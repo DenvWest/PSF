@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Perfect Supplement
+
+Informatieve website over supplementen: gidsen, vergelijkingen en keuzehulpen. Next.js 16 met App Router.
+
+## Structuur
+
+- `src/app/` – Pagina-routes (omega-3, magnesium, slaap, kennisbank, etc.)
+- `src/components/` – UI-componenten (layout, homepage, ui)
+- `src/features/omega3/data/` – Data voor omega-3 pagina’s
 
 ## Getting Started
 
