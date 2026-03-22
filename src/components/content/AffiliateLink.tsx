@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { affiliateLinks, type AffiliateSlug } from "@/data/affiliate-links";
 
