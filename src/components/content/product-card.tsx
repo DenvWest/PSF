@@ -1,7 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
+import AffiliateLink from "@/components/content/AffiliateLink";
 import { DisclosureSmall } from "@/components/ui/Disclosure";
-import { getAffiliateRedirectPath } from "@/data/affiliate-links";
 import { formatPrice } from "@/lib/format-price";
 import type { Omega3Product } from "@/types/product";
 
@@ -83,13 +82,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="border-t border-slate-100 px-6 pb-6 pt-4">
-        <Link
-          href={getAffiliateRedirectPath(product.affiliateSlug)}
-          prefetch={false}
+        <AffiliateLink
+          affiliateSlug={product.affiliateSlug}
           className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
         >
           Bekijk product
-        </Link>
+        </AffiliateLink>
         <DisclosureSmall />
       </div>
     </article>

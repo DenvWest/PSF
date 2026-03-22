@@ -1,9 +1,9 @@
 import Link from "next/link";
+import AffiliateLink from "@/components/content/AffiliateLink";
 import ProductCard from "@/components/content/product-card";
 import Disclosure, { DisclosureSmall, DisclosureTable } from "@/components/ui/Disclosure";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
-import { getAffiliateRedirectPath } from "@/data/affiliate-links";
 import { omega3Products } from "@/data/products/omega3";
 import { formatPrice } from "@/lib/format-price";
 import { faqs } from "@/features/omega3/data/beste-omega-3-supplement";
@@ -124,13 +124,12 @@ export default function BestOmegaPage() {
                                     <li key={pro}>• {pro}</li>
                                 ))}
                             </ul>
-                            <Link
-                                href={getAffiliateRedirectPath(product.affiliateSlug)}
-                                prefetch={false}
+                            <AffiliateLink
+                                affiliateSlug={product.affiliateSlug}
                                 className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-green-700 px-4 py-3 text-sm font-medium text-white hover:bg-green-800"
                             >
                                 Bekijk product
-                            </Link>
+                            </AffiliateLink>
                             <DisclosureSmall />
                         </article>
                     ))}
@@ -209,13 +208,12 @@ export default function BestOmegaPage() {
                             <h3 className="text-base font-semibold">{product.badge}</h3>
                             <p className="mt-1 text-sm font-medium text-green-700">{product.name}</p>
                             <p className="mt-2 text-sm leading-6 text-slate-600">{product.description}</p>
-                            <Link
-                                href={getAffiliateRedirectPath(product.affiliateSlug)}
-                                prefetch={false}
+                            <AffiliateLink
+                                affiliateSlug={product.affiliateSlug}
                                 className="mt-4 inline-flex items-center text-xs font-medium text-slate-500 underline-offset-4 hover:text-slate-700 hover:underline"
                             >
                                 Bekijk product →
-                            </Link>
+                            </AffiliateLink>
                         </div>
                     ))}
                 </div>

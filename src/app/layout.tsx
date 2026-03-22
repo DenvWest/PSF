@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
+import Script from "next/script";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import type { Metadata } from "next";
 import "./globals.css";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -25,26 +25,23 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <body className="bg-white text-slate-900 antialiased">
-
-        {/* Google Analytics */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-FK37BX7ZEK"
+          id="ga-loader"
+          src="https://www.googletagmanager.com/gtag/js?id=G-KF37B7XT2EK"
           strategy="afterInteractive"
         />
-
-        <Script id="ga-script" strategy="afterInteractive">
+        <Script id="ga-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-FK37BX7ZEK');
+            window.gtag = function(){window.dataLayer.push(arguments);}
+            window.gtag('js', new Date());
+            window.gtag('config', 'G-KF37B7XT2EK');
           `}
         </Script>
 
         <Header />
         <main className="min-h-screen">{children}</main>
         <Footer />
-
       </body>
     </html>
   );

@@ -1,8 +1,8 @@
 import Link from "next/link";
+import AffiliateLink from "@/components/content/AffiliateLink";
 import { DisclosureSmall, DisclosureTable } from "@/components/ui/Disclosure";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
-import { getAffiliateRedirectPath } from "@/data/affiliate-links";
 import {
     choiceRoutes,
     comparisonCriteria,
@@ -221,13 +221,12 @@ export default function OmegaComparisonPage() {
                                 </div>
                             </div>
 
-                            <Link
-                                href={getAffiliateRedirectPath(product.affiliateSlug)}
-                                prefetch={false}
+                            <AffiliateLink
+                                affiliateSlug={product.affiliateSlug}
                                 className="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
                             >
                                 Bekijk product
-                            </Link>
+                            </AffiliateLink>
                             <DisclosureSmall />
                         </article>
                     ))}
@@ -303,13 +302,12 @@ export default function OmegaComparisonPage() {
                                 {route.product}
                             </h3>
                             <p className="mt-2 text-sm leading-6 text-slate-600">{route.text}</p>
-                            <Link
-                                href={getAffiliateRedirectPath(route.affiliateSlug)}
-                                prefetch={false}
+                            <AffiliateLink
+                                affiliateSlug={route.affiliateSlug}
                                 className="mt-4 inline-flex items-center text-xs font-medium text-slate-500 underline-offset-4 hover:text-slate-700 hover:underline"
                             >
                                 Bekijk product →
-                            </Link>
+                            </AffiliateLink>
                         </article>
                     ))}
                 </div>

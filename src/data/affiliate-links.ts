@@ -8,21 +8,3 @@ export const affiliateLinks = {
 } as const satisfies Record<string, string>;
 
 export type AffiliateSlug = keyof typeof affiliateLinks;
-
-export function getAffiliateRedirectPath(slug: AffiliateSlug): `/out/${AffiliateSlug}` {
-  return `/out/${slug}`;
-}
-
-export function getAffiliateDestination(slug: string): string | null {
-  const destination = affiliateLinks[slug as AffiliateSlug];
-
-  if (!destination) {
-    return null;
-  }
-
-  try {
-    return new URL(destination).toString();
-  } catch {
-    return null;
-  }
-}
