@@ -33,10 +33,9 @@ export default function RootLayout({
         <Script id="ga-init" strategy="afterInteractive">
           {`
     window.dataLayer = window.dataLayer || [];
-    function gtag(){window.dataLayer.push(arguments);}
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', 'G-FK37BX7ZEK');
+    window.gtag = function(){window.dataLayer.push(arguments);}
+    window.gtag('js', new Date());
+    window.gtag('config', 'G-FK37BX7ZEK');
   `}
         </Script>
         <Header />
