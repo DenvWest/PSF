@@ -26,19 +26,19 @@ export default function RootLayout({
     <html lang="nl">
       <body className="bg-white text-slate-900 antialiased">
         <Script
-          id="ga-loader"
-          src="https://www.googletagmanager.com/gtag/js?id=G-KF37B7XT2EK"
+          src="https://www.googletagmanager.com/gtag/js?id=G-FK37BX7ZEK"
           strategy="afterInteractive"
         />
+
         <Script id="ga-init" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
-            window.gtag = function(){window.dataLayer.push(arguments);}
-            window.gtag('js', new Date());
-            window.gtag('config', 'G-KF37B7XT2EK');
-          `}
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){window.dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-FK37BX7ZEK');
+  `}
         </Script>
-
         <Header />
         <main className="min-h-screen">{children}</main>
         <Footer />
