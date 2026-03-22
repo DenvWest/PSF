@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { affiliateLinks, type AffiliateSlug } from "@/data/affiliate-links";
 
 declare global {
@@ -13,7 +14,7 @@ declare global {
 type AffiliateLinkProps = {
   affiliateSlug: AffiliateSlug;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export default function AffiliateLink({
