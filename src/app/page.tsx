@@ -7,22 +7,22 @@ import Section from "@/components/ui/Section";
 function StartChoices() {
   const items = [
     {
-      title: "Vergelijk supplementen",
+      title: "Vergelijk omega-3",
       description:
-        "Bekijk supplementen naast elkaar op dosering, prijs per dag, kwaliteit en gebruiksgemak.",
+        "Zet omega-3 supplementen naast elkaar op dosering, prijs per dag, kwaliteit en gebruiksgemak.",
       href: "/omega-3-vergelijken",
     },
     {
-      title: "Bekijk beste keuzes",
+      title: "Beste omega-3 keuzes",
       description:
-        "Zie snel welke supplementen eruit springen als beste overall, budget of premium keuze.",
+        "Zie welke producten eruit springen als beste overall, budget of premium keuze.",
       href: "/beste-omega-3-supplement",
     },
     {
-      title: "Lees eerst uitleg",
+      title: "Omega-3 en vitamine D",
       description:
-        "Start met heldere gidsen over wat omega 3 is en waar je op let bij supplementen.",
-      href: "/wat-is-omega-3",
+        "Open het supplementenoverzicht met omega-3 (uitleg en vergelijking) en vitamine D als tweede focus.",
+      href: "/supplementen",
     },
   ];
 
@@ -30,7 +30,7 @@ function StartChoices() {
     <Section
       eyebrow="Start hier"
       title="Kies je startpunt"
-      description="Drie overzichtelijke routes om snel te vergelijken, beste keuzes te zien of eerst rustig de basis te begrijpen."
+      description="Drie routes: omega-3 vergelijken, de beste omega-3 keuzes, of het overzicht waar omega-3 en vitamine D centraal staan."
     >
       <div className="grid gap-5 md:grid-cols-3">
         {items.map((item) => (

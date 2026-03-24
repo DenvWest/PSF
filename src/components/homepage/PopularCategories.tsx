@@ -1,15 +1,16 @@
 import Link from "next/link";
+import Container from "@/components/layout/Container";
 
 export default function PopularCategories() {
+    /** Actieve focus (Omega-3, Vitamine D); uitbreiden door items toe te voegen wanneer de prioriteit meegroeit. */
     const categories = [
-        { name: "Omega 3", href: "/omega-3-vergelijken" },
-        { name: "Magnesium", href: "/magnesium-vergelijken" },
-        { name: "Slaap", href: "/slaap-supplement-vergelijken" },
+        { name: "Omega-3", href: "/omega-3-vergelijken" },
+        { name: "Vitamine D", href: "/supplementen" },
     ];
 
     return (
-        <section className="pb-12 md:pb-16">
-            <div className="mx-auto max-w-6xl px-4 md:px-6">
+        <section className="pb-16 md:pb-20">
+            <Container>
                 <div className="max-w-2xl">
                     <p className="text-sm font-medium uppercase tracking-[0.18em] text-green-700">
                         Populaire onderwerpen
@@ -18,7 +19,8 @@ export default function PopularCategories() {
                         Begin bij een onderwerp
                     </h2>
                     <p className="mt-3 text-sm leading-6 text-slate-600 md:text-base">
-                        Kies een populair thema en ga direct naar de eerste vergelijking of beste keuzes.
+                        Kies omega-3 of vitamine D en ga direct naar de vergelijking of het
+                        supplementenoverzicht.
                     </p>
                 </div>
 
@@ -33,7 +35,7 @@ export default function PopularCategories() {
                         </Link>
                     ))}
                 </div>
-            </div>
+            </Container>
         </section>
     );
 }

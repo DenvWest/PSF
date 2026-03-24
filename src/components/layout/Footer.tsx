@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Container from "@/components/layout/Container";
 
 const exploreLinks = [
     { href: "/kennisbank", label: "Kennisbank" },
@@ -17,8 +18,8 @@ const infoLinks = [
 export default function Footer() {
     return (
         <footer className="mt-24 border-t border-slate-200 bg-white">
-            <div className="mx-auto max-w-6xl px-6 md:px-8">
-                <div className="grid gap-10 py-12 md:grid-cols-3 md:gap-12 md:py-14">
+            <Container>
+                <div className="grid gap-10 py-14 md:grid-cols-3 md:gap-16 lg:py-16">
                     <div className="md:col-span-1">
                         <Link href="/" className="inline-flex items-center gap-2.5">
                             <Image
@@ -33,8 +34,9 @@ export default function Footer() {
                             </span>
                         </Link>
                         <p className="mt-4 text-sm leading-relaxed text-slate-500">
-                            Een onafhankelijke kennisbank voor supplementen. Gidsen,
-                            vergelijkingen en keuzes op basis van bewijs.
+                            Een onafhankelijke kennisbank voor supplementen, met nu
+                            focus op Omega-3 en Vitamine D. Gidsen, vergelijkingen
+                            en keuzes op basis van bewijs.
                         </p>
                     </div>
 
@@ -75,7 +77,7 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-3 border-t border-slate-100 py-5 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-col gap-3 border-t border-slate-100 py-6 md:flex-row md:items-center md:justify-between">
                     <p className="text-xs text-slate-400">
                         © 2026 Perfect Supplement. Alle rechten voorbehouden.
                     </p>
@@ -87,7 +89,7 @@ export default function Footer() {
                         .
                     </p>
                 </div>
-            </div>
+            </Container>
         </footer>
     );
 }

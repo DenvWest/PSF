@@ -28,8 +28,8 @@ const searchItems = [
     { href: "/supplementen", label: "Supplementen", group: "Direct naar" },
     { href: "/methodologie", label: "Methodologie", group: "Direct naar" },
     { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken", group: "Vergelijkingen" },
-    { href: "/magnesium-vergelijken", label: "Magnesium vergelijken", group: "Vergelijkingen" },
-    { href: "/slaap-supplement-vergelijken", label: "Slaap supplement vergelijken", group: "Vergelijkingen" },
+    { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement", group: "Vergelijkingen" },
+    { href: "/supplementen", label: "Vitamine D supplementen", group: "Vergelijkingen" },
     { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement", group: "Keuzehulpen" },
     { href: "/wat-is-omega-3", label: "Wat is omega-3?", group: "Ingrediënten" },
     { href: "/waar-let-je-op-bij-omega-3", label: "Waar let je op bij omega-3?", group: "Ingrediënten" },
@@ -102,7 +102,7 @@ export default function Header() {
                 className={`sticky top-0 z-50 border-b border-slate-200/80 backdrop-blur ${searchOpen ? "bg-white/95" : "bg-white/85"
                     }`}
             >
-                <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 md:px-8">
+                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
                     <div className="flex items-center gap-10">
                         <Link
                             href="/"
@@ -194,7 +194,7 @@ export default function Header() {
                     className={`absolute inset-x-0 top-0 border-b border-slate-200 bg-white/90 backdrop-blur-xl transition-all duration-300 ${searchOpen ? "translate-y-0 opacity-100" : "-translate-y-6 opacity-0"
                         }`}
                 >
-                    <div className="mx-auto max-w-6xl px-6 md:px-8">
+                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
                         <div className="flex min-h-[72px] items-center gap-4">
                             <svg
                                 aria-hidden="true"

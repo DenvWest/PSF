@@ -4,28 +4,28 @@ import Link from "next/link";
 const sections = [
     {
         title: "Ingrediënten",
-        text: "Lees rustige, inhoudelijke uitleg over ingrediënten zoals omega-3, magnesium en andere supplementcategorieën.",
+        text: "Lees rustige, inhoudelijke uitleg over ingrediënten, met de meeste diepgang rond omega-3 en vitamine D; andere categorieën volgen naarmate ze worden uitgebouwd.",
         links: [
             { label: "Wat is omega-3?", href: "/wat-is-omega-3" },
             { label: "Waar let je op bij omega-3?", href: "/waar-let-je-op-bij-omega-3" },
-            { label: "Magnesium vergelijken", href: "/magnesium-vergelijken" },
+            { label: "Vitamine D supplementen", href: "/supplementen" },
         ],
     },
     {
         title: "Vergelijkingen",
-        text: "Vergelijk supplementen op inhoud, dosering, transparantie en praktische toepasbaarheid.",
+        text: "Vergelijk supplementen op inhoud, dosering en transparantie — begin bij omega-3 en vitamine D waar de site het meest uitdiept.",
         links: [
             { label: "Omega-3 vergelijken", href: "/omega-3-vergelijken" },
+            { label: "Vitamine D supplementen", href: "/supplementen" },
             { label: "Magnesium vergelijken", href: "/magnesium-vergelijken" },
-            { label: "Slaap supplement vergelijken", href: "/slaap-supplement-vergelijken" },
         ],
     },
     {
         title: "Keuzehulpen",
-        text: "Gebruik overzichtspagina’s en gidsen om sneller te bepalen welke route of categorie bij je vraag past.",
+        text: "Gebruik overzichtspagina’s en gidsen om sneller te bepalen welke route past — onder meer rond omega-3 en vitamine D.",
         links: [
             { label: "Beste omega-3 supplement", href: "/beste-omega-3-supplement" },
-            { label: "Supplementen bekijken", href: "/supplementen" },
+            { label: "Omega-3 en vitamine D (overzicht)", href: "/supplementen" },
             { label: "Lees onze methodologie", href: "/methodologie" },
         ],
     },
@@ -41,13 +41,15 @@ export default function KennisbankPage() {
                     </p>
 
                     <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-slate-900 md:text-5xl">
-                        Kennisbank over supplementen, ingrediënten en vergelijkingen
+                        Kennisbank over supplementen, met nadruk op omega-3 en vitamine D
                     </h1>
 
                     <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
                         In de kennisbank vind je uitleg, vergelijkingen en keuzehulpen die
-                        helpen om supplementen rustiger en beter te begrijpen. De focus ligt
-                        op inhoud, dosering, transparantie en context.
+                        helpen om supplementen rustiger en beter te begrijpen. Omega-3 en
+                        vitamine D zijn het meest uitgewerkt; andere onderwerpen worden
+                        aangevuld waar dat zinvol is. De focus blijft op inhoud, dosering,
+                        transparantie en context.
                     </p>
                 </div>
 
@@ -87,10 +89,11 @@ export default function KennisbankPage() {
 
                     <div className="mt-5 space-y-5 text-base leading-8 text-slate-600">
                         <p>
-                            Gebruik de kennisbank als inhoudelijk startpunt. Begin met een
-                            uitlegpagina als je een ingrediënt of categorie eerst beter wilt
-                            begrijpen. Gebruik een vergelijking als je al meerdere opties
-                            naast elkaar wilt zien.
+                            Gebruik de kennisbank als inhoudelijk startpunt. Voor omega-3 en
+                            vitamine D kun je het supplementenoverzicht combineren met de
+                            uitleg- en vergelijkingslinks hierboven. Bij andere ingrediënten
+                            of doelen geldt hetzelfde patroon naarmate er meer pagina’s bij
+                            komen.
                         </p>
 
                         <p>

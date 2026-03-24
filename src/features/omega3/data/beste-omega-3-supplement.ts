@@ -1,22 +1,22 @@
 export const faqs = [
   {
-    question: "Wat is een goede omega 3 dosering?",
+    question: "Hoeveel omega-3 per dag is genoeg?",
     answer:
-      "Dat verschilt per product en doel. Kijk niet alleen naar het aantal capsules, maar vooral naar de daadwerkelijke EPA- en DHA-inhoud per dagdosering.",
+      "Voor algemene ondersteuning wordt vaak 250–500 mg EPA+DHA per dag aangeraden. Kijk altijd naar de daadwerkelijke EPA- en DHA-inhoud op het etiket, niet alleen het totale omega-3 of visoliegehalte.",
   },
   {
-    question: "Is duurder altijd beter?",
+    question: "Is visolie veilig om dagelijks te gebruiken?",
     answer:
-      "Nee. Een hogere prijs zegt niet automatisch dat een supplement beter is. Prijs per dag, transparantie en samenstelling zijn belangrijker.",
+      "Ja, visolie is bij normale doseringen veilig voor de meeste mensen. Kies voor producten van een transparant merk dat de zuiverheid vermeldt. Bij hoge doseringen of medicijngebruik is het verstandig een arts te raadplegen.",
   },
   {
-    question: "Waar moet je op letten bij kwaliteit?",
+    question: "Wat is beter: visolie of algenolie?",
     answer:
-      "Let op duidelijke doseringsinformatie, transparantie van het merk, gebruiksgemak en een logische verhouding tussen prijs en inhoud.",
+      "Voor de meeste mensen is visolie de eerste keuze: hogere EPA/DHA per portie en vaak goedkoper per gram. Algenolie is logischer als je plantaardig eet — het bevat vergelijkbare omega-3 vetzuren en heeft geen vissmaak.",
   },
   {
-    question: "Wanneer neem je omega 3 in?",
+    question: "Wanneer neem je omega-3 het beste in?",
     answer:
-      "Veel mensen nemen omega 3 bij een maaltijd. Praktisch gezien is consistent gebruik meestal belangrijker dan het exacte tijdstip.",
+      "Veel mensen nemen omega-3 bij een maaltijd, omdat vetten de opname kunnen verbeteren. Consistent gebruik is praktisch gezien belangrijker dan het exacte tijdstip.",
   },
 ];

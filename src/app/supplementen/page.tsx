@@ -71,6 +71,10 @@ const items = [
     },
 ];
 
+/** Welke categorieën nu op deze hub verschijnen; titels uit `items` uitbreiden wanneer de catalogus groeit. */
+const hubVisibleTitles = new Set<string>(["Omega-3", "Vitamine D"]);
+const hubItems = items.filter((item) => hubVisibleTitles.has(item.title));
+
 export default function SupplementenPage() {
     return (
         <Container>
@@ -85,9 +89,10 @@ export default function SupplementenPage() {
                     </h1>
 
                     <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
-                        Deze pagina werkt als een rustig keuze-overzicht. Kies een categorie
-                        en ga daarna verder naar een vergelijking, gids of verdiepende
-                        pagina.
+                        Deze pagina werkt als een rustig keuze-overzicht. Voorlopig tonen we
+                        omega-3 en vitamine D; de catalogus kan later worden uitgebreid. Kies
+                        een categorie en ga daarna verder naar een vergelijking, gids of
+                        verdiepende pagina.
                     </p>
                 </div>
 
@@ -109,7 +114,7 @@ export default function SupplementenPage() {
                 </section>
 
                 <section className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                    {items.map((item) => (
+                    {hubItems.map((item) => (
                         <article
                             key={item.title}
                             className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
