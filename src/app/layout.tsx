@@ -46,3 +46,19 @@ export default function RootLayout({
     </html>
   );
 }
+
+export const metadata = {
+  title: "Perfect Supplement",
+  description: "Evidence-based supplement keuze",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="nl">
+      <head>
+        <meta name="0107f4118169ab8" content="9822d5dcfc9e7853d2ef69971e75efc8" />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
