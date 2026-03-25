@@ -90,7 +90,7 @@ export default function ProductCard({ product, pageType, position }: ProductCard
           position={position}
           className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
         >
-          Bekijk product
+          Bekijk actuele prijs bij aanbieder →
         </AffiliateLink>
         <DisclosureSmall />
       </div>

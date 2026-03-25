@@ -225,7 +225,7 @@ export default function OmegaComparisonPage() {
                                 affiliateSlug={product.affiliateSlug}
                                 className="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
                             >
-                                Bekijk product
+                                Bekijk actuele prijs bij aanbieder →
                             </AffiliateLink>
                             <DisclosureSmall />
                         </article>
@@ -306,7 +306,7 @@ export default function OmegaComparisonPage() {
                                 affiliateSlug={route.affiliateSlug}
                                 className="mt-4 inline-flex items-center text-xs font-medium text-slate-500 underline-offset-4 hover:text-slate-700 hover:underline"
                             >
-                                Bekijk product →
+                                Bekijk actuele prijs bij aanbieder →
                             </AffiliateLink>
                         </article>
                     ))}

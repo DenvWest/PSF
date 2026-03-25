@@ -169,7 +169,7 @@ export default function BestOmegaPage() {
                                     position="hero_sidebar"
                                     className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-green-700 px-4 py-3 text-sm font-medium text-white hover:bg-green-800"
                                 >
-                                    Bekijk beste keuze →
+                                    Bekijk actuele prijs bij aanbieder →
                                 </AffiliateLink>
                                 <DisclosureSmall />
                             </>
@@ -284,7 +284,7 @@ export default function BestOmegaPage() {
                                                 : "border border-slate-200 bg-white text-slate-900 hover:border-slate-300 hover:bg-slate-50"
                                         }`}
                                     >
-                                        Bekijk prijs &amp; product →
+                                        Bekijk actuele prijs bij aanbieder →
                                     </AffiliateLink>
                                     <DisclosureSmall />
                                 </div>
@@ -346,7 +346,7 @@ export default function BestOmegaPage() {
                                 position="section_choice_daily"
                                 className="mt-4 inline-flex items-center text-sm font-medium text-green-800 underline-offset-4 hover:underline"
                             >
-                                Bekijk beste keuze →
+                                Bekijk prijs bij aanbieder →
                             </AffiliateLink>
                         </div>
                     ) : null}
@@ -368,7 +368,7 @@ export default function BestOmegaPage() {
                                 position="section_choice_easy"
                                 className="mt-4 inline-flex items-center text-sm font-medium text-slate-700 underline-offset-4 hover:underline"
                             >
-                                Bekijk product →
+                                Bekijk prijs bij aanbieder →
                             </AffiliateLink>
                         </div>
                     ) : null}
@@ -390,7 +390,7 @@ export default function BestOmegaPage() {
                                 position="section_choice_vegan"
                                 className="mt-4 inline-flex items-center text-sm font-medium text-slate-700 underline-offset-4 hover:underline"
                             >
-                                Bekijk product →
+                                Bekijk prijs bij aanbieder →
                             </AffiliateLink>
                         </div>
                     ) : null}
