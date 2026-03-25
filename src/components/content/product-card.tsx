@@ -6,9 +6,11 @@ import type { Omega3Product } from "@/types/product";
 
 type ProductCardProps = {
   product: Omega3Product;
+  pageType?: string;
+  position?: string;
 };
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, pageType, position }: ProductCardProps) {
   return (
     <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
       <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-start">
@@ -84,6 +86,8 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="border-t border-slate-100 px-6 pb-6 pt-4">
         <AffiliateLink
           affiliateSlug={product.affiliateSlug}
+          pageType={pageType}
+          position={position}
           className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
         >
           Bekijk product

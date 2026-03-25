@@ -165,6 +165,8 @@ export default function BestOmegaPage() {
                             <>
                                 <AffiliateLink
                                     affiliateSlug={bestChoice.affiliateSlug}
+                                    pageType="beste-omega-3-supplement"
+                                    position="hero_sidebar"
                                     className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-green-700 px-4 py-3 text-sm font-medium text-white hover:bg-green-800"
                                 >
                                     Bekijk beste keuze →
@@ -274,6 +276,8 @@ export default function BestOmegaPage() {
 
                                     <AffiliateLink
                                         affiliateSlug={product.affiliateSlug}
+                                        pageType="beste-omega-3-supplement"
+                                        position={`top_pick_${index + 1}`}
                                         className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-medium transition ${
                                             isTop
                                                 ? "bg-green-700 text-white hover:bg-green-800"
@@ -338,6 +342,8 @@ export default function BestOmegaPage() {
                             </p>
                             <AffiliateLink
                                 affiliateSlug={bestChoice.affiliateSlug}
+                                pageType="beste-omega-3-supplement"
+                                position="section_choice_daily"
                                 className="mt-4 inline-flex items-center text-sm font-medium text-green-800 underline-offset-4 hover:underline"
                             >
                                 Bekijk beste keuze →
@@ -358,6 +364,8 @@ export default function BestOmegaPage() {
                             </p>
                             <AffiliateLink
                                 affiliateSlug={easyChoice.affiliateSlug}
+                                pageType="beste-omega-3-supplement"
+                                position="section_choice_easy"
                                 className="mt-4 inline-flex items-center text-sm font-medium text-slate-700 underline-offset-4 hover:underline"
                             >
                                 Bekijk product →
@@ -378,6 +386,8 @@ export default function BestOmegaPage() {
                             </p>
                             <AffiliateLink
                                 affiliateSlug={veganChoice.affiliateSlug}
+                                pageType="beste-omega-3-supplement"
+                                position="section_choice_vegan"
                                 className="mt-4 inline-flex items-center text-sm font-medium text-slate-700 underline-offset-4 hover:underline"
                             >
                                 Bekijk product →
@@ -566,7 +576,12 @@ export default function BestOmegaPage() {
             >
                 <div className="grid gap-5 lg:grid-cols-2">
                     {omega3Products.map((product) => (
-                        <ProductCard key={product.slug} product={product} />
+                        <ProductCard
+                            key={product.slug}
+                            product={product}
+                            pageType="beste-omega-3-supplement"
+                            position={`featured_${product.slug}`}
+                        />
                     ))}
                 </div>
             </ContentSection>

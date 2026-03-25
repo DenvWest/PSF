@@ -2,27 +2,22 @@
 
 import type { ReactNode } from "react";
 import { affiliateLinks, type AffiliateSlug } from "@/data/affiliate-links";
-
-declare global {
-  interface Window {
-    gtag?: (
-      command: "event",
-      action: string,
-      params?: Record<string, string>
-    ) => void;
-  }
-}
+import { trackAffiliateClick } from "@/lib/track-affiliate-click";
 
 type AffiliateLinkProps = {
   affiliateSlug: AffiliateSlug;
   className?: string;
   children: ReactNode;
+  pageType?: string;
+  position?: string;
 };
 
 export default function AffiliateLink({
   affiliateSlug,
   className,
   children,
+  pageType,
+  position,
 }: AffiliateLinkProps) {
   return (
     <a
@@ -31,10 +26,7 @@ export default function AffiliateLink({
       rel="noopener noreferrer sponsored"
       className={className}
       onClick={() => {
-        window.gtag?.("event", "affiliate_click", {
-          event_category: "affiliate",
-          event_label: affiliateSlug,
-        });
+        trackAffiliateClick(affiliateSlug, { pageType, position });
       }}
     >
       {children}
