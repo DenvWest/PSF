@@ -13,7 +13,7 @@ export default function PrivacyPage() {
             }
         >
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">1. Over deze website</h2>
+                <h2 className="text-xl font-semibold text-stone-900">1. Over deze website</h2>
                 <p className="mt-3">
                         Perfect Supplement is een informatieve website over voedingssupplementen,
                         vergelijkingen en methodologie. Sommige links op deze website zijn affiliate
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-stone-900">
                     2. Welke gegevens we verzamelen
                 </h2>
                 <p className="mt-3">
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">3. Waarom we gegevens verwerken</h2>
+                <h2 className="text-xl font-semibold text-stone-900">3. Waarom we gegevens verwerken</h2>
                 <p className="mt-3">
                         Gegevens worden uitsluitend verwerkt voor de volgende doelen:
                     </p>
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">4. Cookies en analytics</h2>
+                <h2 className="text-xl font-semibold text-stone-900">4. Cookies en analytics</h2>
                 <p className="mt-3">
                         Deze website kan functionele cookies, analytische cookies en affiliate cookies
                         gebruiken.
@@ -69,14 +69,14 @@ export default function PrivacyPage() {
 
                 <div className="mt-4 space-y-4">
                     <div>
-                        <h3 className="font-semibold text-slate-900">Functionele cookies</h3>
+                        <h3 className="font-semibold text-stone-900">Functionele cookies</h3>
                         <p className="mt-1">
                                 Deze zijn nodig om de website correct te laten werken.
                             </p>
                     </div>
 
                     <div>
-                        <h3 className="font-semibold text-slate-900">Analytische cookies</h3>
+                        <h3 className="font-semibold text-stone-900">Analytische cookies</h3>
                         <p className="mt-1">
                                 Hiermee krijgen we inzicht in het gebruik van de website, zodat we inhoud,
                                 navigatie en prestaties kunnen verbeteren. Waar mogelijk worden deze gegevens
@@ -85,7 +85,7 @@ export default function PrivacyPage() {
                     </div>
 
                     <div>
-                        <h3 className="font-semibold text-slate-900">Affiliate cookies</h3>
+                        <h3 className="font-semibold text-stone-900">Affiliate cookies</h3>
                         <p className="mt-1">
                                 Wanneer je op een affiliate link klikt, kan een partner of netwerk een cookie
                                 plaatsen om te registreren dat een aankoop via deze website tot stand is gekomen.
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">5. Externe partijen</h2>
+                <h2 className="text-xl font-semibold text-stone-900">5. Externe partijen</h2>
                 <p className="mt-3">
                         Voor analytics, hosting of affiliate tracking kunnen externe partijen worden gebruikt.
                         Deze partijen verwerken gegevens uitsluitend voor hun eigen technische rol of op basis
@@ -104,7 +104,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">6. Bewaartermijn</h2>
+                <h2 className="text-xl font-semibold text-stone-900">6. Bewaartermijn</h2>
                 <p className="mt-3">
                         Gegevens worden niet langer bewaard dan nodig is voor de doelen waarvoor ze zijn
                         verzameld, tenzij een langere bewaartermijn wettelijk vereist is.
@@ -112,7 +112,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">7. Beveiliging</h2>
+                <h2 className="text-xl font-semibold text-stone-900">7. Beveiliging</h2>
                 <p className="mt-3">
                         We nemen redelijke technische en organisatorische maatregelen om gegevens te beschermen,
                         zoals HTTPS, software-updates, toegangsbeveiliging, back-ups en basisbeveiliging tegen
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">8. Jouw rechten</h2>
+                <h2 className="text-xl font-semibold text-stone-900">8. Jouw rechten</h2>
                 <p className="mt-3">
                         Afhankelijk van de situatie kun je verzoeken om inzage, correctie of verwijdering van
                         persoonsgegevens. Ook kun je bezwaar maken tegen bepaalde verwerkingen wanneer dat van
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">9. Externe websites</h2>
+                <h2 className="text-xl font-semibold text-stone-900">9. Externe websites</h2>
                 <p className="mt-3">
                         Deze website kan links bevatten naar externe websites. Wij zijn niet verantwoordelijk
                         voor de inhoud of het privacybeleid van die websites.
@@ -138,7 +138,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">10. Wijzigingen</h2>
+                <h2 className="text-xl font-semibold text-stone-900">10. Wijzigingen</h2>
                 <p className="mt-3">
                         Deze privacyverklaring kan worden aangepast wanneer wetgeving, tools of de website
                         veranderen. De meest recente versie staat altijd op deze pagina.
@@ -146,7 +146,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">11. Contact</h2>
+                <h2 className="text-xl font-semibold text-stone-900">11. Contact</h2>
                 <p className="mt-3">
                         Vragen over privacy of gegevensverwerking kun je stellen via de contactpagina of via
                         het e-mailadres dat je op de website vermeldt.

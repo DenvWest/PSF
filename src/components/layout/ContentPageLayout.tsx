@@ -15,30 +15,28 @@ export default function ContentPageLayout({
     children,
 }: ContentPageLayoutProps) {
     return (
-        <main>
-            <Container className="py-16">
+        <div className="text-stone-900">
+            <Container className="py-16 md:py-20">
                 <div className="max-w-3xl">
                     <div className="mb-10">
                         {eyebrow ? (
-                            <p className="text-sm font-medium uppercase tracking-wide text-green-700">
-                                {eyebrow}
-                            </p>
+                            <p className="ps-eyebrow">{eyebrow}</p>
                         ) : null}
-                        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+                        <h1 className="ps-display mt-4 text-3xl leading-[1.12] tracking-tight text-stone-900 md:text-[2.125rem]">
                             {title}
                         </h1>
                         {intro ? (
-                            <div className="mt-4 text-base leading-7 text-slate-600">
+                            <div className="mt-4 text-base leading-[1.75] text-stone-500">
                                 {intro}
                             </div>
                         ) : null}
                     </div>
 
-                    <div className="space-y-12 text-base leading-7 text-slate-600">
+                    <div className="space-y-12 text-base leading-[1.75] text-stone-500">
                         {children}
                     </div>
                 </div>
             </Container>
-        </main>
+        </div>
     );
 }

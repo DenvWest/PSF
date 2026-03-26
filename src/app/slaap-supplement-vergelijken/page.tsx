@@ -67,26 +67,26 @@ export default function SlaapSupplementVergelijkenPage() {
         <Container>
             <div className="py-16 md:py-20">
                 <div className="max-w-6xl">
-                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
                         Slaap supplement vergelijken
                     </p>
 
-                    <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-slate-900 md:text-5xl">
+                    <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
                         Slaap supplement vergelijken: rustiger kiezen tussen formules
                     </h1>
 
-                    <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
+                    <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
                         Slaapproducten zijn vaak druk gepositioneerd. Daarom vergelijken we
                         ze op helderheid van de formule, dosering, praktische inzet in de
                         avond en transparantie van het merk.
                     </p>
 
-                    <p className="mt-4 max-w-3xl text-base leading-7 text-slate-500">
+                    <p className="mt-4 max-w-3xl text-base leading-7 text-stone-500">
                         Deze pagina is bedoeld als algemene vergelijking en sluit aan op
                         onze{" "}
                         <Link
                             href="/methodologie"
-                            className="font-medium text-slate-900 underline underline-offset-4"
+                            className="font-medium text-stone-900 underline underline-offset-4"
                         >
                             methodologie
                         </Link>
@@ -98,12 +98,12 @@ export default function SlaapSupplementVergelijkenPage() {
                     {factors.map((factor) => (
                         <article
                             key={factor.title}
-                            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
                         >
-                            <h2 className="text-xl font-semibold text-slate-900">
+                            <h2 className="text-xl font-semibold text-stone-900">
                                 {factor.title}
                             </h2>
-                            <p className="mt-4 text-base leading-7 text-slate-600">
+                            <p className="mt-4 text-base leading-7 text-stone-600">
                                 {factor.text}
                             </p>
                         </article>
@@ -111,34 +111,34 @@ export default function SlaapSupplementVergelijkenPage() {
                 </section>
 
                 <section className="mt-16 max-w-6xl">
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
+                    <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
                         Overzicht van veelvoorkomende slaapproduct-types
                     </h2>
 
-                    <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                    <div className="mt-6 overflow-hidden rounded-2xl border border-stone-200 bg-white">
                         <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-slate-200 text-left">
-                                <thead className="bg-slate-50">
-                                    <tr className="text-sm text-slate-600">
+                            <table className="min-w-full divide-y divide-stone-200 text-left">
+                                <thead className="bg-stone-50">
+                                    <tr className="text-sm text-stone-600">
                                         <th className="px-6 py-4 font-medium">Producttype</th>
                                         <th className="px-6 py-4 font-medium">Beste voor</th>
                                         <th className="px-6 py-4 font-medium">Hoofdfocus</th>
                                         <th className="px-6 py-4 font-medium">Opmerking</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-200">
+                                <tbody className="divide-y divide-stone-200">
                                     {products.map((product) => (
                                         <tr key={product.name} className="align-top">
-                                            <td className="px-6 py-5 font-medium text-slate-900">
+                                            <td className="px-6 py-5 font-medium text-stone-900">
                                                 {product.name}
                                             </td>
-                                            <td className="px-6 py-5 text-slate-600">
+                                            <td className="px-6 py-5 text-stone-600">
                                                 {product.bestFor}
                                             </td>
-                                            <td className="px-6 py-5 text-slate-600">
+                                            <td className="px-6 py-5 text-stone-600">
                                                 {product.focus}
                                             </td>
-                                            <td className="px-6 py-5 text-slate-600">
+                                            <td className="px-6 py-5 text-stone-600">
                                                 {product.notes}
                                             </td>
                                         </tr>
@@ -151,11 +151,11 @@ export default function SlaapSupplementVergelijkenPage() {
 
                 <div className="mt-16 grid gap-10 xl:grid-cols-[1.2fr_0.8fr]">
                     <section className="max-w-4xl">
-                        <h2 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
+                        <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
                             Waar wij op letten bij slaapproducten
                         </h2>
 
-                        <div className="mt-5 space-y-5 text-base leading-8 text-slate-600">
+                        <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
                             <p>
                                 Deze categorie vraagt om extra rust in de presentatie. Veel
                                 slaapproducten combineren meerdere ingrediënten en communiceren
@@ -175,22 +175,22 @@ export default function SlaapSupplementVergelijkenPage() {
                         </div>
                     </section>
 
-                    <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                        <p className="text-sm font-medium text-slate-500">Gerelateerd</p>
-                        <h3 className="mt-2 text-xl font-semibold text-slate-900">
+                    <aside className="rounded-2xl border border-stone-200 bg-stone-50 p-6">
+                        <p className="text-sm font-medium text-stone-500">Gerelateerd</p>
+                        <h3 className="mt-2 text-xl font-semibold text-stone-900">
                             Meer context
                         </h3>
 
-                        <div className="mt-5 space-y-4 text-base text-slate-600">
+                        <div className="mt-5 space-y-4 text-base text-stone-600">
                             <Link
                                 href="/methodologie"
-                                className="block rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
                             >
                                 Lees hoe wij beoordelen
                             </Link>
                             <Link
                                 href="/supplementen"
-                                className="block rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
                             >
                                 Bekijk alle supplementen
                             </Link>
@@ -199,7 +199,7 @@ export default function SlaapSupplementVergelijkenPage() {
                 </div>
 
                 <section className="mt-16 max-w-4xl">
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
+                    <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
                         Veelgestelde vragen over slaap supplement vergelijken
                     </h2>
 
@@ -207,12 +207,12 @@ export default function SlaapSupplementVergelijkenPage() {
                         {faq.map((item) => (
                             <article
                                 key={item.question}
-                                className="rounded-2xl border border-slate-200 bg-white p-6"
+                                className="rounded-2xl border border-stone-200 bg-white p-6"
                             >
-                                <h3 className="text-lg font-semibold text-slate-900">
+                                <h3 className="text-lg font-semibold text-stone-900">
                                     {item.question}
                                 </h3>
-                                <p className="mt-3 text-base leading-7 text-slate-600">
+                                <p className="mt-3 text-base leading-7 text-stone-600">
                                     {item.answer}
                                 </p>
                             </article>

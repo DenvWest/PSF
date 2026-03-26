@@ -1,21 +1,29 @@
-import Link from "next/link";
-import Section from "@/components/ui/Section";
+import Container from "@/components/layout/Container";
 
 export default function TrustSection() {
-    return (
-        <Section
-            eyebrow="Transparant & rustig"
-            title="Waar je op kunt vertrouwen"
-            description="We beoordelen op inhoud, dosering en transparantie — niet op marketing. Op elke pagina proberen we keuzes en trade-offs helder te maken, zodat je snel snapt wat je krijgt."
-        >
-            <div className="max-w-2xl">
-                <Link
-                    href="/methodologie"
-                    className="inline-flex text-sm font-medium text-slate-600 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 hover:decoration-slate-400"
-                >
-                    Lees hoe we beoordelen
-                </Link>
-            </div>
-        </Section>
-    );
+  return (
+    <section className="py-28">
+      <div className="ps-divider" />
+      <Container>
+        <div className="pt-28 max-w-[460px]">
+          <p className="text-[0.63rem] font-medium uppercase tracking-[0.26em] text-stone-400">
+            Onze filosofie
+          </p>
+          <h2 className="ps-display mt-5 text-[2.25rem] leading-[1.1] text-stone-900 sm:text-[2.75rem]">
+            Rust boven complexiteit.
+          </h2>
+          <div className="mt-9 space-y-5 text-base leading-[1.85] text-stone-400">
+            <p>
+              Geen ingewikkelde trajecten of overvolle schema&apos;s.
+              We beginnen met een sterke basis — en bouwen van daaruit verder.
+            </p>
+            <p>
+              Door beter te begrijpen wat je gebruikt en waarom, maak je
+              vanzelf betere keuzes. Niet alles tegelijk, maar stap voor stap.
+            </p>
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
 }

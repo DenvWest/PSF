@@ -73,31 +73,31 @@ export default function ContactPage() {
     return (
         <>
             {/* Hero */}
-            <section className="border-b border-slate-200/80 bg-slate-50">
+            <section className="border-b border-stone-200/80 bg-stone-50">
                 <Container>
                     <div className="max-w-6xl py-16 md:py-20 lg:py-24">
-                        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
+                        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
                             CONTACT
                         </p>
 
-                        <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight text-slate-900 md:text-5xl">
+                        <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
                             Waar kunnen we je mee helpen?
                         </h1>
 
-                        <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
+                        <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
                             Heb je een vraag over onze vergelijkingen, methodologie, content
                             of een mogelijke samenwerking? Hieronder vind je de snelste
                             route.
                         </p>
 
                         <div className="mt-10 grid gap-3 sm:grid-cols-3">
-                            <div className="rounded-2xl border border-slate-200/90 bg-white/90 px-4 py-3.5 text-sm leading-6 text-slate-700 shadow-sm ring-1 ring-slate-900/[0.03]">
+                            <div className="rounded-2xl border border-stone-200/90 bg-white/90 px-4 py-3.5 text-sm leading-6 text-stone-700 shadow-sm ring-1 ring-stone-900/[0.03]">
                                 Transparante criteria
                             </div>
-                            <div className="rounded-2xl border border-slate-200/90 bg-white/90 px-4 py-3.5 text-sm leading-6 text-slate-700 shadow-sm ring-1 ring-slate-900/[0.03]">
+                            <div className="rounded-2xl border border-stone-200/90 bg-white/90 px-4 py-3.5 text-sm leading-6 text-stone-700 shadow-sm ring-1 ring-stone-900/[0.03]">
                                 Evidence-based uitgangspunten
                             </div>
-                            <div className="rounded-2xl border border-slate-200/90 bg-white/90 px-4 py-3.5 text-sm leading-6 text-slate-700 shadow-sm ring-1 ring-slate-900/[0.03] sm:col-span-1">
+                            <div className="rounded-2xl border border-stone-200/90 bg-white/90 px-4 py-3.5 text-sm leading-6 text-stone-700 shadow-sm ring-1 ring-stone-900/[0.03] sm:col-span-1">
                                 Geen chat of formulier — rustig en direct
                             </div>
                         </div>
@@ -106,17 +106,17 @@ export default function ContactPage() {
             </section>
 
             {/* Help hub — klikbare routes */}
-            <section className="border-b border-slate-100 bg-white">
+            <section className="border-b border-stone-100 bg-[var(--ps-bg)]">
                 <Container>
                     <div className="max-w-6xl py-14 md:py-16 lg:py-20">
                         <div className="max-w-2xl">
-                            <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+                            <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">
                                 Snel naar
                             </p>
-                            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
+                            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
                                 Kies je route
                             </h2>
-                            <p className="mt-4 text-base leading-7 text-slate-600 md:text-lg md:leading-8">
+                            <p className="mt-4 text-base leading-7 text-stone-600 md:text-lg md:leading-8">
                                 Van veelgestelde vragen tot onze methodologie en zakelijke
                                 contacten — alles op één plek, in dezelfde rustige toon als de
                                 rest van de site.
@@ -128,15 +128,15 @@ export default function ContactPage() {
                                 <Link
                                     key={card.title}
                                     href={card.href}
-                                    className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-7 shadow-sm ring-1 ring-slate-900/[0.04] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+                                    className="group flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-7 shadow-sm ring-1 ring-stone-900/[0.04] transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
                                 >
-                                    <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+                                    <h3 className="text-lg font-semibold tracking-tight text-stone-900">
                                         {card.title}
                                     </h3>
-                                    <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">
+                                    <p className="mt-3 flex-1 text-sm leading-6 text-stone-600">
                                         {card.description}
                                     </p>
-                                    <p className="mt-6 text-sm font-medium text-green-700 underline decoration-green-300 underline-offset-4 transition group-hover:text-green-800 group-hover:decoration-green-400">
+                                    <p className="mt-6 text-sm font-medium text-stone-800 underline decoration-stone-300 underline-offset-4 transition group-hover:text-stone-800 group-hover:decoration-stone-400">
                                         Open
                                     </p>
                                 </Link>
@@ -149,24 +149,24 @@ export default function ContactPage() {
             {/* FAQ */}
             <section
                 id="veelgestelde-vragen"
-                className="scroll-mt-24 border-b border-slate-100 bg-slate-50/60"
+                className="scroll-mt-24 border-b border-stone-100 bg-stone-50/60"
             >
                 <Container>
                     <div className="max-w-6xl py-14 md:py-20">
                         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:gap-14 xl:gap-20">
                             <div className="lg:pt-1">
-                                <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+                                <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">
                                     Veelgestelde vragen
                                 </p>
-                                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+                                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
                                     Antwoorden die bij ons horen
                                 </h2>
-                                <p className="mt-4 text-base leading-7 text-slate-600">
+                                <p className="mt-4 text-base leading-7 text-stone-600">
                                     Korte, eerlijke antwoorden — geen marketingtaal. Voor de
                                     volledige achtergrond kun je altijd doorlinken naar{" "}
                                     <Link
                                         href="/methodologie"
-                                        className="font-medium text-green-800 underline decoration-green-300/80 underline-offset-4 transition hover:text-green-900"
+                                        className="font-medium text-stone-800 underline decoration-stone-300/80 underline-offset-4 transition hover:text-stone-900"
                                     >
                                         de methodologie
                                     </Link>
@@ -178,12 +178,12 @@ export default function ContactPage() {
                                 {faqItems.map((item) => (
                                     <details
                                         key={item.q}
-                                        className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-900/[0.04] transition open:shadow-md open:ring-slate-900/[0.06]"
+                                        className="group overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm ring-1 ring-stone-900/[0.04] transition open:shadow-md open:ring-stone-900/[0.06]"
                                     >
-                                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left text-base font-semibold tracking-tight text-slate-900 md:px-6 md:py-5 [&::-webkit-details-marker]:hidden">
+                                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left text-base font-semibold tracking-tight text-stone-900 md:px-6 md:py-5 [&::-webkit-details-marker]:hidden">
                                             <span>{item.q}</span>
                                             <span
-                                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition group-open:rotate-180"
+                                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-500 transition group-open:rotate-180"
                                                 aria-hidden
                                             >
                                                 <svg
@@ -200,13 +200,13 @@ export default function ContactPage() {
                                                 </svg>
                                             </span>
                                         </summary>
-                                        <div className="border-t border-slate-100 px-5 pb-5 pt-0 text-sm leading-7 text-slate-600 md:px-6 md:pb-6">
+                                        <div className="border-t border-stone-100 px-5 pb-5 pt-0 text-sm leading-7 text-stone-600 md:px-6 md:pb-6">
                                             <p className="pt-4">{item.a}</p>
                                             {"link" in item && item.link ? (
                                                 <p className="mt-3">
                                                     <Link
                                                         href={item.link.href}
-                                                        className="font-medium text-green-800 underline decoration-green-300/80 underline-offset-4 transition hover:text-green-900"
+                                                        className="font-medium text-stone-800 underline decoration-stone-300/80 underline-offset-4 transition hover:text-stone-900"
                                                     >
                                                         {item.link.label}
                                                     </Link>
@@ -224,21 +224,21 @@ export default function ContactPage() {
             {/* Contact — e-mail als laatste stap */}
             <section
                 id="kom-je-er-niet-uit"
-                className="scroll-mt-24 bg-white"
+                className="scroll-mt-24 bg-[var(--ps-bg)]"
             >
                 <Container>
                     <div className="max-w-6xl py-14 md:py-20">
-                        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50/90 via-white to-white shadow-sm ring-1 ring-slate-900/[0.04] md:flex md:min-h-[220px]">
-                            <div className="flex flex-1 flex-col justify-center border-b border-slate-100 px-8 py-10 md:border-b-0 md:border-r md:px-10 md:py-12">
-                                <h2 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
+                        <div className="overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-br from-stone-50/90 via-white to-white shadow-sm ring-1 ring-stone-900/[0.04] md:flex md:min-h-[220px]">
+                            <div className="flex flex-1 flex-col justify-center border-b border-stone-100 px-8 py-10 md:border-b-0 md:border-r md:px-10 md:py-12">
+                                <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
                                     Kom je er niet uit?
                                 </h2>
-                                <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">
+                                <p className="mt-4 max-w-xl text-base leading-7 text-stone-600">
                                     Voor algemene vragen, feedback of zakelijke aanvragen kun je
                                     contact opnemen via{" "}
                                     <a
                                         href={`mailto:${CONTACT_EMAIL}`}
-                                        className="font-medium text-green-800 underline decoration-green-300/80 underline-offset-4 transition hover:text-green-900"
+                                        className="font-medium text-stone-800 underline decoration-stone-300/80 underline-offset-4 transition hover:text-stone-900"
                                     >
                                         {CONTACT_EMAIL}
                                     </a>
@@ -248,17 +248,17 @@ export default function ContactPage() {
                             <div className="flex flex-col justify-center bg-white/80 px-8 py-10 md:w-[min(100%,320px)] md:shrink-0 md:px-10 md:py-12">
                                 <a
                                     href={mailtoWithDraftHref}
-                                    className="inline-flex w-full items-center justify-center rounded-xl bg-green-700 px-5 py-3.5 text-sm font-medium text-white shadow-sm transition hover:bg-green-800"
+                                    className="inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-5 py-3.5 text-sm font-medium text-white shadow-sm transition hover:bg-stone-800"
                                 >
                                     Stuur een e-mail
                                 </a>
-                                <p className="mt-4 text-center text-xs leading-5 text-slate-500 md:text-left">
+                                <p className="mt-4 text-center text-xs leading-5 text-stone-500 md:text-left">
                                     Opent je standaard mailprogramma met een leeg concept.
                                 </p>
                             </div>
                         </div>
 
-                        <p className="mx-auto mt-14 max-w-3xl text-center text-sm leading-7 text-slate-500 md:mt-16">
+                        <p className="mx-auto mt-14 max-w-3xl text-center text-sm leading-7 text-stone-500 md:mt-16">
                             Perfect Supplement is een onafhankelijk platform gericht op
                             transparante, evidence-based informatie over supplementen.
                         </p>

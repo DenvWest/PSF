@@ -3,7 +3,7 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 
 const exploreLinks = [
-    { href: "/kennisbank", label: "Kennisbank" },
+    { href: "/blog", label: "Blog" },
     { href: "/supplementen", label: "Supplementen" },
     { href: "/methodologie", label: "Methodologie" },
 ];
@@ -17,7 +17,7 @@ const infoLinks = [
 
 export default function Footer() {
     return (
-        <footer className="mt-24 border-t border-slate-200 bg-white">
+        <footer className="mt-24 border-t border-stone-200 bg-[var(--ps-bg)]">
             <Container>
                 <div className="grid gap-10 py-14 md:grid-cols-3 md:gap-16 lg:py-16">
                     <div className="md:col-span-1">
@@ -29,19 +29,19 @@ export default function Footer() {
                                 height={28}
                                 className="h-7 w-7 rounded-lg"
                             />
-                            <span className="text-base font-semibold tracking-tight text-slate-900">
-                                Perfect<span className="text-green-600">Supplement</span>
+                            <span className="text-base font-semibold tracking-tight text-stone-900">
+                                Perfect<span className="text-stone-800">Supplement</span>
                             </span>
                         </Link>
-                        <p className="mt-4 text-sm leading-relaxed text-slate-500">
-                            Een onafhankelijke kennisbank voor supplementen, met nu
-                            focus op Omega-3 en Vitamine D. Gidsen, vergelijkingen
-                            en keuzes op basis van bewijs.
+                        <p className="mt-4 text-sm leading-relaxed text-stone-500">
+                            Een onafhankelijk blog over supplementen, met focus op
+                            omega 3 en magnesium. Uitleg, vergelijkingen en keuzes
+                            op basis van bewijs.
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                        <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                             Verkennen
                         </h4>
                         <ul className="mt-4 space-y-2.5">
@@ -49,7 +49,7 @@ export default function Footer() {
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-sm text-slate-600 transition hover:text-slate-900"
+                                        className="text-sm text-stone-600 transition hover:text-stone-900"
                                     >
                                         {link.label}
                                     </Link>
@@ -59,7 +59,7 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                        <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                             Info
                         </h4>
                         <ul className="mt-4 space-y-2.5">
@@ -67,7 +67,7 @@ export default function Footer() {
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-sm text-slate-600 transition hover:text-slate-900"
+                                        className="text-sm text-stone-600 transition hover:text-stone-900"
                                     >
                                         {link.label}
                                     </Link>
@@ -77,13 +77,13 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-3 border-t border-slate-100 py-6 md:flex-row md:items-center md:justify-between">
-                    <p className="text-xs text-slate-400">
+                <div className="flex flex-col gap-3 border-t border-stone-100 py-6 md:flex-row md:items-center md:justify-between">
+                    <p className="text-xs text-stone-400">
                         © 2026 Perfect Supplement. Alle rechten voorbehouden.
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-stone-400">
                         Deze site bevat affiliate-links. Wij ontvangen mogelijk een vergoeding bij aankoop,{" "}
-                        <Link href="/affiliate-disclosure" className="underline underline-offset-2 transition hover:text-slate-600">
+                        <Link href="/affiliate-disclosure" className="underline underline-offset-2 transition hover:text-stone-600">
                             lees meer
                         </Link>
                         .

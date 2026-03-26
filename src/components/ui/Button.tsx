@@ -14,8 +14,8 @@ export default function Button({
 }: ButtonProps) {
     const classes =
         variant === "primary"
-            ? "bg-green-700 text-white hover:bg-green-800"
-            : "border border-slate-200 bg-white text-slate-900 hover:border-slate-300";
+            ? "bg-stone-900 text-white hover:bg-stone-800"
+            : "border border-stone-200 bg-white text-stone-900 hover:border-stone-300 hover:bg-stone-50";
 
     return (
         <Link

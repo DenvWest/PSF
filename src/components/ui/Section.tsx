@@ -19,17 +19,15 @@ export default function Section({
             <Container>
                 <div className="max-w-2xl">
                     {eyebrow ? (
-                        <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
-                            {eyebrow}
-                        </p>
+                        <p className="ps-eyebrow">{eyebrow}</p>
                     ) : null}
 
-                    <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+                    <h2 className="ps-display mt-4 text-[1.875rem] leading-[1.1] text-stone-900 sm:text-[2.25rem]">
                         {title}
                     </h2>
 
                     {description ? (
-                        <p className="mt-4 text-lg leading-8 text-slate-600">
+                        <p className="mt-4 text-lg leading-8 text-stone-500">
                             {description}
                         </p>
                     ) : null}

@@ -32,16 +32,16 @@ const relatedPages = [
 
 export default function WhatIsOmega3Page() {
     return (
-        <main className="bg-white text-slate-900">
-            <section className="border-b border-slate-200 bg-slate-50">
+        <main className="text-stone-900">
+            <section className="border-b border-stone-200 bg-stone-50">
                 <div className="mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-24">
-                    <p className="text-sm font-medium uppercase tracking-[0.18em] text-green-700">
+                    <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
                         Uitleg
                     </p>
                     <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
                         Wat is omega 3?
                     </h1>
-                    <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+                    <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                         Een heldere introductie voor bezoekers die eerst willen begrijpen wat omega 3 is
                         en waarom supplementen onderling kunnen verschillen.
                     </p>
@@ -49,13 +49,13 @@ export default function WhatIsOmega3Page() {
                     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                         <Link
                             href="/omega-3-vergelijken"
-                            className="inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-800"
+                            className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
                         >
                             Bekijk vergelijking
                         </Link>
                         <Link
                             href="/beste-omega-3-supplement"
-                            className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-900 transition hover:border-slate-300"
+                            className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
                         >
                             Bekijk beste keuzes
                         </Link>
@@ -71,26 +71,26 @@ export default function WhatIsOmega3Page() {
                     {keyPoints.map((item) => (
                         <article
                             key={item.title}
-                            className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+                            className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
                         >
                             <h3 className="text-lg font-semibold">{item.title}</h3>
-                            <p className="mt-3 text-sm leading-6 text-slate-600">{item.text}</p>
+                            <p className="mt-3 text-sm leading-6 text-stone-600">{item.text}</p>
                         </article>
                     ))}
                 </div>
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">
+                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
                     Wil je na deze basis vooral begrijpen hoe je supplementen beoordeelt?
                     Lees dan ook{" "}
                     <Link
                         href="/waar-let-je-op-bij-omega-3"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         waar je op let bij omega 3 supplementen
                     </Link>{" "}
                     en bekijk onze{" "}
                     <Link
                         href="/methodologie"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         methodologie
                     </Link>
@@ -102,11 +102,11 @@ export default function WhatIsOmega3Page() {
                 title="Wat betekent dit voor supplementen?"
                 description="Voor bezoekers van een supplementsite is vooral belangrijk dat niet elk omega 3 product hetzelfde is."
             >
-                <p className="mb-4 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">
+                <p className="mb-4 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
                     Wil je direct zien hoe producten onderling verschillen? Bekijk dan ook onze{" "}
                     <Link
                         href="/omega-3-vergelijken"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         vergelijking van omega 3 supplementen
                     </Link>
@@ -117,9 +117,9 @@ export default function WhatIsOmega3Page() {
                     {supplementPoints.map((point) => (
                         <div
                             key={point}
-                            className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                            className="rounded-2xl border border-stone-200 bg-stone-50 p-5"
                         >
-                            <p className="text-sm leading-6 text-slate-600">{point}</p>
+                            <p className="text-sm leading-6 text-stone-600">{point}</p>
                         </div>
                     ))}
                 </div>
@@ -146,18 +146,18 @@ export default function WhatIsOmega3Page() {
                     ].map((item) => (
                         <div
                             key={item.title}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
                         >
                             <h3 className="text-base font-semibold">{item.title}</h3>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">{item.text}</p>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{item.text}</p>
                         </div>
                     ))}
                 </div>
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">
+                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
                     Wil je liever meteen een eerste selectie zien? Bekijk dan de pagina met{" "}
                     <Link
                         href="/beste-omega-3-supplement"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         beste omega 3 supplementen
                     </Link>
@@ -170,27 +170,27 @@ export default function WhatIsOmega3Page() {
                 description="Na deze basisuitleg kiezen de meeste bezoekers één van deze vervolgstappen."
             >
                 <div className="grid gap-5 lg:grid-cols-2">
-                    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <article className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
                         <h3 className="text-xl font-semibold">Supplementen vergelijken</h3>
-                        <p className="mt-3 text-sm leading-6 text-slate-600">
+                        <p className="mt-3 text-sm leading-6 text-stone-600">
                             Bekijk producten naast elkaar op dosering, gebruiksgemak, transparantie en prijs.
                         </p>
                         <Link
                             href="/omega-3-vergelijken"
-                            className="mt-6 inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white hover:bg-green-800"
+                            className="mt-6 inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white hover:bg-stone-800"
                         >
                             Naar vergelijking
                         </Link>
                     </article>
 
-                    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <article className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
                         <h3 className="text-xl font-semibold">Beste keuzes bekijken</h3>
-                        <p className="mt-3 text-sm leading-6 text-slate-600">
+                        <p className="mt-3 text-sm leading-6 text-stone-600">
                             Ga direct naar een selectie van beste overall, prijs-kwaliteit en premium keuzes.
                         </p>
                         <Link
                             href="/beste-omega-3-supplement"
-                            className="mt-6 inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
+                            className="mt-6 inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
                         >
                             Bekijk beste keuzes
                         </Link>
@@ -206,10 +206,10 @@ export default function WhatIsOmega3Page() {
                     {faqs.map((faq) => (
                         <div
                             key={faq.question}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
                         >
                             <h3 className="text-base font-semibold">{faq.question}</h3>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">{faq.answer}</p>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{faq.answer}</p>
                         </div>
                     ))}
                 </div>
@@ -222,13 +222,13 @@ export default function WhatIsOmega3Page() {
                 <div className="flex flex-col gap-3 sm:flex-row">
                     <Link
                         href="/omega-3-vergelijken"
-                        className="inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white hover:bg-green-800"
+                        className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white hover:bg-stone-800"
                     >
                         Vergelijk omega 3 supplementen
                     </Link>
                     <Link
                         href="/beste-omega-3-supplement"
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
+                        className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
                     >
                         Bekijk beste omega 3 supplementen
                     </Link>
