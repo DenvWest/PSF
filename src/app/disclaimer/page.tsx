@@ -13,7 +13,7 @@ export default function DisclaimerPage() {
             }
         >
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">1. Algemene informatie</h2>
+                <h2 className="text-xl font-semibold text-stone-900">1. Algemene informatie</h2>
                 <p className="mt-3">
                         De informatie op deze website is uitsluitend bedoeld voor algemene informatieve
                         en educatieve doeleinden. Hoewel we streven naar zorgvuldige, duidelijke en zo
@@ -27,7 +27,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">2. Geen medisch advies</h2>
+                <h2 className="text-xl font-semibold text-stone-900">2. Geen medisch advies</h2>
                 <p className="mt-3">
                         De inhoud van deze website is geen medisch advies en mag niet worden gezien als
                         vervanging van professioneel medisch advies, diagnose of behandeling.
@@ -40,7 +40,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">3. Supplementen en gezondheid</h2>
+                <h2 className="text-xl font-semibold text-stone-900">3. Supplementen en gezondheid</h2>
                 <p className="mt-3">
                         Reacties op supplementen kunnen per persoon verschillen. Informatie over ingrediënten,
                         doseringen, veiligheid, bijwerkingen of toepassingen is bedoeld als algemene context en
@@ -53,7 +53,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">4. Affiliate disclosure</h2>
+                <h2 className="text-xl font-semibold text-stone-900">4. Affiliate disclosure</h2>
                 <p className="mt-3">
                         Sommige links op deze website zijn affiliate links. Dat betekent dat wij een commissie
                         kunnen ontvangen wanneer je via zo&apos;n link een aankoop doet.
@@ -70,7 +70,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">5. Vergelijkingen en beoordelingen</h2>
+                <h2 className="text-xl font-semibold text-stone-900">5. Vergelijkingen en beoordelingen</h2>
                 <p className="mt-3">
                         Vergelijkingen, samenvattingen en beoordelingen zijn gebaseerd op eigen criteria,
                         beschikbare productinformatie, openbare bronnen en een interne methodologie. Deze
@@ -84,7 +84,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">6. Externe websites</h2>
+                <h2 className="text-xl font-semibold text-stone-900">6. Externe websites</h2>
                 <p className="mt-3">
                         Deze website bevat links naar externe websites. Wij hebben geen controle over de inhoud,
                         beschikbaarheid, prijsinformatie, productwijzigingen of het privacybeleid van deze externe
@@ -93,7 +93,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">7. Aansprakelijkheid</h2>
+                <h2 className="text-xl font-semibold text-stone-900">7. Aansprakelijkheid</h2>
                 <p className="mt-3">
                         Voor zover wettelijk toegestaan aanvaarden wij geen aansprakelijkheid voor directe of
                         indirecte schade die voortvloeit uit het gebruik van deze website of het vertrouwen op
@@ -102,7 +102,7 @@ export default function DisclaimerPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-slate-900">8. Wijzigingen</h2>
+                <h2 className="text-xl font-semibold text-stone-900">8. Wijzigingen</h2>
                 <p className="mt-3">
                         De inhoud van deze website en deze disclaimer kunnen op elk moment worden aangepast zonder
                         voorafgaande aankondiging.

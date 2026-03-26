@@ -26,7 +26,7 @@ export default function HomeKnowledgePreview() {
       <SectionShell>
         <div className="mx-auto max-w-3xl">
           <p className="font-sans text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-[var(--ps-muted)] sm:text-xs">
-            Kennisbank
+            Blog
           </p>
           <h2
             id="kennis-heading"
@@ -35,7 +35,7 @@ export default function HomeKnowledgePreview() {
             Drie artikelen om mee te starten
           </h2>
           <p className="mt-8 max-w-2xl font-sans text-[1.0625rem] leading-[1.75] text-[var(--ps-body)] sm:text-lg">
-            Diepgaandere stof vind je in de kennisbank. Hier drie ingangen die
+            Diepgaandere stof vind je in het blog. Hier drie ingangen die
             aansluiten bij omega-3 en magnesium.
           </p>
           <ul className="mt-16 space-y-0 divide-y divide-[var(--ps-border)]/70">
@@ -58,10 +58,10 @@ export default function HomeKnowledgePreview() {
           </ul>
           <p className="mt-12">
             <Link
-              href="/kennisbank"
+              href="/blog"
               className="font-sans text-sm font-medium text-[var(--ps-body)] underline-offset-[6px] transition hover:text-[var(--ps-ink)] hover:underline"
             >
-              Alle artikelen in de kennisbank
+              Alle artikelen in het blog
             </Link>
           </p>
         </div>

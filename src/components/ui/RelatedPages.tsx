@@ -25,12 +25,14 @@ export default function RelatedPages({
                     <Link
                         key={item.href}
                         href={item.href}
-                        className="group block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300"
+                        className="group block rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:bg-stone-50/80"
                     >
-                        <h3 className="text-base font-semibold text-slate-900 transition group-hover:text-green-700">
+                        <h3 className="text-base font-semibold text-stone-900 transition group-hover:text-stone-700">
                             {item.title}
                         </h3>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+                        <p className="mt-2 text-sm leading-6 text-stone-500">
+                            {item.description}
+                        </p>
                     </Link>
                 ))}
             </div>

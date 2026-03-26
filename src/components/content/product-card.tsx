@@ -12,10 +12,10 @@ type ProductCardProps = {
 
 export default function ProductCard({ product, pageType, position }: ProductCardProps) {
   return (
-    <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <article className="overflow-hidden rounded-2xl border border-stone-200 bg-white">
       <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-start">
         {product.imageSrc ? (
-          <div className="relative mx-auto aspect-[4/3] w-full max-w-[280px] shrink-0 overflow-hidden rounded-2xl bg-slate-50 sm:mx-0 sm:aspect-square sm:max-w-[200px] md:max-w-[220px]">
+          <div className="relative mx-auto aspect-[4/3] w-full max-w-[280px] shrink-0 overflow-hidden rounded-2xl bg-stone-50 sm:mx-0 sm:aspect-square sm:max-w-[200px] md:max-w-[220px]">
             <Image
               src={product.imageSrc}
               alt={product.imageAlt ?? product.name}
@@ -31,33 +31,33 @@ export default function ProductCard({ product, pageType, position }: ProductCard
           <div className="flex items-start justify-between gap-4">
             <div>
               {product.category ? (
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                <p className="text-xs font-medium uppercase tracking-wide text-stone-500">
                   {product.category}
                 </p>
               ) : null}
               <h3 className="text-xl font-semibold">{product.name}</h3>
               {product.badge && (
-                <p className="mt-1 text-sm font-medium text-green-700">{product.badge}</p>
+                <p className="mt-1 text-sm font-medium text-stone-800">{product.badge}</p>
               )}
             </div>
-            <div className="shrink-0 rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold">
+            <div className="shrink-0 rounded-xl bg-stone-100 px-3 py-2 text-sm font-semibold">
               {product.score}/10
             </div>
           </div>
 
-          <p className="mt-4 text-sm leading-6 text-slate-600">{product.description}</p>
+          <p className="mt-4 text-sm leading-6 text-stone-600">{product.description}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">
               EPA {product.epaMg} mg
             </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">
               DHA {product.dhaMg} mg
             </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">
               {product.capsulesPerDay}× per dag
             </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">
               {formatPrice(product.pricePerDayEur)} / dag
             </span>
           </div>
@@ -65,7 +65,7 @@ export default function ProductCard({ product, pageType, position }: ProductCard
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <div>
               <h4 className="text-sm font-semibold">Pluspunten</h4>
-              <ul className="mt-2 space-y-2 text-sm text-slate-600">
+              <ul className="mt-2 space-y-2 text-sm text-stone-600">
                 {product.pros.map((pro) => (
                   <li key={pro}>• {pro}</li>
                 ))}
@@ -73,7 +73,7 @@ export default function ProductCard({ product, pageType, position }: ProductCard
             </div>
             <div>
               <h4 className="text-sm font-semibold">Aandachtspunten</h4>
-              <ul className="mt-2 space-y-2 text-sm text-slate-600">
+              <ul className="mt-2 space-y-2 text-sm text-stone-600">
                 {product.cons.map((con) => (
                   <li key={con}>• {con}</li>
                 ))}
@@ -83,12 +83,12 @@ export default function ProductCard({ product, pageType, position }: ProductCard
         </div>
       </div>
 
-      <div className="border-t border-slate-100 px-6 pb-6 pt-4">
+      <div className="border-t border-stone-100 px-6 pb-6 pt-4">
         <AffiliateLink
           affiliateSlug={product.affiliateSlug}
           pageType={pageType}
           position={position}
-          className="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
+          className="inline-flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
         >
           Bekijk product
         </AffiliateLink>

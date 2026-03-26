@@ -1,104 +1,87 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 
-const heroLinks = [
+const startLinks = [
   {
-    title: "Omega-3 vergelijken",
-    description: "Dosering, prijs per dag en kwaliteit naast elkaar.",
+    title: "Omega 3 vergelijken",
+    description: "EPA/DHA-gehalte, prijs en kwaliteit naast elkaar.",
     href: "/omega-3-vergelijken",
   },
   {
-    title: "Beste omega-3 keuzes",
-    description: "Overall, budget en premium aanbevelingen.",
+    title: "Beste omega 3 keuzes",
+    description: "Aanbevelingen per situatie en budget.",
     href: "/beste-omega-3-supplement",
   },
   {
-    title: "Vitamine D uitleg",
-    description: "Vormen, dosering en wat je moet weten.",
-    href: "/supplementen",
+    title: "Magnesium uitleg",
+    description: "Vormen, doseringen en wanneer het relevant is.",
+    href: "/magnesium-vergelijken",
   },
 ];
 
 export default function Hero() {
   return (
-    <section className="flex min-h-[calc(100svh-72px)] items-center bg-slate-50">
+    <section className="border-b border-stone-200/60">
       <Container>
-        <div className="grid items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20 lg:py-0">
+        <div className="grid gap-10 py-20 md:py-24 lg:grid-cols-[1fr_348px] lg:items-start lg:gap-16">
 
-          {/* Left column */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-400">
-              Onafhankelijke supplement gids · Omega-3 &amp; vitamine D
+          {/* Left: headline, subtext, CTAs */}
+          <div className="pt-2">
+            <p className="text-[0.625rem] font-medium uppercase tracking-[0.26em] text-stone-400">
+              PerfectSupplement · Omega 3 &amp; Magnesium
             </p>
-
-            <h1 className="mt-5 text-4xl font-semibold leading-[1.15] tracking-tight text-slate-900 sm:text-5xl lg:text-[3.25rem]">
-              Begrijp omega-3 en vitamine D beter en maak slimmere keuzes
+            <h1 className="ps-display mt-6 text-[2.625rem] leading-[1.06] text-stone-900 sm:text-[3.25rem] lg:text-[3.75rem]">
+              Kies de juiste omega&nbsp;3 en magnesium supplementen, helder uitgelegd.
             </h1>
-
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-slate-600">
-              Praktische analyses van dosering, kwaliteit, vormen en
-              toepasbaarheid. Rustig opgebouwd, duidelijk uitgelegd.
+            <p className="mt-6 max-w-lg text-base leading-[1.8] text-stone-500">
+              Vergelijk dosering, kwaliteit en prijs per supplement.
+              Duidelijk uitgelegd, zonder overbodige ruis.
             </p>
-
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/supplementen"
-                className="inline-flex rounded-xl bg-green-700 px-6 py-3.5 text-sm font-medium text-white transition hover:bg-green-800"
+                className="inline-flex items-center rounded border border-stone-800 bg-stone-900 px-5 py-2.5 text-[0.8125rem] font-medium tracking-[0.01em] text-white transition duration-150 hover:bg-stone-800"
               >
                 Bekijk supplementen
               </Link>
-
               <Link
                 href="/methodologie"
-                className="text-sm font-medium text-slate-500 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-800 hover:decoration-slate-400"
+                className="inline-flex items-center rounded border border-stone-300 px-5 py-2.5 text-[0.8125rem] font-medium tracking-[0.01em] text-stone-600 transition duration-150 hover:border-stone-500 hover:text-stone-900"
               >
                 Bekijk methodologie
               </Link>
             </div>
           </div>
 
-          {/* Right column — editorial card */}
-          <div className="hidden lg:block">
-            <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <div className="border-b border-slate-100 px-7 py-5">
-                <p className="text-sm font-medium text-slate-500">
-                  Waar wil je mee beginnen?
-                </p>
-              </div>
-
-              <div className="divide-y divide-slate-100">
-                {heroLinks.map((item) => (
-                  <Link
-                    key={item.title}
-                    href={item.href}
-                    className="group flex items-start justify-between gap-4 px-7 py-5 transition hover:bg-slate-50"
-                  >
-                    <div>
-                      <p className="font-semibold text-slate-900 transition group-hover:text-green-700">
-                        {item.title}
-                      </p>
-                      <p className="mt-1 text-sm leading-relaxed text-slate-500">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 20 20"
-                      className="mt-0.5 h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-green-600"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M4 10h12" />
-                      <path d="M12 5l5 5-5 5" />
-                    </svg>
-                  </Link>
-                ))}
-              </div>
+          {/* Right: startblok */}
+          <div className="divide-y divide-stone-100 rounded-lg border border-stone-200 bg-white">
+            <div className="px-5 py-3.5">
+              <p className="text-[0.625rem] font-medium uppercase tracking-[0.22em] text-stone-400">
+                Direct naar
+              </p>
             </div>
+            {startLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex items-start justify-between gap-4 px-5 py-4 transition hover:bg-stone-50"
+              >
+                <div>
+                  <p className="text-sm font-medium text-stone-800 transition group-hover:text-stone-900">
+                    {item.title}
+                  </p>
+                  <p className="mt-0.5 text-[0.8125rem] leading-snug text-stone-400">
+                    {item.description}
+                  </p>
+                </div>
+                <span
+                  className="mt-0.5 shrink-0 text-stone-300 transition group-hover:text-stone-600"
+                  aria-hidden
+                >
+                  →
+                </span>
+              </Link>
+            ))}
           </div>
 
         </div>

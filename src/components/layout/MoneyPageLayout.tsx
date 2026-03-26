@@ -1,4 +1,5 @@
 import Disclosure from "@/components/ui/Disclosure";
+import Container from "@/components/layout/Container";
 
 export default function MoneyPageLayout({
     children,
@@ -6,11 +7,11 @@ export default function MoneyPageLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="max-w-4xl mx-auto px-4">
-            {/* Disclosure altijd bovenaan */}
-            <Disclosure />
-
-            {children}
-        </div>
+        <Container className="py-8">
+            <div className="mx-auto max-w-4xl">
+                <Disclosure />
+                {children}
+            </div>
+        </Container>
     );
 }

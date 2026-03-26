@@ -59,7 +59,7 @@ export default function HeroSection() {
               href="#kennis"
               className="font-sans text-sm font-medium text-[var(--ps-body)] underline-offset-[6px] transition hover:text-[var(--ps-ink)] hover:underline"
             >
-              Lees in de kennisbank
+              Lees in het blog
             </a>
           </div>
         </motion.div>

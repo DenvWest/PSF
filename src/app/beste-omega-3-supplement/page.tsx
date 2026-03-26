@@ -73,12 +73,12 @@ const selectionCriteria = [
 
 export default function BestOmegaPage() {
     return (
-        <main className="bg-white text-slate-900">
+        <main className="text-stone-900">
             {/* Hero */}
-            <section className="border-b border-slate-200 bg-slate-50">
+            <section className="border-b border-stone-200 bg-stone-50">
                 <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 md:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
                     <div>
-                        <p className="text-sm font-medium uppercase tracking-[0.18em] text-green-700">
+                        <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
                             Onafhankelijke omega 3 gids
                         </p>
 
@@ -86,26 +86,26 @@ export default function BestOmegaPage() {
                             Beste omega 3 supplementen van 2026
                         </h1>
 
-                        <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+                        <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                             Vergeleken op dosering, zuiverheid, gebruiksgemak en prijs per dag. Zo zie je in één oogopslag welke keuze het best past bij jouw situatie.
                         </p>
 
-                        <div className="mt-6 grid gap-3 text-sm text-slate-700 sm:grid-cols-2">
-                            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                        <div className="mt-6 grid gap-3 text-sm text-stone-700 sm:grid-cols-2">
+                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
                                 ✓ Gebaseerd op dosering, vorm en gebruiksgemak
                             </div>
-                            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
                                 ✓ Praktisch vergeleken op prijs per dag
                             </div>
-                            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
                                 ✓ Snelle keuzehulp voor beginners
                             </div>
-                            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
                                 ✓ Beste algemene keuze: {bestChoice?.name}
                             </div>
                         </div>
 
-                        <p className="mt-4 text-xs text-slate-400">
+                        <p className="mt-4 text-xs text-stone-400">
                             Laatste update: maart 2026
                         </p>
 
@@ -114,48 +114,48 @@ export default function BestOmegaPage() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             <a
                                 href="#topkeuzes"
-                                className="inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-800"
+                                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
                             >
                                 Bekijk beste keuzes
                             </a>
 
                             <Link
                                 href="/omega-3-vergelijken"
-                                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-900 transition hover:bg-slate-50"
+                                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:bg-stone-50"
                             >
                                 Vergelijk alle supplementen
                             </Link>
                         </div>
 
-                        <p className="mt-4 text-xs text-slate-400">
+                        <p className="mt-4 text-xs text-stone-400">
                             Benieuwd hoe we beoordelen?{" "}
                             <Link
                                 href="/methodologie"
-                                className="text-slate-500 underline-offset-4 hover:underline"
+                                className="text-stone-500 underline-offset-4 hover:underline"
                             >
                                 Lees onze methodologie
                             </Link>
                         </p>
                     </div>
 
-                    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <p className="text-sm font-medium text-slate-500">
+                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+                        <p className="text-sm font-medium text-stone-500">
                             Snelle samenvatting
                         </p>
 
-                        <div className="mt-4 rounded-2xl border border-green-200 bg-green-50 p-4">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-green-800">
+                        <div className="mt-4 rounded-2xl border border-stone-200 bg-stone-100 p-4">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-800">
                                 Beste algemene keuze
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-slate-900">
+                            <p className="mt-1 text-lg font-semibold text-stone-900">
                                 {bestChoice?.name}
                             </p>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">
+                            <p className="mt-2 text-sm leading-6 text-stone-600">
                                 Sterke allround keuze met een goede balans tussen kwaliteit, dosering en dagelijks gebruiksgemak.
                             </p>
                         </div>
 
-                        <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-600">
+                        <ul className="mt-5 space-y-3 text-sm leading-6 text-stone-600">
                             <li>• Kies visolie als je effect en dosering prioriteit geeft</li>
                             <li>• Kies gummies als je gemak en smaak voorop stelt</li>
                             <li>• Kies algenolie als je plantaardig wilt</li>
@@ -167,7 +167,7 @@ export default function BestOmegaPage() {
                                     affiliateSlug={bestChoice.affiliateSlug}
                                     pageType="beste-omega-3-supplement"
                                     position="hero_sidebar"
-                                    className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-green-700 px-4 py-3 text-sm font-medium text-white hover:bg-green-800"
+                                    className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-4 py-3 text-sm font-medium text-white hover:bg-stone-800"
                                 >
                                     Bekijk beste keuze →
                                 </AffiliateLink>
@@ -195,12 +195,12 @@ export default function BestOmegaPage() {
                                 key={product.slug}
                                 className={`flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm transition ${
                                     isTop
-                                        ? "border-green-300 ring-1 ring-green-200"
-                                        : "border-slate-200"
+                                        ? "border-stone-300 ring-1 ring-stone-200"
+                                        : "border-stone-200"
                                 }`}
                             >
                                 {isTop && (
-                                    <div className="bg-green-700 px-6 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white">
+                                    <div className="bg-stone-900 px-6 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white">
                                         Onze aanrader
                                     </div>
                                 )}
@@ -209,8 +209,8 @@ export default function BestOmegaPage() {
                                     <span
                                         className={`inline-flex self-start rounded-full px-3 py-1 text-xs font-medium ${
                                             isTop
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-slate-100 text-slate-700"
+                                                ? "bg-stone-100 text-stone-800"
+                                                : "bg-stone-100 text-stone-700"
                                         }`}
                                     >
                                         {product.badge}
@@ -236,37 +236,37 @@ export default function BestOmegaPage() {
                                         >
                                             {product.name}
                                         </h3>
-                                        <div className="shrink-0 rounded-xl bg-slate-100 px-3 py-1.5 text-sm font-semibold">
+                                        <div className="shrink-0 rounded-xl bg-stone-100 px-3 py-1.5 text-sm font-semibold">
                                             {product.score}/10
                                         </div>
                                     </div>
 
-                                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                                    <p className="mt-2 text-sm leading-6 text-stone-600">
                                         {product.description}
                                     </p>
 
-                                    <ul className="mt-5 space-y-2.5 border-t border-slate-100 pt-5 text-sm">
+                                    <ul className="mt-5 space-y-2.5 border-t border-stone-100 pt-5 text-sm">
                                         <li className="flex gap-3">
-                                            <span className="w-20 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-slate-400">
+                                            <span className="w-20 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-stone-400">
                                                 EPA / DHA
                                             </span>
-                                            <span className="text-slate-700">
+                                            <span className="text-stone-700">
                                                 {product.epaMg} / {product.dhaMg} mg
                                             </span>
                                         </li>
                                         <li className="flex gap-3">
-                                            <span className="w-20 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-slate-400">
+                                            <span className="w-20 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-stone-400">
                                                 Vorm
                                             </span>
-                                            <span className="text-slate-700">
+                                            <span className="text-stone-700">
                                                 {product.form}
                                             </span>
                                         </li>
                                         <li className="flex gap-3">
-                                            <span className="w-20 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-slate-400">
+                                            <span className="w-20 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-stone-400">
                                                 Voor wie
                                             </span>
-                                            <span className="text-slate-700">
+                                            <span className="text-stone-700">
                                                 {voorWie}
                                             </span>
                                         </li>
@@ -280,8 +280,8 @@ export default function BestOmegaPage() {
                                         position={`top_pick_${index + 1}`}
                                         className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-medium transition ${
                                             isTop
-                                                ? "bg-green-700 text-white hover:bg-green-800"
-                                                : "border border-slate-200 bg-white text-slate-900 hover:border-slate-300 hover:bg-slate-50"
+                                                ? "bg-stone-900 text-white hover:bg-stone-800"
+                                                : "border border-stone-200 bg-white text-stone-900 hover:border-stone-300 hover:bg-stone-50"
                                         }`}
                                     >
                                         Bekijk prijs &amp; product →
@@ -295,13 +295,13 @@ export default function BestOmegaPage() {
             </ContentSection>
 
             {/* Waarom deze selectie? */}
-            <div className="border-y border-slate-100 bg-slate-50 py-12 md:py-16">
+            <div className="border-y border-stone-100 bg-stone-50 py-12 md:py-16">
                 <div className="mx-auto max-w-6xl px-4 md:px-6">
                     <div className="max-w-2xl">
                         <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                             Waarom deze selectie?
                         </h2>
-                        <p className="mt-3 text-sm leading-6 text-slate-600 md:text-base">
+                        <p className="mt-3 text-sm leading-6 text-stone-600 md:text-base">
                             Geen marketingtaal. Dit zijn de vier criteria waarop we vergelijken.
                         </p>
                     </div>
@@ -309,12 +309,12 @@ export default function BestOmegaPage() {
                         {selectionCriteria.map((item) => (
                             <li
                                 key={item.label}
-                                className="rounded-2xl border border-slate-200 bg-white p-5"
+                                className="rounded-2xl border border-stone-200 bg-white p-5"
                             >
-                                <p className="text-sm font-semibold text-slate-900">
+                                <p className="text-sm font-semibold text-stone-900">
                                     {item.label}
                                 </p>
-                                <p className="mt-1.5 text-sm leading-6 text-slate-600">
+                                <p className="mt-1.5 text-sm leading-6 text-stone-600">
                                     {item.text}
                                 </p>
                             </li>
@@ -330,21 +330,21 @@ export default function BestOmegaPage() {
             >
                 <div className="grid gap-4 md:grid-cols-3">
                     {bestChoice ? (
-                        <div className="rounded-2xl border border-green-200 bg-green-50 p-5 shadow-sm">
+                        <div className="rounded-2xl border border-stone-200 bg-stone-100 p-5 shadow-sm">
                             <h3 className="text-base font-semibold">
                                 Beste voor dagelijks gebruik
                             </h3>
-                            <p className="mt-1 text-sm font-medium text-green-700">
+                            <p className="mt-1 text-sm font-medium text-stone-800">
                                 {bestChoice.name}
                             </p>
-                            <p className="mt-2 text-sm leading-6 text-slate-700">
+                            <p className="mt-2 text-sm leading-6 text-stone-700">
                                 Kies deze als je een sterke, brede en praktische omega 3 keuze zoekt zonder onnodige twijfel.
                             </p>
                             <AffiliateLink
                                 affiliateSlug={bestChoice.affiliateSlug}
                                 pageType="beste-omega-3-supplement"
                                 position="section_choice_daily"
-                                className="mt-4 inline-flex items-center text-sm font-medium text-green-800 underline-offset-4 hover:underline"
+                                className="mt-4 inline-flex items-center text-sm font-medium text-stone-800 underline-offset-4 hover:underline"
                             >
                                 Bekijk beste keuze →
                             </AffiliateLink>
@@ -352,21 +352,21 @@ export default function BestOmegaPage() {
                     ) : null}
 
                     {easyChoice ? (
-                        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
                             <h3 className="text-base font-semibold">
                                 Beste voor gemak en smaak
                             </h3>
-                            <p className="mt-1 text-sm font-medium text-green-700">
+                            <p className="mt-1 text-sm font-medium text-stone-800">
                                 {easyChoice.name}
                             </p>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">
+                            <p className="mt-2 text-sm leading-6 text-stone-600">
                                 Handig als je iets laagdrempeligs kiest dat makkelijker vol te houden is in je dagelijkse routine.
                             </p>
                             <AffiliateLink
                                 affiliateSlug={easyChoice.affiliateSlug}
                                 pageType="beste-omega-3-supplement"
                                 position="section_choice_easy"
-                                className="mt-4 inline-flex items-center text-sm font-medium text-slate-700 underline-offset-4 hover:underline"
+                                className="mt-4 inline-flex items-center text-sm font-medium text-stone-700 underline-offset-4 hover:underline"
                             >
                                 Bekijk product →
                             </AffiliateLink>
@@ -374,21 +374,21 @@ export default function BestOmegaPage() {
                     ) : null}
 
                     {veganChoice ? (
-                        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
                             <h3 className="text-base font-semibold">
                                 Beste vegan keuze
                             </h3>
-                            <p className="mt-1 text-sm font-medium text-green-700">
+                            <p className="mt-1 text-sm font-medium text-stone-800">
                                 {veganChoice.name}
                             </p>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">
+                            <p className="mt-2 text-sm leading-6 text-stone-600">
                                 Logische keuze als je bewust zoekt naar een plantaardige omega 3 bron zonder visolie.
                             </p>
                             <AffiliateLink
                                 affiliateSlug={veganChoice.affiliateSlug}
                                 pageType="beste-omega-3-supplement"
                                 position="section_choice_vegan"
-                                className="mt-4 inline-flex items-center text-sm font-medium text-slate-700 underline-offset-4 hover:underline"
+                                className="mt-4 inline-flex items-center text-sm font-medium text-stone-700 underline-offset-4 hover:underline"
                             >
                                 Bekijk product →
                             </AffiliateLink>
@@ -396,11 +396,11 @@ export default function BestOmegaPage() {
                     ) : null}
                 </div>
 
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">
+                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
                     Begin je nog bij de basis?{" "}
                     <Link
                         href="/wat-is-omega-3"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         Lees eerst wat omega 3 is
                     </Link>
@@ -409,78 +409,78 @@ export default function BestOmegaPage() {
             </ContentSection>
 
             {/* Visolie vs Algenolie */}
-            <div className="border-y border-slate-100 bg-slate-50 py-12 md:py-16">
+            <div className="border-y border-stone-100 bg-stone-50 py-12 md:py-16">
                 <div className="mx-auto max-w-6xl px-4 md:px-6">
                     <div className="max-w-2xl">
                         <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                             Visolie of algenolie?
                         </h2>
-                        <p className="mt-3 text-sm leading-6 text-slate-600 md:text-base">
+                        <p className="mt-3 text-sm leading-6 text-stone-600 md:text-base">
                             De twee meest voorkomende bronnen van omega-3. De belangrijkste verschillen op een rij.
                         </p>
                     </div>
 
                     <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                        <div className="rounded-2xl border border-stone-200 bg-white p-6">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-stone-500">
                                 Visolie
                             </p>
-                            <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
+                            <ul className="mt-4 space-y-3 text-sm leading-6 text-stone-700">
                                 <li className="flex gap-2">
-                                    <span className="text-green-600">+</span>
+                                    <span className="text-stone-600">+</span>
                                     Hogere EPA/DHA per portie
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-green-600">+</span>
+                                    <span className="text-stone-600">+</span>
                                     Meest onderzocht en bewezen
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-green-600">+</span>
+                                    <span className="text-stone-600">+</span>
                                     Vaak goedkoper per gram
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-slate-400">−</span>
+                                    <span className="text-stone-400">−</span>
                                     Niet geschikt voor veganisten
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-slate-400">−</span>
+                                    <span className="text-stone-400">−</span>
                                     Kan een vissmaak hebben
                                 </li>
                             </ul>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                        <div className="rounded-2xl border border-stone-200 bg-white p-6">
+                            <p className="text-sm font-semibold uppercase tracking-wide text-stone-500">
                                 Algenolie
                             </p>
-                            <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
+                            <ul className="mt-4 space-y-3 text-sm leading-6 text-stone-700">
                                 <li className="flex gap-2">
-                                    <span className="text-green-600">+</span>
+                                    <span className="text-stone-600">+</span>
                                     100% plantaardig
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-green-600">+</span>
+                                    <span className="text-stone-600">+</span>
                                     Geen vissmaak
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-green-600">+</span>
+                                    <span className="text-stone-600">+</span>
                                     Duurzamere bron
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-slate-400">−</span>
+                                    <span className="text-stone-400">−</span>
                                     Vaak duurder per gram
                                 </li>
                                 <li className="flex gap-2">
-                                    <span className="text-slate-400">−</span>
+                                    <span className="text-stone-400">−</span>
                                     Meer DHA dan EPA (niet altijd ideaal)
                                 </li>
                             </ul>
                         </div>
                     </div>
 
-                    <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
-                        <p className="text-sm leading-6 text-slate-600">
-                            <span className="font-medium text-slate-900">
+                    <div className="mt-4 rounded-2xl border border-stone-200 bg-white p-5">
+                        <p className="text-sm leading-6 text-stone-600">
+                            <span className="font-medium text-stone-900">
                                 Conclusie:
                             </span>{" "}
                             Kies visolie als je effect en dosering prioriteit geeft. Kies algenolie als je plantaardig wilt zonder concessies aan kwaliteit te doen.
@@ -495,57 +495,57 @@ export default function BestOmegaPage() {
                 description="Beide werken goed. Kijk wat het best past bij je routine."
             >
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                        <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    <div className="rounded-2xl border border-stone-200 bg-white p-6">
+                        <p className="text-sm font-semibold uppercase tracking-wide text-stone-500">
                             Vloeibaar
                         </p>
-                        <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
+                        <ul className="mt-4 space-y-3 text-sm leading-6 text-stone-700">
                             <li className="flex gap-2">
-                                <span className="text-green-600">+</span>
+                                <span className="text-stone-600">+</span>
                                 Hogere dosering per portie mogelijk
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-green-600">+</span>
+                                <span className="text-stone-600">+</span>
                                 Goedkoper per gram
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-green-600">+</span>
+                                <span className="text-stone-600">+</span>
                                 Makkelijk te doseren
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-slate-400">−</span>
+                                <span className="text-stone-400">−</span>
                                 Smaak kan wennen
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-slate-400">−</span>
+                                <span className="text-stone-400">−</span>
                                 Minder handig onderweg
                             </li>
                         </ul>
                     </div>
 
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                        <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    <div className="rounded-2xl border border-stone-200 bg-white p-6">
+                        <p className="text-sm font-semibold uppercase tracking-wide text-stone-500">
                             Capsules / gummies
                         </p>
-                        <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-700">
+                        <ul className="mt-4 space-y-3 text-sm leading-6 text-stone-700">
                             <li className="flex gap-2">
-                                <span className="text-green-600">+</span>
+                                <span className="text-stone-600">+</span>
                                 Makkelijk in te nemen
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-green-600">+</span>
+                                <span className="text-stone-600">+</span>
                                 Geen vissmaak
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-green-600">+</span>
+                                <span className="text-stone-600">+</span>
                                 Handig voor reizen
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-slate-400">−</span>
+                                <span className="text-stone-400">−</span>
                                 Soms hogere prijs per gram
                             </li>
                             <li className="flex gap-2">
-                                <span className="text-slate-400">−</span>
+                                <span className="text-stone-400">−</span>
                                 Gummies bevatten minder EPA/DHA per portie
                             </li>
                         </ul>
@@ -555,12 +555,12 @@ export default function BestOmegaPage() {
 
             {/* Contextblok: lees meer */}
             <div className="mx-auto max-w-6xl px-4 pb-4 md:px-6">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-5">
-                    <p className="text-sm leading-6 text-slate-600">
+                <div className="rounded-2xl border border-stone-200 bg-stone-50 px-6 py-5">
+                    <p className="text-sm leading-6 text-stone-600">
                         Twijfel je over EPA, DHA, dosering per dag en zuiverheid?{" "}
                         <Link
                             href="/waar-let-je-op-bij-omega-3"
-                            className="font-medium text-green-700 underline-offset-4 hover:underline"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             Lees de praktische keuzegids
                         </Link>{" "}
@@ -591,9 +591,9 @@ export default function BestOmegaPage() {
                 title="Snel vergelijken"
                 description="Deze compacte tabel helpt je sneller scannen voordat je doorklikt."
             >
-                <div className="overflow-x-auto rounded-3xl border border-slate-200">
+                <div className="overflow-x-auto rounded-3xl border border-stone-200">
                     <table className="min-w-full text-left text-sm">
-                        <thead className="bg-slate-50 text-slate-600">
+                        <thead className="bg-stone-50 text-stone-600">
                             <tr>
                                 <th className="px-4 py-3 font-semibold">Product</th>
                                 <th className="px-4 py-3 font-semibold">EPA / DHA</th>
@@ -609,7 +609,7 @@ export default function BestOmegaPage() {
                             {omega3Products.map((product) => (
                                 <tr
                                     key={product.slug}
-                                    className="border-t border-slate-200"
+                                    className="border-t border-stone-200"
                                 >
                                     <td className="px-4 py-3 font-medium">
                                         {product.name}
@@ -642,12 +642,12 @@ export default function BestOmegaPage() {
                     {faqs.map((faq) => (
                         <div
                             key={faq.question}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
                         >
                             <h3 className="text-base font-semibold">
                                 {faq.question}
                             </h3>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">
+                            <p className="mt-2 text-sm leading-6 text-stone-600">
                                 {faq.answer}
                             </p>
                         </div>
@@ -663,13 +663,13 @@ export default function BestOmegaPage() {
                 <div className="flex flex-col gap-3 sm:flex-row">
                     <Link
                         href="/omega-3-vergelijken"
-                        className="inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white hover:bg-green-800"
+                        className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white hover:bg-stone-800"
                     >
                         Vergelijk alle omega 3 supplementen
                     </Link>
                     <a
                         href="#topkeuzes"
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
+                        className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
                     >
                         Terug naar topkeuzes
                     </a>

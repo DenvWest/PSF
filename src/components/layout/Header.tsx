@@ -6,13 +6,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const mainLinks = [
-    { href: "/kennisbank", label: "Kennisbank" },
+    { href: "/blog", label: "Blog" },
     { href: "/supplementen", label: "Supplementen" },
 ];
 
 const menuLinks = [
     { href: "/", label: "Home" },
-    { href: "/kennisbank", label: "Kennisbank" },
+    { href: "/blog", label: "Blog" },
     { href: "/supplementen", label: "Supplementen" },
     { href: "/methodologie", label: "Methodologie" },
 ];
@@ -24,7 +24,7 @@ const infoLinks = [
 ];
 
 const searchItems = [
-    { href: "/kennisbank", label: "Kennisbank", group: "Direct naar" },
+    { href: "/blog", label: "Blog", group: "Direct naar" },
     { href: "/supplementen", label: "Supplementen", group: "Direct naar" },
     { href: "/methodologie", label: "Methodologie", group: "Direct naar" },
     { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken", group: "Vergelijkingen" },
@@ -99,7 +99,7 @@ export default function Header() {
     return (
         <>
             <header
-                className={`sticky top-0 z-50 border-b border-slate-200/80 backdrop-blur ${searchOpen ? "bg-white/95" : "bg-white/85"
+                className={`sticky top-0 z-50 border-b border-stone-200/80 backdrop-blur ${searchOpen ? "bg-white/95" : "bg-white/85"
                     }`}
             >
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
@@ -116,8 +116,8 @@ export default function Header() {
                                 className="h-8 w-8 rounded-lg md:h-[34px] md:w-[34px]"
                                 priority
                             />
-                            <span className="text-lg font-semibold tracking-tight text-neutral-900">
-                                Perfect<span className="text-green-600">Supplement</span>
+                            <span className="text-lg font-semibold tracking-tight text-stone-900">
+                                Perfect<span className="text-stone-800">Supplement</span>
                             </span>
                         </Link>
 
@@ -126,7 +126,7 @@ export default function Header() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className="text-sm font-medium text-slate-500 transition hover:text-slate-900"
+                                    className="text-sm font-medium text-stone-500 transition hover:text-stone-900"
                                 >
                                     {link.label}
                                 </Link>
@@ -139,7 +139,7 @@ export default function Header() {
                             type="button"
                             aria-label="Open zoekfunctie"
                             onClick={openSearch}
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent text-slate-500 transition hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent text-stone-500 transition hover:border-stone-200 hover:bg-stone-50 hover:text-stone-900"
                         >
                             <svg
                                 aria-hidden="true"
@@ -160,7 +160,7 @@ export default function Header() {
                             type="button"
                             aria-label="Open menu"
                             onClick={() => setMenuOpen(true)}
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent text-slate-500 transition hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent text-stone-500 transition hover:border-stone-200 hover:bg-stone-50 hover:text-stone-900"
                         >
                             <svg
                                 aria-hidden="true"
@@ -186,12 +186,12 @@ export default function Header() {
             >
                 <div
                     onClick={closeSearch}
-                    className={`absolute inset-0 bg-slate-950/12 backdrop-blur-md transition-opacity duration-300 ${searchOpen ? "opacity-100" : "opacity-0"
+                    className={`absolute inset-0 bg-stone-950/12 backdrop-blur-md transition-opacity duration-300 ${searchOpen ? "opacity-100" : "opacity-0"
                         }`}
                 />
 
                 <div
-                    className={`absolute inset-x-0 top-0 border-b border-slate-200 bg-white/90 backdrop-blur-xl transition-all duration-300 ${searchOpen ? "translate-y-0 opacity-100" : "-translate-y-6 opacity-0"
+                    className={`absolute inset-x-0 top-0 border-b border-stone-200 bg-white/90 backdrop-blur-xl transition-all duration-300 ${searchOpen ? "translate-y-0 opacity-100" : "-translate-y-6 opacity-0"
                         }`}
                 >
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -199,7 +199,7 @@ export default function Header() {
                             <svg
                                 aria-hidden="true"
                                 viewBox="0 0 24 24"
-                                className="h-5 w-5 shrink-0 text-slate-400"
+                                className="h-5 w-5 shrink-0 text-stone-400"
                                 fill="none"
                                 stroke="currentColor"
                                 strokeWidth="1.8"
@@ -250,14 +250,14 @@ export default function Header() {
                                     }
                                 }}
                                 placeholder="Zoek in de site"
-                                className="w-full border-0 bg-transparent py-5 text-[2rem] font-semibold tracking-tight text-slate-900 outline-none placeholder:text-slate-400 md:text-[2.2rem]"
+                                className="w-full border-0 bg-transparent py-5 text-[2rem] font-semibold tracking-tight text-stone-900 outline-none placeholder:text-stone-400 md:text-[2.2rem]"
                             />
 
                             <button
                                 type="button"
                                 aria-label="Sluit zoeken"
                                 onClick={closeSearch}
-                                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-transparent text-slate-500 transition hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-transparent text-stone-500 transition hover:border-stone-200 hover:bg-stone-50 hover:text-stone-900"
                             >
                                 <svg
                                     aria-hidden="true"
@@ -278,7 +278,7 @@ export default function Header() {
                             {!query && (
                                 <div className="grid gap-10 md:grid-cols-2">
                                     <div>
-                                        <p className="mb-4 text-sm font-medium text-slate-400">
+                                        <p className="mb-4 text-sm font-medium text-stone-400">
                                             Direct naar
                                         </p>
                                         <div className="space-y-3">
@@ -287,7 +287,7 @@ export default function Header() {
                                                     key={item.href}
                                                     href={item.href}
                                                     onClick={closeSearch}
-                                                    className="block text-base text-slate-600 transition hover:text-slate-900"
+                                                    className="block text-base text-stone-600 transition hover:text-stone-900"
                                                 >
                                                     → {item.label}
                                                 </Link>
@@ -296,7 +296,7 @@ export default function Header() {
                                     </div>
 
                                     <div>
-                                        <p className="mb-4 text-sm font-medium text-slate-400">
+                                        <p className="mb-4 text-sm font-medium text-stone-400">
                                             Populaire vergelijkingen
                                         </p>
                                         <div className="space-y-3">
@@ -305,7 +305,7 @@ export default function Header() {
                                                     key={item.href}
                                                     href={item.href}
                                                     onClick={closeSearch}
-                                                    className="block text-base text-slate-600 transition hover:text-slate-900"
+                                                    className="block text-base text-stone-600 transition hover:text-stone-900"
                                                 >
                                                     → {item.label}
                                                 </Link>
@@ -317,13 +317,13 @@ export default function Header() {
 
                             {query && (
                                 <div>
-                                    <p className="mb-4 text-sm font-medium text-slate-400">
+                                    <p className="mb-4 text-sm font-medium text-stone-400">
                                         Resultaten
                                     </p>
 
                                     {filteredResults.length > 0 ? (
                                         <>
-                                            <p className="mb-4 text-sm text-slate-400">
+                                            <p className="mb-4 text-sm text-stone-400">
                                                 Gebruik ↑ ↓ om te kiezen en Enter om te openen.
                                             </p>
 
@@ -341,14 +341,14 @@ export default function Header() {
                                                                 router.push(item.href);
                                                             }}
                                                             className={`block w-full rounded-2xl border px-4 py-4 text-left transition ${isActive
-                                                                ? "border-slate-300 bg-slate-50"
-                                                                : "border-transparent bg-transparent hover:border-slate-200 hover:bg-slate-50"
+                                                                ? "border-stone-300 bg-stone-50"
+                                                                : "border-transparent bg-transparent hover:border-stone-200 hover:bg-stone-50"
                                                                 }`}
                                                         >
-                                                            <span className="block font-medium text-slate-900">
+                                                            <span className="block font-medium text-stone-900">
                                                                 {item.label}
                                                             </span>
-                                                            <span className="mt-1 block text-sm text-slate-500">
+                                                            <span className="mt-1 block text-sm text-stone-500">
                                                                 {item.group}
                                                             </span>
                                                         </button>
@@ -357,7 +357,7 @@ export default function Header() {
                                             </div>
                                         </>
                                     ) : (
-                                        <p className="text-base text-slate-500">
+                                        <p className="text-base text-stone-500">
                                             Geen resultaten gevonden.
                                         </p>
                                     )}
@@ -379,16 +379,16 @@ export default function Header() {
                 />
 
                 <aside
-                    className={`absolute right-0 top-0 h-full w-full max-w-sm border-l border-slate-200 bg-white shadow-2xl transition-transform duration-300 ease-out ${menuOpen ? "translate-x-0" : "translate-x-full"
+                    className={`absolute right-0 top-0 h-full w-full max-w-sm border-l border-stone-200 bg-white shadow-2xl transition-transform duration-300 ease-out ${menuOpen ? "translate-x-0" : "translate-x-full"
                         }`}
                 >
-                    <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
-                        <span className="text-sm font-semibold text-slate-900">Menu</span>
+                    <div className="flex items-center justify-between border-b border-stone-200 px-6 py-5">
+                        <span className="text-sm font-semibold text-stone-900">Menu</span>
                         <button
                             type="button"
                             aria-label="Sluit menu"
                             onClick={() => setMenuOpen(false)}
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent text-slate-500 transition hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent text-stone-500 transition hover:border-stone-200 hover:bg-stone-50 hover:text-stone-900"
                         >
                             <svg
                                 aria-hidden="true"
@@ -412,15 +412,15 @@ export default function Header() {
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setMenuOpen(false)}
-                                    className="block rounded-2xl px-4 py-3 text-base font-medium text-slate-800 transition hover:bg-slate-50 hover:text-slate-900"
+                                    className="block rounded-2xl px-4 py-3 text-base font-medium text-stone-800 transition hover:bg-stone-50 hover:text-stone-900"
                                 >
                                     {link.label}
                                 </Link>
                             ))}
                         </nav>
 
-                        <div className="mt-10 border-t border-slate-200 pt-6">
-                            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+                        <div className="mt-10 border-t border-stone-200 pt-6">
+                            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
                                 Info
                             </p>
                             <div className="space-y-1">
@@ -429,7 +429,7 @@ export default function Header() {
                                         key={link.href}
                                         href={link.href}
                                         onClick={() => setMenuOpen(false)}
-                                        className="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+                                        className="block rounded-2xl px-4 py-3 text-sm font-medium text-stone-500 transition hover:bg-stone-50 hover:text-stone-900"
                                     >
                                         {link.label}
                                     </Link>

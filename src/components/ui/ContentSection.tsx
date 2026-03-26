@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Container from "@/components/layout/Container";
 
 type ContentSectionProps = {
     id?: string;
@@ -15,15 +16,21 @@ export default function ContentSection({
 }: ContentSectionProps) {
     return (
         <section id={id} className="py-12 md:py-16">
-            <div className="mx-auto max-w-6xl px-4 md:px-6">
-                <div className="max-w-2xl">
-                    <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">{title}</h2>
-                    {description ? (
-                        <p className="mt-3 text-sm leading-6 text-slate-600 md:text-base">{description}</p>
-                    ) : null}
+            <Container>
+                <div className="max-w-6xl">
+                    <div className="max-w-2xl">
+                        <h2 className="ps-display text-[1.625rem] leading-[1.15] tracking-tight text-stone-900 md:text-[1.875rem]">
+                            {title}
+                        </h2>
+                        {description ? (
+                            <p className="mt-3 text-sm leading-[1.75] text-stone-500 md:text-base">
+                                {description}
+                            </p>
+                        ) : null}
+                    </div>
+                    <div className="mt-8">{children}</div>
                 </div>
-                <div className="mt-8">{children}</div>
-            </div>
+            </Container>
         </section>
     );
 }

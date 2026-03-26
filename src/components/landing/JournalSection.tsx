@@ -7,25 +7,25 @@ const articles = [
     title: "Waarom omega-3 een fundamentele basis vormt",
     excerpt:
       "EPA en DHA in perspectief: waarom deze vetzuren horen bij een langetermijnstack—nuchter en zonder sensatie.",
-    href: "/kennisbank",
+    href: "/blog",
   },
   {
     title: "Magnesium en herstel in een overprikkelde leefstijl",
     excerpt:
       "Hoe magnesium aansluit op slaap, stress en training—bedoeld voor wie prestaties in weken en maanden meet, niet alleen in één sessie.",
-    href: "/kennisbank",
+    href: "/blog",
   },
   {
     title: "Van losse supplementen naar een samenhangend fundament",
     excerpt:
       "Principes voor minder, betere ingrediënten die samenhang versterken—vóór de volgende hype.",
-    href: "/kennisbank",
+    href: "/blog",
   },
   {
     title: "Preventieve gezondheid begint bij dagelijkse consistentie",
     excerpt:
       "Waarom kleine, herhaalbare keuzes het verschil maken voor veerkracht en vitaliteit op lange termijn.",
-    href: "/kennisbank",
+    href: "/blog",
   },
 ];
 
@@ -38,7 +38,7 @@ export default function JournalSection() {
     >
       <SectionShell>
         <SectionHeading
-          eyebrow="Kennisbank"
+          eyebrow="Blog"
           title="Dieper kijken—voor een langere horizon"
           titleId="journal-heading"
           description="Artikelen over omega-3 en magnesium, dagelijkse gezondheidsondersteuning, herstel en lange-termijnvitaliteit—inhoudelijk, zonder oppervlakkig vulsel."

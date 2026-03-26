@@ -13,7 +13,7 @@ export default function JuridischPage() {
             }
         >
             <section>
-                    <h2 className="text-2xl font-semibold text-slate-900">
+                    <h2 className="text-2xl font-semibold text-stone-900">
                         Algemene disclaimer
                     </h2>
 
@@ -51,8 +51,8 @@ export default function JuridischPage() {
                     </div>
                 </section>
 
-                <section className="border-t border-slate-200 pt-12">
-                    <h2 className="text-2xl font-semibold text-slate-900">
+                <section className="border-t border-stone-200 pt-12">
+                    <h2 className="text-2xl font-semibold text-stone-900">
                         Medische disclaimer
                     </h2>
 
@@ -89,8 +89,8 @@ export default function JuridischPage() {
                     </div>
                 </section>
 
-                <section className="border-t border-slate-200 pt-12">
-                    <h2 className="text-2xl font-semibold text-slate-900">
+                <section className="border-t border-stone-200 pt-12">
+                    <h2 className="text-2xl font-semibold text-stone-900">
                         Affiliate disclosure
                     </h2>
 
@@ -115,8 +115,8 @@ export default function JuridischPage() {
                     </div>
                 </section>
 
-                <section className="border-t border-slate-200 pt-12">
-                    <h2 className="text-2xl font-semibold text-slate-900">Wijzigingen</h2>
+                <section className="border-t border-stone-200 pt-12">
+                    <h2 className="text-2xl font-semibold text-stone-900">Wijzigingen</h2>
 
                     <div className="mt-5 space-y-4 leading-7">
                         <p>

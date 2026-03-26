@@ -1,25 +1,191 @@
 @import "tailwindcss";
 
+/* ── Design tokens (aligned with homepage) ─────────────────────── */
+
+:root {
+  --ps-bg: #f8f7f4;
+  --ps-surface: #ffffff;
+  --ps-border: #e7e5e4;
+  --ps-ink: #1c1917;
+  --ps-body: #78716c;
+  --ps-muted: #a8a29e;
+  --ps-subtle: #d6d3d1;
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
 }
 
 body {
-  background-color: #f8fafc; /* slate-50 */
-  color: #0f172a; /* slate-900 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background-color: var(--ps-bg);
+  color: var(--ps-ink);
 }
 
+/* Tight tracking for all headings by default */
 h1,
 h2,
 h3,
 h4 {
-  letter-spacing: -0.02em;
-  color: #0f172a; /* slate-900 */
+  letter-spacing: -0.03em;
 }
 
-p {
-  color: #475569; /* slate-600 */
+/* ── Display serif (page titles, homepage headings) ───────────── */
+
+.ps-display {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* Eyebrow / label — site-wide */
+.ps-eyebrow {
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ps-muted);
+}
+
+/* Body copy (articles, sections) */
+.ps-prose {
+  color: var(--ps-body);
+  line-height: 1.75;
+}
+
+/* Inline / text links */
+.ps-text-link {
+  font-weight: 500;
+  color: #78716c;
+  text-decoration: underline;
+  text-decoration-color: #e7e5e4;
+  text-underline-offset: 4px;
+  transition: color 150ms ease, text-decoration-color 150ms ease;
+}
+
+.ps-text-link:hover {
+  color: #44403c;
+  text-decoration-color: #a8a29e;
+}
+
+/* Primary CTA — filled dark (matches homepage hero) */
+.ps-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.25rem;
+  border: 1px solid #292524;
+  background-color: #1c1917;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.ps-btn-primary:hover {
+  background-color: #292524;
+}
+
+/* Secondary CTA — outline */
+.ps-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.25rem;
+  border: 1px solid #d6d3d1;
+  background-color: transparent;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #57534e;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.ps-btn-secondary:hover {
+  border-color: #78716c;
+  color: #1c1917;
+}
+
+/* Subtle bordered surface (cards, panels) */
+.ps-surface {
+  border-radius: 0.5rem;
+  border: 1px solid var(--ps-border);
+  background-color: var(--ps-surface);
+}
+
+/* Section vertical rhythm (compact) */
+.ps-section-y {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .ps-section-y {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+/* ── Hero organic blob shapes (legacy, unused in current hero) ─── */
+
+.ps-blob-1 {
+  position: absolute;
+  width: clamp(340px, 44vw, 620px);
+  height: clamp(300px, 40vw, 560px);
+  top: -10%;
+  right: -8%;
+  border-radius: 62% 38% 46% 54% / 60% 44% 56% 40%;
+  background: radial-gradient(
+    ellipse 68% 68% at 52% 48%,
+    rgba(88, 152, 110, 0.075) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.ps-blob-2 {
+  position: absolute;
+  width: clamp(220px, 30vw, 420px);
+  height: clamp(200px, 28vw, 380px);
+  bottom: -6%;
+  left: -4%;
+  border-radius: 38% 62% 70% 30% / 44% 56% 38% 62%;
+  background: radial-gradient(
+    ellipse 62% 62% at 46% 52%,
+    rgba(172, 188, 166, 0.065) 0%,
+    transparent 66%
+  );
+  pointer-events: none;
+}
+
+.ps-blob-3 {
+  position: absolute;
+  width: clamp(180px, 22vw, 290px);
+  height: clamp(160px, 20vw, 260px);
+  top: 32%;
+  right: 20%;
+  border-radius: 50% 50% 38% 62% / 42% 58% 50% 50%;
+  background: radial-gradient(
+    ellipse 58% 58% at 50% 50%,
+    rgba(200, 212, 196, 0.05) 0%,
+    transparent 64%
+  );
+  pointer-events: none;
+}
+
+/* ── Gradient section separator ────────────────────────────────── */
+
+.ps-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(210, 206, 200, 0.65) 22%,
+    rgba(210, 206, 200, 0.65) 78%,
+    transparent
+  );
 }

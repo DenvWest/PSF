@@ -36,17 +36,17 @@ const relatedPages = [
 
 export default function OmegaComparisonPage() {
     return (
-        <main className="bg-white text-slate-900">
-            <section className="border-b border-slate-200 bg-slate-50">
+        <main className="text-stone-900">
+            <section className="border-b border-stone-200 bg-stone-50">
                 <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 md:py-24 lg:grid-cols-2 lg:items-center">
                     <div>
-                        <p className="text-sm font-medium uppercase tracking-[0.18em] text-green-700">
+                        <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
                             Vergelijking
                         </p>
                         <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
                             Omega 3 supplementen vergelijken
                         </h1>
-                        <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+                        <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                             Vergelijk populaire omega 3 supplementen op dosering, transparantie,
                             gebruiksgemak en prijs per dag in één overzichtelijke pagina.
                         </p>
@@ -54,27 +54,27 @@ export default function OmegaComparisonPage() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             <a
                                 href="#vergelijking"
-                                className="inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-800"
+                                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
                             >
                                 Bekijk vergelijking
                             </a>
                             <Link
                                 href="/beste-omega-3-supplement"
-                                className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-900 transition hover:border-slate-300"
+                                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
                             >
                                 Bekijk beste keuzes
                             </Link>
                         </div>
 
-                        <p className="mt-5 inline-flex items-start gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-500">
-                            <span className="mt-px shrink-0 text-slate-400" aria-hidden="true">ℹ</span>
+                        <p className="mt-5 inline-flex items-start gap-2 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm leading-6 text-stone-500">
+                            <span className="mt-px shrink-0 text-stone-400" aria-hidden="true">ℹ</span>
                             Deze pagina bevat affiliate links. Bij een aankoop via deze links kan de consument korting krijgen en deze website een commissie ontvangen.
                         </p>
                     </div>
 
-                    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <p className="text-sm font-medium text-slate-500">Op deze pagina</p>
-                        <ul className="mt-4 space-y-3 text-sm text-slate-600">
+                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+                        <p className="text-sm font-medium text-stone-500">Op deze pagina</p>
+                        <ul className="mt-4 space-y-3 text-sm text-stone-600">
                             <li>• Kort uitgelegd hoe wij vergelijken</li>
                             <li>• Snelle highlights per type bezoeker</li>
                             <li>• Productcards met score-opbouw</li>
@@ -88,8 +88,8 @@ export default function OmegaComparisonPage() {
                 title="Hoe wij vergelijken"
                 description="We proberen producten rustig en consistent te beoordelen op factoren die in de praktijk het meest relevant zijn voor vergelijkbaarheid."
             >
-                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 md:p-7">
-                    <p className="max-w-3xl text-sm leading-7 text-slate-600">
+                <div className="rounded-3xl border border-stone-200 bg-stone-50 p-6 md:p-7">
+                    <p className="max-w-3xl text-sm leading-7 text-stone-600">
                         Onze vergelijking is geen medisch oordeel en ook geen marketingranglijst.
                         We kijken per product naar de praktische bruikbaarheid binnen de categorie:
                         dosering, transparantie, gebruiksgemak, prijs per dag en toepasbaarheid.
@@ -97,14 +97,14 @@ export default function OmegaComparisonPage() {
                         beter scanbaar te maken. Wie eerst de basis wil begrijpen, kan beginnen met{" "}
                         <Link
                             href="/wat-is-omega-3"
-                            className="font-medium text-green-700 underline-offset-4 hover:underline"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             wat omega 3 is
                         </Link>
                         ; wie precies wil weten hoe we deze punten wegen, leest onze{" "}
                         <Link
                             href="/methodologie"
-                            className="font-medium text-green-700 underline-offset-4 hover:underline"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             methodologie
                         </Link>
@@ -115,7 +115,7 @@ export default function OmegaComparisonPage() {
                         {comparisonCriteria.map((criterion) => (
                             <span
                                 key={criterion}
-                                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600"
+                                className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600"
                             >
                                 {criterion}
                             </span>
@@ -132,19 +132,19 @@ export default function OmegaComparisonPage() {
                     {highlights.map((item) => (
                         <div
                             key={item.label}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
                         >
-                            <p className="text-sm font-medium text-green-700">{item.label}</p>
+                            <p className="text-sm font-medium text-stone-800">{item.label}</p>
                             <h3 className="mt-2 text-lg font-semibold">{item.value}</h3>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">{item.text}</p>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{item.text}</p>
                         </div>
                     ))}
                 </div>
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">
+                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
                     Twijfel je nog welke criteria echt verschil maken? Lees dan ook{" "}
                     <Link
                         href="/waar-let-je-op-bij-omega-3"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         waar je op let bij omega 3 supplementen
                     </Link>
@@ -160,25 +160,25 @@ export default function OmegaComparisonPage() {
                     {products.map((product) => (
                         <article
                             key={product.name}
-                            className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+                            className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
                         >
                             <div className="flex items-start justify-between gap-4">
                                 <div>
                                     <h3 className="text-xl font-semibold">{product.name}</h3>
-                                    <p className="mt-1 text-sm font-medium text-green-700">{product.bestFor}</p>
+                                    <p className="mt-1 text-sm font-medium text-stone-800">{product.bestFor}</p>
                                 </div>
-                                <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold">
+                                <div className="rounded-xl bg-stone-100 px-3 py-2 text-sm font-semibold">
                                     {product.score}/10
                                 </div>
                             </div>
 
-                            <p className="mt-4 text-sm leading-6 text-slate-600">{product.summary}</p>
+                            <p className="mt-4 text-sm leading-6 text-stone-600">{product.summary}</p>
 
                             <div className="mt-4 flex flex-wrap gap-2">
                                 {product.specs.map((spec) => (
                                     <span
                                         key={spec}
-                                        className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                                        className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600"
                                     >
                                         {spec}
                                     </span>
@@ -188,7 +188,7 @@ export default function OmegaComparisonPage() {
                             <div className="mt-5 grid gap-5 sm:grid-cols-2">
                                 <div>
                                     <h4 className="text-sm font-semibold">Pluspunten</h4>
-                                    <ul className="mt-2 space-y-2 text-sm text-slate-600">
+                                    <ul className="mt-2 space-y-2 text-sm text-stone-600">
                                         {product.pros.map((pro) => (
                                             <li key={pro}>• {pro}</li>
                                         ))}
@@ -196,7 +196,7 @@ export default function OmegaComparisonPage() {
                                 </div>
                                 <div>
                                     <h4 className="text-sm font-semibold">Aandachtspunten</h4>
-                                    <ul className="mt-2 space-y-2 text-sm text-slate-600">
+                                    <ul className="mt-2 space-y-2 text-sm text-stone-600">
                                         {product.cons.map((con) => (
                                             <li key={con}>• {con}</li>
                                         ))}
@@ -204,8 +204,8 @@ export default function OmegaComparisonPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                            <div className="mt-5 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                                     Score-opbouw
                                 </p>
                                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -214,8 +214,8 @@ export default function OmegaComparisonPage() {
                                             key={label}
                                             className="flex items-center justify-between rounded-xl bg-white px-3 py-2"
                                         >
-                                            <span className="text-sm text-slate-600">{label}</span>
-                                            <span className="text-sm font-medium text-slate-900">{score}</span>
+                                            <span className="text-sm text-stone-600">{label}</span>
+                                            <span className="text-sm font-medium text-stone-900">{score}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -223,7 +223,7 @@ export default function OmegaComparisonPage() {
 
                             <AffiliateLink
                                 affiliateSlug={product.affiliateSlug}
-                                className="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
+                                className="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
                             >
                                 Bekijk product
                             </AffiliateLink>
@@ -238,12 +238,12 @@ export default function OmegaComparisonPage() {
                 title="Vergelijkingstabel"
                 description="Een compact overzicht van de belangrijkste eigenschappen om sneller verschillen te zien zonder veel tekst te hoeven lezen."
             >
-                <div className="mt-4 flex flex-col gap-3 text-sm leading-6 text-slate-600 md:flex-row md:items-center md:justify-between">
+                <div className="mt-4 flex flex-col gap-3 text-sm leading-6 text-stone-600 md:flex-row md:items-center md:justify-between">
                     <p>
                         Wil je liever direct onze selectie zien? Bekijk dan ook de{" "}
                         <Link
                             href="/beste-omega-3-supplement"
-                            className="font-medium text-green-700 underline-offset-4 hover:underline"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             beste omega 3 supplementen
                         </Link>
@@ -251,14 +251,14 @@ export default function OmegaComparisonPage() {
                     </p>
                     <Link
                         href="/methodologie"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         Lees hoe wij vergelijken
                     </Link>
                 </div>
-                <div className="mt-4 overflow-x-auto rounded-3xl border border-slate-200">
+                <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
                     <table className="min-w-full text-left text-sm">
-                        <thead className="bg-slate-50 text-slate-600">
+                        <thead className="bg-stone-50 text-stone-600">
                             <tr>
                                 <th className="px-4 py-3 font-semibold">Product</th>
                                 <th className="px-4 py-3 font-semibold">Type</th>
@@ -271,7 +271,7 @@ export default function OmegaComparisonPage() {
                         </thead>
                         <tbody>
                             {tableRows.map((row) => (
-                                <tr key={row.product} className="border-t border-slate-200">
+                                <tr key={row.product} className="border-t border-stone-200">
                                     <td className="px-4 py-3 font-medium">{row.product}</td>
                                     <td className="px-4 py-3">{row.type}</td>
                                     <td className="px-4 py-3">{row.dosage}</td>
@@ -295,16 +295,16 @@ export default function OmegaComparisonPage() {
                     {choiceRoutes.map((route) => (
                         <article
                             key={route.title}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
                         >
-                            <p className="text-sm font-medium text-green-700">{route.title}</p>
-                            <h3 className="mt-2 text-base font-semibold text-slate-900">
+                            <p className="text-sm font-medium text-stone-800">{route.title}</p>
+                            <h3 className="mt-2 text-base font-semibold text-stone-900">
                                 {route.product}
                             </h3>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">{route.text}</p>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{route.text}</p>
                             <AffiliateLink
                                 affiliateSlug={route.affiliateSlug}
-                                className="mt-4 inline-flex items-center text-xs font-medium text-slate-500 underline-offset-4 hover:text-slate-700 hover:underline"
+                                className="mt-4 inline-flex items-center text-xs font-medium text-stone-500 underline-offset-4 hover:text-stone-700 hover:underline"
                             >
                                 Bekijk product →
                             </AffiliateLink>
@@ -334,18 +334,18 @@ export default function OmegaComparisonPage() {
                     ].map((item) => (
                         <div
                             key={item.title}
-                            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
                         >
                             <h3 className="text-base font-semibold">{item.title}</h3>
-                            <p className="mt-2 text-sm leading-6 text-slate-600">{item.text}</p>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{item.text}</p>
                         </div>
                     ))}
                 </div>
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-slate-600 md:text-base">
+                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
                     Zoek je liever een kortere shortlist dan een volledige vergelijking? Bekijk dan de{" "}
                     <Link
                         href="/beste-omega-3-supplement"
-                        className="font-medium text-green-700 underline-offset-4 hover:underline"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
                     >
                         beste omega 3 supplementen
                     </Link>
@@ -355,13 +355,13 @@ export default function OmegaComparisonPage() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Link
                         href="/beste-omega-3-supplement"
-                        className="inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 text-sm font-medium text-white hover:bg-green-800"
+                        className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white hover:bg-stone-800"
                     >
                         Bekijk beste omega 3 supplementen
                     </Link>
                     <a
                         href="#vergelijking"
-                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-900 hover:border-slate-300"
+                        className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
                     >
                         Terug naar vergelijking
                     </a>
