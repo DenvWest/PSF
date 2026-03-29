@@ -10,6 +10,14 @@ export const metadata: Metadata = {
 
 const articles = [
   {
+    title: "Supplement kiezen: waar op letten?",
+    href: "/supplement-kiezen-waar-op-letten",
+    category: "Keuzehulp",
+    description:
+      "Kwaliteit herkennen: dosering, opneembaarheid, zuiverheid en transparantie — zonder marketingpraat.",
+    date: "Maart 2026",
+  },
+  {
     title: "Wat is omega-3?",
     href: "/wat-is-omega-3",
     category: "Ingrediënten",
@@ -51,7 +59,7 @@ const articles = [
   },
   {
     title: "Beste magnesium supplement",
-    href: "/slaap-supplement-vergelijken",
+    href: "/beste-magnesium",
     category: "Keuzehulp",
     description:
       "Welke magnesiumvorm werkt het best voor jouw doel? Een overzicht van de meest relevante varianten.",

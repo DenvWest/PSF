@@ -26,3 +26,13 @@ export type Omega3Product = Product & {
   pricePerBottleEur: number;
   amountPerBottle: number;
 };
+
+export type MagnesiumProduct = Product & {
+  /** Elementair magnesium per aanbevolen portie (mg). */
+  elementMg: number;
+  capsulesPerDay: number;
+  form: string;
+  pricePerDayEur: number;
+  pricePerBottleEur: number;
+  amountPerBottle: number;
+};

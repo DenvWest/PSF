@@ -13,9 +13,14 @@ const startLinks = [
     href: "/beste-omega-3-supplement",
   },
   {
-    title: "Magnesium uitleg",
+    title: "Magnesium vergelijken",
     description: "Vormen, doseringen en wanneer het relevant is.",
     href: "/magnesium-vergelijken",
+  },
+  {
+    title: "Beste magnesium keuzes",
+    description: "Topkeuzes per vorm en gebruik, met duidelijke onderbouwing.",
+    href: "/beste-magnesium",
   },
 ];
 

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | PerfectSupplement",
   },
   description:
-    "Evidence-based supplementinformatie en vergelijkingen, met focus op Omega-3 en Vitamine D.",
+    "Evidence-based supplementinformatie en vergelijkingen, met focus op omega-3 en magnesium.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

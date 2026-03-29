@@ -26,8 +26,8 @@ const items = [
             "Krijg overzicht in vormen, doseringen en praktische verschillen tussen magnesiumproducten.",
         badge: "Veelgekozen",
         href: "/magnesium-vergelijken",
-        secondaryHref: "/blog",
-        secondaryLabel: "Meer context",
+        secondaryHref: "/beste-magnesium",
+        secondaryLabel: "Beste keuze",
     },
     {
         title: "Slaap",
@@ -72,7 +72,7 @@ const items = [
 ];
 
 /** Welke categorieën nu op deze hub verschijnen; titels uit `items` uitbreiden wanneer de catalogus groeit. */
-const hubVisibleTitles = new Set<string>(["Omega-3", "Vitamine D"]);
+const hubVisibleTitles = new Set<string>(["Omega-3", "Magnesium"]);
 const hubItems = items.filter((item) => hubVisibleTitles.has(item.title));
 
 export default function SupplementenPage() {
@@ -90,7 +90,7 @@ export default function SupplementenPage() {
 
                     <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
                         Deze pagina werkt als een rustig keuze-overzicht. Voorlopig tonen we
-                        omega-3 en vitamine D; de catalogus kan later worden uitgebreid. Kies
+                        omega-3 en magnesium; de catalogus kan later worden uitgebreid. Kies
                         een categorie en ga daarna verder naar een vergelijking, gids of
                         verdiepende pagina.
                     </p>

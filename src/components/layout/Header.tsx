@@ -29,8 +29,10 @@ const searchItems = [
     { href: "/methodologie", label: "Methodologie", group: "Direct naar" },
     { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken", group: "Vergelijkingen" },
     { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement", group: "Vergelijkingen" },
-    { href: "/supplementen", label: "Vitamine D supplementen", group: "Vergelijkingen" },
+    { href: "/beste-magnesium", label: "Beste magnesium supplement", group: "Vergelijkingen" },
+    { href: "/magnesium-vergelijken", label: "Magnesium vergelijken", group: "Vergelijkingen" },
     { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement", group: "Keuzehulpen" },
+    { href: "/beste-magnesium", label: "Beste magnesium supplement", group: "Keuzehulpen" },
     { href: "/wat-is-omega-3", label: "Wat is omega-3?", group: "Ingrediënten" },
     { href: "/waar-let-je-op-bij-omega-3", label: "Waar let je op bij omega-3?", group: "Ingrediënten" },
 ];

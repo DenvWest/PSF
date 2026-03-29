@@ -7,12 +7,16 @@ const products = [
     tagline:
       "Essentieel vetzuur voor hart, hersenen en ontstekingsbalans. Uitgebreid vergeleken op dosering, kwaliteit en prijs.",
     href: "/omega-3-vergelijken",
+    secondaryHref: "/beste-omega-3-supplement",
+    secondaryLabel: "Beste keuzes",
   },
   {
     name: "Magnesium",
     tagline:
       "Ondersteunt spieren, het zenuwstelsel en slaap. Welke vorm past het beste bij jouw doel?",
     href: "/magnesium-vergelijken",
+    secondaryHref: "/beste-magnesium",
+    secondaryLabel: "Beste keuzes",
   },
 ];
 
@@ -39,12 +43,20 @@ export default function PopularCategories() {
               <p className="mt-3 text-sm leading-[1.8] text-stone-400">
                 {product.tagline}
               </p>
-              <Link
-                href={product.href}
-                className="mt-6 inline-block text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition hover:text-stone-700 hover:decoration-stone-400"
-              >
-                Meer over {product.name.toLowerCase()}
-              </Link>
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <Link
+                  href={product.href}
+                  className="inline-block text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition hover:text-stone-700 hover:decoration-stone-400"
+                >
+                  Meer over {product.name.toLowerCase()}
+                </Link>
+                <Link
+                  href={product.secondaryHref}
+                  className="inline-block text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition hover:text-stone-700 hover:decoration-stone-400"
+                >
+                  {product.secondaryLabel}
+                </Link>
+              </div>
             </div>
           ))}
         </div>

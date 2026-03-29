@@ -223,6 +223,8 @@ export default function OmegaComparisonPage() {
 
                             <AffiliateLink
                                 affiliateSlug={product.affiliateSlug}
+                                pageType="omega-3-vergelijken"
+                                position={`comparison_card_${product.affiliateSlug}`}
                                 className="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
                             >
                                 Bekijk actuele prijs bij aanbieder →
@@ -304,6 +306,8 @@ export default function OmegaComparisonPage() {
                             <p className="mt-2 text-sm leading-6 text-stone-600">{route.text}</p>
                             <AffiliateLink
                                 affiliateSlug={route.affiliateSlug}
+                                pageType="omega-3-vergelijken"
+                                position={`choice_route_${route.affiliateSlug}`}
                                 className="mt-4 inline-flex items-center text-xs font-medium text-stone-500 underline-offset-4 hover:text-stone-700 hover:underline"
                             >
                                 Bekijk actuele prijs bij aanbieder →
