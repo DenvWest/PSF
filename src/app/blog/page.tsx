@@ -70,7 +70,7 @@ const articles = [
 export default function BlogPage() {
   return (
     <Container>
-      <div className="py-28 md:py-36">
+      <div className="py-16 md:py-24">
 
         {/* Page header */}
         <div className="max-w-[520px]">
@@ -87,7 +87,7 @@ export default function BlogPage() {
         </div>
 
         {/* Articles grid */}
-        <div className="mt-20 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
             <Link
               key={article.href}

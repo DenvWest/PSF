@@ -19,9 +19,19 @@ export default function AffiliateLink({
   pageType,
   position,
 }: AffiliateLinkProps) {
+  const href = affiliateLinks[affiliateSlug];
+
+  if (!href) {
+    return (
+      <span className={className} role="status">
+        Vergelijking volgt binnenkort
+      </span>
+    );
+  }
+
   return (
     <a
-      href={affiliateLinks[affiliateSlug]}
+      href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
       className={className}

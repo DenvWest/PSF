@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Container from "@/components/layout/Container";
 import AffiliateLink from "@/components/content/AffiliateLink";
 import ProductCard from "@/components/content/product-card";
 import Disclosure, {
@@ -76,7 +77,8 @@ export default function BestOmegaPage() {
         <main className="text-stone-900">
             {/* Hero */}
             <section className="border-b border-stone-200 bg-stone-50">
-                <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 md:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+                <Container>
+                <div className="grid gap-10 py-16 md:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
                     <div>
                         <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
                             Onafhankelijke omega 3 gids
@@ -176,6 +178,7 @@ export default function BestOmegaPage() {
                         ) : null}
                     </div>
                 </div>
+                </Container>
             </section>
 
             {/* Top picks — het belangrijkste blok */}
@@ -296,7 +299,7 @@ export default function BestOmegaPage() {
 
             {/* Waarom deze selectie? */}
             <div className="border-y border-stone-100 bg-stone-50 py-12 md:py-16">
-                <div className="mx-auto max-w-6xl px-4 md:px-6">
+                <Container>
                     <div className="max-w-2xl">
                         <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                             Waarom deze selectie?
@@ -320,7 +323,7 @@ export default function BestOmegaPage() {
                             </li>
                         ))}
                     </ul>
-                </div>
+                </Container>
             </div>
 
             {/* Welke keuze past bij jou? */}
@@ -410,7 +413,7 @@ export default function BestOmegaPage() {
 
             {/* Visolie vs Algenolie */}
             <div className="border-y border-stone-100 bg-stone-50 py-12 md:py-16">
-                <div className="mx-auto max-w-6xl px-4 md:px-6">
+                <Container>
                     <div className="max-w-2xl">
                         <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                             Visolie of algenolie?
@@ -486,7 +489,7 @@ export default function BestOmegaPage() {
                             Kies visolie als je effect en dosering prioriteit geeft. Kies algenolie als je plantaardig wilt zonder concessies aan kwaliteit te doen.
                         </p>
                     </div>
-                </div>
+                </Container>
             </div>
 
             {/* Vloeibaar vs Capsules */}
@@ -554,7 +557,7 @@ export default function BestOmegaPage() {
             </ContentSection>
 
             {/* Contextblok: lees meer */}
-            <div className="mx-auto max-w-6xl px-4 pb-4 md:px-6">
+            <Container className="pb-6">
                 <div className="rounded-2xl border border-stone-200 bg-stone-50 px-6 py-5">
                     <p className="text-sm leading-6 text-stone-600">
                         Twijfel je over EPA, DHA, dosering per dag en zuiverheid?{" "}
@@ -567,7 +570,7 @@ export default function BestOmegaPage() {
                         zodat je sneller begrijpt waarom deze keuzes bovenaan staan.
                     </p>
                 </div>
-            </div>
+            </Container>
 
             {/* Uitgelichte supplementen — volledige cards */}
             <ContentSection

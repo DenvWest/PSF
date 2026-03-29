@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Container from "@/components/layout/Container";
 import AffiliateLink from "@/components/content/AffiliateLink";
 import MagnesiumProductCard from "@/components/content/magnesium-product-card";
 import Disclosure, {
@@ -34,18 +35,6 @@ const relatedPages = [
             "Vormen en doseringen naast elkaar voordat je een specifiek product kiest.",
     },
     {
-        href: "/omega-3-vergelijken",
-        title: "Omega 3 vergelijken",
-        description:
-            "Past magnesium in je stack naast omega 3? Bekijk ook die vergelijking.",
-    },
-    {
-        href: "/beste-omega-3-supplement",
-        title: "Beste omega 3 supplement",
-        description:
-            "Dezelfde aanpak voor omega 3: topkeuzes met duidelijke onderbouwing.",
-    },
-    {
         href: "/methodologie",
         title: "Onze methodologie",
         description: "Lees hoe selectie en rangschikking tot stand komt.",
@@ -76,7 +65,8 @@ export default function BesteMagnesiumPage() {
         <main className="text-stone-900">
             {/* Hero */}
             <section className="border-b border-stone-200 bg-stone-50">
-                <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 md:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+                <Container>
+                <div className="grid gap-10 py-16 md:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
                     <div>
                         <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
                             Onafhankelijke magnesiumgids
@@ -177,6 +167,7 @@ export default function BesteMagnesiumPage() {
                         ) : null}
                     </div>
                 </div>
+                </Container>
             </section>
 
             {/* Top picks — het belangrijkste blok */}
@@ -297,7 +288,7 @@ export default function BesteMagnesiumPage() {
 
             {/* Waarom deze selectie? */}
             <div className="border-y border-stone-100 bg-stone-50 py-12 md:py-16">
-                <div className="mx-auto max-w-6xl px-4 md:px-6">
+                <Container>
                     <div className="max-w-2xl">
                         <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                             Waarom deze selectie?
@@ -321,7 +312,7 @@ export default function BesteMagnesiumPage() {
                             </li>
                         ))}
                     </ul>
-                </div>
+                </Container>
             </div>
 
             {/* Welke keuze past bij jou? */}
@@ -411,7 +402,7 @@ export default function BesteMagnesiumPage() {
 
             {/* Bisglycinaat, citraat, tauraat */}
             <div className="border-y border-stone-100 bg-stone-50 py-12 md:py-16">
-                <div className="mx-auto max-w-6xl px-4 md:px-6">
+                <Container>
                     <div className="max-w-2xl">
                         <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                             Bisglycinaat, citraat of tauraat?
@@ -503,7 +494,7 @@ export default function BesteMagnesiumPage() {
                             Start bij bisglycinaat als je vooral mildheid en routine zoekt. Kies citraat als prijs per mg en flexibiliteit leidend zijn (let op je darm). Overweeg tauraat als je de combinatie met taurine bewust in je avond- of ontspanningscontext wilt plaatsen.
                         </p>
                     </div>
-                </div>
+                </Container>
             </div>
 
             {/* Capsules of poeder */}
@@ -563,7 +554,7 @@ export default function BesteMagnesiumPage() {
             </ContentSection>
 
             {/* Contextblok: lees meer */}
-            <div className="mx-auto max-w-6xl px-4 pb-4 md:px-6">
+            <Container className="pb-6">
                 <div className="rounded-2xl border border-stone-200 bg-stone-50 px-6 py-5">
                     <p className="text-sm leading-6 text-stone-600">
                         Twijfel je over elementaire mg, timing of combinatie met voeding?{" "}
@@ -576,7 +567,7 @@ export default function BesteMagnesiumPage() {
                         voor meer houvast voordat je bestelt.
                     </p>
                 </div>
-            </div>
+            </Container>
 
             {/* Uitgelichte supplementen — volledige cards */}
             <ContentSection

@@ -93,7 +93,7 @@ const blogPreviews = [
 
 function BlogPreview() {
   return (
-    <section className="py-28 pb-36">
+    <section className="py-28">
       <div className="ps-divider" />
       <Container>
         <div className="pt-28">

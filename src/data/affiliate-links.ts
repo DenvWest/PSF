@@ -5,13 +5,13 @@ export const affiliateLinks = {
     "https://www.arctic-blue.com/winkel/visolie/visolie-vloeibaar/?sld=dennisvanwestbroek",
   "arctic-blue-gummies":
     "https://www.arctic-blue.com/sp/omega-3-soft-gummies?sld=dennisvanwestbroek",
-  /** Placeholder: vervang door product-URL wanneer definitieve magnesiumpartners bekend zijn. */
-  "magnesium-bisglycinaat":
-    "https://www.arctic-blue.com/winkel/?sld=dennisvanwestbroek",
-  "magnesium-tauraat":
-    "https://www.arctic-blue.com/winkel/?sld=dennisvanwestbroek",
-  "magnesium-citraat":
-    "https://www.arctic-blue.com/winkel/?sld=dennisvanwestbroek",
+  /**
+   * Geen externe affiliate-URL tot er passende magnesiumpartners zijn.
+   * Lege string = geen link; zie AffiliateLink.
+   */
+  "magnesium-bisglycinaat": "",
+  "magnesium-tauraat": "",
+  "magnesium-citraat": "",
 } as const satisfies Record<string, string>;
 
 export type AffiliateSlug = keyof typeof affiliateLinks;

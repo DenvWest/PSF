@@ -79,22 +79,20 @@ export default function SupplementenPage() {
     return (
         <Container>
             <div className="py-16 md:py-20">
-                <div className="max-w-6xl">
-                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
-                        Supplementen
-                    </p>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
+                    Supplementen
+                </p>
 
-                    <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
-                        Kies een supplementcategorie
-                    </h1>
+                <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
+                    Kies een supplementcategorie
+                </h1>
 
-                    <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
-                        Deze pagina werkt als een rustig keuze-overzicht. Voorlopig tonen we
-                        omega-3 en magnesium; de catalogus kan later worden uitgebreid. Kies
-                        een categorie en ga daarna verder naar een vergelijking, gids of
-                        verdiepende pagina.
-                    </p>
-                </div>
+                <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
+                    Deze pagina werkt als een rustig keuze-overzicht. Voorlopig tonen we
+                    omega-3 en magnesium; de catalogus kan later worden uitgebreid. Kies
+                    een categorie en ga daarna verder naar een vergelijking, gids of
+                    verdiepende pagina.
+                </p>
 
                 <section className="mt-10">
                     <div className="flex flex-wrap gap-3">
