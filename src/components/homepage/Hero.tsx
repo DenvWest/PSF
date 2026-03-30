@@ -26,67 +26,82 @@ const startLinks = [
 
 export default function Hero() {
   return (
-    <section className="border-b border-stone-200/60">
-      <Container>
-        <div className="grid gap-10 py-20 md:py-24 lg:grid-cols-[1fr_348px] lg:items-start lg:gap-16">
+    <section className="relative border-b border-stone-200/60">
+      {/* Soft top wash — ties hero to page without feeling empty */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_-8%,rgba(255,255,255,0.85),transparent_58%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-stone-200/70 to-transparent"
+        aria-hidden
+      />
 
-          {/* Left: headline, subtext, CTAs */}
-          <div className="pt-2">
-            <p className="text-[0.625rem] font-medium uppercase tracking-[0.26em] text-stone-400">
+      <Container className="relative">
+        <div className="grid gap-10 py-24 sm:gap-12 sm:py-28 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start lg:gap-16 xl:gap-[5.5rem]">
+
+          {/* Left: headline, subtext, CTAs — lg:pt-3 matches card header inset so eyebrows align */}
+          <div className="flex min-w-0 flex-col lg:max-w-[min(100%,40rem)] xl:max-w-[min(100%,42rem)] lg:pt-3">
+            <p className="ps-eyebrow">
               PerfectSupplement · Omega 3 &amp; Magnesium
             </p>
-            <h1 className="ps-display mt-6 text-[2.625rem] leading-[1.06] text-stone-900 sm:text-[3.25rem] lg:text-[3.75rem]">
+            <h1 className="ps-display mt-5 text-[2.625rem] leading-[1.05] text-stone-900 sm:text-[3.375rem] lg:text-[3.75rem]">
               Kies de juiste omega&nbsp;3 en magnesium supplementen, helder uitgelegd.
             </h1>
-            <p className="mt-6 max-w-lg text-base leading-[1.8] text-stone-500">
+            <p className="mt-5 max-w-[44ch] text-[0.9375rem] leading-[1.8] text-stone-500">
               Vergelijk dosering, kwaliteit en prijs per supplement.
               Duidelijk uitgelegd, zonder overbodige ruis.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+
+            {/* Primary leads; secondary stays visually quieter */}
+            <div className="mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-3">
               <Link
                 href="/supplementen"
-                className="inline-flex items-center rounded border border-stone-800 bg-stone-900 px-5 py-2.5 text-[0.8125rem] font-medium tracking-[0.01em] text-white transition duration-150 hover:bg-stone-800"
+                className="ps-btn-primary-hero w-full text-center sm:w-auto sm:min-w-[12rem]"
               >
                 Bekijk supplementen
               </Link>
               <Link
                 href="/methodologie"
-                className="inline-flex items-center rounded border border-stone-300 px-5 py-2.5 text-[0.8125rem] font-medium tracking-[0.01em] text-stone-600 transition duration-150 hover:border-stone-500 hover:text-stone-900"
+                className="ps-btn-secondary-hero w-full text-center sm:w-auto"
               >
                 Bekijk methodologie
               </Link>
             </div>
           </div>
 
-          {/* Right: startblok */}
-          <div className="divide-y divide-stone-100 rounded-lg border border-stone-200 bg-white">
-            <div className="px-5 py-3.5">
-              <p className="text-[0.625rem] font-medium uppercase tracking-[0.22em] text-stone-400">
-                Direct naar
-              </p>
+          {/* Right: quick-nav — header py matches left lg:pt-3 so label rows line up */}
+          <div className="w-full border-t border-stone-200/70 pt-10 lg:min-w-0 lg:border-t-0 lg:pt-3">
+            <div className="overflow-hidden rounded-2xl border border-stone-200/80 bg-white/95 shadow-[0_8px_40px_-12px_rgba(28,25,23,0.12),0_2px_8px_rgba(28,25,23,0.04)] ring-1 ring-stone-900/[0.04] backdrop-blur-[2px]">
+              <div className="border-b border-stone-100/90 bg-gradient-to-b from-stone-50 to-stone-50/30 px-6 py-3">
+                <p className="ps-eyebrow">Direct naar</p>
+              </div>
+              <ul className="divide-y divide-stone-100/90">
+                {startLinks.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="group flex items-start justify-between gap-4 px-6 py-[0.9375rem] transition-colors duration-150 hover:bg-stone-50/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-stone-400/40"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-[0.875rem] font-medium text-stone-800 transition-colors duration-150 group-hover:text-stone-900">
+                          {item.title}
+                        </p>
+                        <p className="mt-0.5 text-[0.8125rem] leading-[1.55] text-stone-400">
+                          {item.description}
+                        </p>
+                      </div>
+                      <span
+                        className="mt-0.5 shrink-0 text-stone-300 transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-stone-500"
+                        aria-hidden
+                      >
+                        →
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-            {startLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group flex items-start justify-between gap-4 px-5 py-4 transition hover:bg-stone-50"
-              >
-                <div>
-                  <p className="text-sm font-medium text-stone-800 transition group-hover:text-stone-900">
-                    {item.title}
-                  </p>
-                  <p className="mt-0.5 text-[0.8125rem] leading-snug text-stone-400">
-                    {item.description}
-                  </p>
-                </div>
-                <span
-                  className="mt-0.5 shrink-0 text-stone-300 transition group-hover:text-stone-600"
-                  aria-hidden
-                >
-                  →
-                </span>
-              </Link>
-            ))}
           </div>
 
         </div>

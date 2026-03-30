@@ -6,6 +6,16 @@ import { formatPublishedLabel, getCoverImageSrc, type BlogPost } from "@/data/bl
 const CARD_WIDTH = 640;
 const CARD_HEIGHT = 427;
 
+/**
+ * Shared grid for `/blog` and homepage featured articles — keep layouts aligned.
+ * (2 columns from `sm`, 3 from `lg`; vertical rhythm matches blog listing.)
+ */
+export const BLOG_CARD_GRID_CLASS =
+  "grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3";
+
+/** Space above the card grid (after intro / section header). */
+export const BLOG_CARD_GRID_SECTION_TOP_CLASS = "mt-14 md:mt-16";
+
 type Props = {
   post: BlogPost;
   priority?: boolean;
