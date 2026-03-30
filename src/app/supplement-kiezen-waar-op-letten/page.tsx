@@ -1,18 +1,20 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import {
+    BlogArticleExcerpt,
+    BlogArticleIntro,
+} from "@/components/blog/BlogArticleIntro";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
+import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
-    articleMeta,
     veelgemaakteFouten,
     segmentatie,
 } from "@/features/supplementen/data/supplement-kiezen-waar-op-letten";
 
-export const metadata: Metadata = {
-    title: articleMeta.title,
-    description: articleMeta.description,
-};
+export function generateMetadata() {
+    return buildArticlePageMetadata("supplement-kiezen-waar-op-letten");
+}
 
 const relatedPages = [
     {
@@ -38,16 +40,23 @@ const relatedPages = [
 ];
 
 export default function SupplementKiezenWaarOpLettenPage() {
+    const post = getBlogPostBySlug("supplement-kiezen-waar-op-letten");
+    if (!post) {
+        throw new Error("Blog post supplement-kiezen-waar-op-letten ontbreekt");
+    }
+
     return (
         <main className="text-stone-900">
+            <article>
             <section className="border-b border-stone-200 bg-stone-50">
                 <Container className="py-16 md:py-24">
-                    <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
-                        Keuzehulp
-                    </p>
-                    <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
+                    <header>
+                    <BlogArticleIntro post={post} />
+                    <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
                         Waar moet je op letten bij het kiezen van een supplement?
                     </h1>
+                    <BlogArticleExcerpt post={post} />
+                    </header>
                     <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                         Supplementen zijn er in overvloed — en niet alles wat op de schap staat, is even
                         zinvol. Tussen slimme marketing en echte kwaliteit zit vaak een groot verschil. In
@@ -387,6 +396,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                 description="Diepgang per categorie en onze keuzes — aansluitend op dit artikel."
                 items={relatedPages}
             />
+            </article>
         </main>
     );
 }

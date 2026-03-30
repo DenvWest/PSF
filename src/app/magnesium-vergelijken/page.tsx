@@ -1,5 +1,14 @@
 import Container from "@/components/layout/Container";
+import {
+    BlogArticleExcerpt,
+    BlogArticleIntro,
+} from "@/components/blog/BlogArticleIntro";
+import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import Link from "next/link";
+
+export function generateMetadata() {
+    return buildArticlePageMetadata("magnesium-vergelijken");
+}
 
 const products = [
     {
@@ -66,17 +75,24 @@ const faq = [
 ];
 
 export default function MagnesiumVergelijkenPage() {
+    const post = getBlogPostBySlug("magnesium-vergelijken");
+    if (!post) {
+        throw new Error("Blog post magnesium-vergelijken ontbreekt");
+    }
+
     return (
-        <Container>
+        <main className="text-stone-900">
+            <article>
+            <Container>
             <div className="py-16 md:py-20">
                 <div className="max-w-6xl">
-                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
-                        Magnesium vergelijken
-                    </p>
-
-                    <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
+                    <header>
+                    <BlogArticleIntro post={post} />
+                    <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
                         Magnesium vergelijken: waar let je op per vorm en dosering?
                     </h1>
+                    <BlogArticleExcerpt post={post} />
+                    </header>
 
                     <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
                         Op deze pagina vergelijken we magnesiumsupplementen op vorm,
@@ -235,5 +251,7 @@ export default function MagnesiumVergelijkenPage() {
                 </section>
             </div>
         </Container>
+            </article>
+        </main>
     );
 }

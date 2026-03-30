@@ -1,13 +1,7 @@
 /**
  * Blogartikel: Waar moet je op letten bij het kiezen van een supplement?
- * SEO: supplement kiezen waar op letten, beste supplement kiezen, kwaliteit supplementen herkennen
+ * SEO-titels en meta staan centraal in `src/data/blog-posts.ts`.
  */
-
-export const articleMeta = {
-    title: "Supplement kiezen: waar op letten? | PerfectSupplement",
-    description:
-        "Ontdek waar je op letten bij magnesium, omega-3 en andere supplementen: dosering, opneembaarheid, zuiverheid en transparantie — zonder marketingpraat.",
-};
 
 export const veelgemaakteFouten = [
     "Kiezen op basis van marketingclaims of mooie verpakking in plaats van samenstelling en transparantie.",

@@ -1,8 +1,13 @@
 import Link from "next/link";
 import AffiliateLink from "@/components/content/AffiliateLink";
+import {
+    BlogArticleExcerpt,
+    BlogArticleIntro,
+} from "@/components/blog/BlogArticleIntro";
 import { DisclosureSmall, DisclosureTable } from "@/components/ui/Disclosure";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
+import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
     choiceRoutes,
     comparisonCriteria,
@@ -10,6 +15,10 @@ import {
     products,
     tableRows,
 } from "@/features/omega3/data/omega-3-vergelijken";
+
+export function generateMetadata() {
+    return buildArticlePageMetadata("omega-3-vergelijken");
+}
 
 const relatedPages = [
     {
@@ -35,17 +44,24 @@ const relatedPages = [
 ];
 
 export default function OmegaComparisonPage() {
+    const post = getBlogPostBySlug("omega-3-vergelijken");
+    if (!post) {
+        throw new Error("Blog post omega-3-vergelijken ontbreekt");
+    }
+
     return (
         <main className="text-stone-900">
+            <article>
             <section className="border-b border-stone-200 bg-stone-50">
                 <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 md:py-24 lg:grid-cols-2 lg:items-center">
                     <div>
-                        <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
-                            Vergelijking
-                        </p>
-                        <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
+                        <header>
+                        <BlogArticleIntro post={post} />
+                        <h1 className="mt-6 text-4xl font-semibold tracking-tight md:text-5xl">
                             Omega 3 supplementen vergelijken
                         </h1>
+                        <BlogArticleExcerpt post={post} />
+                        </header>
                         <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                             Vergelijk populaire omega 3 supplementen op dosering, transparantie,
                             gebruiksgemak en prijs per dag in één overzichtelijke pagina.
@@ -377,6 +393,7 @@ export default function OmegaComparisonPage() {
                 description="Handige vervolgstappen als je vanuit vergelijken verder wilt in het omega 3 cluster."
                 items={relatedPages}
             />
+            </article>
         </main>
     );
 }

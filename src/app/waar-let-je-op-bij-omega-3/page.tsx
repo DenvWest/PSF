@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import {
+    BlogArticleExcerpt,
+    BlogArticleIntro,
+} from "@/components/blog/BlogArticleIntro";
 import ContentSection from "@/components/ui/ContentSection";
+import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
     attentionPoints,
     mistakes,
@@ -9,11 +13,9 @@ import {
     faqs,
 } from "@/features/omega3/data/waar-let-je-op-bij-omega-3";
 
-export const metadata: Metadata = {
-    title: "Waar let je op bij omega 3 supplementen?",
-    description:
-        "Een praktische gids over EPA en DHA, dagdosering, prijs per dag, capsules per dag en kwaliteitstransparantie bij omega 3 supplementen.",
-};
+export function generateMetadata() {
+    return buildArticlePageMetadata("waar-let-je-op-bij-omega-3");
+}
 
 const epaSection = deepDiveSections[0];
 const doseringSection = deepDiveSections[1];
@@ -22,18 +24,24 @@ const prijsSection = deepDiveSections[3];
 const transparantieSection = deepDiveSections[4];
 
 export default function WaarLetJeOpBijOmega3Page() {
+    const post = getBlogPostBySlug("waar-let-je-op-bij-omega-3");
+    if (!post) {
+        throw new Error("Blog post waar-let-je-op-bij-omega-3 ontbreekt");
+    }
+
     return (
         <main className="text-stone-900">
-
+            <article>
             {/* 1. Hero */}
             <section className="border-b border-stone-200 bg-stone-50">
                 <Container className="py-16 md:py-24">
-                    <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
-                        Praktische gids
-                    </p>
-                    <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
+                    <header>
+                    <BlogArticleIntro post={post} />
+                    <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
                         Waar let je op bij omega&nbsp;3 supplementen?
                     </h1>
+                    <BlogArticleExcerpt post={post} />
+                    </header>
                     <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                         Niet elke omega&nbsp;3 is hetzelfde. In deze gids lees je waar je op let bij dosering,
                         EPA en DHA, prijs per dag, gebruiksgemak en kwaliteit — zodat je producten eerlijk
@@ -314,6 +322,8 @@ export default function WaarLetJeOpBijOmega3Page() {
                     </div>
                 </Container>
             </section>
+
+            </article>
 
         </main>
     );

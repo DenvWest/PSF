@@ -1,0 +1,13 @@
+Handmatig te vervangen door definitieve beelden (nu placeholders, gekopieerd van de category fallbacks):
+
+  supplement-kiezen.jpg          (algemene supplement-keuze; bron: fallback-default)
+  omega-3-basics.jpg             (intro EPA/DHA; bron: fallback-omega-3)
+  omega-3-criteria.jpg           (waar op letten; bron: fallback-omega-3)
+  omega-3-vergelijken.jpg        (vergelijking; bron: fallback-omega-3)
+  omega-3-beste-keuze.jpg        (beste keuze; bron: fallback-omega-3)
+  magnesium-vergelijken.jpg      (vergelijking; bron: fallback-magnesium)
+  magnesium-beste-keuze.jpg      (beste keuze; bron: fallback-magnesium)
+
+Optioneel behouden als generieke reserves: fallback-default.jpg, fallback-omega-3.jpg, fallback-magnesium.jpg
+
+Paden in data: src/data/blog-posts.ts → veld coverImage.

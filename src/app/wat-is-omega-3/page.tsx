@@ -1,11 +1,20 @@
 import Link from "next/link";
+import {
+    BlogArticleExcerpt,
+    BlogArticleIntro,
+} from "@/components/blog/BlogArticleIntro";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
+import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
     keyPoints,
     supplementPoints,
     faqs,
 } from "@/features/omega3/data/wat-is-omega-3";
+
+export function generateMetadata() {
+    return buildArticlePageMetadata("wat-is-omega-3");
+}
 
 const relatedPages = [
     {
@@ -31,16 +40,23 @@ const relatedPages = [
 ];
 
 export default function WhatIsOmega3Page() {
+    const post = getBlogPostBySlug("wat-is-omega-3");
+    if (!post) {
+        throw new Error("Blog post wat-is-omega-3 ontbreekt");
+    }
+
     return (
         <main className="text-stone-900">
+            <article>
             <section className="border-b border-stone-200 bg-stone-50">
                 <div className="mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-24">
-                    <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
-                        Uitleg
-                    </p>
-                    <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
+                    <header>
+                    <BlogArticleIntro post={post} />
+                    <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
                         Wat is omega 3?
                     </h1>
+                    <BlogArticleExcerpt post={post} />
+                    </header>
                     <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                         Een heldere introductie voor bezoekers die eerst willen begrijpen wat omega 3 is
                         en waarom supplementen onderling kunnen verschillen.
@@ -240,6 +256,7 @@ export default function WhatIsOmega3Page() {
                 description="Logische vervolgstappen als je na de basisuitleg verder wilt binnen het omega 3 cluster."
                 items={relatedPages}
             />
+            </article>
         </main>
     );
 }

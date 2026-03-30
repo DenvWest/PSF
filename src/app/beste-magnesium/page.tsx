@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import {
+    BlogArticleExcerpt,
+    BlogArticleIntro,
+} from "@/components/blog/BlogArticleIntro";
 import AffiliateLink from "@/components/content/AffiliateLink";
 import MagnesiumProductCard from "@/components/content/magnesium-product-card";
 import Disclosure, {
@@ -12,6 +16,11 @@ import RelatedPages from "@/components/ui/RelatedPages";
 import { magnesiumProducts } from "@/data/products/magnesium";
 import { formatPrice } from "@/lib/format-price";
 import { faqs } from "@/features/magnesium/data/beste-magnesium";
+import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
+
+export function generateMetadata() {
+    return buildArticlePageMetadata("beste-magnesium");
+}
 
 const topPicks = magnesiumProducts
     .filter((p) => p.badge && p.rank <= 3)
@@ -61,20 +70,26 @@ const selectionCriteria = [
 ];
 
 export default function BesteMagnesiumPage() {
+    const post = getBlogPostBySlug("beste-magnesium");
+    if (!post) {
+        throw new Error("Blog post beste-magnesium ontbreekt");
+    }
+
     return (
         <main className="text-stone-900">
+            <article>
             {/* Hero */}
             <section className="border-b border-stone-200 bg-stone-50">
                 <Container>
                 <div className="grid gap-10 py-16 md:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
                     <div>
-                        <p className="text-sm font-medium uppercase tracking-[0.18em] text-stone-800">
-                            Onafhankelijke magnesiumgids
-                        </p>
-
-                        <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
+                        <header>
+                        <BlogArticleIntro post={post} />
+                        <h1 className="mt-6 text-4xl font-semibold tracking-tight md:text-5xl">
                             Beste magnesium supplementen van 2026
                         </h1>
+                        <BlogArticleExcerpt post={post} />
+                        </header>
 
                         <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
                             Vergeleken op elementaire dosering, vorm (bisglycinaat, citraat, tauraat),
@@ -681,6 +696,7 @@ export default function BesteMagnesiumPage() {
                 description="Aanvullende pagina's om deze topkeuzes in context te plaatsen."
                 items={relatedPages}
             />
+            </article>
         </main>
     );
 }
