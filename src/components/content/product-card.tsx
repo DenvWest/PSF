@@ -4,6 +4,46 @@ import { DisclosureSmall } from "@/components/ui/Disclosure";
 import { formatPrice } from "@/lib/format-price";
 import type { Omega3Product } from "@/types/product";
 
+export const PRODUCT_CARD_TRUST_BULLETS = [
+  "Vandaag besteld = snel geleverd",
+  "Officiële aanbieder",
+  "Onafhankelijk beoordeeld",
+  "Gebaseerd op wetenschappelijk onderzoek",
+  "Geen sponsoring",
+] as const;
+
+type ProductTrustBulletsProps = {
+  className?: string;
+  /** Stronger checkmark tint for the #1 / featured card */
+  variant?: "default" | "featured";
+};
+
+export function ProductTrustBullets({
+  className = "",
+  variant = "default",
+}: ProductTrustBulletsProps) {
+  const checkClass =
+    variant === "featured" ? "text-emerald-700" : "text-emerald-600";
+
+  return (
+    <ul
+      className={`space-y-2 text-sm leading-snug text-stone-700 ${className}`}
+    >
+      {PRODUCT_CARD_TRUST_BULLETS.map((text) => (
+        <li key={text} className="flex gap-2.5">
+          <span className={`mt-0.5 shrink-0 ${checkClass}`} aria-hidden>
+            ✔
+          </span>
+          <span>{text}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const productCardCtaClassName =
+  "inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700";
+
 type ProductCardProps = {
   product: Omega3Product;
   pageType?: string;
@@ -83,15 +123,16 @@ export default function ProductCard({ product, pageType, position }: ProductCard
         </div>
       </div>
 
-      <div className="border-t border-stone-100 px-6 pb-6 pt-4">
+      <div className="border-t border-stone-100 px-6 pb-6 pt-6">
         <AffiliateLink
           affiliateSlug={product.affiliateSlug}
           pageType={pageType}
           position={position}
-          className="inline-flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
+          className={productCardCtaClassName}
         >
           Bekijk actuele prijs bij aanbieder →
         </AffiliateLink>
+        <ProductTrustBullets className="mt-5" />
         <DisclosureSmall />
       </div>
     </article>

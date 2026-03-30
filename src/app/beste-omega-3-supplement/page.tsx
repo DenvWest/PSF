@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import AffiliateLink from "@/components/content/AffiliateLink";
-import ProductCard from "@/components/content/product-card";
+import ProductCard, {
+    ProductTrustBullets,
+} from "@/components/content/product-card";
 import Disclosure, {
     DisclosureSmall,
     DisclosureTable,
@@ -26,6 +28,9 @@ const voorWieMap: Record<string, string> = {
     "arctic-blue-gummies": "Wie gemak en smaak belangrijk vindt",
     "arctic-blue-algenolie": "Wie plantaardig de voorkeur geeft",
 };
+
+/** Display rating for the #1 card (editorial conversion cue; not a store review aggregate). */
+const BEST_CHOICE_STAR_LABEL = "4 van 5 sterren, 4,8 van 5";
 
 const relatedPages = [
     {
@@ -169,7 +174,7 @@ export default function BestOmegaPage() {
                                     affiliateSlug={bestChoice.affiliateSlug}
                                     pageType="beste-omega-3-supplement"
                                     position="hero_sidebar"
-                                    className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-4 py-3 text-sm font-medium text-white hover:bg-stone-800"
+                                    className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
                                 >
                                     Bekijk actuele prijs bij aanbieder →
                                 </AffiliateLink>
@@ -192,69 +197,143 @@ export default function BestOmegaPage() {
                         const isTop = index === 0;
                         const voorWie =
                             voorWieMap[product.slug] ?? product.description;
+                        const topUsps = isTop
+                            ? product.pros.slice(0, 3)
+                            : [];
 
                         return (
                             <article
                                 key={product.slug}
-                                className={`flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm transition ${
+                                className={`flex flex-col overflow-hidden rounded-3xl border bg-white transition ${
                                     isTop
-                                        ? "border-stone-300 ring-1 ring-stone-200"
-                                        : "border-stone-200"
+                                        ? "border-emerald-200/70 bg-gradient-to-b from-emerald-50/90 via-white to-stone-50/40 shadow-xl shadow-stone-300/40 ring-1 ring-emerald-100/80 md:scale-[1.02] md:origin-top"
+                                        : "border-stone-200 shadow-sm"
                                 }`}
                             >
                                 {isTop && (
-                                    <div className="bg-stone-900 px-6 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white">
-                                        Onze aanrader
+                                    <div className="bg-gradient-to-r from-emerald-800 to-emerald-900 px-6 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.12em] text-white">
+                                        Beste keuze 2026
                                     </div>
                                 )}
 
-                                <div className="flex flex-1 flex-col p-6">
-                                    <span
-                                        className={`inline-flex self-start rounded-full px-3 py-1 text-xs font-medium ${
-                                            isTop
-                                                ? "bg-stone-100 text-stone-800"
-                                                : "bg-stone-100 text-stone-700"
-                                        }`}
-                                    >
-                                        {product.badge}
-                                    </span>
+                                <div
+                                    className={`flex flex-1 flex-col ${
+                                        isTop ? "p-7 sm:p-8" : "p-6"
+                                    }`}
+                                >
+                                    {!isTop && (
+                                        <span className="inline-flex self-start rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">
+                                            {product.badge}
+                                        </span>
+                                    )}
+
+                                    {isTop && (
+                                        <span className="inline-flex self-start rounded-full border border-emerald-200/80 bg-white/80 px-3 py-1 text-xs font-semibold text-emerald-900 shadow-sm">
+                                            {product.badge}
+                                        </span>
+                                    )}
 
                                     {product.imageSrc && (
-                                        <div className="relative mx-auto mt-5 h-28 w-28 shrink-0">
+                                        <div
+                                            className={`relative mx-auto shrink-0 ${
+                                                isTop
+                                                    ? "mt-6 h-36 w-36 sm:h-40 sm:w-40"
+                                                    : "mt-5 h-28 w-28"
+                                            }`}
+                                        >
                                             <Image
                                                 src={product.imageSrc}
                                                 alt={product.imageAlt ?? product.name}
                                                 fill
-                                                sizes="112px"
+                                                sizes={
+                                                    isTop
+                                                        ? "(max-width: 768px) 144px, 160px"
+                                                        : "112px"
+                                                }
                                                 className="object-contain"
+                                                priority={isTop}
                                             />
                                         </div>
                                     )}
 
-                                    <div className="mt-4 flex items-start justify-between gap-3">
+                                    <div
+                                        className={`mt-4 flex items-start justify-between gap-3 ${
+                                            isTop ? "gap-4" : ""
+                                        }`}
+                                    >
                                         <h3
-                                            className={`font-semibold leading-tight ${
-                                                isTop ? "text-xl" : "text-lg"
+                                            className={`font-semibold leading-tight tracking-tight text-stone-900 ${
+                                                isTop
+                                                    ? "text-xl sm:text-2xl"
+                                                    : "text-lg"
                                             }`}
                                         >
                                             {product.name}
                                         </h3>
-                                        <div className="shrink-0 rounded-xl bg-stone-100 px-3 py-1.5 text-sm font-semibold">
+                                        <div
+                                            className={`shrink-0 rounded-xl font-semibold ${
+                                                isTop
+                                                    ? "bg-emerald-100 px-3 py-2 text-sm text-emerald-950"
+                                                    : "bg-stone-100 px-3 py-1.5 text-sm"
+                                            }`}
+                                        >
                                             {product.score}/10
                                         </div>
                                     </div>
 
-                                    <p className="mt-2 text-sm leading-6 text-stone-600">
+                                    {isTop && (
+                                        <>
+                                            <p
+                                                className="mt-3 flex flex-wrap items-center gap-2 text-sm text-stone-700"
+                                                aria-label={BEST_CHOICE_STAR_LABEL}
+                                            >
+                                                <span
+                                                    className="text-amber-500"
+                                                    aria-hidden
+                                                >
+                                                    ★★★★☆
+                                                </span>
+                                                <span className="font-medium text-stone-800">
+                                                    4,8/5
+                                                </span>
+                                            </p>
+                                            <ul className="mt-4 space-y-2 text-sm leading-snug text-stone-700">
+                                                {topUsps.map((usp) => (
+                                                    <li
+                                                        key={usp}
+                                                        className="flex gap-2.5"
+                                                    >
+                                                        <span
+                                                            className="mt-0.5 shrink-0 text-emerald-700"
+                                                            aria-hidden
+                                                        >
+                                                            •
+                                                        </span>
+                                                        <span>{usp}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    )}
+
+                                    <p className="mt-4 text-sm leading-6 text-stone-600">
                                         {product.description}
                                     </p>
 
-                                    <ul className="mt-5 space-y-2.5 border-t border-stone-100 pt-5 text-sm">
+                                    <ul
+                                        className={`space-y-2.5 border-t text-sm ${
+                                            isTop
+                                                ? "mt-6 border-emerald-100/80 pt-6"
+                                                : "mt-6 border-stone-100 pt-6"
+                                        }`}
+                                    >
                                         <li className="flex gap-3">
                                             <span className="w-20 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-stone-400">
                                                 EPA / DHA
                                             </span>
                                             <span className="text-stone-700">
-                                                {product.epaMg} / {product.dhaMg} mg
+                                                {product.epaMg} / {product.dhaMg}{" "}
+                                                mg
                                             </span>
                                         </li>
                                         <li className="flex gap-3">
@@ -281,14 +360,22 @@ export default function BestOmegaPage() {
                                         affiliateSlug={product.affiliateSlug}
                                         pageType="beste-omega-3-supplement"
                                         position={`top_pick_${index + 1}`}
-                                        className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-medium transition ${
+                                        className={`inline-flex w-full items-center justify-center rounded-xl font-semibold text-white shadow-sm transition hover:bg-emerald-700 ${
                                             isTop
-                                                ? "bg-stone-900 text-white hover:bg-stone-800"
-                                                : "border border-stone-200 bg-white text-stone-900 hover:border-stone-300 hover:bg-stone-50"
+                                                ? "mt-7 bg-emerald-600 px-5 py-4 text-base shadow-md shadow-emerald-900/15"
+                                                : "mt-6 bg-emerald-600 px-5 py-3.5 text-sm"
                                         }`}
                                     >
                                         Bekijk actuele prijs bij aanbieder →
                                     </AffiliateLink>
+
+                                    <ProductTrustBullets
+                                        className="mt-5"
+                                        variant={
+                                            isTop ? "featured" : "default"
+                                        }
+                                    />
+
                                     <DisclosureSmall />
                                 </div>
                             </article>
@@ -347,10 +434,12 @@ export default function BestOmegaPage() {
                                 affiliateSlug={bestChoice.affiliateSlug}
                                 pageType="beste-omega-3-supplement"
                                 position="section_choice_daily"
-                                className="mt-4 inline-flex items-center text-sm font-medium text-stone-800 underline-offset-4 hover:underline"
+                                className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
                             >
-                                Bekijk prijs bij aanbieder →
+                                Bekijk actuele prijs bij aanbieder →
                             </AffiliateLink>
+                            <ProductTrustBullets className="mt-5" />
+                            <DisclosureSmall />
                         </div>
                     ) : null}
 
@@ -369,10 +458,12 @@ export default function BestOmegaPage() {
                                 affiliateSlug={easyChoice.affiliateSlug}
                                 pageType="beste-omega-3-supplement"
                                 position="section_choice_easy"
-                                className="mt-4 inline-flex items-center text-sm font-medium text-stone-700 underline-offset-4 hover:underline"
+                                className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
                             >
-                                Bekijk prijs bij aanbieder →
+                                Bekijk actuele prijs bij aanbieder →
                             </AffiliateLink>
+                            <ProductTrustBullets className="mt-5" />
+                            <DisclosureSmall />
                         </div>
                     ) : null}
 
@@ -391,10 +482,12 @@ export default function BestOmegaPage() {
                                 affiliateSlug={veganChoice.affiliateSlug}
                                 pageType="beste-omega-3-supplement"
                                 position="section_choice_vegan"
-                                className="mt-4 inline-flex items-center text-sm font-medium text-stone-700 underline-offset-4 hover:underline"
+                                className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
                             >
-                                Bekijk prijs bij aanbieder →
+                                Bekijk actuele prijs bij aanbieder →
                             </AffiliateLink>
+                            <ProductTrustBullets className="mt-5" />
+                            <DisclosureSmall />
                         </div>
                     ) : null}
                 </div>

@@ -10,8 +10,8 @@ export default function Disclosure() {
 
 export function DisclosureSmall() {
     return (
-        <p className="mt-2 text-xs leading-5 text-stone-400">
-            * Wij kunnen een commissie ontvangen via deze link.
+        <p className="mt-4 text-sm leading-snug text-gray-500">
+            Wij verdienen mogelijk een commissie zonder extra kosten voor jou.
         </p>
     );
 }
