@@ -17,10 +17,6 @@ type HubItem = {
     href: string;
     secondaryHref?: string;
     secondaryLabel?: string;
-    /** Overrides default "Bekijk {title} →" on grid primary button */
-    primaryCtaLabel?: string;
-    /** Short line under the title (grid cards) */
-    subtitle?: string;
     group: "ingredienten" | "doelen" | "vergelijkingen";
     /** hero/secondary appear in the featured strip; default goes to the grid */
     priority: "hero" | "secondary" | "default";
@@ -110,14 +106,11 @@ const GRID_ITEMS: readonly HubItem[] = [
         id: "beste-magnesium",
         title: "Beste Magnesium",
         eyebrow: "Vergelijking",
-        subtitle:
-            "Vergelijk vormen en kies wat werkt — met scores en actuele prijzen.",
         benefit: "Vormen, dosering en prijs per dag vergeleken",
         icon: "✓",
         href: "/beste-magnesium",
-        primaryCtaLabel: "Beste Magnesium supplementen →",
         secondaryHref: "/magnesium-vergelijken",
-        secondaryLabel: "Vergelijk alle vormen →",
+        secondaryLabel: "Alle producten",
         group: "vergelijkingen",
         priority: "default",
     },
@@ -231,67 +224,49 @@ export default function SupplementenPage() {
                             </div>
                         </Link>
 
-                        {/* Magnesium — secondary tile (twee CTAs, meer visuele aanwezigheid) */}
-                        <div
-                            className="group relative flex min-h-[240px] flex-col overflow-hidden rounded-2xl border border-amber-200/90 bg-gradient-to-br from-amber-50/95 via-white to-stone-50/40 p-7 shadow-[0_12px_40px_-16px_rgba(180,83,9,0.18)] ring-2 ring-amber-200/60 transition duration-200 md:min-h-[280px] md:p-8"
-                            aria-label="Magnesium — vergelijken en topkeuzes"
+                        {/* Magnesium — secondary tile */}
+                        <Link
+                            href="/magnesium-vergelijken"
+                            className="group relative flex min-h-[240px] flex-col overflow-hidden rounded-2xl border border-stone-200/90 bg-white p-7 shadow-sm ring-1 ring-stone-200/50 transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md md:min-h-[280px] md:p-8"
+                            aria-label="Magnesium vergelijken — populair"
                         >
-                            <div
-                                className="pointer-events-none absolute inset-0 opacity-[0.07]"
-                                aria-hidden
-                                style={{
-                                    backgroundImage:
-                                        "radial-gradient(circle at 15% 85%, rgb(245 158 11) 0%, transparent 55%)",
-                                }}
-                            />
-                            <div className="relative flex flex-1 flex-col">
+                            <div className="flex flex-1 flex-col">
                                 <div className="flex items-start justify-between gap-3">
                                     <span
-                                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-2xl ring-1 ring-amber-200/90 transition group-hover:bg-amber-200/80"
+                                        className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100 text-2xl ring-1 ring-stone-200/80 transition group-hover:bg-stone-200/70"
                                         aria-hidden
                                     >
                                         ⚡
                                     </span>
-                                    <span className="rounded-full border border-amber-200/90 bg-amber-100/90 px-3 py-1 text-xs font-semibold text-amber-950">
+                                    <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-semibold text-stone-700">
                                         ⭐ Populair
                                     </span>
                                 </div>
 
                                 <div className="mt-auto">
-                                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-amber-800/90">
+                                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-stone-500">
                                         Ingrediënt
                                     </p>
                                     <h2 className="mt-1 text-2xl font-bold tracking-tight text-stone-900 md:text-3xl">
                                         Magnesium
                                     </h2>
-                                    <p className="mt-2 text-sm font-medium leading-snug text-stone-800">
-                                        Vergelijk vormen en kies wat werkt —
-                                        met duidelijke criteria en actuele
-                                        prijzen.
-                                    </p>
-                                    <p className="mt-2 max-w-sm text-sm leading-relaxed text-stone-600">
+                                    <p className="mt-2.5 max-w-sm text-sm leading-relaxed text-stone-600">
                                         Populair voor spieren, zenuwstelsel en
                                         rustiger slapen. Meerdere vormen
                                         vergeleken.
                                     </p>
 
-                                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                                        <Link
-                                            href="/beste-magnesium"
-                                            className="inline-flex w-full items-center justify-center rounded-lg bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 sm:w-auto"
-                                        >
-                                            Beste Magnesium supplementen →
-                                        </Link>
-                                        <Link
-                                            href="/beste-magnesium#topkeuzes"
-                                            className="inline-flex w-full items-center justify-center rounded-lg border border-stone-300/90 bg-white/90 px-4 py-2.5 text-sm font-semibold text-stone-900 shadow-sm transition hover:border-amber-300 hover:bg-amber-50/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400 sm:w-auto"
-                                        >
-                                            Bekijk top 5 magnesium →
-                                        </Link>
+                                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-stone-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition group-hover:bg-stone-800">
+                                            Bekijk Magnesium →
+                                        </span>
+                                        <span className="text-sm font-medium text-stone-500 transition group-hover:text-stone-800">
+                                            Topkeuzes →
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 </section>
 
@@ -338,31 +313,15 @@ export default function SupplementenPage() {
                     >
                         {gridItems.map((item) => (
                             <li key={item.id} className="list-none">
-                                <article
-                                    className={`group flex h-full flex-col rounded-2xl border p-5 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md ${
-                                        item.id === "beste-magnesium"
-                                            ? "border-amber-300/90 bg-gradient-to-br from-amber-50/90 via-white to-stone-50/50 ring-2 ring-amber-200/70 hover:border-amber-400/80"
-                                            : "border-stone-200/90 bg-white hover:border-stone-300"
-                                    }`}
-                                >
+                                <article className="group flex h-full flex-col rounded-2xl border border-stone-200/90 bg-white p-5 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md">
                                     <div className="flex items-start justify-between gap-3">
                                         <span
-                                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg ring-1 transition group-hover:bg-stone-200/60 ${
-                                                item.id === "beste-magnesium"
-                                                    ? "bg-amber-100/90 ring-amber-200/80"
-                                                    : "bg-stone-100/90 ring-stone-200/70"
-                                            }`}
+                                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-stone-100/90 text-lg ring-1 ring-stone-200/70 transition group-hover:bg-stone-200/60"
                                             aria-hidden
                                         >
                                             {item.icon}
                                         </span>
-                                        <span
-                                            className={`rounded-full border px-2.5 py-1 text-[0.6875rem] font-medium ${
-                                                item.id === "beste-magnesium"
-                                                    ? "border-amber-200 bg-amber-100/80 text-amber-900"
-                                                    : "border-stone-200 bg-stone-50/80 text-stone-600"
-                                            }`}
-                                        >
+                                        <span className="rounded-full border border-stone-200 bg-stone-50/80 px-2.5 py-1 text-[0.6875rem] font-medium text-stone-600">
                                             {item.eyebrow}
                                         </span>
                                     </div>
@@ -370,11 +329,6 @@ export default function SupplementenPage() {
                                     <h2 className="mt-4 text-lg font-semibold tracking-tight text-stone-900">
                                         {item.title}
                                     </h2>
-                                    {item.subtitle ? (
-                                        <p className="mt-2 text-sm font-medium leading-snug text-stone-700">
-                                            {item.subtitle}
-                                        </p>
-                                    ) : null}
                                     <p className="mt-2 text-sm leading-relaxed text-stone-600">
                                         {item.benefit}
                                     </p>
@@ -382,14 +336,9 @@ export default function SupplementenPage() {
                                     <div className="mt-auto border-t border-stone-100 pt-5">
                                         <Link
                                             href={item.href}
-                                            className={`inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400 ${
-                                                item.id === "beste-magnesium"
-                                                    ? "bg-amber-600 text-white shadow-sm hover:bg-amber-700"
-                                                    : "bg-stone-900 text-white hover:bg-stone-800"
-                                            }`}
+                                            className="inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400"
                                         >
-                                            {item.primaryCtaLabel ??
-                                                `Bekijk ${item.title} →`}
+                                            Bekijk {item.title} →
                                         </Link>
                                         {item.secondaryHref &&
                                         item.secondaryLabel ? (

@@ -9,7 +9,7 @@ export const magnesiumProducts: MagnesiumProduct[] = [
     affiliateSlug: "magnesium-bisglycinaat",
     rank: 1,
     score: 8.7,
-    badge: "Beste overall",
+    badge: "Beste keuze",
     description:
       "Gebonden aan aminozuren (glycine): vaak goed verdragen en praktisch als je een milde, alledaagse magnesiumbron zoekt zonder onnodige maagbelasting.",
     elementMg: 200,
@@ -87,64 +87,6 @@ export const magnesiumProducts: MagnesiumProduct[] = [
     ],
     transparencyNote:
       "Citraat trekt vocht aan; bewaar droog en controleer mg element per maatlepel op de verpakking.",
-  },
-  {
-    slug: "magnesium-malaat",
-    category: "Magnesium (malaat)",
-    name: "Magnesium malaat capsules",
-    brand: "Voorbeeldmerk",
-    affiliateSlug: "magnesium-malaat",
-    rank: 4,
-    score: 8.2,
-    badge: "Beste voor sport & overdag",
-    description:
-      "Magnesium gebonden aan appelzuur (malaat). Vaak gekozen door mensen die magnesium overdag of rond inspanning willen inzetten.",
-    elementMg: 150,
-    capsulesPerDay: 2,
-    form: "Malaat",
-    pricePerDayEur: 0.42,
-    pricePerBottleEur: 25.2,
-    amountPerBottle: 90,
-    pros: [
-      "Praktische capsulevorm voor vaste routine",
-      "Past vaak bij wie magnesium niet alleen ’s avonds wil nemen",
-      "Goed te vergelijken met andere vormen op mg element per portie",
-    ],
-    cons: [
-      "Minder gangbaar dan citraat; aanbod verschilt per winkel",
-      "Net als andere vormen: start met een verantwoorde portie",
-    ],
-    transparencyNote:
-      "Controleer het elementaire magnesium per portie; malaatproducten verschillen in verhouding tot het zout.",
-  },
-  {
-    slug: "magnesium-oxide",
-    category: "Magnesium (oxide)",
-    name: "Magnesium oxide tabletten",
-    brand: "Voorbeeldmerk",
-    affiliateSlug: "magnesium-oxide",
-    rank: 5,
-    score: 7.0,
-    badge: "Budget (let op opname)",
-    description:
-      "Een veelgebruikte vorm in tabletten met vaak veel mg op het etiket. De biologische beschikbaarheid is doorgaans lager dan bij bisglycinaat of citraat.",
-    elementMg: 400,
-    capsulesPerDay: 1,
-    form: "Oxide (tablet)",
-    pricePerDayEur: 0.18,
-    pricePerBottleEur: 10.8,
-    amountPerBottle: 120,
-    pros: [
-      "Vaak de laagste prijs per verpakking",
-      "Hoge vermelde mg op het etiket (let op: elementair vs verbinding)",
-      "Eenvoudige tablet voor wie weinig capsules wil slikken",
-    ],
-    cons: [
-      "Over het algemeen lagere opname dan chelaten of citraat",
-      "Kan maag/darm minder prettig voelen bij hogere doses",
-    ],
-    transparencyNote:
-      "Vergelijk altijd mg elementair magnesium, niet alleen het gewicht van magnesiumoxide als geheel.",
   },
 ];
 

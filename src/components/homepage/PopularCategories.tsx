@@ -7,18 +7,16 @@ const products = [
     tagline:
       "Essentieel vetzuur voor hart, hersenen en ontstekingsbalans. Uitgebreid vergeleken op dosering, kwaliteit en prijs.",
     href: "/omega-3-vergelijken",
-    linkLabel: "Vergelijking bekijken",
-    secondaryHref: "/beste-omega-3-supplement#topkeuzes",
-    secondaryLabel: "Bekijk topkeuzes →",
+    secondaryHref: "/beste-omega-3-supplement",
+    secondaryLabel: "Beste keuzes",
   },
   {
     name: "Magnesium",
     tagline:
-      "Ondersteunt spieren, het zenuwstelsel en slaap. Vergelijk vormen en kies wat werkt — met duidelijke onderbouwing.",
-    href: "/beste-magnesium",
-    linkLabel: "Beste Magnesium supplementen →",
-    secondaryHref: "/beste-magnesium#topkeuzes",
-    secondaryLabel: "Bekijk top 5 magnesium →",
+      "Ondersteunt spieren, het zenuwstelsel en slaap. Welke vorm past het beste bij jouw doel?",
+    href: "/magnesium-vergelijken",
+    secondaryHref: "/beste-magnesium",
+    secondaryLabel: "Beste keuzes",
   },
 ];
 
@@ -51,20 +49,16 @@ export default function PopularCategories() {
                 <p className="mt-3 text-[0.9375rem] leading-[1.8] text-stone-400">
                   {product.tagline}
                 </p>
-                <div className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
+                <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2">
                   <Link
                     href={product.href}
-                    className={`inline-flex w-fit items-center rounded-lg px-3.5 py-2 text-[0.8125rem] font-semibold transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400 ${
-                      product.name === "Magnesium"
-                        ? "bg-stone-900 text-white shadow-sm hover:bg-stone-800"
-                        : "bg-stone-100 text-stone-800 hover:bg-stone-200/90"
-                    }`}
+                    className="inline-block text-[0.8125rem] font-medium text-stone-500 underline decoration-stone-200 underline-offset-4 transition-all duration-150 hover:text-stone-800 hover:decoration-stone-400"
                   >
-                    {product.linkLabel}
+                    Vergelijking bekijken
                   </Link>
                   <Link
                     href={product.secondaryHref}
-                    className="inline-flex w-fit items-center text-[0.8125rem] font-medium text-stone-600 underline decoration-stone-300 underline-offset-[0.2em] transition-all duration-150 hover:text-stone-900 hover:decoration-stone-500"
+                    className="inline-block text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition-all duration-150 hover:text-stone-700 hover:decoration-stone-400"
                   >
                     {product.secondaryLabel}
                   </Link>

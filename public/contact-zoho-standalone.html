@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact — Perfect Supplement (standalone voorbeeld)</title>
+    <!--
+      =============================================================================
+      ZOHO FORMS — VERVANG DEZE WAARDEN
+      -----------------------------------------------------------------------------
+      1) Log in op https://forms.zoho.com (of EU: forms.zoho.eu)
+      2) Maak formulier met velden: Naam (verplicht), E-mail (verplicht), Opmerking (optioneel)
+      3) Embed → HTML-formulier kopiëren en hier invullen:
+         - FORM_ACTION: de volledige action="..." URL van het <form>-element
+         - FIELD_NAME, FIELD_EMAIL, FIELD_MESSAGE: exacte name="" uit Zoho (bijv. SingleLine1, Email, MultiLine)
+         - Optioneel: hidden fields uit Zoho (zf_referrer_name, etc.) als <input type="hidden">
+      4) E-mailnotificaties in Zoho: Settings → Notifications → info@perfectsupplement.nl
+      5) CAPTCHA: in Zoho Forms inschakelen (Spam Control) — werkt met dit native form POST
+      =============================================================================
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { submit: "#3B82F6" },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-slate-50 antialiased">
+    <!-- VERVANG: jouw Zoho form action URL -->
+    <!-- FORM_ACTION placeholder: -->
+    <form
+      id="contact-form"
+      action="https://forms.zohopublic.eu/VERVANG-MET-JOUW-ORG/form/VERVANG_FORM_PERMA/formperma/VERVANG_ID"
+      method="POST"
+      class="mx-auto max-w-md px-4 py-12 sm:px-0"
+      accept-charset="UTF-8"
+    >
+      <!-- Voeg hier Zoho hidden fields toe die je in de HTML-export krijgt -->
+      <!-- <input type="hidden" name="zf_redirect_url" value="" /> -->
+
+      <div
+        class="fade-in rounded-xl bg-white p-10 shadow-lg ring-1 ring-slate-200/80"
+        style="animation: fadeIn 0.5s ease-out"
+      >
+        <h1 class="text-2xl font-semibold text-slate-900">Neem contact op</h1>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">
+          Perfect Supplement — evidence-based supplementinformatie. Stuur een bericht; we reageren zo snel mogelijk.
+        </p>
+
+        <div class="mt-8 space-y-5">
+          <div>
+            <label for="field-name" class="block text-sm font-medium text-slate-800">Naam</label>
+            <input
+              id="field-name"
+              name="SingleLine1"
+              type="text"
+              required
+              autocomplete="name"
+              placeholder="Je volledige naam *"
+              aria-required="true"
+              class="mt-1.5 w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-[#3B82F6]/35"
+            />
+          </div>
+          <div>
+            <label for="field-email" class="block text-sm font-medium text-slate-800">E-mail</label>
+            <input
+              id="field-email"
+              name="Email"
+              type="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="je@email.com *"
+              aria-required="true"
+              class="mt-1.5 w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-[#3B82F6]/35"
+            />
+          </div>
+          <div>
+            <label for="field-msg" class="block text-sm font-medium text-slate-800">Opmerking</label>
+            <textarea
+              id="field-msg"
+              name="MultiLine"
+              rows="4"
+              placeholder="Je bericht of vraag (optioneel)"
+              class="mt-1.5 w-full resize-y rounded-lg border border-slate-200 px-3.5 py-2.5 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-[#3B82F6]/35"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            id="submit-btn"
+            class="group w-full rounded-xl bg-[#3B82F6] px-4 py-3.5 text-sm font-semibold text-white shadow-md outline-none transition hover:shadow-lg focus-visible:ring-2 focus-visible:ring-[#3B82F6] focus-visible:ring-offset-2 active:scale-[0.98] disabled:opacity-70"
+          >
+            <span id="btn-label">Verstuur bericht</span>
+            <span id="btn-loading" class="hidden inline-flex items-center justify-center gap-2">
+              <svg class="h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Verzenden…
+            </span>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Toast (toon na terugkeer van Zoho thank-you page — bij POST navigatie zie je die pagina;
+         voor SPA-gedrag: gebruik de Next.js /api/contact proxy op je echte site) -->
+    <div
+      id="toast"
+      role="status"
+      class="fixed bottom-6 left-1/2 z-50 hidden w-[min(100%,24rem)] -translate-x-1/2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-medium text-emerald-900 shadow-lg"
+    >
+      ✓ Bedankt! Je bericht is verzonden naar info@perfectsupplement.nl.
+    </div>
+
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+
+    <script>
+      (function () {
+        var form = document.getElementById("contact-form");
+        var btn = document.getElementById("submit-btn");
+        var label = document.getElementById("btn-label");
+        var loading = document.getElementById("btn-loading");
+
+        form.addEventListener("submit", function (e) {
+          var name = document.getElementById("field-name").value.trim();
+          var email = document.getElementById("field-email").value.trim();
+          if (!name) {
+            e.preventDefault();
+            alert("Vul je naam in.");
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            e.preventDefault();
+            alert("Vul een geldig e-mailadres in.");
+            return;
+          }
+          btn.disabled = true;
+          label.classList.add("hidden");
+          loading.classList.remove("hidden");
+        });
+
+        if (new URLSearchParams(location.search).get("sent") === "1") {
+          document.getElementById("toast").classList.remove("hidden");
+          form.reset();
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -1,20 +1,19 @@
 import Link from "next/link";
 import AffiliateLink from "@/components/content/AffiliateLink";
-import { BlogArticleIntro } from "@/components/blog/BlogArticleIntro";
-import { DisclosureTable } from "@/components/ui/Disclosure";
+import {
+    BlogArticleExcerpt,
+    BlogArticleIntro,
+} from "@/components/blog/BlogArticleIntro";
+import { DisclosureSmall, DisclosureTable } from "@/components/ui/Disclosure";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
 import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
-import { omega3Products } from "@/data/products/omega3";
-import type { AffiliateSlug } from "@/data/affiliate-links";
 import {
+    choiceRoutes,
     comparisonCriteria,
-    comparisonTableRows,
-    ctaTrustLines,
-    decisionGuide,
-    omega3WatchPoints,
-    pageTrustSignals,
-    topThree,
+    highlights,
+    products,
+    tableRows,
 } from "@/features/omega3/data/omega-3-vergelijken";
 
 export function generateMetadata() {
@@ -44,426 +43,356 @@ const relatedPages = [
     },
 ];
 
-function scoreByAffiliate(slug: AffiliateSlug): number {
-    return omega3Products.find((p) => p.affiliateSlug === slug)?.score ?? 0;
-}
-
-function StarRow({ score }: { score: number }) {
-    const filled = Math.round((score / 10) * 5 * 2) / 2;
-    const full = Math.floor(filled);
-    const half = filled - full >= 0.5;
-    const empty = 5 - full - (half ? 1 : 0);
-    return (
-        <span
-            className="inline-flex items-center gap-0.5 text-amber-500"
-            aria-label={`Score ${score} van 10`}
-        >
-            {Array.from({ length: full }).map((_, i) => (
-                <span key={`f-${i}`}>★</span>
-            ))}
-            {half ? <span className="text-amber-400">★</span> : null}
-            {Array.from({ length: empty }).map((_, i) => (
-                <span key={`e-${i}`} className="text-stone-200">
-                    ★
-                </span>
-            ))}
-        </span>
-    );
-}
-
-function CtaTrustBlock() {
-    return (
-        <ul className="mt-4 space-y-1.5 text-xs leading-relaxed text-stone-500">
-            {ctaTrustLines.map((line) => (
-                <li key={line} className="flex gap-2">
-                    <span className="shrink-0 text-emerald-600" aria-hidden>
-                        ✔
-                    </span>
-                    <span>{line}</span>
-                </li>
-            ))}
-        </ul>
-    );
-}
-
-const ctaButtonClass =
-    "inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-800 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900";
-
-const secondaryCardClass =
-    "group flex flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition hover:border-stone-300 hover:shadow-md";
-
 export default function OmegaComparisonPage() {
     const post = getBlogPostBySlug("omega-3-vergelijken");
     if (!post) {
         throw new Error("Blog post omega-3-vergelijken ontbreekt");
     }
 
-    const [first, second, third] = topThree;
-
     return (
         <main className="text-stone-900">
             <article>
-                {/* Hero */}
-                <section className="border-b border-stone-200 bg-gradient-to-b from-stone-50 to-white">
-                    <div className="mx-auto max-w-6xl px-4 py-14 md:px-6 md:py-20">
+            <section className="border-b border-stone-200 bg-stone-50">
+                <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 md:py-24 lg:grid-cols-2 lg:items-center">
+                    <div>
+                        <header>
                         <BlogArticleIntro post={post} />
-                        <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
-                            Beste omega 3 supplementen van 2026
+                        <h1 className="mt-6 text-4xl font-semibold tracking-tight md:text-5xl">
+                            Omega 3 supplementen vergelijken
                         </h1>
-                        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl">
-                            Onafhankelijke vergelijking op EPA/DHA, vorm en prijs per dag — zodat je snel de juiste keuze
-                            maakt.
-                        </p>
-                        <p className="mt-3 max-w-2xl text-base leading-relaxed text-stone-500">
-                            Geen marketingruis: alleen criteria die het verschil maken voor jouw portemonnee en je
-                            gezondheidsdoelen.
+                        <BlogArticleExcerpt post={post} />
+                        </header>
+                        <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
+                            Vergelijk populaire omega 3 supplementen op dosering, transparantie,
+                            gebruiksgemak en prijs per dag in één overzichtelijke pagina.
                         </p>
 
-                        <div className="mt-8 flex flex-wrap gap-2 text-sm text-stone-600">
-                            {pageTrustSignals.map((t) => (
-                                <span
-                                    key={t}
-                                    className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white/80 px-3 py-1.5"
-                                >
-                                    <span className="text-emerald-600" aria-hidden>
-                                        ✔
-                                    </span>
-                                    {t}
-                                </span>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-                            <a
-                                href="#top-3"
-                                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800"
-                            >
-                                Bekijk top 3
-                            </a>
+                        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             <a
                                 href="#vergelijking"
-                                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-800 transition hover:border-stone-300"
+                                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
                             >
-                                Naar vergelijkingstabel
+                                Bekijk vergelijking
                             </a>
+                            <Link
+                                href="/beste-omega-3-supplement"
+                                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
+                            >
+                                Bekijk beste keuzes
+                            </Link>
                         </div>
 
-                        <p className="mt-8 max-w-2xl rounded-xl border border-stone-200 bg-white/90 px-4 py-3 text-sm leading-relaxed text-stone-500">
-                            <span className="font-medium text-stone-700">Transparantie:</span> deze pagina bevat
-                            affiliatelinks. Bij een aankoop via een link kan de aanbieder korting geven en wij een
-                            vergoeding ontvangen — zonder extra kosten voor jou.
+                        <p className="mt-5 inline-flex items-start gap-2 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm leading-6 text-stone-500">
+                            <span className="mt-px shrink-0 text-stone-400" aria-hidden="true">ℹ</span>
+                            Deze pagina bevat affiliate links. Bij een aankoop via deze links kan de consument korting krijgen en deze website een commissie ontvangen.
                         </p>
                     </div>
-                </section>
 
-                {/* Top 3 */}
-                <section id="top-3" className="scroll-mt-24 border-b border-stone-100 bg-white">
-                    <div className="mx-auto max-w-6xl px-4 py-14 md:px-6 md:py-20">
-                        <div className="max-w-2xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
-                                Top 3 omega-3 supplementen
-                            </h2>
-                            <p className="mt-2 text-stone-600">
-                                Onze keuze voor beste totaalpakket, het beste alternatief, en een budgetvriendelijke
-                                instap — met duidelijke verschillen per kaart.
-                            </p>
-                        </div>
-
-                        <div className="mt-10 grid gap-6 lg:grid-cols-12 lg:items-stretch">
-                            {/* #1 — dominant */}
-                            <div className="lg:col-span-7">
-                                <article
-                                    className="relative flex h-full flex-col overflow-hidden rounded-3xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-50/90 via-white to-stone-50 p-8 shadow-lg shadow-amber-900/5 transition hover:border-amber-400/70 hover:shadow-xl md:p-10"
-                                >
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <span className="rounded-full bg-amber-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                                            {first.badge}
-                                        </span>
-                                        <span className="text-xs font-medium uppercase tracking-wider text-stone-500">
-                                            {first.rankLabel}
-                                        </span>
-                                    </div>
-                                    <h3 className="mt-5 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
-                                        {omega3Products.find((p) => p.affiliateSlug === first.affiliateSlug)?.name}
-                                    </h3>
-                                    <div className="mt-3 flex flex-wrap items-center gap-3">
-                                        <StarRow score={scoreByAffiliate(first.affiliateSlug)} />
-                                        <span className="text-sm font-semibold text-stone-800">
-                                            {scoreByAffiliate(first.affiliateSlug).toFixed(1)}/10
-                                        </span>
-                                    </div>
-                                    <ul className="mt-6 space-y-2.5 text-sm leading-relaxed text-stone-700">
-                                        {first.usps.map((u) => (
-                                            <li key={u} className="flex gap-2">
-                                                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                                                {u}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <p className="mt-5 text-sm leading-relaxed text-stone-600">{first.shortDescription}</p>
-                                    <div className="mt-auto pt-8">
-                                        <AffiliateLink
-                                            affiliateSlug={first.affiliateSlug}
-                                            pageType="omega-3-vergelijken"
-                                            position={`top3_best_${first.affiliateSlug}`}
-                                            className={ctaButtonClass}
-                                        >
-                                            Bekijk actuele prijs →
-                                        </AffiliateLink>
-                                        <CtaTrustBlock />
-                                    </div>
-                                </article>
-                            </div>
-
-                            {/* #2 & #3 */}
-                            <div className="flex flex-col gap-6 lg:col-span-5">
-                                {[second, third].map((slot) => {
-                                    const name = omega3Products.find(
-                                        (p) => p.affiliateSlug === slot.affiliateSlug,
-                                    )?.name;
-                                    const score = scoreByAffiliate(slot.affiliateSlug);
-                                    return (
-                                        <article key={slot.affiliateSlug} className={secondaryCardClass}>
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-semibold text-stone-700">
-                                                    {slot.badge}
-                                                </span>
-                                                <span className="text-xs font-medium text-stone-500">{slot.rankLabel}</span>
-                                            </div>
-                                            <h3 className="mt-3 text-lg font-semibold text-stone-900">{name}</h3>
-                                            <div className="mt-2 flex flex-wrap items-center gap-2">
-                                                <StarRow score={score} />
-                                                <span className="text-sm font-semibold text-stone-800">
-                                                    {score.toFixed(1)}/10
-                                                </span>
-                                            </div>
-                                            <ul className="mt-4 space-y-2 text-sm text-stone-600">
-                                                {slot.usps.slice(0, 4).map((u) => (
-                                                    <li key={u} className="flex gap-2">
-                                                        <span className="text-stone-400">•</span>
-                                                        <span>{u}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            <p className="mt-3 text-sm leading-relaxed text-stone-500">{slot.shortDescription}</p>
-                                            <div className="mt-5">
-                                                <AffiliateLink
-                                                    affiliateSlug={slot.affiliateSlug}
-                                                    pageType="omega-3-vergelijken"
-                                                    position={`top3_${slot.role}_${slot.affiliateSlug}`}
-                                                    className={ctaButtonClass}
-                                                >
-                                                    Bekijk actuele prijs →
-                                                </AffiliateLink>
-                                                <CtaTrustBlock />
-                                            </div>
-                                        </article>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        <p className="mt-8 text-sm text-stone-500">
-                            <span className="font-medium text-stone-700">Prijs per dag:</span> de scherpste €/dag in deze
-                            vergelijking is Arctic Blue Visolie — zie ook de tabel hieronder.
-                        </p>
+                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+                        <p className="text-sm font-medium text-stone-500">Op deze pagina</p>
+                        <ul className="mt-4 space-y-3 text-sm text-stone-600">
+                            <li>• Kort uitgelegd hoe wij vergelijken</li>
+                            <li>• Snelle highlights per type bezoeker</li>
+                            <li>• Productcards met score-opbouw</li>
+                            <li>• Een compacte vergelijkingstabel</li>
+                        </ul>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                {/* Comparison table */}
-                <ContentSection
-                    id="vergelijking"
-                    title="Vergelijking in één oogopslag"
-                    description="EPA/DHA, vorm, dagprijs en score — minimaal, scanbaar, met directe doorklik naar de aanbieder."
-                >
-                    <div className="mt-2 overflow-x-auto rounded-2xl border border-stone-200 shadow-sm">
-                        <table className="min-w-full text-left text-sm">
-                            <thead className="border-b border-stone-200 bg-stone-50 text-stone-600">
-                                <tr>
-                                    <th className="whitespace-nowrap px-4 py-3.5 font-semibold">Product</th>
-                                    <th className="whitespace-nowrap px-4 py-3.5 font-semibold">EPA/DHA</th>
-                                    <th className="whitespace-nowrap px-4 py-3.5 font-semibold">Vorm</th>
-                                    <th className="whitespace-nowrap px-4 py-3.5 font-semibold">Prijs per dag</th>
-                                    <th className="whitespace-nowrap px-4 py-3.5 font-semibold">Score</th>
-                                    <th className="whitespace-nowrap px-4 py-3.5 font-semibold">Actie</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {comparisonTableRows.map((row) => (
-                                    <tr
-                                        key={row.product}
-                                        className={
-                                            row.isBest
-                                                ? "border-t border-amber-200/80 bg-amber-50/60 transition hover:bg-amber-50"
-                                                : "border-t border-stone-100 transition hover:bg-stone-50/80"
-                                        }
-                                    >
-                                        <td className="px-4 py-4 font-medium text-stone-900">
-                                            {row.isBest ? (
-                                                <span className="mr-2 inline-flex items-center rounded-md bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">
-                                                    Beste keuze
-                                                </span>
-                                            ) : null}
-                                            {row.product}
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-4 text-stone-700">{row.epaDha}</td>
-                                        <td className="px-4 py-4 text-stone-700">{row.vorm}</td>
-                                        <td className="whitespace-nowrap px-4 py-4 font-medium text-stone-900">
-                                            {row.pricePerDay}
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-4">
-                                            <span className="font-semibold text-stone-900">{row.score}</span>
-                                            <span className="text-stone-500">/10</span>
-                                        </td>
-                                        <td className="px-4 py-4 align-top">
-                                            <AffiliateLink
-                                                affiliateSlug={row.affiliateSlug}
-                                                pageType="omega-3-vergelijken"
-                                                position={`table_row_${row.affiliateSlug}`}
-                                                className="inline-flex min-w-[10rem] items-center justify-center rounded-lg bg-stone-900 px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-stone-800 hover:shadow"
-                                            >
-                                                Bekijk actuele prijs →
-                                            </AffiliateLink>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <ul className="mt-4 flex flex-col gap-1.5 text-xs text-stone-500 sm:flex-row sm:flex-wrap sm:gap-x-8">
-                        {ctaTrustLines.map((line) => (
-                            <li key={line} className="flex items-center gap-2">
-                                <span className="text-emerald-600" aria-hidden>
-                                    ✔
-                                </span>
-                                {line}
-                            </li>
-                        ))}
-                    </ul>
-                    <p className="mt-4 text-sm text-stone-500">
-                        Meer achtergrond? Lees{" "}
+            <ContentSection
+                title="Hoe wij vergelijken"
+                description="We proberen producten rustig en consistent te beoordelen op factoren die in de praktijk het meest relevant zijn voor vergelijkbaarheid."
+            >
+                <div className="rounded-3xl border border-stone-200 bg-stone-50 p-6 md:p-7">
+                    <p className="max-w-3xl text-sm leading-7 text-stone-600">
+                        Onze vergelijking is geen medisch oordeel en ook geen marketingranglijst.
+                        We kijken per product naar de praktische bruikbaarheid binnen de categorie:
+                        dosering, transparantie, gebruiksgemak, prijs per dag en toepasbaarheid.
+                        Zo ontstaat een vergelijking die vooral bedoeld is om keuzes duidelijker en
+                        beter scanbaar te maken. Wie eerst de basis wil begrijpen, kan beginnen met{" "}
+                        <Link
+                            href="/wat-is-omega-3"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                        >
+                            wat omega 3 is
+                        </Link>
+                        ; wie precies wil weten hoe we deze punten wegen, leest onze{" "}
                         <Link
                             href="/methodologie"
                             className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
-                            hoe wij vergelijken
-                        </Link>{" "}
-                        of bekijk{" "}
+                            methodologie
+                        </Link>
+                        .
+                    </p>
+
+                    <div className="mt-5 flex flex-wrap gap-2">
+                        {comparisonCriteria.map((criterion) => (
+                            <span
+                                key={criterion}
+                                className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600"
+                            >
+                                {criterion}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </ContentSection>
+
+            <ContentSection
+                title="Snelle highlights"
+                description="Voor bezoekers die direct willen weten welke richting het best bij hun doel of budget past."
+            >
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {highlights.map((item) => (
+                        <div
+                            key={item.label}
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
+                        >
+                            <p className="text-sm font-medium text-stone-800">{item.label}</p>
+                            <h3 className="mt-2 text-lg font-semibold">{item.value}</h3>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{item.text}</p>
+                        </div>
+                    ))}
+                </div>
+                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
+                    Twijfel je nog welke criteria echt verschil maken? Lees dan ook{" "}
+                    <Link
+                        href="/waar-let-je-op-bij-omega-3"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                    >
+                        waar je op let bij omega 3 supplementen
+                    </Link>
+                    .
+                </p>
+            </ContentSection>
+
+            <ContentSection
+                title="Populaire keuzes naast elkaar"
+                description="De cards hieronder maken verschillen sneller zichtbaar zonder dat je meteen een grote tabel hoeft te lezen."
+            >
+                <div className="grid gap-5 lg:grid-cols-2">
+                    {products.map((product) => (
+                        <article
+                            key={product.name}
+                            className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
+                        >
+                            <div className="flex items-start justify-between gap-4">
+                                <div>
+                                    <h3 className="text-xl font-semibold">{product.name}</h3>
+                                    <p className="mt-1 text-sm font-medium text-stone-800">{product.bestFor}</p>
+                                </div>
+                                <div className="rounded-xl bg-stone-100 px-3 py-2 text-sm font-semibold">
+                                    {product.score}/10
+                                </div>
+                            </div>
+
+                            <p className="mt-4 text-sm leading-6 text-stone-600">{product.summary}</p>
+
+                            <div className="mt-4 flex flex-wrap gap-2">
+                                {product.specs.map((spec) => (
+                                    <span
+                                        key={spec}
+                                        className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600"
+                                    >
+                                        {spec}
+                                    </span>
+                                ))}
+                            </div>
+
+                            <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                                <div>
+                                    <h4 className="text-sm font-semibold">Pluspunten</h4>
+                                    <ul className="mt-2 space-y-2 text-sm text-stone-600">
+                                        {product.pros.map((pro) => (
+                                            <li key={pro}>• {pro}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-semibold">Aandachtspunten</h4>
+                                    <ul className="mt-2 space-y-2 text-sm text-stone-600">
+                                        {product.cons.map((con) => (
+                                            <li key={con}>• {con}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="mt-5 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                                    Score-opbouw
+                                </p>
+                                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                                    {product.breakdown.map(([label, score]) => (
+                                        <div
+                                            key={label}
+                                            className="flex items-center justify-between rounded-xl bg-white px-3 py-2"
+                                        >
+                                            <span className="text-sm text-stone-600">{label}</span>
+                                            <span className="text-sm font-medium text-stone-900">{score}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <AffiliateLink
+                                affiliateSlug={product.affiliateSlug}
+                                pageType="omega-3-vergelijken"
+                                position={`comparison_card_${product.affiliateSlug}`}
+                                className="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
+                            >
+                                Bekijk actuele prijs bij aanbieder →
+                            </AffiliateLink>
+                            <DisclosureSmall />
+                        </article>
+                    ))}
+                </div>
+            </ContentSection>
+
+            <ContentSection
+                id="vergelijking"
+                title="Vergelijkingstabel"
+                description="Een compact overzicht van de belangrijkste eigenschappen om sneller verschillen te zien zonder veel tekst te hoeven lezen."
+            >
+                <div className="mt-4 flex flex-col gap-3 text-sm leading-6 text-stone-600 md:flex-row md:items-center md:justify-between">
+                    <p>
+                        Wil je liever direct onze selectie zien? Bekijk dan ook de{" "}
                         <Link
                             href="/beste-omega-3-supplement"
                             className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
-                            alle beste keuzes
+                            beste omega 3 supplementen
                         </Link>
                         .
                     </p>
-                    <DisclosureTable />
-                </ContentSection>
-
-                {/* Educational */}
-                <ContentSection
-                    title="Waar moet je op letten bij omega 3?"
-                    description="Korte checklist — alles wat je nodig hebt om etiketten en prijzen eerlijk te vergelijken."
-                >
-                    <ul className="grid gap-4 md:grid-cols-2">
-                        {omega3WatchPoints.map((item) => (
-                            <li
-                                key={item.title}
-                                className="rounded-2xl border border-stone-200 bg-stone-50/80 p-5 transition hover:border-stone-300"
-                            >
-                                <h3 className="font-semibold text-stone-900">{item.title}</h3>
-                                <p className="mt-2 text-sm leading-relaxed text-stone-600">{item.text}</p>
-                            </li>
-                        ))}
-                    </ul>
-                </ContentSection>
-
-                {/* Decision help */}
-                <ContentSection
-                    title="Welke keuze past bij jou?"
-                    description="Drie veelvoorkomende profielen — met een concrete productaanbeveling per situatie."
-                >
-                    <div className="grid gap-5 md:grid-cols-3">
-                        {decisionGuide.map((item) => (
-                            <article
-                                key={item.title}
-                                className="flex flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition hover:border-stone-300 hover:shadow-md"
-                            >
-                                <h3 className="text-base font-semibold text-stone-900">{item.title}</h3>
-                                <p className="mt-1 text-sm font-medium text-stone-700">{item.product}</p>
-                                <p className="mt-3 flex-1 text-sm leading-relaxed text-stone-600">{item.text}</p>
-                                <AffiliateLink
-                                    affiliateSlug={item.affiliateSlug}
-                                    pageType="omega-3-vergelijken"
-                                    position={`decision_${item.affiliateSlug}_${item.title}`}
-                                    className={`${ctaButtonClass} mt-6 text-xs sm:text-sm`}
-                                >
-                                    Bekijk actuele prijs →
-                                </AffiliateLink>
-                                <CtaTrustBlock />
-                            </article>
-                        ))}
-                    </div>
-                </ContentSection>
-
-                {/* How we compare — compact */}
-                <ContentSection
-                    title="Hoe wij vergelijken"
-                    description="Consistente criteria — geen medisch advies, wel praktische vergelijkbaarheid."
-                >
-                    <div className="rounded-2xl border border-stone-200 bg-stone-50 p-6 md:p-8">
-                        <p className="max-w-3xl text-sm leading-relaxed text-stone-600">
-                            We beoordelen supplementen op factoren die in de praktijk het meest uitmaken: dosering,
-                            transparantie, gebruiksgemak, prijs per dag en toepasbaarheid. Zo blijft de vergelijking
-                            scanbaar en eerlijk.{" "}
-                            <Link
-                                href="/wat-is-omega-3"
-                                className="font-medium text-stone-800 underline-offset-4 hover:underline"
-                            >
-                                Wat is omega 3?
-                            </Link>{" "}
-                            ·{" "}
-                            <Link
-                                href="/waar-let-je-op-bij-omega-3"
-                                className="font-medium text-stone-800 underline-offset-4 hover:underline"
-                            >
-                                Waar let je op?
-                            </Link>
-                        </p>
-                        <div className="mt-5 flex flex-wrap gap-2">
-                            {comparisonCriteria.map((criterion) => (
-                                <span
-                                    key={criterion}
-                                    className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600"
-                                >
-                                    {criterion}
-                                </span>
+                    <Link
+                        href="/methodologie"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                    >
+                        Lees hoe wij vergelijken
+                    </Link>
+                </div>
+                <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
+                    <table className="min-w-full text-left text-sm">
+                        <thead className="bg-stone-50 text-stone-600">
+                            <tr>
+                                <th className="px-4 py-3 font-semibold">Product</th>
+                                <th className="px-4 py-3 font-semibold">Type</th>
+                                <th className="px-4 py-3 font-semibold">Dosering</th>
+                                <th className="px-4 py-3 font-semibold">Transparantie</th>
+                                <th className="px-4 py-3 font-semibold">Gebruiksgemak</th>
+                                <th className="px-4 py-3 font-semibold">Prijs per dag</th>
+                                <th className="px-4 py-3 font-semibold">Beste voor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tableRows.map((row) => (
+                                <tr key={row.product} className="border-t border-stone-200">
+                                    <td className="px-4 py-3 font-medium">{row.product}</td>
+                                    <td className="px-4 py-3">{row.type}</td>
+                                    <td className="px-4 py-3">{row.dosage}</td>
+                                    <td className="px-4 py-3">{row.transparency}</td>
+                                    <td className="px-4 py-3">{row.convenience}</td>
+                                    <td className="px-4 py-3">{row.price}</td>
+                                    <td className="px-4 py-3">{row.bestFor}</td>
+                                </tr>
                             ))}
+                        </tbody>
+                    </table>
+                </div>
+                <DisclosureTable />
+            </ContentSection>
+
+            <ContentSection
+                title="Welke keuze past bij jou?"
+                description="Als je niet alles wilt vergelijken, helpen deze vier routes om sneller bij een logische eerste keuze uit te komen."
+            >
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {choiceRoutes.map((route) => (
+                        <article
+                            key={route.title}
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
+                        >
+                            <p className="text-sm font-medium text-stone-800">{route.title}</p>
+                            <h3 className="mt-2 text-base font-semibold text-stone-900">
+                                {route.product}
+                            </h3>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{route.text}</p>
+                            <AffiliateLink
+                                affiliateSlug={route.affiliateSlug}
+                                pageType="omega-3-vergelijken"
+                                position={`choice_route_${route.affiliateSlug}`}
+                                className="mt-4 inline-flex items-center text-xs font-medium text-stone-500 underline-offset-4 hover:text-stone-700 hover:underline"
+                            >
+                                Bekijk actuele prijs bij aanbieder →
+                            </AffiliateLink>
+                        </article>
+                    ))}
+                </div>
+            </ContentSection>
+
+            <ContentSection
+                title="Onze conclusie"
+                description="Voor de meeste bezoekers is een korte eindkeuze handiger dan nog meer losse details."
+            >
+                <div className="grid gap-4 md:grid-cols-3">
+                    {[
+                        {
+                            title: "Topkeuze",
+                            text: "Kies Arctic Blue Visolie als je een sterke allround keuze zoekt met balans tussen dosering en dagelijks gebruik.",
+                        },
+                        {
+                            title: "Beste prijs/gebruiksgemak",
+                            text: "Kies Arctic Blue Gummies als je vooral laagdrempelig wilt beginnen en smaak en routine belangrijk vindt.",
+                        },
+                        {
+                            title: "Beste plantaardige optie",
+                            text: "Kies Arctic Blue Algenolie als je liever een plantaardige omega-3 bron gebruikt dan visolie.",
+                        },
+                    ].map((item) => (
+                        <div
+                            key={item.title}
+                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
+                        >
+                            <h3 className="text-base font-semibold">{item.title}</h3>
+                            <p className="mt-2 text-sm leading-6 text-stone-600">{item.text}</p>
                         </div>
-                    </div>
-                </ContentSection>
+                    ))}
+                </div>
+                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
+                    Zoek je liever een kortere shortlist dan een volledige vergelijking? Bekijk dan de{" "}
+                    <Link
+                        href="/beste-omega-3-supplement"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                    >
+                        beste omega 3 supplementen
+                    </Link>
+                    .
+                </p>
 
-                {/* Trust strip repeat */}
-                <section className="border-y border-stone-100 bg-stone-50/50">
-                    <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
-                        <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-10">
-                            {pageTrustSignals.map((t) => (
-                                <li key={t} className="flex items-center justify-center gap-2 text-sm text-stone-700">
-                                    <span className="text-emerald-600" aria-hidden>
-                                        ✔
-                                    </span>
-                                    {t}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </section>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <Link
+                        href="/beste-omega-3-supplement"
+                        className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white hover:bg-stone-800"
+                    >
+                        Bekijk beste omega 3 supplementen
+                    </Link>
+                    <a
+                        href="#vergelijking"
+                        className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
+                    >
+                        Terug naar vergelijking
+                    </a>
+                </div>
+            </ContentSection>
 
-                <RelatedPages
-                    title="Gerelateerde pagina's"
-                    description="Handige vervolgstappen als je vanuit vergelijken verder wilt in het omega-3 cluster."
-                    items={relatedPages}
-                />
+            <RelatedPages
+                title="Gerelateerde pagina's"
+                description="Handige vervolgstappen als je vanuit vergelijken verder wilt in het omega 3 cluster."
+                items={relatedPages}
+            />
             </article>
         </main>
     );

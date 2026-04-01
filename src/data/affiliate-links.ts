@@ -12,8 +12,6 @@ export const affiliateLinks = {
   "magnesium-bisglycinaat": "",
   "magnesium-tauraat": "",
   "magnesium-citraat": "",
-  "magnesium-malaat": "",
-  "magnesium-oxide": "",
 } as const satisfies Record<string, string>;
 
 export type AffiliateSlug = keyof typeof affiliateLinks;
