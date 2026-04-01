@@ -2,11 +2,11 @@
   max-width: 32rem;
   margin-left: auto;
   margin-right: auto;
-  padding: 1.5rem;
+  padding: 1.25rem;
 }
 
 .header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .header h1 {
@@ -62,7 +62,7 @@
 .submitButton {
   display: block;
   width: 100%;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   padding: 0.625rem 1rem;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -107,4 +107,18 @@
   background: #fef2f2;
   color: #991b1b;
   border-color: #fecaca;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .header {
+    margin-bottom: 1.5rem;
+  }
+
+  .submitButton {
+    margin-top: 1.25rem;
+  }
 }

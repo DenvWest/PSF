@@ -11,7 +11,15 @@ function getField(name: string, form: FormData): string {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function ContactForm() {
+type ContactFormProps = {
+  description?: string;
+  title?: string;
+};
+
+export default function ContactForm({
+  description = "Stuur een bericht. We reageren zo snel mogelijk.",
+  title = "Contact",
+}: ContactFormProps) {
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const [responseKind, setResponseKind] = useState<"success" | "error" | null>(null);
   const [pending, setPending] = useState(false);
@@ -67,8 +75,8 @@ export default function ContactForm() {
   return (
     <div className={contactFormStyles.container}>
       <header className={contactFormStyles.header}>
-        <h1>Contact</h1>
-        <p>Stuur een bericht. We reageren zo snel mogelijk.</p>
+        <h2>{title}</h2>
+        <p>{description}</p>
       </header>
 
       <form onSubmit={onSubmit} noValidate>

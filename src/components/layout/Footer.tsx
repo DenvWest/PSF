@@ -9,6 +9,7 @@ const exploreLinks = [
 ];
 
 const infoLinks = [
+    { href: "/faqs", label: "FAQ's" },
     { href: "/privacy", label: "Privacy" },
     { href: "/disclaimer", label: "Disclaimer" },
     { href: "/affiliate-disclosure", label: "Affiliate disclosure" },
