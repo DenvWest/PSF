@@ -75,8 +75,11 @@ export async function POST(request: Request) {
   const apiDomain = process.env.ZOHO_API_DOMAIN?.trim() || "https://www.zohoapis.eu";
   const moduleName = process.env.ZOHO_CRM_MODULE?.trim() || "Leads";
   const smtpConfig = getSmtpConfig();
+  const zohoConfig = hasZohoConfig({ clientId, clientSecret, refreshToken })
+    ? { clientId, clientSecret, refreshToken }
+    : null;
 
-  if (!hasZohoConfig({ clientId, clientSecret, refreshToken }) && !smtpConfig) {
+  if (!zohoConfig && !smtpConfig) {
     return NextResponse.json(
       {
         error:
@@ -86,12 +89,12 @@ export async function POST(request: Request) {
     );
   }
 
-  if (hasZohoConfig({ clientId, clientSecret, refreshToken })) {
+  if (zohoConfig) {
     try {
       const accessToken = await getZohoAccessToken({
-        clientId,
-        clientSecret,
-        refreshToken,
+        clientId: zohoConfig.clientId,
+        clientSecret: zohoConfig.clientSecret,
+        refreshToken: zohoConfig.refreshToken,
         accountsDomain,
       });
 
