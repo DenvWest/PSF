@@ -67,12 +67,11 @@ export default function ContactPage() {
                                     description="Voor algemene vragen, feedback en zakelijke aanvragen."
                                 />
                             </div>
+                            <p className="mt-10 text-sm leading-7 text-stone-500 md:mt-12">
+                                Perfect Supplement is een onafhankelijk platform gericht op
+                                transparante, evidence-based informatie over supplementen.
+                            </p>
                         </div>
-
-                        <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-7 text-stone-500 md:mt-12">
-                            Perfect Supplement is een onafhankelijk platform gericht op
-                            transparante, evidence-based informatie over supplementen.
-                        </p>
                     </div>
                 </Container>
             </section>
