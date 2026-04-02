@@ -116,9 +116,11 @@ const GRID_ITEMS: readonly HubItem[] = [
     },
 ];
 
+const ALL_ITEMS: readonly HubItem[] = [...FEATURED, ...GRID_ITEMS];
+
 const ALL_FOR_FILTER: Record<FilterId, readonly HubItem[]> = {
-    alles: GRID_ITEMS,
-    ingredienten: [...FEATURED, ...GRID_ITEMS].filter(
+    alles: ALL_ITEMS,
+    ingredienten: ALL_ITEMS.filter(
         (i) => i.group === "ingredienten",
     ),
     doelen: GRID_ITEMS.filter((i) => i.group === "doelen"),
