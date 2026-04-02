@@ -46,7 +46,7 @@ export default function Hero() {
               PerfectSupplement · Omega 3 &amp; Magnesium
             </p>
             <h1 className="ps-display mt-5 text-[2.625rem] leading-[1.05] text-stone-900 sm:text-[3.375rem] lg:text-[3.75rem]">
-              Kies de juiste omega&nbsp;3 en magnesium supplementen, helder uitgelegd.
+              Evidence-based supplementinformatie, begonnen waar de meeste verwarring zit.
             </h1>
             <p className="mt-5 max-w-[44ch] text-[0.9375rem] leading-[1.8] text-stone-500">
               Vergelijk dosering, kwaliteit en prijs per supplement.

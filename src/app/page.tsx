@@ -4,8 +4,6 @@ import BlogCard, {
   BLOG_CARD_GRID_SECTION_TOP_CLASS,
 } from "@/components/blog/BlogCard";
 import Hero from "@/components/homepage/Hero";
-import PopularCategories from "@/components/homepage/PopularCategories";
-import TrustSection from "@/components/homepage/TrustSection";
 import Container from "@/components/layout/Container";
 import { getBlogPostBySlug } from "@/data/blog-posts";
 
@@ -39,7 +37,7 @@ const brandPillars = [
 
 function BrandSection() {
   return (
-    <section className="border-t border-stone-200 bg-white">
+    <section className="bg-white">
       <Container>
         <div className="py-20 md:py-28">
           <div className="max-w-xl">
@@ -91,10 +89,10 @@ function BlogPreview() {
   ).filter((post): post is NonNullable<typeof post> => post != null);
 
   return (
-    <section className="py-28">
+    <section className="py-20 md:py-24">
       <div className="ps-divider" />
       <Container>
-        <div className="pt-28">
+        <div className="pt-20 md:pt-24">
           <div className="flex items-end justify-between gap-6">
             <div>
               <p className="ps-eyebrow">Blog</p>
@@ -130,8 +128,6 @@ export default function HomePage() {
     <>
       <Hero />
       <BrandSection />
-      <PopularCategories />
-      <TrustSection />
       <BlogPreview />
     </>
   );

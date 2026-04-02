@@ -18,7 +18,7 @@ const infoLinks = [
 
 export default function Footer() {
     return (
-        <footer className="mt-24 border-t border-stone-200 bg-[var(--ps-bg)]">
+        <footer className="border-t border-stone-200 bg-[var(--ps-bg)]">
             <Container>
                 <div className="grid gap-10 py-14 md:grid-cols-3 md:gap-16 lg:py-16">
                     <div className="md:col-span-1">
