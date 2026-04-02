@@ -4,6 +4,7 @@ import {
     BlogArticleExcerpt,
     BlogArticleIntro,
 } from "@/components/blog/BlogArticleIntro";
+import Container from "@/components/layout/Container";
 import { DisclosureSmall, DisclosureTable } from "@/components/ui/Disclosure";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
@@ -11,13 +12,20 @@ import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
     choiceRoutes,
     comparisonCriteria,
-    highlights,
     products,
     tableRows,
 } from "@/features/omega3/data/omega-3-vergelijken";
 
 export function generateMetadata() {
     return buildArticlePageMetadata("omega-3-vergelijken");
+}
+
+function splitSpec(spec: string): { label: string; value: string } {
+    const [label, ...rest] = spec.split(": ");
+    return {
+        label,
+        value: rest.join(": ") || spec,
+    };
 }
 
 const relatedPages = [
@@ -52,52 +60,83 @@ export default function OmegaComparisonPage() {
     return (
         <main className="text-stone-900">
             <article>
-            <section className="border-b border-stone-200 bg-stone-50">
-                <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:px-6 md:py-24 lg:grid-cols-2 lg:items-center">
-                    <div>
-                        <header>
-                        <BlogArticleIntro post={post} />
-                        <h1 className="mt-6 text-4xl font-semibold tracking-tight md:text-5xl">
-                            Omega 3 supplementen vergelijken
-                        </h1>
-                        <BlogArticleExcerpt post={post} />
-                        </header>
-                        <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
-                            Vergelijk populaire omega 3 supplementen op dosering, transparantie,
-                            gebruiksgemak en prijs per dag in één overzichtelijke pagina.
-                        </p>
+            <section className="relative overflow-hidden border-b border-stone-200 bg-stone-50">
+                <div
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_78%_58%_at_14%_0%,rgba(255,255,255,0.95),transparent_60%)]"
+                    aria-hidden="true"
+                />
+                <Container className="relative">
+                    <div className="grid gap-10 py-16 md:gap-12 md:py-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,360px)] lg:items-start">
+                        <div className="relative">
+                            <header className="max-w-3xl">
+                                <BlogArticleIntro post={post} />
+                                <h1 className="ps-display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.02] text-stone-900">
+                                    Omega 3 supplementen vergelijken
+                                </h1>
+                                <BlogArticleExcerpt post={post} />
+                            </header>
 
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                            <a
-                                href="#vergelijking"
-                                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
-                            >
-                                Bekijk vergelijking
-                            </a>
-                            <Link
-                                href="/beste-omega-3-supplement"
-                                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
-                            >
-                                Bekijk beste keuzes
-                            </Link>
+                            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                <a
+                                    href="#vergelijking"
+                                    className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
+                                >
+                                    Bekijk vergelijking
+                                </a>
+                                <Link
+                                    href="/beste-omega-3-supplement"
+                                    className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
+                                >
+                                    Bekijk beste keuzes
+                                </Link>
+                            </div>
+
+                            <p className="mt-5 inline-flex max-w-xl items-start gap-2 rounded-xl border border-stone-200/90 bg-white/90 px-4 py-3 text-sm leading-6 text-stone-500 shadow-[0_1px_3px_rgba(28,25,23,0.04)]">
+                                <span className="mt-px shrink-0 text-stone-400" aria-hidden="true">ℹ</span>
+                                Deze pagina bevat affiliate links. Bij een aankoop via deze links kan de consument korting krijgen en deze website een commissie ontvangen.
+                            </p>
                         </div>
 
-                        <p className="mt-5 inline-flex items-start gap-2 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm leading-6 text-stone-500">
-                            <span className="mt-px shrink-0 text-stone-400" aria-hidden="true">ℹ</span>
-                            Deze pagina bevat affiliate links. Bij een aankoop via deze links kan de consument korting krijgen en deze website een commissie ontvangen.
-                        </p>
+                        <div className="relative rounded-[1.75rem] border border-stone-200/90 bg-white/95 p-6 shadow-[0_12px_40px_-18px_rgba(28,25,23,0.18)] ring-1 ring-stone-900/[0.03] backdrop-blur-[2px]">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                                In één oogopslag
+                            </p>
+                            <div className="mt-5 space-y-4">
+                                <div className="border-b border-stone-100 pb-4">
+                                    <p className="text-sm font-semibold text-stone-900">Waarop je vergelijkt</p>
+                                    <p className="mt-1.5 text-sm leading-6 text-stone-600">
+                                        Dosering, transparantie, gebruiksgemak en prijs per dag.
+                                    </p>
+                                </div>
+                                <div className="border-b border-stone-100 pb-4">
+                                    <p className="text-sm font-semibold text-stone-900">Voor wie deze pagina handig is</p>
+                                    <p className="mt-1.5 text-sm leading-6 text-stone-600">
+                                        Voor wie snel verschillen wil zien zonder meerdere productpagina&apos;s naast elkaar te leggen.
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-stone-900">Snelle routes</p>
+                                    <div className="mt-3 flex flex-col gap-2.5">
+                                        <a
+                                            href="#producten"
+                                            className="inline-flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-stone-300 hover:bg-white hover:text-stone-900"
+                                        >
+                                            <span>Bekijk populaire keuzes</span>
+                                            <span aria-hidden="true">→</span>
+                                        </a>
+                                        <a
+                                            href="#vergelijking"
+                                            className="inline-flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-stone-300 hover:bg-white hover:text-stone-900"
+                                        >
+                                            <span>Ga naar vergelijkingstabel</span>
+                                            <span aria-hidden="true">→</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
-                        <p className="text-sm font-medium text-stone-500">Op deze pagina</p>
-                        <ul className="mt-4 space-y-3 text-sm text-stone-600">
-                            <li>• Kort uitgelegd hoe wij vergelijken</li>
-                            <li>• Snelle highlights per type bezoeker</li>
-                            <li>• Productcards met score-opbouw</li>
-                            <li>• Een compacte vergelijkingstabel</li>
-                        </ul>
-                    </div>
-                </div>
+                </Container>
             </section>
 
             <ContentSection
@@ -141,86 +180,88 @@ export default function OmegaComparisonPage() {
             </ContentSection>
 
             <ContentSection
-                title="Snelle highlights"
-                description="Voor bezoekers die direct willen weten welke richting het best bij hun doel of budget past."
-            >
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    {highlights.map((item) => (
-                        <div
-                            key={item.label}
-                            className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
-                        >
-                            <p className="text-sm font-medium text-stone-800">{item.label}</p>
-                            <h3 className="mt-2 text-lg font-semibold">{item.value}</h3>
-                            <p className="mt-2 text-sm leading-6 text-stone-600">{item.text}</p>
-                        </div>
-                    ))}
-                </div>
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
-                    Twijfel je nog welke criteria echt verschil maken? Lees dan ook{" "}
-                    <Link
-                        href="/waar-let-je-op-bij-omega-3"
-                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
-                    >
-                        waar je op let bij omega 3 supplementen
-                    </Link>
-                    .
-                </p>
-            </ContentSection>
-
-            <ContentSection
+                id="producten"
                 title="Populaire keuzes naast elkaar"
-                description="De cards hieronder maken verschillen sneller zichtbaar zonder dat je meteen een grote tabel hoeft te lezen."
+                description="Deze drie kaarten geven de snelste eerste vergelijking zonder dat je direct door een grote tabel hoeft."
             >
-                <div className="grid gap-5 lg:grid-cols-2">
+                <div className="grid gap-5 xl:grid-cols-3">
                     {products.map((product) => (
                         <article
                             key={product.name}
-                            className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
+                            className="flex h-full flex-col rounded-[1.75rem] border border-stone-200/90 bg-white p-6 shadow-[0_8px_30px_-18px_rgba(28,25,23,0.16)] ring-1 ring-stone-900/[0.03] md:p-7"
                         >
                             <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <h3 className="text-xl font-semibold">{product.name}</h3>
-                                    <p className="mt-1 text-sm font-medium text-stone-800">{product.bestFor}</p>
-                                </div>
-                                <div className="rounded-xl bg-stone-100 px-3 py-2 text-sm font-semibold">
-                                    {product.score}/10
+                                <p className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-stone-600">
+                                    {product.bestFor}
+                                </p>
+                                <div className="shrink-0 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-right">
+                                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-stone-500">
+                                        Score
+                                    </p>
+                                    <p className="mt-1 text-lg font-semibold text-stone-900">
+                                        {product.score}/10
+                                    </p>
                                 </div>
                             </div>
 
-                            <p className="mt-4 text-sm leading-6 text-stone-600">{product.summary}</p>
-
-                            <div className="mt-4 flex flex-wrap gap-2">
-                                {product.specs.map((spec) => (
-                                    <span
-                                        key={spec}
-                                        className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600"
-                                    >
-                                        {spec}
-                                    </span>
-                                ))}
+                            <div className="mt-5">
+                                <h3 className="text-[1.375rem] font-semibold tracking-tight text-stone-900">
+                                    {product.name}
+                                </h3>
+                                <p className="mt-3 text-sm leading-6 text-stone-600">
+                                    {product.summary}
+                                </p>
                             </div>
 
-                            <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                            <div className="mt-5 grid gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
+                                {product.specs.map((spec) => {
+                                    const { label, value } = splitSpec(spec);
+                                    return (
+                                        <div
+                                            key={spec}
+                                            className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3"
+                                        >
+                                            <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-stone-500">
+                                                {label}
+                                            </p>
+                                            <p className="mt-1 text-sm font-medium text-stone-900">
+                                                {value}
+                                            </p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <div className="mt-6 grid gap-5 border-t border-stone-100 pt-5">
                                 <div>
-                                    <h4 className="text-sm font-semibold">Pluspunten</h4>
-                                    <ul className="mt-2 space-y-2 text-sm text-stone-600">
+                                    <h4 className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                                        Sterk in
+                                    </h4>
+                                    <ul className="mt-3 space-y-2.5 text-sm leading-6 text-stone-600">
                                         {product.pros.map((pro) => (
-                                            <li key={pro}>• {pro}</li>
+                                            <li key={pro} className="flex items-start gap-2">
+                                                <span className="mt-[0.42rem] h-1.5 w-1.5 shrink-0 rounded-full bg-stone-400" />
+                                                <span>{pro}</span>
+                                            </li>
                                         ))}
                                     </ul>
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-semibold">Aandachtspunten</h4>
-                                    <ul className="mt-2 space-y-2 text-sm text-stone-600">
+                                    <h4 className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                                        Let op
+                                    </h4>
+                                    <ul className="mt-3 space-y-2.5 text-sm leading-6 text-stone-600">
                                         {product.cons.map((con) => (
-                                            <li key={con}>• {con}</li>
+                                            <li key={con} className="flex items-start gap-2">
+                                                <span className="mt-[0.42rem] h-1.5 w-1.5 shrink-0 rounded-full bg-stone-300" />
+                                                <span>{con}</span>
+                                            </li>
                                         ))}
                                     </ul>
                                 </div>
                             </div>
 
-                            <div className="mt-5 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                            <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50 p-4">
                                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                                     Score-opbouw
                                 </p>
@@ -228,7 +269,7 @@ export default function OmegaComparisonPage() {
                                     {product.breakdown.map(([label, score]) => (
                                         <div
                                             key={label}
-                                            className="flex items-center justify-between rounded-xl bg-white px-3 py-2"
+                                            className="flex items-center justify-between rounded-xl bg-white px-3 py-2.5"
                                         >
                                             <span className="text-sm text-stone-600">{label}</span>
                                             <span className="text-sm font-medium text-stone-900">{score}</span>
@@ -241,7 +282,7 @@ export default function OmegaComparisonPage() {
                                 affiliateSlug={product.affiliateSlug}
                                 pageType="omega-3-vergelijken"
                                 position={`comparison_card_${product.affiliateSlug}`}
-                                className="mt-6 inline-flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-900 hover:border-stone-300"
+                                className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
                             >
                                 Bekijk actuele prijs bij aanbieder →
                             </AffiliateLink>
