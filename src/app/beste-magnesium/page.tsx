@@ -79,109 +79,136 @@ export default function BesteMagnesiumPage() {
         <main className="text-stone-900">
             <article>
             {/* Hero */}
-            <section className="border-b border-stone-200 bg-stone-50">
-                <Container>
-                <div className="grid gap-10 py-16 md:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-                    <div>
-                        <header>
-                        <BlogArticleIntro post={post} />
-                        <h1 className="mt-6 text-4xl font-semibold tracking-tight md:text-5xl">
-                            Beste magnesium supplementen van 2026
-                        </h1>
-                        <BlogArticleExcerpt post={post} />
-                        </header>
+            <section className="relative overflow-hidden border-b border-stone-200 bg-stone-50">
+                <div
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_58%_at_16%_0%,rgba(255,255,255,0.95),transparent_60%)]"
+                    aria-hidden="true"
+                />
+                <Container className="relative">
+                    <div className="grid gap-10 py-16 md:gap-12 md:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+                        <div>
+                            <header className="max-w-3xl">
+                                <BlogArticleIntro post={post} />
+                                <h1 className="ps-display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.02] text-stone-900">
+                                    Beste magnesium supplementen van 2026
+                                </h1>
+                                <BlogArticleExcerpt post={post} />
+                            </header>
 
-                        <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
-                            Vergeleken op elementaire dosering, vorm (bisglycinaat, citraat, tauraat),
-                            transparantie en prijs per dag. Zo zie je snel welke richting bij jouw situatie past.
-                        </p>
-
-                        <div className="mt-6 grid gap-3 text-sm text-stone-700 sm:grid-cols-2">
-                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
-                                ✓ Gebaseerd op mg elementair magnesium per portie
-                            </div>
-                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
-                                ✓ Praktisch vergeleken op prijs per dag
-                            </div>
-                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
-                                ✓ Duidelijke keuze per vorm en gebruik
-                            </div>
-                            <div className="rounded-2xl border border-stone-200 bg-white px-4 py-3">
-                                ✓ Beste algemene keuze: {bestChoice?.name}
-                            </div>
-                        </div>
-
-                        <p className="mt-4 text-xs text-stone-400">
-                            Laatste update: maart 2026
-                        </p>
-
-                        <Disclosure />
-
-                        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                            <a
-                                href="#topkeuzes"
-                                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
-                            >
-                                Bekijk beste keuzes
-                            </a>
-
-                            <Link
-                                href="/magnesium-vergelijken"
-                                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:bg-stone-50"
-                            >
-                                Vergelijk alle vormen
-                            </Link>
-                        </div>
-
-                        <p className="mt-4 text-xs text-stone-400">
-                            Benieuwd hoe we beoordelen?{" "}
-                            <Link
-                                href="/methodologie"
-                                className="text-stone-500 underline-offset-4 hover:underline"
-                            >
-                                Lees onze methodologie
-                            </Link>
-                        </p>
-                    </div>
-
-                    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
-                        <p className="text-sm font-medium text-stone-500">
-                            Snelle samenvatting
-                        </p>
-
-                        <div className="mt-4 rounded-2xl border border-stone-200 bg-stone-100 p-4">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-stone-800">
-                                Beste algemene keuze
+                            <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
+                                Vergeleken op elementaire dosering, vorm, transparantie en prijs per dag,
+                                zodat je sneller ziet welke richting past bij dagelijks gebruik,
+                                ontspanning of prijsbewuste keuze.
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-stone-900">
-                                {bestChoice?.name}
-                            </p>
-                            <p className="mt-2 text-sm leading-6 text-stone-600">
-                                Vaak de meest logische start als je een milde, alledaagse magnesiumbron zoekt met aandacht voor verdragenheid.
-                            </p>
-                        </div>
 
-                        <ul className="mt-5 space-y-3 text-sm leading-6 text-stone-600">
-                            <li>• Bisglycinaat: mild, vaak goed in dagelijkse routine</li>
-                            <li>• Tauraat: past vaak bij ontspanning en avondgebruik</li>
-                            <li>• Citraat: flexibel doseren, let op darmgevoeligheid</li>
-                        </ul>
+                            <div className="mt-6 flex flex-wrap gap-2">
+                                <span className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600">
+                                    mg elementair magnesium per portie
+                                </span>
+                                <span className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600">
+                                    vorm en praktisch gebruik
+                                </span>
+                                <span className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600">
+                                    transparantie en prijs per dag
+                                </span>
+                            </div>
 
-                        {bestChoice ? (
-                            <>
-                                <AffiliateLink
-                                    affiliateSlug={bestChoice.affiliateSlug}
-                                    pageType="beste-magnesium"
-                                    position="hero_sidebar"
-                                    className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-4 py-3 text-sm font-medium text-white hover:bg-stone-800"
+                            <p className="mt-4 text-xs text-stone-400">
+                                Laatste update: maart 2026
+                            </p>
+
+                            <Disclosure />
+
+                            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                <a
+                                    href="#topkeuzes"
+                                    className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
                                 >
-                                    Bekijk actuele prijs bij aanbieder →
-                                </AffiliateLink>
-                                <DisclosureSmall />
-                            </>
-                        ) : null}
+                                    Bekijk beste keuzes
+                                </a>
+
+                                <Link
+                                    href="/magnesium-vergelijken"
+                                    className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300 hover:bg-stone-50"
+                                >
+                                    Vergelijk alle vormen
+                                </Link>
+                            </div>
+
+                            <p className="mt-4 text-xs text-stone-400">
+                                Benieuwd hoe we beoordelen?{" "}
+                                <Link
+                                    href="/methodologie"
+                                    className="text-stone-500 underline-offset-4 hover:underline"
+                                >
+                                    Lees onze methodologie
+                                </Link>
+                            </p>
+                        </div>
+
+                        <div className="rounded-[1.75rem] border border-stone-200/90 bg-white/95 p-6 shadow-[0_12px_40px_-18px_rgba(28,25,23,0.18)] ring-1 ring-stone-900/[0.03] backdrop-blur-[2px]">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                                In één oogopslag
+                            </p>
+
+                            <div className="mt-5 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                                    Beste algemene keuze
+                                </p>
+                                <p className="mt-1.5 text-lg font-semibold tracking-tight text-stone-900">
+                                    {bestChoice?.name}
+                                </p>
+                                <p className="mt-2 text-sm leading-6 text-stone-600">
+                                    Vaak de logischste start als je een milde vorm zoekt die goed past
+                                    in een dagelijkse routine.
+                                </p>
+                            </div>
+
+                            <div className="mt-5 space-y-4">
+                                <div className="border-b border-stone-100 pb-4">
+                                    <p className="text-sm font-semibold text-stone-900">Snelle verschillen</p>
+                                    <ul className="mt-2.5 space-y-2 text-sm leading-6 text-stone-600">
+                                        <li>Bisglycinaat: mild en vaak praktisch in dagelijkse routine</li>
+                                        <li>Tauraat: vaak gekozen rond ontspanning en avondgebruik</li>
+                                        <li>Citraat: flexibel doseren, let op darmgevoeligheid</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-stone-900">Snelle routes</p>
+                                    <div className="mt-3 flex flex-col gap-2.5">
+                                        <a
+                                            href="#topkeuzes"
+                                            className="inline-flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-stone-300 hover:bg-white hover:text-stone-900"
+                                        >
+                                            <span>Ga naar topkeuzes</span>
+                                            <span aria-hidden="true">→</span>
+                                        </a>
+                                        <a
+                                            href="#vergelijking"
+                                            className="inline-flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-stone-300 hover:bg-white hover:text-stone-900"
+                                        >
+                                            <span>Ga naar vergelijkingstabel</span>
+                                            <span aria-hidden="true">→</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {bestChoice ? (
+                                <>
+                                    <AffiliateLink
+                                        affiliateSlug={bestChoice.affiliateSlug}
+                                        pageType="beste-magnesium"
+                                        position="hero_sidebar"
+                                        className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-stone-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
+                                    >
+                                        Bekijk actuele prijs bij aanbieder →
+                                    </AffiliateLink>
+                                    <DisclosureSmall />
+                                </>
+                            ) : null}
+                        </div>
                     </div>
-                </div>
                 </Container>
             </section>
 
@@ -200,84 +227,89 @@ export default function BesteMagnesiumPage() {
                         return (
                             <article
                                 key={product.slug}
-                                className={`flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm transition ${
+                                className={`flex flex-col overflow-hidden rounded-[1.75rem] border bg-white shadow-[0_8px_30px_-18px_rgba(28,25,23,0.16)] ring-1 ring-stone-900/[0.03] transition ${
                                     isTop
-                                        ? "border-stone-300 ring-1 ring-stone-200"
-                                        : "border-stone-200"
+                                        ? "border-stone-300 ring-stone-200"
+                                        : "border-stone-200/90"
                                 }`}
                             >
                                 {isTop && (
-                                    <div className="bg-stone-900 px-6 py-2 text-center text-xs font-semibold uppercase tracking-wide text-white">
+                                    <div className="bg-stone-900 px-6 py-2 text-center text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-white">
                                         Onze aanrader
                                     </div>
                                 )}
 
-                                <div className="flex flex-1 flex-col p-6">
+                                <div className="flex flex-1 flex-col p-6 md:p-7">
                                     <span
-                                        className={`inline-flex self-start rounded-full px-3 py-1 text-xs font-medium ${
+                                        className={`inline-flex self-start rounded-full border px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] ${
                                             isTop
-                                                ? "bg-stone-100 text-stone-800"
-                                                : "bg-stone-100 text-stone-700"
+                                                ? "border-stone-200 bg-stone-50 text-stone-700"
+                                                : "border-stone-200 bg-stone-50 text-stone-600"
                                         }`}
                                     >
                                         {product.badge}
                                     </span>
 
                                     {product.imageSrc && (
-                                        <div className="relative mx-auto mt-5 h-28 w-28 shrink-0">
+                                        <div className="relative mx-auto mt-6 flex h-32 w-32 shrink-0 items-center justify-center rounded-[1.5rem] border border-stone-200 bg-stone-50">
                                             <Image
                                                 src={product.imageSrc}
                                                 alt={product.imageAlt ?? product.name}
                                                 fill
-                                                sizes="112px"
-                                                className="object-contain"
+                                                sizes="128px"
+                                                className="object-contain p-4"
                                             />
                                         </div>
                                     )}
 
-                                    <div className="mt-4 flex items-start justify-between gap-3">
+                                    <div className="mt-5 flex items-start justify-between gap-3">
                                         <h3
-                                            className={`font-semibold leading-tight ${
-                                                isTop ? "text-xl" : "text-lg"
+                                            className={`font-semibold leading-tight tracking-tight ${
+                                                isTop ? "text-[1.375rem]" : "text-[1.25rem]"
                                             }`}
                                         >
                                             {product.name}
                                         </h3>
-                                        <div className="shrink-0 rounded-xl bg-stone-100 px-3 py-1.5 text-sm font-semibold">
-                                            {product.score}/10
+                                        <div className="shrink-0 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-right">
+                                            <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-stone-500">
+                                                Score
+                                            </p>
+                                            <p className="mt-1 text-lg font-semibold text-stone-900">
+                                                {product.score}/10
+                                            </p>
                                         </div>
                                     </div>
 
-                                    <p className="mt-2 text-sm leading-6 text-stone-600">
+                                    <p className="mt-3 text-sm leading-6 text-stone-600">
                                         {product.description}
                                     </p>
 
-                                    <ul className="mt-5 space-y-2.5 border-t border-stone-100 pt-5 text-sm">
-                                        <li className="flex gap-3">
-                                            <span className="w-24 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-stone-400">
+                                    <div className="mt-5 grid gap-2">
+                                        <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
+                                            <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-stone-500">
                                                 Elementair Mg
-                                            </span>
-                                            <span className="text-stone-700">
+                                            </p>
+                                            <p className="mt-1 text-sm font-medium text-stone-900">
                                                 {product.elementMg} mg
-                                            </span>
-                                        </li>
-                                        <li className="flex gap-3">
-                                            <span className="w-24 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-stone-400">
+                                            </p>
+                                        </div>
+                                        <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
+                                            <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-stone-500">
                                                 Vorm
-                                            </span>
-                                            <span className="text-stone-700">
+                                            </p>
+                                            <p className="mt-1 text-sm font-medium text-stone-900">
                                                 {product.form}
-                                            </span>
-                                        </li>
-                                        <li className="flex gap-3">
-                                            <span className="w-24 shrink-0 pt-0.5 text-xs font-medium uppercase tracking-wide text-stone-400">
+                                            </p>
+                                        </div>
+                                        <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
+                                            <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-stone-500">
                                                 Voor wie
-                                            </span>
-                                            <span className="text-stone-700">
+                                            </p>
+                                            <p className="mt-1 text-sm font-medium text-stone-900">
                                                 {voorWie}
-                                            </span>
-                                        </li>
-                                    </ul>
+                                            </p>
+                                        </div>
+                                    </div>
 
                                     <div className="flex-1" />
 
