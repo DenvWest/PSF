@@ -1,17 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Script from "next/script";
-import { DM_Serif_Display } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import "./globals.css";
-
-const dmSerif = DM_Serif_Display({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -38,7 +30,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="nl" className={dmSerif.variable}>
+    <html lang="nl">
       <head>
         <meta
           name="0107f4118169ab8"
