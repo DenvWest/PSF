@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -16,6 +17,15 @@ type ZohoCreateResponse = {
     message?: string;
     status?: string;
   }>;
+};
+
+type SmtpConfig = {
+  host: string;
+  inbox: string;
+  outbox: string;
+  password: string;
+  port: number;
+  secure: boolean;
 };
 
 function isValidEmail(email: string): boolean {
@@ -64,62 +74,125 @@ export async function POST(request: Request) {
   const accountsDomain = process.env.ZOHO_ACCOUNTS_DOMAIN?.trim() || "https://accounts.zoho.eu";
   const apiDomain = process.env.ZOHO_API_DOMAIN?.trim() || "https://www.zohoapis.eu";
   const moduleName = process.env.ZOHO_CRM_MODULE?.trim() || "Leads";
+  const smtpConfig = getSmtpConfig();
 
-  if (!clientId || !clientSecret || !refreshToken) {
+  if (!hasZohoConfig({ clientId, clientSecret, refreshToken }) && !smtpConfig) {
     return NextResponse.json(
       {
         error:
-          "Zoho CRM is nog niet geconfigureerd. Vul ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET en ZOHO_REFRESH_TOKEN in .env.local in.",
+          "Contact is nog niet geconfigureerd. Vul Zoho CRM-gegevens of SMTP-gegevens in op de server.",
       },
       { status: 503 },
     );
   }
 
-  try {
-    const accessToken = await getZohoAccessToken({
-      clientId,
-      clientSecret,
-      refreshToken,
-      accountsDomain,
-    });
+  if (hasZohoConfig({ clientId, clientSecret, refreshToken })) {
+    try {
+      const accessToken = await getZohoAccessToken({
+        clientId,
+        clientSecret,
+        refreshToken,
+        accountsDomain,
+      });
 
-    const zohoResponse = await fetch(`${apiDomain}/crm/v8/${moduleName}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: [
-          {
-            Last_Name: nameStr,
-            Email: emailStr,
-            Description: messageStr,
-            Lead_Source: "Website Contact Form",
-          },
-        ],
-      }),
-      cache: "no-store",
-    });
+      const zohoResponse = await fetch(`${apiDomain}/crm/v8/${moduleName}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: [
+            {
+              Last_Name: nameStr,
+              Email: emailStr,
+              Description: messageStr,
+              Lead_Source: "Website Contact Form",
+            },
+          ],
+        }),
+        cache: "no-store",
+      });
 
-    const zohoJson = (await zohoResponse.json().catch(() => null)) as ZohoCreateResponse | null;
+      const zohoJson = (await zohoResponse.json().catch(() => null)) as ZohoCreateResponse | null;
 
-    if (!zohoResponse.ok || zohoJson?.data?.[0]?.status !== "success") {
-      console.error("[api/contact] zoho create error:", zohoJson);
-      return NextResponse.json(
-        { error: getZohoErrorMessage(zohoJson) },
-        { status: zohoResponse.ok ? 502 : zohoResponse.status },
-      );
+      if (!zohoResponse.ok || zohoJson?.data?.[0]?.status !== "success") {
+        console.error("[api/contact] zoho create error:", zohoJson);
+        return NextResponse.json(
+          { error: getZohoErrorMessage(zohoJson) },
+          { status: zohoResponse.ok ? 502 : zohoResponse.status },
+        );
+      }
+
+      return NextResponse.json({ message: "Message successfully sent." }, { status: 200 });
+    } catch (err) {
+      console.error("[api/contact] zoho error:", err);
     }
+  }
 
-    return NextResponse.json({ message: "Message successfully sent." }, { status: 200 });
-  } catch (err) {
-    console.error("[api/contact] zoho error:", err);
+  if (!smtpConfig) {
     return NextResponse.json(
       { error: "Bericht kon niet naar Zoho CRM worden verzonden. Probeer het later opnieuw." },
       { status: 500 },
     );
   }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpConfig.host,
+      port: smtpConfig.port,
+      secure: smtpConfig.secure,
+      auth: {
+        user: smtpConfig.outbox,
+        pass: smtpConfig.password,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Perfect Supplement contact" <${smtpConfig.outbox}>`,
+      to: smtpConfig.inbox,
+      replyTo: emailStr,
+      subject: `[Contact] ${nameStr}`,
+      text: `Naam: ${nameStr}\nE-mail: ${emailStr}\n\n${messageStr}`,
+      html: `<p><strong>Naam:</strong> ${escapeHtml(nameStr)}</p><p><strong>E-mail:</strong> ${escapeHtml(emailStr)}</p><p>${escapeHtml(messageStr).replace(/\n/g, "<br/>")}</p>`,
+    });
+
+    return NextResponse.json({ message: "Message successfully sent." }, { status: 200 });
+  } catch (err) {
+    console.error("[api/contact] smtp error:", err);
+    return NextResponse.json(
+      { error: "E-mail kon niet worden verzonden. Probeer het later opnieuw." },
+      { status: 500 },
+    );
+  }
+}
+
+function hasZohoConfig(config: {
+  clientId?: string;
+  clientSecret?: string;
+  refreshToken?: string;
+}): config is { clientId: string; clientSecret: string; refreshToken: string } {
+  return Boolean(config.clientId && config.clientSecret && config.refreshToken);
+}
+
+function getSmtpConfig(): SmtpConfig | null {
+  const outbox =
+    process.env.OUTBOX_EMAIL?.trim() || process.env.ZOHO_MAIL_USER?.trim() || "";
+  const password = process.env.OUTBOX_EMAIL_PASSWORD || process.env.ZOHO_MAIL_PASSWORD || "";
+  const inbox = process.env.INBOX_EMAIL?.trim() || outbox;
+
+  if (!outbox || !password || !inbox) {
+    return null;
+  }
+
+  return {
+    host: process.env.SMTP_HOST?.trim() || "smtp.zoho.com",
+    inbox,
+    outbox,
+    password,
+    port: parseInt(process.env.SMTP_PORT ?? "465", 10),
+    secure: process.env.SMTP_SECURE !== "false",
+  };
 }
 
 async function getZohoAccessToken(config: ZohoTokenConfig): Promise<string> {
@@ -157,4 +230,12 @@ function getZohoErrorMessage(response: ZohoCreateResponse | null): string {
   }
 
   return "Zoho CRM accepteerde het bericht niet.";
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }

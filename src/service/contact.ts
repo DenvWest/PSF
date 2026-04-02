@@ -24,6 +24,15 @@ export async function handleSendEmail(data: ContactFormData): Promise<ContactApi
     body: JSON.stringify(data),
   });
 
-  const json = (await res.json()) as ContactApiResponse;
-  return json;
+  const contentType = res.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    return (await res.json()) as ContactApiResponse;
+  }
+
+  if (!res.ok) {
+    return { error: `Serverfout (${res.status}). Probeer het later opnieuw.` };
+  }
+
+  return { message: "Message successfully sent." };
 }
