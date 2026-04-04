@@ -1,33 +1,32 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 
-const startLinks = [
+const quickLinks = [
   {
-    title: "Omega 3 vergelijken",
-    description: "EPA/DHA-gehalte, prijs en kwaliteit naast elkaar.",
-    href: "/omega-3-vergelijken",
+    title: "Kennisbank",
+    description: "Begrippen en context voor zelfverzekerde keuzes.",
+    href: "/kennisbank",
   },
   {
-    title: "Beste omega 3 keuzes",
-    description: "Aanbevelingen per situatie en budget.",
-    href: "/beste-omega-3-supplement",
+    title: "Methodologie",
+    description: "Hoe we informatie beoordelen en vergelijken.",
+    href: "/methodologie",
   },
   {
-    title: "Magnesium vergelijken",
-    description: "Vormen, doseringen en wanneer het relevant is.",
-    href: "/magnesium-vergelijken",
+    title: "Veelgestelde vragen",
+    description: "Praktische antwoorden om snel verder te gaan.",
+    href: "/faqs",
   },
   {
-    title: "Beste magnesium keuzes",
-    description: "Topkeuzes per vorm en gebruik, met duidelijke onderbouwing.",
-    href: "/beste-magnesium",
+    title: "Blog",
+    description: "Leefstijl, routines en evidence-based tips.",
+    href: "/blog",
   },
 ];
 
 export default function Hero() {
   return (
     <section className="relative border-b border-stone-200/60">
-      {/* Soft top wash — ties hero to page without feeling empty */}
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_-8%,rgba(255,255,255,0.85),transparent_58%)]"
         aria-hidden
@@ -38,44 +37,34 @@ export default function Hero() {
       />
 
       <Container className="relative">
-        <div className="grid gap-10 pt-16 pb-24 sm:gap-12 sm:pt-20 sm:pb-28 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start lg:gap-16 lg:pt-6 xl:gap-[5.5rem]">
-          {/* Left: eyebrow + headline + subtext + CTAs — lg:pt-3 lines up with card eyebrow row */}
-          <div className="flex min-w-0 flex-col lg:max-w-[min(100%,40rem)] xl:max-w-[min(100%,42rem)] lg:pt-3">
-            <p className="ps-eyebrow">
-              PerfectSupplement · Omega 3 &amp; Magnesium
-            </p>
-            <h1 className="home-hero-title ps-display mt-5 text-stone-900">
-              Evidence-based supplementinformatie.
+        <div className="home-hero-grid grid gap-10 pb-[3em] sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start lg:gap-16 xl:gap-[5.5rem]">
+          <div className="home-hero-column flex min-w-0 flex-col lg:max-w-[min(100%,40rem)] xl:max-w-[min(100%,42rem)] lg:pt-1">
+            <h1 className="home-hero-title ps-display text-stone-900">
+              Voor mannen 40+ die merken dat hun energie verandert
             </h1>
-            <p className="home-lead mt-5 text-stone-600">
-              Vergelijk dosering, kwaliteit en prijs per supplement.
-              Duidelijk uitgelegd, zonder overbodige ruis.
+            <p className="home-lead home-hero-sub mt-5 text-stone-600">
+              <span className="block">
+                Wat voelt als ‘gewoon ouder worden’ is vaak een hormonale verschuiving.
+              </span>
+              <span className="mt-2 block">
+                Krijg weer grip met de juiste leefstijl en gerichte supplementen.
+              </span>
             </p>
 
-            <div className="mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-3">
-              <Link
-                href="/supplementen"
-                className="ps-btn-primary-hero w-full text-center sm:w-auto sm:min-w-[12rem]"
-              >
-                Bekijk supplementen
-              </Link>
-              <Link
-                href="/methodologie"
-                className="ps-btn-secondary-hero w-full text-center sm:w-auto"
-              >
-                Bekijk methodologie
+            <div className="mt-9 sm:mt-10">
+              <Link href="#step-care" className="ps-btn-primary-hero inline-flex w-full max-w-md justify-center text-center sm:w-auto sm:min-w-[14rem]">
+                Start jouw pad
               </Link>
             </div>
           </div>
 
-          {/* Right: quick-nav — lg:pt-3 matches left column so eyebrow rows align */}
-          <div className="w-full border-t border-stone-200/70 pt-10 lg:min-w-0 lg:border-t-0 lg:pt-3">
+          <div className="w-full border-t border-stone-200/70 pt-10 lg:min-w-0 lg:border-t-0 lg:pt-1">
             <div className="overflow-hidden rounded-2xl border border-stone-200/80 bg-white/95 shadow-[0_8px_40px_-12px_rgba(28,25,23,0.12),0_2px_8px_rgba(28,25,23,0.04)] ring-1 ring-stone-900/[0.04] backdrop-blur-[2px]">
               <div className="border-b border-stone-100/90 bg-gradient-to-b from-stone-50 to-stone-50/30 px-6 py-3">
-                <p className="ps-eyebrow">Direct naar</p>
+                <p className="ps-eyebrow">Direct verder</p>
               </div>
               <ul className="divide-y divide-stone-100/90">
-                {startLinks.map((item) => (
+                {quickLinks.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}

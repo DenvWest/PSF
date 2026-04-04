@@ -1,12 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import BlogCard, {
   BLOG_CARD_GRID_CLASS,
   BLOG_CARD_GRID_SECTION_TOP_CLASS,
 } from "@/components/blog/BlogCard";
 import Hero from "@/components/homepage/Hero";
+import JourneySection from "@/components/homepage/JourneySection";
 import Container from "@/components/layout/Container";
 import { getBlogPostBySlug } from "@/data/blog-posts";
 import "./homepage.css";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Voor mannen 40+: grip op energie, slaap en leefstijl—stap voor stap, zonder harde sales.",
+};
 
 /** Same articles as before (routes unchanged); data comes from blog-posts for covers. */
 const FEATURED_ARTICLE_SLUGS = [
@@ -15,85 +23,16 @@ const FEATURED_ARTICLE_SLUGS = [
   "magnesium-vergelijken",
 ] as const;
 
-const brandPillars = [
-  {
-    label: "Zorgvuldig geselecteerd",
-    text: "Elk supplement is beoordeeld op samenstelling, dosering en transparantie van de fabrikant. Geen aannames, wel concrete criteria.",
-    href: "/supplementen",
-    linkLabel: "Bekijk supplementen",
-  },
-  {
-    label: "Helder toegelicht",
-    text: "Uitleg over de verschillen in vorm, toepassing en kwaliteit — zodat je begrijpt waarom het ene supplement beter past dan het andere.",
-    href: "/blog",
-    linkLabel: "Naar het blog",
-  },
-  {
-    label: "Zonder overbodige ruis",
-    text: "De methodologie legt uit welke afwegingen worden gemaakt en welke criteria tellen. Controleerbaar en consistent.",
-    href: "/methodologie",
-    linkLabel: "Lees de methodologie",
-  },
-];
-
-function BrandSection() {
-  return (
-    <section className="bg-white">
-      <Container>
-        <div className="py-20 md:py-28">
-          <div className="max-w-xl">
-            <p className="ps-eyebrow">Waar je op kunt vertrouwen</p>
-            <h2 className="ps-display mt-5 text-stone-900">
-              Goede keuzes beginnen bij duidelijke informatie.
-            </h2>
-            <p className="home-lead mt-5 text-stone-600">
-              Supplementen vergelijken op dosering, kwaliteit en prijs — zonder vage claims. Alleen wat relevant is voor een concrete beslissing.
-            </p>
-          </div>
-
-          <div className="mt-14 grid grid-cols-1 gap-4 sm:mt-16 sm:grid-cols-3 sm:gap-5 lg:gap-6">
-            {brandPillars.map((pillar) => (
-              <Link
-                key={pillar.href}
-                href={pillar.href}
-                className="group flex h-full min-h-0 flex-col rounded-xl border border-stone-200/90 bg-white p-8 shadow-[0_1px_3px_rgba(28,25,23,0.04)] ring-1 ring-stone-900/[0.03] transition-all duration-200 hover:border-stone-300 hover:bg-stone-50/50 hover:shadow-[0_10px_32px_-12px_rgba(28,25,23,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/45 focus-visible:ring-offset-2 md:p-9"
-              >
-                <p className="text-[0.9375rem] font-semibold leading-snug tracking-[-0.02em] text-stone-900">
-                  {pillar.label}
-                </p>
-                <p className="home-pillar-text mt-4 flex-1 text-stone-600">
-                  {pillar.text}
-                </p>
-                <span className="mt-8 inline-flex items-center gap-2 text-[0.8125rem] font-medium text-stone-600 transition-colors duration-150 group-hover:text-stone-900">
-                  <span className="border-b border-stone-300/80 pb-px transition-[border-color,color] duration-150 group-hover:border-stone-600 group-hover:text-stone-900">
-                    {pillar.linkLabel}
-                  </span>
-                  <span
-                    className="text-stone-400 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-stone-600"
-                    aria-hidden
-                  >
-                    →
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
 function BlogPreview() {
   const featuredPosts = FEATURED_ARTICLE_SLUGS.map((slug) =>
     getBlogPostBySlug(slug)
   ).filter((post): post is NonNullable<typeof post> => post != null);
 
   return (
-    <section className="py-20 md:py-24">
+    <section className="home-blog-section border-b border-stone-200/60">
       <div className="ps-divider" />
       <Container>
-        <div className="pt-20 md:pt-24">
+        <div className="home-blog-section-inner pt-[3em] pb-[3em] md:pt-[3.5em] md:pb-[3.5em]">
           <div className="flex items-end justify-between gap-6">
             <div>
               <p className="ps-eyebrow">Blog</p>
@@ -129,7 +68,7 @@ export default function HomePage() {
   return (
     <div className="home">
       <Hero />
-      <BrandSection />
+      <JourneySection />
       <BlogPreview />
     </div>
   );
