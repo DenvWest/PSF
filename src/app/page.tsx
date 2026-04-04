@@ -32,7 +32,7 @@ function BlogPreview() {
     <section className="home-blog-section border-b border-stone-200/60">
       <div className="ps-divider" />
       <Container>
-        <div className="home-blog-section-inner pt-[3em] pb-[3em] md:pt-[3.5em] md:pb-[3.5em]">
+        <div className="home-blog-section-inner py-16 md:py-20">
           <div className="flex items-end justify-between gap-6">
             <div>
               <p className="ps-eyebrow">Blog</p>

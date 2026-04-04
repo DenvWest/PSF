@@ -4,52 +4,54 @@ import StepCard, { type StepCardProps } from "@/components/homepage/StepCard";
 const STEPS: StepCardProps[] = [
   {
     step: 1,
-    title: "Herken Symptomen",
+    title: "Symptomen",
     description: "Vermoeid? Slechter slapen? Minder drive?",
     href: "/faqs",
     ctaLabel: "Ontdek waar je staat",
   },
   {
     step: 2,
-    title: "Herstel Leefstijl",
-    description: "Slaap, training, voeding en stress vormen je basis.",
+    title: "Leefstijl",
+    description: "Slaap, training en voeding als basis",
     href: "/methodologie",
   },
   {
     step: 3,
-    title: "Gerichte Supplementen",
-    description: "Ondersteun je lichaam gericht wanneer de basis staat.",
+    title: "Supplementen",
+    description: "Gerichte ondersteuning wanneer nodig",
     href: "/supplementen",
   },
   {
     step: 4,
-    title: "Volg & Optimaliseer",
-    description: "Meet je progressie en blijf verbeteren.",
+    title: "Progressie",
+    description: "Blijf verbeteren en meten",
     href: "/blog",
   },
 ];
 
-/**
- * Step-care navigatie: educatie → leefstijl → supplementen → vervolg.
- */
 export default function JourneySection() {
   return (
     <section
       id="step-care"
-      className="home-journey-section border-b border-stone-200/60 bg-white"
+      className="scroll-mt-24 border-b border-stone-200/50 bg-white"
       aria-labelledby="step-care-heading"
     >
-      <Container>
-        <div className="home-journey-inner max-w-[65ch] lg:max-w-none">
-          <p className="ps-eyebrow">Jouw pad</p>
-          <h2 id="step-care-heading" className="home-journey-title ps-display mt-5 text-stone-900">
-            Step-Care Pad
-          </h2>
-          <p className="mt-4 max-w-[65ch] text-[0.9375rem] leading-[1.75] text-stone-600">
-            Van herkenning naar routine: volg de stappen in je eigen tempo.
-          </p>
+      <Container className="max-w-screen-xl py-14 md:py-20">
+        <div className="mx-auto max-w-screen-xl">
+          <div className="mx-auto max-w-[65ch] text-center md:mx-0 md:max-w-none md:text-left">
+            <p className="ps-eyebrow">Step-care</p>
+            <h2
+              id="step-care-heading"
+              className="mt-4 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl"
+            >
+              Vier stappen, jouw tempo
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-stone-600 md:max-w-xl">
+              Van herkenning naar routine — zonder drukte.
+            </p>
+          </div>
 
-          <div className="step-care-grid mt-10 lg:mt-12">
+          <div className="mt-10 grid grid-cols-1 gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((item) => (
               <StepCard key={item.step} {...item} />
             ))}
