@@ -53,10 +53,10 @@ export default function ProblemSection() {
               key={item.title}
               className="rounded-[1.25rem] bg-white/85 px-8 py-9 shadow-[0_24px_48px_-28px_rgba(20,20,20,0.08)] sm:px-9 sm:py-10"
             >
-              <h3 className="font-display text-xl font-light tracking-tight text-[var(--ps-ink)] sm:text-[1.35rem]">
+              <h3 className="font-display text-xl font-light tracking-wide text-[var(--ps-ink)] sm:text-[1.35rem]">
                 {item.title}
               </h3>
-              <p className="mt-5 font-sans text-[0.9375rem] leading-[1.75] text-[var(--ps-body)] sm:text-base">
+              <p className="mt-5 text-[0.9375rem] leading-[1.75] text-[var(--ps-body)] sm:text-base">
                 {item.text}
               </p>
             </article>

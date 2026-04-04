@@ -22,7 +22,7 @@ export default function ContentPageLayout({
                         {eyebrow ? (
                             <p className="ps-eyebrow">{eyebrow}</p>
                         ) : null}
-                        <h1 className="ps-display mt-4 text-3xl leading-[1.12] tracking-tight text-stone-900 md:text-[2.125rem]">
+                        <h1 className="ps-display mt-4 text-3xl leading-[1.12] text-stone-900 md:text-[2.125rem]">
                             {title}
                         </h1>
                         {intro ? (

@@ -21,14 +21,14 @@ export default function LandingFooter() {
       <div className="mx-auto max-w-[88rem] px-5 sm:px-8 lg:px-12">
         <div className="flex flex-col gap-14 lg:flex-row lg:justify-between">
           <div>
-            <p className="font-display text-xl font-medium tracking-tight text-[var(--ps-ink)]">
+            <p className="font-display text-xl font-medium tracking-wide text-[var(--ps-ink)]">
               Perfect Supplement
             </p>
-            <p className="mt-4 max-w-md font-sans text-[0.9375rem] leading-[1.75] text-[var(--ps-body)]">
+            <p className="mt-4 max-w-md text-[0.9375rem] leading-[1.75] text-[var(--ps-body)]">
               Premium supplementen met nadruk op omega-3 en magnesium—duidelijk
               uitgelegd, zorgvuldig gekozen.
             </p>
-            <p className="mt-8 font-sans text-[0.9375rem] text-[var(--ps-body)]">
+            <p className="mt-8 text-[0.9375rem] text-[var(--ps-body)]">
               <span className="text-[var(--ps-muted)]">Contact:</span>{" "}
               <a
                 href="mailto:hello@perfectsupplement.com"
@@ -44,7 +44,7 @@ export default function LandingFooter() {
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="font-sans text-sm text-[var(--ps-body)] hover:text-[var(--ps-ink)]"
+                    className="text-sm text-[var(--ps-body)] hover:text-[var(--ps-ink)]"
                   >
                     {l.label}
                   </Link>
@@ -58,7 +58,7 @@ export default function LandingFooter() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-sans text-sm text-[var(--ps-muted)] hover:text-[var(--ps-ink)]"
+                    className="text-sm text-[var(--ps-muted)] hover:text-[var(--ps-ink)]"
                   >
                     {s.label}
                   </a>

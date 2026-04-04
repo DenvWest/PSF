@@ -75,9 +75,8 @@ export async function POST(request: Request) {
   const apiDomain = process.env.ZOHO_API_DOMAIN?.trim() || "https://www.zohoapis.eu";
   const moduleName = process.env.ZOHO_CRM_MODULE?.trim() || "Leads";
   const smtpConfig = getSmtpConfig();
-  const zohoConfig = hasZohoConfig({ clientId, clientSecret, refreshToken })
-    ? { clientId, clientSecret, refreshToken }
-    : null;
+  const zohoInput = { clientId, clientSecret, refreshToken };
+  const zohoConfig = hasZohoConfig(zohoInput) ? zohoInput : null;
 
   if (!zohoConfig && !smtpConfig) {
     return NextResponse.json(

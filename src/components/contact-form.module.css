@@ -40,6 +40,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 0.5rem 0.75rem;
+  font-family: inherit;
   font-size: 0.9375rem;
   border: 1px solid #d6d3d1;
   border-radius: 0.5rem;
@@ -64,6 +65,7 @@
   width: 100%;
   margin-top: 1rem;
   padding: 0.625rem 1rem;
+  font-family: inherit;
   font-size: 0.9375rem;
   font-weight: 600;
   color: #fff;

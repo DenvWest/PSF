@@ -18,7 +18,7 @@ export default function ContentSection({
         <section id={id} className="py-12 md:py-16">
             <Container>
                 <div className="max-w-2xl">
-                    <h2 className="ps-display text-[1.625rem] leading-[1.15] tracking-tight text-stone-900 md:text-[1.875rem]">
+                    <h2 className="ps-display text-[1.625rem] leading-[1.15] text-stone-900 md:text-[1.875rem]">
                         {title}
                     </h2>
                     {description ? (

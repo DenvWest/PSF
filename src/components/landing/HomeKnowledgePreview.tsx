@@ -25,16 +25,16 @@ export default function HomeKnowledgePreview() {
     >
       <SectionShell>
         <div className="mx-auto max-w-3xl">
-          <p className="font-sans text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-[var(--ps-muted)] sm:text-xs">
+          <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-[var(--ps-muted)] sm:text-xs">
             Blog
           </p>
           <h2
             id="kennis-heading"
-            className="font-display mt-8 text-[clamp(1.875rem,4vw,2.75rem)] font-light leading-[1.12] tracking-[-0.03em] text-[var(--ps-ink)]"
+            className="font-display mt-8 text-[clamp(1.875rem,4vw,2.75rem)] font-light leading-[1.12] tracking-wide text-[var(--ps-ink)]"
           >
             Drie artikelen om mee te starten
           </h2>
-          <p className="mt-8 max-w-2xl font-sans text-[1.0625rem] leading-[1.75] text-[var(--ps-body)] sm:text-lg">
+          <p className="mt-8 max-w-2xl text-[1.0625rem] leading-[1.75] text-[var(--ps-body)] sm:text-lg">
             Diepgaandere stof vind je in het blog. Hier drie ingangen die
             aansluiten bij omega-3 en magnesium.
           </p>
@@ -43,11 +43,11 @@ export default function HomeKnowledgePreview() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="group flex items-center justify-between gap-6 py-8 font-display text-[clamp(1.25rem,2.5vw,1.5rem)] font-light tracking-tight text-[var(--ps-ink)] transition hover:text-[var(--ps-charcoal)]"
+                  className="group flex items-center justify-between gap-6 py-8 font-display text-[clamp(1.25rem,2.5vw,1.5rem)] font-light tracking-wide text-[var(--ps-ink)] transition hover:text-[var(--ps-charcoal)]"
                 >
                   <span>{item.title}</span>
                   <span
-                    className="shrink-0 font-sans text-sm text-[var(--ps-muted)] transition group-hover:text-[var(--ps-ink)]"
+                    className="shrink-0 text-sm text-[var(--ps-muted)] transition group-hover:text-[var(--ps-ink)]"
                     aria-hidden
                   >
                     →
@@ -59,7 +59,7 @@ export default function HomeKnowledgePreview() {
           <p className="mt-12">
             <Link
               href="/blog"
-              className="font-sans text-sm font-medium text-[var(--ps-body)] underline-offset-[6px] transition hover:text-[var(--ps-ink)] hover:underline"
+              className="text-sm font-medium text-[var(--ps-body)] underline-offset-[6px] transition hover:text-[var(--ps-ink)] hover:underline"
             >
               Alle artikelen in het blog
             </Link>

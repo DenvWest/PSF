@@ -22,19 +22,19 @@ export default function SectionHeading({
   return (
     <div className={`mb-14 sm:mb-20 md:mb-24 ${alignClass}`}>
       {eyebrow ? (
-        <p className="font-sans text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-[var(--ps-muted)] sm:text-xs">
+        <p className="text-[0.6875rem] font-medium uppercase tracking-[0.28em] text-[var(--ps-muted)] sm:text-xs">
           {eyebrow}
         </p>
       ) : null}
       <TitleTag
         id={titleId}
-        className="font-display mt-5 text-[clamp(2rem,4.5vw,3.75rem)] font-light leading-[1.08] tracking-[-0.03em] text-[var(--ps-ink)] sm:mt-6 md:text-[clamp(2.25rem,4vw,4.25rem)]"
+        className="font-display mt-5 text-[clamp(2rem,4.5vw,3.75rem)] font-light leading-[1.08] tracking-wide text-[var(--ps-ink)] sm:mt-6 md:text-[clamp(2.25rem,4vw,4.25rem)]"
       >
         {title}
       </TitleTag>
       {description ? (
         <p
-          className={`mt-6 max-w-2xl font-sans text-[1.0625rem] leading-[1.7] text-[var(--ps-body)] sm:text-lg sm:leading-relaxed md:max-w-3xl md:text-xl md:leading-relaxed ${descClass}`}
+          className={`mt-6 max-w-2xl text-[1.0625rem] leading-[1.7] text-[var(--ps-body)] sm:text-lg sm:leading-relaxed md:max-w-3xl md:text-xl md:leading-relaxed ${descClass}`}
         >
           {description}
         </p>

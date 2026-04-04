@@ -23,7 +23,7 @@ export default function LandingNavbar() {
       >
         <Link
           href="/"
-          className="font-display text-lg font-medium tracking-tight text-[var(--ps-ink)]"
+          className="font-display text-lg font-medium tracking-wide text-[var(--ps-ink)]"
         >
           Perfect Supplement
         </Link>

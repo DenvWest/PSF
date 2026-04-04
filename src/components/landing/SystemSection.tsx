@@ -48,10 +48,10 @@ export default function SystemSection() {
               }}
               className="flex flex-col rounded-[1.35rem] bg-gradient-to-b from-white to-[var(--ps-cream)]/90 px-9 py-11 shadow-[0_20px_40px_-24px_rgba(20,20,20,0.07)] sm:px-10 sm:py-12"
             >
-              <h3 className="font-display text-2xl font-light tracking-tight text-[var(--ps-ink)]">
+              <h3 className="font-display text-2xl font-light tracking-wide text-[var(--ps-ink)]">
                 {pillar.name}
               </h3>
-              <p className="mt-6 font-sans text-[1rem] leading-[1.75] text-[var(--ps-body)] sm:text-[1.0625rem]">
+              <p className="mt-6 text-[1rem] leading-[1.75] text-[var(--ps-body)] sm:text-[1.0625rem]">
                 {pillar.text}
               </p>
             </motion.article>

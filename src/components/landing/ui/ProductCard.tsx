@@ -29,13 +29,13 @@ export default function ProductCard({
       className="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-[var(--ps-border)]/60 bg-white/90 px-9 py-11 sm:px-10 sm:py-12"
     >
       <div className="relative">
-        <h3 className="font-display text-[clamp(1.75rem,3vw,2.125rem)] font-light tracking-tight text-[var(--ps-ink)]">
+        <h3 className="font-display text-[clamp(1.75rem,3vw,2.125rem)] font-light tracking-wide text-[var(--ps-ink)]">
           {name}
         </h3>
-        <p className="mt-5 max-w-prose font-sans text-[1.0625rem] leading-relaxed text-[var(--ps-body)]">
+        <p className="mt-5 max-w-prose text-[1.0625rem] leading-relaxed text-[var(--ps-body)]">
           {subtitle}
         </p>
-        <ul className="mt-9 space-y-3.5 font-sans text-[0.9375rem] leading-[1.7] text-[var(--ps-body)] sm:text-base">
+        <ul className="mt-9 space-y-3.5 text-[0.9375rem] leading-[1.7] text-[var(--ps-body)] sm:text-base">
           {bullets.map((item) => (
             <li key={item} className="flex gap-4">
               <span

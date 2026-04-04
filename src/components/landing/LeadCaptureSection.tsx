@@ -19,11 +19,11 @@ export default function LeadCaptureSection() {
         >
           <h2
             id="newsletter-heading"
-            className="font-display text-[clamp(1.75rem,3.5vw,2.5rem)] font-light leading-[1.2] tracking-tight text-[var(--ps-ink)]"
+            className="font-display text-[clamp(1.75rem,3.5vw,2.5rem)] font-light leading-[1.2] tracking-wide text-[var(--ps-ink)]"
           >
             Ontvang de gids voor een sterker dagelijks fundament
           </h2>
-          <p className="mt-6 font-sans text-[1.0625rem] leading-[1.75] text-[var(--ps-body)] sm:text-lg">
+          <p className="mt-6 text-[1.0625rem] leading-[1.75] text-[var(--ps-body)] sm:text-lg">
             Inzichten over preventie, herstel en lange-termijnvitaliteit—rustige,
             doordachte updates. Geen schreeuwerige lijsten, geen kortingscircus.
           </p>
@@ -41,16 +41,16 @@ export default function LeadCaptureSection() {
               type="email"
               autoComplete="email"
               placeholder="uw@e-mail.nl"
-              className="min-h-[52px] flex-1 rounded-full border border-[var(--ps-border)]/80 bg-white px-6 font-sans text-[0.9375rem] text-[var(--ps-ink)] placeholder:text-[var(--ps-muted)] focus:border-[var(--ps-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--ps-accent)]"
+              className="min-h-[52px] flex-1 rounded-full border border-[var(--ps-border)]/80 bg-white px-6 text-[0.9375rem] text-[var(--ps-ink)] placeholder:text-[var(--ps-muted)] focus:border-[var(--ps-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--ps-accent)]"
             />
             <button
               type="submit"
-              className="min-h-[52px] rounded-full bg-[var(--ps-ink)] px-10 font-sans text-[0.8125rem] font-medium tracking-[0.06em] text-[var(--ps-cream)] transition hover:bg-[var(--ps-charcoal)]"
+              className="min-h-[52px] rounded-full bg-[var(--ps-ink)] px-10 text-[0.8125rem] font-medium tracking-[0.06em] text-[var(--ps-cream)] transition hover:bg-[var(--ps-charcoal)]"
             >
               Inschrijven
             </button>
           </form>
-          <p className="mt-6 font-sans text-xs leading-relaxed text-[var(--ps-muted)] sm:text-sm">
+          <p className="mt-6 text-xs leading-relaxed text-[var(--ps-muted)] sm:text-sm">
             U kunt zich op elk moment uitschrijven. Geen doorverkoop van
             adressen.
           </p>

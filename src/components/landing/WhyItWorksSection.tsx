@@ -36,10 +36,10 @@ export default function WhyItWorksSection() {
               key={block.title}
               className="rounded-[1.35rem] bg-white/90 px-8 py-10 shadow-[0_20px_44px_-28px_rgba(20,20,20,0.09)] sm:px-9 sm:py-11"
             >
-              <h3 className="font-display text-[1.25rem] font-light leading-snug tracking-tight text-[var(--ps-ink)] sm:text-[1.35rem]">
+              <h3 className="font-display text-[1.25rem] font-light leading-snug tracking-wide text-[var(--ps-ink)] sm:text-[1.35rem]">
                 {block.title}
               </h3>
-              <p className="mt-6 font-sans text-[0.9375rem] leading-[1.75] text-[var(--ps-body)] sm:text-base">
+              <p className="mt-6 text-[0.9375rem] leading-[1.75] text-[var(--ps-body)] sm:text-base">
                 {block.body}
               </p>
             </article>
