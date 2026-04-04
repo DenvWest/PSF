@@ -6,6 +6,7 @@ import BlogCard, {
 import Hero from "@/components/homepage/Hero";
 import Container from "@/components/layout/Container";
 import { getBlogPostBySlug } from "@/data/blog-posts";
+import "./homepage.css";
 
 /** Same articles as before (routes unchanged); data comes from blog-posts for covers. */
 const FEATURED_ARTICLE_SLUGS = [
@@ -42,10 +43,10 @@ function BrandSection() {
         <div className="py-20 md:py-28">
           <div className="max-w-xl">
             <p className="ps-eyebrow">Waar je op kunt vertrouwen</p>
-            <h2 className="ps-display mt-5 text-[1.875rem] leading-[1.1] text-stone-900 sm:text-[2.25rem]">
+            <h2 className="ps-display mt-5 text-stone-900">
               Goede keuzes beginnen bij duidelijke informatie.
             </h2>
-            <p className="mt-5 text-[0.9375rem] leading-[1.75] text-stone-500">
+            <p className="home-lead mt-5 text-stone-600">
               Supplementen vergelijken op dosering, kwaliteit en prijs — zonder vage claims. Alleen wat relevant is voor een concrete beslissing.
             </p>
           </div>
@@ -60,7 +61,7 @@ function BrandSection() {
                 <p className="text-[0.9375rem] font-semibold leading-snug tracking-[-0.02em] text-stone-900">
                   {pillar.label}
                 </p>
-                <p className="mt-4 flex-1 text-[0.9375rem] leading-[1.7] text-stone-500">
+                <p className="home-pillar-text mt-4 flex-1 text-stone-600">
                   {pillar.text}
                 </p>
                 <span className="mt-8 inline-flex items-center gap-2 text-[0.8125rem] font-medium text-stone-600 transition-colors duration-150 group-hover:text-stone-900">
@@ -96,13 +97,13 @@ function BlogPreview() {
           <div className="flex items-end justify-between gap-6">
             <div>
               <p className="ps-eyebrow">Blog</p>
-              <h2 className="ps-display mt-5 text-[2rem] leading-[1.1] text-stone-900 sm:text-[2.5rem]">
+              <h2 className="ps-display mt-5 text-stone-900">
                 Uitgelichte artikelen
               </h2>
             </div>
             <Link
               href="/blog"
-              className="shrink-0 text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition-all duration-150 hover:text-stone-700 hover:decoration-stone-400"
+              className="home-inline-link shrink-0 text-[0.8125rem] text-stone-500 transition-colors duration-150 hover:text-stone-800"
             >
               Alle artikelen
             </Link>
@@ -114,6 +115,7 @@ function BlogPreview() {
                 key={post.slug}
                 post={post}
                 priority={index < 3}
+                homePage
               />
             ))}
           </div>
@@ -125,10 +127,10 @@ function BlogPreview() {
 
 export default function HomePage() {
   return (
-    <>
+    <div className="home">
       <Hero />
       <BrandSection />
       <BlogPreview />
-    </>
+    </div>
   );
 }

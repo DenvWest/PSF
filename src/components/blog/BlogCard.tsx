@@ -19,15 +19,21 @@ export const BLOG_CARD_GRID_SECTION_TOP_CLASS = "mt-14 md:mt-16";
 type Props = {
   post: BlogPost;
   priority?: boolean;
+  /** When true (homepage featured only), apply homepage typography hooks */
+  homePage?: boolean;
 };
 
-export default function BlogCard({ post, priority }: Props) {
+export default function BlogCard({ post, priority, homePage = false }: Props) {
   const src = getCoverImageSrc(post);
 
   return (
     <Link
       href={`/${post.slug}`}
-      className="group flex min-h-0 w-full min-w-0 flex-col"
+      className={
+        homePage
+          ? "home-blog-card group flex min-h-0 w-full min-w-0 flex-col"
+          : "group flex min-h-0 w-full min-w-0 flex-col"
+      }
     >
       <div className="relative w-full shrink-0 overflow-hidden rounded-md bg-stone-100">
         {src ? (
@@ -66,15 +72,33 @@ export default function BlogCard({ post, priority }: Props) {
           <p className="text-[0.625rem] text-stone-400">{post.readingTime}</p>
         </div>
 
-        <h2 className="ps-display mt-3 text-[1.3125rem] leading-[1.2] text-stone-900 transition group-hover:text-stone-600">
+        <h2
+          className={
+            homePage
+              ? "ps-display mt-3 text-stone-900 transition group-hover:text-stone-600"
+              : "ps-display mt-3 text-[1.3125rem] leading-[1.2] text-stone-900 transition group-hover:text-stone-600"
+          }
+        >
           {post.title}
         </h2>
 
-        <p className="mt-3 flex-1 text-[0.875rem] leading-[1.8] text-stone-400">
+        <p
+          className={
+            homePage
+              ? "home-blog-excerpt mt-3 flex-1 text-stone-500"
+              : "mt-3 flex-1 text-[0.875rem] leading-[1.8] text-stone-400"
+          }
+        >
           {post.excerpt}
         </p>
 
-        <p className="mt-5 text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition group-hover:text-stone-700 group-hover:decoration-stone-400">
+        <p
+          className={
+            homePage
+              ? "home-inline-link mt-5 text-[0.8125rem] font-medium text-stone-500 transition group-hover:text-stone-800"
+              : "mt-5 text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition group-hover:text-stone-700 group-hover:decoration-stone-400"
+          }
+        >
           Lees meer
         </p>
       </div>
