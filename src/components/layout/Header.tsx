@@ -101,7 +101,7 @@ export default function Header() {
     return (
         <>
             <header
-                className={`sticky top-0 z-50 border-b border-stone-200/80 backdrop-blur ${searchOpen ? "bg-white/95" : "bg-white/85"
+                className={`sticky top-0 z-50 border-b border-stone-200/60 backdrop-blur ${searchOpen ? "bg-white/95" : "bg-[var(--ps-bg)]/90"
                     }`}
             >
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">

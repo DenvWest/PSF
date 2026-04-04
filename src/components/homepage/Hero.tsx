@@ -38,9 +38,8 @@ export default function Hero() {
       />
 
       <Container className="relative">
-        <div className="grid gap-10 py-24 sm:gap-12 sm:py-28 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start lg:gap-16 xl:gap-[5.5rem]">
-
-          {/* Left: headline, subtext, CTAs — lg:pt-3 matches card header inset so eyebrows align */}
+        <div className="grid gap-10 pt-16 pb-24 sm:gap-12 sm:pt-20 sm:pb-28 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:items-start lg:gap-16 lg:pt-6 xl:gap-[5.5rem]">
+          {/* Left: eyebrow + headline + subtext + CTAs — lg:pt-3 lines up with card eyebrow row */}
           <div className="flex min-w-0 flex-col lg:max-w-[min(100%,40rem)] xl:max-w-[min(100%,42rem)] lg:pt-3">
             <p className="ps-eyebrow">
               PerfectSupplement · Omega 3 &amp; Magnesium
@@ -53,7 +52,6 @@ export default function Hero() {
               Duidelijk uitgelegd, zonder overbodige ruis.
             </p>
 
-            {/* Primary leads; secondary stays visually quieter */}
             <div className="mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-stretch sm:gap-3">
               <Link
                 href="/supplementen"
@@ -70,7 +68,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right: quick-nav — header py matches left lg:pt-3 so label rows line up */}
+          {/* Right: quick-nav — lg:pt-3 matches left column so eyebrow rows align */}
           <div className="w-full border-t border-stone-200/70 pt-10 lg:min-w-0 lg:border-t-0 lg:pt-3">
             <div className="overflow-hidden rounded-2xl border border-stone-200/80 bg-white/95 shadow-[0_8px_40px_-12px_rgba(28,25,23,0.12),0_2px_8px_rgba(28,25,23,0.04)] ring-1 ring-stone-900/[0.04] backdrop-blur-[2px]">
               <div className="border-b border-stone-100/90 bg-gradient-to-b from-stone-50 to-stone-50/30 px-6 py-3">
@@ -103,7 +101,6 @@ export default function Hero() {
               </ul>
             </div>
           </div>
-
         </div>
       </Container>
     </section>
