@@ -75,8 +75,15 @@ export async function POST(request: Request) {
   const apiDomain = process.env.ZOHO_API_DOMAIN?.trim() || "https://www.zohoapis.eu";
   const moduleName = process.env.ZOHO_CRM_MODULE?.trim() || "Leads";
   const smtpConfig = getSmtpConfig();
-  const zohoInput = { clientId, clientSecret, refreshToken };
-  const zohoConfig = hasZohoConfig(zohoInput) ? zohoInput : null;
+  const zohoConfig: ZohoTokenConfig | null =
+    clientId && clientSecret && refreshToken
+      ? {
+        clientId,
+        clientSecret,
+        refreshToken,
+        accountsDomain,
+      }
+      : null;
 
   if (!zohoConfig && !smtpConfig) {
     return NextResponse.json(
@@ -90,12 +97,7 @@ export async function POST(request: Request) {
 
   if (zohoConfig) {
     try {
-      const accessToken = await getZohoAccessToken({
-        clientId: zohoConfig.clientId,
-        clientSecret: zohoConfig.clientSecret,
-        refreshToken: zohoConfig.refreshToken,
-        accountsDomain,
-      });
+      const accessToken = await getZohoAccessToken(zohoConfig);
 
       const zohoResponse = await fetch(`${apiDomain}/crm/v8/${moduleName}`, {
         method: "POST",
@@ -167,14 +169,6 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-}
-
-function hasZohoConfig(config: {
-  clientId?: string;
-  clientSecret?: string;
-  refreshToken?: string;
-}): config is { clientId: string; clientSecret: string; refreshToken: string } {
-  return Boolean(config.clientId && config.clientSecret && config.refreshToken);
 }
 
 function getSmtpConfig(): SmtpConfig | null {

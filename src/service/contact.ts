@@ -10,10 +10,6 @@ export type ContactApiResponse = {
   error?: string;
 };
 
-/**
- * Verstuurt het contactformulier naar de Next.js API-route.
- * Later: zorg dat `.env.local` echte SMTP-gegevens bevat (of zet CONTACT_SMTP_DISABLED=false).
- */
 export async function handleSendEmail(data: ContactFormData): Promise<ContactApiResponse> {
   const res = await fetch("/api/contact", {
     method: "POST",
