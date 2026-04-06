@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { affiliateLinks, type AffiliateSlug } from "@/data/affiliate-links";
 import { trackAffiliateClick } from "@/lib/track-affiliate-click";
 import { trackAffiliateKlik } from "@/lib/ga4";
+import { trackClick } from "@/lib/track";
 
 type AffiliateLinkProps = {
   affiliateSlug: AffiliateSlug;
@@ -42,6 +43,14 @@ export default function AffiliateLink({
           product_naam: affiliateSlug,
           merk: affiliateSlug.split('-').slice(0, -1).join('-') || affiliateSlug,
           positie_op_pagina: parseInt(position ?? '0', 10) || 0,
+        });
+        trackClick({
+          product_id: affiliateSlug,
+          product_naam: affiliateSlug,
+          categorie: pageType ?? 'onbekend',
+          pagina: typeof window !== 'undefined'
+            ? window.location.pathname
+            : '',
         });
       }}
     >
