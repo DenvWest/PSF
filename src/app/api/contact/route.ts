@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { buildZohoTags } from "@/lib/contact-segmentation-tags";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -128,6 +129,21 @@ export async function POST(request: Request) {
         );
       }
 
+      const contactId = zohoJson?.data?.[0]?.details?.id as string | undefined;
+      if (contactId) {
+        try {
+          await attachZohoTags({
+            accessToken,
+            apiDomain,
+            moduleName,
+            contactId,
+            body: body as Record<string, unknown>,
+          });
+        } catch (tagErr) {
+          console.warn("[api/contact] zoho tag error (non-fatal):", tagErr);
+        }
+      }
+
       return NextResponse.json({ message: "Message successfully sent." }, { status: 200 });
     } catch (err) {
       console.error("[api/contact] zoho error:", err);
@@ -234,4 +250,66 @@ function escapeHtml(s: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+async function attachZohoTags(options: {
+  accessToken: string;
+  apiDomain: string;
+  moduleName: string;
+  contactId: string;
+  body: Record<string, unknown>;
+}): Promise<void> {
+  const { accessToken, apiDomain, moduleName, contactId, body } = options;
+
+  const tags = buildZohoTags({
+    doelgroep: typeof body.doelgroep === "string" ? body.doelgroep : undefined,
+    hoofd_symptoom: typeof body.hoofd_symptoom === "string" ? body.hoofd_symptoom : undefined,
+    leefstijl_score: typeof body.leefstijl_score === "string" ? body.leefstijl_score : undefined,
+    supplement_fase: typeof body.supplement_fase === "string" ? body.supplement_fase : undefined,
+    quiz_voltooid: typeof body.quiz_voltooid === "boolean" ? body.quiz_voltooid : undefined,
+    affiliate_klik: typeof body.affiliate_klik === "string" ? body.affiliate_klik : undefined,
+  });
+
+  if (tags.length === 0) return;
+
+  const authHeaders = {
+    Authorization: `Zoho-oauthtoken ${accessToken}`,
+    "Content-Type": "application/json",
+  };
+
+  // Fetch existing tags to determine which ones need to be created
+  const existingTagsRes = await fetch(
+    `${apiDomain}/crm/v8/settings/tags?module=${moduleName}`,
+    { headers: authHeaders, cache: "no-store" }
+  );
+  const existingTagsJson = (await existingTagsRes.json().catch(() => null)) as
+    | { tags?: Array<{ name: string }> }
+    | null;
+  const existingNames = new Set(
+    existingTagsJson?.tags?.map((t) => t.name) ?? []
+  );
+
+  // Create tags that do not exist yet
+  const newTags = tags.filter((t) => !existingNames.has(t));
+  if (newTags.length > 0) {
+    await fetch(`${apiDomain}/crm/v8/settings/tags`, {
+      method: "POST",
+      headers: authHeaders,
+      body: JSON.stringify({
+        tags: newTags.map((name) => ({ name, module: { api_name: moduleName } })),
+      }),
+      cache: "no-store",
+    });
+  }
+
+  // Attach all tags to the contact record
+  await fetch(
+    `${apiDomain}/crm/v8/${moduleName}/${contactId}/actions/add_tags`,
+    {
+      method: "POST",
+      headers: authHeaders,
+      body: JSON.stringify({ tags: tags.map((name) => ({ name })) }),
+      cache: "no-store",
+    }
+  );
 }
