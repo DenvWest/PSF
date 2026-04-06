@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { affiliateLinks, type AffiliateSlug } from "@/data/affiliate-links";
 import { trackAffiliateClick } from "@/lib/track-affiliate-click";
+import { trackAffiliateKlik } from "@/lib/ga4";
 
 type AffiliateLinkProps = {
   affiliateSlug: AffiliateSlug;
@@ -37,6 +38,11 @@ export default function AffiliateLink({
       className={className}
       onClick={() => {
         trackAffiliateClick(affiliateSlug, { pageType, position });
+        trackAffiliateKlik({
+          product_naam: affiliateSlug,
+          merk: affiliateSlug.split('-').slice(0, -1).join('-') || affiliateSlug,
+          positie_op_pagina: parseInt(position ?? '0', 10) || 0,
+        });
       }}
     >
       {children}
