@@ -1,9 +1,23 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Script from "next/script";
+import { Lora, Source_Sans_3 } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import "./globals.css";
+
+const loraFont = Lora({
+  subsets: ["latin"],
+  variable: "--font-heading",
+  display: "swap",
+});
+
+const sourceSans = Source_Sans_3({
+  subsets: ["latin"],
+  variable: "--font-body",
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
+});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -30,7 +44,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="nl">
+    <html lang="nl" className={`${loraFont.variable} ${sourceSans.variable}`}>
       <head>
         <meta
           name="0107f4118169ab8"
