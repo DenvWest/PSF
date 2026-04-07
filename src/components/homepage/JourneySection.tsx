@@ -6,7 +6,8 @@ const STEPS: StepCardProps[] = [
     step: 1,
     title: "Symptomen",
     description: "Vermoeid? Slechter slapen? Minder drive?",
-    href: "/faqs",
+    // Gewijzigd: navigeert nu naar de symptomenpagina i.p.v. /faqs
+    href: "/symptomen",
     ctaLabel: "Ontdek waar je staat",
   },
   {
