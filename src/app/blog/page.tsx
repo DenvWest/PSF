@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import Container from "@/components/layout/Container";
-import BlogCard, {
-  BLOG_CARD_GRID_CLASS,
-  BLOG_CARD_GRID_SECTION_TOP_CLASS,
-} from "@/components/blog/BlogCard";
+import BlogPageContent from "@/components/blog/BlogPageContent";
 import { warnMissingBlogCoverFiles } from "@/lib/blog-cover-validation";
 import { BLOG_POSTS, type BlogPost } from "@/data/blog-posts";
 
@@ -40,26 +37,9 @@ export default function BlogPage() {
 
         <div className="ps-divider mt-14 md:mt-16" aria-hidden />
 
-        <section
-          className={BLOG_CARD_GRID_SECTION_TOP_CLASS}
-          aria-labelledby="blog-articles-heading"
-        >
-          <h2
-            id="blog-articles-heading"
-            className="sr-only"
-          >
-            Artikelen
-          </h2>
-          <div className={BLOG_CARD_GRID_CLASS}>
-            {posts.map((article, index) => (
-              <BlogCard
-                key={article.slug}
-                post={article}
-                priority={index < 3}
-              />
-            ))}
-          </div>
-        </section>
+        <div className="mt-14 md:mt-16">
+          <BlogPageContent posts={posts} />
+        </div>
       </div>
     </Container>
   );

@@ -2,16 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatPublishedLabel, getCoverImageSrc, type BlogPost } from "@/data/blog-posts";
 
-/** 3:2 cards — explicit dimensions avoid layout collapse with next/image `fill` in flex/grid. */
-const CARD_WIDTH = 640;
-const CARD_HEIGHT = 427;
-
 /**
  * Shared grid for `/blog` and homepage featured articles — keep layouts aligned.
  * (2 columns from `sm`, 3 from `lg`; vertical rhythm matches blog listing.)
  */
 export const BLOG_CARD_GRID_CLASS =
-  "grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3";
+  "grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3";
 
 /** Space above the card grid (after intro / section header). */
 export const BLOG_CARD_GRID_SECTION_TOP_CLASS = "mt-14 md:mt-16";
@@ -19,87 +15,61 @@ export const BLOG_CARD_GRID_SECTION_TOP_CLASS = "mt-14 md:mt-16";
 type Props = {
   post: BlogPost;
   priority?: boolean;
-  /** When true (homepage featured only), apply homepage typography hooks */
+  /** Kept for backwards compatibility; card design is now unified. */
   homePage?: boolean;
 };
 
-export default function BlogCard({ post, priority, homePage = false }: Props) {
+export default function BlogCard({ post, priority }: Props) {
   const src = getCoverImageSrc(post);
 
   return (
     <Link
       href={`/${post.slug}`}
-      className={
-        homePage
-          ? "home-blog-card group flex min-h-0 w-full min-w-0 flex-col"
-          : "group flex min-h-0 w-full min-w-0 flex-col"
-      }
+      className="group flex min-h-0 w-full min-w-0 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
     >
-      <div className="relative w-full shrink-0 overflow-hidden rounded-md bg-stone-100">
+      {/* Image */}
+      <div className="relative aspect-video w-full shrink-0 overflow-hidden">
         {src ? (
           <Image
             src={src}
             alt={post.coverImageAlt}
-            width={CARD_WIDTH}
-            height={CARD_HEIGHT}
+            fill
             priority={priority}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="h-auto w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+            className="object-cover transition duration-500 group-hover:scale-[1.02]"
           />
         ) : (
           <div
-            className="aspect-[3/2] w-full bg-stone-200"
+            className="h-full w-full bg-stone-200"
             role="img"
             aria-label={post.coverImageAlt}
           />
         )}
+
+        {/* Category badge */}
+        <span className="absolute left-3 top-3 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+          {post.category}
+        </span>
       </div>
 
-      <div className="mt-5 flex flex-1 flex-col">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="text-[0.625rem] font-medium uppercase tracking-[0.22em] text-stone-400">
-            {post.category}
-          </p>
-          <span className="text-stone-200" aria-hidden>
-            ·
-          </span>
-          <p className="text-[0.625rem] text-stone-400">
-            {formatPublishedLabel(post.publishedAt)}
-          </p>
-          <span className="text-stone-200" aria-hidden>
-            ·
-          </span>
-          <p className="text-[0.625rem] text-stone-400">{post.readingTime}</p>
-        </div>
-
-        <h2
-          className={
-            homePage
-              ? "ps-display mt-3 text-stone-900 transition group-hover:text-stone-600"
-              : "ps-display mt-3 text-[1.3125rem] leading-[1.2] text-stone-900 transition group-hover:text-stone-600"
-          }
-        >
+      {/* Text */}
+      <div className="flex flex-1 flex-col p-5">
+        <h2 className="text-base font-semibold leading-snug text-gray-900 transition group-hover:text-stone-600">
           {post.title}
         </h2>
 
-        <p
-          className={
-            homePage
-              ? "home-blog-excerpt mt-3 flex-1 text-stone-500"
-              : "mt-3 flex-1 text-[0.875rem] leading-[1.8] text-stone-400"
-          }
-        >
+        <p className="mt-1 text-sm text-gray-400">
+          {formatPublishedLabel(post.publishedAt)}
+          <span className="mx-1.5" aria-hidden>·</span>
+          {post.readingTime}
+        </p>
+
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-stone-400">
           {post.excerpt}
         </p>
 
-        <p
-          className={
-            homePage
-              ? "home-inline-link mt-5 text-[0.8125rem] font-medium text-stone-500 transition group-hover:text-stone-800"
-              : "mt-5 text-[0.8125rem] font-medium text-stone-400 underline decoration-stone-200 underline-offset-4 transition group-hover:text-stone-700 group-hover:decoration-stone-400"
-          }
-        >
-          Lees meer
+        <p className="mt-4 text-base font-medium text-stone-400 transition group-hover:text-stone-800">
+          →
         </p>
       </div>
     </Link>
