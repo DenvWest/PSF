@@ -16,28 +16,28 @@ import {
 import type { BlogCategorie } from "@/types/blog";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ categorie: string }>;
 }
 
 export async function generateStaticParams() {
-  const artikelParams = alleArtikelen.map((a) => ({ slug: a.slug }));
-  const categorieParams = GELDIGE_CATEGORIE_IDS.map((c) => ({ slug: c }));
+  const categorieParams = GELDIGE_CATEGORIE_IDS.map((c) => ({ categorie: c }));
+  const artikelParams = alleArtikelen.map((a) => ({ categorie: a.slug }));
   return [...categorieParams, ...artikelParams];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { categorie } = await params;
 
-  if (isGeldigeCategorie(slug)) {
-    const config = CATEGORIE_CONFIG[slug];
+  if (isGeldigeCategorie(categorie)) {
+    const config = CATEGORIE_CONFIG[categorie];
     return {
       title: config.metaTitle,
       description: config.metaDescription,
-      alternates: { canonical: `/blog/${slug}` },
+      alternates: { canonical: `/blog/${categorie}` },
     };
   }
 
-  const artikel = getArtikelBySlug(slug);
+  const artikel = getArtikelBySlug(categorie);
   if (!artikel) return {};
 
   const title = artikel.metaTitle ?? artikel.titel;
@@ -67,13 +67,13 @@ function telAantalPerCategorie(): Record<BlogCategorie, number> {
   );
 }
 
-export default async function BlogSlugPage({ params }: Props) {
-  const { slug } = await params;
+export default async function BlogCategoriePage({ params }: Props) {
+  const { categorie } = await params;
 
-  // Categorie-pagina: /blog/stress, /blog/slaap, /blog/energie, /blog/supplementen
-  if (isGeldigeCategorie(slug)) {
-    const config = CATEGORIE_CONFIG[slug];
-    const artikelen = getArtikelenByCategorie(slug);
+  // /blog/stress, /blog/slaap, /blog/energie, /blog/supplementen
+  if (isGeldigeCategorie(categorie)) {
+    const config = CATEGORIE_CONFIG[categorie];
+    const artikelen = getArtikelenByCategorie(categorie);
     const aantalPerCategorie = telAantalPerCategorie();
 
     return (
@@ -85,8 +85,8 @@ export default async function BlogSlugPage({ params }: Props) {
     );
   }
 
-  // Artikel-pagina: /blog/cortisol-verlagen-natuurlijk etc.
-  const artikel = getArtikelBySlug(slug);
+  // /blog/cortisol-verlagen-natuurlijk etc.
+  const artikel = getArtikelBySlug(categorie);
   if (!artikel) notFound();
 
   const gerelateerde = getGerelateerdeArtikelen(artikel);
