@@ -38,12 +38,6 @@ body:has(.home) > header {
   transition: text-decoration-thickness 0.15s ease, color 0.15s ease;
 }
 
-.home a.home-inline-link:hover,
-.home a.home-blog-card:hover p.home-inline-link {
+.home a.home-inline-link:hover {
   text-decoration-thickness: 2px;
-}
-
-.home .home-blog-section .home-blog-section-inner {
-  max-width: min(100%, 90rem);
-  margin-inline: auto;
 }

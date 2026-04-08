@@ -2,7 +2,7 @@ import type { BlogArtikel } from "@/types/blog";
 
 export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   slug: "magnesium-en-slaapkwaliteit",
-  categorie: "slaap",
+  categorie: "supplementen",
   titel: "Magnesium en slaapkwaliteit: wat zegt het onderzoek?",
   heroIntro:
     "Magnesium speelt een rol in honderden enzymreacties — waaronder processen die ontspanning en slaap beïnvloeden. Maar welke vorm, welke dosering en wat mag je realistisch verwachten? Een inhoudelijke duiding voor mannen 40+.",

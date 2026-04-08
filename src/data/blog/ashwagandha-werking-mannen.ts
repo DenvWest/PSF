@@ -2,7 +2,7 @@ import type { BlogArtikel } from "@/types/blog";
 
 export const ashwagandhaData: BlogArtikel = {
   slug: "ashwagandha-werking-mannen",
-  categorie: "stress",
+  categorie: "supplementen",
   titel: "Ashwagandha: hoe het werkt voor mannen boven de 40",
   heroIntro:
     "Ashwagandha is het meest bestudeerde adaptogeen voor stressregulatie. Maar hoe werkt het precies, wat mag je verwachten en wat zijn de valkuilen bij het kiezen van een supplement? Alles wat relevant is voor mannen boven de 40.",

@@ -1,4 +1,4 @@
-export type BlogCategorie = "stress" | "slaap" | "energie";
+export type BlogCategorie = "stress" | "slaap" | "energie" | "supplementen";
 
 export type BlogSectieType = "tekst" | "opsomming";
 
