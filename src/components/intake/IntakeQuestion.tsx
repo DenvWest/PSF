@@ -71,38 +71,46 @@ export default function IntakeQuestion({
       </div>
 
       <div className="px-6 pb-10">
-        <button
-          type="button"
-          onClick={onBack}
-          className="p-0 text-left"
-          style={{
-            marginBottom: 16,
-            background: "none",
-            border: "none",
-            color: "#999",
-            fontSize: "14px",
-            cursor: "pointer",
-          }}
-        >
-          ← Terug
-        </button>
         <div
-          className="mb-5 inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5"
           style={{
-            background: `${catColor}15`,
-            borderColor: `${catColor}30`,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 24,
           }}
         >
-          <span className="text-base">{category.icon}</span>
-          <span
-            className="text-[13px] font-semibold"
-            style={{ color: catColor }}
+          <button
+            type="button"
+            onClick={onBack}
+            className="p-0 text-left"
+            style={{
+              background: "none",
+              border: "none",
+              color: "#999",
+              fontSize: "14px",
+              cursor: "pointer",
+            }}
           >
-            {category.label}
-          </span>
-          <span className="text-[11px]" style={{ color: `${catColor}99` }}>
-            — vraag {question.questionIndex} van 2
-          </span>
+            ← Terug
+          </button>
+          <div
+            className="inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5"
+            style={{
+              background: `${catColor}15`,
+              borderColor: `${catColor}30`,
+            }}
+          >
+            <span className="text-base">{category.icon}</span>
+            <span
+              className="text-[13px] font-semibold"
+              style={{ color: catColor }}
+            >
+              {category.label}
+            </span>
+            <span className="text-[11px]" style={{ color: `${catColor}99` }}>
+              — vraag {question.questionIndex} van 2
+            </span>
+          </div>
         </div>
 
         <h2
