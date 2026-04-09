@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
+import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import BlogCategorieBadge from "./BlogCategorieBadge";
 
 const FILTERS: { label: string; value: string }[] = [
@@ -89,7 +90,7 @@ function ArtikelCard({ artikel }: { artikel: BlogArtikel }) {
 
   return (
     <Link
-      href={`/blog/${artikel.slug}`}
+      href={blogArtikelPad(artikel)}
       className="group flex flex-col overflow-hidden rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
     >
       <BlogCategorieBadge

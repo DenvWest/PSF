@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/symptomen/Breadcrumbs";
 import BlogCategorieBadge from "./BlogCategorieBadge";
@@ -33,7 +34,7 @@ export default function BlogArticlePage({
       url: "https://perfectsupplement.nl",
     },
     description: artikel.metaDescription ?? artikel.heroIntro,
-    mainEntityOfPage: `https://perfectsupplement.nl/blog/${artikel.slug}`,
+    mainEntityOfPage: `https://perfectsupplement.nl${blogArtikelPad(artikel)}`,
   };
 
   return (

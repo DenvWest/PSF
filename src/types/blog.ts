@@ -27,6 +27,8 @@ export interface BlogCornerstoneLink {
 
 export interface BlogArtikel {
   slug: string;
+  /** Optioneel publiek pad (bv. `/omega-3-vergelijken`); anders `/blog/${slug}`. */
+  pad?: string;
   categorie: BlogCategorie;
   titel: string;
   /** Introductietekst direct onder de H1 */

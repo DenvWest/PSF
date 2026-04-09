@@ -14,6 +14,7 @@ import {
   isGeldigeCategorie,
 } from "@/data/blog/categorieen";
 import type { BlogCategorie } from "@/types/blog";
+import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 
 interface Props {
   params: Promise<{ categorie: string }>;
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     keywords: artikel.keywords,
-    alternates: { canonical: `/blog/${artikel.slug}` },
+    alternates: { canonical: blogArtikelPad(artikel) },
     openGraph: {
       type: "article",
       title,

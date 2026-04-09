@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BlogArtikel } from "@/types/blog";
+import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import BlogCategorieBadge from "./BlogCategorieBadge";
 
 interface BlogArtikelKaartProps {
@@ -19,7 +20,7 @@ export default function BlogArtikelKaart({
 }: BlogArtikelKaartProps) {
   return (
     <Link
-      href={`/blog/${artikel.slug}`}
+      href={blogArtikelPad(artikel)}
       className="group flex min-h-0 flex-col rounded-2xl border border-stone-200/60 bg-white p-7 transition duration-300 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
     >
       <BlogCategorieBadge categorie={artikel.categorie} className="self-start" />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BlogArtikel } from "@/types/blog";
+import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import BlogCategorieBadge from "./BlogCategorieBadge";
 
 interface BlogGerelateerProps {
@@ -22,7 +23,7 @@ export default function BlogGerelateerd({ artikelen }: BlogGerelateerProps) {
         {artikelen.map((artikel) => (
           <Link
             key={artikel.slug}
-            href={`/blog/${artikel.slug}`}
+            href={blogArtikelPad(artikel)}
             className="group flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-sm"
           >
             <BlogCategorieBadge categorie={artikel.categorie} />
