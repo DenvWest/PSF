@@ -54,6 +54,8 @@ export default function IntakeResults({
   const urgency = getUrgency(scores);
   const profile = getProfileLabel(scores);
   const advice = getAdvice(scores, answers, symptoms);
+  const quickWins = advice.quickWins.slice(0, 3);
+  const longTermTips = advice.longTerm.slice(0, 3);
 
   const primaryCatId = PROFILE_DOMAIN_TO_CAT[profile.domain];
   const primaryCategory = CATEGORIES.find((c) => c.id === primaryCatId);
@@ -156,9 +158,9 @@ export default function IntakeResults({
             <div className="text-xs text-[#999]">Start hier — deze week nog</div>
           </div>
         </div>
-        {advice.quickWins.map((tip, i) => (
+        {quickWins.map((tip, i) => (
           <div
-            key={tip}
+            key={`qw-${i}`}
             className={`flex gap-3 py-3 ${i > 0 ? "border-t border-[#f0ede8]" : ""}`}
           >
             <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#5A8F6A] text-xs font-bold text-white">
@@ -180,16 +182,9 @@ export default function IntakeResults({
           </div>
         </div>
         {supplementsEmpty ? (
-          <div className="rounded-[10px] bg-[#FAFAF7] px-4 py-3.5">
-            <div className="mb-1 text-[15px] font-bold text-[#1a1a1a]">
-              Geen specifieke supplementaanbeveling
-            </div>
-            <p className="m-0 text-[13px] leading-relaxed text-[#777]">
-              Op basis van je antwoorden is er geen gerichte
-              supplementroute nodig. Focus op je leefstijl en herhaal de
-              intake later om te zien of dat verandert.
-            </p>
-          </div>
+          <p className="m-0 text-sm leading-relaxed text-[#777]">
+            Geen specifieke supplementen nodig bij dit profiel.
+          </p>
         ) : (
           advice.supplements.map((sup, i) => (
             <div
@@ -225,9 +220,9 @@ export default function IntakeResults({
             <div className="text-xs text-[#999]">Maand 2 en verder</div>
           </div>
         </div>
-        {advice.longTerm.map((tip, i) => (
+        {longTermTips.map((tip, i) => (
           <div
-            key={tip}
+            key={`lt-${i}`}
             className={`flex gap-3 py-3 ${i > 0 ? "border-t border-[#f0ede8]" : ""}`}
           >
             <div className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B6EAE]" />

@@ -10,7 +10,12 @@ import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
 import { CATEGORIES, QUESTIONS, type SymptomId } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
-import { calcDomainScores } from "@/lib/intake-engine";
+import {
+  calcDomainScores,
+  getProfileLabel,
+  getUrgency,
+} from "@/lib/intake-engine";
+import { getLastSession, saveIntakeSession } from "@/lib/intake-storage";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -65,12 +70,21 @@ export default function IntakePage() {
     }
 
     const timer = window.setTimeout(() => {
-      setScores(calcDomainScores(answers));
+      const computed = calcDomainScores(answers);
+      setScores(computed);
+      saveIntakeSession({
+        symptoms,
+        answers,
+        scores: computed,
+        urgency: getUrgency(computed).label,
+        profile: getProfileLabel(computed).name,
+        timestamp: Date.now(),
+      });
       setPhase("results");
     }, 2000);
 
     return () => window.clearTimeout(timer);
-  }, [phase, answers]);
+  }, [phase, answers, symptoms]);
 
   function toggleSymptom(id: SymptomId) {
     setSymptoms((prev) =>
@@ -119,6 +133,18 @@ export default function IntakePage() {
     setScores(null);
   }
 
+  function resumeLastResults() {
+    const session = getLastSession();
+    if (!session) {
+      return;
+    }
+    setSymptoms(session.symptoms as SymptomId[]);
+    setAnswers(session.answers);
+    setScores(session.scores);
+    setAnsweredIndices({});
+    setPhase("results");
+  }
+
   const currentQuestion = QUESTIONS[currentQ];
   const currentCategory = currentQuestion
     ? CATEGORIES.find((c) => c.id === currentQuestion.category)
@@ -141,7 +167,10 @@ export default function IntakePage() {
     <div className={shellClass} style={shellStyle}>
       {phase === "intro" && (
         <div style={contentStyle}>
-          <IntakeIntro onStart={() => setPhase("symptoms")} />
+          <IntakeIntro
+            onStart={() => setPhase("symptoms")}
+            onResumeLastResults={resumeLastResults}
+          />
         </div>
       )}
 

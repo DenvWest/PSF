@@ -1,12 +1,28 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { CATEGORIES } from "@/data/intake-questions";
+import {
+  getLastSession,
+  type IntakeSessionPayload,
+} from "@/lib/intake-storage";
 
 type IntakeIntroProps = {
   onStart: () => void;
+  onResumeLastResults?: () => void;
 };
 
-export default function IntakeIntro({ onStart }: IntakeIntroProps) {
+export default function IntakeIntro({
+  onStart,
+  onResumeLastResults,
+}: IntakeIntroProps) {
+  const [lastSession, setLastSession] = useState<IntakeSessionPayload | null>(
+    null,
+  );
+
+  useEffect(() => {
+    setLastSession(getLastSession());
+  }, []);
   return (
     <div className="px-6 pt-14 pb-10 text-center">
       <p className="mb-4 text-[13px] font-semibold uppercase tracking-[2px] text-[#999]">
@@ -40,6 +56,21 @@ export default function IntakeIntro({ onStart }: IntakeIntroProps) {
       >
         Start de intake →
       </button>
+      {lastSession && onResumeLastResults ? (
+        <button
+          type="button"
+          onClick={onResumeLastResults}
+          className="mt-5 text-[13px] font-medium text-[#888] underline decoration-[#d8d4cd] underline-offset-2 transition-colors hover:text-[#666]"
+        >
+          Je laatste meting was op{" "}
+          {new Date(lastSession.timestamp).toLocaleDateString("nl-NL", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
+          . Bekijk resultaten →
+        </button>
+      ) : null}
       <p className="mt-4 text-xs text-[#aaa]">
         Duurt ± 3 minuten · geen account nodig
       </p>
