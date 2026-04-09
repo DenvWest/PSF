@@ -1,173 +1,225 @@
-/**
- * Intake-vragenlijst (sectie 2: Vragenlijst-ontwerp).
- * Indien docs/intake-spec.md wordt gevuld, stem teksten hier 1-op-1 af op die spec.
- */
+export type SymptomId = "stress" | "slaap" | "energie";
 
-export const DOMAIN_IDS = [
-  "slaap",
-  "energie",
-  "stress",
-  "basis",
-  "beweging",
-  "stille_belasting",
-] as const;
-
-export type DomainId = (typeof DOMAIN_IDS)[number];
-
-/** Max numerieke waarde van een antwoordoptie (laag 2-normalisatie in de engine). */
-export const MAX_OPTION_VALUE = 3;
-
-export interface IntakeSymptom {
-  id: string;
+export interface Symptom {
+  id: SymptomId;
   icon: string;
   label: string;
   desc: string;
 }
 
-export interface IntakeCategory {
-  id: DomainId;
+export type CategoryId =
+  | "slaap"
+  | "energie"
+  | "stress"
+  | "voeding"
+  | "beweging"
+  | "herstel";
+
+export interface Category {
+  id: CategoryId;
   label: string;
   icon: string;
-  /** CSS-kleur of hex voor UI (bijv. #6366f1). */
   color: string;
 }
 
-export interface IntakeQuestionOption {
+export type QuestionId =
+  | "SLP_QUAL"
+  | "SLP_CONS"
+  | "NRG_PATN"
+  | "NRG_DEP"
+  | "STR_FREQ"
+  | "STR_RECV"
+  | "NUT_QUAL"
+  | "NUT_O3"
+  | "MOV_FREQ"
+  | "MOV_DAILY"
+  | "RCV_PHYS"
+  | "RCV_MENT";
+
+export interface QuestionOption {
   label: string;
-  /** Zwaarte / belasting: 0 = minst, MAX_OPTION_VALUE = meest (slechter voor gezondheid). */
   value: number;
 }
 
 export interface IntakeQuestion {
-  /** Data-tag voor analytics en antwoord-map. */
-  id: string;
-  category: DomainId;
-  questionIndex: number;
+  id: QuestionId;
+  category: CategoryId;
+  questionIndex: 1 | 2;
   question: string;
-  options: IntakeQuestionOption[];
+  options: QuestionOption[];
 }
 
-const BURDEN_4: IntakeQuestionOption[] = [
-  { label: "Nooit", value: 0 },
-  { label: "Zelden", value: 1 },
-  { label: "Regelmatig", value: 2 },
-  { label: "Bijna altijd", value: 3 },
-];
-
-export const SYMPTOMS: IntakeSymptom[] = [
+export const SYMPTOMS: readonly Symptom[] = [
   {
     id: "stress",
     icon: "🧠",
     label: "Stress",
-    desc: "Meer prikkelbaarheid, een hoofd dat niet stopt, spanning in je lijf.",
+    desc: "Meer prikkelbaarheid, minder rust",
   },
   {
     id: "slaap",
     icon: "🌙",
     label: "Slaap",
-    desc: "Moeite met inslapen, wakker liggen of nooit echt uitgerust opstaan.",
+    desc: "Moeite met inslapen of doorslapen",
   },
   {
     id: "energie",
     icon: "⚡",
     label: "Energie",
-    desc: "Een lege batterij halverwege de dag, minder drive en motivatie.",
+    desc: "Lege batterij, minder drive",
   },
-];
+] as const satisfies readonly Symptom[];
 
-export const CATEGORIES: IntakeCategory[] = [
-  { id: "slaap", label: "Slaap", icon: "🌙", color: "#6366f1" },
-  { id: "energie", label: "Energie", icon: "⚡", color: "#10b981" },
-  { id: "stress", label: "Stress", icon: "🧠", color: "#f59e0b" },
-  { id: "basis", label: "Basis (voeding & ritme)", icon: "🥗", color: "#78716c" },
-  { id: "beweging", label: "Beweging", icon: "🚶", color: "#0ea5e9" },
-  { id: "stille_belasting", label: "Stille belasting", icon: "🔇", color: "#f43f5e" },
-];
+export const CATEGORIES: readonly Category[] = [
+  { id: "slaap", label: "Slaap", icon: "🌙", color: "#5B6EAE" },
+  { id: "energie", label: "Energie", icon: "⚡", color: "#C4873B" },
+  { id: "stress", label: "Stress", icon: "🧠", color: "#8B6E99" },
+  { id: "voeding", label: "Voeding", icon: "🥗", color: "#5A8F6A" },
+  { id: "beweging", label: "Beweging", icon: "🏃", color: "#C26E4B" },
+  { id: "herstel", label: "Herstel", icon: "🔄", color: "#4A8A99" },
+] as const satisfies readonly Category[];
 
-export const QUESTIONS: IntakeQuestion[] = [
+export const QUESTIONS: readonly IntakeQuestion[] = [
   {
-    id: "intake-slaap-inslapen",
+    id: "SLP_QUAL",
     category: "slaap",
     questionIndex: 1,
-    question: "Hoe vaak heb je moeite om ’s avonds tot rust te komen en in slaap te vallen?",
-    options: BURDEN_4,
+    question: "Hoe voel je je gemiddeld als je wakker wordt?",
+    options: [
+      { label: "Uitgerust en helder", value: 4 },
+      { label: "Redelijk, maar niet optimaal", value: 3 },
+      { label: "Moe, alsof ik niet geslapen heb", value: 1 },
+      { label: "Wisselend, verschilt per dag", value: 2 },
+    ],
   },
   {
-    id: "intake-slaap-uitgerust",
+    id: "SLP_CONS",
     category: "slaap",
     questionIndex: 2,
-    question: "Hoe vaak sta je op en voel je je niet uitgerust, ook na voldoende uren in bed?",
-    options: BURDEN_4,
+    question: "Lukt het je om op een vast tijdstip te gaan slapen en wakker te worden?",
+    options: [
+      { label: "Ja, vrij consistent", value: 3 },
+      { label: "Meestal wel, soms niet", value: 2 },
+      { label: "Nee, mijn ritme is onregelmatig", value: 1 },
+    ],
   },
   {
-    id: "intake-energie-dip",
+    id: "NRG_PATN",
     category: "energie",
-    questionIndex: 3,
-    question: "Hoe vaak heb je na de lunch een duidelijke energiedip of een zwaar hoofd?",
-    options: BURDEN_4,
+    questionIndex: 1,
+    question: "Hoe zou je je energieniveau overdag omschrijven?",
+    options: [
+      { label: "Stabiel de hele dag", value: 4 },
+      { label: "Goed in de ochtend, dip in de middag", value: 2 },
+      { label: "Laag vanaf het begin", value: 1 },
+      { label: "Wisselend en onvoorspelbaar", value: 2 },
+    ],
   },
   {
-    id: "intake-energie-inspanning",
+    id: "NRG_DEP",
     category: "energie",
-    questionIndex: 4,
-    question: "Hoe vaak voelt je lichaam zich traag of zwaar bij normale dagelijkse dingen?",
-    options: BURDEN_4,
+    questionIndex: 2,
+    question: "Waar leun je op voor energie?",
+    options: [
+      { label: "Koffie of energiedrank (meer dan 3 per dag)", value: 1 },
+      { label: "Koffie of energiedrank (1-2 per dag)", value: 2 },
+      { label: "Ik heb weinig stimulanten nodig", value: 4 },
+      { label: "Ik gebruik regelmatig suiker of snacks als opkikker", value: 1 },
+    ],
   },
   {
-    id: "intake-stress-lichaam",
+    id: "STR_FREQ",
     category: "stress",
-    questionIndex: 5,
-    question:
-      "Hoe vaak merk je spanning in je lichaam (kaak, schouders, buik) zonder dat er iets groots speelt?",
-    options: BURDEN_4,
+    questionIndex: 1,
+    question: "Hoe vaak voel je je gestrest of overprikkeld?",
+    options: [
+      { label: "Zelden", value: 4 },
+      { label: "Soms, maar beheersbaar", value: 3 },
+      { label: "Regelmatig", value: 2 },
+      { label: "Dagelijks of bijna dagelijks", value: 1 },
+    ],
   },
   {
-    id: "intake-stress-irritatie",
+    id: "STR_RECV",
     category: "stress",
-    questionIndex: 6,
-    question: "Hoe snel ben je geïrriteerd of kortaf als het druk wordt of onverwachts schuift?",
-    options: BURDEN_4,
+    questionIndex: 2,
+    question: "Als je een drukke of stressvolle dag hebt gehad, hoe snel kom je tot rust?",
+    options: [
+      { label: "Vrij snel, ik kan goed loslaten", value: 4 },
+      { label: "Het kost me wat tijd, maar lukt wel", value: 3 },
+      { label: "Ik neem stress mee naar bed", value: 1 },
+      { label: "Ik merk dat stress zich opstapelt over dagen", value: 1 },
+    ],
   },
   {
-    id: "intake-basis-variatie",
-    category: "basis",
-    questionIndex: 7,
-    question: "Hoe vaak eet je op een gemiddelde dag weinig gevarieerd (weinig groente, eiwit of vezels)?",
-    options: BURDEN_4,
+    id: "NUT_QUAL",
+    category: "voeding",
+    questionIndex: 1,
+    question: "Hoe zou je je dagelijkse eetpatroon omschrijven?",
+    options: [
+      { label: "Gevarieerd met groente, eiwitten en vetten", value: 4 },
+      { label: "Redelijk, maar niet altijd bewust", value: 3 },
+      { label: "Onregelmatig of eenzijdig", value: 2 },
+      { label: "Veel bewerkt voedsel en weinig groente", value: 1 },
+    ],
   },
   {
-    id: "intake-basis-vocht",
-    category: "basis",
-    questionIndex: 8,
-    question: "Hoe vaak drink je te weinig water gedurende de dag (dorst, donkere urine, hoofdpijn)?",
-    options: BURDEN_4,
+    id: "NUT_O3",
+    category: "voeding",
+    questionIndex: 2,
+    question: "Eet je regelmatig vette vis (zalm, makreel, sardines)?",
+    options: [
+      { label: "2x per week of vaker", value: 3 },
+      { label: "Ongeveer 1x per week", value: 2 },
+      { label: "Zelden of nooit", value: 1 },
+    ],
   },
   {
-    id: "intake-beweging-zitten",
+    id: "MOV_FREQ",
     category: "beweging",
-    questionIndex: 9,
-    question: "Hoe vaak zit je op een werkdag lang achter elkaar zonder echt te bewegen?",
-    options: BURDEN_4,
+    questionIndex: 1,
+    question: "Hoe vaak beweeg je intensief (sport, krachttraining, hardlopen)?",
+    options: [
+      { label: "3x per week of meer", value: 4 },
+      { label: "1-2x per week", value: 3 },
+      { label: "Minder dan 1x per week", value: 2 },
+      { label: "Zelden of nooit", value: 1 },
+    ],
   },
   {
-    id: "intake-beweging-norm",
+    id: "MOV_DAILY",
     category: "beweging",
-    questionIndex: 10,
-    question: "Hoe vaak lukt het niet om aan de beweegnorm te komen (minimaal matig intensief)?",
-    options: BURDEN_4,
+    questionIndex: 2,
+    question: "Hoeveel beweeg je buiten sport om (wandelen, fietsen, staan)?",
+    options: [
+      { label: "Veel - ik sta en loop de hele dag", value: 3 },
+      { label: "Gemiddeld - ik wissel zitten en bewegen af", value: 2 },
+      { label: "Weinig - ik zit het grootste deel van de dag", value: 1 },
+    ],
   },
   {
-    id: "intake-stille-maaltijd",
-    category: "stille_belasting",
-    questionIndex: 11,
-    question: "Hoe vaak heb je een opgeblazen of zwaar gevoel na maaltijden, terwijl je niet veel gegeten hebt?",
-    options: BURDEN_4,
+    id: "RCV_PHYS",
+    category: "herstel",
+    questionIndex: 1,
+    question: "Hoe snel herstel je na inspanning (sport, fysiek werk)?",
+    options: [
+      { label: "Binnen een dag", value: 3 },
+      { label: "Duurt 2-3 dagen", value: 2 },
+      { label: "Ik voel me langer moe of stijf", value: 1 },
+    ],
   },
   {
-    id: "intake-stille-alcohol",
-    category: "stille_belasting",
-    questionIndex: 12,
-    question: "Hoe vaak drink je meer dan één glas alcohol op een gemiddelde avond?",
-    options: BURDEN_4,
+    id: "RCV_MENT",
+    category: "herstel",
+    questionIndex: 2,
+    question: "Neem je bewust momenten van rust of ontspanning?",
+    options: [
+      {
+        label: "Ja, dagelijks (meditatie, wandeling, ademhaling)",
+        value: 3,
+      },
+      { label: "Soms, maar niet structureel", value: 2 },
+      { label: "Nee, daar kom ik niet aan toe", value: 1 },
+    ],
   },
-];
+] as const satisfies readonly IntakeQuestion[];
