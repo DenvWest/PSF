@@ -1,20 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  CATEGORIES,
-  QUESTIONS,
-  SYMPTOMS,
-  type CategoryId,
-  type SymptomId,
-} from "@/data/intake-questions";
+import { DM_Sans, DM_Serif_Display } from "next/font/google";
+import type { CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
+import IntakeCalculating from "@/components/intake/IntakeCalculating";
+import IntakeIntro from "@/components/intake/IntakeIntro";
+import IntakeQuestion from "@/components/intake/IntakeQuestion";
+import IntakeResults from "@/components/intake/IntakeResults";
+import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
+import { CATEGORIES, QUESTIONS, type SymptomId } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
-import {
-  calcDomainScores,
-  getAdvice,
-  getProfileLabel,
-  getUrgency,
-} from "@/lib/intake-engine";
+import { calcDomainScores } from "@/lib/intake-engine";
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-intake-body",
+  display: "swap",
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-intake-heading",
+  display: "swap",
+});
 
 type Phase =
   | "intro"
@@ -23,33 +33,40 @@ type Phase =
   | "calculating"
   | "results";
 
-const CATEGORY_TO_SCORE_KEY: Record<CategoryId, keyof DomainScores> = {
-  slaap: "sleep_score",
-  energie: "energy_score",
-  stress: "stress_score",
-  voeding: "nutrition_score",
-  beweging: "movement_score",
-  herstel: "recovery_score",
-};
-
 export default function IntakePage() {
   const [phase, setPhase] = useState<Phase>("intro");
   const [symptoms, setSymptoms] = useState<SymptomId[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [scores, setScores] = useState<DomainScores | null>(null);
+  const [fadeIn, setFadeIn] = useState(true);
+  const skipFadeOnMount = useRef(true);
+
+  useEffect(() => {
+    if (skipFadeOnMount.current) {
+      skipFadeOnMount.current = false;
+      return;
+    }
+
+    const fadeOut = window.setTimeout(() => setFadeIn(false), 0);
+    const fadeInTimer = window.setTimeout(() => setFadeIn(true), 50);
+    return () => {
+      window.clearTimeout(fadeOut);
+      window.clearTimeout(fadeInTimer);
+    };
+  }, [phase, currentQ]);
 
   useEffect(() => {
     if (phase !== "calculating") {
       return;
     }
 
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setScores(calcDomainScores(answers));
       setPhase("results");
     }, 2000);
 
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, [phase, answers]);
 
   function toggleSymptom(id: SymptomId) {
@@ -58,123 +75,94 @@ export default function IntakePage() {
     );
   }
 
-  function selectAnswer(value: number) {
+  function handleAnswer(value: number) {
     const q = QUESTIONS[currentQ];
     setAnswers((prev) => ({ ...prev, [q.id]: value }));
-    if (currentQ < 11) {
+    if (currentQ < QUESTIONS.length - 1) {
       setCurrentQ((c) => c + 1);
     } else {
       setPhase("calculating");
     }
   }
 
-  if (phase === "intro") {
-    return (
-      <div>
-        <p>Intro — korte intake voor je profiel.</p>
-        <button type="button" onClick={() => setPhase("symptoms")}>
-          Start
-        </button>
-      </div>
-    );
+  function goToQuestions() {
+    setCurrentQ(0);
+    setAnswers({});
+    setPhase("questions");
   }
 
-  if (phase === "symptoms") {
-    return (
-      <div>
-        <p>Selecteer symptomen (meerdere mogelijk)</p>
-        {SYMPTOMS.map((s) => (
-          <div key={s.id}>
-            <button type="button" onClick={() => toggleSymptom(s.id)}>
-              {symptoms.includes(s.id) ? "[x]" : "[ ]"} {s.label}
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() => {
-            setCurrentQ(0);
-            setAnswers({});
-            setPhase("questions");
-          }}
-        >
-          Verder naar vragen
-        </button>
-      </div>
-    );
+  function restart() {
+    setPhase("intro");
+    setSymptoms([]);
+    setCurrentQ(0);
+    setAnswers({});
+    setScores(null);
   }
 
-  if (phase === "questions") {
-    const q = QUESTIONS[currentQ];
-    return (
-      <div>
-        <p>
-          Vraag {currentQ + 1} van {QUESTIONS.length}
-        </p>
-        <p>{q.question}</p>
-        {q.options.map((opt) => (
-          <div key={opt.label}>
-            <button type="button" onClick={() => selectAnswer(opt.value)}>
-              {opt.label}
-            </button>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  const currentQuestion = QUESTIONS[currentQ];
+  const currentCategory = currentQuestion
+    ? CATEGORIES.find((c) => c.id === currentQuestion.category)
+    : undefined;
 
-  if (phase === "calculating") {
-    return <div>Berekenen…</div>;
-  }
+  const contentStyle: CSSProperties = {
+    opacity: fadeIn ? 1 : 0,
+    transform: fadeIn ? "translateY(0)" : "translateY(12px)",
+    transition: "opacity 400ms ease, transform 400ms ease",
+  };
 
-  if (phase === "results") {
-    if (!scores) {
-      return <div>Geen scores beschikbaar.</div>;
-    }
+  const shellClass = `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto min-h-screen w-full max-w-[480px] text-[#1a1a1a]`;
 
-    const urgency = getUrgency(scores);
-    const profile = getProfileLabel(scores);
-    const advice = getAdvice(scores, answers, symptoms);
+  const shellStyle: CSSProperties = {
+    fontFamily: "var(--font-intake-body), system-ui, sans-serif",
+    background: "linear-gradient(180deg, #FAFAF7 0%, #F4F1EB 100%)",
+  };
 
-    return (
-      <div>
-        <p>Resultaten</p>
-        <p>Urgentie: {urgency.label}</p>
-        <p>
-          Profiel: {profile.name} (domein {profile.domain}, score{" "}
-          {profile.score})
-        </p>
-        <p>Domeinscores</p>
-        <ul>
-          {CATEGORIES.map((cat) => (
-            <li key={cat.id}>
-              {cat.label}: {scores[CATEGORY_TO_SCORE_KEY[cat.id]]}
-            </li>
-          ))}
-        </ul>
-        <p>Snelle winst</p>
-        <ul>
-          {advice.quickWins.map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
-        <p>Supplementen</p>
-        <ul>
-          {advice.supplements.map((s) => (
-            <li key={s.name}>
-              {s.name} — {s.reason}
-            </li>
-          ))}
-        </ul>
-        <p>Langetermijn</p>
-        <ul>
-          {advice.longTerm.map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+  return (
+    <div className={shellClass} style={shellStyle}>
+      {phase === "intro" && (
+        <div style={contentStyle}>
+          <IntakeIntro onStart={() => setPhase("symptoms")} />
+        </div>
+      )}
 
-  return null;
+      {phase === "symptoms" && (
+        <div style={contentStyle}>
+          <IntakeSymptoms
+            symptoms={symptoms}
+            onToggle={toggleSymptom}
+            onNext={goToQuestions}
+          />
+        </div>
+      )}
+
+      {phase === "questions" && currentQuestion && currentCategory && (
+        <div style={contentStyle} key={currentQ}>
+          <IntakeQuestion
+            question={currentQuestion}
+            category={currentCategory}
+            currentIndex={currentQ}
+            total={QUESTIONS.length}
+            onAnswer={handleAnswer}
+          />
+        </div>
+      )}
+
+      {phase === "calculating" && (
+        <div style={contentStyle}>
+          <IntakeCalculating />
+        </div>
+      )}
+
+      {phase === "results" && scores && (
+        <div style={contentStyle}>
+          <IntakeResults
+            scores={scores}
+            answers={answers}
+            symptoms={symptoms}
+            onRestart={restart}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
