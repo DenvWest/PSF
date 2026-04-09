@@ -47,6 +47,7 @@ export default function IntakePage() {
     Record<string, number>
   >({});
   const [scores, setScores] = useState<DomainScores | null>(null);
+  const [sessionTimestamp, setSessionTimestamp] = useState<number | null>(null);
   const [fadeIn, setFadeIn] = useState(true);
   const skipFadeOnMount = useRef(true);
 
@@ -71,14 +72,16 @@ export default function IntakePage() {
 
     const timer = window.setTimeout(() => {
       const computed = calcDomainScores(answers);
+      const ts = Date.now();
       setScores(computed);
+      setSessionTimestamp(ts);
       saveIntakeSession({
         symptoms,
         answers,
         scores: computed,
         urgency: getUrgency(computed).label,
         profile: getProfileLabel(computed).name,
-        timestamp: Date.now(),
+        timestamp: ts,
       });
       setPhase("results");
     }, 2000);
@@ -131,6 +134,7 @@ export default function IntakePage() {
     setAnswers({});
     setAnsweredIndices({});
     setScores(null);
+    setSessionTimestamp(null);
   }
 
   function resumeLastResults() {
@@ -141,6 +145,7 @@ export default function IntakePage() {
     setSymptoms(session.symptoms as SymptomId[]);
     setAnswers(session.answers);
     setScores(session.scores);
+    setSessionTimestamp(session.timestamp);
     setAnsweredIndices({});
     setPhase("results");
   }
@@ -205,12 +210,13 @@ export default function IntakePage() {
         </div>
       )}
 
-      {phase === "results" && scores && (
+      {phase === "results" && scores && sessionTimestamp !== null && (
         <div style={contentStyle}>
           <IntakeResults
             scores={scores}
             answers={answers}
             symptoms={symptoms}
+            sessionTimestamp={sessionTimestamp}
             onRestart={restart}
           />
         </div>

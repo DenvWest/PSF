@@ -2,6 +2,72 @@ import type { DomainScores } from "@/lib/intake-engine";
 
 export const INTAKE_SESSIONS_KEY = "ps_intake_sessions";
 
+export const REMINDER_EMAILS_KEY = "ps_reminder_emails";
+
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+export type ReminderEmailRecord = {
+  email: string;
+  sessionTimestamp: number;
+  reminderDate: number;
+  createdAt: number;
+};
+
+function readReminderEmailsRaw(): unknown {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(REMINDER_EMAILS_KEY);
+    if (raw === null || raw === "") {
+      return [];
+    }
+    return JSON.parse(raw) as unknown;
+  } catch {
+    return [];
+  }
+}
+
+export function saveReminderEmail(
+  email: string,
+  sessionTimestamp: number,
+): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const createdAt = Date.now();
+  const reminderDate = sessionTimestamp + THIRTY_DAYS_MS;
+  const record: ReminderEmailRecord = {
+    email: email.trim(),
+    sessionTimestamp,
+    reminderDate,
+    createdAt,
+  };
+
+  const parsed = readReminderEmailsRaw();
+  const existing = Array.isArray(parsed)
+    ? parsed.filter(isReminderEmailRecord)
+    : [];
+  const next = [...existing, record];
+  window.localStorage.setItem(REMINDER_EMAILS_KEY, JSON.stringify(next));
+}
+
+function isReminderEmailRecord(value: unknown): value is ReminderEmailRecord {
+  if (value === null || typeof value !== "object") {
+    return false;
+  }
+
+  const o = value as Record<string, unknown>;
+  return (
+    typeof o.email === "string" &&
+    typeof o.sessionTimestamp === "number" &&
+    typeof o.reminderDate === "number" &&
+    typeof o.createdAt === "number"
+  );
+}
+
 export type IntakeSessionPayload = {
   symptoms: string[];
   answers: Record<string, number>;

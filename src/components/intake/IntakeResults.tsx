@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import type { SymptomId } from "@/data/intake-questions";
 import { CATEGORIES, type CategoryId } from "@/data/intake-questions";
 import type { DomainId, DomainScores } from "@/lib/intake-engine";
@@ -10,6 +11,7 @@ import {
   getUrgency,
 } from "@/lib/intake-engine";
 import ScoreRing from "@/components/intake/ScoreRing";
+import { saveReminderEmail } from "@/lib/intake-storage";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
   sleep_score: "slaap",
@@ -42,15 +44,27 @@ type IntakeResultsProps = {
   scores: DomainScores;
   answers: Record<string, number>;
   symptoms: SymptomId[];
+  sessionTimestamp: number;
   onRestart?: () => void;
 };
+
+const REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
+
+function isLooseEmailValid(value: string): boolean {
+  const t = value.trim();
+  return t.includes("@") && t.includes(".");
+}
 
 export default function IntakeResults({
   scores,
   answers,
   symptoms,
+  sessionTimestamp,
   onRestart,
 }: IntakeResultsProps) {
+  const [reminderEmail, setReminderEmail] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+
   const urgency = getUrgency(scores);
   const profile = getProfileLabel(scores);
   const advice = getAdvice(scores, answers, symptoms);
@@ -238,12 +252,69 @@ export default function IntakeResults({
         <div className="mb-5 text-[13px] text-[#999]">
           Vergelijk je scores en zie wat er verbeterd is.
         </div>
-        <button
-          type="button"
-          className="cursor-pointer rounded-[10px] border-none bg-white px-8 py-3.5 text-sm font-bold text-[#1a1a1a]"
-        >
-          Herinnering instellen
-        </button>
+        {emailSubmitted ? (
+          <div className="flex flex-col items-center gap-2 text-[15px] leading-snug text-white">
+            <span className="text-xl text-[#5A8F6A]" aria-hidden>
+              ✓
+            </span>
+            <p className="m-0">
+              We sturen je een herinnering op{" "}
+              {new Date(sessionTimestamp + REMINDER_MS).toLocaleDateString(
+                "nl-NL",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                },
+              )}
+              .
+            </p>
+          </div>
+        ) : (
+          <>
+            <input
+              type="email"
+              name="reminder-email"
+              autoComplete="email"
+              placeholder="je@emailadres.nl"
+              value={reminderEmail}
+              onChange={(e) => setReminderEmail(e.target.value)}
+              className="box-border w-full max-w-full outline-none"
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: 10,
+                border: "none",
+                fontSize: 15,
+                fontFamily: "inherit",
+                background: "rgba(255,255,255,0.95)",
+                color: "#1a1a1a",
+                marginBottom: 12,
+              }}
+            />
+            <button
+              type="button"
+              disabled={!isLooseEmailValid(reminderEmail)}
+              onClick={() => {
+                if (!isLooseEmailValid(reminderEmail)) {
+                  return;
+                }
+                saveReminderEmail(reminderEmail.trim(), sessionTimestamp);
+                setEmailSubmitted(true);
+              }}
+              className={`rounded-[10px] border-none bg-white px-8 py-3.5 text-sm font-bold text-[#1a1a1a] ${
+                isLooseEmailValid(reminderEmail)
+                  ? "cursor-pointer opacity-100"
+                  : "cursor-default opacity-50"
+              }`}
+            >
+              Herinnering instellen
+            </button>
+            <p className="mt-2 text-center text-[11px] text-[rgba(255,255,255,0.4)]">
+              Alleen voor je herinnering. Geen spam, geen nieuwsbrief.
+            </p>
+          </>
+        )}
       </div>
 
       {onRestart ? (
