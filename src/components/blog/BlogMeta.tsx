@@ -13,6 +13,16 @@ function formatDatum(isoDate: string): string {
   });
 }
 
+export function formatBlogDatum(datum: string): string {
+  const d = new Date(datum);
+  if (Number.isNaN(d.getTime())) return datum;
+  return d.toLocaleDateString("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export default function BlogMeta({ leestijd, gepubliceerdOp }: BlogMetaProps) {
   return (
     <p className="flex items-center gap-1.5 text-sm text-stone-400">
