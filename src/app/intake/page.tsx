@@ -38,6 +38,9 @@ export default function IntakePage() {
   const [symptoms, setSymptoms] = useState<SymptomId[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answeredIndices, setAnsweredIndices] = useState<
+    Record<string, number>
+  >({});
   const [scores, setScores] = useState<DomainScores | null>(null);
   const [fadeIn, setFadeIn] = useState(true);
   const skipFadeOnMount = useRef(true);
@@ -75,9 +78,10 @@ export default function IntakePage() {
     );
   }
 
-  function handleAnswer(value: number) {
+  function handleAnswer(value: number, optionIndex: number) {
     const q = QUESTIONS[currentQ];
     setAnswers((prev) => ({ ...prev, [q.id]: value }));
+    setAnsweredIndices((prev) => ({ ...prev, [q.id]: optionIndex }));
     if (currentQ < QUESTIONS.length - 1) {
       setCurrentQ((c) => c + 1);
     } else {
@@ -88,7 +92,22 @@ export default function IntakePage() {
   function goToQuestions() {
     setCurrentQ(0);
     setAnswers({});
+    setAnsweredIndices({});
     setPhase("questions");
+  }
+
+  function handleBack() {
+    if (phase === "questions") {
+      if (currentQ > 0) {
+        setCurrentQ((c) => c - 1);
+      } else {
+        setPhase("symptoms");
+      }
+      return;
+    }
+    if (phase === "symptoms") {
+      setPhase("intro");
+    }
   }
 
   function restart() {
@@ -96,6 +115,7 @@ export default function IntakePage() {
     setSymptoms([]);
     setCurrentQ(0);
     setAnswers({});
+    setAnsweredIndices({});
     setScores(null);
   }
 
@@ -131,6 +151,7 @@ export default function IntakePage() {
             symptoms={symptoms}
             onToggle={toggleSymptom}
             onNext={goToQuestions}
+            onBack={handleBack}
           />
         </div>
       )}
@@ -142,7 +163,9 @@ export default function IntakePage() {
             category={currentCategory}
             currentIndex={currentQ}
             total={QUESTIONS.length}
+            savedOptionIndex={answeredIndices[currentQuestion.id]}
             onAnswer={handleAnswer}
+            onBack={handleBack}
           />
         </div>
       )}

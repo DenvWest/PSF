@@ -8,12 +8,14 @@ type IntakeSymptomsProps = {
   symptoms: SymptomId[];
   onToggle: (id: SymptomId) => void;
   onNext: () => void;
+  onBack: () => void;
 };
 
 export default function IntakeSymptoms({
   symptoms,
   onToggle,
   onNext,
+  onBack,
 }: IntakeSymptomsProps) {
   const isProcessing = useRef(false);
   const [pointerLocked, setPointerLocked] = useState(false);
@@ -35,6 +37,20 @@ export default function IntakeSymptoms({
 
   return (
     <div className="px-6 pb-10">
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-4 p-0 text-left"
+        style={{
+          background: "none",
+          border: "none",
+          color: "#999",
+          fontSize: "14px",
+          cursor: "pointer",
+        }}
+      >
+        ← Terug
+      </button>
       <p className="mb-2 text-xs font-semibold uppercase tracking-[1.5px] text-[#999]">
         Stap 1 van 2
       </p>

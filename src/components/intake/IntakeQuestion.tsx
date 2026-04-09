@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+import { useEffect, useState } from "react";
 import ProgressDots from "@/components/intake/ProgressDots";
 import {
   CATEGORIES,
@@ -14,7 +13,9 @@ type IntakeQuestionProps = {
   category: Category;
   currentIndex: number;
   total: number;
-  onAnswer: (value: number) => void;
+  savedOptionIndex?: number;
+  onAnswer: (value: number, optionIndex: number) => void;
+  onBack: () => void;
 };
 
 export default function IntakeQuestion({
@@ -22,44 +23,32 @@ export default function IntakeQuestion({
   category,
   currentIndex,
   total,
+  savedOptionIndex,
   onAnswer,
+  onBack,
 }: IntakeQuestionProps) {
-  const isProcessing = useRef(false);
-  const [selectedValue, setSelectedValue] = useState<number | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [pointerLocked, setPointerLocked] = useState(false);
+  const [locked, setLocked] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const catColor = category.color;
 
   useEffect(() => {
-    isProcessing.current = false;
-    const unlockId = window.setTimeout(() => setPointerLocked(false), 0);
-    const id = window.setTimeout(() => setIsAnimating(false), 0);
-    return () => {
-      window.clearTimeout(unlockId);
-      window.clearTimeout(id);
-    };
+    const id = window.setTimeout(() => setLocked(false), 0);
+    return () => window.clearTimeout(id);
   }, [question.id]);
 
-  function handleClick(value: number) {
-    if (isProcessing.current) {
+  function handleClick(optionIndex: number) {
+    if (locked) {
       return;
     }
-    if (isAnimating) {
+    const opt = question.options[optionIndex];
+    if (!opt) {
       return;
     }
-    isProcessing.current = true;
-    setPointerLocked(true);
-    setSelectedValue(value);
-    flushSync(() => {
-      setIsAnimating(true);
-    });
+    setLocked(true);
+    setSelectedOption(optionIndex);
     window.setTimeout(() => {
-      onAnswer(value);
-    }, 400);
-    window.setTimeout(() => {
-      isProcessing.current = false;
-      setPointerLocked(false);
-    }, 400);
+      onAnswer(opt.value, optionIndex);
+    }, 500);
   }
 
   const currentCatIndex = CATEGORIES.findIndex((c) => c.id === category.id);
@@ -82,6 +71,21 @@ export default function IntakeQuestion({
       </div>
 
       <div className="px-6 pb-10">
+        <button
+          type="button"
+          onClick={onBack}
+          className="p-0 text-left"
+          style={{
+            marginBottom: 16,
+            background: "none",
+            border: "none",
+            color: "#999",
+            fontSize: "14px",
+            cursor: "pointer",
+          }}
+        >
+          ← Terug
+        </button>
         <div
           className="mb-5 inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5"
           style={{
@@ -108,16 +112,20 @@ export default function IntakeQuestion({
           {question.question}
         </h2>
 
-        <div className="flex flex-col gap-2.5">
+        <div
+          style={{ pointerEvents: locked ? "none" : "auto" }}
+          className="flex flex-col gap-2.5"
+        >
           {question.options.map((opt, i) => {
-            const isSelected =
-              selectedValue === opt.value && isAnimating;
+            const isSelected = locked
+              ? selectedOption === i
+              : savedOptionIndex !== undefined && savedOptionIndex === i;
             return (
               <button
                 key={i}
                 type="button"
-                onClick={() => handleClick(opt.value)}
-                className="block w-full rounded-[14px] border-2 px-5 py-[18px] text-left text-[15px] font-medium leading-snug transition-all duration-[400ms] ease-out"
+                onClick={() => handleClick(i)}
+                className="block w-full rounded-[14px] border-2 px-5 py-[18px] text-left text-[15px] font-medium leading-snug transition-all duration-500 ease-out"
                 style={{
                   background: isSelected ? catColor : "white",
                   color: isSelected ? "white" : "#1a1a1a",
@@ -125,7 +133,6 @@ export default function IntakeQuestion({
                   boxShadow: isSelected
                     ? `0 4px 16px ${catColor}33`
                     : "none",
-                  pointerEvents: pointerLocked ? "none" : "auto",
                 }}
               >
                 {opt.label}
