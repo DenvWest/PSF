@@ -21,7 +21,15 @@ export default function IntakeIntro({
   );
 
   useEffect(() => {
-    setLastSession(getLastSession());
+    let cancelled = false;
+    void getLastSession().then((session) => {
+      if (!cancelled) {
+        setLastSession(session);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
   return (
     <div className="px-6 pt-14 pb-10 text-center">

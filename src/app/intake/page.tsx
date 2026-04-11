@@ -71,19 +71,20 @@ export default function IntakePage() {
     }
 
     const timer = window.setTimeout(() => {
-      const computed = calcDomainScores(answers);
-      const ts = Date.now();
-      setScores(computed);
-      setSessionTimestamp(ts);
-      saveIntakeSession({
-        symptoms,
-        answers,
-        scores: computed,
-        urgency: getUrgency(computed).label,
-        profile: getProfileLabel(computed).name,
-        timestamp: ts,
-      });
-      setPhase("results");
+      void (async () => {
+        const computed = calcDomainScores(answers);
+        const ts = Date.now();
+        setScores(computed);
+        setSessionTimestamp(ts);
+        await saveIntakeSession({
+          symptoms,
+          answers,
+          scores: computed,
+          urgency: getUrgency(computed).label,
+          profile: getProfileLabel(computed).name,
+        });
+        setPhase("results");
+      })();
     }, 2000);
 
     return () => window.clearTimeout(timer);
@@ -137,8 +138,8 @@ export default function IntakePage() {
     setSessionTimestamp(null);
   }
 
-  function resumeLastResults() {
-    const session = getLastSession();
+  async function resumeLastResults() {
+    const session = await getLastSession();
     if (!session) {
       return;
     }
@@ -216,7 +217,6 @@ export default function IntakePage() {
             scores={scores}
             answers={answers}
             symptoms={symptoms}
-            sessionTimestamp={sessionTimestamp}
             onRestart={restart}
           />
         </div>

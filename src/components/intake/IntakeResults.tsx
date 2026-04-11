@@ -44,11 +44,8 @@ type IntakeResultsProps = {
   scores: DomainScores;
   answers: Record<string, number>;
   symptoms: SymptomId[];
-  sessionTimestamp: number;
   onRestart?: () => void;
 };
-
-const REMINDER_MS = 30 * 24 * 60 * 60 * 1000;
 
 function isLooseEmailValid(value: string): boolean {
   const t = value.trim();
@@ -59,11 +56,13 @@ export default function IntakeResults({
   scores,
   answers,
   symptoms,
-  sessionTimestamp,
   onRestart,
 }: IntakeResultsProps) {
   const [reminderEmail, setReminderEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [reminderConfirmDate, setReminderConfirmDate] = useState<Date | null>(
+    null,
+  );
 
   const urgency = getUrgency(scores);
   const profile = getProfileLabel(scores);
@@ -259,14 +258,11 @@ export default function IntakeResults({
             </span>
             <p className="m-0">
               We sturen je een herinnering op{" "}
-              {new Date(sessionTimestamp + REMINDER_MS).toLocaleDateString(
-                "nl-NL",
-                {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                },
-              )}
+              {(reminderConfirmDate ?? new Date()).toLocaleDateString("nl-NL", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
               .
             </p>
           </div>
@@ -296,11 +292,16 @@ export default function IntakeResults({
               type="button"
               disabled={!isLooseEmailValid(reminderEmail)}
               onClick={() => {
-                if (!isLooseEmailValid(reminderEmail)) {
-                  return;
-                }
-                saveReminderEmail(reminderEmail.trim(), sessionTimestamp);
-                setEmailSubmitted(true);
+                void (async () => {
+                  if (!isLooseEmailValid(reminderEmail)) {
+                    return;
+                  }
+                  const d = new Date();
+                  d.setDate(d.getDate() + 30);
+                  setReminderConfirmDate(d);
+                  await saveReminderEmail(reminderEmail.trim());
+                  setEmailSubmitted(true);
+                })();
               }}
               className={`rounded-[10px] border-none bg-white px-8 py-3.5 text-sm font-bold text-[#1a1a1a] ${
                 isLooseEmailValid(reminderEmail)
