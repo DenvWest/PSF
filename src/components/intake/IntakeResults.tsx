@@ -10,6 +10,8 @@ import {
   getProfileLabel,
   getUrgency,
 } from "@/lib/intake-engine";
+import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
+import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import ScoreRing from "@/components/intake/ScoreRing";
 import { saveReminderEmail } from "@/lib/intake-storage";
 
@@ -44,6 +46,7 @@ type IntakeResultsProps = {
   scores: DomainScores;
   answers: Record<string, number>;
   symptoms: SymptomId[];
+  sessionId: string | null;
   onRestart?: () => void;
 };
 
@@ -56,6 +59,7 @@ export default function IntakeResults({
   scores,
   answers,
   symptoms,
+  sessionId,
   onRestart,
 }: IntakeResultsProps) {
   const [reminderEmail, setReminderEmail] = useState("");
@@ -318,6 +322,12 @@ export default function IntakeResults({
         )}
       </div>
 
+      {sessionId ? <IntakeFeedback sessionId={sessionId} /> : null}
+
+      <div className="mb-5">
+        <IntakeDisclaimer />
+      </div>
+
       {onRestart ? (
         <button
           type="button"
@@ -329,8 +339,6 @@ export default function IntakeResults({
       ) : null}
 
       <p className="text-center text-[11px] leading-normal text-[#bbb]">
-        Dit is geen medisch advies. Raadpleeg een arts bij klachten.
-        <br />
         © 2026 PerfectSupplement
       </p>
     </div>

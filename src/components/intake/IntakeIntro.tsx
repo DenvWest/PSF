@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CATEGORIES } from "@/data/intake-questions";
+import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
 import {
   getLastSession,
   type IntakeSessionPayload,
@@ -82,6 +83,9 @@ export default function IntakeIntro({
       <p className="mt-4 text-xs text-[#aaa]">
         Duurt ± 3 minuten · geen account nodig
       </p>
+      <div className="mx-auto mt-4 max-w-[340px] px-0">
+        <IntakeDisclaimer />
+      </div>
     </div>
   );
 }

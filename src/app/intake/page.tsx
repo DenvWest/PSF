@@ -48,6 +48,7 @@ export default function IntakePage() {
   >({});
   const [scores, setScores] = useState<DomainScores | null>(null);
   const [sessionTimestamp, setSessionTimestamp] = useState<number | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [fadeIn, setFadeIn] = useState(true);
   const skipFadeOnMount = useRef(true);
 
@@ -76,13 +77,14 @@ export default function IntakePage() {
         const ts = Date.now();
         setScores(computed);
         setSessionTimestamp(ts);
-        await saveIntakeSession({
+        const id = await saveIntakeSession({
           symptoms,
           answers,
           scores: computed,
           urgency: getUrgency(computed).label,
           profile: getProfileLabel(computed).name,
         });
+        setSessionId(id);
         setPhase("results");
       })();
     }, 2000);
@@ -136,6 +138,7 @@ export default function IntakePage() {
     setAnsweredIndices({});
     setScores(null);
     setSessionTimestamp(null);
+    setSessionId(null);
   }
 
   async function resumeLastResults() {
@@ -147,6 +150,7 @@ export default function IntakePage() {
     setAnswers(session.answers);
     setScores(session.scores);
     setSessionTimestamp(session.timestamp);
+    setSessionId(session.sessionId);
     setAnsweredIndices({});
     setPhase("results");
   }
@@ -217,6 +221,7 @@ export default function IntakePage() {
             scores={scores}
             answers={answers}
             symptoms={symptoms}
+            sessionId={sessionId}
             onRestart={restart}
           />
         </div>
