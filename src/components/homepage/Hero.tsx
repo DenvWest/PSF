@@ -13,23 +13,19 @@ export default function Hero() {
         <div className="max-w-[65ch] pt-6 text-left">
           <div className="space-y-4 py-[clamp(2rem,5vh,4rem)]">
             <h1 className="text-pretty text-3xl font-semibold leading-tight tracking-tight text-stone-900 sm:text-4xl md:text-[2.5rem] md:leading-[1.15]">
-              Voor mannen 40+ die merken dat hun energie verandert
+              Moe, slecht slapen of constant gestrest?
             </h1>
             <p className="text-base leading-relaxed text-stone-600 sm:text-lg">
-              <span className="block">
-                Wat voelt als ‘gewoon ouder worden’ is vaak een hormonale verschuiving.
-              </span>
-              <span className="mt-2 block">
-                Krijg weer grip met de juiste leefstijl en gerichte supplementen.
-              </span>
+              Na je 40e verandert je lichaam. Dat is normaal — maar je hoeft het
+              niet te accepteren. Ontdek in 3 minuten waar jij kunt verbeteren.
             </p>
 
             <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap sm:justify-start sm:gap-4">
               <Link
-                href="#step-care"
+                href="/intake"
                 className="inline-flex min-h-[44px] min-w-[12rem] items-center justify-center rounded-xl bg-emerald-800 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-900 focus-visible:outline focus-visible:ring-2 focus-visible:ring-emerald-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ps-bg)]"
               >
-                Start jouw pad
+                Doe de leefstijlcheck →
               </Link>
               <Link
                 href="/supplementen"

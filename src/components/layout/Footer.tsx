@@ -3,12 +3,13 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 
 const exploreLinks = [
+    { href: "/intake", label: "Leefstijlcheck" },
     { href: "/blog", label: "Blog" },
     { href: "/supplementen", label: "Supplementen" },
-    { href: "/methodologie", label: "Methodologie" },
 ];
 
 const infoLinks = [
+    { href: "/methodologie", label: "Methodologie" },
     { href: "/faqs", label: "FAQ's" },
     { href: "/privacy", label: "Privacy" },
     { href: "/disclaimer", label: "Disclaimer" },
@@ -35,9 +36,9 @@ export default function Footer() {
                             </span>
                         </Link>
                         <p className="mt-4 text-sm leading-relaxed text-stone-500">
-                            Een onafhankelijk blog over supplementen, met focus op
-                            omega 3 en magnesium. Uitleg, vergelijkingen en keuzes
-                            op basis van bewijs.
+                            Onafhankelijk platform voor mannen 40+ over supplementen,
+                            leefstijl en herstel. Vergelijkingen, persoonlijke intake
+                            en advies op basis van bewijs.
                         </p>
                     </div>
 
