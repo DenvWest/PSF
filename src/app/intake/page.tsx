@@ -8,7 +8,12 @@ import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
 import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
-import { CATEGORIES, QUESTIONS, type SymptomId } from "@/data/intake-questions";
+import {
+  CATEGORIES,
+  QUESTIONS,
+  type IntakeAgeRange,
+  type SymptomId,
+} from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
 import {
   calcDomainScores,
@@ -40,6 +45,7 @@ type Phase =
 
 export default function IntakePage() {
   const [phase, setPhase] = useState<Phase>("intro");
+  const [ageRange, setAgeRange] = useState<IntakeAgeRange | null>(null);
   const [symptoms, setSymptoms] = useState<SymptomId[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -77,12 +83,18 @@ export default function IntakePage() {
         const ts = Date.now();
         setScores(computed);
         setSessionTimestamp(ts);
+        if (ageRange === null) {
+          setSessionId(null);
+          setPhase("results");
+          return;
+        }
         const id = await saveIntakeSession({
           symptoms,
           answers,
           scores: computed,
           urgency: getUrgency(computed).label,
           profile: getProfileLabel(computed).name,
+          ageRange,
         });
         setSessionId(id);
         setPhase("results");
@@ -90,7 +102,7 @@ export default function IntakePage() {
     }, 2000);
 
     return () => window.clearTimeout(timer);
-  }, [phase, answers, symptoms]);
+  }, [phase, answers, symptoms, ageRange]);
 
   function toggleSymptom(id: SymptomId) {
     setSymptoms((prev) =>
@@ -132,6 +144,7 @@ export default function IntakePage() {
 
   function restart() {
     setPhase("intro");
+    setAgeRange(null);
     setSymptoms([]);
     setCurrentQ(0);
     setAnswers({});
@@ -147,6 +160,7 @@ export default function IntakePage() {
       return;
     }
     setSymptoms(session.symptoms as SymptomId[]);
+    setAgeRange(session.ageRange);
     setAnswers(session.answers);
     setScores(session.scores);
     setSessionTimestamp(session.timestamp);
@@ -187,6 +201,8 @@ export default function IntakePage() {
       {phase === "symptoms" && (
         <div style={contentStyle}>
           <IntakeSymptoms
+            ageRange={ageRange}
+            onAgeRangeChange={setAgeRange}
             symptoms={symptoms}
             onToggle={toggleSymptom}
             onNext={goToQuestions}

@@ -12,9 +12,11 @@ const STEPS: StepCardProps[] = [
   },
   {
     step: 2,
-    title: "Leefstijl",
-    description: "Slaap, training en voeding als basis",
-    href: "/methodologie",
+    title: "Leefstijlcheck",
+    description: "Doe de intake en ontdek waar jij kunt verbeteren",
+    href: "/intake",
+    badge: "Nieuw",
+    ctaLabel: "Start de intake",
   },
   {
     step: 3,

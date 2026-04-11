@@ -1,10 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { Symptom, SymptomId } from "@/data/intake-questions";
-import { SYMPTOMS } from "@/data/intake-questions";
+import {
+  INTAKE_AGE_RANGE_OPTIONS,
+  SYMPTOMS,
+  type IntakeAgeRange,
+  type Symptom,
+  type SymptomId,
+} from "@/data/intake-questions";
 
 type IntakeSymptomsProps = {
+  ageRange: IntakeAgeRange | null;
+  onAgeRangeChange: (value: IntakeAgeRange) => void;
   symptoms: SymptomId[];
   onToggle: (id: SymptomId) => void;
   onNext: () => void;
@@ -12,6 +19,8 @@ type IntakeSymptomsProps = {
 };
 
 export default function IntakeSymptoms({
+  ageRange,
+  onAgeRangeChange,
   symptoms,
   onToggle,
   onNext,
@@ -21,6 +30,7 @@ export default function IntakeSymptoms({
   const [pointerLocked, setPointerLocked] = useState(false);
 
   const hasSelection = symptoms.length > 0;
+  const canProceed = ageRange !== null && hasSelection;
 
   const handleToggle = (id: SymptomId) => {
     if (isProcessing.current) {
@@ -34,6 +44,12 @@ export default function IntakeSymptoms({
       setPointerLocked(false);
     }, 300);
   };
+
+  const verderLabel = canProceed
+    ? "Verder naar leefstijlcheck →"
+    : ageRange === null
+      ? "Kies je leeftijdscategorie"
+      : "Selecteer minimaal 1 symptoom";
 
   return (
     <div className="px-6 pb-10">
@@ -54,6 +70,36 @@ export default function IntakeSymptoms({
       <p className="mb-2 text-xs font-semibold uppercase tracking-[1.5px] text-[#999]">
         Stap 1 van 2
       </p>
+      <h2
+        className="mb-2 text-[26px] font-normal text-[#1a1a1a]"
+        style={{ fontFamily: "var(--font-intake-heading), Georgia, serif" }}
+      >
+        Wat is je leeftijdscategorie?
+      </h2>
+      <div className="mb-8 grid grid-cols-2 gap-3">
+        {INTAKE_AGE_RANGE_OPTIONS.map((opt) => {
+          const active = ageRange === opt;
+          return (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => onAgeRangeChange(opt)}
+              className="cursor-pointer rounded-[14px] border-2 text-center font-semibold transition-all duration-[250ms] ease-out"
+              style={{
+                padding: "12px",
+                fontSize: 14,
+                background: active ? "#1a1a1a" : "white",
+                color: active ? "white" : "#1a1a1a",
+                borderColor: active ? "#1a1a1a" : "#e8e6e1",
+                boxShadow: active ? "0 4px 20px rgba(0,0,0,0.12)" : "none",
+              }}
+            >
+              {opt}
+            </button>
+          );
+        })}
+      </div>
+
       <h2
         className="mb-2 text-[26px] font-normal text-[#1a1a1a]"
         style={{ fontFamily: "var(--font-intake-heading), Georgia, serif" }}
@@ -98,7 +144,9 @@ export default function IntakeSymptoms({
               </div>
               {active && (
                 <div className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white">
-                  <span className="text-sm font-bold text-[#1a1a1a]">✓</span>
+                  <span className="text-sm font-bold text-[#1a1a1a]">
+                    {"\u2713"}
+                  </span>
                 </div>
               )}
             </button>
@@ -108,19 +156,17 @@ export default function IntakeSymptoms({
 
       <button
         type="button"
-        onClick={() => hasSelection && onNext()}
-        disabled={!hasSelection}
+        onClick={() => canProceed && onNext()}
+        disabled={!canProceed}
         className="w-full rounded-[14px] border-none py-[18px] text-base font-semibold transition-all duration-300"
         style={{
-          background: hasSelection ? "#1a1a1a" : "#ddd",
-          color: hasSelection ? "white" : "#999",
-          cursor: hasSelection ? "pointer" : "default",
+          background: canProceed ? "#1a1a1a" : "#ddd",
+          color: canProceed ? "white" : "#999",
+          cursor: canProceed ? "pointer" : "default",
           pointerEvents: pointerLocked ? "none" : "auto",
         }}
       >
-        {hasSelection
-          ? "Verder naar leefstijlcheck →"
-          : "Selecteer minimaal 1 symptoom"}
+        {verderLabel}
       </button>
     </div>
   );

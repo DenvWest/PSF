@@ -4,7 +4,7 @@ import { useState } from "react";
 import { saveIntakeFeedback } from "@/lib/intake-storage";
 
 type IntakeFeedbackProps = {
-  sessionId: string;
+  sessionId: string | null;
 };
 
 export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {

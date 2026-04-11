@@ -8,12 +8,14 @@ import { useRouter } from "next/navigation";
 const mainLinks = [
     { href: "/blog", label: "Blog" },
     { href: "/supplementen", label: "Supplementen" },
+    { href: "/intake", label: "Leefstijlcheck" },
 ];
 
 const menuLinks = [
     { href: "/", label: "Home" },
     { href: "/blog", label: "Blog" },
     { href: "/supplementen", label: "Supplementen" },
+    { href: "/intake", label: "Leefstijlcheck" },
     { href: "/methodologie", label: "Methodologie" },
 ];
 
@@ -26,6 +28,7 @@ const infoLinks = [
 const searchItems = [
     { href: "/blog", label: "Blog", group: "Direct naar" },
     { href: "/supplementen", label: "Supplementen", group: "Direct naar" },
+    { href: "/intake", label: "Leefstijlcheck", group: "Direct naar" },
     { href: "/methodologie", label: "Methodologie", group: "Direct naar" },
     { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken", group: "Vergelijkingen" },
     { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement", group: "Vergelijkingen" },

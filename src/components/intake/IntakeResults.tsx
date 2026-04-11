@@ -322,7 +322,7 @@ export default function IntakeResults({
         )}
       </div>
 
-      {sessionId ? <IntakeFeedback sessionId={sessionId} /> : null}
+      <IntakeFeedback sessionId={sessionId} />
 
       <div className="mb-5">
         <IntakeDisclaimer />

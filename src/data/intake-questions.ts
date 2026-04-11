@@ -1,3 +1,12 @@
+export const INTAKE_AGE_RANGE_OPTIONS = [
+  "40–44",
+  "45–49",
+  "50–54",
+  "55+",
+] as const;
+
+export type IntakeAgeRange = (typeof INTAKE_AGE_RANGE_OPTIONS)[number];
+
 export type SymptomId = "stress" | "slaap" | "energie";
 
 export interface Symptom {
