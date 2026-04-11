@@ -12,9 +12,14 @@ export default function Hero() {
       <Container className="relative max-w-screen-xl">
         <div className="max-w-[65ch] pt-6 text-left">
           <div className="space-y-4 py-[clamp(2rem,5vh,4rem)]">
-            <h1 className="text-pretty text-3xl font-semibold leading-tight tracking-tight text-stone-900 sm:text-4xl md:text-[2.5rem] md:leading-[1.15]">
-              Moe, slecht slapen of constant gestrest?
-            </h1>
+            <div>
+              <p className="mb-[12px] text-[12px] font-semibold uppercase tracking-[2px] text-[#999]">
+                VOOR MANNEN 40+
+              </p>
+              <h1 className="text-pretty text-3xl font-semibold leading-tight tracking-tight text-stone-900 sm:text-4xl md:text-[2.5rem] md:leading-[1.15]">
+                Moe, slecht slapen of constant gestrest?
+              </h1>
+            </div>
             <p className="text-base leading-relaxed text-stone-600 sm:text-lg">
               Na je 40e verandert je lichaam. Dat is normaal — maar je hoeft het
               niet te accepteren. Ontdek in 3 minuten waar jij kunt verbeteren.
