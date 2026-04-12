@@ -1,4 +1,5 @@
 import type { IntakeAgeRange } from "@/data/intake-questions";
+import type { IntakeConsentPayload } from "@/lib/intake-consent";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 
 export type { IntakeSessionPayload };
@@ -9,6 +10,7 @@ export async function saveIntakeSession(data: {
   ageRange: IntakeAgeRange;
   turnstileToken: string;
   website: string;
+  consent: IntakeConsentPayload;
 }): Promise<string | null> {
   try {
     const response = await fetch("/api/intake/session", {
@@ -21,6 +23,12 @@ export async function saveIntakeSession(data: {
         answers: data.answers,
         turnstileToken: data.turnstileToken,
         website: data.website,
+        consent: {
+          healthDataProcessing: data.consent.healthDataProcessing,
+          anonymousAnalytics: data.consent.anonymousAnalytics,
+          marketingEmail: data.consent.marketingEmail,
+          marketingEmailAddress: data.consent.marketingEmailAddress,
+        },
       }),
     });
 
@@ -108,5 +116,32 @@ export async function getLastSession(): Promise<IntakeSessionPayload | null> {
     return json?.session ?? null;
   } catch {
     return null;
+  }
+}
+
+/** Trekt alle toestemmingen voor de huidige intake-sessie in en anonimiseert serverdata (DELETE /api/intake/consent). */
+export async function revokeIntakeConsent(): Promise<
+  { ok: true } | { ok: false; error: string }
+> {
+  try {
+    const response = await fetch("/api/intake/consent", {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const json = (await response.json().catch(() => null)) as
+      | { error?: string }
+      | null;
+    if (response.ok) {
+      return { ok: true };
+    }
+    return {
+      ok: false,
+      error:
+        typeof json?.error === "string"
+          ? json.error
+          : "Toestemming kon niet worden ingetrokken.",
+    };
+  } catch {
+    return { ok: false, error: "Netwerkfout. Probeer het later opnieuw." };
   }
 }

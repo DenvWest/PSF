@@ -4,6 +4,7 @@ import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import IntakeCalculating from "@/components/intake/IntakeCalculating";
+import IntakeConsent from "@/components/intake/IntakeConsent";
 import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
 import IntakeResults from "@/components/intake/IntakeResults";
@@ -16,6 +17,7 @@ import {
 } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
 import { calcDomainScores } from "@/lib/intake-engine";
+import type { IntakeConsentPayload } from "@/lib/intake-consent";
 import { getLastSession, saveIntakeSession } from "@/lib/intake-storage";
 
 const dmSans = DM_Sans({
@@ -36,6 +38,7 @@ type Phase =
   | "intro"
   | "symptoms"
   | "questions"
+  | "consent"
   | "calculating"
   | "results";
 
@@ -56,6 +59,9 @@ export default function IntakePage() {
   const calculatingStartedAtRef = useRef(0);
   const [intakeTurnstileToken, setIntakeTurnstileToken] = useState("");
   const [honeypotWebsite, setHoneypotWebsite] = useState("");
+  const [intakeConsent, setIntakeConsent] = useState<IntakeConsentPayload | null>(
+    null,
+  );
 
   useEffect(() => {
     if (skipFadeOnMount.current) {
@@ -104,6 +110,10 @@ export default function IntakePage() {
       return;
     }
 
+    if (!intakeConsent) {
+      return;
+    }
+
     let cancelled = false;
     const start = calculatingStartedAtRef.current;
 
@@ -121,6 +131,7 @@ export default function IntakePage() {
         ageRange,
         turnstileToken: intakeTurnstileToken,
         website: honeypotWebsite,
+        consent: intakeConsent,
       });
       if (cancelled) {
         return;
@@ -141,6 +152,7 @@ export default function IntakePage() {
     ageRange,
     intakeTurnstileToken,
     honeypotWebsite,
+    intakeConsent,
   ]);
 
   function toggleSymptom(id: SymptomId) {
@@ -156,20 +168,31 @@ export default function IntakePage() {
     if (currentQ < QUESTIONS.length - 1) {
       setCurrentQ((c) => c + 1);
     } else {
-      calculatingStartedAtRef.current = Date.now();
-      setIntakeTurnstileToken("");
-      setPhase("calculating");
+      setPhase("consent");
     }
+  }
+
+  function handleConsentContinue(payload: IntakeConsentPayload) {
+    setIntakeConsent(payload);
+    calculatingStartedAtRef.current = Date.now();
+    setIntakeTurnstileToken("");
+    setPhase("calculating");
   }
 
   function goToQuestions() {
     setCurrentQ(0);
     setAnswers({});
     setAnsweredIndices({});
+    setIntakeConsent(null);
     setPhase("questions");
   }
 
   function handleBack() {
+    if (phase === "consent") {
+      setCurrentQ(QUESTIONS.length - 1);
+      setPhase("questions");
+      return;
+    }
     if (phase === "questions") {
       if (currentQ > 0) {
         setCurrentQ((c) => c - 1);
@@ -195,6 +218,7 @@ export default function IntakePage() {
     setSessionId(null);
     setHoneypotWebsite("");
     setIntakeTurnstileToken("");
+    setIntakeConsent(null);
   }
 
   async function resumeLastResults() {
@@ -256,6 +280,15 @@ export default function IntakePage() {
         </div>
       )}
 
+      {phase === "consent" && (
+        <div style={contentStyle}>
+          <IntakeConsent
+            onContinue={handleConsentContinue}
+            onBack={handleBack}
+          />
+        </div>
+      )}
+
       {phase === "questions" && currentQuestion && currentCategory && (
         <div style={contentStyle} key={currentQ}>
           <IntakeQuestion
@@ -287,6 +320,7 @@ export default function IntakePage() {
             symptoms={symptoms}
             sessionId={sessionId}
             onRestart={restart}
+            onConsentRevoked={restart}
           />
         </div>
       )}

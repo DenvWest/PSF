@@ -13,7 +13,7 @@ import {
 import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import ScoreRing from "@/components/intake/ScoreRing";
-import { saveReminderEmail } from "@/lib/intake-storage";
+import { revokeIntakeConsent, saveReminderEmail } from "@/lib/intake-storage";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
   sleep_score: "slaap",
@@ -42,12 +42,17 @@ const DOMAIN_KEYS: (keyof DomainScores)[] = [
   "recovery_score",
 ];
 
+const REVOKE_CONFIRM =
+  "Weet je het zeker? Je intakegegevens worden op de server geanonimiseerd en je toestemmingen worden ingetrokken. Dit kun je niet ongedaan maken.";
+
 type IntakeResultsProps = {
   scores: DomainScores;
   answers: Record<string, number>;
   symptoms: SymptomId[];
   sessionId: string | null;
   onRestart?: () => void;
+  /** Na succesvol intrekken van toestemming (serverdata geanonimiseerd). */
+  onConsentRevoked?: () => void;
 };
 
 function isLooseEmailValid(value: string): boolean {
@@ -61,12 +66,18 @@ export default function IntakeResults({
   symptoms,
   sessionId,
   onRestart,
+  onConsentRevoked,
 }: IntakeResultsProps) {
   const [reminderEmail, setReminderEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [reminderConfirmDate, setReminderConfirmDate] = useState<Date | null>(
     null,
   );
+  const [revokeBusy, setRevokeBusy] = useState(false);
+  const [revokeFeedback, setRevokeFeedback] = useState<{
+    kind: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const urgency = getUrgency(scores);
   const profile = getProfileLabel(scores);
@@ -327,6 +338,54 @@ export default function IntakeResults({
       <div className="mb-5">
         <IntakeDisclaimer />
       </div>
+
+      {sessionId ? (
+        <div className="mb-5">
+          {revokeFeedback ? (
+            <p
+              className={`mb-3 rounded-xl px-4 py-3 text-[13px] leading-snug ${
+                revokeFeedback.kind === "success"
+                  ? "border border-[#c6e7d0] bg-[#f0fdf4] text-[#166534]"
+                  : "border border-[#fecaca] bg-[#fef2f2] text-[#991b1b]"
+              }`}
+              role={revokeFeedback.kind === "error" ? "alert" : "status"}
+            >
+              {revokeFeedback.text}
+            </p>
+          ) : null}
+          {revokeFeedback?.kind !== "success" ? (
+            <button
+              type="button"
+              disabled={revokeBusy}
+              onClick={() => {
+                if (!window.confirm(REVOKE_CONFIRM)) {
+                  return;
+                }
+                void (async () => {
+                  setRevokeBusy(true);
+                  setRevokeFeedback(null);
+                  const result = await revokeIntakeConsent();
+                  setRevokeBusy(false);
+                  if (result.ok) {
+                    setRevokeFeedback({
+                      kind: "success",
+                      text: "Je gegevens zijn geanonimiseerd en je toestemming is ingetrokken.",
+                    });
+                    window.setTimeout(() => {
+                      onConsentRevoked?.();
+                    }, 2800);
+                    return;
+                  }
+                  setRevokeFeedback({ kind: "error", text: result.error });
+                })();
+              }}
+              className="w-full cursor-pointer rounded-xl border border-[#e8e6e1] bg-white py-3.5 text-[13px] font-medium text-[#666] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {revokeBusy ? "Bezig…" : "Toestemming intrekken"}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
 
       {onRestart ? (
         <button

@@ -1,4 +1,5 @@
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+import PrivacyRevokeConsent from "@/components/privacy/PrivacyRevokeConsent";
 
 export default function PrivacyPage() {
     return (
@@ -152,6 +153,8 @@ export default function PrivacyPage() {
                         het e-mailadres dat je op de website vermeldt.
                     </p>
             </section>
+
+            <PrivacyRevokeConsent />
         </ContentPageLayout>
     );
 }

@@ -4,6 +4,11 @@ export type ContactFormData = {
   message: string;
   turnstileToken: string;
   website: string;
+  consent: {
+    healthDataProcessing: boolean;
+    anonymousAnalytics: boolean;
+    marketingEmail: boolean;
+  };
 };
 
 /** Antwoord van POST /api/contact */
@@ -19,7 +24,14 @@ export async function handleSendEmail(data: ContactFormData): Promise<ContactApi
       Accept: "application/json, text/plain, */*",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      turnstileToken: data.turnstileToken,
+      website: data.website,
+      consent: data.consent,
+    }),
   });
 
   const contentType = res.headers.get("content-type") || "";

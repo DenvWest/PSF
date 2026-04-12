@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sha256Hex } from "@/lib/consent-hashing";
+import {
+  intakeConsentRows,
+  validateIntakeConsent,
+} from "@/lib/intake-consent";
 import { computeIntakePersistenceFields, validateIntakeSubmission } from "@/lib/intake-compute";
 import {
   INTAKE_SESSION_COOKIE_NAME,
@@ -147,6 +152,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: validated.error }, { status: 400 });
   }
 
+  const consentValidated = validateIntakeConsent(bodyRecord);
+  if (!consentValidated.ok) {
+    logSecurityEvent("input_invalid", {
+      message: consentValidated.error,
+      remoteIp: clientIp,
+    });
+    return NextResponse.json({ error: consentValidated.error }, { status: 400 });
+  }
+
   const turnstileToken = normalizeSingleLine(bodyRecord.turnstileToken);
   if (!turnstileToken) {
     logSecurityEvent("input_invalid", {
@@ -207,6 +221,11 @@ export async function POST(request: NextRequest) {
 
   const { ageRange, symptoms, answers } = validated.value;
   const { scores, urgency, profile } = computeIntakePersistenceFields(answers);
+  const consent = consentValidated.value;
+
+  const ua = request.headers.get("user-agent") ?? "";
+  const ipHash = sha256Hex(clientIp);
+  const uaHash = sha256Hex(ua);
 
   const { data: row, error } = await admin
     .from("intake_sessions")
@@ -217,6 +236,9 @@ export async function POST(request: NextRequest) {
       urgency_level: urgency,
       profile_label: profile,
       age_range: ageRange,
+      marketing_email: consent.marketingEmail
+        ? consent.marketingEmailAddress
+        : null,
     })
     .select("id")
     .single();
@@ -225,6 +247,26 @@ export async function POST(request: NextRequest) {
     console.error("[api/intake/session] insert error:", error);
     return NextResponse.json(
       { error: "Kon intake niet opslaan." },
+      { status: 500 },
+    );
+  }
+
+  const consentRows = intakeConsentRows({
+    sessionId: row.id,
+    consent,
+    ipHash,
+    uaHash,
+  });
+
+  const { error: consentError } = await admin
+    .from("consent_records")
+    .insert(consentRows);
+
+  if (consentError) {
+    console.error("[api/intake/session] consent insert error:", consentError);
+    await admin.from("intake_sessions").delete().eq("id", row.id);
+    return NextResponse.json(
+      { error: "Kon toestemming niet vastleggen. Probeer het opnieuw." },
       { status: 500 },
     );
   }

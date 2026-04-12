@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { contactConsentRows, validateContactConsent } from "@/lib/contact-consent";
+import { sha256Hex } from "@/lib/consent-hashing";
 import { buildZohoTags } from "@/lib/contact-segmentation-tags";
 import { consumeRateLimit } from "@/lib/rate-limit";
+import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -181,6 +184,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: validationError }, { status: 400 });
   }
 
+  const consentValidated = validateContactConsent(bodyRecord);
+  if (!consentValidated.ok) {
+    logSecurityEvent("input_invalid", {
+      message: consentValidated.error,
+      remoteIp: clientIp,
+    });
+    return NextResponse.json({ error: consentValidated.error }, { status: 400 });
+  }
+
   const turnstileCheck = await verifyTurnstileToken({
     token: payload.turnstileToken,
     remoteIp: clientIp,
@@ -206,6 +218,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "De human verification is mislukt. Probeer het opnieuw." },
       { status: 403 },
+    );
+  }
+
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json(
+      {
+        error:
+          "Toestemming kan niet worden vastgelegd. De server-database is niet geconfigureerd.",
+      },
+      { status: 503 },
+    );
+  }
+
+  const ua = request.headers.get("user-agent") ?? "";
+  const ipHash = sha256Hex(clientIp);
+  const uaHash = sha256Hex(ua);
+  const consentRows = contactConsentRows({
+    consent: consentValidated.value,
+    ipHash,
+    uaHash,
+  });
+
+  const { error: consentError } = await admin
+    .from("consent_records")
+    .insert(consentRows);
+
+  if (consentError) {
+    console.error("[api/contact] consent insert error:", consentError);
+    return NextResponse.json(
+      { error: "Toestemming kon niet worden vastgelegd. Probeer het later opnieuw." },
+      { status: 500 },
     );
   }
 
