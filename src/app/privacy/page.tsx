@@ -8,151 +8,342 @@ export default function PrivacyPage() {
             title="Privacyverklaring"
             intro={
                 <>
-                    Op deze pagina leggen we uit welke gegevens deze website verwerkt, waarom
-                    dit gebeurt en hoe zorgvuldig met die gegevens wordt omgegaan.
+                    Laatst bijgewerkt: 12 april 2026. PerfectSupplement is een initiatief van Dennis
+                    van Westbroek, KVK 74667653.
                 </>
             }
         >
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">1. Over deze website</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Contactgegevens</h2>
                 <p className="mt-3">
-                        Perfect Supplement is een informatieve website over voedingssupplementen,
-                        vergelijkingen en methodologie. Sommige links op deze website zijn affiliate
-                        links. Dat betekent dat wij een commissie kunnen ontvangen wanneer je via
-                        zo&apos;n link een aankoop doet. Dit heeft geen invloed op de prijs die jij betaalt.
-                    </p>
-            </section>
-
-            <section>
-                <h2 className="text-xl font-semibold text-stone-900">
-                    2. Welke gegevens we verzamelen
-                </h2>
-                <p className="mt-3">
-                        We verzamelen alleen gegevens die nodig zijn om de website goed te laten
-                        functioneren, te beveiligen en te verbeteren.
-                    </p>
-
+                    Vragen over privacy of gegevensverwerking kun je richten aan de ondernemer
+                    achter deze website:
+                </p>
                 <ul className="mt-4 list-disc space-y-2 pl-6">
-                        <li>IP-adres, waar mogelijk geanonimiseerd</li>
-                        <li>browsertype en apparaatgegevens</li>
-                        <li>bezochte pagina&apos;s en klikgedrag</li>
-                        <li>datum en tijd van het bezoek</li>
-                        <li>technische foutmeldingen en beveiligingsinformatie</li>
-                    </ul>
-
-                <p className="mt-4">
-                        We verzamelen via deze website geen accounts en vragen niet om gevoelige
-                        medische gegevens.
-                    </p>
+                    <li>
+                        E-mail:{" "}
+                        <a
+                            href="mailto:info@perfectsupplement.nl"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                        >
+                            info@perfectsupplement.nl
+                        </a>
+                    </li>
+                    <li>KvK-nummer: 74667653</li>
+                </ul>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">3. Waarom we gegevens verwerken</h2>
-                <p className="mt-3">
-                        Gegevens worden uitsluitend verwerkt voor de volgende doelen:
-                    </p>
+                <h2 className="text-xl font-semibold text-stone-900">Welke gegevens verzamelen we</h2>
 
-                <ul className="mt-4 list-disc space-y-2 pl-6">
-                        <li>het technisch laten werken van de website</li>
-                        <li>het verbeteren van content, gebruikservaring en prestaties</li>
-                        <li>het analyseren van algemeen websitegebruik</li>
-                        <li>het beveiligen van de website tegen misbruik</li>
-                        <li>het correct registreren van affiliate verwijzingen</li>
-                    </ul>
-            </section>
-
-            <section>
-                <h2 className="text-xl font-semibold text-stone-900">4. Cookies en analytics</h2>
-                <p className="mt-3">
-                        Deze website kan functionele cookies, analytische cookies en affiliate cookies
-                        gebruiken.
-                    </p>
-
-                <div className="mt-4 space-y-4">
+                <div className="mt-6 space-y-6">
                     <div>
-                        <h3 className="font-semibold text-stone-900">Functionele cookies</h3>
-                        <p className="mt-1">
-                                Deze zijn nodig om de website correct te laten werken.
-                            </p>
+                        <h3 className="font-semibold text-stone-900">Leefstijlcheck</h3>
+                        <p className="mt-2">
+                            De leefstijlcheck verwerkt je intake-antwoorden. Deze gegevens kunnen
+                            gezondheidsinformatie en andere bijzondere persoonsgegevens bevatten in de
+                            zin van artikel 9 AVG. We verwerken ze uitsluitend op basis van jouw expliciete
+                            toestemming.
+                        </p>
                     </div>
 
                     <div>
-                        <h3 className="font-semibold text-stone-900">Analytische cookies</h3>
-                        <p className="mt-1">
-                                Hiermee krijgen we inzicht in het gebruik van de website, zodat we inhoud,
-                                navigatie en prestaties kunnen verbeteren. Waar mogelijk worden deze gegevens
-                                privacyvriendelijk ingesteld.
-                            </p>
+                        <h3 className="font-semibold text-stone-900">
+                            Contactformulier en optioneel e-mailadres
+                        </h3>
+                        <p className="mt-2">
+                            Via het contactformulier verwerken we je naam, e-mailadres en bericht. Als je
+                            daarvoor kiest, kun je een e-mailadres opgeven om herinnerd te worden voor een
+                            herhaalmeting; dat adres gebruiken we alleen voor die herinnering.
+                        </p>
                     </div>
 
                     <div>
-                        <h3 className="font-semibold text-stone-900">Affiliate cookies</h3>
-                        <p className="mt-1">
-                                Wanneer je op een affiliate link klikt, kan een partner of netwerk een cookie
-                                plaatsen om te registreren dat een aankoop via deze website tot stand is gekomen.
-                            </p>
+                        <h3 className="font-semibold text-stone-900">Automatisch verzamelde gegevens</h3>
+                        <p className="mt-2">
+                            Voor inzicht in het gebruik van de site gebruiken we Google Analytics met
+                            cookies. Cloudflare Turnstile wordt ingezet ter bescherming tegen misbruik en
+                            plaatst geen trackingcookies voor advertentiedoeleinden. Voor de intake wordt een
+                            functioneel sessiecookie{" "}
+                            <span className="font-mono text-stone-700">psf_intake_sid</span> gebruikt om je
+                            voortgang technisch vast te leggen.
+                        </p>
                     </div>
                 </div>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">5. Jouw rechten</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Waarom we gegevens verwerken</h2>
                 <p className="mt-3">
-                        Afhankelijk van de situatie kun je verzoeken om inzage, correctie of verwijdering van
-                        persoonsgegevens. Ook kun je bezwaar maken tegen bepaalde verwerkingen wanneer dat van
+                    Hieronder staat per doel welke rechtsgrond we hanteren en welke gegevens daarbij horen.
+                </p>
+                <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
+                    <table className="min-w-full text-left text-sm">
+                        <thead className="bg-stone-50 text-stone-600">
+                            <tr>
+                                <th className="px-4 py-3 font-semibold">Doel</th>
+                                <th className="px-4 py-3 font-semibold">Rechtsgrond</th>
+                                <th className="px-4 py-3 font-semibold">Gegevens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
+                                    Leefstijlcheck uitvoeren en resultaat tonen
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    Art. 9 lid 2 sub a AVG (expliciete toestemming voor bijzondere
+                                    persoonsgegevens), in combinatie met art. 6 lid 1 sub a AVG waar nodig
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    Intake-antwoorden (waaronder mogelijke gezondheidsgegevens)
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">Beantwoorden van contactverzoeken</td>
+                                <td className="px-4 py-3 align-top">Art. 6 lid 1 sub f AVG (gerechtvaardigd belang)</td>
+                                <td className="px-4 py-3 align-top">Naam, e-mailadres, bericht</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">Herinnering voor herhaalmeting</td>
+                                <td className="px-4 py-3 align-top">Art. 6 lid 1 sub a AVG (toestemming)</td>
+                                <td className="px-4 py-3 align-top">E-mailadres</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
+                                    Beveiliging, fraudepreventie en technisch beheer
+                                </td>
+                                <td className="px-4 py-3 align-top">Art. 6 lid 1 sub f AVG (gerechtvaardigd belang)</td>
+                                <td className="px-4 py-3 align-top">
+                                    Onder meer IP-gegevens (waar mogelijk gehasht of ingekort), Turnstile- en
+                                    serverlogs
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">Inzicht in gebruik van de website</td>
+                                <td className="px-4 py-3 align-top">Art. 6 lid 1 sub a AVG (toestemming)</td>
+                                <td className="px-4 py-3 align-top">
+                                    Via Google Analytics verzamelde gebruiks- en apparaatgegevens
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section>
+                <h2 className="text-xl font-semibold text-stone-900">Bewaartermijnen</h2>
+                <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
+                    <table className="min-w-full text-left text-sm">
+                        <thead className="bg-stone-50 text-stone-600">
+                            <tr>
+                                <th className="px-4 py-3 font-semibold">Categorie</th>
+                                <th className="px-4 py-3 font-semibold">Termijn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Intake-sessies</td>
+                                <td className="px-4 py-3">2 jaar</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Contactberichten</td>
+                                <td className="px-4 py-3">1 jaar</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Registraties van toestemming (consent)</td>
+                                <td className="px-4 py-3">5 jaar na intrekking</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Beveiligingslogs</td>
+                                <td className="px-4 py-3">90 dagen</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Google Analytics</td>
+                                <td className="px-4 py-3">14 maanden</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section>
+                <h2 className="text-xl font-semibold text-stone-900">Jouw rechten</h2>
+                <p className="mt-3">
+                    Onder de AVG heb je onder meer de volgende rechten, voor zover van toepassing op jouw
+                    situatie:
+                </p>
+                <ul className="mt-4 list-disc space-y-2 pl-6">
+                    <li>
+                        <span className="font-medium text-stone-800">Inzage</span> — je kunt vragen welke
+                        persoonsgegevens we van je verwerken.
+                    </li>
+                    <li>
+                        <span className="font-medium text-stone-800">Correctie</span> — je kunt onjuiste of
+                        onvolledige gegevens laten aanpassen.
+                    </li>
+                    <li>
+                        <span className="font-medium text-stone-800">Verwijdering</span> — je kunt in
+                        aanmerking komen voor verwijdering, rekening houdend met wettelijke verplichtingen.
+                    </li>
+                    <li>
+                        <span className="font-medium text-stone-800">Toestemming intrekken</span> — waar
+                        verwerking op toestemming berust, kun je die intrekken. Dat kan via de onderstaande
+                        knop of door een e-mail te sturen naar{" "}
+                        <a
+                            href="mailto:info@perfectsupplement.nl"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                        >
+                            info@perfectsupplement.nl
+                        </a>
+                        .
+                    </li>
+                    <li>
+                        <span className="font-medium text-stone-800">Bezwaar</span> — je kunt bezwaar maken
+                        tegen verwerking op basis van gerechtvaardigd belang, voor zover dat recht op jou van
                         toepassing is.
-                    </p>
-                <PrivacyRevokeConsent embedded />
+                    </li>
+                    <li>
+                        <span className="font-medium text-stone-800">Gegevensoverdraagbaarheid</span> — voor
+                        gegevens die je ons hebt verstrekt en die we verwerken met toestemming of contract,
+                        kun je in aanmerking komen voor overdracht in een gangbaar formaat.
+                    </li>
+                    <li>
+                        <span className="font-medium text-stone-800">Klacht</span> — je kunt een klacht
+                        indienen bij de Autoriteit Persoonsgegevens (
+                        <a
+                            href="https://www.autoriteitpersoonsgegevens.nl"
+                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                        >
+                            autoriteitpersoonsgegevens.nl
+                        </a>
+                        ).
+                    </li>
+                </ul>
+
+                <div className="mt-8 border-t border-stone-200 pt-8">
+                    <PrivacyRevokeConsent embedded />
+                </div>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">6. Externe partijen</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Beveiliging</h2>
                 <p className="mt-3">
-                        Voor analytics, hosting of affiliate tracking kunnen externe partijen worden gebruikt.
-                        Deze partijen verwerken gegevens uitsluitend voor hun eigen technische rol of op basis
-                        van hun eigen privacyvoorwaarden.
-                    </p>
+                    We treffen passende technische en organisatorische maatregelen om je gegevens te
+                    beschermen, waaronder:
+                </p>
+                <ul className="mt-4 list-disc space-y-2 pl-6">
+                    <li>versleutelde verbinding via HTTPS;</li>
+                    <li>Row Level Security en server-side alleen toegang tot de database waar van toepassing;</li>
+                    <li>IP-adressen waar passend gehasht of beperkt vastgelegd;</li>
+                    <li>beveiligingsheaders op de website;</li>
+                    <li>Cloudflare Turnstile ter bescherming van formulieren tegen geautomatiseerd misbruik.</li>
+                </ul>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">7. Bewaartermijn</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Cookies</h2>
                 <p className="mt-3">
-                        Gegevens worden niet langer bewaard dan nodig is voor de doelen waarvoor ze zijn
-                        verzameld, tenzij een langere bewaartermijn wettelijk vereist is.
-                    </p>
+                    Functionele cookies zijn nodig voor de werking van de site en worden geplaatst zonder
+                    voorafgaande toestemming via de cookiebanner. Analytische cookies (Google Analytics)
+                    plaatsen we pas nadat je daarvoor toestemming geeft.
+                </p>
+                <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
+                    <table className="min-w-full text-left text-sm">
+                        <thead className="bg-stone-50 text-stone-600">
+                            <tr>
+                                <th className="px-4 py-3 font-semibold">Cookie</th>
+                                <th className="px-4 py-3 font-semibold">Type</th>
+                                <th className="px-4 py-3 font-semibold">Bewaartermijn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 font-mono text-stone-700">psf_intake_sid</td>
+                                <td className="px-4 py-3">Functioneel (sessie / intake)</td>
+                                <td className="px-4 py-3">90 dagen</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 font-mono text-stone-700">_ga / _ga_*</td>
+                                <td className="px-4 py-3">Analytisch (Google Analytics)</td>
+                                <td className="px-4 py-3">14 maanden</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">8. Beveiliging</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Derde partijen</h2>
                 <p className="mt-3">
-                        We nemen redelijke technische en organisatorische maatregelen om gegevens te beschermen,
-                        zoals HTTPS, software-updates, toegangsbeveiliging, back-ups en basisbeveiliging tegen
-                        misbruik of ongeautoriseerde toegang.
-                    </p>
+                    We maken voor hosting, beveiliging, analyse en communicatie gebruik van onderstaande
+                    verwerkers. Waar nodig zijn verwerkersovereenkomsten gesloten.
+                </p>
+                <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
+                    <table className="min-w-full text-left text-sm">
+                        <thead className="bg-stone-50 text-stone-600">
+                            <tr>
+                                <th className="px-4 py-3 font-semibold">Dienst</th>
+                                <th className="px-4 py-3 font-semibold">Rol / locatie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Supabase</td>
+                                <td className="px-4 py-3">Database / hosting — EU (Frankfurt)</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Cloudflare</td>
+                                <td className="px-4 py-3">
+                                    CDN, beveiliging, Turnstile — wereldwijd, met waarborgen conform AVG
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Google Analytics</td>
+                                <td className="px-4 py-3">Webanalyse — Verenigde Staten, EU-US Data Privacy Framework</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Zoho CRM</td>
+                                <td className="px-4 py-3">CRM — EU</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Resend</td>
+                                <td className="px-4 py-3">E-mail — Verenigde Staten, EU-US Data Privacy Framework</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">9. Externe websites</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Gegevensoverdracht buiten de EU</h2>
                 <p className="mt-3">
-                        Deze website kan links bevatten naar externe websites. Wij zijn niet verantwoordelijk
-                        voor de inhoud of het privacybeleid van die websites.
-                    </p>
+                    Als gegevens buiten de Europese Economische Ruimte worden doorgegeven, doen we dat met
+                    passende waarborgen, zoals het EU-US Data Privacy Framework waar van toepassing, en anders
+                    met door de Europese Commissie goedgekeurde standaardcontractbepalingen (SCC&apos;s) of
+                    vergelijkbare maatregelen.
+                </p>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">10. Wijzigingen</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Minderjarigen</h2>
                 <p className="mt-3">
-                        Deze privacyverklaring kan worden aangepast wanneer wetgeving, tools of de website
-                        veranderen. De meest recente versie staat altijd op deze pagina.
-                    </p>
+                    Deze website richt zich op mannen vanaf ongeveer veertig jaar. We verzamelen niet bewust
+                    persoonsgegevens van personen jonger dan zestien jaar. Als je denkt dat we onbedoeld
+                    dergelijke gegevens hebben verwerkt, neem dan contact met ons op zodat we dit kunnen
+                    verwijderen.
+                </p>
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">11. Contact</h2>
+                <h2 className="text-xl font-semibold text-stone-900">Wijzigingen</h2>
                 <p className="mt-3">
-                        Vragen over privacy of gegevensverwerking kun je stellen via de contactpagina of via
-                        het e-mailadres dat je op de website vermeldt.
-                    </p>
+                    Deze privacyverklaring kan worden aangepast, bijvoorbeeld bij wijzigingen in wetgeving,
+                    diensten of onze werkwijze. De meest recente versie staat altijd op deze pagina; de datum
+                    van de laatste wijziging staat bovenaan deze verklaring.
+                </p>
             </section>
         </ContentPageLayout>
     );
