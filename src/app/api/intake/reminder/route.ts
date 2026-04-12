@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { consumeRateLimit } from "@/lib/rate-limit";
+import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp } from "@/lib/turnstile-verify";
 
@@ -81,6 +82,7 @@ export async function POST(request: NextRequest) {
   reminderDate.setDate(reminderDate.getDate() + 30);
 
   const { error } = await admin.from("intake_reminders").insert({
+    organization_id: getDefaultOrganizationId(),
     email,
     reminder_date: reminderDate.toISOString(),
   });

@@ -87,11 +87,13 @@ export function validateIntakeConsent(body: Record<string, unknown>):
 
 export function intakeConsentRows(options: {
   sessionId: string;
+  organizationId: string;
   consent: IntakeConsentPayload;
   ipHash: string;
   uaHash: string;
 }): Array<{
   session_id: string;
+  organization_id: string;
   consent_type: ConsentType;
   consent_version: string;
   granted: boolean;
@@ -99,11 +101,17 @@ export function intakeConsentRows(options: {
   ip_hash: string;
   ua_hash: string;
 }> {
-  const { sessionId, consent, ipHash, uaHash } = options;
-  const base = { session_id: sessionId, ip_hash: ipHash, ua_hash: uaHash };
+  const { sessionId, organizationId, consent, ipHash, uaHash } = options;
+  const base = {
+    session_id: sessionId,
+    organization_id: organizationId,
+    ip_hash: ipHash,
+    ua_hash: uaHash,
+  };
 
   const rows: Array<{
     session_id: string;
+    organization_id: string;
     consent_type: ConsentType;
     consent_version: string;
     granted: boolean;

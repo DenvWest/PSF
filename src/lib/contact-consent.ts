@@ -58,11 +58,13 @@ export function validateContactConsent(body: Record<string, unknown>):
 }
 
 export function contactConsentRows(options: {
+  organizationId: string;
   consent: ContactConsentPayload;
   ipHash: string;
   uaHash: string;
 }): Array<{
   session_id: null;
+  organization_id: string;
   consent_type: ConsentType;
   consent_version: string;
   granted: boolean;
@@ -70,9 +72,10 @@ export function contactConsentRows(options: {
   ip_hash: string;
   ua_hash: string;
 }> {
-  const { consent, ipHash, uaHash } = options;
+  const { organizationId, consent, ipHash, uaHash } = options;
   const base = {
     session_id: null as null,
+    organization_id: organizationId,
     ip_hash: ipHash,
     ua_hash: uaHash,
   };

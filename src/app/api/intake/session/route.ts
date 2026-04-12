@@ -12,6 +12,7 @@ import {
 } from "@/lib/intake-session-cookie";
 import { intakeSessionRowToPayload } from "@/lib/intake-session-payload";
 import { consumeRateLimit } from "@/lib/rate-limit";
+import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 
@@ -227,9 +228,12 @@ export async function POST(request: NextRequest) {
   const ipHash = sha256Hex(clientIp);
   const uaHash = sha256Hex(ua);
 
+  const organizationId = getDefaultOrganizationId();
+
   const { data: row, error } = await admin
     .from("intake_sessions")
     .insert({
+      organization_id: organizationId,
       symptom_profile: symptoms,
       answers,
       domain_scores: scores,
@@ -253,6 +257,7 @@ export async function POST(request: NextRequest) {
 
   const consentRows = intakeConsentRows({
     sessionId: row.id,
+    organizationId,
     consent,
     ipHash,
     uaHash,

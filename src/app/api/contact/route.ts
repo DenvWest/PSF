@@ -4,6 +4,7 @@ import { contactConsentRows, validateContactConsent } from "@/lib/contact-consen
 import { sha256Hex } from "@/lib/consent-hashing";
 import { buildZohoTags } from "@/lib/contact-segmentation-tags";
 import { consumeRateLimit } from "@/lib/rate-limit";
+import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 
@@ -236,6 +237,7 @@ export async function POST(request: NextRequest) {
   const ipHash = sha256Hex(clientIp);
   const uaHash = sha256Hex(ua);
   const consentRows = contactConsentRows({
+    organizationId: getDefaultOrganizationId(),
     consent: consentValidated.value,
     ipHash,
     uaHash,

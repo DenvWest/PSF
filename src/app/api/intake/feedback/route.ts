@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { consumeRateLimit } from "@/lib/rate-limit";
+import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp } from "@/lib/turnstile-verify";
 
@@ -89,6 +90,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { error } = await admin.from("intake_feedback").insert({
+    organization_id: getDefaultOrganizationId(),
     session_id: sessionId,
     rating,
     comment: comment.length > 0 ? comment : null,
