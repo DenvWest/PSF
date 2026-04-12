@@ -15,11 +15,7 @@ import {
   type SymptomId,
 } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
-import {
-  calcDomainScores,
-  getProfileLabel,
-  getUrgency,
-} from "@/lib/intake-engine";
+import { calcDomainScores } from "@/lib/intake-engine";
 import { getLastSession, saveIntakeSession } from "@/lib/intake-storage";
 
 const dmSans = DM_Sans({
@@ -57,6 +53,9 @@ export default function IntakePage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [fadeIn, setFadeIn] = useState(true);
   const skipFadeOnMount = useRef(true);
+  const calculatingStartedAtRef = useRef(0);
+  const [intakeTurnstileToken, setIntakeTurnstileToken] = useState("");
+  const [honeypotWebsite, setHoneypotWebsite] = useState("");
 
   useEffect(() => {
     if (skipFadeOnMount.current) {
@@ -77,32 +76,72 @@ export default function IntakePage() {
       return;
     }
 
-    const timer = window.setTimeout(() => {
-      void (async () => {
-        const computed = calcDomainScores(answers);
-        const ts = Date.now();
+    const computed = calcDomainScores(answers);
+    const ts = Date.now();
+    const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
+    if (ageRange === null) {
+      const timer = window.setTimeout(() => {
         setScores(computed);
         setSessionTimestamp(ts);
-        if (ageRange === null) {
-          setSessionId(null);
-          setPhase("results");
-          return;
-        }
-        const id = await saveIntakeSession({
-          symptoms,
-          answers,
-          scores: computed,
-          urgency: getUrgency(computed).label,
-          profile: getProfileLabel(computed).name,
-          ageRange,
-        });
-        setSessionId(id);
+        setSessionId(null);
         setPhase("results");
-      })();
-    }, 2000);
+      }, 2000);
+      return () => window.clearTimeout(timer);
+    }
 
-    return () => window.clearTimeout(timer);
-  }, [phase, answers, symptoms, ageRange]);
+    if (!turnstileSiteKey) {
+      const timer = window.setTimeout(() => {
+        setScores(computed);
+        setSessionTimestamp(ts);
+        setSessionId(null);
+        setPhase("results");
+      }, 2000);
+      return () => window.clearTimeout(timer);
+    }
+
+    if (!intakeTurnstileToken) {
+      return;
+    }
+
+    let cancelled = false;
+    const start = calculatingStartedAtRef.current;
+
+    void (async () => {
+      const wait = Math.max(0, 2000 - (Date.now() - start));
+      if (wait > 0) {
+        await new Promise((r) => setTimeout(r, wait));
+      }
+      if (cancelled) {
+        return;
+      }
+      const id = await saveIntakeSession({
+        symptoms,
+        answers,
+        ageRange,
+        turnstileToken: intakeTurnstileToken,
+        website: honeypotWebsite,
+      });
+      if (cancelled) {
+        return;
+      }
+      setScores(computed);
+      setSessionTimestamp(ts);
+      setSessionId(id);
+      setPhase("results");
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    phase,
+    answers,
+    symptoms,
+    ageRange,
+    intakeTurnstileToken,
+    honeypotWebsite,
+  ]);
 
   function toggleSymptom(id: SymptomId) {
     setSymptoms((prev) =>
@@ -117,6 +156,8 @@ export default function IntakePage() {
     if (currentQ < QUESTIONS.length - 1) {
       setCurrentQ((c) => c + 1);
     } else {
+      calculatingStartedAtRef.current = Date.now();
+      setIntakeTurnstileToken("");
       setPhase("calculating");
     }
   }
@@ -152,6 +193,8 @@ export default function IntakePage() {
     setScores(null);
     setSessionTimestamp(null);
     setSessionId(null);
+    setHoneypotWebsite("");
+    setIntakeTurnstileToken("");
   }
 
   async function resumeLastResults() {
@@ -207,6 +250,8 @@ export default function IntakePage() {
             onToggle={toggleSymptom}
             onNext={goToQuestions}
             onBack={handleBack}
+            honeypotWebsite={honeypotWebsite}
+            onHoneypotWebsiteChange={setHoneypotWebsite}
           />
         </div>
       )}
@@ -227,7 +272,10 @@ export default function IntakePage() {
 
       {phase === "calculating" && (
         <div style={contentStyle}>
-          <IntakeCalculating />
+          <IntakeCalculating
+            needsHumanVerification={ageRange !== null}
+            onTurnstileToken={setIntakeTurnstileToken}
+          />
         </div>
       )}
 

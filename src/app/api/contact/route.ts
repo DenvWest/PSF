@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { buildZohoTags } from "@/lib/contact-segmentation-tags";
 import { consumeRateLimit } from "@/lib/rate-limit";
+import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const URL_REGEX = /(https?:\/\/|www\.)/i;
 const CONTROL_CHARS_REGEX = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
-const TURNSTILE_VERIFY_URL =
-  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const TURNSTILE_ACTION = "contact_submit";
 const SUCCESS_MESSAGE = "Message successfully sent.";
 const CONTACT_RATE_LIMIT = {
@@ -50,13 +49,6 @@ type ContactPayload = {
   name: string;
   turnstileToken: string;
   website: string;
-};
-
-type TurnstileVerifyResponse = {
-  action?: string;
-  "error-codes"?: string[];
-  hostname?: string;
-  success?: boolean;
 };
 
 function isValidEmail(email: string): boolean {
@@ -137,115 +129,11 @@ function validateContactPayload(payload: ContactPayload): string | null {
   return null;
 }
 
-function getClientIp(request: NextRequest): string {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  if (forwardedFor) {
-    const firstForwardedIp = forwardedFor.split(",")[0]?.trim();
-    if (firstForwardedIp) {
-      return firstForwardedIp;
-    }
-  }
-
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  if (realIp) {
-    return realIp;
-  }
-
-  return "unknown";
-}
-
-function getExpectedTurnstileHostname(): string | null {
-  const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-
-  if (!rawSiteUrl) {
-    return null;
-  }
-
-  try {
-    return new URL(rawSiteUrl).hostname;
-  } catch {
-    return null;
-  }
-}
-
 function logSecurityEvent(
   event: string,
   details: Record<string, unknown> = {},
 ) {
   console.warn("[api/contact][security]", { event, ...details });
-}
-
-async function verifyTurnstileToken(options: {
-  expectedAction: string;
-  remoteIp: string;
-  token: string;
-}): Promise<
-  | { ok: true }
-  | { ok: false; reason: "action" | "config" | "hostname" | "invalid" | "unavailable" }
-> {
-  const secret = process.env.TURNSTILE_SECRET_KEY?.trim();
-
-  if (!secret) {
-    return { ok: false, reason: "config" };
-  }
-
-  const body = new URLSearchParams({
-    secret,
-    response: options.token,
-  });
-
-  if (options.remoteIp !== "unknown") {
-    body.set("remoteip", options.remoteIp);
-  }
-
-  try {
-    const response = await fetch(TURNSTILE_VERIFY_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body,
-      cache: "no-store",
-    });
-
-    const result =
-      (await response.json().catch(() => null)) as TurnstileVerifyResponse | null;
-
-    if (!response.ok || !result?.success) {
-      logSecurityEvent("turnstile_failed", {
-        errorCodes: result?.["error-codes"] ?? [],
-        remoteIp: options.remoteIp,
-      });
-      return { ok: false, reason: "invalid" };
-    }
-
-    if (result.action !== options.expectedAction) {
-      logSecurityEvent("turnstile_action_mismatch", {
-        action: result.action,
-        remoteIp: options.remoteIp,
-      });
-      return { ok: false, reason: "action" };
-    }
-
-    const expectedHostname = getExpectedTurnstileHostname();
-    if (
-      expectedHostname &&
-      result.hostname &&
-      result.hostname !== expectedHostname
-    ) {
-      logSecurityEvent("turnstile_hostname_mismatch", {
-        expectedHostname,
-        hostname: result.hostname,
-        remoteIp: options.remoteIp,
-      });
-      return { ok: false, reason: "hostname" };
-    }
-
-    return { ok: true };
-  } catch (error) {
-    console.error("[api/contact] turnstile verify error:", error);
-    return { ok: false, reason: "unavailable" };
-  }
 }
 
 export async function POST(request: NextRequest) {
@@ -297,6 +185,7 @@ export async function POST(request: NextRequest) {
     token: payload.turnstileToken,
     remoteIp: clientIp,
     expectedAction: TURNSTILE_ACTION,
+    logContext: "api/contact",
   });
 
   if (!turnstileCheck.ok) {

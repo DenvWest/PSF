@@ -16,6 +16,8 @@ type IntakeSymptomsProps = {
   onToggle: (id: SymptomId) => void;
   onNext: () => void;
   onBack: () => void;
+  honeypotWebsite: string;
+  onHoneypotWebsiteChange: (value: string) => void;
 };
 
 export default function IntakeSymptoms({
@@ -25,6 +27,8 @@ export default function IntakeSymptoms({
   onToggle,
   onNext,
   onBack,
+  honeypotWebsite,
+  onHoneypotWebsiteChange,
 }: IntakeSymptomsProps) {
   const isProcessing = useRef(false);
   const [pointerLocked, setPointerLocked] = useState(false);
@@ -52,7 +56,22 @@ export default function IntakeSymptoms({
       : "Selecteer minimaal 1 symptoom";
 
   return (
-    <div className="px-6 pb-10">
+    <div className="relative px-6 pb-10">
+      <div
+        className="absolute -left-[200vw] h-0 overflow-hidden opacity-0"
+        aria-hidden
+      >
+        <label htmlFor="intake-website-hp">Website</label>
+        <input
+          id="intake-website-hp"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypotWebsite}
+          onChange={(e) => onHoneypotWebsiteChange(e.target.value)}
+        />
+      </div>
       <button
         type="button"
         onClick={onBack}
