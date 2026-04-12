@@ -358,7 +358,7 @@ export async function POST(request: NextRequest) {
     try {
       const accessToken = await getZohoAccessToken(zohoConfig);
 
-      const zohoResponse = await fetch(`${apiDomain}/crm/v8/${moduleName}`, {
+      const zohoResponse = await fetch(`${apiDomain}/crm/v2/${moduleName}`, {
         method: "POST",
         headers: {
           Authorization: `Zoho-oauthtoken ${accessToken}`,
