@@ -43,7 +43,10 @@ const DOMAIN_KEYS: (keyof DomainScores)[] = [
 ];
 
 const REVOKE_CONFIRM =
-  "Weet je het zeker? Je intakegegevens worden op de server geanonimiseerd en je toestemmingen worden ingetrokken. Dit kun je niet ongedaan maken.";
+  "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd en kunnen niet worden hersteld.";
+
+const REVOKE_SUCCESS =
+  "Je toestemming is ingetrokken en je gegevens zijn geanonimiseerd.";
 
 type IntakeResultsProps = {
   scores: DomainScores;
@@ -337,55 +340,54 @@ export default function IntakeResults({
 
       <div className="mb-5">
         <IntakeDisclaimer />
-      </div>
-
-      {sessionId ? (
-        <div className="mb-5">
-          {revokeFeedback ? (
-            <p
-              className={`mb-3 rounded-xl px-4 py-3 text-[13px] leading-snug ${
-                revokeFeedback.kind === "success"
-                  ? "border border-[#c6e7d0] bg-[#f0fdf4] text-[#166534]"
-                  : "border border-[#fecaca] bg-[#fef2f2] text-[#991b1b]"
-              }`}
-              role={revokeFeedback.kind === "error" ? "alert" : "status"}
-            >
-              {revokeFeedback.text}
-            </p>
-          ) : null}
-          {revokeFeedback?.kind !== "success" ? (
-            <button
-              type="button"
-              disabled={revokeBusy}
-              onClick={() => {
-                if (!window.confirm(REVOKE_CONFIRM)) {
-                  return;
-                }
-                void (async () => {
-                  setRevokeBusy(true);
-                  setRevokeFeedback(null);
-                  const result = await revokeIntakeConsent();
-                  setRevokeBusy(false);
-                  if (result.ok) {
-                    setRevokeFeedback({
-                      kind: "success",
-                      text: "Je gegevens zijn geanonimiseerd en je toestemming is ingetrokken.",
-                    });
-                    window.setTimeout(() => {
-                      onConsentRevoked?.();
-                    }, 2800);
+        {sessionId ? (
+          <div className="mt-5">
+            {revokeFeedback ? (
+              <p
+                className={`mb-3 rounded-xl px-4 py-3 text-[13px] leading-snug ${
+                  revokeFeedback.kind === "success"
+                    ? "border border-[#c6e7d0] bg-[#f0fdf4] text-[#166534]"
+                    : "border border-[#fecaca] bg-[#fef2f2] text-[#991b1b]"
+                }`}
+                role={revokeFeedback.kind === "error" ? "alert" : "status"}
+              >
+                {revokeFeedback.text}
+              </p>
+            ) : null}
+            {revokeFeedback?.kind !== "success" ? (
+              <button
+                type="button"
+                disabled={revokeBusy}
+                onClick={() => {
+                  if (!window.confirm(REVOKE_CONFIRM)) {
                     return;
                   }
-                  setRevokeFeedback({ kind: "error", text: result.error });
-                })();
-              }}
-              className="w-full cursor-pointer rounded-xl border border-[#e8e6e1] bg-white py-3.5 text-[13px] font-medium text-[#666] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {revokeBusy ? "Bezig…" : "Toestemming intrekken"}
-            </button>
-          ) : null}
-        </div>
-      ) : null}
+                  void (async () => {
+                    setRevokeBusy(true);
+                    setRevokeFeedback(null);
+                    const result = await revokeIntakeConsent();
+                    setRevokeBusy(false);
+                    if (result.ok) {
+                      setRevokeFeedback({
+                        kind: "success",
+                        text: REVOKE_SUCCESS,
+                      });
+                      window.setTimeout(() => {
+                        onConsentRevoked?.();
+                      }, 2800);
+                      return;
+                    }
+                    setRevokeFeedback({ kind: "error", text: result.error });
+                  })();
+                }}
+                className="w-full cursor-pointer rounded-xl border border-[#e8e6e1] bg-white py-3.5 text-[13px] font-medium text-[#666] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {revokeBusy ? "Bezig…" : "Toestemming intrekken"}
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
 
       {onRestart ? (
         <button

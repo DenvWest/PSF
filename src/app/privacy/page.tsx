@@ -96,7 +96,17 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">5. Externe partijen</h2>
+                <h2 className="text-xl font-semibold text-stone-900">5. Jouw rechten</h2>
+                <p className="mt-3">
+                        Afhankelijk van de situatie kun je verzoeken om inzage, correctie of verwijdering van
+                        persoonsgegevens. Ook kun je bezwaar maken tegen bepaalde verwerkingen wanneer dat van
+                        toepassing is.
+                    </p>
+                <PrivacyRevokeConsent embedded />
+            </section>
+
+            <section>
+                <h2 className="text-xl font-semibold text-stone-900">6. Externe partijen</h2>
                 <p className="mt-3">
                         Voor analytics, hosting of affiliate tracking kunnen externe partijen worden gebruikt.
                         Deze partijen verwerken gegevens uitsluitend voor hun eigen technische rol of op basis
@@ -105,7 +115,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">6. Bewaartermijn</h2>
+                <h2 className="text-xl font-semibold text-stone-900">7. Bewaartermijn</h2>
                 <p className="mt-3">
                         Gegevens worden niet langer bewaard dan nodig is voor de doelen waarvoor ze zijn
                         verzameld, tenzij een langere bewaartermijn wettelijk vereist is.
@@ -113,20 +123,11 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">7. Beveiliging</h2>
+                <h2 className="text-xl font-semibold text-stone-900">8. Beveiliging</h2>
                 <p className="mt-3">
                         We nemen redelijke technische en organisatorische maatregelen om gegevens te beschermen,
                         zoals HTTPS, software-updates, toegangsbeveiliging, back-ups en basisbeveiliging tegen
                         misbruik of ongeautoriseerde toegang.
-                    </p>
-            </section>
-
-            <section>
-                <h2 className="text-xl font-semibold text-stone-900">8. Jouw rechten</h2>
-                <p className="mt-3">
-                        Afhankelijk van de situatie kun je verzoeken om inzage, correctie of verwijdering van
-                        persoonsgegevens. Ook kun je bezwaar maken tegen bepaalde verwerkingen wanneer dat van
-                        toepassing is.
                     </p>
             </section>
 
@@ -153,8 +154,6 @@ export default function PrivacyPage() {
                         het e-mailadres dat je op de website vermeldt.
                     </p>
             </section>
-
-            <PrivacyRevokeConsent />
         </ContentPageLayout>
     );
 }

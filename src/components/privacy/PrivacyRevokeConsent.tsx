@@ -4,9 +4,19 @@ import { useEffect, useState } from "react";
 import { getLastSession, revokeIntakeConsent } from "@/lib/intake-storage";
 
 const CONFIRM_MESSAGE =
-  "Weet je het zeker? Je intakegegevens worden op de server geanonimiseerd en je toestemmingen worden ingetrokken. Dit kun je niet ongedaan maken.";
+  "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd en kunnen niet worden hersteld.";
 
-export default function PrivacyRevokeConsent() {
+const SUCCESS_MESSAGE =
+  "Je toestemming is ingetrokken en je gegevens zijn geanonimiseerd.";
+
+type PrivacyRevokeConsentProps = {
+  /** Ingesloten onder een bestaande sectie (geen extra kaart-rand). */
+  embedded?: boolean;
+};
+
+export default function PrivacyRevokeConsent({
+  embedded = false,
+}: PrivacyRevokeConsentProps) {
   const [loading, setLoading] = useState(true);
   const [hasSession, setHasSession] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -32,10 +42,7 @@ export default function PrivacyRevokeConsent() {
     setBusy(false);
     if (result.ok) {
       setHasSession(false);
-      setFeedback({
-        kind: "success",
-        text: "Je gegevens zijn geanonimiseerd en je toestemming is ingetrokken.",
-      });
+      setFeedback({ kind: "success", text: SUCCESS_MESSAGE });
       return;
     }
     setFeedback({ kind: "error", text: result.error });
@@ -45,15 +52,11 @@ export default function PrivacyRevokeConsent() {
     return null;
   }
 
-  return (
-    <section className="mt-10 rounded-lg border border-stone-200 bg-stone-50 p-5">
-      <h2 className="text-lg font-semibold text-stone-900">
-        Intake & toestemming
-      </h2>
-      <p className="mt-2 text-sm leading-relaxed text-stone-600">
-        Heb je eerder de leefstijlcheck ingevuld? Dan kun je hier je toestemming
-        voor de verwerking van die gegevens intrekken. Je antwoorden worden op de
-        server geanonimiseerd.
+  const inner = (
+    <>
+      <p className="mt-4 text-sm leading-relaxed text-stone-600">
+        Heb je de leefstijlcheck ingevuld? Dan kun je hier je toestemming voor
+        die gegevens intrekken. Je antwoorden worden op de server geanonimiseerd.
       </p>
 
       {feedback ? (
@@ -81,6 +84,21 @@ export default function PrivacyRevokeConsent() {
           Er is geen actieve intake-sessie in deze browser.
         </p>
       ) : null}
+    </>
+  );
+
+  if (embedded) {
+    return (
+      <div className="mt-6 border-t border-stone-200 pt-6">{inner}</div>
+    );
+  }
+
+  return (
+    <section className="mt-10 rounded-lg border border-stone-200 bg-stone-50 p-5">
+      <h2 className="text-lg font-semibold text-stone-900">
+        Intake & toestemming
+      </h2>
+      {inner}
     </section>
   );
 }
