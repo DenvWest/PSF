@@ -60,6 +60,26 @@
   min-height: 6rem;
 }
 
+.honeypotField {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.turnstileWrapper {
+  margin-top: 1rem;
+}
+
+.turnstileNotice {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #991b1b;
+}
+
 .submitButton {
   display: block;
   width: 100%;

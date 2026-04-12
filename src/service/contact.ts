@@ -2,6 +2,8 @@ export type ContactFormData = {
   name: string;
   email: string;
   message: string;
+  turnstileToken: string;
+  website: string;
 };
 
 /** Antwoord van POST /api/contact */

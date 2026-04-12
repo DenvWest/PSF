@@ -1,8 +1,23 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { buildZohoTags } from "@/lib/contact-segmentation-tags";
+import { consumeRateLimit } from "@/lib/rate-limit";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const URL_REGEX = /(https?:\/\/|www\.)/i;
+const CONTROL_CHARS_REGEX = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
+const TURNSTILE_VERIFY_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+const TURNSTILE_ACTION = "contact_submit";
+const SUCCESS_MESSAGE = "Message successfully sent.";
+const CONTACT_RATE_LIMIT = {
+  limit: 5,
+  windowMs: 10 * 60 * 1000,
+} as const;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_NAME_LENGTH = 80;
+const MAX_MESSAGE_LENGTH = 2000;
+const MIN_MESSAGE_LENGTH = 10;
 
 type ZohoTokenConfig = {
   accountsDomain: string;
@@ -29,11 +44,227 @@ type SmtpConfig = {
   secure: boolean;
 };
 
+type ContactPayload = {
+  email: string;
+  message: string;
+  name: string;
+  turnstileToken: string;
+  website: string;
+};
+
+type TurnstileVerifyResponse = {
+  action?: string;
+  "error-codes"?: string[];
+  hostname?: string;
+  success?: boolean;
+};
+
 function isValidEmail(email: string): boolean {
   return EMAIL_REGEX.test(email.trim());
 }
 
-export async function POST(request: Request) {
+function normalizeSingleLine(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function normalizeMultiline(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.replace(/\r\n/g, "\n").trim();
+}
+
+function containsControlChars(value: string): boolean {
+  return CONTROL_CHARS_REGEX.test(value);
+}
+
+function parseContactPayload(body: Record<string, unknown>): ContactPayload {
+  return {
+    name: normalizeSingleLine(body.name),
+    email: normalizeSingleLine(body.email),
+    message: normalizeMultiline(body.message),
+    turnstileToken: normalizeSingleLine(body.turnstileToken),
+    website: normalizeSingleLine(body.website),
+  };
+}
+
+function validateContactPayload(payload: ContactPayload): string | null {
+  if (!payload.name) {
+    return "Naam is verplicht.";
+  }
+  if (payload.name.length > MAX_NAME_LENGTH) {
+    return "Naam is te lang.";
+  }
+  if (URL_REGEX.test(payload.name)) {
+    return "Gebruik geen links in het naamveld.";
+  }
+  if (containsControlChars(payload.name)) {
+    return "Naam bevat ongeldige tekens.";
+  }
+
+  if (!payload.email) {
+    return "E-mail is verplicht.";
+  }
+  if (payload.email.length > MAX_EMAIL_LENGTH) {
+    return "E-mailadres is te lang.";
+  }
+  if (!isValidEmail(payload.email)) {
+    return "Ongeldig e-mailadres.";
+  }
+
+  if (!payload.message) {
+    return "Bericht is verplicht.";
+  }
+  if (payload.message.length < MIN_MESSAGE_LENGTH) {
+    return "Bericht is te kort.";
+  }
+  if (payload.message.length > MAX_MESSAGE_LENGTH) {
+    return "Bericht is te lang.";
+  }
+  if (containsControlChars(payload.message)) {
+    return "Bericht bevat ongeldige tekens.";
+  }
+
+  if (!payload.turnstileToken) {
+    return "Bevestig eerst dat je geen bot bent.";
+  }
+
+  return null;
+}
+
+function getClientIp(request: NextRequest): string {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    const firstForwardedIp = forwardedFor.split(",")[0]?.trim();
+    if (firstForwardedIp) {
+      return firstForwardedIp;
+    }
+  }
+
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  if (realIp) {
+    return realIp;
+  }
+
+  return "unknown";
+}
+
+function getExpectedTurnstileHostname(): string | null {
+  const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (!rawSiteUrl) {
+    return null;
+  }
+
+  try {
+    return new URL(rawSiteUrl).hostname;
+  } catch {
+    return null;
+  }
+}
+
+function logSecurityEvent(
+  event: string,
+  details: Record<string, unknown> = {},
+) {
+  console.warn("[api/contact][security]", { event, ...details });
+}
+
+async function verifyTurnstileToken(options: {
+  expectedAction: string;
+  remoteIp: string;
+  token: string;
+}): Promise<
+  | { ok: true }
+  | { ok: false; reason: "action" | "config" | "hostname" | "invalid" | "unavailable" }
+> {
+  const secret = process.env.TURNSTILE_SECRET_KEY?.trim();
+
+  if (!secret) {
+    return { ok: false, reason: "config" };
+  }
+
+  const body = new URLSearchParams({
+    secret,
+    response: options.token,
+  });
+
+  if (options.remoteIp !== "unknown") {
+    body.set("remoteip", options.remoteIp);
+  }
+
+  try {
+    const response = await fetch(TURNSTILE_VERIFY_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body,
+      cache: "no-store",
+    });
+
+    const result =
+      (await response.json().catch(() => null)) as TurnstileVerifyResponse | null;
+
+    if (!response.ok || !result?.success) {
+      logSecurityEvent("turnstile_failed", {
+        errorCodes: result?.["error-codes"] ?? [],
+        remoteIp: options.remoteIp,
+      });
+      return { ok: false, reason: "invalid" };
+    }
+
+    if (result.action !== options.expectedAction) {
+      logSecurityEvent("turnstile_action_mismatch", {
+        action: result.action,
+        remoteIp: options.remoteIp,
+      });
+      return { ok: false, reason: "action" };
+    }
+
+    const expectedHostname = getExpectedTurnstileHostname();
+    if (
+      expectedHostname &&
+      result.hostname &&
+      result.hostname !== expectedHostname
+    ) {
+      logSecurityEvent("turnstile_hostname_mismatch", {
+        expectedHostname,
+        hostname: result.hostname,
+        remoteIp: options.remoteIp,
+      });
+      return { ok: false, reason: "hostname" };
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("[api/contact] turnstile verify error:", error);
+    return { ok: false, reason: "unavailable" };
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const clientIp = getClientIp(request);
+  const rateLimit = consumeRateLimit(`contact:${clientIp}`, CONTACT_RATE_LIMIT);
+
+  if (!rateLimit.allowed) {
+    logSecurityEvent("rate_limited", { remoteIp: clientIp });
+    return NextResponse.json(
+      { error: "Te veel pogingen. Probeer het over een paar minuten opnieuw." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      },
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -45,28 +276,55 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Ongeldig verzoek" }, { status: 400 });
   }
 
-  const { name, email, message } = body as Record<string, unknown>;
-  const nameStr = typeof name === "string" ? name.trim() : "";
-  const emailStr = typeof email === "string" ? email.trim() : "";
-  const messageStr = typeof message === "string" ? message.trim() : "";
+  const bodyRecord = body as Record<string, unknown>;
+  const payload = parseContactPayload(bodyRecord);
 
-  if (!nameStr) {
-    return NextResponse.json({ error: "Naam is verplicht." }, { status: 400 });
-  }
-  if (!emailStr) {
-    return NextResponse.json({ error: "E-mail is verplicht." }, { status: 400 });
-  }
-  if (!isValidEmail(emailStr)) {
-    return NextResponse.json({ error: "Ongeldig e-mailadres." }, { status: 400 });
-  }
-  if (!messageStr) {
-    return NextResponse.json({ error: "Bericht is verplicht." }, { status: 400 });
+  if (payload.website) {
+    logSecurityEvent("honeypot_hit", { remoteIp: clientIp });
+    return NextResponse.json({ message: SUCCESS_MESSAGE }, { status: 200 });
   }
 
+  const validationError = validateContactPayload(payload);
+  if (validationError) {
+    logSecurityEvent("input_invalid", {
+      message: validationError,
+      remoteIp: clientIp,
+    });
+    return NextResponse.json({ error: validationError }, { status: 400 });
+  }
+
+  const turnstileCheck = await verifyTurnstileToken({
+    token: payload.turnstileToken,
+    remoteIp: clientIp,
+    expectedAction: TURNSTILE_ACTION,
+  });
+
+  if (!turnstileCheck.ok) {
+    if (turnstileCheck.reason === "config") {
+      return NextResponse.json(
+        { error: "Human verification is nog niet geconfigureerd op de server." },
+        { status: 503 },
+      );
+    }
+
+    if (turnstileCheck.reason === "unavailable") {
+      return NextResponse.json(
+        { error: "Verificatie kon niet worden voltooid. Probeer het opnieuw." },
+        { status: 502 },
+      );
+    }
+
+    return NextResponse.json(
+      { error: "De human verification is mislukt. Probeer het opnieuw." },
+      { status: 403 },
+    );
+  }
+
+  const { name, email, message } = payload;
   const contactDisabled = process.env.CONTACT_SMTP_DISABLED === "true";
 
   if (contactDisabled) {
-    return NextResponse.json({ message: "Message successfully sent." }, { status: 200 });
+    return NextResponse.json({ message: SUCCESS_MESSAGE }, { status: 200 });
   }
 
   const clientId = process.env.ZOHO_CLIENT_ID?.trim();
@@ -109,9 +367,9 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           data: [
             {
-              Last_Name: nameStr,
-              Email: emailStr,
-              Description: messageStr,
+              Last_Name: name,
+              Email: email,
+              Description: message,
               Lead_Source: "Website Contact Form",
             },
           ],
@@ -137,14 +395,14 @@ export async function POST(request: Request) {
             apiDomain,
             moduleName,
             contactId,
-            body: body as Record<string, unknown>,
+            body: bodyRecord,
           });
         } catch (tagErr) {
           console.warn("[api/contact] zoho tag error (non-fatal):", tagErr);
         }
       }
 
-      return NextResponse.json({ message: "Message successfully sent." }, { status: 200 });
+      return NextResponse.json({ message: SUCCESS_MESSAGE }, { status: 200 });
     } catch (err) {
       console.error("[api/contact] zoho error:", err);
     }
@@ -171,15 +429,16 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: `"Perfect Supplement contact" <${smtpConfig.outbox}>`,
       to: smtpConfig.inbox,
-      replyTo: emailStr,
-      subject: `[Contact] ${nameStr}`,
-      text: `Naam: ${nameStr}\nE-mail: ${emailStr}\n\n${messageStr}`,
-      html: `<p><strong>Naam:</strong> ${escapeHtml(nameStr)}</p><p><strong>E-mail:</strong> ${escapeHtml(emailStr)}</p><p>${escapeHtml(messageStr).replace(/\n/g, "<br/>")}</p>`,
+      replyTo: email,
+      subject: `[Contact] ${name}`,
+      text: `Naam: ${name}\nE-mail: ${email}\n\n${message}`,
+      html: `<p><strong>Naam:</strong> ${escapeHtml(name)}</p><p><strong>E-mail:</strong> ${escapeHtml(email)}</p><p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`,
     });
 
-    return NextResponse.json({ message: "Message successfully sent." }, { status: 200 });
+    return NextResponse.json({ message: SUCCESS_MESSAGE }, { status: 200 });
   } catch (err) {
     console.error("[api/contact] smtp error:", err);
+    logSecurityEvent("provider_error");
     return NextResponse.json(
       { error: "E-mail kon niet worden verzonden. Probeer het later opnieuw." },
       { status: 500 },
