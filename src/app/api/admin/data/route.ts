@@ -6,7 +6,6 @@ import {
 } from "@/lib/admin-auth";
 import type { AdminDashboardPayload } from "@/lib/admin-dashboard-types";
 import type { DomainScores } from "@/lib/intake-engine";
-import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const dynamic = "force-dynamic";
@@ -57,23 +56,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const orgId = getDefaultOrganizationId();
-
   const [sessionsRes, remindersRes, feedbackRes] = await Promise.all([
     admin
       .from("intake_sessions")
       .select(
         "created_at, age_range, profile_label, domain_scores, urgency_level, marketing_email",
-      )
-      .eq("organization_id", orgId),
-    admin
-      .from("intake_reminders")
-      .select("email, sent")
-      .eq("organization_id", orgId),
+      ),
+    admin.from("intake_reminders").select("email, sent"),
     admin
       .from("intake_feedback")
       .select("rating, comment, created_at")
-      .eq("organization_id", orgId)
       .order("created_at", { ascending: false })
       .limit(10),
   ]);
