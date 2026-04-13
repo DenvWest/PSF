@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Script from "next/script";
 import { Lora, Source_Sans_3 } from "next/font/google";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import AppShell from "@/components/layout/AppShell";
 import "./globals.css";
 
 const loraFont = Lora({
@@ -67,9 +66,7 @@ export default function RootLayout({
           `}
         </Script>
 
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

@@ -1,4 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  ADMIN_TOKEN_COOKIE_NAME,
+  isValidAdminSessionCookie,
+} from "@/lib/admin-auth";
+
+function requiresAdminAuth(pathname: string): boolean {
+  const isAdminArea =
+    pathname === "/admin" || pathname.startsWith("/admin/");
+  if (isAdminArea) {
+    if (pathname === "/admin/login") return false;
+    if (pathname.startsWith("/admin/api")) return false;
+    return true;
+  }
+  if (pathname.startsWith("/api/admin/auth")) {
+    return false;
+  }
+  if (pathname.startsWith("/api/admin/")) {
+    return true;
+  }
+  return false;
+}
 
 function getSupabaseOrigin(): string | null {
   const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
@@ -57,6 +78,21 @@ function buildContentSecurityPolicy() {
 }
 
 export function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  if (requiresAdminAuth(pathname)) {
+    const token = request.cookies.get(ADMIN_TOKEN_COOKIE_NAME)?.value;
+    if (!isValidAdminSessionCookie(token)) {
+      if (pathname.startsWith("/api/")) {
+        return NextResponse.json(
+          { error: "Niet geautoriseerd." },
+          { status: 401 },
+        );
+      }
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+  }
+
   const response = NextResponse.next();
   const isSecureRequest =
     request.nextUrl.protocol === "https:" ||
