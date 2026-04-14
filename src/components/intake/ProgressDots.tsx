@@ -14,25 +14,22 @@ export default function ProgressDots({
   return (
     <div
       className="flex justify-center gap-1.5 py-4"
-      role="progressbar"
-      aria-valuenow={currentCatIndex + 1}
-      aria-valuemin={1}
-      aria-valuemax={categories.length}
-      aria-label="Voortgang per categorie"
+      role="presentation"
+      aria-hidden="true"
     >
       {categories.map((cat, i) => (
         <div
           key={cat.id}
-          className="h-2 rounded transition-all duration-300 ease-out"
+          className="h-1.5 rounded transition-all duration-300 ease-out"
           style={{
-            width: i === currentCatIndex ? 28 : 8,
+            width: i === currentCatIndex ? 24 : 6,
             background:
               i < currentCatIndex
                 ? cat.color
                 : i === currentCatIndex
                   ? cat.color
-                  : "#ddd",
-            opacity: i <= currentCatIndex ? 1 : 0.4,
+                  : "rgba(255,255,255,0.15)",
+            opacity: i <= currentCatIndex ? 1 : 0.5,
           }}
         />
       ))}

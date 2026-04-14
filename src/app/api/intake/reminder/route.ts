@@ -85,6 +85,8 @@ export async function POST(request: NextRequest) {
     organization_id: getDefaultOrganizationId(),
     email,
     reminder_date: reminderDate.toISOString(),
+    reminder_type: "day30",
+    session_id: null,
   });
 
   if (error) {

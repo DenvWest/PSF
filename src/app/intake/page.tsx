@@ -247,11 +247,11 @@ export default function IntakePage() {
     transition: "opacity 400ms ease, transform 400ms ease",
   };
 
-  const shellClass = `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto min-h-screen w-full max-w-[480px] text-[#1a1a1a]`;
+  const shellClass = `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px]`;
 
   const shellStyle: CSSProperties = {
     fontFamily: "var(--font-intake-body), system-ui, sans-serif",
-    background: "linear-gradient(180deg, #FAFAF7 0%, #F4F1EB 100%)",
+    color: "rgba(255,255,255,0.9)",
   };
 
   return (

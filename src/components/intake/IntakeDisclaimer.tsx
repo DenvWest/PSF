@@ -1,20 +1,16 @@
 export default function IntakeDisclaimer() {
   return (
-    <div
-      className="text-left"
+    <p
       style={{
-        background: "#FFF8F0",
-        borderLeft: "3px solid #C4873B",
-        borderRadius: 8,
-        padding: "14px 16px",
-        fontSize: 12,
-        color: "#777",
-        lineHeight: 1.5,
+        fontSize: 11,
+        color: "rgba(255,255,255,0.22)",
+        lineHeight: 1.6,
+        margin: 0,
+        textAlign: "center",
       }}
     >
-      Dit is geen medisch advies. Deze intake geeft inzicht in je leefstijlpatronen
-      en suggesties voor verbetering. Het vervangt geen diagnose of behandeling.
-      Raadpleeg een arts bij klachten.
-    </div>
+      Geen medisch advies. Geeft inzicht in leefstijlpatronen, geen diagnose of
+      behandeling. Raadpleeg een arts bij klachten.
+    </p>
   );
 }

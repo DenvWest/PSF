@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CATEGORIES } from "@/data/intake-questions";
-import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
 import {
   getLastSession,
   type IntakeSessionPayload,
@@ -32,59 +30,97 @@ export default function IntakeIntro({
       cancelled = true;
     };
   }, []);
+
   return (
-    <div className="px-6 pt-14 pb-10 text-center">
-      <p className="mb-4 text-[13px] font-semibold uppercase tracking-[2px] text-[#999]">
-        PerfectSupplement
-      </p>
-      <h1
-        className="mb-4 text-[32px] font-normal leading-tight text-[#1a1a1a]"
-        style={{ fontFamily: "var(--font-intake-heading), Georgia, serif" }}
-      >
-        Ontdek waar je staat
-      </h1>
-      <p className="mx-auto mb-10 max-w-[340px] text-base leading-relaxed text-[#666]">
-        Beantwoord 12 korte vragen over je leefstijl. Na 3 minuten weet je
-        precies waar je kunt verbeteren — en hoe.
-      </p>
-      <div className="mb-12 flex flex-wrap justify-center gap-3">
-        {CATEGORIES.map((c) => (
-          <div
-            key={c.id}
-            className="flex items-center gap-1.5 rounded-[10px] border border-[#e8e6e1] bg-white px-3.5 py-2.5 text-[13px] font-medium text-[#555]"
-          >
-            <span>{c.icon}</span>
-            {c.label}
-          </div>
-        ))}
-      </div>
-      <button
-        type="button"
-        onClick={onStart}
-        className="cursor-pointer rounded-[14px] border-none bg-[#1a1a1a] px-12 py-[18px] text-base font-semibold text-white shadow-[0_4px_20px_rgba(0,0,0,0.15)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_28px_rgba(0,0,0,0.2)]"
-      >
-        Start de intake →
-      </button>
-      {lastSession && onResumeLastResults ? (
+    <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-12 text-center">
+      <div className="flex w-full max-w-lg flex-col items-center gap-6">
+        {/* 1. Label */}
+        <p
+          className="text-sm font-semibold uppercase"
+          style={{ letterSpacing: "0.2em", color: "rgba(255,255,255,0.5)" }}
+        >
+          Leefstijlcheck
+        </p>
+
+        {/* 2. Titel */}
+        <h1
+          className="text-3xl font-normal leading-tight md:text-4xl"
+          style={{
+            fontFamily: "var(--font-intake-heading), Georgia, serif",
+            color: "rgba(255,255,255,0.95)",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Ontdek waar je staat
+        </h1>
+
+        {/* 3. Subtitel */}
+        <p
+          className="max-w-md text-lg leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.6)" }}
+        >
+          We analyseren jouw leefstijl op zes domeinen — slaap, energie,
+          stress, voeding, beweging en herstel — en geven je een persoonlijk
+          plan om te verbeteren.
+        </p>
+
+        {/* 4. Stats-rij */}
+        <div
+          className="flex items-center gap-2 text-sm"
+          style={{ color: "rgba(255,255,255,0.4)" }}
+        >
+          <span>12 vragen</span>
+          <span aria-hidden>·</span>
+          <span>3 minuten</span>
+          <span aria-hidden>·</span>
+          <span>geen account nodig</span>
+        </div>
+
+        {/* 5. CTA */}
         <button
           type="button"
-          onClick={onResumeLastResults}
-          className="mt-5 text-[13px] font-medium text-[#888] underline decoration-[#d8d4cd] underline-offset-2 transition-colors hover:text-[#666]"
+          onClick={onStart}
+          className="mt-8 cursor-pointer rounded-[14px] border border-white/30 bg-transparent px-12 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-white/10"
+          style={{ fontFamily: "inherit" }}
         >
-          Je laatste meting was op{" "}
-          {new Date(lastSession.timestamp).toLocaleDateString("nl-NL", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-          . Bekijk resultaten →
+          Start de intake →
         </button>
-      ) : null}
-      <p className="mt-4 text-xs text-[#aaa]">
-        Duurt ± 3 minuten · geen account nodig
-      </p>
-      <div className="mx-auto mt-4 max-w-[340px] px-0">
-        <IntakeDisclaimer />
+
+        {/* 6. Laatste-meting link */}
+        {lastSession && onResumeLastResults ? (
+          <button
+            type="button"
+            onClick={onResumeLastResults}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 13,
+              color: "rgba(255,255,255,0.35)",
+              cursor: "pointer",
+              textDecoration: "underline",
+              textDecorationColor: "rgba(255,255,255,0.15)",
+              textUnderlineOffset: 3,
+              fontFamily: "inherit",
+            }}
+          >
+            Laatste meting:{" "}
+            {new Date(lastSession.timestamp).toLocaleDateString("nl-NL", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}{" "}
+            — bekijk resultaten →
+          </button>
+        ) : null}
+
+        {/* 7. Disclaimer */}
+        <p
+          className="mt-6 max-w-sm text-xs"
+          style={{ color: "rgba(255,255,255,0.3)", lineHeight: 1.6 }}
+        >
+          Geen medisch advies. Geeft inzicht in leefstijlpatronen. Raadpleeg
+          een arts bij klachten.
+        </p>
       </div>
     </div>
   );

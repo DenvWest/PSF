@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import type { SymptomId } from "@/data/intake-questions";
 import { CATEGORIES, type CategoryId } from "@/data/intake-questions";
 import type { DomainId, DomainScores } from "@/lib/intake-engine";
 import {
   getAdvice,
+  getDeficiencySignals,
   getProfileLabel,
   getUrgency,
 } from "@/lib/intake-engine";
 import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
+import SupplementRoute from "@/components/intake/SupplementRoute";
 import ScoreRing from "@/components/intake/ScoreRing";
+import { getSupplementRoute } from "@/lib/getSupplementRoute";
 import { revokeIntakeConsent, saveReminderEmail } from "@/lib/intake-storage";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
@@ -87,6 +89,8 @@ export default function IntakeResults({
   const advice = getAdvice(scores, answers, symptoms);
   const quickWins = advice.quickWins.slice(0, 3);
   const longTermTips = advice.longTerm.slice(0, 3);
+  const deficiencySignals = getDeficiencySignals(answers);
+  const supplementRoute = getSupplementRoute(scores, deficiencySignals, profile);
 
   const primaryCatId = PROFILE_DOMAIN_TO_CAT[profile.domain];
   const primaryCategory = CATEGORIES.find((c) => c.id === primaryCatId);
@@ -103,23 +107,30 @@ export default function IntakeResults({
     DOMAIN_KEYS.reduce((sum, k) => sum + scores[k], 0) / DOMAIN_KEYS.length,
   );
 
-  const supplementsEmpty = advice.supplements.length === 0;
-
   return (
-    <div className="px-6 pb-10 pt-8">
+    <div
+      className="px-6 pb-10 pt-8"
+      style={{ maxWidth: 480, margin: "0 auto", boxSizing: "border-box", width: "100%" }}
+    >
       <div className="mb-9 text-center">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[1.5px] text-[#999]">
+        <p
+          className="mb-3 text-xs font-semibold uppercase tracking-[1.5px]"
+          style={{ color: "rgba(255,255,255,0.4)" }}
+        >
           Jouw Herstelplan
         </p>
         <h1
-          className="mb-1.5 text-[30px] font-normal text-[#1a1a1a]"
-          style={{ fontFamily: "var(--font-intake-heading), Georgia, serif" }}
+          className="mb-1.5 text-[30px] font-normal"
+          style={{
+            fontFamily: "var(--font-intake-heading), Georgia, serif",
+            color: "rgba(255,255,255,0.92)",
+          }}
         >
           {profile.name}
         </h1>
-        <p className="mb-5 text-[15px] text-[#777]">
+        <p className="mb-5 text-[15px]" style={{ color: "rgba(255,255,255,0.55)" }}>
           Je primaire aandachtsgebied is{" "}
-          <strong style={{ color: primaryCategory?.color ?? "#1a1a1a" }}>
+          <strong style={{ color: primaryCategory?.color ?? "#C8956C" }}>
             {primaryCategory?.label ?? profile.domain}
           </strong>{" "}
           met een score van {profile.score}/100.
@@ -208,37 +219,11 @@ export default function IntakeResults({
             💊
           </div>
           <div>
-            <div className="text-[15px] font-bold">Supplementroute</div>
+            <div className="text-[15px] font-bold">Jouw Supplementroute</div>
             <div className="text-xs text-[#999]">Gericht op jouw profiel</div>
           </div>
         </div>
-        {supplementsEmpty ? (
-          <p className="m-0 text-sm leading-relaxed text-[#777]">
-            Geen specifieke supplementen nodig bij dit profiel.
-          </p>
-        ) : (
-          advice.supplements.map((sup, i) => (
-            <div
-              key={`${sup.name}-${i}`}
-              className={`rounded-[10px] bg-[#FAFAF7] px-4 py-3.5 ${i < advice.supplements.length - 1 ? "mb-2" : ""}`}
-            >
-              <div className="mb-1 text-[15px] font-bold text-[#1a1a1a]">
-                {sup.name}
-              </div>
-              <div className="text-[13px] leading-relaxed text-[#777]">
-                {sup.reason}
-              </div>
-              {sup.link ? (
-                <Link
-                  href={sup.link}
-                  className="mt-1.5 inline-block text-xs font-semibold text-[#C4873B]"
-                >
-                  Bekijk vergelijking →
-                </Link>
-              ) : null}
-            </div>
-          ))
-        )}
+        <SupplementRoute recommendations={supplementRoute} />
       </div>
 
       <div className="mb-7 rounded-2xl border border-[#e8e6e1] bg-white p-6">
@@ -380,7 +365,13 @@ export default function IntakeResults({
                     setRevokeFeedback({ kind: "error", text: result.error });
                   })();
                 }}
-                className="w-full cursor-pointer rounded-xl border border-[#e8e6e1] bg-white py-3.5 text-[13px] font-medium text-[#666] disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-60"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "rgba(255,255,255,0.4)",
+                  fontFamily: "inherit",
+                }}
               >
                 {revokeBusy ? "Bezig…" : "Toestemming intrekken"}
               </button>
@@ -393,7 +384,13 @@ export default function IntakeResults({
         <button
           type="button"
           onClick={onRestart}
-          className="mb-5 w-full cursor-pointer rounded-xl border border-[#e0ddd7] bg-transparent py-3.5 text-[13px] font-medium text-[#999]"
+          className="mb-5 w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium"
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "rgba(255,255,255,0.4)",
+            fontFamily: "inherit",
+          }}
         >
           Opnieuw beginnen
         </button>

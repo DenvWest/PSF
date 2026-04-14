@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import { sha256Hex } from "@/lib/consent-hashing";
 import {
   intakeConsentRows,
@@ -13,6 +14,11 @@ import {
 import { intakeSessionRowToPayload } from "@/lib/intake-session-payload";
 import { consumeRateLimit } from "@/lib/rate-limit";
 import { getDefaultOrganizationId } from "@/lib/organization";
+import { insertNurtureRemindersForSession } from "@/lib/intake-nurture-reminders";
+import {
+  buildNurtureEmail,
+  type ReminderRowWithSession,
+} from "@/lib/nurture-email-dispatch";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 
@@ -23,6 +29,8 @@ const INTAKE_SESSION_RATE = {
 } as const;
 
 const COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 90;
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function logSecurityEvent(
   event: string,
@@ -274,6 +282,74 @@ export async function POST(request: NextRequest) {
       { error: "Kon toestemming niet vastleggen. Probeer het opnieuw." },
       { status: 500 },
     );
+  }
+
+  const marketingAddr = consent.marketingEmailAddress?.trim();
+  if (consent.marketingEmail && marketingAddr) {
+    const nurture = await insertNurtureRemindersForSession({
+      admin,
+      organizationId,
+      sessionId: row.id,
+      email: marketingAddr,
+    });
+    if (!nurture.ok) {
+      console.error(
+        "[api/intake/session] nurture reminders insert:",
+        nurture.error,
+      );
+    } else if (process.env.RESEND_API_KEY?.trim()) {
+      const { data: welcomeReminder, error: welcomeLookupError } = await admin
+        .from("intake_reminders")
+        .select("id")
+        .eq("session_id", row.id)
+        .eq("reminder_type", "welcome")
+        .maybeSingle();
+
+      if (welcomeLookupError) {
+        console.error(
+          "[api/intake/session] welcome reminder lookup:",
+          welcomeLookupError,
+        );
+      } else if (welcomeReminder?.id) {
+        const welcomeRow: ReminderRowWithSession = {
+          id: welcomeReminder.id,
+          email: marketingAddr,
+          reminder_type: "welcome",
+          intake_sessions: {
+            profile_label: profile,
+            domain_scores: scores,
+            urgency_level: urgency,
+            answers,
+            symptom_profile: symptoms,
+          },
+        };
+        const built = buildNurtureEmail(welcomeRow);
+        if (!built) {
+          console.error("[api/intake/session] buildNurtureEmail (welcome) failed");
+        } else {
+          const { error: sendError } = await resend.emails.send({
+            from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
+            to: marketingAddr.trim(),
+            subject: built.subject,
+            html: built.html,
+          });
+          if (sendError) {
+            console.error("[api/intake/session] welcome Resend error:", sendError);
+          } else {
+            const { error: welcomeSentError } = await admin
+              .from("intake_reminders")
+              .update({ sent: true })
+              .eq("id", welcomeReminder.id);
+            if (welcomeSentError) {
+              console.error(
+                "[api/intake/session] welcome reminder sent flag:",
+                welcomeSentError,
+              );
+            }
+          }
+        }
+      }
+    }
   }
 
   const signed = signIntakeSessionId(row.id);

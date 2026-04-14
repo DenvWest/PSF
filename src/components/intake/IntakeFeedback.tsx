@@ -15,10 +15,13 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
 
   if (submitted) {
     return (
-      <p className="m-0 text-center text-[15px] text-[#555]">
+      <p
+        className="m-0 text-center text-[15px]"
+        style={{ color: "rgba(255,255,255,0.5)" }}
+      >
         Bedankt voor je feedback{" "}
-        <span className="text-[#5A8F6A]" aria-hidden>
-          {"\u2713"}
+        <span style={{ color: "#5A8F6A" }} aria-hidden>
+          ✓
         </span>
       </p>
     );
@@ -26,7 +29,10 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
 
   return (
     <div className="mb-5">
-      <p className="mb-4 text-[15px] font-semibold text-[#1a1a1a]">
+      <p
+        className="mb-4 text-[15px] font-semibold"
+        style={{ color: "rgba(255,255,255,0.75)" }}
+      >
         Herken je jezelf in dit advies?
       </p>
       {rating === null ? (
@@ -34,14 +40,26 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
           <button
             type="button"
             onClick={() => setRating("positive")}
-            className="flex-1 cursor-pointer rounded-[10px] border-2 border-[#5A8F6A] bg-transparent py-3 text-sm font-semibold text-[#5A8F6A] transition-colors hover:bg-[#5A8F6A08]"
+            className="flex-1 cursor-pointer rounded-[10px] py-3 text-sm font-semibold transition-colors"
+            style={{
+              background: "rgba(90,143,106,0.15)",
+              border: "1px solid rgba(90,143,106,0.4)",
+              color: "#5A8F6A",
+              fontFamily: "inherit",
+            }}
           >
             Ja, klopt
           </button>
           <button
             type="button"
             onClick={() => setRating("negative")}
-            className="flex-1 cursor-pointer rounded-[10px] border-2 border-[#b8b5ae] bg-transparent py-3 text-sm font-semibold text-[#666] transition-colors hover:bg-[#00000006]"
+            className="flex-1 cursor-pointer rounded-[10px] py-3 text-sm font-semibold transition-colors"
+            style={{
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.5)",
+              fontFamily: "inherit",
+            }}
           >
             Niet helemaal
           </button>
@@ -54,7 +72,13 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
             placeholder="Wil je iets toelichten? (optioneel)"
             rows={4}
             maxLength={500}
-            className="box-border w-full resize-y rounded-[10px] border border-[#e0ddd7] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] outline-none placeholder:text-[#aaa] focus:border-[#C4873B]"
+            className="box-border w-full resize-y rounded-[10px] px-3 py-2.5 text-sm outline-none"
+            style={{
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "rgba(255,255,255,0.82)",
+              fontFamily: "inherit",
+            }}
           />
           <button
             type="button"
@@ -71,7 +95,12 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
                 setSubmitted(true);
               })();
             }}
-            className="cursor-pointer rounded-[10px] border-none bg-[#1a1a1a] py-3.5 text-sm font-semibold text-white disabled:cursor-default disabled:opacity-60"
+            className="cursor-pointer rounded-[10px] border-none py-3.5 text-sm font-semibold disabled:cursor-default disabled:opacity-60"
+            style={{
+              background: "#C8956C",
+              color: "white",
+              fontFamily: "inherit",
+            }}
           >
             Verstuur feedback
           </button>

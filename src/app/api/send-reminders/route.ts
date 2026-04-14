@@ -1,25 +1,28 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
-import { getReminderEmailHtml } from "@/lib/email-templates/reminder";
+import {
+  buildNurtureEmail,
+  type ReminderRowWithSession,
+} from "@/lib/nurture-email-dispatch";
+import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-type IntakeReminderRow = {
+type ReminderFetchRow = {
   id: string;
   email: string;
+  reminder_type: string;
+  session_id: string | null;
 };
 
-function getCronSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
-  const key = serviceKey || anonKey;
-  if (!url || !key || url.includes("<")) {
-    return null;
-  }
-  return createClient(url, key);
-}
+type SessionFetchRow = {
+  id: string;
+  profile_label: string | null;
+  domain_scores: unknown;
+  urgency_level: string | null;
+  answers: unknown;
+  symptom_profile: unknown;
+};
 
 function getBearerToken(request: Request): string {
   const authHeader = request.headers.get("authorization");
@@ -47,16 +50,16 @@ function authorizeGet(request: Request): boolean {
 }
 
 async function runSendReminders(): Promise<{ sent: number; errors: number }> {
-  const supabase = getCronSupabase();
+  const supabase = createSupabaseAdmin();
   if (!supabase) {
     throw new Error("SUPABASE_CONFIG");
   }
 
   const nowIso = new Date().toISOString();
 
-  const { data: rows, error: fetchError } = await supabase
+  const { data: reminderRows, error: fetchError } = await supabase
     .from("intake_reminders")
-    .select("id,email")
+    .select("id,email,reminder_type,session_id")
     .lte("reminder_date", nowIso)
     .eq("sent", false);
 
@@ -64,10 +67,35 @@ async function runSendReminders(): Promise<{ sent: number; errors: number }> {
     throw fetchError;
   }
 
-  const list = (rows ?? []) as IntakeReminderRow[];
+  const list = (reminderRows ?? []) as ReminderFetchRow[];
+  const sessionIds = [
+    ...new Set(
+      list
+        .map((r) => r.session_id)
+        .filter((id): id is string => typeof id === "string" && id.length > 0),
+    ),
+  ];
+
+  let sessionById = new Map<string, SessionFetchRow>();
+  if (sessionIds.length > 0) {
+    const { data: sessionRows, error: sessionErr } = await supabase
+      .from("intake_sessions")
+      .select(
+        "id, profile_label, domain_scores, urgency_level, answers, symptom_profile",
+      )
+      .in("id", sessionIds);
+
+    if (sessionErr) {
+      throw sessionErr;
+    }
+
+    sessionById = new Map(
+      ((sessionRows ?? []) as SessionFetchRow[]).map((s) => [s.id, s]),
+    );
+  }
+
   let sent = 0;
   let errors = 0;
-  const html = getReminderEmailHtml();
 
   for (const row of list) {
     if (!row.id || typeof row.email !== "string" || !row.email.trim()) {
@@ -75,11 +103,28 @@ async function runSendReminders(): Promise<{ sent: number; errors: number }> {
       continue;
     }
 
+    const session = row.session_id
+      ? sessionById.get(row.session_id) ?? null
+      : null;
+
+    const withSession: ReminderRowWithSession = {
+      id: row.id,
+      email: row.email,
+      reminder_type: row.reminder_type,
+      intake_sessions: session,
+    };
+
+    const built = buildNurtureEmail(withSession);
+    if (!built) {
+      errors += 1;
+      continue;
+    }
+
     const { error: sendError } = await resend.emails.send({
       from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
       to: row.email.trim(),
-      subject: "Tijd voor je voortgangscheck",
-      html,
+      subject: built.subject,
+      html: built.html,
     });
 
     if (sendError) {

@@ -64,6 +64,24 @@ interface RawSignals {
   energyCrashPattern: boolean;
 }
 
+/** Snake_case signalen voor supplement-triggers (o.a. `getSupplementRoute`). */
+export type DeficiencySignals = {
+  omega3_deficiency: boolean;
+  magnesium_signal: boolean;
+  cortisol_risk: boolean;
+};
+
+export function getDeficiencySignals(
+  answers: Record<string, number>,
+): DeficiencySignals {
+  const s = getSignals(answers);
+  return {
+    omega3_deficiency: s.omega3Deficiency,
+    magnesium_signal: s.magnesiumSignal,
+    cortisol_risk: s.cortisolRisk,
+  };
+}
+
 const DOMAIN_SCORE_KEYS: readonly DomainScoreKey[] = [
   "sleep_score",
   "energy_score",
@@ -158,7 +176,8 @@ function getSortedDomains(scores: DomainScores): Array<{
   })).sort((left, right) => left.score - right.score);
 }
 
-function getAdvicePrimaryDomain(scores: DomainScores): DomainId {
+/** Primaire aandachtsdomein voor advies (kan afwijken van het profiel-label). */
+export function getAdvicePrimaryDomain(scores: DomainScores): DomainId {
   if (scores.sleep_score < 40) {
     return "sleep";
   }
