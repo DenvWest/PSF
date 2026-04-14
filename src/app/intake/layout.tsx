@@ -12,6 +12,7 @@ export default function IntakeLayout({ children }: { children: ReactNode }) {
       }}
     >
       <div
+        className="intake-layout-header"
         style={{
           display: "flex",
           alignItems: "center",
