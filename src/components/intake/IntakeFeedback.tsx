@@ -15,26 +15,32 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
 
   if (submitted) {
     return (
-      <p
-        className="m-0 text-center text-[15px]"
-        style={{ color: "rgba(255,255,255,0.5)" }}
+      <div
+        className="mb-5 rounded-2xl px-6 py-8 text-center"
+        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
       >
-        Bedankt voor je feedback{" "}
-        <span style={{ color: "#5A8F6A" }} aria-hidden>
-          ✓
-        </span>
-      </p>
+        <p className="text-[15px]" style={{ color: "rgba(255,255,255,0.5)" }}>
+          Bedankt voor je feedback{" "}
+          <span style={{ color: "#5A8F6A" }} aria-hidden>
+            ✓
+          </span>
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="mb-5">
+    <div
+      className="mb-5 rounded-2xl px-6 py-7"
+      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+    >
       <p
-        className="mb-4 text-[15px] font-semibold"
-        style={{ color: "rgba(255,255,255,0.75)" }}
+        className="mb-5 text-center text-[15px] font-semibold"
+        style={{ color: "rgba(255,255,255,0.7)" }}
       >
         Herken je jezelf in dit advies?
       </p>
+
       {rating === null ? (
         <div className="flex gap-3">
           <button
