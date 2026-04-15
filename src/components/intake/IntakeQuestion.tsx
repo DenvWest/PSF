@@ -66,7 +66,7 @@ export default function IntakeQuestion({
   const hasSelection = selectedOption !== null;
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center">
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
       {/* Fixed progress bar — stays at very top */}
       <div
         style={{
@@ -135,78 +135,81 @@ export default function IntakeQuestion({
           Vraag {currentIndex + 1} van {total}
         </p>
 
-        {/* Question text */}
-        <h2
-          className="mb-10 text-center text-2xl font-normal leading-snug md:text-3xl"
-          style={{
-            fontFamily: "var(--font-intake-heading), Georgia, serif",
-            color: "rgba(255,255,255,0.92)",
-          }}
-        >
-          {question.question}
-        </h2>
-
-        {/* Answer options */}
+        {/* Question text + answer options — keyed so React remounts on question change, triggering the fadeIn animation */}
         <div
-          style={{ pointerEvents: locked ? "none" : "auto" }}
-          className="flex flex-col gap-3"
+          key={currentIndex}
+          className="animate-[fadeIn_200ms_ease-out] min-h-[400px]"
         >
-          {question.options.map((opt, i) => {
-            const isSelected = selectedOption === i;
-            const isHovered = !isSelected && hoveredOption === i;
+          {/* Question text */}
+          <h2
+            className="mb-10 text-center text-2xl font-normal leading-snug md:text-3xl"
+            style={{
+              fontFamily: "var(--font-intake-heading), Georgia, serif",
+              color: "rgba(255,255,255,0.92)",
+            }}
+          >
+            {question.question}
+          </h2>
 
-            return (
-              <button
-                key={i}
-                type="button"
-                onClick={() => handleOptionSelect(i)}
-                onMouseEnter={() => setHoveredOption(i)}
-                onMouseLeave={() => setHoveredOption(null)}
-                className="block w-full rounded-[14px] px-5 py-4 text-left text-base font-medium leading-snug transition-all duration-200 ease-out"
-                style={{
-                  background: isSelected
-                    ? "rgba(200,149,108,0.18)"
-                    : isHovered
-                      ? "rgba(255,255,255,0.11)"
-                      : "rgba(255,255,255,0.07)",
-                  color: isSelected
-                    ? "rgba(255,255,255,0.95)"
-                    : "rgba(255,255,255,0.8)",
-                  border: isSelected
-                    ? "1px solid rgba(200,149,108,0.35)"
-                    : "1px solid rgba(255,255,255,0.1)",
-                  boxShadow: isSelected ? "inset 4px 0 0 #C8956C" : "none",
-                  fontFamily: "inherit",
-                  cursor: "pointer",
-                }}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
+          {/* Answer options */}
+          <div
+            style={{ pointerEvents: locked ? "none" : "auto" }}
+            className="flex flex-col gap-3"
+          >
+            {question.options.map((opt, i) => {
+              const isSelected = selectedOption === i;
+              const isHovered = !isSelected && hoveredOption === i;
+
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => handleOptionSelect(i)}
+                  onMouseEnter={() => setHoveredOption(i)}
+                  onMouseLeave={() => setHoveredOption(null)}
+                  className="block w-full rounded-[14px] px-5 py-4 text-left text-base font-medium leading-snug transition-all duration-200 ease-out"
+                  style={{
+                    background: isSelected
+                      ? "rgba(200,149,108,0.18)"
+                      : isHovered
+                        ? "rgba(255,255,255,0.11)"
+                        : "rgba(255,255,255,0.07)",
+                    color: isSelected
+                      ? "rgba(255,255,255,0.95)"
+                      : "rgba(255,255,255,0.8)",
+                    border: isSelected
+                      ? "1px solid rgba(200,149,108,0.35)"
+                      : "1px solid rgba(255,255,255,0.1)",
+                    boxShadow: isSelected ? "inset 4px 0 0 #C8956C" : "none",
+                    fontFamily: "inherit",
+                    cursor: "pointer",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation — back button always takes up space to prevent layout shift */}
         <div className="mt-10 flex items-center justify-between">
-          {currentIndex > 0 ? (
-            <button
-              type="button"
-              onClick={onBack}
-              style={{
-                background: "none",
-                border: "none",
-                color: "rgba(255,255,255,0.4)",
-                fontSize: 14,
-                cursor: "pointer",
-                padding: "12px 0",
-                fontFamily: "inherit",
-              }}
-            >
-              ← Terug
-            </button>
-          ) : (
-            <div />
-          )}
+          <button
+            type="button"
+            onClick={onBack}
+            style={{
+              background: "none",
+              border: "none",
+              color: "rgba(255,255,255,0.4)",
+              fontSize: 14,
+              cursor: currentIndex > 0 ? "pointer" : "default",
+              padding: "12px 0",
+              fontFamily: "inherit",
+              visibility: currentIndex > 0 ? "visible" : "hidden",
+            }}
+          >
+            ← Terug
+          </button>
 
           <button
             type="button"

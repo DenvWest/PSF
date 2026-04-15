@@ -75,7 +75,7 @@ export default function IntakePage() {
       window.clearTimeout(fadeOut);
       window.clearTimeout(fadeInTimer);
     };
-  }, [phase, currentQ]);
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== "calculating") {
@@ -290,7 +290,7 @@ export default function IntakePage() {
       )}
 
       {phase === "questions" && currentQuestion && currentCategory && (
-        <div style={contentStyle} key={currentQ}>
+        <div style={contentStyle}>
           <IntakeQuestion
             question={currentQuestion}
             category={currentCategory}
