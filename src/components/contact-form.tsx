@@ -2,8 +2,7 @@
 
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import Link from "next/link";
-import { type FormEvent, useRef, useState } from "react";
-import { CONTACT_CONSENT_TEXT } from "@/lib/consent-texts";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { handleSendEmail } from "@/service/contact";
 import contactFormStyles from "./contact-form.module.css";
 
@@ -29,9 +28,19 @@ export default function ContactForm({
   const [pending, setPending] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRef = useRef<TurnstileInstance>(undefined);
-  const [consentHealth, setConsentHealth] = useState(false);
-  const [consentAnalytics, setConsentAnalytics] = useState(false);
-  const [consentMarketing, setConsentMarketing] = useState(false);
+  const [nameValue, setNameValue] = useState("");
+  const [emailValue, setEmailValue] = useState("");
+
+  useEffect(() => {
+    try {
+      const storedName = sessionStorage.getItem("ps_contact_name");
+      const storedEmail = sessionStorage.getItem("ps_contact_email");
+      if (storedName) setNameValue(storedName);
+      if (storedEmail) setEmailValue(storedEmail);
+    } catch {
+      // sessionStorage niet beschikbaar (bijv. private browsing)
+    }
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,13 +74,6 @@ export default function ContactForm({
       setResponseMessage("Bevestig eerst dat je geen bot bent.");
       return;
     }
-    if (!consentHealth) {
-      setResponseKind("error");
-      setResponseMessage(
-        "Je moet toestemming geven voor verwerking van je gegevens (inclusief eventuele gezondheidsgegevens in je bericht).",
-      );
-      return;
-    }
 
     setPending(true);
     let attemptedSubmission = false;
@@ -85,8 +87,8 @@ export default function ContactForm({
         website,
         consent: {
           healthDataProcessing: true,
-          anonymousAnalytics: consentAnalytics,
-          marketingEmail: consentMarketing,
+          anonymousAnalytics: false,
+          marketingEmail: false,
         },
       });
 
@@ -99,10 +101,9 @@ export default function ContactForm({
         setResponseKind("success");
         setResponseMessage(response.message);
         form.reset();
+        setNameValue("");
+        setEmailValue("");
         setTurnstileToken("");
-        setConsentHealth(false);
-        setConsentAnalytics(false);
-        setConsentMarketing(false);
         return;
       }
 
@@ -141,56 +142,31 @@ export default function ContactForm({
 
         <div className={contactFormStyles.formField}>
           <label htmlFor="contact-name">Naam</label>
-          <input id="contact-name" name="name" type="text" autoComplete="name" required />
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            required
+            value={nameValue}
+            onChange={(e) => setNameValue(e.target.value)}
+          />
         </div>
         <div className={contactFormStyles.formField}>
           <label htmlFor="contact-email">E-mail</label>
-          <input id="contact-email" name="email" type="email" autoComplete="email" required />
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={emailValue}
+            onChange={(e) => setEmailValue(e.target.value)}
+          />
         </div>
         <div className={contactFormStyles.formField}>
           <label htmlFor="contact-message">Bericht</label>
           <textarea id="contact-message" name="message" rows={5} required />
-        </div>
-
-        <div className={contactFormStyles.consentBlock}>
-          <p className={contactFormStyles.consentLead}>
-            Je bericht kan gezondheidsinformatie bevatten. Geef hier aan wat we mogen doen.
-          </p>
-          <label className={contactFormStyles.consentRow}>
-            <input
-              type="checkbox"
-              checked={consentHealth}
-              onChange={(e) => setConsentHealth(e.target.checked)}
-            />
-            <span>{CONTACT_CONSENT_TEXT.health_data_processing}</span>
-          </label>
-          <p className={contactFormStyles.consentPrivacy}>
-            <Link href="/privacy">Privacyverklaring</Link>
-          </p>
-
-          <label className={contactFormStyles.consentRow}>
-            <input
-              type="checkbox"
-              checked={consentAnalytics}
-              onChange={(e) => setConsentAnalytics(e.target.checked)}
-            />
-            <span>{CONTACT_CONSENT_TEXT.anonymous_analytics}</span>
-          </label>
-          <p className={contactFormStyles.consentPrivacy}>
-            <Link href="/privacy">Privacyverklaring</Link>
-          </p>
-
-          <label className={contactFormStyles.consentRow}>
-            <input
-              type="checkbox"
-              checked={consentMarketing}
-              onChange={(e) => setConsentMarketing(e.target.checked)}
-            />
-            <span>{CONTACT_CONSENT_TEXT.marketing_email}</span>
-          </label>
-          <p className={contactFormStyles.consentPrivacy}>
-            <Link href="/privacy">Privacyverklaring</Link>
-          </p>
         </div>
 
         <div className={contactFormStyles.turnstileWrapper}>
@@ -226,6 +202,11 @@ export default function ContactForm({
         >
           {pending ? "Bezig…" : "Verstuur"}
         </button>
+
+        <p className={contactFormStyles.privacyNote}>
+          Door dit formulier te versturen ga je akkoord met onze{" "}
+          <Link href="/privacyverklaring">privacyverklaring</Link>.
+        </p>
 
         {responseMessage != null ? (
           <p

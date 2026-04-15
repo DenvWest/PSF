@@ -119,6 +119,16 @@ export default function IntakePage() {
       if (cancelled) {
         return;
       }
+
+      const savedEmail = intakeConsent.marketingEmailAddress;
+      if (savedEmail) {
+        try {
+          sessionStorage.setItem("ps_contact_email", savedEmail);
+        } catch {
+          // sessionStorage niet beschikbaar
+        }
+      }
+
       setScores(computed);
       setSessionTimestamp(ts);
       setSessionId(id);
