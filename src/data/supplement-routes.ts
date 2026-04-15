@@ -18,6 +18,8 @@ export type SupplementRecommendation = {
   reason: string;
   priority: number;
   domains: string[];
+  /** True wanneer de doel-URL een productvergelijking met affiliate-kaarten is. */
+  hasComparison: boolean;
   affiliateUrl: string;
   triggers: {
     /** Minimaal één clause is voldoende (OR). */
@@ -35,6 +37,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
       "Je visinname is laag of je voedingsscore vraagt om een brede basis. Omega-3 ondersteunt hart, hersenen en ontstekingsbalans.",
     priority: 1,
     domains: ["Voeding", "Energie", "Herstel"],
+    hasComparison: true,
     affiliateUrl: "/beste-omega-3-supplement",
     triggers: {
       anyOf: [
@@ -50,6 +53,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
       "Je slaap, stress of herstel vraagt om meer ontspanning. Magnesium glycinaat is een veelgekozen vorm voor avond en rust.",
     priority: 2,
     domains: ["Slaap", "Stress", "Herstel"],
+    hasComparison: true,
     affiliateUrl: "/magnesium-vergelijken",
     triggers: {
       anyOf: [
@@ -66,6 +70,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
       "Je stressscore is laag of er is een duidelijk cortisolpatroon. Ashwagandha wordt vaak ingezet voor stressbelasting en ritme.",
     priority: 3,
     domains: ["Stress", "Slaap"],
+    hasComparison: false,
     affiliateUrl: "/supplementen/ashwagandha",
     triggers: {
       anyOf: [
@@ -81,6 +86,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
       "Je beweegt veel terwijl je herstel achterblijft. Creatine kan kracht en herstel bij training ondersteunen.",
     priority: 4,
     domains: ["Beweging", "Herstel"],
+    hasComparison: false,
     affiliateUrl: "/supplementen",
     triggers: { anyOf: [] },
   },
@@ -91,6 +97,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
       "Een praktische basis voor bijna elk profiel: vitamine D speelt mee bij botten, spieren en immuunfunctie — zeker als er weinig zon is.",
     priority: 50,
     domains: ["Energie", "Immuun", "Beweging"],
+    hasComparison: false,
     affiliateUrl: "/supplementen/vitamine-d",
     triggers: { anyOf: [] },
     fallbackOnly: true,

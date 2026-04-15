@@ -223,7 +223,7 @@ export default function IntakeResults({
             <div className="text-xs text-[#999]">Gericht op jouw profiel</div>
           </div>
         </div>
-        <SupplementRoute recommendations={supplementRoute} />
+        <SupplementRoute recommendations={supplementRoute} scores={scores} />
       </div>
 
       <div className="mb-7 rounded-2xl border border-[#e8e6e1] bg-white p-6">
