@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   CATEGORIES,
@@ -32,6 +32,13 @@ export default function IntakeQuestion({
     savedOptionIndex !== undefined ? savedOptionIndex : null,
   );
   const [hoveredOption, setHoveredOption] = useState<number | null>(null);
+  // Skip inner animation on first mount — the phase-level wrapper in page.tsx
+  // already handles the entry animation for the symptoms→questions transition.
+  // The inner animation should only fire on question-to-question transitions.
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    isFirstRender.current = false;
+  }, []);
 
   // Take over the full screen: hide the layout header while questions are active.
   useEffect(() => {
@@ -135,10 +142,12 @@ export default function IntakeQuestion({
           Vraag {currentIndex + 1} van {total}
         </p>
 
-        {/* Question text + answer options — keyed so React remounts on question change, triggering the fadeIn animation */}
+        {/* Question text + answer options — keyed so React remounts on question change,
+            triggering the fadeIn animation. Skipped on first render because the outer
+            phase wrapper already handles the entry animation. */}
         <div
           key={currentIndex}
-          className="animate-[fadeIn_200ms_ease-out] min-h-[400px]"
+          className={`min-h-[400px] ${isFirstRender.current ? "" : "animate-[fadeIn_200ms_ease-out]"}`}
         >
           {/* Question text */}
           <h2

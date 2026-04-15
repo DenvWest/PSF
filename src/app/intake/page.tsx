@@ -1,7 +1,6 @@
 "use client";
 
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
-import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import IntakeCalculating from "@/components/intake/IntakeCalculating";
 import IntakeConsent from "@/components/intake/IntakeConsent";
@@ -54,28 +53,12 @@ export default function IntakePage() {
   const [scores, setScores] = useState<DomainScores | null>(null);
   const [sessionTimestamp, setSessionTimestamp] = useState<number | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [fadeIn, setFadeIn] = useState(true);
-  const skipFadeOnMount = useRef(true);
   const calculatingStartedAtRef = useRef(0);
   const [intakeTurnstileToken, setIntakeTurnstileToken] = useState("");
   const [honeypotWebsite, setHoneypotWebsite] = useState("");
   const [intakeConsent, setIntakeConsent] = useState<IntakeConsentPayload | null>(
     null,
   );
-
-  useEffect(() => {
-    if (skipFadeOnMount.current) {
-      skipFadeOnMount.current = false;
-      return;
-    }
-
-    const fadeOut = window.setTimeout(() => setFadeIn(false), 0);
-    const fadeInTimer = window.setTimeout(() => setFadeIn(true), 50);
-    return () => {
-      window.clearTimeout(fadeOut);
-      window.clearTimeout(fadeInTimer);
-    };
-  }, [phase]);
 
   useEffect(() => {
     if (phase !== "calculating") {
@@ -241,12 +224,6 @@ export default function IntakePage() {
     ? CATEGORIES.find((c) => c.id === currentQuestion.category)
     : undefined;
 
-  const contentStyle: CSSProperties = {
-    opacity: fadeIn ? 1 : 0,
-    transform: fadeIn ? "translateY(0)" : "translateY(12px)",
-    transition: "opacity 400ms ease, transform 400ms ease",
-  };
-
   const shellClass = `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px]`;
 
   const shellStyle: CSSProperties = {
@@ -257,7 +234,7 @@ export default function IntakePage() {
   return (
     <div className={shellClass} style={shellStyle}>
       {phase === "intro" && (
-        <div style={contentStyle}>
+        <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeIntro
             onStart={() => setPhase("symptoms")}
             onResumeLastResults={resumeLastResults}
@@ -266,7 +243,7 @@ export default function IntakePage() {
       )}
 
       {phase === "symptoms" && (
-        <div style={contentStyle}>
+        <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeSymptoms
             ageRange={ageRange}
             onAgeRangeChange={setAgeRange}
@@ -281,7 +258,7 @@ export default function IntakePage() {
       )}
 
       {phase === "consent" && (
-        <div style={contentStyle}>
+        <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeConsent
             onContinue={handleConsentContinue}
             onBack={handleBack}
@@ -290,7 +267,7 @@ export default function IntakePage() {
       )}
 
       {phase === "questions" && currentQuestion && currentCategory && (
-        <div style={contentStyle}>
+        <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeQuestion
             question={currentQuestion}
             category={currentCategory}
@@ -304,7 +281,7 @@ export default function IntakePage() {
       )}
 
       {phase === "calculating" && (
-        <div style={contentStyle}>
+        <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeCalculating
             needsHumanVerification={ageRange !== null}
             onTurnstileToken={setIntakeTurnstileToken}
@@ -313,7 +290,7 @@ export default function IntakePage() {
       )}
 
       {phase === "results" && scores && sessionTimestamp !== null && (
-        <div style={contentStyle}>
+        <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeResults
             scores={scores}
             answers={answers}
