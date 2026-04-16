@@ -175,6 +175,7 @@ export function buildNurtureEmail(
 
   const site = getPublicSiteUrl();
   const intakeUrl = `${site}/intake`;
+  const intakeResultatenUrl = `${site}/intake?resultaten=true`;
   const unsubQs = new URLSearchParams({ email });
   const unsubscribeUrl = `${site}/api/unsubscribe?${unsubQs.toString()}`;
 
@@ -220,7 +221,7 @@ export function buildNurtureEmail(
         subject: welcomeEmailSubject,
         html: welcomeEmailHtml({
           unsubscribeUrl,
-          intakeUrl,
+          intakeUrl: intakeResultatenUrl,
           profileLabel,
           urgencyLabel,
           primaryDomainLabel,
