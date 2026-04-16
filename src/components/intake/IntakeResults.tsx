@@ -226,6 +226,44 @@ export default function IntakeResults({
         <SupplementRoute recommendations={supplementRoute} scores={scores} />
       </div>
 
+      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal) && (
+        <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
+          <div className="mb-3 flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3A7D5C18] text-base">
+              🔬
+            </div>
+            <div>
+              <div className="text-[15px] font-bold">Vergelijkingen voor jou</div>
+              <div className="text-xs text-[#999]">Gebaseerd op jouw profiel</div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {deficiencySignals.omega3_deficiency && (
+              <a
+                href="/beste-omega-3-supplement"
+                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
+              >
+                <span className="font-medium text-[#1a1a1a]">
+                  Bekijk onze omega-3 vergelijking
+                </span>
+                <span className="text-[#999]">→</span>
+              </a>
+            )}
+            {deficiencySignals.magnesium_signal && (
+              <a
+                href="/beste-magnesium"
+                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
+              >
+                <span className="font-medium text-[#1a1a1a]">
+                  Bekijk onze magnesium vergelijking
+                </span>
+                <span className="text-[#999]">→</span>
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="mb-7 rounded-2xl border border-[#e8e6e1] bg-white p-6">
         <div className="mb-4 flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#5B6EAE18] text-base">
