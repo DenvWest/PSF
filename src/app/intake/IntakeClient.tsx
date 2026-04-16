@@ -101,9 +101,9 @@ export default function IntakeClient() {
         const session = await getLastSession();
         if (cancelled) return;
 
-        if (session) {
+        if (session && hasResultsParam) {
           hydrateFromSession(session);
-        } else if (hasResultsParam) {
+        } else if (!session && hasResultsParam) {
           setResultsDeepLinkMissing(true);
         }
       } catch {
