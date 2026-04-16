@@ -46,7 +46,20 @@ function normalizeSingleLine(value: unknown): string {
   return value.replace(/\s+/g, " ").trim();
 }
 
+/**
+ * In development, skip the shared GET+POST intake bucket so local debugging
+ * (refresh loops, Strict Mode, deeplink tests) is not blocked by 429s.
+ * This runs only on the server inside this route; NODE_ENV is not settable
+ * from the browser, so production behavior stays unchanged.
+ */
 function applyIntakeRateLimit(clientIp: string) {
+  if (process.env.NODE_ENV === "development") {
+    return {
+      allowed: true,
+      remaining: Number.MAX_SAFE_INTEGER,
+      retryAfterSeconds: 0,
+    };
+  }
   return consumeRateLimit(`intake_session:${clientIp}`, INTAKE_SESSION_RATE);
 }
 
