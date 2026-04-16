@@ -3,7 +3,8 @@ import nodemailer from "nodemailer";
 import { contactConsentRows, validateContactConsent } from "@/lib/contact-consent";
 import { sha256Hex } from "@/lib/consent-hashing";
 import { buildZohoTags } from "@/lib/contact-segmentation-tags";
-import { consumeRateLimit } from "@/lib/rate-limit";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
@@ -13,10 +14,6 @@ const URL_REGEX = /(https?:\/\/|www\.)/i;
 const CONTROL_CHARS_REGEX = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
 const TURNSTILE_ACTION = "contact_submit";
 const SUCCESS_MESSAGE = "Message successfully sent.";
-const CONTACT_RATE_LIMIT = {
-  limit: 5,
-  windowMs: 10 * 60 * 1000,
-} as const;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_NAME_LENGTH = 80;
 const MAX_MESSAGE_LENGTH = 2000;
@@ -142,7 +139,7 @@ function logSecurityEvent(
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimit(`contact:${clientIp}`, CONTACT_RATE_LIMIT);
+  const rateLimit = consumeRateLimitForIp("contact", clientIp, getRateLimitConfig("contact"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });

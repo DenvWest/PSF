@@ -12,7 +12,8 @@ import {
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
 import { intakeSessionRowToPayload } from "@/lib/intake-session-payload";
-import { consumeRateLimit } from "@/lib/rate-limit";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { insertNurtureRemindersForSession } from "@/lib/intake-nurture-reminders";
 import {
@@ -23,10 +24,6 @@ import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 
 const TURNSTILE_ACTION = "intake_submit";
-const INTAKE_SESSION_RATE = {
-  limit: 10,
-  windowMs: 15 * 60 * 1000,
-} as const;
 
 const COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 90;
 
@@ -46,26 +43,9 @@ function normalizeSingleLine(value: unknown): string {
   return value.replace(/\s+/g, " ").trim();
 }
 
-/**
- * In development, skip the shared GET+POST intake bucket so local debugging
- * (refresh loops, Strict Mode, deeplink tests) is not blocked by 429s.
- * This runs only on the server inside this route; NODE_ENV is not settable
- * from the browser, so production behavior stays unchanged.
- */
-function applyIntakeRateLimit(clientIp: string) {
-  if (process.env.NODE_ENV === "development") {
-    return {
-      allowed: true,
-      remaining: Number.MAX_SAFE_INTEGER,
-      retryAfterSeconds: 0,
-    };
-  }
-  return consumeRateLimit(`intake_session:${clientIp}`, INTAKE_SESSION_RATE);
-}
-
 export async function GET(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = applyIntakeRateLimit(clientIp);
+  const rateLimit = consumeRateLimitForIp("intake_session", clientIp, getRateLimitConfig("intake_session"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });
@@ -131,7 +111,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = applyIntakeRateLimit(clientIp);
+  const rateLimit = consumeRateLimitForIp("intake_session", clientIp, getRateLimitConfig("intake_session"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });

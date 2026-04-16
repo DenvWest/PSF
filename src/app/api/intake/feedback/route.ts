@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { consumeRateLimit } from "@/lib/rate-limit";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp } from "@/lib/turnstile-verify";
-
-const FEEDBACK_RATE = {
-  limit: 10,
-  windowMs: 15 * 60 * 1000,
-} as const;
 
 function toUuidOrNull(value: string | null | undefined): string | null {
   if (value == null || value === "") {
@@ -35,7 +31,7 @@ function normalizeSingleLine(value: unknown): string {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimit(`intake_feedback:${clientIp}`, FEEDBACK_RATE);
+  const rateLimit = consumeRateLimitForIp("intake_feedback", clientIp, getRateLimitConfig("intake_feedback"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });

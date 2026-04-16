@@ -1,5 +1,3 @@
-import type { NextRequest } from "next/server";
-
 export const TURNSTILE_VERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
@@ -10,22 +8,7 @@ type TurnstileVerifyResponse = {
   success?: boolean;
 };
 
-export function getClientIp(request: NextRequest): string {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  if (forwardedFor) {
-    const firstForwardedIp = forwardedFor.split(",")[0]?.trim();
-    if (firstForwardedIp) {
-      return firstForwardedIp;
-    }
-  }
-
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  if (realIp) {
-    return realIp;
-  }
-
-  return "unknown";
-}
+export { getClientIp } from "./client-ip";
 
 export function getExpectedTurnstileHostname(): string | null {
   const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();

@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { consumeRateLimit } from "@/lib/rate-limit";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp } from "@/lib/turnstile-verify";
-
-const REMINDER_RATE = {
-  limit: 10,
-  windowMs: 15 * 60 * 1000,
-} as const;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
@@ -28,7 +24,7 @@ function normalizeSingleLine(value: unknown): string {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimit(`intake_reminder:${clientIp}`, REMINDER_RATE);
+  const rateLimit = consumeRateLimitForIp("intake_reminder", clientIp, getRateLimitConfig("intake_reminder"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });

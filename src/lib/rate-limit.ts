@@ -1,3 +1,5 @@
+import { isWhitelistedIp } from "./rate-limit-config";
+
 type RateLimitOptions = {
   limit: number;
   windowMs: number;
@@ -19,7 +21,6 @@ function getStore(): RateLimitStore {
   if (!globalThis.__rateLimitStore__) {
     globalThis.__rateLimitStore__ = new Map<string, number[]>();
   }
-
   return globalThis.__rateLimitStore__;
 }
 
@@ -36,9 +37,7 @@ export function consumeRateLimit(
   if (active.length >= options.limit) {
     const oldestActive = active[0];
     const retryAfterMs = Math.max(oldestActive + options.windowMs - now, 0);
-
     store.set(key, active);
-
     return {
       allowed: false,
       remaining: 0,
@@ -54,4 +53,19 @@ export function consumeRateLimit(
     remaining: Math.max(options.limit - active.length, 0),
     retryAfterSeconds: 0,
   };
+}
+
+export function consumeRateLimitForIp(
+  keyPrefix: string,
+  ip: string,
+  options: RateLimitOptions,
+): RateLimitResult {
+  if (isWhitelistedIp(ip)) {
+    return {
+      allowed: true,
+      remaining: Number.MAX_SAFE_INTEGER,
+      retryAfterSeconds: 0,
+    };
+  }
+  return consumeRateLimit(`${keyPrefix}:${ip}`, options);
 }
