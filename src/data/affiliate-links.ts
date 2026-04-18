@@ -1,13 +1,21 @@
 export const affiliateLinks = {
-  // Omega-3 — NIET AANRAKEN
-  "arctic-blue-algenolie":
-    "https://www.arctic-blue.com/winkel/algenolie/algenolie-vloeibaar/?sld=dennisvanwestbroek",
+  // Omega-3
   "arctic-blue-visolie":
     "https://www.arctic-blue.com/winkel/visolie/visolie-vloeibaar/?sld=dennisvanwestbroek",
+  "mollers-omega-3-citroen":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=organische%20omega%203%20olie&dl=product%2Fmollers-mollers-omega-3-citroen-mollers-visolie-vloeibaar-240847",
+  "minami-morepa-original":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=duurzame-sterke-visolie&dl=product%2Fminami-nutrition-morepa-smart-fats-softgels-183303",
+  "vitals-liquid-epadha":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=Vitalis-Epa%2FDHA&dl=product%2Fvitals-liquid-epadha-vloeibaar-1200mg-doos-1308940",
+
+  // Behoud Arctic Blue Gummies en Algenolie voor eventueel gebruik elders op de site
+  "arctic-blue-algenolie":
+    "https://www.arctic-blue.com/winkel/algenolie/algenolie-vloeibaar/?sld=dennisvanwestbroek",
   "arctic-blue-gummies":
     "https://www.arctic-blue.com/sp/omega-3-soft-gummies?sld=dennisvanwestbroek",
 
-  // Magnesium
+  // Magnesium — NIET AANRAKEN
   "vitaminstore-super-magnesium":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitaminstore-super-magnesium&dl=product%2Fvitaminstore-super-magnesium-tabletten-162179",
   "vital-nutrition-citraat":
