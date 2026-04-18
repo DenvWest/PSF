@@ -69,7 +69,7 @@ export const magnesiumData: ComparisonPageData = {
         { criterium: "Transparantie", score: 7 },
         { criterium: "Prijs/kwaliteit", score: 8 },
       ],
-      imageSrc: "/images/producten/Super-Magnesium-Vitaminstore.jpg",
+      imageSrc: "/images/producten/Vitaminstore-Super-Magnesium.jpg",
       imageAlt: "Vitaminstore Super Magnesium verpakking",
     },
     {
@@ -106,7 +106,7 @@ export const magnesiumData: ComparisonPageData = {
         { criterium: "Transparantie", score: 7 },
         { criterium: "Prijs/kwaliteit", score: 7 },
       ],
-      imageSrc: "/images/producten/Magnesium-Bisglycinate-Viridian.jpg",
+      imageSrc: "/images/producten/Viridian-Magnesium-Bisglycinate.jpg",
       imageAlt: "Viridian Magnesium Bisglycinate verpakking",
     },
     {
@@ -142,7 +142,7 @@ export const magnesiumData: ComparisonPageData = {
         { criterium: "Transparantie", score: 8 },
         { criterium: "Prijs/kwaliteit", score: 9 },
       ],
-      imageSrc: "/images/producten/Magnesium-Citraat-Vitalnutrition.jpg",
+      imageSrc: "/images/producten/Vitalnutrition-Magnesium-Citraat.jpg",
       imageAlt: "Vital Nutrition Magnesium Citraat verpakking",
     },
   ],

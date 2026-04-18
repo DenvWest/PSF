@@ -154,7 +154,7 @@ export const omega3Data: ComparisonPageData = {
         { criterium: "Gebruiksgemak", score: 8 },
         { criterium: "Prijs/kwaliteit", score: 9 },
       ],
-      imageSrc: "/images/producten/Möller's Omega-3 Cirtoen.jpg",
+      imageSrc: "/images/producten/Mollers-Omega-3-Citroen.jpg",
       imageAlt: "Möller's Omega-3 Citroen verpakking",
     },
     {
