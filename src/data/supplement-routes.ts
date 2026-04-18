@@ -54,7 +54,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 2,
     domains: ["Slaap", "Stress", "Herstel"],
     hasComparison: true,
-    affiliateUrl: "/magnesium-vergelijken",
+    affiliateUrl: "/beste-magnesium",
     triggers: {
       anyOf: [
         { deficiencySignal: "magnesium_signal" },

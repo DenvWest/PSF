@@ -40,11 +40,6 @@ const relatedPages = [
         description: "Praktische uitleg over welke criteria echt iets zeggen.",
     },
     {
-        href: "/beste-omega-3-supplement",
-        title: "Beste omega 3 supplement",
-        description: "Ga direct naar de selectie met topkeuze, gummies en algenolie.",
-    },
-    {
         href: "/methodologie",
         title: "Onze methodologie",
         description: "Lees hoe vergelijkingen en rankings worden opgebouwd.",
@@ -427,6 +422,19 @@ export default function OmegaComparisonPage() {
                         Terug naar vergelijking
                     </a>
                 </div>
+            </ContentSection>
+
+            <ContentSection
+                title="Handige vervolgstappen"
+                description="Klaar om een concrete keuze te maken? Bekijk onze shortlist met productkaarten en actuele prijzen."
+            >
+                <Link
+                    href="/beste-omega-3-supplement"
+                    className="block max-w-md rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                >
+                    <span className="font-medium text-stone-900">Bekijk onze top 4 omega-3 →</span>
+                    <span className="mt-0.5 block text-sm text-stone-500">Vergeleken op EPA/DHA, prijs en zuiverheid</span>
+                </Link>
             </ContentSection>
 
             <RelatedPages

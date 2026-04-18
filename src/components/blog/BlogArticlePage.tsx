@@ -8,6 +8,7 @@ import BlogSectie from "./BlogSectie";
 import BlogSamenvatting from "./BlogSamenvatting";
 import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
+import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
 
 interface BlogArticlePageProps {
@@ -96,8 +97,19 @@ export default function BlogArticlePage({
         )}
 
         {/* ── Cornerstone terug-link ────────────────────────────────────── */}
-        <div className="mt-14 max-w-[680px]">
+        <div className="mt-14 max-w-[680px] space-y-4">
           <BlogCornerstoneLink link={artikel.cornerstoneLink} />
+          {artikel.vergelijkingExtraLink && (
+            <Link
+              href={artikel.vergelijkingExtraLink.href}
+              className="group inline-flex w-full items-center justify-between gap-3 rounded-lg border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-700 transition-colors hover:border-stone-300 hover:text-stone-900 sm:w-auto"
+            >
+              <span>{artikel.vergelijkingExtraLink.label}</span>
+              <span aria-hidden className="text-stone-400 transition group-hover:text-stone-600">
+                →
+              </span>
+            </Link>
+          )}
         </div>
 
         {/* ── Gerelateerde artikelen ────────────────────────────────────── */}

@@ -213,6 +213,13 @@ export default function MagnesiumVergelijkenPage() {
 
                         <div className="mt-5 space-y-4 text-base text-stone-600">
                             <Link
+                                href="/beste-magnesium"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                            >
+                                <span className="font-medium text-stone-900">Bekijk onze top 3 magnesium →</span>
+                                <span className="mt-0.5 block text-sm text-stone-500">Vergeleken op vorm, dosering en prijs per dag</span>
+                            </Link>
+                            <Link
                                 href="/methodologie"
                                 className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
                             >

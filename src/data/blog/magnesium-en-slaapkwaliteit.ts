@@ -88,6 +88,10 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     label: "Magnesium supplementen vergelijken",
     href: "/magnesium-vergelijken",
   },
+  vergelijkingExtraLink: {
+    label: "Bekijk onze top 3 magnesium (productvergelijking)",
+    href: "/beste-magnesium",
+  },
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",
     "supplement-kiezen-waar-op-letten",

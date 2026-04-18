@@ -13,7 +13,7 @@ function formatDate(iso: string): string {
 
 export function ChoiceHero({ data }: Props) {
   return (
-    <section className="mx-auto max-w-4xl px-4 pt-10">
+    <section className="mx-auto w-full max-w-7xl px-6 lg:px-8 pt-10">
       <div className="mb-2 inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs text-slate-500">
         Laatst bijgewerkt: {formatDate(data.lastUpdated)}
       </div>

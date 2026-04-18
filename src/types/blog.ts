@@ -41,6 +41,8 @@ export interface BlogArtikel {
   samenvatting: string;
   supplementCTA?: BlogSupplementCTA;
   cornerstoneLink: BlogCornerstoneLink;
+  /** Optionele extra link naar productvergelijking (naast cornerstone naar educatieve pagina). */
+  vergelijkingExtraLink?: BlogCornerstoneLink;
   /** Sluggen van gerelateerde artikelen (2-3) */
   gerelateerdeSluggen: string[];
   metaTitle?: string;
