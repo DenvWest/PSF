@@ -9,6 +9,7 @@ export const affiliateLinks = {
    * Geen externe affiliate-URL tot er passende magnesiumpartners zijn.
    * Lege string = geen link; zie AffiliateLink.
    */
+  "vitaminstore-super-magnesium": "",
   "magnesium-bisglycinaat": "",
   "magnesium-tauraat": "",
   "magnesium-citraat": "",
