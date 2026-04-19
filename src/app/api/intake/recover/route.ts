@@ -6,6 +6,7 @@ import {
 import { getClientIp } from "@/lib/turnstile-verify";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { getPublicSiteUrl } from "@/lib/public-site-url";
 
 const COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 90;
 
@@ -43,10 +44,10 @@ export async function GET(request: NextRequest) {
   const sessionId = verifySignedIntakeSessionCookie(sid);
   if (!sessionId) {
     logSecurityEvent("invalid_sid", { remoteIp: clientIp });
-    return NextResponse.redirect(new URL("/intake", request.url));
+    return NextResponse.redirect(new URL(`${getPublicSiteUrl()}/intake`));
   }
 
-  const dest = new URL("/intake?resultaten=true", request.url);
+  const dest = new URL(`${getPublicSiteUrl()}/intake?resultaten=true`);
   const res = NextResponse.redirect(dest);
   res.cookies.set(INTAKE_SESSION_COOKIE_NAME, sid, {
     httpOnly: true,
