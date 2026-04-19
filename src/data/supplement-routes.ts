@@ -3,7 +3,8 @@ import type { DomainScores, ProfileLabel } from "@/lib/intake-engine";
 export type DeficiencySignalKey =
   | "omega3_deficiency"
   | "magnesium_signal"
-  | "cortisol_risk";
+  | "cortisol_risk"
+  | "ashwagandha_signal";
 
 export type SupplementTriggerClause = {
   deficiencySignal?: DeficiencySignalKey;
@@ -70,12 +71,13 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
       "Je stressscore is laag of er is een duidelijk cortisolpatroon. Ashwagandha wordt vaak ingezet voor stressbelasting en ritme.",
     priority: 3,
     domains: ["Stress", "Slaap"],
-    hasComparison: false,
-    affiliateUrl: "/supplementen/ashwagandha",
+    hasComparison: true,
+    affiliateUrl: "/beste-ashwagandha",
     triggers: {
       anyOf: [
         { domainBelow: { domain: "stress_score", threshold: 40 } },
         { deficiencySignal: "cortisol_risk" },
+        { deficiencySignal: "ashwagandha_signal" },
       ],
     },
   },

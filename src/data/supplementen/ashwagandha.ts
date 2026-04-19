@@ -154,4 +154,10 @@ export const ashwagandhaData: SupplementData = {
       titel: "Cortisol verlagen: 5 bewezen methodes zonder medicatie",
     },
   ],
+
+  productVergelijkingCta: {
+    titel: "Wil je weten welke ashwagandha het beste scoort?",
+    href: "/beste-ashwagandha",
+    linkLabel: "Bekijk de vergelijking →",
+  },
 };

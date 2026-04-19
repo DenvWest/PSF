@@ -1,5 +1,6 @@
 import type { ComparisonPageData } from "@/types/supplement";
 import { AffiliateLink } from "@/components/supplements/AffiliateLink";
+import { getAffiliateShopLabel } from "@/lib/affiliate-shop-labels";
 
 type Props = { data: ComparisonPageData };
 
@@ -43,11 +44,11 @@ export function ChoiceHero({ data }: Props) {
             </p>
             <AffiliateLink
               affiliateSlug={route.affiliateSlug}
-              sourcePage={`beste-${data.category}-supplement`}
+              sourcePage="choice-hero"
               position={i + 1}
               className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
-              Bekijk aanbieder →
+              Bekijk bij {getAffiliateShopLabel(route.affiliateSlug)} →
             </AffiliateLink>
           </div>
         ))}

@@ -9,10 +9,13 @@ import { trackClick } from "@/lib/track";
 type Props = {
   affiliateSlug: AffiliateSlug;
   children: ReactNode;
-  sourcePage: string;
+  /** Optioneel: extra context voor GA-affiliate_click (page_type). */
+  sourcePage?: string;
   position?: number;
   className?: string;
 };
+
+const SUPABASE_CLICK_SOURCE = "vergelijking";
 
 export function AffiliateLink({
   affiliateSlug,
@@ -35,12 +38,12 @@ export function AffiliateLink({
     <a
       href={href}
       target="_blank"
-      rel="sponsored nofollow"
+      rel="noopener noreferrer sponsored"
       className={className}
       onClick={() => {
         const positionStr = position !== undefined ? String(position) : undefined;
         trackAffiliateClick(affiliateSlug, {
-          pageType: sourcePage,
+          pageType: sourcePage ?? SUPABASE_CLICK_SOURCE,
           position: positionStr,
         });
         trackAffiliateKlik({
@@ -51,7 +54,7 @@ export function AffiliateLink({
         void trackClick({
           product_id: affiliateSlug,
           product_naam: affiliateSlug,
-          categorie: sourcePage,
+          categorie: SUPABASE_CLICK_SOURCE,
           pagina:
             typeof window !== "undefined" ? window.location.pathname : "",
         });

@@ -8,6 +8,12 @@ const exploreLinks = [
     { href: "/supplementen", label: "Supplementen" },
 ];
 
+const vergelijkingLinks = [
+    { href: "/beste-omega-3-supplement", label: "Beste omega-3" },
+    { href: "/beste-magnesium", label: "Beste magnesium" },
+    { href: "/beste-ashwagandha", label: "Beste ashwagandha" },
+];
+
 const infoLinks = [
     { href: "/methodologie", label: "Methodologie" },
     { href: "/faqs", label: "FAQ's" },
@@ -21,7 +27,7 @@ export default function Footer() {
     return (
         <footer className="border-t border-stone-200 bg-[var(--ps-bg)]">
             <Container>
-                <div className="grid gap-10 py-14 md:grid-cols-3 md:gap-16 lg:py-16">
+                <div className="grid gap-10 py-14 md:grid-cols-2 md:gap-12 lg:grid-cols-4 lg:gap-16 lg:py-16">
                     <div className="md:col-span-1">
                         <Link href="/" className="inline-flex items-center gap-2.5">
                             <Image
@@ -48,6 +54,24 @@ export default function Footer() {
                         </h4>
                         <ul className="mt-4 space-y-2.5">
                             {exploreLinks.map((link) => (
+                                <li key={link.href}>
+                                    <Link
+                                        href={link.href}
+                                        className="text-sm text-stone-600 transition hover:text-stone-900"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-400">
+                            Vergelijkingen
+                        </h4>
+                        <ul className="mt-4 space-y-2.5">
+                            {vergelijkingLinks.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}

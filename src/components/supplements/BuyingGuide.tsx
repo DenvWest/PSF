@@ -9,6 +9,7 @@ type Props = {
 const CATEGORY_LABEL: Record<SupplementCategory, string> = {
   "omega-3": "omega-3 supplement",
   magnesium: "magnesiumvorm",
+  ashwagandha: "ashwagandha supplement",
 };
 
 const OMEGA3_EXPLANATIONS: Record<string, string> = {
@@ -33,6 +34,17 @@ const MAGNESIUM_EXPLANATIONS: Record<string, string> = {
     "Citraat is de betaalbare optie met goede opneembaarheid. Bisglycinaat is duurder maar levert meer waarde voor slaap en ontspanning.",
 };
 
+const ASHWAGANDHA_EXPLANATIONS: Record<string, string> = {
+  "Extract kwaliteit":
+    "KSM-66 is het meest onderzochte ashwagandha-extract voor cortisolverlaging, testosteron en sportieve prestaties. Sensoril heeft een hogere withanolideconcentratie en wordt vaker aanbevolen voor slaap. Generieke extracten zijn moeilijker te vergelijken omdat gestandaardisering vaak ontbreekt. Kies altijd een gepatenteerd extract als basis.",
+  Dosering:
+    "300 mg KSM-66 per dag is in meerdere gerandomiseerde studies effectief bewezen. 600 mg biedt ruimte voor een hogere behoefte zonder risico op bijwerkingen. Doseringen onder 250 mg KSM-66 zijn zelden onderzocht en bieden minder zekerheid over werkzaamheid.",
+  "Prijs/kwaliteit":
+    "Vergelijk niet op verpakkingsprijs maar op prijs per effectieve dag. Een product met 300 mg KSM-66 voor €0,42/dag versus 600 mg voor €0,23/dag: het tweede levert twee keer zoveel werkzame stof voor de helft van het geld. Bereken altijd prijs per mg gestandaardiseerd extract.",
+  Transparantie:
+    "Een transparant supplement vermeldt het exacte percentage withanoliden, het gebruikte extract-type en idealiter batchgewijze lab-uitslagen. Producten die alleen 'ashwagandha-poeder' of een vaag mg-getal vermelden zijn niet eerlijk te vergelijken met gestandaardiseerde extracten.",
+};
+
 function getExplanation(
   criterium: string,
   category: SupplementCategory,
@@ -40,6 +52,12 @@ function getExplanation(
   if (category === "omega-3") {
     return (
       OMEGA3_EXPLANATIONS[criterium] ??
+      "Zie onze methodologie voor de volledige uitleg van dit criterium."
+    );
+  }
+  if (category === "ashwagandha") {
+    return (
+      ASHWAGANDHA_EXPLANATIONS[criterium] ??
       "Zie onze methodologie voor de volledige uitleg van dit criterium."
     );
   }

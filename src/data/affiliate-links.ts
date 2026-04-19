@@ -15,6 +15,14 @@ export const affiliateLinks = {
   "arctic-blue-gummies":
     "https://www.arctic-blue.com/sp/omega-3-soft-gummies?sld=dennisvanwestbroek",
 
+  // Ashwagandha — Sub ID (ws) altijd: ashwagandha-vergelijking
+  "vitaminstore-ashwagandha-ksm66":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=ashwagandha-vergelijking&dl=product%2Fvitaminstore-ashwagandha-ksm-66-ashwaganda-vegicaps-278077",
+  "vitalnutrition-ashwagandha-ksm66":
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=ashwagandha-vergelijking&dl=products%2Fashwagandha%3F_pos%3D1%26_psq%3Dashwaga%26_ss%3De%26_v%3D1.0",
+  "vitaminstore-solgar-ashwagandha":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=ashwagandha-vergelijking&dl=product%2Fsolgar-vitamins-ashwagandha-root-extract-vegicaps-713",
+
   // Magnesium — NIET AANRAKEN
   "vitaminstore-super-magnesium":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitaminstore-super-magnesium&dl=product%2Fvitaminstore-super-magnesium-tabletten-162179",

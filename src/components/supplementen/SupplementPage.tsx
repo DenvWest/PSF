@@ -151,6 +151,26 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </div>
           </section>
 
+          {data.productVergelijkingCta ? (
+            <section
+              aria-labelledby="vergelijking-cta-heading"
+              className="rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/90 to-white px-6 py-8 shadow-sm"
+            >
+              <h2
+                id="vergelijking-cta-heading"
+                className="text-lg font-semibold tracking-tight text-stone-900 sm:text-xl"
+              >
+                {data.productVergelijkingCta.titel}
+              </h2>
+              <Link
+                href={data.productVergelijkingCta.href}
+                className="mt-4 inline-flex items-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+              >
+                {data.productVergelijkingCta.linkLabel}
+              </Link>
+            </section>
+          ) : null}
+
           {/* ── Sectie 5: Gerelateerde symptomen ─────────────────────── */}
           <section aria-labelledby="symptomen-heading">
             <h2

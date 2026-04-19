@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { SupplementProduct } from "@/types/supplement";
 import { AffiliateLink } from "@/components/supplements/AffiliateLink";
+import { getAffiliateShopLabel } from "@/lib/affiliate-shop-labels";
 
 type Props = { product: SupplementProduct; position: number };
 
@@ -115,11 +116,11 @@ export function ProductCard({ product, position }: Props) {
 
           <AffiliateLink
             affiliateSlug={product.affiliateSlug}
-            sourcePage="beste-supplement-vergelijking"
+            sourcePage="product-card"
             position={position}
             className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 sm:w-auto"
           >
-            Bekijk actuele prijs bij aanbieder →
+            Bekijk bij {getAffiliateShopLabel(product.affiliateSlug)} →
           </AffiliateLink>
         </div>
       </div>

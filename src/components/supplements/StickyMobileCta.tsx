@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { SupplementProduct } from "@/types/supplement";
 import { AffiliateLink } from "@/components/supplements/AffiliateLink";
+import { getAffiliateShopLabel } from "@/lib/affiliate-shop-labels";
 
 type Props = { topProduct: SupplementProduct };
 
@@ -33,11 +34,11 @@ export function StickyMobileCta({ topProduct }: Props) {
         </div>
         <AffiliateLink
           affiliateSlug={topProduct.affiliateSlug}
-          sourcePage="beste-supplement-sticky-cta"
+          sourcePage="sticky-cta"
           position={1}
-          className="shrink-0 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+          className="max-w-[min(200px,48vw)] shrink-0 truncate whitespace-nowrap rounded-xl bg-emerald-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-emerald-700 sm:max-w-none sm:px-4 sm:text-sm"
         >
-          Bekijk →
+          Bekijk bij {getAffiliateShopLabel(topProduct.affiliateSlug)} →
         </AffiliateLink>
       </div>
     </div>

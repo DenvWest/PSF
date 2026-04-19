@@ -69,16 +69,20 @@ export type DeficiencySignals = {
   omega3_deficiency: boolean;
   magnesium_signal: boolean;
   cortisol_risk: boolean;
+  ashwagandha_signal: boolean;
 };
 
 export function getDeficiencySignals(
   answers: Record<string, number>,
 ): DeficiencySignals {
   const s = getSignals(answers);
+  const stressFrequency = getAnswer(answers, "STR_FREQ");
+  const stressRecovery = getAnswer(answers, "STR_RECV");
   return {
     omega3_deficiency: s.omega3Deficiency,
     magnesium_signal: s.magnesiumSignal,
     cortisol_risk: s.cortisolRisk,
+    ashwagandha_signal: stressFrequency <= 2 && stressRecovery <= 2,
   };
 }
 
