@@ -97,8 +97,8 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt:
       "Populaire omega-3 supplementen naast elkaar op EPA/DHA-gehalte, prijs per dag en kwaliteitsindicatoren.",
     category: "Vergelijking",
-    publishedAt: "2025-02-15",
-    readingTime: "11 min",
+    publishedAt: "2026-04-19",
+    readingTime: "12 min",
     coverImageAlt:
       "Afbeelding bij vergelijking van omega-3 supplementen op EPA/DHA, prijs per dag en transparantie.",
     seoTitle:

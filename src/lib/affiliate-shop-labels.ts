@@ -7,6 +7,8 @@ const AFFILIATE_SHOP_LABELS: Partial<Record<AffiliateSlug, string>> = {
   "arctic-blue-gummies": "Arctic Blue",
   "mollers-omega-3-citroen": "Möller's",
   "minami-morepa-original": "Vitaminstore",
+  "minami-morepa-vergelijking": "Vitaminstore",
+  "vitaminstore-super-fish-oil": "Vitaminstore",
   "vitals-liquid-epadha": "Vitaminstore",
   "vitaminstore-ashwagandha-ksm66": "Vitaminstore",
   "vitalnutrition-ashwagandha-ksm66": "Vital Nutrition",

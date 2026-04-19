@@ -6,6 +6,10 @@ export const affiliateLinks = {
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=organische%20omega%203%20olie&dl=product%2Fmollers-mollers-omega-3-citroen-mollers-visolie-vloeibaar-240847",
   "minami-morepa-original":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=duurzame-sterke-visolie&dl=product%2Fminami-nutrition-morepa-smart-fats-softgels-183303",
+  "minami-morepa-vergelijking":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega3-vergelijking&dl=product%2Fminami-nutrition-morepa-smart-fats-softgels-183303",
+  "vitaminstore-super-fish-oil":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega3-vergelijking&dl=product%2Fvitaminstore-super-fish-oil-omega-3-softgels-162556",
   "vitals-liquid-epadha":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=Vitalis-Epa%2FDHA&dl=product%2Fvitals-liquid-epadha-vloeibaar-1200mg-doos-1308940",
 

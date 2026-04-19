@@ -177,7 +177,7 @@ export default function OmegaComparisonPage() {
             <ContentSection
                 id="producten"
                 title="Populaire keuzes naast elkaar"
-                description="Deze drie kaarten geven de snelste eerste vergelijking zonder dat je direct door een grote tabel hoeft."
+                description="De drie hoogst scorende producten direct naast elkaar — voor een snelle eerste vergelijking zonder dat je door een grote tabel hoeft."
             >
                 <div className="grid gap-5 xl:grid-cols-3">
                     {products.map((product) => (
@@ -316,10 +316,11 @@ export default function OmegaComparisonPage() {
                             <tr>
                                 <th className="px-4 py-3 font-semibold">Product</th>
                                 <th className="px-4 py-3 font-semibold">Type</th>
+                                <th className="px-4 py-3 font-semibold whitespace-nowrap">EPA / DHA</th>
                                 <th className="px-4 py-3 font-semibold">Dosering</th>
                                 <th className="px-4 py-3 font-semibold">Transparantie</th>
                                 <th className="px-4 py-3 font-semibold">Gebruiksgemak</th>
-                                <th className="px-4 py-3 font-semibold">Prijs per dag</th>
+                                <th className="px-4 py-3 font-semibold whitespace-nowrap">Prijs per dag</th>
                                 <th className="px-4 py-3 font-semibold">Beste voor</th>
                             </tr>
                         </thead>
@@ -328,6 +329,7 @@ export default function OmegaComparisonPage() {
                                 <tr key={row.product} className="border-t border-stone-200">
                                     <td className="px-4 py-3 font-medium">{row.product}</td>
                                     <td className="px-4 py-3">{row.type}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">{row.epa}</td>
                                     <td className="px-4 py-3">{row.dosage}</td>
                                     <td className="px-4 py-3">{row.transparency}</td>
                                     <td className="px-4 py-3">{row.convenience}</td>
@@ -373,15 +375,19 @@ export default function OmegaComparisonPage() {
                 title="Onze conclusie"
                 description="Voor de meeste bezoekers is een korte eindkeuze handiger dan nog meer losse details."
             >
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     {[
                         {
                             title: "Topkeuze",
-                            text: "Kies Arctic Blue Visolie als je een sterke allround keuze zoekt met balans tussen dosering en dagelijks gebruik.",
+                            text: "Kies Minami MorEPA Original als je de hoogste EPA-concentratie zoekt met CO2-extractie en wetenschappelijk gevalideerde kwaliteit.",
                         },
                         {
-                            title: "Beste prijs/gebruiksgemak",
-                            text: "Kies Arctic Blue Gummies als je vooral laagdrempelig wilt beginnen en smaak en routine belangrijk vindt.",
+                            title: "Beste prijs-kwaliteit",
+                            text: "Kies Vitaminstore Super Fish Oil als je een kwalitatieve triglyceride-visolie zoekt voor de scherpste prijs per mg omega-3.",
+                        },
+                        {
+                            title: "Beste vloeibaar",
+                            text: "Kies Arctic Blue Visolie als je liever vloeibare olie gebruikt dan capsules en een sterke dagelijkse routine wilt opbouwen.",
                         },
                         {
                             title: "Beste plantaardige optie",
@@ -432,7 +438,7 @@ export default function OmegaComparisonPage() {
                     href="/beste-omega-3-supplement"
                     className="block max-w-md rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
                 >
-                    <span className="font-medium text-stone-900">Bekijk onze top 4 omega-3 →</span>
+                    <span className="font-medium text-stone-900">Bekijk onze top 5 omega-3 →</span>
                     <span className="mt-0.5 block text-sm text-stone-500">Vergeleken op EPA/DHA, prijs en zuiverheid</span>
                 </Link>
             </ContentSection>

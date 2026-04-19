@@ -11,13 +11,13 @@ export const comparisonCriteria = [
 export const highlights = [
   {
     label: "Topkeuze",
-    value: "Arctic Blue Visolie",
-    text: "Sterke balans tussen dosering, dagelijks gebruik en algemene productfit.",
+    value: "Minami MorEPA Original",
+    text: "Hoogste EPA per portie (590 mg), CO2-extractie en wetenschappelijk gevalideerde kwaliteitsstandaard.",
   },
   {
-    label: "Beste prijs/gebruiksgemak",
-    value: "Arctic Blue Gummies",
-    text: "Laagdrempelige keuze voor wie vooral eenvoud en routine belangrijk vindt.",
+    label: "Beste prijs-kwaliteit",
+    value: "Vitaminstore Super Fish Oil",
+    text: "Triglyceride-vorm voor betere opname, bijna dubbele EPA/DHA vs standaard visolie en scherpste prijs per mg.",
   },
   {
     label: "Beste plantaardige optie",
@@ -38,17 +38,68 @@ export const products: Array<{
     affiliateSlug: AffiliateSlug;
 }> = [
   {
-    name: "Arctic Blue Visolie",
-    score: "8.8",
+    name: "Minami MorEPA Original",
+    score: "9.0",
     summary:
-      "Sterke allround keuze voor wie een goede mix zoekt van dosering, gebruiksgemak en een duidelijke productpositionering.",
-    specs: ["Type: Visolie", "Dosering: Hoog", "Prijs per dag: €0,58"],
+      "Hoogste EPA-concentratie van alle vergeleken producten, gewonnen via superkritische CO2-extractie en gecertificeerd via de S.M.A.R.T.-kwaliteitsstandaard.",
+    specs: ["Type: Visolie softgel", "EPA/DHA: 590 / 130 mg", "Prijs per dag: €0,65"],
     pros: [
-      "Sterke totaalbalans voor dagelijks gebruik",
-      "Vloeibare vorm zonder grote capsules",
+      "Hoogste EPA per portie van alle producten (590 mg)",
+      "CO2-extractie garandeert maximale zuiverheid",
+      "Wetenschappelijk gevalideerde S.M.A.R.T. kwaliteitsstandaard",
     ],
-    cons: ["Smaak is niet voor iedereen ideaal", "Minder handig als je liever gummies kiest"],
+    cons: [
+      "Hoogste prijs per dag van het vergelijk",
+      "Bevat visgelatine — niet geschikt voor veganisten",
+    ],
     bestFor: "Topkeuze",
+    breakdown: [
+      ["Dosering", "10/10"],
+      ["Transparantie", "9/10"],
+      ["Gebruiksgemak", "8/10"],
+      ["Prijs per dag", "7/10"],
+    ],
+    affiliateSlug: "minami-morepa-vergelijking",
+  },
+  {
+    name: "Vitaminstore Super Fish Oil",
+    score: "8.6",
+    summary:
+      "Visolie in natuurlijke triglyceride-vorm met 360 mg EPA en 240 mg DHA per softgel — bijna dubbele omega-3 ten opzichte van standaard visolie, voor een scherpe prijs per dag.",
+    specs: ["Type: Visolie softgel", "EPA/DHA: 360 / 240 mg", "Prijs per dag: €0,42"],
+    pros: [
+      "Natuurlijke triglyceride-vorm voor betere opname",
+      "Bijna dubbele EPA/DHA vs standaard visolie",
+      "Scherpste prijs per mg omega-3 van alle visolieproducten",
+    ],
+    cons: [
+      "Lagere EPA dan Minami MorEPA",
+      "Geen CO2-extractie of IFOS-certificering",
+    ],
+    bestFor: "Beste prijs-kwaliteit",
+    breakdown: [
+      ["Dosering", "8/10"],
+      ["Transparantie", "8/10"],
+      ["Gebruiksgemak", "9/10"],
+      ["Prijs per dag", "9/10"],
+    ],
+    affiliateSlug: "vitaminstore-super-fish-oil",
+  },
+  {
+    name: "Arctic Blue Visolie",
+    score: "8.4",
+    summary:
+      "Vloeibare visolie met 400 mg EPA en 250 mg DHA per portie — een sterke keuze voor wie geen capsules wil en consistentie in dagelijks gebruik waardeert.",
+    specs: ["Type: Visolie vloeibaar", "EPA/DHA: 400 / 250 mg", "Prijs per dag: €0,58"],
+    pros: [
+      "Vloeibare vorm zonder grote capsules",
+      "Sterke totaalbalans voor dagelijks gebruik",
+    ],
+    cons: [
+      "Smaak is niet voor iedereen ideaal",
+      "Minder handig als je liever capsules kiest",
+    ],
+    bestFor: "Beste vloeibaar",
     breakdown: [
       ["Dosering", "9/10"],
       ["Transparantie", "8/10"],
@@ -57,75 +108,58 @@ export const products: Array<{
     ],
     affiliateSlug: "arctic-blue-visolie",
   },
-  {
-    name: "Arctic Blue Gummies",
-    score: "8.4",
-    summary:
-      "Praktische keuze voor bezoekers die vooral een eenvoudige, smakelijke en laagdrempelige routine willen opbouwen.",
-    specs: ["Type: Gummies", "Dosering: Laag", "Prijs per dag: €0,72"],
-    pros: [
-      "Toegankelijk en gebruiksvriendelijk",
-      "Past goed bij wie geen olie of grote capsules wil",
-    ],
-    cons: ["Lagere EPA/DHA per portie", "Minder geschikt als je maximale dosering zoekt"],
-    bestFor: "Beste prijs/gebruiksgemak",
-    breakdown: [
-      ["Dosering", "6/10"],
-      ["Transparantie", "8/10"],
-      ["Gebruiksgemak", "9/10"],
-      ["Prijs per dag", "8/10"],
-    ],
-    affiliateSlug: "arctic-blue-gummies",
-  },
-  {
-    name: "Arctic Blue Algenolie",
-    score: "8.2",
-    summary:
-      "Plantaardige omega-3 optie voor wie bewust liever geen visolie gebruikt, maar wel een vloeibare bron wil overwegen.",
-    specs: ["Type: Algenolie", "Dosering: Gemiddeld", "Prijs per dag: €0,62"],
-    pros: [
-      "Plantaardige bron van omega-3",
-      "Logische keuze bij voorkeur voor algen in plaats van visolie",
-    ],
-    cons: ["Vaak wat duurder dan standaard visolie", "Voor veel bezoekers niet de eerste prijskeuze"],
-    bestFor: "Beste plantaardige optie",
-    breakdown: [
-      ["Dosering", "8/10"],
-      ["Transparantie", "8/10"],
-      ["Gebruiksgemak", "8/10"],
-      ["Prijs per dag", "7/10"],
-    ],
-    affiliateSlug: "arctic-blue-algenolie",
-  },
 ];
 
 export const tableRows = [
   {
+    product: "Minami MorEPA Original",
+    type: "Visolie",
+    epa: "590 / 130 mg",
+    dosage: "Zeer hoog",
+    transparency: "Zeer goed",
+    convenience: "Goed",
+    price: "€0,65",
+    bestFor: "Topkeuze",
+  },
+  {
+    product: "Vitaminstore Super Fish Oil",
+    type: "Visolie",
+    epa: "360 / 240 mg",
+    dosage: "Hoog",
+    transparency: "Goed",
+    convenience: "Goed",
+    price: "€0,42",
+    bestFor: "Beste prijs-kwaliteit",
+  },
+  {
     product: "Arctic Blue Visolie",
     type: "Visolie",
+    epa: "400 / 250 mg",
     dosage: "Hoog",
     transparency: "Goed",
     convenience: "Goed",
     price: "€0,58",
-    bestFor: "Topkeuze",
-  },
-  {
-    product: "Arctic Blue Gummies",
-    type: "Gummies",
-    dosage: "Laag",
-    transparency: "Goed",
-    convenience: "Sterk",
-    price: "€0,72",
-    bestFor: "Beste prijs/gebruiksgemak",
+    bestFor: "Beste vloeibaar",
   },
   {
     product: "Arctic Blue Algenolie",
     type: "Algenolie",
+    epa: "150 / 350 mg",
     dosage: "Gemiddeld",
     transparency: "Goed",
     convenience: "Goed",
     price: "€0,62",
-    bestFor: "Beste plantaardige optie",
+    bestFor: "Beste plantaardig",
+  },
+  {
+    product: "Arctic Blue Gummies",
+    type: "Gummies",
+    epa: "60 / 60 mg",
+    dosage: "Laag",
+    transparency: "Goed",
+    convenience: "Sterk",
+    price: "€0,72",
+    bestFor: "Beste gemak",
   },
 ];
 
@@ -137,15 +171,21 @@ export const choiceRoutes: Array<{
 }> = [
   {
     title: "Topkeuze",
-    product: "Arctic Blue Visolie",
-    text: "Kies deze route als je vooral een uitgebalanceerde combinatie zoekt van dosering, gebruiksgemak en een sterke totaalindruk.",
-    affiliateSlug: "arctic-blue-visolie",
+    product: "Minami MorEPA Original",
+    text: "Kies deze route als je de hoogste EPA-concentratie zoekt met gevalideerde kwaliteitsstandaarden en maximale zuiverheid.",
+    affiliateSlug: "minami-morepa-vergelijking",
   },
   {
-    title: "Beste prijs/gebruiksgemak",
-    product: "Arctic Blue Gummies",
-    text: "Past beter als je vooral eenvoudig wilt beginnen en dagelijkse inname laagdrempelig wilt houden.",
-    affiliateSlug: "arctic-blue-gummies",
+    title: "Beste prijs-kwaliteit",
+    product: "Vitaminstore Super Fish Oil",
+    text: "Past beter als je een kwalitatieve triglyceride-visolie zoekt voor een scherpe prijs per dag.",
+    affiliateSlug: "vitaminstore-super-fish-oil",
+  },
+  {
+    title: "Beste vloeibaar",
+    product: "Arctic Blue Visolie",
+    text: "Kies deze route als je liever vloeibare olie gebruikt dan capsules en een bewezen dagelijkse routine wilt opbouwen.",
+    affiliateSlug: "arctic-blue-visolie",
   },
   {
     title: "Beste plantaardige optie",
