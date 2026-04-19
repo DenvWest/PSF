@@ -144,6 +144,14 @@ export default function AdminDashboardPage() {
           >
             Feedback
           </Link>
+          <Link
+            href="/admin#nurture"
+            scroll
+            onClick={() => setMenuOpen(false)}
+            className="rounded-lg px-3 py-2 text-[#1a1a1a] hover:bg-[#F8F7F4]"
+          >
+            Nurture-mail
+          </Link>
         </nav>
         <div className="border-t p-4" style={{ borderColor: "#e8e6e1" }}>
           <a
@@ -335,6 +343,145 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               </section>
+
+              {data.nurture ? (
+                <section
+                  id="nurture"
+                  className="scroll-mt-24 rounded-xl border bg-white p-6"
+                  style={{ borderColor: "#e8e6e1" }}
+                >
+                  <h2 className="mb-4 text-lg font-semibold text-[#1a1a1a]">
+                    Nurture e-mails
+                  </h2>
+                  <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Gepland (pending)</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.stats.pending}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Verstuurd</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.stats.sent}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Mislukt</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.stats.failed}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Geannuleerd</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.stats.cancelled}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <div>
+                      <h3 className="mb-2 text-sm font-semibold text-[#1a1a1a]">
+                        Verzonden per stap in de reeks
+                      </h3>
+                      <div className="h-[220px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            data={data.nurture.sequenceSent.map((r) => ({
+                              label: `Dag ${r.sequenceDay}`,
+                              sent: r.sent,
+                            }))}
+                            margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
+                          >
+                            <XAxis dataKey="label" tick={{ fontSize: 11 }} />
+                            <YAxis tick={{ fontSize: 11 }} width={36} allowDecimals={false} />
+                            <Tooltip />
+                            <Bar dataKey="sent" fill="#1a1a1a" radius={[6, 6, 0, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-center rounded-lg border p-4" style={{ borderColor: "#e8e6e1" }}>
+                      <h3 className="mb-2 text-sm font-semibold text-[#1a1a1a]">
+                        Dag 30 → herhaalmeting (indicatie)
+                      </h3>
+                      <p className="text-sm text-[#555]">
+                        Van de <strong>{data.nurture.day30Conversion.day30Sent}</strong> verzonden
+                        dag-30-mails heeft{" "}
+                        <strong>{data.nurture.day30Conversion.repeatIntakeAfterMail}</strong>{" "}
+                        minstens één latere intake-sessie met hetzelfde marketing-e-mailadres
+                        (sessie gestart ná het verzendmoment van de dag-30-mail).
+                      </p>
+                      <p className="mt-3 text-sm text-[#555]">
+                        Geschatte conversie:{" "}
+                        <strong>
+                          {data.nurture.day30Conversion.conversionRate != null
+                            ? `${Math.round(data.nurture.day30Conversion.conversionRate * 1000) / 10}%`
+                            : "—"}
+                        </strong>
+                      </p>
+                      <p className="mt-2 text-xs text-[#999]">
+                        Geen exacte attributie: iemand kan ook zonder de mail opnieuw meten.
+                      </p>
+                    </div>
+                  </div>
+
+                  <h3 className="mb-3 text-sm font-semibold text-[#1a1a1a]">
+                    Recente nurture-mails
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[520px] text-left text-sm">
+                      <thead>
+                        <tr className="border-b text-[13px] text-[#999]" style={{ borderColor: "#e8e6e1" }}>
+                          <th className="pb-3 pr-4 font-medium">E-mail</th>
+                          <th className="pb-3 pr-4 font-medium">Dag</th>
+                          <th className="pb-3 pr-4 font-medium">Status</th>
+                          <th className="pb-3 font-medium">Gepland</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.nurture.recent.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="py-4 text-[#999]">
+                              Nog geen rijen in nurture_emails.
+                            </td>
+                          </tr>
+                        ) : (
+                          data.nurture.recent.map((row, i) => (
+                            <tr
+                              key={`${row.scheduledAt}-${row.sequenceDay}-${i}`}
+                              className="border-b last:border-b-0"
+                              style={{ borderColor: "#e8e6e1" }}
+                            >
+                              <td className="py-3 pr-4 font-mono text-[13px] text-[#1a1a1a]">
+                                {row.emailMasked}
+                              </td>
+                              <td className="py-3 pr-4 text-[#555]">{row.sequenceDay}</td>
+                              <td className="py-3 pr-4 text-[#555]">{row.status}</td>
+                              <td className="py-3 text-[#555]">
+                                {formatNlDate(row.scheduledAt)}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              ) : (
+                <section
+                  id="nurture"
+                  className="scroll-mt-24 rounded-xl border border-amber-200 bg-amber-50/80 p-6 text-sm text-amber-900"
+                >
+                  <h2 className="mb-2 text-lg font-semibold">Nurture e-mails</h2>
+                  <p>
+                    Kon nurture-statistieken niet laden (ontbrekende tabel of recht). Controleer of{" "}
+                    <code className="rounded bg-amber-100/80 px-1">nurture_emails</code> bestaat in
+                    Supabase.
+                  </p>
+                </section>
+              )}
 
               <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div

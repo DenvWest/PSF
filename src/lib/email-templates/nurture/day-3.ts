@@ -56,5 +56,5 @@ export function nurtureDay3Email(
             </td>
           </tr>`;
 
-  return { subject, html: wrapNurtureBlock(inner, ctx.recipientEmail, false) };
+  return { subject, html: wrapNurtureBlock(inner, ctx, false) };
 }

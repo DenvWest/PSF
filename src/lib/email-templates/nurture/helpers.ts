@@ -6,8 +6,10 @@ import {
   nurtureEmailWrap,
 } from "@/lib/emails/shared";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { absoluteUrl, getPublicSiteUrl } from "@/lib/public-site-url";
 import { signIntakeSessionId } from "@/lib/intake-session-cookie";
+import type { NurtureEmailDispatchContext } from "./types";
 
 const DOMAIN_IDS = [
   "sleep",
@@ -102,22 +104,17 @@ export function buildIntakeHerstelplanUrl(sessionId: string | null | undefined):
   return `${site}/intake`;
 }
 
-export function buildUnsubscribeUrl(email: string): string {
-  const site = getPublicSiteUrl();
-  const unsubQs = new URLSearchParams({ email: email.trim().toLowerCase() });
-  return `${site}/api/unsubscribe?${unsubQs.toString()}`;
-}
-
 export function wrapNurtureBlock(
   innerRows: string,
-  recipientEmail: string,
+  ctx: Pick<NurtureEmailDispatchContext, "recipientEmail" | "sessionId">,
   affiliateDisclaimer = false,
 ): string {
-  return nurtureEmailWrap(
-    innerRows,
-    buildUnsubscribeUrl(recipientEmail),
-    affiliateDisclaimer,
+  const unsubscribeUrl = buildNurtureUnsubscribeUrl(
+    ctx.recipientEmail,
+    ctx.sessionId,
+    getPublicSiteUrl(),
   );
+  return nurtureEmailWrap(innerRows, unsubscribeUrl, affiliateDisclaimer);
 }
 
 export function nutritionScoreLow(scores: Record<string, number>): boolean {

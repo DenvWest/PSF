@@ -4,11 +4,160 @@ import {
   ADMIN_TOKEN_COOKIE_NAME,
   isValidAdminSessionCookie,
 } from "@/lib/admin-auth";
-import type { AdminDashboardPayload } from "@/lib/admin-dashboard-types";
+import type {
+  AdminDashboardPayload,
+  AdminNurtureSection,
+} from "@/lib/admin-dashboard-types";
+import { anonymizeEmailForAdmin } from "@/lib/nurture-unsubscribe";
 import type { DomainScores } from "@/lib/intake-engine";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
+
+const NURTURE_SEQUENCE_DAYS = [0, 3, 7, 14, 21, 30] as const;
+
+async function loadNurtureSection(
+  admin: SupabaseClient,
+): Promise<AdminNurtureSection | null> {
+  const statusList = ["pending", "sent", "failed", "cancelled"] as const;
+  const countResults = await Promise.all(
+    statusList.map((status) =>
+      admin
+        .from("nurture_emails")
+        .select("id", { count: "exact", head: true })
+        .eq("status", status),
+    ),
+  );
+
+  for (const r of countResults) {
+    if (r.error) {
+      console.error("[api/admin/data] nurture count:", r.error);
+      return null;
+    }
+  }
+
+  const stats = {
+    pending: countResults[0]?.count ?? 0,
+    sent: countResults[1]?.count ?? 0,
+    failed: countResults[2]?.count ?? 0,
+    cancelled: countResults[3]?.count ?? 0,
+  };
+
+  const { data: recentRaw, error: recentErr } = await admin
+    .from("nurture_emails")
+    .select("email, sequence_day, status, scheduled_at")
+    .order("scheduled_at", { ascending: false })
+    .limit(30);
+
+  if (recentErr) {
+    console.error("[api/admin/data] nurture recent:", recentErr);
+    return null;
+  }
+
+  const recent = (recentRaw ?? []).map((row) => ({
+    emailMasked:
+      typeof row.email === "string"
+        ? anonymizeEmailForAdmin(row.email)
+        : "—",
+    sequenceDay: typeof row.sequence_day === "number" ? row.sequence_day : 0,
+    status: typeof row.status === "string" ? row.status : "—",
+    scheduledAt:
+      typeof row.scheduled_at === "string" ? row.scheduled_at : "",
+  }));
+
+  const { data: sentRows, error: sentErr } = await admin
+    .from("nurture_emails")
+    .select("sequence_day")
+    .eq("status", "sent");
+
+  if (sentErr) {
+    console.error("[api/admin/data] nurture sent seq:", sentErr);
+    return null;
+  }
+
+  const sentBySeq = new Map<number, number>();
+  for (const row of sentRows ?? []) {
+    const d = row.sequence_day;
+    if (typeof d === "number" && Number.isFinite(d)) {
+      sentBySeq.set(d, (sentBySeq.get(d) ?? 0) + 1);
+    }
+  }
+
+  const sequenceSent = NURTURE_SEQUENCE_DAYS.map((d) => ({
+    sequenceDay: d,
+    sent: sentBySeq.get(d) ?? 0,
+  }));
+
+  const { data: day30Rows, error: d30Err } = await admin
+    .from("nurture_emails")
+    .select("email, sent_at")
+    .eq("sequence_day", 30)
+    .eq("status", "sent")
+    .not("sent_at", "is", null);
+
+  if (d30Err) {
+    console.error("[api/admin/data] nurture day30:", d30Err);
+    return null;
+  }
+
+  const { data: sessionRows, error: sessErr } = await admin
+    .from("intake_sessions")
+    .select("marketing_email, created_at")
+    .not("marketing_email", "is", null);
+
+  if (sessErr) {
+    console.error("[api/admin/data] nurture sessions join:", sessErr);
+    return null;
+  }
+
+  const sessionsByEmail = new Map<string, Date[]>();
+  for (const row of sessionRows ?? []) {
+    const em =
+      typeof row.marketing_email === "string"
+        ? row.marketing_email.trim().toLowerCase()
+        : "";
+    if (!em) continue;
+    const created =
+      typeof row.created_at === "string" ? new Date(row.created_at) : null;
+    if (!created || Number.isNaN(created.getTime())) continue;
+    const list = sessionsByEmail.get(em) ?? [];
+    list.push(created);
+    sessionsByEmail.set(em, list);
+  }
+
+  let repeatIntakeAfterMail = 0;
+  const d30List = day30Rows ?? [];
+  for (const row of d30List) {
+    const em =
+      typeof row.email === "string" ? row.email.trim().toLowerCase() : "";
+    const sentAt =
+      typeof row.sent_at === "string" ? new Date(row.sent_at) : null;
+    if (!em || !sentAt || Number.isNaN(sentAt.getTime())) {
+      continue;
+    }
+    const times = sessionsByEmail.get(em);
+    if (!times?.length) continue;
+    if (times.some((t) => t.getTime() > sentAt.getTime())) {
+      repeatIntakeAfterMail += 1;
+    }
+  }
+
+  const day30Sent = d30List.length;
+  const conversionRate =
+    day30Sent > 0 ? repeatIntakeAfterMail / day30Sent : null;
+
+  return {
+    stats,
+    recent,
+    sequenceSent,
+    day30Conversion: {
+      day30Sent,
+      repeatIntakeAfterMail,
+      conversionRate,
+    },
+  };
+}
 
 const DOMAIN_KEYS: readonly (keyof DomainScores)[] = [
   "sleep_score",
@@ -221,6 +370,8 @@ export async function GET(request: NextRequest) {
     createdAt: typeof row.created_at === "string" ? row.created_at : "",
   }));
 
+  const nurture = await loadNurtureSection(admin);
+
   const payload: AdminDashboardPayload = {
     stats: {
       totalSessions: sessions.length,
@@ -237,6 +388,7 @@ export async function GET(request: NextRequest) {
     ageDistribution,
     recentFeedback,
     recentSessions,
+    nurture,
   };
 
   return NextResponse.json(payload);

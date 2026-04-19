@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
+import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { getPublicSiteUrl } from "@/lib/public-site-url";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -96,11 +98,21 @@ export async function runPendingNurtureEmails(): Promise<{
         },
       );
 
+      const listUnsubscribeUrl = buildNurtureUnsubscribeUrl(
+        email,
+        mail.session_id,
+        getPublicSiteUrl(),
+      );
+
       const { data: sendData, error: sendError } = await resend.emails.send({
         from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
         to: email,
         subject,
         html,
+        headers: {
+          "List-Unsubscribe": `<${listUnsubscribeUrl}>`,
+          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        },
       });
 
       if (sendError) {
