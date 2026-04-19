@@ -4,6 +4,7 @@ import {
   buildNurtureEmail,
   type ReminderRowWithSession,
 } from "@/lib/nurture-email-dispatch";
+import { runPendingNurtureEmails } from "@/lib/nurture-cron";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -160,7 +161,8 @@ async function handleAuthorized(): Promise<NextResponse> {
 
   try {
     const result = await runSendReminders();
-    return NextResponse.json(result);
+    const nurture = await runPendingNurtureEmails();
+    return NextResponse.json({ ...result, nurture });
   } catch (err) {
     console.error("[api/send-reminders]", err);
     return NextResponse.json(
