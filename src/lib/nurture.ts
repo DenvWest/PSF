@@ -1,4 +1,5 @@
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import type { DomainScores } from "@/lib/intake-engine";
 
 const SEQUENCE_DAYS = [0, 3, 7, 14, 21, 30] as const;
 
@@ -7,7 +8,7 @@ interface NurtureScheduleInput {
   email: string;
   profileLabel: string;
   primaryDomain: string;
-  domainScores: Record<string, number>;
+  domainScores: DomainScores;
 }
 
 export async function scheduleNurtureSequence(input: NurtureScheduleInput) {

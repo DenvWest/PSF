@@ -61,6 +61,7 @@ async function runSendReminders(): Promise<{ sent: number; errors: number }> {
   const { data: reminderRows, error: fetchError } = await supabase
     .from("intake_reminders")
     .select("id,email,reminder_type,session_id")
+    .eq("reminder_type", "day30")
     .lte("reminder_date", nowIso)
     .eq("sent", false);
 
