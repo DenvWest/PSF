@@ -27,6 +27,14 @@ export const affiliateLinks = {
   "vitaminstore-solgar-ashwagandha":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=ashwagandha-vergelijking&dl=product%2Fsolgar-vitamins-ashwagandha-root-extract-vegicaps-713",
 
+  // Vitamine D — Sub ID (ws) altijd: vitamine-d-vergelijking
+  "vitaminstore-super-d3":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d-vergelijking&dl=product%2Fvitaminstore-super-d3-25-mcg-vitamine-d-softgels-222385",
+  "vitalnutrition-vitamin-d3":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d-vergelijking&dl=products%2Fvitamine-d3",
+  "solgar-vitamin-d3":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d-vergelijking&dl=product%2Fsolgar-vitamins-vitamin-d-3-25-ug1000-iu-vitamine-d-uit-levertraan-softgels-197241",
+
   // Magnesium — NIET AANRAKEN
   "vitaminstore-super-magnesium":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitaminstore-super-magnesium&dl=product%2Fvitaminstore-super-magnesium-tabletten-162179",

@@ -10,6 +10,7 @@ const CATEGORY_LABEL: Record<SupplementCategory, string> = {
   "omega-3": "omega-3 supplement",
   magnesium: "magnesiumvorm",
   ashwagandha: "ashwagandha supplement",
+  "vitamine-d": "vitamine D supplement",
 };
 
 const OMEGA3_EXPLANATIONS: Record<string, string> = {
@@ -32,6 +33,17 @@ const MAGNESIUM_EXPLANATIONS: Record<string, string> = {
     "Magnesiumoxide en citraat kunnen bij hogere doseringen laxerend werken. Bisglycinaat en tauraat zijn doorgaans maagvriendelijker.",
   "Prijs/kwaliteit":
     "Citraat is de betaalbare optie met goede opneembaarheid. Bisglycinaat is duurder maar levert meer waarde voor slaap en ontspanning.",
+};
+
+const VITAMINED_EXPLANATIONS: Record<string, string> = {
+  "Kwaliteit/vorm":
+    "Kies altijd voor D3 (cholecalciferol) boven D2 (ergocalciferol). D3 is identiek aan de vorm die je huid aanmaakt bij zonlicht en verhoogt je bloedwaarden aantoonbaar effectiever. Keurmerken zoals Quali-D garanderen dat de cholecalciferol aan strikte zuiverheids- en stabiliteitseisen voldoet.",
+  Dosering:
+    "25 mcg (1000 IU) is voldoende voor dagelijks onderhoud bij mensen met matige zonblootstelling. Bij bewezen tekort (bloedwaarde < 50 nmol/L) of in de wintermaanden kan 50–75 mcg zinvol zijn. Laat bij twijfel je 25(OH)D-bloedwaarden meten voordat je hogere doseringen kiest.",
+  "Prijs/kwaliteit":
+    "Vitamine D is een van de meest betaalbare supplementen. Vergelijk de prijs per dag, niet de prijs van de verpakking. Een product met Quali-D keurmerk voor €0,14/dag levert meer zekerheid dan een goedkopere variant zonder kwaliteitsgarantie.",
+  Transparantie:
+    "Een transparant vitamine D-supplement vermeldt de exacte hoeveelheid in mcg én IU, de bron (cholecalciferol of levertraan), eventuele drager (olijfolie verhoogt opname) en idealiter een kwaliteitskeurmerk. Producten die alleen een vaag 'vitamine D' vermelden zonder bron of eenheid bieden onvoldoende zekerheid.",
 };
 
 const ASHWAGANDHA_EXPLANATIONS: Record<string, string> = {
@@ -58,6 +70,12 @@ function getExplanation(
   if (category === "ashwagandha") {
     return (
       ASHWAGANDHA_EXPLANATIONS[criterium] ??
+      "Zie onze methodologie voor de volledige uitleg van dit criterium."
+    );
+  }
+  if (category === "vitamine-d") {
+    return (
+      VITAMINED_EXPLANATIONS[criterium] ??
       "Zie onze methodologie voor de volledige uitleg van dit criterium."
     );
   }
