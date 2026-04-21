@@ -91,6 +91,9 @@ export default function IntakeResults({
   const longTermTips = advice.longTerm.slice(0, 3);
   const deficiencySignals = getDeficiencySignals(answers);
   const supplementRoute = getSupplementRoute(scores, deficiencySignals, profile);
+  const zinkSignal =
+    scores.nutrition_score < 40 ||
+    (scores.stress_score < 40 && scores.recovery_score < 35);
 
   const primaryCatId = PROFILE_DOMAIN_TO_CAT[profile.domain];
   const primaryCategory = CATEGORIES.find((c) => c.id === primaryCatId);
@@ -226,7 +229,7 @@ export default function IntakeResults({
         <SupplementRoute recommendations={supplementRoute} scores={scores} />
       </div>
 
-      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.ashwagandha_signal) && (
+      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.ashwagandha_signal || deficiencySignals.creatine_signal || zinkSignal) && (
         <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
           <div className="mb-3 flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3A7D5C18] text-base">
@@ -267,6 +270,28 @@ export default function IntakeResults({
               >
                 <span className="font-medium text-[#1a1a1a]">
                   Bekijk onze ashwagandha vergelijking
+                </span>
+                <span className="text-[#999]">→</span>
+              </a>
+            )}
+            {deficiencySignals.creatine_signal && (
+              <a
+                href="/beste-creatine"
+                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
+              >
+                <span className="font-medium text-[#1a1a1a]">
+                  Bekijk onze creatine vergelijking
+                </span>
+                <span className="text-[#999]">→</span>
+              </a>
+            )}
+            {zinkSignal && (
+              <a
+                href="/beste-zink"
+                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
+              >
+                <span className="font-medium text-[#1a1a1a]">
+                  Bekijk onze zink vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
               </a>

@@ -139,4 +139,10 @@ export const vitamineDData: SupplementData = {
       titel: "Vitamine D-tekort herkennen: signalen die mannen negeren",
     },
   ],
+
+  productVergelijkingCta: {
+    titel: "Welke vitamine D scoort het beste?",
+    href: "/beste-vitamine-d",
+    linkLabel: "Bekijk de vergelijking →",
+  },
 };

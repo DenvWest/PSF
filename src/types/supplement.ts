@@ -1,6 +1,6 @@
 import type { AffiliateSlug } from "@/data/affiliate-links";
 
-export type SupplementCategory = "omega-3" | "magnesium" | "ashwagandha" | "vitamine-d";
+export type SupplementCategory = "omega-3" | "magnesium" | "ashwagandha" | "vitamine-d" | "creatine" | "zink";
 
 export interface ScoreBreakdown {
   criterium: string;

@@ -5,6 +5,13 @@ import {
 } from "@/data/supplement-routes";
 import type { DeficiencySignals, DomainScores, ProfileLabel } from "@/lib/intake-engine";
 
+function matchesZink(scores: DomainScores): boolean {
+  return (
+    scores.nutrition_score < 40 ||
+    (scores.stress_score < 40 && scores.recovery_score < 35)
+  );
+}
+
 function matchesCreatine(scores: DomainScores): boolean {
   return scores.movement_score > 60 && scores.recovery_score < 50;
 }
@@ -46,6 +53,10 @@ function definitionMatches(
 ): boolean {
   if (def.fallbackOnly) {
     return false;
+  }
+
+  if (def.id === "zink") {
+    return matchesZink(scores);
   }
 
   if (def.id === "creatine") {

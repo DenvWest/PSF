@@ -11,6 +11,8 @@ const CATEGORY_LABEL: Record<SupplementCategory, string> = {
   magnesium: "magnesiumvorm",
   ashwagandha: "ashwagandha supplement",
   "vitamine-d": "vitamine D supplement",
+  creatine: "creatine supplement",
+  zink: "zink supplement",
 };
 
 const OMEGA3_EXPLANATIONS: Record<string, string> = {
@@ -57,6 +59,28 @@ const ASHWAGANDHA_EXPLANATIONS: Record<string, string> = {
     "Een transparant supplement vermeldt het exacte percentage withanoliden, het gebruikte extract-type en idealiter batchgewijze lab-uitslagen. Producten die alleen 'ashwagandha-poeder' of een vaag mg-getal vermelden zijn niet eerlijk te vergelijken met gestandaardiseerde extracten.",
 };
 
+const ZINK_EXPLANATIONS: Record<string, string> = {
+  Biobeschikbaarheid:
+    "Organisch gebonden zinkvormen zoals zinkmethionine en zinkpicolinaat worden aanzienlijk beter opgenomen dan anorganisch zink (oxide, sulfaat). Zinkoxide heeft slechts ~5% absorptie. Kies altijd een organische vorm. L-OptiZinc® (zinkmethionine) heeft klinische studies achter de naam; regulier zinkmethionine gebruikt hetzelfde principe zonder het patent. Beide zijn goed opneembaar.",
+  Dosering:
+    "De aanbevolen dagelijkse hoeveelheid (ADH) voor mannen is 9,4 mg. Supplementen doseren doorgaans 15–25 mg. Bij 15 mg zit je veilig voor langdurig gebruik. Boven 25 mg per dag is voorzichtigheid geboden: langdurig hoge zinkinname kan de koperabsorptie belemmeren omdat zink en koper concurreren om dezelfde transporter in de darmwand.",
+  "Prijs/kwaliteit":
+    "Vergelijk de prijs per dag — niet de verpakkingsprijs. Met zinkmethionine of picolinaat zit je al voor €0,16–0,19 per dag. De meerwaarde van een gepatenteerde vorm zoals L-OptiZinc® ligt in de klinische documentatie, niet noodzakelijk in een hogere absorptie ten opzichte van regulier zinkmethionine.",
+  Transparantie:
+    "Een transparant zinksupplement vermeldt de exacte zinkvorm (niet slechts 'zink'), het elemental zinc gehalte per dosis, de procentuele bijdrage aan de RI en idealiter onafhankelijke lab-resultaten. Vermeldingen als 'zinkoxide' of 'zinksulfaat' zonder toelichting zijn een signaal voor een goedkopere, minder opneembare grondstof.",
+};
+
+const CREATINE_EXPLANATIONS: Record<string, string> = {
+  Zuiverheid:
+    "Creatine monohydraat is de meest onderzochte en bewezen vorm. Andere vormen (HCL, ethyl ester, buffered creatine) hebben ondanks hogere prijzen geen bewezen meerwaarde in goed opgezette studies. Kies altijd voor monohydraat. Creapure® — geproduceerd door AlzChem in Duitsland — garandeert de hoogste zuiverheidsstandaard (>99,99%) met farmaceutische kwaliteitscontrole.",
+  "Dosering/gemak":
+    "De wetenschappelijke consensus is 3–5 gram per dag. Een laadschema (20 g/dag gedurende 5–7 dagen) verzadigt de creatinedepo's sneller maar is niet noodzakelijk. Bij 5 g/dag is volledige verzadiging na 3–4 weken bereikt. Poedervorm biedt de meest flexibele dosering en is goedkoper per gram dan capsules.",
+  "Prijs/kwaliteit":
+    "Vergelijk altijd de prijs per gram of prijs per dag — niet de verpakkingsprijs. Een grotere verpakking (500 g) levert doorgaans de scherpste prijs per dag. Generieke creatine monohydraat van micronized kwaliteit (200 mesh) is uitstekend oplosbaar en biedt dezelfde werkzaamheid als duurdere gecertificeerde varianten voor de meeste gebruikers.",
+  Transparantie:
+    "Een transparant creatinesupplement vermeldt de zuiverheidsnorm (bijv. micronized 200 mesh), het type creatine (monohydraat) en idealiter een kwaliteitskeurmerk. Creapure® is het enige creatine dat in Europa wordt geproduceerd en biedt aantoonbare garantie op afwezigheid van verontreinigingen zoals dicyandiamide en dihydrotriazine.",
+};
+
 function getExplanation(
   criterium: string,
   category: SupplementCategory,
@@ -76,6 +100,18 @@ function getExplanation(
   if (category === "vitamine-d") {
     return (
       VITAMINED_EXPLANATIONS[criterium] ??
+      "Zie onze methodologie voor de volledige uitleg van dit criterium."
+    );
+  }
+  if (category === "creatine") {
+    return (
+      CREATINE_EXPLANATIONS[criterium] ??
+      "Zie onze methodologie voor de volledige uitleg van dit criterium."
+    );
+  }
+  if (category === "zink") {
+    return (
+      ZINK_EXPLANATIONS[criterium] ??
       "Zie onze methodologie voor de volledige uitleg van dit criterium."
     );
   }

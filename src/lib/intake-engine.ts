@@ -70,6 +70,7 @@ export type DeficiencySignals = {
   magnesium_signal: boolean;
   cortisol_risk: boolean;
   ashwagandha_signal: boolean;
+  creatine_signal: boolean;
 };
 
 export function getDeficiencySignals(
@@ -83,6 +84,7 @@ export function getDeficiencySignals(
     magnesium_signal: s.magnesiumSignal,
     cortisol_risk: s.cortisolRisk,
     ashwagandha_signal: stressFrequency <= 2 && stressRecovery <= 2,
+    creatine_signal: s.recoveryDeficit,
   };
 }
 

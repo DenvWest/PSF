@@ -82,6 +82,17 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     },
   },
   {
+    id: "zink",
+    name: "Zink",
+    reason:
+      "Je voedingspatroon of herstelbalans wijst op een mogelijk zinktekort. Zink is een cofactor voor testosteron, immuunfunctie en celreparatie.",
+    priority: 4,
+    domains: ["Voeding", "Herstel", "Stress"],
+    hasComparison: true,
+    affiliateUrl: "/beste-zink",
+    triggers: { anyOf: [] },
+  },
+  {
     id: "creatine",
     name: "Creatine",
     reason:

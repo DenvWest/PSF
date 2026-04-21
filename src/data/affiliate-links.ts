@@ -35,6 +35,22 @@ export const affiliateLinks = {
   "solgar-vitamin-d3":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d-vergelijking&dl=product%2Fsolgar-vitamins-vitamin-d-3-25-ug1000-iu-vitamine-d-uit-levertraan-softgels-197241",
 
+  // Creatine — Sub ID (ws) altijd: creatine-vergelijking
+  "vitalnutrition-creatine":
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=creatine-vergelijking&dl=products%2Fcreatine-monohydraat%3F_pos%3D1%26_sid%3Dbcae2cad6%26_ss%3Dr",
+  "vitaminstore-creatine":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=creatine-vergelijking&dl=product%2Fcreatine-monohydraat-poeder-1309330",
+  "mattisson-creatine-creapure":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=creatine-vergelijking&dl=product%2Fmattisson-healthstyle-creatine-monohydraat-poeder-creapure-poeder-1309550",
+
+  // Zink — Sub ID (ws) altijd: zink-vergelijking
+  "vitalnutrition-zink":
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=zink-vergelijking&dl=products%2Fzinkmethionine%3F_pos%3D2%26_sid%3Da4213ada0%26_ss%3Dr",
+  "solgar-zink-picolinaat":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=zink-vergelijking&dl=product%2Fsolgar-vitamins-zinc-picolinate-22-mg-zinkpicolinaat-tabletten-847",
+  "bonusan-zinkmethionine":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=zink-vergelijking&dl=product%2Fbonusan-zinkmethionine-15-mg-plantaardige-capsules-1305137",
+
   // Magnesium — NIET AANRAKEN
   "vitaminstore-super-magnesium":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitaminstore-super-magnesium&dl=product%2Fvitaminstore-super-magnesium-tabletten-162179",

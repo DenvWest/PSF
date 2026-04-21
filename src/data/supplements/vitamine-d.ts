@@ -8,7 +8,7 @@ export const vitamineDData: ComparisonPageData = {
   seoTitle:
     "Beste Vitamine D Supplement 2026 — D3 Vergelijking | PerfectSupplement",
   seoDescription:
-    "Vergelijk de beste vitamine D3 supplementen op dosering, kwaliteit en prijs. Onafhankelijke scores voor mannen 40+ in Nederland.",
+    "Vergelijk de beste vitamine D3 supplementen op dosering, kwaliteit en prijs. Van Vitaminstore Super D3 tot Solgar — eerlijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",
   choiceRoutes: [
     {
