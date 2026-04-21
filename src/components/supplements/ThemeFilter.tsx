@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 type Theme = {
   id: string;
@@ -9,6 +10,7 @@ type Theme = {
   icon: string;
   bgClass: string;
   textClass: string;
+  themaLink?: string;
 };
 
 const THEMES: Theme[] = [
@@ -19,6 +21,7 @@ const THEMES: Theme[] = [
     icon: "🌙",
     bgClass: "bg-indigo-50",
     textClass: "text-indigo-600",
+    themaLink: "/thema/slaap",
   },
   {
     id: "stress",
@@ -47,24 +50,31 @@ const THEMES: Theme[] = [
 ];
 
 export default function ThemeFilter() {
-  const handleThemeClick = useCallback((tag: string) => {
-    const tagLower = tag.toLowerCase();
+  const router = useRouter();
 
-    // Find the first supplement card that contains this tag
-    const cards = document.querySelectorAll<HTMLElement>("[data-tags]");
-    for (const card of cards) {
-      const tags = card.getAttribute("data-tags") ?? "";
-      if (tags.toLowerCase().includes(tagLower)) {
-        card.scrollIntoView({ behavior: "smooth", block: "center" });
-        // Brief highlight pulse
-        card.classList.add("ring-2", "ring-[#5A8F6A]", "ring-offset-2");
-        setTimeout(() => {
-          card.classList.remove("ring-2", "ring-[#5A8F6A]", "ring-offset-2");
-        }, 1800);
-        break;
+  const handleThemeClick = useCallback(
+    (theme: Theme) => {
+      if (theme.themaLink) {
+        router.push(theme.themaLink);
+        return;
       }
-    }
-  }, []);
+
+      const tagLower = theme.tag.toLowerCase();
+      const cards = document.querySelectorAll<HTMLElement>("[data-tags]");
+      for (const card of cards) {
+        const tags = card.getAttribute("data-tags") ?? "";
+        if (tags.toLowerCase().includes(tagLower)) {
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          card.classList.add("ring-2", "ring-[#5A8F6A]", "ring-offset-2");
+          setTimeout(() => {
+            card.classList.remove("ring-2", "ring-[#5A8F6A]", "ring-offset-2");
+          }, 1800);
+          break;
+        }
+      }
+    },
+    [router],
+  );
 
   return (
     <div className="bg-white rounded-2xl border border-stone-200 p-8 lg:p-10 shadow-sm">
@@ -82,7 +92,7 @@ export default function ThemeFilter() {
         {THEMES.map((theme) => (
           <button
             key={theme.id}
-            onClick={() => handleThemeClick(theme.tag)}
+            onClick={() => handleThemeClick(theme)}
             className="flex flex-col items-center gap-2 p-5 rounded-xl border border-stone-200 hover:border-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all cursor-pointer group text-left"
             aria-label={`Filter op ${theme.label}`}
           >
