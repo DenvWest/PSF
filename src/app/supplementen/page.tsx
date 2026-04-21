@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
-import ThemeFilter from "@/components/supplements/ThemeFilter";
 
 export const metadata: Metadata = {
   title: "Supplementengids — Onafhankelijk advies voor mannen 40+ | PerfectSupplement",
@@ -26,7 +25,6 @@ const SUPPLEMENTS = [
     icon: "⚡",
     gradient: "from-emerald-50 to-teal-50",
     iconBg: "bg-emerald-100",
-    featured: true,
     comingSoon: false,
   },
   {
@@ -38,7 +36,6 @@ const SUPPLEMENTS = [
     icon: "🌿",
     gradient: "from-amber-50 to-orange-50",
     iconBg: "bg-amber-100",
-    featured: true,
     comingSoon: false,
   },
   {
@@ -50,7 +47,6 @@ const SUPPLEMENTS = [
     icon: "🐟",
     gradient: "from-sky-50 to-blue-50",
     iconBg: "bg-sky-100",
-    featured: true,
     comingSoon: false,
   },
   {
@@ -62,7 +58,6 @@ const SUPPLEMENTS = [
     icon: "☀️",
     gradient: "from-yellow-50 to-amber-50",
     iconBg: "bg-yellow-100",
-    featured: false,
     comingSoon: true,
   },
   {
@@ -74,7 +69,6 @@ const SUPPLEMENTS = [
     icon: "💪",
     gradient: "from-violet-50 to-purple-50",
     iconBg: "bg-violet-100",
-    featured: false,
     comingSoon: true,
   },
   {
@@ -86,93 +80,149 @@ const SUPPLEMENTS = [
     icon: "🛡️",
     gradient: "from-slate-50 to-gray-50",
     iconBg: "bg-slate-100",
-    featured: false,
     comingSoon: true,
   },
 ] as const;
 
-const COMPARISONS = [
-  { name: "Omega-3", href: "/beste-omega-3-supplement" },
-  { name: "Magnesium", href: "/beste-magnesium" },
-  { name: "Ashwagandha", href: "/beste-ashwagandha" },
+const THEMES = [
+  {
+    id: "slaap",
+    icon: "🌙",
+    label: "Slaap",
+    description: "Slaapkwaliteit, ritme, herstel",
+    href: "/thema/slaap",
+    iconBg: "bg-indigo-100",
+    comingSoon: false,
+  },
+  {
+    id: "stress",
+    icon: "🧠",
+    label: "Stress",
+    description: "Cortisol, ontspanning, veerkracht",
+    href: "/thema/stress",
+    iconBg: "bg-amber-100",
+    comingSoon: false,
+  },
+  {
+    id: "energie",
+    icon: "⚡",
+    label: "Energie",
+    description: "Energieniveau, voeding, focus",
+    href: "#energie",
+    iconBg: "bg-emerald-100",
+    comingSoon: true,
+  },
+  {
+    id: "herstel",
+    icon: "🔄",
+    label: "Herstel",
+    description: "Spierherstel, mentale rust",
+    href: "#herstel",
+    iconBg: "bg-rose-100",
+    comingSoon: true,
+  },
 ] as const;
-
-const featuredSupplements = SUPPLEMENTS.filter((s) => s.featured);
-const allSupplements = SUPPLEMENTS;
 
 /* ── Page ──────────────────────────────────────────────────────── */
 
 export default function SupplementenPage() {
   return (
     <div className="relative">
-      {/* ── Hero ─────────────────────────────────────────────── */}
+      {/* ── Sectie 1: Hero ───────────────────────────────────── */}
       <section
         className="relative overflow-hidden"
         style={{ background: "linear-gradient(160deg, #FDFCFA 0%, #F7F5F0 100%)" }}
         aria-label="Introductie"
       >
-        {/* Decorative radial glow — top right */}
-        <div
-          className="pointer-events-none absolute -right-32 -top-32 h-[36rem] w-[36rem] rounded-full opacity-30"
-          aria-hidden="true"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(251,191,36,0.18) 0%, transparent 70%)",
-          }}
-        />
-
         <Container className="relative py-20 lg:py-28">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left: copy */}
-            <div>
-              <p className="text-xs font-medium tracking-[0.22em] text-stone-500 uppercase mb-5">
-                Supplementengids
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12">
+            {/* Linkerkolom */}
+            <div className="lg:w-3/5">
+              <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
+                SUPPLEMENTENGIDS
               </p>
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.08] tracking-tight text-stone-900">
+              <h1 className="mt-4 font-serif text-4xl md:text-5xl text-stone-900">
                 Weloverwogen kiezen,
                 <br />
                 <span className="text-[#C4873B]">zonder ruis.</span>
               </h1>
-              <p className="mt-6 text-lg text-stone-600 leading-relaxed max-w-xl font-sans">
-                Supplementen kunnen helpen — maar alleen als je weet wat je
-                neemt en waarom. Geen rankings of sterren. Wel eerlijke
-                informatie over werking, vormen en dosering.
+              <p className="mt-6 max-w-md text-base leading-relaxed text-stone-600">
+                Supplementen kunnen helpen — maar alleen als je weet wat je neemt
+                en waarom. Geen rankings of sterren. Wel eerlijke informatie over
+                werking, vormen en dosering.
               </p>
+
+              {/* Ik weet wat ik zoek */}
               <div className="mt-8">
+                <p className="text-xs font-medium uppercase tracking-widest text-stone-400 mb-3">
+                  IK WEET WAT IK ZOEK
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href="/beste-magnesium"
+                    className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+                  >
+                    ⚡ Magnesium vergelijken
+                  </Link>
+                  <Link
+                    href="/beste-ashwagandha"
+                    className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+                  >
+                    🌿 Ashwagandha vergelijken
+                  </Link>
+                  <Link
+                    href="/beste-omega-3-supplement"
+                    className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+                  >
+                    🐟 Omega-3 vergelijken
+                  </Link>
+                </div>
+              </div>
+
+              {/* Ik weet niet waar ik moet beginnen */}
+              <div className="mt-6">
                 <Link
                   href="/intake"
-                  className="inline-flex items-center gap-2 bg-[#5A8F6A] hover:bg-[#4a7a5a] text-white rounded-full px-8 py-3.5 font-medium text-sm transition-all shadow-sm hover:shadow-md"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#5A8F6A] px-7 py-3 text-sm font-semibold text-white hover:bg-[#4a7a5a] transition-all shadow-sm hover:shadow-md"
                 >
-                  Doe de Leefstijlcheck
-                  <span aria-hidden="true">→</span>
+                  Doe de Leefstijlcheck →
                 </Link>
+                <p className="mt-2 text-xs text-stone-400">
+                  Weet je niet waar je moet beginnen? 12 vragen, 3 minuten, persoonlijk resultaat.
+                </p>
               </div>
             </div>
 
-            {/* Right: decorative blob — hidden on mobile */}
-            <div className="hidden lg:flex items-center justify-center" aria-hidden="true">
-              <div className="relative w-80 h-80">
-                {/* Soft outer ring */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-50 to-emerald-50 opacity-60" />
-                {/* Inner blob */}
-                <div
-                  className="absolute inset-8 rounded-full opacity-40"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse at 40% 40%, #d4e8db 0%, #f5e4c8 60%, transparent 100%)",
-                  }}
-                />
-                {/* Center icon cluster */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="grid grid-cols-2 gap-4">
-                    {(["⚡", "🌿", "🐟", "☀️"] as const).map((icon, i) => (
-                      <span
-                        key={i}
-                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 text-2xl shadow-sm ring-1 ring-stone-200/60"
-                      >
-                        {icon}
-                      </span>
-                    ))}
+            {/* Rechterkolom — 2x2 thema-iconen */}
+            <div className="hidden lg:flex lg:w-2/5 items-center justify-center">
+              <div className="relative">
+                <div className="absolute inset-0 -m-8 rounded-full bg-amber-50/40" />
+                <div className="relative grid grid-cols-2 gap-4">
+                  <Link
+                    href="/thema/slaap"
+                    className="group flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                  >
+                    <span className="text-2xl">🌙</span>
+                    <span className="text-[10px] font-medium text-stone-500 mt-1 group-hover:text-indigo-700 transition-colors">
+                      Slaap
+                    </span>
+                  </Link>
+                  <Link
+                    href="/thema/stress"
+                    className="group flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-amber-50 hover:bg-amber-100 transition-colors"
+                  >
+                    <span className="text-2xl">🧠</span>
+                    <span className="text-[10px] font-medium text-stone-500 mt-1 group-hover:text-amber-700 transition-colors">
+                      Stress
+                    </span>
+                  </Link>
+                  <div className="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-emerald-50 opacity-50">
+                    <span className="text-2xl">⚡</span>
+                    <span className="text-[10px] font-medium text-stone-500 mt-1">Energie</span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-rose-50 opacity-50">
+                    <span className="text-2xl">🔄</span>
+                    <span className="text-[10px] font-medium text-stone-500 mt-1">Herstel</span>
                   </div>
                 </div>
               </div>
@@ -181,141 +231,82 @@ export default function SupplementenPage() {
         </Container>
       </section>
 
-      {/* ── ThemeFilter — floating card ───────────────────────── */}
-      <div className="relative z-10 -mt-10">
-        <Container>
-          <ThemeFilter />
-        </Container>
-      </div>
-
-      {/* ── Featured supplements ─────────────────────────────── */}
+      {/* ── Sectie 2: Supplementgidsen ───────────────────────── */}
       <section
         className="py-16 lg:py-20"
         style={{ background: "#FDFCFA" }}
-        aria-label="Meest gelezen gidsen"
+        aria-label="Supplementgidsen"
       >
         <Container>
           <div className="flex items-center gap-3 mb-8">
             <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
             <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
-              Meest gelezen
+              Onze gidsen
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredSupplements.map((item) => (
-              <Link
-                key={item.slug}
-                href={`/supplementen/${item.slug}`}
-                data-tags={item.tags.join(",")}
-                className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-lg transition-all duration-300"
-              >
-                {/* Gradient header */}
-                <div
-                  className={`bg-gradient-to-br ${item.gradient} h-32 flex items-center justify-center`}
-                >
-                  <span className="text-5xl" aria-hidden="true">
-                    {item.icon}
-                  </span>
-                </div>
-
-                {/* Body */}
-                <div className="p-6">
-                  <h2 className="font-serif text-xl text-stone-900">
-                    {item.name}
-                  </h2>
-                  <p className="text-sm text-stone-500 mt-2 line-clamp-2 leading-relaxed">
-                    {item.description}
-                  </p>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 mt-4">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-medium"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* CTA */}
-                  <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-[#5A8F6A] group-hover:gap-2 transition-all">
-                    Lees de gids
-                    <span aria-hidden="true">→</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* ── All supplements ──────────────────────────────────── */}
-      <section
-        className="py-16 lg:py-20"
-        style={{ background: "#F7F5F0" }}
-        aria-label="Alle supplementengidsen"
-      >
-        <Container>
-          <div className="flex items-center gap-3 mb-8">
-            <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
-            <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
-              Alle gidsen
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {allSupplements.map((item) => {
-              const cardContent = (
-                <div
-                  data-tags={item.tags.join(",")}
-                  className="bg-white rounded-xl p-5 border border-stone-200 hover:border-[#5A8F6A]/30 transition-all group flex items-start gap-4 h-full"
-                >
-                  {/* Icon */}
-                  <span
-                    className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-lg ${item.iconBg}`}
-                    aria-hidden="true"
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SUPPLEMENTS.map((item) => {
+              const cardInner = (
+                <div className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                  {/* Gradient header */}
+                  <div
+                    className={`bg-gradient-to-br ${item.gradient} h-32 flex items-center justify-center relative`}
                   >
-                    {item.icon}
-                  </span>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-stone-900 text-base">
-                        {item.name}
+                    <span className="text-5xl" aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    {item.comingSoon && (
+                      <span className="absolute top-3 right-3 text-[10px] font-medium px-2.5 py-1 rounded-full bg-white/80 text-stone-500 border border-stone-200 backdrop-blur-sm">
+                        Binnenkort
                       </span>
-                      {item.comingSoon && (
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-stone-100 text-stone-400 border border-stone-200">
-                          Binnenkort
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-stone-500 mt-1 line-clamp-2 leading-relaxed">
+                    )}
+                  </div>
+
+                  {/* Body */}
+                  <div className="p-6 flex flex-col flex-1">
+                    <h2 className="font-serif text-xl text-stone-900">
+                      {item.name}
+                    </h2>
+                    <p className="text-sm text-stone-500 mt-2 line-clamp-2 leading-relaxed flex-1">
                       {item.description}
                     </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1.5 mt-4">
+                      {item.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-medium"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* CTA */}
                     {!item.comingSoon && (
-                      <span className="text-xs font-medium text-[#5A8F6A] mt-2 opacity-0 group-hover:opacity-100 transition-opacity block">
-                        Lees meer →
-                      </span>
+                      <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-[#5A8F6A] group-hover:gap-2 transition-all">
+                        Lees de gids
+                        <span aria-hidden="true">→</span>
+                      </div>
                     )}
                   </div>
                 </div>
               );
 
               return item.comingSoon ? (
-                <div key={item.slug} className="cursor-default">
-                  {cardContent}
+                <div key={item.slug} className="cursor-default opacity-70">
+                  {cardInner}
                 </div>
               ) : (
                 <Link
                   key={item.slug}
                   href={`/supplementen/${item.slug}`}
+                  data-tags={item.tags.join(",")}
                   className="block"
                 >
-                  {cardContent}
+                  {cardInner}
                 </Link>
               );
             })}
@@ -323,41 +314,78 @@ export default function SupplementenPage() {
         </Container>
       </section>
 
-      {/* ── Comparisons CTA ──────────────────────────────────── */}
+      {/* ── Sectie 3: Thema's ────────────────────────────────── */}
       <section
         className="py-16 lg:py-20"
-        style={{ background: "#FDFCFA" }}
-        aria-label="Productvergelijkingen"
+        style={{ background: "#F7F5F0" }}
+        aria-label="Thema's"
       >
         <Container>
-          <div className="bg-white rounded-2xl border border-stone-200 p-8 lg:p-10 text-center">
-            <h2 className="font-serif text-2xl text-stone-900">
-              Welk product past bij jou?
-            </h2>
-            <p className="text-stone-500 mt-3 max-w-lg mx-auto text-sm leading-relaxed">
-              Bekijk onze onafhankelijke productvergelijkingen met scores op
-              biobeschikbaarheid, dosering en prijs-kwaliteit.
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
+            <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
+              Kies een thema
             </p>
+          </div>
+          <h2 className="font-serif text-2xl text-stone-900 mb-2">
+            Liever starten vanuit wat je voelt?
+          </h2>
+          <p className="text-sm text-stone-500 mb-8 max-w-lg">
+            Elk thema combineert leefstijltips, supplementadvies en een gratis gids.
+          </p>
 
-            <div className="flex flex-wrap justify-center gap-3 mt-6">
-              {COMPARISONS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="px-5 py-2.5 rounded-full border border-stone-200 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {THEMES.map((theme) => {
+              const cardInner = (
+                <div
+                  className={`rounded-2xl border border-stone-200 bg-white p-5 flex flex-col items-start gap-3 transition-all h-full ${
+                    theme.comingSoon
+                      ? "opacity-60"
+                      : "hover:border-[#5A8F6A] hover:shadow-sm"
+                  }`}
                 >
-                  {item.name} vergelijken →
+                  <div className="relative">
+                    <span
+                      className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl ${theme.iconBg}`}
+                      aria-hidden="true"
+                    >
+                      {theme.icon}
+                    </span>
+                    {theme.comingSoon && (
+                      <span className="absolute -top-1.5 -right-1.5 text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-stone-100 text-stone-400 border border-stone-200 leading-none">
+                        Binnenkort
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-stone-800">
+                      {theme.label}
+                    </p>
+                    <p className="text-xs text-stone-500 mt-1">
+                      {theme.description}
+                    </p>
+                  </div>
+                </div>
+              );
+
+              return theme.comingSoon ? (
+                <div key={theme.id} className="cursor-default">
+                  {cardInner}
+                </div>
+              ) : (
+                <Link key={theme.id} href={theme.href} className="block">
+                  {cardInner}
                 </Link>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </Container>
       </section>
 
-      {/* ── Leefstijlcheck CTA ───────────────────────────────── */}
+      {/* ── Sectie 4: Leefstijlcheck CTA ─────────────────────── */}
       <section
         className="py-16 lg:py-20"
-        style={{ background: "#F7F5F0" }}
+        style={{ background: "#FDFCFA" }}
         aria-label="Leefstijlcheck"
       >
         <Container>
