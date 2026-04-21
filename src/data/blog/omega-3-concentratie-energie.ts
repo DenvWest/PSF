@@ -28,7 +28,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
       type: "tekst",
       titel: "Praktisch: wanneer heeft het zin?",
       tekst:
-        "Als je weinig vette vis eet en weinig ALA uit plantaardige bronnen, is suppletie met visolie of algenolie een logische aanvulling. Kies op basis van EPA+DHA per portie en zuiverheid (zware metalen, oxidatie), niet op basis van ‘mega focus’-claims. Voor energie en concentratie blijven slaap, beweging, bloedsuiker en stressmanagement de hoofdhefbomen — omega-3 is ondersteunend, zelden doorslaggevend op zichzelf.",
+        "Als je weinig vette vis eet en weinig ALA uit plantaardige bronnen, is suppletie met [beste omega-3 supplementen (visolie of algenolie)](/beste-omega-3-supplement) een logische aanvulling. Kies op basis van EPA+DHA per portie en zuiverheid (zware metalen, oxidatie), niet op basis van ‘mega focus’-claims. Voor energie en concentratie blijven slaap, beweging, bloedsuiker en stressmanagement de hoofdhefbomen — omega-3 is ondersteunend, zelden doorslaggevend op zichzelf.",
     },
   ],
   samenvatting:

@@ -156,4 +156,10 @@ export const magnesiumData: SupplementData = {
       titel: "Cortisol verlagen: 5 bewezen methodes zonder medicatie",
     },
   ],
+
+  productVergelijkingCta: {
+    titel: "Welke magnesium scoort het beste?",
+    href: "/beste-magnesium",
+    linkLabel: "Bekijk de vergelijking →",
+  },
 };

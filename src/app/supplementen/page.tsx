@@ -58,7 +58,7 @@ const SUPPLEMENTS = [
     icon: "☀️",
     gradient: "from-yellow-50 to-amber-50",
     iconBg: "bg-yellow-100",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     slug: "creatine",
@@ -69,7 +69,9 @@ const SUPPLEMENTS = [
     icon: "💪",
     gradient: "from-violet-50 to-purple-50",
     iconBg: "bg-violet-100",
-    comingSoon: true,
+    comingSoon: false,
+    cardHref: "/beste-creatine",
+    ctaLabel: "Bekijk vergelijking →",
   },
   {
     slug: "zink",
@@ -80,7 +82,42 @@ const SUPPLEMENTS = [
     icon: "🛡️",
     gradient: "from-slate-50 to-gray-50",
     iconBg: "bg-slate-100",
-    comingSoon: true,
+    comingSoon: false,
+    cardHref: "/beste-zink",
+    ctaLabel: "Bekijk vergelijking →",
+  },
+] as const;
+
+const VERGELIJKINGEN = [
+  {
+    href: "/beste-magnesium",
+    name: "Magnesium",
+    tagline: "Vormen, elementair gehalte en prijs per dag op een rij.",
+  },
+  {
+    href: "/beste-omega-3-supplement",
+    name: "Omega-3",
+    tagline: "EPA/DHA, zuiverheid en dagkosten — eerlijk vergeleken.",
+  },
+  {
+    href: "/beste-ashwagandha",
+    name: "Ashwagandha",
+    tagline: "Extracten, withanoliden en dosering voor stress & herstel.",
+  },
+  {
+    href: "/beste-vitamine-d",
+    name: "Vitamine D",
+    tagline: "D3, K2-combo’s en wat het etiket écht zegt.",
+  },
+  {
+    href: "/beste-creatine",
+    name: "Creatine",
+    tagline: "Monohydraat, micronized en prijs per dosering.",
+  },
+  {
+    href: "/beste-zink",
+    name: "Zink",
+    tagline: "Bisglycinaat, picolinaat en opname — praktisch gekozen.",
   },
 ] as const;
 
@@ -176,6 +213,24 @@ export default function SupplementenPage() {
                   >
                     🐟 Omega-3 vergelijken
                   </Link>
+                  <Link
+                    href="/beste-vitamine-d"
+                    className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+                  >
+                    ☀️ Vitamine D vergelijken
+                  </Link>
+                  <Link
+                    href="/beste-creatine"
+                    className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+                  >
+                    💪 Creatine vergelijken
+                  </Link>
+                  <Link
+                    href="/beste-zink"
+                    className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+                  >
+                    🛡️ Zink vergelijken
+                  </Link>
                 </div>
               </div>
 
@@ -231,93 +286,10 @@ export default function SupplementenPage() {
         </Container>
       </section>
 
-      {/* ── Sectie 2: Supplementgidsen ───────────────────────── */}
+      {/* ── Sectie 2: Thema's ────────────────────────────────── */}
       <section
         className="py-16 lg:py-20"
         style={{ background: "#FDFCFA" }}
-        aria-label="Supplementgidsen"
-      >
-        <Container>
-          <div className="flex items-center gap-3 mb-8">
-            <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
-            <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
-              Onze gidsen
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SUPPLEMENTS.map((item) => {
-              const cardInner = (
-                <div className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
-                  {/* Gradient header */}
-                  <div
-                    className={`bg-gradient-to-br ${item.gradient} h-32 flex items-center justify-center relative`}
-                  >
-                    <span className="text-5xl" aria-hidden="true">
-                      {item.icon}
-                    </span>
-                    {item.comingSoon && (
-                      <span className="absolute top-3 right-3 text-[10px] font-medium px-2.5 py-1 rounded-full bg-white/80 text-stone-500 border border-stone-200 backdrop-blur-sm">
-                        Binnenkort
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Body */}
-                  <div className="p-6 flex flex-col flex-1">
-                    <h2 className="font-serif text-xl text-stone-900">
-                      {item.name}
-                    </h2>
-                    <p className="text-sm text-stone-500 mt-2 line-clamp-2 leading-relaxed flex-1">
-                      {item.description}
-                    </p>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5 mt-4">
-                      {item.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-medium"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* CTA */}
-                    {!item.comingSoon && (
-                      <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-[#5A8F6A] group-hover:gap-2 transition-all">
-                        Lees de gids
-                        <span aria-hidden="true">→</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-
-              return item.comingSoon ? (
-                <div key={item.slug} className="cursor-default opacity-70">
-                  {cardInner}
-                </div>
-              ) : (
-                <Link
-                  key={item.slug}
-                  href={`/supplementen/${item.slug}`}
-                  data-tags={item.tags.join(",")}
-                  className="block"
-                >
-                  {cardInner}
-                </Link>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
-
-      {/* ── Sectie 3: Thema's ────────────────────────────────── */}
-      <section
-        className="py-16 lg:py-20"
-        style={{ background: "#F7F5F0" }}
         aria-label="Thema's"
       >
         <Container>
@@ -328,7 +300,7 @@ export default function SupplementenPage() {
             </p>
           </div>
           <h2 className="font-serif text-2xl text-stone-900 mb-2">
-            Liever starten vanuit wat je voelt?
+            Start vanuit wat je ervaart
           </h2>
           <p className="text-sm text-stone-500 mb-8 max-w-lg">
             Elk thema combineert leefstijltips, supplementadvies en een gratis gids.
@@ -378,6 +350,131 @@ export default function SupplementenPage() {
                 </Link>
               );
             })}
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Sectie 3: Supplementgidsen ───────────────────────── */}
+      <section
+        className="py-16 lg:py-20"
+        style={{ background: "#F7F5F0" }}
+        aria-label="Supplementgidsen"
+      >
+        <Container>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
+            <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
+              Onze gidsen
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SUPPLEMENTS.map((item) => {
+              const cardHref =
+                "cardHref" in item && item.cardHref
+                  ? item.cardHref
+                  : `/supplementen/${item.slug}`;
+              const ctaBase =
+                "ctaLabel" in item && item.ctaLabel
+                  ? item.ctaLabel.replace(/\s*→\s*$/, "").trim()
+                  : "Lees de gids";
+
+              const cardInner = (
+                <div className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                  {/* Gradient header */}
+                  <div
+                    className={`bg-gradient-to-br ${item.gradient} h-32 flex items-center justify-center relative`}
+                  >
+                    <span className="text-5xl" aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    {item.comingSoon && (
+                      <span className="absolute top-3 right-3 text-[10px] font-medium px-2.5 py-1 rounded-full bg-white/80 text-stone-500 border border-stone-200 backdrop-blur-sm">
+                        Binnenkort
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Body */}
+                  <div className="p-6 flex flex-col flex-1">
+                    <h2 className="font-serif text-xl text-stone-900">
+                      {item.name}
+                    </h2>
+                    <p className="text-sm text-stone-500 mt-2 line-clamp-2 leading-relaxed flex-1">
+                      {item.description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1.5 mt-4">
+                      {item.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-medium"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* CTA */}
+                    {!item.comingSoon && (
+                      <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-[#5A8F6A] group-hover:gap-2 transition-all">
+                        {ctaBase}
+                        <span aria-hidden="true">→</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+
+              return item.comingSoon ? (
+                <div key={item.slug} className="cursor-default opacity-70">
+                  {cardInner}
+                </div>
+              ) : (
+                <Link
+                  key={item.slug}
+                  href={cardHref}
+                  data-tags={item.tags.join(",")}
+                  className="block"
+                >
+                  {cardInner}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Productvergelijkingen — compact */}
+          <div className="mt-14">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
+              <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
+                Onze vergelijkingen
+              </p>
+            </div>
+            <p className="text-sm text-stone-500 mb-6 max-w-xl">
+              Producten vergeleken op inhoud, kwaliteit en prijs per dag — dezelfde criteria als in onze gidsen.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {VERGELIJKINGEN.map((v) => (
+                <Link
+                  key={v.href}
+                  href={v.href}
+                  className="group flex flex-col rounded-xl border border-stone-200 bg-white px-4 py-3.5 shadow-sm transition hover:border-[#5A8F6A]/40 hover:shadow-md"
+                >
+                  <span className="font-serif text-base font-semibold text-stone-900">
+                    {v.name}
+                  </span>
+                  <span className="mt-1 text-xs leading-relaxed text-stone-500 line-clamp-2">
+                    {v.tagline}
+                  </span>
+                  <span className="mt-2.5 inline-flex items-center gap-1 text-xs font-semibold text-[#5A8F6A] group-hover:gap-1.5 transition-all">
+                    Bekijk vergelijking
+                    <span aria-hidden="true">→</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </Container>
       </section>

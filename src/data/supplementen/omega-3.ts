@@ -144,4 +144,10 @@ export const omega3Data: SupplementData = {
       titel: "Omega-3 en concentratie: wat zegt het onderzoek?",
     },
   ],
+
+  productVergelijkingCta: {
+    titel: "Welke omega-3 scoort het beste?",
+    href: "/beste-omega-3-supplement",
+    linkLabel: "Bekijk de vergelijking →",
+  },
 };

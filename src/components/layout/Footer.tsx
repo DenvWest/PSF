@@ -9,9 +9,12 @@ const exploreLinks = [
 ];
 
 const vergelijkingLinks = [
-    { href: "/beste-omega-3-supplement", label: "Beste omega-3" },
-    { href: "/beste-magnesium", label: "Beste magnesium" },
     { href: "/beste-ashwagandha", label: "Beste ashwagandha" },
+    { href: "/beste-creatine", label: "Beste creatine" },
+    { href: "/beste-magnesium", label: "Beste magnesium" },
+    { href: "/beste-omega-3-supplement", label: "Beste omega-3" },
+    { href: "/beste-vitamine-d", label: "Beste vitamine D" },
+    { href: "/beste-zink", label: "Beste zink" },
 ];
 
 const infoLinks = [

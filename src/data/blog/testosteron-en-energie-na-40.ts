@@ -13,7 +13,7 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Hoe testosteron en energie samenhangen",
       tekst:
-        "Testosteron beïnvloedt spiermassa, botdichtheid, libido, stemming en het gevoel van vitaliteit. Het is geen enkele schakelaar voor vermoeidheid: slaap, schildklier, ijzer, vitamine D, stress en depressie kunnen dezelfde symptomen geven. Daarom is ‘even testosteron slikken’ zonder diagnose geen oplossing — en kan het risico’s geven.",
+        "Testosteron beïnvloedt spiermassa, botdichtheid, libido, stemming en het gevoel van vitaliteit. Het is geen enkele schakelaar voor vermoeidheid: slaap, schildklier, ijzer, [beste vitamine D-supplementen](/beste-vitamine-d) na meten, stress en depressie kunnen dezelfde symptomen geven. Daarom is ‘even testosteron slikken’ zonder diagnose geen oplossing — en kan het risico’s geven.",
     },
     {
       type: "opsomming",

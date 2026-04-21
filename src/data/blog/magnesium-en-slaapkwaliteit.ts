@@ -47,7 +47,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
         "Donkere chocolade 70% of hoger (30 g): circa 65 mg. Nog een reden om voor pure chocolade te kiezen.",
         "Zwarte bonen, bereid (100 g): circa 70 mg. Ook andere peulvruchten zijn goede bronnen.",
         "Avocado (1 heel): circa 58 mg. Plus gezonde vetten die de opname van andere voedingsstoffen ondersteunen.",
-        "Makreel (100 g): circa 60 mg — met als bonus omega-3 vetzuren die het hart ondersteunen.",
+        "Makreel (100 g): circa 60 mg — met als bonus [beste omega-3 supplementen](/beste-omega-3-supplement) die het hart ondersteunen.",
       ],
     },
     {

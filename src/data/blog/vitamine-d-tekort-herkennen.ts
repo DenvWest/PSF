@@ -13,7 +13,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom tekort zo vaak over het hoofd wordt gezien",
       tekst:
-        "Vitamine D is eigenlijk een hormoon dat ontstaat in de huid bij UVB-blootstelling en die de aanmaak van honderden eiwitten reguleert — van calciumhuishouding tot immuunfunctie. In Nederland is blootstelling aan zon in de winter onvoldoende voor veel mensen; donkere huid en binnenwerk versterken dat. Klachten zijn vaak vaag, waardoor andere oorzaken eerst worden geschaad.",
+        "[Beste vitamine D-supplementen](/beste-vitamine-d) kies je pas zinvol na meten; het hormoon zelf ontstaat in de huid bij UVB-blootstelling en reguleert de aanmaak van honderden eiwitten — van calciumhuishouding tot immuunfunctie. In Nederland is blootstelling aan zon in de winter onvoldoende voor veel mensen; donkere huid en binnenwerk versterken dat. Klachten zijn vaak vaag, waardoor andere oorzaken eerst worden geschaad.",
     },
     {
       type: "opsomming",

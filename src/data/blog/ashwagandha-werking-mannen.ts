@@ -13,7 +13,7 @@ export const ashwagandhaData: BlogArtikel = {
       type: "tekst",
       titel: "Wat is ashwagandha en waarom is het relevant?",
       tekst:
-        "Ashwagandha (Withania somnifera) is een plant uit de Ayurvedische geneeskunde die de afgelopen twee decennia intensief klinisch is onderzocht. De actieve bestanddelen — withanoliden — werken als modulatoren van de HPA-as: ze helpen je lichaam beter reageren op stress zonder die stress te blokkeren. Voor mannen boven de 40, bij wie de cortisolregulatie minder efficiënt wordt, is dit directe aanknopingspunt relevant.",
+        "[Beste ashwagandha-supplementen](/beste-ashwagandha) zijn gebaseerd op extracts van Withania somnifera — traditioneel bekend als ashwagandha — een plant uit de Ayurvedische geneeskunde die de afgelopen twee decennia intensief klinisch is onderzocht. De actieve bestanddelen — withanoliden — werken als modulatoren van de HPA-as: ze helpen je lichaam beter reageren op stress zonder die stress te blokkeren. Voor mannen boven de 40, bij wie de cortisolregulatie minder efficiënt wordt, is dit directe aanknopingspunt relevant.",
     },
     {
       type: "tekst",

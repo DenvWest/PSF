@@ -151,26 +151,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </div>
           </section>
 
-          {data.productVergelijkingCta ? (
-            <section
-              aria-labelledby="vergelijking-cta-heading"
-              className="rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50/90 to-white px-6 py-8 shadow-sm"
-            >
-              <h2
-                id="vergelijking-cta-heading"
-                className="text-lg font-semibold tracking-tight text-stone-900 sm:text-xl"
-              >
-                {data.productVergelijkingCta.titel}
-              </h2>
-              <Link
-                href={data.productVergelijkingCta.href}
-                className="mt-4 inline-flex items-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
-              >
-                {data.productVergelijkingCta.linkLabel}
-              </Link>
-            </section>
-          ) : null}
-
           {/* ── Sectie 5: Gerelateerde symptomen ─────────────────────── */}
           <section aria-labelledby="symptomen-heading">
             <h2
@@ -207,6 +187,29 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               </div>
             </div>
           </section>
+
+          {data.productVergelijkingCta ? (
+            <section
+              aria-labelledby="vergelijking-cta-heading"
+              className="rounded-2xl border-2 border-[#5A8F6A]/25 bg-gradient-to-br from-emerald-50 via-white to-amber-50/30 px-6 py-8 shadow-md ring-1 ring-stone-200/60"
+            >
+              <h2
+                id="vergelijking-cta-heading"
+                className="text-lg font-semibold tracking-tight text-stone-900 sm:text-xl"
+              >
+                {data.productVergelijkingCta.titel}
+              </h2>
+              <p className="mt-2 text-sm text-stone-600">
+                Onafhankelijk vergeleken op inhoud, kwaliteit en prijs per dag — dezelfde criteria als in deze gids.
+              </p>
+              <Link
+                href={data.productVergelijkingCta.href}
+                className="mt-5 inline-flex items-center rounded-xl bg-[#5A8F6A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#4a7a5a]"
+              >
+                {data.productVergelijkingCta.linkLabel}
+              </Link>
+            </section>
+          ) : null}
 
           {/* ── Blogartikelen ──────────────────────────────────────────── */}
           {data.blogLinks.length > 0 && (

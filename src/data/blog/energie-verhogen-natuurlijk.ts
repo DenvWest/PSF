@@ -29,7 +29,7 @@ export const energieVerhogenData: BlogArtikel = {
         "Prioriteer slaap boven alles: Slaaptekort verlaagt energie meer dan bijna elke andere factor. Acht uur is voor de meeste mannen boven de 40 het minimum voor volledig herstel.",
         "Stabiliseer bloedsuiker: Schommelende bloedsuikerspiegel veroorzaakt energiedips. Eet maaltijden met genoeg eiwit en complexe koolhydraten; beperk geraffineerde suikers.",
         "Verminder cortisol: Chronische stress verbruikt energie en interfereert met herstel. Stressmanagement is ook energiebeheer.",
-        "Controleer tekorten: Vitamine D, B12 en ijzertekort zijn veelvoorkomende maar makkelijk te corrigeren oorzaken van vermoeidheid. Bloedonderzoek geeft uitsluitsel.",
+        "Controleer tekorten: [beste vitamine D-supplementen](/beste-vitamine-d) horen bij een gemeten tekort, net als B12 en ijzer — veelvoorkomende maar makkelijk te corrigeren oorzaken van vermoeidheid. Bloedonderzoek geeft uitsluitsel.",
       ],
     },
     {

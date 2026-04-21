@@ -31,7 +31,7 @@ export const cortisolVerlagenData: BlogArtikel = {
         "Kortdurende krachttraining: Intensieve training verhoogt cortisol acuut, maar regelmatige krachttraining (3-4x per week, 45-60 minuten) verlaagt het basale cortisolniveau over tijd door verbeterde stressadaptatie.",
         "Diafragmaal ademhalen: Vijf minuten langzaam, diep ademhalen activeert de parasympathische zenuwstelsel. Studies tonen cortisolverlagingen van 12-20% na acht weken dagelijkse oefening.",
         "Sociale verbinding: Positief sociaal contact stimuleert oxytocine, dat direct cortisol onderdrukt. Bewust investeren in relaties heeft meetbare fysiologische effecten.",
-        "Adaptogene supplementen: Specifieke planten zoals Withania somnifera (ashwagandha) moduleren de HPA-as aantoonbaar. In gecontroleerde studies daalde cortisol gemiddeld 14-28% bij dagelijks gebruik.",
+        "Adaptogene supplementen: Specifieke planten zoals Withania somnifera ([beste ashwagandha-supplementen](/beste-ashwagandha)) moduleren de HPA-as aantoonbaar. In gecontroleerde studies daalde cortisol gemiddeld 14-28% bij dagelijks gebruik.",
       ],
     },
     {

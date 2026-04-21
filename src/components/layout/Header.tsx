@@ -25,23 +25,26 @@ const infoLinks = [
     { href: "/disclaimer", label: "Disclaimer" },
 ];
 
+const vergelijkingSuggesties = [
+    { href: "/beste-ashwagandha", label: "Beste ashwagandha supplement" },
+    { href: "/beste-creatine", label: "Beste creatine supplement" },
+    { href: "/beste-magnesium", label: "Beste magnesium supplement" },
+    { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement" },
+    { href: "/beste-vitamine-d", label: "Beste vitamine D supplement" },
+    { href: "/beste-zink", label: "Beste zink supplement" },
+].sort((a, b) => a.label.localeCompare(b.label, "nl"));
+
 const searchItems = [
     { href: "/blog", label: "Blog", group: "Direct naar" },
     { href: "/supplementen", label: "Supplementen", group: "Direct naar" },
     { href: "/intake", label: "Leefstijlcheck", group: "Direct naar" },
     { href: "/methodologie", label: "Methodologie", group: "Direct naar" },
-    { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken", group: "Vergelijkingen" },
-    { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement", group: "Vergelijkingen" },
-    { href: "/beste-magnesium", label: "Beste magnesium supplement", group: "Vergelijkingen" },
-    { href: "/beste-ashwagandha", label: "Beste ashwagandha supplement", group: "Vergelijkingen" },
-    { href: "/beste-vitamine-d", label: "Beste vitamine D supplement", group: "Vergelijkingen" },
-    { href: "/beste-creatine", label: "Beste creatine supplement", group: "Vergelijkingen" },
-    { href: "/beste-zink", label: "Beste zink supplement", group: "Vergelijkingen" },
-    { href: "/magnesium-vergelijken", label: "Magnesium vergelijken", group: "Vergelijkingen" },
-    { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement", group: "Keuzehulpen" },
-    { href: "/beste-magnesium", label: "Beste magnesium supplement", group: "Keuzehulpen" },
-    { href: "/beste-ashwagandha", label: "Beste ashwagandha supplement", group: "Keuzehulpen" },
-    { href: "/beste-vitamine-d", label: "Beste vitamine D supplement", group: "Keuzehulpen" },
+    ...vergelijkingSuggesties.map((item) => ({
+        ...item,
+        group: "Vergelijkingen",
+    })),
+    { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken", group: "Keuzehulpen" },
+    { href: "/magnesium-vergelijken", label: "Magnesium vergelijken", group: "Keuzehulpen" },
     { href: "/wat-is-omega-3", label: "Wat is omega-3?", group: "Ingrediënten" },
     { href: "/waar-let-je-op-bij-omega-3", label: "Waar let je op bij omega-3?", group: "Ingrediënten" },
 ];

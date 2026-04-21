@@ -1,4 +1,5 @@
 import type { BlogSectie as BlogSectieType } from "@/types/blog";
+import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 
 interface BlogSectieProps {
   sectie: BlogSectieType;
@@ -16,7 +17,7 @@ export default function BlogSectie({ sectie }: BlogSectieProps) {
 
       {sectie.type === "tekst" && sectie.tekst && (
         <p className="mt-4 text-[1.0625rem] leading-[1.75] text-stone-600">
-          {sectie.tekst}
+          {renderInlineMarkdownLinks(sectie.tekst)}
         </p>
       )}
 
@@ -24,7 +25,7 @@ export default function BlogSectie({ sectie }: BlogSectieProps) {
         <div className="mt-4">
           {sectie.inleiding && (
             <p className="mb-4 text-[1.0625rem] leading-[1.75] text-stone-600">
-              {sectie.inleiding}
+              {renderInlineMarkdownLinks(sectie.inleiding)}
             </p>
           )}
           <ol className="space-y-3">
@@ -45,10 +46,10 @@ export default function BlogSectie({ sectie }: BlogSectieProps) {
                         <strong className="font-semibold text-stone-800">
                           {item.slice(0, colonIdx + 1)}
                         </strong>
-                        {item.slice(colonIdx + 1)}
+                        {renderInlineMarkdownLinks(item.slice(colonIdx + 1))}
                       </>
                     ) : (
-                      item
+                      renderInlineMarkdownLinks(item)
                     )}
                   </p>
                 </li>

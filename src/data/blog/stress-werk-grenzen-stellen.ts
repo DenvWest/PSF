@@ -13,7 +13,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom grenzen op werk zo moeilijk zijn na je 40e",
       tekst:
-        "Rond je veertigste combineer je vaak senioriteit met meer afhankelijkheid van je inkomen: gezin, hypotheek, ouders die zorg nodig hebben. Tegelijk verwacht men van je dat je beschikbaar bent — mail, Teams, telefoon. Chronische beschikbaarheid houdt je cortisol hoog en ondermijnt diepe concentratie. Grenzen zijn dus geen ‘soft skill’; ze zijn een randvoorwaarde voor duurzame werkprestatie.",
+        "Rond je veertigste combineer je vaak senioriteit met meer afhankelijkheid van je inkomen: gezin, hypotheek, ouders die zorg nodig hebben. Tegelijk verwacht men van je dat je beschikbaar bent — mail, Teams, telefoon. Chronische beschikbaarheid houdt je cortisol hoog en ondermijnt diepe concentratie. Grenzen zijn dus geen ‘soft skill’; ze zijn een randvoorwaarde voor duurzame werkprestatie. Bij aanhoudende stress kun je [beste ashwagandha-supplementen](/beste-ashwagandha) als gerichte aanvulling overwegen.",
     },
     {
       type: "opsomming",

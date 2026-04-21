@@ -13,7 +13,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom ademhaling direct op stress reageert",
       tekst:
-        "Bij stress versnelt je ademhaling en wordt je ademhaling oppervlakkiger — dat activeert het sympathische (vecht-vlucht) deel van je autonome zenuwstelsel. Langzame, diepe ademhaling via het middenrif activeert daarentegen de parasympathische tak: hartslag daalt, bloeddruk stabiliseert en cortisol neemt af. Dat effect treedt binnen minuten op; vandaar dat ademhaling een eerste-lijn interventie is bij piekeren, spanning voor het slapen en acute werkstress.",
+        "Bij stress versnelt je ademhaling en wordt je ademhaling oppervlakkiger — dat activeert het sympathische (vecht-vlucht) deel van je autonome zenuwstelsel. Langzame, diepe ademhaling via het middenrif activeert daarentegen de parasympathische tak: hartslag daalt, bloeddruk stabiliseert en cortisol neemt af. Dat effect treedt binnen minuten op; vandaar dat ademhaling een eerste-lijn interventie is bij piekeren, spanning voor het slapen en acute werkstress. Structurele ondersteuning van de stressas kan met [beste ashwagandha-supplementen](/beste-ashwagandha) naast ademhaling en leefstijl.",
     },
     {
       type: "opsomming",
