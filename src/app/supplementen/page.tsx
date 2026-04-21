@@ -1,425 +1,414 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
-import SupplementKeuzeHulp from "@/components/supplements/SupplementKeuzeHulp";
+import ThemeFilter from "@/components/supplements/ThemeFilter";
 
 export const metadata: Metadata = {
-    title: "Supplementengids voor mannen 40+ | PerfectSupplement",
+  title: "Supplementengids — Onafhankelijk advies voor mannen 40+ | PerfectSupplement",
+  description:
+    "Eerlijke, wetenschappelijk onderbouwde informatie over supplementen. Geen rankings of sterren — wel heldere vergelijkingen op biobeschikbaarheid, dosering en prijs-kwaliteit.",
+  openGraph: {
+    title: "Supplementengids — PerfectSupplement",
     description:
-        "Eerlijke informatie over supplementen voor mannen boven de 40. Werking, vormen en dosering — zonder rankings of verkooppraatjes.",
+      "Onafhankelijke supplementgidsen en vergelijkingen voor mannen 40+.",
+  },
 };
 
 /* ── Data ──────────────────────────────────────────────────────── */
 
-const featured = [
-    {
-        slug: "magnesium",
-        naam: "Magnesium",
-        icoon: "⚡",
-        beschrijving:
-            "Het meest veelzijdige mineraal voor mannen 40+. Ondersteunt slaap, stressregulatie en spierherstel — in meerdere vormen beschikbaar.",
-        categorieen: ["Slaap", "Stress", "Spieren"],
-        // Subtle green-tinted white gradient
-        gradientStyle: {
-            background:
-                "linear-gradient(145deg, #ffffff 0%, #dff0e8 100%)",
-        } as React.CSSProperties,
-        tagClass: "border border-emerald-200 text-emerald-700 bg-emerald-50/60",
-        accentClass: "text-emerald-700",
-        accentBorder: "border-t-2 border-emerald-400/60",
-    },
-    {
-        slug: "ashwagandha",
-        naam: "Ashwagandha",
-        icoon: "🌿",
-        beschrijving:
-            "Een adaptogeen met sterke onderbouwing. Verlaagt cortisol, ondersteunt mentale veerkracht en helpt bij herstel na chronische stress.",
-        categorieen: ["Stress", "Herstel", "Veerkracht"],
-        // Subtle amber-tinted white gradient
-        gradientStyle: {
-            background:
-                "linear-gradient(145deg, #ffffff 0%, #fde8c0 100%)",
-        } as React.CSSProperties,
-        tagClass: "border border-amber-200 text-amber-700 bg-amber-50/60",
-        accentClass: "text-amber-700",
-        accentBorder: "border-t-2 border-amber-400/60",
-    },
-];
+const SUPPLEMENTS = [
+  {
+    slug: "magnesium",
+    name: "Magnesium",
+    description:
+      "Het meest veelzijdige mineraal voor mannen 40+. Ondersteunt slaap, stressregulatie en spierherstel — in meerdere vormen beschikbaar.",
+    tags: ["Slaap", "Stress", "Spieren"],
+    icon: "⚡",
+    gradient: "from-emerald-50 to-teal-50",
+    iconBg: "bg-emerald-100",
+    featured: true,
+    comingSoon: false,
+  },
+  {
+    slug: "ashwagandha",
+    name: "Ashwagandha",
+    description:
+      "Een adaptogeen met sterke onderbouwing. Verlaagt cortisol, ondersteunt mentale veerkracht en helpt bij herstel na chronische stress.",
+    tags: ["Stress", "Herstel", "Veerkracht"],
+    icon: "🌿",
+    gradient: "from-amber-50 to-orange-50",
+    iconBg: "bg-amber-100",
+    featured: true,
+    comingSoon: false,
+  },
+  {
+    slug: "omega-3",
+    name: "Omega-3",
+    description:
+      "Essentiële vetzuren die je lichaam niet zelf aanmaakt. Cruciaal voor hersenfunctie, gewrichten en ontstekingsregulatie.",
+    tags: ["Hersenen", "Gewrichten", "Hart"],
+    icon: "🐟",
+    gradient: "from-sky-50 to-blue-50",
+    iconBg: "bg-sky-100",
+    featured: true,
+    comingSoon: false,
+  },
+  {
+    slug: "vitamine-d",
+    name: "Vitamine D",
+    description:
+      "Het 'zonnevitamine' waar bijna elke Nederlander een tekort aan heeft. Essentieel voor immuniteit, botten en stemming.",
+    tags: ["Immuniteit", "Botten", "Energie"],
+    icon: "☀️",
+    gradient: "from-yellow-50 to-amber-50",
+    iconBg: "bg-yellow-100",
+    featured: false,
+    comingSoon: true,
+  },
+  {
+    slug: "creatine",
+    name: "Creatine",
+    description:
+      "Niet alleen voor sporters. Ondersteunt ook cognitieve functie en energieproductie op celniveau.",
+    tags: ["Spieren", "Energie", "Cognitie"],
+    icon: "💪",
+    gradient: "from-violet-50 to-purple-50",
+    iconBg: "bg-violet-100",
+    featured: false,
+    comingSoon: true,
+  },
+  {
+    slug: "zink",
+    name: "Zink",
+    description:
+      "Belangrijk voor testosteron, immuunsysteem en wondgenezing. Tekorten komen vaak voor bij mannen 40+.",
+    tags: ["Testosteron", "Immuniteit", "Herstel"],
+    icon: "🛡️",
+    gradient: "from-slate-50 to-gray-50",
+    iconBg: "bg-slate-100",
+    featured: false,
+    comingSoon: true,
+  },
+] as const;
 
-const supplementen = [
-    {
-        slug: "omega-3",
-        naam: "Omega-3",
-        subtitel: "EPA / DHA",
-        icoon: "🧠",
-        beschrijving:
-            "Ondersteunt hart en hersenen, en dempt laaggradige ontstekingen die energie en stemming beïnvloeden.",
-        categorieen: ["Hart", "Hersenen", "Ontstekingen"],
-        accentDot: "bg-sky-400",
-        tagClass: "border border-stone-200 text-stone-500 bg-stone-50",
-    },
-    {
-        slug: "vitamine-d",
-        naam: "Vitamine D3 + K2",
-        subtitel: "Cholecalciferol",
-        icoon: "☀️",
-        beschrijving:
-            "Essentieel bij weinig zonlicht. Speelt een rol bij energie, immuunfunctie en testosteronondersteuning.",
-        categorieen: ["Energie", "Immuun", "Botten"],
-        accentDot: "bg-amber-400",
-        tagClass: "border border-stone-200 text-stone-500 bg-stone-50",
-    },
-    {
-        slug: "melatonine",
-        naam: "Melatonine",
-        subtitel: "Slaaphormoon",
-        icoon: "🌙",
-        beschrijving:
-            "Helpt bij het inslapen en het herstellen van een verstoord dag-nachtritme. Geen slaappil, wel een signaal.",
-        categorieen: ["Slaap", "Bioritme"],
-        accentDot: "bg-indigo-400",
-        tagClass: "border border-stone-200 text-stone-500 bg-stone-50",
-    },
-];
+const COMPARISONS = [
+  { name: "Omega-3", href: "/beste-omega-3-supplement" },
+  { name: "Magnesium", href: "/beste-magnesium" },
+  { name: "Ashwagandha", href: "/beste-ashwagandha" },
+] as const;
 
-const principes = [
-    {
-        nummer: "01",
-        titel: "Onafhankelijk",
-        tekst: "Geen sponsors, geen betaalde plaatsingen. Elk advies is gebaseerd op openbare bronnen en peer-reviewed onderzoek.",
-    },
-    {
-        nummer: "02",
-        titel: "Onderbouwd",
-        tekst: "We verwijzen naar onderzoek en vermijden medische claims. Wat niet bewezen is, noemen we niet.",
-    },
-    {
-        nummer: "03",
-        titel: "Transparant",
-        tekst: "Onze beoordelingsmethode is openbaar beschikbaar.",
-        link: { label: "Bekijk de methodologie", href: "/methodologie" },
-    },
-];
+const featuredSupplements = SUPPLEMENTS.filter((s) => s.featured);
+const allSupplements = SUPPLEMENTS;
 
 /* ── Page ──────────────────────────────────────────────────────── */
 
 export default function SupplementenPage() {
-    return (
-        <div className="relative">
-            {/* ── Hero ─────────────────────────────────────────────── */}
-            <section
-                className="relative overflow-hidden border-b border-stone-200/60 bg-white"
-                aria-label="Introductie"
-            >
-                {/* Ambient glow — upper left, very subtle on light bg */}
+  return (
+    <div className="relative">
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section
+        className="relative overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #FDFCFA 0%, #F7F5F0 100%)" }}
+        aria-label="Introductie"
+      >
+        {/* Decorative radial glow — top right */}
+        <div
+          className="pointer-events-none absolute -right-32 -top-32 h-[36rem] w-[36rem] rounded-full opacity-30"
+          aria-hidden="true"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(251,191,36,0.18) 0%, transparent 70%)",
+          }}
+        />
+
+        <Container className="relative py-20 lg:py-28">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left: copy */}
+            <div>
+              <p className="text-xs font-medium tracking-[0.22em] text-stone-500 uppercase mb-5">
+                Supplementengids
+              </p>
+              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.08] tracking-tight text-stone-900">
+                Weloverwogen kiezen,
+                <br />
+                <span className="text-[#C4873B]">zonder ruis.</span>
+              </h1>
+              <p className="mt-6 text-lg text-stone-600 leading-relaxed max-w-xl font-sans">
+                Supplementen kunnen helpen — maar alleen als je weet wat je
+                neemt en waarom. Geen rankings of sterren. Wel eerlijke
+                informatie over werking, vormen en dosering.
+              </p>
+              <div className="mt-8">
+                <Link
+                  href="/intake"
+                  className="inline-flex items-center gap-2 bg-[#5A8F6A] hover:bg-[#4a7a5a] text-white rounded-full px-8 py-3.5 font-medium text-sm transition-all shadow-sm hover:shadow-md"
+                >
+                  Doe de Leefstijlcheck
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: decorative blob — hidden on mobile */}
+            <div className="hidden lg:flex items-center justify-center" aria-hidden="true">
+              <div className="relative w-80 h-80">
+                {/* Soft outer ring */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-50 to-emerald-50 opacity-60" />
+                {/* Inner blob */}
                 <div
-                    className="pointer-events-none absolute -left-48 -top-48 h-[36rem] w-[36rem] rounded-full opacity-[0.07]"
-                    aria-hidden="true"
-                    style={{
-                        background:
-                            "radial-gradient(circle, rgba(16,124,106,1) 0%, transparent 70%)",
-                    }}
+                  className="absolute inset-8 rounded-full opacity-40"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at 40% 40%, #d4e8db 0%, #f5e4c8 60%, transparent 100%)",
+                  }}
                 />
-                {/* Ambient glow — lower right */}
+                {/* Center icon cluster */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="grid grid-cols-2 gap-4">
+                    {(["⚡", "🌿", "🐟", "☀️"] as const).map((icon, i) => (
+                      <span
+                        key={i}
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 text-2xl shadow-sm ring-1 ring-stone-200/60"
+                      >
+                        {icon}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── ThemeFilter — floating card ───────────────────────── */}
+      <div className="relative z-10 -mt-10">
+        <Container>
+          <ThemeFilter />
+        </Container>
+      </div>
+
+      {/* ── Featured supplements ─────────────────────────────── */}
+      <section
+        className="py-16 lg:py-20"
+        style={{ background: "#FDFCFA" }}
+        aria-label="Meest gelezen gidsen"
+      >
+        <Container>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
+            <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
+              Meest gelezen
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredSupplements.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/supplementen/${item.slug}`}
+                data-tags={item.tags.join(",")}
+                className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-lg transition-all duration-300"
+              >
+                {/* Gradient header */}
                 <div
-                    className="pointer-events-none absolute -bottom-32 -right-32 h-[28rem] w-[28rem] rounded-full opacity-[0.05]"
+                  className={`bg-gradient-to-br ${item.gradient} h-32 flex items-center justify-center`}
+                >
+                  <span className="text-5xl" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                </div>
+
+                {/* Body */}
+                <div className="p-6">
+                  <h2 className="font-serif text-xl text-stone-900">
+                    {item.name}
+                  </h2>
+                  <p className="text-sm text-stone-500 mt-2 line-clamp-2 leading-relaxed">
+                    {item.description}
+                  </p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 mt-4">
+                    {item.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-[#5A8F6A] group-hover:gap-2 transition-all">
+                    Lees de gids
+                    <span aria-hidden="true">→</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ── All supplements ──────────────────────────────────── */}
+      <section
+        className="py-16 lg:py-20"
+        style={{ background: "#F7F5F0" }}
+        aria-label="Alle supplementengidsen"
+      >
+        <Container>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
+            <p className="text-xs font-medium tracking-widest text-stone-400 uppercase">
+              Alle gidsen
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {allSupplements.map((item) => {
+              const cardContent = (
+                <div
+                  data-tags={item.tags.join(",")}
+                  className="bg-white rounded-xl p-5 border border-stone-200 hover:border-[#5A8F6A]/30 transition-all group flex items-start gap-4 h-full"
+                >
+                  {/* Icon */}
+                  <span
+                    className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-lg ${item.iconBg}`}
                     aria-hidden="true"
-                    style={{
-                        background:
-                            "radial-gradient(circle, rgba(180,83,9,1) 0%, transparent 70%)",
-                    }}
-                />
+                  >
+                    {item.icon}
+                  </span>
 
-                <Container className="relative pt-12 pb-20 md:pt-20 md:pb-28">
-                    {/* Breadcrumb */}
-                    <nav aria-label="Breadcrumb" className="mb-12 md:mb-16">
-                        <ol className="flex items-center gap-2 text-[0.8125rem] text-stone-500">
-                            <li>
-                                <Link
-                                    href="/"
-                                    className="transition hover:text-stone-800"
-                                >
-                                    Home
-                                </Link>
-                            </li>
-                            <li aria-hidden="true" className="select-none text-stone-400">
-                                ›
-                            </li>
-                            <li className="font-medium text-stone-700">
-                                Supplementen
-                            </li>
-                        </ol>
-                    </nav>
-
-                    <div className="max-w-3xl">
-                        <p className="mb-5 text-[0.625rem] font-medium uppercase tracking-[0.26em] text-stone-500">
-                            Supplementengids
-                        </p>
-                        <h1 className="font-display text-[2.75rem] font-semibold leading-[1.08] tracking-tight text-stone-900 md:text-[4.5rem]">
-                            Weloverwogen kiezen,
-                            <br />
-                            <span className="text-stone-500"> zonder ruis.</span>
-                        </h1>
-                        <p className="mt-8 max-w-xl text-lg leading-[1.8] text-stone-600 md:text-xl">
-                            Supplementen kunnen helpen — maar alleen als je weet
-                            wat je neemt en waarom. Geen rankings of sterren. Wel
-                            eerlijke informatie over werking, vormen en dosering.
-                        </p>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-stone-900 text-base">
+                        {item.name}
+                      </span>
+                      {item.comingSoon && (
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-stone-100 text-stone-400 border border-stone-200">
+                          Binnenkort
+                        </span>
+                      )}
                     </div>
-                </Container>
-            </section>
+                    <p className="text-sm text-stone-500 mt-1 line-clamp-2 leading-relaxed">
+                      {item.description}
+                    </p>
+                    {!item.comingSoon && (
+                      <span className="text-xs font-medium text-[#5A8F6A] mt-2 opacity-0 group-hover:opacity-100 transition-opacity block">
+                        Lees meer →
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
 
-            {/* ── Keuzehulp ────────────────────────────────────────── */}
-            <SupplementKeuzeHulp />
+              return item.comingSoon ? (
+                <div key={item.slug} className="cursor-default">
+                  {cardContent}
+                </div>
+              ) : (
+                <Link
+                  key={item.slug}
+                  href={`/supplementen/${item.slug}`}
+                  className="block"
+                >
+                  {cardContent}
+                </Link>
+              );
+            })}
+          </div>
+        </Container>
+      </section>
 
-            {/* ── Featured supplements ─────────────────────────────── */}
-            <section
-                className="bg-[--ps-bg] py-20 md:py-28"
-                aria-label="Aanbevolen supplementen"
-            >
-                <Container>
-                    <div className="mb-8 flex items-center gap-3 md:mb-10">
-                        <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
-                        <p className="text-[0.625rem] font-medium uppercase tracking-[0.3em] text-stone-500">
-                            Meest gelezen
-                        </p>
-                    </div>
+      {/* ── Comparisons CTA ──────────────────────────────────── */}
+      <section
+        className="py-16 lg:py-20"
+        style={{ background: "#FDFCFA" }}
+        aria-label="Productvergelijkingen"
+      >
+        <Container>
+          <div className="bg-white rounded-2xl border border-stone-200 p-8 lg:p-10 text-center">
+            <h2 className="font-serif text-2xl text-stone-900">
+              Welk product past bij jou?
+            </h2>
+            <p className="text-stone-500 mt-3 max-w-lg mx-auto text-sm leading-relaxed">
+              Bekijk onze onafhankelijke productvergelijkingen met scores op
+              biobeschikbaarheid, dosering en prijs-kwaliteit.
+            </p>
 
-                    <div className="grid gap-5 md:grid-cols-2">
-                        {featured.map((item) => (
-                            <Link
-                                key={item.slug}
-                                href={`/supplementen/${item.slug}`}
-                                className={`group relative flex min-h-[320px] flex-col overflow-hidden rounded-2xl border border-stone-200 p-8 shadow-[0_4px_24px_rgba(0,0,0,0.09)] transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(0,0,0,0.13)] md:min-h-[420px] md:p-10 ${item.accentBorder}`}
-                                style={item.gradientStyle}
-                            >
-                                {/* Icon */}
-                                <span
-                                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 text-2xl ring-1 ring-stone-200/70 shadow-sm"
-                                    aria-hidden="true"
-                                >
-                                    {item.icoon}
-                                </span>
+            <div className="flex flex-wrap justify-center gap-3 mt-6">
+              {COMPARISONS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="px-5 py-2.5 rounded-full border border-stone-200 text-sm font-medium text-stone-700 hover:border-[#5A8F6A] hover:text-[#5A8F6A] hover:bg-[#5A8F6A]/5 transition-all"
+                >
+                  {item.name} vergelijken →
+                </Link>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
 
-                                {/* Content */}
-                                <div className="mt-auto flex flex-1 flex-col justify-end pb-8 pt-10 md:pb-10">
-                                    <h2 className="font-display text-3xl font-semibold tracking-tight text-stone-900 md:text-4xl">
-                                        {item.naam}
-                                    </h2>
-                                    <p className="mt-3 max-w-sm text-[0.9375rem] leading-relaxed text-stone-600">
-                                        {item.beschrijving}
-                                    </p>
+      {/* ── Leefstijlcheck CTA ───────────────────────────────── */}
+      <section
+        className="py-16 lg:py-20"
+        style={{ background: "#F7F5F0" }}
+        aria-label="Leefstijlcheck"
+      >
+        <Container>
+          <div className="bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] text-white rounded-2xl p-8 lg:p-12 text-center">
+            <h2 className="font-serif text-2xl lg:text-3xl text-white">
+              Niet zeker waar je moet beginnen?
+            </h2>
+            <p className="text-white/80 mt-3 max-w-md mx-auto text-sm leading-relaxed">
+              Doe onze gratis Leefstijlcheck — 12 vragen, 3 minuten, persoonlijk
+              resultaat.
+            </p>
+            <div className="mt-6">
+              <Link
+                href="/intake"
+                className="inline-flex items-center gap-2 bg-white text-[#5A8F6A] rounded-full px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
+              >
+                Start de Leefstijlcheck
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <p className="text-white/50 text-xs mt-4">
+              Geen account nodig · Je gegevens worden anoniem verwerkt
+            </p>
+          </div>
+        </Container>
+      </section>
 
-                                    {/* Tags */}
-                                    <div className="mt-5 flex flex-wrap gap-2">
-                                        {item.categorieen.map((cat) => (
-                                            <span
-                                                key={cat}
-                                                className={`rounded-full px-3 py-1 text-[0.6875rem] font-medium ${item.tagClass}`}
-                                            >
-                                                {cat}
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    {/* CTA */}
-                                    <div
-                                        className={`mt-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-wide ${item.accentClass}`}
-                                    >
-                                        <span>Lees de gids</span>
-                                        <span
-                                            className="inline-block transition-transform duration-300 group-hover:translate-x-1"
-                                            aria-hidden="true"
-                                        >
-                                            →
-                                        </span>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </Container>
-            </section>
-
-            {/* ── All supplements ──────────────────────────────────── */}
-            <section
-                className="bg-[--ps-bg] pb-20 md:pb-28"
-                aria-label="Alle supplementen"
-            >
-                <Container>
-                    <div className="mb-8 flex items-center gap-3 md:mb-10">
-                        <div className="h-px w-6 bg-stone-400" aria-hidden="true" />
-                        <p className="text-[0.625rem] font-medium uppercase tracking-[0.3em] text-stone-500">
-                            Alle gidsen
-                        </p>
-                    </div>
-
-                    <div className="grid gap-4 md:grid-cols-3">
-                        {supplementen.map((item) => (
-                            <Link
-                                key={item.slug}
-                                href={`/supplementen/${item.slug}`}
-                                className="group relative flex min-h-[260px] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 shadow-[0_2px_14px_rgba(0,0,0,0.07)] transition duration-300 ease-out hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-[0_8px_28px_rgba(0,0,0,0.11)] md:min-h-[300px] md:p-7"
-                            >
-                                {/* Accent dot — top-right corner */}
-                                <div
-                                    className={`absolute right-5 top-5 h-1.5 w-1.5 rounded-full opacity-80 ${item.accentDot}`}
-                                    aria-hidden="true"
-                                />
-
-                                {/* Icon */}
-                                <span
-                                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100 text-xl ring-1 ring-stone-200/60"
-                                    aria-hidden="true"
-                                >
-                                    {item.icoon}
-                                </span>
-
-                                {/* Content */}
-                                <div className="mt-6 flex flex-1 flex-col">
-                                    <h2 className="font-display text-lg font-semibold tracking-tight text-stone-900">
-                                        {item.naam}
-                                    </h2>
-                                    {item.subtitel && (
-                                        <p className="mt-0.5 text-xs tracking-wide text-stone-500">
-                                            {item.subtitel}
-                                        </p>
-                                    )}
-
-                                    <p className="mt-3 text-[0.875rem] leading-relaxed text-stone-600">
-                                        {item.beschrijving}
-                                    </p>
-
-                                    {/* Tags */}
-                                    <div className="mt-4 flex flex-wrap gap-1.5">
-                                        {item.categorieen.map((cat) => (
-                                            <span
-                                                key={cat}
-                                                className={`rounded-full px-2.5 py-0.5 text-[0.6875rem] font-medium ${item.tagClass}`}
-                                            >
-                                                {cat}
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    {/* CTA */}
-                                    <div className="mt-auto flex items-center gap-3 pt-6 text-xs font-semibold uppercase tracking-wide text-stone-500 transition duration-300 group-hover:text-stone-800">
-                                        <span>Lees de gids</span>
-                                        <span
-                                            className="inline-block transition-transform duration-300 group-hover:translate-x-1"
-                                            aria-hidden="true"
-                                        >
-                                            →
-                                        </span>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </Container>
-            </section>
-
-            {/* ── Route advice ─────────────────────────────────────── */}
-            <section
-                className="border-t border-stone-200/60 bg-[--ps-bg] py-20 md:py-28"
-                aria-label="Navigatie naar symptomen"
-            >
-                <Container>
-                    <div className="mx-auto max-w-2xl text-center">
-                        <p className="ps-eyebrow mb-5">Niet zeker?</p>
-                        <p className="font-display text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
-                            Begin bij wat je voelt,
-                            <br className="hidden sm:block" />
-                            niet bij een product.
-                        </p>
-                        <p className="mx-auto mt-5 max-w-lg text-[0.9375rem] leading-relaxed text-stone-600">
-                            Onze symptoomgidsen helpen je eerst begrijpen wat er
-                            speelt — en wijzen je daarna naar wat kan helpen.
-                        </p>
-
-                        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                            {[
-                                { label: "Stress", href: "/symptomen/stress" },
-                                { label: "Slaapproblemen", href: "/symptomen/slaap" },
-                                { label: "Energieverlies", href: "/symptomen/energie" },
-                            ].map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className="group flex w-full items-center justify-between rounded-xl border border-stone-200/80 bg-white px-6 py-4 text-sm font-medium text-stone-800 shadow-sm transition duration-200 hover:border-stone-300 hover:shadow-md sm:w-auto sm:justify-center sm:gap-2"
-                                >
-                                    <span>{link.label}</span>
-                                    <span
-                                        className="text-stone-400 transition-transform duration-300 group-hover:translate-x-0.5"
-                                        aria-hidden="true"
-                                    >
-                                        →
-                                    </span>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </Container>
-            </section>
-
-            {/* ── Trust / Werkwijze ────────────────────────────────── */}
-            <section
-                className="border-t border-stone-200/60 py-20 md:py-28"
-                aria-label="Onze werkwijze"
-            >
-                <Container>
-                    <div className="grid gap-10 md:grid-cols-3 md:gap-12">
-                        {principes.map((p) => (
-                            <div key={p.nummer}>
-                                <span className="block text-4xl font-bold text-stone-300 md:text-5xl">
-                                    {p.nummer}
-                                </span>
-                                <h2 className="mt-3 text-base font-semibold text-stone-900">
-                                    {p.titel}
-                                </h2>
-                                <p className="mt-2.5 text-[0.875rem] leading-relaxed text-stone-600">
-                                    {p.tekst}
-                                    {p.link && (
-                                        <>
-                                            {" "}
-                                            <Link
-                                                href={p.link.href}
-                                                className="font-medium text-stone-700 underline decoration-stone-300 underline-offset-4 transition hover:text-stone-900 hover:decoration-stone-500"
-                                            >
-                                                {p.link.label}
-                                            </Link>
-                                        </>
-                                    )}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </Container>
-            </section>
-
-            {/* ── JSON-LD ──────────────────────────────────────────── */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "BreadcrumbList",
-                        itemListElement: [
-                            {
-                                "@type": "ListItem",
-                                position: 1,
-                                name: "Home",
-                                item: "https://perfectsupplement.nl",
-                            },
-                            {
-                                "@type": "ListItem",
-                                position: 2,
-                                name: "Supplementen",
-                            },
-                        ],
-                    }),
-                }}
-            />
-        </div>
-    );
+      {/* ── JSON-LD ──────────────────────────────────────────── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://perfectsupplement.nl",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Supplementen",
+                item: "https://perfectsupplement.nl/supplementen",
+              },
+            ],
+          }),
+        }}
+      />
+    </div>
+  );
 }

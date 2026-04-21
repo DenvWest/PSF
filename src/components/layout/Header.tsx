@@ -6,17 +6,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const mainLinks = [
-    { href: "/blog", label: "Blog" },
-    { href: "/supplementen", label: "Supplementen" },
     { href: "/intake", label: "Leefstijlcheck" },
+    { href: "/supplementen", label: "Supplementen" },
+    { href: "/blog", label: "Blog" },
 ];
 
 const menuLinks = [
     { href: "/", label: "Home" },
-    { href: "/blog", label: "Blog" },
-    { href: "/supplementen", label: "Supplementen" },
     { href: "/intake", label: "Leefstijlcheck" },
+    { href: "/supplementen", label: "Supplementen" },
     { href: "/methodologie", label: "Methodologie" },
+    { href: "/blog", label: "Blog" },
 ];
 
 const infoLinks = [
