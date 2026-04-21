@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import SupplementKeuzeHulp from "@/components/supplements/SupplementKeuzeHulp";
 
 export const metadata: Metadata = {
     title: "Supplementengids voor mannen 40+ | PerfectSupplement",
@@ -167,6 +168,9 @@ export default function SupplementenPage() {
                     </div>
                 </Container>
             </section>
+
+            {/* ── Keuzehulp ────────────────────────────────────────── */}
+            <SupplementKeuzeHulp />
 
             {/* ── Featured supplements ─────────────────────────────── */}
             <section
