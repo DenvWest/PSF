@@ -33,3 +33,8 @@ export function renderInlineMarkdownLinks(text: string): ReactNode {
   }
   return segments.length === 1 ? segments[0] : <>{segments}</>;
 }
+
+/** Voor o.a. FAQ JSON-LD: alleen zichtbare ankertekst, zonder markdown-syntax. */
+export function stripInlineMarkdownLinks(text: string): string {
+  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+}

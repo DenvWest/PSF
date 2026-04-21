@@ -263,7 +263,7 @@ export const omega3Data: ComparisonPageData = {
     {
       question: "Wat is het verschil tussen levertraan en visolie?",
       answer:
-        "Levertraan (zoals Möller's) komt uit de lever van kabeljauw en bevat naast omega-3 ook vitamine A en D. Reguliere visolie komt uit het spierweefsel en bevat alleen omega-3. Beide zijn effectief, maar bij levertraan moet je letten op vitamine A-inname als je al supplementen gebruikt.",
+        "Levertraan (zoals Möller's) komt uit de lever van kabeljauw en bevat naast omega-3 ook vitamine A en [vitamine D](/beste-vitamine-d). Reguliere visolie komt uit het spierweefsel en bevat alleen omega-3. Beide zijn effectief, maar bij levertraan moet je letten op vitamine A-inname als je al supplementen gebruikt.",
     },
     {
       question: "Wat betekent triglyceridevorm?",

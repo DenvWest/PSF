@@ -204,6 +204,11 @@ export const zinkData: ComparisonPageData = {
         "Bij mannen met een zinktekort: ja, meetbaar. Zink is een cofactor voor enzymen in de testosteronproductie, en epidemiologisch onderzoek laat zien dat mannen met lage zinkwaarden significant lagere testosteronspiegels hebben. Bij mannen die al voldoende zink binnenkrijgen is het effect minimaal. Laat bij twijfel je bloedwaarden checken.",
     },
     {
+      question: "Zijn zink en vitamine D beide cofactoren voor testosteron?",
+      answer:
+        "Ja. Zink en vitamine D zijn beide cofactoren voor testosteron en andere hormonale processen; bij tekorten komen lagere waarden vaker voor. Laat bij twijfel meten. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
+    },
+    {
       question: "Kan ik zink combineren met magnesium?",
       answer:
         "Ja, dat kan prima. Neem ze bij voorkeur op verschillende momenten in — zink bij de lunch, magnesium 's avonds — voor optimale opname van beide mineralen.",

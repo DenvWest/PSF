@@ -208,5 +208,10 @@ export const creatineData: ComparisonPageData = {
       answer:
         "Creapure® wordt geproduceerd door AlzChem in Duitsland met farmaceutische kwaliteitscontrole en is gegarandeerd vrij van verontreinigingen zoals dicyandiamide en dihydrotriazine. Generieke creatine kan ook zuiver zijn, maar biedt niet dezelfde certificeringsgarantie. Voor de meeste gebruikers is micronized creatine monohydraat van een betrouwbaar merk een uitstekende keuze.",
     },
+    {
+      question: "Kan ik creatine combineren met magnesium?",
+      answer:
+        "Ja. Combineer met magnesium voor spierherstel en ontspanning: creatine vult de fosfaatbuffer in spieren aan; magnesium ondersteunt spiercontractie en -ontspanning. Neem ze bij voorkeur op verschillende momenten als je gevoelige darmen hebt. Zie onze [magnesiumvergelijking](/beste-magnesium) voor de beste keuze.",
+    },
   ],
 };

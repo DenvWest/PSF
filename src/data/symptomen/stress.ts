@@ -31,7 +31,7 @@ export const stressOorzaken: OorzakenData = {
         "Slechte slaap, eenzijdige voeding en te weinig beweging zijn geen gevolgen van stress — ze zijn vaak de oorzaak.",
       voorbeelden: [
         "Minder dan 6 uur slaap per nacht verstoort je cortisolritme al na drie dagen",
-        "Een tekort aan magnesium en B-vitamines remt het zenuwstelsel in zijn herstelfunctie",
+        "Een tekort aan [magnesium](/beste-magnesium) en B-vitamines remt het zenuwstelsel in zijn herstelfunctie",
       ],
       blogLink: {
         href: "/blog/cortisol-verlagen-natuurlijk",
@@ -94,7 +94,7 @@ export const stressOplossingen: OplossingenData = {
     "Van direct toepasbare tips tot structurele verandering. Ontdek wat werkt tegen stress voor mannen boven de 40.",
   h1: "Stress verminderen: wat werkt écht voor mannen 40+?",
   intro:
-    "Stress aanpakken werkt het beste in lagen. Sommige dingen kun je vandaag al doen, andere kosten wat meer tijd. Hieronder vind je drie niveaus — begin waar het voor jou logisch voelt.",
+    "Stress aanpakken werkt het beste in lagen. [De beste omega-3 supplementen](/beste-omega-3-supplement) ondersteunen hersenfunctie en ontstekingsbalans bij weinig vis — naast leefstijl. Hieronder vind je drie niveaus — begin waar het voor jou logisch voelt.",
   niveaus: [
     {
       niveau: 1,

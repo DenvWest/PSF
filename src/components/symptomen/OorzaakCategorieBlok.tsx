@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { OorzaakCategorie } from "@/types/symptomen";
+import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 
 interface OorzaakCategorieBlokProps {
   categorie: OorzaakCategorie;
@@ -20,7 +21,7 @@ export default function OorzaakCategorieBlok({ categorie, index }: OorzaakCatego
       </h3>
 
       <p className="mt-3 text-sm font-semibold leading-relaxed text-stone-800">
-        {categorie.kernboodschap}
+        {renderInlineMarkdownLinks(categorie.kernboodschap)}
       </p>
 
       <div className="mt-4 space-y-2.5">
@@ -29,7 +30,7 @@ export default function OorzaakCategorieBlok({ categorie, index }: OorzaakCatego
             <span aria-hidden className="mt-px shrink-0 select-none text-stone-400">
               —
             </span>
-            <span>{voorbeeld}</span>
+            <span>{renderInlineMarkdownLinks(voorbeeld)}</span>
           </p>
         ))}
       </div>

@@ -210,5 +210,10 @@ export const magnesiumData: ComparisonPageData = {
       answer:
         "Voor slaap: 30-60 minuten voor het slapen, bij voorkeur bisglycinaat. Voor energie of sport: bij een maaltijd overdag, bij voorkeur malaat of citraat. Een complex kun je het beste verdelen over twee momenten.",
     },
+    {
+      question: "Werkt magnesium samen met vitamine D?",
+      answer:
+        "Ja. Magnesium werkt goed samen met vitamine D: het mineraal is nodig voor de activatie van vitamine D in het lichaam. Wie beide aanvult, doet er goed aan op beide te letten. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
+    },
   ],
 };

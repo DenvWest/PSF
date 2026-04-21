@@ -125,18 +125,6 @@ export default function Page() {
                 </Link>
               </p>
               <Link
-                href="/beste-ashwagandha"
-                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
-              >
-                Creatine combineren met ashwagandha? Bekijk de ashwagandha vergelijking
-              </Link>
-              <Link
-                href="/beste-magnesium"
-                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
-              >
-                Herstel optimaliseren met magnesium? Bekijk de magnesiumvergelijking
-              </Link>
-              <Link
                 href="/intake"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
               >

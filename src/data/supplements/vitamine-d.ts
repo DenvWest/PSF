@@ -214,7 +214,7 @@ export const vitamineDData: ComparisonPageData = {
     {
       question: "Kan ik vitamine D combineren met magnesium?",
       answer:
-        "Ja — magnesium is zelfs nodig voor de activatie van vitamine D in het lichaam. Zonder voldoende magnesium kan vitamine D niet optimaal worden omgezet naar zijn actieve vorm. Overweeg beide als je een tekort aanvult. Bekijk ook onze magnesiumvergelijking voor de beste keuze.",
+        "Ja — magnesium is nodig voor activatie van vitamine D in het lichaam. Zonder voldoende magnesium kan vitamine D niet optimaal worden omgezet naar zijn actieve vorm. Overweeg beide als je een tekort aanvult. Bekijk onze [magnesiumvergelijking](/beste-magnesium) voor productkeuze.",
     },
   ],
 };

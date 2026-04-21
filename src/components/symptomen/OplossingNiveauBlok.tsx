@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { OplossingsNiveau } from "@/types/symptomen";
+import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 
 interface OplossingNiveauBlokProps {
   niveau: OplossingsNiveau;
@@ -13,7 +14,7 @@ export default function OplossingNiveauBlok({ niveau }: OplossingNiveauBlokProps
       </h2>
 
       <p className="mt-2 max-w-[720px] text-sm font-semibold text-stone-700">
-        {niveau.kernboodschap}
+        {renderInlineMarkdownLinks(niveau.kernboodschap)}
       </p>
 
       {/* Oplossingen — geen bullets/nummering */}
@@ -21,7 +22,9 @@ export default function OplossingNiveauBlok({ niveau }: OplossingNiveauBlokProps
         {niveau.oplossingen.map((oplossing, i) => (
           <div key={i} className="max-w-[720px]">
             <p className="text-sm font-semibold text-stone-900">{oplossing.titel}</p>
-            <p className="mt-1 text-sm leading-relaxed text-stone-600">{oplossing.uitleg}</p>
+            <p className="mt-1 text-sm leading-relaxed text-stone-600">
+              {renderInlineMarkdownLinks(oplossing.uitleg)}
+            </p>
           </div>
         ))}
       </div>

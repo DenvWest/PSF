@@ -1,3 +1,8 @@
+import {
+  renderInlineMarkdownLinks,
+  stripInlineMarkdownLinks,
+} from "@/components/blog/inlineMarkdownLinks";
+
 type Props = {
   items: Array<{ question: string; answer: string }>;
 };
@@ -11,7 +16,7 @@ export function FaqSection({ items }: Props) {
       name: item.question,
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.answer,
+        text: stripInlineMarkdownLinks(item.answer),
       },
     })),
   };
@@ -39,7 +44,9 @@ export function FaqSection({ items }: Props) {
                 </span>
               </summary>
               <div className="border-t border-slate-100 px-5 pb-5 pt-3">
-                <p className="text-sm leading-7 text-slate-600">{item.answer}</p>
+                <p className="text-sm leading-7 text-slate-600">
+                  {renderInlineMarkdownLinks(item.answer)}
+                </p>
               </div>
             </details>
           ))}

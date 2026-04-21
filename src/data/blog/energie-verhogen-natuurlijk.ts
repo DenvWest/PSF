@@ -19,7 +19,7 @@ export const energieVerhogenData: BlogArtikel = {
       type: "tekst",
       titel: "Mitochondriale gezondheid: de energiefabriek",
       tekst:
-        "Mitochondriën zijn de energiefabrieken van je cellen. Ze produceren ATP — de universele energiemolecule — via oxidatieve fosforylatie. Naarmate je ouder wordt, neemt de mitochondriale dichtheid en efficiëntie af. Dit is deels beïnvloedbaar: intensieve duurtraining en krachttraining stimuleren mitochondriale biogenese (aanmaak van nieuwe mitochondriën). Voeding die rijk is aan B-vitamines, ijzer en CoQ10 ondersteunt de ATP-productie direct.",
+        "Mitochondriën zijn de energiefabrieken van je cellen. Ze produceren ATP — de universele energiemolecule — via oxidatieve fosforylatie. Naarmate je ouder wordt, neemt de mitochondriale dichtheid en efficiëntie af. Dit is deels beïnvloedbaar: intensieve duurtraining en krachttraining stimuleren mitochondriale biogenese (aanmaak van nieuwe mitochondriën). Voeding die rijk is aan B-vitamines, ijzer en CoQ10 ondersteunt de ATP-productie direct; [magnesium](/beste-magnesium) is daarnaast een cruciale cofactor voor enzymen in die keten.",
     },
     {
       type: "opsomming",

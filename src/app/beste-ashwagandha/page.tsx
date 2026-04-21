@@ -123,12 +123,6 @@ export default function Page() {
                 Meer weten over ashwagandha? Lees de uitgebreide gids →
               </Link>
               <Link
-                href="/beste-magnesium"
-                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
-              >
-                Ashwagandha combineren met magnesium? Bekijk de magnesiumvergelijking
-              </Link>
-              <Link
                 href="/intake"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
               >

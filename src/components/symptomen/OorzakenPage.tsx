@@ -5,6 +5,7 @@ import Breadcrumbs from "./Breadcrumbs";
 import OorzaakCategorieBlok from "./OorzaakCategorieBlok";
 import GerelateerdBlok from "./GerelateerdBlok";
 import Container from "@/components/layout/Container";
+import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 
 interface OorzakenPageProps {
   data: OorzakenData;
@@ -32,7 +33,7 @@ export default function OorzakenPage({ data, symptoomLabel }: OorzakenPageProps)
               {data.h1}
             </h1>
             <p className="mt-5 text-base leading-7 text-stone-600 md:text-lg">
-              {data.intro}
+              {renderInlineMarkdownLinks(data.intro)}
             </p>
           </div>
         </Container>
@@ -57,7 +58,7 @@ export default function OorzakenPage({ data, symptoomLabel }: OorzakenPageProps)
             {data.afsluitingTitel}
           </h2>
           <p className="ps-prose-container mt-3 text-sm leading-relaxed text-stone-600">
-            {data.afsluitingTekst}
+            {renderInlineMarkdownLinks(data.afsluitingTekst)}
           </p>
           <div className="mt-6">
             <Link

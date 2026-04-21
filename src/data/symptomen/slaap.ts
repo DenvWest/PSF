@@ -94,7 +94,7 @@ export const slaapOplossingen: OplossingenData = {
     "Van slaapkamer optimaliseren tot cognitieve gedragstherapie. Ontdek wat écht werkt tegen slaapproblemen voor mannen boven de 40.",
   h1: "Beter slapen: wat werkt écht voor mannen 40+?",
   intro:
-    "Slaap verbeteren vraagt om een aanpak in lagen. Begin met de directe verstoorders, bouw dan betere gewoontes op, en pak daarna de dieperliggende oorzaken aan. Hieronder vind je drie niveaus — begin waar het voor jou haalbaar voelt.",
+    "Slaap verbeteren vraagt om een aanpak in lagen. [De beste magnesium supplementen](/beste-magnesium) vind je in onze productvergelijking — naast de gids. Begin met de directe verstoorders, bouw dan betere gewoontes op, en pak daarna de dieperliggende oorzaken aan. Hieronder vind je drie niveaus — begin waar het voor jou haalbaar voelt.",
   niveaus: [
     {
       niveau: 1,

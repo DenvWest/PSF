@@ -125,18 +125,6 @@ export default function Page() {
                 </Link>
               </p>
               <Link
-                href="/beste-magnesium"
-                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
-              >
-                Zink combineren met magnesium? Bekijk de magnesiumvergelijking
-              </Link>
-              <Link
-                href="/beste-ashwagandha"
-                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
-              >
-                Testosteron verder ondersteunen? Bekijk de ashwagandha vergelijking
-              </Link>
-              <Link
                 href="/intake"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
               >

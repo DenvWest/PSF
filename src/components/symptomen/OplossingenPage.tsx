@@ -5,6 +5,7 @@ import OplossingNiveauBlok from "./OplossingNiveauBlok";
 import CTASection from "./CTASection";
 import GerelateerdBlok from "./GerelateerdBlok";
 import Container from "@/components/layout/Container";
+import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 
 interface OplossingenPageProps {
   data: OplossingenData;
@@ -32,7 +33,7 @@ export default function OplossingenPage({ data, symptoomLabel }: OplossingenPage
               {data.h1}
             </h1>
             <p className="mt-5 text-base leading-7 text-stone-600 md:text-lg">
-              {data.intro}
+              {renderInlineMarkdownLinks(data.intro)}
             </p>
           </div>
         </Container>

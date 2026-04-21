@@ -69,7 +69,7 @@ export const energieOorzaken: OorzakenData = {
       kernboodschap:
         "Testosterondaling, een traag werkende schildklier, vitamine D-tekort en insulineresistentie zijn fysiologische oorzaken die energie structureel ondermijnen.",
       voorbeelden: [
-        "Vitamine D-tekort komt voor bij meer dan 50% van mannen boven de 40 en is direct gelinkt aan vermoeidheid en spierkracht",
+        "[Vitamine D-tekort](/beste-vitamine-d) komt voor bij meer dan 50% van mannen boven de 40 en is direct gelinkt aan vermoeidheid en spierkracht",
         "Subklinische hypothyreoïdie — een trage schildklier net onder de behandelgrens — veroorzaakt chronische uitputting die labs missen",
       ],
       blogLink: {
@@ -94,7 +94,7 @@ export const energieOplossingen: OplossingenData = {
     "Van eiwitrijk ontbijt tot bloedpanel. Ontdek wat écht werkt tegen lage energie voor mannen boven de 40.",
   h1: "Meer energie: wat werkt écht voor mannen 40+?",
   intro:
-    "Energie aanpakken werkt het beste van buiten naar binnen. Begin met de directe oorzaken in je dag, bouw dan betere gewoontes op, en laat daarna meten wat er fysiologisch speelt. Hieronder drie niveaus — begin waar jij nu staat.",
+    "Energie aanpakken werkt het beste van buiten naar binnen. [De beste omega-3 supplementen](/beste-omega-3-supplement) ondersteunen mitochondriële en ontstekingsfunctie bij weinig vis — naast leefstijl. Begin met de directe oorzaken in je dag, bouw dan betere gewoontes op, en laat daarna meten wat er fysiologisch speelt. Hieronder drie niveaus — begin waar jij nu staat.",
   niveaus: [
     {
       niveau: 1,

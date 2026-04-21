@@ -198,7 +198,7 @@ export const ashwagandhaData: ComparisonPageData = {
     {
       question: "Kan ik ashwagandha combineren met magnesium?",
       answer:
-        "Ja, de combinatie is complementair. Ashwagandha verlaagt cortisol en ondersteunt stressresistentie; magnesium (met name bisglycinaat) bevordert ontspanning en slaapkwaliteit. Beide kunnen 's avonds worden ingenomen. Bekijk ook onze magnesiumvergelijking voor de beste keuze.",
+        "Ja, de combinatie is complementair. Ashwagandha verlaagt cortisol en ondersteunt stressresistentie; magnesium (met name bisglycinaat) bevordert ontspanning en slaapkwaliteit — combineer met magnesium voor slaap als je beide doelen hebt. Beide kunnen 's avonds worden ingenomen. Bekijk onze [magnesiumvergelijking](/beste-magnesium) voor productkeuze.",
     },
     {
       question: "Hoe lang moet ik ashwagandha gebruiken?",

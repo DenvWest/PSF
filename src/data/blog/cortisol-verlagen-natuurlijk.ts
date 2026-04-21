@@ -38,7 +38,7 @@ export const cortisolVerlagenData: BlogArtikel = {
       type: "tekst",
       titel: "De rol van voeding en bloedsuiker",
       tekst:
-        "Bloedsuikerschommelingen zijn een onderschatte cortisolaanjager. Elke sterke daling van de bloedsuikerspiegel triggert een cortisolrespons. Praktisch: eet regelmatige maaltijden met voldoende eiwit en complexe koolhydraten, beperk geraffineerde suikers en vermijd lange perioden zonder eten. Cafeïne verhoogt cortisol bij chronisch gebruik — niet bij incidenteel gebruik. Meer dan drie koppen koffie per dag kan cortisolniveaus structureel verhogen, vooral bij mensen die al gestrest zijn.",
+        "Bloedsuikerschommelingen zijn een onderschatte cortisolaanjager. Elke sterke daling van de bloedsuikerspiegel triggert een cortisolrespons. Praktisch: eet regelmatige maaltijden met voldoende eiwit en complexe koolhydraten, beperk geraffineerde suikers en vermijd lange perioden zonder eten. [Magnesium](/beste-magnesium) ondersteunt het zenuwstelsel en spierontspanning bij stress. Cafeïne verhoogt cortisol bij chronisch gebruik — niet bij incidenteel gebruik. Meer dan drie koppen koffie per dag kan cortisolniveaus structureel verhogen, vooral bij mensen die al gestrest zijn.",
     },
     {
       type: "tekst",

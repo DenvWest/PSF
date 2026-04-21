@@ -10,6 +10,7 @@ import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
+import { renderInlineMarkdownLinks } from "./inlineMarkdownLinks";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -70,7 +71,7 @@ export default function BlogArticlePage({
             </div>
 
             <p className="mt-5 text-[1.0625rem] leading-[1.75] text-stone-600">
-              {artikel.heroIntro}
+              {renderInlineMarkdownLinks(artikel.heroIntro)}
             </p>
           </div>
         </Container>
