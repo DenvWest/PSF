@@ -87,35 +87,27 @@ export default function HomePage() {
       </div>
 
       <JourneySection />
-      <section className="border-t border-stone-200/60 pb-20 md:pb-28">
+      <section className="border-t border-stone-200/60 py-20 md:py-28">
         <div className="mx-auto max-w-[680px] px-6 lg:px-8">
-          <div
-            className="mx-auto text-center"
-            style={{
-              background: "#1a1a1a",
-              borderRadius: 16,
-              padding: "40px 24px",
-            }}
-          >
-            <h2
-              className={`${intakeCtaHeading.className} m-0 text-[24px] font-normal leading-snug text-white`}
-            >
-              Ontdek waar je staat
+          <div className="bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] text-white rounded-2xl p-8 lg:p-12 text-center">
+            <h2 className={`${intakeCtaHeading.className} text-2xl lg:text-3xl text-white`}>
+              Niet zeker waar je moet beginnen?
             </h2>
-            <p
-              className="mx-auto mt-3 max-w-[28rem] text-[15px] leading-relaxed text-[#999]"
-            >
-              Beantwoord 12 vragen en krijg een persoonlijk herstelplan.
+            <p className="text-white/80 mt-3 max-w-md mx-auto text-sm leading-relaxed">
+              Doe onze gratis Leefstijlcheck — 12 vragen, 3 minuten, persoonlijk
+              resultaat.
             </p>
-            <Link
-              href="/intake"
-              className="mt-6 inline-flex items-center gap-1.5 rounded-lg bg-[#5A8F6A] px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#4a7a5a] hover:shadow-md"
-            >
-              Start de intake
-              <span aria-hidden="true">→</span>
-            </Link>
-            <p className="mb-0 mt-4 text-[12px] text-[#666]">
-              Duurt 3 minuten · gratis · geen account nodig
+            <div className="mt-6">
+              <Link
+                href="/intake"
+                className="inline-flex items-center gap-2 bg-white text-[#5A8F6A] rounded-lg px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
+              >
+                Start de Leefstijlcheck
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <p className="text-white/50 text-xs mt-4">
+              Geen account nodig · Je gegevens worden anoniem verwerkt
             </p>
           </div>
         </div>
