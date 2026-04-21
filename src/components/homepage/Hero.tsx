@@ -28,13 +28,14 @@ export default function Hero() {
             <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap sm:justify-start sm:gap-4">
               <Link
                 href="/intake"
-                className="inline-flex min-h-[44px] min-w-[12rem] items-center justify-center rounded-xl bg-emerald-800 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-900 focus-visible:outline focus-visible:ring-2 focus-visible:ring-emerald-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ps-bg)]"
+                className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#4a7a5a] hover:shadow-md focus-visible:outline focus-visible:ring-2 focus-visible:ring-[#5A8F6A]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ps-bg)]"
               >
-                Doe de leefstijlcheck →
+                Doe de leefstijlcheck
+                <span aria-hidden="true">→</span>
               </Link>
               <Link
                 href="/supplementen"
-                className="inline-flex min-h-[44px] min-w-[12rem] items-center justify-center rounded-xl border border-stone-300/90 bg-white/70 px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition hover:border-stone-400 hover:bg-white focus-visible:outline focus-visible:ring-2 focus-visible:ring-stone-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ps-bg)]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 shadow-sm transition hover:border-stone-400 hover:bg-stone-50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-stone-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ps-bg)]"
               >
                 Bekijk supplementen
               </Link>

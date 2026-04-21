@@ -238,7 +238,7 @@ export default function SupplementenPage() {
               <div className="mt-6">
                 <Link
                   href="/intake"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#5A8F6A] px-7 py-3 text-sm font-semibold text-white hover:bg-[#4a7a5a] transition-all shadow-sm hover:shadow-md"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#5A8F6A] px-7 py-3 text-sm font-semibold text-white hover:bg-[#4a7a5a] transition-all shadow-sm hover:shadow-md"
                 >
                   Doe de Leefstijlcheck →
                 </Link>
@@ -497,7 +497,7 @@ export default function SupplementenPage() {
             <div className="mt-6">
               <Link
                 href="/intake"
-                className="inline-flex items-center gap-2 bg-white text-[#5A8F6A] rounded-full px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
+                className="inline-flex items-center gap-2 bg-white text-[#5A8F6A] rounded-lg px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
               >
                 Start de Leefstijlcheck
                 <span aria-hidden="true">→</span>
