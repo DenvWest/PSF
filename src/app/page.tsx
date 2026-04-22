@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DM_Serif_Display } from "next/font/google";
 import Hero from "@/components/homepage/Hero";
-import JourneySection from "@/components/homepage/JourneySection";
 import "./homepage.css";
-
-const intakeCtaHeading = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
+import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -86,11 +79,15 @@ export default function HomePage() {
         </ul>
       </div>
 
-      <JourneySection />
-      <section className="border-t border-stone-200/60 py-20 md:py-28">
-        <div className="mx-auto max-w-[680px] px-6 lg:px-8">
+      {/* ── Sectie 4: Leefstijlcheck CTA ─────────────────────── */}
+      <section
+        className="py-16 lg:py-20"
+        style={{ background: "#FDFCFA" }}
+        aria-label="Leefstijlcheck"
+      >
+        <Container>
           <div className="bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] text-white rounded-2xl p-8 lg:p-12 text-center">
-            <h2 className={`${intakeCtaHeading.className} text-2xl lg:text-3xl text-white`}>
+            <h2 className="font-serif text-2xl lg:text-3xl text-white">
               Niet zeker waar je moet beginnen?
             </h2>
             <p className="text-white/80 mt-3 max-w-md mx-auto text-sm leading-relaxed">
@@ -110,7 +107,7 @@ export default function HomePage() {
               Geen account nodig · Je gegevens worden anoniem verwerkt
             </p>
           </div>
-        </div>
+        </Container>
       </section>
     </div>
   );
