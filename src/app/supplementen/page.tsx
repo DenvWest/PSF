@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import PersonalizedRecommendations from "@/components/supplements/PersonalizedRecommendations";
 
 export const metadata: Metadata = {
   title: "Supplementengids — Onafhankelijk advies voor mannen 40+ | PerfectSupplement",
@@ -283,6 +284,16 @@ export default function SupplementenPage() {
               </div>
             </div>
           </div>
+        </Container>
+      </section>
+
+      <section
+        className="pt-0 pb-4 lg:pb-6"
+        style={{ background: "#FDFCFA" }}
+        aria-label="Persoonlijke supplementaanbevelingen"
+      >
+        <Container>
+          <PersonalizedRecommendations />
         </Container>
       </section>
 
