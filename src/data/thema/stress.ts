@@ -164,6 +164,43 @@ export const stressThema: ThemaPageData = {
     },
   ],
 
+  leesOok: {
+    sectionLabel: "MEER NAVIGATIE",
+    title: "Lees ook",
+    items: [
+      {
+        context:
+          "Beter slapen is vaak de snelste hefboom op je stresssysteem: het thema slaap vult aan wat hier op hoofdlijnen staat (ritme, licht, supplementkeuze).",
+        href: "/thema/slaap",
+        label: "Thema: slaap (ritme, cortisol, herstel)",
+      },
+      {
+        context:
+          "KSM-66 en vergelijkbare extracten: wat onderzoek zegt over cortisol, stemming en nachtrust — met productvergelijking.",
+        href: "/beste-ashwagandha",
+        label: "Beste ashwagandha-supplementen vergeleken",
+      },
+      {
+        context:
+          "Eerlijke top picks op vorm, elementair gehalte en prijs per dag, relevant voor onrust en fysieke spanning.",
+        href: "/beste-magnesium",
+        label: "Beste magnesium-supplementen vergeleken",
+      },
+      {
+        context:
+          "Volledige uitleg over adaptogenen, wanneer ashwagandha wél of níét past, en praktische dosering.",
+        href: "/supplementen/ashwagandha",
+        label: "Ashwagandhagids",
+      },
+      {
+        context:
+          "Glycinaat, tauraat, citraat: welke vorm kies je bij piekeren, gespannen spieren of slappe nachten?",
+        href: "/supplementen/magnesium",
+        label: "Magnesiumgids",
+      },
+    ],
+  },
+
   seo: {
     title:
       "Stress bij mannen 40+ herkennen en aanpakken | PerfectSupplement",

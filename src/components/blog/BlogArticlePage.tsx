@@ -1,7 +1,7 @@
 import type { BlogArtikel } from "@/types/blog";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import Container from "@/components/layout/Container";
-import Breadcrumbs from "@/components/symptomen/Breadcrumbs";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlogCategorieBadge from "./BlogCategorieBadge";
 import BlogMeta from "./BlogMeta";
 import BlogSectie from "./BlogSectie";

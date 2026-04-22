@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { SupplementData } from "@/types/supplementen";
 import Container from "@/components/layout/Container";
-import Breadcrumbs from "@/components/symptomen/Breadcrumbs";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import VormCard from "./VormCard";
 import RelevantieCard from "./RelevantieCard";
 import SymptoomLinkCard from "./SymptoomLinkCard";
@@ -151,10 +151,10 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </div>
           </section>
 
-          {/* ── Sectie 5: Gerelateerde symptomen ─────────────────────── */}
-          <section aria-labelledby="symptomen-heading">
+          {/* ── Sectie 5: Gerelateerde thema&apos;s ─────────────────────── */}
+          <section aria-labelledby="thema-gerelateerd-heading">
             <h2
-              id="symptomen-heading"
+              id="thema-gerelateerd-heading"
               className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
             >
               {data.gerelateerdeSymptomen.titel}

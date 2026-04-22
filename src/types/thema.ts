@@ -77,6 +77,17 @@ export interface ThemaPageData {
     category: string;
   }>;
 
+  /** Aanvullende interne links (thema’s, vergelijkingen, gidsen) met korte context. */
+  leesOok: {
+    sectionLabel: string;
+    title: string;
+    items: Array<{
+      context: string;
+      href: string;
+      label: string;
+    }>;
+  };
+
   seo: {
     title: string;
     description: string;

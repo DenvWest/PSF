@@ -48,6 +48,18 @@ export default async function ThemaPage({ params }: Props) {
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone-600">
             {data.heroSubtitle}
           </p>
+          <p className="mt-8">
+            <Link
+              href="/intake"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#5A8F6A] underline decoration-[#5A8F6A]/30 underline-offset-4 transition hover:text-[#4a7a5a] hover:decoration-[#4a7a5a]/50"
+            >
+              Start de Leefstijlcheck
+              <span aria-hidden>→</span>
+            </Link>
+            <span className="ml-2 text-sm text-stone-500">
+              12 vragen, ongeveer 3 minuten, gratis
+            </span>
+          </p>
         </Container>
       </section>
 
@@ -267,33 +279,82 @@ export default async function ThemaPage({ params }: Props) {
 
       {/* ─── GERELATEERDE ARTIKELEN ─── */}
       {data.relatedArticles.length > 0 && (
-        <section className="bg-[#F7F5F0] py-16 lg:py-20">
+        <section
+          className="bg-[#F7F5F0] py-16 lg:py-20"
+          aria-labelledby="gerelateerde-artikelen-heading"
+        >
           <Container>
             <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
               VERDER LEZEN
             </p>
-            <h2 className="mt-3 font-serif text-2xl text-stone-900">
+            <h2
+              id="gerelateerde-artikelen-heading"
+              className="mt-3 font-serif text-2xl text-stone-900"
+            >
               Gerelateerde artikelen
             </h2>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {data.relatedArticles.map((article, i) => (
-                <Link
-                  key={i}
-                  href={`/blog/${article.category}`}
-                  className="group flex items-center justify-between rounded-xl border border-stone-200 bg-white p-5 transition-all hover:border-stone-300 hover:shadow-sm"
-                >
-                  <span className="text-sm font-medium text-stone-800">
-                    {article.title}
-                  </span>
-                  <span className="text-stone-400 transition-transform group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
-              ))}
-            </div>
+            <nav className="mt-8" aria-label="Blogcategorieën en artikelen">
+              <ul className="grid gap-4 sm:grid-cols-2" role="list">
+                {data.relatedArticles.map((article, i) => (
+                  <li key={i}>
+                    <Link
+                      href={`/blog/${article.category}`}
+                      className="group flex items-center justify-between rounded-xl border border-stone-200 bg-white p-5 transition-all hover:border-stone-300 hover:shadow-sm"
+                    >
+                      <span className="text-sm font-medium text-stone-800">
+                        {article.title}
+                      </span>
+                      <span className="text-stone-400 transition-transform group-hover:translate-x-0.5">
+                        →
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </Container>
         </section>
       )}
+
+      <section
+        className="border-t border-stone-200/80 py-16 lg:py-20"
+        aria-labelledby="lees-ook-heading"
+      >
+        <Container>
+          <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
+            {data.leesOok.sectionLabel}
+          </p>
+          <h2
+            id="lees-ook-heading"
+            className="mt-3 font-serif text-2xl text-stone-900"
+          >
+            {data.leesOok.title}
+          </h2>
+          <aside className="mt-8" aria-label="Aanvullende links en thema’s">
+            <nav aria-label="Kies verdieping of vergelijking">
+              <ul className="space-y-6" role="list">
+                {data.leesOok.items.map((item) => (
+                  <li
+                    key={item.href}
+                    className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                  >
+                    <p className="text-sm leading-relaxed text-stone-600">
+                      {item.context}
+                    </p>
+                    <Link
+                      href={item.href}
+                      className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#5A8F6A] transition hover:gap-1.5"
+                    >
+                      {item.label}
+                      <span aria-hidden>→</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        </Container>
+      </section>
 
       {/* ─── MEDISCHE DISCLAIMER ─── */}
       <section className="py-10">

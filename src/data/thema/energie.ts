@@ -164,6 +164,43 @@ export const energieThema: ThemaPageData = {
     },
   ],
 
+  leesOok: {
+    sectionLabel: "MEER NAVIGATIE",
+    title: "Lees ook",
+    items: [
+      {
+        context:
+          "Chronische stress en hoge insuline-eisen vreten dezelfde ‘brandstof’ weg als pure energie-tekorten — lees beide lijnen naast elkaar.",
+        href: "/thema/stress",
+        label: "Thema: stress (cortisol, herstel)",
+      },
+      {
+        context:
+          "EPA en DHA op één lijn gezet: zuiverheid, dosering, prijs per dag — handig als je weinig vette vis eet.",
+        href: "/beste-omega-3-supplement",
+        label: "Beste omega-3-supplementen vergeleken",
+      },
+      {
+        context:
+          "Monohydraat en prijs per dosering: compact vergelijken als je (weer) met creatine aan de slag wilt om explosieve en cognitieve output te ondersteunen.",
+        href: "/beste-creatine",
+        label: "Beste creatine-supplementen vergeleken",
+      },
+      {
+        context:
+          "Hersenen, hart, ontstekingsbalans: wanneer omega-3 prioriteit heeft na je 40e en hoe je producten beoordeelt.",
+        href: "/supplementen/omega-3",
+        label: "Omega-3 gids (EPA, DHA, keuzehulp)",
+      },
+      {
+        context:
+          "D3, K2, opname, veelvoorkomende tekorten en wat je op het etiket checkt (ook voor vermoeidheid en spierfunctie).",
+        href: "/supplementen/vitamine-d",
+        label: "Vitamine D gids (D3, K2, praktische keuze)",
+      },
+    ],
+  },
+
   seo: {
     title:
       "Energie terugwinnen als man 40+ | Oorzaken, tips en supplementen | PerfectSupplement",

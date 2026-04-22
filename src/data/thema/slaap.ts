@@ -164,6 +164,31 @@ export const slaapThema: ThemaPageData = {
     },
   ],
 
+  leesOok: {
+    sectionLabel: "MEER NAVIGATIE",
+    title: "Lees ook",
+    items: [
+      {
+        context:
+          "Hoge of scheve cortisol geeft vaak dezelfde nachtrust-problemen als ‘pure’ slaapissues — het helpt om stress en herstel in één beeld te zien.",
+        href: "/thema/stress",
+        label: "Thema: stress (cortisol en herstel)",
+      },
+      {
+        context:
+          "Magnesium is een van de meest gebruikte mineraal-supplementen voor betere nachtrust; onze vergelijking zet vorm, prijs en praktische dosering op een rij.",
+        href: "/beste-magnesium",
+        label: "Beste magnesium-supplementen vergeleken",
+      },
+      {
+        context:
+          "Diep in op glycinaat, citraat, oxide en wanneer wat past bij jouw doel (slaap, spieren, spijsvertering).",
+        href: "/supplementen/magnesium",
+        label: "Magnesiumgids: werking, vormen, dosering",
+      },
+    ],
+  },
+
   seo: {
     title:
       "Slaap verbeteren als man 40+ — Oorzaken, tips en supplementen | PerfectSupplement",
