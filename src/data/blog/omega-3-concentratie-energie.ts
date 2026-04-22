@@ -41,7 +41,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij energieklachten",
-    href: "/symptomen/energie/oplossingen",
+    href: "/thema/energie",
   },
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",

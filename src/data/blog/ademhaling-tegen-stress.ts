@@ -37,7 +37,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
     "Langzame, middenrifgestuurde ademhaling schakelt binnen minuten over naar een rustiger zenuwstelsel. Probeer 4-7-8 voor de nacht, box breathing onder werkstress en coherent ademen als dagelijkse gewoonte.",
   cornerstoneLink: {
     label: "Oplossingen bij stress",
-    href: "/symptomen/stress/oplossingen",
+    href: "/thema/stress",
   },
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",

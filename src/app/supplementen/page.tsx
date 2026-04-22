@@ -146,9 +146,9 @@ const THEMES = [
     icon: "⚡",
     label: "Energie",
     description: "Energieniveau, voeding, focus",
-    href: "#energie",
+    href: "/thema/energie",
     iconBg: "bg-emerald-100",
-    comingSoon: true,
+    comingSoon: false,
   },
   {
     id: "herstel",

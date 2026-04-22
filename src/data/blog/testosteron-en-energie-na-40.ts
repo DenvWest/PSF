@@ -36,7 +36,7 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     "Energie na 40 heeft zelden één hormonale oorzaak. Bij klachten die passen bij laag testosteron hoort een zorgvuldige meting en uitsluiting van andere factoren — geen zelftherapie op basis van een internettest.",
   cornerstoneLink: {
     label: "Oplossingen bij energieklachten",
-    href: "/symptomen/energie/oplossingen",
+    href: "/thema/energie",
   },
   gerelateerdeSluggen: [
     "vitamine-d-tekort-herkennen",

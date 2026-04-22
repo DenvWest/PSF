@@ -22,8 +22,8 @@ export default function OplossingenPage({ data, symptoomLabel }: OplossingenPage
         <Container className="py-10 md:py-14">
           <Breadcrumbs
             items={[
-              { label: "Symptomen", href: "/symptomen" },
-              { label: symptoomLabel, href: `/symptomen/${data.slug}` },
+              { label: "Thema's", href: "/supplementen" },
+              { label: symptoomLabel, href: `/thema/${data.slug}` },
               { label: "Oplossingen" },
             ]}
           />

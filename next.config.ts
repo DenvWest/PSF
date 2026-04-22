@@ -11,17 +11,17 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/symptomen",
+        destination: "/supplementen",
+        permanent: true,
+      },
+      {
         source: "/symptomen/slaap",
         destination: "/thema/slaap",
         permanent: true,
       },
       {
-        source: "/symptomen/slaap/oorzaken",
-        destination: "/thema/slaap",
-        permanent: true,
-      },
-      {
-        source: "/symptomen/slaap/oplossingen",
+        source: "/symptomen/slaap/:path*",
         destination: "/thema/slaap",
         permanent: true,
       },
@@ -31,13 +31,18 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/symptomen/stress/oorzaken",
+        source: "/symptomen/stress/:path*",
         destination: "/thema/stress",
         permanent: true,
       },
       {
-        source: "/symptomen/stress/oplossingen",
-        destination: "/thema/stress",
+        source: "/symptomen/energie",
+        destination: "/thema/energie",
+        permanent: true,
+      },
+      {
+        source: "/symptomen/energie/:path*",
+        destination: "/thema/energie",
         permanent: true,
       },
     ];

@@ -49,7 +49,7 @@ export const energieVerhogenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij energieklachten",
-    href: "/symptomen/energie/oplossingen",
+    href: "/thema/energie",
   },
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",

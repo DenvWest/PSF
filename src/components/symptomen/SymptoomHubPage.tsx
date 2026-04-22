@@ -15,7 +15,7 @@ export default function SymptoomHubPage({ data }: SymptoomHubPageProps) {
         <Container className="py-10 md:py-14">
           <Breadcrumbs
             items={[
-              { label: "Symptomen", href: "/symptomen" },
+              { label: "Thema's", href: "/supplementen" },
               { label: data.label },
             ]}
           />
@@ -40,7 +40,7 @@ export default function SymptoomHubPage({ data }: SymptoomHubPageProps) {
         {/* ── Twee kaarten ─────────────────────────────────────────────── */}
         <div className="mt-10 grid gap-5 sm:grid-cols-2">
           <Link
-            href={`/symptomen/${data.slug}/oorzaken`}
+            href={`/thema/${data.slug}`}
             className="group flex flex-col justify-between rounded-2xl border border-stone-200/90 bg-white p-7 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400"
           >
             <div>
@@ -61,7 +61,7 @@ export default function SymptoomHubPage({ data }: SymptoomHubPageProps) {
           </Link>
 
           <Link
-            href={`/symptomen/${data.slug}/oplossingen`}
+            href={`/thema/${data.slug}`}
             className="group flex flex-col justify-between rounded-2xl border border-stone-200/90 bg-white p-7 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400"
           >
             <div>

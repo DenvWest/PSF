@@ -104,19 +104,19 @@ export const ashwagandhaData: SupplementData = {
         symptoom: "Stress",
         tekst:
           "Ashwagandha is het best onderzochte adaptogeen voor chronische stress — het verlaagt cortisol en verbetert stressbestendigheid.",
-        href: "/symptomen/stress/oplossingen",
+        href: "/thema/stress",
       },
       {
         symptoom: "Slaap",
         tekst:
           "Door cortisolniveaus in de avond te verlagen helpt ashwagandha je lichaam sneller in slaapstand te komen.",
-        href: "/symptomen/slaap/oplossingen",
+        href: "/thema/slaap",
       },
       {
         symptoom: "Energie",
         tekst:
           "Minder cortisol en betere slaap werken door in je energieniveau overdag. Ashwagandha ondersteunt ook testosteron, dat invloed heeft op motivatie.",
-        href: "/symptomen/energie/oplossingen",
+        href: "/thema/energie",
       },
     ],
   },

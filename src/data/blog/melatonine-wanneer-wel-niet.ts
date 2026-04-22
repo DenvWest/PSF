@@ -41,7 +41,7 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij slaapproblemen",
-    href: "/symptomen/slaap/oplossingen",
+    href: "/thema/slaap",
   },
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",

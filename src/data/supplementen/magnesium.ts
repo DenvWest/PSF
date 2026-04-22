@@ -111,19 +111,19 @@ export const magnesiumData: SupplementData = {
         symptoom: "Stress",
         tekst:
           "Magnesium ondersteunt de afbraak van cortisol en helpt je zenuwstelsel ontspannen.",
-        href: "/symptomen/stress/oplossingen",
+        href: "/thema/stress",
       },
       {
         symptoom: "Slaap",
         tekst:
           "Magnesium glycinaat wordt het meest aanbevolen bij slaapproblemen vanwege het kalmerende effect.",
-        href: "/symptomen/slaap/oplossingen",
+        href: "/thema/slaap",
       },
       {
         symptoom: "Energie",
         tekst:
           "Als cofactor bij ATP-productie helpt magnesium je lichaam efficiënter energie vrijmaken.",
-        href: "/symptomen/energie/oplossingen",
+        href: "/thema/energie",
       },
     ],
   },

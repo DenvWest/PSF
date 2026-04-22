@@ -60,7 +60,7 @@ export default function SymptomenPage() {
             <li key={symptoom.slug} className="list-none">
               {/* Hele kaart is klikbaar via de Link-wrapper */}
               <Link
-                href={`/symptomen/${symptoom.slug}`}
+                href={`/thema/${symptoom.slug}`}
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400"
                 aria-label={`Meer over ${symptoom.title}`}
               >

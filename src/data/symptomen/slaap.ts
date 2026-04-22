@@ -83,7 +83,7 @@ export const slaapOorzaken: OorzakenData = {
     "Als je weet wat je slaap verstoort, kun je gericht ingrijpen. Van kleine aanpassingen in je avondroutine tot structurele veranderingen — er zijn concrete stappen die werken.",
   ctaOplossingen: {
     label: "Bekijk oplossingen voor slaap",
-    href: "/symptomen/slaap/oplossingen",
+    href: "/thema/slaap",
   },
 };
 

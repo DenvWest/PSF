@@ -134,21 +134,21 @@ export default function BlogPage() {
       <div className="ps-divider" />
 
       {/* ── ROUTE-ADVIES ───────────────────────────────────────────── */}
-      <section className="py-20 md:py-28" aria-label="Symptoomgidsen">
+      <section className="py-20 md:py-28" aria-label="Themagidsen">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
               Liever beginnen bij je klacht?
             </p>
             <p className="mx-auto mt-4 max-w-lg text-[0.9375rem] leading-relaxed text-stone-500">
-              Onze symptoomgidsen helpen je begrijpen wat er speelt en wijzen
-              je naar concrete stappen.
+              Onze themagidsen helpen je begrijpen wat er speelt en wijzen je
+              naar concrete stappen.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               {[
-                { label: "Stress", href: "/symptomen/stress" },
-                { label: "Slaapproblemen", href: "/symptomen/slaap" },
-                { label: "Energieverlies", href: "/symptomen/energie" },
+                { label: "Stress", href: "/thema/stress" },
+                { label: "Slaapproblemen", href: "/thema/slaap" },
+                { label: "Energieverlies", href: "/thema/energie" },
               ].map((link) => (
                 <Link
                   key={link.href}

@@ -83,7 +83,7 @@ export const energieOorzaken: OorzakenData = {
     "Energie terugwinnen begint met begrijpen waar het weglekt. Van kleine dagelijkse aanpassingen tot een gerichte bloedtest — er zijn concrete stappen die het verschil maken.",
   ctaOplossingen: {
     label: "Bekijk oplossingen voor energie",
-    href: "/symptomen/energie/oplossingen",
+    href: "/thema/energie",
   },
 };
 

@@ -104,13 +104,13 @@ export const vitamineDData: SupplementData = {
         symptoom: "Energie",
         tekst:
           "Een vitamine D-tekort is een van de meest over het hoofd geziene oorzaken van aanhoudende vermoeidheid bij mannen 40+.",
-        href: "/symptomen/energie/oplossingen",
+        href: "/thema/energie",
       },
       {
         symptoom: "Stress",
         tekst:
           "Vitamine D ondersteunt testosteronproductie en immuunregulatie — beiden relevant bij chronische stress en uitputting.",
-        href: "/symptomen/stress/oplossingen",
+        href: "/thema/stress",
       },
     ],
   },

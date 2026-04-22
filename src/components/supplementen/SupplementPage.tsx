@@ -254,8 +254,8 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               <Link href="/supplementen" className="ps-btn-primary">
                 Alle supplementen
               </Link>
-              <Link href="/symptomen" className="ps-btn-secondary">
-                Bekijk symptomen
+              <Link href="/supplementen" className="ps-btn-secondary">
+                Bekijk thema&apos;s
               </Link>
             </div>
           </div>

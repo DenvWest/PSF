@@ -83,7 +83,7 @@ export const stressOorzaken: OorzakenData = {
     "Nu je weet waar het vandaan komt, is de volgende stap: wat kun je er concreet aan doen — van simpele aanpassingen tot diepere veranderingen.",
   ctaOplossingen: {
     label: "Bekijk oplossingen voor stress",
-    href: "/symptomen/stress/oplossingen",
+    href: "/thema/stress",
   },
 };
 

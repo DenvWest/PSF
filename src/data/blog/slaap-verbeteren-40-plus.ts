@@ -51,7 +51,7 @@ export const slaapVerbeterenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij slaapproblemen",
-    href: "/symptomen/slaap/oplossingen",
+    href: "/thema/slaap",
   },
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",

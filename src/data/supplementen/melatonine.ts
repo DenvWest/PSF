@@ -104,7 +104,7 @@ export const melatonineData: SupplementData = {
         symptoom: "Slaap",
         tekst:
           "Melatonine is het meest direct werkzame supplement bij slaapinitiatieproblemen en circadiane ritmeverstoringen.",
-        href: "/symptomen/slaap/oplossingen",
+        href: "/thema/slaap",
       },
     ],
   },
