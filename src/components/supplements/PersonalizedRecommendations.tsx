@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { buildRecommendations } from "@/lib/build-recommendations";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
-import { getPersonalizedRecommendations } from "@/lib/supplement-recommendations";
 
 export default function PersonalizedRecommendations() {
   const [session, setSession] = useState<IntakeSessionPayload | null>(null);
@@ -30,20 +30,7 @@ export default function PersonalizedRecommendations() {
     return null;
   }
 
-  const { scores, answers, profile } = session;
-  const domainScores = {
-    slaap: scores.sleep_score,
-    energie: scores.energy_score,
-    stress: scores.stress_score,
-    voeding: scores.nutrition_score,
-    beweging: scores.movement_score,
-    herstel: scores.recovery_score,
-  };
-
-  const recommendations = getPersonalizedRecommendations(
-    domainScores,
-    answers,
-  );
+  const recommendations = buildRecommendations(session);
 
   if (recommendations.length === 0) return null;
 
@@ -55,7 +42,7 @@ export default function PersonalizedRecommendations() {
       <h2 className="font-serif text-2xl text-stone-900 mb-2">
         Op basis van jouw Leefstijlcheck
       </h2>
-      <p className="text-stone-500 text-sm mb-8">Profiel: {profile}</p>
+      <p className="text-stone-500 text-sm mb-8">Profiel: {session.profile}</p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {recommendations.map((rec) => (
@@ -70,17 +57,19 @@ export default function PersonalizedRecommendations() {
             <p className="text-sm text-stone-600 mb-6 flex-1">{rec.reason}</p>
             <div className="flex flex-col gap-2">
               <Link
-                href={`/supplementen/${rec.slug}`}
+                href={rec.guideHref}
                 className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"
               >
                 Lees de gids →
               </Link>
-              <Link
-                href={`/${rec.comparisonSlug}`}
-                className="text-sm font-medium text-[#C4873B] hover:text-[#a36e2f] transition-colors"
-              >
-                Vergelijk producten →
-              </Link>
+              {rec.comparisonHref ? (
+                <Link
+                  href={rec.comparisonHref}
+                  className="text-sm font-medium text-[#C4873B] hover:text-[#a36e2f] transition-colors"
+                >
+                  Vergelijk producten →
+                </Link>
+              ) : null}
             </div>
           </div>
         ))}

@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import PersonalizedRecommendations from "@/components/supplements/PersonalizedRecommendations";
+import {
+  CATALOG,
+  HUB_COMPARISON_TAGLINES,
+  type ThemaTag,
+} from "@/data/supplementen-hub/catalog";
+import { ALL_SUPPLEMENT_SLUGS } from "@/data/supplementen";
+import type { SupplementSlug } from "@/types/supplementen";
 
 export const metadata: Metadata = {
   title: "Supplementengids — Onafhankelijk advies voor mannen 40+ | PerfectSupplement",
@@ -16,111 +23,38 @@ export const metadata: Metadata = {
 
 /* ── Data ──────────────────────────────────────────────────────── */
 
-const SUPPLEMENTS = [
-  {
-    slug: "magnesium",
-    name: "Magnesium",
-    description:
-      "Het meest veelzijdige mineraal voor mannen 40+. Ondersteunt slaap, stressregulatie en spierherstel — in meerdere vormen beschikbaar.",
-    tags: ["Slaap", "Stress", "Spieren"],
-    icon: "⚡",
-    gradient: "from-emerald-50 to-teal-50",
-    iconBg: "bg-emerald-100",
-    comingSoon: false,
-  },
-  {
-    slug: "ashwagandha",
-    name: "Ashwagandha",
-    description:
-      "Een adaptogeen met sterke onderbouwing. Verlaagt cortisol, ondersteunt mentale veerkracht en helpt bij herstel na chronische stress.",
-    tags: ["Stress", "Herstel", "Veerkracht"],
-    icon: "🌿",
-    gradient: "from-amber-50 to-orange-50",
-    iconBg: "bg-amber-100",
-    comingSoon: false,
-  },
-  {
-    slug: "omega-3",
-    name: "Omega-3",
-    description:
-      "Essentiële vetzuren die je lichaam niet zelf aanmaakt. Cruciaal voor hersenfunctie, gewrichten en ontstekingsregulatie.",
-    tags: ["Hersenen", "Gewrichten", "Hart"],
-    icon: "🐟",
-    gradient: "from-sky-50 to-blue-50",
-    iconBg: "bg-sky-100",
-    comingSoon: false,
-  },
-  {
-    slug: "vitamine-d",
-    name: "Vitamine D",
-    description:
-      "Het 'zonnevitamine' waar bijna elke Nederlander een tekort aan heeft. Essentieel voor immuniteit, botten en stemming.",
-    tags: ["Immuniteit", "Botten", "Energie"],
-    icon: "☀️",
-    gradient: "from-yellow-50 to-amber-50",
-    iconBg: "bg-yellow-100",
-    comingSoon: false,
-  },
-  {
-    slug: "creatine",
-    name: "Creatine",
-    description:
-      "Niet alleen voor sporters. Ondersteunt ook cognitieve functie en energieproductie op celniveau.",
-    tags: ["Spieren", "Energie", "Cognitie"],
-    icon: "💪",
-    gradient: "from-violet-50 to-purple-50",
-    iconBg: "bg-violet-100",
-    comingSoon: false,
-    cardHref: "/beste-creatine",
-    ctaLabel: "Bekijk vergelijking →",
-  },
-  {
-    slug: "zink",
-    name: "Zink",
-    description:
-      "Belangrijk voor testosteron, immuunsysteem en wondgenezing. Tekorten komen vaak voor bij mannen 40+.",
-    tags: ["Testosteron", "Immuniteit", "Herstel"],
-    icon: "🛡️",
-    gradient: "from-slate-50 to-gray-50",
-    iconBg: "bg-slate-100",
-    comingSoon: false,
-    cardHref: "/beste-zink",
-    ctaLabel: "Bekijk vergelijking →",
-  },
-] as const;
+const THEMA_LABELS: Record<ThemaTag, string> = {
+  slaap: "Slaap",
+  stress: "Stress",
+  energie: "Energie",
+  herstel: "Herstel",
+};
 
-const VERGELIJKINGEN = [
-  {
-    href: "/beste-magnesium",
-    name: "Magnesium",
-    tagline: "Vormen, elementair gehalte en prijs per dag op een rij.",
-  },
-  {
-    href: "/beste-omega-3-supplement",
-    name: "Omega-3",
-    tagline: "EPA/DHA, zuiverheid en dagkosten — eerlijk vergeleken.",
-  },
-  {
-    href: "/beste-ashwagandha",
-    name: "Ashwagandha",
-    tagline: "Extracten, withanoliden en dosering voor stress & herstel.",
-  },
-  {
-    href: "/beste-vitamine-d",
-    name: "Vitamine D",
-    tagline: "D3, K2-combo’s en wat het etiket écht zegt.",
-  },
-  {
-    href: "/beste-creatine",
-    name: "Creatine",
-    tagline: "Monohydraat, micronized en prijs per dosering.",
-  },
-  {
-    href: "/beste-zink",
-    name: "Zink",
-    tagline: "Bisglycinaat, picolinaat en opname — praktisch gekozen.",
-  },
-] as const;
+const CARD_VISUALS: Record<string, { gradient: string }> = {
+  magnesium: { gradient: "from-emerald-50 to-teal-50" },
+  ashwagandha: { gradient: "from-amber-50 to-orange-50" },
+  "omega-3": { gradient: "from-sky-50 to-blue-50" },
+  "vitamine-d": { gradient: "from-yellow-50 to-amber-50" },
+  creatine: { gradient: "from-violet-50 to-purple-50" },
+  zink: { gradient: "from-slate-50 to-gray-50" },
+};
+
+function supplementHasGuide(slug: string): boolean {
+  return ALL_SUPPLEMENT_SLUGS.includes(slug as SupplementSlug);
+}
+
+function hubCardHref(entry: (typeof CATALOG)[number]): string {
+  if (entry.comingSoon) return "#";
+  if (supplementHasGuide(entry.slug)) return entry.guideHref;
+  if (entry.comparisonHref) return entry.comparisonHref;
+  return entry.guideHref;
+}
+
+function hubCardCtaLabel(entry: (typeof CATALOG)[number]): string {
+  if (supplementHasGuide(entry.slug)) return "Lees de gids";
+  if (entry.comparisonHref) return "Bekijk vergelijking";
+  return "Lees de gids";
+}
 
 const THEMES = [
   {
@@ -380,21 +314,19 @@ export default function SupplementenPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SUPPLEMENTS.map((item) => {
-              const cardHref =
-                "cardHref" in item && item.cardHref
-                  ? item.cardHref
-                  : `/supplementen/${item.slug}`;
-              const ctaBase =
-                "ctaLabel" in item && item.ctaLabel
-                  ? item.ctaLabel.replace(/\s*→\s*$/, "").trim()
-                  : "Lees de gids";
+            {CATALOG.map((item) => {
+              const visuals = CARD_VISUALS[item.slug] ?? {
+                gradient: "from-stone-50 to-stone-100",
+              };
+              const cardHref = hubCardHref(item);
+              const ctaBase = hubCardCtaLabel(item);
+              const tagLabels = item.themas.map((t) => THEMA_LABELS[t]);
 
               const cardInner = (
                 <div className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
                   {/* Gradient header */}
                   <div
-                    className={`bg-gradient-to-br ${item.gradient} h-32 flex items-center justify-center relative`}
+                    className={`bg-gradient-to-br ${visuals.gradient} h-32 flex items-center justify-center relative`}
                   >
                     <span className="text-5xl" aria-hidden="true">
                       {item.icon}
@@ -412,12 +344,12 @@ export default function SupplementenPage() {
                       {item.name}
                     </h2>
                     <p className="text-sm text-stone-500 mt-2 line-clamp-2 leading-relaxed flex-1">
-                      {item.description}
+                      {item.wiifm}
                     </p>
 
                     {/* Tags */}
                     <div className="flex flex-wrap gap-1.5 mt-4">
-                      {item.tags.map((tag) => (
+                      {tagLabels.map((tag) => (
                         <span
                           key={tag}
                           className="text-xs px-2.5 py-1 rounded-full bg-stone-100 text-stone-600 font-medium"
@@ -446,7 +378,7 @@ export default function SupplementenPage() {
                 <Link
                   key={item.slug}
                   href={cardHref}
-                  data-tags={item.tags.join(",")}
+                  data-tags={tagLabels.join(",")}
                   className="block"
                 >
                   {cardInner}
@@ -467,17 +399,17 @@ export default function SupplementenPage() {
               Producten vergeleken op inhoud, kwaliteit en prijs per dag — dezelfde criteria als in onze gidsen.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {VERGELIJKINGEN.map((v) => (
+              {CATALOG.filter((e) => e.comparisonHref).map((v) => (
                 <Link
-                  key={v.href}
-                  href={v.href}
+                  key={v.comparisonHref}
+                  href={v.comparisonHref!}
                   className="group flex flex-col rounded-xl border border-stone-200 bg-white px-4 py-3.5 shadow-sm transition hover:border-[#5A8F6A]/40 hover:shadow-md"
                 >
                   <span className="font-serif text-base font-semibold text-stone-900">
                     {v.name}
                   </span>
                   <span className="mt-1 text-xs leading-relaxed text-stone-500 line-clamp-2">
-                    {v.tagline}
+                    {HUB_COMPARISON_TAGLINES[v.slug] ?? ""}
                   </span>
                   <span className="mt-2.5 inline-flex items-center gap-1 text-xs font-semibold text-[#5A8F6A] group-hover:gap-1.5 transition-all">
                     Bekijk vergelijking
