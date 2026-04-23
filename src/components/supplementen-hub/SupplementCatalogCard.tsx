@@ -17,19 +17,21 @@ type SupplementCatalogCardProps = {
 export default function SupplementCatalogCard({
   entry,
 }: SupplementCatalogCardProps) {
-  const iconBg = ICON_BG_MAP[entry.slug] ?? "bg-stone-100";
+  const iconBg = ICON_BG_MAP[entry.slug] ?? "bg-stone-50";
 
   return (
     <div data-themas={entry.themas.join(" ")} aria-disabled={entry.comingSoon ? "true" : undefined}>
       <div
-        className={`bg-white rounded-xl border border-stone-200 p-5 transition-colors flex gap-4 h-full ${
-          entry.comingSoon ? "opacity-50 cursor-default" : "hover:border-[#5A8F6A]/30"
+        className={`bg-white rounded-xl border border-stone-200 p-5 flex gap-4 h-full transition-all duration-200 ${
+          entry.comingSoon
+            ? "opacity-40 cursor-not-allowed"
+            : "hover:border-[#5A8F6A]/40 hover:shadow-md hover:-translate-y-0.5"
         }`}
       >
-        {/* Icon circle */}
+        {/* Icon */}
         <div className="flex-shrink-0">
           <span
-            className={`w-11 h-11 rounded-full flex items-center justify-center text-xl ${iconBg}`}
+            className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl ${iconBg}`}
             aria-hidden="true"
           >
             {entry.icon}
@@ -48,7 +50,7 @@ export default function SupplementCatalogCard({
               </span>
             )}
             {!entry.comingSoon && entry.topScore !== null && (
-              <span className="text-xs bg-emerald-50 text-emerald-700 rounded-full px-2 py-0.5 leading-none flex-shrink-0">
+              <span className="text-xs font-semibold bg-emerald-50 text-emerald-700 rounded-full px-2.5 py-1 leading-none flex-shrink-0">
                 Score: {entry.topScore.toFixed(1)}
               </span>
             )}
@@ -62,14 +64,14 @@ export default function SupplementCatalogCard({
             <div className="mt-3 flex flex-wrap gap-3">
               <Link
                 href={entry.guideHref}
-                className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"
+                className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
               >
                 Lees de gids →
               </Link>
               {entry.comparisonHref && entry.comparisonHref !== entry.guideHref && (
                 <Link
                   href={entry.comparisonHref}
-                  className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"
+                  className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
                 >
                   Vergelijk →
                 </Link>

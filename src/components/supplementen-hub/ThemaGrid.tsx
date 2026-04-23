@@ -7,6 +7,7 @@ export type ThemaData = {
   description: string;
   href: string;
   iconBg: string;
+  iconBgHover: string;
   comingSoon: boolean;
 };
 
@@ -17,7 +18,8 @@ export const DEFAULT_THEMAS: ThemaData[] = [
     label: "Slaap",
     description: "Slaapkwaliteit, ritme en herstel verbeteren.",
     href: "/thema/slaap",
-    iconBg: "bg-indigo-100",
+    iconBg: "bg-indigo-50",
+    iconBgHover: "group-hover:bg-indigo-100",
     comingSoon: false,
   },
   {
@@ -26,7 +28,8 @@ export const DEFAULT_THEMAS: ThemaData[] = [
     label: "Stress",
     description: "Cortisol verlagen, ontspanning en veerkracht.",
     href: "/thema/stress",
-    iconBg: "bg-amber-100",
+    iconBg: "bg-amber-50",
+    iconBgHover: "group-hover:bg-amber-100",
     comingSoon: false,
   },
   {
@@ -35,7 +38,8 @@ export const DEFAULT_THEMAS: ThemaData[] = [
     label: "Energie",
     description: "Energieniveau, focus en aandacht verbeteren.",
     href: "/thema/energie",
-    iconBg: "bg-emerald-100",
+    iconBg: "bg-emerald-50",
+    iconBgHover: "group-hover:bg-emerald-100",
     comingSoon: false,
   },
   {
@@ -44,7 +48,8 @@ export const DEFAULT_THEMAS: ThemaData[] = [
     label: "Herstel",
     description: "Spierherstel, mentale rust en regeneratie.",
     href: "/thema/herstel",
-    iconBg: "bg-rose-100",
+    iconBg: "bg-stone-50",
+    iconBgHover: "",
     comingSoon: true,
   },
 ];
@@ -57,9 +62,9 @@ export default function ThemaGrid({
   themas = DEFAULT_THEMAS,
 }: ThemaGridProps) {
   return (
-    <div>
+    <div className="py-16 md:py-20">
       <div className="mb-6">
-        <h2 className="font-display text-2xl text-stone-900">
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">
           Blader per thema
         </h2>
         <p className="mt-2 text-sm text-stone-500 max-w-lg">
@@ -70,15 +75,15 @@ export default function ThemaGrid({
       {themas.map((thema) => {
         const cardInner = (
           <div
-            className={`relative rounded-2xl border border-stone-200 bg-white p-5 flex flex-col items-start gap-3 transition-all h-full ${
+            className={`group relative rounded-2xl border border-stone-200 bg-white p-5 flex flex-col items-start transition-all duration-200 h-full ${
               thema.comingSoon
-                ? "opacity-60"
-                : "hover:border-[#5A8F6A] hover:shadow-sm cursor-pointer"
+                ? "opacity-40 cursor-not-allowed"
+                : "hover:shadow-md hover:-translate-y-1 cursor-pointer hover:border-[#5A8F6A]"
             }`}
           >
             <div className="relative">
               <span
-                className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl ${thema.iconBg}`}
+                className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-colors ${thema.iconBg} ${thema.iconBgHover}`}
                 aria-hidden="true"
               >
                 {thema.icon}
@@ -89,11 +94,11 @@ export default function ThemaGrid({
                 </span>
               )}
             </div>
-            <div>
-              <p className="font-semibold text-sm text-stone-800">
+            <div className="mt-3">
+              <p className="font-display font-semibold text-stone-900">
                 {thema.label}
               </p>
-              <p className="text-xs text-stone-500 mt-1 leading-relaxed">
+              <p className="text-sm text-stone-500 mt-1 leading-relaxed">
                 {thema.description}
               </p>
             </div>
@@ -101,7 +106,7 @@ export default function ThemaGrid({
         );
 
         return thema.comingSoon ? (
-          <div key={thema.id} className="cursor-default">
+          <div key={thema.id}>
             {cardInner}
           </div>
         ) : (

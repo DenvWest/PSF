@@ -39,14 +39,14 @@ export default function CategoryNav({ themas }: CategoryNavProps) {
 
   const chipClass = (tag: ThemaTag | "alles") =>
     tag === active
-      ? "bg-[#5A8F6A] text-white"
-      : "bg-stone-100 text-stone-600 hover:bg-stone-200";
+      ? "bg-[#5A8F6A] text-white shadow-sm font-semibold"
+      : "bg-white text-stone-600 border border-stone-200 hover:border-[#5A8F6A]/30 hover:text-[#5A8F6A] transition-all";
 
   return (
     <>
       {/* Desktop: vertical sticky sidebar */}
       <nav
-        className="hidden md:flex flex-col gap-1 sticky top-24"
+        className="hidden md:flex flex-col gap-2 sticky top-24"
         aria-label="Filter supplementen op thema"
         role="group"
       >
@@ -55,7 +55,7 @@ export default function CategoryNav({ themas }: CategoryNavProps) {
             key={tag}
             onClick={() => handleFilter(tag)}
             aria-pressed={active === tag}
-            className={`text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors ${chipClass(tag)}`}
+            className={`text-left rounded-full px-4 py-2 text-sm transition-all ${chipClass(tag)}`}
           >
             {tag === "alles" ? "Alles" : THEMA_LABELS[tag as ThemaTag]}
           </button>
@@ -64,7 +64,7 @@ export default function CategoryNav({ themas }: CategoryNavProps) {
 
       {/* Mobile: horizontal scrollable chip row */}
       <nav
-        className="flex md:hidden gap-2 overflow-x-auto pb-2 scrollbar-hide"
+        className="flex md:hidden gap-2 overflow-x-auto pb-1 scrollbar-hide"
         aria-label="Filter supplementen op thema"
         role="group"
       >
@@ -73,7 +73,7 @@ export default function CategoryNav({ themas }: CategoryNavProps) {
             key={tag}
             onClick={() => handleFilter(tag)}
             aria-pressed={active === tag}
-            className={`flex-shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${chipClass(tag)}`}
+            className={`flex-shrink-0 rounded-full px-4 py-2 text-sm transition-all ${chipClass(tag)}`}
           >
             {tag === "alles" ? "Alles" : THEMA_LABELS[tag as ThemaTag]}
           </button>

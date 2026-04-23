@@ -60,14 +60,14 @@ export default async function SupplementenPage() {
 
         {/* 2. Staat A of B */}
         {session ? (
-          <section id="aanbevolen" aria-label="Aanbevolen voor jou" className="py-16 lg:py-20">
+          <section id="aanbevolen" aria-label="Aanbevolen voor jou" className="mt-4">
             <Container>
               <RecommendedForYou session={session} />
               <ProfileUpdateLink />
             </Container>
           </section>
         ) : (
-          <section aria-label="Persoonlijke aanbevelingen" className="py-16 lg:py-20">
+          <section aria-label="Persoonlijke aanbevelingen" className="mt-4">
             <Container>
               <PersonalizationCta />
             </Container>
@@ -75,37 +75,28 @@ export default async function SupplementenPage() {
         )}
 
         {/* 3. Thema's */}
-        <section aria-label="Supplementthema's" className="py-16 lg:py-20">
+        <section aria-label="Supplementthema's" className="mt-16 md:mt-20">
           <Container>
             <ThemaGrid />
           </Container>
         </section>
 
         {/* 4. Alle supplementgidsen */}
-        <section className="py-16 lg:py-20">
+        <section className="mt-16 md:mt-20">
           <Container>
             <SupplementCatalog />
           </Container>
         </section>
 
         {/* 5. Vertrouwensblok */}
-        <section className="py-16 lg:py-20">
+        <section className="mt-16 md:mt-20">
           <Container>
             <WhyTrustUs />
           </Container>
         </section>
 
-        {/* 6. Intake CTA (alleen Staat A) */}
-        {!session && (
-          <section aria-label="Start je leefstijlcheck" className="py-16 lg:py-20">
-            <Container>
-              <PersonalizationCta />
-            </Container>
-          </section>
-        )}
-
-        {/* 7. Medische disclaimer */}
-        <Container>
+        {/* 6. Medische disclaimer */}
+        <Container className="mt-16">
           <MedicalDisclaimer />
         </Container>
       </div>

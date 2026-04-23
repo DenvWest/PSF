@@ -22,22 +22,24 @@ function InfoShieldIcon() {
 
 export function MedicalDisclaimer() {
   return (
-    <div className="border-t border-stone-200 py-6" role="complementary">
-      <div className="mx-auto flex max-w-7xl flex-col items-start gap-3 px-6 md:flex-row md:items-center md:gap-4 lg:px-8">
-        <InfoShieldIcon />
-        <div className="min-w-0 text-sm text-stone-500">
-          <p>
-            De informatie op deze pagina is geen medisch advies. Raadpleeg bij
-            klachten altijd een arts.
-          </p>
-          <p className="mt-2">
-            <Link
-              href="/medische-disclaimer"
-              className="font-medium text-stone-500 underline decoration-stone-300 underline-offset-4 transition hover:text-stone-700"
-            >
-              Lees onze volledige disclaimer →
-            </Link>
-          </p>
+    <div className="border-t border-stone-200 py-8" role="complementary">
+      <div className="bg-stone-50/50 -mx-6 px-6 lg:-mx-8 lg:px-8 py-6 rounded-lg">
+        <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:gap-4">
+          <InfoShieldIcon />
+          <div className="min-w-0 text-sm text-stone-400">
+            <p>
+              De informatie op deze pagina is geen medisch advies. Raadpleeg bij
+              klachten altijd een arts.
+            </p>
+            <p className="mt-2">
+              <Link
+                href="/medische-disclaimer"
+                className="font-medium text-stone-400 underline decoration-stone-300 underline-offset-4 transition hover:text-stone-600"
+              >
+                Lees onze volledige disclaimer →
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
