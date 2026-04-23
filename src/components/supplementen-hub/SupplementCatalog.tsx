@@ -30,20 +30,14 @@ export default function SupplementCatalog() {
         </p>
       </div>
 
-      {/* Mobile: chip row boven grid */}
-      <div className="md:hidden mb-4">
-        <CategoryNav themas={themas} />
-      </div>
-
-      <div className="md:flex md:gap-8">
-        {/* Desktop sidebar */}
-        <div className="hidden md:block w-48 flex-shrink-0">
+      {/* Eén CategoryNav: chips boven het grid op mobiel, sidebar op desktop */}
+      <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+        <div className="w-full flex-shrink-0 md:mb-0 md:w-48">
           <CategoryNav themas={themas} />
         </div>
 
-        {/* Card grid */}
-        <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CATALOG.map((entry) => (
               <SupplementCatalogCard key={entry.slug} entry={entry} />
             ))}

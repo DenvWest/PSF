@@ -54,7 +54,7 @@ export default async function SupplementenPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main>
+      <div>
         {/* 1. Hero */}
         <HubHero hasSession={!!session} />
 
@@ -108,7 +108,7 @@ export default async function SupplementenPage() {
         <Container>
           <MedicalDisclaimer />
         </Container>
-      </main>
+      </div>
     </>
   );
 }

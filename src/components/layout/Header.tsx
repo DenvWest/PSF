@@ -49,6 +49,12 @@ const searchItems = [
     { href: "/waar-let-je-op-bij-omega-3", label: "Waar let je op bij omega-3?", group: "Ingrediënten" },
 ];
 
+const mainLinkHrefs = new Set(mainLinks.map((l) => l.href));
+/** Zonder links die al in de hoofdnav staan (voorkomt dubbele “Leefstijlcheck” in zoek-overlay). */
+const directQuickLinks = searchItems.filter(
+    (item) => item.group === "Direct naar" && !mainLinkHrefs.has(item.href),
+);
+
 export default function Header() {
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -91,7 +97,6 @@ export default function Header() {
         );
     }, [query]);
 
-    const directItems = searchItems.filter((item) => item.group === "Direct naar");
     const comparisonItems = searchItems.filter((item) => item.group === "Vergelijkingen");
 
     const openSearch = () => {
@@ -195,6 +200,7 @@ export default function Header() {
             </header>
 
             <div
+                aria-hidden={!searchOpen}
                 className={`fixed inset-x-0 bottom-0 top-[72px] z-40 transition ${searchOpen ? "pointer-events-auto" : "pointer-events-none"
                     }`}
             >
@@ -296,7 +302,7 @@ export default function Header() {
                                             Direct naar
                                         </p>
                                         <div className="space-y-3">
-                                            {directItems.map((item) => (
+                                            {directQuickLinks.map((item) => (
                                                 <Link
                                                     key={item.href}
                                                     href={item.href}
@@ -383,6 +389,7 @@ export default function Header() {
             </div>
 
             <div
+                aria-hidden={!menuOpen}
                 className={`fixed inset-0 z-50 transition ${menuOpen ? "pointer-events-auto" : "pointer-events-none"
                     }`}
             >
