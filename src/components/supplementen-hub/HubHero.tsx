@@ -22,7 +22,7 @@ export default function HubHero({ hasSession }: HubHeroProps) {
         />
 
         <div className="mt-6 max-w-2xl">
-          <h1 className="font-serif text-3xl md:text-5xl text-stone-900 leading-tight">
+          <h1 className="font-display text-3xl md:text-5xl text-stone-900 leading-tight">
             Welk supplement past bij jou?
           </h1>
           <p className="mt-4 text-base md:text-lg text-stone-600 leading-relaxed max-w-xl">

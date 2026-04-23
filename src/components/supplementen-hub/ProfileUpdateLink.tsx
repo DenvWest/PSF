@@ -5,7 +5,7 @@ export default function ProfileUpdateLink() {
     <div className="mt-4">
       <Link
         href="/intake"
-        className="text-sm text-stone-400 hover:text-[#5A8F6A] transition-colors"
+        className="text-sm text-stone-500 hover:text-[#5A8F6A] transition-colors"
       >
         Leefstijlcheck opnieuw doen →
       </Link>

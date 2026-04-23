@@ -26,7 +26,7 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
   return (
     <section id="aanbevolen" aria-label="Aanbevolen voor jou">
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <h2 className="font-serif text-2xl text-stone-900">
+        <h2 className="font-display text-2xl text-stone-900">
           Aanbevolen voor jou
         </h2>
         <span className="text-xs font-medium bg-[#5A8F6A]/10 text-[#5A8F6A] rounded-full px-3 py-1">
@@ -51,7 +51,7 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
                   {rec.icon}
                 </span>
                 <div className="min-w-0">
-                  <h3 className="font-serif text-lg text-stone-900 leading-tight">
+                  <h3 className="font-display text-lg text-stone-900 leading-tight">
                     {rec.name}
                   </h3>
                   <p className="mt-1 text-sm text-stone-500 leading-relaxed">
@@ -68,14 +68,14 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
                 </div>
               )}
 
-              <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={rec.guideHref}
                   className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"
                 >
                   Lees de gids →
                 </Link>
-                {rec.comparisonHref && (
+                {rec.comparisonHref && rec.comparisonHref !== rec.guideHref && (
                   <Link
                     href={rec.comparisonHref}
                     className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"

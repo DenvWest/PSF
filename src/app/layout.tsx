@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Script from "next/script";
-import { Lora, Source_Sans_3 } from "next/font/google";
+import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import AppShell from "@/components/layout/AppShell";
 import "./globals.css";
 
-const loraFont = Lora({
+const dmSerifDisplay = DM_Serif_Display({
+  weight: "400",
   subsets: ["latin"],
   variable: "--font-heading",
   display: "swap",
 });
 
-const sourceSans = Source_Sans_3({
+const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-body",
   weight: ["300", "400", "500", "600"],
@@ -43,7 +44,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="nl" className={`${loraFont.variable} ${sourceSans.variable}`}>
+    <html lang="nl" className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
       <head>
         <meta
           name="0107f4118169ab8"

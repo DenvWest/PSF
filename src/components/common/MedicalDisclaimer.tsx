@@ -25,7 +25,7 @@ export function MedicalDisclaimer() {
     <div className="border-t border-stone-200 py-6" role="complementary">
       <div className="mx-auto flex max-w-7xl flex-col items-start gap-3 px-6 md:flex-row md:items-center md:gap-4 lg:px-8">
         <InfoShieldIcon />
-        <div className="min-w-0 text-sm text-stone-400">
+        <div className="min-w-0 text-sm text-stone-500">
           <p>
             De informatie op deze pagina is geen medisch advies. Raadpleeg bij
             klachten altijd een arts.
@@ -33,7 +33,7 @@ export function MedicalDisclaimer() {
           <p className="mt-2">
             <Link
               href="/medische-disclaimer"
-              className="font-medium text-stone-400 underline decoration-stone-300 underline-offset-4 transition hover:text-stone-500"
+              className="font-medium text-stone-500 underline decoration-stone-300 underline-offset-4 transition hover:text-stone-700"
             >
               Lees onze volledige disclaimer →
             </Link>

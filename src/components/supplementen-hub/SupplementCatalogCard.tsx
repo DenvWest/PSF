@@ -20,10 +20,10 @@ export default function SupplementCatalogCard({
   const iconBg = ICON_BG_MAP[entry.slug] ?? "bg-stone-100";
 
   return (
-    <div data-themas={entry.themas.join(" ")}>
+    <div data-themas={entry.themas.join(" ")} aria-disabled={entry.comingSoon ? "true" : undefined}>
       <div
         className={`bg-white rounded-xl border border-stone-200 p-5 transition-colors flex gap-4 h-full ${
-          entry.comingSoon ? "opacity-60" : "hover:border-[#5A8F6A]/30"
+          entry.comingSoon ? "opacity-50 cursor-default" : "hover:border-[#5A8F6A]/30"
         }`}
       >
         {/* Icon circle */}
@@ -66,7 +66,7 @@ export default function SupplementCatalogCard({
               >
                 Lees de gids →
               </Link>
-              {entry.comparisonHref && (
+              {entry.comparisonHref && entry.comparisonHref !== entry.guideHref && (
                 <Link
                   href={entry.comparisonHref}
                   className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"

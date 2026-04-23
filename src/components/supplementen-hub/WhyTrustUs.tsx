@@ -28,7 +28,7 @@ export default function WhyTrustUs() {
   return (
     <section aria-label="Waarom vertrouwen op ons">
       <div className="bg-[#F7F5F0] rounded-2xl p-8">
-        <h2 className="font-serif text-xl text-stone-900 mb-6 text-center">
+        <h2 className="font-display text-xl text-stone-900 mb-6 text-center">
           Waarom PerfectSupplement?
         </h2>
 

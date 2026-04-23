@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function PersonalizationCta() {
   return (
     <div className="bg-[#F7F5F0] rounded-2xl border border-stone-200 p-8 lg:p-10">
-      <h2 className="font-serif text-xl text-stone-900">
+      <h2 className="font-display text-xl text-stone-900">
         Krijg persoonlijke supplementaanbevelingen
       </h2>
       <p className="mt-2 text-sm text-stone-600 leading-relaxed max-w-lg">
@@ -18,7 +18,7 @@ export default function PersonalizationCta() {
           Doe de gratis leefstijlcheck →
         </Link>
       </div>
-      <p className="mt-3 text-xs text-stone-400">
+      <p className="mt-3 text-xs text-stone-500">
         ± 3 minuten · geen e-mail verplicht · direct resultaat
       </p>
     </div>

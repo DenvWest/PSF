@@ -22,7 +22,7 @@ export default function SupplementCatalog() {
   return (
     <section aria-label="Alle supplementgidsen">
       <div className="mb-6">
-        <h2 className="font-serif text-2xl text-stone-900">
+        <h2 className="font-display text-2xl text-stone-900">
           Alle supplementgidsen
         </h2>
         <p className="mt-2 text-sm text-stone-500 max-w-lg">

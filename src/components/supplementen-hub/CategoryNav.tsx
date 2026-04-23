@@ -47,12 +47,14 @@ export default function CategoryNav({ themas }: CategoryNavProps) {
       {/* Desktop: vertical sticky sidebar */}
       <nav
         className="hidden md:flex flex-col gap-1 sticky top-24"
-        aria-label="Filter op thema"
+        aria-label="Filter supplementen op thema"
+        role="group"
       >
         {allTags.map((tag) => (
           <button
             key={tag}
             onClick={() => handleFilter(tag)}
+            aria-pressed={active === tag}
             className={`text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors ${chipClass(tag)}`}
           >
             {tag === "alles" ? "Alles" : THEMA_LABELS[tag as ThemaTag]}
@@ -63,12 +65,14 @@ export default function CategoryNav({ themas }: CategoryNavProps) {
       {/* Mobile: horizontal scrollable chip row */}
       <nav
         className="flex md:hidden gap-2 overflow-x-auto pb-2 scrollbar-hide"
-        aria-label="Filter op thema"
+        aria-label="Filter supplementen op thema"
+        role="group"
       >
         {allTags.map((tag) => (
           <button
             key={tag}
             onClick={() => handleFilter(tag)}
+            aria-pressed={active === tag}
             className={`flex-shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${chipClass(tag)}`}
           >
             {tag === "alles" ? "Alles" : THEMA_LABELS[tag as ThemaTag]}

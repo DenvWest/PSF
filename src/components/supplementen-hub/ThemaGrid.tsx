@@ -57,7 +57,16 @@ export default function ThemaGrid({
   themas = DEFAULT_THEMAS,
 }: ThemaGridProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div>
+      <div className="mb-6">
+        <h2 className="font-display text-2xl text-stone-900">
+          Blader per thema
+        </h2>
+        <p className="mt-2 text-sm text-stone-500 max-w-lg">
+          Kies een levensstijlthema en zie welke supplementen het meest relevant zijn.
+        </p>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {themas.map((thema) => {
         const cardInner = (
           <div
@@ -101,6 +110,7 @@ export default function ThemaGrid({
           </Link>
         );
       })}
+      </div>
     </div>
   );
 }
