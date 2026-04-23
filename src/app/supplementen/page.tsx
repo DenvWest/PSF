@@ -61,8 +61,8 @@ export default async function SupplementenPage() {
         {/* 1. Hero */}
         <HubHero hasSession={hasIntakeCookie} />
 
-        {/* 2. Staat A of B — alleen op geverifieerde psf_intake_sid, niet op alleen geladen payload */}
-        {hasIntakeCookie ? (
+        {/* 2. Staat B — alleen op geverifieerde psf_intake_sid, niet op alleen geladen payload */}
+        {hasIntakeCookie && (
           <section id="aanbevolen" aria-label="Aanbevolen voor jou" className="mt-4">
             <Container>
               {session ? (
@@ -81,12 +81,6 @@ export default async function SupplementenPage() {
               )}
             </Container>
           </section>
-        ) : (
-          <section aria-label="Persoonlijke aanbevelingen" className="mt-4">
-            <Container>
-              <PersonalizationCta />
-            </Container>
-          </section>
         )}
 
         {/* 3. Thema's */}
@@ -95,6 +89,15 @@ export default async function SupplementenPage() {
             <ThemaGrid />
           </Container>
         </section>
+
+        {/* Staat A — persoonlijke aanbevelingen CTA (geen sessie) */}
+        {!hasIntakeCookie && (
+          <section aria-label="Persoonlijke aanbevelingen" className="mt-4">
+            <Container>
+              <PersonalizationCta />
+            </Container>
+          </section>
+        )}
 
         {/* 4. Alle supplementgidsen */}
         <section className="mt-16 md:mt-20">
