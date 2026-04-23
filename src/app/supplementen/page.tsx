@@ -9,7 +9,7 @@ import SupplementCatalog from "@/components/supplementen-hub/SupplementCatalog";
 import WhyTrustUs from "@/components/supplementen-hub/WhyTrustUs";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { CATALOG } from "@/data/supplementen-hub/catalog";
-import { getIntakeSessionServer } from "@/lib/intake-session-server";
+import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
 import {
   buildBreadcrumbSchema,
   buildItemListSchema,
@@ -45,7 +45,10 @@ const itemListSchema = buildItemListSchema(
 const jsonLd = [breadcrumbSchema, itemListSchema];
 
 export default async function SupplementenPage() {
-  const session = await getIntakeSessionServer();
+  const { verifiedSessionId, session } = await getIntakeSessionFromCookie();
+  const hasIntakeCookie = verifiedSessionId !== null;
+
+  console.log("session:", session, "verifiedSessionId:", verifiedSessionId);
 
   return (
     <>
@@ -56,14 +59,26 @@ export default async function SupplementenPage() {
 
       <div>
         {/* 1. Hero */}
-        <HubHero hasSession={!!session} />
+        <HubHero hasSession={hasIntakeCookie} />
 
-        {/* 2. Staat A of B */}
-        {session ? (
+        {/* 2. Staat A of B — alleen op geverifieerde psf_intake_sid, niet op alleen geladen payload */}
+        {hasIntakeCookie ? (
           <section id="aanbevolen" aria-label="Aanbevolen voor jou" className="mt-4">
             <Container>
-              <RecommendedForYou session={session} />
-              <ProfileUpdateLink />
+              {session ? (
+                <>
+                  <RecommendedForYou session={session} />
+                  <ProfileUpdateLink />
+                </>
+              ) : (
+                <>
+                  <p className="text-stone-600 text-base leading-relaxed max-w-xl">
+                    Je leefstijlcheck is niet beschikbaar (meer). Doe de check
+                    opnieuw om persoonlijke aanbevelingen te zien.
+                  </p>
+                  <ProfileUpdateLink />
+                </>
+              )}
             </Container>
           </section>
         ) : (

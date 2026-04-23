@@ -21,10 +21,8 @@ const SCORE_LABEL_MAP: Record<
 export default function RecommendedForYou({ session }: RecommendedForYouProps) {
   const recommendations = buildRecommendations(session);
 
-  if (recommendations.length === 0) return null;
-
   return (
-    <section id="aanbevolen" aria-label="Aanbevolen voor jou">
+    <section aria-label="Aanbevolen voor jou">
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <h2 className="font-display text-2xl text-stone-900">
           Aanbevolen voor jou
@@ -34,6 +32,13 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
         </span>
       </div>
 
+      {recommendations.length === 0 ? (
+        <p className="text-stone-600 text-base leading-relaxed max-w-xl">
+          We hebben op dit moment geen specifieke supplementtips op basis van je
+          profiel. Bekijk hieronder de thema&apos;s en gidsen, of doe de
+          leefstijlcheck opnieuw als je situatie is veranderd.
+        </p>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recommendations.map((rec) => {
           const scoreMap = SCORE_LABEL_MAP[rec.slug];
@@ -88,6 +93,7 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
           );
         })}
       </div>
+      )}
     </section>
   );
 }
