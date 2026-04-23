@@ -10,7 +10,7 @@ import {
   signIntakeSessionId,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
-import { intakeSessionRowToPayload } from "@/lib/intake-session-payload";
+import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
@@ -69,38 +69,25 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ session: null }, { status: 200 });
   }
 
-  const admin = createSupabaseAdmin();
-  if (!admin) {
-    return NextResponse.json(
-      { error: "Database is nog niet geconfigureerd op de server." },
-      { status: 503 },
-    );
-  }
-
-  const { data, error } = await admin
-    .from("intake_sessions")
-    .select("*")
-    .eq("id", sessionId)
-    .maybeSingle();
-
-  if (error) {
-    console.error("[api/intake/session] GET error:", error);
+  const loaded = await loadIntakeSessionPayloadBySessionId(sessionId);
+  if (!loaded.ok) {
+    if (loaded.error === "no_admin") {
+      return NextResponse.json(
+        { error: "Database is nog niet geconfigureerd op de server." },
+        { status: 503 },
+      );
+    }
     return NextResponse.json(
       { error: "Kon sessie niet laden." },
       { status: 500 },
     );
   }
 
-  if (!data) {
+  if (!loaded.session) {
     return NextResponse.json({ session: null }, { status: 200 });
   }
 
-  const payload = intakeSessionRowToPayload(data);
-  if (!payload) {
-    return NextResponse.json({ session: null }, { status: 200 });
-  }
-
-  return NextResponse.json({ session: payload }, { status: 200 });
+  return NextResponse.json({ session: loaded.session }, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {

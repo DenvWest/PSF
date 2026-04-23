@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/supplements/ProductCard";
 import { BuyingGuide } from "@/components/supplements/BuyingGuide";
 import { FaqSection } from "@/components/supplements/FaqSection";
 import { StickyMobileCta } from "@/components/supplements/StickyMobileCta";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { TrustBar } from "@/components/supplements/TrustBar";
 import {
   buildBreadcrumbSchema,
@@ -133,6 +134,8 @@ export default function Page() {
             </div>
           </div>
         </section>
+
+        <MedicalDisclaimer />
       </main>
 
       <StickyMobileCta topProduct={topProduct} />
