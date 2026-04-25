@@ -48,9 +48,9 @@ export const DEFAULT_THEMAS: ThemaData[] = [
     label: "Herstel",
     description: "Spierherstel, mentale rust en regeneratie.",
     href: "/thema/herstel",
-    iconBg: "bg-stone-50",
-    iconBgHover: "",
-    comingSoon: true,
+    iconBg: "bg-rose-50",
+    iconBgHover: "group-hover:bg-rose-100",
+    comingSoon: false,
   },
 ];
 
