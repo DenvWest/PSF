@@ -46,6 +46,7 @@ const THEMES: Theme[] = [
     icon: "🔄",
     bgClass: "bg-rose-50",
     textClass: "text-rose-600",
+    themaLink: "/thema/herstel",
   },
 ];
 

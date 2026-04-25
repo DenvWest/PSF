@@ -39,6 +39,10 @@ export const ademhalingTegenStressData: BlogArtikel = {
     label: "Oplossingen bij stress",
     href: "/thema/stress",
   },
+  vergelijkingExtraLink: {
+    label: "Beste ashwagandha supplement (productvergelijking)",
+    href: "/beste-ashwagandha",
+  },
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",
     "stress-werk-grenzen-stellen",
