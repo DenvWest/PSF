@@ -115,16 +115,22 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-slate-900">
               Meer over zink
             </h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Zink speelt een rol bij testosteron, immuunfunctie en herstel — drie thema&apos;s die na je 40e extra aandacht verdienen.
+            </p>
             <div className="mt-3 space-y-2">
-              <p className="text-sm text-slate-600">
-                Meer weten over zink en testosteron?{" "}
-                <Link
-                  href="/blog"
-                  className="font-medium text-emerald-700 underline underline-offset-4"
-                >
-                  Lees ons artikel over testosteron na je 40e →
-                </Link>
-              </p>
+              <Link
+                href="/supplement-kiezen-waar-op-letten"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Supplement kiezen: waar let je op? — praktische checklist →
+              </Link>
+              <Link
+                href="/thema/energie"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Energieverlies na je 40e — oorzaken en wat je eraan kunt doen →
+              </Link>
               <Link
                 href="/intake"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"

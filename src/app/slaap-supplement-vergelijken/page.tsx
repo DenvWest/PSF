@@ -188,19 +188,30 @@ export default function SlaapSupplementVergelijkenPage() {
                         <h3 className="mt-2 text-xl font-semibold text-stone-900">
                             Meer context
                         </h3>
+                        <p className="mt-2 text-sm text-stone-600">
+                            Magnesium is het meest gebruikte slaapsupplement. Bekijk de vergelijking of ga direct naar onze top 3.
+                        </p>
 
                         <div className="mt-5 space-y-4 text-base text-stone-600">
+                            <Link
+                                href="/magnesium-vergelijken"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                            >
+                                <span className="font-medium text-stone-900">Magnesium vergelijken →</span>
+                                <span className="mt-0.5 block text-sm text-stone-500">Bisglycinaat vs citraat vs malaat — wat past bij jouw avondroutine?</span>
+                            </Link>
+                            <Link
+                                href="/beste-magnesium"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                            >
+                                <span className="font-medium text-stone-900">Beste magnesium supplement →</span>
+                                <span className="mt-0.5 block text-sm text-stone-500">Top 3 vergeleken op vorm, dosering en prijs per dag</span>
+                            </Link>
                             <Link
                                 href="/methodologie"
                                 className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
                             >
                                 Lees hoe wij beoordelen
-                            </Link>
-                            <Link
-                                href="/supplementen"
-                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
-                            >
-                                Bekijk alle supplementen
                             </Link>
                         </div>
                     </aside>

@@ -115,12 +115,21 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-slate-900">
               Meer over vitamine D
             </h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Vitamine D raakt aan energie, immuunfunctie en stemming — drie klachten die na je 40e vaker samenkomen.
+            </p>
             <div className="mt-3 space-y-2">
               <Link
                 href="/supplementen/vitamine-d"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
               >
                 Meer weten over vitamine D? Lees de uitgebreide gids →
+              </Link>
+              <Link
+                href="/thema/energie"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Energieverlies na je 40e — oorzaken en oplossingen →
               </Link>
               <Link
                 href="/intake"

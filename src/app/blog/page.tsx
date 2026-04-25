@@ -131,6 +131,39 @@ export default function BlogPage() {
         </Container>
       </section>
 
+      <section className="border-t border-stone-100 py-12 md:py-16" aria-label="Vergelijkingspagina's">
+        <Container>
+          <div className="max-w-3xl">
+            <p className="text-sm font-medium text-stone-500">
+              Klaar om te vergelijken? Na het lezen van de achtergrondartikelen kun je direct door naar onze onafhankelijke productanalyses.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <Link
+                href="/omega-3-vergelijken"
+                className="flex flex-col rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
+              >
+                <span className="text-sm font-medium text-stone-900">Omega&nbsp;3 vergelijken</span>
+                <span className="mt-1 text-xs text-stone-500">EPA, DHA en prijs per dag</span>
+              </Link>
+              <Link
+                href="/magnesium-vergelijken"
+                className="flex flex-col rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
+              >
+                <span className="text-sm font-medium text-stone-900">Magnesium vergelijken</span>
+                <span className="mt-1 text-xs text-stone-500">Bisglycinaat, citraat en malaat</span>
+              </Link>
+              <Link
+                href="/slaap-supplement-vergelijken"
+                className="flex flex-col rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
+              >
+                <span className="text-sm font-medium text-stone-900">Slaapsupplementen</span>
+                <span className="mt-1 text-xs text-stone-500">Melatonine, magnesium en kruiden</span>
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       <div className="ps-divider" />
 
       {/* ── ROUTE-ADVIES ───────────────────────────────────────────── */}

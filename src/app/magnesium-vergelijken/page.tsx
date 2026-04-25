@@ -226,10 +226,11 @@ export default function MagnesiumVergelijkenPage() {
                                 Lees onze methodologie
                             </Link>
                             <Link
-                                href="/supplementen"
+                                href="/slaap-supplement-vergelijken"
                                 className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
                             >
-                                Bekijk supplementcategorieën
+                                <span className="font-medium text-stone-900">Slaapsupplementen vergelijken →</span>
+                                <span className="mt-0.5 block text-sm text-stone-500">Magnesium staat niet op zichzelf — bekijk het bredere slaapplaatje</span>
                             </Link>
                         </div>
                     </aside>

@@ -233,12 +233,20 @@ export default function WaarLetJeOpBijOmega3Page() {
                         <p className="mt-1 text-sm leading-6 text-stone-800">
                             We hebben de topkeuzes voor overall, prijs-kwaliteit en premium al op een rij gezet.
                         </p>
-                        <Link
-                            href="/beste-omega-3-supplement"
-                            className="mt-4 inline-flex items-center rounded-xl bg-stone-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-stone-800"
-                        >
-                            Bekijk beste omega&nbsp;3 supplementen →
-                        </Link>
+                        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                            <Link
+                                href="/beste-omega-3-supplement"
+                                className="inline-flex items-center rounded-xl bg-stone-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-stone-800"
+                            >
+                                Bekijk beste omega&nbsp;3 supplementen →
+                            </Link>
+                            <Link
+                                href="/wat-is-omega-3"
+                                className="inline-flex items-center rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:border-stone-400"
+                            >
+                                Wat is omega&nbsp;3? Lees de basisgids →
+                            </Link>
+                        </div>
                     </div>
                 </Container>
             </section>

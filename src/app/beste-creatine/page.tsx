@@ -115,16 +115,22 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-slate-900">
               Meer over creatine
             </h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Creatine werkt het best als onderdeel van een bredere herstelstrategie. Bekijk wat goed aansluit.
+            </p>
             <div className="mt-3 space-y-2">
-              <p className="text-sm text-slate-600">
-                Meer weten over creatine en spierherstel?{" "}
-                <Link
-                  href="/blog"
-                  className="font-medium text-emerald-700 underline underline-offset-4"
-                >
-                  Lees onze blog →
-                </Link>
-              </p>
+              <Link
+                href="/beste-magnesium"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Beste magnesium — ondersteunt herstel en slaapkwaliteit →
+              </Link>
+              <Link
+                href="/supplement-kiezen-waar-op-letten"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Supplement kiezen: waar let je op? — praktische checklist →
+              </Link>
               <Link
                 href="/intake"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"

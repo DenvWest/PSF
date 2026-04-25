@@ -116,12 +116,21 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-slate-900">
               Meer over ashwagandha
             </h3>
+            <p className="mt-2 text-sm text-slate-600">
+              Ashwagandha werkt het best in combinatie met andere herstelkeuzes. Lees de theorie of ontdek wat er naast ashwagandha relevant is voor stress en slaap na je 40e.
+            </p>
             <div className="mt-3 space-y-2">
               <Link
                 href="/supplementen/ashwagandha"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
               >
                 Meer weten over ashwagandha? Lees de uitgebreide gids →
+              </Link>
+              <Link
+                href="/thema/stress"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Stress na je 40e — wat speelt er en wat helpt? →
               </Link>
               <Link
                 href="/intake"
