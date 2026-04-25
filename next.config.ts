@@ -45,6 +45,16 @@ const nextConfig: NextConfig = {
         destination: "/thema/energie",
         permanent: true,
       },
+      {
+        source: "/symptomen/herstel",
+        destination: "/thema/herstel",
+        permanent: true,
+      },
+      {
+        source: "/symptomen/herstel/:path*",
+        destination: "/thema/herstel",
+        permanent: true,
+      },
     ];
   },
 };
