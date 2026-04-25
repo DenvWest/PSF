@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import RelatedPages from "@/components/ui/RelatedPages";
+
+export const metadata: Metadata = {
+  title: "Onze methodologie | PerfectSupplement",
+  description:
+    "Hoe we supplementen beoordelen: criteria, weging en onafhankelijkheid. Transparant en herhaalbaar.",
+  alternates: { canonical: "/methodologie" },
+};
 
 const criteria = [
     {

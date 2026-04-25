@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Home",
   description:
     "Voor mannen 40+: grip op energie, slaap en leefstijl—stap voor stap, zonder harde sales.",
+  alternates: { canonical: "/" },
 };
 
 export default function HomePage() {

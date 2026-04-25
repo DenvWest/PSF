@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   },
   description:
     "Veelgestelde vragen, snelle routes en contactopties van Perfect Supplement.",
+  alternates: { canonical: "/faqs" },
 };
 
 export default function FaqPage() {

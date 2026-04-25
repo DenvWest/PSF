@@ -396,6 +396,24 @@ export default function SupplementKiezenWaarOpLettenPage() {
                 description="Diepgang per categorie en onze keuzes — aansluitend op dit artikel."
                 items={relatedPages}
             />
+
+            <Container>
+                <div className="mt-16 rounded-2xl bg-stone-50 px-6 py-10 text-center">
+                    <p className="ps-eyebrow">Persoonlijk advies</p>
+                    <p className="mt-3 text-xl font-semibold text-stone-900">
+                        Weet jij welk supplement bij jou past?
+                    </p>
+                    <p className="mt-2 text-sm text-stone-500">
+                        12 vragen, 3 minuten — direct een persoonlijk herstelplan.
+                    </p>
+                    <Link
+                        href="/intake"
+                        className="mt-6 inline-block rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white hover:bg-stone-700"
+                    >
+                        Start de gratis intake →
+                    </Link>
+                </div>
+            </Container>
             </article>
         </main>
     );

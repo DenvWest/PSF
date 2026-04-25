@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Link from "next/link";
 import Container from "@/components/layout/Container";
 
 type ContentPageLayoutProps = {
@@ -35,6 +36,48 @@ export default function ContentPageLayout({
                     <div className="space-y-12 text-base leading-[1.75] text-stone-500">
                         {children}
                     </div>
+
+                    <nav className="mt-16 border-t border-stone-100 pt-8">
+                        <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
+                            Verder lezen
+                        </p>
+                        <ul className="mt-4 flex flex-wrap gap-4 text-sm text-stone-500">
+                            <li>
+                                <Link href="/" className="hover:text-stone-900">
+                                    Home
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/supplementen"
+                                    className="hover:text-stone-900"
+                                >
+                                    Supplementengids
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/intake"
+                                    className="hover:text-stone-900"
+                                >
+                                    Gratis intake
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/methodologie"
+                                    className="hover:text-stone-900"
+                                >
+                                    Methodologie
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/blog" className="hover:text-stone-900">
+                                    Blog
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </Container>
         </div>

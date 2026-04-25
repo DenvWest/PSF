@@ -16,7 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
   const data = getSupplementData(supplement as SupplementSlug);
-  return { title: data.metaTitle, description: data.metaDescription };
+  return {
+    title: data.metaTitle,
+    description: data.metaDescription,
+    alternates: { canonical: `/supplementen/${supplement}` },
+  };
 }
 
 export default async function Page({ params }: Props) {

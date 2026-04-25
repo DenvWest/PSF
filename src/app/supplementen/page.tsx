@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     description:
       "Onafhankelijke supplementgidsen en vergelijkingen voor mannen 40+.",
   },
+  alternates: { canonical: "/supplementen" },
 };
 
 const breadcrumbSchema = buildBreadcrumbSchema([
