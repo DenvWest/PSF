@@ -39,6 +39,18 @@ export const ademhalingTegenStressData: BlogArtikel = {
     label: "Oplossingen bij stress",
     href: "/thema/stress",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste ashwagandha supplementen (2026)",
+      beschrijving: "Moduleert je stresssysteem vanuit binnen — top 5 op werkzame dosis",
+      href: "/beste-ashwagandha",
+    },
+    {
+      titel: "Beste magnesium supplementen (2026)",
+      beschrijving: "Ondersteunt het zenuwstelsel en verlaagt cortisolreactiviteit",
+      href: "/beste-magnesium",
+    },
+  ],
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",
     "stress-werk-grenzen-stellen",

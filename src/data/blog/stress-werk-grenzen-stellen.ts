@@ -38,6 +38,18 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
     label: "Oplossingen bij stress",
     href: "/thema/stress",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste ashwagandha supplementen (2026)",
+      beschrijving: "Klinisch onderbouwd adaptogeen voor chronische stress — top 5 vergeleken",
+      href: "/beste-ashwagandha",
+    },
+    {
+      titel: "Beste magnesium supplementen (2026)",
+      beschrijving: "Moduleert je stresssysteem en spierspanning — welke vorm past bij jou?",
+      href: "/beste-magnesium",
+    },
+  ],
   gerelateerdeSluggen: [
     "ademhaling-tegen-stress",
     "cortisol-verlagen-natuurlijk",

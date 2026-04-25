@@ -51,6 +51,18 @@ export const energieVerhogenData: BlogArtikel = {
     label: "Oplossingen bij energieklachten",
     href: "/thema/energie",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste vitamine D supplementen (2026)",
+      beschrijving: "D3 + K2 of D3 alleen? Top 5 vergeleken op dosering, vorm en prijs per dag",
+      href: "/beste-vitamine-d",
+    },
+    {
+      titel: "Beste omega-3 supplementen (2026)",
+      beschrijving: "Visolie vs algenolie — EPA/DHA per portie en zuiverheid vergeleken",
+      href: "/beste-omega-3-supplement",
+    },
+  ],
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",
     "cortisol-verlagen-natuurlijk",

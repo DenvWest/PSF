@@ -53,6 +53,18 @@ export const slaapVerbeterenData: BlogArtikel = {
     label: "Oplossingen bij slaapproblemen",
     href: "/thema/slaap",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste magnesium supplementen (2026)",
+      beschrijving: "Magnesiumglycinaat voor slaap: top 5 vergeleken op dosering en kwaliteit",
+      href: "/beste-magnesium",
+    },
+    {
+      titel: "Beste ashwagandha supplementen (2026)",
+      beschrijving: "Verlaagt cortisolniveaus die slaap verstoren — top 5 met klinisch bewijs",
+      href: "/beste-ashwagandha",
+    },
+  ],
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",
     "ashwagandha-werking-mannen",

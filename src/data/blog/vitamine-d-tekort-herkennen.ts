@@ -44,6 +44,13 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     label: "Oplossingen bij energieklachten",
     href: "/thema/energie",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste vitamine D supplementen (2026)",
+      beschrijving: "D3 + K2 of D3 alleen? Top 5 vergeleken op dosering, opneembaarheid en prijs",
+      href: "/beste-vitamine-d",
+    },
+  ],
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",
     "testosteron-en-energie-na-40",

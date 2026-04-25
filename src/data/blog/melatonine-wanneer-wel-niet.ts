@@ -43,6 +43,13 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
     label: "Oplossingen bij slaapproblemen",
     href: "/thema/slaap",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste magnesium supplementen (2026)",
+      beschrijving: "Glycinaat ondersteunt melatonine-aanmaak en ontspanning — top 5 vergeleken",
+      href: "/beste-magnesium",
+    },
+  ],
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",
     "slaaphygiene-mannen-40-plus",

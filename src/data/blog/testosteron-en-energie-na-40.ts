@@ -38,6 +38,18 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     label: "Oplossingen bij energieklachten",
     href: "/thema/energie",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste zink supplementen (2026)",
+      beschrijving: "Ondersteunt testosteronaanmaak en herstel — top 5 op opneembaarheid en prijs",
+      href: "/beste-zink",
+    },
+    {
+      titel: "Beste omega-3 supplementen (2026)",
+      beschrijving: "EPA/DHA ondersteunen hormonale balans en cardiovasculaire gezondheid",
+      href: "/beste-omega-3-supplement",
+    },
+  ],
   gerelateerdeSluggen: [
     "vitamine-d-tekort-herkennen",
     "energie-verhogen-natuurlijk",

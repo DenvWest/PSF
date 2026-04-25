@@ -38,6 +38,13 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     label: "Oplossingen bij slaapproblemen",
     href: "/thema/slaap",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste magnesium supplementen (2026)",
+      beschrijving: "Ondersteunt slaap en ontspanning — top 5 vormen vergeleken op kwaliteit",
+      href: "/beste-magnesium",
+    },
+  ],
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",
     "magnesium-en-slaapkwaliteit",

@@ -59,6 +59,18 @@ export const cortisolVerlagenData: BlogArtikel = {
     label: "Oplossingen bij stress",
     href: "/thema/stress",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste ashwagandha supplementen (2026)",
+      beschrijving: "Top 5 vergeleken op werkzame dosis, KSM-66 vs Sensoril en prijs per dag",
+      href: "/beste-ashwagandha",
+    },
+    {
+      titel: "Beste magnesium supplementen (2026)",
+      beschrijving: "Glycinaat, citraat of malaat — welke vorm past bij jouw klachten?",
+      href: "/beste-magnesium",
+    },
+  ],
   gerelateerdeSluggen: [
     "ashwagandha-werking-mannen",
     "slaap-verbeteren-40-plus",

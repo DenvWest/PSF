@@ -92,6 +92,18 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     label: "Bekijk onze top 3 magnesium (productvergelijking)",
     href: "/beste-magnesium",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste magnesium supplementen (2026)",
+      beschrijving: "Glycinaat, citraat, malaat, tauraat — top 5 vergeleken op dosering en doel",
+      href: "/beste-magnesium",
+    },
+    {
+      titel: "Beste omega-3 supplementen (2026)",
+      beschrijving: "Visolie vs algenolie — EPA/DHA per portie en zuiverheid vergeleken",
+      href: "/beste-omega-3-supplement",
+    },
+  ],
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",
     "supplement-kiezen-waar-op-letten",

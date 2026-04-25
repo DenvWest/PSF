@@ -59,6 +59,13 @@ export const ashwagandhaData: BlogArtikel = {
     label: "Oplossingen bij stress",
     href: "/thema/stress",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste ashwagandha supplementen (2026)",
+      beschrijving: "KSM-66 vs Sensoril — welk extract werkt het best voor stressregulatie?",
+      href: "/beste-ashwagandha",
+    },
+  ],
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",
     "slaap-verbeteren-40-plus",

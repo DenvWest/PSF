@@ -43,6 +43,13 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     label: "Oplossingen bij energieklachten",
     href: "/thema/energie",
   },
+  vergelijkingLinks: [
+    {
+      titel: "Beste omega-3 supplementen (2026)",
+      beschrijving: "Visolie vs algenolie — EPA/DHA per portie, zuiverheid en prijs vergeleken",
+      href: "/beste-omega-3-supplement",
+    },
+  ],
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",
     "vitamine-d-tekort-herkennen",

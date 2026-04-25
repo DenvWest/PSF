@@ -10,6 +10,7 @@ import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
+import BlogVergelijkingLinks from "./BlogVergelijkingLinks";
 import { renderInlineMarkdownLinks } from "./inlineMarkdownLinks";
 
 interface BlogArticlePageProps {
@@ -85,8 +86,15 @@ export default function BlogArticlePage({
           ))}
         </div>
 
+        {/* ── Vergelijkingslinks ────────────────────────────────────────── */}
+        {artikel.vergelijkingLinks && artikel.vergelijkingLinks.length > 0 && (
+          <div className="mt-14 max-w-[680px]">
+            <BlogVergelijkingLinks links={artikel.vergelijkingLinks} />
+          </div>
+        )}
+
         {/* ── Samenvatting ─────────────────────────────────────────────── */}
-        <div className="mt-14 max-w-[680px]">
+        <div className="mt-10 max-w-[680px]">
           <BlogSamenvatting tekst={artikel.samenvatting} />
         </div>
 
