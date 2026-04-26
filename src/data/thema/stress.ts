@@ -108,6 +108,14 @@ export const stressThema: ThemaPageData = {
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
       },
+      {
+        name: "Zink",
+        reason:
+          "Zink raakt uitgeput bij chronische stress en is essentieel voor immuunfunctie.",
+        guideLink: "/supplementen/zink",
+        comparisonLink: "/beste-zink",
+        icon: "🛡️",
+      },
     ],
   },
 

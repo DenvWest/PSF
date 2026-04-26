@@ -94,7 +94,7 @@ export const herstelThema: ThemaPageData = {
     sectionLabel: "SUPPLEMENTEN DIE KUNNEN HELPEN",
     title: "Welke supplementen helpen bij herstel",
     intro:
-      "Supplementen zijn geen vervanging voor rust, slaap en voeding. Deze vier hebben in onderzoek en praktijk de meeste ondersteuning voor herstel na 40 — klik door naar de gids voor vormen en dosering; bij magnesium en omega-3 ook naar onze productvergelijking.",
+      "Supplementen zijn geen vervanging voor rust, slaap en voeding. Deze vier hebben in onderzoek en praktijk de meeste ondersteuning voor herstel na 40 — klik door naar de gids voor vormen en dosering; bij magnesium, omega-3, creatine en zink ook naar onze productvergelijking.",
     items: [
       {
         name: "Magnesium (glycinaat)",
@@ -117,6 +117,7 @@ export const herstelThema: ThemaPageData = {
         reason:
           "Ondersteunt ATP-productie (spierenergie), bewezen effectief voor kracht en herstel. Na 40 daalt de natuurlijke creatineaanmaak.",
         guideLink: "/supplementen/creatine",
+        comparisonLink: "/beste-creatine",
         icon: "💪",
       },
       {
@@ -124,6 +125,7 @@ export const herstelThema: ThemaPageData = {
         reason:
           "Essentieel voor eiwitaanmaak, immuunfunctie en wondgenezing. Tekort vertraagt spierherstel.",
         guideLink: "/supplementen/zink",
+        comparisonLink: "/beste-zink",
         icon: "🔩",
       },
     ],

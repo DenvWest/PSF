@@ -5,15 +5,35 @@ import {
 } from "@/data/supplement-routes";
 import type { DeficiencySignals, DomainScores, ProfileLabel } from "@/lib/intake-engine";
 
-function matchesZink(scores: DomainScores): boolean {
+function intAnswer(answers: Record<string, number>, key: string): number {
+  const v = answers[key];
+  return typeof v === "number" ? v : 0;
+}
+
+function matchesZink(scores: DomainScores, profileLabel: ProfileLabel): boolean {
   return (
+    scores.recovery_score < 40 ||
     scores.nutrition_score < 40 ||
-    (scores.stress_score < 40 && scores.recovery_score < 35)
+    profileLabel.name === "Stille Slijter"
   );
 }
 
-function matchesCreatine(scores: DomainScores): boolean {
-  return scores.movement_score > 60 && scores.recovery_score < 50;
+/** Overtrainer-patroon uit intake-spec: veel bewegen, weinig fysiek herstel (geen apart profiellabel in engine). */
+function matchesOvertrainerAnswers(answers: Record<string, number>): boolean {
+  return intAnswer(answers, "MOV_FREQ") >= 3 && intAnswer(answers, "RCV_PHYS") <= 1;
+}
+
+function matchesCreatine(
+  scores: DomainScores,
+  profileLabel: ProfileLabel,
+  answers: Record<string, number>,
+): boolean {
+  const movementFrequency = intAnswer(answers, "MOV_FREQ");
+  return (
+    (scores.recovery_score < 50 && movementFrequency >= 3) ||
+    profileLabel.name === "Stille Slijter" ||
+    matchesOvertrainerAnswers(answers)
+  );
 }
 
 function clauseMatches(
@@ -50,17 +70,18 @@ function definitionMatches(
   scores: DomainScores,
   deficiencySignals: DeficiencySignals,
   profileLabel: ProfileLabel,
+  answers: Record<string, number>,
 ): boolean {
   if (def.fallbackOnly) {
     return false;
   }
 
   if (def.id === "zink") {
-    return matchesZink(scores);
+    return matchesZink(scores, profileLabel);
   }
 
   if (def.id === "creatine") {
-    return matchesCreatine(scores);
+    return matchesCreatine(scores, profileLabel, answers);
   }
 
   return def.triggers.anyOf.some((clause) =>
@@ -72,11 +93,20 @@ export function getSupplementRoute(
   domainScores: DomainScores,
   deficiencySignals: DeficiencySignals,
   profileLabel: ProfileLabel,
+  answers: Record<string, number>,
 ): SupplementRecommendation[] {
   const matched: SupplementRecommendation[] = [];
 
   for (const def of SUPPLEMENT_ROUTE_DEFINITIONS) {
-    if (definitionMatches(def, domainScores, deficiencySignals, profileLabel)) {
+    if (
+      definitionMatches(
+        def,
+        domainScores,
+        deficiencySignals,
+        profileLabel,
+        answers,
+      )
+    ) {
       matched.push(def);
     }
   }

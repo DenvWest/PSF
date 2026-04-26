@@ -30,13 +30,6 @@ export function trackAffiliateClick(
   const gtagExists =
     typeof window !== "undefined" && typeof window.gtag === "function";
 
-  console.log("[affiliate_click]", {
-    slug,
-    label,
-    pageType,
-    position,
-    gtagExists,
-  });
 
   if (typeof window === "undefined") return;
 

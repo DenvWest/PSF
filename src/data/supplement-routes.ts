@@ -85,7 +85,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "zink",
     name: "Zink",
     reason:
-      "Je voedingspatroon of herstelbalans wijst op een mogelijk zinktekort. Zink is een cofactor voor testosteron, immuunfunctie en celreparatie.",
+      "Zink is essentieel voor eiwitaanmaak en immuunfunctie. Tekort vertraagt spierherstel.",
     priority: 4,
     domains: ["Voeding", "Herstel", "Stress"],
     hasComparison: true,
@@ -96,11 +96,11 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "creatine",
     name: "Creatine",
     reason:
-      "Je beweegt veel terwijl je herstel achterblijft. Creatine kan kracht en herstel bij training ondersteunen.",
+      "Creatine ondersteunt spierenergieproductie en herstel. Na 40 daalt je natuurlijke aanmaak.",
     priority: 4,
     domains: ["Beweging", "Herstel"],
-    hasComparison: false,
-    affiliateUrl: "/supplementen",
+    hasComparison: true,
+    affiliateUrl: "/beste-creatine",
     triggers: { anyOf: [] },
   },
   {

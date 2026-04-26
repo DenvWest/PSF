@@ -90,10 +90,16 @@ export default function IntakeResults({
   const quickWins = advice.quickWins.slice(0, 3);
   const longTermTips = advice.longTerm.slice(0, 3);
   const deficiencySignals = getDeficiencySignals(answers);
-  const supplementRoute = getSupplementRoute(scores, deficiencySignals, profile);
+  const supplementRoute = getSupplementRoute(
+    scores,
+    deficiencySignals,
+    profile,
+    answers,
+  );
   const zinkSignal =
+    scores.recovery_score < 40 ||
     scores.nutrition_score < 40 ||
-    (scores.stress_score < 40 && scores.recovery_score < 35);
+    profile.name === "Stille Slijter";
 
   const primaryCatId = PROFILE_DOMAIN_TO_CAT[profile.domain];
   const primaryCategory = CATEGORIES.find((c) => c.id === primaryCatId);

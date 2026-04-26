@@ -108,6 +108,14 @@ export const energieThema: ThemaPageData = {
         comparisonLink: "/beste-ashwagandha",
         icon: "🌿",
       },
+      {
+        name: "Creatine",
+        reason:
+          "Creatine ondersteunt ATP-productie — de directe energiebron van je spieren en brein.",
+        guideLink: "/supplementen/creatine",
+        comparisonLink: "/beste-creatine",
+        icon: "💪",
+      },
     ],
   },
 

@@ -79,12 +79,21 @@ export function getDeficiencySignals(
   const s = getSignals(answers);
   const stressFrequency = getAnswer(answers, "STR_FREQ");
   const stressRecovery = getAnswer(answers, "STR_RECV");
+  const scores = calcDomainScores(answers);
+  const profile = getProfileLabel(scores);
+  const mov = getAnswer(answers, "MOV_FREQ");
+  const rcvPhys = getAnswer(answers, "RCV_PHYS");
+  const overtrainerPattern = mov >= 3 && rcvPhys <= 1;
+  const creatine_signal =
+    (scores.recovery_score < 50 && mov >= 3) ||
+    profile.name === "Stille Slijter" ||
+    overtrainerPattern;
   return {
     omega3_deficiency: s.omega3Deficiency,
     magnesium_signal: s.magnesiumSignal,
     cortisol_risk: s.cortisolRisk,
     ashwagandha_signal: stressFrequency <= 2 && stressRecovery <= 2,
-    creatine_signal: s.recoveryDeficit,
+    creatine_signal,
   };
 }
 
