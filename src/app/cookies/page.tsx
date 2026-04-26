@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+
+export const metadata: Metadata = {
+  title: "Cookiebeleid | PerfectSupplement",
+  description:
+    "Cookiebeleid van PerfectSupplement. Lees hoe wij omgaan met cookies en jouw privacy.",
+  alternates: {
+    canonical: "https://perfectsupplement.nl/cookies",
+  },
+};
 
 export default function CookiesPage() {
     return (

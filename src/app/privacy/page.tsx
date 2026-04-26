@@ -1,5 +1,15 @@
+import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 import PrivacyRevokeConsent from "@/components/privacy/PrivacyRevokeConsent";
+
+export const metadata: Metadata = {
+  title: "Privacyverklaring | PerfectSupplement",
+  description:
+    "Privacyverklaring van PerfectSupplement. Lees hoe wij omgaan met jouw persoonsgegevens.",
+  alternates: {
+    canonical: "https://perfectsupplement.nl/privacy",
+  },
+};
 
 export default function PrivacyPage() {
     return (

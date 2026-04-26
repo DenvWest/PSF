@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "Kennisbank | Artikelen voor mannen 40+ | PerfectSupplement",
   description:
     "Onderbouwde artikelen over stress, slaap, energie en supplementen. Praktische inzichten voor mannen boven de 40.",
+  alternates: {
+    canonical: "https://perfectsupplement.nl/blog",
+  },
 };
 
 const NOISE_SVG =

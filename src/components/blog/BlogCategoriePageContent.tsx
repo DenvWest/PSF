@@ -122,6 +122,24 @@ export default function BlogCategoriePageContent({
         </Container>
       </section>
 
+      {/* ── INTAKE CTA ─────────────────────────────────────────────── */}
+      <Container>
+        <section className="mt-4 mb-16 rounded-2xl bg-amber-50 px-6 py-12 text-center">
+          <h2 className="font-serif text-2xl text-stone-900">
+            Welke supplementen passen bij jou?
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-base text-stone-600">
+            Doe de gratis Leefstijlcheck en ontdek in 3 minuten welke supplementen bij jouw situatie passen.
+          </p>
+          <Link
+            href="/intake"
+            className="mt-6 inline-block rounded-lg bg-[#3C7A56] px-6 py-3 text-sm font-medium text-white hover:bg-[#2E5F43] transition-colors"
+          >
+            Doe de Leefstijlcheck →
+          </Link>
+        </section>
+      </Container>
+
       <div className="ps-divider" />
 
       {/* ── ROUTE-ADVIES ───────────────────────────────────────────── */}

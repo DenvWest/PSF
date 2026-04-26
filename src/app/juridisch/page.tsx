@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+
+export const metadata: Metadata = {
+  title: "Juridische Informatie | PerfectSupplement",
+  description:
+    "Juridische informatie van PerfectSupplement. Lees hoe wij omgaan met disclaimer, privacy en affiliate links.",
+  alternates: {
+    canonical: "https://perfectsupplement.nl/juridisch",
+  },
+};
 
 export default function JuridischPage() {
     return (

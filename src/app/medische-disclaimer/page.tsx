@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+
+export const metadata: Metadata = {
+  title: "Medische Disclaimer | PerfectSupplement",
+  description:
+    "Medische disclaimer van PerfectSupplement. Lees hoe wij omgaan met medische informatie en adviezen.",
+  alternates: {
+    canonical: "https://perfectsupplement.nl/medische-disclaimer",
+  },
+};
 
 export default function MedischeDisclaimerPage() {
     return (

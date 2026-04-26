@@ -1,5 +1,15 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import IntakeClient from "./IntakeClient";
+
+export const metadata: Metadata = {
+  title: "Gratis Leefstijlcheck voor Mannen 40+ | PerfectSupplement",
+  description:
+    "Ontdek in 3 minuten welke supplementen bij jouw situatie passen. Persoonlijk advies op basis van 6 gezondheidsdomeinen.",
+  alternates: {
+    canonical: "https://perfectsupplement.nl/intake",
+  },
+};
 
 // useSearchParams() in IntakeClient requires a Suspense boundary; without it
 // Next.js App Router will bail out during prerendering and fail the build.

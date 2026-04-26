@@ -205,7 +205,7 @@ export default function ContactForm({
 
         <p className={contactFormStyles.privacyNote}>
           Door dit formulier te versturen ga je akkoord met onze{" "}
-          <Link href="/privacyverklaring">privacyverklaring</Link>.
+          <Link href="/privacy">privacyverklaring</Link>.
         </p>
 
         {responseMessage != null ? (

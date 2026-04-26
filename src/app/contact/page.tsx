@@ -8,6 +8,9 @@ export const metadata: Metadata = {
     },
     description:
         "Hulp, veelgestelde vragen en contactinformatie van Perfect Supplement.",
+    alternates: {
+        canonical: "https://perfectsupplement.nl/contact",
+    },
 };
 
 export default function ContactPage() {

@@ -62,19 +62,30 @@ export default function SupplementCatalogCard({
 
           {!entry.comingSoon && (
             <div className="mt-3 flex flex-wrap gap-3">
-              <Link
-                href={entry.guideHref}
-                className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
-              >
-                Lees de gids →
-              </Link>
-              {entry.comparisonHref && entry.comparisonHref !== entry.guideHref && (
+              {entry.comparisonHref === entry.guideHref ? (
                 <Link
                   href={entry.comparisonHref}
                   className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
                 >
                   Vergelijk →
                 </Link>
+              ) : (
+                <>
+                  <Link
+                    href={entry.guideHref}
+                    className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
+                  >
+                    Lees de gids →
+                  </Link>
+                  {entry.comparisonHref && (
+                    <Link
+                      href={entry.comparisonHref}
+                      className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
+                    >
+                      Vergelijk →
+                    </Link>
+                  )}
+                </>
               )}
             </div>
           )}

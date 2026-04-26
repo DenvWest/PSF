@@ -240,6 +240,22 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </section>
           )}
 
+          {/* ── Intake CTA ────────────────────────────────────────────── */}
+          <section className="rounded-2xl bg-amber-50 px-6 py-12 text-center">
+            <h2 className="font-serif text-2xl text-stone-900">
+              Past dit supplement bij jouw situatie?
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-base text-stone-600">
+              Doe de gratis Leefstijlcheck en ontdek welke supplementen écht bij jou passen.
+            </p>
+            <Link
+              href="/intake"
+              className="mt-6 inline-block rounded-lg bg-[#3C7A56] px-6 py-3 text-sm font-medium text-white hover:bg-[#2E5F43] transition-colors"
+            >
+              Doe de Leefstijlcheck →
+            </Link>
+          </section>
+
           {/* ── Footer CTA ────────────────────────────────────────────── */}
           <div className="rounded-2xl border border-stone-200 bg-white p-6 md:p-8">
             <p className="ps-eyebrow">Meer weten</p>
