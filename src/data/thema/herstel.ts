@@ -5,7 +5,7 @@ export const herstelThema: ThemaPageData = {
   title: "Herstel",
   heroTitle: "Herstel is waar groei begint",
   heroSubtitle:
-    "Zonder herstel geen vooruitgang. Als je lichaam en geest niet opladen, bouw je af in plaats van op. Ontdek wat je herstel blokkeert — en hoe je het terugwint.",
+    "Je traint, je werkt, je doet alles goed — maar je lichaam herstelt niet meer zoals vroeger. Spierpijn die dagen aanhoudt, stijfheid bij het opstaan, of een vermoeidheid die niet weggaat met een nachtje slaap. Na 40 verandert je herstelvermogen. Dat is fysiologisch — maar je kunt er veel aan doen.",
   heroLabel: "THEMA",
 
   recognition: {
@@ -22,91 +22,109 @@ export const herstelThema: ThemaPageData = {
 
   causes: {
     sectionLabel: "WAT ER SPEELT",
-    title: "Waarom herstel verandert na je 40e",
+    title: "Waarom herstel verandert na 40",
     intro:
-      "Herstel is geen passief proces. Je lichaam heeft actieve signalen nodig om te repareren, op te bouwen en bij te tanken. Na je 40e veranderen die signalen — en dat merk je.",
+      "Na je 40e verandert hoe snel je lichaam weefsel herstelt en spieren opbouwt. Dat zit in hormonen, slaap, eiwitrespons en ontstekingsbalans — geen gebrek aan discipline, wel andere fysiologie.",
     items: [
       {
-        title: "Langzamer spierherstel",
+        title: "Spiereiwitaanmaak (MPS) wordt trager",
         description:
-          "De snelheid waarmee je spieren herstellen na inspanning neemt af. Eiwitopname wordt minder efficiënt, en ontstekingsreacties duren langer. Wat je op je 25e in een dag repareerde, kost nu twee tot drie dagen.",
-        icon: "💪",
+          "Muscle protein synthesis daalt — je hebt meer eiwit nodig per maaltijd (minimaal 30 g per keer) om dezelfde respons te triggeren als vroeger.",
+        icon: "🧬",
       },
       {
-        title: "Chronisch verhoogd cortisol",
+        title: "Cortisol en herstel",
         description:
-          "Stress remt je herstelmodus. Cortisol onderdrukt groeihormoon en vertraagt weefselreparatie. Als je niet actief ontspant, blijft je lichaam in 'overlevingsstand' — en herstelt het niet.",
+          "Cortisolniveaus reageren trager op herstel — chronische stress houdt cortisol hoog, wat spieropbouw en weefselreparatie remt.",
         icon: "📈",
       },
       {
-        title: "Minder diepe slaap",
+        title: "Slaapkwaliteit en N3",
         description:
-          "Het meeste fysieke herstel vindt plaats in diepe slaap (fase 3 en 4). Na 40 neemt de hoeveelheid diepe slaap af met 10-15% per decennium. Minder diepe slaap = minder groeihormoon = minder herstel.",
+          "Slaapkwaliteit daalt met leeftijd — en diepe slaap (N3) is de fase waarin groeihormoon vrijkomt en het meeste fysieke herstel plaatsvindt.",
         icon: "🌙",
       },
       {
-        title: "Magnesiumtekort",
+        title: "Lichte chronische ontsteking (inflammaging)",
         description:
-          "Magnesium is betrokken bij meer dan 300 enzymatische processen, waaronder spierontspanning en energieproductie. Tekorten komen veel voor en versterken spierkrampen, stijfheid en trage recovery.",
-        icon: "⚡",
+          "Dit neemt toe en remt spier- en weefselherstel; het draagt bij aan stijfheid en pijn die langer blijven hangen.",
+        icon: "🔥",
       },
     ],
   },
 
   quickWins: {
-    sectionLabel: "WAT JE NU KUNT DOEN",
-    title: "Drie stappen die je herstel direct verbeteren",
+    sectionLabel: "DIRECT TOEPASBAAR",
+    title: "Quick wins: wat je zelf kunt doen",
     items: [
       {
-        title: "Plan bewust een rustdag",
+        title: "Minimaal 30 g eiwit per hoofdmaaltijd",
         description:
-          "Herstel is geen bijproduct van training — het is de helft. Plan minimaal twee rustdagen per week in en behandel ze als onderdeel van je trainingsschema, niet als 'vrij'.",
-        icon: "📅",
-      },
-      {
-        title: "Eet eiwitrijk binnen 2 uur na inspanning",
-        description:
-          "Na je 40e heb je meer eiwit nodig voor dezelfde spiersynthese. Richt op 25-40 gram eiwit binnen 2 uur na training — denk aan kwark, eieren of een shake.",
+          "Eieren, kwark, kip, vis, peulvruchten — dit is de drempel voor optimale spiereiwitaanmaak na 40.",
         icon: "🥚",
       },
       {
-        title: "Neem 10 minuten bewuste stilte per dag",
+        title: "Minstens 1 rustdag per 3 trainingsdagen",
         description:
-          "Ademhalingsoefeningen, een wandeling zonder telefoon of simpelweg stilzitten. Dit activeert je parasympathisch zenuwstelsel — de herstelmodus van je lichaam.",
+          "Meer trainen is niet altijd beter; geef je lichaam geplande ruimte om te herstellen.",
+        icon: "📅",
+      },
+      {
+        title: "Slaap prioriteren: 7–8 uur, vast ritme",
+        description:
+          "Geen schermen na 21:00 — herstel gebeurt vooral tijdens diepe slaap.",
+        icon: "⏰",
+      },
+      {
+        title: "10–15 minuten wandelen na het avondeten",
+        description:
+          "Verlaagt cortisol en verbetert bloedsuikerregulatie — rustig voor je systeem voor de nacht.",
+        icon: "🚶",
+      },
+      {
+        title: "Stretch of foam roll na training",
+        description:
+          "Niet alleen voor flexibiliteit, maar voor doorbloeding en afvoer van afvalstoffen.",
         icon: "🧘",
       },
     ],
   },
 
   supplements: {
-    sectionLabel: "GERICHTE ONDERSTEUNING",
-    title: "Supplementen die herstel ondersteunen",
+    sectionLabel: "SUPPLEMENTEN DIE KUNNEN HELPEN",
+    title: "Welke supplementen helpen bij herstel",
     intro:
-      "Supplementen zijn geen vervanging voor rust, slaap en goede voeding. Maar bij een tekort of verhoogde behoefte kunnen ze het verschil maken. Dit zijn de drie met de sterkste onderbouwing voor herstel.",
+      "Supplementen zijn geen vervanging voor rust, slaap en voeding. Deze vier hebben in onderzoek en praktijk de meeste ondersteuning voor herstel na 40 — klik door naar de gids voor vormen en dosering; bij magnesium en omega-3 ook naar onze productvergelijking.",
     items: [
       {
-        name: "Magnesium",
+        name: "Magnesium (glycinaat)",
         reason:
-          "Magnesium glycinaat ondersteunt spierontspanning, vermindert krampen en verbetert slaapkwaliteit — drie pijlers van fysiek herstel. Veel mannen 40+ krijgen te weinig binnen via voeding alleen.",
+          "Ontspant spieren, verbetert slaapkwaliteit, essentieel voor 300+ enzymatische processen waaronder eiwitaanmaak.",
         guideLink: "/supplementen/magnesium",
         comparisonLink: "/beste-magnesium",
         icon: "⚡",
       },
       {
-        name: "Omega-3",
+        name: "Omega-3 (EPA/DHA)",
         reason:
-          "EPA en DHA hebben een ontstekingsremmend effect dat het herstel na inspanning versnelt. Omega-3 ondersteunt ook de gezondheid van gewrichten en pezen — kwetsbare punten na 40.",
+          "Remt ontstekingsreacties (inflammaging), ondersteunt celmembranen en herstel op celniveau.",
         guideLink: "/supplementen/omega-3",
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
       },
       {
-        name: "Ashwagandha",
+        name: "Creatine",
         reason:
-          "Verlaagt cortisol en ondersteunt de balans tussen inspanning en herstel. Onderzoek toont verbeterde recovery en spierkracht bij regelmatig gebruik, vooral onder stressvolle omstandigheden.",
-        guideLink: "/supplementen/ashwagandha",
-        comparisonLink: "/beste-ashwagandha",
-        icon: "🌿",
+          "Ondersteunt ATP-productie (spierenergie), bewezen effectief voor kracht en herstel. Na 40 daalt de natuurlijke creatineaanmaak.",
+        guideLink: "/supplementen/creatine",
+        icon: "💪",
+      },
+      {
+        name: "Zink",
+        reason:
+          "Essentieel voor eiwitaanmaak, immuunfunctie en wondgenezing. Tekort vertraagt spierherstel.",
+        guideLink: "/supplementen/zink",
+        icon: "🔩",
       },
     ],
   },
@@ -119,7 +137,7 @@ export const herstelThema: ThemaPageData = {
     bulletPoints: [
       "Waarom rustdagen net zo belangrijk zijn als trainingsdagen",
       "Een 7-dagen herstelprotocol dat je deze week kunt starten",
-      "Doseerschema's voor magnesium, omega-3 en ashwagandha bij herstel",
+      "Doseerschema's voor magnesium, omega-3, creatine en zink bij herstel",
       "De drie grootste herstelfouten die mannen 40+ maken",
     ],
     ctaText: "Download de Herstelgids",
@@ -175,36 +193,30 @@ export const herstelThema: ThemaPageData = {
     items: [
       {
         context:
-          "Herstel begint bij slaap. Ontdek waarom je slaap verandert na 40 en wat je eraan kunt doen.",
+          "Herstel begint bij slaap. Zonder diepe slaap herstellen je spieren niet — groeihormoon komt vrij tijdens N3-slaap.",
         href: "/thema/slaap",
         label: "Thema: slaap (nachtrust en herstel)",
       },
       {
         context:
-          "Chronische stress remt je herstel. Leer hoe cortisol je recovery blokkeert — en hoe je dat doorbreekt.",
+          "Chronische stress houdt cortisol hoog. Cortisol remt spieropbouw en vertraagt weefselreparatie.",
         href: "/thema/stress",
         label: "Thema: stress (cortisol en herstel)",
       },
       {
         context:
-          "Welke magnesiumvorm werkt het best voor spierherstel? We vergeleken de populairste opties op vorm, prijs en dosering.",
-        href: "/beste-magnesium",
-        label: "Beste magnesium-supplementen vergeleken",
-      },
-      {
-        context:
-          "Omega-3 ondersteunt herstel na inspanning door ontstekingsremmende werking. Bekijk onze onafhankelijke vergelijking.",
-        href: "/beste-omega-3-supplement",
-        label: "Beste omega-3 supplementen vergeleken",
+          "Slecht herstel vreet aan je energie. Het zijn twee kanten van dezelfde munt — als je niet herstelt, heb je geen brandstof.",
+        href: "/thema/energie",
+        label: "Thema: energie (herstel en belasting)",
       },
     ],
   },
 
   seo: {
     title:
-      "Herstel verbeteren als man 40+ — Oorzaken, tips en supplementen | PerfectSupplement",
+      "Herstel verbeteren als man 40+ — Slaap, eiwit, cortisol, magnesium, omega-3 | PerfectSupplement",
     description:
-      "Waarom je herstel verandert na je 40e en wat je eraan kunt doen. Concrete leefstijltips, supplementadvies en een gratis herstelgids.",
+      "Waarom herstel na 40 anders is: MPS, cortisol, diepe slaap, inflammaging. Quick wins, supplementen (magnesium, omega-3, creatine, zink) en gerelateerde thema’s — plus gratis herstelgids.",
     canonical: "/thema/herstel",
   },
 };

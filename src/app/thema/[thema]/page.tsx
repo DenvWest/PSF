@@ -184,12 +184,14 @@ export default async function ThemaPage({ params }: Props) {
                   >
                     Lees de gids →
                   </Link>
-                  <Link
-                    href={item.comparisonLink}
-                    className="text-sm font-medium text-stone-500 hover:text-stone-700 hover:underline"
-                  >
-                    Vergelijk producten →
-                  </Link>
+                  {item.comparisonLink ? (
+                    <Link
+                      href={item.comparisonLink}
+                      className="text-sm font-medium text-stone-500 hover:text-stone-700 hover:underline"
+                    >
+                      Vergelijk producten →
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             ))}
