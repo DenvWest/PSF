@@ -3,6 +3,8 @@ import { ashwagandhaData } from "./ashwagandha";
 import { omega3Data } from "./omega-3";
 import { vitamineDData } from "./vitamine-d";
 import { melatonineData } from "./melatonine";
+import { creatineGidsData } from "./creatine";
+import { zinkGidsData } from "./zink";
 import type { SupplementSlug, SupplementData } from "@/types/supplementen";
 
 const alleSupplementen: Record<SupplementSlug, SupplementData> = {
@@ -11,6 +13,8 @@ const alleSupplementen: Record<SupplementSlug, SupplementData> = {
   "omega-3": omega3Data,
   "vitamine-d": vitamineDData,
   melatonine: melatonineData,
+  creatine: creatineGidsData,
+  zink: zinkGidsData,
 };
 
 export function getSupplementData(slug: SupplementSlug): SupplementData {
@@ -23,4 +27,6 @@ export const ALL_SUPPLEMENT_SLUGS: SupplementSlug[] = [
   "omega-3",
   "vitamine-d",
   "melatonine",
+  "creatine",
+  "zink",
 ];

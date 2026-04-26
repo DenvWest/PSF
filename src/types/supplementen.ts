@@ -3,7 +3,9 @@ export type SupplementSlug =
   | "ashwagandha"
   | "omega-3"
   | "vitamine-d"
-  | "melatonine";
+  | "melatonine"
+  | "creatine"
+  | "zink";
 
 export interface SupplementData {
   slug: SupplementSlug;
