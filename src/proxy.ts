@@ -63,7 +63,7 @@ function buildContentSecurityPolicy() {
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     "media-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.clarity.ms https://challenges.cloudflare.com https://www.googletagmanager.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clarity.ms https://challenges.cloudflare.com https://www.googletagmanager.com",
     "style-src 'self' 'unsafe-inline'",
     `connect-src 'self' ${connectSrc.join(" ")} https://*.clarity.ms`,
     "frame-src https://challenges.cloudflare.com",
