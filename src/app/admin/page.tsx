@@ -212,7 +212,11 @@ export default function AdminDashboardPage() {
 
           {data ? (
             <div className="flex flex-col gap-8">
-              <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <section
+                className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${
+                  data.affiliate ? "xl:grid-cols-5" : "xl:grid-cols-4"
+                }`}
+              >
                 <div
                   className="rounded-xl border bg-white p-6"
                   style={{ borderColor: "#e8e6e1" }}
@@ -270,6 +274,22 @@ export default function AdminDashboardPage() {
                     {data.stats.avgTotalScore ?? "—"}
                   </p>
                 </div>
+                {data.affiliate ? (
+                  <div
+                    className="rounded-xl border bg-white p-6"
+                    style={{ borderColor: "#e8e6e1" }}
+                  >
+                    <p className="text-[13px] text-[#999]">Totaal clicks</p>
+                    <p
+                      className="mt-2 text-[32px] font-bold leading-none text-[#1a1a1a]"
+                    >
+                      {data.affiliate.totalClicks}
+                    </p>
+                    <p className="mt-2 text-[13px] text-[#999]">
+                      Affiliate links
+                    </p>
+                  </div>
+                ) : null}
               </section>
 
               <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -482,6 +502,165 @@ export default function AdminDashboardPage() {
                   </p>
                 </section>
               )}
+
+              {data.affiliate ? (
+                <section
+                  id="affiliate"
+                  className="scroll-mt-24 rounded-xl border bg-white p-6"
+                  style={{ borderColor: "#e8e6e1" }}
+                >
+                  <h2 className="mb-6 text-lg font-semibold text-[#1a1a1a]">
+                    Affiliate clicks
+                  </h2>
+                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <div>
+                      <h3 className="mb-2 text-sm font-semibold text-[#1a1a1a]">
+                        Clicks per product
+                      </h3>
+                      <div
+                        className="w-full"
+                        style={{
+                          height: Math.min(
+                            400,
+                            40 +
+                              Math.max(3, data.affiliate.clicksPerProduct.length) *
+                                28,
+                          ),
+                        }}
+                      >
+                        {data.affiliate.clicksPerProduct.length === 0 ? (
+                          <p className="text-sm text-[#999]">Nog geen data.</p>
+                        ) : (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              layout="vertical"
+                              data={data.affiliate.clicksPerProduct}
+                              margin={{ top: 4, right: 12, left: 4, bottom: 4 }}
+                            >
+                              <XAxis
+                                type="number"
+                                tick={{ fontSize: 11 }}
+                                allowDecimals={false}
+                              />
+                              <YAxis
+                                type="category"
+                                dataKey="name"
+                                width={140}
+                                tick={{ fontSize: 10 }}
+                                interval={0}
+                              />
+                              <Tooltip />
+                              <Bar
+                                dataKey="count"
+                                fill="#1a1a1a"
+                                radius={[0, 4, 4, 0]}
+                                maxBarSize={22}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="mb-2 text-sm font-semibold text-[#1a1a1a]">
+                        Clicks per pagina
+                      </h3>
+                      <div
+                        className="w-full"
+                        style={{
+                          height: Math.min(
+                            400,
+                            40 +
+                              Math.max(3, data.affiliate.clicksPerPage.length) *
+                                28,
+                          ),
+                        }}
+                      >
+                        {data.affiliate.clicksPerPage.length === 0 ? (
+                          <p className="text-sm text-[#999]">Nog geen data.</p>
+                        ) : (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              layout="vertical"
+                              data={data.affiliate.clicksPerPage}
+                              margin={{ top: 4, right: 12, left: 4, bottom: 4 }}
+                            >
+                              <XAxis
+                                type="number"
+                                tick={{ fontSize: 11 }}
+                                allowDecimals={false}
+                              />
+                              <YAxis
+                                type="category"
+                                dataKey="name"
+                                width={160}
+                                tick={{ fontSize: 10 }}
+                                interval={0}
+                              />
+                              <Tooltip />
+                              <Bar
+                                dataKey="count"
+                                fill="#1a1a1a"
+                                radius={[0, 4, 4, 0]}
+                                maxBarSize={22}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <h3 className="mb-3 mt-8 text-sm font-semibold text-[#1a1a1a]">
+                    Recente clicks
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[520px] text-left text-sm">
+                      <thead>
+                        <tr
+                          className="border-b text-[13px] text-[#999]"
+                          style={{ borderColor: "#e8e6e1" }}
+                        >
+                          <th className="pb-3 pr-4 font-medium">Datum</th>
+                          <th className="pb-3 pr-4 font-medium">Product</th>
+                          <th className="pb-3 pr-4 font-medium">Categorie</th>
+                          <th className="pb-3 font-medium">Pagina</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.affiliate.recentClicks.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="py-4 text-[#999]">
+                              Nog geen affiliate-clicks.
+                            </td>
+                          </tr>
+                        ) : (
+                          data.affiliate.recentClicks.map((row, i) => (
+                            <tr
+                              key={`${row.timestamp}-${i}`}
+                              className="border-b last:border-b-0"
+                              style={{ borderColor: "#e8e6e1" }}
+                            >
+                              <td className="py-3 pr-4 text-[#1a1a1a]">
+                                {formatNlDate(row.timestamp)}
+                              </td>
+                              <td className="py-3 pr-4 text-[#555]">
+                                {row.productNaam}
+                              </td>
+                              <td className="py-3 pr-4 text-[#555]">
+                                {row.categorie}
+                              </td>
+                              <td className="py-3 text-[#555]">
+                                {row.pagina}
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              ) : null}
 
               <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div

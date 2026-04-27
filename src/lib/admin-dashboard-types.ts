@@ -70,6 +70,21 @@ export type AdminNurtureSection = {
   day30Conversion: AdminNurtureDay30Conversion;
 };
 
+export type AdminAffiliateClickRow = {
+  productId: string;
+  productNaam: string;
+  categorie: string;
+  pagina: string;
+  timestamp: string;
+};
+
+export type AdminAffiliateSection = {
+  totalClicks: number;
+  clicksPerProduct: { name: string; count: number }[];
+  clicksPerPage: { name: string; count: number }[];
+  recentClicks: AdminAffiliateClickRow[];
+};
+
 export type AdminDashboardPayload = {
   stats: AdminDashboardStats;
   profileDistribution: AdminProfileSlice[];
@@ -78,4 +93,5 @@ export type AdminDashboardPayload = {
   recentFeedback: AdminFeedbackRow[];
   recentSessions: AdminSessionRow[];
   nurture: AdminNurtureSection | null;
+  affiliate: AdminAffiliateSection | null;
 };

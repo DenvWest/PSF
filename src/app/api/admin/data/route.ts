@@ -5,6 +5,7 @@ import {
   isValidAdminSessionCookie,
 } from "@/lib/admin-auth";
 import type {
+  AdminAffiliateSection,
   AdminDashboardPayload,
   AdminNurtureSection,
 } from "@/lib/admin-dashboard-types";
@@ -156,6 +157,78 @@ async function loadNurtureSection(
       repeatIntakeAfterMail,
       conversionRate,
     },
+  };
+}
+
+function labelWithFallback(
+  value: unknown,
+  fallback: string = "—",
+): string {
+  if (typeof value === "string" && value.trim() !== "") {
+    return value.trim();
+  }
+  return fallback;
+}
+
+function tsMs(value: unknown): number {
+  if (typeof value !== "string" || value === "") {
+    return 0;
+  }
+  const t = new Date(value).getTime();
+  return Number.isNaN(t) ? 0 : t;
+}
+
+async function loadAffiliateSection(
+  admin: SupabaseClient,
+): Promise<AdminAffiliateSection | null> {
+  const { data: rows, error } = await admin
+    .from("affiliate_clicks")
+    .select("product_id, product_naam, categorie, pagina, timestamp");
+
+  if (error) {
+    console.error("[api/admin/data] affiliate_clicks:", error);
+    return null;
+  }
+
+  const list = rows ?? [];
+  const totalClicks = list.length;
+
+  const byProduct = new Map<string, number>();
+  const byPage = new Map<string, number>();
+
+  for (const row of list) {
+    const pName = labelWithFallback(row.product_naam);
+    byProduct.set(pName, (byProduct.get(pName) ?? 0) + 1);
+    const page = labelWithFallback(row.pagina);
+    byPage.set(page, (byPage.get(page) ?? 0) + 1);
+  }
+
+  const clicksPerProduct = [...byProduct.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const clicksPerPage = [...byPage.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const sortedByTime = [...list].sort((a, b) => {
+    return tsMs(b.timestamp) - tsMs(a.timestamp);
+  });
+  const top20 = sortedByTime.slice(0, 20);
+
+  const recentClicks = top20.map((row) => ({
+    productId: labelWithFallback(row.product_id, ""),
+    productNaam: labelWithFallback(row.product_naam),
+    categorie: labelWithFallback(row.categorie),
+    pagina: labelWithFallback(row.pagina),
+    timestamp: typeof row.timestamp === "string" ? row.timestamp : "",
+  }));
+
+  return {
+    totalClicks,
+    clicksPerProduct,
+    clicksPerPage,
+    recentClicks,
   };
 }
 
@@ -370,7 +443,10 @@ export async function GET(request: NextRequest) {
     createdAt: typeof row.created_at === "string" ? row.created_at : "",
   }));
 
-  const nurture = await loadNurtureSection(admin);
+  const [nurture, affiliate] = await Promise.all([
+    loadNurtureSection(admin),
+    loadAffiliateSection(admin),
+  ]);
 
   const payload: AdminDashboardPayload = {
     stats: {
@@ -389,6 +465,7 @@ export async function GET(request: NextRequest) {
     recentFeedback,
     recentSessions,
     nurture,
+    affiliate,
   };
 
   return NextResponse.json(payload);
