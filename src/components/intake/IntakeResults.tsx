@@ -12,7 +12,9 @@ import {
 } from "@/lib/intake-engine";
 import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
+import FoundationStack from "@/components/intake/FoundationStack";
 import SupplementRoute from "@/components/intake/SupplementRoute";
+import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import ScoreRing from "@/components/intake/ScoreRing";
 import { getSupplementRoute } from "@/lib/getSupplementRoute";
 import { revokeIntakeConsent, saveReminderEmail } from "@/lib/intake-storage";
@@ -95,6 +97,10 @@ export default function IntakeResults({
     deficiencySignals,
     profile,
     answers,
+  );
+  const excludeIds = supplementRoute.map((r) => r.id);
+  const foundationItems = FOUNDATION_STACK.filter(
+    (f) => !excludeIds.includes(f.id),
   );
   const zinkSignal =
     scores.recovery_score < 40 ||
@@ -234,6 +240,10 @@ export default function IntakeResults({
         </div>
         <SupplementRoute recommendations={supplementRoute} scores={scores} />
       </div>
+
+      {foundationItems.length > 0 ? (
+        <FoundationStack excludeIds={excludeIds} />
+      ) : null}
 
       {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.ashwagandha_signal || deficiencySignals.creatine_signal || zinkSignal) && (
         <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
