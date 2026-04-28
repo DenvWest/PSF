@@ -84,6 +84,12 @@ export default function OmegaComparisonPage() {
                                 >
                                     Bekijk beste keuzes
                                 </Link>
+                                <Link
+                                    href="/intake"
+                                    className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
+                                >
+                                    Doe de Leefstijlcheck
+                                </Link>
                             </div>
 
                             <p className="mt-5 inline-flex max-w-xl items-start gap-2 rounded-xl border border-stone-200/90 bg-white/90 px-4 py-3 text-sm leading-6 text-stone-500 shadow-[0_1px_3px_rgba(28,25,23,0.04)]">
@@ -442,6 +448,21 @@ export default function OmegaComparisonPage() {
                     <span className="mt-0.5 block text-sm text-stone-500">Vergeleken op EPA/DHA, prijs en zuiverheid</span>
                 </Link>
             </ContentSection>
+
+            <section className="mt-16 mb-12 bg-slate-50 rounded-2xl p-8 md:p-12 text-center">
+                <h2 className="text-2xl md:text-3xl font-bold font-serif text-slate-900 mb-4">
+                    Welke omega-3 past bij jou?
+                </h2>
+                <p className="text-slate-600 mb-6 max-w-xl mx-auto">
+                    Ontdek in 3 minuten welke supplementen bij jouw situatie passen — op basis van je slaap, stress, energie en meer.
+                </p>
+                <Link
+                    href="/intake"
+                    className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors"
+                >
+                    Doe de gratis Leefstijlcheck
+                </Link>
+            </section>
 
             <RelatedPages
                 title="Gerelateerde pagina's"
