@@ -27,9 +27,6 @@ export function trackAffiliateClick(
   const label = affiliateGaEventLabel(slug);
   const pageType = options?.pageType;
   const position = options?.position;
-  const gtagExists =
-    typeof window !== "undefined" && typeof window.gtag === "function";
-
 
   if (typeof window === "undefined") return;
 

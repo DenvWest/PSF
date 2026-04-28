@@ -9,6 +9,7 @@ import Disclosure, {
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
 import { omega3Products } from "@/data/products/omega3";
+import type { Omega3Product } from "@/types/product";
 import { formatPrice } from "@/lib/format-price";
 import { faqs } from "@/features/omega3/data/beste-omega-3-supplement";
 
@@ -17,12 +18,11 @@ const topPicks = omega3Products
     .sort((a, b) => a.rank - b.rank);
 
 const bestChoice = topPicks[0];
-const easyChoice = topPicks[1];
-const veganChoice = topPicks[2];
+const easyChoice: Omega3Product | undefined = undefined;
+const veganChoice = omega3Products.find((p) => p.slug === "arctic-blue-algenolie");
 
 const voorWieMap: Record<string, string> = {
     "arctic-blue-visolie": "Dagelijks gebruik, brede ondersteuning",
-    "arctic-blue-gummies": "Wie gemak en smaak belangrijk vindt",
     "arctic-blue-algenolie": "Wie plantaardig de voorkeur geeft",
 };
 
@@ -157,7 +157,6 @@ export default function BestOmegaPage() {
 
                         <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-600">
                             <li>• Kies visolie als je effect en dosering prioriteit geeft</li>
-                            <li>• Kies gummies als je gemak en smaak voorop stelt</li>
                             <li>• Kies algenolie als je plantaardig wilt</li>
                         </ul>
 
@@ -182,7 +181,7 @@ export default function BestOmegaPage() {
             <ContentSection
                 id="topkeuzes"
                 title="Onze topkeuzes"
-                description="Drie keuzes, snel te scannen. Klik door voor prijs en besteloptie."
+                description="Twee keuzes, snel te scannen. Klik door voor prijs en besteloptie."
             >
                 <div className="grid gap-5 lg:grid-cols-3">
                     {topPicks.map((product, index) => {

@@ -22,10 +22,7 @@ function authorizePost(request: Request): boolean {
 function authorizeGet(request: Request): boolean {
   const secret = process.env.CRON_SECRET?.trim();
   if (!secret) return false;
-  if (getBearerToken(request) === secret) return true;
-  const url = new URL(request.url);
-  const q = url.searchParams.get("secret")?.trim() ?? "";
-  return q === secret;
+  return getBearerToken(request) === secret;
 }
 
 async function handleAuthorized(): Promise<NextResponse> {

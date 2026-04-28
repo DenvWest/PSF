@@ -7,13 +7,19 @@ export type RateLimitRoute =
   | "contact"
   | "intake_session"
   | "intake_feedback"
-  | "intake_reminder";
+  | "intake_reminder"
+  | "thema_download"
+  | "admin_auth"
+  | "unsubscribe";
 
 const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   contact: { limit: 5, windowMs: 10 * 60 * 1000 },
   intake_session: { limit: 20, windowMs: 15 * 60 * 1000 },
   intake_feedback: { limit: 10, windowMs: 15 * 60 * 1000 },
   intake_reminder: { limit: 10, windowMs: 15 * 60 * 1000 },
+  thema_download: { limit: 5, windowMs: 15 * 60 * 1000 },
+  admin_auth: { limit: 5, windowMs: 15 * 60 * 1000 },
+  unsubscribe: { limit: 10, windowMs: 15 * 60 * 1000 },
 };
 
 const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
@@ -21,6 +27,9 @@ const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   intake_session: { limit: 1000, windowMs: 60 * 1000 },
   intake_feedback: { limit: 1000, windowMs: 60 * 1000 },
   intake_reminder: { limit: 1000, windowMs: 60 * 1000 },
+  thema_download: { limit: 1000, windowMs: 60 * 1000 },
+  admin_auth: { limit: 1000, windowMs: 60 * 1000 },
+  unsubscribe: { limit: 1000, windowMs: 60 * 1000 },
 };
 
 export function getRateLimitConfig(route: RateLimitRoute): RateLimitConfig {

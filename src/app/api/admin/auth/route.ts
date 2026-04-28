@@ -4,6 +4,9 @@ import {
   ADMIN_TOKEN_COOKIE_NAME,
   getAdminSecret,
 } from "@/lib/admin-auth";
+import { getClientIp } from "@/lib/client-ip";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 
 function safeStringEqual(a: string, b: string): boolean {
   const ba = Buffer.from(a, "utf8");
@@ -30,6 +33,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "Admin is niet geconfigureerd op de server." },
       { status: 503 },
+    );
+  }
+
+  const clientIp = getClientIp(request);
+  const rateLimit = consumeRateLimitForIp(
+    "admin_auth",
+    clientIp,
+    getRateLimitConfig("admin_auth"),
+  );
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Te veel inlogpogingen, probeer het over 15 minuten opnieuw" },
+      { status: 429 },
     );
   }
 

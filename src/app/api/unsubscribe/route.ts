@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getClientIp } from "@/lib/client-ip";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { decodeNurtureUnsubscribeToken } from "@/lib/nurture-unsubscribe";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -146,6 +149,17 @@ async function handleReminderUnsubscribe(email: string): Promise<NextResponse> {
 }
 
 export async function GET(request: NextRequest) {
+  const clientIp = getClientIp(request);
+  const rateLimit = consumeRateLimitForIp(
+    "unsubscribe",
+    clientIp,
+    getRateLimitConfig("unsubscribe"),
+  );
+
+  if (!rateLimit.allowed) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   const url = request.nextUrl;
   const token = url.searchParams.get("token");
 

@@ -16,8 +16,8 @@ export const highlights = [
   },
   {
     label: "Beste prijs-kwaliteit",
-    value: "Vitaminstore Super Fish Oil",
-    text: "Triglyceride-vorm voor betere opname, bijna dubbele EPA/DHA vs standaard visolie en scherpste prijs per mg.",
+    value: "Möller's Omega-3 Citroen",
+    text: "Traditioneel Noors merk met hoge DHA per portie, zachte citroensmaak en een sterke prijs per dag.",
   },
   {
     label: "Beste plantaardige optie",
@@ -62,28 +62,28 @@ export const products: Array<{
     affiliateSlug: "minami-morepa-vergelijking",
   },
   {
-    name: "Vitaminstore Super Fish Oil",
-    score: "8.6",
+    name: "Möller's Omega-3 Citroen",
+    score: "8.5",
     summary:
-      "Visolie in natuurlijke triglyceride-vorm met 360 mg EPA en 240 mg DHA per softgel — bijna dubbele omega-3 ten opzichte van standaard visolie, voor een scherpe prijs per dag.",
-    specs: ["Type: Visolie softgel", "EPA/DHA: 360 / 240 mg", "Prijs per dag: €0,42"],
+      "Traditioneel Noors levertraan met zachte citroensmaak. Sterke DHA-focus met 370 mg EPA en 510 mg DHA per portie tegen een scherpe prijs per dag.",
+    specs: ["Type: Vloeibaar levertraan", "EPA/DHA: 370 / 510 mg", "Prijs per dag: €0,47"],
     pros: [
-      "Natuurlijke triglyceride-vorm voor betere opname",
-      "Bijna dubbele EPA/DHA vs standaard visolie",
-      "Scherpste prijs per mg omega-3 van alle visolieproducten",
+      "Hoogste DHA per portie in dit overzicht",
+      "Zachte citroensmaak en minder oprispingen",
+      "Zeer scherpe prijs per dag",
     ],
     cons: [
       "Lagere EPA dan Minami MorEPA",
-      "Geen CO2-extractie of IFOS-certificering",
+      "Levertraan — let op vitamine A bij andere supplementen",
     ],
     bestFor: "Beste prijs-kwaliteit",
     breakdown: [
       ["Dosering", "8/10"],
       ["Transparantie", "8/10"],
-      ["Gebruiksgemak", "9/10"],
+      ["Gebruiksgemak", "8/10"],
       ["Prijs per dag", "9/10"],
     ],
-    affiliateSlug: "vitaminstore-super-fish-oil",
+    affiliateSlug: "mollers-omega-3-citroen",
   },
   {
     name: "Arctic Blue Visolie",
@@ -122,13 +122,13 @@ export const tableRows = [
     bestFor: "Topkeuze",
   },
   {
-    product: "Vitaminstore Super Fish Oil",
+    product: "Möller's Omega-3 Citroen",
     type: "Visolie",
-    epa: "360 / 240 mg",
+    epa: "370 / 510 mg",
     dosage: "Hoog",
     transparency: "Goed",
     convenience: "Goed",
-    price: "€0,42",
+    price: "€0,47",
     bestFor: "Beste prijs-kwaliteit",
   },
   {
@@ -151,16 +151,6 @@ export const tableRows = [
     price: "€0,62",
     bestFor: "Beste plantaardig",
   },
-  {
-    product: "Arctic Blue Gummies",
-    type: "Gummies",
-    epa: "60 / 60 mg",
-    dosage: "Laag",
-    transparency: "Goed",
-    convenience: "Sterk",
-    price: "€0,72",
-    bestFor: "Beste gemak",
-  },
 ];
 
 export const choiceRoutes: Array<{
@@ -177,9 +167,9 @@ export const choiceRoutes: Array<{
   },
   {
     title: "Beste prijs-kwaliteit",
-    product: "Vitaminstore Super Fish Oil",
-    text: "Past beter als je een kwalitatieve triglyceride-visolie zoekt voor een scherpe prijs per dag.",
-    affiliateSlug: "vitaminstore-super-fish-oil",
+    product: "Möller's Omega-3 Citroen",
+    text: "Past beter als je een scherpe prijs per dag wilt met hoge DHA en een vertrouwd Noors merk.",
+    affiliateSlug: "mollers-omega-3-citroen",
   },
   {
     title: "Beste vloeibaar",
