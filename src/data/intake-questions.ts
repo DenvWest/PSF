@@ -130,9 +130,9 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     questionIndex: 2,
     question: "Waar leun je op voor energie?",
     options: [
-      { label: "Koffie of energiedrank (meer dan 3 per dag)", value: 1 },
-      { label: "Koffie of energiedrank (1-2 per dag)", value: 2 },
       { label: "Ik heb weinig stimulanten nodig", value: 4 },
+      { label: "Koffie of energiedrank (1-2 per dag)", value: 2 },
+      { label: "Koffie of energiedrank (meer dan 3 per dag)", value: 1 },
       { label: "Ik gebruik regelmatig suiker of snacks als opkikker", value: 1 },
     ],
   },

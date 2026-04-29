@@ -34,7 +34,8 @@ export interface ProfileLabel {
     | "Stressdrager"
     | "Basis Mist"
     | "Stilzitter"
-    | "Stille Slijter";
+    | "Stille Slijter"
+    | "In Balans";
   domain: DomainId;
   score: number;
 }
@@ -310,6 +311,14 @@ export function getUrgency(scores: DomainScores): UrgencyResult {
 
 export function getProfileLabel(scores: DomainScores): ProfileLabel {
   const primary = getSortedDomains(scores)[0];
+
+  if (primary.score > 60) {
+    return {
+      name: "In Balans",
+      domain: primary.domain,
+      score: primary.score,
+    };
+  }
 
   return {
     name: PROFILE_NAMES[primary.domain],
