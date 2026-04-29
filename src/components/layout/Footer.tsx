@@ -19,6 +19,7 @@ const vergelijkingLinks = [
 
 const infoLinks = [
     { href: "/methodologie", label: "Methodologie" },
+    { href: "/over-ons", label: "Over ons" },
     { href: "/faqs", label: "FAQ's" },
     { href: "/privacy", label: "Privacy" },
     { href: "/disclaimer", label: "Disclaimer" },
