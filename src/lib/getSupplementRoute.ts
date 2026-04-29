@@ -30,9 +30,19 @@ function matchesCreatine(
   answers: Record<string, number>,
 ): boolean {
   const movementFrequency = intAnswer(answers, "MOV_FREQ");
-  return (
-    (scores.recovery_score < 50 && movementFrequency >= 3) ||
+
+  const activeExerciser = movementFrequency >= 2;
+  const poorRecovery = scores.recovery_score < 50;
+  const cognitiveLoad = scores.energy_score < 50 && scores.stress_score < 50;
+  const relevantProfile =
     profileLabel.name === "Stille Slijter" ||
+    profileLabel.name === "Lage Batterij";
+
+  return (
+    activeExerciser ||
+    poorRecovery ||
+    cognitiveLoad ||
+    relevantProfile ||
     matchesOvertrainerAnswers(answers)
   );
 }

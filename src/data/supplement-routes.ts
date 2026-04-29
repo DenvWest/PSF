@@ -96,8 +96,8 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "creatine",
     name: "Creatine",
     reason:
-      "Creatine ondersteunt spierenergieproductie en herstel. Na 40 daalt je natuurlijke aanmaak.",
-    priority: 4,
+      "Creatine ondersteunt spierkracht bij intensieve inspanning. Na 40 daalt je natuurlijke creatineproductie — aanvullen kan helpen bij sport en herstel. Opkomend onderzoek suggereert ook een rol bij mentale scherpte.",
+    priority: 20,
     domains: ["Beweging", "Herstel"],
     hasComparison: true,
     affiliateUrl: "/beste-creatine",
