@@ -11,5 +11,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/beste-ashwagandha`, lastModified: new Date() },
     { url: `${BASE_URL}/profiel/stressdrager`, lastModified: new Date() },
     { url: `${BASE_URL}/profiel/lage-batterij`, lastModified: new Date() },
+    { url: `${BASE_URL}/profiel/onrustige-slaper`, lastModified: new Date() },
+    { url: `${BASE_URL}/profiel/stille-slijter`, lastModified: new Date() },
+    { url: `${BASE_URL}/profiel/basis-mist`, lastModified: new Date() },
+    { url: `${BASE_URL}/profiel/overtrainer`, lastModified: new Date() },
   ];
 }

@@ -1,0 +1,189 @@
+import type { ProfilePageData } from "@/types/profile-page";
+
+export const basisMist: ProfilePageData = {
+  slug: "basis-mist",
+  label: "Basis Mist",
+
+  seo: {
+    title: "Voedingstekort Na 40: Welke Bouwstenen Mis Je? | PerfectSupplement",
+    description:
+      "Je eet wel, maar niet genoeg van het goede. Na 40 nemen tekorten toe. Ontdek welke bouwstenen je mist en hoe je dat oplost.",
+    canonical: "https://perfectsupplement.nl/profiel/basis-mist",
+    targetKeyword: "voedingstekort man 40",
+  },
+
+  hero: {
+    headline: "Basis Mist: je voeding mist essentiële bouwstenen",
+    subline:
+      "Je eet drie keer per dag. Je hebt geen eetprobleem. Maar je lichaam krijgt niet wat het nodig heeft — en dat merk je overal.",
+  },
+
+  recognition: {
+    intro: "Ken je dit?",
+    points: [
+      {
+        situation:
+          "Je eet 'normaal', maar als je eerlijk bent is het veel brood, pasta en kant-en-klaar. Groente is bijzaak.",
+        emotion: "herkenning",
+      },
+      {
+        situation:
+          "Je eet zelden vis. Misschien een keer per maand, als het toevallig uitkomt. Noten of zaden? Nauwelijks.",
+        emotion: "onverschilligheid",
+      },
+      {
+        situation:
+          "Je bent vaker ziek dan vroeger. Verkoudheid duurt langer, wondjes genezen langzamer.",
+        emotion: "bezorgdheid",
+      },
+      {
+        situation:
+          "Je hebt last van droge huid, broze nagels of haaruitval. Klein, maar het is er.",
+        emotion: "ongemak",
+      },
+      {
+        situation:
+          "Je voelt je niet ziek, maar ook niet goed. Ergens tussen 'het gaat' en 'het zou beter moeten'.",
+        emotion: "onvrede",
+      },
+    ],
+    closer:
+      "Dit profiel gaat niet over diëten of afvallen. Het gaat over de stille tekorten die je niet ziet maar wel voelt — en die na 40 steeds meer impact hebben.",
+  },
+
+  understanding: {
+    title: "Waarom je voeding tekortschiet na 40",
+    paragraphs: [
+      "Je lichaam verandert na 40 — maar je eetpatroon meestal niet. Je darmen nemen minder efficiënt voedingsstoffen op (vooral vitamine B12, magnesium en vitamine D). Je eiwitbehoefte stijgt (door spierafbraak), maar de meeste mannen eten evenveel eiwit als op hun 25e.",
+      "Daar komt bij: de gemiddelde Nederlandse voeding is arm aan omega-3 vetzuren, magnesium en vitamine D. Dat is geen kwestie van slecht eten — het is een structureel probleem in ons voedingspatroon. Weinig vis, weinig noten, weinig zon.",
+      "Het gevolg is een stille erosie. Geen acute klachten, maar een langzame daling van je energieniveau, je immuunfunctie en je herstelvermogen. Je went eraan — maar het hoeft niet zo te zijn.",
+    ],
+  },
+
+  stepCare: [
+    {
+      id: "vandaag",
+      title: "Wat je vandaag nog kunt doen",
+      subtitle: "De snelste verbeteringen in je voeding",
+      items: [
+        {
+          title: "Voeg een handvol noten toe aan je dag",
+          description:
+            "Walnoten, amandelen of cashewnoten bevatten magnesium, zink, gezonde vetten en eiwit. Een handvol per dag is een van de simpelste voedingsupgrades die er is.",
+          actionable: "Koop een zak ongezouten noten en zet die op je bureau of aanrecht.",
+          timeframe: "Vandaag",
+        },
+        {
+          title: "Eet vanavond een portie groente extra",
+          description:
+            "De meeste mannen eten 100-150 gram groente per dag. De richtlijn is 250 gram. Eén extra portie maakt al verschil.",
+          actionable: "Voeg vanavond een extra groentesoort toe aan je avondeten.",
+          timeframe: "Vandaag",
+        },
+        {
+          title: "Vervang je snack door fruit met pindakaas",
+          description:
+            "In plaats van een koek of cracker: een appel of banaan met een eetlepel pindakaas. Meer vezels, meer eiwit, stabielere energie.",
+          actionable: "Leg morgen een appel en een pot pindakaas klaar op je werkplek.",
+          timeframe: "Vandaag",
+        },
+      ],
+    },
+    {
+      id: "deze-week",
+      title: "Wat je deze week kunt aanpassen",
+      subtitle: "De basis verbreden",
+      items: [
+        {
+          title: "Plan 2 vismaaltijden in",
+          description:
+            "Zalm, makreel, haring of sardines zijn de rijkste bronnen van omega-3. Twee keer per week is de richtlijn — de meeste Nederlanders zitten op nul.",
+          actionable: "Zet deze week twee avonden vis op het menu. Diepvriesvis telt ook.",
+          timeframe: "Deze week",
+        },
+        {
+          title: "Verhoog je eiwitinname bij elke maaltijd",
+          description:
+            "Eieren bij het ontbijt, kwark of kipfilet bij de lunch, peulvruchten bij het avondeten. Spreid eiwit over de dag — dat is effectiever dan alles bij het avondeten.",
+          actionable: "Begin morgen met 2 eieren of een bak kwark als ontbijt.",
+          timeframe: "Deze week",
+        },
+        {
+          title: "Drink meer water, minder sap en frisdrank",
+          description:
+            "Vruchtensap bevat evenveel suiker als cola. Water, kruidenthee en koffie (zonder suiker) zijn de betere keuzes.",
+          actionable: "Vervang deze week elke frisdrank of sap door water.",
+          timeframe: "Deze week",
+        },
+      ],
+    },
+    {
+      id: "komende-maand",
+      title: "De komende 30 dagen",
+      subtitle: "Tekorten structureel aanvullen",
+      items: [
+        {
+          title: "Bouw een weekmenu op met variatie",
+          description:
+            "Eenzijdig eten is de grootste oorzaak van tekorten. Plan je maaltijden voor de week — niet als dieet, maar als structuur. Wissel groenten, eiwitten en koolhydraten af.",
+          actionable:
+            "Schrijf komend weekend een weekmenu. Hoeft niet perfect — consistentie wint.",
+          timeframe: "Komende 30 dagen",
+        },
+        {
+          title: "Overweeg gerichte supplementen",
+          description:
+            "Als je voeding verbetert maar bepaalde tekorten structureel zijn (omega-3, vitamine D), kunnen supplementen het verschil maken.",
+          actionable: "Lees hieronder welke supplementen bij dit profiel passen.",
+          timeframe: "Komende 30 dagen",
+        },
+      ],
+    },
+  ],
+
+  supplements: [
+    {
+      name: "Omega-3 (EPA/DHA)",
+      efsa_claim:
+        "EPA en DHA dragen bij tot de normale werking van het hart. DHA draagt bij tot de instandhouding van normale hersenfunctie.",
+      why_this_profile:
+        "Als je weinig vis eet, is omega-3 het supplement met de meeste impact. De meeste Nederlanders krijgen minder dan de helft van de aanbevolen hoeveelheid.",
+      href: "/beste-omega-3-supplement",
+      hasComparison: true,
+    },
+    {
+      name: "Vitamine D3",
+      efsa_claim:
+        "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale botten en spierfunctie.",
+      why_this_profile:
+        "In Nederland is vitamine D-tekort structureel — vooral van oktober tot april. Bij het Basis Mist-profiel is dit een van de eerste tekorten om aan te pakken.",
+      href: "/beste-vitamine-d",
+      hasComparison: true,
+    },
+  ],
+
+  guidanceCta: {
+    title: "Welke bouwstenen mis jij?",
+    text: "De Leefstijlcheck meet je voedingspatroon, energie en vier andere domeinen in 3 minuten. Je krijgt direct inzicht in waar je tekortkomt.",
+  },
+
+  relatedPillar: null,
+
+  relatedComparisons: [
+    {
+      href: "/beste-omega-3-supplement",
+      turboSnippet: "Welke omega-3 is écht goed? We vergelijken op EPA/DHA, zuiverheid en prijs.",
+    },
+    {
+      href: "/beste-vitamine-d",
+      turboSnippet:
+        "Vitamine D3 alleen of met K2? Druppels of capsules? Objectief vergeleken.",
+    },
+  ],
+
+  breadcrumbs: [
+    { name: "Home", href: "/" },
+    { name: "Profielen", href: "/profiel" },
+    { name: "Basis Mist", href: "/profiel/basis-mist" },
+  ],
+};
