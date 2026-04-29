@@ -13,6 +13,7 @@ import {
 import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import FoundationStack from "@/components/intake/FoundationStack";
+import { isSupplementAvailable } from "@/lib/supplement-availability";
 import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import ScoreRing from "@/components/intake/ScoreRing";
@@ -279,7 +280,7 @@ export default function IntakeResults({
                 <span className="text-[#999]">→</span>
               </a>
             )}
-            {deficiencySignals.ashwagandha_signal && (
+            {deficiencySignals.ashwagandha_signal && isSupplementAvailable("ashwagandha") && (
               <a
                 href="/beste-ashwagandha"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"

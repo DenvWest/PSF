@@ -61,6 +61,15 @@ export default function Page() {
       <main className="pb-24 md:pb-12">
         <ChoiceHero data={data} />
 
+        <div className="mx-auto mt-6 w-full max-w-7xl px-6 lg:px-8">
+          <p className="text-sm text-slate-500 mb-8">
+            Dit artikel bevat affiliate links. Bij aankoop via deze links ontvangen wij een
+            kleine vergoeding. Dit heeft geen invloed op onze beoordeling —
+            onze <a href="/methodologie" className="underline hover:text-slate-700">methodologie</a> is
+            onafhankelijk.
+          </p>
+        </div>
+
         <section className="mx-auto mt-12 w-full max-w-7xl px-6 lg:px-8">
           <h2 className="mb-4 text-2xl font-semibold tracking-tight text-slate-900">
             In één oogopslag vergelijken

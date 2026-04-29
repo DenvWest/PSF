@@ -110,7 +110,7 @@ export const vitamineDData: ComparisonPageData = {
         { criterium: "Prijs/kwaliteit", score: 8 },
         { criterium: "Transparantie", score: 9 },
       ],
-      imageSrc: "/images/producten/VitalNutrition-Vitamin-D3.jpg",
+      imageSrc: "/images/producten/Vital-Nutrition-Vitamin-D3.jpg",
       imageAlt: "Vital Nutrition Vitamine D3 75 mcg softgels verpakking",
     },
     {

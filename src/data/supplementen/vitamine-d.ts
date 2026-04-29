@@ -20,9 +20,9 @@ export const vitamineDData: SupplementData = {
     titel: "Waarom is vitamine D zo relevant na je 40e?",
     punten: [
       {
-        titel: "Energieproductie",
+        titel: "Vermoeidheid bij tekort",
         uitleg:
-          "Vitamine D-receptoren zitten in mitochondriën — de energiecentrales van je cellen. Een tekort vertaalt zich direct in aanhoudende vermoeidheid.",
+          "Vitamine D draagt bij aan een normaal energieleverend metabolisme. Aanhoudende vermoeidheid is een veelvoorkomend signaal van een vitamine D-tekort.",
       },
       {
         titel: "Testosteronondersteuning",

@@ -13,6 +13,10 @@ import {
   buildBreadcrumbSchema,
   buildItemListSchema,
 } from "@/lib/seo/structuredData";
+import {
+  isSupplementAvailable,
+  getSupplementDisabledReason,
+} from "@/lib/supplement-availability";
 
 const PAGE_URL = "https://perfectsupplement.nl/beste-ashwagandha";
 
@@ -53,6 +57,8 @@ export default function Page() {
   const data = ashwagandhaData;
   const topProduct =
     data.products.find((p) => p.bestFor === "Topkeuze") ?? data.products[0];
+  const ashwagandhaAvailable = isSupplementAvailable("ashwagandha");
+  const disabledReason = getSupplementDisabledReason("ashwagandha");
 
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", url: "https://perfectsupplement.nl" },
@@ -79,7 +85,28 @@ export default function Page() {
       <TrustBar />
 
       <main className="pb-24 md:pb-12">
+        {!ashwagandhaAvailable && disabledReason && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8 mx-auto max-w-7xl px-6 lg:px-8">
+            <p className="text-amber-800 font-medium">
+              ⚠️ Let op: {disabledReason}
+            </p>
+            <p className="text-amber-700 text-sm mt-2">
+              De informatie op deze pagina is nog beschikbaar ter referentie,
+              maar de producten zijn mogelijk niet meer verkrijgbaar.
+            </p>
+          </div>
+        )}
+
         <ChoiceHero data={data} />
+
+        <div className="mx-auto mt-6 w-full max-w-7xl px-6 lg:px-8">
+          <p className="text-sm text-slate-500 mb-8">
+            Dit artikel bevat affiliate links. Bij aankoop via deze links ontvangen wij een
+            kleine vergoeding. Dit heeft geen invloed op onze beoordeling —
+            onze <a href="/methodologie" className="underline hover:text-slate-700">methodologie</a> is
+            onafhankelijk.
+          </p>
+        </div>
 
         <section className="mx-auto mt-12 w-full max-w-7xl px-6 lg:px-8">
           <h2 className="mb-4 text-2xl font-semibold tracking-tight text-slate-900">
@@ -105,6 +132,16 @@ export default function Page() {
         </section>
 
         <section className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8">
+          <aside className="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-10 text-sm text-slate-600">
+            <p className="font-medium text-slate-700 mb-1">Over gezondheidsclaims</p>
+            <p>
+              De gezondheidsclaims over ashwagandha staan op de Europese &quot;on hold&quot;-lijst.
+              Dit betekent dat ze zijn ingediend bij EFSA maar nog niet definitief beoordeeld.
+              Ze mogen voorlopig worden gebruikt. De Nederlandse overheid (VWS) onderzoekt momenteel
+              of ashwagandha als supplement verkrijgbaar blijft in Nederland.
+            </p>
+          </aside>
+
           <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-900">
             Veelgestelde vragen
           </h2>

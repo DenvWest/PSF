@@ -1,6 +1,7 @@
 import { SUPPLEMENT_ROUTE_DEFINITIONS } from "@/data/supplement-routes";
 import { catalogBySlug } from "@/data/supplementen-hub/catalog";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
+import { isSupplementAvailable } from "@/lib/supplement-availability";
 
 export type RecommendedSupplement = {
   slug: string;
@@ -60,7 +61,7 @@ function selectLegacyHubRecommendations(
     });
   }
 
-  if (scores.stress_score < 50) {
+  if (scores.stress_score < 50 && isSupplementAvailable("ashwagandha")) {
     recommendations.push({
       slug: "ashwagandha",
       name: "Ashwagandha",

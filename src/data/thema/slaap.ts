@@ -95,7 +95,7 @@ export const slaapThema: ThemaPageData = {
       {
         name: "Ashwagandha",
         reason:
-          "Verlaagt cortisol en helpt je 's avonds sneller tot rust te komen. Vooral effectief als je slaapprobleem gekoppeld is aan stress of piekeren.",
+          "Kan bijdragen aan het verlagen van cortisol en helpt je 's avonds sneller tot rust te komen (on-hold EFSA-claim). Vooral relevant als je slaapprobleem gekoppeld is aan stress of piekeren.",
         guideLink: "/supplementen/ashwagandha",
         comparisonLink: "/beste-ashwagandha",
         icon: "🌿",

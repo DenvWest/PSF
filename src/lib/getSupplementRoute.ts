@@ -4,6 +4,7 @@ import {
   type SupplementTriggerClause,
 } from "@/data/supplement-routes";
 import type { DeficiencySignals, DomainScores, ProfileLabel } from "@/lib/intake-engine";
+import { isSupplementAvailable } from "@/lib/supplement-availability";
 
 function intAnswer(answers: Record<string, number>, key: string): number {
   const v = answers[key];
@@ -96,8 +97,11 @@ export function getSupplementRoute(
   answers: Record<string, number>,
 ): SupplementRecommendation[] {
   const matched: SupplementRecommendation[] = [];
+  const availableDefinitions = SUPPLEMENT_ROUTE_DEFINITIONS.filter((d) =>
+    isSupplementAvailable(d.id),
+  );
 
-  for (const def of SUPPLEMENT_ROUTE_DEFINITIONS) {
+  for (const def of availableDefinitions) {
     if (
       definitionMatches(
         def,
@@ -112,7 +116,7 @@ export function getSupplementRoute(
   }
 
   if (matched.length === 0) {
-    const fallback = SUPPLEMENT_ROUTE_DEFINITIONS.find((d) => d.fallbackOnly);
+    const fallback = availableDefinitions.find((d) => d.fallbackOnly);
     if (fallback) {
       matched.push(fallback);
     }

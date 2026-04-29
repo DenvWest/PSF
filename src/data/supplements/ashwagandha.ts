@@ -112,7 +112,7 @@ export const ashwagandhaData: ComparisonPageData = {
         { criterium: "Prijs/kwaliteit", score: 7 },
         { criterium: "Transparantie", score: 9 },
       ],
-      imageSrc: "/images/producten/Vitalnutrition-Ashwagandha-KSM-66.jpg",
+      imageSrc: "/images/producten/Vital-Nutrition-Ashwagandha-KSM-66.jpg",
       imageAlt: "Vital Nutrition Ashwagandha KSM-66 capsules verpakking",
     },
     {

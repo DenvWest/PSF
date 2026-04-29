@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
 import { THEMA_DATA, THEMA_SLUGS } from "@/data/thema";
 import { EmailGateForm } from "@/components/thema/EmailGateForm";
+import { isSupplementAvailable } from "@/lib/supplement-availability";
 
 interface Props {
   params: Promise<{ thema: string }>;
@@ -163,7 +164,12 @@ export default async function ThemaPage({ params }: Props) {
             {data.supplements.intro}
           </p>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {data.supplements.items.map((item, i) => (
+            {data.supplements.items
+              .filter((item) => {
+                const slug = item.guideLink.replace("/supplementen/", "");
+                return isSupplementAvailable(slug);
+              })
+              .map((item, i) => (
               <div
                 key={i}
                 className="flex flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"

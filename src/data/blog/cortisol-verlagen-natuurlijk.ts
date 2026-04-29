@@ -52,7 +52,7 @@ export const cortisolVerlagenData: BlogArtikel = {
   supplementCTA: {
     naam: "Ashwagandha",
     uitleg:
-      "Klinisch onderzocht adaptogeen dat de HPA-as moduleert en cortisolniveaus aantoonbaar verlaagt bij chronische stress.",
+      "Klinisch onderzocht adaptogeen dat de HPA-as moduleert. Onderzoek suggereert dat het kan bijdragen aan het verlagen van cortisol bij chronische stress (on-hold EFSA-claim).",
     href: "/supplementen/ashwagandha",
   },
   cornerstoneLink: {

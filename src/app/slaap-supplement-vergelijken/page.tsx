@@ -100,6 +100,13 @@ export default function SlaapSupplementVergelijkenPage() {
                         </Link>
                         .
                     </p>
+
+                    <p className="text-sm text-slate-500 mb-8 mt-4 max-w-3xl">
+                        Dit artikel bevat affiliate links. Bij aankoop via deze links ontvangen wij een
+                        kleine vergoeding. Dit heeft geen invloed op onze beoordeling —
+                        onze <a href="/methodologie" className="underline hover:text-slate-700">methodologie</a> is
+                        onafhankelijk.
+                    </p>
                 </div>
 
                 <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
