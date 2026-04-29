@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/beste-omega-3-supplement`, lastModified: new Date() },
     { url: `${BASE_URL}/beste-magnesium`, lastModified: new Date() },
     { url: `${BASE_URL}/beste-ashwagandha`, lastModified: new Date() },
+    { url: `${BASE_URL}/profiel`, lastModified: new Date() },
     { url: `${BASE_URL}/profiel/stressdrager`, lastModified: new Date() },
     { url: `${BASE_URL}/profiel/lage-batterij`, lastModified: new Date() },
     { url: `${BASE_URL}/profiel/onrustige-slaper`, lastModified: new Date() },
