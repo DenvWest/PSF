@@ -32,7 +32,7 @@ export interface ProfileLabel {
     | "Onrustige Slaper"
     | "Lage Batterij"
     | "Stressdrager"
-    | "Basis Mist"
+    | "Stille Tekorten"
     | "Stilzitter"
     | "Stille Slijter"
     | "In Balans";
@@ -120,7 +120,7 @@ const PROFILE_NAMES: Record<DomainId, ProfileLabel["name"]> = {
   sleep: "Onrustige Slaper",
   energy: "Lage Batterij",
   stress: "Stressdrager",
-  nutrition: "Basis Mist",
+  nutrition: "Stille Tekorten",
   movement: "Stilzitter",
   recovery: "Stille Slijter",
 };

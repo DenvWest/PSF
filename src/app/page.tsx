@@ -18,7 +18,7 @@ export default function HomePage() {
 
       {/* Trust-sectie */}
       <div className="border-b border-stone-200/60 bg-[var(--ps-bg)] px-6 py-10 lg:px-8">
-        <ul className="mx-auto grid max-w-screen-xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+        <ul className="mx-auto grid max-w-screen-xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 overflow-hidden">
           {[
             {
               label: "Onafhankelijk",
@@ -65,10 +65,10 @@ export default function HomePage() {
               ),
             },
           ].map((item) => (
-            <li key={item.label} className="relative group list-none">
+            <li key={item.label} className="relative group list-none overflow-hidden rounded-2xl">
               {/* gradient border */}
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-green-500 to-emerald-400 opacity-20 transition-opacity group-hover:opacity-35" aria-hidden="true" />
-              <div className="relative rounded-2xl bg-white p-5 text-center shadow-sm">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-400 opacity-20 transition-opacity group-hover:opacity-35" aria-hidden="true" />
+              <div className="relative rounded-2xl bg-white p-5 text-center shadow-sm h-full">
                 <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-green-50">
                   {item.icon}
                 </div>

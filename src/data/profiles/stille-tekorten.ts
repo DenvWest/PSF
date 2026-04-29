@@ -1,19 +1,19 @@
 import type { ProfilePageData } from "@/types/profile-page";
 
-export const basisMist: ProfilePageData = {
-  slug: "basis-mist",
-  label: "Basis Mist",
+export const stilleTekorten: ProfilePageData = {
+  slug: "stille-tekorten",
+  label: "Stille Tekorten",
 
   seo: {
     title: "Voedingstekort Na 40: Welke Bouwstenen Mis Je? | PerfectSupplement",
     description:
       "Je eet wel, maar niet genoeg van het goede. Na 40 nemen tekorten toe. Ontdek welke bouwstenen je mist en hoe je dat oplost.",
-    canonical: "https://perfectsupplement.nl/profiel/basis-mist",
+    canonical: "https://perfectsupplement.nl/profiel/stille-tekorten",
     targetKeyword: "voedingstekort man 40",
   },
 
   hero: {
-    headline: "Basis Mist: je voeding mist essentiële bouwstenen",
+    headline: "Stille Tekorten: je voeding mist essentiële bouwstenen",
     subline:
       "Je eet drie keer per dag. Je hebt geen eetprobleem. Maar je lichaam krijgt niet wat het nodig heeft — en dat merk je overal.",
   },
@@ -156,7 +156,7 @@ export const basisMist: ProfilePageData = {
       efsa_claim:
         "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale botten en spierfunctie.",
       why_this_profile:
-        "In Nederland is vitamine D-tekort structureel — vooral van oktober tot april. Bij het Basis Mist-profiel is dit een van de eerste tekorten om aan te pakken.",
+        "In Nederland is vitamine D-tekort structureel — vooral van oktober tot april. Bij het Stille Tekorten-profiel is dit een van de eerste tekorten om aan te pakken.",
       href: "/beste-vitamine-d",
       hasComparison: true,
     },
@@ -184,6 +184,6 @@ export const basisMist: ProfilePageData = {
   breadcrumbs: [
     { name: "Home", href: "/" },
     { name: "Profielen", href: "/profiel" },
-    { name: "Basis Mist", href: "/profiel/basis-mist" },
+    { name: "Stille Tekorten", href: "/profiel/stille-tekorten" },
   ],
 };

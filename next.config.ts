@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/profiel/basis-mist",
+        destination: "/profiel/stille-tekorten",
+        permanent: true,
+      },
+      {
         source: "/symptomen",
         destination: "/supplementen",
         permanent: true,

@@ -20,10 +20,6 @@ const vergelijkingLinks = [
 const infoLinks = [
     { href: "/methodologie", label: "Methodologie" },
     { href: "/over-ons", label: "Over ons" },
-    { href: "/faqs", label: "FAQ's" },
-    { href: "/privacy", label: "Privacy" },
-    { href: "/disclaimer", label: "Disclaimer" },
-    { href: "/affiliate-disclosure", label: "Affiliate disclosure" },
     { href: "/contact", label: "Contact" },
 ];
 
@@ -107,17 +103,33 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-3 border-t border-stone-100 py-6 md:flex-row md:items-center md:justify-between">
-                    <p className="text-xs text-stone-400">
-                        © 2026 Perfect Supplement. Alle rechten voorbehouden.
-                    </p>
-                    <p className="text-xs text-stone-400">
-                        Deze site bevat affiliate-links. Wij ontvangen mogelijk een vergoeding bij aankoop,{" "}
-                        <Link href="/affiliate-disclosure" className="underline underline-offset-2 transition hover:text-stone-600">
-                            lees meer
+                <div className="border-t border-stone-100 py-6 space-y-3">
+                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                        <Link href="/privacy" className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline">
+                            Privacy
                         </Link>
-                        .
-                    </p>
+                        <Link href="/disclaimer" className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline">
+                            Disclaimer
+                        </Link>
+                        <Link href="/affiliate-disclosure" className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline">
+                            Affiliate disclosure
+                        </Link>
+                        <Link href="/faqs" className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline">
+                            FAQ
+                        </Link>
+                    </div>
+                    <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                        <p className="text-xs text-stone-400">
+                            © 2026 PerfectSupplement. Alle rechten voorbehouden.
+                        </p>
+                        <p className="text-xs text-stone-400">
+                            Deze site bevat affiliate-links. Wij ontvangen mogelijk een vergoeding bij aankoop,{" "}
+                            <Link href="/affiliate-disclosure" className="underline underline-offset-2 transition hover:text-stone-600">
+                                lees meer
+                            </Link>
+                            .
+                        </p>
+                    </div>
                 </div>
             </Container>
         </footer>
