@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
 import { CATEGORIES, type CategoryId } from "@/data/intake-questions";
 import type { DomainId, DomainScores } from "@/lib/intake-engine";
@@ -144,6 +145,16 @@ export default function IntakeResults({
         >
           {profile.name}
         </h1>
+        <Link
+          href={`/profiel/${profile.name
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^a-z0-9-]/g, "")}`}
+          target="_blank"
+          className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
+        >
+          Lees meer over dit profiel →
+        </Link>
         <p className="mb-5 text-[15px]" style={{ color: "rgba(255,255,255,0.55)" }}>
           Je primaire aandachtsgebied is{" "}
           <strong style={{ color: primaryCategory?.color ?? "#C8956C" }}>

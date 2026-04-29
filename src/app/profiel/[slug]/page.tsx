@@ -175,8 +175,6 @@ export default async function ProfielPage({ params }: Props) {
                       <Link
                         href={supp.href}
                         className="inline-block mt-4 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-                        rel="nofollow sponsored"
-                        target="_blank"
                       >
                         Bekijk vergelijking →
                       </Link>
