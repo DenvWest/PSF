@@ -155,7 +155,7 @@ export const lageBatterijProfile: ProfilePageData = {
       efsa_claim:
         "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale spierfunctie.",
       why_this_profile:
-        "In Nederland is vitamine D-tekort veelvoorkomend. Een tekort veroorzaakt vermoeidheid, spierzwakte en een lager energieniveau — precies de klachten van dit profiel.",
+        "In Nederland is vitamine D-tekort veelvoorkomend — vooral van oktober tot april. Een tekort kan bijdragen aan verminderde spierfunctie en een minder goed werkend immuunsysteem — domeinen die bij het Lage Batterij-profiel een directe rol spelen.",
       href: "/beste-vitamine-d",
       hasComparison: true,
     },
