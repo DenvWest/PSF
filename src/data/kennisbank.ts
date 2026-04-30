@@ -20,22 +20,55 @@ export interface KennisbankTerm {
   metaDescription: string
 }
 
-export const themeLabels: Record<KennisbankTheme, { title: string; description: string }> = {
+export const themeLabels: Record<KennisbankTheme, {
+  title: string
+  description: string
+  icon: string
+  colorClasses: {
+    bg: string
+    accent: string
+    tekst: string
+  }
+}> = {
   'lichaam-veroudering': {
     title: 'Lichaam & Veroudering',
     description: 'Wat er fysiologisch verandert na je 40e — en waarom dat niet het einde is.',
+    icon: '🧬',
+    colorClasses: {
+      bg: 'from-rose-950 to-rose-900',
+      accent: 'bg-white/10 ring-white/20',
+      tekst: 'text-rose-200/80',
+    },
   },
   'leefstijl-herstel': {
     title: 'Leefstijl & Herstel',
     description: 'De basis die op orde moet zijn vóórdat supplementen zin hebben.',
+    icon: '🌿',
+    colorClasses: {
+      bg: 'from-emerald-950 to-emerald-900',
+      accent: 'bg-white/10 ring-white/20',
+      tekst: 'text-emerald-200/80',
+    },
   },
   supplementwetenschap: {
     title: 'Supplementwetenschap',
     description: 'De begrippen die je nodig hebt om supplementen eerlijk te beoordelen.',
+    icon: '🔬',
+    colorClasses: {
+      bg: 'from-sky-950 to-sky-900',
+      accent: 'bg-white/10 ring-white/20',
+      tekst: 'text-sky-200/80',
+    },
   },
   longevity: {
     title: 'Longevity & Gezond Ouder Worden',
     description: 'Het grotere plaatje: niet langer leven, maar langer goed leven.',
+    icon: '⏳',
+    colorClasses: {
+      bg: 'from-amber-950 to-amber-900',
+      accent: 'bg-white/10 ring-white/20',
+      tekst: 'text-amber-200/80',
+    },
   },
 }
 
