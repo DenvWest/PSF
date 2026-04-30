@@ -9,6 +9,7 @@ import { FaqSection } from "@/components/supplements/FaqSection";
 import { StickyMobileCta } from "@/components/supplements/StickyMobileCta";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { TrustBar } from "@/components/supplements/TrustBar";
+import Container from "@/components/layout/Container";
 import {
   buildBreadcrumbSchema,
   buildItemListSchema,
@@ -126,6 +127,26 @@ export default function Page() {
               </Link>
             </div>
           </div>
+        </section>
+
+        <section className="mt-16 border-t border-stone-100 pt-12">
+          <Container>
+            <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link href="/profiel/stille-tekorten" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                <p className="text-base text-stone-600 leading-relaxed">Eet je zelden vette vis? Dan mis je essentiële bouwstenen.</p>
+                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
+              </Link>
+              <Link href="/profiel/lage-batterij" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                <p className="text-base text-stone-600 leading-relaxed">Altijd moe? Omega-3 ondersteunt je energieproductie op celniveau.</p>
+                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
+              </Link>
+              <Link href="/thema/herstel" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                <p className="text-base text-stone-600 leading-relaxed">Herstel na sport of inspanning begint van binnenuit.</p>
+                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Lees de herstelgids →</span>
+              </Link>
+            </div>
+          </Container>
         </section>
 
         <MedicalDisclaimer />

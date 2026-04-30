@@ -211,6 +211,24 @@ export const herstelThema: ThemaPageData = {
         href: "/thema/energie",
         label: "Thema: energie (herstel en belasting)",
       },
+      {
+        context:
+          "Je traint, slaapt en eet goed — maar je lichaam herstelt moeizamer dan vroeger. Herken de signalen van de Stille Slijter.",
+        href: "/profiel/stille-slijter",
+        label: "Herstelt je lichaam niet meer goed? Herken de signalen →",
+      },
+      {
+        context:
+          "Meer trainen leidt na 40 snel tot overreaching. Herken de signalen voordat overtraining optreedt.",
+        href: "/profiel/overtrainer",
+        label: "Meer trainen ≠ beter worden. Herken overtraining →",
+      },
+      {
+        context:
+          "Magnesium glycinaat ontspant spieren, verbetert slaapkwaliteit en ondersteunt enzymatische processen bij herstel.",
+        href: "/beste-magnesium",
+        label: "Magnesium ondersteunt je spierherstel →",
+      },
     ],
   },
 

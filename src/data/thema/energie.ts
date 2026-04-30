@@ -206,6 +206,12 @@ export const energieThema: ThemaPageData = {
         href: "/supplementen/vitamine-d",
         label: "Vitamine D gids (D3, K2, praktische keuze)",
       },
+      {
+        context:
+          "Slaap je genoeg maar voel je je toch leeg? Herken het patroon van de Lage Batterij — structurele vermoeidheid na 40.",
+        href: "/profiel/lage-batterij",
+        label: "Altijd moe na 40? Ontdek of je een Lage Batterij profiel hebt →",
+      },
     ],
   },
 

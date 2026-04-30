@@ -186,6 +186,18 @@ export const slaapThema: ThemaPageData = {
         href: "/supplementen/magnesium",
         label: "Magnesiumgids: werking, vormen, dosering",
       },
+      {
+        context:
+          "Lig je regelmatig wakker, slaap je onrustig of word je moe wakker? Herken je jezelf in het profiel van de Onrustige Slaper.",
+        href: "/profiel/onrustige-slaper",
+        label: "Herken je jezelf? Ontdek of je een Onrustige Slaper bent →",
+      },
+      {
+        context:
+          "Hoe wij supplementen onafhankelijk beoordelen: criteria, weging en werkwijze.",
+        href: "/methodologie",
+        label: "Hoe wij supplementen beoordelen →",
+      },
     ],
   },
 

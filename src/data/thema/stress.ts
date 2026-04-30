@@ -206,6 +206,18 @@ export const stressThema: ThemaPageData = {
         href: "/supplementen/magnesium",
         label: "Magnesiumgids",
       },
+      {
+        context:
+          "Functioneer je wel, maar kost alles meer dan het zou moeten? Herken de signalen van chronische stress.",
+        href: "/profiel/stressdrager",
+        label: "Chronische stress? Check of je een Stressdrager bent →",
+      },
+      {
+        context:
+          "Hoe wij supplementen onafhankelijk beoordelen: criteria, weging en werkwijze.",
+        href: "/methodologie",
+        label: "Hoe wij supplementen beoordelen →",
+      },
     ],
   },
 
