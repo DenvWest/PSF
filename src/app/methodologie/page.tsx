@@ -22,11 +22,25 @@ const criteria = [
   {
     title: "Biobeschikbaarheid",
     pct: "25%",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+        <path d="M9 3h6v5l2 4v6a1 1 0 01-1 1H8a1 1 0 01-1-1v-6l2-4V3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M7 14h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M9 3H7M15 3h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
     content: <p className="text-sm leading-relaxed text-stone-600">Hoeveel je lichaam daadwerkelijk opneemt — niet wat er op het etiket staat.</p>,
   },
   {
     title: "Dosering",
     pct: "30%",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+        <path d="M12 3v1M6.34 5.34l.7.7M3 12h1M6.34 18.66l.7-.7M12 20v1M17.66 18.66l-.7-.7M21 12h-1M17.66 5.34l-.7.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M5 16h14M8 16l1.5-5h5L16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M10 19h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
     content: (
       <p className="text-sm leading-relaxed text-stone-600">
         Of de dosis aansluit bij de{" "}
@@ -38,11 +52,23 @@ const criteria = [
   {
     title: "Prijs-kwaliteit",
     pct: "25%",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M12 7v1m0 8v1m-2.5-5.5C9.5 10.67 10.5 10 12 10s2.5.67 2.5 1.5S13.5 13 12 13s-2.5.67-2.5 1.5S10.5 16 12 16s2.5-.67 2.5-1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
     content: <p className="text-sm leading-relaxed text-stone-600">De prijs per effectieve dosis, niet per capsule.</p>,
   },
   {
     title: "Transparantie",
     pct: "20%",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M20 20l-3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
     content: (
       <p className="text-sm leading-relaxed text-stone-600">
         <Link href="/kennisbank/derde-partij-testen" className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]">Derde-partij testen</Link>,{" "}
@@ -73,7 +99,7 @@ export default function MethodologiePage() {
               </ol>
             </nav>
 
-            <section className="pt-10 pb-20 md:pt-14 md:pb-28">
+            <section className="pt-10 pb-12 md:pt-14 md:pb-16">
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 tracking-tight max-w-4xl">
                 Hoe wij supplementen beoordelen
               </h1>
@@ -82,33 +108,21 @@ export default function MethodologiePage() {
                 We beoordelen supplementen niet op marketing, maar op inhoud,
                 dagdosering, transparantie en praktische toepasbaarheid.
               </p>
-
-              <p className="mt-4 max-w-2xl text-base text-stone-600 leading-relaxed">
-                Op deze pagina leggen we uit hoe producten worden geselecteerd, welke
-                criteria we gebruiken, hoe claims worden gecontroleerd, hoe affiliate
-                links werken en wanneer beoordelingen worden herijkt. Wil je zien hoe
-                dit er in de praktijk uitziet? Bekijk een van onze vergelijkingen
-                onderaan deze pagina, bijvoorbeeld die van omega-3, magnesium of creatine.
-              </p>
             </section>
           </Container>
         </div>
 
         <Container>
-          <section id="leefstijl-eerst" className="mt-12 space-y-5 text-base leading-relaxed text-stone-600 max-w-3xl">
+          <section id="leefstijl-eerst" className="mt-12 text-base leading-relaxed text-stone-600 max-w-3xl">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
               Leefstijl eerst, supplementen tweede
             </h2>
             <p>
               Wij geloven in de juiste volgorde. Slaaphygiëne, voeding, beweging en
-              stressmanagement vormen het fundament. Supplementen komen pas op nummer
-              twee — als aanvulling op een sterk fundament, niet als vervanging.
-            </p>
-            <p>
-              Dit noemen we{" "}
+              stressmanagement vormen het fundament. Supplementen komen op nummer twee —
+              als aanvulling, niet als vervanging. Dit noemen we{" "}
               <Link href="/kennisbank/healthspan" className={linkClass}>healthspan</Link>-denken:
-              niet langer leven, maar langer goed leven. De Leefstijlcheck meet niet of
-              je supplementen nodig hebt — hij meet hoe sterk je fundament is.
+              niet langer leven, maar langer goed leven.
             </p>
           </section>
 
@@ -117,6 +131,9 @@ export default function MethodologiePage() {
               <article key={item.title} className="relative group overflow-hidden rounded-2xl">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-400 opacity-20 transition-opacity group-hover:opacity-35" aria-hidden="true" />
                 <div className="relative rounded-2xl bg-white p-5 shadow-sm h-full flex flex-col">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-green-50">
+                    {item.icon}
+                  </div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <h2 className="font-display text-base font-semibold text-stone-900">{item.title}</h2>
                     <span className="shrink-0 rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-600">{item.pct}</span>
@@ -132,111 +149,63 @@ export default function MethodologiePage() {
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                 Hoe producten worden geselecteerd
               </h2>
-              <div className="space-y-5 text-base leading-relaxed text-stone-600">
-                <p>
-                  Niet alle supplementen op de markt worden op deze website opgenomen. We
-                  selecteren producten op basis van relevantie binnen een categorie,
-                  beschikbaarheid bij betrouwbare aanbieders en de mate van transparantie
-                  van het merk.
-                </p>
-                <p>
-                  Het doel is om een representatieve selectie van producten te tonen die
-                  bezoekers helpt verschillende opties beter te vergelijken. Daarbij kijken
-                  we niet alleen naar populaire producten, maar vooral naar producten die
-                  inhoudelijk logisch zijn binnen een specifieke categorie en duidelijk
-                  genoeg gespecificeerd zijn om te beoordelen op dagdosering, prijs per dag
-                  en claims. Bekijk een van onze vergelijkingen onderaan deze pagina voor een concreet voorbeeld.
-                </p>
-              </div>
+              <p className="text-base leading-relaxed text-stone-600">
+                We selecteren producten op basis van relevantie binnen een categorie,
+                beschikbaarheid bij betrouwbare aanbieders en de transparantie van het merk.
+                Daarbij kijken we niet alleen naar populaire producten, maar naar producten die
+                duidelijk genoeg gespecificeerd zijn om te beoordelen op dagdosering, prijs per dag
+                en claims.
+              </p>
             </section>
 
             <section>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                 Hoe claims worden gecontroleerd
               </h2>
-              <div className="space-y-5 text-base leading-relaxed text-stone-600">
-                <p>
-                  Informatie over ingrediënten en mogelijke effecten proberen we zorgvuldig
-                  en neutraal te beschrijven. Daarbij kijken we naar beschikbare
-                  wetenschappelijke literatuur en, waar relevant, naar toegestane{" "}
-                  <Link href="/kennisbank/efsa-claims" className={linkClass}>gezondheidsclaims</Link>{" "}
-                  binnen de Europese regelgeving en de dosiscontext waarin zo&apos;n claim
-                  gebruikt mag worden.
-                </p>
-                <p>
-                  We proberen claims niet groter te maken dan ze zijn — geen absolute
-                  formuleringen of gezondheidsbeloften die onvoldoende onderbouwd zijn,
-                  geen medische overclaims, en geen claims die alleen kloppen bij een
-                  hogere dosis dan het product levert. De informatie op deze website is
-                  bedoeld als algemene informatie en vervangt geen medisch advies, diagnose
-                  of behandeling.
-                </p>
-              </div>
+              <p className="text-base leading-relaxed text-stone-600">
+                Informatie over ingrediënten beschrijven we neutraal op basis van wetenschappelijke
+                literatuur en toegestane{" "}
+                <Link href="/kennisbank/efsa-claims" className={linkClass}>gezondheidsclaims</Link>{" "}
+                binnen de Europese regelgeving. We maken claims niet groter dan ze zijn — geen
+                medische overclaims, geen beloften die onvoldoende onderbouwd zijn. De informatie
+                op deze website vervangt geen medisch advies.
+              </p>
             </section>
 
             <section>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                 Dosering en prijs per dag
               </h2>
-              <div className="space-y-5 text-base leading-relaxed text-stone-600">
-                <p>
-                  In veel categorieën zegt een losse verpakking of potprijs weinig zonder
-                  gebruikscontext. Daarom kijken we waar relevant naar dosering per dag,
-                  capsules per dag en de prijs die daar in de praktijk bij hoort.
-                </p>
-                <p>
-                  Een supplement met een aantrekkelijke instapprijs kan alsnog minder sterk
-                  uitvallen wanneer de dagdosering laag is of wanneer je meerdere capsules
-                  nodig hebt om op een relevante inname uit te komen. Omgekeerd is een
-                  hogere prijs alleen verdedigbaar als daar ook aantoonbaar betere inhoud,
-                  duidelijkere specificaties of meer praktisch nut tegenover staat.
-                </p>
-              </div>
+              <p className="text-base leading-relaxed text-stone-600">
+                Een potprijs zegt weinig zonder gebruikscontext. Daarom kijken we naar de prijs
+                per effectieve dagdosering. Een lage instapprijs kan alsnog minder sterk uitvallen
+                als je meerdere capsules per dag nodig hebt — een hogere prijs is alleen
+                verdedigbaar als daar aantoonbaar betere inhoud tegenover staat.
+              </p>
             </section>
 
             <section>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                 Hoe rankings tot stand komen
               </h2>
-              <div className="space-y-5 text-base leading-relaxed text-stone-600">
-                <p>
-                  Rankings ontstaan niet op basis van één losse factor, maar op basis van
-                  een gewogen beoordeling van biobeschikbaarheid, dosering, prijs-kwaliteit
-                  en transparantie — de vier criteria die bovenaan deze pagina staan. Een
-                  concreet voorbeeld zie je terug op onze vergelijkingspagina's.
-                  Rankings kunnen worden aangepast wanneer productsamenstellingen, prijzen
-                  of beschikbare informatie veranderen.
-                </p>
-              </div>
+              <p className="text-base leading-relaxed text-stone-600">
+                Rankings ontstaan op basis van een gewogen beoordeling van biobeschikbaarheid,
+                dosering, prijs-kwaliteit en transparantie — de vier criteria bovenaan deze pagina.
+                Ze worden aangepast wanneer productsamenstellingen, prijzen of beschikbare informatie
+                veranderen.
+              </p>
             </section>
 
             <section>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                 Affiliate transparantie
               </h2>
-              <div className="space-y-5 text-base leading-relaxed text-stone-600">
-                <p>
-                  Sommige links op deze website zijn affiliate links — we kunnen een
-                  commissie ontvangen wanneer iemand via zo&apos;n link een product koopt.
-                  Deze vergoeding heeft geen invloed op welke criteria we gebruiken of hoe
-                  rankings worden opgebouwd. We proberen commerciële prikkels zichtbaar te
-                  houden door affiliate transparantie expliciet te benoemen.
-                </p>
-              </div>
-            </section>
-
-            <section>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
-                Updates en wijzigingen
-              </h2>
-              <div className="space-y-5 text-base leading-relaxed text-stone-600">
-                <p>
-                  Productinformatie, samenstellingen en prijzen kunnen in de loop van de
-                  tijd veranderen. Beoordelingen en rankings worden periodiek bijgewerkt
-                  wanneer dat nodig is — zonder te doen alsof een eerdere beoordeling
-                  definitief of tijdloos was.
-                </p>
-              </div>
+              <p className="text-base leading-relaxed text-stone-600">
+                Sommige links op deze website zijn affiliate links — we kunnen een commissie
+                ontvangen wanneer iemand via zo&apos;n link een product koopt. Deze vergoeding
+                heeft geen invloed op de criteria of rankings. We benoemen affiliate links
+                expliciet om commerciële prikkels zichtbaar te houden.
+              </p>
             </section>
 
             <section>
