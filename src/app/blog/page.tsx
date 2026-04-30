@@ -9,7 +9,7 @@ import {
 import type { BlogCategorie } from "@/types/blog";
 
 export const metadata: Metadata = {
-  title: "Kennisbank | Artikelen voor mannen 40+ | PerfectSupplement",
+  title: "Blog | Artikelen voor Mannen 40+ | PerfectSupplement",
   description:
     "Onderbouwde artikelen over stress, slaap, energie en supplementen. Praktische inzichten voor mannen boven de 40.",
   alternates: {
@@ -71,10 +71,10 @@ export default function BlogPage() {
               </p>
             </div>
             <h1 className="text-[2.5rem] font-semibold leading-[1.1] tracking-tight text-stone-900 md:text-[3.5rem]">
-              Kennisbank
+              Blog
             </h1>
             <p className="mt-6 max-w-xl text-[1.0625rem] leading-[1.75] text-stone-500">
-              Onderbouwde artikelen over stress, slaap, energie en
+              Achtergrondartikelen over stress, slaap, energie en
               supplementen. Geschreven om te begrijpen, niet om te verkopen.
             </p>
           </div>
