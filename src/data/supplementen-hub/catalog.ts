@@ -50,7 +50,7 @@ export const CATALOG: CatalogEntry[] = [
   {
     slug: "ashwagandha",
     name: "Ashwagandha",
-    wiifm: "Helpt bij chronische stress en ondersteunt energieniveau",
+    wiifm: "Adaptogeen dat kan bijdragen aan ontspanning en stressverwerking",
     themas: ["stress", "herstel"],
     topScore: maxProductScore(ashwagandhaData.products),
     guideHref: "/supplementen/ashwagandha",
@@ -62,7 +62,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "omega-3",
     name: "Omega-3",
     wiifm:
-      "Essentieel voor hersenen, gewrichten en ontstekingsbalans",
+      "Draagt bij aan een normale hartfunctie, hersenfunctie en gezichtsvermogen",
     themas: ["herstel", "energie"],
     topScore: maxProductScore(omega3Data.products),
     guideHref: "/supplementen/omega-3",
@@ -98,7 +98,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "zink",
     name: "Zink",
     wiifm:
-      "Essentieel voor immuunfunctie, testosteron en wondgenezing",
+      "Ondersteunt immuunfunctie en draagt bij aan een normaal testosterongehalte",
     themas: ["herstel", "stress"],
     topScore: maxProductScore(zinkData.products),
     guideHref: "/supplementen/zink",
