@@ -6,6 +6,7 @@ const exploreLinks = [
     { href: "/intake", label: "Leefstijlcheck" },
     { href: "/supplementen", label: "Supplementen" },
     { href: "/blog", label: "Blog" },
+    { href: "/kennisbank", label: "Kennisbank" },
 ];
 
 const vergelijkingLinks = [
