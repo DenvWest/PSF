@@ -149,7 +149,7 @@ export const stilleSlijter: ProfilePageData = {
       efsa_claim:
         "Magnesium draagt bij tot de normale spierfunctie en tot de vermindering van vermoeidheid.",
       why_this_profile:
-        "Bij intensieve inspanning verlies je magnesium via zweet. Aanvullen ondersteunt spierherstel en vermindert krampen.",
+        "Bij elke training verlies je magnesium via zweet — en als je er te weinig van aanvult, herstel je langzamer dan nodig. Magnesium glycinaat ondersteunt je spierfunctie zodat je na een training sneller hersteld bent en minder last hebt van aanhoudende stijfheid.",
       href: "/beste-magnesium",
       hasComparison: true,
     },
@@ -158,7 +158,7 @@ export const stilleSlijter: ProfilePageData = {
       efsa_claim:
         "Creatine verhoogt de lichamelijke prestatie bij opeenvolgende korte, zeer intensieve inspanningen.",
       why_this_profile:
-        "Na 40 daalt je natuurlijke creatineproductie. Aanvullen ondersteunt spierkracht en kan het herstel versnellen — een van de best onderzochte supplementen voor sporters.",
+        "Na 40 daalt je natuurlijke creatineproductie — en daarmee je vermogen om snel te recupereren na inspanning. Aanvullen helpt je sneller klaar zijn voor de volgende training, zodat je kwaliteit levert in plaats van met stapelende vermoeidheid blijft slepen.",
       href: "/beste-creatine",
       hasComparison: true,
     },
@@ -166,7 +166,7 @@ export const stilleSlijter: ProfilePageData = {
 
   guidanceCta: {
     title: "Hoe staat het met jouw herstel?",
-    text: "De Leefstijlcheck meet je herstelvermogen, bewegingspatroon en vier andere domeinen in 3 minuten.",
+    text: "In 3 minuten weet je welke supplementen bij jouw herstelpatroon passen — en welke stappen de meeste impact hebben.",
   },
 
   relatedPillar: null,
@@ -174,13 +174,16 @@ export const stilleSlijter: ProfilePageData = {
   relatedComparisons: [
     {
       href: "/beste-magnesium",
-      turboSnippet:
-        "Welke magnesium is het beste voor spierherstel? Vergelijking op vorm, dosering en prijs.",
+      turboSnippet: "Magnesium ondersteunt je spierherstel. Welke vorm is het beste? →",
     },
     {
-      href: "/beste-creatine",
-      turboSnippet:
-        "Creatine monohydraat is de gouden standaard — maar welk merk geeft de beste prijs-kwaliteit?",
+      href: "/beste-omega-3-supplement",
+      turboSnippet: "Omega-3 helpt bij herstel na inspanning →",
+    },
+    {
+      href: "/intake",
+      turboSnippet: "Herstelt jouw lichaam goed genoeg? Meet het →",
+      linkText: "Doe de gratis check",
     },
   ],
 

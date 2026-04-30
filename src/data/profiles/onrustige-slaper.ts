@@ -147,7 +147,7 @@ export const onrustigeSlaper: ProfilePageData = {
       efsa_claim:
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie.",
       why_this_profile:
-        "Magnesium ontspant je zenuwstelsel en spieren. De glycinaatvorm wordt goed opgenomen en heeft een kalmerend effect — ideaal voor inname in de avond.",
+        "Als je 's nachts wakker ligt of onrustig slaapt, helpt magnesium glycinaat je spieren en zenuwstelsel te ontspannen. De avondsdosis zet je lichaam in herstelmodus — zodat je eindelijk kunt loslaten en doorslapen.",
       href: "/beste-magnesium",
       hasComparison: true,
     },
@@ -156,7 +156,7 @@ export const onrustigeSlaper: ProfilePageData = {
       efsa_claim:
         "Ashwagandha-claims staan op de Europese 'on hold'-lijst en zijn nog niet definitief beoordeeld door EFSA.",
       why_this_profile:
-        "Als stress de oorzaak is van je slaapproblemen, kan ashwagandha helpen om je cortisolniveau te normaliseren. Vooral relevant als je 's nachts wakker wordt door piekeren.",
+        "Piekert je brein 's nachts? Stress is de meest voorkomende oorzaak van slaapproblemen bij mannen boven de 40. Ashwagandha helpt je cortisolniveau te normaliseren — zodat je wekker om 3 uur minder vaak afgaat.",
       href: "/beste-ashwagandha",
       hasComparison: true,
     },
@@ -164,7 +164,7 @@ export const onrustigeSlaper: ProfilePageData = {
 
   guidanceCta: {
     title: "Hoe staat het met jouw slaap?",
-    text: "De Leefstijlcheck meet je slaapkwaliteit, stressniveau en vijf andere domeinen in 3 minuten. Je krijgt direct inzicht in wat je slaap verstoort.",
+    text: "In 3 minuten weet je welke supplementen bij jouw slaappatroon passen — en wat je stressniveau met je slaap doet.",
   },
 
   relatedPillar: null,
@@ -172,13 +172,16 @@ export const onrustigeSlaper: ProfilePageData = {
   relatedComparisons: [
     {
       href: "/beste-magnesium",
-      turboSnippet:
-        "Welke magnesium vorm is het beste voor slaap? Glycinaat, bisglycinaat of citraat — vergeleken.",
+      turboSnippet: "Magnesium en slaap: welke vorm werkt het snelst? →",
     },
     {
       href: "/beste-ashwagandha",
-      turboSnippet:
-        "Stress houdt je wakker? Dit supplement is het meest onderzocht voor stressgerelateerde slaapproblemen.",
+      turboSnippet: "Stress houdt je wakker? Dit supplement kan helpen →",
+    },
+    {
+      href: "/intake",
+      turboSnippet: "Hoe staat het met jouw slaap? Check het in 3 minuten →",
+      linkText: "Doe de gratis check",
     },
   ],
 

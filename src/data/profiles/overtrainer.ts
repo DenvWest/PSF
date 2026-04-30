@@ -149,7 +149,7 @@ export const overtrainer: ProfilePageData = {
       efsa_claim:
         "Creatine verhoogt de lichamelijke prestatie bij opeenvolgende korte, zeer intensieve inspanningen.",
       why_this_profile:
-        "Een van de best onderzochte supplementen voor kracht en herstel. Na 40 daalt je natuurlijke creatineproductie — aanvullen helpt bij prestatie en spierbehoud.",
+        "Als je te veel traint en te weinig herstelt, helpt creatine je energiehuishouding in de spieren sneller te herstellen. Na 40 daalt je eigen productie — aanvullen helpt je sneller recupereren tussen sessies, zodat je kwaliteit levert in plaats van volume draait op een leeg lichaam.",
       href: "/beste-creatine",
       hasComparison: true,
     },
@@ -158,7 +158,7 @@ export const overtrainer: ProfilePageData = {
       efsa_claim:
         "Magnesium draagt bij tot de normale spierfunctie en tot de vermindering van vermoeidheid.",
       why_this_profile:
-        "Bij intensief trainen verlies je magnesium via zweet. Tekort leidt tot krampen, trage recovery en slechte slaap — precies het patroon van de Overtrainer.",
+        "Intensief trainen put je magnesiumreserves uit via zweet — en een tekort leidt precies tot wat het Overtrainer-profiel kenmerkt: slechte slaap, trage recovery en meer kans op blessures. Magnesium glycinaat vult aan waar je training te veel wegneemt.",
       href: "/beste-magnesium",
       hasComparison: true,
     },
@@ -166,21 +166,24 @@ export const overtrainer: ProfilePageData = {
 
   guidanceCta: {
     title: "Train je te hard — of herstel je te weinig?",
-    text: "De Leefstijlcheck meet je herstelvermogen, beweging, slaap en meer in 3 minuten. Ontdek waar de balans is verstoord.",
+    text: "In 3 minuten weet je welke supplementen bij jouw trainingsbelasting passen — en waar de herstelbalans is verstoord.",
   },
 
   relatedPillar: null,
 
   relatedComparisons: [
     {
-      href: "/beste-creatine",
-      turboSnippet:
-        "Creatine monohydraat: welk merk geeft de beste kwaliteit voor de prijs? Vergeleken.",
+      href: "/beste-magnesium",
+      turboSnippet: "Magnesium voor spierherstel en ontspanning →",
     },
     {
-      href: "/beste-magnesium",
-      turboSnippet:
-        "Welke magnesium helpt het beste bij spierherstel? Glycinaat vs citraat — vergeleken.",
+      href: "/beste-omega-3-supplement",
+      turboSnippet: "Omega-3 helpt bij herstel na zware training →",
+    },
+    {
+      href: "/intake",
+      turboSnippet: "Train je te hard? Check je herstelbalans →",
+      linkText: "Doe de gratis check",
     },
   ],
 

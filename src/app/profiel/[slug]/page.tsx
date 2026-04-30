@@ -200,7 +200,7 @@ export default async function ProfielPage({ params }: Props) {
                 <p className="text-slate-600 mt-4 leading-relaxed">{profile.guidanceCta.text}</p>
                 <Link
                   href="/intake"
-                  className="inline-block mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors"
+                  className="inline-flex items-center mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 h-12 rounded-lg transition-colors"
                 >
                   Doe de gratis Leefstijlcheck
                 </Link>
@@ -233,7 +233,7 @@ export default async function ProfielPage({ params }: Props) {
                       href={item.href}
                       className="text-emerald-600 hover:underline font-medium"
                     >
-                      Bekijk de vergelijking →
+                      {item.linkText ?? "Bekijk de vergelijking"} →
                     </Link>
                   </div>
                 ))}

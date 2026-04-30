@@ -147,7 +147,7 @@ export const stilleTekorten: ProfilePageData = {
       efsa_claim:
         "EPA en DHA dragen bij tot de normale werking van het hart. DHA draagt bij tot de instandhouding van normale hersenfunctie.",
       why_this_profile:
-        "Als je weinig vis eet, is omega-3 het supplement met de meeste impact. De meeste Nederlanders krijgen minder dan de helft van de aanbevolen hoeveelheid.",
+        "Als je weinig of nooit vis eet, mis je de omega-3 vetzuren die je lichaam nodig heeft maar zelf niet kan maken. Bij het Stille Tekorten-profiel is dit het supplement met de meeste directe impact — je hart, hersenfunctie en energieniveau profiteren er allemaal van.",
       href: "/beste-omega-3-supplement",
       hasComparison: true,
     },
@@ -156,7 +156,7 @@ export const stilleTekorten: ProfilePageData = {
       efsa_claim:
         "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale botten en spierfunctie.",
       why_this_profile:
-        "In Nederland is vitamine D-tekort structureel — vooral van oktober tot april. Bij het Stille Tekorten-profiel is dit een van de eerste tekorten om aan te pakken.",
+        "Van oktober tot april haalt bijna niemand in Nederland genoeg vitamine D via de zon. Bij het Stille Tekorten-profiel is dit een van de eerste tekorten om aan te pakken — het ondersteunt tegelijk je immuunsysteem en je spierfunctie.",
       href: "/beste-vitamine-d",
       hasComparison: true,
     },
@@ -164,7 +164,7 @@ export const stilleTekorten: ProfilePageData = {
 
   guidanceCta: {
     title: "Welke bouwstenen mis jij?",
-    text: "De Leefstijlcheck meet je voedingspatroon, energie en vier andere domeinen in 3 minuten. Je krijgt direct inzicht in waar je tekortkomt.",
+    text: "In 3 minuten weet je welke supplementen bij jouw voedingspatroon passen en waar de grootste tekorten zitten.",
   },
 
   relatedPillar: null,
@@ -172,12 +172,12 @@ export const stilleTekorten: ProfilePageData = {
   relatedComparisons: [
     {
       href: "/beste-omega-3-supplement",
-      turboSnippet: "Welke omega-3 is écht goed? We vergelijken op EPA/DHA, zuiverheid en prijs.",
+      turboSnippet: "Eet je weinig vis? Vergelijk de beste omega-3 supplementen →",
     },
     {
-      href: "/beste-vitamine-d",
-      turboSnippet:
-        "Vitamine D3 alleen of met K2? Druppels of capsules? Objectief vergeleken.",
+      href: "/intake",
+      turboSnippet: "Welke bouwstenen mis jij? Ontdek het in 3 minuten →",
+      linkText: "Doe de gratis check",
     },
   ],
 

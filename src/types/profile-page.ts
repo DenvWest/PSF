@@ -63,7 +63,7 @@ export interface ProfilePageData {
 
   relatedPillar: { href: string; turboSnippet: string } | null;
 
-  relatedComparisons: { href: string; turboSnippet: string }[];
+  relatedComparisons: { href: string; turboSnippet: string; linkText?: string }[];
 
   breadcrumbs: { name: string; href: string }[];
 }

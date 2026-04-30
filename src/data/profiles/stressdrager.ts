@@ -146,7 +146,7 @@ export const stressdragerProfile: ProfilePageData = {
       efsa_claim:
         "Ashwagandha-claims staan op de Europese 'on hold'-lijst en zijn nog niet definitief beoordeeld door EFSA.",
       why_this_profile:
-        "Wordt traditioneel gebruikt ter ondersteuning van ontspanning en weerstand tegen stress. Bij het Stressdrager-profiel is dit het meest onderzochte adaptogeen.",
+        "Als je voortdurend aan staat en nauwelijks kunt ontspannen, ondersteunt ashwagandha je vermogen om met stress om te gaan. Het helpt je zenuwstelsel rustiger worden — zodat je na een drukke dag eindelijk tot rust kunt komen.",
       href: "/beste-ashwagandha",
       hasComparison: true,
     },
@@ -155,7 +155,7 @@ export const stressdragerProfile: ProfilePageData = {
       efsa_claim:
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot de vermindering van vermoeidheid.",
       why_this_profile:
-        "Bij chronische stress raakt je magnesiumvoorraad sneller uitgeput. Glycinaatvorm wordt goed opgenomen en heeft een kalmerend effect.",
+        "Chronische stress put je magnesiumreserves sneller uit dan je aanvult. Een tekort maakt je slaap onrustiger en je reactie op stress heftiger. Magnesium glycinaat helpt je zenuwen tot rust brengen — precies wat het Stressdrager-profiel nodig heeft.",
       href: "/beste-magnesium",
       hasComparison: true,
     },
@@ -163,7 +163,7 @@ export const stressdragerProfile: ProfilePageData = {
 
   guidanceCta: {
     title: "Wil je weten waar jij staat?",
-    text: "De Leefstijlcheck meet je slaap, stress, energie, voeding, beweging en herstel in 3 minuten. Je krijgt direct een persoonlijk profiel met concrete aanbevelingen.",
+    text: "In 3 minuten weet je welke supplementen bij jouw stressniveau passen — en welke leefstijlaanpassingen het meeste effect hebben voor jouw situatie.",
   },
 
   relatedPillar: null,
@@ -172,12 +172,16 @@ export const stressdragerProfile: ProfilePageData = {
     {
       href: "/beste-ashwagandha",
       turboSnippet:
-        "Welke ashwagandha werkt het best tegen stress? KSM-66 vs Sensoril — vergeleken op dosering en prijs.",
+        "Welke ashwagandha werkt het best tegen stress? Vergeleken op extract en dosering →",
     },
     {
       href: "/beste-magnesium",
-      turboSnippet:
-        "Welke magnesium vorm past bij jou? Glycinaat, bisglycinaat of citraat — objectief vergeleken.",
+      turboSnippet: "Magnesium ontspant je zenuwstelsel. Welke vorm past bij jou? →",
+    },
+    {
+      href: "/intake",
+      turboSnippet: "Hoe hoog is jouw stressbelasting? Meet het in 3 minuten →",
+      linkText: "Doe de gratis check",
     },
   ],
 

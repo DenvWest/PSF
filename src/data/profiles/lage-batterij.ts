@@ -146,7 +146,7 @@ export const lageBatterijProfile: ProfilePageData = {
       efsa_claim:
         "EPA en DHA dragen bij tot de normale werking van het hart. DHA draagt bij tot de instandhouding van normale hersenfunctie.",
       why_this_profile:
-        "Bij het Lage Batterij-profiel is de voedingsbasis vaak onvoldoende. Omega-3 is een van de meest onderzochte aanvullingen — vooral als je weinig vis eet.",
+        "Als je regelmatig moe wakker wordt, mist je lichaam vaak essentiële bouwstenen — en omega-3 staat bovenaan die lijst. Het ondersteunt je energieproductie op celniveau, iets wat bij het Lage Batterij-profiel direct voelbaar verschil maakt.",
       href: "/beste-omega-3-supplement",
       hasComparison: true,
     },
@@ -155,7 +155,7 @@ export const lageBatterijProfile: ProfilePageData = {
       efsa_claim:
         "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale spierfunctie.",
       why_this_profile:
-        "In Nederland is vitamine D-tekort veelvoorkomend — vooral van oktober tot april. Een tekort kan bijdragen aan verminderde spierfunctie en een minder goed werkend immuunsysteem — domeinen die bij het Lage Batterij-profiel een directe rol spelen.",
+        "In Nederland loopt bijna iedereen na 40 een vitamine D-tekort op — en dat merk je terug in je energieniveau en spierfunctie. Als je je herkent in het Lage Batterij-profiel, is vitamine D een van de eerste tekorten om aan te pakken.",
       href: "/beste-vitamine-d",
       hasComparison: true,
     },
@@ -163,7 +163,7 @@ export const lageBatterijProfile: ProfilePageData = {
 
   guidanceCta: {
     title: "Ontdek waar jouw energie weglekt",
-    text: "De Leefstijlcheck meet 6 domeinen in 3 minuten: slaap, stress, energie, voeding, beweging en herstel. Je krijgt direct een persoonlijk profiel met concrete stappen.",
+    text: "In 3 minuten weet je welke supplementen bij jouw situatie passen en welke bouwstenen je mist.",
   },
 
   relatedPillar: null,
@@ -172,12 +172,12 @@ export const lageBatterijProfile: ProfilePageData = {
     {
       href: "/beste-omega-3-supplement",
       turboSnippet:
-        "Welke omega-3 is écht goed? We vergelijken op EPA/DHA, biobeschikbaarheid en prijs.",
+        "Omega-3 ondersteunt je energieproductie op celniveau. Welke is het beste? →",
     },
     {
-      href: "/beste-vitamine-d",
-      turboSnippet:
-        "Vitamine D3 alleen of met K2? Druppels of capsules? Objectief vergeleken.",
+      href: "/intake",
+      turboSnippet: "Waar lekt jouw energie weg? Ontdek het gratis →",
+      linkText: "Doe de gratis check",
     },
   ],
 
