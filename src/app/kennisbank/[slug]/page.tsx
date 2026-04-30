@@ -325,7 +325,7 @@ function TermPage({ slug }: { slug: string }) {
               </ol>
             </nav>
 
-            <div className="mx-auto max-w-3xl">
+            <div className="max-w-[680px]">
               <article>
                 <header className="mb-10">
                   <span className="inline-block rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-medium text-stone-500">
@@ -407,7 +407,7 @@ function TermPage({ slug }: { slug: string }) {
                   </section>
                 )}
 
-                <section className="rounded-2xl bg-stone-50 px-6 py-8 text-center">
+                <section className="rounded-2xl bg-stone-50 px-6 py-8">
                   <h2 className="text-lg font-semibold tracking-tight text-stone-900">
                     Wil je weten wat bij jou past?
                   </h2>
