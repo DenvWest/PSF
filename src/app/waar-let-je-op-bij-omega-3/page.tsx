@@ -33,36 +33,56 @@ export default function WaarLetJeOpBijOmega3Page() {
         <main className="text-stone-900">
             <article>
             {/* 1. Hero */}
-            <section className="border-b border-stone-200 bg-stone-50">
-                <Container className="py-16 md:py-24">
-                    <header>
-                    <BlogArticleIntro post={post} />
-                    <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
-                        Waar let je op bij omega&nbsp;3 supplementen?
-                    </h1>
-                    <BlogArticleExcerpt post={post} />
-                    </header>
-                    <p className="mt-5 max-w-2xl text-base leading-7 text-stone-600 md:text-lg">
-                        Niet elke omega&nbsp;3 is hetzelfde. In deze gids lees je waar je op let bij dosering,
-                        EPA en DHA, prijs per dag, gebruiksgemak en kwaliteit — zodat je producten eerlijk
-                        kunt vergelijken.
-                    </p>
-                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <Link
-                            href="/beste-omega-3-supplement"
-                            className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
-                        >
-                            Bekijk beste omega&nbsp;3 supplementen
-                        </Link>
-                        <Link
-                            href="/omega-3-vergelijken"
-                            className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
-                        >
-                            Vergelijk supplementen
-                        </Link>
+            <div className="bg-gradient-to-b from-[#FDFCFA] to-[#F7F5F0]">
+            <section>
+                <Container className="pt-0 pb-0">
+                    <nav aria-label="Breadcrumb" className="pt-6 pb-2">
+                        <ol className="flex flex-wrap items-center gap-1 text-sm text-stone-400">
+                            <li className="flex items-center gap-1">
+                                <Link href="/" className="hover:text-stone-600 transition-colors">Home</Link>
+                                <span aria-hidden="true">/</span>
+                            </li>
+                            <li className="flex items-center gap-1">
+                                <Link href="/omega-3-vergelijken" className="hover:text-stone-600 transition-colors">Omega 3</Link>
+                                <span aria-hidden="true">/</span>
+                            </li>
+                            <li>
+                                <span className="text-stone-600">Waar let je op bij omega 3?</span>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <div className="pt-10 pb-20 md:pt-14 md:pb-28">
+                        <header>
+                            <BlogArticleIntro post={post} />
+                            <h1 className="font-display mt-6 text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 tracking-tight max-w-3xl">
+                                Waar let je op bij omega&nbsp;3 supplementen?
+                            </h1>
+                            <BlogArticleExcerpt post={post} />
+                        </header>
+                        <p className="mt-5 max-w-xl text-lg text-stone-500 leading-relaxed">
+                            Niet elke omega&nbsp;3 is hetzelfde. In deze gids lees je waar je op let bij dosering,
+                            EPA en DHA, prijs per dag, gebruiksgemak en kwaliteit — zodat je producten eerlijk
+                            kunt vergelijken.
+                        </p>
+                        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                            <Link
+                                href="/beste-omega-3-supplement"
+                                className="inline-flex items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
+                            >
+                                Bekijk beste omega&nbsp;3 supplementen
+                            </Link>
+                            <Link
+                                href="/omega-3-vergelijken"
+                                className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
+                            >
+                                Vergelijk supplementen
+                            </Link>
+                        </div>
                     </div>
                 </Container>
             </section>
+            </div>
 
             {/* 2. Samenvatting */}
             <ContentSection
@@ -75,8 +95,8 @@ export default function WaarLetJeOpBijOmega3Page() {
                             key={item.title}
                             className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
                         >
-                            <h3 className="text-base font-semibold text-stone-900">{item.title}</h3>
-                            <p className="mt-3 text-sm leading-6 text-stone-600">{item.text}</p>
+                            <h3 className="font-display text-base font-semibold text-stone-900">{item.title}</h3>
+                            <p className="mt-3 text-sm leading-relaxed text-stone-600">{item.text}</p>
                         </article>
                     ))}
                 </div>
@@ -86,17 +106,17 @@ export default function WaarLetJeOpBijOmega3Page() {
             <section className="border-t border-stone-100 py-12 md:py-16">
                 <Container>
                     <div className="max-w-3xl">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-800">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                             Samenstelling
                         </p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <h2 className="font-display mt-3 text-2xl md:text-3xl font-bold text-stone-900">
                             {epaSection.title}
                         </h2>
-                        <p className="mt-4 text-base leading-7 text-stone-600">{epaSection.intro}</p>
-                        <ul className="mt-6 space-y-3 text-sm leading-6 text-stone-600">
+                        <p className="mt-4 text-base leading-relaxed text-stone-600">{epaSection.intro}</p>
+                        <ul className="mt-6 space-y-3 text-sm leading-relaxed text-stone-600">
                             {epaSection.bullets.map((bullet) => (
                                 <li key={bullet} className="flex gap-3">
-                                    <span className="mt-0.5 flex-shrink-0 text-stone-600">—</span>
+                                    <span className="mt-0.5 flex-shrink-0 text-stone-400">—</span>
                                     <span>{bullet}</span>
                                 </li>
                             ))}
@@ -109,17 +129,17 @@ export default function WaarLetJeOpBijOmega3Page() {
             <section className="border-t border-stone-100 py-12 md:py-16">
                 <Container>
                     <div className="max-w-3xl">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-800">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                             Dosering
                         </p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <h2 className="font-display mt-3 text-2xl md:text-3xl font-bold text-stone-900">
                             {doseringSection.title}
                         </h2>
-                        <p className="mt-4 text-base leading-7 text-stone-600">{doseringSection.intro}</p>
-                        <ul className="mt-6 space-y-3 text-sm leading-6 text-stone-600">
+                        <p className="mt-4 text-base leading-relaxed text-stone-600">{doseringSection.intro}</p>
+                        <ul className="mt-6 space-y-3 text-sm leading-relaxed text-stone-600">
                             {doseringSection.bullets.map((bullet) => (
                                 <li key={bullet} className="flex gap-3">
-                                    <span className="mt-0.5 flex-shrink-0 text-stone-600">—</span>
+                                    <span className="mt-0.5 flex-shrink-0 text-stone-400">—</span>
                                     <span>{bullet}</span>
                                 </li>
                             ))}
@@ -132,17 +152,17 @@ export default function WaarLetJeOpBijOmega3Page() {
             <section className="border-t border-stone-100 py-12 md:py-16">
                 <Container>
                     <div className="max-w-3xl">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-800">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                             Kosten
                         </p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <h2 className="font-display mt-3 text-2xl md:text-3xl font-bold text-stone-900">
                             {prijsSection.title}
                         </h2>
-                        <p className="mt-4 text-base leading-7 text-stone-600">{prijsSection.intro}</p>
-                        <ul className="mt-6 space-y-3 text-sm leading-6 text-stone-600">
+                        <p className="mt-4 text-base leading-relaxed text-stone-600">{prijsSection.intro}</p>
+                        <ul className="mt-6 space-y-3 text-sm leading-relaxed text-stone-600">
                             {prijsSection.bullets.map((bullet) => (
                                 <li key={bullet} className="flex gap-3">
-                                    <span className="mt-0.5 flex-shrink-0 text-stone-600">—</span>
+                                    <span className="mt-0.5 flex-shrink-0 text-stone-400">—</span>
                                     <span>{bullet}</span>
                                 </li>
                             ))}
@@ -155,17 +175,17 @@ export default function WaarLetJeOpBijOmega3Page() {
             <section className="border-t border-stone-100 py-12 md:py-16">
                 <Container>
                     <div className="max-w-3xl">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-800">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                             Gebruiksgemak
                         </p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <h2 className="font-display mt-3 text-2xl md:text-3xl font-bold text-stone-900">
                             {capsulesSection.title}
                         </h2>
-                        <p className="mt-4 text-base leading-7 text-stone-600">{capsulesSection.intro}</p>
-                        <ul className="mt-6 space-y-3 text-sm leading-6 text-stone-600">
+                        <p className="mt-4 text-base leading-relaxed text-stone-600">{capsulesSection.intro}</p>
+                        <ul className="mt-6 space-y-3 text-sm leading-relaxed text-stone-600">
                             {capsulesSection.bullets.map((bullet) => (
                                 <li key={bullet} className="flex gap-3">
-                                    <span className="mt-0.5 flex-shrink-0 text-stone-600">—</span>
+                                    <span className="mt-0.5 flex-shrink-0 text-stone-400">—</span>
                                     <span>{bullet}</span>
                                 </li>
                             ))}
@@ -178,17 +198,17 @@ export default function WaarLetJeOpBijOmega3Page() {
             <section className="border-t border-stone-100 py-12 md:py-16">
                 <Container>
                     <div className="max-w-3xl">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-800">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                             Kwaliteit
                         </p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <h2 className="font-display mt-3 text-2xl md:text-3xl font-bold text-stone-900">
                             {transparantieSection.title}
                         </h2>
-                        <p className="mt-4 text-base leading-7 text-stone-600">{transparantieSection.intro}</p>
-                        <ul className="mt-6 space-y-3 text-sm leading-6 text-stone-600">
+                        <p className="mt-4 text-base leading-relaxed text-stone-600">{transparantieSection.intro}</p>
+                        <ul className="mt-6 space-y-3 text-sm leading-relaxed text-stone-600">
                             {transparantieSection.bullets.map((bullet) => (
                                 <li key={bullet} className="flex gap-3">
-                                    <span className="mt-0.5 flex-shrink-0 text-stone-600">—</span>
+                                    <span className="mt-0.5 flex-shrink-0 text-stone-400">—</span>
                                     <span>{bullet}</span>
                                 </li>
                             ))}
@@ -200,14 +220,14 @@ export default function WaarLetJeOpBijOmega3Page() {
             {/* 8. Hoe wij vergelijken */}
             <section className="border-t border-stone-100 py-12 md:py-16">
                 <Container>
-                    <div className="max-w-3xl rounded-2xl border border-stone-200 bg-stone-50 px-6 py-8">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-800">
+                    <div className="max-w-3xl rounded-2xl bg-[#F7F5F0]/50 border border-stone-200 px-6 py-8">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                             Methodologie
                         </p>
-                        <h2 className="mt-3 text-xl font-semibold tracking-tight text-stone-900">
+                        <h2 className="font-display mt-3 text-xl font-semibold text-stone-900">
                             Hoe wij vergelijken
                         </h2>
-                        <p className="mt-3 text-sm leading-6 text-stone-600">
+                        <p className="mt-3 text-sm leading-relaxed text-stone-600">
                             We beoordelen omega&nbsp;3 supplementen op dezelfde criteria die je op deze
                             pagina hebt gelezen: EPA en DHA per dagdosering, prijs per dag, capsules per dag
                             en de duidelijkheid van productinformatie. Marketingclaims tellen niet mee;
@@ -215,7 +235,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                         </p>
                         <Link
                             href="/methodologie"
-                            className="mt-5 inline-flex items-center text-sm font-medium text-stone-800 underline-offset-4 hover:underline"
+                            className="mt-5 inline-flex items-center text-sm font-medium text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                         >
                             Lees hoe we beoordelen →
                         </Link>
@@ -226,23 +246,23 @@ export default function WaarLetJeOpBijOmega3Page() {
             {/* Inline CTA */}
             <section className="py-6">
                 <Container>
-                    <div className="rounded-2xl border border-stone-200 bg-stone-100 px-6 py-5">
+                    <div className="rounded-2xl border border-amber-100 bg-amber-50 px-6 py-5">
                         <p className="text-sm font-medium text-stone-900">
                             Klaar met lezen en wil je direct de beste keuzes zien?
                         </p>
-                        <p className="mt-1 text-sm leading-6 text-stone-800">
+                        <p className="mt-1 text-sm leading-relaxed text-stone-600">
                             We hebben de topkeuzes voor overall, prijs-kwaliteit en premium al op een rij gezet.
                         </p>
                         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                             <Link
                                 href="/beste-omega-3-supplement"
-                                className="inline-flex items-center rounded-xl bg-stone-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-stone-800"
+                                className="inline-flex items-center rounded-xl bg-[#5A8F6A] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
                             >
                                 Bekijk beste omega&nbsp;3 supplementen →
                             </Link>
                             <Link
                                 href="/wat-is-omega-3"
-                                className="inline-flex items-center rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:border-stone-400"
+                                className="inline-flex items-center rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:border-stone-300"
                             >
                                 Wat is omega&nbsp;3? Lees de basisgids →
                             </Link>
@@ -261,17 +281,17 @@ export default function WaarLetJeOpBijOmega3Page() {
                     {mistakes.map((mistake) => (
                         <div
                             key={mistake}
-                            className="rounded-2xl border border-stone-200 bg-stone-50 p-5"
+                            className="rounded-2xl border border-stone-200 bg-[#F7F5F0]/50 p-5"
                         >
-                            <p className="text-sm leading-6 text-stone-600">{mistake}</p>
+                            <p className="text-sm leading-relaxed text-stone-600">{mistake}</p>
                         </div>
                     ))}
                 </div>
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600">
+                <p className="mt-6 max-w-3xl text-base leading-relaxed text-stone-600">
                     Wil je producten direct naast elkaar zien? Bekijk dan onze{" "}
                     <Link
                         href="/omega-3-vergelijken"
-                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                     >
                         vergelijking van omega&nbsp;3 supplementen
                     </Link>
@@ -291,24 +311,41 @@ export default function WaarLetJeOpBijOmega3Page() {
                             key={faq.question}
                             className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
                         >
-                            <h3 className="text-base font-semibold text-stone-900">{faq.question}</h3>
-                            <p className="mt-2 text-sm leading-6 text-stone-600">{faq.answer}</p>
+                            <h3 className="font-display text-base font-semibold text-stone-900">{faq.question}</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-stone-600">{faq.answer}</p>
                         </div>
                     ))}
                 </div>
             </ContentSection>
 
-            {/* 11. Afsluitende CTA */}
+            {/* 11. Lees ook */}
+            <section className="border-t border-stone-100 pt-12 pb-0">
+                <Container>
+                    <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Link href="/beste-omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                            <p className="text-base text-stone-600 leading-relaxed">Klaar om een product te kiezen? Onze top 5 vergeleken op EPA/DHA, prijs per dag en transparantie.</p>
+                            <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk beste omega 3 →</span>
+                        </Link>
+                        <Link href="/omega-3-vergelijken" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                            <p className="text-base text-stone-600 leading-relaxed">Alle producten naast elkaar in een vergelijkingstabel — snel de verschillen zien.</p>
+                            <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Vergelijk omega 3 supplementen →</span>
+                        </Link>
+                    </div>
+                </Container>
+            </section>
+
+            {/* 12. Afsluitende CTA */}
             <section className="border-t border-stone-100 py-16 md:py-20">
                 <Container>
                     <div className="max-w-2xl">
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                             Volgende stap
                         </p>
-                        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <h2 className="font-display mt-3 text-2xl md:text-3xl font-bold text-stone-900">
                             Bekijk de beste omega&nbsp;3 supplementen
                         </h2>
-                        <p className="mt-4 text-base leading-7 text-stone-600">
+                        <p className="mt-4 text-base leading-relaxed text-stone-600">
                             Nu je weet waar je op let, kun je producten gericht vergelijken. We hebben de
                             sterkste keuzes op EPA en DHA, prijs per dag en transparantie al op een rij
                             gezet.
@@ -316,7 +353,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             <Link
                                 href="/beste-omega-3-supplement"
-                                className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
+                                className="inline-flex items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
                             >
                                 Bekijk beste omega&nbsp;3 supplementen
                             </Link>
@@ -327,6 +364,22 @@ export default function WaarLetJeOpBijOmega3Page() {
                                 Vergelijk supplementen
                             </Link>
                         </div>
+                    </div>
+
+                    <div className="mt-12 bg-amber-50 rounded-2xl border border-amber-100 px-8 py-10 text-center">
+                        <p className="text-sm font-semibold uppercase tracking-widest text-amber-700 mb-3">Persoonlijk advies</p>
+                        <p className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-3">
+                            Weet jij welk supplement bij jou past?
+                        </p>
+                        <p className="text-base text-stone-500 leading-relaxed mb-6 max-w-md mx-auto">
+                            12 vragen, 3 minuten — direct een persoonlijk herstelplan.
+                        </p>
+                        <Link
+                            href="/intake"
+                            className="inline-block bg-[#5A8F6A] text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-[#4A7F5A] transition-colors"
+                        >
+                            Start de gratis intake →
+                        </Link>
                     </div>
                 </Container>
             </section>

@@ -55,17 +55,29 @@ export default function OmegaComparisonPage() {
     return (
         <main className="text-stone-900">
             <article>
-            <section className="relative overflow-hidden border-b border-stone-200 bg-stone-50">
-                <div
-                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_78%_58%_at_14%_0%,rgba(255,255,255,0.95),transparent_60%)]"
-                    aria-hidden="true"
-                />
+            <div className="bg-gradient-to-b from-[#FDFCFA] to-[#F7F5F0]">
+            <section className="relative overflow-hidden">
                 <Container className="relative">
-                    <div className="grid gap-10 py-16 md:gap-12 md:py-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,360px)] lg:items-start">
+                    <nav aria-label="Breadcrumb" className="pt-6 pb-2">
+                        <ol className="flex flex-wrap items-center gap-1 text-sm text-stone-400">
+                            <li className="flex items-center gap-1">
+                                <Link href="/" className="hover:text-stone-600 transition-colors">Home</Link>
+                                <span aria-hidden="true">/</span>
+                            </li>
+                            <li className="flex items-center gap-1">
+                                <Link href="/beste-omega-3-supplement" className="hover:text-stone-600 transition-colors">Omega 3</Link>
+                                <span aria-hidden="true">/</span>
+                            </li>
+                            <li>
+                                <span className="text-stone-600">Omega 3 vergelijken</span>
+                            </li>
+                        </ol>
+                    </nav>
+                    <div className="grid gap-10 pt-10 pb-20 md:gap-12 md:pt-14 md:pb-28 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,360px)] lg:items-start">
                         <div className="relative">
                             <header className="max-w-3xl">
                                 <BlogArticleIntro post={post} />
-                                <h1 className="ps-display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.02] text-stone-900">
+                                <h1 className="font-display mt-6 text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 tracking-tight">
                                     Omega 3 supplementen vergelijken
                                 </h1>
                                 <BlogArticleExcerpt post={post} />
@@ -74,7 +86,7 @@ export default function OmegaComparisonPage() {
                             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                                 <a
                                     href="#vergelijking"
-                                    className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
+                                    className="inline-flex items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
                                 >
                                     Bekijk vergelijking
                                 </a>
@@ -86,7 +98,7 @@ export default function OmegaComparisonPage() {
                                 </Link>
                                 <Link
                                     href="/intake"
-                                    className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-medium text-emerald-800 transition hover:bg-emerald-100"
+                                    className="inline-flex items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-medium text-amber-800 transition hover:bg-amber-100"
                                 >
                                     Doe de Leefstijlcheck
                                 </Link>
@@ -139,6 +151,7 @@ export default function OmegaComparisonPage() {
                     </div>
                 </Container>
             </section>
+            </div>
 
             <ContentSection
                 title="Hoe wij vergelijken"
@@ -153,14 +166,14 @@ export default function OmegaComparisonPage() {
                         beter scanbaar te maken. Wie eerst de basis wil begrijpen, kan beginnen met{" "}
                         <Link
                             href="/wat-is-omega-3"
-                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                            className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                         >
                             wat omega 3 is
                         </Link>
                         ; wie precies wil weten hoe we deze punten wegen, leest onze{" "}
                         <Link
                             href="/methodologie"
-                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                            className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                         >
                             methodologie
                         </Link>
@@ -303,7 +316,7 @@ export default function OmegaComparisonPage() {
                         Wil je liever direct onze selectie zien? Bekijk dan ook de{" "}
                         <Link
                             href="/beste-omega-3-supplement"
-                            className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                            className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                         >
                             beste omega 3 supplementen
                         </Link>
@@ -311,7 +324,7 @@ export default function OmegaComparisonPage() {
                     </p>
                     <Link
                         href="/methodologie"
-                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A] font-medium"
                     >
                         Lees hoe wij vergelijken
                     </Link>
@@ -409,11 +422,11 @@ export default function OmegaComparisonPage() {
                         </div>
                     ))}
                 </div>
-                <p className="mt-6 max-w-3xl text-sm leading-6 text-stone-600 md:text-base">
+                <p className="mt-6 max-w-3xl text-base leading-relaxed text-stone-600">
                     Zoek je liever een kortere shortlist dan een volledige vergelijking? Bekijk dan de{" "}
                     <Link
                         href="/beste-omega-3-supplement"
-                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                     >
                         beste omega 3 supplementen
                     </Link>
@@ -423,7 +436,7 @@ export default function OmegaComparisonPage() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Link
                         href="/beste-omega-3-supplement"
-                        className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white hover:bg-stone-800"
+                        className="inline-flex items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white hover:bg-[#4A7F5A] transition-colors"
                     >
                         Bekijk beste omega 3 supplementen
                     </Link>
@@ -442,26 +455,31 @@ export default function OmegaComparisonPage() {
             >
                 <Link
                     href="/beste-omega-3-supplement"
-                    className="block max-w-md rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                    className="block max-w-md rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-[#5A8F6A]/30"
                 >
                     <span className="font-medium text-stone-900">Bekijk onze top 5 omega-3 →</span>
                     <span className="mt-0.5 block text-sm text-stone-500">Vergeleken op EPA/DHA, prijs en zuiverheid</span>
                 </Link>
             </ContentSection>
 
-            <section className="mt-16 mb-12 bg-slate-50 rounded-2xl p-8 md:p-12 text-center">
-                <h2 className="text-2xl md:text-3xl font-bold font-serif text-slate-900 mb-4">
-                    Welke omega-3 past bij jou?
-                </h2>
-                <p className="text-slate-600 mb-6 max-w-xl mx-auto">
-                    Ontdek in 3 minuten welke supplementen bij jouw situatie passen — op basis van je slaap, stress, energie en meer.
-                </p>
-                <Link
-                    href="/intake"
-                    className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded-xl transition-colors"
-                >
-                    Doe de gratis Leefstijlcheck
-                </Link>
+            <section className="mt-16 mb-12">
+                <Container>
+                    <div className="bg-amber-50 rounded-2xl border border-amber-100 px-8 py-10 text-center">
+                        <p className="text-sm font-semibold uppercase tracking-widest text-amber-700 mb-3">Persoonlijk advies</p>
+                        <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-3">
+                            Welke omega-3 past bij jou?
+                        </h2>
+                        <p className="text-base text-stone-500 leading-relaxed mb-6 max-w-xl mx-auto">
+                            Ontdek in 3 minuten welke supplementen bij jouw situatie passen — op basis van je slaap, stress, energie en meer.
+                        </p>
+                        <Link
+                            href="/intake"
+                            className="inline-block bg-[#5A8F6A] text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-[#4A7F5A] transition-colors"
+                        >
+                            Doe de gratis Leefstijlcheck
+                        </Link>
+                    </div>
+                </Container>
             </section>
 
             <RelatedPages

@@ -82,63 +82,78 @@ const relatedPages = [
 export default function MethodologiePage() {
     return (
         <>
-            <Container>
-                <div className="py-16 md:py-20">
-                    <div className="max-w-6xl">
-                        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
-                            Methodologie
-                        </p>
+            <main>
+                <div className="bg-gradient-to-b from-[#FDFCFA] to-[#F7F5F0]">
+                    <Container>
+                        <nav aria-label="Breadcrumb" className="pt-6 pb-2">
+                            <ol className="flex flex-wrap items-center gap-1 text-sm text-stone-400">
+                                <li className="flex items-center gap-1">
+                                    <Link href="/" className="hover:text-stone-600 transition-colors">Home</Link>
+                                    <span aria-hidden="true">/</span>
+                                </li>
+                                <li>
+                                    <span className="text-stone-600">Methodologie</span>
+                                </li>
+                            </ol>
+                        </nav>
 
-                        <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
-                            Hoe wij supplementen beoordelen
-                        </h1>
+                        <section className="pt-10 pb-20 md:pt-14 md:pb-28">
+                            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 tracking-tight max-w-4xl">
+                                Hoe wij supplementen beoordelen
+                            </h1>
 
-                        <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
-                            We beoordelen supplementen niet op marketing, maar op inhoud,
-                            dagdosering, transparantie en praktische toepasbaarheid. Op deze
-                            pagina leggen we uit hoe producten worden geselecteerd, welke
-                            criteria we gebruiken, hoe claims worden gecontroleerd, hoe affiliate
-                            links werken en wanneer beoordelingen worden herijkt. Wil je de
-                            uitkomst hiervan in de praktijk zien, bekijk dan onze{" "}
-                            <Link
-                                href="/omega-3-vergelijken"
-                                className="font-medium text-stone-800 underline-offset-4 hover:underline"
-                            >
-                                vergelijking van omega 3 supplementen
-                            </Link>{" "}
-                            of ga direct naar de{" "}
-                            <Link
-                                href="/beste-omega-3-supplement"
-                                className="font-medium text-stone-800 underline-offset-4 hover:underline"
-                            >
-                                beste omega 3 supplementen
-                            </Link>
-                            .
-                        </p>
-                    </div>
+                            <p className="text-lg text-stone-500 leading-relaxed max-w-xl mt-4">
+                                We beoordelen supplementen niet op marketing, maar op inhoud,
+                                dagdosering, transparantie en praktische toepasbaarheid.
+                            </p>
 
+                            <p className="mt-4 max-w-2xl text-base text-stone-600 leading-relaxed">
+                                Op deze pagina leggen we uit hoe producten worden geselecteerd, welke
+                                criteria we gebruiken, hoe claims worden gecontroleerd, hoe affiliate
+                                links werken en wanneer beoordelingen worden herijkt. Wil je de
+                                uitkomst hiervan in de praktijk zien, bekijk dan onze{" "}
+                                <Link
+                                    href="/omega-3-vergelijken"
+                                    className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
+                                >
+                                    vergelijking van omega 3 supplementen
+                                </Link>{" "}
+                                of ga direct naar de{" "}
+                                <Link
+                                    href="/beste-omega-3-supplement"
+                                    className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
+                                >
+                                    beste omega 3 supplementen
+                                </Link>
+                                .
+                            </p>
+                        </section>
+                    </Container>
+                </div>
+
+                <Container>
                     <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                         {criteria.map((item) => (
                             <article
                                 key={item.title}
-                                className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+                                className="rounded-2xl bg-[#F7F5F0]/50 border border-stone-200 p-6"
                             >
-                                <h2 className="text-2xl font-semibold text-stone-900">
+                                <h2 className="font-display text-xl font-semibold text-stone-900">
                                     {item.title}
                                 </h2>
-                                <p className="mt-4 text-base leading-7 text-stone-600">
+                                <p className="mt-4 text-base leading-relaxed text-stone-600">
                                     {item.text}
                                 </p>
                             </article>
                         ))}
                     </section>
 
-                    <div className="mt-16 space-y-14">
-                        <section className="max-w-4xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                    <div className="mt-16 md:mt-20 space-y-14">
+                        <section>
+                            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                                 Hoe producten worden geselecteerd
                             </h2>
-                            <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                            <div className="space-y-5 text-base leading-relaxed text-stone-600">
                                 <p>
                                     Niet alle supplementen op de markt worden op deze website
                                     opgenomen. We selecteren producten op basis van relevantie
@@ -156,7 +171,7 @@ export default function MethodologiePage() {
                                     ook lezen{" "}
                                     <Link
                                         href="/waar-let-je-op-bij-omega-3"
-                                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                                     >
                                         waar je op let bij omega 3 supplementen
                                     </Link>
@@ -165,11 +180,11 @@ export default function MethodologiePage() {
                             </div>
                         </section>
 
-                        <section className="max-w-4xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <section>
+                            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                                 Welke criteria we gebruiken
                             </h2>
-                            <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                            <div className="space-y-5 text-base leading-relaxed text-stone-600">
                                 <p>
                                     Onze beoordelingen zijn gebaseerd op een vaste set criteria. Die
                                     criteria helpen om producten consistenter te bekijken en niet
@@ -184,7 +199,7 @@ export default function MethodologiePage() {
                                     uitgangspunten blijven gelijk. Op de pagina{" "}
                                     <Link
                                         href="/waar-let-je-op-bij-omega-3"
-                                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                                     >
                                         waar let je op bij omega 3
                                     </Link>{" "}
@@ -194,12 +209,12 @@ export default function MethodologiePage() {
                                     {criteria.map((item) => (
                                         <div
                                             key={`detail-${item.title}`}
-                                            className="rounded-2xl border border-stone-200 bg-stone-50 p-5"
+                                            className="rounded-2xl bg-[#F7F5F0]/50 border border-stone-200 p-5"
                                         >
-                                            <h3 className="text-lg font-semibold text-stone-900">
+                                            <h3 className="font-display text-lg font-semibold text-stone-900">
                                                 {item.title}
                                             </h3>
-                                            <p className="mt-2 text-sm leading-6 text-stone-600">
+                                            <p className="mt-2 text-sm leading-relaxed text-stone-600">
                                                 {item.text}
                                             </p>
                                         </div>
@@ -208,11 +223,11 @@ export default function MethodologiePage() {
                             </div>
                         </section>
 
-                        <section className="max-w-4xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <section>
+                            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                                 Hoe claims worden gecontroleerd
                             </h2>
-                            <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                            <div className="space-y-5 text-base leading-relaxed text-stone-600">
                                 <p>
                                     Informatie over ingrediënten en mogelijke effecten proberen we
                                     zorgvuldig en neutraal te beschrijven. Daarbij kijken we naar
@@ -237,7 +252,7 @@ export default function MethodologiePage() {
                                     eerst een rustige categorie-uitleg zoekt, kan beginnen bij{" "}
                                     <Link
                                         href="/wat-is-omega-3"
-                                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                                     >
                                         wat omega 3 is
                                     </Link>
@@ -246,11 +261,11 @@ export default function MethodologiePage() {
                             </div>
                         </section>
 
-                        <section className="max-w-4xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <section>
+                            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                                 Dosering en prijs per dag
                             </h2>
-                            <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                            <div className="space-y-5 text-base leading-relaxed text-stone-600">
                                 <p>
                                     In veel categorieën zegt een losse verpakking of potprijs weinig
                                     zonder gebruikscontext. Daarom kijken we waar relevant naar
@@ -268,11 +283,11 @@ export default function MethodologiePage() {
                             </div>
                         </section>
 
-                        <section className="max-w-4xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <section>
+                            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                                 Hoe rankings tot stand komen
                             </h2>
-                            <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                            <div className="space-y-5 text-base leading-relaxed text-stone-600">
                                 <p>
                                     Wanneer producten worden vergeleken, gebruiken we de criteria
                                     die op deze pagina worden beschreven. Rankings ontstaan dus niet
@@ -281,7 +296,7 @@ export default function MethodologiePage() {
                                     voorbeeld daarvan zie je terug op onze{" "}
                                     <Link
                                         href="/omega-3-vergelijken"
-                                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                                     >
                                         vergelijking van omega 3 supplementen
                                     </Link>
@@ -303,11 +318,11 @@ export default function MethodologiePage() {
                             </div>
                         </section>
 
-                        <section className="max-w-4xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <section>
+                            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                                 Affiliate transparantie
                             </h2>
-                            <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                            <div className="space-y-5 text-base leading-relaxed text-stone-600">
                                 <p>
                                     Sommige links op deze website kunnen affiliate links zijn. Dat
                                     betekent dat we mogelijk een commissie ontvangen wanneer iemand
@@ -321,11 +336,11 @@ export default function MethodologiePage() {
                             </div>
                         </section>
 
-                        <section className="max-w-4xl">
-                            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                        <section>
+                            <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                                 Updates en wijzigingen
                             </h2>
-                            <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                            <div className="space-y-5 text-base leading-relaxed text-stone-600">
                                 <p>
                                     Productinformatie, verpakkingen en samenstellingen kunnen in de
                                     loop van de tijd veranderen. Daarom kunnen beoordelingen,
@@ -347,14 +362,14 @@ export default function MethodologiePage() {
                             </div>
                         </section>
                     </div>
-                </div>
-            </Container>
+                </Container>
 
-            <RelatedPages
-                title="Verder lezen"
-                description="Pagina's die deze methodologie concreet maken binnen het omega 3 cluster."
-                items={relatedPages}
-            />
+                <RelatedPages
+                    title="Verder lezen"
+                    description="Pagina's die deze methodologie concreet maken binnen het omega 3 cluster."
+                    items={relatedPages}
+                />
+            </main>
         </>
     );
 }

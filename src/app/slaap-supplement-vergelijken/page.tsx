@@ -72,65 +72,78 @@ const faq = [
 
 export default function SlaapSupplementVergelijkenPage() {
     return (
-        <Container>
-            <div className="py-16 md:py-20">
-                <div className="max-w-6xl">
-                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
-                        Slaap supplement vergelijken
-                    </p>
+        <main>
+            <div className="bg-gradient-to-b from-[#FDFCFA] to-[#F7F5F0]">
+                <Container>
+                    <nav aria-label="Breadcrumb" className="pt-6 pb-2">
+                        <ol className="flex flex-wrap items-center gap-1 text-sm text-stone-400">
+                            <li className="flex items-center gap-1">
+                                <Link href="/" className="hover:text-stone-600 transition-colors">Home</Link>
+                                <span aria-hidden="true">/</span>
+                            </li>
+                            <li>
+                                <span className="text-stone-600">Slaap supplement vergelijken</span>
+                            </li>
+                        </ol>
+                    </nav>
 
-                    <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 md:text-5xl">
-                        Slaap supplement vergelijken: rustiger kiezen tussen formules
-                    </h1>
+                    <section className="pt-10 pb-20 md:pt-14 md:pb-28">
+                        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 tracking-tight max-w-4xl">
+                            Slaap supplement vergelijken: rustiger kiezen tussen formules
+                        </h1>
 
-                    <p className="mt-6 max-w-3xl text-lg leading-8 text-stone-600">
-                        Slaapproducten zijn vaak druk gepositioneerd. Daarom vergelijken we
-                        ze op helderheid van de formule, dosering, praktische inzet in de
-                        avond en transparantie van het merk.
-                    </p>
+                        <p className="text-lg text-stone-500 leading-relaxed max-w-xl mt-4">
+                            Slaapproducten zijn vaak druk gepositioneerd. Daarom vergelijken we
+                            ze op helderheid van de formule, dosering, praktische inzet in de
+                            avond en transparantie van het merk.
+                        </p>
 
-                    <p className="mt-4 max-w-3xl text-base leading-7 text-stone-500">
-                        Deze pagina is bedoeld als algemene vergelijking en sluit aan op
-                        onze{" "}
-                        <Link
-                            href="/methodologie"
-                            className="font-medium text-stone-900 underline underline-offset-4"
-                        >
-                            methodologie
-                        </Link>
-                        .
-                    </p>
+                        <p className="mt-4 max-w-2xl text-base text-stone-500 leading-relaxed">
+                            Deze pagina is bedoeld als algemene vergelijking en sluit aan op
+                            onze{" "}
+                            <Link
+                                href="/methodologie"
+                                className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
+                            >
+                                methodologie
+                            </Link>
+                            .
+                        </p>
 
-                    <p className="text-sm text-slate-500 mb-8 mt-4 max-w-3xl">
-                        Dit artikel bevat affiliate links. Bij aankoop via deze links ontvangen wij een
-                        kleine vergoeding. Dit heeft geen invloed op onze beoordeling —
-                        onze <a href="/methodologie" className="underline hover:text-slate-700">methodologie</a> is
-                        onafhankelijk.
-                    </p>
-                </div>
+                        <p className="text-sm text-stone-500 mt-4 max-w-2xl">
+                            Dit artikel bevat affiliate links. Bij aankoop via deze links ontvangen wij een
+                            kleine vergoeding. Dit heeft geen invloed op onze beoordeling —
+                            onze{" "}
+                            <Link href="/methodologie" className="underline hover:text-stone-700">methodologie</Link>{" "}
+                            is onafhankelijk.
+                        </p>
+                    </section>
+                </Container>
+            </div>
 
+            <Container>
                 <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
                     {factors.map((factor) => (
                         <article
                             key={factor.title}
                             className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
                         >
-                            <h2 className="text-xl font-semibold text-stone-900">
+                            <h2 className="font-display text-xl font-semibold text-stone-900">
                                 {factor.title}
                             </h2>
-                            <p className="mt-4 text-base leading-7 text-stone-600">
+                            <p className="mt-4 text-base leading-relaxed text-stone-600">
                                 {factor.text}
                             </p>
                         </article>
                     ))}
                 </section>
 
-                <section className="mt-16 max-w-6xl">
-                    <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                <section className="mt-16 md:mt-20">
+                    <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                         Overzicht van veelvoorkomende slaapproduct-types
                     </h2>
 
-                    <div className="mt-6 overflow-hidden rounded-2xl border border-stone-200 bg-white">
+                    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-stone-200 text-left">
                                 <thead className="bg-stone-50">
@@ -164,13 +177,13 @@ export default function SlaapSupplementVergelijkenPage() {
                     </div>
                 </section>
 
-                <div className="mt-16 grid gap-10 xl:grid-cols-[1.2fr_0.8fr]">
-                    <section className="max-w-4xl">
-                        <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                <div className="mt-16 md:mt-20 grid gap-10 xl:grid-cols-[1.2fr_0.8fr]">
+                    <section>
+                        <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                             Waar wij op letten bij slaapproducten
                         </h2>
 
-                        <div className="mt-5 space-y-5 text-base leading-8 text-stone-600">
+                        <div className="space-y-5 text-base leading-relaxed text-stone-600">
                             <p>
                                 Deze categorie vraagt om extra rust in de presentatie. Veel
                                 slaapproducten combineren meerdere ingrediënten en communiceren
@@ -190,9 +203,9 @@ export default function SlaapSupplementVergelijkenPage() {
                         </div>
                     </section>
 
-                    <aside className="rounded-2xl border border-stone-200 bg-stone-50 p-6">
+                    <aside className="rounded-2xl border border-stone-200 bg-[#F7F5F0]/50 p-6">
                         <p className="text-sm font-medium text-stone-500">Gerelateerd</p>
-                        <h3 className="mt-2 text-xl font-semibold text-stone-900">
+                        <h3 className="font-display mt-2 text-xl font-semibold text-stone-900">
                             Meer context
                         </h3>
                         <p className="mt-2 text-sm text-stone-600">
@@ -202,21 +215,21 @@ export default function SlaapSupplementVergelijkenPage() {
                         <div className="mt-5 space-y-4 text-base text-stone-600">
                             <Link
                                 href="/magnesium-vergelijken"
-                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-[#5A8F6A]/30"
                             >
                                 <span className="font-medium text-stone-900">Magnesium vergelijken →</span>
                                 <span className="mt-0.5 block text-sm text-stone-500">Bisglycinaat vs citraat vs malaat — wat past bij jouw avondroutine?</span>
                             </Link>
                             <Link
                                 href="/beste-magnesium"
-                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-[#5A8F6A]/30"
                             >
                                 <span className="font-medium text-stone-900">Beste magnesium supplement →</span>
                                 <span className="mt-0.5 block text-sm text-stone-500">Top 3 vergeleken op vorm, dosering en prijs per dag</span>
                             </Link>
                             <Link
                                 href="/methodologie"
-                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-stone-300"
+                                className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-[#5A8F6A]/30 text-[#5A8F6A] font-medium"
                             >
                                 Lees hoe wij beoordelen
                             </Link>
@@ -224,21 +237,21 @@ export default function SlaapSupplementVergelijkenPage() {
                     </aside>
                 </div>
 
-                <section className="mt-16 max-w-4xl">
-                    <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+                <section className="mt-16 md:mt-20">
+                    <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
                         Veelgestelde vragen over slaap supplement vergelijken
                     </h2>
 
-                    <div className="mt-6 space-y-4">
+                    <div className="space-y-4">
                         {faq.map((item) => (
                             <article
                                 key={item.question}
                                 className="rounded-2xl border border-stone-200 bg-white p-6"
                             >
-                                <h3 className="text-lg font-semibold text-stone-900">
+                                <h3 className="font-display text-lg font-semibold text-stone-900">
                                     {item.question}
                                 </h3>
-                                <p className="mt-3 text-base leading-7 text-stone-600">
+                                <p className="mt-3 text-base leading-relaxed text-stone-600">
                                     {item.answer}
                                 </p>
                             </article>
@@ -246,22 +259,38 @@ export default function SlaapSupplementVergelijkenPage() {
                     </div>
                 </section>
 
-                <div className="mt-16 rounded-2xl bg-stone-50 px-6 py-10 text-center">
-                  <p className="ps-eyebrow">Persoonlijk advies</p>
-                  <p className="mt-3 text-xl font-semibold text-stone-900">
-                    Weet jij welk supplement bij jou past?
-                  </p>
-                  <p className="mt-2 text-sm text-stone-500">
-                    12 vragen, 3 minuten — direct een persoonlijk herstelplan.
-                  </p>
-                  <Link
-                    href="/intake"
-                    className="mt-6 inline-block rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white hover:bg-stone-700"
-                  >
-                    Start de gratis intake →
-                  </Link>
-                </div>
-            </div>
-        </Container>
+                <section className="mt-16 md:mt-20 border-t border-stone-100 pt-12">
+                    <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Link href="/profiel/onrustige-slaper" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                            <p className="text-base text-stone-600 leading-relaxed">Slecht slapen na 40? Ontdek of jij een Onrustige Slaper bent en welke stappen echt helpen.</p>
+                            <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
+                        </Link>
+                        <Link href="/beste-magnesium" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                            <p className="text-base text-stone-600 leading-relaxed">Magnesium is stap één bij slaapproblemen. Bekijk welke vorm het beste bij jou past.</p>
+                            <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk beste magnesium →</span>
+                        </Link>
+                    </div>
+                </section>
+
+                <section className="mt-16 mb-12">
+                    <div className="bg-amber-50 rounded-2xl border border-amber-100 px-8 py-10 text-center">
+                        <p className="text-sm font-semibold uppercase tracking-widest text-amber-700 mb-3">Persoonlijk advies</p>
+                        <p className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-3">
+                            Weet jij welk supplement bij jou past?
+                        </p>
+                        <p className="text-base text-stone-500 leading-relaxed mb-6 max-w-md mx-auto">
+                            12 vragen, 3 minuten — direct een persoonlijk herstelplan.
+                        </p>
+                        <Link
+                            href="/intake"
+                            className="inline-block bg-[#5A8F6A] text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-[#4A7F5A] transition-colors"
+                        >
+                            Start de gratis intake →
+                        </Link>
+                    </div>
+                </section>
+            </Container>
+        </main>
     );
 }
