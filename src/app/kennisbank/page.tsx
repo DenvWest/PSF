@@ -90,55 +90,61 @@ export default function KennisbankPage() {
       {themesWithTerms.map(({ theme, config, terms }) => (
         <section key={theme} className="pb-16 md:pb-20" aria-label={config.title}>
           <Container>
-            {/* Thema-header kaart */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            {/* Thema-header — full width */}
+            <div
+              className={`relative overflow-hidden rounded-2xl bg-gradient-to-br p-7 md:p-9 ${config.colorClasses.bg}`}
+            >
               <div
-                className={`relative flex min-h-[200px] flex-col overflow-hidden rounded-2xl bg-gradient-to-br p-7 md:min-h-[220px] md:p-9 ${config.colorClasses.bg}`}
-              >
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-[0.035]"
+                className="pointer-events-none absolute inset-0 opacity-[0.035]"
+                aria-hidden
+                style={{ backgroundImage: NOISE_SVG }}
+              />
+              <div className="relative">
+                <span
+                  className={`flex h-11 w-11 items-center justify-center rounded-xl text-lg ring-1 ${config.colorClasses.accent}`}
                   aria-hidden
-                  style={{ backgroundImage: NOISE_SVG }}
-                />
-                <div className="relative flex flex-1 flex-col">
-                  <span
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl text-lg ring-1 ${config.colorClasses.accent}`}
-                    aria-hidden
-                  >
-                    {config.icon}
-                  </span>
-                  <div className="mt-auto">
-                    <h2 className="text-xl font-semibold tracking-tight text-white md:text-2xl">
-                      {config.title}
-                    </h2>
-                    <p
-                      className={`mt-2 text-sm leading-relaxed ${config.colorClasses.tekst}`}
-                    >
-                      {config.description}
-                    </p>
-                    <div className="mt-6">
-                      <span className="text-xs font-medium text-white/50">
-                        {terms.length}{' '}
-                        {terms.length === 1 ? 'begrip' : 'begrippen'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                >
+                  {config.icon}
+                </span>
+                <h2 className="mt-5 text-xl font-semibold tracking-tight text-white md:text-2xl">
+                  {config.title}
+                </h2>
+                <p
+                  className={`mt-2 max-w-lg text-sm leading-relaxed ${config.colorClasses.tekst}`}
+                >
+                  {config.description}
+                </p>
+                <span className="mt-4 block text-xs font-medium text-white/50">
+                  {terms.length} {terms.length === 1 ? 'begrip' : 'begrippen'}
+                </span>
               </div>
             </div>
 
-            {/* Term-kaarten grid */}
-            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Term-kaarten grid — zelfde stijl als BlogArtikelKaart */}
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {terms.map((term) => (
                 <Link
                   key={term.slug}
                   href={`/kennisbank/${term.slug}`}
                   className="group flex min-h-0 flex-col rounded-2xl border border-stone-200/60 bg-white p-7 transition duration-300 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
                 >
-                  <h3 className="text-lg font-semibold leading-snug tracking-tight text-stone-900 md:text-xl">
+                  <span
+                    className={`inline-flex self-start items-center rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-wider ring-1 ring-inset ${
+                      theme === 'lichaam-veroudering'
+                        ? 'bg-rose-50 text-rose-700 ring-rose-200/50'
+                        : theme === 'supplementwetenschap'
+                          ? 'bg-sky-50 text-sky-700 ring-sky-200/50'
+                          : theme === 'longevity'
+                            ? 'bg-amber-50 text-amber-700 ring-amber-200/50'
+                            : 'bg-emerald-50 text-emerald-700 ring-emerald-200/50'
+                    }`}
+                  >
+                    {config.title}
+                  </span>
+                  <h3 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-stone-900 md:text-xl">
                     {term.term}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone-500">
+                  <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-stone-500">
                     {term.shortDefinition}
                   </p>
                   <div className="mt-auto flex items-center gap-2 pt-6 text-xs font-semibold uppercase tracking-[0.15em] text-stone-800">
