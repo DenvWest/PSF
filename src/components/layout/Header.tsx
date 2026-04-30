@@ -16,9 +16,6 @@ const menuLinks = [
     { href: "/intake", label: "Leefstijlcheck" },
     { href: "/supplementen", label: "Supplementen" },
     { href: "/methodologie", label: "Methodologie" },
-    { href: "/over-ons", label: "Over ons" },
-    { href: "/blog", label: "Blog" },
-    { href: "/kennisbank", label: "Kennisbank" },
 ];
 
 const infoLinks = [

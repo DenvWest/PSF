@@ -172,6 +172,111 @@ Na 40 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen ond
     metaTitle: 'Circadiaan Ritme: Je Interne Klok Uitgelegd',
     metaDescription: 'Je circadiaan ritme stuurt slaap, hormonen en energie aan. Na 40 wordt het gevoeliger. Wat kun je eraan doen?',
   },
+  // ── NIEUWE TERMEN ──────────────────────────────────────────
+
+  {
+    slug: 'adh',
+    term: 'ADH (Aanbevolen Dagelijkse Hoeveelheid)',
+    theme: 'supplementwetenschap',
+    shortDefinition: 'De Nederlandse richtlijn voor de minimale dagelijkse inname van vitamines en mineralen.',
+    content: {
+      whatIsIt: `De Aanbevolen Dagelijkse Hoeveelheid (ADH) is de Nederlandse vertaling van de Europese referentie-inname (RI). Het is de hoeveelheid van een vitamine of mineraal die voldoende is om aan de behoefte van vrijwel de gehele gezonde bevolking te voldoen.
+
+Je vindt de ADH op elk supplementetiket als percentage: "100% ADH" betekent dat één dosis de volledige aanbevolen hoeveelheid bevat. Maar de ADH is een minimum, geen optimum — en de waarden zijn vastgesteld voor de gemiddelde volwassene, niet specifiek voor mannen boven de 40.`,
+      howItWorks: `De ADH wordt vastgesteld door de Europese Autoriteit voor Voedselveiligheid (EFSA) en is wettelijk verplicht op etiketten. Voor magnesium is de ADH 375 mg per dag, voor vitamine D 5 µg, voor omega-3 (EPA+DHA) 250 mg.
+
+Belangrijk: de ADH is een referentiewaarde, geen persoonlijk advies. Iemand die intensief sport, chronische stress heeft of weinig vis eet kan een hogere behoefte hebben. Daarom kijken we bij onze beoordelingen niet alleen of een supplement de ADH haalt, maar of de dosering aansluit bij wat onderzoek laat zien voor specifieke doelgroepen.`,
+      whyItMatters: `Veel supplementen adverteren met "500% ADH" alsof meer altijd beter is. Dat klopt niet — bij wateroplosbare vitamines plast je het overschot uit, bij vetoplosbare vitamines (A, D, E, K) kan overdosering schadelijk zijn. Wij beoordelen doseringen op basis van de ADH als ondergrens, gecombineerd met wat klinisch onderzoek aantoont als effectieve dosis voor de doelgroep.`,
+    },
+    relatedSlugs: ['biobeschikbaarheid'],
+    relatedComparisons: ['/beste-magnesium', '/beste-omega-3-supplement', '/beste-vitamine-d', '/beste-zink'],
+    metaTitle: 'ADH: Wat de Aanbevolen Dagelijkse Hoeveelheid Écht Betekent',
+    metaDescription: 'De ADH is een minimum, geen optimum. Wat betekent het voor jouw supplementkeuze? Helder uitgelegd.',
+  },
+  {
+    slug: 'efsa-claims',
+    term: 'EFSA-claims',
+    theme: 'supplementwetenschap',
+    shortDefinition: 'Door de Europese voedselautoriteit goedgekeurde uitspraken over wat een supplement mag beweren.',
+    content: {
+      whatIsIt: `EFSA-claims zijn gezondheidsclaims die officieel zijn goedgekeurd door de European Food Safety Authority. In de EU mag een supplementfabrikant niet zomaar beweren dat zijn product "goed is voor je hart" of "je energie verhoogt" — die claim moet wetenschappelijk onderbouwd en goedgekeurd zijn.
+
+Het EU-register bevat alle goedgekeurde claims. Bijvoorbeeld: "Magnesium draagt bij tot vermindering van vermoeidheid" is goedgekeurd. "Ashwagandha verlaagt je cortisol" is dat niet — ashwagandha-claims staan nog "on hold" bij EFSA.`,
+      howItWorks: `Een fabrikant dient een dossier in bij EFSA met wetenschappelijk bewijs. EFSA beoordeelt of de claim voldoende onderbouwd is. Alleen goedgekeurde claims mogen op etiketten en in reclame gebruikt worden. Claims die zijn afgewezen mogen niet meer worden gemaakt.
+
+Er is een tussencategorie: "on hold" claims. Dit zijn claims voor botanische stoffen (zoals ashwagandha, rhodiola) die nog niet beoordeeld zijn. Fabrikanten mogen deze claims voorlopig nog gebruiken, maar er is geen garantie dat ze worden goedgekeurd.`,
+      whyItMatters: `Wanneer een supplement beweert dat het "je immuunsysteem versterkt" zonder dat die claim is goedgekeurd, is dat misleidend — en illegaal. Wij controleren bij elke beoordeling of de claims op het etiket en de website van de fabrikant overeenkomen met het EFSA-register. Een product dat ongefundeerde claims maakt, scoort lager op transparantie.`,
+    },
+    relatedSlugs: ['adh'],
+    relatedComparisons: ['/beste-magnesium', '/beste-ashwagandha', '/beste-vitamine-d'],
+    metaTitle: 'EFSA-claims: Welke Supplementclaims Zijn Écht Goedgekeurd?',
+    metaDescription: 'Niet elke claim op een supplementetiket is waar. EFSA keurt ze goed of af. Wat mag wel en niet? Uitgelegd.',
+  },
+  {
+    slug: 'derde-partij-testen',
+    term: 'Derde-partij Testen',
+    theme: 'supplementwetenschap',
+    shortDefinition: 'Onafhankelijke laboratoriumtesten die controleren of in een supplement zit wat er op het etiket staat.',
+    content: {
+      whatIsIt: `Derde-partij testen betekent dat een onafhankelijk laboratorium — niet de fabrikant zelf — controleert of een supplement daadwerkelijk bevat wat er op het etiket staat. Dit omvat de juiste dosering van actieve ingrediënten, afwezigheid van zware metalen, en controle op verontreinigingen.
+
+In tegenstelling tot medicijnen worden supplementen in de EU niet vooraf getest door een overheidsinstantie. De fabrikant is zelf verantwoordelijk voor de kwaliteit. Derde-partij testen zijn vrijwillig — en dat maakt ze juist waardevol als kwaliteitsindicator.`,
+      howItWorks: `Bekende onafhankelijke testorganisaties zijn NIZO (Nederland), Eurofins, NSF International en Informed Sport. Een fabrikant stuurt monsters op, het lab test op zuiverheid, potentie en contaminanten, en geeft een certificaat af.
+
+Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is weinig waard. Transparante merken publiceren de naam van het testlab en maken certificaten beschikbaar op hun website.`,
+      whyItMatters: `Een supplement kan een mooi etiket hebben met indrukwekkende doseringen, maar zonder onafhankelijke verificatie weet je niet of die doseringen kloppen. Derde-partij testen wegen mee in onze transparantie-score (20% van de totale beoordeling). Merken die hun testresultaten publiceren scoren hoger.`,
+    },
+    relatedSlugs: ['efsa-claims', 'biobeschikbaarheid'],
+    relatedComparisons: ['/beste-omega-3-supplement', '/beste-ashwagandha', '/beste-creatine'],
+    metaTitle: 'Derde-partij Testen: Hoe Weet Je Of Er Inzit Wat Erop Staat?',
+    metaDescription: 'Supplementen worden niet vooraf gecontroleerd. Derde-partij testen zijn de beste garantie. Wat moet je weten?',
+  },
+  {
+    slug: 'slaaphygiene',
+    term: 'Slaaphygiëne',
+    theme: 'leefstijl-herstel',
+    shortDefinition: 'Het geheel van gewoontes en omgevingsfactoren dat de kwaliteit van je slaap bepaalt.',
+    content: {
+      whatIsIt: `Slaaphygiëne is geen trendy term — het is de wetenschappelijke verzamelnaam voor alle factoren die bepalen hoe goed je slaapt. Van de temperatuur in je slaapkamer tot het tijdstip waarop je je laatste koffie drinkt — het zijn de gewoontes rondom slaap die samen bepalen of je 's ochtends uitgerust wakker wordt.
+
+Na 40 wordt slaaphygiëne belangrijker omdat je circadiaan ritme gevoeliger wordt voor verstoringen. Dezelfde gewoontes die op je 30e geen probleem waren (laat schermgebruik, wisselende bedtijden) kunnen na 40 merkbaar je slaapkwaliteit ondermijnen.`,
+      howItWorks: `De basis van goede slaaphygiëne bestaat uit vijf pijlers:
+
+Een vast slaap-waakritme — ook in het weekend. Dit synchroniseert je circadiaan ritme en verbetert de kwaliteit van je diepe slaap.
+
+Een koele, donkere slaapkamer — ideaal 16-18°C. Melatonineproductie werkt beter bij lage temperaturen.
+
+Geen schermen 60 minuten voor bedtijd — blauw licht onderdrukt je melatonineaanmaak met tot 50%.
+
+Geen cafeïne na 14:00 — de halfwaardetijd van cafeïne is 5-7 uur, langer dan de meeste mensen denken.
+
+Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af te schakelen.`,
+      whyItMatters: `Slaaphygiëne is de reden dat wij bij PerfectSupplement leefstijl op nummer één zetten en supplementen op nummer twee. Een magnesiumsupplement nemen terwijl je tot 23:30 op je telefoon zit is als een paracetamol nemen terwijl je met je hoofd tegen de muur slaat. Eerst het fundament, dan de aanvulling.`,
+    },
+    relatedSlugs: ['circadiaan-ritme'],
+    relatedComparisons: ['/beste-magnesium'],
+    metaTitle: 'Slaaphygiëne: De Gewoontes Die Je Slaap Maken of Breken',
+    metaDescription: 'Slaaphygiëne is de basis voor goede slaap. Na 40 wordt het belangrijker. De 5 pijlers uitgelegd.',
+  },
+  {
+    slug: 'eiwitbehoefte-na-40',
+    term: 'Eiwitbehoefte na 40',
+    theme: 'leefstijl-herstel',
+    shortDefinition: 'Na 40 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mannen eten te weinig.',
+    content: {
+      whatIsIt: `Vanaf je 40e begint je lichaam geleidelijk spiermassa te verliezen — een proces dat sarcopenie heet. Gemiddeld verlies je 3-8% spiermassa per decennium na je 30e, en dat versnelt na je 50e. Eiwit is de belangrijkste bouwsteen om dit tegen te gaan.
+
+De standaard ADH voor eiwit (0,8 gram per kilogram lichaamsgewicht) is vastgesteld als minimum om deficiëntie te voorkomen — niet als optimum voor spierbehoud. Onderzoekers adviseren voor mannen boven de 40 eerder 1,2 tot 1,6 gram per kilogram, vooral in combinatie met krachttraining.`,
+      howItWorks: `Na 40 treedt anabole resistentie op: je spieren reageren minder sterk op dezelfde hoeveelheid eiwit. Waar een 25-jarige met 20 gram eiwit per maaltijd een volledige spierproteïnesynthese-respons krijgt, heeft een 50-jarige daar 35-40 gram voor nodig.
+
+Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook om de verdeling over de dag. Drie maaltijden met elk 30-40 gram eiwit is effectiever dan één maaltijd met 90 gram en twee met 15 gram.`,
+      whyItMatters: `Eiwitinname is een van de eerste dingen die wij controleren via de Leefstijlcheck. Veel mannen 40+ eten een ontbijt van brood met jam (5g eiwit) en een lunch van een broodje kaas (12g eiwit) — ruim onder wat hun lichaam nodig heeft. Dit is een leefstijlaanpassing die meer impact heeft dan welk supplement dan ook. Quick win: begin de dag met een eiwitrijk ontbijt (eieren, kwark, noten).`,
+    },
+    relatedSlugs: ['slaaphygiene'],
+    relatedComparisons: ['/beste-creatine'],
+    metaTitle: 'Eiwitbehoefte na 40: Hoeveel Heb Je Écht Nodig?',
+    metaDescription: 'Na 40 heb je meer eiwit nodig dan je denkt. De wetenschap achter spierbehoud, simpel uitgelegd.',
+  },
   {
     slug: 'healthspan',
     term: 'Healthspan',
