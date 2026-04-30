@@ -1,12 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import Container from '@/components/layout/Container'
-import {
-  kennisbankTerms,
-  themeLabels,
-  getTermsByTheme,
-  getAllThemes,
-} from '@/data/kennisbank'
+import { themeLabels, getTermsByTheme, getAllThemes } from '@/data/kennisbank'
 
 export const metadata: Metadata = {
   title: 'Kennisbank — Begrippen & Concepten | PerfectSupplement',
@@ -21,14 +16,6 @@ const NOISE_SVG =
   "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
 
 export default function KennisbankPage() {
-  const themesWithTerms = getAllThemes()
-    .map((theme) => ({
-      theme,
-      config: themeLabels[theme],
-      terms: getTermsByTheme(theme),
-    }))
-    .filter((t) => t.terms.length > 0)
-
   return (
     <>
       <script
@@ -86,82 +73,54 @@ export default function KennisbankPage() {
         </Container>
       </section>
 
-      {/* ── THEMA SECTIES ──────────────────────────────────────────── */}
-      {themesWithTerms.map(({ theme, config, terms }) => (
-        <section key={theme} className="pb-16 md:pb-20" aria-label={config.title}>
-          <Container>
-            {/* Thema-header — full width */}
-            <div
-              className={`relative overflow-hidden rounded-2xl bg-gradient-to-br p-7 md:p-9 ${config.colorClasses.bg}`}
-            >
-              <div
-                className="pointer-events-none absolute inset-0 opacity-[0.035]"
-                aria-hidden
-                style={{ backgroundImage: NOISE_SVG }}
-              />
-              <div className="relative">
-                <span
-                  className={`flex h-11 w-11 items-center justify-center rounded-xl text-lg ring-1 ${config.colorClasses.accent}`}
-                  aria-hidden
-                >
-                  {config.icon}
-                </span>
-                <h2 className="mt-5 text-xl font-semibold tracking-tight text-white md:text-2xl">
-                  {config.title}
-                </h2>
-                <p
-                  className={`mt-2 max-w-lg text-sm leading-relaxed ${config.colorClasses.tekst}`}
-                >
-                  {config.description}
-                </p>
-                <span className="mt-4 block text-xs font-medium text-white/50">
-                  {terms.length} {terms.length === 1 ? 'begrip' : 'begrippen'}
-                </span>
-              </div>
-            </div>
-
-            {/* Term-kaarten grid — zelfde stijl als BlogArtikelKaart */}
-            <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {terms.map((term) => (
+      {/* ── THEMA GRID ─────────────────────────────────────────────── */}
+      <section className="pb-20 md:pb-28" aria-label="Thema's">
+        <Container>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {getAllThemes().map((theme) => {
+              const config = themeLabels[theme]
+              const aantal = getTermsByTheme(theme).length
+              return (
                 <Link
-                  key={term.slug}
-                  href={`/kennisbank/${term.slug}`}
-                  className="group flex min-h-0 flex-col rounded-2xl border border-stone-200/60 bg-white p-7 transition duration-300 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
+                  key={theme}
+                  href={`/kennisbank/${theme}`}
+                  className={`group relative flex min-h-[200px] flex-col overflow-hidden rounded-2xl bg-gradient-to-br p-7 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl md:min-h-[220px] md:p-9 ${config.colorClasses.bg}`}
                 >
-                  <span
-                    className={`inline-flex self-start items-center rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-wider ring-1 ring-inset ${
-                      theme === 'lichaam-veroudering'
-                        ? 'bg-rose-50 text-rose-700 ring-rose-200/50'
-                        : theme === 'supplementwetenschap'
-                          ? 'bg-sky-50 text-sky-700 ring-sky-200/50'
-                          : theme === 'longevity'
-                            ? 'bg-amber-50 text-amber-700 ring-amber-200/50'
-                            : 'bg-emerald-50 text-emerald-700 ring-emerald-200/50'
-                    }`}
-                  >
-                    {config.title}
-                  </span>
-                  <h3 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-stone-900 md:text-xl">
-                    {term.term}
-                  </h3>
-                  <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-stone-500">
-                    {term.shortDefinition}
-                  </p>
-                  <div className="mt-auto flex items-center gap-2 pt-6 text-xs font-semibold uppercase tracking-[0.15em] text-stone-800">
-                    <span>Lees meer</span>
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-[0.035]"
+                    aria-hidden
+                    style={{ backgroundImage: NOISE_SVG }}
+                  />
+                  <div className="relative flex flex-1 flex-col">
                     <span
-                      className="transition-transform duration-300 group-hover:translate-x-1"
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl text-lg ring-1 ${config.colorClasses.accent}`}
                       aria-hidden
                     >
-                      →
+                      {config.icon}
                     </span>
+                    <div className="mt-auto">
+                      <h2 className="text-xl font-semibold tracking-tight text-white md:text-2xl">
+                        {config.title}
+                      </h2>
+                      <p className={`mt-2 text-sm leading-relaxed ${config.colorClasses.tekst}`}>
+                        {config.description}
+                      </p>
+                      <div className="mt-6 flex items-center justify-between">
+                        <span className="text-xs font-medium text-white/50">
+                          {aantal} {aantal === 1 ? 'begrip' : 'begrippen'}
+                        </span>
+                        <span className="text-sm font-medium text-white/80 transition-transform duration-300 group-hover:translate-x-1">
+                          →
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </Link>
-              ))}
-            </div>
-          </Container>
-        </section>
-      ))}
+              )
+            })}
+          </div>
+        </Container>
+      </section>
 
       {/* ── CTA ────────────────────────────────────────────────────── */}
       <section className="py-20 md:py-28" aria-label="Leefstijlcheck">
