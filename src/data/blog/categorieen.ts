@@ -24,7 +24,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     metaDescription:
       "Alles over cortisol, chronische spanning en herstel — onderbouwde artikelen voor mannen boven de 40.",
     kleur: {
-      bg: "from-amber-900/90 via-stone-900 to-stone-950",
+      bg: "from-amber-800 to-amber-900",
       accent: "bg-amber-500/20 ring-amber-400/20",
       tekst: "text-amber-200",
     },
@@ -38,7 +38,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     metaDescription:
       "Slaaphygiëne, melatonine en slaaparchitectuur — praktische artikelen voor mannen boven de 40.",
     kleur: {
-      bg: "from-sky-900/80 via-slate-900 to-stone-950",
+      bg: "from-slate-700 to-slate-800",
       accent: "bg-sky-500/20 ring-sky-400/20",
       tekst: "text-sky-200",
     },
@@ -53,7 +53,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     metaDescription:
       "Testosteron, vitamine D en mitochondriale functie — onderbouwde artikelen voor mannen boven de 40.",
     kleur: {
-      bg: "from-emerald-900/80 via-stone-900 to-stone-950",
+      bg: "from-emerald-800 to-emerald-900",
       accent: "bg-emerald-500/20 ring-emerald-400/20",
       tekst: "text-emerald-200",
     },
@@ -67,7 +67,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     metaDescription:
       "Werking, vormen en dosering van supplementen — inhoudelijk uitgelegd voor mannen boven de 40.",
     kleur: {
-      bg: "from-violet-900/70 via-stone-900 to-stone-950",
+      bg: "from-stone-700 to-stone-800",
       accent: "bg-violet-500/20 ring-violet-400/20",
       tekst: "text-violet-200",
     },
