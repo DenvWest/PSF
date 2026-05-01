@@ -35,7 +35,7 @@ export const themeLabels: Record<KennisbankTheme, {
     description: 'Wat er fysiologisch verandert na je 40e — en waarom dat niet het einde is.',
     icon: '🧬',
     colorClasses: {
-      bg: 'from-rose-800 to-rose-900',
+      bg: 'from-rose-700 to-rose-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-rose-200/80',
     },
@@ -45,7 +45,7 @@ export const themeLabels: Record<KennisbankTheme, {
     description: 'De basis die op orde moet zijn vóórdat supplementen zin hebben.',
     icon: '🌿',
     colorClasses: {
-      bg: 'from-emerald-800 to-emerald-900',
+      bg: 'from-emerald-700 to-emerald-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-emerald-200/80',
     },
@@ -55,7 +55,7 @@ export const themeLabels: Record<KennisbankTheme, {
     description: 'De begrippen die je nodig hebt om supplementen eerlijk te beoordelen.',
     icon: '🔬',
     colorClasses: {
-      bg: 'from-sky-800 to-sky-900',
+      bg: 'from-sky-700 to-sky-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-sky-200/80',
     },
@@ -65,7 +65,7 @@ export const themeLabels: Record<KennisbankTheme, {
     description: 'Het grotere plaatje: niet langer leven, maar langer goed leven.',
     icon: '⏳',
     colorClasses: {
-      bg: 'from-amber-800 to-amber-900',
+      bg: 'from-amber-700 to-amber-800',
       accent: 'bg-white/10 ring-white/20',
       tekst: 'text-amber-200/80',
     },
