@@ -14,7 +14,10 @@ import {
 } from "@/features/omega3/data/wat-is-omega-3";
 
 export function generateMetadata() {
-    return buildArticlePageMetadata("wat-is-omega-3");
+    return {
+        ...buildArticlePageMetadata("wat-is-omega-3"),
+        alternates: { canonical: "https://perfectsupplement.nl/wat-is-omega-3" },
+    };
 }
 
 const relatedPages = [

@@ -17,7 +17,10 @@ import {
 } from "@/features/omega3/data/omega-3-vergelijken";
 
 export function generateMetadata() {
-    return buildArticlePageMetadata("omega-3-vergelijken");
+    return {
+        ...buildArticlePageMetadata("omega-3-vergelijken"),
+        alternates: { canonical: "https://perfectsupplement.nl/omega-3-vergelijken" },
+    };
 }
 
 function splitSpec(spec: string): { label: string; value: string } {

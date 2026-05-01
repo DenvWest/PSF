@@ -14,7 +14,10 @@ import {
 } from "@/features/omega3/data/waar-let-je-op-bij-omega-3";
 
 export function generateMetadata() {
-    return buildArticlePageMetadata("waar-let-je-op-bij-omega-3");
+    return {
+        ...buildArticlePageMetadata("waar-let-je-op-bij-omega-3"),
+        alternates: { canonical: "https://perfectsupplement.nl/waar-let-je-op-bij-omega-3" },
+    };
 }
 
 const epaSection = deepDiveSections[0];

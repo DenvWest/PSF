@@ -7,7 +7,10 @@ import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import Link from "next/link";
 
 export function generateMetadata() {
-    return buildArticlePageMetadata("magnesium-vergelijken");
+    return {
+        ...buildArticlePageMetadata("magnesium-vergelijken"),
+        alternates: { canonical: "https://perfectsupplement.nl/magnesium-vergelijken" },
+    };
 }
 
 const products = [
@@ -264,6 +267,24 @@ export default function MagnesiumVergelijkenPage() {
                         ))}
                     </div>
                 </section>
+
+                <div className="mt-12 rounded-2xl border border-stone-200 bg-stone-50 p-8 text-center">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-amber-700 mb-3">
+                        Persoonlijk advies
+                    </p>
+                    <h2 className="text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl mb-3">
+                        Welk magnesium past bij jou?
+                    </h2>
+                    <p className="text-base text-stone-500 leading-relaxed mb-6 max-w-xl mx-auto">
+                        Doe de gratis intake en ontdek welke supplementen het beste aansluiten bij jouw situatie — op basis van slaap, stress, energie en meer.
+                    </p>
+                    <Link
+                        href="/intake"
+                        className="inline-block rounded-xl bg-[#5A8F6A] px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-[#4A7F5A]"
+                    >
+                        Doe de gratis Leefstijlcheck
+                    </Link>
+                </div>
             </div>
         </Container>
             </article>

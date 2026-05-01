@@ -13,7 +13,10 @@ import {
 } from "@/features/supplementen/data/supplement-kiezen-waar-op-letten";
 
 export function generateMetadata() {
-    return buildArticlePageMetadata("supplement-kiezen-waar-op-letten");
+    return {
+        ...buildArticlePageMetadata("supplement-kiezen-waar-op-letten"),
+        alternates: { canonical: "https://perfectsupplement.nl/supplement-kiezen-waar-op-letten" },
+    };
 }
 
 const relatedPages = [
