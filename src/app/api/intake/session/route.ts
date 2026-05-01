@@ -267,6 +267,7 @@ export async function POST(request: NextRequest) {
         profileLabel: profile,
         primaryDomain: getAdvicePrimaryDomain(scores),
         domainScores: scores,
+        urgencyLevel: urgency,
       });
     } catch (nurtureErr) {
       console.error(

@@ -14,6 +14,7 @@ type NurtureEmailRow = {
   primary_domain: string | null;
   domain_scores: unknown;
   session_id: string | null;
+  urgency_level: string | null;
 };
 
 function parseDomainScores(raw: unknown): Record<string, number> {
@@ -85,12 +86,18 @@ export async function runPendingNurtureEmails(): Promise<{
         : "sleep";
 
     try {
+      const urgencyLevel =
+        typeof mail.urgency_level === "string" && mail.urgency_level.trim()
+          ? mail.urgency_level.trim()
+          : "moderate";
+
       const { subject, html } = getNurtureEmailContent(
         {
           sequenceDay: mail.sequence_day,
           profileLabel,
           primaryDomain,
           domainScores: parseDomainScores(mail.domain_scores),
+          urgencyLevel,
         },
         {
           recipientEmail: email,

@@ -13,6 +13,7 @@ interface NurtureScheduleInput {
   profileLabel: string;
   primaryDomain: string;
   domainScores: DomainScores;
+  urgencyLevel: string;
 }
 
 export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
@@ -35,6 +36,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     profile_label: input.profileLabel,
     primary_domain: input.primaryDomain,
     domain_scores: input.domainScores,
+    urgency_level: input.urgencyLevel,
     status: "pending" as const,
   }));
 
@@ -48,6 +50,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
       profileLabel: input.profileLabel,
       primaryDomain: input.primaryDomain,
       domainScores: domainScoresRecord,
+      urgencyLevel: input.urgencyLevel,
     },
     {
       recipientEmail: input.email,
@@ -102,6 +105,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     profile_label: input.profileLabel,
     primary_domain: input.primaryDomain,
     domain_scores: input.domainScores,
+    urgency_level: input.urgencyLevel,
     status: resendId ? ("sent" as const) : ("failed" as const),
     sent_at: resendId ? now.toISOString() : null,
     resend_id: resendId ?? null,

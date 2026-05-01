@@ -3,6 +3,7 @@ export interface NurtureEmailData {
   primaryDomain: string;
   domainScores: Record<string, number>;
   sequenceDay: number;
+  urgencyLevel?: string;
 }
 
 export type NurtureEmailDispatchContext = {

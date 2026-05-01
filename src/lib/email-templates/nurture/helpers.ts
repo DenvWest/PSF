@@ -157,3 +157,63 @@ export function day21SupplementChoice(params: {
 }
 
 export { escapeHtml, nurtureCtaButton };
+
+// ============================================================
+// Gepersonaliseerde HTML-blokken voor profielgestuurde mails
+// ============================================================
+
+import type { NurtureBlock, DomainSupplementTip } from "@/data/nurture-content";
+
+export function renderPersonalizedRows(
+  block: NurtureBlock,
+  supplementTip: DomainSupplementTip | null,
+  intakeUrl: string,
+): string {
+  const bodyHtml = block.bodyParagraphs
+    .map(
+      (p) =>
+        `<p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">${escapeHtml(p)}</p>`,
+    )
+    .join("\n");
+
+  const tipHtml = `
+    <div style="background:#f5f5f0;border-left:3px solid #2d4a3e;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;">
+      <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(block.tip)}</p>
+    </div>`;
+
+  const supplementHtml = supplementTip
+    ? `
+    <div style="margin:18px 0;padding:14px 18px;border:1px solid #e0e0d8;border-radius:4px;background:#fafaf7;">
+      <p style="margin:0 0 6px 0;font-size:13px;color:#666;text-transform:uppercase;letter-spacing:.04em;font-weight:600;">Supplement-tip</p>
+      <p style="margin:0 0 8px 0;font-size:15px;line-height:1.6;color:#333333;">${escapeHtml(supplementTip.intro)}</p>
+      <p style="margin:0 0 8px 0;font-size:15px;line-height:1.6;color:#333333;"><strong>${escapeHtml(supplementTip.supplement.name)}</strong> — ${escapeHtml(supplementTip.supplement.reason)}</p>
+      <a href="https://www.perfectsupplement.nl${escapeHtml(supplementTip.supplement.url)}" style="font-size:14px;color:#2d4a3e;text-decoration:underline;">Vergelijk ${escapeHtml(supplementTip.supplement.name)} supplementen →</a>
+    </div>`
+    : "";
+
+  const ctaUrl = block.cta.url.startsWith("http")
+    ? block.cta.url
+    : `https://www.perfectsupplement.nl${block.cta.url}`;
+
+  return `
+        <tr>
+          <td style="padding:8px 28px 16px 28px;">
+            <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:22px;line-height:1.25;color:#1a1a1a;font-weight:400;">
+              ${escapeHtml(block.subject)}
+            </h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 28px 10px 28px;">
+            <p style="margin:0 0 4px 0;font-size:16px;line-height:1.6;color:#333333;">${escapeHtml(block.greeting)}</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 28px 28px 28px;">
+            ${bodyHtml}
+            ${tipHtml}
+            ${supplementHtml}
+            ${nurtureCtaButton(ctaUrl, block.cta.text)}
+          </td>
+        </tr>`;
+}
