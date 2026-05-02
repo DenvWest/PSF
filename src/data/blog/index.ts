@@ -12,6 +12,7 @@ import { melatonineWanneerWelNietData } from "./melatonine-wanneer-wel-niet";
 import { vitamineDTekortHerkennenData } from "./vitamine-d-tekort-herkennen";
 import { testosteronEnEnergieNa40Data } from "./testosteron-en-energie-na-40";
 import { omega3ConcentratieEnergieData } from "./omega-3-concentratie-energie";
+import { slaapritmeHerstellenData } from "./slaapritme-herstellen";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -31,6 +32,7 @@ export const alleArtikelen: BlogArtikel[] = [
   vitamineDTekortHerkennenData,
   testosteronEnEnergieNa40Data,
   omega3ConcentratieEnergieData,
+  slaapritmeHerstellenData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>
