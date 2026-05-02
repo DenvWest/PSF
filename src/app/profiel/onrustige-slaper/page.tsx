@@ -365,15 +365,36 @@ export default function OnrustigeSlaperPage() {
               </div>
             </section>
 
+            {/* Slaapgids Download */}
+            <section className="mt-12 p-8 bg-green-50 rounded-2xl border border-green-200 text-center">
+              <p className="text-sm font-semibold uppercase tracking-wider text-green-700 mb-2">
+                Gratis Slaapgids
+              </p>
+              <h2 className="font-serif text-2xl font-bold text-gray-900">
+                Al de Leefstijlcheck gedaan?
+              </h2>
+              <p className="mt-3 text-gray-600 max-w-lg mx-auto">
+                Download je persoonlijke slaapgids met een 7-dagen protocol, doseerschema&apos;s en
+                de fouten die je slaap saboteren.
+              </p>
+              <a
+                href="/downloads/slaapgids-perfectsupplement.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
+              >
+                Download de Slaapgids (PDF) →
+              </a>
+            </section>
+
             {/* CTA Blok */}
             <section className="py-16">
               <div className="bg-emerald-50 rounded-2xl p-8 md:p-12 text-center">
                 <h2 className="font-[var(--font-heading)] text-2xl md:text-3xl text-slate-900">
-                  Ontdek Wat Jouw Slaap Verstoort
+                  Nog niet de Leefstijlcheck gedaan?
                 </h2>
                 <p className="text-slate-600 mt-4 leading-relaxed max-w-xl mx-auto">
-                  De Leefstijlcheck meet je slaap als onderdeel van 6 gezondheidsdomeinen. In 3
-                  minuten weet je waar je slaapprobleem vandaan komt — en wat je eraan kunt doen.
+                  Ontdek in 3 minuten hoe je scoort op slaap, stress en 4 andere domeinen.
                 </p>
                 <Link
                   href="/intake"
