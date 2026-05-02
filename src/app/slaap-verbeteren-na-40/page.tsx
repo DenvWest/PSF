@@ -562,15 +562,11 @@ export default function SlaapVerbeterenNa40Page() {
               <section id="verder-lezen" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">Verder Lezen</h2>
                 <p className="mt-4 text-gray-700">
-                  We werken aan een serie verdiepende artikelen over slaap en herstel. De onderstaande
-                  blogs verschijnen de komende weken.
+                  Verdiepende artikelen over slaap en herstel.
                 </p>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200 opacity-75">
-                    <span className="inline-block text-xs font-semibold uppercase tracking-wider text-stone-500 bg-stone-200 px-2 py-0.5 rounded mb-3">
-                      Binnenkort beschikbaar
-                    </span>
+                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">
                       Hoe magnesium je slaap verbetert — en welke vorm het snelst werkt.
                     </p>
@@ -582,10 +578,7 @@ export default function SlaapVerbeterenNa40Page() {
                     </Link>
                   </div>
 
-                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200 opacity-75">
-                    <span className="inline-block text-xs font-semibold uppercase tracking-wider text-stone-500 bg-stone-200 px-2 py-0.5 rounded mb-3">
-                      Binnenkort beschikbaar
-                    </span>
+                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">
                       Cortisol wekt je om 3 uur. Hier is waarom — en wat je eraan doet.
                     </p>
@@ -597,10 +590,7 @@ export default function SlaapVerbeterenNa40Page() {
                     </Link>
                   </div>
 
-                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200 opacity-75">
-                    <span className="inline-block text-xs font-semibold uppercase tracking-wider text-stone-500 bg-stone-200 px-2 py-0.5 rounded mb-3">
-                      Binnenkort beschikbaar
-                    </span>
+                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">
                       Je slaapritme herstellen in 7 dagen? Het kan — met dit protocol.
                     </p>
@@ -612,10 +602,7 @@ export default function SlaapVerbeterenNa40Page() {
                     </Link>
                   </div>
 
-                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200 opacity-75">
-                    <span className="inline-block text-xs font-semibold uppercase tracking-wider text-stone-500 bg-stone-200 px-2 py-0.5 rounded mb-3">
-                      Binnenkort beschikbaar
-                    </span>
+                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">
                       Melatonine alleen is niet genoeg na 40. Dit is waarom — en wat beter werkt.
                     </p>
