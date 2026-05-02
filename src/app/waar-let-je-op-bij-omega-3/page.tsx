@@ -16,7 +16,7 @@ import {
 export function generateMetadata() {
     return {
         ...buildArticlePageMetadata("waar-let-je-op-bij-omega-3"),
-        alternates: { canonical: "https://perfectsupplement.nl/waar-let-je-op-bij-omega-3" },
+        alternates: { canonical: "/waar-let-je-op-bij-omega-3" },
     };
 }
 

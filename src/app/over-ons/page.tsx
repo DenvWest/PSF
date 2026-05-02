@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Over PerfectSupplement — Wie We Zijn | PerfectSupplement",
   description:
     "PerfectSupplement is opgericht door Dennis van Westbroek, fysiotherapeut en leefstijlcoach. Onafhankelijke supplementvergelijking voor mannen 40+.",
-  alternates: { canonical: "https://perfectsupplement.nl/over-ons" },
+  alternates: { canonical: "/over-ons" },
 };
 
 const structuredData = {

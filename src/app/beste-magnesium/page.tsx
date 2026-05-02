@@ -20,7 +20,7 @@ const PAGE_URL = "https://perfectsupplement.nl/beste-magnesium";
 export const metadata: Metadata = {
   title: magnesiumData.seoTitle,
   description: magnesiumData.seoDescription,
-  alternates: { canonical: PAGE_URL },
+  alternates: { canonical: "/beste-magnesium" },
   openGraph: {
     title: magnesiumData.seoTitle,
     description: magnesiumData.seoDescription,

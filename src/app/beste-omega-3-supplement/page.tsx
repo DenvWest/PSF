@@ -20,7 +20,7 @@ const PAGE_URL = "https://perfectsupplement.nl/beste-omega-3-supplement";
 export const metadata: Metadata = {
   title: omega3Data.seoTitle,
   description: omega3Data.seoDescription,
-  alternates: { canonical: PAGE_URL },
+  alternates: { canonical: "/beste-omega-3-supplement" },
   openGraph: {
     title: omega3Data.seoTitle,
     description: omega3Data.seoDescription,

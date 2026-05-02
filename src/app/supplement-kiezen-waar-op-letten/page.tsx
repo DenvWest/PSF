@@ -15,7 +15,7 @@ import {
 export function generateMetadata() {
     return {
         ...buildArticlePageMetadata("supplement-kiezen-waar-op-letten"),
-        alternates: { canonical: "https://perfectsupplement.nl/supplement-kiezen-waar-op-letten" },
+        alternates: { canonical: "/supplement-kiezen-waar-op-letten" },
     };
 }
 

@@ -19,7 +19,7 @@ import {
 export function generateMetadata() {
     return {
         ...buildArticlePageMetadata("omega-3-vergelijken"),
-        alternates: { canonical: "https://perfectsupplement.nl/omega-3-vergelijken" },
+        alternates: { canonical: "/omega-3-vergelijken" },
     };
 }
 

@@ -9,7 +9,7 @@ import Link from "next/link";
 export function generateMetadata() {
     return {
         ...buildArticlePageMetadata("magnesium-vergelijken"),
-        alternates: { canonical: "https://perfectsupplement.nl/magnesium-vergelijken" },
+        alternates: { canonical: "/magnesium-vergelijken" },
     };
 }
 
