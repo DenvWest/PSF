@@ -6,6 +6,7 @@ import { ademhalingTegenStressData } from "./ademhaling-tegen-stress";
 import { stressWerkGrenzenStellenData } from "./stress-werk-grenzen-stellen";
 import { slaaphygieneMannen40PlusData } from "./slaaphygiene-mannen-40-plus";
 import { magnesiumEnSlaapkwaliteitData } from "./magnesium-en-slaapkwaliteit";
+import { magnesiumEnSlaapData } from "./magnesium-en-slaap";
 import { melatonineWanneerWelNietData } from "./melatonine-wanneer-wel-niet";
 import { vitamineDTekortHerkennenData } from "./vitamine-d-tekort-herkennen";
 import { testosteronEnEnergieNa40Data } from "./testosteron-en-energie-na-40";
@@ -23,6 +24,7 @@ export const alleArtikelen: BlogArtikel[] = [
   stressWerkGrenzenStellenData,
   slaaphygieneMannen40PlusData,
   magnesiumEnSlaapkwaliteitData,
+  magnesiumEnSlaapData,
   melatonineWanneerWelNietData,
   vitamineDTekortHerkennenData,
   testosteronEnEnergieNa40Data,
