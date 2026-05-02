@@ -44,9 +44,7 @@ export function nurtureDay0Email(
     data.urgencyLevel ?? "moderate",
   );
 
-  const showSleepGuide =
-    data.profileLabel === "Onrustige Slaper" ||
-    (data.domainScores?.sleep_score ?? Infinity) < 50;
+  const showSleepGuide = data.profileLabel === "Onrustige Slaper";
 
   const inner =
     renderPersonalizedRows(blocks, supplementTip, intakeUrl) +
