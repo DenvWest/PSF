@@ -1,4 +1,5 @@
 import { cortisolVerlagenData } from "./cortisol-verlagen-natuurlijk";
+import { cortisolEnSlaapData } from "./cortisol-en-slaap";
 import { ashwagandhaData } from "./ashwagandha-werking-mannen";
 import { slaapVerbeterenData } from "./slaap-verbeteren-40-plus";
 import { energieVerhogenData } from "./energie-verhogen-natuurlijk";
@@ -17,6 +18,7 @@ import type { BlogArtikel, BlogCategorie } from "@/types/blog";
 
 export const alleArtikelen: BlogArtikel[] = [
   cortisolVerlagenData,
+  cortisolEnSlaapData,
   ashwagandhaData,
   slaapVerbeterenData,
   energieVerhogenData,
