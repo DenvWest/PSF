@@ -9,6 +9,7 @@ import { slaaphygieneMannen40PlusData } from "./slaaphygiene-mannen-40-plus";
 import { magnesiumEnSlaapkwaliteitData } from "./magnesium-en-slaapkwaliteit";
 import { magnesiumEnSlaapData } from "./magnesium-en-slaap";
 import { melatonineWanneerWelNietData } from "./melatonine-wanneer-wel-niet";
+import { melatonineNa40Data } from "./melatonine-na-40";
 import { vitamineDTekortHerkennenData } from "./vitamine-d-tekort-herkennen";
 import { testosteronEnEnergieNa40Data } from "./testosteron-en-energie-na-40";
 import { omega3ConcentratieEnergieData } from "./omega-3-concentratie-energie";
@@ -29,6 +30,7 @@ export const alleArtikelen: BlogArtikel[] = [
   magnesiumEnSlaapkwaliteitData,
   magnesiumEnSlaapData,
   melatonineWanneerWelNietData,
+  melatonineNa40Data,
   vitamineDTekortHerkennenData,
   testosteronEnEnergieNa40Data,
   omega3ConcentratieEnergieData,
