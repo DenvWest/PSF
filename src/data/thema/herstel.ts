@@ -128,6 +128,14 @@ export const herstelThema: ThemaPageData = {
         comparisonLink: "/beste-zink",
         icon: "🔩",
       },
+      {
+        name: "Eiwitpoeder",
+        reason:
+          "Eiwitten dragen bij aan de groei en instandhouding van spiermassa. Na je 40e heb je meer eiwit nodig voor hetzelfde herstel — een eiwitpoeder vult dat gat efficiënt aan.",
+        guideLink: "/beste-eiwitpoeder",
+        comparisonLink: "/beste-eiwitpoeder",
+        icon: "💪",
+      },
     ],
   },
 

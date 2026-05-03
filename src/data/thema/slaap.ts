@@ -108,6 +108,14 @@ export const slaapThema: ThemaPageData = {
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
       },
+      {
+        name: "Melatonine",
+        reason:
+          "Je lichaam maakt minder melatonine aan naarmate je ouder wordt. Bij inslaapproblemen zonder stress als oorzaak kan melatonine helpen je slaap-waakritme te herstellen.",
+        guideLink: "/supplementen/melatonine",
+        comparisonLink: "/beste-melatonine",
+        icon: "🌙",
+      },
     ],
   },
 

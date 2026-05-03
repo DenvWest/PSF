@@ -116,6 +116,14 @@ export const energieThema: ThemaPageData = {
         comparisonLink: "/beste-creatine",
         icon: "💪",
       },
+      {
+        name: "Eiwitpoeder",
+        reason:
+          "Na je 40e daalt de eiwitsynthese. Voldoende eiwit is essentieel voor stabiele energie overdag — vooral als je traint of weinig eiwit via voeding binnenkrijgt.",
+        guideLink: "/beste-eiwitpoeder",
+        comparisonLink: "/beste-eiwitpoeder",
+        icon: "💪",
+      },
     ],
   },
 
