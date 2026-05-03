@@ -259,7 +259,7 @@ export default function IntakeResults({
         <FoundationStack excludeIds={excludeIds} />
       ) : null}
 
-      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.ashwagandha_signal || deficiencySignals.creatine_signal || zinkSignal) && (
+      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.ashwagandha_signal || deficiencySignals.creatine_signal || deficiencySignals.melatonine_signal || zinkSignal) && (
         <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
           <div className="mb-3 flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3A7D5C18] text-base">
@@ -311,6 +311,17 @@ export default function IntakeResults({
               >
                 <span className="font-medium text-[#1a1a1a]">
                   Bekijk onze creatine vergelijking
+                </span>
+                <span className="text-[#999]">→</span>
+              </a>
+            )}
+            {deficiencySignals.melatonine_signal && (
+              <a
+                href="/beste-melatonine"
+                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
+              >
+                <span className="font-medium text-[#1a1a1a]">
+                  Bekijk onze melatonine vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
               </a>

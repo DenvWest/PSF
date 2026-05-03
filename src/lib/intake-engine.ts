@@ -72,6 +72,7 @@ export type DeficiencySignals = {
   cortisol_risk: boolean;
   ashwagandha_signal: boolean;
   creatine_signal: boolean;
+  melatonine_signal: boolean;
 };
 
 export function getDeficiencySignals(
@@ -89,12 +90,15 @@ export function getDeficiencySignals(
     (scores.recovery_score < 50 && mov >= 3) ||
     profile.name === "Stille Slijter" ||
     overtrainerPattern;
+  const sleepQuality = getAnswer(answers, "SLP_QUAL");
+  const melatonine_signal = sleepQuality <= 2 && stressFrequency >= 3;
   return {
     omega3_deficiency: s.omega3Deficiency,
     magnesium_signal: s.magnesiumSignal,
     cortisol_risk: s.cortisolRisk,
     ashwagandha_signal: stressFrequency <= 2 && stressRecovery <= 2,
     creatine_signal,
+    melatonine_signal,
   };
 }
 
@@ -384,6 +388,20 @@ export function getAdvice(
       longTerm,
       "Koppel een vast slaapritme aan een korte ademhalingsroutine in de avond.",
       5,
+    );
+  }
+
+  // Melatonine bij slaapprobleem zonder stress-component
+  if (scores.sleep_score < 50 && scores.stress_score >= 50) {
+    pushRankedSupplement(
+      supplements,
+      {
+        name: "Melatonine",
+        reason:
+          "Je slaap scoort laag, maar stress lijkt niet de hoofdoorzaak. Melatonine kan helpen je slaap-waakritme te herstellen.",
+        link: "/beste-melatonine",
+      },
+      8,
     );
   }
 

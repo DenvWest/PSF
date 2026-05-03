@@ -4,7 +4,8 @@ export type DeficiencySignalKey =
   | "omega3_deficiency"
   | "magnesium_signal"
   | "cortisol_risk"
-  | "ashwagandha_signal";
+  | "ashwagandha_signal"
+  | "melatonine_signal";
 
 export type SupplementTriggerClause = {
   deficiencySignal?: DeficiencySignalKey;
@@ -91,6 +92,19 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     hasComparison: true,
     affiliateUrl: "/beste-zink",
     triggers: { anyOf: [] },
+  },
+  {
+    id: "melatonine",
+    name: "Melatonine",
+    reason:
+      "Je slaap scoort laag terwijl stress minder dominant lijkt. Melatonine kan helpen je slaap-waakritme te herstellen.",
+    priority: 5,
+    domains: ["Slaap"],
+    hasComparison: true,
+    affiliateUrl: "/beste-melatonine",
+    triggers: {
+      anyOf: [{ deficiencySignal: "melatonine_signal" }],
+    },
   },
   {
     id: "creatine",
