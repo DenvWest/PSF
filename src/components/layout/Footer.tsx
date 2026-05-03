@@ -16,6 +16,8 @@ const vergelijkingLinks = [
     { href: "/beste-omega-3-supplement", label: "Beste omega-3" },
     { href: "/beste-vitamine-d", label: "Beste vitamine D" },
     { href: "/beste-zink", label: "Beste zink" },
+    { href: "/beste-melatonine", label: "Beste melatonine" },
+    { href: "/beste-eiwitpoeder", label: "Beste eiwitpoeder" },
 ];
 
 const infoLinks = [

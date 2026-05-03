@@ -4,6 +4,8 @@ import { ashwagandhaData } from "@/data/supplements/ashwagandha";
 import { vitamineDData } from "@/data/supplements/vitamine-d";
 import { creatineData } from "@/data/supplements/creatine";
 import { zinkData } from "@/data/supplements/zink";
+import { melatonineData } from "@/data/supplements/melatonine";
+import { eiwitpoederData } from "@/data/supplements/eiwitpoeder";
 
 export type ThemaTag = "slaap" | "stress" | "energie" | "herstel";
 
@@ -32,6 +34,8 @@ export const HUB_COMPARISON_TAGLINES: Record<string, string> = {
   "vitamine-d": "D3, K2-combo’s en wat het etiket écht zegt.",
   creatine: "Monohydraat, micronized en prijs per dosering.",
   zink: "Bisglycinaat, picolinaat en opname — praktisch gekozen.",
+  melatonine: "Puur, complexen en dosering — eerlijk naast elkaar.",
+  eiwitpoeder: "Whey, isolaat en plantaardig — eiwitgehalte en prijs.",
 };
 
 export const CATALOG: CatalogEntry[] = [
@@ -105,6 +109,28 @@ export const CATALOG: CatalogEntry[] = [
     comparisonHref: "/beste-zink",
     comingSoon: false,
     icon: "🛡️",
+  },
+  {
+    slug: "melatonine",
+    name: "Melatonine",
+    wiifm: "Puur, time-release en slaapcomplexen",
+    themas: ["slaap"],
+    topScore: maxProductScore(melatonineData.products),
+    guideHref: "/supplementen/melatonine",
+    comparisonHref: "/beste-melatonine",
+    comingSoon: false,
+    icon: "🌙",
+  },
+  {
+    slug: "eiwitpoeder",
+    name: "Eiwitpoeder",
+    wiifm: "Whey, isolaat en plantaardig",
+    themas: ["herstel", "energie"],
+    topScore: maxProductScore(eiwitpoederData.products),
+    guideHref: "/beste-eiwitpoeder",
+    comparisonHref: "/beste-eiwitpoeder",
+    comingSoon: false,
+    icon: "🥤",
   },
 ];
 
