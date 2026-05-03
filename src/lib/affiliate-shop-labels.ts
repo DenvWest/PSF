@@ -17,6 +17,9 @@ const AFFILIATE_SHOP_LABELS: Partial<Record<AffiliateSlug, string>> = {
   "melatonine-vital-nutrition-slaap-complex": "Vital Nutrition",
   "melatonine-lucovitaal-puur": "Vitaminstore",
   "melatonine-vitaminstore-nachtrust": "Vitaminstore",
+  "proteine-vital-nutrition-whey": "Vital Nutrition",
+  "proteine-orangefit-protein": "Vitaminstore",
+  "proteine-royal-green-isolate": "Vitaminstore",
 };
 
 export function getAffiliateShopLabel(slug: AffiliateSlug): string {

@@ -7,7 +7,8 @@ export type SupplementCategory =
   | "ashwagandha"
   | "vitamine-d"
   | "creatine"
-  | "zink";
+  | "zink"
+  | "eiwitpoeder";
 
 export interface ScoreBreakdown {
   criterium: string;

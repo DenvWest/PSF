@@ -61,6 +61,14 @@ export const affiliateLinks = {
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine-vergelijken&dl=product%2Flucovitaal-pure-melatonine-100-mcg-tabletten-163814",
   "melatonine-vitaminstore-nachtrust":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine-vergelijken&dl=product%2Fvitaminstore-nachtrust-complex-met-melatonine-vegicaps-190775",
+
+  // Eiwitpoeder — Sub ID (ws): proteïne-vergelijken
+  "proteine-vital-nutrition-whey":
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=prote%C3%AFne-vergelijken&dl=products%2Fwhey-proteine%3F_pos%3D1%26_sid%3D018a6fc58%26_ss%3Dr",
+  "proteine-orangefit-protein":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=prote%C3%AFne-vergelijken&dl=product%2Forangefit-protein-poeder-271837",
+  "proteine-royal-green-isolate":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=prote%C3%AFne-vergelijken&dl=product%2Froyal-green-royal-green-100-whey-protein-isolate-poeder-217835",
 } as const satisfies Record<string, string>;
 
 export type AffiliateSlug = keyof typeof affiliateLinks;

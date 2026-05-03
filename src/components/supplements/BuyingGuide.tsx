@@ -14,6 +14,7 @@ const CATEGORY_LABEL: Record<SupplementCategory, string> = {
   "vitamine-d": "vitamine D supplement",
   creatine: "creatine supplement",
   zink: "zink supplement",
+  eiwitpoeder: "eiwitpoeder",
 };
 
 const OMEGA3_EXPLANATIONS: Record<string, string> = {
@@ -69,6 +70,17 @@ const ASHWAGANDHA_EXPLANATIONS: Record<string, string> = {
     "Vergelijk niet op verpakkingsprijs maar op prijs per effectieve dag. Een product met 300 mg KSM-66 voor €0,42/dag versus 600 mg voor €0,23/dag: het tweede levert twee keer zoveel werkzame stof voor de helft van het geld. Bereken altijd prijs per mg gestandaardiseerd extract.",
   Transparantie:
     "Een transparant supplement vermeldt het exacte percentage withanoliden, het gebruikte extract-type en idealiter batchgewijze lab-uitslagen. Producten die alleen 'ashwagandha-poeder' of een vaag mg-getal vermelden zijn niet eerlijk te vergelijken met gestandaardiseerde extracten.",
+};
+
+const EIWEITPOEDER_EXPLANATIONS: Record<string, string> = {
+  "Biobeschikbaarheid (25%)":
+    "Hoe snel en volledig neemt je lichaam het eiwit op? Whey (zeker isolaat en hydrolysaat) scoort hier doorgaans het hoogst; goed samengestelde plantaardige blends kunnen dichtbij komen. In onze methodiek weegt de verwachte opname en verteerbaarheid per portie zwaar mee.",
+  "Dosering & eiwitgehalte (30%)":
+    "Hoeveel gram eiwit zit er per serving, en sluit het aminozurenprofiel aan bij wat je nodig hebt voor herstel? We letten op eiwitpercentage per scoop, relevante hoeveelheid per portie en of de essentiële aminozuren gedekt zijn — niet op marketingclaims.",
+  "Prijs-kwaliteit (25%)":
+    "Wat betaal je per gram daadwerkelijk eiwit — niet per mooie verpakking? Een duurder isolaat kan per portie toch goedkoper uitpakken dan een goedkoper concentraat met veel opvulling. We vergelijken daarom op waarde voor je dagelijkse routine.",
+  "Transparantie (20%)":
+    "Zijn ingrediënten, eiwitbronnen en zo nodig allergenen duidelijk vermeld? Tellen reviews, certificeringen en merkreputatie mee? Transparantie helpt inschatten of je krijgt wat op het etiket staat.",
 };
 
 const ZINK_EXPLANATIONS: Record<string, string> = {
@@ -130,6 +142,12 @@ function getExplanation(
   if (category === "melatonine") {
     return (
       MELATONINE_EXPLANATIONS[criterium] ??
+      "Zie onze methodologie voor de volledige uitleg van dit criterium."
+    );
+  }
+  if (category === "eiwitpoeder") {
+    return (
+      EIWEITPOEDER_EXPLANATIONS[criterium] ??
       "Zie onze methodologie voor de volledige uitleg van dit criterium."
     );
   }
