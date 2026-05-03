@@ -269,7 +269,7 @@ export default function OnrustigeSlaperPage() {
               <p className="text-slate-600 mb-6">
                 Slaaphygiëne is de basis. Maar als je lichaam de bouwstenen mist om goed te
                 ontspannen en te herstellen, kun je dat niet altijd met leefstijl alleen oplossen.
-                Twee supplementen zijn specifiek relevant voor het Onrustige Slaper profiel:
+                Drie supplementen zijn specifiek relevant voor het Onrustige Slaper profiel:
               </p>
 
               <div className="space-y-5">
@@ -329,6 +329,26 @@ export default function OnrustigeSlaperPage() {
                     className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                   >
                     Bekijk de ashwagandha vergelijking →
+                  </Link>
+                </div>
+
+                {/* Melatonine */}
+                <div className="border border-slate-200 rounded-xl p-6">
+                  <h4 className="font-semibold text-slate-900 text-base">Melatonine</h4>
+                  <div className="mt-3 space-y-3">
+                    <p className="text-slate-600 leading-relaxed">
+                      Heb je vooral moeite met inslapen? Melatonine kan helpen je slaap-waakritme te
+                      herstellen
+                    </p>
+                  </div>
+                  <p className="text-slate-500 text-sm mt-4">
+                    Welke melatonine past bij inslapen? Dosering en vorm — objectief vergeleken.
+                  </p>
+                  <Link
+                    href="/beste-melatonine"
+                    className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                  >
+                    Bekijk de melatonine vergelijking →
                   </Link>
                 </div>
               </div>
