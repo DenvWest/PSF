@@ -53,6 +53,14 @@ export const affiliateLinks = {
     "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=magnesium-vergelijking&dl=collections%2Fmagnesium%2Fproducts%2Fmagnesium-citraat",
   "viridian-bisglycinaat":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=magnesium-vergelijking&dl=product%2Fsolgar-vitamins-magnesium-bisglycinate-1308886",
+
+  // Melatonine — Sub ID (ws): melatonine-vergelijken
+  "melatonine-vital-nutrition-slaap-complex":
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=melatonine-vergelijken&dl=products%2Fslaap-complex%3F_pos%3D2%26_sid%3Dfc8b8fe2b%26_ss%3Dr",
+  "melatonine-lucovitaal-puur":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine-vergelijken&dl=product%2Flucovitaal-pure-melatonine-100-mcg-tabletten-163814",
+  "melatonine-vitaminstore-nachtrust":
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine-vergelijken&dl=product%2Fvitaminstore-nachtrust-complex-met-melatonine-vegicaps-190775",
 } as const satisfies Record<string, string>;
 
 export type AffiliateSlug = keyof typeof affiliateLinks;

@@ -9,6 +9,7 @@ type Props = {
 const CATEGORY_LABEL: Record<SupplementCategory, string> = {
   "omega-3": "omega-3 supplement",
   magnesium: "magnesiumvorm",
+  melatonine: "melatonine- of slaapcomplex-supplement",
   ashwagandha: "ashwagandha supplement",
   "vitamine-d": "vitamine D supplement",
   creatine: "creatine supplement",
@@ -24,6 +25,17 @@ const OMEGA3_EXPLANATIONS: Record<string, string> = {
     "Consistent gebruik is belangrijker dan de perfecte dosis. Een product dat je niet volhoudt werkt niet. Kies een vorm — vloeibaar, gummies of capsules — die past bij jouw dagelijkse routine.",
   "Prijs/kwaliteit":
     "Een hogere prijs garandeert geen betere kwaliteit. Vergelijk altijd de kosten per gram EPA+DHA, niet de prijs van de verpakking. Vloeibare vormen zijn doorgaans goedkoper per gram dan gummies.",
+};
+
+const MELATONINE_EXPLANATIONS: Record<string, string> = {
+  Biobeschikbaarheid:
+    "Biobeschikbaarheid (25%): hoe goed neemt je lichaam het op? Daarvoor kijken we naar vorm (capsule, tablet, vegicap) en naar time-release. Capsules en vegicaps zijn doorgaans prettig om in te nemen; tabletten kunnen iets trager zijn. Bij complexen tellen ook extractkwaliteit en standaardisering (zoals KSM-66) voor voorspelbare werking.",
+  "Dosering & werkzame stoffen":
+    "Dosering en werkzame stoffen (30%): sluiten de hoeveelheden aan bij wat klinisch en in richtlijnen gangbaar is besproken? Bij melatonine hebben lage, fysiologische doses vaak de voorkeur boven hoge doses uit de schappen. Bij blends beoordelen we óf doseringen duidelijk op het etiket staan — zonder medische claims over uitkomsten.",
+  "Prijs-kwaliteit":
+    "Prijs-kwaliteit (25%): wat krijg je voor je geld per maand? Soms is een goedkoop puur melatonineproduct de slimste keuze; soms rechtvaardigt een slaapcomplex de meerprijs doordat het meerdere routes tegelijk ondersteunt.",
+  Transparantie:
+    "Transparantie (20%): zijn doseringen zichtbaar en is er kwaliteits- of labinformatie? Bij huismerken en multi-ingrediëntformules is transparantie extra belangrijk om eerlijk te kunnen vergelijken.",
 };
 
 const MAGNESIUM_EXPLANATIONS: Record<string, string> = {
@@ -112,6 +124,12 @@ function getExplanation(
   if (category === "zink") {
     return (
       ZINK_EXPLANATIONS[criterium] ??
+      "Zie onze methodologie voor de volledige uitleg van dit criterium."
+    );
+  }
+  if (category === "melatonine") {
+    return (
+      MELATONINE_EXPLANATIONS[criterium] ??
       "Zie onze methodologie voor de volledige uitleg van dit criterium."
     );
   }

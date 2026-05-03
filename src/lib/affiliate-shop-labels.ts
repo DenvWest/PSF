@@ -14,6 +14,9 @@ const AFFILIATE_SHOP_LABELS: Partial<Record<AffiliateSlug, string>> = {
   "vitaminstore-super-magnesium": "Vitaminstore",
   "vital-nutrition-citraat": "Vital Nutrition",
   "viridian-bisglycinaat": "Vitaminstore",
+  "melatonine-vital-nutrition-slaap-complex": "Vital Nutrition",
+  "melatonine-lucovitaal-puur": "Vitaminstore",
+  "melatonine-vitaminstore-nachtrust": "Vitaminstore",
 };
 
 export function getAffiliateShopLabel(slug: AffiliateSlug): string {
