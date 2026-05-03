@@ -489,6 +489,19 @@ export default function SlaapVerbeterenNa40Page() {
                   maskeert het. Focus op magnesium en leefstijl eerst; gebruik melatonine alleen
                   als tijdelijk hulpmiddel bij een specifieke verstoorde klok.
                 </p>
+
+                <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
+                  <p className="text-gray-700">
+                    Kies je voor een laag-gedoseerd product? We vergeleken melatonine-supplementen op
+                    vorm, dosering en prijs per nacht.
+                  </p>
+                  <Link
+                    href="/beste-melatonine"
+                    className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
+                  >
+                    Bekijk de melatonine vergelijking →
+                  </Link>
+                </div>
               </section>
 
               {/* 8. Timing & Planning */}

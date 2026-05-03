@@ -162,29 +162,37 @@ export default function Page() {
           <Container>
             <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Link href="/beste-ashwagandha" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+              <Link
+                href="/beste-ashwagandha"
+                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
+              >
                 <p className="text-base text-stone-600 leading-relaxed">
-                  Stress houdt je wakker? Ashwagandha kan helpen bij het loslaten van spanning vóór bed.
+                  Stress houdt je wakker? Ashwagandha kan helpen →
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk de vergelijking →</span>
               </Link>
-              <Link href="/beste-magnesium" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+              <Link
+                href="/beste-magnesium"
+                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
+              >
                 <p className="text-base text-stone-600 leading-relaxed">
-                  Magnesium en slaap zijn onlosmakelijk verbonden — het mineraal speelt een rol in ontspanning en nachtelijk herstel.
+                  Magnesium en slaap zijn onlosmakelijk verbonden →
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Welke vorm werkt het beste? →</span>
               </Link>
-              <Link href="/slaap-verbeteren-na-40" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+              <Link
+                href="/slaap-verbeteren-na-40"
+                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
+              >
                 <p className="text-base text-stone-600 leading-relaxed">
-                  Slaap na je 40e verbeteren vraagt om een keten van gewoontes — supplementen zijn de finetuning, niet de eerste stap.
+                  Slaap verbeteren vraagt om een keten van gewoontes →
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Lees de pijler pagina →</span>
               </Link>
-              <Link href="/profiel/onrustige-slaper" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors md:col-span-2">
+              <Link
+                href="/profiel/onrustige-slaper"
+                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors md:col-span-2"
+              >
                 <p className="text-base text-stone-600 leading-relaxed">
-                  Herken je het patroon: moe maar niet kunnen slapen, of te vroeg wakker? Het Onrustige Slaper-profiel bundelt de belangrijkste hefbomen.
+                  Herken je het patroon? Bekijk het profiel →
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
             </div>
           </Container>

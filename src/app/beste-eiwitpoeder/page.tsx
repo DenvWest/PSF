@@ -139,33 +139,9 @@ export default function Page() {
               Meer over eiwitpoeder
             </h3>
             <p className="mt-2 text-sm text-slate-600">
-              Eiwit werkt het best als onderdeel van training, slaap en voeding. Dit sluit aan bij
-              eerdere vergelijkingen op PerfectSupplement.
+              Eiwit werkt het best als onderdeel van training, slaap en voeding. Zie onder Lees ook
+              voor gerelateerde vergelijkingen en de pijlerpagina slaap.
             </p>
-            <div className="mt-3 space-y-3">
-              <div>
-                <p className="text-sm text-slate-600">
-                  Train je veel maar herstel je slecht? Creatine kan het verschil maken.
-                </p>
-                <Link
-                  href="/beste-creatine"
-                  className="mt-1 inline-block text-sm font-medium text-emerald-700 underline underline-offset-4"
-                >
-                  Bekijk de vergelijking →
-                </Link>
-              </div>
-              <div>
-                <p className="text-sm text-slate-600">
-                  Spieren herstellen &apos;s nachts. Goed slapen is essentieel.
-                </p>
-                <Link
-                  href="/slaap-verbeteren-na-40"
-                  className="mt-1 inline-block text-sm font-medium text-emerald-700 underline underline-offset-4"
-                >
-                  Lees de complete gids →
-                </Link>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -174,39 +150,20 @@ export default function Page() {
             <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Link
-                href="/profiel/stille-slijter"
-                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
-              >
-                <p className="text-base text-stone-600 leading-relaxed">
-                  Snacks en leeg-calorieën na de training? Herstel begint bij consistente
-                  voeding — ontdek het profiel van de Stille Slijter.
-                </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
-                  Bekijk het profiel →
-                </span>
-              </Link>
-              <Link
                 href="/beste-creatine"
                 className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
               >
                 <p className="text-base text-stone-600 leading-relaxed">
-                  Train je veel maar herstel je slecht? Creatine kan het verschil maken voor
-                  kracht en herstel.
+                  Train je veel maar herstel je slecht? Creatine kan het verschil maken →
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
-                  Bekijk de vergelijking →
-                </span>
               </Link>
               <Link
                 href="/slaap-verbeteren-na-40"
                 className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
               >
                 <p className="text-base text-stone-600 leading-relaxed">
-                  Spieren herstellen &apos;s nachts. Goed slapen is essentieel voor resultaat.
+                  Spieren herstellen &apos;s nachts — goed slapen is essentieel →
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
-                  Lees de complete gids →
-                </span>
               </Link>
             </div>
           </Container>
