@@ -392,7 +392,9 @@ export function getAdvice(
   }
 
   // Melatonine bij slaapprobleem zonder stress-component
-  if (scores.sleep_score < 50 && scores.stress_score >= 50) {
+  const slpQual = getAnswer(answers, "SLP_QUAL");
+  const strFreq = getAnswer(answers, "STR_FREQ");
+  if (slpQual <= 2 && strFreq >= 3) {
     pushRankedSupplement(
       supplements,
       {
