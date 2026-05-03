@@ -22,7 +22,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Waarom dit na je 40e erger wordt",
-      tekst: "Na je 40e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de HPA-as — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt.",
+      tekst: "Na je 40e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de HPA-as — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt. [Bekijk de melatonine vergelijking](/beste-melatonine).",
     },
     {
       type: "tekst",
@@ -33,7 +33,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
       type: "opsomming",
       titel: "Wat je hieraan kunt doen",
       inleiding:
-        "Het goede nieuws: dit patroon is beïnvloedbaar. Het vraagt aanpak op twee niveaus — leefstijl en eventueel gerichte supplementen.",
+        "Het goede nieuws: dit patroon is beïnvloedbaar. Het vraagt aanpak op twee niveaus — leefstijl en eventueel gerichte supplementen. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
       items: [
         "Avondroutine: cortisol heeft een afbouwsignaal nodig. Een vaste avondroutine — zelfde tijd, dezelfde volgorde — traint je HPA-as om eerder te remmen. Dim het licht na 21:00. Blauw licht van schermen blokkeert melatonineaanmaak en houdt cortisol actief.",
         "Geen schermen 60 minuten voor bed: dit is het meest onderbouwde advies in slaaponderzoek. Niet vanwege de content, maar vanwege het lichtspectrum. Gebruik een e-reader met warm licht, een boek, of luister naar iets rustigs.",
@@ -45,7 +45,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Herken jij dit patroon?",
-      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon bij mannen boven de 40 waarbij cortisolontregeling de sleutelfactor is.",
+      tekst: "Regelmatig wakker worden 's nachts — moe maar niet uitgerust opstaan — een gevoel van achterstand dat zich opstapelt. Dat is geen karakterzwakte en geen gevolg van te laat naar bed gaan. Het is een specifiek profiel dat je kunt herkennen én aanpakken. Misschien ben je een [Onrustige Slaper](/profiel/onrustige-slaper) — een veelvoorkomend patroon bij mannen boven de 40 waarbij cortisolontregeling de sleutelfactor is. Wil je weten hoe jouw stress en slaap scoren? [Doe de gratis Leefstijlcheck](/intake) — 12 vragen, 3 minuten, persoonlijk resultaat.",
     },
     {
       type: "tekst",
