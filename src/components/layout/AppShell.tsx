@@ -17,10 +17,20 @@ export default function AppShell({ children }: { children: ReactNode }) {
     return <>{children}</>;
   }
 
+  const isHomePage = pathname === "/";
+
   return (
     <>
       <Header />
-      <main className="min-h-screen">{children}</main>
+      <main
+        className={
+          isHomePage
+            ? "pb-16 md:pb-20"
+            : "min-h-screen"
+        }
+      >
+        {children}
+      </main>
       <Footer />
     </>
   );

@@ -11,14 +11,10 @@ const exploreLinks = [
 ];
 
 const vergelijkingLinks = [
-    { href: "/beste-ashwagandha", label: "Beste ashwagandha" },
-    { href: "/beste-creatine", label: "Beste creatine" },
     { href: "/beste-magnesium", label: "Beste magnesium" },
     { href: "/beste-omega-3-supplement", label: "Beste omega-3" },
-    { href: "/beste-vitamine-d", label: "Beste vitamine D" },
-    { href: "/beste-zink", label: "Beste zink" },
+    { href: "/beste-ashwagandha", label: "Beste ashwagandha" },
     { href: "/beste-melatonine", label: "Beste melatonine" },
-    { href: "/beste-eiwitpoeder", label: "Beste eiwitpoeder" },
 ];
 
 const infoLinks = [
@@ -75,6 +71,15 @@ export default function Footer() {
                             Vergelijkingen
                         </h4>
                         <ul className="mt-4 space-y-2.5">
+                            <li>
+                                <Link
+                                    href="/supplementen"
+                                    className="text-sm text-stone-600 transition hover:text-stone-900"
+                                >
+                                    Alle vergelijkingen{" "}
+                                    <span aria-hidden="true">→</span>
+                                </Link>
+                            </li>
                             {vergelijkingLinks.map((link) => (
                                 <li key={link.href}>
                                     <Link
