@@ -3,21 +3,18 @@ import { Resend } from "resend";
 import { getClientIp } from "@/lib/client-ip";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
-import { absoluteUrl } from "@/lib/public-site-url";
+import {
+  getThemaNurtureTemplate,
+  hasThemaNurtureSequence,
+} from "@/lib/email-templates/thema-nurture";
+import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
-import { hasThemaNurtureSequence } from "@/lib/email-templates/thema-nurture";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const THEMA_DOWNLOADS: Record<
-  string,
-  { pdfPath: string; subject: string; title: string }
-> = {
-  slaap: {
-    pdfPath: "/downloads/slaapgids-perfectsupplement.pdf",
-    subject: "Je Slaapgids staat klaar",
-    title: "De complete gids voor betere slaap na 40",
-  },
+/** Thema’s met downloadflow; dag-1 body komt uit getThemaNurtureTemplate(thema, 1). */
+const THEMA_DOWNLOADS: Record<string, true> = {
+  slaap: true,
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -101,30 +98,24 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const pdfUrl = absoluteUrl(download.pdfPath);
+  const template = getThemaNurtureTemplate(thema, 1);
+  if (!template) {
+    return NextResponse.json(
+      { error: "E-mailtemplate niet gevonden" },
+      { status: 500 },
+    );
+  }
+
+  const siteUrl = getPublicSiteUrl();
+  const unsubscribeUrl = `${siteUrl}/api/thema/unsubscribe?email=${encodeURIComponent(email)}&thema=${encodeURIComponent(thema)}`;
+  const emailHtml = template.html(unsubscribeUrl);
 
   try {
     const { data: sendData, error: sendError } = await resend.emails.send({
       from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
       to: email,
-      subject: download.subject,
-      html: `
-        <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px;">
-          <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; color: #1a1a1a; margin-bottom: 16px;">
-            ${download.title}
-          </h1>
-          <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-            Bedankt voor je interesse. Hieronder vind je de link om je gids te downloaden.
-          </p>
-          <a href="${pdfUrl}" style="display: inline-block; background-color: #3C7A56; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">
-            Download de gids (PDF) →
-          </a>
-          <p style="font-size: 13px; color: #999; margin-top: 32px; line-height: 1.5;">
-            Je ontvangt deze e-mail omdat je de gids hebt aangevraagd via PerfectSupplement.nl.
-            Je kunt je altijd uitschrijven.
-          </p>
-        </div>
-      `,
+      subject: template.subject,
+      html: emailHtml,
     });
 
     if (sendError) {
