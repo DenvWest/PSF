@@ -124,7 +124,7 @@ export const slaapThema: ThemaPageData = {
     ],
     ctaText: "Download de Slaapgids",
     privacyText:
-      "Je e-mail wordt alleen gebruikt voor de gids en relevante tips. Geen spam, altijd opzegbaar.",
+      "Je ontvangt de gids en maximaal 3 tips over slaap en supplementen. Geen spam, altijd opzegbaar.",
     successMessage: "Check je inbox — de Slaapgids is onderweg.",
   },
 

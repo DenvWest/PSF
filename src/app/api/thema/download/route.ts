@@ -5,6 +5,7 @@ import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { absoluteUrl } from "@/lib/public-site-url";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { hasThemaNurtureSequence } from "@/lib/email-templates/thema-nurture";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
   const pdfUrl = absoluteUrl(download.pdfPath);
 
   try {
-    const { error: sendError } = await resend.emails.send({
+    const { data: sendData, error: sendError } = await resend.emails.send({
       from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
       to: email,
       subject: download.subject,
@@ -131,6 +132,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Verzenden mislukt" }, { status: 500 });
     }
 
+    const resendId = sendData?.id ?? null;
+
     const { error: insertError } = await supabase
       .from("thema_downloads")
       .insert({ email, thema });
@@ -138,6 +141,49 @@ export async function POST(request: NextRequest) {
     if (insertError) {
       logSecurityEvent("db_insert_failed", { remoteIp: clientIp });
       return NextResponse.json({ error: "Opslaan mislukt" }, { status: 500 });
+    }
+
+    if (hasThemaNurtureSequence(thema)) {
+      const { data: existing } = await supabase
+        .from("thema_nurture")
+        .select("id")
+        .eq("email", email)
+        .eq("thema", thema)
+        .limit(1);
+
+      if (!existing?.length) {
+        const NURTURE_DAYS = [3, 7] as const;
+        const now = new Date();
+        const nurturePending = NURTURE_DAYS.map((day) => ({
+          email,
+          thema,
+          sequence_day: day,
+          scheduled_at: new Date(
+            now.getTime() + day * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          status: "pending" as const,
+        }));
+
+        const day1Row = {
+          email,
+          thema,
+          sequence_day: 1,
+          scheduled_at: now.toISOString(),
+          status: "sent" as const,
+          sent_at: now.toISOString(),
+          resend_id: resendId,
+        };
+
+        const { error: nurtureInsertError } = await supabase
+          .from("thema_nurture")
+          .insert([day1Row, ...nurturePending]);
+
+        if (nurtureInsertError) {
+          logSecurityEvent("thema_nurture_insert_failed", {
+            remoteIp: clientIp,
+          });
+        }
+      }
     }
 
     return NextResponse.json({ success: true });
