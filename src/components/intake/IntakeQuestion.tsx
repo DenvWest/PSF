@@ -151,7 +151,7 @@ export default function IntakeQuestion({
         >
           {/* Question text */}
           <h2
-            className="mb-10 text-center text-2xl font-normal leading-snug md:text-3xl"
+            className={`text-center text-2xl font-normal leading-snug md:text-3xl ${question.subtitle ? "mb-4" : "mb-10"}`}
             style={{
               fontFamily: "var(--font-intake-heading), Georgia, serif",
               color: "rgba(255,255,255,0.92)",
@@ -159,6 +159,14 @@ export default function IntakeQuestion({
           >
             {question.question}
           </h2>
+          {question.subtitle ? (
+            <p
+              className="mb-10 text-center text-base font-normal leading-relaxed md:text-lg"
+              style={{ color: "rgba(255,255,255,0.55)" }}
+            >
+              {question.subtitle}
+            </p>
+          ) : null}
 
           {/* Answer options */}
           <div

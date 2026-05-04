@@ -242,6 +242,35 @@ export default function IntakeResults({
         ))}
       </div>
 
+      {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
+        <div className="mb-4 border-l-4 border-amber-400 rounded-r-lg bg-amber-50 p-4">
+          <h3 className="font-semibold text-amber-800">
+            Let op: je eiwitinname
+          </h3>
+          <p className="mt-1 text-amber-700">
+            Na je 40e heb je meer eiwit nodig om spiermassa te behouden — minimaal
+            1,2 tot 1,6 gram per kilo lichaamsgewicht per dag.
+            {typeof answers.MOV_FREQ === "number" && answers.MOV_FREQ >= 3 ? (
+              <>
+                {" "}
+                Je beweegt actief, maar zonder voldoende eiwit mist je lichaam de
+                bouwstenen voor herstel en spieropbouw.
+              </>
+            ) : null}
+            {typeof answers.RCV_PHYS === "number" && answers.RCV_PHYS <= 1 ? (
+              <>
+                {" "}
+                Je trage herstel kan deels komen door een eiwitgebrek.
+              </>
+            ) : null}
+          </p>
+          <p className="mt-2 text-sm text-amber-700">
+            <strong>Quick win:</strong> Begin elke maaltijd met 20-30 gram eiwit
+            — denk aan 3 eieren, een bak kwark, of een portie kip/vis.
+          </p>
+        </div>
+      ) : null}
+
       <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
         <div className="mb-4 flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#C4873B18] text-base">

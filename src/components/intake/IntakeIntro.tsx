@@ -69,7 +69,7 @@ export default function IntakeIntro({
           className="flex items-center gap-2 text-sm"
           style={{ color: "rgba(255,255,255,0.4)" }}
         >
-          <span>12 vragen</span>
+          <span>13 vragen</span>
           <span aria-hidden>·</span>
           <span>3 minuten</span>
           <span aria-hidden>·</span>

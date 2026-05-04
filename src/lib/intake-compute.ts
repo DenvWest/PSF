@@ -3,9 +3,9 @@ import {
   QUESTIONS,
   SYMPTOMS,
   type IntakeAgeRange,
-  type QuestionId,
   type SymptomId,
 } from "@/data/intake-questions";
+import type { IntakeAnswers } from "@/types/intake-answers";
 import {
   calcDomainScores,
   getProfileLabel,
@@ -16,10 +16,10 @@ import {
 const AGE_SET = new Set<string>(INTAKE_AGE_RANGE_OPTIONS);
 const SYMPTOM_SET = new Set<SymptomId>(SYMPTOMS.map((s) => s.id));
 
-const QUESTION_VALID_VALUES: Record<QuestionId, Set<number>> = {} as Record<
-  QuestionId,
+const QUESTION_VALID_VALUES: Record<
+  keyof IntakeAnswers,
   Set<number>
->;
+> = {} as Record<keyof IntakeAnswers, Set<number>>;
 
 for (const q of QUESTIONS) {
   QUESTION_VALID_VALUES[q.id] = new Set(q.options.map((o) => o.value));
@@ -52,7 +52,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 export type ValidatedIntakeBody = {
   ageRange: IntakeAgeRange;
   symptoms: SymptomId[];
-  answers: Record<QuestionId, number>;
+  answers: IntakeAnswers;
 };
 
 /**
@@ -97,7 +97,7 @@ export function validateIntakeSubmission(body: unknown):
     return { ok: false, error: "Ongeldige antwoorden." };
   }
 
-  const answers: Record<QuestionId, number> = {} as Record<QuestionId, number>;
+  const answers = {} as IntakeAnswers;
 
   for (const q of QUESTIONS) {
     const raw = answersRaw[q.id];

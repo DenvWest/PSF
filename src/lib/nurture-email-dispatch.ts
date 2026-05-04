@@ -64,6 +64,10 @@ function parseAnswers(raw: unknown): Record<QuestionId, number> | null {
   for (const q of QUESTIONS) {
     const v = o[q.id];
     if (typeof v !== "number" || !Number.isFinite(v)) {
+      if (q.id === "NUT_PROT") {
+        out[q.id] = 3;
+        continue;
+      }
       return null;
     }
     if (!QUESTION_VALID_VALUES[q.id]?.has(v)) {
@@ -230,6 +234,8 @@ export function buildNurtureEmail(
       };
     }
     case "day3": {
+      const proteinAttention =
+        answers != null && answers.NUT_PROT <= 2 ? true : undefined;
       return {
         subject: day3EmailSubject(quickWin),
         html: day3EmailHtml({
@@ -237,6 +243,7 @@ export function buildNurtureEmail(
           quickWin,
           primaryDomainLabel,
           domainTip,
+          proteinAttention,
         }),
       };
     }

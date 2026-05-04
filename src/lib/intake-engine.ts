@@ -274,8 +274,10 @@ export function calcDomainScores(
       8,
     ),
     nutrition_score: normalizeScore(
-      getAnswer(answers, "NUT_QUAL") + getAnswer(answers, "NUT_O3"),
-      7,
+      getAnswer(answers, "NUT_QUAL") +
+        getAnswer(answers, "NUT_O3") +
+        getAnswer(answers, "NUT_PROT"),
+      11,
     ),
     movement_score: normalizeScore(
       getAnswer(answers, "MOV_FREQ") + getAnswer(answers, "MOV_DAILY"),
@@ -404,6 +406,15 @@ export function getAdvice(
         link: "/beste-melatonine",
       },
       8,
+    );
+  }
+
+  const proteinIntake = getAnswer(answers, "NUT_PROT");
+  if (proteinIntake <= 2) {
+    pushRankedText(
+      quickWins,
+      "Begin elke maaltijd met 20-30g eiwit. Kwark, eieren, vis of peulvruchten.",
+      2,
     );
   }
 

@@ -40,6 +40,7 @@ export type QuestionId =
   | "STR_RECV"
   | "NUT_QUAL"
   | "NUT_O3"
+  | "NUT_PROT"
   | "MOV_FREQ"
   | "MOV_DAILY"
   | "RCV_PHYS"
@@ -53,8 +54,10 @@ export interface QuestionOption {
 export interface IntakeQuestion {
   id: QuestionId;
   category: CategoryId;
-  questionIndex: 1 | 2;
+  questionIndex: 1 | 2 | 3;
   question: string;
+  /** Korte toelichting onder de vraag (optioneel). */
+  subtitle?: string;
   options: QuestionOption[];
 }
 
@@ -181,6 +184,29 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
       { label: "2x per week of vaker", value: 3 },
       { label: "Ongeveer 1x per week", value: 2 },
       { label: "Zelden of nooit", value: 1 },
+    ],
+  },
+  {
+    id: "NUT_PROT",
+    category: "voeding",
+    questionIndex: 3,
+    question: "Hoeveel eiwitrijke producten eet je per dag?",
+    subtitle:
+      "Denk aan vlees, vis, eieren, zuivel, peulvruchten, noten",
+    options: [
+      {
+        label: "Elke maaltijd bevat een goede eiwitbron",
+        value: 4,
+      },
+      {
+        label: "1–2 maaltijden met eiwit, de rest niet bewust",
+        value: 3,
+      },
+      { label: "Ik eet weinig bewust eiwit", value: 2 },
+      {
+        label: "Ik weet het niet / ik let er niet op",
+        value: 1,
+      },
     ],
   },
   {
