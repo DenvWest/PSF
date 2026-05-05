@@ -371,7 +371,7 @@ export function getAdvice(
       {
         name: "Magnesium glycinaat",
         reason:
-          "Je slaap en stress staan beide onder druk. Magnesium glycinaat ondersteunt ontspanning en nachtrust.",
+          "Je slaap- en stresscores geven samen een signaal; magnesium draagt bij tot normale psychologische functie, tot de normale werking van het zenuwstelsel en tot vermindering van vermoeidheid.",
         link: "/magnesium-vergelijken",
       },
       10,
@@ -381,7 +381,7 @@ export function getAdvice(
       {
         name: "Ashwagandha",
         reason:
-          "Bij een stress-slaapspiraal kan ashwagandha helpen om stressbelasting en avondlijke onrust te verlagen.",
+          "Je combineert lage slaap- en stresscores; ashwagandha vergelijken kan zinvol zijn op extractkwaliteit — let op dat EU-gezondheidsclaims voor dit ingrediënt nog niet definitief zijn.",
         link: "/blog/ashwagandha-werking-mannen",
       },
       11,
@@ -437,7 +437,7 @@ export function getAdvice(
       {
         name: "Omega-3 (EPA/DHA)",
         reason:
-          "Je eet zelden vette vis. Daarom is omega-3 een brede basisaanvulling voor hart, hersenen en ontstekingsbalans.",
+          "Je eet zelden vette vis. EPA en DHA dragen onder meer bij tot normale hartfunctie en DHA tot instandhouding van hersenfunctie (bij voldoende dagdosis volgens claimvoorwaarden).",
         link: "/omega-3-vergelijken",
       },
       20,
@@ -460,7 +460,7 @@ export function getAdvice(
       {
         name: "Magnesium glycinaat",
         reason:
-          "Bij veel training en traag herstel kan magnesium helpen bij ontspanning, spierfunctie en herstel.",
+          "Bij veel training helpt magnesium onder meer bij normale spierfunctie en dragen bij tot vermindering van vermoeidheid.",
         link: "/magnesium-vergelijken",
       },
       14,
@@ -483,7 +483,7 @@ export function getAdvice(
       {
         name: "Ashwagandha",
         reason:
-          "Je antwoorden wijzen op verhoogde stressbelasting met ontregeld ritme. Ashwagandha past dan als eerste ondersteuning.",
+          "Je antwoorden wijzen op piekbelasting; vergelijk ashwagandha op etiket en extract — EU-claims zijn voor dit ingrediënt nog niet definitief.",
         link: "/blog/ashwagandha-werking-mannen",
       },
       4,
@@ -493,7 +493,7 @@ export function getAdvice(
       {
         name: "Magnesium glycinaat",
         reason:
-          "Bij cortisolrisico ondersteunt magnesium ontspanning, slaapkwaliteit en herstel van het zenuwstelsel.",
+          "Magnesium draagt bij tot normale werking van zenuwstelsel en spieren en tot een normale psychologische functie — passend bij dit profiel naast leefstijl.",
         link: "/magnesium-vergelijken",
       },
       5,
@@ -521,7 +521,7 @@ export function getAdvice(
       {
         name: "Magnesium glycinaat",
         reason:
-          "Je antwoorden laten een combinatie van onrustige slaap en moeizaam stressherstel zien, een klassiek magnesiumsignaal.",
+          "Je antwoorden tonen onder andere onrust rond slapen en herstel; magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid.",
         link: "/magnesium-vergelijken",
       },
       16,

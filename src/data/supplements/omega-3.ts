@@ -138,7 +138,7 @@ export const omega3Data: ComparisonPageData = {
         { label: "Inhoud", value: "250 ml (50 dagen)" },
       ],
       pros: [
-        "Hoogste DHA per portie — goed voor hersenfunctie",
+        "Hoogste DHA per portie — past bij de EU-claimcontext voor hersenfunctie (250 mg DHA/dag)",
         "Zachte citroensmaak, geen oprispingen",
         "Inclusief vitamine A, D en E",
         "Gevestigd Noors merk, 160+ jaar",
@@ -248,12 +248,12 @@ export const omega3Data: ComparisonPageData = {
     {
       question: "Hoeveel omega-3 per dag is genoeg?",
       answer:
-        "Voor algemene ondersteuning wordt 250–500 mg EPA+DHA per dag aanbevolen. Bij specifieke doelen (hart, gewrichten, hersenen) kan een hogere dosering tot 1000-2000 mg zinvol zijn. Kijk altijd naar de daadwerkelijke EPA- en DHA-inhoud, niet naar het totale visoliegehalte.",
+        "Kijk naar de werkzame EPA- en DHA-hoeveelheid op het etiket. In de EU gelden voor gezondheidsclaims o.a. 250 mg EPA+DHA per dag (hart) en 250 mg DHA per dag (instandhouding hersenfunctie en gezichtsvermogen). Hogere innames komen in onderzoek en praktijk voor, maar vallen buiten deze standaard claimdrempels — stem hoge doses af met je arts als je medicatie gebruikt.",
     },
     {
       question: "Wat is het verschil tussen EPA en DHA?",
       answer:
-        "EPA werkt primair ontstekingsremmend en ondersteunt hart en immuunsysteem. DHA is vooral belangrijk voor hersenfunctie en het netvlies. Voor de meeste mensen is een combinatie van beide het beste.",
+        "EPA en DHA dragen samen bij tot de normale werking van het hart (250 mg EPA+DHA/dag). DHA draagt daarnaast bij tot de instandhouding van normale hersenfunctie en van een normaal gezichtsvermogen (250 mg DHA/dag). De meeste visolieproducten combineren beide vetzuren.",
     },
     {
       question: "Vloeibaar of capsules — wat is beter?",

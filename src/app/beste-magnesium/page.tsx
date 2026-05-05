@@ -126,12 +126,22 @@ export default function Page() {
           <Container>
             <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Link href="/profiel/onrustige-slaper" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
-                <p className="text-base text-stone-600 leading-relaxed">Slecht slapen na 40? Magnesium is stap 1. Ontdek of jij een Onrustige Slaper bent.</p>
+              <Link
+                href="/profiel/onrustige-slaper"
+                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
+              >
+                <p className="text-base text-stone-600 leading-relaxed">
+                  Slecht slapen na 40? Magnesium draagt bij tot normale psychologische functie en
+                  vermindering van vermoeidheid — ontdek of jouw profiel past bij meer structuur
+                  rond herstel.
+                </p>
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
               <Link href="/profiel/stressdrager" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
-                <p className="text-base text-stone-600 leading-relaxed">Stress die zich opstapelt? Magnesium ontspant je zenuwstelsel.</p>
+                <p className="text-base text-stone-600 leading-relaxed">
+                  Veel prikkels en weinig rust in je lijf? Magnesium draagt bij tot de normale
+                  werking van het zenuwstelsel — check of dit profiel bij je past.
+                </p>
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
               <Link href="/thema/slaap" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">

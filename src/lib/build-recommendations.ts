@@ -54,10 +54,10 @@ function selectLegacyHubRecommendations(
       icon: "⚡",
       reason:
         scores.sleep_score < 50 && scores.stress_score < 50
-          ? "Ondersteunt zowel je slaapkwaliteit als stressregulatie — twee gebieden waar jij ruimte hebt."
+          ? "Magnesium draagt bij tot normale psychologische functie en tot vermindering van vermoeidheid — passend bij je scores, neven leefstijl."
           : scores.sleep_score < 50
-            ? "Magnesium glycinaat kan je slaapkwaliteit ondersteunen — een van je verbeterpunten."
-            : "Helpt bij het reguleren van je stressrespons en ontspanning.",
+            ? "Magnesium draagt bij tot een normale psychologische functie; check je routine naast andere slaaphygiëne."
+            : "Magnesium draagt bij tot de normale werking van het zenuwstelsel en een normale psychologische functie.",
     });
   }
 
@@ -67,7 +67,7 @@ function selectLegacyHubRecommendations(
       name: "Ashwagandha",
       icon: "🌿",
       reason:
-        "Een adaptogeen dat cortisol kan verlagen — relevant bij jouw stressscore.",
+        "EU-claims voor ashwagandha zijn nog niet definitief; op jouw stressscore is vergelijken van extractkwaliteit desgewenst interessant.",
     });
   }
 
@@ -90,7 +90,7 @@ function selectLegacyHubRecommendations(
       name: "Creatine",
       icon: "💪",
       reason:
-        "Ondersteunt energieproductie op celniveau — relevant bij jouw lage energiescore.",
+        "Creatine verhoogt fysieke prestaties bij zeer korte, intense inspanning (minimaal 3 g/dag) — relevant als je aan kracht of sprintwerk doet.",
     });
   }
 
@@ -103,7 +103,7 @@ function selectLegacyHubRecommendations(
       name: "Magnesium",
       icon: "⚡",
       reason:
-        "Ondersteunt spierherstel en ontspanning — belangrijk bij jouw herstelscore.",
+        "Magnesium draagt bij tot normale spierfunctie — relevant naast je herstelscore.",
     });
   }
 

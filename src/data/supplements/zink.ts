@@ -4,7 +4,7 @@ export const zinkData: ComparisonPageData = {
   category: "zink",
   h1: "Beste zink supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Drie zink supplementen vergeleken op zinkvorm, biobeschikbaarheid, dosering en prijs — speciaal beoordeeld voor mannen 40+ die testosteron, immuunfunctie en herstel willen ondersteunen.",
+    "Drie zink supplementen vergeleken op zinkvorm, biobeschikbaarheid, dosering en prijs — voor wie let op onder andere draagt bij tot het immuunsysteem, eiwitsynthese en (officieel geformuleerd) tot de instandhouding van een normaal testosterongehalte in het bloed.",
   seoTitle:
     "Beste Zink Supplement 2026 — Methionine & Picolinaat Vergelijking | PerfectSupplement",
   seoDescription:
@@ -31,7 +31,7 @@ export const zinkData: ComparisonPageData = {
       badgeLabel: "Premium kwaliteit",
       productName: "Bonusan Zinkmethionine 15 mg",
       teaser:
-        "L-OptiZinc® — gepatenteerde, klinisch geteste zinkvorm. Breed spectrum gezondheidsclaims voor testosteron, cognitie en immuun.",
+        "L-OptiZinc® — gepatenteerde, klinisch geteste zinkvorm. Sluit aan bij EU-claims o.a. immuunsysteem, normale testosteronspiegels in het bloed en cognitieve functie.",
       affiliateSlug: "bonusan-zinkmethionine",
       slug: "bonusan-zinkmethionine",
     },
@@ -120,7 +120,7 @@ export const zinkData: ComparisonPageData = {
       bestFor: "Premium kwaliteit",
       variantTag: "L-OptiZinc® — 90 plantaardige capsules",
       summary:
-        "L-OptiZinc® is een gepatenteerde zinkmethionine met klinische studies die de absorptie en biologische activiteit onderbouwen. Bonusan koppelt dit aan een breed spectrum gezondheidsclaims: testosteron, cognitieve functie, immuunsysteem en bescherming tegen oxidatieve stress. De plantaardige capsules sluiten aan bij een bewuste leefstijl. Duurder per dag, maar certificering en breedte rechtvaardigen de premiumpositionering.",
+        "L-OptiZinc® is een gepatenteerde zinkmethionine met klinische studies die de absorptie en biologische activiteit onderbouwen. Zink draagt in de EU-claimcontext bij aan o.a. het immuunsysteem, normale cognitieve functie, eiwitsynthese, bescherming van cellen tegen oxidatieve stress en instandhouding van een normaal testosterongehalte in het bloed. De plantaardige capsules sluiten aan bij een bewuste leefwijze. Duurder per dag, maar certificering rechtvaardigt voor sommige kopers de premiumpositie.",
       specs: [
         { label: "Zinkvorm", value: "L-OptiZinc® (zinkmethionine)" },
         { label: "Dosering", value: "15 mg" },
@@ -132,7 +132,7 @@ export const zinkData: ComparisonPageData = {
       ],
       pros: [
         "L-OptiZinc® — gepatenteerde, klinisch geteste zinkvorm",
-        "Breed spectrum gezondheidsclaims (testosteron, cognitie, immuun)",
+        "Sluit aan bij EU-goedgekeurde zinkclaims (o.a. immuun, cognitie, normaal testosteron in bloed)",
         "Plantaardige capsules",
       ],
       cons: [
@@ -199,14 +199,14 @@ export const zinkData: ComparisonPageData = {
         "Bij voorkeur bij een maaltijd om maagklachten te voorkomen. Combineer zink niet op hetzelfde moment met ijzer of calciumsupplementen — die concurreren om opname. Neem zink bij de lunch en calcium/ijzer op een ander moment.",
     },
     {
-      question: "Helpt zink echt bij testosteron?",
+      question: "Helpt zink bij testosteron?",
       answer:
-        "Bij mannen met een zinktekort: ja, meetbaar. Zink is een cofactor voor enzymen in de testosteronproductie, en epidemiologisch onderzoek laat zien dat mannen met lage zinkwaarden significant lagere testosteronspiegels hebben. Bij mannen die al voldoende zink binnenkrijgen is het effect minimaal. Laat bij twijfel je bloedwaarden checken.",
+        "In de EU is voor zink o.a. toegestaan te zeggen dat het bijdraagt tot de instandhouding van een normaal testosterongehalte in het bloed — dat is geen belofte van een 'boost', maar gaat over normale fysiologie met voldoende inname. Bij twijfel over tekort of suppletie: laat waarden meten met je arts.",
     },
     {
-      question: "Zijn zink en vitamine D beide cofactoren voor testosteron?",
+      question: "Zijn zink en vitamine D beide relevant als je aan hormoonbalans denkt?",
       answer:
-        "Ja. Zink en vitamine D zijn beide cofactoren voor testosteron en andere hormonale processen; bij tekorten komen lagere waarden vaker voor. Laat bij twijfel meten. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
+        "Zink heeft, zoals genoemd, een EU-goedgekeurde formulering rond normaal testosterongehalte in het bloed. Vitamine D heeft bijvoorbeeld claims rond botten, spieren en immuunsysteem — niet dezelfde claimtekst als zink. Epidemiologisch zie je correlaties tussen lage bloedwaarden en verschillende markers; laat meten en laat je adviseren. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
     },
     {
       question: "Kan ik zink combineren met magnesium?",

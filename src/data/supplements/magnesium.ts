@@ -4,7 +4,7 @@ export const magnesiumData: ComparisonPageData = {
   category: "magnesium",
   h1: "Welke magnesium past bij jou?",
   intro:
-    "Drie magnesiumsupplementen vergeleken op vorm, elementaire dosering, prijs per dag en toepasbaarheid — zodat je weet welke variant bij jouw doel past.",
+    "Drie magnesiumsupplementen vergeleken op vorm, elementaire dosering, prijs per dag en toepasbaarheid — zodat je weet welke variant bij jouw voorkeur voor inname en routine past.",
   seoTitle: "Beste magnesium supplement 2026 — onafhankelijk vergeleken",
   seoDescription:
     "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 40+.",
@@ -19,10 +19,10 @@ export const magnesiumData: ComparisonPageData = {
       slug: "vitaminstore-super-magnesium",
     },
     {
-      badgeLabel: "Beste voor slaap",
+      badgeLabel: "Beste bisglycinaat",
       productName: "Viridian Magnesium Bisglycinate",
       teaser:
-        "Puur bisglycinaat, vegetarisch, van een gerespecteerd supplementmerk. Ideaal als avondroutine.",
+        "Puur bisglycinaat, vegetarisch, van een gerespecteerd supplementmerk. Veel gekozen voor inname later op de dag.",
       affiliateSlug: "viridian-bisglycinaat",
       slug: "viridian-bisglycinaat",
     },
@@ -45,7 +45,7 @@ export const magnesiumData: ComparisonPageData = {
       bestFor: "Beste allround",
       variantTag: "Complex (5 vormen)",
       summary:
-        "Combineert bisglycinaat, citraat, tauraat, malaat en glycerofosfaat in één tablet. Dekt slaap, stress, energie en algemeen welzijn zonder meerdere potjes.",
+        "Combineert bisglycinaat, citraat, tauraat, malaat en glycerofosfaat in één tablet. Magnesium draagt onder meer bij tot normale spier- en zenuwfunctie, tot een normale psychologische functie en tot vermindering van vermoeidheid — zonder dat je meerdere potjes nodig hebt.",
       specs: [
         { label: "Vormen", value: "5 (bisglycinaat, citraat, tauraat, malaat, glycerofosfaat)" },
         { label: "Elementair Mg", value: "200 mg / 2 tabletten" },
@@ -78,10 +78,10 @@ export const magnesiumData: ComparisonPageData = {
       brand: "Viridian",
       affiliateSlug: "viridian-bisglycinaat",
       score: 8.2,
-      bestFor: "Beste voor slaap",
+      bestFor: "Beste bisglycinaat",
       variantTag: "Bisglycinaat (vegetarisch)",
       summary:
-        "Puur magnesium bisglycinaat van Viridian — een gerespecteerd Brits supplementmerk. Vegetarische capsules met de best onderzochte vorm voor slaap en ontspanning.",
+        "Puur magnesium bisglycinaat van Viridian — een gerespecteerd Brits supplementmerk. Vegetarische capsules; magnesium draagt bij tot normale zenuw- en spierfunctie en tot een normale psychologische functie.",
       specs: [
         { label: "Vormen", value: "1 (bisglycinaat)" },
         { label: "Elementair Mg", value: "Check etiket per capsule" },
@@ -90,8 +90,8 @@ export const magnesiumData: ComparisonPageData = {
         { label: "Inhoud", value: "120 vegicaps" },
       ],
       pros: [
-        "Beste vorm voor slaap en stress",
-        "Glycine heeft eigen kalmerend effect",
+        "Bisglycinaat — vaak gekozen voor latere momenten op de dag",
+        "Glycine is een aminozuur; dit product levert vooral magnesium als mineraal",
         "Gerespecteerd merk met kwaliteitsreputatie",
         "100% vegetarisch",
       ],
@@ -165,7 +165,7 @@ export const magnesiumData: ComparisonPageData = {
       transparantie: "Goed",
       gebruiksgemak: "Goed",
       prijs: "€ 0,29/dag",
-      badge: "Beste voor slaap",
+      badge: "Beste bisglycinaat",
     },
     {
       slug: "vital-nutrition-citraat",
@@ -188,7 +188,7 @@ export const magnesiumData: ComparisonPageData = {
     {
       question: "Welke vorm magnesium is het beste?",
       answer:
-        "Dat hangt af van je doel. Bisglycinaat is het best onderzocht voor slaap en stress. Citraat is goed opneembaar en betaalbaar voor algemeen gebruik. Een complex met meerdere vormen dekt de breedste basis.",
+        "Dat hangt af van je voorkeur voor vorm, dosering en verdraagzaamheid. Bisglycinaat is een gechloreerde chelaatvorm met over het algemeen goede maagverdraagzaamheid; citraat is goed opneembaar en vaak voordeliger. Een complex met meerdere vormen dekt een breder spectrum aan magnesiumzouten op het etiket.",
     },
     {
       question: "Hoeveel magnesium per dag heb ik nodig?",
@@ -208,12 +208,12 @@ export const magnesiumData: ComparisonPageData = {
     {
       question: "Wanneer neem ik magnesium het beste in?",
       answer:
-        "Voor slaap: 30-60 minuten voor het slapen, bij voorkeur bisglycinaat. Voor energie of sport: bij een maaltijd overdag, bij voorkeur malaat of citraat. Een complex kun je het beste verdelen over twee momenten.",
+        "Dat is persoonlijk. Magnesium draagt bij tot vermindering van vermoeidheid — veel mensen kiezen voor opname bij een maaltijd om maagcomfort te houden. Bij meerdere tabletten per dag kun je de dosis verdelen. Voor concrete klachten of medicatie: stem het af met je arts.",
     },
     {
       question: "Werkt magnesium samen met vitamine D?",
       answer:
-        "Ja. Magnesium werkt goed samen met vitamine D: het mineraal is nodig voor de activatie van vitamine D in het lichaam. Wie beide aanvult, doet er goed aan op beide te letten. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
+        "Ja. Magnesium speelt onder meer mee bij de omzetting van vitamine D naar biologisch actieve vormen in het lichaam. Wie beide aanvult, doet er goed aan op beide te letten. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
     },
   ],
 };

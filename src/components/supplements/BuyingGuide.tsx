@@ -19,7 +19,7 @@ const CATEGORY_LABEL: Record<SupplementCategory, string> = {
 
 const OMEGA3_EXPLANATIONS: Record<string, string> = {
   "EPA/DHA per portie":
-    "EPA (eicosapentaeenzuur) ondersteunt hart en ontstekingsbalans; DHA (docosahexaeenzuur) is essentieel voor hersenfunctie en het netvlies. Kijk altijd naar de werkzame hoeveelheid per portie — niet naar het totale visoliegewicht. Een goede omega-3 bevat minimaal 250 mg EPA+DHA per dag.",
+    "EPA en DHA dragen bij tot de normale werking van het hart (bij een inname van 250 mg EPA+DHA per dag). DHA draagt bovendien bij tot instandhouding van normale hersenfunctie en tot instandhouding van een normaal gezichtsvermogen (250 mg DHA per dag). Kijk naar de werkzame hoeveelheid per portie — niet naar het totale visoliegewicht.",
   Transparantie:
     "Een transparant merk publiceert de exacte EPA- en DHA-waarden, de herkomst van de grondstof en idealiter onafhankelijke testresultaten (IFOS of vergelijkbaar). Zonder die informatie op het etiket is het onmogelijk om producten eerlijk te vergelijken.",
   Gebruiksgemak:
@@ -40,14 +40,14 @@ const MELATONINE_EXPLANATIONS: Record<string, string> = {
 };
 
 const MAGNESIUM_EXPLANATIONS: Record<string, string> = {
-  Opneembaarheid:
-    "Niet alle magnesiumvormen worden even goed opgenomen. Bisglycinaat en tauraat scoren het hoogst; oxide het laagst. Check altijd het elementaire magnesiumgehalte per portie.",
-  Slaapondersteuning:
-    "Bisglycinaat is de favoriete keuze voor slaap vanwege de combinatie met glycine, een aminozuur dat ontspanning bevordert. Tauraat biedt vergelijkbare ondersteuning via een ander mechanisme.",
-  Maagvriendelijkheid:
-    "Magnesiumoxide en citraat kunnen bij hogere doseringen laxerend werken. Bisglycinaat en tauraat zijn doorgaans maagvriendelijker.",
+  Vormkwaliteit:
+    "Bisglycinaat, citraat en tauraat zijn gangbare organisch gebonden vormen; oxide wordt minder goed opgenomen. Check altijd het elementaire magnesiumgewicht per portie — daar vergelijk je eerlijk op.",
+  Dosering:
+    "Elementair magnesium is wat telt voor vergelijking met de ADH en veilige bovengrenzen. Complexen combineren vormen; je wilt weten of de totale elementaire mg bij je routine past.",
+  Transparantie:
+    "Transparante merken vermelden vormen, elementaire mg en zo nodig vulstoffen. Als alleen 'magnesiumcomplex' staat zonder opdeling is vergelijken lastiger.",
   "Prijs/kwaliteit":
-    "Citraat is de betaalbare optie met goede opneembaarheid. Bisglycinaat is duurder maar levert meer waarde voor slaap en ontspanning.",
+    "Bereken de prijs per dag per elementair magnesium. Citraat wint vaak op kosten; bisglycinaat kan duurder per mg zijn maar past bij voorkeur voor maagcomfort en capsulevorm.",
 };
 
 const VITAMINED_EXPLANATIONS: Record<string, string> = {
@@ -63,13 +63,13 @@ const VITAMINED_EXPLANATIONS: Record<string, string> = {
 
 const ASHWAGANDHA_EXPLANATIONS: Record<string, string> = {
   "Extract kwaliteit":
-    "KSM-66 is het meest onderzochte ashwagandha-extract voor cortisolverlaging, testosteron en sportieve prestaties. Sensoril heeft een hogere withanolideconcentratie en wordt vaker aanbevolen voor slaap. Generieke extracten zijn moeilijker te vergelijken omdat gestandaardisering vaak ontbreekt. Kies altijd een gepatenteerd extract als basis.",
+    "Wij beoordelen genoemd extracttype, withanolidepercentage en plantdeel. In de EU zijn gezondheidsclaims voor ashwagandha nog niet definitief afgerond (on-hold); je vergelijkt daarom vooral specificaties en betrouwbaarheid op het etiket.",
   Dosering:
-    "300 mg KSM-66 per dag is in meerdere gerandomiseerde studies effectief bewezen. 600 mg biedt ruimte voor een hogere behoefte zonder risico op bijwerkingen. Doseringen onder 250 mg KSM-66 zijn zelden onderzocht en bieden minder zekerheid over werkzaamheid.",
+    "Let op mg extract per dag en of fabrikant de standaardisatie steekt. Onderzoek gebruikt uiteenlopende doses; dat is geen garantie voor een persoonlijke uitkomst buiten onderzoekscontext.",
   "Prijs/kwaliteit":
-    "Vergelijk niet op verpakkingsprijs maar op prijs per effectieve dag. Een product met 300 mg KSM-66 voor €0,42/dag versus 600 mg voor €0,23/dag: het tweede levert twee keer zoveel werkzame stof voor de helft van het geld. Bereken altijd prijs per mg gestandaardiseerd extract.",
+    "Bereken de prijs per mg vermeld extract en per dagdosering. Twee potten met dezelfde merknaam-ingrediënt kunnen sterk verschillen in hoeveel werkzame stof je per euro krijgt.",
   Transparantie:
-    "Een transparant supplement vermeldt het exacte percentage withanoliden, het gebruikte extract-type en idealiter batchgewijze lab-uitslagen. Producten die alleen 'ashwagandha-poeder' of een vaag mg-getal vermelden zijn niet eerlijk te vergelijken met gestandaardiseerde extracten.",
+    "Batchinformatie, LAB-testen en exacte withanolide-% maken producten vergelijkbaar. Vage 'extract' zonder standaardisatie maakt een eerlijke vergelijking moeilijk.",
 };
 
 const EIWEITPOEDER_EXPLANATIONS: Record<string, string> = {

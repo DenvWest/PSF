@@ -4,7 +4,7 @@ export const ashwagandhaData: ComparisonPageData = {
   category: "ashwagandha",
   h1: "Beste ashwagandha supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Drie ashwagandha supplementen vergeleken op extract-type, withanolidegehalte, dosering en prijs — speciaal beoordeeld voor mannen 40+ die stress, slaap en veerkracht willen ondersteunen.",
+    "Drie ashwagandha supplementen vergeleken op extract-type, withanolidegehalte, dosering en prijs — voor wie bewust kiest op basis van standaardisatie en transparantie op het etiket. Let op: dit ingrediënt staat in de EU in de on-hold-procedure voor gezondheidsclaims; vergelijk producten dus vooral op kwaliteit en specificaties, niet op beloofde uitkomsten.",
   seoTitle:
     "Beste Ashwagandha Supplement 2026 — KSM-66 Vergelijking | PerfectSupplement",
   seoDescription:
@@ -23,7 +23,7 @@ export const ashwagandhaData: ComparisonPageData = {
       badgeLabel: "Beste gemak",
       productName: "Vital Nutrition Ashwagandha KSM-66",
       teaser:
-        "Eén capsule per dag met bewezen 300 mg KSM-66. Nederlands geproduceerd met lab-testen en perfecte reviewscore.",
+        "Eén capsule per dag met 300 mg KSM-66. Nederlands geproduceerd met lab-testen en sterke gebruikersbeoordelingen.",
       affiliateSlug: "vitalnutrition-ashwagandha-ksm66",
       slug: "vitalnutrition-ashwagandha-ksm66",
     },
@@ -85,7 +85,7 @@ export const ashwagandhaData: ComparisonPageData = {
       bestFor: "Beste gemak",
       variantTag: "KSM-66® extract (300 mg/dag)",
       summary:
-        "Eén capsule per dag met 300 mg KSM-66 extract — de dosis die effectief is bewezen in klinische studies. Nederlands geproduceerd, lab getest en gestandaardiseerd op 5% withanoliden. Perfecte reviewscore van 12 gebruikers.",
+        "Eén capsule per dag met 300 mg KSM-66 extract — een dosering die in wetenschappelijke publicaties vaak voorkomt. Nederlands geproduceerd, lab getest en gestandaardiseerd op 5% withanoliden. Sterke gebruikersbeoordelingen.",
       specs: [
         { label: "Extract", value: "KSM-66®" },
         { label: "Withanoliden", value: "≥5%" },
@@ -98,9 +98,9 @@ export const ashwagandhaData: ComparisonPageData = {
         { label: "Reviews", value: "12 (5★)" },
       ],
       pros: [
-        "Eén capsule per dag (300 mg is effectieve dosis)",
+        "Eén capsule per dag (300 mg — gangbare onderzoeksdosis)",
         "Nederlands geproduceerd met lab-testen",
-        "Perfecte reviewscore (5/5)",
+        "Hoge reviewscore bij gebruikers",
       ],
       cons: [
         "Hogere prijs per dag dan Vitaminstore",
@@ -198,27 +198,27 @@ export const ashwagandhaData: ComparisonPageData = {
     {
       question: "Kan ik ashwagandha combineren met magnesium?",
       answer:
-        "Ja, de combinatie is complementair. Ashwagandha verlaagt cortisol en ondersteunt stressresistentie; magnesium (met name bisglycinaat) bevordert ontspanning en slaapkwaliteit — combineer met magnesium voor slaap als je beide doelen hebt. Beide kunnen 's avonds worden ingenomen. Bekijk onze [magnesiumvergelijking](/beste-magnesium) voor productkeuze.",
+        "Veel mensen combineren extracten en mineralen in aparte producten. Magnesium draagt bij tot normale spier- en zenuwfunctie en tot een normale psychologische functie. Ashwagandha beoordeel je op extractkwaliteit en etiketinformatie. Bij twijfel over stapeling met medicatie: overleg met je arts. Bekijk onze [magnesiumvergelijking](/beste-magnesium) voor productkeuze.",
     },
     {
       question: "Hoe lang moet ik ashwagandha gebruiken?",
       answer:
-        "Studies lopen doorgaans 8 tot 12 weken. Meetbare effecten op cortisol, stressperceptie en slaapkwaliteit worden gemiddeld na 4-8 weken gerapporteerd. Plan een minimumkuur van 8 weken voordat je de werking evalueert.",
+        "In klinische studies lopen interventies vaak 8 tot 12 weken. Individuele ervaring verschilt sterk; plan een vaste evaluatieperiode en stop bij ongewenste klachten. Dit is geen voorschrift — bij een medische situatie hoort begeleiding door een zorgverlener.",
     },
     {
       question: "KSM-66 of Sensoril — wat is beter?",
       answer:
-        "KSM-66 is het meest onderzocht voor dagelijks gebruik: cortisolreductie, testosteron en sportieve prestaties. Sensoril heeft een hogere withanolideconcentratie en wordt vaker aanbevolen voor slaapverbetering. Geen van de drie producten in deze vergelijking bevat Sensoril.",
+        "Beide zijn merkextraten met verschillende standaardisatie en plantdeelkeuzes. In deze vergelijking zie je vooral KSM-66. Welk extract past, hangt af van jouw voorkeur voor transparantie op het etiket en de beschikbaarheid van batchinformatie — niet van één universele gezondheidsclaim in EU-context.",
     },
     {
       question: "Zijn er bijwerkingen?",
       answer:
-        "Ashwagandha wordt over het algemeen goed verdragen bij aanbevolen doseringen. Milde maagklachten zijn mogelijk bij inname op nuchtere maag. Bij schildklieraandoeningen of gebruik van schildkliermedicatie wordt het afgeraden zonder overleg met een arts. Raadpleeg bij twijfel altijd een zorgverlener.",
+        "Ashwagandha wordt in veel trials redelijk verdragen bij de gebruikte doses. Milde maagklachten kunnen voorkomen bij inname op een nuchtere maag. Bij schildklieraandoeningen of schildkliermedicatie: niet zelf experimenteren zonder arts. Raadpleeg bij twijfel altijd een zorgverlener.",
     },
     {
       question: "Wat is het verschil tussen extract en heel kruid?",
       answer:
-        "Een extract is geconcentreerd en gestandaardiseerd op een bepaald percentage actieve stoffen (withanoliden). Heel kruid bevat meer plantcomponenten maar met een wisselend en moeilijker te voorspellen withanolidegehalte. Voor betrouwbare werking verdient gestandaardiseerd extract de voorkeur.",
+        "Een extract is geconcentreerd en gestandaardiseerd op een bepaald percentage actieve stoffen (withanoliden). Heel kruid bevat meer plantcomponenten maar met een wisselend en moeilijker te voorspellen withanolidegehalte. Voor reproduceerbare specificaties op het etiket verdient gestandaardiseerd extract vaak de voorkeur bij vergelijken.",
     },
   ],
 };

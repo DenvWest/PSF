@@ -36,7 +36,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "omega-3",
     name: "Omega-3 (EPA/DHA)",
     reason:
-      "Je visinname is laag of je voedingsscore vraagt om een brede basis. Omega-3 ondersteunt hart, hersenen en ontstekingsbalans.",
+      "Je visinname is laag of je voedingsscore vraagt om een brede basis. EPA en DHA dragen bij tot de normale werking van het hart; DHA bovendien tot instandhouding van hersenfunctie en gezichtsvermogen (bij voldoende dagdosis volgens claimvoorwaarden).",
     priority: 1,
     domains: ["Voeding", "Energie", "Herstel"],
     hasComparison: true,
@@ -52,7 +52,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "magnesium-glycinaat",
     name: "Magnesium glycinaat",
     reason:
-      "Je slaap, stress of herstel vraagt om meer ontspanning. Magnesium glycinaat is een veelgekozen vorm voor avond en rust.",
+      "Je routine of energie-indicator vraagt om ondersteuning via mineralen. Magnesium draagt o.a. bij tot vermindering van vermoeidheid en tot normale psychologische functie; bisglycinaat is een veelgekozen vorm.",
     priority: 2,
     domains: ["Slaap", "Stress", "Herstel"],
     hasComparison: true,
@@ -69,7 +69,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "ashwagandha",
     name: "Ashwagandha",
     reason:
-      "Je stressscore is laag of er is een duidelijk cortisolpatroon. Ashwagandha wordt vaak ingezet voor stressbelasting en ritme.",
+      "Je profiel matcht op door jou gekozen voorkeuren voor een kruidextract-vergelijking. Let op: ashwagandha staat EU-breed in de on-hold-procedure voor gezondheidsclaims en VWS toetst de voedselveiligheid in eigen procedure.",
     priority: 3,
     domains: ["Stress", "Slaap"],
     hasComparison: true,
@@ -86,7 +86,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "zink",
     name: "Zink",
     reason:
-      "Zink is essentieel voor eiwitaanmaak en immuunfunctie. Tekort vertraagt spierherstel.",
+      "Zink draagt onder meer bij tot normale eiwitsynthese en een normaal functionerend immuunsysteem — een logische optie als je profiel hierop stuurt.",
     priority: 4,
     domains: ["Voeding", "Herstel", "Stress"],
     hasComparison: true,
@@ -110,7 +110,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "creatine",
     name: "Creatine",
     reason:
-      "Creatine ondersteunt spierkracht bij intensieve inspanning. Na 40 daalt je natuurlijke creatineproductie — aanvullen kan helpen bij sport en herstel. Opkomend onderzoek suggereert ook een rol bij mentale scherpte.",
+      "Creatine verhoogt de fysieke prestaties bij opeenvolgende reeksen van zeer korte, intense inspanningen (minimaal 3 g/dag). Handig als je aan krachtsport of korte bursts doet.",
     priority: 20,
     domains: ["Beweging", "Herstel"],
     hasComparison: true,

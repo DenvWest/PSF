@@ -131,7 +131,10 @@ export default function Page() {
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
               <Link href="/profiel/lage-batterij" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
-                <p className="text-base text-stone-600 leading-relaxed">Altijd moe? Omega-3 ondersteunt je energieproductie op celniveau.</p>
+                <p className="text-base text-stone-600 leading-relaxed">
+                  Vaak moe? EPA en DHA dragen bij tot normale hartfunctie; DHA ook tot instandhouding
+                  van hersenfunctie — handig als je weinig vette vis eet.
+                </p>
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
               <Link href="/thema/herstel" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">

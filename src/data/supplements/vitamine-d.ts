@@ -207,9 +207,9 @@ export const vitamineDData: ComparisonPageData = {
         "Levertraan is een natuurlijke bron, maar niet per se beter opneembaar dan synthetisch cholecalciferol. Beide vormen zijn effectief in het verhogen van je 25(OH)D-bloedwaarden. Het verschil zit in de bron, niet in de biologische beschikbaarheid.",
     },
     {
-      question: "Waarom is vitamine D belangrijk voor testosteron?",
+      question: "Waarom is vitamine D vaak ter sprake bij hormonale gezondheid?",
       answer:
-        "Vitamine D werkt direct op testiculair weefsel en indirect via de calciumhuishouding. Mannen met een vitamine D-tekort tonen consistent lagere testosteronwaarden in epidemiologisch onderzoek. Dit maakt adequate vitamine D-status bijzonder relevant voor mannen 40+.",
+        "Vitamine D is geen testosteron-claim op het etiket in de EU. Wel draagt vitamine D o.a. bij tot normale spierwerking en een normaal functionerend immuunsysteem. Observatieonderzoek koppelt lage 25(OH)D-waarden aan diverse gezondheidsmarkers — dat is correlatie, geen reden om zelf hoge doses te nemen zonder advies. Laat bloedwaarden en suppletie afstemmen met een zorgverlener.",
     },
     {
       question: "Kan ik vitamine D combineren met magnesium?",

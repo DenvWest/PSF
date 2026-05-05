@@ -30,7 +30,7 @@ function maxProductScore(products: ReadonlyArray<{ score: number }>): number {
 export const HUB_COMPARISON_TAGLINES: Record<string, string> = {
   magnesium: "Vormen, elementair gehalte en prijs per dag op een rij.",
   "omega-3": "EPA/DHA, zuiverheid en dagkosten — eerlijk vergeleken.",
-  ashwagandha: "Extracten, withanoliden en dosering voor stress & herstel.",
+  ashwagandha: "Extracten, withanoliden en dagdosering — EU-claims zijn nog niet definitief.",
   "vitamine-d": "D3, K2-combo’s en wat het etiket écht zegt.",
   creatine: "Monohydraat, micronized en prijs per dosering.",
   zink: "Bisglycinaat, picolinaat en opname — praktisch gekozen.",
@@ -43,7 +43,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "magnesium",
     name: "Magnesium",
     wiifm:
-      "Ondersteunt slaapkwaliteit, stressverwerking en spierherstel",
+      "Draagt o.a. bij tot normale psychologische functie, zenuw- en/of spierfunctie en vermindering van vermoeidheid",
     themas: ["slaap", "stress", "herstel"],
     topScore: maxProductScore(magnesiumData.products),
     guideHref: "/supplementen/magnesium",
@@ -54,7 +54,8 @@ export const CATALOG: CatalogEntry[] = [
   {
     slug: "ashwagandha",
     name: "Ashwagandha",
-    wiifm: "Adaptogeen dat kan bijdragen aan ontspanning en stressverwerking",
+    wiifm:
+      "Vergelijk extractkwaliteit op etiket — EU-gezondheidsclaims voor dit ingrediënt zijn nog niet definitief",
     themas: ["stress", "herstel"],
     topScore: maxProductScore(ashwagandhaData.products),
     guideHref: "/supplementen/ashwagandha",
@@ -78,7 +79,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "vitamine-d",
     name: "Vitamine D",
     wiifm:
-      "Belangrijk voor immuunsysteem, botten en stemming",
+      "Onder meer immuunsysteem, botten en spieren — volgens EU-claimteksten voor vitamine D",
     themas: ["energie", "herstel"],
     topScore: maxProductScore(vitamineDData.products),
     guideHref: "/supplementen/vitamine-d",
@@ -90,7 +91,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "creatine",
     name: "Creatine",
     wiifm:
-      "Ondersteunt spierkracht, herstel en cognitieve prestaties",
+      "Verhoogt fysieke prestaties bij zeer korte, intense inspanning (minimaal 3 g/dag)",
     themas: ["energie", "herstel"],
     topScore: maxProductScore(creatineData.products),
     guideHref: "/supplementen/creatine",
@@ -102,7 +103,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "zink",
     name: "Zink",
     wiifm:
-      "Ondersteunt immuunfunctie en draagt bij aan een normaal testosterongehalte",
+      "Ondersteunt o.a. immuunsysteem en instandhouding van normaal testosterongehalte in het bloed",
     themas: ["herstel", "stress"],
     topScore: maxProductScore(zinkData.products),
     guideHref: "/supplementen/zink",

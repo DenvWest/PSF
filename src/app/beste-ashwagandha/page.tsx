@@ -133,12 +133,22 @@ export default function Page() {
 
         <section className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8">
           <aside className="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-10 text-sm text-slate-600">
-            <p className="font-medium text-slate-700 mb-1">Over gezondheidsclaims</p>
+            <p className="font-medium text-slate-700 mb-1">Over gezondheidsclaims en regelgeving</p>
             <p>
-              De gezondheidsclaims over ashwagandha staan op de Europese &quot;on hold&quot;-lijst.
-              Dit betekent dat ze zijn ingediend bij EFSA maar nog niet definitief beoordeeld.
-              Ze mogen voorlopig worden gebruikt. De Nederlandse overheid (VWS) onderzoekt momenteel
-              of ashwagandha als supplement verkrijgbaar blijft in Nederland.
+              Ashwagandha staat in de EU op de on-hold-lijst voor gezondheidsclaims: ingediend bij
+              EFSA, nog niet definitief beoordeeld; pendende claims mogen voorlopig worden gebruikt.
+              Los daarvan loopt in Nederland een aparte toets op veiligheid en regelgeving via VWS
+              (Warenwet), met publieke internetconsultatie. Houd rekening met mogelijke
+              regelgevingswijzigingen — zie{" "}
+              <a
+                href="https://www.internetconsultatie.nl/voedingssupplementen_en_kruidenpreparaten"
+                className="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                internetconsultatie.nl — voedingssupplementen en kruidenpreparaten
+              </a>
+              .
             </p>
           </aside>
 
@@ -154,7 +164,8 @@ export default function Page() {
               Meer over ashwagandha
             </h3>
             <p className="mt-2 text-sm text-slate-600">
-              Ashwagandha werkt het best in combinatie met andere herstelkeuzes. Lees de theorie of ontdek wat er naast ashwagandha relevant is voor stress en slaap na je 40e.
+              Vergelijk extracten op transparantie en dosering. Themapagina&apos;s over leefstijl
+              (bijv. stress en slaap) zijn géén etiketclaims voor dit ingrediënt in EU-context.
             </p>
             <div className="mt-3 space-y-2">
               <Link
@@ -182,7 +193,11 @@ export default function Page() {
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
               <Link href="/profiel/onrustige-slaper" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
-                <p className="text-base text-stone-600 leading-relaxed">Stress houdt je wakker. Ashwagandha kan helpen om tot rust te komen.</p>
+                <p className="text-base text-stone-600 leading-relaxed">
+                  Lang wakker liggen door prikkels? Combineer leefstijl met zorgvuldig gekozen
+                  supplementen; bij dit ingrediënt zijn etiketclaims in de EU nog niet definitief
+                  vastgesteld.
+                </p>
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
             </div>

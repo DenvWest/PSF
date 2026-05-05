@@ -125,7 +125,8 @@ export default function Page() {
               Meer over zink
             </h3>
             <p className="mt-2 text-sm text-slate-600">
-              Zink speelt een rol bij testosteron, immuunfunctie en herstel — drie thema&apos;s die na je 40e extra aandacht verdienen.
+              Zink draagt o.a. bij tot een normaal immuunsysteem, eiwitsynthese en — officieel
+              geformuleerd — tot instandhouding van een normaal testosterongehalte in het bloed.
             </p>
             <div className="mt-3 space-y-2">
               <Link

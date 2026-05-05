@@ -201,7 +201,7 @@ export const creatineData: ComparisonPageData = {
     {
       question: "Helpt creatine ook zonder sporten?",
       answer:
-        "Er is groeiend bewijs dat creatine cognitieve functie kan ondersteunen, met name bij slaaptekort en mentale vermoeidheid. Maar het primaire en meest bewezen voordeel blijft spierkracht en -herstel bij trainende volwassenen.",
+        "De EU-goedgekeurde claim voor creatine gaat over fysieke prestaties bij zeer korte, intense inspanningen (minimaal 3 g/dag). Onderzoek naar andere uitkomsten is niet hetzelfde als een gezondheidsclaim op het etiket. Train je niet en ben je gezond, dan is het nut vooral een persoonlijke afweging naast voeding.",
     },
     {
       question: "Wat is het verschil tussen Creapure® en gewone creatine?",
@@ -211,7 +211,7 @@ export const creatineData: ComparisonPageData = {
     {
       question: "Kan ik creatine combineren met magnesium?",
       answer:
-        "Ja. Combineer met magnesium voor spierherstel en ontspanning: creatine vult de fosfaatbuffer in spieren aan; magnesium ondersteunt spiercontractie en -ontspanning. Neem ze bij voorkeur op verschillende momenten als je gevoelige darmen hebt. Zie onze [magnesiumvergelijking](/beste-magnesium) voor de beste keuze.",
+        "Ja. Creatine vul je fosfaatsysteem in spierweefsel aan bij kortdurende intensiteit; magnesium draagt bij tot normale spierfunctie. Neem ze bij voorkeur op verschillende momenten als je een gevoelige darm hebt. Zie onze [magnesiumvergelijking](/beste-magnesium) voor de beste keuze.",
     },
   ],
 };

@@ -45,7 +45,7 @@ export const melatonineData: ComparisonPageData = {
       bestFor: "Beste allround",
       variantTag: "Slaapcomplex (8 werkzame stoffen)",
       summary:
-        "Dit is geen puur melatonineproduct maar een breed spectrum slaapcomplex: KSM-66 ashwagandha (gestandaardiseerd op withanoliden), valeriaan, 5-HTP, L-theanine en GABA in capsules. Ideaal als je naast timing ook ondersteuning zoekt rond stress en ontspanning — met een scherpe maandprijs voor wat er op het etiket staat.",
+        "Dit is geen puur melatonineproduct maar een breed samengestelde nachtformule: KSM-66 ashwagandha (gestandaardiseerd op withanoliden), valeriaan, 5-HTP, L-theanine en GABA in capsules. Handig als je naast melatonine ook meerdere werkzame stoffen in één capsule wilt — let op dat ashwagandha in de EU in de on-hold-procedure voor claims zit.",
       specs: [
         {
           label: "Dosering per portie",
@@ -57,9 +57,9 @@ export const melatonineData: ComparisonPageData = {
         { label: "Prijs per maand", value: "€ 13,98" },
       ],
       pros: [
-        "Breed spectrum: 8 werkzame stoffen voor slaap",
+        "Breed samengestelde formule: meerdere werkzame stoffen",
         "KSM-66 ashwagandha (gepatenteerd extract)",
-        "Bevat L-theanine én 5-HTP voor ontspanning",
+        "Bevat L-theanine én 5-HTP",
         "Scherpe prijs voor wat je krijgt",
       ],
       cons: [
@@ -197,7 +197,7 @@ export const melatonineData: ComparisonPageData = {
     {
       question: "Is een slaapcomplex beter dan pure melatonine?",
       answer:
-        "Dat hangt af van je situatie. Heb je vooral last van een brein dat 's avonds niet loslaat door stress? Dan kan een complex met onder andere ashwagandha (zoals KSM-66) beter passen — zie onze [ashwagandha-vergelijking](/beste-ashwagandha). Is je probleem vooral een duidelijk inslaap- of ritmevraagstuk, dan kan een puur, laag gedoseerd melatonineproduct soms genoeg zijn. Dit artikel zet beide benaderingen naast elkaar.",
+        "Dat hangt af van je situatie. Heb je vooral last van prikkelbaar avondritme door onrust in je hoofd, dan kan een meer-ingrediëntenformule aansluiten — zie desgewenst onze [ashwagandha-vergelijking](/beste-ashwagandha) en let op de EU on-hold-status van claims daar. Is je vraag vooral inslapen volgens de melatonine-claimcontext, dan kan een puur, laag gedoseerd melatonineproduct passender zijn. Dit artikel zet benaderingen naast elkaar.",
     },
     {
       question: "Mag je melatonine elke dag gebruiken?",

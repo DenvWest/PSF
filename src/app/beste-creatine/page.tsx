@@ -132,7 +132,7 @@ export default function Page() {
                 href="/beste-magnesium"
                 className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
               >
-                Beste magnesium — ondersteunt herstel en slaapkwaliteit →
+                Beste magnesium — o.a. normale spierfunctie en vermindering van vermoeidheid →
               </Link>
               <Link
                 href="/supplement-kiezen-waar-op-letten"

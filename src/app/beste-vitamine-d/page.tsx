@@ -125,7 +125,8 @@ export default function Page() {
               Meer over vitamine D
             </h3>
             <p className="mt-2 text-sm text-slate-600">
-              Vitamine D raakt aan energie, immuunfunctie en stemming — drie klachten die na je 40e vaker samenkomen.
+              Vitamine D draagt o.a. bij tot normale botten, spieren en een normaal immuunsysteem —
+              thema&apos;s die na je 40e vaker bespreekbaar worden met je zorgverlener.
             </p>
             <div className="mt-3 space-y-2">
               <Link
