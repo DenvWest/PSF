@@ -8,6 +8,11 @@ import { BuyingGuide } from "@/components/supplements/BuyingGuide";
 import { FaqSection } from "@/components/supplements/FaqSection";
 import { StickyMobileCta } from "@/components/supplements/StickyMobileCta";
 import { TrustBar } from "@/components/supplements/TrustBar";
+import {
+  ComparisonChooserIntro,
+  ComparisonEducationalLead,
+  ComparisonIntakeFallbackCta,
+} from "@/components/supplements/ContentFirstComparisonCTAs";
 import Container from "@/components/layout/Container";
 import {
   buildBreadcrumbSchema,
@@ -89,12 +94,10 @@ export default function Page() {
           </p>
         </div>
 
-        <section className="mx-auto mt-12 w-full max-w-7xl px-6 lg:px-8">
-          <h2 className="mb-4 text-2xl font-semibold tracking-tight text-slate-900">
-            In één oogopslag vergelijken
-          </h2>
+        <ComparisonEducationalLead category={data.category} />
+        <ComparisonChooserIntro category={data.category}>
           <ComparisonTable rows={data.tableRows} criteria={data.comparisonCriteria} doseringColumnLabel={data.tableDoseringColumnLabel} />
-        </section>
+        </ComparisonChooserIntro>
 
         <section id="producten" className="mx-auto mt-16 w-full max-w-7xl space-y-8 px-6 lg:px-8">
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
@@ -145,30 +148,7 @@ export default function Page() {
           </div>
         </section>
 
-        <Container>
-          <section className="my-16">
-            <div className="bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] text-white rounded-2xl p-8 lg:p-12 text-center">
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-white">
-                Wil je weten welk supplement bij jou past?
-              </h2>
-              <p className="text-white/80 mt-3 max-w-md mx-auto text-sm leading-relaxed">
-                Doe de gratis Leefstijlcheck — 12 vragen, 3 minuten, persoonlijk resultaat.
-              </p>
-              <div className="mt-6">
-                <Link
-                  href="/intake"
-                  className="inline-flex items-center gap-2 bg-white text-[#5A8F6A] rounded-lg px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
-                >
-                  Start de Leefstijlcheck
-                  <span aria-hidden="true">→</span>
-                </Link>
-              </div>
-              <p className="text-white/50 text-xs mt-4">
-                Geen account nodig — je gegevens worden anoniem verwerkt.
-              </p>
-            </div>
-          </section>
-        </Container>
+        <ComparisonIntakeFallbackCta />
 
         <section className="border-t border-stone-200 py-10" role="complementary">
           <Container>

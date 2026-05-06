@@ -282,23 +282,52 @@ export default function SupplementPage({ data }: SupplementPageProps) {
           <section
             id="leefstijl-cta"
             aria-labelledby="leefstijl-cta-heading"
-            className="rounded-2xl bg-amber-50 px-6 py-12 text-center"
+            className="py-16 lg:py-20"
           >
-            <h2
-              id="leefstijl-cta-heading"
-              className="font-serif text-2xl text-stone-900"
-            >
-              Past dit supplement bij jouw situatie?
-            </h2>
-            <p className="mx-auto mt-3 max-w-md text-base text-stone-600">
-              Doe de gratis Leefstijlcheck en ontdek welke supplementen écht bij jou passen.
-            </p>
-            <Link
-              href="/intake"
-              className="mt-6 inline-block rounded-lg bg-[#3C7A56] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#2E5F43]"
-            >
-              Doe de Leefstijlcheck →
-            </Link>
+            <div className="rounded-2xl bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] p-8 lg:p-12 text-center">
+              <p className="text-xs font-medium uppercase tracking-widest text-white/50">
+                PERSOONLIJK ADVIES
+              </p>
+              <h2
+                id="leefstijl-cta-heading"
+                className="mt-3 font-serif text-2xl lg:text-3xl text-white"
+              >
+                Twijfel je of{" "}
+                {data.naam.charAt(0).toLowerCase() + data.naam.slice(1)} echt
+                iets voor jou is?
+              </h2>
+              <p className="mx-auto mt-4 max-w-lg text-base text-white/80">
+                De meeste klachten beginnen niet bij een tekort, maar bij
+                leefstijl. Onze check laat zien wat er écht speelt — en of een
+                supplement zinvol is.
+              </p>
+              <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2">
+                <span className="text-sm text-white/70">
+                  ✓ 12 vragen, 3 minuten
+                </span>
+                <span className="text-sm text-white/70">
+                  ✓ Scores op 6 leefstijldomeinen
+                </span>
+                <span className="text-sm text-white/70">
+                  ✓ Persoonlijk Herstelplan met quick wins
+                </span>
+                <span className="text-sm text-white/70">
+                  ✓ Gerichte supplementroute op basis van jouw profiel
+                </span>
+              </div>
+              <div className="mt-8">
+                <Link
+                  href="/intake"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#5A8F6A] shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
+                >
+                  Start je leefstijlcheck
+                  <span aria-hidden>→</span>
+                </Link>
+              </div>
+              <p className="mt-4 text-xs text-white/40">
+                Gratis · Geen account nodig · Anoniem verwerkt
+              </p>
+            </div>
           </section>
 
           <MedicalDisclaimer />
