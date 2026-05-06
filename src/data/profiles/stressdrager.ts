@@ -5,17 +5,17 @@ export const stressdragerProfile: ProfilePageData = {
   label: "Stressdrager",
 
   seo: {
-    title: "Chronische Stress als Man? Herken Het en Pak Het Aan | PerfectSupplement",
+    title: "Stressdrager: Profiel Chronische Stress Mannen 40+ | PerfectSupplement",
     description:
-      "Stress hoort erbij, maar het mag je niet opvreten. Herken je de signalen? Ontdek wat je vandaag nog kunt doen — van leefstijl tot supplementen.",
+      "Continu aan, nooit echt uit? Het Stressdrager-profiel: herkenning, biologie, quick wins en een 4-weken plan om er uit te komen.",
     canonical: "https://perfectsupplement.nl/profiel/stressdrager",
     targetKeyword: "chronische stress man 40",
   },
 
   hero: {
-    headline: "Stressdrager: draag jij meer dan je lichaam aankan?",
+    headline: "Stressdrager: Altijd Aan, Nooit Echt Uit?",
     subline:
-      "Stress is niet het probleem. Niet herstellen van stress is het probleem. En na 40 wordt dat herstel steeds lastiger.",
+      "Je lichaam staat continu in de paraatstand. Niet acuut paniek, maar een onderhuidse spanning die je niet meer voelt — totdat hij eraf gaat.",
   },
 
   recognition: {
@@ -23,40 +23,40 @@ export const stressdragerProfile: ProfilePageData = {
     points: [
       {
         situation:
-          "Je ligt in bed en je hoofd stopt niet met draaien. Morgen is er weer een dag vol verplichtingen.",
-        emotion: "onrust",
+          "Je schouders zitten standaard hoog, ook als er niets aan de hand is.",
+        emotion: "spanning",
       },
       {
         situation:
-          "Je snapt niet waarom kleine dingen je irriteren — een file, een vraag van je partner, een mailtje te veel.",
+          "Je tanden klemmen in je slaap, of je merkt dat je ze overdag op elkaar zet.",
+        emotion: "overbelasting",
+      },
+      {
+        situation:
+          "Tijdens vakantie word je in de eerste dagen ziek of moe — alsof je lichaam pas dán durft te ontspannen.",
+        emotion: "uitstel",
+      },
+      {
+        situation:
+          "Kleine ergernissen voelen groter dan ze zijn; je geduld is korter dan vroeger.",
         emotion: "prikkelbaarheid",
       },
       {
         situation:
-          "Je hebt het gevoel dat je altijd 'aan' staat. Zelfs in het weekend kun je niet echt ontspannen.",
-        emotion: "uitputting",
-      },
-      {
-        situation:
-          "Je traint of beweegt, maar het voelt alsof je lichaam niet meewerkt. Stijf, moe, geen progressie.",
-        emotion: "frustratie",
-      },
-      {
-        situation:
-          "Je weet dat je iets moet veranderen, maar je hebt er de energie niet voor. Een vicieuze cirkel.",
-        emotion: "machteloosheid",
+          "Je valt moe in slaap, maar wordt om 3 of 4 uur klaarwakker met een hoofd vol gedachten.",
+        emotion: "onrust",
       },
     ],
     closer:
-      "Als je hier drie of meer van herkent, lees dan verder. Je bent niet gek en je bent niet alleen. Er is iets fysiologisch aan de hand — en je kunt er iets aan doen.",
+      "Als je hier drie of meer van herkent, is er waarschijnlijk iets structureels aan de hand met hoe je lichaam stress vasthoudt. Dat is geen karakter — het is biologie. En je kunt het stap voor stap veranderen.",
   },
 
   understanding: {
     title: "Wat er in je lichaam gebeurt",
     paragraphs: [
-      "Je lichaam heeft een stresssysteem dat ontworpen is voor korte pieken: een leeuw, een deadline, een conflict. Na de piek hoort er rust te komen. Je stresshormoon cortisol daalt, je herstelhormonen nemen het over, en je lichaam repareert.",
-      "Maar als de stress niet stopt — werk, zorgen, slechte slaap, te weinig beweging — blijft cortisol hoog. En hoog cortisol remt precies de systemen die je nodig hebt om te herstellen: je slaap wordt oppervlakkiger, je spieren herstellen langzamer, je testosteron daalt, en je energieniveau zakt.",
-      "Na 40 wordt dit erger. Je lichaam produceert van nature minder herstelhormonen. De buffer die je op je 30e nog had, is dunner geworden. Dezelfde hoeveelheid stress heeft nu meer impact.",
+      "Bij chronische stress staat je HPA-as (de stress-as tussen hersenen en bijnieren) langdurig \"aan\". Cortisol — het ochtendhormoon dat je wakker maakt — blijft in de avond te hoog en dipt in de ochtend te laag.",
+      "Je sympathische zenuwstelsel (\"vechten of vluchten\") domineert over het parasympathische (\"rust en herstel\"). Het gevolg: je lichaam herstelt slechter, je slaap is oppervlakkiger, je spijsvertering vertraagt, en je testosteron daalt — want cortisol en testosteron concurreren om dezelfde bouwstenen.",
+      "Na 40 wordt dit patroon harder voelbaar omdat je buffer kleiner wordt: een doorgewerkte avond herstel je niet meer in één nacht.",
     ],
   },
 
@@ -64,27 +64,30 @@ export const stressdragerProfile: ProfilePageData = {
     {
       id: "vandaag",
       title: "Wat je vandaag nog kunt doen",
-      subtitle: "Drie dingen die niets kosten en direct werken",
+      subtitle: "Drie quick wins die direct je zenuwstelsel richting rust duwen",
       items: [
         {
-          title: "4-7-8 ademhaling voor het slapen",
+          title: "Adem bewust uit — 5 minuten",
           description:
-            "Adem in door je neus (4 sec), houd vast (7 sec), adem uit door je mond (8 sec). Doe dit 4 rondes. Het activeert je parasympathisch zenuwstelsel — het systeem dat je lichaam vertelt dat het veilig is om te herstellen.",
-          actionable: "Doe dit vanavond in bed, vóór je je telefoon pakt.",
+            "Adem 5 minuten per dag bewust uit (4 sec in, 6 sec uit). Dat activeert de nervus vagus en kalmeert direct het zenuwstelsel.",
+          actionable:
+            "Zet een timer op 5 minuten en doe dit vóór de lunch of na het avondeten — vaste plek, geen telefoon.",
           timeframe: "Vandaag",
         },
         {
-          title: "Schermstop om 21:00",
+          title: "Stop met cafeïne na 12:00",
           description:
-            "Blauw licht van je telefoon remt melatonine — je slaaphormoon. En scrollen houdt je brein in 'aan'-modus. Leg je telefoon om 21:00 in een andere kamer.",
-          actionable: "Stel een alarm in op 21:00 met de tekst 'telefoon weg'.",
+            "Cafeïne heeft een halfwaardetijd van 5-7 uur — een koffie om 14:00 zit nog rond bedtijd in je systeem.",
+          actionable:
+            "Na de lunch alleen water of cafeïnevrije thee. Geen cola of pre-workout met verborgen cafeïne.",
           timeframe: "Vandaag",
         },
         {
-          title: "10 minuten wandelen na het avondeten",
+          title: "30 minuten zonder scherm vóór bed",
           description:
-            "Een korte wandeling na het eten verlaagt je bloedsuiker, helpt je spijsvertering, en geeft je brein een signaal dat de dag afloopt. Geen podcast, geen telefoon — gewoon lopen.",
-          actionable: "Trek vanavond na het eten je schoenen aan en loop een rondje.",
+            "Je brein heeft tijd nodig om uit de \"doe-modus\" te schakelen. Schermlicht en prikkels houden je alert.",
+          actionable:
+            "Leg je telefoon buiten de slaapkamer en kies één rustige vervanger: boek, douche, lichte stretching.",
           timeframe: "Vandaag",
         },
       ],
@@ -92,49 +95,54 @@ export const stressdragerProfile: ProfilePageData = {
     {
       id: "deze-week",
       title: "Wat je deze week kunt aanpassen",
-      subtitle: "Kleine gewoontes die het verschil maken",
+      subtitle: "Kleine grenzen die je stresscurve afvlakken",
       items: [
         {
-          title: "Vaste bedtijd instellen",
+          title: "Eén vaste \"afsluitmoment\" na werk",
           description:
-            "Je lichaam herstelt het beste in een ritme. Kies een bedtijd en houd die 5 van de 7 dagen aan — ook in het weekend. Binnen twee weken merk je verschil in hoe je wakker wordt.",
-          actionable: "Kies vanavond je bedtijd en zet een herinnering.",
+            "Je brein heeft een overgang nodig tussen werk en herstel. Zonder die overgang blijft cortisol langer hoog.",
+          actionable:
+            "Kies een tijdstip (bijv. 20:00) waarna geen mail en geen werk-apps meer — informeer desnoods kort je omgeving.",
           timeframe: "Deze week",
         },
         {
-          title: "Geen werk na 20:00",
+          title: "Dagelijkse wandeling van 15 minuten",
           description:
-            "Je brein heeft een overgang nodig tussen werk-modus en rust-modus. Die overgang duurt minstens een uur. Als je tot 23:00 mailt en om 23:30 in bed ligt, slaap je in werk-modus.",
-          actionable: "Vertel je collega's dat je na 20:00 niet meer bereikbaar bent.",
+            "Lichte beweging buiten geeft je zenuwstelsel een signaal van veiligheid en helpt het ritme van vastzitten te doorbreken.",
+          actionable:
+            "Plan na de lunch of direct na werk hetzelfde rondje — geen podcast over deadlines, even geen input.",
           timeframe: "Deze week",
         },
         {
-          title: "Eén cafeïnevrije dag",
+          title: "Slaapvenster op orde",
           description:
-            "Koffie maskeert vermoeidheid — het lost het niet op. Probeer één dag per week zonder cafeïne. Voel hoe moe je écht bent. Dat is je baseline — daar werk je vanaf.",
-          actionable: "Kies een dag deze week en drink alleen water en kruidenthee.",
+            "Onregelmatig slapen maakt je stressgevoeliger. Een vaste opsta-tijd is vaak krachtiger dan een vaste bedtijd.",
+          actionable:
+            "Kies 5 ochtenden per week hetzelfde opstatestip, ook als je slecht hebt geslapen.",
           timeframe: "Deze week",
         },
       ],
     },
     {
       id: "komende-maand",
-      title: "De komende 30 dagen",
-      subtitle: "Structurele veranderingen die blijvend effect hebben",
+      title: "De komende 4 weken",
+      subtitle: "Structureel uit de paraatstand",
       items: [
         {
-          title: "Beweeg 3x per week — maar niet te hard",
+          title: "Week 1–2: ritme en prikkels",
           description:
-            "Intensieve training verhoogt cortisol. Als je al gestrest bent, is HIIT het laatste wat je nodig hebt. Kies voor krachtraining met rust, wandelen, of zwemmen. Beweging die je energie geeft in plaats van kost.",
-          actionable: "Plan 3 momenten in je agenda — behandel ze als afspraken.",
-          timeframe: "Komende 30 dagen",
+            "Anker de drie quick wins (adem, cafeïne, schermen) en het afsluitmoment. Meet niet aan gevoel alleen — merk of je 's nachts minder vaak klaarwakker wordt.",
+          actionable:
+            "Houd op je telefoon geen scrollen voor bed; gebruik een papieren lijstje met je drie vaste acties.",
+          timeframe: "Week 1–2",
         },
         {
-          title: "Overweeg gerichte supplementen",
+          title: "Week 3–4: ondersteuning en herhaalmeting",
           description:
-            "Leefstijlaanpassingen zijn de basis. Maar sommige supplementen kunnen het herstel ondersteunen — vooral als je tekorten hebt opgebouwd door langdurige stress.",
-          actionable: "Lees hieronder welke supplementen passen bij dit profiel.",
-          timeframe: "Komende 30 dagen",
+            "Als de basis er staat, kun je gericht kijken naar supplementen die passen bij dit profiel (zie hieronder). Doe de Leefstijlcheck opnieuw om je stressscore te vergelijken.",
+          actionable:
+            "Zet in week 4 een herinnering om de Leefstijlcheck opnieuw te doen — zelfde tijdstip, rustige omgeving.",
+          timeframe: "Week 3–4",
         },
       ],
     },
@@ -142,46 +150,50 @@ export const stressdragerProfile: ProfilePageData = {
 
   supplements: [
     {
-      name: "Ashwagandha (KSM-66)",
+      name: "Ashwagandha",
       efsa_claim:
         "Ashwagandha-claims staan op de Europese 'on hold'-lijst en zijn nog niet definitief beoordeeld door EFSA.",
       why_this_profile:
-        "Als je voortdurend aan staat en nauwelijks kunt ontspannen, ondersteunt ashwagandha je vermogen om met stress om te gaan. Het helpt je zenuwstelsel rustiger worden — zodat je na een drukke dag eindelijk tot rust kunt komen.",
+        "Adaptogeen kruid dat in onderzoek gelinkt wordt aan lagere cortisolwaarden en betere stress-tolerantie. Veel mensen met dit profiel proberen het als eerste.",
       href: "/beste-ashwagandha",
       hasComparison: true,
     },
     {
-      name: "Magnesium glycinaat",
+      name: "Magnesium",
       efsa_claim:
-        "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot de vermindering van vermoeidheid.",
+        "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie.",
       why_this_profile:
-        "Chronische stress put je magnesiumreserves sneller uit dan je aanvult. Een tekort maakt je slaap onrustiger en je reactie op stress heftiger. Magnesium glycinaat helpt je zenuwen tot rust brengen — precies wat het Stressdrager-profiel nodig heeft.",
+        "Bij chronische stress raakt magnesium sneller uitgeput. Draagt bij aan normale werking van het zenuwstelsel.",
       href: "/beste-magnesium",
       hasComparison: true,
     },
   ],
 
   guidanceCta: {
-    title: "Wil je weten waar jij staat?",
-    text: "In 3 minuten weet je welke supplementen bij jouw stressniveau passen — en welke leefstijlaanpassingen het meeste effect hebben voor jouw situatie.",
+    title: "Ontdek jouw volledige profiel in 3 minuten",
+    text: "De Leefstijlcheck koppelt stress aan slaap, energie en herstel — zodat je weet waar je het snelst winst behaalt.",
   },
 
   relatedPillar: null,
 
   relatedComparisons: [
     {
-      href: "/beste-ashwagandha",
+      href: "/profiel/onrustige-slaper",
       turboSnippet:
-        "Welke ashwagandha werkt het best tegen stress? Vergeleken op extract en dosering →",
+        "Word je ook 's nachts wakker met een hoofd vol gedachten? Bekijk het Onrustige Slaper-profiel — veel overlap met dit patroon.",
+    },
+    {
+      href: "/beste-ashwagandha",
+      turboSnippet: "Welke ashwagandha is het meest onderzocht? Objectieve vergelijking op kwaliteit en dosering.",
     },
     {
       href: "/beste-magnesium",
-      turboSnippet: "Magnesium ontspant je zenuwstelsel. Welke vorm past bij jou? →",
+      turboSnippet: "Welke magnesium past bij jouw situatie? Vergelijking op vorm, opname en praktisch gebruik.",
     },
     {
       href: "/intake",
-      turboSnippet: "Hoe hoog is jouw stressbelasting? Meet het in 3 minuten →",
-      linkText: "Doe de gratis check",
+      turboSnippet: "Ontdek jouw volledige profiel in 3 minuten — met scores op alle domeinen.",
+      linkText: "Naar de Leefstijlcheck",
     },
   ],
 

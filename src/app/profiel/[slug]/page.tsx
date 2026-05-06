@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import type { ProfilePageData, StepCareLayer, SupplementSuggestion } from "@/types/profile-page";
 
@@ -241,13 +242,24 @@ export default async function ProfielPage({ params }: Props) {
             )}
 
             {/* Disclaimer */}
-            <aside className="py-8 text-xs text-slate-400">
-              <p>
-                PerfectSupplement geeft informatie en suggesties, geen medische diagnoses of
-                behandelingen. Bij aanhoudende klachten: raadpleeg je huisarts. Supplementen zijn
-                geen vervanging voor een gevarieerd voedingspatroon en een gezonde leefstijl.
-              </p>
-            </aside>
+            {slug === "stressdrager" ? (
+              <>
+                <aside className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900">
+                  <strong>Belangrijk:</strong> Bij langdurige somberheid, burn-outklachten of paniek
+                  is professionele hulp nodig. Bel je huisarts of vraag een POH-GGZ-gesprek aan.
+                  Supplementen zijn geen vervanging voor psychologische zorg.
+                </aside>
+                <MedicalDisclaimer />
+              </>
+            ) : (
+              <aside className="py-8 text-xs text-slate-400">
+                <p>
+                  PerfectSupplement geeft informatie en suggesties, geen medische diagnoses of
+                  behandelingen. Bij aanhoudende klachten: raadpleeg je huisarts. Supplementen zijn
+                  geen vervanging voor een gevarieerd voedingspatroon en een gezonde leefstijl.
+                </p>
+              </aside>
+            )}
           </article>
         </Container>
       </main>

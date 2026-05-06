@@ -316,6 +316,21 @@ export function getUrgency(scores: DomainScores): UrgencyResult {
 }
 
 export function getProfileLabel(scores: DomainScores): ProfileLabel {
+  if (scores.sleep_score < 40) {
+    return {
+      name: "Onrustige Slaper",
+      domain: "sleep",
+      score: scores.sleep_score,
+    };
+  }
+  if (scores.stress_score < 40) {
+    return {
+      name: "Stressdrager",
+      domain: "stress",
+      score: scores.stress_score,
+    };
+  }
+
   const primary = getSortedDomains(scores)[0];
 
   if (primary.score > 60) {

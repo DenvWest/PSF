@@ -193,7 +193,9 @@ export default function Page() {
             <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Link href="/profiel/stressdrager" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
-                <p className="text-base text-stone-600 leading-relaxed">Chronische stress zonder uitweg? Herken de signalen.</p>
+                <p className="text-base text-stone-600 leading-relaxed">
+                  Sta je continu &quot;aan&quot;? Herken je dit patroon?
+                </p>
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
               </Link>
               <Link href="/profiel/onrustige-slaper" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">

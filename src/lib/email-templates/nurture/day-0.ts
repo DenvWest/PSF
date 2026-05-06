@@ -7,6 +7,41 @@ import {
 } from "./helpers";
 import { absoluteUrl } from "@/lib/public-site-url";
 
+function buildStressInsightBlock(profileUrl: string, compact: boolean): string {
+  if (compact) {
+    return `
+        <tr>
+          <td style="padding: 24px 28px; border-top: 1px solid #E7E5E4;">
+            <p style="margin: 0 0 16px; font-size: 14px; color: #404040; line-height: 1.6;">
+              Wil je meer achtergrond en concrete stappen? Die staan gebundeld op het
+              Stressdrager-profiel — zonder gimmicks, wel met houvast.
+            </p>
+            <a href="${profileUrl}"
+               style="display: inline-block; padding: 12px 24px; background-color: #166534; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
+              Bekijk het Stressdrager-profiel →
+            </a>
+          </td>
+        </tr>`;
+  }
+  return `
+        <tr>
+          <td style="padding: 24px 28px; border-top: 1px solid #E7E5E4;">
+            <p style="margin: 0 0 12px; font-size: 14px; color: #404040; line-height: 1.6;">
+              Ik zie dat stress een rol speelt in jouw plaatje. Geen oordeel — wel een aanwijzing
+              waar herstel de meeste ruimte geeft.
+            </p>
+            <p style="margin: 0 0 16px; font-size: 14px; color: #404040; line-height: 1.6;">
+              Op de profielpagina leggen we uit wat er dan vaak biologisch speelt en welke eerste
+              stappen realistisch zijn.
+            </p>
+            <a href="${profileUrl}"
+               style="display: inline-block; padding: 12px 24px; background-color: #166534; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
+              Bekijk het Stressdrager-profiel →
+            </a>
+          </td>
+        </tr>`;
+}
+
 function buildSleepGuideBlock(): string {
   const pdfUrl = absoluteUrl("/downloads/slaapgids-perfectsupplement.pdf");
   return `
@@ -46,9 +81,25 @@ export function nurtureDay0Email(
 
   const showSleepGuide = data.profileLabel === "Onrustige Slaper";
 
+  const rawStressScore = data.domainScores.stress_score;
+  const stressScore =
+    typeof rawStressScore === "number"
+      ? rawStressScore
+      : typeof rawStressScore === "string"
+        ? Number.parseFloat(rawStressScore)
+        : Number.NaN;
+  const stressScoreLowEnough = Number.isFinite(stressScore) && stressScore < 50;
+  const showStressInsight =
+    data.profileLabel === "Stressdrager" ||
+    (stressScoreLowEnough && data.profileLabel !== "Onrustige Slaper");
+
+  const stressProfileUrl = absoluteUrl("/profiel/stressdrager");
+  const stressInsightCompact = data.profileLabel === "Stressdrager";
+
   const inner =
     renderPersonalizedRows(blocks, supplementTip, intakeUrl) +
-    (showSleepGuide ? buildSleepGuideBlock() : "");
+    (showSleepGuide ? buildSleepGuideBlock() : "") +
+    (showStressInsight ? buildStressInsightBlock(stressProfileUrl, stressInsightCompact) : "");
 
   return { subject, html: wrapNurtureBlock(inner, ctx, false) };
 }
