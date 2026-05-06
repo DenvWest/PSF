@@ -130,10 +130,9 @@ export const urgencyModifiers = {
 // Profielgestuurde content per template-dag
 //
 // Profielnamen komen rechtstreeks uit de intake-engine:
-//   sleep     → "Onrustige Slaper"
-//   energy    → "Lage Batterij"
-//   stress    → "Stressdrager"
-//   movement  → "Stilzitter"
+//   sleep                  → "Onrustige Slaper"
+//   stress                 → "Stressdrager"
+//   lage energie/beweging → "Lage Batterij"
 //   (lage voeding/herstel als zwakste domein) → "In Balans" of ander benoemd profiel als fallback
 //   (all > 60)→ "In Balans"
 // ============================================================
@@ -175,17 +174,6 @@ export const nurtureContent: Record<
         "Chronische stress remt je testosteronproductie, verstoort je slaap en vreet aan je energie. Maar er zijn concrete stappen die helpen.",
       ],
       tip: "Begin vandaag met 3 minuten ademhalingsoefening: 4 tellen inademen, 7 tellen vasthouden, 8 tellen uitademen. Doe dit voor het slapengaan. Het activeert je parasympathisch zenuwstelsel.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
-    },
-    "Stilzitter": {
-      subject: "Je Herstelplan staat klaar",
-      preheader: "Meer bewegen hoeft niet ingewikkeld te zijn",
-      greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
-      bodyParagraphs: [
-        "Je resultaten laten zien dat beweging je laagste score is. Na 40 is een actieve leefstijl één van de krachtigste middelen om energie, slaap en stemming te verbeteren.",
-        "Het goede nieuws: je hoeft niet naar de sportschool. Kleine, dagelijkse beweging heeft al een meetbaar effect.",
-      ],
-      tip: "Begin vandaag met 15 minuten wandelen — bij voorkeur buiten en na de lunch. Daglicht en lichte beweging verlagen cortisol en verbeteren je energieniveau de rest van de dag.",
       cta: { text: "Bekijk je Herstelplan", url: "/intake" },
     },
     "In Balans": {
@@ -233,16 +221,6 @@ export const nurtureContent: Record<
       tip: "Quick win #1: 4-7-8 ademhaling (3 minuten, 2× per dag). Quick win #2: Wandel 15 minuten na de lunch — het verlaagt cortisol meetbaar. Quick win #3: Schrijf 's avonds 3 dingen op die goed gingen vandaag.",
       cta: { text: "Hoe ashwagandha stress verlaagt", url: "/beste-ashwagandha" },
     },
-    "Stilzitter": {
-      subject: "3 kleine stappen die je bewegingspatroon doorbreken",
-      preheader: "Je hoeft geen sporter te zijn om het verschil te voelen",
-      greeting: "Drie dagen geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Meer bewegen hoeft niet betekenen dat je een sportschoolabonnement neemt. Kleine, frequente beweging verspreid over de dag heeft al een meetbaar effect op je energie en stemming.",
-      ],
-      tip: "Quick win #1: Sta elk uur 5 minuten op en beweeg. Quick win #2: Loop of fiets voor boodschappen in plaats van de auto. Quick win #3: Doe 10 minuten stretchen voor het slapengaan — het verlaagt je rusthartslag.",
-      cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
-    },
     "In Balans": {
       subject: "3 optimalisaties voor wie al goed scoort",
       preheader: "Je basis staat — dit zijn de volgende stappen",
@@ -289,17 +267,6 @@ export const nurtureContent: Record<
       ],
       tip: "Lees meer over hoe ashwagandha werkt en waar je op moet letten bij het kiezen van een supplement.",
       cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste-ashwagandha" },
-    },
-    "Stilzitter": {
-      subject: "Waarom bewegen na 40 zo anders werkt",
-      preheader: "Niet harder — slimmer",
-      greeting: "Een week geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Na 40 verlies je zonder actief gebruik gemiddeld 1% spiermassa per jaar. Dat klinkt weinig, maar over 10 jaar is het merkbaar: minder kracht, langzamer herstel, vaker vermoeid.",
-        "Het goede nieuws: dit proces is grotendeels omkeerbaar. Zelfs lichte krachttraining 2× per week maakt al verschil — en wandelen dagelijks verlaagt je risico op chronische aandoeningen.",
-      ],
-      tip: "Voeg deze week twee dingen toe: 20 minuten wandelen per dag en één keer oefeningen met lichaamsgewicht (squats, planks). Niet meer — consistentie is belangrijker dan volume.",
-      cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
     },
     "In Balans": {
       subject: "Hoe je een goede basis vasthoudt na 40",
@@ -349,17 +316,6 @@ export const nurtureContent: Record<
       tip: "Voeg deze week iets toe: 5 minuten journaling voor het slapengaan. Schrijf op wat je bezighoudt — het 'legen' van je hoofd helpt je brein om los te laten.",
       cta: { text: "Hoe ashwagandha cortisol verlaagt", url: "/beste-ashwagandha" },
     },
-    "Stilzitter": {
-      subject: "Halverwege: beweeg je al meer?",
-      preheader: "Twee weken is genoeg om een patroon te zien",
-      greeting: "Twee weken geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Als je de afgelopen twee weken dagelijks bent gaan lopen of meer bent gaan bewegen, merk je nu waarschijnlijk het eerste effect: iets meer energie, iets betere slaap.",
-        "Beweging heeft een opstapelend effect. Elke stap telt — en het wordt makkelijker naarmate je het vaker doet.",
-      ],
-      tip: "Voeg deze week één keer krachttraining toe: squats, lunges, push-ups. Geen sportschool nodig — 20 minuten thuis is al genoeg om spiermassa te behouden.",
-      cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
-    },
     "In Balans": {
       subject: "Halverwege: hoe houd je dit vol?",
       preheader: "Goede gewoontes vragen actief onderhoud",
@@ -408,17 +364,6 @@ export const nurtureContent: Record<
       tip: "Houd deze week vast wat werkt. Consistentie verslaat intensiteit.",
       cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste-ashwagandha" },
     },
-    "Stilzitter": {
-      subject: "Drie weken: je lichaam went aan beweging",
-      preheader: "Wat eerst moeite kostte, wordt nu gewoonte",
-      greeting: "Drie weken geleden startte je met je Herstelplan.",
-      bodyParagraphs: [
-        "Na drie weken dagelijkse beweging begint je lichaam te wennen. Je energie is stabieler, je slaap is iets dieper, en de eerste stappen voelen minder als een opgave.",
-        "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan zie je of je bewegingsscore is verbeterd.",
-      ],
-      tip: "Verhoog deze week licht: van 15 naar 20 minuten wandelen, of voeg een tweede krachttraining toe. Kleine stap, groot effect op de lange termijn.",
-      cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
-    },
     "In Balans": {
       subject: "Drie weken: je goede gewoontes zijn stevig",
       preheader: "Nu is het moment om te optimaliseren",
@@ -463,16 +408,6 @@ export const nurtureContent: Record<
         "Een maand stressmanagement. De herhaalmeting laat je zien wat er veranderd is — in je stressscore, maar ook in je slaap en energie (die worden vaak meegezogen).",
       ],
       tip: "Doe de Leefstijlcheck opnieuw. Je resultaten worden vergeleken met een maand geleden.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
-    },
-    "Stilzitter": {
-      subject: "30 dagen: beweeg je al meer?",
-      preheader: "Meet je voortgang in 3 minuten",
-      greeting: "Een maand geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Een maand meer bewegen. De herhaalmeting laat je zien of je bewegingsscore is verbeterd — en hoe dat doorwerkt in je energie en slaap.",
-      ],
-      tip: "Doe de Leefstijlcheck opnieuw en vergelijk je bewegings-, energie- en slaapscores.",
       cta: { text: "Doe de herhaalmeting", url: "/intake" },
     },
     "In Balans": {
@@ -552,7 +487,10 @@ export function buildNurtureEmail(
   urgencyTone: string;
 } {
   const templateKey = sequenceDayToTemplateKey(sequenceDay);
-  const knownLabel = profileLabel as ProfileLabelName;
+  const trimmed = profileLabel.trim();
+  const normalizedLabel =
+    trimmed === "Stilzitter" ? "Lage Batterij" : trimmed;
+  const knownLabel = normalizedLabel as ProfileLabelName;
 
   const dayContent = nurtureContent[templateKey];
   const blocks =

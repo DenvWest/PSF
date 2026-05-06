@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/profiel/stilzitter",
+        destination: "/profiel/lage-batterij",
+        permanent: true,
+      },
+      {
         source: "/symptomen",
         destination: "/supplementen",
         permanent: true,

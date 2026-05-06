@@ -32,7 +32,6 @@ export interface ProfileLabel {
     | "Onrustige Slaper"
     | "Lage Batterij"
     | "Stressdrager"
-    | "Stilzitter"
     | "In Balans";
   domain: DomainId;
   score: number;
@@ -124,7 +123,7 @@ const NAMED_DOMAIN_LABELS: Record<NamedProfileDomain, ProfileLabel["name"]> = {
   sleep: "Onrustige Slaper",
   energy: "Lage Batterij",
   stress: "Stressdrager",
-  movement: "Stilzitter",
+  movement: "Lage Batterij",
 };
 
 function firstNonNutritionRecoveryDomain(
@@ -342,6 +341,27 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     };
   }
 
+  if (scores.energy_score < 40 || scores.movement_score < 35) {
+    const energyLow = scores.energy_score < 40;
+    const movementLow = scores.movement_score < 35;
+    let domain: DomainId;
+    if (energyLow && movementLow) {
+      domain =
+        scores.energy_score <= scores.movement_score ? "energy" : "movement";
+    } else if (energyLow) {
+      domain = "energy";
+    } else {
+      domain = "movement";
+    }
+    const score =
+      domain === "energy" ? scores.energy_score : scores.movement_score;
+    return {
+      name: "Lage Batterij",
+      domain,
+      score,
+    };
+  }
+
   const sorted = getSortedDomains(scores);
   const primary = sorted[0];
 
@@ -373,6 +393,28 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     return {
       name: "In Balans",
       domain: "recovery",
+      score: primary.score,
+    };
+  }
+
+  if (primary.domain === "movement") {
+    for (let i = 1; i < sorted.length; i++) {
+      const entry = sorted[i];
+      if (entry.domain === "nutrition" || entry.domain === "recovery") {
+        continue;
+      }
+      if (entry.domain === "energy" && scores.energy_score >= 40) {
+        continue;
+      }
+      return {
+        name: NAMED_DOMAIN_LABELS[entry.domain as NamedProfileDomain],
+        domain: entry.domain,
+        score: entry.score,
+      };
+    }
+    return {
+      name: "In Balans",
+      domain: "movement",
       score: primary.score,
     };
   }

@@ -43,6 +43,16 @@ export const lageBatterijProfile: ProfilePageData = {
       },
       {
         situation:
+          "Je merkt dat je dagen meer zittend zijn dan vroeger — en bewegen voelt zwaarder.",
+        emotion: "frustratie",
+      },
+      {
+        situation:
+          "Je weet dat je meer zou moeten sporten, maar de drempel is groot.",
+        emotion: "schuldgevoel",
+      },
+      {
+        situation:
           "Je vergelijkt jezelf met 5 jaar geleden en je snapt niet waar het is misgegaan. Hetzelfde lichaam, de helft van de energie.",
         emotion: "verwarring",
       },
@@ -55,6 +65,7 @@ export const lageBatterijProfile: ProfilePageData = {
     title: "Waarom je energie verdwijnt na 40",
     paragraphs: [
       "Je energie wordt geproduceerd in je cellen — letterlijk, in kleine krachtcentrales die mitochondriën heten. Na 40 worden die minder efficiënt. Ze produceren minder energie uit dezelfde brandstof. Dat is normaal, maar het betekent dat je meer moet investeren om hetzelfde niveau te houden.",
+      "Veel zitten en weinig beweging zet die energiefabrieken nog verder onder druk: mitochondriën worden minder geprikkeld om vitaal te blijven, vermoeidheid maakt sporten of wandelen lastiger, en zo blijft het patroon zichzelf voeden. Kleine, vaste stappen in bewegen helpen die spiraal te doorbreken.",
       "Daar komt bij: je slaap wordt oppervlakkiger (minder diepe slaap = minder herstel), je stresshormonen blijven langer hoog (cortisol remt energieproductie), en je voedingsopname verandert (je darmen nemen minder voedingsstoffen op). Als je dan ook nog weinig beweegt of eenzijdig eet, ontstaat er een energietekort dat koffie niet oplost.",
       "De oplossing is geen wonderpil. Het is een stappenplan: eerst de basis fixen (slaap, voeding, beweging), dan gericht aanvullen waar je tekort komt.",
     ],

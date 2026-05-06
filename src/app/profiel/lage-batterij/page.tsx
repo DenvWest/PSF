@@ -69,6 +69,8 @@ const herkenningBullets = [
   "Na de lunch zak je weg. Niet een beetje, maar compleet. Je concentratie is weg, je motivatie ook. Om 15:00 is de dag eigenlijk al voorbij.",
   "'s Avonds heb je geen energie meer voor de dingen die je leuk vindt. Sporten? Geen zin. Tijd met je gezin? Je bent er wel, maar niet écht.",
   "In het weekend herstel je niet. Maandagochtend begin je weer met dezelfde lege tank.",
+  "Je merkt dat je dagen meer zittend zijn dan vroeger — en bewegen voelt zwaarder.",
+  "Je weet dat je meer zou moeten sporten, maar de drempel is groot.",
 ];
 
 const quickWins = [
@@ -206,11 +208,23 @@ export default function LageBatterijPage() {
               <h2 className="font-[var(--font-heading)] text-2xl md:text-3xl text-slate-900">
                 Wat Er Aan De Hand Is
               </h2>
+              <h3 className="mt-8 font-semibold text-lg text-slate-900 tracking-tight">
+                Wat er biologisch gebeurt
+              </h3>
               <div className="mt-6 space-y-5">
                 <p className="text-slate-600 leading-relaxed">
                   Na je 40e verandert er iets fundamenteels in hoe je lichaam energie aanmaakt. Je
                   mitochondriën — de energiecentrales in elke cel van je lichaam — worden geleidelijk
                   minder efficiënt. Dat is een biologisch proces, geen karakterfout.
+                </p>
+                <p className="text-slate-600 leading-relaxed">
+                  Langdurig veel zitten en weinig spierbelasting vraagt van die mitochondriën minder
+                  prikkeling om vitaal actief te blijven — ze worden minder actief aangesproken,
+                  terwijl je lichaam wél energie
+                  blijft vragen. Dat voelt als een lege batterij — en vermoeidheid maakt bewegen
+                  zwaarder. Daardoor blijf je vaker stil, wat het patroon versterkt. Het is een
+                  zelfversterkende spiraal, maar je kunt hem doorbreken door klein en herhaalbaar meer
+                  te bewegen, niet door meteen groot en perfect te willen doen.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
                   Tegelijk gebeuren er nog twee dingen. Ten eerste daalt je testosteronspiegel met

@@ -22,8 +22,15 @@ export default function ProfielOverzichtPage() {
               Welk profiel herken jij?
             </h1>
             <p className="text-lg text-slate-600">
-              Vier veelvoorkomende patronen bij mannen 40+. Herken jezelf en
-              ontdek wat je kunt doen.
+              Vier veelvoorkomende patronen bij mannen 40+. Herken jezelf en ontdek wat je kunt doen —
+              of doe de{" "}
+              <Link
+                href="/intake"
+                className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+              >
+                Leefstijlcheck
+              </Link>{" "}
+              als je niet weet welk profiel bij je past.
             </p>
           </div>
 
