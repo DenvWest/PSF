@@ -94,10 +94,10 @@ export default function Page() {
           </p>
         </div>
 
-        <ComparisonEducationalLead category={data.category} />
         <ComparisonChooserIntro category={data.category}>
           <ComparisonTable rows={data.tableRows} criteria={data.comparisonCriteria} doseringColumnLabel={data.tableDoseringColumnLabel} />
         </ComparisonChooserIntro>
+        <ComparisonEducationalLead category={data.category} />
 
         <section id="producten" className="mx-auto mt-16 w-full max-w-7xl space-y-8 px-6 lg:px-8">
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">

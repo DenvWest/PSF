@@ -75,8 +75,6 @@ export default function Page() {
           </p>
         </div>
 
-        <ComparisonEducationalLead category={data.category} />
-
         <section className="mx-auto mt-8 w-full max-w-7xl px-6 lg:px-8 mb-12">
           <h2 className="mb-4 text-2xl font-semibold tracking-tight text-slate-900">
             Waarom melatonine (of een slaapcomplex) ter sprake komt
@@ -116,6 +114,8 @@ export default function Page() {
         <ComparisonChooserIntro category={data.category}>
           <ComparisonTable rows={data.tableRows} criteria={data.comparisonCriteria} doseringColumnLabel={data.tableDoseringColumnLabel} />
         </ComparisonChooserIntro>
+
+        <ComparisonEducationalLead category={data.category} />
 
         <section id="producten" className="mx-auto mt-16 w-full max-w-7xl space-y-8 px-6 lg:px-8">
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">

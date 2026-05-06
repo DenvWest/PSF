@@ -27,7 +27,7 @@ export function ComparisonEducationalLead({
     return (
       <section
         aria-label="Eerst begrijpen"
-        className="mx-auto mt-12 w-full max-w-7xl px-6 lg:px-8"
+        className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8"
       >
         <div className="rounded-lg bg-stone-50 p-8">
           <h2 className="font-display mb-2 text-2xl text-stone-900">
@@ -51,7 +51,7 @@ export function ComparisonEducationalLead({
   return (
     <section
       aria-label="Eerst zicht op jouw situatie"
-      className="mx-auto mt-12 w-full max-w-7xl px-6 lg:px-8"
+      className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8"
     >
       <div className="rounded-lg bg-stone-50 p-8">
         <h2 className="font-display mb-2 text-2xl text-stone-900">
@@ -80,7 +80,6 @@ export function ComparisonChooserIntro({
   children: ReactNode;
 }) {
   const label = CHOOSER_LABEL[category];
-  const pillar = hasSleepPillar(category);
 
   return (
     <section
@@ -94,9 +93,8 @@ export function ComparisonChooserIntro({
         Klaar om de beste {label} voor jou te kiezen?
       </h2>
       <p className="mb-6 text-stone-600">
-        {pillar
-          ? "Nu je begrijpt hoe magnesium werkt, hier zijn de best beoordeelde opties:"
-          : "Hier zijn de best beoordeelde opties — onafhankelijk vergeleken op dezelfde criteria als in onze methodologie:"}
+        Hier zijn de best beoordeelde opties — onafhankelijk vergeleken op dezelfde criteria als in
+        onze methodologie:
       </p>
       {children}
     </section>

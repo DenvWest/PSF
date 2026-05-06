@@ -331,25 +331,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
           </section>
 
           <MedicalDisclaimer />
-
-          <div className="rounded-2xl border border-stone-200 bg-white p-6 md:p-8">
-            <p className="ps-eyebrow">Meer weten</p>
-            <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-900 md:text-xl">
-              Terug naar het overzicht
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-stone-600">
-              Ontdek welke supplementen passen bij jouw klachten — stress,
-              slaap of energie.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link href="/supplementen" className="ps-btn-primary">
-                Alle supplementen
-              </Link>
-              <Link href="/supplementen#themas" className="ps-btn-secondary">
-                Bekijk thema&apos;s
-              </Link>
-            </div>
-          </div>
         </div>
       </Container>
     </div>
