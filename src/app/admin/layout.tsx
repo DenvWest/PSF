@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import { adminSans, adminSerif } from "@/lib/admin-fonts";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard — PerfectSupplement",
+  title: "Admin — Dashboard — PerfectSupplement",
+  description: "Administratie-dashboard met intake-overzicht, feedback en nurture-e-mail.",
   robots: { index: false, follow: false },
 };
 

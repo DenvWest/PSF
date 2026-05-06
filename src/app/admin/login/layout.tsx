@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Admin Login — PerfectSupplement",
+  title: "Admin — Inloggen — PerfectSupplement",
+  description: "Beveiligde inlogpagina voor het PerfectSupplement administratie-dashboard.",
   robots: { index: false, follow: false },
 };
 

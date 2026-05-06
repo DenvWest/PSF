@@ -331,9 +331,9 @@ function TermPage({ slug }: { slug: string }) {
                   <span className="inline-block rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-medium text-stone-500">
                     {themeLabels[term.theme].title}
                   </span>
-                  <h1 className="mt-4 text-[2.5rem] font-semibold leading-[1.1] tracking-tight text-stone-900 md:text-[3rem]">
+                  <h2 className="mt-4 text-[2.5rem] font-semibold leading-[1.1] tracking-tight text-stone-900 md:text-[3rem]">
                     {term.term}
-                  </h1>
+                  </h2>
                   <p className="mt-4 text-lg leading-relaxed text-stone-500">
                     {term.shortDefinition}
                   </p>
