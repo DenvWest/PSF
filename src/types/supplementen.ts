@@ -12,6 +12,10 @@ export interface SupplementData {
   naam: string;
   metaTitle: string;
   metaDescription: string;
+  /** ISO YYYY-MM-DD voor Article structured data */
+  datePublished: string;
+  /** Optioneel; default in UI: zelfde als datePublished */
+  dateModified?: string;
   h1: string;
   introTekst: string;
 

@@ -3,9 +3,11 @@ import type { SupplementData } from "@/types/supplementen";
 export const vitamineDData: SupplementData = {
   slug: "vitamine-d",
   naam: "Vitamine D",
-  metaTitle: "Vitamine D voor mannen 40+ | D3, K2 & dosering | PerfectSupplement",
+  metaTitle:
+    "Vitamine D: Welke Vorm Past Bij Jou? | PerfectSupplement",
   metaDescription:
-    "Hoeveel vitamine D heb je nodig? Waarom D3 combineren met K2? Praktisch advies voor mannen boven de 40.",
+    "Vitamine D uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+  datePublished: "2026-03-01",
   h1: "Vitamine D: waarom D3 + K2 samen?",
   introTekst:
     "Vitamine D is strikt genomen een hormoon, geen vitamine. Het beïnvloedt energie, immuunsysteem, stemming en testosteron — en een tekort is bij mannen boven de 40 verrassend gewoon, ook in landen met regelmatig zonlicht.",
@@ -13,7 +15,7 @@ export const vitamineDData: SupplementData = {
   watIsHet: {
     titel: "Wat doet vitamine D in je lichaam?",
     tekst:
-      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons tot de aanmaak van testosteron. Na je 40e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 is de partner van D3: het zorgt dat calcium naar botten gaat in plaats van aderkalking te veroorzaken.",
+      "Vitamine D wordt aangemaakt in je huid bij blootstelling aan UVB-straling van de zon. Het fungeert als hormoon dat honderden genen reguleert — van calcium-opname tot immuunrespons tot de aanmaak van testosteron. Op supplementetiketten zie je doses vaak als percentage van de [ADH (aanbevolen dagelijkse hoeveelheid)](/kennisbank/adh) — een referentieminimum, geen persoonlijk optimum. Na je 40e daalt de aanmaakcapaciteit van je huid, terwijl je tegelijkertijd minder buiten bent en meer binnen werkt. Het resultaat: veel mannen hebben een tekort zonder het te weten. Vitamine K2 is de partner van D3: het zorgt dat calcium naar botten gaat in plaats van aderkalking te veroorzaken.",
   },
 
   waaromRelevant: {
@@ -112,6 +114,12 @@ export const vitamineDData: SupplementData = {
           "Vitamine D ondersteunt testosteronproductie en immuunregulatie — beiden relevant bij chronische stress en uitputting.",
         href: "/thema/stress",
       },
+      {
+        symptoom: "Slaap",
+        tekst:
+          "Een tekort gaat gepaard met vermoeidheid en prikkelbare buiendips; herstel van waarden sluit aan bij beter herstel overdag en rustiger avonden.",
+        href: "/thema/slaap",
+      },
     ],
   },
 
@@ -131,12 +139,25 @@ export const vitamineDData: SupplementData = {
       antwoord:
         "Bij doseringen tot 4.000 IE per dag is overdosering voor de meeste mensen onwaarschijnlijk. Langdurig gebruik van hogere doseringen zonder monitoring kan leiden tot hypercalciëmie. Houd je aan aanbevolen doseringen of gebruik het onder begeleiding.",
     },
+    {
+      vraag: "Waarom wordt D3 vaak met K2 gecombineerd?",
+      antwoord:
+        "D3 verbetert calciumopname; K2 (vooral MK-7) helpt calcium naar botten en weg van zachte weefsels. Die combinatie is ingestudeerd op lange termijn veiligheid bij suppletie.",
+    },
   ],
 
   blogLinks: [
     {
       href: "/blog/vitamine-d-tekort-herkennen",
       titel: "Vitamine D-tekort herkennen: signalen die mannen negeren",
+    },
+    {
+      href: "/blog/testosteron-en-energie-na-40",
+      titel: "Testosteron en energie na 40: wanneer is actie nodig?",
+    },
+    {
+      href: "/blog/energie-verhogen-natuurlijk",
+      titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
     },
   ],
 

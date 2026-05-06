@@ -6,21 +6,50 @@ import VormCard from "./VormCard";
 import RelevantieCard from "./RelevantieCard";
 import SymptoomLinkCard from "./SymptoomLinkCard";
 import FAQItem from "./FAQItem";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import {
+  renderInlineMarkdownLinks,
+  stripInlineMarkdownLinks,
+} from "@/components/blog/inlineMarkdownLinks";
+
+const SITE_URL = "https://perfectsupplement.nl";
 
 interface SupplementPageProps {
   data: SupplementData;
 }
 
 export default function SupplementPage({ data }: SupplementPageProps) {
+  const pageUrl = `${SITE_URL}/supplementen/${data.slug}`;
+  const modified = data.dateModified ?? data.datePublished;
+
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: data.h1,
+    datePublished: data.datePublished,
+    dateModified: modified,
+    author: {
+      "@type": "Organization",
+      name: "Redactie PerfectSupplement",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "PerfectSupplement",
+      url: SITE_URL,
+    },
+    description: data.metaDescription,
+    mainEntityOfPage: pageUrl,
+  };
+
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: data.faq.map((item) => ({
       "@type": "Question",
-      name: item.vraag,
+      name: stripInlineMarkdownLinks(item.vraag),
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.antwoord,
+        text: stripInlineMarkdownLinks(item.antwoord),
       },
     })),
   };
@@ -29,50 +58,51 @@ export default function SupplementPage({ data }: SupplementPageProps) {
     <div className="bg-stone-50/40 pb-24">
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      {/* ── Header ───────────────────────────────────────────────────── */}
       <div className="border-b border-stone-200/80 bg-white">
         <Container className="py-10 md:py-14">
           <Breadcrumbs
             items={[
+              { label: "Home", href: "/" },
               { label: "Supplementen", href: "/supplementen" },
               { label: data.naam },
             ]}
           />
 
-          <div className="ps-prose-container mt-5">
+          <section aria-label="Intro" className="ps-prose-container mt-5">
             <h1 className="ps-symptoom-h1 text-4xl text-stone-900 md:text-5xl">
               {data.h1}
             </h1>
             <p className="mt-5 text-base leading-7 text-stone-600 md:text-lg">
               {data.introTekst}
             </p>
-          </div>
+          </section>
         </Container>
       </div>
 
       <Container className="pt-10 md:pt-14">
         <div className="space-y-16">
-
-          {/* ── Sectie 1: Wat is het ──────────────────────────────────── */}
-          <section aria-labelledby="watishet-heading">
+          <section id="wat-doet" aria-labelledby="wat-doet-heading">
             <div className="ps-prose-container">
               <h2
-                id="watishet-heading"
+                id="wat-doet-heading"
                 className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
               >
                 {data.watIsHet.titel}
               </h2>
               <p className="mt-4 text-sm leading-7 text-stone-600">
-                {data.watIsHet.tekst}
+                {renderInlineMarkdownLinks(data.watIsHet.tekst)}
               </p>
             </div>
           </section>
 
-          {/* ── Sectie 2: Waarom relevant ─────────────────────────────── */}
-          <section aria-labelledby="waarom-heading">
+          <section id="waarom-na-40" aria-labelledby="waarom-heading">
             <h2
               id="waarom-heading"
               className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
@@ -90,8 +120,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </div>
           </section>
 
-          {/* ── Sectie 3: Vormen & dosering ───────────────────────────── */}
-          <section aria-labelledby="vormen-heading">
+          <section id="vormen" aria-labelledby="vormen-heading">
             <h2
               id="vormen-heading"
               className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
@@ -121,8 +150,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </div>
           </section>
 
-          {/* ── Sectie 4: Waar op letten ──────────────────────────────── */}
-          <section aria-labelledby="letten-heading">
+          <section id="waar-op-letten" aria-labelledby="letten-heading">
             <div className="ps-prose-container">
               <h2
                 id="letten-heading"
@@ -151,10 +179,9 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </div>
           </section>
 
-          {/* ── Sectie 5: Gerelateerde thema&apos;s ─────────────────────── */}
-          <section aria-labelledby="thema-gerelateerd-heading">
+          <section id="bij-jouw-klachten" aria-labelledby="klachten-heading">
             <h2
-              id="thema-gerelateerd-heading"
+              id="klachten-heading"
               className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
             >
               {data.gerelateerdeSymptomen.titel}
@@ -171,8 +198,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </div>
           </section>
 
-          {/* ── Sectie 6: FAQ ──────────────────────────────────────────── */}
-          <section aria-labelledby="faq-heading">
+          <section id="faq" aria-labelledby="faq-heading">
             <div className="ps-prose-container">
               <h2
                 id="faq-heading"
@@ -190,8 +216,9 @@ export default function SupplementPage({ data }: SupplementPageProps) {
 
           {data.productVergelijkingCta ? (
             <section
+              id="vergelijking-cta"
               aria-labelledby="vergelijking-cta-heading"
-              className="rounded-2xl border-2 border-[#5A8F6A]/25 bg-gradient-to-br from-emerald-50 via-white to-amber-50/30 px-6 py-8 shadow-md ring-1 ring-stone-200/60"
+              className="rounded-2xl border border-emerald-200/70 bg-[#EEF3EB] px-6 py-8 shadow-sm ring-1 ring-stone-200/40"
             >
               <h2
                 id="vergelijking-cta-heading"
@@ -211,12 +238,11 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </section>
           ) : null}
 
-          {/* ── Blogartikelen ──────────────────────────────────────────── */}
           {data.blogLinks.length > 0 && (
-            <section aria-labelledby="blog-heading">
+            <section id="verdieping" aria-labelledby="verdieping-heading">
               <div className="ps-prose-container">
                 <h2
-                  id="blog-heading"
+                  id="verdieping-heading"
                   className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
                 >
                   Verdieping
@@ -240,9 +266,15 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </section>
           )}
 
-          {/* ── Intake CTA ────────────────────────────────────────────── */}
-          <section className="rounded-2xl bg-amber-50 px-6 py-12 text-center">
-            <h2 className="font-serif text-2xl text-stone-900">
+          <section
+            id="leefstijl-cta"
+            aria-labelledby="leefstijl-cta-heading"
+            className="rounded-2xl bg-amber-50 px-6 py-12 text-center"
+          >
+            <h2
+              id="leefstijl-cta-heading"
+              className="font-serif text-2xl text-stone-900"
+            >
               Past dit supplement bij jouw situatie?
             </h2>
             <p className="mx-auto mt-3 max-w-md text-base text-stone-600">
@@ -250,13 +282,14 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             </p>
             <Link
               href="/intake"
-              className="mt-6 inline-block rounded-lg bg-[#3C7A56] px-6 py-3 text-sm font-medium text-white hover:bg-[#2E5F43] transition-colors"
+              className="mt-6 inline-block rounded-lg bg-[#3C7A56] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#2E5F43]"
             >
               Doe de Leefstijlcheck →
             </Link>
           </section>
 
-          {/* ── Footer CTA ────────────────────────────────────────────── */}
+          <MedicalDisclaimer />
+
           <div className="rounded-2xl border border-stone-200 bg-white p-6 md:p-8">
             <p className="ps-eyebrow">Meer weten</p>
             <h2 className="mt-2 text-lg font-semibold tracking-tight text-stone-900 md:text-xl">
@@ -275,7 +308,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               </Link>
             </div>
           </div>
-
         </div>
       </Container>
     </div>

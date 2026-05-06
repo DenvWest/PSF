@@ -16,10 +16,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
   const data = getSupplementData(supplement as SupplementSlug);
+  const ogUrl = `https://perfectsupplement.nl/supplementen/${supplement}`;
   return {
     title: data.metaTitle,
     description: data.metaDescription,
     alternates: { canonical: `/supplementen/${supplement}` },
+    openGraph: {
+      title: data.metaTitle,
+      description: data.metaDescription,
+      type: "article",
+      url: ogUrl,
+    },
   };
 }
 

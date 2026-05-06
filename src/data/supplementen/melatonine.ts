@@ -3,9 +3,11 @@ import type { SupplementData } from "@/types/supplementen";
 export const melatonineData: SupplementData = {
   slug: "melatonine",
   naam: "Melatonine",
-  metaTitle: "Melatonine voor mannen 40+ | Dosering, vormen & wanneer stoppen | PerfectSupplement",
+  metaTitle:
+    "Melatonine: Welke Vorm Past Bij Jou? | PerfectSupplement",
   metaDescription:
-    "Lage dosis of slow-release? Wanneer gebruik je melatonine — en wanneer juist niet? Praktisch advies voor mannen boven de 40.",
+    "Melatonine uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+  datePublished: "2026-03-01",
   h1: "Melatonine: minder is meer",
   introTekst:
     "Melatonine is je slaaphormoon — maar het is geen slaapmiddel. Het geeft je lichaam een tijdssignaal: het is nacht. Slim gebruik versterkt je circadiaans ritme. Verkeerd gebruik verstoort het juist.",
@@ -13,7 +15,7 @@ export const melatonineData: SupplementData = {
   watIsHet: {
     titel: "Wat doet melatonine in je lichaam?",
     tekst:
-      "Melatonine wordt aangemaakt in je pijnappelklier zodra het donker wordt — het is het signaal dat je slaap-waakcyclus in gang zet. Het reguleert het tijdstip van slapen, niet de diepte ervan. Na je 40e neemt de melatonineproductie geleidelijk af: de piek wordt lager en later in de avond bereikt. Dit kan verklaren waarom je moeilijker in slaap valt, eerder wakker wordt of je slaap minder verkwikkend aanvoelt.",
+      "Melatonine wordt aangemaakt in je pijnappelklier zodra het donker wordt — het is het signaal dat je [circadiaans ritme](/kennisbank/circadiaan-ritme) ondersteunt: wanneer slapen, niet per se hoe diep. Het reguleert het tijdstip van slapen, niet de diepte ervan. Na je 40e neemt de melatonineproductie geleidelijk af: de piek wordt lager en later in de avond bereikt. Dit kan verklaren waarom je moeilijker in slaap valt, eerder wakker wordt of je slaap minder verkwikkend aanvoelt.",
   },
 
   waaromRelevant: {
@@ -106,6 +108,18 @@ export const melatonineData: SupplementData = {
           "Melatonine is het meest direct werkzame supplement bij slaapinitiatieproblemen en circadiane ritmeverstoringen.",
         href: "/thema/slaap",
       },
+      {
+        symptoom: "Stress",
+        tekst:
+          "Piekeren en onregelmatige werkuren verzetten je ritme; laaggedoseerde melatonine kan helpen om weer naar één slaaptijd te sturen.",
+        href: "/thema/stress",
+      },
+      {
+        symptoom: "Energie",
+        tekst:
+          "Betere uitlijning van slaaptijd met je biologisch ritme verbetert de kwaliteit van je herstel — en indirect je scherpte overdag.",
+        href: "/thema/energie",
+      },
     ],
   },
 
@@ -141,5 +155,15 @@ export const melatonineData: SupplementData = {
       href: "/blog/slaaphygiene-mannen-40-plus",
       titel: "Slaaphygiëne: wat wél werkt na je 40e",
     },
+    {
+      href: "/blog/slaapritme-herstellen",
+      titel: "Slaapritme Herstellen in 7 Dagen: Een Dag-voor-Dag Protocol",
+    },
   ],
+
+  productVergelijkingCta: {
+    titel: "Welke melatonine scoort het beste?",
+    href: "/beste-melatonine",
+    linkLabel: "Bekijk de vergelijking →",
+  },
 };

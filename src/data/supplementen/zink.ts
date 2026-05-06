@@ -4,9 +4,10 @@ export const zinkGidsData: SupplementData = {
   slug: "zink",
   naam: "Zink",
   metaTitle:
-    "Zink voor mannen 40+ | Vormen, dosering & immuunfunctie | PerfectSupplement",
+    "Zink: Welke Vorm Past Bij Jou? | PerfectSupplement",
   metaDescription:
-    "Waarom zink na je 40e? Alles over zinkbisglycinaat, picolinaat en dosering. Onafhankelijk advies voor immuunfunctie, testosteron en herstel.",
+    "Zink uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+  datePublished: "2026-03-01",
   h1: "Zink: wat je moet weten voor je begint",
   introTekst:
     "Zink is betrokken bij meer dan 300 enzymatische processen in je lichaam — van testosteronproductie tot immuunfunctie tot wondgenezing. Na je 40e stijgt de behoefte terwijl de opname afneemt. Een tekort is daardoor bij mannen vaker dan gedacht.",
@@ -14,7 +15,7 @@ export const zinkGidsData: SupplementData = {
   watIsHet: {
     titel: "Wat doet zink in je lichaam?",
     tekst:
-      "Zink is een essentieel sporenelement dat je lichaam niet zelf aanmaakt — je bent volledig afhankelijk van voeding of suppletie. Het is cruciaal voor celdeling, immuunafweer, wondgenezing en de aanmaak van testosteron. Mannen die weinig rood vlees, schelpdieren of noten eten, lopen een verhoogd risico op een tekort. Dat risico neemt toe met de leeftijd door een verminderde opname in de darm.",
+      "Zink is een essentieel sporenelement dat je lichaam niet zelf aanmaakt — je bent volledig afhankelijk van voeding of suppletie. Het is cruciaal voor celdeling, immuunafweer, wondgenezing en de aanmaak van testosteron. Bij keuze van een supplement speelt [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) tussen oxiden en organisch gebonden vormen een grote rol. Mannen die weinig rood vlees, schelpdieren of noten eten, lopen een verhoogd risico op een tekort. Dat risico neemt toe met de leeftijd door een verminderde opname in de darm.",
   },
 
   waaromRelevant: {
@@ -114,10 +115,10 @@ export const zinkGidsData: SupplementData = {
         href: "/thema/stress",
       },
       {
-        symptoom: "Energie",
+        symptoom: "Slaap",
         tekst:
-          "Via testosteronondersteuning draagt zink bij aan motivatie en uithoudingsvermogen — factoren die merkbaar achteruitgaan bij een tekort.",
-        href: "/thema/energie",
+          "Zink draait mee in neurotransmitters en immuunbalans die je nachtelijke rust kunnen beïnvloeden; een latent tekort wordt vaak gemist.",
+        href: "/thema/slaap",
       },
     ],
   },
@@ -152,12 +153,22 @@ export const zinkGidsData: SupplementData = {
 
   blogLinks: [
     {
-      href: "/blog/zink-tekort-herkennen",
-      titel: "Zinktekort herkennen: symptomen die mannen over het hoofd zien",
+      href: "/blog/testosteron-en-energie-na-40",
+      titel: "Testosteron en energie na 40: wanneer is actie nodig?",
     },
     {
-      href: "/blog/testosteron-verhogen-natuurlijk",
-      titel: "Testosteron na je 40e: wat werkt en wat niet",
+      href: "/blog/energie-verhogen-natuurlijk",
+      titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
+    },
+    {
+      href: "/supplement-kiezen-waar-op-letten",
+      titel: "Supplement kiezen: waar op letten?",
     },
   ],
+
+  productVergelijkingCta: {
+    titel: "Welke zink scoort het beste?",
+    href: "/beste-zink",
+    linkLabel: "Bekijk de vergelijking →",
+  },
 };

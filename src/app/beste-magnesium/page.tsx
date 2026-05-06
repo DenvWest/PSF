@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ReferenceList } from "@/components/references/ReferenceList";
+import { RefNote } from "@/components/references/RefNote";
+import { magnesiumReferences } from "@/data/references/magnesium";
 import { magnesiumData } from "@/data/supplements/magnesium";
 import { ChoiceHero } from "@/components/supplements/ChoiceHero";
 import { ComparisonTable } from "@/components/supplements/ComparisonTable";
@@ -105,6 +108,13 @@ export default function Page() {
             <h3 className="text-lg font-semibold text-slate-900">
               Meer over magnesium
             </h3>
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+              Magnesiumbisglycinaat wordt vaak als mild en goed verdragen beschouwd
+              <RefNote number={5} />. Magnesiumcitraat lost goed op en wordt in onderzoek vaker
+              met gunstige biologische beschikbaarheid geassocieerd
+              <RefNote number={6} />. Overzichten benadrukken het klinische belang van magnesium
+              <RefNote number={4} />.
+            </p>
             <div className="mt-3 space-y-2">
               <Link
                 href="/magnesium-vergelijken"
@@ -126,24 +136,34 @@ export default function Page() {
           <Container>
             <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Link
-                href="/profiel/onrustige-slaper"
-                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
-              >
+              <div className="rounded-xl border border-stone-200 p-6 transition-colors hover:border-[#5A8F6A]/30">
                 <p className="text-base text-stone-600 leading-relaxed">
                   Slecht slapen na 40? Magnesium draagt bij tot normale psychologische functie en
-                  vermindering van vermoeidheid — ontdek of jouw profiel past bij meer structuur
-                  rond herstel.
+                  vermindering van vermoeidheid
+                  <RefNote number={1} />
+                  <RefNote number={2} /> — ontdek of jouw profiel past bij meer structuur rond
+                  herstel.
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
-              </Link>
-              <Link href="/profiel/stressdrager" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                <Link
+                  href="/profiel/onrustige-slaper"
+                  className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] hover:underline"
+                >
+                  Bekijk het profiel →
+                </Link>
+              </div>
+              <div className="rounded-xl border border-stone-200 p-6 transition-colors hover:border-[#5A8F6A]/30">
                 <p className="text-base text-stone-600 leading-relaxed">
                   Veel prikkels en weinig rust in je lijf? Magnesium draagt bij tot de normale
-                  werking van het zenuwstelsel — check of dit profiel bij je past.
+                  werking van het zenuwstelsel
+                  <RefNote number={3} /> — check of dit profiel bij je past.
                 </p>
-                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
-              </Link>
+                <Link
+                  href="/profiel/stressdrager"
+                  className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] hover:underline"
+                >
+                  Bekijk het profiel →
+                </Link>
+              </div>
               <Link href="/thema/slaap" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
                 <p className="text-base text-stone-600 leading-relaxed">Slaapkwaliteit verbeteren begint bij de juiste bouwstenen.</p>
                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Lees de slaapgids →</span>
@@ -175,6 +195,10 @@ export default function Page() {
               </p>
             </div>
           </section>
+        </Container>
+
+        <Container>
+          <ReferenceList references={magnesiumReferences} />
         </Container>
 
         <section className="border-t border-stone-200 py-10" role="complementary">

@@ -3,9 +3,11 @@ import type { SupplementData } from "@/types/supplementen";
 export const magnesiumData: SupplementData = {
   slug: "magnesium",
   naam: "Magnesium",
-  metaTitle: "Magnesium voor mannen 40+ | Vormen, dosering & advies | PerfectSupplement",
+  metaTitle:
+    "Magnesium: Welke Vorm Past Bij Jou? | PerfectSupplement",
   metaDescription:
-    "Welke magnesiumvorm past bij jou? Vergelijk glycinaat, citraat en meer. Praktisch advies voor mannen boven de 40.",
+    "Magnesium uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+  datePublished: "2026-03-01",
   h1: "Magnesium: welke vorm past bij jou?",
   introTekst:
     "Magnesium is betrokken bij meer dan 300 processen in je lichaam — van slaap tot spierherstel tot stressregulatie. Na je 40e neemt de opname af terwijl de behoefte gelijk blijft of toeneemt. Toch is niet elke magnesiumvorm hetzelfde.",
@@ -13,7 +15,7 @@ export const magnesiumData: SupplementData = {
   watIsHet: {
     titel: "Wat doet magnesium in je lichaam?",
     tekst:
-      "Magnesium is een mineraal dat je zenuwstelsel, spieren en energiehuishouding ondersteunt. Het speelt een sleutelrol bij de aanmaak van melatonine (je slaaphormoon) en bij het reguleren van cortisol (je stresshormoon). Veel mannen boven de 40 krijgen via voeding onvoldoende magnesium binnen — vooral bij stress, intensieve sport of alcoholgebruik neemt het verbruik toe.",
+      "Magnesium is een mineraal dat je zenuwstelsel, spieren en energiehuishouding ondersteunt. Het speelt een sleutelrol bij de aanmaak van melatonine (je slaaphormoon) en bij het reguleren van cortisol (je stresshormoon). De [chelaatvorm](/kennisbank/chelaatvorm) — zoals bij glycinaat — beïnvloedt mede hoe goed magnesium wordt opgenomen. Veel mannen boven de 40 krijgen via voeding onvoldoende magnesium binnen — vooral bij stress, intensieve sport of alcoholgebruik neemt het verbruik toe.",
   },
 
   waaromRelevant: {
@@ -154,6 +156,10 @@ export const magnesiumData: SupplementData = {
     {
       href: "/blog/cortisol-verlagen-natuurlijk",
       titel: "Cortisol verlagen: 5 bewezen methodes zonder medicatie",
+    },
+    {
+      href: "/blog/magnesium-en-slaap",
+      titel: "Magnesium voor Slaap: Werkt Het Écht?",
     },
   ],
 

@@ -4,9 +4,10 @@ export const creatineGidsData: SupplementData = {
   slug: "creatine",
   naam: "Creatine",
   metaTitle:
-    "Creatine voor mannen 40+ | Monohydraat, dosering & werking | PerfectSupplement",
+    "Creatine: Welke Vorm Past Bij Jou? | PerfectSupplement",
   metaDescription:
-    "Waarom creatine na je 40e? Alles over creatine monohydraat: werking, dosering en waarop te letten. Onafhankelijk advies zonder affiliate druk.",
+    "Creatine uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+  datePublished: "2026-03-01",
   h1: "Creatine: wat je moet weten voor je begint",
   introTekst:
     "Creatine monohydraat is het meest onderzochte supplement ter wereld — met bewezen effecten op spierkracht, herstel en, steeds vaker, cognitieve prestaties. Na je 40e neemt de natuurlijke creatineproductie af, terwijl spierverval en mentale belasting juist toenemen.",
@@ -14,7 +15,7 @@ export const creatineGidsData: SupplementData = {
   watIsHet: {
     titel: "Wat doet creatine in je lichaam?",
     tekst:
-      "Creatine is een stof die van nature voorkomt in spierweefsel en de hersenen. Het vult de fosfaatbuffer aan waarmee je lichaam snel energie (ATP) aanmaakt bij korte, intensieve inspanning. Suppletie vergroot de creatinevoorraad in de spieren, waardoor je langer en krachtiger kunt presteren. Bovendien is er groeiend wetenschappelijk bewijs dat creatine cognitieve functie ondersteunt — met name bij slaaptekort en mentale vermoeidheid.",
+      "Creatine is een stof die van nature voorkomt in spierweefsel en de hersenen. Het vult de fosfaatbuffer aan waarmee je lichaam snel energie (ATP) aanmaakt bij korte, intensieve inspanning. Suppletie vergroot de creatinevoorraad in de spieren, waardoor je langer en krachtiger kunt presteren. Spiermassa en trainingsbelasting onder druk na 40 leggen onder meer een brug naar [eiwitbehoefte na 40](/kennisbank/eiwitbehoefte-na-40) als randvoorwaarde naast creatine. Bovendien is er groeiend wetenschappelijk bewijs dat creatine cognitieve functie ondersteunt — met name bij slaaptekort en mentale vermoeidheid.",
   },
 
   waaromRelevant: {
@@ -152,12 +153,22 @@ export const creatineGidsData: SupplementData = {
 
   blogLinks: [
     {
-      href: "/blog/creatine-voor-mannen-40-plus",
-      titel: "Creatine na je 40e: waarom het slimmer is dan je denkt",
+      href: "/blog/testosteron-en-energie-na-40",
+      titel: "Testosteron en energie na 40: wanneer is actie nodig?",
     },
     {
-      href: "/blog/spiermassa-behouden-na-40",
-      titel: "Spiermassa behouden na je 40e: voeding, training en suppletie",
+      href: "/blog/energie-verhogen-natuurlijk",
+      titel: "Energie verhogen na je 40e: de fysiologie en wat je kunt doen",
+    },
+    {
+      href: "/supplement-kiezen-waar-op-letten",
+      titel: "Supplement kiezen: waar op letten?",
     },
   ],
+
+  productVergelijkingCta: {
+    titel: "Welke creatine scoort het beste?",
+    href: "/beste-creatine",
+    linkLabel: "Bekijk de vergelijking →",
+  },
 };

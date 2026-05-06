@@ -3,9 +3,10 @@ import type { SupplementData } from "@/types/supplementen";
 export const omega3Data: SupplementData = {
   slug: "omega-3",
   naam: "Omega-3",
-  metaTitle: "Omega-3 voor mannen 40+ | EPA, DHA & keuze uit visolie, algenolie | PerfectSupplement",
+  metaTitle: "Omega-3: Welke Vorm Past Bij Jou? | PerfectSupplement",
   metaDescription:
-    "Hoeveel EPA en DHA heb je nodig? Visolie, algenolie of krillolie? Praktisch overzicht voor mannen boven de 40.",
+    "Omega-3 uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+  datePublished: "2026-03-01",
   h1: "Omega-3: hoeveel EPA en DHA heb je nodig?",
   introTekst:
     "Omega-3 vetzuren zijn essentieel — je lichaam maakt ze niet zelf aan. EPA en DHA ondersteunen je hersenen, hart en ontstekingsbalans. Na je 40e worden deze functies steeds relevanter, terwijl de meeste mannen structureel te weinig omega-3 binnenkrijgen.",
@@ -13,7 +14,7 @@ export const omega3Data: SupplementData = {
   watIsHet: {
     titel: "Wat zijn omega-3 vetzuren?",
     tekst:
-      "Omega-3 is een verzamelnaam voor meervoudig onverzadigde vetzuren. De twee werkzame vormen zijn EPA (eicosapentaeenzuur) en DHA (docosahexaeenzuur). EPA speelt een rol bij ontstekingsregulatie en stemming. DHA is de bouwsteen voor hersencellen en zit in hoge concentraties in het netvlies. ALA (uit lijnzaad, walnoten) is een derde omega-3, maar wordt maar voor 5–10% omgezet naar EPA en DHA — te weinig om op te vertrouwen als primaire bron.",
+      "Omega-3 is een verzamelnaam voor meervoudig onverzadigde vetzuren. De twee werkzame vormen zijn [EPA en DHA](/kennisbank/epa-dha) (eicosapentaeenzuur en docosahexaeenzuur). EPA speelt een rol bij ontstekingsregulatie en stemming. DHA is de bouwsteen voor hersencellen en zit in hoge concentraties in het netvlies. ALA (uit lijnzaad, walnoten) is een derde omega-3, maar wordt maar voor 5–10% omgezet naar EPA en DHA — te weinig om op te vertrouwen als primaire bron.",
   },
 
   waaromRelevant: {
@@ -112,6 +113,12 @@ export const omega3Data: SupplementData = {
           "DHA ondersteunt hersenfunctie en concentratie overdag — twee pijlers van mentale energie.",
         href: "/thema/energie",
       },
+      {
+        symptoom: "Slaap",
+        tekst:
+          "Door ontstekingsbalans en hersenondersteuning draagt DHA indirect bij aan rust en herstel ’s nachts — naast je baseline slaaphygiëne.",
+        href: "/thema/slaap",
+      },
     ],
   },
 
@@ -142,6 +149,14 @@ export const omega3Data: SupplementData = {
     {
       href: "/blog/omega-3-concentratie-energie",
       titel: "Omega-3 en concentratie: wat zegt het onderzoek?",
+    },
+    {
+      href: "/waar-let-je-op-bij-omega-3",
+      titel: "Waar let je op bij omega-3?",
+    },
+    {
+      href: "/supplement-kiezen-waar-op-letten",
+      titel: "Supplement kiezen: waar op letten?",
     },
   ],
 

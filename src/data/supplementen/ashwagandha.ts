@@ -3,9 +3,11 @@ import type { SupplementData } from "@/types/supplementen";
 export const ashwagandhaData: SupplementData = {
   slug: "ashwagandha",
   naam: "Ashwagandha",
-  metaTitle: "Ashwagandha voor mannen 40+ | KSM-66, dosering & werking | PerfectSupplement",
+  metaTitle:
+    "Ashwagandha: Welke vorm past bij jou? | PerfectSupplement",
   metaDescription:
-    "Hoe werkt ashwagandha bij stress, slaap en energie? Vergelijk KSM-66 en Sensoril. Praktisch advies voor mannen boven de 40.",
+    "Ashwagandha uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
+  datePublished: "2026-03-01",
   h1: "Ashwagandha: wat je moet weten voor je begint",
   introTekst:
     "Ashwagandha is een adaptogeen — een plant die je lichaam helpt beter om te gaan met stress. Bij mannen boven de 40 is het een van de best onderzochte supplementen voor het verlagen van cortisol, het verbeteren van veerkracht en het ondersteunen van een gezonde slaap.",
@@ -13,7 +15,7 @@ export const ashwagandhaData: SupplementData = {
   watIsHet: {
     titel: "Wat is ashwagandha?",
     tekst:
-      "Ashwagandha (Withania somnifera) is een kruid uit de Ayurvedische geneeskunde dat al duizenden jaren wordt gebruikt. Het werkzame bestanddeel zijn withanoliden — stoffen die invloed hebben op het stresssysteem van je lichaam. Moderne studies bevestigen wat traditionele kennis al langer stelt: ashwagandha verlaagt cortisolniveaus meetbaar bij volwassenen met chronische stress. Het is geen stimulant en geen kalmeringsmiddel — het helpt je lichaam balans vinden.",
+      "Ashwagandha (Withania somnifera) is een kruid uit de Ayurvedische geneeskunde dat al duizenden jaren wordt gebruikt. Het past bij de groep [adaptogenen](/kennisbank/adaptogens) — stoffen die je stressrespons helpen bufferen. Het werkzame bestanddeel zijn withanoliden — stoffen die invloed hebben op het stresssysteem van je lichaam. Moderne studies bevestigen wat traditionele kennis al langer stelt: ashwagandha verlaagt cortisolniveaus meetbaar bij volwassenen met chronische stress. Het is geen stimulant en geen kalmeringsmiddel — het helpt je lichaam balans vinden.",
   },
 
   waaromRelevant: {
@@ -152,6 +154,10 @@ export const ashwagandhaData: SupplementData = {
     {
       href: "/blog/cortisol-verlagen-natuurlijk",
       titel: "Cortisol verlagen: 5 bewezen methodes zonder medicatie",
+    },
+    {
+      href: "/supplement-kiezen-waar-op-letten",
+      titel: "Supplement kiezen: waar op letten?",
     },
   ],
 
