@@ -8,9 +8,9 @@ export const vitamineDData: SupplementData = {
   metaDescription:
     "Vitamine D uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Vitamine D: waarom D3 + K2 samen?",
+  h1: "Vitamine D: welke vorm past bij jou?",
   introTekst:
-    "Vitamine D is strikt genomen een hormoon, geen vitamine. Het beïnvloedt energie, immuunsysteem, stemming en testosteron — en een tekort is bij mannen boven de 40 verrassend gewoon, ook in landen met regelmatig zonlicht.",
+    "Vitamine D werkt hormonaal — het beïnvloedt energie, stemming, calciumhuishouding en immuunmodulatie. Combinaties van D3 met K2 (vaak als MK-7) zijn daarom zo gangbaar na je 40e: ze sluiten aan bij zonlicht tekort én bij de wens calcium netjes naar bot ten goede te geleiden i.p.v. naar zacht weefsel waar het niet hoeft te zitten. Tekorten komen veel vaker voor in donkere maanden en bij weinig buitenbeweging — vaak zonder dat je het merkt.",
 
   watIsHet: {
     titel: "Wat doet vitamine D in je lichaam?",
@@ -19,7 +19,7 @@ export const vitamineDData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is vitamine D zo relevant na je 40e?",
+    titel: "Waarom is vitamine D zo belangrijk na je 40e?",
     punten: [
       {
         titel: "Vermoeidheid bij tekort",
@@ -45,7 +45,7 @@ export const vitamineDData: SupplementData = {
   },
 
   vormenDosering: {
-    titel: "D3 met K2: hoe en hoeveel?",
+    titel: "Welke vorm vitamine D kies je?",
     vormen: [
       {
         naam: "Vitamine D3 + K2 (MK-7) — capsule",
@@ -138,6 +138,11 @@ export const vitamineDData: SupplementData = {
       vraag: "Kan ik teveel vitamine D innemen?",
       antwoord:
         "Bij doseringen tot 4.000 IE per dag is overdosering voor de meeste mensen onwaarschijnlijk. Langdurig gebruik van hogere doseringen zonder monitoring kan leiden tot hypercalciëmie. Houd je aan aanbevolen doseringen of gebruik het onder begeleiding.",
+    },
+    {
+      vraag: "Kan ik vitamine D combineren met andere supplementen?",
+      antwoord:
+        "Ja, vaak wordt D3 bij een maaltijd met vet ingenomen samen met K2 zoals beschreven op het etiket. Magnesium ondersteunt de omzetting van vitamine D naar de actieve vorm — een nuttige context naast zonlichtgedrag — maar hoeft niet op dezelfde minuut. Bij gelijktijdige ijzer-/calciumsuppletie: hou wat ruimte tussen innames voor opname-competitie.",
     },
     {
       vraag: "Waarom wordt D3 vaak met K2 gecombineerd?",

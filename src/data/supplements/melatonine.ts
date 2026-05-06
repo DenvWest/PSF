@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const melatonineData: ComparisonPageData = {
   category: "melatonine",
+  guideHref: "/supplementen/melatonine",
   h1: "Beste Melatonine Supplement 2026",
   intro:
     "Beter slapen begint bij de juiste keuze. Wij vergeleken pure melatonine en slaapcomplexen op werking, dosering en prijs.",

@@ -53,6 +53,8 @@ export interface TableRow {
 
 export interface ComparisonPageData {
   category: SupplementCategory;
+  /** Educatieve supplementgids — geen affiliate */
+  guideHref?: string;
   h1: string;
   intro: string;
   seoTitle: string;

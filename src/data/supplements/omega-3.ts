@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const omega3Data: ComparisonPageData = {
   category: "omega-3",
+  guideHref: "/supplementen/omega-3",
   h1: "Welke omega-3 visolie past bij jou?",
   intro:
     "Vier visoliën vergeleken op EPA/DHA-gehalte, vorm, prijs per dag en zuiverheid — zodat je in één oogopslag ziet welke het beste bij jouw situatie past.",

@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const vitamineDData: ComparisonPageData = {
   category: "vitamine-d",
+  guideHref: "/supplementen/vitamine-d",
   h1: "Beste vitamine D supplement 2026 — onafhankelijk vergeleken",
   intro:
     "Drie vitamine D3 supplementen vergeleken op dosering, kwaliteit, prijs en opneembaarheid — speciaal beoordeeld voor mannen 40+ in Nederland, waar zonlicht het grootste deel van het jaar onvoldoende is voor een gezond vitamine D-niveau.",

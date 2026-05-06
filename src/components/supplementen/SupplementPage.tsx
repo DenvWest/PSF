@@ -11,6 +11,7 @@ import {
   renderInlineMarkdownLinks,
   stripInlineMarkdownLinks,
 } from "@/components/blog/inlineMarkdownLinks";
+import { buildBreadcrumbSchema } from "@/lib/structured-data";
 
 const SITE_URL = "https://perfectsupplement.nl";
 
@@ -21,6 +22,12 @@ interface SupplementPageProps {
 export default function SupplementPage({ data }: SupplementPageProps) {
   const pageUrl = `${SITE_URL}/supplementen/${data.slug}`;
   const modified = data.dateModified ?? data.datePublished;
+
+  const breadcrumbJsonLd = buildBreadcrumbSchema([
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Supplementen", url: "/supplementen" },
+    { name: data.naam, url: `/supplementen/${data.slug}` },
+  ]);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -58,6 +65,12 @@ export default function SupplementPage({ data }: SupplementPageProps) {
     <div className="bg-stone-50/40 pb-24">
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
       <script
@@ -92,7 +105,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             <div className="ps-prose-container">
               <h2
                 id="wat-doet-heading"
-                className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
+                className="font-display text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
               >
                 {data.watIsHet.titel}
               </h2>
@@ -105,7 +118,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
           <section id="waarom-na-40" aria-labelledby="waarom-heading">
             <h2
               id="waarom-heading"
-              className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
+              className="font-display text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
             >
               {data.waaromRelevant.titel}
             </h2>
@@ -123,7 +136,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
           <section id="vormen" aria-labelledby="vormen-heading">
             <h2
               id="vormen-heading"
-              className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
+              className="font-display text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
             >
               {data.vormenDosering.titel}
             </h2>
@@ -154,7 +167,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             <div className="ps-prose-container">
               <h2
                 id="letten-heading"
-                className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
+                className="font-display text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
               >
                 {data.waarOpLetten.titel}
               </h2>
@@ -182,7 +195,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
           <section id="bij-jouw-klachten" aria-labelledby="klachten-heading">
             <h2
               id="klachten-heading"
-              className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
+              className="font-display text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
             >
               {data.gerelateerdeSymptomen.titel}
             </h2>
@@ -202,7 +215,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             <div className="ps-prose-container">
               <h2
                 id="faq-heading"
-                className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
+                className="font-display text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
               >
                 Veelgestelde vragen
               </h2>
@@ -222,7 +235,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             >
               <h2
                 id="vergelijking-cta-heading"
-                className="text-lg font-semibold tracking-tight text-stone-900 sm:text-xl"
+                className="font-display text-lg font-semibold tracking-tight text-stone-900 sm:text-xl"
               >
                 {data.productVergelijkingCta.titel}
               </h2>
@@ -243,7 +256,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               <div className="ps-prose-container">
                 <h2
                   id="verdieping-heading"
-                  className="text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
+                  className="font-display text-xl font-semibold tracking-tight text-stone-900 sm:text-2xl"
                 >
                   Verdieping
                 </h2>
@@ -303,7 +316,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               <Link href="/supplementen" className="ps-btn-primary">
                 Alle supplementen
               </Link>
-              <Link href="/supplementen" className="ps-btn-secondary">
+              <Link href="/supplementen#themas" className="ps-btn-secondary">
                 Bekijk thema&apos;s
               </Link>
             </div>

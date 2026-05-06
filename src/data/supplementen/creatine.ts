@@ -8,7 +8,7 @@ export const creatineGidsData: SupplementData = {
   metaDescription:
     "Creatine uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Creatine: wat je moet weten voor je begint",
+  h1: "Creatine: welke vorm past bij jou?",
   introTekst:
     "Creatine monohydraat is het meest onderzochte supplement ter wereld — met bewezen effecten op spierkracht, herstel en, steeds vaker, cognitieve prestaties. Na je 40e neemt de natuurlijke creatineproductie af, terwijl spierverval en mentale belasting juist toenemen.",
 
@@ -19,7 +19,7 @@ export const creatineGidsData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is creatine relevant na je 40e?",
+    titel: "Waarom is creatine belangrijk na je 40e?",
     punten: [
       {
         titel: "Spierbehoud bij sarcopenie",

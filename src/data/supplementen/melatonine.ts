@@ -8,9 +8,9 @@ export const melatonineData: SupplementData = {
   metaDescription:
     "Melatonine uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Melatonine: minder is meer",
+  h1: "Melatonine: welke vorm past bij jou?",
   introTekst:
-    "Melatonine is je slaaphormoon — maar het is geen slaapmiddel. Het geeft je lichaam een tijdssignaal: het is nacht. Slim gebruik versterkt je circadiaans ritme. Verkeerd gebruik verstoort het juist.",
+    "Melatonine regelt tijding — niet per se hoe diep je slaapt. Het vertelt je organisme dat het ‘nacht’ wordt: een signaal waar je slaapsysteem op inspeelt als de rest voor elkaar is. Slim gedoseerd versterkt vaak eerder je ritme dan je diepte van slaap. Na je 40e daalt eigen melatoninemaxima en kan timing verzakken; veel mensen gebruiken daarom kort tijdelijk lage doses in plaats van hoge capsules uit de gangbare schappen.",
 
   watIsHet: {
     titel: "Wat doet melatonine in je lichaam?",
@@ -19,7 +19,7 @@ export const melatonineData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is melatonine relevant na je 40e?",
+    titel: "Waarom is melatonine belangrijk na je 40e?",
     punten: [
       {
         titel: "Slaapinitiatie",
@@ -45,7 +45,7 @@ export const melatonineData: SupplementData = {
   },
 
   vormenDosering: {
-    titel: "Laaggedoseerd of slow-release?",
+    titel: "Welke vorm melatonine kies je?",
     vormen: [
       {
         naam: "Laaggedoseerd (0,3–0,5 mg) — direct werkend",

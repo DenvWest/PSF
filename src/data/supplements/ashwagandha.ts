@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const ashwagandhaData: ComparisonPageData = {
   category: "ashwagandha",
+  guideHref: "/supplementen/ashwagandha",
   h1: "Beste ashwagandha supplement 2026 — onafhankelijk vergeleken",
   intro:
     "Drie ashwagandha supplementen vergeleken op extract-type, withanolidegehalte, dosering en prijs — voor wie bewust kiest op basis van standaardisatie en transparantie op het etiket. Let op: dit ingrediënt staat in de EU in de on-hold-procedure voor gezondheidsclaims; vergelijk producten dus vooral op kwaliteit en specificaties, niet op beloofde uitkomsten.",

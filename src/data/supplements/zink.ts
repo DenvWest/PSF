@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const zinkData: ComparisonPageData = {
   category: "zink",
+  guideHref: "/supplementen/zink",
   h1: "Beste zink supplement 2026 — onafhankelijk vergeleken",
   intro:
     "Drie zink supplementen vergeleken op zinkvorm, biobeschikbaarheid, dosering en prijs — voor wie let op onder andere draagt bij tot het immuunsysteem, eiwitsynthese en (officieel geformuleerd) tot de instandhouding van een normaal testosterongehalte in het bloed.",

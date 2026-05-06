@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const magnesiumData: ComparisonPageData = {
   category: "magnesium",
+  guideHref: "/supplementen/magnesium",
   h1: "Welke magnesium past bij jou?",
   intro:
     "Drie magnesiumsupplementen vergeleken op vorm, elementaire dosering, prijs per dag en toepasbaarheid — zodat je weet welke variant bij jouw voorkeur voor inname en routine past.",

@@ -8,7 +8,7 @@ export const zinkGidsData: SupplementData = {
   metaDescription:
     "Zink uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Zink: wat je moet weten voor je begint",
+  h1: "Zink: welke vorm past bij jou?",
   introTekst:
     "Zink is betrokken bij meer dan 300 enzymatische processen in je lichaam — van testosteronproductie tot immuunfunctie tot wondgenezing. Na je 40e stijgt de behoefte terwijl de opname afneemt. Een tekort is daardoor bij mannen vaker dan gedacht.",
 
@@ -19,7 +19,7 @@ export const zinkGidsData: SupplementData = {
   },
 
   waaromRelevant: {
-    titel: "Waarom is zink relevant na je 40e?",
+    titel: "Waarom is zink belangrijk na je 40e?",
     punten: [
       {
         titel: "Testosteronproductie",

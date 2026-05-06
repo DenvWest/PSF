@@ -7,14 +7,14 @@ export const omega3Data: SupplementData = {
   metaDescription:
     "Omega-3 uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Omega-3: hoeveel EPA en DHA heb je nodig?",
+  h1: "Omega-3: welke vorm past bij jou?",
   introTekst:
     "Omega-3 vetzuren zijn essentieel — je lichaam maakt ze niet zelf aan. EPA en DHA ondersteunen je hersenen, hart en ontstekingsbalans. Na je 40e worden deze functies steeds relevanter, terwijl de meeste mannen structureel te weinig omega-3 binnenkrijgen.",
 
   watIsHet: {
-    titel: "Wat zijn omega-3 vetzuren?",
+    titel: "Wat doet omega-3 in je lichaam?",
     tekst:
-      "Omega-3 is een verzamelnaam voor meervoudig onverzadigde vetzuren. De twee werkzame vormen zijn [EPA en DHA](/kennisbank/epa-dha) (eicosapentaeenzuur en docosahexaeenzuur). EPA speelt een rol bij ontstekingsregulatie en stemming. DHA is de bouwsteen voor hersencellen en zit in hoge concentraties in het netvlies. ALA (uit lijnzaad, walnoten) is een derde omega-3, maar wordt maar voor 5–10% omgezet naar EPA en DHA — te weinig om op te vertrouwen als primaire bron.",
+      "Omega-3 is een verzamelnaam voor meervoudig onverzadigde vetzuren. De twee werkzame vormen zijn [EPA en DHA](/kennisbank/epa-dha) (eicosapentaeenzuur en docosahexaeenzuur). Ze bouwen zich in in celmembraan van zenuwcellen en weefsels waar signaaltransductie plaatsvindt: EPA heeft vooral naam in ontstekings- en stemmingmodellering; DHA is de dominante meer-onverzadigde vetzuurketen in grijze stof en netvlies — vandaar de nadruk op cognitie en visus in richtlijnen. ALA uit lijnzaad of walnoten is een plantaardige voorloper maar wordt maar beperkt (<10%) omgezet naar EPA/DHA bij de meeste volwassenen — niet voldoende om op te vertrouwen als enige bron als je zo weinig vis eet als de gemiddelde man 40+. Met de leeftijd neemt de cardiovasculaire ‘ruis’ en oxidatieve spanning toe; stabiele omega-3-inname wordt daardoor praktischer relevant, los van elk marketingverhaal over ‘superhersenen’.",
   },
 
   waaromRelevant: {
@@ -44,7 +44,7 @@ export const omega3Data: SupplementData = {
   },
 
   vormenDosering: {
-    titel: "Visolie, algenolie of krillolie?",
+    titel: "Welke vorm omega-3 kies je?",
     vormen: [
       {
         naam: "Visolie (EPA + DHA)",
@@ -123,6 +123,11 @@ export const omega3Data: SupplementData = {
   },
 
   faq: [
+    {
+      vraag: "Kan ik omega-3 combineren met andere supplementen?",
+      antwoord:
+        "Ja. Omega-3 met vitamine D (beide vetoplosbaar, bij voorkeur met een maaltijd met vet), met magnesium voor ontspanning, of met multivitaminen is gangbaar. Hoge omega-3-doses kunnen de bloedingstijd subtiel beïnvloeden; bij vitamine-K-antagonisten of bloedverdunners eerst arts raadplegen.",
+    },
     {
       vraag: "Hoeveel EPA versus DHA heb ik nodig?",
       antwoord:

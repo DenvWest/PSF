@@ -146,6 +146,11 @@ export const magnesiumData: SupplementData = {
       antwoord:
         "In theorie wel — noten, zaden, groene bladgroenten en volkoren bevatten magnesium. In de praktijk halen veel mannen boven de 40 het aanbevolen dagelijkse minimum niet, zeker bij stress of intensief sporten.",
     },
+    {
+      vraag: "Welke magnesiumvorm is het minst laxerend?",
+      antwoord:
+        "Magnesiumglycinaat en -bisglycinaat worden vaak als zacht voor de darmervaring genoemd; magnesiumcitraat kan bij hogere doses sneller laxerend werken. Dosering tijdens de dag verdelen helpt ook.",
+    },
   ],
 
   blogLinks: [

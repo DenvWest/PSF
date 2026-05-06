@@ -4,6 +4,8 @@ import type { SupplementCategory } from "@/types/supplement";
 type Props = {
   criteria: string[];
   category: SupplementCategory;
+  /** Link naar Supplementgids (geen affiliate) */
+  guideHref?: string;
 };
 
 const CATEGORY_LABEL: Record<SupplementCategory, string> = {
@@ -157,7 +159,7 @@ function getExplanation(
   );
 }
 
-export function BuyingGuide({ criteria, category }: Props) {
+export function BuyingGuide({ criteria, category, guideHref }: Props) {
   const categoryLabel = CATEGORY_LABEL[category];
 
   return (
@@ -181,6 +183,18 @@ export function BuyingGuide({ criteria, category }: Props) {
           </div>
         ))}
       </div>
+
+      {guideHref ? (
+        <p className="mt-6 text-sm text-slate-600">
+          Wil je eerst begrijpen welke vorm bij jou past?{" "}
+          <Link
+            href={guideHref}
+            className="font-medium text-slate-900 underline decoration-slate-900/30 underline-offset-[3px] hover:decoration-slate-900/60"
+          >
+            Lees de volledige gids →
+          </Link>
+        </p>
+      ) : null}
 
       <p className="mt-6 text-sm text-slate-500">
         Benieuwd hoe we beoordelen?{" "}

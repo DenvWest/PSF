@@ -8,18 +8,18 @@ export const ashwagandhaData: SupplementData = {
   metaDescription:
     "Ashwagandha uitgelegd: vormen, dosering en bij welke klachten. Objectief en onafhankelijk.",
   datePublished: "2026-03-01",
-  h1: "Ashwagandha: wat je moet weten voor je begint",
+  h1: "Ashwagandha: welke vorm past bij jou?",
   introTekst:
     "Ashwagandha is een adaptogeen — een plant die je lichaam helpt beter om te gaan met stress. Bij mannen boven de 40 is het een van de best onderzochte supplementen voor het verlagen van cortisol, het verbeteren van veerkracht en het ondersteunen van een gezonde slaap.",
 
   watIsHet: {
-    titel: "Wat is ashwagandha?",
+    titel: "Wat doet ashwagandha in je lichaam?",
     tekst:
-      "Ashwagandha (Withania somnifera) is een kruid uit de Ayurvedische geneeskunde dat al duizenden jaren wordt gebruikt. Het past bij de groep [adaptogenen](/kennisbank/adaptogens) — stoffen die je stressrespons helpen bufferen. Het werkzame bestanddeel zijn withanoliden — stoffen die invloed hebben op het stresssysteem van je lichaam. Moderne studies bevestigen wat traditionele kennis al langer stelt: ashwagandha verlaagt cortisolniveaus meetbaar bij volwassenen met chronische stress. Het is geen stimulant en geen kalmeringsmiddel — het helpt je lichaam balans vinden.",
+      "Ashwagandha (Withania somnifera) is een kruid uit de Ayurvedische geneeskunde dat al duizenden jaren wordt gebruikt. Het past bij de groep [adaptogenen](/kennisbank/adaptogens) — stoffen die je stressrespons helpen bufferen door met name op de hypofyse-hypothalamus-bijnieras (HPA-as) te werken, zonder die as ‘uit te zetten’. Het werkzame bestanddeel zijn withanoliden — stoffen die invloed hebben op signalering rond spanning en herstel. Moderne gerandomiseerde studies laten onder andere een daling van cortisol zien bij volwassenen met chronisch stressprofiel; dat is géén garantie voor een persoonlijke uitkomst, maar wél onderbouwd als populatie-effect. Het is geen stimulant en geen kalmeringsmiddel — het ondersteunt veerkracht en balans tussen actie en herstel.",
   },
 
   waaromRelevant: {
-    titel: "Waarom is ashwagandha relevant na je 40e?",
+    titel: "Waarom is ashwagandha belangrijk na je 40e?",
     punten: [
       {
         titel: "Cortisolverlaging",
@@ -45,7 +45,7 @@ export const ashwagandhaData: SupplementData = {
   },
 
   vormenDosering: {
-    titel: "KSM-66, Sensoril of generiek extract?",
+    titel: "Welke vorm ashwagandha kies je?",
     vormen: [
       {
         naam: "KSM-66",
@@ -125,9 +125,9 @@ export const ashwagandhaData: SupplementData = {
 
   faq: [
     {
-      vraag: "Kan ik ashwagandha combineren met magnesium?",
+      vraag: "Kan ik ashwagandha combineren met andere supplementen?",
       antwoord:
-        "Ja, deze combinatie wordt veel gebruikt en beide werken complementair: magnesium ondersteunt direct de ontspanning van het zenuwstelsel, ashwagandha verlaagt cortisol op de langere termijn. Je kunt ze samen nemen, bij voorkeur 's avonds.",
+        "Ja, vaak wordt het gecombineerd met magnesium (glycinaat) voor slaap en ontspanning, of met omega-3 voor stemming en ontstekingsbalans. Let op overlapping met sedativa of schildkliermedicatie — neem niet zomaar meer stacks bij elkaar; bij twijfel overleg je met je arts.",
     },
     {
       vraag: "Hoe lang moet ik ashwagandha gebruiken?",

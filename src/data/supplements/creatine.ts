@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const creatineData: ComparisonPageData = {
   category: "creatine",
+  guideHref: "/supplementen/creatine",
   h1: "Beste creatine supplement 2026 — onafhankelijk vergeleken",
   intro:
     "Drie creatine monohydraat supplementen vergeleken op zuiverheid, prijs per gram en kwaliteitscertificering — voor mannen 40+ die spierkracht, herstel en prestatie willen ondersteunen.",

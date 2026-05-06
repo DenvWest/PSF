@@ -128,6 +128,7 @@ export default function Page() {
           <BuyingGuide
             criteria={data.comparisonCriteria}
             category={data.category}
+            guideHref={data.guideHref}
           />
         </section>
 
