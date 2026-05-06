@@ -30,8 +30,8 @@ export default function JuridischPage() {
                 <div className="mt-5 space-y-4">
                         <p>
                             De informatie op deze website is uitsluitend bedoeld voor algemene
-                            informatieve en educatieve doeleinden. Hoewel we streven naar zorgvuldige,
-                            duidelijke en zo actueel mogelijke informatie, kunnen we niet garanderen
+                            informatieve en educatieve doeleinden. Hoewel we streven naar zorgvuldige en
+                            duidelijke informatie die zo actueel mogelijk is, kunnen we niet garanderen
                             dat alle informatie volledig, foutloos of altijd actueel is.
                         </p>
                         <p>

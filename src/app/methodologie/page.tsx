@@ -163,7 +163,7 @@ export default function MethodologiePage() {
                 Hoe claims worden gecontroleerd
               </h2>
               <p className="text-base leading-relaxed text-stone-600">
-                Informatie over ingrediënten beschrijven we neutraal op basis van wetenschappelijke
+                We beschrijven informatie over ingrediënten neutraal op basis van wetenschappelijke
                 literatuur en toegestane{" "}
                 <Link href="/kennisbank/efsa-claims" className={linkClass}>gezondheidsclaims</Link>{" "}
                 binnen de Europese regelgeving. We maken claims niet groter dan ze zijn — geen

@@ -6,10 +6,10 @@ import { faqHelpCards, faqItems } from "@/data/contact-faq";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "FAQ's | Perfect Supplement",
+    absolute: "FAQ's | PerfectSupplement",
   },
   description:
-    "Veelgestelde vragen, snelle routes en contactopties van Perfect Supplement.",
+    "Veelgestelde vragen, snelle routes en contactopties van PerfectSupplement.",
   alternates: { canonical: "/faqs" },
 };
 

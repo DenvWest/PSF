@@ -246,7 +246,7 @@ export default function PrivacyPage() {
                 </p>
                 <ul className="mt-4 list-disc space-y-2 pl-6">
                     <li>versleutelde verbinding via HTTPS;</li>
-                    <li>Row Level Security en server-side alleen toegang tot de database waar van toepassing;</li>
+                    <li>Row Level Security en server-side toegang tot de database alleen waar nodig;</li>
                     <li>IP-adressen waar passend gehasht of beperkt vastgelegd;</li>
                     <li>beveiligingsheaders op de website;</li>
                     <li>Cloudflare Turnstile ter bescherming van formulieren tegen geautomatiseerd misbruik.</li>

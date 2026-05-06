@@ -4,10 +4,10 @@ import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
     title: {
-        absolute: "Contact | Perfect Supplement",
+        absolute: "Contact | PerfectSupplement",
     },
     description:
-        "Hulp, veelgestelde vragen en contactinformatie van Perfect Supplement.",
+        "Hulp, veelgestelde vragen en contactinformatie van PerfectSupplement.",
     alternates: {
         canonical: "https://perfectsupplement.nl/contact",
     },
@@ -60,7 +60,7 @@ export default function ContactPage() {
                                 <p className="mt-3 text-sm leading-6 text-stone-600">
                                     Gebruik hetzelfde formulier en vermeld kort je organisatie,
                                     het type samenwerking en je voorstel. Dan kunnen we sneller
-                                    beoordelen of het inhoudelijk past bij Perfect Supplement.
+                                    beoordelen of het inhoudelijk past bij PerfectSupplement.
                                 </p>
                             </div>
 
@@ -71,7 +71,7 @@ export default function ContactPage() {
                                 />
                             </div>
                             <p className="mt-10 text-sm leading-7 text-stone-500 md:mt-12">
-                                Perfect Supplement is een onafhankelijk platform gericht op
+                                PerfectSupplement is een onafhankelijk platform gericht op
                                 transparante, evidence-based informatie over supplementen.
                             </p>
                         </div>

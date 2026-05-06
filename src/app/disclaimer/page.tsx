@@ -26,8 +26,8 @@ export default function DisclaimerPage() {
                 <h2 className="text-xl font-semibold text-stone-900">1. Algemene informatie</h2>
                 <p className="mt-3">
                         De informatie op deze website is uitsluitend bedoeld voor algemene informatieve
-                        en educatieve doeleinden. Hoewel we streven naar zorgvuldige, duidelijke en zo
-                        actueel mogelijke informatie, kunnen we niet garanderen dat alle informatie
+                        en educatieve doeleinden. Hoewel we streven naar zorgvuldige en duidelijke informatie
+                        die zo actueel mogelijk is, kunnen we niet garanderen dat alle informatie
                         volledig, foutloos of altijd actueel is.
                     </p>
                 <p className="mt-3">
@@ -52,7 +52,7 @@ export default function DisclaimerPage() {
             <section>
                 <h2 className="text-xl font-semibold text-stone-900">3. Supplementen en gezondheid</h2>
                 <p className="mt-3">
-                        Reacties op supplementen kunnen per persoon verschillen. Informatie over ingrediënten,
+                        Het effect van supplementen kan per persoon verschillen. Informatie over ingrediënten,
                         doseringen, veiligheid, bijwerkingen of toepassingen is bedoeld als algemene context en
                         niet als persoonlijke aanbeveling.
                     </p>
