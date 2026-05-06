@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import { ReferenceList } from "@/components/references/ReferenceList";
+import { RefNote } from "@/components/references/RefNote";
+import { magnesiumReferences } from "@/data/references/magnesium";
 
 export const metadata: Metadata = {
   title: "Slaap Verbeteren Na 40: Oorzaken, Tips & Supplementen | PerfectSupplement",
@@ -405,21 +408,28 @@ export default function SlaapVerbeterenNa40Page() {
                   Magnesium glycinaat
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam,
-                  waaronder de regulatie van GABA — de neurotransmitter die het zenuwstelsel tot
+                  Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam
+                  <RefNote number={4} />
+                  , waaronder de regulatie van GABA — de neurotransmitter die het zenuwstelsel tot
                   rust brengt. Studies tonen consistent aan dat magnesiumsuppletie de slaapkwaliteit
-                  verbetert, met name bij mensen met een suboptimale inname.
+                  verbetert, met name bij mensen met een suboptimale inname
+                  <RefNote number={1} />
+                  <RefNote number={2} />.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Magnesiumtekort is vaker aanwezig dan gedacht: stressvolle leefstijlen, alcohol en
-                  een westers dieet arm aan groente en noten zorgen bij veel mannen voor een tekort.
-                  Na je 40e neemt de opname via de darmen ook iets af.
+                  Magnesiumtekort is vaker aanwezig dan gedacht: stressvolle leefstijlen
+                  <RefNote number={3} />
+                  , alcohol en een westers dieet arm aan groente en noten zorgen bij veel mannen voor
+                  een tekort. Na je 40e neemt de opname via de darmen ook iets af.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Vorm maakt uit. Magnesiumoxide (goedkoop, in veel supermarkt-supplementen) heeft
-                  een slechte biologische beschikbaarheid. Magnesium glycinaat en bisglycinaat
-                  worden het best opgenomen en hebben het minste last van maag-darmklachten.
-                  Dosering: 200-400 mg, 30-60 minuten voor bedtijd.
+                  een slechte biologische beschikbaarheid
+                  <RefNote number={5} />
+                  . Magnesium glycinaat en bisglycinaat worden het best opgenomen en hebben het
+                  minste last van maag-darmklachten
+                  <RefNote number={6} />
+                  . Dosering: 200-400 mg, 30-60 minuten voor bedtijd.
                 </p>
 
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
@@ -726,6 +736,8 @@ export default function SlaapVerbeterenNa40Page() {
                   </Link>
                 </div>
               </section>
+
+              <ReferenceList references={magnesiumReferences} />
 
               {/* 12. Disclaimer */}
               <footer className="mt-16 pt-8 border-t border-stone-200">

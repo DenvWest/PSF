@@ -14,40 +14,11 @@ const CHOOSER_LABEL: Record<SupplementCategory, string> = {
   eiwitpoeder: "eiwitpoeder",
 };
 
-function hasSleepPillar(category: SupplementCategory): boolean {
-  return category === "magnesium";
-}
-
 export function ComparisonEducationalLead({
-  category,
+  category: _category,
 }: {
   category: SupplementCategory;
 }) {
-  if (hasSleepPillar(category)) {
-    return (
-      <section
-        aria-label="Eerst begrijpen"
-        className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8"
-      >
-        <div className="rounded-lg bg-stone-50 p-8">
-          <h2 className="font-display mb-2 text-2xl text-stone-900">
-            Wil je eerst begrijpen waarom magnesium helpt?
-          </h2>
-          <p className="mb-4 text-stone-600">
-            Veel mensen kopen zomaar een supplement. Maar als je eerst begrijpt wat er aan de hand
-            is, kies je slimmer.
-          </p>
-          <Link
-            href="/slaap-verbeteren-na-40"
-            className="inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
-          >
-            Lees: Slaap verbeteren na 40 — complete gids →
-          </Link>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section
       aria-label="Eerst zicht op jouw situatie"

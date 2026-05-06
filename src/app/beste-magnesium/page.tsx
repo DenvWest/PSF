@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ReferenceList } from "@/components/references/ReferenceList";
-import { RefNote } from "@/components/references/RefNote";
-import { magnesiumReferences } from "@/data/references/magnesium";
 import { magnesiumData } from "@/data/supplements/magnesium";
 import { ChoiceHero } from "@/components/supplements/ChoiceHero";
 import { ComparisonTable } from "@/components/supplements/ComparisonTable";
@@ -13,7 +10,6 @@ import { StickyMobileCta } from "@/components/supplements/StickyMobileCta";
 import { TrustBar } from "@/components/supplements/TrustBar";
 import {
   ComparisonChooserIntro,
-  ComparisonEducationalLead,
   ComparisonIntakeFallbackCta,
 } from "@/components/supplements/ContentFirstComparisonCTAs";
 import Container from "@/components/layout/Container";
@@ -81,7 +77,6 @@ export default function Page() {
         <ComparisonChooserIntro category={data.category}>
           <ComparisonTable rows={data.tableRows} criteria={data.comparisonCriteria} doseringColumnLabel={data.tableDoseringColumnLabel} />
         </ComparisonChooserIntro>
-        <ComparisonEducationalLead category={data.category} />
 
         <section id="producten" className="mx-auto mt-16 w-full max-w-7xl space-y-8 px-6 lg:px-8">
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
@@ -107,33 +102,26 @@ export default function Page() {
           <FaqSection items={data.faq} />
         </section>
 
-        <section className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8 pb-8">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <h3 className="text-lg font-semibold text-slate-900">
-              Meer over magnesium
-            </h3>
-            <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-              Magnesiumbisglycinaat wordt vaak als mild en goed verdragen beschouwd
-              <RefNote number={5} />. Magnesiumcitraat lost goed op en wordt in onderzoek vaker
-              met gunstige biologische beschikbaarheid geassocieerd
-              <RefNote number={6} />. Overzichten benadrukken het klinische belang van magnesium
-              <RefNote number={4} />.
-            </p>
-            <div className="mt-3 space-y-2">
+        <section className="mx-auto mt-12 w-full max-w-7xl px-6 lg:px-8 pb-8">
+          <h3 className="font-display text-lg text-stone-900 mb-4">Meer over magnesium</h3>
+          <ul className="space-y-2">
+            <li>
               <Link
                 href="/magnesium-vergelijken"
-                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+                className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
               >
-                Magnesium vormen vergelijken — waar let je op per vorm en dosering?
+                Magnesium vormen vergelijken — waar let je op per vorm en dosering? →
               </Link>
+            </li>
+            <li>
               <Link
                 href="/blog/magnesium-en-slaapkwaliteit"
-                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+                className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
               >
-                Magnesium en slaapkwaliteit: wat zegt het onderzoek?
+                Magnesium en slaapkwaliteit: wat zegt het onderzoek? →
               </Link>
-            </div>
-          </div>
+            </li>
+          </ul>
         </section>
 
         <section className="mt-16 border-t border-stone-100 pt-12">
@@ -143,9 +131,7 @@ export default function Page() {
               <div className="rounded-xl border border-stone-200 p-6 transition-colors hover:border-[#5A8F6A]/30">
                 <p className="text-base text-stone-600 leading-relaxed">
                   Slecht slapen na 40? Magnesium draagt bij tot normale psychologische functie en
-                  vermindering van vermoeidheid
-                  <RefNote number={1} />
-                  <RefNote number={2} /> — ontdek of jouw profiel past bij meer structuur rond
+                  vermindering van vermoeidheid — ontdek of jouw profiel past bij meer structuur rond
                   herstel.
                 </p>
                 <Link
@@ -158,8 +144,7 @@ export default function Page() {
               <div className="rounded-xl border border-stone-200 p-6 transition-colors hover:border-[#5A8F6A]/30">
                 <p className="text-base text-stone-600 leading-relaxed">
                   Veel prikkels en weinig rust in je lijf? Magnesium draagt bij tot de normale
-                  werking van het zenuwstelsel
-                  <RefNote number={3} /> — check of dit profiel bij je past.
+                  werking van het zenuwstelsel — check of dit profiel bij je past.
                 </p>
                 <Link
                   href="/profiel/stressdrager"
@@ -177,10 +162,6 @@ export default function Page() {
         </section>
 
         <ComparisonIntakeFallbackCta />
-
-        <Container>
-          <ReferenceList references={magnesiumReferences} />
-        </Container>
 
         <section className="border-t border-stone-200 py-10" role="complementary">
           <Container>
