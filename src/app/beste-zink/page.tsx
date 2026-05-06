@@ -93,7 +93,7 @@ export default function Page() {
           <h2 className="mb-4 text-2xl font-semibold tracking-tight text-slate-900">
             In één oogopslag vergelijken
           </h2>
-          <ComparisonTable rows={data.tableRows} criteria={data.comparisonCriteria} />
+          <ComparisonTable rows={data.tableRows} criteria={data.comparisonCriteria} doseringColumnLabel={data.tableDoseringColumnLabel} />
         </section>
 
         <section id="producten" className="mx-auto mt-16 w-full max-w-7xl space-y-8 px-6 lg:px-8">

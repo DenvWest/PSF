@@ -9,6 +9,7 @@ export const omega3Data: ComparisonPageData = {
   seoDescription:
     "Vergelijk Vitals, Arctic Blue, Möller's en Minami MorEPA op EPA/DHA, prijs per dag en zuiverheid. Onafhankelijke analyse voor de beste omega-3 keuze in 2026.",
   lastUpdated: "2026-04-18",
+  tableDoseringColumnLabel: "EPA / DHA",
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -201,7 +202,7 @@ export const omega3Data: ComparisonPageData = {
       slug: "vitals-liquid-epadha",
       name: "Vitals EPA/DHA",
       type: "Vloeibaar",
-      dosering: "740 / 460 mg",
+      dosering: "1200 mg EPA+DHA/dag (740 EPA, 460 DHA)",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 0,60/dag",
@@ -211,7 +212,7 @@ export const omega3Data: ComparisonPageData = {
       slug: "arctic-blue-visolie",
       name: "Arctic Blue",
       type: "Vloeibaar",
-      dosering: "400 / 250 mg",
+      dosering: "650 mg EPA+DHA/dag (400 EPA, 250 DHA)",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 0,58/dag",
@@ -221,7 +222,7 @@ export const omega3Data: ComparisonPageData = {
       slug: "mollers-omega-3-citroen",
       name: "Möller's Citroen",
       type: "Vloeibaar",
-      dosering: "370 / 510 mg",
+      dosering: "880 mg EPA+DHA/dag (370 EPA, 510 DHA)",
       transparantie: "Goed",
       gebruiksgemak: "Goed",
       prijs: "€ 0,47/dag",
@@ -231,7 +232,7 @@ export const omega3Data: ComparisonPageData = {
       slug: "minami-morepa-original",
       name: "Minami MorEPA",
       type: "Softgels",
-      dosering: "590 / 130 mg",
+      dosering: "720 mg EPA+DHA/dag (590 EPA, 130 DHA)",
       transparantie: "Hoog",
       gebruiksgemak: "Uitstekend",
       prijs: "€ 0,65/dag",

@@ -9,6 +9,7 @@ export const melatonineData: ComparisonPageData = {
   seoDescription:
     "Welke melatonine werkt het beste voor jouw slaap? Vergelijking van pure melatonine en slaapcomplexen op werking, dosering en prijs.",
   lastUpdated: "2026-05-03",
+  tableDoseringColumnLabel: "Dosering / dag",
   choiceRoutes: [
     {
       badgeLabel: "Beste allround",
@@ -155,7 +156,7 @@ export const melatonineData: ComparisonPageData = {
       slug: "vital-nutrition-slaap-complex",
       name: "Vital Nutrition Slaap Complex",
       type: "Slaapcomplex",
-      dosering: "Blend (o.a. KSM-66, valeriaan)",
+      dosering: "1 caps / dag (slaapcomplex)",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 13,98/mnd",
@@ -165,7 +166,7 @@ export const melatonineData: ComparisonPageData = {
       slug: "lucovitaal-melatonine-puur",
       name: "Lucovitaal Puur",
       type: "Melatonine TR",
-      dosering: "299 mcg",
+      dosering: "299 mcg / dag (TR)",
       transparantie: "Redelijk",
       gebruiksgemak: "Goed",
       prijs: "€ 1,50/mnd",
@@ -175,7 +176,7 @@ export const melatonineData: ComparisonPageData = {
       slug: "vitaminstore-nachtrust-complex",
       name: "Vitaminstore Nachtrust",
       type: "Melatonine + kruiden",
-      dosering: "Blend (melatonine + kruiden)",
+      dosering: "1 caps / dag (zie etiket)",
       transparantie: "Redelijk",
       gebruiksgemak: "Goed",
       prijs: "€ 14,98/mnd",

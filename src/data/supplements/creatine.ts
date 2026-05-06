@@ -10,6 +10,7 @@ export const creatineData: ComparisonPageData = {
   seoDescription:
     "Vergelijk de beste creatine monohydraat supplementen op zuiverheid, Creapure® certificering en prijs. Onafhankelijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",
+  tableDoseringColumnLabel: "Dosering / dag",
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -154,7 +155,7 @@ export const creatineData: ComparisonPageData = {
       slug: "vitalnutrition-creatine",
       name: "Vital Nutrition Creatine",
       type: "Micronized 200 mesh",
-      dosering: "500 g (100 doseringen)",
+      dosering: "3–5 g / dag (±5 g portie)",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 0,20/dag",
@@ -164,7 +165,7 @@ export const creatineData: ComparisonPageData = {
       slug: "mattisson-creatine-creapure",
       name: "Mattisson Creapure®",
       type: "Creapure® gecertificeerd",
-      dosering: "350 g (70 doseringen)",
+      dosering: "3–5 g / dag (±5 g portie)",
       transparantie: "Uitstekend",
       gebruiksgemak: "Goed",
       prijs: "€ 0,46/dag",
@@ -174,7 +175,7 @@ export const creatineData: ComparisonPageData = {
       slug: "vitaminstore-creatine",
       name: "Vitaminstore Creatine",
       type: "100% puur monohydraat",
-      dosering: "250 g (50 doseringen)",
+      dosering: "3–5 g / dag (±5 g portie)",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 0,32/dag",

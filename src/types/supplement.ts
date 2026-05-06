@@ -58,6 +58,7 @@ export interface ComparisonPageData {
   seoTitle: string;
   seoDescription: string;
   lastUpdated: string;
+  tableDoseringColumnLabel: string;
   choiceRoutes: ChoiceRoute[];
   products: SupplementProduct[];
   tableRows: TableRow[];

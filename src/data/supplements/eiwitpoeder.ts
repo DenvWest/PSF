@@ -10,6 +10,7 @@ export const eiwitpoederData: ComparisonPageData = {
   seoDescription:
     "Welk eiwitpoeder past bij jou? Whey of plantaardig? Vergelijking op eiwitgehalte, opname, prijs en zuiverheid.",
   lastUpdated: "2026-05-03",
+  tableDoseringColumnLabel: "Proteïne per portie",
   choiceRoutes: [
     {
       badgeLabel: "Beste allround",
@@ -159,7 +160,7 @@ export const eiwitpoederData: ComparisonPageData = {
       slug: "vital-nutrition-whey-proteine",
       name: "Vital Nutrition Whey",
       type: "Whey blend",
-      dosering: "ca. 25 g eiwit / 30 g",
+      dosering: "ca. 25 g eiwit / scoop",
       transparantie: "Zeer goed",
       gebruiksgemak: "Goed",
       prijs: "€ 39,95/mnd",
@@ -169,7 +170,7 @@ export const eiwitpoederData: ComparisonPageData = {
       slug: "orangefit-protein",
       name: "Orangefit Protein",
       type: "Plantaardig",
-      dosering: "30 g planteiwit",
+      dosering: "ca. 25 g eiwit / scoop",
       transparantie: "Goed",
       gebruiksgemak: "Goed",
       prijs: "€ 33,90/mnd",
@@ -179,7 +180,7 @@ export const eiwitpoederData: ComparisonPageData = {
       slug: "royal-green-whey-protein-isolate",
       name: "Royal Green Isolaat",
       type: "Whey isolaat",
-      dosering: "30 g isolaat",
+      dosering: "ca. 27 g eiwit / scoop",
       transparantie: "Zeer goed",
       gebruiksgemak: "Goed",
       prijs: "€ 44,95/mnd",

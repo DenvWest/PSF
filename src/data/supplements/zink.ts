@@ -10,6 +10,7 @@ export const zinkData: ComparisonPageData = {
   seoDescription:
     "Vergelijk de beste zink supplementen op biobeschikbaarheid, dosering en prijs. Zinkmethionine vs picolinaat — eerlijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",
+  tableDoseringColumnLabel: "Elementair zink / dag",
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -154,7 +155,7 @@ export const zinkData: ComparisonPageData = {
       slug: "vitalnutrition-zink",
       name: "Vital Nutrition Zink 15 mg",
       type: "Zinkmethionine",
-      dosering: "15 mg (150% RI)",
+      dosering: "15 mg / dag (150% RI)",
       transparantie: "Uitstekend",
       gebruiksgemak: "Tablet",
       prijs: "€ 0,18/dag",
@@ -164,7 +165,7 @@ export const zinkData: ComparisonPageData = {
       slug: "solgar-zink-picolinaat",
       name: "Solgar Zinc Picolinate 22 mg",
       type: "Zinkpicolinaat",
-      dosering: "22 mg",
+      dosering: "22 mg / dag",
       transparantie: "Hoog",
       gebruiksgemak: "Tablet",
       prijs: "€ 0,16/dag",
@@ -174,7 +175,7 @@ export const zinkData: ComparisonPageData = {
       slug: "bonusan-zinkmethionine",
       name: "Bonusan Zinkmethionine 15 mg",
       type: "L-OptiZinc®",
-      dosering: "15 mg",
+      dosering: "15 mg / dag",
       transparantie: "Uitstekend",
       gebruiksgemak: "Capsule",
       prijs: "€ 0,19/dag",

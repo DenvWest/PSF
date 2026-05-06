@@ -10,6 +10,7 @@ export const ashwagandhaData: ComparisonPageData = {
   seoDescription:
     "Vergelijk de beste ashwagandha supplementen met KSM-66 extract. Onafhankelijke scores op withanoliden, dosering en prijs voor mannen 40+.",
   lastUpdated: "2026-04-19",
+  tableDoseringColumnLabel: "Dosering / dag",
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -161,7 +162,7 @@ export const ashwagandhaData: ComparisonPageData = {
       slug: "vitaminstore-ashwagandha-ksm66",
       name: "Vitaminstore KSM-66",
       type: "KSM-66® extract",
-      dosering: "600 mg / dag",
+      dosering: "600 mg extract / dag",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 0,23/dag",
@@ -171,7 +172,7 @@ export const ashwagandhaData: ComparisonPageData = {
       slug: "vitalnutrition-ashwagandha-ksm66",
       name: "Vital Nutrition KSM-66",
       type: "KSM-66® extract",
-      dosering: "300 mg / dag",
+      dosering: "300 mg extract / dag",
       transparantie: "Hoog",
       gebruiksgemak: "Uitstekend",
       prijs: "€ 0,42/dag",
@@ -181,7 +182,7 @@ export const ashwagandhaData: ComparisonPageData = {
       slug: "vitaminstore-solgar-ashwagandha",
       name: "Solgar Root Extract",
       type: "Eigen extract + kruid",
-      dosering: "4,5 mg withanoliden",
+      dosering: "1 caps / dag (4,5 mg withanoliden)",
       transparantie: "Goed",
       gebruiksgemak: "Goed",
       prijs: "€ 0,47/dag",

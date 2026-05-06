@@ -10,6 +10,7 @@ export const vitamineDData: ComparisonPageData = {
   seoDescription:
     "Vergelijk de beste vitamine D3 supplementen op dosering, kwaliteit en prijs. Van Vitaminstore Super D3 tot Solgar — eerlijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",
+  tableDoseringColumnLabel: "µg (IU) / dag",
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -157,7 +158,7 @@ export const vitamineDData: ComparisonPageData = {
       slug: "vitaminstore-super-d3",
       name: "Vitaminstore Super D3",
       type: "Cholecalciferol",
-      dosering: "25 mcg (1000 IU)",
+      dosering: "25 µg (1000 IU) / dag",
       transparantie: "Hoog",
       gebruiksgemak: "Uitstekend",
       prijs: "€ 0,14/dag",
@@ -167,7 +168,7 @@ export const vitamineDData: ComparisonPageData = {
       slug: "vitalnutrition-vitamin-d3",
       name: "Vital Nutrition D3 75 mcg",
       type: "Cholecalciferol + olijfolie",
-      dosering: "75 mcg (3000 IU)",
+      dosering: "75 µg (3000 IU) / dag",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 0,20/dag",
@@ -177,7 +178,7 @@ export const vitamineDData: ComparisonPageData = {
       slug: "solgar-vitamin-d3",
       name: "Solgar Vitamin D-3",
       type: "Levertraan",
-      dosering: "25 mcg (1000 IU)",
+      dosering: "25 µg (1000 IU) / dag",
       transparantie: "Hoog",
       gebruiksgemak: "Goed",
       prijs: "€ 0,16/dag",

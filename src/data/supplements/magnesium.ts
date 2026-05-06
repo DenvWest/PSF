@@ -9,6 +9,7 @@ export const magnesiumData: ComparisonPageData = {
   seoDescription:
     "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 40+.",
   lastUpdated: "2026-04-18",
+  tableDoseringColumnLabel: "Elementair mg / dag",
   choiceRoutes: [
     {
       badgeLabel: "Beste allround",

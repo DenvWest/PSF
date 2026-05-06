@@ -3,9 +3,10 @@ import type { ComparisonPageData } from "@/types/supplement";
 type Props = {
   rows: ComparisonPageData["tableRows"];
   criteria: string[];
+  doseringColumnLabel: string;
 };
 
-export function ComparisonTable({ rows }: Props) {
+export function ComparisonTable({ rows, doseringColumnLabel }: Props) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200">
       <table className="min-w-full text-left text-sm">
@@ -15,7 +16,9 @@ export function ComparisonTable({ rows }: Props) {
               Product
             </th>
             <th className="px-4 py-3 font-semibold">Type</th>
-            <th className="px-4 py-3 font-semibold">EPA / DHA</th>
+            <th className="px-4 py-3 font-semibold whitespace-nowrap">
+              {doseringColumnLabel}
+            </th>
             <th className="px-4 py-3 font-semibold">Transparantie</th>
             <th className="px-4 py-3 font-semibold">Gebruiksgemak</th>
             <th className="px-4 py-3 font-semibold">Prijs</th>
