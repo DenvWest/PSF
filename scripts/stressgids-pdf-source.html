@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <title>Stressgids PerfectSupplement</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 16mm 18mm;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.55;
+        color: #1c1917;
+        background: #fff;
+      }
+      .page {
+        page-break-after: always;
+        min-height: 257mm;
+        position: relative;
+        padding-bottom: 12mm;
+      }
+      .page:last-child {
+        page-break-after: auto;
+      }
+      .brand-kicker {
+        font-size: 8.5pt;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #57534e;
+        font-weight: 600;
+      }
+      .cover-title {
+        margin-top: 8mm;
+        font-size: 22pt;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        color: #0c0a09;
+      }
+      .cover-sub {
+        margin-top: 4mm;
+        font-size: 12pt;
+        color: #44403c;
+        max-width: 42ch;
+        line-height: 1.45;
+      }
+      .cover-list {
+        margin: 10mm 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .cover-list li {
+        margin-bottom: 3.5mm;
+        padding-left: 5mm;
+        position: relative;
+        font-size: 10.5pt;
+        color: #292524;
+      }
+      .cover-list li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #3f6212;
+        font-weight: 700;
+      }
+      blockquote.cover-quote {
+        margin: 12mm 0 0;
+        padding: 5mm 0 0;
+        border-top: 1px solid #e7e5e4;
+        font-style: italic;
+        color: #57534e;
+        font-size: 10pt;
+      }
+      blockquote.cover-quote cite {
+        display: block;
+        margin-top: 3mm;
+        font-style: normal;
+        font-size: 9pt;
+        color: #78716c;
+      }
+      .footer-mini {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        font-size: 9pt;
+        color: #78716c;
+      }
+      .footer-mini strong {
+        color: #44403c;
+      }
+      .toc-title {
+        font-size: 18pt;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 2mm 0 8mm;
+      }
+      .toc-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border-bottom: 1px solid #e7e5e4;
+        padding: 3.5mm 0;
+        font-size: 10.5pt;
+      }
+      .toc-num {
+        font-weight: 700;
+        color: #a8a29e;
+        width: 8mm;
+      }
+      .toc-label {
+        flex: 1;
+        padding-right: 4mm;
+      }
+      .toc-dots {
+        flex: 0;
+      }
+      .section-head {
+        display: flex;
+        gap: 6mm;
+        align-items: flex-start;
+        margin-bottom: 6mm;
+      }
+      .section-num {
+        font-size: 32pt;
+        font-weight: 300;
+        line-height: 1;
+        color: #d6d3d1;
+      }
+      .section-head h2 {
+        margin: 2mm 0 0;
+        font-size: 14pt;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+      }
+      h3 {
+        margin: 5mm 0 2mm;
+        font-size: 11pt;
+        font-weight: 700;
+        color: #292524;
+      }
+      p {
+        margin: 0 0 3mm;
+      }
+      ul {
+        margin: 2mm 0 4mm;
+        padding-left: 5mm;
+      }
+      li {
+        margin-bottom: 2mm;
+      }
+      strong {
+        font-weight: 700;
+        color: #1c1917;
+      }
+      .page-num {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-size: 9pt;
+        color: #a8a29e;
+      }
+      .disclaimer-box {
+        margin-top: 6mm;
+        padding: 4mm;
+        background: #fafaf9;
+        border: 1px solid #e7e5e4;
+        border-radius: 2mm;
+        font-size: 9pt;
+        color: #57534e;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Cover -->
+    <div class="page">
+      <p class="brand-kicker">Gratis stressgids</p>
+      <h1 class="cover-title">De Stressgids voor mannen 40+</h1>
+      <p class="cover-sub">
+        Hoe je je zenuwstelsel weer kalmeert — zonder dat je je leven hoeft om te gooien.
+      </p>
+      <ul class="cover-list">
+        <li>Waarom chronische stress na 40 harder voelt en wat dat met cortisol en herstel doet</li>
+        <li>Vier pijlers die elkaar versterken: ademhaling, slaap, de juiste beweging, voeding</li>
+        <li>Een haalbaar vierwekenplan om te voelen, te meten en bij te sturen</li>
+        <li>
+          Supplementen (ashwagandha, magnesium) in onderzoekscontext — leefstijl eerst, extras
+          tweede
+        </li>
+      </ul>
+      <blockquote class="cover-quote">
+        Stress verminderen is geen project van een week. Het is een richting — met 1–2 dingen die je
+        consequent volhoudt.
+        <cite>— PerfectSupplement</cite>
+      </blockquote>
+      <div class="footer-mini"><strong>perfectsupplement.nl</strong></div>
+    </div>
+
+    <!-- TOC -->
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <h2 class="toc-title">Stressgids voor mannen 40+</h2>
+      <p style="margin: -4mm 0 6mm; color: #57534e; font-size: 10pt">Inhoudsopgave</p>
+      <div class="toc-row"><span class="toc-num">01</span><span class="toc-label">Voor wie deze gids is</span></div>
+      <div class="toc-row"><span class="toc-num">02</span><span class="toc-label">Wat er biologisch gebeurt</span></div>
+      <div class="toc-row"><span class="toc-num">03</span><span class="toc-label">De vier pijlers van herstel</span></div>
+      <div class="toc-row"><span class="toc-num">04</span><span class="toc-label">Het vierwekenplan</span></div>
+      <div class="toc-row"><span class="toc-num">05</span><span class="toc-label">Supplementen in perspectief</span></div>
+      <div class="toc-row"><span class="toc-num">06</span><span class="toc-label">Wanneer professionele hulp?</span></div>
+      <div class="toc-row"><span class="toc-num">07</span><span class="toc-label">Tot slot &amp; disclaimer</span></div>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">2</span>
+    </div>
+
+    <!-- 01 -->
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <h2>Voor wie deze gids is</h2>
+      </div>
+      <p>
+        Je hebt de Leefstijlcheck gedaan en je profiel is <strong>Stressdrager</strong>. Dat betekent
+        niet dat je een burn-out hebt of dat het slecht met je gaat. Het betekent dat je zenuwstelsel
+        langer “aan” staat dan goed voor je is — en dat je dat zelf vaak niet meer voelt.
+      </p>
+      <p>Deze gids is voor jou als:</p>
+      <ul>
+        <li>Je merkt dat je schouders standaard hoog zitten</li>
+        <li>Je ’s nachts wakker wordt met een hoofd vol gedachten</li>
+        <li>Je in de eerste vakantiedagen ziek of moe wordt</li>
+        <li>Je geduld korter is dan vroeger</li>
+        <li>Kleine ergernissen onevenredig groot voelen</li>
+      </ul>
+      <p>Als je hier drie of meer van herkent: dit is voor jou.</p>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">3</span>
+    </div>
+
+    <!-- 02 -->
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2>Wat er biologisch gebeurt (en waarom het na 40 harder voelbaar wordt)</h2>
+      </div>
+      <p>
+        Stress is niet slecht. Acute stress — een deadline, een zware training, een ruzie — is
+        functioneel. Je lichaam mobiliseert energie, je focus scherpt aan, en als de stressor weg is,
+        herstel je.
+      </p>
+      <p>
+        Het probleem is <strong>chronische</strong> stress. Dan blijft je HPA-as (de stress-as tussen
+        je hersenen en bijnieren) langdurig actief. Cortisol — het hormoon dat je ’s ochtends wakker
+        maakt en je overdag scherp houdt — raakt uit ritme. Te hoog ’s avonds, te laag ’s ochtends. Je
+        sympathische zenuwstelsel (“vechten of vluchten”) domineert over je parasympathische (“rust en
+        herstel”).
+      </p>
+      <p>De gevolgen die je vaak merkt:</p>
+      <ul>
+        <li><strong>Slaap wordt oppervlakkiger.</strong> Je valt moe in slaap maar wordt om 3 of 4 uur wakker.</li>
+        <li><strong>Spijsvertering vertraagt.</strong> Opgeblazen gevoel of geen honger ’s ochtends.</li>
+        <li><strong>Herstel duurt langer.</strong> Een doorgewerkte avond herstel je niet meer in één nacht.</li>
+        <li><strong>Testosteron kan dalen.</strong> Cortisol en testosteron concurreren om bouwstenen.</li>
+        <li><strong>Je voelt het niet meer.</strong> Het meest verraderlijke: je went eraan.</li>
+      </ul>
+      <p>
+        Na 40 wordt dit harder voelbaar omdat je biologische buffer kleiner wordt. Tot je 35e kon je
+        veel hebben — slecht slapen, doorwerken, hard trainen — en de volgende dag was je weer fit.
+        Die buffer is er minder. Dat is geen falen; dat is fysiologie.
+      </p>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">4</span>
+    </div>
+
+    <!-- 03 pijlers -->
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <h2>De vier pijlers van herstel</h2>
+      </div>
+      <p>
+        Stress verminderen is niet één ding. Het zijn vier dingen die elkaar versterken. Je hoeft ze
+        niet alle vier perfect te doen — twee goed is beter dan vier matig.
+      </p>
+      <h3>Pijler 1: Ademhaling</h3>
+      <p>
+        De snelste manier om je zenuwstelsel om te zetten van “aan” naar “uit”. Je nervus vagus — de
+        hoofdzenuw van je parasympathische systeem — reageert direct op je ademhaling.
+      </p>
+      <p><strong>Wat werkt:</strong></p>
+      <ul>
+        <li><strong>4-6 ademhaling:</strong> 4 seconden in, 6 seconden uit. 5 minuten per dag.</li>
+        <li><strong>Box breathing:</strong> 4 in, 4 vast, 4 uit, 4 vast. Goed voor acute momenten.</li>
+        <li><strong>Fysiologische zucht:</strong> 2× kort in door je neus, 1 lange uit door je mond.</li>
+      </ul>
+      <p><strong>Wanneer:</strong> ’s ochtends voor je je telefoon pakt, of ’s avonds voor het slapen.</p>
+      <h3>Pijler 2: Slaap</h3>
+      <p>
+        Slaap is je belangrijkste hersteltool. Met chronische stress wordt slaap oppervlakkiger — wat
+        stress versterkt.
+      </p>
+      <p><strong>Niet-onderhandelbaar:</strong></p>
+      <ul>
+        <li>Vaste bedtijd, ook in het weekend</li>
+        <li>30 minuten voor bed: geen schermen</li>
+        <li>Slaapkamer koel en donker (17–19 °C, geen storend licht)</li>
+        <li>Geen cafeïne na 12:00 (halfwaardetijd 5–7 uur)</li>
+      </ul>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">5</span>
+    </div>
+
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <h3>Pijler 3: Beweging — maar wel de juiste</h3>
+      <p>
+        Met chronische stress kan heel intens trainen een trigger zijn in plaats van een oplossing — je
+        tilt cortisol verder op. Het advies is <strong>kalibreren</strong>, niet stoppen.
+      </p>
+      <p><strong>Wat werkt bij Stressdrager:</strong></p>
+      <ul>
+        <li>Wandelen, dagelijks, minimaal 30 minuten — liefst buiten, liefst in de ochtend</li>
+        <li>Krachttraining 2–3× per week: korte sessies, genoeg rust ertussen</li>
+        <li>Yoga, mobility of zwemmen als tegenwicht</li>
+        <li>Geen HIIT, boksen of marathontraining in de herstelfase — dat komt later weer</li>
+      </ul>
+      <p><strong>Wat je merkt:</strong> je presteert beter met minder. Dat voelt eerst tegennatuurlijk.</p>
+      <h3>Pijler 4: Voeding en hydratatie</h3>
+      <p>
+        Onder chronische stress krijgt je lichaam minder bouwstenen binnen — vaak omdat je vergeet te
+        eten of grijpt naar snelle koolhydraten.
+      </p>
+      <p><strong>Basis:</strong></p>
+      <ul>
+        <li>Ontbijt met eiwit — circa 30 g eiwit binnen een uur na opstaan helpt bloedsuiker stabiliteit</li>
+        <li>Geen koffie op een lege maag — eerst iets eten, dan koffie</li>
+        <li>Magnesium-rijke voeding: pure chocolade, noten, pompoenpitten, bladgroenten</li>
+        <li>Genoeg drinken — richting 2 liter water per dag als houvast</li>
+      </ul>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">6</span>
+    </div>
+
+    <!-- 04 plan -->
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <h2>Het vierwekenplan</h2>
+      </div>
+      <h3>Week 1: Voelen wat er is</h3>
+      <p><strong>Doel:</strong> geen verandering doorvoeren — alleen waarnemen.</p>
+      <ul>
+        <li>Schrijf elke avond op: spanningsniveau 1–10</li>
+        <li>Adem 5 minuten per dag bewust uit (4-6)</li>
+        <li>Stop met cafeïne na 12:00</li>
+      </ul>
+      <p><strong>Verwacht:</strong> meer bewustzijn van wanneer spanning oploopt.</p>
+      <h3>Week 2: Slaap herstellen</h3>
+      <p><strong>Doel:</strong> slaapkwaliteit op orde brengen.</p>
+      <ul>
+        <li>Vaste bedtijd; noteer wanneer je inslaapt</li>
+        <li>30 minuten voor bed: geen schermen</li>
+        <li>Slaapkamer optimaliseren (koel, donker, stil)</li>
+        <li>Blijf dagelijks ademen</li>
+      </ul>
+      <p><strong>Verwacht:</strong> dieper inslapen, minder vaak om 3 uur wakker.</p>
+      <h3>Week 3: Beweging kalibreren</h3>
+      <p><strong>Doel:</strong> beweging die kalmeert in plaats van triggert.</p>
+      <ul>
+        <li>Dagelijks 30 minuten wandelen, liefst ’s ochtends buiten</li>
+        <li>Krachttraining 2–3× per week, korte sessies</li>
+        <li>Schrap intensieve cardio voor nu</li>
+      </ul>
+      <p><strong>Verwacht:</strong> minder spanning na trainen, beter slapen.</p>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">7</span>
+    </div>
+
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <h3>Week 4: Herhaalmeting</h3>
+      <p><strong>Doel:</strong> meten of het werkt.</p>
+      <ul>
+        <li>Doe de Leefstijlcheck opnieuw</li>
+        <li>Vergelijk je nieuwe scores met je oude</li>
+        <li>Bepaal wat werkt — pas bij waar nodig</li>
+      </ul>
+      <div class="section-head" style="margin-top: 8mm">
+        <span class="section-num">05</span>
+        <h2>Supplementen die veel mensen met dit profiel proberen</h2>
+      </div>
+      <p>
+        Eerst een principe: <strong>leefstijl eerst, supplementen tweede.</strong> Een supplement
+        vervangt geen ademhaling, slaap of beweging — het kan ondersteunen.
+      </p>
+      <h3>Ashwagandha</h3>
+      <p>
+        Een adaptogeen kruid dat in onderzoek wordt gelinkt aan lagere cortisolwaarden en betere
+        stress-tolerantie. KSM-66 en Sensoril worden vaak genoemd als veel onderzochte extracten.
+      </p>
+      <p>
+        <strong>Wat je kunt verwachten:</strong> subtieler dan je denkt — vaak pas na enkele weken
+        merkbaar aan je baseline, niet als “acute uit-knop”.
+      </p>
+      <p>Vergelijking op de site: perfectsupplement.nl/beste-ashwagandha</p>
+      <h3>Magnesium</h3>
+      <p>
+        Onder chronische stress raakt magnesium sneller uitgeput. Magnesium draagt bij aan de normale
+        werking van het zenuwstelsel en aan vermindering van vermoeidheid (EFSA-goedgekeurde claims
+        waar van toepassing).
+      </p>
+      <p>
+        <strong>Wat je kunt verwachten:</strong> vooral richting slaap en spierherstel merkbaar voor sommige mensen. Bisglycinaat is vaak mild voor de maag; citraat wordt gekozen om opname/redenen.
+      </p>
+      <p>Vergelijking op de site: perfectsupplement.nl/beste-magnesium</p>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">8</span>
+    </div>
+
+    <!-- 06 -->
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <div class="section-head">
+        <span class="section-num">06</span>
+        <h2>Wanneer is het meer dan stress?</h2>
+      </div>
+      <p>
+        Deze gids gaat over chronische stress als fysiologisch fenomeen. Er zijn momenten waarop je
+        hulp van een professional nodig hebt — geen gids, geen supplement.
+      </p>
+      <p><strong>Bel je huisarts of vraag een POH-GGZ-gesprek aan als:</strong></p>
+      <ul>
+        <li>Je al weken of maanden somber bent</li>
+        <li>Je geen plezier meer beleeft aan dingen die je vroeger leuk vond</li>
+        <li>Je ’s ochtends niet meer uit bed komt</li>
+        <li>Je paniek- of angstaanvallen hebt</li>
+        <li>Je gedachten over jezelf erg negatief zijn</li>
+      </ul>
+      <p>
+        Dit is geen falen — het kan betekenen dat het systeem te lang overbelast was. Een POH-GGZ-gesprek
+        loopt via je huisarts en helpt richting te bepalen.
+      </p>
+      <div class="section-head" style="margin-top: 10mm">
+        <span class="section-num">07</span>
+        <h2>Tot slot</h2>
+      </div>
+      <p>
+        Stress verminderen is geen project van een week. Het is een richting. Slechte dagen horen erbij —
+        dat is geen mislukking; dat is hoe het werkt.
+      </p>
+      <p>
+        De gemene deler bij mensen die hier winst boeken: ze doen 1–2 dingen consistent, langer dan ze
+        zelf voor mogelijk hielden. Niet alles tegelijk. Niet perfect. Wel consequent.
+      </p>
+      <p>
+        Veel succes. Vragen? Je kunt antwoorden op de mails die we sturen — we lezen mee.
+      </p>
+      <p style="margin-top: 6mm">— Het PerfectSupplement-team</p>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">9</span>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="page">
+      <p class="brand-kicker">perfectsupplement.nl</p>
+      <div class="section-head">
+        <span class="section-num"></span>
+        <h2>Disclaimer</h2>
+      </div>
+      <div class="disclaimer-box">
+        <p style="margin-bottom: 0">
+          Deze gids is informatief en geen medisch advies. Bij langdurige somberheid, burn-outklachten,
+          paniek, of als je medicatie gebruikt: raadpleeg een arts. Supplementen zijn geen vervanging
+          voor medische zorg of psychologische begeleiding.
+        </p>
+      </div>
+      <p style="margin-top: 10mm; font-size: 10pt; color: #57534e">
+        PerfectSupplement · perfectsupplement.nl
+      </p>
+      <div class="footer-mini"><strong>perfectsupplement.nl/intake</strong></div>
+      <span class="page-num">10</span>
+    </div>
+  </body>
+</html>

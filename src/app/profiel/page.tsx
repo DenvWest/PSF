@@ -6,7 +6,7 @@ import { PROFILE_PAGES } from "@/data/profiles";
 export const metadata: Metadata = {
   title: "Profielen: Welk Type Ben Jij? | PerfectSupplement",
   description:
-    "Zes profielen voor mannen 40+: Stressdrager, Lage Batterij, Onrustige Slaper en meer. Herken jezelf en ontdek wat je kunt doen.",
+    "Profielen voor mannen 40+: Stressdrager, Lage Batterij, Onrustige Slaper en Overtrainer. Herken jezelf en ontdek wat je kunt doen.",
   alternates: { canonical: "https://perfectsupplement.nl/profiel" },
 };
 
@@ -22,7 +22,7 @@ export default function ProfielOverzichtPage() {
               Welk profiel herken jij?
             </h1>
             <p className="text-lg text-slate-600">
-              Zes veelvoorkomende patronen bij mannen 40+. Herken jezelf en
+              Vier veelvoorkomende patronen bij mannen 40+. Herken jezelf en
               ontdek wat je kunt doen.
             </p>
           </div>

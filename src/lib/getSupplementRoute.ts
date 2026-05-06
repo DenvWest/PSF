@@ -4,6 +4,7 @@ import {
   type SupplementTriggerClause,
 } from "@/data/supplement-routes";
 import type { DeficiencySignals, DomainScores, ProfileLabel } from "@/lib/intake-engine";
+import { getSortedDomains } from "@/lib/intake-engine";
 import { isSupplementAvailable } from "@/lib/supplement-availability";
 
 function intAnswer(answers: Record<string, number>, key: string): number {
@@ -11,11 +12,11 @@ function intAnswer(answers: Record<string, number>, key: string): number {
   return typeof v === "number" ? v : 0;
 }
 
-function matchesZink(scores: DomainScores, profileLabel: ProfileLabel): boolean {
+function matchesZink(scores: DomainScores): boolean {
   return (
     scores.recovery_score < 40 ||
     scores.nutrition_score < 40 ||
-    profileLabel.name === "Stille Slijter"
+    getSortedDomains(scores)[0].domain === "recovery"
   );
 }
 
@@ -35,7 +36,7 @@ function matchesCreatine(
   const poorRecovery = scores.recovery_score < 50;
   const cognitiveLoad = scores.energy_score < 50 && scores.stress_score < 50;
   const relevantProfile =
-    profileLabel.name === "Stille Slijter" ||
+    getSortedDomains(scores)[0].domain === "recovery" ||
     profileLabel.name === "Lage Batterij";
 
   return (
@@ -88,7 +89,7 @@ function definitionMatches(
   }
 
   if (def.id === "zink") {
-    return matchesZink(scores, profileLabel);
+    return matchesZink(scores);
   }
 
   if (def.id === "creatine") {

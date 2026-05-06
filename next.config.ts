@@ -12,7 +12,17 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/profiel/basis-mist",
-        destination: "/profiel/stille-tekorten",
+        destination: "/profiel",
+        permanent: true,
+      },
+      {
+        source: "/profiel/stille-tekorten",
+        destination: "/profiel",
+        permanent: true,
+      },
+      {
+        source: "/profiel/stille-slijter",
+        destination: "/profiel",
         permanent: true,
       },
       {

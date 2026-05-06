@@ -133,9 +133,8 @@ export const urgencyModifiers = {
 //   sleep     → "Onrustige Slaper"
 //   energy    → "Lage Batterij"
 //   stress    → "Stressdrager"
-//   nutrition → "Stille Tekorten"
 //   movement  → "Stilzitter"
-//   recovery  → "Stille Slijter"
+//   (lage voeding/herstel als zwakste domein) → "In Balans" of ander benoemd profiel als fallback
 //   (all > 60)→ "In Balans"
 // ============================================================
 
@@ -178,17 +177,6 @@ export const nurtureContent: Record<
       tip: "Begin vandaag met 3 minuten ademhalingsoefening: 4 tellen inademen, 7 tellen vasthouden, 8 tellen uitademen. Doe dit voor het slapengaan. Het activeert je parasympathisch zenuwstelsel.",
       cta: { text: "Bekijk je Herstelplan", url: "/intake" },
     },
-    "Stille Tekorten": {
-      subject: "Je Herstelplan staat klaar",
-      preheader: "Je voedingsbasis heeft ruimte voor verbetering",
-      greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
-      bodyParagraphs: [
-        "Je resultaten laten zien dat de basis — voeding, hydratatie, essentiële voedingsstoffen — nog niet op orde is. Dat is geen verwijt, maar een kans: hier zit vaak de grootste winst.",
-        "Supplementen zijn nuttig, maar alleen als de basis staat. Daarom beginnen we daar.",
-      ],
-      tip: "Check vandaag eens hoeveel water je drinkt. De vuistregel: 30 ml per kilo lichaamsgewicht. Bij 85 kilo is dat 2,5 liter. De meeste mannen zitten op de helft.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
-    },
     "Stilzitter": {
       subject: "Je Herstelplan staat klaar",
       preheader: "Meer bewegen hoeft niet ingewikkeld te zijn",
@@ -198,17 +186,6 @@ export const nurtureContent: Record<
         "Het goede nieuws: je hoeft niet naar de sportschool. Kleine, dagelijkse beweging heeft al een meetbaar effect.",
       ],
       tip: "Begin vandaag met 15 minuten wandelen — bij voorkeur buiten en na de lunch. Daglicht en lichte beweging verlagen cortisol en verbeteren je energieniveau de rest van de dag.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
-    },
-    "Stille Slijter": {
-      subject: "Je Herstelplan staat klaar",
-      preheader: "Meerdere domeinen vragen aandacht — hier begin je",
-      greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
-      bodyParagraphs: [
-        "Je resultaten laten een breed patroon zien: niet één domein springt eruit, maar meerdere gebieden staan onder druk. Dat is het 'stille slijten' — je functioneert, maar niet op het niveau dat je wilt.",
-        "De sleutel is niet alles tegelijk aanpakken, maar beginnen bij de basis.",
-      ],
-      tip: "Focus deze week op twee dingen: een vast bedtijd (elke dag dezelfde tijd) en 20 minuten wandelen per dag. Dat lijkt simpel, maar het legt de fundering voor alles wat daarna komt.",
       cta: { text: "Bekijk je Herstelplan", url: "/intake" },
     },
     "In Balans": {
@@ -256,16 +233,6 @@ export const nurtureContent: Record<
       tip: "Quick win #1: 4-7-8 ademhaling (3 minuten, 2× per dag). Quick win #2: Wandel 15 minuten na de lunch — het verlaagt cortisol meetbaar. Quick win #3: Schrijf 's avonds 3 dingen op die goed gingen vandaag.",
       cta: { text: "Hoe ashwagandha stress verlaagt", url: "/beste-ashwagandha" },
     },
-    "Stille Tekorten": {
-      subject: "3 voedingstips die je basis versterken",
-      preheader: "Je bouwt een huis — begin bij het fundament",
-      greeting: "Drie dagen geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Je voedingsbasis is het fundament voor alles. Supplementen zijn waardevol, maar pas als je basis staat.",
-      ],
-      tip: "Quick win #1: Eet 2× per week vette vis (zalm, makreel, haring). Quick win #2: Voeg bij elke maaltijd een handvol groente toe. Quick win #3: Vervang één keer per dag een tussendoortje door noten.",
-      cta: { text: "Waarom omega-3 belangrijk is", url: "/beste-omega-3-supplement" },
-    },
     "Stilzitter": {
       subject: "3 kleine stappen die je bewegingspatroon doorbreken",
       preheader: "Je hoeft geen sporter te zijn om het verschil te voelen",
@@ -275,16 +242,6 @@ export const nurtureContent: Record<
       ],
       tip: "Quick win #1: Sta elk uur 5 minuten op en beweeg. Quick win #2: Loop of fiets voor boodschappen in plaats van de auto. Quick win #3: Doe 10 minuten stretchen voor het slapengaan — het verlaagt je rusthartslag.",
       cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
-    },
-    "Stille Slijter": {
-      subject: "Begin hier: 3 kleine stappen die het verschil maken",
-      preheader: "Focus op de basis, niet op alles tegelijk",
-      greeting: "Drie dagen geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Als meerdere domeinen aandacht vragen, is de verleiding groot om overal tegelijk aan te werken. Doe dat niet. Begin bij de basis.",
-      ],
-      tip: "Quick win #1: Drink 2 liter water per dag (zet een fles op je bureau). Quick win #2: Ga elke dag 15 minuten naar buiten. Quick win #3: Leg je telefoon buiten de slaapkamer.",
-      cta: { text: "Bekijk je Herstelplan opnieuw", url: "/intake" },
     },
     "In Balans": {
       subject: "3 optimalisaties voor wie al goed scoort",
@@ -333,17 +290,6 @@ export const nurtureContent: Record<
       tip: "Lees meer over hoe ashwagandha werkt en waar je op moet letten bij het kiezen van een supplement.",
       cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste-ashwagandha" },
     },
-    "Stille Tekorten": {
-      subject: "Waarom supplementen zonder basis niet werken",
-      preheader: "Eerst het fundament, dan de verfijning",
-      greeting: "Een week geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Een supplement is precies dat: een aanvulling. Als je basis — voeding, hydratatie, slaap — niet op orde is, gooi je geld weg aan supplementen die je lichaam niet goed kan opnemen.",
-        "De uitzondering is omega-3. De meeste Nederlanders krijgen structureel te weinig EPA en DHA binnen, en het is lastig om dat alleen via voeding op te lossen (je zou 3-4× per week vette vis moeten eten).",
-      ],
-      tip: "Als je één supplement kiest terwijl je aan je basis werkt: laat het omega-3 zijn.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
-    },
     "Stilzitter": {
       subject: "Waarom bewegen na 40 zo anders werkt",
       preheader: "Niet harder — slimmer",
@@ -354,17 +300,6 @@ export const nurtureContent: Record<
       ],
       tip: "Voeg deze week twee dingen toe: 20 minuten wandelen per dag en één keer oefeningen met lichaamsgewicht (squats, planks). Niet meer — consistentie is belangrijker dan volume.",
       cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
-    },
-    "Stille Slijter": {
-      subject: "Het 'stille slijten' doorbreken: waar begin je?",
-      preheader: "Niet alles tegelijk — wel het juiste eerst",
-      greeting: "Een week geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Als meerdere domeinen onder druk staan, is de vraag: waar begin je? Het antwoord is bijna altijd slaap. Zonder goede slaap werkt geen enkele andere interventie optimaal — niet voeding, niet beweging, niet supplementen.",
-        "Daarom is de eerste stap: je slaapfundament op orde brengen. Vast ritme, koele kamer, geen schermen voor bed.",
-      ],
-      tip: "Focus de komende week uitsluitend op je slaap. Als dat staat, pak je volgende week je voeding aan.",
-      cta: { text: "Bekijk je Herstelplan opnieuw", url: "/intake" },
     },
     "In Balans": {
       subject: "Hoe je een goede basis vasthoudt na 40",
@@ -414,17 +349,6 @@ export const nurtureContent: Record<
       tip: "Voeg deze week iets toe: 5 minuten journaling voor het slapengaan. Schrijf op wat je bezighoudt — het 'legen' van je hoofd helpt je brein om los te laten.",
       cta: { text: "Hoe ashwagandha cortisol verlaagt", url: "/beste-ashwagandha" },
     },
-    "Stille Tekorten": {
-      subject: "Halverwege: staat je basis al steviger?",
-      preheader: "Elke verbetering in je voeding telt",
-      greeting: "Twee weken geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Als je de voedingstips hebt gevolgd — meer vis, meer groente, meer water — dan bouw je nu aan een steviger fundament. Je lichaam heeft 2-4 weken nodig om de effecten te voelen.",
-        "Nu is een goed moment om te kijken of een omega-3 supplement je kan helpen. Vooral als je niet 3× per week vis eet.",
-      ],
-      tip: "Houd deze week een voedingsdagboek bij — niet om calorieën te tellen, maar om te zien of je voldoende variatie en voedingsstoffen binnenkrijgt.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
-    },
     "Stilzitter": {
       subject: "Halverwege: beweeg je al meer?",
       preheader: "Twee weken is genoeg om een patroon te zien",
@@ -435,17 +359,6 @@ export const nurtureContent: Record<
       ],
       tip: "Voeg deze week één keer krachttraining toe: squats, lunges, push-ups. Geen sportschool nodig — 20 minuten thuis is al genoeg om spiermassa te behouden.",
       cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
-    },
-    "Stille Slijter": {
-      subject: "Halverwege: focus op één ding tegelijk",
-      preheader: "Niet alles hoeft nu — consistentie wint",
-      greeting: "Twee weken geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Als je de afgelopen twee weken je slaap hebt verbeterd, is nu het moment om je tweede domein aan te pakken. Kijk naar je Herstelplan: welk domein scoorde op-één-na-laagst?",
-        "Voeg deze week één nieuwe gewoonte toe — niet twee, niet drie. Stapelen werkt alleen als elke laag stevig staat.",
-      ],
-      tip: "Ga terug naar je Herstelplan en kies je volgende focusdomein. Eén duidelijke actie per week is genoeg.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
     },
     "In Balans": {
       subject: "Halverwege: hoe houd je dit vol?",
@@ -495,17 +408,6 @@ export const nurtureContent: Record<
       tip: "Houd deze week vast wat werkt. Consistentie verslaat intensiteit.",
       cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste-ashwagandha" },
     },
-    "Stille Tekorten": {
-      subject: "Drie weken: je fundament wordt sterker",
-      preheader: "Elke gezonde keuze bouwt voort op de vorige",
-      greeting: "Drie weken geleden startte je met je Herstelplan.",
-      bodyParagraphs: [
-        "Na drie weken betere voeding begint je lichaam het verschil te merken. Je darmmicrobioom past zich aan, je energieniveau stabiliseert, en je herstel verbetert.",
-        "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan zie je of je voedingsscore is verbeterd.",
-      ],
-      tip: "Blijf consistent met wat je hebt opgebouwd. De basis is bijna op orde — daarna kun je gericht supplementen toevoegen.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
-    },
     "Stilzitter": {
       subject: "Drie weken: je lichaam went aan beweging",
       preheader: "Wat eerst moeite kostte, wordt nu gewoonte",
@@ -516,17 +418,6 @@ export const nurtureContent: Record<
       ],
       tip: "Verhoog deze week licht: van 15 naar 20 minuten wandelen, of voeg een tweede krachttraining toe. Kleine stap, groot effect op de lange termijn.",
       cta: { text: "Magnesium voor spierfunctie", url: "/beste-magnesium" },
-    },
-    "Stille Slijter": {
-      subject: "Drie weken: stap voor stap vooruit",
-      preheader: "Je bent verder dan je denkt",
-      greeting: "Drie weken geleden startte je met je Herstelplan.",
-      bodyParagraphs: [
-        "Als 'stille slijter' is vooruitgang soms lastig te voelen — juist omdat de veranderingen subtiel zijn. Maar ze zijn er. Betere slaap, iets meer energie, wat minder spanning.",
-        "Over 9 dagen doe je de Leefstijlcheck opnieuw. Dan zie je in cijfers wat er veranderd is.",
-      ],
-      tip: "Schrijf vandaag op: wat gaat beter dan 3 weken geleden? Soms moet je het bewust opmerken.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
     },
     "In Balans": {
       subject: "Drie weken: je goede gewoontes zijn stevig",
@@ -574,16 +465,6 @@ export const nurtureContent: Record<
       tip: "Doe de Leefstijlcheck opnieuw. Je resultaten worden vergeleken met een maand geleden.",
       cta: { text: "Doe de herhaalmeting", url: "/intake" },
     },
-    "Stille Tekorten": {
-      subject: "30 dagen: staat je basis nu steviger?",
-      preheader: "Meet je voortgang in 3 minuten",
-      greeting: "Een maand geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Een maand werken aan je basis. De herhaalmeting laat je zien of je voedingsscore is verbeterd — en of je nu klaar bent voor gerichte supplementen.",
-      ],
-      tip: "Doe de Leefstijlcheck opnieuw. Als je basis verbeterd is, krijg je andere aanbevelingen dan een maand geleden.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
-    },
     "Stilzitter": {
       subject: "30 dagen: beweeg je al meer?",
       preheader: "Meet je voortgang in 3 minuten",
@@ -592,16 +473,6 @@ export const nurtureContent: Record<
         "Een maand meer bewegen. De herhaalmeting laat je zien of je bewegingsscore is verbeterd — en hoe dat doorwerkt in je energie en slaap.",
       ],
       tip: "Doe de Leefstijlcheck opnieuw en vergelijk je bewegings-, energie- en slaapscores.",
-      cta: { text: "Doe de herhaalmeting", url: "/intake" },
-    },
-    "Stille Slijter": {
-      subject: "30 dagen: tijd om te zien wat er veranderd is",
-      preheader: "Je vooruitgang in cijfers — in 3 minuten",
-      greeting: "Een maand geleden deed je de Leefstijlcheck.",
-      bodyParagraphs: [
-        "Als 'stille slijter' zijn verbeteringen soms moeilijk te voelen. Daarom is meten zo waardevol: de herhaalmeting laat je objectief zien wat er is veranderd.",
-      ],
-      tip: "Doe de Leefstijlcheck opnieuw. De cijfers vertellen het verhaal dat je gevoel soms mist.",
       cta: { text: "Doe de herhaalmeting", url: "/intake" },
     },
     "In Balans": {
@@ -685,7 +556,7 @@ export function buildNurtureEmail(
 
   const dayContent = nurtureContent[templateKey];
   const blocks =
-    dayContent[knownLabel] ?? dayContent["Stille Slijter"];
+    dayContent[knownLabel] ?? dayContent["In Balans"];
 
   const weakestDomain = getWeakestDomain(domainScores);
 

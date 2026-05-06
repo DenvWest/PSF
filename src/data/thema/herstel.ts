@@ -221,9 +221,9 @@ export const herstelThema: ThemaPageData = {
       },
       {
         context:
-          "Je traint, slaapt en eet goed — maar je lichaam herstelt moeizamer dan vroeger. Herken de signalen van de Stille Slijter.",
-        href: "/profiel/stille-slijter",
-        label: "Herstelt je lichaam niet meer goed? Herken de signalen →",
+          "Herstel na inspanning laat soms langer op zich wachten. De Leefstijlcheck laat zien welk domein het eerst aandacht vraagt — zonder medische claims.",
+        href: "/intake",
+        label: "Herstel onder de loep? Doe de Leefstijlcheck →",
       },
       {
         context:

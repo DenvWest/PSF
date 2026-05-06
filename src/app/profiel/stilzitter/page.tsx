@@ -414,13 +414,14 @@ export default function StilzitterPage() {
                 </div>
                 <div>
                   <p className="text-slate-600 text-sm">
-                    Je eet wel, maar niet genoeg van het goede? Check je voedingsbasis.
+                    Twijfel je aan je voedingspatroon of energie? Doe de Leefstijlcheck voor zelfinzicht
+                    — bij aanhoudende klachten is je huisarts het startpunt.
                   </p>
                   <Link
-                    href="/profiel/stille-tekorten"
+                    href="/intake"
                     className="text-emerald-600 hover:underline font-medium"
                   >
-                    Heb jij Stille Tekorten? →
+                    Doe de Leefstijlcheck →
                   </Link>
                 </div>
               </div>

@@ -14,8 +14,6 @@ const STATIC_PROFIEL_SLUGS = new Set([
   "stressdrager",
   "lage-batterij",
   "onrustige-slaper",
-  "stille-slijter",
-  "stille-tekorten",
   "stilzitter",
 ]);
 

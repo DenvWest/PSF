@@ -104,14 +104,6 @@ export default function IntakeResults({
   const foundationItems = FOUNDATION_STACK.filter(
     (f) => !excludeIds.includes(f.id),
   );
-  const zinkSignal =
-    scores.recovery_score < 40 ||
-    scores.nutrition_score < 40 ||
-    profile.name === "Stille Slijter";
-
-  const primaryCatId = PROFILE_DOMAIN_TO_CAT[profile.domain];
-  const primaryCategory = CATEGORIES.find((c) => c.id === primaryCatId);
-
   const sortedDomainEntries = [...DOMAIN_KEYS]
     .map((key) => ({
       key,
@@ -119,6 +111,13 @@ export default function IntakeResults({
       catId: DOMAIN_SCORE_TO_CAT[key],
     }))
     .sort((a, b) => a.score - b.score);
+  const zinkSignal =
+    scores.recovery_score < 40 ||
+    scores.nutrition_score < 40 ||
+    sortedDomainEntries[0].catId === "herstel";
+
+  const primaryCatId = PROFILE_DOMAIN_TO_CAT[profile.domain];
+  const primaryCategory = CATEGORIES.find((c) => c.id === primaryCatId);
 
   const overall = Math.round(
     DOMAIN_KEYS.reduce((sum, k) => sum + scores[k], 0) / DOMAIN_KEYS.length,

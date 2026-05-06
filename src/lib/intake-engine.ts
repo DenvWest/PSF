@@ -32,9 +32,7 @@ export interface ProfileLabel {
     | "Onrustige Slaper"
     | "Lage Batterij"
     | "Stressdrager"
-    | "Stille Tekorten"
     | "Stilzitter"
-    | "Stille Slijter"
     | "In Balans";
   domain: DomainId;
   score: number;
@@ -82,13 +80,13 @@ export function getDeficiencySignals(
   const stressFrequency = getAnswer(answers, "STR_FREQ");
   const stressRecovery = getAnswer(answers, "STR_RECV");
   const scores = calcDomainScores(answers);
-  const profile = getProfileLabel(scores);
   const mov = getAnswer(answers, "MOV_FREQ");
   const rcvPhys = getAnswer(answers, "RCV_PHYS");
   const overtrainerPattern = mov >= 3 && rcvPhys <= 1;
+  const recoveryPrimary = getSortedDomains(scores)[0].domain === "recovery";
   const creatine_signal =
     (scores.recovery_score < 50 && mov >= 3) ||
-    profile.name === "Stille Slijter" ||
+    recoveryPrimary ||
     overtrainerPattern;
   const sleepQuality = getAnswer(answers, "SLP_QUAL");
   const melatonine_signal = sleepQuality <= 2 && stressFrequency >= 3;
@@ -120,14 +118,27 @@ const DOMAIN_KEY_TO_ID: Record<DomainScoreKey, DomainId> = {
   recovery_score: "recovery",
 };
 
-const PROFILE_NAMES: Record<DomainId, ProfileLabel["name"]> = {
+type NamedProfileDomain = Exclude<DomainId, "nutrition" | "recovery">;
+
+const NAMED_DOMAIN_LABELS: Record<NamedProfileDomain, ProfileLabel["name"]> = {
   sleep: "Onrustige Slaper",
   energy: "Lage Batterij",
   stress: "Stressdrager",
-  nutrition: "Stille Tekorten",
   movement: "Stilzitter",
-  recovery: "Stille Slijter",
 };
+
+function firstNonNutritionRecoveryDomain(
+  sorted: ReturnType<typeof getSortedDomains>,
+  startIndex: number,
+): (typeof sorted)[number] | undefined {
+  for (let i = startIndex; i < sorted.length; i++) {
+    const entry = sorted[i];
+    if (entry.domain !== "nutrition" && entry.domain !== "recovery") {
+      return entry;
+    }
+  }
+  return undefined;
+}
 
 const URGENCY_CONFIG: Record<UrgencyLevel, UrgencyResult> = {
   critical: {
@@ -184,7 +195,7 @@ function getSignals(answers: Record<string, number>): RawSignals {
   };
 }
 
-function getSortedDomains(scores: DomainScores): Array<{
+export function getSortedDomains(scores: DomainScores): Array<{
   key: DomainScoreKey;
   domain: DomainId;
   score: number;
@@ -331,7 +342,8 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     };
   }
 
-  const primary = getSortedDomains(scores)[0];
+  const sorted = getSortedDomains(scores);
+  const primary = sorted[0];
 
   if (primary.score > 60) {
     return {
@@ -341,8 +353,32 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     };
   }
 
+  if (primary.domain === "nutrition") {
+    return {
+      name: "In Balans",
+      domain: "nutrition",
+      score: primary.score,
+    };
+  }
+
+  if (primary.domain === "recovery") {
+    const fallback = firstNonNutritionRecoveryDomain(sorted, 1);
+    if (fallback) {
+      return {
+        name: NAMED_DOMAIN_LABELS[fallback.domain as NamedProfileDomain],
+        domain: fallback.domain,
+        score: fallback.score,
+      };
+    }
+    return {
+      name: "In Balans",
+      domain: "recovery",
+      score: primary.score,
+    };
+  }
+
   return {
-    name: PROFILE_NAMES[primary.domain],
+    name: NAMED_DOMAIN_LABELS[primary.domain as NamedProfileDomain],
     domain: primary.domain,
     score: primary.score,
   };
@@ -361,6 +397,17 @@ export function getAdvice(
   const signals = getSignals(answers);
   const movementFrequency = getAnswer(answers, "MOV_FREQ");
   const physicalRecovery = getAnswer(answers, "RCV_PHYS");
+  const weakestDomain = getSortedDomains(scores)[0];
+  const nutritionScoreLow =
+    weakestDomain.domain === "nutrition" && weakestDomain.score <= 60;
+
+  if (nutritionScoreLow) {
+    pushRankedText(
+      longTerm,
+      "Twijfel je aan tekorten in vitamines of mineralen? Vraag bij aanhoudende klachten je huisarts om bloedonderzoek — zekerheid haal je bij de arts, niet uit een vragenlijst.",
+      1,
+    );
+  }
 
   if (primaryDomain === "sleep") {
     pushRankedText(
