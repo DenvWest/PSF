@@ -5,7 +5,7 @@ export const ashwagandhaData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Ashwagandha: hoe het werkt voor mannen boven de 40",
   heroIntro:
-    "Ashwagandha is het meest bestudeerde adaptogeen voor stressregulatie. Maar hoe werkt het precies, wat mag je verwachten en wat zijn de valkuilen bij het kiezen van een supplement? Alles wat relevant is voor mannen boven de 40.",
+    "Ashwagandha is in de wetenschappelijke literatuur een van de best bestudeerde adaptogenen rond stressbelasting. Let wel: in de EU zijn er (nog) geen goedgekeurde gezondheidsclaims voor op het etiket. Hier lees je mechanismen, studie‑inzichten en valkuilen bij productkeuze — specifiek voor mannen boven de 40.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-03-15",
   secties: [
@@ -13,13 +13,13 @@ export const ashwagandhaData: BlogArtikel = {
       type: "tekst",
       titel: "Wat is ashwagandha en waarom is het relevant?",
       tekst:
-        "[Beste ashwagandha-supplementen](/beste-ashwagandha) zijn gebaseerd op extracts van Withania somnifera — traditioneel bekend als ashwagandha — een plant uit de Ayurvedische geneeskunde die de afgelopen twee decennia intensief klinisch is onderzocht. De actieve bestanddelen — withanoliden — werken als modulatoren van de HPA-as: ze helpen je lichaam beter reageren op stress zonder die stress te blokkeren. Voor mannen boven de 40, bij wie de cortisolregulatie minder efficiënt wordt, is dit directe aanknopingspunt relevant.",
+        "[Beste ashwagandha-supplementen](/beste-ashwagandha) bevatten extracten van Withania somnifera — traditioneel gebruikt in Ayurveda en in de afgelopen decennia veel in klinische studies. De actieve fracties (withanoliden) worden in onderzoek in verband gebracht met de stressas (HPA); dat wil zeggen: hoe het organisme op langdurige belasting reageert — geen ‘stress uit’‑knop. Voor mannen boven de 40, bij wie stressregulatie vaak trager aanvoelt, is dat een veel besproken mechanisme in de literatuur.",
     },
     {
       type: "tekst",
       titel: "Wat de studies zeggen",
       tekst:
-        "In meerdere gerandomiseerde, placebogecontroleerde studies (onder meer van Chandrasekhar et al., 2012, en Pratte et al., 2014) werden cortisoldalingen van 14 tot 28% gemeten bij dagelijks gebruik van 300-600 mg KSM-66 of Sensoril-extract. Bijkomende uitkomsten: verbeterde slaapkwaliteit, lager zelfgerapporteerd stressniveau en — in studies bij mannen — verhoogd testosteronniveau. Dat laatste is bijzonder relevant na de 40e: testosteron en cortisol staan in een inversieve relatie.",
+        "In meerdere gerandomiseerde, placebogecontroleerde studies (onder meer Chandrasekhar et al., 2012, en Pratte et al., 2014) werden verschillen in cortisolmarkeringen en zelfrapportage beschreven bij dagelijks gebruik van 300-600 mg KSM-66 of Sensoril-extract. Bijkomende uitkomsten in sommige onderzoeken: subjectieve slaapkwaliteit, lager zelfgerapporteerd stressniveau en — in een deel van de mannenstudies — verschillen in testosteronmarkers. Dat zijn studie‑uitkomsten, geen goedgekeurde EU‑claims; individuele resultaten wijken sterk af.",
     },
     {
       type: "opsomming",
@@ -27,11 +27,11 @@ export const ashwagandhaData: BlogArtikel = {
       inleiding:
         "Ashwagandha werkt geleidelijk, niet acuut. De meeste studies meten resultaten na 8-12 weken dagelijks gebruik:",
       items: [
-        "Lager cortisolniveau bij chronische stress (meetbaar via speeksel of bloed)",
-        "Betere slaapkwaliteit, met name sneller inslapen en minder 's nachts wakker worden",
-        "Verminderd gevoel van vermoeidheid en mentale belasting",
-        "Ondersteuning van testosteronniveaus (relevant na je 40e)",
-        "Verbeterd herstel na fysieke inspanning",
+        "Verschillen in stress‑ en hormoonmarkers waaronder cortisol (in onderzoek gemeten, niet als productclaim)",
+        "Verbeterde ingeschatte slaapkwaliteit in sommige studies — niet hetzelfde als een medische slaapbehandeling",
+        "Minder gemelde vermoeidheid en mentale belasting in een deel van de onderzoeken",
+        "Verschillen in testosteronmarkers in een deel van de mannenonderzoeken — geen claim op ‘meer testosteron’ op etiket",
+        "Herstelparameters na training: bescheiden effectgroottes, vooral bij hoge trainingsbelasting",
       ],
     },
     {
@@ -44,15 +44,21 @@ export const ashwagandhaData: BlogArtikel = {
       type: "tekst",
       titel: "Dosering en timing",
       tekst:
-        "De effectieve dosering in de meeste studies ligt tussen 300 en 600 mg per dag van een gestandaardiseerd extract. Neem het bij voorkeur 's avonds of verdeeld over dag en avond — dit sluit aan op het cortisolritme en ondersteunt de slaapkwaliteit. Ashwagandha heeft een goede veiligheidsprofielrol bij gezonde volwassenen. Mensen met schildklieraandoeningen of autoïmmuunziekten bespreken het gebruik eerst met een arts.",
+        "De effectieve dosering in veel studies ligt tussen 300 en 600 mg per dag van een gestandaardiseerd extract. Inname 's avonds of verdeeld over dag en avond komt voor in protocollen. Ashwagandha wordt in toxiciteitsstudies doorgaans als redelijk verdragen beschouwd bij gezonde volwassenen; niet gebruiken zonder overleg bij slecht functionerende schildklier, zwangerschap of auto-immuunziekten, of naast medicatie die immuunreactie of sedatie beïnvloedt.",
+    },
+    {
+      type: "tekst",
+      titel: "EU‑claims, EFSA en VWS — wat jij moet weten",
+      tekst:
+        "Voor Withania somnifera (ashwagandha) staan er in de Europese Unie op dit moment geen definitief toegelaten gezondheidsclaims op de EU‑lijst voor dit ingrediënt. Dossiers voor botanische stoffen kunnen bij de Europese Autoriteit voor voedselveiligheid (EFSA) in de on-holdprocedure staan: onderzoek en veiligheid kunnen besproken zijn zonder dat er al een claim voor consumenten op het etiket mag. In Nederland zet het ministerie van Volksgezondheid, Welzijn en Sport (VWS) beleid en wetgeving uit; de Nederlandse Voedsel- en Warenautoriteit (NVWA) handhaaft markt en etikettering. Dit artikel vat literatuur samen en is geen medische aanbeveling of erkende productclaim. Bij klachten, medicatie of zwangerschap: overleg met een arts.",
     },
   ],
   samenvatting:
-    "Ashwagandha is een goed onderbouwd adaptogeen voor mannen boven de 40 die kampen met chronische stress. Kies een gestandaardiseerd extract (KSM-66 of Sensoril), houd rekening met 8-12 weken voor meetbaar effect en zie het als aanvulling op slaap, beweging en voeding — niet als vervanging.",
+    "Ashwagandha‑extracten worden in studies onderzocht bij chronische stress en gerelateerde uitkomsten; kies een gestandaardiseerd extract (KSM-66 of Sensoril), reken op weken voor evaluatie en zie het als aanvulling op slaap, beweging en voeding. EU: geen goedgekeurde gezondheidsclaims voor deze botanische stof.",
   supplementCTA: {
     naam: "Ashwagandha",
     uitleg:
-      "Gestandaardiseerd extract (KSM-66) met klinisch onderbouwde werking voor stressregulatie en cortisolbalans.",
+      "Gestandaardiseerd extract (KSM-66 of Sensoril): vergelijken op specificatie en prijs — studie‑achtergrond, geen wettelijke EU‑claim op stress of hormonen.",
     href: "/supplementen/ashwagandha",
   },
   cornerstoneLink: {

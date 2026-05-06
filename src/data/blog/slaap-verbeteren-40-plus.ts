@@ -17,7 +17,7 @@ export const slaapVerbeterenData: BlogArtikel = {
     },
     {
       type: "opsomming",
-      titel: "Wat aantoonbaar werkt",
+      titel: "Wat slaaponderzoek veel steunt",
       inleiding:
         "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant voor mannen boven de 40:",
       items: [
@@ -25,7 +25,7 @@ export const slaapVerbeterenData: BlogArtikel = {
         "Blootstelling aan daglicht in de ochtend: Tien minuten buiten in de eerste twee uur na het opstaan resynchroniseert je circadiaanse klok.",
         "Slaapkamertemperatuur: 16-19°C is optimaal voor diepe slaap. Iets koeler dan de meeste mensen instellen.",
         "Geen schermen 60-90 minuten voor bed: Blauw licht onderdrukt melatonine-aanmaak met 50-80% bij intensief gebruik.",
-        "[Beste magnesium supplementen voor slaap](/beste-magnesium) — vaak als glycinaat of L-threonaat — ondersteunen melatonine-synthese en ontspanning van het zenuwstelsel bij een tekort.",
+        "[Beste magnesium supplementen voor slaap](/beste-magnesium) — vaak als glycinaat — bieden magnesium dat bij voldoende inname bijdraagt aan o.a. normale werking van het zenuwstelsel en spieren (EFSA); slaap zelf is geen geautoriseerde claim op het etiket.",
       ],
     },
     {
@@ -46,7 +46,7 @@ export const slaapVerbeterenData: BlogArtikel = {
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
-      "Magnesiumglycinaat ondersteunt melatonine-aanmaak en ontspanning van het zenuwstelsel — relevant bij slaapklachten door stress.",
+      "Magnesiumglycinaat levert magnesium dat bij voldoende inname bijdraagt aan normale werking van zenuwstelsel en spieren; wordt vaak gecombineerd met leefstijl bij slaapklachten.",
     href: "/supplementen/magnesium",
   },
   cornerstoneLink: {

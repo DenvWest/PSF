@@ -21,7 +21,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
       items: [
         "Vast ritme: zelfde opsta- en bedtijd, ook in het weekend — dit verankert je interne klok sterker dan elke app.",
         "Licht: minimaal tien minuten buitenlicht ’s ochtends; ’s avonds dimmen en schermen beperken 60-90 min voor slapen.",
-        "Temperatuur: koele slaapkamer (ongeveer 16-19°C) bevordert diepe slaap.",
+        "Temperatuur: koele slaapkamer (ongeveer 16-19°C) sluit aan bij wat slaaponderzoek beschrijft voor diepe slaap en kerntemperatuurdaling.",
         "Prikkelbeheer: cafeïne na lunch vermijden; alcohol niet als slaapmiddel — het verkort REM en verstoort de tweede helft van de nacht.",
       ],
     },

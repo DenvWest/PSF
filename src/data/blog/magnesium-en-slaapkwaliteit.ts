@@ -11,7 +11,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   secties: [
     {
       type: "tekst",
-      titel: "Magnesium na je 40e: meer dan een slaapmiddel",
+      titel: "Magnesium na je 40e: meer dan alleen ‘voor de nacht’",
       tekst:
         "[De beste magnesium supplementen](/beste-magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De gemiddelde inname via voeding in Nederland ligt op 270 tot 300 mg per dag — terwijl de aanbevolen dagelijkse hoeveelheid voor mannen op 350 tot 400 mg elementair magnesium ligt. Dat gat van 80 tot 120 mg is de reden dat magnesiumsuppletie voor veel mannen boven de 40 relevant kan zijn.",
     },
@@ -21,9 +21,9 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       inleiding:
         "Niet alle magnesiumsupplementen zijn gelijk. De vorm bepaalt de opneembaarheid, het effect en de bijwerkingen. Dit zijn de zes meest voorkomende:",
       items: [
-        "Magnesium glycinaat (bisglycinaat): de meest aanbevolen vorm voor slaap en stress. Magnesium is hier gebonden aan glycine, een aminozuur dat zelf een kalmerend effect heeft op het zenuwstelsel. Goed opneembaar en zacht voor de maag — weinig tot geen maag-darmklachten.",
+        "Magnesium glycinaat (bisglycinaat): veelgebruikt bij avondinname; magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycine wordt in onderzoek o.a. bestudeerd rond neurotransmissie en temperatuur rond slapen. Goed opneembaar en zacht voor de maag — weinig tot geen maag-darmklachten.",
         "Magnesium citraat: gebonden aan citroenzuur. Goede opneembaarheid en breed inzetbaar voor dagelijks gebruik. Bij hogere doseringen kan laxerende werking optreden — bij gevoelige mensen al bij lagere doses.",
-        "Magnesium tauraat: combinatie met taurine, een aminozuur dat eveneens een ontspannend effect heeft. Onderzocht voor hart- en vaatgezondheid en bloeddrukregulatie. Interessant voor mannen boven de 40 die bewust zijn van cardiovasculair welzijn.",
+        "Magnesium tauraat: combinatie met taurine. Magnesium draagt bij tot normale spierfunctie en elektrolytenbalans; taurine wordt in onderzoek onder meer in cardiovasculaire contexten bestudeerd.",
         "Magnesium malaat: gebonden aan appelzuur, dat betrokken is bij energieproductie in de citroenzuurcyclus. Onderzocht bij vermoeidheid en spierpijn. Logische keuze voor sporters of mensen met aanhoudende vermoeidheid.",
         "Magnesium oxide: goedkoop en veelgebruikt in budgetsupplementen. De biologische beschikbaarheid is echter slecht — gemiddeld circa 4 procent. Voor de meeste doeleinden niet aanbevolen als hoofdvorm.",
         "Magnesium L-threonaat: kan de bloed-hersenbarrière passeren en is onderzocht in relatie tot cognitieve functie en geheugen. Relatief nieuw; het bewijs is veelbelovend maar nog beperkt. Minder breed beschikbaar in Nederland dan de andere vormen.",
@@ -47,7 +47,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
         "Donkere chocolade 70% of hoger (30 g): circa 65 mg. Nog een reden om voor pure chocolade te kiezen.",
         "Zwarte bonen, bereid (100 g): circa 70 mg. Ook andere peulvruchten zijn goede bronnen.",
         "Avocado (1 heel): circa 58 mg. Plus gezonde vetten die de opname van andere voedingsstoffen ondersteunen.",
-        "Makreel (100 g): circa 60 mg — met als bonus [beste omega-3 supplementen](/beste-omega-3-supplement) die het hart ondersteunen.",
+        "Makreel (100 g): circa 60 mg — combineren met vette vis of [omega-3-suppletie](/beste-omega-3-supplement) past bij adequate inname van EPA/DHA; EPA en DHA dragen o.a. bij tot de normale werking van het hart (EFSA, bij voldoende dagelijkse hoeveelheid).",
       ],
     },
     {
@@ -56,8 +56,8 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       inleiding:
         "Afhankelijk van wat je wilt aanpakken, is een andere vorm en timing logisch. Dit is de praktische samenvatting per doel:",
       items: [
-        "Voor betere slaap: magnesium glycinaat (bisglycinaat), 200–400 mg elementair, 30 tot 60 minuten voor het slapen. Glycine werkt als remmende neurotransmitter en helpt de kerntemperatuur van het lichaam te verlagen — beide ondersteunen het inslapen. Combineer met een vast slaapritme en geen schermen een uur voor bed.",
-        "Voor stressverlichting: magnesium glycinaat of tauraat, 200–300 mg elementair, verdeeld over de dag. Magnesium moduleert de HPA-as (het stresssysteem) en een tekort verhoogt het cortisolniveau. Combineer suppletie met ademhalingsoefeningen en dagelijks bewegen voor het beste resultaat.",
+        "Voor avondroutine en inslapen: magnesium glycinaat (bisglycinaat), 200–400 mg elementair, 30 tot 60 minuten voor het slapen (zoals in onderzoeksprotocollen; individuele respons verschilt). Glycine is een remmende neurotransmitter en wordt bestudeerd rond kerntemperatuur. Combineer met een vast slaapritme en geen schermen een uur voor bed.",
+        "Voor stressverlichting: magnesium glycinaat of tauraat, 200–300 mg elementair, verdeeld over de dag. Magnesium draagt bij tot normale psychologische functie en normale werking van het zenuwstelsel (EFSA). Stressregulatie is vooral gedrag en leefstijl — suppletie is hooguit ondersteunend.",
         "Voor energie en sport: magnesium malaat of citraat, 200–400 mg elementair, bij de maaltijd. Malaat is betrokken bij energieproductie in de citroenzuurcyclus; citraat ondersteunt ATP-synthese. Combineer met voldoende eiwit en herstelmoment na training.",
         "Voor algemeen welzijn (40+): een supplement met meerdere vormen gecombineerd — zoals glycinaat, citraat en tauraat — in een totaaldosering van 150 tot 300 mg elementair per dag. Dekt meerdere behoeften tegelijk zonder specifieke timing.",
       ],

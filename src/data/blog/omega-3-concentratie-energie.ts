@@ -19,7 +19,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
       type: "opsomming",
       titel: "Wat onderzoek voorzichtig suggereert",
       items: [
-        "Sommige meta-analyses vinden lichte stemming- of angstverbetering bij suppletie — effectgroottes zijn bescheiden en niet bij iedereen repliceerbaar.",
+        "Sommige meta-analyses melden lichte verschillen in stemming bij suppletie; effecten zijn bescheiden en inconsistent. Angst- en stemmingstoornissen horen thuis bij zorg.",
         "Cognitieve tests bij gezonde volwassenen tonen geen dramatische boost; mogelijk relevanter bij lage baseline-inname of ouderen.",
         "Cardiovasculaire en ontstekingsmarkers kunnen verbeteren — dat is indirect relevant voor algeheel welbevinden.",
       ],
@@ -32,7 +32,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Omega-3 kan een ondersteunende rol spelen bij stemming en ontsteking, maar ‘meer energie’ is geen harde belofte uit de literatuur. Zinvol bij lage visinname; kies kwaliteit (EPA/DHA, zuiverheid) en zet het in je totale leefstijlplan.",
+    "Omega-3 kan een ondersteunende rol spelen rond ontsteking en DHA in hersenweefsel; harde ‘meer energie’-beloftes zijn uit de literatuur niet te halen. Zinvol bij lage visinname; kies kwaliteit (EPA/DHA, zuiverheid).",
   supplementCTA: {
     naam: "Omega-3",
     uitleg:

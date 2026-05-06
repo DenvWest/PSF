@@ -36,7 +36,7 @@ export const energieVerhogenData: BlogArtikel = {
       type: "tekst",
       titel: "De rol van vitamine D",
       tekst:
-        "Vitamine D-tekort (serum 25-OH-D onder de 50 nmol/L) is sterk geassocieerd met vermoeidheidsklachten. In Nederland heeft naar schatting 40-50% van de bevolking een tekort, met piek in de winter. Suppletie bij bewezen tekort verbetert energieniveaus aantoonbaar. De veilige suppletiedosering voor de meeste volwassenen is 1000-2000 IE per dag; laat je waarden meten voor je start.",
+        "Vitamine D‑tekort (lage 25‑OH‑D, bespreek grenswaarden met je arts/lab) wordt vaak genoemd naast vermoeidheidsklachten. In Nederland is lage status in de winter relatief gebruikelijk. Bij vastgesteld tekort kan suppletie onder begeleiding zinvol zijn; vitamine D draagt o.a. bij tot normale werking van het immuunsysteem en tot instandhouding van normale botten en spieren (EFSA) — geen ‘wondermiddel tegen vermoeidheid’. Gangbare suppletie bij advies: vaak 1000–2000 IE/dag volwassene; laat meten en laat je informeren door een zorgprofessional.",
     },
   ],
   samenvatting:
@@ -44,7 +44,7 @@ export const energieVerhogenData: BlogArtikel = {
   supplementCTA: {
     naam: "Vitamine D",
     uitleg:
-      "Bij een tekort (frequent in Nederland) is suppletie een directe en effectieve interventie voor energieniveau en algeheel welbevinden.",
+      "Bij gemeten tekort (frequent in Nederland) kan suppletie passend zijn; vitamine D heeft EFSA‑erkende claims o.a. op botten, spieren en immuunsysteem — niet op ‘meer energie’ als etiketclaim.",
     href: "/supplementen/vitamine-d",
   },
   cornerstoneLink: {
@@ -59,7 +59,7 @@ export const energieVerhogenData: BlogArtikel = {
   metaTitle:
     "Energie verhogen na je 40e: fysiologie en praktische aanpak | PerfectSupplement",
   metaDescription:
-    "Aanhoudende vermoeidheid na je 40e? Ontdek de fysiologische oorzaken en vijf bewezen aanknopingspunten om je energieniveau structureel te verbeteren.",
+    "Aanhoudende vermoeidheid na je 40e? Ontdek fysiologische factoren en vijf leefstijlpunten die in onderzoek met energie en herstel in verband worden gebracht.",
   keywords: [
     "energie verhogen 40",
     "vermoeidheid mannen 40",

@@ -35,8 +35,8 @@ export const melatonineNa40Data: BlogArtikel = {
       inleiding:
         "Melatonine adresseert timing. Maar de meeste slaapproblemen na je 40e zitten in de laag eronder: cortisolregulatie, ontspanning van het zenuwstelsel, en de kwaliteit van diepe slaap. Dit zijn de aanpakken die verder reiken.",
       items: [
-        "Magnesium glycinaat voor ontspanning: magnesium activeert GABA-receptoren — het remmende systeem van je brein. Glycinaat is de meest onderbouwde vorm voor slaap: goed opneembaar en het glycine heeft een zelfstandig kalmerend effect op het zenuwstelsel. Neem 200 tot 400 mg elementair magnesium 30 tot 60 minuten voor bed. [Welke magnesium werkt het best voor slaap? De vormen vergeleken.](/beste-magnesium)",
-        "Ashwagandha voor cortisolregulatie: het meest onderzochte adaptogeen voor het normaliseren van cortisol. Meerdere dubbelblinde studies (KSM-66 en Sensoril) tonen effecten op cortisolniveaus en slaapkwaliteit bij chronische stress. Het werkt niet acuut maar cumulatief — effecten zijn merkbaar na 4 tot 8 weken. [Stress houdt je wakker? Dit adaptogeen helpt je cortisol normaliseren.](/beste-ashwagandha)",
+        "Magnesium glycinaat: magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycinaat heeft goede opname; glycine wordt in slaaponderzoek bestudeerd rond remmende neurotransmissie en temperatuur. Neem 200 tot 400 mg elementair magnesium 30 tot 60 minuten voor bed. [Magnesiumvormen vergeleken.](/beste-magnesium)",
+        "Ashwagandha en cortisol: Withania somnifera is in gerandomiseerde studies onderzocht op cortisolmarkeringen en welbevinden; in de EU zijn daar nog geen goedgekeurde gezondheidsclaims voor (on-hold bij EFSA — zie [volledige uitleg](/blog/ashwagandha-werking-mannen)). Geen acuut ‘slaappil’‑effect; in onderzoek vaak merkbaar na weken. [Producten.](/beste-ashwagandha)",
         "Leefstijl als fundament: melatonine is zinloos als je slaaphygiëne niet op orde is. Geen schermen 60 minuten voor bed (het blauwe lichtspectrum blokkeert melatonineaanmaak), vaste slaap- en waaktijden, en ochtendzonnelicht om je biologische klok te ankeren.",
         "Melatonine: tijdelijk en in microdosering: als je melatonine inzet, gebruik dan een dosis van 0,3 tot 0,5 mg — niet de standaard 3 mg van de drogist. En zie het als tijdelijk hulpmiddel bij een specifiek timing-probleem, niet als structurele oplossing. [De beste melatonine-supplementen op een rij — dosering en vorm vergeleken.](/beste-melatonine)",
       ],
@@ -49,15 +49,15 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Disclaimer",
-      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft adviezen, geen diagnoses.",
+      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft adviezen, geen diagnoses. EU‑claimstatus ashwagandha: zie [toelichting](/blog/ashwagandha-werking-mannen).",
     },
   ],
   samenvatting:
-    "Melatonine is een timing-hormoon, geen slaapmiddel. Na je 40e zijn cortisolontregeling en afnemende diepe slaap de werkelijke knelpunten — dat fixt melatonine niet. Gebruik het alleen tijdelijk, in een microdosering van 0,3 tot 0,5 mg. Magnesium glycinaat (ontspanning) en ashwagandha (cortisolregulatie) pakken de diepere laag aan en hebben sterkere onderbouwing voor structureel beter slapen.",
+    "Melatonine is een timing-hormoon, geen klassiek slaapmiddel. Na je 40e zijn cortisolritme en afnemende diepe slaap vaak belangrijker dan alleen timing; dat lost melatonine niet structureel op. Gebruik het maximaal tijdelijk, bij voorkeur 0,3–0,5 mg. Magnesium (EFSA: zenuwstelsel/spieren) en ashwagandha (literatuur; geen EU‑claim) worden in artikelen en studies naast leefstijl besproken.",
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
-      "Voor de meeste mannen boven de 40 werkt magnesium beter dan melatonine. Glycinaat, citraat, malaat — welke vorm voor welk doel? Onze vergelijking zet de populairste supplementen naast elkaar.",
+      "Voor de meeste mannen boven de 40 is magnesium rechtstreeks koppelbaar aan EFSA‑claims op zenuwstelsel en spieren; avondinname is een gangbare gewoonte naast leefstijl.",
     href: "/beste-magnesium",
   },
   cornerstoneLink: {

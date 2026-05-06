@@ -17,15 +17,15 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Hoe magnesium je slaap beïnvloedt",
-      tekst: "Magnesium speelt een directe rol in het kalmeren van het zenuwstelsel. Het helpt GABA-receptoren activeren — GABA is de belangrijkste remmende neurotransmitter in je brein. Zonder voldoende GABA-activiteit blijf je 'aan': piekeren, alert blijven, moeilijk loslaten. Tegelijk reguleert magnesium de balans tussen calcium (spiercontractie) en magnesium zelf (spierontspanning): gespannen spieren in bed zijn een direct teken dat dit systeem niet in balans is. Bovendien is magnesium betrokken bij de aanmaak van melatonine, het slaaphormoon. Een tekort raakt daarmee drie systemen tegelijk — je hoofd, je spieren én je slaapritme. Dat verklaart waarom 40 tot 60 procent van de Nederlanders structureel te weinig magnesium binnenkrijgt via voeding, en waarom dit na je 40e extra hard speelt: de opname via de darm daalt met de jaren, terwijl de behoefte door stress en spierherstel gelijk blijft of stijgt. Wakker worden om 3 uur en niet meer in slaap komen? Dat patroon heeft een naam. [Wakker om 3 uur, niet terug in slaap? Je bent niet alleen.](/profiel/onrustige-slaper)",
+      tekst: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot normale psychologische functie — dat zijn EU‑geautoriseerde gezondheidsclaims bij voldoende inname. In biochemische modellen is magnesium betrokken bij GABAerge signalering; GABA is een belangrijke remmende neurotransmitter. Tegelijk draagt magnesium bij tot normale spierfunctie en tot elektrolytenbalans — relevant voor de balans tussen calcium (contractie) en ontspanning: gespannen spieren in bed kunnen duiden op onvoldoende rust in dat systeem. Ook speelt magnesium een rol in het melatonine‑metaboliek traject; melatonine is het hormoon dat je circadiaanse slaapsignaal mede stuurt. Een tekort raakt daarmee meerdere sporen tegelijk — zenuwstelsel, spieren én ritme. Dat verklaart waarom 40 tot 60 procent van de Nederlanders structureel te weinig magnesium binnenkrijgt via voeding, en waarom dit na je 40e extra hard speelt: de opname via de darm daalt met de jaren, terwijl de behoefte door stress en spierherstel gelijk blijft of stijgt. Wakker worden om 3 uur en niet meer in slaap komen? Dat patroon heeft een naam. [Wakker om 3 uur, niet terug in slaap? Je bent niet alleen.](/profiel/onrustige-slaper)",
     },
     {
       type: "opsomming",
       titel: "Welke vorm werkt (en welke niet)",
       inleiding:
-        "Niet alle magnesiumsupplementen zijn gelijk. De vorm bepaalt de [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) — hoeveel je lichaam daadwerkelijk opneemt — en daarmee het effect op slaap. Dit zijn de drie meest relevante vormen:",
+        "Niet alle magnesiumsupplementen zijn gelijk. De vorm bepaalt de [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) — hoeveel je lichaam daadwerkelijk opneemt — en daarmee wat er in onderzoek naar uitkomsten bij slaap is gemeten. Dit zijn de drie meest relevante vormen:",
       items: [
-        "Magnesium glycinaat (ook: bisglycinaat): de beste keuze voor slaap. Magnesium is hier gebonden aan glycine, een aminozuur met een zelfstandig kalmerend effect op het zenuwstelsel. Glycine verlaagt de kerntemperatuur van het lichaam — een signaal voor de hersenen om over te schakelen naar slaapstand. Goede opneembaarheid, zacht voor de maag. Dit is de meest onderbouwde keuze als slaap je hoofddoel is.",
+        "Magnesium glycinaat (ook: bisglycinaat): vaak gekozen bij avondinname vanwege goede opname en onderzoek naar glycine rond slaap. Magnesium draagt zelf bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycine heeft in onderzoek verband met o.a. kerntemperatuurdaling rond slapen — een fysiologisch signaal dat past bij het naar bed gaan. Zacht voor de maag. Dit is in studies veel gebruikt als vorm bij slaapgerichte protocollen; individuele respons verschilt.",
         "Magnesium oxide: vermijden. De biologische beschikbaarheid ligt rond de 4% — van elke 100 mg die je inneemt, neemt je lichaam nog geen 4 mg op. Veelgebruikt in goedkope supplementen vanwege de lage kostprijs, maar voor slaap — of welk doel dan ook — niet effectief genoeg.",
         "Magnesium citraat: een middenweg. Betere opname dan oxide, breder inzetbaar dan glycinaat alleen. Zinvol als je niet uitsluitend voor slaap wil supplementeren, maar ook voor de dagelijkse aanvulling. Let op: bij hogere doseringen kan een laxerend effect optreden.",
       ],
@@ -33,7 +33,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Dosering en timing",
-      tekst: "De onderzochte doseringen voor slaapondersteuning liggen op 200–400 mg elementair magnesium per dag. Elementair magnesium staat altijd apart vermeld op het etiket — het totale gewicht van een capsule is niet de werkzame hoeveelheid. Een capsule van 500 mg magnesium glycinaat bevat doorgaans slechts circa 50–80 mg elementair magnesium. Tel altijd het elementaire magnesium per dagdosering op, niet het totaalgewicht van de tablet of capsule. Neem je supplement 30 tot 60 minuten voor het slapen — de kalmeringswerking is dan op z'n sterkst wanneer het telt. Verwacht geen effect in één nacht: bij de meeste mensen zijn effecten merkbaar na 1 tot 2 weken regelmatig gebruik. Welke magnesiumvorm absorbeert het snelst? Glycinaat, bisglycinaat of citraat vergeleken — inclusief prijsverschillen en doseringen per product. [Bekijk de volledige vergelijking.](/beste-magnesium)",
+      tekst: "In slaapgericht onderzoek worden vaak 200–400 mg elementair magnesium per dag gebruikt — dit is geen algemene aanbeveling voor iedereen; bespreek suppletie bij twijfel met je arts. Elementair magnesium staat altijd apart vermeld op het etiket — het totale gewicht van een capsule is niet de werkzame hoeveelheid. Een capsule van 500 mg magnesium glycinaat bevat doorgaans slechts circa 50–80 mg elementair magnesium. Tel altijd het elementaire magnesium per dagdosering op, niet het totaalgewicht van de tablet of capsule. Avondinname 30 tot 60 minuten voor bed wordt in protocollen vaak gekozen; of je dat merkt, verschilt per persoon. Verwacht geen effect in één nacht: in onderzoek worden veranderingen vaak pas na 1 tot 2 weken zichtbaar. Welke magnesiumvorm absorbeert het snelst? Glycinaat, bisglycinaat of citraat vergeleken — inclusief prijsverschillen en doseringen per product. [Bekijk de volledige vergelijking.](/beste-magnesium)",
     },
     {
       type: "tekst",
@@ -47,11 +47,11 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Magnesium glycinaat (bisglycinaat) is de meest onderbouwde keuze voor betere slaap: goede opname, rustgevend effect via GABA-receptoren en spierontspanning dankzij glycine. Neem 200–400 mg elementair magnesium, 30–60 minuten voor bed. Vermijd oxide. Effect is merkbaar na 1–2 weken regelmatig gebruik.",
+    "Magnesium glycinaat (bisglycinaat) wordt vaak gekozen bij slaapstress: goede opname, en magnesium draagt bij tot normale werking van zenuwstelsel en spieren. Glycine wordt in slaaponderzoek onderzocht rond temperatuur en inslapen. Neem — indien je suppletie kiest — 200–400 mg elementair magnesium conform etiket en eventueel je arts, 30–60 minuten voor bed. Vermijd oxide als hoofdvorm. Merkbare verschillen kosten vaak 1–2 weken.",
   supplementCTA: {
     naam: "Magnesium",
     uitleg:
-      "Van glycinaat tot bisglycinaat: welke vorm scoort het beste op opname, slaapeffect en prijs per dag? Onze vergelijking zet de populairste supplementen naast elkaar.",
+      "Van glycinaat tot bisglycinaat: welke vorm scoort het beste op opname, gebruik in slaapprotocollen en prijs per dag? Onze vergelijking zet de populairste supplementen naast elkaar.",
     href: "/beste-magnesium",
   },
   cornerstoneLink: {

@@ -38,8 +38,8 @@ export const cortisolEnSlaapData: BlogArtikel = {
         "Avondroutine: cortisol heeft een afbouwsignaal nodig. Een vaste avondroutine — zelfde tijd, dezelfde volgorde — traint je HPA-as om eerder te remmen. Dim het licht na 21:00. Blauw licht van schermen blokkeert melatonineaanmaak en houdt cortisol actief.",
         "Geen schermen 60 minuten voor bed: dit is het meest onderbouwde advies in slaaponderzoek. Niet vanwege de content, maar vanwege het lichtspectrum. Gebruik een e-reader met warm licht, een boek, of luister naar iets rustigs.",
         "Cortisol-verlagende gewoontes overdag: beweging (voorkeur: 's ochtends of middag, niet vlak voor bed), ademhalingsoefeningen en voldoende zonlicht vroeg op de dag helpen je cortisolritme te normaliseren. De CAR — de ochtendpiek — wordt hierdoor scherper en eerder, waardoor er 's nachts minder over is.",
-        "Ashwagandha (KSM-66 of Sensoril): het meest onderzochte adaptogeen voor cortisolregulatie. Meerdere dubbelblinde studies tonen effecten op cortisolniveaus en slaapkwaliteit bij chronische stress. Het werkt niet acuut maar cumulatief — effecten zijn merkbaar na 4 tot 8 weken. [Welke ashwagandha werkt het best tegen stress? KSM-66 vs Sensoril — het verschil maakt uit.](/beste-ashwagandha)",
-        "Magnesium glycinaat voor ontspanning: magnesium activeert GABA-receptoren — het remmende systeem van je brein — en helpt je zenuwstelsel daadwerkelijk los te laten. Glycinaat is de meest onderbouwde vorm voor slaap: goede opname en het glycine heeft een zelfstandig kalmerend effect. Neem 200–400 mg elementair magnesium, 30–60 minuten voor bed. [Welke magnesium vorm is het beste voor slaap? Vergeleken.](/beste-magnesium)",
+        "Ashwagandha (KSM-66 of Sensoril): in studies wordt Withania somnifera onderzocht bij stress en cortisolmarkeringen. In de EU zijn hiervoor nog geen goedgekeurde gezondheidsclaims (on-hold bij EFSA; zie [toelichting](/blog/ashwagandha-werking-mannen)). Effecten treden niet acuut op — in onderzoek vaak na 4 tot 8 weken. [Producten vergeleken.](/beste-ashwagandha)",
+        "Magnesium glycinaat: magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycinaat heeft goede opname; glycine wordt in slaaponderzoek bestudeerd rond temperatuur en remmende neurotransmissie. Neem 200–400 mg elementair magnesium, 30–60 minuten voor bed, tenzij je arts anders voorschrijft. [Vormen vergeleken.](/beste-magnesium)",
       ],
     },
     {
@@ -50,15 +50,15 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Disclaimer",
-      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft adviezen, geen diagnoses.",
+      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft adviezen, geen diagnoses. Verwijzingen naar ashwagandha beschrijven wetenschappelijke literatuur, geen EU‑erkende productclaims — zie [ashwagandha: claimstatus](/blog/ashwagandha-werking-mannen).",
     },
   ],
   samenvatting:
-    "Wakker worden om 3 uur is een teken van te vroeg opstijgend cortisol dat je uit de slaap trekt. Na je 40e versterkt dit patroon door dalende melatonine en een trager cortisolregulatiesysteem. Aanpak: vaste avondroutine, geen schermen voor bed, en eventueel ashwagandha (voor cortisol) en magnesium glycinaat (voor ontspanning). Effect is cumulatief — reken op 4 tot 8 weken.",
+    "Wakker worden om 3 uur kan samenhangeren met een vroegere cortisolopbouw dan passend is voor diepe slaap. Na je 40e speelt vaak minder melatonine en tragere stressrem mee. Aanpak: vaste avondroutine, geen schermen voor bed, en eventueel magnesium glycinaat (EFSA: zenuwstelsel/spieren) en — met kennis van EU‑claimstatus — ashwagandha zoals in studies. Rekening houden met weken voordat je eventuele veranderingen beoordeelt.",
   supplementCTA: {
     naam: "Ashwagandha",
     uitleg:
-      "KSM-66 of Sensoril: welke vorm heeft de sterkste onderbouwing voor cortisolregulatie en slaap? Onze vergelijking zet de populairste supplementen naast elkaar op extract, dosering en prijs per dag.",
+      "KSM-66 of Sensoril: welke extractvorm en dosering worden in onderzoek het meest gebruikt? Onze vergelijking zet aanbieders naast elkaar — literatuur is geen goedgekeurde EU‑claim.",
     href: "/beste-ashwagandha",
   },
   cornerstoneLink: {

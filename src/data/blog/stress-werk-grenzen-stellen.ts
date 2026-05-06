@@ -29,7 +29,13 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
       type: "tekst",
       titel: "Wanneer het structureel misgaat",
       tekst:
-        "Als grenzen stellen structureel wordt genegeerd of bestraft, is het probleem vaak organisatiecultuur, niet jouw communicatie. Dan zijn andere keuzes nodig — rolwissel, teamwissel of externe oriëntatie. Langdurige overbelasting zonder erkenning is een risicofactor voor burn-out en is medisch serieus te nemen.",
+        "Als grenzen stellen structureel wordt genegeerd of bestraft, is het probleem vaak organisatiecultuur, niet jouw communicatie. Dan zijn andere keuzes nodig — rolwissel, teamwissel of externe oriëntatie. Langdurige overbelasting zonder erkenning vergroot het risico op burn-out en is medisch serieus te nemen.",
+    },
+    {
+      type: "tekst",
+      titel: "Supplementen en claimstatus",
+      tekst:
+        "Over ashwagandha: in de Europese Unie zijn voor Withania somnifera nog geen definitief goedgekeurde gezondheidsclaims; dossiers staan bij EFSA in de on-holdprocedure voor botanische stoffen. In Nederland coördineert het ministerie van Volksgezondheid, Welzijn en Sport (VWS) de uitvoering van EU-regels; de NVWA handhaaft op de markt. Zie [ashwagandha: werking en EU-context](/blog/ashwagandha-werking-mannen) voor literatuur en nuancering.",
     },
   ],
   samenvatting:
@@ -51,6 +57,6 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
     "grenzen stellen werk",
     "nee zeggen werk",
     "werkstress mannen",
-    "burn-out voorkomen",
+    "burn-out werkstress",
   ],
 };

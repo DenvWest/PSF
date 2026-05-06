@@ -13,7 +13,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom tekort zo vaak over het hoofd wordt gezien",
       tekst:
-        "[Beste vitamine D-supplementen](/beste-vitamine-d) kies je pas zinvol na meten; het hormoon zelf ontstaat in de huid bij UVB-blootstelling en reguleert de aanmaak van honderden eiwitten — van calciumhuishouding tot immuunfunctie. In Nederland is blootstelling aan zon in de winter onvoldoende voor veel mensen; donkere huid en binnenwerk versterken dat. Klachten zijn vaak vaag, waardoor andere oorzaken eerst worden geschaad.",
+        "[Beste vitamine D-supplementen](/beste-vitamine-d) kies je pas zinvol na meten; het hormoon zelf ontstaat in de huid bij UVB-blootstelling en reguleert de aanmaak van honderden eiwitten — van calciumhuishouding tot immuunfunctie. In Nederland is blootstelling aan zon in de winter onvoldoende voor veel mensen; donkere huid en binnenwerk versterken dat. Klachten zijn vaak vaag, waardoor andere oorzaken eerst worden overwogen en tekort later in beeld kan komen.",
     },
     {
       type: "opsomming",
@@ -33,7 +33,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Vitamine D-tekort veroorzaakt vaak vage klachten; aanhoudende vermoeidheid en spierzwakte zijn redenen om 25-OH-D te laten meten. Suppletie is effectief bij bewezen tekort — laat je niet verleiden tot megadoses zonder monitoring.",
+    "Vitamine D-tekort gaat vaak gepaard met vage klachten; aanhoudende vermoeidheid en spierzwakte zijn redenen om 25-OH-D te laten meten. Bij vastgesteld tekort kan suppletie onder begeleiding zinvol zijn — laat je niet verleiden tot hoge doses zonder monitoring.",
   supplementCTA: {
     naam: "Vitamine D",
     uitleg:

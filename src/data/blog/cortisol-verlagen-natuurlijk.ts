@@ -3,7 +3,7 @@ import type { BlogArtikel } from "@/types/blog";
 export const cortisolVerlagenData: BlogArtikel = {
   slug: "cortisol-verlagen-natuurlijk",
   categorie: "stress",
-  titel: "Cortisol verlagen: 5 methodes die werken zonder medicatie",
+  titel: "Cortisol benaderen: vijf leefstijlroutes uit onderzoek, zonder medicatie",
   heroIntro:
     "Chronisch verhoogd cortisol beïnvloedt je slaap, stemming en gewicht — vaak zonder dat je het doorhebt. Ontdek vijf methodes die klinisch zijn onderzocht en direct toepasbaar zijn voor mannen boven de 40.",
   leestijd: "7 min",
@@ -23,22 +23,22 @@ export const cortisolVerlagenData: BlogArtikel = {
     },
     {
       type: "opsomming",
-      titel: "5 bewezen methodes om cortisol te verlagen",
+      titel: "Vijf benaderingen uit onderzoek om cortisolritme te beïnvloeden",
       inleiding:
-        "Deze methodes zijn elk afzonderlijk effectief. Combineer je er meerdere, dan is het cumulatief effect groter.",
+        "Deze routes hebben in onderzoeken correlaties of interventie‑effecten laten zien; sterkte verschilt per persoon. Combineer je er meerdere, kan het totale effect groter uitvallen.",
       items: [
         "Slaapoptimalisatie: Cortisol volgt een circadiaans ritme met een piek vroeg in de ochtend. Slaaptekort verstoort dit ritme structureel. Zeven tot acht uur slaap op vaste tijden is de meest directe interventie.",
         "Kortdurende krachttraining: Intensieve training verhoogt cortisol acuut, maar regelmatige krachttraining (3-4x per week, 45-60 minuten) verlaagt het basale cortisolniveau over tijd door verbeterde stressadaptatie.",
-        "Diafragmaal ademhalen: Vijf minuten langzaam, diep ademhalen activeert de parasympathische zenuwstelsel. Studies tonen cortisolverlagingen van 12-20% na acht weken dagelijkse oefening.",
+        "Diafragmaal ademhalen: Vijf minuten langzaam, diep ademhalen activeert het parasympathische deel van het autonome zenuwstelsel. Studies tonen cortisolverlagingen van 12-20% na acht weken dagelijkse oefening.",
         "Sociale verbinding: Positief sociaal contact stimuleert oxytocine, dat direct cortisol onderdrukt. Bewust investeren in relaties heeft meetbare fysiologische effecten.",
-        "Adaptogene supplementen: Specifieke planten zoals Withania somnifera ([beste ashwagandha-supplementen](/beste-ashwagandha)) moduleren de HPA-as aantoonbaar. In gecontroleerde studies daalde cortisol gemiddeld 14-28% bij dagelijks gebruik.",
+        "Adaptogene supplementen: plantenextracten zoals Withania somnifera ([beste ashwagandha](/beste-ashwagandha)) zijn in gecontroleerde studies onderzocht op stress- en hormoonmarkers. Dat zijn publicaties, geen goedgekeurde EU‑gezondheidsclaims; bespreek verwachtingen en medicatie-interacties met je arts.",
       ],
     },
     {
       type: "tekst",
       titel: "De rol van voeding en bloedsuiker",
       tekst:
-        "Bloedsuikerschommelingen zijn een onderschatte cortisolaanjager. Elke sterke daling van de bloedsuikerspiegel triggert een cortisolrespons. Praktisch: eet regelmatige maaltijden met voldoende eiwit en complexe koolhydraten, beperk geraffineerde suikers en vermijd lange perioden zonder eten. [Magnesium](/beste-magnesium) ondersteunt het zenuwstelsel en spierontspanning bij stress. Welke zink wordt het best opgenomen? Bisglycinaat vs picolinaat — [bekijk de vergelijking](/beste-zink). Cafeïne verhoogt cortisol bij chronisch gebruik — niet bij incidenteel gebruik. Meer dan drie koppen koffie per dag kan cortisolniveaus structureel verhogen, vooral bij mensen die al gestrest zijn.",
+        "Bloedsuikerschommelingen zijn onderschatte prikkels voor de stress‑respons. Elke sterke daling van de bloedsuikerspiegel triggert een cortisolrespons. Praktisch: eet regelmatige maaltijden met voldoende eiwit en complexe koolhydraten, beperk geraffineerde suikers en vermijd lange perioden zonder eten. [Magnesium](/beste-magnesium) draagt bij tot normale werking van het zenuwstelsel en van de spieren (EFSA). Welke zink wordt het best opgenomen? Bisglycinaat vs picolinaat — [bekijk de vergelijking](/beste-zink). Cafeïne verhoogt cortisol bij chronisch gebruik — niet bij incidenteel gebruik. Meer dan drie koppen koffie per dag kan cortisolniveaus structureel verhogen, vooral bij mensen die al gestrest zijn.",
     },
     {
       type: "tekst",
@@ -48,11 +48,11 @@ export const cortisolVerlagenData: BlogArtikel = {
     },
   ],
   samenvatting:
-    "Chronisch verhoogd cortisol is een fysiologisch probleem dat je kunt aanpakken via slaap, beweging, ademhaling en voeding. Combineer je deze basisinterventies met een adaptogeen supplement zoals ashwagandha, dan ondersteun je de HPA-as vanuit meerdere kanten tegelijk.",
+    "Chronisch verhoogd cortisol is een fysiologisch thema dat je met leefstijl kunt benaderen: slaap, beweging, ademhaling en voeding. Sommige mensen kiezen daarnaast een adaptogeen supplement; let op de EU‑claimstatus van plantenextracten (zie [ashwagandha](/blog/ashwagandha-werking-mannen)).",
   supplementCTA: {
     naam: "Ashwagandha",
     uitleg:
-      "Klinisch onderzocht adaptogeen dat de HPA-as moduleert. Onderzoek suggereert dat het kan bijdragen aan het verlagen van cortisol bij chronische stress (on-hold EFSA-claim).",
+      "Gestandaardiseerd extract; studie‑context over stressmarkers — in de EU (nog) geen definitieve goedkeuring van gezondheidsclaims voor ashwagandha (on-hold bij EFSA). Zie artikel voor VWS/NVWA‑context.",
     href: "/supplementen/ashwagandha",
   },
   cornerstoneLink: {
@@ -67,7 +67,7 @@ export const cortisolVerlagenData: BlogArtikel = {
   metaTitle:
     "Cortisol verlagen: 5 natuurlijke methodes voor mannen 40+ | PerfectSupplement",
   metaDescription:
-    "Chronisch verhoogd cortisol? Ontdek 5 klinisch onderzochte methodes om cortisol te verlagen zonder medicatie — specifiek voor mannen boven de 40.",
+    "Chronisch verhoogd cortisol wordt vaak met leefstijl benaderd: slaap, beweging, ademhaling en voeding. Over plantenextracten en EU-claimstatus lees je meer in ons ashwagandha-artikel.",
   keywords: [
     "cortisol verlagen",
     "cortisol verlagen natuurlijk",
