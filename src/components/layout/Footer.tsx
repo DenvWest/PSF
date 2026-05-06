@@ -42,9 +42,9 @@ export default function Footer() {
                             </span>
                         </Link>
                         <p className="mt-4 text-sm leading-relaxed text-stone-500">
-                            Onafhankelijk platform voor mannen 40+ over supplementen,
-                            leefstijl en herstel. Vergelijkingen, persoonlijke intake
-                            en advies op basis van bewijs.
+                            Onafhankelijk platform voor mannen 40+ — met leefstijl,
+                            slaap en herstel voorop en transparante supplementvergelijking
+                            op basis van vaste criteria.
                         </p>
                     </div>
 

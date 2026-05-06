@@ -5,7 +5,7 @@ import Container from "@/components/layout/Container";
 export const metadata: Metadata = {
   title: "Over PerfectSupplement — Wie We Zijn | PerfectSupplement",
   description:
-    "PerfectSupplement is opgericht door Dennis van Westbroek, fysiotherapeut en leefstijlcoach. Onafhankelijke supplementvergelijking voor mannen 40+.",
+    "PerfectSupplement is een onafhankelijk tegengewicht tegen keuzestress in supplementen — opgericht door fysiotherapeut Dennis van Westbroek. Leefstijl eerst, vergelijking daarna.",
   alternates: { canonical: "/over-ons" },
 };
 
@@ -14,7 +14,8 @@ const structuredData = {
   "@type": "Organization",
   name: "PerfectSupplement",
   url: "https://perfectsupplement.nl",
-  description: "Onafhankelijk supplementvergelijkingsplatform voor mannen 40+",
+  description:
+    "Onafhankelijk supplementvergelijkingsplatform voor mannen 40+ — met leefstijl voorop en transparante productvergelijking",
   founder: {
     "@type": "Person",
     name: "Dennis van Westbroek",
@@ -41,10 +42,21 @@ export default function OverOnsPage() {
               <h1 className="font-serif text-4xl font-normal text-slate-900 md:text-5xl">
                 Over PerfectSupplement
               </h1>
-              <p className="mt-5 max-w-2xl text-xl text-slate-600">
-                Onafhankelijke supplementvergelijking door een fysiotherapeut
-                die dagelijks ziet wat supplementen wél en niet doen.
-              </p>
+              <div className="mt-5 max-w-2xl space-y-4 text-xl text-slate-600">
+                <p>
+                  De meeste mannen merken het ergens na hun veertigste. Je wordt
+                  wakker zonder je écht uitgerust te voelen. Je traint, maar
+                  herstelt trager. Je energie is minder stabiel dan vroeger.
+                </p>
+                <p>
+                  Vroeg of laat komt dezelfde vraag:{" "}
+                  <span className="text-slate-800">
+                    “Moet ik iets met supplementen?”
+                  </span>{" "}
+                  Dit platform bestaat om je daarbij te helpen — kalm, helder en
+                  zonder marketingruis.
+                </p>
+              </div>
             </section>
 
             {/* SECTIE 2 — WIE ZIT HIERACHTER */}
@@ -55,24 +67,51 @@ export default function OverOnsPage() {
 
               <p className="text-slate-600 leading-relaxed">
                 Ik ben Dennis van Westbroek — fysiotherapeut (BIG-geregistreerd)
-                en leefstijlcoach. In mijn praktijk werk ik dagelijks met mannen
-                die merken dat hun lichaam verandert na hun 40e: minder energie,
-                slechter slapen, langzamer herstel.
+                en leefstijlcoach. In mijn praktijk zie ik dagelijks mannen die
+                precies hier tegenaan lopen. Bijna altijd volgt dezelfde vraag:{" "}
+                <span className="text-slate-800">
+                  “Welk supplement werkt nou echt?”
+                </span>
               </p>
 
               <p className="text-slate-600 leading-relaxed">
-                Veel van hen vragen me: "Welk supplement moet ik nemen?" Het
-                eerlijke antwoord is bijna altijd: "Dat hangt ervan af." Maar
-                de supplementenmarkt maakt het onnodig ingewikkeld — onduidelijke
-                doseringen, marketingclaims die niet kloppen, en prijzen die
-                nergens op slaan.
+                Het eerlijke antwoord? Dat hangt af van jouw situatie. Maar wat
+                me steeds meer begon te frustreren, is wat er daarna gebeurt.
+                Je gaat zoeken en belandt in een wirwar van tegenstrijdige
+                claims, eindeloze keuzes en influencers die vaak maar een deel
+                van het verhaal vertellen. Doseringen zijn onduidelijk of niet
+                in proportie. En hoe langer je zoekt, hoe groter de keuzestress —
+                en hoe minder je weet wie je nog kunt vertrouwen.
               </p>
 
               <p className="text-slate-600 leading-relaxed">
-                PerfectSupplement is ontstaan uit frustratie over dat gat. Ik
-                wilde een plek waar je als man van 40+ gewoon kunt zien: welk
-                supplement bevat wat het claimt, in een vorm die je lichaam
-                opneemt, tegen een eerlijke prijs.
+                Achter elk supplement zit een verdienmodel. Dat wil niet zeggen
+                dat alles verdacht is — wél dat transparantie en inhoud niet
+                altijd voorop staan. De volledige waarheid zie je zelden in één
+                advertentie of video. Dat voedt wantrouwen, terwijl je vooral
+                duidelijkheid nodig hebt.
+              </p>
+
+              <p className="text-slate-600 leading-relaxed">
+                PerfectSupplement is gestart als tegengewicht. Niet om nóg een
+                snelle mening te verkopen, maar om drie vragen rustig te
+                beantwoorden: wat zit erin, sluit dit aan bij wat we weten, en is
+                het de prijs waard? Altijd volgens dezelfde criteria —{" "}
+                <span className="text-slate-800">
+                  onafhankelijk van het merk.
+                </span>
+              </p>
+
+              <p className="text-slate-600 leading-relaxed">
+                Eén ding wil ik hier extra scherp neerzetten. Een supplement is
+                letterlijk een aanvulling. Het vervangt geen goede slaap,
+                regelmatige beweging, degelijke voeding, aandacht voor stress
+                noch sociale verbinding.                 Als die basis scheef staat, maakt geen enkel supplement het
+                verschil dat marketing je voorspiegelt.{" "}
+                <span className="text-slate-800">
+                  Daarom beginnen we altijd bij de basis — en gebruiken we
+                  supplementen alleen waar het zinvol is.
+                </span>
               </p>
             </section>
 
@@ -83,9 +122,10 @@ export default function OverOnsPage() {
               </h2>
 
               <p className="text-slate-600 leading-relaxed">
-                We vergelijken supplementen op vier meetbare criteria: dosering,
-                biobeschikbaarheid, prijs-kwaliteit en transparantie. Elk product
-                wordt op dezelfde manier beoordeeld — ongeacht het merk.{" "}
+                Zo vertaalt dat zich naar concrete vergelijkingen. We beoordelen
+                supplementen op vier vaste punten: dosering,
+                biobeschikbaarheid, prijs-kwaliteit en transparantie. Elk
+                product doorloopt hetzelfde stramien — ongeacht het merk.{" "}
                 <Link
                   href="/methodologie"
                   className="text-emerald-600 underline-offset-2 hover:underline"
@@ -95,11 +135,19 @@ export default function OverOnsPage() {
               </p>
 
               <p className="text-slate-600 leading-relaxed">
-                Daarnaast bieden we een gratis Leefstijlcheck aan: een korte
-                vragenlijst die je slaap, stress, energie, voeding, beweging
-                en herstel in kaart brengt. Op basis van je scores krijg je
-                concrete suggesties — eerst leefstijlaanpassingen, dan pas
-                supplementen.
+                <span className="text-slate-800">Eerst inzicht, dan pas aanvullen.</span>{" "}
+                Met de gratis Leefstijlcheck breng je in een paar minuten je
+                slaap, stress, energie, voeding, beweging en herstel in kaart.
+                Op basis daarvan krijg je gerichte suggesties — eerst
+                leefstijlaanpassingen, daarna pas supplementen die daadwerkelijk
+                aansluiten.
+              </p>
+
+              <p className="text-slate-600 leading-relaxed">
+                Dit platform is er niet om je meer te laten kopen. Het is er om
+                je grip te geven: beter begrijpen wat je doet, scherpere keuzes
+                maken en minder afhankelijk te worden van glimmende verpakkingen
+                en halve verhalen.
               </p>
 
               <div>
@@ -122,10 +170,11 @@ export default function OverOnsPage() {
               </h2>
 
               <p className="text-slate-600 leading-relaxed">
-                PerfectSupplement verdient geld via affiliate links. Als je via
-                onze vergelijkingspagina&apos;s een product koopt bij een webshop
-                zoals Vitaminstore of VitalNutrition, ontvangen wij een kleine
-                commissie. Je betaalt daar niets extra voor.
+                Transparantie hoort ook hier. PerfectSupplement verdient via
+                affiliate links: als je via onze vergelijkingspagina&apos;s een
+                product koopt bij een webshop zoals Vitaminstore of
+                VitalNutrition, ontvangen wij een kleine commissie — zonder
+                extra kosten voor jou.
               </p>
 
               <p className="text-slate-600 leading-relaxed">
@@ -168,12 +217,12 @@ export default function OverOnsPage() {
                 </div>
 
                 <p className="mt-4 text-slate-600 leading-relaxed">
-                  Met een achtergrond in fysiotherapie en leefstijlcoaching
-                  kijk ik naar supplementen vanuit de vraag: wat heeft
-                  wetenschappelijk bewijs, wat is veilig, en wat past bij
-                  de levensfase van mijn doelgroep? Ik claim geen
-                  alwetendheid — bij twijfel verwijs ik naar de
-                  wetenschappelijke bronnen of naar een arts.
+                  Vanuit fysiotherapie en leefstijlcoaching kijk ik naar wat
+                  onderbouwd is, wat veilig past in jouw levensfase en waar een
+                  pil wél of géén zinvolle aanvulling is. Ik claim geen
+                  alwetendheid: bij twijfel verwijs ik naar bronnen of naar je
+                  arts — supplementen zijn geen vervanging voor professioneel
+                  medisch advies.
                 </p>
               </div>
             </section>
