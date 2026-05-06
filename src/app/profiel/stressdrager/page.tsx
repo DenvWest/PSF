@@ -291,7 +291,7 @@ export default function StressdragerPage() {
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">
-                    Welke ashwagandha werkt het best? KSM-66 vs Sensoril — het verschil matteert.
+                    Welke ashwagandha werkt het best? KSM-66 vs Sensoril — het verschil maakt uit.
                     Objectief vergeleken.
                   </p>
                   <Link

@@ -353,9 +353,9 @@ function TermPage({ slug }: { slug: string }) {
                   {renderParagraphs(term.content.howItWorks)}
                 </section>
 
-                <section id="waarom-het-matteert" className="mb-10">
+                <section id="waarom-dit-ertoe-doet" className="mb-10">
                   <h2 className="mb-4 text-xl font-semibold tracking-tight text-stone-900">
-                    Waarom het matteert voor jouw keuze
+                    Waarom dit ertoe doet voor jouw keuze
                   </h2>
                   {renderParagraphs(term.content.whyItMatters)}
                 </section>

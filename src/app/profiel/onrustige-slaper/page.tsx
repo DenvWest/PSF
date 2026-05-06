@@ -321,7 +321,7 @@ export default function OnrustigeSlaperPage() {
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">
-                    Welke ashwagandha werkt het best? KSM-66 vs Sensoril — het verschil matteert.
+                    Welke ashwagandha werkt het best? KSM-66 vs Sensoril — het verschil maakt uit.
                     Objectief vergeleken.
                   </p>
                   <Link
@@ -427,7 +427,7 @@ export default function OnrustigeSlaperPage() {
                 <div>
                   <p className="text-slate-600 text-sm">
                     Welke ashwagandha werkt het best tegen stress? KSM-66 vs Sensoril — het
-                    verschil matteert.
+                    verschil maakt uit.
                   </p>
                   <Link
                     href="/beste-ashwagandha"
