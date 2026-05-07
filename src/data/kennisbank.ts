@@ -296,6 +296,162 @@ De vijf pijlers waar onderzoekers naar kijken: slaapkwaliteit, voedingspatroon, 
     metaTitle: 'Healthspan: Niet Hoe Lang, Maar Hoe Goed Je Leeft',
     metaDescription: 'Healthspan is het aantal gezonde jaren. Na 40 wordt het verschil met lifespan groter. Maar je kunt er iets aan doen.',
   },
+  {
+    slug: 'hpa-as',
+    term: 'HPA-as (hypothalamus-hypofyse-bijnier-as)',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'Het communicatiesysteem tussen je hersenen en bijnieren dat je stressreactie aanstuurt.',
+    content: {
+      whatIsIt: `De HPA-as is de hypothalamus-hypofyse-bijnier-as: het regelsysteem achter je stressreactie. Als je hersenen een belasting signaleren — fysiek of mentaal — stuurt de hypothalamus (een klein gebied diep in je hersenen) een ketenreactie in gang. De hypofyse (een klier onder je hersenen) maakt ACTH aan, en daarmee zet je bijnieren (kleine orgaantjes boven je nieren) cortisolproductie aan.
+
+Bij korte, gezonde stress piekt cortisol even en daalt het daarna weer. Bij aanhoudende stress blijft het systeem langer in een “hoog-alert”-stand: alsof het alarm niet helemaal uitgaat, ook als er geen acuut gevaar meer is. Dat verandert hoe je slaapt, herstelt en energie verdeelt over de dag.`,
+      howItWorks: `In het kort ziet de keten er zo uit: je hersenen registreren spanning; de hypothalamus maakt CRH (corticotropin-releasing hormone) aan; de hypofyse reageert met ACTH; de bijnieren maken cortisol. Normaal helpt een terugkoppeling via cortisol het systeem weer af te remmen — “genoeg nu”.
+
+Bij chronische stress werkt die rem vaak minder soepel. Het systeem blijft langer sensitief, waardoor de curve van cortisol minder rustig wordt en andere hormonen — waaronder slaap en herstel — onder druk komen te staan. Daarom is de HPA-as geen abstract begrip uit een handboek: het verklaart waarom “stress” zich in het lichaam vertaalt naar vermoeidheid, onrust en slechter herstel als het lang duurt.`,
+      whyItMatters: `Na je 40ste wordt deze as bij veel mensen kwetsbaarder: dezelfde werkdruk of zorg kan langer nazinderen op fysiek vlak. Dat raakt slaapkwaliteit, energie en hoe snel je weer tot een rustiger baseline terugkeert — precies waar supplementen soms ondersteuning bieden, maar waar leefstijl de eerste hefboom blijft.
+
+Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes plaatsen zich in deze context, maar zijn geen vervanging voor hersteltijd en patronen die de as weer naar rust helpen trekken.
+
+Bron: Herman JP et al. Regulation of the HPA Stress Response. Compr Physiol. 2016;6(2):603-621.`,
+    },
+    relatedSlugs: ['adaptogens', 'cortisol'],
+    relatedComparisons: ['/beste-ashwagandha', '/beste-magnesium'],
+    metaTitle: 'HPA-as: Wat Het Is en Waarom Het Na 40 Meer Voelt',
+    metaDescription:
+      'De HPA-as stuurt je stressreactie aan: van hypothalamus en hypofyse tot cortisol uit je bijnieren. Begrijpelijk uitgelegd.',
+  },
+  {
+    slug: 'cortisol',
+    term: 'Cortisol',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'Je belangrijkste stresshormoon: het geeft je energie overdag, maar veroorzaakt problemen als het te lang te hoog blijft.',
+    content: {
+      whatIsIt: `Cortisol is een hormoon dat je bijnieren aanmaken. Het staat centraal in je stressrespons, maar het doet meer: het speelt mee in je dag-nachtritme, je bloedsuikerregulatie, je immuunsysteem en hoe waakzaam je overdag bent. Kortom: het verbindt “wat er speelt” met “wat je lichaam klaarmaakt om te doen”.
+
+In een gezond patroon helpt cortisol je op te starten na de nacht en alert te blijven wanneer dat nodig is. Het probleem ontstaat vooral wanneer het niveau structureel te hoog blijft, of wanneer het ritme kantelt — bijvoorbeeld minder ochtendpiek of juist nachtelijke pieken — waardoor je je uit balans voelt ondanks voldoende uren in bed.`,
+      howItWorks: `Typisch is cortisol ’s ochtends hoger (wakker worden, alertheid) en ’s avonds lager, zodat melatonine en slaap de ruimte krijgen. Chronische stress verstoort dat beeld: het kan “de hele dag aan” staan, of juist onrustig schommelen.
+
+Er is ook een bekende wisselwerking met testosteron: bij langdurig hoge cortisolbelasting kan het lichaam voorrang geven aan stressas — met effecten op energie, spiermassa en libido die voor mannen 40+ merkbaar kunnen zijn. Het is geen simpele schakelaar; wel een reden om stress en herstel serieus te nemen naast eventuele supplementen.`,
+      whyItMatters: `In de supplementwereld wordt ashwagandha (o.a. KSM-66) in studies in verband gebracht met lagere cortisolmarkers bij volwassenen onder stress — dat is populatie-onderzoek, geen garantie per persoon. Magnesium ondersteunt de normale werking van het zenuwstelsel (EFSA-goedgekeurde claim) en past vaak in hetzelfde verhaal: minder gespannen systeem, betere basis voor slaap.
+
+Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, voeding); cortisol optimaliseer je niet met één capsule alleen.
+
+Bron: Chrousos GP. Stress and disorders of the stress system. Nat Rev Endocrinol. 2009;5(7):374-381.
+
+Bron: Smith GD et al. Cortisol, Testosterone, and Coronary Heart Disease. Circulation. 2005;112(3):332-340.`,
+    },
+    relatedSlugs: ['hpa-as', 'melatonine'],
+    relatedComparisons: ['/beste-ashwagandha'],
+    metaTitle: 'Cortisol: Het Stresshormoon en Je Dag-Nachtritme',
+    metaDescription:
+      'Wat cortisol doet, hoe het ritme kan verstorren bij stress, en waarom dat na 40 merkbaar wordt — helder uitgelegd.',
+  },
+  {
+    slug: 'melatonine',
+    term: 'Melatonine',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'Het hormoon dat je lichaam helpt “nacht” te signaleren; de eigen aanmaak neigt te dalen na je 40e.',
+    content: {
+      whatIsIt: `Melatonine wordt aangemaakt in de pijnappelklier, een kleine structuur in je middenhersenen. Het is vooral een timing-signaal: het helpt je biologische klok te verankeren op donker en rust, niet om per se “hard” in slaap te vallen op commando. Vandaar het verschil tussen inslapen en een gezond 24-uursritme.
+
+Naarmate je ouder wordt, daalt de piek in endogene melatonine bij veel mensen geleidelijk. Dat verklaart geen individuele diagnose, wél waarom het thema vaker opduikt bij mannen 40+: later moe worden, eerder wakker, of slaap die minder diep aanvoelt terwijl de omstandigheden gelijk lijken.`,
+      howItWorks: `Wanneer het donker wordt, neemt de signalering naar de pijnappelklier toe en stijgt melatonine. Fel licht — met name blauw licht van schermen laat op de avond — kan die curve afvlakken: je hersenen krijgen het signaal dat het nog “dag” is.
+
+Daardoor is licht hygiëne net zo relevant als doseringen op een flesje. Ook verstoringen in je vaste bed- en opsta-tijden (social jetlag) kunnen de timing van melatonine verschuiven, los van hoeveel milligram je inneemt.`,
+      whyItMatters: `Melatonine als supplement hoort bij “ritme bijstellen” — bijvoorbeeld jetlag of een duidelijk verschoven slaapvenster — niet automatisch bij elke vorm van chronische slapeloosheid. Bij langdurig gebruik kan de gevoeligheid van je eigen aanmaak veranderen; daarom is zinvol gebruik vaak tijdelijk en in lage doses (denkrichting 0,3–0,5 mg bij time-shifts; vraag bij twijfel advies aan je arts, zeker bij medicatie).
+
+Verbeter eerst het ritme (licht overdag, dimmen ’s avonds, vaste tijden): dat raakt dezelfde hormoon-as structureel.
+
+Bron: Wurtman RJ. Age-Related Decreases in Melatonin Secretion. J Clin Endocrinol Metab. 2000;85(6):2135-2136.
+
+Bron: Claustrat B, Leston J. Melatonin and circadian rhythm sleep disorders. Endotext (NIH), 2022. NBK550972.`,
+    },
+    relatedSlugs: ['circadiaan-ritme', 'cortisol'],
+    relatedComparisons: [],
+    metaTitle: 'Melatonine: Hormoon, Ritme en Wat Suppletie Wél en Niet Is',
+    metaDescription:
+      'Melatonine stuurt timing van slaap mee, vooral via je biologische klok. Wat er na 40 verandert en waar je op let bij suppletie.',
+  },
+  {
+    slug: 'mitochondrien',
+    term: 'Mitochondriën',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'De energiefabriekjes in je cellen: ze zetten voedingsstoffen en zuurstof om in ATP voor alles wat je lichaam doet.',
+    content: {
+      whatIsIt: `Mitochondriën zijn organellen in bijna al je cellen — minuscule fabrieken die energie leveren. Ze nemen bouwstoffen en zuurstof en maken daar ATP van, de directe “brandstofmunt” voor spierbeweging, hersenwerk, hartslag en herstel. Hoe meer een weefsel onder stroom moet staan, hoe meer mitochondriën het gewoonlijk bevat; hart en hersenen horen bij de topverbruikers.
+
+Ze zijn geen los detail uit biologieles: als mitochondriën minder efficiënt worden, voelt dat als minder buffer in de dag — minder veerkracht na inspanning, langzamer herstel, sneller “leeg” ondanks genoeg slaap op papier.`,
+      howItWorks: `In zeer simpele termen “verbranden” mitochondriën brandstof met zuurstof in een keten van stappen (oxidatieve fosforylering) om ATP te laden. Daarbij ontstaan ook reactieve moleculen; normaal vangt je lichaam die op, maar bij disbalans speelt dat mee in vermoeidheid en veroudering op cellulair niveau.
+
+Trainingsprikkels — met name duur en kracht — geven het signaal om nieuwe of veerkrachtigere mitochondriën op te bouwen. Dat is een van de sterkste niet-supplementaire hefbomen voor energie na 40.`,
+      whyItMatters: `Onderzoek laat zien dat gemiddeld de mitochondriale functie in spierweefsel met de leeftijd kan afnemen; dat raakt het gevoel van energie en het trainbare vermogen. Supplementen zoals omega-3 vetzuren en creatine worden in verschillende lijnen onderzoek besproken rond membraangezondheid en snelle ATP-buffering — handig om te kennen als je vergelijkingen leest, maar nooit ter vervanging van beweging en voeding.
+
+Combi die vaak werkt: structureel bewegen + voldoende eiwit + gerichte supplementen waar evidence en kwaliteit kloppen.
+
+Bron: Short KR et al. Decline in skeletal muscle mitochondrial function with aging. Proc Natl Acad Sci. 2005;102(15):5618-5623.`,
+    },
+    relatedSlugs: ['atp', 'epa-dha'],
+    relatedComparisons: ['/beste-omega-3-supplement', '/beste-creatine'],
+    metaTitle: 'Mitochondriën: Je Cellulaire Energie en Wat Er Na 40 Verandert',
+    metaDescription:
+      'Mitochondriën maken ATP voor energie en herstel. Waarom dat na 40 anders voelt en wat rol speelt bij leefstijl en supplementen.',
+  },
+  {
+    slug: 'nervus-vagus',
+    term: 'Nervus vagus (zwerfzenuw)',
+    theme: 'leefstijl-herstel',
+    shortDefinition:
+      'De lange rustzenuw tussen hersenen en romp die herstel en vertering ondersteunt — gedeeltelijk beïnvloedbaar via ademhaling.',
+    content: {
+      whatIsIt: `De nervus vagus — vaak zwerfzenuw genoemd — is een van de hoofdaders van het parasympathische deel van je autonome zenuwstelsel. Hij loopt vanuit de hersenstam langs onder meer hart, longen en maag-darmtraject en coördineert “rust-digest”-taken: een lagere hartfrequentie wanneer dat past, ondersteuning van vertering en een rem op overmatige alertheid.
+
+Je kunt het zien als de tegenpool van het sympathische “gaspedaal” dat je tijdens acute stress gebruikt. Als de vagale activatie laag blijft, komt je systeem minder makkelijk uit de “aan”-stand van alertheid — zelfs als de situatie inhoudelijk beheersbaar is.`,
+      howItWorks: `Vagale activiteit is deels onbewust, deels indirect beïnvloedbaar. Langzamere, langere uitademing vergeleken met inademing prikkelt normaal gesproken het parasympathische takje via mechanoreceptoren en hartvariabiliteit — vandaar dat simpele ademhaling snel effect kan geven (“ik zak weer”) zonder zweverig verhaal.
+
+Dat is ook waarom coherence-training, rustige adem en zachte cardio vaak onder leefstijl voor stress worden gezet naast psycho-educatie: het zijn ingangen met meetbare fysiologie.`,
+      whyItMatters: `Voor chronische spanning is vagale ondersteuning geen silver bullet, wél een praktische, lage drempel hefboom naast slaapritme en beweging. Geen verwonderlijke gadgets nodig — consistente routines die uitademing en veiligheidssignalen naar je lijf brengen, zijn vaak rendabel voor hersteldips ’s avonds.
+
+Combineer dit met eerlijke grenzen op werkdruk; supplementen zijn hooguit een tweede-lijnshygiëne.
+
+Bron: Zaccaro A et al. How Breath-Control Can Change Your Life. Front Hum Neurosci. 2018;12:353.
+
+Bron: Balban MY et al. Brief structured respiration practices enhance mood and reduce respiratory rate. Cell Rep Med. 2023;4(1):100895.`,
+    },
+    relatedSlugs: ['slaaphygiene', 'hpa-as'],
+    relatedComparisons: [],
+    metaTitle: 'Nervus Vagus: Je Rustzenuw en Ademhaling als Hefboom',
+    metaDescription:
+      'Wat de nervus vagus doet, hoe die samenhangt met stress en herstel, en waarom ademhaling snel effect kan geven — uitgelegd in begrijpelijke taal.',
+  },
+  {
+    slug: 'atp',
+    term: 'ATP (adenosinetrifosfaat)',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'Het energiemolecuul dat vrijwel al je lichaamsfuncties aandrijft — van spier tot denken.',
+    content: {
+      whatIsIt: `ATP (adenosinetrifosfaat) is het molecuul waarmee cellen betalen voor arbeid. Spiercontracties, zenuwimpulsen, transport over membranen, aanmaak van eiwitten — het draait op het vrijmaken van energie uit ATP naar ADP. Zonder constante aanmaak en recycling zou elke inspanning onmiddellijk stoppen.
+
+Je voorraad op zich is klein; het geheim zit in het tempo van hersynthese. Daarom zijn “energieproblemen” vaak geen tekort aan één tablet, maar aan mitochondriale capaciteit, zuurstoftoename, slaap, of voedingspatroon dat de fabriek voedt.`,
+      howItWorks: `Het grootste deel van je ATP komt uit mitochondriën via aerobe routes (met zuurstof). Bij zeer korte, harde inspanning speelt het fosfaat-creatine systeem: creatinefosfaat levert snel een fosfaatgroep om ADP weer tot ATP om te zetten. Dat verklaart waarom creatine zowel in de sportschool als in cognitieve studies bij slaaptekort terugkomt: hersenen zijn energie-intensief en profiteren van een snellere buffer.
+
+Macro’s (koolhydraten, vetten, eiwitten) zijn uiteindelijk de grondstoffen; training verhoogt het vermogen om die om te zetten in bruikbare ATP.`,
+      whyItMatters: `Als je creatine of andere “energie”-supplementen beoordeelt, is het nuttig ATP te begrijpen als keten: substraat → mitochondriën → ATP → prestatie/herstel. Creatine ondersteunt de snelle herlading, niet magisch oneindig vermogen.
+
+Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en eiwit (zie ook eiwit na 40) als basis zien.
+
+Bron: Avgerinos KI et al. Effects of creatine supplementation on cognitive function of healthy individuals. Exp Gerontol. 2018;108:166-173.`,
+    },
+    relatedSlugs: ['mitochondrien', 'eiwitbehoefte-na-40'],
+    relatedComparisons: ['/beste-creatine'],
+    metaTitle: 'ATP: Het Energiemolecuul Achter Inspanning en Denken',
+    metaDescription:
+      'Wat ATP is, hoe je lichaam het maakt en verbruikt, en waarom creatine in dat plaatje past — zonder marketingjargon.',
+  },
 ]
 
 export function getTermBySlug(slug: string): KennisbankTerm | undefined {
