@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const slaaphygieneMannen40PlusData: BlogArtikel = {
   slug: "slaaphygiene-mannen-40-plus",
@@ -53,12 +54,12 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     "slaapritme",
     "cafeïne slaap",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Irish LA et al. The role of sleep hygiene in the management of primary insomnia — review of rationale and empirical evidence; practitioner summary recommendations. Sleep Med Rev. 2015;22:23-36.",
     "Morgenthaler T et al. Practice parameters behavioral treatment insomnia update — American Academy Sleep Medicine standards context.",
     "Van Straten A et al. Internet-delivered cognitive behavioral therapy for insomnia in adults Cochrane review outcomes.",
     "Crowley SJ et al. A longitudinal examination of adolescent sleep longitudinal EEG changes — methodological sleep-aging continuity context.",
     "Ohayon MM. Epidemiology of insomnia epidemiological insomnia definitions general population prevalence reviews.",
     "National Sleep Foundation. Sleep Basics public education materials — widely referenced sleep-duration guidance lineage.",
-  ],
+  ]),
 };

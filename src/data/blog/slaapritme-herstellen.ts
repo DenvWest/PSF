@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const slaapritmeHerstellenData: BlogArtikel = {
   slug: "slaapritme-herstellen",
@@ -97,12 +98,12 @@ export const slaapritmeHerstellenData: BlogArtikel = {
     "slaapritme mannen 40",
     "melatonine slaapritme",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Wright KP et al. Entrainment of the human circadian clock to natural light dark cycle Sleep 2013 context outdoor light resetting.",
     "Gooley JJ et al. Exposure room light suppresses melatonin J Clin Endocrinol Metab brightness thresholds evening light physiology.",
     "Wittmann M et al. Social jetlag misalignment biological social time Chronobiol Int 2006 weekend chronotype foundational.",
     "Claustrat B, Leston J. Melatonin circadian rhythm sleep disorders Endotext NIH NBK550972 2022.",
     "Czeisler CA et al. Human sleep duration stability precision circadian neuroscience landmark reviews frameworks.",
     "NIH Office Dietary Supplements Magnesium magnesium physiology consumer fact sheet supplementation context.",
-  ],
+  ]),
 };

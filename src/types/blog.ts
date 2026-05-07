@@ -1,3 +1,5 @@
+import type { ReferentieItem } from "@/types/referenties";
+
 export type BlogCategorie = "stress" | "slaap" | "energie" | "supplementen";
 
 export type BlogSectieType = "tekst" | "opsomming";
@@ -11,6 +13,10 @@ export interface BlogSectie {
   inleiding?: string;
   /** Lijst items — voor type "opsomming" */
   items?: string[];
+  /**
+   * Optionele markering als sectie rust op beperkt, heterogeen of gedateerd bewijs (geen diagnoses).
+   */
+  bewijsKanttekening?: string;
 }
 
 export interface BlogSupplementCTA {
@@ -45,8 +51,14 @@ export interface BlogArtikel {
   vergelijkingExtraLink?: BlogCornerstoneLink;
   /** Sluggen van gerelateerde artikelen (2-3) */
   gerelateerdeSluggen: string[];
-  /** Wetenschappelijke of autoritaire bronvermeldingen (minimaal 5). */
-  bronnen: string[];
+  /** Vancouver-stijl referenties + type werk (minimaal 5). */
+  referenties: ReferentieItem[];
+  /** ISO 8601 inhoudelijk herzien voor professionele referentie; default vuller in layout. */
+  laatstBijgewerktOp?: string;
+  /** Zichtbaar onderaan o.a. bij referenties. */
+  inhoudelijkeVerantwoordelijke?: string;
+  /** Korte leestekst onder de hero (bewijs‑informed toon). */
+  leesNuanceOnderHero?: string;
   /** Langere zin voor blok naar `/stress-verminderen-man` (alleen stress-pillar-cluster). */
   stressPillarTurbo?: string;
   metaTitle?: string;

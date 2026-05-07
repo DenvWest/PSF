@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   slug: "magnesium-en-slaapkwaliteit",
@@ -110,12 +111,12 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     "magnesium slaap",
     "magnesium stress",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Schwalfenberg GK, Genuis SJ. The importance magnesium clinical healthcare Scientifica 2012 overview bioavailability forms.",
     "Abbasi B et al. Effect magnesium supplementation primary insomnia elderly double-blind placebo-controlled trial J Res Med Sci.",
     "EFSA Panel authorised health claim magnesium nervous system muscle function EU register reference.",
     "NIH Office Dietary Supplements Magnesium fact sheet consumer absorption forms.",
     "Fiorentini D et al. Magnesium biochemistry nutrition clinical roles Nutrients reviews mineral physiology.",
     "Gröber U et al. Myth or reality transdermal magnesium systematic review Magnes Res absorption evidence context.",
-  ],
+  ]),
 };

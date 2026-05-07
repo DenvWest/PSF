@@ -58,6 +58,16 @@ export default function BlogSectie({ sectie }: BlogSectieProps) {
           </ol>
         </div>
       )}
+
+      {sectie.bewijsKanttekening && (
+        <p
+          className="mt-4 rounded-lg border border-amber-200/70 bg-amber-50/50 px-4 py-3 text-[0.8125rem] leading-relaxed text-stone-700"
+          role="note"
+        >
+          <span className="font-semibold text-stone-800">Bewijs & nuance:</span>{" "}
+          {renderInlineMarkdownLinks(sectie.bewijsKanttekening)}
+        </p>
+      )}
     </section>
   );
 }

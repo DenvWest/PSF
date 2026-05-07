@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const melatonineWanneerWelNietData: BlogArtikel = {
   slug: "melatonine-wanneer-wel-niet",
@@ -58,12 +59,12 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
     "melatonine mannen",
     "circadiaans ritme",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Auld F et al. Evidence for efficacy melatonin management primary sleep disorders adults systematic review Sleep Med Rev.",
     "Buscemi N et al. Efficacy safety exogenous melatonin secondary sleep disorders meta-analysis J Gen Intern Med.",
     "Herxheimer A, Petrie KJ. Melatonin jet lag Cochrane Database Syst Rev.",
     "Claustrat B, Leston J. Melatonin circadian rhythm sleep disorders Endotext NIH NBK550972 2022.",
     "Pandi-Perumal SR et al. Melatonin effects human sleep methodological reviews chronobiology.",
     "van Geijlswijk IM et al. Dose-findings effects melatonin children chronic sleep onset insomnia Eur J Pediatr dosing principles context.",
-  ],
+  ]),
 };

@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const cortisolVerlagenData: BlogArtikel = {
   slug: "cortisol-verlagen-natuurlijk",
@@ -77,12 +78,12 @@ export const cortisolVerlagenData: BlogArtikel = {
     "stress hormoon verlagen",
     "ashwagandha cortisol",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Chrousos GP. Stress and disorders of the stress system. Nat Rev Endocrinol. 2009;5(7):374-381.",
     "Herman JP et al. Regulation of the HPA Stress Response. Compr Physiol. 2016;6(2):603-621.",
     "McEwen BS. Protective and damaging effects of stress mediators: the good and bad. Ann NY Acad Sci. 2004;1032:1-7.",
     "Dickerson SS, Kemeny ME. Acute stressors and cortisol responses: a theoretical integration. Psychol Bull. 2004;130(3):355-391.",
     "Pruessner JC et al. Two formulas for awakening cortisol response. Psychoneuroendocrinology. 2003;28(8):916-937.",
     "Tsigos C, Chrousos GP. Hypothalamic-pituitary-adrenal axis, neuroendocrine factors and stress. J Psychosom Res. 2002;53(4):865-871.",
-  ],
+  ]),
 };

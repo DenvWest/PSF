@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const testosteronEnEnergieNa40Data: BlogArtikel = {
   slug: "testosteron-en-energie-na-40",
@@ -52,12 +53,12 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     "laag testosteron symptomen",
     "vermoeidheid testosteron",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Harman SM et al. Longitudinal effects aging serum total free sex hormones men Baltimore Longitudinal Aging Study J Clin Endocrinol Metab.",
     "Kaufman JM, Vermeulen A. Decline gonadal function elderly men pathophysiology therapy Endocrine Reviews androgen physiology aging.",
     "Bhasin S et al. Testosterone therapy men hypogonadism JAMA guideline-style clinical testosterone treatment frame.",
     "Travison TG et al. Age trends population-level sex hormones men J Clin Endocrinol Metab secular trends testosterone context.",
     "Corona G et al. Testosterone supplementation body composition lower urinary tract symptoms Clin Endocrinol reviews safety efficacy.",
     "Isidori AM et al. Effects testosterone sexual function meta-analysis Lancet Diabetes Endocrinol.",
-  ],
+  ]),
 };

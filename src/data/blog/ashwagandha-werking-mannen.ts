@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const ashwagandhaData: BlogArtikel = {
   slug: "ashwagandha-werking-mannen",
@@ -81,12 +82,12 @@ export const ashwagandhaData: BlogArtikel = {
     "ashwagandha cortisol",
     "adaptogeen stress",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Chandrasekhar K et al. A prospective randomised controlled trial safety efficacy ashwagandha root extract on stress in adults. Indian J Psychol Med. 2012;34(3):255-262.",
     "Pratte MA et al. An alternative treatment for anxiety: systematic review human trial results Ayurvedic ashwagandha. J Altern Complement Med. 2014;20(12):967-974.",
     "Lopresti AL et al. An investigation into the stress-relieving and pharmacological actions of an ashwagandha extract. Medicine (Baltimore). 2019;98(37):e17186.",
     "Langade D et al. Efficacy and safety of ashwagandha root extract in insomnia and anxiety: a double-blind RCT. Cureus. 2019;11(9):e5797.",
     "Bonilla DA et al. Effects of Ashwagandha (Withania somnifera) on physical performance: systematic review Bayesian meta-analysis. Nutrients. 2021;13(2):652.",
     "EFSA. EU Register on nutrition and health claims — policy context for botanical substance claims (including ‘on hold’ list for Withania somnifera).",
-  ],
+  ]),
 };

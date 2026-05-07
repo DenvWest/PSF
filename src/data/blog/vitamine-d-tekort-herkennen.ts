@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const vitamineDTekortHerkennenData: BlogArtikel = {
   slug: "vitamine-d-tekort-herkennen",
@@ -59,12 +60,12 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     "25-OH vitamine d",
     "vitamine d mannen",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Holick MF. Vitamin D deficiency. N Engl J Med. 2007;357(3):266-281.",
     "Ross AC et al. Dietary Reference Intakes calcium vitamin D Institute Medicine US 2011 report context.",
     "Bouillon R. Comparative analysis nutritional guidelines vitamin D Endocr Connect guideline synthesis context.",
     "Aranow C. Vitamin D immune function clinical disease J Investig Med vitamin D physiology beyond bone.",
     "EFSA Vitamin D authorised health claims bone teeth muscle immune EU register dossier reference.",
     "Amrein K et al. Vitamin D deficiency 2 revisiting supplementation critical care contexts broader clinical supplementation evidence.",
-  ],
+  ]),
 };

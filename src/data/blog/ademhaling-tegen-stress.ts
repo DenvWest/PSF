@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const ademhalingTegenStressData: BlogArtikel = {
   slug: "ademhaling-tegen-stress",
@@ -60,12 +61,12 @@ export const ademhalingTegenStressData: BlogArtikel = {
     "box breathing",
     "stress verminderen ademhaling",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Zaccaro A et al. How Breath-Control Can Change Your Life: A Systematic Literature Review. Front Hum Neurosci. 2018;12:353.",
     "Balban MY et al. Brief structured respiration practices enhance mood and reduce respiratory rate. Cell Rep Med. 2023;4(1):100895.",
     "Laborde S, Mosley E, Thayer JF. Heart rate variability and cardiac vagal tone in psychophysiological research. Neurosci Biobehav Rev. 2017;74(Pt B):228-255.",
     "Ma X et al. The Effect of Diaphragmatic Breathing on Attention Negative Affect Stress in Healthy Adults. Front Psychol. 2017;8:874.",
     "Fincham GW et al. Effect of Breathwork on Stress and Mental Health: A Meta-analysis of RCTs. Sci Rep. 2023;13(1):19856.",
     "Lehrer PM, Gevirtz R. Heart rate variability biofeedback: how why it works. Front Psychol. 2014;5:756.",
-  ],
+  ]),
 };

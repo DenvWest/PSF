@@ -10,7 +10,11 @@ import {
   getAllThemes,
 } from '@/data/kennisbank'
 import type { KennisbankTheme } from '@/data/kennisbank'
-import BlogBronnen from '@/components/blog/BlogBronnen'
+import ArticleReferentiesFooter from '@/components/content/ArticleReferentiesFooter'
+import {
+  REDACTIE_VERANTWOORDELIJKE_STANDARD,
+  STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
+} from '@/lib/redactie-standaarden'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -361,7 +365,17 @@ function TermPage({ slug }: { slug: string }) {
                   {renderParagraphs(term.content.whyItMatters)}
                 </section>
 
-                <BlogBronnen bronnen={term.bronnen} />
+                {term.domeinMetBeperktCausaalBewijs && (
+                  <aside
+                    className="mb-10 rounded-lg border border-stone-200 bg-stone-50/90 px-4 py-3 text-sm leading-relaxed text-stone-600"
+                    role="note"
+                  >
+                    <strong className="text-stone-800">Let op bij interpretatie:</strong> voor dit onderwerp is het
+                    causale interventiebewijs vaak beperkt, heterogeen of nog in ontwikkeling. De tekst beschrijft
+                    mechanismen en associaties uit de literatuur; dat is niet hetzelfde als een persoonlijke
+                    aanbeveling of een zorgpad.
+                  </aside>
+                )}
 
                 {term.relatedComparisons.length > 0 && (
                   <section className="mb-10">
@@ -412,25 +426,27 @@ function TermPage({ slug }: { slug: string }) {
 
                 <section className="rounded-2xl bg-stone-50 px-6 py-8">
                   <h2 className="text-lg font-semibold tracking-tight text-stone-900">
-                    Wil je weten wat bij jou past?
+                    Leefstijl en supplementen prioriteren?
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-stone-500">
-                    Doe de gratis Leefstijlcheck — 12 vragen, 3 minuten, persoonlijk resultaat.
+                    De Leefstijlcheck is een korte vragenlijst; het resultaat kan helpen om aandachtspunten te zien — het
+                    is geen medische test en vervangt geen artsbezoek.
                   </p>
                   <Link
                     href="/intake"
                     className="mt-5 inline-block rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-stone-700"
                   >
-                    Doe de Leefstijlcheck →
+                    Start de Leefstijlcheck →
                   </Link>
                 </section>
 
-                <footer className="mt-10 border-t border-stone-100 pt-6">
-                  <p className="text-xs leading-relaxed text-stone-400">
-                    Disclaimer: Deze informatie is informatief bedoeld en vervangt geen medisch
-                    advies. Raadpleeg een arts bij gezondheidsklachten.
-                  </p>
-                </footer>
+                <div className="mt-12">
+                  <ArticleReferentiesFooter
+                    referenties={term.referenties}
+                    laatstBijgewerktOp={term.laatstBijgewerktOp ?? STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM}
+                    verantwoordelijke={term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD}
+                  />
+                </div>
               </article>
             </div>
           </div>

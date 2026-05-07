@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs"
 
 export const energieVerhogenData: BlogArtikel = {
   slug: "energie-verhogen-natuurlijk",
@@ -67,12 +68,12 @@ export const energieVerhogenData: BlogArtikel = {
     "vitamine D vermoeidheid",
     "energie verbeteren natuurlijk",
   ],
-  bronnen: [
+  referenties: toRefs([
     "Short KR et al. Decline in skeletal muscle mitochondrial function with aging in humans. Proc Natl Acad Sci USA. 2005;102(15):5618-5623.",
     "Warburton DER et al. Health benefits physical activity empirical evidence guideline Canadian Society Exercise Physiology. CMAJ. 2006;174(6):801-809.",
     "Holick MF. Vitamin D deficiency. N Engl J Med. 2007;357(3):266-281.",
     "Volpi E et al. The response muscle protein anabolism aging — protein nutrition fatigue recovery context. J Gerontol A Biol Sci Med Sci.",
     "Paddon-Jones D et al. Role dietary protein sarcopenia countermeasures muscle mass aging. J Am Coll Nutr.",
     "EFSA. EU Register nutrition health claims — authoritative context for vitamin D muscle/bone/immune authorised claims.",
-  ],
+  ]),
 };

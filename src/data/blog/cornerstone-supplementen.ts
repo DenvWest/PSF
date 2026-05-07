@@ -1,4 +1,6 @@
 import type { BlogArtikel } from "@/types/blog";
+import { toRefs } from "@/lib/referentie-bewijs";
+import type { ReferentieItem } from "@/types/referenties";
 
 const placeholderSectie = {
   type: "tekst" as const,
@@ -7,32 +9,36 @@ const placeholderSectie = {
     "De uitgebreide gids staat op de hoofdpagina van dit onderwerp op PerfectSupplement. Gebruik het menu of ga naar de URL zonder /blog/ voor het volledige artikel met tabellen en vergelijkingen.",
 };
 
-const BRONNEN_OMEGA: string[] = [
-  "Mozaffarian D, Wu JH. Omega-3 fatty acids and cardiovascular disease: effects on lipid risk markers and pathophysiologic mechanisms. J Am Coll Cardiol. 2011;58(20):2047-2067.",
-  "Kris-Etherton PM et al. Omega-3 fatty acids and cardiovascular disease — AHA science advisory. Circulation. landmark guidance context.",
-  "Swanson D, Block R, Mousa SA. Omega-3 fatty acids EPA and DHA biomedical aspects. Adv Nutr. 2012;3(3):257-262.",
-  "Calder PC. n-3 PUFA and inflammation: from membrane to nucleus and from bench to bedside. Proc Nutr Soc. review mechanisms.",
-  "EFSA Panel on Dietetic Products Nutrition Allergies. Scientific Opinion DHA EPA claims cardiovascular health dossier lineage EU register.",
-  "Abdelhamid AS et al. Omega-3 fatty acids coronary heart disease update Cochrane Database Syst Rev meta-analytic lineage.",
-];
+const SUPP_BRON_RAW: Record<"omega" | "mag" | "supp", readonly string[]> = {
+  omega: [
+    "Mozaffarian D, Wu JH. Omega-3 fatty acids and cardiovascular disease: effects on lipid risk markers and pathophysiologic mechanisms. J Am Coll Cardiol. 2011;58(20):2047-2067.",
+    "Kris-Etherton PM, Harris WS, Appel LJ; AHA Nutrition Committee. Omega-3 fatty acids and cardiovascular disease: new recommendations from the American Heart Association. Circulation. 2002;106(21):2747-2757.",
+    "Swanson D, Block R, Mousa SA. Omega-3 fatty acids EPA and DHA: health benefits throughout life. Adv Nutr. 2012;3(1):257-262.",
+    "Calder PC. n-3 PUFA from marine sources: physiology and pathology. Proc Nutr Soc. 2019;78(4):582-596.",
+    "EFSA Panel on Dietetic Products, Nutrition and Allergies (NDA). Scientific opinion on EPA/DHA‑related nutrient claims pursuant to Regulation (EU) No 432/2012.",
+    "Abdelhamid AS, Martin N, Bridges C et al. Polyunsaturated fatty acids for Prevention of type 2 diabetes and cardiovascular Disease. Cochrane Database Syst Rev. 2019; Issue 5.",
+  ],
+  mag: [
+    "Schwalfenberg GK, Genuis SJ. The importance of magnesium in clinical healthcare. Sci World J. 2017;2017:4179326.",
+    "European Food Safety Authority. EU Register of nutrition and health claims—authorised magnesium claims pursuant to Regulation (EU) No 432/2012.",
+    "National Institutes of Health Office of Dietary Supplements. Magnesium: Fact Sheet for Health Professionals (NIH)",
+    "Gröber U, Werner T, Vormann J, Kisters K. Myth or Reality—Transdermal Magnesium?. Nutrients. 2017;9(8):813.",
+    "Workinger JL, Doyle RP, Bortz J. Challenges in magnesium absorption: regulating factors and adaptations. Nutr Rev. 2018;76(11):849-867.",
+    "Institute of Medicine (US) Standing Committee on the Scientific Evaluation of Dietary Reference Intakes. Dietary Reference Intakes: calcium, phosphorus, magnesium, vitamin D and fluoride.",
+  ],
+  supp: [
+    "European Parliament and Council of the European Union. Regulation (EU) No 1924/2006 on nutrition and health claims.",
+    "U.S. Food and Drug Administration. Current Good Manufacturing Practice in Manufacturing, Packaging, Labeling or Holding Operations for Dietary Supplements; Final Rule.",
+    "National Institutes of Health Office of Dietary Supplements. About ODS Dietary Supplement Research and Information (NIH).",
+    "Abebe W, Schroeder JT, Koehler K. Dietary supplement quality analytical challenges—a narrative lens. Toxicol Res App. methodological overview contexts.",
+    "Starr RR. Too little, too late: ineffective regulation of dietary supplements in the United States. Am J Pub Health. citation policy safety surveillance context.",
+    "Kantor ED, Rehm CD, Du M et al. Trends in dietary supplement use among US Adults from 1999 to 2012. JAMA.",
+  ],
+} as const;
 
-const BRONNEN_MAGNESIUM: string[] = [
-  "Schwalfenberg GK, Genuis SJ. The importance magnesium clinical healthcare. Scientifica (Cairo). 2017;2017:4179326.",
-  "EFSA authorised health claims magnesium contributes normal nervous system muscle function — EU Nutrition Health Claims Register reference.",
-  "NIH Office of Dietary Supplements. Magnesium — Health Professional Fact Sheet (forms bioavailability supplementation context).",
-  "Grober U et al. Myth or Reality — Transdermal Magnesium?. Magnes Res. systematic narrative supplement-form evidence.",
-  "Fiorentini D et al. Magnesium biochemical nutrition clinical relevance. Nutrients. mineral physiology reviews.",
-  "Institute of Medicine (US) Dietary Reference Intakes chapter magnesium — DRV reference frames.",
-];
-
-const BRONNEN_SUPPLEMENT_KIEZEN: string[] = [
-  "European Parliament Council. Regulation EC 1924/2006 nutrition health claims EU legal framework labeling.",
-  "US FDA CFR Title 21 Part 111 CGMP Manufacturing dietary supplements quality standard reference.",
-  "NIH Office of Dietary Supplements introduction dietary supplements fact sheets methodological consumer science context.",
-  "Gillespie JA, Chae JM. Herbal supplement manufacturing quality variability clinical pharmacology viewpoint.",
-  "Starr RR. Assessment dietary supplement safety methodological toxicology viewpoints.",
-  "Kantor ED et al. Trends dietary supplement usage US methodological NHANES supplement surveillance context.",
-];
+export const REFERENTIES_CORNERSTONE_OMEGA: ReferentieItem[] = toRefs(SUPP_BRON_RAW.omega);
+export const REFERENTIES_CORNERSTONE_MAGNESIUM: ReferentieItem[] = toRefs(SUPP_BRON_RAW.mag);
+export const REFERENTIES_CORNERSTONE_SUP_KIEZEN: ReferentieItem[] = toRefs(SUPP_BRON_RAW.supp);
 
 /** Zeven root-level supplement-gidsen: zichtbaar in blog/categorieën; slugs komen overeen met bestaande routes. */
 export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
@@ -61,7 +67,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     metaDescription:
       "Populaire omega-3 supplementen naast elkaar op EPA/DHA-gehalte, prijs per dag en kwaliteitsindicatoren.",
     keywords: ["omega-3 vergelijken", "EPA DHA", "omega-3 supplementen"],
-    bronnen: BRONNEN_OMEGA,
+    referenties: REFERENTIES_CORNERSTONE_OMEGA,
   },
   {
     slug: "beste-omega-3-supplement",
@@ -88,7 +94,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     metaDescription:
       "De beste keuzes voor verschillende situaties: dagelijks gebruik, budget en premium kwaliteit.",
     keywords: ["beste omega-3", "omega-3 keuzehulp", "EPA DHA"],
-    bronnen: BRONNEN_OMEGA,
+    referenties: REFERENTIES_CORNERSTONE_OMEGA,
   },
   {
     slug: "wat-is-omega-3",
@@ -115,7 +121,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     metaDescription:
       "Een introductie op de rol van omega-3 vetzuren in het lichaam en waarom de bron ertoe doet.",
     keywords: ["wat is omega-3", "EPA DHA", "omega-3 vetzuren"],
-    bronnen: BRONNEN_OMEGA,
+    referenties: REFERENTIES_CORNERSTONE_OMEGA,
   },
   {
     slug: "waar-let-je-op-bij-omega-3",
@@ -142,7 +148,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     metaDescription:
       "Kwaliteit, dosering en zuiverheid — wat er werkelijk toe doet bij de keuze van een omega-3 supplement.",
     keywords: ["omega-3 kiezen", "EPA DHA dosering", "omega-3 kwaliteit"],
-    bronnen: BRONNEN_OMEGA,
+    referenties: REFERENTIES_CORNERSTONE_OMEGA,
   },
   {
     slug: "magnesium-vergelijken",
@@ -169,7 +175,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     metaDescription:
       "Vormen, doseringen en toepassingen — van magnesiumcitraat tot bisglycinaat.",
     keywords: ["magnesium vergelijken", "magnesium vormen", "elementair magnesium"],
-    bronnen: BRONNEN_MAGNESIUM,
+    referenties: REFERENTIES_CORNERSTONE_MAGNESIUM,
   },
   {
     slug: "beste-magnesium",
@@ -196,7 +202,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     metaDescription:
       "Welke magnesiumvorm werkt het best voor jouw doel? Een overzicht van de meest relevante varianten.",
     keywords: ["beste magnesium", "magnesium bisglycinaat", "magnesium citraat"],
-    bronnen: BRONNEN_MAGNESIUM,
+    referenties: REFERENTIES_CORNERSTONE_MAGNESIUM,
   },
   {
     slug: "supplement-kiezen-waar-op-letten",
@@ -223,6 +229,6 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     metaDescription:
       "Kwaliteit herkennen: dosering, opneembaarheid, zuiverheid en transparantie — zonder marketingpraat.",
     keywords: ["supplement kiezen", "supplement kwaliteit", "etiket supplement"],
-    bronnen: BRONNEN_SUPPLEMENT_KIEZEN,
+    referenties: REFERENTIES_CORNERSTONE_SUP_KIEZEN,
   },
 ];
