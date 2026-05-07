@@ -29,26 +29,64 @@ export const stressThema: ThemaPageData = {
       {
         title: "Leefstijl — de basis die scheef staat",
         description:
-          "Slechte slaap, eenzijdige voeding en te weinig beweging zijn geen pure gevolgen van stress; ze houden je zenuwstelsel in een alerte modus.",
+          "Slechte slaap, eenzijdige voeding en te weinig beweging zijn geen pure gevolgen van stress; ze houden je zenuwstelsel in een alerte modus. Stress en slaap vormen een vicieuze cirkel die zichzelf versterkt.",
         icon: "🍽️",
+        source: "Mikkelsen et al., Maturitas, 2017",
       },
       {
         title: "Mentaal & emotioneel",
         description:
-          "Piekeren, controle willen houden en onuitgesproken twijfels vormen stille stressbronnen die mannen zelden meteen zo benoemen.",
+          "Piekeren, controle willen houden en onuitgesproken twijfels vormen stille stressbronnen die mannen zelden meteen zo benoemen. Chronische psychologische stress activeert dezelfde HPA-as als fysieke bedreigingen.",
         icon: "🧠",
+        source: "Herman et al., Compr Physiol, 2016",
       },
       {
         title: "Werk & omgeving",
         description:
-          "Hoge verwachtingen, onduidelijke grenzen en het gevoel onmisbaar te moeten zijn zorgen voor chronische zichtbare (en onzichtbare) druk.",
+          "Hoge verwachtingen, onduidelijke grenzen en het gevoel onmisbaar te moeten zijn zorgen voor chronische druk. Een hoge cortisol-testosteron ratio is een endocrinologische marker van chronische werkstress.",
         icon: "💼",
+        source: "Smith et al., Circulation (Caerphilly Study), 2005",
       },
       {
         title: "Fysiek & hormonaal",
         description:
-          "Na je 40e verandert de balans van cortisol, testosteron en herstel — daardoor oog je sneller fysiologisch ‘gespannen’ zonder duidelijke oorzaak.",
+          "Na je 40e verandert de balans van cortisol, testosteron en herstel. Cortisol en testosteron concurreren om dezelfde bouwsteen (pregnenolon) — chronische stress kiest voor cortisol boven testosteron.",
         icon: "📊",
+        source:
+          "Cumming et al., J Clin Endocrinol Metab, 1983; Baulieu, Psychoneuroendocrinology, 1998",
+      },
+    ],
+  },
+
+  scienceBlock: {
+    sectionLabel: "WAT ONDERZOEK LAAT ZIEN",
+    title: "De wetenschap achter chronische stress",
+    intro: "Geen meningen, maar meetbare feiten uit peer-reviewed onderzoek.",
+    facts: [
+      {
+        claim: "Gecontroleerde ademhaling (langzame uitademing) activeert de nervus vagus en verlaagt hartslag en cortisol binnen 5 minuten.",
+        source: "Zaccaro et al., Front Hum Neurosci, 2018 (systematic review)",
+        pubmedId: "30245619",
+      },
+      {
+        claim: "Eén 5-minuten sessie 'fysiologische zucht' (dubbele inademing + lange uitademing) verbetert stemming effectiever dan meditatie.",
+        source: "Huberman et al., Cell Rep Med, 2023 (RCT)",
+        pubmedId: "36630953",
+      },
+      {
+        claim: "Ashwagandha root extract (600 mg/dag) verlaagt serumcortisol significant (p<0.0001) en verbetert slaapkwaliteit na 8 weken.",
+        source: "Lopresti et al., Medicine, 2019 (RCT, n=60)",
+        pubmedId: "32021735",
+      },
+      {
+        claim: "Een hoge cortisol-testosteron ratio is een onafhankelijke risicofactor voor hart- en vaatziekten bij mannen 45-59 jaar.",
+        source: "Smith et al., Circulation (Caerphilly Study, n=2512), 2005",
+        pubmedId: "16009799",
+      },
+      {
+        claim: "95% van de serotonine in het lichaam wordt geproduceerd in de darm — chronische stress verstoort dit via de vaguszenuw.",
+        source: "Yano et al., Cell, 2015",
+        pubmedId: "25860609",
       },
     ],
   },
@@ -136,6 +174,13 @@ export const stressThema: ThemaPageData = {
     successMessage: "Check je inbox — de Stressgids is onderweg.",
   },
 
+  pillarPage: {
+    href: "/stress-verminderen-man",
+    title: "De complete gids: stress verminderen na 40",
+    description:
+      "Van de HPA-as en cortisol-testosteron balans tot een concreet vierwekenplan. Alles wat op deze pagina in het kort staat, uitgewerkt met bronnen en context.",
+  },
+
   expertQuote: {
     quote:
       "Chronische stress is geen karaktereigenschap. Het is een fysiologische belasting waar je, stap voor stap, bewuster mee kunt omgaan.",
@@ -161,13 +206,19 @@ export const stressThema: ThemaPageData = {
 
   relatedArticles: [
     {
-      title: "Cortisol verlagen: 5 bewezen methoden",
+      title:
+        "Cortisol benaderen: vijf leefstijlroutes uit onderzoek, zonder medicatie",
       slug: "cortisol-verlagen-natuurlijk",
       category: "stress",
     },
     {
       title: "Ademhalingstechnieken die binnen 5 minuten werken",
       slug: "ademhaling-tegen-stress",
+      category: "stress",
+    },
+    {
+      title: "Grenzen stellen op werk zonder je carrière te saboteren",
+      slug: "stress-werk-grenzen-stellen",
       category: "stress",
     },
   ],

@@ -29,26 +29,64 @@ export const slaapThema: ThemaPageData = {
       {
         title: "Melatonine daalt",
         description:
-          "Je lichaam maakt minder melatonine aan naarmate je ouder wordt. Dit vertaalt zich in langer wakker liggen, lichter slapen en eerder wakker worden.",
+          "Je lichaam maakt minder melatonine aan naarmate je ouder wordt. Na je 40e is de productie meetbaar lager, wat leidt tot langer wakker liggen, lichter slapen en eerder wakker worden.",
         icon: "🌙",
+        source:
+          "Wurtman RJ, J Clin Endocrinol Metab, 2000; Claustrat & Leston, Endotext, 2022",
       },
       {
         title: "Cortisol blijft hoog",
         description:
-          "Chronische stress houdt je cortisolspiegel verhoogd — precies het hormoon dat 's avonds hoort te dalen. Het resultaat: je lichaam komt niet in de herstelmodus.",
+          "Chronische stress houdt je cortisolspiegel verhoogd — precies het hormoon dat 's avonds hoort te dalen. Cortisol en melatonine werken als tegenpolen: als cortisol hoog blijft, krijgt melatonine geen ruimte.",
         icon: "📈",
+        source: "Chrousos GP, Nat Rev Endocrinol, 2009",
       },
       {
         title: "Magnesiumtekort",
         description:
-          "Magnesium is essentieel voor spierontspanning en de regulatie van je zenuwstelsel. Bij een tekort — wat bij 40+ veel voorkomt — blijft je lichaam in een staat van alertheid.",
+          "Magnesium is essentieel voor spierontspanning en de regulatie van je zenuwstelsel. Bij een tekort — wat bij 40+ veel voorkomt — blijft je lichaam in een staat van alertheid. Een recente RCT toonde aan dat magnesium bisglycinaat insomniescores significant verbetert.",
         icon: "⚡",
+        source: "Schuster et al., Nat Sci Sleep, 2025 (RCT, n=155)",
       },
       {
         title: "Minder diepe slaap",
         description:
-          "De hoeveelheid diepe slaap (fase 3 en 4) neemt af met de leeftijd. Je slaapt misschien 7 uur, maar het herstellend vermogen van die uren is lager.",
+          "De hoeveelheid diepe slaap (slow-wave sleep) neemt af met de leeftijd. Je slaapt misschien 7 uur, maar het herstellend vermogen is lager. Diepe slaap is ook wanneer 80% van je dagelijkse testosteron wordt aangemaakt.",
         icon: "📉",
+        source:
+          "Ohayon et al., Sleep, 2004 (meta-analyse); Wittert G, Asian J Androl, 2014",
+      },
+    ],
+  },
+
+  scienceBlock: {
+    sectionLabel: "WAT ONDERZOEK LAAT ZIEN",
+    title: "De wetenschap achter slaapverandering",
+    intro: "Geen meningen, maar meetbare feiten uit peer-reviewed onderzoek.",
+    facts: [
+      {
+        claim: "Bij mensen boven de 90 is melatonine minder dan 20% van het niveau van jonge volwassenen.",
+        source: "Claustrat & Leston, Endotext (NIH), 2022",
+        pubmedId: "NBK550972",
+      },
+      {
+        claim: "Cafeïne 6 uur voor bedtijd vermindert de totale slaaptijd met gemiddeld 1 uur.",
+        source: "Drake et al., J Clin Sleep Med, 2013",
+        pubmedId: "24235903",
+      },
+      {
+        claim: "Magnesium bisglycinaat verlaagt insomniescores significant vs. placebo na 4 weken (RCT, n=155).",
+        source: "Schuster et al., Nat Sci Sleep, 2025",
+      },
+      {
+        claim: "600 mg ashwagandha KSM-66 per dag verlaagt serumcortisol significant (p=0.0006) na 60 dagen.",
+        source: "Chandrasekhar et al., Indian J Psychol Med, 2012",
+        pubmedId: "23439798",
+      },
+      {
+        claim: "Avondlicht van e-readers onderdrukt melatonine, vertraagt het circadiaan ritme en vermindert alertheid de volgende ochtend.",
+        source: "Chang et al., Proc Natl Acad Sci, 2015",
+        pubmedId: "25535358",
       },
     ],
   },
@@ -136,11 +174,19 @@ export const slaapThema: ThemaPageData = {
     successMessage: "Check je inbox — de Slaapgids is onderweg.",
   },
 
+  pillarPage: {
+    href: "/slaap-verbeteren-na-40",
+    title: "De complete gids: slaap verbeteren na 40",
+    description:
+      "Van de biologie achter slaapverandering tot een concreet weekplan met supplementen. Alles wat op deze pagina in het kort staat, uitgewerkt met bronnen en context.",
+  },
+
   expertQuote: {
     quote:
       "Slaap is de meest onderschatte interventie voor mannen boven de 40. Geen supplement compenseert voor structureel slaaptekort.",
-    author: "Voedingsdeskundige",
-    credential: "Orthomoleculair therapeut",
+    author: "Praktische voorlichting",
+    credential:
+      "Samengesteld door PerfectSupplement op basis van klinisch onderzoek",
   },
 
   premiumCta: {
@@ -161,12 +207,13 @@ export const slaapThema: ThemaPageData = {
 
   relatedArticles: [
     {
-      title: "Slaap verbeteren na 40: wat werkt écht?",
+      title: "Slaap verbeteren na je 40e: wat werkt en wat niet",
       slug: "slaap-verbeteren-40-plus",
       category: "slaap",
     },
     {
-      title: "Cortisol verlagen: 5 bewezen methoden",
+      title:
+        "Cortisol benaderen: vijf leefstijlroutes uit onderzoek, zonder medicatie",
       slug: "cortisol-verlagen-natuurlijk",
       category: "stress",
     },

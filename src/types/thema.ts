@@ -19,6 +19,18 @@ export interface ThemaPageData {
       title: string;
       description: string;
       icon: string;
+      source?: string;
+    }>;
+  };
+
+  scienceBlock?: {
+    sectionLabel: string;
+    title: string;
+    intro: string;
+    facts: Array<{
+      claim: string;
+      source: string;
+      pubmedId?: string;
     }>;
   };
 
@@ -54,6 +66,12 @@ export interface ThemaPageData {
     ctaText: string;
     privacyText: string;
     successMessage: string;
+  };
+
+  pillarPage?: {
+    href: string;
+    title: string;
+    description: string;
   };
 
   expertQuote: {

@@ -115,11 +115,64 @@ export default async function ThemaPage({ params }: Props) {
                 <p className="mt-3 text-sm leading-relaxed text-stone-500">
                   {item.description}
                 </p>
+                {item.source ? (
+                  <p className="mt-2 text-[10px] text-stone-400 italic">
+                    Bron: {item.source}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>
         </Container>
       </section>
+
+      {/* ─── ONDERBOUWING ─── */}
+      {data.scienceBlock ? (
+        <section className="py-16 lg:py-20">
+          <Container>
+            <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
+              {data.scienceBlock.sectionLabel}
+            </p>
+            <h2 className="mt-3 font-serif text-2xl lg:text-3xl text-stone-900">
+              {data.scienceBlock.title}
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-stone-600">
+              {data.scienceBlock.intro}
+            </p>
+            <div className="mt-8 space-y-4">
+              {data.scienceBlock.facts.map((fact, i) => (
+                <div
+                  key={i}
+                  className="flex gap-4 rounded-xl border-l-[3px] border-[#3C7A56] bg-[#F7F5F0] p-5"
+                >
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-stone-800">
+                      {fact.claim}
+                    </p>
+                    <p className="mt-1 text-[11px] text-stone-400">
+                      {fact.source}
+                      {fact.pubmedId ? (
+                        <>
+                          {" "}
+                          ·{" "}
+                          <a
+                            href={`https://pubmed.ncbi.nlm.nih.gov/${fact.pubmedId}/`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#5A8F6A] underline decoration-[#5A8F6A]/30 underline-offset-2"
+                          >
+                            PubMed
+                          </a>
+                        </>
+                      ) : null}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+      ) : null}
 
       {/* ─── QUICK WINS ─── */}
       <section className="py-16 lg:py-20">
@@ -205,31 +258,6 @@ export default async function ThemaPage({ params }: Props) {
         </Container>
       </section>
 
-      {slug === "stress" && (
-        <section className="py-16 lg:py-20" aria-labelledby="stress-pillar-gids-heading">
-          <Container>
-            <div className="mx-auto flex max-w-2xl flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
-              <h2
-                id="stress-pillar-gids-heading"
-                className="font-display text-2xl text-stone-900"
-              >
-                De complete gids: stress verminderen na 40
-              </h2>
-              <p className="mt-2 text-base leading-relaxed text-stone-600">
-                Wat doet chronische stress met je lichaam? Hoe zit de cortisol-testosteron balans in
-                elkaar? En wat kun je er concreet aan doen — van ademhaling tot supplementen?
-              </p>
-              <Link
-                href="/stress-verminderen-man"
-                className="mt-3 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
-              >
-                Lees de complete gids →
-              </Link>
-            </div>
-          </Container>
-        </section>
-      )}
-
       {/* ─── E-MAIL GATE + EXPERT QUOTE ─── */}
       <section className="py-16 lg:py-20">
         <Container>
@@ -273,6 +301,32 @@ export default async function ThemaPage({ params }: Props) {
           </div>
         </Container>
       </section>
+
+      {/* ─── PILLAR PAGE LINK ─── */}
+      {data.pillarPage ? (
+        <section className="py-8 lg:py-12">
+          <Container>
+            <div className="mx-auto max-w-2xl rounded-2xl border border-[#5A8F6A]/20 bg-[#5A8F6A]/5 p-8">
+              <p className="text-xs font-medium uppercase tracking-widest text-[#5A8F6A]">
+                VERDIEPING
+              </p>
+              <h3 className="mt-2 font-serif text-xl text-stone-900">
+                {data.pillarPage.title}
+              </h3>
+              <p className="mt-2 text-sm text-stone-600">
+                {data.pillarPage.description}
+              </p>
+              <Link
+                href={data.pillarPage.href}
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#5A8F6A] underline decoration-[#5A8F6A]/30 underline-offset-4 transition hover:gap-2"
+              >
+                Lees de complete gids
+                <span aria-hidden>→</span>
+              </Link>
+            </div>
+          </Container>
+        </section>
+      ) : null}
 
       {/* ─── PREMIUM INTAKE CTA ─── */}
       <section className="py-16 lg:py-20">
@@ -326,12 +380,12 @@ export default async function ThemaPage({ params }: Props) {
             >
               Gerelateerde artikelen
             </h2>
-            <nav className="mt-8" aria-label="Blogcategorieën en artikelen">
+            <nav className="mt-8" aria-label="Gerelateerde blogartikelen">
               <ul className="grid gap-4 sm:grid-cols-2" role="list">
                 {data.relatedArticles.map((article, i) => (
                   <li key={i}>
                     <Link
-                      href={`/blog/${article.category}`}
+                      href={`/blog/${article.slug}`}
                       className="group flex items-center justify-between rounded-xl border border-stone-200 bg-white p-5 transition-all hover:border-stone-300 hover:shadow-sm"
                     >
                       <span className="text-sm font-medium text-stone-800">
