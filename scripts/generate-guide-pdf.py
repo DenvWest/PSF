@@ -357,6 +357,39 @@ def build_styles(body_font: str, heading_font: str) -> dict[str, ParagraphStyle]
         spaceAfter=0,
     )
 
+    references_label = ParagraphStyle(
+        "ReferencesLabel",
+        parent=body,
+        fontName=h3.fontName,
+        fontSize=8,
+        leading=10,
+        textColor=COLORS["caption"],
+        alignment=TA_LEFT,
+        spaceBefore=6,
+        spaceAfter=4,
+    )
+    reference_item = ParagraphStyle(
+        "ReferenceItem",
+        parent=body,
+        fontSize=7.5,
+        leading=10,
+        textColor=COLORS["muted"],
+        alignment=TA_LEFT,
+        spaceAfter=3,
+        leftIndent=12,
+        firstLineIndent=-12,
+    )
+    references_page_title = ParagraphStyle(
+        "ReferencesPageTitle",
+        parent=ss["Normal"],
+        fontName=heading_font,
+        fontSize=22,
+        leading=26,
+        textColor=COLORS["body"],
+        alignment=TA_LEFT,
+        spaceAfter=16,
+    )
+
     return {
         "cover_label": cover_label,
         "cover_title": cover_title,
@@ -377,6 +410,9 @@ def build_styles(body_font: str, heading_font: str) -> dict[str, ParagraphStyle]
         "disclaimer": disclaimer,
         "table_cell": table_cell,
         "table_head": table_head,
+        "references_label": references_label,
+        "reference_item": reference_item,
+        "references_page_title": references_page_title,
     }
 
 
@@ -411,6 +447,54 @@ def tip_flowables(title: str | None, text: str, st: dict[str, ParagraphStyle]) -
     return [Spacer(1, 6), t, Spacer(1, 8)]
 
 
+def build_references_block(items: list[dict[str, Any]], st: dict[str, ParagraphStyle]) -> list:
+    """Footnotes-style block at end of a chapter (subset of global bibliography)."""
+    elements: list = [Spacer(1, 14)]
+    inner: list[list[Any]] = []
+
+    inner.append(
+        [
+            HRFlowable(
+                width="40%",
+                thickness=0.5,
+                color=COLORS["border"],
+                spaceBefore=0,
+                spaceAfter=0,
+            )
+        ]
+    )
+    inner.append([Paragraph("Bronnen", st["references_label"])])
+    for ref in items:
+        num = ref["num"]
+        txt = ref["text"]
+        safe = txt if "<" in txt else xm(txt)
+        inner.append(
+            [
+                Paragraph(
+                    f"<super>{num}</super> {safe}",
+                    st["reference_item"],
+                )
+            ]
+        )
+
+    tbl = Table(inner, colWidths=[CONTENT_W])
+    tbl.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), COLORS["beige"]),
+                ("LEFTPADDING", (0, 0), (-1, -1), 12),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ]
+        )
+    )
+    elements.append(tbl)
+    elements.append(Spacer(1, 6))
+    return elements
+
+
 def render_blocks(blocks: list[dict[str, Any]], st: dict[str, ParagraphStyle]) -> list:
     out: list = []
     for block in blocks:
@@ -424,9 +508,10 @@ def render_blocks(blocks: list[dict[str, Any]], st: dict[str, ParagraphStyle]) -
         elif btype == "bullets":
             for item in block["items"]:
                 raw = item if isinstance(item, str) else str(item)
+                body_txt = raw if "<" in raw else xm(raw)
                 out.append(
                     Paragraph(
-                        f'<font color="#5A8F6A">●</font> <font color="#1a1a1a">{xm(raw)}</font>',
+                        f'<font color="#5A8F6A">●</font> <font color="#1a1a1a">{body_txt}</font>',
                         st["bullet"],
                     )
                 )
@@ -441,7 +526,9 @@ def render_blocks(blocks: list[dict[str, Any]], st: dict[str, ParagraphStyle]) -
             data = [head_par]
             for ri, row in enumerate(rows):
                 bg = COLORS["white"] if ri % 2 == 0 else COLORS["beige"]
-                data.append([Paragraph(xm(c), st["table_cell"]) for c in row])
+                data.append(
+                    [Paragraph(c if "<" in c else xm(c), st["table_cell"]) for c in row]
+                )
             tbl = Table(data, colWidths=[CONTENT_W / len(headers)] * len(headers), repeatRows=1)
             ts = [
                 ("BACKGROUND", (0, 0), (-1, 0), COLORS["primary"]),
@@ -461,6 +548,8 @@ def render_blocks(blocks: list[dict[str, Any]], st: dict[str, ParagraphStyle]) -
             out.extend([Spacer(1, 6), tbl, Spacer(1, 10)])
         elif btype == "spacer":
             out.append(Spacer(1, float(block.get("height", 12))))
+        elif btype == "references":
+            out.extend(build_references_block(block["items"], st))
         else:
             out.append(Paragraph(xm(str(block)), st["body"]))
     return out
@@ -585,6 +674,21 @@ def build_story(guide: dict[str, Any], st: dict[str, ParagraphStyle]) -> list:
     )
     story.append(Spacer(1, 30))
     story.append(cta_tbl)
+
+    all_refs = guide.get("all_references")
+    if all_refs:
+        story.append(PageBreak())
+        story.append(Paragraph("Bronnen", st["references_page_title"]))
+        story.append(Spacer(1, 4))
+        for ref in sorted(all_refs, key=lambda r: int(r["num"])):
+            txt = ref["text"]
+            safe = txt if "<" in txt else xm(txt)
+            story.append(
+                Paragraph(
+                    f"<super>{ref['num']}</super> {safe}",
+                    st["reference_item"],
+                )
+            )
 
     story.append(PageBreak())
     story.append(Paragraph(f"<b>{xm(guide['disclaimer']['title'])}</b>", st["disclaimer"]))

@@ -76,18 +76,18 @@ GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Stress op zich is niet fout — acute stress scherpt aan en helpt je prioriteren. "
-                        "Het probleem is chronische belasting: dan blijft je stress-as (HPA-as) te lang actief."
+                        "Het probleem is chronische belasting: dan blijft je <b>HPA-as te lang actief</b>"
+                        "<super>1</super>."
                     ),
                 },
                 {
                     "type": "paragraph",
                     "text": (
-                        "In klassieke hormoonliteratuur wordt het beeld beschreven dat chronisch verhoogde "
-                        "cortisol samen kan hangen met lagere androgene signalering bij mannen. "
-                        "<b>Cumming et al. (1983)</b> rapporteerden bij een cohort dat mannen met chronisch "
-                        "verhoogde cortisolwaarden gemiddeld "
-                        "<b>ongeveer 10–15% lagere testosteronniveaus</b> hadden dan leeftijdgenoten — een "
-                        "richtingsindicator; niet elk individu volgt dit patroon."
+                        "<b>Cortisol en testosteron concurreren</b>: prospectieve data tonen associaties tussen "
+                        "cortisolprofielen en androgene markers bij mannen<super>2</super>. Experimenteel kan "
+                        "acute cortisol circulating testosteron onderdrukken<super>3</super>. "
+                        "Niet elk individu volgt hetzelfde patroon — het verklaart wel waarom chronische spanning "
+                        "herstel kan uitstellen."
                     ),
                 },
                 {
@@ -99,9 +99,9 @@ GUIDE = {
                     "text": (
                         "Je lichaam gebruikt dezelfde bouwstenen voor verschillende hormonen. Als het systeem "
                         "structureel uitlijning zoekt op overleven (cortisol), kan dat ten koste gaan van "
-                        "andere takken van hormoonsynthese — informeel wordt dat concept ook wel "
-                        "<b>‘pregnenolon steal’</b> genoemd (vereenvoudigde voorlichting; geen strikte "
-                        "diagnose-term)."
+                        "andere takken van hormoonsynthese — informeel <b>pregnenolon steal</b>; wetenschappelijk "
+                        "beschreven in neurosteroid-frameworks<super>4</super> (vereenvoudigde voorlichting; "
+                        "geen strikte diagnose-term)."
                     ),
                 },
                 {
@@ -113,19 +113,19 @@ GUIDE = {
                     "text": (
                         "Je nervus vagus verbindt brein en onderbuik: hij coördineert rust-digest modussen. "
                         "Onder chronische stress verschuift vaak de balans naar minder ‘repair-and-digest’. "
-                        "Daarnaast wordt een groot deel van je serotonine gemaakt in het maag-darmgebied — "
-                        "educatief wordt vaak genoemd dat "
-                        "<b>ruim 90–95%</b> van serotonine elders wordt geproduceerd dan klassiek alleen ‘in "
-                        "je hoofd’. Daarom zijn routine, vezels en rust rond eten geen bijzaak bij stress."
+                        "Daarnaast regelt darmmicrobioom-host interactie een groot deel van de "
+                        "<b>serotoninebiosynthese</b>: circa <b>95%</b> van het lichaams-serotonine zit buiten "
+                        "de klassieke centrale pool — relevant voor stemming en stressverwerking<super>5</super>."
                     ),
                 },
                 {"type": "subtitle", "text": "Sympathisch vs. parasympathisch — wat je voelt"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Je sympathische tak (‘gas’) kan te dominant worden; je parasympathische tak (‘rem’) "
-                        "krijgt dan minder ruimte. Slaap wordt oppervlakkiger, herstel faalt, je merkt minder "
-                        "wat je lichaam probeert te signaleren."
+                        "Je <b>sympathisch zenuwstelsel</b> (‘gas’) kan te dominant worden; je parasympathische "
+                        "tak (‘rem’) krijgt dan minder ruimte — een patroon dat samenhangt met chronische "
+                        "stresssystemen en endocriene disbalans<super>6</super>. Slaap wordt oppervlakkiger, "
+                        "herstel faalt, je merkt minder wat je lichaam probeert te signaleren."
                     ),
                 },
                 {
@@ -134,6 +134,53 @@ GUIDE = {
                         "Na 40 is je buffer kleiner: hetzelfde werkpakket voelt zwaarder omdat herstel "
                         "trager en kwetsbaarder wordt. Dat is geen falen — het is fysiologie."
                     ),
+                },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 1,
+                            "text": (
+                                "Herman JP et al. Regulation of the Hypothalamic-Pituitary-Adrenocortical Stress "
+                                "Response. Compr Physiol. 2016;6(2):603-621. PMC4867107"
+                            ),
+                        },
+                        {
+                            "num": 2,
+                            "text": (
+                                "Smith GD et al. Cortisol, Testosterone, and Coronary Heart Disease: Prospective "
+                                "Evidence from the Caerphilly Study. Circulation. 2005;112(3):332-340. PMID: 16009799"
+                            ),
+                        },
+                        {
+                            "num": 3,
+                            "text": (
+                                "Cumming DC et al. Acute suppression of circulating testosterone levels by cortisol "
+                                "in men. J Clin Endocrinol Metab. 1983;57(3):671-673. PMID: 6348068"
+                            ),
+                        },
+                        {
+                            "num": 4,
+                            "text": (
+                                "Baulieu EE. Neurosteroids: a novel function of the brain. "
+                                "Psychoneuroendocrinology. 1998;23(8):963-987. PMID: 9924747"
+                            ),
+                        },
+                        {
+                            "num": 5,
+                            "text": (
+                                "Yano JM et al. Indigenous bacteria from the gut microbiota regulate host serotonin "
+                                "biosynthesis. Cell. 2015;161(2):264-276. PMC4393509"
+                            ),
+                        },
+                        {
+                            "num": 6,
+                            "text": (
+                                "Chrousos GP. Stress and disorders of the stress system. Nat Rev Endocrinol. "
+                                "2009;5(7):374-381. PMID: 19488073"
+                            ),
+                        },
+                    ],
                 },
             ],
         },
@@ -159,11 +206,15 @@ GUIDE = {
                 {
                     "type": "bullets",
                     "items": [
-                        "4–6 ademhaling: 4 sec in, 6 sec uit — 5 minuten dagelijks",
+                        (
+                            "<b>4–6 ademhaling</b> (4 sec in, 6 sec uit) — traag ademen activeert parasympathisch "
+                            "effect-pathway’s in reviews van psycho-fysiologie<super>7</super>"
+                        ),
                         "Box breathing: 4–4–4–4 — geschikt bij acute spanning",
                         (
                             "Fysiologische zucht: twee korte inhalaties door de neus, één langere uitademing "
-                            "door de mond — vaak natuurlijk aanwezig na stresspieken"
+                            "door de mond — gestructureerde varianten verlagen arousal in onderzoek"
+                            "<super>8</super>"
                         ),
                     ],
                 },
@@ -173,8 +224,8 @@ GUIDE = {
                     "text": (
                         "Een <b>dubbele inademing</b> kan longblaasjes extra openzetten; een "
                         "<b>langere uitademing</b> versterkt vagale remming en verlaagt hartfrequentie sneller "
-                        "dan alleen focussen op inhaleren. Daardoor voelt het alsof je systeem weer ‘ruimte’ "
-                        "krijgt."
+                        "dan alleen focussen op inhaleren — in lijn met gecontroleerde adem-protocollen"
+                        "<super>8</super>."
                     ),
                 },
                 {"type": "subtitle", "text": "Pijler 2: Slaap"},
@@ -205,8 +256,11 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Te zwaar trainen kan tijdens een herstelfase als extra stressor voelen. Het doel is "
-                        "kalibreren: voldoende prikkel om fit te blijven, niet constant alarm."
+                        "<b>Matige beweging</b> kan cortisol gunstiger profileren dan zeer hoge intensiteit, "
+                        "waarbij acute cortisolresponses hoger uit kunnen vallen<super>9</super>. "
+                        "<b>Wandelen</b> — vooral in groen — wordt in reviews gekoppeld aan stressvermindering "
+                        "en stemming<super>10</super>. Het doel is kalibreren: voldoende prikkel om fit te blijven, "
+                        "niet constant alarm."
                     ),
                 },
                 {
@@ -237,7 +291,10 @@ GUIDE = {
                 {
                     "type": "bullets",
                     "items": [
-                        "Eiwit bij ontbijt — stabielere bloedsuiker eerder op de dag",
+                        (
+                            "<b>Eiwit bij ontbijt</b> stabiliseert bloedsuiker en appetitieve hormonen in "
+                            "proefpersoonstudies bij mis-breakfast-populaties<super>11</super>"
+                        ),
                         "Geen koffie op volledig lege maag als je daar trillerig van wordt",
                         "Voldoende water — vermoeidheid maskeert vaak dehydratie",
                         (
@@ -245,6 +302,49 @@ GUIDE = {
                             "kurkuma als kruid (combineer met zwarte peper voor curcumine-opname), groene thee "
                             "(let op cafeïne)"
                         ),
+                    ],
+                },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 7,
+                            "text": (
+                                "Zaccaro A et al. How Breath-Control Can Change Your Life: A Systematic Review on "
+                                "Psycho-Physiological Correlates of Slow Breathing. Front Hum Neurosci. "
+                                "2018;12:353. PMC6137615"
+                            ),
+                        },
+                        {
+                            "num": 8,
+                            "text": (
+                                "Huberman AD et al. Brief structured respiration practices enhance mood and reduce "
+                                "physiological arousal. Cell Rep Med. 2023;4(1):100895. PMID: 36630953"
+                            ),
+                        },
+                        {
+                            "num": 9,
+                            "text": (
+                                "Hill EE et al. Exercise and circulating cortisol levels: the intensity threshold "
+                                "effect. J Endocrinol Invest. 2008;31(7):587-591. PMID: 18787373"
+                            ),
+                        },
+                        {
+                            "num": 10,
+                            "text": (
+                                "Mikkelsen K et al. Exercise and mental health. Maturitas. 2017;106:48-56. "
+                                "PMID: 29150166"
+                            ),
+                        },
+                        {
+                            "num": 11,
+                            "text": (
+                                "Leidy HJ et al. Beneficial effects of a higher-protein breakfast on the appetitive, "
+                                "hormonal, and neural signals controlling energy intake regulation in overweight/obese, "
+                                "breakfast-skipping, late-adolescent girls. Am J Clin Nutr. 2013;97(4):677-688. "
+                                "PMC3718776"
+                            ),
+                        },
                     ],
                 },
             ],
@@ -337,25 +437,28 @@ GUIDE = {
                     "title": "EFSA / regulering — even rechtzetten",
                     "text": (
                         "Veel kruidenextracten — waaronder ashwagandha — hebben in de EU "
-                        "<b>geen erkende gezondheidsclaims</b> zoals voor sommige micronutriënten. Labels en "
-                        "claims verschillen per leverancier; discussie over novel foods/registratie kan per tijd "
-                        "verschuiven. Koop bij voorkeur bij merken met batch-testing en transparante extractinfo."
+                        "<b>geen erkende gezondheidsclaims</b> volgens EFSA-beoordelingen voor "
+                        "<i>Withania somnifera</i><super>14</super>. Labels verschillen per leverancier; kies "
+                        "transparante extractinfo en batch-testing."
                     ),
                 },
                 {"type": "subtitle", "text": "Magnesium"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Magnesium ondersteunt normale spier- en zenuwfunctie en kan bij tekort bijdragen aan "
-                        "minder vermoeidheid (EFSA-claims waar van toepassing op specifieke vormen/doses)."
+                        "Magnesium draagt bij aan een <b>normale werking van het zenuwstelsel</b> — een "
+                        "EFSA-goedgekeurde claim onder voorwaarden van Verordening (EU) nr. 432/2012"
+                        "<super>15</super>."
                     ),
                 },
                 {"type": "subtitle", "text": "Ashwagandha (extracten zoals KSM-66 / Sensoril worden veel besproken)"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Wordt onderzocht in stress-/cortisolcontexten; geen ‘acute uit-knop’. Stop bij maagklachten "
-                        "of ongewenste sufheid en overleg bij schildklier- of schildkliermedicatie."
+                        "RCT’s melden <b>lager cortisol</b> en minder stressscores met sommige "
+                        "full-spectrum- en hoog-concentratie-extracten"
+                        "<super>12</super><super>13</super>. Geen acute uit-knop — stop bij maagklachten "
+                        "of sufheid en overleg bij schildklier- of schildkliermedicatie."
                     ),
                 },
                 {"type": "subtitle", "text": "L-theanine"},
@@ -370,8 +473,9 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "EPA heeft anti-inflammatoire signalering relevant bij chronische stressbelasting — vooral "
-                        "als je weinig vis eet. Kwaliteit en oxidatie-advies zijn belangrijker dan megadosissen."
+                        "<b>EPA</b> moduleert ontstekingsroutes relevant bij chronische stressbelasting"
+                        "<super>16</super> — vooral als je weinig vis eet. Kwaliteit en oxidatie zijn belangrijker dan "
+                        "megadosissen."
                     ),
                 },
                 {
@@ -383,6 +487,51 @@ GUIDE = {
                         "<b>Week 5–6:</b> evalueer — werk het? Zo niet: niet stapellen, maar terug naar één variabele.<br/>"
                         "L-theanine kun je gericht inzetten rond bedtijd of stresspieken; omega-3 parallel aan voeding."
                     ),
+                },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 12,
+                            "text": (
+                                "Chandrasekhar K et al. A prospective, randomized double-blind, placebo-controlled study "
+                                "of safety and efficacy of a high-concentration full-spectrum extract of ashwagandha root "
+                                "in reducing stress and anxiety in adults. Indian J Psychol Med. 2012;34(3):255-262. "
+                                "PMID: 23439798"
+                            ),
+                        },
+                        {
+                            "num": 13,
+                            "text": (
+                                "Lopresti AL et al. An investigation into the stress-relieving and pharmacological actions "
+                                "of an ashwagandha extract: A randomized, double-blind, placebo-controlled study. Medicine. "
+                                "2019;98(37):e17186. PMC6979308"
+                            ),
+                        },
+                        {
+                            "num": 14,
+                            "text": (
+                                "EFSA Panel on Dietetic Products, Nutrition and Allergies (NDA). Scientific opinions on "
+                                "health claims related to botanical substances — geen goedgekeurde claims voor "
+                                "<i>Withania somnifera</i> (ashwagandha) vastgesteld per mei 2026 (EFSA Journal; "
+                                "botanical claim dossiers)."
+                            ),
+                        },
+                        {
+                            "num": 15,
+                            "text": (
+                                "EFSA. Magnesium draagt bij tot een normale werking van het zenuwstelsel — "
+                                "Verordening (EU) nr. 432/2012 (lijst goedgekeurde claims)."
+                            ),
+                        },
+                        {
+                            "num": 16,
+                            "text": (
+                                "Calder PC. Omega-3 fatty acids and inflammatory processes: from molecules to man. "
+                                "Biochem Soc Trans. 2017;45(5):1105-1115. PMC5745491"
+                            ),
+                        },
+                    ],
                 },
             ],
         },
@@ -419,8 +568,8 @@ GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Een <b>POH-GGZ-gesprek</b> via je huisarts is in Nederland doorgaans "
-                        "<b>gratis en vergoed vanuit de basisverzekering</b> — controleer wel je eigen polis voor "
-                        "details bij jouw zorgverzekeraar."
+                        "<b>gratis en vergoed vanuit de basisverzekering</b> volgens landelijke kaders "
+                        "<super>17</super> — controleer je polis voor details bij jouw zorgverzekeraar."
                     ),
                 },
                 {
@@ -428,6 +577,18 @@ GUIDE = {
                     "text": (
                         "Dit hoeft geen falen te zijn — het kan betekenen dat je systeem te lang overbelast was."
                     ),
+                },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 17,
+                            "text": (
+                                "Rijksoverheid. Geestelijke gezondheidszorg (GGZ) — vergoeding en toegang via "
+                                "huisarts (actueel per 2026)."
+                            ),
+                        },
+                    ],
                 },
             ],
         },
@@ -448,8 +609,8 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Ja, dat kan — onder andere via langdurig verhoogde cortisol en prioriteit naar "
-                        "stress-hormoonpaden (zie ook hoofdstuk 02 over cortisol–testosteron onderzoek)."
+                        "Ja, dat kan — onder andere via langdurig verhoogde cortisol en concurrentie tussen "
+                        "stress- en androgene assen (zie hoofdstuk 02)<super>2</super><super>3</super>."
                     ),
                 },
                 {"type": "subtitle", "text": "Hoe snel merk ik resultaat van stressvermindering?"},
@@ -528,3 +689,23 @@ GUIDE = {
         ),
     },
 }
+
+GUIDE["all_references"] = [
+    {"num": 1, "text": GUIDE["chapters"][1]["blocks"][-1]["items"][0]["text"]},
+    {"num": 2, "text": GUIDE["chapters"][1]["blocks"][-1]["items"][1]["text"]},
+    {"num": 3, "text": GUIDE["chapters"][1]["blocks"][-1]["items"][2]["text"]},
+    {"num": 4, "text": GUIDE["chapters"][1]["blocks"][-1]["items"][3]["text"]},
+    {"num": 5, "text": GUIDE["chapters"][1]["blocks"][-1]["items"][4]["text"]},
+    {"num": 6, "text": GUIDE["chapters"][1]["blocks"][-1]["items"][5]["text"]},
+    {"num": 7, "text": GUIDE["chapters"][2]["blocks"][-1]["items"][0]["text"]},
+    {"num": 8, "text": GUIDE["chapters"][2]["blocks"][-1]["items"][1]["text"]},
+    {"num": 9, "text": GUIDE["chapters"][2]["blocks"][-1]["items"][2]["text"]},
+    {"num": 10, "text": GUIDE["chapters"][2]["blocks"][-1]["items"][3]["text"]},
+    {"num": 11, "text": GUIDE["chapters"][2]["blocks"][-1]["items"][4]["text"]},
+    {"num": 12, "text": GUIDE["chapters"][4]["blocks"][-1]["items"][0]["text"]},
+    {"num": 13, "text": GUIDE["chapters"][4]["blocks"][-1]["items"][1]["text"]},
+    {"num": 14, "text": GUIDE["chapters"][4]["blocks"][-1]["items"][2]["text"]},
+    {"num": 15, "text": GUIDE["chapters"][4]["blocks"][-1]["items"][3]["text"]},
+    {"num": 16, "text": GUIDE["chapters"][4]["blocks"][-1]["items"][4]["text"]},
+    {"num": 17, "text": GUIDE["chapters"][5]["blocks"][-1]["items"][0]["text"]},
+]

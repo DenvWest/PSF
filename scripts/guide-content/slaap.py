@@ -1,7 +1,7 @@
 # scripts/guide-content/slaap.py
 # Content voor slaapgids-PDF (zie README.md voor schema).
 
-GUIDE = {
+_GUIDE = {
     "meta": {
         "header_banner": "SLAAPGIDS VOOR MANNEN 40+",
         "output_filename": "slaapgids-perfectsupplement.pdf",
@@ -45,10 +45,11 @@ GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Melatonine helpt je circadiaanse ritme te sturen (donker signaleert: tijd om "
-                        "te rusten). In populatiescreening zie je dat melatonine-output met het ouder worden "
-                        "afbouwt; auteurs zoals Zhdanova et al. beschrijven dalende nachtelijke melatonine bij "
-                        "volwassenen — vaak in de orde van <b>ongeveer 10–15% minder per decennium na je 30e</b> "
-                        "(richting; individueel sterk verschillend). Praktisch merk je dat als "
+                        "te rusten). De <b>melatonineproductie daalt</b> na je 40e<super>1</super>; ook "
+                        "speelt op langere termijn geleidelijk verminderde secretie een rol<super>2</super>. "
+                        "In mensen ouder dan 90 jaar ligt melatonine gemiddeld op "
+                        "<b>minder dan 20%</b> van het niveau bij jonge volwassenen — individueel sterk "
+                        "verschillend<super>3</super>. Praktisch merk je dat als "
                         "‘intrappen’ lastiger wordt en je lichter slaapt."
                     ),
                 },
@@ -57,7 +58,9 @@ GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Slaap bestaat uit cycli met lichte slaap, diepe slaap en REM. Diepe slaap is een "
-                        "belangrijke schakel voor herstel en consolidatie. Na 40 kan het totaal nog "
+                        "belangrijke schakel voor herstel en consolidatie. Meta-analyses laten zien dat "
+                        "kwantitatieve slaapparameters — waaronder diepe slaap — met de leeftijd verschuiven; "
+                        "<b>diepe slaap neemt relatief af na 40</b><super>4</super>. Het totaal kan nog "
                         "hetzelfde voelen qua uren, terwijl de verdeling minder gunstig wordt — je wordt "
                         "sneller wakker en minder uitgerust."
                     ),
@@ -67,7 +70,9 @@ GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Cortisol hoort later op de dag te zakken zodat je systeem kan schakelen naar rust. "
-                        "Bij langdurige stress blijft het avondniveau soms te hoog. Het gevolg: je bent moe, "
+                        "Bij langdurige stress blijft het avondniveau soms te hoog — het "
+                        "<b>saboteert je avond</b> en kan samenhangen met verstoring van herstelsignalen en "
+                        "hormoonbalans<super>5</super>. Het gevolg: je bent moe, "
                         "maar je lichaam staat nog te veel op scherp."
                     ),
                 },
@@ -85,13 +90,60 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "In endocrinologische literatuur wordt vaak benadrukt dat een groot deel van de "
+                        "In endocrinologische literatuur wordt benadrukt dat een groot deel van de "
                         "dagelijkse testosteronrelease pulseert met slaap en met name met "
-                        "<b>diepe slaap</b>. Als vuistregel in educatieve context wordt wel genoemd dat "
-                        "<b>ruim 70–80%</b> van de dagelijkse productie in relatie staat tot slaapkwaliteit "
-                        "en -duur — als je diepe slaap structureel terugloopt, wordt hormonaal herstel "
-                        "moeilijker. Dit is géén diagnose: het is een reden om slaap serieus te nemen."
+                        "<b>diepe slaap</b>. Als vuistregel wordt wel genoemd dat "
+                        "ongeveer <b>70–80%</b> van de dagelijkse testosteronproductie tijdens slaap plaatsvindt "
+                        "of daarmee samenhangt — kwetsbaar dus als diepe slaap structureel terugloopt<super>6</super>. "
+                        "Dit is géén diagnose: het is een reden om slaap serieus te nemen."
                     ),
+                },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 1,
+                            "text": (
+                                "Wurtman RJ. Age-Related Decreases in Melatonin Secretion—Clinical Consequences. "
+                                "J Clin Endocrinol Metab. 2000;85(6):2135-2136. PMID: 10852443"
+                            ),
+                        },
+                        {
+                            "num": 2,
+                            "text": (
+                                "Hardeland R. Melatonin in Aging and Disease—Multiple Consequences of Reduced Secretion, "
+                                "Options and Limits of Treatment. Aging Dis. 2012;3(2):194-225. PMC3377831"
+                            ),
+                        },
+                        {
+                            "num": 3,
+                            "text": (
+                                "Claustrat B, Leston J. Melatonin: Physiological effects in humans. Neurochirurgie. "
+                                "2015;61(2-3):77-84."
+                            ),
+                        },
+                        {
+                            "num": 4,
+                            "text": (
+                                "Ohayon MM et al. Meta-analysis of quantitative sleep parameters from childhood to old "
+                                "age in healthy individuals. Sleep. 2004;27(7):1255-1273. PMID: 15586779"
+                            ),
+                        },
+                        {
+                            "num": 5,
+                            "text": (
+                                "Leproult R, Van Cauter E. Effect of 1 week of sleep restriction on testosterone levels "
+                                "in young healthy men. JAMA. 2011;305(21):2173-2174. PMID: 21632481"
+                            ),
+                        },
+                        {
+                            "num": 6,
+                            "text": (
+                                "Wittert G. The relationship between sleep disorders and testosterone in men. "
+                                "Asian J Androl. 2014;16(2):262-265. PMC3955336"
+                            ),
+                        },
+                    ],
                 },
             ],
         },
@@ -110,7 +162,8 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Cafeïne heeft een halfwaardetijd van ongeveer 5–6 uur. Een latte om 15:00 kan "
+                        "Cafeïne heeft een halfwaardetijd van ongeveer <b>5–6 uur</b><super>7</super>. "
+                        "Een latte om 15:00 kan "
                         "‘s avonds nog merkbaar aanwezig zijn. "
                         "<b>Dit geldt ook voor sterke groene thee en veel energiedranken</b> — niet alleen "
                         "espresso."
@@ -120,7 +173,8 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Helder licht en mentale prikkels schuiven je slaapdruk opzij. Zet je telefoon "
+                        "Helder licht en vooral <b>blauwrijk schermlicht onderdrukt ’s avonds melatonine</b><super>8</super>. "
+                        "Zet je telefoon "
                         "minimaal 45–60 minuten voor slapen uit het bereik — niet alleen op zijn kant."
                     ),
                 },
@@ -144,10 +198,10 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Een koele kamer ondersteunt inslapen. Maar thermoregulatie gaat ook over timing: "
+                        "Voor veel mensen is een slaapkamer van <b>ongeveer 16–18 °C</b> gunstig voor "
+                        "inslapen<super>9</super>. Thermoregulatie gaat ook over timing: "
                         "<b>90 minuten voor bed een warme douche</b> gevolgd door afkoeling kan inslapen "
-                        "helpen door een duidelijke daling van kern temperatuur daarna (warm bad werkt "
-                        "vergelijkbaar voor veel mensen)."
+                        "helpen door een duidelijke daling van kerntemperatuur daarna."
                     ),
                 },
                 {"type": "subtitle", "text": "Fout 6: Te lang in bed liggen terwijl je niet slaapt"},
@@ -161,6 +215,32 @@ GUIDE = {
                         "met frustratie en piekeren. Sta op, zoek rust zonder scherm, en ga pas terug als je "
                         "weer slaapdruk voelt."
                     ),
+                },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 7,
+                            "text": (
+                                "Drake C et al. Caffeine effects on sleep taken 0, 3, or 6 hours before going to bed. "
+                                "J Clin Sleep Med. 2013;9(11):1195-1200. PMC3805807"
+                            ),
+                        },
+                        {
+                            "num": 8,
+                            "text": (
+                                "Chang AM et al. Evening use of light-emitting eReaders negatively affects sleep. "
+                                "Proc Natl Acad Sci USA. 2015;112(4):1232-1237. PMID: 25535358"
+                            ),
+                        },
+                        {
+                            "num": 9,
+                            "text": (
+                                "Okamoto-Mizuno K, Mizuno K. Effects of thermal environment on sleep and circadian rhythm. "
+                                "J Physiol Anthropol. 2012;31(1):14. PMC3427038"
+                            ),
+                        },
+                    ],
                 },
             ],
         },
@@ -212,7 +292,10 @@ GUIDE = {
                 {
                     "type": "bullets",
                     "items": [
-                        "Binnen 30–60 min na opstaan daglicht",
+                        (
+                            "<b>Daglicht binnen 30 minuten na opstaan</b> om je circadiaanse klok te verankeren"
+                            "<super>10</super>"
+                        ),
                         "Rustige wandeling na diner om spanning af te bouwen",
                     ],
                 },
@@ -247,6 +330,18 @@ GUIDE = {
                         "(zie hoofdstuk 5 voor dosering)."
                     ),
                 },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 10,
+                            "text": (
+                                "Blume C et al. Effects of light on human circadian rhythms, sleep and mood. "
+                                "Somnologie. 2019;23(3):147-156. PMC6751071"
+                            ),
+                        },
+                    ],
+                },
             ],
         },
         {
@@ -265,7 +360,9 @@ GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Magnesium speelt mee in talloze processen, waaronder neurotransmitters en "
-                        "spierspanning. Niet elke vorm is gelijkwaardig voor slaapdoelen."
+                        "spierspanning; studies naar bisglycinaat en bredere magnesium-suppletie rapporteren "
+                        "verbeteringen in <b>slaapkwaliteit</b> bij sommige populaties<super>11</super><super>12</super>. "
+                        "Niet elke vorm is gelijkwaardig voor slaapdoelen."
                     ),
                 },
                 {
@@ -284,22 +381,32 @@ GUIDE = {
                     ],
                 },
                 {
+                    "type": "paragraph",
+                    "text": (
+                        "Het aminozuur <b>glycine</b> — onderdeel van glycinaatverbindingen — heeft kalmerende "
+                        "eigenschappen die in onderzoek met slaapkwaliteit in verband worden gebracht"
+                        "<super>13</super>."
+                    ),
+                },
+                {
                     "type": "subtitle",
                     "text": "Ashwagandha — vooral bij stress-gestuurde slaapproblemen",
                 },
                 {
                     "type": "paragraph",
                     "text": (
-                        "Als je hoofd niet uitstaat door prikkels en je cortisolcurve voelt ‘scheef’, kan een "
-                        "adaptogeen onderdeel zijn van een breder plan — niet als enige hefboom."
+                        "Extracten zoals KSM-66 zijn onderzocht op <b>cortisol</b> en stressklachten en tonen in "
+                        "RCT’s verbetering ten opzichte van placebo — relevant als je slaap vooral door spanning "
+                        "lijdt<super>14</super><super>15</super>. Het is onderdeel van een breder plan — niet als enige hefboom."
                     ),
                 },
                 {"type": "subtitle", "text": "Melatonine — laagdrempelig, maar niet structureel voor iedereen"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Microdosering kan soms helpen bij ritmeverstoring; langdurig dagelijks gebruik "
-                        "zonder evaluatie is zelden nodig."
+                        "Microdosering kan soms helpen bij ritmeverstoring; reviews benadrukken dat "
+                        "<b>langdurig dagelijks gebruik zonder medische evaluatie zelden nodig is</b>"
+                        "<super>16</super>."
                     ),
                 },
                 {"type": "subtitle", "text": "L-theanine — rust zonder zware sedatie"},
@@ -320,6 +427,56 @@ GUIDE = {
                         "wat bijdraagt — en wat alleen kosten en complexiteit toevoegt."
                     ),
                 },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 11,
+                            "text": (
+                                "Schuster J et al. Magnesium Bisglycinate Supplementation in Healthy Adults Reporting Poor "
+                                "Sleep: A Randomized, Placebo-Controlled Trial. Nat Sci Sleep. 2025;17. PMC12412596"
+                            ),
+                        },
+                        {
+                            "num": 12,
+                            "text": (
+                                "Rawji A et al. Examining the Effects of Supplemental Magnesium on Self-Reported Anxiety "
+                                "and Sleep Quality: A Systematic Review. Cureus. 2024;16(4):e59317. PMC11136869"
+                            ),
+                        },
+                        {
+                            "num": 13,
+                            "text": (
+                                "Bannai M, Kawai N. New therapeutic strategy for amino acid medicine: glycine improves "
+                                "the quality of sleep. J Pharmacol Sci. 2012;118(2):145-148. PMID: 22293292"
+                            ),
+                        },
+                        {
+                            "num": 14,
+                            "text": (
+                                "Lopresti AL et al. An investigation into the stress-relieving and pharmacological actions "
+                                "of an ashwagandha extract: A randomized, double-blind, placebo-controlled study. Medicine. "
+                                "2019;98(37):e17186. PMC6979308"
+                            ),
+                        },
+                        {
+                            "num": 15,
+                            "text": (
+                                "Chandrasekhar K et al. A prospective, randomized double-blind, placebo-controlled study "
+                                "of safety and efficacy of a high-concentration full-spectrum extract of ashwagandha root "
+                                "in reducing stress and anxiety in adults. Indian J Psychol Med. 2012;34(3):255-262. "
+                                "PMID: 23439798"
+                            ),
+                        },
+                        {
+                            "num": 16,
+                            "text": (
+                                "Auld F et al. Evidence for the efficacy of melatonin in the treatment of primary adult "
+                                "sleep disorders. Sleep Med Rev. 2017;34:10-22. PMID: 28648359"
+                            ),
+                        },
+                    ],
+                },
             ],
         },
         {
@@ -338,7 +495,11 @@ GUIDE = {
                 {
                     "type": "bullets",
                     "items": [
-                        "Veel gebruik: 200–400 mg elementair magnesium, 30–60 min voor slapen",
+                        (
+                            "Veel gebruik: 200–400 mg elementair magnesium, 30–60 min voor slapen "
+                            "(populatiestudies koppelen hogere magnesiuminname aan betere slaapduur en "
+                            "-kwaliteit)<super>17</super>"
+                        ),
                         "Start bij de onderkant als je een gevoelige maag hebt",
                     ],
                 },
@@ -356,7 +517,10 @@ GUIDE = {
                 {
                     "type": "bullets",
                     "items": [
-                        "Veel gebruik: 300 mg, 2× daags bij maaltijd — evalueren na 4–6 weken",
+                        (
+                            "Veel gebruik: 300 mg, 2× daags bij maaltijd — evalueren na 4–6 weken "
+                            "(zie onderbouwing en veiligheid in RCT-literatuur<super>14</super><super>15</super>)"
+                        ),
                     ],
                 },
                 {
@@ -399,6 +563,18 @@ GUIDE = {
                         "combinaties met cafeïne als je gevoelig bent voor bloeddruk."
                     ),
                 },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 17,
+                            "text": (
+                                "Zhang Y et al. Association of magnesium intake with sleep duration and sleep quality. "
+                                "PLoS One. 2022;17(1):e0261989. PMC8782427"
+                            ),
+                        },
+                    ],
+                },
             ],
         },
         {
@@ -437,7 +613,10 @@ GUIDE = {
                 {
                     "type": "bullets",
                     "items": [
-                        "Mini-slaapdagboek 4× per week: inslapen, wakker momenten, ochtendfrisheid",
+                        (
+                            "Mini-<b>slaapdagboek</b> 4× per week (gestandaardiseerde registratie verhoogt "
+                            "betrouwbaarheid)<super>18</super>"
+                        ),
                         "Optioneel: voeg ashwagandha toe alleen als stress/nachtelijk wakker blijven nog leidend is",
                         "Evalueer supplementkeuzes met startdatum — wat heeft geholpen, wat niet?",
                     ],
@@ -451,6 +630,18 @@ GUIDE = {
                         "<b>herhaal na ±4 weken</b>. Zo voorkom je dat je blind stapelt zonder te weten wat "
                         "werkte."
                     ),
+                },
+                {
+                    "type": "references",
+                    "items": [
+                        {
+                            "num": 18,
+                            "text": (
+                                "Carney CE et al. The consensus sleep diary: standardizing prospective self-monitoring. "
+                                "Sleep. 2012;35(2):287-302. PMC3250369"
+                            ),
+                        },
+                    ],
                 },
             ],
         },
@@ -496,7 +687,8 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Bij aanhoudende vermoeidheid overdag ondanks voldoende tijd in bed, luid snurken met apneu-vermoeden, "
+                        "Bij aanhoudende vermoeidheid overdag ondanks voldoende tijd in bed, luid snurken met "
+                        "apneu-vermoeden, "
                         "onverklaarde pijn, depressieve klachten, of slaapproblemen die je dagfunctioneren "
                         "ondermijnen: vraag professioneel onderzoek aan."
                     ),
@@ -524,3 +716,26 @@ GUIDE = {
         ),
     },
 }
+
+_GUIDE["all_references"] = [
+    _GUIDE["chapters"][0]["blocks"][-1]["items"][0],
+    _GUIDE["chapters"][0]["blocks"][-1]["items"][1],
+    _GUIDE["chapters"][0]["blocks"][-1]["items"][2],
+    _GUIDE["chapters"][0]["blocks"][-1]["items"][3],
+    _GUIDE["chapters"][0]["blocks"][-1]["items"][4],
+    _GUIDE["chapters"][0]["blocks"][-1]["items"][5],
+    _GUIDE["chapters"][1]["blocks"][-1]["items"][0],
+    _GUIDE["chapters"][1]["blocks"][-1]["items"][1],
+    _GUIDE["chapters"][1]["blocks"][-1]["items"][2],
+    _GUIDE["chapters"][2]["blocks"][-1]["items"][0],
+    _GUIDE["chapters"][3]["blocks"][-1]["items"][0],
+    _GUIDE["chapters"][3]["blocks"][-1]["items"][1],
+    _GUIDE["chapters"][3]["blocks"][-1]["items"][2],
+    _GUIDE["chapters"][3]["blocks"][-1]["items"][3],
+    _GUIDE["chapters"][3]["blocks"][-1]["items"][4],
+    _GUIDE["chapters"][3]["blocks"][-1]["items"][5],
+    _GUIDE["chapters"][4]["blocks"][-1]["items"][0],
+    _GUIDE["chapters"][5]["blocks"][-1]["items"][0],
+]
+
+GUIDE = _GUIDE

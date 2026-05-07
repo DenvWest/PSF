@@ -20,6 +20,32 @@ python scripts/generate-guide-pdf.py energie
 
 3. Output: `public/downloads/{output_filename}` zoals ingesteld onder `meta`.
 
+## Wetenschappelijke bronnen (E-E-A-T)
+
+Elke gids **moet** (tenzij expres een korte leaflet zonder claims):
+
+- In de body bij claims **superscript-voetnootnummers** gebruiken: ReportLab-markup `<super>1</super>` (niet Unicode ¹ in platte tekst zonder markup).
+- Aan het **einde van elk hoofdstuk** dat bronnen heeft een blok `{"type": "references", "items": [...]}` vóór de automatische pagina-einde — zie onder.
+- Top-level **`all_references`**: genummerde lijst (`{"num": int, "text": str}`) met **alle** unieke bronnen; de generator plaatst dit op een aparte pagina **Bronnen** na de CTA en vóór de disclaimer.
+- Minimaal **10 unieke bronnen** per volwaardige gids; voorkeur PubMed / peer-reviewed / EFSA / overheid.
+- **Vancouver (verkort)** in `text`: Auteur(s). Titel. Tijdschrift. Jaar;Volume(Nummer):Pagina’s. Eventueel PMID/PMC.
+
+```python
+# Voetnotenblok onderaan een hoofdstuk (subset van all_references):
+{"type": "references", "items": [
+    {"num": 1, "text": "Wurtman RJ. Age-Related Decreases ..."},
+    {"num": 2, "text": "Hardeland R. Melatonin in Aging ..."},
+]}
+
+# Onderaan het GUIDE-dict (na chapters):
+GUIDE["all_references"] = [
+    {"num": 1, "text": "..."},
+    # ...
+]
+```
+
+Rendering (lijntje `#E5E0D8`, label **Bronnen** 8pt bold `#999`, regels 7.5pt `#666`, hanging indent) gebeurt in `scripts/generate-guide-pdf.py`.
+
 ## Template (`GUIDE`)
 
 ```python
@@ -85,16 +111,18 @@ GUIDE = {
 | `tip`       | `text`, optioneel `title` |
 | `table`     | `headers`, `rows` |
 | `spacer`    | `height` (pt, default 12) |
+| `references`| `items`: list van `{"num": int, "text": str}` (voetnoten onderaan hoofdstuk) |
 
-Tekst mag **ReportLab Paragraph markup** bevatten (`<b>`, `<br/>`, `<a href="..." color="#5A8F6A"><u>...</u></a>`). Gebruik anders platte tekst (speciale tekens worden waar nodig ge-escaped).
+Tekst mag **ReportLab Paragraph markup** bevatten (`<b>`, `<br/>`, `<super>N</super>`, `<a href="..." color="#5A8F6A"><u>...</u></a>`). Gebruik anders platte tekst (speciale tekens worden waar nodig ge-escaped). **Bullets** en **tabelcellen** ondersteunen dezelfde markup als `paragraph` zolang je `<` in de string gebruikt (dan wordt niet alles ge-escaped).
 
 ## Verplichte secties (logisch)
 
 1. **`meta`** — uitvoerbestandsnaam + banner-tekst.
 2. **`title_page`** — label, titel, subtitle, 4 USP’s, quote + bron, footer-url.
 3. **`chapters`** — elk hoofdstuk **begint op nieuwe pagina** (script voegt `PageBreak` toe).
-4. **`cta`** — voorlaatste pagina (Leefstijlcheck).
-5. **`disclaimer`** — laatste pagina (copyright).
+4. **`cta`** — na de hoofdstukken (Leefstijlcheck).
+5. **`all_references`** (aanbevolen) — volledige genummerde bronnenlijst op aparte pagina **Bronnen** (na CTA, vóór disclaimer).
+6. **`disclaimer`** — laatste pagina (copyright).
 
 FAQ’s zijn gewoon een extra hoofdstuk met `subtitle` + `paragraph` Q/A.
 
