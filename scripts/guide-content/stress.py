@@ -16,10 +16,10 @@ GUIDE = {
         "label": "GRATIS STRESSGIDS",
         "title": "De Stressgids voor mannen 40+",
         "subtitle": (
-            "Hoe je je zenuwstelsel weer kalmeert — zonder dat je je leven hoeft om te gooien."
+            "Zo breng je je lichaam weer wat meer naar rust — zonder je leven op zijn kop te zetten."
         ),
         "usps": [
-            "Waarom chronische stress na 40 harder voelt en wat dat met cortisol en herstel doet",
+            "Waarom chronische stress na je veertigste harder aanvoelt — en wat dat met herstel doet",
             "Vier pijlers die elkaar versterken: ademhaling, slaap, de juiste beweging, voeding",
             "Een haalbaar vierwekenplan én een verdieping voor daarna — met stresslog-sjabloon",
             "Supplementen in perspectief: magnesium, ashwagandha, L-theanine en omega-3",
@@ -75,64 +75,66 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Stress op zich is niet fout — acute stress scherpt aan en helpt je prioriteren. "
-                        "Het probleem is chronische belasting: dan blijft je <b>HPA-as te lang actief</b>"
-                        "<super>1</super>."
+                        "Stress hoort er te zijn — het maakt je scherp als het moet. Het probleem wordt pas als "
+                        "je wekenlang onder spanning blijft. Dan kan je <b>stresssysteem te lang op scherp blijven</b> "
+                        "<super>1</super>: de keten tussen je hersenen en de kleine orgaantjes boven je nieren "
+                        "(je <b>bijnieren</b>)."
                     ),
                 },
                 {
                     "type": "paragraph",
                     "text": (
-                        "<b>Cortisol en testosteron concurreren</b>: prospectieve data tonen associaties tussen "
-                        "cortisolprofielen en androgene markers bij mannen<super>2</super>. Experimenteel kan "
-                        "acute cortisol circulating testosteron onderdrukken<super>3</super>. "
-                        "Niet elk individu volgt hetzelfde patroon — het verklaart wel waarom chronische spanning "
-                        "herstel kan uitstellen."
-                    ),
-                },
-                {
-                    "type": "subtitle",
-                    "text": "Pregnenolon steal — waarom ‘prioriteit’ ertoe doet",
-                },
-                {
-                    "type": "paragraph",
-                    "text": (
-                        "Je lichaam gebruikt dezelfde bouwstenen voor verschillende hormonen. Als het systeem "
-                        "structureel uitlijning zoekt op overleven (cortisol), kan dat ten koste gaan van "
-                        "andere takken van hormoonsynthese — informeel <b>pregnenolon steal</b>; wetenschappelijk "
-                        "beschreven in neurosteroid-frameworks<super>4</super> (vereenvoudigde voorlichting; "
-                        "geen strikte diagnose-term)."
+                        "Je <b>testosteron kan dalen</b> als je stresshormoon (<b>cortisol</b>) lang hoog blijft. "
+                        "In ouder onderzoek bij mannen zagen onderzoekers bij chronisch verhoogd cortisol vaak "
+                        "<b>ongeveer 10–15% lagere testosteronwaarden</b> dan bij vergelijkbare leeftijdgenoten "
+                        "<super>2</super>. Los daarvan kan een plotseling hoge dosis cortisol je testosteron "
+                        "kort onderdrukken <super>3</super>. Zo’n gemiddelde zegt niet wat er bij jou gebeurt — "
+                        "wel verklaart het waarom je je bij aanhoudende stress minder hersteld kunt voelen."
                     ),
                 },
                 {
                     "type": "subtitle",
-                    "text": "Darmen, vagus en serotonine — waarom je buik bij stress ‘meedoet’",
+                    "text": "Waarom je lichaam soms ‘kiezen’ moet",
                 },
                 {
                     "type": "paragraph",
                     "text": (
-                        "Je nervus vagus verbindt brein en onderbuik: hij coördineert rust-digest modussen. "
-                        "Onder chronische stress verschuift vaak de balans naar minder ‘repair-and-digest’. "
-                        "Daarnaast regelt darmmicrobioom-host interactie een groot deel van de "
-                        "<b>serotoninebiosynthese</b>: circa <b>95%</b> van het lichaams-serotonine zit buiten "
-                        "de klassieke centrale pool — relevant voor stemming en stressverwerking<super>5</super>."
-                    ),
-                },
-                {"type": "subtitle", "text": "Sympathisch vs. parasympathisch — wat je voelt"},
-                {
-                    "type": "paragraph",
-                    "text": (
-                        "Je <b>sympathisch zenuwstelsel</b> (‘gas’) kan te dominant worden; je parasympathische "
-                        "tak (‘rem’) krijgt dan minder ruimte — een patroon dat samenhangt met chronische "
-                        "stresssystemen en endocriene disbalans<super>6</super>. Slaap wordt oppervlakkiger, "
-                        "herstel faalt, je merkt minder wat je lichaam probeert te signaleren."
+                        "Je lichaam gebruikt voor hormonen dezelfde bouwstoffen. Bij langdurige stress schuift de "
+                        "prioriteit vaak naar <b>stresshormoon</b>. Informeel zeggen sommigen: dan wordt er "
+                        "minder ruimte voor testosteron — ze gebruiken dezelfde grondstof. Zo uitgelegd "
+                        "klinkt het simpeler dan het in elk individu echt werkt <super>4</super>."
                     ),
                 },
                 {
+                    "type": "subtitle",
+                    "text": "Je buik doet mee — via een grote ‘rustzenuw’",
+                },
+                {
                     "type": "paragraph",
                     "text": (
-                        "Na 40 is je buffer kleiner: hetzelfde werkpakket voelt zwaarder omdat herstel "
-                        "trager en kwetsbaarder wordt. Dat is geen falen — het is fysiologie."
+                        "Er loopt een <b>grote zenuw</b> van je hersenstam naar je buik die je helpt kalmeren na "
+                        "stress (informeel: je ‘rustzenuw’). Sta je lang ‘aan’, dan voelt je spijsvertering dat "
+                        "ook. Daarnaast maakt een groot deel van je <b>serotonine</b> — een stof die met stemming "
+                        "te maken heeft — niet alleen ‘in je hoofd’, maar ook met hulp van je darmen en bacteriën "
+                        "daar; onderzoekers benadrukken vaak dat het grootste deel buiten de klassieke "
+                        "‘hoofdpool’ zit <super>5</super>. Vandaar dat eten, vezels en rust rond maaltijden meetellen."
+                    ),
+                },
+                {"type": "subtitle", "text": "Het voelt alsof je gaspedaal klemt"},
+                {
+                    "type": "paragraph",
+                    "text": (
+                        "Dan blijft het <b>‘aan-de-slag’-deel</b> van je zenuwstelsel te veel de baas. Het "
+                        "<b>‘eerst herstellen’-deel</b> komt minder aan bod — een patroon dat samenhangt met "
+                        "langdurige stress en hormonen <super>6</super>. Je slaap wordt oppervlakkiger, je "
+                        "merkt minder snel signalen van je lichaam."
+                    ),
+                },
+                {
+                    "type": "paragraph",
+                    "text": (
+                        "Na je 40e merk je zo’n buffer sneller: hetzelfde ritme voelt zwaarder. Dat zegt niets "
+                        "over falen — alleen dat herstel wat kwetsbaarder wordt."
                     ),
                 },
                 {
@@ -191,41 +193,39 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Stress verminderen is niet één hack. Het zijn vier pijlers die elkaar versterken. "
-                        "Twee pijlers goed uitvoeren slaat vier pijlers half uitvoeren."
+                        "Stress verminderen is geen enkele truc. Het zijn vier pijlers die elkaar versterken. "
+                        "Twee dingen goed volhouden slaat vier dingen half doen."
                     ),
                 },
                 {"type": "subtitle", "text": "Pijler 1: Ademhaling"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Je adem is de snelste vrij beschikbare schakelaar richting meer parasympatische "
-                        "activiteit."
+                        "Je adem is het snelste hulpmiddel dat je gratis hebt om je lichaam uit de hoogste spanning "
+                        "te halen."
                     ),
                 },
                 {
                     "type": "bullets",
                     "items": [
+                        "<b>4–6 ademen:</b> 4 tellen in, 6 tellen uit — een paar minuten per dag kan helpen om rustiger te worden <super>7</super>",
                         (
-                            "<b>4–6 ademhaling</b> (4 sec in, 6 sec uit) — traag ademen activeert parasympathisch "
-                            "effect-pathway’s in reviews van psycho-fysiologie<super>7</super>"
+                            "<b>Vierkant ademen:</b> 4 tellen in, 4 vasthouden, 4 uit, 4 wachten — handig bij een acute stresspie "
+                            "(vaak ‘box breathing’ genoemd)"
                         ),
-                        "Box breathing: 4–4–4–4 — geschikt bij acute spanning",
                         (
-                            "Fysiologische zucht: twee korte inhalaties door de neus, één langere uitademing "
-                            "door de mond — gestructureerde varianten verlagen arousal in onderzoek"
+                            "<b>Dubbele inademing:</b> twee keer kort door je neus (snif-snif), daarna één keer lang uit door je mond"
                             "<super>8</super>"
                         ),
                     ],
                 },
                 {
                     "type": "tip",
-                    "title": "Waarom een ‘zucht’ kan helpen",
+                    "title": "Waarom die dubbele inademing werkt",
                     "text": (
-                        "Een <b>dubbele inademing</b> kan longblaasjes extra openzetten; een "
-                        "<b>langere uitademing</b> versterkt vagale remming en verlaagt hartfrequentie sneller "
-                        "dan alleen focussen op inhaleren — in lijn met gecontroleerde adem-protocollen"
-                        "<super>8</super>."
+                        "Die eerste twee korte happen helpen je longen goed open te zetten. "
+                        "Die lange uitademing zet je <b>rustzenuw</b> harder aan het werk — vaak merk je dan "
+                        "sneller dat je hartslag daalt <super>8</super>."
                     ),
                 },
                 {"type": "subtitle", "text": "Pijler 2: Slaap"},
@@ -248,19 +248,19 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Voor een compleet slaapprotocol met supplement-tabellen en ritme-opbouw: download de "
-                        f"slaapgids via {_GUIDE_LINK}."
+                        "Download voor een volledig slaapplan met supplement-tabellen en ritme de slaapgids via "
+                        f"{_GUIDE_LINK}."
                     ),
                 },
-                {"type": "subtitle", "text": "Pijler 3: Beweging — kalibreren i.p.v. stoppen"},
+                {"type": "subtitle", "text": "Pijler 3: Beweging — afstemmen op wat je aankan"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "<b>Matige beweging</b> kan cortisol gunstiger profileren dan zeer hoge intensiteit, "
-                        "waarbij acute cortisolresponses hoger uit kunnen vallen<super>9</super>. "
-                        "<b>Wandelen</b> — vooral in groen — wordt in reviews gekoppeld aan stressvermindering "
-                        "en stemming<super>10</super>. Het doel is kalibreren: voldoende prikkel om fit te blijven, "
-                        "niet constant alarm."
+                        "Rustige beweging wordt in onderzoek vaak gunstiger gezien voor stresshormonen dan "
+                        "heel harde sport — zo’n harde sessie kan cortisol even doen pieken <super>9</super>. "
+                        "<b>Wandelen</b>, vooral buiten, wordt in samenvattingen van onderzoek gekoppeld aan "
+                        "minder spanning en een beter humeur <super>10</super>. Het punt: niet stoppen, maar het "
+                        "tempo aanpassen."
                     ),
                 },
                 {
@@ -272,11 +272,11 @@ GUIDE = {
                     "headers": ["Dag", "Focus"],
                     "rows": [
                         ["Maandag", "40–45 min wandelen (liefst buiten)"],
-                        ["Dinsdag", "Krachttraining kort (40–50 min), geen failure sets"],
+                        ["Dinsdag", "Korte krachttraining (40–50 min), niet tot het uiterste gaan"],
                         ["Woensdag", "Rust actief: yoga / mobiliteit 25–35 min"],
-                        ["Donderdag", "Wandelen 30 min + lichte core"],
-                        ["Vrijdag", "Krachttraining kort"],
-                        ["Zaterdag", "Langer wandelen (60–75 min), geen wedstrijd-intensiteit"],
+                        ["Donderdag", "30 min wandelen + lichte core"],
+                        ["Vrijdag", "Korte krachttraining"],
+                        ["Zaterdag", "Langere wandeling — geen trainingswedstrijd"],
                         ["Zondag", "Rust of heel lichte beweging"],
                     ],
                 },
@@ -292,15 +292,15 @@ GUIDE = {
                     "type": "bullets",
                     "items": [
                         (
-                            "<b>Eiwit bij ontbijt</b> stabiliseert bloedsuiker en appetitieve hormonen in "
-                            "proefpersoonstudies bij mis-breakfast-populaties<super>11</super>"
+                            "<b>Ontbijt met eiwit</b> — eieren, kwark of noten — helpt bij veel mensen om de "
+                            "ochtendbloedsuiker rustiger te houden <super>11</super>"
                         ),
                         "Geen koffie op volledig lege maag als je daar trillerig van wordt",
                         "Voldoende water — vermoeidheid maskeert vaak dehydratie",
                         (
-                            "Anti-inflammatoire bouwstenen: vette vis (omega-3), bessen, kleurrijke groenten, "
-                            "kurkuma als kruid (combineer met zwarte peper voor curcumine-opname), groene thee "
-                            "(let op cafeïne)"
+                            "Denk aan omega-3 uit vis en aan kleur op je bord: bessen, groente, kurkuma als kruid "
+                            "(met een beetje zwarte peper), groene thee — maar let op cafeïne als je daar "
+                            "hipper van wordt"
                         ),
                     ],
                 },
@@ -386,12 +386,12 @@ GUIDE = {
                         "Slaapkamer koel en donker",
                     ],
                 },
-                {"type": "subtitle", "text": "Week 3: Beweging kalibreren"},
+                {"type": "subtitle", "text": "Week 3: Beweging aanpassen"},
                 {
                     "type": "bullets",
                     "items": [
                         "Dagelijks wandelen",
-                        "Kracht kort en gecontroleerd — geen maximale intervals",
+                        "Kracht kort en rustig — geen maximale intervallen",
                     ],
                 },
                 {"type": "subtitle", "text": "Week 4: Meten wat werkt"},
@@ -434,58 +434,66 @@ GUIDE = {
                 },
                 {
                     "type": "tip",
-                    "title": "EFSA / regulering — even rechtzetten",
+                    "title": "Belangrijk over claims en regels",
                     "text": (
-                        "Veel kruidenextracten — waaronder ashwagandha — hebben in de EU "
-                        "<b>geen erkende gezondheidsclaims</b> volgens EFSA-beoordelingen voor "
-                        "<i>Withania somnifera</i><super>14</super>. Labels verschillen per leverancier; kies "
-                        "transparante extractinfo en batch-testing."
+                        "<b>Ashwagandha heeft geen door de EFSA goedgekeurde gezondheidsclaims.</b> Wat je hier "
+                        "leest komt uit onderzoek bij vrijwilligers — niet uit zo’n officiële claim op een "
+                        "pillendoosje. Labels verschillen; kies merken met duidelijke extractinfo. "
+                        "<b>In Nederland wordt de regelgeving rondom ashwagandha scherper bekeken;</b> "
+                        "houd het nieuws in de gaten."
                     ),
                 },
                 {"type": "subtitle", "text": "Magnesium"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Magnesium draagt bij aan een <b>normale werking van het zenuwstelsel</b> — een "
-                        "EFSA-goedgekeurde claim onder voorwaarden van Verordening (EU) nr. 432/2012"
-                        "<super>15</super>."
+                        "Magnesium draagt bij aan de normale werking van het zenuwstelsel en kan bijdragen aan "
+                        "vermindering van vermoeidheid — dat zijn <b>EFSA-goedgekeurde claims</b> onder de juiste "
+                        "product- en dosisvoorwaarden (EU-verordening nr. 432/2012)<super>15</super>. "
+                        "Dat wil nog niet zeggen dat jij het verschil meteen voelt — maar het verklaart waarom "
+                        "veel mensen het serieus nemen."
                     ),
                 },
                 {"type": "subtitle", "text": "Ashwagandha (extracten zoals KSM-66 / Sensoril worden veel besproken)"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "RCT’s melden <b>lager cortisol</b> en minder stressscores met sommige "
-                        "full-spectrum- en hoog-concentratie-extracten"
-                        "<super>12</super><super>13</super>. Geen acute uit-knop — stop bij maagklachten "
-                        "of sufheid en overleg bij schildklier- of schildkliermedicatie."
+                        "In gecontroleerde studies bij vrijwilligers werd bij sommige extracten "
+                        "<b>minder stresshormoon (cortisol) gemeten</b> en geven mensen vaak lagere stressscores "
+                        "aan dan met een placebo — maar uitkomsten <b>lopen sterk uiteen</b>"
+                        "<super>12</super><super>13</super>. Dit is geen ‘uit-knop’. Stop bij klachten aan je maag "
+                        "of ongewenste sufheid. Gebruik je schildkliermedicatie? Overleg eerst met je arts."
                     ),
                 },
                 {"type": "subtitle", "text": "L-theanine"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Kan overdag of voor rustmomenten helpen zonder zware sedatie — veel gebruikers zitten rond "
-                        "<b>100–200 mg</b>. Combineer voorzichtig met veel cafeïne als je gevoelig bent voor hartslag."
+                        "Sommige mensen gebruiken dit aminozuur uit thee als ze spanning willen temperen zonder "
+                        "meteen suf te worden. Doseringen rond <b>100–200 mg</b> komen vaak voor — voel zelf wat "
+                        "bij je past. Drink je veel sterke koffie? Ga voorzichtig om met combinaties als je "
+                        "hart sneller klopt."
                     ),
                 },
                 {"type": "subtitle", "text": "Omega-3 (EPA/DHA)"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "<b>EPA</b> moduleert ontstekingsroutes relevant bij chronische stressbelasting"
-                        "<super>16</super> — vooral als je weinig vis eet. Kwaliteit en oxidatie zijn belangrijker dan "
-                        "megadosissen."
+                        "<b>EPA en DHA uit visolie</b> worden in onderzoek in verband gebracht met ontstekingsbalans "
+                        "en met het ondersteunen van celmembranen — relevant als je weinig vis eet "
+                        "<super>16</super>. Belangrijker dan megadosissen is verse olie van goede kwaliteit."
                     ),
                 },
                 {
                     "type": "tip",
                     "title": "Stapelvolgorde (praktisch)",
                     "text": (
-                        "<b>Week 1–2:</b> magnesium + basisroutine.<br/>"
-                        "<b>Week 3–4:</b> eventueel ashwagandha toevoegen als stress nog dominant is.<br/>"
-                        "<b>Week 5–6:</b> evalueer — werk het? Zo niet: niet stapellen, maar terug naar één variabele.<br/>"
-                        "L-theanine kun je gericht inzetten rond bedtijd of stresspieken; omega-3 parallel aan voeding."
+                        "<b>Week 1–2:</b> magnesium naast je basisroutine — raadpleeg je huisarts bij medicatie.<br/>"
+                        "<b>Week 3–4:</b> eventueel ashwagandha, alleen als spanning nog overheerst "
+                        "(geen EFSA-claims; zie kader hierboven).<br/>"
+                        "<b>Week 5–6:</b> evalueer eerlijk: merk je iets? Zo niet, niet verder stapelen.<br/>"
+                        "L-theanine kun je gericht proberen voor slapen of stresspieken; omega-3 past naast "
+                        "normale voeding."
                     ),
                 },
                 {
@@ -511,17 +519,17 @@ GUIDE = {
                         {
                             "num": 14,
                             "text": (
-                                "EFSA Panel on Dietetic Products, Nutrition and Allergies (NDA). Scientific opinions on "
-                                "health claims related to botanical substances — geen goedgekeurde claims voor "
-                                "<i>Withania somnifera</i> (ashwagandha) vastgesteld per mei 2026 (EFSA Journal; "
-                                "botanical claim dossiers)."
+                                "EFSA — Europese lijst van goedgekeurde gezondheidsclaims (EU-verordening nr. "
+                                "432/2012): voor <i>Withania somnifera</i> (ashwagandha) zijn geen dergelijke claims "
+                                "vastgesteld; raadpleeg registers voor actuele status."
                             ),
                         },
                         {
                             "num": 15,
                             "text": (
-                                "EFSA. Magnesium draagt bij tot een normale werking van het zenuwstelsel — "
-                                "Verordening (EU) nr. 432/2012 (lijst goedgekeurde claims)."
+                                "EFSA — goedgekeurde claims voor magnesium o.a. normale werking zenuwstelsel en "
+                                "bijdrage aan vermindering van vermoeidheid — EU-verordening nr. 432/2012 "
+                                "(onder voorwaarden)."
                             ),
                         },
                         {
@@ -542,40 +550,53 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Deze gids gaat over chronische stress als fysiologisch fenomeen. Soms is het breder — dan "
-                        "hoort er professionaliteit bij."
+                        "Deze gids helpt je bij langdurige spanning die niet meer vanzelf wegzakt. "
+                        "Denk je dat het breder is — bijvoorbeeld diepe somberheid of paniek — zoek dan hulp "
+                        "buiten deze teksten om."
                     ),
                 },
-                {"type": "subtitle", "text": "Bel je huisarts of plan POH-GGZ bij onder andere"},
+                {
+                    "type": "subtitle",
+                    "text": "Bel je huisarts of vraag een POH-GGZ-gesprek aan bij onder andere",
+                },
                 {
                     "type": "bullets",
                     "items": [
-                        "Weken tot maanden somberheid",
-                        "Geen plezier meer in wat je eerder leuk vond",
-                        "'s Ochtends structureel niet uit bed komen",
-                        "Paniek- of angstaanvallen",
-                        "Sterk negatieve gedachten over jezelf",
+                        "Je bent weken of maanden somber",
+                        "Niets waar je blij van werd voelt nog leuk",
+                        "Je komt ’s ochtends niet meer uit bed",
+                        "Je hebt paniek- of angstaanvallen",
+                        "Je denkt heel negatief over jezelf",
                     ],
                 },
                 {
                     "type": "paragraph",
                     "text": (
-                        "<b>113 Zelfmoordpreventie</b> (0800-0113) en de <b>huisartsenpost</b> zijn 24/7 bereikbaar "
-                        "bij acute crisis of zorgen over veiligheid."
+                        "<b>113 Zelfmoordpreventie</b> (telefoon <b>0800-0113</b>) en de "
+                        "<b>huisartsenpost</b> bereik je 24 uur per dag bij acute crisis of als je bang bent voor "
+                        "wat je voelt."
                     ),
                 },
                 {
                     "type": "paragraph",
                     "text": (
-                        "Een <b>POH-GGZ-gesprek</b> via je huisarts is in Nederland doorgaans "
-                        "<b>gratis en vergoed vanuit de basisverzekering</b> volgens landelijke kaders "
-                        "<super>17</super> — controleer je polis voor details bij jouw zorgverzekeraar."
+                        "<b>POH-GGZ</b> staat voor een gespecialiseerde hulpverlener op de praktijk van je "
+                        "huisarts. Zo’n eerste gesprek is meestal <b>gratis</b> en wordt "
+                        "<b>vergoed vanuit je basisverzekering</b> — check jouw polis voor details "
+                        "<super>17</super>."
                     ),
                 },
                 {
                     "type": "paragraph",
                     "text": (
-                        "Dit hoeft geen falen te zijn — het kan betekenen dat je systeem te lang overbelast was."
+                        "<b>Twijfel je?</b> Bel je huisarts. Dat is geen zwakte — dat is verstandig."
+                    ),
+                },
+                {
+                    "type": "paragraph",
+                    "text": (
+                        "Dat je hier terechtkomt, hoeft niets te zeggen over falen. Soms staat een systeem te lang "
+                        "aan."
                     ),
                 },
                 {
@@ -600,8 +621,8 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Nee. Burn-out is een diagnoseterm in specifieke medische contexten (criteria via arts). "
-                        "Chronische stress beschrijft een belastingstoestand — die kan voorafgaan aan meer, maar "
+                        "Nee. Burn-out is een diagnose die alleen een arts in een vaste procedure mag vaststellen. "
+                        "‘Chronische stress’ beschrijft hoe zwaar het voelt — dat kan wijzen op meer, maar het "
                         "is niet hetzelfde."
                     ),
                 },
@@ -609,34 +630,40 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Ja, dat kan — onder andere via langdurig verhoogde cortisol en concurrentie tussen "
-                        "stress- en androgene assen (zie hoofdstuk 02)<super>2</super><super>3</super>."
+                        "Ja, dat kan bij sommige mannen spelen. Langdurig hoog cortisol hangt samen met lagere "
+                        "testosteronwaarden in onderzoek — en je lichaam kan tijdelijk meer aan stresshormoon "
+                        "bouwen dan aan testosteron (zie hoofdstuk 02)<super>2</super><super>3</super>. "
+                        "Elk lichaam reageert anders."
                     ),
                 },
                 {"type": "subtitle", "text": "Hoe snel merk ik resultaat van stressvermindering?"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Ademhaling kan binnen minuten subtiel verschil geven; slaap en training vragen vaak "
-                        "2–4 weken om trend zichtbaar te maken; adaptogenen zoals ashwagandha worden vaak pas "
-                        "na meerdere weken geëvalueerd."
+                        "Ademoefeningen merk je soms binnen enkele minuten subtiel. "
+                        "Slaap en wandelen hebben meestal een paar weken nodig om een trend te zien. "
+                        "Kruiden zoals ashwagandha kunnen pas na meerdere weken beoordeeld worden — "
+                        "onthoud dat ze <b>geen EFSA-goedgekeurde claims</b> hebben."
                     ),
                 },
                 {"type": "subtitle", "text": "Mag ik ashwagandha combineren met medicatie?"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Niet zonder overleg bij schildkliermedicatie, immunotherapie, sedativa of als je zwanger "
-                        "probeert te worden. Neem je stack mee naar je apotheek/huisarts."
+                        "Niet zonder overleg bij schildkliermedicatie, bij kalmerende pillen of bij "
+                        "immunotherapie. Wil je zwanger worden of gebruik je andere vaste medicatie? "
+                        "Neem je potjes mee naar huisarts of apotheek. "
+                        "<b>Ashwagandha heeft geen EFSA-goedgekeurde claims;</b> extra reden om niet zelf te "
+                        "stoeien."
                     ),
                 },
                 {"type": "subtitle", "text": "Ik kan niet stoppen met hard trainen — wat dan?"},
                 {
                     "type": "paragraph",
                     "text": (
-                        "Dan train je nog — maar je verandert de <b>kwaliteit</b>: minder tot falen, meer "
-                        "technische reps, meer slaap en meer wandelen. Het voelt als minder; voor je hormonen is "
-                        "het vaak meer herstel."
+                        "Je hoeft niet te stoppen met sport — maar parkeer even de zwaarste vormen. "
+                        "Wandelen en rustige krachttraining leveren in zo’n herstelfase vaak meer op dan jezelf "
+                        "kapot intervaltrainen. Het voelt rustiger; je systeem heeft juist dat nodig."
                     ),
                 },
             ],
@@ -671,7 +698,7 @@ GUIDE = {
     "cta": {
         "title": "Wil je weten waar je staat?",
         "text": (
-            "Stress is één van de zes domeinen die we meten in de gratis Leefstijlcheck. In een paar minuten "
+            "Stress is een van de zes domeinen die we meten in de gratis Leefstijlcheck. In een paar minuten "
             "zie je waar je op scoort — en welk profiel bij jou past."
         ),
         "url_href": "https://perfectsupplement.nl/intake",
