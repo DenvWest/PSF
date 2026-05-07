@@ -64,6 +64,8 @@ export const cortisolVerlagenData: BlogArtikel = {
     "slaap-verbeteren-40-plus",
     "ademhaling-tegen-stress",
   ],
+  stressPillarTurbo:
+    "Dit artikel over cortisol is onderdeel van onze complete gids over stressvermindering — van de HPA-as tot een concreet weekplan.",
   metaTitle:
     "Cortisol verlagen: 5 natuurlijke methodes voor mannen 40+ | PerfectSupplement",
   metaDescription:

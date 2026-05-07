@@ -309,6 +309,17 @@ export default function StressdragerPage() {
             <section className="py-12 border-t border-slate-100">
               <h2 className="font-[var(--font-heading)] text-xl text-slate-900 mb-6">Verder Lezen</h2>
               <div className="space-y-5">
+                {profile.relatedPillar && (
+                  <div>
+                    <p className="text-slate-600 text-sm">{profile.relatedPillar.turboSnippet}</p>
+                    <Link
+                      href={profile.relatedPillar.href}
+                      className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                    >
+                      Alles over stressvermindering na 40 — de complete gids →
+                    </Link>
+                  </div>
+                )}
                 {profile.relatedComparisons.map((item, index) => (
                   <div key={`${item.href}-${index}`}>
                     <p className="text-slate-600 text-sm">{item.turboSnippet}</p>

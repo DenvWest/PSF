@@ -174,7 +174,11 @@ export const stressdragerProfile: ProfilePageData = {
     text: "De Leefstijlcheck koppelt stress aan slaap, energie en herstel — zodat je weet waar je het snelst winst behaalt.",
   },
 
-  relatedPillar: null,
+  relatedPillar: {
+    href: "/stress-verminderen-man",
+    turboSnippet:
+      "Chronische stress, cortisol, slaap en testosteron — in één onderbouwde gids met een concreet weekplan.",
+  },
 
   relatedComparisons: [
     {

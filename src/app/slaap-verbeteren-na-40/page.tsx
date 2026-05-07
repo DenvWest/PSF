@@ -588,6 +588,20 @@ export default function SlaapVerbeterenNa40Page() {
                   Verdiepende artikelen over slaap en herstel.
                 </p>
 
+                <div className="mt-6 p-5 rounded-xl border border-stone-200 bg-stone-50">
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    <strong className="text-gray-900">Speelt stress een rol bij je slaapproblemen?</strong>
+                    <br />
+                    Chronische stress en slaap zijn nauw verbonden. Als je merkt dat je &apos;s nachts wakker wordt met een hoofd vol gedachten, kan stress de onderliggende oorzaak zijn.
+                  </p>
+                  <Link
+                    href="/stress-verminderen-man"
+                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] text-sm"
+                  >
+                    Lees de gids: Stress Verminderen na 40 →
+                  </Link>
+                </div>
+
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">

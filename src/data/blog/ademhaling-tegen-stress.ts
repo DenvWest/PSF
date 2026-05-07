@@ -48,6 +48,8 @@ export const ademhalingTegenStressData: BlogArtikel = {
     "stress-werk-grenzen-stellen",
     "slaap-verbeteren-40-plus",
   ],
+  stressPillarTurbo:
+    "Ademhaling is één van de vijf pijlers uit onze complete gids over stressvermindering. Benieuwd naar de andere vier?",
   metaTitle:
     "Ademhaling tegen stress: 4-7-8, box breathing en coherent ademen | PerfectSupplement",
   metaDescription:

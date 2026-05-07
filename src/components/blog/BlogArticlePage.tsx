@@ -95,6 +95,19 @@ export default function BlogArticlePage({
           ))}
         </div>
 
+        {artikel.stressPillarTurbo && (
+          <aside className="mt-10 max-w-[680px] bg-[#F7F5F0] rounded-xl p-6">
+            <p className="font-display text-lg text-stone-900">Meer over stress na 40?</p>
+            <p className="text-stone-600 mt-2 text-sm leading-relaxed">{artikel.stressPillarTurbo}</p>
+            <Link
+              href="/stress-verminderen-man"
+              className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] mt-3 inline-block text-sm"
+            >
+              Lees de complete gids: Stress Verminderen na 40 →
+            </Link>
+          </aside>
+        )}
+
         {/* Intake CTA */}
         <div className="mt-16 max-w-[680px]">
           <section className="rounded-2xl bg-[#F7F5F0] px-6 py-10 text-center sm:px-10">

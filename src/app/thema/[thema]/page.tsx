@@ -205,6 +205,31 @@ export default async function ThemaPage({ params }: Props) {
         </Container>
       </section>
 
+      {slug === "stress" && (
+        <section className="py-16 lg:py-20" aria-labelledby="stress-pillar-gids-heading">
+          <Container>
+            <div className="mx-auto flex max-w-2xl flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+              <h2
+                id="stress-pillar-gids-heading"
+                className="font-display text-2xl text-stone-900"
+              >
+                De complete gids: stress verminderen na 40
+              </h2>
+              <p className="mt-2 text-base leading-relaxed text-stone-600">
+                Wat doet chronische stress met je lichaam? Hoe zit de cortisol-testosteron balans in
+                elkaar? En wat kun je er concreet aan doen — van ademhaling tot supplementen?
+              </p>
+              <Link
+                href="/stress-verminderen-man"
+                className="mt-3 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+              >
+                Lees de complete gids →
+              </Link>
+            </div>
+          </Container>
+        </section>
+      )}
+
       {/* ─── E-MAIL GATE + EXPERT QUOTE ─── */}
       <section className="py-16 lg:py-20">
         <Container>

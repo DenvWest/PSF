@@ -49,6 +49,8 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
     "cortisol-verlagen-natuurlijk",
     "ashwagandha-werking-mannen",
   ],
+  stressPillarTurbo:
+    "Grenzen stellen is de structurele oplossing voor chronische stress. In onze complete gids lees je ook over ademhaling, supplementen en een weekplan.",
   metaTitle:
     "Grenzen stellen op werk: professioneel nee zeggen | PerfectSupplement",
   metaDescription:
