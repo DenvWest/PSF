@@ -4,9 +4,21 @@ export type BlogCategorie = "stress" | "slaap" | "energie" | "supplementen";
 
 export type BlogSectieType = "tekst" | "opsomming";
 
+export type BlogEvidenceNiveau = "sterk" | "redelijk" | "beperkt" | "vroeg";
+
+/** Optionele tussenkop onder een sectie voor langere teksten (TOC H3); `tekst` weglaten = alleen kop in TOC. */
+export interface BlogSubkop {
+  titel: string;
+  tekst?: string;
+}
+
 export interface BlogSectie {
   type: BlogSectieType;
   titel: string;
+  /** Subtiel bewijsniveau voor evidence‑based presentatie — alleen gebruiken waar relevant. */
+  bewijsNiveau?: BlogEvidenceNiveau;
+  /** Extra H3-structuren onder deze sectie; verschijnt automatisch in de inhoudsopgave. */
+  subkoppen?: BlogSubkop[];
   /** Doorlopende tekst — voor type "tekst" */
   tekst?: string;
   /** Optionele inleidende zin voor type "opsomming" */

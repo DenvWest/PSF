@@ -36,6 +36,11 @@
   --ps-green-light: #e8f5ee;
   --ps-amber: #b45309;
   --ps-amber-light: #fef3c7;
+
+  /* Editorial / article reading (blog + kennisbank) — sticky TOC + anchors */
+  --reading-scroll-margin: 6.75rem;
+  --sticky-toc-offset: 6.875rem;
+  --reading-layout-max-width: 88rem;
 }
 
 /* Tailwind font utilities */
