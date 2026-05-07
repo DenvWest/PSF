@@ -16,6 +16,8 @@ import ArticleReferentiesFooter from "@/components/content/ArticleReferentiesFoo
 import ArticleBodyReadingChrome, {
   ARTICLE_HIDE_TOC_BELOW_ITEMS,
 } from "@/components/content/ArticleBodyReadingChrome";
+import ReadingLayoutDesktopGutters from "@/components/content/ReadingLayoutDesktopGutters";
+import { READING_ROW_GAP_CLASS } from "@/lib/article-reading-columns";
 import { renderInlineMarkdownLinks } from "./inlineMarkdownLinks";
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
@@ -51,6 +53,7 @@ export default function BlogArticlePage({
   const redacteur = artikel.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD;
 
   const tocItems = buildBlogTocItems(artikel.slug, artikel.secties);
+  const showReadingGutters = tocItems.length >= ARTICLE_HIDE_TOC_BELOW_ITEMS;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -80,32 +83,43 @@ export default function BlogArticlePage({
 
       <header className="border-b border-stone-200/75 bg-white">
         <Container className="py-11 md:py-[3.25rem]">
-          <div className="max-w-[min(72ch,calc(100%-0.75rem))]">
-            <Breadcrumbs
-              items={[
-                { label: "Blog", href: "/blog" },
-                { label: artikel.titel },
-              ]}
-            />
+          <div
+            className={`flex min-w-0 flex-col lg:flex-row lg:items-start ${
+              showReadingGutters ? READING_ROW_GAP_CLASS : ""
+            }`}
+          >
+            {showReadingGutters ? <ReadingLayoutDesktopGutters /> : null}
+            <div
+              className={`min-w-0 w-full max-w-[min(72ch,calc(100%-0.75rem))] ${
+                showReadingGutters ? "mx-auto lg:mx-0" : "mx-auto"
+              }`}
+            >
+              <Breadcrumbs
+                items={[
+                  { label: "Blog", href: "/blog" },
+                  { label: artikel.titel },
+                ]}
+              />
 
-            <div className="mt-8">
-              <BlogCategorieBadge categorie={artikel.categorie} />
+              <div className="mt-8">
+                <BlogCategorieBadge categorie={artikel.categorie} />
 
-              <h1 className="mt-6 font-display text-[clamp(2rem,4vw,2.6rem)] font-semibold leading-[1.12] tracking-[-0.02em] text-stone-900">
-                {artikel.titel}
-              </h1>
+                <h1 className="mt-6 font-display text-[clamp(2rem,4vw,2.6rem)] font-semibold leading-[1.12] tracking-[-0.02em] text-stone-900">
+                  {artikel.titel}
+                </h1>
 
-              <div className="mt-5">
-                <BlogMeta leestijd={artikel.leestijd} gepubliceerdOp={artikel.gepubliceerdOp} />
-              </div>
+                <div className="mt-5">
+                  <BlogMeta leestijd={artikel.leestijd} gepubliceerdOp={artikel.gepubliceerdOp} />
+                </div>
 
-              <p className={HERO_PROSE}>{renderInlineMarkdownLinks(artikel.heroIntro)}</p>
+                <p className={HERO_PROSE}>{renderInlineMarkdownLinks(artikel.heroIntro)}</p>
 
-              <div
-                role="note"
-                className="mt-7 max-w-[72ch] rounded-lg border border-stone-200/95 bg-[color-mix(in_srgb,var(--ps-bg)_92%,transparent)] px-4 py-3.5 text-[0.875rem] leading-[1.7] text-stone-600"
-              >
-                {artikel.leesNuanceOnderHero ?? DEFAULT_HERO_NUANCE}
+                <div
+                  role="note"
+                  className="mt-7 max-w-[72ch] rounded-lg border border-stone-200/95 bg-[color-mix(in_srgb,var(--ps-bg)_92%,transparent)] px-4 py-3.5 text-[0.875rem] leading-[1.7] text-stone-600"
+                >
+                  {artikel.leesNuanceOnderHero ?? DEFAULT_HERO_NUANCE}
+                </div>
               </div>
             </div>
           </div>

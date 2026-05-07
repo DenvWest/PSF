@@ -3,6 +3,12 @@
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import type { ArticleTocItem } from '@/types/article-reading'
 import ArticleTableOfContents from '@/components/content/ArticleTableOfContents'
+import {
+  READING_MAIN_COL_CLASS,
+  READING_RAIL_COL_CLASS,
+  READING_ROW_GAP_CLASS,
+  READING_TOC_COL_CLASS,
+} from '@/lib/article-reading-columns'
 import { parseReadingAnchorLinePx } from '@/lib/reading-metrics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
@@ -15,7 +21,6 @@ interface ArticleBodyReadingChromeProps {
   children: React.ReactNode
 }
 
-/** Voortgang 0–1 op basis van positie langs het meetbare artikel‑blok. */
 function readingProgressFraction(el: HTMLElement | null): number {
   if (!el) return 0
   const anchor = parseReadingAnchorLinePx()
@@ -98,7 +103,7 @@ export default function ArticleBodyReadingChrome({
   }
 
   return (
-    <div className="relative lg:scroll-pt-[var(--reading-scroll-margin)]">
+    <div className="relative w-full lg:scroll-pt-[var(--reading-scroll-margin)]">
       <div
         className="pointer-events-none fixed left-0 right-0 top-0 z-[60] md:hidden"
         aria-hidden="true"
@@ -106,48 +111,46 @@ export default function ArticleBodyReadingChrome({
         <div className="h-px bg-stone-200/95" />
         <div className="h-[2px] w-full bg-stone-200/95">
           <div
-            className="h-full w-full origin-left bg-stone-500/90 motion-safe:transition-transform motion-safe:duration-100 motion-safe:ease-out"
+            className="motion-safe:ease-linear h-full w-full origin-left bg-stone-500/90 motion-safe:transition-transform motion-safe:duration-100 motion-safe:ease-out"
             style={{ transform: `scaleX(${progress})` }}
           />
         </div>
       </div>
 
       <div
-        className={`mx-auto w-full max-w-[min(92rem,calc(100vw-2rem))] ${
-          showToc ? 'lg:grid lg:grid-cols-[minmax(9.25rem,10.25rem)_1fr] lg:gap-x-[clamp(1.25rem,3vw,2.25rem)]' : ''
+        className={`flex w-full min-w-0 flex-col items-stretch lg:flex-row ${READING_ROW_GAP_CLASS} ${
+          showToc ? '' : 'lg:justify-center'
         }`}
       >
         {showToc ? (
-          <aside className="hidden min-h-0 lg:block">
+          <aside className={`${READING_TOC_COL_CLASS} hidden min-h-0 lg:block`}>
             <div className="sticky top-[var(--sticky-toc-offset)] pb-14 pt-0.5 xl:pb-16">
               <ArticleTableOfContents items={tocItems} activeId={activeId} />
             </div>
           </aside>
         ) : null}
 
-        <div className={showToc ? 'min-w-0' : 'lg:col-span-full'}>
-          <div className="flex justify-center">
-            <div ref={measureRef} className="relative w-full max-w-[68ch] lg:max-w-[70ch]">
+        {showToc ? (
+          <div className={`${READING_RAIL_COL_CLASS} hidden lg:flex`} aria-hidden="true">
+            <div className="relative min-h-[6rem] w-[2px] flex-1 overflow-hidden rounded-full bg-stone-200/92">
               <div
-                className="pointer-events-none absolute -left-2 top-0 bottom-0 z-0 hidden w-[2px] overflow-hidden lg:block xl:-left-2.5"
-                aria-hidden="true"
-              >
-                <div className="h-full rounded-full bg-stone-200/90" />
-                <div
-                  className="absolute left-0 top-0 h-full w-full origin-top rounded-full bg-stone-600/88 motion-safe:transition-transform motion-safe:duration-[120ms] motion-safe:ease-linear"
-                  style={{ transform: `scaleY(${progress})` }}
-                />
-              </div>
-
-              {showToc ? (
-                <div className="mb-9 lg:hidden">
-                  <ArticleTableOfContents items={tocItems} activeId={activeId} />
-                </div>
-              ) : null}
-
-              <div className="relative">{children}</div>
+                className="motion-safe:ease-linear absolute left-0 top-0 h-full w-full origin-top rounded-full bg-stone-600/88 motion-safe:transition-transform motion-safe:duration-[130ms]"
+                style={{ transform: `scaleY(${progress})` }}
+              />
             </div>
           </div>
+        ) : null}
+
+        <div
+          ref={measureRef}
+          className={`${READING_MAIN_COL_CLASS} mx-auto ${showToc ? 'lg:mx-0' : ''}`}
+        >
+          {showToc ? (
+            <div className="mb-9 lg:hidden">
+              <ArticleTableOfContents items={tocItems} activeId={activeId} />
+            </div>
+          ) : null}
+          <div className="relative min-w-0">{children}</div>
         </div>
       </div>
 

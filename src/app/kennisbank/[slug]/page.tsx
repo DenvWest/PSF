@@ -12,7 +12,9 @@ import {
 import type { KennisbankTheme } from '@/data/kennisbank'
 import ArticleReferentiesFooter from '@/components/content/ArticleReferentiesFooter'
 import ArticleBodyReadingChrome from '@/components/content/ArticleBodyReadingChrome'
+import ReadingLayoutDesktopGutters from '@/components/content/ReadingLayoutDesktopGutters'
 import { buildKennisbankTocItems } from '@/lib/article-toc'
+import { READING_ROW_GAP_CLASS } from '@/lib/article-reading-columns'
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
   STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
@@ -322,44 +324,51 @@ function TermPage({ slug }: { slug: string }) {
       <main>
         <Container>
           <div className="py-10 md:py-16">
-            <nav aria-label="Breadcrumb" className="mb-10">
-              <ol className="flex flex-wrap items-center gap-2 text-[0.8125rem] text-stone-400">
-                <li>
-                  <Link href="/" className="transition hover:text-stone-600">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none">›</li>
-                <li>
-                  <Link href="/kennisbank" className="transition hover:text-stone-600">
-                    Kennisbank
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none">›</li>
-                <li>
-                  <Link href={`/kennisbank/${term.theme}`} className="transition hover:text-stone-600">
-                    {themeLabels[term.theme].title}
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none">›</li>
-                <li className="font-medium text-stone-600">{term.term}</li>
-              </ol>
-            </nav>
-
             <article>
-              <header className="mb-12 max-w-[72ch] md:mb-[4rem]">
-                <span className="inline-flex rounded-full border border-stone-200/95 bg-white/95 px-3 py-1 text-[0.6875rem] font-medium uppercase tracking-[0.05em] text-stone-500">
-                  {themeLabels[term.theme].title}
-                </span>
-                <h1 className="mt-6 font-display text-[clamp(2rem,4vw,2.85rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-stone-900">
-                  {term.term} — wat je moet weten
-                </h1>
-                <p className="mt-6 text-[1.0625rem] leading-[1.82] text-stone-600 md:text-[1.125rem]">
-                  {term.shortDefinition}
-                </p>
-              </header>
+              <div
+                className={`mb-12 flex min-w-0 flex-col md:mb-[4rem] lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}
+              >
+              <ReadingLayoutDesktopGutters />
+              <div className="w-full min-w-0 max-w-[72ch] mx-auto lg:mx-0">
+                <nav aria-label="Breadcrumb" className="mb-10">
+                  <ol className="flex flex-wrap items-center gap-2 text-[0.8125rem] text-stone-400">
+                    <li>
+                      <Link href="/" className="transition hover:text-stone-600">
+                        Home
+                      </Link>
+                    </li>
+                    <li aria-hidden className="select-none">›</li>
+                    <li>
+                      <Link href="/kennisbank" className="transition hover:text-stone-600">
+                        Kennisbank
+                      </Link>
+                    </li>
+                    <li aria-hidden className="select-none">›</li>
+                    <li>
+                      <Link href={`/kennisbank/${term.theme}`} className="transition hover:text-stone-600">
+                        {themeLabels[term.theme].title}
+                      </Link>
+                    </li>
+                    <li aria-hidden className="select-none">›</li>
+                    <li className="font-medium text-stone-600">{term.term}</li>
+                  </ol>
+                </nav>
 
-              <ArticleBodyReadingChrome tocItems={tocItems} hideTocBelowItemCount={2}>
+                <header>
+                  <span className="inline-flex rounded-full border border-stone-200/95 bg-white/95 px-3 py-1 text-[0.6875rem] font-medium uppercase tracking-[0.05em] text-stone-500">
+                    {themeLabels[term.theme].title}
+                  </span>
+                  <h1 className="mt-6 font-display text-[clamp(2rem,4vw,2.85rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-stone-900">
+                    {term.term} — wat je moet weten
+                  </h1>
+                  <p className="mt-6 text-[1.0625rem] leading-[1.82] text-stone-600 md:text-[1.125rem]">
+                    {term.shortDefinition}
+                  </p>
+                </header>
+              </div>
+            </div>
+
+            <ArticleBodyReadingChrome tocItems={tocItems} hideTocBelowItemCount={2}>
                 <section className={KB_SECTION_CLASS} aria-labelledby="wat-is-het">
                   <h2 id="wat-is-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
                     Wat is {term.term}?
