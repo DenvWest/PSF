@@ -10,6 +10,7 @@ import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
+import BlogBronnen from "./BlogBronnen";
 import { renderInlineMarkdownLinks } from "./inlineMarkdownLinks";
 
 interface BlogArticlePageProps {
@@ -93,6 +94,7 @@ export default function BlogArticlePage({
           {hoofdSecties.map((sectie, index) => (
             <BlogSectie key={index} sectie={sectie} />
           ))}
+          <BlogBronnen bronnen={artikel.bronnen} />
         </div>
 
         {artikel.stressPillarTurbo && (

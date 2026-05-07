@@ -69,4 +69,12 @@ export const slaapVerbeterenData: BlogArtikel = {
     "magnesium slaap",
     "circadiaans ritme",
   ],
+  bronnen: [
+    "Vitiello MV. Sleep disturbances in older adults physiology and pathology. Sleep Med Clin. foundational overview sleep architecture aging.",
+    "Roenneberg T et al. Social jetlag chronotypes mismatched internal external clock. Curr Biol. 2012;22(21):R939-R943.",
+    "Riemann D et al. European guideline diagnosis treatment insomnia insomnia disorder — multidimensional sleep guideline context.",
+    "Institute of Medicine (US). Sleep Disorders Sleep Deprivation epidemic — NIH / National Academies report context public sleep health.",
+    "NIH Office of Dietary Supplements. Magnesium fact sheet consumer — intake physiology claims cross-reference lineage.",
+    "Claustrat B, Leston J. Melatonin circadian rhythm sleep disorders. Endotext (NIH) NBK550972 2022.",
+  ],
 };

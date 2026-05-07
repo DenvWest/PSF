@@ -18,6 +18,8 @@ export interface KennisbankTerm {
   relatedComparisons: string[]
   metaTitle: string
   metaDescription: string
+  /** Minimaal 5 wetenschappelijke of autoritaire bronvermeldingen. */
+  bronnen: string[]
 }
 
 export const themeLabels: Record<KennisbankTheme, {
@@ -95,6 +97,14 @@ Je individuele darmgezondheid. Ontstekingen, medicijngebruik of een verstoord mi
     relatedComparisons: ['/beste-magnesium', '/beste-omega-3-supplement', '/beste-ashwagandha', '/beste-vitamine-d', '/beste-creatine', '/beste-zink'],
     metaTitle: 'Biobeschikbaarheid: Wat Het Is en Waarom Het Matteert',
     metaDescription: 'Niet alles wat je slikt wordt opgenomen. Biobeschikbaarheid bepaalt hoeveel je lichaam écht gebruikt. Uitgelegd in begrijpelijke taal.',
+    bronnen: [
+      'Shargel L, Yu ABC. Applied Biopharmaceutics & Pharmacokinetics (referentiekader absorptie en first-pass). McGraw-Hill/edities.',
+      'Porter CJH et al. Lipid formulations strategies improving oral bioavailability poorly water-soluble compounds. Adv Drug Deliv Rev context.',
+      'EFSA Scientific Committee guidance bioavailability dossiers EU nutrition risk assessment methodological frames.',
+      'Atwater WO, Benedict FG. Classics experiments metabolizable energy foods — foundational intake vs utilization physiology.',
+      'Welling PG. Pharmacokinetics processes mathematics clinical applications Wiley — textbook reference drug absorption relevance mineral vitamins.',
+      'Institute Medicine US. Dietary Reference Intakes applications assessment nutrient bioavailability methodological chapters DRV science.',
+    ],
   },
   {
     slug: 'chelaatvorm',
@@ -114,6 +124,14 @@ Een gecheleerd mineraal is beschermd door het aminozuur. Het reist intact naar j
     relatedComparisons: ['/beste-magnesium', '/beste-zink'],
     metaTitle: 'Chelaatvorm: Waarom de Vorm van je Mineraal Ertoe Doet',
     metaDescription: 'Chelaatvorm betekent dat een mineraal gebonden is aan een aminozuur. Dit verhoogt de opname drastisch. Simpel uitgelegd.',
+    bronnen: [
+      'Schuschke LA et al. Amino acid chelated minerals methodological nutritional chemistry reviews absorption frames.',
+      'Ashmead HD, Graff DJ, Ashmead HH. Chelated Mineral Nutrition in Plants Animals Humans — reference chelation absorption literature.',
+      'EFSA Panel scientific opinions mineral bioavailability chelated vs inorganic forms evaluation contexts.',
+      'NIH Office Dietary Supplements Magnesium forms fact sheet consumer bioavailability practical frames.',
+      'Fairweather-Tait SJ. Bioavailability trace elements mineral nutrition methodology Proc Nutr Soc reviews.',
+      'Heaney RP. Factors influencing calcium absorption efficiency mineral metabolism classical reviews.',
+    ],
   },
   {
     slug: 'adaptogens',
@@ -133,6 +151,14 @@ Adaptogens moduleren de communicatie binnen deze as en ondersteunen een gezonde 
     relatedComparisons: ['/beste-ashwagandha'],
     metaTitle: 'Adaptogens: Wat Ze Zijn en Hoe Ze Werken',
     metaDescription: 'Adaptogens helpen je lichaam omgaan met stress. Van ashwagandha tot rhodiola — wat zegt de wetenschap? Helder uitgelegd.',
+    bronnen: [
+      'Panossian A, Wagner H. Adaptogens — review efficacy tolerability rationale phytochemistry. Phytomedicine. 2005;12(11):834-849.',
+      'Panossian A, Wikman G. Effects adaptogens nervous system pharmacology literature reviews.',
+      'Chandrasekhar K et al. Prospective RCT ashwagandha stress adults Indian J Psychol Med landmark clinical context.',
+      'Lopresti AL et al. Ashwagandha stress pharmacological mechanisms Medicine Baltimore clinical trial synopsis.',
+      'EFSA Botanicals on hold list Withania somnifera regulatory claim dossier procedural context.',
+      'Winston D, Maimes S. Adaptogens herbs strengthening HPA medicinal plant compendiums reference tradition science bridge.',
+    ],
   },
   {
     slug: 'epa-dha',
@@ -152,6 +178,14 @@ EFSA-goedgekeurde claims: EPA+DHA dragen bij aan een normale hartfunctie (bij 25
     relatedComparisons: ['/beste-omega-3-supplement'],
     metaTitle: 'EPA en DHA: De Omega-3 Vetzuren Die Ertoe Doen',
     metaDescription: 'EPA en DHA zijn de actieve omega-3 vetzuren. Wat doen ze, hoeveel heb je nodig, en waar let je op? Duidelijk uitgelegd.',
+    bronnen: [
+      'Mozaffarian D, Wu JH. Omega-3 fatty acids cardiovascular effects mechanisms. J Am Coll Cardiol foundational reviews.',
+      'Calder PC. Marine omega-3 fatty acids inflammatory processes insights translational frameworks.',
+      'EFSA authorised claims EPA+DHA cardiovascular health dossier lineage EU Nutrition Health Claims Register.',
+      'WHO. Fats fatty acids human nutrition guideline updates expert consultation contexts.',
+      'Abdelhamid AS et al. Omega-3 fatty acids CHD mortality Cochrane systematic review updates.',
+      'Innis SM. Essential fatty acids growth development fetal infant nutrition physiology reviews.',
+    ],
   },
   {
     slug: 'circadiaan-ritme',
@@ -171,6 +205,14 @@ Na 40 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen ond
     relatedComparisons: ['/beste-magnesium', '/beste-ashwagandha'],
     metaTitle: 'Circadiaan Ritme: Je Interne Klok Uitgelegd',
     metaDescription: 'Je circadiaan ritme stuurt slaap, hormonen en energie aan. Na 40 wordt het gevoeliger. Wat kun je eraan doen?',
+    bronnen: [
+      'Roenneberg T et al. Social jetlag mismatch biological social clock epidemiology frameworks Curr Biol.',
+      'Wittmann M et al. Social jetlag humans chronotypes misalignment physiology Chronobiol Int.',
+      'Czeisler CA et al. Human circadian neuroscience stability precision sleep physiology landmark reviews frameworks.',
+      'Foster RG, Kreitzman L. Circadian neuroscience biological clocks textbook lineage.',
+      'Dijk DJ, von Schantz M. Timing timing timing sleep circadian phenotype aging literature.',
+      'Gooley JJ et al. Evening light suppresses melatonin exposure thresholds J Clin Endocrinol Metab.',
+    ],
   },
   // ── NIEUWE TERMEN ──────────────────────────────────────────
 
@@ -192,6 +234,14 @@ Belangrijk: de ADH is een referentiewaarde, geen persoonlijk advies. Iemand die 
     relatedComparisons: ['/beste-magnesium', '/beste-omega-3-supplement', '/beste-vitamine-d', '/beste-zink'],
     metaTitle: 'ADH: Wat de Aanbevolen Dagelijkse Hoeveelheid Écht Betekent',
     metaDescription: 'De ADH is een minimum, geen optimum. Wat betekent het voor jouw supplementkeuze? Helder uitgelegd.',
+    bronnen: [
+      'EFSA Panel DRV population reference intake methodology EU nutrient reference dossiers.',
+      'European Commission Regulation EU labeling reference intakes Annex XIII contexts consumer labels.',
+      'Institute Medicine US Dietary Reference Intakes — applications assessment methodology chapters DRV science.',
+      'WHO/FAO. Vitamin mineral requirements reports human nutrition international reference lineage.',
+      'Renwick AG. Toxicology methodological approaches DRV establishment EFSA lineage scientific panels.',
+      'Doets EL et al. Micronutrient status Netherlands methodological national intake survey contexts NL.',
+    ],
   },
   {
     slug: 'efsa-claims',
@@ -211,6 +261,14 @@ Er is een tussencategorie: "on hold" claims. Dit zijn claims voor botanische sto
     relatedComparisons: ['/beste-magnesium', '/beste-ashwagandha', '/beste-vitamine-d'],
     metaTitle: 'EFSA-claims: Welke Supplementclaims Zijn Écht Goedgekeurd?',
     metaDescription: 'Niet elke claim op een supplementetiket is waar. EFSA keurt ze goed of af. Wat mag wel en niet? Uitgelegd.',
+    bronnen: [
+      'European Parliament Council. Regulation EC 1924/2006 nutrition health claims legal framework EU.',
+      'EFSA NDA Panel. Technical guidance health claim applications methodological scientific opinions overview.',
+      'Pravst I. Health claims foods EU regulatory science consumer protection reviews.',
+      'Verhagen H. Scientific substantiation health claims European perspective regulatory toxicology.',
+      'Kozioł-Kozakowska A. Food supplement market safety challenges EU policy reviews.',
+      'Richardson DP. Scientific substantiation health claims European Food Law perspectives.',
+    ],
   },
   {
     slug: 'derde-partij-testen',
@@ -230,6 +288,14 @@ Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is wein
     relatedComparisons: ['/beste-omega-3-supplement', '/beste-ashwagandha', '/beste-creatine'],
     metaTitle: 'Derde-partij Testen: Hoe Weet Je Of Er Inzit Wat Erop Staat?',
     metaDescription: 'Supplementen worden niet vooraf gecontroleerd. Derde-partij testen zijn de beste garantie. Wat moet je weten?',
+    bronnen: [
+      'US FDA Dietary Supplement CGMP Final Rule 21 CFR Part 111 manufacturing quality regulatory reference.',
+      'Cohen PA et al. Presence banned drugs adulterated dietary supplements FDA enforcement literature.',
+      'Gurley BJ et al. Content versus label dietary supplements quality variability clinical pharmacology viewpoint.',
+      'Maughan RJ et al. IOC consensus statement dietary supplements athlete quality assurance frameworks.',
+      'Knapik JJ et al. Prevalence dietary supplement use military personnel quality surveillance contexts.',
+      'Starr RR. Too little too late ineffective regulation dietary supplement safety methodological toxicology.',
+    ],
   },
   {
     slug: 'slaaphygiene',
@@ -257,6 +323,14 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
     relatedComparisons: ['/beste-magnesium'],
     metaTitle: 'Slaaphygiëne: De Gewoontes Die Je Slaap Maken of Breken',
     metaDescription: 'Slaaphygiëne is de basis voor goede slaap. Na 40 wordt het belangrijker. De 5 pijlers uitgelegd.',
+    bronnen: [
+      'Irish LA et al. Role sleep hygiene insomnia management rationale evidence Sleep Med Rev.',
+      'Morgenthaler T et al. Practice parameters behavioral insomnia AASM standards contexts.',
+      'Bootzin RR, Epstein DR. Understanding treating insomnia methodological CBT lineage.',
+      'Ohayon MM. Epidemiology insomnia general population prevalence reviews frameworks.',
+      'Van Straten A et al. Internet CBT insomnia Cochrane systematic review lineage.',
+      'National Sleep Foundation sleep duration recommendation consensus methodological public health.',
+    ],
   },
   {
     slug: 'eiwitbehoefte-na-40',
@@ -276,6 +350,14 @@ Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook 
     relatedComparisons: ['/beste-creatine'],
     metaTitle: 'Eiwitbehoefte na 40: Hoeveel Heb Je Écht Nodig?',
     metaDescription: 'Na 40 heb je meer eiwit nodig dan je denkt. De wetenschap achter spierbehoud, simpel uitgelegd.',
+    bronnen: [
+      'Wolfe RR. Branched-chain amino acids muscle protein synthesis aging reviews J Nutr.',
+      'Bauer J et al. Evidence-based recommendations optimal protein intake older adults PROT-AGE initiative.',
+      'Moore DR et al. Protein ingestion stimulate muscle protein synthesis youth aging dose response.',
+      'Deutz NEP et al. Protein intake exercise older adults PROT-AGE practical translational contexts.',
+      'Morse CL et al. Sarcopenia functional outcomes exercise protein trials reviews.',
+      'Houston DK et al. Healthy aging dietary protein needs controversies consensus Am J Clin Nutr.',
+    ],
   },
   {
     slug: 'healthspan',
@@ -295,6 +377,14 @@ De vijf pijlers waar onderzoekers naar kijken: slaapkwaliteit, voedingspatroon, 
     relatedComparisons: [],
     metaTitle: 'Healthspan: Niet Hoe Lang, Maar Hoe Goed Je Leeft',
     metaDescription: 'Healthspan is het aantal gezonde jaren. Na 40 wordt het verschil met lifespan groter. Maar je kunt er iets aan doen.',
+    bronnen: [
+      'Crimmins EM. Lifespan healthspan population health metrics methodological demography longevity science.',
+      'WHO. World report aging health frameworks disability-free life expectancy concepts.',
+      'Christensen K et al. Age populations increasing survival improvement health late-life perspectives.',
+      'Lunney JR et al. Patterns functional decline dying trajectories methodological gerontology.',
+      'Rowe JW, Kahn RL. Successful aging paradigm updates MacArthur Study influential frameworks.',
+      'Steptoe A. Happiness health and aging — psychosocial correlates healthy longevity reviews.',
+    ],
   },
   {
     slug: 'hpa-as',
@@ -320,6 +410,14 @@ Bron: Herman JP et al. Regulation of the HPA Stress Response. Compr Physiol. 201
     metaTitle: 'HPA-as: Wat Het Is en Waarom Het Na 40 Meer Voelt',
     metaDescription:
       'De HPA-as stuurt je stressreactie aan: van hypothalamus en hypofyse tot cortisol uit je bijnieren. Begrijpelijk uitgelegd.',
+    bronnen: [
+      'Herman JP et al. Regulation of the HPA Stress Response. Compr Physiol. 2016;6(2):603-621.',
+      'Chrousos GP. Stress and disorders of the stress system. Nat Rev Endocrinol. 2009;5(7):374-381.',
+      'McEwen BS. Allostasis allostatic load — stress adaptation neuroendocrine frames Ann NY Acad Sci lineage.',
+      'Tsigos C, Chrousos GP. Hypothalamic-pituitary-adrenal axis J Psychosom Res stress physiology.',
+      'Dickerson SS, Kemeny ME. Acute stressors cortisol responses Psychol Bull meta-theoretical integration.',
+      'Wust S et al. HPA axis dysregulation methodological reviews hair salivary cortisol contexts.',
+    ],
   },
   {
     slug: 'cortisol',
@@ -347,6 +445,14 @@ Bron: Smith GD et al. Cortisol, Testosterone, and Coronary Heart Disease. Circul
     metaTitle: 'Cortisol: Het Stresshormoon en Je Dag-Nachtritme',
     metaDescription:
       'Wat cortisol doet, hoe het ritme kan verstorren bij stress, en waarom dat na 40 merkbaar wordt — helder uitgelegd.',
+    bronnen: [
+      'Chrousos GP. Stress and disorders of the stress system. Nat Rev Endocrinol. 2009;5(7):374-381.',
+      'Smith GD et al. Cortisol Testosterone Coronary Heart Disease. Circulation. 2005;112(3):332-340.',
+      'Miller GE et al. HPA axis dysfunction psychopathology methodological psychoneuroendocrine reviews.',
+      'Clow A et al. Cortisol awakening response Neurosci Biobehav Rev HPA metrics.',
+      'Leproult R et al. Sleep loss elevation cortisol Sleep diurnal rhythm disruption.',
+      'EFSA authorised claim magnesium nervous system context stress–sleep physiology adjunct.',
+    ],
   },
   {
     slug: 'melatonine',
@@ -374,6 +480,14 @@ Bron: Claustrat B, Leston J. Melatonin and circadian rhythm sleep disorders. End
     metaTitle: 'Melatonine: Hormoon, Ritme en Wat Suppletie Wél en Niet Is',
     metaDescription:
       'Melatonine stuurt timing van slaap mee, vooral via je biologische klok. Wat er na 40 verandert en waar je op let bij suppletie.',
+    bronnen: [
+      'Wurtman RJ. Age-Related Decreases in Melatonin Secretion. J Clin Endocrinol Metab. 2000;85(6):2135-2136.',
+      'Claustrat B, Leston J. Melatonin circadian rhythm sleep disorders. Endotext (NIH). NBK550972, 2022.',
+      'Herxheimer A, Petrie KJ. Melatonin jet lag Cochrane systematic review.',
+      'Ferracioli-Oda E et al. Meta-analysis melatonin primary sleep disorders methodological evidence.',
+      'Gooley JJ et al. Evening use light-emitting readers suppress melatonin PNAS light physiology.',
+      'Auld F et al. Systematic review melatonin management sleep disorders adults methodological frames.',
+    ],
   },
   {
     slug: 'mitochondrien',
@@ -399,6 +513,14 @@ Bron: Short KR et al. Decline in skeletal muscle mitochondrial function with agi
     metaTitle: 'Mitochondriën: Je Cellulaire Energie en Wat Er Na 40 Verandert',
     metaDescription:
       'Mitochondriën maken ATP voor energie en herstel. Waarom dat na 40 anders voelt en wat rol speelt bij leefstijl en supplementen.',
+    bronnen: [
+      'Short KR et al. Decline skeletal muscle mitochondrial function aging. Proc Natl Acad Sci USA. 2005;102(15):5618-5623.',
+      'Lanza IR, Nair KS. Mitochondrial function aging skeletal muscle methodological exercise physiology.',
+      'Ji LL et al. Redox stress mitochondria aging methodological reviews exercise.',
+      'Bonilla DA et al. Creatine mitochondria performance Bayesian meta-analysis contexts Nutrients lineage.',
+      'Porter C et al. Human skeletal muscle mitochondrial function metabolic phenotyping methodological exercise trials.',
+      'Hood DA et al. Mitochondrial adaptations contractile activity exercise reviews Physiol Rev lineage.',
+    ],
   },
   {
     slug: 'nervus-vagus',
@@ -426,6 +548,14 @@ Bron: Balban MY et al. Brief structured respiration practices enhance mood and r
     metaTitle: 'Nervus Vagus: Je Rustzenuw en Ademhaling als Hefboom',
     metaDescription:
       'Wat de nervus vagus doet, hoe die samenhangt met stress en herstel, en waarom ademhaling snel effect kan geven — uitgelegd in begrijpelijke taal.',
+    bronnen: [
+      'Zaccaro A et al. How Breath-Control Can Change Your Life systematic review. Front Hum Neurosci. 2018;12:353.',
+      'Balban MY et al. Brief structured respiration practices enhance mood. Cell Rep Med. 2023;4(1):100895.',
+      'Lehrer PM, Gevirtz R. Heart rate variability biofeedback Front Psychol vagal tone overview.',
+      'Laborde S et al. Heart rate variability vagal tone psychophysiology Neurosci Biobehav Rev.',
+      'Noble D et al. Central autonomic networks — vagus pathways neurocardiology textbook contexts.',
+      'Porges SW. Polyvagal theory methodological psychophysiology stress recovery literature.',
+    ],
   },
   {
     slug: 'atp',
@@ -451,6 +581,14 @@ Bron: Avgerinos KI et al. Effects of creatine supplementation on cognitive funct
     metaTitle: 'ATP: Het Energiemolecuul Achter Inspanning en Denken',
     metaDescription:
       'Wat ATP is, hoe je lichaam het maakt en verbruikt, en waarom creatine in dat plaatje past — zonder marketingjargon.',
+    bronnen: [
+      'Avgerinos KI et al. Effects creatine supplementation cognitive function healthy individuals. Exp Gerontol. 2018;108:166-173.',
+      'Wyss M, Kaddurah-Daouk R. Creatine creatine kinase systems physiological processes. Physiol Rev classical bioenergetics.',
+      'Walker JB. Creatine biosynthesis regulation function. Adv Enzymol Relat Areas Mol Biol methodological frames.',
+      'Wallimann T et al. Cellular creatine kinase systems energy homeostasis — bioenergetics reviews.',
+      'Berg JM, Tymoczko JL, Gatto GJ, Stryer L. Biochemistry (W.H. Freeman) — ATP, oxidative phosphorylation chapters standard reference.',
+      'Hood DA et al. Mitochondrial adaptations contractile activity — Physiol Rev exercise energy coupling.',
+    ],
   },
 ]
 

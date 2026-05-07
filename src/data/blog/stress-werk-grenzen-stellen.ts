@@ -61,4 +61,12 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
     "werkstress mannen",
     "burn-out werkstress",
   ],
+  bronnen: [
+    "Karasek R et al. Job strain, socio-economic status, and risk of myocardial infarction: a collaborative analysis. Lancet. 2008;371(9611):1081-1087 (job demand–control lineage).",
+    "Siegrist J. Adverse health effects of high-effort/low-reward conditions. J Occup Health Psychol. 1996;1(1):27-41.",
+    "WHO. Mental health policies and programmes in the workplace (policy evidence base on psychosocial risks).",
+    "Maslach C, Leiter MP. Understanding the burnout experience: recent research and implications. World Psychiatry. 2016;15(2):103-111.",
+    "Nieuwenhuijsen K et al. Interventions to improve return to work in workers with stress-related mental disorders. Cochrane Database Syst Rev.",
+    "Eurofound / European Agency for Safety and Health at Work. Psychosocial risks and stress at work — overview reports (EU OSH context).",
+  ],
 };

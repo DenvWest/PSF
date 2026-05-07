@@ -10,6 +10,7 @@ import {
   getAllThemes,
 } from '@/data/kennisbank'
 import type { KennisbankTheme } from '@/data/kennisbank'
+import BlogBronnen from '@/components/blog/BlogBronnen'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -359,6 +360,8 @@ function TermPage({ slug }: { slug: string }) {
                   </h2>
                   {renderParagraphs(term.content.whyItMatters)}
                 </section>
+
+                <BlogBronnen bronnen={term.bronnen} />
 
                 {term.relatedComparisons.length > 0 && (
                   <section className="mb-10">

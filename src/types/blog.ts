@@ -45,6 +45,8 @@ export interface BlogArtikel {
   vergelijkingExtraLink?: BlogCornerstoneLink;
   /** Sluggen van gerelateerde artikelen (2-3) */
   gerelateerdeSluggen: string[];
+  /** Wetenschappelijke of autoritaire bronvermeldingen (minimaal 5). */
+  bronnen: string[];
   /** Langere zin voor blok naar `/stress-verminderen-man` (alleen stress-pillar-cluster). */
   stressPillarTurbo?: string;
   metaTitle?: string;

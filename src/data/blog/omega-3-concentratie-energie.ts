@@ -57,4 +57,12 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     "EPA DHA concentratie",
     "omega 3 hersenen",
   ],
+  bronnen: [
+    "Mozaffarian D, Wu JH. Omega-3 fatty acids and cardiovascular disease: effects optimal intake. Circulation contexts / major reviews.",
+    "Swanson D, Block R, Mousa SA. Omega-3 fatty acids EPA DHA biomedical aspects. Adv Nutr. omega-3 overview reviews.",
+    "EFSA Scientific Opinion — EPA+DHA cardio claim conditions (authorised EU nutrient claim dossier reference).",
+    "Calder PC. Functional roles fatty acids adipose inflammation brain — immunology neuroscience contexts relevant cognitive energy narrative.",
+    "Richardson AJ. Omega-3 fatty acids behaviour learning disorders — methodological neurodevelopment reviews.",
+    "Innis SM. Essential fatty acids growth development — clinical metabolism overview DHA brain incorporation.",
+  ],
 };

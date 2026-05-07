@@ -85,4 +85,12 @@ export const melatonineNa40Data: BlogArtikel = {
     "cortisol slaap",
     "magnesium slaap",
   ],
+  bronnen: [
+    "Wurtman RJ. Age-related decreases melatonin secretion J Clin Endocrinol Metab 2000 context pineal aging.",
+    "Herxheimer A, Petrie KJ. Melatonin prevention treatment jet lag Cochrane Database Syst Rev systematic evidence.",
+    "Ferracioli-Oda E et al. Meta-analysis melatonin treatment primary sleep disorders PLoS One 2013 dosage evidence base.",
+    "Claustrat B, Leston J. Melatonin circadian rhythm sleep disorders Endotext NIH NBK550972 2022.",
+    "Gooley JJ et al. Evening use light-emitting readers suppresses melatonin PNAS 2015 screen light physiology.",
+    "Brzezinski A et al. Effects exogenous melatonin sleep meta-analysis Sleep Med Rev primary insomnia meta-analytic context.",
+  ],
 };

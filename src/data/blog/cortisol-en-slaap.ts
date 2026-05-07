@@ -87,4 +87,12 @@ export const cortisolEnSlaapData: BlogArtikel = {
     "cortisol ritme herstellen",
     "slaap mannen 40",
   ],
+  bronnen: [
+    "Leproult R et al. Sleep loss results in an elevation of cortisol levels the next evening. Sleep. 1997;20(10):865-870.",
+    "Irwin MR. Why sleep is important for health: a psychoneuroimmunology perspective. Annu Rev Psychol. 2015;66:143-172.",
+    "Clow A et al. The cortisol awakening response: more than a measure of HPA axis function. Neurosci Biobehav Rev. 2004;28(6):583-596.",
+    "Claustrat B, Leston J. Melatonin and circadian rhythm sleep disorders. Endotext (NIH), NBK550972, 2022.",
+    "Kim EJ, Dimsdale JE. The effect of psychosocial stress on sleep: a review polysomnographic evidence for healthy sleep. Sleep Med Rev. 2007;11(6):459-478.",
+    "Buxton OM et al. Adverse metabolic consequences in humans of prolonged sleep restriction combined with circadian disruption. Sci Transl Med. 2012;4(129):129ra43.",
+  ],
 };

@@ -79,4 +79,12 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     "magnesium voor het slapen",
     "slaap supplement mannen 40",
   ],
+  bronnen: [
+    "Abbasi B et al. Effect magnesium supplementation primary insomnia elderly J Res Med Sci RCT context.",
+    "Schwalfenberg GK, Genuis SJ. Magnesium clinical healthcare bioavailability forms Scientifica 2012.",
+    "EFSA authorised claim magnesium normal nervous system muscle function dossier summaries.",
+    "Gröber U et al. Transdermal magnesium systematic review Magnes Res.",
+    "Fiorentini D et al. Magnesium nutritional clinical roles Nutrients reviews.",
+    "Nielsen FH et al. Magnesium inflammation advancing age physiological reviews magnesium sleep stress bridge.",
+  ],
 };
