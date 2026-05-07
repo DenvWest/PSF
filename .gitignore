@@ -10,3 +10,4 @@ next-env.d.ts
 !.env.example
 .env.backup
 next-env.d.ts
+scripts/.fonts_cache/
