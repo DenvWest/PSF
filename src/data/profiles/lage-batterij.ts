@@ -177,7 +177,11 @@ export const lageBatterijProfile: ProfilePageData = {
     text: "In 3 minuten weet je welke supplementen bij jouw situatie passen en welke bouwstenen je mist.",
   },
 
-  relatedPillar: null,
+  relatedPillar: {
+    href: "/energie-na-40",
+    turboSnippet:
+      "Van mitochondriën en bloedsuiker tot een weekplan met supplementen — de volledige gids bij structurele moeheid na 40.",
+  },
 
   relatedComparisons: [
     {

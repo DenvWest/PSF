@@ -29,26 +29,68 @@ export const energieThema: ThemaPageData = {
       {
         title: "Leefstijl — de energielekken in je dag",
         description:
-          "Bloedsuikerschommelingen, onvoldoende eiwitten of structuur in maaltijden, en te weinig water zijn de stille, aanhoudende drains.",
+          "Bloedsuikerschommelingen, onvoldoende eiwitten en te weinig water zijn de stille, aanhoudende drains. Een eiwitrijk ontbijt (≥30g) verlaagt bloedsuikerpieken significant de rest van de dag.",
         icon: "🥗",
+        source: "Leidy et al., Am J Clin Nutr, 2013",
       },
       {
         title: "Mentaal & emotioneel",
         description:
-          "Gevoelens van onrust, ruis of onderstimulatie vreten net zo hard aan je tank als harde overbelasting — zonder dat je het als ‘stress’ ervaart.",
+          "Gevoelens van onrust, ruis of onderstimulatie vreten net zo hard aan je tank als overbelasting. Chronische mentale vermoeidheid verlaagt de mitochondriële efficiëntie via verhoogde oxidatieve stress.",
         icon: "🧠",
+        source: "Picard et al., Nat Rev Endocrinol, 2018",
       },
       {
         title: "Werk & omgeving",
         description:
-          "Een strak schema zonder pauze, lange stilzitten dagen of gebrek aan beweegmomenten snoept vóór de avond al je herstel weg.",
+          "Langdurig zitten verlaagt je stofwisseling en onderdrukt mitochondriële biogenese. Al 10 minuten wandelen na het eten verlaagt je bloedsuikerpiek met 12-22%.",
         icon: "💼",
+        source: "Buffey et al., Sports Med, 2022",
       },
       {
         title: "Fysiek & hormonaal",
         description:
-          "Vitamine D, schildklier, testosteron en insulinegevoeligheid: kleine afwijkingen kunnen grote invloed hebben op hoe ‘vol’ je je voelt.",
+          "Vitamine D-tekort (40-60% in NL), dalend testosteron (1-2%/jaar na 30) en verminderde insulinegevoeligheid: kleine verschuivingen met grote impact op hoe 'vol' je je voelt.",
         icon: "🩺",
+        source: "Gezondheidsraad NL, 2012; Travison et al., J Clin Endocrinol Metab, 2007",
+      },
+    ],
+  },
+
+  scienceBlock: {
+    sectionLabel: "WAT ONDERZOEK LAAT ZIEN",
+    title: "De wetenschap achter energieverlies na 40",
+    intro: "Geen meningen, maar meetbare feiten uit peer-reviewed onderzoek.",
+    facts: [
+      {
+        claim:
+          "Mitochondriële functie daalt met 8-10% per decennium na je 30e — minder ATP uit dezelfde voedingsstoffen.",
+        source: "Short et al., Proc Natl Acad Sci, 2005",
+        pubmedId: "15767349",
+      },
+      {
+        claim:
+          "40-60% van de Nederlandse volwassenen heeft een suboptimaal vitamine D-niveau, vooral in wintermaanden.",
+        source: "Gezondheidsraad NL, Evaluatie voedingsnormen vitamine D, 2012",
+        pubmedId: "",
+      },
+      {
+        claim:
+          "Creatine monohydraat (3-5 g/dag) verbetert cognitieve prestaties bij slaaptekort en mentale vermoeidheid.",
+        source: "Avgerinos et al., Exp Gerontol, 2018 (systematic review)",
+        pubmedId: "29704637",
+      },
+      {
+        claim:
+          "Een eiwitrijk ontbijt (≥30g) vermindert honger, verbetert alertheid en stabiliseert bloedsuiker bij jonge vrouwen en mannen.",
+        source: "Leidy et al., Am J Clin Nutr, 2013",
+        pubmedId: "23446906",
+      },
+      {
+        claim:
+          "10 minuten wandelen na een maaltijd verlaagt de postprandiale bloedsuikerpiek met 12-22%.",
+        source: "Buffey et al., Sports Med, 2022 (meta-analyse)",
+        pubmedId: "35364009",
       },
     ],
   },
@@ -142,6 +184,13 @@ export const energieThema: ThemaPageData = {
     privacyText:
       "Je e-mail wordt alleen gebruikt voor de gids en relevante tips. Geen spam, altijd opzegbaar.",
     successMessage: "Check je inbox — de Energiegids is onderweg.",
+  },
+
+  pillarPage: {
+    href: "/energie-na-40",
+    title: "De complete gids: energie terugwinnen na 40",
+    description:
+      "Van mitochondriën en bloedsuiker tot een concreet weekplan met supplementen. Alles wat op deze pagina in het kort staat, uitgewerkt met bronnen.",
   },
 
   expertQuote: {

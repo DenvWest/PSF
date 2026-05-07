@@ -602,6 +602,21 @@ export default function SlaapVerbeterenNa40Page() {
                   </Link>
                 </div>
 
+                <div className="mt-6 p-5 rounded-xl border border-stone-200 bg-stone-50">
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    <strong className="text-gray-900">Ben je moe ondanks goede slaap?</strong>
+                    <br />
+                    Als je slaap op orde is maar je energie laag blijft, kan de oorzaak dieper liggen
+                    — bij hormonen, bloedsuiker of mitochondriën.
+                  </p>
+                  <Link
+                    href="/energie-na-40"
+                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] text-sm"
+                  >
+                    Lees de gids: Energie Na 40 →
+                  </Link>
+                </div>
+
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
                     <p className="text-gray-700 text-sm leading-relaxed">

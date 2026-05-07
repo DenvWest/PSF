@@ -483,6 +483,21 @@ export default function StressVerminderenManPage() {
               <section id="verder-lezen" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">Verder Lezen</h2>
 
+                <div className="mt-6 p-5 rounded-xl border border-stone-200 bg-stone-50">
+                  <p className="text-stone-600 mt-0 leading-relaxed text-sm">
+                    <strong className="text-stone-900">Moe én gestrest?</strong>
+                    <br />
+                    Vermoeidheid en stress versterken elkaar. Als je energie structureel laag is,
+                    kan het helpen om beide kanten te bekijken.
+                  </p>
+                  <a
+                    href="/energie-na-40"
+                    className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] mt-2 inline-block text-sm"
+                  >
+                    Lees de gids: Energie Na 40 →
+                  </a>
+                </div>
+
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <Link
                     href="/blog/cortisol-verlagen-natuurlijk"
