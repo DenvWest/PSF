@@ -1,4 +1,5 @@
 import { slaapTemplates } from "./slaap";
+import { stressTemplates } from "./stress";
 import type { ThemaNurtureDay, ThemaNurtureTemplate } from "./types";
 
 export type { ThemaNurtureDay, ThemaNurtureTemplate } from "./types";
@@ -8,10 +9,7 @@ const THEMA_TEMPLATES: Record<
   Record<ThemaNurtureDay, ThemaNurtureTemplate>
 > = {
   slaap: slaapTemplates,
-  // Toekomstige thema's:
-  // stress: stressTemplates,
-  // energie: energieTemplates,
-  // herstel: herstelTemplates,
+  stress: stressTemplates,
 };
 
 export function getThemaNurtureTemplate(

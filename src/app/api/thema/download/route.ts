@@ -15,6 +15,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 /** Thema’s met downloadflow; dag-1 body komt uit getThemaNurtureTemplate(thema, 1). */
 const THEMA_DOWNLOADS: Record<string, true> = {
   slaap: true,
+  stress: true,
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
