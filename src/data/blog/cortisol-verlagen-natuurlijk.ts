@@ -13,18 +13,23 @@ export const cortisolVerlagenData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Wat cortisol met je lichaam doet na je 40e",
+      bewijsNiveau: "beperkt",
       tekst:
         "Cortisol is je primaire stresshormoon, aangemaakt door de bijnieren. Bij korte stress is dat nuttig: het scherpt je focus en geeft je energie. Het probleem begint wanneer het niveau chronisch verhoogd blijft. Na je 40e wordt de cortisolregulatie minder efficiënt — de zogenoemde HPA-as (hypothalamus-hypofyse-bijnieras) reageert trager op signalen om cortisol terug te brengen. Het gevolg: opgebouwd vet rond de buik, slechter slaap, verminderde testosteronproductie en een gevoel van aanhoudende vermoeidheid ondanks voldoende rust.",
     },
     {
       type: "tekst",
       titel: "Waarom standaard ontspanningstips tekortschieten",
+      bewijsNiveau: "beperkt",
       tekst:
         "\"Doe meer aan ontspanning\" is advies dat klopt maar onvolledig is. Voor mannen boven de 40 met een druk leven, gezin en werkverantwoordelijkheden is 'gewoon minder stress' geen reële optie. De vijf methodes hieronder zijn specifiek onderzocht op hun vermogen om het cortisolfysiologie te beïnvloeden — niet als vervanging van medische behandeling, maar als effectieve basisinterventies.",
     },
     {
       type: "opsomming",
       titel: "Vijf benaderingen uit onderzoek om cortisolritme te beïnvloeden",
+      bewijsNiveau: "redelijk",
+      bewijsKanttekening:
+        "Effectgroottes verschillen tussen studies (populatie, dosis, uitkomstmaat). De routes hieronder zijn oriëntatie uit de literatuur, geen persoonlijke belofte van meetbaar cortisolresultaat.",
       inleiding:
         "Deze routes hebben in onderzoeken correlaties of interventie‑effecten laten zien; sterkte verschilt per persoon. Combineer je er meerdere, kan het totale effect groter uitvallen.",
       items: [
@@ -38,12 +43,14 @@ export const cortisolVerlagenData: BlogArtikel = {
     {
       type: "tekst",
       titel: "De rol van voeding en bloedsuiker",
+      bewijsNiveau: "redelijk",
       tekst:
         "Bloedsuikerschommelingen zijn onderschatte prikkels voor de stress‑respons. Elke sterke daling van de bloedsuikerspiegel triggert een cortisolrespons. Praktisch: eet regelmatige maaltijden met voldoende eiwit en complexe koolhydraten, beperk geraffineerde suikers en vermijd lange perioden zonder eten. [Magnesium](/beste-magnesium) draagt bij tot normale werking van het zenuwstelsel en van de spieren (EFSA). Welke zink wordt het best opgenomen? Bisglycinaat vs picolinaat — [bekijk de vergelijking](/beste-zink). Cafeïne verhoogt cortisol bij chronisch gebruik — niet bij incidenteel gebruik. Meer dan drie koppen koffie per dag kan cortisolniveaus structureel verhogen, vooral bij mensen die al gestrest zijn.",
     },
     {
       type: "tekst",
       titel: "Wat je kunt meten",
+      bewijsNiveau: "redelijk",
       tekst:
         "Cortisolwaarden zijn meetbaar via bloedonderzoek (ochtend, nuchtere waarde), speeksel (diurnaal profiel, meest nauwkeurig) of urine (24-uurswaarden). Als je vermoedt dat je cortisolregulatie structureel verstoord is, is een gesprek met je huisarts de eerste stap. Zelf meetbare indicatoren zijn: slaapkwaliteit, gewichtstoename buikvet, herstel na inspanning en energieniveau rond 14-16 uur.",
     },

@@ -9,13 +9,14 @@ import {
 
 interface ArticleReferentiesFooterProps {
   referenties: ReferentieItem[];
-  /** ISO 8601 (yyyy-mm-dd) */
   laatstBijgewerktOp?: string;
   verantwoordelijke?: string;
-  /** Standaard gelijk aan `laatstBijgewerktOp`; apart te zetten als redactionele controle elders valt. */
   wetenschappelijkGecontroleerdOp?: string;
-  /** Optionele blokken binnen het disclaimgedeelte vóór het standaard medische blok. */
   aanvullendeDisclaimers?: ReactNode[];
+}
+
+function SectionRule() {
+  return <div className="my-10 h-px bg-stone-200/80" role="presentation" aria-hidden="true" />;
 }
 
 export default function ArticleReferentiesFooter({
@@ -29,66 +30,83 @@ export default function ArticleReferentiesFooter({
 
   return (
     <footer
-      className="scroll-mt-[var(--reading-scroll-margin)] rounded-xl border border-stone-200/90 bg-white px-5 py-8 shadow-[inset_0_1px_0_0_rgb(231_229_228_/_0.45)] sm:px-8"
-      aria-label="Referenties bronnenlijst juridische kaders en redactiemeta"
+      className="scroll-mt-[var(--reading-scroll-margin)] rounded-lg border border-stone-200/90 bg-white px-5 py-9 sm:px-8 sm:py-10 md:px-9 md:py-11"
+      aria-label="Bronnen, disclaimer en redactiemeta"
     >
-      <section aria-labelledby="vancouver-heading">
+      <section aria-labelledby="vancouver-heading" className="scroll-mt-2">
         <h2
           id="vancouver-heading"
-          className="font-display text-xl font-semibold leading-snug tracking-tight text-stone-900"
+          className="font-display text-lg font-semibold leading-snug tracking-tight text-stone-900 md:text-xl"
         >
-          Referenties{" "}
-          <span className="font-normal text-stone-500">(Vancouver-stijl)</span>
+          Referenties <span className="font-normal text-stone-500">(Vancouver-stijl)</span>
         </h2>
-        <p className="mt-3 max-w-[70ch] text-[0.8125rem] leading-relaxed text-stone-500">
-          Nummering volgens Vancouver waar mogelijk. Het veld bij elke bron geeft het{" "}
-          <strong className="font-medium text-stone-600">type werk</strong> weer (welke gevolgtrekkingen daaruit
-          redelijkerwijs mogelijk zijn; geen klinisch effect per individu). Observatie in onderzoek is geen
-          persoonlijke causaliteit — bij twijfel met uw zorgprofessional.
+        <p className="mt-4 max-w-[70ch] text-[0.8125rem] leading-[1.62] text-stone-500 md:mt-5">
+          Nummering volgens Vancouver waar mogelijk. Het bijschrift “documenttype / bewijskader” karakteriseert het werk
+          als document; het is geen inschatting van klinisch effect bij u persoonlijk. Correlatie in studies is geen
+          persoonlijke causaliteit.
         </p>
-        <ol className="mt-8 list-none space-y-6 border-t border-stone-100/90 pt-7 pl-0 text-[0.9375rem] leading-[1.7] text-stone-600 sm:text-[1rem] sm:leading-[1.75]">
+        <ol className="mt-9 list-none space-y-6 md:space-y-7">
           {referenties.map((ref, index) => (
-            <li key={index} className="max-w-none">
-              <span className="font-semibold tabular-nums text-stone-800">{index + 1}. </span>
-              <span className="break-words">{ref.vancouver}</span>
-              <div className="mt-2 border-l border-stone-200 pl-3 text-[0.8125rem] leading-relaxed text-stone-500">
-                <span className="font-medium text-stone-600">Documenttype / bewijskader:</span> {ref.bewijsType}
+            <li
+              key={index}
+              className="scroll-mt-2 border-b border-stone-100/95 pb-6 last:border-b-0 last:pb-0 md:pb-7"
+            >
+              <div className="text-[0.9375rem] leading-[1.68] text-stone-600 sm:text-[0.96875rem] sm:leading-[1.72]">
+                <span className="font-semibold tabular-nums text-stone-800">{index + 1}. </span>
+                <span className="break-words [overflow-wrap:anywhere]">{ref.vancouver}</span>
               </div>
+              <p className="mt-2 pl-0 text-[0.78rem] leading-[1.55] text-stone-500 md:pl-1 md:text-[0.8125rem] md:leading-[1.58]">
+                <span className="font-medium text-stone-600">Documenttype / bewijskader:</span> {ref.bewijsType}
+              </p>
             </li>
           ))}
         </ol>
       </section>
 
-      <section aria-labelledby="disclaimer-sectie" className="mt-10 space-y-3 border-t border-stone-200 pt-10">
-        <h2 id="disclaimer-sectie" className="sr-only">
+      <SectionRule />
+
+      <section aria-labelledby="disclaimer-sectie" className="space-y-3">
+        <h2 id="disclaimer-sectie" className="font-display text-[0.75rem] font-semibold uppercase tracking-[0.085em] text-stone-500">
           Disclaimer
         </h2>
         {aanvullendeDisclaimers.map((blok, index) => (
           <div
             key={index}
-            className="rounded-lg border border-stone-100/95 bg-stone-50/60 px-4 py-3 text-[0.8125rem] leading-relaxed text-stone-600"
+            className="rounded-md border border-stone-200/80 bg-stone-50/70 px-4 py-3 text-[0.8125rem] leading-[1.62] text-stone-600 md:px-[1.0625rem]"
           >
             {blok}
           </div>
         ))}
-        <p className="rounded-lg bg-amber-50/65 px-4 py-3 text-[0.8125rem] leading-relaxed text-stone-700 ring-1 ring-amber-200/60">
-          <strong className="font-semibold text-stone-900">Medische disclaimer:</strong>{" "}
-          <span>{MEDISCHE_DISCLAIMER_LANG_NL}</span>
-        </p>
+        <div className="rounded-md border border-amber-100/90 bg-[color-mix(in_srgb,var(--ps-amber-light)_18%,white)] px-4 py-[0.9375rem] text-[0.8125rem] leading-[1.62] text-stone-700 md:px-[1.0625rem]">
+          <p>
+            <strong className="font-semibold text-stone-900">Medische disclaimer:</strong>{" "}
+            <span>{MEDISCHE_DISCLAIMER_LANG_NL}</span>
+          </p>
+        </div>
       </section>
 
-      <div className="mt-10 grid gap-y-4 border-t border-stone-200 pt-10 text-[0.8125rem] leading-relaxed text-stone-600 sm:gap-y-[1.125rem]">
+      <SectionRule />
+
+      <div
+        className="grid gap-y-4 text-[0.8125rem] leading-[1.62] text-stone-600 md:gap-y-5"
+        role="group"
+        aria-label="Redactiecontrole en herzieningen"
+      >
         <p>
           <strong className="font-semibold text-stone-800">Wetenschappelijk door de redactie gecontroleerd op:</strong>{" "}
-          {formatDatumNederlandsISO(reviewIso)}
+          <time dateTime={reviewIso} className="text-stone-600 tabular-nums">
+            {formatDatumNederlandsISO(reviewIso)}
+          </time>
         </p>
         <p>
           <strong className="font-semibold text-stone-800">Laatst inhoudelijk herzien op:</strong>{" "}
-          {formatDatumNederlandsISO(laatstBijgewerktOp)}
+          <time dateTime={laatstBijgewerktOp} className="text-stone-600 tabular-nums">
+            {formatDatumNederlandsISO(laatstBijgewerktOp)}
+          </time>
         </p>
         <p>
           <strong className="font-semibold text-stone-800">Eindredactie / inhoudelijke verantwoordelijke:</strong>{" "}
-          {verantwoordelijke}
+          <span>{verantwoordelijke}</span>
         </p>
       </div>
     </footer>

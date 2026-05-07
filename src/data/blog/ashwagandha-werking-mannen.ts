@@ -13,18 +13,21 @@ export const ashwagandhaData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Wat is ashwagandha en waarom is het relevant?",
+      bewijsNiveau: "vroeg",
       tekst:
         "[Beste ashwagandha-supplementen](/beste-ashwagandha) bevatten extracten van Withania somnifera — traditioneel gebruikt in Ayurveda en in de afgelopen decennia veel in klinische studies. De actieve fracties (withanoliden) worden in onderzoek in verband gebracht met de stressas (HPA); dat wil zeggen: hoe het organisme op langdurige belasting reageert — geen ‘stress uit’‑knop. Voor mannen boven de 40, bij wie stressregulatie vaak trager aanvoelt, is dat een veel besproken mechanisme in de literatuur.",
     },
     {
       type: "tekst",
       titel: "Wat de studies zeggen",
+      bewijsNiveau: "redelijk",
       tekst:
         "In meerdere gerandomiseerde, placebogecontroleerde studies (onder meer Chandrasekhar et al., 2012, en Pratte et al., 2014) werden verschillen in cortisolmarkeringen en zelfrapportage beschreven bij dagelijks gebruik van 300-600 mg KSM-66 of Sensoril-extract. Bijkomende uitkomsten in sommige onderzoeken: subjectieve slaapkwaliteit, lager zelfgerapporteerd stressniveau en — in een deel van de mannenstudies — verschillen in testosteronmarkers. Dat zijn studie‑uitkomsten, geen goedgekeurde EU‑claims; individuele resultaten wijken sterk af.",
     },
     {
       type: "opsomming",
       titel: "Wat je kunt verwachten bij consistent gebruik",
+      bewijsNiveau: "beperkt",
       inleiding:
         "Ashwagandha werkt geleidelijk, niet acuut. De meeste studies meten resultaten na 8-12 weken dagelijks gebruik:",
       items: [
@@ -38,6 +41,7 @@ export const ashwagandhaData: BlogArtikel = {
     {
       type: "tekst",
       titel: "KSM-66 vs Sensoril: wat is het verschil?",
+      bewijsNiveau: "redelijk",
       tekst:
         "De twee dominante gestandaardiseerde extracten zijn KSM-66 (volledig-wortelextract, minimaal 5% withanoliden, geproduceerd door Ixoreal) en Sensoril (blad- en wortelextract, hogere withanolide-concentratie maar lager aanbevolen dosering). KSM-66 heeft de meeste klinische data en is het meest gebruikt in onderzoek. Sensoril heeft een vergelijkbaar profiel. Vermijd producten die alleen 'ashwagandha-wortelpoeder' vermelden zonder extractverhouding: de werkzame stofconcentratie is onbekend en onbetrouwbaar.",
     },

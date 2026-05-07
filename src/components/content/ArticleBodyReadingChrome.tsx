@@ -2,30 +2,34 @@
 
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import type { ArticleTocItem } from '@/types/article-reading'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ArticleTableOfContents from '@/components/content/ArticleTableOfContents'
+import { parseReadingAnchorLinePx } from '@/lib/reading-metrics'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-const PROGRESS_GUIDE_TOP = 88
 /** Toon inhoudsopgave niet bij zeer korte artikelen (< 3 koppen). */
 export const ARTICLE_HIDE_TOC_BELOW_ITEMS = 3
 
 interface ArticleBodyReadingChromeProps {
   tocItems: ArticleTocItem[]
-  /** TOC verbergen wanneer `tocItems.length` strikt kleiner is dan deze waarde. */
   hideTocBelowItemCount?: number
-  /** Hoofdtekst óf combinatie hoofdtekst + referenties (alles waar de lezer doorheen “leest”). */
   children: React.ReactNode
 }
 
-/** Lees‑progress tussen boven‑ en onderkant van het meetbare blok (smooth, geen zware animatie). */
-function readingProgressRatio(el: HTMLElement | null): number {
+/** Voortgang 0–1 op basis van positie langs het meetbare artikel‑blok. */
+function readingProgressFraction(el: HTMLElement | null): number {
   if (!el) return 0
-  const docTop = el.getBoundingClientRect().top + window.scrollY
-  const scrollEnd = Math.max(docTop + el.offsetHeight - window.innerHeight * 0.28, docTop + 24)
-  const scrollStart = Math.max(0, docTop - PROGRESS_GUIDE_TOP)
-  const denom = scrollEnd - scrollStart
-  if (denom < 120) return 1
-  return Math.min(1, Math.max(0, (window.scrollY - scrollStart) / denom))
+  const anchor = parseReadingAnchorLinePx()
+  const scrollY = window.scrollY
+  const viewH = window.visualViewport?.height ?? window.innerHeight
+  const rect = el.getBoundingClientRect()
+  const top = scrollY + rect.top
+  const height = Math.max(el.scrollHeight, el.offsetHeight)
+  const bottom = top + height
+  const readableStart = top - anchor
+  const readableEnd = Math.max(readableStart + viewH * 0.42, bottom - viewH * 0.32)
+  const span = readableEnd - readableStart
+  if (span < 64) return scrollY >= readableStart ? 1 : 0
+  return Math.min(1, Math.max(0, (scrollY - readableStart) / span))
 }
 
 export default function ArticleBodyReadingChrome({
@@ -34,6 +38,9 @@ export default function ArticleBodyReadingChrome({
   children,
 }: ArticleBodyReadingChromeProps) {
   const measureRef = useRef<HTMLDivElement>(null)
+  const rafRef = useRef<number | null>(null)
+  const schedulingRef = useRef(false)
+
   const [progress, setProgress] = useState(0)
   const [activeId, setActiveId] = useState<string | null>(tocItems[0]?.id ?? null)
   const [showBackTop, setShowBackTop] = useState(false)
@@ -41,113 +48,114 @@ export default function ArticleBodyReadingChrome({
   const showToc = tocItems.length >= hideTocBelowItemCount
   const ids = useMemo(() => tocItems.map((t) => t.id), [tocItems])
 
-  const updateFromScroll = useCallback(() => {
-    setProgress(readingProgressRatio(measureRef.current))
-    setShowBackTop(window.scrollY > 480)
-  }, [])
+  const flush = useCallback(() => {
+    schedulingRef.current = false
+    rafRef.current = null
 
-  useEffect(() => {
-    updateFromScroll()
-    window.addEventListener('scroll', updateFromScroll, { passive: true })
-    window.addEventListener('resize', updateFromScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', updateFromScroll)
-      window.removeEventListener('resize', updateFromScroll)
-    }
-  }, [updateFromScroll])
+    setProgress(readingProgressFraction(measureRef.current))
+    setShowBackTop(window.scrollY > 420)
 
-  useEffect(() => {
     if (ids.length === 0) return
-    const elems = ids
-      .map((id) => document.getElementById(id))
-      .filter((e): e is HTMLElement => Boolean(e))
-
-    const computeActive = () => {
-      const line = PROGRESS_GUIDE_TOP
-      let current = ids[0] ?? null
-      for (let i = 0; i < elems.length; i++) {
-        const top = elems[i]!.getBoundingClientRect().top
-        if (top <= line + 10) current = ids[i]!
-      }
-      setActiveId(current)
+    const line = parseReadingAnchorLinePx() + 4
+    let winner: string | null = ids[0] ?? null
+    for (const id of ids) {
+      const node = document.getElementById(id)
+      if (!node) continue
+      if (node.getBoundingClientRect().top <= line) winner = id
     }
-
-    computeActive()
-    window.addEventListener('scroll', computeActive, { passive: true })
-    window.addEventListener('resize', computeActive, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', computeActive)
-      window.removeEventListener('resize', computeActive)
-    }
+    setActiveId(winner)
   }, [ids])
+
+  const schedule = useCallback(() => {
+    if (typeof window === 'undefined') return
+    if (schedulingRef.current) return
+    schedulingRef.current = true
+    rafRef.current = window.requestAnimationFrame(flush)
+  }, [flush])
+
+  useEffect(() => {
+    flush()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+    }
+  }, [flush, schedule])
+
+  useEffect(() => {
+    const root = measureRef.current
+    if (!root || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => schedule())
+    ro.observe(root)
+    return () => ro.disconnect()
+  }, [schedule])
 
   const onBackTopClick = (e: ReactMouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const barLeft = 'max(10px, env(safe-area-inset-left))'
-
   return (
     <div className="relative lg:scroll-pt-[var(--reading-scroll-margin)]">
-      {/* Mobiel — dunne voortgang bovenaan */}
       <div
         className="pointer-events-none fixed left-0 right-0 top-0 z-[60] md:hidden"
         aria-hidden="true"
       >
-        <div className="h-px bg-stone-100" />
-        <div
-          className="h-[2px] w-full bg-stone-500/90"
-          style={{
-            transform: `scaleX(${progress})`,
-            transformOrigin: "left",
-            transition: "transform 140ms linear",
-          }}
-        />
+        <div className="h-px bg-stone-200/95" />
+        <div className="h-[2px] w-full bg-stone-200/95">
+          <div
+            className="h-full w-full origin-left bg-stone-500/90 motion-safe:transition-transform motion-safe:duration-100 motion-safe:ease-out"
+            style={{ transform: `scaleX(${progress})` }}
+          />
+        </div>
       </div>
 
-      {/* Desktop — verticale balk langs kantlijnt */}
       <div
-        className="pointer-events-none fixed bottom-[16%] top-[26%] z-[46] hidden w-px md:block"
-        style={{ left: barLeft }}
-        aria-hidden="true"
+        className={`mx-auto w-full max-w-[min(92rem,calc(100vw-2rem))] ${
+          showToc ? 'lg:grid lg:grid-cols-[minmax(9.25rem,10.25rem)_1fr] lg:gap-x-[clamp(1.25rem,3vw,2.25rem)]' : ''
+        }`}
       >
-        <div className="h-full rounded-full bg-stone-300/95" />
-        <div
-          className="absolute left-0 top-0 w-px rounded-full bg-stone-700/95"
-          style={{ height: `${progress * 100}%`, maxHeight: '100%', transition: 'height 140ms linear' }}
-        />
-      </div>
-
-      {/* Kolommen: TOC + meetbare hoofdtekst (+ optioneel refereerblok als child) */}
-      <div className="mx-auto w-full max-w-[calc(100vw-1.75rem)] md:max-w-none lg:mr-auto lg:ml-[max(0px,calc(1.25rem+env(safe-area-inset-left)))] lg:flex lg:max-w-[min(var(--reading-layout-max-width),calc(100vw-2.5rem))] lg:flex-row-reverse lg:items-start lg:gap-x-[clamp(2rem,4vw,3.5rem)] xl:gap-x-[clamp(2.5rem,5vw,4.5rem)]">
-        <div className="reading-prose-column min-w-0 flex-1 lg:max-w-[72ch]" ref={measureRef}>
-          {showToc && (
-            <div className="mb-10 lg:hidden">
+        {showToc ? (
+          <aside className="hidden min-h-0 lg:block">
+            <div className="sticky top-[var(--sticky-toc-offset)] pb-14 pt-0.5 xl:pb-16">
               <ArticleTableOfContents items={tocItems} activeId={activeId} />
             </div>
-          )}
-          {children}
-        </div>
+          </aside>
+        ) : null}
 
-        {showToc && (
-          <div className="hidden shrink-0 lg:block lg:w-[min(13.5rem,22vw)]">
-            <nav
-              className="sticky top-[var(--sticky-toc-offset)] pb-12 xl:pb-14"
-              aria-label="Pagina‑navigatie"
-            >
-              <ArticleTableOfContents items={tocItems} activeId={activeId} />
-            </nav>
+        <div className={showToc ? 'min-w-0' : 'lg:col-span-full'}>
+          <div className="flex justify-center">
+            <div ref={measureRef} className="relative w-full max-w-[68ch] lg:max-w-[70ch]">
+              <div
+                className="pointer-events-none absolute -left-2 top-0 bottom-0 z-0 hidden w-[2px] overflow-hidden lg:block xl:-left-2.5"
+                aria-hidden="true"
+              >
+                <div className="h-full rounded-full bg-stone-200/90" />
+                <div
+                  className="absolute left-0 top-0 h-full w-full origin-top rounded-full bg-stone-600/88 motion-safe:transition-transform motion-safe:duration-[120ms] motion-safe:ease-linear"
+                  style={{ transform: `scaleY(${progress})` }}
+                />
+              </div>
+
+              {showToc ? (
+                <div className="mb-9 lg:hidden">
+                  <ArticleTableOfContents items={tocItems} activeId={activeId} />
+                </div>
+              ) : null}
+
+              <div className="relative">{children}</div>
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Terug naar boven */}
       <button
         type="button"
         onClick={onBackTopClick}
         aria-label="Terug naar boven"
-        className={`fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[55] rounded-full border border-stone-300/95 bg-white/95 px-[0.9rem] py-2 text-[0.75rem] font-medium text-stone-700 shadow-sm backdrop-blur-[2px] transition-opacity duration-200 hover:border-stone-400 hover:text-stone-900 md:bottom-8 md:right-8 ${
+        className={`fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[55] rounded-full border border-stone-300/95 bg-white/95 px-[0.9rem] py-2 text-[0.75rem] font-medium text-stone-700 backdrop-blur-sm motion-safe:transition-opacity motion-safe:duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400/45 focus-visible:ring-offset-2 hover:border-stone-400 hover:text-stone-900 md:bottom-8 md:right-8 ${
           showBackTop ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
