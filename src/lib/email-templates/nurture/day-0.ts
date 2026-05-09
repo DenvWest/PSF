@@ -45,6 +45,9 @@ const STRESS_GUIDE_PS =
 const ENERGY_GUIDE_PS =
   "Begin deze week klein met één ding: stabiel eiwit bij het eerste moment van eten na opstaan — dat helpt vaak meer dan nog een kop koffie.";
 
+const RECOVERY_GUIDE_PS =
+  "Plan vandaag welke twee harde blokken deze week wél plaatsmaken voor licht werk en meer slaap dat levert meer op dan nog een kop sterke espresso.";
+
 function buildStressGuideBlock(stressProfileUrl: string): string {
   const pdfUrl = absoluteUrl("/downloads/stressgids-perfectsupplement.pdf");
   const profileEsc = escapeHtml(stressProfileUrl);
@@ -132,6 +135,29 @@ function buildEnergyGuideBlock(profileUrl: string): string {
         </tr>`;
 }
 
+function buildRecoveryProfileBlock(overtrainerProfileUrl: string): string {
+  const profileEsc = escapeHtml(overtrainerProfileUrl);
+  return `
+        <tr>
+          <td style="padding: 24px 28px; border-top: 1px solid #E7E5E4;">
+            <p style="margin: 0 0 8px; font-size: 12px; font-weight: 600; color: #4A7C28; text-transform: uppercase; letter-spacing: 0.05em;">
+              RECOVERY
+            </p>
+            <p style="margin: 0 0 12px; font-size: 18px; font-weight: 700; color: #171717;">
+              Hier is jouw digitale recovery-gids
+            </p>
+            <p style="margin: 0 0 16px; font-size: 15px; color: #404040; line-height: 1.65;">
+              We hebben (nog) geen losse PDF-gids voor dit profiel daarom bundelen we alles op de Overtrainer-profielpagina vier weken-protocol, supplementen onder EU‑claims en wanneer je beter naar een arts gaat.
+            </p>
+            <a href="${profileEsc}"
+               style="display: inline-block; padding: 12px 24px; background-color: #2D5016; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
+              Naar jouw recovery-pagina →
+            </a>
+            ${buildPdfGuideSignatureHtml(RECOVERY_GUIDE_PS, 24)}
+          </td>
+        </tr>`;
+}
+
 function renderStressdragerDay0PersonalizedRows(intakeUrl: string): string {
   const headline =
     "Hoi, dit valt op in jouw resultaten";
@@ -161,6 +187,38 @@ function renderStressdragerDay0PersonalizedRows(intakeUrl: string): string {
         </tr>`;
 }
 
+function renderRecoveryLeadDay0PersonalizedRows(intakeUrl: string, profileLabel: string): string {
+  const headline = "Je lichaam vraagt om meer rust — dit zien we in je scores";
+  const isExplicitOvertrainer = profileLabel === "Overtrainer";
+  const opener = isExplicitOvertrainer
+    ? "Je profiel is <strong>Overtrainer</strong>: veel belasting, te weinig buffer om weer op peil te komen. Dat zegt niets over je karakter — veel mannen 40+ lopen zo vast tussen ambitie en fysieke rek."
+    : "Je herstelsignaal in de Leefstijlcheck valt op: vaak veel trainen of weinig echte ontspanning. Daar past deze recovery-mail bij, ook als je andere domeinen hoger scoorden.";
+  const tip =
+    "Kies deze week twee geplande zware sessies en maak ze echt licht óf ruim ze op. Vervang ze door 30–40 minuten wandelen zonder stopwatchstress en ga een halfuur eerder naar bed twee avonden op rij klein, maar je systeem merkt het.";
+  return `
+        <tr>
+          <td style="padding:8px 28px 16px 28px;">
+            <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:22px;line-height:1.25;color:#1a1a1a;font-weight:400;">
+              ${escapeHtml(headline)}
+            </h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 28px 28px 28px;">
+            <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
+              ${opener}
+            </p>
+            <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
+              Geen oordeel — je wilt vooruit. Na 40 wordt het verschil tussen trainingsdruk en echte rust eerder zichtbaar; supplementen komen pas nadat volume en slaap eerlijk zijn tegen het licht gehouden.
+            </p>
+            <div style="background:#f5f5f0;border-left:3px solid #2d4a3e;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;">
+              <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(tip)}</p>
+            </div>
+            ${nurtureCtaButton(intakeUrl, "Bekijk je Herstelplan")}
+          </td>
+        </tr>`;
+}
+
 export function nurtureDay0Email(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
@@ -176,38 +234,55 @@ export function nurtureDay0Email(
 
   const sleepScore = parseDomainScore(data.domainScores.sleep_score);
   const sleepScoreLowEnough = Number.isFinite(sleepScore) && sleepScore < 50;
-  const showSleepGuide =
-    data.profileLabel === "Onrustige Slaper" || sleepScoreLowEnough;
 
   const stressScore = parseDomainScore(data.domainScores.stress_score);
   const stressScoreLowEnough = Number.isFinite(stressScore) && stressScore < 50;
-  const showStressGuide =
-    !showSleepGuide &&
-    (data.profileLabel === "Stressdrager" || stressScoreLowEnough);
 
   const energyScore = parseDomainScore(data.domainScores.energy_score);
   const energyScoreLowEnough =
     Number.isFinite(energyScore) && energyScore < 50;
+
+  const recoveryScore = parseDomainScore(data.domainScores.recovery_score);
+  const recoveryScoreLowEnough = Number.isFinite(recoveryScore) && recoveryScore < 40;
+
+  const stressProfileFirst = data.profileLabel === "Stressdrager";
+  const recoveryLeadEligible =
+    !stressProfileFirst &&
+    (data.profileLabel === "Overtrainer" || recoveryScoreLowEnough);
+
+  const showSleepGuide =
+    !recoveryLeadEligible &&
+    (data.profileLabel === "Onrustige Slaper" || sleepScoreLowEnough);
+
+  const showStressGuide =
+    !recoveryLeadEligible &&
+    !showSleepGuide &&
+    (data.profileLabel === "Stressdrager" || stressScoreLowEnough);
+
   const showEnergyGuide =
+    !recoveryLeadEligible &&
     !showSleepGuide &&
     !showStressGuide &&
     (data.profileLabel === "Lage Batterij" || energyScoreLowEnough);
 
   const stressProfileUrl = absoluteUrl("/profiel/stressdrager");
   const energyProfileUrl = absoluteUrl("/profiel/lage-batterij");
+  const overtrainerProfileUrl = absoluteUrl("/profiel/overtrainer");
 
-  const mainRows =
-    data.profileLabel === "Stressdrager"
-      ? renderStressdragerDay0PersonalizedRows(intakeUrl)
+  const mainRows = stressProfileFirst
+    ? renderStressdragerDay0PersonalizedRows(intakeUrl)
+    : recoveryLeadEligible
+      ? renderRecoveryLeadDay0PersonalizedRows(intakeUrl, data.profileLabel)
       : renderPersonalizedRows(blocks, supplementTip, intakeUrl);
 
-  const emailSubject =
-    data.profileLabel === "Stressdrager"
-      ? "Hoi, dit valt op in jouw resultaten"
-      : subject;
+  let emailSubject: string;
+  if (stressProfileFirst) emailSubject = "Hoi, dit valt op in jouw resultaten";
+  else if (recoveryLeadEligible) emailSubject = "Je recovery vraagt nu je aandacht";
+  else emailSubject = subject;
 
   const inner =
     mainRows +
+    (recoveryLeadEligible ? buildRecoveryProfileBlock(overtrainerProfileUrl) : "") +
     (showSleepGuide ? buildSleepGuideBlock() : "") +
     (showStressGuide ? buildStressGuideBlock(stressProfileUrl) : "") +
     (showEnergyGuide ? buildEnergyGuideBlock(energyProfileUrl) : "");

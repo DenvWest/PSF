@@ -15,6 +15,7 @@ const STATIC_PROFIEL_SLUGS = new Set([
   "stressdrager",
   "lage-batterij",
   "onrustige-slaper",
+  "overtrainer",
 ]);
 
 export function generateStaticParams() {
