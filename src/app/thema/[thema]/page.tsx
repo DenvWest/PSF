@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
 import { THEMA_DATA, THEMA_SLUGS } from "@/data/thema";
 import { EmailGateForm } from "@/components/thema/EmailGateForm";
-import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { isSupplementAvailable } from "@/lib/supplement-availability";
 
 interface Props {
@@ -223,7 +222,6 @@ export default async function ThemaPage({ params }: Props) {
           </p>
           {showAshwagandhaDisclaimer ? (
             <div className="mx-auto mt-8 max-w-2xl">
-              <AshwagandhaOnHoldDisclaimer />
             </div>
           ) : null}
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
