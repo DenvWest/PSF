@@ -16,6 +16,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const THEMA_DOWNLOADS: Record<string, true> = {
   slaap: true,
   stress: true,
+  energie: true,
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

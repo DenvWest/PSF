@@ -50,7 +50,7 @@ export const energieThema: ThemaPageData = {
       {
         title: "Fysiek & hormonaal",
         description:
-          "Vitamine D-tekort (40-60% in NL), dalend testosteron (1-2%/jaar na 30) en verminderde insulinegevoeligheid: kleine verschuivingen met grote impact op hoe 'vol' je je voelt.",
+          "Vitamine D-tekort (naar schatting 40-60% in NL), dalend testosteron (gemiddeld naar schatting 1-2%/jaar na 30) en verminderde insulinegevoeligheid: kleine verschuivingen met grote impact op hoe 'vol' je je voelt.",
         icon: "🩺",
         source: "Gezondheidsraad NL, 2012; Travison et al., J Clin Endocrinol Metab, 2007",
       },
@@ -76,7 +76,7 @@ export const energieThema: ThemaPageData = {
       },
       {
         claim:
-          "Creatine monohydraat (3-5 g/dag) verbetert cognitieve prestaties bij slaaptekort en mentale vermoeidheid.",
+          "Onderzoek suggereert dat creatine monohydraat (3-5 g/dag) kan bijdragen aan cognitieve prestaties bij slaaptekort en mentale vermoeidheid.",
         source: "Avgerinos et al., Exp Gerontol, 2018 (systematic review)",
         pubmedId: "29704637",
       },
@@ -137,7 +137,7 @@ export const energieThema: ThemaPageData = {
       {
         name: "Omega-3 (EPA/DHA)",
         reason:
-          "Ondersteunt cellen, ontstekingsbalans en mentale frisheid; nauw te koppelen aan lage visinname in het moderne eetpatroon.",
+          "Ondersteunt cellen en mentale frisheid; EPA en DHA worden in onderzoek geassocieerd met onder andere ontstekingsbalans — relevant als je weinig vis eet.",
         guideLink: "/supplementen/omega-3",
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
@@ -171,9 +171,9 @@ export const energieThema: ThemaPageData = {
 
   emailGate: {
     sectionLabel: "GRATIS ENERGIEGIDS",
-    title: "Op een rij: energie, voeding, hormonen en stappen",
+    title: "Gratis Energiegids (PDF)",
     subtitle:
-      "Een strakke PDF met herkenning, eenvoudige leefstijlinterventies en wanneer meten of verdieping zinvol is — zonder pakkende beloftes, wel met duiding.",
+      "17 pagina's met concrete stappen voor meer energie na 40. Van voeding en beweging tot de supplementen met de beste evidence.",
     bulletPoints: [
       "Hoe leefstijl en hormonen elkaar versterken na je 40e",
       "Eenvoudig weekplan: eten, beweging, licht (haalbaar in drukke weken)",

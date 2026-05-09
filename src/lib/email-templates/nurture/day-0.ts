@@ -42,6 +42,9 @@ const SLEEP_GUIDE_PS =
 const STRESS_GUIDE_PS =
   "Eén ding dat je deze week nog kunt proberen: vijf minuten uitademen gericht uitvoeren vóór je je werkmail opent — het is klein, maar je zenuwstelsel merkt het verschil.";
 
+const ENERGY_GUIDE_PS =
+  "Begin deze week klein met één ding: stabiel eiwit bij het eerste moment van eten na opstaan — dat helpt vaak meer dan nog een kop koffie.";
+
 function buildStressGuideBlock(stressProfileUrl: string): string {
   const pdfUrl = absoluteUrl("/downloads/stressgids-perfectsupplement.pdf");
   const profileEsc = escapeHtml(stressProfileUrl);
@@ -92,6 +95,39 @@ function buildSleepGuideBlock(): string {
               Download de Slaapgids (PDF) →
             </a>
             ${buildPdfGuideSignatureHtml(SLEEP_GUIDE_PS, 24)}
+          </td>
+        </tr>`;
+}
+
+function buildEnergyGuideBlock(profileUrl: string): string {
+  const pdfUrl = absoluteUrl("/downloads/energiegids-perfectsupplement.pdf");
+  const profileEsc = escapeHtml(profileUrl);
+  return `
+        <tr>
+          <td style="padding: 24px 28px; border-top: 1px solid #E7E5E4;">
+            <p style="margin: 0 0 12px; font-size: 12px; font-weight: 600; color: #4A7C28; text-transform: uppercase; letter-spacing: 0.05em;">
+              GRATIS ENERGIEGIDS
+            </p>
+            <p style="margin: 0 0 12px; font-size: 18px; font-weight: 700; color: #171717;">
+              Je Energiegids staat voor je klaar
+            </p>
+            <p style="margin: 0 0 16px;">
+              <a href="${pdfUrl}"
+                 style="font-size: 16px; font-weight: 600; color: #2d4a3e; text-decoration: underline;">
+                Download je gratis Energiegids →
+              </a>
+            </p>
+            <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.65; color: #333333;">
+              Als <strong>Lage Batterij</strong> is je energiehuishouding je belangrijkste aandachtspunt. In je Energiegids vind je concrete stappen — van voeding
+              en bloedsuiker tot de supplementen die het meest evidence-based zijn.
+            </p>
+            <p style="margin: 0 0 24px; font-size: 14px; color: #404040; line-height: 1.6;">
+              Wil je je profiel verder verdiepen?
+              <a href="${profileEsc}" style="color:#2d4a3e; font-weight:600;">
+                Bekijk hier wat het Lage Batterij-profiel inhoudt
+              </a>.
+            </p>
+            ${buildPdfGuideSignatureHtml(ENERGY_GUIDE_PS, 0)}
           </td>
         </tr>`;
 }
@@ -149,7 +185,16 @@ export function nurtureDay0Email(
     !showSleepGuide &&
     (data.profileLabel === "Stressdrager" || stressScoreLowEnough);
 
+  const energyScore = parseDomainScore(data.domainScores.energy_score);
+  const energyScoreLowEnough =
+    Number.isFinite(energyScore) && energyScore < 50;
+  const showEnergyGuide =
+    !showSleepGuide &&
+    !showStressGuide &&
+    (data.profileLabel === "Lage Batterij" || energyScoreLowEnough);
+
   const stressProfileUrl = absoluteUrl("/profiel/stressdrager");
+  const energyProfileUrl = absoluteUrl("/profiel/lage-batterij");
 
   const mainRows =
     data.profileLabel === "Stressdrager"
@@ -164,7 +209,8 @@ export function nurtureDay0Email(
   const inner =
     mainRows +
     (showSleepGuide ? buildSleepGuideBlock() : "") +
-    (showStressGuide ? buildStressGuideBlock(stressProfileUrl) : "");
+    (showStressGuide ? buildStressGuideBlock(stressProfileUrl) : "") +
+    (showEnergyGuide ? buildEnergyGuideBlock(energyProfileUrl) : "");
 
   return { subject: emailSubject, html: wrapNurtureBlock(inner, ctx, false) };
 }

@@ -77,7 +77,7 @@ const quickWins = [
   {
     number: "1",
     title: "Eet binnen 30 minuten na het opstaan een eiwitrijk ontbijt",
-    body: "Denk aan eieren, Griekse yoghurt met noten, of kwark met zaden. Eiwit stabiliseert je bloedsuiker en voorkomt de ochtend-crash die je kent van een boterham met hagelslag.",
+    body: "Denk aan eieren, Griekse yoghurt met noten, of kwark met zaden. Eiwit stabiliseert je bloedsuiker en kan ondersteunen om de ochtend-crash van een hoog-suikerontbijt te beperken.",
   },
   {
     number: "2",
@@ -288,10 +288,10 @@ export default function LageBatterijPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Omega-3 (EPA/DHA)</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      EPA en DHA — de actieve omega-3 vetzuren — ondersteunen je mitochondriale
-                      functie. Dat is relevant omdat je mitochondriën na 40 minder efficiënt worden.
-                      Omega-3 helpt ze beter te functioneren, wat zich vertaalt in een stabieler
-                      energieniveau door de dag.
+                      EPA en DHA — de actieve omega-3 vetzuren — spelen onder andere een rol bij
+                      cellen en mitochondriën. Onderzoek suggereert dat voldoende inname kan
+                      ondersteunen als je mitochondriële functie onder druk staat (zoals vaak na 40).
+                      Dat maakt het relevant voor wie een stabieler energieniveau door de dag zoekt.
                     </p>
                     <p className="text-slate-600 leading-relaxed">
                       De meeste mannen in Nederland krijgen structureel te weinig omega-3 binnen. Je
@@ -316,10 +316,12 @@ export default function LageBatterijPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Magnesium</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      Magnesium is betrokken bij meer dan 300 processen in je lichaam, waaronder
-                      energieproductie en spierontspanning. Een tekort — dat bij naar schatting 50%
-                      van de westerse bevolking voorkomt — uit zich in vermoeidheid, spierkrampen en
-                      slechte slaap. Precies de klachten van het Lage Batterij profiel.
+                      Magnesium draagt bij tot een normaal energieleverend metabolisme (officiële
+                      gezondheidsclaim waar supplementen aan mogen refereren). Daarnaast speelt het
+                      mee bij spierontspanning en slaap. Volgens sommige schattingen kan een tekort bij
+                      ruim de helft van de westerse bevolking een rol spelen — en dat wordt geassocieerd met
+                      vermoeidheid, spierkrampen en onrustige nachtrust. Precies klachten die vaak bij
+                      het Lage Batterij-profiel passen.
                     </p>
                     <p className="text-slate-600 leading-relaxed">
                       Kies voor magnesium glycinaat of bisglycinaat: deze vormen worden het best

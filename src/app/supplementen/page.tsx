@@ -143,8 +143,7 @@ export default async function SupplementenPage() {
                   Persoonlijk advies
                 </h3>
                 <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-                  Via de Leefstijlcheck krijg je supplementadvies dat past bij
-                  jouw situatie — niet een one-size-fits-all.
+                  Ontvang advies afgestemd op jouw leefstijl, doelen en eventuele supplementbehoeften.
                 </p>
               </div>
             </div>
