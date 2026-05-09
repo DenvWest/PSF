@@ -286,7 +286,6 @@ export function nurtureDay0Email(
     !showStressGuide &&
     !showEnergyGuide &&
     (data.profileLabel === "Overtrainer" ||
-      data.profileLabel === "Stille Slijter" ||
       (Number.isFinite(recoveryScore) && recoveryScore < 50) ||
       isOvertrainerPatternScores);
 

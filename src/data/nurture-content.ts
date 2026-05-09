@@ -489,8 +489,14 @@ export function buildNurtureEmail(
 } {
   const templateKey = sequenceDayToTemplateKey(sequenceDay);
   const trimmed = profileLabel.trim();
+  // Intake produceert geen losse recovery-labels; map bekende varianten naar
+  // bestaande content zodat ze niet naar de "In Balans" fallback vallen.
   const normalizedLabel =
-    trimmed === "Stilzitter" ? "Lage Batterij" : trimmed;
+    trimmed === "Stilzitter" ||
+    trimmed === "Overtrainer" ||
+    trimmed === "Stille Slijter"
+      ? "Lage Batterij"
+      : trimmed;
   const knownLabel = normalizedLabel as ProfileLabelName;
 
   const dayContent = nurtureContent[templateKey];
