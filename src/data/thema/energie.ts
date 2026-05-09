@@ -162,7 +162,7 @@ export const energieThema: ThemaPageData = {
         name: "Eiwitpoeder",
         reason:
           "Voldoende eiwitinname in je voeding ondersteunt spieronderhoud; na je 40e wordt behoud vaak meer aandacht. In de EU hebben eiwit‑supplementen o.a. claims rond spiermassa en botten onder voorwaarden — geen garantie voor ‘meer pit’ uit één scooptje.",
-        guideLink: "/beste-eiwitpoeder",
+        guideLink: "/supplementen/eiwitpoeder",
         comparisonLink: "/beste-eiwitpoeder",
         icon: "💪",
       },

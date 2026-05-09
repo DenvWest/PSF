@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const eiwitpoederData: ComparisonPageData = {
   category: "eiwitpoeder",
+  guideHref: "/supplementen/eiwitpoeder",
   h1: "Beste Eiwitpoeder 2026",
   intro:
     "Whey of plantaardig? We vergeleken de beste eiwitpoeders op eiwitgehalte, biobeschikbaarheid, zuiverheid en prijs.",

@@ -11,7 +11,6 @@ import { TrustBar } from "@/components/supplements/TrustBar";
 import {
   ComparisonChooserIntro,
   ComparisonEducationalLead,
-  ComparisonIntakeFallbackCta,
 } from "@/components/supplements/ContentFirstComparisonCTAs";
 import Container from "@/components/layout/Container";
 import {
@@ -126,6 +125,7 @@ export default function Page() {
           <BuyingGuide
             criteria={data.comparisonCriteria}
             category={data.category}
+            guideHref={data.guideHref}
           />
         </section>
 
@@ -142,9 +142,23 @@ export default function Page() {
               Meer over eiwitpoeder
             </h3>
             <p className="mt-2 text-sm text-slate-600">
-              Eiwit werkt het best als onderdeel van training, slaap en voeding. Zie onder Lees ook
-              voor gerelateerde vergelijkingen en de pijlerpagina slaap.
+              Eiwit werkt het best als onderdeel van training, slaap en voeding. Begin met de gids
+              als je eerst wilt bepalen of whey, isolaat of plantaardig eiwit bij je past.
             </p>
+            <div className="mt-3 space-y-2">
+              <Link
+                href="/supplementen/eiwitpoeder"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Eiwitpoeder gids — whey, isolaat en plantaardig uitgelegd →
+              </Link>
+              <Link
+                href="/beste-creatine"
+                className="block text-sm font-medium text-emerald-700 underline underline-offset-4"
+              >
+                Beste creatine — handig naast eiwit bij krachttraining →
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -152,6 +166,17 @@ export default function Page() {
           <Container>
             <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link
+                href="/supplementen/eiwitpoeder"
+                className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
+              >
+                <p className="text-base text-stone-600 leading-relaxed">
+                  Eerst begrijpen wat bij jou past? Lees de complete eiwitpoeder gids.
+                </p>
+                <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
+                  Lees de gids →
+                </span>
+              </Link>
               <Link
                 href="/beste-creatine"
                 className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors"
@@ -172,7 +197,47 @@ export default function Page() {
           </Container>
         </section>
 
-        <ComparisonIntakeFallbackCta />
+        <Container>
+          <section
+            id="leefstijl-cta"
+            aria-labelledby="leefstijl-cta-heading"
+            className="py-16 lg:py-20"
+          >
+            <div className="rounded-2xl bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] p-8 text-center shadow-sm lg:p-12">
+              <p className="text-xs font-medium uppercase tracking-widest text-white/60">
+                Persoonlijk advies
+              </p>
+              <h2
+                id="leefstijl-cta-heading"
+                className="mt-3 font-serif text-2xl text-white lg:text-3xl"
+              >
+                Niet zeker of eiwitpoeder bij jouw situatie past?
+              </h2>
+              <p className="mx-auto mt-4 max-w-lg text-base text-white/80">
+                De meeste herstelproblemen beginnen niet bij één supplement, maar bij slaap,
+                training, voeding en stress. De Leefstijlcheck laat zien waar jouw grootste winst zit.
+              </p>
+              <div className="mx-auto mt-6 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2">
+                <span className="text-sm text-white/70">✓ 12 vragen, 3 minuten</span>
+                <span className="text-sm text-white/70">✓ Scores op 6 leefstijldomeinen</span>
+                <span className="text-sm text-white/70">✓ Persoonlijk Herstelplan</span>
+                <span className="text-sm text-white/70">✓ Gerichte supplementroute</span>
+              </div>
+              <div className="mt-8">
+                <Link
+                  href="/intake"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#5A8F6A] shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
+                >
+                  Start je leefstijlcheck
+                  <span aria-hidden>→</span>
+                </Link>
+              </div>
+              <p className="mt-4 text-xs text-white/45">
+                Gratis · Geen account nodig · Anoniem verwerkt
+              </p>
+            </div>
+          </section>
+        </Container>
 
         <section className="border-t border-stone-200 py-10" role="complementary">
           <Container>

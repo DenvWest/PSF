@@ -128,7 +128,7 @@ export const CATALOG: CatalogEntry[] = [
     wiifm: "Whey, isolaat en plantaardig",
     themas: ["herstel", "energie"],
     topScore: maxProductScore(eiwitpoederData.products),
-    guideHref: "/beste-eiwitpoeder",
+    guideHref: "/supplementen/eiwitpoeder",
     comparisonHref: "/beste-eiwitpoeder",
     comingSoon: false,
     icon: "🥤",

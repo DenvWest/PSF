@@ -5,6 +5,7 @@ import { vitamineDData } from "./vitamine-d";
 import { melatonineData } from "./melatonine";
 import { creatineGidsData } from "./creatine";
 import { zinkGidsData } from "./zink";
+import { eiwitpoederGidsData } from "./eiwitpoeder";
 import type { SupplementSlug, SupplementData } from "@/types/supplementen";
 
 const alleSupplementen: Record<SupplementSlug, SupplementData> = {
@@ -15,6 +16,7 @@ const alleSupplementen: Record<SupplementSlug, SupplementData> = {
   melatonine: melatonineData,
   creatine: creatineGidsData,
   zink: zinkGidsData,
+  eiwitpoeder: eiwitpoederGidsData,
 };
 
 export function getSupplementData(slug: SupplementSlug): SupplementData {
@@ -29,4 +31,5 @@ export const ALL_SUPPLEMENT_SLUGS: SupplementSlug[] = [
   "melatonine",
   "creatine",
   "zink",
+  "eiwitpoeder",
 ];

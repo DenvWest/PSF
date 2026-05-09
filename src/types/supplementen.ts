@@ -5,7 +5,8 @@ export type SupplementSlug =
   | "vitamine-d"
   | "melatonine"
   | "creatine"
-  | "zink";
+  | "zink"
+  | "eiwitpoeder";
 
 export interface SupplementData {
   slug: SupplementSlug;
