@@ -31,24 +31,61 @@ export const herstelThema: ThemaPageData = {
         description:
           "Muscle protein synthesis daalt — je hebt meer eiwit nodig per maaltijd (minimaal 30 g per keer) om dezelfde respons te triggeren als vroeger.",
         icon: "🧬",
+        source: "Moore et al., J Gerontol A Biol Sci Med Sci, 2015",
       },
       {
         title: "Cortisol en herstel",
         description:
           "Cortisolniveaus reageren trager op herstel — chronische stress houdt cortisol hoog, wat spieropbouw en weefselreparatie remt.",
         icon: "📈",
+        source: "Chrousos GP, Nat Rev Endocrinol, 2009",
       },
       {
         title: "Slaapkwaliteit en N3",
         description:
           "Slaapkwaliteit daalt met leeftijd — en diepe slaap (N3) is de fase waarin groeihormoon vrijkomt en het meeste fysieke herstel plaatsvindt.",
         icon: "🌙",
+        source: "Ohayon et al., Sleep, 2004 (meta-analyse)",
       },
       {
         title: "Lichte chronische ontsteking (inflammaging)",
         description:
           "Dit neemt toe en remt spier- en weefselherstel; het draagt bij aan stijfheid en pijn die langer blijven hangen.",
         icon: "🔥",
+        source: "Franceschi et al., Nat Rev Immunol, 2018",
+      },
+    ],
+  },
+
+  scienceBlock: {
+    sectionLabel: "WAT ONDERZOEK LAAT ZIEN",
+    title: "De wetenschap achter trager herstel na je 40e",
+    intro: "Geen meningen, maar meetbare feiten uit peer-reviewed onderzoek.",
+    facts: [
+      {
+        claim:
+          "Spierproteïnesynthese reageert minder sterk op kleine eiwitdoseringen naarmate je ouder wordt (anabole resistentie).",
+        source: "Burd et al., Exerc Sport Sci Rev, 2013",
+      },
+      {
+        claim:
+          "Diepe slaap neemt met de leeftijd af, terwijl juist in deze fase de sterkste fysieke herstelprocessen plaatsvinden.",
+        source: "Ohayon et al., Sleep, 2004 (meta-analyse)",
+      },
+      {
+        claim:
+          "Chronisch verhoogd cortisol hangt samen met afbraakprocessen in spierweefsel en langzamer herstel na belasting.",
+        source: "Chrousos GP, Nat Rev Endocrinol, 2009",
+      },
+      {
+        claim:
+          "Creatinesuppletie ondersteunt krachttoename en vetvrije massa bij volwassenen die weerstandstraining doen.",
+        source: "Kreider et al., J Int Soc Sports Nutr, 2017 (position stand)",
+      },
+      {
+        claim:
+          "Lagere magnesiumstatus komt vaker voor bij suboptimale spierfunctie en vermoeidheidsklachten.",
+        source: "Cuciureanu & Vink, Magnes Res, 2011",
       },
     ],
   },
@@ -154,6 +191,13 @@ export const herstelThema: ThemaPageData = {
     privacyText:
       "Je e-mail wordt alleen gebruikt voor de gids en relevante tips. Geen spam, altijd opzegbaar.",
     successMessage: "Check je inbox — de Herstelgids is onderweg.",
+  },
+
+  pillarPage: {
+    href: "/herstel-verbeteren-na-40",
+    title: "De complete gids: herstel verbeteren na 40",
+    description:
+      "Van MPS en slaaparchitectuur tot een praktisch weekplan met voeding, training en supplementen. Alles op deze pagina, maar dan volledig uitgewerkt.",
   },
 
   expertQuote: {
