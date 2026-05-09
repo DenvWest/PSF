@@ -29,7 +29,7 @@ export const slaapThema: ThemaPageData = {
       {
         title: "Melatonine daalt",
         description:
-          "Je lichaam maakt minder melatonine aan naarmate je ouder wordt. Na je 40e is de productie meetbaar lager, wat leidt tot langer wakker liggen, lichter slapen en eerder wakker worden.",
+          "Melatonine kan onder meer een rol spelen in timing van je slaap‑waaksysteem en circadiaan ritme. Je lichaam maakt gemiddeld minder melatonine aan naarmate je ouder wordt; na je 40e wordt die daling bij veel mensen meetbaar, wat kan samengaan met langer wakker liggen en lichter slapen.",
         icon: "🌙",
         source:
           "Wurtman RJ, J Clin Endocrinol Metab, 2000; Claustrat & Leston, Endotext, 2022",
@@ -44,7 +44,7 @@ export const slaapThema: ThemaPageData = {
       {
         title: "Magnesiumtekort",
         description:
-          "Magnesium is essentieel voor spierontspanning en de regulatie van je zenuwstelsel. Bij een tekort — wat bij 40+ veel voorkomt — blijft je lichaam in een staat van alertheid. Een recente RCT toonde aan dat magnesium bisglycinaat insomniescores significant verbetert.",
+          "Magnesium draagt bij tot de normale werking van het zenuwstelsel en normale spierfunctie, en bij voldoende dosis tot de vermindering van vermoeidheid en een normale psychologische functie. Bij een tekort — wat bij 40+ relatief veel voorkomt — wordt je systeem eerder ’te lang waak gehouden’. In een RCT werden met magnesium bisglycinaat vergeleken met placebo insomnierelatieve scores gemeten; onderzoeksresultaten overdraag niet 1‑op‑1 naar beloftes over slaap op het etiket.",
         icon: "⚡",
         source: "Schuster et al., Nat Sci Sleep, 2025 (RCT, n=155)",
       },
@@ -75,11 +75,13 @@ export const slaapThema: ThemaPageData = {
         pubmedId: "24235903",
       },
       {
-        claim: "Magnesium bisglycinaat verlaagt insomniescores significant vs. placebo na 4 weken (RCT, n=155).",
+        claim:
+          "In een dubbelblinde placebo-gecontroleerde studie rapporteerden volwassenen met slechte slaap na 4 weken andere insomnierelateerde uitkomsten met magnesiumbisglycinaat dan met placebo — individueel effect varieert.",
         source: "Schuster et al., Nat Sci Sleep, 2025",
       },
       {
-        claim: "600 mg ashwagandha KSM-66 per dag verlaagt serumcortisol significant (p=0.0006) na 60 dagen.",
+        claim:
+          "Een gecontroleerde studie rapporteerde na 60 dagen met een ashwagandha‑extract andere serum‑cortisolwaarden versus placebo; dit is onderzoekscontext geen EU‑goedgekeurde claim en garandeert geen betere slaap.",
         source: "Chandrasekhar et al., Indian J Psychol Med, 2012",
         pubmedId: "23439798",
       },
@@ -120,12 +122,12 @@ export const slaapThema: ThemaPageData = {
     sectionLabel: "SUPPLEMENTEN DIE KUNNEN HELPEN",
     title: "Gericht aanvullen — niet zomaar slikken",
     intro:
-      "Deze supplementen hebben wetenschappelijke onderbouwing voor slaapverbetering. Klik door naar de gids voor dosering, vormen en onze onafhankelijke productvergelijking.",
+      "Sommige stoffen hebben officiële EU‑claims voor specifieke lichaamsfuncties; andere worden in onderzoek besproken in relatie tot nachtrust. Lees hier de nuance — en klik door naar de gids voor dosering en productvergelijking.",
     items: [
       {
         name: "Magnesium",
         reason:
-          "Magnesium glycinaat ondersteunt spierontspanning en helpt je zenuwstelsel in de parasympathische modus — essentieel om in slaap te vallen en door te slapen.",
+          "Magnesium draagt bij tot de normale werking van het zenuwstelsel en spieren, tot vermindering van vermoeidheid en een normale psychologische functie (EFSA‑claims bij voldoende dosis) — veel mensen gebruiken glycinaat/bisglycinaat bij een avondroutine.",
         guideLink: "/supplementen/magnesium",
         comparisonLink: "/beste-magnesium",
         icon: "⚡",
@@ -133,7 +135,7 @@ export const slaapThema: ThemaPageData = {
       {
         name: "Ashwagandha",
         reason:
-          "Kan bijdragen aan het verlagen van cortisol en helpt je 's avonds sneller tot rust te komen (on-hold EFSA-claim). Vooral relevant als je slaapprobleem gekoppeld is aan stress of piekeren.",
+          "Ashwagandha staat bij EFSA op de on‑holdlijst voor claims: onderzoeken suggereren mogelijk een rol in hoe je stress ervaart, maar dat is géén erkende gezondheidsclaim. Als spanning je nacht belemmert, plaats je het in die context — gebruik op eigen risico.",
         guideLink: "/supplementen/ashwagandha",
         comparisonLink: "/beste-ashwagandha",
         icon: "🌿",
@@ -141,7 +143,7 @@ export const slaapThema: ThemaPageData = {
       {
         name: "Omega-3",
         reason:
-          "EPA en DHA ondersteunen de productie van serotonine, een voorloper van melatonine. Een tekort kan je slaap-waakcyclus verstoren.",
+          "EPA en DHA dragen bij tot de normale werking van het hart; DHA draagt bij tot het instandhouden van normale hersenfunctie — geen EU‑claim gericht op slaapkwaliteit. Wel een gangbare bouwsteen voor wie weinig vis eet.",
         guideLink: "/supplementen/omega-3",
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
@@ -149,7 +151,7 @@ export const slaapThema: ThemaPageData = {
       {
         name: "Melatonine",
         reason:
-          "Je lichaam maakt minder melatonine aan naarmate je ouder wordt. Bij inslaapproblemen zonder stress als oorzaak kan melatonine helpen je slaap-waakritme te herstellen.",
+          "Je lichaam maakt gemiddeld minder melatonine aan naarmate je ouder wordt. Melatonine draagt bij aan het verkorten van de inslaaptijd onder de officiële claimvoorwaarden — geschikt bij vooral ritme-/timingvragen na overleg bij langdurige klachten.",
         guideLink: "/supplementen/melatonine",
         comparisonLink: "/beste-melatonine",
         icon: "🌙",

@@ -436,6 +436,29 @@ _GUIDE = {
                         "Effectvariatie blijft groot tussen mensen <super>14</super>."
                     ),
                 },
+                {"type": "subtitle", "text": "Omega-3 (EPA/DHA)"},
+                {
+                    "type": "paragraph",
+                    "text": (
+                        "<b>EPA en DHA</b> worden in officieuze EU‑lijsten gekoppeld aan hart‑ en hersenclaims "
+                        "(DHA‑drempels voor hersenen en gezichtsvermogen). "
+                        "Gebruik deze claims om verwachtingen te kaderen — <b>geen Europese supplementclaim hier op "
+                        "‘direct meer energie’</b>; dat blijft leefstijl + waar nodig medisch onderzoek."
+                    ),
+                },
+                {
+                    "type": "subtitle",
+                    "text": "Ashwagandha (extracten worden buiten officiële claims besproken)",
+                },
+                {
+                    "type": "paragraph",
+                    "text": (
+                        "<b>Geen EU‑labels met goedgekeurde gezondheidsclaims — EFSA dossiers staan veelal \"on‑hold\". "
+                        "Studies bespreken soms beleefde stress of subjectieve vermoeidheid, maar overdraag je dat "
+                        "niet naar harde garanties.</b> VWS bekijkt aanvullende regels; signalen medio 2026 mogelijk relevant. "
+                        "Gebruik op eigen risico."
+                    ),
+                },
                 {"type": "subtitle", "text": "Co-enzym Q10"},
                 {
                     "type": "paragraph",
@@ -449,9 +472,10 @@ _GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Creatine is vooral onderzocht voor kracht en sprintkracht; een deel van de literatuur "
-                        "kijkt ook naar cognitie onder slaaptekort — interessant, maar <b>geen garantie</b> voor "
-                        "dagelijkse energie bij jou <super>16</super>."
+                        "<b>Creatine</b> fungeert vooral als creatinefosfaat‑buffer bij korte, zware spiertaken "
+                        "(onderzoekscontext verwijst ook naar cognitie tijdens slaaptekort — dat is géén brede dagclaim). "
+                        "De erkende EU‑claim beschrijft zeer korte, intense inspanning bij voldoende dagdosis; "
+                        "formuleer geen garantie voor algemeen energieniveau op kantoor."
                     ),
                 },
                 {

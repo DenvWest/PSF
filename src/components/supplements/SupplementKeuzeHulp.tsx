@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 
+import { ON_HOLD_DISCLAIMER } from "@/data/approved-claims";
+
 type Categorie = "Slaap" | "Stress" | "Energie" | "Herstel";
 
 const aanbevelingen: Record<
@@ -11,25 +13,25 @@ const aanbevelingen: Record<
 > = {
     Slaap: {
         supplement: "Magnesium Glycinaat",
-        reden: "Magnesium ondersteunt ontspanning van het zenuwstelsel en verbetert slaapkwaliteit — met name de glycinaatvorm wordt het best opgenomen.",
+        reden: "Magnesium draagt bij tot een normale psychologische functie, normale werking van zenuwstelsel en spieren en tot vermindering van vermoeidheid (EFSA onder voorwaarden). Glycinaat is een praktische keuze in een avondroutine.",
         gids: "/supplementen/magnesium",
         vergelijking: "/beste-magnesium",
     },
     Stress: {
         supplement: "Ashwagandha",
-        reden: "Ashwagandha verlaagt cortisolwaarden aantoonbaar. Effectief bij chronische stress en mentale vermoeidheid.",
+        reden: "Geen EU‑erkende claims: ashwagandha staat op de EFSA on‑holdlijst; sommige studies bespreken stressperceptie. Gebruik op eigen risico — zie amber waarschuwing op thema-/vergelijkingsroutes.",
         gids: "/supplementen/ashwagandha",
         vergelijking: "/beste-ashwagandha",
     },
     Energie: {
         supplement: "Vitamine D3 + K2",
-        reden: "Bij mannen 40+ is een tekort aan vitamine D veelvoorkomend en direct gekoppeld aan vermoeidheid en energieproblemen.",
+        reden: "Vitamine D draagt bij aan immuunsysteem, botten en een normale spierwerking onder EU‑claimvoorwaarden. Laat een eventueel tekort inhoudelijk toetsen bij je arts.",
         gids: "/supplementen/vitamine-d",
         vergelijking: "/beste-vitamine-d",
     },
     Herstel: {
         supplement: "Omega-3 (EPA/DHA)",
-        reden: "Omega-3 dempt laaggradige ontstekingen die herstel vertragen, en ondersteunt spierherstel na inspanning.",
+        reden: "EPA en DHA dragen bij aan de werking van het hart en DHA aan hersen‑ en gezichtsclaims (EU). Voeding en rust blijven de basis voor herstel.",
         gids: "/supplementen/omega-3",
         vergelijking: "/beste-omega-3-supplement",
     },
@@ -106,6 +108,13 @@ export default function SupplementKeuzeHulp() {
                             <p className="mt-3 max-w-prose text-[0.9375rem] leading-relaxed text-stone-600">
                                 {aanbeveling.reden}
                             </p>
+                            {geselecteerd === "Stress" ? (
+                                <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                                    <p className="text-sm text-amber-900">
+                                        <strong>Let op:</strong> {ON_HOLD_DISCLAIMER}
+                                    </p>
+                                </div>
+                            ) : null}
                             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <Link
                                     href={aanbeveling.vergelijking}

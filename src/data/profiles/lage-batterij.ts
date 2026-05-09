@@ -157,7 +157,7 @@ export const lageBatterijProfile: ProfilePageData = {
       efsa_claim:
         "EPA en DHA dragen bij tot de normale werking van het hart. DHA draagt bij tot de instandhouding van normale hersenfunctie.",
       why_this_profile:
-        "Als je regelmatig moe wakker wordt, mist je lichaam vaak essentiële bouwstenen — en omega-3 staat bovenaan die lijst. Het ondersteunt je energieproductie op celniveau, iets wat bij het Lage Batterij-profiel direct voelbaar verschil maakt.",
+        "EPA en DHA dragen bij tot de normale werking van het hart; DHA draagt bij tot het instandhouden van normale hersenfunctie (EFSA). Geen Europese claim op ‘cellulaire energiefabriek’ of middagdip hier—wel een logische stap als je weinig vette vis eet en je algemene voedingskwaliteit wilt ondersteunen.",
       href: "/beste-omega-3-supplement",
       hasComparison: true,
     },
@@ -166,7 +166,7 @@ export const lageBatterijProfile: ProfilePageData = {
       efsa_claim:
         "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale spierfunctie.",
       why_this_profile:
-        "In Nederland loopt bijna iedereen na 40 een vitamine D-tekort op — en dat merk je terug in je energieniveau en spierfunctie. Als je je herkent in het Lage Batterij-profiel, is vitamine D een van de eerste tekorten om aan te pakken.",
+        "In beleidsdocumenten wordt vaak benadrukt dat veel volwassenen in NL suboptimale vitamine D‑status hebben. Vitamine D draagt onder voorwaarden bij aan immuunsysteem, botten en een normale spierwerking (EFSA) — passend als je weinig zon ziet of veel binnen werkt.",
       href: "/beste-vitamine-d",
       hasComparison: true,
     },
@@ -187,7 +187,7 @@ export const lageBatterijProfile: ProfilePageData = {
     {
       href: "/beste-omega-3-supplement",
       turboSnippet:
-        "Omega-3 ondersteunt je energieproductie op celniveau. Welke is het beste? →",
+        "EPA/DHA: hart‑ en hersenclaims (EFSA) — vergelijk zuiverheid en prijs per dag →",
     },
     {
       href: "/intake",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import Container from "@/components/layout/Container";
 import { stressdragerProfile } from "@/data/profiles/stressdrager";
 
@@ -227,6 +228,10 @@ export default function StressdragerPage() {
                 gerichte ondersteuning via supplementen een volgende stap zijn — deze twee zijn het
                 meest relevant bij het Stressdrager-profiel:
               </p>
+
+              <div className="mb-6">
+                <AshwagandhaOnHoldDisclaimer />
+              </div>
 
               <div className="space-y-5">
                 {profile.supplements.map((supp) => (

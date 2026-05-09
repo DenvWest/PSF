@@ -411,10 +411,11 @@ _GUIDE = {
                     "type": "tip",
                     "title": "Belangrijk over ashwagandha",
                     "text": (
-                        "<b>Ashwagandha heeft geen door de EFSA goedgekeurde gezondheidsclaims.</b> Wat je hier "
-                        "leest steunt op onderzoek bij vrijwilligers — niet op zo’n officiële claim. "
-                        "In Nederland loopt discussie over regels voor dit kruid; blijf kritisch op merken en "
-                        "labels."
+                        "<b>Voor Withania somnifera gelden nog geen door de Europese autoriteiten goedgekeurde "
+                        "gezondheidsclaims op supplementetiketten — EFSA beschouwt dossiers veelal als on-hold.</b> "
+                        "Wat je hier leest steunt alleen op literatuur, niet op zo’n officiële claim voor consumenten. "
+                        "<b>Het Nederlandse ministerie van VWS overweegt aanvullende regels; signalen verwijzen naar "
+                        "besluitvorming rond medio 2026.</b> Gebruik op eigen risico en bespreek medicatiecombinaties met je arts."
                     ),
                 },
                 {"type": "subtitle", "text": "Melatonine — soms handig, niet voor iedereen voor altijd"},

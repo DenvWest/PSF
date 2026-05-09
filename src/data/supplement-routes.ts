@@ -69,7 +69,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "ashwagandha",
     name: "Ashwagandha",
     reason:
-      "Je profiel matcht op door jou gekozen voorkeuren voor een kruidextract-vergelijking. Let op: ashwagandha staat EU-breed in de on-hold-procedure voor gezondheidsclaims en VWS toetst de voedselveiligheid in eigen procedure.",
+      "Je profiel matcht op door jou gekozen voorkeuren voor een kruidextract‑vergelijking. Let op EFSA on‑holdlijst: geen goedgekeurde gezondheidsclaims — VWS overweegt aanvullende regels (besluit medio 2026). Gebruik op eigen risico.",
     priority: 3,
     domains: ["Stress", "Slaap"],
     hasComparison: true,
@@ -97,7 +97,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "melatonine",
     name: "Melatonine",
     reason:
-      "Je slaap scoort laag terwijl stress minder dominant lijkt. Melatonine kan helpen je slaap-waakritme te herstellen.",
+      "Melatonine draagt bij aan het verkorten van de tijd nodig om in slaap te vallen volgens officiële claimvoorwaarden — geen garantie tegen doorstress of slechte slapen‑gewoonte.",
     priority: 5,
     domains: ["Slaap"],
     hasComparison: true,
@@ -110,7 +110,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     id: "creatine",
     name: "Creatine",
     reason:
-      "Creatine verhoogt de fysieke prestaties bij opeenvolgende reeksen van zeer korte, intense inspanningen (minimaal 3 g/dag). Handig als je aan krachtsport of korte bursts doet.",
+      "Creatine ondersteunt fosfaat‑buffering voor korte bursts; onder EU‑claims kan het bij langdurige adequate inname (minimaal 3 g/dag) onder voorwaarden iets bijdragen aan ultrakorte spiertaken — geen belofte op algemene energie.",
     priority: 20,
     domains: ["Beweging", "Herstel"],
     hasComparison: true,

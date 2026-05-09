@@ -147,9 +147,9 @@ export const overtrainer: ProfilePageData = {
     {
       name: "Creatine monohydraat",
       efsa_claim:
-        "Creatine verhoogt de lichamelijke prestatie bij opeenvolgende korte, zeer intensieve inspanningen.",
+        "Bij een dagelijkse inname van minimaal 3 g creatine kan creatine onder erkende EU‑voorwaarden bijdragen aan de fysieke prestatie bij opeenvolgende reeksen van zeer korte, intense inspanningen.",
       why_this_profile:
-        "Als je te veel traint en te weinig herstelt, helpt creatine je energiehuishouding in de spieren sneller te herstellen. Na 40 daalt je eigen productie — aanvullen helpt je sneller recupereren tussen sessies, zodat je kwaliteit levert in plaats van volume draait op een leeg lichaam.",
+        "Creatine ondersteunt de fosfaatbuffer in spiercellen — passend als je korte, zware series draait. Het is geen vervanging voor slaap en voeding; na 40 willen sommigen de inname structureren naast training en rust.",
       href: "/beste-creatine",
       hasComparison: true,
     },

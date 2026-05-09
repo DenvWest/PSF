@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
 import { THEMA_DATA, THEMA_SLUGS } from "@/data/thema";
 import { EmailGateForm } from "@/components/thema/EmailGateForm";
+import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { isSupplementAvailable } from "@/lib/supplement-availability";
 
 interface Props {
@@ -34,6 +35,10 @@ export default async function ThemaPage({ params }: Props) {
   const { thema: slug } = await params;
   const data = THEMA_DATA[slug];
   if (!data) notFound();
+
+  const showAshwagandhaDisclaimer = data.supplements.items.some((item) =>
+    item.guideLink.includes("/supplementen/ashwagandha"),
+  );
 
   return (
     <>
@@ -216,6 +221,11 @@ export default async function ThemaPage({ params }: Props) {
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-stone-600">
             {data.supplements.intro}
           </p>
+          {showAshwagandhaDisclaimer ? (
+            <div className="mx-auto mt-8 max-w-2xl">
+              <AshwagandhaOnHoldDisclaimer />
+            </div>
+          ) : null}
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {data.supplements.items
               .filter((item) => {

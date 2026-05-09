@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import Container from "@/components/layout/Container";
 import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import type { ProfilePageData, StepCareLayer, SupplementSuggestion } from "@/types/profile-page";
@@ -44,6 +45,12 @@ export default async function ProfielPage({ params }: Props) {
   const profile: ProfilePageData | undefined = PROFILE_PAGES[slug];
 
   if (!profile) notFound();
+
+  const showAshwagandhaDisclaimer = profile.supplements.some(
+    (s) =>
+      s.name.toLowerCase().includes("ashwagandha") ||
+      s.href.includes("ashwagandha"),
+  );
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -174,6 +181,11 @@ export default async function ProfielPage({ params }: Props) {
                 Supplementen zijn geen vervanging voor leefstijlaanpassingen — ze versterken het
                 effect als de basis op orde is.
               </p>
+              {showAshwagandhaDisclaimer ? (
+                <div className="mt-6">
+                  <AshwagandhaOnHoldDisclaimer />
+                </div>
+              ) : null}
               <div className="mt-6 space-y-4">
                 {profile.supplements.map((supp: SupplementSuggestion, index) => (
                   <div key={index} className="border border-slate-200 rounded-xl p-6">

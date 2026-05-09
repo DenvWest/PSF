@@ -288,15 +288,13 @@ export default function LageBatterijPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Omega-3 (EPA/DHA)</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      EPA en DHA — de actieve omega-3 vetzuren — spelen onder andere een rol bij
-                      cellen en mitochondriën. Onderzoek suggereert dat voldoende inname kan
-                      ondersteunen als je mitochondriële functie onder druk staat (zoals vaak na 40).
-                      Dat maakt het relevant voor wie een stabieler energieniveau door de dag zoekt.
+                      EPA en DHA dragen onder de juiste dosering bij tot de normale werking van het hart;
+                      DHA draagt bij tot het instandhouden van normale hersenfunctie (EU‑gezondheidsclaims).
+                      Geen Europees etiket‑claim op ‘cellulaire energiefabriek’ voor omega‑3.
                     </p>
                     <p className="text-slate-600 leading-relaxed">
-                      De meeste mannen in Nederland krijgen structureel te weinig omega-3 binnen. Je
-                      zou 3–4 keer per week vette vis moeten eten (zalm, makreel, haring) om aan de
-                      aanbevolen hoeveelheid te komen. Een supplement vult dit gat.
+                      De meeste mannen in Nederland krijgen structureel weinig vette vis binnen — een
+                      supplement kan dan helpen de inname te structureren naast je gewoontes.
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">
@@ -316,16 +314,14 @@ export default function LageBatterijPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Magnesium</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      Magnesium draagt bij tot een normaal energieleverend metabolisme (officiële
-                      gezondheidsclaim waar supplementen aan mogen refereren). Daarnaast speelt het
-                      mee bij spierontspanning en slaap. Volgens sommige schattingen kan een tekort bij
-                      ruim de helft van de westerse bevolking een rol spelen — en dat wordt geassocieerd met
-                      vermoeidheid, spierkrampen en onrustige nachtrust. Precies klachten die vaak bij
-                      het Lage Batterij-profiel passen.
+                      Magnesium draagt bij tot de normale werking van het zenuwstelsel en normale spierfunctie,
+                      tot vermindering van vermoeidheid en een normale psychologische functie (EFSA‑claims onder
+                      voorwaarden). Veel Nederlanders halen relatief weinig magnesium binnen — dat wordt soms geassocieerd
+                      met spier‑ en spanningssignalen waarvan je merkt dat ze je overdag ook raken.
                     </p>
                     <p className="text-slate-600 leading-relaxed">
-                      Kies voor magnesium glycinaat of bisglycinaat: deze vormen worden het best
-                      opgenomen en hebben een ontspannend effect dat ook je slaap ten goede komt.
+                      Kies naar voorkeur voor magnesium glycinaat of bisglycinaat: vaak gekozen bij een avondroutine.
+                      Stem dosering altijd af op het etiket en bij twijfel op je arts.
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">

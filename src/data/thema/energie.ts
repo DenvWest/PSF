@@ -114,7 +114,7 @@ export const energieThema: ThemaPageData = {
       {
         title: "10 minuten ochtendlicht",
         description:
-          "Buitenlicht in de ochtend helpt je cortisol- en waakritme te zetten — essentieel voor vermoeidheidsbestendigheid later op de dag.",
+          "Buitenlicht in de ochtend helpt je cortisol- en waakritme te zetten — dat ondersteunt later op de dag meer alertheid.",
         icon: "☀️",
       },
     ],
@@ -129,7 +129,7 @@ export const energieThema: ThemaPageData = {
       {
         name: "Vitamine D3 (+ K2)",
         reason:
-          "Een wijdverspreid tekort sluit aan op vermoeidheid, spierfunctie en humeur — zeker in maanden met weinig zon of bij binnenwerk.",
+          "Vitamine D draagt bij tot de normale werking van het immuunsysteem, het instandhouden van normale botten en een normale spierfunctie (EFSA) — veel mannen halen niet genoeg binnen naar een schatting van beleidsdocumenten voor NL.",
         guideLink: "/supplementen/vitamine-d",
         comparisonLink: "/beste-vitamine-d",
         icon: "☀️",
@@ -137,7 +137,7 @@ export const energieThema: ThemaPageData = {
       {
         name: "Omega-3 (EPA/DHA)",
         reason:
-          "Ondersteunt cellen en mentale frisheid; EPA en DHA worden in onderzoek geassocieerd met onder andere ontstekingsbalans — relevant als je weinig vis eet.",
+          "EPA en DHA dragen bij tot de normale werking van het hart; DHA aan het instandhouden van normale hersenfunctie (EFSA bij voldoende dosering). Geen EU‑labelclaim op ‘more energie’ of cel‑ATP hier.",
         guideLink: "/supplementen/omega-3",
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
@@ -145,7 +145,7 @@ export const energieThema: ThemaPageData = {
       {
         name: "Ashwagandha",
         reason:
-          "Ondersteunt herstel en stress- en bijnierbelasting; relevant als vermoeidheid samengaat met slechte nachten of ‘altijd alert’-gevoel.",
+          "Ashwagandha staat bij EFSA op de on‑holdlijst: literatuur bespreekt mogelijk andere stressperceptie of herstelperceptie bij langdurige belasting — geen officiële claim; gebruik alleen als je deze context accepteert (zie kader onderaan).",
         guideLink: "/supplementen/ashwagandha",
         comparisonLink: "/beste-ashwagandha",
         icon: "🌿",
@@ -153,7 +153,7 @@ export const energieThema: ThemaPageData = {
       {
         name: "Creatine",
         reason:
-          "Creatine ondersteunt ATP-productie — de directe energiebron van je spieren en brein.",
+          "Creatine ondersteunt de ATP‑voorziening in cellen wat spier‑ en explosieve kracht kan ondersteunen bij langdurige inname en bij regelmatig trainen; de erkende EU‑claim formulering beschrijft heel korte, intense spiertaken bij voldoende dagdosis.",
         guideLink: "/supplementen/creatine",
         comparisonLink: "/beste-creatine",
         icon: "💪",
@@ -161,7 +161,7 @@ export const energieThema: ThemaPageData = {
       {
         name: "Eiwitpoeder",
         reason:
-          "Na je 40e daalt de eiwitsynthese. Voldoende eiwit is essentieel voor stabiele energie overdag — vooral als je traint of weinig eiwit via voeding binnenkrijgt.",
+          "Voldoende eiwitinname in je voeding ondersteunt spieronderhoud; na je 40e wordt behoud vaak meer aandacht. In de EU hebben eiwit‑supplementen o.a. claims rond spiermassa en botten onder voorwaarden — geen garantie voor ‘meer pit’ uit één scooptje.",
         guideLink: "/beste-eiwitpoeder",
         comparisonLink: "/beste-eiwitpoeder",
         icon: "💪",
@@ -253,7 +253,7 @@ export const energieThema: ThemaPageData = {
       },
       {
         context:
-          "Hersenen, hart, ontstekingsbalans: wanneer omega-3 prioriteit heeft na je 40e en hoe je producten beoordeelt.",
+          "Hersenen, hart: wanneer EPA/DHA volgens EU‑claims past na je 40e en hoe je producten beoordeelt.",
         href: "/supplementen/omega-3",
         label: "Omega-3 gids (EPA, DHA, keuzehulp)",
       },

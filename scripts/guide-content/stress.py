@@ -439,8 +439,8 @@ GUIDE = {
                         "<b>Ashwagandha heeft geen door de EFSA goedgekeurde gezondheidsclaims.</b> Wat je hier "
                         "leest komt uit onderzoek bij vrijwilligers — niet uit zo’n officiële claim op een "
                         "pillendoosje. Labels verschillen; kies merken met duidelijke extractinfo. "
-                        "<b>In Nederland wordt de regelgeving rondom ashwagandha scherper bekeken;</b> "
-                        "houd het nieuws in de gaten."
+                        "<b>EFSA‑on‑holdlijst voor claims; Nederlandse VWS overweegt aanvullend beleid (signalen medio 2026). "
+                        "Gebruik op eigen risico.</b>"
                     ),
                 },
                 {"type": "subtitle", "text": "Magnesium"},
@@ -479,9 +479,11 @@ GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "<b>EPA en DHA uit visolie</b> worden in onderzoek in verband gebracht met ontstekingsbalans "
-                        "en met het ondersteunen van celmembranen — relevant als je weinig vis eet "
-                        "<super>16</super>. Belangrijker dan megadosissen is verse olie van goede kwaliteit."
+                        "<b>EPA en DHA uit visolie</b> hebben officiële EU‑claims op onder andere hart en "
+                        "(voor DHA apart) hersenen en gezichtsvermogen bij voldoende dagdosis "
+                        "<super>16</super>. Formuleer verwachtingen daarom via die claims — niet als "
+                        "‘gegarandeerde ontstekings‑ of stress‑uitkomst’ tenzij je eigen arts anders "
+                        "afspreekt."
                     ),
                 },
                 {
@@ -653,8 +655,10 @@ GUIDE = {
                         "Niet zonder overleg bij schildkliermedicatie, bij kalmerende pillen of bij "
                         "immunotherapie. Wil je zwanger worden of gebruik je andere vaste medicatie? "
                         "Neem je potjes mee naar huisarts of apotheek. "
-                        "<b>Ashwagandha heeft geen EFSA-goedgekeurde claims;</b> extra reden om niet zelf te "
-                        "stoeien."
+                        "<b>Ashwagandha heeft geen EFSA-goedgekeurde claims;</b> staat op de Europese on‑holdlijst en "
+                        "onderzoek loopt. De Nederlandse VWS overweegt aanvullende regels — besluit rond medio 2026 "
+                        "kan relevant zijn. Gebruik op eigen risico en bespreek combinaties altijd met je arts — "
+                        "niet zelf experimenteren naast immunotherapie, schildklier- of kalmerende medicatie."
                     ),
                 },
                 {"type": "subtitle", "text": "Ik kan niet stoppen met hard trainen — wat dan?"},

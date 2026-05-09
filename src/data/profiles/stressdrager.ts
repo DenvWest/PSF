@@ -152,9 +152,9 @@ export const stressdragerProfile: ProfilePageData = {
     {
       name: "Ashwagandha",
       efsa_claim:
-        "Ashwagandha-claims staan op de Europese 'on hold'-lijst en zijn nog niet definitief beoordeeld door EFSA.",
+        "Geen erkende EU‑gezondheidsclaims; staat op EFSA on‑holdlijst — zie amber waarschuwing op de profielpagina en VWS‑informatie.",
       why_this_profile:
-        "Adaptogeen kruid dat in onderzoek gelinkt wordt aan lagere cortisolwaarden en betere stress-tolerantie. Veel mensen met dit profiel proberen het als eerste.",
+        "In publicaties wordt soms geschreven over stressperceptie of stresshormoonmarkers bij gestandaardiseerde extracten — dat is geen vaste claim zoals bij mineralen. Kies op etiketkwaliteit en overleg bij medicatie.",
       href: "/beste-ashwagandha",
       hasComparison: true,
     },
@@ -163,7 +163,7 @@ export const stressdragerProfile: ProfilePageData = {
       efsa_claim:
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie.",
       why_this_profile:
-        "Bij chronische stress raakt magnesium sneller uitgeput. Draagt bij aan normale werking van het zenuwstelsel.",
+        "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EFSA bij voldoende dosis). Chronische stress en slechte voedingspatronen gaan soms samen met een lager magnesiumbereik.",
       href: "/beste-magnesium",
       hasComparison: true,
     },

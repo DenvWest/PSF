@@ -90,7 +90,7 @@ function selectLegacyHubRecommendations(
       name: "Creatine",
       icon: "💪",
       reason:
-        "Creatine verhoogt fysieke prestaties bij zeer korte, intense inspanning (minimaal 3 g/dag) — relevant als je aan kracht of sprintwerk doet.",
+        "Creatine ondersteunt korte, intense spieroutput bij voldoende dagdosis (EU‑claimcontext) — geen algemene energiebelofte.",
     });
   }
 

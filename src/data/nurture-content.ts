@@ -53,7 +53,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
     supplement: {
       name: "Magnesium",
       reason:
-        "Magnesium glycinaat ondersteunt je spierontspanning en slaapkwaliteit — vooral als je merkt dat je lichaam 's avonds niet goed tot rust komt.",
+        "Magnesium draagt bij tot een normale psychologische functie en tot vermindering van vermoeidheid (plus zenuwstelsel en spieren onder EU‑claims). Glycinaat is praktisch in een rustige avondroutine — naast vaste slapen-/lichtgewoonten.",
       url: "/beste-magnesium",
     },
   },
@@ -62,7 +62,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
     supplement: {
       name: "Omega-3",
       reason:
-        "EPA en DHA ondersteunen je energiehuishouding op celniveau. Vooral als je weinig vette vis eet, kan dit verschil maken.",
+        "EPA en DHA dragen bij tot de normale werking van het hart en DHA tot instandhouding van normale hersenfunctie onder claimvoorwaarden — géén EU‑claim hier op ‘direct meer energie’.",
       url: "/beste-omega-3-supplement",
     },
   },
@@ -71,7 +71,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
     supplement: {
       name: "Ashwagandha",
       reason:
-        "Ashwagandha (KSM-66) helpt je cortisolniveaus in balans te houden — zodat je lichaam beter herstelt van dagelijkse stress.",
+        "Geen goedgekeurde EU‑claims: staat bij EFSA on‑hold. Sommige publicaties bespreken stressperceptie — gebruik alleen als je die context wilt (eigen risico).",
       url: "/beste-ashwagandha",
     },
   },
@@ -89,7 +89,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
     supplement: {
       name: "Magnesium",
       reason:
-        "Magnesium ondersteunt je spierfunctie en helpt krampen voorkomen — vooral relevant als je meer gaat bewegen.",
+        "Magnesium draagt onder voorwaarden bij tot normale spierfunctie en vermindering van vermoeidheid — bruikbare context als je beweging opbouwt.",
       url: "/beste-magnesium",
     },
   },
@@ -98,7 +98,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
     supplement: {
       name: "Magnesium",
       reason:
-        "Magnesium speelt een sleutelrol in spierherstel en ontspanning. Bij een lage herstelscore is dit vaak de eerste stap.",
+        "Magnesium draagt bij tot vermindering van vermoeidheid en tot normale werking van spieren en het zenuwstelsel (EFSA onder voorwaarden) — waardevol als je hersteltijd structureel tekortkomt.",
       url: "/beste-magnesium",
     },
   },
@@ -219,7 +219,7 @@ export const nurtureContent: Record<
         "Stress verminderen hoeft niet ingewikkeld te zijn. Het gaat niet om grote veranderingen, maar om kleine momenten van herstel verspreid over de dag.",
       ],
       tip: "Quick win #1: 4-7-8 ademhaling (3 minuten, 2× per dag). Quick win #2: Wandel 15 minuten na de lunch — het verlaagt cortisol meetbaar. Quick win #3: Schrijf 's avonds 3 dingen op die goed gingen vandaag.",
-      cta: { text: "Hoe ashwagandha stress verlaagt", url: "/beste-ashwagandha" },
+      cta: { text: "Ashwagandha: EFSA-context en vergelijkingspagina", url: "/beste-ashwagandha" },
     },
     "In Balans": {
       subject: "3 optimalisaties voor wie al goed scoort",
@@ -243,7 +243,7 @@ export const nurtureContent: Record<
         "Na 40 verandert je stofwisseling. Je mitochondriën — de energiecentrales van je cellen — worden minder efficiënt. Tegelijk daalt je testosteron geleidelijk, wat direct invloed heeft op je energieniveau.",
         "Maar dit is geen onvermijdelijk verval. Met de juiste voeding, beweging en gerichte supplementen kun je dit proces vertragen en zelfs deels omkeren.",
       ],
-      tip: "Deze week: voeg omega-3 toe aan je routine. EPA en DHA ondersteunen je mitochondriale functie — dat is de motor van je energie.",
+      tip: "Deze week: check je vispatroon. EPA/DHA‑suppletie kan onder claimvoorwaarden hart‑ en hersenclaims ondersteunen — géén wonderpil voor middagdip.",
       cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
     },
     "Onrustige Slaper": {
@@ -251,10 +251,10 @@ export const nurtureContent: Record<
       preheader: "Slaap is geen luxe — het is herstel",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Tijdens diepe slaap ruimt je brein afvalstoffen op via het glymfatisch systeem. Je spieren herstellen, je immuunsysteem wordt bijgevuld, en je groeihormoon piekt. Als die diepe slaap ontbreekt, bouw je een slaapschuld op die alles beïnvloedt.",
-        "Magnesium speelt hierin een sleutelrol: het activeert je parasympathisch zenuwstelsel (je 'ruststand') en helpt je spieren ontspannen.",
+        "Tijdens diepe slaap ruimt je brein afvalstoffen op via het glymfatisch systeem. Je spieren herstellen, je immuunsysteem wordt bijgevuld, en je groeihormoon piekt. Als die diepe slaap ontbreekt, bouw je een slaapschuld op die veel plekken raken.",
+        "Magnesium heeft EU‑claims op zenuwstelsel, spieren, psychologische functie en vermoeidheid — veel mensen mikken glycinaat/bisglycinaat naar een rustige avondroutine naast slapen-/lichtgewoonten.",
       ],
-      tip: "Overweeg magnesium glycinaat voor het slapengaan. Het is de best opneembare vorm en specifiek onderzocht op slaapkwaliteit.",
+      tip: "EFSA‑claims magnesium richten zich op onder meer psychologische functie en vermoeidheid — gebruik slaap-/lichtprotocol als eerste hefboom en stem suppletie af op een arts bij medicatie.",
       cta: { text: "Vergelijk magnesium supplementen", url: "/beste-magnesium" },
     },
     "Stressdrager": {
@@ -262,10 +262,11 @@ export const nurtureContent: Record<
       preheader: "Cortisol is niet de vijand — chronisch cortisol wel",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
-        "Cortisol is je stresshormoon — en in korte pieken is het nuttig. Maar als het chronisch hoog blijft, onderdrukt het je testosteronproductie, verstoort het je slaap, en remt het je spierherstel.",
-        "Ashwagandha (specifiek de KSM-66 extract) is in meerdere studies onderzocht op het verlagen van chronisch cortisol. Het is geen wondermiddel, maar het kan een zinvolle aanvulling zijn naast leefstijlveranderingen.",
+        "Langdurige activering van de stress‑as heeft invloed op hormonen en nachtrust. Leefstijl (slaapritme, beweging, voorspelbare routines) wil je daarom eerst goed bekijken.",
+        "Ashwagandha staat bij EFSA op de on‑holdlijst voor gezondheidsclaims — geen Europese garantie‑claim over uitkomsten. Sommige studies bespreken stressperceptie of markers als context; bekijk extracts kritisch.",
       ],
-      tip: "Lees meer over hoe ashwagandha werkt en waar je op moet letten bij het kiezen van een supplement.",
+      tip:
+        "Ashwagandha staat bij EFSA op de on‑holdlijst voor gezondheidsclaims — geen garantie‑uitspraken mogelijk zoals bij mineralen. Zie beste-ashwagandha voor objectieve productvergelijking en inhoudelijke uitleg.",
       cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste-ashwagandha" },
     },
     "In Balans": {
@@ -302,7 +303,7 @@ export const nurtureContent: Record<
         "Slaapverbetering is een proces. Je circadiaan ritme heeft 1-2 weken nodig om zich aan te passen aan een nieuw patroon. Als je consistent bent geweest met je bedtijd en schermtijd, zou je nu de eerste resultaten kunnen merken.",
         "Als je nog geen verbetering voelt: geef het nog een week. Consistentie is belangrijker dan perfectie.",
       ],
-      tip: "Probeer vanavond 200-400 mg magnesium glycinaat, 30-60 minuten voor bed. Het helpt je lichaam in de 'ruststand' te komen.",
+      tip: "Probeer vanavond voor bed een gangbare magnesiumdosis (volg etiket) en houd 2 uur afstand van bepaalde medicijnen; EFSA‑claims richten zich op zenuwstelsel, spieren, psychologische functie en vermoeidheid.",
       cta: { text: "Welk magnesium is het beste voor slaap?", url: "/beste-magnesium" },
     },
     "Stressdrager": {
@@ -314,7 +315,7 @@ export const nurtureContent: Record<
         "Het effect van leefstijlveranderingen op cortisol is meetbaar na 2-4 weken. Je zit nu precies in die fase.",
       ],
       tip: "Voeg deze week iets toe: 5 minuten journaling voor het slapengaan. Schrijf op wat je bezighoudt — het 'legen' van je hoofd helpt je brein om los te laten.",
-      cta: { text: "Hoe ashwagandha cortisol verlaagt", url: "/beste-ashwagandha" },
+      cta: { text: "Ashwagandha: on-hold context en vergelijking", url: "/beste-ashwagandha" },
     },
     "In Balans": {
       subject: "Halverwege: hoe houd je dit vol?",
@@ -372,7 +373,7 @@ export const nurtureContent: Record<
         "Na drie weken consistent goede gewoontes zijn ze steviger verankerd. Dit is het moment om te kijken of er een supplement is dat je basis versterkt.",
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Wees benieuwd of je scores nog beter zijn geworden.",
       ],
-      tip: "Overweeg een omega-3 supplement als aanvulling op je basis. Het is laagdrempelig en ondersteunt hart, hersenen en energiehuishouding.",
+      tip: "Overweeg omega‑3 als je weinig vis eet: EU‑claims gaan over hart en (DHA) hersenen — geen etiketclaim op ‘meer energie’.",
       cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
     },
   },

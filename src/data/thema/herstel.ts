@@ -78,7 +78,7 @@ export const herstelThema: ThemaPageData = {
       {
         title: "10–15 minuten wandelen na het avondeten",
         description:
-          "Verlaagt cortisol en verbetert bloedsuikerregulatie — rustig voor je systeem voor de nacht.",
+          "Een rustige wandeling na het eten wordt in veel protocollen gekoppeld aan rustiger bloedsuiker na de maaltijd en een zachtere overgang naar bedtijd — het sterkste effect krijg je samen met vast slaapritme.",
         icon: "🚶",
       },
       {
@@ -99,7 +99,7 @@ export const herstelThema: ThemaPageData = {
       {
         name: "Magnesium (glycinaat)",
         reason:
-          "Ontspant spieren, verbetert slaapkwaliteit, essentieel voor 300+ enzymatische processen waaronder eiwitaanmaak.",
+          "Magnesium draagt bij tot de normale werking van spieren en het zenuwstelsel, tot vermindering van vermoeidheid en een normale psychologische functie (EFSA‑context) — logisch nadat trainingsdagen intensief waren, maar nooit een vervanging voor slaap of eiwit uit voeding.",
         guideLink: "/supplementen/magnesium",
         comparisonLink: "/beste-magnesium",
         icon: "⚡",
@@ -107,7 +107,7 @@ export const herstelThema: ThemaPageData = {
       {
         name: "Omega-3 (EPA/DHA)",
         reason:
-          "Remt ontstekingsreacties (inflammaging), ondersteunt celmembranen en herstel op celniveau.",
+          "EPA en DHA dragen onder claimvoorwaarden bij aan hart‑ en hersenfunctie (plus DHA en gezicht). Formuleer herstelverwachting via die kaders — géén EU‑etiketclaim hier op ontsteking of garantie‑celherstel.",
         guideLink: "/supplementen/omega-3",
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
@@ -115,7 +115,7 @@ export const herstelThema: ThemaPageData = {
       {
         name: "Creatine",
         reason:
-          "Ondersteunt ATP-productie (spierenergie), bewezen effectief voor kracht en herstel. Na 40 daalt de natuurlijke creatineaanmaak.",
+          "Creatine ondersteunt fosfaatbuffering voor korte, zware inspanning; de erkende EU‑zin gaat over opeenvolgende zeer korte bursts bij voldoende dagdosis — denk eerst aan slapen en eiwit uit voeding.",
         guideLink: "/supplementen/creatine",
         comparisonLink: "/beste-creatine",
         icon: "💪",
@@ -123,7 +123,7 @@ export const herstelThema: ThemaPageData = {
       {
         name: "Zink",
         reason:
-          "Essentieel voor eiwitaanmaak, immuunfunctie en wondgenezing. Tekort vertraagt spierherstel.",
+          "Zink draagt bij tot normale eiwitsynthese en aan een werkend immuunsysteem en speelt een rol bij veel enzymen — zonder geneesclaims of garanties op bijzondere wondherstelmarketing.",
         guideLink: "/supplementen/zink",
         comparisonLink: "/beste-zink",
         icon: "🔩",
@@ -233,7 +233,7 @@ export const herstelThema: ThemaPageData = {
       },
       {
         context:
-          "Magnesium glycinaat ontspant spieren, verbetert slaapkwaliteit en ondersteunt enzymatische processen bij herstel.",
+          "Magnesium heeft EU‑claims rond onder meer psychologische functie en vermoeidheid; combineer capsules nooit los van voldoende slaap en geleidelijk opgebouwde trainingsbelasting.",
         href: "/beste-magnesium",
         label: "Magnesium ondersteunt je spierherstel →",
       },

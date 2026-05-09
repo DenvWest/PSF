@@ -1,3 +1,29 @@
+export const ON_HOLD_DISCLAIMER =
+  "Ashwagandha staat op de EFSA 'on-hold' lijst voor claims. Dit betekent dat onderzoek naar " +
+  "effectiviteit en veiligheid loopt. Geen goedgekeurde EFSA-claim. Gebruik op eigen risico. " +
+  "De Nederlandse VWS overweegt momenteel een verbod (besluit verwacht medio 2026).";
+
+export const APPROVED_CLAIMS = {
+  magnesium: [
+    "Draagt bij tot de normale werking van het zenuwstelsel",
+    "Draagt bij tot de normale spierfunctie",
+    "Draagt bij tot de vermindering van vermoeidheid",
+    "Draagt bij tot een normale psychologische functie",
+    "Draagt bij tot de normale eiwitsynthese",
+  ],
+  omega3: [
+    "EPA en DHA dragen bij tot de normale werking van het hart",
+    "DHA draagt bij tot de instandhouding van normale hersenfunctie",
+    "DHA draagt bij tot de instandhouding van een normaal gezichtsvermogen",
+  ],
+  vitaminD: [
+    "Draagt bij tot de normale werking van het immuunsysteem",
+    "Draagt bij tot de instandhouding van normale botten",
+    "Draagt bij tot de instandhouding van een normale spierfunctie",
+  ],
+  ashwagandha: ["(On-hold) Onderzoeken suggereren een mogelijke rol in stressperceptie"],
+} as const;
+
 export type ApprovedClaimsEntry =
   | {
       efsa: string[];
@@ -19,7 +45,7 @@ export const approvedClaims = {
     efsa: [
       "Draagt bij tot de normale werking van het zenuwstelsel",
       "Draagt bij tot de normale spierfunctie",
-      "Draagt bij tot de vermindering van moeheid en vermoeidheid",
+      "Draagt bij tot de vermindering van vermoeidheid",
       "Draagt bij tot een normale psychologische functie",
       "Draagt bij tot de normale eiwitsynthese",
     ],
@@ -32,7 +58,7 @@ export const approvedClaims = {
       tegen_stress:
         "magnesium draagt bij tot normale psychologische functie en tot de normale werking van het zenuwstelsel",
       energie:
-        "magnesium draagt bij tot de vermindering van moeheid en vermoeidheid",
+        "magnesium draagt bij tot de vermindering van vermoeidheid",
     },
   },
   "omega-3": {
@@ -53,12 +79,11 @@ export const approvedClaims = {
   ashwagandha: {
     status: "on-hold" as const,
     efsa: [],
-    disclaimer:
-      "Voor dit ingrediënt geldt in de EU de zgn. on-hold-situatie: claims zijn ingediend bij EFSA en nog niet definitief beoordeeld. Ze mogen voorlopig worden gebruikt, maar er zijn geen formeel goedgekeurde gezondheidsclaims. Het ministerie van VWS voert een aparte procedure over de voedselveiligheid van ashwagandha in supplementen.",
+    disclaimer: ON_HOLD_DISCLAIMER,
     vwsConsultationUrl:
       "https://www.internetconsultatie.nl/voedingssupplementen_en_kruidenpreparaten",
     notApproved: [
-      "Concrete gezondheidseffecten als gevestigde feiten (stress, slaap, cortisol, testosteron) zonder nuance",
+      "Stress, slaap, cortisol of testosteron als vaste uitkomstclaims zonder on-hold context",
     ],
     alternativePhrasing: {
       stress_slaap:
@@ -93,7 +118,7 @@ export const approvedClaims = {
   },
   creatine: {
     efsa: [
-      "Creatine verhoogt de fysieke prestaties bij opeenvolgende reeksen van zeer korte, intense lichamelijke inspanningen (minimaal 3 g creatine per dag)",
+      "Kan bij dagelijkse inname van ten minste 3 g creatine onder de juiste voorwaarden bijdragen aan de fysieke prestatie bij opeenvolgende reeksen van zeer korte, intense lichamelijke inspanningen (erkende EU-claimtekst; geformuleerd zonder harde garantie naar de lezer)",
     ],
     dosageRequirement: "Minimaal 3 g/dag voor deze claimcontext; 3–5 g/dag gangbaar in sportcontext",
     notApproved: ["cognitieve gezondheidsclaim EU", "energie (metabool) als claim"],

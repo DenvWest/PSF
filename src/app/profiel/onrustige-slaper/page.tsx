@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
@@ -272,17 +273,21 @@ export default function OnrustigeSlaperPage() {
                 Drie supplementen zijn specifiek relevant voor het Onrustige Slaper profiel:
               </p>
 
+              <div className="mb-6">
+                <AshwagandhaOnHoldDisclaimer />
+              </div>
+
               <div className="space-y-5">
                 {/* Magnesium */}
                 <div className="border border-slate-200 rounded-xl p-6">
                   <h4 className="font-semibold text-slate-900 text-base">Magnesium (glycinaat)</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      Magnesium activeert je parasympathisch zenuwstelsel — je &apos;ruststand&apos;.
-                      Het helpt je spieren ontspannen en bereidt je lichaam voor op slaap. Magnesium
-                      glycinaat is de vorm die hiervoor het meest onderzocht is: het wordt goed
-                      opgenomen en heeft een kalmerend effect dat andere vormen (zoals oxide of
-                      citraat) minder hebben.
+                      Magnesium draagt bij tot de normale werking van het zenuwstelsel en normale
+                      spierfunctie, tot vermindering van vermoeidheid en een normale psychologische
+                      functie (EFSA bij voldoende dosis). Magnesium glycinaat is praktisch populair
+                      in een avondroutine; start altijd op het etiket en bespreek gebruik bij maag- of
+                      medicatievragen.
                     </p>
                     <p className="text-slate-600 leading-relaxed">
                       Neem 200–400 mg magnesium glycinaat, 30–60 minuten voor het slapengaan. Naar
@@ -308,16 +313,14 @@ export default function OnrustigeSlaperPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Ashwagandha (KSM-66)</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      Als stress een rol speelt in je slaapprobleem — en bij de meeste Onrustige
-                      Slapers is dat het geval — dan kan ashwagandha helpen. KSM-66, een
-                      gestandaardiseerd extract, is in klinische studies onderzocht op het verlagen
-                      van cortisol. Lager cortisol in de avond betekent dat melatonine zijn werk
-                      beter kan doen.
+                      Als stress een rol speelt bij onrust &apos;s nachts, bespreken studies soms of
+                      plantenextracten iets doen met hoe je spanning ervaart of met stresshormoonmarkers
+                      — maar voor ashwagandha bestaan in de EU géén afgeronde gezondheidsclaims (EFSA on‑hold).
+                      Gebruik het alleen als je die onzekerheid prima vindt.
                     </p>
                     <p className="text-slate-600 leading-relaxed">
-                      Ashwagandha is geen slaapmiddel. Het pakt de oorzaak aan (te hoog cortisol)
-                      in plaats van het symptoom (niet slapen). Dat maakt het een andere aanpak dan
-                      slaappillen — en een duurzamere.
+                      Ashwagandha is géén klassiek slaapmiddel met labelclaim; denk in weken, niet in
+                      minuten, en bespreek gebruik bij medicatie of schildklierzorg met je arts.
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">
@@ -337,8 +340,10 @@ export default function OnrustigeSlaperPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Melatonine</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      Heb je vooral moeite met inslapen? Melatonine kan helpen je slaap-waakritme te
-                      herstellen
+                      Heb je vooral moeite met inslapen? Melatonine draagt bij aan het verkorten van de
+                      tijd die je nodig hebt om in slaap te vallen volgens de officiële EU‑claimtekst
+                      (dosis en timing volgens product/arts). Melatonine ondersteunt ritme en timing;
+                      het is géén alles-in-één oplossing voor slechte nachten door stress.
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">

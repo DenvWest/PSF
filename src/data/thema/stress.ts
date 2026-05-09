@@ -74,7 +74,8 @@ export const stressThema: ThemaPageData = {
         pubmedId: "36630953",
       },
       {
-        claim: "Ashwagandha root extract (600 mg/dag) verlaagt serumcortisol significant (p<0.0001) en verbetert slaapkwaliteit na 8 weken.",
+        claim:
+          "Een RCT met een ashwagandha‑wortelextract rapporteerde na 8 weken andere serum‑cortisolwaarden dan placebo en hogere ingeschatte slaapscores bij sommige deelnemers — slaap‑ of stressclaims op het EU‑label ontbreken nog (EFSA on‑hold).",
         source: "Lopresti et al., Medicine, 2019 (RCT, n=60)",
         pubmedId: "32021735",
       },
@@ -125,7 +126,7 @@ export const stressThema: ThemaPageData = {
       {
         name: "Ashwagandha",
         reason:
-          "Een goed bestudeerd adaptogeen; ondersteunt het verlagen van ervaren stress en helpt wanneer piekeren en nachtrust elkaar versterken.",
+          "Ashwagandha staat bij EFSA op de on‑holdlijst voor claims: onderzoek suggereert soms andere stressperceptie of stressmarkers, maar daar bestaat géén afgeronde EU‑health claim voor. Vergelijk extracts op inhoud — gebruik op eigen risico.",
         guideLink: "/supplementen/ashwagandha",
         comparisonLink: "/beste-ashwagandha",
         icon: "🌿",
@@ -133,7 +134,7 @@ export const stressThema: ThemaPageData = {
       {
         name: "Magnesium",
         reason:
-          "Glycinaat of tauraat helpen spieren en zenuwstelsel te ontspannen; veel mannen 40+ krijgen structureel te weinig binnen via voeding.",
+          "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EFSA). Glycinaat of tauraat zijn praktisch vaak gekozen vormen; velen krijgen structureel relatief weinig magnesium binnen via voeding.",
         guideLink: "/supplementen/magnesium",
         comparisonLink: "/beste-magnesium",
         icon: "⚡",
@@ -141,7 +142,7 @@ export const stressThema: ThemaPageData = {
       {
         name: "Omega-3 (EPA/DHA)",
         reason:
-          "Ondersteunt hersen- en huidcelmembranen en ontstekingsbalans; relevant bij chronische psychische en lichamelijke belasting.",
+          "EPA en DHA dragen bij tot de normale werking van het hart; DHA draagt bij tot het instandhouden van normale hersenfunctie — passend als je structureel weinig vette vis eet (geen EU‑claim hier op ‘minder ontsteking’ of energie als labelzin).",
         guideLink: "/supplementen/omega-3",
         comparisonLink: "/beste-omega-3-supplement",
         icon: "🐟",
@@ -149,7 +150,7 @@ export const stressThema: ThemaPageData = {
       {
         name: "Zink",
         reason:
-          "Zink raakt uitgeput bij chronische stress en is essentieel voor immuunfunctie.",
+          "Zink draagt bij tot de normale eiwitsynthese en tot een normale werking van het immuunsysteem; het speelt daarnaast een rol bij talloze enzymreacties — chronisch hoge spanning kan meer zink‑verplaatsing of ‑verlies met zich meebrengen.",
         guideLink: "/supplementen/zink",
         comparisonLink: "/beste-zink",
         icon: "🛡️",

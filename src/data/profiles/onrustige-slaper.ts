@@ -147,16 +147,16 @@ export const onrustigeSlaper: ProfilePageData = {
       efsa_claim:
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie.",
       why_this_profile:
-        "Als je 's nachts wakker ligt of onrustig slaapt, helpt magnesium glycinaat je spieren en zenuwstelsel te ontspannen. De avondsdosis zet je lichaam in herstelmodus — zodat je eindelijk kunt loslaten en doorslapen.",
+        "Magnesium draagt bij tot een normale psychologische functie, tot de normale werking van zenuwstelsel en spieren, en tot vermindering van vermoeidheid (EFSA). Dat sluit aan bij onrust en piekeren voor het slapen als je lichaam meer ‘brug’ naar rust nodig heeft.",
       href: "/beste-magnesium",
       hasComparison: true,
     },
     {
       name: "Ashwagandha (KSM-66)",
       efsa_claim:
-        "Ashwagandha-claims staan op de Europese 'on hold'-lijst en zijn nog niet definitief beoordeeld door EFSA.",
+        "Geen erkende EU‑gezondheidsclaims; ashwagandha staat bij EFSA op de on‑holdlijst. Nederlandse VWS overweegt aanvullend beleid (communicatie rond medio 2026). Gebruik op eigen risico.",
       why_this_profile:
-        "Piekert je brein 's nachts? Stress is de meest voorkomende oorzaak van slaapproblemen bij mannen boven de 40. Ashwagandha helpt je cortisolniveau te normaliseren — zodat je wekker om 3 uur minder vaak afgaat.",
+        "Studies bespreken plantenextracten soms in het licht van beleefde stress of stresshormoonmarkers — dat is iets anders dan een erkende EU‑gezondheidsclaim op het etiket. Vergelijk producten op extract en transparantie; raadpleeg je arts bij medicatie.",
       href: "/beste-ashwagandha",
       hasComparison: true,
     },
@@ -176,7 +176,8 @@ export const onrustigeSlaper: ProfilePageData = {
     },
     {
       href: "/beste-ashwagandha",
-      turboSnippet: "Stress houdt je wakker? Dit supplement kan helpen →",
+      turboSnippet:
+        "Plantenextracten zijn geen slaap‑labelclaim — vergelijk KSM‑66 vs Sensoril objectief →",
     },
     {
       href: "/intake",
