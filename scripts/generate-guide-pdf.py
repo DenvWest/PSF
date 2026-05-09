@@ -7,6 +7,7 @@ Gebruik:
   python scripts/generate-guide-pdf.py stress
   python scripts/generate-guide-pdf.py energie
   python scripts/generate-guide-pdf.py tekorten
+  python scripts/generate-guide-pdf.py herstel
 
 Content: scripts/guide-content/{thema}.py (variabele GUIDE)
 Output:  public/downloads/{thema}gids-perfectsupplement.pdf
@@ -548,6 +549,8 @@ def render_blocks(blocks: list[dict[str, Any]], st: dict[str, ParagraphStyle]) -
             out.extend([Spacer(1, 6), tbl, Spacer(1, 10)])
         elif btype == "spacer":
             out.append(Spacer(1, float(block.get("height", 12))))
+        elif btype == "pagebreak":
+            out.append(PageBreak())
         elif btype == "references":
             out.extend(build_references_block(block["items"], st))
         else:
@@ -739,7 +742,7 @@ def make_canvas_hooks(meta: dict[str, str], body_font: str) -> tuple[Callable, C
 
 def main() -> int:
     if len(sys.argv) != 2:
-        print("Gebruik: python scripts/generate-guide-pdf.py <slaap|stress|energie|tekorten>")
+        print("Gebruik: python scripts/generate-guide-pdf.py <slaap|stress|energie|tekorten|herstel>")
         return 2
     thema = sys.argv[1].strip().lower()
     ensure_fonts()

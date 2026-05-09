@@ -38,13 +38,8 @@ export default function ArticleReferentiesFooter({
           id="vancouver-heading"
           className="font-display text-lg font-semibold leading-snug tracking-tight text-stone-900 md:text-xl"
         >
-          Referenties <span className="font-normal text-stone-500">(Vancouver-stijl)</span>
+          Referenties
         </h2>
-        <p className="mt-4 max-w-[70ch] text-[0.8125rem] leading-[1.62] text-stone-500 md:mt-5">
-          Nummering volgens Vancouver waar mogelijk. Het bijschrift “documenttype / bewijskader” karakteriseert het werk
-          als document; het is geen inschatting van klinisch effect bij u persoonlijk. Correlatie in studies is geen
-          persoonlijke causaliteit.
-        </p>
         <ol className="mt-9 list-none space-y-6 md:space-y-7">
           {referenties.map((ref, index) => (
             <li
