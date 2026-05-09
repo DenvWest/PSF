@@ -75,6 +75,11 @@ const nextConfig: NextConfig = {
         destination: "/thema/herstel",
         permanent: true,
       },
+      {
+        source: "/profiel/herstel",
+        destination: "/profiel/overtrainer",
+        permanent: true,
+      },
     ];
   },
 };
