@@ -36,7 +36,7 @@ _GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Na je 40e merk je vaak drie dingen in je slaap. Dit hoeft niets te zeggen over je "
-                        "karakter — het is gewoon biologie. Snap je wat er schuift, dan kun je gerichter kiezen "
+                        "karakter — het is gewoon biologie. Begrijp je wat er gebeurt, dan kun je gerichter kiezen "
                         "wat je wél aanpast."
                     ),
                 },
@@ -58,7 +58,7 @@ _GUIDE = {
                     "text": (
                         "Je slaap loopt in rondjes met lichte slaap, diepe slaap en droomslaap (REM). "
                         "<b>Diepe slaap</b> is het deel waarin je lichaam echt herstelt: spieren bijtrekken, "
-                        "geheugen opslaan, immuunsysteem opladen. Studies laten zien dat zo’n diepe fase met "
+                        "herinneringen verwerken, immuunsysteem opladen. Studies laten zien dat zo’n diepe fase met "
                         "de jaren minder lang kan zijn — ook als je nog even lang in bed ligt<super>4</super>. "
                         "Je wordt dan sneller wakker en staat minder fris op."
                     ),
@@ -196,7 +196,7 @@ _GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Voor veel mensen is een slaapkamer van <b>ongeveer 16–18 °C</b> gunstig voor "
-                        "inslapen<super>9</super>. Thermoregulatie gaat ook over timing: "
+                        "inslapen<super>9</super>. Je kerntemperatuur heeft ook timing nodig: "
                         "<b>90 minuten voor bed een warme douche</b> gevolgd door afkoeling kan inslapen "
                         "helpen door een duidelijke daling van kerntemperatuur daarna."
                     ),
@@ -205,7 +205,7 @@ _GUIDE = {
                 {
                     "type": "paragraph",
                     "text": (
-                        "Als je vaak wakker ligt, noemen ze dat een <b>lage slaapefficiëntie</b>: een groot deel "
+                        "Als je vaak wakker ligt maar in bed blijft, wordt dat wel een <b>lage slaapefficiëntie</b> genoemd: een groot deel "
                         "van je tijd in bed is wakker tijd. "
                         "<b>7 uur in bed met 6,5 uur slapen</b> voelt dan vaak beter dan "
                         "<b>9 uur in bed met dezelfde 6,5 uur slapen</b>. Je wilt niet dat je brein bed koppelt "
@@ -400,7 +400,7 @@ _GUIDE = {
                     "type": "paragraph",
                     "text": (
                         "Sommige extracten (zoals KSM-66) zijn getest in gecontroleerde studies: daar rapporteerden "
-                        "<b>deelnemers soms lagere stressscores en gunstigere stresshormoonprofielen</b> ten "
+                        "<b>deelnemers soms lagere stressscores en kalmerende effecten op stresshormonen</b> ten "
                         "opzichte van een placebo — maar niet iedereen merkt het even sterk<super>14</super>"
                         "<super>15</super>. Bij gestandaardiseerde extracten staat op het etiket een vast "
                         "percentage werkzame stoffen (withanoliden) — zo weet je dat een capsule niet steeds "

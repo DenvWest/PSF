@@ -172,24 +172,24 @@ export default function HerstelVerbeterenNa40Page() {
               <section id="herkenbaar" className="mt-12">
                 <p className="text-lg text-gray-700 leading-relaxed">
                   Ken je dit: je traint normaal — misschien zelfs met hetzelfde schema als vijf jaar
-                  geleden — maar DOMS en stijfheid blijven drie tot vijf dagen plakken waar het
+                  geleden — maar spierpijn en stijfheid blijven ineens drie tot vijf dagen hangen, waar het
                   vroeger binnen twee dagen voorbij was. Of je voelt jezelf tijdens trainingsblokken
-                  &quot;sterk&quot;, maar je herstelt tussen trainingen niet meer zoals vroeger.
+                  &quot;sterk&quot;, maar zakken over meerdere dagen niet meer op naar je oude niveau als je
+                  volgende sessie plaatst.
                 </p>
                 <p className="mt-4 text-lg text-gray-700 leading-relaxed">
                   Misschien eet je al &quot;best gezond&quot;, maar vergeet tijdens drukke weken gewoon te
                   eten tussen trainingen door. Je slaapt voldoende uren maar niet diep genoeg. Of je
                   stress blijft &apos;s avonds nog een trede te hoog staan voor echte parasympatische rust.
-                  Geen excuus, wel iets dat veel mannen herkennen: het herstelbeeld wordt na je 40e veeleisender om
-                  dezelfde trainingsbelasting te verwerken.
+                  Geen excuses — wel herkenning: het herstelbeeld wordt na je 40e veeleisender om dezelfde trainingsprikkel kwijt te raken.
                 </p>
                 <div className="mt-8 p-6 bg-amber-50 border border-amber-200 rounded-xl">
                   <p className="text-gray-800 font-medium">
-                    Train je hard, maar herstelt je lichaam niet meer zoals vroeger?
+                    Train je hard maar herstelt je lichaam alsof het achterstallig onderhoud heeft?
                   </p>
                   <p className="mt-2 text-gray-600">
                     Herken je dit patroon? Misschien sluit je aan bij het herstel-type profiel zoals we
-                    dat beschrijven in de intake — veel belasting, weinig herstelmomenten.
+                    dat beschrijven in de intake — veel belasting zonder buffers.
                   </p>
                   <Link
                     href="/profiel/herstel"
@@ -217,19 +217,20 @@ export default function HerstelVerbeterenNa40Page() {
                   Wat Er Verandert Na 40
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Het is niet &quot;minder doorzetten&quot; — je lichaam heeft meer nodig om goed te herstellen
-                  tussen trainingen: voeding, voldoende slaap, stressmanagement en bewust ingeplande rust.
-                  Hieronder vijf biomechanische pijlers die bepalen hoeveel resultaat je nog uit training haalt.
+                  Het is niet &quot;minder doorzetten&quot; — het systeem tussen trainingssessie en supercompensatie
+                  vraagt meer input (voeding), betere buffering (slaap, stressmanagement) en expliciete
+                  rust. Hieronder vind je vijf biomechanische pijlers waar je echte trainingswinst nog
+                  steeds wordt bepaald.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
                   Testosteroncurve en anaboler context
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Serumtestosterondaling met de jaren wordt in populatiestudies consistent gezien: na de 30ste
-                  daalt vrij en totaal hormoon geleidelijk, al verschilt dat sterk per persoon
-                  <RefNote number={1} /> <RefNote number={2} />. Dit is geen vrijbrief om te stoppen — wel extra
-                  reden om eiwitverdeling en krachttraining serieus te nemen als je wilt blijven
+                  Serumtestosterondaling met de jaren wordt in populatiestudies consistent gezien: na de
+                  30ste daalt vrij en totaal hormoon geleidelijk, met tussenindividuele spreiding
+                  <RefNote number={1} /> <RefNote number={2} />. Dit is geen vrijbrief om te stoppen — wel
+                  extra reden om eiwitdistribution en krachtbehoud serieus te nemen als je wilt blijven
                   bouwen of verliezen wilt remmen na belastingblokken.
                 </p>
 
@@ -238,17 +239,17 @@ export default function HerstelVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Groeihormoon blijft belangrijk voor weefselreparatie, maar puls-amplitude én hoeveelheid
-                  diepe slaap waar dit mee samengaat verschuiven met de leeftijd{" "}
+                  profondere slaapsfasen waar dit mee samengaat verschuiven met de leeftijd
                   <RefNote number={3} />. Kort samengevat: dezelfde klok slaapuren hoeft niet dezelfde
-                  hoeveelheid herstelcapaciteit te leveren als op je twintigste.
+                  hoeveelheid hersteldeppen te leveren als op je twintigste.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Inflammaging</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Chronische, laaggradige ontsteking (&ldquo;inflamm-aging&rdquo;) hangt samen met veranderingen
-                  in het immuunsysteem en herstelvermogen — en dat raakt hoe snel je lichaam herstelt tussen
-                  trainingen <RefNote number={4} /> <RefNote number={5} />. Trainen kan juist óók ontstekingsremmend
-                  werken óf overdreven belasting verslechteren als volume en stress tegelijk
+                  Chronic low-grade inflammatie (&ldquo;inflamm-aging&rdquo;) verknoopt immunosenescentie met
+                  stofwisselingsadaptatie na belasting — en dat raakt hoe snel jouw systeem tussen sessies op
+                  &quot;baseline&quot; terugkomt <RefNote number={4} /> <RefNote number={5} />. Trainen kan juist óók
+                  anti-inflammatoir werken óf overdreven belasting verschlechteren als volume en stress tegelijk
                   stapelen — context is hier leidend <RefNote number={8} />.
                 </p>
 
@@ -256,12 +257,11 @@ export default function HerstelVerbeterenNa40Page() {
                   Tragere spiereiwitresponses (&quot;anabolic resistance&quot;)
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Ouder wordende spieren reageren trager en minder sterk op dezelfde hoeveelheid eiwit uit een
-                  maaltijd — je hebt relatief meer per maaltijd of betere timing rond het trainen nodig voor
-                  een vergelijkbaar signaal voor spieropbouw{" "}
-                  <RefNote number={6} /> <RefNote number={7} /> <RefNote number={21} />.
-                  Hier win je geen olympische medailles mee in één cheatdag; wel betere kansen op spierbehoud en
-                  spiergroei op langere termijn.
+                  Ouder wordende spieren reageren trager én meer doseringsgevoelig op dezelfde hoeveheid
+                  geconsumeerd aminozuren uit een maaltijd — je hebt relatief meer per maaltijd of betere timing
+                  rond het trainen nodig voor vergelijkbaar signaal naar opbouwroutes
+                  <RefNote number={6} /> <RefNote number={7} /> <RefNote number={21} />. Hier win je geen olympische
+                  medailles mee in één cheatday; wel structurele hypertrofiekansen op middellange horizon.
                 </p>
               </section>
 
@@ -271,19 +271,19 @@ export default function HerstelVerbeterenNa40Page() {
                 </h2>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  Wanneer training harder gaat dan herstel
+                  Recovery-training balance versus overreaching-signatuur
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Te veel volume zonder periodes waarin stress en spierschade kunnen herstellen, leidt sneller tot
-                  minder effect van training (&quot;diminishing returns&quot;) of klachten van overbelasting en
-                  overtraining <RefNote number={8} />. Dit is géén
+                  Overschotten met volume zonder periodes waar sympathische hype en microtrauma gedempt
+                  kunnen worden, leiden sneller naar verminderde trainingsrespons (&quot;diminishing returns&quot;)
+                  of klassiek niet-functioneel overtrainingsspectrum <RefNote number={8} />. Dit is géén
                   morele fout — dit is hoe het autonome en neuro-endocriene systeem prikkels opstapelt.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Slaap en herstel hangen samen</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Slaapschuld remt endocriene en metabole functies die je nodig hebt om van hard trainen weer
-                  sterker terug te komen <RefNote number={9} />. Voor sporters en recreatieve
+                  Slaapschuld remt endocriene en metabole functies die je nodig hebt om van hard trainen
+                  weer supercompensatie te maken <RefNote number={9} />. Voor sporters en recreatieve
                   krachttrainers is er bovendien consistent verband tussen slaapduur/kwaliteit en prestatie +
                   subjectief herstel <RefNote number={12} />.
                 </p>
@@ -292,11 +292,10 @@ export default function HerstelVerbeterenNa40Page() {
                   Voeding is kritischer geworden
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Ouderen hebben absoluut meer goed verdeelde eiwitinname van hoge kwaliteit nodig om
-                  spierverlies te remmen en training te ondersteunen — position papers benadrukken richting
-                  1,0–1,2 g/kg/dag als basis en hoger bij actieve ouderen of revalidatie{" "}
-                  <RefNote number={10} />. Krachttraining gecombineerd met voldoende eiwit blijft de meest
-                  robuuste &quot;supplement&quot; die er is <RefNote number={19} />.
+                  Ouderen hebben absoluut meer distributed high-quality protein nodig om spierverlies te
+                  remmen en training te ondersteunen — position papers benadrukken richting 1,0–1,2 g/kg/dag
+                  als basis en hoger bij actieve ouderen of revalidatie <RefNote number={10} />. RT +
+                  proteïne-stack blijft de meest robuuste &quot;supplement&quot; die er is <RefNote number={19} />.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -304,9 +303,8 @@ export default function HerstelVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Intensiteit en duur van inspanning beïnvloeden acuut circulerend cortisol — chronische
-                  stapeling zonder buffer verandert hoe snel je terugschakelt naar herstelmodus na zware sessies{" "}
-                  <RefNote number={11} />. Dat botst direct met de mentaliteit van altijd maar harder trainen: soms
-                  is minder
+                  stapeling zonder buffer verandert hoe snel je parasympathisch terugvalt na zware sessies
+                  <RefNote number={11} />. Dat botst direct met train-hard altijd-culture: soms is minder
                   zwaar &quot;meer&quot; als je autonome output weer normaal moet worden.
                 </p>
               </section>
@@ -322,24 +320,23 @@ export default function HerstelVerbeterenNa40Page() {
                   1. Prioriteer slaapkwaliteit
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Vaste opstaandraam (ook weekend), een koele slaapkamer, gedoseerd avondlicht, en géén
+                  Vaste openstaandraam (ook weekend), lauwe slaapkamer-kern, gedoseerd avondlicht, en géén
                   e-mail-marathon tien minuten vóór bed. Hier bouw je de omgeving waarin GH-pulsen en
                   recuperatief herstel beter uit kunnen spelen <RefNote number={9} /> <RefNote number={12} />.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">2. Eet meer eiwit, verdeeld</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Richt op minimaal 25–35 g hoogwaardig eiwit per maaltijd in 3 maaltijden plus waar nodig een
-                  snack — eet rond krachttraining bewust voldoende eiwit zodat je inname aansluit op je training.
-                  Dit compenseert gedeeltelijk anabolic resistance <RefNote number={7} />{" "}
+                  Richt op minimaal 25–35 g hoogwaardig eiwit per maaltijd in 3 maaltijden + waar nodig snack;
+                  nabij krachtsessies waar mogelijk nabij timings zodat levering synchroon loopt met
+                  trainingsprikkel — dit compenseert gedeeltelijk anabolic resistance <RefNote number={7} />{" "}
                   <RefNote number={19} />.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">3. Plan rustdagen als training</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Twee echte relatieve offload-dagen zijn geen zwakte — ze zijn periodes waarin spieren en pezen
-                  echt kunnen herstellen vóór je volgende progressieve overload{" "}
-                  <RefNote number={8} />.
+                  Twee echte relatieve offload-dagen zijn geen zwakte — ze zijn periodes waar connective tissue
+                  en mitochondriën weer oprichten vóór je volgende progressieve overload <RefNote number={8} />.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">4. Beheer chronische stress</h3>
@@ -372,9 +369,8 @@ export default function HerstelVerbeterenNa40Page() {
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Magnesium (glycinaat)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Magnesium speelt mee in honderden enzymroutes; spier- en zenuwfunctie en slaapkwaliteit zijn
-                  bekende aandachtspunten na inspanning <RefNote number={13} /> <RefNote number={22} />.
-                  Glycinaat / bisglycinaat geven vaak minder maag- en darmklachten dan goedkope oxideniveaus — zie
-                  onze
+                  publieksvriendelijke hefbomen na inspanning <RefNote number={13} /> <RefNote number={22} />.
+                  Glycinaat / bisglycinaat tolereren veel maag-darm beter dan goedkope oxideniveaus — zie onze
                   vergelijking voor vorm + prijs.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
@@ -391,7 +387,7 @@ export default function HerstelVerbeterenNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Omega-3 (EPA/DHA)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Marine omega-3 vetzuren beïnvloeden ontstekingsreacties in het lichaam en spier-eiwitturnover in
+                  Marine omega-3 vetzuren moduleren inflammatoire signatuur en spier-eiwitturnover in
                   onderzoek bij ouderen en atletische contexten <RefNote number={14} /> <RefNote number={15} />.
                   EU‑claims blijven strikt rond hart en visie — herstelverwachting formuleer je realistisch
                   binnen die kaders.
@@ -458,7 +454,7 @@ export default function HerstelVerbeterenNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Eiwitpoeder (whey of plantaardig)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Praktische manier om je dagelijkse eiwitdoel te halen zonder elke maaltijd te koken —
+                  Praktische manier om distributed protein targets te halen zonder elke maaltijd te koken —
                   effect op hypertrofie vooral wanneer totale daginname en training kloppen <RefNote number={19} />.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
@@ -479,7 +475,7 @@ export default function HerstelVerbeterenNa40Page() {
                   Hoe Je Dit Aanpakt: Week voor Week
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Verander niet alles tegelijk in week één — anders weet je niet meer wat echt effect heeft.
+                  Stapel niet alles in week één — je hormonale en perceptuele signalen raken dan onleesbaar.
                   Dit is een progressief template; schuif timing op als je nachtdiensten of reisfases hebt.
                 </p>
 
@@ -496,9 +492,7 @@ export default function HerstelVerbeterenNa40Page() {
                   <p className="font-semibold text-gray-900 text-lg">Week 3–4 — Verdieping</p>
                   <ul className="mt-3 list-disc list-inside text-gray-700 space-y-2 leading-relaxed">
                     <li>Start magnesium glycinaat rond diner/avondroutine (bouwen op tolerated dose)</li>
-                    <li>
-                      Voeg omega-3 baseline toe conform het productlabel en afgestemd op hoeveel vette vis je eet
-                    </li>
+                    <li>Voeg omega-3 baseline toe conform productlabel + visinname-echo</li>
                     <li>Actief herstel: dagelijks rustig bewegen 20–30 min buitenlicht</li>
                   </ul>
                   <p className="mt-3 text-gray-700 leading-relaxed text-sm">

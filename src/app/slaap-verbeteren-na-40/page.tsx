@@ -83,7 +83,7 @@ const faqSchema = {
       name: "Is slecht slapen na 40 normaal?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "De verandering is normaal — je slaaparchitectuur verschuift met de leeftijd. Maar chronisch slecht slapen hoeft niet geaccepteerd te worden. Met de juiste aanpassingen kun je je slaapkwaliteit aanzienlijk verbeteren.",
+        text: "De verandering is normaal — je slaappatroon verschuift met de leeftijd. Maar chronisch slecht slapen hoeft niet geaccepteerd te worden. Met de juiste aanpassingen kun je je slaapkwaliteit aanzienlijk verbeteren.",
       },
     },
   ],
@@ -172,19 +172,18 @@ export default function SlaapVerbeterenNa40Page() {
               {/* 3. Herkenning */}
               <section id="herkenbaar" className="mt-12">
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Ken je dit: je gaat moe naar bed, maar zodra je hoofd het kussen raakt, begint het
-                  malen. Of je valt wél in slaap, maar om 3 uur &apos;s nachts lig je klaarwakker naar
-                  het plafond te staren. Geen reden, geen lawaai — je brein weigert gewoon om uit te
-                  schakelen.
+                  Ken je dit: je gaat moe naar bed, maar zodra je hoofd het kussen raakt, blijft je hoofd maar
+                  draaien. Of je valt wél in slaap, maar om 3 uur &apos;s nachts lig je klaarwakker naar
+                  het plafond te staren. Geen lawaai, geen duidelijke reden — je hoofd schakelt gewoon niet uit.
                 </p>
                 <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                  Overdag voel je het. Die waas. Die trage ochtenden waarin koffie nauwelijks helpt.
-                  De korte lontjes. Het gevoel dat je draait op reserves in plaats van op energie.
+                  Overdag voel je het. Die mist in je hoofd. Die trage ochtenden waarin koffie nauwelijks helpt.
+                  De korte lontjes. Het gevoel dat je leeft op reserves in plaats van echte energie.
                 </p>
                 <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                  Je bent niet de enige. Na je 40e verandert er fysiologisch iets fundamenteels in
-                  hoe je slaapt. Dat is geen zwakte en geen leeftijdsklacht — het is biologie. En het
-                  goede nieuws: als je begrijpt wát er verandert, kun je er iets aan doen.
+                  Je bent niet de enige. Na je 40e verandert er echt iets in je lichaam als het om slaap
+                  gaat. Dat is geen zwakte en geen leeftijdsklacht — het is biologie. En het
+                  goede nieuws: als je begrijpt wat er gebeurt, kun je er iets aan doen.
                 </p>
                 <p className="mt-4 text-gray-700">In deze gids leer je:</p>
                 <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
@@ -203,9 +202,8 @@ export default function SlaapVerbeterenNa40Page() {
                   Wat Er Verandert Na 40
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Je slaap is geen constante factor. Ze evolueert mee met je biologie. Rond je 40e
-                  beginnen drie veranderingen zich tegelijk door te zetten — en het samenspel
-                  daarvan verklaart waarom je opeens slechter slaapt, ook al ben je net zo moe als
+                  Je slaap blijft niet je hele leven hetzelfde. Ze verandert mee met je biologie. Rond je 40e
+                  spelen drie veranderingen tegelijk op — en samen verklaren die waarom je opeens slechter slaapt, ook al ben je net zo moe als
                   vroeger.
                 </p>
 
@@ -219,10 +217,9 @@ export default function SlaapVerbeterenNa40Page() {
                   dan op hun 20e.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Het praktische gevolg: je slaapsignaal wordt zwakker. Je lichaam geeft minder
-                  duidelijk het sein &ldquo;slaap nu&rdquo; af. Daardoor duurt het langer voor je in slaap
-                  valt, en wordt je gevoeliger voor licht en geluid in de avonduren. Blauwe
-                  schermstraling van telefoons en laptops versterkt dit effect — het onderdrukt de
+                  Wat je daarvan merkt: je lichaam geeft minder sterk het signaal af dat het tijd is om te
+                  slapen. Daardoor duurt het langer voor je in slaap
+                  valt, en wordt je gevoeliger voor licht en geluid in de avonduren. Blauw licht van telefoons en laptops versterkt dit effect — het onderdrukt de
                   toch al verminderde melatonine-aanmaak nog verder.
                 </p>
 
@@ -231,20 +228,20 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Slaap bestaat uit cycli van circa 90 minuten. Elk blok bevat lichte slaap,
-                  diepe slaap (slow-wave sleep) en REM-slaap. De diepe slaap is cruciaal: dit is
-                  waar je lichaam herstelt, groeihormoon aanmaakt en herinneringen consolideert.
+                  diepe slaap en REM-slaap. Die diepe slaap is cruciaal: dit is
+                  waar je lichaam herstelt, groeihormoon aanmaakt en herinneringen verwerkt.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Onderzoek laat consistent zien dat de hoeveelheid diepe slaap per nacht afneemt
                   met de leeftijd. Op je 20e slaap je misschien 20-25% van de nacht in diepe slaap;
-                  op je 45e kan dat al gedaald zijn naar 10-15%. Het gevolg: je slaapt technisch
-                  gezien &ldquo;genoeg&rdquo; uren, maar de herstelwaarde is lager. Je wordt wakker en voelt je
+                  op je 45e kan dat al gedaald zijn naar 10-15%. Het gevolg: je slaapt op papier genoeg
+                  uren, maar de herstelkwaliteit is lager. Je wordt wakker en voelt je
                   toch niet uitgerust.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Alcohol verergert dit aanzienlijk. Een borrel voor het slapen verkort de tijd
                   nodig om in slaap te vallen, maar onderdrukt diepe slaap en REM drastisch — je
-                  slaapt &ldquo;door&rdquo;, maar herstelt nauwelijks.
+                  slaapt &ldquo;door&rdquo;, maar je lichaam herstelt minder goed.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -253,11 +250,11 @@ export default function SlaapVerbeterenNa40Page() {
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Na je 40e duurt het langer om van lichte slaap naar diepe slaap te zakken. En
                   eenmaal wakker geworden — door geluid, licht, een volle blaas, of zomaar — kom je
-                  moeilijker terug. Je slaapdrempel stijgt, je terugvalsdrempel daalt.
+                  moeilijker terug. Je wordt makkelijker wakker en valt moeilijker weer in slaap.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Dat verklaard het klassieke patroon van de 40-plusser: makkelijk in slaap vallen,
-                  maar dan om 2 of 3 uur wakker liggen met een draaierig hoofd. Die
+                  maar dan om 2 of 3 uur wakker liggen met een hoofd vol gedachten. Die
                   vroeg-in-de-nacht-wakker-periode is geen toeval — het is je biologie.
                 </p>
               </section>
@@ -271,11 +268,11 @@ export default function SlaapVerbeterenNa40Page() {
                   Cortisol is je primaire stresshormoon. Het heeft een natuurlijk dag-nacht ritme:
                   piek in de ochtend om je wakker en alert te maken, en een daling richting de
                   avond zodat je lichaam tot rust kan komen. Melatonine kan pas stijgen als
-                  cortisol voldoende gedaald is — ze zijn communicerende vaten.
+                  cortisol voldoende gedaald is — ze zitten nauw met elkaar verbonden.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Het probleem bij veel mannen na 40: chronische stress, werkdruk, en een altijd-aan
-                  levensstijl houden het cortisolniveau te lang verhoogd. Het hormoon daalt
+                  Het probleem bij veel mannen na 40: chronische stress, werkdruk, en een
+                  levensstijl waarin je altijd &lsquo;aan&rsquo; staat houden het cortisolniveau te lang verhoogd. Het hormoon daalt
                   &lsquo;s avonds onvoldoende, waardoor melatonine te laat of te weinig stijgt. Je bent
                   lichamelijk moe, maar &lsquo;aan&rsquo; — in bed liggen scrollen op je telefoon maakt het
                   alleen maar erger.
@@ -283,8 +280,8 @@ export default function SlaapVerbeterenNa40Page() {
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Er is nog een tweede mechanisme. Bij sommige mensen schiet cortisol vroeg in de
                   ochtend — soms al om 3 of 4 uur — omhoog. Dat is een evolutionair overblijfsel:
-                  je lichaam bereidt zich voor op de dag. Maar als je cortisolcurve verschoven is
-                  of te piekerig is, word je daardoor te vroeg wakker, niet meer in staat om terug
+                  je lichaam bereidt zich voor op de dag. Maar als je cortisolritme verstoord is,
+                  word je daardoor te vroeg wakker, niet meer in staat om terug
                   te slapen. Dit is de biologische verklaring voor het &lsquo;3-uur-wakker&rsquo; patroon.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
@@ -325,8 +322,8 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je circadiaan ritme — je interne klok — wordt voornamelijk gestuurd door
-                  consistente tijden. Elke dag op hetzelfde tijdstip opstaan, ook in het weekend, is
-                  de krachtigste interventie die bestaat. Niet naar bed gaan op een vast tijdstip,
+                  consistente tijden. Elke dag op hetzelfde tijdstip opstaan, ook in het weekend, heeft
+                  de grootste impact op je slaap. Niet naar bed gaan op een vast tijdstip,
                   maar opstaan op een vast tijdstip.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -339,11 +336,10 @@ export default function SlaapVerbeterenNa40Page() {
                   2. Bouw een windroutine van 45-60 minuten
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Je zenuwstelsel heeft tijd nodig om van de sympathische (actief) naar de
-                  parasympathische (rust) stand te schakelen. Dat gaat niet van de ene op de
+                  Je zenuwstelsel heeft tijd nodig om van actie- naar herstelmodus te schakelen. Dat gaat niet van de ene op de
                   andere minuut. Een actieve wind-down routine — dimmen van lichten, geen schermen,
                   lichte bezigheid zoals lezen of ademhalingsoefeningen — helpt cortisol te dalen
-                  en geeft melatonine de ruimte om te stijgen.
+                  en helpt je lichaam melatonine aan te maken.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Concreet: zet schermen uit om 22:00 als je om 23:00 in bed wil liggen.
@@ -355,10 +351,10 @@ export default function SlaapVerbeterenNa40Page() {
                   3. Oefen eerder op de dag
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Beweging verhoogt de slow-wave slaap significant — maar het tijdstip telt.
+                  Beweging verhoogt diepe slaap significant — maar het tijdstip telt.
                   Intensieve training verhoogt je lichaamstemperatuur en cortisolniveau, wat bij
-                  sommige mensen de slaap verstoort als ze dit na 19:00 doen. Ochtend of vroege
-                  middag is optimaal voor intensieve training. Avondwandelingen zijn prima.
+                  sommige mensen de slaap verstoort als ze dit na 19:00 doen. Trainen in de ochtend of vroege
+                  middag werkt vaak beter bij zware blokken. Avondwandelingen zijn prima.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Bijkomend voordeel van ochtendtraining: het versterkt je circadiaan ritme. Je
@@ -370,8 +366,8 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Cafeïne heeft een halfwaardetijd van 5-7 uur. Een kop koffie om 14:00 betekent
-                  dat om 21:00 nog de helft van de cafeïne actief is in je bloed. Na je 40e neemt
-                  je lever cafeïne langzamer af — de effectieve halfwaardetijd kan 8-10 uur worden.
+                  dat om 21:00 nog de helft van de cafeïne actief is in je bloed. Na je 40e breekt
+                  je lichaam cafeïne langzamer af — de effectieve halfwaardetijd kan 8-10 uur worden.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Praktische regel: geen cafeïne na 13:00. Als je gewend bent aan een middag-koffie,
@@ -384,7 +380,7 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je kernlichaamstemperatuur moet dalen met 1-2°C om in slaap te vallen en diepe
-                  slaap te bereiken. Een koele slaapkamer (16-19°C) faciliteert dit. Een warme kamer
+                  slaap te bereiken. Een koele slaapkamer (16-19°C) helpt daarbij. Een warme kamer
                   verstoort de slaap zonder dat je je er bewust van bent.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -410,21 +406,21 @@ export default function SlaapVerbeterenNa40Page() {
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam
                   <RefNote number={4} />
-                  , waaronder de regulatie van GABA — de neurotransmitter die het zenuwstelsel tot
+                  , waaronder de aanmaak en werking van GABA — de neurotransmitter die het zenuwstelsel tot
                   rust brengt. Studies tonen consistent aan dat magnesiumsuppletie de slaapkwaliteit
-                  verbetert, met name bij mensen met een suboptimale inname
+                  verbetert, met name bij mensen die te weinig magnesium binnenkrijgen
                   <RefNote number={1} />
                   <RefNote number={2} />.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Magnesiumtekort is vaker aanwezig dan gedacht: stressvolle leefstijlen
+                  Magnesiumtekort komt vaker voor dan gedacht: langdurige stress
                   <RefNote number={3} />
                   , alcohol en een westers dieet arm aan groente en noten zorgen bij veel mannen voor
                   een tekort. Na je 40e neemt de opname via de darmen ook iets af.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Vorm maakt uit. Magnesiumoxide (goedkoop, in veel supermarkt-supplementen) heeft
-                  een slechte biologische beschikbaarheid
+                  Vorm maakt uit. Magnesiumoxide (goedkoop, in veel supermarkt-supplementen) wordt meestal
+                  slecht opgenomen door het lichaam
                   <RefNote number={5} />
                   . Magnesium glycinaat en bisglycinaat worden het best opgenomen en hebben het
                   minste last van maag-darmklachten
@@ -456,8 +452,8 @@ export default function SlaapVerbeterenNa40Page() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Ashwagandha werkt niet direct slaapbevorderend zoals magnesium dat doet. Het
-                  werkt via het cortisol-as: door cortisol te normaliseren, verwijdert het de
-                  primaire blokkade waardoor je moeilijk in slaap valt. Het effect bouwt op over
+                  werkt via het stresssysteem van het lichaam: door cortisol te normaliseren, helpt het
+                  de onrust te verminderen die je inslapen in de weg staat. Het effect bouwt op over
                   4-8 weken — het is geen snelle fix.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -484,15 +480,15 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Melatonine is het meest verkochte slaapmiddel in Nederland — en tegelijk het meest
-                  verkeerd begrepen. Het is geen slaapmiddel. Het is een chronobiologisch signaal
-                  dat je biologische klok verschuift. Het zegt je lichaam: &ldquo;het is nu nacht&rdquo; — maar
-                  het maakt je niet slaperiger als je biologische klok al klopt.
+                  verkeerd begrepen. Het is geen slaapmiddel. Het is een signaalstof voor je biologische klok —
+                  zo verschuift die klok tijdelijk. Het zegt je lichaam: &ldquo;het is nu nacht&rdquo; — maar
+                  het maakt je niet slaperiger als je ritme al klopt.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Waar melatonine wél helpt: jetlag, ploegendienst, of een sterk verschoven
                   slaapritme. Tijdelijk gebruik (2-4 weken) in lage dosering (0,3-0,5 mg) is
                   zinvol. Dosering maakt hier veel uit: de gangbare tabletten van 1-5 mg zijn
-                  farmacologisch (te) hoog gedoseerd voor chronobiologisch gebruik.
+                  vaak veel hoger gedoseerd dan je voor een klokverschuiving nodig hebt.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Chronisch melatonine slikken lost het onderliggende probleem niet op — het
@@ -529,9 +525,9 @@ export default function SlaapVerbeterenNa40Page() {
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     Kies één vast opstaanmoment en houd je er zeven dagen aan, ook in het weekend.
                     Bepaal je slaapvenster (bijv. 23:00–06:30) en ga niet eerder naar bed als je
-                    niet slaperig bent — dat versterkt slaapangst. Zet schermen om 22:00 uit. Dit
-                    zijn de drie meest impactvolle interventies. Doe nog niets met supplementen —
-                    registreer eerst hoe je slaapt.
+                    nog niet slaperig bent — dat versterkt slaapangst. Zet schermen om 22:00 uit. Dit
+                    zijn de drie stappen met het meeste effect. Doe nog niets met supplementen —
+                    kijk eerst hoe je slaap hierop reageert.
                   </p>
                 </div>
 
@@ -540,8 +536,8 @@ export default function SlaapVerbeterenNa40Page() {
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     Start met magnesium glycinaat: 200-400 mg, 45 minuten voor bedtijd. Bouw een
                     consistente wind-down routine van 45 minuten. Schrap cafeïne na 13:00. Voeg
-                    een ochtendwandeling van 15-20 minuten toe direct na het opstaan — daglicht
-                    direct in de ochtend is een krachtig circadiaan signaal.
+                    een ochtendwandeling van 15-20 minuten toe direct na het opstaan — ochtendlicht helpt je
+                    biologische klok resetten.
                   </p>
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     Evalueer na week 2: voel je verschil? Zo ja, houd dit vol. Zo nee, voeg
@@ -555,7 +551,7 @@ export default function SlaapVerbeterenNa40Page() {
                     De meeste mensen merken na 4-6 weken een duidelijk verschil in slaapkwaliteit,
                     energieniveau overdag, en stemming. Dit is ook het moment om te evalueren of
                     je nog verdere optimalisaties wil doen: kamertemperatuur, training timing, of
-                    eventueel een slaaptracker om objectief inzicht te krijgen in je slaapfasen.
+                    eventueel een slaaptracker om objectief inzicht te krijgen in je slaappatronen.
                   </p>
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     Blijf kritisch op alcohol. Zelfs één glas wijn verstoort diepe slaap meetbaar.
@@ -739,7 +735,7 @@ export default function SlaapVerbeterenNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      De verandering is normaal — je slaaparchitectuur verschuift met de leeftijd.
+                      De verandering is normaal — je slaappatroon verschuift met de leeftijd.
                       Maar chronisch slecht slapen hoeft niet geaccepteerd te worden. Met de juiste
                       aanpassingen kun je je slaapkwaliteit aanzienlijk verbeteren.
                     </div>
@@ -754,7 +750,7 @@ export default function SlaapVerbeterenNa40Page() {
                     Klaar om je slaap structureel aan te pakken?
                   </h3>
                   <p className="mt-3 text-gray-600 max-w-lg mx-auto">
-                    De Leefstijlcheck brengt in 3 minuten jouw slaak-, stress- en energieprofiel in
+                    De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en energieprofiel in
                     kaart. Je krijgt een persoonlijk herstelplan — gratis, zonder registratie.
                   </p>
                   <Link
