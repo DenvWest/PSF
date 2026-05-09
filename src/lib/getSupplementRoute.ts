@@ -21,7 +21,7 @@ function matchesZink(scores: DomainScores): boolean {
 }
 
 /** Overtrainer-patroon uit intake-spec: veel bewegen, weinig fysiek herstel (geen apart profiellabel in engine). */
-function matchesOvertrainerAnswers(answers: Record<string, number>): boolean {
+export function matchesOvertrainerAnswers(answers: Record<string, number>): boolean {
   return intAnswer(answers, "MOV_FREQ") >= 3 && intAnswer(answers, "RCV_PHYS") <= 1;
 }
 

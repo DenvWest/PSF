@@ -17,6 +17,7 @@ const THEMA_DOWNLOADS: Record<string, true> = {
   slaap: true,
   stress: true,
   energie: true,
+  herstel: true,
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

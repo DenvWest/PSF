@@ -18,7 +18,7 @@ import { isSupplementAvailable } from "@/lib/supplement-availability";
 import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import ScoreRing from "@/components/intake/ScoreRing";
-import { getSupplementRoute } from "@/lib/getSupplementRoute";
+import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { revokeIntakeConsent, saveReminderEmail } from "@/lib/intake-storage";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
@@ -116,8 +116,21 @@ export default function IntakeResults({
     scores.nutrition_score < 40 ||
     sortedDomainEntries[0].catId === "herstel";
 
-  const primaryCatId = PROFILE_DOMAIN_TO_CAT[profile.domain];
-  const primaryCategory = CATEGORIES.find((c) => c.id === primaryCatId);
+  const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
+  const displayProfileName = isOvertrainerProfile ? "Overtrainer" : profile.name;
+  const primaryCatIdForUi: CategoryId = isOvertrainerProfile
+    ? "herstel"
+    : PROFILE_DOMAIN_TO_CAT[profile.domain];
+  const primaryCategoryForUi = CATEGORIES.find((c) => c.id === primaryCatIdForUi);
+  const profileScoreForUi = isOvertrainerProfile
+    ? scores.recovery_score
+    : profile.score;
+  const displayProfileSlugPath = isOvertrainerProfile
+    ? "/profiel/overtrainer"
+    : `/profiel/${profile.name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")}`;
 
   const overall = Math.round(
     DOMAIN_KEYS.reduce((sum, k) => sum + scores[k], 0) / DOMAIN_KEYS.length,
@@ -142,26 +155,34 @@ export default function IntakeResults({
             color: "rgba(255,255,255,0.92)",
           }}
         >
-          {profile.name}
+          {displayProfileName}
         </h1>
-        {profile.name !== "In Balans" && (
+        {displayProfileName !== "In Balans" && (
           <Link
-            href={`/profiel/${profile.name
-              .toLowerCase()
-              .replace(/\s+/g, "-")
-              .replace(/[^a-z0-9-]/g, "")}`}
+            href={displayProfileSlugPath}
             target="_blank"
             className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
           >
             Lees meer over dit profiel →
           </Link>
         )}
+        {isOvertrainerProfile ? (
+          <p className="mt-3">
+            <Link
+              href="/thema/herstel"
+              target="_blank"
+              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
+            >
+              Gratis Herstelgids + thema herstel →
+            </Link>
+          </p>
+        ) : null}
         <p className="mb-5 text-[15px]" style={{ color: "rgba(255,255,255,0.55)" }}>
           Je primaire aandachtsgebied is{" "}
-          <strong style={{ color: primaryCategory?.color ?? "#C8956C" }}>
-            {primaryCategory?.label ?? profile.domain}
+          <strong style={{ color: primaryCategoryForUi?.color ?? "#C8956C" }}>
+            {primaryCategoryForUi?.label ?? profile.domain}
           </strong>{" "}
-          met een score van {profile.score}/100.
+          met een score van {Math.round(profileScoreForUi)}/100.
         </p>
         <div
           className="inline-flex items-center gap-2 rounded-lg border px-4 py-2"
