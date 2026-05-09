@@ -23,6 +23,7 @@ import {
   type DomainScores,
 } from "@/lib/intake-engine";
 import { normalizeReminderType } from "@/lib/intake-nurture-reminders";
+import { buildIntakeHerstelplanUrl } from "@/lib/email-templates/nurture/helpers";
 import { absoluteUrl, getPublicSiteUrl } from "@/lib/public-site-url";
 
 const DOMAIN_KEYS: readonly (keyof DomainScores)[] = [
@@ -145,6 +146,7 @@ export type ReminderRowWithSession = {
   id: string;
   email: string;
   reminder_type: string;
+  session_id?: string | null;
   intake_sessions: IntakeSessionsJoin | IntakeSessionsJoin[] | null;
 };
 
@@ -179,7 +181,7 @@ export function buildNurtureEmail(
 
   const site = getPublicSiteUrl();
   const intakeUrl = `${site}/intake`;
-  const intakeResultatenUrl = `${site}/intake?resultaten=true`;
+  const herstelplanUrl = buildIntakeHerstelplanUrl(row.session_id ?? null);
   const unsubQs = new URLSearchParams({ email });
   const unsubscribeUrl = `${site}/api/unsubscribe?${unsubQs.toString()}`;
 
@@ -225,7 +227,7 @@ export function buildNurtureEmail(
         subject: welcomeEmailSubject,
         html: welcomeEmailHtml({
           unsubscribeUrl,
-          intakeUrl: intakeResultatenUrl,
+          intakeUrl: herstelplanUrl,
           profileLabel,
           urgencyLabel,
           primaryDomainLabel,

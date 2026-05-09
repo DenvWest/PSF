@@ -110,6 +110,7 @@ async function runSendReminders(): Promise<{ sent: number; errors: number }> {
       id: row.id,
       email: row.email,
       reminder_type: row.reminder_type,
+      session_id: row.session_id,
       intake_sessions: session,
     };
 

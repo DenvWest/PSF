@@ -191,9 +191,11 @@ export function renderPersonalizedRows(
     </div>`
     : "";
 
-  const ctaUrl = block.cta.url.startsWith("http")
-    ? block.cta.url
-    : `https://www.perfectsupplement.nl${block.cta.url}`;
+  const rawCtaTarget =
+    block.cta.url === "/intake" ? intakeUrl : block.cta.url;
+  const ctaUrl = rawCtaTarget.startsWith("http")
+    ? rawCtaTarget
+    : `https://www.perfectsupplement.nl${rawCtaTarget}`;
 
   return `
         <tr>
