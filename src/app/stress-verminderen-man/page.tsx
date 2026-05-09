@@ -7,14 +7,15 @@ const INLINE_LINK_CLASS =
   "font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A] hover:text-[#4a7a5a]";
 
 export const metadata: Metadata = {
-  title: "Stress Verminderen: Complete Gids voor Mannen 40+ | PerfectSupplement",
+  title:
+    "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust | PerfectSupplement",
   description:
     "Chronische stress vreet aan je energie, slaap en hormonen. Ontdek wat je eraan doet — praktisch, onderbouwd en zonder vage adviezen.",
   alternates: {
     canonical: "/stress-verminderen-man",
   },
   openGraph: {
-    title: "Stress Verminderen als Man: Van Chronische Belasting naar Controle",
+    title: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
     description:
       "Chronische stress vreet aan je energie, slaap en hormonen. Hier is wat je eraan doet.",
     url: "/stress-verminderen-man",
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Stress Verminderen als Man: Van Chronische Belasting naar Controle",
+  headline: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
   description:
     "Chronische stress vreet aan je energie, slaap en hormonen. Ontdek wat je eraan doet.",
   author: {
@@ -76,7 +77,7 @@ const faqSchema = {
       name: "Hoe snel merk ik effect van stressvermindering?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ademhalingsoefeningen werken direct — binnen 5 minuten kun je je hartslag en cortisolrespons verlagen. Leefstijlaanpassingen zoals een vast slaapritme en dagelijks bewegen geven na 2-3 weken merkbaar verschil. Supplementen als ashwagandha hebben 4-8 weken nodig voor het volledige effect.",
+        text: "Ademhalingsoefeningen werken direct — binnen 5 minuten kun je je hartslag en stressreactie verlagen. Leefstijlaanpassingen zoals een vast slaapritme en dagelijks bewegen geven na 2-3 weken merkbaar verschil. Supplementen als ashwagandha hebben 4-8 weken nodig voor het volledige effect.",
       },
     },
     {
@@ -108,7 +109,7 @@ export default function StressVerminderenManPage() {
                   Complete Gids
                 </p>
                 <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                  Stress Verminderen als Man: Van Chronische Belasting naar Controle
+                  Stress Verminderen na 40: Van Altijd &apos;Aan&apos; Naar Meer Rust
                 </h1>
                 <p className="mt-4 text-lg text-gray-600">
                   Bijgewerkt: mei 2026 · Leestijd: 12 min
@@ -179,10 +180,10 @@ export default function StressVerminderenManPage() {
               <section id="herkenning" className="mt-12">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">Ken Je Dit?</h2>
                 <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                  Je wordt wakker en je hoofd draait al. Nog voor je voeten de grond raken, loop je
-                  de dag van morgen door. Op je werk functioneer je — niemand ziet dat je op
-                  reserves draait. &apos;s Avonds kun je niet loslaten: je lichaam is moe, maar je
-                  hoofd stopt niet.
+                  Je wordt wakker en je hoofd staat meteen aan. Nog voor je voeten de grond raken, ben
+                  je de volgende dag al aan het plannen. Op je werk functioneer je — niemand merkt
+                  hoeveel energie het je kost. &apos;s Avonds kun je niet loslaten: je lichaam is
+                  moe, maar je hoofd blijft doorgaan.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">Ken je dit:</p>
                 <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
@@ -191,8 +192,8 @@ export default function StressVerminderenManPage() {
                     &quot;goed&quot; was
                   </li>
                   <li>
-                    Je reageert sneller geïrriteerd dan een paar jaar geleden, op dingen die je
-                    vroeger niet raakten
+                    Je bent sneller geïrriteerd dan een paar jaar geleden, op dingen die je vroeger
+                    niet raakten
                   </li>
                   <li>
                     Je merkt dat je steeds vaker &quot;doorduwen&quot; als standaardmodus hebt —
@@ -200,12 +201,12 @@ export default function StressVerminderenManPage() {
                   </li>
                   <li>Je slaap is licht en onrustig, ook al ben je doodmoe</li>
                   <li>
-                    Hoofdpijn, kaakspanning of schouderklachten zijn je vaste metgezellen
+                    Hoofdpijn, kaakspanning of schouderklachten komen steeds terug
                   </li>
                 </ul>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Als je hier drie of meer van herkent, lees verder. Het is geen zwakte — het is een
-                  signaal dat je stresssysteem vastzit in de verkeerde stand.
+                  signaal dat je stresssysteem constant &apos;aan&apos; staat.
                 </p>
               </section>
 
@@ -222,32 +223,33 @@ export default function StressVerminderenManPage() {
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Na je 40e verandert de manier waarop je lichaam met stress omgaat. Je
                   herstelvermogen neemt af: waar je op je 30e een zware week nog compenseerde met
-                  een goed weekend, lukt dat nu niet meer. De reden is fysiologisch, niet mentaal.
+                  een goed weekend, lukt dat nu niet meer. Dat zit niet alleen tussen je oren —
+                  er verandert echt iets in je lichaam.
                 </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">Drie dingen veranderen tegelijk:</p>
+                <p className="mt-4 text-gray-700 leading-relaxed">Drie processen spelen tegelijk mee:</p>
                 <ol className="mt-3 space-y-3 text-gray-700 list-decimal list-inside leading-relaxed">
                   <li>
                     <strong className="font-semibold text-gray-900">Je HPA-as raakt ontregeld.</strong>{" "}
-                    Je hypothalamus-hypofyse-bijnier-as (HPA-as) is het stresssysteem van je
-                    lichaam. Bij chronische stress blijft dit systeem actief — ook als er geen
-                    acuut gevaar is. Het gevolg: je cortisol is de hele dag verhoogd in plaats van
-                    alleen &apos;s ochtends.
+                    Je biologische stresssysteem (de HPA-as) is het netwerk waarmee je lichaam op
+                    stress reageert. Bij chronische stress blijft je stresssysteem actief — ook als
+                    er geen acuut gevaar is. Het gevolg: je cortisolniveau blijft de hele dag te hoog
+                    in plaats van alleen &apos;s ochtends.
                   </li>
                   <li>
                     <strong className="font-semibold text-gray-900">Je testosteron daalt.</strong>{" "}
-                    Cortisol en testosteron concurreren om dezelfde bouwstenen. Als cortisol
-                    chronisch hoog is, daalt testosteron — met gevolgen voor energie, spiermassa,
-                    libido en stemming. Na 40 daalt testosteron al met ongeveer 1-2% per jaar;
-                    chronische stress versnelt dat proces.
+                    Cortisol en testosteron gebruiken dezelfde grondstoffen in je lichaam. Als
+                    cortisol chronisch hoog is, daalt testosteron — wat invloed heeft op je energie,
+                    spiermassa, libido en stemming. Na 40 daalt testosteron al met ongeveer 1-2% per
+                    jaar; langdurige stress kan dat versnellen.
                   </li>
                   <li>
                     <strong className="font-semibold text-gray-900">
                       Je zenuwstelsel blijft in de &quot;aan&quot;-stand.
                     </strong>{" "}
-                    Je autonome zenuwstelsel heeft twee standen: sympathisch (actie) en
-                    parasympathisch (herstel). Bij chronische stress blijft het sympathische
-                    systeem dominant. Dat verklaart de slaapproblemen, de spierspanning en het
-                    gevoel dat je niet kunt ontspannen — zelfs als je niets doet.
+                    Je zenuwstelsel heeft twee standen: actie- en herstelmodus. Bij chronische stress
+                    blijft het sympathische systeem dominant. Dat verklaart de slaapproblemen, de
+                    spierspanning en het gevoel dat je niet kunt ontspannen — zelfs op rustige
+                    momenten.
                   </li>
                 </ol>
 
@@ -260,21 +262,21 @@ export default function StressVerminderenManPage() {
                     het:
                   </p>
                   <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside leading-relaxed">
-                    <li>Je hersenen detecteren een stressor (fysiek of mentaal)</li>
+                    <li>Je hersenen detecteren een stressprikkel (fysiek of mentaal)</li>
                     <li>De hypothalamus stuurt een signaal naar de hypofyse</li>
                     <li>De hypofyse activeert de bijnieren</li>
                     <li>De bijnieren produceren cortisol</li>
                   </ul>
                   <p className="mt-4 text-gray-700 leading-relaxed">
                     Bij gezonde stress piekt cortisol kort en daalt het weer. Bij chronische stress
-                    blijft de as actief. Je bijnieren produceren continu cortisol, en op den duur
-                    raken ze uitgeput — waardoor je cortisol juist te laag wordt op de verkeerde
-                    momenten.
+                    blijft de as actief. Je lichaam blijft langer in een stressstand dan goed voor
+                    je is, en op den duur raakt je stresssysteem ontregeld — met een cortisolritme
+                    dat niet meer past bij wat je overdag nodig hebt.
                   </p>
                   <p className="mt-4 text-gray-700 leading-relaxed">
                     Het resultaat: je bent moe maar opgefokt, je slaapt slecht maar kunt niet
-                    ontspannen, je wilt bewegen maar hebt er de energie niet voor. Die paradox is
-                    het kenmerk van een ontregelde HPA-as.
+                    ontspannen, je wilt bewegen maar hebt er de energie niet voor. Dat gevoel — moe
+                    maar toch opgejaagd — herkennen veel mensen met langdurige stress.
                   </p>
                 </section>
 
@@ -283,22 +285,22 @@ export default function StressVerminderenManPage() {
                     Cortisol en Testosteron: De Onzichtbare Balans
                   </h3>
                   <p className="mt-3 text-gray-700 leading-relaxed">
-                    Cortisol en testosteron delen dezelfde precursor: pregnenolon. Onder chronische
-                    stress kiest je lichaam voor cortisol boven testosteron — een
+                    Cortisol en testosteron delen dezelfde voorloperstof: pregnenolon. Onder
+                    chronische stress kiest je lichaam voor cortisol boven testosteron — een
                     overlevingsmechanisme dat op korte termijn logisch is, maar op lange termijn je
-                    vitaliteit ondermijnt.
+                    energie en herstel langzaam onder druk zet.
                   </p>
                   <p className="mt-4 text-gray-700 leading-relaxed">
                     Onderzoek laat zien dat mannen met chronisch verhoogd cortisol gemiddeld 10-15%
                     lager testosteron hebben dan leeftijdgenoten met normale cortisolwaarden. De
                     gevolgen zijn breed: minder energie, trager herstel na inspanning, verminderd
-                    libido, en een subtiel verlies aan spiermassa dat je niet meteen opvalt maar
+                    libido, en een langzaam verlies van spiermassa dat je niet meteen opvalt maar
                     over maanden zichtbaar wordt.
                   </p>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Het goede nieuws: deze relatie werkt twee kanten op. Verlaging van cortisol door
-                    stressmanagement leidt aantoonbaar tot herstel van testosteronwaarden — niet
-                    naar het niveau van je 20e, maar naar het optimum voor jouw leeftijd.
+                    Het goede nieuws: deze relatie werkt twee kanten op. Minder stress door
+                    stressmanagement kan helpen je testosteronwaarden te verbeteren — niet naar het
+                    niveau van je 20e, maar naar het optimum voor jouw leeftijd.
                   </p>
                 </section>
               </section>
@@ -314,12 +316,12 @@ export default function StressVerminderenManPage() {
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  1. Ademhaling — de snelste schakelaar
+                  1. Ademhaling — de snelste manier om je lichaam tot rust te brengen
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   De eenvoudigste manier om je parasympathische zenuwstelsel te activeren is
                   gecontroleerde ademhaling. De 4-7-8 methode (4 tellen inademen, 7 tellen
-                  vasthouden, 8 tellen uitademen) verlaagt je hartslag en cortisolrespons binnen 5
+                  vasthouden, 8 tellen uitademen) verlaagt je hartslag en stressreactie binnen 5
                   minuten. Twee keer per dag, 5 minuten.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -333,10 +335,10 @@ export default function StressVerminderenManPage() {
                   2. Beweging — maar niet te veel
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Matige beweging (wandelen, zwemmen, fietsen) verlaagt cortisol. Intensief sporten
-                  verhoogt het juist. Als je al chronisch gestrest bent, is een dagelijkse wandeling
-                  van 30 minuten effectiever dan een HIIT-sessie. Train maximaal 3-4 keer per week
-                  op intensiteit, en compenseer met herstel.
+                  Matige beweging (wandelen, zwemmen, fietsen) verlaagt cortisol. Heel intensief
+                  sporten kan cortisol tijdelijk verhogen. Als je al chronisch gestrest bent, is een
+                  dagelijkse wandeling van 30 minuten effectiever dan een HIIT-sessie. Train maximaal
+                  3-4 keer per week op intensiteit, en compenseer met herstel.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -344,8 +346,8 @@ export default function StressVerminderenManPage() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je cortisolritme volgt je slaapritme. Ga op dezelfde tijd naar bed en sta op
-                  dezelfde tijd op — ook in het weekend. Dat herstelt je circadiaan ritme en
-                  normaliseert je cortisolcurve. Het klinkt simpel, maar het is de meest effectieve
+                  dezelfde tijd op — ook in het weekend. Dat herstelt je circadiaan ritme en helpt je
+                  cortisolritme herstellen. Het klinkt simpel, maar het is de meest effectieve
                   interventie die bijna niemand consequent doet.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -396,12 +398,12 @@ export default function StressVerminderenManPage() {
                   Het meest onderzochte adaptogeen voor stressvermindering. KSM-66 is een
                   gestandaardiseerd extract met consistente withanolide-gehaltes. In klinische
                   studies verlaagt het cortisol met 25-30% na 8 weken dagelijks gebruik (300-600
-                  mg). Het verbetert ook slaapkwaliteit en subjectieve stressbeleving.
+                  mg). Het verbetert ook slaapkwaliteit en hoe gestrest mensen zich voelen.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Let op: ashwagandha heeft geen EFSA-goedgekeurde gezondheidsclaims en er lopen
-                  discussies over regulering in Nederland. Wij presenteren de wetenschappelijke stand
-                  van zaken — de keuze is aan jou.
+                  discussies over regulering in Nederland. Wij presenteren wat onderzoek op dit moment
+                  laat zien — de keuze is aan jou.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">
@@ -419,9 +421,9 @@ export default function StressVerminderenManPage() {
                   Magnesium glycinaat
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Magnesium speelt een rol bij meer dan 300 processen in je lichaam, waaronder de
-                  regulatie van je zenuwstelsel. Glycinaat is de vorm die het beste opgenomen wordt
-                  en een extra kalmerend effect heeft via de glycine-component. Dosering: 200-400 mg
+                  Magnesium speelt een rol bij meer dan 300 processen in je lichaam, waaronder het
+                  ontspannen van je zenuwstelsel. Glycinaat is de vorm die het beste opgenomen wordt
+                  en werkt vaak rustgevender via de glycine-component. Dosering: 200-400 mg
                   elementair magnesium, bij voorkeur &apos;s avonds.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
@@ -451,7 +453,7 @@ export default function StressVerminderenManPage() {
                   <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside leading-relaxed">
                     <li>Ademhalingsoefening 2x per dag, 5 minuten (ochtend en avond)</li>
                     <li>Geen cafeïne na 14:00</li>
-                    <li>Vast bedtijd ± 30 minuten</li>
+                    <li>Vast bedtijd met maximaal 30 minuten verschil</li>
                   </ul>
                 </div>
 
@@ -640,7 +642,7 @@ export default function StressVerminderenManPage() {
                     </summary>
                     <div className="px-5 pb-5 leading-relaxed text-gray-700">
                       Ademhalingsoefeningen werken direct — binnen 5 minuten kun je je hartslag en
-                      cortisolrespons verlagen. Leefstijlaanpassingen zoals een vast slaapritme en
+                      stressreactie verlagen. Leefstijlaanpassingen zoals een vast slaapritme en
                       dagelijks bewegen geven na 2-3 weken merkbaar verschil. Supplementen als
                       ashwagandha hebben 4-8 weken nodig voor het volledige effect.
                     </div>
