@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const ashwagandhaData: ComparisonPageData = {
   category: "ashwagandha",
+  slug: "ashwagandha",
   guideHref: "/supplementen/ashwagandha",
   h1: "Beste ashwagandha supplement 2026 — onafhankelijk vergeleken",
   intro:
@@ -12,6 +13,26 @@ export const ashwagandhaData: ComparisonPageData = {
     "Vergelijk de beste ashwagandha supplementen met KSM-66 extract. Onafhankelijke scores op withanoliden, dosering en prijs voor mannen 40+.",
   lastUpdated: "2026-04-19",
   tableDoseringColumnLabel: "Dosering / dag",
+  ogImage: "https://perfectsupplement.nl/images/producten/Vitaminstore-Ashwagandha-KSM-66.jpg",
+  ogImageAlt: "Vitaminstore Ashwagandha KSM-66 — topkeuze in de vergelijking",
+  topProductLabel: "Topkeuze",
+  showEducationalLead: true,
+  showIntakeFallbackCta: true,
+  breadcrumbs: [
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Supplementen", url: "https://perfectsupplement.nl/supplementen/ashwagandha" },
+    { name: "Beste ashwagandha", url: "https://perfectsupplement.nl/beste/ashwagandha" },
+  ],
+  moreAboutTitle: "Meer over ashwagandha",
+  moreAboutDescription: "Vergelijk extracten op transparantie en dosering. Themapagina\u2019s over leefstijl (bijv. stress en slaap) zijn géén etiketclaims voor dit ingrediënt in EU-context.",
+  moreAboutLinks: [
+    { href: "/supplementen/ashwagandha", label: "Meer weten over ashwagandha? Lees de uitgebreide gids →" },
+    { href: "/thema/stress", label: "Stress na je 40e — wat speelt er en wat helpt? →" },
+  ],
+  readAlsoCards: [
+    { href: "/profiel/stressdrager", text: "Sta je continu \"aan\"? Herken je dit patroon?", cta: "Bekijk het profiel →" },
+    { href: "/profiel/onrustige-slaper", text: "Lang wakker liggen door prikkels? Combineer leefstijl met zorgvuldig gekozen supplementen; bij dit ingrediënt zijn etiketclaims in de EU nog niet definitief vastgesteld.", cta: "Bekijk het profiel →" },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -200,7 +221,7 @@ export const ashwagandhaData: ComparisonPageData = {
     {
       question: "Kan ik ashwagandha combineren met magnesium?",
       answer:
-        "Veel mensen combineren extracten en mineralen in aparte producten. Magnesium draagt bij tot normale spier- en zenuwfunctie en tot een normale psychologische functie. Ashwagandha beoordeel je op extractkwaliteit en etiketinformatie. Bij twijfel over stapeling met medicatie: overleg met je arts. Bekijk onze [magnesiumvergelijking](/beste-magnesium) voor productkeuze.",
+        "Veel mensen combineren extracten en mineralen in aparte producten. Magnesium draagt bij tot normale spier- en zenuwfunctie en tot een normale psychologische functie. Ashwagandha beoordeel je op extractkwaliteit en etiketinformatie. Bij twijfel over stapeling met medicatie: overleg met je arts. Bekijk onze [magnesiumvergelijking](/beste/magnesium) voor productkeuze.",
     },
     {
       question: "Hoe lang moet ik ashwagandha gebruiken?",

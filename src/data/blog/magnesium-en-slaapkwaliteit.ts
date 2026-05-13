@@ -14,7 +14,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       type: "tekst",
       titel: "Magnesium na je 40e: meer dan alleen ‘voor de nacht’",
       tekst:
-        "[De beste magnesium supplementen](/beste-magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De gemiddelde inname via voeding in Nederland ligt op 270 tot 300 mg per dag — terwijl de aanbevolen dagelijkse hoeveelheid voor mannen op 350 tot 400 mg elementair magnesium ligt. Dat gat van 80 tot 120 mg is de reden dat magnesiumsuppletie voor veel mannen boven de 40 relevant kan zijn.",
+        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De gemiddelde inname via voeding in Nederland ligt op 270 tot 300 mg per dag — terwijl de aanbevolen dagelijkse hoeveelheid voor mannen op 350 tot 400 mg elementair magnesium ligt. Dat gat van 80 tot 120 mg is de reden dat magnesiumsuppletie voor veel mannen boven de 40 relevant kan zijn.",
     },
     {
       type: "opsomming",
@@ -48,7 +48,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
         "Donkere chocolade 70% of hoger (30 g): circa 65 mg. Nog een reden om voor pure chocolade te kiezen.",
         "Zwarte bonen, bereid (100 g): circa 70 mg. Ook andere peulvruchten zijn goede bronnen.",
         "Avocado (1 heel): circa 58 mg. Plus gezonde vetten die de opname van andere voedingsstoffen ondersteunen.",
-        "Makreel (100 g): circa 60 mg — combineren met vette vis of [omega-3-suppletie](/beste-omega-3-supplement) past bij adequate inname van EPA/DHA; EPA en DHA dragen o.a. bij tot de normale werking van het hart (EFSA, bij voldoende dagelijkse hoeveelheid).",
+        "Makreel (100 g): circa 60 mg — combineren met vette vis of [omega-3-suppletie](/beste/omega-3-supplement) past bij adequate inname van EPA/DHA; EPA en DHA dragen o.a. bij tot de normale werking van het hart (EFSA, bij voldoende dagelijkse hoeveelheid).",
       ],
     },
     {
@@ -91,7 +91,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   },
   vergelijkingExtraLink: {
     label: "Bekijk onze top 3 magnesium (productvergelijking)",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",

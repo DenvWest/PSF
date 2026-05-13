@@ -507,7 +507,7 @@ export function getAdvice(
         name: "Melatonine",
         reason:
           "Je slaap scoort laag, maar stress lijkt niet de hoofdoorzaak. Melatonine kan helpen je slaap-waakritme te herstellen.",
-        link: "/beste-melatonine",
+        link: "/beste/melatonine",
       },
       8,
     );

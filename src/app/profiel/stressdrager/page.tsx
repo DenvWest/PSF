@@ -52,8 +52,8 @@ const weekPlan = [
 function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.linkText) return item.linkText;
   if (item.href === "/profiel/onrustige-slaper") return "Bekijk het Onrustige Slaper-profiel";
-  if (item.href === "/beste-ashwagandha") return "Bekijk de ashwagandha vergelijking";
-  if (item.href === "/beste-magnesium") return "Bekijk de magnesium vergelijking";
+  if (item.href === "/beste/ashwagandha") return "Bekijk de ashwagandha vergelijking";
+  if (item.href === "/beste/magnesium") return "Bekijk de magnesium vergelijking";
   return "Lees meer";
 }
 
@@ -242,7 +242,7 @@ export default function StressdragerPage() {
                       <p className="text-slate-600 leading-relaxed">{supp.efsa_claim}</p>
                     </div>
                     <p className="text-slate-500 text-sm mt-4">
-                      {supp.href === "/beste-ashwagandha"
+                      {supp.href === "/beste/ashwagandha"
                         ? "Welke ashwagandha werkt het best? KSM-66 vs Sensoril — objectief vergeleken."
                         : "Welke magnesium vorm past bij jou? Glycinaat, bisglycinaat of citraat — objectief vergeleken."}
                     </p>
@@ -250,7 +250,7 @@ export default function StressdragerPage() {
                       href={supp.href}
                       className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                     >
-                      {supp.href === "/beste-ashwagandha"
+                      {supp.href === "/beste/ashwagandha"
                         ? "Bekijk de ashwagandha vergelijking →"
                         : "Bekijk de magnesium vergelijking →"}
                     </Link>

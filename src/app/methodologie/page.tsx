@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 };
 
 const vergelijkingen = [
-  { href: "/beste-omega-3-supplement", label: "Omega-3", sub: "EPA, DHA en prijs per dag" },
-  { href: "/beste-magnesium", label: "Magnesium", sub: "Bisglycinaat, citraat en malaat" },
-  { href: "/beste-ashwagandha", label: "Ashwagandha", sub: "KSM-66, Sensoril en generiek" },
-  { href: "/beste-vitamine-d", label: "Vitamine D", sub: "D3, met of zonder K2" },
-  { href: "/beste-creatine", label: "Creatine", sub: "Monohydraat en alternatieven" },
-  { href: "/beste-zink", label: "Zink", sub: "Picolinaat, bisglycinaat en gluconaat" },
+  { href: "/beste/omega-3-supplement", label: "Omega-3", sub: "EPA, DHA en prijs per dag" },
+  { href: "/beste/magnesium", label: "Magnesium", sub: "Bisglycinaat, citraat en malaat" },
+  { href: "/beste/ashwagandha", label: "Ashwagandha", sub: "KSM-66, Sensoril en generiek" },
+  { href: "/beste/vitamine-d", label: "Vitamine D", sub: "D3, met of zonder K2" },
+  { href: "/beste/creatine", label: "Creatine", sub: "Monohydraat en alternatieven" },
+  { href: "/beste/zink", label: "Zink", sub: "Picolinaat, bisglycinaat en gluconaat" },
 ];
 
 const criteria = [

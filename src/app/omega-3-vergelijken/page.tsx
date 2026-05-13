@@ -14,7 +14,7 @@ import {
     comparisonCriteria,
     products,
     tableRows,
-} from "@/features/omega3/data/omega-3-vergelijken";
+} from "@/data/page-content/omega-3-vergelijken";
 
 export function generateMetadata() {
     return {
@@ -68,7 +68,7 @@ export default function OmegaComparisonPage() {
                                 <span aria-hidden="true">/</span>
                             </li>
                             <li className="flex items-center gap-1">
-                                <Link href="/beste-omega-3-supplement" className="hover:text-stone-600 transition-colors">Omega 3</Link>
+                                <Link href="/beste/omega-3-supplement" className="hover:text-stone-600 transition-colors">Omega 3</Link>
                                 <span aria-hidden="true">/</span>
                             </li>
                             <li>
@@ -94,7 +94,7 @@ export default function OmegaComparisonPage() {
                                     Bekijk vergelijking
                                 </a>
                                 <Link
-                                    href="/beste-omega-3-supplement"
+                                    href="/beste/omega-3-supplement"
                                     className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
                                 >
                                     Bekijk beste keuzes
@@ -318,7 +318,7 @@ export default function OmegaComparisonPage() {
                     <p>
                         Wil je liever direct onze selectie zien? Bekijk dan ook de{" "}
                         <Link
-                            href="/beste-omega-3-supplement"
+                            href="/beste/omega-3-supplement"
                             className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                         >
                             beste omega 3 supplementen
@@ -428,7 +428,7 @@ export default function OmegaComparisonPage() {
                 <p className="mt-6 max-w-3xl text-base leading-relaxed text-stone-600">
                     Zoek je liever een kortere shortlist dan een volledige vergelijking? Bekijk dan de{" "}
                     <Link
-                        href="/beste-omega-3-supplement"
+                        href="/beste/omega-3-supplement"
                         className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                     >
                         beste omega 3 supplementen
@@ -438,7 +438,7 @@ export default function OmegaComparisonPage() {
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Link
-                        href="/beste-omega-3-supplement"
+                        href="/beste/omega-3-supplement"
                         className="inline-flex items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white hover:bg-[#4A7F5A] transition-colors"
                     >
                         Bekijk beste omega 3 supplementen
@@ -457,7 +457,7 @@ export default function OmegaComparisonPage() {
                 description="Klaar om een concrete keuze te maken? Bekijk onze shortlist met productkaarten en actuele prijzen."
             >
                 <Link
-                    href="/beste-omega-3-supplement"
+                    href="/beste/omega-3-supplement"
                     className="block max-w-md rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-[#5A8F6A]/30"
                 >
                     <span className="font-medium text-stone-900">Bekijk onze top 5 omega-3 →</span>

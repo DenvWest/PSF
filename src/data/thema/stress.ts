@@ -128,7 +128,7 @@ export const stressThema: ThemaPageData = {
         reason:
           "Ashwagandha staat bij EFSA op de on‑holdlijst voor claims: onderzoek suggereert soms andere stressperceptie of stressmarkers, maar daar bestaat géén afgeronde EU‑health claim voor. Vergelijk extracts op inhoud — gebruik op eigen risico.",
         guideLink: "/supplementen/ashwagandha",
-        comparisonLink: "/beste-ashwagandha",
+        comparisonLink: "/beste/ashwagandha",
         icon: "🌿",
       },
       {
@@ -136,7 +136,7 @@ export const stressThema: ThemaPageData = {
         reason:
           "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EFSA). Glycinaat of tauraat zijn praktisch vaak gekozen vormen; velen krijgen structureel relatief weinig magnesium binnen via voeding.",
         guideLink: "/supplementen/magnesium",
-        comparisonLink: "/beste-magnesium",
+        comparisonLink: "/beste/magnesium",
         icon: "⚡",
       },
       {
@@ -144,7 +144,7 @@ export const stressThema: ThemaPageData = {
         reason:
           "EPA en DHA dragen bij tot de normale werking van het hart; DHA draagt bij tot het instandhouden van normale hersenfunctie — passend als je structureel weinig vette vis eet (geen EU‑claim hier op ‘minder ontsteking’ of energie als labelzin).",
         guideLink: "/supplementen/omega-3",
-        comparisonLink: "/beste-omega-3-supplement",
+        comparisonLink: "/beste/omega-3-supplement",
         icon: "🐟",
       },
       {
@@ -152,7 +152,7 @@ export const stressThema: ThemaPageData = {
         reason:
           "Zink draagt bij tot de normale eiwitsynthese en tot een normale werking van het immuunsysteem; het speelt daarnaast een rol bij talloze enzymreacties — chronisch hoge spanning kan meer zink‑verplaatsing of ‑verlies met zich meebrengen.",
         guideLink: "/supplementen/zink",
-        comparisonLink: "/beste-zink",
+        comparisonLink: "/beste/zink",
         icon: "🛡️",
       },
     ],
@@ -237,13 +237,13 @@ export const stressThema: ThemaPageData = {
       {
         context:
           "KSM-66 en vergelijkbare extracten: wat onderzoek zegt over cortisol, stemming en nachtrust — met productvergelijking.",
-        href: "/beste-ashwagandha",
+        href: "/beste/ashwagandha",
         label: "Beste ashwagandha-supplementen vergeleken",
       },
       {
         context:
           "Eerlijke top picks op vorm, elementair gehalte en prijs per dag, relevant voor onrust en fysieke spanning.",
-        href: "/beste-magnesium",
+        href: "/beste/magnesium",
         label: "Beste magnesium-supplementen vergeleken",
       },
       {

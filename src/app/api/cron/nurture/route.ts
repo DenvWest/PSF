@@ -1,29 +1,8 @@
 import { NextResponse } from "next/server";
 import { runPendingNurtureEmails } from "@/lib/nurture-cron";
+import { verifyCronRequest } from "@/lib/cron-auth";
 
 export const dynamic = "force-dynamic";
-
-function getBearerToken(request: Request): string {
-  const authHeader = request.headers.get("authorization");
-  if (!authHeader) return "";
-  const trimmed = authHeader.trim();
-  if (trimmed.toLowerCase().startsWith("bearer ")) {
-    return trimmed.slice(7).trim();
-  }
-  return trimmed;
-}
-
-function authorizePost(request: Request): boolean {
-  const secret = process.env.CRON_SECRET?.trim();
-  if (!secret) return false;
-  return getBearerToken(request) === secret;
-}
-
-function authorizeGet(request: Request): boolean {
-  const secret = process.env.CRON_SECRET?.trim();
-  if (!secret) return false;
-  return getBearerToken(request) === secret;
-}
 
 async function handleAuthorized(): Promise<NextResponse> {
   if (!process.env.RESEND_API_KEY?.trim()) {
@@ -46,27 +25,19 @@ async function handleAuthorized(): Promise<NextResponse> {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.CRON_SECRET?.trim()) {
-    return NextResponse.json(
-      { error: "CRON_SECRET ontbreekt" },
-      { status: 503 },
-    );
-  }
-  if (!authorizePost(request)) {
-    return NextResponse.json({ error: "Niet geautoriseerd" }, { status: 401 });
+  const auth = verifyCronRequest(request);
+  if (!auth.authorized) {
+    const status = auth.error === "CRON_SECRET ontbreekt" ? 503 : 401;
+    return NextResponse.json({ error: auth.error }, { status });
   }
   return handleAuthorized();
 }
 
 export async function GET(request: Request) {
-  if (!process.env.CRON_SECRET?.trim()) {
-    return NextResponse.json(
-      { error: "CRON_SECRET ontbreekt" },
-      { status: 503 },
-    );
-  }
-  if (!authorizeGet(request)) {
-    return NextResponse.json({ error: "Niet geautoriseerd" }, { status: 401 });
+  const auth = verifyCronRequest(request);
+  if (!auth.authorized) {
+    const status = auth.error === "CRON_SECRET ontbreekt" ? 503 : 401;
+    return NextResponse.json({ error: auth.error }, { status });
   }
   return handleAuthorized();
 }

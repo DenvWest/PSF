@@ -138,7 +138,7 @@ export const herstelThema: ThemaPageData = {
         reason:
           "Magnesium draagt bij tot de normale werking van spieren en het zenuwstelsel, tot vermindering van vermoeidheid en een normale psychologische functie (EFSA‑context) — logisch nadat trainingsdagen intensief waren, maar nooit een vervanging voor slaap of eiwit uit voeding.",
         guideLink: "/supplementen/magnesium",
-        comparisonLink: "/beste-magnesium",
+        comparisonLink: "/beste/magnesium",
         icon: "⚡",
       },
       {
@@ -146,7 +146,7 @@ export const herstelThema: ThemaPageData = {
         reason:
           "EPA en DHA dragen onder claimvoorwaarden bij aan hart‑ en hersenfunctie (plus DHA en gezicht). Formuleer herstelverwachting via die kaders — géén EU‑etiketclaim hier op ontsteking of garantie‑celherstel.",
         guideLink: "/supplementen/omega-3",
-        comparisonLink: "/beste-omega-3-supplement",
+        comparisonLink: "/beste/omega-3-supplement",
         icon: "🐟",
       },
       {
@@ -154,7 +154,7 @@ export const herstelThema: ThemaPageData = {
         reason:
           "Creatine ondersteunt fosfaatbuffering voor korte, zware inspanning; de erkende EU‑zin gaat over opeenvolgende zeer korte bursts bij voldoende dagdosis — denk eerst aan slapen en eiwit uit voeding.",
         guideLink: "/supplementen/creatine",
-        comparisonLink: "/beste-creatine",
+        comparisonLink: "/beste/creatine",
         icon: "💪",
       },
       {
@@ -162,7 +162,7 @@ export const herstelThema: ThemaPageData = {
         reason:
           "Zink draagt bij tot normale eiwitsynthese en aan een werkend immuunsysteem en speelt een rol bij veel enzymen — zonder geneesclaims of garanties op bijzondere wondherstelmarketing.",
         guideLink: "/supplementen/zink",
-        comparisonLink: "/beste-zink",
+        comparisonLink: "/beste/zink",
         icon: "🔩",
       },
       {
@@ -170,7 +170,7 @@ export const herstelThema: ThemaPageData = {
         reason:
           "Eiwitten dragen bij aan de groei en instandhouding van spiermassa. Na je 40e heb je meer eiwit nodig voor hetzelfde herstel — een eiwitpoeder vult dat gat efficiënt aan.",
         guideLink: "/supplementen/eiwitpoeder",
-        comparisonLink: "/beste-eiwitpoeder",
+        comparisonLink: "/beste/eiwitpoeder",
         icon: "💪",
       },
     ],
@@ -278,7 +278,7 @@ export const herstelThema: ThemaPageData = {
       {
         context:
           "Magnesium heeft EU‑claims rond onder meer psychologische functie en vermoeidheid; combineer capsules nooit los van voldoende slaap en geleidelijk opgebouwde trainingsbelasting.",
-        href: "/beste-magnesium",
+        href: "/beste/magnesium",
         label: "Magnesium ondersteunt je spierherstel →",
       },
     ],

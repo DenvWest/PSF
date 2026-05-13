@@ -301,7 +301,7 @@ export default function OnrustigeSlaperPage() {
                     objectief vergeleken op opname en prijs.
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                   >
                     Bekijk de magnesium vergelijking →
@@ -328,7 +328,7 @@ export default function OnrustigeSlaperPage() {
                     Objectief vergeleken.
                   </p>
                   <Link
-                    href="/beste-ashwagandha"
+                    href="/beste/ashwagandha"
                     className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                   >
                     Bekijk de ashwagandha vergelijking →
@@ -350,7 +350,7 @@ export default function OnrustigeSlaperPage() {
                     Welke melatonine past bij inslapen? Dosering en vorm — objectief vergeleken.
                   </p>
                   <Link
-                    href="/beste-melatonine"
+                    href="/beste/melatonine"
                     className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                   >
                     Bekijk de melatonine vergelijking →
@@ -423,7 +423,7 @@ export default function OnrustigeSlaperPage() {
                     objectief vergeleken op opname en prijs.
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="text-emerald-600 hover:underline font-medium"
                   >
                     Bekijk de magnesium vergelijking →
@@ -435,7 +435,7 @@ export default function OnrustigeSlaperPage() {
                     verschil maakt uit.
                   </p>
                   <Link
-                    href="/beste-ashwagandha"
+                    href="/beste/ashwagandha"
                     className="text-emerald-600 hover:underline font-medium"
                   >
                     Bekijk de ashwagandha vergelijking →

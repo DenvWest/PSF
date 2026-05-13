@@ -50,7 +50,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       type: "tekst",
       titel: "Supplementondersteuning vanaf dag 3",
       tekst:
-        "Twee supplementen kunnen dit protocol versterken — als aanvulling, niet als vervanging.\n\nMagnesium glycinaat (200–400 mg elementair magnesium, 30–60 minuten voor bed): magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycine wordt in onderzoek bestudeerd rond GABAerge routes en kerntemperatuur. Merkbare verschillen duren vaak 1–2 weken. [Magnesiumvormen vergeleken.](/beste-magnesium)\n\nMelatonine (0,3 mg — niet de standaard 5 mg uit de winkel) kan de eerste week helpen als je slaaptijdstip sterk verschoven is. Laag gedoseerd melatonine, 30–45 minuten voor de gewenste slaaptijd, geeft je biologische klok een extra zetje in de juiste richting. Hogere doseringen leiden bij veel mensen tot een zwaar, groggy gevoel de volgende ochtend — en onderdrukken op den duur de eigen aanmaak.\n\nSlapen lukt ook niet als je cortisol 's avonds nog hoog staat. [Wordt je om 3 uur wakker? Dat kan aan cortisol liggen.](/blog/cortisol-en-slaap)",
+        "Twee supplementen kunnen dit protocol versterken — als aanvulling, niet als vervanging.\n\nMagnesium glycinaat (200–400 mg elementair magnesium, 30–60 minuten voor bed): magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycine wordt in onderzoek bestudeerd rond GABAerge routes en kerntemperatuur. Merkbare verschillen duren vaak 1–2 weken. [Magnesiumvormen vergeleken.](/beste/magnesium)\n\nMelatonine (0,3 mg — niet de standaard 5 mg uit de winkel) kan de eerste week helpen als je slaaptijdstip sterk verschoven is. Laag gedoseerd melatonine, 30–45 minuten voor de gewenste slaaptijd, geeft je biologische klok een extra zetje in de juiste richting. Hogere doseringen leiden bij veel mensen tot een zwaar, groggy gevoel de volgende ochtend — en onderdrukken op den duur de eigen aanmaak.\n\nSlapen lukt ook niet als je cortisol 's avonds nog hoog staat. [Wordt je om 3 uur wakker? Dat kan aan cortisol liggen.](/blog/cortisol-en-slaap)",
     },
     {
       type: "tekst",
@@ -71,7 +71,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
     naam: "Magnesium",
     uitleg:
       "Magnesium glycinaat ondersteunt — binnen EFSA‑claims — normale werking van zenuwstelsel en spieren; avondinname sluit aan bij veel slaapprotocollen.",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 40e",
@@ -79,7 +79,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
     "cortisol-en-slaap",

@@ -23,7 +23,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Waarom dit na je 40e erger wordt",
-      tekst: "Na je 40e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de HPA-as — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt. [Bekijk de melatonine vergelijking](/beste-melatonine).",
+      tekst: "Na je 40e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de HPA-as — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt. [Bekijk de melatonine vergelijking](/beste/melatonine).",
     },
     {
       type: "tekst",
@@ -39,8 +39,8 @@ export const cortisolEnSlaapData: BlogArtikel = {
         "Avondroutine: cortisol heeft een afbouwsignaal nodig. Een vaste avondroutine — zelfde tijd, dezelfde volgorde — traint je HPA-as om eerder te remmen. Dim het licht na 21:00. Blauw licht van schermen blokkeert melatonineaanmaak en houdt cortisol actief.",
         "Geen schermen 60 minuten voor bed: dit is het meest onderbouwde advies in slaaponderzoek. Niet vanwege de content, maar vanwege het lichtspectrum. Gebruik een e-reader met warm licht, een boek, of luister naar iets rustigs.",
         "Cortisol-verlagende gewoontes overdag: beweging (voorkeur: 's ochtends of middag, niet vlak voor bed), ademhalingsoefeningen en voldoende zonlicht vroeg op de dag helpen je cortisolritme te normaliseren. De CAR — de ochtendpiek — wordt hierdoor scherper en eerder, waardoor er 's nachts minder over is.",
-        "Ashwagandha (KSM-66 of Sensoril): in studies wordt Withania somnifera onderzocht bij stress en cortisolmarkeringen. In de EU zijn hiervoor nog geen goedgekeurde gezondheidsclaims (on-hold bij EFSA; zie [toelichting](/blog/ashwagandha-werking-mannen)). Effecten treden niet acuut op — in onderzoek vaak na 4 tot 8 weken. [Producten vergeleken.](/beste-ashwagandha)",
-        "Magnesium glycinaat: magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycinaat heeft goede opname; glycine wordt in slaaponderzoek bestudeerd rond temperatuur en remmende neurotransmissie. Neem 200–400 mg elementair magnesium, 30–60 minuten voor bed, tenzij je arts anders voorschrijft. [Vormen vergeleken.](/beste-magnesium)",
+        "Ashwagandha (KSM-66 of Sensoril): in studies wordt Withania somnifera onderzocht bij stress en cortisolmarkeringen. In de EU zijn hiervoor nog geen goedgekeurde gezondheidsclaims (on-hold bij EFSA; zie [toelichting](/blog/ashwagandha-werking-mannen)). Effecten treden niet acuut op — in onderzoek vaak na 4 tot 8 weken. [Producten vergeleken.](/beste/ashwagandha)",
+        "Magnesium glycinaat: magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycinaat heeft goede opname; glycine wordt in slaaponderzoek bestudeerd rond temperatuur en remmende neurotransmissie. Neem 200–400 mg elementair magnesium, 30–60 minuten voor bed, tenzij je arts anders voorschrijft. [Vormen vergeleken.](/beste/magnesium)",
       ],
     },
     {
@@ -60,7 +60,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     naam: "Ashwagandha",
     uitleg:
       "KSM-66 of Sensoril: welke extractvorm en dosering worden in onderzoek het meest gebruikt? Onze vergelijking zet aanbieders naast elkaar — literatuur is geen goedgekeurde EU‑claim.",
-    href: "/beste-ashwagandha",
+    href: "/beste/ashwagandha",
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 40e",
@@ -68,7 +68,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste ashwagandha supplementen",
-    href: "/beste-ashwagandha",
+    href: "/beste/ashwagandha",
   },
   gerelateerdeSluggen: [
     "magnesium-en-slaap",

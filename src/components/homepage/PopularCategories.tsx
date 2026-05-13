@@ -7,7 +7,7 @@ const products = [
     tagline:
       "Essentieel vetzuur voor hart, hersenen en ontstekingsbalans. Uitgebreid vergeleken op dosering, kwaliteit en prijs.",
     href: "/omega-3-vergelijken",
-    secondaryHref: "/beste-omega-3-supplement",
+    secondaryHref: "/beste/omega-3-supplement",
     secondaryLabel: "Beste keuzes",
   },
   {
@@ -15,7 +15,7 @@ const products = [
     tagline:
       "Ondersteunt spieren, het zenuwstelsel en slaap. Welke vorm past het beste bij jouw doel?",
     href: "/magnesium-vergelijken",
-    secondaryHref: "/beste-magnesium",
+    secondaryHref: "/beste/magnesium",
     secondaryLabel: "Beste keuzes",
   },
 ];

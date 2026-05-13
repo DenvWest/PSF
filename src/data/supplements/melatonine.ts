@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const melatonineData: ComparisonPageData = {
   category: "melatonine",
+  slug: "melatonine",
   guideHref: "/supplementen/melatonine",
   h1: "Beste Melatonine Supplement 2026",
   intro:
@@ -11,6 +12,25 @@ export const melatonineData: ComparisonPageData = {
     "Welke melatonine werkt het beste voor jouw slaap? Vergelijking van pure melatonine en slaapcomplexen op werking, dosering en prijs.",
   lastUpdated: "2026-05-03",
   tableDoseringColumnLabel: "Dosering / dag",
+  topProductLabel: "Beste allround",
+  showEducationalLead: true,
+  showIntakeFallbackCta: true,
+  breadcrumbs: [
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Supplementen", url: "https://perfectsupplement.nl/supplementen/melatonine" },
+    { name: "Beste melatonine", url: "https://perfectsupplement.nl/beste/melatonine" },
+  ],
+  moreAboutTitle: "Meer over melatonine",
+  moreAboutLinks: [
+    { href: "/supplementen/melatonine", label: "Melatonine als supplement — wanneer wel en wanneer niet?" },
+    { href: "/blog/melatonine-wanneer-wel-niet", label: "Melatonine: wanneer wél en wanneer juist niet — de nuances op een rij" },
+  ],
+  readAlsoCards: [
+    { href: "/beste/ashwagandha", text: "Stress houdt je wakker? Ashwagandha kan helpen →" },
+    { href: "/beste/magnesium", text: "Magnesium en slaap zijn onlosmakelijk verbonden →" },
+    { href: "/slaap-verbeteren-na-40", text: "Slaap verbeteren vraagt om een keten van gewoontes →" },
+    { href: "/profiel/onrustige-slaper", text: "Herken je het patroon? Bekijk het profiel →", colSpan: 2 },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Beste allround",
@@ -199,7 +219,7 @@ export const melatonineData: ComparisonPageData = {
     {
       question: "Is een slaapcomplex beter dan pure melatonine?",
       answer:
-        "Dat hangt af van je situatie. Heb je vooral last van prikkelbaar avondritme door onrust in je hoofd, dan kan een meer-ingrediëntenformule aansluiten — zie desgewenst onze [ashwagandha-vergelijking](/beste-ashwagandha) en let op de EU on-hold-status van claims daar. Is je vraag vooral inslapen volgens de melatonine-claimcontext, dan kan een puur, laag gedoseerd melatonineproduct passender zijn. Dit artikel zet benaderingen naast elkaar.",
+        "Dat hangt af van je situatie. Heb je vooral last van prikkelbaar avondritme door onrust in je hoofd, dan kan een meer-ingrediëntenformule aansluiten — zie desgewenst onze [ashwagandha-vergelijking](/beste/ashwagandha) en let op de EU on-hold-status van claims daar. Is je vraag vooral inslapen volgens de melatonine-claimcontext, dan kan een puur, laag gedoseerd melatonineproduct passender zijn. Dit artikel zet benaderingen naast elkaar.",
     },
     {
       question: "Mag je melatonine elke dag gebruiken?",

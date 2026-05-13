@@ -322,7 +322,7 @@ export default function IntakeResults({
           <div className="space-y-2">
             {deficiencySignals.omega3_deficiency && (
               <a
-                href="/beste-omega-3-supplement"
+                href="/beste/omega-3-supplement"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
                 <span className="font-medium text-[#1a1a1a]">
@@ -333,7 +333,7 @@ export default function IntakeResults({
             )}
             {deficiencySignals.magnesium_signal && (
               <a
-                href="/beste-magnesium"
+                href="/beste/magnesium"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
                 <span className="font-medium text-[#1a1a1a]">
@@ -344,7 +344,7 @@ export default function IntakeResults({
             )}
             {deficiencySignals.ashwagandha_signal && isSupplementAvailable("ashwagandha") && (
               <a
-                href="/beste-ashwagandha"
+                href="/beste/ashwagandha"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
                 <span className="font-medium text-[#1a1a1a]">
@@ -355,7 +355,7 @@ export default function IntakeResults({
             )}
             {deficiencySignals.creatine_signal && (
               <a
-                href="/beste-creatine"
+                href="/beste/creatine"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
                 <span className="font-medium text-[#1a1a1a]">
@@ -366,7 +366,7 @@ export default function IntakeResults({
             )}
             {deficiencySignals.melatonine_signal && (
               <a
-                href="/beste-melatonine"
+                href="/beste/melatonine"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
                 <span className="font-medium text-[#1a1a1a]">
@@ -377,7 +377,7 @@ export default function IntakeResults({
             )}
             {zinkSignal && (
               <a
-                href="/beste-zink"
+                href="/beste/zink"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
                 <span className="font-medium text-[#1a1a1a]">

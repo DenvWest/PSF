@@ -36,10 +36,10 @@ export const melatonineNa40Data: BlogArtikel = {
       inleiding:
         "Melatonine adresseert timing. Maar de meeste slaapproblemen na je 40e zitten in de laag eronder: cortisolregulatie, ontspanning van het zenuwstelsel, en de kwaliteit van diepe slaap. Dit zijn de aanpakken die verder reiken.",
       items: [
-        "Magnesium glycinaat: magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycinaat heeft goede opname; glycine wordt in slaaponderzoek bestudeerd rond remmende neurotransmissie en temperatuur. Neem 200 tot 400 mg elementair magnesium 30 tot 60 minuten voor bed. [Magnesiumvormen vergeleken.](/beste-magnesium)",
-        "Ashwagandha en cortisol: Withania somnifera is in gerandomiseerde studies onderzocht op cortisolmarkeringen en welbevinden; in de EU zijn daar nog geen goedgekeurde gezondheidsclaims voor (on-hold bij EFSA — zie [volledige uitleg](/blog/ashwagandha-werking-mannen)). Geen acuut ‘slaappil’‑effect; in onderzoek vaak merkbaar na weken. [Producten.](/beste-ashwagandha)",
+        "Magnesium glycinaat: magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycinaat heeft goede opname; glycine wordt in slaaponderzoek bestudeerd rond remmende neurotransmissie en temperatuur. Neem 200 tot 400 mg elementair magnesium 30 tot 60 minuten voor bed. [Magnesiumvormen vergeleken.](/beste/magnesium)",
+        "Ashwagandha en cortisol: Withania somnifera is in gerandomiseerde studies onderzocht op cortisolmarkeringen en welbevinden; in de EU zijn daar nog geen goedgekeurde gezondheidsclaims voor (on-hold bij EFSA — zie [volledige uitleg](/blog/ashwagandha-werking-mannen)). Geen acuut ‘slaappil’‑effect; in onderzoek vaak merkbaar na weken. [Producten.](/beste/ashwagandha)",
         "Leefstijl als fundament: melatonine is zinloos als je slaaphygiëne niet op orde is. Geen schermen 60 minuten voor bed (het blauwe lichtspectrum blokkeert melatonineaanmaak), vaste slaap- en waaktijden, en ochtendzonnelicht om je biologische klok te ankeren.",
-        "Melatonine: tijdelijk en in microdosering: als je melatonine inzet, gebruik dan een dosis van 0,3 tot 0,5 mg — niet de standaard 3 mg van de drogist. En zie het als tijdelijk hulpmiddel bij een specifiek timing-probleem, niet als structurele oplossing. [De beste melatonine-supplementen op een rij — dosering en vorm vergeleken.](/beste-melatonine)",
+        "Melatonine: tijdelijk en in microdosering: als je melatonine inzet, gebruik dan een dosis van 0,3 tot 0,5 mg — niet de standaard 3 mg van de drogist. En zie het als tijdelijk hulpmiddel bij een specifiek timing-probleem, niet als structurele oplossing. [De beste melatonine-supplementen op een rij — dosering en vorm vergeleken.](/beste/melatonine)",
       ],
     },
     {
@@ -59,7 +59,7 @@ export const melatonineNa40Data: BlogArtikel = {
     naam: "Magnesium",
     uitleg:
       "Voor de meeste mannen boven de 40 is magnesium rechtstreeks koppelbaar aan EFSA‑claims op zenuwstelsel en spieren; avondinname is een gangbare gewoonte naast leefstijl.",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 40e",
@@ -67,7 +67,7 @@ export const melatonineNa40Data: BlogArtikel = {
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste ashwagandha supplementen",
-    href: "/beste-ashwagandha",
+    href: "/beste/ashwagandha",
   },
   gerelateerdeSluggen: [
     "cortisol-en-slaap",

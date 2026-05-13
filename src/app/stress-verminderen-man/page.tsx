@@ -410,7 +410,7 @@ export default function StressVerminderenManPage() {
                     Welke ashwagandha is het meest onderzocht en het beste gedoseerd?
                   </p>
                   <Link
-                    href="/beste-ashwagandha"
+                    href="/beste/ashwagandha"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk de vergelijking →
@@ -431,7 +431,7 @@ export default function StressVerminderenManPage() {
                     Welke magnesium werkt het snelst en wordt het beste opgenomen?
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk de vergelijking →

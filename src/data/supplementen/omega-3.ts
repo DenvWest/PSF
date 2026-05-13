@@ -167,7 +167,7 @@ export const omega3Data: SupplementData = {
 
   productVergelijkingCta: {
     titel: "Welke omega-3 scoort het beste?",
-    href: "/beste-omega-3-supplement",
+    href: "/beste/omega-3-supplement",
     linkLabel: "Bekijk de vergelijking →",
   },
 };

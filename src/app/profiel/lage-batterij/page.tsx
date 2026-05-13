@@ -302,7 +302,7 @@ export default function LageBatterijPage() {
                     en prijs per maand.
                   </p>
                   <Link
-                    href="/beste-omega-3-supplement"
+                    href="/beste/omega-3-supplement"
                     className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                   >
                     Bekijk de omega-3 vergelijking →
@@ -329,7 +329,7 @@ export default function LageBatterijPage() {
                     objectief vergeleken op opname en prijs.
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                   >
                     Bekijk de magnesium vergelijking →
@@ -402,7 +402,7 @@ export default function LageBatterijPage() {
                     biobeschikbaarheid en prijs.
                   </p>
                   <Link
-                    href="/beste-omega-3-supplement"
+                    href="/beste/omega-3-supplement"
                     className="text-emerald-600 hover:underline font-medium"
                   >
                     Bekijk de omega-3 vergelijking →
@@ -414,7 +414,7 @@ export default function LageBatterijPage() {
                     objectief vergeleken op opname en prijs.
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="text-emerald-600 hover:underline font-medium"
                   >
                     Bekijk de magnesium vergelijking →

@@ -71,7 +71,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
   },
   {
     slug: "beste-omega-3-supplement",
-    pad: "/beste-omega-3-supplement",
+    pad: "/beste/omega-3-supplement",
     categorie: "supplementen",
     titel: "Beste omega-3 supplement",
     heroIntro:
@@ -179,7 +179,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
   },
   {
     slug: "beste-magnesium",
-    pad: "/beste-magnesium",
+    pad: "/beste/magnesium",
     categorie: "supplementen",
     titel: "Beste magnesium supplement",
     heroIntro:

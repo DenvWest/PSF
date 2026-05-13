@@ -434,7 +434,7 @@ export default function SlaapVerbeterenNa40Page() {
                     citraat vergeleken op opname en prijs.
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk onze magnesium vergelijking →
@@ -468,7 +468,7 @@ export default function SlaapVerbeterenNa40Page() {
                     supplementen op extractkwaliteit, dosering en prijs per capsule.
                   </p>
                   <Link
-                    href="/beste-ashwagandha"
+                    href="/beste/ashwagandha"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk onze ashwagandha vergelijking →
@@ -502,7 +502,7 @@ export default function SlaapVerbeterenNa40Page() {
                     vorm, dosering en prijs per nacht.
                   </p>
                   <Link
-                    href="/beste-melatonine"
+                    href="/beste/melatonine"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk de melatonine vergelijking →

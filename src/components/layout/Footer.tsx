@@ -11,10 +11,10 @@ const exploreLinks = [
 ];
 
 const vergelijkingLinks = [
-    { href: "/beste-magnesium", label: "Beste magnesium" },
-    { href: "/beste-omega-3-supplement", label: "Beste omega-3" },
-    { href: "/beste-ashwagandha", label: "Beste ashwagandha" },
-    { href: "/beste-melatonine", label: "Beste melatonine" },
+    { href: "/beste/magnesium", label: "Beste magnesium" },
+    { href: "/beste/omega-3-supplement", label: "Beste omega-3" },
+    { href: "/beste/ashwagandha", label: "Beste ashwagandha" },
+    { href: "/beste/melatonine", label: "Beste melatonine" },
 ];
 
 const infoLinks = [

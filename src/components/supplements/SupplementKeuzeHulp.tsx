@@ -15,25 +15,25 @@ const aanbevelingen: Record<
         supplement: "Magnesium Glycinaat",
         reden: "Magnesium draagt bij tot een normale psychologische functie, normale werking van zenuwstelsel en spieren en tot vermindering van vermoeidheid (EFSA onder voorwaarden). Glycinaat is een praktische keuze in een avondroutine.",
         gids: "/supplementen/magnesium",
-        vergelijking: "/beste-magnesium",
+        vergelijking: "/beste/magnesium",
     },
     Stress: {
         supplement: "Ashwagandha",
         reden: "Geen EU‑erkende claims: ashwagandha staat op de EFSA on‑holdlijst; sommige studies bespreken stressperceptie. Gebruik op eigen risico — zie amber waarschuwing op thema-/vergelijkingsroutes.",
         gids: "/supplementen/ashwagandha",
-        vergelijking: "/beste-ashwagandha",
+        vergelijking: "/beste/ashwagandha",
     },
     Energie: {
         supplement: "Vitamine D3 + K2",
         reden: "Vitamine D draagt bij aan immuunsysteem, botten en een normale spierwerking onder EU‑claimvoorwaarden. Laat een eventueel tekort inhoudelijk toetsen bij je arts.",
         gids: "/supplementen/vitamine-d",
-        vergelijking: "/beste-vitamine-d",
+        vergelijking: "/beste/vitamine-d",
     },
     Herstel: {
         supplement: "Omega-3 (EPA/DHA)",
         reden: "EPA en DHA dragen bij aan de werking van het hart en DHA aan hersen‑ en gezichtsclaims (EU). Voeding en rust blijven de basis voor herstel.",
         gids: "/supplementen/omega-3",
-        vergelijking: "/beste-omega-3-supplement",
+        vergelijking: "/beste/omega-3-supplement",
     },
 };
 

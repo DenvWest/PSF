@@ -52,7 +52,7 @@ export interface ThemaPageData {
       name: string;
       reason: string;
       guideLink: string;
-      /** Alleen zetten als er een /beste-* vergelijking is; anders uitsluitend gidslink tonen. */
+      /** Alleen zetten als er een /beste/* vergelijking is; anders uitsluitend gidslink tonen. */
       comparisonLink?: string;
       icon: string;
     }>;

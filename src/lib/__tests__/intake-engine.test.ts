@@ -1,0 +1,542 @@
+import { describe, it, expect } from "vitest";
+import {
+  calcDomainScores,
+  getUrgency,
+  getProfileLabel,
+  getAdvice,
+  getDeficiencySignals,
+  getSortedDomains,
+  getAdvicePrimaryDomain,
+  type DomainScores,
+} from "@/lib/intake-engine";
+
+function makeAnswers(overrides: Record<string, number> = {}): Record<string, number> {
+  return {
+    SLP_QUAL: 3,
+    SLP_CONS: 3,
+    NRG_PATN: 3,
+    NRG_DEP: 3,
+    STR_FREQ: 3,
+    STR_RECV: 3,
+    NUT_QUAL: 3,
+    NUT_O3: 3,
+    NUT_PROT: 3,
+    MOV_FREQ: 3,
+    MOV_DAILY: 3,
+    RCV_PHYS: 3,
+    RCV_MENT: 3,
+    ...overrides,
+  };
+}
+
+function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
+  return {
+    sleep_score: 70,
+    energy_score: 70,
+    stress_score: 70,
+    nutrition_score: 70,
+    movement_score: 70,
+    recovery_score: 70,
+    ...overrides,
+  };
+}
+
+// ─── calcDomainScores ─────────────────────────────────────────────
+
+describe("calcDomainScores", () => {
+  it("returns all zeros for empty answers", () => {
+    const scores = calcDomainScores({});
+    expect(scores.sleep_score).toBe(0);
+    expect(scores.energy_score).toBe(0);
+    expect(scores.stress_score).toBe(0);
+    expect(scores.nutrition_score).toBe(0);
+    expect(scores.movement_score).toBe(0);
+    expect(scores.recovery_score).toBe(0);
+  });
+
+  it("calculates sleep_score from SLP_QUAL + SLP_CONS (max 7)", () => {
+    const scores = calcDomainScores(makeAnswers({ SLP_QUAL: 4, SLP_CONS: 3 }));
+    expect(scores.sleep_score).toBe(100);
+  });
+
+  it("calculates energy_score from NRG_PATN + NRG_DEP (max 8)", () => {
+    const scores = calcDomainScores(makeAnswers({ NRG_PATN: 4, NRG_DEP: 4 }));
+    expect(scores.energy_score).toBe(100);
+  });
+
+  it("calculates stress_score from STR_FREQ + STR_RECV (max 8)", () => {
+    const scores = calcDomainScores(makeAnswers({ STR_FREQ: 4, STR_RECV: 4 }));
+    expect(scores.stress_score).toBe(100);
+  });
+
+  it("calculates nutrition_score from NUT_QUAL + NUT_O3 + NUT_PROT (max 11)", () => {
+    const scores = calcDomainScores(makeAnswers({ NUT_QUAL: 4, NUT_O3: 4, NUT_PROT: 3 }));
+    expect(scores.nutrition_score).toBe(100);
+  });
+
+  it("calculates movement_score from MOV_FREQ + MOV_DAILY (max 7)", () => {
+    const scores = calcDomainScores(makeAnswers({ MOV_FREQ: 4, MOV_DAILY: 3 }));
+    expect(scores.movement_score).toBe(100);
+  });
+
+  it("calculates recovery_score from RCV_PHYS + RCV_MENT (max 6)", () => {
+    const scores = calcDomainScores(makeAnswers({ RCV_PHYS: 3, RCV_MENT: 3 }));
+    expect(scores.recovery_score).toBe(100);
+  });
+
+  it("normalizes partial scores correctly", () => {
+    const scores = calcDomainScores(makeAnswers({ SLP_QUAL: 2, SLP_CONS: 1 }));
+    expect(scores.sleep_score).toBe(Math.round((3 / 7) * 100));
+  });
+
+  it("handles missing individual questions as 0", () => {
+    const scores = calcDomainScores({ SLP_QUAL: 3 });
+    expect(scores.sleep_score).toBe(Math.round((3 / 7) * 100));
+    expect(scores.energy_score).toBe(0);
+  });
+
+  it("scores are bounded 0-100", () => {
+    const scores = calcDomainScores(makeAnswers());
+    for (const value of Object.values(scores)) {
+      expect(value).toBeGreaterThanOrEqual(0);
+      expect(value).toBeLessThanOrEqual(100);
+    }
+  });
+
+  it("produces maximum scores when all answers are max", () => {
+    const maxAnswers = makeAnswers({
+      SLP_QUAL: 4,
+      SLP_CONS: 3,
+      NRG_PATN: 4,
+      NRG_DEP: 4,
+      STR_FREQ: 4,
+      STR_RECV: 4,
+      NUT_QUAL: 4,
+      NUT_O3: 4,
+      NUT_PROT: 3,
+      MOV_FREQ: 4,
+      MOV_DAILY: 3,
+      RCV_PHYS: 3,
+      RCV_MENT: 3,
+    });
+    const scores = calcDomainScores(maxAnswers);
+    expect(scores.sleep_score).toBe(100);
+    expect(scores.energy_score).toBe(100);
+    expect(scores.stress_score).toBe(100);
+    expect(scores.nutrition_score).toBe(100);
+    expect(scores.movement_score).toBe(100);
+    expect(scores.recovery_score).toBe(100);
+  });
+});
+
+// ─── getUrgency ───────────────────────────────────────────────────
+
+describe("getUrgency", () => {
+  it("returns critical when 2+ domains are under 30", () => {
+    const result = getUrgency(makeScores({ sleep_score: 20, stress_score: 25 }));
+    expect(result.level).toBe("critical");
+  });
+
+  it("returns moderate when 1 domain is under 30", () => {
+    const result = getUrgency(makeScores({ sleep_score: 20 }));
+    expect(result.level).toBe("moderate");
+  });
+
+  it("returns moderate when 3+ domains are under 50", () => {
+    const result = getUrgency(
+      makeScores({ sleep_score: 40, stress_score: 45, energy_score: 35 }),
+    );
+    expect(result.level).toBe("moderate");
+  });
+
+  it("returns healthy when all domains above 60", () => {
+    const result = getUrgency(makeScores({ sleep_score: 65, energy_score: 70 }));
+    expect(result.level).toBe("healthy");
+  });
+
+  it("returns mild when all above 30 and 2+ under 60", () => {
+    const result = getUrgency(makeScores({ sleep_score: 45, stress_score: 55 }));
+    expect(result.level).toBe("mild");
+  });
+
+  it("returns correct label for critical", () => {
+    const result = getUrgency(makeScores({ sleep_score: 10, stress_score: 15 }));
+    expect(result.label).toBe("Urgente aandacht nodig");
+  });
+
+  it("returns correct label for healthy", () => {
+    const result = getUrgency(makeScores());
+    expect(result.label).toBe("Sterke basis");
+  });
+
+  it("includes a color string", () => {
+    const result = getUrgency(makeScores());
+    expect(result.color).toMatch(/^#[0-9A-Fa-f]{6}$/);
+  });
+});
+
+// ─── getProfileLabel ─────────────────────────────────────────────
+
+describe("getProfileLabel", () => {
+  it("returns 'Onrustige Slaper' when sleep < 40", () => {
+    const scores = makeScores({ sleep_score: 30 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Onrustige Slaper");
+    expect(result.domain).toBe("sleep");
+    expect(result.score).toBe(30);
+  });
+
+  it("returns 'Stressdrager' when stress < 40 (and sleep >= 40)", () => {
+    const scores = makeScores({ sleep_score: 50, stress_score: 30 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Stressdrager");
+    expect(result.domain).toBe("stress");
+  });
+
+  it("prioritizes sleep over stress when both < 40", () => {
+    const scores = makeScores({ sleep_score: 30, stress_score: 30 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Onrustige Slaper");
+  });
+
+  it("returns 'Lage Batterij' when energy < 40", () => {
+    const scores = makeScores({ energy_score: 30 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Lage Batterij");
+    expect(result.domain).toBe("energy");
+  });
+
+  it("returns 'Lage Batterij' when movement < 35", () => {
+    const scores = makeScores({ movement_score: 30 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Lage Batterij");
+    expect(result.domain).toBe("movement");
+  });
+
+  it("picks energy domain when both energy and movement are low and energy is lower", () => {
+    const scores = makeScores({ energy_score: 25, movement_score: 30 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Lage Batterij");
+    expect(result.domain).toBe("energy");
+  });
+
+  it("picks movement domain when movement is lower", () => {
+    const scores = makeScores({ energy_score: 35, movement_score: 20 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Lage Batterij");
+    expect(result.domain).toBe("movement");
+  });
+
+  it("returns 'In Balans' when all scores > 60", () => {
+    const scores = makeScores();
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("In Balans");
+  });
+
+  it("returns 'In Balans' when primary domain is nutrition", () => {
+    const scores = makeScores({
+      nutrition_score: 40,
+      sleep_score: 70,
+      stress_score: 70,
+      energy_score: 70,
+      movement_score: 70,
+      recovery_score: 70,
+    });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("In Balans");
+    expect(result.domain).toBe("nutrition");
+  });
+
+  it("falls back from recovery domain to next named domain", () => {
+    const scores = makeScores({
+      recovery_score: 40,
+      sleep_score: 45,
+      stress_score: 70,
+      energy_score: 70,
+      movement_score: 70,
+      nutrition_score: 70,
+    });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Onrustige Slaper");
+    expect(result.domain).toBe("sleep");
+  });
+});
+
+// ─── getSortedDomains ─────────────────────────────────────────────
+
+describe("getSortedDomains", () => {
+  it("sorts domains from lowest to highest score", () => {
+    const scores = makeScores({
+      sleep_score: 40,
+      energy_score: 80,
+      stress_score: 20,
+    });
+    const sorted = getSortedDomains(scores);
+    expect(sorted[0].domain).toBe("stress");
+    expect(sorted[0].score).toBe(20);
+    expect(sorted[sorted.length - 1].score).toBeGreaterThanOrEqual(sorted[0].score);
+  });
+
+  it("returns all 6 domains", () => {
+    const sorted = getSortedDomains(makeScores());
+    expect(sorted).toHaveLength(6);
+  });
+
+  it("maintains stable order for equal scores", () => {
+    const scores = makeScores({
+      sleep_score: 50,
+      energy_score: 50,
+      stress_score: 50,
+      nutrition_score: 50,
+      movement_score: 50,
+      recovery_score: 50,
+    });
+    const sorted = getSortedDomains(scores);
+    expect(sorted).toHaveLength(6);
+    expect(sorted.every((d) => d.score === 50)).toBe(true);
+  });
+
+  it("maps score keys to correct domain IDs", () => {
+    const sorted = getSortedDomains(makeScores());
+    const domains = sorted.map((d) => d.domain);
+    expect(domains).toContain("sleep");
+    expect(domains).toContain("energy");
+    expect(domains).toContain("stress");
+    expect(domains).toContain("nutrition");
+    expect(domains).toContain("movement");
+    expect(domains).toContain("recovery");
+  });
+});
+
+// ─── getAdvicePrimaryDomain ──────────────────────────────────────
+
+describe("getAdvicePrimaryDomain", () => {
+  it("returns sleep when sleep_score < 40 regardless of other scores", () => {
+    const scores = makeScores({ sleep_score: 30, stress_score: 10 });
+    expect(getAdvicePrimaryDomain(scores)).toBe("sleep");
+  });
+
+  it("returns the domain with lowest score when sleep >= 40", () => {
+    const scores = makeScores({ sleep_score: 50, stress_score: 20 });
+    expect(getAdvicePrimaryDomain(scores)).toBe("stress");
+  });
+
+  it("returns sleep at boundary (score = 39)", () => {
+    const scores = makeScores({ sleep_score: 39 });
+    expect(getAdvicePrimaryDomain(scores)).toBe("sleep");
+  });
+
+  it("does not force sleep at exactly 40", () => {
+    const scores = makeScores({
+      sleep_score: 40,
+      stress_score: 30,
+    });
+    expect(getAdvicePrimaryDomain(scores)).toBe("stress");
+  });
+});
+
+// ─── getDeficiencySignals ────────────────────────────────────────
+
+describe("getDeficiencySignals", () => {
+  it("detects omega3 deficiency when NUT_O3 <= 1", () => {
+    const signals = getDeficiencySignals(makeAnswers({ NUT_O3: 1 }));
+    expect(signals.omega3_deficiency).toBe(true);
+  });
+
+  it("does not flag omega3 when NUT_O3 > 1", () => {
+    const signals = getDeficiencySignals(makeAnswers({ NUT_O3: 2 }));
+    expect(signals.omega3_deficiency).toBe(false);
+  });
+
+  it("detects magnesium signal when SLP_QUAL <= 2 and STR_RECV <= 2", () => {
+    const signals = getDeficiencySignals(makeAnswers({ SLP_QUAL: 2, STR_RECV: 2 }));
+    expect(signals.magnesium_signal).toBe(true);
+  });
+
+  it("does not flag magnesium when sleep quality is fine", () => {
+    const signals = getDeficiencySignals(makeAnswers({ SLP_QUAL: 3, STR_RECV: 2 }));
+    expect(signals.magnesium_signal).toBe(false);
+  });
+
+  it("detects cortisol risk when stress high + inconsistent sleep + low energy", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ STR_FREQ: 1, SLP_CONS: 1, NRG_PATN: 2 }),
+    );
+    expect(signals.cortisol_risk).toBe(true);
+  });
+
+  it("does not flag cortisol when stress frequency is low (high answer)", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ STR_FREQ: 3, SLP_CONS: 1, NRG_PATN: 2 }),
+    );
+    expect(signals.cortisol_risk).toBe(false);
+  });
+
+  it("detects ashwagandha signal when STR_FREQ <= 2 and STR_RECV <= 2", () => {
+    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 2, STR_RECV: 2 }));
+    expect(signals.ashwagandha_signal).toBe(true);
+  });
+
+  it("does not flag ashwagandha when stress is well-managed", () => {
+    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 3, STR_RECV: 3 }));
+    expect(signals.ashwagandha_signal).toBe(false);
+  });
+
+  it("detects creatine signal when recovery is low and movement is high", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ MOV_FREQ: 4, RCV_PHYS: 1, RCV_MENT: 1 }),
+    );
+    expect(signals.creatine_signal).toBe(true);
+  });
+
+  it("does not flag creatine for sedentary low-recovery person", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ MOV_FREQ: 1, RCV_PHYS: 1, RCV_MENT: 3 }),
+    );
+    expect(signals.creatine_signal).toBe(false);
+  });
+
+  it("detects melatonine signal when sleep quality low and stress NOT primary", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ SLP_QUAL: 1, STR_FREQ: 4 }),
+    );
+    expect(signals.melatonine_signal).toBe(true);
+  });
+
+  it("does not flag melatonine when stress is also high (low STR_FREQ answer)", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ SLP_QUAL: 1, STR_FREQ: 2 }),
+    );
+    expect(signals.melatonine_signal).toBe(false);
+  });
+});
+
+// ─── getAdvice ───────────────────────────────────────────────────
+
+describe("getAdvice", () => {
+  it("returns quickWins, supplements, and longTerm arrays", () => {
+    const scores = makeScores();
+    const result = getAdvice(scores, makeAnswers(), []);
+    expect(result).toHaveProperty("quickWins");
+    expect(result).toHaveProperty("supplements");
+    expect(result).toHaveProperty("longTerm");
+    expect(Array.isArray(result.quickWins)).toBe(true);
+    expect(Array.isArray(result.supplements)).toBe(true);
+    expect(Array.isArray(result.longTerm)).toBe(true);
+  });
+
+  it("returns max 3 quickWins", () => {
+    const scores = makeScores({ sleep_score: 20, stress_score: 20, energy_score: 20 });
+    const answers = makeAnswers({
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
+      NRG_PATN: 1, NRG_DEP: 1, NUT_O3: 1,
+    });
+    const result = getAdvice(scores, answers, ["slaap", "stress", "energie"]);
+    expect(result.quickWins.length).toBeLessThanOrEqual(3);
+  });
+
+  it("returns max 3 supplements", () => {
+    const scores = makeScores({ sleep_score: 20, stress_score: 20, energy_score: 20 });
+    const answers = makeAnswers({
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
+      NRG_PATN: 1, NRG_DEP: 1, NUT_O3: 1, MOV_FREQ: 4, RCV_PHYS: 1,
+    });
+    const result = getAdvice(scores, answers, []);
+    expect(result.supplements.length).toBeLessThanOrEqual(3);
+  });
+
+  it("returns max 3 longTerm items", () => {
+    const scores = makeScores({ sleep_score: 20, stress_score: 20 });
+    const answers = makeAnswers({
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1, NUT_O3: 1,
+    });
+    const result = getAdvice(scores, answers, ["slaap", "stress"]);
+    expect(result.longTerm.length).toBeLessThanOrEqual(3);
+  });
+
+  it("provides fallback quickWin when no specific triggers", () => {
+    const scores = makeScores();
+    const result = getAdvice(scores, makeAnswers(), []);
+    expect(result.quickWins.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("provides fallback longTerm when no specific triggers", () => {
+    const scores = makeScores();
+    const result = getAdvice(scores, makeAnswers(), []);
+    expect(result.longTerm.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("recommends magnesium when sleep and stress both low", () => {
+    const scores = makeScores({ sleep_score: 30, stress_score: 30 });
+    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1 });
+    const result = getAdvice(scores, answers, []);
+    const names = result.supplements.map((s) => s.name);
+    expect(names).toContain("Magnesium glycinaat");
+  });
+
+  it("recommends omega-3 when NUT_O3 is low", () => {
+    const scores = makeScores({ nutrition_score: 40 });
+    const answers = makeAnswers({ NUT_O3: 1 });
+    const result = getAdvice(scores, answers, []);
+    const names = result.supplements.map((s) => s.name);
+    expect(names).toContain("Omega-3 (EPA/DHA)");
+  });
+
+  it("recommends melatonine when sleep is bad but stress is low", () => {
+    const scores = makeScores({ sleep_score: 30 });
+    const answers = makeAnswers({ SLP_QUAL: 1, STR_FREQ: 4 });
+    const result = getAdvice(scores, answers, []);
+    const names = result.supplements.map((s) => s.name);
+    expect(names).toContain("Melatonine");
+  });
+
+  it("deduplicates supplement recommendations", () => {
+    const scores = makeScores({ sleep_score: 20, stress_score: 20, recovery_score: 20 });
+    const answers = makeAnswers({
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
+      NRG_PATN: 1, MOV_FREQ: 4, RCV_PHYS: 1,
+    });
+    const result = getAdvice(scores, answers, []);
+    const names = result.supplements.map((s) => s.name);
+    const uniqueNames = [...new Set(names)];
+    expect(names.length).toBe(uniqueNames.length);
+  });
+
+  it("supplements have name, reason, and link", () => {
+    const scores = makeScores({ sleep_score: 20, stress_score: 20 });
+    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1 });
+    const result = getAdvice(scores, answers, []);
+    for (const supp of result.supplements) {
+      expect(supp.name).toBeTruthy();
+      expect(supp.reason).toBeTruthy();
+      expect(supp.link).toBeTruthy();
+    }
+  });
+
+  it("adds sleep-specific quickWin when primary domain is sleep", () => {
+    const scores = makeScores({ sleep_score: 20 });
+    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1 });
+    const result = getAdvice(scores, answers, []);
+    const hasPhoneWin = result.quickWins.some((w) => w.includes("vliegtuigmodus"));
+    expect(hasPhoneWin).toBe(true);
+  });
+
+  it("adds cortisol-related advice when cortisol risk is detected", () => {
+    const scores = makeScores({ stress_score: 20, sleep_score: 20, energy_score: 30 });
+    const answers = makeAnswers({
+      STR_FREQ: 1, SLP_CONS: 1, NRG_PATN: 1, STR_RECV: 1, SLP_QUAL: 1,
+    });
+    const result = getAdvice(scores, answers, []);
+    const names = result.supplements.map((s) => s.name);
+    expect(names).toContain("Ashwagandha");
+  });
+
+  it("includes symptom-specific advice when symptoms are selected", () => {
+    const scores = makeScores();
+    const result = getAdvice(scores, makeAnswers(), ["slaap"]);
+    const hasSleepTip = result.quickWins.some(
+      (w) => w.includes("koel") || w.includes("donker"),
+    );
+    expect(hasSleepTip).toBe(true);
+  });
+});

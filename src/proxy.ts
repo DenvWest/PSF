@@ -3,6 +3,7 @@ import {
   ADMIN_TOKEN_COOKIE_NAME,
   isValidAdminSessionCookie,
 } from "@/lib/admin-auth";
+import { DEFAULT_ORG_ID } from "@/config/org";
 
 function requiresAdminAuth(pathname: string): boolean {
   const isAdminArea =
@@ -94,6 +95,10 @@ export function proxy(request: NextRequest) {
   }
 
   const response = NextResponse.next();
+
+  const orgId = resolveOrgId(request);
+  response.headers.set("x-org-id", orgId);
+
   const isSecureRequest =
     request.nextUrl.protocol === "https:" ||
     request.headers.get("x-forwarded-proto") === "https";
@@ -116,6 +121,22 @@ export function proxy(request: NextRequest) {
   }
 
   return response;
+}
+
+function resolveOrgId(request: NextRequest): string {
+  const headerOrg = request.headers.get("x-org-id");
+  if (headerOrg) return headerOrg;
+
+  const host = request.headers.get("host") ?? "";
+  const parts = host.split(".");
+  if (parts.length >= 3) {
+    const subdomain = parts[0];
+    if (subdomain !== "www" && subdomain !== "perfectsupplement") {
+      return subdomain;
+    }
+  }
+
+  return DEFAULT_ORG_ID;
 }
 
 export const config = {

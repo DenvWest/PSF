@@ -163,7 +163,7 @@ export const melatonineData: SupplementData = {
 
   productVergelijkingCta: {
     titel: "Welke melatonine scoort het beste?",
-    href: "/beste-melatonine",
+    href: "/beste/melatonine",
     linkLabel: "Bekijk de vergelijking →",
   },
 };

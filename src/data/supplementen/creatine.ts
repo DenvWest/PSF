@@ -168,7 +168,7 @@ export const creatineGidsData: SupplementData = {
 
   productVergelijkingCta: {
     titel: "Welke creatine scoort het beste?",
-    href: "/beste-creatine",
+    href: "/beste/creatine",
     linkLabel: "Bekijk de vergelijking →",
   },
 };

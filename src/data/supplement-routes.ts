@@ -40,7 +40,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 1,
     domains: ["Voeding", "Energie", "Herstel"],
     hasComparison: true,
-    affiliateUrl: "/beste-omega-3-supplement",
+    affiliateUrl: "/beste/omega-3-supplement",
     triggers: {
       anyOf: [
         { deficiencySignal: "omega3_deficiency" },
@@ -56,7 +56,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 2,
     domains: ["Slaap", "Stress", "Herstel"],
     hasComparison: true,
-    affiliateUrl: "/beste-magnesium",
+    affiliateUrl: "/beste/magnesium",
     triggers: {
       anyOf: [
         { deficiencySignal: "magnesium_signal" },
@@ -73,7 +73,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 3,
     domains: ["Stress", "Slaap"],
     hasComparison: true,
-    affiliateUrl: "/beste-ashwagandha",
+    affiliateUrl: "/beste/ashwagandha",
     triggers: {
       anyOf: [
         { domainBelow: { domain: "stress_score", threshold: 40 } },
@@ -90,7 +90,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 4,
     domains: ["Voeding", "Herstel", "Stress"],
     hasComparison: true,
-    affiliateUrl: "/beste-zink",
+    affiliateUrl: "/beste/zink",
     triggers: { anyOf: [] },
   },
   {
@@ -101,7 +101,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 5,
     domains: ["Slaap"],
     hasComparison: true,
-    affiliateUrl: "/beste-melatonine",
+    affiliateUrl: "/beste/melatonine",
     triggers: {
       anyOf: [{ deficiencySignal: "melatonine_signal" }],
     },
@@ -114,7 +114,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 20,
     domains: ["Beweging", "Herstel"],
     hasComparison: true,
-    affiliateUrl: "/beste-creatine",
+    affiliateUrl: "/beste/creatine",
     triggers: { anyOf: [] },
   },
   {

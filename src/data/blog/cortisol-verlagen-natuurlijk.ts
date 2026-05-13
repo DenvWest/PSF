@@ -37,7 +37,7 @@ export const cortisolVerlagenData: BlogArtikel = {
         "Kortdurende krachttraining: Intensieve training verhoogt cortisol acuut, maar regelmatige krachttraining (3-4x per week, 45-60 minuten) verlaagt het basale cortisolniveau over tijd door verbeterde stressadaptatie.",
         "Diafragmaal ademhalen: Vijf minuten langzaam, diep ademhalen activeert het parasympathische deel van het autonome zenuwstelsel. Studies tonen cortisolverlagingen van 12-20% na acht weken dagelijkse oefening.",
         "Sociale verbinding: Positief sociaal contact stimuleert oxytocine, dat direct cortisol onderdrukt. Bewust investeren in relaties heeft meetbare fysiologische effecten.",
-        "Adaptogene supplementen: plantenextracten zoals Withania somnifera ([beste ashwagandha](/beste-ashwagandha)) zijn in gecontroleerde studies onderzocht op stress- en hormoonmarkers. Dat zijn publicaties, geen goedgekeurde EU‑gezondheidsclaims; bespreek verwachtingen en medicatie-interacties met je arts.",
+        "Adaptogene supplementen: plantenextracten zoals Withania somnifera ([beste ashwagandha](/beste/ashwagandha)) zijn in gecontroleerde studies onderzocht op stress- en hormoonmarkers. Dat zijn publicaties, geen goedgekeurde EU‑gezondheidsclaims; bespreek verwachtingen en medicatie-interacties met je arts.",
       ],
     },
     {
@@ -45,7 +45,7 @@ export const cortisolVerlagenData: BlogArtikel = {
       titel: "De rol van voeding en bloedsuiker",
       bewijsNiveau: "redelijk",
       tekst:
-        "Bloedsuikerschommelingen zijn onderschatte prikkels voor de stress‑respons. Elke sterke daling van de bloedsuikerspiegel triggert een cortisolrespons. Praktisch: eet regelmatige maaltijden met voldoende eiwit en complexe koolhydraten, beperk geraffineerde suikers en vermijd lange perioden zonder eten. [Magnesium](/beste-magnesium) draagt bij tot normale werking van het zenuwstelsel en van de spieren (EFSA). Welke zink wordt het best opgenomen? Bisglycinaat vs picolinaat — [bekijk de vergelijking](/beste-zink). Cafeïne verhoogt cortisol bij chronisch gebruik — niet bij incidenteel gebruik. Meer dan drie koppen koffie per dag kan cortisolniveaus structureel verhogen, vooral bij mensen die al gestrest zijn.",
+        "Bloedsuikerschommelingen zijn onderschatte prikkels voor de stress‑respons. Elke sterke daling van de bloedsuikerspiegel triggert een cortisolrespons. Praktisch: eet regelmatige maaltijden met voldoende eiwit en complexe koolhydraten, beperk geraffineerde suikers en vermijd lange perioden zonder eten. [Magnesium](/beste/magnesium) draagt bij tot normale werking van het zenuwstelsel en van de spieren (EFSA). Welke zink wordt het best opgenomen? Bisglycinaat vs picolinaat — [bekijk de vergelijking](/beste/zink). Cafeïne verhoogt cortisol bij chronisch gebruik — niet bij incidenteel gebruik. Meer dan drie koppen koffie per dag kan cortisolniveaus structureel verhogen, vooral bij mensen die al gestrest zijn.",
     },
     {
       type: "tekst",

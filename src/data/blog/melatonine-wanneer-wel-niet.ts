@@ -38,7 +38,7 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
     naam: "Melatonine",
     uitleg:
       "Wanneer een laag-gedoseerd product past en hoe je het inzet naast licht- en gedragstrategieën — de supplementen vergeleken op dosering en vorm.",
-    href: "/beste-melatonine",
+    href: "/beste/melatonine",
   },
   cornerstoneLink: {
     label: "Oplossingen bij slaapproblemen",

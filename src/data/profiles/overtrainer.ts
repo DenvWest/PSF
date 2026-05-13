@@ -153,7 +153,7 @@ export const overtrainerProfile: ProfilePageData = {
         "Magnesium draagt bij tot vermindering van vermoeidheid en tot een normale psychologische functie onder de EU-claimvoorwaarden.",
       why_this_profile:
         "Magnesium verlaat onder andere via zweet en speelt een rol bij spieren en het zenuwstelsel. Bij veel training en slaap onder druk is het logisch eerst naar inname uit voeding en vervolgens naar een gekozen vorm te kijken.",
-      href: "/beste-magnesium",
+      href: "/beste/magnesium",
       hasComparison: true,
     },
     {
@@ -162,7 +162,7 @@ export const overtrainerProfile: ProfilePageData = {
         "EPA en DHA dragen bij tot de normale werking van het hart bij een dagelijkse inname van minimaal 250 mg EPA en DHA zoals beschreven in de EU-claimteksten.",
       why_this_profile:
         "Twee tot drie keer vette vis lukt niet bij iedereen; een supplement kan helpen EPA en DHA richting te houden zoals de officiële hart- en DHA‑claim op het product vereist. Het is geen vervanging voor rustdagen en slaap.",
-      href: "/beste-omega-3-supplement",
+      href: "/beste/omega-3-supplement",
       hasComparison: true,
     },
     {
@@ -171,7 +171,7 @@ export const overtrainerProfile: ProfilePageData = {
         "Vitamine D draagt bij tot de instandhouding van een normale spierwerking en tot een normale werking van het immuunsysteem onder claimvoorwaarden.",
       why_this_profile:
         "Bij veel binnen-/kantoorwerk en trainingsritmes zonder vast zonmoment komt aanvullen met vitamine D vaker aan bod laat hogere doses door je arts of POH inhaken als je daar twijfelt over.",
-      href: "/beste-vitamine-d",
+      href: "/beste/vitamine-d",
       hasComparison: true,
     },
     {
@@ -180,7 +180,7 @@ export const overtrainerProfile: ProfilePageData = {
         "Zink draagt bij tot normale eiwitsynthese en tot de normale werking van het immuunsysteem onder claimvoorwaarden.",
       why_this_profile:
         "In EU‑claimcontext speelt zink mee bij normale eiwitsynthese en immuunsysteem; hou je aan etiket‑ en ADH‑adviezen en ga niet zelf experimenteren met zeer hoge doses.",
-      href: "/beste-zink",
+      href: "/beste/zink",
       hasComparison: true,
     },
     {
@@ -189,7 +189,7 @@ export const overtrainerProfile: ProfilePageData = {
         "Kan bij dagelijkse inname van ten minste 3 g creatine onder de juiste voorwaarden bijdragen aan fysieke prestatie bij opeenvolgende reeksen van zeer korte, intense lichamelijke inspanningen (EU-claimtekst).",
       why_this_profile:
         "Geschikt voor korte, zware blokken waar je fosfaatsystemen veel vragen nog steeds géén vrijbrief om slaap te skippen of volume te verdubbelen.",
-      href: "/beste-creatine",
+      href: "/beste/creatine",
       hasComparison: true,
     },
     {
@@ -198,7 +198,7 @@ export const overtrainerProfile: ProfilePageData = {
         "Eiwitten dragen bij aan groei in spiermassa en aan het instandhouden van spiermassa en normale botten onder de gebruikelijke claimvoorwaarden en bij voldoende inname‑context zoals beschreven in de EU-claims.",
       why_this_profile:
         "Eiwitten dragen volgens erkende EU‑claims bij aan groei en instandhouding van spiermassa in de juiste intakecontext; shakes helpen vooral om rond training voldoende totaal eiwit te halen terwijl je basisvoeding op orde blijft.",
-      href: "/beste-eiwitpoeder",
+      href: "/beste/eiwitpoeder",
       hasComparison: true,
     },
   ],
@@ -226,12 +226,12 @@ export const overtrainerProfile: ProfilePageData = {
         "Zonder stabiele slaap blijft herstel krap het slaapthema legt gedrag en omgeving naast supplementen uit.",
     },
     {
-      href: "/beste-magnesium",
+      href: "/beste/magnesium",
       turboSnippet:
         "Magnesium onder EU-claims o.a. op vermoeidheid en psychologische functie zie hier welke vorm past.",
     },
     {
-      href: "/beste-omega-3-supplement",
+      href: "/beste/omega-3-supplement",
       turboSnippet:
         "Omega-3 op kwaliteit, dosering EPA/DHA en praktijk zonder marketingclaims buiten EU-teksten.",
     },

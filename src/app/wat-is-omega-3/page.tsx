@@ -11,7 +11,7 @@ import {
     keyPoints,
     supplementPoints,
     faqs,
-} from "@/features/omega3/data/wat-is-omega-3";
+} from "@/data/page-content/wat-is-omega-3";
 
 export function generateMetadata() {
     return {
@@ -32,7 +32,7 @@ const relatedPages = [
         description: "Bekijk producten naast elkaar in een compact overzicht.",
     },
     {
-        href: "/beste-omega-3-supplement",
+        href: "/beste/omega-3-supplement",
         title: "Beste omega 3 supplement",
         description: "Ga direct naar de beste overall, budget en premium keuzes.",
     },
@@ -91,7 +91,7 @@ export default function WhatIsOmega3Page() {
                                     Bekijk vergelijking
                                 </Link>
                                 <Link
-                                    href="/beste-omega-3-supplement"
+                                    href="/beste/omega-3-supplement"
                                     className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-6 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
                                 >
                                     Bekijk beste keuzes
@@ -194,7 +194,7 @@ export default function WhatIsOmega3Page() {
                     <p className="mt-6 max-w-3xl text-base leading-relaxed text-stone-600">
                         Wil je liever meteen een eerste selectie zien? Bekijk dan de pagina met{" "}
                         <Link
-                            href="/beste-omega-3-supplement"
+                            href="/beste/omega-3-supplement"
                             className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                         >
                             beste omega 3 supplementen
@@ -227,7 +227,7 @@ export default function WhatIsOmega3Page() {
                                 Ga direct naar een selectie van beste overall, prijs-kwaliteit en premium keuzes.
                             </p>
                             <Link
-                                href="/beste-omega-3-supplement"
+                                href="/beste/omega-3-supplement"
                                 className="mt-6 inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-6 py-3 text-sm font-medium text-stone-900 hover:border-stone-300 transition-colors"
                             >
                                 Bekijk beste keuzes
@@ -257,7 +257,7 @@ export default function WhatIsOmega3Page() {
                     <Container>
                         <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Link href="/beste-omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                            <Link href="/beste/omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
                                 <p className="text-base text-stone-600 leading-relaxed">Klaar om een product te kiezen? Bekijk onze top 5 op EPA/DHA, prijs en transparantie.</p>
                                 <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk beste omega 3 →</span>
                             </Link>

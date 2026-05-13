@@ -131,7 +131,7 @@ export const energieThema: ThemaPageData = {
         reason:
           "Vitamine D draagt bij tot de normale werking van het immuunsysteem, het instandhouden van normale botten en een normale spierfunctie (EFSA) — veel mannen halen niet genoeg binnen naar een schatting van beleidsdocumenten voor NL.",
         guideLink: "/supplementen/vitamine-d",
-        comparisonLink: "/beste-vitamine-d",
+        comparisonLink: "/beste/vitamine-d",
         icon: "☀️",
       },
       {
@@ -139,7 +139,7 @@ export const energieThema: ThemaPageData = {
         reason:
           "EPA en DHA dragen bij tot de normale werking van het hart; DHA aan het instandhouden van normale hersenfunctie (EFSA bij voldoende dosering). Geen EU‑labelclaim op ‘more energie’ of cel‑ATP hier.",
         guideLink: "/supplementen/omega-3",
-        comparisonLink: "/beste-omega-3-supplement",
+        comparisonLink: "/beste/omega-3-supplement",
         icon: "🐟",
       },
       {
@@ -147,7 +147,7 @@ export const energieThema: ThemaPageData = {
         reason:
           "Ashwagandha staat bij EFSA op de on‑holdlijst: literatuur bespreekt mogelijk andere stressperceptie of herstelperceptie bij langdurige belasting — geen officiële claim; gebruik alleen als je deze context accepteert (zie kader onderaan).",
         guideLink: "/supplementen/ashwagandha",
-        comparisonLink: "/beste-ashwagandha",
+        comparisonLink: "/beste/ashwagandha",
         icon: "🌿",
       },
       {
@@ -155,7 +155,7 @@ export const energieThema: ThemaPageData = {
         reason:
           "Creatine ondersteunt de ATP‑voorziening in cellen wat spier‑ en explosieve kracht kan ondersteunen bij langdurige inname en bij regelmatig trainen; de erkende EU‑claim formulering beschrijft heel korte, intense spiertaken bij voldoende dagdosis.",
         guideLink: "/supplementen/creatine",
-        comparisonLink: "/beste-creatine",
+        comparisonLink: "/beste/creatine",
         icon: "💪",
       },
       {
@@ -163,7 +163,7 @@ export const energieThema: ThemaPageData = {
         reason:
           "Voldoende eiwitinname in je voeding ondersteunt spieronderhoud; na je 40e wordt behoud vaak meer aandacht. In de EU hebben eiwit‑supplementen o.a. claims rond spiermassa en botten onder voorwaarden — geen garantie voor ‘meer pit’ uit één scooptje.",
         guideLink: "/supplementen/eiwitpoeder",
-        comparisonLink: "/beste-eiwitpoeder",
+        comparisonLink: "/beste/eiwitpoeder",
         icon: "💪",
       },
     ],
@@ -242,13 +242,13 @@ export const energieThema: ThemaPageData = {
       {
         context:
           "EPA en DHA op één lijn gezet: zuiverheid, dosering, prijs per dag — handig als je weinig vette vis eet.",
-        href: "/beste-omega-3-supplement",
+        href: "/beste/omega-3-supplement",
         label: "Beste omega-3-supplementen vergeleken",
       },
       {
         context:
           "Monohydraat en prijs per dosering: compact vergelijken als je (weer) met creatine aan de slag wilt om explosieve en cognitieve output te ondersteunen.",
-        href: "/beste-creatine",
+        href: "/beste/creatine",
         label: "Beste creatine-supplementen vergeleken",
       },
       {

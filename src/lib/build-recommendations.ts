@@ -29,7 +29,7 @@ function comparisonHrefFromSupplementRoutes(slug: string): string | null {
     ? SUPPLEMENT_ROUTE_DEFINITIONS.find((d) => d.id === routeId)
     : undefined;
   if (!def) return null;
-  if (def.affiliateUrl.startsWith("/beste-")) return def.affiliateUrl;
+  if (def.affiliateUrl.startsWith("/beste/")) return def.affiliateUrl;
   return null;
 }
 
@@ -39,7 +39,7 @@ type LegacyPick = { slug: string; name: string; icon: string; reason: string };
  * Bepaalt welke supplementen op de hub worden aanbevolen (legacy regels,
  * gelijk aan de eerdere `getPersonalizedRecommendations`).
  * `comparisonHref` wordt waar mogelijk aangevuld via `supplement-routes`
- * (`affiliateUrl` voor /beste-* pagina's).
+ * (`affiliateUrl` voor /beste/* pagina's).
  */
 function selectLegacyHubRecommendations(
   session: IntakeSessionPayload,

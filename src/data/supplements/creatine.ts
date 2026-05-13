@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const creatineData: ComparisonPageData = {
   category: "creatine",
+  slug: "creatine",
   guideHref: "/supplementen/creatine",
   h1: "Beste creatine supplement 2026 — onafhankelijk vergeleken",
   intro:
@@ -12,6 +13,22 @@ export const creatineData: ComparisonPageData = {
     "Vergelijk de beste creatine monohydraat supplementen op zuiverheid, Creapure® certificering en prijs. Onafhankelijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",
   tableDoseringColumnLabel: "Dosering / dag",
+  ogImage: "https://perfectsupplement.nl/images/producten/vital-Nutrition-Creatine-Monohydraat.jpg",
+  ogImageAlt: "Vital Nutrition Creatine Monohydraat — topkeuze in de vergelijking",
+  topProductLabel: "Topkeuze",
+  showEducationalLead: true,
+  showIntakeFallbackCta: true,
+  breadcrumbs: [
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Supplementen", url: "https://perfectsupplement.nl/supplementen" },
+    { name: "Beste creatine", url: "https://perfectsupplement.nl/beste/creatine" },
+  ],
+  moreAboutTitle: "Meer over creatine",
+  moreAboutDescription: "Creatine werkt het best als onderdeel van een bredere herstelstrategie. Bekijk wat goed aansluit.",
+  moreAboutLinks: [
+    { href: "/beste/magnesium", label: "Beste magnesium — o.a. normale spierfunctie en vermindering van vermoeidheid →" },
+    { href: "/supplement-kiezen-waar-op-letten", label: "Supplement kiezen: waar let je op? — praktische checklist →" },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -213,7 +230,7 @@ export const creatineData: ComparisonPageData = {
     {
       question: "Kan ik creatine combineren met magnesium?",
       answer:
-        "Ja. Creatine vul je fosfaatsysteem in spierweefsel aan bij kortdurende intensiteit; magnesium draagt bij tot normale spierfunctie. Neem ze bij voorkeur op verschillende momenten als je een gevoelige darm hebt. Zie onze [magnesiumvergelijking](/beste-magnesium) voor de beste keuze.",
+        "Ja. Creatine vul je fosfaatsysteem in spierweefsel aan bij kortdurende intensiteit; magnesium draagt bij tot normale spierfunctie. Neem ze bij voorkeur op verschillende momenten als je een gevoelige darm hebt. Zie onze [magnesiumvergelijking](/beste/magnesium) voor de beste keuze.",
     },
   ],
 };

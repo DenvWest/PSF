@@ -34,7 +34,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Dosering en timing",
-      tekst: "In slaapgericht onderzoek worden vaak 200–400 mg elementair magnesium per dag gebruikt — dit is geen algemene aanbeveling voor iedereen; bespreek suppletie bij twijfel met je arts. Elementair magnesium staat altijd apart vermeld op het etiket — het totale gewicht van een capsule is niet de werkzame hoeveelheid. Een capsule van 500 mg magnesium glycinaat bevat doorgaans slechts circa 50–80 mg elementair magnesium. Tel altijd het elementaire magnesium per dagdosering op, niet het totaalgewicht van de tablet of capsule. Avondinname 30 tot 60 minuten voor bed wordt in protocollen vaak gekozen; of je dat merkt, verschilt per persoon. Verwacht geen effect in één nacht: in onderzoek worden veranderingen vaak pas na 1 tot 2 weken zichtbaar. Welke magnesiumvorm absorbeert het snelst? Glycinaat, bisglycinaat of citraat vergeleken — inclusief prijsverschillen en doseringen per product. [Bekijk de volledige vergelijking.](/beste-magnesium)",
+      tekst: "In slaapgericht onderzoek worden vaak 200–400 mg elementair magnesium per dag gebruikt — dit is geen algemene aanbeveling voor iedereen; bespreek suppletie bij twijfel met je arts. Elementair magnesium staat altijd apart vermeld op het etiket — het totale gewicht van een capsule is niet de werkzame hoeveelheid. Een capsule van 500 mg magnesium glycinaat bevat doorgaans slechts circa 50–80 mg elementair magnesium. Tel altijd het elementaire magnesium per dagdosering op, niet het totaalgewicht van de tablet of capsule. Avondinname 30 tot 60 minuten voor bed wordt in protocollen vaak gekozen; of je dat merkt, verschilt per persoon. Verwacht geen effect in één nacht: in onderzoek worden veranderingen vaak pas na 1 tot 2 weken zichtbaar. Welke magnesiumvorm absorbeert het snelst? Glycinaat, bisglycinaat of citraat vergeleken — inclusief prijsverschillen en doseringen per product. [Bekijk de volledige vergelijking.](/beste/magnesium)",
     },
     {
       type: "tekst",
@@ -53,7 +53,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     naam: "Magnesium",
     uitleg:
       "Van glycinaat tot bisglycinaat: welke vorm scoort het beste op opname, gebruik in slaapprotocollen en prijs per dag? Onze vergelijking zet de populairste supplementen naast elkaar.",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
   },
   cornerstoneLink: {
     label: "Complete gids: slaap verbeteren na je 40e",
@@ -61,7 +61,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
   },
   vergelijkingExtraLink: {
     label: "Vergelijk de beste magnesium supplementen",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",

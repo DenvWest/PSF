@@ -51,8 +51,26 @@ export interface TableRow {
   badge: string;
 }
 
+export interface RelatedLink {
+  href: string;
+  label: string;
+}
+
+export interface ReadAlsoCard {
+  href: string;
+  text: string;
+  cta?: string;
+  colSpan?: number;
+}
+
+export interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
 export interface ComparisonPageData {
   category: SupplementCategory;
+  slug: string;
   /** Educatieve supplementgids — geen affiliate */
   guideHref?: string;
   h1: string;
@@ -66,4 +84,14 @@ export interface ComparisonPageData {
   tableRows: TableRow[];
   comparisonCriteria: string[];
   faq: Array<{ question: string; answer: string }>;
+  ogImage?: string;
+  ogImageAlt?: string;
+  topProductLabel?: string;
+  showEducationalLead?: boolean;
+  showIntakeFallbackCta?: boolean;
+  breadcrumbs: BreadcrumbItem[];
+  moreAboutTitle?: string;
+  moreAboutDescription?: string;
+  moreAboutLinks?: RelatedLink[];
+  readAlsoCards?: ReadAlsoCard[];
 }

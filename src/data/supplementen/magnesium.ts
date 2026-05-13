@@ -170,7 +170,7 @@ export const magnesiumData: SupplementData = {
 
   productVergelijkingCta: {
     titel: "Welke magnesium scoort het beste?",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
     linkLabel: "Bekijk de vergelijking →",
   },
 };

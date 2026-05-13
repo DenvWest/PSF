@@ -430,7 +430,7 @@ export default function EnergieNa40Page() {
                     Welke vitamine D is het best gedoseerd en meest compleet?
                   </p>
                   <Link
-                    href="/beste-vitamine-d"
+                    href="/beste/vitamine-d"
                     className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →
@@ -449,7 +449,7 @@ export default function EnergieNa40Page() {
                     Welke omega-3 is het zuiverst en best gedoseerd?
                   </p>
                   <Link
-                    href="/beste-omega-3-supplement"
+                    href="/beste/omega-3-supplement"
                     className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →
@@ -468,7 +468,7 @@ export default function EnergieNa40Page() {
                     Welke creatine is het zuiverst?
                   </p>
                   <Link
-                    href="/beste-creatine"
+                    href="/beste/creatine"
                     className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →
@@ -486,7 +486,7 @@ export default function EnergieNa40Page() {
                     Welke magnesium werkt het beste voor jouw situatie?
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →

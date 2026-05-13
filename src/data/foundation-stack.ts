@@ -16,7 +16,7 @@ export const FOUNDATION_STACK: FoundationSupplement[] = [
     claimCondition: "Bij een dagelijkse inname van minimaal 250 mg EPA en DHA.",
     reason:
       "De meeste Nederlanders krijgen te weinig omega-3 via voeding. Een brede basis voor hart en hersenen.",
-    href: "/beste-omega-3-supplement",
+    href: "/beste/omega-3-supplement",
     hasComparison: true,
   },
   {
@@ -28,7 +28,7 @@ export const FOUNDATION_STACK: FoundationSupplement[] = [
       "Bij een dagelijkse inname van minimaal 56,25 mg magnesium (15% RI).",
     reason:
       "Veel mannen 40+ krijgen onvoldoende magnesium. Relevant voor slaap, spieren en zenuwstelsel.",
-    href: "/beste-magnesium",
+    href: "/beste/magnesium",
     hasComparison: true,
   },
   {

@@ -129,7 +129,7 @@ export const slaapThema: ThemaPageData = {
         reason:
           "Magnesium draagt bij tot de normale werking van het zenuwstelsel en spieren, tot vermindering van vermoeidheid en een normale psychologische functie (EFSA‑claims bij voldoende dosis) — veel mensen gebruiken glycinaat/bisglycinaat bij een avondroutine.",
         guideLink: "/supplementen/magnesium",
-        comparisonLink: "/beste-magnesium",
+        comparisonLink: "/beste/magnesium",
         icon: "⚡",
       },
       {
@@ -137,7 +137,7 @@ export const slaapThema: ThemaPageData = {
         reason:
           "Ashwagandha staat bij EFSA op de on‑holdlijst voor claims: onderzoeken suggereren mogelijk een rol in hoe je stress ervaart, maar dat is géén erkende gezondheidsclaim. Als spanning je nacht belemmert, plaats je het in die context — gebruik op eigen risico.",
         guideLink: "/supplementen/ashwagandha",
-        comparisonLink: "/beste-ashwagandha",
+        comparisonLink: "/beste/ashwagandha",
         icon: "🌿",
       },
       {
@@ -145,7 +145,7 @@ export const slaapThema: ThemaPageData = {
         reason:
           "EPA en DHA dragen bij tot de normale werking van het hart; DHA draagt bij tot het instandhouden van normale hersenfunctie — geen EU‑claim gericht op slaapkwaliteit. Wel een gangbare bouwsteen voor wie weinig vis eet.",
         guideLink: "/supplementen/omega-3",
-        comparisonLink: "/beste-omega-3-supplement",
+        comparisonLink: "/beste/omega-3-supplement",
         icon: "🐟",
       },
       {
@@ -153,7 +153,7 @@ export const slaapThema: ThemaPageData = {
         reason:
           "Je lichaam maakt gemiddeld minder melatonine aan naarmate je ouder wordt. Melatonine draagt bij aan het verkorten van de inslaaptijd onder de officiële claimvoorwaarden — geschikt bij vooral ritme-/timingvragen na overleg bij langdurige klachten.",
         guideLink: "/supplementen/melatonine",
-        comparisonLink: "/beste-melatonine",
+        comparisonLink: "/beste/melatonine",
         icon: "🌙",
       },
     ],
@@ -234,7 +234,7 @@ export const slaapThema: ThemaPageData = {
       {
         context:
           "Magnesium is een van de meest gebruikte mineraal-supplementen voor betere nachtrust; onze vergelijking zet vorm, prijs en praktische dosering op een rij.",
-        href: "/beste-magnesium",
+        href: "/beste/magnesium",
         label: "Beste magnesium-supplementen vergeleken",
       },
       {

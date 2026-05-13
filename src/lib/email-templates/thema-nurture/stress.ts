@@ -112,9 +112,9 @@ ${ctaButton(
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   We hebben beide vergeleken op kwaliteit, dosering en prijs — zodat je een keuze kunt maken die bij jou past:
 </p>
-${ctaButton(absoluteUrl("/beste-ashwagandha"), "Bekijk de ashwagandha-vergelijking →")}
+${ctaButton(absoluteUrl("/beste/ashwagandha"), "Bekijk de ashwagandha-vergelijking →")}
 <p style="margin-top: 12px;">
-  <a href="${absoluteUrl("/beste-magnesium")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
+  <a href="${absoluteUrl("/beste/magnesium")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
     Of bekijk de magnesium-vergelijking →
   </a>
 </p>

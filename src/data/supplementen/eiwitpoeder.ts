@@ -155,11 +155,11 @@ export const eiwitpoederGidsData: SupplementData = {
 
   blogLinks: [
     {
-      href: "/beste-eiwitpoeder",
+      href: "/beste/eiwitpoeder",
       titel: "Beste eiwitpoeder: whey en vegan vergeleken",
     },
     {
-      href: "/beste-creatine",
+      href: "/beste/creatine",
       titel: "Beste creatine: herstel en kracht ondersteunen",
     },
     {
@@ -170,7 +170,7 @@ export const eiwitpoederGidsData: SupplementData = {
 
   productVergelijkingCta: {
     titel: "Welk eiwitpoeder scoort het beste?",
-    href: "/beste-eiwitpoeder",
+    href: "/beste/eiwitpoeder",
     linkLabel: "Bekijk de vergelijking →",
   },
 };

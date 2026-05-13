@@ -20,7 +20,7 @@ export const energieVerhogenData: BlogArtikel = {
       type: "tekst",
       titel: "Mitochondriale gezondheid: de energiefabriek",
       tekst:
-        "Mitochondriën zijn de energiefabrieken van je cellen. Ze produceren ATP — de universele energiemolecule — via oxidatieve fosforylatie. Naarmate je ouder wordt, neemt de mitochondriale dichtheid en efficiëntie af. Dit is deels beïnvloedbaar: intensieve duurtraining en krachttraining stimuleren mitochondriale biogenese (aanmaak van nieuwe mitochondriën). Voeding die rijk is aan B-vitamines, ijzer en CoQ10 ondersteunt de ATP-productie direct; [magnesium](/beste-magnesium) is daarnaast een cruciale cofactor voor enzymen in die keten. Welke creatine is het beste? Monohydraat vs HCL vergeleken — [bekijk de vergelijking](/beste-creatine).",
+        "Mitochondriën zijn de energiefabrieken van je cellen. Ze produceren ATP — de universele energiemolecule — via oxidatieve fosforylatie. Naarmate je ouder wordt, neemt de mitochondriale dichtheid en efficiëntie af. Dit is deels beïnvloedbaar: intensieve duurtraining en krachttraining stimuleren mitochondriale biogenese (aanmaak van nieuwe mitochondriën). Voeding die rijk is aan B-vitamines, ijzer en CoQ10 ondersteunt de ATP-productie direct; [magnesium](/beste/magnesium) is daarnaast een cruciale cofactor voor enzymen in die keten. Welke creatine is het beste? Monohydraat vs HCL vergeleken — [bekijk de vergelijking](/beste/creatine).",
     },
     {
       type: "opsomming",
@@ -30,7 +30,7 @@ export const energieVerhogenData: BlogArtikel = {
         "Prioriteer slaap boven alles: Slaaptekort verlaagt energie meer dan bijna elke andere factor. Acht uur is voor de meeste mannen boven de 40 het minimum voor volledig herstel.",
         "Stabiliseer bloedsuiker: Schommelende bloedsuikerspiegel veroorzaakt energiedips. Eet maaltijden met genoeg eiwit en complexe koolhydraten; beperk geraffineerde suikers.",
         "Verminder cortisol: Chronische stress verbruikt energie en interfereert met herstel. Stressmanagement is ook energiebeheer.",
-        "Controleer tekorten: [beste vitamine D-supplementen](/beste-vitamine-d) horen bij een gemeten tekort, net als B12 en ijzer — veelvoorkomende maar makkelijk te corrigeren oorzaken van vermoeidheid. Bloedonderzoek geeft uitsluitsel.",
+        "Controleer tekorten: [beste vitamine D-supplementen](/beste/vitamine-d) horen bij een gemeten tekort, net als B12 en ijzer — veelvoorkomende maar makkelijk te corrigeren oorzaken van vermoeidheid. Bloedonderzoek geeft uitsluitsel.",
       ],
     },
     {

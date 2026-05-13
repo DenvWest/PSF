@@ -148,7 +148,7 @@ export const onrustigeSlaper: ProfilePageData = {
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie.",
       why_this_profile:
         "Magnesium draagt bij tot een normale psychologische functie, tot de normale werking van zenuwstelsel en spieren, en tot vermindering van vermoeidheid (EFSA). Dat sluit aan bij onrust en piekeren voor het slapen als je lichaam meer ‘brug’ naar rust nodig heeft.",
-      href: "/beste-magnesium",
+      href: "/beste/magnesium",
       hasComparison: true,
     },
     {
@@ -157,7 +157,7 @@ export const onrustigeSlaper: ProfilePageData = {
         "Geen erkende EU‑gezondheidsclaims; ashwagandha staat bij EFSA op de on‑holdlijst. Nederlandse VWS overweegt aanvullend beleid (communicatie rond medio 2026). Gebruik op eigen risico.",
       why_this_profile:
         "Studies bespreken plantenextracten soms in het licht van beleefde stress of stresshormoonmarkers — dat is iets anders dan een erkende EU‑gezondheidsclaim op het etiket. Vergelijk producten op extract en transparantie; raadpleeg je arts bij medicatie.",
-      href: "/beste-ashwagandha",
+      href: "/beste/ashwagandha",
       hasComparison: true,
     },
   ],
@@ -171,11 +171,11 @@ export const onrustigeSlaper: ProfilePageData = {
 
   relatedComparisons: [
     {
-      href: "/beste-magnesium",
+      href: "/beste/magnesium",
       turboSnippet: "Magnesium en slaap: welke vorm werkt het snelst? →",
     },
     {
-      href: "/beste-ashwagandha",
+      href: "/beste/ashwagandha",
       turboSnippet:
         "Plantenextracten zijn geen slaap‑labelclaim — vergelijk KSM‑66 vs Sensoril objectief →",
     },

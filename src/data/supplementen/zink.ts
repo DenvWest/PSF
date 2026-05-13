@@ -168,7 +168,7 @@ export const zinkGidsData: SupplementData = {
 
   productVergelijkingCta: {
     titel: "Welke zink scoort het beste?",
-    href: "/beste-zink",
+    href: "/beste/zink",
     linkLabel: "Bekijk de vergelijking →",
   },
 };

@@ -26,7 +26,7 @@ export const slaapVerbeterenData: BlogArtikel = {
         "Blootstelling aan daglicht in de ochtend: Tien minuten buiten in de eerste twee uur na het opstaan resynchroniseert je circadiaanse klok.",
         "Slaapkamertemperatuur: 16-19°C is optimaal voor diepe slaap. Iets koeler dan de meeste mensen instellen.",
         "Geen schermen 60-90 minuten voor bed: Blauw licht onderdrukt melatonine-aanmaak met 50-80% bij intensief gebruik.",
-        "[Beste magnesium supplementen voor slaap](/beste-magnesium) — vaak als glycinaat — bieden magnesium dat bij voldoende inname bijdraagt aan o.a. normale werking van het zenuwstelsel en spieren (EFSA); slaap zelf is geen geautoriseerde claim op het etiket.",
+        "[Beste magnesium supplementen voor slaap](/beste/magnesium) — vaak als glycinaat — bieden magnesium dat bij voldoende inname bijdraagt aan o.a. normale werking van het zenuwstelsel en spieren (EFSA); slaap zelf is geen geautoriseerde claim op het etiket.",
       ],
     },
     {

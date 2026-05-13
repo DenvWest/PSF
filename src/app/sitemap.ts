@@ -5,20 +5,12 @@ import { kennisbankTerms } from "@/data/kennisbank";
 import { alleArtikelen } from "@/data/blog";
 import { GELDIGE_CATEGORIE_IDS } from "@/data/blog/categorieen";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { SUPPLEMENT_SLUGS } from "@/data/supplements";
 
 const BASE = "https://perfectsupplement.nl";
 const LAST_MOD = new Date("2026-05-01");
 
-const VERGELIJKINGS_PADEN = [
-  "/beste-magnesium",
-  "/beste-omega-3-supplement",
-  "/beste-ashwagandha",
-  "/beste-vitamine-d",
-  "/beste-creatine",
-  "/beste-zink",
-  "/beste-melatonine",
-  "/beste-eiwitpoeder",
-];
+const VERGELIJKINGS_PADEN = SUPPLEMENT_SLUGS.map((s) => `/beste/${s}`);
 
 const STATISCHE_PADEN = [
   "/",

@@ -158,7 +158,7 @@ export const lageBatterijProfile: ProfilePageData = {
         "EPA en DHA dragen bij tot de normale werking van het hart. DHA draagt bij tot de instandhouding van normale hersenfunctie.",
       why_this_profile:
         "EPA en DHA dragen bij tot de normale werking van het hart; DHA draagt bij tot het instandhouden van normale hersenfunctie (EFSA). Geen Europese claim op ‘cellulaire energiefabriek’ of middagdip hier—wel een logische stap als je weinig vette vis eet en je algemene voedingskwaliteit wilt ondersteunen.",
-      href: "/beste-omega-3-supplement",
+      href: "/beste/omega-3-supplement",
       hasComparison: true,
     },
     {
@@ -167,7 +167,7 @@ export const lageBatterijProfile: ProfilePageData = {
         "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale spierfunctie.",
       why_this_profile:
         "In beleidsdocumenten wordt vaak benadrukt dat veel volwassenen in NL suboptimale vitamine D‑status hebben. Vitamine D draagt onder voorwaarden bij aan immuunsysteem, botten en een normale spierwerking (EFSA) — passend als je weinig zon ziet of veel binnen werkt.",
-      href: "/beste-vitamine-d",
+      href: "/beste/vitamine-d",
       hasComparison: true,
     },
   ],
@@ -185,7 +185,7 @@ export const lageBatterijProfile: ProfilePageData = {
 
   relatedComparisons: [
     {
-      href: "/beste-omega-3-supplement",
+      href: "/beste/omega-3-supplement",
       turboSnippet:
         "EPA/DHA: hart‑ en hersenclaims (EFSA) — vergelijk zuiverheid en prijs per dag →",
     },

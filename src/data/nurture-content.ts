@@ -54,7 +54,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
       name: "Magnesium",
       reason:
         "Magnesium draagt bij tot een normale psychologische functie en tot vermindering van vermoeidheid (plus zenuwstelsel en spieren onder EU‑claims). Glycinaat is praktisch in een rustige avondroutine — naast vaste slapen-/lichtgewoonten.",
-      url: "/beste-magnesium",
+      url: "/beste/magnesium",
     },
   },
   energy_score: {
@@ -63,7 +63,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
       name: "Omega-3",
       reason:
         "EPA en DHA dragen bij tot de normale werking van het hart en DHA tot instandhouding van normale hersenfunctie onder claimvoorwaarden — géén EU‑claim hier op ‘direct meer energie’.",
-      url: "/beste-omega-3-supplement",
+      url: "/beste/omega-3-supplement",
     },
   },
   stress_score: {
@@ -72,7 +72,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
       name: "Ashwagandha",
       reason:
         "Geen goedgekeurde EU‑claims: staat bij EFSA on‑hold. Sommige publicaties bespreken stressperceptie — gebruik alleen als je die context wilt (eigen risico).",
-      url: "/beste-ashwagandha",
+      url: "/beste/ashwagandha",
     },
   },
   nutrition_score: {
@@ -81,7 +81,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
       name: "Omega-3",
       reason:
         "De meeste mannen krijgen te weinig EPA en DHA binnen via voeding. Een goed omega-3 supplement is vaak de makkelijkste eerste stap.",
-      url: "/beste-omega-3-supplement",
+      url: "/beste/omega-3-supplement",
     },
   },
   movement_score: {
@@ -90,7 +90,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
       name: "Magnesium",
       reason:
         "Magnesium draagt onder voorwaarden bij tot normale spierfunctie en vermindering van vermoeidheid — bruikbare context als je beweging opbouwt.",
-      url: "/beste-magnesium",
+      url: "/beste/magnesium",
     },
   },
   recovery_score: {
@@ -99,7 +99,7 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
       name: "Magnesium",
       reason:
         "Magnesium draagt bij tot vermindering van vermoeidheid en tot normale werking van spieren en het zenuwstelsel (EFSA onder voorwaarden) — waardevol als je hersteltijd structureel tekortkomt.",
-      url: "/beste-magnesium",
+      url: "/beste/magnesium",
     },
   },
 };
@@ -199,7 +199,7 @@ export const nurtureContent: Record<
         "Energie opbouwen gaat niet in één dag. Maar er zijn dingen die je vandaag kunt doen die je morgen al voelt.",
       ],
       tip: "Quick win #1: Stop na 14:00 met cafeïne. Quick win #2: Eet bij elke maaltijd een eiwitbron (eieren, vis, noten, kwark). Quick win #3: Ga 10 minuten naar buiten — daglicht in de ochtend reset je biologische klok.",
-      cta: { text: "Welk supplement past bij jouw profiel?", url: "/beste-omega-3-supplement" },
+      cta: { text: "Welk supplement past bij jouw profiel?", url: "/beste/omega-3-supplement" },
     },
     "Onrustige Slaper": {
       subject: "3 dingen die je slaap deze week verbeteren",
@@ -209,7 +209,7 @@ export const nurtureContent: Record<
         "Slaapverbetering begint niet in bed — het begint overdag. Je lichaam heeft signalen nodig om te weten dat het tijd is om af te schakelen.",
       ],
       tip: "Quick win #1: Slaapkamer op 18°C (koel slapen = dieper slapen). Quick win #2: Geen schermen 60 min voor bed. Quick win #3: Zelfde bedtijd, ook in het weekend — je circadiaan ritme heeft regelmaat nodig.",
-      cta: { text: "Welk magnesium helpt bij slaap?", url: "/beste-magnesium" },
+      cta: { text: "Welk magnesium helpt bij slaap?", url: "/beste/magnesium" },
     },
     "Stressdrager": {
       subject: "3 stressverlagers die je vandaag kunt proberen",
@@ -219,7 +219,7 @@ export const nurtureContent: Record<
         "Stress verminderen hoeft niet ingewikkeld te zijn. Het gaat niet om grote veranderingen, maar om kleine momenten van herstel verspreid over de dag.",
       ],
       tip: "Quick win #1: 4-7-8 ademhaling (3 minuten, 2× per dag). Quick win #2: Wandel 15 minuten na de lunch — het verlaagt cortisol meetbaar. Quick win #3: Schrijf 's avonds 3 dingen op die goed gingen vandaag.",
-      cta: { text: "Ashwagandha: EFSA-context en vergelijkingspagina", url: "/beste-ashwagandha" },
+      cta: { text: "Ashwagandha: EFSA-context en vergelijkingspagina", url: "/beste/ashwagandha" },
     },
     "In Balans": {
       subject: "3 optimalisaties voor wie al goed scoort",
@@ -229,7 +229,7 @@ export const nurtureContent: Record<
         "Als je al goed scoort, zit de winst in de details. Kleine optimalisaties op het gebied van voeding, slaapkwaliteit en herstel leveren merkbaar verschil op.",
       ],
       tip: "Quick win #1: Eet 2× per week vette vis voor je omega-3 inname. Quick win #2: Controleer je slaapkwaliteit — even wakker worden is normaal, maar diepe slaap is cruciaal. Quick win #3: Plan één echte rustdag per week in.",
-      cta: { text: "Bekijk vergelijkingspagina's", url: "/beste-omega-3-supplement" },
+      cta: { text: "Bekijk vergelijkingspagina's", url: "/beste/omega-3-supplement" },
     },
   },
 
@@ -244,7 +244,7 @@ export const nurtureContent: Record<
         "Maar dit is geen onvermijdelijk verval. Met de juiste voeding, beweging en gerichte supplementen kun je dit proces vertragen en zelfs deels omkeren.",
       ],
       tip: "Deze week: check je vispatroon. EPA/DHA‑suppletie kan onder claimvoorwaarden hart‑ en hersenclaims ondersteunen — géén wonderpil voor middagdip.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
+      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
     "Onrustige Slaper": {
       subject: "Wat er in je brein gebeurt als je slecht slaapt",
@@ -255,7 +255,7 @@ export const nurtureContent: Record<
         "Magnesium heeft EU‑claims op zenuwstelsel, spieren, psychologische functie en vermoeidheid — veel mensen mikken glycinaat/bisglycinaat naar een rustige avondroutine naast slapen-/lichtgewoonten.",
       ],
       tip: "EFSA‑claims magnesium richten zich op onder meer psychologische functie en vermoeidheid — gebruik slaap-/lichtprotocol als eerste hefboom en stem suppletie af op een arts bij medicatie.",
-      cta: { text: "Vergelijk magnesium supplementen", url: "/beste-magnesium" },
+      cta: { text: "Vergelijk magnesium supplementen", url: "/beste/magnesium" },
     },
     "Stressdrager": {
       subject: "Hoe chronische stress je lichaam sloopt (en hoe je het stopt)",
@@ -267,7 +267,7 @@ export const nurtureContent: Record<
       ],
       tip:
         "Ashwagandha staat bij EFSA op de on‑holdlijst voor gezondheidsclaims — geen garantie‑uitspraken mogelijk zoals bij mineralen. Zie beste-ashwagandha voor objectieve productvergelijking en inhoudelijke uitleg.",
-      cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste-ashwagandha" },
+      cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste/ashwagandha" },
     },
     "In Balans": {
       subject: "Hoe je een goede basis vasthoudt na 40",
@@ -278,7 +278,7 @@ export const nurtureContent: Record<
         "Nu is het moment om te kijken waar nog winst zit. Omega-3 is voor de meeste mannen het laaghangende fruit: de meesten eten te weinig vette vis en missen EPA en DHA.",
       ],
       tip: "Check of je voldoende omega-3 binnenkrijgt. Als je minder dan 2× per week vette vis eet, is een supplement het overwegen waard.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
+      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
   },
 
@@ -293,7 +293,7 @@ export const nurtureContent: Record<
         "Verandering gaat niet lineair. Sommige dagen voelen beter, andere niet. Dat is normaal. Het gaat om de trend over weken, niet over dagen.",
       ],
       tip: "Houd deze week eens bij hoe je energie fluctueert door de dag: noteer om 10:00, 14:00 en 20:00 een score van 1-10. Na een week zie je je patroon.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
+      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
     "Onrustige Slaper": {
       subject: "Halverwege: slaapt het al wat beter?",
@@ -304,7 +304,7 @@ export const nurtureContent: Record<
         "Als je nog geen verbetering voelt: geef het nog een week. Consistentie is belangrijker dan perfectie.",
       ],
       tip: "Probeer vanavond voor bed een gangbare magnesiumdosis (volg etiket) en houd 2 uur afstand van bepaalde medicijnen; EFSA‑claims richten zich op zenuwstelsel, spieren, psychologische functie en vermoeidheid.",
-      cta: { text: "Welk magnesium is het beste voor slaap?", url: "/beste-magnesium" },
+      cta: { text: "Welk magnesium is het beste voor slaap?", url: "/beste/magnesium" },
     },
     "Stressdrager": {
       subject: "Halverwege: hoe gaat het met je stress?",
@@ -315,7 +315,7 @@ export const nurtureContent: Record<
         "Het effect van leefstijlveranderingen op cortisol is meetbaar na 2-4 weken. Je zit nu precies in die fase.",
       ],
       tip: "Voeg deze week iets toe: 5 minuten journaling voor het slapengaan. Schrijf op wat je bezighoudt — het 'legen' van je hoofd helpt je brein om los te laten.",
-      cta: { text: "Ashwagandha: on-hold context en vergelijking", url: "/beste-ashwagandha" },
+      cta: { text: "Ashwagandha: on-hold context en vergelijking", url: "/beste/ashwagandha" },
     },
     "In Balans": {
       subject: "Halverwege: hoe houd je dit vol?",
@@ -326,7 +326,7 @@ export const nurtureContent: Record<
         "Nu is het moment om te checken of je huidige gewoontes houdbaar zijn op de lange termijn. Slaap, voeding en beweging zijn de drie pijlers die het meest opleveren.",
       ],
       tip: "Kies deze week één gewoonte die je wilt verankeren: elke dag wandelen, elke dag een eiwitrijk ontbijt, of elke avond schermvrij voor bed. Houd het bij voor de rest van de maand.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
+      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
   },
 
@@ -341,7 +341,7 @@ export const nurtureContent: Record<
         "Over 9 dagen ontvang je een herinnering om de Leefstijlcheck opnieuw te doen. Dan kun je meten wat er veranderd is.",
       ],
       tip: "Houd vol wat werkt. Voeg deze week niets nieuws toe — consolideer wat je hebt.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
+      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
     "Onrustige Slaper": {
       subject: "Drie weken: je slaapritme vindt zijn weg",
@@ -352,7 +352,7 @@ export const nurtureContent: Record<
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan zie je zwart-op-wit of je slaapscore is verbeterd.",
       ],
       tip: "Houd je slaapritme vast — ook in het weekend. Dat is het moeilijkste, maar ook het belangrijkste.",
-      cta: { text: "Vergelijk magnesium supplementen", url: "/beste-magnesium" },
+      cta: { text: "Vergelijk magnesium supplementen", url: "/beste/magnesium" },
     },
     "Stressdrager": {
       subject: "Drie weken: je stressbuffer groeit",
@@ -363,7 +363,7 @@ export const nurtureContent: Record<
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan meet je of je stressscore is verbeterd.",
       ],
       tip: "Houd deze week vast wat werkt. Consistentie verslaat intensiteit.",
-      cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste-ashwagandha" },
+      cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste/ashwagandha" },
     },
     "In Balans": {
       subject: "Drie weken: je goede gewoontes zijn stevig",
@@ -374,7 +374,7 @@ export const nurtureContent: Record<
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Wees benieuwd of je scores nog beter zijn geworden.",
       ],
       tip: "Overweeg omega‑3 als je weinig vis eet: EU‑claims gaan over hart en (DHA) hersenen — geen etiketclaim op ‘meer energie’.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste-omega-3-supplement" },
+      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
   },
 

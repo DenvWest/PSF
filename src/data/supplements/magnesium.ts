@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const magnesiumData: ComparisonPageData = {
   category: "magnesium",
+  slug: "magnesium",
   guideHref: "/supplementen/magnesium",
   h1: "Welke magnesium past bij jou?",
   intro:
@@ -11,6 +12,24 @@ export const magnesiumData: ComparisonPageData = {
     "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 40+.",
   lastUpdated: "2026-04-18",
   tableDoseringColumnLabel: "Elementair mg / dag",
+  topProductLabel: "Beste allround",
+  showEducationalLead: false,
+  showIntakeFallbackCta: true,
+  breadcrumbs: [
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Vergelijkingen", url: "https://perfectsupplement.nl/magnesium-vergelijken" },
+    { name: "Beste magnesium", url: "https://perfectsupplement.nl/beste/magnesium" },
+  ],
+  moreAboutTitle: "Meer over magnesium",
+  moreAboutLinks: [
+    { href: "/magnesium-vergelijken", label: "Magnesium vormen vergelijken — waar let je op per vorm en dosering? →" },
+    { href: "/blog/magnesium-en-slaapkwaliteit", label: "Magnesium en slaapkwaliteit: wat zegt het onderzoek? →" },
+  ],
+  readAlsoCards: [
+    { href: "/profiel/onrustige-slaper", text: "Slecht slapen na 40? Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — ontdek of jouw profiel past bij meer structuur rond herstel.", cta: "Bekijk het profiel →" },
+    { href: "/profiel/stressdrager", text: "Veel prikkels en weinig rust in je lijf? Magnesium draagt bij tot de normale werking van het zenuwstelsel — check of dit profiel bij je past.", cta: "Bekijk het profiel →" },
+    { href: "/thema/slaap", text: "Slaapkwaliteit verbeteren begint bij de juiste bouwstenen.", cta: "Lees de slaapgids →" },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Beste allround",
@@ -215,7 +234,7 @@ export const magnesiumData: ComparisonPageData = {
     {
       question: "Werkt magnesium samen met vitamine D?",
       answer:
-        "Ja. Magnesium speelt onder meer mee bij de omzetting van vitamine D naar biologisch actieve vormen in het lichaam. Wie beide aanvult, doet er goed aan op beide te letten. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
+        "Ja. Magnesium speelt onder meer mee bij de omzetting van vitamine D naar biologisch actieve vormen in het lichaam. Wie beide aanvult, doet er goed aan op beide te letten. Zie ook onze [vitamine D-vergelijking](/beste/vitamine-d).",
     },
   ],
 };

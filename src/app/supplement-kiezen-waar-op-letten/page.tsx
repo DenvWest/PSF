@@ -10,7 +10,7 @@ import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
     veelgemaakteFouten,
     segmentatie,
-} from "@/features/supplementen/data/supplement-kiezen-waar-op-letten";
+} from "@/data/page-content/supplement-kiezen-waar-op-letten";
 
 export function generateMetadata() {
     return {
@@ -21,12 +21,12 @@ export function generateMetadata() {
 
 const relatedPages = [
     {
-        href: "/beste-magnesium",
+        href: "/beste/magnesium",
         title: "Beste magnesium supplement",
         description: "Vergelijk vormen en vind een keuze die past bij ontspanning, slaap of algemeen gebruik.",
     },
     {
-        href: "/beste-omega-3-supplement",
+        href: "/beste/omega-3-supplement",
         title: "Beste omega-3 supplement",
         description: "EPA, DHA, vorm van de olie en praktische keuzes voor dagelijks gebruik.",
     },
@@ -327,7 +327,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                         Voor <strong className="font-semibold text-stone-800">waar op letten bij magnesium</strong>{" "}
                         (vormen, elementair magnesium, praktische keuzes) kun je verder lezen op onze pagina met{" "}
                         <Link
-                            href="/beste-magnesium"
+                            href="/beste/magnesium"
                             className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             beste magnesium supplementen
@@ -338,7 +338,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                         Voor <strong className="font-semibold text-stone-800">waar op letten bij omega-3</strong>{" "}
                         (EPA/DHA, oxidatie, vorm van de olie) is onze selectie en toelichting te vinden bij de{" "}
                         <Link
-                            href="/beste-omega-3-supplement"
+                            href="/beste/omega-3-supplement"
                             className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             beste omega-3 supplementen
@@ -362,14 +362,14 @@ export default function SupplementKiezenWaarOpLettenPage() {
                     <p>
                         Wil je concreet vergelijken binnen een categorie? Bekijk onze vergelijking van{" "}
                         <Link
-                            href="/beste-magnesium"
+                            href="/beste/magnesium"
                             className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             beste magnesium supplementen
                         </Link>{" "}
                         en{" "}
                         <Link
-                            href="/beste-omega-3-supplement"
+                            href="/beste/omega-3-supplement"
                             className="font-medium text-stone-800 underline-offset-4 hover:underline"
                         >
                             beste omega-3 supplementen
@@ -380,13 +380,13 @@ export default function SupplementKiezenWaarOpLettenPage() {
                 </div>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Link
-                        href="/beste-magnesium"
+                        href="/beste/magnesium"
                         className="inline-flex items-center justify-center rounded-xl bg-stone-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-stone-800"
                     >
                         Bekijk beste magnesium supplementen
                     </Link>
                     <Link
-                        href="/beste-omega-3-supplement"
+                        href="/beste/omega-3-supplement"
                         className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
                     >
                         Bekijk beste omega-3 supplementen

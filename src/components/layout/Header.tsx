@@ -25,12 +25,12 @@ const infoLinks = [
 ];
 
 const vergelijkingSuggesties = [
-    { href: "/beste-ashwagandha", label: "Beste ashwagandha supplement" },
-    { href: "/beste-creatine", label: "Beste creatine supplement" },
-    { href: "/beste-magnesium", label: "Beste magnesium supplement" },
-    { href: "/beste-omega-3-supplement", label: "Beste omega-3 supplement" },
-    { href: "/beste-vitamine-d", label: "Beste vitamine D supplement" },
-    { href: "/beste-zink", label: "Beste zink supplement" },
+    { href: "/beste/ashwagandha", label: "Beste ashwagandha supplement" },
+    { href: "/beste/creatine", label: "Beste creatine supplement" },
+    { href: "/beste/magnesium", label: "Beste magnesium supplement" },
+    { href: "/beste/omega-3-supplement", label: "Beste omega-3 supplement" },
+    { href: "/beste/vitamine-d", label: "Beste vitamine D supplement" },
+    { href: "/beste/zink", label: "Beste zink supplement" },
 ].sort((a, b) => a.label.localeCompare(b.label, "nl"));
 
 const searchItems = [

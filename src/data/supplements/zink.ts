@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const zinkData: ComparisonPageData = {
   category: "zink",
+  slug: "zink",
   guideHref: "/supplementen/zink",
   h1: "Beste zink supplement 2026 — onafhankelijk vergeleken",
   intro:
@@ -12,6 +13,22 @@ export const zinkData: ComparisonPageData = {
     "Vergelijk de beste zink supplementen op biobeschikbaarheid, dosering en prijs. Zinkmethionine vs picolinaat — eerlijk gescoord voor mannen 40+.",
   lastUpdated: "2026-04-21",
   tableDoseringColumnLabel: "Elementair zink / dag",
+  ogImage: "https://perfectsupplement.nl/images/producten/vital-nutrition-zink-methionine.jpg",
+  ogImageAlt: "Vital Nutrition Zink 15 mg — topkeuze in de vergelijking",
+  topProductLabel: "Topkeuze",
+  showEducationalLead: true,
+  showIntakeFallbackCta: true,
+  breadcrumbs: [
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Supplementen", url: "https://perfectsupplement.nl/supplementen" },
+    { name: "Beste zink", url: "https://perfectsupplement.nl/beste/zink" },
+  ],
+  moreAboutTitle: "Meer over zink",
+  moreAboutDescription: "Zink draagt o.a. bij tot een normaal immuunsysteem, eiwitsynthese en — officieel geformuleerd — tot instandhouding van een normaal testosterongehalte in het bloed.",
+  moreAboutLinks: [
+    { href: "/supplement-kiezen-waar-op-letten", label: "Supplement kiezen: waar let je op? — praktische checklist →" },
+    { href: "/thema/energie", label: "Energieverlies na je 40e — oorzaken en wat je eraan kunt doen →" },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -208,7 +225,7 @@ export const zinkData: ComparisonPageData = {
     {
       question: "Zijn zink en vitamine D beide relevant als je aan hormoonbalans denkt?",
       answer:
-        "Zink heeft, zoals genoemd, een EU-goedgekeurde formulering rond normaal testosterongehalte in het bloed. Vitamine D heeft bijvoorbeeld claims rond botten, spieren en immuunsysteem — niet dezelfde claimtekst als zink. Epidemiologisch zie je correlaties tussen lage bloedwaarden en verschillende markers; laat meten en laat je adviseren. Zie ook onze [vitamine D-vergelijking](/beste-vitamine-d).",
+        "Zink heeft, zoals genoemd, een EU-goedgekeurde formulering rond normaal testosterongehalte in het bloed. Vitamine D heeft bijvoorbeeld claims rond botten, spieren en immuunsysteem — niet dezelfde claimtekst als zink. Epidemiologisch zie je correlaties tussen lage bloedwaarden en verschillende markers; laat meten en laat je adviseren. Zie ook onze [vitamine D-vergelijking](/beste/vitamine-d).",
     },
     {
       question: "Kan ik zink combineren met magnesium?",

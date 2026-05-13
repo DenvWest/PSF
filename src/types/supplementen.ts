@@ -71,7 +71,7 @@ export interface SupplementData {
     titel: string;
   }[];
 
-  /** Optionele CTA naar productvergelijking (bijv. /beste-ashwagandha). */
+  /** Optionele CTA naar productvergelijking (bijv. /beste/ashwagandha). */
   productVergelijkingCta?: {
     titel: string;
     href: string;

@@ -15,7 +15,7 @@ export const ashwagandhaData: BlogArtikel = {
       titel: "Wat is ashwagandha en waarom is het relevant?",
       bewijsNiveau: "vroeg",
       tekst:
-        "[Beste ashwagandha-supplementen](/beste-ashwagandha) bevatten extracten van Withania somnifera — traditioneel gebruikt in Ayurveda en in de afgelopen decennia veel in klinische studies. De actieve fracties (withanoliden) worden in onderzoek in verband gebracht met de stressas (HPA); dat wil zeggen: hoe het organisme op langdurige belasting reageert — geen ‘stress uit’‑knop. Voor mannen boven de 40, bij wie stressregulatie vaak trager aanvoelt, is dat een veel besproken mechanisme in de literatuur.",
+        "[Beste ashwagandha-supplementen](/beste/ashwagandha) bevatten extracten van Withania somnifera — traditioneel gebruikt in Ayurveda en in de afgelopen decennia veel in klinische studies. De actieve fracties (withanoliden) worden in onderzoek in verband gebracht met de stressas (HPA); dat wil zeggen: hoe het organisme op langdurige belasting reageert — geen ‘stress uit’‑knop. Voor mannen boven de 40, bij wie stressregulatie vaak trager aanvoelt, is dat een veel besproken mechanisme in de literatuur.",
     },
     {
       type: "tekst",

@@ -35,12 +35,12 @@ const THEME_BADGE_STYLES: Record<KennisbankTheme, string> = {
 }
 
 const comparisonLabels: Record<string, string> = {
-  '/beste-magnesium': 'Beste magnesium supplement',
-  '/beste-omega-3-supplement': 'Beste omega-3 supplement',
-  '/beste-ashwagandha': 'Beste ashwagandha supplement',
-  '/beste-vitamine-d': 'Beste vitamine D supplement',
-  '/beste-creatine': 'Beste creatine supplement',
-  '/beste-zink': 'Beste zink supplement',
+  '/beste/magnesium': 'Beste magnesium supplement',
+  '/beste/omega-3-supplement': 'Beste omega-3 supplement',
+  '/beste/ashwagandha': 'Beste ashwagandha supplement',
+  '/beste/vitamine-d': 'Beste vitamine D supplement',
+  '/beste/creatine': 'Beste creatine supplement',
+  '/beste/zink': 'Beste zink supplement',
 }
 
 function isValidTheme(value: string): value is KennisbankTheme {

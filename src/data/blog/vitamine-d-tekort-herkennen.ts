@@ -14,7 +14,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom tekort zo vaak over het hoofd wordt gezien",
       tekst:
-        "[Beste vitamine D-supplementen](/beste-vitamine-d) kies je pas zinvol na meten; het hormoon zelf ontstaat in de huid bij UVB-blootstelling en reguleert de aanmaak van honderden eiwitten — van calciumhuishouding tot immuunfunctie. In Nederland is blootstelling aan zon in de winter onvoldoende voor veel mensen; donkere huid en binnenwerk versterken dat. Klachten zijn vaak vaag, waardoor andere oorzaken eerst worden overwogen en tekort later in beeld kan komen.",
+        "[Beste vitamine D-supplementen](/beste/vitamine-d) kies je pas zinvol na meten; het hormoon zelf ontstaat in de huid bij UVB-blootstelling en reguleert de aanmaak van honderden eiwitten — van calciumhuishouding tot immuunfunctie. In Nederland is blootstelling aan zon in de winter onvoldoende voor veel mensen; donkere huid en binnenwerk versterken dat. Klachten zijn vaak vaag, waardoor andere oorzaken eerst worden overwogen en tekort later in beeld kan komen.",
     },
     {
       type: "opsomming",

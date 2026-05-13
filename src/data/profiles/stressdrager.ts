@@ -155,7 +155,7 @@ export const stressdragerProfile: ProfilePageData = {
         "Geen erkende EU‑gezondheidsclaims; staat op EFSA on‑holdlijst — zie amber waarschuwing op de profielpagina en VWS‑informatie.",
       why_this_profile:
         "In publicaties wordt soms geschreven over stressperceptie of stresshormoonmarkers bij gestandaardiseerde extracten — dat is geen vaste claim zoals bij mineralen. Kies op etiketkwaliteit en overleg bij medicatie.",
-      href: "/beste-ashwagandha",
+      href: "/beste/ashwagandha",
       hasComparison: true,
     },
     {
@@ -164,7 +164,7 @@ export const stressdragerProfile: ProfilePageData = {
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie.",
       why_this_profile:
         "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EFSA bij voldoende dosis). Chronische stress en slechte voedingspatronen gaan soms samen met een lager magnesiumbereik.",
-      href: "/beste-magnesium",
+      href: "/beste/magnesium",
       hasComparison: true,
     },
   ],
@@ -187,11 +187,11 @@ export const stressdragerProfile: ProfilePageData = {
         "Word je ook 's nachts wakker met een hoofd vol gedachten? Bekijk het Onrustige Slaper-profiel — veel overlap met dit patroon.",
     },
     {
-      href: "/beste-ashwagandha",
+      href: "/beste/ashwagandha",
       turboSnippet: "Welke ashwagandha is het meest onderzocht? Objectieve vergelijking op kwaliteit en dosering.",
     },
     {
-      href: "/beste-magnesium",
+      href: "/beste/magnesium",
       turboSnippet: "Welke magnesium past bij jouw situatie? Vergelijking op vorm, opname en praktisch gebruik.",
     },
     {

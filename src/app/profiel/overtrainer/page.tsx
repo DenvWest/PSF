@@ -73,14 +73,14 @@ const faqItems = [
 
 function supplementComparisonTeaser(href: string): string {
   const map: Record<string, string> = {
-    "/beste-magnesium": "Welke magnesiumvorm past bij jou? Glycinaat, citraat of bisglycinaat eerlijk naast elkaar.",
-    "/beste-omega-3-supplement":
+    "/beste/magnesium": "Welke magnesiumvorm past bij jou? Glycinaat, citraat of bisglycinaat eerlijk naast elkaar.",
+    "/beste/omega-3-supplement":
       "EPA/DHA-gehaltes, formulering en praktische dosering vergeleken, binnen officiële claimcontext.",
-    "/beste-vitamine-d": "Bolus, dagelijkse doses en combinaties zonder gedoe op het etiket.",
-    "/beste-zink": "Zwavelzouten, bisglycinaat en wat dat betekent voor opname én kopertekorten bij overdosering.",
-    "/beste-creatine":
+    "/beste/vitamine-d": "Bolus, dagelijkse doses en combinaties zonder gedoe op het etiket.",
+    "/beste/zink": "Zwavelzouten, bisglycinaat en wat dat betekent voor opname én kopertekorten bij overdosering.",
+    "/beste/creatine":
       "Monohydraat eerst hoe en wanneer 3 gram past bij korte bursts zonder rookgordijnmarketing.",
-    "/beste-eiwitpoeder":
+    "/beste/eiwitpoeder":
       "Whey, blends en plantaardige opties smaak en oplosbaarheid met kritische ketens op het label.",
   };
   return map[href] ?? "Objectief geordende vergelijkingspagina op basis van etiketinformatie.";
@@ -92,13 +92,13 @@ function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.href === "/thema/herstel") return "Het thema Herstel — volledige context";
   if (item.href === "/thema/energie") return "Het energiethema";
   if (item.href === "/thema/slaap") return "Het slaapthema";
-  if (item.href === "/beste-ashwagandha") return "Bekijk de ashwagandha vergelijking";
-  if (item.href === "/beste-magnesium") return "Bekijk de magnesium vergelijking";
-  if (item.href === "/beste-omega-3-supplement") return "Bekijk de omega-3 vergelijking";
-  if (item.href === "/beste-vitamine-d") return "Bekijk de vitamine D vergelijking";
-  if (item.href === "/beste-zink") return "Bekijk de zink vergelijking";
-  if (item.href === "/beste-creatine") return "Bekijk de creatine vergelijking";
-  if (item.href === "/beste-eiwitpoeder") return "Bekijk de eiwitpoeder vergelijking";
+  if (item.href === "/beste/ashwagandha") return "Bekijk de ashwagandha vergelijking";
+  if (item.href === "/beste/magnesium") return "Bekijk de magnesium vergelijking";
+  if (item.href === "/beste/omega-3-supplement") return "Bekijk de omega-3 vergelijking";
+  if (item.href === "/beste/vitamine-d") return "Bekijk de vitamine D vergelijking";
+  if (item.href === "/beste/zink") return "Bekijk de zink vergelijking";
+  if (item.href === "/beste/creatine") return "Bekijk de creatine vergelijking";
+  if (item.href === "/beste/eiwitpoeder") return "Bekijk de eiwitpoeder vergelijking";
   return "Lees meer";
 }
 

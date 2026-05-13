@@ -221,7 +221,7 @@ export default function SlaapSupplementVergelijkenPage() {
                                 <span className="mt-0.5 block text-sm text-stone-500">Bisglycinaat vs citraat vs malaat — wat past bij jouw avondroutine?</span>
                             </Link>
                             <Link
-                                href="/beste-magnesium"
+                                href="/beste/magnesium"
                                 className="block rounded-xl border border-stone-200 bg-white px-4 py-3 transition hover:border-[#5A8F6A]/30"
                             >
                                 <span className="font-medium text-stone-900">Beste magnesium supplement →</span>
@@ -266,7 +266,7 @@ export default function SlaapSupplementVergelijkenPage() {
                             <p className="text-base text-stone-600 leading-relaxed">Slecht slapen na 40? Ontdek of jij een Onrustige Slaper bent en welke stappen echt helpen.</p>
                             <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk het profiel →</span>
                         </Link>
-                        <Link href="/beste-magnesium" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                        <Link href="/beste/magnesium" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
                             <p className="text-base text-stone-600 leading-relaxed">Magnesium is stap één bij slaapproblemen. Bekijk welke vorm het beste bij jou past.</p>
                             <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk beste magnesium →</span>
                         </Link>

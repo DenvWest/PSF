@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const eiwitpoederData: ComparisonPageData = {
   category: "eiwitpoeder",
+  slug: "eiwitpoeder",
   guideHref: "/supplementen/eiwitpoeder",
   h1: "Beste Eiwitpoeder 2026",
   intro:
@@ -12,6 +13,25 @@ export const eiwitpoederData: ComparisonPageData = {
     "Welk eiwitpoeder past bij jou? Whey of plantaardig? Vergelijking op eiwitgehalte, opname, prijs en zuiverheid.",
   lastUpdated: "2026-05-03",
   tableDoseringColumnLabel: "Proteïne per portie",
+  topProductLabel: "Beste allround",
+  showEducationalLead: true,
+  showIntakeFallbackCta: false,
+  breadcrumbs: [
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Supplementen", url: "https://perfectsupplement.nl/supplementen" },
+    { name: "Beste eiwitpoeder", url: "https://perfectsupplement.nl/beste/eiwitpoeder" },
+  ],
+  moreAboutTitle: "Meer over eiwitpoeder",
+  moreAboutDescription: "Eiwit werkt het best als onderdeel van training, slaap en voeding. Begin met de gids als je eerst wilt bepalen of whey, isolaat of plantaardig eiwit bij je past.",
+  moreAboutLinks: [
+    { href: "/supplementen/eiwitpoeder", label: "Eiwitpoeder gids — whey, isolaat en plantaardig uitgelegd →" },
+    { href: "/beste/creatine", label: "Beste creatine — handig naast eiwit bij krachttraining →" },
+  ],
+  readAlsoCards: [
+    { href: "/supplementen/eiwitpoeder", text: "Eerst begrijpen wat bij jou past? Lees de complete eiwitpoeder gids.", cta: "Lees de gids →" },
+    { href: "/beste/creatine", text: "Train je veel maar herstel je slecht? Creatine kan het verschil maken →" },
+    { href: "/slaap-verbeteren-na-40", text: "Spieren herstellen 's nachts — goed slapen is essentieel →" },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Beste allround",

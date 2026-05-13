@@ -2,6 +2,7 @@ import type { ComparisonPageData } from "@/types/supplement";
 
 export const omega3Data: ComparisonPageData = {
   category: "omega-3",
+  slug: "omega-3-supplement",
   guideHref: "/supplementen/omega-3",
   h1: "Welke omega-3 visolie past bij jou?",
   intro:
@@ -11,6 +12,24 @@ export const omega3Data: ComparisonPageData = {
     "Vergelijk Vitals, Arctic Blue, Möller's en Minami MorEPA op EPA/DHA, prijs per dag en zuiverheid. Onafhankelijke analyse voor de beste omega-3 keuze in 2026.",
   lastUpdated: "2026-04-18",
   tableDoseringColumnLabel: "EPA / DHA",
+  topProductLabel: "Topkeuze",
+  showEducationalLead: true,
+  showIntakeFallbackCta: true,
+  breadcrumbs: [
+    { name: "Home", url: "https://perfectsupplement.nl" },
+    { name: "Vergelijkingen", url: "https://perfectsupplement.nl/omega-3-vergelijken" },
+    { name: "Beste omega-3", url: "https://perfectsupplement.nl/beste/omega-3-supplement" },
+  ],
+  moreAboutTitle: "Meer over omega-3",
+  moreAboutLinks: [
+    { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken — alle vormen en criteria uitgelegd" },
+    { href: "/wat-is-omega-3", label: "Wat is omega-3? Een introductie op vetzuren" },
+  ],
+  readAlsoCards: [
+    { href: "/omega-3-vergelijken", text: "Eet je zelden vette vis? Vergelijk EPA/DHA-producten op kwaliteit en dosering.", cta: "Naar omega-3 vergelijken →" },
+    { href: "/profiel/lage-batterij", text: "Vaak moe? EPA en DHA dragen bij tot normale hartfunctie; DHA ook tot instandhouding van hersenfunctie — handig als je weinig vette vis eet.", cta: "Bekijk het profiel →" },
+    { href: "/thema/herstel", text: "Herstel na sport of inspanning begint van binnenuit.", cta: "Lees de herstelgids →" },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
@@ -265,7 +284,7 @@ export const omega3Data: ComparisonPageData = {
     {
       question: "Wat is het verschil tussen levertraan en visolie?",
       answer:
-        "Levertraan (zoals Möller's) komt uit de lever van kabeljauw en bevat naast omega-3 ook vitamine A en [vitamine D](/beste-vitamine-d). Reguliere visolie komt uit het spierweefsel en bevat alleen omega-3. Beide zijn effectief, maar bij levertraan moet je letten op vitamine A-inname als je al supplementen gebruikt.",
+        "Levertraan (zoals Möller's) komt uit de lever van kabeljauw en bevat naast omega-3 ook vitamine A en [vitamine D](/beste/vitamine-d). Reguliere visolie komt uit het spierweefsel en bevat alleen omega-3. Beide zijn effectief, maar bij levertraan moet je letten op vitamine A-inname als je al supplementen gebruikt.",
     },
     {
       question: "Wat betekent triglyceridevorm?",

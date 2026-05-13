@@ -431,7 +431,7 @@ export default function HerstelVerbeterenNa40Page() {
                     Magnesiumvormen vergelijken op opname, maag-tolerantie en prijs per effectieve dosis.
                   </p>
                   <Link
-                    href="/beste-magnesium"
+                    href="/beste/magnesium"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk onze magnesium vergelijking →
@@ -451,7 +451,7 @@ export default function HerstelVerbeterenNa40Page() {
                     EPA/DHA mg per softgel, oxidatiestabiliteit en prijs per dag — naast elkaar gezet.
                   </p>
                   <Link
-                    href="/beste-omega-3-supplement"
+                    href="/beste/omega-3-supplement"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk onze omega-3 vergelijking →
@@ -468,7 +468,7 @@ export default function HerstelVerbeterenNa40Page() {
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">Welke D3+K2-combinaties en doseringen sluiten aan?</p>
                   <Link
-                    href="/beste-vitamine-d"
+                    href="/beste/vitamine-d"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk de vitamine D-gids →
@@ -486,7 +486,7 @@ export default function HerstelVerbeterenNa40Page() {
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">Monohydraat, Creapure en prijs per dosering.</p>
                   <Link
-                    href="/beste-creatine"
+                    href="/beste/creatine"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk de creatine vergelijking →
@@ -522,7 +522,7 @@ export default function HerstelVerbeterenNa40Page() {
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">Zinkvormen en doseringen vergeleken.</p>
                   <Link
-                    href="/beste-zink"
+                    href="/beste/zink"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk de zink vergelijking →
