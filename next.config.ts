@@ -120,6 +120,21 @@ const nextConfig: NextConfig = {
         destination: "/profiel/overtrainer",
         permanent: true,
       },
+      {
+        source: "/omega-3-vergelijken",
+        destination: "/beste/omega-3-supplement",
+        permanent: true,
+      },
+      {
+        source: "/magnesium-vergelijken",
+        destination: "/beste/magnesium",
+        permanent: true,
+      },
+      {
+        source: "/slaap-supplement-vergelijken",
+        destination: "/thema/slaap",
+        permanent: true,
+      },
     ];
   },
 };

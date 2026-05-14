@@ -142,21 +142,21 @@ export default function BlogPage() {
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <Link
-                href="/omega-3-vergelijken"
+                href="/beste/omega-3-supplement"
                 className="flex flex-col rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
               >
                 <span className="text-sm font-medium text-stone-900">Omega&nbsp;3 vergelijken</span>
                 <span className="mt-1 text-xs text-stone-500">EPA, DHA en prijs per dag</span>
               </Link>
               <Link
-                href="/magnesium-vergelijken"
+                href="/beste/magnesium"
                 className="flex flex-col rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
               >
                 <span className="text-sm font-medium text-stone-900">Magnesium vergelijken</span>
                 <span className="mt-1 text-xs text-stone-500">Bisglycinaat, citraat en malaat</span>
               </Link>
               <Link
-                href="/slaap-supplement-vergelijken"
+                href="/thema/slaap"
                 className="flex flex-col rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-stone-300 hover:shadow-sm"
               >
                 <span className="text-sm font-medium text-stone-900">Slaapsupplementen</span>

@@ -135,7 +135,7 @@ export function day21SupplementChoice(params: {
   if (id === "sleep" || id === "stress") {
     return {
       name: "Magnesium",
-      comparePath: "/magnesium-vergelijken",
+      comparePath: "/beste/magnesium",
       reason:
         "Bij veel mannen 40+ wordt magnesium genoemd in de context van ontspanning en slaapritme — geen wonderpil, maar een veelbesproken optie om te vergelijken.",
     };
@@ -143,14 +143,14 @@ export function day21SupplementChoice(params: {
   if (id === "nutrition" || nutritionScoreLow(params.domainScores)) {
     return {
       name: "Omega-3 (EPA/DHA)",
-      comparePath: "/omega-3-vergelijken",
+      comparePath: "/beste/omega-3-supplement",
       reason:
         "Als voeding of vetzuur-balans aandacht vraagt, is omega-3 vaak het eerste thema om inhoudelijk te vergelijken (EPA/DHA, vorm, zuiverheid).",
     };
   }
   return {
     name: "Magnesium",
-    comparePath: "/magnesium-vergelijken",
+    comparePath: "/beste/magnesium",
     reason:
       "Op basis van je profiel past vergelijken op magnesium vaak het beste als startpunt — inhoudelijk, op eigen tempo.",
   };

@@ -42,8 +42,8 @@ const searchItems = [
         ...item,
         group: "Vergelijkingen",
     })),
-    { href: "/omega-3-vergelijken", label: "Omega-3 vergelijken", group: "Keuzehulpen" },
-    { href: "/magnesium-vergelijken", label: "Magnesium vergelijken", group: "Keuzehulpen" },
+    { href: "/beste/omega-3-supplement", label: "Omega-3 vergelijken", group: "Keuzehulpen" },
+    { href: "/beste/magnesium", label: "Magnesium vergelijken", group: "Keuzehulpen" },
     { href: "/wat-is-omega-3", label: "Wat is omega-3?", group: "Ingrediënten" },
     { href: "/waar-let-je-op-bij-omega-3", label: "Waar let je op bij omega-3?", group: "Ingrediënten" },
 ];

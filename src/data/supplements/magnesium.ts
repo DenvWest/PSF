@@ -17,12 +17,12 @@ export const magnesiumData: ComparisonPageData = {
   showIntakeFallbackCta: true,
   breadcrumbs: [
     { name: "Home", url: "https://perfectsupplement.nl" },
-    { name: "Vergelijkingen", url: "https://perfectsupplement.nl/magnesium-vergelijken" },
+    { name: "Vergelijkingen", url: "https://perfectsupplement.nl/beste/magnesium" },
     { name: "Beste magnesium", url: "https://perfectsupplement.nl/beste/magnesium" },
   ],
   moreAboutTitle: "Meer over magnesium",
   moreAboutLinks: [
-    { href: "/magnesium-vergelijken", label: "Magnesium vormen vergelijken — waar let je op per vorm en dosering? →" },
+    { href: "/beste/magnesium", label: "Magnesium vormen vergelijken — waar let je op per vorm en dosering? →" },
     { href: "/blog/magnesium-en-slaapkwaliteit", label: "Magnesium en slaapkwaliteit: wat zegt het onderzoek? →" },
   ],
   readAlsoCards: [

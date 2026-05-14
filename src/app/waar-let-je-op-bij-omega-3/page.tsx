@@ -46,7 +46,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                                 <span aria-hidden="true">/</span>
                             </li>
                             <li className="flex items-center gap-1">
-                                <Link href="/omega-3-vergelijken" className="hover:text-stone-600 transition-colors">Omega 3</Link>
+                                <Link href="/beste/omega-3-supplement" className="hover:text-stone-600 transition-colors">Omega 3</Link>
                                 <span aria-hidden="true">/</span>
                             </li>
                             <li>
@@ -76,7 +76,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                                 Bekijk beste omega&nbsp;3 supplementen
                             </Link>
                             <Link
-                                href="/omega-3-vergelijken"
+                                href="/beste/omega-3-supplement"
                                 className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
                             >
                                 Vergelijk supplementen
@@ -293,7 +293,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                 <p className="mt-6 max-w-3xl text-base leading-relaxed text-stone-600">
                     Wil je producten direct naast elkaar zien? Bekijk dan onze{" "}
                     <Link
-                        href="/omega-3-vergelijken"
+                        href="/beste/omega-3-supplement"
                         className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
                     >
                         vergelijking van omega&nbsp;3 supplementen
@@ -330,7 +330,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                             <p className="text-base text-stone-600 leading-relaxed">Klaar om een product te kiezen? Onze top 5 vergeleken op EPA/DHA, prijs per dag en transparantie.</p>
                             <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk beste omega 3 →</span>
                         </Link>
-                        <Link href="/omega-3-vergelijken" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                        <Link href="/beste/omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
                             <p className="text-base text-stone-600 leading-relaxed">Alle producten naast elkaar in een vergelijkingstabel — snel de verschillen zien.</p>
                             <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Vergelijk omega 3 supplementen →</span>
                         </Link>
@@ -361,7 +361,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                                 Bekijk beste omega&nbsp;3 supplementen
                             </Link>
                             <Link
-                                href="/omega-3-vergelijken"
+                                href="/beste/omega-3-supplement"
                                 className="inline-flex items-center justify-center rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-medium text-stone-900 transition hover:border-stone-300"
                             >
                                 Vergelijk supplementen

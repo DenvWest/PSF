@@ -44,7 +44,7 @@ export const REFERENTIES_CORNERSTONE_SUP_KIEZEN: ReferentieItem[] = toRefs(SUPP_
 export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
   {
     slug: "omega-3-vergelijken",
-    pad: "/omega-3-vergelijken",
+    pad: "/beste/omega-3-supplement",
     categorie: "supplementen",
     titel: "Omega-3 supplementen vergelijken",
     heroIntro:
@@ -152,7 +152,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
   },
   {
     slug: "magnesium-vergelijken",
-    pad: "/magnesium-vergelijken",
+    pad: "/beste/magnesium",
     categorie: "supplementen",
     titel: "Magnesium vergelijken",
     heroIntro:

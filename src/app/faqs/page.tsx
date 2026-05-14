@@ -118,19 +118,19 @@ export default function FaqPage() {
             </p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/omega-3-vergelijken"
+                href="/beste/omega-3-supplement"
                 className="inline-flex items-center rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:border-stone-300"
               >
                 Omega&nbsp;3 vergelijken →
               </Link>
               <Link
-                href="/magnesium-vergelijken"
+                href="/beste/magnesium"
                 className="inline-flex items-center rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:border-stone-300"
               >
                 Magnesium vergelijken →
               </Link>
               <Link
-                href="/slaap-supplement-vergelijken"
+                href="/thema/slaap"
                 className="inline-flex items-center rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm font-medium text-stone-800 transition hover:border-stone-300"
               >
                 Slaapsupplementen vergelijken →

@@ -3,72 +3,72 @@ export const affiliateLinks = {
   "arctic-blue-visolie":
     "https://www.arctic-blue.com/omega-3/visolie/vloeibaar/?sld=dennisvanwestbroek",
   "mollers-omega-3-citroen":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-vergelijken&dl=product%2Fmollers-mollers-omega-3-citroen-mollers-visolie-vloeibaar-240847",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-supplement&dl=product%2Fmollers-mollers-omega-3-citroen-mollers-visolie-vloeibaar-240847",
   "minami-morepa-original":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-vergelijken&dl=product%2Fminami-nutrition-morepa-plus-softgels-183304",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-supplement&dl=product%2Fminami-nutrition-morepa-plus-softgels-183304",
   "minami-morepa-vergelijking":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-vergelijken&dl=product%2Fminami-nutrition-morepa-smart-fats-softgels-183303",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-supplement&dl=product%2Fminami-nutrition-morepa-smart-fats-softgels-183303",
   "vitals-liquid-epadha":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-vergelijken&dl=product%2Fvitals-liquid-epadha-vloeibaar-1200mg-doos-1308940",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=omega-3-supplement&dl=product%2Fvitals-liquid-epadha-vloeibaar-1200mg-doos-1308940",
 
   "arctic-blue-algenolie":
     "https://www.arctic-blue.com/omega-3/algenolie/?sld=dennisvanwestbroek",
 
-  // Ashwagandha — Sub ID (ws) altijd: ashwagandha-vergelijking
+  // Ashwagandha
   "vitaminstore-ashwagandha-ksm66":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=ashwagandha-vergelijking&dl=product%2Fvitaminstore-ashwagandha-ksm-66-ashwaganda-vegicaps-278077",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=ashwagandha&dl=product%2Fvitaminstore-ashwagandha-ksm-66-ashwaganda-vegicaps-278077",
   "vitalnutrition-ashwagandha-ksm66":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=ashwagandha-vergelijking&dl=products%2Fashwagandha%3F_pos%3D1%26_psq%3Dashwaga%26_ss%3De%26_v%3D1.0",
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=ashwagandha&dl=products%2Fashwagandha%3F_pos%3D1%26_psq%3Dashwaga%26_ss%3De%26_v%3D1.0",
   "vitaminstore-solgar-ashwagandha":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=ashwagandha-vergelijking&dl=product%2Fsolgar-vitamins-ashwagandha-root-extract-vegicaps-713",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=ashwagandha&dl=product%2Fsolgar-vitamins-ashwagandha-root-extract-vegicaps-713",
 
-  // Vitamine D — Sub ID (ws) altijd: vitamine-d-vergelijking
+  // Vitamine D
   "vitaminstore-super-d3":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d-vergelijking&dl=product%2Fvitaminstore-super-d3-25-mcg-vitamine-d-softgels-222385",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d&dl=product%2Fvitaminstore-super-d3-25-mcg-vitamine-d-softgels-222385",
   "vitalnutrition-vitamin-d3":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=vitamine-d-vergelijken&dl=products%2Fvitamine-d3",
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=vitamine-d&dl=products%2Fvitamine-d3",
   "solgar-vitamin-d3":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d-vergelijking&dl=product%2Fsolgar-vitamins-vitamin-d-3-25-ug1000-iu-vitamine-d-uit-levertraan-softgels-197241",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=vitamine-d&dl=product%2Fsolgar-vitamins-vitamin-d-3-25-ug1000-iu-vitamine-d-uit-levertraan-softgels-197241",
 
-  // Creatine — Sub ID (ws) altijd: creatine-vergelijking
+  // Creatine
   "vitalnutrition-creatine":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=creatine-vergelijking&dl=products%2Fcreatine-monohydraat%3F_pos%3D1%26_sid%3Dbcae2cad6%26_ss%3Dr",
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=creatine&dl=products%2Fcreatine-monohydraat%3F_pos%3D1%26_sid%3Dbcae2cad6%26_ss%3Dr",
   "vitaminstore-creatine":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=creatine-vergelijking&dl=product%2Fcreatine-monohydraat-poeder-1309330",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=creatine&dl=product%2Fcreatine-monohydraat-poeder-1309330",
   "mattisson-creatine-creapure":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=creatine-vergelijking&dl=product%2Fmattisson-healthstyle-creatine-monohydraat-poeder-creapure-poeder-1309550",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=creatine&dl=product%2Fmattisson-healthstyle-creatine-monohydraat-poeder-creapure-poeder-1309550",
 
-  // Zink — Sub ID (ws) altijd: zink-vergelijking
+  // Zink
   "vitalnutrition-zink":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=zink-vergelijking&dl=products%2Fzinkmethionine%3F_pos%3D2%26_sid%3Da4213ada0%26_ss%3Dr",
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=zink&dl=products%2Fzinkmethionine%3F_pos%3D2%26_sid%3Da4213ada0%26_ss%3Dr",
   "solgar-zink-picolinaat":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=zink-vergelijking&dl=product%2Fsolgar-vitamins-zinc-picolinate-22-mg-zinkpicolinaat-tabletten-847",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=zink&dl=product%2Fsolgar-vitamins-zinc-picolinate-22-mg-zinkpicolinaat-tabletten-847",
   "bonusan-zinkmethionine":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=zink-vergelijking&dl=product%2Fbonusan-zinkmethionine-15-mg-plantaardige-capsules-1305137",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=zink&dl=product%2Fbonusan-zinkmethionine-15-mg-plantaardige-capsules-1305137",
 
-  // Magnesium — Sub ID (ws): magnesium-vergelijking
+  // Magnesium
   "vitaminstore-super-magnesium":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=magnesium-vergelijking&dl=product%2Fvitaminstore-super-magnesium-tabletten-162179",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=magnesium&dl=product%2Fvitaminstore-super-magnesium-tabletten-162179",
   "vital-nutrition-citraat":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=magnesium-vergelijking&dl=collections%2Fmagnesium%2Fproducts%2Fmagnesium-citraat",
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=magnesium&dl=collections%2Fmagnesium%2Fproducts%2Fmagnesium-citraat",
   "viridian-bisglycinaat":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=magnesium-vergelijking&dl=product%2Fsolgar-vitamins-magnesium-bisglycinate-1308886",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=magnesium&dl=product%2Fsolgar-vitamins-magnesium-bisglycinate-1308886",
 
-  // Melatonine — Sub ID (ws): melatonine-vergelijken
+  // Melatonine
   "melatonine-vital-nutrition-slaap-complex":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=melatonine-vergelijken&dl=products%2Fslaap-complex%3F_pos%3D2%26_sid%3Dfc8b8fe2b%26_ss%3Dr",
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=melatonine&dl=products%2Fslaap-complex%3F_pos%3D2%26_sid%3Dfc8b8fe2b%26_ss%3Dr",
   "melatonine-lucovitaal-puur":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine-vergelijken&dl=product%2Flucovitaal-pure-melatonine-100-mcg-tabletten-163814",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine&dl=product%2Flucovitaal-pure-melatonine-100-mcg-tabletten-163814",
   "melatonine-vitaminstore-nachtrust":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine-vergelijken&dl=product%2Fvitaminstore-nachtrust-complex-met-melatonine-vegicaps-190775",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine&dl=product%2Fvitaminstore-nachtrust-complex-met-melatonine-vegicaps-190775",
 
-  // Eiwitpoeder — Sub ID (ws): proteïne-vergelijken
+  // Eiwitpoeder
   "proteine-vital-nutrition-whey":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=prote%C3%AFne-vergelijken&dl=products%2Fwhey-proteine%3F_pos%3D1%26_sid%3D018a6fc58%26_ss%3Dr",
+    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=eiwitpoeder&dl=products%2Fwhey-proteine%3F_pos%3D1%26_sid%3D018a6fc58%26_ss%3Dr",
   "proteine-orangefit-protein":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=prote%C3%AFne-vergelijken&dl=product%2Forangefit-protein-poeder-271837",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=eiwitpoeder&dl=product%2Forangefit-protein-poeder-271837",
   "proteine-royal-green-isolate":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=prote%C3%AFne-vergelijken&dl=product%2Froyal-green-royal-green-100-whey-protein-isolate-poeder-217835",
+    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=eiwitpoeder&dl=product%2Froyal-green-royal-green-100-whey-protein-isolate-poeder-217835",
 } as const satisfies Record<string, string>;
 
 export type AffiliateSlug = keyof typeof affiliateLinks;
