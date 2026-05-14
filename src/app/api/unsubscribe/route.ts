@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientIp } from "@/lib/client-ip";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
-import { decodeNurtureUnsubscribeToken } from "@/lib/nurture-unsubscribe";
+import { decodeNurtureUnsubscribeToken, MAX_EMAIL_LENGTH } from "@/lib/nurture-unsubscribe";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX_EMAIL_LENGTH = 254;
 
 function normalizeEmail(raw: string | null): string | null {
   if (raw === null) {

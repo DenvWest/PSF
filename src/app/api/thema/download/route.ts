@@ -8,7 +8,7 @@ import {
   hasThemaNurtureSequence,
 } from "@/lib/email-templates/thema-nurture";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
-import { buildThemaUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
+import { buildThemaUnsubscribeUrl, MAX_EMAIL_LENGTH } from "@/lib/nurture-unsubscribe";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -22,7 +22,6 @@ const THEMA_DOWNLOADS: Record<string, true> = {
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX_EMAIL_LENGTH = 254;
 
 function logSecurityEvent(
   event: string,
@@ -120,6 +119,10 @@ export async function POST(request: NextRequest) {
       to: email,
       subject: template.subject,
       html: emailHtml,
+      headers: {
+        "List-Unsubscribe": `<${unsubscribeUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
     });
 
     if (sendError) {

@@ -1,5 +1,7 @@
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export const MAX_EMAIL_LENGTH = 254;
+
 /**
  * Token voor nurture uitschrijven: base64url van `email:session_id` (session_id mag leeg zijn).
  */
@@ -27,7 +29,7 @@ export function decodeNurtureUnsubscribeToken(
     }
     const email = decoded.slice(0, idx).trim().toLowerCase();
     const sessionId = decoded.slice(idx + 1);
-    if (!email || !EMAIL_REGEX.test(email)) {
+    if (!email || email.length > MAX_EMAIL_LENGTH || !EMAIL_REGEX.test(email)) {
       return null;
     }
     return { email, sessionId };
@@ -78,7 +80,7 @@ export function decodeThemaUnsubscribeToken(
     }
     const email = payload.slice(0, idx).trim().toLowerCase();
     const thema = payload.slice(idx + 1).trim().toLowerCase();
-    if (!email || !EMAIL_REGEX.test(email) || !thema) {
+    if (!email || email.length > MAX_EMAIL_LENGTH || !EMAIL_REGEX.test(email) || !thema) {
       return null;
     }
     return { email, thema };
