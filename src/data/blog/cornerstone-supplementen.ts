@@ -59,8 +59,8 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       href: "/blog/supplementen",
     },
     gerelateerdeSluggen: [
-      "beste-omega-3-supplement",
       "waar-let-je-op-bij-omega-3",
+      "wat-is-omega-3",
       "omega-3-concentratie-energie",
     ],
     metaTitle: "Beste omega-3 supplement: keuzehulp op inhoud en prijs per dag",
@@ -115,7 +115,7 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
     gerelateerdeSluggen: [
       "wat-is-omega-3",
       "beste-omega-3-supplement",
-      "beste-omega-3-supplement",
+      "omega-3-concentratie-energie",
     ],
     metaTitle: "Omega-3 kiezen: waar let je op bij EPA, DHA en kwaliteit?",
     metaDescription:
@@ -140,9 +140,9 @@ export const cornerstoneSupplementenArtikelen: BlogArtikel[] = [
       href: "/blog/supplementen",
     },
     gerelateerdeSluggen: [
-      "beste-magnesium",
       "magnesium-en-slaapkwaliteit",
       "supplement-kiezen-waar-op-letten",
+      "beste-omega-3-supplement",
     ],
     metaTitle: "Beste magnesium supplement: vormen en gebruik vergeleken",
     metaDescription:
