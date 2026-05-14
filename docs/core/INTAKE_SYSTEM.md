@@ -91,8 +91,6 @@ Scoring engine: `src/lib/intake-engine.ts`
 | Lage Batterij | `energy_score < 40` | energy_score |
 | Stressdrager | `stress_score < 40` | stress_score |
 | Stille Tekorten | `nutrition_score < 40` | nutrition_score |
-| Stilzitter | `movement_score < 35` | movement_score |
-| Stille Slijter | `recovery_score < 35` (zonder hoge movement) | recovery_score |
 
 **Prioriteit bij meerdere matches:** profiel met laagste genormaliseerde score wint. Bij gelijk: slaap > stress > energie > voeding > beweging > herstel.
 

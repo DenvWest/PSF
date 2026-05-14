@@ -10,8 +10,8 @@
 |---|---|
 | `/slaap-verbeteren-na-40` | Homepage (hero of "Verder lezen"), `/thema/slaap` |
 | `/profiel/onrustige-slaper` | `/thema/slaap`, bestaande slaap-blogs |
-| `/beste-zink` | Relevante blogs, toekomstig profiel Stilzitter |
-| `/beste-creatine` | Relevante blogs, toekomstig profiel Stilzitter |
+| `/beste-zink` | Relevante blogs |
+| `/beste-creatine` | Relevante blogs |
 | `/beste-vitamine-d` | Relevante blogs, profiel Lage Batterij + Stille Tekorten |
 
 ---
@@ -33,9 +33,7 @@
 | Onrustige Slaper | ✅ | `/slaap-verbeteren-na-40` ✅ | `/beste-magnesium` ✅, `/beste-ashwagandha` ✅ |
 | Lage Batterij | ✏️ | `/energie-na-40` ✏️ | `/beste-omega-3-supplement` ✅, `/beste-vitamine-d` ✅ |
 | Stressdrager | ✏️ | `/stress-verminderen-man` ✏️ | `/beste-ashwagandha` ✅, `/beste-magnesium` ✅ |
-| Stille Slijter | ✏️ | `/supplementen-mannen-40` 💡 | `/beste-magnesium` ✅, `/beste-omega-3-supplement` ✅ |
 | Stille Tekorten | ✏️ | `/voeding-na-40` 💡 | `/beste-omega-3-supplement` ✅, `/beste-vitamine-d` ✅ |
-| Stilzitter | ✏️ | `/testosteron-na-40` ✏️ | `/beste-magnesium` ✅, `/beste-creatine` ✅ |
 
 ---
 

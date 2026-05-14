@@ -52,9 +52,7 @@
 | `/profiel/onrustige-slaper` | Onrustige Slaper | ✅ Live |
 | `/profiel/stressdrager` | Stressdrager | ✏️ Sprint 2 |
 | `/profiel/lage-batterij` | Lage Batterij | ✏️ Sprint 4 |
-| `/profiel/stille-slijter` | Stille Slijter | ✏️ Sprint 4 |
 | `/profiel/stille-tekorten` | Stille Tekorten | ✏️ Sprint 4 |
-| `/profiel/stilzitter` | Stilzitter | ✏️ Sprint 4 |
 
 ## Cluster blogs (gepland)
 

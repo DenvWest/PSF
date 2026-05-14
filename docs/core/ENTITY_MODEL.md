@@ -16,7 +16,7 @@
 | answers | jsonb | Ruwe antwoorden per data-tag (zie onder) |
 | domain_scores | jsonb | 6 domeinen, score 0-100 (zie onder) |
 | urgency_level | text | `critical`, `moderate`, `mild`, `healthy` |
-| profile_label | text | `Lage Batterij`, `Onrustige Slaper`, `Stressdrager`, `Stille Slijter`, `Stille Tekorten`, `Stilzitter` |
+| profile_label | text | `Onrustige Slaper`, `Stressdrager`, `Lage Batterij`, `Overtrainer` |
 | age_range | text | `40-44`, `45-49`, `50-54`, `55+` |
 | marketing_email | text, nullable | — |
 | organization_id | uuid, nullable | Voorbereid voor B2B white-label, niet in gebruik |

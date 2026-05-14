@@ -79,7 +79,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
-| Mei 2026 | Profielnaam "Basis Mist" → "Stille Tekorten", "Overtrainer" → "Stilzitter" | `systems/PERSONALIZATION_ENGINE.md` |
+| Mei 2026 | Geannuleerde profielen verwijderd, 4 definitieve profielen vastgelegd | `core/PERSONALIZATION_ENGINE.md` |
 | Mei 2026 | Ashwagandha uitgesloten van Foundation Stack (EFSA + NL verbod risico) | `core/COMPLIANCE.md` |
 | Mei 2026 | Content spinnenweb eerst, features later | `work/CURRENT_SPRINT.md` |
 | April 2026 | localStorage afgeschaft, alles via Supabase | `core/ARCHITECTURE.md` |

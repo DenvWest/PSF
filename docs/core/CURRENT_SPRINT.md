@@ -45,7 +45,7 @@
 | # | Pagina | Type |
 |---|---|---|
 | 7 | `/energie-na-40` | Pillar |
-| 8 | Lage Batterij, Stille Slijter, Stille Tekorten, Stilzitter | Profielen |
+| 8 | Lage Batterij, Overtrainer | Profielen |
 
 ## Op de horizon
 

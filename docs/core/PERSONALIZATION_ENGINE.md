@@ -4,19 +4,14 @@
 
 ---
 
-## 7 profielen
+## 4 profielen
 
 | Profiel | Slug | Trigger | Status |
 |---|---|---|---|
 | Onrustige Slaper | `onrustige-slaper` | `sleep_score < 40` | ✅ Live |
 | Lage Batterij | `lage-batterij` | `energy_score < 40` | ✏️ Gepland |
 | Stressdrager | `stressdrager` | `stress_score < 40` | ✏️ Gepland |
-| Stille Tekorten | `stille-tekorten` | `nutrition_score < 40` | ✏️ Gepland |
-| Stilzitter | `stilzitter` | `movement_score < 35` | ✏️ Gepland |
-| Stille Slijter | `stille-slijter` | `recovery_score < 35` (zonder hoge movement) | ✏️ Gepland |
 | Overtrainer | `overtrainer` | `movement_frequency ≥ 3 EN recovery_score ≤ 35` | ✏️ Gepland |
-
-**Let op profielnaam-wijzigingen:** "Basis Mist" → "Stille Tekorten", "Overtrainer" → "Stilzitter" in productie. De oude namen staan nog in sommige docs/data.
 
 **Prioriteit bij meerdere matches:** laagste genormaliseerde score wint. Bij gelijk: slaap > stress > energie > voeding > beweging > herstel.
 
@@ -54,8 +49,6 @@
 | Profiel | Extra disclaimer |
 |---|---|
 | Onrustige Slaper | Slaapapneu: "Bij snurken + overgewicht + extreme vermoeidheid → huisarts" |
-| Stille Tekorten | Bloedonderzoek: "Laat vitamine D, B12 en ijzer prikken" |
-| Stilzitter | Pre-exercise: "Begin rustig, overleg bij hartklachten" |
 | Stressdrager | GGZ: "Bij langdurige somberheid of burn-out → professionele hulp" |
 | Lage Batterij | Schildklier: "Chronische vermoeidheid kan schildklier-gerelateerd zijn" |
 | Overtrainer | Rust: "Meer trainen is niet de oplossing" |
