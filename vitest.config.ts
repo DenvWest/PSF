@@ -9,5 +9,13 @@ export default defineConfig({
   },
   test: {
     globals: true,
+    coverage: {
+      provider: "v8",
+      include: ["src/lib/intake-engine.ts", "src/lib/cron-auth.ts"],
+      thresholds: {
+        lines: 80,
+        branches: 80,
+      },
+    },
   },
 });
