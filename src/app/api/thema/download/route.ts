@@ -8,6 +8,7 @@ import {
   hasThemaNurtureSequence,
 } from "@/lib/email-templates/thema-nurture";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
+import { buildThemaUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -110,7 +111,7 @@ export async function POST(request: NextRequest) {
   }
 
   const siteUrl = getPublicSiteUrl();
-  const unsubscribeUrl = `${siteUrl}/api/thema/unsubscribe?email=${encodeURIComponent(email)}&thema=${encodeURIComponent(thema)}`;
+  const unsubscribeUrl = buildThemaUnsubscribeUrl(email, thema, siteUrl);
   const emailHtml = template.html(unsubscribeUrl);
 
   try {

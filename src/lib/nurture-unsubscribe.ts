@@ -46,6 +46,57 @@ export function buildNurtureUnsubscribeUrl(
   return `${base}/api/unsubscribe?token=${encodeURIComponent(token)}`;
 }
 
+const THEMA_TOKEN_PREFIX = "thema:";
+
+export function encodeThemaUnsubscribeToken(
+  email: string,
+  thema: string,
+): string {
+  const e = email.trim().toLowerCase();
+  const t = thema.trim().toLowerCase();
+  return Buffer.from(`${THEMA_TOKEN_PREFIX}${e}:${t}`, "utf8").toString(
+    "base64url",
+  );
+}
+
+export function decodeThemaUnsubscribeToken(
+  token: string,
+): { email: string; thema: string } | null {
+  const trimmed = token.trim();
+  if (!trimmed) {
+    return null;
+  }
+  try {
+    const decoded = Buffer.from(trimmed, "base64url").toString("utf8");
+    if (!decoded.startsWith(THEMA_TOKEN_PREFIX)) {
+      return null;
+    }
+    const payload = decoded.slice(THEMA_TOKEN_PREFIX.length);
+    const idx = payload.indexOf(":");
+    if (idx <= 0) {
+      return null;
+    }
+    const email = payload.slice(0, idx).trim().toLowerCase();
+    const thema = payload.slice(idx + 1).trim().toLowerCase();
+    if (!email || !EMAIL_REGEX.test(email) || !thema) {
+      return null;
+    }
+    return { email, thema };
+  } catch {
+    return null;
+  }
+}
+
+export function buildThemaUnsubscribeUrl(
+  email: string,
+  thema: string,
+  siteBase: string,
+): string {
+  const base = siteBase.replace(/\/$/, "");
+  const token = encodeThemaUnsubscribeToken(email, thema);
+  return `${base}/api/thema/unsubscribe?token=${encodeURIComponent(token)}`;
+}
+
 export function anonymizeEmailForAdmin(email: string): string {
   const e = email.trim().toLowerCase();
   const at = e.indexOf("@");

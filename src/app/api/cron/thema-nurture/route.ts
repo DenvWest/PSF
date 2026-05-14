@@ -6,6 +6,7 @@ import {
   type ThemaNurtureDay,
 } from "@/lib/email-templates/thema-nurture";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
+import { buildThemaUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { verifyCronRequest } from "@/lib/cron-auth";
 
 export const dynamic = "force-dynamic";
@@ -63,7 +64,7 @@ async function handleAuthorized(): Promise<NextResponse> {
     }
 
     const siteUrl = getPublicSiteUrl();
-    const unsubscribeUrl = `${siteUrl}/api/thema/unsubscribe?email=${encodeURIComponent(mail.email)}&thema=${encodeURIComponent(mail.thema)}`;
+    const unsubscribeUrl = buildThemaUnsubscribeUrl(mail.email, mail.thema, siteUrl);
 
     try {
       const { data: sendData, error: sendError } = await resend.emails.send({
