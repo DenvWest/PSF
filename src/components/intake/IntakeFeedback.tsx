@@ -21,7 +21,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
       >
         <p className="text-[15px]" style={{ color: "rgba(255,255,255,0.5)" }}>
           Bedankt voor je feedback{" "}
-          <span style={{ color: "#5A8F6A" }} aria-hidden>
+          <span style={{ color: "var(--ps-green)" }} aria-hidden>
             ✓
           </span>
         </p>
@@ -50,7 +50,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
             style={{
               background: "rgba(90,143,106,0.15)",
               border: "1px solid rgba(90,143,106,0.4)",
-              color: "#5A8F6A",
+              color: "var(--ps-green)",
               fontFamily: "inherit",
             }}
           >

@@ -26,7 +26,7 @@ export default function ProfielOverzichtPage() {
               of doe de{" "}
               <Link
                 href="/intake"
-                className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
               >
                 Leefstijlcheck
               </Link>{" "}

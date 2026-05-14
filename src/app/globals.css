@@ -31,8 +31,8 @@
   --ps-subtle: #d6d3d1;
 
   /* Extended palette — symptomen & content pages */
-  --ps-green: #2d6a4f;
-  --ps-green-hover: #1f4e3a;
+  --ps-green: #5A8F6A;
+  --ps-green-hover: #4A7F5A;
   --ps-green-light: #e8f5ee;
   --ps-amber: #b45309;
   --ps-amber-light: #fef3c7;
@@ -48,6 +48,7 @@
   --font-sans: var(--font-primary);
   --font-display: var(--font-heading-stack);
   --color-ps-green: var(--ps-green);
+  --color-ps-green-hover: var(--ps-green-hover);
   --color-ps-green-light: var(--ps-green-light);
   --color-ps-amber: var(--ps-amber);
   --color-ps-amber-light: var(--ps-amber-light);

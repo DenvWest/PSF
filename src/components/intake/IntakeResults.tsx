@@ -241,7 +241,7 @@ export default function IntakeResults({
 
       <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
         <div className="mb-4 flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#5A8F6A18] text-base">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ps-green/10 text-base">
             ⚡
           </div>
           <div>
@@ -254,7 +254,7 @@ export default function IntakeResults({
             key={`qw-${i}`}
             className={`flex gap-3 py-3 ${i > 0 ? "border-t border-[#f0ede8]" : ""}`}
           >
-            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#5A8F6A] text-xs font-bold text-white">
+            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ps-green text-xs font-bold text-white">
               {i + 1}
             </div>
             <p className="m-0 text-sm leading-normal text-[#444]">{tip}</p>
@@ -420,7 +420,7 @@ export default function IntakeResults({
         </div>
         {emailSubmitted ? (
           <div className="flex flex-col items-center gap-2 text-[15px] leading-snug text-white">
-            <span className="text-xl text-[#5A8F6A]" aria-hidden>
+            <span className="text-xl text-ps-green" aria-hidden>
               ✓
             </span>
             <p className="m-0">

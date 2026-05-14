@@ -27,7 +27,7 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
         <h2 className="font-display text-2xl text-stone-900">
           Aanbevolen voor jou
         </h2>
-        <span className="text-xs font-medium bg-[#5A8F6A]/10 text-[#5A8F6A] rounded-full px-3 py-1">
+        <span className="text-xs font-medium bg-ps-green/10 text-ps-green rounded-full px-3 py-1">
           Op basis van je leefstijlcheck
         </span>
       </div>
@@ -49,7 +49,7 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
           return (
             <div
               key={rec.slug}
-              className="bg-white rounded-xl border border-stone-200 p-5 hover:border-[#5A8F6A]/30 transition-colors"
+              className="bg-white rounded-xl border border-stone-200 p-5 hover:border-ps-green/30 transition-colors"
             >
               <div className="flex items-start gap-3">
                 <span className="text-2xl flex-shrink-0" aria-hidden="true">
@@ -76,14 +76,14 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
                 <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={rec.guideHref}
-                  className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"
+                  className="text-sm font-medium text-ps-green hover:text-ps-green-hover transition-colors"
                 >
                   Lees de gids →
                 </Link>
                 {rec.comparisonHref && rec.comparisonHref !== rec.guideHref && (
                   <Link
                     href={rec.comparisonHref}
-                    className="text-sm font-medium text-[#5A8F6A] hover:text-[#4a7a5a] transition-colors"
+                    className="text-sm font-medium text-ps-green hover:text-ps-green-hover transition-colors"
                   >
                     Vergelijk producten →
                   </Link>

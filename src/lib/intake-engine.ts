@@ -153,7 +153,7 @@ const URGENCY_CONFIG: Record<UrgencyLevel, UrgencyResult> = {
   mild: {
     level: "mild",
     label: "Fijn te optimaliseren",
-    color: "#5A8F6A",
+    color: "var(--ps-green)",
   },
   healthy: {
     level: "healthy",

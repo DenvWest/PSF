@@ -319,7 +319,7 @@ export default function StressdragerPage() {
                     <p className="text-slate-600 text-sm">{profile.relatedPillar.turboSnippet}</p>
                     <Link
                       href={profile.relatedPillar.href}
-                      className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                      className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                     >
                       Alles over stressvermindering na 40 — de complete gids →
                     </Link>

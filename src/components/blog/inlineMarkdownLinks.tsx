@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 const MD_LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 
 const linkClassName =
-  "font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]";
+  "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green";
 
 /**
  * Rendert `[label](href)` in platte blogstrings als interne Next-links.

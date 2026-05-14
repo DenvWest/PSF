@@ -24,7 +24,7 @@ export function ReferenceList({ references }: ReferenceListProps) {
                   href={`https://doi.org/${ref.doi}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                 >
                   DOI
                 </a>
@@ -37,7 +37,7 @@ export function ReferenceList({ references }: ReferenceListProps) {
                   href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                 >
                   PubMed
                 </a>

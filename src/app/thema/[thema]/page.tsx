@@ -56,7 +56,7 @@ export default async function ThemaPage({ params }: Props) {
           <p className="mt-8">
             <Link
               href="/intake"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#5A8F6A] underline decoration-[#5A8F6A]/30 underline-offset-4 transition hover:text-[#4a7a5a] hover:decoration-[#4a7a5a]/50"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-ps-green underline decoration-ps-green/30 underline-offset-4 transition hover:text-ps-green-hover hover:decoration-ps-green-hover/50"
             >
               Start de Leefstijlcheck
               <span aria-hidden>→</span>
@@ -163,7 +163,7 @@ export default async function ThemaPage({ params }: Props) {
                             href={`https://pubmed.ncbi.nlm.nih.gov/${fact.pubmedId}/`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#5A8F6A] underline decoration-[#5A8F6A]/30 underline-offset-2"
+                            className="text-ps-green underline decoration-ps-green/30 underline-offset-2"
                           >
                             PubMed
                           </a>
@@ -193,7 +193,7 @@ export default async function ThemaPage({ params }: Props) {
                 key={i}
                 className="flex gap-5 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#5A8F6A]/10 text-xl">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-ps-green/10 text-xl">
                   {item.icon}
                 </div>
                 <div>
@@ -247,7 +247,7 @@ export default async function ThemaPage({ params }: Props) {
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link
                     href={item.guideLink}
-                    className="text-sm font-medium text-[#5A8F6A] hover:underline"
+                    className="text-sm font-medium text-ps-green hover:underline"
                   >
                     Lees de gids →
                   </Link>
@@ -270,7 +270,7 @@ export default async function ThemaPage({ params }: Props) {
       <section className="py-16 lg:py-20">
         <Container>
           <div className="mx-auto max-w-2xl rounded-2xl border border-stone-200 bg-white p-8 lg:p-10 shadow-sm">
-            <p className="text-xs font-medium uppercase tracking-widest text-[#5A8F6A]">
+            <p className="text-xs font-medium uppercase tracking-widest text-ps-green">
               {data.emailGate.sectionLabel}
             </p>
             <h2 className="mt-3 font-serif text-2xl lg:text-3xl text-stone-900">
@@ -282,7 +282,7 @@ export default async function ThemaPage({ params }: Props) {
             <div className="mt-6 space-y-2">
               {data.emailGate.bulletPoints.map((point, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#5A8F6A]/10 text-xs text-[#5A8F6A]">
+                  <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ps-green/10 text-xs text-ps-green">
                     ✓
                   </span>
                   <p className="text-sm text-stone-600">{point}</p>
@@ -314,8 +314,8 @@ export default async function ThemaPage({ params }: Props) {
       {data.pillarPage ? (
         <section className="py-8 lg:py-12">
           <Container>
-            <div className="mx-auto max-w-2xl rounded-2xl border border-[#5A8F6A]/20 bg-[#5A8F6A]/5 p-8">
-              <p className="text-xs font-medium uppercase tracking-widest text-[#5A8F6A]">
+            <div className="mx-auto max-w-2xl rounded-2xl border border-ps-green/20 bg-ps-green/5 p-8">
+              <p className="text-xs font-medium uppercase tracking-widest text-ps-green">
                 VERDIEPING
               </p>
               <h3 className="mt-2 font-serif text-xl text-stone-900">
@@ -326,7 +326,7 @@ export default async function ThemaPage({ params }: Props) {
               </p>
               <Link
                 href={data.pillarPage.href}
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#5A8F6A] underline decoration-[#5A8F6A]/30 underline-offset-4 transition hover:gap-2"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ps-green underline decoration-ps-green/30 underline-offset-4 transition hover:gap-2"
               >
                 Lees de complete gids
                 <span aria-hidden>→</span>
@@ -339,7 +339,7 @@ export default async function ThemaPage({ params }: Props) {
       {/* ─── PREMIUM INTAKE CTA ─── */}
       <section className="py-16 lg:py-20">
         <Container>
-          <div className="rounded-2xl bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] p-8 lg:p-12 text-center">
+          <div className="rounded-2xl bg-gradient-to-br from-ps-green to-ps-green-hover p-8 lg:p-12 text-center">
             <p className="text-xs font-medium uppercase tracking-widest text-white/50">
               {data.premiumCta.sectionLabel}
             </p>
@@ -359,7 +359,7 @@ export default async function ThemaPage({ params }: Props) {
             <div className="mt-8">
               <Link
                 href={data.premiumCta.ctaLink}
-                className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#5A8F6A] shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-ps-green shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
               >
                 {data.premiumCta.ctaText}
                 <span aria-hidden>→</span>
@@ -438,7 +438,7 @@ export default async function ThemaPage({ params }: Props) {
                     </p>
                     <Link
                       href={item.href}
-                      className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#5A8F6A] transition hover:gap-1.5"
+                      className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-ps-green transition hover:gap-1.5"
                     >
                       {item.label}
                       <span aria-hidden>→</span>

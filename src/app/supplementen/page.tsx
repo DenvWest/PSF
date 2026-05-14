@@ -87,7 +87,7 @@ export default async function SupplementenPage() {
                 <div className="mt-6">
                   <Link
                     href="/intake"
-                    className="inline-flex items-center gap-2 bg-[#5A8F6A] text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-[#4A7F5A] transition-all shadow-sm hover:shadow-md"
+                    className="inline-flex items-center gap-2 bg-ps-green text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-ps-green-hover transition-all shadow-sm hover:shadow-md"
                   >
                     Doe de Leefstijlcheck →
                   </Link>
@@ -112,7 +112,7 @@ export default async function SupplementenPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="flex flex-col items-center text-center p-6">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-[#5A8F6A]/10 flex items-center justify-center mb-4 text-xl">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-ps-green/10 flex items-center justify-center mb-4 text-xl">
                   🔬
                 </div>
                 <h3 className="font-semibold text-stone-900 text-base">
@@ -124,7 +124,7 @@ export default async function SupplementenPage() {
                 </p>
               </div>
               <div className="flex flex-col items-center text-center p-6">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-[#5A8F6A]/10 flex items-center justify-center mb-4 text-xl">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-ps-green/10 flex items-center justify-center mb-4 text-xl">
                   ⚖️
                 </div>
                 <h3 className="font-semibold text-stone-900 text-base">
@@ -136,7 +136,7 @@ export default async function SupplementenPage() {
                 </p>
               </div>
               <div className="flex flex-col items-center text-center p-6">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-[#5A8F6A]/10 flex items-center justify-center mb-4 text-xl">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-ps-green/10 flex items-center justify-center mb-4 text-xl">
                   🎯
                 </div>
                 <h3 className="font-semibold text-stone-900 text-base">

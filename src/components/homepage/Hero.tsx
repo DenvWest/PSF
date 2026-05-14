@@ -28,7 +28,7 @@ export default function Hero() {
             <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap sm:justify-start sm:gap-4">
               <Link
                 href="/intake"
-                className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#4a7a5a] hover:shadow-md focus-visible:outline focus-visible:ring-2 focus-visible:ring-[#5A8F6A]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ps-bg)]"
+                className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover hover:shadow-md focus-visible:outline focus-visible:ring-2 focus-visible:ring-ps-green/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--ps-bg)]"
               >
                 Doe de leefstijlcheck
                 <span aria-hidden="true">→</span>

@@ -592,7 +592,7 @@ export default function SlaapVerbeterenNa40Page() {
                   </p>
                   <Link
                     href="/stress-verminderen-man"
-                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] text-sm"
+                    className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
                     Lees de gids: Stress Verminderen na 40 →
                   </Link>
@@ -607,7 +607,7 @@ export default function SlaapVerbeterenNa40Page() {
                   </p>
                   <Link
                     href="/energie-na-40"
-                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] text-sm"
+                    className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
                     Lees de gids: Energie Na 40 →
                   </Link>

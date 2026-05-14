@@ -35,14 +35,14 @@ export default function HubHero({ hasSession }: HubHeroProps) {
             {hasSession ? (
               <a
                 href="#aanbevolen"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#5A8F6A] px-8 py-4 text-base font-semibold text-white hover:bg-[#4a7a5a] transition-all shadow-sm hover:shadow-md scroll-smooth"
+                className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white hover:bg-ps-green-hover transition-all shadow-sm hover:shadow-md scroll-smooth"
               >
                 Bekijk je aanbevelingen ↓
               </a>
             ) : (
               <Link
                 href="/intake"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#5A8F6A] px-8 py-4 text-base font-semibold text-white hover:bg-[#4a7a5a] transition-all shadow-sm hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white hover:bg-ps-green-hover transition-all shadow-sm hover:shadow-md"
               >
                 Doe de leefstijlcheck →
               </Link>

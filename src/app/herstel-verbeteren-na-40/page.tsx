@@ -7,7 +7,7 @@ import { herstelVerbeterenNa40References } from "@/data/references/herstel-verbe
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 const INLINE_LINK_THEME =
-  "font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]";
+  "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]";
 
 export const metadata: Metadata = {
   title: "Herstel Verbeteren Na 40: Training, Voeding & Supplementen | PerfectSupplement",

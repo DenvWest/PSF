@@ -244,7 +244,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               </p>
               <Link
                 href={data.productVergelijkingCta.href}
-                className="mt-5 inline-flex items-center rounded-xl bg-[#5A8F6A] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#4a7a5a]"
+                className="mt-5 inline-flex items-center rounded-xl bg-ps-green px-5 py-3 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
               >
                 {data.productVergelijkingCta.linkLabel}
               </Link>
@@ -284,7 +284,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
             aria-labelledby="leefstijl-cta-heading"
             className="py-16 lg:py-20"
           >
-            <div className="rounded-2xl bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] p-8 lg:p-12 text-center">
+            <div className="rounded-2xl bg-gradient-to-br from-ps-green to-ps-green-hover p-8 lg:p-12 text-center">
               <p className="text-xs font-medium uppercase tracking-widest text-white/50">
                 PERSOONLIJK ADVIES
               </p>
@@ -318,7 +318,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               <div className="mt-8">
                 <Link
                   href="/intake"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#5A8F6A] shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-ps-green shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
                 >
                   Start je leefstijlcheck
                   <span aria-hidden>→</span>

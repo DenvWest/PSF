@@ -24,7 +24,7 @@ export default function HomePage() {
               label: "Onafhankelijk",
               description: "Geen sponsors of betaalde plaatsingen",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
                   <path d="M12 3L4 7v5c0 4.97 3.6 9.6 8 10.93C16.4 21.6 20 16.97 20 12V7L12 3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
                   <path d="M9.5 12l2 2 3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -34,7 +34,7 @@ export default function HomePage() {
               label: "Onderbouwd",
               description: "Gebaseerd op peer-reviewed onderzoek",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
                   <path d="M4 19.5V4.5C4 3.67 4.67 3 5.5 3H19v18H5.5C4.67 21 4 20.33 4 19.5z" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M4 19.5C4 18.67 4.67 18 5.5 18H19" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M9 8h6M9 12h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -45,7 +45,7 @@ export default function HomePage() {
               label: "3 minuten",
               description: "12 vragen, persoonlijk herstelplan",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
                   <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -55,7 +55,7 @@ export default function HomePage() {
               label: "Gratis",
               description: "Geen account, geen kosten",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
                   <rect x="3" y="10" width="18" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M3 14h18M12 10V21" stroke="currentColor" strokeWidth="1.5" />
                   <rect x="8" y="6" width="8" height="4" rx="0.5" stroke="currentColor" strokeWidth="1.5" />
@@ -87,7 +87,7 @@ export default function HomePage() {
         aria-label="Leefstijlcheck"
       >
         <Container>
-          <div className="bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] text-white rounded-2xl p-8 lg:p-12 text-center">
+          <div className="bg-gradient-to-br from-ps-green to-ps-green-hover text-white rounded-2xl p-8 lg:p-12 text-center">
             <h2 className="font-serif text-2xl lg:text-3xl text-white">
               Niet zeker waar je moet beginnen?
             </h2>
@@ -98,7 +98,7 @@ export default function HomePage() {
             <div className="mt-6">
               <Link
                 href="/intake"
-                className="inline-flex items-center gap-2 bg-white text-[#5A8F6A] rounded-lg px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
+                className="inline-flex items-center gap-2 bg-white text-ps-green rounded-lg px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
               >
                 Start de Leefstijlcheck
                 <span aria-hidden="true">→</span>

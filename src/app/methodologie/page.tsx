@@ -23,7 +23,7 @@ const criteria = [
     title: "Biobeschikbaarheid",
     pct: "25%",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
         <path d="M9 3h6v5l2 4v6a1 1 0 01-1 1H8a1 1 0 01-1-1v-6l2-4V3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
         <path d="M7 14h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         <path d="M9 3H7M15 3h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -35,7 +35,7 @@ const criteria = [
     title: "Dosering",
     pct: "30%",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
         <path d="M12 3v1M6.34 5.34l.7.7M3 12h1M6.34 18.66l.7-.7M12 20v1M17.66 18.66l-.7-.7M21 12h-1M17.66 5.34l-.7.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         <path d="M5 16h14M8 16l1.5-5h5L16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M10 19h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -44,7 +44,7 @@ const criteria = [
     content: (
       <p className="text-sm leading-relaxed text-stone-600">
         Of de dosis aansluit bij de{" "}
-        <Link href="/kennisbank/adh" className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]">ADH</Link>{" "}
+        <Link href="/kennisbank/adh" className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green">ADH</Link>{" "}
         en bij klinisch onderzoek.
       </p>
     ),
@@ -53,7 +53,7 @@ const criteria = [
     title: "Prijs-kwaliteit",
     pct: "25%",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
         <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
         <path d="M12 7v1m0 8v1m-2.5-5.5C9.5 10.67 10.5 10 12 10s2.5.67 2.5 1.5S13.5 13 12 13s-2.5.67-2.5 1.5S10.5 16 12 16s2.5-.67 2.5-1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
@@ -64,14 +64,14 @@ const criteria = [
     title: "Transparantie",
     pct: "20%",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-[#5A8F6A]">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5 text-ps-green">
         <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.5" />
         <path d="M20 20l-3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
     content: (
       <p className="text-sm leading-relaxed text-stone-600">
-        <Link href="/kennisbank/derde-partij-testen" className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]">Derde-partij testen</Link>,{" "}
+        <Link href="/kennisbank/derde-partij-testen" className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green">Derde-partij testen</Link>,{" "}
         EFSA-claims en volledige ingrediëntenlijst.
       </p>
     ),
@@ -80,7 +80,7 @@ const criteria = [
 
 export default function MethodologiePage() {
   const linkClass =
-    "font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]";
+    "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green";
 
   return (
     <>
@@ -232,7 +232,7 @@ export default function MethodologiePage() {
           </div>
 
           <section className="my-16">
-            <div className="bg-gradient-to-br from-[#5A8F6A] to-[#4a7a5a] text-white rounded-2xl p-8 lg:p-12 text-center">
+            <div className="bg-gradient-to-br from-ps-green to-ps-green-hover text-white rounded-2xl p-8 lg:p-12 text-center">
               <h2 className="font-display text-2xl md:text-3xl font-bold text-white">
                 Niet zeker welk supplement bij jou past?
               </h2>
@@ -242,7 +242,7 @@ export default function MethodologiePage() {
               <div className="mt-6">
                 <Link
                   href="/intake"
-                  className="inline-flex items-center gap-2 bg-white text-[#5A8F6A] rounded-lg px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
+                  className="inline-flex items-center gap-2 bg-white text-ps-green rounded-lg px-8 py-3.5 font-semibold text-sm hover:bg-white/90 transition-all shadow-lg"
                 >
                   Start de Leefstijlcheck
                   <span aria-hidden="true">→</span>

@@ -34,7 +34,7 @@ export function ComparisonEducationalLead({
         </p>
         <Link
           href="/intake"
-          className="inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+          className="inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
         >
           Start de Leefstijlcheck →
         </Link>
@@ -88,7 +88,7 @@ export function ComparisonIntakeFallbackCta() {
         </p>
         <Link
           href="/intake"
-          className="inline-block rounded bg-[#3C7A56] px-4 py-2 font-medium text-white hover:bg-[#4A7F5A]"
+          className="inline-block rounded bg-[#3C7A56] px-4 py-2 font-medium text-white hover:bg-ps-green-hover"
         >
           Start de Leefstijlcheck →
         </Link>

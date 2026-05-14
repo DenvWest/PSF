@@ -4,7 +4,7 @@ import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 const INLINE_LINK_CLASS =
-  "font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A] hover:text-[#4a7a5a]";
+  "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
   title: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet | PerfectSupplement",
@@ -431,7 +431,7 @@ export default function EnergieNa40Page() {
                   </p>
                   <Link
                     href="/beste/vitamine-d"
-                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                    className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →
                   </Link>
@@ -450,7 +450,7 @@ export default function EnergieNa40Page() {
                   </p>
                   <Link
                     href="/beste/omega-3-supplement"
-                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                    className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →
                   </Link>
@@ -469,7 +469,7 @@ export default function EnergieNa40Page() {
                   </p>
                   <Link
                     href="/beste/creatine"
-                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                    className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →
                   </Link>
@@ -487,7 +487,7 @@ export default function EnergieNa40Page() {
                   </p>
                   <Link
                     href="/beste/magnesium"
-                    className="mt-2 inline-block font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px]"
+                    className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
                   >
                     Bekijk de vergelijking →
                   </Link>
@@ -563,7 +563,7 @@ export default function EnergieNa40Page() {
                   </p>
                   <Link
                     href="/profiel/lage-batterij"
-                    className="mt-2 inline-block text-sm font-semibold text-[#5A8F6A] hover:underline"
+                    className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
                     Lees meer over het Lage Batterij-profiel →
                   </Link>
@@ -578,7 +578,7 @@ export default function EnergieNa40Page() {
                   </p>
                   <Link
                     href="/stress-verminderen-man"
-                    className="mt-2 inline-block text-sm font-semibold text-[#5A8F6A] hover:underline"
+                    className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
                     Lees de gids: Stress Verminderen na 40 →
                   </Link>
@@ -593,7 +593,7 @@ export default function EnergieNa40Page() {
                   </p>
                   <Link
                     href="/slaap-verbeteren-na-40"
-                    className="mt-2 inline-block text-sm font-semibold text-[#5A8F6A] hover:underline"
+                    className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
                     Lees de gids: Slaap Verbeteren na 40 →
                   </Link>

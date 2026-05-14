@@ -78,7 +78,7 @@ export default function ThemaGrid({
             className={`group relative rounded-2xl border border-stone-200 bg-white p-5 flex flex-col items-start transition-all duration-200 h-full ${
               thema.comingSoon
                 ? "opacity-40 cursor-not-allowed"
-                : "hover:shadow-md hover:-translate-y-1 cursor-pointer hover:border-[#5A8F6A]"
+                : "hover:shadow-md hover:-translate-y-1 cursor-pointer hover:border-ps-green"
             }`}
           >
             <div className="relative">

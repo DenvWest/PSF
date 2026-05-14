@@ -39,8 +39,8 @@ export default function CategoryNav({ themas }: CategoryNavProps) {
 
   const chipClass = (tag: ThemaTag | "alles") =>
     tag === active
-      ? "bg-[#5A8F6A] text-white shadow-sm font-semibold"
-      : "bg-white text-stone-600 border border-stone-200 hover:border-[#5A8F6A]/30 hover:text-[#5A8F6A] transition-all";
+      ? "bg-ps-green text-white shadow-sm font-semibold"
+      : "bg-white text-stone-600 border border-stone-200 hover:border-ps-green/30 hover:text-ps-green transition-all";
 
   return (
     <>

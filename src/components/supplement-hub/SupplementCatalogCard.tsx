@@ -25,7 +25,7 @@ export default function SupplementCatalogCard({
         className={`bg-white rounded-xl border border-stone-200 p-5 flex gap-4 h-full transition-all duration-200 ${
           entry.comingSoon
             ? "opacity-40 cursor-not-allowed"
-            : "hover:border-[#5A8F6A]/40 hover:shadow-md hover:-translate-y-0.5"
+            : "hover:border-ps-green/40 hover:shadow-md hover:-translate-y-0.5"
         }`}
       >
         {/* Icon */}
@@ -65,7 +65,7 @@ export default function SupplementCatalogCard({
               {entry.comparisonHref === entry.guideHref ? (
                 <Link
                   href={entry.comparisonHref}
-                  className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
+                  className="text-sm font-semibold text-ps-green hover:text-ps-green-hover transition-colors"
                 >
                   Vergelijk →
                 </Link>
@@ -73,14 +73,14 @@ export default function SupplementCatalogCard({
                 <>
                   <Link
                     href={entry.guideHref}
-                    className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
+                    className="text-sm font-semibold text-ps-green hover:text-ps-green-hover transition-colors"
                   >
                     Lees de gids →
                   </Link>
                   {entry.comparisonHref && (
                     <Link
                       href={entry.comparisonHref}
-                      className="text-sm font-semibold text-[#5A8F6A] hover:text-[#4A7F5A] transition-colors"
+                      className="text-sm font-semibold text-ps-green hover:text-ps-green-hover transition-colors"
                     >
                       Vergelijk →
                     </Link>

@@ -4,7 +4,7 @@ import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 const INLINE_LINK_CLASS =
-  "font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A] hover:text-[#4a7a5a]";
+  "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
   title:
@@ -494,7 +494,7 @@ export default function StressVerminderenManPage() {
                   </p>
                   <a
                     href="/energie-na-40"
-                    className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] mt-2 inline-block text-sm"
+                    className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] mt-2 inline-block text-sm"
                   >
                     Lees de gids: Energie Na 40 →
                   </a>
@@ -503,54 +503,54 @@ export default function StressVerminderenManPage() {
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <Link
                     href="/blog/cortisol-verlagen-natuurlijk"
-                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-[#5A8F6A]/30"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
                       Chronisch verhoogd cortisol beïnvloedt je slaap, stemming en gewicht — vaak
                       zonder dat je het doorhebt. In dit artikel: vijf onderbouwde leefstijlroutes om
                       je cortisol te verlagen.
                     </p>
-                    <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Lees het artikel →
                     </span>
                   </Link>
 
                   <Link
                     href="/blog/ademhaling-tegen-stress"
-                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-[#5A8F6A]/30"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
                       Je ademhaling is de snelste manier om je zenuwstelsel te beïnvloeden. Geen
                       apparaat nodig, geen abonnement.
                     </p>
-                    <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Lees het artikel →
                     </span>
                   </Link>
 
                   <Link
                     href="/blog/stress-werk-grenzen-stellen"
-                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-[#5A8F6A]/30"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
                       Nee zeggen voelt riskant als je verantwoordelijkheid draagt of je positie wilt
                       behouden. Maar chronische overbelasting is een groter risico.
                     </p>
-                    <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Lees het artikel →
                     </span>
                   </Link>
 
                   <Link
                     href="/profiel/stressdrager"
-                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-[#5A8F6A]/30"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
                       Herken je het Stressdrager-profiel? Als chronische stress je primaire patroon
                       is, past dit profiel bij jou. Met concrete stappen en supplementadvies
                       afgestemd op jouw situatie.
                     </p>
-                    <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Lees meer over het Stressdrager-profiel →
                     </span>
                   </Link>

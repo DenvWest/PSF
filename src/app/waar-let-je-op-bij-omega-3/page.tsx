@@ -71,7 +71,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             <Link
                                 href="/beste/omega-3-supplement"
-                                className="inline-flex items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
+                                className="inline-flex items-center justify-center rounded-xl bg-ps-green px-6 py-3 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
                             >
                                 Bekijk beste omega&nbsp;3 supplementen
                             </Link>
@@ -238,7 +238,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                         </p>
                         <Link
                             href="/methodologie"
-                            className="mt-5 inline-flex items-center text-sm font-medium text-[#5A8F6A] underline hover:text-[#4A7F5A]"
+                            className="mt-5 inline-flex items-center text-sm font-medium text-ps-green underline hover:text-ps-green-hover"
                         >
                             Lees hoe we beoordelen →
                         </Link>
@@ -259,7 +259,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                             <Link
                                 href="/beste/omega-3-supplement"
-                                className="inline-flex items-center rounded-xl bg-[#5A8F6A] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
+                                className="inline-flex items-center rounded-xl bg-ps-green px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
                             >
                                 Bekijk beste omega&nbsp;3 supplementen →
                             </Link>
@@ -294,7 +294,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                     Wil je producten direct naast elkaar zien? Bekijk dan onze{" "}
                     <Link
                         href="/beste/omega-3-supplement"
-                        className="text-[#5A8F6A] underline hover:text-[#4A7F5A]"
+                        className="text-ps-green underline hover:text-ps-green-hover"
                     >
                         vergelijking van omega&nbsp;3 supplementen
                     </Link>
@@ -326,13 +326,13 @@ export default function WaarLetJeOpBijOmega3Page() {
                 <Container>
                     <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Link href="/beste/omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                        <Link href="/beste/omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-ps-green/30 transition-colors">
                             <p className="text-base text-stone-600 leading-relaxed">Klaar om een product te kiezen? Onze top 5 vergeleken op EPA/DHA, prijs per dag en transparantie.</p>
-                            <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Bekijk beste omega 3 →</span>
+                            <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">Bekijk beste omega 3 →</span>
                         </Link>
-                        <Link href="/beste/omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors">
+                        <Link href="/beste/omega-3-supplement" className="group block rounded-xl border border-stone-200 p-6 hover:border-ps-green/30 transition-colors">
                             <p className="text-base text-stone-600 leading-relaxed">Alle producten naast elkaar in een vergelijkingstabel — snel de verschillen zien.</p>
-                            <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">Vergelijk omega 3 supplementen →</span>
+                            <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">Vergelijk omega 3 supplementen →</span>
                         </Link>
                     </div>
                 </Container>
@@ -356,7 +356,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                             <Link
                                 href="/beste/omega-3-supplement"
-                                className="inline-flex items-center justify-center rounded-xl bg-[#5A8F6A] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
+                                className="inline-flex items-center justify-center rounded-xl bg-ps-green px-6 py-3 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
                             >
                                 Bekijk beste omega&nbsp;3 supplementen
                             </Link>
@@ -379,7 +379,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                         </p>
                         <Link
                             href="/intake"
-                            className="inline-block bg-[#5A8F6A] text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-[#4A7F5A] transition-colors"
+                            className="inline-block bg-ps-green text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-ps-green-hover transition-colors"
                         >
                             Start de gratis intake →
                         </Link>

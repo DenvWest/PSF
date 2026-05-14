@@ -20,7 +20,7 @@ const PROFILE_FILL = [
   "#5B6EAE",
   "#C4873B",
   "#8B6E99",
-  "#5A8F6A",
+  "var(--ps-green)",
   "#C26E4B",
   "#4A8A99",
   "#7a6a5a",

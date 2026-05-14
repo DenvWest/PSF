@@ -204,7 +204,7 @@ export default async function Page({ params }: PageProps) {
                   <Link
                     key={card.href}
                     href={card.href}
-                    className={`group block rounded-xl border border-stone-200 p-6 hover:border-[#5A8F6A]/30 transition-colors${
+                    className={`group block rounded-xl border border-stone-200 p-6 hover:border-ps-green/30 transition-colors${
                       card.colSpan === 2 ? " md:col-span-2" : ""
                     }`}
                   >
@@ -212,7 +212,7 @@ export default async function Page({ params }: PageProps) {
                       {card.text}
                     </p>
                     {card.cta && (
-                      <span className="mt-3 inline-block text-sm font-semibold text-[#5A8F6A] group-hover:underline">
+                      <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                         {card.cta}
                       </span>
                     )}

@@ -86,7 +86,7 @@ export const CATEGORIES: readonly Category[] = [
   { id: "slaap", label: "Slaap", icon: "🌙", color: "#5B6EAE" },
   { id: "energie", label: "Energie", icon: "⚡", color: "#C4873B" },
   { id: "stress", label: "Stress", icon: "🧠", color: "#8B6E99" },
-  { id: "voeding", label: "Voeding", icon: "🥗", color: "#5A8F6A" },
+  { id: "voeding", label: "Voeding", icon: "🥗", color: "var(--ps-green)" },
   { id: "beweging", label: "Beweging", icon: "🏃", color: "#C26E4B" },
   { id: "herstel", label: "Herstel", icon: "🔄", color: "#4A8A99" },
 ] as const satisfies readonly Category[];
