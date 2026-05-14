@@ -1,4 +1,4 @@
-import type { SupplementData } from "@/types/supplementen";
+import type { SupplementData } from "@/types/supplement-guide";
 
 export const ashwagandhaData: SupplementData = {
   slug: "ashwagandha",

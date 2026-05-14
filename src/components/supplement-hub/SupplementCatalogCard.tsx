@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CatalogEntry } from "@/data/supplementen-hub/catalog";
+import type { CatalogEntry } from "@/data/supplement-hub/catalog";
 
 const ICON_BG_MAP: Record<string, string> = {
   magnesium: "bg-emerald-100",

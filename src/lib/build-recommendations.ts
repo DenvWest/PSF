@@ -1,5 +1,5 @@
 import { SUPPLEMENT_ROUTE_DEFINITIONS } from "@/data/supplement-routes";
-import { catalogBySlug } from "@/data/supplementen-hub/catalog";
+import { catalogBySlug } from "@/data/supplement-hub/catalog";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { isSupplementAvailable } from "@/lib/supplement-availability";
 

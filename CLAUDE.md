@@ -18,20 +18,35 @@ PerfectSupplement (perfectsupplement.nl) is een onafhankelijk supplementen-verge
 
 ```
 src/
-├── app/            # Next.js App Router pagina's
-│   ├── intake/     # Intake flow (/intake)
-│   ├── admin/      # Admin dashboard
-│   ├── blog/       # Blog artikelen
+├── app/                    # Next.js App Router pagina's (NL routes, bijv. /supplementen/)
+│   ├── intake/             # Intake flow (/intake)
+│   ├── admin/              # Admin dashboard
+│   ├── blog/               # Blog artikelen
+│   ├── supplementen/       # Supplementgids pagina's (/supplementen/*)
 │   └── ...
 ├── components/
-│   ├── intake/     # IntakeIntro, IntakeQuestion, IntakeResults, etc.
-│   ├── supplements/# Supplement vergelijkingspagina componenten
-│   ├── layout/     # Header, Footer, Container
-│   └── blog/       # Blog componenten
-├── data/           # Statische data (vragen, categorieën, supplementen, affiliate-links)
-├── lib/            # Utility functies, Supabase client, scoring engine, nurture, rate-limit
-└── types/          # TypeScript types (supplement.ts, etc.)
+│   ├── intake/             # IntakeIntro, IntakeQuestion, IntakeResults, etc.
+│   ├── supplements/        # Vergelijkingspagina componenten (/beste-*)
+│   ├── supplement-guides/  # Supplementgids componenten (/supplementen/*)
+│   ├── supplement-hub/     # Hub-overzichtspagina componenten (/supplementen)
+│   ├── layout/             # Header, Footer, Container
+│   └── blog/               # Blog componenten
+├── data/
+│   ├── supplements/        # ComparisonPageData voor vergelijkingspagina's
+│   ├── supplement-guides/  # SupplementData voor gidspagina's
+│   ├── supplement-hub/     # Catalog data voor hub-overzicht
+│   └── ...                 # Overige statische data (vragen, categorieën, affiliate-links)
+├── lib/                    # Utility functies, Supabase client, scoring engine, nurture, rate-limit
+├── proxy.ts                # Next.js proxy (admin auth, CSP, security headers)
+└── types/                  # TypeScript types (supplement.ts, supplement-guide.ts, etc.)
 ```
+
+### Naamconventie mappen
+
+- **Data en componenten**: altijd Engelse mapnamen (`supplements/`, `supplement-guides/`, `supplement-hub/`)
+- **Routes/URLs**: Nederlandse slugs waar user-facing (`/supplementen/`, `/beste-magnesium`)
+- **Geen `src/service/`** — alle logica hoort in `src/lib/`
+- **Geen losse bestanden in `src/`** behalve `proxy.ts` (Next.js 16 proxy conventie)
 
 ## Code conventies
 

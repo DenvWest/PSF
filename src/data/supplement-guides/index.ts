@@ -6,7 +6,7 @@ import { melatonineData } from "./melatonine";
 import { creatineGidsData } from "./creatine";
 import { zinkGidsData } from "./zink";
 import { eiwitpoederGidsData } from "./eiwitpoeder";
-import type { SupplementSlug, SupplementData } from "@/types/supplementen";
+import type { SupplementSlug, SupplementData } from "@/types/supplement-guide";
 
 const alleSupplementen: Record<SupplementSlug, SupplementData> = {
   magnesium: magnesiumData,

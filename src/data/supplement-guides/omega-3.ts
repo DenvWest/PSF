@@ -1,4 +1,4 @@
-import type { SupplementData } from "@/types/supplementen";
+import type { SupplementData } from "@/types/supplement-guide";
 
 export const omega3Data: SupplementData = {
   slug: "omega-3",

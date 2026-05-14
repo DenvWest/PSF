@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getSupplementData, ALL_SUPPLEMENT_SLUGS } from "@/data/supplementen";
-import type { SupplementSlug } from "@/types/supplementen";
-import SupplementPage from "@/components/supplementen/SupplementPage";
+import { getSupplementData, ALL_SUPPLEMENT_SLUGS } from "@/data/supplement-guides";
+import type { SupplementSlug } from "@/types/supplement-guide";
+import SupplementPage from "@/components/supplement-guides/SupplementPage";
 
 type Props = { params: Promise<{ supplement: string }> };
 

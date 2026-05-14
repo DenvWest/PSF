@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
-import HubHero from "@/components/supplementen-hub/HubHero";
-import RecommendedForYou from "@/components/supplementen-hub/RecommendedForYou";
-import ProfileUpdateLink from "@/components/supplementen-hub/ProfileUpdateLink";
-import ThemaGrid from "@/components/supplementen-hub/ThemaGrid";
-import SupplementCatalog from "@/components/supplementen-hub/SupplementCatalog";
+import HubHero from "@/components/supplement-hub/HubHero";
+import RecommendedForYou from "@/components/supplement-hub/RecommendedForYou";
+import ProfileUpdateLink from "@/components/supplement-hub/ProfileUpdateLink";
+import ThemaGrid from "@/components/supplement-hub/ThemaGrid";
+import SupplementCatalog from "@/components/supplement-hub/SupplementCatalog";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
-import { CATALOG } from "@/data/supplementen-hub/catalog";
+import { CATALOG } from "@/data/supplement-hub/catalog";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
 import {
   buildBreadcrumbSchema,

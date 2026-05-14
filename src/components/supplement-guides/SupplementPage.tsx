@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { SupplementData } from "@/types/supplementen";
+import type { SupplementData } from "@/types/supplement-guide";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import VormCard from "./VormCard";

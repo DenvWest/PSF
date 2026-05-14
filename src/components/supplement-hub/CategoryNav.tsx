@@ -1,6 +1,6 @@
 "use client";
 
-import type { ThemaTag } from "@/data/supplementen-hub/catalog";
+import type { ThemaTag } from "@/data/supplement-hub/catalog";
 import { useState } from "react";
 
 type CategoryNavProps = {

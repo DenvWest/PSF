@@ -3,7 +3,7 @@
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { handleSendEmail } from "@/service/contact";
+import { handleSendEmail } from "@/lib/contact";
 import contactFormStyles from "./contact-form.module.css";
 
 function getField(name: string, form: FormData): string {

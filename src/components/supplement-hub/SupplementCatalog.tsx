@@ -1,6 +1,6 @@
-import { CATALOG, type ThemaTag } from "@/data/supplementen-hub/catalog";
-import CategoryNav from "@/components/supplementen-hub/CategoryNav";
-import SupplementCatalogCard from "@/components/supplementen-hub/SupplementCatalogCard";
+import { CATALOG, type ThemaTag } from "@/data/supplement-hub/catalog";
+import CategoryNav from "@/components/supplement-hub/CategoryNav";
+import SupplementCatalogCard from "@/components/supplement-hub/SupplementCatalogCard";
 
 function getUniqueThemas(): ThemaTag[] {
   const seen = new Set<ThemaTag>();
