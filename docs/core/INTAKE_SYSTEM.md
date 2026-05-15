@@ -88,11 +88,13 @@ Scoring engine: `src/lib/intake-engine.ts`
 | Profiel | Trigger | Primaire score |
 |---|---|---|
 | Onrustige Slaper | `sleep_score < 40` | sleep_score |
-| Lage Batterij | `energy_score < 40` | energy_score |
 | Stressdrager | `stress_score < 40` | stress_score |
-| Stille Tekorten | `nutrition_score < 40` | nutrition_score |
+| Lage Batterij | `energy_score < 40` of `movement_score < 40` | energy_score / movement_score |
+| In Balans | Alle domeinen ≥ 40 | hoogste domein |
 
-**Prioriteit bij meerdere matches:** profiel met laagste genormaliseerde score wint. Bij gelijk: slaap > stress > energie > voeding > beweging > herstel.
+**Prioriteit bij meerdere matches:** slaap > stress > energie/beweging. Nutrition en recovery hebben geen eigen profiellabel.
+
+**Overtrainer-patroon:** Geen apart profiellabel in de engine. Het patroon (`movement_frequency ≥ 3` EN `recovery_score ≤ 35`) wordt herkend in de supplementroute-logica (`getSupplementRoute`) en in de nurture e-mails. Er bestaat wel een `/profiel/overtrainer` pagina en de waarde `Overtrainer` kan in `profile_label` staan in de database.
 
 ---
 

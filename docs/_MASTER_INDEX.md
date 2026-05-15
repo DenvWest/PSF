@@ -14,10 +14,10 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 ## Wat is live (mei 2026)
 
-- 6 vergelijkingspagina's (omega-3, magnesium, ashwagandha, zink, creatine, vitamine D)
-- 1 pillar page (`/slaap-verbeteren-na-40`)
-- 1 profielpagina (`/profiel/onrustige-slaper`)
-- 19 blogartikelen, 11 kennisbankbegrippen, 4 thema-hubs
+- 8 vergelijkingspagina's (omega-3, magnesium, ashwagandha, zink, creatine, vitamine D, melatonine, eiwitpoeder)
+- 4 pillar pages (`/slaap-verbeteren-na-40`, `/stress-verminderen-man`, `/energie-na-40`, `/herstel-verbeteren-na-40`)
+- 4 profielpagina's (onrustige-slaper, stressdrager, lage-batterij, overtrainer)
+- 21 blogartikelen, 17 kennisbankbegrippen, 4 thema-hubs
 - Intake flow met scoring engine, nurture emails, affiliate tracking
 - Admin dashboard
 

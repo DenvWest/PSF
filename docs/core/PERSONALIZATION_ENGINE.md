@@ -9,9 +9,9 @@
 | Profiel | Slug | Trigger | Status |
 |---|---|---|---|
 | Onrustige Slaper | `onrustige-slaper` | `sleep_score < 40` | ✅ Live |
-| Lage Batterij | `lage-batterij` | `energy_score < 40` | ✏️ Gepland |
-| Stressdrager | `stressdrager` | `stress_score < 40` | ✏️ Gepland |
-| Overtrainer | `overtrainer` | `movement_frequency ≥ 3 EN recovery_score ≤ 35` | ✏️ Gepland |
+| Stressdrager | `stressdrager` | `stress_score < 40` | ✅ Live |
+| Lage Batterij | `lage-batterij` | `energy_score < 40` | ✅ Live |
+| Overtrainer | `overtrainer` | `movement_frequency ≥ 3 EN recovery_score ≤ 35` | ✅ Live |
 
 **Prioriteit bij meerdere matches:** laagste genormaliseerde score wint. Bij gelijk: slaap > stress > energie > voeding > beweging > herstel.
 
