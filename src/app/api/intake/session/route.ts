@@ -225,6 +225,7 @@ export async function POST(request: NextRequest) {
       marketing_email: consent.marketingEmail
         ? consent.marketingEmailAddress
         : null,
+      first_name: consent.firstName,
     })
     .select("id")
     .single();
@@ -268,6 +269,7 @@ export async function POST(request: NextRequest) {
         primaryDomain: getAdvicePrimaryDomain(scores),
         domainScores: scores,
         urgencyLevel: urgency,
+        firstName: consent.firstName,
       });
     } catch (nurtureErr) {
       console.error(

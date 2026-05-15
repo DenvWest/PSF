@@ -224,9 +224,9 @@ export default function StressdragerPage() {
                 Supplementen Die Helpen Bij Dit Profiel
               </h3>
               <p className="text-slate-600 mb-6">
-                Leefstijl en kleine grenzen leggen het fundament. Als cortisol chronisch hoog blijft, kan
-                gerichte ondersteuning via supplementen een volgende stap zijn — deze twee zijn het
-                meest relevant bij het Stressdrager-profiel:
+                Leefstijl en kleine grenzen leggen het fundament. Als je ondanks die basis nog veel
+                spanning en slechte slaap herkent, kan gerichte ondersteuning via supplementen een
+                volgende stap zijn — deze twee sluiten vaak aan bij dit profiel:
               </p>
 
               <div className="mb-6">

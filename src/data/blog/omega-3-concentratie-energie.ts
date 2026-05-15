@@ -45,6 +45,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     href: "/thema/energie",
   },
   gerelateerdeSluggen: [
+    "omega-3-en-herstel",
     "energie-verhogen-natuurlijk",
     "vitamine-d-tekort-herkennen",
     "testosteron-en-energie-na-40",

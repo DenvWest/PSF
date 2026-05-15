@@ -19,6 +19,7 @@
 | profile_label | text | `Onrustige Slaper`, `Stressdrager`, `Lage Batterij`, `Overtrainer`, `In Balans` |
 | age_range | text | `40-44`, `45-49`, `50-54`, `55+` |
 | marketing_email | text, nullable | — |
+| first_name | text, nullable | Optionele voornaam voor personalisatie (nurture-mails) |
 | organization_id | uuid, nullable | Voorbereid voor B2B white-label, niet in gebruik |
 
 ### intake_reminders
@@ -38,6 +39,7 @@
 | id | uuid, pk | — |
 | created_at | timestamptz | — |
 | email | text | — |
+| first_name | text, nullable | Snapshot voornaam bij scheduling |
 | template_key | text | `day0_welcome`, `day3_quickwins`, etc. |
 | scheduled_at | timestamptz | — |
 | sent | boolean, default false | — |

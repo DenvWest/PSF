@@ -16,7 +16,7 @@ export const overtrainerProfile: ProfilePageData = {
   hero: {
     headline: "Overtrainer — Te veel trainingsvolume, te weinig recovery",
     subline:
-      "🔥 Je traint harder dan je lichaam kan bijbenen met rust — met alle respect voor je discipline. Hier vind je herkenning (geen oordeel), wat er dan vaak fysiologisch meespeelt, en hoe je vier weken richting herstel stuurt.",
+      "Je traint harder dan je lichaam kan bijbenen met rust — met alle respect voor je discipline. Hier vind je herkenning (geen oordeel), wat er dan vaak meespeelt in het dagelijks leven, en hoe je vier weken richting herstel stuurt.",
   },
 
   recognition: {
@@ -53,13 +53,12 @@ export const overtrainerProfile: ProfilePageData = {
   },
 
   understanding: {
-    title: "Wat gebeurt er?",
+    title: "Wat speelt er vaak mee?",
     paragraphs: [
-      "Zware inspanning is voor je systeem ook belasting. De HPA-as (hypothalamus–hypofyse–bijnieren; het samenspel waarmee stresshormonen worden aangestuurd) hoort zich na inspanning weer naar rust te oriënteren. Blijven er weinig echte rustvensters tussen harde blokken, dan kan dat ritme uit balans raken: langdurig meer \"stressmodus\", minder echte recuperatie.",
-      "Het cortisolritme hoort zich te verdunnen naar de avond voor betere slaapkwaliteit. Als dat lang scheef staat merken veel mensen opgejaagde dagen maar oppervlakkige nachten — juist daar waar diepe slaap veel betekenis heeft voor gewrichten, spieren en concentratie overdag.",
-      "Ontstekings-, stijfheids- en pijnsignalen horen na zware periodes tijdelijk mee te lopen maar meestal wel weer af te vlakken. Blijven ze ophopen: in onderzoekscontext wordt vaak gesproken van overbelasting van spieren, pezen en bindweefsel, met lokale spanning en immunologische facetten eromheen géén oordeel over jou als individu.",
-      "Het centrale zenuwstelsel kan wennen aan veel prikkels en constante drive. Signalen zoals geforceerde motivatie voor training, meer prikkelgevoeligheid of moeite met \"loslaten\" na werk worden daarmee in verband gebracht. Hard trainen mag; leren herstellen is een aparte vaardigheid.",
-      "Na je veertigste is de marge tussen flinke progressie en te weinig herstel kleiner: dezelfde weekstructuur vraagt vaker om extra rust en structuur dan tien jaar geleden.",
+      "Zware training is voor je lichaam ook belasting. Als er weinig echte rust tussen harde blokken zit, blijft het gevoel van \"aan\" langer hangen: moe, maar toch slecht landen in bed, en sneller geïrriteerd in werk en gezin.",
+      "Slaap blijft dan vaak oppervlakkig — je bent wel moe, maar niet uitgerust. Dat maakt de volgende training zwaarder, terwijl je hoofd zegt dat je door moet. Dat patroon herkennen veel fanatieke sporters; het zegt niets over je karakter.",
+      "Kleine blessure- of stijfheidsklachten die blijven terugkomen, passen bij te weinig herstel ten opzichte van volume. In de sportwereld heet dat vaak overbelasting: geen diagnose van jou als individu, wel een signaal om tijdelijk gas terug te nemen.",
+      "Na je veertigste is de marge tussen flinke vooruitgang en te weinig herstel kleiner: dezelfde weekstructuur vraagt vaker om extra rust en structuur dan tien jaar geleden.",
     ],
   },
 
@@ -209,9 +208,9 @@ export const overtrainerProfile: ProfilePageData = {
   },
 
   relatedPillar: {
-    href: "/thema/herstel",
+    href: "/herstel-verbeteren-na-40",
     turboSnippet:
-      "Herstel na 40 verandert — dit thema legt uit waarom en wat realistische stappen zijn.",
+      "Herstel na 40: waarom volume en slaap samenhangen — met bronnen en een concreet weekplan.",
   },
 
   relatedComparisons: [

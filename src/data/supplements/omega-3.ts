@@ -26,9 +26,21 @@ export const omega3Data: ComparisonPageData = {
     { href: "/wat-is-omega-3", label: "Wat is omega-3? Een introductie op vetzuren" },
   ],
   readAlsoCards: [
-    { href: "/beste/omega-3-supplement", text: "Eet je zelden vette vis? Vergelijk EPA/DHA-producten op kwaliteit en dosering.", cta: "Naar omega-3 vergelijken →" },
-    { href: "/profiel/lage-batterij", text: "Vaak moe? EPA en DHA dragen bij tot normale hartfunctie; DHA ook tot instandhouding van hersenfunctie — handig als je weinig vette vis eet.", cta: "Bekijk het profiel →" },
-    { href: "/thema/herstel", text: "Herstel na sport of inspanning begint van binnenuit.", cta: "Lees de herstelgids →" },
+    {
+      href: "/profiel/overtrainer",
+      text: "Veel belasting en traag herstel? Omega-3 past vaak in het bredere herstelplaatje naast rust en slaap.",
+      cta: "Past bij profiel Overtrainer →",
+    },
+    {
+      href: "/herstel-verbeteren-na-40",
+      text: "EPA/DHA in context van slaap, eiwit en training — pillar herstel na 40.",
+      cta: "Naar herstel-pillar →",
+    },
+    {
+      href: "/blog/omega-3-en-herstel",
+      text: "Cluster: omega-3 koppelen aan herstel en vergelijken.",
+      cta: "Lees het artikel →",
+    },
   ],
   choiceRoutes: [
     {

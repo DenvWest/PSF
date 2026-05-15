@@ -14,6 +14,11 @@ import { vitamineDTekortHerkennenData } from "./vitamine-d-tekort-herkennen";
 import { testosteronEnEnergieNa40Data } from "./testosteron-en-energie-na-40";
 import { omega3ConcentratieEnergieData } from "./omega-3-concentratie-energie";
 import { slaapritmeHerstellenData } from "./slaapritme-herstellen";
+import { creatineEnHerstelData } from "./creatine-en-herstel";
+import { vitamineDEnEnergieData } from "./vitamine-d-en-energie";
+import { cortisolEnTestosteronData } from "./cortisol-en-testosteron";
+import { zinkEnTestosteronData } from "./zink-en-testosteron";
+import { omega3EnHerstelData } from "./omega-3-en-herstel";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -35,6 +40,11 @@ export const alleArtikelen: BlogArtikel[] = [
   testosteronEnEnergieNa40Data,
   omega3ConcentratieEnergieData,
   slaapritmeHerstellenData,
+  creatineEnHerstelData,
+  vitamineDEnEnergieData,
+  cortisolEnTestosteronData,
+  zinkEnTestosteronData,
+  omega3EnHerstelData,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

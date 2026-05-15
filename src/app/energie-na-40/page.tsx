@@ -9,14 +9,14 @@ const INLINE_LINK_CLASS =
 export const metadata: Metadata = {
   title: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet | PerfectSupplement",
   description:
-    "Altijd moe na 40? Dat is niet normaal. Ontdek de oorzaken — van mitochondriën tot hormonen — en wat je vandaag nog kunt veranderen.",
+    "Structureel moe na 40? Herkenning, oorzaken in begrijpelijke taal (slaap, ritme, eten, beweging) en wat je stap voor stap kunt doen.",
   alternates: {
     canonical: "/energie-na-40",
   },
   openGraph: {
     title: "Energie Na 40: Waarom Je Anders Bent (en Wat Je Eraan Doet)",
     description:
-      "Altijd moe na 40? Ontdek de oorzaken en wat je vandaag nog kunt veranderen.",
+      "Structureel moe na 40? Praktische stappen rond slaap, ritme, eten en beweging.",
     url: "/energie-na-40",
     type: "article",
   },
@@ -26,6 +26,8 @@ const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet",
+  description:
+    "Structureel moe na 40? Herkenning, oorzaken in begrijpelijke taal en wat je stap voor stap kunt doen.",
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -50,7 +52,7 @@ const faqSchema = {
       name: "Waarom ben ik altijd moe na mijn 40e?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Na je 40e veranderen meerdere systemen tegelijk: je mitochondriën produceren minder ATP, testosteron daalt met 1-2% per jaar, je insulinegevoeligheid neemt af, en vitamine D-tekort komt vaker voor. De combinatie van deze verschuivingen verklaart waarom vermoeidheid na 40 anders voelt dan 'gewoon moe zijn'.",
+        text: "Vermoeidheid heeft meestal meerdere oorzaken tegelijk: te weinig slaap, onregelmatig ritme, weinig beweging, veel stress en maaltijden met snelle suikerpieken. Dat voelt anders dan \"één nachtje kort\". Wil je het biologische verhaal dieper (bijv. mitochondriën of ATP)? Zie de kennisbank — hier focussen we op wat je in je week kunt sturen.",
       },
     },
     {
@@ -58,7 +60,7 @@ const faqSchema = {
       name: "Welk supplement helpt het beste tegen vermoeidheid?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Dat hangt af van de oorzaak. Bij vitamine D-tekort (zeer veel voorkomend in Nederland) is D3+K2 de eerste stap. Bij lage visinname helpt omega-3 (EPA/DHA). Creatine ondersteunt directe ATP-productie in spieren en brein. Begin met bloedonderzoek bij je huisarts om tekorten uit te sluiten.",
+        text: "Dat hangt af van je situatie. Vitamine D en omega-3 hebben erkende EU‑claims op onderdelen van gezondheid (zoals botten, immuunsysteem, hart, hersenen) — geen vaste claim op \"minder moe\" voor iedereen. Creatine heeft een EU‑claim rond korte, intense inspanning. Begin bij leefstijl; bij aanhoudende klachten kun je met je huisarts bloedonderzoek bespreken.",
       },
     },
     {
@@ -66,7 +68,7 @@ const faqSchema = {
       name: "Kan lage testosteron mijn vermoeidheid veroorzaken?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ja. Testosteron speelt een rol bij energieniveau, spiermassa en motivatie. Na 40 daalt testosteron met gemiddeld 1-2% per jaar. Bij aanhoudende vermoeidheid in combinatie met minder spiermassa, lager libido en stemmingsveranderingen is het zinvol om je testosteronwaarden te laten controleren via bloedonderzoek.",
+        text: "Hormonen zoals testosteron spelen mee bij energie en herstel, maar vermoeidheid is zelden één meetwaarde. Bij aanhoudende klachten (langdurige moeheid, duidelijke verandering in libido of spiermassa) is het zinvol om dit met je huisarts te bespreken — niet zelf te diagnosticeren.",
       },
     },
     {
@@ -74,7 +76,7 @@ const faqSchema = {
       name: "Hoe snel merk ik verschil als ik mijn leefstijl aanpas?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "De eerste quick wins (eiwitrijk ontbijt, ochtendlicht, geen cafeïne na 14:00) geven vaak binnen 3-5 dagen merkbaar verschil. Structurele verbetering van energieniveau duurt 2-4 weken. Supplementen als vitamine D hebben 4-8 weken nodig voor volledig effect.",
+        text: "Eerste stappen zoals eiwit bij het ontbijt, daglicht na het opstaan en minder cafeïne laat op de dag merken veel mensen binnen enkele dagen. Een rustiger weekritme bouw je meestal over enkele weken. Supplementen volg je altijd op het etiket en bij twijfel met je arts.",
       },
     },
     {
@@ -131,22 +133,22 @@ export default function EnergieNa40Page() {
                   </li>
                   <li>
                     <a href="#wat-er-verandert" className="hover:underline">
-                      Wat er verandert na 40
+                      Waarom energie na 40 anders voelt
                     </a>
                   </li>
                   <li>
                     <a href="#mitochondrien" className="hover:underline">
-                      Mitochondriën: je energiecentrales
+                      Celenergie — kort en zonder jargon
                     </a>
                   </li>
                   <li>
                     <a href="#hormonen" className="hover:underline">
-                      Testosteron, cortisol en energie
+                      Slaap, stress en eetritme
                     </a>
                   </li>
                   <li>
                     <a href="#bloedsuiker" className="hover:underline">
-                      Bloedsuiker: de onzichtbare achtbaan
+                      Eten en energiepieken
                     </a>
                   </li>
                   <li>
@@ -203,146 +205,116 @@ export default function EnergieNa40Page() {
                   </li>
                 </ul>
                 <p className="mt-6 text-gray-700 leading-relaxed">
-                  Als je hier drie of meer van herkent, lees verder. Dit is geen normaal onderdeel
-                  van ouder worden — het is een signaal dat je energiesysteem uit balans is.
+                  Als je hier drie of meer van herkent, lees verder. Dat is geen \"normaal ouder
+                  worden\" — het is een signaal om je weekritme, slaap en voeding scherper te bekijken.
                 </p>
               </section>
 
               {/* 4. Wat er verandert */}
               <section id="wat-er-verandert" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Wat Er Verandert Na 40
+                  Waarom energie na 40 anders kan voelen
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Vermoeidheid na 40 is niet één ding. Het is de som van vier systemen die tegelijk
-                  verschuiven — langzaam genoeg om het te normaliseren, maar meetbaar genoeg om er
-                  iets aan te doen.
+                  Vermoeidheid is zelden één oorzaak. Meestal spelen slaap, stress, beweging en
+                  eetpatroon samen — langzaam genoeg om het te normaliseren, maar merkbaar genoeg om
+                  er bewust mee aan de slag te gaan.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  1. Je mitochondriën worden minder efficiënt
+                  1. Herstel duurt langer na dezelfde week
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Mitochondriën zijn de energiecentrales van je cellen. Ze zetten voedingsstoffen om
-                  in ATP — de brandstof voor alles wat je lichaam doet. Na je 40e daalt de
-                  mitochondriële efficiëntie. Je cellen produceren minder energie uit dezelfde input.
-                  Dit verklaart waarom je moe kunt zijn zonder dat er iets &quot;mis&quot; is op een
-                  bloedtest.
+                  Veel mannen merken dat een drukke week langer \"naar\" voelt dan tien jaar geleden.
+                  Dat hoeft geen ziekte te zijn: het past vaak bij minder slaap, meer schermwerk en
+                  minder beweging tussen vergaderingen door.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  2. Testosteron daalt — subtiel maar merkbaar
+                  2. Je hoofd blijft lang \"aan\", je lichaam wil rust
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Testosteron daalt met gemiddeld 1-2% per jaar na je 30e. Op je 45e kan dat een
-                  cumulatieve daling van 15-30% betekenen. De gevolgen zijn breder: minder energie,
-                  trager herstel, minder motivatie, subtiel verlies aan spiermassa. Het is niet
-                  dramatisch genoeg voor een diagnose, maar wel genoeg om je dagelijks functioneren
-                  te beïnvloeden.
+                  Stress en piekeren kosten energie — ook als je overdag \"alles redt\". Als je
+                  &apos;s avonds niet echt ontspant, blijft het gevoel van zwaarte hangen.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  3. Insulinegevoeligheid neemt af
+                  3. Eten met snelle pieken maakt dips voorspelbaar
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Na je 40e reageert je lichaam minder goed op insuline. Het gevolg: grotere
-                  bloedsuikerschommelingen na maaltijden, die zich vertalen in energiedips,
-                  hersenmist en honger naar suiker. De middagdip die steeds vroeger komt? Dat is
-                  vaak geen slaapgebrek — dat is bloedsuiker.
+                  Veel ontbijten en lunches zijn rijk aan snelle koolhydraten en arm aan eiwit. Dan
+                  volgt vaak een snelle opfleuring en daarna een zware middag — onafhankelijk van je
+                  leeftijd, maar na 40 merken mensen dat vaker.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  4. Vitamine D-tekort is wijdverbreid
+                  4. Binnen werken en weinig zonlicht
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  In Nederland krijgt 40-60% van de volwassenen onvoldoende vitamine D, vooral in de
-                  wintermaanden. Een tekort is gekoppeld aan vermoeidheid, spierzwakte en
-                  stemmingsklachten. Het is een van de meest voorkomende én meest onderschatte oorzaken
-                  van chronische moeheid.
+                  Veel volwassenen halen minder vitamine D uit zonlicht dan je denkt, vooral als je
+                  veel binnen zit. Dat is geen diagnose bij jou — wel een reden om voeding en
+                  eventueel aanvulling met je huisarts te bespreken als klachten aanhouden.
                 </p>
               </section>
 
-              {/* 5. Mitochondriën */}
               <section id="mitochondrien" className="mt-14">
                 <h3 className="font-serif text-2xl font-bold text-gray-900">
-                  Mitochondriën: Je Energiecentrales Uitgelegd
+                  Celenergie — kort, zonder medische claims
                 </h3>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Elke cel in je lichaam bevat honderden tot duizenden mitochondriën. Ze gebruiken
-                  zuurstof en voedingsstoffen om ATP te produceren — het molecuul dat al je
-                  celprocessen aandrijft. Van spiercontractie tot hersenactiviteit: zonder ATP
-                  gebeurt er niets.
-                </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">
-                  Na je 40e neemt de mitochondriële biogenese (de aanmaak van nieuwe mitochondriën)
-                  af. Tegelijk produceren verouderende mitochondriën meer oxidatieve stress — vrije
-                  radicalen die je cellen beschadigen. Dit is een vicieuze cirkel: minder en
-                  slechtere mitochondriën → minder ATP → meer vermoeidheid → minder beweging → nog
-                  minder mitochondriën.
-                </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">
-                  Het goede nieuws: je kunt deze cyclus doorbreken. Regelmatige beweging (vooral
-                  matige intensiteit) stimuleert mitochondriële biogenese. Omega-3 vetzuren
-                  beschermen mitochondriële membranen. Creatine levert directe ATP-precursors. En
-                  CoQ10 — een co-enzym dat in je mitochondriën werkt — daalt ook met de leeftijd.
+                  Je lichaam maakt energie uit voeding en zuurstof — op een manier die je op school
+                  misschien \"mitochondriën\" en \"ATP\" hoorde noemen. Belangrijk voor nu: beweging,
+                  slaap en eiwitrijke maaltijden helpen veel mensen om zich fitter te voelen. Wil je
+                  het wetenschappelijke kader? Lees{" "}
+                  <Link href="/kennisbank/mitochondrien" className={INLINE_LINK_CLASS}>
+                    mitochondriën
+                  </Link>{" "}
+                  en{" "}
+                  <Link href="/kennisbank/atp" className={INLINE_LINK_CLASS}>
+                    ATP
+                  </Link>{" "}
+                  in de kennisbank — zonder dat we hier claimen wat er in jouw cellen meetbaar gebeurt.
                 </p>
               </section>
 
-              {/* 6. Hormonen */}
               <section id="hormonen" className="mt-14">
                 <h3 className="font-serif text-2xl font-bold text-gray-900">
-                  Testosteron, Cortisol en Energie: Het Driehoeksspel
+                  Slaap, stress en eetritme (geen hormoon-diagnose)
                 </h3>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Energie is geen los systeem — het hangt samen met je hormonale balans. Drie
-                  hormonen spelen de hoofdrol:
+                  Hormonen spelen mee bij energie en herstel, maar vanaf een webpagina kunnen we niet
+                  zeggen wat jouw testosteron of andere waarden doen. Wél zien we in de praktijk dat
+                  vaste slaaptijden, minder laat cafeïne en minder chronische \"doorwerkavonden\"
+                  vaak het grootste verschil maken.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  <strong className="text-gray-900">Testosteron</strong> is je anabole motor. Het
-                  stuurt spierherstel, motivatie en energiebeleving aan. Na 40 daalt het
-                  geleidelijk, versneld door slechte slaap, chronische stress en overgewicht.
-                </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">
-                  <strong className="text-gray-900">Cortisol</strong> is je stresshormoon. Op de
-                  juiste momenten (ochtend) geeft het je energie. Chronisch verhoogd (door stress,
-                  slechte slaap, te veel cafeïne) put het je uit en onderdrukt het testosteron.
-                </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">
-                  <strong className="text-gray-900">Insuline</strong> regelt je bloedsuiker. Bij
-                  afnemende insulinegevoeligheid schommelt je bloedsuiker meer — met energiedips als
-                  direct gevolg.
-                </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">
-                  De drie beïnvloeden elkaar: hoog cortisol verlaagt testosteron. Lage testosteron
-                  maakt je gevoeliger voor stress. Stress verhoogt insulineresistentie. De uitweg
-                  begint bij leefstijl — niet bij één pil.
+                  Blijft vermoeidheid lang hangen, of verandert er veel aan libido, spiermassa of
+                  stemming? Bespreek het met je huisarts — eventueel met bloedonderzoek — in plaats
+                  van zelf te gokken.
                 </p>
               </section>
 
-              {/* 7. Bloedsuiker */}
               <section id="bloedsuiker" className="mt-14">
                 <h3 className="font-serif text-2xl font-bold text-gray-900">
-                  Bloedsuiker: De Onzichtbare Achtbaan
+                  Eten en energiepieken — wat je merkt in je dag
                 </h3>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  De meeste mannen 40+ eten te veel snelle koolhydraten en te weinig eiwit — zeker
-                  bij het ontbijt. Het resultaat: een bloedsuikerpiek gevolgd door een crash. Die
-                  crash is je middagdip, je hersenmist, je snack-verlangens om 16:00.
+                  De meeste mannen 40+ eten relatief weinig eiwit bij het ontbijt en veel snelle
+                  koolhydraten. Het resultaat: een korte oppepper en daarna een zware middag — vaak
+                  omschreven als hersenmist of snackdrang.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Een stabielere bloedsuiker begint bij drie dingen:
+                  Drie simpele hefbomen:
                 </p>
                 <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
+                  <li>Eiwit bij elke maaltijd — minimaal 25–30 gram, vooral bij het ontbijt</li>
                   <li>
-                    Eiwit bij elke maaltijd — minimaal 25-30 gram, vooral bij het ontbijt
+                    Niet te veel sterke koffie op een lege maag — dat maakt voor veel mensen de ochtend
+                    onrustiger
                   </li>
                   <li>
-                    Geen koffie op een lege maag — cafeïne verhoogt cortisol, wat je bloedsuiker
-                    verder ontregelt
-                  </li>
-                  <li>
-                    Bewegen na het eten — een wandeling van 10-15 minuten na de lunch verlaagt je
-                    bloedsuikerpiek meetbaar
+                    Bewegen na het eten — een wandeling van 10–15 minuten na de lunch helpt vaak om
+                    de middag vlakker te maken
                   </li>
                 </ul>
               </section>
@@ -365,28 +337,27 @@ export default function EnergieNa40Page() {
                   2. Ochtendlicht — stel je biologische klok
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Ga binnen 30 minuten na het opstaan naar buiten voor daglicht. Dit zet je
-                  cortisolritme goed — cortisol hoort &apos;s ochtends hoog te zijn (energie!) en
-                  &apos;s avonds laag (slaap). Binnenlicht is niet sterk genoeg.
+                  Ga binnen 30 minuten na het opstaan naar buiten voor daglicht. Dat helpt veel
+                  mensen om het ritme van wakker worden en slapen gaan natuurlijker te laten voelen —
+                  zeker als je veel binnen werkt.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
                   3. Geen cafeïne na 14:00
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Cafeïne heeft een halfwaardetijd van 5-6 uur. Die koffie om 15:00 verstoort je
-                  slaap én houdt je cortisol te hoog &apos;s avonds. Switch na de lunch naar water
-                  of kruidenthee.
+                  Cafeïne heeft een halfwaardetijd van enkele uren. Koffie laat op de dag kan voor
+                  veel mensen slapen lastiger maken. Switch na de lunch naar water of kruidenthee.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
                   4. Bewegen — maar slim
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Dagelijks 30 minuten wandelen is effectiever voor energie dan 3x per week intensief
-                  sporten. Krachttraining 2-3x per week stimuleert testosteron en mitochondriële
-                  biogenese. Vermijd intensieve training &apos;s avonds — dat verhoogt cortisol
-                  wanneer het moet dalen.
+                  Dagelijks 30 minuten wandelen helpt veel mensen om zich energieker te voelen dan
+                  af en toe een hele zware sessie. Krachttraining 2–3x per week ondersteunt kracht en
+                  conditie — plan herstel er bewust tussen. Heel laat intensief trainen past niet bij
+                  iedereen als je al slecht slaapt.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   <strong className="text-gray-900">Speelt stress ook een rol bij je vermoeidheid?</strong>{" "}
@@ -419,11 +390,10 @@ export default function EnergieNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Vitamine D3 (+ K2)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  40-60% van de Nederlandse volwassenen heeft een suboptimaal vitamine D-niveau. Een
-                  tekort is direct gekoppeld aan vermoeidheid, spierzwakte en verminderde stemming.
-                  D3 is de actieve vorm; K2 zorgt ervoor dat calcium in je botten terechtkomt, niet
-                  in je bloedvaten. Dosering: 25-50 mcg (1000-2000 IE) per dag, bij voorkeur bij een
-                  vetrijke maaltijd.
+                  In Nederland hebben veel volwassenen een vitamine D‑inname die onder de adviezen
+                  ligt, vooral met weinig zon. Vitamine D draagt — bij voldoende inname — o.a. bij aan
+                  botten, spieren en het immuunsysteem (EU‑claims). Laat dosering en bloedonderzoek
+                  liever met je huisarts afstemmen dan zelf hoge doses te gokken.
                 </p>
                 <div className="mt-4 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700 text-sm leading-relaxed">
@@ -439,10 +409,9 @@ export default function EnergieNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Omega-3 (EPA/DHA)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  EPA en DHA ondersteunen je mitochondriële membranen, verminderen systemische
-                  ontstekingen en ondersteunen de hersenstructuur. De meeste Nederlanders krijgen
-                  structureel te weinig omega-3 via voeding. Dosering: minimaal 1000 mg EPA+DHA per
-                  dag.
+                  EPA en DHA hebben erkende EU‑claims onder andere voor hart en hersenen (DHA), mits
+                  je de productteksten volgt. Als je weinig vette vis eet, is een supplement vaak
+                  praktischer — vergelijk zuiverheid en hoeveelheid EPA/DHA per dag.
                 </p>
                 <div className="mt-4 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700 text-sm leading-relaxed">
@@ -458,10 +427,9 @@ export default function EnergieNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Creatine</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Niet alleen voor sporters. Creatine is een directe ATP-precursor die zowel
-                  spieren als je brein van energie voorziet. Onderzoek toont dat 3-5 gram creatine
-                  monohydraat per dag cognitieve prestaties verbetert, vooral bij slaaptekort of
-                  mentale vermoeidheid.
+                  Creatine monohydraat heeft een EU‑claim rond korte, intense inspanning bij
+                  dagelijks gebruik volgens het etiket. Het is geen vervanging voor slaap en voeding,
+                  maar past voor veel mensen die kracht willen ondersteunen.
                 </p>
                 <div className="mt-4 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700 text-sm leading-relaxed">
@@ -598,6 +566,31 @@ export default function EnergieNa40Page() {
                     Lees de gids: Slaap Verbeteren na 40 →
                   </Link>
                 </div>
+
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  <Link
+                    href="/blog/vitamine-d-en-energie"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
+                  >
+                    <p className="text-sm leading-relaxed text-gray-700">
+                      Vitamine D en energie: wat claims wél zeggen en wanneer meten zinvol is.
+                    </p>
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
+                      Lees het cluster-artikel →
+                    </span>
+                  </Link>
+                  <Link
+                    href="/testosteron-na-40"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
+                  >
+                    <p className="text-sm leading-relaxed text-gray-700">
+                      Testosteron na 40 in voorzichtige taal — gekoppeld aan energie en stress.
+                    </p>
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
+                      Naar de pillar →
+                    </span>
+                  </Link>
+                </div>
               </section>
 
               {/* 12. CTA */}
@@ -638,10 +631,11 @@ export default function EnergieNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      Na je 40e veranderen meerdere systemen tegelijk: je mitochondriën produceren
-                      minder ATP, testosteron daalt met 1-2% per jaar, je insulinegevoeligheid neemt
-                      af, en vitamine D-tekort komt vaker voor. De combinatie van deze verschuivingen
-                      verklaart waarom vermoeidheid na 40 anders voelt dan &apos;gewoon moe zijn&apos;.
+                      Vermoeidheid heeft meestal meerdere oorzaken tegelijk: te weinig slaap,
+                      onregelmatig ritme, weinig beweging, veel stress en maaltijden met snelle
+                      suikerpieken. Dat voelt anders dan &quot;één nachtje kort&quot;. Wil je het
+                      biologische verhaal dieper (bijv. mitochondriën of ATP)? Zie de kennisbank —
+                      hier focussen we op wat je in je week kunt sturen.
                     </div>
                   </details>
 
@@ -653,10 +647,11 @@ export default function EnergieNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      Dat hangt af van de oorzaak. Bij vitamine D-tekort (zeer veel voorkomend in
-                      Nederland) is D3+K2 de eerste stap. Bij lage visinname helpt omega-3 (EPA/DHA).
-                      Creatine ondersteunt directe ATP-productie in spieren en brein. Begin met
-                      bloedonderzoek bij je huisarts om tekorten uit te sluiten.
+                      Dat hangt af van je situatie. Vitamine D en omega-3 hebben erkende EU‑claims op
+                      onderdelen van gezondheid (zoals botten, immuunsysteem, hart, hersenen) — geen
+                      vaste claim op &quot;minder moe&quot; voor iedereen. Creatine heeft een EU‑claim
+                      rond korte, intense inspanning. Begin bij leefstijl; bij aanhoudende klachten
+                      kun je met je huisarts bloedonderzoek bespreken.
                     </div>
                   </details>
 
@@ -668,10 +663,10 @@ export default function EnergieNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      Ja. Testosteron speelt een rol bij energieniveau, spiermassa en motivatie. Na 40
-                      daalt testosteron met gemiddeld 1-2% per jaar. Bij aanhoudende vermoeidheid in
-                      combinatie met minder spiermassa, lager libido en stemmingsveranderingen is het
-                      zinvol om je testosteronwaarden te laten controleren via bloedonderzoek.
+                      Hormonen zoals testosteron spelen mee bij energie en herstel, maar vermoeidheid
+                      is zelden één meetwaarde. Bij aanhoudende klachten (langdurige moeheid, duidelijke
+                      verandering in libido of spiermassa) is het zinvol om dit met je huisarts te
+                      bespreken — niet zelf te diagnosticeren.
                     </div>
                   </details>
 
@@ -683,10 +678,10 @@ export default function EnergieNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      De eerste quick wins (eiwitrijk ontbijt, ochtendlicht, geen cafeïne na 14:00)
-                      geven vaak binnen 3-5 dagen merkbaar verschil. Structurele verbetering van
-                      energieniveau duurt 2-4 weken. Supplementen als vitamine D hebben 4-8 weken
-                      nodig voor volledig effect.
+                      Eerste stappen zoals eiwit bij het ontbijt, daglicht na het opstaan en minder
+                      cafeïne laat op de dag merken veel mensen binnen enkele dagen. Een rustiger
+                      weekritme bouw je meestal over enkele weken. Supplementen volg je altijd op het
+                      etiket en bij twijfel met je arts.
                     </div>
                   </details>
 

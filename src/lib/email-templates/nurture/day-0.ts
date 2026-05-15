@@ -4,6 +4,7 @@ import {
   buildIntakeHerstelplanUrl,
   escapeHtml,
   nurtureCtaButton,
+  nurtureNamePrefixHtml,
   renderPersonalizedRows,
   wrapNurtureBlock,
 } from "./helpers";
@@ -172,11 +173,15 @@ function buildRecoveryGuideBlock(
         </tr>`;
 }
 
-function renderStressdragerDay0PersonalizedRows(intakeUrl: string): string {
+function renderStressdragerDay0PersonalizedRows(
+  intakeUrl: string,
+  firstName?: string | null,
+): string {
   const headline =
     "Hoi, dit valt op in jouw resultaten";
   const breathingTip =
-    "Eén ding voor deze week: adem elke dag 5 minuten bewust uit (4 seconden in, 6 seconden uit). Het kalmeert je nervus vagus direct. Doe het ’s ochtends voor je je telefoon pakt.";
+    "Eén ding voor deze week: adem elke dag 5 minuten bewust uit (4 seconden in, 6 seconden uit). Langzaam uitademen helpt veel mensen om iets rustiger te worden — doe het ’s ochtends voor je je telefoon pakt.";
+  const prefix = nurtureNamePrefixHtml(firstName);
   return `
         <tr>
           <td style="padding:8px 28px 16px 28px;">
@@ -187,6 +192,7 @@ function renderStressdragerDay0PersonalizedRows(intakeUrl: string): string {
         </tr>
         <tr>
           <td style="padding:0 28px 28px 28px;">
+            ${prefix}
             <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
               Ik zie dat stress een grote rol speelt in jouw resultaten. Dat is geen oordeel — het is een patroon dat veel mannen na 40 herkennen, vaak zonder het zelf door te hebben.
             </p>
@@ -204,6 +210,7 @@ function renderStressdragerDay0PersonalizedRows(intakeUrl: string): string {
 function renderRecoveryLeadDay0PersonalizedRows(
   intakeUrl: string,
   isOvertrainerVoice: boolean,
+  firstName?: string | null,
 ): string {
   const headline = "Je lichaam vraagt om meer rust — dit zien we in je scores";
   const opener = isOvertrainerVoice
@@ -211,6 +218,7 @@ function renderRecoveryLeadDay0PersonalizedRows(
     : "Je herstelsignaal in de Leefstijlcheck valt op: vaak veel trainen of weinig echte ontspanning. Daar past deze recovery-mail bij, ook als je andere domeinen hoger scoorden.";
   const tip =
     "Kies deze week twee geplande zware sessies en maak ze echt licht óf ruim ze op. Vervang ze door 30–40 minuten wandelen zonder stopwatchstress en ga een halfuur eerder naar bed twee avonden op rij klein, maar je systeem merkt het.";
+  const prefix = nurtureNamePrefixHtml(firstName);
   return `
         <tr>
           <td style="padding:8px 28px 16px 28px;">
@@ -221,6 +229,7 @@ function renderRecoveryLeadDay0PersonalizedRows(
         </tr>
         <tr>
           <td style="padding:0 28px 28px 28px;">
+            ${prefix}
             <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
               ${opener}
             </p>
@@ -297,10 +306,14 @@ export function nurtureDay0Email(
   const herstelThemaUrl = absoluteUrl("/thema/herstel");
 
   const mainRows = stressProfileFirst
-    ? renderStressdragerDay0PersonalizedRows(intakeUrl)
+    ? renderStressdragerDay0PersonalizedRows(intakeUrl, data.firstName)
     : showRecoveryGuide
-      ? renderRecoveryLeadDay0PersonalizedRows(intakeUrl, isOvertrainerVoice)
-      : renderPersonalizedRows(blocks, supplementTip, intakeUrl);
+      ? renderRecoveryLeadDay0PersonalizedRows(
+          intakeUrl,
+          isOvertrainerVoice,
+          data.firstName,
+        )
+      : renderPersonalizedRows(blocks, supplementTip, intakeUrl, data.firstName);
 
   let emailSubject: string;
   if (stressProfileFirst) emailSubject = "Hoi, dit valt op in jouw resultaten";

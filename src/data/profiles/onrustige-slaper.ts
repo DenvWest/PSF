@@ -7,7 +7,7 @@ export const onrustigeSlaper: ProfilePageData = {
   seo: {
     title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen | PerfectSupplement",
     description:
-      "Wakker om 3 uur, niet terug in slaap? Na 40 verandert je slaap fundamenteel. Ontdek wat er aan de hand is en wat helpt.",
+      "Wakker om 3 uur, niet terug in slaap? Herkenning, uitleg in begrijpelijke taal en wat je stap voor stap kunt doen.",
     canonical: "https://perfectsupplement.nl/profiel/onrustige-slaper",
     targetKeyword: "slaapproblemen man 40+",
   },
@@ -48,15 +48,15 @@ export const onrustigeSlaper: ProfilePageData = {
       },
     ],
     closer:
-      "Als je hier drie of meer van herkent, is er waarschijnlijk iets structureels aan de hand met je slaaparchitectuur. Dat klinkt ingewikkeld, maar de oplossing is vaak simpeler dan je denkt.",
+      "Als je hier drie of meer van herkent, past dat bij veel mannen 40+: je slaap voelt minder \"diep\" en je ritme wankelt sneller. Het goede nieuws: met ritme, licht en rust rond bedtijd kun je vaak veel winnen — zonder ingewikkelde theorie.",
   },
 
   understanding: {
-    title: "Wat er met je slaap gebeurt na 40",
+    title: "Waarom slechte slaap na 40 zo herkenbaar is",
     paragraphs: [
-      "Je slaap bestaat uit cycli van lichte slaap, diepe slaap en REM-slaap. Diepe slaap is de fase waarin je lichaam herstelt — spieren repareren, groeihormoon vrijkomt, je immuunsysteem bijlaadt. Na 40 neemt de hoeveelheid diepe slaap meetbaar af.",
-      "Tegelijkertijd wordt je cortisolritme minder stabiel. Cortisol hoort 's nachts laag te zijn en 's ochtends te pieken. Bij chronische stress of een verstoord ritme stijgt cortisol te vroeg — en word je om 3 uur wakker zonder reden.",
-      "Melatonine — je slaaphormoon — daalt ook. Je lichaam maakt er minder van aan, en het duurt langer voordat het vrijkomt. Daardoor val je later in slaap en is je slaap oppervlakkiger. Een melatoninetablet lost dat niet op, want het probleem zit in het ritme, niet alleen in de hoeveelheid.",
+      "Slaap bestaat uit wisselende fases: licht, diep en droomslaap. Diepe slaap is het gevoel van \"echt uitgerust\" — en veel mensen merken na 40 vaker dat ze die fase minder lang of minder stabiel ervaren.",
+      "Een patroon dat vaak terugkomt: je valt nog wel in slaap, maar wordt vroeg wakker met een hoofd vol gedachten. Dat past vaak bij stress, onregelmatige tijden, schermen laat op de avond of alcohol rond het slapen gaan — niet automatisch bij \"iets ernstigs\".",
+      "Hulpmiddelen zoals melatonine of een wijntje kunnen kort helpen, maar lossen een scheef ritme zelden structureel op. Daarom beginnen we bij gedrag rond bedtijd: koel, donker, vaste opsta-tijd en minder prikkels vlak voor slapen.",
     ],
   },
 
@@ -69,7 +69,7 @@ export const onrustigeSlaper: ProfilePageData = {
         {
           title: "Telefoon weg om 21:00",
           description:
-            "Blauw licht van je scherm onderdrukt melatonine. Maar het gaat niet alleen om het licht — scrollen houdt je brein in een staat van alertheid. Leg je telefoon in een andere kamer.",
+            "Blauw licht van je scherm maakt je brein vaak langer alert. Scrollen houdt je in \"doe-modus\". Leg je telefoon in een andere kamer.",
           actionable: "Stel een alarm in op 21:00 met 'telefoon weg'. Leg een boek op je nachtkastje.",
           timeframe: "Vandaag",
         },
@@ -83,7 +83,7 @@ export const onrustigeSlaper: ProfilePageData = {
         {
           title: "4-7-8 ademhaling in bed",
           description:
-            "Adem in door je neus (4 sec), houd vast (7 sec), adem langzaam uit door je mond (8 sec). Dit activeert je parasympathisch zenuwstelsel en verlaagt je hartslag. Doe 4 rondes.",
+            "Adem in door je neus (4 sec), houd vast (7 sec), adem langzaam uit door je mond (8 sec). Langzamer uitademen helpt veel mensen om fysiek wat losser te worden. Doe 4 rondes.",
           actionable: "Doe dit vanavond als je in bed ligt, vóór je gaat proberen te slapen.",
           timeframe: "Vandaag",
         },
@@ -126,7 +126,7 @@ export const onrustigeSlaper: ProfilePageData = {
         {
           title: "Ochtendlicht — de onderbelichtte slaaptip",
           description:
-            "Daglicht in je ogen binnen 30 minuten na het opstaan zet je biologische klok goed. Het vertelt je lichaam: het is ochtend, begin het cortisolritme. Daardoor komt melatonine 's avonds op het juiste moment.",
+            "Daglicht in je ogen binnen 30 minuten na het opstaan helpt je ritme overdag scherper te zetten. Daardoor voelt 's avonds slapen voor veel mensen natuurlijker aan.",
           actionable: "Ga de eerste week elke ochtend 10 minuten naar buiten — ook als het bewolkt is.",
           timeframe: "Komende 30 dagen",
         },

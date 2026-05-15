@@ -40,6 +40,8 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     href: "/thema/energie",
   },
   gerelateerdeSluggen: [
+    "cortisol-en-testosteron",
+    "zink-en-testosteron",
     "vitamine-d-tekort-herkennen",
     "energie-verhogen-natuurlijk",
     "omega-3-concentratie-energie",

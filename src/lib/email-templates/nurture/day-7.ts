@@ -19,7 +19,7 @@ export function nurtureDay7Email(
     data.urgencyLevel ?? "moderate",
   );
 
-  const inner = renderPersonalizedRows(blocks, supplementTip, intakeUrl);
+  const inner = renderPersonalizedRows(blocks, supplementTip, intakeUrl, data.firstName);
 
   return { subject, html: wrapNurtureBlock(inner, ctx, false) };
 }

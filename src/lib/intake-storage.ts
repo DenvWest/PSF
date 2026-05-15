@@ -28,6 +28,7 @@ export async function saveIntakeSession(data: {
           anonymousAnalytics: data.consent.anonymousAnalytics,
           marketingEmail: data.consent.marketingEmail,
           marketingEmailAddress: data.consent.marketingEmailAddress,
+          firstName: data.consent.firstName,
         },
       }),
     });

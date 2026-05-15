@@ -7,7 +7,7 @@ export const lageBatterijProfile: ProfilePageData = {
   seo: {
     title: "Altijd Moe Na 40? Dit Is Waarom (en Wat Je Eraan Doet) | PerfectSupplement",
     description:
-      "Je energie is op. Niet even, maar structureel. Herken je dit? Ontdek wat er aan de hand is en wat helpt — stap voor stap.",
+      "Je energie is op. Niet even, maar structureel. Herkenning, uitleg in begrijpelijke taal en wat je stap voor stap kunt doen.",
     canonical: "https://perfectsupplement.nl/profiel/lage-batterij",
     targetKeyword: "altijd moe na 40",
   },
@@ -15,7 +15,7 @@ export const lageBatterijProfile: ProfilePageData = {
   hero: {
     headline: "Lage Batterij: ben jij al moe voor de dag begonnen is?",
     subline:
-      "Het is niet luiheid. Het is niet 'gewoon ouder worden'. Er is iets concreets aan de hand — en je kunt er iets aan doen.",
+      "Het is niet luiheid en niet \"gewoon ouder worden\". Vaak spelen slaap, voeding, beweging en stress samen — en je kunt daar concreet op sturen.",
   },
 
   recognition: {
@@ -58,16 +58,16 @@ export const lageBatterijProfile: ProfilePageData = {
       },
     ],
     closer:
-      "Als je hier drie of meer van herkent, is dat niet raar. Na 40 verandert er fysiologisch iets fundamenteels. Het goede nieuws: het is geen noodlot.",
+      "Als je hier drie of meer van herkent, past dat bij veel mannen 40+: de dag voelt zwaarder terwijl je routine hetzelfde lijkt. Het goede nieuws: met kleine stappen in ritme, voeding en beweging kun je vaak merkbaar verschil maken.",
   },
 
   understanding: {
-    title: "Waarom je energie verdwijnt na 40",
+    title: "Waarom je energie vaak minder voelt na 40",
     paragraphs: [
-      "Je energie wordt geproduceerd in je cellen — letterlijk, in kleine krachtcentrales die mitochondriën heten. Na 40 worden die minder efficiënt. Ze produceren minder energie uit dezelfde brandstof. Dat is normaal, maar het betekent dat je meer moet investeren om hetzelfde niveau te houden.",
-      "Veel zitten en weinig beweging zet die energiefabrieken nog verder onder druk: mitochondriën worden minder geprikkeld om vitaal te blijven, vermoeidheid maakt sporten of wandelen lastiger, en zo blijft het patroon zichzelf voeden. Kleine, vaste stappen in bewegen helpen die spiraal te doorbreken.",
-      "Daar komt bij: je slaap wordt oppervlakkiger (minder diepe slaap = minder herstel), je stresshormonen blijven langer hoog (cortisol remt energieproductie), en je voedingsopname verandert (je darmen nemen minder voedingsstoffen op). Als je dan ook nog weinig beweegt of eenzijdig eet, ontstaat er een energietekort dat koffie niet oplost.",
-      "De oplossing is geen wonderpil. Het is een stappenplan: eerst de basis fixen (slaap, voeding, beweging), dan gericht aanvullen waar je tekort komt.",
+      "Je lichaam haalt energie uit voeding, slaap en beweging. Als één van die drie langere tijd scheef staat — te weinig slaap, te veel suikerpieken, te weinig beweging — merken veel mensen dat ze zich sneller leeg voelen. Dat is herkenbaar gedrag, geen diagnose.",
+      "Veel zitten en weinig beweging versterken dat gevoel: je wordt sneller moe van dingen die vroeger vanzelf gingen. Een korte wandeling of vaste eetmomenten helpen vaak al om de dag \"vlakker\" te maken.",
+      "Daar komt bij dat stress en slechte slaap elkaar versterken: slecht slapen maakt de volgende dag zwaarder, en een zware dag maakt 's avonds loslaten lastiger. Koffie en snoep geven een korte boost, maar geen structurele oplossing.",
+      "De aanpak is geen wonderpil: eerst de basis (slaap, voeding, beweging), daarna gericht aanvullen waar je echt tekort komt.",
     ],
   },
 
@@ -180,7 +180,7 @@ export const lageBatterijProfile: ProfilePageData = {
   relatedPillar: {
     href: "/energie-na-40",
     turboSnippet:
-      "Van mitochondriën en bloedsuiker tot een weekplan met supplementen — de volledige gids bij structurele moeheid na 40.",
+      "Energie na 40: ritme, voeding, slaap en supplementen — één gids met een concreet weekplan.",
   },
 
   relatedComparisons: [

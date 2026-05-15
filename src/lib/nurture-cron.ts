@@ -15,6 +15,7 @@ type NurtureEmailRow = {
   domain_scores: unknown;
   session_id: string | null;
   urgency_level: string | null;
+  first_name: string | null;
 };
 
 function parseDomainScores(raw: unknown): Record<string, number> {
@@ -80,6 +81,10 @@ export async function runPendingNurtureEmails(): Promise<{
       typeof mail.profile_label === "string" && mail.profile_label.trim()
         ? mail.profile_label.trim()
         : "jouw profiel";
+    const firstName =
+      typeof mail.first_name === "string" && mail.first_name.trim()
+        ? mail.first_name.trim()
+        : null;
     const primaryDomain =
       typeof mail.primary_domain === "string" && mail.primary_domain.trim()
         ? mail.primary_domain.trim()
@@ -98,6 +103,7 @@ export async function runPendingNurtureEmails(): Promise<{
           primaryDomain,
           domainScores: parseDomainScores(mail.domain_scores),
           urgencyLevel,
+          firstName,
         },
         {
           recipientEmail: email,

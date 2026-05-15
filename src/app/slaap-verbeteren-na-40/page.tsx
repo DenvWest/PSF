@@ -67,7 +67,7 @@ const faqSchema = {
       name: "Wat is het beste supplement voor slaap?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Magnesium glycinaat is het breedst onderzocht en meest effectief voor slaapverbetering. Start daar. Als je slaapprobleem stressgerelateerd is, kan ashwagandha (KSM-66) een waardevolle aanvulling zijn.",
+        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EU‑claims bij voldoende inname). Bij stressgerelateerde onrust kun je met je arts bespreken of een plantenextract als ashwagandha past — let op EFSA/VWS‑context en medicatie.",
       },
     },
     {
@@ -137,8 +137,8 @@ export default function SlaapVerbeterenNa40Page() {
                     </a>
                   </li>
                   <li>
-                    <a href="#cortisol" className="hover:underline">
-                      Cortisol: de onzichtbare saboteur
+                    <a href="#spanning-slaap" className="hover:underline">
+                      Spanning overdag en je slaap
                     </a>
                   </li>
                   <li>
@@ -181,18 +181,18 @@ export default function SlaapVerbeterenNa40Page() {
                   De korte lontjes. Het gevoel dat je leeft op reserves in plaats van echte energie.
                 </p>
                 <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                  Je bent niet de enige. Na je 40e verandert er echt iets in je lichaam als het om slaap
-                  gaat. Dat is geen zwakte en geen leeftijdsklacht — het is biologie. En het
-                  goede nieuws: als je begrijpt wat er gebeurt, kun je er iets aan doen.
+                  Je bent niet de enige. Na je 40e verandert er vaak iets in hoe diep je slaapt en hoe snel je
+                  wakker wordt. Dat is geen zwakte — en het goede nieuws: met ritme, licht en rust rond bedtijd kun je
+                  veel winnen.
                 </p>
                 <p className="mt-4 text-gray-700">In deze gids leer je:</p>
                 <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside">
                   <li>
-                    Waarom je slaap na 40 verandert (en waarom &ldquo;gewoon eerder naar bed&rdquo; niet werkt)
+                    Waarom je slaap na 40 anders kan voelen (en waarom &ldquo;gewoon eerder naar bed&rdquo; niet altijd werkt)
                   </li>
-                  <li>Welke hormonen en processen je slaap saboteren</li>
+                  <li>Hoe overdag stress en schermen je nacht beïnvloeden — in begrijpelijke taal</li>
                   <li>5 concrete aanpassingen die je vanavond nog kunt starten</li>
-                  <li>Welke supplementen wél werken — en welke niet</li>
+                  <li>Welke supplementen je kunt overwegen — en wat je beter eerst met je huisarts bespreekt</li>
                 </ul>
               </section>
 
@@ -208,19 +208,20 @@ export default function SlaapVerbeterenNa40Page() {
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  Je melatonine-productie daalt
+                  Je ritme rond licht en slapen verandert
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Melatonine is het hormoon dat je lichaam vertelt dat het donker is en dat het tijd
-                  is om te slapen. Je pijnappelklier maakt dit aan op basis van lichtprikkels. Na
-                  je 40e neemt de productie geleidelijk af — bij sommige mannen tot wel 50% minder
-                  dan op hun 20e.
+                  In de kennisbank lees je wat{" "}
+                  <Link href="/kennisbank/melatonine" className="text-green-700 underline underline-offset-2 hover:text-green-800">
+                    melatonine
+                  </Link>{" "}
+                  doet: kort gezegd helpt het je biologische klok om &quot;nu is het nacht&quot; te signaleren.
+                  Veel mensen merken na 40 dat inslapen langer duurt en prikkels (licht, geluid) harder binnenkomen.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Wat je daarvan merkt: je lichaam geeft minder sterk het signaal af dat het tijd is om te
-                  slapen. Daardoor duurt het langer voor je in slaap
-                  valt, en wordt je gevoeliger voor licht en geluid in de avonduren. Blauw licht van telefoons en laptops versterkt dit effect — het onderdrukt de
-                  toch al verminderde melatonine-aanmaak nog verder.
+                  Schermlicht en laat scrollen geven je brein vaak langer het gevoel van &quot;nog even
+                  dagmodus&quot;. Dat maakt het niet automatisch een ziekte — wel een haakje om aan te trekken
+                  vóór je aan supplementen denkt.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -232,10 +233,9 @@ export default function SlaapVerbeterenNa40Page() {
                   waar je lichaam herstelt, groeihormoon aanmaakt en herinneringen verwerkt.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Onderzoek laat consistent zien dat de hoeveelheid diepe slaap per nacht afneemt
-                  met de leeftijd. Op je 20e slaap je misschien 20-25% van de nacht in diepe slaap;
-                  op je 45e kan dat al gedaald zijn naar 10-15%. Het gevolg: je slaapt op papier genoeg
-                  uren, maar de herstelkwaliteit is lager. Je wordt wakker en voelt je
+                  Onderzoek laat zien dat de hoeveelheid diepe slaap per nacht gemiddeld afneemt
+                  met de leeftijd. Het gevolg voor veel mensen: je slaapt op papier genoeg uren, maar
+                  de herstelkwaliteit voelt lager. Je wordt wakker en voelt je
                   toch niet uitgerust.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -253,41 +253,38 @@ export default function SlaapVerbeterenNa40Page() {
                   moeilijker terug. Je wordt makkelijker wakker en valt moeilijker weer in slaap.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Dat verklaard het klassieke patroon van de 40-plusser: makkelijk in slaap vallen,
-                  maar dan om 2 of 3 uur wakker liggen met een hoofd vol gedachten. Die
-                  vroeg-in-de-nacht-wakker-periode is geen toeval — het is je biologie.
+                  Dat verklaart het klassieke patroon van de 40-plusser: makkelijk in slaap vallen,
+                  maar dan om 2 of 3 uur wakker liggen met een hoofd vol gedachten. Dat past vaak bij
+                  stress en een scheef ritme — niet automatisch bij een hormoonprobleem bij jou.
                 </p>
               </section>
 
               {/* 5. Cortisol */}
-              <section id="cortisol" className="mt-14">
+              <section id="spanning-slaap" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Cortisol: De Onzichtbare Saboteur
+                  Spanning overdag en je slaap &apos;s nachts
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Cortisol is je primaire stresshormoon. Het heeft een natuurlijk dag-nacht ritme:
-                  piek in de ochtend om je wakker en alert te maken, en een daling richting de
-                  avond zodat je lichaam tot rust kan komen. Melatonine kan pas stijgen als
-                  cortisol voldoende gedaald is — ze zitten nauw met elkaar verbonden.
+                  Wie lang in een hoge belastingstand staat, merkt vaak dat slapen minder diep voelt:
+                  moe, maar toch slecht landen in bed. In de kennisbank lees je meer over{" "}
+                  <Link href="/kennisbank/cortisol" className="text-green-700 underline underline-offset-2 hover:text-green-800">
+                    cortisol
+                  </Link>{" "}
+                  en de{" "}
+                  <Link href="/kennisbank/hpa-as" className="text-green-700 underline underline-offset-2 hover:text-green-800">
+                    HPA-as
+                  </Link>
+                  — zonder dat we hier claimen wat er bij jou meetbaar gebeurt.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Het probleem bij veel mannen na 40: chronische stress, werkdruk, en een
-                  levensstijl waarin je altijd &lsquo;aan&rsquo; staat houden het cortisolniveau te lang verhoogd. Het hormoon daalt
-                  &lsquo;s avonds onvoldoende, waardoor melatonine te laat of te weinig stijgt. Je bent
-                  lichamelijk moe, maar &lsquo;aan&rsquo; — in bed liggen scrollen op je telefoon maakt het
-                  alleen maar erger.
+                  Praktisch gezien helpt het om overdag pauzes, daglicht en een vaste afsluiting na
+                  werk te pakken. Wat je overdag met je hoofd doet, beïnvloedt vaak hoe rustig je
+                  &apos;s avonds wordt.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Er is nog een tweede mechanisme. Bij sommige mensen schiet cortisol vroeg in de
-                  ochtend — soms al om 3 of 4 uur — omhoog. Dat is een evolutionair overblijfsel:
-                  je lichaam bereidt zich voor op de dag. Maar als je cortisolritme verstoord is,
-                  word je daardoor te vroeg wakker, niet meer in staat om terug
-                  te slapen. Dit is de biologische verklaring voor het &lsquo;3-uur-wakker&rsquo; patroon.
-                </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">
-                  Cortisol reguleren is daarmee net zo belangrijk als je slaaphygiëne verbeteren.
-                  Niet wat je in bed doet, maar wat je overdag doet bepaalt grotendeels hoe je
-                  &lsquo;s nachts slaapt.
+                  Word je vroeg wakker met piekeren? Dat herkennen veel mensen. Zie ook het profiel
+                  Onrustige Slaper voor stappenplan en supplementen die je met je situatie wilt
+                  matchen — geen diagnose.
                 </p>
 
                 <div className="mt-8 p-6 bg-amber-50 border border-amber-200 rounded-xl">
@@ -338,13 +335,12 @@ export default function SlaapVerbeterenNa40Page() {
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je zenuwstelsel heeft tijd nodig om van actie- naar herstelmodus te schakelen. Dat gaat niet van de ene op de
                   andere minuut. Een actieve wind-down routine — dimmen van lichten, geen schermen,
-                  lichte bezigheid zoals lezen of ademhalingsoefeningen — helpt cortisol te dalen
-                  en helpt je lichaam melatonine aan te maken.
+                  lichte bezigheid zoals lezen of ademhalingsoefeningen — helpt veel mensen om
+                  rustiger richting bed te gaan.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Concreet: zet schermen uit om 22:00 als je om 23:00 in bed wil liggen.
-                  Gebruik oranje/rode verlichting in de avond — die heeft nauwelijks effect op
-                  melatonine, in tegenstelling tot wit en blauw licht.
+                  Gebruik oranje/rode verlichting in de avond — die voelt voor veel mensen rustiger dan fel wit licht.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -352,8 +348,8 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Beweging verhoogt diepe slaap significant — maar het tijdstip telt.
-                  Intensieve training verhoogt je lichaamstemperatuur en cortisolniveau, wat bij
-                  sommige mensen de slaap verstoort als ze dit na 19:00 doen. Trainen in de ochtend of vroege
+                  Intensieve training verhoogt je lichaamstemperatuur en kan bij
+                  sommige mensen de slaap verstoren als ze dit na 19:00 doen. Trainen in de ochtend of vroege
                   middag werkt vaak beter bij zware blokken. Avondwandelingen zijn prima.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -445,16 +441,15 @@ export default function SlaapVerbeterenNa40Page() {
                   Ashwagandha (KSM-66)
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Ashwagandha is een adaptogeen — het helpt het lichaam omgaan met stress door
-                  cortisol te moduleren. KSM-66 is de meest onderzochte gestandaardiseerde extract,
-                  met een reeks gerandomiseerde gecontroleerde studies die positieve effecten laten
-                  zien op stressperceptie, cortisolniveau en slaapkwaliteit.
+                  Ashwagandha is een plantenextract waar in studies soms naar spanning en slaap wordt
+                  gekeken. Er zijn geen vaste EU‑gezondheidsclaims op stress of slaap op het etiket;
+                  er lopen discussies over regulering in Nederland. KSM‑66 is een veelgebruikt
+                  gestandaardiseerd extract — vergelijk producten en overleg bij medicatie.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Ashwagandha werkt niet direct slaapbevorderend zoals magnesium dat doet. Het
-                  werkt via het stresssysteem van het lichaam: door cortisol te normaliseren, helpt het
-                  de onrust te verminderen die je inslapen in de weg staat. Het effect bouwt op over
-                  4-8 weken — het is geen snelle fix.
+                  Het werkt niet als klassiek slaapmiddel zoals magnesium met erkende
+                  zenuwstelsel-/psychologie‑claims. Denk er vooral bij als je spanning overdag je
+                  nacht verzwaart — en geef gedrag eerst ruimte om te werken.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Dosering: 300-600 mg KSM-66 per dag, bij voorkeur &lsquo;s avonds of gesplitst over dag
@@ -602,8 +597,8 @@ export default function SlaapVerbeterenNa40Page() {
                   <p className="text-gray-700 text-sm leading-relaxed">
                     <strong className="text-gray-900">Ben je moe ondanks goede slaap?</strong>
                     <br />
-                    Als je slaap op orde is maar je energie laag blijft, kan de oorzaak dieper liggen
-                    — bij hormonen, bloedsuiker of mitochondriën.
+                    Als je slaap op orde is maar je energie laag blijft, kunnen voeding, stress en
+                    beweging samenspelen — bespreek aanhoudende klachten met je huisarts.
                   </p>
                   <Link
                     href="/energie-na-40"
@@ -708,9 +703,10 @@ export default function SlaapVerbeterenNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      Magnesium glycinaat is het breedst onderzocht en meest effectief voor
-                      slaapverbetering. Start daar. Als je slaapprobleem stressgerelateerd is, kan
-                      ashwagandha (KSM-66) een waardevolle aanvulling zijn.
+                      Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een
+                      normale psychologische functie (EU‑claims bij voldoende inname). Bij
+                      stressgerelateerde onrust kun je met je arts bespreken of een plantenextract
+                      als ashwagandha past — let op EFSA/VWS‑context en medicatie.
                     </div>
                   </details>
 

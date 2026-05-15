@@ -41,11 +41,11 @@ export function quickWinsForDomain(domain: string): string[] {
 /** Eerste voorkeur-slug per domein; wordt gecontroleerd met getArtikelBySlug. */
 const BLOG_SLUG_BY_DOMAIN: Record<string, string> = {
   sleep: "magnesium-en-slaapkwaliteit",
-  stress: "ademhaling-tegen-stress",
-  energy: "energie-verhogen-natuurlijk",
-  nutrition: "wat-is-omega-3",
+  stress: "cortisol-en-testosteron",
+  energy: "vitamine-d-en-energie",
+  nutrition: "omega-3-en-herstel",
   movement: "testosteron-en-energie-na-40",
-  recovery: "cortisol-verlagen-natuurlijk",
+  recovery: "creatine-en-herstel",
 };
 
 export function resolveBlogForDomain(domain: string): {
@@ -158,6 +158,19 @@ export function day21SupplementChoice(params: {
 
 export { escapeHtml, nurtureCtaButton };
 
+export function nurtureNamePrefixHtml(firstName?: string | null): string {
+  const raw = typeof firstName === "string" ? firstName.replace(/\s+/g, " ").trim() : "";
+  if (!raw) {
+    return "";
+  }
+  const cleaned = raw.replace(/[^a-zA-Zà-ïÀ-ÿĳĲ\s'-]/g, "").trim();
+  if (!cleaned) {
+    return "";
+  }
+  const safe = cleaned.length > 60 ? cleaned.slice(0, 60) : cleaned;
+  return `<p style="margin:0 0 4px 0;font-size:16px;line-height:1.6;color:#333333;">Hoi ${escapeHtml(safe)},</p>`;
+}
+
 // ============================================================
 // Gepersonaliseerde HTML-blokken voor profielgestuurde mails
 // ============================================================
@@ -168,6 +181,7 @@ export function renderPersonalizedRows(
   block: NurtureBlock,
   supplementTip: DomainSupplementTip | null,
   intakeUrl: string,
+  firstName?: string | null,
 ): string {
   const bodyHtml = block.bodyParagraphs
     .map(
@@ -207,6 +221,7 @@ export function renderPersonalizedRows(
         </tr>
         <tr>
           <td style="padding:0 28px 10px 28px;">
+            ${nurtureNamePrefixHtml(firstName)}
             <p style="margin:0 0 4px 0;font-size:16px;line-height:1.6;color:#333333;">${escapeHtml(block.greeting)}</p>
           </td>
         </tr>

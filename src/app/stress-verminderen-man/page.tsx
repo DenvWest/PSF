@@ -10,14 +10,14 @@ export const metadata: Metadata = {
   title:
     "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust | PerfectSupplement",
   description:
-    "Chronische stress vreet aan je energie, slaap en hormonen. Ontdek wat je eraan doet — praktisch, onderbouwd en zonder vage adviezen.",
+    "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
   alternates: {
     canonical: "/stress-verminderen-man",
   },
   openGraph: {
     title: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
     description:
-      "Chronische stress vreet aan je energie, slaap en hormonen. Hier is wat je eraan doet.",
+      "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Hier lees je wat je zelf kunt doen.",
     url: "/stress-verminderen-man",
     type: "article",
   },
@@ -28,7 +28,7 @@ const articleSchema = {
   "@type": "Article",
   headline: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
   description:
-    "Chronische stress vreet aan je energie, slaap en hormonen. Ontdek wat je eraan doet.",
+    "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Praktische stappen — zonder diagnoses.",
   author: {
     "@type": "Organization",
     name: "PerfectSupplement",
@@ -53,7 +53,7 @@ const faqSchema = {
       name: "Hoe weet ik of mijn stress chronisch is?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Chronische stress herken je aan aanhoudende signalen die niet verdwijnen na een weekend rust: slechte slaap ondanks vermoeidheid, prikkelbaarheid zonder duidelijke reden, moeite met concentreren, en een lichaam dat voortdurend 'aan' staat. Als je deze klachten langer dan 4-6 weken hebt, is er waarschijnlijk sprake van chronische stress.",
+        text: "Je herkent langdurige stress vaak aan signalen die niet verdwijnen na een weekend rust: slechte slaap ondanks vermoeidheid, prikkelbaarheid, moeite met concentreren, en een lichaam dat moeilijk tot rust komt. Dat is herkenbaar gedrag — geen diagnose. Blijven klachten lang hangen, bespreek het met je huisarts.",
       },
     },
     {
@@ -61,7 +61,7 @@ const faqSchema = {
       name: "Welk supplement helpt het beste tegen stress?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ashwagandha (KSM-66 extract) is het breedst onderzocht voor stressvermindering bij volwassenen. Studies laten zien dat het cortisol met 25-30% kan verlagen bij dagelijks gebruik gedurende 8 weken. Magnesium glycinaat is een goede aanvulling, vooral als je last hebt van spierspanning en onrustige slaap.",
+        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EU‑claim bij voldoende inname). Ashwagandha heeft geen vaste EU‑gezondheidsclaims op stress; sommige studies gaan over hoe mensen spanning ervaren — vergelijk producten op kwaliteit en overleg bij medicatie. Zie ook onze ashwagandha‑pagina en amber waarschuwing.",
       },
     },
     {
@@ -69,7 +69,7 @@ const faqSchema = {
       name: "Kan stress mijn testosteron verlagen?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ja. Chronische stress verhoogt het cortisol, en cortisol en testosteron hebben een omgekeerde relatie: als cortisol langdurig hoog is, daalt testosteron. Dit is een van de redenen waarom mannen 40+ die chronisch gestrest zijn vaak ook last hebben van vermoeidheid, minder spiermassa en een lager libido.",
+        text: "In populaties kan langdurige stress samenhangen met vermoeidheid, minder zin in training of seksuele interesse, of minder herstelgevoel — dat verschilt sterk per persoon. Dat is geen meetbare diagnose van jouw hormonen zonder bloedonderzoek. Bij aanhoudende klachten: huisarts.",
       },
     },
     {
@@ -77,7 +77,7 @@ const faqSchema = {
       name: "Hoe snel merk ik effect van stressvermindering?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ademhalingsoefeningen werken direct — binnen 5 minuten kun je je hartslag en stressreactie verlagen. Leefstijlaanpassingen zoals een vast slaapritme en dagelijks bewegen geven na 2-3 weken merkbaar verschil. Supplementen als ashwagandha hebben 4-8 weken nodig voor het volledige effect.",
+        text: "Ademhalingsoefeningen helpen veel mensen snel om rustiger te worden. Leefstijl zoals vast slaapritme en dagelijkse wandeling merk je vaak binnen enkele weken. Supplementen zijn geen vervanging voor rust en ritme; volg altijd het etiket en vraag advies bij medicatie.",
       },
     },
     {
@@ -130,17 +130,12 @@ export default function StressVerminderenManPage() {
                   </li>
                   <li>
                     <a href="#wat-er-gebeurt" className="hover:underline">
-                      Wat stress doet met je lichaam na 40
+                      Waarom stress na 40 vaak zwaarder voelt
                     </a>
                   </li>
                   <li>
-                    <a href="#hpa-as" className="hover:underline">
-                      De HPA-as: je stresssysteem uitgelegd
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#cortisol-testosteron" className="hover:underline">
-                      Cortisol en testosteron: de onzichtbare balans
+                    <a href="#stress-bij-mannen-40" className="hover:underline">
+                      Hoe stress zich meestal uit — in begrijpelijke taal
                     </a>
                   </li>
                   <li>
@@ -206,101 +201,76 @@ export default function StressVerminderenManPage() {
                 </ul>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Als je hier drie of meer van herkent, lees verder. Het is geen zwakte — het is een
-                  signaal dat je stresssysteem constant &apos;aan&apos; staat.
+                  signaal dat je lang in een hoge belastingstand zit. Dat wil zeggen: je systeem
+                  krijgt weinig echte rustmomenten, niet dat wij weten wat er in je bloed zit.
                 </p>
               </section>
 
               {/* 4–6. Stress na 40, HPA, cortisol/testosteron */}
               <section id="wat-er-gebeurt" className="mt-14">
                 <h2 className="font-serif text-3xl font-bold text-gray-900">
-                  Wat Stress Doet Met Je Lichaam Na 40
+                  Waarom stress na 40 vaak zwaarder voelt
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Stress is niet per definitie slecht. Kortdurende stress — een deadline, een
-                  intensieve training, een moeilijk gesprek — activeert je en maakt je scherper. Het
-                  probleem begint wanneer de stress niet meer stopt.
+                  intensieve training, een moeilijk gesprek — kan je scherp zetten. Het probleem
+                  begint wanneer de spanning lang aan blijft staan en rust zeldzaam wordt.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Na je 40e verandert de manier waarop je lichaam met stress omgaat. Je
-                  herstelvermogen neemt af: waar je op je 30e een zware week nog compenseerde met
-                  een goed weekend, lukt dat nu niet meer. Dat zit niet alleen tussen je oren —
-                  er verandert echt iets in je lichaam.
+                  Na je 40e merken veel mannen dat herstel langer duurt: waar een zware week vroeger
+                  met een goed weekend weer vlak werd, blijft het gevoel van &quot;aan&quot; langer
+                  hangen. Dat past vaak bij druk op werk, gezin en verantwoordelijkheden — niet
+                  automatisch bij een ziekte.
                 </p>
-                <p className="mt-4 text-gray-700 leading-relaxed">Drie processen spelen tegelijk mee:</p>
+                <p className="mt-4 text-gray-700 leading-relaxed">Drie dingen horen we vaak terug:</p>
                 <ol className="mt-3 space-y-3 text-gray-700 list-decimal list-inside leading-relaxed">
                   <li>
-                    <strong className="font-semibold text-gray-900">Je HPA-as raakt ontregeld.</strong>{" "}
-                    Je biologische stresssysteem (de HPA-as) is het netwerk waarmee je lichaam op
-                    stress reageert. Bij chronische stress blijft je stresssysteem actief — ook als
-                    er geen acuut gevaar is. Het gevolg: je cortisolniveau blijft de hele dag te hoog
-                    in plaats van alleen &apos;s ochtends.
-                  </li>
-                  <li>
-                    <strong className="font-semibold text-gray-900">Je testosteron daalt.</strong>{" "}
-                    Cortisol en testosteron gebruiken dezelfde grondstoffen in je lichaam. Als
-                    cortisol chronisch hoog is, daalt testosteron — wat invloed heeft op je energie,
-                    spiermassa, libido en stemming. Na 40 daalt testosteron al met ongeveer 1-2% per
-                    jaar; langdurige stress kan dat versnellen.
+                    <strong className="font-semibold text-gray-900">Je komt moeilijk in echte rust.</strong>{" "}
+                    Overdag functioneer je, maar &apos;s avonds blijft je hoofd doorlopen en slaap
+                    voelt oppervlakkig. Dat is herkenbaar gedrag bij langdurige belasting.
                   </li>
                   <li>
                     <strong className="font-semibold text-gray-900">
-                      Je zenuwstelsel blijft in de &quot;aan&quot;-stand.
+                      Energie en herstel voelen minder &quot;gratis&quot;.
                     </strong>{" "}
-                    Je zenuwstelsel heeft twee standen: actie- en herstelmodus. Bij chronische stress
-                    blijft het sympathische systeem dominant. Dat verklaart de slaapproblemen, de
-                    spierspanning en het gevoel dat je niet kunt ontspannen — zelfs op rustige
-                    momenten.
+                    Trainen, werken en sociale dingen kosten meer moeite om weer op peil te komen.
+                    Dat zegt niets over je karakter — wel over je weekbelasting.
+                  </li>
+                  <li>
+                    <strong className="font-semibold text-gray-900">
+                      Kleine dingen voelen sneller zwaar.
+                    </strong>{" "}
+                    Prikkelbaarheid, spanning in kaak of schouders, hoofdpijn: signalen die vaak
+                    samengaan met weinig pauzes en slechte slaap.
                   </li>
                 </ol>
 
-                <section id="hpa-as" className="mt-14">
+                <section id="stress-bij-mannen-40" className="mt-14">
                   <h3 className="font-semibold text-xl text-gray-900">
-                    De HPA-as: Je Stresssysteem Uitgelegd
+                    Hoe stress zich meestal uit — zonder medisch jargon
                   </h3>
                   <p className="mt-3 text-gray-700 leading-relaxed">
-                    De HPA-as is de communicatielijn tussen je hersenen en je bijnieren. Zo werkt
-                    het:
-                  </p>
-                  <ul className="mt-3 space-y-2 text-gray-700 list-disc list-inside leading-relaxed">
-                    <li>Je hersenen detecteren een stressprikkel (fysiek of mentaal)</li>
-                    <li>De hypothalamus stuurt een signaal naar de hypofyse</li>
-                    <li>De hypofyse activeert de bijnieren</li>
-                    <li>De bijnieren produceren cortisol</li>
-                  </ul>
-                  <p className="mt-4 text-gray-700 leading-relaxed">
-                    Bij gezonde stress piekt cortisol kort en daalt het weer. Bij chronische stress
-                    blijft de as actief. Je lichaam blijft langer in een stressstand dan goed voor
-                    je is, en op den duur raakt je stresssysteem ontregeld — met een cortisolritme
-                    dat niet meer past bij wat je overdag nodig hebt.
+                    In gesprekken met mannen 40+ horen we vaak hetzelfde patroon: je lichaam blijft
+                    lang in een &quot;alles moet af&quot;-modus, terwijl je brein weinig momenten
+                    krijgt om echt los te laten. Daardoor slaap je slechter, ben je sneller kort van
+                    stok en blijft sporten of hobby&apos;s voelen als &quot;moeten&quot;.
                   </p>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Het resultaat: je bent moe maar opgefokt, je slaapt slecht maar kunt niet
-                    ontspannen, je wilt bewegen maar hebt er de energie niet voor. Dat gevoel — moe
-                    maar toch opgejaagd — herkennen veel mensen met langdurige stress.
-                  </p>
-                </section>
-
-                <section id="cortisol-testosteron" className="mt-14">
-                  <h3 className="font-semibold text-xl text-gray-900">
-                    Cortisol en Testosteron: De Onzichtbare Balans
-                  </h3>
-                  <p className="mt-3 text-gray-700 leading-relaxed">
-                    Cortisol en testosteron delen dezelfde voorloperstof: pregnenolon. Onder
-                    chronische stress kiest je lichaam voor cortisol boven testosteron — een
-                    overlevingsmechanisme dat op korte termijn logisch is, maar op lange termijn je
-                    energie en herstel langzaam onder druk zet.
+                    Wil je dieper duiken in het biologische verhaal (bijvoorbeeld{" "}
+                    <Link href="/kennisbank/cortisol" className={INLINE_LINK_CLASS}>
+                      cortisol
+                    </Link>{" "}
+                    of de{" "}
+                    <Link href="/kennisbank/hpa-as" className={INLINE_LINK_CLASS}>
+                      HPA-as
+                    </Link>
+                    )? Dat lees je in de kennisbank — zonder dat we hier claimen wat er bij jou
+                    precies meetbaar speelt.
                   </p>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Onderzoek laat zien dat mannen met chronisch verhoogd cortisol gemiddeld 10-15%
-                    lager testosteron hebben dan leeftijdgenoten met normale cortisolwaarden. De
-                    gevolgen zijn breed: minder energie, trager herstel na inspanning, verminderd
-                    libido, en een langzaam verlies van spiermassa dat je niet meteen opvalt maar
-                    over maanden zichtbaar wordt.
-                  </p>
-                  <p className="mt-4 text-gray-700 leading-relaxed">
-                    Het goede nieuws: deze relatie werkt twee kanten op. Minder stress door
-                    stressmanagement kan helpen je testosteronwaarden te verbeteren — niet naar het
-                    niveau van je 20e, maar naar het optimum voor jouw leeftijd.
+                    Het goede nieuws: wat je overdag doet met ritme, slaap, beweging en grenzen, heeft
+                    voor veel mensen de grootste impact. Daar begin je het liefst — supplementen
+                    zijn hooguit een tweede stap als de basis staat.
                   </p>
                 </section>
               </section>
@@ -319,10 +289,9 @@ export default function StressVerminderenManPage() {
                   1. Ademhaling — de snelste manier om je lichaam tot rust te brengen
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  De eenvoudigste manier om je parasympathische zenuwstelsel te activeren is
-                  gecontroleerde ademhaling. De 4-7-8 methode (4 tellen inademen, 7 tellen
-                  vasthouden, 8 tellen uitademen) verlaagt je hartslag en stressreactie binnen 5
-                  minuten. Twee keer per dag, 5 minuten.
+                  Langzaam en bewust uitademen helpt veel mensen om sneller rustiger te worden. De
+                  4-7-8 methode (4 tellen inademen, 7 tellen vasthouden, 8 tellen uitademen) is
+                  eenvoudig om te onthouden. Twee keer per dag, 5 minuten.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   → Lees meer:{" "}
@@ -335,20 +304,19 @@ export default function StressVerminderenManPage() {
                   2. Beweging — maar niet te veel
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Matige beweging (wandelen, zwemmen, fietsen) verlaagt cortisol. Heel intensief
-                  sporten kan cortisol tijdelijk verhogen. Als je al chronisch gestrest bent, is een
-                  dagelijkse wandeling van 30 minuten effectiever dan een HIIT-sessie. Train maximaal
-                  3-4 keer per week op intensiteit, en compenseer met herstel.
+                  Matige beweging (wandelen, zwemmen, fietsen) helpt veel mensen om spanning af te
+                  bouwen. Heel intensief trainen bovenop een vol hoofd voelt voor sommigen juist te
+                  zwaar. Als je al lang &quot;aan&quot; staat, is een dagelijkse wandeling van 30
+                  minuten vaak effectiever dan extra harde sessies.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
                   3. Slaapritme — de ondergewaardeerde reset
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Je cortisolritme volgt je slaapritme. Ga op dezelfde tijd naar bed en sta op
-                  dezelfde tijd op — ook in het weekend. Dat herstelt je circadiaan ritme en helpt je
-                  cortisolritme herstellen. Het klinkt simpel, maar het is de meest effectieve
-                  interventie die bijna niemand consequent doet.
+                  Een vast ritme helpt je lichaam overdag scherper te stellen: ga op een vergelijkbaar
+                  tijdstip naar bed en sta op een vast moment op — ook in het weekend. Dat klinkt
+                  simpel, maar het is voor veel mensen de snelste winst op slaap en stressgevoel.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   → Worstel je ook met je slaap? Lees de complete gids:{" "}
@@ -376,9 +344,9 @@ export default function StressVerminderenManPage() {
                   5. Stimulanten beperken
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Cafeïne na 14:00 verstoort je slaap en houdt je cortisol hoog. Alcohol lijkt
-                  ontspannend maar onderdrukt je REM-slaap en verhoogt cortisol na 2-3 uur. Beperk
-                  koffie tot de ochtend en alcohol tot maximaal 2 glazen, niet dagelijks.
+                  Cafeïne laat op de dag kan slapen lastiger maken. Alcohol lijkt ontspannend, maar
+                  maakt slaap voor veel mensen oppervlakkiger. Beperk koffie tot de ochtend en drink
+                  alcohol met mate — niet dagelijks rond bedtijd.
                 </p>
               </section>
 
@@ -395,10 +363,10 @@ export default function StressVerminderenManPage() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Ashwagandha (KSM-66)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Het meest onderzochte adaptogeen voor stressvermindering. KSM-66 is een
-                  gestandaardiseerd extract met consistente withanolide-gehaltes. In klinische
-                  studies verlaagt het cortisol met 25-30% na 8 weken dagelijks gebruik (300-600
-                  mg). Het verbetert ook slaapkwaliteit en hoe gestrest mensen zich voelen.
+                  Ashwagandha wordt in studies vaak besproken rond hoe mensen spanning ervaren.
+                  Er zijn geen vaste EU‑gezondheidsclaims op stress voor dit kruid; er lopen discussies
+                  over regulering in Nederland. KSM‑66 is een veelgebruikt gestandaardiseerd extract
+                  — vergelijk producten op kwaliteit en overleg bij medicatie.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Let op: ashwagandha heeft geen EFSA-goedgekeurde gezondheidsclaims en er lopen
@@ -506,9 +474,9 @@ export default function StressVerminderenManPage() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Chronisch verhoogd cortisol beïnvloedt je slaap, stemming en gewicht — vaak
-                      zonder dat je het doorhebt. In dit artikel: vijf onderbouwde leefstijlroutes om
-                      je cortisol te verlagen.
+                      Langdurige stress en spanning kunnen samengaan met slechte slaap en meer
+                      prikkelbaarheid — vaak zonder dat je het direct doorhebt. In dit artikel: vijf
+                      leefstijlroutes om rustiger te worden.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Lees het artikel →
@@ -538,6 +506,31 @@ export default function StressVerminderenManPage() {
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
                       Lees het artikel →
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/blog/cortisol-en-testosteron"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
+                  >
+                    <p className="text-sm leading-relaxed text-gray-700">
+                      Stress en testosteron worden vaak in één adem genoemd — dit artikel scheidt feiten
+                      van verhalen.
+                    </p>
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
+                      Cortisol en testosteron →
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/testosteron-na-40"
+                    className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
+                  >
+                    <p className="text-sm leading-relaxed text-gray-700">
+                      Volledige gids testosteron na 40: leefstijl eerst, supplementen in context.
+                    </p>
+                    <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
+                      Naar de pillar →
                     </span>
                   </Link>
 
@@ -595,11 +588,11 @@ export default function StressVerminderenManPage() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 leading-relaxed text-gray-700">
-                      Chronische stress herken je aan aanhoudende signalen die niet verdwijnen na
-                      een weekend rust: slechte slaap ondanks vermoeidheid, prikkelbaarheid zonder
-                      duidelijke reden, moeite met concentreren, en een lichaam dat voortdurend
-                      &apos;aan&apos; staat. Als je deze klachten langer dan 4-6 weken hebt, is er
-                      waarschijnlijk sprake van chronische stress.
+                      Je herkent langdurige stress vaak aan signalen die niet verdwijnen na een
+                      weekend rust: slechte slaap ondanks vermoeidheid, prikkelbaarheid, moeite met
+                      concentreren, en een lichaam dat moeilijk tot rust komt. Dat is herkenbaar
+                      gedrag — geen diagnose. Blijven klachten lang hangen, bespreek het met je
+                      huisarts.
                     </div>
                   </details>
 
@@ -611,10 +604,11 @@ export default function StressVerminderenManPage() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 leading-relaxed text-gray-700">
-                      Ashwagandha (KSM-66 extract) is het breedst onderzocht voor stressvermindering
-                      bij volwassenen. Studies laten zien dat het cortisol met 25-30% kan verlagen
-                      bij dagelijks gebruik gedurende 8 weken. Magnesium glycinaat is een goede
-                      aanvulling, vooral als je last hebt van spierspanning en onrustige slaap.
+                      Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een
+                      normale psychologische functie (EU‑claim bij voldoende inname). Ashwagandha
+                      heeft geen vaste EU‑gezondheidsclaims op stress; sommige studies gaan over hoe
+                      mensen spanning ervaren — vergelijk producten op kwaliteit en overleg bij
+                      medicatie. Zie ook onze ashwagandha‑pagina en amber waarschuwing.
                     </div>
                   </details>
 
@@ -626,10 +620,10 @@ export default function StressVerminderenManPage() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 leading-relaxed text-gray-700">
-                      Ja. Chronische stress verhoogt het cortisol, en cortisol en testosteron hebben
-                      een omgekeerde relatie: als cortisol langdurig hoog is, daalt testosteron. Dit
-                      is een van de redenen waarom mannen 40+ die chronisch gestrest zijn vaak ook
-                      last hebben van vermoeidheid, minder spiermassa en een lager libido.
+                      In populaties kan langdurige stress samenhangen met vermoeidheid, minder zin in
+                      training of seksuele interesse, of minder herstelgevoel — dat verschilt sterk
+                      per persoon. Dat is geen meetbare diagnose van jouw hormonen zonder
+                      bloedonderzoek. Bij aanhoudende klachten: huisarts.
                     </div>
                   </details>
 
@@ -641,10 +635,10 @@ export default function StressVerminderenManPage() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 leading-relaxed text-gray-700">
-                      Ademhalingsoefeningen werken direct — binnen 5 minuten kun je je hartslag en
-                      stressreactie verlagen. Leefstijlaanpassingen zoals een vast slaapritme en
-                      dagelijks bewegen geven na 2-3 weken merkbaar verschil. Supplementen als
-                      ashwagandha hebben 4-8 weken nodig voor het volledige effect.
+                      Ademhalingsoefeningen helpen veel mensen snel om rustiger te worden.
+                      Leefstijl zoals vast slaapritme en dagelijkse wandeling merk je vaak binnen
+                      enkele weken. Supplementen zijn geen vervanging voor rust en ritme; volg
+                      altijd het etiket en vraag advies bij medicatie.
                     </div>
                   </details>
 

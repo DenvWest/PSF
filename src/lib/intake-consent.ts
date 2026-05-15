@@ -13,7 +13,24 @@ export type IntakeConsentPayload = {
   marketingEmail: boolean;
   /** Alleen relevant als marketingEmail true; verplicht bij marketing. */
   marketingEmailAddress: string | null;
+  /** Optioneel; voor personalisatie in e-mails (max. 60 tekens). */
+  firstName: string | null;
 };
+
+function normalizeFirstName(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const t = value.replace(/\s+/g, " ").trim();
+  if (!t) {
+    return null;
+  }
+  const cleaned = t.replace(/[^a-zA-Zà-ïÀ-ÿĳĲ\s'-]/g, "").trim();
+  if (!cleaned) {
+    return null;
+  }
+  return cleaned.length > 60 ? cleaned.slice(0, 60) : cleaned;
+}
 
 function normalizeEmail(value: unknown): string | null {
   if (typeof value !== "string") {
@@ -64,6 +81,7 @@ export function validateIntakeConsent(body: Record<string, unknown>):
   }
 
   const marketingEmailAddress = normalizeEmail(raw.marketingEmailAddress);
+  const firstName = normalizeFirstName(raw.firstName);
 
   if (marketing === true) {
     if (!marketingEmailAddress || !EMAIL_LOOSE.test(marketingEmailAddress)) {
@@ -81,6 +99,7 @@ export function validateIntakeConsent(body: Record<string, unknown>):
       anonymousAnalytics: analytics,
       marketingEmail: marketing,
       marketingEmailAddress: marketing ? marketingEmailAddress : null,
+      firstName,
     },
   };
 }

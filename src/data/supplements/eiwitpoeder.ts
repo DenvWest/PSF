@@ -28,9 +28,21 @@ export const eiwitpoederData: ComparisonPageData = {
     { href: "/beste/creatine", label: "Beste creatine — handig naast eiwit bij krachttraining →" },
   ],
   readAlsoCards: [
-    { href: "/supplementen/eiwitpoeder", text: "Eerst begrijpen wat bij jou past? Lees de complete eiwitpoeder gids.", cta: "Lees de gids →" },
-    { href: "/beste/creatine", text: "Train je veel maar herstel je slecht? Creatine kan het verschil maken →" },
-    { href: "/slaap-verbeteren-na-40", text: "Spieren herstellen 's nachts — goed slapen is essentieel →" },
+    {
+      href: "/profiel/overtrainer",
+      text: "Veel trainen zonder voldoende eiwit? Herstel begint op het bord — poeder is ondersteuning.",
+      cta: "Past bij profiel Overtrainer →",
+    },
+    {
+      href: "/herstel-verbeteren-na-40",
+      text: "Eiwitdosering en herstel na 40 — in de pillar met slaap en rustdagen.",
+      cta: "Naar herstel-pillar →",
+    },
+    {
+      href: "/beste/creatine",
+      text: "Krachttraining? Vergelijk creatine naast je eiwitroutine.",
+      cta: "Naar creatine-vergelijking →",
+    },
   ],
   choiceRoutes: [
     {

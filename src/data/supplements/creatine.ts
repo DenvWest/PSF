@@ -29,6 +29,23 @@ export const creatineData: ComparisonPageData = {
     { href: "/beste/magnesium", label: "Beste magnesium — o.a. normale spierfunctie en vermindering van vermoeidheid →" },
     { href: "/supplement-kiezen-waar-op-letten", label: "Supplement kiezen: waar let je op? — praktische checklist →" },
   ],
+  readAlsoCards: [
+    {
+      href: "/profiel/overtrainer",
+      text: "Veel trainen maar weinig buffer? Creatine ondersteunt vooral korte piekbelasting — herstel vraagt ook rust en slaap.",
+      cta: "Past bij profiel Overtrainer →",
+    },
+    {
+      href: "/herstel-verbeteren-na-40",
+      text: "Creatine is één stukje; lees de volledige herstelroute na 40 met slaap, eiwit en vergelijkingen.",
+      cta: "Naar herstel-pillar →",
+    },
+    {
+      href: "/blog/creatine-en-herstel",
+      text: "Cluster-artikel: creatine koppelen aan herstel zonder wonderbeloftes.",
+      cta: "Lees het artikel →",
+    },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",

@@ -677,6 +677,39 @@ export default function HerstelVerbeterenNa40Page() {
                       Energie verhogen, natuurlijk →
                     </Link>
                   </div>
+                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Creatine en herstel: buffer naast slaap en eiwit.
+                    </p>
+                    <Link
+                      href="/blog/creatine-en-herstel"
+                      className="mt-2 inline-block text-green-700 text-sm font-semibold hover:text-green-800"
+                    >
+                      Creatine en herstel →
+                    </Link>
+                  </div>
+                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200">
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Omega-3 en herstel: EPA/DHA wanneer je weinig vis eet.
+                    </p>
+                    <Link
+                      href="/blog/omega-3-en-herstel"
+                      className="mt-2 inline-block text-green-700 text-sm font-semibold hover:text-green-800"
+                    >
+                      Omega-3 en herstel →
+                    </Link>
+                  </div>
+                  <div className="p-5 bg-stone-50 rounded-xl border border-stone-200 sm:col-span-2">
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      Veel trainen, weinig buffer? Bekijk profiel Overtrainer.
+                    </p>
+                    <Link
+                      href="/profiel/overtrainer"
+                      className="mt-2 inline-block text-green-700 text-sm font-semibold hover:text-green-800"
+                    >
+                      Naar het profiel →
+                    </Link>
+                  </div>
                 </div>
               </section>
 

@@ -7,7 +7,7 @@ export const stressdragerProfile: ProfilePageData = {
   seo: {
     title: "Stressdrager: Profiel Chronische Stress Mannen 40+ | PerfectSupplement",
     description:
-      "Continu aan, nooit echt uit? Het Stressdrager-profiel: herkenning, biologie, quick wins en een 4-weken plan om er uit te komen.",
+      "Continu aan, nooit echt uit? Het Stressdrager-profiel: herkenning, uitleg in begrijpelijke taal, quick wins en een 4-weken plan.",
     canonical: "https://perfectsupplement.nl/profiel/stressdrager",
     targetKeyword: "chronische stress man 40",
   },
@@ -48,15 +48,15 @@ export const stressdragerProfile: ProfilePageData = {
       },
     ],
     closer:
-      "Als je hier drie of meer van herkent, is er waarschijnlijk iets structureels aan de hand met hoe je lichaam stress vasthoudt. Dat is geen karakter — het is biologie. En je kunt het stap voor stap veranderen.",
+      "Als je hier drie of meer van herkent, herkennen veel mannen 40+ hetzelfde patroon: je bent lang \"aan\" en komt moeilijk in echte rust. Dat zegt niets over je karakter — en je kunt het stap voor stap anders inrichten.",
   },
 
   understanding: {
-    title: "Wat er in je lichaam gebeurt",
+    title: "Hoe stress zich vaak voelt na 40",
     paragraphs: [
-      "Bij chronische stress staat je HPA-as (de stress-as tussen hersenen en bijnieren) langdurig \"aan\". Cortisol — het ochtendhormoon dat je wakker maakt — blijft in de avond te hoog en dipt in de ochtend te laag.",
-      "Je sympathische zenuwstelsel (\"vechten of vluchten\") domineert over het parasympathische (\"rust en herstel\"). Het gevolg: je lichaam herstelt slechter, je slaap is oppervlakkiger, je spijsvertering vertraagt, en je testosteron daalt — want cortisol en testosteron concurreren om dezelfde bouwstenen.",
-      "Na 40 wordt dit patroon harder voelbaar omdat je buffer kleiner wordt: een doorgewerkte avond herstel je niet meer in één nacht.",
+      "Veel mannen merken dat ze overdag scherp blijven, maar 's avonds niet meer loslaten. Je hoofd blijft doorlopen, je lichaam voelt gespannen en slapen voelt oppervlakkig. Dat hoeft geen ziekte te zijn: het past vaak bij druk op werk, gezin en verantwoordelijkheden die elkaar opstapelen.",
+      "Als je lang in die modus blijft, kost herstel meer moeite: je slaapt minder diep, je bent sneller geïrriteerd en kleine dingen voelen zwaarder. Dat is herkenbaar gedrag — geen diagnose van wat er in je bloed zit.",
+      "Na je veertigste merken veel mensen dat dezelfde weekstructuur harder voelt dan tien jaar geleden. Kleine grenzen (ritme, scherm, cafeïne, beweging) helpen vaak meer dan nog harder \"doortrekken\".",
     ],
   },
 
@@ -64,12 +64,12 @@ export const stressdragerProfile: ProfilePageData = {
     {
       id: "vandaag",
       title: "Wat je vandaag nog kunt doen",
-      subtitle: "Drie quick wins die direct je zenuwstelsel richting rust duwen",
+      subtitle: "Drie quick wins die je direct richting meer rust duwen",
       items: [
         {
           title: "Adem bewust uit — 5 minuten",
           description:
-            "Adem 5 minuten per dag bewust uit (4 sec in, 6 sec uit). Dat activeert de nervus vagus en kalmeert direct het zenuwstelsel.",
+            "Adem 5 minuten per dag bewust uit (4 sec in, 6 sec uit). Langzamer uitademen geeft je lichaam vaak sneller een gevoel van: het is oké om te ontspannen.",
           actionable:
             "Zet een timer op 5 minuten en doe dit vóór de lunch of na het avondeten — vaste plek, geen telefoon.",
           timeframe: "Vandaag",
@@ -100,7 +100,7 @@ export const stressdragerProfile: ProfilePageData = {
         {
           title: "Eén vaste \"afsluitmoment\" na werk",
           description:
-            "Je brein heeft een overgang nodig tussen werk en herstel. Zonder die overgang blijft cortisol langer hoog.",
+            "Je brein heeft een overgang nodig tussen werk en herstel. Zonder die overgang blijf je mentaal \"in de winkel\" staan.",
           actionable:
             "Kies een tijdstip (bijv. 20:00) waarna geen mail en geen werk-apps meer — informeer desnoods kort je omgeving.",
           timeframe: "Deze week",
@@ -177,7 +177,7 @@ export const stressdragerProfile: ProfilePageData = {
   relatedPillar: {
     href: "/stress-verminderen-man",
     turboSnippet:
-      "Chronische stress, cortisol, slaap en testosteron — in één onderbouwde gids met een concreet weekplan.",
+      "Stress na 40: herkenning, slaap, energie en een concreet weekplan — zonder medisch jargon als diagnose.",
   },
 
   relatedComparisons: [

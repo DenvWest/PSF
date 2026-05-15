@@ -585,6 +585,172 @@ Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en ei
       'Hood DA et al. Mitochondrial adaptations contractile activity — Physiol Rev exercise energy coupling.',
     ]),
   },
+  {
+    slug: 'testosteron',
+    term: 'Testosteron',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'Het belangrijkste mannelijke geslachtshormoon — met invloed op energie, spierbehoud en stemming, maar sterk individueel en leeftijdsafhankelijk.',
+    content: {
+      whatIsIt: `Testosteron wordt vooral in de testikels aangemaakt (met een klein deel uit de bijnieren). Het hoort bij mannelijke ontwikkeling, spiermassa, botdichtheid en libido — maar “normaal” is een bandbreedte, geen enkel doelgetal op een bonnetje.
+
+Na je 40e dalen gemiddelde waarden geleidelijk; hoe snel en hoe merkbaar dat is, verschilt sterk per persoon. Vermoeidheid of minder zin in training heeft vaak meerdere oorzaken tegelijk (slaap, stress, voeding, medicatie).`,
+      howItWorks: `Testosteron volgt een dagritme en reageert op slaap, inspanning en stressbelasting. Langdurige stress en slechte slaap kunnen samenhangen met minder gunstige hormonale patronen — dat is populatie-onderzoek, geen voorspelling voor jouw bloedwaarde.
+
+Labtesten (totaal en soms vrij testosteron) horen in medische context: interpretatie hangt af van tijdstip, klachten en andere markers. Zelf-diagnose via marketing is riskant.`,
+      whyItMatters: `Supplementen zoals zink of creatine worden soms besproken rond mannelijke gezondheid, maar vervangen geen medische beoordeling bij aanhoudende klachten. Lees onze pillar [testosteron na 40](/testosteron-na-40) en vergelijk zink inhoudelijk op [/beste/zink](/beste/zink) — altijd naast leefstijl (slaap, krachttraining, stress).`,
+    },
+    relatedSlugs: ['cortisol', 'hpa-as'],
+    relatedComparisons: ['/beste/zink', '/beste/creatine'],
+    metaTitle: 'Testosteron: Wat Het Is en Wat Verandert Na 40',
+    metaDescription:
+      'Testosteron uitgelegd: functie, leeftijdstrend en waarom labwaarden context nodig hebben — zonder supplement-hype.',
+    referenties: toRefs([
+      'Feldman HA et al. Age trends serum testosterone Massachusetts Male Aging Study. J Clin Endocrinol Metab. 2002;87(2):589-598.',
+      'Harman SM et al. Longitudinal effects aging serum total free testosterone healthy men. J Clin Endocrinol Metab. 2001;86(2):724-731.',
+      'Travison TG et al. Harmonized reference ranges testosterone J Clin Endocrinol Metab methodological.',
+      'Bhasin S et al. Testosterone therapy men hypogonadism Endocrine Society clinical practice guideline context.',
+      'Leproult R, Van Cauter E. Effect of 1 week sleep restriction on testosterone levels in young healthy men. JAMA. 2011;305(21):2173-2174.',
+      'Prasad AS et al. Zinc status and serum testosterone levels in healthy adults. Nutrition. 1996;12(5):344-348.',
+    ]),
+  },
+  {
+    slug: 'slaapschuld',
+    term: 'Slaapschuld',
+    theme: 'leefstijl-herstel',
+    shortDefinition:
+      'Het cumulatieve tekort aan slaap over dagen of weken — vaak merkbaar als traagheid, prikkelbaarheid en slechter herstel.',
+    content: {
+      whatIsIt: `Slaapschuld ontstaat wanneer je structureel minder slaapt dan je lichaam nodig heeft — niet alleen één slechte nacht. Veel mannen 40+ compenseren met koffie en “doorgaan”, terwijl concentratie, humeur en herstel langzaam afnemen.
+
+Het is geen officiële diagnose op zich; wel een bruikbaar begrip om te zien waarom kleine verbeteringen in bedtijd groot effect kunnen hebben.`,
+      howItWorks: `Slaap bestaat uit cycli (licht, diep, REM). Tekort raakt vooral diepe slaap en REM — fases die belangrijk zijn voor herstel en geheugen. Je kunt “genoeg uren” hebben en toch niet uitgerust zijn als het ritme verstoord is (laat naar bed, schermlicht, alcohol).
+
+Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme niet volledig op.`,
+      whyItMatters: `Voor supplementen is slaap de basis: melatonine ondersteunt vooral timing, magnesium past bij ontspanning — geen vervanging van structurele slaapschuld. Lees [slaap verbeteren na 40](/slaap-verbeteren-na-40) en blogs over [slaapritme](/blog/slaapritme-herstellen).`,
+    },
+    relatedSlugs: ['melatonine', 'cortisol', 'slaaphygiene'],
+    relatedComparisons: ['/beste/magnesium'],
+    metaTitle: 'Slaapschuld: Wat Het Is en Hoe Je Het Terugdraait',
+    metaDescription:
+      'Slaapschuld uitgelegd: hoe tekort zich opstapelt en welke leefstijlstappen eerst helpen — vóór supplementen.',
+    referenties: toRefs([
+      'Van Dongen HP et al. The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology. Sleep. 2003;26(2):117-126.',
+      'Banks S, Dinges DF. Behavioral and physiological consequences of sleep restriction. J Clin Sleep Med. 2007;3(5):519-528.',
+      'Walker MP. Why we sleep — neurocognitive consequences sleep loss reviews.',
+      'Leproult R, Van Cauter E. Role of sleep and sleep loss in hormonal release and metabolism. Endocr Dev.',
+      'Irish LA et al. The role of sleep hygiene in promoting public health: a review of empirical evidence. Sleep Med Rev. 2015;22:23-36.',
+      'Czeisler CA. Duration timing safety during sleepiness circadian physiology perspective.',
+    ]),
+  },
+  {
+    slug: 'magnesiumvormen',
+    term: 'Magnesiumvormen',
+    theme: 'supplementwetenschap',
+    shortDefinition:
+      'Niet elk magnesium op het etiket wordt even goed opgenomen — de chemische vorm bepaalt opname en doel.',
+    content: {
+      whatIsIt: `Magnesium komt in supplementen als verschillende zouten: oxide, citraat, bisglycinaat, tauraat, enzovoort. Het elementaire magnesium per capsule verschilt per vorm — en dus ook wat je lichaam effectief binnenkrijgt.
+
+“400 mg magnesium” op de voorkant kan citraat, oxide of een mix zijn; zonder specificatie is vergelijken lastig.`,
+      howItWorks: `Oxide heeft doorgaans lagere opname; citraat en glycinaat worden vaak beter verdragen en opgenomen. Bisglycinaat (chelaat) wordt gekoppeld aan aminozuur-transporters — relevant als je gevoelige darmen hebt.
+
+Transparantie op het etiket (elementair mg, vorm, geen verkapte blends) is waar onze [magnesiumvergelijking](/beste/magnesium) op scoort.`,
+      whyItMatters: `Kies vorm op doel en verdraging: avond/ontspanning vs algemene aanvulling. Lees ook [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) en [chelaatvorm](/kennisbank/chelaatvorm).`,
+    },
+    relatedSlugs: ['biobeschikbaarheid', 'chelaatvorm'],
+    relatedComparisons: ['/beste/magnesium'],
+    metaTitle: 'Magnesiumvormen: Oxide, Citraat, Bisglycinaat en Meer',
+    metaDescription:
+      'Magnesiumvormen vergeleken: opname, verdraging en waar je op let bij het kiezen van een supplement.',
+    referenties: toRefs([
+      'Schwalfenberg GK, Genuis SJ. The importance of magnesium in clinical healthcare. ScientificWorldJournal. 2017;2017:4179326.',
+      'Workinger JL et al. Challenges in magnesium absorption: regulating factors and adaptations. Nutr Rev. 2018;76(11):849-867.',
+      'NIH Office of Dietary Supplements. Magnesium Fact Sheet for Health Professionals.',
+      'EFSA authorised claims magnesium nervous system muscle fatigue contexts.',
+      'Gröber U et al. Myth or Reality—Transdermal Magnesium? Nutrients. 2017;9(8):813.',
+      'Institute of Medicine. Dietary Reference Intakes: magnesium DRV methodological chapters.',
+    ]),
+  },
+  {
+    slug: 'overtrainingssyndroom',
+    term: 'Overtrainingssyndroom',
+    theme: 'leefstijl-herstel',
+    shortDefinition:
+      'Een langdurige disbalans tussen trainingbelasting en herstel — met vermoeidheid, slechtere prestaties en soms stemmingsverandering.',
+    content: {
+      whatIsIt: `Overtraining (of het overtrainingssyndroom) is geen “lui zijn” — het is wanneer je lichaam wekenlang meer belasting krijgt dan het kan verwerken, ondanks slaap en voeding die op papier oké lijken. Veel fanatieke mannen 40+ herkennen het patroon: harder trainen terwijl prestaties en stemming achteruitgaan.
+
+Het verschilt van een normale dip na zware week: het houdt aan en verbetert niet met één rustweek.`,
+      howItWorks: `Belasting = training + werkstress + slaaptekort. Herstel = slaap, voeding (eiwit), rustdagen en soms minder volume. Zonder die balans blijft het sympathische “aan”-gevoel langer hangen; herstelmarkers en subjectief welzijn kunnen achterblijven.
+
+Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; online checklists zijn geen vervanging.`,
+      whyItMatters: `Supplementen zoals creatine of magnesium ondersteunen delen van het plaatje, maar vervangen geen deload. Zie profiel [Overtrainer](/profiel/overtrainer), pillar [herstel na 40](/herstel-verbeteren-na-40) en blog [creatine en herstel](/blog/creatine-en-herstel).`,
+    },
+    relatedSlugs: ['mitochondrien', 'cortisol'],
+    relatedComparisons: ['/beste/creatine', '/beste/magnesium'],
+    metaTitle: 'Overtrainingssyndroom: Tekenen en Herstelroute',
+    metaDescription:
+      'Overtraining uitgelegd: wanneer te veel belasting wint van herstel en welke stappen eerst helpen.',
+    referenties: toRefs([
+      'Meeusen R et al. Prevention diagnosis and treatment of the overtraining syndrome. Eur J Sport Sci. 2013;13(1):1-24.',
+      'Kreher JB, Schwartz JB. Overtraining syndrome: a practical guide. Sports Health. 2012;4(2):128-138.',
+      'Budgett R. Fatigue and underperformance in athletes: the overtraining syndrome. Br J Sports Med. 1998;32(2):107-110.',
+      'Halson SL. Monitoring training load to understand fatigue in athletes. Sports Med. 2014;44(Suppl 2):S139-S147.',
+      'Foster C et al. Monitoring training in athletes with reference to overtraining syndrome. Med Sci Sports Exerc.',
+      'Kellmann M et al. Recovery and performance in sport: consensus statement. Int J Sports Physiol Perform.',
+    ]),
+  },
+  {
+    slug: 'insulineresistentie',
+    term: 'Insulineresistentie',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'Wanneer cellen minder gevoelig worden voor insuline — vaak besproken rond energie, gewicht en metabole gezondheid na 40.',
+    content: {
+      whatIsIt: `Insuline helpt glucose uit je bloed naar cellen te brengen. Bij insulineresistentie reageert het lichaam minder goed: de alvleesklier maakt meer insuline aan om hetzelfde effect te halen. Dat patroon wordt vaak genoemd in de context van type 2-diabetes-risico en “energiedips” na maaltijden — maar individuele klachten zijn niet specifiek genoeg om zelf te diagnosticeren.`,
+      howItWorks: `Factoren die in onderzoek terugkomen: buikvet, weinig beweging, slaaptekort en hoge inname van ultra-bewerkte koolhydraten. Krachttraining en eiwitrijke maaltijden ondersteunen vaak stabilere bloedsuikerspiegels — geen wondermiddel, wel een praktische hefboom naast medische begeleiding.`,
+      whyItMatters: `Voor mannen 40+ hangt energie vaak samen met metabole gezondheid. Lees [energie na 40](/energie-na-40) en [testosteron na 40](/testosteron-na-40) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
+    },
+    relatedSlugs: ['mitochondrien'],
+    relatedComparisons: [],
+    metaTitle: 'Insulineresistentie: Uitleg en Relevantie Na 40',
+    metaDescription:
+      'Insulineresistentie in begrijpelijke taal: wat het betekent, wat onderzoek zegt en wanneer medische hulp past.',
+    referenties: toRefs([
+      'Reaven GM. Banting lecture 1988. Role of insulin resistance in human disease. Diabetes. 1988;37(12):1595-1607.',
+      'Kahn SE et al. Mechanisms linking obesity to insulin resistance and type 2 diabetes. Nature. 2006;444(7121):840-846.',
+      'Petersen KF, Shulman GI. Etiology of insulin resistance. Am J Med. 2006;119(5 Suppl 1):S10-S16.',
+      'WHO. Diabetes fact sheet and prevention frameworks.',
+      'American Diabetes Association Standards of Care — insulin resistance screening contexts.',
+      'Spiegel K et al. Sleep loss: a novel risk factor for insulin resistance and type 2 diabetes. J Appl Physiol.',
+    ]),
+  },
+  {
+    slug: 'oxidatieve-stress',
+    term: 'Oxidatieve stress',
+    theme: 'longevity',
+    shortDefinition:
+      'Een disbalans tussen vrije radicalen en antioxidanten — vaak genoemd bij veroudering, training en voeding.',
+    content: {
+      whatIsIt: `Je lichaam produceert continu reactieve zuurstofsoorten als bijproduct van energieproductie en afweer. Antioxidanten (eigen enzymen én uit voeding) neutraliseren het overschot. Als de balans scheef staat, spreken onderzoekers van oxidatieve stress — een concept, geen diagnose die je thuis meet.`,
+      howItWorks: `Intensieve training verhoogt tijdelijk oxidatieve signalen; dat hoort bij adaptatie als herstel en voeding meekomen. Chronische ontsteking, roken, slaaptekort en ongezonde voeding worden vaker genoemd als aanhoudende belasting.`,
+      whyItMatters: `Omega-3, vitamine D en beweging worden in verschillende lijnen onderzoek besproken in bredere gezondheidscontext — geen reden om mega-doses antioxidanten te stapelen zonder reden. Verbind met [EPA en DHA](/kennisbank/epa-dha) en pillars [herstel](/herstel-verbeteren-na-40) / [energie](/energie-na-40).`,
+    },
+    relatedSlugs: ['mitochondrien', 'epa-dha'],
+    relatedComparisons: ['/beste/omega-3-supplement'],
+    metaTitle: 'Oxidatieve Stress: Wat Het Betekent in de Praktijk',
+    metaDescription:
+      'Oxidatieve stress uitgelegd: balans, training, voeding en waarom meer supplementen niet automatisch beter is.',
+    referenties: toRefs([
+      'Halliwell B, Gutteridge JMC. Free Radicals in Biology and Medicine. Oxford University Press reference frames.',
+      'Powers SK, Jackson MJ. Exercise-induced oxidative stress: cellular mechanisms and impact on muscle force production. Physiol Rev. 2008;88(4):1243-1276.',
+      'Lobo V et al. Free radicals antioxidants functional foods impact human health. Pharmacogn Rev.',
+      'Calder PC. Omega-3 fatty acids and inflammatory processes. Nutrients.',
+      'Ristow M et al. Antioxidants prevent health-promoting effects of physical exercise in humans. Proc Natl Acad Sci USA controversial trial context.',
+      'Harman D. Aging: a theory based on free radical and radiation chemistry. J Gerontol classical framing.',
+    ]),
+  },
 ]
 
 export function getTermBySlug(slug: string): KennisbankTerm | undefined {

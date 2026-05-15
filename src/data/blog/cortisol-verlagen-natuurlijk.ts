@@ -68,6 +68,7 @@ export const cortisolVerlagenData: BlogArtikel = {
     href: "/thema/stress",
   },
   gerelateerdeSluggen: [
+    "cortisol-en-testosteron",
     "ashwagandha-werking-mannen",
     "slaap-verbeteren-40-plus",
     "ademhaling-tegen-stress",

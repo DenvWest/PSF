@@ -19,6 +19,7 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
   const [health, setHealth] = useState(false);
   const [analytics, setAnalytics] = useState(false);
   const [optionalEmail, setOptionalEmail] = useState("");
+  const [optionalFirstName, setOptionalFirstName] = useState("");
   const [marketing, setMarketing] = useState(false);
 
   // Take over full screen: hide the layout header.
@@ -38,12 +39,14 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
   function handleContinue() {
     if (!canProceed) return;
     const addr = optionalEmail.trim();
+    const fn = optionalFirstName.trim();
     const payload: IntakeConsentPayload = {
       healthDataProcessing: true,
       anonymousAnalytics: analytics,
       marketingEmail: showMarketing && marketing,
       marketingEmailAddress:
         showMarketing && marketing && emailLooseOk(addr) ? addr : null,
+      firstName: fn.length > 0 ? fn : null,
     };
     onContinue(payload);
   }
@@ -184,6 +187,32 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
               Privacyverklaring
             </Link>
           </p>
+        </div>
+
+        {/* Optional first name */}
+        <div className="mb-4">
+          <label
+            className="mb-2 block text-[13px] font-medium"
+            style={{ color: "rgba(255,255,255,0.45)" }}
+          >
+            Voornaam (optioneel — voor persoonlijke e-mails)
+          </label>
+          <input
+            type="text"
+            name="consent-first-name"
+            autoComplete="given-name"
+            placeholder="Bijv. Dennis"
+            value={optionalFirstName}
+            onChange={(e) => setOptionalFirstName(e.target.value)}
+            maxLength={60}
+            className="box-border w-full max-w-full rounded-[12px] px-4 py-3 text-[15px] outline-none"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "inherit",
+            }}
+          />
         </div>
 
         {/* Optional email */}

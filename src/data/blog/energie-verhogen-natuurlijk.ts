@@ -53,9 +53,9 @@ export const energieVerhogenData: BlogArtikel = {
     href: "/thema/energie",
   },
   gerelateerdeSluggen: [
+    "vitamine-d-en-energie",
     "slaap-verbeteren-40-plus",
     "cortisol-verlagen-natuurlijk",
-    "ashwagandha-werking-mannen",
   ],
   metaTitle:
     "Energie verhogen na je 40e: fysiologie en praktische aanpak | PerfectSupplement",

@@ -29,6 +29,23 @@ export const vitamineDData: ComparisonPageData = {
     { href: "/supplementen/vitamine-d", label: "Meer weten over vitamine D? Lees de uitgebreide gids →" },
     { href: "/thema/energie", label: "Energieverlies na je 40e — oorzaken en oplossingen →" },
   ],
+  readAlsoCards: [
+    {
+      href: "/profiel/lage-batterij",
+      text: "Lage energie en weinig zon in de winter? Vitamine D hoort bij bot/spier/immuuncontext — meet waar nodig.",
+      cta: "Past bij profiel Lage batterij →",
+    },
+    {
+      href: "/energie-na-40",
+      text: "Energie is breder dan één capsule: slaap, beweging en stress spelen mee.",
+      cta: "Naar energie-pillar →",
+    },
+    {
+      href: "/blog/vitamine-d-en-energie",
+      text: "Wat vitamine D wél belooft op het etiket — en wat niet.",
+      cta: "Lees het cluster-artikel →",
+    },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",

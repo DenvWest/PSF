@@ -29,6 +29,23 @@ export const zinkData: ComparisonPageData = {
     { href: "/supplement-kiezen-waar-op-letten", label: "Supplement kiezen: waar let je op? — praktische checklist →" },
     { href: "/thema/energie", label: "Energieverlies na je 40e — oorzaken en wat je eraan kunt doen →" },
   ],
+  readAlsoCards: [
+    {
+      href: "/profiel/stressdrager",
+      text: "Langdurige stress en weinig herstel? Zink draagt bij tot normaal immuunsysteem — geen hormoon-quickfix.",
+      cta: "Past bij profiel Stressdrager →",
+    },
+    {
+      href: "/testosteron-na-40",
+      text: "Testosteron na 40 in voorzichtige taal: leefstijl eerst, labwaarden met zorgverlener.",
+      cta: "Naar testosteron-pillar →",
+    },
+    {
+      href: "/blog/zink-en-testosteron",
+      text: "Zink en testosteron: EU-claims vs verwachtingen.",
+      cta: "Lees het artikel →",
+    },
+  ],
   choiceRoutes: [
     {
       badgeLabel: "Topkeuze",
