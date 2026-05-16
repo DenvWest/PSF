@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import SupplementAdviceDisclaimer from "@/components/intake/SupplementAdviceDisclaimer";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
 
 type FoundationStackProps = {
@@ -30,10 +31,12 @@ export default function FoundationStack({ excludeIds }: FoundationStackProps) {
             Basisadvies voor elke man 40+
           </h2>
           <p className="m-0 text-xs text-[#777]">
-            Los van je scores — deze supplementen zijn voor de meeste mannen een goede basis.
+            Algemene opties die veel mannen 40+ vergelijken — los van je scores.
           </p>
         </div>
       </div>
+
+      <SupplementAdviceDisclaimer variant="foundation" />
 
       <div className="space-y-2">
         {items.map((item) => (

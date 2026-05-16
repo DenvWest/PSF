@@ -12,6 +12,7 @@ import {
   getUrgency,
 } from "@/lib/intake-engine";
 import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
+import SupplementAdviceDisclaimer from "@/components/intake/SupplementAdviceDisclaimer";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import FoundationStack from "@/components/intake/FoundationStack";
 import { isSupplementAvailable } from "@/lib/supplement-availability";
@@ -297,10 +298,11 @@ export default function IntakeResults({
             💊
           </div>
           <div>
-            <div className="text-[15px] font-bold">Jouw Supplementroute</div>
-            <div className="text-xs text-[#999]">Gericht op jouw profiel</div>
+            <div className="text-[15px] font-bold">Supplementen om te verkennen</div>
+            <div className="text-xs text-[#999]">Mogelijk relevant bij jouw patronen</div>
           </div>
         </div>
+        <SupplementAdviceDisclaimer variant="profile" />
         <SupplementRoute recommendations={supplementRoute} scores={scores} />
       </div>
 
@@ -315,10 +317,11 @@ export default function IntakeResults({
               🔬
             </div>
             <div>
-              <div className="text-[15px] font-bold">Vergelijkingen voor jou</div>
-              <div className="text-xs text-[#999]">Gebaseerd op jouw profiel</div>
+              <div className="text-[15px] font-bold">Vergelijkingen om te bekijken</div>
+              <div className="text-xs text-[#999]">Als je verder wilt vergelijken</div>
             </div>
           </div>
+          <SupplementAdviceDisclaimer variant="profile" />
           <div className="space-y-2">
             {deficiencySignals.omega3_deficiency && (
               <a
