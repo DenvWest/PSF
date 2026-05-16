@@ -7,7 +7,7 @@ const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Testosteron Na 40: Wat Verandert en Wat Je Zelf Kunt Doen | PerfectSupplement",
+  title: "Testosteron na 40: wat verandert en wat helpt | PerfectSupplement",
   description:
     "Testosteron na 40 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
   alternates: { canonical: "/testosteron-na-40" },
@@ -148,11 +148,21 @@ export default function TestosteronNa40Page() {
               </nav>
 
               <p className="mt-10 text-lg leading-relaxed text-gray-700">
-                Testosteron wordt online vaak neergezet als de enige schakelaar voor energie,
-                libido en spierbehoud. In de praktijk is het een deel van een groter plaatje:
-                slaap, stress, voeding en beweging. Deze gids helpt je verwachtingen te kalibreren
-                — zonder harde hormoonclaims over jouw lichaam.
+                Ken je dit: harder werken om hetzelfde resultaat in de gym te halen, langzamer
+                herstel na een drukke week, minder zin om aan iets nieuws te beginnen? Op
+                internet wordt dat snel teruggebracht tot &quot;testosteron&quot;. In de praktijk is het
+                een deel van een groter plaatje: slaap, stress, voeding en beweging. Deze gids
+                helpt je verwachtingen kalibreren — zonder harde hormoonclaims over jouw lichaam.
               </p>
+
+              <div className="mt-6">
+                <Link
+                  href="/intake"
+                  className="inline-flex items-center rounded-lg bg-ps-green px-5 py-2.5 text-sm font-semibold text-white hover:bg-ps-green-hover"
+                >
+                  Start de Leefstijlcheck →
+                </Link>
+              </div>
 
               <section id="herkenning" className="mt-12 scroll-mt-24">
                 <h2 className="font-serif text-2xl font-bold text-gray-900">
@@ -302,6 +312,18 @@ export default function TestosteronNa40Page() {
                     </div>
                   ))}
                 </dl>
+              </section>
+
+              <section className="mt-14 rounded-xl bg-stone-50 p-6 text-center">
+                <p className="font-semibold text-gray-900">
+                  Wil je weten hoe testosteron, slaap en stress in jouw situatie samenkomen?
+                </p>
+                <Link
+                  href="/intake"
+                  className="mt-4 inline-flex items-center rounded-lg bg-ps-green px-5 py-2.5 text-sm font-semibold text-white hover:bg-ps-green-hover"
+                >
+                  Start de Leefstijlcheck →
+                </Link>
               </section>
 
               <div className="mt-12">

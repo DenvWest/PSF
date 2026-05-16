@@ -26,10 +26,27 @@ export const melatonineData: ComparisonPageData = {
     { href: "/blog/melatonine-wanneer-wel-niet", label: "Melatonine: wanneer wél en wanneer juist niet — de nuances op een rij" },
   ],
   readAlsoCards: [
-    { href: "/beste/ashwagandha", text: "Stress houdt je wakker? Ashwagandha kan helpen →" },
-    { href: "/beste/magnesium", text: "Magnesium en slaap zijn onlosmakelijk verbonden →" },
-    { href: "/slaap-verbeteren-na-40", text: "Slaap verbeteren vraagt om een keten van gewoontes →" },
-    { href: "/profiel/onrustige-slaper", text: "Herken je het patroon? Bekijk het profiel →", colSpan: 2 },
+    {
+      href: "/profiel/onrustige-slaper",
+      text: "Wakker om 3 uur, niet terug in slaap? Herken je dit patroon na 40?",
+      cta: "Bekijk het profiel →",
+    },
+    {
+      href: "/slaap-verbeteren-na-40",
+      text: "Slaap verbeteren vraagt om een keten van gewoontes — pillar met ritme, licht en supplementen.",
+      cta: "Naar slaap-pillar →",
+    },
+    {
+      href: "/blog/melatonine-na-40",
+      text: "Cluster-artikel: melatonine na 40 — wat werkt, wat is timing, wat is mythe.",
+      cta: "Lees het artikel →",
+    },
+    {
+      href: "/blog/melatonine-wanneer-wel-niet",
+      text: "Wanneer is melatonine wél of niet zinvol? Achtergrond bij dosering en moment.",
+      cta: "Lees het artikel →",
+      colSpan: 2,
+    },
   ],
   choiceRoutes: [
     {

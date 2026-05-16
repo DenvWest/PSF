@@ -177,8 +177,9 @@ function renderStressdragerDay0PersonalizedRows(
   intakeUrl: string,
   firstName?: string | null,
 ): string {
-  const headline =
-    "Hoi, dit valt op in jouw resultaten";
+  const headline = firstName
+    ? "Dit valt op in jouw resultaten"
+    : "Hoi, dit valt op in jouw resultaten";
   const breathingTip =
     "Eén ding voor deze week: adem elke dag 5 minuten bewust uit (4 seconden in, 6 seconden uit). Langzaam uitademen helpt veel mensen om iets rustiger te worden — doe het ’s ochtends voor je je telefoon pakt.";
   const prefix = nurtureNamePrefixHtml(firstName);

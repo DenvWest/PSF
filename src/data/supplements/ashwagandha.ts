@@ -30,8 +30,26 @@ export const ashwagandhaData: ComparisonPageData = {
     { href: "/thema/stress", label: "Stress na je 40e — wat speelt er en wat helpt? →" },
   ],
   readAlsoCards: [
-    { href: "/profiel/stressdrager", text: "Sta je continu \"aan\"? Herken je dit patroon?", cta: "Bekijk het profiel →" },
-    { href: "/profiel/onrustige-slaper", text: "Lang wakker liggen door prikkels? Combineer leefstijl met zorgvuldig gekozen supplementen; bij dit ingrediënt zijn etiketclaims in de EU nog niet definitief vastgesteld.", cta: "Bekijk het profiel →" },
+    {
+      href: "/profiel/stressdrager",
+      text: "Sta je continu \"aan\"? Herken je dit patroon van langdurige spanning en oppervlakkige slaap?",
+      cta: "Bekijk het profiel →",
+    },
+    {
+      href: "/profiel/onrustige-slaper",
+      text: "Lang wakker liggen door prikkels? Combineer leefstijl met zorgvuldig gekozen supplementen — etiketclaims voor dit ingrediënt zijn in de EU nog niet definitief vastgesteld.",
+      cta: "Bekijk het profiel →",
+    },
+    {
+      href: "/stress-verminderen-man",
+      text: "Stress na 40: herkenning, slaap en een concreet weekplan — zonder medisch jargon.",
+      cta: "Naar stress-pillar →",
+    },
+    {
+      href: "/blog/cortisol-en-testosteron",
+      text: "Cluster-artikel: cortisol, testosteron en de relatie met stress — verhalen vs onderzoek.",
+      cta: "Lees het artikel →",
+    },
   ],
   choiceRoutes: [
     {
