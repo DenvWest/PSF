@@ -70,6 +70,8 @@ export type DeficiencySignals = {
   ashwagandha_signal: boolean;
   creatine_signal: boolean;
   melatonine_signal: boolean;
+  /** Lage eiwitinname + trainen of traag herstel — hub/vergelijking, niet supplementroute. */
+  protein_gap_signal: boolean;
 };
 
 export function getDeficiencySignals(
@@ -89,6 +91,10 @@ export function getDeficiencySignals(
     overtrainerPattern;
   const sleepOnset = getAnswer(answers, "SLP_ONSET");
   const melatonine_signal = sleepOnset <= 2 && stressFrequency >= 3;
+  const proteinIntake = getAnswer(answers, "NUT_PROT");
+  const protein_gap_signal =
+    proteinIntake <= 2 &&
+    (movementLoad >= 2 || rcvPhys <= 1 || overtrainerPattern);
   return {
     omega3_deficiency: s.omega3Deficiency,
     magnesium_signal: s.magnesiumSignal,
@@ -96,6 +102,7 @@ export function getDeficiencySignals(
     ashwagandha_signal: stressFrequency <= 2 && stressRecovery <= 2,
     creatine_signal,
     melatonine_signal,
+    protein_gap_signal,
   };
 }
 

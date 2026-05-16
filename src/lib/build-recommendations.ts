@@ -1,5 +1,6 @@
 import { SUPPLEMENT_ROUTE_DEFINITIONS } from "@/data/supplement-routes";
 import { catalogBySlug } from "@/data/supplement-hub/catalog";
+import { getDeficiencySignals } from "@/lib/intake-engine";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { isSupplementAvailable } from "@/lib/supplement-availability";
 
@@ -81,6 +82,20 @@ function selectLegacyHubRecommendations(
         omega3Answer <= 1
           ? "Je eet zelden vette vis — een omega-3 supplement kan dat aanvullen."
           : "Je voedingspatroon heeft ruimte voor verbetering — omega-3 is een goede basis.",
+    });
+  }
+
+  const deficiencySignals = getDeficiencySignals(answers);
+  if (
+    deficiencySignals.protein_gap_signal &&
+    !recommendations.find((r) => r.slug === "eiwitpoeder")
+  ) {
+    recommendations.push({
+      slug: "eiwitpoeder",
+      name: "Eiwitpoeder",
+      icon: "🥛",
+      reason:
+        "Je eiwitinname uit voeding lijkt laag terwijl je traint of traag herstelt — poeder kan helpen je dagdoel te halen naast volwaardige maaltijden.",
     });
   }
 

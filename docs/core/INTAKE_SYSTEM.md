@@ -125,6 +125,7 @@ Scoring engine: `src/lib/intake-engine.ts`
 | melatonine_signal | SLP_ONSET ≤ 2 en STR_FREQ ≥ 3 |
 | magnesium_signal | SLP_WAKE ≤ 2 of (SLP_QUAL ≤ 2 en STR_RCV ≤ 2) |
 | creatine_signal | hoge trainingsbelasting + laag herstel |
+| protein_gap_signal | NUT_PROT ≤ 2 én (bewegingsbelasting ≥ 2 of RCV_PHYS ≤ 1 of overtrainer-patroon) |
 
 ---
 
@@ -136,7 +137,7 @@ Regelgebaseerd (fase 1). Geen AI/ML tot 500+ gebruikers.
 - Max 3 supplementen per profiel op resultatenpagina
 - Aantal schaalt omlaag bij hogere totaalscore
 - Elk supplement moet een bijbehorende vergelijkingspagina of gidspagina hebben
-- Eiwitadvies verschijnt conditioneel, niet als supplement
+- Eiwit uit voeding eerst (quick wins + callout bij NUT_PROT ≤ 2); eiwitpoeder alleen als vergelijkingslink op resultaten + hub “Aanbevolen voor jou” bij `protein_gap_signal`, niet in de max-3 supplementroute
 
 ---
 

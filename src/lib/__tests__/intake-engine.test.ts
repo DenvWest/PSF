@@ -432,6 +432,34 @@ describe("getDeficiencySignals", () => {
     );
     expect(signals.melatonine_signal).toBe(false);
   });
+
+  it("detects protein_gap_signal when NUT_PROT low and training load present", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ NUT_PROT: 1, MOV_STR: 3, MOV_CARD: 2 }),
+    );
+    expect(signals.protein_gap_signal).toBe(true);
+  });
+
+  it("detects protein_gap_signal when NUT_PROT low and slow physical recovery", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ NUT_PROT: 2, MOV_STR: 1, MOV_CARD: 1, RCV_PHYS: 1 }),
+    );
+    expect(signals.protein_gap_signal).toBe(true);
+  });
+
+  it("does not flag protein_gap when NUT_PROT low but sedentary with ok recovery", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ NUT_PROT: 1, MOV_STR: 1, MOV_CARD: 1, RCV_PHYS: 3 }),
+    );
+    expect(signals.protein_gap_signal).toBe(false);
+  });
+
+  it("does not flag protein_gap when protein intake is adequate", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ NUT_PROT: 4, MOV_STR: 4, RCV_PHYS: 1 }),
+    );
+    expect(signals.protein_gap_signal).toBe(false);
+  });
 });
 
 // ─── getAdvice ───────────────────────────────────────────────────

@@ -12,13 +12,19 @@ export function day3EmailHtml(params: {
   primaryDomainLabel: string;
   domainTip: string;
   proteinAttention?: boolean;
+  proteinComparisonLink?: boolean;
 }): string {
+  const proteinComparisonParagraph =
+    params.proteinComparisonLink === true
+      ? `<p style="margin:12px 0 0 0;font-size:15px;line-height:1.6;color:#b45309;">Poeder handig als aanvulling naast maaltijden? <a href="https://perfectsupplement.nl/beste/eiwitpoeder" style="color:#92400e;font-weight:600;">Vergelijk eiwitpoeders</a>.</p>`
+      : "";
   const proteinBlock =
     params.proteinAttention === true
       ? `
               <div style="background:#fffbeb;border-left:3px solid #f59e0b;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;">
                 <p style="margin:0 0 8px 0;font-size:15px;line-height:1.55;color:#92400e;font-weight:600;">Je eiwitinname verdient aandacht</p>
                 <p style="margin:0;font-size:15px;line-height:1.6;color:#b45309;">Na je 40e heb je meer bouwstenen nodig om spiermassa te behouden — denk aan minimaal 1,2–1,6&nbsp;g eiwit per kilo lichaamsgewicht per dag. Begin elke maaltijd met 20–30&nbsp;g eiwit (eieren, kwark, vis, peulvruchten).</p>
+                ${proteinComparisonParagraph}
               </div>`
       : "";
   const inner = `

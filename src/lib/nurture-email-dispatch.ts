@@ -19,6 +19,7 @@ import { welcomeEmailHtml, welcomeEmailSubject } from "@/lib/emails/welcome";
 import {
   getAdvice,
   getAdvicePrimaryDomain,
+  getDeficiencySignals,
   type DomainId,
   type DomainScores,
 } from "@/lib/intake-engine";
@@ -238,6 +239,10 @@ export function buildNurtureEmail(
     case "day3": {
       const proteinAttention =
         answers != null && answers.NUT_PROT <= 2 ? true : undefined;
+      const proteinComparisonLink =
+        answers != null && getDeficiencySignals(answers).protein_gap_signal
+          ? true
+          : undefined;
       return {
         subject: day3EmailSubject(quickWin),
         html: day3EmailHtml({
@@ -246,6 +251,7 @@ export function buildNurtureEmail(
           primaryDomainLabel,
           domainTip,
           proteinAttention,
+          proteinComparisonLink,
         }),
       };
     }

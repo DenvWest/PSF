@@ -300,6 +300,17 @@ export default function IntakeResults({
             <strong>Quick win:</strong> Begin elke maaltijd met 20-30 gram eiwit
             — denk aan 3 eieren, een bak kwark, of een portie kip/vis.
           </p>
+          {deficiencySignals.protein_gap_signal ? (
+            <p className="mt-3 text-sm text-amber-800">
+              Poeder handig als aanvulling?{" "}
+              <a
+                href="/beste/eiwitpoeder"
+                className="font-medium underline underline-offset-2 hover:text-amber-900"
+              >
+                Vergelijk eiwitpoeders
+              </a>
+            </p>
+          ) : null}
         </div>
       ) : null}
 
@@ -321,7 +332,7 @@ export default function IntakeResults({
         <FoundationStack excludeIds={excludeIds} />
       ) : null}
 
-      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.ashwagandha_signal || deficiencySignals.creatine_signal || deficiencySignals.melatonine_signal || zinkSignal) && (
+      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.ashwagandha_signal || deficiencySignals.creatine_signal || deficiencySignals.melatonine_signal || deficiencySignals.protein_gap_signal || zinkSignal) && (
         <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
           <div className="mb-3 flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3A7D5C18] text-base">
@@ -385,6 +396,17 @@ export default function IntakeResults({
               >
                 <span className="font-medium text-[#1a1a1a]">
                   Bekijk onze melatonine vergelijking
+                </span>
+                <span className="text-[#999]">→</span>
+              </a>
+            )}
+            {deficiencySignals.protein_gap_signal && (
+              <a
+                href="/beste/eiwitpoeder"
+                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
+              >
+                <span className="font-medium text-[#1a1a1a]">
+                  Bekijk onze eiwitpoeder vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
               </a>
