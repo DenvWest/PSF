@@ -2,8 +2,6 @@ import { SUPPLEMENT_ROUTE_DEFINITIONS } from "@/data/supplement-routes";
 import { catalogBySlug } from "@/data/supplement-hub/catalog";
 import { getDeficiencySignals } from "@/lib/intake-engine";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
-import { isSupplementAvailable } from "@/lib/supplement-availability";
-
 export type RecommendedSupplement = {
   slug: string;
   name: string;
@@ -59,16 +57,6 @@ function selectLegacyHubRecommendations(
           : scores.sleep_score < 50
             ? "Magnesium draagt bij tot een normale psychologische functie; check je routine naast andere slaaphygiëne."
             : "Magnesium draagt bij tot de normale werking van het zenuwstelsel en een normale psychologische functie.",
-    });
-  }
-
-  if (scores.stress_score < 50 && isSupplementAvailable("ashwagandha")) {
-    recommendations.push({
-      slug: "ashwagandha",
-      name: "Ashwagandha",
-      icon: "🌿",
-      reason:
-        "EU-claims voor ashwagandha zijn nog niet definitief; op jouw stressscore is vergelijken van extractkwaliteit desgewenst interessant.",
     });
   }
 

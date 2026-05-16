@@ -9,6 +9,7 @@ import {
   getAdvicePrimaryDomain,
   type DomainScores,
 } from "@/lib/intake-engine";
+import { getSupplementRoute } from "@/lib/getSupplementRoute";
 
 function makeAnswers(overrides: Record<string, number> = {}): Record<string, number> {
   return {
@@ -395,16 +396,6 @@ describe("getDeficiencySignals", () => {
     expect(signals.cortisol_risk).toBe(false);
   });
 
-  it("detects ashwagandha signal when STR_FREQ <= 2 and STR_RCV <= 2", () => {
-    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 2, STR_RCV: 2 }));
-    expect(signals.ashwagandha_signal).toBe(true);
-  });
-
-  it("does not flag ashwagandha when stress is well-managed", () => {
-    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 3, STR_RCV: 3 }));
-    expect(signals.ashwagandha_signal).toBe(false);
-  });
-
   it("detects creatine signal when recovery is low and movement is high", () => {
     const signals = getDeficiencySignals(
       makeAnswers({ MOV_CARD: 4, MOV_STR: 3, RCV_PHYS: 1, STR_RCV: 1 }),
@@ -587,7 +578,8 @@ describe("getAdvice", () => {
     });
     const result = getAdvice(scores, answers, []);
     const names = result.supplements.map((s) => s.name);
-    expect(names).toContain("Ashwagandha");
+    expect(names).toContain("Magnesium glycinaat");
+    expect(names).not.toContain("Ashwagandha");
   });
 
   it("includes symptom-specific advice when symptoms are selected", () => {
@@ -597,5 +589,29 @@ describe("getAdvice", () => {
       (w) => w.includes("koel") || w.includes("donker"),
     );
     expect(hasSleepTip).toBe(true);
+  });
+});
+
+// ─── getSupplementRoute ───────────────────────────────────────────
+
+describe("getSupplementRoute", () => {
+  it("does not recommend ashwagandha for low stress and sleep scores", () => {
+    const answers = makeAnswers({
+      SLP_QUAL: 1,
+      SLP_CONS: 1,
+      STR_FREQ: 1,
+      STR_RCV: 1,
+    });
+    const scores = calcDomainScores(answers);
+    const profile = getProfileLabel(scores);
+    const deficiencySignals = getDeficiencySignals(answers);
+    const routes = getSupplementRoute(
+      scores,
+      deficiencySignals,
+      profile,
+      answers,
+    );
+    const names = routes.map((r) => r.name);
+    expect(names).not.toContain("Ashwagandha");
   });
 });

@@ -67,7 +67,6 @@ export type DeficiencySignals = {
   omega3_deficiency: boolean;
   magnesium_signal: boolean;
   cortisol_risk: boolean;
-  ashwagandha_signal: boolean;
   creatine_signal: boolean;
   melatonine_signal: boolean;
   /** Lage eiwitinname + trainen of traag herstel — hub/vergelijking, niet supplementroute. */
@@ -79,7 +78,6 @@ export function getDeficiencySignals(
 ): DeficiencySignals {
   const s = getSignals(answers);
   const stressFrequency = getAnswer(answers, "STR_FREQ");
-  const stressRecovery = getStressRecoveryAnswer(answers);
   const scores = calcDomainScores(answers);
   const movementLoad = getMovementLoad(answers);
   const rcvPhys = getAnswer(answers, "RCV_PHYS");
@@ -99,7 +97,6 @@ export function getDeficiencySignals(
     omega3_deficiency: s.omega3Deficiency,
     magnesium_signal: s.magnesiumSignal,
     cortisol_risk: s.cortisolRisk,
-    ashwagandha_signal: stressFrequency <= 2 && stressRecovery <= 2,
     creatine_signal,
     melatonine_signal,
     protein_gap_signal,
@@ -515,16 +512,6 @@ export function getAdvice(
       },
       10,
     );
-    pushRankedSupplement(
-      supplements,
-      {
-        name: "Ashwagandha",
-        reason:
-          "Je combineert lage slaap- en stresscores; ashwagandha vergelijken kan zinvol zijn op extractkwaliteit — let op dat EU-gezondheidsclaims voor dit ingrediënt nog niet definitief zijn.",
-        link: "/blog/ashwagandha-werking-mannen",
-      },
-      11,
-    );
     pushRankedText(
       longTerm,
       "Koppel een vast slaapritme aan een korte ademhalingsroutine in de avond.",
@@ -636,16 +623,6 @@ export function getAdvice(
       quickWins,
       "Zet stressmanagement deze week boven extra stimulanten of nieuwe supplementroutines.",
       2,
-    );
-    pushRankedSupplement(
-      supplements,
-      {
-        name: "Ashwagandha",
-        reason:
-          "Je antwoorden wijzen op piekbelasting; vergelijk ashwagandha op etiket en extract — EU-claims zijn voor dit ingrediënt nog niet definitief.",
-        link: "/blog/ashwagandha-werking-mannen",
-      },
-      4,
     );
     pushRankedSupplement(
       supplements,

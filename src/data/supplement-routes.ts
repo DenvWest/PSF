@@ -3,8 +3,6 @@ import type { DomainScores, ProfileLabel } from "@/lib/intake-engine";
 export type DeficiencySignalKey =
   | "omega3_deficiency"
   | "magnesium_signal"
-  | "cortisol_risk"
-  | "ashwagandha_signal"
   | "melatonine_signal";
 
 export type SupplementTriggerClause = {
@@ -62,23 +60,6 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
         { deficiencySignal: "magnesium_signal" },
         { domainBelow: { domain: "sleep_score", threshold: 50 } },
         { domainBelow: { domain: "stress_score", threshold: 50 } },
-      ],
-    },
-  },
-  {
-    id: "ashwagandha",
-    name: "Ashwagandha",
-    reason:
-      "Je profiel matcht op door jou gekozen voorkeuren voor een kruidextract‑vergelijking. Let op EFSA on‑holdlijst: geen goedgekeurde gezondheidsclaims — VWS overweegt aanvullende regels (besluit medio 2026). Gebruik op eigen risico.",
-    priority: 3,
-    domains: ["Stress", "Slaap"],
-    hasComparison: true,
-    affiliateUrl: "/beste/ashwagandha",
-    triggers: {
-      anyOf: [
-        { domainBelow: { domain: "stress_score", threshold: 40 } },
-        { deficiencySignal: "cortisol_risk" },
-        { deficiencySignal: "ashwagandha_signal" },
       ],
     },
   },
