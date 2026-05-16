@@ -11,6 +11,8 @@ import {
 } from "@/data/intake-questions";
 
 type IntakeSymptomsProps = {
+  firstName: string;
+  onFirstNameChange: (value: string) => void;
   ageRange: IntakeAgeRange | null;
   onAgeRangeChange: (value: IntakeAgeRange) => void;
   symptoms: SymptomId[];
@@ -22,6 +24,8 @@ type IntakeSymptomsProps = {
 };
 
 export default function IntakeSymptoms({
+  firstName,
+  onFirstNameChange,
   ageRange,
   onAgeRangeChange,
   symptoms,
@@ -62,7 +66,7 @@ export default function IntakeSymptoms({
   const verderLabel = canProceed
     ? "Verder naar leefstijlcheck →"
     : ageRange === null
-      ? "Kies je leeftijdscategorie"
+      ? "Kies je leeftijd"
       : "Selecteer minimaal 1 symptoom";
 
   return (
@@ -128,6 +132,31 @@ export default function IntakeSymptoms({
           Stap 1 van 2
         </p>
 
+        <div className="mb-8">
+          <label
+            className="mb-2 block text-[13px] font-medium"
+            style={{ color: "rgba(255,255,255,0.45)" }}
+          >
+            Voornaam (optioneel)
+          </label>
+          <input
+            type="text"
+            name="intake-first-name"
+            autoComplete="given-name"
+            placeholder="Bijv. Dennis"
+            value={firstName}
+            onChange={(e) => onFirstNameChange(e.target.value)}
+            maxLength={60}
+            className="box-border w-full max-w-full rounded-[12px] px-4 py-3 text-[15px] outline-none"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "inherit",
+            }}
+          />
+        </div>
+
         <h2
           className="mb-2 font-normal"
           style={{
@@ -136,7 +165,7 @@ export default function IntakeSymptoms({
             color: "rgba(255,255,255,0.92)",
           }}
         >
-          Wat is je leeftijdscategorie?
+          Hoe oud ben je?
         </h2>
 
         <div className="mb-8 grid grid-cols-2 gap-3">

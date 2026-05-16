@@ -60,6 +60,7 @@ type IntakeResultsProps = {
   answers: Record<string, number>;
   symptoms: SymptomId[];
   sessionId: string | null;
+  firstName?: string | null;
   onRestart?: () => void;
   /** Na succesvol intrekken van toestemming (serverdata geanonimiseerd). */
   onConsentRevoked?: () => void;
@@ -75,6 +76,7 @@ export default function IntakeResults({
   answers,
   symptoms,
   sessionId,
+  firstName,
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
@@ -149,6 +151,14 @@ export default function IntakeResults({
         >
           Jouw Herstelplan
         </p>
+        {firstName ? (
+          <p
+            className="mb-3 text-base"
+            style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}
+          >
+            {firstName}, dit is jouw herstelplan
+          </p>
+        ) : null}
         <h1
           className="mb-1.5 text-[30px] font-normal"
           style={{

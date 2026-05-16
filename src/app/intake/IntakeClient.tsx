@@ -18,7 +18,10 @@ import {
 } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
 import { calcDomainScores } from "@/lib/intake-engine";
-import type { IntakeConsentPayload } from "@/lib/intake-consent";
+import {
+  normalizeFirstName,
+  type IntakeConsentPayload,
+} from "@/lib/intake-consent";
 import {
   getLastSession,
   saveIntakeSession,
@@ -53,6 +56,7 @@ export default function IntakeClient() {
   const hasResultsParam = searchParams.get("resultaten") === "true";
 
   const [phase, setPhase] = useState<Phase>("intro");
+  const [firstName, setFirstName] = useState("");
   const [ageRange, setAgeRange] = useState<IntakeAgeRange | null>(null);
   const [symptoms, setSymptoms] = useState<SymptomId[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
@@ -227,8 +231,13 @@ export default function IntakeClient() {
     }
   }
 
-  function handleConsentContinue(payload: IntakeConsentPayload) {
-    setIntakeConsent(payload);
+  function handleConsentContinue(
+    payload: Omit<IntakeConsentPayload, "firstName">,
+  ) {
+    setIntakeConsent({
+      ...payload,
+      firstName: normalizeFirstName(firstName),
+    });
     calculatingStartedAtRef.current = Date.now();
     setIntakeTurnstileToken("");
     setPhase("calculating");
@@ -263,6 +272,7 @@ export default function IntakeClient() {
 
   function restart() {
     setPhase("intro");
+    setFirstName("");
     setAgeRange(null);
     setSymptoms([]);
     setCurrentQ(0);
@@ -363,6 +373,8 @@ export default function IntakeClient() {
       {phase === "symptoms" && (
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeSymptoms
+            firstName={firstName}
+            onFirstNameChange={setFirstName}
             ageRange={ageRange}
             onAgeRangeChange={setAgeRange}
             symptoms={symptoms}
@@ -414,6 +426,7 @@ export default function IntakeClient() {
             answers={answers}
             symptoms={symptoms}
             sessionId={sessionId}
+            firstName={normalizeFirstName(firstName)}
             onRestart={restart}
             onConsentRevoked={restart}
           />

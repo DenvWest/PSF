@@ -17,7 +17,7 @@ export type IntakeConsentPayload = {
   firstName: string | null;
 };
 
-function normalizeFirstName(value: unknown): string | null {
+export function normalizeFirstName(value: unknown): string | null {
   if (typeof value !== "string") {
     return null;
   }
