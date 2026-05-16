@@ -113,13 +113,12 @@ Opgeslagen in `intake_sessions.answers` (jsonb):
   "NRG_PATN": 2,
   "NRG_DEP": 1,
   "STR_FREQ": 3,
-  "STR_RECV": 2,
-  "NUT_QUAL": 3,
+  "STR_RCV": 2,
   "NUT_O3": 1,
-  "MOV_FREQ": 3,
-  "MOV_DAILY": 2,
-  "RCV_PHYS": 1,
-  "RCV_MENT": 2
+  "NUT_PROT": 3,
+  "MOV_STR": 3,
+  "MOV_CARD": 2,
+  "RCV_PHYS": 1
 }
 ```
 
@@ -132,13 +131,12 @@ Opgeslagen in `intake_sessions.answers` (jsonb):
 | NRG_PATN | energy_pattern | int | 1-4 | Energie |
 | NRG_DEP | energy_dependency | int | 1-4 | Energie |
 | STR_FREQ | stress_frequency | int | 1-4 | Stress |
-| STR_RECV | stress_recovery | int | 1-4 | Stress |
-| NUT_QUAL | nutrition_quality | int | 1-4 | Voeding |
+| STR_RCV | stress_recovery | int | 1-4 | Stress (+ recovery_score) |
 | NUT_O3 | omega3_intake | int | 1-3 | Voeding |
-| MOV_FREQ | movement_frequency | int | 1-4 | Beweging |
-| MOV_DAILY | daily_activity | int | 1-3 | Beweging |
+| NUT_PROT | protein_intake | int | 1-4 | Voeding |
+| MOV_STR | strength_training | int | 1-4 | Beweging |
+| MOV_CARD | cardio_frequency | int | 1-4 | Beweging |
 | RCV_PHYS | physical_recovery | int | 1-3 | Herstel |
-| RCV_MENT | mental_recovery | int | 1-3 | Herstel |
 
 ---
 

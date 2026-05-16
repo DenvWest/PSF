@@ -17,7 +17,7 @@ Herkenning → Diagnose → Advies → Actie → Feedback
 Gebruiker selecteert symptomen. Opgeslagen als `symptom_profile` in Supabase.
 
 ### Fase 2 — Diagnose (de kern)
-17 vragen, 7 categorieën, max 3–4 minuten. Resultaat: `domain_scores` per domein.
+15 vragen, 7 categorieën, max 3–4 minuten. Resultaat: `domain_scores` per domein.
 
 ### Fase 3 — Advies (Herstelplan)
 Geprioriteerde aanbeveling: eerst leefstijl ("quick wins"), dan supplementen. Persoonlijk, niet catalogus.
@@ -30,7 +30,7 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen.
 
 ---
 
-## Vragenlijst (17 vragen, 7 categorieën)
+## Vragenlijst (15 vragen, 7 categorieën)
 
 ### Slaap
 | Vraag | Variabele | Bereik |
@@ -50,12 +50,11 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen.
 | Vraag | Variabele | Bereik |
 |---|---|---|
 | "Hoe vaak gestrest of overprikkeld?" | stress_frequency (STR_FREQ) | 1-4 |
-| "Hoe snel kom je tot rust?" | stress_recovery (STR_RECV) | 1-4 |
+| "Rust komen en herstelmomenten op drukke dagen?" | stress_recovery (STR_RCV) | 1-4 |
 
 ### Voeding
 | Vraag | Variabele | Bereik |
 |---|---|---|
-| "Dagelijks eetpatroon?" | nutrition_quality (NUT_QUAL) | 1-4 |
 | "Regelmatig vette vis?" | omega3_intake (NUT_O3) | 1-3 |
 | "Eiwitrijke producten per dag?" | protein_intake (NUT_PROT) | 1-4 |
 
@@ -64,13 +63,13 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen.
 |---|---|---|
 | "Kracht- of weerstandstraining?" | strength_training (MOV_STR) | 1-4 |
 | "Cardio of intensieve sport?" | cardio_frequency (MOV_CARD) | 1-4 |
-| "Hoeveel bewegen buiten sport?" | daily_activity (MOV_DAILY) | 1-3 |
 
 ### Herstel
 | Vraag | Variabele | Bereik |
 |---|---|---|
 | "Hoe snel herstel na inspanning?" | physical_recovery (RCV_PHYS) | 1-3 |
-| "Bewust momenten van rust?" | mental_recovery (RCV_MENT) | 1-3 |
+
+`STR_RCV` telt ook mee in `stress_score` (stress-categorie).
 
 ### Leefstijl (geen domeinscore)
 | Vraag | Variabele | Bereik |
@@ -92,10 +91,10 @@ Scoring engine: `src/lib/intake-engine.ts`
 |---|---|---|
 | slaap | SLP_QUAL + SLP_CONS + SLP_ONSET + SLP_WAKE | 15 |
 | energie | NRG_PATN + NRG_DEP | 8 |
-| stress | STR_FREQ + STR_RECV | 8 |
-| voeding | NUT_QUAL + NUT_O3 + NUT_PROT | 11 |
-| beweging | MOV_STR + MOV_CARD + MOV_DAILY | 11 |
-| herstel | RCV_PHYS + RCV_MENT | 6 |
+| stress | STR_FREQ + STR_RCV | 8 |
+| voeding | NUT_O3 + NUT_PROT | 7 |
+| beweging | MOV_STR + MOV_CARD | 8 |
+| herstel | RCV_PHYS + STR_RCV | 7 |
 
 ### Urgentieniveaus
 
@@ -124,7 +123,7 @@ Scoring engine: `src/lib/intake-engine.ts`
 | Signaal | Trigger (indicatief) |
 |---|---|
 | melatonine_signal | SLP_ONSET ≤ 2 en STR_FREQ ≥ 3 |
-| magnesium_signal | SLP_WAKE ≤ 2 of (SLP_QUAL ≤ 2 en STR_RECV ≤ 2) |
+| magnesium_signal | SLP_WAKE ≤ 2 of (SLP_QUAL ≤ 2 en STR_RCV ≤ 2) |
 | creatine_signal | hoge trainingsbelasting + laag herstel |
 
 ---
@@ -144,7 +143,7 @@ Regelgebaseerd (fase 1). Geen AI/ML tot 500+ gebruikers.
 ## UX principes
 
 - Eén vraag per scherm op mobiel
-- Voortgangsindicator: 17 vragen
+- Voortgangsindicator: 15 vragen
 - Directe visuele feedback na elke categorie
 - Geen vragen overslaan (systeem heeft alle data nodig)
 - Totale invultijd: max 3–4 minuten

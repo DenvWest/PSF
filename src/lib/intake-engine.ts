@@ -77,7 +77,7 @@ export function getDeficiencySignals(
 ): DeficiencySignals {
   const s = getSignals(answers);
   const stressFrequency = getAnswer(answers, "STR_FREQ");
-  const stressRecovery = getAnswer(answers, "STR_RECV");
+  const stressRecovery = getStressRecoveryAnswer(answers);
   const scores = calcDomainScores(answers);
   const movementLoad = getMovementLoad(answers);
   const rcvPhys = getAnswer(answers, "RCV_PHYS");
@@ -167,6 +167,20 @@ function getAnswer(answers: Record<string, number>, id: QuestionId): number {
   return typeof value === "number" ? value : 0;
 }
 
+/** Stressherstel / herstelmomenten (STR_RCV; legacy STR_RECV / RCV_MENT). */
+function getStressRecoveryAnswer(answers: Record<string, number>): number {
+  if (answers.STR_RCV != null) {
+    return getAnswer(answers, "STR_RCV");
+  }
+  if (answers.STR_RECV != null) {
+    return answers.STR_RECV;
+  }
+  if (answers.RCV_MENT != null) {
+    return answers.RCV_MENT;
+  }
+  return 0;
+}
+
 /** Hoogste trainingsbelasting uit kracht- en cardiofrequentie (1–4). */
 function getMovementLoad(answers: Record<string, number>): number {
   return Math.max(
@@ -184,7 +198,7 @@ function getSignals(answers: Record<string, number>): RawSignals {
   const sleepQuality = getAnswer(answers, "SLP_QUAL");
   const sleepConsistency = getAnswer(answers, "SLP_CONS");
   const stressFrequency = getAnswer(answers, "STR_FREQ");
-  const stressRecovery = getAnswer(answers, "STR_RECV");
+  const stressRecovery = getStressRecoveryAnswer(answers);
   const physicalRecovery = getAnswer(answers, "RCV_PHYS");
   const movementLoad = getMovementLoad(answers);
   const sleepWake = getAnswer(answers, "SLP_WAKE");
@@ -294,24 +308,20 @@ export function calcDomainScores(
       8,
     ),
     stress_score: normalizeScore(
-      getAnswer(answers, "STR_FREQ") + getAnswer(answers, "STR_RECV"),
+      getAnswer(answers, "STR_FREQ") + getStressRecoveryAnswer(answers),
       8,
     ),
     nutrition_score: normalizeScore(
-      getAnswer(answers, "NUT_QUAL") +
-        getAnswer(answers, "NUT_O3") +
-        getAnswer(answers, "NUT_PROT"),
-      11,
+      getAnswer(answers, "NUT_O3") + getAnswer(answers, "NUT_PROT"),
+      7,
     ),
     movement_score: normalizeScore(
-      getAnswer(answers, "MOV_STR") +
-        getAnswer(answers, "MOV_CARD") +
-        getAnswer(answers, "MOV_DAILY"),
-      11,
+      getAnswer(answers, "MOV_STR") + getAnswer(answers, "MOV_CARD"),
+      8,
     ),
     recovery_score: normalizeScore(
-      getAnswer(answers, "RCV_PHYS") + getAnswer(answers, "RCV_MENT"),
-      6,
+      getAnswer(answers, "RCV_PHYS") + getStressRecoveryAnswer(answers),
+      7,
     ),
   };
 }

@@ -40,15 +40,12 @@ export type QuestionId =
   | "NRG_PATN"
   | "NRG_DEP"
   | "STR_FREQ"
-  | "STR_RECV"
-  | "NUT_QUAL"
+  | "STR_RCV"
   | "NUT_O3"
   | "NUT_PROT"
   | "MOV_STR"
   | "MOV_CARD"
-  | "MOV_DAILY"
   | "RCV_PHYS"
-  | "RCV_MENT"
   | "LIF_ALC"
   | "LIF_SUN";
 
@@ -183,33 +180,22 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     ],
   },
   {
-    id: "STR_RECV",
+    id: "STR_RCV",
     category: "stress",
     questionIndex: 2,
-    question: "Als je een drukke of stressvolle dag hebt gehad, hoe snel kom je tot rust?",
+    question:
+      "Lukt het je om op een drukke dag tot rust te komen en herstelmomenten te pakken?",
     options: [
-      { label: "Vrij snel, ik kan goed loslaten", value: 4 },
-      { label: "Het kost me wat tijd, maar lukt wel", value: 3 },
-      { label: "Ik merk dat stress zich opstapelt over dagen", value: 2 },
-      { label: "Ik neem stress mee naar bed", value: 1 },
-    ],
-  },
-  {
-    id: "NUT_QUAL",
-    category: "voeding",
-    questionIndex: 1,
-    question: "Hoe zou je je dagelijkse eetpatroon omschrijven?",
-    options: [
-      { label: "Gevarieerd met groente, eiwitten en vetten", value: 4 },
-      { label: "Redelijk, maar niet altijd bewust", value: 3 },
-      { label: "Onregelmatig of eenzijdig", value: 2 },
-      { label: "Veel bewerkt voedsel en weinig groente", value: 1 },
+      { label: "Ja — ik kan loslaten én neem bewust rust", value: 4 },
+      { label: "Het kost tijd, maar ik vind wel herstelmomenten", value: 3 },
+      { label: "Stress stapelt op of herstel blijft achterwege", value: 2 },
+      { label: "Ik neem stress mee en kom niet aan ontspanning", value: 1 },
     ],
   },
   {
     id: "NUT_O3",
     category: "voeding",
-    questionIndex: 2,
+    questionIndex: 1,
     question: "Eet je regelmatig vette vis (zalm, makreel, sardines)?",
     options: [
       { label: "2x per week of vaker", value: 3 },
@@ -220,7 +206,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
   {
     id: "NUT_PROT",
     category: "voeding",
-    questionIndex: 3,
+    questionIndex: 2,
     question: "Hoeveel eiwitrijke producten eet je per dag?",
     subtitle:
       "Denk aan vlees, vis, eieren, zuivel, peulvruchten, noten",
@@ -265,17 +251,6 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     ],
   },
   {
-    id: "MOV_DAILY",
-    category: "beweging",
-    questionIndex: 3,
-    question: "Hoeveel beweeg je buiten sport om (wandelen, fietsen, staan)?",
-    options: [
-      { label: "Veel - ik sta en loop de hele dag", value: 3 },
-      { label: "Gemiddeld - ik wissel zitten en bewegen af", value: 2 },
-      { label: "Weinig - ik zit het grootste deel van de dag", value: 1 },
-    ],
-  },
-  {
     id: "RCV_PHYS",
     category: "herstel",
     questionIndex: 1,
@@ -284,20 +259,6 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
       { label: "Binnen een dag", value: 3 },
       { label: "Duurt 2-3 dagen", value: 2 },
       { label: "Ik voel me langer moe of stijf", value: 1 },
-    ],
-  },
-  {
-    id: "RCV_MENT",
-    category: "herstel",
-    questionIndex: 2,
-    question: "Neem je bewust momenten van rust of ontspanning?",
-    options: [
-      {
-        label: "Ja, dagelijks (meditatie, wandeling, ademhaling)",
-        value: 3,
-      },
-      { label: "Soms, maar niet structureel", value: 2 },
-      { label: "Nee, daar kom ik niet aan toe", value: 1 },
     ],
   },
   {

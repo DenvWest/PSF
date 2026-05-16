@@ -19,15 +19,12 @@ function makeAnswers(overrides: Record<string, number> = {}): Record<string, num
     NRG_PATN: 3,
     NRG_DEP: 3,
     STR_FREQ: 3,
-    STR_RECV: 3,
-    NUT_QUAL: 3,
+    STR_RCV: 3,
     NUT_O3: 3,
     NUT_PROT: 3,
     MOV_STR: 3,
     MOV_CARD: 3,
-    MOV_DAILY: 3,
     RCV_PHYS: 3,
-    RCV_MENT: 3,
     LIF_ALC: 3,
     LIF_SUN: 3,
     ...overrides,
@@ -71,25 +68,31 @@ describe("calcDomainScores", () => {
     expect(scores.energy_score).toBe(100);
   });
 
-  it("calculates stress_score from STR_FREQ + STR_RECV (max 8)", () => {
-    const scores = calcDomainScores(makeAnswers({ STR_FREQ: 4, STR_RECV: 4 }));
+  it("calculates stress_score from STR_FREQ + STR_RCV (max 8)", () => {
+    const scores = calcDomainScores(makeAnswers({ STR_FREQ: 4, STR_RCV: 4 }));
     expect(scores.stress_score).toBe(100);
   });
 
-  it("calculates nutrition_score from NUT_QUAL + NUT_O3 + NUT_PROT (max 11)", () => {
-    const scores = calcDomainScores(makeAnswers({ NUT_QUAL: 4, NUT_O3: 4, NUT_PROT: 3 }));
+  it("calculates nutrition_score from NUT_O3 + NUT_PROT (max 7)", () => {
+    const scores = calcDomainScores(makeAnswers({ NUT_O3: 3, NUT_PROT: 4 }));
     expect(scores.nutrition_score).toBe(100);
   });
 
-  it("calculates movement_score from MOV_STR + MOV_CARD + MOV_DAILY (max 11)", () => {
+  it("calculates movement_score from MOV_STR + MOV_CARD (max 8)", () => {
     const scores = calcDomainScores(
-      makeAnswers({ MOV_STR: 4, MOV_CARD: 4, MOV_DAILY: 3 }),
+      makeAnswers({ MOV_STR: 4, MOV_CARD: 4 }),
     );
     expect(scores.movement_score).toBe(100);
   });
 
-  it("calculates recovery_score from RCV_PHYS + RCV_MENT (max 6)", () => {
-    const scores = calcDomainScores(makeAnswers({ RCV_PHYS: 3, RCV_MENT: 3 }));
+  it("calculates recovery_score from RCV_PHYS + STR_RCV (max 7)", () => {
+    const scores = calcDomainScores(makeAnswers({ RCV_PHYS: 3, STR_RCV: 4 }));
+    expect(scores.recovery_score).toBe(100);
+  });
+
+  it("reads legacy STR_RECV for stress/recovery when STR_RCV is absent", () => {
+    const scores = calcDomainScores({ STR_FREQ: 4, STR_RECV: 4, RCV_PHYS: 3 });
+    expect(scores.stress_score).toBe(100);
     expect(scores.recovery_score).toBe(100);
   });
 
@@ -123,15 +126,12 @@ describe("calcDomainScores", () => {
       NRG_PATN: 4,
       NRG_DEP: 4,
       STR_FREQ: 4,
-      STR_RECV: 4,
-      NUT_QUAL: 4,
+      STR_RCV: 4,
       NUT_O3: 3,
       NUT_PROT: 4,
       MOV_STR: 4,
       MOV_CARD: 4,
-      MOV_DAILY: 3,
       RCV_PHYS: 3,
-      RCV_MENT: 3,
       LIF_ALC: 4,
       LIF_SUN: 4,
     });
@@ -364,14 +364,14 @@ describe("getDeficiencySignals", () => {
     expect(signals.omega3_deficiency).toBe(false);
   });
 
-  it("detects magnesium signal when SLP_QUAL <= 2 and STR_RECV <= 2", () => {
-    const signals = getDeficiencySignals(makeAnswers({ SLP_QUAL: 2, STR_RECV: 2 }));
+  it("detects magnesium signal when SLP_QUAL <= 2 and STR_RCV <= 2", () => {
+    const signals = getDeficiencySignals(makeAnswers({ SLP_QUAL: 2, STR_RCV: 2 }));
     expect(signals.magnesium_signal).toBe(true);
   });
 
   it("does not flag magnesium when sleep quality is fine", () => {
     const signals = getDeficiencySignals(
-      makeAnswers({ SLP_QUAL: 3, SLP_WAKE: 4, STR_RECV: 2 }),
+      makeAnswers({ SLP_QUAL: 3, SLP_WAKE: 4, STR_RCV: 2 }),
     );
     expect(signals.magnesium_signal).toBe(false);
   });
@@ -395,26 +395,26 @@ describe("getDeficiencySignals", () => {
     expect(signals.cortisol_risk).toBe(false);
   });
 
-  it("detects ashwagandha signal when STR_FREQ <= 2 and STR_RECV <= 2", () => {
-    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 2, STR_RECV: 2 }));
+  it("detects ashwagandha signal when STR_FREQ <= 2 and STR_RCV <= 2", () => {
+    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 2, STR_RCV: 2 }));
     expect(signals.ashwagandha_signal).toBe(true);
   });
 
   it("does not flag ashwagandha when stress is well-managed", () => {
-    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 3, STR_RECV: 3 }));
+    const signals = getDeficiencySignals(makeAnswers({ STR_FREQ: 3, STR_RCV: 3 }));
     expect(signals.ashwagandha_signal).toBe(false);
   });
 
   it("detects creatine signal when recovery is low and movement is high", () => {
     const signals = getDeficiencySignals(
-      makeAnswers({ MOV_CARD: 4, MOV_STR: 3, RCV_PHYS: 1, RCV_MENT: 1 }),
+      makeAnswers({ MOV_CARD: 4, MOV_STR: 3, RCV_PHYS: 1, STR_RCV: 1 }),
     );
     expect(signals.creatine_signal).toBe(true);
   });
 
   it("does not flag creatine for sedentary low-recovery person", () => {
     const signals = getDeficiencySignals(
-      makeAnswers({ MOV_CARD: 1, MOV_STR: 1, RCV_PHYS: 1, RCV_MENT: 3 }),
+      makeAnswers({ MOV_CARD: 1, MOV_STR: 1, RCV_PHYS: 1, STR_RCV: 3 }),
     );
     expect(signals.creatine_signal).toBe(false);
   });
@@ -451,7 +451,7 @@ describe("getAdvice", () => {
   it("returns max 3 quickWins", () => {
     const scores = makeScores({ sleep_score: 20, stress_score: 20, energy_score: 20 });
     const answers = makeAnswers({
-      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RCV: 1,
       NRG_PATN: 1, NRG_DEP: 1, NUT_O3: 1,
     });
     const result = getAdvice(scores, answers, ["slaap", "stress", "energie"]);
@@ -461,7 +461,7 @@ describe("getAdvice", () => {
   it("returns max 3 supplements", () => {
     const scores = makeScores({ sleep_score: 20, stress_score: 20, energy_score: 20 });
     const answers = makeAnswers({
-      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RCV: 1,
       NRG_PATN: 1, NRG_DEP: 1, NUT_O3: 1, MOV_CARD: 4, RCV_PHYS: 1,
     });
     const result = getAdvice(scores, answers, []);
@@ -471,7 +471,7 @@ describe("getAdvice", () => {
   it("returns max 3 longTerm items", () => {
     const scores = makeScores({ sleep_score: 20, stress_score: 20 });
     const answers = makeAnswers({
-      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1, NUT_O3: 1,
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RCV: 1, NUT_O3: 1,
     });
     const result = getAdvice(scores, answers, ["slaap", "stress"]);
     expect(result.longTerm.length).toBeLessThanOrEqual(3);
@@ -491,7 +491,7 @@ describe("getAdvice", () => {
 
   it("recommends magnesium when sleep and stress both low", () => {
     const scores = makeScores({ sleep_score: 30, stress_score: 30 });
-    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1 });
+    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RCV: 1 });
     const result = getAdvice(scores, answers, []);
     const names = result.supplements.map((s) => s.name);
     expect(names).toContain("Magnesium glycinaat");
@@ -524,7 +524,7 @@ describe("getAdvice", () => {
   it("deduplicates supplement recommendations", () => {
     const scores = makeScores({ sleep_score: 20, stress_score: 20, recovery_score: 20 });
     const answers = makeAnswers({
-      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
+      SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RCV: 1,
       NRG_PATN: 1, MOV_CARD: 4, RCV_PHYS: 1,
     });
     const result = getAdvice(scores, answers, []);
@@ -535,7 +535,7 @@ describe("getAdvice", () => {
 
   it("supplements have name, reason, and link", () => {
     const scores = makeScores({ sleep_score: 20, stress_score: 20 });
-    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1 });
+    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RCV: 1 });
     const result = getAdvice(scores, answers, []);
     for (const supp of result.supplements) {
       expect(supp.name).toBeTruthy();
@@ -555,7 +555,7 @@ describe("getAdvice", () => {
   it("adds cortisol-related advice when cortisol risk is detected", () => {
     const scores = makeScores({ stress_score: 20, sleep_score: 20, energy_score: 30 });
     const answers = makeAnswers({
-      STR_FREQ: 1, SLP_CONS: 1, NRG_PATN: 1, STR_RECV: 1, SLP_QUAL: 1,
+      STR_FREQ: 1, SLP_CONS: 1, NRG_PATN: 1, STR_RCV: 1, SLP_QUAL: 1,
     });
     const result = getAdvice(scores, answers, []);
     const names = result.supplements.map((s) => s.name);
