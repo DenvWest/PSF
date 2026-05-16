@@ -79,16 +79,16 @@ export function getDeficiencySignals(
   const stressFrequency = getAnswer(answers, "STR_FREQ");
   const stressRecovery = getAnswer(answers, "STR_RECV");
   const scores = calcDomainScores(answers);
-  const mov = getAnswer(answers, "MOV_FREQ");
+  const movementLoad = getMovementLoad(answers);
   const rcvPhys = getAnswer(answers, "RCV_PHYS");
-  const overtrainerPattern = mov >= 3 && rcvPhys <= 1;
+  const overtrainerPattern = movementLoad >= 3 && rcvPhys <= 1;
   const recoveryPrimary = getSortedDomains(scores)[0].domain === "recovery";
   const creatine_signal =
-    (scores.recovery_score < 50 && mov >= 3) ||
+    (scores.recovery_score < 50 && movementLoad >= 3) ||
     recoveryPrimary ||
     overtrainerPattern;
-  const sleepQuality = getAnswer(answers, "SLP_QUAL");
-  const melatonine_signal = sleepQuality <= 2 && stressFrequency >= 3;
+  const sleepOnset = getAnswer(answers, "SLP_ONSET");
+  const melatonine_signal = sleepOnset <= 2 && stressFrequency >= 3;
   return {
     omega3_deficiency: s.omega3Deficiency,
     magnesium_signal: s.magnesiumSignal,
@@ -167,6 +167,14 @@ function getAnswer(answers: Record<string, number>, id: QuestionId): number {
   return typeof value === "number" ? value : 0;
 }
 
+/** Hoogste trainingsbelasting uit kracht- en cardiofrequentie (1–4). */
+function getMovementLoad(answers: Record<string, number>): number {
+  return Math.max(
+    getAnswer(answers, "MOV_CARD"),
+    getAnswer(answers, "MOV_STR"),
+  );
+}
+
 function normalizeScore(total: number, max: number): number {
   return Math.round((total / max) * 100);
 }
@@ -178,18 +186,20 @@ function getSignals(answers: Record<string, number>): RawSignals {
   const stressFrequency = getAnswer(answers, "STR_FREQ");
   const stressRecovery = getAnswer(answers, "STR_RECV");
   const physicalRecovery = getAnswer(answers, "RCV_PHYS");
-  const movementFrequency = getAnswer(answers, "MOV_FREQ");
+  const movementLoad = getMovementLoad(answers);
+  const sleepWake = getAnswer(answers, "SLP_WAKE");
   const energyPattern = getAnswer(answers, "NRG_PATN");
   const energyDependency = getAnswer(answers, "NRG_DEP");
 
   return {
     omega3Deficiency: omega3Intake <= 1,
-    magnesiumSignal: sleepQuality <= 2 && stressRecovery <= 2,
+    magnesiumSignal:
+      sleepWake <= 2 || (sleepQuality <= 2 && stressRecovery <= 2),
     cortisolRisk:
       stressFrequency <= 2 &&
       sleepConsistency <= 1 &&
       energyPattern <= 2,
-    recoveryDeficit: physicalRecovery <= 1 && movementFrequency >= 3,
+    recoveryDeficit: physicalRecovery <= 1 && movementLoad >= 3,
     energyCrashPattern: energyPattern <= 2 && energyDependency <= 2,
   };
 }
@@ -208,6 +218,7 @@ export function getSortedDomains(scores: DomainScores): Array<{
 
 /** Primaire aandachtsdomein voor advies (kan afwijken van het profiel-label). */
 export function getAdvicePrimaryDomain(scores: DomainScores): DomainId {
+  // Slaap krijgt bewust voorrang vóór getSortedDomains — ook bij profiel-label.
   if (scores.sleep_score < 40) {
     return "sleep";
   }
@@ -272,8 +283,11 @@ export function calcDomainScores(
 ): DomainScores {
   return {
     sleep_score: normalizeScore(
-      getAnswer(answers, "SLP_QUAL") + getAnswer(answers, "SLP_CONS"),
-      7,
+      getAnswer(answers, "SLP_QUAL") +
+        getAnswer(answers, "SLP_CONS") +
+        getAnswer(answers, "SLP_ONSET") +
+        getAnswer(answers, "SLP_WAKE"),
+      15,
     ),
     energy_score: normalizeScore(
       getAnswer(answers, "NRG_PATN") + getAnswer(answers, "NRG_DEP"),
@@ -290,8 +304,10 @@ export function calcDomainScores(
       11,
     ),
     movement_score: normalizeScore(
-      getAnswer(answers, "MOV_FREQ") + getAnswer(answers, "MOV_DAILY"),
-      7,
+      getAnswer(answers, "MOV_STR") +
+        getAnswer(answers, "MOV_CARD") +
+        getAnswer(answers, "MOV_DAILY"),
+      11,
     ),
     recovery_score: normalizeScore(
       getAnswer(answers, "RCV_PHYS") + getAnswer(answers, "RCV_MENT"),
@@ -437,8 +453,10 @@ export function getAdvice(
   const selectedSymptoms = new Set(symptoms);
   const primaryDomain = getAdvicePrimaryDomain(scores);
   const signals = getSignals(answers);
-  const movementFrequency = getAnswer(answers, "MOV_FREQ");
+  const movementLoad = getMovementLoad(answers);
   const physicalRecovery = getAnswer(answers, "RCV_PHYS");
+  const lifAlc = getAnswer(answers, "LIF_ALC");
+  const lifSun = getAnswer(answers, "LIF_SUN");
   const weakestDomain = getSortedDomains(scores)[0];
   const nutritionScoreLow =
     weakestDomain.domain === "nutrition" && weakestDomain.score <= 60;
@@ -497,19 +515,39 @@ export function getAdvice(
     );
   }
 
-  // Melatonine bij slaapprobleem zonder stress-component
-  const slpQual = getAnswer(answers, "SLP_QUAL");
+  const slpOnset = getAnswer(answers, "SLP_ONSET");
   const strFreq = getAnswer(answers, "STR_FREQ");
-  if (slpQual <= 2 && strFreq >= 3) {
+  if (slpOnset <= 2 && strFreq >= 3) {
     pushRankedSupplement(
       supplements,
       {
         name: "Melatonine",
         reason:
-          "Je slaap scoort laag, maar stress lijkt niet de hoofdoorzaak. Melatonine kan helpen je slaap-waakritme te herstellen.",
+          "Je ligt regelmatig lang wakker terwijl stress beheersbaar lijkt. Melatonine kan helpen je slaap-waakritme te herstellen (bij minimaal 1 mg voor het slapen volgens claimvoorwaarden).",
         link: "/beste/melatonine",
       },
       8,
+    );
+  }
+
+  if (lifAlc <= 2) {
+    pushRankedText(
+      quickWins,
+      "Plan 2–3 avonden per week zonder alcohol — je slaap en ochtendenergie profiteren daar vaak direct van.",
+      6,
+    );
+  }
+
+  if (lifSun <= 2) {
+    pushRankedSupplement(
+      supplements,
+      {
+        name: "Vitamine D",
+        reason:
+          "Je krijgt weinig zon en geen supplement. Vitamine D draagt bij tot normale botten, spierfunctie en het immuunsysteem — relevant in het Nederlandse klimaat.",
+        link: "/supplementen/vitamine-d",
+      },
+      25,
     );
   }
 
@@ -553,7 +591,7 @@ export function getAdvice(
     );
   }
 
-  if (movementFrequency >= 3 && physicalRecovery <= 1) {
+  if (movementLoad >= 3 && physicalRecovery <= 1) {
     pushRankedText(
       quickWins,
       "Je traint hard maar herstelt slecht: plan vandaag een rustdag.",

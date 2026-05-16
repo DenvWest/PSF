@@ -20,9 +20,16 @@ function matchesZink(scores: DomainScores): boolean {
   );
 }
 
+function getMovementLoad(answers: Record<string, number>): number {
+  return Math.max(
+    intAnswer(answers, "MOV_CARD"),
+    intAnswer(answers, "MOV_STR"),
+  );
+}
+
 /** Overtrainer-patroon uit intake-spec: veel bewegen, weinig fysiek herstel (geen apart profiellabel in engine). */
 export function matchesOvertrainerAnswers(answers: Record<string, number>): boolean {
-  return intAnswer(answers, "MOV_FREQ") >= 3 && intAnswer(answers, "RCV_PHYS") <= 1;
+  return getMovementLoad(answers) >= 3 && intAnswer(answers, "RCV_PHYS") <= 1;
 }
 
 function matchesCreatine(
@@ -30,9 +37,10 @@ function matchesCreatine(
   profileLabel: ProfileLabel,
   answers: Record<string, number>,
 ): boolean {
-  const movementFrequency = intAnswer(answers, "MOV_FREQ");
+  const movementLoad = getMovementLoad(answers);
+  const strengthTraining = intAnswer(answers, "MOV_STR");
 
-  const activeExerciser = movementFrequency >= 2;
+  const activeExerciser = movementLoad >= 2 || strengthTraining >= 3;
   const poorRecovery = scores.recovery_score < 50;
   const cognitiveLoad = scores.energy_score < 50 && scores.stress_score < 50;
   const relevantProfile =

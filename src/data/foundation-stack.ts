@@ -40,6 +40,6 @@ export const FOUNDATION_STACK: FoundationSupplement[] = [
     reason:
       "In Nederland is vitamine D-tekort veelvoorkomend, vooral in de wintermaanden.",
     href: "/supplementen/vitamine-d",
-    hasComparison: false,
+    hasComparison: true,
   },
 ];

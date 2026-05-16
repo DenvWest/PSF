@@ -281,7 +281,8 @@ export default function IntakeResults({
           <p className="mt-1 text-amber-700">
             Na je 40e heb je meer eiwit nodig om spiermassa te behouden — minimaal
             1,2 tot 1,6 gram per kilo lichaamsgewicht per dag.
-            {typeof answers.MOV_FREQ === "number" && answers.MOV_FREQ >= 3 ? (
+            {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
+              (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
               <>
                 {" "}
                 Je beweegt actief, maar zonder voldoende eiwit mist je lichaam de

@@ -17,7 +17,7 @@ Herkenning → Diagnose → Advies → Actie → Feedback
 Gebruiker selecteert symptomen. Opgeslagen als `symptom_profile` in Supabase.
 
 ### Fase 2 — Diagnose (de kern)
-12 vragen, 6 categorieën, max 3 minuten. Resultaat: `domain_scores` per domein.
+17 vragen, 7 categorieën, max 3–4 minuten. Resultaat: `domain_scores` per domein.
 
 ### Fase 3 — Advies (Herstelplan)
 Geprioriteerde aanbeveling: eerst leefstijl ("quick wins"), dan supplementen. Persoonlijk, niet catalogus.
@@ -30,13 +30,15 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen.
 
 ---
 
-## Vragenlijst (12 vragen, 6 categorieën)
+## Vragenlijst (17 vragen, 7 categorieën)
 
 ### Slaap
 | Vraag | Variabele | Bereik |
 |---|---|---|
 | "Hoe voel je je als je wakker wordt?" | sleep_quality (SLP_QUAL) | 1-4 |
 | "Lukt vast tijdstip slapen/wakker worden?" | sleep_consistency (SLP_CONS) | 1-3 |
+| "Hoe lang duurt inslapen?" | sleep_onset (SLP_ONSET) | 1-4 |
+| "Word je 's nachts wakker?" | sleep_wake (SLP_WAKE) | 1-4 |
 
 ### Energie
 | Vraag | Variabele | Bereik |
@@ -55,11 +57,13 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen.
 |---|---|---|
 | "Dagelijks eetpatroon?" | nutrition_quality (NUT_QUAL) | 1-4 |
 | "Regelmatig vette vis?" | omega3_intake (NUT_O3) | 1-3 |
+| "Eiwitrijke producten per dag?" | protein_intake (NUT_PROT) | 1-4 |
 
 ### Beweging
 | Vraag | Variabele | Bereik |
 |---|---|---|
-| "Hoe vaak intensief bewegen?" | movement_frequency (MOV_FREQ) | 1-4 |
+| "Kracht- of weerstandstraining?" | strength_training (MOV_STR) | 1-4 |
+| "Cardio of intensieve sport?" | cardio_frequency (MOV_CARD) | 1-4 |
 | "Hoeveel bewegen buiten sport?" | daily_activity (MOV_DAILY) | 1-3 |
 
 ### Herstel
@@ -68,20 +72,39 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen.
 | "Hoe snel herstel na inspanning?" | physical_recovery (RCV_PHYS) | 1-3 |
 | "Bewust momenten van rust?" | mental_recovery (RCV_MENT) | 1-3 |
 
+### Leefstijl (geen domeinscore)
+| Vraag | Variabele | Bereik |
+|---|---|---|
+| "3+ glazen alcohol op één avond?" | alcohol_frequency (LIF_ALC) | 1-4 |
+| "Zon en buitenlicht?" | sun_exposure (LIF_SUN) | 1-4 |
+
+`LIF_ALC` en `LIF_SUN` sturen signalen en advies, maar tellen niet mee in `domain_scores`.
+
 ---
 
 ## Scoring & Profiellabels
 
 Scoring engine: `src/lib/intake-engine.ts`
 
+### Domein-maxima (genormaliseerd naar 0–100)
+
+| Domein | Som | Max |
+|---|---|---|
+| slaap | SLP_QUAL + SLP_CONS + SLP_ONSET + SLP_WAKE | 15 |
+| energie | NRG_PATN + NRG_DEP | 8 |
+| stress | STR_FREQ + STR_RECV | 8 |
+| voeding | NUT_QUAL + NUT_O3 + NUT_PROT | 11 |
+| beweging | MOV_STR + MOV_CARD + MOV_DAILY | 11 |
+| herstel | RCV_PHYS + RCV_MENT | 6 |
+
 ### Urgentieniveaus
 
 | Level | Conditie |
 |---|---|
-| critical | Laagste domein < 25 |
-| moderate | Laagste domein 25-40 |
-| mild | Laagste domein 40-60 |
-| healthy | Alle domeinen > 60 |
+| critical | 2+ domeinen < 30 |
+| moderate | 1 domein < 30 of 3+ domeinen < 50 |
+| mild | alle > 30 en 2+ onder 60 |
+| healthy | alle domeinen > 60 |
 
 ### Profiellabels
 
@@ -89,12 +112,20 @@ Scoring engine: `src/lib/intake-engine.ts`
 |---|---|---|
 | Onrustige Slaper | `sleep_score < 40` | sleep_score |
 | Stressdrager | `stress_score < 40` | stress_score |
-| Lage Batterij | `energy_score < 40` of `movement_score < 40` | energy_score / movement_score |
+| Lage Batterij | `energy_score < 40` of `movement_score < 35` | energy_score / movement_score |
 | In Balans | Alle domeinen ≥ 40 | hoogste domein |
 
 **Prioriteit bij meerdere matches:** slaap > stress > energie/beweging. Nutrition en recovery hebben geen eigen profiellabel.
 
-**Overtrainer-patroon:** Geen apart profiellabel in de engine. Het patroon (`movement_frequency ≥ 3` EN `recovery_score ≤ 35`) wordt herkend in de supplementroute-logica (`getSupplementRoute`) en in de nurture e-mails. Er bestaat wel een `/profiel/overtrainer` pagina en de waarde `Overtrainer` kan in `profile_label` staan in de database.
+**Overtrainer-patroon:** Geen apart profiellabel in de engine. Het patroon (`max(MOV_CARD, MOV_STR) ≥ 3` EN `RCV_PHYS ≤ 1`) wordt herkend in `getSupplementRoute` en op de resultatenpagina. Er bestaat een `/profiel/overtrainer` pagina.
+
+### Supplement-signalen (selectie)
+
+| Signaal | Trigger (indicatief) |
+|---|---|
+| melatonine_signal | SLP_ONSET ≤ 2 en STR_FREQ ≥ 3 |
+| magnesium_signal | SLP_WAKE ≤ 2 of (SLP_QUAL ≤ 2 en STR_RECV ≤ 2) |
+| creatine_signal | hoge trainingsbelasting + laag herstel |
 
 ---
 
@@ -105,32 +136,18 @@ Regelgebaseerd (fase 1). Geen AI/ML tot 500+ gebruikers.
 ### Supplementroute-logica
 - Max 3 supplementen per profiel op resultatenpagina
 - Aantal schaalt omlaag bij hogere totaalscore
-- Elk supplement moet een bijbehorende vergelijkingspagina hebben
+- Elk supplement moet een bijbehorende vergelijkingspagina of gidspagina hebben
 - Eiwitadvies verschijnt conditioneel, niet als supplement
-
----
-
-## Zelflerend systeem (toekomst)
-
-### Drie datasporen
-1. **Inputs** — elke vragenlijst-invulling met tijdstempel
-2. **Outputs** — elke aanbeveling gelogd
-3. **Outcomes** — delta's bij herhaalmeting na 30 dagen
-
-### Fasering
-- **Fase 1 (nu):** Regelgebaseerd, handmatige regels
-- **Fase 2 (500+ gebruikers):** Patroonherkenning, statistische analyse
-- **Fase 3 (2000+ gebruikers):** Voorspellend model (decision tree / gradient boosting)
 
 ---
 
 ## UX principes
 
 - Eén vraag per scherm op mobiel
-- Voortgangsindicator: 6 categorieën (niet 12 vragen)
+- Voortgangsindicator: 17 vragen
 - Directe visuele feedback na elke categorie
 - Geen vragen overslaan (systeem heeft alle data nodig)
-- Totale invultijd: max 3 minuten
+- Totale invultijd: max 3–4 minuten
 
 ---
 

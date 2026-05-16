@@ -22,7 +22,8 @@ export type CategoryId =
   | "stress"
   | "voeding"
   | "beweging"
-  | "herstel";
+  | "herstel"
+  | "leefstijl";
 
 export interface Category {
   id: CategoryId;
@@ -34,6 +35,8 @@ export interface Category {
 export type QuestionId =
   | "SLP_QUAL"
   | "SLP_CONS"
+  | "SLP_ONSET"
+  | "SLP_WAKE"
   | "NRG_PATN"
   | "NRG_DEP"
   | "STR_FREQ"
@@ -41,10 +44,13 @@ export type QuestionId =
   | "NUT_QUAL"
   | "NUT_O3"
   | "NUT_PROT"
-  | "MOV_FREQ"
+  | "MOV_STR"
+  | "MOV_CARD"
   | "MOV_DAILY"
   | "RCV_PHYS"
-  | "RCV_MENT";
+  | "RCV_MENT"
+  | "LIF_ALC"
+  | "LIF_SUN";
 
 export interface QuestionOption {
   label: string;
@@ -54,7 +60,7 @@ export interface QuestionOption {
 export interface IntakeQuestion {
   id: QuestionId;
   category: CategoryId;
-  questionIndex: 1 | 2 | 3;
+  questionIndex: 1 | 2 | 3 | 4;
   question: string;
   /** Korte toelichting onder de vraag (optioneel). */
   subtitle?: string;
@@ -89,6 +95,7 @@ export const CATEGORIES: readonly Category[] = [
   { id: "voeding", label: "Voeding", icon: "🥗", color: "var(--ps-green)" },
   { id: "beweging", label: "Beweging", icon: "🏃", color: "#C26E4B" },
   { id: "herstel", label: "Herstel", icon: "🔄", color: "#4A8A99" },
+  { id: "leefstijl", label: "Leefstijl", icon: "☀️", color: "#7A8A6B" },
 ] as const satisfies readonly Category[];
 
 export const QUESTIONS: readonly IntakeQuestion[] = [
@@ -100,8 +107,8 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     options: [
       { label: "Uitgerust en helder", value: 4 },
       { label: "Redelijk, maar niet optimaal", value: 3 },
-      { label: "Moe, alsof ik niet geslapen heb", value: 1 },
       { label: "Wisselend, verschilt per dag", value: 2 },
+      { label: "Moe, alsof ik niet geslapen heb", value: 1 },
     ],
   },
   {
@@ -116,15 +123,39 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     ],
   },
   {
+    id: "SLP_ONSET",
+    category: "slaap",
+    questionIndex: 3,
+    question: "Hoe lang lig je gemiddeld wakker voordat je in slaap valt?",
+    options: [
+      { label: "Meestal binnen 15 minuten", value: 4 },
+      { label: "Ongeveer 15–30 minuten", value: 3 },
+      { label: "Regelmatig langer dan 30 minuten", value: 2 },
+      { label: "Vaak langer dan een uur of heel moeilijk", value: 1 },
+    ],
+  },
+  {
+    id: "SLP_WAKE",
+    category: "slaap",
+    questionIndex: 4,
+    question: "Word je 's nachts wakker en lukt doorslapen niet altijd?",
+    options: [
+      { label: "Zelden of nooit", value: 4 },
+      { label: "Soms, maar ik slaap meestal weer door", value: 3 },
+      { label: "Regelmatig wakker, soms lang wakker liggen", value: 2 },
+      { label: "Vaak meerdere keren per nacht", value: 1 },
+    ],
+  },
+  {
     id: "NRG_PATN",
     category: "energie",
     questionIndex: 1,
     question: "Hoe zou je je energieniveau overdag omschrijven?",
     options: [
       { label: "Stabiel de hele dag", value: 4 },
-      { label: "Goed in de ochtend, dip in de middag", value: 2 },
-      { label: "Laag vanaf het begin", value: 1 },
+      { label: "Goed in de ochtend, dip in de middag", value: 3 },
       { label: "Wisselend en onvoorspelbaar", value: 2 },
+      { label: "Laag vanaf het begin", value: 1 },
     ],
   },
   {
@@ -134,9 +165,9 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     question: "Waar leun je op voor energie?",
     options: [
       { label: "Ik heb weinig stimulanten nodig", value: 4 },
-      { label: "Koffie of energiedrank (1-2 per dag)", value: 2 },
-      { label: "Koffie of energiedrank (meer dan 3 per dag)", value: 1 },
-      { label: "Ik gebruik regelmatig suiker of snacks als opkikker", value: 1 },
+      { label: "Koffie of energiedrank (1-2 per dag)", value: 3 },
+      { label: "Regelmatig suiker of snacks als opkikker", value: 2 },
+      { label: "Alcohol als ontspanning (meerdere keren per week)", value: 1 },
     ],
   },
   {
@@ -159,8 +190,8 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     options: [
       { label: "Vrij snel, ik kan goed loslaten", value: 4 },
       { label: "Het kost me wat tijd, maar lukt wel", value: 3 },
+      { label: "Ik merk dat stress zich opstapelt over dagen", value: 2 },
       { label: "Ik neem stress mee naar bed", value: 1 },
-      { label: "Ik merk dat stress zich opstapelt over dagen", value: 1 },
     ],
   },
   {
@@ -210,10 +241,22 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     ],
   },
   {
-    id: "MOV_FREQ",
+    id: "MOV_STR",
     category: "beweging",
     questionIndex: 1,
-    question: "Hoe vaak beweeg je intensief (sport, krachttraining, hardlopen)?",
+    question: "Doe je kracht- of weerstandstraining (gewichten, banden, eigen lichaamsgewicht)?",
+    options: [
+      { label: "Ja, 2x per week of vaker", value: 4 },
+      { label: "Ja, ongeveer 1x per week", value: 3 },
+      { label: "Minder dan 1x per week", value: 2 },
+      { label: "Zelden of nooit", value: 1 },
+    ],
+  },
+  {
+    id: "MOV_CARD",
+    category: "beweging",
+    questionIndex: 2,
+    question: "Hoe vaak doe je cardio of intensieve sport (hardlopen, fietsen, teamsport)?",
     options: [
       { label: "3x per week of meer", value: 4 },
       { label: "1-2x per week", value: 3 },
@@ -224,7 +267,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
   {
     id: "MOV_DAILY",
     category: "beweging",
-    questionIndex: 2,
+    questionIndex: 3,
     question: "Hoeveel beweeg je buiten sport om (wandelen, fietsen, staan)?",
     options: [
       { label: "Veel - ik sta en loop de hele dag", value: 3 },
@@ -255,6 +298,31 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
       },
       { label: "Soms, maar niet structureel", value: 2 },
       { label: "Nee, daar kom ik niet aan toe", value: 1 },
+    ],
+  },
+  {
+    id: "LIF_ALC",
+    category: "leefstijl",
+    questionIndex: 1,
+    question: "Hoe vaak drink je 3 glazen alcohol of meer op één avond?",
+    options: [
+      { label: "Zelden of nooit", value: 4 },
+      { label: "Af en toe, niet wekelijks", value: 3 },
+      { label: "Ongeveer 1x per week", value: 2 },
+      { label: "Meerdere keren per week of vaker", value: 1 },
+    ],
+  },
+  {
+    id: "LIF_SUN",
+    category: "leefstijl",
+    questionIndex: 2,
+    question: "Hoeveel zon en buitenlicht krijg je gemiddeld?",
+    subtitle: "Vitamine D uit zonlicht is na je 40e extra relevant in Nederland",
+    options: [
+      { label: "Veel buiten of ik slik al vitamine D", value: 4 },
+      { label: "Redelijk, regelmatig naar buiten", value: 3 },
+      { label: "Weinig zon, geen supplement", value: 2 },
+      { label: "Bijna alleen binnen, geen supplement", value: 1 },
     ],
   },
 ] as const satisfies readonly IntakeQuestion[];

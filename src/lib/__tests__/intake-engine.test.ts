@@ -14,6 +14,8 @@ function makeAnswers(overrides: Record<string, number> = {}): Record<string, num
   return {
     SLP_QUAL: 3,
     SLP_CONS: 3,
+    SLP_ONSET: 3,
+    SLP_WAKE: 3,
     NRG_PATN: 3,
     NRG_DEP: 3,
     STR_FREQ: 3,
@@ -21,10 +23,13 @@ function makeAnswers(overrides: Record<string, number> = {}): Record<string, num
     NUT_QUAL: 3,
     NUT_O3: 3,
     NUT_PROT: 3,
-    MOV_FREQ: 3,
+    MOV_STR: 3,
+    MOV_CARD: 3,
     MOV_DAILY: 3,
     RCV_PHYS: 3,
     RCV_MENT: 3,
+    LIF_ALC: 3,
+    LIF_SUN: 3,
     ...overrides,
   };
 }
@@ -54,8 +59,10 @@ describe("calcDomainScores", () => {
     expect(scores.recovery_score).toBe(0);
   });
 
-  it("calculates sleep_score from SLP_QUAL + SLP_CONS (max 7)", () => {
-    const scores = calcDomainScores(makeAnswers({ SLP_QUAL: 4, SLP_CONS: 3 }));
+  it("calculates sleep_score from SLP_QUAL + SLP_CONS + SLP_ONSET + SLP_WAKE (max 15)", () => {
+    const scores = calcDomainScores(
+      makeAnswers({ SLP_QUAL: 4, SLP_CONS: 3, SLP_ONSET: 4, SLP_WAKE: 4 }),
+    );
     expect(scores.sleep_score).toBe(100);
   });
 
@@ -74,8 +81,10 @@ describe("calcDomainScores", () => {
     expect(scores.nutrition_score).toBe(100);
   });
 
-  it("calculates movement_score from MOV_FREQ + MOV_DAILY (max 7)", () => {
-    const scores = calcDomainScores(makeAnswers({ MOV_FREQ: 4, MOV_DAILY: 3 }));
+  it("calculates movement_score from MOV_STR + MOV_CARD + MOV_DAILY (max 11)", () => {
+    const scores = calcDomainScores(
+      makeAnswers({ MOV_STR: 4, MOV_CARD: 4, MOV_DAILY: 3 }),
+    );
     expect(scores.movement_score).toBe(100);
   });
 
@@ -85,13 +94,15 @@ describe("calcDomainScores", () => {
   });
 
   it("normalizes partial scores correctly", () => {
-    const scores = calcDomainScores(makeAnswers({ SLP_QUAL: 2, SLP_CONS: 1 }));
-    expect(scores.sleep_score).toBe(Math.round((3 / 7) * 100));
+    const scores = calcDomainScores(
+      makeAnswers({ SLP_QUAL: 2, SLP_CONS: 1, SLP_ONSET: 0, SLP_WAKE: 0 }),
+    );
+    expect(scores.sleep_score).toBe(Math.round((3 / 15) * 100));
   });
 
   it("handles missing individual questions as 0", () => {
     const scores = calcDomainScores({ SLP_QUAL: 3 });
-    expect(scores.sleep_score).toBe(Math.round((3 / 7) * 100));
+    expect(scores.sleep_score).toBe(Math.round((3 / 15) * 100));
     expect(scores.energy_score).toBe(0);
   });
 
@@ -107,17 +118,22 @@ describe("calcDomainScores", () => {
     const maxAnswers = makeAnswers({
       SLP_QUAL: 4,
       SLP_CONS: 3,
+      SLP_ONSET: 4,
+      SLP_WAKE: 4,
       NRG_PATN: 4,
       NRG_DEP: 4,
       STR_FREQ: 4,
       STR_RECV: 4,
       NUT_QUAL: 4,
-      NUT_O3: 4,
-      NUT_PROT: 3,
-      MOV_FREQ: 4,
+      NUT_O3: 3,
+      NUT_PROT: 4,
+      MOV_STR: 4,
+      MOV_CARD: 4,
       MOV_DAILY: 3,
       RCV_PHYS: 3,
       RCV_MENT: 3,
+      LIF_ALC: 4,
+      LIF_SUN: 4,
     });
     const scores = calcDomainScores(maxAnswers);
     expect(scores.sleep_score).toBe(100);
@@ -354,8 +370,15 @@ describe("getDeficiencySignals", () => {
   });
 
   it("does not flag magnesium when sleep quality is fine", () => {
-    const signals = getDeficiencySignals(makeAnswers({ SLP_QUAL: 3, STR_RECV: 2 }));
+    const signals = getDeficiencySignals(
+      makeAnswers({ SLP_QUAL: 3, SLP_WAKE: 4, STR_RECV: 2 }),
+    );
     expect(signals.magnesium_signal).toBe(false);
+  });
+
+  it("detects magnesium signal when SLP_WAKE <= 2", () => {
+    const signals = getDeficiencySignals(makeAnswers({ SLP_WAKE: 1 }));
+    expect(signals.magnesium_signal).toBe(true);
   });
 
   it("detects cortisol risk when stress high + inconsistent sleep + low energy", () => {
@@ -384,28 +407,28 @@ describe("getDeficiencySignals", () => {
 
   it("detects creatine signal when recovery is low and movement is high", () => {
     const signals = getDeficiencySignals(
-      makeAnswers({ MOV_FREQ: 4, RCV_PHYS: 1, RCV_MENT: 1 }),
+      makeAnswers({ MOV_CARD: 4, MOV_STR: 3, RCV_PHYS: 1, RCV_MENT: 1 }),
     );
     expect(signals.creatine_signal).toBe(true);
   });
 
   it("does not flag creatine for sedentary low-recovery person", () => {
     const signals = getDeficiencySignals(
-      makeAnswers({ MOV_FREQ: 1, RCV_PHYS: 1, RCV_MENT: 3 }),
+      makeAnswers({ MOV_CARD: 1, MOV_STR: 1, RCV_PHYS: 1, RCV_MENT: 3 }),
     );
     expect(signals.creatine_signal).toBe(false);
   });
 
-  it("detects melatonine signal when sleep quality low and stress NOT primary", () => {
+  it("detects melatonine signal when sleep onset slow and stress manageable", () => {
     const signals = getDeficiencySignals(
-      makeAnswers({ SLP_QUAL: 1, STR_FREQ: 4 }),
+      makeAnswers({ SLP_ONSET: 1, STR_FREQ: 4 }),
     );
     expect(signals.melatonine_signal).toBe(true);
   });
 
   it("does not flag melatonine when stress is also high (low STR_FREQ answer)", () => {
     const signals = getDeficiencySignals(
-      makeAnswers({ SLP_QUAL: 1, STR_FREQ: 2 }),
+      makeAnswers({ SLP_ONSET: 1, STR_FREQ: 2 }),
     );
     expect(signals.melatonine_signal).toBe(false);
   });
@@ -439,7 +462,7 @@ describe("getAdvice", () => {
     const scores = makeScores({ sleep_score: 20, stress_score: 20, energy_score: 20 });
     const answers = makeAnswers({
       SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
-      NRG_PATN: 1, NRG_DEP: 1, NUT_O3: 1, MOV_FREQ: 4, RCV_PHYS: 1,
+      NRG_PATN: 1, NRG_DEP: 1, NUT_O3: 1, MOV_CARD: 4, RCV_PHYS: 1,
     });
     const result = getAdvice(scores, answers, []);
     expect(result.supplements.length).toBeLessThanOrEqual(3);
@@ -482,19 +505,27 @@ describe("getAdvice", () => {
     expect(names).toContain("Omega-3 (EPA/DHA)");
   });
 
-  it("recommends melatonine when sleep is bad but stress is low", () => {
+  it("recommends melatonine when sleep onset is slow but stress is manageable", () => {
     const scores = makeScores({ sleep_score: 30 });
-    const answers = makeAnswers({ SLP_QUAL: 1, STR_FREQ: 4 });
+    const answers = makeAnswers({ SLP_ONSET: 1, STR_FREQ: 4 });
     const result = getAdvice(scores, answers, []);
     const names = result.supplements.map((s) => s.name);
     expect(names).toContain("Melatonine");
+  });
+
+  it("recommends vitamine D when sun exposure is low", () => {
+    const scores = makeScores();
+    const answers = makeAnswers({ LIF_SUN: 1 });
+    const result = getAdvice(scores, answers, []);
+    const names = result.supplements.map((s) => s.name);
+    expect(names).toContain("Vitamine D");
   });
 
   it("deduplicates supplement recommendations", () => {
     const scores = makeScores({ sleep_score: 20, stress_score: 20, recovery_score: 20 });
     const answers = makeAnswers({
       SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RECV: 1,
-      NRG_PATN: 1, MOV_FREQ: 4, RCV_PHYS: 1,
+      NRG_PATN: 1, MOV_CARD: 4, RCV_PHYS: 1,
     });
     const result = getAdvice(scores, answers, []);
     const names = result.supplements.map((s) => s.name);

@@ -53,7 +53,7 @@ export default function FoundationStack({ excludeIds }: FoundationStackProps) {
                 href={item.href}
                 className="inline-flex max-w-full items-center justify-center rounded-lg bg-[#C4873B] px-4 py-2.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
               >
-                Bekijk vergelijking →
+                {item.href.startsWith("/beste/") ? "Bekijk vergelijking →" : "Bekijk gids →"}
               </Link>
             ) : (
               <Link

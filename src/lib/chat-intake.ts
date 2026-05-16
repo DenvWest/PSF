@@ -18,23 +18,32 @@ export interface ChatIntakeState {
 const QUESTION_MAP: Record<string, { label: string; domain: string }> = {
   SLP_QUAL: { label: "Hoe beoordeel je je slaapkwaliteit?", domain: "slaap" },
   SLP_CONS: { label: "Hoe consistent is je slaapritme?", domain: "slaap" },
+  SLP_ONSET: { label: "Hoe lang duurt inslapen gemiddeld?", domain: "slaap" },
+  SLP_WAKE: { label: "Hoe vaak word je 's nachts wakker?", domain: "slaap" },
   NRG_PATN: { label: "Hoe is je energiepatroon over de dag?", domain: "energie" },
-  NRG_DEP: { label: "Hoeveel ben je afhankelijk van cafeïne of suiker?", domain: "energie" },
+  NRG_DEP: { label: "Hoeveel ben je afhankelijk van cafeïne, suiker of alcohol?", domain: "energie" },
   STR_FREQ: { label: "Hoe vaak ervaar je stress?", domain: "stress" },
   STR_RECV: { label: "Hoe goed herstel je van stress?", domain: "stress" },
   NUT_QUAL: { label: "Hoe beoordeel je je voedingskwaliteit?", domain: "voeding" },
   NUT_O3: { label: "Hoe vaak eet je vette vis of omega-3 rijke voeding?", domain: "voeding" },
   NUT_PROT: { label: "Hoe beoordeel je je eiwitinname?", domain: "voeding" },
-  MOV_FREQ: { label: "Hoe vaak beweeg je intensief per week?", domain: "beweging" },
+  MOV_STR: { label: "Hoe vaak doe je krachttraining?", domain: "beweging" },
+  MOV_CARD: { label: "Hoe vaak doe je cardio of intensieve sport?", domain: "beweging" },
   MOV_DAILY: { label: "Hoeveel beweeg je dagelijks (wandelen, fietsen)?", domain: "beweging" },
   RCV_PHYS: { label: "Hoe goed herstelt je lichaam na inspanning?", domain: "herstel" },
   RCV_MENT: { label: "Hoe goed herstelt je hoofd na een drukke dag?", domain: "herstel" },
+  LIF_ALC: { label: "Hoe vaak drink je 3+ glazen alcohol op één avond?", domain: "leefstijl" },
+  LIF_SUN: { label: "Hoeveel zon en buitenlicht krijg je?", domain: "leefstijl" },
 };
 
 const QUESTION_ORDER = [
-  "SLP_QUAL", "SLP_CONS", "NRG_PATN", "NRG_DEP",
-  "STR_FREQ", "STR_RECV", "NUT_QUAL", "NUT_O3",
-  "NUT_PROT", "MOV_FREQ", "MOV_DAILY", "RCV_PHYS", "RCV_MENT",
+  "SLP_QUAL", "SLP_CONS", "SLP_ONSET", "SLP_WAKE",
+  "NRG_PATN", "NRG_DEP",
+  "STR_FREQ", "STR_RECV",
+  "NUT_QUAL", "NUT_O3", "NUT_PROT",
+  "MOV_STR", "MOV_CARD", "MOV_DAILY",
+  "RCV_PHYS", "RCV_MENT",
+  "LIF_ALC", "LIF_SUN",
 ];
 
 export function createInitialChatState(): ChatIntakeState {
@@ -47,7 +56,7 @@ export function createInitialChatState(): ChatIntakeState {
       {
         role: "assistant",
         content:
-          "Hallo! Ik help je met een korte leefstijlcheck. Ik stel je 13 vragen over slaap, energie, stress, voeding, beweging en herstel. Op basis van je antwoorden krijg je een persoonlijk Herstelplan. Laten we beginnen!\n\nHoe beoordeel je je slaapkwaliteit? (1 = slecht, 4 = uitstekend)",
+          "Hallo! Ik help je met een korte leefstijlcheck. Ik stel je 17 vragen over slaap, energie, stress, voeding, beweging, herstel en leefstijl. Op basis van je antwoorden krijg je een persoonlijk Herstelplan. Laten we beginnen!\n\nHoe beoordeel je je slaapkwaliteit? (1 = slecht, 4 = uitstekend)",
       },
     ],
     collectedAnswers: {},
@@ -180,5 +189,5 @@ function parseNumericAnswer(input: string): number | null {
 }
 
 function buildSystemPrompt(): string {
-  return `Je bent een leefstijladviseur van PerfectSupplement. Je helpt mannen 40+ met een korte intake over 6 domeinen: slaap, energie, stress, voeding, beweging en herstel. Stel één vraag tegelijk. Verwacht een score van 1-4. Wees kort, vriendelijk en to-the-point. Geef geen medisch advies.`;
+  return `Je bent een leefstijladviseur van PerfectSupplement. Je helpt mannen 40+ met een korte intake over slaap, energie, stress, voeding, beweging, herstel en leefstijl. Stel één vraag tegelijk. Verwacht een score van 1-4. Wees kort, vriendelijk en to-the-point. Geef geen medisch advies.`;
 }
