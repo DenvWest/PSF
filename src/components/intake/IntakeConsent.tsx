@@ -50,6 +50,15 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
     onContinue(payload);
   }
 
+  const sectionLabelStyle = {
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase" as const,
+    color: "rgba(255,255,255,0.35)",
+    marginBottom: 12,
+  };
+
   const cardStyle = {
     background: "rgba(255,255,255,0.07)",
     border: "1px solid rgba(255,255,255,0.1)",
@@ -139,12 +148,14 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
         </h2>
 
         <p
-          className="mb-8"
+          className="mb-6"
           style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}
         >
-          Voor persoonlijk advies hebben we je antwoorden nodig. Dat zijn
-          gezondheidsgegevens: je kiest hier wat we mogen doen.
+          Om je persoonlijke herstelplan te berekenen, verwerken we je antwoorden.
+          Dat zijn gezondheidsgegevens — geef hieronder toestemming.
         </p>
+
+        <p style={sectionLabelStyle}>Herstelplan</p>
 
         {/* Health consent */}
         <div className="mb-4">
@@ -168,7 +179,7 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
         </div>
 
         {/* Analytics consent */}
-        <div className="mb-4">
+        <div className="mb-6">
           <label style={cardStyle}>
             <input
               type="checkbox"
@@ -188,13 +199,15 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
           </p>
         </div>
 
+        <p style={{ ...sectionLabelStyle, marginTop: 8 }}>E-mail (optioneel)</p>
+
         {/* Optional email */}
         <div className="mb-4">
           <label
             className="mb-2 block text-[13px] font-medium"
             style={{ color: "rgba(255,255,255,0.45)" }}
           >
-            E-mail (optioneel — alleen nodig voor updates over je herstelplan)
+            E-mail (optioneel) — voor je gratis gids en/of persoonlijke inzichten
           </label>
           <input
             type="email"
@@ -261,7 +274,7 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
             ? "Vul een geldig e-mailadres in of zet e-mailupdates uit"
             : canProceed
               ? "Verder naar berekening →"
-              : "Vink toestemming gezondheidsgegevens aan"}
+              : "Geef toestemming om verder te gaan"}
         </button>
       </div>
     </div>

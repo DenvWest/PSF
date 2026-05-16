@@ -149,16 +149,8 @@ export default function IntakeResults({
           className="mb-3 text-xs font-semibold uppercase tracking-[1.5px]"
           style={{ color: "rgba(255,255,255,0.4)" }}
         >
-          Jouw Herstelplan
+          Herstelplan
         </p>
-        {firstName ? (
-          <p
-            className="mb-3 text-base"
-            style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}
-          >
-            {firstName}, dit is jouw herstelplan
-          </p>
-        ) : null}
         <h1
           className="mb-1.5 text-[30px] font-normal"
           style={{
@@ -168,6 +160,14 @@ export default function IntakeResults({
         >
           {displayProfileName}
         </h1>
+        {firstName ? (
+          <p
+            className="mb-1.5 text-base"
+            style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}
+          >
+            Voor {firstName}
+          </p>
+        ) : null}
         {displayProfileName !== "In Balans" && (
           <Link
             href={displayProfileSlugPath}
