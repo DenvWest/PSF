@@ -29,8 +29,7 @@ function buildPdfGuideSignatureHtml(
               Groet,
             </p>
             <p style="margin: 0 0 16px; font-size: 15px; line-height: 1.6; color: #333333;">
-              Dennis van Westbroek<br />
-              <span style="font-size: 14px; color: #707070;">PerfectSupplement</span>
+              team PerfectSupplement
             </p>
             <p style="margin: 0; font-size: 14px; line-height: 1.65; color: #555555;">
               <strong>P.S.</strong> ${escapeHtml(psBodyPlainText)}
