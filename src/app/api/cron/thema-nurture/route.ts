@@ -11,7 +11,13 @@ import { verifyCronRequest } from "@/lib/cron-auth";
 
 export const dynamic = "force-dynamic";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+function getResend(): Resend {
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
 
 async function handleAuthorized(): Promise<NextResponse> {
   if (!process.env.RESEND_API_KEY?.trim()) {
@@ -67,7 +73,7 @@ async function handleAuthorized(): Promise<NextResponse> {
     const unsubscribeUrl = buildThemaUnsubscribeUrl(mail.email, mail.thema, siteUrl);
 
     try {
-      const { data: sendData, error: sendError } = await resend.emails.send({
+      const { data: sendData, error: sendError } = await getResend().emails.send({
         from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
         to: mail.email,
         subject: template.subject,

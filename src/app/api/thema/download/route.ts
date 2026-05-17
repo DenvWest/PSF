@@ -11,7 +11,13 @@ import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { buildThemaUnsubscribeUrl, MAX_EMAIL_LENGTH } from "@/lib/nurture-unsubscribe";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+function getResend(): Resend {
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
 
 /** Thema’s met downloadflow; dag-1 body komt uit getThemaNurtureTemplate(thema, 1). */
 const THEMA_DOWNLOADS: Record<string, true> = {
@@ -114,7 +120,7 @@ export async function POST(request: NextRequest) {
   const emailHtml = template.html(unsubscribeUrl);
 
   try {
-    const { data: sendData, error: sendError } = await resend.emails.send({
+    const { data: sendData, error: sendError } = await getResend().emails.send({
       from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
       to: email,
       subject: template.subject,

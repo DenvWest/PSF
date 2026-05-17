@@ -4,7 +4,13 @@ import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+function getResend(): Resend {
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
 
 type NurtureEmailRow = {
   id: string;
@@ -117,7 +123,7 @@ export async function runPendingNurtureEmails(): Promise<{
         getPublicSiteUrl(),
       );
 
-      const { data: sendData, error: sendError } = await resend.emails.send({
+      const { data: sendData, error: sendError } = await getResend().emails.send({
         from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
         to: email,
         subject,

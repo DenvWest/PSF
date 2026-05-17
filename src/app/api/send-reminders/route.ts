@@ -7,7 +7,13 @@ import {
 import { runPendingNurtureEmails } from "@/lib/nurture-cron";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendClient: Resend | null = null;
+function getResend(): Resend {
+  if (!resendClient) {
+    resendClient = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendClient;
+}
 
 type ReminderFetchRow = {
   id: string;
@@ -120,7 +126,7 @@ async function runSendReminders(): Promise<{ sent: number; errors: number }> {
       continue;
     }
 
-    const { error: sendError } = await resend.emails.send({
+    const { error: sendError } = await getResend().emails.send({
       from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",
       to: row.email.trim(),
       subject: built.subject,
