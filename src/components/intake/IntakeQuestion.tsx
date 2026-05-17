@@ -147,7 +147,10 @@ export default function IntakeQuestion({
             phase wrapper already handles the entry animation. */}
         <div
           key={currentIndex}
-          className={`min-h-[400px] ${isFirstRender.current ? "" : "animate-[fadeIn_200ms_ease-out]"}`}
+          className={`min-h-[400px] ${
+            // eslint-disable-next-line react-hooks/refs -- skip inner fade-in on first mount; outer phase handles entry
+            isFirstRender.current ? "" : "animate-[fadeIn_200ms_ease-out]"
+          }`}
         >
           {/* Question text */}
           <h2

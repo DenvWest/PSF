@@ -329,12 +329,12 @@ export default function IntakeResults({
           {deficiencySignals.protein_gap_signal ? (
             <p className="mt-3 text-sm text-amber-800">
               Poeder handig als aanvulling?{" "}
-              <a
+              <Link
                 href="/beste/eiwitpoeder"
                 className="font-medium underline underline-offset-2 hover:text-amber-900"
               >
                 Vergelijk eiwitpoeders
-              </a>
+              </Link>
             </p>
           ) : null}
         </div>
@@ -372,7 +372,7 @@ export default function IntakeResults({
           <SupplementAdviceDisclaimer variant="profile" />
           <div className="space-y-2">
             {deficiencySignals.omega3_deficiency && (
-              <a
+              <Link
                 href="/beste/omega-3-supplement"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
@@ -380,10 +380,10 @@ export default function IntakeResults({
                   Bekijk onze omega-3 vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
-              </a>
+              </Link>
             )}
             {deficiencySignals.magnesium_signal && (
-              <a
+              <Link
                 href="/beste/magnesium"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
@@ -391,10 +391,10 @@ export default function IntakeResults({
                   Bekijk onze magnesium vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
-              </a>
+              </Link>
             )}
             {deficiencySignals.creatine_signal && (
-              <a
+              <Link
                 href="/beste/creatine"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
@@ -402,10 +402,10 @@ export default function IntakeResults({
                   Bekijk onze creatine vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
-              </a>
+              </Link>
             )}
             {deficiencySignals.melatonine_signal && (
-              <a
+              <Link
                 href="/beste/melatonine"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
@@ -413,10 +413,10 @@ export default function IntakeResults({
                   Bekijk onze melatonine vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
-              </a>
+              </Link>
             )}
             {deficiencySignals.protein_gap_signal && (
-              <a
+              <Link
                 href="/beste/eiwitpoeder"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
@@ -424,10 +424,10 @@ export default function IntakeResults({
                   Bekijk onze eiwitpoeder vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
-              </a>
+              </Link>
             )}
             {zinkSignal && (
-              <a
+              <Link
                 href="/beste/zink"
                 className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
               >
@@ -435,7 +435,7 @@ export default function IntakeResults({
                   Bekijk onze zink vergelijking
                 </span>
                 <span className="text-[#999]">→</span>
-              </a>
+              </Link>
             )}
           </div>
         </div>

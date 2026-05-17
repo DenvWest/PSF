@@ -205,8 +205,8 @@ export default function EnergieNa40Page() {
                   </li>
                 </ul>
                 <p className="mt-6 text-gray-700 leading-relaxed">
-                  Als je hier drie of meer van herkent, lees verder. Dat is geen \"normaal ouder
-                  worden\" — het is een signaal om je weekritme, slaap en voeding scherper te bekijken.
+                  Als je hier drie of meer van herkent, lees verder. Dat is geen &ldquo;normaal ouder
+                  worden&rdquo; — het is een signaal om je weekritme, slaap en voeding scherper te bekijken.
                 </p>
               </section>
 
@@ -225,16 +225,16 @@ export default function EnergieNa40Page() {
                   1. Herstel duurt langer na dezelfde week
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Veel mannen merken dat een drukke week langer \"naar\" voelt dan tien jaar geleden.
+                  Veel mannen merken dat een drukke week langer &ldquo;naar&rdquo; voelt dan tien jaar geleden.
                   Dat hoeft geen ziekte te zijn: het past vaak bij minder slaap, meer schermwerk en
                   minder beweging tussen vergaderingen door.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  2. Je hoofd blijft lang \"aan\", je lichaam wil rust
+                  2. Je hoofd blijft lang &ldquo;aan&rdquo;, je lichaam wil rust
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Stress en piekeren kosten energie — ook als je overdag \"alles redt\". Als je
+                  Stress en piekeren kosten energie — ook als je overdag &ldquo;alles redt&rdquo;. Als je
                   &apos;s avonds niet echt ontspant, blijft het gevoel van zwaarte hangen.
                 </p>
 
@@ -263,7 +263,7 @@ export default function EnergieNa40Page() {
                 </h3>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Je lichaam maakt energie uit voeding en zuurstof — op een manier die je op school
-                  misschien \"mitochondriën\" en \"ATP\" hoorde noemen. Belangrijk voor nu: beweging,
+                  misschien &ldquo;mitochondriën&rdquo; en &ldquo;ATP&rdquo; hoorde noemen. Belangrijk voor nu: beweging,
                   slaap en eiwitrijke maaltijden helpen veel mensen om zich fitter te voelen. Wil je
                   het wetenschappelijke kader? Lees{" "}
                   <Link href="/kennisbank/mitochondrien" className={INLINE_LINK_CLASS}>
@@ -284,7 +284,7 @@ export default function EnergieNa40Page() {
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Hormonen spelen mee bij energie en herstel, maar vanaf een webpagina kunnen we niet
                   zeggen wat jouw testosteron of andere waarden doen. Wél zien we in de praktijk dat
-                  vaste slaaptijden, minder laat cafeïne en minder chronische \"doorwerkavonden\"
+                  vaste slaaptijden, minder laat cafeïne en minder chronische &ldquo;doorwerkavonden&rdquo;
                   vaak het grootste verschil maken.
                 </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
