@@ -53,7 +53,7 @@ const structuredData = {
 };
 
 export default function OverOnsPage() {
-  const [insightLead, insightBridge] = ABOUT_INSIGHT.paragraphs;
+  const [insightLead] = ABOUT_INSIGHT.paragraphs;
   const [, , whatWeDoPurpose] = ABOUT_WHAT_WE_DO.paragraphs;
   const [trustAffiliate] = ABOUT_TRUST.paragraphs;
 
@@ -97,7 +97,10 @@ export default function OverOnsPage() {
                 {ABOUT_INSIGHT.title}
               </h2>
               <p className="text-slate-600 leading-relaxed">{insightLead}</p>
-              <p className="text-slate-600 leading-relaxed">{insightBridge}</p>
+              <p className="text-slate-600 leading-relaxed">
+                {ABOUT_INSIGHT.vicieuzeCirkel} {ABOUT_INSIGHT.keyInsightLead}{" "}
+                <span className="text-slate-800">{ABOUT_INSIGHT.keyInsight}</span>
+              </p>
               <p className="text-slate-600 leading-relaxed">
                 Wil je hier dieper op in? Lees onze gids over{" "}
                 <Link href={ABOUT_INSIGHT.links[0].href} className={linkClass}>
@@ -115,14 +118,27 @@ export default function OverOnsPage() {
               <h2 className="font-serif text-2xl font-normal text-slate-900 md:text-3xl">
                 {ABOUT_ORIGIN.title}
               </h2>
-              {ABOUT_ORIGIN.paragraphs.map((paragraph) => (
-                <p
-                  key={paragraph.slice(0, 48)}
-                  className="text-slate-600 leading-relaxed"
-                >
-                  {paragraph}
+              <p className="text-slate-600 leading-relaxed">
+                {ABOUT_ORIGIN.paragraphs[0]}
+              </p>
+
+              <div className="space-y-4 rounded-2xl border border-slate-200/80 bg-slate-50/80 px-6 py-7">
+                <h3 className="font-serif text-xl font-normal text-slate-900 md:text-2xl">
+                  {ABOUT_ORIGIN.positioning.title}
+                </h3>
+                <p className="text-slate-600 leading-relaxed">
+                  {ABOUT_ORIGIN.positioning.paragraphs[0]}
                 </p>
-              ))}
+                <p className="text-slate-700 leading-relaxed">
+                  <span className="text-slate-900">
+                    {ABOUT_ORIGIN.positioning.paragraphs[1]}
+                  </span>
+                </p>
+              </div>
+
+              <p className="text-slate-600 leading-relaxed">
+                {ABOUT_ORIGIN.paragraphs[1]}
+              </p>
             </section>
 
             <section id={ABOUT_WHAT_WE_DO.id} className="mb-16 space-y-6">
@@ -155,7 +171,7 @@ export default function OverOnsPage() {
 
               <div>
                 <h3 className="mb-4 text-lg font-semibold text-slate-900">
-                  Wat we niet doen
+                  {ABOUT_WHAT_WE_DO.whatWeDontDoTitle}
                 </h3>
                 <ul className="space-y-2 text-slate-600">
                   {ABOUT_WHAT_WE_DO.whatWeDontDo.map((item) => (
@@ -169,6 +185,7 @@ export default function OverOnsPage() {
               <h2 className="font-serif text-2xl font-normal text-slate-900 md:text-3xl">
                 {ABOUT_TRUST.title}
               </h2>
+              <p className="text-slate-600 leading-relaxed">{ABOUT_TRUST.intro}</p>
               <p className="text-slate-600 leading-relaxed">{trustAffiliate}</p>
               <p className="text-slate-600 leading-relaxed">
                 Onze scores worden niet beïnvloed door commissie. De{" "}

@@ -38,8 +38,7 @@ export const ABOUT_STORY = {
   title: "Wie zit hierachter",
   paragraphs: [
     "Ik weet dat niet alleen vanuit mijn praktijk als fysiotherapeut en leefstijlcoach — maar ook vanuit eigen ervaring.",
-    "Jarenlang merkte ik hoe stress, slecht herstel en een continu 'aan' zenuwstelsel zich lichamelijk begonnen te vertalen. Niet alleen in vermoeidheid, maar ook in onrust, gespannenheid en het gevoel dat mijn lichaam moeite had om terug te schakelen na drukke periodes.",
-    "Juist daardoor ben ik me steeds meer gaan verdiepen in de relatie tussen stress, herstel, slaap, het zenuwstelsel en gezondheid. Wat ik in de praktijk zag bij mannen, herkende ik ook in mezelf — en omgekeerd.",
+    "Jarenlang merkte ik hoe stress, slecht herstel en een lichaam dat maar niet echt tot rust kwam zich steeds duidelijker lieten voelen. Niet alleen in vermoeidheid, maar ook in een opgejaagd gevoel, slecht kunnen ontspannen, onrustige slaap en het idee dat mijn lichaam steeds moeilijker terugschakelde na drukke periodes.",
   ],
 } as const;
 
@@ -47,9 +46,14 @@ export const ABOUT_INSIGHT = {
   id: "waarom-leefstijl",
   title: "Wat veel mannen over het hoofd zien",
   paragraphs: [
-    "Wat veel mensen niet beseffen, is dat chronische stress niet alleen 'tussen je oren' zit. Langdurige stress beïnvloedt de communicatie tussen je brein en je darmen — de hersen-darm-as. Het zenuwstelsel blijft in een staat van alertheid hangen, herstelprocessen vertragen en klachten zoals vermoeidheid, slechte slaap, opgeblazen gevoel of prikkelbaarheid kunnen elkaar versterken.",
-    "In de praktijk zie ik vaak dezelfde vicieuze cirkel: stress leidt tot slechter herstel, dat versterkt lichamelijke klachten, en dat verhoogt de stress weer. En precies daar gaat het mis met veel gezondheidsadvies online: er wordt gezocht naar één supplement, terwijl de basis ontregeld blijft.",
+    "Wat veel mensen niet beseffen, is dat chronische stress niet alleen 'tussen je oren' zit. Langdurige stress beïnvloedt de communicatie tussen je brein en je darmen — de hersen-darm-as. Je lichaam blijft als het ware in de 'aan-stand' hangen, herstel vertraagt en klachten zoals vermoeidheid, slechte slaap, opgeblazen gevoel of prikkelbaarheid kunnen elkaar versterken.",
   ],
+  vicieuzeCirkel:
+    "In de praktijk zie ik vaak dezelfde vicieuze cirkel: stress leidt tot slechter herstel, dat versterkt lichamelijke klachten, en dat verhoogt de stress weer.",
+  keyInsightLead:
+    "En precies daar gaat het mis met veel gezondheidsadvies online:",
+  keyInsight:
+    "er wordt gezocht naar één supplement, terwijl de basis ontregeld blijft.",
   links: [
     { href: "/stress-verminderen-man", label: "Stress verminderen na 40" },
     { href: "/slaap-verbeteren-na-40", label: "Slaap verbeteren na 40" },
@@ -61,9 +65,15 @@ export const ABOUT_ORIGIN = {
   title: "Waarom PerfectSupplement ontstond",
   paragraphs: [
     "PerfectSupplement is ontstaan vanuit die frustratie. Niet omdat supplementen waardeloos zijn — maar omdat ze vaak worden verkocht alsof ze het hele probleem oplossen, terwijl echte gezondheid bijna altijd begint bij slaap, stressregulatie, voeding, beweging en herstel.",
-    "Ik ben geen supplementvergelijker die snel een top 10 wil verkopen. Ik wil de rustige gids zijn tussen leefstijl, herstel en supplementen: eerst begrijpen waar jij staat, daarna pas gericht aanvullen waar het zinvol is.",
     "Supplementen kunnen daarin ondersteunen — maar alleen als ze passen bij wat jouw lichaam daadwerkelijk nodig heeft.",
   ],
+  positioning: {
+    title: "Geen snelle oplossingen — wel richting",
+    paragraphs: [
+      "Ik wil niet de zoveelste supplementvergelijker zijn die snel een top 10 verkoopt.",
+      "Ik wil de rustige gids zijn tussen leefstijl, herstel en supplementen: eerst begrijpen waar jij staat, daarna pas gericht aanvullen waar het zinvol is.",
+    ],
+  },
 } as const;
 
 export const ABOUT_WHAT_WE_DO = {
@@ -82,18 +92,22 @@ export const ABOUT_WHAT_WE_DO = {
     href: "/intake",
     label: "Doe de gratis Leefstijlcheck",
   },
+  whatWeDontDoTitle: "Waar je ons níet voor gebruikt",
   whatWeDontDo: [
-    "We stellen geen medische diagnoses — bij klachten: ga naar je huisarts",
-    "We verkopen zelf geen supplementen en accepteren geen gesponsorde reviews",
-    "We verbergen geen nadelen — als een product slecht scoort, staat dat erbij",
+    "We stellen geen medische diagnoses — bij aanhoudende klachten: neem contact op met je huisarts of specialist",
+    "We verkopen zelf geen supplementen",
+    "We accepteren geen betaalde reviews of gesponsorde rankings",
+    "We benoemen ook nadelen en zwakke punten van producten",
   ],
 } as const;
 
 export const ABOUT_TRUST = {
   id: "vertrouwen",
-  title: "Hoe we geld verdienen — en waarom dat eerlijk is",
+  title: "Transparantie vinden we belangrijk",
+  intro:
+    "Daarom zijn we ook open over hoe PerfectSupplement geld verdient.",
   paragraphs: [
-    "PerfectSupplement verdient via affiliate links: koop je via onze vergelijkingspagina's bij een partnerwebshop, dan ontvangen wij een kleine commissie — zonder extra kosten voor jou. Daardoor hoeven we geen eigen producten te verkopen en kunnen we onafhankelijk beoordelen.",
+    "Koop je via onze vergelijkingspagina's bij een partnerwebshop, dan ontvangen wij een kleine commissie — zonder extra kosten voor jou. Daardoor hoeven we geen eigen producten te verkopen en kunnen we onafhankelijk beoordelen.",
   ],
   affiliateLink: {
     href: "/affiliate-disclosure",
@@ -111,7 +125,7 @@ export const ABOUT_CREDENTIALS = {
 export const ABOUT_CTA = {
   title: "Ontdek waar jij staat",
   description:
-    "Begin met de gratis Leefstijlcheck: in drie minuten breng je slaap, stress, energie en herstel in kaart — en zie je welke hefbomen bij jou het grootst zijn.",
+    "Begin met de gratis Leefstijlcheck en ontdek waar jouw lichaam waarschijnlijk het meest om herstel vraagt — in slaap, stress, energie en belastbaarheid.",
   buttonLabel: "Doe de gratis Leefstijlcheck",
   href: "/intake",
 } as const;
