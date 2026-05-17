@@ -2,7 +2,7 @@
 
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import Link from "next/link";
-import { type FormEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 import { handleSendEmail } from "@/lib/contact";
 import contactFormStyles from "./contact-form.module.css";
 
@@ -28,19 +28,20 @@ export default function ContactForm({
   const [pending, setPending] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRef = useRef<TurnstileInstance>(undefined);
-  const [nameValue, setNameValue] = useState("");
-  const [emailValue, setEmailValue] = useState("");
-
-  useEffect(() => {
+  const [nameValue, setNameValue] = useState(() => {
     try {
-      const storedName = sessionStorage.getItem("ps_contact_name");
-      const storedEmail = sessionStorage.getItem("ps_contact_email");
-      if (storedName) setNameValue(storedName);
-      if (storedEmail) setEmailValue(storedEmail);
+      return sessionStorage.getItem("ps_contact_name") ?? "";
     } catch {
-      // sessionStorage niet beschikbaar (bijv. private browsing)
+      return "";
     }
-  }, []);
+  });
+  const [emailValue, setEmailValue] = useState(() => {
+    try {
+      return sessionStorage.getItem("ps_contact_email") ?? "";
+    } catch {
+      return "";
+    }
+  });
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

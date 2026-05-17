@@ -31,7 +31,19 @@ export default function IntakeQuestion({
   const [selectedOption, setSelectedOption] = useState<number | null>(
     savedOptionIndex !== undefined ? savedOptionIndex : null,
   );
+  const [prevQuestionId, setPrevQuestionId] = useState(question.id);
+  const [prevSavedOptionIndex, setPrevSavedOptionIndex] = useState(savedOptionIndex);
   const [hoveredOption, setHoveredOption] = useState<number | null>(null);
+
+  if (
+    prevQuestionId !== question.id ||
+    prevSavedOptionIndex !== savedOptionIndex
+  ) {
+    setPrevQuestionId(question.id);
+    setPrevSavedOptionIndex(savedOptionIndex);
+    setSelectedOption(savedOptionIndex !== undefined ? savedOptionIndex : null);
+    setLocked(false);
+  }
   // Skip inner animation on first mount — the phase-level wrapper in page.tsx
   // already handles the entry animation for the symptoms→questions transition.
   // The inner animation should only fire on question-to-question transitions.
@@ -48,12 +60,6 @@ export default function IntakeQuestion({
       if (header) header.style.display = "";
     };
   }, []);
-
-  // Reset / restore selection whenever the question changes.
-  useEffect(() => {
-    setSelectedOption(savedOptionIndex !== undefined ? savedOptionIndex : null);
-    setLocked(false);
-  }, [question.id, savedOptionIndex]);
 
   function handleOptionSelect(optionIndex: number) {
     if (locked) return;
