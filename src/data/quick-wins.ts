@@ -14,7 +14,7 @@ export const quickWinsByDomain: Record<string, string[]> = {
   nutrition: [
     "Voeg een handvol noten toe aan je lunch",
     "Eet deze week 2x vette vis (zalm, makreel, sardines)",
-    "Begin elke maaltijd met 20-30g eiwit (kwark, eieren, vis of peulvruchten)",
+    "Begin elke maaltijd eiwitrijk. Denk aan zuivel, eieren, vis, peulvruchten of vegetarisch.",
   ],
   movement: [
     "Wandel elke dag minimaal 20 minuten",

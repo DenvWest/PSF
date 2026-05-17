@@ -559,7 +559,7 @@ export function getAdvice(
   if (proteinIntake <= 2) {
     pushRankedText(
       quickWins,
-      "Begin elke maaltijd met 20-30g eiwit. Kwark, eieren, vis of peulvruchten.",
+      "Begin elke maaltijd eiwitrijk. Denk aan zuivel, eieren, vis, peulvruchten of vegetarisch.",
       2,
     );
   }

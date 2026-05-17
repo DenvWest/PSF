@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
 import { CATEGORIES, type CategoryId } from "@/data/intake-questions";
@@ -138,11 +138,38 @@ export default function IntakeResults({
     DOMAIN_KEYS.reduce((sum, k) => sum + scores[k], 0) / DOMAIN_KEYS.length,
   );
 
+  useEffect(() => {
+    const header = document.querySelector<HTMLElement>(".intake-layout-header");
+    if (header) header.style.display = "none";
+    return () => {
+      if (header) header.style.display = "";
+    };
+  }, []);
+
   return (
-    <div
-      className="px-6 pb-10 pt-8"
-      style={{ maxWidth: 480, margin: "0 auto", boxSizing: "border-box", width: "100%" }}
-    >
+    <>
+      <Link
+        href="/"
+        style={{
+          position: "fixed",
+          top: 16,
+          right: 16,
+          zIndex: 50,
+          color: "rgba(255,255,255,0.4)",
+          fontSize: 13,
+          lineHeight: 1,
+          textDecoration: "none",
+          letterSpacing: "0.01em",
+          padding: "4px 8px",
+        }}
+        aria-label="Sluiten"
+      >
+        ✕ Sluiten
+      </Link>
+      <div
+        className="px-6 pb-10 pt-8"
+        style={{ maxWidth: 480, margin: "0 auto", boxSizing: "border-box", width: "100%" }}
+      >
       <div className="mb-9 text-center">
         <p
           className="mb-3 text-xs font-semibold uppercase tracking-[1.5px]"
@@ -267,7 +294,7 @@ export default function IntakeResults({
             <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ps-green text-xs font-bold text-white">
               {i + 1}
             </div>
-            <p className="m-0 text-sm leading-normal text-[#444]">{tip}</p>
+            <p className="m-0 text-sm leading-relaxed text-[#444]">{tip}</p>
           </div>
         ))}
       </div>
@@ -296,8 +323,8 @@ export default function IntakeResults({
             ) : null}
           </p>
           <p className="mt-2 text-sm text-amber-700">
-            <strong>Quick win:</strong> Begin elke maaltijd met 20-30 gram eiwit
-            — denk aan 3 eieren, een bak kwark, of een portie kip/vis.
+            <strong>Quick win:</strong> Begin elke maaltijd eiwitrijk. Denk aan
+            zuivel, eieren, vis, peulvruchten of vegetarisch.
           </p>
           {deficiencySignals.protein_gap_signal ? (
             <p className="mt-3 text-sm text-amber-800">
@@ -588,5 +615,6 @@ export default function IntakeResults({
         © 2026 PerfectSupplement
       </p>
     </div>
+    </>
   );
 }

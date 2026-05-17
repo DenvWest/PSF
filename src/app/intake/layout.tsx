@@ -16,25 +16,12 @@ export default function IntakeLayout({ children }: { children: ReactNode }) {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           padding: "20px 24px 12px",
-          maxWidth: 480,
           width: "100%",
-          margin: "0 auto",
           boxSizing: "border-box",
         }}
       >
-        <span
-          style={{
-            fontFamily: '"DM Serif Display", Georgia, serif',
-            fontSize: 15,
-            color: "rgba(255,255,255,0.85)",
-            letterSpacing: "0.01em",
-            fontWeight: 400,
-          }}
-        >
-          PerfectSupplement
-        </span>
         <Link
           href="/"
           style={{
