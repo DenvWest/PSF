@@ -1,12 +1,15 @@
 import Link from "next/link";
 import type { BlogArtikel } from "@/types/blog";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { CATEGORIE_CONFIG } from "@/data/blog/categorieen";
 import BlogCategorieBadge from "./BlogCategorieBadge";
 
 interface BlogArtikelKaartProps {
   artikel: BlogArtikel;
   /** Optionele beschrijving — overschrijft afleiding uit heroIntro */
   beschrijving?: string;
+  /** Verberg categorie-badge (bijv. op hub-uitgelicht) */
+  hideBadge?: boolean;
 }
 
 function korteBeschrijving(heroIntro: string): string {
@@ -17,13 +20,18 @@ function korteBeschrijving(heroIntro: string): string {
 export default function BlogArtikelKaart({
   artikel,
   beschrijving,
+  hideBadge = false,
 }: BlogArtikelKaartProps) {
+  const accent = CATEGORIE_CONFIG[artikel.categorie].kleur.cardAccent;
+
   return (
     <Link
       href={blogArtikelPad(artikel)}
-      className="group flex min-h-0 flex-col rounded-2xl border border-stone-200/60 bg-white p-7 transition duration-300 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
+      className={`group flex min-h-0 flex-col rounded-2xl border border-stone-200/60 border-l-2 bg-[var(--ps-surface)] p-7 shadow-sm shadow-stone-900/[0.04] transition duration-300 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md ${accent}`}
     >
-      <BlogCategorieBadge categorie={artikel.categorie} className="self-start" />
+      {!hideBadge ? (
+        <BlogCategorieBadge categorie={artikel.categorie} className="self-start" />
+      ) : null}
 
       <h3 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-stone-900 md:text-xl">
         {artikel.titel}
@@ -35,15 +43,9 @@ export default function BlogArtikelKaart({
         {beschrijving ?? korteBeschrijving(artikel.heroIntro)}
       </p>
 
-      <div className="mt-auto flex items-center gap-2 pt-6 text-xs font-semibold uppercase tracking-[0.15em] text-stone-800">
-        <span>Lees artikel</span>
-        <span
-          className="transition-transform duration-300 group-hover:translate-x-1"
-          aria-hidden
-        >
-          →
-        </span>
-      </div>
+      <p className="mt-auto pt-6 text-sm text-stone-500 transition group-hover:text-stone-700">
+        Lezen →
+      </p>
     </Link>
   );
 }

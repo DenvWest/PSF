@@ -1,10 +1,10 @@
 import type { BlogCategorie } from "@/types/blog";
 
 const BADGE_STYLES: Record<BlogCategorie, string> = {
-  stress: "bg-amber-50 text-amber-700 ring-amber-200/50",
-  slaap: "bg-sky-50 text-sky-700 ring-sky-200/50",
-  energie: "bg-emerald-50 text-emerald-700 ring-emerald-200/50",
-  supplementen: "bg-stone-100 text-stone-600 ring-stone-200/50",
+  stress: "bg-amber-50/80 text-amber-800/90 ring-amber-200/40",
+  slaap: "bg-sky-50/80 text-sky-800/90 ring-sky-200/40",
+  energie: "bg-emerald-50/80 text-emerald-800/90 ring-emerald-200/40",
+  supplementen: "bg-stone-100/90 text-stone-600 ring-stone-200/40",
 };
 
 const LABELS: Record<BlogCategorie, string> = {
@@ -25,7 +25,7 @@ export default function BlogCategorieBadge({
 }: BlogCategorieBadgeProps) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-wider ring-1 ring-inset ${BADGE_STYLES[categorie]} ${className}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.625rem] font-medium normal-case tracking-wide ring-1 ring-inset ${BADGE_STYLES[categorie]} ${className}`}
     >
       {LABELS[categorie]}
     </span>

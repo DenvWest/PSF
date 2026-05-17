@@ -15,6 +15,7 @@ import {
 } from "@/data/blog/categorieen";
 import type { BlogCategorie } from "@/types/blog";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 
 interface Props {
   params: Promise<{ categorie: string }>;
@@ -77,12 +78,60 @@ export default async function BlogCategoriePage({ params }: Props) {
     const artikelen = getArtikelenByCategorie(categorie);
     const aantalPerCategorie = telAantalPerCategorie();
 
+    const categoryUrl = `https://perfectsupplement.nl/blog/${categorie}`;
+
     return (
-      <BlogCategoriePageContent
-        config={config}
-        artikelen={artikelen}
-        aantalPerCategorie={aantalPerCategorie}
-      />
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "BreadcrumbList",
+                  itemListElement: [
+                    {
+                      "@type": "ListItem",
+                      position: 1,
+                      name: "Home",
+                      item: "https://perfectsupplement.nl",
+                    },
+                    {
+                      "@type": "ListItem",
+                      position: 2,
+                      name: BLOG_HUB_LABEL,
+                      item: "https://perfectsupplement.nl/blog",
+                    },
+                    {
+                      "@type": "ListItem",
+                      position: 3,
+                      name: config.naam,
+                      item: categoryUrl,
+                    },
+                  ],
+                },
+                {
+                  "@type": "CollectionPage",
+                  name: `${config.naam} — ${BLOG_HUB_LABEL}`,
+                  description: config.metaDescription,
+                  url: categoryUrl,
+                  isPartOf: {
+                    "@type": "WebSite",
+                    name: "PerfectSupplement",
+                    url: "https://perfectsupplement.nl",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
+        <BlogCategoriePageContent
+          config={config}
+          artikelen={artikelen}
+          aantalPerCategorie={aantalPerCategorie}
+        />
+      </>
     );
   }
 

@@ -4,9 +4,17 @@ import type { CategorieConfig } from "@/data/blog/categorieen";
 import { ALLE_CATEGORIEEN } from "@/data/blog/categorieen";
 import Container from "@/components/layout/Container";
 import BlogArtikelKaart from "./BlogArtikelKaart";
-
-const NOISE_SVG =
-  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+import BlogCategorieIcon from "./BlogCategorieIcon";
+import BlogSymptomNav from "./BlogSymptomNav";
+import BlogThemaLinks from "./BlogThemaLinks";
+import BlogIntakeCTA from "./BlogIntakeCTA";
+import {
+  BLOG_BG_CLASS,
+  BLOG_CONVERSION_SECTION_PY,
+  BLOG_HERO_PT,
+  BLOG_HUB_LABEL,
+  BLOG_NOISE_SVG,
+} from "@/components/blog/blog-layout";
 
 interface Props {
   config: CategorieConfig;
@@ -21,17 +29,15 @@ export default function BlogCategoriePageContent({
 }: Props) {
   return (
     <>
-      {/* ── HERO ───────────────────────────────────────────────────── */}
       <section
-        className={`relative overflow-hidden bg-gradient-to-br pb-12 pt-12 md:pt-20 ${config.kleur.bg}`}
+        className={`relative overflow-hidden bg-gradient-to-br pb-16 md:pb-20 ${BLOG_HERO_PT} ${config.kleur.bg}`}
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.04]"
           aria-hidden
-          style={{ backgroundImage: NOISE_SVG }}
+          style={{ backgroundImage: BLOG_NOISE_SVG }}
         />
         <Container>
-          {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="relative mb-10 md:mb-14">
             <ol className="flex items-center gap-2 text-[0.8125rem] text-white/50">
               <li>
@@ -44,7 +50,7 @@ export default function BlogCategoriePageContent({
               </li>
               <li>
                 <Link href="/blog" className="transition hover:text-white/80">
-                  Blog
+                  {BLOG_HUB_LABEL}
                 </Link>
               </li>
               <li aria-hidden className="select-none">
@@ -55,24 +61,39 @@ export default function BlogCategoriePageContent({
           </nav>
 
           <div className="relative max-w-2xl">
-            <span className="text-2xl" aria-hidden>
-              {config.icoon}
+            <span
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-xl text-white/90 ring-1 ${config.kleur.accent}`}
+              aria-hidden
+            >
+              <BlogCategorieIcon categorie={config.id} className="h-5 w-5" />
             </span>
-            <h1 className="mt-4 text-[2.5rem] font-semibold leading-[1.1] tracking-tight text-white md:text-[3rem]">
+            <h1 className="mt-4 scroll-mt-24 font-display text-[2.5rem] font-semibold leading-[1.1] tracking-[-0.02em] text-white md:text-[3rem]">
               {config.naam}
             </h1>
             <p className={`mt-4 text-[1.0625rem] leading-[1.75] ${config.kleur.tekst}`}>
               {config.beschrijving}
             </p>
+            <p className="mt-6">
+              <Link
+                href={config.themaHref}
+                className="text-sm text-white/70 underline decoration-white/30 underline-offset-4 transition hover:text-white"
+              >
+                Naar de themagids →
+              </Link>
+            </p>
           </div>
         </Container>
       </section>
 
-      {/* ── CATEGORIE TABS ─────────────────────────────────────────── */}
+      <BlogSymptomNav
+        links={config.intentArticleLinks}
+        topics={config.intentTopics}
+      />
+
       <div className="border-b border-stone-200 bg-white">
         <Container>
           <div
-            className="flex flex-wrap gap-1 py-4"
+            className="-mb-px flex flex-wrap gap-6"
             role="tablist"
             aria-label="Categorieën"
           >
@@ -85,17 +106,15 @@ export default function BlogCategoriePageContent({
                   href={`/blog/${cat.id}`}
                   role="tab"
                   aria-selected={isActive}
-                  className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                  className={`flex items-center gap-2 border-b-2 py-4 text-sm font-medium transition ${
                     isActive
-                      ? "bg-stone-900 text-white"
-                      : "text-stone-500 hover:bg-stone-100 hover:text-stone-800"
+                      ? "border-stone-900 text-stone-900"
+                      : "border-transparent text-stone-500 hover:border-stone-300 hover:text-stone-800"
                   }`}
                 >
-                  <span aria-hidden>{cat.icoon}</span>
+                  <BlogCategorieIcon categorie={cat.id} className="h-4 w-4" />
                   <span>{cat.naam}</span>
-                  <span
-                    className={`text-xs ${isActive ? "text-white/60" : "text-stone-400"}`}
-                  >
+                  <span className={`text-xs ${isActive ? "text-stone-400" : "text-stone-400"}`}>
                     {aantal}
                   </span>
                 </Link>
@@ -105,8 +124,10 @@ export default function BlogCategoriePageContent({
         </Container>
       </div>
 
-      {/* ── ARTIKELEN ──────────────────────────────────────────────── */}
-      <section className="py-14 md:py-20" aria-label={`${config.naam} artikelen`}>
+      <section
+        className={`${BLOG_BG_CLASS} py-14 md:py-20`}
+        aria-label={`${config.naam} artikelen`}
+      >
         <Container>
           {artikelen.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -122,58 +143,15 @@ export default function BlogCategoriePageContent({
         </Container>
       </section>
 
-      {/* ── INTAKE CTA ─────────────────────────────────────────────── */}
-      <Container>
-        <section className="mt-4 mb-16 rounded-2xl bg-amber-50 px-6 py-12 text-center">
-          <h2 className="font-serif text-2xl text-stone-900">
-            Welke supplementen passen bij jou?
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-base text-stone-600">
-            Doe de gratis Leefstijlcheck en ontdek in 3 minuten welke supplementen bij jouw situatie passen.
-          </p>
-          <Link
-            href="/intake"
-            className="mt-6 inline-block rounded-lg bg-[#3C7A56] px-6 py-3 text-sm font-medium text-white hover:bg-[#2E5F43] transition-colors"
-          >
-            Doe de Leefstijlcheck →
-          </Link>
-        </section>
-      </Container>
-
-      <div className="ps-divider" />
-
-      {/* ── ROUTE-ADVIES ───────────────────────────────────────────── */}
-      <section className="py-16 md:py-24" aria-label="Themagidsen">
+      <section className={`${BLOG_BG_CLASS} ${BLOG_CONVERSION_SECTION_PY}`}>
         <Container>
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xl font-semibold tracking-tight text-stone-900 md:text-2xl">
-              Liever beginnen bij je klacht?
-            </p>
-            <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-stone-500">
-              Onze themagidsen helpen je begrijpen wat er speelt en wijzen je
-              naar concrete stappen.
-            </p>
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              {[
-                { label: "Stress", href: "/thema/stress" },
-                { label: "Slaapproblemen", href: "/thema/slaap" },
-                { label: "Energieverlies", href: "/thema/energie" },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="group flex w-full items-center justify-between gap-2 rounded-xl border border-stone-200/80 bg-white px-5 py-3 text-sm font-medium text-stone-800 transition hover:border-stone-300 hover:shadow-sm sm:w-auto sm:justify-center"
-                >
-                  <span>{link.label}</span>
-                  <span
-                    className="text-stone-400 transition-transform group-hover:translate-x-0.5"
-                    aria-hidden
-                  >
-                    →
-                  </span>
-                </Link>
-              ))}
-            </div>
+          <BlogIntakeCTA className="mx-auto max-w-2xl" />
+
+          <div className="mx-auto mt-24 max-w-2xl md:mt-28">
+            <BlogThemaLinks
+              heading="Andere klachten verkennen?"
+              subtext="Onze themagidsen helpen je vanuit je symptoom verder."
+            />
           </div>
         </Container>
       </section>
