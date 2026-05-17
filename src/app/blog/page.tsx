@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import Container from "@/components/layout/Container";
 import { alleArtikelen } from "@/data/blog";
@@ -9,14 +8,11 @@ import BlogUitgelicht from "@/components/blog/BlogUitgelicht";
 import BlogThemaLinks from "@/components/blog/BlogThemaLinks";
 import BlogIntakeCTA from "@/components/blog/BlogIntakeCTA";
 import BlogVergelijkingLinks from "@/components/blog/BlogVergelijkingLinks";
-import BlogCategorieIcon from "@/components/blog/BlogCategorieIcon";
+import BlogCategorieKaart from "@/components/blog/BlogCategorieKaart";
 import {
   BLOG_BG_CLASS,
-  BLOG_CATEGORY_ARROW,
-  BLOG_CATEGORY_CARD,
   BLOG_CONVERSION_SECTION_PY,
   BLOG_HUB_LABEL,
-  BLOG_NOISE_SVG,
 } from "@/components/blog/blog-layout";
 
 export const metadata: Metadata = {
@@ -81,55 +77,20 @@ export default function BlogPage() {
 
       <BlogHubHero />
 
-      <section className={`${BLOG_BG_CLASS} pb-16 md:pb-20`} aria-label="Categorieën">
+      <section
+        className={`${BLOG_BG_CLASS} pt-2 pb-14 md:pt-3 md:pb-16`}
+        aria-label="Categorieën"
+      >
         <Container>
-          <div className="rounded-3xl bg-[var(--ps-surface)] p-8 shadow-sm shadow-stone-900/[0.03] md:p-12">
-            <div className="grid gap-4 sm:grid-cols-2">
-              {ALLE_CATEGORIEEN.map((cat) => {
-                const aantal = telArtikelen(cat.id);
-                return (
-                  <Link
-                    key={cat.id}
-                    href={`/blog/${cat.id}`}
-                    className={`${BLOG_CATEGORY_CARD} ${cat.kleur.bg}`}
-                  >
-                    <div
-                      className="pointer-events-none absolute inset-0 opacity-[0.035]"
-                      aria-hidden
-                      style={{ backgroundImage: BLOG_NOISE_SVG }}
-                    />
-
-                    <div className="relative flex flex-1 flex-col">
-                      <span
-                        className={`flex h-11 w-11 items-center justify-center rounded-xl text-white/90 ring-1 ${cat.kleur.accent}`}
-                        aria-hidden
-                      >
-                        <BlogCategorieIcon categorie={cat.id} className="h-5 w-5" />
-                      </span>
-
-                      <div className="mt-auto">
-                        <h2 className="font-display text-xl font-semibold tracking-tight text-white md:text-2xl">
-                          {cat.naam}
-                        </h2>
-                        <p
-                          className={`mt-2 text-sm leading-relaxed ${cat.kleur.tekst}`}
-                        >
-                          {cat.beschrijving}
-                        </p>
-
-                        <div className="mt-6 flex items-center justify-between">
-                          <span className="text-xs font-medium text-white/50">
-                            {aantal} {aantal === 1 ? "artikel" : "artikelen"}
-                          </span>
-                          <span className={BLOG_CATEGORY_ARROW} aria-hidden>
-                            →
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
+          <div className="rounded-3xl bg-white p-5 shadow-sm shadow-stone-900/[0.04] md:p-8 lg:p-10">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+              {ALLE_CATEGORIEEN.map((cat) => (
+                <BlogCategorieKaart
+                  key={cat.id}
+                  config={cat}
+                  artikelCount={telArtikelen(cat.id)}
+                />
+              ))}
             </div>
           </div>
         </Container>
@@ -151,7 +112,7 @@ export default function BlogPage() {
       </section>
 
       <section
-        className="border-t border-stone-200/60 bg-[var(--ps-surface)] py-12 md:py-16"
+        className="border-t border-stone-200/60 bg-white py-12 md:py-16"
         aria-label="Vergelijkingspagina's"
       >
         <Container>

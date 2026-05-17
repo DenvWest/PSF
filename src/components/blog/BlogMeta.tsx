@@ -31,9 +31,9 @@ export default function BlogMeta({
 }: BlogMetaProps) {
   if (variant === "featured") {
     return (
-      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium uppercase tracking-[0.2em] text-stone-500">
+      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium uppercase tracking-[0.18em] text-stone-500">
         <span>{leestijd} leestijd</span>
-        <span aria-hidden className="text-stone-400/80 select-none">
+        <span aria-hidden className="text-stone-400/90 select-none">
           ·
         </span>
         <time dateTime={gepubliceerdOp}>{formatDatum(gepubliceerdOp)}</time>

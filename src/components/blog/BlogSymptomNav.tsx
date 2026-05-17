@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { IntentArticleLink } from "@/data/blog/categorieen";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { getArtikelBySlug } from "@/data/blog";
-import { BLOG_EDITORIAL_LINK } from "@/components/blog/blog-layout";
 
 interface BlogSymptomNavProps {
   links: IntentArticleLink[];
@@ -21,21 +20,32 @@ export default function BlogSymptomNav({ links, topics }: BlogSymptomNavProps) {
   if (resolved.length === 0) return null;
 
   return (
-    <nav aria-label="Onderwerpen in deze categorie" className="border-b border-stone-200/70 bg-white">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <p className="pt-6 text-[0.6875rem] font-medium tracking-wide text-stone-400">
-          Veelgezocht: {topics.slice(0, 4).join(" · ")}
+    <div className="px-6 py-7 md:px-8 md:py-8">
+      <p className="ps-eyebrow">Veelgezocht</p>
+      {topics.length > 0 ? (
+        <p className="mt-2 max-w-prose text-sm leading-relaxed text-stone-500">
+          {topics.slice(0, 4).join(" · ")}
         </p>
-        <ul className="flex flex-wrap gap-x-6 gap-y-2 py-4">
-          {resolved.map((item) => (
-            <li key={item.href}>
-              <Link href={item.href} className={BLOG_EDITORIAL_LINK}>
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </nav>
+      ) : null}
+
+      <ul className="mt-6 divide-y divide-stone-200/80 border-y border-stone-200/80">
+        {resolved.map((item) => (
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              className="group flex min-h-11 items-center justify-between gap-4 py-3.5 text-base text-stone-700 transition hover:text-stone-900"
+            >
+              <span className="font-medium leading-snug">{item.label}</span>
+              <span
+                className="shrink-0 text-stone-400 transition-transform duration-200 ease-out [@media(hover:hover)]:group-hover:translate-x-0.5"
+                aria-hidden
+              >
+                →
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
