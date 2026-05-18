@@ -20,6 +20,12 @@ Je werkt aan PerfectSupplement (perfectsupplement.nl) — een data-gedreven gezo
 - database-schema.md — Supabase tabellen en RLS
 - seo-content-strategie.md — structured data, content kanon
 
+docs/PROJECT_STATE.md is auto-gegenereerd door scripts/generate-state.mjs en
+wordt elke deploy overschreven. Staat bewust in docs/ (niet docs/core/) om
+gegenereerde van handgeschreven docs te scheiden. NOOIT handmatig bewerken —
+wijzigingen verdwijnen bij de volgende generate. Conventies of uitleg horen
+in een handgeschreven doc (zoals dit bestand), nooit in PROJECT_STATE.md zelf.
+
 ## Kwaliteitsregels
 - TypeScript strict, geen `any`
 - Geen console.log statements
