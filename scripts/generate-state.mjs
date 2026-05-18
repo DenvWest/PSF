@@ -71,6 +71,9 @@ function countKennisbankTerms() {
     throw new Error("export const kennisbankTerms not found in src/data/kennisbank.ts");
   }
   const slice = content.slice(start);
+  // Telt alleen 'slug:' met quoted waarde (datavelden). Geverifieerd 2026-05-18:
+  // type-def en functieparameter worden bewust niet meegeteld. NIET vervangen
+  // door TS-import zonder reden — deze telling is correct.
   const matches = slice.match(/^\s+slug:/gm);
   return matches ? matches.length : 0;
 }

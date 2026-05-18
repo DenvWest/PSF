@@ -1,6 +1,6 @@
 # PROJECT STATE — AUTO-GEGENEREERD
 > NIET HANDMATIG BEWERKEN. Gegenereerd door scripts/generate-state.mjs.
-> Laatst gegenereerd: 2026-05-18T04:10:14.734Z
+> Laatst gegenereerd: 2026-05-18T04:14:43.839Z
 
 ## Vergelijkingen (`src/data/supplements/`)
 
