@@ -16,6 +16,7 @@ const STATISCHE_PADEN = [
   "/",
   "/intake",
   "/supplementen",
+  "/gidsen",
   "/over-ons",
   "/contact",
   "/methodologie",
