@@ -5,9 +5,9 @@ import Container from "@/components/layout/Container";
 const exploreLinks = [
     { href: "/intake", label: "Leefstijlcheck" },
     { href: "/supplementen", label: "Supplementen" },
+    { href: "/gidsen", label: "Gidsen na 40" },
     { href: "/kennisbank", label: "Kennisbank" },
     { href: "/blog", label: "Blog" },
-
 ];
 
 const vergelijkingLinks = [
