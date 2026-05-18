@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "generate-state": "node scripts/generate-state.mjs"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.0",
