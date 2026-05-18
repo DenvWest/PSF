@@ -1,32 +1,28 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
-import { join, relative, basename } from "node:path";
+import { join } from "node:path";
 
 const ROOT = process.cwd();
 
-const PILLAR_EXCLUDED = new Set([
-  "intake",
-  "blog",
-  "profiel",
-  "kennisbank",
-  "thema",
-  "admin",
-  "api",
-  "beste",
-  "supplementen",
-  "over-ons",
-  "methodologie",
-  "faqs",
-  "disclaimer",
-  "privacy",
-  "cookies",
-]);
+const PILLAR_ROUTES = [
+  "/energie-na-40",
+  "/herstel-verbeteren-na-40",
+  "/slaap-verbeteren-na-40",
+  "/stress-verminderen-man",
+  "/testosteron-na-40",
+];
 
 const THEMA_HUBS = ["slaap", "stress", "energie", "herstel"];
 
-function listTsSlugs(dir, { ignoreIndex = false } = {}) {
+const STRUCTURE_BASENAMES = new Set(["index"]);
+
+function listTsSlugs(dir, { excludeBasenames = new Set() } = {}) {
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
-    .filter((name) => name.endsWith(".ts") && (!ignoreIndex || name !== "index.ts"))
+    .filter((name) => {
+      if (!name.endsWith(".ts")) return false;
+      const slug = name.replace(/\.ts$/, "");
+      return !STRUCTURE_BASENAMES.has(slug) && !excludeBasenames.has(slug);
+    })
     .map((name) => name.replace(/\.ts$/, ""))
     .sort();
 }
@@ -35,45 +31,35 @@ function scanSupplements() {
   return listTsSlugs(join(ROOT, "src/data/supplements"));
 }
 
-function isDynamicDirName(name) {
-  return name.includes("[") || name.includes("]");
-}
-
 function scanPillars() {
   const appDir = join(ROOT, "src/app");
-  const routes = [];
+  const missing = [];
 
-  function walk(currentDir) {
-    const dirName = basename(currentDir);
-    const pagePath = join(currentDir, "page.tsx");
-
-    if (existsSync(pagePath)) {
-      const isAppRoot = currentDir === appDir;
-      const excluded = !isAppRoot && (PILLAR_EXCLUDED.has(dirName) || isDynamicDirName(dirName));
-
-      if (isAppRoot || !excluded) {
-        const rel = relative(appDir, currentDir).replace(/\\/g, "/");
-        routes.push(rel === "" ? "/" : `/${rel}`);
-      }
-    }
-
-    for (const entry of readdirSync(currentDir, { withFileTypes: true })) {
-      if (entry.isDirectory()) {
-        walk(join(currentDir, entry.name));
-      }
+  for (const route of PILLAR_ROUTES) {
+    const segment = route.slice(1);
+    const pagePath = join(appDir, segment, "page.tsx");
+    if (!existsSync(pagePath)) {
+      missing.push(route);
     }
   }
 
-  walk(appDir);
-  return [...new Set(routes)].sort();
+  if (missing.length > 0) {
+    console.warn(
+      `Pillar page.tsx ontbreekt voor: ${missing.join(", ")} (verwacht in src/app/<route>/page.tsx)`,
+    );
+  }
+
+  return { routes: [...PILLAR_ROUTES], missing };
 }
 
 function scanProfiles() {
-  return listTsSlugs(join(ROOT, "src/data/profiles"), { ignoreIndex: true });
+  return listTsSlugs(join(ROOT, "src/data/profiles"));
 }
 
 function scanBlog() {
-  return listTsSlugs(join(ROOT, "src/data/blog"));
+  return listTsSlugs(join(ROOT, "src/data/blog"), {
+    excludeBasenames: new Set(["categorieen", "cornerstone-supplementen"]),
+  });
 }
 
 function countKennisbankTerms() {
@@ -97,6 +83,7 @@ function markdownList(items) {
 function buildMarkdown({
   supplements,
   pillars,
+  pillarMissing,
   profiles,
   blog,
   kennisbankCount,
@@ -118,6 +105,12 @@ function buildMarkdown({
     "",
     `**Aantal:** ${pillars.length}`,
     "",
+    ...(pillarMissing.length > 0
+      ? [
+          `> Waarschuwing: geen \`page.tsx\` gevonden voor: ${pillarMissing.map((r) => `\`${r}\``).join(", ")}`,
+          "",
+        ]
+      : []),
     markdownList(pillars).trimEnd(),
     "",
     "## Profielen (`src/data/profiles/`)",
@@ -149,13 +142,14 @@ function buildMarkdown({
 
 function main() {
   const supplements = scanSupplements();
-  const pillars = scanPillars();
+  const { routes: pillars, missing: pillarMissing } = scanPillars();
   const profiles = scanProfiles();
   const blog = scanBlog();
   const kennisbankCount = countKennisbankTerms();
   const markdown = buildMarkdown({
     supplements,
     pillars,
+    pillarMissing,
     profiles,
     blog,
     kennisbankCount,
