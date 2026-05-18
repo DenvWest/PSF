@@ -13,6 +13,8 @@
 | Lage Batterij | `lage-batterij` | `energy_score < 40` | ✅ Live |
 | Overtrainer | `overtrainer` | `movement_frequency ≥ 3 EN recovery_score ≤ 35` | ✅ Live |
 
+> Welke profielen daadwerkelijk in code bestaan: zie docs/PROJECT_STATE.md.
+
 **Prioriteit bij meerdere matches:** laagste genormaliseerde score wint. Bij gelijk: slaap > stress > energie > voeding > beweging > herstel.
 
 ---

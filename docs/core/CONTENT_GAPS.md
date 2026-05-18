@@ -1,5 +1,7 @@
 # CONTENT GAPS — PerfectSupplement
 
+> Voor de actuele lijst van bestaande pagina's: zie docs/PROJECT_STATE.md.
+
 > **Layer 3 — Work.** Wat ontbreekt in het spinnenweb. Update na elke sprint.
 
 ---
