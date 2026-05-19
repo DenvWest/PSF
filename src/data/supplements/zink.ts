@@ -27,7 +27,7 @@ export const zinkData: ComparisonPageData = {
   moreAboutDescription: "Zink draagt o.a. bij tot een normaal immuunsysteem, eiwitsynthese en — officieel geformuleerd — tot instandhouding van een normaal testosterongehalte in het bloed.",
   moreAboutLinks: [
     { href: "/supplement-kiezen-waar-op-letten", label: "Supplement kiezen: waar let je op? — praktische checklist →" },
-    { href: "/thema/energie", label: "Energieverlies na je 40e — oorzaken en wat je eraan kunt doen →" },
+    { href: "/gids/energie", label: "Energieverlies na je 40e — oorzaken en wat je eraan kunt doen →" },
   ],
   readAlsoCards: [
     {

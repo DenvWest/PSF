@@ -9,6 +9,7 @@ export type RateLimitRoute =
   | "intake_feedback"
   | "intake_reminder"
   | "thema_download"
+  | "gids_opt_in"
   | "admin_auth"
   | "unsubscribe"
   | "thema_unsubscribe";
@@ -19,6 +20,7 @@ const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   intake_feedback: { limit: 10, windowMs: 15 * 60 * 1000 },
   intake_reminder: { limit: 10, windowMs: 15 * 60 * 1000 },
   thema_download: { limit: 5, windowMs: 15 * 60 * 1000 },
+  gids_opt_in: { limit: 5, windowMs: 15 * 60 * 1000 },
   admin_auth: { limit: 5, windowMs: 15 * 60 * 1000 },
   unsubscribe: { limit: 10, windowMs: 15 * 60 * 1000 },
   thema_unsubscribe: { limit: 10, windowMs: 15 * 60 * 1000 },
@@ -30,6 +32,7 @@ const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   intake_feedback: { limit: 1000, windowMs: 60 * 1000 },
   intake_reminder: { limit: 1000, windowMs: 60 * 1000 },
   thema_download: { limit: 1000, windowMs: 60 * 1000 },
+  gids_opt_in: { limit: 1000, windowMs: 60 * 1000 },
   admin_auth: { limit: 1000, windowMs: 60 * 1000 },
   unsubscribe: { limit: 1000, windowMs: 60 * 1000 },
   thema_unsubscribe: { limit: 1000, windowMs: 60 * 1000 },

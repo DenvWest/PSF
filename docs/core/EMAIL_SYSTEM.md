@@ -4,45 +4,73 @@
 
 ---
 
-## Nurture sequence (6 emails, dag 0-30)
+## Twee nurture-stromen in `nurture_emails`
 
-| Dag | Template key | Inhoud | Personalisatie |
+| Stroom | `source` | Trigger | Templates |
 |---|---|---|---|
-| 0 | `day0_welcome` | Welkom + profiel intro | Profielnaam, profiel-tip, conditionele PDF-link |
-| 3 | `day3_quickwins` | Quick wins | Afgestemd op zwakste domein |
-| 7 | `day7_verdieping` | Verdieping | Link naar profiel-relevante pillar page |
-| 14 | `day14_supplement` | Supplement intro | Profiel-relevante vergelijkingspagina |
-| 21 | `day21_motivatie` | Motivatie | Herkenningsmoment herhalen |
-| 30 | `day30_herhaalmeting` | Herhaalmeting CTA | "Meet je voortgang" → /intake |
+| Intake | `intake` | Marketing consent bij `/intake` | `src/lib/email-templates/nurture/` |
+| Gids-opt-in | `guide_slaap`, `guide_stress`, … | `/gids/[thema]` + checkbox | `src/lib/email-templates/guide-nurture/` |
 
-## Dag-0 flow
+Beide gebruiken dezelfde sequentiedagen: **0, 3, 7, 14, 21, 30**. Cron: `src/lib/nurture-cron.ts` (route `/api/cron/nurture`).
+
+---
+
+## Intake nurture (6 emails, dag 0-30)
+
+| Dag | Inhoud | Personalisatie |
+|---|---|---|
+| 0 | Welkom + profiel intro | Profielnaam, profiel-tip, conditionele PDF-link |
+| 3 | Quick wins | Afgestemd op zwakste domein |
+| 7 | Verdieping | Link naar profiel-relevante pillar page |
+| 14 | Supplement intro | Profiel-relevante vergelijkingspagina |
+| 21 | Motivatie | Herkenningsmoment herhalen |
+| 30 | Herhaalmeting CTA | "Meet je voortgang" → /intake |
+
+### Dag-0 flow
 
 1. Intake completion → `src/app/api/intake/session/route.ts`
-2. `scheduleNurtureSequence` wordt aangeroepen
-3. Dag-0 welcome email stuurt **direct** bij intake completion
-4. Conditionele slaapgids-link bij `profile_label === "Onrustige Slaper"` of `sleep_score < 50`
+2. `scheduleNurtureSequence` in `src/lib/nurture.ts`
+3. Dag-0 direct via Resend; dagen 3–30 `pending` in `nurture_emails`
+
+---
+
+## Gids-opt-in nurture
+
+| Route | API | Consent |
+|---|---|---|
+| `/gids/slaap` … `/gids/testosteron` | `POST /api/gids/opt-in` | `guide_opt_ins` (marketing-only) |
+
+1. Gebruiker vinkt expliciet marketing-checkbox aan (niet voorgevinkt)
+2. Consent → `guide_opt_ins`
+3. `scheduleGuideNurtureSequence` → dag-0 PDF-mail + pending rijen met `source = guide_{thema}`
+4. Unsubscribe: token-prefix `guide:` → annuleert alleen pending rijen voor dat e-mail + thema
+
+### PDF-gidsen (gids-flow)
+
+| Thema | PDF | Pillar |
+|---|---|---|
+| slaap | `public/downloads/slaapgids-perfectsupplement.pdf` | `/slaap-verbeteren-na-40` |
+| stress | `public/downloads/stressgids-perfectsupplement.pdf` | `/stress-verminderen-man` |
+| energie | `public/downloads/energiegids-perfectsupplement.pdf` | `/energie-na-40` |
+| herstel | `public/downloads/herstelgids-perfectsupplement.pdf` | `/herstel-verbeteren-na-40` |
+| testosteron | — (dag-0 linkt naar pillar) | `/testosteron-na-40` |
+
+Legacy `/thema/*` redirect naar `/gids/*`. Oude `thema_nurture`-tabel is uitgefaseerd.
+
+---
 
 ## Technische implementatie
 
 | Onderdeel | Details |
 |---|---|
-| E-mail provider | Resend (gratis tier 3000/mnd) |
-| Database tabel | `nurture_emails` (apart van `intake_reminders`) |
-| Scheduling | `scheduleNurtureSequence` in session route |
-| Trigger | cron-job.org (externe trigger) |
-| Templates | `src/lib/emails/` |
-
-## PDF-gidsen
-
-| Profiel | Gids | Locatie | Trigger |
-|---|---|---|---|
-| Onrustige Slaper | Slaapgids | `public/downloads/slaapgids-perfectsupplement.pdf` | `profile_label === "Onrustige Slaper"` of `sleep_score < 50` |
-| Stressdrager | Stressgids | ⏳ Gepland | `profile_label === "Stressdrager"` of `stress_score < 50` |
-| Lage Batterij | Energiegids | ⏳ Gepland | `profile_label === "Lage Batterij"` of `energy_score < 50` |
+| E-mail provider | Resend |
+| Database | `nurture_emails`, `guide_opt_ins` |
+| Cron | `/api/cron/nurture` → `runPendingNurtureEmails()` |
+| Unsubscribe | `/api/unsubscribe` (intake-, guide- en legacy thema-tokens) |
 
 ## 30-dagen reminder
 
-Aparte tabel `intake_reminders`. Trigger via cron-job.org. Stuurt herinnering om intake opnieuw te doen.
+Aparte tabel `intake_reminders`. Trigger via cron-job.org.
 
 ---
 

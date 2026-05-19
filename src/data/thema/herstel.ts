@@ -248,19 +248,19 @@ export const herstelThema: ThemaPageData = {
       {
         context:
           "Herstel begint bij slaap. Zonder diepe slaap herstellen je spieren niet — groeihormoon komt vrij tijdens N3-slaap.",
-        href: "/thema/slaap",
+        href: "/gids/slaap",
         label: "Thema: slaap (nachtrust en herstel)",
       },
       {
         context:
           "Chronische stress houdt cortisol hoog. Cortisol remt spieropbouw en vertraagt weefselreparatie.",
-        href: "/thema/stress",
+        href: "/gids/stress",
         label: "Thema: stress (cortisol en herstel)",
       },
       {
         context:
           "Slecht herstel vreet aan je energie. Het zijn twee kanten van dezelfde munt — als je niet herstelt, heb je geen brandstof.",
-        href: "/thema/energie",
+        href: "/gids/energie",
         label: "Thema: energie (herstel en belasting)",
       },
       {
@@ -289,6 +289,6 @@ export const herstelThema: ThemaPageData = {
       "Herstel verbeteren als man 40+ — Slaap, eiwit, cortisol, magnesium, omega-3 | PerfectSupplement",
     description:
       "Waarom herstel na 40 anders is: MPS, cortisol, diepe slaap, inflammaging. Quick wins, supplementen (magnesium, omega-3, creatine, zink) en gerelateerde thema’s — plus gratis herstelgids.",
-    canonical: "/thema/herstel",
+    canonical: "/gids/herstel",
   },
 };

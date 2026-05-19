@@ -1,8 +1,14 @@
 import { Resend } from "resend";
+import { getGuideNurtureEmailContent } from "@/lib/email-templates/guide-nurture";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
-import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
+import {
+  buildGuideUnsubscribeUrl,
+  buildNurtureUnsubscribeUrl,
+} from "@/lib/nurture-unsubscribe";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
+import type { GuideThema } from "@/types/guide-opt-in";
+import { isGuideThema } from "@/data/gids";
 
 let resendClient: Resend | null = null;
 function getResend(): Resend {
@@ -22,6 +28,8 @@ type NurtureEmailRow = {
   session_id: string | null;
   urgency_level: string | null;
   first_name: string | null;
+  source: string | null;
+  thema: string | null;
 };
 
 function parseDomainScores(raw: unknown): Record<string, number> {
@@ -35,6 +43,10 @@ function parseDomainScores(raw: unknown): Record<string, number> {
     }
   }
   return out;
+}
+
+function isGuideSource(source: string | null): boolean {
+  return typeof source === "string" && source.startsWith("guide_");
 }
 
 export async function runPendingNurtureEmails(): Promise<{
@@ -68,6 +80,7 @@ export async function runPendingNurtureEmails(): Promise<{
 
   let sent = 0;
   let errors = 0;
+  const siteUrl = getPublicSiteUrl();
 
   for (const mail of list) {
     const email = typeof mail.email === "string" ? mail.email.trim() : "";
@@ -83,45 +96,74 @@ export async function runPendingNurtureEmails(): Promise<{
       continue;
     }
 
-    const profileLabel =
-      typeof mail.profile_label === "string" && mail.profile_label.trim()
-        ? mail.profile_label.trim()
-        : "jouw profiel";
-    const firstName =
-      typeof mail.first_name === "string" && mail.first_name.trim()
-        ? mail.first_name.trim()
-        : null;
-    const primaryDomain =
-      typeof mail.primary_domain === "string" && mail.primary_domain.trim()
-        ? mail.primary_domain.trim()
-        : "sleep";
+    const source =
+      typeof mail.source === "string" && mail.source.trim()
+        ? mail.source.trim()
+        : "intake";
 
     try {
-      const urgencyLevel =
-        typeof mail.urgency_level === "string" && mail.urgency_level.trim()
-          ? mail.urgency_level.trim()
-          : "moderate";
+      let subject: string;
+      let html: string;
+      let listUnsubscribeUrl: string;
 
-      const { subject, html } = getNurtureEmailContent(
-        {
-          sequenceDay: mail.sequence_day,
-          profileLabel,
-          primaryDomain,
-          domainScores: parseDomainScores(mail.domain_scores),
-          urgencyLevel,
-          firstName,
-        },
-        {
-          recipientEmail: email,
-          sessionId: mail.session_id,
-        },
-      );
+      if (isGuideSource(source)) {
+        const themaRaw =
+          typeof mail.thema === "string" ? mail.thema.trim().toLowerCase() : "";
+        if (!isGuideThema(themaRaw)) {
+          throw new Error("Onbekend gids-thema");
+        }
+        const thema = themaRaw as GuideThema;
+        listUnsubscribeUrl = buildGuideUnsubscribeUrl(email, thema, siteUrl);
+        const content = getGuideNurtureEmailContent(
+          thema,
+          mail.sequence_day,
+          listUnsubscribeUrl,
+        );
+        if (!content) {
+          throw new Error("Gids-template niet gevonden");
+        }
+        subject = content.subject;
+        html = content.html;
+      } else {
+        const profileLabel =
+          typeof mail.profile_label === "string" && mail.profile_label.trim()
+            ? mail.profile_label.trim()
+            : "jouw profiel";
+        const firstName =
+          typeof mail.first_name === "string" && mail.first_name.trim()
+            ? mail.first_name.trim()
+            : null;
+        const primaryDomain =
+          typeof mail.primary_domain === "string" && mail.primary_domain.trim()
+            ? mail.primary_domain.trim()
+            : "sleep";
+        const urgencyLevel =
+          typeof mail.urgency_level === "string" && mail.urgency_level.trim()
+            ? mail.urgency_level.trim()
+            : "moderate";
 
-      const listUnsubscribeUrl = buildNurtureUnsubscribeUrl(
-        email,
-        mail.session_id,
-        getPublicSiteUrl(),
-      );
+        const intakeContent = getNurtureEmailContent(
+          {
+            sequenceDay: mail.sequence_day,
+            profileLabel,
+            primaryDomain,
+            domainScores: parseDomainScores(mail.domain_scores),
+            urgencyLevel,
+            firstName,
+          },
+          {
+            recipientEmail: email,
+            sessionId: mail.session_id,
+          },
+        );
+        subject = intakeContent.subject;
+        html = intakeContent.html;
+        listUnsubscribeUrl = buildNurtureUnsubscribeUrl(
+          email,
+          mail.session_id,
+          siteUrl,
+        );
+      }
 
       const { data: sendData, error: sendError } = await getResend().emails.send({
         from: "PerfectSupplement <herinnering@mail.perfectsupplement.nl>",

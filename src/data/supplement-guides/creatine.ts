@@ -106,19 +106,19 @@ export const creatineGidsData: SupplementData = {
         symptoom: "Herstel",
         tekst:
           "Creatine versnelt spierherstel na training en vermindert spierschade — relevant als je merkt dat je langer nodig hebt om bij te komen.",
-        href: "/thema/herstel",
+        href: "/gids/herstel",
       },
       {
         symptoom: "Energie",
         tekst:
           "Door de fosfaatbuffer in spieren aan te vullen ondersteunt creatine fysieke en cognitieve energie, met name bij inspanning.",
-        href: "/thema/energie",
+        href: "/gids/energie",
       },
       {
         symptoom: "Stress",
         tekst:
           "Cognitieve voordelen van creatine zijn het sterkst bij slaaptekort en mentale belasting — veelvoorkomend bij mannen met hoge werkdruk.",
-        href: "/thema/stress",
+        href: "/gids/stress",
       },
     ],
   },

@@ -45,9 +45,42 @@ async function loadNurtureSection(
     cancelled: countResults[3]?.count ?? 0,
   };
 
+  const countBySource = async (
+    status: string,
+    sourceFilter: "intake" | "guide",
+  ): Promise<number> => {
+    let q = admin
+      .from("nurture_emails")
+      .select("id", { count: "exact", head: true })
+      .eq("status", status);
+    if (sourceFilter === "intake") {
+      q = q.or("source.eq.intake,source.is.null");
+    } else {
+      q = q.like("source", "guide_%");
+    }
+    const { count, error: countErr } = await q;
+    if (countErr) {
+      throw countErr;
+    }
+    return count ?? 0;
+  };
+
+  let bySource: AdminNurtureSection["bySource"];
+  try {
+    bySource = {
+      intakePending: await countBySource("pending", "intake"),
+      guidePending: await countBySource("pending", "guide"),
+      intakeSent: await countBySource("sent", "intake"),
+      guideSent: await countBySource("sent", "guide"),
+    };
+  } catch (sourceErr) {
+    console.error("[api/admin/data] nurture by source:", sourceErr);
+    return null;
+  }
+
   const { data: recentRaw, error: recentErr } = await admin
     .from("nurture_emails")
-    .select("email, sequence_day, status, scheduled_at")
+    .select("email, sequence_day, status, scheduled_at, source, thema")
     .order("scheduled_at", { ascending: false })
     .limit(30);
 
@@ -56,16 +89,32 @@ async function loadNurtureSection(
     return null;
   }
 
-  const recent = (recentRaw ?? []).map((row) => ({
-    emailMasked:
-      typeof row.email === "string"
-        ? anonymizeEmailForAdmin(row.email)
-        : "—",
-    sequenceDay: typeof row.sequence_day === "number" ? row.sequence_day : 0,
-    status: typeof row.status === "string" ? row.status : "—",
-    scheduledAt:
-      typeof row.scheduled_at === "string" ? row.scheduled_at : "",
-  }));
+  const recent = (recentRaw ?? []).map((row) => {
+    const rawSource =
+      typeof row.source === "string" && row.source.trim()
+        ? row.source.trim()
+        : "intake";
+    const thema =
+      typeof row.thema === "string" && row.thema.trim()
+        ? row.thema.trim()
+        : "";
+    const sourceLabel =
+      rawSource.startsWith("guide_") && thema
+        ? `gids:${thema}`
+        : rawSource;
+
+    return {
+      emailMasked:
+        typeof row.email === "string"
+          ? anonymizeEmailForAdmin(row.email)
+          : "—",
+      sequenceDay: typeof row.sequence_day === "number" ? row.sequence_day : 0,
+      status: typeof row.status === "string" ? row.status : "—",
+      scheduledAt:
+        typeof row.scheduled_at === "string" ? row.scheduled_at : "",
+      source: sourceLabel,
+    };
+  });
 
   const { data: sentRows, error: sentErr } = await admin
     .from("nurture_emails")
@@ -150,6 +199,7 @@ async function loadNurtureSection(
 
   return {
     stats,
+    bySource,
     recent,
     sequenceSent,
     day30Conversion: {

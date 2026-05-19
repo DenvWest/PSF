@@ -43,7 +43,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij energieklachten",
-    href: "/thema/energie",
+    href: "/gids/energie",
   },
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",

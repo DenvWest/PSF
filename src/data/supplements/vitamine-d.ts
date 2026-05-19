@@ -27,7 +27,7 @@ export const vitamineDData: ComparisonPageData = {
   moreAboutDescription: "Vitamine D draagt o.a. bij tot normale botten, spieren en een normaal immuunsysteem — thema\u2019s die na je 40e vaker bespreekbaar worden met je zorgverlener.",
   moreAboutLinks: [
     { href: "/supplementen/vitamine-d", label: "Meer weten over vitamine D? Lees de uitgebreide gids →" },
-    { href: "/thema/energie", label: "Energieverlies na je 40e — oorzaken en oplossingen →" },
+    { href: "/gids/energie", label: "Energieverlies na je 40e — oorzaken en oplossingen →" },
   ],
   readAlsoCards: [
     {

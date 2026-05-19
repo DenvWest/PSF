@@ -228,7 +228,7 @@ export const slaapThema: ThemaPageData = {
       {
         context:
           "Hoge of scheve cortisol geeft vaak dezelfde nachtrust-problemen als ‘pure’ slaapissues — het helpt om stress en herstel in één beeld te zien.",
-        href: "/thema/stress",
+        href: "/gids/stress",
         label: "Thema: stress (cortisol en herstel)",
       },
       {
@@ -263,6 +263,6 @@ export const slaapThema: ThemaPageData = {
       "Slaap verbeteren als man 40+ — Oorzaken, tips en supplementen | PerfectSupplement",
     description:
       "Waarom je slaap verandert na je 40e en wat je eraan kunt doen. Concrete leefstijltips, supplementadvies en een gratis slaapgids.",
-    canonical: "/thema/slaap",
+    canonical: "/gids/slaap",
   },
 };

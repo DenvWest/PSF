@@ -105,19 +105,19 @@ export const omega3Data: SupplementData = {
         symptoom: "Stress",
         tekst:
           "EPA moduleert ontstekingsreacties die bij chronische stress verhoogd zijn, en ondersteunt stemmingsstabiliteit.",
-        href: "/thema/stress",
+        href: "/gids/stress",
       },
       {
         symptoom: "Energie",
         tekst:
           "DHA ondersteunt hersenfunctie en concentratie overdag — twee pijlers van mentale energie.",
-        href: "/thema/energie",
+        href: "/gids/energie",
       },
       {
         symptoom: "Slaap",
         tekst:
           "Door ontstekingsbalans en hersenondersteuning draagt DHA indirect bij aan rust en herstel ’s nachts — naast je baseline slaaphygiëne.",
-        href: "/thema/slaap",
+        href: "/gids/slaap",
       },
     ],
   },

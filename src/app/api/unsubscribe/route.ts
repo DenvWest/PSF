@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientIp } from "@/lib/client-ip";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
-import { decodeNurtureUnsubscribeToken, EMAIL_REGEX, MAX_EMAIL_LENGTH } from "@/lib/nurture-unsubscribe";
+import {
+  decodeGuideUnsubscribeToken,
+  decodeNurtureUnsubscribeToken,
+  decodeThemaUnsubscribeToken,
+  EMAIL_REGEX,
+  MAX_EMAIL_LENGTH,
+} from "@/lib/nurture-unsubscribe";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { guideSourceForThema, isGuideThema } from "@/data/gids";
+import type { GuideThema } from "@/types/guide-opt-in";
 
 function normalizeEmail(raw: string | null): string | null {
   if (raw === null) {
@@ -44,31 +52,64 @@ function htmlPage(title: string, body: string, status: number): NextResponse {
   });
 }
 
-async function cancelPendingNurtureForEmail(email: string): Promise<{
-  ok: true;
-  cancelled: number;
-} | { ok: false; error: string }> {
+async function cancelPendingIntakeNurture(
+  email: string,
+  sessionId: string,
+): Promise<{ ok: true; cancelled: number } | { ok: false; error: string }> {
   const admin = createSupabaseAdmin();
   if (!admin) {
     return { ok: false, error: "config" };
   }
 
-  const { data, error } = await admin
+  let query = admin
     .from("nurture_emails")
     .update({ status: "cancelled" })
     .eq("email", email)
     .eq("status", "pending")
-    .select("id");
+    .or("source.eq.intake,source.is.null");
+
+  if (sessionId) {
+    query = query.eq("session_id", sessionId);
+  }
+
+  const { data, error } = await query.select("id");
 
   if (error) {
-    console.error("[api/unsubscribe] nurture cancel:", error);
+    console.error("[api/unsubscribe] intake nurture cancel:", error);
     return { ok: false, error: "db" };
   }
 
   return { ok: true, cancelled: data?.length ?? 0 };
 }
 
-async function handleNurtureUnsubscribe(
+async function cancelPendingGuideNurture(
+  email: string,
+  thema: GuideThema,
+): Promise<{ ok: true; cancelled: number } | { ok: false; error: string }> {
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return { ok: false, error: "config" };
+  }
+
+  const source = guideSourceForThema(thema);
+  const { data, error } = await admin
+    .from("nurture_emails")
+    .update({ status: "cancelled" })
+    .eq("email", email)
+    .eq("thema", thema)
+    .eq("source", source)
+    .eq("status", "pending")
+    .select("id");
+
+  if (error) {
+    console.error("[api/unsubscribe] guide nurture cancel:", error);
+    return { ok: false, error: "db" };
+  }
+
+  return { ok: true, cancelled: data?.length ?? 0 };
+}
+
+async function handleIntakeUnsubscribe(
   tokenRaw: string | null,
 ): Promise<NextResponse> {
   const token = tokenRaw?.trim() ?? "";
@@ -89,7 +130,7 @@ async function handleNurtureUnsubscribe(
     );
   }
 
-  const result = await cancelPendingNurtureForEmail(parsed.email);
+  const result = await cancelPendingIntakeNurture(parsed.email, parsed.sessionId);
   if (!result.ok) {
     if (result.error === "config") {
       return htmlPage(
@@ -107,12 +148,98 @@ async function handleNurtureUnsubscribe(
 
   return htmlPage(
     "Je bent uitgeschreven",
-    "Je ontvangt geen verdere nurture-e-mails op dit adres. Geplande berichten in deze reeks zijn geannuleerd.",
+    "Je ontvangt geen verdere herstelplan-e-mails op dit adres. Geplande berichten in deze reeks zijn geannuleerd.",
     200,
   );
 }
 
-/** Legacy: herinneringsmails (intake_reminders) via ?email= */
+async function handleGuideUnsubscribe(
+  tokenRaw: string | null,
+): Promise<NextResponse> {
+  const token = tokenRaw?.trim() ?? "";
+  if (!token) {
+    return htmlPage(
+      "Ongeldige link",
+      "De uitschrijflink is ongeldig of ontbreekt.",
+      400,
+    );
+  }
+
+  const parsed = decodeGuideUnsubscribeToken(token);
+  if (!parsed || !isGuideThema(parsed.thema)) {
+    return htmlPage(
+      "Ongeldige link",
+      "De uitschrijflink is ongeldig of verlopen.",
+      400,
+    );
+  }
+
+  const result = await cancelPendingGuideNurture(
+    parsed.email,
+    parsed.thema as GuideThema,
+  );
+  if (!result.ok) {
+    if (result.error === "config") {
+      return htmlPage(
+        "Niet beschikbaar",
+        "De server kan dit verzoek nu niet verwerken. Probeer het later opnieuw.",
+        503,
+      );
+    }
+    return htmlPage(
+      "Er ging iets mis",
+      "Kon je uitschrijving niet opslaan. Stuur ons een mail als dit blijft gebeuren.",
+      500,
+    );
+  }
+
+  return htmlPage(
+    "Je bent uitgeschreven",
+    "Je ontvangt geen verdere gids-e-mails voor dit thema. Geplande berichten zijn geannuleerd.",
+    200,
+  );
+}
+
+/** Legacy thema-token uit oude thema_nurture-mails */
+async function handleLegacyThemaUnsubscribe(
+  tokenRaw: string | null,
+): Promise<NextResponse> {
+  const token = tokenRaw?.trim() ?? "";
+  const parsed = decodeThemaUnsubscribeToken(token);
+  if (!parsed || !isGuideThema(parsed.thema)) {
+    return htmlPage(
+      "Ongeldige link",
+      "De uitschrijflink is ongeldig of verlopen.",
+      400,
+    );
+  }
+
+  const result = await cancelPendingGuideNurture(
+    parsed.email,
+    parsed.thema as GuideThema,
+  );
+  if (!result.ok) {
+    if (result.error === "config") {
+      return htmlPage(
+        "Niet beschikbaar",
+        "De server kan dit verzoek nu niet verwerken. Probeer het later opnieuw.",
+        503,
+      );
+    }
+    return htmlPage(
+      "Er ging iets mis",
+      "Kon je uitschrijving niet opslaan. Stuur ons een mail als dit blijft gebeuren.",
+      500,
+    );
+  }
+
+  return htmlPage(
+    "Je bent uitgeschreven",
+    "Je ontvangt geen verdere gids-e-mails voor dit thema. Geplande berichten zijn geannuleerd.",
+    200,
+  );
+}
+
 async function handleReminderUnsubscribe(email: string): Promise<NextResponse> {
   const admin = createSupabaseAdmin();
   if (!admin) {
@@ -140,8 +267,39 @@ async function handleReminderUnsubscribe(email: string): Promise<NextResponse> {
 
   return htmlPage(
     "Je bent uitgeschreven",
-    "Je ontvangt geen verdere nurture- of herinneringsmails op dit adres via ons automatische systeem.",
+    "Je ontvangt geen verdere herinneringsmails op dit adres via ons automatische systeem.",
     200,
+  );
+}
+
+function resolveTokenHandler(token: string): "guide" | "intake" | "thema_legacy" | null {
+  const parsedGuide = decodeGuideUnsubscribeToken(token);
+  if (parsedGuide) return "guide";
+
+  const parsedThema = decodeThemaUnsubscribeToken(token);
+  if (parsedThema) return "thema_legacy";
+
+  const parsedIntake = decodeNurtureUnsubscribeToken(token);
+  if (parsedIntake) return "intake";
+
+  return null;
+}
+
+async function dispatchTokenUnsubscribe(token: string): Promise<NextResponse> {
+  const kind = resolveTokenHandler(token);
+  if (kind === "guide") {
+    return handleGuideUnsubscribe(token);
+  }
+  if (kind === "thema_legacy") {
+    return handleLegacyThemaUnsubscribe(token);
+  }
+  if (kind === "intake") {
+    return handleIntakeUnsubscribe(token);
+  }
+  return htmlPage(
+    "Ongeldige link",
+    "De uitschrijflink is ongeldig of verlopen.",
+    400,
   );
 }
 
@@ -161,7 +319,7 @@ export async function GET(request: NextRequest) {
   const token = url.searchParams.get("token");
 
   if (token !== null && token.trim() !== "") {
-    return handleNurtureUnsubscribe(token);
+    return dispatchTokenUnsubscribe(token);
   }
 
   const email = normalizeEmail(url.searchParams.get("email"));
@@ -176,14 +334,10 @@ export async function GET(request: NextRequest) {
   return handleReminderUnsubscribe(email);
 }
 
-/**
- * RFC 8058 one-click unsubscribe (o.a. Gmail): POST naar dezelfde URL als in List-Unsubscribe,
- * body `List-Unsubscribe=One-Click` (token zit meestal in de querystring van die URL).
- */
 export async function POST(request: NextRequest) {
   const qs = request.nextUrl.searchParams.get("token");
   if (qs?.trim()) {
-    return handleNurtureUnsubscribe(qs);
+    return dispatchTokenUnsubscribe(qs);
   }
 
   let raw = "";
@@ -208,5 +362,5 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return handleNurtureUnsubscribe(token);
+  return dispatchTokenUnsubscribe(token);
 }

@@ -44,7 +44,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Grenzen stellen op werk", slug: "stress-werk-grenzen-stellen" },
       { label: "Ashwagandha bij mannen", slug: "ashwagandha-werking-mannen" },
     ],
-    themaHref: "/thema/stress",
+    themaHref: "/gids/stress",
     kleur: {
       bg: "from-amber-700 to-amber-800",
       accent: "bg-amber-500/20 ring-amber-400/20",
@@ -72,7 +72,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Magnesium en slaap", slug: "magnesium-en-slaapkwaliteit" },
       { label: "Melatonine na 40", slug: "melatonine-na-40" },
     ],
-    themaHref: "/thema/slaap",
+    themaHref: "/gids/slaap",
     kleur: {
       bg: "from-slate-600 to-slate-700",
       accent: "bg-sky-500/20 ring-sky-400/20",
@@ -101,7 +101,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Vitamine D tekort", slug: "vitamine-d-tekort-herkennen" },
       { label: "Creatine en herstel", slug: "creatine-en-herstel" },
     ],
-    themaHref: "/thema/energie",
+    themaHref: "/gids/energie",
     kleur: {
       bg: "from-emerald-700 to-emerald-800",
       accent: "bg-emerald-500/20 ring-emerald-400/20",
@@ -129,7 +129,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Vitamine D en energie", slug: "vitamine-d-en-energie" },
       { label: "Zink en testosteron", slug: "zink-en-testosteron" },
     ],
-    themaHref: "/thema/energie",
+    themaHref: "/gids/energie",
     kleur: {
       bg: "from-stone-600 to-stone-700",
       accent: "bg-violet-500/20 ring-violet-400/20",

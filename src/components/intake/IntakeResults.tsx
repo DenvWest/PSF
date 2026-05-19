@@ -206,7 +206,7 @@ export default function IntakeResults({
         {isOvertrainerProfile ? (
           <p className="mt-3">
             <Link
-              href="/thema/herstel"
+              href="/gids/herstel"
               target="_blank"
               className="text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
             >

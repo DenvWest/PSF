@@ -68,7 +68,7 @@ export const ashwagandhaData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij stress",
-    href: "/thema/stress",
+    href: "/gids/stress",
   },
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",

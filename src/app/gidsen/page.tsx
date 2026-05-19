@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { GUIDE_SLUGS, GUIDE_DATA } from "@/data/gids";
 
 export const metadata: Metadata = {
   title: "Gidsen na 40: slaap, energie, stress en herstel | PerfectSupplement",
@@ -11,44 +12,6 @@ export const metadata: Metadata = {
     canonical: "/gidsen",
   },
 };
-
-const guides = [
-  {
-    href: "/slaap-verbeteren-na-40",
-    title: "Slaap Verbeteren Na 40: De Complete Gids",
-    description:
-      "Waarom je slaap verandert na 40 en wat daar leefstijlmatig achter zit.",
-    linkLabel: "Slaap Verbeteren Na 40",
-  },
-  {
-    href: "/energie-na-40",
-    title: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet",
-    description:
-      "Wat er speelt als je energie structureel tegenvalt: slaap, ritme, eten en beweging.",
-    linkLabel: "Energie Na 40",
-  },
-  {
-    href: "/stress-verminderen-man",
-    title: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
-    description:
-      "Hoe langdurige spanning anders voelt na 40 en welke aanknopingspunten je hebt.",
-    linkLabel: "Stress Verminderen na 40",
-  },
-  {
-    href: "/herstel-verbeteren-na-40",
-    title: "Herstel Verbeteren Na 40: De Complete Gids",
-    description:
-      "Waarom herstel trager gaat na 40 en hoe rust en leefstijl meewegen.",
-    linkLabel: "Herstel Verbeteren Na 40",
-  },
-  {
-    href: "/testosteron-na-40",
-    title: "Testosteron na 40: wat verandert en wat je zelf kunt doen",
-    description:
-      "Wat er rond testosteron verandert met de leeftijd, in begrijpelijke taal.",
-    linkLabel: "Testosteron na 40",
-  },
-] as const;
 
 export default function GidsenPage() {
   return (
@@ -68,8 +31,8 @@ export default function GidsenPage() {
             <section className="mt-10">
               <p className="text-lg text-gray-700 leading-relaxed">
                 Geen snelle fixes of vage beloftes — gewoon begrijpen waar het wringt
-                en wat je eraan doet. Hieronder vind je onze vijf themagidsen voor
-                mannen 40+. Kies waar je nu mee bezig bent.
+                en wat je eraan doet. Kies je thema en ontvang de gratis PDF per
+                e-mail, of lees de complete gids op de website.
               </p>
             </section>
 
@@ -79,24 +42,35 @@ export default function GidsenPage() {
               </h2>
 
               <div className="mt-6 space-y-4">
-                {guides.map((guide) => (
-                  <div
-                    key={guide.href}
-                    className="p-5 rounded-xl border border-stone-200 bg-stone-50"
-                  >
-                    <p className="text-gray-700 text-sm leading-relaxed">
-                      <strong className="text-gray-900">{guide.title}</strong>
-                      <br />
-                      {guide.description}
-                    </p>
-                    <Link
-                      href={guide.href}
-                      className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
+                {GUIDE_SLUGS.map((slug) => {
+                  const guide = GUIDE_DATA[slug];
+                  return (
+                    <div
+                      key={slug}
+                      className="p-5 rounded-xl border border-stone-200 bg-stone-50"
                     >
-                      Lees de gids: {guide.linkLabel} →
-                    </Link>
-                  </div>
-                ))}
+                      <p className="text-gray-700 text-sm leading-relaxed">
+                        <strong className="text-gray-900">{guide.optIn.title}</strong>
+                        <br />
+                        {guide.heroSubtitle}
+                      </p>
+                      <div className="mt-3 flex flex-col sm:flex-row gap-3 text-sm">
+                        <Link
+                          href={`/gids/${slug}`}
+                          className="font-semibold text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
+                        >
+                          Download gratis {guide.guideName} →
+                        </Link>
+                        <Link
+                          href={guide.pillarHref}
+                          className="text-stone-600 hover:text-ps-green underline underline-offset-[3px]"
+                        >
+                          Lees de complete gids online
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
 

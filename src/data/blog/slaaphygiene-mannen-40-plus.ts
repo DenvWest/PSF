@@ -37,7 +37,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
     "Na je 40e win je het meeste slaapkwaliteit met een vast ritme, ochtendlicht, koele kamer en striktere cafeïne- en alcoholregels. Voeg een shutdown-routine toe als je hoofd blijft malen.",
   cornerstoneLink: {
     label: "Oplossingen bij slaapproblemen",
-    href: "/thema/slaap",
+    href: "/gids/slaap",
   },
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",

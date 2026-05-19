@@ -50,7 +50,7 @@ export const energieVerhogenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij energieklachten",
-    href: "/thema/energie",
+    href: "/gids/energie",
   },
   gerelateerdeSluggen: [
     "vitamine-d-en-energie",

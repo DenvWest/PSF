@@ -236,7 +236,7 @@ export const energieThema: ThemaPageData = {
       {
         context:
           "Chronische stress en hoge insuline-eisen vreten dezelfde ‘brandstof’ weg als pure energie-tekorten — lees beide lijnen naast elkaar.",
-        href: "/thema/stress",
+        href: "/gids/stress",
         label: "Thema: stress (cortisol, herstel)",
       },
       {
@@ -277,6 +277,6 @@ export const energieThema: ThemaPageData = {
       "Energie terugwinnen als man 40+ | Oorzaken, tips en supplementen | PerfectSupplement",
     description:
       "Middagdips, hersenmist en weinig puf begrijpen. Leefstijl, verdieping wanneer nodig, en supplementinformatie onafhankelijk uit de doeken gedaan.",
-    canonical: "/thema/energie",
+    canonical: "/gids/energie",
   },
 };

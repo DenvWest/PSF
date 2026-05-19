@@ -231,7 +231,7 @@ export const stressThema: ThemaPageData = {
       {
         context:
           "Beter slapen is vaak de snelste hefboom op je stresssysteem: het thema slaap vult aan wat hier op hoofdlijnen staat (ritme, licht, supplementkeuze).",
-        href: "/thema/slaap",
+        href: "/gids/slaap",
         label: "Thema: slaap (ritme, cortisol, herstel)",
       },
       {
@@ -278,6 +278,6 @@ export const stressThema: ThemaPageData = {
       "Stress bij mannen 40+ herkennen en aanpakken | PerfectSupplement",
     description:
       "Chronische stress herkennen, oorzaken begrijpen en concrete stappen zetten. Leefstijl, supplementen en een gratis gids — onafhankelijk uitgelegd.",
-    canonical: "/thema/stress",
+    canonical: "/gids/stress",
   },
 };

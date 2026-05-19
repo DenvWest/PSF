@@ -2,9 +2,9 @@ import Link from "next/link";
 import { BLOG_EDITORIAL_LINK } from "@/components/blog/blog-layout";
 
 const THEMA_LINKS = [
-  { label: "Stress en herstel", href: "/thema/stress" },
-  { label: "Slaapproblemen", href: "/thema/slaap" },
-  { label: "Energieverlies", href: "/thema/energie" },
+  { label: "Stress en herstel", href: "/gids/stress" },
+  { label: "Slaapproblemen", href: "/gids/slaap" },
+  { label: "Energieverlies", href: "/gids/energie" },
 ] as const;
 
 interface BlogThemaLinksProps {

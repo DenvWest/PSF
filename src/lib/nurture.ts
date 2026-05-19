@@ -28,6 +28,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
 
   const laterDays = SEQUENCE_DAYS.filter((d) => d > 0);
   const pendingRows = laterDays.map((day) => ({
+    source: "intake" as const,
     session_id: input.sessionId,
     email: input.email,
     sequence_day: day,
@@ -101,6 +102,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
   }
 
   const day0Row = {
+    source: "intake" as const,
     session_id: input.sessionId,
     email: input.email,
     sequence_day: 0,

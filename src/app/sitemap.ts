@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { PROFILE_SLUGS } from "@/data/profiles";
-import { THEMA_SLUGS } from "@/data/thema";
+import { GUIDE_SLUGS } from "@/data/gids";
 import { kennisbankTerms } from "@/data/kennisbank";
 import { alleArtikelen } from "@/data/blog";
 import { GELDIGE_CATEGORIE_IDS } from "@/data/blog/categorieen";
@@ -46,8 +46,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "monthly",
   );
 
-  const themas = entries(
-    THEMA_SLUGS.map((s) => `/thema/${s}`),
+  const gids = entries(
+    GUIDE_SLUGS.map((s) => `/gids/${s}`),
     0.8,
     "monthly",
   );
@@ -78,7 +78,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...vergelijking,
     ...profielen,
-    ...themas,
+    ...gids,
     ...kennisbank,
     ...blog,
     ...statisch,

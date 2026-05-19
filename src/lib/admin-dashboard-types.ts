@@ -49,6 +49,14 @@ export type AdminNurtureRecentRow = {
   sequenceDay: number;
   status: string;
   scheduledAt: string;
+  source: string;
+};
+
+export type AdminNurtureBySource = {
+  intakePending: number;
+  guidePending: number;
+  intakeSent: number;
+  guideSent: number;
 };
 
 export type AdminNurtureSequenceSent = {
@@ -65,6 +73,7 @@ export type AdminNurtureDay30Conversion = {
 
 export type AdminNurtureSection = {
   stats: AdminNurtureStats;
+  bySource: AdminNurtureBySource;
   recent: AdminNurtureRecentRow[];
   sequenceSent: AdminNurtureSequenceSent[];
   day30Conversion: AdminNurtureDay30Conversion;

@@ -65,7 +65,7 @@ export const cortisolVerlagenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij stress",
-    href: "/thema/stress",
+    href: "/gids/stress",
   },
   gerelateerdeSluggen: [
     "cortisol-en-testosteron",

@@ -43,7 +43,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
     "Grenzen zijn afspraken over beschikbaarheid en prioriteit — geen zwakte. Werk met duidelijke scope, tijdslots en nee met alternatief; bij structurele miskenning is de oorzaak vaak breder dan jouw assertiviteit.",
   cornerstoneLink: {
     label: "Oplossingen bij stress",
-    href: "/thema/stress",
+    href: "/gids/stress",
   },
   gerelateerdeSluggen: [
     "ademhaling-tegen-stress",

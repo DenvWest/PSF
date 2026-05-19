@@ -113,13 +113,13 @@ export const eiwitpoederGidsData: SupplementData = {
         symptoom: "Herstel",
         tekst:
           "Lang spierpijn of traag herstel na training? Eiwitinname is een basisvoorwaarde voor spierherstel.",
-        href: "/thema/herstel",
+        href: "/gids/herstel",
       },
       {
         symptoom: "Energie",
         tekst:
           "Een stabieler ontbijt of tussendoortje met voldoende eiwit kan helpen om energiedips overdag te beperken.",
-        href: "/thema/energie",
+        href: "/gids/energie",
       },
       {
         symptoom: "Stille Slijter",

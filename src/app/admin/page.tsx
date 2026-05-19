@@ -400,6 +400,33 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
+                  <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Intake pending</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.bySource.intakePending}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Gids pending</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.bySource.guidePending}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Intake verstuurd</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.bySource.intakeSent}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-[#F8F7F4] p-4">
+                      <p className="text-[12px] text-[#999]">Gids verstuurd</p>
+                      <p className="mt-1 text-xl font-semibold text-[#1a1a1a]">
+                        {data.nurture.bySource.guideSent}
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <div>
                       <h3 className="mb-2 text-sm font-semibold text-[#1a1a1a]">
@@ -455,6 +482,7 @@ export default function AdminDashboardPage() {
                       <thead>
                         <tr className="border-b text-[13px] text-[#999]" style={{ borderColor: "#e8e6e1" }}>
                           <th className="pb-3 pr-4 font-medium">E-mail</th>
+                          <th className="pb-3 pr-4 font-medium">Bron</th>
                           <th className="pb-3 pr-4 font-medium">Dag</th>
                           <th className="pb-3 pr-4 font-medium">Status</th>
                           <th className="pb-3 font-medium">Gepland</th>
@@ -463,7 +491,7 @@ export default function AdminDashboardPage() {
                       <tbody>
                         {data.nurture.recent.length === 0 ? (
                           <tr>
-                            <td colSpan={4} className="py-4 text-[#999]">
+                            <td colSpan={5} className="py-4 text-[#999]">
                               Nog geen rijen in nurture_emails.
                             </td>
                           </tr>
@@ -477,6 +505,7 @@ export default function AdminDashboardPage() {
                               <td className="py-3 pr-4 font-mono text-[13px] text-[#1a1a1a]">
                                 {row.emailMasked}
                               </td>
+                              <td className="py-3 pr-4 text-[#555]">{row.source}</td>
                               <td className="py-3 pr-4 text-[#555]">{row.sequenceDay}</td>
                               <td className="py-3 pr-4 text-[#555]">{row.status}</td>
                               <td className="py-3 text-[#555]">

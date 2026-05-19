@@ -17,6 +17,14 @@ export const INTAKE_CONSENT_TEXT: Record<ConsentType, string> = {
 };
 
 /** Teksten contactformulier (NL); zelfde consent_type-waarden als intake. */
+export type GuideConsentType = "guide_marketing_email";
+
+/** Tekst exact zoals op het gids-opt-in scherm (NL). */
+export const GUIDE_CONSENT_TEXT: Record<GuideConsentType, string> = {
+  guide_marketing_email:
+    "Ik wil de gratis gids en relevante tips per e-mail ontvangen. Ik begrijp dat ik dit altijd kan intrekken.",
+};
+
 export const CONTACT_CONSENT_TEXT: Record<ConsentType, string> = {
   health_data_processing:
     "Ik geef toestemming voor de verwerking van de gegevens in dit bericht, inclusief eventuele gezondheidsgegevens, voor het beantwoorden van mijn vraag",

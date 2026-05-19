@@ -12,7 +12,7 @@ const LINKS = [
     subtitle: "Bisglycinaat, citraat en malaat",
   },
   {
-    href: "/thema/slaap",
+    href: "/gids/slaap",
     title: "Slaapsupplementen",
     subtitle: "Melatonine, magnesium en kruiden",
   },

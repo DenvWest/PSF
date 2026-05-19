@@ -50,7 +50,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Thema energie — overzicht en routes",
-    href: "/thema/energie",
+    href: "/gids/energie",
   },
   vergelijkingExtraLink: {
     label: "Vitamine D supplementen vergelijken",

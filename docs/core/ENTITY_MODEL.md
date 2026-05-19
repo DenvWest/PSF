@@ -39,13 +39,46 @@
 | id | uuid, pk | — |
 | created_at | timestamptz | — |
 | email | text | — |
-| first_name | text, nullable | Snapshot voornaam bij scheduling |
-| template_key | text | `day0_welcome`, `day3_quickwins`, etc. |
+| session_id | uuid, nullable | FK naar intake_sessions (alleen intake-flow) |
+| source | text | `intake` of `guide_slaap`, `guide_stress`, … |
+| thema | text, nullable | Thema-slug bij gids-opt-in (`slaap`, `stress`, …) |
+| template_key | text, nullable | Audittrail, bv. `guide_slaap_day0` |
+| sequence_day | integer | `0`, `3`, `7`, `14`, `21`, `30` |
 | scheduled_at | timestamptz | — |
-| sent | boolean, default false | — |
+| status | text | `pending`, `sent`, `failed`, `cancelled` |
 | sent_at | timestamptz, nullable | — |
+| resend_id | text, nullable | — |
+| error_message | text, nullable | — |
+| profile_label | text, nullable | Snapshot (intake) |
+| primary_domain | text, nullable | Snapshot (intake) |
+| domain_scores | jsonb, nullable | Snapshot (intake) |
+| urgency_level | text, nullable | Snapshot (intake) |
+| first_name | text, nullable | Snapshot |
 
-Aparte tabel van intake_reminders. `scheduleNurtureSequence` is geïmporteerd in `src/app/api/intake/session/route.ts`.
+Intake-nurture: `scheduleNurtureSequence` in `src/lib/nurture.ts`.  
+Gids-nurture: `scheduleGuideNurtureSequence` in `src/lib/guide-nurture.ts`.
+
+### guide_opt_ins
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| created_at | timestamptz | — |
+| email | text | — |
+| thema | text | `slaap`, `stress`, `energie`, `herstel`, `testosteron` |
+| consent_type | text | `guide_marketing_email` |
+| consent_version | text | — |
+| consent_text | text | Exacte checkbox-tekst |
+| granted | boolean | — |
+| granted_at | timestamptz | — |
+| ip_hash | text, nullable | — |
+| ua_hash | text, nullable | — |
+
+Juridische administratie voor gids-opt-in (geen FK naar intake_sessions).
+
+### thema_nurture (deprecated)
+
+Legacy tabel voor oude `/thema/*` flow. Geen nieuwe inserts. Pending rijen geannuleerd bij migratie.
 
 ### intake_feedback
 
@@ -59,14 +92,14 @@ Aparte tabel van intake_reminders. `scheduleNurtureSequence` is geïmporteerd in
 
 ### affiliate_clicks
 
-Bestaande tabel voor click tracking. **Niet aanraken / wijzigen zonder overleg.** Gebruikt door AffiliateLink component.
+Bestaande tabel voor click tracking. **Niet aanraken / wijzigen zonder overleg.**
 
 ---
 
 ## RLS policies
 
 - RLS aan op alle tabellen
-- Anon: inserts op intake_sessions, intake_reminders, nurture_emails, intake_feedback
+- Anon: inserts op intake_sessions, intake_reminders, nurture_emails, intake_feedback, guide_opt_ins
 - Anon: reads op intake_sessions, intake_feedback
 - Admin dashboard: service_role key (bypasses RLS)
 
@@ -86,57 +119,6 @@ Opgeslagen in `intake_sessions.domain_scores` (jsonb):
   "recovery_score": 33
 }
 ```
-
-### Berekening
-
-| Score | Formule | Max ruwe score |
-|---|---|---|
-| sleep_score | (sleep_quality + sleep_consistency) / 7 × 100 | 7 |
-| energy_score | (energy_pattern + energy_dependency) / 8 × 100 | 8 |
-| stress_score | (stress_frequency + stress_recovery) / 8 × 100 | 8 |
-| nutrition_score | (nutrition_quality + omega3_intake) / 7 × 100 | 7 |
-| movement_score | (movement_frequency + daily_activity) / 7 × 100 | 7 |
-| recovery_score | (physical_recovery + mental_recovery) / 6 × 100 | 6 |
-
-**Let op:** cookie key is `psf_intake_sid` en domain score keys zijn Engels (niet Nederlands).
-
----
-
-## Answers structuur
-
-Opgeslagen in `intake_sessions.answers` (jsonb):
-
-```json
-{
-  "SLP_QUAL": 3,
-  "SLP_CONS": 2,
-  "NRG_PATN": 2,
-  "NRG_DEP": 1,
-  "STR_FREQ": 3,
-  "STR_RCV": 2,
-  "NUT_O3": 1,
-  "NUT_PROT": 3,
-  "MOV_STR": 3,
-  "MOV_CARD": 2,
-  "RCV_PHYS": 1
-}
-```
-
-### Variabelenlijst
-
-| Data-tag | Variabele | Type | Bereik | Categorie |
-|---|---|---|---|---|
-| SLP_QUAL | sleep_quality | int | 1-4 | Slaap |
-| SLP_CONS | sleep_consistency | int | 1-3 | Slaap |
-| NRG_PATN | energy_pattern | int | 1-4 | Energie |
-| NRG_DEP | energy_dependency | int | 1-4 | Energie |
-| STR_FREQ | stress_frequency | int | 1-4 | Stress |
-| STR_RCV | stress_recovery | int | 1-4 | Stress (+ recovery_score) |
-| NUT_O3 | omega3_intake | int | 1-3 | Voeding |
-| NUT_PROT | protein_intake | int | 1-4 | Voeding |
-| MOV_STR | strength_training | int | 1-4 | Beweging |
-| MOV_CARD | cardio_frequency | int | 1-4 | Beweging |
-| RCV_PHYS | physical_recovery | int | 1-3 | Herstel |
 
 ---
 

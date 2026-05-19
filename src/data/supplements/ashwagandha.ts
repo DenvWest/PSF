@@ -27,7 +27,7 @@ export const ashwagandhaData: ComparisonPageData = {
   moreAboutDescription: "Vergelijk extracten op transparantie en dosering. Themapagina\u2019s over leefstijl (bijv. stress en slaap) zijn géén etiketclaims voor dit ingrediënt in EU-context.",
   moreAboutLinks: [
     { href: "/supplementen/ashwagandha", label: "Meer weten over ashwagandha? Lees de uitgebreide gids →" },
-    { href: "/thema/stress", label: "Stress na je 40e — wat speelt er en wat helpt? →" },
+    { href: "/gids/stress", label: "Stress na je 40e — wat speelt er en wat helpt? →" },
   ],
   readAlsoCards: [
     {

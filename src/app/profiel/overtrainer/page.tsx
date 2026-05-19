@@ -89,9 +89,9 @@ function supplementComparisonTeaser(href: string): string {
 function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.linkText) return item.linkText;
   if (item.href === "/profiel/onrustige-slaper") return "Bekijk het Onrustige Slaper-profiel";
-  if (item.href === "/thema/herstel") return "Het thema Herstel — volledige context";
-  if (item.href === "/thema/energie") return "Het energiethema";
-  if (item.href === "/thema/slaap") return "Het slaapthema";
+  if (item.href === "/gids/herstel") return "Het thema Herstel — volledige context";
+  if (item.href === "/gids/energie") return "Het energiethema";
+  if (item.href === "/gids/slaap") return "Het slaapthema";
   if (item.href === "/beste/ashwagandha") return "Bekijk de ashwagandha vergelijking";
   if (item.href === "/beste/magnesium") return "Bekijk de magnesium vergelijking";
   if (item.href === "/beste/omega-3-supplement") return "Bekijk de omega-3 vergelijking";
@@ -204,15 +204,15 @@ export default function OvertrainerPage() {
               <p className="mt-5 text-xl text-slate-600 max-w-2xl leading-relaxed">{profile.hero.subline}</p>
               <p className="mt-6 text-slate-600 max-w-2xl leading-relaxed">
                 Meer over herstel na 40: zie ook het{" "}
-                <Link href="/thema/herstel" className="text-emerald-600 font-medium hover:text-emerald-700">
+                <Link href="/gids/herstel" className="text-emerald-600 font-medium hover:text-emerald-700">
                   thema Herstel
                 </Link>
                 , energie in het{" "}
-                <Link href="/thema/energie" className="text-emerald-600 font-medium hover:text-emerald-700">
+                <Link href="/gids/energie" className="text-emerald-600 font-medium hover:text-emerald-700">
                   energiethema
                 </Link>{" "}
                 en slaap in het{" "}
-                <Link href="/thema/slaap" className="text-emerald-600 font-medium hover:text-emerald-700">
+                <Link href="/gids/slaap" className="text-emerald-600 font-medium hover:text-emerald-700">
                   slaapthema
                 </Link>
                 .

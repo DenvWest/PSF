@@ -42,7 +42,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Oplossingen bij energieklachten",
-    href: "/thema/energie",
+    href: "/gids/energie",
   },
   gerelateerdeSluggen: [
     "omega-3-en-herstel",

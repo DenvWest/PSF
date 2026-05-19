@@ -76,7 +76,7 @@ ${ctaButton(
   Op onze herstelthemapagina zetten we de verdieping op een rij — praktisch en haalbaar.
 </p>
 ${ctaButton(
-          absoluteUrl("/thema/herstel"),
+          absoluteUrl("/gids/herstel"),
           "Lees het complete herstelthema op de site →",
         )}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">

@@ -215,12 +215,12 @@ export const overtrainerProfile: ProfilePageData = {
 
   relatedComparisons: [
     {
-      href: "/thema/energie",
+      href: "/gids/energie",
       turboSnippet:
         "Trainingsvolume en energiehuishouding lopen vast in elkaar over zo lees je het energiethema voor voeding en dagritme.",
     },
     {
-      href: "/thema/slaap",
+      href: "/gids/slaap",
       turboSnippet:
         "Zonder stabiele slaap blijft herstel krap het slaapthema legt gedrag en omgeving naast supplementen uit.",
     },

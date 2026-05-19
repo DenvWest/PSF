@@ -303,7 +303,7 @@ export function nurtureDay0Email(
   const stressProfileUrl = absoluteUrl("/profiel/stressdrager");
   const energyProfileUrl = absoluteUrl("/profiel/lage-batterij");
   const overtrainerProfileUrl = absoluteUrl("/profiel/overtrainer");
-  const herstelThemaUrl = absoluteUrl("/thema/herstel");
+  const herstelThemaUrl = absoluteUrl("/gids/herstel");
 
   const mainRows = stressProfileFirst
     ? renderStressdragerDay0PersonalizedRows(intakeUrl, data.firstName)

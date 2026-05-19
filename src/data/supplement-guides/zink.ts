@@ -106,19 +106,19 @@ export const zinkGidsData: SupplementData = {
         symptoom: "Herstel",
         tekst:
           "Zink is essentieel voor celdeling en weefselreparatie — bij een tekort verloopt spierherstel na training meetbaar trager.",
-        href: "/thema/herstel",
+        href: "/gids/herstel",
       },
       {
         symptoom: "Stress",
         tekst:
           "Chronische stress verhoogt het zinkverbruik. Een tekort kan de stressrespons versterken en het immuunsysteem verder verzwakken.",
-        href: "/thema/stress",
+        href: "/gids/stress",
       },
       {
         symptoom: "Slaap",
         tekst:
           "Zink draait mee in neurotransmitters en immuunbalans die je nachtelijke rust kunnen beïnvloeden; een latent tekort wordt vaak gemist.",
-        href: "/thema/slaap",
+        href: "/gids/slaap",
       },
     ],
   },

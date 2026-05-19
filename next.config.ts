@@ -76,43 +76,48 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/thema/:thema",
+        destination: "/gids/:thema",
+        permanent: true,
+      },
+      {
         source: "/symptomen/slaap",
-        destination: "/thema/slaap",
+        destination: "/gids/slaap",
         permanent: true,
       },
       {
         source: "/symptomen/slaap/:path*",
-        destination: "/thema/slaap",
+        destination: "/gids/slaap",
         permanent: true,
       },
       {
         source: "/symptomen/stress",
-        destination: "/thema/stress",
+        destination: "/gids/stress",
         permanent: true,
       },
       {
         source: "/symptomen/stress/:path*",
-        destination: "/thema/stress",
+        destination: "/gids/stress",
         permanent: true,
       },
       {
         source: "/symptomen/energie",
-        destination: "/thema/energie",
+        destination: "/gids/energie",
         permanent: true,
       },
       {
         source: "/symptomen/energie/:path*",
-        destination: "/thema/energie",
+        destination: "/gids/energie",
         permanent: true,
       },
       {
         source: "/symptomen/herstel",
-        destination: "/thema/herstel",
+        destination: "/gids/herstel",
         permanent: true,
       },
       {
         source: "/symptomen/herstel/:path*",
-        destination: "/thema/herstel",
+        destination: "/gids/herstel",
         permanent: true,
       },
       {
@@ -132,7 +137,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/slaap-supplement-vergelijken",
-        destination: "/thema/slaap",
+        destination: "/gids/slaap",
         permanent: true,
       },
     ];

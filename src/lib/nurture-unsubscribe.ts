@@ -48,7 +48,57 @@ export function buildNurtureUnsubscribeUrl(
   return `${base}/api/unsubscribe?token=${encodeURIComponent(token)}`;
 }
 
+const GUIDE_TOKEN_PREFIX = "guide:";
 const THEMA_TOKEN_PREFIX = "thema:";
+
+export function encodeGuideUnsubscribeToken(
+  email: string,
+  thema: string,
+): string {
+  const e = email.trim().toLowerCase();
+  const t = thema.trim().toLowerCase();
+  return Buffer.from(`${GUIDE_TOKEN_PREFIX}${e}:${t}`, "utf8").toString(
+    "base64url",
+  );
+}
+
+export function decodeGuideUnsubscribeToken(
+  token: string,
+): { email: string; thema: string } | null {
+  const trimmed = token.trim();
+  if (!trimmed) {
+    return null;
+  }
+  try {
+    const decoded = Buffer.from(trimmed, "base64url").toString("utf8");
+    if (!decoded.startsWith(GUIDE_TOKEN_PREFIX)) {
+      return null;
+    }
+    const payload = decoded.slice(GUIDE_TOKEN_PREFIX.length);
+    const idx = payload.indexOf(":");
+    if (idx <= 0) {
+      return null;
+    }
+    const email = payload.slice(0, idx).trim().toLowerCase();
+    const thema = payload.slice(idx + 1).trim().toLowerCase();
+    if (!email || email.length > MAX_EMAIL_LENGTH || !EMAIL_REGEX.test(email) || !thema) {
+      return null;
+    }
+    return { email, thema };
+  } catch {
+    return null;
+  }
+}
+
+export function buildGuideUnsubscribeUrl(
+  email: string,
+  thema: string,
+  siteBase: string,
+): string {
+  const base = siteBase.replace(/\/$/, "");
+  const token = encodeGuideUnsubscribeToken(email, thema);
+  return `${base}/api/unsubscribe?token=${encodeURIComponent(token)}`;
+}
 
 export function encodeThemaUnsubscribeToken(
   email: string,
@@ -96,7 +146,7 @@ export function buildThemaUnsubscribeUrl(
 ): string {
   const base = siteBase.replace(/\/$/, "");
   const token = encodeThemaUnsubscribeToken(email, thema);
-  return `${base}/api/thema/unsubscribe?token=${encodeURIComponent(token)}`;
+  return `${base}/api/unsubscribe?token=${encodeURIComponent(token)}`;
 }
 
 export function anonymizeEmailForAdmin(email: string): string {
