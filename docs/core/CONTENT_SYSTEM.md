@@ -6,8 +6,9 @@
 
 ## Smart Content Module
 
-Bij ELKE nieuwe pagina doorloop je deze 10 stappen:
+Bij ELKE nieuwe pagina doorloop je deze 11 stappen:
 
+0. **Raadpleeg `core/WRITING_VOICE.md`** — toon, woorden, begrip → urgentie → actie
 1. **Raadpleeg `work/PAGE_ROADMAP.md`** — status en SEO-data van deze pagina
 2. **Kies het juiste blueprint** (zie onder)
 3. **Interne links** — welke 2-3 bestaande pagina's zijn semantisch gerelateerd?

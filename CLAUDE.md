@@ -135,6 +135,10 @@ RLS is aan. Anon kan inserts doen op sessions, reminders en feedback.
 - Deploy: `bash deploy.sh` (git pull + npm ci + build + pm2 restart)
 - Env: `/root/perfectsupplement/.env`
 
+## Schrijfstem
+
+- Herkennings-copy, nurture-mails, profielpagina's: volg `docs/core/WRITING_VOICE.md` (begrip → urgentie → actie, geen diagnose-taal)
+
 ## Communicatie
 
 - Antwoord in het Nederlands, code in het Engels

@@ -35,6 +35,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/ENTITY_MODEL.md`](core/ENTITY_MODEL.md) | Database schema, domain scores, answers structuur, RLS |
 | [`core/DESIGN_TOKENS.md`](core/DESIGN_TOKENS.md) | Fonts, kleuren, spacing, component patterns, mobile-first |
 | [`core/COMPLIANCE.md`](core/COMPLIANCE.md) | EFSA claims, AVG, affiliate disclosure, medische disclaimers |
+| [`core/WRITING_VOICE.md`](core/WRITING_VOICE.md) | Schrijfstem: toon, woorden, herkennings-copy (weggever, nurture, profielen) |
 
 ### Layer 2 — Systems (hoe systemen werken)
 
@@ -66,7 +67,8 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Pillar page | `core/SEO_RULES.md` + `systems/CONTENT_SYSTEM.md` (Blueprint 2) |
 | Blogpost | `core/SEO_RULES.md` + `systems/CONTENT_SYSTEM.md` (Blueprint 4 + Smart Content Module) |
 | Intake/scoring | `systems/INTAKE_SYSTEM.md` + `core/ENTITY_MODEL.md` |
-| Nurture emails | `systems/EMAIL_SYSTEM.md` + `systems/PERSONALIZATION_ENGINE.md` |
+| Nurture emails | `core/WRITING_VOICE.md` + `systems/EMAIL_SYSTEM.md` + `systems/PERSONALIZATION_ENGINE.md` |
+| Copy schrijven (herkenning, profiel, weggever) | `core/WRITING_VOICE.md` + `core/COMPLIANCE.md` |
 | Affiliate links | `systems/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
 | Technische vraag | `core/ARCHITECTURE.md` + `core/CODE_CONVENTIONS.md` |
 | Database/data | `core/ENTITY_MODEL.md` |
