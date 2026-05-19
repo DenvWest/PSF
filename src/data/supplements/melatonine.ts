@@ -6,7 +6,7 @@ export const melatonineData: ComparisonPageData = {
   guideHref: "/supplementen/melatonine",
   h1: "Beste Melatonine Supplement 2026",
   intro:
-    "Beter slapen begint bij de juiste keuze. Wij vergeleken pure melatonine en slaapcomplexen op werking, dosering en prijs.",
+    "In bed liggen maar je hoofd blijft malen? Melatonine kan kortdurend helpen bij slaaponset — maar pure melatonine en slaapcomplexen werken verschillend. Drie opties vergeleken op dosering, samenstelling en prijs.",
   seoTitle: "Beste Melatonine 2026: Vergelijking | PerfectSupplement",
   seoDescription:
     "Welke melatonine werkt het beste voor jouw slaap? Vergelijking van pure melatonine en slaapcomplexen op werking, dosering en prijs.",

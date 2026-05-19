@@ -51,14 +51,17 @@ export default function ProfielOverzichtPage() {
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 mb-3">
               Weet je niet welk profiel bij je past?
             </h2>
-            <p className="text-slate-600 mb-6">
+            <p className="text-slate-600 mb-2">
               De Leefstijlcheck bepaalt het voor je in 3 minuten.
+            </p>
+            <p className="text-sm text-slate-500 mb-6">
+              Geen medische test — wel inzicht in 6 leefstijldomeinen.
             </p>
             <Link
               href="/intake"
               className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors"
             >
-              Doe de gratis Leefstijlcheck
+              Ontdek jouw herstelprofiel — gratis
             </Link>
           </div>
         </div>

@@ -23,7 +23,7 @@ export default function BlogSupplementCTA({ cta }: BlogSupplementCTAProps) {
         href={cta.href}
         className="mt-5 inline-flex min-h-10 items-center text-[0.8125rem] font-medium text-stone-800 underline decoration-stone-300 decoration-1 underline-offset-[4px] transition hover:text-stone-950 hover:decoration-stone-400"
       >
-        Verder lezen — {cta.naam}
+        Lees wanneer {cta.naam} zinvol is →
       </Link>
     </aside>
   );

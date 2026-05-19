@@ -6,7 +6,7 @@ export const omega3Data: ComparisonPageData = {
   guideHref: "/supplementen/omega-3",
   h1: "Welke omega-3 visolie past bij jou?",
   intro:
-    "Vier visoliën vergeleken op EPA/DHA-gehalte, vorm, prijs per dag en zuiverheid — zodat je in één oogopslag ziet welke het beste bij jouw situatie past.",
+    "Minder scherp, stijve gewrichten of weinig vis op je bord? Omega-3 is een logische aanvulling — maar EPA/DHA-gehalte en prijs per dag verschillen flink. Vier visoliën vergeleken op inhoud, zuiverheid en wat je per dag betaalt.",
   seoTitle: "Beste omega-3 supplement 2026 — 4 visoliën onafhankelijk vergeleken",
   seoDescription:
     "Vergelijk Vitals, Arctic Blue, Möller's en Minami MorEPA op EPA/DHA, prijs per dag en zuiverheid. Onafhankelijke analyse voor de beste omega-3 keuze in 2026.",

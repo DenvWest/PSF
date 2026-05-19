@@ -164,6 +164,6 @@ export const ashwagandhaData: SupplementData = {
   productVergelijkingCta: {
     titel: "Welke ashwagandha scoort het beste?",
     href: "/beste/ashwagandha",
-    linkLabel: "Bekijk de vergelijking →",
+    linkLabel: "Vergelijk 3 ashwagandha-extracten op kwaliteit →",
   },
 };

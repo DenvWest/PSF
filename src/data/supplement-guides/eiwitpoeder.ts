@@ -171,6 +171,6 @@ export const eiwitpoederGidsData: SupplementData = {
   productVergelijkingCta: {
     titel: "Welk eiwitpoeder scoort het beste?",
     href: "/beste/eiwitpoeder",
-    linkLabel: "Bekijk de vergelijking →",
+    linkLabel: "Vergelijk whey vs. plantaardig op prijs →",
   },
 };

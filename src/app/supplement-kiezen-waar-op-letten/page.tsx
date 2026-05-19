@@ -413,7 +413,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                         href="/intake"
                         className="mt-6 inline-block rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white hover:bg-stone-700"
                     >
-                        Start de gratis intake →
+                        Ontdek jouw herstelprofiel — gratis →
                     </Link>
                 </div>
             </Container>

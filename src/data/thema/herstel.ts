@@ -187,7 +187,7 @@ export const herstelThema: ThemaPageData = {
       "Doseerschema's voor magnesium, omega-3, creatine en zink bij herstel",
       "De drie grootste herstelfouten die mannen 40+ maken",
     ],
-    ctaText: "Download de Herstelgids",
+    ctaText: "Download ter inspiratie",
     privacyText:
       "Je e-mail wordt alleen gebruikt voor de gids en relevante tips. Geen spam, altijd opzegbaar.",
     successMessage: "Check je inbox — de Herstelgids is onderweg.",

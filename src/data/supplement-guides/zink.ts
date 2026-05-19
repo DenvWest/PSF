@@ -169,6 +169,6 @@ export const zinkGidsData: SupplementData = {
   productVergelijkingCta: {
     titel: "Welke zink scoort het beste?",
     href: "/beste/zink",
-    linkLabel: "Bekijk de vergelijking →",
+    linkLabel: "Vergelijk 3 zinkvormen op biobeschikbaarheid →",
   },
 };

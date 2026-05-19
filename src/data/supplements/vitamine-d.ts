@@ -6,7 +6,7 @@ export const vitamineDData: ComparisonPageData = {
   guideHref: "/supplementen/vitamine-d",
   h1: "Beste vitamine D supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Drie vitamine D3 supplementen vergeleken op dosering, kwaliteit, prijs en opneembaarheid — speciaal beoordeeld voor mannen 40+ in Nederland, waar zonlicht het grootste deel van het jaar onvoldoende is voor een gezond vitamine D-niveau.",
+    "Moe en futloos terwijl de zon maandenlang te weinig schijnt? Vitamine D3 is in Nederland vaak een aandachtspunt na je 40e. Drie producten vergeleken op dosering, kwaliteit, opneembaarheid en prijs per dag.",
   seoTitle:
     "Beste Vitamine D Supplement 2026 — D3 Vergelijking | PerfectSupplement",
   seoDescription:

@@ -56,12 +56,12 @@ export default async function ThemaPage({ params }: Props) {
           <p className="mt-8">
             <Link
               href="/intake"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-ps-green underline decoration-ps-green/30 underline-offset-4 transition hover:text-ps-green-hover hover:decoration-ps-green-hover/50"
+              className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover"
             >
-              Start de Leefstijlcheck
+              Ontdek jouw herstelprofiel — gratis
               <span aria-hidden>→</span>
             </Link>
-            <span className="ml-2 text-sm text-stone-500">
+            <span className="ml-3 block mt-3 text-sm text-stone-500 sm:ml-0 sm:mt-0 sm:inline">
               12 vragen, ongeveer 3 minuten, gratis
             </span>
           </p>

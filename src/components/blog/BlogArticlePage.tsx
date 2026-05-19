@@ -12,6 +12,7 @@ import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
 import Link from "next/link";
 import BlogGerelateerd from "./BlogGerelateerd";
+import BlogIntakeCTA from "./BlogIntakeCTA";
 import ArticleReferentiesFooter from "@/components/content/ArticleReferentiesFooter";
 import ArticleBodyReadingChrome, {
   ARTICLE_HIDE_TOC_BELOW_ITEMS,
@@ -195,24 +196,7 @@ export default function BlogArticlePage({
           </div>
         ) : null}
 
-        <section
-          className="mx-auto mt-20 max-w-[min(38rem,100%)] border border-stone-200/90 bg-white px-7 py-10 text-center md:mt-24 md:px-10 md:py-12"
-          aria-label="Intake"
-        >
-          <p className="ps-eyebrow">Persoonlijk inzicht</p>
-          <h2 className="mt-3 font-display text-[1.375rem] font-semibold leading-snug text-stone-900 md:text-2xl">
-            Ontdek waar jouw lichaam waarschijnlijk om herstel vraagt
-          </h2>
-          <p className="mx-auto mt-4 max-w-[36ch] text-[0.9375rem] leading-[1.75] text-stone-600">
-            12 vragen, 3 minuten — direct een persoonlijk herstelplan. Geen medische test en geen vervanging van zorg.
-          </p>
-          <Link
-            href="/intake"
-            className="mt-8 inline-flex min-h-11 items-center justify-center rounded-full bg-stone-900 px-7 text-[0.875rem] font-medium text-white transition hover:bg-stone-800"
-          >
-            Start de gratis intake →
-          </Link>
-        </section>
+        <BlogIntakeCTA className="mx-auto mt-20 max-w-[min(38rem,100%)] md:mt-24" />
       </Container>
     </div>
   );

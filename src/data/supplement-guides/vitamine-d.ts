@@ -169,6 +169,6 @@ export const vitamineDData: SupplementData = {
   productVergelijkingCta: {
     titel: "Welke vitamine D scoort het beste?",
     href: "/beste/vitamine-d",
-    linkLabel: "Bekijk de vergelijking →",
+    linkLabel: "Vergelijk 3 D3-producten op dosering en prijs →",
   },
 };

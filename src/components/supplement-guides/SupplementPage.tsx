@@ -244,7 +244,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               </p>
               <Link
                 href={data.productVergelijkingCta.href}
-                className="mt-5 inline-flex items-center rounded-xl bg-ps-green px-5 py-3 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
+                className="mt-5 inline-flex items-center rounded-xl border border-ps-green/40 bg-white px-5 py-3 text-sm font-semibold text-ps-green transition hover:border-ps-green hover:bg-[#EEF3EB]"
               >
                 {data.productVergelijkingCta.linkLabel}
               </Link>
@@ -315,12 +315,16 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                   ✓ Gerichte supplementroute op basis van jouw profiel
                 </span>
               </div>
-              <div className="mt-8">
+              <p className="mx-auto mt-6 max-w-md text-sm text-white/60">
+                Geen medische test — wel inzicht in 6 leefstijldomeinen.
+              </p>
+              <div className="mt-6">
                 <Link
                   href="/intake"
                   className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-ps-green shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
                 >
-                  Start je leefstijlcheck
+                  Ontdek of {data.naam.charAt(0).toLowerCase() + data.naam.slice(1)}{" "}
+                  bij jou past — gratis
                   <span aria-hidden>→</span>
                 </Link>
               </div>

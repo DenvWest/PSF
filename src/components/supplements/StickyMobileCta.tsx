@@ -3,12 +3,17 @@
 import { useEffect, useState } from "react";
 import type { SupplementProduct } from "@/types/supplement";
 import { AffiliateLink } from "@/components/supplements/AffiliateLink";
-import { getAffiliateShopLabel } from "@/lib/affiliate-shop-labels";
+import {
+  buildAffiliateCtaLabel,
+  getProductPricePerDay,
+} from "@/lib/comparison-cta-label";
 
 type Props = { topProduct: SupplementProduct };
 
 export function StickyMobileCta({ topProduct }: Props) {
   const [visible, setVisible] = useState(false);
+  const price = getProductPricePerDay(topProduct);
+  const ctaLabel = buildAffiliateCtaLabel(topProduct.bestFor, price);
 
   useEffect(() => {
     function onScroll() {
@@ -28,9 +33,9 @@ export function StickyMobileCta({ topProduct }: Props) {
       <div className="mx-auto flex max-w-sm items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-slate-900">
-            {topProduct.name}
+            {topProduct.bestFor}
           </p>
-          <p className="text-xs text-slate-500">{topProduct.variantTag}</p>
+          <p className="truncate text-xs text-slate-500">{topProduct.name}</p>
         </div>
         <AffiliateLink
           affiliateSlug={topProduct.affiliateSlug}
@@ -38,7 +43,7 @@ export function StickyMobileCta({ topProduct }: Props) {
           position={1}
           className="max-w-[min(200px,48vw)] shrink-0 truncate whitespace-nowrap rounded-xl bg-emerald-600 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-emerald-700 sm:max-w-none sm:px-4 sm:text-sm"
         >
-          Bekijk bij {getAffiliateShopLabel(topProduct.affiliateSlug)} →
+          {ctaLabel} →
         </AffiliateLink>
       </div>
     </div>

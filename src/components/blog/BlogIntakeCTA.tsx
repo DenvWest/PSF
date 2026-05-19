@@ -16,11 +16,14 @@ export default function BlogIntakeCTA({ className = "" }: BlogIntakeCTAProps) {
       <p className="mt-2 text-sm text-stone-500">
         12 vragen, 3 minuten — direct een persoonlijk herstelplan.
       </p>
+      <p className="mx-auto mt-4 max-w-md text-sm text-stone-500">
+        Geen medische test — wel inzicht in 6 leefstijldomeinen.
+      </p>
       <Link
         href="/intake"
         className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[#3C7A56] px-6 py-3 text-base font-medium text-white transition hover:bg-[#2E5F43]"
       >
-        Start de gratis intake →
+        Ontdek jouw herstelprofiel — gratis →
       </Link>
     </div>
   );

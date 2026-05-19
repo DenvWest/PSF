@@ -155,14 +155,9 @@ export default function TestosteronNa40Page() {
                 helpt je verwachtingen kalibreren — zonder harde hormoonclaims over jouw lichaam.
               </p>
 
-              <div className="mt-6">
-                <Link
-                  href="/intake"
-                  className="inline-flex items-center rounded-lg bg-ps-green px-5 py-2.5 text-sm font-semibold text-white hover:bg-ps-green-hover"
-                >
-                  Start de Leefstijlcheck →
-                </Link>
-              </div>
+              <p className="mt-6 text-sm text-gray-500">
+                Benieuwd hoe jouw profiel scoort? Scroll naar beneden voor de gratis Leefstijlcheck.
+              </p>
 
               <section id="herkenning" className="mt-12 scroll-mt-24">
                 <h2 className="font-serif text-2xl font-bold text-gray-900">
@@ -240,13 +235,9 @@ export default function TestosteronNa40Page() {
                     .
                   </li>
                 </ul>
-                <p className="mt-6">
-                  <Link
-                    href="/intake"
-                    className="inline-flex items-center rounded-lg bg-ps-green px-5 py-2.5 text-sm font-semibold text-white hover:bg-ps-green-hover"
-                  >
-                    Start de Leefstijlcheck →
-                  </Link>
+                <p className="mt-6 text-sm text-gray-500">
+                  Meer context? Scroll naar beneden voor je persoonlijke profiel via de
+                  Leefstijlcheck.
                 </p>
               </section>
 
@@ -318,11 +309,14 @@ export default function TestosteronNa40Page() {
                 <p className="font-semibold text-gray-900">
                   Wil je weten hoe testosteron, slaap en stress in jouw situatie samenkomen?
                 </p>
+                <p className="mt-3 text-sm text-gray-500">
+                  Geen diagnose — wel inzicht in 6 leefstijldomeinen.
+                </p>
                 <Link
                   href="/intake"
                   className="mt-4 inline-flex items-center rounded-lg bg-ps-green px-5 py-2.5 text-sm font-semibold text-white hover:bg-ps-green-hover"
                 >
-                  Start de Leefstijlcheck →
+                  Zie waar jouw slaap, stress en energie scoren — gratis →
                 </Link>
               </section>
 

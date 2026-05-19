@@ -114,7 +114,7 @@ export default function GidsenPage() {
                   href="/intake"
                   className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
                 >
-                  Doe de gratis Leefstijlcheck →
+                  Ontdek jouw herstelprofiel — gratis →
                 </Link>
               </div>
             </section>

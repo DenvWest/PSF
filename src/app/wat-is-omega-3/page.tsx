@@ -283,7 +283,7 @@ export default function WhatIsOmega3Page() {
                                 href="/intake"
                                 className="inline-block bg-ps-green text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-ps-green-hover transition-colors"
                             >
-                                Start de gratis intake →
+                                Ontdek jouw herstelprofiel — gratis →
                             </Link>
                         </div>
                     </section>

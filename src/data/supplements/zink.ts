@@ -6,7 +6,7 @@ export const zinkData: ComparisonPageData = {
   guideHref: "/supplementen/zink",
   h1: "Beste zink supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Drie zink supplementen vergeleken op zinkvorm, biobeschikbaarheid, dosering en prijs — voor wie let op onder andere draagt bij tot het immuunsysteem, eiwitsynthese en (officieel geformuleerd) tot de instandhouding van een normaal testosterongehalte in het bloed.",
+    "Vaak verkouden, langzaam herstel of twijfel over je voedingsstatus? Zinkvorm en dosering bepalen of een supplement zinvol is. Drie producten vergeleken op biobeschikbaarheid, elementaire mg per dag en prijs — zink draagt bij tot het immuunsysteem, eiwitsynthese en (officieel geformuleerd) tot de instandhouding van een normaal testosterongehalte in het bloed.",
   seoTitle:
     "Beste Zink Supplement 2026 — Methionine & Picolinaat Vergelijking | PerfectSupplement",
   seoDescription:

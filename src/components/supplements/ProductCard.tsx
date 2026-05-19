@@ -1,15 +1,28 @@
 import Image from "next/image";
 import type { SupplementProduct } from "@/types/supplement";
 import { AffiliateLink } from "@/components/supplements/AffiliateLink";
-import { getAffiliateShopLabel } from "@/lib/affiliate-shop-labels";
+import {
+  buildAffiliateCtaLabel,
+  getProductPricePerDay,
+} from "@/lib/comparison-cta-label";
 
-type Props = { product: SupplementProduct; position: number };
+type Props = {
+  product: SupplementProduct;
+  position: number;
+  isPrimary?: boolean;
+};
 
-export function ProductCard({ product, position }: Props) {
+export function ProductCard({ product, position, isPrimary = false }: Props) {
+  const price = getProductPricePerDay(product);
+  const ctaLabel = buildAffiliateCtaLabel(product.bestFor, price);
+
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <article
+      className={`rounded-2xl border bg-white p-6 shadow-sm ${
+        isPrimary ? "border-emerald-300 ring-2 ring-emerald-100" : "border-slate-200"
+      }`}
+    >
       <div className="flex flex-col gap-6 md:flex-row">
-        {/* Left column */}
         <div className="flex shrink-0 flex-col items-center gap-4 md:w-1/3">
           <div
             className="relative aspect-square w-36 overflow-hidden rounded-xl border border-slate-100 bg-slate-50"
@@ -30,7 +43,6 @@ export function ProductCard({ product, position }: Props) {
             )}
           </div>
 
-          {/* Score circle */}
           <div className="flex flex-col items-center gap-1">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-emerald-500 bg-white text-xl font-bold text-emerald-700">
               {product.score}
@@ -39,7 +51,6 @@ export function ProductCard({ product, position }: Props) {
           </div>
         </div>
 
-        {/* Right column */}
         <div className="flex-1">
           <div className="flex flex-wrap items-start gap-2">
             <h2 className="text-xl font-semibold text-slate-900">
@@ -48,13 +59,17 @@ export function ProductCard({ product, position }: Props) {
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
               {product.variantTag}
             </span>
+            {isPrimary ? (
+              <span className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-semibold text-white">
+                {product.bestFor}
+              </span>
+            ) : null}
           </div>
 
           <p className="mt-2 text-sm leading-6 text-slate-600">
             {product.summary}
           </p>
 
-          {/* Specs */}
           <ul className="mt-4 flex flex-wrap gap-3">
             {product.specs.map((s) => (
               <li key={s.label} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-sm">
@@ -64,7 +79,6 @@ export function ProductCard({ product, position }: Props) {
             ))}
           </ul>
 
-          {/* Pros / Cons */}
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
@@ -94,7 +108,6 @@ export function ProductCard({ product, position }: Props) {
             </div>
           </div>
 
-          {/* Score breakdown bars */}
           <div className="mt-5 space-y-2">
             {product.breakdown.map((item) => (
               <div key={item.criterium} className="flex items-center gap-3">
@@ -114,14 +127,31 @@ export function ProductCard({ product, position }: Props) {
             ))}
           </div>
 
-          <AffiliateLink
-            affiliateSlug={product.affiliateSlug}
-            sourcePage="product-card"
-            position={position}
-            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 sm:w-auto"
-          >
-            Bekijk bij {getAffiliateShopLabel(product.affiliateSlug)} →
-          </AffiliateLink>
+          {isPrimary ? (
+            <>
+              <p className="mt-5 text-sm text-slate-600">
+                Onafhankelijk getest — geen sponsoring. Bij twijfel of medicatie: overleg met je
+                huisarts.
+              </p>
+              <AffiliateLink
+                affiliateSlug={product.affiliateSlug}
+                sourcePage="product-card"
+                position={position}
+                className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 sm:w-auto"
+              >
+                {ctaLabel} →
+              </AffiliateLink>
+            </>
+          ) : (
+            <AffiliateLink
+              affiliateSlug={product.affiliateSlug}
+              sourcePage="product-card"
+              position={position}
+              className="mt-6 inline-flex text-sm font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-4 transition hover:text-emerald-800"
+            >
+              {ctaLabel} →
+            </AffiliateLink>
+          )}
         </div>
       </div>
     </article>

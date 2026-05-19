@@ -220,11 +220,14 @@ export default async function ProfielPage({ params }: Props) {
                   {profile.guidanceCta.title}
                 </h2>
                 <p className="text-slate-600 mt-4 leading-relaxed">{profile.guidanceCta.text}</p>
+                <p className="mt-4 text-sm text-slate-500">
+                  Geen medische test — wel inzicht in 6 leefstijldomeinen.
+                </p>
                 <Link
                   href="/intake"
                   className="inline-flex items-center mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 h-12 rounded-lg transition-colors"
                 >
-                  Doe de gratis Leefstijlcheck
+                  Ontdek jouw profiel — match met {profile.label}
                 </Link>
               </div>
             </section>

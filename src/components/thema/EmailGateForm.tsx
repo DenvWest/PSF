@@ -65,7 +65,7 @@ export function EmailGateForm({
         <button
           onClick={handleSubmit}
           disabled={status === "loading"}
-          className="rounded-xl bg-ps-green px-6 py-3 text-sm font-semibold text-white hover:bg-ps-green-hover disabled:opacity-60 transition-all shadow-sm hover:shadow-md whitespace-nowrap"
+          className="rounded-xl border border-stone-300 bg-white px-6 py-3 text-sm font-semibold text-ps-green hover:border-ps-green hover:bg-ps-green/5 disabled:opacity-60 transition-all whitespace-nowrap"
         >
           {status === "loading" ? "Verzenden..." : ctaText}
         </button>

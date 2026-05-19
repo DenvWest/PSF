@@ -14,35 +14,6 @@ const CHOOSER_LABEL: Record<SupplementCategory, string> = {
   eiwitpoeder: "eiwitpoeder",
 };
 
-export function ComparisonEducationalLead({
-  category: _category,
-}: {
-  category: SupplementCategory;
-}) {
-  return (
-    <section
-      aria-label="Eerst zicht op jouw situatie"
-      className="mx-auto mt-16 w-full max-w-7xl px-6 lg:px-8"
-    >
-      <div className="rounded-lg bg-stone-50 p-8">
-        <h2 className="font-display mb-2 text-2xl text-stone-900">
-          Wil je eerst begrijpen wat bij jou past?
-        </h2>
-        <p className="mb-4 text-stone-600">
-          Veel mensen kopen zomaar een supplement. De Leefstijlcheck geeft in ongeveer 3 minuten
-          zicht op jouw profiel — zodat je daarna gerichter kunt kiezen.
-        </p>
-        <Link
-          href="/intake"
-          className="inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
-        >
-          Start de Leefstijlcheck →
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 export function ComparisonChooserIntro({
   category,
   children,
@@ -77,20 +48,23 @@ export function ComparisonIntakeFallbackCta() {
     <Container>
       <section
         aria-label="Leefstijlcheck"
-        className="my-16 rounded-lg bg-stone-100 p-8"
+        className="my-16 rounded-lg border border-stone-200 bg-stone-50 p-8"
       >
         <h2 className="font-display mb-2 text-lg text-stone-900">
           Niet zeker welk supplement bij jóu past?
         </h2>
-        <p className="mb-4 text-stone-600">
+        <p className="mb-2 text-stone-600">
           Je situatie is uniek. De Leefstijlcheck bepaalt jouw profiel in 3 minuten — en zegt
           precies welke supplementen voor jou relevant zijn.
         </p>
+        <p className="mb-4 text-sm text-stone-500">
+          Geen medische test — wel inzicht in 6 leefstijldomeinen.
+        </p>
         <Link
           href="/intake"
-          className="inline-block rounded bg-[#3C7A56] px-4 py-2 font-medium text-white hover:bg-ps-green-hover"
+          className="inline-flex font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:text-ps-green-hover"
         >
-          Start de Leefstijlcheck →
+          Ontdek jouw herstelprofiel — gratis →
         </Link>
       </section>
     </Container>

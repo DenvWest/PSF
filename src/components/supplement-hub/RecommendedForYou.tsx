@@ -78,14 +78,14 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
                   href={rec.guideHref}
                   className="text-sm font-medium text-ps-green hover:text-ps-green-hover transition-colors"
                 >
-                  Lees de gids →
+                  {rec.name}: {rec.wiifm} →
                 </Link>
                 {rec.comparisonHref && rec.comparisonHref !== rec.guideHref && (
                   <Link
                     href={rec.comparisonHref}
-                    className="text-sm font-medium text-ps-green hover:text-ps-green-hover transition-colors"
+                    className="text-sm font-medium text-stone-600 hover:text-stone-800 transition-colors"
                   >
-                    Vergelijk producten →
+                    Vergelijk {rec.name.toLowerCase()} op prijs →
                   </Link>
                 )}
               </div>

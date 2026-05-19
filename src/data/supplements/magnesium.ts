@@ -6,7 +6,7 @@ export const magnesiumData: ComparisonPageData = {
   guideHref: "/supplementen/magnesium",
   h1: "Welke magnesium past bij jou?",
   intro:
-    "Drie magnesiumsupplementen vergeleken op vorm, elementaire dosering, prijs per dag en toepasbaarheid — zodat je weet welke variant bij jouw voorkeur voor inname en routine past.",
+    "Slecht slapen, gespannen spieren of moeilijk tot rust komen? Magnesium wordt vaak genoemd — maar bisglycinaat, citraat of complex maakt wél uit. Drie producten vergeleken op vorm, elementaire dosering en prijs per dag.",
   seoTitle: "Beste magnesium supplement 2026 — onafhankelijk vergeleken",
   seoDescription:
     "Vergelijk magnesiumsupplementen op vorm (bisglycinaat, citraat, complex), dosering en prijs per dag. Onafhankelijke analyse voor mannen 40+.",

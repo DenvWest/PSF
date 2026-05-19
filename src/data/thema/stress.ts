@@ -169,7 +169,7 @@ export const stressThema: ThemaPageData = {
       "Supplementinformatie op hoofdlijnen, gekoppeld aan onze gidsen",
       "Signalen wanneer professionele of medische begeleiding passend is",
     ],
-    ctaText: "Download de Stressgids",
+    ctaText: "Download ter inspiratie",
     privacyText:
       "Je e-mail wordt alleen gebruikt voor de gids en relevante tips. Geen spam, altijd opzegbaar.",
     successMessage: "Check je inbox — de Stressgids is onderweg.",

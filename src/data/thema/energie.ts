@@ -180,7 +180,7 @@ export const energieThema: ThemaPageData = {
       "Supplementinformatie op hoofdlijnen met links naar onze gidsen",
       "Wanneer vermoeidheid wél iets ernstigers kan betekenen — en wat je bespreekt",
     ],
-    ctaText: "Download de Energiegids",
+    ctaText: "Download ter inspiratie",
     privacyText:
       "Je e-mail wordt alleen gebruikt voor de gids en relevante tips. Geen spam, altijd opzegbaar.",
     successMessage: "Check je inbox — de Energiegids is onderweg.",

@@ -378,11 +378,14 @@ export default function LageBatterijPage() {
                   In 3 minuten weet je waar je staat op 6 gezondheidsdomeinen — en krijg je een
                   persoonlijk Herstelplan met concrete stappen.
                 </p>
+                <p className="mt-4 text-sm text-slate-500 max-w-xl mx-auto">
+                  Geen medische test — wel inzicht in 6 leefstijldomeinen.
+                </p>
                 <Link
                   href="/intake"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  Doe de gratis Leefstijlcheck
+                  Ontdek jouw profiel — match met Lage Batterij
                 </Link>
                 <p className="mt-4 text-sm text-slate-400">
                   Meer dan 500 mannen 40+ gingen je voor. Gratis, anoniem, geen account nodig.

@@ -561,11 +561,14 @@ export default function StressVerminderenManPage() {
                     minuten weet je hoe je scoort op stress, slaap, energie, herstel, voeding en
                     beweging — en welk profiel bij jou past.
                   </p>
+                  <p className="mt-4 text-sm text-gray-500 max-w-lg mx-auto">
+                    Geen diagnose — wel een startpunt voor gesprek met je arts.
+                  </p>
                   <Link
                     href="/intake"
                     className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
                   >
-                    Doe de gratis Leefstijlcheck →
+                    Zie waar jouw stress, slaap en energie scoren — gratis →
                   </Link>
                   <p className="mt-3 text-sm text-gray-500">
                     12 vragen, 3 minuten, persoonlijk advies

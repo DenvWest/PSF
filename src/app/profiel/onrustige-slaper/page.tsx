@@ -394,16 +394,20 @@ export default function OnrustigeSlaperPage() {
             <section className="py-16">
               <div className="bg-emerald-50 rounded-2xl p-8 md:p-12 text-center">
                 <h2 className="font-[var(--font-heading)] text-2xl md:text-3xl text-slate-900">
-                  Nog niet de Leefstijlcheck gedaan?
+                  Twijfel je of dit profiel bij jou past?
                 </h2>
                 <p className="text-slate-600 mt-4 leading-relaxed max-w-xl mx-auto">
-                  Ontdek in 3 minuten hoe je scoort op slaap, stress en 4 andere domeinen.
+                  Ontdek in 3 minuten hoe je scoort op slaap, stress en 4 andere domeinen — en of
+                  Onrustige Slaper bij jouw situatie past.
+                </p>
+                <p className="mt-4 text-sm text-slate-500 max-w-xl mx-auto">
+                  Geen medische test — wel inzicht in 6 leefstijldomeinen.
                 </p>
                 <Link
                   href="/intake"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  Doe de gratis Leefstijlcheck
+                  Ontdek jouw profiel — match met Onrustige Slaper
                 </Link>
                 <p className="mt-4 text-sm text-slate-400">
                   Gratis, anoniem, geen account nodig. Je krijgt direct je persoonlijke Herstelplan.

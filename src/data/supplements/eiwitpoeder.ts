@@ -6,7 +6,7 @@ export const eiwitpoederData: ComparisonPageData = {
   guideHref: "/supplementen/eiwitpoeder",
   h1: "Beste Eiwitpoeder 2026",
   intro:
-    "Whey of plantaardig? We vergeleken de beste eiwitpoeders op eiwitgehalte, biobeschikbaarheid, zuiverheid en prijs.",
+    "Spieren die langzamer herstellen of te weinig eiwit via je voeding? Whey of plantaardig maakt uit voor opname en prijs. Drie eiwitpoeders vergeleken op eiwitgehalte, zuiverheid en wat je per portie betaalt.",
   seoTitle:
     "Beste Eiwitpoeder 2026: Whey & Vegan Vergelijking | PerfectSupplement",
   seoDescription:
@@ -15,7 +15,7 @@ export const eiwitpoederData: ComparisonPageData = {
   tableDoseringColumnLabel: "Proteïne per portie",
   topProductLabel: "Beste allround",
   showEducationalLead: true,
-  showIntakeFallbackCta: false,
+  showIntakeFallbackCta: true,
   breadcrumbs: [
     { name: "Home", url: "https://perfectsupplement.nl" },
     { name: "Supplementen", url: "https://perfectsupplement.nl/supplementen" },

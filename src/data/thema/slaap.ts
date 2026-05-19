@@ -170,7 +170,7 @@ export const slaapThema: ThemaPageData = {
       "Doseerschema's per supplement, gebaseerd op klinisch onderzoek",
       "Veelgemaakte fouten die je slaap saboteren zonder dat je het weet",
     ],
-    ctaText: "Download de Slaapgids",
+    ctaText: "Download ter inspiratie",
     privacyText:
       "Je ontvangt de gids en maximaal 3 tips over slaap en supplementen. Geen spam, altijd opzegbaar.",
     successMessage: "Check je inbox — de Slaapgids is onderweg.",

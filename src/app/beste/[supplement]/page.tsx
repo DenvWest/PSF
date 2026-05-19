@@ -14,7 +14,6 @@ import { StickyMobileCta } from "@/components/supplements/StickyMobileCta";
 import { TrustBar } from "@/components/supplements/TrustBar";
 import {
   ComparisonChooserIntro,
-  ComparisonEducationalLead,
   ComparisonIntakeFallbackCta,
 } from "@/components/supplements/ContentFirstComparisonCTAs";
 import Container from "@/components/layout/Container";
@@ -86,9 +85,9 @@ export default async function Page({ params }: PageProps) {
   if (!data) notFound();
 
   const pageUrl = `https://perfectsupplement.nl/beste/${supplement}`;
+  const topProductLabel = data.topProductLabel ?? "Topkeuze";
   const topProduct =
-    data.products.find((p) => p.bestFor === (data.topProductLabel ?? "Topkeuze")) ??
-    data.products[0];
+    data.products.find((p) => p.bestFor === topProductLabel) ?? data.products[0];
 
   const breadcrumbSchema = buildBreadcrumbSchema(data.breadcrumbs);
   const itemListSchema = buildItemListSchema(data.products, pageUrl);
@@ -141,18 +140,28 @@ export default async function Page({ params }: PageProps) {
           />
         </ComparisonChooserIntro>
 
-        {data.showEducationalLead && (
-          <ComparisonEducationalLead category={data.category} />
+        {data.readAlsoCards && data.readAlsoCards.length > 0 && (
+          <section className="mt-16 border-t border-stone-100 pt-12">
+            <Container>
+              <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {data.readAlsoCards.map((card) => (
+                  <Link
+                    key={card.href}
+                    href={card.href}
+                    className={`group block rounded-xl border border-stone-200 p-6 hover:border-ps-green/30 transition-colors${
+                      card.colSpan === 2 ? " md:col-span-2" : ""
+                    }`}
+                  >
+                    <p className="text-base text-stone-600 leading-relaxed">
+                      {card.text}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </Container>
+          </section>
         )}
-
-        <section id="producten" className="mx-auto mt-16 w-full max-w-7xl space-y-8 px-6 lg:px-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Alle varianten uitgelicht
-          </h2>
-          {data.products.map((p, i) => (
-            <ProductCard key={p.slug} product={p} position={i + 1} />
-          ))}
-        </section>
 
         <section className="mt-16">
           <BuyingGuide
@@ -167,6 +176,20 @@ export default async function Page({ params }: PageProps) {
             Veelgestelde vragen
           </h2>
           <FaqSection items={data.faq} />
+        </section>
+
+        <section id="producten" className="mx-auto mt-16 w-full max-w-7xl space-y-8 px-6 lg:px-8">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Alle varianten uitgelicht
+          </h2>
+          {data.products.map((p, i) => (
+            <ProductCard
+              key={p.slug}
+              product={p}
+              position={i + 1}
+              isPrimary={p.slug === topProduct.slug}
+            />
+          ))}
         </section>
 
         {data.moreAboutTitle && data.moreAboutLinks && (
@@ -192,34 +215,6 @@ export default async function Page({ params }: PageProps) {
                 ))}
               </div>
             </div>
-          </section>
-        )}
-
-        {data.readAlsoCards && data.readAlsoCards.length > 0 && (
-          <section className="mt-16 border-t border-stone-100 pt-12">
-            <Container>
-              <h2 className="font-display text-2xl font-bold text-stone-900 mb-8">Lees ook</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {data.readAlsoCards.map((card) => (
-                  <Link
-                    key={card.href}
-                    href={card.href}
-                    className={`group block rounded-xl border border-stone-200 p-6 hover:border-ps-green/30 transition-colors${
-                      card.colSpan === 2 ? " md:col-span-2" : ""
-                    }`}
-                  >
-                    <p className="text-base text-stone-600 leading-relaxed">
-                      {card.text}
-                    </p>
-                    {card.cta && (
-                      <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
-                        {card.cta}
-                      </span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </Container>
           </section>
         )}
 

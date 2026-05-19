@@ -6,7 +6,7 @@ export const creatineData: ComparisonPageData = {
   guideHref: "/supplementen/creatine",
   h1: "Beste creatine supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Drie creatine monohydraat supplementen vergeleken op zuiverheid, prijs per gram en kwaliteitscertificering — voor mannen 40+ die spierkracht, herstel en prestatie willen ondersteunen.",
+    "Kracht verliest en herstel duurt langer na training? Creatine monohydraat is een van de best onderzochte supplementen voor spierkracht en herstel — maar zuiverheid en prijs per gram lopen uiteen. Drie producten vergeleken op kwaliteit en transparantie.",
   seoTitle:
     "Beste Creatine 2026 — Monohydraat Vergelijking | PerfectSupplement",
   seoDescription:

@@ -556,19 +556,10 @@ export default function SlaapVerbeterenNa40Page() {
                 </div>
 
                 <div className="mt-10 text-center p-8 bg-green-50 rounded-2xl border border-green-200">
-                  <h3 className="font-serif text-2xl font-bold text-gray-900">
-                    Wil je weten waar je staat?
-                  </h3>
-                  <p className="mt-3 text-gray-600 max-w-lg mx-auto">
-                    Slaap is één van de zes domeinen die we meten in de Leefstijlcheck. In 3
-                    minuten weet je hoe je scoort — en welk profiel bij jou past.
+                  <p className="text-gray-600 max-w-lg mx-auto">
+                    Benieuwd hoe jouw slaapprofiel scoort? Scroll naar beneden voor de gratis
+                    Leefstijlcheck.
                   </p>
-                  <Link
-                    href="/intake"
-                    className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
-                  >
-                    Doe de gratis Leefstijlcheck →
-                  </Link>
                 </div>
               </section>
 
@@ -749,11 +740,14 @@ export default function SlaapVerbeterenNa40Page() {
                     De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en energieprofiel in
                     kaart. Je krijgt een persoonlijk herstelplan — gratis, zonder registratie.
                   </p>
+                  <p className="mt-4 text-sm text-gray-500 max-w-lg mx-auto">
+                    Geen diagnose — wel een startpunt voor gesprek met je arts.
+                  </p>
                   <Link
                     href="/intake"
                     className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
                   >
-                    Doe de gratis Leefstijlcheck →
+                    Zie waar jouw slaap, stress en energie scoren — gratis →
                   </Link>
                 </div>
               </section>

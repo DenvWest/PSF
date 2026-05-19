@@ -44,7 +44,7 @@ export default function HubHero({ hasSession }: HubHeroProps) {
                 href="/intake"
                 className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white hover:bg-ps-green-hover transition-all shadow-sm hover:shadow-md"
               >
-                Doe de leefstijlcheck →
+                Ontdek welke supplementen bij jou passen →
               </Link>
             )}
           </div>
