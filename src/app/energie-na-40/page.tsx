@@ -614,7 +614,7 @@ export default function EnergieNa40Page() {
                     Zie waar jouw energie, slaap en stress scoren — gratis →
                   </Link>
                   <p className="mt-3 text-sm text-gray-500">
-                    12 vragen, 3 minuten, persoonlijk advies
+                    15 vragen, 3 minuten, persoonlijk advies
                   </p>
                 </div>
               </section>

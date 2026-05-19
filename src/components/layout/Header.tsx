@@ -144,7 +144,11 @@ export default function Header() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className="text-sm font-medium text-stone-500 transition hover:text-stone-900"
+                                    className={
+                                        link.href === "/intake"
+                                            ? "rounded-lg bg-ps-green/10 px-3 py-1.5 text-sm font-semibold text-ps-green transition hover:bg-ps-green/15"
+                                            : "text-sm font-medium text-stone-500 transition hover:text-stone-900"
+                                    }
                                 >
                                     {link.label}
                                 </Link>

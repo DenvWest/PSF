@@ -732,7 +732,7 @@ export default function HerstelVerbeterenNa40Page() {
                     Zie waar jouw herstel, slaap en energie scoren — gratis →
                   </Link>
                   <p className="mt-3 text-sm text-gray-500">
-                    12 vragen, 3 minuten, persoonlijk advies
+                    15 vragen, 3 minuten, persoonlijk advies
                   </p>
                 </div>
               </section>

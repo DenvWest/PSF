@@ -1,5 +1,15 @@
 import type { QuestionId } from "@/data/intake-questions";
 
+export const INTAKE_PROMO = {
+  questionCount: 15,
+  durationLabel: "3 minuten",
+  subline: "15 vragen, 3 minuten — direct een persoonlijk herstelplan.",
+  sublineShort: "15 vragen, 3 minuten",
+  sublineWithResult: "15 vragen, 3 minuten, persoonlijk resultaat.",
+  sublineWithAdvice: "15 vragen, 3 minuten, persoonlijk advies",
+  heroCta: "Start de Leefstijlcheck (3 min)",
+} as const;
+
 export const HOMEPAGE_HERO = {
   eyebrow: "VOOR MANNEN 40+",
   headline: "Minder energie na 40? Meestal geen testosteronprobleem.",

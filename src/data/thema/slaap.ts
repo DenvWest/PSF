@@ -195,9 +195,9 @@ export const slaapThema: ThemaPageData = {
     sectionLabel: "PERSOONLIJK ADVIES",
     title: "Wil je weten wat er bij jou speelt?",
     subtitle:
-      "De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 12 vragen. Je krijgt een persoonlijk Herstelplan met concrete stappen.",
+      "De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 15 vragen. Je krijgt een persoonlijk Herstelplan met concrete stappen.",
     features: [
-      "12 vragen, 3 minuten",
+      "15 vragen, 3 minuten",
       "Scores op 6 leefstijldomeinen",
       "Persoonlijk Herstelplan met quick wins",
       "Gerichte supplementroute op basis van jouw profiel",

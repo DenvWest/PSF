@@ -277,7 +277,7 @@ export default function WhatIsOmega3Page() {
                                 Weet jij welk supplement bij jou past?
                             </p>
                             <p className="text-base text-stone-500 leading-relaxed mb-6 max-w-md mx-auto">
-                                12 vragen, 3 minuten — direct een persoonlijk herstelplan.
+                                15 vragen, 3 minuten — direct een persoonlijk herstelplan.
                             </p>
                             <Link
                                 href="/intake"

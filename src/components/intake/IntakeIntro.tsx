@@ -80,10 +80,10 @@ export default function IntakeIntro({
         <button
           type="button"
           onClick={onStart}
-          className="mt-8 cursor-pointer rounded-[14px] border border-white/30 bg-transparent px-12 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-white/10"
-          style={{ fontFamily: "inherit" }}
+          className="mt-8 cursor-pointer rounded-[14px] border border-[#C8956C] px-12 py-4 text-base font-semibold text-white transition-all duration-200 hover:brightness-110"
+          style={{ fontFamily: "inherit", background: "#C8956C" }}
         >
-          Start de intake →
+          Start de Leefstijlcheck →
         </button>
 
         {/* 6. Laatste-meting link */}

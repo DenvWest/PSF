@@ -237,7 +237,7 @@ export default function MethodologiePage() {
                 Niet zeker welk supplement bij jou past?
               </h2>
               <p className="text-white/80 mt-3 max-w-md mx-auto text-sm leading-relaxed">
-                Doe de gratis Leefstijlcheck — 12 vragen, 3 minuten, persoonlijk resultaat.
+                Doe de gratis Leefstijlcheck — 15 vragen, 3 minuten, persoonlijk resultaat.
               </p>
               <div className="mt-6">
                 <Link

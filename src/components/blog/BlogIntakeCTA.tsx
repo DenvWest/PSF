@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { INTAKE_PROMO } from "@/data/homepage";
 
 interface BlogIntakeCTAProps {
   className?: string;
@@ -14,14 +15,14 @@ export default function BlogIntakeCTA({ className = "" }: BlogIntakeCTAProps) {
         Ontdek waar jouw lichaam waarschijnlijk om herstel vraagt
       </p>
       <p className="mt-2 text-sm text-stone-500">
-        12 vragen, 3 minuten — direct een persoonlijk herstelplan.
+        {INTAKE_PROMO.subline}
       </p>
       <p className="mx-auto mt-4 max-w-md text-sm text-stone-500">
         Geen medische test — wel inzicht in 6 leefstijldomeinen.
       </p>
       <Link
         href="/intake"
-        className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[#3C7A56] px-6 py-3 text-base font-medium text-white transition hover:bg-[#2E5F43]"
+        className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
       >
         Ontdek jouw herstelprofiel — gratis →
       </Link>

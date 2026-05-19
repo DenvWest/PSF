@@ -8,6 +8,7 @@ import {
   BLOG_HERO_PT,
   BLOG_HUB_LABEL,
 } from "@/components/blog/blog-layout";
+import { HOMEPAGE_LIFESTYLE, INTAKE_PROMO } from "@/data/homepage";
 
 interface BlogHubHeroProps {
   compact?: boolean;
@@ -50,6 +51,22 @@ export default function BlogHubHero({ compact = false }: BlogHubHeroProps) {
             supplementen — geschreven om je te helpen begrijpen wat je lichaam
             probeert te vertellen.
           </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link
+              href="/intake"
+              className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover"
+            >
+              {INTAKE_PROMO.heroCta}
+              <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href={`/#${HOMEPAGE_LIFESTYLE.sectionId}`}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3.5 text-sm font-medium text-stone-700 shadow-sm transition hover:border-stone-400 hover:bg-stone-50"
+            >
+              Bekijk hoe het werkt
+            </Link>
+          </div>
+          <p className="mt-3 text-xs text-stone-500">{INTAKE_PROMO.subline}</p>
         </div>
       </Container>
     </section>

@@ -62,7 +62,7 @@ export default async function ThemaPage({ params }: Props) {
               <span aria-hidden>→</span>
             </Link>
             <span className="ml-3 block mt-3 text-sm text-stone-500 sm:ml-0 sm:mt-0 sm:inline">
-              12 vragen, ongeveer 3 minuten, gratis
+              15 vragen, ongeveer 3 minuten, gratis
             </span>
           </p>
         </Container>
