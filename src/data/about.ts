@@ -16,7 +16,7 @@ export const ABOUT_FOUNDER = {
   bigNumber: "59930614504",
   credentials: [
     "Fysiotherapeut, ingeschreven in het BIG-register (nr. 59930614504)",
-    "Leefstijlcoach",
+    "Leefstijlcoach — Civabv-erkenning KNGF-keurmerk registratie leefstijlcoaching",
     "Oprichter PerfectSupplement",
   ] as const,
   roleNote:
@@ -45,7 +45,7 @@ export const ABOUT_STORY = {
   title: "Wie zit hierachter",
   paragraphs: [
     "Dennis van Westbroek weet dat niet alleen vanuit zijn praktijk als fysiotherapeut en leefstijlcoach — maar ook vanuit eigen ervaring.",
-    "Jarenlang herkende Dennis in zijn eigen leven het patroon van drukke periodes, minder rust en het gevoel dat herstel en ontspanning steeds meer moeite kostten. Dat is een persoonlijk verhaal — geen medische beschrijving van wat er in je lichaam gebeurt.",
+    "Jarenlang herkende Dennis in zijn eigen leven het patroon van drukke periodes, minder rust en het gevoel dat herstel en ontspanning steeds meer moeite kostten.",
   ],
 } as const;
 
@@ -53,18 +53,14 @@ export const ABOUT_INSIGHT = {
   id: "waarom-leefstijl",
   title: "Wat veel mannen over het hoofd zien",
   paragraphs: [
-    "Slaap, stress, voeding, beweging en herstel hangen in het dagelijks leven vaak met elkaar samen. Veel mannen merken dat als één van die onderdelen langere tijd scheef staat, de rest ook lastiger wordt om te overzien — dat is herkenbaar gedrag, geen medische uitleg.",
+    "Leefstijlfactoren hangen in het dagelijks leven vaak met elkaar samen — waaronder leefstijl, (ver)binding, autonomie en competentie die niet verzadigd zijn. Veel mannen merken dat als één van die onderdelen langere tijd scheef staat, de rest ook lastiger wordt om te overzien.",
   ],
   vicieuzeCirkel:
-    "In de praktijk hoort Dennis vaak hetzelfde verhaal: meer stress, minder rust, minder overzicht — en daardoor weer meer spanning. Dat is een herkenbaar patroon, geen diagnose.",
+    "In de praktijk hoort Dennis vaak hetzelfde verhaal: meer stress, minder rust, minder overzicht — en daardoor weer meer spanning.",
   keyInsightLead:
     "En precies daar gaat het mis met veel gezondheidsadvies online:",
   keyInsight:
-    "er wordt gezocht naar één supplement, terwijl de basis (slaap, stress, voeding) nog niet op orde is.",
-  links: [
-    { href: "/stress-verminderen-man", label: "Stress verminderen na 40" },
-    { href: "/slaap-verbeteren-na-40", label: "Slaap verbeteren na 40" },
-  ],
+    "er wordt gezocht naar één supplement, terwijl de basis in je leefstijl nog niet op orde is.",
 } as const;
 
 export const ABOUT_ORIGIN = {
@@ -77,21 +73,20 @@ export const ABOUT_ORIGIN = {
   positioning: {
     title: "Geen snelle oplossingen — wel richting",
     paragraphs: [
-      "Dennis van Westbroek wil niet de zoveelste supplementvergelijker zijn die snel een top 10 verkoopt.",
-      "Hij wil de rustige gids zijn tussen leefstijl, herstel en supplementen: eerst overzicht in je leefstijl, daarna pas gericht aanvullen waar het zinvol is.",
+      "PerfectSupplement is de rustige gids tussen leefstijl, herstel en supplementen: eerst overzicht in je leefstijl, daarna pas gericht aanvullen waar het zinvol is.",
     ],
   },
 } as const;
 
 export const ABOUT_WHAT_WE_DO = {
   id: "wat-we-doen",
-  title: "Wat we voor je doen",
+  title: "Wat wij voor je doen",
   leadPhrase: "Eerst inzicht, dan pas aanvullen.",
   brandPrinciple: "Eerst de basis, dan de pil — in die volgorde, altijd.",
   intakeDisclaimer:
     "De Leefstijlcheck is een korte vragenlijst die helpt bij het ordenen van aandachtspunten — geen medische test en geen vervanging voor zorg.",
   privacyNoteBefore: "Je antwoorden worden versleuteld opgeslagen. Lees ons ",
-  privacyNoteAfter: " voor hoe we met gegevens omgaan.",
+  privacyNoteAfter: " voor hoe wij met gegevens omgaan.",
   privacyLink: {
     href: "/privacy",
     label: "privacybeleid",
@@ -100,7 +95,7 @@ export const ABOUT_WHAT_WE_DO = {
     "Onze vergelijkingen volgen vaste criteria en waar mogelijk EFSA-toegelaten claims. Per product vind je bronnen en toelichting onderaan de vergelijkingspagina — de volledige uitleg staat op onze methodologiepagina.",
   paragraphs: [
     "Met onze vragenlijst vul je in een paar minuten je antwoorden in over slaap, stress, energie, voeding, beweging en herstel. Je krijgt een overzicht van aandachtspunten en algemene leefstijltips — geen medisch advies en geen persoonlijk behandelplan.",
-    "Daarnaast vergelijken we supplementen op vaste criteria: dosering, biobeschikbaarheid, prijs-kwaliteit en transparantie. Elk product doorloopt hetzelfde stramien — ongeacht het merk.",
+    "Daarnaast vergelijken wij supplementen op vaste criteria: dosering, biobeschikbaarheid, prijs-kwaliteit en transparantie. Elk product doorloopt hetzelfde stramien — ongeacht het merk.",
     "Dit platform is er niet om je meer te laten kopen. Het is er om je grip te geven: beter begrijpen wat je doet, scherpere keuzes maken en minder afhankelijk te worden van glimmende verpakkingen en halve verhalen.",
   ],
   methodologieLink: {
@@ -113,21 +108,20 @@ export const ABOUT_WHAT_WE_DO = {
   },
   whatWeDontDoTitle: "Onze uitgangspunten",
   whatWeDontDo: [
-    "We vergelijken transparant op dezelfde criteria — ongeacht merk of commissie",
-    "We stellen geen medische diagnoses, geven geen behandeling en zijn geen vervanging voor je huisarts of specialist — bij aanhoudende klachten: neem contact op met je zorgverlener",
-    "We verkopen zelf geen supplementen",
-    "We accepteren geen betaalde reviews of gesponsorde rankings — affiliate-relaties beïnvloeden de scores niet, die volgen vaste criteria",
-    "We benoemen ook nadelen en zwakke punten van producten",
+    "Wij vergelijken transparant op dezelfde criteria — ongeacht merk of commissie",
+    "Wij stellen geen medische diagnoses, geven geen behandeling en zijn geen vervanging voor je huisarts of specialist — bij aanhoudende klachten: neem contact op met je zorgverlener",
+    "Wij verkopen zelf geen supplementen",
+    "Wij accepteren geen betaalde reviews of gesponsorde rankings — affiliate-relaties beïnvloeden de scores niet, die volgen vaste criteria",
   ],
 } as const;
 
 export const ABOUT_TRUST = {
   id: "vertrouwen",
-  title: "Transparantie vinden we belangrijk",
+  title: "Transparantie vinden wij belangrijk",
   intro:
-    "Daarom zijn we ook open over hoe PerfectSupplement geld verdient.",
+    "Daarom zijn wij ook open over hoe PerfectSupplement geld verdient.",
   paragraphs: [
-    "Koop je via onze vergelijkingspagina's bij een partnerwebshop, dan ontvangen wij een kleine commissie — zonder extra kosten voor jou. Daardoor hoeven we geen eigen producten te verkopen en kunnen we onafhankelijk beoordelen. Onze affiliate-relaties beïnvloeden de scores niet: die volgen vaste criteria, zie onze methodologie.",
+    "Koop je via onze vergelijkingspagina's bij een partnerwebshop, dan ontvangen wij een kleine commissie — zonder extra kosten voor jou. Daardoor hoeven wij geen eigen producten te verkopen en kunnen wij onafhankelijk beoordelen. Onze affiliate-relaties beïnvloeden de scores niet: die volgen vaste criteria, zie onze methodologie.",
   ],
   affiliateLink: {
     href: "/affiliate-disclosure",

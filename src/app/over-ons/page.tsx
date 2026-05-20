@@ -51,7 +51,7 @@ const structuredData = {
       url: `${ABOUT_SITE_URL}/over-ons#achtergrond`,
       jobTitle: ABOUT_FOUNDER.jobTitle,
       description:
-        `Fysiotherapeut ingeschreven in het BIG-register (nr. ${ABOUT_FOUNDER.bigNumber}), leefstijlcoach en oprichter van PerfectSupplement`,
+        `Fysiotherapeut ingeschreven in het BIG-register (nr. ${ABOUT_FOUNDER.bigNumber}), leefstijlcoach (Civabv/KNGF-keurmerk) en oprichter van PerfectSupplement`,
       ...(ABOUT_FOUNDER_SAME_AS.length > 0
         ? { sameAs: ABOUT_FOUNDER_SAME_AS }
         : {}),
@@ -158,17 +158,6 @@ export default function OverOnsPage() {
                       {ABOUT_INSIGHT.keyInsight}
                     </span>
                   </p>
-                  <p className={bodyClass}>
-                    Wil je hier dieper op in? Lees onze gids over{" "}
-                    <Link href={ABOUT_INSIGHT.links[0].href} className={linkClass}>
-                      {ABOUT_INSIGHT.links[0].label}
-                    </Link>{" "}
-                    of{" "}
-                    <Link href={ABOUT_INSIGHT.links[1].href} className={linkClass}>
-                      {ABOUT_INSIGHT.links[1].label}
-                    </Link>{" "}
-                    — met praktische stappen, zonder diagnoses.
-                  </p>
                 </div>
                 {/* Desktop */}
                 <div className="hidden lg:grid lg:grid-cols-[1fr_80px_1fr] lg:items-start">
@@ -183,17 +172,6 @@ export default function OverOnsPage() {
                       <span className="font-medium text-stone-800">
                         {ABOUT_INSIGHT.keyInsight}
                       </span>
-                    </p>
-                    <p className={bodyClass}>
-                      Wil je hier dieper op in? Lees onze gids over{" "}
-                      <Link href={ABOUT_INSIGHT.links[0].href} className={linkClass}>
-                        {ABOUT_INSIGHT.links[0].label}
-                      </Link>{" "}
-                      of{" "}
-                      <Link href={ABOUT_INSIGHT.links[1].href} className={linkClass}>
-                        {ABOUT_INSIGHT.links[1].label}
-                      </Link>{" "}
-                      — met praktische stappen, zonder diagnoses.
                     </p>
                   </div>
                 </div>
@@ -210,9 +188,8 @@ export default function OverOnsPage() {
                     <h3 className="font-serif text-2xl leading-tight text-stone-900 md:text-3xl">
                       {ABOUT_ORIGIN.positioning.title}
                     </h3>
-                    <p className={bodyClass}>{ABOUT_ORIGIN.positioning.paragraphs[0]}</p>
                     <blockquote className="max-w-2xl border-l-2 border-[#5A8F6A] py-2 pl-6 font-serif text-2xl leading-snug text-stone-800 md:text-3xl">
-                      {ABOUT_ORIGIN.positioning.paragraphs[1]}
+                      {ABOUT_ORIGIN.positioning.paragraphs[0]}
                     </blockquote>
                   </div>
                   <p className={bodyClass}>{ABOUT_ORIGIN.paragraphs[1]}</p>
@@ -227,9 +204,8 @@ export default function OverOnsPage() {
                       <h3 className="font-serif text-2xl leading-tight text-stone-900 md:text-3xl">
                         {ABOUT_ORIGIN.positioning.title}
                       </h3>
-                      <p className={bodyClass}>{ABOUT_ORIGIN.positioning.paragraphs[0]}</p>
                       <blockquote className="border-l-2 border-[#5A8F6A] py-2 pl-6 font-serif text-2xl leading-snug text-stone-800 lg:text-3xl">
-                        {ABOUT_ORIGIN.positioning.paragraphs[1]}
+                        {ABOUT_ORIGIN.positioning.paragraphs[0]}
                       </blockquote>
                     </div>
                     <p className={bodyClass}>{ABOUT_ORIGIN.paragraphs[1]}</p>
