@@ -4,7 +4,7 @@ export const INTAKE_PROMO = {
   questionCount: 15,
   durationLabel: "3 minuten",
   subline: "15 vragen, 3 minuten — direct een persoonlijk herstelplan.",
-  sublineShort: "15 vragen, 3 minuten",
+  sublineShort: "Check in 3 minuten hoe jouw leefstijl invloed heeft.",
   sublineWithResult: "15 vragen, 3 minuten, persoonlijk resultaat.",
   sublineWithAdvice: "15 vragen, 3 minuten, persoonlijk advies",
   heroCta: "Start de Leefstijlcheck (3 min)",
