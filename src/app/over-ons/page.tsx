@@ -72,7 +72,8 @@ function StepNode({ number }: { number: string }) {
 export default function OverOnsPage() {
   const [heroLead, ...heroBody] = ABOUT_HERO.paragraphs;
   const [insightLead] = ABOUT_INSIGHT.paragraphs;
-  const [, , whatWeDoPurpose] = ABOUT_WHAT_WE_DO.paragraphs;
+  const [whatWeDoIntake, whatWeDoComparison, whatWeDoPurpose] =
+    ABOUT_WHAT_WE_DO.paragraphs;
   const [trustAffiliate] = ABOUT_TRUST.paragraphs;
 
   return (
@@ -245,20 +246,21 @@ export default function OverOnsPage() {
                   <span className={eyebrowClass}>04 — Aanpak</span>
                   <h2 className={h2Class}>{ABOUT_WHAT_WE_DO.title}</h2>
                   <p className={bodyClass}>
-                    <span className="font-medium text-stone-800">Eerst inzicht, dan pas aanvullen.</span>{" "}
-                    Met de gratis{" "}
+                    <span className="font-medium text-stone-800">
+                      {ABOUT_WHAT_WE_DO.leadPhrase}
+                    </span>{" "}
+                    {whatWeDoIntake}
+                  </p>
+                  <p>
                     <Link href={ABOUT_WHAT_WE_DO.intakeLink.href} className={linkClass}>
-                      Leefstijlcheck
-                    </Link>{" "}
-                    breng je in drie minuten je slaap, stress, energie, voeding,
-                    beweging en herstel in kaart. Op basis daarvan krijg je gerichte
-                    suggesties — eerst leefstijlaanpassingen, daarna pas supplementen
-                    die aansluiten.
+                      {ABOUT_WHAT_WE_DO.intakeLink.label} →
+                    </Link>
+                  </p>
+                  <p className="text-sm leading-relaxed text-stone-500">
+                    {ABOUT_WHAT_WE_DO.intakeDisclaimer}
                   </p>
                   <p className={bodyClass}>
-                    Daarnaast vergelijken we supplementen op vaste criteria:
-                    dosering, biobeschikbaarheid, prijs-kwaliteit en transparantie.
-                    Elk product doorloopt hetzelfde stramien — ongeacht het merk.{" "}
+                    {whatWeDoComparison}{" "}
                     <Link href={ABOUT_WHAT_WE_DO.methodologieLink.href} className={linkClass}>
                       {ABOUT_WHAT_WE_DO.methodologieLink.label} →
                     </Link>
@@ -290,20 +292,21 @@ export default function OverOnsPage() {
                     <span className={eyebrowClass}>04 — Aanpak</span>
                     <h2 className={h2Class}>{ABOUT_WHAT_WE_DO.title}</h2>
                     <p className={bodyClass}>
-                      <span className="font-medium text-stone-800">Eerst inzicht, dan pas aanvullen.</span>{" "}
-                      Met de gratis{" "}
+                      <span className="font-medium text-stone-800">
+                        {ABOUT_WHAT_WE_DO.leadPhrase}
+                      </span>{" "}
+                      {whatWeDoIntake}
+                    </p>
+                    <p>
                       <Link href={ABOUT_WHAT_WE_DO.intakeLink.href} className={linkClass}>
-                        Leefstijlcheck
-                      </Link>{" "}
-                      breng je in drie minuten je slaap, stress, energie, voeding,
-                      beweging en herstel in kaart. Op basis daarvan krijg je gerichte
-                      suggesties — eerst leefstijlaanpassingen, daarna pas supplementen
-                      die aansluiten.
+                        {ABOUT_WHAT_WE_DO.intakeLink.label} →
+                      </Link>
+                    </p>
+                    <p className="text-sm leading-relaxed text-stone-500">
+                      {ABOUT_WHAT_WE_DO.intakeDisclaimer}
                     </p>
                     <p className={bodyClass}>
-                      Daarnaast vergelijken we supplementen op vaste criteria:
-                      dosering, biobeschikbaarheid, prijs-kwaliteit en transparantie.
-                      Elk product doorloopt hetzelfde stramien — ongeacht het merk.{" "}
+                      {whatWeDoComparison}{" "}
                       <Link href={ABOUT_WHAT_WE_DO.methodologieLink.href} className={linkClass}>
                         {ABOUT_WHAT_WE_DO.methodologieLink.label} →
                       </Link>
