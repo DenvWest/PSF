@@ -412,79 +412,41 @@ export default function TestosteronNa40Page() {
                 <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-5">
                   <h3 className="font-semibold text-gray-900">Stack in onderzoek — geen hormoon-fix</h3>
                   <p className="mt-3 text-sm leading-relaxed text-gray-700">
-                    In populatie-onderzoek worden eiwit (via voeding of poeder), marine omega-3 en
-                    creatine vaak besproken rond spiermetabolisme bij ouder worden — niet als
-                    testosteron-boost. Smith et al. (2011) zagen bij ouderen een hogere rate of
-                    muscle protein synthesis met omega-3-suppletie in een gecontroleerde trial; recente
-                    meta-analyses tonen een gemengd beeld en geen garantie voor jou individueel.
-                    Creatine ondersteunt vooral korte, zware inspanning (EU-claim). Praktische volgorde:
-                    leefstijl → voldoende eiwit → eventueel omega-3 bij lage visinname → creatine bij
-                    krachttraining — maximaal één nieuwe stap per 1–2 weken.
+                    Geen supplement vervangt medisch advies — geen stack vervangt slaap, kracht en
+                    herstel.
                   </p>
-                </div>
-
-                <h3 className="mt-10 text-xl font-semibold text-gray-900">Zink</h3>
-                <p className="mt-3 leading-relaxed text-gray-700">
-                  Enige supplement hier met een EU-claim die testosteron noemt: zink draagt bij tot
-                  instandhouding van een normaal testosterongehalte in het bloed bij voldoende
-                  inname — geen belofte van verhoging bij normale status. Alleen gericht overwegen
-                  bij verhoogd risico op tekort; niet standaard hoge doses.
-                </p>
-                <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    Welke zinkvorm en dosering past bij veilig gebruik?
-                  </p>
-                  <Link href="/beste/zink" className={`mt-2 inline-block ${LINK}`}>
-                    Bekijk de zink-vergelijking →
-                  </Link>
-                </div>
-
-                <h3 className="mt-10 text-xl font-semibold text-gray-900">Eiwitpoeder (praktisch hulpmiddel)</h3>
-                <p className="mt-3 leading-relaxed text-gray-700">
-                  Eiwit draagt bij aan groei en instandhouding van spiermassa (EU-claims, bij
-                  voldoende totale inname en training). Poeder is vooral handig als je dagdoel
-                  (≈1,2–1,6 g/kg bij krachttraining) lastig haalt via maaltijden — geen vervanging
-                  van echte voeding.
-                </p>
-                <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    Whey of plantaardig — vergelijk op eiwit per portie en prijs per dag.
-                  </p>
-                  <Link href="/beste/eiwitpoeder" className={`mt-2 inline-block ${LINK}`}>
-                    Bekijk de eiwitpoeder-vergelijking →
-                  </Link>
-                </div>
-
-                <h3 className="mt-10 text-xl font-semibold text-gray-900">Omega-3 (EPA/DHA)</h3>
-                <p className="mt-3 leading-relaxed text-gray-700">
-                  EPA en DHA dragen bij tot normale werking van het hart; DHA draagt bij tot
-                  instandhouding van normale hersenfunctie (EU-claims bij voldoende dosering). In
-                  onderzoek worden ze besproken rond ontstekingsprofielen en spiermetabolisme bij
-                  ouder worden — verwacht geen wonderen, wel een zinvolle basis bij weinig vette vis.
-                </p>
-                <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    EPA/DHA per capsule, zuiverheid en prijs per dag — naast elkaar gezet.
-                  </p>
-                  <Link href="/beste/omega-3-supplement" className={`mt-2 inline-block ${LINK}`}>
-                    Bekijk de omega-3-vergelijking →
-                  </Link>
-                </div>
-
-                <h3 className="mt-10 text-xl font-semibold text-gray-900">Creatine monohydraat</h3>
-                <p className="mt-3 leading-relaxed text-gray-700">
-                  EU-claim: fysieke prestatie bij opeenvolgingen van zeer korte, intense inspanning
-                  (≥3 g/dag). Geen hormoonclaim — wel een van de best onderzochte opties bij
-                  krachttraining, ook bij ouderen. Past logisch naast eiwit en omega-3 in een
-                  herstel/training-context, niet als vervanging van rustdagen.
-                </p>
-                <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    Monohydraat op zuiverheid en prijs per dag vergelijken?
-                  </p>
-                  <Link href="/beste/creatine" className={`mt-2 inline-block ${LINK}`}>
-                    Bekijk de creatine-vergelijking →
-                  </Link>
+                  <ul className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700">
+                    <li>
+                      <strong className="text-gray-900">Zink</strong> — bij tekort EU-claim
+                      &apos;draagt bij aan normale testosteron in het bloed&apos;.{" "}
+                      <Link href="/beste/zink" className={LINK}>
+                        Bekijk de zink-vergelijking →
+                      </Link>
+                    </li>
+                    <li>
+                      <strong className="text-gray-900">Eiwitpoeder</strong> — handig als je
+                      dagdoel (≈1,2–1,6 g/kg) lastig haalt via maaltijden; EU-claim op spiermassa
+                      bij training.{" "}
+                      <Link href="/beste/eiwitpoeder" className={LINK}>
+                        Bekijk de eiwitpoeder-vergelijking →
+                      </Link>
+                    </li>
+                    <li>
+                      <strong className="text-gray-900">Omega-3</strong> — EPA/DHA voor hart
+                      (EU-claim); in onderzoek rond spiermetabolisme, geen hormoon-belofte.{" "}
+                      <Link href="/beste/omega-3-supplement" className={LINK}>
+                        Bekijk de omega-3-vergelijking →
+                      </Link>
+                    </li>
+                    <li>
+                      <strong className="text-gray-900">Creatine</strong> — EU-claim op korte,
+                      intense inspanning (≥3 g/dag); geen hormoonclaim, wel onderbouwd bij
+                      krachttraining.{" "}
+                      <Link href="/beste/creatine" className={LINK}>
+                        Bekijk de creatine-vergelijking →
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
               </section>
 
