@@ -51,7 +51,7 @@ const structuredData = {
       url: `${ABOUT_SITE_URL}/over-ons#achtergrond`,
       jobTitle: ABOUT_FOUNDER.jobTitle,
       description:
-        "BIG-geregistreerd fysiotherapeut en gecertificeerd leefstijlcoach met focus op mannen 40+",
+        `Fysiotherapeut ingeschreven in het BIG-register (nr. ${ABOUT_FOUNDER.bigNumber}), leefstijlcoach en oprichter van PerfectSupplement`,
       ...(ABOUT_FOUNDER_SAME_AS.length > 0
         ? { sameAs: ABOUT_FOUNDER_SAME_AS }
         : {}),
@@ -245,6 +245,9 @@ export default function OverOnsPage() {
                 <div className="lg:hidden space-y-6">
                   <span className={eyebrowClass}>04 — Aanpak</span>
                   <h2 className={h2Class}>{ABOUT_WHAT_WE_DO.title}</h2>
+                  <p className="font-serif text-xl leading-snug text-stone-800 md:text-2xl">
+                    {ABOUT_WHAT_WE_DO.brandPrinciple}
+                  </p>
                   <p className={bodyClass}>
                     <span className="font-medium text-stone-800">
                       {ABOUT_WHAT_WE_DO.leadPhrase}
@@ -259,12 +262,20 @@ export default function OverOnsPage() {
                   <p className="text-sm leading-relaxed text-stone-500">
                     {ABOUT_WHAT_WE_DO.intakeDisclaimer}
                   </p>
+                  <p className="text-sm leading-relaxed text-stone-500">
+                    {ABOUT_WHAT_WE_DO.privacyNoteBefore}
+                    <Link href={ABOUT_WHAT_WE_DO.privacyLink.href} className={linkClass}>
+                      {ABOUT_WHAT_WE_DO.privacyLink.label}
+                    </Link>
+                    {ABOUT_WHAT_WE_DO.privacyNoteAfter}
+                  </p>
                   <p className={bodyClass}>
                     {whatWeDoComparison}{" "}
                     <Link href={ABOUT_WHAT_WE_DO.methodologieLink.href} className={linkClass}>
                       {ABOUT_WHAT_WE_DO.methodologieLink.label} →
                     </Link>
                   </p>
+                  <p className={bodyClass}>{ABOUT_WHAT_WE_DO.evidenceParagraph}</p>
                   <p className={bodyClass}>{whatWeDoPurpose}</p>
                   <div className="pt-6">
                     <h3 className="mb-8 font-serif text-2xl leading-tight text-stone-900">
@@ -291,6 +302,9 @@ export default function OverOnsPage() {
                   <div className="pl-16 space-y-6">
                     <span className={eyebrowClass}>04 — Aanpak</span>
                     <h2 className={h2Class}>{ABOUT_WHAT_WE_DO.title}</h2>
+                    <p className="font-serif text-xl leading-snug text-stone-800 lg:text-2xl">
+                      {ABOUT_WHAT_WE_DO.brandPrinciple}
+                    </p>
                     <p className={bodyClass}>
                       <span className="font-medium text-stone-800">
                         {ABOUT_WHAT_WE_DO.leadPhrase}
@@ -305,12 +319,20 @@ export default function OverOnsPage() {
                     <p className="text-sm leading-relaxed text-stone-500">
                       {ABOUT_WHAT_WE_DO.intakeDisclaimer}
                     </p>
+                    <p className="text-sm leading-relaxed text-stone-500">
+                      {ABOUT_WHAT_WE_DO.privacyNoteBefore}
+                      <Link href={ABOUT_WHAT_WE_DO.privacyLink.href} className={linkClass}>
+                        {ABOUT_WHAT_WE_DO.privacyLink.label}
+                      </Link>
+                      {ABOUT_WHAT_WE_DO.privacyNoteAfter}
+                    </p>
                     <p className={bodyClass}>
                       {whatWeDoComparison}{" "}
                       <Link href={ABOUT_WHAT_WE_DO.methodologieLink.href} className={linkClass}>
                         {ABOUT_WHAT_WE_DO.methodologieLink.label} →
                       </Link>
                     </p>
+                    <p className={bodyClass}>{ABOUT_WHAT_WE_DO.evidenceParagraph}</p>
                     <p className={bodyClass}>{whatWeDoPurpose}</p>
                     <div className="pt-6">
                       <h3 className="mb-8 font-serif text-2xl leading-tight text-stone-900 lg:text-3xl">
@@ -396,7 +418,16 @@ export default function OverOnsPage() {
                         </p>
                       ))}
                     </div>
-                    <p className={`${bodyClass} max-w-2xl`}>{ABOUT_FOUNDER.bio}</p>
+                    <p className={`${bodyClass} max-w-2xl italic text-stone-600`}>
+                      {ABOUT_FOUNDER.roleNote}
+                    </p>
+                    <div className="max-w-2xl space-y-6">
+                      {ABOUT_FOUNDER.bioParagraphs.map((paragraph) => (
+                        <p key={paragraph.slice(0, 48)} className={bodyClass}>
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 {/* Desktop */}
@@ -417,7 +448,16 @@ export default function OverOnsPage() {
                           </p>
                         ))}
                       </div>
-                      <p className={bodyClass}>{ABOUT_FOUNDER.bio}</p>
+                      <p className={`${bodyClass} italic text-stone-600`}>
+                        {ABOUT_FOUNDER.roleNote}
+                      </p>
+                      <div className="space-y-6">
+                        {ABOUT_FOUNDER.bioParagraphs.map((paragraph) => (
+                          <p key={paragraph.slice(0, 48)} className={bodyClass}>
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>

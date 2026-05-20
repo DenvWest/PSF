@@ -13,21 +13,28 @@ export const ABOUT_SITE_URL = "https://perfectsupplement.nl";
 export const ABOUT_FOUNDER = {
   name: "Dennis van Westbroek",
   jobTitle: "Fysiotherapeut & Leefstijlcoach",
+  bigNumber: "59930614504",
   credentials: [
-    "Fysiotherapeut (BIG-geregistreerd)",
-    "Gecertificeerd leefstijlcoach",
+    "Fysiotherapeut, ingeschreven in het BIG-register (nr. 59930614504)",
+    "Leefstijlcoach",
     "Oprichter PerfectSupplement",
   ] as const,
-  bio: "Vanuit fysiotherapie en leefstijlcoaching kijk ik naar wat onderbouwd is, wat in de literatuur en richtlijnen past bij mannen 40+ en waar een pil wél of géén zinvolle aanvulling is. Ik claim geen alwetendheid: bij twijfel verwijs ik naar bronnen of naar je arts — supplementen zijn geen vervanging voor professioneel medisch advies.",
+  roleNote:
+    "In mijn praktijk ben ik fysiotherapeut binnen het BIG-kader. PerfectSupplement is een afzonderlijk informatieplatform — geen behandelrelatie en geen BIG-zorgverlening via deze site.",
+  bioParagraphs: [
+    "Al jarenlang werk ik in de fysiotherapie met mannen 40+ die merken dat herstel, slaap en stress meer aandacht vragen dan vroeger — vaak na jaren van hoge werkdruk, sport of een volle agenda.",
+    "Op PerfectSupplement spreek ik als oprichter en redacteur, niet als jouw behandelend fysiotherapeut. Ik kijk naar wat in de literatuur en richtlijnen past bij mannen 40+, en waar een supplement wél of géén zinvolle aanvulling is.",
+    "Ik claim geen alwetendheid: bij twijfel verwijs ik naar bronnen of naar je arts — supplementen zijn geen vervanging voor professioneel medisch advies.",
+  ],
 } as const;
 
 /** Vul aan zodra social accounts live zijn */
 export const ABOUT_FOUNDER_SAME_AS: string[] = [];
 
 export const ABOUT_HERO = {
-  headline: "De rustige gids tussen leefstijl, herstel en supplementen",
+  headline: "Eerst grip op de basis. Dan pas supplementen.",
   paragraphs: [
-    "Je functioneert nog wel — maar niet meer zoals vroeger.",
+    "De rustige gids tussen leefstijl, herstel en supplementen — voor mannen 40+.",
     "Veel mannen herkennen dit: genoeg uren slaap, maar toch niet uitgerust wakker worden; een hoofd dat 'aan' blijft staan; wisselende energie; minder ruimte om te herstellen na training, werk of drukke periodes. Soms een onrustig gevoel of een buik die niet meewerkt — zonder dat je precies weet waar het vandaan komt.",
     "Veel mannen lopen hier jarenlang mee door zonder overzicht in hun dagelijkse leefstijl. PerfectSupplement is er voor mannen 40+ die eerst grip willen op de basis — en pas daarna willen weten welke supplementen zinvol zijn.",
   ],
@@ -80,10 +87,19 @@ export const ABOUT_WHAT_WE_DO = {
   id: "wat-we-doen",
   title: "Wat we voor je doen",
   leadPhrase: "Eerst inzicht, dan pas aanvullen.",
+  brandPrinciple: "Eerst de basis, dan de pil — in die volgorde, altijd.",
   intakeDisclaimer:
     "De Leefstijlcheck is een korte vragenlijst die helpt bij het ordenen van aandachtspunten — geen medische test en geen vervanging voor zorg.",
+  privacyNoteBefore: "Je antwoorden worden versleuteld opgeslagen. Lees ons ",
+  privacyNoteAfter: " voor hoe we met gegevens omgaan.",
+  privacyLink: {
+    href: "/privacy",
+    label: "privacybeleid",
+  },
+  evidenceParagraph:
+    "Onze vergelijkingen volgen vaste criteria en waar mogelijk EFSA-toegelaten claims. Per product vind je bronnen en toelichting onderaan de vergelijkingspagina — de volledige uitleg staat op onze methodologiepagina.",
   paragraphs: [
-    "Met onze gratis vragenlijst vul je in een paar minuten je antwoorden in over slaap, stress, energie, voeding, beweging en herstel. Je krijgt een overzicht van aandachtspunten en algemene leefstijltips — geen medisch advies en geen persoonlijk behandelplan.",
+    "Met onze vragenlijst vul je in een paar minuten je antwoorden in over slaap, stress, energie, voeding, beweging en herstel. Je krijgt een overzicht van aandachtspunten en algemene leefstijltips — geen medisch advies en geen persoonlijk behandelplan.",
     "Daarnaast vergelijken we supplementen op vaste criteria: dosering, biobeschikbaarheid, prijs-kwaliteit en transparantie. Elk product doorloopt hetzelfde stramien — ongeacht het merk.",
     "Dit platform is er niet om je meer te laten kopen. Het is er om je grip te geven: beter begrijpen wat je doet, scherpere keuzes maken en minder afhankelijk te worden van glimmende verpakkingen en halve verhalen.",
   ],
@@ -93,13 +109,14 @@ export const ABOUT_WHAT_WE_DO = {
   },
   intakeLink: {
     href: "/intake",
-    label: "Doe de gratis Leefstijlcheck",
+    label: "Doe de Leefstijlcheck",
   },
-  whatWeDontDoTitle: "Waar je ons níet voor gebruikt",
+  whatWeDontDoTitle: "Onze uitgangspunten",
   whatWeDontDo: [
+    "We vergelijken transparant op dezelfde criteria — ongeacht merk of commissie",
     "We stellen geen medische diagnoses, geven geen behandeling en zijn geen vervanging voor je huisarts of specialist — bij aanhoudende klachten: neem contact op met je zorgverlener",
     "We verkopen zelf geen supplementen",
-    "We accepteren geen betaalde reviews of gesponsorde rankings",
+    "We accepteren geen betaalde reviews of gesponsorde rankings — affiliate-relaties beïnvloeden de scores niet, die volgen vaste criteria",
     "We benoemen ook nadelen en zwakke punten van producten",
   ],
 } as const;
@@ -110,7 +127,7 @@ export const ABOUT_TRUST = {
   intro:
     "Daarom zijn we ook open over hoe PerfectSupplement geld verdient.",
   paragraphs: [
-    "Koop je via onze vergelijkingspagina's bij een partnerwebshop, dan ontvangen wij een kleine commissie — zonder extra kosten voor jou. Daardoor hoeven we geen eigen producten te verkopen en kunnen we onafhankelijk beoordelen.",
+    "Koop je via onze vergelijkingspagina's bij een partnerwebshop, dan ontvangen wij een kleine commissie — zonder extra kosten voor jou. Daardoor hoeven we geen eigen producten te verkopen en kunnen we onafhankelijk beoordelen. Onze affiliate-relaties beïnvloeden de scores niet: die volgen vaste criteria, zie onze methodologie.",
   ],
   affiliateLink: {
     href: "/affiliate-disclosure",
@@ -128,8 +145,8 @@ export const ABOUT_CREDENTIALS = {
 export const ABOUT_CTA = {
   title: "Krijg overzicht in je leefstijl",
   description:
-    "Begin met de gratis Leefstijlcheck: een korte vragenlijst over slaap, stress, energie, voeding, beweging en herstel. Je krijgt een overzicht van aandachtspunten — geen medische test en geen vervanging voor zorg.",
-  buttonLabel: "Doe de gratis Leefstijlcheck",
+    "Begin met de Leefstijlcheck: een korte vragenlijst over slaap, stress, energie, voeding, beweging en herstel. Je krijgt een overzicht van aandachtspunten — geen medische test en geen vervanging voor zorg.",
+  buttonLabel: "Doe de Leefstijlcheck",
   href: "/intake",
 } as const;
 
