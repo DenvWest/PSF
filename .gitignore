@@ -11,6 +11,7 @@ next-env.d.ts
 .env.backup
 next-env.d.ts
 scripts/.fonts_cache/
+coverage/
 
 # Auto-gegenereerd door scripts/generate-state.mjs — niet tracken
 docs/PROJECT_STATE.md

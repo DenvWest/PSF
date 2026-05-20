@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  CATEGORIES,
   type Category,
   type IntakeQuestion as IntakeQuestionType,
 } from "@/data/intake-questions";
