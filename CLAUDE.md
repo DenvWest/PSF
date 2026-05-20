@@ -44,7 +44,7 @@ src/
 ### Naamconventie mappen
 
 - **Data en componenten**: altijd Engelse mapnamen (`supplements/`, `supplement-guides/`, `supplement-hub/`)
-- **Routes/URLs**: Nederlandse slugs waar user-facing (`/supplementen/`, `/beste-magnesium`)
+- **Routes/URLs**: Nederlandse slugs waar user-facing (`/supplementen/`, `/beste/magnesium`)
 - **Geen `src/service/`** — alle logica hoort in `src/lib/`
 - **Geen losse bestanden in `src/`** behalve `proxy.ts` (Next.js 16 proxy conventie)
 
@@ -102,11 +102,11 @@ RLS is aan. Anon kan inserts doen op sessions, reminders en feedback.
 ## Live features (april 2026)
 
 - Homepage met hero gericht op symptomen
-- Intake flow op /intake: 5 fases, 12 vragen, scoring → Herstelplan
+- Intake flow op /intake: 5 fases, 15 vragen, scoring → Herstelplan
 - Scoring engine: 6 domeinen, urgentieniveaus, profiellabels ("Lage Batterij", "Onrustige Slaper", etc.)
 - Nurture e-mailsequence (dag 0-30, 6 templates via Resend)
 - Admin dashboard op /admin
-- Vergelijkingspagina's: /beste-omega-3-supplement, /beste-magnesium, /beste-ashwagandha
+- Vergelijkingspagina's: /beste/omega-3-supplement, /beste/magnesium, /beste/ashwagandha
 - Rate limiter (in-memory sliding window)
 - AVG/GDPR compliance
 - Blog met artikelen per categorie

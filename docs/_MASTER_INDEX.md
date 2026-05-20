@@ -41,19 +41,19 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Document | Wat het beschrijft |
 |---|---|
-| [`systems/INTAKE_SYSTEM.md`](systems/INTAKE_SYSTEM.md) | 5-fasen flow, vragenlijst, scoring engine, beslislogica, profiellabels |
-| [`systems/CONTENT_SYSTEM.md`](systems/CONTENT_SYSTEM.md) | Content-map, turbo-snippets, Smart Content Module, page blueprints |
-| [`systems/AFFILIATE_SYSTEM.md`](systems/AFFILIATE_SYSTEM.md) | Daisycon, Arctic Blue, link-structuur, Sub ID, click tracking |
-| [`systems/EMAIL_SYSTEM.md`](systems/EMAIL_SYSTEM.md) | Nurture sequence, Resend, cron, PDF-gidsen |
-| [`systems/PERSONALIZATION_ENGINE.md`](systems/PERSONALIZATION_ENGINE.md) | Profiel-architectuur, scoring triggers, 8-sectie structuur, spinnenweb per profiel |
+| [`core/INTAKE_SYSTEM.md`](core/INTAKE_SYSTEM.md) | 5-fasen flow, vragenlijst, scoring engine, beslislogica, profiellabels |
+| [`core/CONTENT_SYSTEM.md`](core/CONTENT_SYSTEM.md) | Content-map, turbo-snippets, Smart Content Module, page blueprints |
+| [`core/AFFILIATE_SYSTEM.md`](core/AFFILIATE_SYSTEM.md) | Daisycon, Arctic Blue, link-structuur, Sub ID, click tracking |
+| [`core/EMAIL_SYSTEM.md`](core/EMAIL_SYSTEM.md) | Nurture sequence, Resend, cron, PDF-gidsen |
+| [`core/PERSONALIZATION_ENGINE.md`](core/PERSONALIZATION_ENGINE.md) | Profiel-architectuur, scoring triggers, 8-sectie structuur, spinnenweb per profiel |
 
 ### Layer 3 — Work (tijdelijk, verandert regelmatig)
 
 | Document | Wat het beschrijft |
 |---|---|
-| [`work/CURRENT_SPRINT.md`](work/CURRENT_SPRINT.md) | Wat nu gebouwd wordt, sprint planning, voltooid/gepland |
-| [`work/PAGE_ROADMAP.md`](work/PAGE_ROADMAP.md) | Alle 66 pagina's: status, SEO-data, prioriteit |
-| [`work/CONTENT_GAPS.md`](work/CONTENT_GAPS.md) | Link-gaps, ontbrekende cluster-blogs, spinnenweb-gaten |
+| [`core/CURRENT_SPRINT.md`](core/CURRENT_SPRINT.md) | Wat nu gebouwd wordt, sprint planning, voltooid/gepland |
+| [`core/PAGE_ROADMAP.md`](core/PAGE_ROADMAP.md) | Alle 66 pagina's: status, SEO-data, prioriteit |
+| [`core/CONTENT_GAPS.md`](core/CONTENT_GAPS.md) | Link-gaps, ontbrekende cluster-blogs, spinnenweb-gaten |
 
 ---
 
@@ -61,18 +61,18 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Taak | Lees |
 |---|---|
-| Pagina bouwen | `core/SEO_RULES.md` + `systems/CONTENT_SYSTEM.md` + `work/PAGE_ROADMAP.md` |
-| Vergelijkingspagina | `core/COMPLIANCE.md` (EFSA claims) + `systems/AFFILIATE_SYSTEM.md` + `systems/CONTENT_SYSTEM.md` (Blueprint 1) |
-| Profielpagina | `systems/PERSONALIZATION_ENGINE.md` + `systems/CONTENT_SYSTEM.md` (Blueprint 3) |
-| Pillar page | `core/SEO_RULES.md` + `systems/CONTENT_SYSTEM.md` (Blueprint 2) |
-| Blogpost | `core/SEO_RULES.md` + `systems/CONTENT_SYSTEM.md` (Blueprint 4 + Smart Content Module) |
-| Intake/scoring | `systems/INTAKE_SYSTEM.md` + `core/ENTITY_MODEL.md` |
-| Nurture emails | `core/WRITING_VOICE.md` + `systems/EMAIL_SYSTEM.md` + `systems/PERSONALIZATION_ENGINE.md` |
+| Pagina bouwen | `core/SEO_RULES.md` + `core/CONTENT_SYSTEM.md` + `core/PAGE_ROADMAP.md` |
+| Vergelijkingspagina | `core/COMPLIANCE.md` (EFSA claims) + `core/AFFILIATE_SYSTEM.md` + `core/CONTENT_SYSTEM.md` (Blueprint 1) |
+| Profielpagina | `core/PERSONALIZATION_ENGINE.md` + `core/CONTENT_SYSTEM.md` (Blueprint 3) |
+| Pillar page | `core/SEO_RULES.md` + `core/CONTENT_SYSTEM.md` (Blueprint 2) |
+| Blogpost | `core/SEO_RULES.md` + `core/CONTENT_SYSTEM.md` (Blueprint 4 + Smart Content Module) |
+| Intake/scoring | `core/INTAKE_SYSTEM.md` + `core/ENTITY_MODEL.md` |
+| Nurture emails | `core/WRITING_VOICE.md` + `core/EMAIL_SYSTEM.md` + `core/PERSONALIZATION_ENGINE.md` |
 | Copy schrijven (herkenning, profiel, weggever) | `core/WRITING_VOICE.md` + `core/COMPLIANCE.md` |
-| Affiliate links | `systems/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
+| Affiliate links | `core/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
 | Technische vraag | `core/ARCHITECTURE.md` + `core/CODE_CONVENTIONS.md` |
 | Database/data | `core/ENTITY_MODEL.md` |
-| Planning/sprint | `work/CURRENT_SPRINT.md` |
+| Planning/sprint | `core/CURRENT_SPRINT.md` |
 | Design/styling | `core/DESIGN_TOKENS.md` |
 
 ---
@@ -83,7 +83,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 |---|---|---|
 | Mei 2026 | Geannuleerde profielen verwijderd, 4 definitieve profielen vastgelegd | `core/PERSONALIZATION_ENGINE.md` |
 | Mei 2026 | Ashwagandha uitgesloten van Foundation Stack (EFSA + NL verbod risico) | `core/COMPLIANCE.md` |
-| Mei 2026 | Content spinnenweb eerst, features later | `work/CURRENT_SPRINT.md` |
+| Mei 2026 | Content spinnenweb eerst, features later | `core/CURRENT_SPRINT.md` |
 | April 2026 | localStorage afgeschaft, alles via Supabase | `core/ARCHITECTURE.md` |
 
 ---

@@ -1,3 +1,5 @@
+// EXPERIMENTAL: scaffold for future multi-tenant work. Not used by production pages. Do not refactor production routes against this API yet.
+
 import { headers } from "next/headers";
 import { getOrgConfig, DEFAULT_ORG_ID, type OrgConfig } from "@/config/org";
 

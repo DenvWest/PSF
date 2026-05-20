@@ -76,7 +76,7 @@ PerfectSupplement vergelijkt en adviseert, maar verkoopt niet. Toch geldt de Cla
 ## Medische disclaimers
 
 - `MedicalDisclaimer` component op alle vergelijkings- en profielpagina's
-- Profiel-specifieke disclaimers waar relevant (zie `systems/PERSONALIZATION_ENGINE.md`)
+- Profiel-specifieke disclaimers waar relevant (zie `core/PERSONALIZATION_ENGINE.md`)
 - "Dit is geen medisch advies" — altijd
 
 ---

@@ -1,3 +1,5 @@
+// EXPERIMENTAL: scaffold for future multi-tenant work. Not used by production pages. Do not refactor production routes against this API yet.
+
 import { DEFAULT_ORG_ID } from "@/config/org";
 import type { ComparisonPageData } from "@/types/supplement";
 

@@ -12,7 +12,7 @@
 |---|---|
 | `/herstel-verbeteren-na-40` | Homepage, relevante blogs, `/thema/herstel` |
 | `/beste-zink` | Relevante blogs, profiel-pagina's |
-| `/beste-creatine` | Relevante blogs, profiel overtrainer |
+| `/beste/creatine` | Relevante blogs, profiel overtrainer |
 | `/beste-melatonine` | Slaap-blogs, profiel onrustige-slaper, pillar slaap |
 | `/beste-eiwitpoeder` | Energie-blogs, profiel overtrainer, pillar herstel |
 | `/beste-vitamine-d` | Energie-blogs, profiel lage-batterij |
@@ -38,8 +38,8 @@
 |---|---|---|---|
 | Onrustige Slaper | ✅ | `/slaap-verbeteren-na-40` ✅ | `/beste-magnesium` ✅, `/beste-ashwagandha` ✅ |
 | Stressdrager | ✅ | `/stress-verminderen-man` ✅ | `/beste-ashwagandha` ✅, `/beste-magnesium` ✅ |
-| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/beste-omega-3-supplement` ✅, `/beste-vitamine-d` ✅ |
-| Overtrainer | ✅ | `/herstel-verbeteren-na-40` ✅ | `/beste-creatine` ✅, `/beste-omega-3-supplement` ✅ |
+| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/beste/omega-3-supplement` ✅, `/beste/vitamine-d` ✅ |
+| Overtrainer | ✅ | `/herstel-verbeteren-na-40` ✅ | `/beste/creatine` ✅, `/beste/omega-3-supplement` ✅ |
 
 ---
 

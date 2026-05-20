@@ -33,51 +33,67 @@
 ```
 psf/
 ├── src/
-│   ├── app/                    # Next.js App Router pagina's
-│   │   ├── intake/             # Intake flow (/intake)
-│   │   ├── blog/               # Blog artikelen
-│   │   ├── profiel/            # Profielpagina's
-│   │   ├── beste-*/            # Vergelijkingspagina's
-│   │   ├── thema/              # Thema-hubs
-│   │   ├── kennisbank/         # Kennisbank begrippen
-│   │   ├── admin/              # Admin dashboard
-│   │   └── api/                # API routes
+│   ├── app/                         # Next.js App Router pagina's
+│   │   ├── intake/                  # Intake flow (/intake)
+│   │   ├── blog/                    # Blog artikelen
+│   │   ├── profiel/                 # Profielpagina's (+ [slug] dynamisch)
+│   │   ├── beste/[supplement]/      # Vergelijkingspagina's (/beste/magnesium, etc.)
+│   │   ├── supplementen/[supplement]/ # Supplementgidsen (/supplementen/omega-3)
+│   │   ├── gids/[thema]/            # Thema-gidsen
+│   │   ├── thema/[thema]/           # Thema-hubs
+│   │   ├── kennisbank/[slug]/       # Kennisbank begrippen
+│   │   ├── admin/                   # Admin dashboard
+│   │   └── api/                     # API routes (intake, cron, partner, affiliate)
 │   ├── components/
-│   │   ├── intake/             # IntakeIntro, IntakeQuestion, IntakeResults
-│   │   ├── supplements/        # ComparisonTable, ProductCard, etc.
-│   │   ├── layout/             # Header, Footer, Container
-│   │   ├── blog/               # Blog componenten
-│   │   └── ui/                 # Shared UI (MedicalDisclaimer, PersonalizationCta, etc.)
-│   ├── data/                   # Statische data
-│   │   ├── supplements/        # Product data per categorie
-│   │   ├── profiles.ts         # Profieldata
-│   │   ├── affiliate-links.ts  # Affiliate URL's
-│   │   └── supplement-routes.ts # Supplement routing
-│   ├── lib/                    # Utility functies
-│   │   ├── intake-engine.ts    # Scoring + profiellabels
-│   │   ├── emails/             # Email templates
-│   │   ├── rate-limit.ts       # Rate limiter
-│   │   ├── rate-limit-config.ts
-│   │   ├── client-ip.ts        # IP detection
-│   │   ├── supabase.ts         # Supabase client
-│   │   └── structured-data.ts  # JSON-LD helpers
-│   └── types/                  # TypeScript types
+│   │   ├── intake/                  # IntakeIntro, IntakeQuestion, IntakeResults
+│   │   ├── supplements/             # ComparisonTable, ProductCard, etc.
+│   │   ├── supplement-guides/       # Gidspagina componenten
+│   │   ├── supplement-hub/          # Hub-overzicht componenten
+│   │   ├── layout/                  # Header, Footer, Container
+│   │   ├── blog/                    # Blog componenten
+│   │   ├── thema/                   # Thema-hub componenten
+│   │   └── ui/                      # Shared UI (MedicalDisclaimer, etc.)
+│   ├── config/                      # Org config, theme tokens (Tier 2 scaffold)
+│   ├── data/                        # Statische data
+│   │   ├── supplements/             # Vergelijkingsdata (ComparisonPageData)
+│   │   ├── supplement-guides/       # Gidsdata (SupplementData)
+│   │   ├── supplement-hub/          # Hub catalog data
+│   │   ├── profiles/                # Profieldata per slug
+│   │   ├── blog/                    # Blog artikeldata
+│   │   ├── affiliate-links.ts       # Affiliate URL's
+│   │   └── supplement-routes.ts     # Supplement routing triggers
+│   ├── lib/                         # Utility functies en businesslogica
+│   │   ├── intake-engine.ts         # Scoring + profiellabels
+│   │   ├── __tests__/               # Vitest unit tests
+│   │   ├── seo/                     # JSON-LD helpers
+│   │   ├── email-templates/         # Nurture e-mail templates
+│   │   ├── rate-limit.ts            # Rate limiter
+│   │   ├── cron-auth.ts             # Cron HMAC verificatie
+│   │   ├── supabase.ts              # Supabase client
+│   │   └── ...                      # Overige lib modules
+│   ├── proxy.ts                     # Next.js proxy (admin auth, CSP, security headers)
+│   └── types/                       # TypeScript types
 │       ├── supplement.ts
-│       └── supplement-comparison.ts
+│       ├── supplement-guide.ts
+│       └── ...
 ├── public/
-│   ├── images/producten/       # Product images (Merk-Product.jpg)
-│   └── downloads/              # PDF gidsen
-├── docs/                       # Dit documentensysteem
-└── db/                         # Database migraties
+│   ├── images/producten/            # Product images (Merk-Product.jpg)
+│   └── downloads/                   # PDF gidsen
+├── docs/                            # Documentatiesysteem (core/ = source of truth)
+└── db/                              # Database migraties
 ```
 
 ## Key file locations
 
 | Wat | Waar |
 |---|---|
+| Vergelijkingspagina route | `src/app/beste/[supplement]/page.tsx` |
+| Supplementgids route | `src/app/supplementen/[supplement]/page.tsx` |
 | Supplement components | `src/components/supplements/` |
-| Supplement data | `src/data/supplements/` |
-| Supplement types | `src/types/supplement.ts` |
+| Vergelijkingsdata | `src/data/supplements/` |
+| Gidsdata | `src/data/supplement-guides/` |
+| Profieldata | `src/data/profiles/` |
+| Supplement types | `src/types/supplement.ts`, `src/types/supplement-guide.ts` |
 | Affiliate links | `src/data/affiliate-links.ts` |
 | Supplement routes | `src/data/supplement-routes.ts` |
 | Product images | `public/images/producten/` |
@@ -86,6 +102,17 @@ psf/
 | Scoring engine | `src/lib/intake-engine.ts` |
 | Rate limiter | `src/lib/rate-limit.ts` + `src/lib/rate-limit-config.ts` |
 | IP detection | `src/lib/client-ip.ts` (cf-connecting-ip → x-forwarded-for → x-real-ip) |
+| Legacy URL redirects | `next.config.ts` (flat `/beste-*` → `/beste/[slug]`) |
+
+### Vergelijkings- vs gids-slugs
+
+| Paginatype | Voorbeeld slug | URL |
+|---|---|---|
+| Supplementgids | `omega-3` | `/supplementen/omega-3` |
+| Vergelijking | `omega-3-supplement` | `/beste/omega-3-supplement` |
+
+Bewuste split: gids-slugs zijn kort; vergelijking-slugs volgen SEO/tracking-history (`omega-3-supplement`).
+Affiliate sub-IDs in `affiliate-links.ts` (`ws=omega-3-supplement`) blijven gekoppeld aan vergelijking-slug.
 
 ## Server
 

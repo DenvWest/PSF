@@ -10,7 +10,7 @@
 Herkenning → Diagnose → Advies → Actie → Feedback
      ↑                                        |
      └────────────────────────────────────────┘
-                   (elke 30 dagen)F
+                   (elke 30 dagen)
 ```
 
 ### Fase 1 — Herkenning

@@ -9,7 +9,7 @@
 Bij ELKE nieuwe pagina doorloop je deze 11 stappen:
 
 0. **Raadpleeg `core/WRITING_VOICE.md`** — toon, woorden, begrip → urgentie → actie
-1. **Raadpleeg `work/PAGE_ROADMAP.md`** — status en SEO-data van deze pagina
+1. **Raadpleeg `core/PAGE_ROADMAP.md`** — status en SEO-data van deze pagina
 2. **Kies het juiste blueprint** (zie onder)
 3. **Interne links** — welke 2-3 bestaande pagina's zijn semantisch gerelateerd?
 4. **Kennisbank-indexering** — welke termen komen voor? Eerste voorkomen inline linken
@@ -81,7 +81,7 @@ src/components/supplements/ComparisonTable.tsx (herbruikbaar)
 7. **Cross-links** — pillar, vergelijking(en), gerelateerd profiel
 8. **Disclaimer** — MedicalDisclaimer + profiel-specifiek
 
-Zie `systems/PERSONALIZATION_ENGINE.md` voor complete profiel-architectuur.
+Zie `core/PERSONALIZATION_ENGINE.md` voor complete profiel-architectuur.
 
 ---
 

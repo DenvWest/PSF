@@ -12,42 +12,42 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/beste-magnesium",
-        destination: "/beste-magnesium",
+        destination: "/beste/magnesium",
         permanent: true,
       },
       {
         source: "/beste-omega-3-supplement",
-        destination: "/beste-omega-3-supplement",
+        destination: "/beste/omega-3-supplement",
         permanent: true,
       },
       {
         source: "/beste-ashwagandha",
-        destination: "/beste-ashwagandha",
+        destination: "/beste/ashwagandha",
         permanent: true,
       },
       {
         source: "/beste-vitamine-d",
-        destination: "/beste-vitamine-d",
+        destination: "/beste/vitamine-d",
         permanent: true,
       },
       {
         source: "/beste-creatine",
-        destination: "/beste-creatine",
+        destination: "/beste/creatine",
         permanent: true,
       },
       {
         source: "/beste-zink",
-        destination: "/beste-zink",
+        destination: "/beste/zink",
         permanent: true,
       },
       {
         source: "/beste-melatonine",
-        destination: "/beste-melatonine",
+        destination: "/beste/melatonine",
         permanent: true,
       },
       {
         source: "/beste-eiwitpoeder",
-        destination: "/beste-eiwitpoeder",
+        destination: "/beste/eiwitpoeder",
         permanent: true,
       },
       {

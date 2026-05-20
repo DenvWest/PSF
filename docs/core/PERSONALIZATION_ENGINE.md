@@ -11,11 +11,27 @@
 | Onrustige Slaper | `onrustige-slaper` | `sleep_score < 40` | ✅ Live |
 | Stressdrager | `stressdrager` | `stress_score < 40` | ✅ Live |
 | Lage Batterij | `lage-batterij` | `energy_score < 40` | ✅ Live |
-| Overtrainer | `overtrainer` | `movement_frequency ≥ 3 EN recovery_score ≤ 35` | ✅ Live |
+| Overtrainer | `overtrainer` | Patroon: `movement_frequency ≥ 3 EN recovery_score ≤ 35` (via `matchesOvertrainerAnswers`) | ✅ Live (patroon) |
 
 > Welke profielen daadwerkelijk in code bestaan: zie docs/PROJECT_STATE.md.
 
 **Prioriteit bij meerdere matches:** laagste genormaliseerde score wint. Bij gelijk: slaap > stress > energie > voeding > beweging > herstel.
+
+---
+
+## Overtrainer — patroon vs profiellabel
+
+Overtrainer is een **herkenningspatroon**, geen output van `getProfileLabel()` in `src/lib/intake-engine.ts`.
+
+| Laag | Gedrag |
+|---|---|
+| `getProfileLabel()` | Retourneert `In Balans` of dichtstbijzijnde named profiel (Onrustige Slaper, Stressdrager, Lage Batterij) |
+| `matchesOvertrainerAnswers()` | Detecteert patroon: veel bewegen (`MOV_FREQ ≥ 3`) + laag herstel (`REC_QUAL ≤ 35`) |
+| `IntakeResults` UI | Toont "Overtrainer" als display-naam wanneer patroon matcht |
+| `getSupplementRoute()` | Routing en supplement-advies reageren op Overtrainer-patroon |
+| Supabase `profile_label` | Slaat engine-label op (`In Balans` etc.), niet "Overtrainer" |
+
+Profielpagina `/profiel/overtrainer` en nurture-content voor Overtrainer zijn wél live; alleen het persisted profiellabel volgt de engine-logica.
 
 ---
 
@@ -24,8 +40,8 @@
 | # | Onderdeel | Locatie |
 |---|---|---|
 | 1 | Profielpagina | `src/app/profiel/[slug]/page.tsx` |
-| 2 | Profieldata | `src/data/profiles.ts` |
-| 3 | Scoring trigger | `src/lib/intake-engine.ts` |
+| 2 | Profieldata | `src/data/profiles/` |
+| 3 | Scoring trigger | `src/lib/intake-engine.ts` (+ Overtrainer-patroon in `src/lib/getSupplementRoute.ts`) |
 | 4 | Intake-resultaat koppeling | `src/components/intake/IntakeResults.tsx` |
 | 5 | Nurture email personalisatie | `src/lib/emails/` |
 | 6 | PDF-gids (optioneel) | `public/downloads/` |

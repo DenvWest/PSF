@@ -1,3 +1,5 @@
+// EXPERIMENTAL: scaffold for future multi-tenant work. Not used by production pages. Do not refactor production routes against this API yet.
+
 import type { SymptomId } from "@/data/intake-questions";
 import type {
   DomainScores,

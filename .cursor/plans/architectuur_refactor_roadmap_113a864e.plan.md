@@ -22,25 +22,25 @@ todos:
     status: completed
   - id: theme-tokens
     content: Extract theme tokens naar config, maak ThemeProvider voor parametriseerbare branding
-    status: completed
+    status: in-progress (scaffold v0)
   - id: org-context
     content: "OrgContext layer: middleware, React context, OrgConfig type, migreer getDefaultOrganizationId()"
-    status: completed
+    status: in-progress (scaffold v0)
   - id: content-layer
     content: "Content indirection: getProfileCopy(), getSupplementData(), getNurtureContent() met org-aware lookups"
-    status: completed
+    status: in-progress (scaffold v0)
   - id: intake-strategy
     content: "IntakeStrategy interface: ontkoppel scoring van form-delivery, maak FormIntakeStrategy"
-    status: completed
+    status: in-progress (scaffold v0)
   - id: api-split
     content: Herstructureer API routes naar public/internal/partner met shared middleware
-    status: completed
+    status: in-progress (scaffold v0)
   - id: ai-chat
     content: ChatIntakeStrategy prototype met AI conversational intake
-    status: completed
+    status: in-progress (scaffold v0)
   - id: b2b-pilot
     content: "Eerste B2B partner: OrgConfig, custom theme, partner dashboard"
-    status: completed
+    status: in-progress (scaffold v0)
 isProject: false
 ---
 
@@ -262,6 +262,16 @@ gantt
     AI_Chat_prototype              :t12, 2026-07-27, 10d
     B2B_pilot                      :t13, 2026-08-10, 10d
 ```
+
+---
+
+## Scaffold vs productief
+
+| Item | Status |
+|---|---|
+| Tier 1 (legacy delete, /beste/[slug], vitest, cron, CI) | productief |
+| Tier 2 (theme, org, content, intake-strategy, partner API, chat) | scaffold v0, niet productie-kritiek |
+| Tier 3 (B2B pilot) | niet gestart |
 
 ---
 
