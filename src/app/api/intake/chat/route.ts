@@ -1,9 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   createInitialChatState,
   processUserResponse,
   type ChatIntakeState,
 } from "@/lib/chat-intake";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { getClientIp } from "@/lib/turnstile-verify";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +15,34 @@ interface ChatRequest {
   message?: string;
 }
 
-export async function POST(request: Request) {
+function logSecurityEvent(
+  event: string,
+  details: Record<string, unknown> = {},
+) {
+  console.warn("[api/intake/chat][security]", { event, ...details });
+}
+
+export async function POST(request: NextRequest) {
+  const clientIp = getClientIp(request);
+  const rateLimit = consumeRateLimitForIp(
+    "intake_chat",
+    clientIp,
+    getRateLimitConfig("intake_chat"),
+  );
+
+  if (!rateLimit.allowed) {
+    logSecurityEvent("rate_limited", { remoteIp: clientIp });
+    return NextResponse.json(
+      { error: "Te veel pogingen. Probeer het over een paar minuten opnieuw." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+        },
+      },
+    );
+  }
+
   let body: ChatRequest;
   try {
     body = await request.json();

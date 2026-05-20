@@ -1,4 +1,5 @@
 import type { DomainScores, ProfileLabel } from "@/lib/intake-engine";
+import { COMPARISON_PATHS } from "@/lib/comparison-paths";
 
 export type DeficiencySignalKey =
   | "omega3_deficiency"
@@ -38,7 +39,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 1,
     domains: ["Voeding", "Energie", "Herstel"],
     hasComparison: true,
-    affiliateUrl: "/beste/omega-3-supplement",
+    affiliateUrl: COMPARISON_PATHS["omega-3-supplement"],
     triggers: {
       anyOf: [
         { deficiencySignal: "omega3_deficiency" },
@@ -54,7 +55,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 2,
     domains: ["Slaap", "Stress", "Herstel"],
     hasComparison: true,
-    affiliateUrl: "/beste/magnesium",
+    affiliateUrl: COMPARISON_PATHS.magnesium,
     triggers: {
       anyOf: [
         { deficiencySignal: "magnesium_signal" },
@@ -82,7 +83,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 5,
     domains: ["Slaap"],
     hasComparison: true,
-    affiliateUrl: "/beste/melatonine",
+    affiliateUrl: COMPARISON_PATHS.melatonine,
     triggers: {
       anyOf: [{ deficiencySignal: "melatonine_signal" }],
     },
@@ -95,7 +96,7 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     priority: 20,
     domains: ["Beweging", "Herstel"],
     hasComparison: true,
-    affiliateUrl: "/beste/creatine",
+    affiliateUrl: COMPARISON_PATHS.creatine,
     triggers: { anyOf: [] },
   },
   {

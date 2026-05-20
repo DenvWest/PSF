@@ -49,28 +49,44 @@ psf/
 │   │   ├── supplements/             # ComparisonTable, ProductCard, etc.
 │   │   ├── supplement-guides/       # Gidspagina componenten
 │   │   ├── supplement-hub/          # Hub-overzicht componenten
-│   │   ├── layout/                  # Header, Footer, Container
+│   │   ├── layout/                  # Header, Footer, Container, Breadcrumbs
 │   │   ├── blog/                    # Blog componenten
-│   │   ├── thema/                   # Thema-hub componenten
-│   │   └── ui/                      # Shared UI (MedicalDisclaimer, etc.)
-│   ├── config/                      # Org config, theme tokens (Tier 2 scaffold)
+│   │   ├── homepage/                # Hero, trust, lifestyle secties
+│   │   ├── gids/                    # Gids opt-in formulieren
+│   │   ├── kennisbank/              # Kennisbank hub en term-pagina's
+│   │   ├── content/                 # Article TOC, body chrome, affiliate inline
+│   │   ├── compliance/              # Ashwagandha on-hold disclaimer, etc.
+│   │   ├── references/              # RefNote, ReferenceList
+│   │   ├── common/                  # MedicalDisclaimer
+│   │   ├── privacy/                 # Privacy consent revoke
+│   │   └── ui/                      # ContentSection, RelatedPages, Disclosure
+│   ├── config/                      # Org config, theme tokens, partners (Tier 2 scaffold)
 │   ├── data/                        # Statische data
-│   │   ├── supplements/             # Vergelijkingsdata (ComparisonPageData)
+│   │   ├── supplements/             # Vergelijkingsdata (ComparisonPageData) — actieve mapnaam
 │   │   ├── supplement-guides/       # Gidsdata (SupplementData)
 │   │   ├── supplement-hub/          # Hub catalog data
 │   │   ├── profiles/                # Profieldata per slug
 │   │   ├── blog/                    # Blog artikeldata
+│   │   ├── gids/                    # Thema-gids content (slaap, stress, etc.)
+│   │   ├── thema/                   # Thema-hub content
+│   │   ├── page-content/            # Landingspagina copy (omega-3-vergelijken, etc.)
+│   │   ├── references/              # Bronverwijzingen per pagina
 │   │   ├── affiliate-links.ts       # Affiliate URL's
 │   │   └── supplement-routes.ts     # Supplement routing triggers
 │   ├── lib/                         # Utility functies en businesslogica
 │   │   ├── intake-engine.ts         # Scoring + profiellabels
+│   │   ├── intake-strategy.ts       # Form/chat intake strategy wrapper
+│   │   ├── comparison-paths.ts      # Canonieke /beste/* paden (SSOT)
+│   │   ├── build-recommendations.ts # Hub-aanbevelingen uit intake-sessie
+│   │   ├── chat-intake.ts           # Conversational intake state machine
+│   │   ├── api-middleware.ts        # public/internal/partner API auth
 │   │   ├── __tests__/               # Vitest unit tests
 │   │   ├── seo/                     # JSON-LD helpers
 │   │   ├── email-templates/         # Nurture e-mail templates
 │   │   ├── rate-limit.ts            # Rate limiter
+│   │   ├── rate-limit-config.ts     # Per-route limits
 │   │   ├── cron-auth.ts             # Cron HMAC verificatie
-│   │   ├── supabase.ts              # Supabase client
-│   │   └── ...                      # Overige lib modules
+│   │   └── supabase*.ts             # Supabase clients
 │   ├── proxy.ts                     # Next.js proxy (admin auth, CSP, security headers)
 │   └── types/                       # TypeScript types
 │       ├── supplement.ts
@@ -90,7 +106,8 @@ psf/
 | Vergelijkingspagina route | `src/app/beste/[supplement]/page.tsx` |
 | Supplementgids route | `src/app/supplementen/[supplement]/page.tsx` |
 | Supplement components | `src/components/supplements/` |
-| Vergelijkingsdata | `src/data/supplements/` |
+| Vergelijkingsdata | `src/data/supplements/` (roadmap noemt `supplement-comparisons/` — rename niet uitgevoerd) |
+| Canonieke /beste/* paden | `src/lib/comparison-paths.ts` |
 | Gidsdata | `src/data/supplement-guides/` |
 | Profieldata | `src/data/profiles/` |
 | Supplement types | `src/types/supplement.ts`, `src/types/supplement-guide.ts` |
@@ -113,6 +130,12 @@ psf/
 
 Bewuste split: gids-slugs zijn kort; vergelijking-slugs volgen SEO/tracking-history (`omega-3-supplement`).
 Affiliate sub-IDs in `affiliate-links.ts` (`ws=omega-3-supplement`) blijven gekoppeld aan vergelijking-slug.
+
+`docs/PROJECT_STATE.md` is auto-gegenereerd (`scripts/generate-state.mjs`) en kan slug-keys tonen die afwijken van de runtime keys in `src/data/supplements/index.ts`.
+
+### Partner API keys
+
+`PARTNER_API_KEYS` in `.env`: `secret:org-uuid` per partner, of legacy `secret` (alleen key) → default org via `getDefaultOrganizationId()`. De `x-org-id` header wordt op partner-routes **niet** vertrouwd; org komt uit de key-mapping.
 
 ## Server
 

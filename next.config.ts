@@ -127,12 +127,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/omega-3-vergelijken",
-        destination: "/beste-omega-3-supplement",
+        destination: "/beste/omega-3-supplement",
         permanent: true,
       },
       {
         source: "/magnesium-vergelijken",
-        destination: "/beste-magnesium",
+        destination: "/beste/magnesium",
         permanent: true,
       },
       {

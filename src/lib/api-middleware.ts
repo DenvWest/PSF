@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 import { verifyCronRequest } from "./cron-auth";
+import { getDefaultOrganizationId } from "./organization";
 
 export type ApiGroup = "public" | "internal" | "partner";
 
@@ -9,6 +10,40 @@ export interface ApiMiddlewareResult {
   authorized: boolean;
   response?: NextResponse;
   orgId?: string;
+}
+
+type PartnerKeyEntry = {
+  key: string;
+  orgId?: string;
+};
+
+export function parsePartnerApiKeys(raw: string): PartnerKeyEntry[] {
+  return raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .map((entry) => {
+      const colonIndex = entry.indexOf(":");
+      if (colonIndex === -1) {
+        return { key: entry };
+      }
+      return {
+        key: entry.slice(0, colonIndex),
+        orgId: entry.slice(colonIndex + 1),
+      };
+    });
+}
+
+export function resolvePartnerOrgId(apiKey: string): string | undefined {
+  const entries = parsePartnerApiKeys(process.env.PARTNER_API_KEYS ?? "");
+  const match = entries.find((entry) => entry.key === apiKey);
+  if (!match) {
+    return undefined;
+  }
+  if (match.orgId) {
+    return match.orgId;
+  }
+  return getDefaultOrganizationId();
 }
 
 export function withPublicApi(request: Request): ApiMiddlewareResult {
@@ -42,7 +77,8 @@ export function withPartnerApi(request: Request): ApiMiddlewareResult {
     };
   }
 
-  const validKeys = (process.env.PARTNER_API_KEYS ?? "").split(",").map((k) => k.trim()).filter(Boolean);
+  const entries = parsePartnerApiKeys(process.env.PARTNER_API_KEYS ?? "");
+  const validKeys = entries.map((entry) => entry.key);
   if (!validKeys.includes(apiKey)) {
     return {
       authorized: false,
@@ -53,6 +89,6 @@ export function withPartnerApi(request: Request): ApiMiddlewareResult {
     };
   }
 
-  const orgId = request.headers.get("x-org-id") ?? undefined;
+  const orgId = resolvePartnerOrgId(apiKey);
   return { authorized: true, orgId };
 }
