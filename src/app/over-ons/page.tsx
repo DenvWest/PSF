@@ -62,7 +62,7 @@ const structuredData = {
 function StepNode({ number }: { number: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 bg-[#F7F5F0] font-serif text-sm text-[#5A8F6A]">
+      <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-100 font-serif text-sm text-[#5A8F6A]">
         {number}
       </div>
     </div>
@@ -88,14 +88,14 @@ export default function OverOnsPage() {
 
             {/* ── HERO ─────────────────────────────────────────────────── */}
             <section className="pt-16 pb-16 md:pt-20 lg:pt-24">
-              <div className="mx-auto max-w-3xl">
+              <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:items-end lg:gap-20">
                 <h1 className="font-serif text-5xl font-normal leading-[1.05] tracking-tight text-balance text-stone-900 md:text-6xl lg:text-7xl">
                   {ABOUT_HERO.headline}
                 </h1>
-                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl">
-                  {heroLead}
-                </p>
-                <div className="mt-6 max-w-2xl space-y-6">
+                <div className="mt-8 space-y-6 lg:mt-0 lg:pb-2">
+                  <p className="text-lg leading-relaxed text-stone-600 md:text-xl">
+                    {heroLead}
+                  </p>
                   {heroBody.map((paragraph) => (
                     <p key={paragraph.slice(0, 48)} className={bodyClass}>
                       {paragraph}
@@ -139,7 +139,7 @@ export default function OverOnsPage() {
               </section>
 
               {/* ── Step 02: Wat mannen missen — RIGHT ─────────────────── */}
-              <section id={ABOUT_INSIGHT.id} className="py-14 md:py-16">
+              <section id={ABOUT_INSIGHT.id} className="py-14 md:py-16 -mx-6 px-6 bg-white lg:-mx-8 lg:px-8">
                 {/* Mobile */}
                 <div className="lg:hidden space-y-6">
                   <span className={eyebrowClass}>02</span>
@@ -233,7 +233,7 @@ export default function OverOnsPage() {
               </section>
 
               {/* ── Step 04: Wat we voor je doen — RIGHT ───────────────── */}
-              <section id={ABOUT_WHAT_WE_DO.id} className="py-14 md:py-16">
+              <section id={ABOUT_WHAT_WE_DO.id} className="py-14 md:py-16 -mx-6 px-6 bg-white lg:-mx-8 lg:px-8">
                 {/* Mobile */}
                 <div className="lg:hidden space-y-6">
                   <span className={eyebrowClass}>04 — Aanpak</span>
@@ -371,7 +371,7 @@ export default function OverOnsPage() {
               </section>
 
               {/* ── Step 06: Achtergrond — RIGHT ───────────────────────── */}
-              <section id={ABOUT_CREDENTIALS.id} className="py-14 md:py-16">
+              <section id={ABOUT_CREDENTIALS.id} className="py-14 md:py-16 -mx-6 px-6 bg-white lg:-mx-8 lg:px-8">
                 {/* Mobile */}
                 <div className="lg:hidden space-y-6">
                   <span className={eyebrowClass}>06 — Wie schrijft dit</span>

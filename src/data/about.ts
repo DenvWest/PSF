@@ -37,8 +37,8 @@ export const ABOUT_STORY = {
   id: "wie",
   title: "Wie zit hierachter",
   paragraphs: [
-    "Ik weet dat niet alleen vanuit mijn praktijk als fysiotherapeut en leefstijlcoach — maar ook vanuit eigen ervaring.",
-    "Jarenlang merkte ik hoe stress, slecht herstel en een lichaam dat maar niet echt tot rust kwam zich steeds duidelijker lieten voelen. Niet alleen in vermoeidheid, maar ook in een opgejaagd gevoel, slecht kunnen ontspannen, onrustige slaap en het idee dat mijn lichaam steeds moeilijker terugschakelde na drukke periodes.",
+    "Dennis van Westbroek weet dat niet alleen vanuit zijn praktijk als fysiotherapeut en leefstijlcoach — maar ook vanuit eigen ervaring.",
+    "Jarenlang merkte Dennis hoe stress, slecht herstel en een lichaam dat maar niet echt tot rust kwam zich steeds duidelijker lieten voelen. Niet alleen in vermoeidheid, maar ook in een opgejaagd gevoel, slecht kunnen ontspannen, onrustige slaap en het idee dat zijn lichaam steeds moeilijker terugschakelde na drukke periodes.",
   ],
 } as const;
 
@@ -49,7 +49,7 @@ export const ABOUT_INSIGHT = {
     "Wat veel mensen niet beseffen, is dat chronische stress niet alleen 'tussen je oren' zit. Langdurige stress beïnvloedt de communicatie tussen je brein en je darmen — de hersen-darm-as. Je lichaam blijft als het ware in de 'aan-stand' hangen, herstel vertraagt en klachten zoals vermoeidheid, slechte slaap, opgeblazen gevoel of prikkelbaarheid kunnen elkaar versterken.",
   ],
   vicieuzeCirkel:
-    "In de praktijk zie ik vaak dezelfde vicieuze cirkel: stress leidt tot slechter herstel, dat versterkt lichamelijke klachten, en dat verhoogt de stress weer.",
+    "In de praktijk ziet Dennis vaak dezelfde vicieuze cirkel: stress leidt tot slechter herstel, dat versterkt lichamelijke klachten, en dat verhoogt de stress weer.",
   keyInsightLead:
     "En precies daar gaat het mis met veel gezondheidsadvies online:",
   keyInsight:
@@ -70,8 +70,8 @@ export const ABOUT_ORIGIN = {
   positioning: {
     title: "Geen snelle oplossingen — wel richting",
     paragraphs: [
-      "Ik wil niet de zoveelste supplementvergelijker zijn die snel een top 10 verkoopt.",
-      "Ik wil de rustige gids zijn tussen leefstijl, herstel en supplementen: eerst begrijpen waar jij staat, daarna pas gericht aanvullen waar het zinvol is.",
+      "Dennis van Westbroek wil niet de zoveelste supplementvergelijker zijn die snel een top 10 verkoopt.",
+      "Hij wil de rustige gids zijn tussen leefstijl, herstel en supplementen: eerst begrijpen waar jij staat, daarna pas gericht aanvullen waar het zinvol is.",
     ],
   },
 } as const;
