@@ -9,8 +9,17 @@ import { SUPPLEMENT_SLUGS } from "@/data/supplements";
 
 const BASE = "https://perfectsupplement.nl";
 const LAST_MOD = new Date("2026-05-01");
+const PILLAR_LAST_MOD = new Date("2026-05-20");
 
 const VERGELIJKINGS_PADEN = SUPPLEMENT_SLUGS.map((s) => `/beste/${s}`);
+
+const PILLAR_PADEN = [
+  "/slaap-verbeteren-na-40",
+  "/stress-verminderen-man",
+  "/energie-na-40",
+  "/herstel-verbeteren-na-40",
+  "/testosteron-na-40",
+];
 
 const STATISCHE_PADEN = [
   "/",
@@ -46,6 +55,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "monthly",
   );
 
+  const pillars = PILLAR_PADEN.map((pad) => ({
+    url: `${BASE}${pad}`,
+    lastModified: PILLAR_LAST_MOD,
+    changeFrequency: "monthly" as const,
+    priority: 0.85,
+  }));
+
   const gids = entries(
     GUIDE_SLUGS.map((s) => `/gids/${s}`),
     0.8,
@@ -77,6 +93,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...vergelijking,
+    ...pillars,
     ...profielen,
     ...gids,
     ...kennisbank,

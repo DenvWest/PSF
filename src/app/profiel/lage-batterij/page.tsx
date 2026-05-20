@@ -401,6 +401,18 @@ export default function LageBatterijPage() {
               <div className="space-y-5">
                 <div>
                   <p className="text-slate-600 text-sm">
+                    Vitamine D en energie: wat claims wél zeggen en wanneer meten zinvol is — zonder
+                    wonderbeloftes.
+                  </p>
+                  <Link
+                    href="/blog/vitamine-d-en-energie"
+                    className="text-emerald-600 hover:underline font-medium"
+                  >
+                    Lees: vitamine D en energie na 40 →
+                  </Link>
+                </div>
+                <div>
+                  <p className="text-slate-600 text-sm">
                     Welke omega-3 is écht goed? We vergeleken de beste supplementen op EPA/DHA,
                     biobeschikbaarheid en prijs.
                   </p>

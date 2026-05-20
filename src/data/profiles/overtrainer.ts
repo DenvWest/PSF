@@ -215,6 +215,16 @@ export const overtrainerProfile: ProfilePageData = {
 
   relatedComparisons: [
     {
+      href: "/blog/creatine-en-herstel",
+      turboSnippet:
+        "Creatine na 40: ATP-buffer en training — wanneer het past en wanneer volume het echte probleem is.",
+    },
+    {
+      href: "/kennisbank/overtrainingssyndroom",
+      turboSnippet:
+        "Overtrainingssyndroom uitgelegd: wanneer belasting structureel wint van herstel — geen ‘lui zijn’.",
+    },
+    {
       href: "/gids/energie",
       turboSnippet:
         "Trainingsvolume en energiehuishouding lopen vast in elkaar over zo lees je het energiethema voor voeding en dagritme.",

@@ -10,7 +10,7 @@
 
 | URL | Status | Target keyword |
 |---|---|---|
-| `/testosteron-na-40` | ✏️ Gepland | "testosteron na 40" |
+| `/testosteron-na-40` | ✅ Live | "testosteron na 40" |
 | `/supplementen-mannen-40` | 💡 | "supplementen mannen 40+" |
 | `/voeding-na-40` | 💡 | "voeding na 40" |
 

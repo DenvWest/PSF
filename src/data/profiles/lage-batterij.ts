@@ -185,6 +185,11 @@ export const lageBatterijProfile: ProfilePageData = {
 
   relatedComparisons: [
     {
+      href: "/blog/vitamine-d-en-energie",
+      turboSnippet:
+        "Vitamine D en energie: wat claims wél zeggen, wanneer meten zinvol is — zonder wonderbeloftes.",
+    },
+    {
       href: "/beste/omega-3-supplement",
       turboSnippet:
         "EPA/DHA: hart‑ en hersenclaims (EFSA) — vergelijk zuiverheid en prijs per dag →",

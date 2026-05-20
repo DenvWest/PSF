@@ -325,8 +325,16 @@ export default function SlaapVerbeterenNa40Page() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Uitslapen in het weekend voelt als herstel, maar het verschuift je biologische
-                  klok. Maandag voel je dat — ook wel &ldquo;sociale jetlag&rdquo; genoemd. Varieer maximaal 30
-                  minuten met je opstaanmoment, zeven dagen per week.
+                  klok. Maandag voel je dat — ook wel &ldquo;sociale jetlag&rdquo; genoemd. Structureel
+                  tekort stapelt op als{" "}
+                  <Link
+                    href="/kennisbank/slaapschuld"
+                    className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
+                  >
+                    slaapschuld
+                  </Link>
+                  ; uitslapen lost dat niet volledig op. Varieer maximaal 30 minuten met je
+                  opstaanmoment, zeven dagen per week.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">

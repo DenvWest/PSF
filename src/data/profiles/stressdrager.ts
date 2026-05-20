@@ -182,6 +182,16 @@ export const stressdragerProfile: ProfilePageData = {
 
   relatedComparisons: [
     {
+      href: "/blog/cortisol-en-testosteron",
+      turboSnippet:
+        "Cortisol en testosteron na 40: stress-as zonder mythes — brug tussen stress- en hormooncluster.",
+    },
+    {
+      href: "/testosteron-na-40",
+      turboSnippet:
+        "Testosteron na 40 in voorzichtige taal — leefstijl eerst, geen zelf-diagnose via internet.",
+    },
+    {
       href: "/profiel/onrustige-slaper",
       turboSnippet:
         "Word je ook 's nachts wakker met een hoofd vol gedachten? Bekijk het Onrustige Slaper-profiel — veel overlap met dit patroon.",

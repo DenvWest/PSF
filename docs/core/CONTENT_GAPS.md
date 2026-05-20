@@ -10,12 +10,10 @@
 
 | Pagina | Moet gelinkt worden vanuit |
 |---|---|
-| `/herstel-verbeteren-na-40` | Homepage, relevante blogs, `/thema/herstel` |
-| `/beste-zink` | Relevante blogs, profiel-pagina's |
-| `/beste/creatine` | Relevante blogs, profiel overtrainer |
-| `/beste-melatonine` | Slaap-blogs, profiel onrustige-slaper, pillar slaap |
-| `/beste-eiwitpoeder` | Energie-blogs, profiel overtrainer, pillar herstel |
-| `/beste-vitamine-d` | Energie-blogs, profiel lage-batterij |
+| `/herstel-verbeteren-na-40` | Homepage, `/thema/herstel` |
+| `/beste/zink` | Extra profiel-pagina's (stressdrager) |
+| `/beste/melatonine` | Slaap-blogs, profiel onrustige-slaper |
+| `/beste/eiwitpoeder` | Energie-blogs, pillar herstel |
 
 ---
 
@@ -23,57 +21,57 @@
 
 | Blog (idee) | Verbindt | Impact |
 |---|---|---|
-| `/blog/cortisol-en-testosteron` | toekomstig pillar testosteron ↔ pillar stress ↔ ashwagandha | **Hoog** — cross-cluster brug, voorbereiding testosteron-pillar |
-| `/blog/creatine-en-herstel` | pillar herstel ↔ creatine vergelijking ↔ profiel overtrainer | **Hoog** — verbindt 3 live pagina's |
-| `/blog/vitamine-d-en-energie` | pillar energie ↔ vitamine-d vergelijking ↔ profiel lage-batterij | **Hoog** — verbindt 3 live pagina's |
-| `/blog/zink-en-testosteron` | toekomstig pillar testosteron ↔ zink vergelijking | Midden |
-| `/blog/omega-3-en-herstel` | pillar herstel ↔ omega-3 vergelijking ↔ profiel overtrainer | Midden |
-| `/blog/melatonine-en-slaap` | pillar slaap ↔ melatonine vergelijking ↔ profiel onrustige-slaper | Midden |
+| `/blog/cortisol-en-testosteron` | ✅ Live | pillar testosteron ↔ pillar stress ↔ ashwagandha |
+| `/blog/creatine-en-herstel` | ✅ Live | pillar herstel ↔ creatine vergelijking ↔ profiel overtrainer |
+| `/blog/vitamine-d-en-energie` | ✅ Live | pillar energie ↔ vitamine-d vergelijking ↔ profiel lage-batterij |
+| `/blog/zink-en-testosteron` | ✅ Live | pillar testosteron ↔ zink vergelijking |
+| `/blog/omega-3-en-herstel` | ✅ Live | pillar herstel ↔ omega-3 vergelijking ↔ profiel overtrainer |
+| `/blog/melatonine-en-slaap` | pillar slaap ↔ melatonine vergelijking ↔ profiel onrustige-slaper | **Hoog** |
 
 ---
 
 ## Profielpagina link-targets
 
-| Profiel | Status | Pillar link | Vergelijking link(s) |
+| Profiel | Status | Pillar link | Cluster / vergelijking |
 |---|---|---|---|
-| Onrustige Slaper | ✅ | `/slaap-verbeteren-na-40` ✅ | `/beste-magnesium` ✅, `/beste-ashwagandha` ✅ |
-| Stressdrager | ✅ | `/stress-verminderen-man` ✅ | `/beste-ashwagandha` ✅, `/beste-magnesium` ✅ |
-| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/beste/omega-3-supplement` ✅, `/beste/vitamine-d` ✅ |
-| Overtrainer | ✅ | `/herstel-verbeteren-na-40` ✅ | `/beste/creatine` ✅, `/beste/omega-3-supplement` ✅ |
+| Onrustige Slaper | ✅ | `/slaap-verbeteren-na-40` ✅ | `/beste/magnesium` ✅, `/beste/ashwagandha` ✅ |
+| Stressdrager | ✅ | `/stress-verminderen-man` ✅ | `/blog/cortisol-en-testosteron` ✅, `/testosteron-na-40` ✅ |
+| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/blog/vitamine-d-en-energie` ✅, `/beste/vitamine-d` ✅ |
+| Overtrainer | ✅ | `/herstel-verbeteren-na-40` ✅ | `/blog/creatine-en-herstel` ✅, `/kennisbank/overtrainingssyndroom` ✅ |
 
 ---
 
-## Ontbrekende pillar page
+## Pillar pages
 
-| Pillar | Status | Zou verbinden |
+| Pillar | Status | Verbindt |
 |---|---|---|
-| `/testosteron-na-40` | ✏️ Gepland | zink vergelijking, creatine vergelijking, blog testosteron-en-energie-na-40 |
+| `/testosteron-na-40` | ✅ Live | zink, creatine, ashwagandha vergelijkingen + cluster-blogs |
 
 ---
 
-## Kennisbank — ontbrekende termen voor inline linking
+## Kennisbank — termen (inline linking)
 
-| Term | Nodig voor | Prioriteit |
+| Term | Status | Inline vanuit |
 |---|---|---|
-| Testosteron | Testosteron pillar, energie-blogs, profiel overtrainer | Hoog |
-| Slaapschuld | Slaap pillar, slaap-blogs | Midden |
-| Magnesiumvormen | Magnesium vergelijking, magnesium-blogs | Midden |
-| Overtrainingssyndroom | Profiel overtrainer, pillar herstel | Midden |
-| Insulineresistentie | Energie pillar, pillar testosteron | Laag |
-| Oxidatieve stress | Cross-cluster verbinder | Laag |
+| Testosteron | ✅ | testosteron-pillar, cortisol-blog, zink-blog |
+| Slaapschuld | ✅ | slaap-pillar |
+| Overtrainingssyndroom | ✅ | profiel overtrainer, kennisbank cross-links |
+| Magnesiumvormen | ✅ | magnesium vergelijking, magnesium-blogs |
+| Insulineresistentie | ✅ term | Energie pillar, pillar testosteron — meer inline links gewenst |
+| Oxidatieve stress | 💡 | Cross-cluster verbinder |
 
 ---
 
 ## Spinnenweb-integriteit checklist
 
-- [ ] Elke pillar linkt naar bijbehorend profiel?
-- [ ] Elke vergelijkingspagina heeft "past bij profiel X" blok?
-- [ ] Elke blog linkt naar 2+ gerelateerde pagina's?
-- [ ] Kennisbank-termen inline gelinkt bij eerste voorkomen?
-- [ ] Turbo-snippets bestaan voor alle live pagina's?
-- [ ] Geen broken interne links (run `npm run build`)?
-- [ ] Content-map bijgewerkt na elke nieuwe pagina?
-- [ ] Nieuwe vergelijkingen (melatonine, eiwitpoeder) opgenomen in profieldata?
+- [x] Elke pillar linkt naar bijbehorend profiel (testosteron-pillar → 3 profielen)
+- [ ] Elke vergelijkingspagina heeft "past bij profiel X" blok
+- [x] Elke nieuwe cluster-blog linkt naar 2+ gerelateerde pagina's
+- [x] Kennisbank-termen testosteron, slaapschuld, overtrainingssyndroom inline gelinkt
+- [x] Turbo-snippets op testosteron-pillar en cluster-blogs
+- [ ] Geen broken interne links (run `npm run build` — na deploy verifiëren)
+- [ ] Content-map bijgewerkt na elke nieuwe pagina
+- [x] Nieuwe vergelijkingen (melatonine, eiwitpoeder) opgenomen in profieldata
 
 ---
 

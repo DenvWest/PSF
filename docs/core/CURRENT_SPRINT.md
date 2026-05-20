@@ -6,7 +6,7 @@
 
 ## Strategische prioriteit
 
-**Content spinnenweb versterken** — cluster-blogs, interne links en kennisbank-termen vullen om de bestaande pillar + profiel + vergelijking structuur te verbinden. Testosteron-pillar bouwen als vijfde cluster.
+**Content spinnenweb versterken** — cluster-blogs, interne links en kennisbank-termen vullen om de bestaande pillar + profiel + vergelijking structuur te verbinden.
 
 ---
 
@@ -16,17 +16,23 @@
 2. ✅ Pillar: `/stress-verminderen-man`
 3. ✅ Pillar: `/energie-na-40`
 4. ✅ Pillar: `/herstel-verbeteren-na-40`
-5. ✅ Profiel: `/profiel/onrustige-slaper`
-6. ✅ Profiel: `/profiel/stressdrager`
-7. ✅ Profiel: `/profiel/lage-batterij`
-8. ✅ Profiel: `/profiel/overtrainer`
-9. ✅ 8 vergelijkingspagina's (omega-3, magnesium, ashwagandha, zink, creatine, vitamine D, melatonine, eiwitpoeder)
-10. ✅ 21 blogartikelen, 17 kennisbankbegrippen, 4 thema-hubs
-11. ✅ Slaapgids PDF + dag-0 nurture mail integratie
-12. ✅ SEO audit fixes (admin noindex, canonical consistentie)
-13. ✅ Nurture email sequence (6 templates)
-14. ✅ Admin dashboard
-15. ✅ Doc reorganisatie (3-layer system)
+5. ✅ Pillar: `/testosteron-na-40` (vijfde cluster)
+6. ✅ Profiel: `/profiel/onrustige-slaper`
+7. ✅ Profiel: `/profiel/stressdrager`
+8. ✅ Profiel: `/profiel/lage-batterij`
+9. ✅ Profiel: `/profiel/overtrainer`
+10. ✅ 8 vergelijkingspagina's (omega-3, magnesium, ashwagandha, zink, creatine, vitamine D, melatonine, eiwitpoeder)
+11. ✅ 24 blogartikelen, 20 kennisbankbegrippen, 4 thema-hubs
+12. ✅ Slaapgids PDF + dag-0 nurture mail integratie
+13. ✅ SEO audit fixes (admin noindex, canonical consistentie)
+14. ✅ Nurture email sequence (6 templates)
+15. ✅ Admin dashboard
+16. ✅ Doc reorganisatie (3-layer system)
+17. ✅ Cluster-blog: `/blog/cortisol-en-testosteron`
+18. ✅ Cluster-blogs: `/blog/creatine-en-herstel`, `/blog/vitamine-d-en-energie`
+19. ✅ Kennisbank: testosteron, slaapschuld, overtrainingssyndroom
+20. ✅ Spinnenweb-links profielen ↔ cluster-blogs ↔ kennisbank
+21. ✅ Sitemap: alle 5 pillar pages
 
 ---
 
@@ -34,10 +40,9 @@
 
 | # | Pagina | Type | Impact |
 |---|---|---|---|
-| 1 | `/blog/cortisol-en-testosteron` | Cluster-blog | Cross-cluster brug: stress pillar ↔ toekomstig testosteron pillar ↔ ashwagandha |
-| 2 | `/testosteron-na-40` | Pillar | Opent vijfde cluster, verbindt zink + creatine vergelijkingen |
-| 3 | Cluster-blogs (creatine-en-herstel, vitamine-d-en-energie) | Cluster-blogs | Verbinden pillar pages met losse vergelijkingen |
-| 4 | Kennisbank uitbreiding (testosteron, slaapschuld, overtrainingssyndroom) | Kennisbank | Inline linking targets voor bestaande content |
+| 1 | `/blog/melatonine-en-slaap` | Cluster-blog | Verbindt slaap-pillar ↔ melatonine vergelijking ↔ onrustige slaper |
+| 2 | `/supplementen-mannen-40` | Pillar (idee) | Breed overzicht supplementen 40+ |
+| 3 | "Past bij profiel X" op alle vergelijkingspagina's | Conversie | Profielherkenning op /beste/* |
 
 ## Op de horizon
 
@@ -58,7 +63,7 @@
 - Kennisbank: uitbreiden waar nodig
 - Bestaande blog audit: herkenningsmoment + interne links
 - Interne link audit na elke sprint
-- "Past bij profiel X" blok toevoegen aan vergelijkingspagina's
+- "Past bij profiel X" blok toevoegen aan vergelijkingpagina's
 
 ---
 

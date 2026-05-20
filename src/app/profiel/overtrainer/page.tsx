@@ -99,6 +99,8 @@ function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.href === "/beste/zink") return "Bekijk de zink vergelijking";
   if (item.href === "/beste/creatine") return "Bekijk de creatine vergelijking";
   if (item.href === "/beste/eiwitpoeder") return "Bekijk de eiwitpoeder vergelijking";
+  if (item.href === "/blog/creatine-en-herstel") return "Lees: creatine en herstel na 40";
+  if (item.href === "/kennisbank/overtrainingssyndroom") return "Overtrainingssyndroom in de kennisbank";
   return "Lees meer";
 }
 
@@ -266,7 +268,11 @@ export default function OvertrainerPage() {
               </h2>
               <p className="mt-3 text-slate-600 leading-relaxed max-w-3xl">
                 HPA-as, cortisolritme, ontstekingsdruk en het centrale zenuwstelsel komen vaak ter sprake als
-                je veel traint en weinig landt. Dit is algemene fysiologie geen persoonlijke diagnose.
+                je veel traint en weinig landt. Meer context:{" "}
+                <Link href="/kennisbank/overtrainingssyndroom" className="text-emerald-600 font-medium hover:text-emerald-700">
+                  overtrainingssyndroom in de kennisbank
+                </Link>
+                . Dit is algemene fysiologie geen persoonlijke diagnose.
               </p>
               <div className="mt-6 space-y-5">
                 {profile.understanding.paragraphs.map((paragraph, index) => (
