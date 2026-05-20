@@ -87,21 +87,27 @@ export default function OverOnsPage() {
           <article>
 
             {/* ── HERO ─────────────────────────────────────────────────── */}
-            <section className="pt-16 pb-16 md:pt-20 lg:pt-24">
-              <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:items-end lg:gap-20">
-                <h1 className="font-serif text-5xl font-normal leading-[1.05] tracking-tight text-balance text-stone-900 md:text-6xl lg:text-7xl">
-                  {ABOUT_HERO.headline}
-                </h1>
-                <div className="mt-8 space-y-6 lg:mt-0 lg:pb-2">
-                  <p className="text-lg leading-relaxed text-stone-600 md:text-xl">
-                    {heroLead}
+            <section className="-mx-6 px-6 py-28 md:py-32 lg:-mx-8 lg:px-8 lg:py-36 bg-[#E8E2D5]">
+              <span className="block text-xs uppercase tracking-[0.2em] text-stone-500 mb-6">
+                Over PerfectSupplement
+              </span>
+              <h1 className="font-serif text-5xl font-normal leading-[1.05] tracking-tight text-balance text-stone-900 md:text-6xl lg:text-7xl">
+                {ABOUT_HERO.headline}
+              </h1>
+              <p className="mt-8 max-w-2xl text-xl leading-relaxed text-stone-700">
+                {heroLead}
+              </p>
+              <div className="mt-16 h-px w-24 bg-stone-400/40" />
+            </section>
+
+            {/* ── INTRO ────────────────────────────────────────────────── */}
+            <section className="py-16 md:py-20">
+              <div className="mx-auto max-w-3xl space-y-6">
+                {heroBody.map((paragraph) => (
+                  <p key={paragraph.slice(0, 48)} className={bodyClass}>
+                    {paragraph}
                   </p>
-                  {heroBody.map((paragraph) => (
-                    <p key={paragraph.slice(0, 48)} className={bodyClass}>
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
+                ))}
               </div>
             </section>
 
