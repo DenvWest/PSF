@@ -6,8 +6,6 @@ import type { BlogCategorie } from "@/types/blog";
 import BlogHubHero from "@/components/blog/BlogHubHero";
 import BlogUitgelicht from "@/components/blog/BlogUitgelicht";
 import BlogThemaLinks from "@/components/blog/BlogThemaLinks";
-import BlogIntakeCTA from "@/components/blog/BlogIntakeCTA";
-import BlogVergelijkingLinks from "@/components/blog/BlogVergelijkingLinks";
 import BlogCategorieKaart from "@/components/blog/BlogCategorieKaart";
 import {
   BLOG_BG_CLASS,
@@ -100,23 +98,12 @@ export default function BlogPage() {
 
       <section
         className={`${BLOG_BG_CLASS} ${BLOG_CONVERSION_SECTION_PY}`}
-        aria-label="Themagidsen en intake"
+        aria-label="Themagidsen"
       >
         <Container>
           <div className="mx-auto max-w-2xl px-1">
             <BlogThemaLinks />
           </div>
-
-          <BlogIntakeCTA className="mx-auto mt-24 max-w-2xl md:mt-28" />
-        </Container>
-      </section>
-
-      <section
-        className="border-t border-stone-200/60 bg-white py-12 md:py-16"
-        aria-label="Vergelijkingspagina's"
-      >
-        <Container>
-          <BlogVergelijkingLinks />
         </Container>
       </section>
     </>
