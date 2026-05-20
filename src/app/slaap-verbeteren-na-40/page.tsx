@@ -4,6 +4,8 @@ import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
 import { magnesiumReferences } from "@/data/references/magnesium";
+import PillarReadingChrome from "@/components/content/PillarReadingChrome";
+import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
 
 export const metadata: Metadata = {
   title: "Slaap Verbeteren Na 40: Oorzaken, Tips & Supplementen | PerfectSupplement",
@@ -101,9 +103,10 @@ export default function SlaapVerbeterenNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="py-12 md:py-16">
+      <main className="pb-24 md:pb-28 py-12 md:py-16">
         <Container>
           <div className="max-w-3xl mx-auto">
+            <PillarReadingChrome>
             <article>
 
               {/* 1. Hero */}
@@ -771,9 +774,11 @@ export default function SlaapVerbeterenNa40Page() {
               </footer>
 
             </article>
+            </PillarReadingChrome>
           </div>
         </Container>
       </main>
+      <PillarStickyIntakeCta />
     </>
   );
 }

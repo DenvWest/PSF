@@ -9,7 +9,7 @@ import {
   READING_ROW_GAP_CLASS,
   READING_TOC_COL_CLASS,
 } from '@/lib/article-reading-columns'
-import { parseReadingAnchorLinePx } from '@/lib/reading-metrics'
+import { parseReadingAnchorLinePx, readingProgressFraction } from '@/lib/reading-metrics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 /** Toon inhoudsopgave niet bij zeer korte artikelen (< 3 koppen). */
@@ -19,22 +19,6 @@ interface ArticleBodyReadingChromeProps {
   tocItems: ArticleTocItem[]
   hideTocBelowItemCount?: number
   children: React.ReactNode
-}
-
-function readingProgressFraction(el: HTMLElement | null): number {
-  if (!el) return 0
-  const anchor = parseReadingAnchorLinePx()
-  const scrollY = window.scrollY
-  const viewH = window.visualViewport?.height ?? window.innerHeight
-  const rect = el.getBoundingClientRect()
-  const top = scrollY + rect.top
-  const height = Math.max(el.scrollHeight, el.offsetHeight)
-  const bottom = top + height
-  const readableStart = top - anchor
-  const readableEnd = Math.max(readableStart + viewH * 0.42, bottom - viewH * 0.32)
-  const span = readableEnd - readableStart
-  if (span < 64) return scrollY >= readableStart ? 1 : 0
-  return Math.min(1, Math.max(0, (scrollY - readableStart) / span))
 }
 
 export default function ArticleBodyReadingChrome({

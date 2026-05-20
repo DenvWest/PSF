@@ -3,6 +3,8 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { ReferenceList } from "@/components/references/ReferenceList";
+import PillarReadingChrome from "@/components/content/PillarReadingChrome";
+import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
 import { testosteronNa40References } from "@/data/references/testosteron-na-40";
 
 const LINK =
@@ -91,9 +93,10 @@ export default function TestosteronNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="py-12 md:py-16">
+      <main className="pb-24 md:pb-28 py-12 md:py-16">
         <Container>
           <div className="mx-auto max-w-3xl">
+            <PillarReadingChrome>
             <article>
               <header>
                 <p className="text-sm font-semibold uppercase tracking-wider text-green-700">
@@ -392,14 +395,40 @@ export default function TestosteronNa40Page() {
                   Supplementen In Context
                 </h2>
                 <p className="mt-4 leading-relaxed text-gray-700">
-                  Geen supplement vervangt meting of medisch advies. Onderstaande opties worden vaak
-                  besproken rond mannelijke gezondheid — altijd na leefstijl en met etiket-claims:
+                  Geen supplement vervangt meting of medisch advies — en geen stack verhoogt
+                  gegarandeerd testosteron. Onderstaande opties passen vooral bij{" "}
+                  <strong className="text-gray-900">spierbehoud en krachttraining na 40</strong>,
+                  naast slaap, eiwit via voeding en stressmanagement. Meer diepgang:{" "}
+                  <Link href="/herstel-verbeteren-na-40" className={LINK}>
+                    herstel verbeteren na 40
+                  </Link>{" "}
+                  en{" "}
+                  <Link href="/blog/creatine-en-herstel" className={LINK}>
+                    creatine en herstel
+                  </Link>
+                  .
                 </p>
 
-                <h3 className="mt-8 text-xl font-semibold text-gray-900">Zink</h3>
+                <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-5">
+                  <h3 className="font-semibold text-gray-900">Stack in onderzoek — geen hormoon-fix</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-700">
+                    In populatie-onderzoek worden eiwit (via voeding of poeder), marine omega-3 en
+                    creatine vaak besproken rond spiermetabolisme bij ouder worden — niet als
+                    testosteron-boost. Smith et al. (2011) zagen bij ouderen een hogere rate of
+                    muscle protein synthesis met omega-3-suppletie in een gecontroleerde trial; recente
+                    meta-analyses tonen een gemengd beeld en geen garantie voor jou individueel.
+                    Creatine ondersteunt vooral korte, zware inspanning (EU-claim). Praktische volgorde:
+                    leefstijl → voldoende eiwit → eventueel omega-3 bij lage visinname → creatine bij
+                    krachttraining — maximaal één nieuwe stap per 1–2 weken.
+                  </p>
+                </div>
+
+                <h3 className="mt-10 text-xl font-semibold text-gray-900">Zink</h3>
                 <p className="mt-3 leading-relaxed text-gray-700">
-                  Zink draagt bij tot instandhouding van een normaal testosterongehalte in het bloed
-                  bij voldoende inname (EU-claim). Geen belofte van verhoging bij normale status.
+                  Enige supplement hier met een EU-claim die testosteron noemt: zink draagt bij tot
+                  instandhouding van een normaal testosterongehalte in het bloed bij voldoende
+                  inname — geen belofte van verhoging bij normale status. Alleen gericht overwegen
+                  bij verhoogd risico op tekort; niet standaard hoge doses.
                 </p>
                 <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
                   <p className="text-sm leading-relaxed text-gray-700">
@@ -410,10 +439,44 @@ export default function TestosteronNa40Page() {
                   </Link>
                 </div>
 
+                <h3 className="mt-10 text-xl font-semibold text-gray-900">Eiwitpoeder (praktisch hulpmiddel)</h3>
+                <p className="mt-3 leading-relaxed text-gray-700">
+                  Eiwit draagt bij aan groei en instandhouding van spiermassa (EU-claims, bij
+                  voldoende totale inname en training). Poeder is vooral handig als je dagdoel
+                  (≈1,2–1,6 g/kg bij krachttraining) lastig haalt via maaltijden — geen vervanging
+                  van echte voeding.
+                </p>
+                <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
+                  <p className="text-sm leading-relaxed text-gray-700">
+                    Whey of plantaardig — vergelijk op eiwit per portie en prijs per dag.
+                  </p>
+                  <Link href="/beste/eiwitpoeder" className={`mt-2 inline-block ${LINK}`}>
+                    Bekijk de eiwitpoeder-vergelijking →
+                  </Link>
+                </div>
+
+                <h3 className="mt-10 text-xl font-semibold text-gray-900">Omega-3 (EPA/DHA)</h3>
+                <p className="mt-3 leading-relaxed text-gray-700">
+                  EPA en DHA dragen bij tot normale werking van het hart; DHA draagt bij tot
+                  instandhouding van normale hersenfunctie (EU-claims bij voldoende dosering). In
+                  onderzoek worden ze besproken rond ontstekingsprofielen en spiermetabolisme bij
+                  ouder worden — verwacht geen wonderen, wel een zinvolle basis bij weinig vette vis.
+                </p>
+                <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
+                  <p className="text-sm leading-relaxed text-gray-700">
+                    EPA/DHA per capsule, zuiverheid en prijs per dag — naast elkaar gezet.
+                  </p>
+                  <Link href="/beste/omega-3-supplement" className={`mt-2 inline-block ${LINK}`}>
+                    Bekijk de omega-3-vergelijking →
+                  </Link>
+                </div>
+
                 <h3 className="mt-10 text-xl font-semibold text-gray-900">Creatine monohydraat</h3>
                 <p className="mt-3 leading-relaxed text-gray-700">
                   EU-claim: fysieke prestatie bij opeenvolgingen van zeer korte, intense inspanning
-                  (≥3 g/dag). Geen hormoonclaim — wel relevant bij krachttraining na 40.
+                  (≥3 g/dag). Geen hormoonclaim — wel een van de best onderzochte opties bij
+                  krachttraining, ook bij ouderen. Past logisch naast eiwit en omega-3 in een
+                  herstel/training-context, niet als vervanging van rustdagen.
                 </p>
                 <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
                   <p className="text-sm leading-relaxed text-gray-700">
@@ -421,21 +484,6 @@ export default function TestosteronNa40Page() {
                   </p>
                   <Link href="/beste/creatine" className={`mt-2 inline-block ${LINK}`}>
                     Bekijk de creatine-vergelijking →
-                  </Link>
-                </div>
-
-                <h3 className="mt-10 text-xl font-semibold text-gray-900">Ashwagandha</h3>
-                <p className="mt-3 leading-relaxed text-gray-700">
-                  Wordt in stresscontext besproken; geen vaste EU-stressclaims op elk etiket.
-                  Vergelijk inhoudelijk als tweede lijn na slaap en grenzen — niet als vervanging van
-                  zorg.
-                </p>
-                <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-5">
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    Ashwagandha op kwaliteit en dosering — zonder marketing-beloftes?
-                  </p>
-                  <Link href="/beste/ashwagandha" className={`mt-2 inline-block ${LINK}`}>
-                    Bekijk de ashwagandha-vergelijking →
                   </Link>
                 </div>
               </section>
@@ -574,9 +622,11 @@ export default function TestosteronNa40Page() {
               <ReferenceList references={testosteronNa40References} />
               <MedicalDisclaimer />
             </article>
+            </PillarReadingChrome>
           </div>
         </Container>
       </main>
+      <PillarStickyIntakeCta />
     </>
   );
 }

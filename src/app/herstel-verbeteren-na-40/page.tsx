@@ -5,6 +5,8 @@ import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
 import { herstelVerbeterenNa40References } from "@/data/references/herstel-verbeteren-na-40";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import PillarReadingChrome from "@/components/content/PillarReadingChrome";
+import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
 
 const INLINE_LINK_THEME =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px]";
@@ -105,9 +107,10 @@ export default function HerstelVerbeterenNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="py-12 md:py-16">
+      <main className="pb-24 md:pb-28 py-12 md:py-16">
         <Container>
           <div className="max-w-3xl mx-auto">
+            <PillarReadingChrome>
             <article>
               <header>
                 <p className="text-sm font-semibold uppercase tracking-wider text-green-700">
@@ -825,9 +828,11 @@ export default function HerstelVerbeterenNa40Page() {
                 </p>
               </footer>
             </article>
+            </PillarReadingChrome>
           </div>
         </Container>
       </main>
+      <PillarStickyIntakeCta />
     </>
   );
 }

@@ -79,4 +79,30 @@ export const testosteronNa40References: Reference[] = [
     pmid: "28324103",
     url: "https://pubmed.ncbi.nlm.nih.gov/28324103/",
   },
+  {
+    id: "smith-omega3-older-mps",
+    authors: "Smith, G. I., Atherton, P., Reeds, D. N., Mohammed, D. N., Rankin, D., … Mittendorfer, B.",
+    year: 2011,
+    title:
+      "Dietary omega-3 fatty acid supplementation increases the rate of muscle protein synthesis in older adults: a randomized controlled trial",
+    journal: "The American Journal of Clinical Nutrition",
+    volume: "93(2)",
+    pages: "402-412",
+    doi: "10.3945/ajcn.110.005611",
+    pmid: "21159741",
+    url: "https://pubmed.ncbi.nlm.nih.gov/21159741/",
+  },
+  {
+    id: "kreider-creatine-issn",
+    authors: "Kreider, R. B., Kalman, D. S., Antonio, J., et al.",
+    year: 2017,
+    title:
+      "International Society of Sports Nutrition position stand: safety and efficacy of creatine supplementation in exercise, sport, and medicine",
+    journal: "Journal of the International Society of Sports Nutrition",
+    volume: "14",
+    pages: "18",
+    doi: "10.1186/s12970-017-0173-z",
+    pmid: "28615996",
+    url: "https://pubmed.ncbi.nlm.nih.gov/28615996/",
+  },
 ];

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import PillarReadingChrome from "@/components/content/PillarReadingChrome";
+import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
 
 const INLINE_LINK_CLASS =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
@@ -102,9 +104,10 @@ export default function EnergieNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="py-12 md:py-16">
+      <main className="pb-24 md:pb-28 py-12 md:py-16">
         <Container>
           <div className="max-w-3xl mx-auto">
+            <PillarReadingChrome>
             <article>
               {/* 1. Hero */}
               <header>
@@ -719,9 +722,11 @@ export default function EnergieNa40Page() {
                 </p>
               </footer>
             </article>
+            </PillarReadingChrome>
           </div>
         </Container>
       </main>
+      <PillarStickyIntakeCta />
     </>
   );
 }
