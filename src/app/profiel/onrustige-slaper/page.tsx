@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
@@ -108,6 +109,13 @@ const weekPlan = [
     title: "Meten",
     description:
       "Doe de Leefstijlcheck opnieuw. Vergelijk je slaapscore met 4 weken geleden. Is er verbetering? Dan weet je dat de aanpak werkt. Geen verbetering? Dan is het misschien tijd om een arts te raadplegen — niet als falen, maar als logische volgende stap.",
+  },
+];
+
+const faqItems = [
+  {
+    q: "Wanneer moet ik naar mijn huisarts?",
+    a: "Bij aanhoudende slaapproblemen die langer dan 3 maanden duren, of als je last hebt van ernstig snurken of ademstops tijdens de slaap. Dat kan wijzen op slaapapnoe — een aandoening die je huisarts kan onderzoeken.",
   },
 ];
 
@@ -390,6 +398,20 @@ export default function OnrustigeSlaperPage() {
               </div>
             </section>
 
+            <section id="faq" className="py-12 border-t border-slate-100">
+              <h2 className="font-[var(--font-heading)] text-2xl md:text-3xl text-slate-900">
+                Veelgestelde vragen
+              </h2>
+              <dl className="mt-8 space-y-8">
+                {faqItems.map((item) => (
+                  <div key={item.q}>
+                    <dt className="font-semibold text-slate-900">{item.q}</dt>
+                    <dd className="mt-2 text-slate-600 leading-relaxed">{item.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+
             {/* CTA Blok */}
             <section className="py-16">
               <div className="bg-emerald-50 rounded-2xl p-8 md:p-12 text-center">
@@ -459,17 +481,7 @@ export default function OnrustigeSlaperPage() {
               </div>
             </section>
 
-            {/* Disclaimer */}
-            <aside className="py-8 border-t border-slate-100 text-xs text-slate-400">
-              <p>
-                PerfectSupplement geeft adviezen op basis van wetenschappelijk onderzoek, geen
-                medische diagnoses. Onze Leefstijlcheck is een hulpmiddel voor zelfinzicht, geen
-                vervanging voor professioneel medisch advies. Bij aanhoudende slaapproblemen raden
-                wij aan om contact op te nemen met je huisarts — met name als je last hebt van
-                ernstig snurken, ademstops tijdens de slaap, of slaapproblemen die langer dan 3
-                maanden aanhouden.
-              </p>
-            </aside>
+            <MedicalDisclaimer />
           </article>
         </Container>
       </main>

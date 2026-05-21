@@ -16,6 +16,7 @@ import {
   ComparisonChooserIntro,
   ComparisonIntakeFallbackCta,
 } from "@/components/supplements/ContentFirstComparisonCTAs";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 import {
   buildBreadcrumbSchema,
@@ -220,24 +221,9 @@ export default async function Page({ params }: PageProps) {
 
         {data.showIntakeFallbackCta !== false && <ComparisonIntakeFallbackCta />}
 
-        <section className="border-t border-stone-200 py-10" role="complementary">
-          <Container>
-            <div className="mx-auto max-w-2xl text-center text-sm text-stone-500">
-              <p>
-                De informatie op deze pagina is geen medisch advies. Raadpleeg bij klachten altijd
-                een arts.
-              </p>
-              <p className="mt-3">
-                <Link
-                  href="/disclaimer"
-                  className="font-medium text-stone-600 underline decoration-stone-300 underline-offset-4 transition hover:text-stone-900"
-                >
-                  Lees onze volledige disclaimer →
-                </Link>
-              </p>
-            </div>
-          </Container>
-        </section>
+        <Container>
+          <MedicalDisclaimer />
+        </Container>
       </main>
 
       <StickyMobileCta topProduct={topProduct} />

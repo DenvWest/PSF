@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 import { stressdragerProfile } from "@/data/profiles/stressdrager";
 
@@ -58,6 +59,13 @@ function relatedLinkLabel(item: { href: string; linkText?: string }): string {
   if (item.href === "/testosteron-na-40") return "Naar de testosteron-pillar";
   return "Lees meer";
 }
+
+const faqItems = [
+  {
+    q: "Wanneer is professionele hulp nodig?",
+    a: "Bij langdurige somberheid, burn-outklachten of paniekaanvallen: zoek professionele hulp via je huisarts of de POH-GGZ. Supplementen zijn geen vervanging voor psychologische zorg. Bij klachten die je dagelijks functioneren beïnvloeden, neem contact op met je huisarts.",
+  },
+];
 
 const breadcrumbJsonLd = [
   {
@@ -291,6 +299,20 @@ export default function StressdragerPage() {
               </div>
             </section>
 
+            <section id="faq" className="py-12 border-t border-slate-100">
+              <h2 className="font-[var(--font-heading)] text-2xl md:text-3xl text-slate-900">
+                Veelgestelde vragen
+              </h2>
+              <dl className="mt-8 space-y-8">
+                {faqItems.map((item) => (
+                  <div key={item.q}>
+                    <dt className="font-semibold text-slate-900">{item.q}</dt>
+                    <dd className="mt-2 text-slate-600 leading-relaxed">{item.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+
             {/* CTA Blok */}
             <section className="py-16">
               <div className="bg-emerald-50 rounded-2xl p-8 md:p-12 text-center">
@@ -341,17 +363,7 @@ export default function StressdragerPage() {
               </div>
             </section>
 
-            {/* Disclaimer */}
-            <aside className="py-8 border-t border-slate-100 text-xs text-slate-400">
-              <p>
-                PerfectSupplement geeft adviezen op basis van wetenschappelijk onderzoek, geen medische
-                diagnoses. Bij langdurige somberheid, burn-outklachten of paniek: zoek professionele hulp via
-                je huisarts of de POH-GGZ. Supplementen zijn geen vervanging voor psychologische zorg.
-                Onze Leefstijlcheck is een hulpmiddel voor zelfinzicht, geen vervanging voor
-                professioneel medisch advies. Bij aanhoudende klachten die je dagelijks functioneren
-                beïnvloeden raden wij aan om contact op te nemen met je huisarts.
-              </p>
-            </aside>
+            <MedicalDisclaimer />
           </article>
         </Container>
       </main>

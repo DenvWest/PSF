@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import type { ProfilePageData, StepCareLayer, SupplementSuggestion } from "@/types/profile-page";
@@ -265,14 +266,7 @@ export default async function ProfielPage({ params }: Props) {
               </section>
             )}
 
-            {/* Disclaimer */}
-            <aside className="py-8 text-xs text-slate-400">
-              <p>
-                PerfectSupplement geeft informatie en suggesties, geen medische diagnoses of
-                behandelingen. Bij aanhoudende klachten: raadpleeg je huisarts. Supplementen zijn
-                geen vervanging voor een gevarieerd voedingspatroon en een gezonde leefstijl.
-              </p>
-            </aside>
+            <MedicalDisclaimer />
           </article>
         </Container>
       </main>

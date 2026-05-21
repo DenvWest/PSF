@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
@@ -388,7 +389,7 @@ export default function LageBatterijPage() {
                   Ontdek jouw profiel — match met Lage Batterij
                 </Link>
                 <p className="mt-4 text-sm text-slate-400">
-                  Meer dan 500 mannen 40+ gingen je voor. Gratis, anoniem, geen account nodig.
+                  Gratis, anoniem, geen account nodig.
                 </p>
               </div>
             </section>
@@ -450,15 +451,7 @@ export default function LageBatterijPage() {
               </div>
             </section>
 
-            {/* Disclaimer */}
-            <aside className="py-8 border-t border-slate-100 text-xs text-slate-400">
-              <p>
-                PerfectSupplement geeft adviezen op basis van wetenschappelijk onderzoek, geen
-                medische diagnoses. Onze Leefstijlcheck is een hulpmiddel voor zelfinzicht, geen
-                vervanging voor professioneel medisch advies. Raadpleeg altijd een arts bij
-                aanhoudende klachten.
-              </p>
-            </aside>
+            <MedicalDisclaimer />
           </article>
         </Container>
       </main>

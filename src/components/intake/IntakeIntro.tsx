@@ -5,6 +5,7 @@ import {
   getLastSession,
   type IntakeSessionPayload,
 } from "@/lib/intake-storage";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 type IntakeIntroProps = {
   onStart: () => void;
@@ -113,14 +114,7 @@ export default function IntakeIntro({
           </button>
         ) : null}
 
-        {/* 7. Disclaimer */}
-        <p
-          className="mt-6 max-w-sm text-xs"
-          style={{ color: "rgba(255,255,255,0.3)", lineHeight: 1.6 }}
-        >
-          Geen medisch advies. Geeft inzicht in leefstijlpatronen. Raadpleeg
-          een arts bij klachten.
-        </p>
+        <MedicalDisclaimer variant="intake" theme="dark" />
       </div>
     </div>
   );

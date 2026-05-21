@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 import { overtrainerProfile } from "@/data/profiles/overtrainer";
 
@@ -424,15 +425,7 @@ export default function OvertrainerPage() {
               </div>
             </section>
 
-            <aside className="py-8 border-t border-slate-100 text-xs text-slate-400">
-              <p>
-                PerfectSupplement geeft adviezen op basis van wetenschappelijk onderzoek, geen medische
-                diagnoses. Bij langdurige blessurepijn, hartkloppingen, flauw vallen of uitval: neem contact op
-                met je huisarts of een sportarts. Supplementen zijn geen vervanging voor rust, voeding en
-                professionele begeleiding. De Leefstijlcheck is een hulpmiddel voor zelfinzicht; bij twijfel
-                altijd medische expertise inschakelen.
-              </p>
-            </aside>
+            <MedicalDisclaimer />
           </article>
         </Container>
       </main>
