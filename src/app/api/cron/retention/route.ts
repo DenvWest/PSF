@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { runIntakeRetention } from "@/lib/intake-retention";
+import { runRetentionCronJob } from "@/lib/intake-retention";
 import { verifyCronRequest } from "@/lib/cron-auth";
 
 export const dynamic = "force-dynamic";
 
 async function handleAuthorized(): Promise<NextResponse> {
   try {
-    const result = await runIntakeRetention();
+    const result = await runRetentionCronJob();
     return NextResponse.json(result);
   } catch (err) {
     console.error("[api/cron/retention]", err);
