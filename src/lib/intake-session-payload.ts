@@ -1,5 +1,6 @@
 import type { IntakeAgeRange } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
+import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 
 export type IntakeSessionPayload = {
   sessionId: string;
@@ -26,13 +27,18 @@ type IntakeSessionRow = {
 export function intakeSessionRowToPayload(
   row: IntakeSessionRow,
 ): IntakeSessionPayload | null {
+  const profileLabel =
+    typeof row.profile_label === "string" ? row.profile_label.trim() : "";
+
   if (
     !row.id ||
     !row.symptom_profile ||
+    row.symptom_profile.length === 0 ||
     !row.answers ||
     !row.domain_scores ||
     typeof row.urgency_level !== "string" ||
-    typeof row.profile_label !== "string" ||
+    profileLabel.length === 0 ||
+    profileLabel === ANON_PROFILE_LABEL ||
     !row.created_at
   ) {
     return null;
@@ -50,7 +56,7 @@ export function intakeSessionRowToPayload(
     answers: row.answers,
     scores: row.domain_scores,
     urgency: row.urgency_level,
-    profile: row.profile_label,
+    profile: profileLabel,
     timestamp: new Date(row.created_at).getTime(),
     ageRange,
   };
