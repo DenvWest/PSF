@@ -10,7 +10,7 @@ const ANON_DOMAIN_SCORES = {
   recovery_score: 0,
 } as const;
 
-export async function revokeIntakeConsentForSession(
+async function cleanupIntakeSessionLinkedData(
   admin: SupabaseClient,
   sessionId: string,
 ): Promise<{ ok: true } | { ok: false; step: string; error: unknown }> {
@@ -53,6 +53,18 @@ export async function revokeIntakeConsentForSession(
     return { ok: false, step: "recovery_tokens", error: tokensError };
   }
 
+  return { ok: true };
+}
+
+export async function revokeIntakeConsentForSession(
+  admin: SupabaseClient,
+  sessionId: string,
+): Promise<{ ok: true } | { ok: false; step: string; error: unknown }> {
+  const cleanup = await cleanupIntakeSessionLinkedData(admin, sessionId);
+  if (!cleanup.ok) {
+    return cleanup;
+  }
+
   const { error: anonError } = await admin
     .from("intake_sessions")
     .update({
@@ -69,6 +81,27 @@ export async function revokeIntakeConsentForSession(
 
   if (anonError) {
     return { ok: false, step: "intake_sessions", error: anonError };
+  }
+
+  return { ok: true };
+}
+
+export async function deleteIntakeSessionForSession(
+  admin: SupabaseClient,
+  sessionId: string,
+): Promise<{ ok: true } | { ok: false; step: string; error: unknown }> {
+  const cleanup = await cleanupIntakeSessionLinkedData(admin, sessionId);
+  if (!cleanup.ok) {
+    return cleanup;
+  }
+
+  const { error: deleteError } = await admin
+    .from("intake_sessions")
+    .delete()
+    .eq("id", sessionId);
+
+  if (deleteError) {
+    return { ok: false, step: "intake_sessions_delete", error: deleteError };
   }
 
   return { ok: true };

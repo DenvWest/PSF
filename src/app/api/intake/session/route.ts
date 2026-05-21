@@ -4,6 +4,7 @@ import {
   intakeConsentRows,
   validateIntakeConsent,
 } from "@/lib/intake-consent";
+import { deleteIntakeSessionForSession } from "@/lib/intake-consent-revoke";
 import { computeIntakePersistenceFields, validateIntakeSubmission } from "@/lib/intake-compute";
 import {
   INTAKE_SESSION_COOKIE_NAME,
@@ -296,5 +297,48 @@ export async function POST(request: NextRequest) {
     maxAge: COOKIE_MAX_AGE_SEC,
   });
 
+  return res;
+}
+
+export async function DELETE(request: NextRequest) {
+  const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
+  const sessionId = verifySignedIntakeSessionCookie(rawCookie);
+
+  if (!sessionId) {
+    logSecurityEvent("missing_session");
+    return NextResponse.json(
+      { error: "Geen geldige intake-sessie." },
+      { status: 401 },
+    );
+  }
+
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
+  }
+
+  const result = await deleteIntakeSessionForSession(admin, sessionId);
+  if (!result.ok) {
+    console.error(
+      `[api/intake/session] delete failed at ${result.step}:`,
+      result.error,
+    );
+    return NextResponse.json(
+      { error: "Sessie kon niet volledig worden verwijderd." },
+      { status: 500 },
+    );
+  }
+
+  const res = NextResponse.json({ ok: true }, { status: 200 });
+  res.cookies.set(INTAKE_SESSION_COOKIE_NAME, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
   return res;
 }

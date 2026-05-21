@@ -1,13 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getLastSession, revokeIntakeConsent } from "@/lib/intake-storage";
+import { getLastSession, revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 
-const CONFIRM_MESSAGE =
-  "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd en kunnen niet worden hersteld.";
+const CONFIRM_ANON_MESSAGE =
+  "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd. Een anonieme sessie-id blijft bewaard voor statistiek.";
 
-const SUCCESS_MESSAGE =
+const CONFIRM_DELETE_MESSAGE =
+  "Weet je het zeker? Je volledige intake-sessie wordt permanent verwijderd. Dit kan niet ongedaan worden gemaakt.";
+
+const SUCCESS_ANON_MESSAGE =
   "Je toestemming is ingetrokken en je gegevens zijn geanonimiseerd.";
+
+const SUCCESS_DELETE_MESSAGE =
+  "Je intake-sessie is volledig verwijderd.";
 
 type PrivacyRevokeConsentProps = {
   /** Ingesloten onder een bestaande sectie (geen extra kaart-rand). */
@@ -33,7 +39,7 @@ export default function PrivacyRevokeConsent({
   }, []);
 
   async function handleRevoke() {
-    if (!window.confirm(CONFIRM_MESSAGE)) {
+    if (!window.confirm(CONFIRM_ANON_MESSAGE)) {
       return;
     }
     setBusy(true);
@@ -42,7 +48,23 @@ export default function PrivacyRevokeConsent({
     setBusy(false);
     if (result.ok) {
       setHasSession(false);
-      setFeedback({ kind: "success", text: SUCCESS_MESSAGE });
+      setFeedback({ kind: "success", text: SUCCESS_ANON_MESSAGE });
+      return;
+    }
+    setFeedback({ kind: "error", text: result.error });
+  }
+
+  async function handleDelete() {
+    if (!window.confirm(CONFIRM_DELETE_MESSAGE)) {
+      return;
+    }
+    setBusy(true);
+    setFeedback(null);
+    const result = await deleteIntakeSession();
+    setBusy(false);
+    if (result.ok) {
+      setHasSession(false);
+      setFeedback({ kind: "success", text: SUCCESS_DELETE_MESSAGE });
       return;
     }
     setFeedback({ kind: "error", text: result.error });
@@ -55,8 +77,9 @@ export default function PrivacyRevokeConsent({
   const inner = (
     <>
       <p className="mt-4 text-sm leading-relaxed text-stone-600">
-        Heb je de leefstijlcheck ingevuld? Dan kun je hier je toestemming voor
-        die gegevens intrekken. Je antwoorden worden op de server geanonimiseerd.
+        Heb je de leefstijlcheck ingevuld? Dan kun je hier je toestemming intrekken
+        of je sessie volledig laten verwijderen. Bij intrekken worden je antwoorden
+        geanonimiseerd; pending e-mails worden geannuleerd.
       </p>
 
       {feedback ? (
@@ -71,14 +94,24 @@ export default function PrivacyRevokeConsent({
       ) : null}
 
       {hasSession ? (
-        <button
-          type="button"
-          className="mt-4 rounded-md border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={busy}
-          onClick={() => void handleRevoke()}
-        >
-          {busy ? "Bezig…" : "Toestemming intrekken"}
-        </button>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <button
+            type="button"
+            className="rounded-md border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={busy}
+            onClick={() => void handleRevoke()}
+          >
+            {busy ? "Bezig…" : "Toestemming intrekken & anonimiseren"}
+          </button>
+          <button
+            type="button"
+            className="rounded-md border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-800 shadow-sm transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={busy}
+            onClick={() => void handleDelete()}
+          >
+            {busy ? "Bezig…" : "Alles verwijderen"}
+          </button>
+        </div>
       ) : !feedback ? (
         <p className="mt-4 text-sm text-stone-500">
           Er is geen actieve intake-sessie in deze browser.

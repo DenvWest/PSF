@@ -19,7 +19,7 @@ import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import ScoreRing from "@/components/intake/ScoreRing";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
-import { revokeIntakeConsent, saveReminderEmail } from "@/lib/intake-storage";
+import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
   sleep_score: "slaap",
@@ -49,10 +49,15 @@ const DOMAIN_KEYS: (keyof DomainScores)[] = [
 ];
 
 const REVOKE_CONFIRM =
-  "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd en kunnen niet worden hersteld.";
+  "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd. Een anonieme sessie-id blijft bewaard voor statistiek.";
+
+const DELETE_CONFIRM =
+  "Weet je het zeker? Je volledige intake-sessie wordt permanent verwijderd. Dit kan niet ongedaan worden gemaakt.";
 
 const REVOKE_SUCCESS =
   "Je toestemming is ingetrokken en je gegevens zijn geanonimiseerd.";
+
+const DELETE_SUCCESS = "Je intake-sessie is volledig verwijderd.";
 
 type IntakeResultsProps = {
   scores: DomainScores;
@@ -555,41 +560,78 @@ export default function IntakeResults({
               </p>
             ) : null}
             {revokeFeedback?.kind !== "success" ? (
-              <button
-                type="button"
-                disabled={revokeBusy}
-                onClick={() => {
-                  if (!window.confirm(REVOKE_CONFIRM)) {
-                    return;
-                  }
-                  void (async () => {
-                    setRevokeBusy(true);
-                    setRevokeFeedback(null);
-                    const result = await revokeIntakeConsent();
-                    setRevokeBusy(false);
-                    if (result.ok) {
-                      setRevokeFeedback({
-                        kind: "success",
-                        text: REVOKE_SUCCESS,
-                      });
-                      window.setTimeout(() => {
-                        onConsentRevoked?.();
-                      }, 2800);
+              <div className="flex flex-col gap-2.5">
+                <button
+                  type="button"
+                  disabled={revokeBusy}
+                  onClick={() => {
+                    if (!window.confirm(REVOKE_CONFIRM)) {
                       return;
                     }
-                    setRevokeFeedback({ kind: "error", text: result.error });
-                  })();
-                }}
-                className="w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-60"
-                style={{
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: "rgba(255,255,255,0.4)",
-                  fontFamily: "inherit",
-                }}
-              >
-                {revokeBusy ? "Bezig…" : "Toestemming intrekken"}
-              </button>
+                    void (async () => {
+                      setRevokeBusy(true);
+                      setRevokeFeedback(null);
+                      const result = await revokeIntakeConsent();
+                      setRevokeBusy(false);
+                      if (result.ok) {
+                        setRevokeFeedback({
+                          kind: "success",
+                          text: REVOKE_SUCCESS,
+                        });
+                        window.setTimeout(() => {
+                          onConsentRevoked?.();
+                        }, 2800);
+                        return;
+                      }
+                      setRevokeFeedback({ kind: "error", text: result.error });
+                    })();
+                  }}
+                  className="w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-60"
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    color: "rgba(255,255,255,0.4)",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  {revokeBusy ? "Bezig…" : "Toestemming intrekken & anonimiseren"}
+                </button>
+                <button
+                  type="button"
+                  disabled={revokeBusy}
+                  onClick={() => {
+                    if (!window.confirm(DELETE_CONFIRM)) {
+                      return;
+                    }
+                    void (async () => {
+                      setRevokeBusy(true);
+                      setRevokeFeedback(null);
+                      const result = await deleteIntakeSession();
+                      setRevokeBusy(false);
+                      if (result.ok) {
+                        setRevokeFeedback({
+                          kind: "success",
+                          text: DELETE_SUCCESS,
+                        });
+                        window.setTimeout(() => {
+                          onConsentRevoked?.();
+                        }, 2800);
+                        return;
+                      }
+                      setRevokeFeedback({ kind: "error", text: result.error });
+                    })();
+                  }}
+                  className="w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-60"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(239,68,68,0.25)",
+                    color: "rgba(252,165,165,0.75)",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  {revokeBusy ? "Bezig…" : "Alles verwijderen"}
+                </button>
+              </div>
             ) : null}
           </div>
         ) : null}

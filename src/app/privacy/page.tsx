@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 import PrivacyRevokeConsent from "@/components/privacy/PrivacyRevokeConsent";
 
@@ -18,7 +19,7 @@ export default function PrivacyPage() {
             title="Privacyverklaring"
             intro={
                 <>
-                    Laatst bijgewerkt: 12 april 2026. PerfectSupplement is een initiatief van Dennis
+                    Laatst bijgewerkt: 21 mei 2026. PerfectSupplement is een initiatief van Dennis
                     van Westbroek, KVK 74667653.
                 </>
             }
@@ -121,6 +122,18 @@ export default function PrivacyPage() {
                             </tr>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3 align-top">
+                                    E-mailupdates over je leefstijlcheck (marketingtoestemming)
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    Art. 9 lid 2 sub a AVG (expliciete toestemming), in combinatie met art. 6
+                                    lid 1 sub a AVG
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    E-mailadres, voornaam, profiel-snapshot (labels en scores uit je check)
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
                                     Beveiliging, fraudepreventie en technisch beheer
                                 </td>
                                 <td className="px-4 py-3 align-top">Art. 6 lid 1 sub f AVG (gerechtvaardigd belang)</td>
@@ -142,7 +155,43 @@ export default function PrivacyPage() {
             </section>
 
             <section>
+                <h2 className="text-xl font-semibold text-stone-900">
+                    Geautomatiseerde aanbeveling
+                </h2>
+                <p className="mt-3">
+                    Op basis van je antwoorden in de leefstijlcheck tonen we supplementen en
+                    leefstijl-informatie die qua patroon bij je profiel passen. Dit is een
+                    algoritmische selectie op basis van vaste regels — geen medische beoordeling
+                    en geen individuele diagnose.
+                </p>
+                <p className="mt-3">
+                    Je hebt het recht om bezwaar te maken tegen deze verwerking, de aanbeveling
+                    te negeren, of alle supplementen te bekijken zonder je antwoorden te gebruiken
+                    via{" "}
+                    <Link
+                        href="/supplementen"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                    >
+                        /supplementen
+                    </Link>
+                    . Vragen? Neem contact op via{" "}
+                    <Link
+                        href="/contact"
+                        className="font-medium text-stone-800 underline-offset-4 hover:underline"
+                    >
+                        /contact
+                    </Link>
+                    .
+                </p>
+            </section>
+
+            <section>
                 <h2 className="text-xl font-semibold text-stone-900">Bewaartermijnen</h2>
+                <p className="mt-3 text-sm text-stone-600">
+                    Onderstaande termijnen worden technisch afgedwongen via geautomatiseerde
+                    opschoning. Bij intrekking van toestemming worden pending e-mails geannuleerd
+                    en gezondheidsgegevens geanonimiseerd of verwijderd.
+                </p>
                 <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
                     <table className="min-w-full text-left text-sm">
                         <thead className="bg-stone-50 text-stone-600">
@@ -154,7 +203,17 @@ export default function PrivacyPage() {
                         <tbody>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Intake-sessies</td>
-                                <td className="px-4 py-3">2 jaar</td>
+                                <td className="px-4 py-3">
+                                    24 maanden (automatisch verwijderd)
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Nurture-e-mails (intake-sequentie)</td>
+                                <td className="px-4 py-3">12 maanden na verzending</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Recovery-links in e-mail</td>
+                                <td className="px-4 py-3">72 uur, eenmalig te gebruiken</td>
                             </tr>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Contactberichten</td>
@@ -250,6 +309,11 @@ export default function PrivacyPage() {
                     <li>IP-adressen waar passend gehasht of beperkt vastgelegd;</li>
                     <li>beveiligingsheaders op de website;</li>
                     <li>Cloudflare Turnstile ter bescherming van formulieren tegen geautomatiseerd misbruik.</li>
+                    <li>
+                        Recovery-links in e-mail geven tijdelijk toegang tot je intake-resultaten.
+                        Deel ze niet en stuur ze niet door — wie de link heeft, kan je resultaten
+                        inzien zolang de link geldig is.
+                    </li>
                 </ul>
             </section>
 

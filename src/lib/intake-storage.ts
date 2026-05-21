@@ -149,3 +149,33 @@ export async function revokeIntakeConsent(): Promise<
     return { ok: false, error: "Netwerkfout. Probeer het later opnieuw." };
   }
 }
+
+/** Verwijdert de volledige intake-sessie (DELETE /api/intake/session). */
+export async function deleteIntakeSession(): Promise<
+  { ok: true } | { ok: false; error: string }
+> {
+  try {
+    const response = await fetch("/api/intake/session", {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const json = (await response.json().catch(() => null)) as
+      | { error?: string }
+      | null;
+    if (response.ok) {
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.removeItem("ps_contact_email");
+      }
+      return { ok: true };
+    }
+    return {
+      ok: false,
+      error:
+        typeof json?.error === "string"
+          ? json.error
+          : "Sessie kon niet worden verwijderd.",
+    };
+  } catch {
+    return { ok: false, error: "Netwerkfout. Probeer het later opnieuw." };
+  }
+}
