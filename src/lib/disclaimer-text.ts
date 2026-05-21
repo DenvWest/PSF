@@ -9,4 +9,9 @@ export const DISCLAIMER_TEXTS = {
     "PerfectSupplement biedt leefstijl-informatie, geen medisch advies. Raadpleeg bij klachten je zorgverlener.",
   ctaMicro:
     "15 vragen · 3 minuten · gratis · anoniem — geen medische test, wel leefstijl-inzicht op 6 domeinen.",
+  emailInline:
+    "Geen medisch advies — bij twijfel of klachten: raadpleeg je zorgverlener.",
+  emailSupplementScope:
+    "Supplementen zijn geen vervanging voor een gevarieerd dieet of medische zorg.",
+  emailFooter: "© 2026 PerfectSupplement · Informatief, geen medisch advies.",
 } as const;

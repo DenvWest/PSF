@@ -327,9 +327,6 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                   <span aria-hidden>→</span>
                 </Link>
               </div>
-              <p className="mt-4 text-xs text-white/40">
-                Gratis · Geen account nodig · Anoniem verwerkt
-              </p>
             </div>
           </section>
 

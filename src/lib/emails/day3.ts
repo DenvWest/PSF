@@ -1,4 +1,5 @@
 import { escapeHtml, nurtureEmailWrap } from "@/lib/emails/shared";
+import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
 export function day3EmailSubject(quickWin: string): string {
   const snippet =
@@ -47,7 +48,7 @@ export function day3EmailHtml(params: {
                 Extra tip: ${escapeHtml(params.domainTip)}
               </p>
               <p style="margin:0;font-size:15px;line-height:1.6;color:#555555;">
-                Geen medisch advies — bij twijfel of klachten zoek je zelf contact met je zorgverlener.
+                ${escapeHtml(DISCLAIMER_TEXTS.emailInline)}
               </p>
             </td>
           </tr>`;

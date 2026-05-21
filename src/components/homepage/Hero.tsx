@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { HOMEPAGE_HERO, HOMEPAGE_LIFESTYLE } from "@/data/homepage";
 
 const HERO_BULLETS = [
@@ -48,8 +49,7 @@ function CheckBullet({
 }
 
 export default function Hero() {
-  const { primaryCta, secondaryCta, microCopy, footnoteLabel, footnoteHref } =
-    HOMEPAGE_HERO;
+  const { primaryCta, secondaryCta, footnoteLabel, footnoteHref } = HOMEPAGE_HERO;
 
   return (
     <section className="relative border-b border-stone-200/50 bg-[#F7F5F0]">
@@ -104,7 +104,7 @@ export default function Hero() {
             </Link>
           </div>
 
-          <p className="mt-3 text-xs text-stone-500">{microCopy}</p>
+          <IntakeCtaMicro className="mt-3 max-w-xl text-xs text-stone-500" />
 
           <p className="mt-4 text-xs text-stone-400">
             <Link

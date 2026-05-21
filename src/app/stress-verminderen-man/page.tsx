@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
 
@@ -564,18 +565,13 @@ export default function StressVerminderenManPage() {
                     minuten weet je hoe je scoort op stress, slaap, energie, herstel, voeding en
                     beweging — en welk profiel bij jou past.
                   </p>
-                  <p className="mt-4 text-sm text-gray-500 max-w-lg mx-auto">
-                    Geen diagnose — wel een startpunt voor gesprek met je arts.
-                  </p>
+                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   <Link
                     href="/intake"
                     className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
                   >
                     Zie waar jouw stress, slaap en energie scoren — gratis →
                   </Link>
-                  <p className="mt-3 text-sm text-gray-500">
-                    15 vragen, 3 minuten, persoonlijk advies
-                  </p>
                 </div>
               </section>
 
@@ -678,9 +674,6 @@ export default function StressVerminderenManPage() {
                   Bij langdurige somberheid, burn-outklachten of paniekgevoelens: zoek professionele
                   hulp via je huisarts of de POH-GGZ. Supplementen zijn geen vervanging voor
                   psychologische zorg.
-                </p>
-                <p className="mt-4 text-sm text-gray-400 italic">
-                  Dit artikel is informatief van aard en vervangt geen medisch advies.
                 </p>
               </footer>
             </article>

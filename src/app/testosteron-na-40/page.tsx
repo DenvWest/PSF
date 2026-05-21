@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
@@ -546,16 +547,13 @@ export default function TestosteronNa40Page() {
                     Testosteron speelt mee in een groter plaatje. In 3 minuten zie je hoe je scoort
                     op slaap, stress, energie, herstel, voeding en beweging — en welk profiel past.
                   </p>
-                  <p className="mx-auto mt-4 max-w-lg text-sm text-gray-500">
-                    Geen diagnose — wel een startpunt voor gesprek met je arts.
-                  </p>
+                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   <Link
                     href="/intake"
                     className="mt-5 inline-block rounded-lg bg-green-700 px-8 py-3 font-semibold text-white transition-colors hover:bg-green-800"
                   >
                     Zie waar jouw slaap, stress en energie scoren — gratis →
                   </Link>
-                  <p className="mt-3 text-sm text-gray-500">15 vragen · 3 minuten · Anoniem</p>
                 </div>
               </section>
 

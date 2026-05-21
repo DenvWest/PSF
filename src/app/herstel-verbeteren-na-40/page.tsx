@@ -5,6 +5,7 @@ import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
 import { herstelVerbeterenNa40References } from "@/data/references/herstel-verbeteren-na-40";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
 
@@ -725,18 +726,13 @@ export default function HerstelVerbeterenNa40Page() {
                     Herstel is een van de zes domeinen in de Leefstijlcheck. In 3 minuten zie je hoe je
                     scoort op herstel, slaap, stress en energie - en wat je als eerste moet aanpakken.
                   </p>
-                  <p className="mt-4 text-sm text-gray-500 max-w-lg mx-auto">
-                    Geen diagnose — wel een startpunt voor gesprek met je arts.
-                  </p>
+                  <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   <Link
                     href="/intake"
                     className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
                   >
                     Zie waar jouw herstel, slaap en energie scoren — gratis →
                   </Link>
-                  <p className="mt-3 text-sm text-gray-500">
-                    15 vragen, 3 minuten, persoonlijk advies
-                  </p>
                 </div>
               </section>
 
@@ -822,9 +818,6 @@ export default function HerstelVerbeterenNa40Page() {
                   Bij aanhoudende herstelklachten of onverklaarbare vermoeidheid: laat je medisch
                   beoordelen via je huisarts. Zeker bij plotselinge prestatieachteruitgang, spierzwakte
                   of pijn op de borst.
-                </p>
-                <p className="mt-4 text-sm text-gray-400 italic">
-                  Dit artikel is informatief van aard en vervangt geen medisch advies.
                 </p>
               </footer>
             </article>

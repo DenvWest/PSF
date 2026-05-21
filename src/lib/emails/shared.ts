@@ -1,3 +1,5 @@
+import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
+
 export function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")
@@ -21,7 +23,7 @@ export function nurtureFooterBlock(
             <td style="padding:0 28px 24px 28px;border-top:1px solid #eeeeee;">
               ${disc}
               <p style="margin:20px 0 12px 0;font-size:13px;line-height:1.5;color:#666666;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-                © 2026 PerfectSupplement · Informatief, geen medisch advies.
+                ${escapeHtml(DISCLAIMER_TEXTS.emailFooter)}
               </p>
               <p style="margin:0;font-size:11px;line-height:1.4;color:#999999;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
                 Je ontvangt deze mail omdat je toestemming gaf bij de intake.

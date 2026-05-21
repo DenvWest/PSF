@@ -612,6 +612,14 @@ export default function IntakeResults({
       ) : null}
 
       <p className="text-center text-[11px] leading-normal text-[#bbb]">
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-[#999]">
+          Privacy
+        </Link>
+        {" · "}
+        <Link href="/disclaimer" className="underline underline-offset-2 hover:text-[#999]">
+          Disclaimer
+        </Link>
+        {" · "}
         © 2026 PerfectSupplement
       </p>
     </div>

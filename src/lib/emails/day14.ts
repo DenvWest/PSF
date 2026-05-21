@@ -1,4 +1,5 @@
 import { escapeHtml, nurtureEmailWrap } from "@/lib/emails/shared";
+import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
 export const day14EmailSubject = "Halverwege: tijd voor je supplementroute?";
 
@@ -25,7 +26,7 @@ export function day14EmailHtml(params: {
               </p>
               ${params.supplementListHtml}
               <p style="margin:16px 0 0 0;font-size:15px;line-height:1.6;color:#555555;">
-                Supplementen zijn geen vervanging voor een gevarieerd dieet of medische zorg.
+                ${escapeHtml(DISCLAIMER_TEXTS.emailSupplementScope)}
               </p>
             </td>
           </tr>`;
