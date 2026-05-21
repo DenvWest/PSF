@@ -69,7 +69,7 @@ export default async function SupplementenPage() {
         </section>
 
         {/* 3. Persoonlijke aanbeveling */}
-        <section id="aanbeveling" aria-label="Persoonlijke aanbeveling" className="mt-16 md:mt-20">
+        <section id="aanbevolen" aria-label="Persoonlijke aanbeveling" className="mt-16 md:mt-20">
           <Container>
             {hasSession ? (
               <>
