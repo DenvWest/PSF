@@ -23,6 +23,13 @@ import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 const TURNSTILE_ACTION = "intake_submit";
 
 const COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 90;
+const HONEYPOT_MIN_RESPONSE_MS = 200;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 function logSecurityEvent(
   event: string,
@@ -124,6 +131,7 @@ export async function POST(request: NextRequest) {
 
   if (website) {
     logSecurityEvent("honeypot_hit", { remoteIp: clientIp });
+    await sleep(HONEYPOT_MIN_RESPONSE_MS);
     return NextResponse.json({ sessionId: null }, { status: 200 });
   }
 

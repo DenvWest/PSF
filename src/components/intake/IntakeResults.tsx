@@ -19,6 +19,7 @@ import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import ScoreRing from "@/components/intake/ScoreRing";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
+import { getPrimaryDomainBandSentence } from "@/lib/score-bands";
 import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
@@ -129,9 +130,6 @@ export default function IntakeResults({
     ? "herstel"
     : PROFILE_DOMAIN_TO_CAT[profile.domain];
   const primaryCategoryForUi = CATEGORIES.find((c) => c.id === primaryCatIdForUi);
-  const profileScoreForUi = isOvertrainerProfile
-    ? scores.recovery_score
-    : profile.score;
   const displayProfileSlugPath = isOvertrainerProfile
     ? "/profiel/overtrainer"
     : `/profiel/${profile.name
@@ -180,7 +178,7 @@ export default function IntakeResults({
           className="mb-3 text-xs font-semibold uppercase tracking-[1.5px]"
           style={{ color: "rgba(255,255,255,0.4)" }}
         >
-          Herstelplan
+          JOUW LEEFSTIJL-OVERZICHT
         </p>
         <h1
           className="mb-1.5 text-[30px] font-normal"
@@ -189,8 +187,15 @@ export default function IntakeResults({
             color: "rgba(255,255,255,0.92)",
           }}
         >
-          {displayProfileName}
+          Patroon: {displayProfileName}
         </h1>
+        <p
+          className="mb-3 text-[13px] leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.4)" }}
+        >
+          Dit is een herkenningspatroon dat we onder mannen 40+ vaak zien — geen
+          medische diagnose.
+        </p>
         {firstName ? (
           <p
             className="mb-1.5 text-base"
@@ -220,11 +225,9 @@ export default function IntakeResults({
           </p>
         ) : null}
         <p className="mb-5 text-[15px]" style={{ color: "rgba(255,255,255,0.55)" }}>
-          Je primaire aandachtsgebied is{" "}
-          <strong style={{ color: primaryCategoryForUi?.color ?? "#C8956C" }}>
-            {primaryCategoryForUi?.label ?? profile.domain}
-          </strong>{" "}
-          met een score van {Math.round(profileScoreForUi)}/100.
+          {getPrimaryDomainBandSentence(
+            primaryCategoryForUi?.label ?? profile.domain,
+          )}
         </p>
         <div
           className="inline-flex items-center gap-2 rounded-lg border px-4 py-2"
@@ -248,10 +251,10 @@ export default function IntakeResults({
 
       <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white px-6 py-7 text-center">
         <div className="flex justify-center">
-          <ScoreRing score={overall} size={96} stroke={6} color="#1a1a1a" />
+          <ScoreRing score={overall} size={96} stroke={6} color="#1a1a1a" showBand />
         </div>
         <div className="mt-3 text-[13px] font-semibold tracking-wide text-[#999]">
-          TOTAALSCORE
+          TOTAALBEELD
         </div>
       </div>
 
@@ -271,7 +274,7 @@ export default function IntakeResults({
               }}
             >
               <div className="flex justify-center">
-                <ScoreRing score={score} size={52} stroke={4} color={cat.color} />
+                <ScoreRing score={score} size={52} stroke={4} color={cat.color} showBand />
               </div>
               <div className="mt-2 text-[11px] font-semibold tracking-wide text-[#888]">
                 {cat.icon} {cat.label}
@@ -307,29 +310,27 @@ export default function IntakeResults({
       {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
         <div className="mb-4 border-l-4 border-amber-400 rounded-r-lg bg-amber-50 p-4">
           <h3 className="font-semibold text-amber-800">
-            Let op: je eiwitinname
+            Eiwit als aandachtspunt
           </h3>
           <p className="mt-1 text-amber-700">
-            Na je 40e heb je meer eiwit nodig om spiermassa te behouden — minimaal
-            1,2 tot 1,6 gram per kilo lichaamsgewicht per dag.
+            Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
+            dag, wat het onderhouden van spiermassa lastiger maakt.
             {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
               (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
               <>
                 {" "}
-                Je beweegt actief, maar zonder voldoende eiwit mist je lichaam de
-                bouwstenen voor herstel en spieropbouw.
-              </>
-            ) : null}
-            {typeof answers.RCV_PHYS === "number" && answers.RCV_PHYS <= 1 ? (
-              <>
-                {" "}
-                Je trage herstel kan deels komen door een eiwitgebrek.
+                Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
+                spieronderhoud.
               </>
             ) : null}
           </p>
           <p className="mt-2 text-sm text-amber-700">
             <strong>Quick win:</strong> Begin elke maaltijd eiwitrijk. Denk aan
             zuivel, eieren, vis, peulvruchten of vegetarisch.
+          </p>
+          <p className="mt-2 text-sm text-amber-700">
+            <em>Wil je het zeker weten?</em> Een diëtist of huisarts kan je
+            inname meetbaar maken.
           </p>
           {deficiencySignals.protein_gap_signal ? (
             <p className="mt-3 text-sm text-amber-800">
@@ -357,6 +358,15 @@ export default function IntakeResults({
         </div>
         <SupplementAdviceDisclaimer variant="profile" />
         <SupplementRoute recommendations={supplementRoute} scores={scores} />
+        <p className="mt-4 text-sm text-[#666]">
+          Vragen over deze aanbeveling?{" "}
+          <Link
+            href="/contact"
+            className="font-medium text-ps-green underline-offset-2 hover:underline"
+          >
+            Stel ze →
+          </Link>
+        </p>
       </div>
 
       {foundationItems.length > 0 ? (

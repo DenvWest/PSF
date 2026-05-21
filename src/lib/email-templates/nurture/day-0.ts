@@ -202,7 +202,7 @@ function renderStressdragerDay0PersonalizedRows(
             <div style="background:#f5f5f0;border-left:3px solid #2d4a3e;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;">
               <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(breathingTip)}</p>
             </div>
-            ${nurtureCtaButton(intakeUrl, "Bekijk je Herstelplan")}
+            ${nurtureCtaButton(intakeUrl, "Bekijk je leefstijl-overzicht")}
           </td>
         </tr>`;
 }
@@ -239,7 +239,7 @@ function renderRecoveryLeadDay0PersonalizedRows(
             <div style="background:#f5f5f0;border-left:3px solid #2d4a3e;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;">
               <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(tip)}</p>
             </div>
-            ${nurtureCtaButton(intakeUrl, "Bekijk je Herstelplan")}
+            ${nurtureCtaButton(intakeUrl, "Bekijk je leefstijl-overzicht")}
           </td>
         </tr>`;
 }

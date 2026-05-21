@@ -178,7 +178,7 @@ describe("getUrgency", () => {
 
   it("returns correct label for critical", () => {
     const result = getUrgency(makeScores({ sleep_score: 10, stress_score: 15 }));
-    expect(result.label).toBe("Urgente aandacht nodig");
+    expect(result.label).toBe("Meerdere domeinen vragen aandacht");
   });
 
   it("returns correct label for healthy", () => {

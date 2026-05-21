@@ -151,11 +151,11 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
           className="mb-6"
           style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}
         >
-          Om je persoonlijke herstelplan te berekenen, verwerken we je antwoorden.
+          Om je leefstijl-overzicht samen te stellen, verwerken we je antwoorden.
           Dat zijn gezondheidsgegevens — geef hieronder toestemming.
         </p>
 
-        <p style={sectionLabelStyle}>Herstelplan</p>
+        <p style={sectionLabelStyle}>Leefstijl-overzicht</p>
 
         {/* Health consent */}
         <div className="mb-4">

@@ -147,17 +147,17 @@ function firstNonNutritionRecoveryDomain(
 const URGENCY_CONFIG: Record<UrgencyLevel, UrgencyResult> = {
   critical: {
     level: "critical",
-    label: "Urgente aandacht nodig",
+    label: "Meerdere domeinen vragen aandacht",
     color: "#C0392B",
   },
   moderate: {
     level: "moderate",
-    label: "Ruimte voor verbetering",
+    label: "Een of twee domeinen vragen aandacht",
     color: "#C4873B",
   },
   mild: {
     level: "mild",
-    label: "Fijn te optimaliseren",
+    label: "Lichte aandachtspunten",
     color: "var(--ps-green)",
   },
   healthy: {

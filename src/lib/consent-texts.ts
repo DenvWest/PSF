@@ -1,5 +1,5 @@
 /** Versie van de getoonde toestemmingsteksten (audittrail). */
-export const CONSENT_VERSION = "1.1" as const;
+export const CONSENT_VERSION = "2.0" as const;
 
 export type ConsentType =
   | "health_data_processing"
@@ -13,7 +13,7 @@ export const INTAKE_CONSENT_TEXT: Record<ConsentType, string> = {
   anonymous_analytics:
     "Ik sta anonieme analyse van mijn antwoorden toe voor productverbetering",
   marketing_email:
-    "Ik wil mijn gratis gids en updates over mijn herstelplan ontvangen",
+    "Ik wil mijn gratis gids ontvangen en e-mailupdates waarin informatie wordt afgestemd op mijn antwoorden over slaap, stress en energie. Ik begrijp dat hiervoor mijn gezondheidsgegevens worden gebruikt en kan dit intrekken via de uitschrijflink in elke mail.",
 };
 
 /** Teksten contactformulier (NL); zelfde consent_type-waarden als intake. */

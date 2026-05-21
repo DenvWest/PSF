@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { SupplementRecommendation } from "@/data/supplement-routes";
 import type { DomainScores } from "@/lib/intake-engine";
+import { getScoreBandShortLabel, type DomainScoreKey } from "@/lib/score-bands";
 
 const DOMAIN_LABEL_TO_KEY: Record<string, keyof DomainScores> = {
   Slaap: "sleep_score",
@@ -13,13 +14,13 @@ const DOMAIN_LABEL_TO_KEY: Record<string, keyof DomainScores> = {
   Herstel: "recovery_score",
 };
 
-const SCORE_KEY_TO_SHORT_LABEL: Record<keyof DomainScores, string> = {
-  sleep_score: "slaapscore",
-  energy_score: "energiescore",
-  stress_score: "stressscore",
-  nutrition_score: "voedingsscore",
-  movement_score: "bewegingsscore",
-  recovery_score: "herstelscore",
+const SCORE_KEY_TO_SHORT_LABEL: Record<DomainScoreKey, string> = {
+  sleep_score: "slaap",
+  energy_score: "energie",
+  stress_score: "stress",
+  nutrition_score: "voeding",
+  movement_score: "beweging",
+  recovery_score: "herstel",
 };
 
 function formatScoreBasisLine(
@@ -43,9 +44,9 @@ function formatScoreBasisLine(
   }
 
   const parts = keys.map((key, i) => {
-    const value = Math.round(scores[key]);
+    const band = getScoreBandShortLabel(scores[key]).toLowerCase();
     const name = SCORE_KEY_TO_SHORT_LABEL[key];
-    return i === 0 ? `je ${name} (${value}/100)` : `${name} (${value}/100)`;
+    return i === 0 ? `je ${name} (${band})` : `${name} (${band})`;
   });
 
   if (parts.length === 1) {

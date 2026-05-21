@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   getLastSession,
@@ -76,6 +77,42 @@ export default function IntakeIntro({
           <span aria-hidden>·</span>
           <span>geen account nodig</span>
         </div>
+
+        <details
+          className="max-w-md text-left text-xs"
+          style={{ color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}
+        >
+          <summary
+            className="cursor-pointer list-none text-center [&::-webkit-details-marker]:hidden"
+            style={{ color: "rgba(255,255,255,0.45)" }}
+          >
+            Wat doen we met je antwoorden?
+          </summary>
+          <ul className="mt-3 space-y-2 pl-4">
+            <li>
+              Je antwoorden zijn gezondheidsgegevens (AVG art. 9).
+            </li>
+            <li>
+              We slaan ze pas op nadat je aan het einde expliciet toestemming
+              geeft.
+            </li>
+            <li>Je kunt je toestemming op elk moment intrekken.</li>
+            <li>
+              Meer in onze{" "}
+              <Link
+                href="/privacy"
+                style={{
+                  color: "rgba(255,255,255,0.55)",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                }}
+              >
+                privacyverklaring
+              </Link>
+              .
+            </li>
+          </ul>
+        </details>
 
         {/* 5. CTA */}
         <button

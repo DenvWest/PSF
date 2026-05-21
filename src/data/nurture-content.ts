@@ -144,18 +144,18 @@ export const nurtureContent: Record<
   // ── DAG 0: WELKOM ────────────────────────────────────────
   day0_welcome: {
     "Lage Batterij": {
-      subject: "Je Herstelplan staat klaar",
+      subject: "Je leefstijl-overzicht staat klaar",
       preheader: "Je energiescore laat zien waar de winst zit",
       greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
       bodyParagraphs: [
         "Je resultaten laten zien dat je energie structureel onder druk staat. Dat is niet 'gewoon ouder worden' — het is een signaal dat je lichaam iets mist.",
-        "In je Herstelplan vind je concrete stappen die je deze week al kunt nemen. Geen grote veranderingen, maar slimme eerste stappen.",
+        "In je leefstijl-overzicht vind je concrete stappen die je deze week al kunt nemen. Geen grote veranderingen, maar slimme eerste stappen.",
       ],
       tip: "Begin vandaag met één ding: eet binnen 30 minuten na het opstaan een eiwitrijk ontbijt. Dit stabiliseert je bloedsuiker en geeft je ochtendenergie een boost.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
     "Onrustige Slaper": {
-      subject: "Je Herstelplan staat klaar",
+      subject: "Je leefstijl-overzicht staat klaar",
       preheader: "Je slaapscore laat zien waar je kunt verbeteren",
       greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
       bodyParagraphs: [
@@ -163,10 +163,10 @@ export const nurtureContent: Record<
         "Het goede nieuws: slaap is een van de domeinen waar je het snelst verbetering kunt zien met de juiste aanpassingen.",
       ],
       tip: "Probeer vanavond je schermtijd te stoppen 60 minuten voor het slapengaan. Lees een boek, doe een ademhalingsoefening, of ga gewoon even zitten. Je brein heeft dat signaal nodig om af te schakelen.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
     "Stressdrager": {
-      subject: "Je Herstelplan staat klaar",
+      subject: "Je leefstijl-overzicht staat klaar",
       preheader: "Je stresspatroon verdient aandacht",
       greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
       bodyParagraphs: [
@@ -174,18 +174,18 @@ export const nurtureContent: Record<
         "Chronische stress remt je testosteronproductie, verstoort je slaap en vreet aan je energie. Maar er zijn concrete stappen die helpen.",
       ],
       tip: "Begin vandaag met 3 minuten ademhalingsoefening: 4 tellen inademen, 7 tellen vasthouden, 8 tellen uitademen. Doe dit voor het slapengaan. Het activeert je parasympathisch zenuwstelsel.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
     "In Balans": {
-      subject: "Je Herstelplan staat klaar",
+      subject: "Je leefstijl-overzicht staat klaar",
       preheader: "Je scoort goed — hier is hoe je het nog beter maakt",
       greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
       bodyParagraphs: [
         "Je scores laten een solide basis zien. Dat is niet vanzelfsprekend — het is het resultaat van bewuste keuzes.",
         "Nu is het moment om te kijken hoe je die basis kunt vasthouden en op bepaalde punten kunt optimaliseren. Want ook een goede basis heeft onderhoud nodig.",
       ],
-      tip: "Focus deze week op één domein dat je wilt verfijnen. Bekijk je Herstelplan en kies het gebied met de meeste groeimogelijkheid.",
-      cta: { text: "Bekijk je Herstelplan", url: "/intake" },
+      tip: "Focus deze week op één domein dat je wilt verfijnen. Bekijk je leefstijl-overzicht en kies het gebied met de meeste groeimogelijkheid.",
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
   },
 
@@ -247,7 +247,7 @@ export const nurtureContent: Record<
       cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
     "Onrustige Slaper": {
-      subject: "Wat er in je brein gebeurt als je slecht slaapt",
+      subject: "Slaap en brein: wat onderzoek laat zien",
       preheader: "Slaap is geen luxe — het is herstel",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
@@ -258,7 +258,7 @@ export const nurtureContent: Record<
       cta: { text: "Vergelijk magnesium supplementen", url: "/beste/magnesium" },
     },
     "Stressdrager": {
-      subject: "Hoe chronische stress je lichaam sloopt (en hoe je het stopt)",
+      subject: "Hoe chronische stress je lichaam beïnvloedt — en wat je kunt doen",
       preheader: "Cortisol is niet de vijand — chronisch cortisol wel",
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
@@ -335,7 +335,7 @@ export const nurtureContent: Record<
     "Lage Batterij": {
       subject: "Drie weken: je bouwt momentum op",
       preheader: "De gewoontes die je nu hebt, bepalen hoe je je over een maand voelt",
-      greeting: "Drie weken geleden startte je met je Herstelplan.",
+      greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Na drie weken begin je de grens te bereiken waar gewoontes makkelijker worden. De inspanning om je ochtendroutine vol te houden voelt minder — dat is je brein dat een nieuw patroon aanleert.",
         "Over 9 dagen ontvang je een herinnering om de Leefstijlcheck opnieuw te doen. Dan kun je meten wat er veranderd is.",
@@ -346,7 +346,7 @@ export const nurtureContent: Record<
     "Onrustige Slaper": {
       subject: "Drie weken: je slaapritme vindt zijn weg",
       preheader: "Consistentie is de sleutel — en je bent er bijna",
-      greeting: "Drie weken geleden startte je met je Herstelplan.",
+      greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Na drie weken consistent slaapritme begint je lichaam zich aan te passen. Je circadiaan ritme wordt sterker, je melatonineproductie komt op gang op het juiste moment.",
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan zie je zwart-op-wit of je slaapscore is verbeterd.",
@@ -357,7 +357,7 @@ export const nurtureContent: Record<
     "Stressdrager": {
       subject: "Drie weken: je stressbuffer groeit",
       preheader: "Elke dag dat je oefent, wordt de buffer sterker",
-      greeting: "Drie weken geleden startte je met je Herstelplan.",
+      greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Stressmanagement is als spiertraining: het wordt sterker door herhaling. Na drie weken ademhalingsoefeningen en bewuste rustmomenten, is je cortisolrespons aan het veranderen.",
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan meet je of je stressscore is verbeterd.",
@@ -368,7 +368,7 @@ export const nurtureContent: Record<
     "In Balans": {
       subject: "Drie weken: je goede gewoontes zijn stevig",
       preheader: "Nu is het moment om te optimaliseren",
-      greeting: "Drie weken geleden startte je met je Herstelplan.",
+      greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
       bodyParagraphs: [
         "Na drie weken consistent goede gewoontes zijn ze steviger verankerd. Dit is het moment om te kijken of er een supplement is dat je basis versterkt.",
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Wees benieuwd of je scores nog beter zijn geworden.",
@@ -386,7 +386,7 @@ export const nurtureContent: Record<
       greeting: "Een maand geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
         "Je hebt een maand aan je energie gewerkt. Nu is het tijd om te meten: zijn je scores verbeterd? Welke domeinen zijn vooruitgegaan? Waar is nog winst te halen?",
-        "De herhaalmeting geeft je een nieuw Herstelplan met geüpdatete aanbevelingen op basis van je huidige situatie.",
+        "De herhaalmeting geeft je een nieuw leefstijl-overzicht met geüpdatete aanbevelingen op basis van je huidige situatie.",
       ],
       tip: "Doe de Leefstijlcheck opnieuw — het duurt 3 minuten en je ziet direct je voortgang.",
       cta: { text: "Doe de herhaalmeting", url: "/intake" },

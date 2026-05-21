@@ -1,36 +1,34 @@
 import Link from "next/link";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
+import { getRecommendationScoreBandLabel } from "@/lib/score-bands";
 
 type RecommendedForYouProps = {
   session: IntakeSessionPayload;
-};
-
-const SCORE_LABEL_MAP: Record<
-  string,
-  { label: string; key: keyof IntakeSessionPayload["scores"] }
-> = {
-  magnesium: { label: "Slaapscore", key: "sleep_score" },
-  ashwagandha: { label: "Stressscore", key: "stress_score" },
-  "omega-3": { label: "Voedingsscore", key: "nutrition_score" },
-  creatine: { label: "Energiescore", key: "energy_score" },
-  "vitamine-d": { label: "Energiescore", key: "energy_score" },
-  zink: { label: "Herstelscore", key: "recovery_score" },
 };
 
 export default function RecommendedForYou({ session }: RecommendedForYouProps) {
   const recommendations = buildRecommendations(session);
 
   return (
-    <section aria-label="Aanbevolen voor jou">
-      <div className="flex flex-wrap items-center gap-3 mb-6">
+    <section aria-label="Op basis van jouw antwoorden">
+      <div className="flex flex-wrap items-center gap-3 mb-2">
         <h2 className="font-display text-2xl text-stone-900">
-          Aanbevolen voor jou
+          Op basis van jouw antwoorden
         </h2>
-        <span className="text-xs font-medium bg-ps-green/10 text-ps-green rounded-full px-3 py-1">
-          Op basis van je leefstijlcheck
+        <span className="text-xs font-medium bg-stone-100 text-stone-600 rounded-full px-3 py-1">
+          Algemene oriëntatie — geen persoonlijk medisch advies
         </span>
       </div>
+      <p className="mb-6 text-sm text-stone-600">
+        Liever zelf vergelijken zonder antwoorden?{" "}
+        <Link
+          href="/supplementen"
+          className="font-medium text-ps-green hover:text-ps-green-hover underline-offset-4 hover:underline"
+        >
+          Bekijk alle supplementen →
+        </Link>
+      </p>
 
       {recommendations.length === 0 ? (
         <p className="text-stone-600 text-base leading-relaxed max-w-xl">
@@ -41,10 +39,10 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
       ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recommendations.map((rec) => {
-          const scoreMap = SCORE_LABEL_MAP[rec.slug];
-          const scoreValue = scoreMap
-            ? session.scores[scoreMap.key]
-            : null;
+          const scoreBand = getRecommendationScoreBandLabel(
+            rec.slug,
+            session.scores,
+          );
 
           return (
             <div
@@ -65,13 +63,16 @@ export default function RecommendedForYou({ session }: RecommendedForYouProps) {
                 </div>
               </div>
 
-              {scoreValue !== null && scoreMap && (
+              {scoreBand ? (
                 <div className="mt-3">
                   <span className="inline-flex items-center bg-amber-50 text-amber-700 rounded-full px-3 py-1 text-xs font-medium">
-                    {scoreMap.label}: {scoreValue}/100
+                    {scoreBand.label}
                   </span>
+                  <p className="mt-1.5 text-xs text-stone-500">
+                    {scoreBand.context}
+                  </p>
                 </div>
-              )}
+              ) : null}
 
                 <div className="mt-4 flex flex-wrap gap-3">
                 <Link
