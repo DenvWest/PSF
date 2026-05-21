@@ -3,16 +3,8 @@ import {
   INTAKE_SESSION_COOKIE_NAME,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import { revokeIntakeConsentForSession } from "@/lib/intake-consent-revoke";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
-
-const ANON_DOMAIN_SCORES = {
-  sleep_score: 0,
-  energy_score: 0,
-  stress_score: 0,
-  nutrition_score: 0,
-  movement_score: 0,
-  recovery_score: 0,
-} as const;
 
 function logSecurityEvent(
   event: string,
@@ -41,39 +33,14 @@ export async function DELETE(request: NextRequest) {
     );
   }
 
-  const now = new Date().toISOString();
-
-  const { error: withdrawError } = await admin
-    .from("consent_records")
-    .update({ withdrawn_at: now })
-    .eq("session_id", sessionId)
-    .is("withdrawn_at", null);
-
-  if (withdrawError) {
-    console.error("[api/intake/consent] withdraw error:", withdrawError);
-    return NextResponse.json(
-      { error: "Toestemming kon niet worden ingetrokken." },
-      { status: 500 },
+  const result = await revokeIntakeConsentForSession(admin, sessionId);
+  if (!result.ok) {
+    console.error(
+      `[api/intake/consent] revoke failed at ${result.step}:`,
+      result.error,
     );
-  }
-
-  const { error: anonError } = await admin
-    .from("intake_sessions")
-    .update({
-      symptom_profile: [],
-      answers: {},
-      domain_scores: ANON_DOMAIN_SCORES,
-      urgency_level: "—",
-      profile_label: "—",
-      age_range: null,
-      marketing_email: null,
-    })
-    .eq("id", sessionId);
-
-  if (anonError) {
-    console.error("[api/intake/consent] anonymize error:", anonError);
     return NextResponse.json(
-      { error: "Sessie kon niet worden geanonimiseerd." },
+      { error: "Toestemming kon niet volledig worden ingetrokken." },
       { status: 500 },
     );
   }

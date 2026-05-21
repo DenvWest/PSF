@@ -24,7 +24,7 @@ import {
   type DomainScores,
 } from "@/lib/intake-engine";
 import { normalizeReminderType } from "@/lib/intake-nurture-reminders";
-import { buildIntakeHerstelplanUrl } from "@/lib/email-templates/nurture/helpers";
+import { buildIntakeFallbackUrl } from "@/lib/recovery-token";
 import { absoluteUrl, getPublicSiteUrl } from "@/lib/public-site-url";
 
 const DOMAIN_KEYS: readonly (keyof DomainScores)[] = [
@@ -174,6 +174,7 @@ function buildOmegaPartnerUrl(): string | null {
 
 export function buildNurtureEmail(
   row: ReminderRowWithSession,
+  recoveryUrl?: string,
 ): { subject: string; html: string } | null {
   const email = row.email?.trim().toLowerCase();
   if (!email) {
@@ -182,7 +183,10 @@ export function buildNurtureEmail(
 
   const site = getPublicSiteUrl();
   const intakeUrl = `${site}/intake`;
-  const herstelplanUrl = buildIntakeHerstelplanUrl(row.session_id ?? null);
+  const herstelplanUrl =
+    typeof recoveryUrl === "string" && recoveryUrl.trim()
+      ? recoveryUrl.trim()
+      : buildIntakeFallbackUrl();
   const unsubQs = new URLSearchParams({ email });
   const unsubscribeUrl = `${site}/api/unsubscribe?${unsubQs.toString()}`;
 

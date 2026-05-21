@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
+import { buildIntakeRecoveryUrlForSession } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import type { DomainScores } from "@/lib/intake-engine";
@@ -47,6 +48,8 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     ...input.domainScores,
   };
 
+  const recoveryUrl = await buildIntakeRecoveryUrlForSession(input.sessionId);
+
   const { subject, html } = getNurtureEmailContent(
     {
       sequenceDay: 0,
@@ -59,6 +62,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     {
       recipientEmail: input.email,
       sessionId: input.sessionId,
+      recoveryUrl,
     },
   );
 

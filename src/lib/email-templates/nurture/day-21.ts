@@ -1,7 +1,7 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
 import { buildNurtureEmail } from "@/data/nurture-content";
 import {
-  buildIntakeHerstelplanUrl,
+  resolveIntakeRecoveryUrl,
   renderPersonalizedRows,
   wrapNurtureBlock,
 } from "./helpers";
@@ -10,7 +10,7 @@ export function nurtureDay21Email(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
 ): { subject: string; html: string } {
-  const intakeUrl = buildIntakeHerstelplanUrl(ctx.sessionId ?? null);
+  const intakeUrl = resolveIntakeRecoveryUrl(ctx);
 
   const { subject, blocks, supplementTip } = buildNurtureEmail(
     21,

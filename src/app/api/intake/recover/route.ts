@@ -3,15 +3,36 @@ import {
   INTAKE_SESSION_COOKIE_NAME,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
-import { getClientIp } from "@/lib/turnstile-verify";
-import { consumeRateLimitForIp } from "@/lib/rate-limit";
-import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import {
+  isSessionRecoverable,
+  verifyAndConsumeRecoveryToken,
+} from "@/lib/recovery-token";
+import { getClientIp } from "@/lib/turnstile-verify";
 
 const COOKIE_MAX_AGE_SEC = 60 * 60 * 24 * 90;
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
   console.warn("[api/intake/recover][security]", { event, ...details });
+}
+
+function redirectToIntake(): NextResponse {
+  return NextResponse.redirect(new URL(`${getPublicSiteUrl()}/intake`));
+}
+
+function setSessionCookie(signedCookie: string): NextResponse {
+  const dest = new URL(`${getPublicSiteUrl()}/intake?resultaten=true`);
+  const res = NextResponse.redirect(dest);
+  res.cookies.set(INTAKE_SESSION_COOKIE_NAME, signedCookie, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: COOKIE_MAX_AGE_SEC,
+  });
+  return res;
 }
 
 export async function GET(request: NextRequest) {
@@ -40,21 +61,32 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const token = request.nextUrl.searchParams.get("token")?.trim() ?? "";
+  if (token) {
+    const result = await verifyAndConsumeRecoveryToken(token);
+    if (!result.ok) {
+      logSecurityEvent("invalid_token", {
+        remoteIp: clientIp,
+        reason: result.reason,
+      });
+      return redirectToIntake();
+    }
+    return setSessionCookie(result.signedCookie);
+  }
+
   const sid = request.nextUrl.searchParams.get("sid")?.trim() ?? "";
   const sessionId = verifySignedIntakeSessionCookie(sid);
   if (!sessionId) {
     logSecurityEvent("invalid_sid", { remoteIp: clientIp });
-    return NextResponse.redirect(new URL(`${getPublicSiteUrl()}/intake`));
+    return redirectToIntake();
   }
 
-  const dest = new URL(`${getPublicSiteUrl()}/intake?resultaten=true`);
-  const res = NextResponse.redirect(dest);
-  res.cookies.set(INTAKE_SESSION_COOKIE_NAME, sid, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: COOKIE_MAX_AGE_SEC,
-  });
-  return res;
+  const recoverable = await isSessionRecoverable(sessionId);
+  if (!recoverable) {
+    logSecurityEvent("sid_session_invalid", { remoteIp: clientIp });
+    return redirectToIntake();
+  }
+
+  logSecurityEvent("legacy_sid_used", { remoteIp: clientIp });
+  return setSessionCookie(sid);
 }

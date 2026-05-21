@@ -5,6 +5,7 @@ import {
   type ReminderRowWithSession,
 } from "@/lib/nurture-email-dispatch";
 import { runPendingNurtureEmails } from "@/lib/nurture-cron";
+import { buildIntakeRecoveryUrlForSession } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 let resendClient: Resend | null = null;
@@ -120,7 +121,11 @@ async function runSendReminders(): Promise<{ sent: number; errors: number }> {
       intake_sessions: session,
     };
 
-    const built = buildNurtureEmail(withSession);
+    const recoveryUrl = row.session_id
+      ? await buildIntakeRecoveryUrlForSession(row.session_id)
+      : undefined;
+
+    const built = buildNurtureEmail(withSession, recoveryUrl);
     if (!built) {
       errors += 1;
       continue;

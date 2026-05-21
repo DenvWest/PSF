@@ -8,7 +8,6 @@ import {
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { absoluteUrl, getPublicSiteUrl } from "@/lib/public-site-url";
-import { signIntakeSessionId } from "@/lib/intake-session-cookie";
 import type { NurtureEmailDispatchContext } from "./types";
 
 const DOMAIN_IDS = [
@@ -94,14 +93,18 @@ export function day7BodyCopy(domain: string): { htmlBlock: string } {
   };
 }
 
-export function buildIntakeHerstelplanUrl(sessionId: string | null | undefined): string {
-  const site = getPublicSiteUrl();
-  const signed = sessionId ? signIntakeSessionId(sessionId) : null;
-  if (signed) {
-    const qs = new URLSearchParams({ sid: signed });
-    return `${site}/api/intake/recover?${qs.toString()}`;
+export function resolveIntakeRecoveryUrl(
+  ctx: Pick<NurtureEmailDispatchContext, "recoveryUrl">,
+): string {
+  if (typeof ctx.recoveryUrl === "string" && ctx.recoveryUrl.trim()) {
+    return ctx.recoveryUrl.trim();
   }
-  return `${site}/intake`;
+  return `${getPublicSiteUrl()}/intake`;
+}
+
+/** @deprecated Gebruik recoveryUrl in dispatch context (createRecoveryToken). */
+export function buildIntakeHerstelplanUrl(_sessionId: string | null | undefined): string {
+  return `${getPublicSiteUrl()}/intake`;
 }
 
 export function wrapNurtureBlock(

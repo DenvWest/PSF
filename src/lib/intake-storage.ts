@@ -133,6 +133,9 @@ export async function revokeIntakeConsent(): Promise<
       | { error?: string }
       | null;
     if (response.ok) {
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.removeItem("ps_contact_email");
+      }
       return { ok: true };
     }
     return {

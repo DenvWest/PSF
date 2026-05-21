@@ -5,6 +5,11 @@ import {
   buildGuideUnsubscribeUrl,
   buildNurtureUnsubscribeUrl,
 } from "@/lib/nurture-unsubscribe";
+import {
+  ANON_PROFILE_LABEL,
+  buildIntakeFallbackUrl,
+  buildIntakeRecoveryUrlForSession,
+} from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import type { GuideThema } from "@/types/guide-opt-in";
@@ -125,6 +130,33 @@ export async function runPendingNurtureEmails(): Promise<{
         subject = content.subject;
         html = content.html;
       } else {
+        if (mail.session_id) {
+          const { data: sessionRow, error: sessionError } = await supabase
+            .from("intake_sessions")
+            .select("profile_label")
+            .eq("id", mail.session_id)
+            .maybeSingle();
+
+          if (sessionError) {
+            throw sessionError;
+          }
+
+          const profileLabel =
+            typeof sessionRow?.profile_label === "string"
+              ? sessionRow.profile_label.trim()
+              : "";
+          if (!profileLabel || profileLabel === ANON_PROFILE_LABEL) {
+            await supabase
+              .from("nurture_emails")
+              .update({
+                status: "cancelled",
+                error_message: "Sessie ingetrokken of geanonimiseerd",
+              })
+              .eq("id", mail.id);
+            continue;
+          }
+        }
+
         const profileLabel =
           typeof mail.profile_label === "string" && mail.profile_label.trim()
             ? mail.profile_label.trim()
@@ -142,6 +174,10 @@ export async function runPendingNurtureEmails(): Promise<{
             ? mail.urgency_level.trim()
             : "moderate";
 
+        const recoveryUrl = mail.session_id
+          ? await buildIntakeRecoveryUrlForSession(mail.session_id)
+          : buildIntakeFallbackUrl();
+
         const intakeContent = getNurtureEmailContent(
           {
             sequenceDay: mail.sequence_day,
@@ -154,6 +190,7 @@ export async function runPendingNurtureEmails(): Promise<{
           {
             recipientEmail: email,
             sessionId: mail.session_id,
+            recoveryUrl,
           },
         );
         subject = intakeContent.subject;
