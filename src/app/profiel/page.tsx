@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { PROFILE_PAGES } from "@/data/profiles";
 
 export const metadata: Metadata = {
@@ -54,9 +55,7 @@ export default function ProfielOverzichtPage() {
             <p className="text-slate-600 mb-2">
               De Leefstijlcheck bepaalt het voor je in 3 minuten.
             </p>
-            <p className="text-sm text-slate-500 mb-6">
-              Geen medische test — wel inzicht in 6 leefstijldomeinen.
-            </p>
+            <IntakeCtaMicro className="mb-6 text-sm text-slate-500" />
             <Link
               href="/intake"
               className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors"

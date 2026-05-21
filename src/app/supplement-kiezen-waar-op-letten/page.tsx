@@ -6,6 +6,8 @@ import {
 } from "@/components/blog/BlogArticleIntro";
 import ContentSection from "@/components/ui/ContentSection";
 import RelatedPages from "@/components/ui/RelatedPages";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { buildArticlePageMetadata, getBlogPostBySlug } from "@/data/blog-posts";
 import {
     veelgemaakteFouten,
@@ -307,10 +309,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                 </ul>
             </ContentSection>
 
-            <ContentSection
-                title="Welke keuze past bij jou?"
-                description="Korte oriëntatie — geen medisch advies; bij twijfel over gezondheid of medicatie: vraag je zorgverlener."
-            >
+            <ContentSection title="Welke keuze past bij jou?">
                 <div className="grid gap-6 md:grid-cols-2">
                     {segmentatie.map((item) => (
                         <article
@@ -409,6 +408,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                     <p className="mt-2 text-sm text-stone-500">
                         15 vragen, 3 minuten — direct een persoonlijk herstelplan.
                     </p>
+                    <IntakeCtaMicro className="mt-4 text-sm text-stone-500" />
                     <Link
                         href="/intake"
                         className="mt-6 inline-block rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white hover:bg-stone-700"
@@ -416,6 +416,10 @@ export default function SupplementKiezenWaarOpLettenPage() {
                         Ontdek jouw herstelprofiel — gratis →
                     </Link>
                 </div>
+            </Container>
+
+            <Container className="mt-16">
+                <MedicalDisclaimer />
             </Container>
             </article>
         </main>

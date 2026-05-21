@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { KB_CARD_SHELL } from "@/components/kennisbank/kennisbank-layout";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { INTAKE_PROMO } from "@/data/homepage";
 
 interface KennisbankIntakeCTAProps {
@@ -16,18 +17,13 @@ export default function KennisbankIntakeCTA({ className = "" }: KennisbankIntake
       <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-stone-500">
         {INTAKE_PROMO.subline}
       </p>
-      <p className="mx-auto mt-4 max-w-md text-sm text-stone-500">
-        Geen medische test — wel inzicht in 6 leefstijldomeinen.
-      </p>
+      <IntakeCtaMicro className="mx-auto mt-4 max-w-md text-sm text-stone-500" />
       <Link
         href="/intake"
         className="mt-8 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-8 py-3.5 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
       >
         Ontdek jouw herstelprofiel — gratis →
       </Link>
-      <p className="mt-5 text-xs tracking-wide text-stone-400">
-        Geen account nodig · Je gegevens worden anoniem verwerkt
-      </p>
     </div>
   );
 }

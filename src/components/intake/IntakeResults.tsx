@@ -11,7 +11,7 @@ import {
   getProfileLabel,
   getUrgency,
 } from "@/lib/intake-engine";
-import IntakeDisclaimer from "@/components/intake/IntakeDisclaimer";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import SupplementAdviceDisclaimer from "@/components/intake/SupplementAdviceDisclaimer";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import FoundationStack from "@/components/intake/FoundationStack";
@@ -539,7 +539,7 @@ export default function IntakeResults({
       <IntakeFeedback sessionId={sessionId} />
 
       <div className="mb-5">
-        <IntakeDisclaimer />
+        <MedicalDisclaimer variant="intake" theme="dark" className="mt-0" />
         {sessionId ? (
           <div className="mt-5">
             {revokeFeedback ? (

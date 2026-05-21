@@ -6,6 +6,7 @@ import { RefNote } from "@/components/references/RefNote";
 import { magnesiumReferences } from "@/data/references/magnesium";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 export const metadata: Metadata = {
   title: "Slaap Verbeteren Na 40: Oorzaken, Tips & Supplementen | PerfectSupplement",
@@ -751,9 +752,6 @@ export default function SlaapVerbeterenNa40Page() {
                     De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en energieprofiel in
                     kaart. Je krijgt een persoonlijk herstelplan — gratis, zonder registratie.
                   </p>
-                  <p className="mt-4 text-sm text-gray-500 max-w-lg mx-auto">
-                    Geen diagnose — wel een startpunt voor gesprek met je arts.
-                  </p>
                   <Link
                     href="/intake"
                     className="mt-5 inline-block bg-green-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
@@ -765,13 +763,7 @@ export default function SlaapVerbeterenNa40Page() {
 
               <ReferenceList references={magnesiumReferences} />
 
-              {/* 12. Disclaimer */}
-              <footer className="mt-16 pt-8 border-t border-stone-200">
-                <p className="text-sm text-gray-400 italic">
-                  Dit artikel is informatief van aard en vervangt geen medisch advies. Bij
-                  aanhoudende slaapproblemen raden we aan contact op te nemen met je huisarts.
-                </p>
-              </footer>
+              <MedicalDisclaimer />
 
             </article>
             </PillarReadingChrome>

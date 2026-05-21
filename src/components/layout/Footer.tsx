@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
 const exploreLinks = [
     { href: "/intake", label: "Leefstijlcheck" },
@@ -120,6 +121,9 @@ export default function Footer() {
                         <Link href="/disclaimer" className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline">
                             Disclaimer
                         </Link>
+                        <Link href="/medische-disclaimer" className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline">
+                            Medische disclaimer
+                        </Link>
                         <Link href="/affiliate-disclosure" className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline">
                             Affiliate disclosure
                         </Link>
@@ -127,6 +131,12 @@ export default function Footer() {
                             FAQ
                         </Link>
                     </div>
+                    <p className="text-xs text-stone-400">
+                        {DISCLAIMER_TEXTS.footer}{" "}
+                        <Link href="/disclaimer" className="underline underline-offset-2 transition hover:text-stone-600">
+                            Meer →
+                        </Link>
+                    </p>
                     <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                         <p className="text-xs text-stone-400">
                             © 2026 PerfectSupplement. Alle rechten voorbehouden.

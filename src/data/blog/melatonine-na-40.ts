@@ -50,7 +50,7 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Disclaimer",
-      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft adviezen, geen diagnoses. EU‑claimstatus ashwagandha: zie [toelichting](/blog/ashwagandha-werking-mannen).",
+      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft informatie, geen diagnoses. EU‑claimstatus ashwagandha: zie [toelichting](/blog/ashwagandha-werking-mannen).",
     },
   ],
   samenvatting:

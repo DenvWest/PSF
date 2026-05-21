@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 
 export const metadata: Metadata = {
@@ -17,8 +18,12 @@ export default function DisclaimerPage() {
             title="Disclaimer"
             intro={
                 <>
-                    Op deze pagina vind je de algemene disclaimer, affiliate disclosure en medische
-                    disclaimer van deze website.
+                    Op deze pagina vind je de algemene disclaimer en affiliate disclosure van deze
+                    website. Voor de volledige medische disclaimer, zie{" "}
+                    <Link href="/medische-disclaimer" className="underline underline-offset-2">
+                        medische disclaimer
+                    </Link>
+                    .
                 </>
             }
         >
@@ -45,7 +50,11 @@ export default function DisclaimerPage() {
                 <p className="mt-3">
                         Raadpleeg altijd een arts, apotheker of andere gekwalificeerde zorgverlener bij
                         vragen over je gezondheid, medicatie, medische aandoeningen of het gebruik van
-                        voedingssupplementen.
+                        voedingssupplementen. Lees ook onze{" "}
+                        <Link href="/medische-disclaimer" className="underline underline-offset-2">
+                            volledige medische disclaimer
+                        </Link>
+                        .
                     </p>
             </section>
 

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import type { ProfilePageData, StepCareLayer, SupplementSuggestion } from "@/types/profile-page";
@@ -221,9 +222,7 @@ export default async function ProfielPage({ params }: Props) {
                   {profile.guidanceCta.title}
                 </h2>
                 <p className="text-slate-600 mt-4 leading-relaxed">{profile.guidanceCta.text}</p>
-                <p className="mt-4 text-sm text-slate-500">
-                  Geen medische test — wel inzicht in 6 leefstijldomeinen.
-                </p>
+                <IntakeCtaMicro className="mt-4 text-sm text-slate-500" />
                 <Link
                   href="/intake"
                   className="inline-flex items-center mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 h-12 rounded-lg transition-colors"

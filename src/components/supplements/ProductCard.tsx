@@ -130,8 +130,7 @@ export function ProductCard({ product, position, isPrimary = false }: Props) {
           {isPrimary ? (
             <>
               <p className="mt-5 text-sm text-slate-600">
-                Onafhankelijk getest — geen sponsoring. Bij twijfel of medicatie: overleg met je
-                huisarts.
+                Onafhankelijk getest — geen sponsoring.
               </p>
               <AffiliateLink
                 affiliateSlug={product.affiliateSlug}

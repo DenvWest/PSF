@@ -62,7 +62,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       type: "tekst",
       titel: "Disclaimer",
       tekst:
-        "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft adviezen, geen diagnoses.",
+        "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft informatie, geen diagnoses.",
     },
   ],
   samenvatting:

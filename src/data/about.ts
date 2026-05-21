@@ -1,3 +1,5 @@
+import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
+
 export const ABOUT_METADATA = {
   title:
     "Over PerfectSupplement — Leefstijl, herstel en supplementen | PerfectSupplement",
@@ -20,7 +22,7 @@ export const ABOUT_FOUNDER = {
     "Oprichter PerfectSupplement",
   ] as const,
   roleNote:
-    "In mijn praktijk ben ik fysiotherapeut binnen het BIG-kader. PerfectSupplement is een afzonderlijk informatieplatform — geen behandelrelatie en geen BIG-zorgverlening via deze site.",
+    "Dennis is fysiotherapeut, ingeschreven in het BIG-register (nr. 59930614504). Die BIG-registratie geldt voor zijn praktijkwerk — niet voor PerfectSupplement. Op dit platform spreekt hij als oprichter en redacteur, niet als jouw behandelend fysiotherapeut. Er is geen behandelrelatie via deze site, en PerfectSupplement levert geen BIG-zorg. Voor klachten of behandeling: zoek een arts of fysiotherapeut in je regio.",
   bioParagraphs: [
     "Al jarenlang werk ik in de fysiotherapie met mannen 40+ die merken dat herstel, slaap en stress meer aandacht vragen dan vroeger — vaak na jaren van hoge werkdruk, sport of een volle agenda.",
     "Op PerfectSupplement spreek ik als oprichter en redacteur, niet als jouw behandelend fysiotherapeut. Ik kijk naar wat in de literatuur en richtlijnen past bij mannen 40+, en waar een supplement wél of géén zinvolle aanvulling is.",
@@ -127,8 +129,7 @@ export const ABOUT_TRUST = {
     href: "/affiliate-disclosure",
     label: "Affiliate disclosure",
   },
-  medicalDisclaimer:
-    "Informatief bedoeld. Geen medisch advies, geen diagnose, geen behandeling. Bij klachten of twijfel: raadpleeg je zorgverlener.",
+  medicalDisclaimer: DISCLAIMER_TEXTS.default,
 } as const;
 
 export const ABOUT_CREDENTIALS = {

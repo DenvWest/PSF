@@ -51,7 +51,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
     {
       type: "tekst",
       titel: "Disclaimer",
-      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft adviezen, geen diagnoses. Verwijzingen naar ashwagandha beschrijven wetenschappelijke literatuur, geen EU‑erkende productclaims — zie [ashwagandha: claimstatus](/blog/ashwagandha-werking-mannen).",
+      tekst: "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft informatie, geen diagnoses. Verwijzingen naar ashwagandha beschrijven wetenschappelijke literatuur, geen EU‑erkende productclaims — zie [ashwagandha: claimstatus](/blog/ashwagandha-werking-mannen).",
     },
   ],
   samenvatting:

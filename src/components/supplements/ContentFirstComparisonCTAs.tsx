@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import Container from "@/components/layout/Container";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { INTAKE_PROMO } from "@/data/homepage";
 import type { SupplementCategory } from "@/types/supplement";
 
@@ -58,9 +59,7 @@ export function ComparisonIntakeFallbackCta() {
           Je situatie is uniek. Ontdek welke supplementen bij jouw profiel horen — de Leefstijlcheck
           geeft je dat inzicht in {INTAKE_PROMO.durationLabel}.
         </p>
-        <p className="mb-4 text-sm text-stone-500">
-          Geen medische test — wel inzicht in 6 leefstijldomeinen.
-        </p>
+        <IntakeCtaMicro className="mb-4 text-sm text-stone-500" />
         <Link
           href="/intake"
           className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
@@ -379,18 +380,13 @@ export default function LageBatterijPage() {
                   In 3 minuten weet je waar je staat op 6 gezondheidsdomeinen — en krijg je een
                   persoonlijk Herstelplan met concrete stappen.
                 </p>
-                <p className="mt-4 text-sm text-slate-500 max-w-xl mx-auto">
-                  Geen medische test — wel inzicht in 6 leefstijldomeinen.
-                </p>
+                <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
                 <Link
                   href="/intake"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
                   Ontdek jouw profiel — match met Lage Batterij
                 </Link>
-                <p className="mt-4 text-sm text-slate-400">
-                  Gratis, anoniem, geen account nodig.
-                </p>
               </div>
             </section>
 

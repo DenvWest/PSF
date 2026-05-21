@@ -175,6 +175,10 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
             <Link href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
               Privacyverklaring
             </Link>
+            {" · "}
+            <Link href="/medische-disclaimer" style={{ color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
+              Medische disclaimer
+            </Link>
           </p>
         </div>
 
@@ -195,6 +199,10 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
           <p className="mt-1.5 pl-7" style={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
             <Link href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
               Privacyverklaring
+            </Link>
+            {" · "}
+            <Link href="/medische-disclaimer" style={{ color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
+              Medische disclaimer
             </Link>
           </p>
         </div>

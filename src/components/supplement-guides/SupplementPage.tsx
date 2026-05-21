@@ -6,6 +6,7 @@ import VormCard from "./VormCard";
 import RelevantieCard from "./RelevantieCard";
 import SymptoomLinkCard from "./SymptoomLinkCard";
 import FAQItem from "./FAQItem";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import {
   renderInlineMarkdownLinks,
@@ -315,9 +316,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                   ✓ Gerichte supplementroute op basis van jouw profiel
                 </span>
               </div>
-              <p className="mx-auto mt-6 max-w-md text-sm text-white/60">
-                Geen medische test — wel inzicht in 6 leefstijldomeinen.
-              </p>
+              <IntakeCtaMicro className="mx-auto mt-6 max-w-md text-sm text-white/60" />
               <div className="mt-6">
                 <Link
                   href="/intake"

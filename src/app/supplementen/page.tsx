@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import HubHero from "@/components/supplement-hub/HubHero";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import RecommendedForYou from "@/components/supplement-hub/RecommendedForYou";
 import ProfileUpdateLink from "@/components/supplement-hub/ProfileUpdateLink";
 import ThemaGrid from "@/components/supplement-hub/ThemaGrid";
@@ -92,6 +93,7 @@ export default async function SupplementenPage() {
                     Doe de Leefstijlcheck →
                   </Link>
                 </div>
+                <IntakeCtaMicro className="mt-4 max-w-lg text-sm text-stone-500" />
               </div>
             )}
           </Container>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
@@ -422,18 +423,13 @@ export default function OnrustigeSlaperPage() {
                   Ontdek in 3 minuten hoe je scoort op slaap, stress en 4 andere domeinen — en of
                   Onrustige Slaper bij jouw situatie past.
                 </p>
-                <p className="mt-4 text-sm text-slate-500 max-w-xl mx-auto">
-                  Geen medische test — wel inzicht in 6 leefstijldomeinen.
-                </p>
+                <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
                 <Link
                   href="/intake"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
                   Ontdek jouw profiel — match met Onrustige Slaper
                 </Link>
-                <p className="mt-4 text-sm text-slate-400">
-                  Gratis, anoniem, geen account nodig. Je krijgt direct je persoonlijke Herstelplan.
-                </p>
               </div>
             </section>
 

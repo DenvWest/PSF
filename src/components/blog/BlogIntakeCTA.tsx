@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { INTAKE_PROMO } from "@/data/homepage";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 
 interface BlogIntakeCTAProps {
   className?: string;
@@ -17,9 +18,7 @@ export default function BlogIntakeCTA({ className = "" }: BlogIntakeCTAProps) {
       <p className="mt-2 text-sm text-stone-500">
         {INTAKE_PROMO.subline}
       </p>
-      <p className="mx-auto mt-4 max-w-md text-sm text-stone-500">
-        Geen medische test — wel inzicht in 6 leefstijldomeinen.
-      </p>
+      <IntakeCtaMicro className="mx-auto mt-4 max-w-md text-sm text-stone-500" />
       <Link
         href="/intake"
         className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ps-green-hover"

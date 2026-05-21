@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 
 type HubHeroProps = {
   hasSession: boolean;
@@ -47,6 +48,9 @@ export default function HubHero({ hasSession }: HubHeroProps) {
                 Ontdek welke supplementen bij jou passen →
               </Link>
             )}
+            {!hasSession ? (
+              <IntakeCtaMicro className="mt-4 max-w-xl text-sm text-stone-500" />
+            ) : null}
           </div>
         </div>
       </Container>

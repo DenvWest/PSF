@@ -24,11 +24,13 @@ function InfoShieldIcon({ className }: { className?: string }) {
 type MedicalDisclaimerProps = {
   variant?: "default" | "intake";
   theme?: "light" | "dark";
+  className?: string;
 };
 
 export function MedicalDisclaimer({
   variant = "default",
   theme = "light",
+  className,
 }: MedicalDisclaimerProps) {
   const text =
     variant === "intake" ? DISCLAIMER_TEXTS.intake : DISCLAIMER_TEXTS.default;
@@ -36,9 +38,9 @@ export function MedicalDisclaimer({
   if (theme === "dark") {
     return (
       <div
-        className="mt-6 max-w-md text-xs text-center"
+        className={`max-w-md text-xs text-center ${className ?? "mt-6"}`}
         role="complementary"
-        style={{ color: "rgba(255,255,255,0.3)", lineHeight: 1.6 }}
+        style={{ color: "rgba(255,255,255,0.22)", lineHeight: 1.6 }}
       >
         <p>{text}</p>
         {variant === "intake" ? (
@@ -72,7 +74,7 @@ export function MedicalDisclaimer({
   }
 
   return (
-    <div className="border-t border-stone-200 py-8" role="complementary">
+    <div className={`border-t border-stone-200 py-8 ${className ?? ""}`} role="complementary">
       <div className="bg-stone-50/50 -mx-6 px-6 lg:-mx-8 lg:px-8 py-6 rounded-lg">
         <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:gap-4">
           <InfoShieldIcon className="h-5 w-5 shrink-0 text-stone-400" />

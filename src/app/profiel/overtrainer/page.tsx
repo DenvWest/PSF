@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
 import { overtrainerProfile } from "@/data/profiles/overtrainer";
 
@@ -385,18 +386,13 @@ export default function OvertrainerPage() {
                 <p className="text-slate-600 mt-4 leading-relaxed max-w-xl mx-auto">
                   {profile.guidanceCta.text}
                 </p>
-                <p className="mt-4 text-sm text-slate-500 max-w-xl mx-auto">
-                  Geen medische test — wel inzicht in 6 leefstijldomeinen.
-                </p>
+                <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
                 <Link
                   href="/intake"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
                   Ontdek jouw profiel — match met Overtrainer
                 </Link>
-                <p className="mt-4 text-sm text-slate-400">
-                  Gratis, anoniem, geen account nodig. Je krijgt direct je persoonlijke Herstelplan.
-                </p>
               </div>
             </section>
 
