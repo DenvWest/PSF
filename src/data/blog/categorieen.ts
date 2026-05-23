@@ -97,11 +97,11 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     ],
     intentArticleLinks: [
       { label: "Energie verhogen", slug: "energie-verhogen-natuurlijk" },
-      { label: "Testosteron en energie", slug: "testosteron-en-energie-na-40" },
-      { label: "Vitamine D tekort", slug: "vitamine-d-tekort-herkennen" },
-      { label: "Creatine en herstel", slug: "creatine-en-herstel" },
+      { label: "Middagdip en bloedsuiker", slug: "middagdip-bloedsuiker-na-40" },
+      { label: "Krachttraining na 40", slug: "krachttraining-na-40" },
+      { label: "Eiwit na 40", slug: "eiwit-na-40" },
     ],
-    themaHref: "/gids/energie",
+    themaHref: "/energie-na-40",
     kleur: {
       bg: "from-emerald-700 to-emerald-800",
       accent: "bg-emerald-500/20 ring-emerald-400/20",

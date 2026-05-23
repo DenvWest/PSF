@@ -30,6 +30,15 @@
 
 ---
 
+**Wave 3 (mei 2026) opgelost:**
+- Blogs `/blog/middagdip-bloedsuiker-na-40` en `/blog/krachttraining-na-40` — NRG_DEP/NRG_PATN + MOV_STR/MOV_CARD
+- Kennisbank-term `vitamine-d` — LIF_SUN gap; inline in vit-D blogs
+- Insulineresistentie inline: energie-pillar, energie-verhogen, middagdip-blog, profiel lage-batterij
+- Energie-categorie intent-links + pillar `/energie-na-40` (was `/gids/energie`)
+- Profiel lage-batterij → middagdip + krachttraining; overtrainer → krachttraining + pillar-fixes
+
+---
+
 ## Cluster-blogs die het spinnenweb versterken
 
 | Blog (idee) | Verbindt | Impact |
@@ -40,7 +49,8 @@
 | `/blog/zink-en-testosteron` | ✅ Live | pillar testosteron ↔ zink vergelijking |
 | `/blog/omega-3-en-herstel` | ✅ Live | pillar herstel ↔ omega-3 vergelijking ↔ profiel overtrainer |
 | `/blog/eiwit-na-40` | ✅ Live | NUT_PROT + MOV_STR ↔ eiwitbehoefte KB ↔ herstel/testosteron pillar |
-| `/blog/middagdip-bloedsuiker-na-40` | NRG_DEP + NRG_PATN ↔ insulineresistentie | **Hoog** |
+| `/blog/middagdip-bloedsuiker-na-40` | ✅ Live | NRG_DEP + NRG_PATN ↔ insulineresistentie ↔ profiel lage-batterij |
+| `/blog/krachttraining-na-40` | ✅ Live | MOV_STR/MOV_CARD ↔ eiwit KB ↔ profielen lage-batterij/overtrainer |
 
 ---
 
@@ -50,8 +60,8 @@
 |---|---|---|---|
 | Onrustige Slaper | ✅ | `/slaap-verbeteren-na-40` ✅ | `/beste/magnesium` ✅, `/beste/ashwagandha` ✅ |
 | Stressdrager | ✅ | `/stress-verminderen-man` ✅ | `/blog/cortisol-en-testosteron` ✅, `/testosteron-na-40` ✅ |
-| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/blog/vitamine-d-en-energie` ✅, `/beste/vitamine-d` ✅ |
-| Overtrainer | ✅ | `/herstel-verbeteren-na-40` ✅ | `/blog/creatine-en-herstel` ✅, `/kennisbank/overtrainingssyndroom` ✅ |
+| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/blog/middagdip-bloedsuiker-na-40` ✅, `/blog/krachttraining-na-40` ✅ |
+| Overtrainer | ✅ | `/herstel-verbeteren-na-40` ✅ | `/blog/krachttraining-na-40` ✅, `/blog/creatine-en-herstel` ✅ |
 
 ---
 
@@ -75,8 +85,9 @@
 | Overtrainingssyndroom | ✅ | profiel overtrainer, herstel-pillar, kennisbank cross-links |
 | Magnesiumvormen | ✅ | magnesium-en-slaap, magnesium-en-slaapkwaliteit |
 | Mitochondriën / ATP | ✅ | creatine-blog, vitamine-d-en-energie, energie-pillar, energie-verhogen, herstel-pillar |
-| Insulineresistentie | ⚠️ orphan | Term live — nog geen inline links vanuit blogs/pillars |
-| Eiwitbehoefte-na-40 | ✅ | eiwit-na-40 blog, IntakeResults, profielen overtrainer/lage-batterij |
+| Insulineresistentie | ✅ | middagdip-blog, energie-pillar, energie-verhogen, profiel lage-batterij |
+| Vitamine D | ✅ | vitamine-d-en-energie, vitamine-d-tekort-herkennen, kennisbank cross-links |
+| Eiwitbehoefte-na-40 | ✅ | eiwit-na-40 blog, krachttraining-blog, IntakeResults, profielen overtrainer/lage-batterij |
 | Oxidatieve stress | 💡 | Cross-cluster verbinder |
 
 ---

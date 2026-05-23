@@ -702,6 +702,32 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
     ]),
   },
   {
+    slug: 'vitamine-d',
+    term: 'Vitamine D',
+    theme: 'lichaam-veroudering',
+    shortDefinition:
+      'Een vetoplosbare stof die je huid maakt onder invloed van UVB-zonlicht — en die in Nederland vaak tekortschiet, vooral in de winter.',
+    content: {
+      whatIsIt: `Vitamine D is technisch geen vitamine maar een prohormoon: je huid zet cholesterol om in vitamine D3 onder UVB-licht. Daarna wordt het in lever en nieren geactiveerd. Het reguleert calcium, botten, spieren en immuunfunctie — honderden genen worden erdoor beïnvloed.`,
+      howItWorks: `In Nederland is de zon tussen oktober en maart vaak te laag voor voldoende huidsynthese — vooral bij binnenwerk, donkere huid of bedekkende kleding. Voeding levert meestal te weinig (vette vis, verrijkte producten). Suppletie met D3 (cholecalciferol) is gangbaar na bloedmeting (25-OH-vitamine D) en medisch advies.`,
+      whyItMatters: `Veel mannen 40+ hebben in de winter een lage status zonder het te weten. EFSA erkent claims op botten, spieren en immuunsysteem — geen erkende claim op "meer energie" als etiketbelofte. Lees [vitamine D en energie](/blog/vitamine-d-en-energie), [tekort herkennen](/blog/vitamine-d-tekort-herkennen) en vergelijk producten op [/beste/vitamine-d](/beste/vitamine-d). De Leefstijlcheck vraagt naar zonlicht (LIF_SUN).`,
+    },
+    relatedSlugs: ['mitochondrien', 'testosteron'],
+    relatedComparisons: ['/beste/vitamine-d'],
+    metaTitle: 'Vitamine D: Wat Doet Het en Wanneer Suppletie?',
+    metaDescription:
+      'Vitamine D uitgelegd: zonlicht, tekort in NL, EFSA-claims en wanneer meten zinvol is voor mannen 40+.',
+    laatstBijgewerktOp: '2026-05-23',
+    referenties: toRefs([
+      'Holick MF. Vitamin D deficiency. N Engl J Med. 2007;357(3):266-281.',
+      'Ross AC et al. Dietary Reference Intakes for Calcium and Vitamin D. Institute of Medicine. 2011.',
+      'EFSA Panel on Dietetic Products. Scientific opinion on dietary reference values for vitamin D. EFSA Journal. 2016;14(10):4547.',
+      'Bouillon R et al. Skeletal and extraskeletal actions of vitamin D: impact on health. Nat Rev Endocrinol. 2019;15(11):632-645.',
+      'Amrein K et al. Vitamin D deficiency 2.0: an update on the current status worldwide. Eur J Clin Nutr. 2020;74(11):1498-1513.',
+      'Spiro A, Buttriss JL. Vitamin D: an overview of vitamin D status and intake in Europe. Nutr Bull. 2014;39(4):322-350.',
+    ]),
+  },
+  {
     slug: 'insulineresistentie',
     term: 'Insulineresistentie',
     theme: 'lichaam-veroudering',
@@ -712,7 +738,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
       howItWorks: `Factoren die in onderzoek terugkomen: buikvet, weinig beweging, slaaptekort en hoge inname van ultra-bewerkte koolhydraten. Krachttraining en eiwitrijke maaltijden ondersteunen vaak stabilere bloedsuikerspiegels — geen wondermiddel, wel een praktische hefboom naast medische begeleiding.`,
       whyItMatters: `Voor mannen 40+ hangt energie vaak samen met metabole gezondheid. Lees [energie na 40](/energie-na-40) en [testosteron na 40](/testosteron-na-40) voor voorzichtige koppelingen — altijd met huisarts bij aanhoudende klachten of risicofactoren.`,
     },
-    relatedSlugs: ['mitochondrien'],
+    relatedSlugs: ['mitochondrien', 'atp'],
     relatedComparisons: [],
     metaTitle: 'Insulineresistentie: Uitleg en Relevantie Na 40',
     metaDescription:

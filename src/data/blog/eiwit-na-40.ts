@@ -78,8 +78,8 @@ export const eiwitNa40Data: BlogArtikel = {
   },
   gerelateerdeSluggen: [
     "creatine-en-herstel",
-    "energie-verhogen-natuurlijk",
-    "testosteron-en-energie-na-40",
+    "krachttraining-na-40",
+    "middagdip-bloedsuiker-na-40",
   ],
   metaTitle: "Eiwit na 40: hoeveel gram per dag man | PerfectSupplement",
   metaDescription:

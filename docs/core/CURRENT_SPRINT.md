@@ -22,7 +22,7 @@
 8. ✅ Profiel: `/profiel/lage-batterij`
 9. ✅ Profiel: `/profiel/overtrainer`
 10. ✅ 8 vergelijkingspagina's (omega-3, magnesium, ashwagandha, zink, creatine, vitamine D, melatonine, eiwitpoeder)
-11. ✅ 24 blogartikelen, 20 kennisbankbegrippen, 4 thema-hubs
+11. ✅ 26 blogartikelen, 24 kennisbankbegrippen, 4 thema-hubs
 12. ✅ Slaapgids PDF + dag-0 nurture mail integratie
 13. ✅ SEO audit fixes (admin noindex, canonical consistentie)
 14. ✅ Nurture email sequence (6 templates)
@@ -35,18 +35,20 @@
 21. ✅ Sitemap: alle 5 pillar pages
 22. ✅ Wave 1 spinnenweb: inline KB-links (cortisol, HPA-as, melatonine, magnesiumvormen), stress/energie cornerstone → pillars, herstel-pillar KB-links
 23. ✅ Wave 2 spinnenweb: profiel-KB-links, IntakeResults kennisbank bij lage score, blog `/blog/eiwit-na-40`
+24. ✅ Wave 3 spinnenweb: blogs middagdip + krachttraining, kennisbank `vitamine-d`, energie-pillar insulineresistentie, profiel-links
 
 ---
 
-## Volgende sprint (Wave 3)
+## Volgende sprint (Wave 4)
 
-| # | Pagina | Type | Impact |
+| # | Item | Type | Impact |
 |---|---|---|---|
-| 1 | `/blog/middagdip-bloedsuiker-na-40` | Cluster-blog | NRG_DEP + NRG_PATN gap, insulineresistentie orphan |
-| 2 | `/blog/krachttraining-na-40` | Cluster-blog | MOV_STR/MOV_CARD — start beweging-cluster |
-| 3 | Kennisbank-term `vitamine-d` | Kennisbank | LIF_SUN gap |
+| 1 | Alcohol-blog (NRG_DEP) | Cluster-blog | Energie-cluster compleet |
+| 2 | Nervus vagus in ademhaling-blog | Inline KB-link | Stress-cluster |
+| 3 | Kennisbank markdown-rendering | Tech | whyItMatters links werken |
+| 4 | Magnesium/melatonine merge-audit | Content | Dubbele artikelen |
 
-## Op de horizon
+## Op de horizon (was Wave 3)
 
 - Meer profiel-specifieke PDF-gidsen (stressgids, energiegids)
 - 30-dagen herhaalmeting met delta-vergelijking

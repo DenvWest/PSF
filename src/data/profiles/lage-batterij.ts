@@ -185,6 +185,16 @@ export const lageBatterijProfile: ProfilePageData = {
 
   relatedComparisons: [
     {
+      href: "/blog/middagdip-bloedsuiker-na-40",
+      turboSnippet:
+        "Middagdip na 40: bloedsuiker, koffie en wat je vóór 14:00 kunt sturen — zonder wilskracht-moraliseren.",
+    },
+    {
+      href: "/blog/krachttraining-na-40",
+      turboSnippet:
+        "Krachttraining na 40: spierbehoud en energie zonder uren in de gym — het duo met eiwit en herstel.",
+    },
+    {
       href: "/blog/eiwit-na-40",
       turboSnippet:
         "Eiwit na 40: hoeveel gram per dag, anabole resistentie en wanneer poeder zinvol is.",

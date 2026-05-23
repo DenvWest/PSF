@@ -220,6 +220,11 @@ export const overtrainerProfile: ProfilePageData = {
         "Eiwit na 40: hoeveel gram per dag, spreiding en wanneer poeder als aanvulling past.",
     },
     {
+      href: "/blog/krachttraining-na-40",
+      turboSnippet:
+        "Krachttraining na 40: spierbehoud, volume en herstel — wanneer minder harder trainen slimmer is.",
+    },
+    {
       href: "/blog/creatine-en-herstel",
       turboSnippet:
         "Creatine na 40: ATP-buffer en training — wanneer het past en wanneer volume het echte probleem is.",
@@ -230,14 +235,14 @@ export const overtrainerProfile: ProfilePageData = {
         "Overtrainingssyndroom uitgelegd: wanneer belasting structureel wint van herstel — geen ‘lui zijn’.",
     },
     {
-      href: "/gids/energie",
+      href: "/energie-na-40",
       turboSnippet:
-        "Trainingsvolume en energiehuishouding lopen vast in elkaar over zo lees je het energiethema voor voeding en dagritme.",
+        "Trainingsvolume en energiehuishouding lopen vast in elkaar over — zo lees je voeding en dagritme na 40.",
     },
     {
-      href: "/gids/slaap",
+      href: "/slaap-verbeteren-na-40",
       turboSnippet:
-        "Zonder stabiele slaap blijft herstel krap het slaapthema legt gedrag en omgeving naast supplementen uit.",
+        "Zonder stabiele slaap blijft herstel krap — het slaapthema legt gedrag en omgeving naast supplementen uit.",
     },
     {
       href: "/beste/magnesium",

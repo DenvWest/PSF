@@ -321,6 +321,17 @@ export default function EnergieNa40Page() {
                     de middag vlakker te maken
                   </li>
                 </ul>
+                <p className="mt-4 text-gray-700 leading-relaxed">
+                  Wil je het biologische kader? Lees{" "}
+                  <Link href="/kennisbank/insulineresistentie" className={INLINE_LINK_CLASS}>
+                    insulineresistentie
+                  </Link>{" "}
+                  in de kennisbank en het artikel{" "}
+                  <Link href="/blog/middagdip-bloedsuiker-na-40" className={INLINE_LINK_CLASS}>
+                    bloedsuiker en de middagdip
+                  </Link>
+                  .
+                </p>
               </section>
 
               {/* 8. Leefstijl */}

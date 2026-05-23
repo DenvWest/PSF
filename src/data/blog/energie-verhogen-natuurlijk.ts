@@ -29,7 +29,7 @@ export const energieVerhogenData: BlogArtikel = {
       items: [
         "Beweeg regelmatig en varieer intensiteit: Zowel duurtraining als HIIT stimuleren mitochondriale aanmaak op verschillende manieren.",
         "Prioriteer slaap boven alles: Slaaptekort verlaagt energie meer dan bijna elke andere factor. Acht uur is voor de meeste mannen boven de 40 het minimum voor volledig herstel.",
-        "Stabiliseer bloedsuiker: Schommelende bloedsuikerspiegel veroorzaakt energiedips. Eet maaltijden met genoeg eiwit en complexe koolhydraten; beperk geraffineerde suikers.",
+        "Stabiliseer bloedsuiker: Schommelende bloedsuikerspiegel veroorzaakt energiedips. Eet maaltijden met genoeg eiwit en complexe koolhydraten; beperk geraffineerde suikers. Lees [bloedsuiker en de middagdip](/blog/middagdip-bloedsuiker-na-40) en [insulineresistentie](/kennisbank/insulineresistentie).",
         "Verminder cortisol: Chronische stress verbruikt energie en interfereert met herstel. Stressmanagement is ook energiebeheer.",
         "Controleer tekorten: [beste vitamine D-supplementen](/beste/vitamine-d) horen bij een gemeten tekort, net als B12 en ijzer — veelvoorkomende maar makkelijk te corrigeren oorzaken van vermoeidheid. Bloedonderzoek geeft uitsluitsel.",
       ],
@@ -55,8 +55,8 @@ export const energieVerhogenData: BlogArtikel = {
   },
   gerelateerdeSluggen: [
     "vitamine-d-en-energie",
+    "middagdip-bloedsuiker-na-40",
     "slaap-verbeteren-40-plus",
-    "cortisol-verlagen-natuurlijk",
   ],
   metaTitle:
     "Energie verhogen na je 40e: fysiologie en praktische aanpak | PerfectSupplement",

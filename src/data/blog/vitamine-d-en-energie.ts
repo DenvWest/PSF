@@ -15,7 +15,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
       type: "tekst",
       titel: "Wat vitamine D wél officieel “mag” beloven",
       tekst:
-        "EFSA erkent o.a. bijdragen aan normale botten, spieren en immuunsysteem bij voldoende inname — afhankelijk van geformuleerde claim en context. Vermoeidheid is een symptoom met veel oorzaken; vitamine D is hooguit relevant als onderdeel van een gemeten tekort of risicoprofiel dat je met een huisarts/POH bespreekt. Lees ook [vitamine D-tekort herkennen](/blog/vitamine-d-tekort-herkennen) voor signalen en vervolgstappen zonder diagnose-dwang.",
+        "[Vitamine D](/kennisbank/vitamine-d) is technisch een prohormoon: je huid maakt het aan onder UVB-licht. EFSA erkent o.a. bijdragen aan normale botten, spieren en immuunsysteem bij voldoende inname — afhankelijk van geformuleerde claim en context. Vermoeidheid is een symptoom met veel oorzaken; vitamine D is hooguit relevant als onderdeel van een gemeten tekort of risicoprofiel dat je met een huisarts/POH bespreekt. Lees ook [vitamine D-tekort herkennen](/blog/vitamine-d-tekort-herkennen) voor signalen en vervolgstappen zonder diagnose-dwang.",
     },
     {
       type: "tekst",
@@ -58,8 +58,8 @@ export const vitamineDEnEnergieData: BlogArtikel = {
   },
   gerelateerdeSluggen: [
     "vitamine-d-tekort-herkennen",
-    "energie-verhogen-natuurlijk",
-    "testosteron-en-energie-na-40",
+    "middagdip-bloedsuiker-na-40",
+    "krachttraining-na-40",
   ],
   metaTitle:
     "Vitamine D en energie na 40: verwachtingen en vergelijken | PerfectSupplement",
