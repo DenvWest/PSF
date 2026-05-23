@@ -31,11 +31,6 @@ export const creatineData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/profiel/overtrainer",
-      text: "Veel trainen maar weinig buffer? Creatine ondersteunt vooral korte piekbelasting — herstel vraagt ook rust en slaap.",
-      cta: "Past bij profiel Overtrainer →",
-    },
-    {
       href: "/herstel-verbeteren-na-40",
       text: "Creatine is één stukje; lees de volledige herstelroute na 40 met slaap, eiwit en vergelijkingen.",
       cta: "Naar herstel-pillar →",

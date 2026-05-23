@@ -31,11 +31,6 @@ export const vitamineDData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/profiel/lage-batterij",
-      text: "Lage energie en weinig zon in de winter? Vitamine D hoort bij bot/spier/immuuncontext — meet waar nodig.",
-      cta: "Past bij profiel Lage batterij →",
-    },
-    {
       href: "/energie-na-40",
       text: "Energie is breder dan één capsule: slaap, beweging en stress spelen mee.",
       cta: "Naar energie-pillar →",
@@ -44,6 +39,11 @@ export const vitamineDData: ComparisonPageData = {
       href: "/blog/vitamine-d-en-energie",
       text: "Wat vitamine D wél belooft op het etiket — en wat niet.",
       cta: "Lees het cluster-artikel →",
+    },
+    {
+      href: "/blog/vitamine-d-tekort-herkennen",
+      text: "Signalen en vervolgstappen zonder zelf-diagnose.",
+      cta: "Lees het artikel →",
     },
   ],
   choiceRoutes: [

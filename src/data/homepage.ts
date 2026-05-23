@@ -58,6 +58,39 @@ export const HOMEPAGE_TRUST = {
   ],
 } as const;
 
+export const HOMEPAGE_THEMES = [
+  {
+    href: "/slaap-verbeteren-na-40",
+    label: "Slaap",
+    icon: "🌙",
+    description: "Ritme, licht en supplementen",
+  },
+  {
+    href: "/stress-verminderen-man",
+    label: "Stress",
+    icon: "🔥",
+    description: "Cortisol, spanning en herstel",
+  },
+  {
+    href: "/energie-na-40",
+    label: "Energie",
+    icon: "⚡",
+    description: "Vermoeidheid en middagdip",
+  },
+  {
+    href: "/herstel-verbeteren-na-40",
+    label: "Herstel",
+    icon: "💪",
+    description: "Training, slaap en eiwit",
+  },
+  {
+    href: "/testosteron-na-40",
+    label: "Testosteron",
+    icon: "🧬",
+    description: "Voorzichtig en onderbouwd",
+  },
+] as const;
+
 export const HOMEPAGE_LIFESTYLE = {
   sectionId: "leefstijlcheck",
   title:

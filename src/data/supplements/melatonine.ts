@@ -27,11 +27,6 @@ export const melatonineData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/profiel/onrustige-slaper",
-      text: "Wakker om 3 uur, niet terug in slaap? Herken je dit patroon na 40?",
-      cta: "Bekijk het profiel →",
-    },
-    {
       href: "/slaap-verbeteren-na-40",
       text: "Slaap verbeteren vraagt om een keten van gewoontes — pillar met ritme, licht en supplementen.",
       cta: "Naar slaap-pillar →",

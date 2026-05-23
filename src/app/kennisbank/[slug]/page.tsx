@@ -14,6 +14,7 @@ import ArticleBodyReadingChrome from '@/components/content/ArticleBodyReadingChr
 import ReadingLayoutDesktopGutters from '@/components/content/ReadingLayoutDesktopGutters'
 import { renderInlineMarkdownLinks } from '@/components/blog/inlineMarkdownLinks'
 import { buildKennisbankTocItems } from '@/lib/article-toc'
+import { buildDefinedTermSchema } from '@/lib/seo/structuredData'
 import { READING_ROW_GAP_CLASS } from '@/lib/article-reading-columns'
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
@@ -167,16 +168,11 @@ function TermPage({ slug }: { slug: string }) {
   const laatstDatum = term.laatstBijgewerktOp ?? STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM
   const verantwoordelijke = term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD
 
-  const definedTermSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'DefinedTerm',
-    name: term.term,
+  const definedTermSchema = buildDefinedTermSchema({
+    term: term.term,
     description: term.shortDefinition,
-    inDefinedTermSet: {
-      '@type': 'DefinedTermSet',
-      name: 'PerfectSupplement Kennisbank',
-    },
-  }
+    slug: term.slug,
+  })
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',

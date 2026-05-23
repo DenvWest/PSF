@@ -16,6 +16,8 @@ import {
   ComparisonChooserIntro,
   ComparisonIntakeFallbackCta,
 } from "@/components/supplements/ContentFirstComparisonCTAs";
+import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfileFits";
+import { getProfileFitsForCategory } from "@/data/supplement-profile-fits";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
 import {
@@ -95,6 +97,7 @@ export default async function Page({ params }: PageProps) {
 
   const available = isSupplementAvailable(data.category);
   const disabledReason = getSupplementDisabledReason(data.category);
+  const profileFits = getProfileFitsForCategory(data.category);
 
   return (
     <>
@@ -140,6 +143,8 @@ export default async function Page({ params }: PageProps) {
             doseringColumnLabel={data.tableDoseringColumnLabel}
           />
         </ComparisonChooserIntro>
+
+        <ComparisonProfileFits fits={profileFits} />
 
         {data.readAlsoCards && data.readAlsoCards.length > 0 && (
           <section className="mt-16 border-t border-stone-100 pt-12">

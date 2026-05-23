@@ -27,11 +27,6 @@ export const omega3Data: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/profiel/overtrainer",
-      text: "Veel belasting en traag herstel? Omega-3 past vaak in het bredere herstelplaatje naast rust en slaap.",
-      cta: "Past bij profiel Overtrainer →",
-    },
-    {
       href: "/herstel-verbeteren-na-40",
       text: "EPA/DHA in context van slaap, eiwit en training — pillar herstel na 40.",
       cta: "Naar herstel-pillar →",

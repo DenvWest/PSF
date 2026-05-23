@@ -52,3 +52,22 @@ export function buildFaqSchema(
     })),
   };
 }
+
+export function buildDefinedTermSchema(params: {
+  term: string;
+  description: string;
+  slug: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    name: params.term,
+    description: params.description,
+    url: `https://perfectsupplement.nl/kennisbank/${params.slug}`,
+    inDefinedTermSet: {
+      "@type": "DefinedTermSet",
+      name: "PerfectSupplement Kennisbank",
+      url: "https://perfectsupplement.nl/kennisbank",
+    },
+  };
+}

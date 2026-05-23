@@ -44,7 +44,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Grenzen stellen op werk", slug: "stress-werk-grenzen-stellen" },
       { label: "Ashwagandha bij mannen", slug: "ashwagandha-werking-mannen" },
     ],
-    themaHref: "/gids/stress",
+    themaHref: "/stress-verminderen-man",
     kleur: {
       bg: "from-amber-700 to-amber-800",
       accent: "bg-amber-500/20 ring-amber-400/20",

@@ -6,14 +6,21 @@
 
 ---
 
+**Wave 5 (mei 2026) opgelost:**
+- `ComparisonProfileFits` component op alle 8 `/beste/*` pagina's — centrale mapping in `supplement-profile-fits.ts`
+- Homepage: `HomeThemeLinksSection` met 5 pillars incl. `/herstel-verbeteren-na-40`
+- Stress blog-categorie `themaHref` → `/stress-verminderen-man`
+- `buildDefinedTermSchema()` in `structuredData.ts` — kennisbank-term pagina's
+
+---
+
 ## Link-gaps (pagina's die beter gelinkt moeten worden)
 
 | Pagina | Moet gelinkt worden vanuit |
 |---|---|
-| `/herstel-verbeteren-na-40` | Homepage, `/thema/herstel` |
-| `/beste/zink` | Extra profiel-pagina's (stressdrager) |
-| `/beste/melatonine` | Slaap-blogs, profiel onrustige-slaper |
-| `/beste/eiwitpoeder` | Energie-blogs, pillar herstel |
+| `/beste/zink` | Extra profiel-pagina's (stressdrager) — ✅ via ComparisonProfileFits |
+| `/beste/melatonine` | Slaap-blogs, profiel onrustige-slaper — ✅ via ComparisonProfileFits |
+| `/beste/eiwitpoeder` | Energie-blogs, pillar herstel — ✅ readAlsoCards + profiel-fits |
 
 **Wave 1 (mei 2026) opgelost:**
 - Cortisol-blogs → `/kennisbank/cortisol` + `/kennisbank/hpa-as`
@@ -114,7 +121,7 @@ Cross-links toegevoegd; geen redirects nodig (verschillende zoekintentie).
 ## Spinnenweb-integriteit checklist
 
 - [x] Elke pillar linkt naar bijbehorend profiel (testosteron-pillar → 3 profielen)
-- [ ] Elke vergelijkingspagina heeft "past bij profiel X" blok
+- [x] Elke vergelijkingspagina heeft "past bij profiel X" blok (Wave 5 — ComparisonProfileFits)
 - [x] Elke nieuwe cluster-blog linkt naar 2+ gerelateerde pagina's
 - [x] Kennisbank-termen cortisol, hpa-as, melatonine, magnesiumvormen inline gelinkt (Wave 1)
 - [x] Stress/energie cluster-blogs cornerstone → echte pillars (Wave 1)

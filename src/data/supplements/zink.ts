@@ -31,11 +31,6 @@ export const zinkData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/profiel/stressdrager",
-      text: "Langdurige stress en weinig herstel? Zink draagt bij tot normaal immuunsysteem — geen hormoon-quickfix.",
-      cta: "Past bij profiel Stressdrager →",
-    },
-    {
       href: "/testosteron-na-40",
       text: "Testosteron na 40 in voorzichtige taal: leefstijl eerst, labwaarden met zorgverlener.",
       cta: "Naar testosteron-pillar →",

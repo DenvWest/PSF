@@ -37,19 +37,20 @@
 23. ✅ Wave 2 spinnenweb: profiel-KB-links, IntakeResults kennisbank bij lage score, blog `/blog/eiwit-na-40`
 24. ✅ Wave 3 spinnenweb: blogs middagdip + krachttraining, kennisbank `vitamine-d`, energie-pillar insulineresistentie, profiel-links
 25. ✅ Wave 4 spinnenweb: alcohol-blog (NRG_DEP), nervus vagus in ademhaling, KB markdown-rendering, Mg/melatonine cross-links
+26. ✅ Wave 5 spinnenweb: ComparisonProfileFits op 8 vergelijkingen, homepage thema-links incl. herstel, stress-categorie pillar, DefinedTerm schema
 
 ---
 
-## Volgende sprint (Wave 5)
+## Volgende sprint (Wave 6)
 
 | # | Item | Type | Impact |
 |---|---|---|---|
-| 1 | "Past bij profiel X" op vergelijkingspagina's | Component | Conversie + spinnenweb |
-| 2 | Stress-categorie themaHref → pillar | Config | Consistentie |
-| 3 | Homepage links naar herstel-pillar | SEO | Link-gap sluiten |
-| 4 | DefinedTerm schema centraliseren | Tech | SEO onderhoud |
+| 1 | Supplementen-categorie themaHref → hub | Config | Consistentie |
+| 2 | "Past bij profiel X" op supplement-gidsen | Component | Spinnenweb |
+| 3 | Homepage → profiel-overzicht link | SEO | Conversie |
+| 4 | FAQ schema op vergelijkingspagina's | SEO | Rich results |
 
-## Op de horizon (was Wave 4)
+## Op de horizon (was Wave 5)
 
 - Meer profiel-specifieke PDF-gidsen (stressgids, energiegids)
 - 30-dagen herhaalmeting met delta-vergelijking

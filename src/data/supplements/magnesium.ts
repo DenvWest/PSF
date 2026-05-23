@@ -27,16 +27,6 @@ export const magnesiumData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/profiel/onrustige-slaper",
-      text: "Slecht slapen na 40? Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — ontdek of jouw profiel past bij meer structuur rond herstel.",
-      cta: "Bekijk het profiel →",
-    },
-    {
-      href: "/profiel/stressdrager",
-      text: "Veel prikkels en weinig rust in je lijf? Magnesium draagt bij tot de normale werking van het zenuwstelsel — check of dit profiel bij je past.",
-      cta: "Bekijk het profiel →",
-    },
-    {
       href: "/slaap-verbeteren-na-40",
       text: "Slaap na 40 in context — ritme, licht en supplementen in één pillar.",
       cta: "Naar slaap-pillar →",
@@ -44,6 +34,11 @@ export const magnesiumData: ComparisonPageData = {
     {
       href: "/blog/magnesium-en-slaapkwaliteit",
       text: "Cluster-artikel: hoe magnesium past in slaapkwaliteit zonder marketing-claims.",
+      cta: "Lees het artikel →",
+    },
+    {
+      href: "/blog/magnesium-en-slaap",
+      text: "Korter artikel: magnesium voor slaap — vorm, dosering en timing.",
       cta: "Lees het artikel →",
     },
   ],

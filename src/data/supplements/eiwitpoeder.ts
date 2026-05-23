@@ -29,14 +29,14 @@ export const eiwitpoederData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/profiel/overtrainer",
-      text: "Veel trainen zonder voldoende eiwit? Herstel begint op het bord — poeder is ondersteuning.",
-      cta: "Past bij profiel Overtrainer →",
-    },
-    {
       href: "/herstel-verbeteren-na-40",
       text: "Eiwitdosering en herstel na 40 — in de pillar met slaap en rustdagen.",
       cta: "Naar herstel-pillar →",
+    },
+    {
+      href: "/blog/eiwit-na-40",
+      text: "Hoeveel eiwit na 40, anabole resistentie en wanneer poeder zinvol is.",
+      cta: "Lees het artikel →",
     },
     {
       href: "/beste/creatine",
