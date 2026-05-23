@@ -9,6 +9,7 @@ export const melatonineNa40Data: BlogArtikel = {
     "Je hebt melatonine geprobeerd. Misschien werkte het even — de eerste paar nachten viel je wat makkelijker in slaap. Maar na een week of twee was het effect weg. Je lag weer te draaien. Dat is geen pech en geen nocebo. Het heeft een fysiologische verklaring — en die begint bij begrijpen wat melatonine eigenlijk doet.",
   leestijd: "5 min",
   gepubliceerdOp: "2026-05-02",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -18,7 +19,7 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Wat melatonine is — en wat het niet is",
-      tekst: "Melatonine is geen slaapmiddel. Het is een signaalhormoon — een clock-shifter. Je pijnappelklier maakt het aan als reactie op duisternis en geeft daarmee een timing-signaal aan je lichaam: het wordt nacht, bereid je voor op slaap. Melatonine maakt je niet suf. Het maakt je ook niet in slaap. Het verschuift je biologische klok en verlaagt je drempel om de slaap in te gaan — maar alleen als het systeem erachter intact is. Het is het sein voor het vertrek, niet de trein zelf. Dat betekent dat melatonine nuttig kan zijn bij specifieke timing-problemen: jetlag, ploegendienst, of een flink verschoven slaap-waak-ritme. Maar bij de meeste slaapproblemen van mannen boven de 40 is timing niet het primaire probleem.",
+      tekst: "[Melatonine](/kennisbank/melatonine) is geen slaapmiddel. Het is een signaalhormoon — een clock-shifter. Je pijnappelklier maakt het aan als reactie op duisternis en geeft daarmee een timing-signaal aan je lichaam: het wordt nacht, bereid je voor op slaap. Melatonine maakt je niet suf. Het maakt je ook niet in slaap. Het verschuift je biologische klok en verlaagt je drempel om de slaap in te gaan — maar alleen als het systeem erachter intact is. Het is het sein voor het vertrek, niet de trein zelf. Dat betekent dat melatonine nuttig kan zijn bij specifieke timing-problemen: jetlag, ploegendienst, of een flink verschoven slaap-waak-ritme. Maar bij de meeste slaapproblemen van mannen boven de 40 is timing niet het primaire probleem.",
     },
     {
       type: "tekst",

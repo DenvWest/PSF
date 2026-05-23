@@ -9,6 +9,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
     "Magnesium staat bovenaan elke lijst met slaaptips. Maar niet elke magnesiumvorm werkt — en niet elke dosering doet wat de verpakking belooft. Hier lees je wat het onderzoek zegt over de juiste vorm, de juiste dosering en het juiste moment.",
   leestijd: "6 min",
   gepubliceerdOp: "2026-05-02",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -24,7 +25,7 @@ export const magnesiumEnSlaapData: BlogArtikel = {
       type: "opsomming",
       titel: "Welke vorm werkt (en welke niet)",
       inleiding:
-        "Niet alle magnesiumsupplementen zijn gelijk. De vorm bepaalt de [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) — hoeveel je lichaam daadwerkelijk opneemt — en daarmee wat er in onderzoek naar uitkomsten bij slaap is gemeten. Dit zijn de drie meest relevante vormen:",
+        "Niet alle magnesiumsupplementen zijn gelijk. De [magnesiumvorm](/kennisbank/magnesiumvormen) bepaalt de [biobeschikbaarheid](/kennisbank/biobeschikbaarheid) — hoeveel je lichaam daadwerkelijk opneemt — en daarmee wat er in onderzoek naar uitkomsten bij slaap is gemeten. Dit zijn de drie meest relevante vormen:",
       items: [
         "Magnesium glycinaat (ook: bisglycinaat): vaak gekozen bij avondinname vanwege goede opname en onderzoek naar glycine rond slaap. Magnesium draagt zelf bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycine heeft in onderzoek verband met o.a. kerntemperatuurdaling rond slapen — een fysiologisch signaal dat past bij het naar bed gaan. Zacht voor de maag. Dit is in studies veel gebruikt als vorm bij slaapgerichte protocollen; individuele respons verschilt.",
         "Magnesium oxide: vermijden. De biologische beschikbaarheid ligt rond de 4% — van elke 100 mg die je inneemt, neemt je lichaam nog geen 4 mg op. Veelgebruikt in goedkope supplementen vanwege de lage kostprijs, maar voor slaap — of welk doel dan ook — niet effectief genoeg.",

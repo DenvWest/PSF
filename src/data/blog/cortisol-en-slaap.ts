@@ -6,24 +6,25 @@ export const cortisolEnSlaapData: BlogArtikel = {
   categorie: "slaap",
   titel: "Cortisol en Slaap: Waarom Je Om 3 Uur Wakker Wordt",
   heroIntro:
-    "Je valt prima in slaap, maar om 3 uur lig je klaarwakker. Hart bonkt, gedachten racen, slaap wil niet meer komen. Dit is geen toeval en geen slechte gewil — dit is cortisol dat te vroeg gas geeft. Hier lees je waarom dit patroon na je 40e zo hardnekkig is, en wat je er concreet aan kunt doen.",
+    "Je valt prima in slaap, maar om 3 uur lig je klaarwakker. Hart bonkt, gedachten racen, slaap wil niet meer komen. Dit is geen toeval en geen slechte gewil — dit is [cortisol](/kennisbank/cortisol) dat te vroeg gas geeft. Hier lees je waarom dit patroon na je 40e zo hardnekkig is, en wat je er concreet aan kunt doen.",
   leestijd: "6 min",
   gepubliceerdOp: "2026-05-02",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
       titel: "Ken je dit?",
-      tekst: "Je valt om half elf in slaap zonder moeite. Wekker staat op zeven uur. Maar om 03:14 ben je opeens klaarwakker. Geen duidelijke reden. Hart bonkt licht, gedachten gaan meteen aan — werk, een gesprek van gisteren, de planning van morgen. Je draait je om. Kijkt naar het plafond. Probeert de slaap terug te dwingen. Lukt niet. Uiteindelijk dommel je ergens rond vijf uur in, om een uur later uitgeput wakker te worden. Dit patroon heeft een fysiologische verklaring. En die verklaring heet cortisol.",
+      tekst: "Je valt om half elf in slaap zonder moeite. Wekker staat op zeven uur. Maar om 03:14 ben je opeens klaarwakker. Geen duidelijke reden. Hart bonkt licht, gedachten gaan meteen aan — werk, een gesprek van gisteren, de planning van morgen. Je draait je om. Kijkt naar het plafond. Probeert de slaap terug te dwingen. Lukt niet. Uiteindelijk dommel je ergens rond vijf uur in, om een uur later uitgeput wakker te worden. Dit patroon heeft een fysiologische verklaring. En die verklaring heet [cortisol](/kennisbank/cortisol).",
     },
     {
       type: "tekst",
       titel: "De cortisol-melatonine balans",
-      tekst: "Cortisol en melatonine werken als twee kanten van een wipwap — ze bewegen altijd tegengesteld. Normaal gezien piekt melatonine rond middernacht en houdt het je door de nacht in een ruststand. Tegelijk staat cortisol 's nachts op z'n laagst. Pas in de vroege ochtend — rond 6 tot 8 uur — stijgt cortisol geleidelijk om je wakker te maken. Dit wordt de Cortisol Awakening Response (CAR) genoemd: een gecontroleerde opbouw die je lichaam voorbereidt op de dag. Bij een verstoord ritme verschuift deze opbouw naar voor. Cortisol begint al om 2 of 3 uur 's nachts te stijgen, terwijl je melatonine nog actief zou moeten zijn. Het gevolg: je lichaam wordt de slaap uit getrokken, uren voordat de wekker gaat.",
+      tekst: "[Cortisol](/kennisbank/cortisol) en melatonine werken als twee kanten van een wipwap — ze bewegen altijd tegengesteld. Normaal gezien piekt melatonine rond middernacht en houdt het je door de nacht in een ruststand. Tegelijk staat cortisol 's nachts op z'n laagst. Pas in de vroege ochtend — rond 6 tot 8 uur — stijgt cortisol geleidelijk om je wakker te maken. Dit wordt de Cortisol Awakening Response (CAR) genoemd: een gecontroleerde opbouw die je lichaam voorbereidt op de dag. Bij een verstoord ritme verschuift deze opbouw naar voor. Cortisol begint al om 2 of 3 uur 's nachts te stijgen, terwijl je melatonine nog actief zou moeten zijn. Het gevolg: je lichaam wordt de slaap uit getrokken, uren voordat de wekker gaat.",
     },
     {
       type: "tekst",
       titel: "Waarom dit na je 40e erger wordt",
-      tekst: "Na je 40e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de HPA-as — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt. [Bekijk de melatonine vergelijking](/beste/melatonine).",
+      tekst: "Na je 40e spelen twee processen tegelijk. Ten eerste daalt de natuurlijke melatonineproductie met de leeftijd — de pijnappelklier maakt minder aan en reageert minder gevoelig op duisternis. Je slaapdrempel wordt daardoor verhoogd: het duurt langer om in te slapen en de slaap is lichter. Ten tweede wordt de [HPA-as](/kennisbank/hpa-as) — de communicatielijn tussen hersenen en bijnieren die cortisol reguleert — minder responsief. Bij chronische stress reageert dit systeem trager op de rem. Cortisol bouwt op en wordt minder goed afgebroken. Het resultaat is een dubbel probleem: minder melatonine om je door de nacht te dragen, en meer cortisol dat te vroeg opstijgt. Dat is precies de combinatie die het 3-uur-patroon veroorzaakt. [Bekijk de melatonine vergelijking](/beste/melatonine).",
     },
     {
       type: "tekst",
@@ -36,7 +37,7 @@ export const cortisolEnSlaapData: BlogArtikel = {
       inleiding:
         "Het goede nieuws: dit patroon is beïnvloedbaar. Het vraagt aanpak op twee niveaus — leefstijl en eventueel gerichte supplementen. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
       items: [
-        "Avondroutine: cortisol heeft een afbouwsignaal nodig. Een vaste avondroutine — zelfde tijd, dezelfde volgorde — traint je HPA-as om eerder te remmen. Dim het licht na 21:00. Blauw licht van schermen blokkeert melatonineaanmaak en houdt cortisol actief.",
+        "Avondroutine: cortisol heeft een afbouwsignaal nodig. Een vaste avondroutine — zelfde tijd, dezelfde volgorde — traint je [HPA-as](/kennisbank/hpa-as) om eerder te remmen. Dim het licht na 21:00. Blauw licht van schermen blokkeert melatonineaanmaak en houdt cortisol actief.",
         "Geen schermen 60 minuten voor bed: dit is het meest onderbouwde advies in slaaponderzoek. Niet vanwege de content, maar vanwege het lichtspectrum. Gebruik een e-reader met warm licht, een boek, of luister naar iets rustigs.",
         "Cortisol-verlagende gewoontes overdag: beweging (voorkeur: 's ochtends of middag, niet vlak voor bed), ademhalingsoefeningen en voldoende zonlicht vroeg op de dag helpen je cortisolritme te normaliseren. De CAR — de ochtendpiek — wordt hierdoor scherper en eerder, waardoor er 's nachts minder over is.",
         "Ashwagandha (KSM-66 of Sensoril): in studies wordt Withania somnifera onderzocht bij stress en cortisolmarkeringen. In de EU zijn hiervoor nog geen goedgekeurde gezondheidsclaims (on-hold bij EFSA; zie [toelichting](/blog/ashwagandha-werking-mannen)). Effecten treden niet acuut op — in onderzoek vaak na 4 tot 8 weken. [Producten vergeleken.](/beste/ashwagandha)",

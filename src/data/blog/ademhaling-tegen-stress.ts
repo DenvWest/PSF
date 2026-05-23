@@ -9,6 +9,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
     "Je ademhaling is de snelste manier om je zenuwstelsel te beïnvloeden. Geen apparaat nodig — alleen je neus, je middenrif en een paar minuten. Zo pak je acute stress aan zonder je dag stil te zetten.",
   leestijd: "6 min",
   gepubliceerdOp: "2026-03-28",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -37,8 +38,8 @@ export const ademhalingTegenStressData: BlogArtikel = {
   samenvatting:
     "Langzame, middenrifgestuurde ademhaling schakelt binnen minuten over naar een rustiger zenuwstelsel. Probeer 4-7-8 voor de nacht, box breathing onder werkstress en coherent ademen als dagelijkse gewoonte.",
   cornerstoneLink: {
-    label: "Oplossingen bij stress",
-    href: "/gids/stress",
+    label: "Hoofdstuk-gids: stress verminderen na 40",
+    href: "/stress-verminderen-man",
   },
   vergelijkingExtraLink: {
     label: "Beste ashwagandha supplement (productvergelijking)",

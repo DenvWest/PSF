@@ -9,6 +9,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     "Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam — van energieproductie en spierherstel tot slaap en stressregulatie. Toch krijgt 40 tot 60 procent van de Nederlanders onvoldoende magnesium binnen via voeding. Een praktische gids over vormen, doseringen en wanneer suppletie zinvol is.",
   leestijd: "16 min",
   gepubliceerdOp: "2026-04-18",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -20,7 +21,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       type: "opsomming",
       titel: "De zes meest gebruikte vormen",
       inleiding:
-        "Niet alle magnesiumsupplementen zijn gelijk. De vorm bepaalt de opneembaarheid, het effect en de bijwerkingen. Dit zijn de zes meest voorkomende:",
+        "Niet alle magnesiumsupplementen zijn gelijk. De [magnesiumvorm](/kennisbank/magnesiumvormen) bepaalt de opneembaarheid, het effect en de bijwerkingen. Dit zijn de zes meest voorkomende:",
       items: [
         "Magnesium glycinaat (bisglycinaat): veelgebruikt bij avondinname; magnesium draagt bij tot normale werking van zenuwstelsel en spieren (EFSA). Glycine wordt in onderzoek o.a. bestudeerd rond neurotransmissie en temperatuur rond slapen. Goed opneembaar en zacht voor de maag — weinig tot geen maag-darmklachten.",
         "Magnesium citraat: gebonden aan citroenzuur. Goede opneembaarheid en breed inzetbaar voor dagelijks gebruik. Bij hogere doseringen kan laxerende werking optreden — bij gevoelige mensen al bij lagere doses.",

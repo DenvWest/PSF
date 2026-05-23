@@ -33,16 +33,17 @@
 19. ✅ Kennisbank: testosteron, slaapschuld, overtrainingssyndroom
 20. ✅ Spinnenweb-links profielen ↔ cluster-blogs ↔ kennisbank
 21. ✅ Sitemap: alle 5 pillar pages
+22. ✅ Wave 1 spinnenweb: inline KB-links (cortisol, HPA-as, melatonine, magnesiumvormen), stress/energie cornerstone → pillars, herstel-pillar KB-links
 
 ---
 
-## Volgende sprint
+## Volgende sprint (Wave 2)
 
 | # | Pagina | Type | Impact |
 |---|---|---|---|
-| 1 | `/blog/melatonine-en-slaap` | Cluster-blog | Verbindt slaap-pillar ↔ melatonine vergelijking ↔ onrustige slaper |
-| 2 | `/supplementen-mannen-40` | Pillar (idee) | Breed overzicht supplementen 40+ |
-| 3 | "Past bij profiel X" op alle vergelijkingspagina's | Conversie | Profielherkenning op /beste/* |
+| 1 | Profielpagina's → kennisbank (2-3 links per profiel) | Link-pass | Coherentie-gat #2 uit audit |
+| 2 | IntakeResults → kennisbank bij lage domeinscore | UI + data | Educatieve route na intake |
+| 3 | `/blog/eiwit-na-40` | Cluster-blog | NUT_PROT + MOV_STR gap |
 
 ## Op de horizon
 

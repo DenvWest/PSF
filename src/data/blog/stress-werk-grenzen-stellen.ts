@@ -9,6 +9,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
     "Nee zeggen voelt riskant als je verantwoordelijkheid draagt of je positie wilt behouden. Toch zijn grenzen geen luxe — ze beschermen je prestaties en je gezondheid. Hier lees je hoe je dat inhoudelijk en gedragsmatig aanpakt.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-03-25",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -42,8 +43,8 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
   samenvatting:
     "Grenzen zijn afspraken over beschikbaarheid en prioriteit — geen zwakte. Werk met duidelijke scope, tijdslots en nee met alternatief; bij structurele miskenning is de oorzaak vaak breder dan jouw assertiviteit.",
   cornerstoneLink: {
-    label: "Oplossingen bij stress",
-    href: "/gids/stress",
+    label: "Hoofdstuk-gids: stress verminderen na 40",
+    href: "/stress-verminderen-man",
   },
   gerelateerdeSluggen: [
     "ademhaling-tegen-stress",

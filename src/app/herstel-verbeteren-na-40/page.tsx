@@ -279,6 +279,26 @@ export default function HerstelVerbeterenNa40Page() {
                   . Daarom werkt &ldquo;voldoende totaal eiwit + slimme spreiding over de dag&rdquo; vaak beter dan
                   alles in een avondmaaltijd proppen.
                 </p>
+                <p className="mt-4 text-gray-700 leading-relaxed">
+                  Wil je dieper duiken in het biologische verhaal (bijvoorbeeld{" "}
+                  <Link href="/kennisbank/overtrainingssyndroom" className={INLINE_LINK_THEME}>
+                    overtraining
+                  </Link>
+                  ,{" "}
+                  <Link href="/kennisbank/eiwitbehoefte-na-40" className={INLINE_LINK_THEME}>
+                    eiwitbehoefte na 40
+                  </Link>
+                  ,{" "}
+                  <Link href="/kennisbank/mitochondrien" className={INLINE_LINK_THEME}>
+                    mitochondriën
+                  </Link>{" "}
+                  of{" "}
+                  <Link href="/kennisbank/atp" className={INLINE_LINK_THEME}>
+                    ATP
+                  </Link>
+                  )? Dat lees je in de kennisbank — zonder dat we hier claimen wat er bij jou
+                  precies meetbaar speelt.
+                </p>
               </section>
 
               <section id="training-alleen" className="mt-14">

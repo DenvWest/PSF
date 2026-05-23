@@ -9,7 +9,7 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     "In Nederland is een lage vitamine D-status in de winter geen uitzondering — maar “meer energie” staat niet op de lijst met erkende gezondheidsclaims. Dit artikel scheidt feiten van wensen: wanneer meten zinvol is, hoe [energie na 40](/energie-na-40) breder werkt dan één capsule, en hoe je [vitamine D supplementen](/beste/vitamine-d) eerlijk vergelijkt.",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
-  laatstBijgewerktOp: "2026-05-14",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -49,8 +49,8 @@ export const vitamineDEnEnergieData: BlogArtikel = {
     href: "/beste/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Thema energie — overzicht en routes",
-    href: "/gids/energie",
+    label: "Hoofdstuk-gids: energie na 40",
+    href: "/energie-na-40",
   },
   vergelijkingExtraLink: {
     label: "Vitamine D supplementen vergelijken",

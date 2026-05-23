@@ -15,6 +15,14 @@
 | `/beste/melatonine` | Slaap-blogs, profiel onrustige-slaper |
 | `/beste/eiwitpoeder` | Energie-blogs, pillar herstel |
 
+**Wave 1 (mei 2026) opgelost:**
+- Cortisol-blogs → `/kennisbank/cortisol` + `/kennisbank/hpa-as`
+- Melatonine-blogs → `/kennisbank/melatonine`
+- Magnesium-blogs → `/kennisbank/magnesiumvormen`
+- Stress-blogs cornerstone → `/stress-verminderen-man` (was `/gids/stress`)
+- Energie-blogs cornerstone → `/energie-na-40` (was `/gids/energie`)
+- Herstel-pillar → 4 kennisbank-links (overtraining, eiwit, mitochondriën, ATP)
+
 ---
 
 ## Cluster-blogs die het spinnenweb versterken
@@ -53,11 +61,15 @@
 
 | Term | Status | Inline vanuit |
 |---|---|---|
+| Cortisol | ✅ | cortisol-en-slaap, cortisol-verlagen, cortisol-en-testosteron, stress-pillar |
+| HPA-as | ✅ | cortisol-en-slaap, cortisol-verlagen, stress-pillar |
+| Melatonine | ✅ | melatonine-na-40, melatonine-wanneer-wel-niet, slaap-pillar |
 | Testosteron | ✅ | testosteron-pillar, cortisol-blog, zink-blog |
 | Slaapschuld | ✅ | slaap-pillar |
-| Overtrainingssyndroom | ✅ | profiel overtrainer, kennisbank cross-links |
-| Magnesiumvormen | ✅ | magnesium vergelijking, magnesium-blogs |
-| Insulineresistentie | ✅ term | Energie pillar, pillar testosteron — meer inline links gewenst |
+| Overtrainingssyndroom | ✅ | profiel overtrainer, herstel-pillar, kennisbank cross-links |
+| Magnesiumvormen | ✅ | magnesium-en-slaap, magnesium-en-slaapkwaliteit |
+| Mitochondriën / ATP | ✅ | creatine-blog, vitamine-d-en-energie, energie-pillar, energie-verhogen, herstel-pillar |
+| Insulineresistentie | ⚠️ orphan | Term live — nog geen inline links vanuit blogs/pillars |
 | Oxidatieve stress | 💡 | Cross-cluster verbinder |
 
 ---
@@ -67,7 +79,9 @@
 - [x] Elke pillar linkt naar bijbehorend profiel (testosteron-pillar → 3 profielen)
 - [ ] Elke vergelijkingspagina heeft "past bij profiel X" blok
 - [x] Elke nieuwe cluster-blog linkt naar 2+ gerelateerde pagina's
-- [x] Kennisbank-termen testosteron, slaapschuld, overtrainingssyndroom inline gelinkt
+- [x] Kennisbank-termen cortisol, hpa-as, melatonine, magnesiumvormen inline gelinkt (Wave 1)
+- [x] Stress/energie cluster-blogs cornerstone → echte pillars (Wave 1)
+- [x] Herstel-pillar kennisbank-links (Wave 1)
 - [x] Turbo-snippets op testosteron-pillar en cluster-blogs
 - [ ] Geen broken interne links (run `npm run build` — na deploy verifiëren)
 - [ ] Content-map bijgewerkt na elke nieuwe pagina

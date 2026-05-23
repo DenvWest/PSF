@@ -9,6 +9,7 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     "Vermoeidheid, spierzwakte, vaker ziek — het passen allemaal bij vitamine D-tekort, maar ze zijn niet specifiek. Zo zet je signalen in context en wat je vervolgens praktisch kunt doen als man boven de 40.",
   leestijd: "6 min",
   gepubliceerdOp: "2026-03-10",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -42,8 +43,8 @@ export const vitamineDTekortHerkennenData: BlogArtikel = {
     href: "/supplementen/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Oplossingen bij energieklachten",
-    href: "/gids/energie",
+    label: "Hoofdstuk-gids: energie na 40",
+    href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",

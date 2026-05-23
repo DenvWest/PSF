@@ -9,6 +9,7 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
     "Testosteron daalt gemiddeld met 1-2% per jaar vanaf je dertigste — maar ‘laag’ is pas echt betekenisvol in combinatie met klachten en een zorgvuldige diagnose. Zo onderscheid je normale leeftijdsverandering van iets dat medische aandacht verdient.",
   leestijd: "9 min",
   gepubliceerdOp: "2026-03-08",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -36,8 +37,8 @@ export const testosteronEnEnergieNa40Data: BlogArtikel = {
   samenvatting:
     "Energie na 40 heeft zelden één hormonale oorzaak. Bij klachten die passen bij laag testosteron hoort een zorgvuldige meting en uitsluiting van andere factoren — geen zelftherapie op basis van een internettest.",
   cornerstoneLink: {
-    label: "Oplossingen bij energieklachten",
-    href: "/gids/energie",
+    label: "Hoofdstuk-gids: energie na 40",
+    href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
     "cortisol-en-testosteron",

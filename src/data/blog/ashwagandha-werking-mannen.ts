@@ -9,6 +9,7 @@ export const ashwagandhaData: BlogArtikel = {
     "Ashwagandha is in de wetenschappelijke literatuur een van de best bestudeerde adaptogenen rond stressbelasting. Let wel: in de EU zijn er (nog) geen goedgekeurde gezondheidsclaims voor op het etiket. Hier lees je mechanismen, studie‑inzichten en valkuilen bij productkeuze — specifiek voor mannen boven de 40.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-03-15",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -67,8 +68,8 @@ export const ashwagandhaData: BlogArtikel = {
     href: "/supplementen/ashwagandha",
   },
   cornerstoneLink: {
-    label: "Oplossingen bij stress",
-    href: "/gids/stress",
+    label: "Hoofdstuk-gids: stress verminderen na 40",
+    href: "/stress-verminderen-man",
   },
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",

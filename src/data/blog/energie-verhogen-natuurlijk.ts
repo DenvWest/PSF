@@ -9,6 +9,7 @@ export const energieVerhogenData: BlogArtikel = {
     "Aanhoudende vermoeidheid na je 40e is zelden één probleem. Het is meestal een stapeling van verstoorde energieproductie, hormoonveranderingen en leefstijlfactoren. Hier is een helder overzicht van wat er speelt en wat je kunt aanpakken.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-02-15",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -20,7 +21,7 @@ export const energieVerhogenData: BlogArtikel = {
       type: "tekst",
       titel: "Mitochondriale gezondheid: de energiefabriek",
       tekst:
-        "Mitochondriën zijn de energiefabrieken van je cellen. Ze produceren ATP — de universele energiemolecule — via oxidatieve fosforylatie. Naarmate je ouder wordt, neemt de mitochondriale dichtheid en efficiëntie af. Dit is deels beïnvloedbaar: intensieve duurtraining en krachttraining stimuleren mitochondriale biogenese (aanmaak van nieuwe mitochondriën). Voeding die rijk is aan B-vitamines, ijzer en CoQ10 ondersteunt de ATP-productie direct; [magnesium](/beste/magnesium) is daarnaast een cruciale cofactor voor enzymen in die keten. Welke creatine is het beste? Monohydraat vs HCL vergeleken — [bekijk de vergelijking](/beste/creatine).",
+        "[Mitochondriën](/kennisbank/mitochondrien) zijn de energiefabrieken van je cellen. Ze produceren [ATP](/kennisbank/atp) — de universele energiemolecule — via oxidatieve fosforylatie. Naarmate je ouder wordt, neemt de mitochondriale dichtheid en efficiëntie af. Dit is deels beïnvloedbaar: intensieve duurtraining en krachttraining stimuleren mitochondriale biogenese (aanmaak van nieuwe mitochondriën). Voeding die rijk is aan B-vitamines, ijzer en CoQ10 ondersteunt de ATP-productie direct; [magnesium](/beste/magnesium) is daarnaast een cruciale cofactor voor enzymen in die keten. Welke creatine is het beste? Monohydraat vs HCL vergeleken — [bekijk de vergelijking](/beste/creatine).",
     },
     {
       type: "opsomming",
@@ -49,8 +50,8 @@ export const energieVerhogenData: BlogArtikel = {
     href: "/supplementen/vitamine-d",
   },
   cornerstoneLink: {
-    label: "Oplossingen bij energieklachten",
-    href: "/gids/energie",
+    label: "Hoofdstuk-gids: energie na 40",
+    href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
     "vitamine-d-en-energie",

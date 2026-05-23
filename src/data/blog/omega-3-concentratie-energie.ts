@@ -9,6 +9,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     "EPA en DHA spelen een rol in hersenstructuur en ontstekingsregulatie. Word je daar mentaal energieker van? Een eerlijke afweging van wat studies wel en niet aantonen — zonder marketingclaims.",
   leestijd: "8 min",
   gepubliceerdOp: "2026-03-05",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
@@ -41,8 +42,8 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
     href: "/supplementen/omega-3",
   },
   cornerstoneLink: {
-    label: "Oplossingen bij energieklachten",
-    href: "/gids/energie",
+    label: "Hoofdstuk-gids: energie na 40",
+    href: "/energie-na-40",
   },
   gerelateerdeSluggen: [
     "omega-3-en-herstel",

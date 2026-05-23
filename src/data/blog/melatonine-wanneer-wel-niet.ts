@@ -6,9 +6,10 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
   categorie: "slaap",
   titel: "Melatonine: wanneer wel en wanneer niet gebruiken?",
   heroIntro:
-    "Melatonine is geen slaapmiddel in de klassieke zin — het is een signaalhormoon dat je lichaam vertelt dat het nacht wordt. Verkeerd gedoseerd kan het juist je slaapritme verstoren. Zo gebruik je het verstandig.",
+    "[Melatonine](/kennisbank/melatonine) is geen slaapmiddel in de klassieke zin — het is een signaalhormoon dat je lichaam vertelt dat het nacht wordt. Verkeerd gedoseerd kan het juist je slaapritme verstoren. Zo gebruik je het verstandig.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-03-12",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",

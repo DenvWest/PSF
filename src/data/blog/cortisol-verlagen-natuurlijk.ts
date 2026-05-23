@@ -9,13 +9,14 @@ export const cortisolVerlagenData: BlogArtikel = {
     "Chronisch verhoogd cortisol beïnvloedt je slaap, stemming en gewicht — vaak zonder dat je het doorhebt. Ontdek vijf methodes die klinisch zijn onderzocht en direct toepasbaar zijn voor mannen boven de 40.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-04-01",
+  laatstBijgewerktOp: "2026-05-23",
   secties: [
     {
       type: "tekst",
       titel: "Wat cortisol met je lichaam doet na je 40e",
       bewijsNiveau: "beperkt",
       tekst:
-        "Cortisol is je primaire stresshormoon, aangemaakt door de bijnieren. Bij korte stress is dat nuttig: het scherpt je focus en geeft je energie. Het probleem begint wanneer het niveau chronisch verhoogd blijft. Na je 40e wordt de cortisolregulatie minder efficiënt — de zogenoemde HPA-as (hypothalamus-hypofyse-bijnieras) reageert trager op signalen om cortisol terug te brengen. Het gevolg: opgebouwd vet rond de buik, slechter slaap, verminderde testosteronproductie en een gevoel van aanhoudende vermoeidheid ondanks voldoende rust.",
+        "[Cortisol](/kennisbank/cortisol) is je primaire stresshormoon, aangemaakt door de bijnieren. Bij korte stress is dat nuttig: het scherpt je focus en geeft je energie. Het probleem begint wanneer het niveau chronisch verhoogd blijft. Na je 40e wordt de cortisolregulatie minder efficiënt — de zogenoemde [HPA-as](/kennisbank/hpa-as) (hypothalamus-hypofyse-bijnieras) reageert trager op signalen om cortisol terug te brengen. Het gevolg: opgebouwd vet rond de buik, slechter slaap, verminderde testosteronproductie en een gevoel van aanhoudende vermoeidheid ondanks voldoende rust.",
     },
     {
       type: "tekst",
@@ -64,8 +65,8 @@ export const cortisolVerlagenData: BlogArtikel = {
     href: "/supplementen/ashwagandha",
   },
   cornerstoneLink: {
-    label: "Oplossingen bij stress",
-    href: "/gids/stress",
+    label: "Hoofdstuk-gids: stress verminderen na 40",
+    href: "/stress-verminderen-man",
   },
   gerelateerdeSluggen: [
     "cortisol-en-testosteron",
@@ -74,7 +75,7 @@ export const cortisolVerlagenData: BlogArtikel = {
     "ademhaling-tegen-stress",
   ],
   stressPillarTurbo:
-    "Dit artikel over cortisol is onderdeel van onze complete gids over stressvermindering — van de HPA-as tot een concreet weekplan.",
+    "Dit artikel over cortisol is onderdeel van onze complete gids over stressvermindering — van de [HPA-as](/kennisbank/hpa-as) tot een concreet weekplan.",
   metaTitle:
     "Cortisol verlagen: 5 natuurlijke methodes voor mannen 40+ | PerfectSupplement",
   metaDescription:
