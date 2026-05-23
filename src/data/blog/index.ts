@@ -22,6 +22,7 @@ import { omega3EnHerstelData } from "./omega-3-en-herstel";
 import { eiwitNa40Data } from "./eiwit-na-40";
 import { middagdipBloedsuikerNa40Data } from "./middagdip-bloedsuiker-na-40";
 import { krachttrainingNa40Data } from "./krachttraining-na-40";
+import { alcoholSlaapEnergieNa40Data } from "./alcohol-slaap-energie-na-40";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -51,6 +52,7 @@ export const alleArtikelen: BlogArtikel[] = [
   eiwitNa40Data,
   middagdipBloedsuikerNa40Data,
   krachttrainingNa40Data,
+  alcoholSlaapEnergieNa40Data,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>

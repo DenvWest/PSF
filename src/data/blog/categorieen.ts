@@ -68,11 +68,11 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     ],
     intentArticleLinks: [
       { label: "Slaap verbeteren na 40", slug: "slaap-verbeteren-40-plus" },
-      { label: "Slaaphygiëne", slug: "slaaphygiene-mannen-40-plus" },
-      { label: "Magnesium en slaap", slug: "magnesium-en-slaapkwaliteit" },
       { label: "Melatonine na 40", slug: "melatonine-na-40" },
+      { label: "Melatonine: wanneer wel/niet", slug: "melatonine-wanneer-wel-niet" },
+      { label: "Magnesium en slaap", slug: "magnesium-en-slaap" },
     ],
-    themaHref: "/gids/slaap",
+    themaHref: "/slaap-verbeteren-na-40",
     kleur: {
       bg: "from-slate-600 to-slate-700",
       accent: "bg-sky-500/20 ring-sky-400/20",
@@ -98,8 +98,8 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
     intentArticleLinks: [
       { label: "Energie verhogen", slug: "energie-verhogen-natuurlijk" },
       { label: "Middagdip en bloedsuiker", slug: "middagdip-bloedsuiker-na-40" },
+      { label: "Alcohol en energie", slug: "alcohol-slaap-energie-na-40" },
       { label: "Krachttraining na 40", slug: "krachttraining-na-40" },
-      { label: "Eiwit na 40", slug: "eiwit-na-40" },
     ],
     themaHref: "/energie-na-40",
     kleur: {

@@ -12,6 +12,7 @@ import type { KennisbankTheme } from '@/data/kennisbank'
 import ArticleReferentiesFooter from '@/components/content/ArticleReferentiesFooter'
 import ArticleBodyReadingChrome from '@/components/content/ArticleBodyReadingChrome'
 import ReadingLayoutDesktopGutters from '@/components/content/ReadingLayoutDesktopGutters'
+import { renderInlineMarkdownLinks } from '@/components/blog/inlineMarkdownLinks'
 import { buildKennisbankTocItems } from '@/lib/article-toc'
 import { READING_ROW_GAP_CLASS } from '@/lib/article-reading-columns'
 import {
@@ -43,6 +44,9 @@ const KB_H2_CLASS =
 
 const KB_SECTION_CLASS = 'border-b border-stone-200/55 py-14 md:py-[4rem]'
 
+const KB_LINK_CLASS =
+  'font-medium text-emerald-800 underline decoration-emerald-700/35 underline-offset-[3px] transition hover:decoration-emerald-800'
+
 function renderParagraphs(text: string) {
   const blocks = text
     .split('\n\n')
@@ -52,7 +56,7 @@ function renderParagraphs(text: string) {
     <div className="max-w-[72ch] space-y-5 md:space-y-6">
       {blocks.map((paragraph, i) => (
         <p key={i} className="text-[1.0625rem] leading-[1.82] tracking-[0.003em] text-stone-600">
-          {paragraph}
+          {renderInlineMarkdownLinks(paragraph, { linkClassName: KB_LINK_CLASS })}
         </p>
       ))}
     </div>

@@ -30,7 +30,7 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom hoge doses vaak een slecht idee zijn",
       tekst:
-        "In veel winkels vind je 3-10 mg tabletten — terwijl de fysiologische nachtelijke piek veel lager ligt. Hoge doses kunnen bij sommige mensen ochtendduizeligheid geven, dromen intensiveren of het ritme juist verstoren. Literatuur rond ‘microdosing’ (bijv. 0,3-1 mg) sluit beter aan bij hoe het hormoon natuurlijk werkt. Bespreek langdurig gebruik met je huisarts, vooral bij medicatie of hart- en vaatziekten.",
+        "In veel winkels vind je 3-10 mg tabletten — terwijl de fysiologische nachtelijke piek veel lager ligt. Hoge doses kunnen bij sommige mensen ochtendduizeligheid geven, dromen intensiveren of het ritme juist verstoren. Literatuur rond ‘microdosing’ (bijv. 0,3-1 mg) sluit beter aan bij hoe het hormoon natuurlijk werkt. Bespreek langdurig gebruik met je huisarts, vooral bij medicatie of hart- en vaatziekten. Waarom melatonine na 40 vaak niet genoeg is als enige aanpak? Lees [melatonine na 40](/blog/melatonine-na-40).",
     },
   ],
   samenvatting:
@@ -42,13 +42,13 @@ export const melatonineWanneerWelNietData: BlogArtikel = {
     href: "/beste/melatonine",
   },
   cornerstoneLink: {
-    label: "Oplossingen bij slaapproblemen",
-    href: "/gids/slaap",
+    label: "Complete gids: slaap verbeteren na je 40e",
+    href: "/slaap-verbeteren-na-40",
   },
   gerelateerdeSluggen: [
+    "melatonine-na-40",
     "slaap-verbeteren-40-plus",
-    "slaaphygiene-mannen-40-plus",
-    "magnesium-en-slaapkwaliteit",
+    "magnesium-en-slaap",
   ],
   metaTitle:
     "Melatonine: wanneer wel, wanneer niet, dosering | PerfectSupplement",

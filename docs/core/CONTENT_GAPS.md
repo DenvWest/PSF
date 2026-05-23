@@ -37,6 +37,12 @@
 - Energie-categorie intent-links + pillar `/energie-na-40` (was `/gids/energie`)
 - Profiel lage-batterij → middagdip + krachttraining; overtrainer → krachttraining + pillar-fixes
 
+**Wave 4 (mei 2026) opgelost:**
+- Blog `/blog/alcohol-slaap-energie-na-40` — NRG_DEP/LIF_ALC ↔ slaap-pillar, middagdip, profielen
+- Ademhaling-blog → `/kennisbank/nervus-vagus`
+- Kennisbank-term pagina's: `[label](href)` markdown werkt in whyItMatters (en alle content-secties)
+- Magnesium/melatonine audit: beide paren behouden (verschillende diepte), cross-links + slaap-categorie pillar-fix
+
 ---
 
 ## Cluster-blogs die het spinnenweb versterken
@@ -51,6 +57,18 @@
 | `/blog/eiwit-na-40` | ✅ Live | NUT_PROT + MOV_STR ↔ eiwitbehoefte KB ↔ herstel/testosteron pillar |
 | `/blog/middagdip-bloedsuiker-na-40` | ✅ Live | NRG_DEP + NRG_PATN ↔ insulineresistentie ↔ profiel lage-batterij |
 | `/blog/krachttraining-na-40` | ✅ Live | MOV_STR/MOV_CARD ↔ eiwit KB ↔ profielen lage-batterij/overtrainer |
+| `/blog/alcohol-slaap-energie-na-40` | ✅ Live | NRG_DEP + LIF_ALC ↔ slaap/energie pillars ↔ middagdip |
+
+---
+
+## Dubbele artikelen — audit (Wave 4)
+
+| Paar | Beslissing | Rol |
+|---|---|---|
+| `magnesium-en-slaap` + `magnesium-en-slaapkwaliteit` | Beide behouden | Slaap-focus (6 min) vs complete vormengids (16 min, supplementen) |
+| `melatonine-na-40` + `melatonine-wanneer-wel-niet` | Beide behouden | Narratief "waarom niet genoeg" vs praktisch wanneer wel/niet |
+
+Cross-links toegevoegd; geen redirects nodig (verschillende zoekintentie).
 
 ---
 
@@ -60,7 +78,7 @@
 |---|---|---|---|
 | Onrustige Slaper | ✅ | `/slaap-verbeteren-na-40` ✅ | `/beste/magnesium` ✅, `/beste/ashwagandha` ✅ |
 | Stressdrager | ✅ | `/stress-verminderen-man` ✅ | `/blog/cortisol-en-testosteron` ✅, `/testosteron-na-40` ✅ |
-| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/blog/middagdip-bloedsuiker-na-40` ✅, `/blog/krachttraining-na-40` ✅ |
+| Lage Batterij | ✅ | `/energie-na-40` ✅ | `/blog/alcohol-slaap-energie-na-40` ✅, `/blog/middagdip-bloedsuiker-na-40` ✅ |
 | Overtrainer | ✅ | `/herstel-verbeteren-na-40` ✅ | `/blog/krachttraining-na-40` ✅, `/blog/creatine-en-herstel` ✅ |
 
 ---
@@ -88,6 +106,7 @@
 | Insulineresistentie | ✅ | middagdip-blog, energie-pillar, energie-verhogen, profiel lage-batterij |
 | Vitamine D | ✅ | vitamine-d-en-energie, vitamine-d-tekort-herkennen, kennisbank cross-links |
 | Eiwitbehoefte-na-40 | ✅ | eiwit-na-40 blog, krachttraining-blog, IntakeResults, profielen overtrainer/lage-batterij |
+| Nervus vagus | ✅ | ademhaling-tegen-stress, profiel stressdrager, stress-thema |
 | Oxidatieve stress | 💡 | Cross-cluster verbinder |
 
 ---
@@ -103,6 +122,7 @@
 - [x] Turbo-snippets op testosteron-pillar en cluster-blogs
 - [ ] Geen broken interne links (run `npm run build` — na deploy verifiëren)
 - [ ] Content-map bijgewerkt na elke nieuwe pagina
+- [x] Kennisbank-termen whyItMatters markdown-links renderen (Wave 4)
 - [x] Nieuwe vergelijkingen (melatonine, eiwitpoeder) opgenomen in profieldata
 
 ---

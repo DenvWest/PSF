@@ -15,7 +15,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom ademhaling direct op stress reageert",
       tekst:
-        "Bij stress versnelt je ademhaling en wordt je ademhaling oppervlakkiger — dat activeert het sympathische (vecht-vlucht) deel van je autonome zenuwstelsel. Langzame, diepe ademhaling via het middenrif activeert daarentegen de parasympathische tak: hartslag daalt, bloeddruk stabiliseert en cortisol neemt af. Dat effect treedt binnen minuten op; vandaar dat ademhaling een eerste-lijn interventie is bij piekeren, spanning voor het slapen en acute werkstress. Langdurig: sommigen combineren ademhaling met plantenextracten ([ashwagandha in context van studies, niet als EU‑claim](/blog/ashwagandha-werking-mannen); [productvergelijking](/beste/ashwagandha)).",
+        "Bij stress versnelt je ademhaling en wordt je ademhaling oppervlakkiger — dat activeert het sympathische (vecht-vlucht) deel van je autonome zenuwstelsel. Langzame, diepe ademhaling via het middenrif activeert daarentegen de parasympathische tak via de [nervus vagus](/kennisbank/nervus-vagus): hartslag daalt, bloeddruk stabiliseert en cortisol neemt af. Dat effect treedt binnen minuten op; vandaar dat ademhaling een eerste-lijn interventie is bij piekeren, spanning voor het slapen en acute werkstress. Langdurig: sommigen combineren ademhaling met plantenextracten ([ashwagandha in context van studies, niet als EU‑claim](/blog/ashwagandha-werking-mannen); [productvergelijking](/beste/ashwagandha)).",
     },
     {
       type: "opsomming",
@@ -48,7 +48,7 @@ export const ademhalingTegenStressData: BlogArtikel = {
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",
     "stress-werk-grenzen-stellen",
-    "slaap-verbeteren-40-plus",
+    "alcohol-slaap-energie-na-40",
   ],
   stressPillarTurbo:
     "Ademhaling is één van de vijf pijlers uit onze complete gids over stressvermindering. Benieuwd naar de andere vier?",

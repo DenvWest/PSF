@@ -15,7 +15,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       type: "tekst",
       titel: "Magnesium na je 40e: meer dan alleen ‘voor de nacht’",
       tekst:
-        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De gemiddelde inname via voeding in Nederland ligt op 270 tot 300 mg per dag — terwijl de aanbevolen dagelijkse hoeveelheid voor mannen op 350 tot 400 mg elementair magnesium ligt. Dat gat van 80 tot 120 mg is de reden dat magnesiumsuppletie voor veel mannen boven de 40 relevant kan zijn.",
+        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De gemiddelde inname via voeding in Nederland ligt op 270 tot 300 mg per dag — terwijl de aanbevolen dagelijkse hoeveelheid voor mannen op 350 tot 400 mg elementair magnesium ligt. Dat gat van 80 tot 120 mg is de reden dat magnesiumsuppletie voor veel mannen boven de 40 relevant kan zijn. Voor een korter, slaapgericht artikel: [magnesium voor slaap](/blog/magnesium-en-slaap).",
     },
     {
       type: "opsomming",
@@ -95,9 +95,9 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
+    "magnesium-en-slaap",
     "slaap-verbeteren-40-plus",
-    "supplement-kiezen-waar-op-letten",
-    "omega-3-concentratie-energie",
+    "melatonine-wanneer-wel-niet",
   ],
   metaTitle:
     "De complete magnesiumgids voor mannen 40+: vormen, dosering en gebruik | PerfectSupplement",

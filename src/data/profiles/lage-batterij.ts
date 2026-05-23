@@ -195,6 +195,11 @@ export const lageBatterijProfile: ProfilePageData = {
         "Krachttraining na 40: spierbehoud en energie zonder uren in de gym — het duo met eiwit en herstel.",
     },
     {
+      href: "/blog/alcohol-slaap-energie-na-40",
+      turboSnippet:
+        "Alcohol 's avonds: waarom inslapen sneller kan maar ochtendenergie en middagdip zwaarder voelen.",
+    },
+    {
       href: "/blog/eiwit-na-40",
       turboSnippet:
         "Eiwit na 40: hoeveel gram per dag, anabole resistentie en wanneer poeder zinvol is.",

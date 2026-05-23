@@ -46,7 +46,7 @@ export const melatonineNa40Data: BlogArtikel = {
     {
       type: "tekst",
       titel: "Melatonine is een stukje van het verhaal",
-      tekst: "De vraag is niet 'werkt melatonine?' maar 'wat is het eigenlijke knelpunt in mijn slaap?' Voor de meeste mannen boven de 40 is dat antwoord complexer dan een timing-signaal. Het gaat om cortisolontregeling, afnemende diepe slaap, en een zenuwstelsel dat 's avonds niet tot rust komt. Melatonine lost dat niet op. Maar een combinatie van de juiste supplementen en leefstijlinterventies kan dat wel. [Melatonine is maar een stukje van het verhaal. Lees de complete gids over slaap na 40.](/slaap-verbeteren-na-40)",
+      tekst: "De vraag is niet 'werkt melatonine?' maar 'wat is het eigenlijke knelpunt in mijn slaap?' Voor de meeste mannen boven de 40 is dat antwoord complexer dan een timing-signaal. Het gaat om cortisolontregeling, afnemende diepe slaap, en een zenuwstelsel dat 's avonds niet tot rust komt. Melatonine lost dat niet op. Voor wanneer wél en niet: [melatonine wanneer wel en niet](/blog/melatonine-wanneer-wel-niet). Maar een combinatie van de juiste supplementen en leefstijlinterventies kan dat wel. [Melatonine is maar een stukje van het verhaal. Lees de complete gids over slaap na 40.](/slaap-verbeteren-na-40)",
     },
     {
       type: "tekst",

@@ -27,7 +27,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
       type: "tekst",
       titel: "Koffie, suiker en alcohol als energie-truc",
       tekst:
-        "Cafeïne blokkeert adenosine — het signaal dat je moe bent — maar lost geen bloedsuikerschommeling op. Suiker en wit brood geven een korte piek en vaak een diepere dip. Alcohol 's avonds (NRG_DEP in de Leefstijlcheck) verstoort slaap én kan de volgende dag je glucose-regulatie beïnvloeden. Drie koppen koffie vóór lunch maskeren het probleem; ze maken het niet structureel beter.",
+        "Cafeïne blokkeert adenosine — het signaal dat je moe bent — maar lost geen bloedsuikerschommeling op. Suiker en wit brood geven een korte piek en vaak een diepere dip. Alcohol 's avonds (NRG_DEP in de Leefstijlcheck) verstoort slaap én kan de volgende dag je glucose-regulatie beïnvloeden — lees [alcohol, slaap en energie](/blog/alcohol-slaap-energie-na-40). Drie koppen koffie vóór lunch maskeren het probleem; ze maken het niet structureel beter.",
     },
     {
       type: "opsomming",
@@ -63,8 +63,8 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   },
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",
+    "alcohol-slaap-energie-na-40",
     "eiwit-na-40",
-    "vitamine-d-en-energie",
   ],
   metaTitle: "Middagdip na 40: bloedsuiker, koffie en wat wél helpt | PerfectSupplement",
   metaDescription:

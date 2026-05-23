@@ -563,7 +563,14 @@ export default function SlaapVerbeterenNa40Page() {
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     Blijf kritisch op alcohol. Zelfs één glas wijn verstoort diepe slaap meetbaar.
                     Dat hoeft je niet te weerhouden van een sociaal glas, maar weet dat het een
-                    afweging is.
+                    afweging is. Lees{" "}
+                    <Link
+                      href="/blog/alcohol-slaap-energie-na-40"
+                      className="text-green-700 underline underline-offset-2 hover:text-green-800"
+                    >
+                      alcohol, slaap en energie na 40
+                    </Link>{" "}
+                    voor het volledige plaatje — inclusief wat je de dag erna merkt.
                   </p>
                 </div>
 
