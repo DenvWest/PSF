@@ -215,9 +215,22 @@ export default function LageBatterijPage() {
               </h3>
               <div className="mt-6 space-y-5">
                 <p className="text-slate-600 leading-relaxed">
-                  Na je 40e verandert er iets fundamenteels in hoe je lichaam energie aanmaakt. Je
-                  mitochondriën — de energiecentrales in elke cel van je lichaam — worden geleidelijk
-                  minder efficiënt. Dat is een biologisch proces, geen karakterfout.
+                  Na je 40e verandert er iets fundamenteels in hoe je lichaam energie aanmaakt. Je{" "}
+                  <Link
+                    href="/kennisbank/mitochondrien"
+                    className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                  >
+                    mitochondriën
+                  </Link>{" "}
+                  — de energiefabriekjes in elke cel — maken{" "}
+                  <Link
+                    href="/kennisbank/atp"
+                    className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                  >
+                    ATP
+                  </Link>{" "}
+                  aan en worden geleidelijk minder efficiënt. Dat is een biologisch proces, geen
+                  karakterfout.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
                   Langdurig veel zitten en weinig spierbelasting vraagt van die mitochondriën minder
@@ -229,11 +242,17 @@ export default function LageBatterijPage() {
                   te bewegen, niet door meteen groot en perfect te willen doen.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
-                  Tegelijk gebeuren er nog twee dingen. Ten eerste daalt je testosteronspiegel met
-                  gemiddeld 1–2% per jaar. Testosteron speelt een directe rol in je energieniveau,
-                  je motivatie en je spiermassa. Ten tweede wordt je stofwisseling trager: je lichaam
-                  verbrandt minder calorieën in rust, slaat makkelijker vet op, en heeft meer moeite
-                  om voedingsstoffen te absorberen.
+                  Tegelijk gebeuren er nog twee dingen. Ten eerste daalt je{" "}
+                  <Link
+                    href="/kennisbank/testosteron"
+                    className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                  >
+                    testosteron
+                  </Link>
+                  spiegel met gemiddeld 1–2% per jaar. Testosteron speelt een directe rol in je
+                  energieniveau, je motivatie en je spiermassa. Ten tweede wordt je stofwisseling
+                  trager: je lichaam verbrandt minder calorieën in rust, slaat makkelijker vet op, en
+                  heeft meer moeite om voedingsstoffen te absorberen.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
                   Het resultaat is een cascade: minder energie → minder beweging → slechtere slaap →

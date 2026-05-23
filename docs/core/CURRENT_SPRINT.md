@@ -34,16 +34,17 @@
 20. ✅ Spinnenweb-links profielen ↔ cluster-blogs ↔ kennisbank
 21. ✅ Sitemap: alle 5 pillar pages
 22. ✅ Wave 1 spinnenweb: inline KB-links (cortisol, HPA-as, melatonine, magnesiumvormen), stress/energie cornerstone → pillars, herstel-pillar KB-links
+23. ✅ Wave 2 spinnenweb: profiel-KB-links, IntakeResults kennisbank bij lage score, blog `/blog/eiwit-na-40`
 
 ---
 
-## Volgende sprint (Wave 2)
+## Volgende sprint (Wave 3)
 
 | # | Pagina | Type | Impact |
 |---|---|---|---|
-| 1 | Profielpagina's → kennisbank (2-3 links per profiel) | Link-pass | Coherentie-gat #2 uit audit |
-| 2 | IntakeResults → kennisbank bij lage domeinscore | UI + data | Educatieve route na intake |
-| 3 | `/blog/eiwit-na-40` | Cluster-blog | NUT_PROT + MOV_STR gap |
+| 1 | `/blog/middagdip-bloedsuiker-na-40` | Cluster-blog | NRG_DEP + NRG_PATN gap, insulineresistentie orphan |
+| 2 | `/blog/krachttraining-na-40` | Cluster-blog | MOV_STR/MOV_CARD — start beweging-cluster |
+| 3 | Kennisbank-term `vitamine-d` | Kennisbank | LIF_SUN gap |
 
 ## Op de horizon
 

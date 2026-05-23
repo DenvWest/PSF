@@ -20,6 +20,7 @@ import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import ScoreRing from "@/components/intake/ScoreRing";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { getPrimaryDomainBandSentence } from "@/lib/score-bands";
+import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
@@ -119,6 +120,7 @@ export default function IntakeResults({
       catId: DOMAIN_SCORE_TO_CAT[key],
     }))
     .sort((a, b) => a.score - b.score);
+  const kennisbankLinks = getLowDomainKennisbankLinks(scores);
   const zinkSignal =
     scores.recovery_score < 40 ||
     scores.nutrition_score < 40 ||
@@ -284,6 +286,27 @@ export default function IntakeResults({
         })}
       </div>
 
+      {kennisbankLinks.length > 0 ? (
+        <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-5">
+          <p className="m-0 text-sm font-semibold text-[#444]">
+            Wil je begrijpen wat achter je scores zit?
+          </p>
+          <ul className="mt-3 space-y-2">
+            {kennisbankLinks.map((link) => (
+              <li key={link.href} className="text-sm text-[#666]">
+                <span className="text-[#888]">{link.domainLabel}: </span>
+                <Link
+                  href={link.href}
+                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] hover:decoration-ps-green"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
         <div className="mb-4 flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ps-green/10 text-base">
@@ -323,6 +346,21 @@ export default function IntakeResults({
                 spieronderhoud.
               </>
             ) : null}
+          </p>
+          <p className="mt-2 text-sm text-amber-700">
+            <Link
+              href="/blog/eiwit-na-40"
+              className="font-medium underline underline-offset-2 hover:text-amber-900"
+            >
+              Lees: eiwit na 40 — hoeveel je écht nodig hebt
+            </Link>
+            {" · "}
+            <Link
+              href="/kennisbank/eiwitbehoefte-na-40"
+              className="font-medium underline underline-offset-2 hover:text-amber-900"
+            >
+              Eiwitbehoefte in de kennisbank
+            </Link>
           </p>
           <p className="mt-2 text-sm text-amber-700">
             <strong>Quick win:</strong> Begin elke maaltijd eiwitrijk. Denk aan

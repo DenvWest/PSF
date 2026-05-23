@@ -54,8 +54,8 @@ export const onrustigeSlaper: ProfilePageData = {
   understanding: {
     title: "Waarom slechte slaap na 40 zo herkenbaar is",
     paragraphs: [
-      "Slaap bestaat uit wisselende fases: licht, diep en droomslaap. Diepe slaap is het gevoel van \"echt uitgerust\" — en veel mensen merken na 40 vaker dat ze die fase minder lang of minder stabiel ervaren.",
-      "Een patroon dat vaak terugkomt: je valt nog wel in slaap, maar wordt vroeg wakker met een hoofd vol gedachten. Dat past vaak bij stress, onregelmatige tijden, schermen laat op de avond of alcohol rond het slapen gaan — niet automatisch bij \"iets ernstigs\".",
+      "Slaap bestaat uit wisselende fases: licht, diep en droomslaap. Diepe slaap is het gevoel van \"echt uitgerust\" — en veel mensen merken na 40 vaker dat ze die fase minder lang of minder stabiel ervaren. [Melatonine](/kennisbank/melatonine) stuurt je biologische klok; na 40 maakt je lichaam daar vaak minder van aan.",
+      "Een patroon dat vaak terugkomt: je valt nog wel in slaap, maar wordt vroeg wakker met een hoofd vol gedachten. Dat past vaak bij stress, onregelmatige tijden, schermen laat op de avond of alcohol rond het slapen gaan — en bij een [circadiaan ritme](/kennisbank/circadiaan-ritme) dat scheef staat. [Cortisol](/kennisbank/cortisol) dat 's avonds niet daalt, maakt doorslapen lastiger.",
       "Hulpmiddelen zoals melatonine of een wijntje kunnen kort helpen, maar lossen een scheef ritme zelden structureel op. Daarom beginnen we bij gedrag rond bedtijd: koel, donker, vaste opsta-tijd en minder prikkels vlak voor slapen.",
     ],
   },

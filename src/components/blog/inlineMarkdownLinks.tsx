@@ -9,7 +9,11 @@ const linkClassName =
 /**
  * Rendert `[label](href)` in platte blogstrings als interne Next-links.
  */
-export function renderInlineMarkdownLinks(text: string): ReactNode {
+export function renderInlineMarkdownLinks(
+  text: string,
+  options?: { linkClassName?: string },
+): ReactNode {
+  const activeLinkClass = options?.linkClassName ?? linkClassName;
   const segments: ReactNode[] = [];
   let last = 0;
   let match: RegExpExecArray | null;
@@ -22,7 +26,7 @@ export function renderInlineMarkdownLinks(text: string): ReactNode {
     const href = match[2];
     const label = match[1];
     segments.push(
-      <Link key={`mdl-${i++}`} href={href} className={linkClassName}>
+      <Link key={`mdl-${i++}`} href={href} className={activeLinkClass}>
         {label}
       </Link>
     );

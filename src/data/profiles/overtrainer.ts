@@ -57,8 +57,8 @@ export const overtrainerProfile: ProfilePageData = {
     paragraphs: [
       "Zware training is voor je lichaam ook belasting. Als er weinig echte rust tussen harde blokken zit, blijft het gevoel van \"aan\" langer hangen: moe, maar toch slecht landen in bed, en sneller geïrriteerd in werk en gezin.",
       "Slaap blijft dan vaak oppervlakkig — je bent wel moe, maar niet uitgerust. Dat maakt de volgende training zwaarder, terwijl je hoofd zegt dat je door moet. Dat patroon herkennen veel fanatieke sporters; het zegt niets over je karakter.",
-      "Kleine blessure- of stijfheidsklachten die blijven terugkomen, passen bij te weinig herstel ten opzichte van volume. In de sportwereld heet dat vaak overbelasting: geen diagnose van jou als individu, wel een signaal om tijdelijk gas terug te nemen.",
-      "Na je veertigste is de marge tussen flinke vooruitgang en te weinig herstel kleiner: dezelfde weekstructuur vraagt vaker om extra rust en structuur dan tien jaar geleden.",
+      "Kleine blessure- of stijfheidsklachten die blijven terugkomen, passen bij te weinig herstel ten opzichte van volume. In de sportwereld heet dat vaak [overtraining](/kennisbank/overtrainingssyndroom): geen diagnose van jou als individu, wel een signaal om tijdelijk gas terug te nemen.",
+      "Na je veertigste is de marge tussen flinke vooruitgang en te weinig herstel kleiner — en je [eiwitbehoefte](/kennisbank/eiwitbehoefte-na-40) ligt vaak hoger dan je denkt. [Mitochondriën](/kennisbank/mitochondrien) hebben meer tijd nodig om energie te leveren tussen zware sessies. Dezelfde weekstructuur vraagt vaker om extra rust dan tien jaar geleden.",
     ],
   },
 
@@ -214,6 +214,11 @@ export const overtrainerProfile: ProfilePageData = {
   },
 
   relatedComparisons: [
+    {
+      href: "/blog/eiwit-na-40",
+      turboSnippet:
+        "Eiwit na 40: hoeveel gram per dag, spreiding en wanneer poeder als aanvulling past.",
+    },
     {
       href: "/blog/creatine-en-herstel",
       turboSnippet:

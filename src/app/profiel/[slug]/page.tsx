@@ -5,8 +5,12 @@ import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHo
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
+import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 import { PROFILE_PAGES, PROFILE_SLUGS } from "@/data/profiles";
 import type { ProfilePageData, StepCareLayer, SupplementSuggestion } from "@/types/profile-page";
+
+const PROFILE_LINK_CLASS =
+  "font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -146,7 +150,9 @@ export default async function ProfielPage({ params }: Props) {
               <div className="mt-6 space-y-4">
                 {profile.understanding.paragraphs.map((paragraph, index) => (
                   <p key={index} className="text-slate-600 leading-relaxed">
-                    {paragraph}
+                    {renderInlineMarkdownLinks(paragraph, {
+                      linkClassName: PROFILE_LINK_CLASS,
+                    })}
                   </p>
                 ))}
               </div>

@@ -55,8 +55,8 @@ export const stressdragerProfile: ProfilePageData = {
     title: "Hoe stress zich vaak voelt na 40",
     paragraphs: [
       "Veel mannen merken dat ze overdag scherp blijven, maar 's avonds niet meer loslaten. Je hoofd blijft doorlopen, je lichaam voelt gespannen en slapen voelt oppervlakkig. Dat hoeft geen ziekte te zijn: het past vaak bij druk op werk, gezin en verantwoordelijkheden die elkaar opstapelen.",
-      "Als je lang in die modus blijft, kost herstel meer moeite: je slaapt minder diep, je bent sneller geïrriteerd en kleine dingen voelen zwaarder. Dat is herkenbaar gedrag — geen diagnose van wat er in je bloed zit.",
-      "Na je veertigste merken veel mensen dat dezelfde weekstructuur harder voelt dan tien jaar geleden. Kleine grenzen (ritme, scherm, cafeïne, beweging) helpen vaak meer dan nog harder \"doortrekken\".",
+      "Als je lang in die modus blijft, kost herstel meer moeite: je slaapt minder diep, je bent sneller geïrriteerd en kleine dingen voelen zwaarder. Chronisch verhoogd [cortisol](/kennisbank/cortisol) en een overactieve [HPA-as](/kennisbank/hpa-as) spelen hier vaak een rol — lees die begrippen in de kennisbank zonder dat we jouw situatie meten.",
+      "Langzamer [uitademen](/kennisbank/nervus-vagus) helpt je lichaam sneller schakelen naar rust. Dat is geen esoterie: het is een directe route via het parasympathische zenuwstelsel. Na je veertigste merken veel mensen dat dezelfde weekstructuur harder voelt dan tien jaar geleden. Kleine grenzen (ritme, scherm, cafeïne, beweging) helpen vaak meer dan nog harder \"doortrekken\".",
     ],
   },
 

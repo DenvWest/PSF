@@ -218,18 +218,37 @@ export default function OnrustigeSlaperPage() {
               </h2>
               <div className="mt-6 space-y-5">
                 <p className="text-slate-600 leading-relaxed">
-                  Na je 40e verandert je slaap op een manier die je niet altijd bewust merkt. Je
-                  melatonineproductie — het hormoon dat je lichaam vertelt dat het tijd is om te
-                  slapen — neemt geleidelijk af. Tegelijk wordt je slaap lichter: je brengt minder
-                  tijd door in diepe slaap, de fase waarin je lichaam zich fysiek herstelt.
+                  Na je 40e verandert je slaap op een manier die je niet altijd bewust merkt. Je{" "}
+                  <Link
+                    href="/kennisbank/melatonine"
+                    className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                  >
+                    melatonine
+                  </Link>
+                  productie — het hormoon dat je lichaam vertelt dat het tijd is om te slapen — neemt
+                  geleidelijk af. Tegelijk wordt je slaap lichter: je brengt minder tijd door in
+                  diepe slaap, de fase waarin je lichaam zich fysiek herstelt.
                 </p>
                 <p className="text-slate-600 leading-relaxed">
-                  Daar komt bij: als je overdag veel stress ervaart, blijft je cortisol (het
-                  stresshormoon) &apos;s avonds hoog. Normaal gesproken daalt cortisol richting de
+                  Daar komt bij: als je overdag veel stress ervaart, blijft je{" "}
+                  <Link
+                    href="/kennisbank/cortisol"
+                    className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                  >
+                    cortisol
+                  </Link>{" "}
+                  (het stresshormoon) &apos;s avonds hoog. Normaal gesproken daalt cortisol richting de
                   avond zodat melatonine het kan overnemen. Maar bij chronische stress gebeurt dat
                   niet goed. Het resultaat: je valt misschien wel in slaap, maar je lichaam komt
                   niet in de diepe herstelfase. Vandaar dat je om 3 uur wakker wordt — je
-                  cortisolspiegel stijgt te vroeg weer.
+                  cortisolspiegel stijgt te vroeg weer. Meer context:{" "}
+                  <Link
+                    href="/kennisbank/circadiaan-ritme"
+                    className="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700"
+                  >
+                    circadiaan ritme
+                  </Link>
+                  .
                 </p>
                 <p className="text-slate-600 leading-relaxed">
                   Dit is geen slaapstoornis in medische zin. Het is een verstoord evenwicht tussen

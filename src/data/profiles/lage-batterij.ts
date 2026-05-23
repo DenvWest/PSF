@@ -64,8 +64,8 @@ export const lageBatterijProfile: ProfilePageData = {
   understanding: {
     title: "Waarom je energie vaak minder voelt na 40",
     paragraphs: [
-      "Je lichaam haalt energie uit voeding, slaap en beweging. Als één van die drie langere tijd scheef staat — te weinig slaap, te veel suikerpieken, te weinig beweging — merken veel mensen dat ze zich sneller leeg voelen. Dat is herkenbaar gedrag, geen diagnose.",
-      "Veel zitten en weinig beweging versterken dat gevoel: je wordt sneller moe van dingen die vroeger vanzelf gingen. Een korte wandeling of vaste eetmomenten helpen vaak al om de dag \"vlakker\" te maken.",
+      "Je lichaam haalt energie uit voeding, slaap en beweging. [Mitochondriën](/kennisbank/mitochondrien) — je energiefabriekjes in elke cel — maken [ATP](/kennisbank/atp) aan; als één van de drie pijlers scheef staat, merken veel mensen dat ze zich sneller leeg voelen.",
+      "Veel zitten en weinig beweging versterken dat gevoel: je wordt sneller moe van dingen die vroeger vanzelf gingen. Schommelende bloedsuiker — soms gelinkt aan [insulineresistentie](/kennisbank/insulineresistentie) — geeft pieken en crashes. Een korte wandeling of vaste eetmomenten helpen vaak al om de dag \"vlakker\" te maken.",
       "Daar komt bij dat stress en slechte slaap elkaar versterken: slecht slapen maakt de volgende dag zwaarder, en een zware dag maakt 's avonds loslaten lastiger. Koffie en snoep geven een korte boost, maar geen structurele oplossing.",
       "De aanpak is geen wonderpil: eerst de basis (slaap, voeding, beweging), daarna gericht aanvullen waar je echt tekort komt.",
     ],
@@ -184,6 +184,11 @@ export const lageBatterijProfile: ProfilePageData = {
   },
 
   relatedComparisons: [
+    {
+      href: "/blog/eiwit-na-40",
+      turboSnippet:
+        "Eiwit na 40: hoeveel gram per dag, anabole resistentie en wanneer poeder zinvol is.",
+    },
     {
       href: "/blog/vitamine-d-en-energie",
       turboSnippet:

@@ -23,6 +23,11 @@
 - Energie-blogs cornerstone → `/energie-na-40` (was `/gids/energie`)
 - Herstel-pillar → 4 kennisbank-links (overtraining, eiwit, mitochondriën, ATP)
 
+**Wave 2 (mei 2026) opgelost:**
+- Profielpagina's: 2–3 inline kennisbank-links per profiel (stressdrager, onrustige slaper, lage batterij, overtrainer)
+- IntakeResults: kennisbank-links bij lage domeinscore + eiwit-callout naar blog/KB
+- Blog `/blog/eiwit-na-40` — NUT_PROT + MOV_STR gap
+
 ---
 
 ## Cluster-blogs die het spinnenweb versterken
@@ -34,7 +39,8 @@
 | `/blog/vitamine-d-en-energie` | ✅ Live | pillar energie ↔ vitamine-d vergelijking ↔ profiel lage-batterij |
 | `/blog/zink-en-testosteron` | ✅ Live | pillar testosteron ↔ zink vergelijking |
 | `/blog/omega-3-en-herstel` | ✅ Live | pillar herstel ↔ omega-3 vergelijking ↔ profiel overtrainer |
-| `/blog/melatonine-en-slaap` | pillar slaap ↔ melatonine vergelijking ↔ profiel onrustige-slaper | **Hoog** |
+| `/blog/eiwit-na-40` | ✅ Live | NUT_PROT + MOV_STR ↔ eiwitbehoefte KB ↔ herstel/testosteron pillar |
+| `/blog/middagdip-bloedsuiker-na-40` | NRG_DEP + NRG_PATN ↔ insulineresistentie | **Hoog** |
 
 ---
 
@@ -70,6 +76,7 @@
 | Magnesiumvormen | ✅ | magnesium-en-slaap, magnesium-en-slaapkwaliteit |
 | Mitochondriën / ATP | ✅ | creatine-blog, vitamine-d-en-energie, energie-pillar, energie-verhogen, herstel-pillar |
 | Insulineresistentie | ⚠️ orphan | Term live — nog geen inline links vanuit blogs/pillars |
+| Eiwitbehoefte-na-40 | ✅ | eiwit-na-40 blog, IntakeResults, profielen overtrainer/lage-batterij |
 | Oxidatieve stress | 💡 | Cross-cluster verbinder |
 
 ---

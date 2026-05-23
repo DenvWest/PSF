@@ -19,6 +19,7 @@ import { vitamineDEnEnergieData } from "./vitamine-d-en-energie";
 import { cortisolEnTestosteronData } from "./cortisol-en-testosteron";
 import { zinkEnTestosteronData } from "./zink-en-testosteron";
 import { omega3EnHerstelData } from "./omega-3-en-herstel";
+import { eiwitNa40Data } from "./eiwit-na-40";
 import { cornerstoneSupplementenArtikelen } from "./cornerstone-supplementen";
 
 import type { BlogArtikel, BlogCategorie } from "@/types/blog";
@@ -45,6 +46,7 @@ export const alleArtikelen: BlogArtikel[] = [
   cortisolEnTestosteronData,
   zinkEnTestosteronData,
   omega3EnHerstelData,
+  eiwitNa40Data,
   ...cornerstoneSupplementenArtikelen,
 ].sort(
   (a, b) =>
