@@ -3,20 +3,19 @@
 // FoundationPyramid: 5-laag visualisatie (Leefstijl als fundament).
 // Niet te verwarren met FoundationStack (src/components/intake/) — dat is het
 // basis-supplementen-blok in intake-resultaten.
+//
+// Modes:
+// - preview: volledig statisch (toekomstig gebruik elders, niet op intake-intro)
+// - personalized: alleen leefstijl-pijlers klikbaar; drawer via onPillarClick (caller)
 
-import { useState } from "react";
 import {
   FOUNDATION_BASE,
   LIFESTYLE_PILLARS,
   PYRAMID_LAYERS,
-  type FoundationBaseItem,
   type PillarId,
   type PyramidLayer,
   type PyramidLayerId,
 } from "@/data/foundation-pyramid";
-import PyramidLayerDrawer, {
-  type PyramidDrawerContent,
-} from "@/components/pyramid/PyramidLayerDrawer";
 
 export type PillarStatus =
   | "Sterk"
@@ -26,10 +25,11 @@ export type PillarStatus =
   | "Niet gemeten";
 
 type FoundationPyramidProps =
-  | { mode: "static" }
+  | { mode: "preview" }
   | {
       mode: "personalized";
       pillarStatuses: Partial<Record<PillarId, PillarStatus>>;
+      onPillarClick?: (pillarId: PillarId) => void;
     };
 
 const CX = 200;
@@ -147,15 +147,22 @@ function LifestylePillars({
   const totalWidth = geom.halfBottom * 2 - 16;
   const colWidth = totalWidth / count;
   const startX = CX - totalWidth / 2;
+  const isPersonalized = props.mode === "personalized";
+  const onPillarClick =
+    props.mode === "personalized" ? props.onPillarClick : undefined;
+
+  function handlePillarActivate(pillarId: PillarId) {
+    onPillarClick?.(pillarId);
+  }
 
   return (
-    <g pointerEvents="none">
+    <g>
       {LIFESTYLE_PILLARS.map((pillar, index) => {
         const x = startX + index * colWidth;
         const status = statusForPillar(props, pillar.id);
         const fillRatio = STATUS_FILL[status];
         const barHeight = innerHeight * fillRatio;
-        const showPersonalized = props.mode === "personalized";
+        const pillarLabel = `${pillar.label}, ${isPersonalized ? status : pillar.sublabel}`;
 
         return (
           <g key={pillar.id}>
@@ -169,16 +176,32 @@ function LifestylePillars({
                 strokeWidth={1}
               />
             ) : null}
-            <text
-              x={x + colWidth / 2}
-              y={innerTop + 10}
-              textAnchor="middle"
-              className="fill-intake-ink text-[8px] font-medium"
-            >
-              {pillar.label}
-            </text>
-            {showPersonalized ? (
+
+            {isPersonalized ? (
               <>
+                <rect
+                  x={x + 2}
+                  y={innerTop}
+                  width={colWidth - 4}
+                  height={innerBottom - innerTop + 18}
+                  fill="transparent"
+                  className={
+                    onPillarClick
+                      ? "cursor-pointer focus:outline-none"
+                      : undefined
+                  }
+                  tabIndex={onPillarClick ? 0 : undefined}
+                  role={onPillarClick ? "button" : undefined}
+                  aria-label={pillarLabel}
+                  onClick={() => handlePillarActivate(pillar.id)}
+                  onKeyDown={(event) => {
+                    if (!onPillarClick) return;
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      handlePillarActivate(pillar.id);
+                    }
+                  }}
+                />
                 <rect
                   x={x + 4}
                   y={innerBottom - barHeight}
@@ -186,25 +209,44 @@ function LifestylePillars({
                   height={barHeight}
                   rx={2}
                   fill={STATUS_FILL_COLOR[status]}
+                  pointerEvents="none"
                 />
+                <text
+                  x={x + colWidth / 2}
+                  y={innerTop + 10}
+                  textAnchor="middle"
+                  className="fill-intake-ink pointer-events-none text-[8px] font-medium"
+                >
+                  {pillar.label}
+                </text>
                 <text
                   x={x + colWidth / 2}
                   y={innerBottom + 14}
                   textAnchor="middle"
-                  className="fill-intake-ink-subtle text-[7px]"
+                  className="fill-intake-ink-subtle pointer-events-none text-[7px]"
                 >
                   {status}
                 </text>
               </>
             ) : (
-              <text
-                x={x + colWidth / 2}
-                y={innerTop + 24}
-                textAnchor="middle"
-                className="fill-intake-ink-subtle text-[7px]"
-              >
-                {pillar.sublabel}
-              </text>
+              <>
+                <text
+                  x={x + colWidth / 2}
+                  y={innerTop + 10}
+                  textAnchor="middle"
+                  className="fill-intake-ink text-[8px] font-medium"
+                >
+                  {pillar.label}
+                </text>
+                <text
+                  x={x + colWidth / 2}
+                  y={innerTop + 24}
+                  textAnchor="middle"
+                  className="fill-intake-ink-subtle text-[7px]"
+                >
+                  {pillar.sublabel}
+                </text>
+              </>
             )}
           </g>
         );
@@ -214,17 +256,6 @@ function LifestylePillars({
 }
 
 export default function FoundationPyramid(props: FoundationPyramidProps) {
-  const [drawerContent, setDrawerContent] =
-    useState<PyramidDrawerContent | null>(null);
-
-  function openLayer(id: PyramidLayerId) {
-    setDrawerContent({ kind: "layer", layer: getLayerMeta(id) });
-  }
-
-  function openBase(item: FoundationBaseItem) {
-    setDrawerContent({ kind: "base", item });
-  }
-
   return (
     <div className="mx-auto w-full max-w-[480px] md:max-w-[640px]">
       <svg
@@ -251,26 +282,19 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
                 fill="var(--intake-bg-elevated)"
                 stroke="var(--intake-card-border)"
                 strokeWidth={1}
-                className="cursor-pointer transition-[stroke,stroke-width] hover:stroke-intake-sage focus:outline-none focus-visible:stroke-intake-sage"
-                tabIndex={0}
-                role="button"
-                aria-label={`${layer.eyebrow} ${layer.label}`}
-                onClick={() => openLayer(geom.id)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    openLayer(geom.id);
-                  }
-                }}
+                pointerEvents="none"
               />
               {!isLifestyle ? (
-                <LayerLabel layer={layer} yCenter={yCenter} />
+                <g pointerEvents="none">
+                  <LayerLabel layer={layer} yCenter={yCenter} />
+                </g>
               ) : (
-                <>
+                <g>
                   <text
                     x={CX}
                     y={geom.yTop + 14}
                     textAnchor="middle"
+                    pointerEvents="none"
                     className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
                   >
                     {layer.eyebrow}
@@ -279,73 +303,61 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
                     x={CX}
                     y={geom.yTop + 28}
                     textAnchor="middle"
+                    pointerEvents="none"
                     className="fill-intake-ink text-[11px] font-medium"
                   >
                     {layer.label}
                   </text>
                   <LifestylePillars geom={geom} props={props} />
-                </>
+                </g>
               )}
             </g>
           );
         })}
 
-        <rect
-          x={CX - 130}
-          y={340}
-          width={260}
-          height={36}
-          rx={6}
-          fill="var(--intake-divider)"
-          stroke="var(--intake-card-border)"
-          strokeWidth={1}
-        />
+        <g pointerEvents="none">
+          <rect
+            x={CX - 130}
+            y={340}
+            width={260}
+            height={36}
+            rx={6}
+            fill="var(--intake-divider)"
+            stroke="var(--intake-card-border)"
+            strokeWidth={1}
+          />
 
-        {FOUNDATION_BASE.map((item, index) => {
-          const slotWidth = 260 / FOUNDATION_BASE.length;
-          const x = CX - 130 + index * slotWidth + slotWidth / 2;
-          return (
-            <g key={item.id}>
-              {index > 0 ? (
-                <circle
-                  cx={CX - 130 + index * slotWidth}
-                  cy={358}
-                  r={1.5}
-                  fill="var(--intake-ink-subtle)"
-                />
-              ) : null}
-              <text
-                x={x}
-                y={362}
-                textAnchor="middle"
-                className="cursor-pointer fill-intake-ink-muted text-[9px] transition-colors hover:fill-intake-ink"
-                tabIndex={0}
-                role="button"
-                aria-label={item.label}
-                onClick={() => openBase(item)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    openBase(item);
-                  }
-                }}
-              >
-                {item.label}
-              </text>
-            </g>
-          );
-        })}
+          {FOUNDATION_BASE.map((item, index) => {
+            const slotWidth = 260 / FOUNDATION_BASE.length;
+            const x = CX - 130 + index * slotWidth + slotWidth / 2;
+            return (
+              <g key={item.id}>
+                {index > 0 ? (
+                  <circle
+                    cx={CX - 130 + index * slotWidth}
+                    cy={358}
+                    r={1.5}
+                    fill="var(--intake-ink-subtle)"
+                  />
+                ) : null}
+                <text
+                  x={x}
+                  y={362}
+                  textAnchor="middle"
+                  className="fill-intake-ink-muted text-[9px]"
+                >
+                  {item.label}
+                </text>
+              </g>
+            );
+          })}
+        </g>
       </svg>
 
       <p className="mt-4 text-center text-xs leading-relaxed text-intake-ink-subtle">
         Lezen van onder naar boven: sterke leefstijl maakt sterke gezondheid
         mogelijk. Supplementen vullen aan waar leefstijl niet rond komt.
       </p>
-
-      <PyramidLayerDrawer
-        content={drawerContent}
-        onClose={() => setDrawerContent(null)}
-      />
     </div>
   );
 }
