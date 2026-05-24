@@ -70,12 +70,12 @@ const STATUS_FILL_COLOR: Record<PillarStatus, string> = {
   "Niet gemeten": "rgba(244, 239, 230, 0.12)",
 };
 
-const STATUS_LEGEND: Array<{ label: string; color: string }> = [
+const STATUS_LEGEND: Array<{ label: string; color: string; hollow?: boolean }> = [
   { label: "Sterk", color: STATUS_FILL_COLOR.Sterk },
   { label: "Voldoende", color: STATUS_FILL_COLOR.Voldoende },
   { label: "Aandacht", color: STATUS_FILL_COLOR.Aandacht },
   { label: "Prioriteit", color: STATUS_FILL_COLOR.Prioriteit },
-  { label: "Niet gemeten", color: STATUS_FILL_COLOR["Niet gemeten"] },
+  { label: "Niet gemeten", color: STATUS_FILL_COLOR["Niet gemeten"], hollow: true },
 ];
 
 function trapezoidPoints(geom: LayerGeometry): string {
@@ -109,18 +109,72 @@ function statusForPillar(
 function LayerLabel({
   layer,
   yCenter,
-  compact = false,
 }: {
   layer: PyramidLayer;
   yCenter: number;
-  compact?: boolean;
 }) {
-  const titleOffset = layer.subtitle ? (compact ? 4 : 6) : 2;
+  if (layer.id === "vitality") {
+    return (
+      <>
+        <text
+          x={CX}
+          y={yCenter - 8}
+          textAnchor="middle"
+          className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
+        >
+          {layer.eyebrow}
+        </text>
+        <text
+          x={CX}
+          y={yCenter + 6}
+          textAnchor="middle"
+          className="fill-intake-ink text-[11px] font-medium"
+        >
+          {layer.label}
+        </text>
+      </>
+    );
+  }
+
+  if (layer.id === "tools") {
+    return (
+      <>
+        <text
+          x={CX}
+          y={yCenter - 12}
+          textAnchor="middle"
+          className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
+        >
+          {layer.eyebrow}
+        </text>
+        <text
+          x={CX}
+          y={yCenter + 2}
+          textAnchor="middle"
+          className="fill-intake-ink text-[11px] font-medium"
+        >
+          {layer.label}
+        </text>
+        {layer.subtitle ? (
+          <text
+            x={CX}
+            y={yCenter + 14}
+            textAnchor="middle"
+            className="fill-intake-ink-muted text-[9px]"
+          >
+            {layer.subtitle}
+          </text>
+        ) : null}
+      </>
+    );
+  }
+
+  const titleOffset = layer.subtitle ? 4 : 2;
   return (
     <>
       <text
         x={CX}
-        y={yCenter - (compact ? 6 : 10)}
+        y={yCenter - 6}
         textAnchor="middle"
         className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
       >
@@ -137,7 +191,7 @@ function LayerLabel({
       {layer.subtitle ? (
         <text
           x={CX}
-          y={yCenter + (compact ? 18 : 20)}
+          y={yCenter + 18}
           textAnchor="middle"
           className="fill-intake-ink-muted text-[9px]"
         >
@@ -148,26 +202,58 @@ function LayerLabel({
   );
 }
 
-function StatusLegend() {
+function StatusLegendInline() {
   return (
     <div
-      className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2"
+      className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1 text-xs text-intake-ink-subtle"
       aria-label="Legenda statuskleuren"
     >
-      {STATUS_LEGEND.map((item) => (
-        <span
-          key={item.label}
-          className="inline-flex items-center gap-1.5 text-[10px] text-intake-ink-subtle"
-        >
-          <span
-            className="inline-block h-2.5 w-2.5 shrink-0 rounded-sm border border-intake-card-border"
-            style={{ backgroundColor: item.color }}
-            aria-hidden
-          />
-          {item.label}
+      {STATUS_LEGEND.map((item, index) => (
+        <span key={item.label} className="inline-flex items-center gap-1">
+          {index > 0 ? (
+            <span className="text-intake-ink-subtle/60" aria-hidden>
+              ·
+            </span>
+          ) : null}
+          <span className="inline-flex items-center gap-1">
+            <span
+              className={`inline-block h-2 w-2 shrink-0 rounded-full border border-intake-card-border ${
+                item.hollow ? "bg-transparent" : ""
+              }`}
+              style={item.hollow ? undefined : { backgroundColor: item.color }}
+              aria-hidden
+            />
+            {item.label}
+          </span>
         </span>
       ))}
     </div>
+  );
+}
+
+function PyramidFooter({ mode }: { mode: FoundationPyramidProps["mode"] }) {
+  if (mode === "personalized") {
+    return (
+      <>
+        <div className="mt-3 text-center">
+          <StatusLegendInline />
+          <p className="mt-1.5 text-xs text-intake-ink-subtle">
+            Balkhoogte = status · leefstijlgebieden zijn klikbaar
+          </p>
+        </div>
+        <p className="mt-3 text-center text-xs leading-relaxed text-intake-ink-subtle">
+          Lezen van onder naar boven: sterke leefstijl maakt sterke gezondheid
+          mogelijk. Supplementen vullen aan waar leefstijl niet rond komt.
+        </p>
+      </>
+    );
+  }
+
+  return (
+    <p className="mt-4 text-center text-xs leading-relaxed text-intake-ink-subtle">
+      Lezen van onder naar boven: sterke leefstijl maakt sterke gezondheid
+      mogelijk. Supplementen vullen aan waar leefstijl niet rond komt.
+    </p>
   );
 }
 
@@ -178,7 +264,7 @@ function LifestylePillars({
   geom: LayerGeometry;
   props: FoundationPyramidProps;
 }) {
-  const innerTop = geom.yTop + 50;
+  const innerTop = geom.yTop + 46;
   const innerBottom = geom.yBottom - 8;
   const innerHeight = innerBottom - innerTop;
   const count = LIFESTYLE_PILLARS.length;
@@ -244,9 +330,9 @@ function LifestylePillars({
                 {isClickable ? (
                   <rect
                     x={x + 4}
-                    y={innerTop + 28}
+                    y={innerTop + 30}
                     width={colWidth - 8}
-                    height={innerBottom - innerTop - 28}
+                    height={innerBottom - innerTop - 30}
                     rx={2}
                     fill="transparent"
                     stroke="var(--intake-terra)"
@@ -269,7 +355,7 @@ function LifestylePillars({
                   x={x + colWidth / 2}
                   y={innerTop + 10}
                   textAnchor="middle"
-                  className={`pointer-events-none text-[8px] font-semibold ${
+                  className={`pointer-events-none text-[9px] font-semibold ${
                     isClickable ? "fill-intake-terra" : "fill-intake-ink font-medium"
                   }`}
                 >
@@ -278,9 +364,9 @@ function LifestylePillars({
                 {isClickable ? (
                   <line
                     x1={x + colWidth * 0.2}
-                    y1={innerTop + 12}
+                    y1={innerTop + 13}
                     x2={x + colWidth * 0.8}
-                    y2={innerTop + 12}
+                    y2={innerTop + 13}
                     stroke="var(--intake-terra)"
                     strokeWidth={0.75}
                     strokeOpacity={0.7}
@@ -289,9 +375,9 @@ function LifestylePillars({
                 ) : null}
                 <text
                   x={x + colWidth / 2}
-                  y={innerTop + 22}
+                  y={innerTop + 24}
                   textAnchor="middle"
-                  className="fill-intake-ink-muted pointer-events-none text-[7px] font-semibold uppercase tracking-wide"
+                  className="fill-intake-ink-muted pointer-events-none text-[9px] font-semibold uppercase tracking-wide"
                 >
                   {getDisplayStatusShort(status as PillarDisplayStatus)}
                 </text>
@@ -360,7 +446,7 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
               />
               {!isLifestyle ? (
                 <g pointerEvents="none">
-                  <LayerLabel layer={layer} yCenter={yCenter} compact />
+                  <LayerLabel layer={layer} yCenter={yCenter} />
                 </g>
               ) : (
                 <g>
@@ -439,18 +525,7 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
         </g>
       </svg>
 
-      <p className="mt-4 text-center text-xs leading-relaxed text-intake-ink-subtle">
-        Lezen van onder naar boven: sterke leefstijl maakt sterke gezondheid
-        mogelijk. Supplementen vullen aan waar leefstijl niet rond komt.
-      </p>
-      {props.mode === "personalized" ? (
-        <>
-          <p className="mt-2 text-center text-[10px] text-intake-ink-subtle">
-            Balkhoogte = status · leefstijlgebieden zijn klikbaar
-          </p>
-          <StatusLegend />
-        </>
-      ) : null}
+      <PyramidFooter mode={props.mode} />
     </div>
   );
 }

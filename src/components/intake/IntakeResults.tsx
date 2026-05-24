@@ -86,12 +86,6 @@ function buildPillarStatuses(
   };
 }
 
-function buildSecondaryMetricsLine(scores: DomainScores): string {
-  const energy = getDisplayStatus(scores.energy_score);
-  const recovery = getDisplayStatus(scores.recovery_score);
-  return `Ook gemeten: Energie · ${energy} · Herstel · ${recovery}`;
-}
-
 function buildPillarDrawerData(options: {
   pillarId: PillarId;
   scores: DomainScores;
@@ -241,7 +235,6 @@ export default function IntakeResults({
   );
   const excludeIds = supplementRoute.map((r) => r.id);
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
-  const secondaryMetricsLine = buildSecondaryMetricsLine(scores);
   const pillarStatuses = buildPillarStatuses(scores);
 
   const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
@@ -335,22 +328,11 @@ export default function IntakeResults({
         </header>
 
         <section className="mb-6" aria-label="Jouw leefstijlpiramide">
-          <p className="mb-4 rounded-xl border border-intake-terra/35 bg-intake-terra/10 px-4 py-3 text-center text-sm leading-snug text-intake-ink-muted">
-            <span className="font-semibold text-intake-terra">
-              Tik op een leefstijlgebied
-            </span>{" "}
-            onderin de piramide voor uitleg, tips en links.
-          </p>
-
           <FoundationPyramid
             mode="personalized"
             pillarStatuses={pillarStatuses}
             onPillarClick={setActivePillar}
           />
-
-          <p className="mt-3 text-center text-xs text-intake-ink-subtle">
-            {secondaryMetricsLine}
-          </p>
 
           {hasMarketingEmail ? (
             <p className="mt-5 text-center text-sm text-intake-ink-muted">

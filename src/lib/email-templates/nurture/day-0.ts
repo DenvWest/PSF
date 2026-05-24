@@ -5,6 +5,7 @@ import {
   escapeHtml,
   nurtureCtaButton,
   nurtureNamePrefixHtml,
+  renderLifestyleOverviewBlock,
   renderPersonalizedRows,
   wrapNurtureBlock,
 } from "./helpers";
@@ -327,8 +328,15 @@ export function nurtureDay0Email(
     ? "Bekijk hier wat het Overtrainer-profiel inhoudt"
     : "Lees verder op het herstelthema";
 
+  const lifestyleOverviewBlock = renderLifestyleOverviewBlock(
+    data.domainScores,
+    intakeUrl,
+    data.firstName,
+  );
+
   const inner =
     mainRows +
+    lifestyleOverviewBlock +
     (showRecoveryGuide
       ? buildRecoveryGuideBlock(recoveryDeepDiveUrl, recoveryDeepDiveAnchor)
       : "") +
