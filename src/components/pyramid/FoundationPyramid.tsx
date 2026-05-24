@@ -355,9 +355,7 @@ function LifestylePillars({
                   x={x + colWidth / 2}
                   y={innerTop + 10}
                   textAnchor="middle"
-                  className={`pointer-events-none text-[9px] font-semibold ${
-                    isClickable ? "fill-intake-terra" : "fill-intake-ink font-medium"
-                  }`}
+                  className="pointer-events-none fill-intake-ink text-[10px] font-semibold"
                 >
                   {pillar.label}
                 </text>
@@ -369,7 +367,7 @@ function LifestylePillars({
                     y2={innerTop + 13}
                     stroke="var(--intake-terra)"
                     strokeWidth={0.75}
-                    strokeOpacity={0.7}
+                    strokeOpacity={0.85}
                     pointerEvents="none"
                   />
                 ) : null}
@@ -377,7 +375,7 @@ function LifestylePillars({
                   x={x + colWidth / 2}
                   y={innerTop + 24}
                   textAnchor="middle"
-                  className="fill-intake-ink-muted pointer-events-none text-[9px] font-semibold uppercase tracking-wide"
+                  className="pointer-events-none fill-intake-ink-muted text-[9px] font-semibold uppercase tracking-wide"
                 >
                   {getDisplayStatusShort(status as PillarDisplayStatus)}
                 </text>
