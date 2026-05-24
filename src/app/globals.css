@@ -37,6 +37,19 @@
   --ps-amber: #b45309;
   --ps-amber-light: #fef3c7;
 
+
+  /* Intake — dark editorial palette (Sessie 1+) */
+  --intake-bg: #1A1F1C;
+  --intake-bg-elevated: #232826;
+  --intake-ink: #F4EFE6;
+  --intake-ink-muted: rgba(244, 239, 230, 0.65);
+  --intake-ink-subtle: rgba(244, 239, 230, 0.4);
+  --intake-sage: #5A8F6A;
+  --intake-terra: #C68B5B;
+  --intake-terra-deep: #B07449;
+  --intake-divider: rgba(244, 239, 230, 0.08);
+  --intake-card-border: rgba(244, 239, 230, 0.1);
+
   /* Editorial / article reading (blog + kennisbank) — sticky TOC + anchors */
   --reading-scroll-margin: 6.75rem;
   --sticky-toc-offset: 6.875rem;
@@ -52,6 +65,16 @@
   --color-ps-green-light: var(--ps-green-light);
   --color-ps-amber: var(--ps-amber);
   --color-ps-amber-light: var(--ps-amber-light);
+  --color-intake-bg: var(--intake-bg);
+  --color-intake-bg-elevated: var(--intake-bg-elevated);
+  --color-intake-ink: var(--intake-ink);
+  --color-intake-ink-muted: var(--intake-ink-muted);
+  --color-intake-ink-subtle: var(--intake-ink-subtle);
+  --color-intake-sage: var(--intake-sage);
+  --color-intake-terra: var(--intake-terra);
+  --color-intake-terra-deep: var(--intake-terra-deep);
+  --color-intake-divider: var(--intake-divider);
+  --color-intake-card-border: var(--intake-card-border);
 }
 
 html {
