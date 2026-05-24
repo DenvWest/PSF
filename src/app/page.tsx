@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Hero from "@/components/homepage/Hero";
 import HomeTrustSection from "@/components/homepage/HomeTrustSection";
-import HomeThemeLinksSection from "@/components/homepage/HomeThemeLinksSection";
 import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
+import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
 import "./homepage.css";
 
 export const metadata: Metadata = {
@@ -17,8 +17,8 @@ export default function HomePage() {
     <div className="home">
       <Hero />
       <HomeTrustSection />
-      <HomeThemeLinksSection />
       <LifestyleCheckSection />
+      <HomeGuidesPromoSection />
     </div>
   );
 }

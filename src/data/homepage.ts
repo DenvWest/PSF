@@ -58,38 +58,20 @@ export const HOMEPAGE_TRUST = {
   ],
 } as const;
 
-export const HOMEPAGE_THEMES = [
-  {
-    href: "/slaap-verbeteren-na-40",
-    label: "Slaap",
-    icon: "🌙",
-    description: "Ritme, licht en supplementen",
-  },
-  {
-    href: "/stress-verminderen-man",
-    label: "Stress",
-    icon: "🔥",
-    description: "Cortisol, spanning en herstel",
-  },
-  {
-    href: "/energie-na-40",
-    label: "Energie",
-    icon: "⚡",
-    description: "Vermoeidheid en middagdip",
-  },
-  {
-    href: "/herstel-verbeteren-na-40",
-    label: "Herstel",
-    icon: "💪",
-    description: "Training, slaap en eiwit",
-  },
-  {
-    href: "/testosteron-na-40",
-    label: "Testosteron",
-    icon: "🧬",
-    description: "Voorzichtig en onderbouwd",
-  },
-] as const;
+export const HOMEPAGE_GUIDES_PROMO = {
+  title: "Gratis gidsen na 40",
+  body:
+    "Diepgaande PDF's over slaap, stress, energie, herstel en testosteron — praktisch, onderbouwd en zonder diagnoses. Eén overzicht, geen keuzestress op de homepage.",
+  secondaryLine:
+    "Je hoeft niet vooraf te weten welk thema past. De Leefstijlcheck hierboven ordenet dat voor je.",
+  cta: "Bekijk de gidsen",
+  ctaHref: "/gidsen",
+  footnote:
+    "Liever direct persoonlijk? Start de Leefstijlcheck — die wijst je naar je profiel en relevante vervolgstappen.",
+  /** Zet een collage in public/images/home/gidsen-collage.webp om de CSS-fan te vervangen. */
+  imageSrc: undefined,
+  imageAlt: "Overzicht van PerfectSupplement gidsen na 40",
+} as const;
 
 export const HOMEPAGE_LIFESTYLE = {
   sectionId: "leefstijlcheck",
