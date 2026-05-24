@@ -6,7 +6,7 @@ export default function IntakeLayout({ children }: { children: ReactNode }) {
     <div
       style={{
         minHeight: "100dvh",
-        background: "#1a2e1a",
+        background: "var(--intake-bg)",
         display: "flex",
         flexDirection: "column",
       }}
@@ -25,7 +25,7 @@ export default function IntakeLayout({ children }: { children: ReactNode }) {
         <Link
           href="/"
           style={{
-            color: "rgba(255,255,255,0.4)",
+            color: "var(--intake-ink-subtle)",
             fontSize: 13,
             textDecoration: "none",
             letterSpacing: "0.01em",
