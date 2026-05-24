@@ -38,6 +38,7 @@ const dmSans = DM_Sans({
 const dmSerifDisplay = DM_Serif_Display({
   subsets: ["latin"],
   weight: "400",
+  style: ["normal", "italic"],
   variable: "--font-intake-heading",
   display: "swap",
 });
