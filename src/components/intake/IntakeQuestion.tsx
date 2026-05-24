@@ -43,15 +43,12 @@ export default function IntakeQuestion({
     setSelectedOption(savedOptionIndex !== undefined ? savedOptionIndex : null);
     setLocked(false);
   }
-  // Skip inner animation on first mount — the phase-level wrapper in page.tsx
-  // already handles the entry animation for the symptoms→questions transition.
-  // The inner animation should only fire on question-to-question transitions.
+
   const isFirstRender = useRef(true);
   useEffect(() => {
     isFirstRender.current = false;
   }, []);
 
-  // Take over the full screen: hide the layout header while questions are active.
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".intake-layout-header");
     if (header) header.style.display = "none";
@@ -76,20 +73,12 @@ export default function IntakeQuestion({
   const progressPct = ((currentIndex + 1) / total) * 100;
   const isLastQuestion = currentIndex === total - 1;
   const hasSelection = selectedOption !== null;
+  const questionNumber = String(currentIndex + 1).padStart(2, "0");
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
-      {/* Fixed progress bar — stays at very top */}
       <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 3,
-          background: "rgba(255,255,255,0.1)",
-          zIndex: 50,
-        }}
+        className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
         role="progressbar"
         aria-valuenow={currentIndex + 1}
         aria-valuemin={1}
@@ -97,59 +86,35 @@ export default function IntakeQuestion({
         aria-label="Intake voortgang"
       >
         <div
-          style={{
-            height: "100%",
-            width: `${progressPct}%`,
-            background: "#C8956C",
-            transition: "width 300ms ease",
-          }}
+          className="h-full bg-intake-terra transition-[width] duration-300 ease-out"
+          style={{ width: `${progressPct}%` }}
         />
       </div>
 
-      {/* Fixed subtle close button */}
       <Link
         href="/"
-        style={{
-          position: "fixed",
-          top: 16,
-          right: 16,
-          zIndex: 50,
-          color: "rgba(255,255,255,0.35)",
-          fontSize: 18,
-          lineHeight: 1,
-          textDecoration: "none",
-          padding: "4px 8px",
-        }}
+        className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
         aria-label="Sluiten"
       >
         ✕
       </Link>
 
-      {/* ── Single centered content block ─────────────── */}
       <div className="w-full max-w-lg px-6 py-12">
-        {/* Category + counter */}
-        <div className="mb-1 flex items-center justify-center gap-2">
-          <span style={{ fontSize: 15 }} aria-hidden>
+        <div className="mb-2 flex items-center justify-center gap-2">
+          <span className="text-[15px]" aria-hidden>
             {category.icon}
           </span>
-          <span
-            className="text-sm font-semibold uppercase tracking-wider"
-            style={{ color: "rgba(255,255,255,0.5)" }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
+            <span className="text-intake-terra">{questionNumber}</span>
+            {" · "}
             {category.label}
-          </span>
+          </p>
         </div>
 
-        <p
-          className="mb-8 text-center text-sm"
-          style={{ color: "rgba(255,255,255,0.35)" }}
-        >
+        <p className="mb-8 text-center text-sm text-intake-ink-subtle">
           Vraag {currentIndex + 1} van {total}
         </p>
 
-        {/* Question text + answer options — keyed so React remounts on question change,
-            triggering the fadeIn animation. Skipped on first render because the outer
-            phase wrapper already handles the entry animation. */}
         <div
           key={currentIndex}
           className={`min-h-[400px] ${
@@ -157,26 +122,17 @@ export default function IntakeQuestion({
             isFirstRender.current ? "" : "animate-[fadeIn_200ms_ease-out]"
           }`}
         >
-          {/* Question text */}
           <h2
-            className={`text-center text-2xl font-normal leading-snug md:text-3xl ${question.subtitle ? "mb-4" : "mb-10"}`}
-            style={{
-              fontFamily: "var(--font-intake-heading), Georgia, serif",
-              color: "rgba(255,255,255,0.92)",
-            }}
+            className={`text-center font-serif text-2xl font-normal leading-snug text-intake-ink md:text-3xl ${question.subtitle ? "mb-4" : "mb-10"}`}
           >
             {question.question}
           </h2>
           {question.subtitle ? (
-            <p
-              className="mb-10 text-center text-base font-normal leading-relaxed md:text-lg"
-              style={{ color: "rgba(255,255,255,0.55)" }}
-            >
+            <p className="mb-10 text-center text-base font-normal leading-relaxed text-intake-ink-muted md:text-lg">
               {question.subtitle}
             </p>
           ) : null}
 
-          {/* Answer options */}
           <div
             style={{ pointerEvents: locked ? "none" : "auto" }}
             className="flex flex-col gap-3"
@@ -192,23 +148,14 @@ export default function IntakeQuestion({
                   onClick={() => handleOptionSelect(i)}
                   onMouseEnter={() => setHoveredOption(i)}
                   onMouseLeave={() => setHoveredOption(null)}
-                  className="block w-full rounded-[14px] px-5 py-4 text-left text-base font-medium leading-snug transition-all duration-200 ease-out"
-                  style={{
-                    background: isSelected
-                      ? "rgba(200,149,108,0.18)"
+                  className={[
+                    "block w-full min-h-[44px] rounded-[14px] border px-5 py-4 text-left text-base font-medium leading-snug transition-all duration-200 ease-out",
+                    isSelected
+                      ? "border-intake-terra bg-intake-terra/15 text-intake-ink shadow-[inset_4px_0_0_var(--intake-terra)]"
                       : isHovered
-                        ? "rgba(255,255,255,0.11)"
-                        : "rgba(255,255,255,0.07)",
-                    color: isSelected
-                      ? "rgba(255,255,255,0.95)"
-                      : "rgba(255,255,255,0.8)",
-                    border: isSelected
-                      ? "1px solid rgba(200,149,108,0.35)"
-                      : "1px solid rgba(255,255,255,0.1)",
-                    boxShadow: isSelected ? "inset 4px 0 0 #C8956C" : "none",
-                    fontFamily: "inherit",
-                    cursor: "pointer",
-                  }}
+                        ? "border-intake-card-border bg-intake-bg-elevated/90 text-intake-ink"
+                        : "border-intake-card-border bg-intake-bg-elevated text-intake-ink-muted",
+                  ].join(" ")}
                 >
                   {opt.label}
                 </button>
@@ -217,19 +164,13 @@ export default function IntakeQuestion({
           </div>
         </div>
 
-        {/* Navigation — back button always takes up space to prevent layout shift */}
         <div className="mt-10 flex items-center justify-between">
           <button
             type="button"
             onClick={onBack}
+            className="border-none bg-transparent py-3 text-sm text-intake-ink-subtle transition-colors hover:text-intake-ink-muted disabled:cursor-default"
             style={{
-              background: "none",
-              border: "none",
-              color: "rgba(255,255,255,0.4)",
-              fontSize: 14,
               cursor: currentIndex > 0 ? "pointer" : "default",
-              padding: "12px 0",
-              fontFamily: "inherit",
               visibility: currentIndex > 0 ? "visible" : "hidden",
             }}
           >
@@ -240,8 +181,7 @@ export default function IntakeQuestion({
             type="button"
             onClick={handleNext}
             disabled={!hasSelection || locked}
-            className="rounded-[12px] border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/10 disabled:cursor-default disabled:opacity-30"
-            style={{ background: "transparent", fontFamily: "inherit" }}
+            className="min-h-[44px] rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-all duration-200 hover:bg-intake-bg-elevated disabled:cursor-default disabled:opacity-30"
           >
             {isLastQuestion ? "Bekijk resultaten →" : "Volgende →"}
           </button>
