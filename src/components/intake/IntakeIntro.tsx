@@ -1,17 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
-import {
-  getLastSession,
-  type IntakeSessionPayload,
-} from "@/lib/intake-storage";
 
 type IntakeIntroProps = {
   onStart: () => void;
-  onResumeLastResults?: () => void;
 };
 
 const THRESHOLD_ITEMS = [
@@ -20,26 +15,7 @@ const THRESHOLD_ITEMS = [
   "Geen e-mail verplicht",
 ] as const;
 
-export default function IntakeIntro({
-  onStart,
-  onResumeLastResults,
-}: IntakeIntroProps) {
-  const [lastSession, setLastSession] = useState<IntakeSessionPayload | null>(
-    null,
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-    void getLastSession().then((session) => {
-      if (!cancelled) {
-        setLastSession(session);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
+export default function IntakeIntro({ onStart }: IntakeIntroProps) {
   return (
     <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-16 text-center">
       <div className="flex w-full max-w-lg flex-col items-center gap-8 md:gap-10">
@@ -130,31 +106,7 @@ export default function IntakeIntro({
           ))}
         </ul>
 
-        {lastSession && onResumeLastResults ? (
-          <button
-            type="button"
-            onClick={onResumeLastResults}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 13,
-              color: "rgba(255,255,255,0.35)",
-              cursor: "pointer",
-              textDecoration: "underline",
-              textDecorationColor: "rgba(255,255,255,0.15)",
-              textUnderlineOffset: 3,
-              fontFamily: "inherit",
-            }}
-          >
-            Laatste meting:{" "}
-            {new Date(lastSession.timestamp).toLocaleDateString("nl-NL", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}{" "}
-            — bekijk resultaten →
-          </button>
-        ) : null}
+        <IntakeLastSessionLink theme="dark" />
 
         <MedicalDisclaimer variant="intake" theme="dark" />
       </div>

@@ -295,14 +295,6 @@ export default function IntakeClient() {
     router.replace("/intake");
   }
 
-  async function resumeLastResults() {
-    const session = await getLastSession();
-    if (!session) {
-      return;
-    }
-    hydrateFromSession(session);
-  }
-
   function exitResultsDeepLinkFallback() {
     setResultsDeepLinkMissing(false);
     restart();
@@ -373,7 +365,6 @@ export default function IntakeClient() {
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeIntro
             onStart={() => setPhase("symptoms")}
-            onResumeLastResults={resumeLastResults}
           />
         </div>
       )}

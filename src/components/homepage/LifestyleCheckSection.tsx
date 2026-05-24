@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import { HOMEPAGE_LIFESTYLE } from "@/data/homepage";
 import {
   CATEGORIES,
@@ -129,6 +130,7 @@ export default function LifestyleCheckSection() {
             <div className="mt-8 hidden lg:block">
               <IntakeCta />
               <IntakeCtaMicro className="mt-3 text-xs text-stone-500" />
+              <IntakeLastSessionLink theme="light" className="mt-3 block" />
             </div>
           </div>
 
@@ -137,6 +139,7 @@ export default function LifestyleCheckSection() {
           <div className="lg:hidden">
             <IntakeCta className="inline-flex w-full min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover" />
             <IntakeCtaMicro className="mt-3 text-center text-xs text-stone-500" />
+            <IntakeLastSessionLink theme="light" className="mt-3 block text-center" />
           </div>
         </div>
       </Container>

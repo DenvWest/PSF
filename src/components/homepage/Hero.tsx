@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import { HOMEPAGE_HERO, HOMEPAGE_LIFESTYLE } from "@/data/homepage";
 
 const HERO_BULLETS = [
@@ -105,6 +106,8 @@ export default function Hero() {
           </div>
 
           <IntakeCtaMicro className="mt-3 max-w-xl text-xs text-stone-500" />
+
+          <IntakeLastSessionLink theme="light" className="mt-3 block" />
 
           <p className="mt-4 text-xs text-stone-400">
             <Link
