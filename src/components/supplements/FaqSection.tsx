@@ -2,24 +2,19 @@ import {
   renderInlineMarkdownLinks,
   stripInlineMarkdownLinks,
 } from "@/components/blog/inlineMarkdownLinks";
+import { buildFaqSchema } from "@/lib/seo/structuredData";
 
 type Props = {
   items: Array<{ question: string; answer: string }>;
 };
 
 export function FaqSection({ items }: Props) {
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: stripInlineMarkdownLinks(item.answer),
-      },
+  const faqSchema = buildFaqSchema(
+    items.map((item) => ({
+      question: stripInlineMarkdownLinks(item.question),
+      answer: stripInlineMarkdownLinks(item.answer),
     })),
-  };
+  );
 
   return (
     <>

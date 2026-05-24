@@ -8,11 +8,14 @@ import SymptoomLinkCard from "./SymptoomLinkCard";
 import FAQItem from "./FAQItem";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfileFits";
+import { getProfileFitsForGuideSlug } from "@/data/supplement-profile-fits";
 import {
   renderInlineMarkdownLinks,
   stripInlineMarkdownLinks,
 } from "@/components/blog/inlineMarkdownLinks";
 import { buildBreadcrumbSchema } from "@/lib/structured-data";
+import { buildFaqSchema } from "@/lib/seo/structuredData";
 
 const SITE_URL = "https://perfectsupplement.nl";
 
@@ -23,6 +26,7 @@ interface SupplementPageProps {
 export default function SupplementPage({ data }: SupplementPageProps) {
   const pageUrl = `${SITE_URL}/supplementen/${data.slug}`;
   const modified = data.dateModified ?? data.datePublished;
+  const profileFits = getProfileFitsForGuideSlug(data.slug);
 
   const breadcrumbJsonLd = buildBreadcrumbSchema([
     { name: "Home", url: "https://perfectsupplement.nl" },
@@ -49,18 +53,12 @@ export default function SupplementPage({ data }: SupplementPageProps) {
     mainEntityOfPage: pageUrl,
   };
 
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: data.faq.map((item) => ({
-      "@type": "Question",
-      name: stripInlineMarkdownLinks(item.vraag),
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: stripInlineMarkdownLinks(item.antwoord),
-      },
+  const faqJsonLd = buildFaqSchema(
+    data.faq.map((item) => ({
+      question: stripInlineMarkdownLinks(item.vraag),
+      answer: stripInlineMarkdownLinks(item.antwoord),
     })),
-  };
+  );
 
   return (
     <div className="bg-stone-50/40 pb-24">
@@ -211,6 +209,8 @@ export default function SupplementPage({ data }: SupplementPageProps) {
               ))}
             </div>
           </section>
+
+          <ComparisonProfileFits fits={profileFits} />
 
           <section id="faq" aria-labelledby="faq-heading">
             <div className="ps-prose-container">

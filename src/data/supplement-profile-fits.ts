@@ -123,3 +123,9 @@ export function getProfileFitsForCategory(
 ): SupplementProfileFit[] {
   return SUPPLEMENT_PROFILE_FITS[category] ?? [];
 }
+
+export function getProfileFitsForGuideSlug(
+  slug: keyof typeof SUPPLEMENT_PROFILE_FITS,
+): SupplementProfileFit[] {
+  return getProfileFitsForCategory(slug);
+}
