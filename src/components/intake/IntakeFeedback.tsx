@@ -21,7 +21,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
       >
         <p className="text-[15px]" style={{ color: "rgba(255,255,255,0.5)" }}>
           Bedankt voor je feedback{" "}
-          <span style={{ color: "var(--ps-green)" }} aria-hidden>
+          <span className="text-intake-sage" aria-hidden>
             ✓
           </span>
         </p>
@@ -46,13 +46,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
           <button
             type="button"
             onClick={() => setRating("positive")}
-            className="flex-1 cursor-pointer rounded-[10px] py-3 text-sm font-semibold transition-colors"
-            style={{
-              background: "rgba(90,143,106,0.15)",
-              border: "1px solid rgba(90,143,106,0.4)",
-              color: "var(--ps-green)",
-              fontFamily: "inherit",
-            }}
+            className="flex-1 cursor-pointer rounded-[10px] border border-intake-sage/40 bg-intake-sage/15 py-3 text-sm font-semibold text-intake-sage transition-colors"
           >
             Ja, klopt
           </button>

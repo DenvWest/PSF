@@ -13,10 +13,7 @@ export default function SupplementAdviceDisclaimer({
   variant,
 }: SupplementAdviceDisclaimerProps) {
   return (
-    <p
-      className="mb-4 rounded-lg border border-[#e8e6e1] bg-[#f7f6f3] px-3 py-2.5 text-[12px] leading-snug text-[#666]"
-      style={{ fontFamily: "var(--font-intake-body), sans-serif" }}
-    >
+    <p className="mb-4 rounded-lg border border-intake-card-border bg-white/[0.04] px-3 py-2.5 text-[12px] leading-snug text-intake-ink-muted">
       {COPY[variant]}
     </p>
   );

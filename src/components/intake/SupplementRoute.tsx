@@ -71,30 +71,34 @@ export default function SupplementRoute({
   const showAffiliateDisclaimer = recommendations.some((r) => r.hasComparison);
 
   return (
-    <div className="space-y-2" style={{ fontFamily: "var(--font-intake-body), sans-serif" }}>
+    <div className="space-y-2">
       {recommendations.map((rec) => {
         const basisLine = formatScoreBasisLine(rec.domains, scores);
         return (
           <div
             key={rec.id}
-            className="rounded-[10px] border border-[#f0ede8] bg-[#FAFAF7] px-4 py-3.5"
+            className="rounded-[10px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3.5"
           >
-            <div className="mb-1 text-[15px] font-bold text-[#1a1a1a]">{rec.name}</div>
-            <p className="m-0 mb-2 text-[13px] leading-relaxed text-[#777]">{rec.reason}</p>
+            <div className="mb-1 text-[15px] font-bold text-intake-ink">{rec.name}</div>
+            <p className="m-0 mb-2 text-[13px] leading-relaxed text-intake-ink-muted">
+              {rec.reason}
+            </p>
             {basisLine ? (
-              <p className="m-0 mb-3 text-[12px] leading-snug text-[#666]">{basisLine}</p>
+              <p className="m-0 mb-3 text-[12px] leading-snug text-intake-ink-subtle">
+                {basisLine}
+              </p>
             ) : null}
             {rec.hasComparison ? (
               <Link
                 href={rec.affiliateUrl}
-                className="inline-flex max-w-full items-center justify-center rounded-lg bg-[#C4873B] px-4 py-2.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                className="inline-flex max-w-full items-center justify-center rounded-lg bg-intake-terra px-4 py-2.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Bekijk vergelijking →
               </Link>
             ) : (
               <Link
                 href={rec.affiliateUrl}
-                className="inline-block max-w-full break-words text-[13px] font-semibold text-[#C4873B] underline underline-offset-[3px]"
+                className="inline-block max-w-full break-words text-[13px] font-semibold text-intake-terra underline underline-offset-[3px]"
               >
                 Meer informatie →
               </Link>
@@ -103,7 +107,7 @@ export default function SupplementRoute({
         );
       })}
       {showAffiliateDisclaimer ? (
-        <p className="mt-4 text-[11px] leading-snug text-[#aaa]">
+        <p className="mt-4 text-[11px] leading-snug text-intake-ink-subtle">
           We verdienen een commissie als je via onze links koopt. Dit beïnvloedt onze
           aanbevelingen niet.
         </p>
