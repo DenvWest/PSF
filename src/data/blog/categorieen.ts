@@ -129,7 +129,7 @@ export const CATEGORIE_CONFIG: Record<BlogCategorie, CategorieConfig> = {
       { label: "Vitamine D en energie", slug: "vitamine-d-en-energie" },
       { label: "Zink en testosteron", slug: "zink-en-testosteron" },
     ],
-    themaHref: "/gids/energie",
+    themaHref: "/supplementen",
     kleur: {
       bg: "from-stone-600 to-stone-700",
       accent: "bg-violet-500/20 ring-violet-400/20",
