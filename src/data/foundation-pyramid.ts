@@ -118,6 +118,7 @@ export const PYRAMID_LAYERS: readonly PyramidLayer[] = [
     id: "lifestyle",
     eyebrow: "05",
     label: "Leefstijl — het fundament",
+    subtitle: "Jouw leefstijlgebieden",
     summary:
       "Stress, slaap, voeding, beweging en verbinding dragen alles wat erboven staat.",
     details:

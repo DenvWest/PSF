@@ -428,6 +428,9 @@ export default function IntakeClient() {
             symptoms={symptoms}
             sessionId={sessionId}
             firstName={normalizeFirstName(firstName)}
+            hasMarketingEmail={Boolean(
+              intakeConsent?.marketingEmail && intakeConsent?.marketingEmailAddress,
+            )}
             onRestart={restart}
             onConsentRevoked={restart}
           />

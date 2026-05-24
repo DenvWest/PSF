@@ -1,50 +1,94 @@
-type PreviewRow = {
+import {
+  STATUS_TONE_CLASS,
+  type DisplayStatus,
+  type DisplayStatusTone,
+} from "@/lib/score-display";
+
+export type SummaryRow = {
   label: string;
   status: string;
-  tone: "sage" | "neutral" | "terra";
+  tone: DisplayStatusTone;
 };
 
-const PREVIEW_ROWS: PreviewRow[] = [
+const PREVIEW_ROWS: SummaryRow[] = [
   { label: "Slaap", status: "Aandacht", tone: "terra" },
   { label: "Stress", status: "Voldoende", tone: "neutral" },
   { label: "Voeding", status: "Sterk", tone: "sage" },
   { label: "Beweging", status: "Voldoende", tone: "neutral" },
 ];
 
-const TONE_CLASS: Record<PreviewRow["tone"], string> = {
-  sage: "border-intake-sage/40 bg-intake-sage/15 text-intake-sage",
+const ROW_TONE_CLASS: Record<DisplayStatusTone, string> = {
+  sage: STATUS_TONE_CLASS.sage,
   neutral: "border-intake-card-border bg-white/5 text-intake-ink-muted",
-  terra: "border-[#C8956C]/40 bg-[#C8956C]/15 text-[#C8956C]",
+  terra: STATUS_TONE_CLASS.terra,
+  "terra-deep": STATUS_TONE_CLASS["terra-deep"],
 };
 
-export default function IntakeResultPreviewCard() {
+type IntakeResultPreviewCardProps = {
+  rows?: SummaryRow[];
+  variant?: "preview" | "live";
+};
+
+export function summaryToneFromStatus(
+  status: DisplayStatus | "Niet gemeten",
+): DisplayStatusTone {
+  if (status === "Niet gemeten") {
+    return "neutral";
+  }
+  if (status === "Sterk") {
+    return "sage";
+  }
+  if (status === "Voldoende") {
+    return "neutral";
+  }
+  if (status === "Aandacht") {
+    return "terra";
+  }
+  return "terra-deep";
+}
+
+export default function IntakeResultPreviewCard({
+  rows,
+  variant = "preview",
+}: IntakeResultPreviewCardProps) {
+  const isLive = variant === "live";
+  const displayRows = rows ?? PREVIEW_ROWS;
+
   return (
     <article
       className="w-full rounded-2xl border border-intake-card-border bg-intake-bg-elevated px-5 py-5 text-left"
-      aria-label="Voorbeeld van je leefstijl-overzicht"
+      aria-label={
+        isLive ? "Jouw leefstijlgebieden" : "Voorbeeld van je leefstijl-overzicht"
+      }
     >
       <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
-        Zo ziet jouw overzicht eruit
+        {isLive ? "Jouw leefstijlgebieden" : "Zo ziet jouw overzicht eruit"}
       </p>
       <ul className="space-y-2.5">
-        {PREVIEW_ROWS.map((row) => (
+        {displayRows.map((row) => (
           <li
             key={row.label}
             className="flex items-center justify-between gap-3 rounded-xl border border-intake-divider bg-white/[0.03] px-3.5 py-2.5"
           >
             <span className="text-sm font-medium text-intake-ink">{row.label}</span>
             <span
-              className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${TONE_CLASS[row.tone]}`}
+              className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${ROW_TONE_CLASS[row.tone]}`}
             >
               {row.status}
             </span>
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-xs leading-relaxed text-intake-ink-subtle">
-        Illustratie — op basis van jouw antwoorden, zonder totaalscore of
-        diagnose.
-      </p>
+      {!isLive ? (
+        <p className="mt-4 text-xs leading-relaxed text-intake-ink-subtle">
+          Illustratie — op basis van jouw antwoorden, zonder totaalscore of
+          diagnose.
+        </p>
+      ) : (
+        <p className="mt-4 text-xs leading-relaxed text-intake-ink-subtle">
+          Op basis van je antwoorden — geen medische diagnose.
+        </p>
+      )}
     </article>
   );
 }

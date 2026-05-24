@@ -140,7 +140,7 @@ function LifestylePillars({
   geom: LayerGeometry;
   props: FoundationPyramidProps;
 }) {
-  const innerTop = geom.yTop + 36;
+  const innerTop = geom.yTop + 50;
   const innerBottom = geom.yBottom - 8;
   const innerHeight = innerBottom - innerTop;
   const count = LIFESTYLE_PILLARS.length;
@@ -218,14 +218,6 @@ function LifestylePillars({
                   className="fill-intake-ink pointer-events-none text-[8px] font-medium"
                 >
                   {pillar.label}
-                </text>
-                <text
-                  x={x + colWidth / 2}
-                  y={innerBottom + 14}
-                  textAnchor="middle"
-                  className="fill-intake-ink-subtle pointer-events-none text-[7px]"
-                >
-                  {status}
                 </text>
               </>
             ) : (
@@ -308,6 +300,17 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
                   >
                     {layer.label}
                   </text>
+                  {layer.subtitle ? (
+                    <text
+                      x={CX}
+                      y={geom.yTop + 42}
+                      textAnchor="middle"
+                      pointerEvents="none"
+                      className="fill-intake-ink-muted text-[9px]"
+                    >
+                      {layer.subtitle}
+                    </text>
+                  ) : null}
                   <LifestylePillars geom={geom} props={props} />
                 </g>
               )}
@@ -358,6 +361,11 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
         Lezen van onder naar boven: sterke leefstijl maakt sterke gezondheid
         mogelijk. Supplementen vullen aan waar leefstijl niet rond komt.
       </p>
+      {props.mode === "personalized" ? (
+        <p className="mt-2 text-center text-[10px] text-intake-ink-subtle">
+          Balkhoogte = status · groen = sterk · terra = aandacht of prioriteit
+        </p>
+      ) : null}
     </div>
   );
 }

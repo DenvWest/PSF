@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
-import { CATEGORIES, type CategoryId } from "@/data/intake-questions";
 import {
   getPillarById,
+  LIFESTYLE_PILLARS,
   PILLAR_DRAWER_FALLBACKS,
   PILLAR_SCORE_KEYS,
   type PillarDrawerLink,
@@ -33,32 +33,16 @@ import PyramidPillarDrawer, {
   type PillarDrawerData,
   type PillarDrawerStatus,
 } from "@/components/pyramid/PyramidPillarDrawer";
+import IntakeResultPreviewCard, {
+  summaryToneFromStatus,
+  type SummaryRow,
+} from "@/components/intake/IntakeResultPreviewCard";
+import IntakeResultsSection from "@/components/intake/IntakeResultsSection";
 import {
   getConnectionFraming,
   getDisplayStatus,
   getDisplayStatusFraming,
-  getDisplayStatusTone,
-  STATUS_TONE_CLASS,
-  type DisplayStatus,
 } from "@/lib/score-display";
-
-const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
-  sleep_score: "slaap",
-  energy_score: "energie",
-  stress_score: "stress",
-  nutrition_score: "voeding",
-  movement_score: "beweging",
-  recovery_score: "herstel",
-};
-
-const DOMAIN_KEYS: (keyof DomainScores)[] = [
-  "sleep_score",
-  "energy_score",
-  "stress_score",
-  "nutrition_score",
-  "movement_score",
-  "recovery_score",
-];
 
 const SUPPLEMENT_PILLAR: Record<string, PillarId> = {
   "magnesium-glycinaat": "sleep",
@@ -67,9 +51,6 @@ const SUPPLEMENT_PILLAR: Record<string, PillarId> = {
   creatine: "movement",
   zink: "nutrition",
 };
-
-const CARD_CLASS =
-  "mb-4 rounded-2xl border border-intake-card-border bg-intake-bg-elevated p-6";
 
 const REVOKE_CONFIRM =
   "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd. Een anonieme sessie-id blijft bewaard voor statistiek.";
@@ -88,6 +69,7 @@ type IntakeResultsProps = {
   symptoms: SymptomId[];
   sessionId: string | null;
   firstName?: string | null;
+  hasMarketingEmail?: boolean;
   onRestart?: () => void;
   onConsentRevoked?: () => void;
 };
@@ -109,21 +91,29 @@ function buildPillarStatuses(
   };
 }
 
-function getAttentionPoints(
-  scores: DomainScores,
-): { label: string; status: DisplayStatus }[] {
-  return DOMAIN_KEYS.map((key) => ({
-    label:
-      CATEGORIES.find((c) => c.id === DOMAIN_SCORE_TO_CAT[key])?.label ?? key,
-    status: getDisplayStatus(scores[key]),
-    score: scores[key],
-  }))
-    .filter(
-      (entry) => entry.status === "Aandacht" || entry.status === "Prioriteit",
-    )
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 2)
-    .map(({ label, status }) => ({ label, status }));
+function buildSummaryRows(scores: DomainScores): SummaryRow[] {
+  const pillarStatuses = buildPillarStatuses(scores);
+  const rows: SummaryRow[] = LIFESTYLE_PILLARS.map((pillar) => {
+    const status = pillarStatuses[pillar.id] ?? "Niet gemeten";
+    return {
+      label: pillar.label,
+      status,
+      tone: summaryToneFromStatus(status),
+    };
+  });
+  rows.push(
+    {
+      label: "Energie",
+      status: getDisplayStatus(scores.energy_score),
+      tone: summaryToneFromStatus(getDisplayStatus(scores.energy_score)),
+    },
+    {
+      label: "Herstel",
+      status: getDisplayStatus(scores.recovery_score),
+      tone: summaryToneFromStatus(getDisplayStatus(scores.recovery_score)),
+    },
+  );
+  return rows;
 }
 
 function buildPillarDrawerData(options: {
@@ -240,33 +230,13 @@ function buildPillarSupplementLinks(
   return links;
 }
 
-function StatusPill({
-  label,
-  status,
-}: {
-  label: string;
-  status: DisplayStatus | "Niet gemeten";
-}) {
-  const tone =
-    status === "Niet gemeten" ? "neutral" : getDisplayStatusTone(status);
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-xl border border-intake-divider bg-intake-bg/60 px-3.5 py-2.5">
-      <span className="text-sm font-medium text-intake-ink">{label}</span>
-      <span
-        className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${STATUS_TONE_CLASS[tone]}`}
-      >
-        {status}
-      </span>
-    </div>
-  );
-}
-
 export default function IntakeResults({
   scores,
   answers,
   symptoms,
   sessionId,
   firstName,
+  hasMarketingEmail = false,
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
@@ -295,13 +265,8 @@ export default function IntakeResults({
   );
   const excludeIds = supplementRoute.map((r) => r.id);
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
-  const lowestDomainKey = [...DOMAIN_KEYS].sort(
-    (a, b) => scores[a] - scores[b],
-  )[0];
-  const zinkSignal =
-    scores.recovery_score < 40 ||
-    scores.nutrition_score < 40 ||
-    lowestDomainKey === "recovery_score";
+  const summaryRows = buildSummaryRows(scores);
+  const pillarStatuses = buildPillarStatuses(scores);
 
   const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
   const displayProfileName = isOvertrainerProfile ? "Overtrainer" : profile.name;
@@ -313,8 +278,6 @@ export default function IntakeResults({
         .replace(/[^a-z0-9-]/g, "");
   const displayProfileSlugPath = `/profiel/${displayProfileSlug}`;
 
-  const pillarStatuses = buildPillarStatuses(scores);
-  const attentionPoints = getAttentionPoints(scores);
   const pillarSupplementLinks = buildPillarSupplementLinks(
     supplementRoute,
     deficiencySignals,
@@ -329,6 +292,12 @@ export default function IntakeResults({
       })
     : null;
 
+  const hasExploreContent =
+    supplementRoute.length > 0 ||
+    FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
+    kennisbankLinks.length > 0 ||
+    (typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2);
+
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".intake-layout-header");
     if (header) header.style.display = "none";
@@ -341,6 +310,11 @@ export default function IntakeResults({
     ? `Jouw vitaliteitsprofiel, ${firstName}`
     : "Jouw vitaliteitsprofiel";
 
+  const primaryQuickWin = quickWins[0];
+  const extraQuickWins = quickWins.slice(1);
+  const primaryLongTermTip = longTermTips[0];
+  const extraLongTermTips = longTermTips.slice(1);
+
   return (
     <>
       <Link
@@ -352,35 +326,32 @@ export default function IntakeResults({
       </Link>
 
       <div className="mx-auto box-border w-full max-w-[480px] px-6 pb-10 pt-8">
-        <header className="mb-9 text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
+        {/* Tier 1 — boven de fold */}
+        <header className="mb-6 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
             <span className="text-intake-terra">03</span> · Jouw leefstijl-overzicht
           </p>
-          <h1 className="mb-2 font-serif text-[30px] font-normal leading-tight text-intake-ink">
+          <h1 className="mb-2 font-serif text-[28px] font-normal leading-tight text-intake-ink">
             {heroTitle}
           </h1>
-          <p className="mb-4 text-sm leading-relaxed text-intake-ink-muted">
-            Op basis van je antwoorden — geen medische diagnose.
-          </p>
 
           {displayProfileName !== "In Balans" ? (
-            <p className="mb-2 text-sm text-intake-ink-muted">
-              Dit profiel zien we vaker:{" "}
-              <span className="font-medium text-intake-ink">{displayProfileName}</span>
-            </p>
-          ) : null}
-
-          {displayProfileName !== "In Balans" ? (
-            <Link
-              href={displayProfileSlugPath}
-              className="inline-block text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-            >
-              Lees meer over dit profiel →
-            </Link>
+            <>
+              <p className="mb-2 text-sm text-intake-ink-muted">
+                Profiel:{" "}
+                <span className="font-medium text-intake-ink">{displayProfileName}</span>
+              </p>
+              <Link
+                href={displayProfileSlugPath}
+                className="inline-block text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+              >
+                Lees meer over dit profiel →
+              </Link>
+            </>
           ) : null}
 
           {isOvertrainerProfile ? (
-            <p className="mt-3">
+            <p className="mt-2">
               <Link
                 href="/gids/herstel"
                 className="text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
@@ -391,267 +362,31 @@ export default function IntakeResults({
           ) : null}
         </header>
 
-        {attentionPoints.length > 0 ? (
-          <section className={`${CARD_CLASS} mb-6`}>
-            <h2 className="mb-3 text-sm font-semibold text-intake-ink">
-              Wat we zien
-            </h2>
-            <p className="mb-4 text-sm leading-relaxed text-intake-ink-muted">
-              Op basis van je antwoorden valt op:
+        <div className="mb-5">
+          <IntakeResultPreviewCard variant="live" rows={summaryRows} />
+        </div>
+
+        {primaryQuickWin ? (
+          <section className="mb-5 rounded-2xl border border-intake-card-border bg-intake-bg-elevated p-5">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
+              Start deze week
             </p>
-            <ul className="space-y-2">
-              {attentionPoints.map((point) => (
-                <li key={point.label} className="text-sm text-intake-ink-muted">
-                  <span className="font-medium text-intake-ink">{point.label}</span>
-                  {" — "}
-                  {point.status === "Prioriteit" ? "prioriteit" : "aandachtspunt"}
-                </li>
-              ))}
-            </ul>
+            <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
+              {primaryQuickWin}
+            </p>
           </section>
         ) : null}
 
-        <section className="mb-6">
-          <FoundationPyramid
-            mode="personalized"
-            pillarStatuses={pillarStatuses}
-            onPillarClick={setActivePillar}
-          />
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <StatusPill
-              label="Energie"
-              status={getDisplayStatus(scores.energy_score)}
-            />
-            <StatusPill
-              label="Herstel"
-              status={getDisplayStatus(scores.recovery_score)}
-            />
-          </div>
-        </section>
-
-        {kennisbankLinks.length > 0 ? (
-          <section className={CARD_CLASS}>
-            <p className="m-0 text-sm font-semibold text-intake-ink">
-              Wil je meer context?
-            </p>
-            <ul className="mt-3 space-y-2">
-              {kennisbankLinks.map((link) => (
-                <li key={link.href} className="text-sm text-intake-ink-muted">
-                  <span className="text-intake-ink-subtle">{link.domainLabel}: </span>
-                  <Link
-                    href={link.href}
-                    className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        <section className={CARD_CLASS}>
-          <div className="mb-4 flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-intake-sage/15 text-base">
-              ⚡
-            </div>
-            <div>
-              <h2 className="text-[15px] font-bold text-intake-ink">Quick Wins</h2>
-              <p className="text-xs text-intake-ink-subtle">Week 1 — start hier</p>
-            </div>
-          </div>
-          {quickWins.map((tip, i) => (
-            <div
-              key={`qw-${i}`}
-              className={`flex gap-3 py-3 ${i > 0 ? "border-t border-intake-divider" : ""}`}
-            >
-              <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-intake-sage text-xs font-bold text-white">
-                {i + 1}
-              </div>
-              <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">{tip}</p>
-            </div>
-          ))}
-        </section>
-
-        {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
-          <section className="mb-4 rounded-2xl border border-intake-terra/30 bg-intake-terra/10 p-4">
-            <h3 className="font-semibold text-intake-ink">Eiwit als aandachtspunt</h3>
-            <p className="mt-1 text-sm leading-relaxed text-intake-ink-muted">
-              Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
-              dag, wat het onderhouden van spiermassa lastiger maakt.
-              {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
-                (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
-                <>
-                  {" "}
-                  Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
-                  spieronderhoud.
-                </>
-              ) : null}
-            </p>
-            <p className="mt-2 text-sm text-intake-ink-muted">
-              <Link
-                href="/blog/eiwit-na-40"
-                className="font-medium text-intake-sage underline underline-offset-2"
-              >
-                Lees: eiwit na 40
-              </Link>
-              {" · "}
-              <Link
-                href="/kennisbank/eiwitbehoefte-na-40"
-                className="font-medium text-intake-sage underline underline-offset-2"
-              >
-                Kennisbank
-              </Link>
-            </p>
-            {deficiencySignals.protein_gap_signal ? (
-              <p className="mt-3 text-sm text-intake-ink-muted">
-                <Link
-                  href="/beste/eiwitpoeder"
-                  className="font-medium text-intake-sage underline underline-offset-2"
-                >
-                  Vergelijk eiwitpoeders →
-                </Link>
-              </p>
-            ) : null}
-          </section>
-        ) : null}
-
-        <section className={CARD_CLASS}>
-          <div className="mb-4 flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-intake-terra/15 text-base">
-              💊
-            </div>
-            <div>
-              <h2 className="text-[15px] font-bold text-intake-ink">
-                Supplementen om te verkennen
-              </h2>
-              <p className="text-xs text-intake-ink-subtle">
-                Max. 2–3 routes — alleen waar patronen op wijzen
-              </p>
-            </div>
-          </div>
-          <SupplementAdviceDisclaimer variant="profile" />
-          <SupplementRoute recommendations={supplementRoute} scores={scores} />
-          <p className="mt-4 text-sm text-intake-ink-muted">
-            Vragen?{" "}
-            <Link
-              href="/contact"
-              className="font-medium text-intake-sage underline-offset-2 hover:underline"
-            >
-              Stel ze →
-            </Link>
-          </p>
-        </section>
-
-        {FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ? (
-          <FoundationStack excludeIds={excludeIds} />
-        ) : null}
-
-        {(deficiencySignals.omega3_deficiency ||
-          deficiencySignals.magnesium_signal ||
-          deficiencySignals.creatine_signal ||
-          deficiencySignals.melatonine_signal ||
-          deficiencySignals.protein_gap_signal ||
-          zinkSignal) && (
-          <section className={CARD_CLASS}>
-            <h2 className="mb-3 text-[15px] font-bold text-intake-ink">
-              Vergelijkingen om te bekijken
-            </h2>
-            <SupplementAdviceDisclaimer variant="profile" />
-            <div className="space-y-2">
-              {deficiencySignals.omega3_deficiency && (
-                <Link
-                  href="/beste/omega-3-supplement"
-                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
-                >
-                  <span className="font-medium">Omega-3 vergelijking</span>
-                  <span className="text-intake-ink-subtle">→</span>
-                </Link>
-              )}
-              {deficiencySignals.magnesium_signal && (
-                <Link
-                  href="/beste/magnesium"
-                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
-                >
-                  <span className="font-medium">Magnesium vergelijking</span>
-                  <span className="text-intake-ink-subtle">→</span>
-                </Link>
-              )}
-              {deficiencySignals.creatine_signal && (
-                <Link
-                  href="/beste/creatine"
-                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
-                >
-                  <span className="font-medium">Creatine vergelijking</span>
-                  <span className="text-intake-ink-subtle">→</span>
-                </Link>
-              )}
-              {deficiencySignals.melatonine_signal && (
-                <Link
-                  href="/beste/melatonine"
-                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
-                >
-                  <span className="font-medium">Melatonine vergelijking</span>
-                  <span className="text-intake-ink-subtle">→</span>
-                </Link>
-              )}
-              {deficiencySignals.protein_gap_signal && (
-                <Link
-                  href="/beste/eiwitpoeder"
-                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
-                >
-                  <span className="font-medium">Eiwitpoeder vergelijking</span>
-                  <span className="text-intake-ink-subtle">→</span>
-                </Link>
-              )}
-              {zinkSignal && (
-                <Link
-                  href="/beste/zink"
-                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
-                >
-                  <span className="font-medium">Zink vergelijking</span>
-                  <span className="text-intake-ink-subtle">→</span>
-                </Link>
-              )}
-            </div>
-          </section>
-        )}
-
-        <section className={CARD_CLASS}>
-          <div className="mb-4 flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-intake-terra/15 text-base">
-              📈
-            </div>
-            <div>
-              <h2 className="text-[15px] font-bold text-intake-ink">
-                12-weken richting
-              </h2>
-              <p className="text-xs text-intake-ink-subtle">
-                Week 1: quick wins · week 2–4: leefstijl · week 5–12: gerichte aanvulling
-              </p>
-            </div>
-          </div>
-          {longTermTips.map((tip, i) => (
-            <div
-              key={`lt-${i}`}
-              className={`flex gap-3 py-3 ${i > 0 ? "border-t border-intake-divider" : ""}`}
-            >
-              <div className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-intake-terra" />
-              <p className="m-0 text-sm leading-normal text-intake-ink-muted">{tip}</p>
-            </div>
-          ))}
-        </section>
-
-        <section className="mb-5 rounded-2xl border border-intake-card-border bg-intake-bg px-6 py-7 text-center">
+        <section className="mb-6 rounded-2xl border border-intake-card-border bg-intake-bg px-5 py-6 text-center">
           <h2 className="mb-1 text-[15px] font-semibold text-intake-ink">
-            Over 30 dagen opnieuw meten?
+            Bewaar dit overzicht
           </h2>
-          <p className="mb-5 text-[13px] text-intake-ink-subtle">
-            Zie wat er is verschoven — zonder totaalscore.
+          <p className="mb-4 text-[13px] text-intake-ink-subtle">
+            Geen spam — alleen een herinnering over 30 dagen om opnieuw te meten.
           </p>
           {emailSubmitted ? (
-            <div className="flex flex-col items-center gap-2 text-[15px] leading-snug text-intake-ink">
-              <span className="text-xl text-intake-sage" aria-hidden>
+            <div className="flex flex-col items-center gap-2 text-sm leading-snug text-intake-ink">
+              <span className="text-lg text-intake-sage" aria-hidden>
                 ✓
               </span>
               <p className="m-0">
@@ -690,22 +425,181 @@ export default function IntakeResults({
                     setEmailSubmitted(true);
                   })();
                 }}
-                className={`min-h-[44px] rounded-[10px] border-none px-8 py-3.5 text-sm font-bold text-white ${
+                className={`min-h-[44px] w-full rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white ${
                   isLooseEmailValid(reminderEmail)
                     ? "cursor-pointer opacity-100"
                     : "cursor-default opacity-50"
                 }`}
                 style={{ background: "#C8956C" }}
               >
-                Herinnering instellen
+                Stuur me een herinnering
               </button>
-              <p className="mt-2 text-center text-[11px] text-intake-ink-subtle">
-                Alleen voor je herinnering. Geen spam, geen nieuwsbrief.
-              </p>
             </>
           )}
         </section>
 
+        {/* Tier 2 — leefstijl details */}
+        <IntakeResultsSection
+          title="Meer over je leefstijl"
+          subtitle="Piramide, extra tips en 12-weken richting"
+          defaultOpen={hasMarketingEmail}
+        >
+          <div className="mb-5">
+            <FoundationPyramid
+              mode="personalized"
+              pillarStatuses={pillarStatuses}
+              onPillarClick={setActivePillar}
+            />
+          </div>
+
+          {extraQuickWins.length > 0 ? (
+            <div className="mb-5">
+              <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                Meer quick wins
+              </h3>
+              <ul className="space-y-3">
+                {extraQuickWins.map((tip, i) => (
+                  <li
+                    key={`qw-extra-${i}`}
+                    className="flex gap-3 text-sm leading-relaxed text-intake-ink-muted"
+                  >
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-intake-sage text-xs font-bold text-white">
+                      {i + 2}
+                    </span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {primaryLongTermTip ? (
+            <div>
+              <h3 className="mb-2 text-sm font-semibold text-intake-ink">
+                12-weken richting
+              </h3>
+              <p className="mb-3 text-sm leading-relaxed text-intake-ink-muted">
+                {primaryLongTermTip}
+              </p>
+              {extraLongTermTips.length > 0 ? (
+                <details className="group">
+                  <summary className="cursor-pointer list-none text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+                    Volledig 12-weken plan ▾
+                  </summary>
+                  <ul className="mt-3 space-y-2 border-t border-intake-divider pt-3">
+                    {extraLongTermTips.map((tip, i) => (
+                      <li
+                        key={`lt-extra-${i}`}
+                        className="text-sm leading-relaxed text-intake-ink-muted"
+                      >
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : null}
+            </div>
+          ) : null}
+        </IntakeResultsSection>
+
+        {/* Tier 3 — supplementen & verdieping */}
+        {hasExploreContent ? (
+          <IntakeResultsSection
+            title="Verder verkennen"
+            subtitle="Supplementen, kennisbank en basisadvies"
+          >
+            {supplementRoute.length > 0 ? (
+              <div className="mb-5">
+                <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                  Supplementen om te verkennen
+                </h3>
+                <SupplementAdviceDisclaimer variant="profile" />
+                <SupplementRoute recommendations={supplementRoute} scores={scores} />
+                <p className="mt-4 text-sm text-intake-ink-muted">
+                  Vragen?{" "}
+                  <Link
+                    href="/contact"
+                    className="font-medium text-intake-sage underline-offset-2 hover:underline"
+                  >
+                    Stel ze →
+                  </Link>
+                </p>
+              </div>
+            ) : null}
+
+            {FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ? (
+              <div className="mb-5">
+                <FoundationStack excludeIds={excludeIds} />
+              </div>
+            ) : null}
+
+            {kennisbankLinks.length > 0 ? (
+              <div className="mb-5">
+                <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                  Wil je meer context?
+                </h3>
+                <ul className="space-y-2">
+                  {kennisbankLinks.map((link) => (
+                    <li key={link.href} className="text-sm text-intake-ink-muted">
+                      <span className="text-intake-ink-subtle">{link.domainLabel}: </span>
+                      <Link
+                        href={link.href}
+                        className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
+              <section className="rounded-2xl border border-intake-terra/30 bg-intake-terra/10 p-4">
+                <h3 className="font-semibold text-intake-ink">Eiwit als aandachtspunt</h3>
+                <p className="mt-1 text-sm leading-relaxed text-intake-ink-muted">
+                  Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
+                  dag, wat het onderhouden van spiermassa lastiger maakt.
+                  {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
+                    (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
+                    <>
+                      {" "}
+                      Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
+                      spieronderhoud.
+                    </>
+                  ) : null}
+                </p>
+                <p className="mt-2 text-sm text-intake-ink-muted">
+                  <Link
+                    href="/blog/eiwit-na-40"
+                    className="font-medium text-intake-sage underline underline-offset-2"
+                  >
+                    Lees: eiwit na 40
+                  </Link>
+                  {" · "}
+                  <Link
+                    href="/kennisbank/eiwitbehoefte-na-40"
+                    className="font-medium text-intake-sage underline underline-offset-2"
+                  >
+                    Kennisbank
+                  </Link>
+                </p>
+                {deficiencySignals.protein_gap_signal ? (
+                  <p className="mt-3 text-sm text-intake-ink-muted">
+                    <Link
+                      href="/beste/eiwitpoeder"
+                      className="font-medium text-intake-sage underline underline-offset-2"
+                    >
+                      Vergelijk eiwitpoeders →
+                    </Link>
+                  </p>
+                ) : null}
+              </section>
+            ) : null}
+          </IntakeResultsSection>
+        ) : null}
+
+        {/* Footer */}
         <IntakeFeedback sessionId={sessionId} />
 
         <div className="mb-5">
