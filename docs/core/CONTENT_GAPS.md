@@ -6,11 +6,11 @@
 
 ---
 
-**Wave 5 (mei 2026) opgelost:**
-- `ComparisonProfileFits` component op alle 8 `/beste/*` pagina's — centrale mapping in `supplement-profile-fits.ts`
-- Homepage: `HomeThemeLinksSection` met 5 pillars incl. `/herstel-verbeteren-na-40`
-- Stress blog-categorie `themaHref` → `/stress-verminderen-man`
-- `buildDefinedTermSchema()` in `structuredData.ts` — kennisbank-term pagina's
+**Wave 6 (mei 2026) opgelost:**
+- `ComparisonProfileFits` op alle 8 `/supplementen/*` gidsen
+- Homepage: profiel-strip met link naar `/profiel` + 4 profielkaarten
+- Blog-categorie supplementen `themaHref` → `/supplementen`
+- `buildFaqSchema()` gedeeld door vergelijkingen (`FaqSection`) en supplement-gidsen
 
 ---
 
@@ -20,7 +20,7 @@
 |---|---|
 | `/beste/zink` | Extra profiel-pagina's (stressdrager) — ✅ via ComparisonProfileFits |
 | `/beste/melatonine` | Slaap-blogs, profiel onrustige-slaper — ✅ via ComparisonProfileFits |
-| `/beste/eiwitpoeder` | Energie-blogs, pillar herstel — ✅ readAlsoCards + profiel-fits |
+| `/profiel` | ✅ Homepage profiel-strip (Wave 6) |
 
 **Wave 1 (mei 2026) opgelost:**
 - Cortisol-blogs → `/kennisbank/cortisol` + `/kennisbank/hpa-as`
@@ -130,7 +130,8 @@ Cross-links toegevoegd; geen redirects nodig (verschillende zoekintentie).
 - [ ] Geen broken interne links (run `npm run build` — na deploy verifiëren)
 - [ ] Content-map bijgewerkt na elke nieuwe pagina
 - [x] Kennisbank-termen whyItMatters markdown-links renderen (Wave 4)
-- [x] Nieuwe vergelijkingen (melatonine, eiwitpoeder) opgenomen in profieldata
+- [x] FAQ schema op vergelijkingen via gecentraliseerde `buildFaqSchema` (Wave 6)
+- [x] Supplement-gidsen hebben "past bij profiel X" blok (Wave 6)
 
 ---
 
