@@ -43,19 +43,29 @@ export default function IntakeIntro({
   return (
     <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-16 text-center">
       <div className="flex w-full max-w-lg flex-col items-center gap-8 md:gap-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-intake-ink-subtle">
-          <span className="text-intake-terra">01</span> · Leefstijlcheck
+        <p
+          className="text-sm font-semibold uppercase"
+          style={{ letterSpacing: "0.2em", color: "rgba(255,255,255,0.5)" }}
+        >
+          Leefstijlcheck
         </p>
 
         <div className="flex flex-col gap-4">
           <h1
-            className="font-serif text-3xl font-normal leading-tight text-intake-ink md:text-4xl"
-            style={{ letterSpacing: "-0.01em" }}
+            className="text-3xl font-normal leading-tight md:text-4xl"
+            style={{
+              fontFamily: "var(--font-intake-heading), Georgia, serif",
+              color: "rgba(255,255,255,0.95)",
+              letterSpacing: "-0.01em",
+            }}
           >
             Moe, wazig of altijd <em className="italic">aan</em>?
           </h1>
 
-          <p className="mx-auto max-w-md text-lg leading-relaxed text-intake-ink-muted">
+          <p
+            className="mx-auto max-w-md text-lg leading-relaxed"
+            style={{ color: "rgba(255,255,255,0.6)" }}
+          >
             In 3 minuten krijg je een helder beeld van waar je leefstijl staat —
             en wat je deze week kunt doen.
           </p>
@@ -63,8 +73,14 @@ export default function IntakeIntro({
 
         <IntakeResultPreviewCard />
 
-        <details className="max-w-md text-left text-xs leading-relaxed text-intake-ink-subtle">
-          <summary className="cursor-pointer list-none text-center text-intake-ink-muted [&::-webkit-details-marker]:hidden">
+        <details
+          className="max-w-md text-left text-xs"
+          style={{ color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}
+        >
+          <summary
+            className="cursor-pointer list-none text-center [&::-webkit-details-marker]:hidden"
+            style={{ color: "rgba(255,255,255,0.45)" }}
+          >
             Wat doen we met je antwoorden?
           </summary>
           <ul className="mt-3 space-y-2 pl-4">
@@ -78,7 +94,11 @@ export default function IntakeIntro({
               Meer in onze{" "}
               <Link
                 href="/privacy"
-                className="text-intake-ink-muted underline underline-offset-[3px] hover:text-intake-ink"
+                style={{
+                  color: "rgba(255,255,255,0.55)",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                }}
               >
                 privacyverklaring
               </Link>
@@ -90,18 +110,19 @@ export default function IntakeIntro({
         <button
           type="button"
           onClick={onStart}
-          className="min-h-[44px] w-full max-w-sm cursor-pointer rounded-[14px] bg-intake-terra px-12 py-4 text-base font-semibold text-white transition-all duration-200 hover:brightness-110"
+          className="mt-2 min-h-[44px] w-full max-w-sm cursor-pointer rounded-[14px] border border-[#C8956C] px-12 py-4 text-base font-semibold text-white transition-all duration-200 hover:brightness-110"
+          style={{ fontFamily: "inherit", background: "#C8956C" }}
         >
           Start de Leefstijlcheck →
         </button>
 
-        <ul className="flex flex-col items-center gap-2 text-sm text-intake-ink-subtle sm:flex-row sm:gap-4">
+        <ul
+          className="flex flex-col items-center gap-2 text-sm sm:flex-row sm:gap-4"
+          style={{ color: "rgba(255,255,255,0.4)" }}
+        >
           {THRESHOLD_ITEMS.map((item) => (
             <li key={item} className="flex items-center gap-2">
-              <span
-                className="text-intake-sage"
-                aria-hidden
-              >
+              <span aria-hidden style={{ color: "rgba(255,255,255,0.5)" }}>
                 ✓
               </span>
               <span>{item}</span>
@@ -113,7 +134,17 @@ export default function IntakeIntro({
           <button
             type="button"
             onClick={onResumeLastResults}
-            className="cursor-pointer border-none bg-transparent text-[13px] text-intake-ink-subtle underline underline-offset-[3px] decoration-intake-divider hover:text-intake-ink-muted"
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: 13,
+              color: "rgba(255,255,255,0.35)",
+              cursor: "pointer",
+              textDecoration: "underline",
+              textDecorationColor: "rgba(255,255,255,0.15)",
+              textUnderlineOffset: 3,
+              fontFamily: "inherit",
+            }}
           >
             Laatste meting:{" "}
             {new Date(lastSession.timestamp).toLocaleDateString("nl-NL", {

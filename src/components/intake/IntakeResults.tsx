@@ -690,11 +690,12 @@ export default function IntakeResults({
                     setEmailSubmitted(true);
                   })();
                 }}
-                className={`min-h-[44px] rounded-[10px] border-none bg-intake-terra px-8 py-3.5 text-sm font-bold text-white ${
+                className={`min-h-[44px] rounded-[10px] border-none px-8 py-3.5 text-sm font-bold text-white ${
                   isLooseEmailValid(reminderEmail)
                     ? "cursor-pointer opacity-100"
                     : "cursor-default opacity-50"
                 }`}
+                style={{ background: "#C8956C" }}
               >
                 Herinnering instellen
               </button>

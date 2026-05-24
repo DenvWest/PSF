@@ -13,8 +13,8 @@ const PREVIEW_ROWS: PreviewRow[] = [
 
 const TONE_CLASS: Record<PreviewRow["tone"], string> = {
   sage: "border-intake-sage/40 bg-intake-sage/15 text-intake-sage",
-  neutral: "border-intake-card-border bg-intake-bg text-intake-ink-muted",
-  terra: "border-intake-terra/40 bg-intake-terra/15 text-intake-terra",
+  neutral: "border-intake-card-border bg-white/5 text-intake-ink-muted",
+  terra: "border-[#C8956C]/40 bg-[#C8956C]/15 text-[#C8956C]",
 };
 
 export default function IntakeResultPreviewCard() {
@@ -30,7 +30,7 @@ export default function IntakeResultPreviewCard() {
         {PREVIEW_ROWS.map((row) => (
           <li
             key={row.label}
-            className="flex items-center justify-between gap-3 rounded-xl border border-intake-divider bg-intake-bg/60 px-3.5 py-2.5"
+            className="flex items-center justify-between gap-3 rounded-xl border border-intake-divider bg-white/[0.03] px-3.5 py-2.5"
           >
             <span className="text-sm font-medium text-intake-ink">{row.label}</span>
             <span
