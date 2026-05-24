@@ -4,12 +4,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
 import { CATEGORIES, type CategoryId } from "@/data/intake-questions";
-import type { DomainId, DomainScores } from "@/lib/intake-engine";
+import {
+  getPillarById,
+  PILLAR_DRAWER_FALLBACKS,
+  PILLAR_SCORE_KEYS,
+  type PillarDrawerLink,
+  type PillarId,
+} from "@/data/foundation-pyramid";
+import type { DomainScores } from "@/lib/intake-engine";
 import {
   getAdvice,
   getDeficiencySignals,
   getProfileLabel,
-  getUrgency,
 } from "@/lib/intake-engine";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import SupplementAdviceDisclaimer from "@/components/intake/SupplementAdviceDisclaimer";
@@ -17,11 +23,24 @@ import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import FoundationStack from "@/components/intake/FoundationStack";
 import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
-import ScoreRing from "@/components/intake/ScoreRing";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
-import { getPrimaryDomainBandSentence } from "@/lib/score-bands";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
+import FoundationPyramid, {
+  type PillarStatus,
+} from "@/components/pyramid/FoundationPyramid";
+import PyramidPillarDrawer, {
+  type PillarDrawerData,
+  type PillarDrawerStatus,
+} from "@/components/pyramid/PyramidPillarDrawer";
+import {
+  getConnectionFraming,
+  getDisplayStatus,
+  getDisplayStatusFraming,
+  getDisplayStatusTone,
+  STATUS_TONE_CLASS,
+  type DisplayStatus,
+} from "@/lib/score-display";
 
 const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
   sleep_score: "slaap",
@@ -32,15 +51,6 @@ const DOMAIN_SCORE_TO_CAT: Record<keyof DomainScores, CategoryId> = {
   recovery_score: "herstel",
 };
 
-const PROFILE_DOMAIN_TO_CAT: Record<DomainId, CategoryId> = {
-  sleep: "slaap",
-  energy: "energie",
-  stress: "stress",
-  nutrition: "voeding",
-  movement: "beweging",
-  recovery: "herstel",
-};
-
 const DOMAIN_KEYS: (keyof DomainScores)[] = [
   "sleep_score",
   "energy_score",
@@ -49,6 +59,17 @@ const DOMAIN_KEYS: (keyof DomainScores)[] = [
   "movement_score",
   "recovery_score",
 ];
+
+const SUPPLEMENT_PILLAR: Record<string, PillarId> = {
+  "magnesium-glycinaat": "sleep",
+  melatonine: "sleep",
+  "omega-3": "nutrition",
+  creatine: "movement",
+  zink: "nutrition",
+};
+
+const CARD_CLASS =
+  "mb-4 rounded-2xl border border-intake-card-border bg-intake-bg-elevated p-6";
 
 const REVOKE_CONFIRM =
   "Weet je het zeker? Je intake-antwoorden worden geanonimiseerd. Een anonieme sessie-id blijft bewaard voor statistiek.";
@@ -68,13 +89,176 @@ type IntakeResultsProps = {
   sessionId: string | null;
   firstName?: string | null;
   onRestart?: () => void;
-  /** Na succesvol intrekken van toestemming (serverdata geanonimiseerd). */
   onConsentRevoked?: () => void;
 };
 
 function isLooseEmailValid(value: string): boolean {
   const t = value.trim();
   return t.includes("@") && t.includes(".");
+}
+
+function buildPillarStatuses(
+  scores: DomainScores,
+): Partial<Record<PillarId, PillarStatus>> {
+  return {
+    stress: getDisplayStatus(scores.stress_score),
+    sleep: getDisplayStatus(scores.sleep_score),
+    nutrition: getDisplayStatus(scores.nutrition_score),
+    movement: getDisplayStatus(scores.movement_score),
+    connection: "Niet gemeten",
+  };
+}
+
+function getAttentionPoints(
+  scores: DomainScores,
+): { label: string; status: DisplayStatus }[] {
+  return DOMAIN_KEYS.map((key) => ({
+    label:
+      CATEGORIES.find((c) => c.id === DOMAIN_SCORE_TO_CAT[key])?.label ?? key,
+    status: getDisplayStatus(scores[key]),
+    score: scores[key],
+  }))
+    .filter(
+      (entry) => entry.status === "Aandacht" || entry.status === "Prioriteit",
+    )
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 2)
+    .map(({ label, status }) => ({ label, status }));
+}
+
+function buildPillarDrawerData(options: {
+  pillarId: PillarId;
+  scores: DomainScores;
+  profileSlug: string;
+  profileName: string;
+  supplementLinks: PillarDrawerLink[];
+}): PillarDrawerData | null {
+  const pillar = getPillarById(options.pillarId);
+  if (!pillar) {
+    return null;
+  }
+
+  const fallback = PILLAR_DRAWER_FALLBACKS[options.pillarId];
+  const scoreKey = PILLAR_SCORE_KEYS[options.pillarId];
+
+  let status: PillarDrawerStatus = "Niet gemeten";
+  let explanation = getConnectionFraming();
+
+  if (scoreKey) {
+    status = getDisplayStatus(options.scores[scoreKey]);
+    explanation = getDisplayStatusFraming(pillar.label, status);
+  }
+
+  const links: PillarDrawerLink[] = [];
+
+  if (
+    fallback.profileSlugs?.some((slug) => options.profileSlug.includes(slug))
+  ) {
+    links.push({
+      label: `Profiel: ${options.profileName}`,
+      href: `/profiel/${options.profileSlug}`,
+    });
+  }
+
+  if (fallback.guideHref) {
+    links.push({
+      label: "Gratis gids",
+      href: fallback.guideHref,
+    });
+  }
+
+  for (const link of options.supplementLinks) {
+    if (links.length >= 4) {
+      break;
+    }
+    if (!links.some((existing) => existing.href === link.href)) {
+      links.push(link);
+    }
+  }
+
+  return {
+    pillarLabel: pillar.label,
+    pillarSublabel: pillar.sublabel,
+    status,
+    explanation,
+    quickWins: [...fallback.quickWins].slice(0, 3),
+    links,
+  };
+}
+
+function buildPillarSupplementLinks(
+  supplementRoute: ReturnType<typeof getSupplementRoute>,
+  deficiencySignals: ReturnType<typeof getDeficiencySignals>,
+): Partial<Record<PillarId, PillarDrawerLink[]>> {
+  const links: Partial<Record<PillarId, PillarDrawerLink[]>> = {};
+
+  for (const route of supplementRoute) {
+    const pillar = SUPPLEMENT_PILLAR[route.id];
+    if (!pillar) {
+      continue;
+    }
+    const entry = links[pillar] ?? [];
+    entry.push({
+      label: `Vergelijk ${route.name}`,
+      href: route.affiliateUrl,
+    });
+    links[pillar] = entry;
+  }
+
+  const signalLinks: Array<{ pillar: PillarId; label: string; href: string }> = [
+    { pillar: "nutrition", label: "Vergelijk omega-3", href: "/beste/omega-3-supplement" },
+    { pillar: "sleep", label: "Vergelijk magnesium", href: "/beste/magnesium" },
+    { pillar: "movement", label: "Vergelijk creatine", href: "/beste/creatine" },
+    { pillar: "sleep", label: "Vergelijk melatonine", href: "/beste/melatonine" },
+    { pillar: "nutrition", label: "Vergelijk eiwitpoeder", href: "/beste/eiwitpoeder" },
+  ];
+
+  const appendLink = (pillar: PillarId, link: PillarDrawerLink) => {
+    const entry = links[pillar] ?? [];
+    if (!entry.some((existing) => existing.href === link.href)) {
+      entry.push(link);
+    }
+    links[pillar] = entry;
+  };
+
+  if (deficiencySignals.omega3_deficiency) {
+    appendLink(signalLinks[0].pillar, signalLinks[0]);
+  }
+  if (deficiencySignals.magnesium_signal) {
+    appendLink(signalLinks[1].pillar, signalLinks[1]);
+  }
+  if (deficiencySignals.creatine_signal) {
+    appendLink(signalLinks[2].pillar, signalLinks[2]);
+  }
+  if (deficiencySignals.melatonine_signal) {
+    appendLink(signalLinks[3].pillar, signalLinks[3]);
+  }
+  if (deficiencySignals.protein_gap_signal) {
+    appendLink(signalLinks[4].pillar, signalLinks[4]);
+  }
+
+  return links;
+}
+
+function StatusPill({
+  label,
+  status,
+}: {
+  label: string;
+  status: DisplayStatus | "Niet gemeten";
+}) {
+  const tone =
+    status === "Niet gemeten" ? "neutral" : getDisplayStatusTone(status);
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-intake-divider bg-intake-bg/60 px-3.5 py-2.5">
+      <span className="text-sm font-medium text-intake-ink">{label}</span>
+      <span
+        className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${STATUS_TONE_CLASS[tone]}`}
+      >
+        {status}
+      </span>
+    </div>
+  );
 }
 
 export default function IntakeResults({
@@ -96,8 +280,8 @@ export default function IntakeResults({
     kind: "success" | "error";
     text: string;
   } | null>(null);
+  const [activePillar, setActivePillar] = useState<PillarId | null>(null);
 
-  const urgency = getUrgency(scores);
   const profile = getProfileLabel(scores);
   const advice = getAdvice(scores, answers, symptoms);
   const quickWins = advice.quickWins.slice(0, 3);
@@ -110,38 +294,40 @@ export default function IntakeResults({
     answers,
   );
   const excludeIds = supplementRoute.map((r) => r.id);
-  const foundationItems = FOUNDATION_STACK.filter(
-    (f) => !excludeIds.includes(f.id),
-  );
-  const sortedDomainEntries = [...DOMAIN_KEYS]
-    .map((key) => ({
-      key,
-      score: scores[key],
-      catId: DOMAIN_SCORE_TO_CAT[key],
-    }))
-    .sort((a, b) => a.score - b.score);
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
+  const lowestDomainKey = [...DOMAIN_KEYS].sort(
+    (a, b) => scores[a] - scores[b],
+  )[0];
   const zinkSignal =
     scores.recovery_score < 40 ||
     scores.nutrition_score < 40 ||
-    sortedDomainEntries[0].catId === "herstel";
+    lowestDomainKey === "recovery_score";
 
   const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
   const displayProfileName = isOvertrainerProfile ? "Overtrainer" : profile.name;
-  const primaryCatIdForUi: CategoryId = isOvertrainerProfile
-    ? "herstel"
-    : PROFILE_DOMAIN_TO_CAT[profile.domain];
-  const primaryCategoryForUi = CATEGORIES.find((c) => c.id === primaryCatIdForUi);
-  const displayProfileSlugPath = isOvertrainerProfile
-    ? "/profiel/overtrainer"
-    : `/profiel/${profile.name
+  const displayProfileSlug = isOvertrainerProfile
+    ? "overtrainer"
+    : profile.name
         .toLowerCase()
         .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "")}`;
+        .replace(/[^a-z0-9-]/g, "");
+  const displayProfileSlugPath = `/profiel/${displayProfileSlug}`;
 
-  const overall = Math.round(
-    DOMAIN_KEYS.reduce((sum, k) => sum + scores[k], 0) / DOMAIN_KEYS.length,
+  const pillarStatuses = buildPillarStatuses(scores);
+  const attentionPoints = getAttentionPoints(scores);
+  const pillarSupplementLinks = buildPillarSupplementLinks(
+    supplementRoute,
+    deficiencySignals,
   );
+  const activeDrawerData = activePillar
+    ? buildPillarDrawerData({
+        pillarId: activePillar,
+        scores,
+        profileSlug: displayProfileSlug,
+        profileName: displayProfileName,
+        supplementLinks: pillarSupplementLinks[activePillar] ?? [],
+      })
+    : null;
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".intake-layout-header");
@@ -151,568 +337,485 @@ export default function IntakeResults({
     };
   }, []);
 
+  const heroTitle = firstName
+    ? `Jouw vitaliteitsprofiel, ${firstName}`
+    : "Jouw vitaliteitsprofiel";
+
   return (
     <>
       <Link
         href="/"
-        style={{
-          position: "fixed",
-          top: 16,
-          right: 16,
-          zIndex: 50,
-          color: "rgba(255,255,255,0.4)",
-          fontSize: 13,
-          lineHeight: 1,
-          textDecoration: "none",
-          letterSpacing: "0.01em",
-          padding: "4px 8px",
-        }}
+        className="fixed right-4 top-4 z-50 px-1 py-1 text-[13px] text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
         aria-label="Sluiten"
       >
         ✕ Sluiten
       </Link>
-      <div
-        className="px-6 pb-10 pt-8"
-        style={{ maxWidth: 480, margin: "0 auto", boxSizing: "border-box", width: "100%" }}
-      >
-      <div className="mb-9 text-center">
-        <p
-          className="mb-3 text-xs font-semibold uppercase tracking-[1.5px]"
-          style={{ color: "rgba(255,255,255,0.4)" }}
-        >
-          JOUW LEEFSTIJL-OVERZICHT
-        </p>
-        <h1
-          className="mb-1.5 text-[30px] font-normal"
-          style={{
-            fontFamily: "var(--font-intake-heading), Georgia, serif",
-            color: "rgba(255,255,255,0.92)",
-          }}
-        >
-          Patroon: {displayProfileName}
-        </h1>
-        <p
-          className="mb-3 text-[13px] leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.4)" }}
-        >
-          Dit is een herkenningspatroon dat we onder mannen 40+ vaak zien — geen
-          medische diagnose.
-        </p>
-        {firstName ? (
-          <p
-            className="mb-1.5 text-base"
-            style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}
-          >
-            Voor {firstName}
+
+      <div className="mx-auto box-border w-full max-w-[480px] px-6 pb-10 pt-8">
+        <header className="mb-9 text-center">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
+            <span className="text-intake-terra">03</span> · Jouw leefstijl-overzicht
           </p>
-        ) : null}
-        {displayProfileName !== "In Balans" && (
-          <Link
-            href={displayProfileSlugPath}
-            target="_blank"
-            className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
-          >
-            Lees meer over dit profiel →
-          </Link>
-        )}
-        {isOvertrainerProfile ? (
-          <p className="mt-3">
+          <h1 className="mb-2 font-serif text-[30px] font-normal leading-tight text-intake-ink">
+            {heroTitle}
+          </h1>
+          <p className="mb-4 text-sm leading-relaxed text-intake-ink-muted">
+            Op basis van je antwoorden — geen medische diagnose.
+          </p>
+
+          {displayProfileName !== "In Balans" ? (
+            <p className="mb-2 text-sm text-intake-ink-muted">
+              Dit profiel zien we vaker:{" "}
+              <span className="font-medium text-intake-ink">{displayProfileName}</span>
+            </p>
+          ) : null}
+
+          {displayProfileName !== "In Balans" ? (
             <Link
-              href="/gids/herstel"
-              target="_blank"
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium hover:underline"
+              href={displayProfileSlugPath}
+              className="inline-block text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
             >
-              Gratis Herstelgids + thema herstel →
+              Lees meer over dit profiel →
             </Link>
-          </p>
-        ) : null}
-        <p className="mb-5 text-[15px]" style={{ color: "rgba(255,255,255,0.55)" }}>
-          {getPrimaryDomainBandSentence(
-            primaryCategoryForUi?.label ?? profile.domain,
-          )}
-        </p>
-        <div
-          className="inline-flex items-center gap-2 rounded-lg border px-4 py-2"
-          style={{
-            background: `${urgency.color}15`,
-            borderColor: `${urgency.color}30`,
-          }}
-        >
-          <div
-            className="h-2 w-2 rounded"
-            style={{ background: urgency.color }}
-          />
-          <span
-            className="text-[13px] font-semibold"
-            style={{ color: urgency.color }}
-          >
-            {urgency.label}
-          </span>
-        </div>
-      </div>
+          ) : null}
 
-      <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white px-6 py-7 text-center">
-        <div className="flex justify-center">
-          <ScoreRing score={overall} size={96} stroke={6} color="#1a1a1a" showBand />
-        </div>
-        <div className="mt-3 text-[13px] font-semibold tracking-wide text-[#999]">
-          TOTAALBEELD
-        </div>
-      </div>
-
-      <div className="mb-7 grid grid-cols-3 gap-2.5">
-        {sortedDomainEntries.map(({ key, score, catId }) => {
-          const cat = CATEGORIES.find((c) => c.id === catId);
-          if (!cat) {
-            return null;
-          }
-          return (
-            <div
-              key={key}
-              className="rounded-[14px] bg-white px-3 py-5 text-center"
-              style={{
-                border: "1px solid #e8e6e1",
-                borderLeft: `3px solid ${cat.color}`,
-              }}
-            >
-              <div className="flex justify-center">
-                <ScoreRing score={score} size={52} stroke={4} color={cat.color} showBand />
-              </div>
-              <div className="mt-2 text-[11px] font-semibold tracking-wide text-[#888]">
-                {cat.icon} {cat.label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {kennisbankLinks.length > 0 ? (
-        <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-5">
-          <p className="m-0 text-sm font-semibold text-[#444]">
-            Wil je begrijpen wat achter je scores zit?
-          </p>
-          <ul className="mt-3 space-y-2">
-            {kennisbankLinks.map((link) => (
-              <li key={link.href} className="text-sm text-[#666]">
-                <span className="text-[#888]">{link.domainLabel}: </span>
-                <Link
-                  href={link.href}
-                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] hover:decoration-ps-green"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
-        <div className="mb-4 flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ps-green/10 text-base">
-            ⚡
-          </div>
-          <div>
-            <div className="text-[15px] font-bold">Quick Wins</div>
-            <div className="text-xs text-[#999]">Start hier — deze week nog</div>
-          </div>
-        </div>
-        {quickWins.map((tip, i) => (
-          <div
-            key={`qw-${i}`}
-            className={`flex gap-3 py-3 ${i > 0 ? "border-t border-[#f0ede8]" : ""}`}
-          >
-            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ps-green text-xs font-bold text-white">
-              {i + 1}
-            </div>
-            <p className="m-0 text-sm leading-relaxed text-[#444]">{tip}</p>
-          </div>
-        ))}
-      </div>
-
-      {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
-        <div className="mb-4 border-l-4 border-amber-400 rounded-r-lg bg-amber-50 p-4">
-          <h3 className="font-semibold text-amber-800">
-            Eiwit als aandachtspunt
-          </h3>
-          <p className="mt-1 text-amber-700">
-            Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
-            dag, wat het onderhouden van spiermassa lastiger maakt.
-            {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
-              (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
-              <>
-                {" "}
-                Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
-                spieronderhoud.
-              </>
-            ) : null}
-          </p>
-          <p className="mt-2 text-sm text-amber-700">
-            <Link
-              href="/blog/eiwit-na-40"
-              className="font-medium underline underline-offset-2 hover:text-amber-900"
-            >
-              Lees: eiwit na 40 — hoeveel je écht nodig hebt
-            </Link>
-            {" · "}
-            <Link
-              href="/kennisbank/eiwitbehoefte-na-40"
-              className="font-medium underline underline-offset-2 hover:text-amber-900"
-            >
-              Eiwitbehoefte in de kennisbank
-            </Link>
-          </p>
-          <p className="mt-2 text-sm text-amber-700">
-            <strong>Quick win:</strong> Begin elke maaltijd eiwitrijk. Denk aan
-            zuivel, eieren, vis, peulvruchten of vegetarisch.
-          </p>
-          <p className="mt-2 text-sm text-amber-700">
-            <em>Wil je het zeker weten?</em> Een diëtist of huisarts kan je
-            inname meetbaar maken.
-          </p>
-          {deficiencySignals.protein_gap_signal ? (
-            <p className="mt-3 text-sm text-amber-800">
-              Poeder handig als aanvulling?{" "}
+          {isOvertrainerProfile ? (
+            <p className="mt-3">
               <Link
-                href="/beste/eiwitpoeder"
-                className="font-medium underline underline-offset-2 hover:text-amber-900"
+                href="/gids/herstel"
+                className="text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
               >
-                Vergelijk eiwitpoeders
+                Gratis Herstelgids →
               </Link>
             </p>
           ) : null}
-        </div>
-      ) : null}
+        </header>
 
-      <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
-        <div className="mb-4 flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#C4873B18] text-base">
-            💊
+        {attentionPoints.length > 0 ? (
+          <section className={`${CARD_CLASS} mb-6`}>
+            <h2 className="mb-3 text-sm font-semibold text-intake-ink">
+              Wat we zien
+            </h2>
+            <p className="mb-4 text-sm leading-relaxed text-intake-ink-muted">
+              Op basis van je antwoorden valt op:
+            </p>
+            <ul className="space-y-2">
+              {attentionPoints.map((point) => (
+                <li key={point.label} className="text-sm text-intake-ink-muted">
+                  <span className="font-medium text-intake-ink">{point.label}</span>
+                  {" — "}
+                  {point.status === "Prioriteit" ? "prioriteit" : "aandachtspunt"}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        <section className="mb-6">
+          <FoundationPyramid
+            mode="personalized"
+            pillarStatuses={pillarStatuses}
+            onPillarClick={setActivePillar}
+          />
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <StatusPill
+              label="Energie"
+              status={getDisplayStatus(scores.energy_score)}
+            />
+            <StatusPill
+              label="Herstel"
+              status={getDisplayStatus(scores.recovery_score)}
+            />
           </div>
-          <div>
-            <div className="text-[15px] font-bold">Supplementen om te verkennen</div>
-            <div className="text-xs text-[#999]">Mogelijk relevant bij jouw patronen</div>
-          </div>
-        </div>
-        <SupplementAdviceDisclaimer variant="profile" />
-        <SupplementRoute recommendations={supplementRoute} scores={scores} />
-        <p className="mt-4 text-sm text-[#666]">
-          Vragen over deze aanbeveling?{" "}
-          <Link
-            href="/contact"
-            className="font-medium text-ps-green underline-offset-2 hover:underline"
-          >
-            Stel ze →
-          </Link>
-        </p>
-      </div>
+        </section>
 
-      {foundationItems.length > 0 ? (
-        <FoundationStack excludeIds={excludeIds} />
-      ) : null}
+        {kennisbankLinks.length > 0 ? (
+          <section className={CARD_CLASS}>
+            <p className="m-0 text-sm font-semibold text-intake-ink">
+              Wil je meer context?
+            </p>
+            <ul className="mt-3 space-y-2">
+              {kennisbankLinks.map((link) => (
+                <li key={link.href} className="text-sm text-intake-ink-muted">
+                  <span className="text-intake-ink-subtle">{link.domainLabel}: </span>
+                  <Link
+                    href={link.href}
+                    className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
-      {(deficiencySignals.omega3_deficiency || deficiencySignals.magnesium_signal || deficiencySignals.creatine_signal || deficiencySignals.melatonine_signal || deficiencySignals.protein_gap_signal || zinkSignal) && (
-        <div className="mb-4 rounded-2xl border border-[#e8e6e1] bg-white p-6">
-          <div className="mb-3 flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3A7D5C18] text-base">
-              🔬
+        <section className={CARD_CLASS}>
+          <div className="mb-4 flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-intake-sage/15 text-base">
+              ⚡
             </div>
             <div>
-              <div className="text-[15px] font-bold">Vergelijkingen om te bekijken</div>
-              <div className="text-xs text-[#999]">Als je verder wilt vergelijken</div>
+              <h2 className="text-[15px] font-bold text-intake-ink">Quick Wins</h2>
+              <p className="text-xs text-intake-ink-subtle">Week 1 — start hier</p>
+            </div>
+          </div>
+          {quickWins.map((tip, i) => (
+            <div
+              key={`qw-${i}`}
+              className={`flex gap-3 py-3 ${i > 0 ? "border-t border-intake-divider" : ""}`}
+            >
+              <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-intake-sage text-xs font-bold text-white">
+                {i + 1}
+              </div>
+              <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">{tip}</p>
+            </div>
+          ))}
+        </section>
+
+        {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
+          <section className="mb-4 rounded-2xl border border-intake-terra/30 bg-intake-terra/10 p-4">
+            <h3 className="font-semibold text-intake-ink">Eiwit als aandachtspunt</h3>
+            <p className="mt-1 text-sm leading-relaxed text-intake-ink-muted">
+              Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
+              dag, wat het onderhouden van spiermassa lastiger maakt.
+              {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
+                (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
+                <>
+                  {" "}
+                  Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
+                  spieronderhoud.
+                </>
+              ) : null}
+            </p>
+            <p className="mt-2 text-sm text-intake-ink-muted">
+              <Link
+                href="/blog/eiwit-na-40"
+                className="font-medium text-intake-sage underline underline-offset-2"
+              >
+                Lees: eiwit na 40
+              </Link>
+              {" · "}
+              <Link
+                href="/kennisbank/eiwitbehoefte-na-40"
+                className="font-medium text-intake-sage underline underline-offset-2"
+              >
+                Kennisbank
+              </Link>
+            </p>
+            {deficiencySignals.protein_gap_signal ? (
+              <p className="mt-3 text-sm text-intake-ink-muted">
+                <Link
+                  href="/beste/eiwitpoeder"
+                  className="font-medium text-intake-sage underline underline-offset-2"
+                >
+                  Vergelijk eiwitpoeders →
+                </Link>
+              </p>
+            ) : null}
+          </section>
+        ) : null}
+
+        <section className={CARD_CLASS}>
+          <div className="mb-4 flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-intake-terra/15 text-base">
+              💊
+            </div>
+            <div>
+              <h2 className="text-[15px] font-bold text-intake-ink">
+                Supplementen om te verkennen
+              </h2>
+              <p className="text-xs text-intake-ink-subtle">
+                Max. 2–3 routes — alleen waar patronen op wijzen
+              </p>
             </div>
           </div>
           <SupplementAdviceDisclaimer variant="profile" />
-          <div className="space-y-2">
-            {deficiencySignals.omega3_deficiency && (
-              <Link
-                href="/beste/omega-3-supplement"
-                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
-              >
-                <span className="font-medium text-[#1a1a1a]">
-                  Bekijk onze omega-3 vergelijking
-                </span>
-                <span className="text-[#999]">→</span>
-              </Link>
-            )}
-            {deficiencySignals.magnesium_signal && (
-              <Link
-                href="/beste/magnesium"
-                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
-              >
-                <span className="font-medium text-[#1a1a1a]">
-                  Bekijk onze magnesium vergelijking
-                </span>
-                <span className="text-[#999]">→</span>
-              </Link>
-            )}
-            {deficiencySignals.creatine_signal && (
-              <Link
-                href="/beste/creatine"
-                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
-              >
-                <span className="font-medium text-[#1a1a1a]">
-                  Bekijk onze creatine vergelijking
-                </span>
-                <span className="text-[#999]">→</span>
-              </Link>
-            )}
-            {deficiencySignals.melatonine_signal && (
-              <Link
-                href="/beste/melatonine"
-                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
-              >
-                <span className="font-medium text-[#1a1a1a]">
-                  Bekijk onze melatonine vergelijking
-                </span>
-                <span className="text-[#999]">→</span>
-              </Link>
-            )}
-            {deficiencySignals.protein_gap_signal && (
-              <Link
-                href="/beste/eiwitpoeder"
-                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
-              >
-                <span className="font-medium text-[#1a1a1a]">
-                  Bekijk onze eiwitpoeder vergelijking
-                </span>
-                <span className="text-[#999]">→</span>
-              </Link>
-            )}
-            {zinkSignal && (
-              <Link
-                href="/beste/zink"
-                className="flex items-center justify-between rounded-xl border border-[#e8e6e1] px-4 py-3 text-sm transition hover:border-[#c8c4bf]"
-              >
-                <span className="font-medium text-[#1a1a1a]">
-                  Bekijk onze zink vergelijking
-                </span>
-                <span className="text-[#999]">→</span>
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="mb-7 rounded-2xl border border-[#e8e6e1] bg-white p-6">
-        <div className="mb-4 flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#5B6EAE18] text-base">
-            📈
-          </div>
-          <div>
-            <div className="text-[15px] font-bold">Langetermijnstrategie</div>
-            <div className="text-xs text-[#999]">Maand 2 en verder</div>
-          </div>
-        </div>
-        {longTermTips.map((tip, i) => (
-          <div
-            key={`lt-${i}`}
-            className={`flex gap-3 py-3 ${i > 0 ? "border-t border-[#f0ede8]" : ""}`}
-          >
-            <div className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B6EAE]" />
-            <p className="m-0 text-sm leading-normal text-[#444]">{tip}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="mb-5 rounded-2xl bg-[#1a1a1a] px-6 py-7 text-center">
-        <div className="mb-1 text-[15px] font-semibold text-white">
-          Over 30 dagen opnieuw meten?
-        </div>
-        <div className="mb-5 text-[13px] text-[#999]">
-          Vergelijk je scores en zie wat er verbeterd is.
-        </div>
-        {emailSubmitted ? (
-          <div className="flex flex-col items-center gap-2 text-[15px] leading-snug text-white">
-            <span className="text-xl text-ps-green" aria-hidden>
-              ✓
-            </span>
-            <p className="m-0">
-              We sturen je een herinnering op{" "}
-              {(reminderConfirmDate ?? new Date()).toLocaleDateString("nl-NL", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-              .
-            </p>
-          </div>
-        ) : (
-          <>
-            <input
-              type="email"
-              name="reminder-email"
-              autoComplete="email"
-              placeholder="je@emailadres.nl"
-              value={reminderEmail}
-              onChange={(e) => setReminderEmail(e.target.value)}
-              className="box-border w-full max-w-full outline-none"
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                borderRadius: 10,
-                border: "none",
-                fontSize: 15,
-                fontFamily: "inherit",
-                background: "rgba(255,255,255,0.95)",
-                color: "#1a1a1a",
-                marginBottom: 12,
-              }}
-            />
-            <button
-              type="button"
-              disabled={!isLooseEmailValid(reminderEmail)}
-              onClick={() => {
-                void (async () => {
-                  if (!isLooseEmailValid(reminderEmail)) {
-                    return;
-                  }
-                  const d = new Date();
-                  d.setDate(d.getDate() + 30);
-                  setReminderConfirmDate(d);
-                  await saveReminderEmail(reminderEmail.trim());
-                  setEmailSubmitted(true);
-                })();
-              }}
-              className={`rounded-[10px] border-none bg-white px-8 py-3.5 text-sm font-bold text-[#1a1a1a] ${
-                isLooseEmailValid(reminderEmail)
-                  ? "cursor-pointer opacity-100"
-                  : "cursor-default opacity-50"
-              }`}
+          <SupplementRoute recommendations={supplementRoute} scores={scores} />
+          <p className="mt-4 text-sm text-intake-ink-muted">
+            Vragen?{" "}
+            <Link
+              href="/contact"
+              className="font-medium text-intake-sage underline-offset-2 hover:underline"
             >
-              Herinnering instellen
-            </button>
-            <p className="mt-2 text-center text-[11px] text-[rgba(255,255,255,0.4)]">
-              Alleen voor je herinnering. Geen spam, geen nieuwsbrief.
-            </p>
-          </>
-        )}
-      </div>
+              Stel ze →
+            </Link>
+          </p>
+        </section>
 
-      <IntakeFeedback sessionId={sessionId} />
-
-      <div className="mb-5">
-        <MedicalDisclaimer variant="intake" theme="dark" className="mt-0" />
-        {sessionId ? (
-          <div className="mt-5">
-            {revokeFeedback ? (
-              <p
-                className={`mb-3 rounded-xl px-4 py-3 text-[13px] leading-snug ${
-                  revokeFeedback.kind === "success"
-                    ? "border border-[#c6e7d0] bg-[#f0fdf4] text-[#166534]"
-                    : "border border-[#fecaca] bg-[#fef2f2] text-[#991b1b]"
-                }`}
-                role={revokeFeedback.kind === "error" ? "alert" : "status"}
-              >
-                {revokeFeedback.text}
-              </p>
-            ) : null}
-            {revokeFeedback?.kind !== "success" ? (
-              <div className="flex flex-col gap-2.5">
-                <button
-                  type="button"
-                  disabled={revokeBusy}
-                  onClick={() => {
-                    if (!window.confirm(REVOKE_CONFIRM)) {
-                      return;
-                    }
-                    void (async () => {
-                      setRevokeBusy(true);
-                      setRevokeFeedback(null);
-                      const result = await revokeIntakeConsent();
-                      setRevokeBusy(false);
-                      if (result.ok) {
-                        setRevokeFeedback({
-                          kind: "success",
-                          text: REVOKE_SUCCESS,
-                        });
-                        window.setTimeout(() => {
-                          onConsentRevoked?.();
-                        }, 2800);
-                        return;
-                      }
-                      setRevokeFeedback({ kind: "error", text: result.error });
-                    })();
-                  }}
-                  className="w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-60"
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    color: "rgba(255,255,255,0.4)",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  {revokeBusy ? "Bezig…" : "Toestemming intrekken & anonimiseren"}
-                </button>
-                <button
-                  type="button"
-                  disabled={revokeBusy}
-                  onClick={() => {
-                    if (!window.confirm(DELETE_CONFIRM)) {
-                      return;
-                    }
-                    void (async () => {
-                      setRevokeBusy(true);
-                      setRevokeFeedback(null);
-                      const result = await deleteIntakeSession();
-                      setRevokeBusy(false);
-                      if (result.ok) {
-                        setRevokeFeedback({
-                          kind: "success",
-                          text: DELETE_SUCCESS,
-                        });
-                        window.setTimeout(() => {
-                          onConsentRevoked?.();
-                        }, 2800);
-                        return;
-                      }
-                      setRevokeFeedback({ kind: "error", text: result.error });
-                    })();
-                  }}
-                  className="w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium disabled:cursor-not-allowed disabled:opacity-60"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(239,68,68,0.25)",
-                    color: "rgba(252,165,165,0.75)",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  {revokeBusy ? "Bezig…" : "Alles verwijderen"}
-                </button>
-              </div>
-            ) : null}
-          </div>
+        {FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ? (
+          <FoundationStack excludeIds={excludeIds} />
         ) : null}
+
+        {(deficiencySignals.omega3_deficiency ||
+          deficiencySignals.magnesium_signal ||
+          deficiencySignals.creatine_signal ||
+          deficiencySignals.melatonine_signal ||
+          deficiencySignals.protein_gap_signal ||
+          zinkSignal) && (
+          <section className={CARD_CLASS}>
+            <h2 className="mb-3 text-[15px] font-bold text-intake-ink">
+              Vergelijkingen om te bekijken
+            </h2>
+            <SupplementAdviceDisclaimer variant="profile" />
+            <div className="space-y-2">
+              {deficiencySignals.omega3_deficiency && (
+                <Link
+                  href="/beste/omega-3-supplement"
+                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
+                >
+                  <span className="font-medium">Omega-3 vergelijking</span>
+                  <span className="text-intake-ink-subtle">→</span>
+                </Link>
+              )}
+              {deficiencySignals.magnesium_signal && (
+                <Link
+                  href="/beste/magnesium"
+                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
+                >
+                  <span className="font-medium">Magnesium vergelijking</span>
+                  <span className="text-intake-ink-subtle">→</span>
+                </Link>
+              )}
+              {deficiencySignals.creatine_signal && (
+                <Link
+                  href="/beste/creatine"
+                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
+                >
+                  <span className="font-medium">Creatine vergelijking</span>
+                  <span className="text-intake-ink-subtle">→</span>
+                </Link>
+              )}
+              {deficiencySignals.melatonine_signal && (
+                <Link
+                  href="/beste/melatonine"
+                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
+                >
+                  <span className="font-medium">Melatonine vergelijking</span>
+                  <span className="text-intake-ink-subtle">→</span>
+                </Link>
+              )}
+              {deficiencySignals.protein_gap_signal && (
+                <Link
+                  href="/beste/eiwitpoeder"
+                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
+                >
+                  <span className="font-medium">Eiwitpoeder vergelijking</span>
+                  <span className="text-intake-ink-subtle">→</span>
+                </Link>
+              )}
+              {zinkSignal && (
+                <Link
+                  href="/beste/zink"
+                  className="flex items-center justify-between rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink transition hover:border-intake-sage/40"
+                >
+                  <span className="font-medium">Zink vergelijking</span>
+                  <span className="text-intake-ink-subtle">→</span>
+                </Link>
+              )}
+            </div>
+          </section>
+        )}
+
+        <section className={CARD_CLASS}>
+          <div className="mb-4 flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-intake-terra/15 text-base">
+              📈
+            </div>
+            <div>
+              <h2 className="text-[15px] font-bold text-intake-ink">
+                12-weken richting
+              </h2>
+              <p className="text-xs text-intake-ink-subtle">
+                Week 1: quick wins · week 2–4: leefstijl · week 5–12: gerichte aanvulling
+              </p>
+            </div>
+          </div>
+          {longTermTips.map((tip, i) => (
+            <div
+              key={`lt-${i}`}
+              className={`flex gap-3 py-3 ${i > 0 ? "border-t border-intake-divider" : ""}`}
+            >
+              <div className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-intake-terra" />
+              <p className="m-0 text-sm leading-normal text-intake-ink-muted">{tip}</p>
+            </div>
+          ))}
+        </section>
+
+        <section className="mb-5 rounded-2xl border border-intake-card-border bg-intake-bg px-6 py-7 text-center">
+          <h2 className="mb-1 text-[15px] font-semibold text-intake-ink">
+            Over 30 dagen opnieuw meten?
+          </h2>
+          <p className="mb-5 text-[13px] text-intake-ink-subtle">
+            Zie wat er is verschoven — zonder totaalscore.
+          </p>
+          {emailSubmitted ? (
+            <div className="flex flex-col items-center gap-2 text-[15px] leading-snug text-intake-ink">
+              <span className="text-xl text-intake-sage" aria-hidden>
+                ✓
+              </span>
+              <p className="m-0">
+                We sturen je een herinnering op{" "}
+                {(reminderConfirmDate ?? new Date()).toLocaleDateString("nl-NL", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+                .
+              </p>
+            </div>
+          ) : (
+            <>
+              <input
+                type="email"
+                name="reminder-email"
+                autoComplete="email"
+                placeholder="je@emailadres.nl"
+                value={reminderEmail}
+                onChange={(e) => setReminderEmail(e.target.value)}
+                className="mb-3 box-border w-full rounded-[10px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3.5 text-[15px] text-intake-ink outline-none"
+              />
+              <button
+                type="button"
+                disabled={!isLooseEmailValid(reminderEmail)}
+                onClick={() => {
+                  void (async () => {
+                    if (!isLooseEmailValid(reminderEmail)) {
+                      return;
+                    }
+                    const d = new Date();
+                    d.setDate(d.getDate() + 30);
+                    setReminderConfirmDate(d);
+                    await saveReminderEmail(reminderEmail.trim());
+                    setEmailSubmitted(true);
+                  })();
+                }}
+                className={`min-h-[44px] rounded-[10px] border-none bg-intake-terra px-8 py-3.5 text-sm font-bold text-white ${
+                  isLooseEmailValid(reminderEmail)
+                    ? "cursor-pointer opacity-100"
+                    : "cursor-default opacity-50"
+                }`}
+              >
+                Herinnering instellen
+              </button>
+              <p className="mt-2 text-center text-[11px] text-intake-ink-subtle">
+                Alleen voor je herinnering. Geen spam, geen nieuwsbrief.
+              </p>
+            </>
+          )}
+        </section>
+
+        <IntakeFeedback sessionId={sessionId} />
+
+        <div className="mb-5">
+          <MedicalDisclaimer variant="intake" theme="dark" className="mt-0" />
+          {sessionId ? (
+            <div className="mt-5">
+              {revokeFeedback ? (
+                <p
+                  className={`mb-3 rounded-xl px-4 py-3 text-[13px] leading-snug ${
+                    revokeFeedback.kind === "success"
+                      ? "border border-intake-sage/30 bg-intake-sage/10 text-intake-ink"
+                      : "border border-red-400/30 bg-red-950/20 text-red-200"
+                  }`}
+                  role={revokeFeedback.kind === "error" ? "alert" : "status"}
+                >
+                  {revokeFeedback.text}
+                </p>
+              ) : null}
+              {revokeFeedback?.kind !== "success" ? (
+                <div className="flex flex-col gap-2.5">
+                  <button
+                    type="button"
+                    disabled={revokeBusy}
+                    onClick={() => {
+                      if (!window.confirm(REVOKE_CONFIRM)) {
+                        return;
+                      }
+                      void (async () => {
+                        setRevokeBusy(true);
+                        setRevokeFeedback(null);
+                        const result = await revokeIntakeConsent();
+                        setRevokeBusy(false);
+                        if (result.ok) {
+                          setRevokeFeedback({
+                            kind: "success",
+                            text: REVOKE_SUCCESS,
+                          });
+                          window.setTimeout(() => {
+                            onConsentRevoked?.();
+                          }, 2800);
+                          return;
+                        }
+                        setRevokeFeedback({ kind: "error", text: result.error });
+                      })();
+                    }}
+                    className="w-full cursor-pointer rounded-xl border border-intake-card-border bg-intake-bg/60 py-3.5 text-[13px] font-medium text-intake-ink-subtle disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {revokeBusy ? "Bezig…" : "Toestemming intrekken & anonimiseren"}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={revokeBusy}
+                    onClick={() => {
+                      if (!window.confirm(DELETE_CONFIRM)) {
+                        return;
+                      }
+                      void (async () => {
+                        setRevokeBusy(true);
+                        setRevokeFeedback(null);
+                        const result = await deleteIntakeSession();
+                        setRevokeBusy(false);
+                        if (result.ok) {
+                          setRevokeFeedback({
+                            kind: "success",
+                            text: DELETE_SUCCESS,
+                          });
+                          window.setTimeout(() => {
+                            onConsentRevoked?.();
+                          }, 2800);
+                          return;
+                        }
+                        setRevokeFeedback({ kind: "error", text: result.error });
+                      })();
+                    }}
+                    className="w-full cursor-pointer rounded-xl border border-red-400/25 bg-red-950/10 py-3.5 text-[13px] font-medium text-red-200/80 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {revokeBusy ? "Bezig…" : "Alles verwijderen"}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+
+        {onRestart ? (
+          <button
+            type="button"
+            onClick={onRestart}
+            className="mb-5 w-full cursor-pointer rounded-xl border border-intake-card-border bg-intake-bg/60 py-3.5 text-[13px] font-medium text-intake-ink-subtle"
+          >
+            Opnieuw beginnen
+          </button>
+        ) : null}
+
+        <p className="text-center text-[11px] leading-normal text-intake-ink-subtle">
+          <Link href="/privacy" className="underline underline-offset-2 hover:text-intake-ink-muted">
+            Privacy
+          </Link>
+          {" · "}
+          <Link href="/disclaimer" className="underline underline-offset-2 hover:text-intake-ink-muted">
+            Disclaimer
+          </Link>
+          {" · "}
+          © 2026 PerfectSupplement
+        </p>
       </div>
 
-      {onRestart ? (
-        <button
-          type="button"
-          onClick={onRestart}
-          className="mb-5 w-full cursor-pointer rounded-xl py-3.5 text-[13px] font-medium"
-          style={{
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            color: "rgba(255,255,255,0.4)",
-            fontFamily: "inherit",
-          }}
-        >
-          Opnieuw beginnen
-        </button>
-      ) : null}
-
-      <p className="text-center text-[11px] leading-normal text-[#bbb]">
-        <Link href="/privacy" className="underline underline-offset-2 hover:text-[#999]">
-          Privacy
-        </Link>
-        {" · "}
-        <Link href="/disclaimer" className="underline underline-offset-2 hover:text-[#999]">
-          Disclaimer
-        </Link>
-        {" · "}
-        © 2026 PerfectSupplement
-      </p>
-    </div>
+      <PyramidPillarDrawer
+        data={activeDrawerData}
+        onClose={() => setActivePillar(null)}
+      />
     </>
   );
 }

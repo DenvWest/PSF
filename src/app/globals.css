@@ -38,15 +38,15 @@
   --ps-amber-light: #fef3c7;
 
 
-  /* Intake — dark editorial palette (Sessie 1+) */
-  --intake-bg: #1A1F1C;
-  --intake-bg-elevated: #232826;
+  /* Intake — dark editorial palette (originele bosgroen + terracotta CTA) */
+  --intake-bg: #1a2e1a;
+  --intake-bg-elevated: #223522;
   --intake-ink: #F4EFE6;
   --intake-ink-muted: rgba(244, 239, 230, 0.65);
   --intake-ink-subtle: rgba(244, 239, 230, 0.4);
   --intake-sage: #5A8F6A;
-  --intake-terra: #C68B5B;
-  --intake-terra-deep: #B07449;
+  --intake-terra: #C8956C;
+  --intake-terra-deep: #B07F52;
   --intake-divider: rgba(244, 239, 230, 0.08);
   --intake-card-border: rgba(244, 239, 230, 0.1);
 

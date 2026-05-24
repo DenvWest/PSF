@@ -1,3 +1,5 @@
+import type { DomainScores } from "@/lib/intake-engine";
+
 export type PillarId =
   | "stress"
   | "sleep"
@@ -163,4 +165,76 @@ export function getFoundationBaseById(
   id: FoundationBaseItem["id"],
 ): FoundationBaseItem | undefined {
   return FOUNDATION_BASE.find((item) => item.id === id);
+}
+
+export type PillarDrawerLink = {
+  label: string;
+  href: string;
+};
+
+export type PillarDrawerFallback = {
+  quickWins: readonly string[];
+  guideHref?: string;
+  profileSlugs?: readonly string[];
+};
+
+export const PILLAR_SCORE_KEYS: Partial<
+  Record<PillarId, keyof DomainScores>
+> = {
+  stress: "stress_score",
+  sleep: "sleep_score",
+  nutrition: "nutrition_score",
+  movement: "movement_score",
+};
+
+export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {
+  stress: {
+    quickWins: [
+      "Plan één rustmoment van 10 minuten op een vaste tijd vandaag.",
+      "Beperk cafeïne na 14:00 als je 's avonds moeilijk tot rust komt.",
+      "Leg je telefoon 30 minuten vóór bedtijd buiten bereik.",
+    ],
+    guideHref: "/gids/stress",
+    profileSlugs: ["stressdrager"],
+  },
+  sleep: {
+    quickWins: [
+      "Ga de komende 3 nachten op hetzelfde tijdstip naar bed.",
+      "Houd je slaapkamer koel, donker en stil — geen scherm in bed.",
+      "Stop met eten 2–3 uur voor het slapen.",
+    ],
+    guideHref: "/gids/slaap",
+    profileSlugs: ["onrustige-slaper"],
+  },
+  nutrition: {
+    quickWins: [
+      "Begin elke maaltijd met een eiwitbron (eieren, zuivel, vis, peulvruchten).",
+      "Eet vette vis minstens 2× per week of overweeg omega-3 uit voeding.",
+      "Drink water vóór koffie in de ochtend.",
+    ],
+    guideHref: undefined,
+    profileSlugs: [],
+  },
+  movement: {
+    quickWins: [
+      "Plan 2× per week 20 minuten krachttraining — ook thuis met lichaamsgewicht.",
+      "Neem na elke 90 minuten zitten een korte wandeling van 5 minuten.",
+      "Kies één vaste trainingsdag en zet die in je agenda.",
+    ],
+    guideHref: undefined,
+    profileSlugs: ["lage-batterij", "overtrainer"],
+  },
+  connection: {
+    quickWins: [
+      "Plan één sociaal contact deze week — kort bellen telt ook.",
+      "Schrijf op waarom je fitter wilt worden; herlees het bij lage motivatie.",
+      "Neem één taak van je lijst af die geen energie oplevert.",
+    ],
+    guideHref: undefined,
+    profileSlugs: [],
+  },
+};
+
+export function getPillarById(pillarId: PillarId): PyramidPillar | undefined {
+  return LIFESTYLE_PILLARS.find((pillar) => pillar.id === pillarId);
 }

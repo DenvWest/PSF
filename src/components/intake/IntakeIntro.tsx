@@ -90,7 +90,7 @@ export default function IntakeIntro({
         <button
           type="button"
           onClick={onStart}
-          className="min-h-[44px] w-full max-w-sm cursor-pointer rounded-[14px] bg-intake-terra px-12 py-4 text-base font-semibold text-intake-ink transition-all duration-200 hover:brightness-110"
+          className="min-h-[44px] w-full max-w-sm cursor-pointer rounded-[14px] bg-intake-terra px-12 py-4 text-base font-semibold text-white transition-all duration-200 hover:brightness-110"
         >
           Start de Leefstijlcheck →
         </button>
