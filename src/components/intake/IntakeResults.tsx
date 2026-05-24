@@ -5,7 +5,6 @@ import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
 import {
   getPillarById,
-  LIFESTYLE_PILLARS,
   PILLAR_DRAWER_FALLBACKS,
   PILLAR_SCORE_KEYS,
   type PillarDrawerLink,
@@ -33,10 +32,6 @@ import PyramidPillarDrawer, {
   type PillarDrawerData,
   type PillarDrawerStatus,
 } from "@/components/pyramid/PyramidPillarDrawer";
-import IntakeResultPreviewCard, {
-  summaryToneFromStatus,
-  type SummaryRow,
-} from "@/components/intake/IntakeResultPreviewCard";
 import IntakeResultsSection from "@/components/intake/IntakeResultsSection";
 import {
   getConnectionFraming,
@@ -91,29 +86,10 @@ function buildPillarStatuses(
   };
 }
 
-function buildSummaryRows(scores: DomainScores): SummaryRow[] {
-  const pillarStatuses = buildPillarStatuses(scores);
-  const rows: SummaryRow[] = LIFESTYLE_PILLARS.map((pillar) => {
-    const status = pillarStatuses[pillar.id] ?? "Niet gemeten";
-    return {
-      label: pillar.label,
-      status,
-      tone: summaryToneFromStatus(status),
-    };
-  });
-  rows.push(
-    {
-      label: "Energie",
-      status: getDisplayStatus(scores.energy_score),
-      tone: summaryToneFromStatus(getDisplayStatus(scores.energy_score)),
-    },
-    {
-      label: "Herstel",
-      status: getDisplayStatus(scores.recovery_score),
-      tone: summaryToneFromStatus(getDisplayStatus(scores.recovery_score)),
-    },
-  );
-  return rows;
+function buildSecondaryMetricsLine(scores: DomainScores): string {
+  const energy = getDisplayStatus(scores.energy_score);
+  const recovery = getDisplayStatus(scores.recovery_score);
+  return `Ook gemeten: Energie · ${energy} · Herstel · ${recovery}`;
 }
 
 function buildPillarDrawerData(options: {
@@ -265,7 +241,7 @@ export default function IntakeResults({
   );
   const excludeIds = supplementRoute.map((r) => r.id);
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
-  const summaryRows = buildSummaryRows(scores);
+  const secondaryMetricsLine = buildSecondaryMetricsLine(scores);
   const pillarStatuses = buildPillarStatuses(scores);
 
   const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
@@ -326,28 +302,24 @@ export default function IntakeResults({
       </Link>
 
       <div className="mx-auto box-border w-full max-w-[480px] px-6 pb-10 pt-8">
-        {/* Tier 1 — boven de fold */}
-        <header className="mb-6 text-center">
+        <header className="mb-5 text-center">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
-            <span className="text-intake-terra">03</span> · Jouw leefstijl-overzicht
+            <span className="text-intake-terra">03</span> · Meer over je leefstijl
           </p>
           <h1 className="mb-2 font-serif text-[28px] font-normal leading-tight text-intake-ink">
             {heroTitle}
           </h1>
 
           {displayProfileName !== "In Balans" ? (
-            <>
-              <p className="mb-2 text-sm text-intake-ink-muted">
-                Profiel:{" "}
-                <span className="font-medium text-intake-ink">{displayProfileName}</span>
-              </p>
+            <p className="text-sm text-intake-ink-muted">
+              Profiel:{" "}
               <Link
                 href={displayProfileSlugPath}
-                className="inline-block text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
               >
-                Lees meer over dit profiel →
+                {displayProfileName}
               </Link>
-            </>
+            </p>
           ) : null}
 
           {isOvertrainerProfile ? (
@@ -362,35 +334,37 @@ export default function IntakeResults({
           ) : null}
         </header>
 
-        <div className="mb-5">
-          <IntakeResultPreviewCard variant="live" rows={summaryRows} />
-        </div>
-
-        {primaryQuickWin ? (
-          <section className="mb-5 rounded-2xl border border-intake-card-border bg-intake-bg-elevated p-5">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
-              Start deze week
-            </p>
-            <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
-              {primaryQuickWin}
-            </p>
-          </section>
-        ) : null}
-
-        <section className="mb-6 rounded-2xl border border-intake-card-border bg-intake-bg px-5 py-6 text-center">
-          <h2 className="mb-1 text-[15px] font-semibold text-intake-ink">
-            Bewaar dit overzicht
-          </h2>
-          <p className="mb-4 text-[13px] text-intake-ink-subtle">
-            Geen spam — alleen een herinnering over 30 dagen om opnieuw te meten.
+        <section className="mb-6" aria-label="Jouw leefstijlpiramide">
+          <p className="mb-4 rounded-xl border border-intake-terra/35 bg-intake-terra/10 px-4 py-3 text-center text-sm leading-snug text-intake-ink-muted">
+            <span className="font-semibold text-intake-terra">
+              Tik op een leefstijlgebied
+            </span>{" "}
+            onderin de piramide voor uitleg, tips en links.
           </p>
-          {emailSubmitted ? (
-            <div className="flex flex-col items-center gap-2 text-sm leading-snug text-intake-ink">
+
+          <FoundationPyramid
+            mode="personalized"
+            pillarStatuses={pillarStatuses}
+            onPillarClick={setActivePillar}
+          />
+
+          <p className="mt-3 text-center text-xs text-intake-ink-subtle">
+            {secondaryMetricsLine}
+          </p>
+
+          {hasMarketingEmail ? (
+            <p className="mt-5 text-center text-sm text-intake-ink-muted">
+              {firstName
+                ? `${firstName}, je ontvangt je leefstijl-overzicht ook per mail.`
+                : "Je ontvangt je leefstijl-overzicht ook per mail."}
+            </p>
+          ) : emailSubmitted ? (
+            <div className="mt-5 flex flex-col items-center gap-2 rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-center text-sm text-intake-ink">
               <span className="text-lg text-intake-sage" aria-hidden>
                 ✓
               </span>
               <p className="m-0">
-                We sturen je een herinnering op{" "}
+                Herinnering gepland op{" "}
                 {(reminderConfirmDate ?? new Date()).toLocaleDateString("nl-NL", {
                   day: "numeric",
                   month: "long",
@@ -400,7 +374,13 @@ export default function IntakeResults({
               </p>
             </div>
           ) : (
-            <>
+            <section className="mt-5 rounded-2xl border border-intake-card-border bg-intake-bg px-5 py-5 text-center">
+              <h2 className="mb-1 text-[15px] font-semibold text-intake-ink">
+                Bewaar je leefstijlkaart
+              </h2>
+              <p className="mb-4 text-[13px] text-intake-ink-subtle">
+                Geen spam — alleen een herinnering over 30 dagen om opnieuw te meten.
+              </p>
               <input
                 type="email"
                 name="reminder-email"
@@ -434,79 +414,82 @@ export default function IntakeResults({
               >
                 Stuur me een herinnering
               </button>
-            </>
+            </section>
           )}
         </section>
 
-        {/* Tier 2 — leefstijl details */}
-        <IntakeResultsSection
-          title="Meer over je leefstijl"
-          subtitle="Piramide, extra tips en 12-weken richting"
-          defaultOpen={hasMarketingEmail}
-        >
-          <div className="mb-5">
-            <FoundationPyramid
-              mode="personalized"
-              pillarStatuses={pillarStatuses}
-              onPillarClick={setActivePillar}
-            />
-          </div>
+        {(primaryQuickWin || extraQuickWins.length > 0 || primaryLongTermTip) ? (
+          <IntakeResultsSection
+            title="Tips & actieplan"
+            subtitle="Quick wins en 12-weken richting"
+          >
+            {primaryQuickWin ? (
+              <section className="mb-5 rounded-xl border border-intake-card-border bg-intake-bg px-4 py-4">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
+                  Start deze week
+                </p>
+                <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
+                  {primaryQuickWin}
+                </p>
+              </section>
+            ) : null}
 
-          {extraQuickWins.length > 0 ? (
-            <div className="mb-5">
-              <h3 className="mb-3 text-sm font-semibold text-intake-ink">
-                Meer quick wins
-              </h3>
-              <ul className="space-y-3">
-                {extraQuickWins.map((tip, i) => (
-                  <li
-                    key={`qw-extra-${i}`}
-                    className="flex gap-3 text-sm leading-relaxed text-intake-ink-muted"
-                  >
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-intake-sage text-xs font-bold text-white">
-                      {i + 2}
-                    </span>
-                    <span>{tip}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
+            {extraQuickWins.length > 0 ? (
+              <div className="mb-5">
+                <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                  Meer quick wins
+                </h3>
+                <ul className="space-y-3">
+                  {extraQuickWins.map((tip, i) => (
+                    <li
+                      key={`qw-extra-${i}`}
+                      className="flex gap-3 text-sm leading-relaxed text-intake-ink-muted"
+                    >
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-intake-sage text-xs font-bold text-white">
+                        {i + 2}
+                      </span>
+                      <span>{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
-          {primaryLongTermTip ? (
-            <div>
-              <h3 className="mb-2 text-sm font-semibold text-intake-ink">
-                12-weken richting
-              </h3>
-              <p className="mb-3 text-sm leading-relaxed text-intake-ink-muted">
-                {primaryLongTermTip}
-              </p>
-              {extraLongTermTips.length > 0 ? (
-                <details className="group">
-                  <summary className="cursor-pointer list-none text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
-                    Volledig 12-weken plan ▾
-                  </summary>
-                  <ul className="mt-3 space-y-2 border-t border-intake-divider pt-3">
-                    {extraLongTermTips.map((tip, i) => (
-                      <li
-                        key={`lt-extra-${i}`}
-                        className="text-sm leading-relaxed text-intake-ink-muted"
-                      >
-                        {tip}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ) : null}
-            </div>
-          ) : null}
-        </IntakeResultsSection>
+            {primaryLongTermTip ? (
+              <div>
+                <h3 className="mb-2 text-sm font-semibold text-intake-ink">
+                  12-weken richting
+                </h3>
+                <p className="mb-3 text-sm leading-relaxed text-intake-ink-muted">
+                  {primaryLongTermTip}
+                </p>
+                {extraLongTermTips.length > 0 ? (
+                  <details className="group">
+                    <summary className="cursor-pointer list-none text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+                      Volledig 12-weken plan ▾
+                    </summary>
+                    <ul className="mt-3 space-y-2 border-t border-intake-divider pt-3">
+                      {extraLongTermTips.map((tip, i) => (
+                        <li
+                          key={`lt-extra-${i}`}
+                          className="text-sm leading-relaxed text-intake-ink-muted"
+                        >
+                          {tip}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                ) : null}
+              </div>
+            ) : null}
+          </IntakeResultsSection>
+        ) : null}
 
         {/* Tier 3 — supplementen & verdieping */}
         {hasExploreContent ? (
           <IntakeResultsSection
             title="Verder verkennen"
-            subtitle="Supplementen, kennisbank en basisadvies"
+            subtitle="Supplementen, kennisbank en vergelijkingen"
           >
             {supplementRoute.length > 0 ? (
               <div className="mb-5">

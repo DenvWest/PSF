@@ -64,3 +64,20 @@ export const STATUS_TONE_CLASS: Record<DisplayStatusTone, string> = {
   terra: "border-intake-terra/40 bg-intake-terra/15 text-intake-terra",
   "terra-deep": "border-intake-terra-deep/40 bg-intake-terra-deep/15 text-intake-terra-deep",
 };
+
+export type PillarDisplayStatus = DisplayStatus | "Niet gemeten";
+
+export function getDisplayStatusShort(status: PillarDisplayStatus): string {
+  switch (status) {
+    case "Sterk":
+      return "Sterk";
+    case "Voldoende":
+      return "Vold.";
+    case "Aandacht":
+      return "Aand.";
+    case "Prioriteit":
+      return "Prio";
+    case "Niet gemeten":
+      return "—";
+  }
+}

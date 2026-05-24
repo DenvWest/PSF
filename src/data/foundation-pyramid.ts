@@ -76,11 +76,19 @@ export const LIFESTYLE_PILLARS: readonly PyramidPillar[] = [
   },
 ] as const;
 
+/** Vier gemeten leefstijlgebieden — zelfde volgorde als intro-previewkaart. */
+export const SUMMARY_PILLAR_IDS: readonly PillarId[] = [
+  "sleep",
+  "stress",
+  "nutrition",
+  "movement",
+] as const;
+
 export const PYRAMID_LAYERS: readonly PyramidLayer[] = [
   {
     id: "vitality",
     eyebrow: "01",
-    label: "Vitaliteit & Longevity",
+    label: "Longevity",
     summary:
       "Optimalisatie aan de top — pas zinvol als het fundament stevig staat.",
     details:
@@ -89,11 +97,11 @@ export const PYRAMID_LAYERS: readonly PyramidLayer[] = [
   {
     id: "tools",
     eyebrow: "02",
-    label: "Tools & Tracking",
-    subtitle: "Bloedwaarden, biomarkers, intake",
+    label: "Tools",
+    subtitle: "Biomarkers",
     summary: "Meten helpt — mits je weet wát je ermee doet.",
     details:
-      "Bloedwaarden, slaapdata en periodieke checks geven context. Ze vervangen geen solide leefstijl, maar maken keuzes scherper. PerfectSupplement gebruikt je intake om patronen te zien, geen diagnoses te stellen.",
+      "Biomarkers en periodieke checks geven context. Ze vervangen geen solide leefstijl, maar maken keuzes scherper. PerfectSupplement gebruikt je intake om patronen te zien, geen diagnoses te stellen.",
   },
   {
     id: "supplements",
@@ -107,18 +115,18 @@ export const PYRAMID_LAYERS: readonly PyramidLayer[] = [
   {
     id: "outcomes",
     eyebrow: "04",
-    label: "Gezondheidsuitkomsten",
-    subtitle: "Energie · focus · hormonen · herstel",
+    label: "Vitaliteit",
+    subtitle: "Energie · focus · herstel",
     summary:
-      "Wat je voelt — energie, slaap, humeur — volgt vaak uit wat eronder ligt.",
+      "Wat je merkt — energie, focus, herstel — volgt vaak uit wat eronder ligt.",
     details:
-      "Vermoeidheid, onrustige nachten of trage progressie zijn signalen, geen eindpunten. In je resultaten kijken we naar energie en herstel naast de vijf leefstijl-pijlers, zodat je een helder beeld krijgt zonder totaalscore of diagnose.",
+      "Vermoeidheid, wazigheid of trage progressie zijn signalen, geen eindpunten. In je resultaten kijken we naar energie en herstel naast de vijf leefstijl-pijlers — patronen, geen diagnose.",
   },
   {
     id: "lifestyle",
     eyebrow: "05",
-    label: "Leefstijl — het fundament",
-    subtitle: "Jouw leefstijlgebieden",
+    label: "Leefstijl",
+    subtitle: "Jouw 5 gebieden",
     summary:
       "Stress, slaap, voeding, beweging en verbinding dragen alles wat erboven staat.",
     details:

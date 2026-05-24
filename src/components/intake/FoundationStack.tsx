@@ -25,10 +25,10 @@ export default function FoundationStack({ excludeIds }: FoundationStackProps) {
         </div>
         <div>
           <h2 className="text-[15px] font-bold text-intake-ink">
-            Basisadvies voor elke man 40+
+            Veelgezochte vergelijkingen
           </h2>
           <p className="m-0 text-xs text-intake-ink-muted">
-            Algemene opties die veel mannen 40+ vergelijken — los van je scores.
+            Algemene opties — los van je scores en profiel.
           </p>
         </div>
       </div>

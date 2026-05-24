@@ -31,15 +31,4 @@ export const FOUNDATION_STACK: FoundationSupplement[] = [
     href: "/beste/magnesium",
     hasComparison: true,
   },
-  {
-    id: "vitamine-d3",
-    name: "Vitamine D3",
-    claim:
-      "Vitamine D draagt bij tot de normale werking van het immuunsysteem en de instandhouding van normale botten en spierfunctie.",
-    claimCondition: "Bij een dagelijkse inname van minimaal 5 µg vitamine D (100% RI).",
-    reason:
-      "In Nederland is vitamine D-tekort veelvoorkomend, vooral in de wintermaanden.",
-    href: "/supplementen/vitamine-d",
-    hasComparison: true,
-  },
 ];
