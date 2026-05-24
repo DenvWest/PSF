@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import FoundationPyramid from "@/components/pyramid/FoundationPyramid";
+import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import {
   getLastSession,
@@ -13,6 +13,12 @@ type IntakeIntroProps = {
   onStart: () => void;
   onResumeLastResults?: () => void;
 };
+
+const THRESHOLD_ITEMS = [
+  "3 minuten",
+  "Geen account",
+  "Geen e-mail verplicht",
+] as const;
 
 export default function IntakeIntro({
   onStart,
@@ -41,30 +47,21 @@ export default function IntakeIntro({
           <span className="text-intake-terra">01</span> · Leefstijlcheck
         </p>
 
-        <h1
-          className="font-serif text-3xl font-normal leading-tight text-intake-ink md:text-4xl"
-          style={{ letterSpacing: "-0.01em" }}
-        >
-          Ontdek <em className="italic">waar</em> je staat
-        </h1>
+        <div className="flex flex-col gap-4">
+          <h1
+            className="font-serif text-3xl font-normal leading-tight text-intake-ink md:text-4xl"
+            style={{ letterSpacing: "-0.01em" }}
+          >
+            Moe, wazig of altijd <em className="italic">aan</em>?
+          </h1>
 
-        <p className="max-w-md text-lg leading-relaxed text-intake-ink-muted">
-          We analyseren jouw leefstijl op zes domeinen — slaap, energie,
-          stress, voeding, beweging en herstel — en geven je een persoonlijk
-          plan om te verbeteren.
-        </p>
-
-        <div className="my-4 w-full md:my-6">
-          <FoundationPyramid mode="static" />
+          <p className="mx-auto max-w-md text-lg leading-relaxed text-intake-ink-muted">
+            In 3 minuten krijg je een helder beeld van waar je leefstijl staat —
+            en wat je deze week kunt doen.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-intake-ink-subtle">
-          <span>15 vragen</span>
-          <span aria-hidden>·</span>
-          <span>3 minuten</span>
-          <span aria-hidden>·</span>
-          <span>geen account nodig</span>
-        </div>
+        <IntakeResultPreviewCard />
 
         <details className="max-w-md text-left text-xs leading-relaxed text-intake-ink-subtle">
           <summary className="cursor-pointer list-none text-center text-intake-ink-muted [&::-webkit-details-marker]:hidden">
@@ -93,10 +90,24 @@ export default function IntakeIntro({
         <button
           type="button"
           onClick={onStart}
-          className="mt-4 min-h-[44px] cursor-pointer rounded-[14px] bg-intake-terra px-12 py-4 text-base font-semibold text-intake-ink transition-all duration-200 hover:brightness-110"
+          className="min-h-[44px] w-full max-w-sm cursor-pointer rounded-[14px] bg-intake-terra px-12 py-4 text-base font-semibold text-intake-ink transition-all duration-200 hover:brightness-110"
         >
           Start de Leefstijlcheck →
         </button>
+
+        <ul className="flex flex-col items-center gap-2 text-sm text-intake-ink-subtle sm:flex-row sm:gap-4">
+          {THRESHOLD_ITEMS.map((item) => (
+            <li key={item} className="flex items-center gap-2">
+              <span
+                className="text-intake-sage"
+                aria-hidden
+              >
+                ✓
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
 
         {lastSession && onResumeLastResults ? (
           <button
