@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import FoundationPyramid from "@/components/pyramid/FoundationPyramid";
+import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import {
   getLastSession,
   type IntakeSessionPayload,
 } from "@/lib/intake-storage";
-import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 type IntakeIntroProps = {
   onStart: () => void;
@@ -34,43 +35,30 @@ export default function IntakeIntro({
   }, []);
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="flex w-full max-w-lg flex-col items-center gap-6">
-        {/* 1. Label */}
-        <p
-          className="text-sm font-semibold uppercase"
-          style={{ letterSpacing: "0.2em", color: "rgba(255,255,255,0.5)" }}
-        >
-          Leefstijlcheck
+    <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="flex w-full max-w-lg flex-col items-center gap-8 md:gap-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-intake-ink-subtle">
+          <span className="text-intake-terra">01</span> · Leefstijlcheck
         </p>
 
-        {/* 2. Titel */}
         <h1
-          className="text-3xl font-normal leading-tight md:text-4xl"
-          style={{
-            fontFamily: "var(--font-intake-heading), Georgia, serif",
-            color: "rgba(255,255,255,0.95)",
-            letterSpacing: "-0.01em",
-          }}
+          className="font-serif text-3xl font-normal leading-tight text-intake-ink md:text-4xl"
+          style={{ letterSpacing: "-0.01em" }}
         >
-          Ontdek waar je staat
+          Ontdek <em className="italic">waar</em> je staat
         </h1>
 
-        {/* 3. Subtitel */}
-        <p
-          className="max-w-md text-lg leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.6)" }}
-        >
+        <p className="max-w-md text-lg leading-relaxed text-intake-ink-muted">
           We analyseren jouw leefstijl op zes domeinen — slaap, energie,
           stress, voeding, beweging en herstel — en geven je een persoonlijk
           plan om te verbeteren.
         </p>
 
-        {/* 4. Stats-rij */}
-        <div
-          className="flex items-center gap-2 text-sm"
-          style={{ color: "rgba(255,255,255,0.4)" }}
-        >
+        <div className="my-4 w-full md:my-6">
+          <FoundationPyramid mode="static" />
+        </div>
+
+        <div className="flex items-center gap-2 text-sm text-intake-ink-subtle">
           <span>15 vragen</span>
           <span aria-hidden>·</span>
           <span>3 minuten</span>
@@ -78,20 +66,12 @@ export default function IntakeIntro({
           <span>geen account nodig</span>
         </div>
 
-        <details
-          className="max-w-md text-left text-xs"
-          style={{ color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}
-        >
-          <summary
-            className="cursor-pointer list-none text-center [&::-webkit-details-marker]:hidden"
-            style={{ color: "rgba(255,255,255,0.45)" }}
-          >
+        <details className="max-w-md text-left text-xs leading-relaxed text-intake-ink-subtle">
+          <summary className="cursor-pointer list-none text-center text-intake-ink-muted [&::-webkit-details-marker]:hidden">
             Wat doen we met je antwoorden?
           </summary>
           <ul className="mt-3 space-y-2 pl-4">
-            <li>
-              Je antwoorden zijn gezondheidsgegevens (AVG art. 9).
-            </li>
+            <li>Je antwoorden zijn gezondheidsgegevens (AVG art. 9).</li>
             <li>
               We slaan ze pas op nadat je aan het einde expliciet toestemming
               geeft.
@@ -101,11 +81,7 @@ export default function IntakeIntro({
               Meer in onze{" "}
               <Link
                 href="/privacy"
-                style={{
-                  color: "rgba(255,255,255,0.55)",
-                  textDecoration: "underline",
-                  textUnderlineOffset: 3,
-                }}
+                className="text-intake-ink-muted underline underline-offset-[3px] hover:text-intake-ink"
               >
                 privacyverklaring
               </Link>
@@ -114,32 +90,19 @@ export default function IntakeIntro({
           </ul>
         </details>
 
-        {/* 5. CTA */}
         <button
           type="button"
           onClick={onStart}
-          className="mt-8 cursor-pointer rounded-[14px] border border-[#C8956C] px-12 py-4 text-base font-semibold text-white transition-all duration-200 hover:brightness-110"
-          style={{ fontFamily: "inherit", background: "#C8956C" }}
+          className="mt-4 min-h-[44px] cursor-pointer rounded-[14px] bg-intake-terra px-12 py-4 text-base font-semibold text-intake-ink transition-all duration-200 hover:brightness-110"
         >
           Start de Leefstijlcheck →
         </button>
 
-        {/* 6. Laatste-meting link */}
         {lastSession && onResumeLastResults ? (
           <button
             type="button"
             onClick={onResumeLastResults}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 13,
-              color: "rgba(255,255,255,0.35)",
-              cursor: "pointer",
-              textDecoration: "underline",
-              textDecorationColor: "rgba(255,255,255,0.15)",
-              textUnderlineOffset: 3,
-              fontFamily: "inherit",
-            }}
+            className="cursor-pointer border-none bg-transparent text-[13px] text-intake-ink-subtle underline underline-offset-[3px] decoration-intake-divider hover:text-intake-ink-muted"
           >
             Laatste meting:{" "}
             {new Date(lastSession.timestamp).toLocaleDateString("nl-NL", {
