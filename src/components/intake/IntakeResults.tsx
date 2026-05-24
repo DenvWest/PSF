@@ -25,6 +25,7 @@ import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
+import { withIntakeReturn } from "@/lib/intake-return-link";
 import FoundationPyramid, {
   type PillarStatus,
 } from "@/components/pyramid/FoundationPyramid";
@@ -307,7 +308,7 @@ export default function IntakeResults({
             <p className="text-sm text-intake-ink-muted">
               Profiel:{" "}
               <Link
-                href={displayProfileSlugPath}
+                href={withIntakeReturn(displayProfileSlugPath)}
                 className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
               >
                 {displayProfileName}
@@ -318,7 +319,7 @@ export default function IntakeResults({
           {isOvertrainerProfile ? (
             <p className="mt-2">
               <Link
-                href="/gids/herstel"
+                href={withIntakeReturn("/gids/herstel")}
                 className="text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
               >
                 Gratis Herstelgids →

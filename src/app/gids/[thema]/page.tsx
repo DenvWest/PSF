@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Container from "@/components/layout/Container";
+import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 import { GuideOptInForm } from "@/components/gids/GuideOptInForm";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { GUIDE_SLUGS, getGuideData } from "@/data/gids";
@@ -42,6 +43,7 @@ export default async function GidsOptInPage({ params }: Props) {
     <main className="py-12 md:py-16">
       <Container>
         <article className="max-w-2xl mx-auto">
+          <IntakeResultsReturnBanner />
           <header>
             <p className="text-xs font-medium uppercase tracking-widest text-stone-400">
               {data.heroLabel}

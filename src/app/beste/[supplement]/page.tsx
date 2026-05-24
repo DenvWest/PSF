@@ -20,6 +20,7 @@ import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfil
 import { getProfileFitsForCategory } from "@/data/supplement-profile-fits";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import Container from "@/components/layout/Container";
+import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 import {
   buildBreadcrumbSchema,
   buildItemListSchema,
@@ -113,6 +114,9 @@ export default async function Page({ params }: PageProps) {
       <TrustBar />
 
       <main className="pb-24 md:pb-12">
+        <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 pt-6">
+          <IntakeResultsReturnBanner />
+        </div>
         {!available && disabledReason && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8 mx-auto max-w-7xl px-6 lg:px-8">
             <p className="text-amber-800 font-medium">

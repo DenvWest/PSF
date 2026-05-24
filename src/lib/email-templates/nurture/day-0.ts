@@ -330,7 +330,6 @@ export function nurtureDay0Email(
 
   const lifestyleOverviewBlock = renderLifestyleOverviewBlock(
     data.domainScores,
-    intakeUrl,
     data.firstName,
   );
 

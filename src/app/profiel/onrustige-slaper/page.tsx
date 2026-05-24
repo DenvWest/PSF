@@ -4,6 +4,7 @@ import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHo
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import Container from "@/components/layout/Container";
+import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 
 export const metadata: Metadata = {
   title: "Slaapproblemen Na 40? Dit Kun Je Eraan Doen | PerfectSupplement",
@@ -131,6 +132,7 @@ export default function OnrustigeSlaperPage() {
       <main>
         <Container>
           <article>
+            <IntakeResultsReturnBanner />
             {/* Breadcrumbs */}
             <nav aria-label="Breadcrumb" className="pt-6 pb-2">
               <ol className="flex flex-wrap items-center gap-1 text-sm text-slate-400">

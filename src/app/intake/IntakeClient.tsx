@@ -128,6 +128,12 @@ export default function IntakeClient() {
   }, [hasResultsParam]);
 
   useEffect(() => {
+    if (phase === "results" && !hasResultsParam) {
+      router.replace("/intake?resultaten=true", { scroll: false });
+    }
+  }, [phase, hasResultsParam, router]);
+
+  useEffect(() => {
     if (phase !== "calculating") {
       return;
     }
@@ -286,6 +292,7 @@ export default function IntakeClient() {
     setIntakeTurnstileToken("");
     setIntakeConsent(null);
     setResultsDeepLinkMissing(false);
+    router.replace("/intake");
   }
 
   async function resumeLastResults() {

@@ -161,6 +161,68 @@ export async function verifyAndConsumeRecoveryToken(
   return { ok: true, sessionId, signedCookie };
 }
 
+export async function verifyUsedRecoveryToken(
+  rawToken: string,
+): Promise<RecoveryTokenVerifyResult> {
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return { ok: false, reason: "no_admin" };
+  }
+
+  const trimmed = rawToken.trim();
+  if (!trimmed) {
+    return { ok: false, reason: "invalid" };
+  }
+
+  const tokenHash = hashRecoveryToken(trimmed);
+  const now = new Date().toISOString();
+
+  const { data: row, error: fetchError } = await admin
+    .from("recovery_tokens")
+    .select("session_id, expires_at, used_at")
+    .eq("token_hash", tokenHash)
+    .maybeSingle();
+
+  if (fetchError || !row || !row.used_at) {
+    return { ok: false, reason: "invalid" };
+  }
+
+  if (typeof row.expires_at === "string" && row.expires_at <= now) {
+    return { ok: false, reason: "expired" };
+  }
+
+  const sessionId =
+    typeof row.session_id === "string" ? row.session_id.trim() : "";
+  if (!sessionId) {
+    return { ok: false, reason: "invalid" };
+  }
+
+  const recoverable = await isSessionRecoverable(sessionId);
+  if (!recoverable) {
+    return { ok: false, reason: "session_invalid" };
+  }
+
+  const signedCookie = signIntakeSessionId(sessionId);
+  if (!signedCookie) {
+    return { ok: false, reason: "invalid" };
+  }
+
+  return { ok: true, sessionId, signedCookie };
+}
+
+export async function resolveRecoveryToken(
+  rawToken: string,
+): Promise<RecoveryTokenVerifyResult> {
+  const consumed = await verifyAndConsumeRecoveryToken(rawToken);
+  if (consumed.ok) {
+    return consumed;
+  }
+  if (consumed.reason === "used") {
+    return verifyUsedRecoveryToken(rawToken);
+  }
+  return consumed;
+}
+
 export async function invalidateRecoveryTokensForSession(
   sessionId: string,
 ): Promise<void> {

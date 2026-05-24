@@ -8,7 +8,7 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import {
   isSessionRecoverable,
-  verifyAndConsumeRecoveryToken,
+  resolveRecoveryToken,
 } from "@/lib/recovery-token";
 import { getClientIp } from "@/lib/turnstile-verify";
 
@@ -33,6 +33,24 @@ function setSessionCookie(signedCookie: string): NextResponse {
     maxAge: COOKIE_MAX_AGE_SEC,
   });
   return res;
+}
+
+async function redirectWithExistingSession(
+  request: NextRequest,
+): Promise<NextResponse | null> {
+  const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
+  if (!rawCookie) {
+    return null;
+  }
+  const sessionId = verifySignedIntakeSessionCookie(rawCookie);
+  if (!sessionId) {
+    return null;
+  }
+  const recoverable = await isSessionRecoverable(sessionId);
+  if (!recoverable) {
+    return null;
+  }
+  return setSessionCookie(rawCookie);
 }
 
 export async function GET(request: NextRequest) {
@@ -63,12 +81,16 @@ export async function GET(request: NextRequest) {
 
   const token = request.nextUrl.searchParams.get("token")?.trim() ?? "";
   if (token) {
-    const result = await verifyAndConsumeRecoveryToken(token);
+    const result = await resolveRecoveryToken(token);
     if (!result.ok) {
       logSecurityEvent("invalid_token", {
         remoteIp: clientIp,
         reason: result.reason,
       });
+      const existingSession = await redirectWithExistingSession(request);
+      if (existingSession) {
+        return existingSession;
+      }
       return redirectToIntake();
     }
     return setSessionCookie(result.signedCookie);

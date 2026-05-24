@@ -190,7 +190,6 @@ function lifestyleOverviewIntroHtml(firstName?: string | null): string {
 
 export function renderLifestyleOverviewBlock(
   domainScores: Record<string, number>,
-  intakeUrl: string,
   firstName?: string | null,
 ): string {
   const rows = buildLifestyleOverviewRows(domainScores);
@@ -215,7 +214,6 @@ export function renderLifestyleOverviewBlock(
               ${rowHtml}
             </table>
             <p style="margin:0 0 16px 0;font-size:14px;line-height:1.6;color:#555555;">Leefstijl is het fundament — supplementen vullen aan waar dit niet rond komt.</p>
-            ${nurtureCtaButton(intakeUrl, "Bekijk je leefstijl-overzicht")}
           </td>
         </tr>`;
 }

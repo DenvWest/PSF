@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef } from "react";
 import Link from "next/link";
 import type { PillarDrawerLink } from "@/data/foundation-pyramid";
+import { withIntakeReturn } from "@/lib/intake-return-link";
 import type { DisplayStatus } from "@/lib/score-display";
 import {
   STATUS_TONE_CLASS,
@@ -153,7 +154,7 @@ export default function PyramidPillarDrawer({
                 {data.links.map((link) => (
                   <li key={link.href}>
                     <Link
-                      href={link.href}
+                      href={withIntakeReturn(link.href)}
                       className="block rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3 text-sm font-medium text-intake-ink transition-colors hover:border-intake-sage/40"
                     >
                       {link.label} →
