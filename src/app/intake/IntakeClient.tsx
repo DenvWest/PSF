@@ -84,7 +84,7 @@ export default function IntakeClient() {
   // Zonder die param: intro direct zichtbaar, sessie wordt stil op de achtergrond gecheckt.
   const [isCheckingSession, setIsCheckingSession] = useState(hasResultsParam);
   const [resultsDeepLinkMissing, setResultsDeepLinkMissing] = useState(false);
-  const [scrollToTipsOnResults, setScrollToTipsOnResults] = useState(false);
+  const pendingScrollToTipsRef = useRef(false);
 
   function hydrateFromSession(session: IntakeSessionPayload) {
     setSymptoms(session.symptoms as SymptomId[]);
@@ -144,15 +144,15 @@ export default function IntakeClient() {
   }, [phase, hasResultsParam, router]);
 
   useEffect(() => {
-    if (phase !== "results" || !scrollToTipsOnResults) {
+    if (phase !== "results" || !pendingScrollToTipsRef.current) {
       return;
     }
-    setScrollToTipsOnResults(false);
+    pendingScrollToTipsRef.current = false;
     const timer = window.setTimeout(() => {
       document.getElementById("tips")?.scrollIntoView({ behavior: "smooth" });
     }, 150);
     return () => window.clearTimeout(timer);
-  }, [phase, scrollToTipsOnResults]);
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== "calculating") {
@@ -474,7 +474,7 @@ export default function IntakeClient() {
             themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
             onBack={() => setPhase("recognition")}
             onContinue={() => {
-              setScrollToTipsOnResults(true);
+              pendingScrollToTipsRef.current = true;
               setPhase("results");
             }}
           />
