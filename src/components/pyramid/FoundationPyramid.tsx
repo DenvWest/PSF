@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 // FoundationPyramid: 5-laag visualisatie (Leefstijl als fundament).
 // Niet te verwarren met FoundationStack (src/components/intake/) — dat is het
 // basis-supplementen-blok in intake-resultaten.
@@ -33,6 +35,7 @@ type FoundationPyramidProps =
   | {
       mode: "personalized";
       pillarStatuses: Partial<Record<PillarId, PillarStatus>>;
+      primaryPillar?: PillarId;
       onPillarClick?: (pillarId: PillarId) => void;
     };
 
@@ -241,10 +244,6 @@ function PyramidFooter({ mode }: { mode: FoundationPyramidProps["mode"] }) {
             Balkhoogte = status · leefstijlgebieden zijn klikbaar
           </p>
         </div>
-        <p className="mt-3 text-center text-xs leading-relaxed text-intake-ink-subtle">
-          Lezen van onder naar boven: sterke leefstijl maakt sterke gezondheid
-          mogelijk. Supplementen vullen aan waar leefstijl niet rond komt.
-        </p>
       </>
     );
   }
@@ -264,6 +263,7 @@ function LifestylePillars({
   geom: LayerGeometry;
   props: FoundationPyramidProps;
 }) {
+  const [mounted, setMounted] = useState(false);
   const innerTop = geom.yTop + 46;
   const innerBottom = geom.yBottom - 8;
   const innerHeight = innerBottom - innerTop;
@@ -272,9 +272,21 @@ function LifestylePillars({
   const colWidth = totalWidth / count;
   const startX = CX - totalWidth / 2;
   const isPersonalized = props.mode === "personalized";
+  const primaryPillar =
+    props.mode === "personalized" ? props.primaryPillar : undefined;
   const onPillarClick =
     props.mode === "personalized" ? props.onPillarClick : undefined;
   const isClickable = isPersonalized && Boolean(onPillarClick);
+
+  useEffect(() => {
+    if (!primaryPillar) {
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      setMounted(true);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [primaryPillar]);
 
   function handlePillarActivate(pillarId: PillarId) {
     onPillarClick?.(pillarId);
@@ -288,9 +300,17 @@ function LifestylePillars({
         const fillRatio = STATUS_FILL[status];
         const barHeight = innerHeight * fillRatio;
         const pillarLabel = `${pillar.label}, ${isPersonalized ? status : pillar.sublabel}`;
+        const isPrimary = primaryPillar === pillar.id;
+        const liftY = isPrimary && mounted ? -5 : 0;
 
         return (
-          <g key={pillar.id}>
+          <g
+            key={pillar.id}
+            transform={`translate(0 ${liftY})`}
+            style={{
+              transition: "transform 400ms ease-out",
+            }}
+          >
             {index > 0 ? (
               <line
                 x1={x}
@@ -327,7 +347,7 @@ function LifestylePillars({
                     }
                   }}
                 />
-                {isClickable ? (
+                {isClickable && !isPrimary ? (
                   <rect
                     x={x + 4}
                     y={innerTop + 30}
@@ -339,6 +359,19 @@ function LifestylePillars({
                     strokeWidth={0.75}
                     strokeDasharray="3 2"
                     strokeOpacity={0.45}
+                    pointerEvents="none"
+                  />
+                ) : null}
+                {isPrimary ? (
+                  <rect
+                    x={x + 3}
+                    y={innerTop + 28}
+                    width={colWidth - 6}
+                    height={innerBottom - innerTop - 28}
+                    rx={3}
+                    fill="transparent"
+                    stroke="var(--intake-terra)"
+                    strokeWidth={2}
                     pointerEvents="none"
                   />
                 ) : null}
@@ -355,11 +388,13 @@ function LifestylePillars({
                   x={x + colWidth / 2}
                   y={innerTop + 10}
                   textAnchor="middle"
-                  className="pointer-events-none fill-intake-ink text-[10px] font-semibold"
+                  className={`pointer-events-none fill-intake-ink font-semibold ${
+                    isPrimary ? "text-[11px]" : "text-[10px]"
+                  }`}
                 >
                   {pillar.label}
                 </text>
-                {isClickable ? (
+                {isClickable && !isPrimary ? (
                   <line
                     x1={x + colWidth * 0.2}
                     y1={innerTop + 13}

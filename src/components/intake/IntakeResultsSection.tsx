@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 type IntakeResultsSectionProps = {
+  id?: string;
   title: string;
   subtitle?: string;
   defaultOpen?: boolean;
@@ -9,6 +10,7 @@ type IntakeResultsSectionProps = {
 };
 
 export default function IntakeResultsSection({
+  id,
   title,
   subtitle,
   defaultOpen = false,
@@ -17,6 +19,7 @@ export default function IntakeResultsSection({
 }: IntakeResultsSectionProps) {
   return (
     <details
+      id={id}
       open={defaultOpen || undefined}
       className={`group mb-4 overflow-hidden rounded-2xl border border-intake-card-border bg-intake-bg-elevated ${className}`}
     >

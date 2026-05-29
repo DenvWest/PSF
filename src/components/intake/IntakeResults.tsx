@@ -22,7 +22,9 @@ import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import FoundationStack from "@/components/intake/FoundationStack";
 import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
+import { trackEvent } from "@/lib/ga4";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
+import { getPrimaryTheme } from "@/lib/primary-theme";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
 import { withIntakeReturn } from "@/lib/intake-return-link";
@@ -237,6 +239,7 @@ export default function IntakeResults({
   const excludeIds = supplementRoute.map((r) => r.id);
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
   const pillarStatuses = buildPillarStatuses(scores);
+  const primaryTheme = getPrimaryTheme(scores, answers);
 
   const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
   const displayProfileName = isOvertrainerProfile ? "Overtrainer" : profile.name;
@@ -275,6 +278,10 @@ export default function IntakeResults({
       if (header) header.style.display = "";
     };
   }, []);
+
+  useEffect(() => {
+    trackEvent("intake_results_viewed", { theme_slug: primaryTheme });
+  }, [primaryTheme]);
 
   const heroTitle = firstName
     ? `Jouw vitaliteitsprofiel, ${firstName}`
@@ -332,8 +339,22 @@ export default function IntakeResults({
           <FoundationPyramid
             mode="personalized"
             pillarStatuses={pillarStatuses}
+            primaryPillar={primaryTheme}
             onPillarClick={setActivePillar}
           />
+
+          <div className="mt-5 text-center">
+            <a
+              href="#tips"
+              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              style={{ background: "#C8956C" }}
+            >
+              Bekijk wat dit voor jou betekent →
+            </a>
+            <p className="mt-2 text-[13px] text-intake-ink-subtle">
+              Jouw grootste hefboom op basis van je antwoorden.
+            </p>
+          </div>
 
           {hasMarketingEmail ? (
             <p className="mt-5 text-center text-sm text-intake-ink-muted">
@@ -403,8 +424,10 @@ export default function IntakeResults({
 
         {(primaryQuickWin || extraQuickWins.length > 0 || primaryLongTermTip) ? (
           <IntakeResultsSection
+            id="tips"
             title="Tips & actieplan"
             subtitle="Quick wins en 12-weken richting"
+            defaultOpen
           >
             {primaryQuickWin ? (
               <section className="mb-5 rounded-xl border border-intake-card-border bg-intake-bg px-4 py-4">
