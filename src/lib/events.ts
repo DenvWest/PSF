@@ -1,4 +1,8 @@
 import { getDefaultOrganizationId } from "@/lib/organization";
+import {
+  markDomainEventDelivered,
+  publishDomainEventToN8n,
+} from "@/lib/n8n-webhook";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const DOMAIN_EVENT_TYPES = [
@@ -7,6 +11,7 @@ export const DOMAIN_EVENT_TYPES = [
   "plan.action_clicked",
   "email.opted_in",
   "consent.revoked",
+  "evidence.chat_queried",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];
@@ -41,19 +46,54 @@ export async function emitEvent(input: EmitEventInput): Promise<void> {
       ? input.email.trim().toLowerCase()
       : null;
 
-  const { error } = await admin.from("domain_events").insert({
-    organization_id: organizationId,
-    event_type: input.eventType,
-    session_id: input.sessionId ?? null,
-    email,
-    payload: input.payload ?? {},
-    delivered_to: input.deliveredTo ?? [],
-  });
+  const deliveredTo = input.deliveredTo ?? [];
+
+  const { data: inserted, error } = await admin
+    .from("domain_events")
+    .insert({
+      organization_id: organizationId,
+      event_type: input.eventType,
+      session_id: input.sessionId ?? null,
+      email,
+      payload: input.payload ?? {},
+      delivered_to: deliveredTo,
+    })
+    .select(
+      "id, organization_id, occurred_at, event_type, session_id, email, payload",
+    )
+    .single();
 
   if (error) {
     console.error("[emitEvent] insert failed:", {
       eventType: input.eventType,
       message: error.message,
+    });
+    return;
+  }
+
+  if (
+    inserted &&
+    deliveredTo.includes("n8n_webhook")
+  ) {
+    const payload =
+      inserted.payload &&
+      typeof inserted.payload === "object" &&
+      !Array.isArray(inserted.payload)
+        ? (inserted.payload as Record<string, unknown>)
+        : {};
+
+    void publishDomainEventToN8n({
+      id: inserted.id,
+      organization_id: inserted.organization_id,
+      occurred_at: inserted.occurred_at,
+      event_type: inserted.event_type,
+      session_id: inserted.session_id,
+      email: inserted.email,
+      payload,
+    }).then((ok) => {
+      if (ok) {
+        void markDomainEventDelivered(inserted.id, "n8n_webhook");
+      }
     });
   }
 }

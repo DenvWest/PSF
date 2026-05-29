@@ -5,6 +5,7 @@ type RateLimitConfig = {
 
 export type RateLimitRoute =
   | "contact"
+  | "evidence_chat"
   | "intake_session"
   | "intake_chat"
   | "intake_feedback"
@@ -17,6 +18,7 @@ export type RateLimitRoute =
 
 const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   contact: { limit: 5, windowMs: 10 * 60 * 1000 },
+  evidence_chat: { limit: 20, windowMs: 15 * 60 * 1000 },
   intake_session: { limit: 20, windowMs: 15 * 60 * 1000 },
   intake_chat: { limit: 30, windowMs: 15 * 60 * 1000 },
   intake_feedback: { limit: 10, windowMs: 15 * 60 * 1000 },
@@ -30,6 +32,7 @@ const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
 
 const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   contact: { limit: 1000, windowMs: 60 * 1000 },
+  evidence_chat: { limit: 1000, windowMs: 60 * 1000 },
   intake_session: { limit: 1000, windowMs: 60 * 1000 },
   intake_chat: { limit: 1000, windowMs: 60 * 1000 },
   intake_feedback: { limit: 1000, windowMs: 60 * 1000 },

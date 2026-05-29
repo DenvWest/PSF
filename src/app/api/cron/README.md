@@ -10,6 +10,7 @@ Auth-logica: [`src/lib/cron-auth.ts`](../../../lib/cron-auth.ts).
 |------|----------|-------------------------|------|-----------|----------------|
 | **Nurture** | `GET`/`POST` `/api/cron/nurture` | Dagelijks (typisch ochtend) | Verstuurt pending `nurture_emails` (intake + gids) | `RESEND_API_KEY`, `CRON_SECRET` | `{ "sent": number, "errors": number }` |
 | **Retention** | `GET`/`POST` `/api/cron/retention` | Dagelijks | Verwijdert oude `intake_sessions` (24m) en `nurture_emails` (12m / verweesde pending) | `CRON_SECRET`, Supabase admin | `{ "deletedSessions": number, "deletedNurture": number, "deletedOrphanPending": number }` |
+| **n8n events** | `GET`/`POST` `/api/cron/n8n-events` | Elke 5–15 min (optioneel) | Stuurt onbezorgde `domain_events` naar n8n webhook | `CRON_SECRET`, `N8N_WEBHOOK_URL`, Supabase admin | `{ "forwarded": number, "errors": number }` |
 
 ### Gerelateerd (niet onder `/api/cron/`)
 

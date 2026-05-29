@@ -12,4 +12,8 @@ describe("isDomainEventType", () => {
     expect(isDomainEventType("intake.unknown")).toBe(false);
     expect(isDomainEventType("")).toBe(false);
   });
+
+  it("accepts evidence.chat_queried", () => {
+    expect(isDomainEventType("evidence.chat_queried")).toBe(true);
+  });
 });
