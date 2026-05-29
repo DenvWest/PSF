@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { getSleepInterventionBucketsForSession } from "@/lib/content/nurture-interventions";
 import { getGuideNurtureEmailContent } from "@/lib/email-templates/guide-nurture";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
 import {
@@ -178,6 +179,14 @@ export async function runPendingNurtureEmails(): Promise<{
           ? await buildIntakeRecoveryUrlForSession(mail.session_id)
           : buildIntakeFallbackUrl();
 
+        const sleepNurtureDays = new Set([3, 14, 21]);
+        const interventionBuckets =
+          primaryDomain === "sleep" &&
+          mail.session_id &&
+          sleepNurtureDays.has(mail.sequence_day)
+            ? await getSleepInterventionBucketsForSession(mail.session_id)
+            : null;
+
         const intakeContent = getNurtureEmailContent(
           {
             sequenceDay: mail.sequence_day,
@@ -186,6 +195,7 @@ export async function runPendingNurtureEmails(): Promise<{
             domainScores: parseDomainScores(mail.domain_scores),
             urgencyLevel,
             firstName,
+            interventionBuckets,
           },
           {
             recipientEmail: email,

@@ -1,3 +1,5 @@
+import type { InterventionBuckets } from "@/lib/content/match-interventions";
+
 export interface NurtureEmailData {
   profileLabel: string;
   primaryDomain: string;
@@ -6,6 +8,8 @@ export interface NurtureEmailData {
   urgencyLevel?: string;
   /** Optioneel; voor persoonlijke aanhef in mail (voornaam). */
   firstName?: string | null;
+  /** Sleep-journey: zelfde interventies als PLAN-scherm (dag 3/14/21). */
+  interventionBuckets?: InterventionBuckets | null;
 }
 
 export type NurtureEmailDispatchContext = {

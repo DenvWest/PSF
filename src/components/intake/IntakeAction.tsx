@@ -11,14 +11,23 @@ const KIND_LABELS: Record<InterventionKind, string> = {
 type IntakeActionProps = {
   action: PlanAction;
   step: number;
+  onPlanLinkClick?: (action: PlanAction) => void;
 };
 
-export default function IntakeAction({ action, step }: IntakeActionProps) {
+export default function IntakeAction({
+  action,
+  step,
+  onPlanLinkClick,
+}: IntakeActionProps) {
   const href = action.affiliateUrl ?? action.comparisonPath;
   const isExternalAffiliate =
     typeof href === "string" &&
     href.startsWith("http") &&
     action.kind === "supplement";
+
+  const handlePlanLinkClick = () => {
+    onPlanLinkClick?.(action);
+  };
 
   return (
     <article className="rounded-2xl border border-intake-card-border bg-intake-bg px-5 py-5">
@@ -61,6 +70,7 @@ export default function IntakeAction({ action, step }: IntakeActionProps) {
               target="_blank"
               rel="nofollow sponsored"
               className="font-medium text-intake-sage underline underline-offset-2"
+              onClick={handlePlanLinkClick}
             >
               Vergelijk {action.name} →
             </a>
@@ -68,6 +78,7 @@ export default function IntakeAction({ action, step }: IntakeActionProps) {
             <Link
               href={href}
               className="font-medium text-intake-sage underline underline-offset-2"
+              onClick={handlePlanLinkClick}
             >
               Vergelijk {action.name} →
             </Link>

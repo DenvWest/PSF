@@ -224,11 +224,35 @@ export function renderLifestyleOverviewBlock(
 
 import type { NurtureBlock, DomainSupplementTip } from "@/data/nurture-content";
 
+export type NurtureInterventionHighlight = {
+  title: string;
+  body: string;
+  kindLabel: string;
+  comparePath?: string | null;
+};
+
+export function renderInterventionHighlightHtml(
+  highlight: NurtureInterventionHighlight,
+): string {
+  const compareHtml =
+    highlight.comparePath && highlight.comparePath.trim()
+      ? `<p style="margin:12px 0 0 0;font-size:15px;line-height:1.6;color:#333333;"><a href="https://www.perfectsupplement.nl${escapeHtml(highlight.comparePath.trim())}" style="color:#2d4a3e;font-weight:600;text-decoration:underline;">Bekijk ${escapeHtml(highlight.title)} →</a></p>`
+      : "";
+  return `
+    <div style="margin:18px 0;padding:14px 18px;border:1px solid #e0e0d8;border-radius:4px;background:#fafaf7;">
+      <p style="margin:0 0 6px 0;font-size:13px;color:#666;text-transform:uppercase;letter-spacing:.04em;font-weight:600;">${escapeHtml(highlight.kindLabel)}</p>
+      <p style="margin:0 0 8px 0;font-size:15px;line-height:1.6;color:#333333;"><strong>${escapeHtml(highlight.title)}</strong></p>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:#333333;">${escapeHtml(highlight.body)}</p>
+      ${compareHtml}
+    </div>`;
+}
+
 export function renderPersonalizedRows(
   block: NurtureBlock,
   supplementTip: DomainSupplementTip | null,
   intakeUrl: string,
   firstName?: string | null,
+  interventionHighlight?: NurtureInterventionHighlight | null,
 ): string {
   const bodyHtml = block.bodyParagraphs
     .map(
@@ -242,15 +266,17 @@ export function renderPersonalizedRows(
       <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(block.tip)}</p>
     </div>`;
 
-  const supplementHtml = supplementTip
-    ? `
+  const supplementHtml = interventionHighlight
+    ? renderInterventionHighlightHtml(interventionHighlight)
+    : supplementTip
+      ? `
     <div style="margin:18px 0;padding:14px 18px;border:1px solid #e0e0d8;border-radius:4px;background:#fafaf7;">
       <p style="margin:0 0 6px 0;font-size:13px;color:#666;text-transform:uppercase;letter-spacing:.04em;font-weight:600;">Supplement-tip</p>
       <p style="margin:0 0 8px 0;font-size:15px;line-height:1.6;color:#333333;">${escapeHtml(supplementTip.intro)}</p>
       <p style="margin:0 0 8px 0;font-size:15px;line-height:1.6;color:#333333;"><strong>${escapeHtml(supplementTip.supplement.name)}</strong> — ${escapeHtml(supplementTip.supplement.reason)}</p>
       <a href="https://www.perfectsupplement.nl${escapeHtml(supplementTip.supplement.url)}" style="font-size:14px;color:#2d4a3e;text-decoration:underline;">Vergelijk ${escapeHtml(supplementTip.supplement.name)} supplementen →</a>
     </div>`
-    : "";
+      : "";
 
   const rawCtaTarget =
     block.cta.url === "/intake" ? intakeUrl : block.cta.url;

@@ -1,5 +1,6 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
 import { buildNurtureEmail } from "@/data/nurture-content";
+import { resolveNurtureInterventionHighlight } from "@/lib/content/nurture-interventions";
 import {
   resolveIntakeRecoveryUrl,
   renderPersonalizedRows,
@@ -19,7 +20,18 @@ export function nurtureDay3Email(
     data.urgencyLevel ?? "moderate",
   );
 
-  const inner = renderPersonalizedRows(blocks, supplementTip, intakeUrl, data.firstName);
+  const interventionHighlight = resolveNurtureInterventionHighlight(data);
+  const blocksWithTip = interventionHighlight
+    ? { ...blocks, tip: interventionHighlight.body }
+    : blocks;
+
+  const inner = renderPersonalizedRows(
+    blocksWithTip,
+    interventionHighlight ? null : supplementTip,
+    intakeUrl,
+    data.firstName,
+    interventionHighlight,
+  );
 
   return { subject, html: wrapNurtureBlock(inner, ctx, false) };
 }

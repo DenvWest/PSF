@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import IntakeAction from "@/components/intake/IntakeAction";
 import type { PlanContent } from "@/lib/content/plan-content";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import type { ThemeSlug } from "@/lib/content/themes";
 
 type IntakePlanProps = {
@@ -136,7 +137,19 @@ export default function IntakePlan({
           <>
             <div className="mb-6 space-y-4" aria-label="Acties in volgorde">
               {loadState.content.actions.map((action, index) => (
-                <IntakeAction key={action.slug} action={action} step={index + 1} />
+                <IntakeAction
+                  key={action.slug}
+                  action={action}
+                  step={index + 1}
+                  onPlanLinkClick={(clicked) => {
+                    emitIntakeClientEvent("plan.action_clicked", {
+                      theme_slug: themeSlug,
+                      action_slug: clicked.slug,
+                      action_kind: clicked.kind,
+                      step: index + 1,
+                    });
+                  }}
+                />
               ))}
             </div>
 

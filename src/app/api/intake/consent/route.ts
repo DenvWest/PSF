@@ -3,6 +3,7 @@ import {
   INTAKE_SESSION_COOKIE_NAME,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import { emitEvent } from "@/lib/events";
 import { revokeIntakeConsentForSession } from "@/lib/intake-consent-revoke";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -34,6 +35,15 @@ export async function DELETE(request: NextRequest) {
   }
 
   const result = await revokeIntakeConsentForSession(admin, sessionId);
+  if (result.ok) {
+    void emitEvent({
+      eventType: "consent.revoked",
+      sessionId,
+      payload: { source: "intake_consent_delete" },
+      deliveredTo: ["nurture"],
+    });
+  }
+
   if (!result.ok) {
     console.error(
       `[api/intake/consent] revoke failed at ${result.step}:`,

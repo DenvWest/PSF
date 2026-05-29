@@ -16,6 +16,13 @@ import { day3EmailHtml, day3EmailSubject } from "@/lib/emails/day3";
 import { day30EmailHtml, day30EmailSubject } from "@/lib/emails/day30";
 import { day7EmailHtml, day7EmailSubject } from "@/lib/emails/day7";
 import { welcomeEmailHtml, welcomeEmailSubject } from "@/lib/emails/welcome";
+import { escapeHtml } from "@/lib/emails/shared";
+import type { InterventionBuckets } from "@/lib/content/match-interventions";
+import {
+  interventionForNurtureDay,
+  nurtureInterventionHighlight,
+} from "@/lib/content/nurture-interventions";
+import { getPrimaryTheme } from "@/lib/primary-theme";
 import {
   getAdvice,
   getAdvicePrimaryDomain,
@@ -175,6 +182,7 @@ function buildOmegaPartnerUrl(): string | null {
 export function buildNurtureEmail(
   row: ReminderRowWithSession,
   recoveryUrl?: string,
+  interventionBuckets?: InterventionBuckets | null,
 ): { subject: string; html: string } | null {
   const email = row.email?.trim().toLowerCase();
   if (!email) {
@@ -213,12 +221,38 @@ export function buildNurtureEmail(
       ? getAdvice(scores, answers, symptoms)
       : null;
 
-  const quickWin = advice?.quickWins[0] ?? FALLBACK_QUICK;
   const primaryDomain: DomainId = scores
     ? getAdvicePrimaryDomain(scores)
     : "sleep";
+  const themeSlug =
+    scores && answers ? getPrimaryTheme(scores, answers) : primaryDomain;
+
+  const day3Intervention =
+    interventionBuckets && kind === "day3"
+      ? interventionForNurtureDay(interventionBuckets, 3)
+      : null;
+  const day14Intervention =
+    interventionBuckets && kind === "day14"
+      ? interventionForNurtureDay(interventionBuckets, 14)
+      : null;
+  const day21Intervention =
+    interventionBuckets && kind === "day21"
+      ? interventionForNurtureDay(interventionBuckets, 21)
+      : null;
+
+  const quickWin =
+    day21Intervention?.goalPhrase?.trim() ||
+    day21Intervention?.description.trim() ||
+    day3Intervention?.goalPhrase?.trim() ||
+    day3Intervention?.description.trim() ||
+    advice?.quickWins[0] ||
+    FALLBACK_QUICK;
+
   const primaryDomainLabel = DOMAIN_LABEL_NL[primaryDomain];
-  const domainTip = DOMAIN_TIP_NL[primaryDomain];
+  const domainTip =
+    day3Intervention?.goalPhrase?.trim() ||
+    day3Intervention?.description.trim() ||
+    DOMAIN_TIP_NL[primaryDomain];
 
   const articleSlug = DOMAIN_ARTICLE_SLUG[primaryDomain];
   const article = getArtikelBySlug(articleSlug);
@@ -271,6 +305,19 @@ export function buildNurtureEmail(
       };
     }
     case "day14": {
+      if (day14Intervention && themeSlug === "sleep") {
+        const highlight = nurtureInterventionHighlight(day14Intervention);
+        const supplementListHtml = `<p style="margin:0;font-size:16px;line-height:1.6;color:#333333;"><strong>${escapeHtml(highlight.title)}</strong> — ${escapeHtml(highlight.body)}</p>`;
+        return {
+          subject: day14EmailSubject,
+          html: day14EmailHtml({
+            unsubscribeUrl,
+            supplementListHtml,
+            hasAffiliateLinks: false,
+          }),
+        };
+      }
+
       const omegaPartner = buildOmegaPartnerUrl();
       let hasAffiliate = false;
       const items =

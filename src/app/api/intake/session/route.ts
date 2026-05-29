@@ -15,8 +15,9 @@ import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
-import { getAdvicePrimaryDomain } from "@/lib/intake-engine";
+import { emitEvent } from "@/lib/events";
 import { scheduleNurtureSequence } from "@/lib/nurture";
+import { getPrimaryTheme } from "@/lib/primary-theme";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 
@@ -268,14 +269,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  void emitEvent({
+    eventType: "intake.completed",
+    sessionId: row.id,
+    payload: {
+      profile_label: profile,
+      urgency_level: urgency,
+      theme_slug: getPrimaryTheme(scores, answers),
+      marketing_opt_in: consent.marketingEmail,
+    },
+    deliveredTo: ["nurture"],
+  });
+
   const marketingAddr = consent.marketingEmailAddress?.trim();
   if (consent.marketingEmail && marketingAddr) {
+    void emitEvent({
+      eventType: "email.opted_in",
+      sessionId: row.id,
+      email: marketingAddr,
+      payload: { source: "intake_session" },
+      deliveredTo: ["nurture"],
+    });
+
     try {
       await scheduleNurtureSequence({
         sessionId: row.id,
         email: marketingAddr,
         profileLabel: profile,
-        primaryDomain: getAdvicePrimaryDomain(scores),
+        primaryDomain: getPrimaryTheme(scores, answers),
         domainScores: scores,
         urgencyLevel: urgency,
         firstName: consent.firstName,

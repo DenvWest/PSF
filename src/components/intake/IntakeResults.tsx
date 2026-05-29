@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
 import {
@@ -23,6 +23,7 @@ import FoundationStack from "@/components/intake/FoundationStack";
 import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
 import { trackEvent } from "@/lib/ga4";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
@@ -283,9 +284,19 @@ export default function IntakeResults({
     };
   }, []);
 
+  const themeRevealedEmittedRef = useRef(false);
+
   useEffect(() => {
     trackEvent("intake_results_viewed", { theme_slug: primaryTheme });
-  }, [primaryTheme]);
+    if (themeRevealedEmittedRef.current) {
+      return;
+    }
+    themeRevealedEmittedRef.current = true;
+    emitIntakeClientEvent("intake.theme_revealed", {
+      theme_slug: primaryTheme,
+      session_id: sessionId,
+    });
+  }, [primaryTheme, sessionId]);
 
   const heroTitle = firstName
     ? `Jouw vitaliteitsprofiel, ${firstName}`

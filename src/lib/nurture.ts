@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { emitEvent } from "@/lib/events";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { buildIntakeRecoveryUrlForSession } from "@/lib/recovery-token";
@@ -129,6 +130,32 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
   if (error) {
     console.error("Failed to schedule nurture sequence:", error);
     throw error;
+  }
+
+  void emitEvent({
+    eventType: "intake.completed",
+    sessionId: input.sessionId,
+    email: input.email,
+    payload: {
+      profile_label: input.profileLabel,
+      primary_domain: input.primaryDomain,
+      urgency_level: input.urgencyLevel,
+    },
+    deliveredTo: ["nurture"],
+  });
+
+  for (const row of pendingRows) {
+    void emitEvent({
+      eventType: "intake.completed",
+      sessionId: input.sessionId,
+      email: input.email,
+      payload: {
+        nurture_sequence_day: row.sequence_day,
+        scheduled_at: row.scheduled_at,
+        status: row.status,
+      },
+      deliveredTo: ["n8n_webhook"],
+    });
   }
 
   return 1 + pendingRows.length;
