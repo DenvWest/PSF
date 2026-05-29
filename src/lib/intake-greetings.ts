@@ -8,9 +8,9 @@ export function isUsableFirstName(value: string | null | undefined): boolean {
 export function getHeroTitle(firstName: string | null | undefined): string {
   if (isUsableFirstName(firstName)) {
     const name = firstName!.trim();
-    return `Jouw vitaliteitsprofiel, ${name}`;
+    return `Jouw leefstijloverzicht, ${name}`;
   }
-  return "Jouw vitaliteitsprofiel";
+  return "Jouw leefstijloverzicht";
 }
 
 export function getMailConfirmation(firstName: string | null | undefined): string {

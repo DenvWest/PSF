@@ -14,7 +14,7 @@ import IntakeRecognition from "@/components/intake/IntakeRecognition";
 import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
 import type { ThemeSlug } from "@/lib/content/themes";
-import { getPrimaryTheme } from "@/lib/primary-theme";
+import { getPrimaryTheme, getSecondaryTheme } from "@/lib/primary-theme";
 import {
   CATEGORIES,
   QUESTIONS,
@@ -89,6 +89,9 @@ export default function IntakeClient() {
   const pendingScrollToTipsRef = useRef(false);
   const pendingScrollToCommitmentRef = useRef(false);
   const [planJourneyReady, setPlanJourneyReady] = useState(false);
+  // Override voor de stepped-care template wanneer de gebruiker een secundair
+  // thema kiest op REVEAL. null => primair thema uit getPrimaryTheme.
+  const [themeOverride, setThemeOverride] = useState<ThemeSlug | null>(null);
 
   function hydrateFromSession(session: IntakeSessionPayload) {
     setSymptoms(session.symptoms as SymptomId[]);
@@ -156,7 +159,7 @@ export default function IntakeClient() {
       return;
     }
 
-    const themeSlug = getPrimaryTheme(scores, answers);
+    const themeSlug = themeOverride ?? getPrimaryTheme(scores, answers);
     let cancelled = false;
 
     void (async () => {
@@ -184,7 +187,7 @@ export default function IntakeClient() {
     return () => {
       cancelled = true;
     };
-  }, [scores, answers]);
+  }, [scores, answers, themeOverride]);
 
   useEffect(() => {
     if (phase !== "results") {
@@ -367,6 +370,7 @@ export default function IntakeClient() {
     setIntakeConsent(null);
     setResultsDeepLinkMissing(false);
     setPlanJourneyReady(false);
+    setThemeOverride(null);
     router.replace("/intake");
   }
 
@@ -380,6 +384,9 @@ export default function IntakeClient() {
   const currentCategory = currentQuestion
     ? CATEGORIES.find((c) => c.id === currentQuestion.category)
     : undefined;
+
+  const primaryTheme = scores ? getPrimaryTheme(scores, answers) : null;
+  const resolvedTheme: ThemeSlug | null = themeOverride ?? primaryTheme;
 
   const shellClass = `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px]`;
 
@@ -505,17 +512,29 @@ export default function IntakeClient() {
               intakeConsent?.marketingEmail && intakeConsent?.marketingEmailAddress,
             )}
             hideLegacyPlanSections={Boolean(scores && planJourneyReady)}
-            onContinueToRecognition={() => setPhase("recognition")}
+            secondaryTheme={
+              scores && primaryTheme
+                ? getSecondaryTheme(scores, answers, primaryTheme)
+                : null
+            }
+            onSelectSecondaryTheme={(theme) => {
+              setThemeOverride(theme as ThemeSlug);
+              setPhase("recognition");
+            }}
+            onContinueToRecognition={() => {
+              setThemeOverride(null);
+              setPhase("recognition");
+            }}
             onRestart={restart}
             onConsentRevoked={restart}
           />
         </div>
       )}
 
-      {phase === "recognition" && scores && (
+      {phase === "recognition" && scores && resolvedTheme && (
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeRecognition
-            themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
+            themeSlug={resolvedTheme}
             answers={answers}
             onBack={() => setPhase("results")}
             onContinue={() => setPhase("focus")}
@@ -523,10 +542,10 @@ export default function IntakeClient() {
         </div>
       )}
 
-      {phase === "focus" && scores && (
+      {phase === "focus" && scores && resolvedTheme && (
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeFocus
-            themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
+            themeSlug={resolvedTheme}
             onBack={() => setPhase("recognition")}
             onContinue={() => {
               if (scores && planJourneyReady) {
@@ -540,10 +559,10 @@ export default function IntakeClient() {
         </div>
       )}
 
-      {phase === "plan" && scores && (
+      {phase === "plan" && scores && resolvedTheme && (
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakePlan
-            themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
+            themeSlug={resolvedTheme}
             answers={answers}
             onBack={() => setPhase("focus")}
             onCommitment={() => {

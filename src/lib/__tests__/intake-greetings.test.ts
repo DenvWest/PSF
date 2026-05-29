@@ -42,23 +42,23 @@ describe("isUsableFirstName", () => {
 
 describe("getHeroTitle", () => {
   it("returns fallback for null", () => {
-    expect(getHeroTitle(null)).toBe("Jouw vitaliteitsprofiel");
+    expect(getHeroTitle(null)).toBe("Jouw leefstijloverzicht");
   });
 
   it("returns fallback for empty string", () => {
-    expect(getHeroTitle("")).toBe("Jouw vitaliteitsprofiel");
+    expect(getHeroTitle("")).toBe("Jouw leefstijloverzicht");
   });
 
   it("returns fallback for lone dash", () => {
-    expect(getHeroTitle("-")).toBe("Jouw vitaliteitsprofiel");
+    expect(getHeroTitle("-")).toBe("Jouw leefstijloverzicht");
   });
 
   it("includes name when usable", () => {
-    expect(getHeroTitle("Jan")).toBe("Jouw vitaliteitsprofiel, Jan");
+    expect(getHeroTitle("Jan")).toBe("Jouw leefstijloverzicht, Jan");
   });
 
   it("trims surrounding whitespace from name", () => {
-    expect(getHeroTitle("  Jan  ")).toBe("Jouw vitaliteitsprofiel, Jan");
+    expect(getHeroTitle("  Jan  ")).toBe("Jouw leefstijloverzicht, Jan");
   });
 });
 

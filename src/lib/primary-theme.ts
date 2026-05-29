@@ -16,6 +16,9 @@ const TIEBREAK_ORDER: readonly MeasuredPillarId[] = [
 
 const MEASURED_PILLARS: readonly MeasuredPillarId[] = TIEBREAK_ORDER;
 
+/** Drempel waaronder een pijler als "prioriteit" geldt (sluit aan op getDisplayStatus < 40). */
+const PRIORITY_THRESHOLD = 40;
+
 function getPillarScore(
   scores: DomainScores,
   pillar: MeasuredPillarId,
@@ -51,6 +54,27 @@ function pickLowestPillar(scores: DomainScores): MeasuredPillarId {
   return lowest;
 }
 
+/** Pijlers op oplopende score (tiebreak: sleep > stress > nutrition > movement). */
+function getPillarsByScoreAscending(scores: DomainScores): MeasuredPillarId[] {
+  return [...MEASURED_PILLARS].sort((a, b) => {
+    const diff = getPillarScore(scores, a) - getPillarScore(scores, b);
+    if (diff !== 0) {
+      return diff;
+    }
+    return TIEBREAK_ORDER.indexOf(a) - TIEBREAK_ORDER.indexOf(b);
+  });
+}
+
+/**
+ * Primair thema = laagste gemeten gebied.
+ *
+ * - Overtrainer-patroon -> altijd "movement".
+ * - Anders argmin over {sleep, stress, nutrition, movement} met vaste tiebreak.
+ * - Status (Sterk/Voldoende/Aandacht/Prioriteit) is alleen display, geen input:
+ *   ook "alles >= 80" levert nog het laagste gemeten thema op.
+ * - Ontbrekende/niet-finite scores -> alle gelijk -> tiebreak-winnaar "sleep",
+ *   met monitoring-log zodat we hydratie-gaten zien.
+ */
 export function getPrimaryTheme(
   scores: DomainScores,
   answers: Record<string, number>,
@@ -59,5 +83,42 @@ export function getPrimaryTheme(
     return "movement";
   }
 
+  const allMissing = MEASURED_PILLARS.every(
+    (pillar) => !Number.isFinite(getPillarScore(scores, pillar)),
+  );
+  if (allMissing) {
+    console.error(
+      "[getPrimaryTheme] geen finite scores; fallback naar tiebreak-winnaar 'sleep'",
+    );
+    return TIEBREAK_ORDER[0];
+  }
+
   return pickLowestPillar(scores);
+}
+
+/**
+ * Tweede prioriteit: het op-een-na laagste gemeten gebied, maar alleen wanneer
+ * minstens twee pijlers onder de prioriteitsdrempel (< 40) zitten. Anders null.
+ * Sluit aan op randgeval B: één primaire CTA blijft de regel, het tweede thema
+ * is een optionele micro-link op REVEAL.
+ */
+export function getSecondaryTheme(
+  scores: DomainScores,
+  answers: Record<string, number>,
+  primary: MeasuredPillarId,
+): MeasuredPillarId | null {
+  const belowThreshold = MEASURED_PILLARS.filter(
+    (pillar) => getPillarScore(scores, pillar) < PRIORITY_THRESHOLD,
+  );
+  if (belowThreshold.length < 2) {
+    return null;
+  }
+
+  const ordered = getPillarsByScoreAscending(scores).filter(
+    (pillar) => pillar !== primary,
+  );
+  const secondary = ordered[0];
+  return secondary && getPillarScore(scores, secondary) < PRIORITY_THRESHOLD
+    ? secondary
+    : null;
 }

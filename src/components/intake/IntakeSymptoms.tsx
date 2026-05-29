@@ -143,7 +143,7 @@ export default function IntakeSymptoms({
             type="text"
             name="intake-first-name"
             autoComplete="given-name"
-            placeholder="Bijv. Dennis"
+            placeholder="Voornaam"
             value={firstName}
             onChange={(e) => onFirstNameChange(e.target.value)}
             maxLength={60}

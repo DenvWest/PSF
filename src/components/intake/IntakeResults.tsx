@@ -73,7 +73,9 @@ type IntakeResultsProps = {
   firstName?: string | null;
   hasMarketingEmail?: boolean;
   hideLegacyPlanSections?: boolean;
+  secondaryTheme?: PillarId | null;
   onContinueToRecognition?: () => void;
+  onSelectSecondaryTheme?: (theme: PillarId) => void;
   onRestart?: () => void;
   onConsentRevoked?: () => void;
 };
@@ -212,7 +214,9 @@ export default function IntakeResults({
   firstName,
   hasMarketingEmail = false,
   hideLegacyPlanSections = false,
+  secondaryTheme = null,
   onContinueToRecognition,
+  onSelectSecondaryTheme,
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
@@ -355,6 +359,16 @@ export default function IntakeResults({
             >
               {REVEAL_COPY.cta}
             </button>
+
+            {secondaryTheme && onSelectSecondaryTheme ? (
+              <button
+                type="button"
+                onClick={() => onSelectSecondaryTheme(secondaryTheme)}
+                className="mt-3 cursor-pointer text-[13px] font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+              >
+                Ook prioriteit: {getPillarById(secondaryTheme)?.label ?? "tweede gebied"} →
+              </button>
+            ) : null}
           </div>
         </section>
 

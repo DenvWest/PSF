@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { DomainScores } from "@/lib/intake-engine";
 import {
   getPrimaryTheme,
+  getSecondaryTheme,
   type MeasuredPillarId,
 } from "@/lib/primary-theme";
 
@@ -66,5 +67,57 @@ describe("getPrimaryTheme", () => {
     const theme = getPrimaryTheme(scores, {});
     expect(MEASURED_PILLARS).toContain(theme);
     expect(theme).not.toBe("connection");
+  });
+
+  it("still picks lowest measured pillar when all scores >= 80", () => {
+    const scores = baseScores({
+      sleep_score: 95,
+      stress_score: 88,
+      nutrition_score: 82,
+      movement_score: 90,
+    });
+    expect(getPrimaryTheme(scores, {})).toBe("nutrition");
+  });
+
+  it("falls back to sleep and logs when no finite scores", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const scores = baseScores({
+      sleep_score: Number.NaN,
+      stress_score: Number.NaN,
+      nutrition_score: Number.NaN,
+      movement_score: Number.NaN,
+    });
+    expect(getPrimaryTheme(scores, {})).toBe("sleep");
+    expect(spy).toHaveBeenCalledOnce();
+  });
+});
+
+describe("getSecondaryTheme", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("returns null when fewer than two pillars are below 40", () => {
+    const scores = baseScores({ sleep_score: 20, stress_score: 70 });
+    expect(getSecondaryTheme(scores, {}, "sleep")).toBeNull();
+  });
+
+  it("returns the second lowest pillar when two are below 40", () => {
+    const scores = baseScores({ sleep_score: 15, stress_score: 30 });
+    expect(getSecondaryTheme(scores, {}, "sleep")).toBe("stress");
+  });
+
+  it("excludes the primary theme from the result", () => {
+    const scores = baseScores({
+      sleep_score: 10,
+      stress_score: 20,
+      nutrition_score: 35,
+    });
+    expect(getSecondaryTheme(scores, {}, "sleep")).toBe("stress");
+  });
+
+  it("returns null when the only other low pillar is the primary", () => {
+    const scores = baseScores({ movement_score: 25, sleep_score: 30 });
+    expect(getSecondaryTheme(scores, {}, "movement")).toBe("sleep");
   });
 });
