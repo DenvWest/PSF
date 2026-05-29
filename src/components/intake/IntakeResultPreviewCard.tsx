@@ -27,6 +27,8 @@ const ROW_TONE_CLASS: Record<DisplayStatusTone, string> = {
 type IntakeResultPreviewCardProps = {
   rows?: SummaryRow[];
   variant?: "preview" | "live";
+  primaryLabel?: string;
+  hideContextFooter?: boolean;
 };
 
 export function summaryToneFromStatus(
@@ -50,6 +52,8 @@ export function summaryToneFromStatus(
 export default function IntakeResultPreviewCard({
   rows,
   variant = "preview",
+  primaryLabel,
+  hideContextFooter = false,
 }: IntakeResultPreviewCardProps) {
   const isLive = variant === "live";
   const displayRows = rows ?? PREVIEW_ROWS;
@@ -71,24 +75,33 @@ export default function IntakeResultPreviewCard({
             className="flex items-center justify-between gap-3 rounded-xl border border-intake-divider bg-white/[0.03] px-3.5 py-2.5"
           >
             <span className="text-sm font-medium text-intake-ink">{row.label}</span>
-            <span
-              className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${ROW_TONE_CLASS[row.tone]}`}
-            >
-              {row.status}
+            <span className="flex shrink-0 items-center gap-1.5">
+              <span
+                className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${ROW_TONE_CLASS[row.tone]}`}
+              >
+                {row.status}
+              </span>
+              {primaryLabel && row.label === primaryLabel ? (
+                <span className="text-intake-ink-subtle" aria-hidden>
+                  →
+                </span>
+              ) : null}
             </span>
           </li>
         ))}
       </ul>
-      {!isLive ? (
-        <p className="mt-4 text-xs leading-relaxed text-intake-ink-subtle">
-          Illustratie — op basis van jouw antwoorden, zonder totaalscore of
-          diagnose.
-        </p>
-      ) : (
-        <p className="mt-4 text-xs leading-relaxed text-intake-ink-subtle">
-          Op basis van je antwoorden — geen medische diagnose.
-        </p>
-      )}
+      {!hideContextFooter ? (
+        !isLive ? (
+          <p className="mt-4 text-xs leading-relaxed text-intake-ink-subtle">
+            Illustratie — op basis van jouw antwoorden, zonder totaalscore of
+            diagnose.
+          </p>
+        ) : (
+          <p className="mt-4 text-xs leading-relaxed text-intake-ink-subtle">
+            Op basis van je antwoorden — geen medische diagnose.
+          </p>
+        )
+      ) : null}
     </article>
   );
 }

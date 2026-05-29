@@ -27,9 +27,11 @@ import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
-import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
+import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
-import { withIntakeReturn } from "@/lib/intake-return-link";
+import { REVEAL_COPY } from "@/lib/results-reveal-copy";
+import { buildSummaryRows } from "@/lib/results-summary-rows";
+import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import FoundationPyramid, {
   type PillarStatus,
 } from "@/components/pyramid/FoundationPyramid";
@@ -75,11 +77,6 @@ type IntakeResultsProps = {
   onRestart?: () => void;
   onConsentRevoked?: () => void;
 };
-
-function isLooseEmailValid(value: string): boolean {
-  const t = value.trim();
-  return t.includes("@") && t.includes(".");
-}
 
 function buildPillarStatuses(
   scores: DomainScores,
@@ -219,11 +216,6 @@ export default function IntakeResults({
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
-  const [reminderEmail, setReminderEmail] = useState("");
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
-  const [reminderConfirmDate, setReminderConfirmDate] = useState<Date | null>(
-    null,
-  );
   const [revokeBusy, setRevokeBusy] = useState(false);
   const [revokeFeedback, setRevokeFeedback] = useState<{
     kind: "success" | "error";
@@ -255,7 +247,6 @@ export default function IntakeResults({
         .toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
-  const displayProfileSlugPath = `/profiel/${displayProfileSlug}`;
 
   const pillarSupplementLinks = buildPillarSupplementLinks(
     supplementRoute,
@@ -300,11 +291,21 @@ export default function IntakeResults({
   }, [primaryTheme, sessionId]);
 
   const heroTitle = getHeroTitle(firstName);
+  const { rows: summaryRows, primaryLabel } = buildSummaryRows(
+    scores,
+    primaryTheme,
+  );
 
   const primaryQuickWin = quickWins[0];
   const extraQuickWins = quickWins.slice(1);
   const primaryLongTermTip = longTermTips[0];
   const extraLongTermTips = longTermTips.slice(1);
+  const hasTipsContent =
+    Boolean(primaryQuickWin) ||
+    extraQuickWins.length > 0 ||
+    Boolean(primaryLongTermTip);
+  const showLegacyBackground =
+    !hideLegacyPlanSections && (hasTipsContent || hasExploreContent);
 
   return (
     <>
@@ -324,38 +325,25 @@ export default function IntakeResults({
           <h1 className="mb-2 font-serif text-[28px] font-normal leading-tight text-intake-ink">
             {heroTitle}
           </h1>
-
-          {displayProfileName !== "In Balans" ? (
-            <p className="text-sm text-intake-ink-muted">
-              Profiel:{" "}
-              <Link
-                href={withIntakeReturn(displayProfileSlugPath)}
-                className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-              >
-                {displayProfileName}
-              </Link>
-            </p>
-          ) : null}
-
-          {isOvertrainerProfile ? (
-            <p className="mt-2">
-              <Link
-                href={withIntakeReturn("/gids/herstel")}
-                className="text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-              >
-                Gratis Herstelgids →
-              </Link>
-            </p>
-          ) : null}
         </header>
 
-        <section className="mb-6" aria-label="Jouw leefstijlpiramide">
-          <FoundationPyramid
-            mode="personalized"
-            pillarStatuses={pillarStatuses}
-            primaryPillar={primaryTheme}
-            onPillarClick={setActivePillar}
+        <section className="mb-6" aria-label="Jouw leefstijl-overzicht">
+          <IntakeResultPreviewCard
+            variant="live"
+            rows={summaryRows}
+            primaryLabel={primaryLabel}
+            hideContextFooter
           />
+
+          <p className="mt-4 text-center text-xs leading-relaxed text-intake-ink-subtle">
+            {REVEAL_COPY.contextLine}
+          </p>
+
+          {hasMarketingEmail ? (
+            <p className="mt-4 text-center text-sm text-intake-ink-muted">
+              {getMailConfirmation(firstName)}
+            </p>
+          ) : null}
 
           <div className="mt-5 text-center">
             <button
@@ -365,245 +353,196 @@ export default function IntakeResults({
               className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-default disabled:opacity-50"
               style={{ background: "#C8956C" }}
             >
-              Bekijk wat dit voor jou betekent →
+              {REVEAL_COPY.cta}
             </button>
-            <p className="mt-2 text-[13px] text-intake-ink-subtle">
-              Jouw grootste hefboom op basis van je antwoorden.
-            </p>
           </div>
-
-          {hasMarketingEmail ? (
-            <p className="mt-5 text-center text-sm text-intake-ink-muted">
-              {getMailConfirmation(firstName)}
-            </p>
-          ) : emailSubmitted ? (
-            <div className="mt-5 flex flex-col items-center gap-2 rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-center text-sm text-intake-ink">
-              <span className="text-lg text-intake-sage" aria-hidden>
-                ✓
-              </span>
-              <p className="m-0">
-                Herinnering gepland op{" "}
-                {(reminderConfirmDate ?? new Date()).toLocaleDateString("nl-NL", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-                .
-              </p>
-            </div>
-          ) : (
-            <section
-              id="commitment"
-              className="mt-5 rounded-2xl border border-intake-card-border bg-intake-bg px-5 py-5 text-center"
-            >
-              <h2 className="mb-1 text-[15px] font-semibold text-intake-ink">
-                Bewaar je leefstijlkaart
-              </h2>
-              <p className="mb-4 text-[13px] text-intake-ink-subtle">
-                Geen spam — alleen een herinnering over 30 dagen om opnieuw te meten.
-              </p>
-              <input
-                type="email"
-                name="reminder-email"
-                autoComplete="email"
-                placeholder="je@emailadres.nl"
-                value={reminderEmail}
-                onChange={(e) => setReminderEmail(e.target.value)}
-                className="mb-3 box-border w-full rounded-[10px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3.5 text-[15px] text-intake-ink outline-none"
-              />
-              <button
-                type="button"
-                disabled={!isLooseEmailValid(reminderEmail)}
-                onClick={() => {
-                  void (async () => {
-                    if (!isLooseEmailValid(reminderEmail)) {
-                      return;
-                    }
-                    const d = new Date();
-                    d.setDate(d.getDate() + 30);
-                    setReminderConfirmDate(d);
-                    await saveReminderEmail(reminderEmail.trim());
-                    setEmailSubmitted(true);
-                  })();
-                }}
-                className={`min-h-[44px] w-full rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white ${
-                  isLooseEmailValid(reminderEmail)
-                    ? "cursor-pointer opacity-100"
-                    : "cursor-default opacity-50"
-                }`}
-                style={{ background: "#C8956C" }}
-              >
-                Stuur me een herinnering
-              </button>
-            </section>
-          )}
         </section>
 
-        {!hideLegacyPlanSections &&
-        (primaryQuickWin || extraQuickWins.length > 0 || primaryLongTermTip) ? (
-          <IntakeResultsSection
-            id="tips"
-            title="Tips & actieplan"
-            subtitle="Quick wins en 12-weken richting"
-            defaultOpen
-          >
-            {primaryQuickWin ? (
-              <section className="mb-5 rounded-xl border border-intake-card-border bg-intake-bg px-4 py-4">
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
-                  Start deze week
-                </p>
-                <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
-                  {primaryQuickWin}
-                </p>
-              </section>
-            ) : null}
+        <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
+          <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+            {REVEAL_COPY.pyramidDetailsSummary}
+          </summary>
+          <div className="border-t border-intake-divider px-2 pb-4 pt-2">
+            <FoundationPyramid
+              mode="personalized"
+              pillarStatuses={pillarStatuses}
+              primaryPillar={primaryTheme}
+              onPillarClick={setActivePillar}
+            />
+          </div>
+        </details>
 
-            {extraQuickWins.length > 0 ? (
-              <div className="mb-5">
-                <h3 className="mb-3 text-sm font-semibold text-intake-ink">
-                  Meer quick wins
-                </h3>
-                <ul className="space-y-3">
-                  {extraQuickWins.map((tip, i) => (
-                    <li
-                      key={`qw-extra-${i}`}
-                      className="flex gap-3 text-sm leading-relaxed text-intake-ink-muted"
-                    >
-                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-intake-sage text-xs font-bold text-white">
-                        {i + 2}
-                      </span>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {primaryLongTermTip ? (
-              <div>
-                <h3 className="mb-2 text-sm font-semibold text-intake-ink">
-                  12-weken richting
-                </h3>
-                <p className="mb-3 text-sm leading-relaxed text-intake-ink-muted">
-                  {primaryLongTermTip}
-                </p>
-                {extraLongTermTips.length > 0 ? (
-                  <details className="group">
-                    <summary className="cursor-pointer list-none text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
-                      Volledig 12-weken plan ▾
-                    </summary>
-                    <ul className="mt-3 space-y-2 border-t border-intake-divider pt-3">
-                      {extraLongTermTips.map((tip, i) => (
-                        <li
-                          key={`lt-extra-${i}`}
-                          className="text-sm leading-relaxed text-intake-ink-muted"
-                        >
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
-                ) : null}
-              </div>
-            ) : null}
-          </IntakeResultsSection>
-        ) : null}
-
-        {/* Tier 3 — supplementen & verdieping */}
-        {!hideLegacyPlanSections && hasExploreContent ? (
-          <IntakeResultsSection
-            title="Verder verkennen"
-            subtitle="Supplementen, kennisbank en vergelijkingen"
-          >
-            {supplementRoute.length > 0 ? (
-              <div className="mb-5">
-                <h3 className="mb-3 text-sm font-semibold text-intake-ink">
-                  Supplementen om te verkennen
-                </h3>
-                <SupplementAdviceDisclaimer variant="profile" />
-                <SupplementRoute recommendations={supplementRoute} scores={scores} />
-                <p className="mt-4 text-sm text-intake-ink-muted">
-                  Vragen?{" "}
-                  <Link
-                    href="/contact"
-                    className="font-medium text-intake-sage underline-offset-2 hover:underline"
-                  >
-                    Stel ze →
-                  </Link>
-                </p>
-              </div>
-            ) : null}
-
-            {FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ? (
-              <div className="mb-5">
-                <FoundationStack excludeIds={excludeIds} />
-              </div>
-            ) : null}
-
-            {kennisbankLinks.length > 0 ? (
-              <div className="mb-5">
-                <h3 className="mb-3 text-sm font-semibold text-intake-ink">
-                  Wil je meer context?
-                </h3>
-                <ul className="space-y-2">
-                  {kennisbankLinks.map((link) => (
-                    <li key={link.href} className="text-sm text-intake-ink-muted">
-                      <span className="text-intake-ink-subtle">{link.domainLabel}: </span>
-                      <Link
-                        href={link.href}
-                        className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
-              <section className="rounded-2xl border border-intake-terra/30 bg-intake-terra/10 p-4">
-                <h3 className="font-semibold text-intake-ink">Eiwit als aandachtspunt</h3>
-                <p className="mt-1 text-sm leading-relaxed text-intake-ink-muted">
-                  Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
-                  dag, wat het onderhouden van spiermassa lastiger maakt.
-                  {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
-                    (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
-                    <>
-                      {" "}
-                      Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
-                      spieronderhoud.
-                    </>
+        {showLegacyBackground ? (
+          <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
+            <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+              {REVEAL_COPY.moreBackgroundSummary}
+            </summary>
+            <div className="space-y-4 border-t border-intake-divider px-2 pb-4 pt-2">
+              {hasTipsContent ? (
+                <IntakeResultsSection
+                  id="tips"
+                  title="Tips & actieplan"
+                  subtitle="Quick wins en 12-weken richting"
+                >
+                  {primaryQuickWin ? (
+                    <section className="mb-5 rounded-xl border border-intake-card-border bg-intake-bg px-4 py-4">
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
+                        Start deze week
+                      </p>
+                      <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
+                        {primaryQuickWin}
+                      </p>
+                    </section>
                   ) : null}
-                </p>
-                <p className="mt-2 text-sm text-intake-ink-muted">
-                  <Link
-                    href="/blog/eiwit-na-40"
-                    className="font-medium text-intake-sage underline underline-offset-2"
-                  >
-                    Lees: eiwit na 40
-                  </Link>
-                  {" · "}
-                  <Link
-                    href="/kennisbank/eiwitbehoefte-na-40"
-                    className="font-medium text-intake-sage underline underline-offset-2"
-                  >
-                    Kennisbank
-                  </Link>
-                </p>
-                {deficiencySignals.protein_gap_signal ? (
-                  <p className="mt-3 text-sm text-intake-ink-muted">
-                    <Link
-                      href="/beste/eiwitpoeder"
-                      className="font-medium text-intake-sage underline underline-offset-2"
-                    >
-                      Vergelijk eiwitpoeders →
-                    </Link>
-                  </p>
-                ) : null}
-              </section>
-            ) : null}
-          </IntakeResultsSection>
+
+                  {extraQuickWins.length > 0 ? (
+                    <div className="mb-5">
+                      <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                        Meer quick wins
+                      </h3>
+                      <ul className="space-y-3">
+                        {extraQuickWins.map((tip, i) => (
+                          <li
+                            key={`qw-extra-${i}`}
+                            className="flex gap-3 text-sm leading-relaxed text-intake-ink-muted"
+                          >
+                            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-intake-sage text-xs font-bold text-white">
+                              {i + 2}
+                            </span>
+                            <span>{tip}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {primaryLongTermTip ? (
+                    <div>
+                      <h3 className="mb-2 text-sm font-semibold text-intake-ink">
+                        12-weken richting
+                      </h3>
+                      <p className="mb-3 text-sm leading-relaxed text-intake-ink-muted">
+                        {primaryLongTermTip}
+                      </p>
+                      {extraLongTermTips.length > 0 ? (
+                        <details className="group">
+                          <summary className="cursor-pointer list-none text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+                            Volledig 12-weken plan ▾
+                          </summary>
+                          <ul className="mt-3 space-y-2 border-t border-intake-divider pt-3">
+                            {extraLongTermTips.map((tip, i) => (
+                              <li
+                                key={`lt-extra-${i}`}
+                                className="text-sm leading-relaxed text-intake-ink-muted"
+                              >
+                                {tip}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </IntakeResultsSection>
+              ) : null}
+
+              {hasExploreContent ? (
+                <IntakeResultsSection
+                  title="Verder verkennen"
+                  subtitle="Supplementen, kennisbank en vergelijkingen"
+                >
+                  {supplementRoute.length > 0 ? (
+                    <div className="mb-5">
+                      <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                        Supplementen om te verkennen
+                      </h3>
+                      <SupplementAdviceDisclaimer variant="profile" />
+                      <SupplementRoute recommendations={supplementRoute} scores={scores} />
+                      <p className="mt-4 text-sm text-intake-ink-muted">
+                        Vragen?{" "}
+                        <Link
+                          href="/contact"
+                          className="font-medium text-intake-sage underline-offset-2 hover:underline"
+                        >
+                          Stel ze →
+                        </Link>
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ? (
+                    <div className="mb-5">
+                      <FoundationStack excludeIds={excludeIds} />
+                    </div>
+                  ) : null}
+
+                  {kennisbankLinks.length > 0 ? (
+                    <div className="mb-5">
+                      <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                        Wil je meer context?
+                      </h3>
+                      <ul className="space-y-2">
+                        {kennisbankLinks.map((link) => (
+                          <li key={link.href} className="text-sm text-intake-ink-muted">
+                            <span className="text-intake-ink-subtle">{link.domainLabel}: </span>
+                            <Link
+                              href={link.href}
+                              className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                            >
+                              {link.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2 ? (
+                    <section className="rounded-2xl border border-intake-terra/30 bg-intake-terra/10 p-4">
+                      <h3 className="font-semibold text-intake-ink">Eiwit als aandachtspunt</h3>
+                      <p className="mt-1 text-sm leading-relaxed text-intake-ink-muted">
+                        Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
+                        dag, wat het onderhouden van spiermassa lastiger maakt.
+                        {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
+                          (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
+                          <>
+                            {" "}
+                            Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
+                            spieronderhoud.
+                          </>
+                        ) : null}
+                      </p>
+                      <p className="mt-2 text-sm text-intake-ink-muted">
+                        <Link
+                          href="/blog/eiwit-na-40"
+                          className="font-medium text-intake-sage underline underline-offset-2"
+                        >
+                          Lees: eiwit na 40
+                        </Link>
+                        {" · "}
+                        <Link
+                          href="/kennisbank/eiwitbehoefte-na-40"
+                          className="font-medium text-intake-sage underline underline-offset-2"
+                        >
+                          Kennisbank
+                        </Link>
+                      </p>
+                      {deficiencySignals.protein_gap_signal ? (
+                        <p className="mt-3 text-sm text-intake-ink-muted">
+                          <Link
+                            href="/beste/eiwitpoeder"
+                            className="font-medium text-intake-sage underline underline-offset-2"
+                          >
+                            Vergelijk eiwitpoeders →
+                          </Link>
+                        </p>
+                      ) : null}
+                    </section>
+                  ) : null}
+                </IntakeResultsSection>
+              ) : null}
+            </div>
+          </details>
         ) : null}
 
         {/* Footer */}
