@@ -28,6 +28,7 @@ import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSuppleme
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, saveReminderEmail, deleteIntakeSession } from "@/lib/intake-storage";
+import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { withIntakeReturn } from "@/lib/intake-return-link";
 import FoundationPyramid, {
   type PillarStatus,
@@ -298,9 +299,7 @@ export default function IntakeResults({
     });
   }, [primaryTheme, sessionId]);
 
-  const heroTitle = firstName
-    ? `Jouw vitaliteitsprofiel, ${firstName}`
-    : "Jouw vitaliteitsprofiel";
+  const heroTitle = getHeroTitle(firstName);
 
   const primaryQuickWin = quickWins[0];
   const extraQuickWins = quickWins.slice(1);
@@ -375,9 +374,7 @@ export default function IntakeResults({
 
           {hasMarketingEmail ? (
             <p className="mt-5 text-center text-sm text-intake-ink-muted">
-              {firstName
-                ? `${firstName}, je ontvangt je leefstijl-overzicht ook per mail.`
-                : "Je ontvangt je leefstijl-overzicht ook per mail."}
+              {getMailConfirmation(firstName)}
             </p>
           ) : emailSubmitted ? (
             <div className="mt-5 flex flex-col items-center gap-2 rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-center text-sm text-intake-ink">

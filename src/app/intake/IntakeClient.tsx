@@ -97,6 +97,7 @@ export default function IntakeClient() {
     setScores(session.scores);
     setSessionTimestamp(session.timestamp);
     setSessionId(session.sessionId);
+    setFirstName(session.firstName ?? "");
     setAnsweredIndices({});
     setPhase("results");
     setResultsDeepLinkMissing(false);

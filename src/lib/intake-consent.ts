@@ -26,7 +26,7 @@ export function normalizeFirstName(value: unknown): string | null {
     return null;
   }
   const cleaned = t.replace(/[^a-zA-Zà-ïÀ-ÿĳĲ\s'-]/g, "").trim();
-  if (!cleaned) {
+  if (!cleaned || !/[a-zA-ZÀ-ÿ]/.test(cleaned)) {
     return null;
   }
   return cleaned.length > 60 ? cleaned.slice(0, 60) : cleaned;

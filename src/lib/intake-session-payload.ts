@@ -11,6 +11,7 @@ export type IntakeSessionPayload = {
   profile: string;
   timestamp: number;
   ageRange: IntakeAgeRange | null;
+  firstName: string | null;
 };
 
 type IntakeSessionRow = {
@@ -22,6 +23,7 @@ type IntakeSessionRow = {
   profile_label: string | null;
   created_at: string | null;
   age_range: string | null;
+  first_name: string | null;
 };
 
 export function intakeSessionRowToPayload(
@@ -50,6 +52,11 @@ export function intakeSessionRowToPayload(
       ? ar
       : null;
 
+  const firstName =
+    typeof row.first_name === "string" && row.first_name.trim().length > 0
+      ? row.first_name.trim()
+      : null;
+
   return {
     sessionId: row.id,
     symptoms: row.symptom_profile,
@@ -59,5 +66,6 @@ export function intakeSessionRowToPayload(
     profile: profileLabel,
     timestamp: new Date(row.created_at).getTime(),
     ageRange,
+    firstName,
   };
 }
