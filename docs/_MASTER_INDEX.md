@@ -18,7 +18,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 - 4 pillar pages (`/slaap-verbeteren-na-40`, `/stress-verminderen-man`, `/energie-na-40`, `/herstel-verbeteren-na-40`)
 - 4 profielpagina's (onrustige-slaper, stressdrager, lage-batterij, overtrainer)
 - 21 blogartikelen, 17 kennisbankbegrippen, 4 thema-hubs
-- Intake flow met scoring engine, nurture emails, affiliate tracking
+- Intake flow: journey REVEAL → HERKENNING → FOCUS → PLAN (4 thema's), scoring, nurture, `domain_events`, evidence-chat API (`/api/chat`)
 - Admin dashboard
 
 ---
@@ -74,6 +74,8 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Database/data | `core/ENTITY_MODEL.md` |
 | Planning/sprint | `core/CURRENT_SPRINT.md` |
 | Design/styling | `core/DESIGN_TOKENS.md` |
+| Architectuur-strategie analyse (Claude prompt) | `cursors/architecture-strategy-analysis-prompt.md` |
+| Evidence-chat / n8n (fase 8) | `core/EVIDENCE_CHAT.md` |
 
 ---
 
