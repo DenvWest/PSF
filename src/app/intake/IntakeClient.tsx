@@ -9,6 +9,7 @@ import IntakeConsent from "@/components/intake/IntakeConsent";
 import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
 import IntakeFocus from "@/components/intake/IntakeFocus";
+import IntakePlan from "@/components/intake/IntakePlan";
 import IntakeRecognition from "@/components/intake/IntakeRecognition";
 import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
@@ -55,7 +56,8 @@ type Phase =
   | "calculating"
   | "results"
   | "recognition"
-  | "focus";
+  | "focus"
+  | "plan";
 
 export default function IntakeClient() {
   const router = useRouter();
@@ -85,6 +87,8 @@ export default function IntakeClient() {
   const [isCheckingSession, setIsCheckingSession] = useState(hasResultsParam);
   const [resultsDeepLinkMissing, setResultsDeepLinkMissing] = useState(false);
   const pendingScrollToTipsRef = useRef(false);
+  const pendingScrollToCommitmentRef = useRef(false);
+  const [planJourneyReady, setPlanJourneyReady] = useState(false);
 
   function hydrateFromSession(session: IntakeSessionPayload) {
     setSymptoms(session.symptoms as SymptomId[]);
@@ -136,7 +140,10 @@ export default function IntakeClient() {
 
   useEffect(() => {
     if (
-      (phase === "results" || phase === "recognition" || phase === "focus") &&
+      (phase === "results" ||
+        phase === "recognition" ||
+        phase === "focus" ||
+        phase === "plan") &&
       !hasResultsParam
     ) {
       router.replace("/intake?resultaten=true", { scroll: false });
@@ -144,7 +151,52 @@ export default function IntakeClient() {
   }, [phase, hasResultsParam, router]);
 
   useEffect(() => {
-    if (phase !== "results" || !pendingScrollToTipsRef.current) {
+    if (!scores) {
+      return;
+    }
+
+    const themeSlug = getPrimaryTheme(scores, answers);
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const response = await fetch(
+          `/api/intake/journey-ready?theme_slug=${encodeURIComponent(themeSlug)}`,
+        );
+        if (!response.ok || cancelled) {
+          if (!cancelled) {
+            setPlanJourneyReady(false);
+          }
+          return;
+        }
+        const payload = (await response.json()) as { ready?: boolean };
+        if (!cancelled) {
+          setPlanJourneyReady(payload.ready === true);
+        }
+      } catch {
+        if (!cancelled) {
+          setPlanJourneyReady(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [scores, answers]);
+
+  useEffect(() => {
+    if (phase !== "results") {
+      return;
+    }
+    if (pendingScrollToCommitmentRef.current) {
+      pendingScrollToCommitmentRef.current = false;
+      const timer = window.setTimeout(() => {
+        document.getElementById("commitment")?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+      return () => window.clearTimeout(timer);
+    }
+    if (!pendingScrollToTipsRef.current) {
       return;
     }
     pendingScrollToTipsRef.current = false;
@@ -313,6 +365,7 @@ export default function IntakeClient() {
     setIntakeTurnstileToken("");
     setIntakeConsent(null);
     setResultsDeepLinkMissing(false);
+    setPlanJourneyReady(false);
     router.replace("/intake");
   }
 
@@ -450,6 +503,7 @@ export default function IntakeClient() {
             hasMarketingEmail={Boolean(
               intakeConsent?.marketingEmail && intakeConsent?.marketingEmailAddress,
             )}
+            hideLegacyPlanSections={Boolean(scores && planJourneyReady)}
             onContinueToRecognition={() => setPhase("recognition")}
             onRestart={restart}
             onConsentRevoked={restart}
@@ -474,7 +528,25 @@ export default function IntakeClient() {
             themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
             onBack={() => setPhase("recognition")}
             onContinue={() => {
+              if (scores && planJourneyReady) {
+                setPhase("plan");
+                return;
+              }
               pendingScrollToTipsRef.current = true;
+              setPhase("results");
+            }}
+          />
+        </div>
+      )}
+
+      {phase === "plan" && scores && (
+        <div className="animate-[fadeIn_300ms_ease-out]">
+          <IntakePlan
+            themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
+            answers={answers}
+            onBack={() => setPhase("focus")}
+            onCommitment={() => {
+              pendingScrollToCommitmentRef.current = true;
               setPhase("results");
             }}
           />

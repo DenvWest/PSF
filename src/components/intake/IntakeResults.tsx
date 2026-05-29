@@ -68,6 +68,7 @@ type IntakeResultsProps = {
   sessionId: string | null;
   firstName?: string | null;
   hasMarketingEmail?: boolean;
+  hideLegacyPlanSections?: boolean;
   onContinueToRecognition?: () => void;
   onRestart?: () => void;
   onConsentRevoked?: () => void;
@@ -211,6 +212,7 @@ export default function IntakeResults({
   sessionId,
   firstName,
   hasMarketingEmail = false,
+  hideLegacyPlanSections = false,
   onContinueToRecognition,
   onRestart,
   onConsentRevoked,
@@ -382,7 +384,10 @@ export default function IntakeResults({
               </p>
             </div>
           ) : (
-            <section className="mt-5 rounded-2xl border border-intake-card-border bg-intake-bg px-5 py-5 text-center">
+            <section
+              id="commitment"
+              className="mt-5 rounded-2xl border border-intake-card-border bg-intake-bg px-5 py-5 text-center"
+            >
               <h2 className="mb-1 text-[15px] font-semibold text-intake-ink">
                 Bewaar je leefstijlkaart
               </h2>
@@ -426,7 +431,8 @@ export default function IntakeResults({
           )}
         </section>
 
-        {(primaryQuickWin || extraQuickWins.length > 0 || primaryLongTermTip) ? (
+        {!hideLegacyPlanSections &&
+        (primaryQuickWin || extraQuickWins.length > 0 || primaryLongTermTip) ? (
           <IntakeResultsSection
             id="tips"
             title="Tips & actieplan"
@@ -496,7 +502,7 @@ export default function IntakeResults({
         ) : null}
 
         {/* Tier 3 — supplementen & verdieping */}
-        {hasExploreContent ? (
+        {!hideLegacyPlanSections && hasExploreContent ? (
           <IntakeResultsSection
             title="Verder verkennen"
             subtitle="Supplementen, kennisbank en vergelijkingen"
