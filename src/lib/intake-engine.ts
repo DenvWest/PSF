@@ -466,7 +466,6 @@ export function getAdvice(
   const supplements: RankedItem<SupplementAdvice>[] = [];
   const longTerm: RankedItem<string>[] = [];
   const selectedSymptoms = new Set(symptoms);
-  const primaryDomain = getAdvicePrimaryDomain(scores);
   const signals = getSignals(answers);
   const movementLoad = getMovementLoad(answers);
   const physicalRecovery = getAnswer(answers, "RCV_PHYS");
@@ -481,19 +480,6 @@ export function getAdvice(
       longTerm,
       "Twijfel je aan tekorten in vitamines of mineralen? Vraag bij aanhoudende klachten je huisarts om bloedonderzoek — zekerheid haal je bij de arts, niet uit een vragenlijst.",
       1,
-    );
-  }
-
-  if (primaryDomain === "sleep") {
-    pushRankedText(
-      quickWins,
-      "Zet je telefoon om 21:00 op vliegtuigmodus en dim het licht in huis.",
-      0,
-    );
-    pushRankedText(
-      longTerm,
-      "Bouw een vast slaap-waakritme op, ook in het weekend.",
-      0,
     );
   }
 

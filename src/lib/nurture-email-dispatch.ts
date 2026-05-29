@@ -22,7 +22,6 @@ import {
   interventionForNurtureDay,
   nurtureInterventionHighlight,
 } from "@/lib/content/nurture-interventions";
-import { getPrimaryTheme } from "@/lib/primary-theme";
 import {
   getAdvice,
   getAdvicePrimaryDomain,
@@ -224,9 +223,6 @@ export function buildNurtureEmail(
   const primaryDomain: DomainId = scores
     ? getAdvicePrimaryDomain(scores)
     : "sleep";
-  const themeSlug =
-    scores && answers ? getPrimaryTheme(scores, answers) : primaryDomain;
-
   const day3Intervention =
     interventionBuckets && kind === "day3"
       ? interventionForNurtureDay(interventionBuckets, 3)
@@ -305,7 +301,7 @@ export function buildNurtureEmail(
       };
     }
     case "day14": {
-      if (day14Intervention && themeSlug === "sleep") {
+      if (day14Intervention) {
         const highlight = nurtureInterventionHighlight(day14Intervention);
         const supplementListHtml = `<p style="margin:0;font-size:16px;line-height:1.6;color:#333333;"><strong>${escapeHtml(highlight.title)}</strong> — ${escapeHtml(highlight.body)}</p>`;
         return {

@@ -129,6 +129,38 @@ const STATIC_RECOGNITION_LINES: Partial<
       priority: 2,
     },
   ],
+  nutrition: [
+    {
+      body_text: "Je eet zelden vette vis of structurele omega-3-bronnen.",
+      match_question_id: "NUT_O3",
+      match_operator: "<=",
+      match_value: 1,
+      priority: 1,
+    },
+    {
+      body_text: "Eiwit bij maaltijden blijft vaak onder wat je lichaam nodig heeft.",
+      match_question_id: "NUT_PROT",
+      match_operator: "<=",
+      match_value: 2,
+      priority: 2,
+    },
+  ],
+  movement: [
+    {
+      body_text: "Krachttraining voelt zwaarder dan vroeger, herstel blijft achter.",
+      match_question_id: "MOV_STR",
+      match_operator: "<=",
+      match_value: 2,
+      priority: 1,
+    },
+    {
+      body_text: "Cardio of dagelijkse beweging schiet er vaak bij in.",
+      match_question_id: "MOV_CARD",
+      match_operator: "<=",
+      match_value: 2,
+      priority: 2,
+    },
+  ],
 };
 
 function themeFromPillar(slug: ThemeSlug): ThemeContent {

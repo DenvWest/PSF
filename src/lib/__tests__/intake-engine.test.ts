@@ -563,14 +563,6 @@ describe("getAdvice", () => {
     }
   });
 
-  it("adds sleep-specific quickWin when primary domain is sleep", () => {
-    const scores = makeScores({ sleep_score: 20 });
-    const answers = makeAnswers({ SLP_QUAL: 1, SLP_CONS: 1 });
-    const result = getAdvice(scores, answers, []);
-    const hasPhoneWin = result.quickWins.some((w) => w.includes("vliegtuigmodus"));
-    expect(hasPhoneWin).toBe(true);
-  });
-
   it("adds cortisol-related advice when cortisol risk is detected", () => {
     const scores = makeScores({ stress_score: 20, sleep_score: 20, energy_score: 30 });
     const answers = makeAnswers({

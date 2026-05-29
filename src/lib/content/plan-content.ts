@@ -18,6 +18,14 @@ const PLAN_KINDS: InterventionKind[] = [
   "supplement",
 ];
 
+/** Thema's met volledige PLAN-journey (DB interventies + published claims). */
+export const PLAN_JOURNEY_THEME_SLUGS = [
+  "sleep",
+  "stress",
+  "nutrition",
+  "movement",
+] as const satisfies readonly ThemeSlug[];
+
 export type PlanAction = {
   kind: InterventionKind;
   slug: string;

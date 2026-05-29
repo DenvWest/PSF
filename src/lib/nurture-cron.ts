@@ -1,5 +1,7 @@
 import { Resend } from "resend";
-import { getSleepInterventionBucketsForSession } from "@/lib/content/nurture-interventions";
+import { getPlanInterventionBucketsForSession } from "@/lib/content/nurture-interventions";
+import { themeHasCompletePlanContent } from "@/lib/content/plan-content";
+import type { ThemeSlug } from "@/lib/content/themes";
 import { getGuideNurtureEmailContent } from "@/lib/email-templates/guide-nurture";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
 import {
@@ -179,12 +181,14 @@ export async function runPendingNurtureEmails(): Promise<{
           ? await buildIntakeRecoveryUrlForSession(mail.session_id)
           : buildIntakeFallbackUrl();
 
-        const sleepNurtureDays = new Set([3, 14, 21]);
+        const nurtureInterventionDays = new Set([3, 14, 21]);
+        const themeSlug = primaryDomain as ThemeSlug;
+        const planReady = await themeHasCompletePlanContent(themeSlug);
         const interventionBuckets =
-          primaryDomain === "sleep" &&
+          planReady &&
           mail.session_id &&
-          sleepNurtureDays.has(mail.sequence_day)
-            ? await getSleepInterventionBucketsForSession(mail.session_id)
+          nurtureInterventionDays.has(mail.sequence_day)
+            ? await getPlanInterventionBucketsForSession(mail.session_id)
             : null;
 
         const intakeContent = getNurtureEmailContent(

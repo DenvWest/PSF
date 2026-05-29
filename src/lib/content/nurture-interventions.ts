@@ -12,6 +12,7 @@ import {
 } from "@/lib/intake-engine";
 import type { NurtureInterventionHighlight } from "@/lib/email-templates/nurture/helpers";
 import type { NurtureEmailData } from "@/lib/email-templates/nurture/types";
+import { themeHasCompletePlanContent } from "@/lib/content/plan-content";
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import type { QuestionId, SymptomId } from "@/data/intake-questions";
@@ -58,7 +59,7 @@ function isDomainScores(value: unknown): value is DomainScores {
   return keys.every((k) => typeof o[k] === "number" && Number.isFinite(o[k]));
 }
 
-export async function getSleepInterventionBucketsForSession(
+export async function getPlanInterventionBucketsForSession(
   sessionId: string,
 ): Promise<InterventionBuckets | null> {
   const loaded = await loadIntakeSessionPayloadBySessionId(sessionId);
@@ -79,8 +80,9 @@ export async function getSleepInterventionBucketsForSession(
     return null;
   }
 
-  const themeSlug = getPrimaryTheme(scores, answers);
-  if (themeSlug !== "sleep") {
+  const themeSlug = getPrimaryTheme(scores, answers) as ThemeSlug;
+  const planReady = await themeHasCompletePlanContent(themeSlug);
+  if (!planReady) {
     return null;
   }
 
@@ -88,7 +90,7 @@ export async function getSleepInterventionBucketsForSession(
   const profileLabel = getProfileLabel(scores);
 
   const plan = await getInterventionsForTheme(
-    themeSlug as ThemeSlug,
+    themeSlug,
     scores,
     deficiencySignals,
     profileLabel,
