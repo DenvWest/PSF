@@ -47,6 +47,11 @@ export type InterventionRow = {
   affiliate_url: string | null;
   comparison_path: string | null;
   goal_phrase: string | null;
+  tier: number;
+  is_paid: boolean;
+  paid_disclosure_key: string | null;
+  external_provider_label: string | null;
+  external_provider_url: string | null;
   triggers: InterventionTriggerRow[];
 };
 
@@ -59,6 +64,11 @@ export type MatchedIntervention = {
   goalPhrase: string | null;
   affiliateUrl: string | null;
   comparisonPath: string | null;
+  tier: number;
+  isPaid: boolean;
+  paidDisclosureKey: string | null;
+  externalProviderLabel: string | null;
+  externalProviderUrl: string | null;
   compositeScore: number;
   scores: InterventionScoreInput;
 };
@@ -73,7 +83,11 @@ export type InterventionPlanResult = {
   source: "database" | "fallback_supplement_routes";
   themeSlug: ThemeSlug;
   buckets: InterventionBuckets;
+  /** Eén interventie per tier (hoogste composite binnen tier), oplopend op tier. */
+  ordered: MatchedIntervention[];
 };
+
+const DEFAULT_TIER = 1;
 
 function parseThreshold(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -226,9 +240,26 @@ function toMatchedIntervention(row: InterventionRow): MatchedIntervention | null
     goalPhrase: row.goal_phrase,
     affiliateUrl: row.affiliate_url,
     comparisonPath: row.comparison_path,
+    tier: Number.isFinite(row.tier) ? row.tier : DEFAULT_TIER,
+    isPaid: row.is_paid === true,
+    paidDisclosureKey: row.paid_disclosure_key,
+    externalProviderLabel: row.external_provider_label,
+    externalProviderUrl: row.external_provider_url,
     compositeScore: computeCompositeScore(scores),
     scores,
   };
+}
+
+/** Eén interventie per tier (hoogste composite), oplopend gesorteerd op tier. */
+function pickTopPerTier(matched: MatchedIntervention[]): MatchedIntervention[] {
+  const byTier = new Map<number, MatchedIntervention>();
+  for (const item of matched) {
+    const current = byTier.get(item.tier);
+    if (!current || item.compositeScore > current.compositeScore) {
+      byTier.set(item.tier, item);
+    }
+  }
+  return [...byTier.values()].sort((a, b) => a.tier - b.tier);
 }
 
 function pickTopPerKind(
@@ -289,6 +320,11 @@ function buildFallbackBuckets(
       goalPhrase: null,
       affiliateUrl: top.affiliateUrl,
       comparisonPath: top.hasComparison ? top.affiliateUrl : null,
+      tier: 3,
+      isPaid: true,
+      paidDisclosureKey: "paid_action_default",
+      externalProviderLabel: null,
+      externalProviderUrl: null,
       compositeScore: 0,
       scores: {
         scoreMoeite: 3,
@@ -323,7 +359,7 @@ async function loadInterventionsForTheme(
   const { data: interventions, error: interventionsError } = await supabase
     .from("interventions")
     .select(
-      "id, slug, name, kind, description, score_moeite, score_mechanisme, score_onderbouwing, score_veiligheid, affiliate_url, comparison_path, goal_phrase",
+      "id, slug, name, kind, description, score_moeite, score_mechanisme, score_onderbouwing, score_veiligheid, affiliate_url, comparison_path, goal_phrase, tier, is_paid, paid_disclosure_key, external_provider_label, external_provider_url",
     )
     .eq("organization_id", orgId)
     .eq("theme_id", themeRow.id);
@@ -369,6 +405,11 @@ async function loadInterventionsForTheme(
     affiliate_url: row.affiliate_url,
     comparison_path: row.comparison_path,
     goal_phrase: row.goal_phrase,
+    tier: typeof row.tier === "number" ? row.tier : DEFAULT_TIER,
+    is_paid: row.is_paid === true,
+    paid_disclosure_key: row.paid_disclosure_key ?? null,
+    external_provider_label: row.external_provider_label ?? null,
+    external_provider_url: row.external_provider_url ?? null,
     triggers: triggersByIntervention.get(row.id) ?? [],
   }));
 }
@@ -395,17 +436,21 @@ export async function getInterventionsForTheme(
       source: "database",
       themeSlug,
       buckets: pickTopPerKind(matched),
+      ordered: pickTopPerTier(matched),
     };
   }
+
+  const fallbackBuckets = buildFallbackBuckets(
+    scores,
+    deficiencySignals,
+    profileLabel,
+    answers,
+  );
 
   return {
     source: "fallback_supplement_routes",
     themeSlug,
-    buckets: buildFallbackBuckets(
-      scores,
-      deficiencySignals,
-      profileLabel,
-      answers,
-    ),
+    buckets: fallbackBuckets,
+    ordered: fallbackBuckets.supplement ? [fallbackBuckets.supplement] : [],
   };
 }

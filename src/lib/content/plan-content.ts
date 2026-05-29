@@ -37,7 +37,21 @@ export type PlanAction = {
   sourceUrl: string | null;
   affiliateUrl: string | null;
   comparisonPath: string | null;
+  tier: number;
+  isPaid: boolean;
+  paidDisclosureKey: string | null;
+  externalProviderLabel: string | null;
+  externalProviderUrl: string | null;
 };
+
+/** Treden 1-3 vormen de verplichte gratis-tot-ondersteuning-trap; 4/5 zijn optioneel. */
+const REQUIRED_TIERS = [1, 2, 3] as const;
+
+const EMPTY_EVIDENCE = {
+  claimText: "",
+  sourceLabel: "",
+  sourceUrl: null,
+} as const;
 
 export type PlanContent = {
   ready: boolean;
@@ -164,6 +178,11 @@ function interventionToAction(
     sourceUrl: evidence.sourceUrl,
     affiliateUrl,
     comparisonPath: item.comparisonPath,
+    tier: item.tier,
+    isPaid: item.isPaid,
+    paidDisclosureKey: item.paidDisclosureKey,
+    externalProviderLabel: item.externalProviderLabel,
+    externalProviderUrl: item.externalProviderUrl,
   };
 }
 
@@ -202,6 +221,11 @@ export async function getPlanContent(
         sourceUrl: supplement.comparisonPath ?? supplement.affiliateUrl,
         affiliateUrl: supplement.affiliateUrl ?? supplement.comparisonPath,
         comparisonPath: supplement.comparisonPath,
+        tier: supplement.tier,
+        isPaid: supplement.isPaid,
+        paidDisclosureKey: supplement.paidDisclosureKey,
+        externalProviderLabel: supplement.externalProviderLabel,
+        externalProviderUrl: supplement.externalProviderUrl,
       });
     }
 
@@ -222,21 +246,23 @@ export async function getPlanContent(
     organizationId,
   );
 
+  const tiersPresent = new Set(matched.ordered.map((item) => item.tier));
+  if (!REQUIRED_TIERS.every((tier) => tiersPresent.has(tier))) {
+    return {
+      ready: false,
+      themeSlug,
+      source: matched.source,
+      actions: [],
+    };
+  }
+
   const actions: PlanAction[] = [];
 
-  for (const kind of PLAN_KINDS) {
-    const item = matched.buckets[kind];
-    if (!item) {
-      return {
-        ready: false,
-        themeSlug,
-        source: matched.source,
-        actions: [],
-      };
-    }
-
+  // Treden oplopend op tier. Tier 1-3 vereisen een gepubliceerde claim;
+  // optionele tier 4/5 mogen zonder claim renderen (zonder claim-tekst).
+  for (const item of matched.ordered) {
     const evidence = await getPublishedClaimForIntervention(item.id, organizationId);
-    if (!evidence) {
+    if (item.tier <= 3 && !evidence) {
       return {
         ready: false,
         themeSlug,
@@ -245,7 +271,7 @@ export async function getPlanContent(
       };
     }
 
-    actions.push(interventionToAction(item, evidence));
+    actions.push(interventionToAction(item, evidence ?? EMPTY_EVIDENCE));
   }
 
   return {
