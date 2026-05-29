@@ -8,6 +8,7 @@ import IntakeCalculating from "@/components/intake/IntakeCalculating";
 import IntakeConsent from "@/components/intake/IntakeConsent";
 import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
+import IntakeFocus from "@/components/intake/IntakeFocus";
 import IntakeRecognition from "@/components/intake/IntakeRecognition";
 import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
@@ -53,7 +54,8 @@ type Phase =
   | "consent"
   | "calculating"
   | "results"
-  | "recognition";
+  | "recognition"
+  | "focus";
 
 export default function IntakeClient() {
   const router = useRouter();
@@ -82,6 +84,7 @@ export default function IntakeClient() {
   // Zonder die param: intro direct zichtbaar, sessie wordt stil op de achtergrond gecheckt.
   const [isCheckingSession, setIsCheckingSession] = useState(hasResultsParam);
   const [resultsDeepLinkMissing, setResultsDeepLinkMissing] = useState(false);
+  const [scrollToTipsOnResults, setScrollToTipsOnResults] = useState(false);
 
   function hydrateFromSession(session: IntakeSessionPayload) {
     setSymptoms(session.symptoms as SymptomId[]);
@@ -133,12 +136,23 @@ export default function IntakeClient() {
 
   useEffect(() => {
     if (
-      (phase === "results" || phase === "recognition") &&
+      (phase === "results" || phase === "recognition" || phase === "focus") &&
       !hasResultsParam
     ) {
       router.replace("/intake?resultaten=true", { scroll: false });
     }
   }, [phase, hasResultsParam, router]);
+
+  useEffect(() => {
+    if (phase !== "results" || !scrollToTipsOnResults) {
+      return;
+    }
+    setScrollToTipsOnResults(false);
+    const timer = window.setTimeout(() => {
+      document.getElementById("tips")?.scrollIntoView({ behavior: "smooth" });
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [phase, scrollToTipsOnResults]);
 
   useEffect(() => {
     if (phase !== "calculating") {
@@ -449,7 +463,20 @@ export default function IntakeClient() {
             themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
             answers={answers}
             onBack={() => setPhase("results")}
-            onContinue={() => setPhase("results")}
+            onContinue={() => setPhase("focus")}
+          />
+        </div>
+      )}
+
+      {phase === "focus" && scores && (
+        <div className="animate-[fadeIn_300ms_ease-out]">
+          <IntakeFocus
+            themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
+            onBack={() => setPhase("recognition")}
+            onContinue={() => {
+              setScrollToTipsOnResults(true);
+              setPhase("results");
+            }}
           />
         </div>
       )}

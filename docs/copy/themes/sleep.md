@@ -20,4 +20,6 @@
 
 ## Hefboom (fase 3)
 
-{{placeholder: max 100 woorden}}
+Slaap is vaak de **snelste hefboom** als je overdag wazig bent of 's nachts vaak wakker ligt. Verbeter je ritme en je omgeving eerst — supplementen vullen pas aan waar gewoonten niet rondkomen.
+
+> Placeholder in DB (`themes.hefboom_text`) — vervang door definitieve copy.

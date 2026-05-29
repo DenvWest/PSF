@@ -14,11 +14,19 @@ export type ThemeContent = {
   label: string;
   sublabel: string;
   isMeasured: boolean;
+  hefboomText?: string | null;
+  disclaimerKey?: string | null;
 };
 
 export type RecognitionContent = {
   theme: ThemeContent;
   lines: string[];
+};
+
+export type FocusContent = {
+  theme: ThemeContent;
+  hefboomText: string;
+  disclaimerText: string;
 };
 
 type ThemeRow = {
@@ -27,6 +35,12 @@ type ThemeRow = {
   label: string;
   sublabel: string;
   is_measured: boolean;
+  hefboom_text: string | null;
+  disclaimer_key: string | null;
+};
+
+type DisclaimerRow = {
+  body_text: string;
 };
 
 type RecognitionLineRow = {
@@ -49,6 +63,22 @@ const GENERIC_OPENING: Record<ThemeSlug, string> = {
   connection:
     "Verbinding meten we niet in deze intake — wel relevant voor veerkracht op lange termijn.",
 };
+
+const STATIC_HEFBOOM: Record<ThemeSlug, string> = {
+  sleep:
+    "Slaap is vaak de **snelste hefboom** als je overdag wazig bent of 's nachts vaak wakker ligt. Verbeter je ritme en je omgeving eerst — supplementen vullen pas aan waar gewoonten niet rondkomen.",
+  stress:
+    "Stress bepaalt hoe snel je lichaam kan schakelen tussen alert zijn en herstellen. Kleine, vaste rustmomenten hebben vaak **meer effect** dan nog een product.",
+  nutrition:
+    "Voeding beïnvloedt energie, herstel en hoe je reageert op druk. Structurele keuzes (eiwit, vetzuren, regelmaat) zijn meestal de **eerste stap** vóór supplementen.",
+  movement:
+    "Beweging en kracht houden spieren en stofwisseling op peil — vooral na 40. Te veel zonder herstel kan averechts werken; **balans** is hier de hefboom.",
+  connection:
+    "Verbinding meten we niet in deze intake — sociaal contact en doel dragen wel bij aan veerkracht op lange termijn.",
+};
+
+const FOCUS_SCREEN_DISCLAIMER =
+  "Geen medisch advies. Bij aanhoudende klachten: huisarts.";
 
 const STATIC_RECOGNITION_LINES: Partial<
   Record<ThemeSlug, RecognitionLineCandidate[]>
@@ -108,6 +138,8 @@ function themeFromPillar(slug: ThemeSlug): ThemeContent {
     label: pillar?.label ?? slug,
     sublabel: pillar?.sublabel ?? "",
     isMeasured: slug !== "connection",
+    hefboomText: STATIC_HEFBOOM[slug],
+    disclaimerKey: "focus_screen",
   };
 }
 
@@ -134,10 +166,20 @@ export async function getTheme(
 
   const { data, error } = await supabase
     .from("themes")
-    .select("slug, label, sublabel, is_measured")
+    .select("slug, label, sublabel, is_measured, hefboom_text, disclaimer_key")
     .eq("organization_id", organizationId)
     .eq("slug", slug)
-    .maybeSingle<Pick<ThemeRow, "slug" | "label" | "sublabel" | "is_measured">>();
+    .maybeSingle<
+      Pick<
+        ThemeRow,
+        | "slug"
+        | "label"
+        | "sublabel"
+        | "is_measured"
+        | "hefboom_text"
+        | "disclaimer_key"
+      >
+    >();
 
   if (error || !data) {
     return themeFromPillar(slug);
@@ -148,6 +190,52 @@ export async function getTheme(
     label: data.label,
     sublabel: data.sublabel,
     isMeasured: data.is_measured,
+    hefboomText: data.hefboom_text ?? STATIC_HEFBOOM[slug],
+    disclaimerKey: data.disclaimer_key ?? "focus_screen",
+  };
+}
+
+export async function getDisclaimer(
+  key: string,
+  orgId?: string,
+): Promise<string> {
+  if (key === "focus_screen") {
+    const organizationId = orgId ?? getDefaultOrganizationId();
+    const supabase = createSupabaseAdmin();
+    if (!supabase) {
+      return FOCUS_SCREEN_DISCLAIMER;
+    }
+
+    const { data, error } = await supabase
+      .from("disclaimers")
+      .select("body_text")
+      .eq("organization_id", organizationId)
+      .eq("key", key)
+      .maybeSingle<DisclaimerRow>();
+
+    if (error || !data?.body_text) {
+      return FOCUS_SCREEN_DISCLAIMER;
+    }
+    return data.body_text;
+  }
+
+  return FOCUS_SCREEN_DISCLAIMER;
+}
+
+export async function getFocusContent(
+  themeSlug: ThemeSlug,
+  orgId?: string,
+): Promise<FocusContent> {
+  const theme = (await getTheme(themeSlug, orgId)) ?? themeFromPillar(themeSlug);
+  const disclaimerKey = theme.disclaimerKey ?? "focus_screen";
+  const hefboomText =
+    theme.hefboomText?.trim() || STATIC_HEFBOOM[themeSlug];
+  const disclaimerText = await getDisclaimer(disclaimerKey, orgId);
+
+  return {
+    theme: { ...theme, hefboomText, disclaimerKey },
+    hefboomText,
+    disclaimerText,
   };
 }
 
