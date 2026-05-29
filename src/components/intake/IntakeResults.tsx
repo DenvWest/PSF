@@ -68,6 +68,7 @@ type IntakeResultsProps = {
   sessionId: string | null;
   firstName?: string | null;
   hasMarketingEmail?: boolean;
+  onContinueToRecognition?: () => void;
   onRestart?: () => void;
   onConsentRevoked?: () => void;
 };
@@ -210,6 +211,7 @@ export default function IntakeResults({
   sessionId,
   firstName,
   hasMarketingEmail = false,
+  onContinueToRecognition,
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
@@ -344,13 +346,15 @@ export default function IntakeResults({
           />
 
           <div className="mt-5 text-center">
-            <a
-              href="#tips"
-              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+            <button
+              type="button"
+              onClick={onContinueToRecognition}
+              disabled={!onContinueToRecognition}
+              className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-default disabled:opacity-50"
               style={{ background: "#C8956C" }}
             >
               Bekijk wat dit voor jou betekent →
-            </a>
+            </button>
             <p className="mt-2 text-[13px] text-intake-ink-subtle">
               Jouw grootste hefboom op basis van je antwoorden.
             </p>

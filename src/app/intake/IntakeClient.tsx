@@ -8,8 +8,11 @@ import IntakeCalculating from "@/components/intake/IntakeCalculating";
 import IntakeConsent from "@/components/intake/IntakeConsent";
 import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
+import IntakeRecognition from "@/components/intake/IntakeRecognition";
 import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
+import type { ThemeSlug } from "@/lib/content/themes";
+import { getPrimaryTheme } from "@/lib/primary-theme";
 import {
   CATEGORIES,
   QUESTIONS,
@@ -49,7 +52,8 @@ type Phase =
   | "questions"
   | "consent"
   | "calculating"
-  | "results";
+  | "results"
+  | "recognition";
 
 export default function IntakeClient() {
   const router = useRouter();
@@ -128,7 +132,10 @@ export default function IntakeClient() {
   }, [hasResultsParam]);
 
   useEffect(() => {
-    if (phase === "results" && !hasResultsParam) {
+    if (
+      (phase === "results" || phase === "recognition") &&
+      !hasResultsParam
+    ) {
       router.replace("/intake?resultaten=true", { scroll: false });
     }
   }, [phase, hasResultsParam, router]);
@@ -429,8 +436,20 @@ export default function IntakeClient() {
             hasMarketingEmail={Boolean(
               intakeConsent?.marketingEmail && intakeConsent?.marketingEmailAddress,
             )}
+            onContinueToRecognition={() => setPhase("recognition")}
             onRestart={restart}
             onConsentRevoked={restart}
+          />
+        </div>
+      )}
+
+      {phase === "recognition" && scores && (
+        <div className="animate-[fadeIn_300ms_ease-out]">
+          <IntakeRecognition
+            themeSlug={getPrimaryTheme(scores, answers) as ThemeSlug}
+            answers={answers}
+            onBack={() => setPhase("results")}
+            onContinue={() => setPhase("results")}
           />
         </div>
       )}
