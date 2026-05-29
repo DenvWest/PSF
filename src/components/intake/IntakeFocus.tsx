@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FocusContent, ThemeSlug } from "@/lib/content/themes";
 import { trackEvent } from "@/lib/ga4";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { renderSafeMarkdown } from "@/lib/render-safe-markdown";
 
 type IntakeFocusProps = {
@@ -23,6 +24,7 @@ export default function IntakeFocus({
   onContinue,
 }: IntakeFocusProps) {
   const [loadState, setLoadState] = useState<LoadState>({ status: "loading" });
+  const focusViewedEmittedRef = useRef(false);
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".intake-layout-header");
@@ -62,6 +64,10 @@ export default function IntakeFocus({
         if (!cancelled) {
           setLoadState({ status: "ready", content });
           trackEvent("intake_theme_revealed", { theme_slug: themeSlug });
+          if (!focusViewedEmittedRef.current) {
+            focusViewedEmittedRef.current = true;
+            emitIntakeClientEvent("focus.viewed", { theme_slug: themeSlug });
+          }
         }
       } catch {
         if (!cancelled) {

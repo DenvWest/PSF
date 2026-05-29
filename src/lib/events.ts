@@ -8,7 +8,12 @@ import { createSupabaseAdmin } from "@/lib/supabase-admin";
 export const DOMAIN_EVENT_TYPES = [
   "intake.completed",
   "intake.theme_revealed",
+  "focus.viewed",
+  "plan.viewed",
   "plan.action_clicked",
+  "plan.tier_action_clicked",
+  "plan.evidence_clicked",
+  "plan.theme_switched",
   "email.opted_in",
   "consent.revoked",
   "evidence.chat_queried",

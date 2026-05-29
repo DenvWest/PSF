@@ -15,6 +15,7 @@ import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
 import type { ThemeSlug } from "@/lib/content/themes";
 import { getPrimaryTheme, getSecondaryTheme } from "@/lib/primary-theme";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import {
   CATEGORIES,
   QUESTIONS,
@@ -518,6 +519,12 @@ export default function IntakeClient() {
                 : null
             }
             onSelectSecondaryTheme={(theme) => {
+              if (primaryTheme) {
+                emitIntakeClientEvent("plan.theme_switched", {
+                  from_theme: primaryTheme,
+                  to_theme: theme,
+                });
+              }
               setThemeOverride(theme as ThemeSlug);
               setPhase("recognition");
             }}

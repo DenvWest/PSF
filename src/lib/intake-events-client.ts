@@ -2,7 +2,13 @@ import type { DomainEventType } from "@/lib/events";
 
 type ClientEmitType = Extract<
   DomainEventType,
-  "intake.theme_revealed" | "plan.action_clicked"
+  | "intake.theme_revealed"
+  | "focus.viewed"
+  | "plan.viewed"
+  | "plan.action_clicked"
+  | "plan.tier_action_clicked"
+  | "plan.evidence_clicked"
+  | "plan.theme_switched"
 >;
 
 export function emitIntakeClientEvent(

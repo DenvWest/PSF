@@ -10,7 +10,12 @@ import { getClientIp } from "@/lib/turnstile-verify";
 
 const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "intake.theme_revealed",
+  "focus.viewed",
+  "plan.viewed",
   "plan.action_clicked",
+  "plan.tier_action_clicked",
+  "plan.evidence_clicked",
+  "plan.theme_switched",
 ]);
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

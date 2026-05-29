@@ -10,6 +10,7 @@ import type {
   ProfileLabel,
 } from "@/lib/intake-engine";
 import { getDefaultOrganizationId } from "@/lib/organization";
+import { getDisclaimer } from "@/lib/content/themes";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const PLAN_KINDS: InterventionKind[] = [
@@ -40,6 +41,7 @@ export type PlanAction = {
   tier: number;
   isPaid: boolean;
   paidDisclosureKey: string | null;
+  paidDisclosureText: string | null;
   externalProviderLabel: string | null;
   externalProviderUrl: string | null;
 };
@@ -165,6 +167,7 @@ async function getPublishedClaimForIntervention(
 function interventionToAction(
   item: MatchedIntervention,
   evidence: { claimText: string; sourceLabel: string; sourceUrl: string | null },
+  paidDisclosureText: string | null,
 ): PlanAction {
   const affiliateUrl = item.affiliateUrl ?? item.comparisonPath;
   return {
@@ -181,9 +184,30 @@ function interventionToAction(
     tier: item.tier,
     isPaid: item.isPaid,
     paidDisclosureKey: item.paidDisclosureKey,
+    paidDisclosureText,
     externalProviderLabel: item.externalProviderLabel,
     externalProviderUrl: item.externalProviderUrl,
   };
+}
+
+const disclosureCache = new Map<string, string>();
+
+async function resolvePaidDisclosureText(
+  item: MatchedIntervention,
+  orgId: string,
+): Promise<string | null> {
+  if (!item.isPaid) {
+    return null;
+  }
+  const key = item.paidDisclosureKey ?? "paid_action_default";
+  const cacheKey = `${orgId}:${key}`;
+  const cached = disclosureCache.get(cacheKey);
+  if (cached !== undefined) {
+    return cached;
+  }
+  const text = await getDisclaimer(key, orgId);
+  disclosureCache.set(cacheKey, text);
+  return text;
 }
 
 export async function getPlanContent(
@@ -224,6 +248,10 @@ export async function getPlanContent(
         tier: supplement.tier,
         isPaid: supplement.isPaid,
         paidDisclosureKey: supplement.paidDisclosureKey,
+        paidDisclosureText: await resolvePaidDisclosureText(
+          supplement,
+          organizationId,
+        ),
         externalProviderLabel: supplement.externalProviderLabel,
         externalProviderUrl: supplement.externalProviderUrl,
       });
@@ -271,7 +299,13 @@ export async function getPlanContent(
       };
     }
 
-    actions.push(interventionToAction(item, evidence ?? EMPTY_EVIDENCE));
+    const paidDisclosureText = await resolvePaidDisclosureText(
+      item,
+      organizationId,
+    );
+    actions.push(
+      interventionToAction(item, evidence ?? EMPTY_EVIDENCE, paidDisclosureText),
+    );
   }
 
   return {

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IntakeAction from "@/components/intake/IntakeAction";
 import type { PlanContent } from "@/lib/content/plan-content";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
+import { PLAN_STEPPED_CARE_COPY } from "@/lib/plan-stepped-care-copy";
 import type { ThemeSlug } from "@/lib/content/themes";
 
 type IntakePlanProps = {
@@ -26,6 +27,7 @@ export default function IntakePlan({
   onCommitment,
 }: IntakePlanProps) {
   const [loadState, setLoadState] = useState<LoadState>({ status: "loading" });
+  const planViewedEmittedRef = useRef(false);
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".intake-layout-header");
@@ -70,6 +72,13 @@ export default function IntakePlan({
             return;
           }
           setLoadState({ status: "ready", content });
+          if (!planViewedEmittedRef.current) {
+            planViewedEmittedRef.current = true;
+            emitIntakeClientEvent("plan.viewed", {
+              theme_slug: themeSlug,
+              tier_count: content.actions.length,
+            });
+          }
         }
       } catch {
         if (!cancelled) {
@@ -102,10 +111,10 @@ export default function IntakePlan({
             <span className="text-intake-terra">06</span> · Jouw plan
           </p>
           <h1 className="mb-1 font-serif text-[28px] font-normal leading-tight text-intake-ink">
-            Drie stappen, vaste volgorde
+            {PLAN_STEPPED_CARE_COPY.heroTitle}
           </h1>
           <p className="text-sm text-intake-ink-muted">
-            Gratis → meten → supplement
+            {PLAN_STEPPED_CARE_COPY.heroSubtitle}
           </p>
         </header>
 
@@ -135,23 +144,39 @@ export default function IntakePlan({
 
         {loadState.status === "ready" ? (
           <>
-            <div className="mb-6 space-y-4" aria-label="Acties in volgorde">
+            <p className="mb-5 text-center text-xs leading-relaxed text-intake-ink-subtle">
+              {PLAN_STEPPED_CARE_COPY.topDisclaimer}
+            </p>
+
+            <div className="mb-6 space-y-4" aria-label="Stappen in volgorde">
               {loadState.content.actions.map((action, index) => (
                 <IntakeAction
                   key={action.slug}
                   action={action}
                   step={index + 1}
                   onPlanLinkClick={(clicked) => {
-                    emitIntakeClientEvent("plan.action_clicked", {
+                    emitIntakeClientEvent("plan.tier_action_clicked", {
                       theme_slug: themeSlug,
-                      action_slug: clicked.slug,
-                      action_kind: clicked.kind,
-                      step: index + 1,
+                      intervention_slug: clicked.slug,
+                      tier: clicked.tier,
+                      kind: clicked.kind,
+                      is_paid: clicked.isPaid,
+                    });
+                  }}
+                  onEvidenceClick={(clicked) => {
+                    emitIntakeClientEvent("plan.evidence_clicked", {
+                      theme_slug: themeSlug,
+                      intervention_slug: clicked.slug,
+                      tier: clicked.tier,
                     });
                   }}
                 />
               ))}
             </div>
+
+            <p className="mb-5 text-center text-xs leading-relaxed text-intake-ink-subtle">
+              {PLAN_STEPPED_CARE_COPY.bottomDisclaimer}
+            </p>
 
             <div className="text-center">
               <button
@@ -160,7 +185,7 @@ export default function IntakePlan({
                 className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white"
                 style={{ background: "#C8956C" }}
               >
-                Krijg je 14-dagen startplan + check-in over 30 dagen →
+                {PLAN_STEPPED_CARE_COPY.commitmentCta}
               </button>
               <button
                 type="button"
