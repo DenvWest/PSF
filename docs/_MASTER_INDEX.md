@@ -46,6 +46,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/AFFILIATE_SYSTEM.md`](core/AFFILIATE_SYSTEM.md) | Daisycon, Arctic Blue, link-structuur, Sub ID, click tracking |
 | [`core/EMAIL_SYSTEM.md`](core/EMAIL_SYSTEM.md) | Nurture sequence, Resend, cron, PDF-gidsen |
 | [`core/PERSONALIZATION_ENGINE.md`](core/PERSONALIZATION_ENGINE.md) | Profiel-architectuur, scoring triggers, 8-sectie structuur, spinnenweb per profiel |
+| [`core/STEPPED_CARE_MODEL.md`](core/STEPPED_CARE_MODEL.md) | PLAN-journey per symptoom: tiers (gratis→meten→supplement→betaald), intervention_triggers, render-eisen |
 
 ### Layer 3 — Work (tijdelijk, verandert regelmatig)
 
@@ -67,6 +68,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Pillar page | `core/SEO_RULES.md` + `core/CONTENT_SYSTEM.md` (Blueprint 2) |
 | Blogpost | `core/SEO_RULES.md` + `core/CONTENT_SYSTEM.md` (Blueprint 4 + Smart Content Module) |
 | Intake/scoring | `core/INTAKE_SYSTEM.md` + `core/ENTITY_MODEL.md` |
+| PLAN-scherm / interventies / tiers | `core/STEPPED_CARE_MODEL.md` + `core/ENTITY_MODEL.md` |
 | Nurture emails | `core/WRITING_VOICE.md` + `core/EMAIL_SYSTEM.md` + `core/PERSONALIZATION_ENGINE.md` |
 | Copy schrijven (herkenning, profiel, weggever) | `core/WRITING_VOICE.md` + `core/COMPLIANCE.md` |
 | Affiliate links | `core/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
