@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import IntakeLastSessionLink from '@/components/intake/IntakeLastSessionLink'
 import { INTAKE_PROMO } from '@/data/homepage'
 
 export default function PillarStickyIntakeCta() {
@@ -10,12 +11,15 @@ export default function PillarStickyIntakeCta() {
         <p className="mb-2.5 text-center text-sm leading-snug text-stone-600 md:mb-0 md:min-w-0 md:flex-1 md:text-left">
           {INTAKE_PROMO.sublineShort}
         </p>
-        <Link
-          href="/intake"
-          className="flex w-full min-h-[48px] items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-ps-green px-6 py-3 text-base font-semibold text-white shadow-sm shadow-ps-green/25 transition hover:bg-ps-green-hover active:scale-[0.98] md:w-auto md:max-w-fit md:shrink-0"
-        >
-          {INTAKE_PROMO.heroCta} →
-        </Link>
+        <div className="flex w-full flex-col items-center md:w-auto md:items-end">
+          <Link
+            href="/intake"
+            className="flex w-full min-h-[48px] items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-ps-green px-6 py-3 text-base font-semibold text-white shadow-sm shadow-ps-green/25 transition hover:bg-ps-green-hover active:scale-[0.98] md:w-auto md:max-w-fit md:shrink-0"
+          >
+            {INTAKE_PROMO.heroCta} →
+          </Link>
+          <IntakeLastSessionLink theme="light" className="mt-2 block text-center md:text-right" />
+        </div>
       </div>
     </div>
   )
