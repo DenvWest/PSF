@@ -4,7 +4,7 @@ export const ABOUT_METADATA = {
   title:
     "Over PerfectSupplement — Leefstijl, herstel en supplementen | PerfectSupplement",
   description:
-    "Onafhankelijk leefstijlplatform voor mannen 40+: educatie, vergelijking en transparantie rond supplementen. Opgericht door fysiotherapeut Dennis van Westbroek — leefstijl eerst, supplementen alleen waar het zinvol is.",
+    "Onafhankelijk leefstijlplatform voor mannen 40+: educatie, vergelijking en transparantie rond supplementen. Opgericht door leefstijlcoach Dennis van Westbroek — leefstijl eerst, supplementen alleen waar het zinvol is.",
 } as const;
 
 export const ABOUT_TAGLINE =
@@ -14,19 +14,14 @@ export const ABOUT_SITE_URL = "https://perfectsupplement.nl";
 
 export const ABOUT_FOUNDER = {
   name: "Dennis van Westbroek",
-  jobTitle: "Fysiotherapeut & Leefstijlcoach",
-  bigNumber: "59930614504",
-  credentials: [
-    "Fysiotherapeut, ingeschreven in het BIG-register (nr. 59930614504)",
-    "Leefstijlcoach — Civabv-erkenning KNGF-keurmerk registratie leefstijlcoaching",
-    "Oprichter PerfectSupplement",
-  ] as const,
-  roleNote:
-    "Dennis is fysiotherapeut, ingeschreven in het BIG-register (nr. 59930614504). Die BIG-registratie geldt voor zijn praktijkwerk — niet voor PerfectSupplement. Op dit platform spreekt hij als oprichter en redacteur, niet als jouw behandelend fysiotherapeut. Er is geen behandelrelatie via deze site, en PerfectSupplement levert geen BIG-zorg. Voor klachten of behandeling: zoek een arts of fysiotherapeut in je regio.",
+  jobTitle: "Leefstijlcoach",
+  founderSchemaDescription:
+    "Leefstijlcoach en oprichter van PerfectSupplement",
+  credentialsLine: "Leefstijlcoach · Oprichter PerfectSupplement",
   bioParagraphs: [
-    "Al jarenlang werk ik in de fysiotherapie met mannen 40+ die merken dat herstel, slaap en stress meer aandacht vragen dan vroeger — vaak na jaren van hoge werkdruk, sport of een volle agenda.",
-    "Op PerfectSupplement spreek ik als oprichter en redacteur, niet als jouw behandelend fysiotherapeut. Ik kijk naar wat in de literatuur en richtlijnen past bij mannen 40+, en waar een supplement wél of géén zinvolle aanvulling is.",
-    "Ik claim geen alwetendheid: bij twijfel verwijs ik naar bronnen of naar je arts — supplementen zijn geen vervanging voor professioneel medisch advies.",
+    "PerfectSupplement is opgericht vanuit één vraag: welke supplementen zijn voor mannen 40+ wél een zinvolle aanvulling, en welke niet? Het platform vertaalt literatuur en richtlijnen naar heldere, eerlijke vergelijkingen — zonder verkooppraat.",
+    "Op dit platform spreek ik als oprichter en redacteur, niet als jouw zorgverlener. Er is geen behandelrelatie via deze site en PerfectSupplement levert geen medische zorg. Voor klachten of behandeling: raadpleeg een arts of zorgverlener in je regio.",
+    "Ik claim geen alwetendheid: bij twijfel verwijs ik naar bronnen of naar je arts. Supplementen zijn nooit een vervanging voor professioneel medisch advies.",
   ],
 } as const;
 
@@ -46,7 +41,7 @@ export const ABOUT_STORY = {
   id: "wie",
   title: "Wie zit hierachter",
   paragraphs: [
-    "Dennis van Westbroek weet dat niet alleen vanuit zijn praktijk als fysiotherapeut en leefstijlcoach — maar ook vanuit eigen ervaring.",
+    "Dennis van Westbroek weet dat niet alleen vanuit zijn werk als leefstijlcoach — maar ook vanuit eigen ervaring.",
     "Jarenlang herkende Dennis in zijn eigen leven het patroon van drukke periodes, minder rust en het gevoel dat herstel en ontspanning steeds meer moeite kostten.",
   ],
 } as const;
@@ -58,7 +53,7 @@ export const ABOUT_INSIGHT = {
     "Leefstijlfactoren hangen in het dagelijks leven vaak met elkaar samen — waaronder leefstijl, (ver)binding, autonomie en competentie die niet verzadigd zijn. Veel mannen merken dat als één van die onderdelen langere tijd scheef staat, de rest ook lastiger wordt om te overzien.",
   ],
   vicieuzeCirkel:
-    "In de praktijk hoort Dennis vaak hetzelfde verhaal: meer stress, minder rust, minder overzicht — en daardoor weer meer spanning.",
+    "Dennis hoort vaak hetzelfde verhaal: meer stress, minder rust, minder overzicht — en daardoor weer meer spanning.",
   keyInsightLead:
     "En precies daar gaat het mis met veel gezondheidsadvies online:",
   keyInsight:

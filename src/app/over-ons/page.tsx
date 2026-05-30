@@ -50,8 +50,7 @@ const structuredData = {
       name: ABOUT_FOUNDER.name,
       url: `${ABOUT_SITE_URL}/over-ons#achtergrond`,
       jobTitle: ABOUT_FOUNDER.jobTitle,
-      description:
-        `Fysiotherapeut ingeschreven in het BIG-register (nr. ${ABOUT_FOUNDER.bigNumber}), leefstijlcoach (Civabv/KNGF-keurmerk) en oprichter van PerfectSupplement`,
+      description: ABOUT_FOUNDER.founderSchemaDescription,
       ...(ABOUT_FOUNDER_SAME_AS.length > 0
         ? { sameAs: ABOUT_FOUNDER_SAME_AS }
         : {}),
@@ -387,15 +386,8 @@ export default function OverOnsPage() {
                     <h3 className="font-serif text-2xl leading-tight text-stone-900 md:text-3xl">
                       {ABOUT_FOUNDER.name}
                     </h3>
-                    <div className="space-y-3">
-                      {ABOUT_FOUNDER.credentials.map((credential) => (
-                        <p key={credential} className="text-sm uppercase tracking-widest text-stone-500">
-                          {credential}
-                        </p>
-                      ))}
-                    </div>
-                    <p className={`${bodyClass} max-w-2xl italic text-stone-600`}>
-                      {ABOUT_FOUNDER.roleNote}
+                    <p className="text-sm uppercase tracking-widest text-stone-500">
+                      {ABOUT_FOUNDER.credentialsLine}
                     </p>
                     <div className="max-w-2xl space-y-6">
                       {ABOUT_FOUNDER.bioParagraphs.map((paragraph) => (
@@ -417,15 +409,8 @@ export default function OverOnsPage() {
                       <h3 className="font-serif text-2xl leading-tight text-stone-900 lg:text-3xl">
                         {ABOUT_FOUNDER.name}
                       </h3>
-                      <div className="space-y-3">
-                        {ABOUT_FOUNDER.credentials.map((credential) => (
-                          <p key={credential} className="text-sm uppercase tracking-widest text-stone-500">
-                            {credential}
-                          </p>
-                        ))}
-                      </div>
-                      <p className={`${bodyClass} italic text-stone-600`}>
-                        {ABOUT_FOUNDER.roleNote}
+                      <p className="text-sm uppercase tracking-widest text-stone-500">
+                        {ABOUT_FOUNDER.credentialsLine}
                       </p>
                       <div className="space-y-6">
                         {ABOUT_FOUNDER.bioParagraphs.map((paragraph) => (
