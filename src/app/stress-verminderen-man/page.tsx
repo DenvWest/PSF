@@ -64,7 +64,7 @@ const faqSchema = {
       name: "Welk supplement helpt het beste tegen stress?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EU‑claim bij voldoende inname). Ashwagandha heeft geen vaste EU‑gezondheidsclaims op stress; sommige studies gaan over hoe mensen spanning ervaren — vergelijk producten op kwaliteit en overleg bij medicatie. Zie ook onze ashwagandha‑pagina en amber waarschuwing.",
+        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (officieel erkend bij voldoende inname). Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim; sommige studies gaan over hoe mensen spanning ervaren — vergelijk producten op kwaliteit en overleg bij medicatie. Zie ook onze ashwagandha‑pagina.",
       },
     },
     {
@@ -205,8 +205,8 @@ export default function StressVerminderenManPage() {
                 </ul>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Als je hier drie of meer van herkent, lees verder. Het is geen zwakte — het is een
-                  signaal dat je lang in een hoge belastingstand zit. Dat wil zeggen: je systeem
-                  krijgt weinig echte rustmomenten, niet dat wij weten wat er in je bloed zit.
+                  signaal dat je lang onder hoge druk staat. Dat wil zeggen: je lichaam krijgt weinig
+                  echte rustmomenten, niet dat wij weten wat er in je bloed zit.
                 </p>
               </section>
 
@@ -345,7 +345,7 @@ export default function StressVerminderenManPage() {
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  5. Stimulanten beperken
+                  5. Koffie en alcohol beperken
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Cafeïne laat op de dag kan slapen lastiger maken. Alcohol lijkt ontspannend, maar
@@ -368,14 +368,13 @@ export default function StressVerminderenManPage() {
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Ashwagandha (KSM-66)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Ashwagandha wordt in studies vaak besproken rond hoe mensen spanning ervaren.
-                  Er zijn geen vaste EU‑gezondheidsclaims op stress voor dit kruid; er lopen discussies
-                  over regulering in Nederland. KSM‑66 is een veelgebruikt gestandaardiseerd extract
-                  — vergelijk producten op kwaliteit en overleg bij medicatie.
+                  Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim. We tonen wat
+                  het onderzoek laat zien, zonder beloftes. KSM‑66 is een veelgebruikt
+                  gestandaardiseerd extract — vergelijk producten op kwaliteit en overleg bij
+                  medicatie.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Let op: ashwagandha heeft geen EFSA-goedgekeurde gezondheidsclaims en er lopen
-                  discussies over regulering in Nederland. Wij presenteren wat onderzoek op dit moment
-                  laat zien — de keuze is aan jou.
+                  Er lopen discussies over regulering in Nederland; de keuze is aan jou.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">
@@ -394,9 +393,9 @@ export default function StressVerminderenManPage() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Magnesium speelt een rol bij meer dan 300 processen in je lichaam, waaronder het
-                  ontspannen van je zenuwstelsel. Glycinaat is de vorm die het beste opgenomen wordt
-                  en werkt vaak rustgevender via de glycine-component. Dosering: 200-400 mg
-                  elementair magnesium, bij voorkeur &apos;s avonds.
+                  ontspannen van je zenuwstelsel. Glycinaat is de vorm die het beste wordt opgenomen
+                  en werkt vaak rustgevender door de toegevoegde glycine. Dosering: 200-400 mg puur
+                  magnesium, bij voorkeur &apos;s avonds.
                 </p>
                 <div className="mt-6 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700">
@@ -607,10 +606,10 @@ export default function StressVerminderenManPage() {
                     </summary>
                     <div className="px-5 pb-5 leading-relaxed text-gray-700">
                       Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een
-                      normale psychologische functie (EU‑claim bij voldoende inname). Ashwagandha
-                      heeft geen vaste EU‑gezondheidsclaims op stress; sommige studies gaan over hoe
-                      mensen spanning ervaren — vergelijk producten op kwaliteit en overleg bij
-                      medicatie. Zie ook onze ashwagandha‑pagina en amber waarschuwing.
+                      normale psychologische functie (officieel erkend bij voldoende inname). Voor
+                      ashwagandha bestaat nog geen Europees erkende gezondheidsclaim; sommige
+                      studies gaan over hoe mensen spanning ervaren — vergelijk producten op
+                      kwaliteit en overleg bij medicatie. Zie ook onze ashwagandha‑pagina.
                     </div>
                   </details>
 
@@ -656,7 +655,8 @@ export default function StressVerminderenManPage() {
                       slaapproblemen of concentratieproblemen die niet verbeteren met
                       leefstijlaanpassingen. Of als je merkt dat je je terugtrekt uit sociale
                       situaties, niet meer kunt genieten, of fysieke klachten hebt waar geen
-                      medische oorzaak voor wordt gevonden. Begin bij je huisarts of de POH-GGZ.
+                      medische oorzaak voor wordt gevonden. Begin bij je huisarts of de POH-GGZ (de
+                      praktijkondersteuner geestelijke gezondheidszorg).
                     </div>
                   </details>
                 </div>

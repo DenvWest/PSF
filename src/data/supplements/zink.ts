@@ -37,7 +37,7 @@ export const zinkData: ComparisonPageData = {
     },
     {
       href: "/blog/zink-en-testosteron",
-      text: "Zink en testosteron: EU-claims vs verwachtingen.",
+      text: "Zink en testosteron: wat officieel erkend is versus verwachtingen.",
       cta: "Lees het artikel →",
     },
   ],
@@ -62,7 +62,7 @@ export const zinkData: ComparisonPageData = {
       badgeLabel: "Premium kwaliteit",
       productName: "Bonusan Zinkmethionine 15 mg",
       teaser:
-        "L-OptiZinc® — gepatenteerde, klinisch geteste zinkvorm. Sluit aan bij EU-claims o.a. immuunsysteem, normale testosteronspiegels in het bloed en cognitieve functie.",
+        "L-OptiZinc® — gepatenteerde, klinisch geteste zinkvorm. Sluit aan bij wat officieel erkend is: immuunsysteem, normale testosteronspiegels in het bloed en cognitieve functie.",
       affiliateSlug: "bonusan-zinkmethionine",
       slug: "bonusan-zinkmethionine",
     },
@@ -151,7 +151,7 @@ export const zinkData: ComparisonPageData = {
       bestFor: "Premium kwaliteit",
       variantTag: "L-OptiZinc® — 90 plantaardige capsules",
       summary:
-        "L-OptiZinc® is een gepatenteerde zinkmethionine met klinische studies die de absorptie en biologische activiteit onderbouwen. Zink draagt in de EU-claimcontext bij aan o.a. het immuunsysteem, normale cognitieve functie, eiwitsynthese, bescherming van cellen tegen oxidatieve stress en instandhouding van een normaal testosterongehalte in het bloed. De plantaardige capsules sluiten aan bij een bewuste leefwijze. Duurder per dag, maar certificering rechtvaardigt voor sommige kopers de premiumpositie.",
+        "L-OptiZinc® is een gepatenteerde zinkmethionine met klinische studies die de absorptie en biologische activiteit onderbouwen. Zink draagt bij aan o.a. het immuunsysteem, normale cognitieve functie, eiwitsynthese, bescherming van cellen tegen oxidatieve stress en instandhouding van een normaal testosterongehalte in het bloed — allemaal officieel erkend bij voldoende inname. De plantaardige capsules sluiten aan bij een bewuste leefwijze. Duurder per dag, maar certificering rechtvaardigt voor sommige kopers de premiumpositie.",
       specs: [
         { label: "Zinkvorm", value: "L-OptiZinc® (zinkmethionine)" },
         { label: "Dosering", value: "15 mg" },
@@ -163,7 +163,7 @@ export const zinkData: ComparisonPageData = {
       ],
       pros: [
         "L-OptiZinc® — gepatenteerde, klinisch geteste zinkvorm",
-        "Sluit aan bij EU-goedgekeurde zinkclaims (o.a. immuun, cognitie, normaal testosteron in bloed)",
+        "Sluit aan bij officieel erkende zinkclaims (o.a. immuun, cognitie, normaal testosteron in bloed)",
         "Plantaardige capsules",
       ],
       cons: [
@@ -237,7 +237,7 @@ export const zinkData: ComparisonPageData = {
     {
       question: "Zijn zink en vitamine D beide relevant als je aan hormoonbalans denkt?",
       answer:
-        "Zink heeft, zoals genoemd, een EU-goedgekeurde formulering rond normaal testosterongehalte in het bloed. Vitamine D heeft bijvoorbeeld claims rond botten, spieren en immuunsysteem — niet dezelfde claimtekst als zink. Epidemiologisch zie je correlaties tussen lage bloedwaarden en verschillende markers; laat meten en laat je adviseren. Zie ook onze [vitamine D-vergelijking](/beste/vitamine-d).",
+        "Zink draagt, zoals genoemd, bij aan een normaal testosterongehalte in het bloed — officieel erkend bij voldoende inname. Vitamine D is officieel erkend rond botten, spieren en immuunsysteem — een andere strekking dan zink. Epidemiologisch zie je correlaties tussen lage bloedwaarden en verschillende markers; laat meten en laat je adviseren. Zie ook onze [vitamine D-vergelijking](/beste/vitamine-d).",
     },
     {
       question: "Kan ik zink combineren met magnesium?",

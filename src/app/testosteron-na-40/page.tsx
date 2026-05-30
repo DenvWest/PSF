@@ -49,7 +49,7 @@ const articleSchema = {
 const faqItems = [
   {
     q: "Daalt testosteron altijd na 40?",
-    a: "Gemiddeld dalen totale testosteronwaarden geleidelijk met de leeftijd, maar individuele spreiding is groot. Vermoeidheid of libidoverandering heeft vaak meerdere oorzaken. Alleen bloedonderzoek in medische context geeft uitsluitsel over jouw waarden.",
+    a: "Gemiddeld dalen de testosteronwaarden langzaam met de leeftijd, maar de verschillen tussen mannen zijn groot. Vermoeidheid of minder zin in seks heeft vaak meerdere oorzaken. Alleen bloedonderzoek bij een arts geeft zekerheid over jouw waarden.",
   },
   {
     q: "Helpt zink mijn testosteron verhogen?",
@@ -57,11 +57,11 @@ const faqItems = [
   },
   {
     q: "Heeft stress invloed op testosteron?",
-    a: "Langdurige stress en slechte slaap worden in onderzoek vaak genoemd naast veranderende hormonale patronen. Dat is populatie-informatie, geen voorspelling voor jouw labwaarden. Pak slaap en stress eerst aan.",
+    a: "Langdurige stress en slechte slaap worden in onderzoek vaak genoemd naast veranderende hormonen. Dat geldt voor groepen, het is geen voorspelling voor jouw bloedwaarden. Pak slaap en stress eerst aan.",
   },
   {
     q: "Helpt creatine bij testosteron?",
-    a: "Creatine heeft een EU-claim rond korte, intense inspanning — geen erkende claim op testosteron of libido. Het kan wel passen als je krachttraining wilt ondersteunen, naast slaap en voeding.",
+    a: "Creatine is officieel erkend voor korte, intense inspanning bij voldoende inname — geen Europees erkende claim op testosteron of libido. Het kan wel passen als je krachttraining wilt ondersteunen, naast slaap en voeding.",
   },
   {
     q: "Wanneer naar de huisarts?",
@@ -175,7 +175,7 @@ export default function TestosteronNa40Page() {
                 herstel na een drukke week, minder zin om aan iets nieuws te beginnen? Op internet
                 wordt dat snel teruggebracht tot &ldquo;testosteron&rdquo;. In de praktijk is het een
                 deel van een groter plaatje: slaap, stress, voeding en beweging. Deze gids helpt je
-                verwachtingen kalibreren — zonder harde hormoonclaims over jouw lichaam.
+                je verwachtingen bijstellen — zonder harde hormoonclaims over jouw lichaam.
               </p>
 
               <p className="mt-6 text-sm text-gray-500">
@@ -209,8 +209,8 @@ export default function TestosteronNa40Page() {
                   Wat gemiddeld verandert na 40
                 </h2>
                 <p className="mt-4 leading-relaxed text-gray-700">
-                  Populatieonderzoek laat een geleidelijke daling van totaal testosteron zien met de
-                  leeftijd — met grote individuele verschillen.{" "}
+                  Onderzoek bij grote groepen mannen laat zien dat het testosteron gemiddeld langzaam
+                  daalt met de leeftijd. De verschillen tussen mannen zijn wel groot.{" "}
                   <Link href="/kennisbank/testosteron" className={LINK}>
                     Testosteron in de kennisbank
                   </Link>{" "}
@@ -221,20 +221,21 @@ export default function TestosteronNa40Page() {
                   1. Totaal vs vrij testosteron
                 </h3>
                 <p className="mt-3 leading-relaxed text-gray-700">
-                  Labwaarden onderscheiden vaak totaal testosteron (gebonden + vrij) en soms vrij
-                  testosteron — het deel dat biologisch actief is. Beide kunnen anders bewegen; één
-                  getal op een bonnetje vertelt zelden het hele verhaal. Interpretatie hoort bij
-                  klachten, tijdstip van meting en andere markers — in medische context.
+                  Bloedwaarden laten vaak het totale testosteron zien (gebonden + vrij) en soms het
+                  vrije testosteron — het deel dat je lichaam echt gebruikt. Beide kunnen los van
+                  elkaar veranderen. Eén getal op een uitslag zegt dus weinig. Een arts leest zo&apos;n
+                  waarde altijd samen met je klachten, het tijdstip van de meting en andere
+                  bloedwaarden.
                 </p>
 
                 <h3 className="mt-8 text-xl font-semibold text-gray-900">
                   2. Leeftijdstrend is geen individuele voorspelling
                 </h3>
                 <p className="mt-3 leading-relaxed text-gray-700">
-                  Longitudinaal onderzoek bij gezonde mannen laat gemiddeld ~1% daling per jaar zien
-                  na het midden van de levensloop — maar spreiding is enorm. Sommige mannen blijven
-                  binnen brede normbanden; anderen merken meer. Vermoeidheid alleen is geen reden om
-                  hormoontherapie te overwegen zonder medische evaluatie.
+                  Onderzoek dat mannen jarenlang volgt, laat vanaf de middelbare leeftijd gemiddeld
+                  zo&apos;n 1% daling per jaar zien. Maar de verschillen zijn enorm. Sommige mannen
+                  blijven ruim binnen de normale waarden, anderen merken meer. Vermoeidheid alleen is
+                  geen reden om aan hormoontherapie te beginnen zonder medisch onderzoek.
                 </p>
 
                 <h3 className="mt-8 text-xl font-semibold text-gray-900">
@@ -242,9 +243,10 @@ export default function TestosteronNa40Page() {
                 </h3>
                 <p className="mt-4 leading-relaxed text-gray-700">
                   Slaaptekort en overgewicht komen in onderzoek vaker voor bij mannen met lagere
-                  testosteronwaarden — correlatie, geen simpele oorzaak-effect voor jou persoonlijk.
-                  Verbetering van slaap en lichaamssamenstelling kan onderdeel zijn van een medisch
-                  plan, maar we claimen hier geen garantie op jouw labwaarden.
+                  testosteronwaarden. Het hangt dus samen, maar het is geen simpel oorzaak-gevolg voor
+                  jou persoonlijk. Beter slapen en werken aan je lichaamssamenstelling (minder vet,
+                  meer spier) kan onderdeel zijn van een medisch plan, maar we beloven hier niets over
+                  jouw bloedwaarden.
                 </p>
               </section>
 
@@ -253,21 +255,22 @@ export default function TestosteronNa40Page() {
                   Stress, cortisol en de HPA-as
                 </h3>
                 <p className="mt-4 leading-relaxed text-gray-700">
-                  Langdurige stress activeert de hypothalamus-hypofyse-bijnier-as (HPA-as).{" "}
+                  Langdurige stress activeert de stress-as in je lichaam, ook wel de HPA-as genoemd
+                  (hypothalamus-hypofyse-bijnier-as).{" "}
                   <Link href="/kennisbank/cortisol" className={LINK}>
                     Cortisol
                   </Link>{" "}
-                  en testosteron worden soms in één adem genoemd — populatie-onderzoek suggereert
-                  wisselwerkingen, maar dat is geen cartoon van &ldquo;hoog cortisol = laag T&rdquo; voor
-                  elke man thuis. Praktischer: lees{" "}
+                  en testosteron worden vaak in één adem genoemd. Onderzoek bij grote groepen laat
+                  zien dat ze op elkaar inwerken, maar het is geen simpele regel van &ldquo;hoog
+                  cortisol = laag testosteron&rdquo; voor elke man. Praktischer: lees{" "}
                   <Link href="/blog/cortisol-en-testosteron" className={LINK}>
                     cortisol en testosteron
                   </Link>{" "}
-                  en de pillar{" "}
+                  en de gids{" "}
                   <Link href="/stress-verminderen-man" className={LINK}>
                     stress verminderen
                   </Link>{" "}
-                  voor gedragsroutes vóór supplement-hype.
+                  voor wat je met je gedrag kunt doen — vóór je aan supplementen denkt.
                 </p>
               </section>
 
@@ -323,9 +326,9 @@ export default function TestosteronNa40Page() {
                   4. Gewicht en beweging overdag
                 </h3>
                 <p className="mt-3 leading-relaxed text-gray-700">
-                  Buikvet en lage dagelijkse activiteit hangen in populatie-onderzoek samen met
-                  minder gunstige hormonale profielen. Dagelijks wandelen na maaltijden en bewuste
-                  deload-weken passen bij mannen die te veel volume draaien — zie profiel{" "}
+                  Buikvet en weinig beweging op een dag hangen in onderzoek samen met minder gunstige
+                  hormoonwaarden. Dagelijks wandelen na het eten en bewust lichtere trainingsweken
+                  passen bij mannen die te veel trainen — zie profiel{" "}
                   <Link href="/profiel/overtrainer" className={LINK}>
                     Overtrainer
                   </Link>
@@ -396,8 +399,9 @@ export default function TestosteronNa40Page() {
                   Supplementen In Context
                 </h2>
                 <p className="mt-4 leading-relaxed text-gray-700">
-                  Geen supplement vervangt meting of medisch advies — en geen stack verhoogt
-                  gegarandeerd testosteron. Onderstaande opties passen vooral bij{" "}
+                  Geen supplement vervangt een meting of medisch advies — en geen enkele combinatie
+                  van supplementen verhoogt gegarandeerd je testosteron. Onderstaande opties passen
+                  vooral bij{" "}
                   <strong className="text-gray-900">spierbehoud en krachttraining na 40</strong>,
                   naast slaap, eiwit via voeding en stressmanagement. Meer diepgang:{" "}
                   <Link href="/herstel-verbeteren-na-40" className={LINK}>
@@ -411,37 +415,39 @@ export default function TestosteronNa40Page() {
                 </p>
 
                 <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-5">
-                  <h3 className="font-semibold text-gray-900">Stack in onderzoek — geen hormoon-fix</h3>
+                  <h3 className="font-semibold text-gray-900">In onderzoek — geen hormoon-oplossing</h3>
                   <p className="mt-3 text-sm leading-relaxed text-gray-700">
-                    Geen supplement vervangt medisch advies — geen stack vervangt slaap, kracht en
-                    herstel.
+                    Geen supplement vervangt medisch advies — en geen combinatie van supplementen
+                    vervangt slaap, kracht en herstel.
                   </p>
                   <ul className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700">
                     <li>
-                      <strong className="text-gray-900">Zink</strong> — bij tekort EU-claim
-                      &apos;draagt bij aan normale testosteron in het bloed&apos;.{" "}
+                      <strong className="text-gray-900">Zink</strong> — bij een tekort kan het
+                      bijdragen aan een normaal testosterongehalte in het bloed.{" "}
                       <Link href="/beste/zink" className={LINK}>
                         Bekijk de zink-vergelijking →
                       </Link>
                     </li>
                     <li>
                       <strong className="text-gray-900">Eiwitpoeder</strong> — handig als je
-                      dagdoel (≈1,2–1,6 g/kg) lastig haalt via maaltijden; EU-claim op spiermassa
-                      bij training.{" "}
+                      dagdoel (≈1,2–1,6 g/kg) lastig haalt via maaltijden; officieel erkend voor
+                      groei en instandhouding van spiermassa bij training.{" "}
                       <Link href="/beste/eiwitpoeder" className={LINK}>
                         Bekijk de eiwitpoeder-vergelijking →
                       </Link>
                     </li>
                     <li>
-                      <strong className="text-gray-900">Omega-3</strong> — EPA/DHA voor hart
-                      (EU-claim); in onderzoek rond spiermetabolisme, geen hormoon-belofte.{" "}
+                      <strong className="text-gray-900">Omega-3</strong> — EPA/DHA (de werkzame
+                      visvetzuren) dragen bij aan een normaal hart bij voldoende inname; wordt
+                      onderzocht rond spierstofwisseling,
+                      geen hormoon-belofte.{" "}
                       <Link href="/beste/omega-3-supplement" className={LINK}>
                         Bekijk de omega-3-vergelijking →
                       </Link>
                     </li>
                     <li>
-                      <strong className="text-gray-900">Creatine</strong> — EU-claim op korte,
-                      intense inspanning (≥3 g/dag); geen hormoonclaim, wel onderbouwd bij
+                      <strong className="text-gray-900">Creatine</strong> — officieel erkend voor
+                      korte, intense inspanning (≥3 g/dag); geen hormoonclaim, wel onderbouwd bij
                       krachttraining.{" "}
                       <Link href="/beste/creatine" className={LINK}>
                         Bekijk de creatine-vergelijking →
@@ -496,11 +502,10 @@ export default function TestosteronNa40Page() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Cortisol en testosteron: stress-as zonder mythes — brug tussen stress- en
-                      hormooncluster.
+                      Cortisol en testosteron: hoe de stress-as werkt, zonder mythes.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
-                      Lees het cluster-artikel →
+                      Lees het artikel →
                     </span>
                   </Link>
                   <Link
@@ -508,11 +513,10 @@ export default function TestosteronNa40Page() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Zink en testosteron: wat de EU-claim wél zegt — en wat marketing erbovenop
-                      zet.
+                      Zink en testosteron: wat officieel erkend is — en wat marketing erbovenop zet.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
-                      Lees het cluster-artikel →
+                      Lees het artikel →
                     </span>
                   </Link>
                   <Link
@@ -520,11 +524,10 @@ export default function TestosteronNa40Page() {
                     className="group block rounded-xl border border-stone-200 bg-stone-50 p-5 transition-colors hover:border-ps-green/30 sm:col-span-2"
                   >
                     <p className="text-sm leading-relaxed text-gray-700">
-                      Testosteron en energie na 40: vermoeidheid breder dan één labwaarde — gekoppeld
-                      aan de energie-pillar.
+                      Testosteron en energie na 40: vermoeidheid is breder dan één bloedwaarde.
                     </p>
                     <span className="mt-3 inline-block text-sm font-semibold text-ps-green group-hover:underline">
-                      Lees het cluster-artikel →
+                      Lees het artikel →
                     </span>
                   </Link>
                 </div>

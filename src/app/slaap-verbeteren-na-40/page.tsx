@@ -70,7 +70,7 @@ const faqSchema = {
       name: "Wat is het beste supplement voor slaap?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (EU‑claims bij voldoende inname). Bij stressgerelateerde onrust kun je met je arts bespreken of een plantenextract als ashwagandha past — let op EFSA/VWS‑context en medicatie.",
+        text: "Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een normale psychologische functie (officieel erkend bij voldoende inname). Bij stressgerelateerde onrust kun je met je arts bespreken of ashwagandha past — voor dit kruid bestaat nog geen Europees erkende gezondheidsclaim; vergelijk producten zorgvuldig en overleg bij medicatie.",
       },
     },
     {
@@ -232,9 +232,9 @@ export default function SlaapVerbeterenNa40Page() {
                   Je diepe slaap neemt af
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Slaap bestaat uit cycli van circa 90 minuten. Elk blok bevat lichte slaap,
-                  diepe slaap en REM-slaap. Die diepe slaap is cruciaal: dit is
-                  waar je lichaam herstelt, groeihormoon aanmaakt en herinneringen verwerkt.
+                  Slaap bestaat uit blokken van ongeveer 90 minuten. Elk blok bevat lichte slaap,
+                  diepe slaap en droomslaap (REM-slaap). Die diepe slaap is heel belangrijk: dan
+                  herstelt je lichaam, maakt het groeihormoon aan en verwerkt het herinneringen.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Onderzoek laat zien dat de hoeveelheid diepe slaap per nacht gemiddeld afneemt
@@ -322,8 +322,8 @@ export default function SlaapVerbeterenNa40Page() {
                   1. Houd een vast slaapritme aan
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Je circadiaan ritme — je interne klok — wordt voornamelijk gestuurd door
-                  consistente tijden. Elke dag op hetzelfde tijdstip opstaan, ook in het weekend, heeft
+                  Je circadiaan ritme — je interne klok — wordt vooral gestuurd door vaste tijden.
+                  Elke dag op hetzelfde tijdstip opstaan, ook in het weekend, heeft
                   de grootste impact op je slaap. Niet naar bed gaan op een vast tijdstip,
                   maar opstaan op een vast tijdstip.
                 </p>
@@ -342,12 +342,12 @@ export default function SlaapVerbeterenNa40Page() {
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
-                  2. Bouw een windroutine van 45-60 minuten
+                  2. Bouw een afbouwroutine van 45-60 minuten
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Je zenuwstelsel heeft tijd nodig om van actie- naar herstelmodus te schakelen. Dat gaat niet van de ene op de
-                  andere minuut. Een actieve wind-down routine — dimmen van lichten, geen schermen,
-                  lichte bezigheid zoals lezen of ademhalingsoefeningen — helpt veel mensen om
+                  andere minuut. Een vaste afbouwroutine — lichten dimmen, geen schermen,
+                  een rustige bezigheid zoals lezen of ademhalingsoefeningen — helpt veel mensen om
                   rustiger richting bed te gaan.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -359,7 +359,7 @@ export default function SlaapVerbeterenNa40Page() {
                   3. Oefen eerder op de dag
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Beweging verhoogt diepe slaap significant — maar het tijdstip telt.
+                  Beweging verhoogt je diepe slaap merkbaar — maar het tijdstip telt.
                   Intensieve training verhoogt je lichaamstemperatuur en kan bij
                   sommige mensen de slaap verstoren als ze dit na 19:00 doen. Trainen in de ochtend of vroege
                   middag werkt vaak beter bij zware blokken. Avondwandelingen zijn prima.
@@ -373,9 +373,9 @@ export default function SlaapVerbeterenNa40Page() {
                   4. Beheer je cafeïne-inname
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Cafeïne heeft een halfwaardetijd van 5-7 uur. Een kop koffie om 14:00 betekent
-                  dat om 21:00 nog de helft van de cafeïne actief is in je bloed. Na je 40e breekt
-                  je lichaam cafeïne langzamer af — de effectieve halfwaardetijd kan 8-10 uur worden.
+                  Je lichaam breekt cafeïne langzaam af: na 5-7 uur is pas de helft weg. Een kop
+                  koffie om 14:00 betekent dus dat om 21:00 nog de helft in je bloed zit. Na je 40e
+                  gaat dat afbreken nog langzamer — dan kan het 8-10 uur duren.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Praktische regel: geen cafeïne na 13:00. Als je gewend bent aan een middag-koffie,
@@ -387,9 +387,9 @@ export default function SlaapVerbeterenNa40Page() {
                   5. Verlaag je kamertemperatuur
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Je kernlichaamstemperatuur moet dalen met 1-2°C om in slaap te vallen en diepe
+                  Je lichaamstemperatuur van binnen moet 1-2°C dalen om in slaap te vallen en diepe
                   slaap te bereiken. Een koele slaapkamer (16-19°C) helpt daarbij. Een warme kamer
-                  verstoort de slaap zonder dat je je er bewust van bent.
+                  verstoort de slaap zonder dat je het doorhebt.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Tip: een warme douche of bad 1-2 uur voor bedtijd helpt paradoxaal genoeg. Je
@@ -414,9 +414,9 @@ export default function SlaapVerbeterenNa40Page() {
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam
                   <RefNote number={4} />
-                  , waaronder de aanmaak en werking van GABA — de neurotransmitter die het zenuwstelsel tot
-                  rust brengt. Studies tonen consistent aan dat magnesiumsuppletie de slaapkwaliteit
-                  verbetert, met name bij mensen die te weinig magnesium binnenkrijgen
+                  , waaronder de aanmaak en werking van GABA — de stof die het zenuwstelsel tot
+                  rust brengt. Studies laten steeds weer zien dat extra magnesium de slaapkwaliteit
+                  verbetert, vooral bij mensen die te weinig magnesium binnenkrijgen
                   <RefNote number={1} />
                   <RefNote number={2} />.
                 </p>
@@ -430,8 +430,8 @@ export default function SlaapVerbeterenNa40Page() {
                   Vorm maakt uit. Magnesiumoxide (goedkoop, in veel supermarkt-supplementen) wordt meestal
                   slecht opgenomen door het lichaam
                   <RefNote number={5} />
-                  . Magnesium glycinaat en bisglycinaat worden het best opgenomen en hebben het
-                  minste last van maag-darmklachten
+                  . Magnesium glycinaat en bisglycinaat worden het best opgenomen en geven het
+                  minst maag-darmklachten
                   <RefNote number={6} />
                   . Dosering: 200-400 mg, 30-60 minuten voor bedtijd.
                 </p>
@@ -454,13 +454,13 @@ export default function SlaapVerbeterenNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Ashwagandha is een plantenextract waar in studies soms naar spanning en slaap wordt
-                  gekeken. Er zijn geen vaste EU‑gezondheidsclaims op stress of slaap op het etiket;
-                  er lopen discussies over regulering in Nederland. KSM‑66 is een veelgebruikt
+                  gekeken. Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim. We
+                  tonen wat het onderzoek laat zien, zonder beloftes. KSM‑66 is een veelgebruikt
                   gestandaardiseerd extract — vergelijk producten en overleg bij medicatie.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Het werkt niet als klassiek slaapmiddel zoals magnesium met erkende
-                  zenuwstelsel-/psychologie‑claims. Denk er vooral bij als je spanning overdag je
+                  Het werkt niet als klassiek slaapmiddel zoals magnesium, waar zenuwstelsel en
+                  psychologische functie officieel erkend zijn. Denk er vooral bij als je spanning overdag je
                   nacht verzwaart — en geef gedrag eerst ruimte om te werken.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
@@ -523,7 +523,7 @@ export default function SlaapVerbeterenNa40Page() {
                   Hoe Je Dit Aanpakt: Week voor Week
                 </h2>
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  Alles tegelijk veranderen werkt zelden. Dit is een praktisch protocol, opgebouwd
+                  Alles tegelijk veranderen werkt zelden. Dit is een praktisch stappenplan, opgebouwd
                   in fasen.
                 </p>
 
@@ -542,7 +542,7 @@ export default function SlaapVerbeterenNa40Page() {
                   <p className="font-semibold text-gray-900 text-lg">Week 2–4 — Verdiepen en supplementeren</p>
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     Start met magnesium glycinaat: 200-400 mg, 45 minuten voor bedtijd. Bouw een
-                    consistente wind-down routine van 45 minuten. Schrap cafeïne na 13:00. Voeg
+                    vaste afbouwroutine van 45 minuten. Schrap cafeïne na 13:00. Voeg
                     een ochtendwandeling van 15-20 minuten toe direct na het opstaan — ochtendlicht helpt je
                     biologische klok resetten.
                   </p>
@@ -553,12 +553,12 @@ export default function SlaapVerbeterenNa40Page() {
                 </div>
 
                 <div className="mt-4 p-6 bg-stone-50 rounded-xl border border-stone-200">
-                  <p className="font-semibold text-gray-900 text-lg">Maand 2+ — Consolideren en finetunen</p>
+                  <p className="font-semibold text-gray-900 text-lg">Maand 2+ — Vasthouden en bijschaven</p>
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     De meeste mensen merken na 4-6 weken een duidelijk verschil in slaapkwaliteit,
-                    energieniveau overdag, en stemming. Dit is ook het moment om te evalueren of
-                    je nog verdere optimalisaties wil doen: kamertemperatuur, training timing, of
-                    eventueel een slaaptracker om objectief inzicht te krijgen in je slaappatronen.
+                    energie overdag en stemming. Dit is ook het moment om te kijken of je nog meer
+                    wilt verbeteren: kamertemperatuur, het tijdstip van je training, of eventueel een
+                    slaaptracker om beter zicht te krijgen op je slaap.
                   </p>
                   <p className="mt-3 text-gray-700 leading-relaxed">
                     Blijf kritisch op alcohol. Zelfs één glas wijn verstoort diepe slaap meetbaar.
@@ -714,9 +714,10 @@ export default function SlaapVerbeterenNa40Page() {
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
                       Magnesium draagt bij tot de normale werking van het zenuwstelsel en tot een
-                      normale psychologische functie (EU‑claims bij voldoende inname). Bij
-                      stressgerelateerde onrust kun je met je arts bespreken of een plantenextract
-                      als ashwagandha past — let op EFSA/VWS‑context en medicatie.
+                      normale psychologische functie (officieel erkend bij voldoende inname). Bij
+                      stressgerelateerde onrust kun je met je arts bespreken of ashwagandha past —
+                      voor dit kruid bestaat nog geen Europees erkende gezondheidsclaim; vergelijk
+                      producten zorgvuldig en overleg bij medicatie.
                     </div>
                   </details>
 

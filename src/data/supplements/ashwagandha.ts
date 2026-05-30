@@ -6,7 +6,7 @@ export const ashwagandhaData: ComparisonPageData = {
   guideHref: "/supplementen/ashwagandha",
   h1: "Beste ashwagandha supplement 2026 — onafhankelijk vergeleken",
   intro:
-    "Constant alert en tegelijk uitgeput? Ashwagandha wordt vaak gekozen in drukke periodes — maar extract-type en withanolidegehalte verschillen sterk. Drie producten vergeleken op standaardisatie en transparantie. Let op: dit ingrediënt staat in de EU in de on-hold-procedure voor gezondheidsclaims; vergelijk producten dus vooral op kwaliteit en specificaties, niet op beloofde uitkomsten.",
+    "Constant alert en tegelijk uitgeput? Ashwagandha wordt vaak gekozen in drukke periodes — maar extract-type en withanolidegehalte verschillen sterk. Drie producten vergeleken op standaardisatie en transparantie. Voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim; vergelijk producten dus vooral op kwaliteit en specificaties, niet op beloofde uitkomsten.",
   seoTitle:
     "Beste Ashwagandha Supplement 2026 — KSM-66 Vergelijking | PerfectSupplement",
   seoDescription:
@@ -24,7 +24,7 @@ export const ashwagandhaData: ComparisonPageData = {
     { name: "Beste ashwagandha", url: "https://perfectsupplement.nl/beste/ashwagandha" },
   ],
   moreAboutTitle: "Meer over ashwagandha",
-  moreAboutDescription: "Vergelijk extracten op transparantie en dosering. Themapagina\u2019s over leefstijl (bijv. stress en slaap) zijn géén etiketclaims voor dit ingrediënt in EU-context.",
+  moreAboutDescription: "Vergelijk extracten op transparantie en dosering. Themapagina\u2019s over leefstijl (bijv. stress en slaap) zijn géén etiketbeloftes voor dit ingrediënt.",
   moreAboutLinks: [
     { href: "/supplementen/ashwagandha", label: "Meer weten over ashwagandha? Lees de uitgebreide gids →" },
     { href: "/gids/stress", label: "Stress na je 40e — wat speelt er en wat helpt? →" },
@@ -42,7 +42,7 @@ export const ashwagandhaData: ComparisonPageData = {
     },
     {
       href: "/blog/ashwagandha-werking-mannen",
-      text: "Ashwagandha werking en EU-claimstatus — wat studies zeggen vs etiket.",
+      text: "Ashwagandha in onderzoek — wat studies laten zien versus het etiket.",
       cta: "Lees het artikel →",
     },
   ],
@@ -244,7 +244,7 @@ export const ashwagandhaData: ComparisonPageData = {
     {
       question: "KSM-66 of Sensoril — wat is beter?",
       answer:
-        "Beide zijn merkextraten met verschillende standaardisatie en plantdeelkeuzes. In deze vergelijking zie je vooral KSM-66. Welk extract past, hangt af van jouw voorkeur voor transparantie op het etiket en de beschikbaarheid van batchinformatie — niet van één universele gezondheidsclaim in EU-context.",
+        "Beide zijn merkextraten met verschillende standaardisatie en plantdeelkeuzes. In deze vergelijking zie je vooral KSM-66. Welk extract past, hangt af van jouw voorkeur voor transparantie op het etiket en de beschikbaarheid van batchinformatie — niet van één vaste gezondheidsbelofte op het etiket.",
     },
     {
       question: "Zijn er bijwerkingen?",

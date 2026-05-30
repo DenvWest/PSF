@@ -30,7 +30,7 @@ function maxProductScore(products: ReadonlyArray<{ score: number }>): number {
 export const HUB_COMPARISON_TAGLINES: Record<string, string> = {
   magnesium: "Vormen, elementair gehalte en prijs per dag op een rij.",
   "omega-3": "EPA/DHA, zuiverheid en dagkosten — eerlijk vergeleken.",
-  ashwagandha: "Extracten, withanoliden en dagdosering — EU-claims zijn nog niet definitief.",
+  ashwagandha: "Extracten, withanoliden en dagdosering — nog geen Europees erkende gezondheidsclaim.",
   "vitamine-d": "D3, K2-combo’s en wat het etiket écht zegt.",
   creatine: "Monohydraat, micronized en prijs per dosering.",
   zink: "Bisglycinaat, picolinaat en opname — praktisch gekozen.",
@@ -55,7 +55,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "ashwagandha",
     name: "Ashwagandha",
     wiifm:
-      "Vergelijk extractkwaliteit op etiket — EU-gezondheidsclaims voor dit ingrediënt zijn nog niet definitief",
+      "Vergelijk extractkwaliteit op etiket — voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim",
     themas: ["stress", "herstel"],
     topScore: maxProductScore(ashwagandhaData.products),
     guideHref: "/supplementen/ashwagandha",
@@ -79,7 +79,7 @@ export const CATALOG: CatalogEntry[] = [
     slug: "vitamine-d",
     name: "Vitamine D",
     wiifm:
-      "Onder meer immuunsysteem, botten en spieren — volgens EU-claimteksten voor vitamine D",
+      "Onder meer immuunsysteem, botten en spieren — officieel erkend voor vitamine D bij voldoende inname",
     themas: ["energie", "herstel"],
     topScore: maxProductScore(vitamineDData.products),
     guideHref: "/supplementen/vitamine-d",

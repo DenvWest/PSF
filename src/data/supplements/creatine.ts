@@ -232,7 +232,7 @@ export const creatineData: ComparisonPageData = {
     {
       question: "Helpt creatine ook zonder sporten?",
       answer:
-        "De EU-goedgekeurde claim voor creatine gaat over fysieke prestaties bij zeer korte, intense inspanningen (minimaal 3 g/dag). Onderzoek naar andere uitkomsten is niet hetzelfde als een gezondheidsclaim op het etiket. Train je niet en ben je gezond, dan is het nut vooral een persoonlijke afweging naast voeding.",
+        "Officieel erkend: creatine kan bijdragen aan fysieke prestaties bij zeer korte, intense inspanningen (minimaal 3 g/dag). Onderzoek naar andere uitkomsten is niet hetzelfde als een gezondheidsclaim op het etiket. Train je niet en ben je gezond, dan is het nut vooral een persoonlijke afweging naast voeding.",
     },
     {
       question: "Wat is het verschil tussen Creapure® en gewone creatine?",

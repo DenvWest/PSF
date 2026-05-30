@@ -166,7 +166,7 @@ export const omega3Data: ComparisonPageData = {
         { label: "Inhoud", value: "250 ml (50 dagen)" },
       ],
       pros: [
-        "Hoogste DHA per portie — past bij de EU-claimcontext voor hersenfunctie (250 mg DHA/dag)",
+        "Hoogste DHA per portie — voldoet aan de drempel voor een Europees erkende claim rond hersenfunctie (250 mg DHA/dag)",
         "Zachte citroensmaak, geen oprispingen",
         "Inclusief vitamine A, D en E",
         "Gevestigd Noors merk, 160+ jaar",

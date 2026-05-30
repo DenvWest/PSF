@@ -63,7 +63,7 @@ const faqSchema = {
       name: "Welk supplement helpt het beste tegen vermoeidheid?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Dat hangt af van je situatie. Vitamine D en omega-3 hebben erkende EU‑claims op onderdelen van gezondheid (zoals botten, immuunsysteem, hart, hersenen) — geen vaste claim op \"minder moe\" voor iedereen. Creatine heeft een EU‑claim rond korte, intense inspanning. Begin bij leefstijl; bij aanhoudende klachten kun je met je huisarts bloedonderzoek bespreken.",
+        text: "Dat hangt af van je situatie. Vitamine D en omega-3 hebben Europees erkende claims op onderdelen van gezondheid (zoals botten, immuunsysteem, hart, hersenen) — geen vaste claim op \"minder moe\" voor iedereen. Creatine is officieel erkend voor korte, intense inspanning. Begin bij leefstijl; bij aanhoudende klachten kun je met je huisarts bloedonderzoek bespreken.",
       },
     },
     {
@@ -353,16 +353,17 @@ export default function EnergieNa40Page() {
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Ga binnen 30 minuten na het opstaan naar buiten voor daglicht. Dat helpt veel
-                  mensen om het ritme van wakker worden en slapen gaan natuurlijker te laten voelen —
-                  zeker als je veel binnen werkt.
+                  mensen om &apos;s ochtends sneller wakker te worden en &apos;s avonds beter in slaap
+                  te komen — zeker als je veel binnen werkt.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
                   3. Geen cafeïne na 14:00
                 </h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Cafeïne heeft een halfwaardetijd van enkele uren. Koffie laat op de dag kan voor
-                  veel mensen slapen lastiger maken. Switch na de lunch naar water of kruidenthee.
+                  Je lichaam breekt cafeïne maar langzaam af: na enkele uren is pas de helft weg.
+                  Koffie laat op de dag kan voor veel mensen slapen lastiger maken. Stap na de lunch
+                  over op water of kruidenthee.
                 </p>
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">
@@ -406,9 +407,10 @@ export default function EnergieNa40Page() {
                 <h3 className="font-semibold text-xl text-gray-900 mt-8">Vitamine D3 (+ K2)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   In Nederland hebben veel volwassenen een vitamine D‑inname die onder de adviezen
-                  ligt, vooral met weinig zon. Vitamine D draagt — bij voldoende inname — o.a. bij aan
-                  botten, spieren en het immuunsysteem (EU‑claims). Laat dosering en bloedonderzoek
-                  liever met je huisarts afstemmen dan zelf hoge doses te gokken.
+                  ligt, vooral met weinig zon. Vitamine D draagt — bij voldoende inname — onder
+                  andere bij aan botten, spieren en het immuunsysteem (officieel erkend bij
+                  voldoende inname). Stem de dosering
+                  en het bloedonderzoek liever af met je huisarts dan dat je zelf hoge doses gokt.
                 </p>
                 <div className="mt-4 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700 text-sm leading-relaxed">
@@ -424,8 +426,8 @@ export default function EnergieNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Omega-3 (EPA/DHA)</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  EPA en DHA hebben erkende EU‑claims onder andere voor hart en hersenen (DHA), mits
-                  je de productteksten volgt. Als je weinig vette vis eet, is een supplement vaak
+                  EPA en DHA zijn officieel erkend onder andere voor hart en hersenen (DHA), mits je
+                  de productteksten volgt. Als je weinig vette vis eet, is een supplement vaak
                   praktischer — vergelijk zuiverheid en hoeveelheid EPA/DHA per dag.
                 </p>
                 <div className="mt-4 p-5 bg-stone-50 rounded-lg border border-stone-200">
@@ -442,7 +444,7 @@ export default function EnergieNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Creatine</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Creatine monohydraat heeft een EU‑claim rond korte, intense inspanning bij
+                  Creatine monohydraat is officieel erkend voor korte, intense inspanning bij
                   dagelijks gebruik volgens het etiket. Het is geen vervanging voor slaap en voeding,
                   maar past voor veel mensen die kracht willen ondersteunen.
                 </p>
@@ -460,9 +462,9 @@ export default function EnergieNa40Page() {
 
                 <h3 className="font-semibold text-xl text-gray-900 mt-10">Magnesium</h3>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Magnesium is betrokken bij meer dan 300 enzymatische processen, waaronder
-                  energieproductie (ATP-synthese). Een tekort — wat bij 40+ veel voorkomt — leidt
-                  tot vermoeidheid, spierkrampen en slechte slaap.
+                  Magnesium speelt een rol bij meer dan 300 processen in je lichaam, waaronder het
+                  aanmaken van energie. Een tekort — dat bij 40+ veel voorkomt — leidt tot
+                  vermoeidheid, spierkrampen en slechte slaap.
                 </p>
                 <div className="mt-4 p-5 bg-stone-50 rounded-lg border border-stone-200">
                   <p className="text-gray-700 text-sm leading-relaxed">
@@ -557,7 +559,7 @@ export default function EnergieNa40Page() {
                     <strong className="text-gray-900">Speelt stress een rol?</strong>
                     <br />
                     Chronische stress en vermoeidheid gaan vaak samen. Cortisol onderdrukt
-                    testosteron en verstoort je slaap — een dubbele drain op je energie.
+                    testosteron en verstoort je slaap — een dubbele aanslag op je energie.
                   </p>
                   <Link
                     href="/stress-verminderen-man"
@@ -660,10 +662,11 @@ export default function EnergieNa40Page() {
                       </span>
                     </summary>
                     <div className="px-5 pb-5 text-gray-700 leading-relaxed">
-                      Dat hangt af van je situatie. Vitamine D en omega-3 hebben erkende EU‑claims op
-                      onderdelen van gezondheid (zoals botten, immuunsysteem, hart, hersenen) — geen
-                      vaste claim op &quot;minder moe&quot; voor iedereen. Creatine heeft een EU‑claim
-                      rond korte, intense inspanning. Begin bij leefstijl; bij aanhoudende klachten
+                      Dat hangt af van je situatie. Vitamine D en omega-3 hebben Europees erkende
+                      claims op onderdelen van gezondheid (zoals botten, immuunsysteem, hart,
+                      hersenen) — geen vaste claim op &quot;minder moe&quot; voor iedereen. Creatine
+                      is officieel erkend voor korte, intense inspanning. Begin bij leefstijl; bij
+                      aanhoudende klachten
                       kun je met je huisarts bloedonderzoek bespreken.
                     </div>
                   </details>

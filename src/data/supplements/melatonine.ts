@@ -79,7 +79,7 @@ export const melatonineData: ComparisonPageData = {
       bestFor: "Beste allround",
       variantTag: "Slaapcomplex (8 werkzame stoffen)",
       summary:
-        "Dit is geen puur melatonineproduct maar een breed samengestelde nachtformule: KSM-66 ashwagandha (gestandaardiseerd op withanoliden), valeriaan, 5-HTP, L-theanine en GABA in capsules. Handig als je naast melatonine ook meerdere werkzame stoffen in één capsule wilt — let op dat ashwagandha in de EU in de on-hold-procedure voor claims zit.",
+        "Dit is geen puur melatonineproduct maar een breed samengestelde nachtformule: KSM-66 ashwagandha (gestandaardiseerd op withanoliden), valeriaan, 5-HTP, L-theanine en GABA in capsules. Handig als je naast melatonine ook meerdere werkzame stoffen in één capsule wilt — voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim.",
       specs: [
         {
           label: "Dosering per portie",
@@ -231,7 +231,7 @@ export const melatonineData: ComparisonPageData = {
     {
       question: "Is een slaapcomplex beter dan pure melatonine?",
       answer:
-        "Dat hangt af van je situatie. Heb je vooral last van prikkelbaar avondritme door onrust in je hoofd, dan kan een meer-ingrediëntenformule aansluiten — zie desgewenst onze [ashwagandha-vergelijking](/beste/ashwagandha) en let op de EU on-hold-status van claims daar. Is je vraag vooral inslapen volgens de melatonine-claimcontext, dan kan een puur, laag gedoseerd melatonineproduct passender zijn. Dit artikel zet benaderingen naast elkaar.",
+        "Dat hangt af van je situatie. Heb je vooral last van prikkelbaar avondritme door onrust in je hoofd, dan kan een meer-ingrediëntenformule aansluiten — zie desgewenst onze [ashwagandha-vergelijking](/beste/ashwagandha); voor ashwagandha bestaat nog geen Europees erkende gezondheidsclaim. Is je vraag vooral inslapen, dan kan een puur, laag gedoseerd melatonineproduct passender zijn. Dit artikel zet benaderingen naast elkaar.",
     },
     {
       question: "Mag je melatonine elke dag gebruiken?",
