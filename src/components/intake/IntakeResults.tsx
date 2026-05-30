@@ -26,6 +26,8 @@ import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { getPrimaryTheme } from "@/lib/primary-theme";
+import type { ThemeSlug } from "@/lib/content/themes";
+import { getThemeContentLinks } from "@/data/theme-content-map";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
@@ -64,6 +66,29 @@ const REVOKE_SUCCESS =
   "Je toestemming is ingetrokken en je gegevens zijn geanonimiseerd.";
 
 const DELETE_SUCCESS = "Je intake-sessie is volledig verwijderd.";
+
+const THEME_BACKLINK_COPY: Record<ThemeSlug, { pillar: string; profile: string }> = {
+  sleep: {
+    pillar: "Slecht slapen na 40? Complete gids van oorzaak tot oplossing →",
+    profile: "Wakker om 3 uur? Herken je dit patroon →",
+  },
+  stress: {
+    pillar: "Altijd 'aan' staan? Zo kom je structureel tot rust →",
+    profile: "Draag jij stress de hele dag mee? Herken het patroon →",
+  },
+  nutrition: {
+    pillar: "Beter herstellen na 40 begint bij voeding — lees de gids →",
+    profile: "",
+  },
+  movement: {
+    pillar: "Hard trainen, traag herstellen? Lees de herstelgids →",
+    profile: "Train je veel maar voel je je leeg? Herken de overtrainer →",
+  },
+  connection: {
+    pillar: "",
+    profile: "",
+  },
+};
 
 type IntakeResultsProps = {
   scores: DomainScores;
@@ -266,11 +291,16 @@ export default function IntakeResults({
       })
     : null;
 
+  const themeLinks = getThemeContentLinks(primaryTheme);
+  const themeLabel = getPillarById(primaryTheme)?.label ?? "";
+  const hasThemeBacklink = Boolean(themeLinks.pillarHref || themeLinks.profileSlug);
+
   const hasExploreContent =
     supplementRoute.length > 0 ||
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
     kennisbankLinks.length > 0 ||
-    (typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2);
+    (typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2) ||
+    hasThemeBacklink;
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".intake-layout-header");
@@ -465,6 +495,36 @@ export default function IntakeResults({
                   title="Verder verkennen"
                   subtitle="Supplementen, kennisbank en vergelijkingen"
                 >
+                  {hasThemeBacklink ? (
+                    <div className="mb-5">
+                      <h3 className="mb-3 text-sm font-semibold text-intake-ink">
+                        Lees verder over je {themeLabel.toLowerCase()}
+                      </h3>
+                      <ul className="space-y-2">
+                        {themeLinks.pillarHref ? (
+                          <li className="text-sm">
+                            <Link
+                              href={themeLinks.pillarHref}
+                              className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                            >
+                              {THEME_BACKLINK_COPY[primaryTheme].pillar}
+                            </Link>
+                          </li>
+                        ) : null}
+                        {themeLinks.profileSlug ? (
+                          <li className="text-sm">
+                            <Link
+                              href={`/profiel/${themeLinks.profileSlug}`}
+                              className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                            >
+                              {THEME_BACKLINK_COPY[primaryTheme].profile}
+                            </Link>
+                          </li>
+                        ) : null}
+                      </ul>
+                    </div>
+                  ) : null}
+
                   {supplementRoute.length > 0 ? (
                     <div className="mb-5">
                       <h3 className="mb-3 text-sm font-semibold text-intake-ink">
