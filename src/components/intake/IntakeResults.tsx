@@ -28,6 +28,7 @@ import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSuppleme
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import type { ThemeSlug } from "@/lib/content/themes";
 import { getThemeContentLinks } from "@/data/theme-content-map";
+import { getThemePillarHref } from "@/lib/intake-primary-pillar";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
@@ -99,8 +100,6 @@ type IntakeResultsProps = {
   hasMarketingEmail?: boolean;
   hideLegacyPlanSections?: boolean;
   secondaryTheme?: PillarId | null;
-  onContinueToRecognition?: () => void;
-  onSelectSecondaryTheme?: (theme: PillarId) => void;
   onRestart?: () => void;
   onConsentRevoked?: () => void;
 };
@@ -240,8 +239,6 @@ export default function IntakeResults({
   hasMarketingEmail = false,
   hideLegacyPlanSections = false,
   secondaryTheme = null,
-  onContinueToRecognition,
-  onSelectSecondaryTheme,
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
@@ -294,6 +291,7 @@ export default function IntakeResults({
   const themeLinks = getThemeContentLinks(primaryTheme);
   const themeLabel = getPillarById(primaryTheme)?.label ?? "";
   const hasThemeBacklink = Boolean(themeLinks.pillarHref || themeLinks.profileSlug);
+  const primaryPillarHref = themeLinks.pillarHref ?? "/intake";
 
   const hasExploreContent =
     supplementRoute.length > 0 ||
@@ -380,24 +378,34 @@ export default function IntakeResults({
           ) : null}
 
           <div className="mt-5 text-center">
-            <button
-              type="button"
-              onClick={onContinueToRecognition}
-              disabled={!onContinueToRecognition}
-              className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-default disabled:opacity-50"
+            <Link
+              href={primaryPillarHref}
+              onClick={() => {
+                trackEvent("intake_cta_to_pillar", { theme_slug: primaryTheme });
+                emitIntakeClientEvent("intake.cta_to_pillar", {
+                  theme_slug: primaryTheme,
+                  session_id: sessionId,
+                });
+              }}
+              className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
               style={{ background: "#C8956C" }}
             >
               {REVEAL_COPY.cta}
-            </button>
+            </Link>
 
-            {secondaryTheme && onSelectSecondaryTheme ? (
-              <button
-                type="button"
-                onClick={() => onSelectSecondaryTheme(secondaryTheme)}
-                className="mt-3 cursor-pointer text-[13px] font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+            {secondaryTheme ? (
+              <Link
+                href={getThemePillarHref(secondaryTheme)}
+                onClick={() => {
+                  emitIntakeClientEvent("intake.cta_to_pillar", {
+                    theme_slug: secondaryTheme,
+                    session_id: sessionId,
+                  });
+                }}
+                className="mt-3 block cursor-pointer text-[13px] font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
               >
                 Ook prioriteit: {getPillarById(secondaryTheme)?.label ?? "tweede gebied"} →
-              </button>
+              </Link>
             ) : null}
           </div>
         </section>

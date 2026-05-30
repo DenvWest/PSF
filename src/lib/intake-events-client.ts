@@ -3,6 +3,7 @@ import type { DomainEventType } from "@/lib/events";
 type ClientEmitType = Extract<
   DomainEventType,
   | "intake.theme_revealed"
+  | "intake.cta_to_pillar"
   | "focus.viewed"
   | "plan.viewed"
   | "plan.action_clicked"
