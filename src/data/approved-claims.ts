@@ -1,177 +1,120 @@
+export type ClaimStatus = 'approved' | 'on_hold' | 'forbidden'
+
+export interface ApprovedClaim {
+  text: string
+  condition: string
+  status: ClaimStatus
+}
+
+export interface IngredientClaims {
+  ingredient: string
+  comparisonPath: string | null
+  status: ClaimStatus
+  verified: boolean
+  claims: ApprovedClaim[]
+  note: string | null
+}
+
+export const FORBIDDEN_PHRASES_GLOBAL: string[] = [
+  'geneest',
+  'voorkomt',
+  'tegen',
+  'herstelt',
+  'lost op',
+  'behandelt',
+  'genezing',
+  'remedie',
+]
+
+export const approvedClaims: Record<string, IngredientClaims> = {
+  magnesium: {
+    ingredient: 'Magnesium',
+    comparisonPath: '/beste-magnesium',
+    status: 'approved',
+    verified: true,
+    claims: [
+      { text: 'Draagt bij tot de normale werking van het zenuwstelsel', condition: 'min. 56,25 mg per dagdosis (15% RI)', status: 'approved' },
+      { text: 'Draagt bij tot de normale spierfunctie', condition: 'min. 56,25 mg per dagdosis (15% RI)', status: 'approved' },
+      { text: 'Draagt bij tot de vermindering van vermoeidheid en moeheid', condition: 'min. 56,25 mg per dagdosis (15% RI)', status: 'approved' },
+      { text: 'Draagt bij tot een normale psychologische functie', condition: 'min. 56,25 mg per dagdosis (15% RI)', status: 'approved' },
+      { text: 'Draagt bij tot een normale eiwitsynthese', condition: 'min. 56,25 mg per dagdosis (15% RI)', status: 'approved' },
+    ],
+    note: null,
+  },
+  omega3: {
+    ingredient: 'Omega-3 (EPA/DHA)',
+    comparisonPath: '/beste-omega-3-supplement',
+    status: 'approved',
+    verified: true,
+    claims: [
+      { text: 'EPA en DHA dragen bij tot de normale werking van het hart', condition: 'bij 250 mg EPA+DHA per dag', status: 'approved' },
+      { text: 'DHA draagt bij tot de instandhouding van de normale hersenfunctie', condition: 'bij 250 mg DHA per dag', status: 'approved' },
+      { text: 'DHA draagt bij tot de instandhouding van een normaal gezichtsvermogen', condition: 'bij 250 mg DHA per dag', status: 'approved' },
+    ],
+    note: 'GEEN goedgekeurde claim voor energie, vermoeidheid of mitochondrien. Vermijd elke energie-suggestie.',
+  },
+  vitamineD: {
+    ingredient: 'Vitamine D',
+    comparisonPath: '/beste-vitamine-d',
+    status: 'approved',
+    verified: true,
+    claims: [
+      { text: 'Draagt bij tot de normale werking van het immuunsysteem', condition: 'min. 0,75 ug (5% RI) per dagdosis', status: 'approved' },
+      { text: 'Draagt bij tot de instandhouding van normale botten', condition: 'min. 0,75 ug (5% RI) per dagdosis', status: 'approved' },
+      { text: 'Draagt bij tot de instandhouding van een normale spierfunctie', condition: 'min. 0,75 ug (5% RI) per dagdosis', status: 'approved' },
+      { text: 'Draagt bij tot de normale opname en het normale gebruik van calcium en fosfor', condition: 'min. 0,75 ug (5% RI) per dagdosis', status: 'approved' },
+    ],
+    note: null,
+  },
+  zink: {
+    ingredient: 'Zink',
+    comparisonPath: '/beste-zink',
+    status: 'approved',
+    verified: false,
+    claims: [
+      { text: 'Draagt bij tot het behoud van een normaal testosterongehalte in het bloed', condition: 'min. 1,5 mg (15% RI) per dagdosis', status: 'approved' },
+      { text: 'Draagt bij tot de normale werking van het immuunsysteem', condition: 'min. 1,5 mg (15% RI) per dagdosis', status: 'approved' },
+      { text: 'Draagt bij tot een normaal cognitief functioneren', condition: 'min. 1,5 mg (15% RI) per dagdosis', status: 'approved' },
+      { text: 'Draagt bij tot de bescherming van cellen tegen oxidatieve stress', condition: 'min. 1,5 mg (15% RI) per dagdosis', status: 'approved' },
+    ],
+    note: 'verified=false: controleer exacte bewoording in EU Register voordat deze in evidence_claims gaan.',
+  },
+  creatine: {
+    ingredient: 'Creatine',
+    comparisonPath: '/beste-creatine',
+    status: 'approved',
+    verified: false,
+    claims: [
+      { text: 'Verhoogt de fysieke prestatie bij opeenvolgende korte, zeer intensieve inspanningen', condition: 'bij 3 g creatine per dag', status: 'approved' },
+    ],
+    note: 'verified=false: tweede claim (spierkracht i.c.m. weerstandstraining) geldt alleen voor volwassenen ouder dan 55 jaar. Controleer EU Register en leeftijdsvoorwaarde voor je deze opneemt.',
+  },
+  ashwagandha: {
+    ingredient: 'Ashwagandha',
+    comparisonPath: '/beste-ashwagandha',
+    status: 'on_hold',
+    verified: true,
+    claims: [],
+    note: 'GEEN goedgekeurde EFSA-claim, alle claims on-hold. Alleen gebruiken met disclaimer (on-hold, ingediend, aannemelijk). VWS overweegt verbod, besluit medio 2026. Niet opnemen in Foundation Stack.',
+  },
+  melatonine: {
+    ingredient: 'Melatonine',
+    comparisonPath: null,
+    status: 'forbidden',
+    verified: true,
+    claims: [],
+    note: 'NIET als supplement-interventie gebruiken. Boven 0,3 mg = geneesmiddel (IGJ, receptplichtig). Onder 0,3 mg = supplement maar mag GEEN gezondheidsclaim voeren. EFSA-inslaapclaim geldt pas vanaf 1 mg = geneesmiddel. comparisonPath bewust null. Hooguit informatieve kennisbank-term, nooit affiliate of interventie.',
+  },
+}
+
+export function getUsableClaims(key: string): ApprovedClaim[] {
+  const entry = approvedClaims[key]
+  if (!entry || entry.status !== 'approved') return []
+  return entry.claims.filter((claim) => claim.status === 'approved')
+}
+
+/** Backward compat: AshwagandhaOnHoldDisclaimer op profielpagina's. */
 export const ON_HOLD_DISCLAIMER =
   "Ashwagandha staat op de EFSA 'on-hold' lijst voor claims. Dit betekent dat onderzoek naar " +
   "effectiviteit en veiligheid loopt. Geen goedgekeurde EFSA-claim. Gebruik op eigen risico. " +
   "De Nederlandse VWS overweegt momenteel een verbod (besluit verwacht medio 2026).";
-
-export const APPROVED_CLAIMS = {
-  magnesium: [
-    "Draagt bij tot de normale werking van het zenuwstelsel",
-    "Draagt bij tot de normale spierfunctie",
-    "Draagt bij tot de vermindering van vermoeidheid",
-    "Draagt bij tot een normale psychologische functie",
-    "Draagt bij tot de normale eiwitsynthese",
-  ],
-  omega3: [
-    "EPA en DHA dragen bij tot de normale werking van het hart",
-    "DHA draagt bij tot de instandhouding van normale hersenfunctie",
-    "DHA draagt bij tot de instandhouding van een normaal gezichtsvermogen",
-  ],
-  vitaminD: [
-    "Draagt bij tot de normale werking van het immuunsysteem",
-    "Draagt bij tot de instandhouding van normale botten",
-    "Draagt bij tot de instandhouding van een normale spierfunctie",
-  ],
-  ashwagandha: ["(On-hold) Onderzoeken suggereren een mogelijke rol in stressperceptie"],
-} as const;
-
-export type ApprovedClaimsEntry =
-  | {
-      efsa: string[];
-      dosageRequirement?: string;
-      notApproved: string[];
-      alternativePhrasing: Record<string, string>;
-    }
-  | {
-      status: "on-hold";
-      efsa: readonly [];
-      disclaimer: string;
-      vwsConsultationUrl: string;
-      notApproved: string[];
-      alternativePhrasing: Record<string, string>;
-    };
-
-export const approvedClaims = {
-  magnesium: {
-    efsa: [
-      "Draagt bij tot de normale werking van het zenuwstelsel",
-      "Draagt bij tot de normale spierfunctie",
-      "Draagt bij tot de vermindering van vermoeidheid",
-      "Draagt bij tot een normale psychologische functie",
-      "Draagt bij tot de normale eiwitsynthese",
-    ],
-    dosageRequirement:
-      "Voor gezondheidsclaims: minimaal 56,25 mg elementair magnesium per dag (15% van de RI)",
-    notApproved: ["slaap", "stress", "ontspanning", "kalmerend", "migraine"],
-    alternativePhrasing: {
-      voor_slaap:
-        "magnesium draagt bij tot een normale psychologische functie en tot de vermindering van vermoeidheid",
-      tegen_stress:
-        "magnesium draagt bij tot normale psychologische functie en tot de normale werking van het zenuwstelsel",
-      energie:
-        "magnesium draagt bij tot de vermindering van vermoeidheid",
-    },
-  },
-  "omega-3": {
-    efsa: [
-      "EPA en DHA dragen bij tot de normale werking van het hart (bij een dagelijkse inname van 250 mg EPA en DHA)",
-      "DHA draagt bij tot de instandhouding van de normale hersenfunctie (bij een dagelijkse inname van 250 mg DHA)",
-      "DHA draagt bij tot de instandhouding van een normaal gezichtsvermogen (bij een dagelijkse inname van 250 mg DHA)",
-    ],
-    dosageRequirement: "Minimaal 250 mg EPA+DHA voor het hart; 250 mg DHA voor hersenen en gezicht",
-    notApproved: ["energie", "vermoeidheid", "focus", "cognitief (tenzij gekoppeld aan DHA-formulering)"],
-    alternativePhrasing: {
-      energie:
-        "een voldoende inname van EPA en DHA draagt bij tot de normale werking van het hart; DHA aan de instandhouding van normale hersenfunctie",
-      cognitief:
-        "DHA draagt bij tot de instandhouding van normale hersenfunctie (bij 250 mg DHA/dag)",
-    },
-  },
-  ashwagandha: {
-    status: "on-hold" as const,
-    efsa: [],
-    disclaimer: ON_HOLD_DISCLAIMER,
-    vwsConsultationUrl:
-      "https://www.internetconsultatie.nl/voedingssupplementen_en_kruidenpreparaten",
-    notApproved: [
-      "Stress, slaap, cortisol of testosteron als vaste uitkomstclaims zonder on-hold context",
-    ],
-    alternativePhrasing: {
-      stress_slaap:
-        "productvergelijking op extract, standardisatie en transparantie; gezondheidseffecten zijn niet EU-bevestigd",
-    },
-  },
-  zink: {
-    efsa: [
-      "Draagt bij tot een normale cognitieve functie",
-      "Draagt bij tot een normale vruchtbaarheid en voortplanting",
-      "Draagt bij tot de instandhouding van een normaal testosterongehalte in het bloed",
-      "Draagt bij tot de normale werking van het immuunsysteem",
-      "Draagt bij tot de bescherming van cellen tegen oxidatieve stress",
-      "Draagt bij tot de normale eiwitsynthese",
-    ],
-    dosageRequirement: "Hanteer etiket en ADH; langdurig zeer hoge doses kunnen koperopname beïnvloeden",
-    notApproved: ["testosteron boosten", "cortisol"],
-    alternativePhrasing: {
-      testosteron_marketing:
-        "draagt bij tot de instandhouding van een normaal testosterongehalte in het bloed",
-    },
-  },
-  melatonine: {
-    efsa: [
-      "Melatonine draagt bij aan het verminderen van de tijd nodig om in slaap te vallen (in de EU-claimteksten o.a. gekoppeld aan 1 mg, ingesteld vóór het slapen gaan)",
-    ],
-    dosageRequirement: "Volg het etiket; lage fysiologische doses worden vaak gebruikt in zelfzorgcontext",
-    notApproved: ["geneest slapeloosheid", "stress als gegarandeerd effect van melatonine"],
-    alternativePhrasing: {
-      inslapen: "draagt bij aan het verminderen van de tijd om in slaap te vallen (bij passende dosering volgens claimvoorwaarden)",
-    },
-  },
-  creatine: {
-    efsa: [
-      "Kan bij dagelijkse inname van ten minste 3 g creatine onder de juiste voorwaarden bijdragen aan de fysieke prestatie bij opeenvolgende reeksen van zeer korte, intense lichamelijke inspanningen (erkende EU-claimtekst; geformuleerd zonder harde garantie naar de lezer)",
-    ],
-    dosageRequirement: "Minimaal 3 g/dag voor deze claimcontext; 3–5 g/dag gangbaar in sportcontext",
-    notApproved: ["cognitieve gezondheidsclaim EU", "energie (metabool) als claim"],
-    alternativePhrasing: {
-      cognitie:
-        "buiten de erkende EU-claim voor zeer korte, intense inspanning bestaat er geen EU-gezondheidsclaim voor cognitie voor creatine",
-    },
-  },
-  "vitamine-d": {
-    efsa: [
-      "Draagt bij tot een normale werking van het immuunsysteem",
-      "Draagt bij tot de instandhouding van normale botten en tanden",
-      "Draagt bij tot een normale spierwerking",
-      "Draagt bij tot een normale calciumconcentratie in het bloed",
-      "Draagt bij tot de normale opname van calcium en fosfor",
-    ],
-    dosageRequirement: "Volg ADH en advies van zorgverlener; hogere doses alleen met overleg en waar nodig met bloedonderzoek",
-    notApproved: ["testosteron verhogen als supplementclaim", "energie als vitamine-D-claim"],
-    alternativePhrasing: {
-      testosteron:
-        "epidemiologisch komen lagere 25(OH)D-waarden vaker samen met lagere testosteronwaarden; vitamine D draagt o.a. bij tot normale spierwerking en immuunsysteem",
-    },
-  },
-  eiwitpoeder: {
-    efsa: [
-      "Eiwitten dragen bij aan de groei in spiermassa",
-      "Eiwitten dragen bij aan het instandhouden van spiermassa",
-      "Eiwitten dragen bij aan het instandhouden van normale botten",
-    ],
-    dosageRequirement: "Claims zijn gekoppeld aan voldoende eiwitinname en context van o.a. training",
-    notApproved: ["genezing", "vervanging van medische behandeling"],
-    alternativePhrasing: {},
-  },
-} satisfies Record<string, ApprovedClaimsEntry>;
-
-export type ApprovedClaimKey = keyof typeof approvedClaims;
-
-export function isApprovedClaim(supplement: string, claim: string): boolean {
-  const entry = approvedClaims[supplement as ApprovedClaimKey];
-  if (!entry || !("efsa" in entry) || entry.efsa.length === 0) return false;
-  const normalized = claim.toLowerCase().trim();
-  return entry.efsa.some((line) => {
-    const l = line.toLowerCase();
-    return normalized.includes(l) || l.includes(normalized);
-  });
-}
-
-export function getAlternativePhrasing(
-  supplement: string,
-  phraseKey: string,
-): string {
-  const entry = approvedClaims[supplement as ApprovedClaimKey];
-  if (!entry || !("alternativePhrasing" in entry)) return phraseKey;
-  const map = entry.alternativePhrasing as Record<string, string>;
-  return map[phraseKey] ?? phraseKey;
-}
