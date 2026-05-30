@@ -31,6 +31,9 @@
 | email | text | — |
 | reminder_date | timestamptz | 30 dagen na intake |
 | sent | boolean, default false | — |
+| reminder_type | text | `welcome`/`day3`/`day7`/`day14`/`day21`/`day30`. Canonieke default `30d` (legacy `day30` op productie — code mapt beide). |
+| session_id | uuid, nullable | FK naar intake_sessions, `on delete cascade` |
+| organization_id | uuid | FK naar organizations (default-tenant) |
 
 ### nurture_emails
 
@@ -78,7 +81,7 @@ Juridische administratie voor gids-opt-in (geen FK naar intake_sessions).
 
 ### thema_nurture (deprecated)
 
-Legacy tabel voor oude `/thema/*` flow. Geen nieuwe inserts. Pending rijen geannuleerd bij migratie.
+Legacy tabel voor de oude `/thema/*` flow, **vervangen door nurture_emails** (`source`/`thema`/`template_key`). Geen nieuwe inserts vanuit de app; pending rijen worden geannuleerd in `20260519120000_guide_opt_in.sql`. Niet droppen — historische rijen bewaard voor AVG/audit. Alleen in de `db/`-migratieset (`db/004`), niet in `supabase/`.
 
 ### intake_feedback
 
@@ -92,16 +95,199 @@ Legacy tabel voor oude `/thema/*` flow. Geen nieuwe inserts. Pending rijen geann
 
 ### affiliate_clicks
 
-Bestaande tabel voor click tracking. **Niet aanraken / wijzigen zonder overleg.**
+Product-klik tabel. **Niet aanraken / wijzigen zonder overleg.**
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| product_id | text | — |
+| product_naam | text | — |
+| categorie | text, nullable | — |
+| pagina | text, nullable | — |
+| timestamp | timestamptz | default now() |
+| organization_id | uuid | FK naar organizations (default-tenant) |
+
+---
+
+## Multi-tenancy & toestemming
+
+### organizations
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| name | text | — |
+| slug | text, unique | `default` = B2C PerfectSupplement |
+| created_at | timestamptz | — |
+| settings | jsonb | default `{}` |
+
+B2B white-label fundering. Default-tenant `00000000-0000-0000-0000-000000000001`; alle tenant-tabellen hebben `organization_id` met die default.
+
+### consent_records
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| session_id | uuid, nullable | FK naar intake_sessions, `on delete set null` |
+| consent_type | text | — |
+| consent_version | text | — |
+| granted | boolean | — |
+| consent_text | text | Exacte tekst |
+| granted_at | timestamptz | — |
+| withdrawn_at | timestamptz, nullable | — |
+| ip_hash / ua_hash | text, nullable | — |
+| organization_id | uuid | FK naar organizations |
+
+AVG Art. 9 audittrail. Helper-functie `has_active_consent(session_id, consent_type)`.
+
+### recovery_tokens
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| session_id | uuid | FK naar intake_sessions, `on delete cascade` |
+| token_hash | text, unique | — |
+| expires_at | timestamptz | TTL |
+| used_at | timestamptz, nullable | one-time-use |
+| created_at | timestamptz | — |
+
+Eenmalige recovery-links naar intake-resultaten.
+
+### cron_runs
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| cron_name | text | — |
+| started_at | timestamptz | — |
+| completed_at | timestamptz, nullable | — |
+| status | text | `running`/`success`/`error` |
+| result | jsonb, nullable | — |
+| error_message | text, nullable | — |
+
+Dead-man's switch / audit trail voor geplande jobs.
+
+---
+
+## Content-laag (HERKENNING → FOCUS → PLAN)
+
+Alle tabellen hieronder hebben `organization_id` (default-tenant), `created_at` en `updated_at`.
+
+### themes
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| slug | text | uniek per org (`stress`, `sleep`, `nutrition`, `movement`, `connection`) |
+| label / sublabel | text | UI-labels |
+| hefboom_text | text, nullable | FOCUS-scherm uitleg |
+| disclaimer_key | text, nullable | verwijst naar disclaimers.key |
+| position | int | volgorde |
+| is_measured | boolean | of het thema gescoord wordt |
+
+### recognition_lines
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| theme_id | uuid | FK naar themes, `on delete cascade` |
+| body_text | text | HERKENNING-regel |
+| match_question_id | text | intake-vraag-id (bv. `SLP_ONSET`) |
+| match_operator | text | `<=`/`>=`/`=`/`in` |
+| match_value | jsonb | drempel/waarde |
+| priority | int | lager = eerder |
+| is_placeholder | boolean | tot definitieve copy |
+
+### interventions
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| theme_id | uuid | FK naar themes, `on delete cascade` |
+| slug / name | text | uniek (org, theme, slug) |
+| kind | text | `free_action`/`measurement`/`supplement` |
+| description | text | — |
+| score_moeite / score_mechanisme / score_onderbouwing / score_veiligheid | int 1-5 | composite-scoring |
+| affiliate_url / comparison_path | text, nullable | — |
+| goal_phrase | text, nullable | — |
+| tier | int 1-5 | 1=gratis quick win, 2=meten, 3=supplement/affiliate, 4-5=betaald |
+| is_paid | boolean | triggert disclosure-regel |
+| paid_disclosure_key | text, nullable | verwijst naar disclaimers.key |
+| external_provider_label / external_provider_url | text, nullable | bij betaalde externe diensten |
+
+PLAN-scherm stepped-care trap. Volgorde wordt door `tier` bepaald, niet door de gebruiker.
+
+### intervention_triggers
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| intervention_id | uuid | FK naar interventions, `on delete cascade` |
+| group_id | int | OR tussen groepen, AND binnen één groep |
+| kind | text | `domain_below`/`domain_above`/`deficiency_signal`/`profile_label`/`answer` |
+| field | text | domein/signaal/vraag-id |
+| operator | text, nullable | `<=`/`>=`/`=`/`in` |
+| value | jsonb | drempel/waarde |
+
+Bepaalt of een interventie verschijnt (per-symptoom personalisatie, bv. `answer SLP_ONSET <= 2`).
+
+### disclaimers
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| key | text | uniek per org |
+| body_text | text | — |
+| scope | text | `screen_focus`/`theme`/`profile`/`mail` |
+
+### evidence_sources
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| vancouver | text | citatie |
+| url / pmid / doi | text, nullable | — |
+| evidence_type | text | `meta_analysis`/`rct`/`observational`/`efsa_regulation`/`guideline`/`textbook`/`narrative_review` |
+
+### evidence_claims
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| claim_text | text | — |
+| domain_label | text | — |
+| intervention_id | uuid, nullable | FK naar interventions, `on delete set null` |
+| source_id | uuid | FK naar evidence_sources |
+| is_efsa_authorized | boolean | — |
+| status | text | `draft`/`published`/`retired` |
+| search_vector | tsvector | FTS (generated) |
+| embedding | vector(1536), nullable | pgvector RAG |
+
+Onderbouwing per interventie. PLAN-trap tier 1-3 vereist een `published` claim. Zoeken via `search_evidence_claims()` (FTS + semantisch).
+
+### domain_events
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| id | uuid, pk | — |
+| occurred_at | timestamptz | — |
+| event_type | text | — |
+| session_id | uuid, nullable | FK naar intake_sessions, `on delete set null` |
+| email | text, nullable | — |
+| payload | jsonb | default `{}` |
+| delivered_to | text[] | default `{}` |
+
+Append-only event log voor nurture, n8n en analytics.
 
 ---
 
 ## RLS policies
 
-- RLS aan op alle tabellen
-- Anon: inserts op intake_sessions, intake_reminders, nurture_emails, intake_feedback, guide_opt_ins
-- Anon: reads op intake_sessions, intake_feedback
-- Admin dashboard: service_role key (bypasses RLS)
+- RLS staat aan op alle tabellen als verdedigingslaag, maar **alle data-toegang loopt via de service_role-client** (`src/lib/supabase-admin.ts`), die RLS bypasst. Er is **geen anon-client** in gebruik (de oude `src/lib/supabase.ts` is verwijderd).
+- **Anon-policies** bestaan alleen op `guide_opt_ins` en `thema_nurture` (insert) — historisch; de app gebruikt ze niet meer.
+- **Authenticated org-isolatie** (tenant-scope via `auth.jwt() -> app_metadata -> organization_id`) op: intake_sessions, intake_feedback, intake_reminders, affiliate_clicks, organizations, themes, recognition_lines, interventions, intervention_triggers, disclaimers, evidence_sources, evidence_claims, domain_events. Voorbereid op toekomstige JWT/B2B-toegang; anon heeft geen toegang.
+- **Alleen service_role** (geen anon/authenticated policies): consent_records, recovery_tokens, cron_runs, en de productdatabase (products/ingredienten/evaluaties/doelgroep_match/conversies).
+- Admin dashboard gebruikt de service_role key.
 
 ---
 

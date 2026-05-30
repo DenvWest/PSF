@@ -49,3 +49,22 @@ CREATE INDEX idx_products_categorie ON products(categorie);
 CREATE INDEX idx_evaluaties_product ON evaluaties(product_id);
 CREATE INDEX idx_conversies_product ON conversies(product_id);
 CREATE INDEX idx_doelgroep_product ON doelgroep_match(product_id);
+
+-- RLS: producttabellen uitsluitend via service_role (Next.js API), geen anon-
+-- toegang. Bewuste voorbereiding op een dynamische productdatabase.
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ingredienten ENABLE ROW LEVEL SECURITY;
+ALTER TABLE evaluaties ENABLE ROW LEVEL SECURITY;
+ALTER TABLE doelgroep_match ENABLE ROW LEVEL SECURITY;
+ALTER TABLE conversies ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "service_all_products" ON products
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "service_all_ingredienten" ON ingredienten
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "service_all_evaluaties" ON evaluaties
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "service_all_doelgroep_match" ON doelgroep_match
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "service_all_conversies" ON conversies
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
