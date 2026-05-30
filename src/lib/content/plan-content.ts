@@ -10,6 +10,7 @@ import type {
   ProfileLabel,
 } from "@/lib/intake-engine";
 import { getDefaultOrganizationId } from "@/lib/organization";
+import { getVisibleTiers } from "@/lib/org-settings";
 import { getDisclaimer } from "@/lib/content/themes";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -219,6 +220,7 @@ export async function getPlanContent(
   orgId?: string,
 ): Promise<PlanContent> {
   const organizationId = orgId ?? getDefaultOrganizationId();
+  const visibleTiers = new Set(await getVisibleTiers(organizationId));
   const ready = await themeHasCompletePlanContent(themeSlug, organizationId);
 
   if (!ready) {
@@ -261,7 +263,7 @@ export async function getPlanContent(
       ready: false,
       themeSlug,
       source: fallback.source,
-      actions,
+      actions: actions.filter((action) => visibleTiers.has(action.tier)),
     };
   }
 
@@ -312,6 +314,6 @@ export async function getPlanContent(
     ready: true,
     themeSlug,
     source: matched.source,
-    actions,
+    actions: actions.filter((action) => visibleTiers.has(action.tier)),
   };
 }
