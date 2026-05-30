@@ -8,12 +8,8 @@ import IntakeCalculating from "@/components/intake/IntakeCalculating";
 import IntakeConsent from "@/components/intake/IntakeConsent";
 import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
-import IntakeFocus from "@/components/intake/IntakeFocus";
-import IntakePlan from "@/components/intake/IntakePlan";
-import IntakeRecognition from "@/components/intake/IntakeRecognition";
 import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
-import type { ThemeSlug } from "@/lib/content/themes";
 import { getPrimaryTheme, getSecondaryTheme } from "@/lib/primary-theme";
 import {
   CATEGORIES,
@@ -54,10 +50,7 @@ type Phase =
   | "questions"
   | "consent"
   | "calculating"
-  | "results"
-  | "recognition"
-  | "focus"
-  | "plan";
+  | "results";
 
 export default function IntakeClient() {
   const router = useRouter();
@@ -86,12 +79,6 @@ export default function IntakeClient() {
   // Zonder die param: intro direct zichtbaar, sessie wordt stil op de achtergrond gecheckt.
   const [isCheckingSession, setIsCheckingSession] = useState(hasResultsParam);
   const [resultsDeepLinkMissing, setResultsDeepLinkMissing] = useState(false);
-  const pendingScrollToTipsRef = useRef(false);
-  const pendingScrollToCommitmentRef = useRef(false);
-  const [planJourneyReady, setPlanJourneyReady] = useState(false);
-  // Override voor de stepped-care template wanneer de gebruiker een secundair
-  // thema kiest op REVEAL. null => primair thema uit getPrimaryTheme.
-  const [themeOverride, setThemeOverride] = useState<ThemeSlug | null>(null);
 
   function hydrateFromSession(session: IntakeSessionPayload) {
     setSymptoms(session.symptoms as SymptomId[]);
@@ -143,72 +130,10 @@ export default function IntakeClient() {
   }, [hasResultsParam]);
 
   useEffect(() => {
-    if (
-      (phase === "results" ||
-        phase === "recognition" ||
-        phase === "focus" ||
-        phase === "plan") &&
-      !hasResultsParam
-    ) {
+    if (phase === "results" && !hasResultsParam) {
       router.replace("/intake?resultaten=true", { scroll: false });
     }
   }, [phase, hasResultsParam, router]);
-
-  useEffect(() => {
-    if (!scores) {
-      return;
-    }
-
-    const themeSlug = themeOverride ?? getPrimaryTheme(scores, answers);
-    let cancelled = false;
-
-    void (async () => {
-      try {
-        const response = await fetch(
-          `/api/intake/journey-ready?theme_slug=${encodeURIComponent(themeSlug)}`,
-        );
-        if (!response.ok || cancelled) {
-          if (!cancelled) {
-            setPlanJourneyReady(false);
-          }
-          return;
-        }
-        const payload = (await response.json()) as { ready?: boolean };
-        if (!cancelled) {
-          setPlanJourneyReady(payload.ready === true);
-        }
-      } catch {
-        if (!cancelled) {
-          setPlanJourneyReady(false);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [scores, answers, themeOverride]);
-
-  useEffect(() => {
-    if (phase !== "results") {
-      return;
-    }
-    if (pendingScrollToCommitmentRef.current) {
-      pendingScrollToCommitmentRef.current = false;
-      const timer = window.setTimeout(() => {
-        document.getElementById("commitment")?.scrollIntoView({ behavior: "smooth" });
-      }, 150);
-      return () => window.clearTimeout(timer);
-    }
-    if (!pendingScrollToTipsRef.current) {
-      return;
-    }
-    pendingScrollToTipsRef.current = false;
-    const timer = window.setTimeout(() => {
-      document.getElementById("tips")?.scrollIntoView({ behavior: "smooth" });
-    }, 150);
-    return () => window.clearTimeout(timer);
-  }, [phase]);
 
   useEffect(() => {
     if (phase !== "calculating") {
@@ -369,8 +294,6 @@ export default function IntakeClient() {
     setIntakeTurnstileToken("");
     setIntakeConsent(null);
     setResultsDeepLinkMissing(false);
-    setPlanJourneyReady(false);
-    setThemeOverride(null);
     router.replace("/intake");
   }
 
@@ -386,7 +309,6 @@ export default function IntakeClient() {
     : undefined;
 
   const primaryTheme = scores ? getPrimaryTheme(scores, answers) : null;
-  const resolvedTheme: ThemeSlug | null = themeOverride ?? primaryTheme;
 
   const shellClass = `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px]`;
 
@@ -511,7 +433,6 @@ export default function IntakeClient() {
             hasMarketingEmail={Boolean(
               intakeConsent?.marketingEmail && intakeConsent?.marketingEmailAddress,
             )}
-            hideLegacyPlanSections={Boolean(scores && planJourneyReady)}
             secondaryTheme={
               scores && primaryTheme
                 ? getSecondaryTheme(scores, answers, primaryTheme)
@@ -519,48 +440,6 @@ export default function IntakeClient() {
             }
             onRestart={restart}
             onConsentRevoked={restart}
-          />
-        </div>
-      )}
-
-      {phase === "recognition" && scores && resolvedTheme && (
-        <div className="animate-[fadeIn_300ms_ease-out]">
-          <IntakeRecognition
-            themeSlug={resolvedTheme}
-            answers={answers}
-            onBack={() => setPhase("results")}
-            onContinue={() => setPhase("focus")}
-          />
-        </div>
-      )}
-
-      {phase === "focus" && scores && resolvedTheme && (
-        <div className="animate-[fadeIn_300ms_ease-out]">
-          <IntakeFocus
-            themeSlug={resolvedTheme}
-            onBack={() => setPhase("recognition")}
-            onContinue={() => {
-              if (scores && planJourneyReady) {
-                setPhase("plan");
-                return;
-              }
-              pendingScrollToTipsRef.current = true;
-              setPhase("results");
-            }}
-          />
-        </div>
-      )}
-
-      {phase === "plan" && scores && resolvedTheme && (
-        <div className="animate-[fadeIn_300ms_ease-out]">
-          <IntakePlan
-            themeSlug={resolvedTheme}
-            answers={answers}
-            onBack={() => setPhase("focus")}
-            onCommitment={() => {
-              pendingScrollToCommitmentRef.current = true;
-              setPhase("results");
-            }}
           />
         </div>
       )}
