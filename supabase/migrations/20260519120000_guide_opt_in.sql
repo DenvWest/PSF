@@ -48,7 +48,12 @@ create policy "service_all_guide_opt_ins"
   using (true)
   with check (true);
 
--- Uitfaseren thema_nurture pending rijen (legacy flow)
-update public.thema_nurture
-set status = 'cancelled'
-where status = 'pending';
+-- Uitfaseren thema_nurture pending rijen (legacy flow).
+-- Guarded: thema_nurture bestaat niet in een supabase-only/verse DB, en de
+-- legacy CHECK staat geen 'cancelled' toe -> daarom een delete binnen een guard.
+do $$
+begin
+  if to_regclass('public.thema_nurture') is not null then
+    delete from public.thema_nurture where status = 'pending';
+  end if;
+end $$;
