@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
@@ -27,21 +26,6 @@ function getPreviewQuestions(ids: readonly QuestionId[]): IntakeQuestion[] {
     }
     return question;
   });
-}
-
-function IntakeCta({ className }: { className?: string }) {
-  return (
-    <Link
-      href="/intake"
-      className={
-        className ??
-        "inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover hover:shadow-md focus-visible:outline focus-visible:ring-2 focus-visible:ring-ps-green/50 focus-visible:ring-offset-2"
-      }
-    >
-      {HOMEPAGE_LIFESTYLE.cta}
-      <span aria-hidden="true">→</span>
-    </Link>
-  );
 }
 
 function QuestionPreviewStack() {
@@ -128,8 +112,7 @@ export default function LifestyleCheckSection() {
             </ul>
 
             <div className="mt-8 hidden lg:block">
-              <IntakeCta />
-              <IntakeCtaMicro className="mt-3 text-xs text-stone-500" />
+              <IntakeCtaMicro className="text-xs text-stone-500" />
               <IntakeLastSessionLink theme="light" className="mt-3 block" />
             </div>
           </div>
@@ -137,8 +120,7 @@ export default function LifestyleCheckSection() {
           <QuestionPreviewStack />
 
           <div className="lg:hidden">
-            <IntakeCta className="inline-flex w-full min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover" />
-            <IntakeCtaMicro className="mt-3 text-center text-xs text-stone-500" />
+            <IntakeCtaMicro className="text-center text-xs text-stone-500" />
             <IntakeLastSessionLink theme="light" className="mt-3 block text-center" />
           </div>
         </div>
