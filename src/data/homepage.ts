@@ -13,18 +13,24 @@ export const INTAKE_PROMO = {
 
 export const HOMEPAGE_HERO = {
   eyebrow: "VOOR MANNEN 40+",
-  headline: "Minder energie na 40? Meestal geen testosteronprobleem.",
+  headline: "Waar komt jouw verminderde energie écht vandaan?",
   subheadline:
-    "Mannen blijven hun hele leven vruchtbaar en actief. Testosteron daalt geleidelijk vanaf 40 — maar bij een klein percentage spelen hormonen echt de hoofdrol. Bij de meeste mannen wegen slaap, gewicht, stress en beweging zwaarder. Ontdek waar jij kunt bijsturen.",
+    "Ontdek binnen 3 minuten welke leefstijlfactoren waarschijnlijk de grootste invloed hebben op jouw energie, herstel en vitaliteit.",
   bullets: [
-    "Geen plotselinge “andropauze” — veranderingen zijn geleidelijk en per man verschillend",
-    "Echte hormonale klachten komen bij weinig mannen voor",
-    "Leefstijl beïnvloedt energie, libido en herstel het sterkst",
-    "Overgewicht en chronische stress zijn veelvoorkomende oorzaken",
-    "In 3 minuten zie je welke hefbomen bij jou het grootst zijn",
+    "Persoonlijke analyse van 6 leefstijldomeinen",
+    "Gerangschikt op waarschijnlijkheid en impact",
+    "Onafhankelijk en onderbouwd",
+    "Gratis en anoniem",
   ],
   primaryCta: "Start de Leefstijlcheck (3 min)",
-  secondaryCta: "Bekijk hoe het werkt",
+  secondaryCta: "Bekijk de gidsen",
+  secondaryCtaHref: "/gidsen",
+  widget: {
+    eyebrow: "Gratis",
+    title: "Leefstijlcheck voor mannen 40+",
+    body: "15 vragen · 3 minuten · persoonlijk herstelplan op 6 domeinen.",
+    cta: "Start direct",
+  },
   microCopy: DISCLAIMER_TEXTS.ctaMicro,
   footnoteLabel: "Meer over testosteron na 40",
   footnoteHref: "/testosteron-na-40",
