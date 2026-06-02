@@ -10,6 +10,8 @@ type ClientEmitType = Extract<
   | "plan.tier_action_clicked"
   | "plan.evidence_clicked"
   | "plan.theme_switched"
+  | "plan.step_state_changed"
+  | "plan.step_link_clicked"
 >;
 
 export function emitIntakeClientEvent(
