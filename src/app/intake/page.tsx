@@ -1,14 +1,13 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import IntakeClient from "./IntakeClient";
 
 export const metadata: Metadata = {
   title: "Gratis Leefstijlcheck voor Mannen 40+ | PerfectSupplement",
   description:
-    "Ontdek in 3 minuten welke supplementen bij jouw situatie passen. Persoonlijk advies op basis van 6 gezondheidsdomeinen.",
-  alternates: {
-    canonical: "https://perfectsupplement.nl/intake",
-  },
+    "15 vragen, 3 minuten: persoonlijk inzicht in slaap, stress, energie en herstel. Gratis, anoniem — geen diagnose, wel een concreet herstelplan.",
+  ...canonicalMetadata("/intake"),
 };
 
 // useSearchParams() in IntakeClient requires a Suspense boundary; without it

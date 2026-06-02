@@ -43,9 +43,9 @@ export default function Footer() {
                             </span>
                         </Link>
                         <p className="mt-4 text-sm leading-relaxed text-stone-500">
-                            Onafhankelijk platform voor mannen 40+ — met leefstijl,
-                            slaap en herstel voorop en transparante supplementvergelijking
-                            op basis van vaste criteria.
+                            De rustige gids voor mannen 40+: eerst grip op slaap, stress en
+                            herstel — daarna pas supplementen. Gratis Leefstijlcheck,
+                            onafhankelijk en zonder sponsors.
                         </p>
                     </div>
 

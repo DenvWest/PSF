@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s | PerfectSupplement",
   },
   description:
-    "Evidence-based supplementinformatie en vergelijkingen, met focus op omega-3 en magnesium.",
+    "Onafhankelijk leefstijladvies voor mannen 40+. Gratis Leefstijlcheck, onderbouwde gidsen en transparante supplementvergelijking — leefstijl eerst.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
