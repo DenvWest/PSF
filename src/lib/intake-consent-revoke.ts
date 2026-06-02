@@ -17,6 +17,7 @@ const PREFLIGHT_TABLES = [
   "consent_records",
   "nurture_emails",
   "intake_reminders",
+  "plan_progress",
 ] as const;
 
 export type IntakeRevokeResult =
@@ -168,6 +169,15 @@ async function cleanupIntakeSessionLinkedData(
     if (tokensError && !isMissingRelationError(tokensError)) {
       return { ok: false, step: "recovery_tokens", error: tokensError };
     }
+  }
+
+  const { error: planProgressError } = await admin
+    .from("plan_progress")
+    .delete()
+    .eq("session_id", sessionId);
+
+  if (planProgressError && !isMissingRelationError(planProgressError)) {
+    return { ok: false, step: "plan_progress", error: planProgressError };
   }
 
   return { ok: true };

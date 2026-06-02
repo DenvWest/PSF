@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAnalyticsConsentFromRequest } from "@/lib/analytics-consent";
 import { emitEvent, isDomainEventType, type DomainEventType } from "@/lib/events";
 import {
   INTAKE_SESSION_COOKIE_NAME,
@@ -97,6 +98,10 @@ export async function POST(request: NextRequest) {
     emailRaw && EMAIL_REGEX.test(emailRaw) ? emailRaw.toLowerCase() : undefined;
 
   const payload = normalizePayload(record.payload);
+
+  if (!getAnalyticsConsentFromRequest(request)) {
+    return NextResponse.json({ ok: true }, { status: 200 });
+  }
 
   void emitEvent({
     eventType: eventTypeRaw,

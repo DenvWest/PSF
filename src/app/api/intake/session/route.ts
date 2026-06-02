@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  applyAnalyticsConsentCookie,
+  clearAnalyticsConsentCookie,
+} from "@/lib/analytics-consent";
 import { sha256Hex } from "@/lib/consent-hashing";
 import {
   intakeConsentRows,
@@ -325,6 +329,7 @@ export async function POST(request: NextRequest) {
     path: "/",
     maxAge: COOKIE_MAX_AGE_SEC,
   });
+  applyAnalyticsConsentCookie(res, consent.anonymousAnalytics);
 
   return res;
 }
@@ -369,5 +374,6 @@ export async function DELETE(request: NextRequest) {
     path: "/",
     maxAge: 0,
   });
+  clearAnalyticsConsentCookie(res);
   return res;
 }

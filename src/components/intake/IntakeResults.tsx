@@ -22,6 +22,7 @@ import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import FoundationStack from "@/components/intake/FoundationStack";
 import SupplementRoute from "@/components/intake/SupplementRoute";
 import { FOUNDATION_STACK } from "@/data/foundation-stack";
+import { getPlanTemplate } from "@/data/lifestyle-plans";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { getSupplementRoute, matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
@@ -45,6 +46,7 @@ import PyramidPillarDrawer, {
   type PillarDrawerStatus,
 } from "@/components/pyramid/PyramidPillarDrawer";
 import IntakeResultsSection from "@/components/intake/IntakeResultsSection";
+import LifestylePlan from "@/components/intake/LifestylePlan";
 import {
   getConnectionFraming,
   getDisplayStatus,
@@ -266,6 +268,7 @@ export default function IntakeResults({
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
   const pillarStatuses = buildPillarStatuses(scores);
   const primaryTheme = getPrimaryTheme(scores, answers);
+  const planTemplate = getPlanTemplate(primaryTheme);
 
   const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
   const displayProfileName = isOvertrainerProfile ? "Overtrainer" : profile.name;
@@ -383,8 +386,20 @@ export default function IntakeResults({
             </p>
           ) : null}
 
-          <div className="mt-5 text-center">
-            {guideCta ? (
+          <div className="mt-5">
+            {planTemplate ? (
+              <LifestylePlan
+                template={planTemplate}
+                scores={scores}
+                answers={answers}
+                sessionId={sessionId}
+                secondaryTheme={
+                  secondaryTheme && secondaryTheme !== "connection"
+                    ? secondaryTheme
+                    : null
+                }
+              />
+            ) : guideCta ? (
               <div className="text-left">
                 {!guideFormOpen ? (
                   <button
