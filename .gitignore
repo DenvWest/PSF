@@ -15,3 +15,8 @@ coverage/
 
 # Auto-gegenereerd door scripts/generate-state.mjs — niet tracken
 docs/PROJECT_STATE.md
+
+COMPLIANCE-AUDIT-*.md
+nightly-compliance-audit.sh
+scripts/monthly-koag-audit.sh
+package-lock.json.backup
