@@ -67,7 +67,7 @@ export const HOMEPAGE_TRUST = {
 export const HOMEPAGE_GUIDES_PROMO = {
   title: "Gratis gidsen na 40",
   body:
-    "Diepgaande PDF's over slaap, stress, energie, herstel en testosteron — praktisch, onderbouwd",
+    "Diepgaande PDF's over slaap, stress, energie, herstel en testosteron — praktisch, onderbouwd en zonder diagnoses. Eén overzicht, geen keuzestress op de homepage.",
   secondaryLine:
     "Je hoeft niet vooraf te weten welk thema past. De Leefstijlcheck hierboven ordenet dat voor je.",
   cta: "Bekijk de gidsen",

@@ -14,16 +14,7 @@ export default function FloatingLeefstijlcheckCta() {
   useEffect(() => {
     if (dismissed) return;
 
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     let hasRevealed = false;
-
-    function reveal() {
-      if (hasRevealed) return;
-      hasRevealed = true;
-      setRevealed(true);
-      window.removeEventListener("scroll", onScroll);
-      if (timeoutId !== undefined) clearTimeout(timeoutId);
-    }
 
     function onScroll() {
       const total = document.documentElement.scrollHeight - window.innerHeight;
@@ -32,13 +23,21 @@ export default function FloatingLeefstijlcheckCta() {
       }
     }
 
+    function reveal() {
+      if (hasRevealed) return;
+      hasRevealed = true;
+      setRevealed(true);
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(timeoutId);
+    }
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    timeoutId = setTimeout(reveal, 6000);
+    const timeoutId = setTimeout(reveal, 6000);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      if (timeoutId !== undefined) clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
     };
   }, [dismissed]);
 
