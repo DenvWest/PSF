@@ -78,9 +78,10 @@ export default function HomeGuidesPromoSection() {
               <Image
                 src={imageSrc}
                 alt={imageAlt}
-                width={560}
-                height={420}
-                className="w-full max-w-md rounded-xl object-contain lg:max-w-lg"
+                width={1264}
+                height={848}
+                unoptimized
+                className="w-full max-w-md object-contain lg:max-w-lg"
                 sizes="(max-width: 1024px) 100vw, 560px"
               />
             ) : (

@@ -68,9 +68,9 @@ export const HOMEPAGE_GUIDES_PROMO = {
   ctaHref: "/gidsen",
   footnote:
     "Liever direct persoonlijk? Start de Leefstijlcheck — die wijst je naar je profiel en relevante vervolgstappen.",
-  /** Zet een collage in public/images/home/gidsen-collage.webp om de CSS-fan te vervangen. */
-  imageSrc: undefined,
-  imageAlt: "Overzicht van PerfectSupplement gidsen na 40",
+  imageSrc: "/images/home/Gidsen-Compacte-Gidsen.webp",
+  imageAlt:
+    "Gratis compacte gidsen voor mannen 40+: slaap, stress, energie, herstel en testosteron",
 } as const;
 
 export const HOMEPAGE_LIFESTYLE = {
