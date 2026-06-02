@@ -4,8 +4,6 @@ import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import { HOMEPAGE_HERO, HOMEPAGE_LIFESTYLE } from "@/data/homepage";
 
-const HERO_BULLET_SKIP = "Gerangschikt op waarschijnlijkheid en impact";
-
 function CheckIcon() {
   return (
     <svg
@@ -55,7 +53,9 @@ export default function Hero() {
     eyebrow,
   } = HOMEPAGE_HERO;
 
-  const heroBullets = bullets.filter((bullet) => bullet !== HERO_BULLET_SKIP);
+  const heroBullets = bullets.filter(
+    (bullet) => !(bullet as string).startsWith("Gerangschikt"),
+  );
 
   return (
     <section className="relative border-b border-stone-200/50 bg-[#F7F5F0]">
