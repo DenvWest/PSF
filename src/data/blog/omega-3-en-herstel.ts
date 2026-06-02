@@ -6,7 +6,7 @@ export const omega3EnHerstelData: BlogArtikel = {
   categorie: "supplementen",
   titel: "Omega-3 en herstel na 40: EPA/DHA in het herstelplaatje",
   heroIntro:
-    "Omega-3 wordt vaak geassocieerd met hart en hersenen — maar in herstelcontext gaat het vooral om of je genoeg [EPA en DHA](/kennisbank/epa-dha) binnenkrijgt en hoe dat past naast slaap en training. Verbind dit met [herstel verbeteren na 40](/herstel-verbeteren-na-40) en vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement).",
+    "Omega-3 wordt vaak geassocieerd met hart en hersenen — maar in herstelcontext gaat het vooral om of je genoeg [EPA en DHA](/kennisbank/epa-dha) binnenkrijgt en hoe dat past naast slaap, training en [oxidatieve stress](/kennisbank/oxidatieve-stress)-regulatie. Verbind dit met [herstel verbeteren na 40](/herstel-verbeteren-na-40) en vergelijk producten op [/beste/omega-3-supplement](/beste/omega-3-supplement).",
   leestijd: "10 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",

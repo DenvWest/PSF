@@ -6,7 +6,7 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
   categorie: "slaap",
   titel: "Slaaphygiëne: wat wél werkt na je 40e",
   heroIntro:
-    "Lijstjes met slaaptips zijn er genoeg — maar wat heeft na je veertigste echt prioriteit? Hier focussen we op de interventies met de hoogste impact op je slaaparchitectuur en je circadiaanse ritme.",
+    "Lijstjes met slaaptips zijn er genoeg — maar wat heeft na je veertigste echt prioriteit? Hier focussen we op de interventies met de hoogste impact op je slaaparchitectuur en je [circadiaanse ritme](/kennisbank/circadiaan-ritme).",
   leestijd: "7 min",
   gepubliceerdOp: "2026-03-22",
   secties: [
@@ -14,11 +14,13 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom generieke tips tekortschieten",
       tekst:
-        "Na je 40e daalt de hoeveelheid diepe slaap en wordt je slaap lichter. Tegelijk verwerk je mentale spanning minder snel — waardoor dezelfde gewoontes (zoals laat sporten of avondalcohol) harder binnenkomen. Slaaphygiëne is dan vooral: consistentie, licht, temperatuur en prikkelbeheer — niet ‘meer proberen te slapen’.",
+        "Na je 40e daalt de hoeveelheid diepe slaap en wordt je slaap lichter. Tegelijk verwerk je mentale spanning minder snel — waardoor dezelfde gewoontes (zoals laat sporten of avondalcohol) harder binnenkomen. [Slaaphygiëne](/kennisbank/slaaphygiene) is dan vooral: consistentie, licht, temperatuur en prikkelbeheer — niet ‘meer proberen te slapen’.",
     },
     {
       type: "opsomming",
       titel: "De vier pijlers met het meeste effect",
+      inleiding:
+        "Deze gewoontes verankeren je [circadiaanse ritme](/kennisbank/circadiaan-ritme) en leveren vaak het meeste op vóór supplementen. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
       items: [
         "Vast ritme: zelfde opsta- en bedtijd, ook in het weekend — dit verankert je interne klok sterker dan elke app.",
         "Licht: minimaal tien minuten buitenlicht ’s ochtends; ’s avonds dimmen en schermen beperken 60-90 min voor slapen.",
@@ -30,14 +32,18 @@ export const slaaphygieneMannen40PlusData: BlogArtikel = {
       type: "tekst",
       titel: "Als je hoofd niet stopt",
       tekst:
-        "Cognitieve opwinding voor bed is een aparte categorie: onafgemaakte taken en piekeren houden je cortisol onterecht hoog. Een vaste ‘shutdown’-routine — korte notitie voor morgen, lichte stretching, ademhaling — helpt het zenuwstelsel omschakelen. Zie ook ons artikel over ademhaling bij stress als je vooral mentaal opgefokt bent.",
+        "Cognitieve opwinding voor bed is een aparte categorie: onafgemaakte taken en piekeren houden je [cortisol](/kennisbank/cortisol) onterecht hoog. Een vaste ‘shutdown’-routine — korte notitie voor morgen, lichte stretching, ademhaling — helpt het zenuwstelsel omschakelen. Zie ook ons artikel over [ademhaling bij stress](/blog/ademhaling-tegen-stress) als je vooral mentaal opgefokt bent.",
     },
   ],
   samenvatting:
     "Na je 40e win je het meeste slaapkwaliteit met een vast ritme, ochtendlicht, koele kamer en striktere cafeïne- en alcoholregels. Voeg een shutdown-routine toe als je hoofd blijft malen.",
   cornerstoneLink: {
-    label: "Oplossingen bij slaapproblemen",
-    href: "/gids/slaap",
+    label: "Complete gids: slaap verbeteren na je 40e",
+    href: "/slaap-verbeteren-na-40",
+  },
+  vergelijkingExtraLink: {
+    label: "Vergelijk de beste magnesium supplementen",
+    href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
     "slaap-verbeteren-40-plus",

@@ -15,7 +15,7 @@ export const omega3ConcentratieEnergieData: BlogArtikel = {
       type: "tekst",
       titel: "Het biologische verhaal",
       tekst:
-        "[EPA en DHA uit visolie of algenolie](/beste/omega-3-supplement): DHA is prominent aanwezig in hersenweefsel; EPA wordt vaker gekoppeld aan ontstekingsmodulatie en stemming. Een tekort aan omega-3 vetzuren kan theoretisch cognitieve en stemmingsaspecten beïnvloeden — maar de meeste mensen in hoog-inkomenslanden krijgen wel enkele omega-3 binnen; de vraag is of suppletie extra voordeel geeft boven een matige basisinname.",
+        "[EPA en DHA](/kennisbank/epa-dha) uit visolie of algenolie: DHA is prominent aanwezig in hersenweefsel; EPA wordt vaker gekoppeld aan ontstekingsmodulatie en stemming. Een tekort aan omega-3 vetzuren kan theoretisch cognitieve en stemmingsaspecten beïnvloeden — maar de meeste mensen in hoog-inkomenslanden krijgen wel enkele omega-3 binnen; de vraag is of suppletie extra voordeel geeft boven een matige basisinname.",
     },
     {
       type: "opsomming",

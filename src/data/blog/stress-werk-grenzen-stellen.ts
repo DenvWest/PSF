@@ -37,7 +37,7 @@ export const stressWerkGrenzenStellenData: BlogArtikel = {
       type: "tekst",
       titel: "Supplementen en claimstatus",
       tekst:
-        "Over ashwagandha: in de Europese Unie zijn voor Withania somnifera nog geen definitief goedgekeurde gezondheidsclaims; dossiers staan bij EFSA in de on-holdprocedure voor botanische stoffen. In Nederland coördineert het ministerie van Volksgezondheid, Welzijn en Sport (VWS) de uitvoering van EU-regels; de NVWA handhaaft op de markt. Zie [ashwagandha: werking en EU-context](/blog/ashwagandha-werking-mannen) voor literatuur en nuancering.",
+        "Over ashwagandha: in de Europese Unie zijn voor Withania somnifera nog geen definitief goedgekeurde gezondheidsclaims; dossiers staan bij [EFSA](/kennisbank/efsa-claims) in de on-holdprocedure voor botanische stoffen. In Nederland coördineert het ministerie van Volksgezondheid, Welzijn en Sport (VWS) de uitvoering van EU-regels; de NVWA handhaaft op de markt. Zie [ashwagandha: werking en EU-context](/blog/ashwagandha-werking-mannen) voor literatuur en nuancering.",
     },
   ],
   samenvatting:

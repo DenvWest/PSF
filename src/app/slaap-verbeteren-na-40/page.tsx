@@ -348,7 +348,11 @@ export default function SlaapVerbeterenNa40Page() {
                   Je zenuwstelsel heeft tijd nodig om van actie- naar herstelmodus te schakelen. Dat gaat niet van de ene op de
                   andere minuut. Een vaste afbouwroutine — lichten dimmen, geen schermen,
                   een rustige bezigheid zoals lezen of ademhalingsoefeningen — helpt veel mensen om
-                  rustiger richting bed te gaan.
+                  rustiger richting bed te gaan. Meer over gewoontes en omgeving:{" "}
+                  <Link href="/kennisbank/slaaphygiene" className="text-green-700 underline underline-offset-2 hover:text-green-800">
+                    slaaphygiëne
+                  </Link>
+                  .
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Concreet: zet schermen uit om 22:00 als je om 23:00 in bed wil liggen.

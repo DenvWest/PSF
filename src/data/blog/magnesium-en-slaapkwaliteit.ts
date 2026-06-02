@@ -74,7 +74,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
         "Hoeveel elementair magnesium per dagdosering? Dat getal vertelt je de werkzame hoeveelheid — niet het totale gewicht van de tablet of capsule.",
         "Prijs per dag, niet per pot. Een pot van 90 capsules voor 25 euro kan duurder uitpakken dan een pot van 60 capsules voor 18 euro, afhankelijk van de dagdosering.",
         "Onnodige toevoegingen? Veel vulstoffen, synthetische kleurstoffen of geur- en smaakstoffen zijn een signaal van lager kwaliteitsniveau. Minder ingrediënten is vaak beter.",
-        "Onafhankelijk getest? Certificeringen van derde partijen geven extra zekerheid over zuiverheid en doseernauwkeurigheid.",
+        "Onafhankelijk getest? Certificeringen van [derde partijen](/kennisbank/derde-partij-testen) geven extra zekerheid over zuiverheid en doseernauwkeurigheid.",
       ],
     },
   ],
@@ -87,8 +87,8 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
     href: "/supplementen/magnesium",
   },
   cornerstoneLink: {
-    label: "Magnesium supplementen vergelijken",
-    href: "/beste/magnesium",
+    label: "Complete gids: slaap verbeteren na je 40e",
+    href: "/slaap-verbeteren-na-40",
   },
   vergelijkingExtraLink: {
     label: "Bekijk onze top 3 magnesium (productvergelijking)",

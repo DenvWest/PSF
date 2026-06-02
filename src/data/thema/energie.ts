@@ -36,7 +36,7 @@ export const energieThema: ThemaPageData = {
       {
         title: "Mentaal & emotioneel",
         description:
-          "Gevoelens van onrust, ruis of onderstimulatie vreten net zo hard aan je tank als overbelasting. Chronische mentale vermoeidheid verlaagt de mitochondriële efficiëntie via verhoogde oxidatieve stress.",
+          "Gevoelens van onrust, ruis of onderstimulatie vreten net zo hard aan je tank als overbelasting. Chronische mentale vermoeidheid verlaagt de mitochondriële efficiëntie via verhoogde [oxidatieve stress](/kennisbank/oxidatieve-stress).",
         icon: "🧠",
         source: "Picard et al., Nat Rev Endocrinol, 2018",
       },

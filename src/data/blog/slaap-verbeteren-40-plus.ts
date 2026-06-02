@@ -14,18 +14,18 @@ export const slaapVerbeterenData: BlogArtikel = {
       type: "tekst",
       titel: "Waarom slaap na je 40e anders is",
       tekst:
-        "Slaap is geen statisch proces. Naarmate je ouder wordt, verschuift de balans tussen de slaapfasen: de hoeveelheid diepe slaap (slow-wave sleep) neemt af, de slaap wordt lichter en gefragmenteerder. Daarnaast verschuift het circadiaanse ritme — het interne 24-uursklok — bij veel mensen richting een eerdere timing. Het gevolg: eerder moe 's avonds, eerder wakker 's ochtends. Dit is geen stoornis maar een biologische verschuiving. Begrijpen wat er verandert, helpt je realistische en effectieve aanpassingen te maken.",
+        "Slaap is geen statisch proces. Naarmate je ouder wordt, verschuift de balans tussen de slaapfasen: de hoeveelheid diepe slaap (slow-wave sleep) neemt af, de slaap wordt lichter en gefragmenteerder. Daarnaast verschuift het [circadiaanse ritme](/kennisbank/circadiaan-ritme) — het interne 24-uursklok — bij veel mensen richting een eerdere timing. Het gevolg: eerder moe 's avonds, eerder wakker 's ochtends. Dit is geen stoornis maar een biologische verschuiving. Begrijpen wat er verandert, helpt je realistische en effectieve aanpassingen te maken.",
     },
     {
       type: "opsomming",
       titel: "Wat slaaponderzoek veel steunt",
       inleiding:
-        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant voor mannen boven de 40:",
+        "Deze interventies zijn onderbouwd met slaaponderzoek en specifiek relevant voor mannen boven de 40. [Lees de complete aanpak voor betere slaap na je 40e.](/slaap-verbeteren-na-40)",
       items: [
         "Vast slaapritme: Hetzelfde slaap- en waaktijd, ook in het weekend. Consistentie is de sterkste enkelvoudige interventie voor slaapkwaliteit.",
         "Blootstelling aan daglicht in de ochtend: Tien minuten buiten in de eerste twee uur na het opstaan resynchroniseert je circadiaanse klok.",
         "Slaapkamertemperatuur: 16-19°C is optimaal voor diepe slaap. Iets koeler dan de meeste mensen instellen.",
-        "Geen schermen 60-90 minuten voor bed: Blauw licht onderdrukt melatonine-aanmaak met 50-80% bij intensief gebruik.",
+        "Geen schermen 60-90 minuten voor bed: Blauw licht onderdrukt [melatonine](/kennisbank/melatonine)-aanmaak met 50-80% bij intensief gebruik.",
         "[Beste magnesium supplementen voor slaap](/beste/magnesium) — vaak als glycinaat — bieden magnesium dat bij voldoende inname bijdraagt aan o.a. normale werking van het zenuwstelsel en spieren (EFSA); slaap zelf is geen geautoriseerde claim op het etiket.",
       ],
     },
@@ -33,13 +33,13 @@ export const slaapVerbeterenData: BlogArtikel = {
       type: "tekst",
       titel: "Wat populair is maar minder effectief",
       tekst:
-        "Melatoninesupplementen worden vaak te hoog gedoseerd (5-10 mg) terwijl de fysiologische waarden veel lager zijn (0,1-0,3 mg). Hoge doses verstoren het melatonineprofiel eerder dan dat ze het verbeteren. Slaapmedicatie lost de onderliggende problemen niet op en leidt bij regelmatig gebruik tot afhankelijkheid en verminderde slaapkwaliteit op lange termijn. 'Inhalen' in het weekend werkt niet: slaapschuld is deels herstelbaar, maar structurele kwaliteitsverliezen niet.",
+        "[Melatonine](/kennisbank/melatonine)-supplementen worden vaak te hoog gedoseerd (5-10 mg) terwijl de fysiologische waarden veel lager zijn (0,1-0,3 mg). Hoge doses verstoren het melatonineprofiel eerder dan dat ze het verbeteren. Slaapmedicatie lost de onderliggende problemen niet op en leidt bij regelmatig gebruik tot afhankelijkheid en verminderde slaapkwaliteit op lange termijn. 'Inhalen' in het weekend werkt niet: slaapschuld is deels herstelbaar, maar structurele kwaliteitsverliezen niet.",
     },
     {
       type: "tekst",
       titel: "De relatie tussen cortisol en slaap",
       tekst:
-        "Cortisol en slaap staan in een directe feedback-relatie. Slecht slapen verhoogt cortisol; hoog cortisol verstoort slaap. Voor mannen boven de 40 met stressvolle levens is dit een van de meest voorkomende oorzaken van slaapklachten. Stressmanagement overdag — beweging, ademhaling, sociale verbinding — is daarmee ook een slaapinterventie.",
+        "[Cortisol](/kennisbank/cortisol) en slaap staan in een directe feedback-relatie. Slecht slapen verhoogt cortisol; hoog cortisol verstoort slaap. Voor mannen boven de 40 met stressvolle levens is dit een van de meest voorkomende oorzaken van slaapklachten. Stressmanagement overdag — beweging, ademhaling, sociale verbinding — is daarmee ook een slaapinterventie.",
     },
   ],
   samenvatting:
@@ -51,8 +51,12 @@ export const slaapVerbeterenData: BlogArtikel = {
     href: "/supplementen/magnesium",
   },
   cornerstoneLink: {
-    label: "Oplossingen bij slaapproblemen",
-    href: "/gids/slaap",
+    label: "Complete gids: slaap verbeteren na je 40e",
+    href: "/slaap-verbeteren-na-40",
+  },
+  vergelijkingExtraLink: {
+    label: "Vergelijk de beste magnesium supplementen",
+    href: "/beste/magnesium",
   },
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",

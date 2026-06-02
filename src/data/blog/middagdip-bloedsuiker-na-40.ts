@@ -35,7 +35,7 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
       inleiding:
         "Geen dieet-hype — wel gewoontes die in onderzoek vaak stabilere glucoserespons laten zien.",
       items: [
-        "Eiwit + vezels bij ontbijt en lunch: eieren, kwark, noten, peulvruchten — geen alleen-brood-maaltijden. Zie ook [eiwit na 40](/blog/eiwit-na-40).",
+        "Eiwit + vezels bij ontbijt en lunch: eieren, kwark, noten, peulvruchten — geen alleen-brood-maaltijden. Zie ook [eiwit na 40](/blog/eiwit-na-40) en [eiwitpoeder vergelijken](/beste/eiwitpoeder).",
         "Beweging na de lunch: 10 minuten wandelen kan postprandiale glucosepiek afvlakken.",
         "Cafeïne-cap: laatste koffie vóór 12:00 als je middagdip structureel is.",
         "Vaste eettijden: lange gaps zonder eten kunnen cortisol én hongerpieken triggeren.",
@@ -57,9 +57,19 @@ export const middagdipBloedsuikerNa40Data: BlogArtikel = {
   ],
   samenvatting:
     "Middagdip na 40 is vaak een bloedsuiker- en insulineverhaal, niet alleen moeheid. Stabiliseer met eiwitrijke maaltijden, beweging en minder suiker-koffie-trucs — en laat meten bij aanhoudende klachten.",
+  supplementCTA: {
+    naam: "Eiwitpoeder",
+    uitleg:
+      "Whey, plantaardig of blend — vergelijk op eiwit per portie en prijs per dag als voeding tekortschiet bij ontbijt of lunch.",
+    href: "/beste/eiwitpoeder",
+  },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 40",
     href: "/energie-na-40",
+  },
+  vergelijkingExtraLink: {
+    label: "Eiwitpoeder supplementen vergelijken",
+    href: "/beste/eiwitpoeder",
   },
   gerelateerdeSluggen: [
     "energie-verhogen-natuurlijk",

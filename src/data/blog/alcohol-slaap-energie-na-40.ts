@@ -57,9 +57,19 @@ export const alcoholSlaapEnergieNa40Data: BlogArtikel = {
   ],
   samenvatting:
     "Alcohol kan inslapen versnellen maar REM en diepe slaap inkorten — met merkbare energie en middagdip de dag erna. Plan alcoholvrije avonden, stop vroeg genoeg voor bed en vervang het avondritueel waar nodig.",
+  supplementCTA: {
+    naam: "Omega-3 (EPA/DHA)",
+    uitleg:
+      "Bij lage visinname: vergelijk op werkzame EPA+DHA per dag en zuiverheid — ondersteunend naast slaap en leefstijl, geen tegenmiddel voor alcohol.",
+    href: "/beste/omega-3-supplement",
+  },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: energie na 40",
     href: "/energie-na-40",
+  },
+  vergelijkingExtraLink: {
+    label: "Vergelijk omega-3 supplementen",
+    href: "/beste/omega-3-supplement",
   },
   gerelateerdeSluggen: [
     "middagdip-bloedsuiker-na-40",

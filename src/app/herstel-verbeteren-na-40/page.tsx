@@ -212,7 +212,7 @@ export default function HerstelVerbeterenNa40Page() {
                     Dan past mogelijk het herstelprofiel bij jou: hoge belasting, te weinig buffers.
                   </p>
                   <Link
-                    href="/profiel/herstel"
+                    href="/profiel/overtrainer"
                     className="mt-3 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
                     Bekijk het herstelprofiel →

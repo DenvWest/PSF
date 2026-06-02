@@ -56,7 +56,7 @@ export const ashwagandhaData: BlogArtikel = {
       type: "tekst",
       titel: "EU‑claims, EFSA en VWS — wat jij moet weten",
       tekst:
-        "Voor Withania somnifera (ashwagandha) staan er in de Europese Unie op dit moment geen definitief toegelaten gezondheidsclaims op de EU‑lijst voor dit ingrediënt. Dossiers voor botanische stoffen kunnen bij de Europese Autoriteit voor voedselveiligheid (EFSA) in de on-holdprocedure staan: onderzoek en veiligheid kunnen besproken zijn zonder dat er al een claim voor consumenten op het etiket mag. In Nederland zet het ministerie van Volksgezondheid, Welzijn en Sport (VWS) beleid en wetgeving uit; de Nederlandse Voedsel- en Warenautoriteit (NVWA) handhaaft markt en etikettering. Dit artikel vat literatuur samen en is geen medische aanbeveling of erkende productclaim. Bij klachten, medicatie of zwangerschap: overleg met een arts.",
+        "Voor Withania somnifera (ashwagandha) staan er in de Europese Unie op dit moment geen definitief toegelaten gezondheidsclaims op de EU‑lijst voor dit ingrediënt. Dossiers voor botanische stoffen kunnen bij de Europese Autoriteit voor voedselveiligheid ([EFSA](/kennisbank/efsa-claims)) in de on-holdprocedure staan: onderzoek en veiligheid kunnen besproken zijn zonder dat er al een claim voor consumenten op het etiket mag. In Nederland zet het ministerie van Volksgezondheid, Welzijn en Sport (VWS) beleid en wetgeving uit; de Nederlandse Voedsel- en Warenautoriteit (NVWA) handhaaft markt en etikettering. Dit artikel vat literatuur samen en is geen medische aanbeveling of erkende productclaim. Bij klachten, medicatie of zwangerschap: overleg met een arts.",
     },
   ],
   samenvatting:
