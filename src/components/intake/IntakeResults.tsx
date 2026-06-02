@@ -80,11 +80,11 @@ const THEME_BACKLINK_COPY: Record<ThemeSlug, { pillar: string; profile: string }
     profile: "Draag jij stress de hele dag mee? Herken het patroon →",
   },
   nutrition: {
-    pillar: "Beter herstellen na 40 begint bij voeding — lees de gids →",
+    pillar: "Voeding en herstel na 40 — wat mannen vaak missen →",
     profile: "",
   },
   movement: {
-    pillar: "Hard trainen, traag herstellen? Lees de herstelgids →",
+    pillar: "Hard trainen, traag herstellen? Lees verder over herstel na 40 →",
     profile: "Train je veel maar voel je je leeg? Herken de overtrainer →",
   },
   connection: {
@@ -296,13 +296,15 @@ export default function IntakeResults({
   const primaryPillarHref = themeLinks.pillarHref ?? "/intake";
   const guideCta = getIntakeGuideCta(primaryTheme);
   const [guideFormOpen, setGuideFormOpen] = useState(false);
+  const showEnergyGuideLink = scores.energy_score < 40;
 
   const hasExploreContent =
     supplementRoute.length > 0 ||
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
     kennisbankLinks.length > 0 ||
     (typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2) ||
-    hasThemeBacklink;
+    hasThemeBacklink ||
+    showEnergyGuideLink;
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".intake-layout-header");
@@ -557,6 +559,18 @@ export default function IntakeResults({
                         ) : null}
                       </ul>
                     </div>
+                  ) : null}
+
+                  {showEnergyGuideLink ? (
+                    <p className="mb-5 text-sm text-intake-ink-muted">
+                      Energie staat onder druk in je profiel.{" "}
+                      <Link
+                        href="/gids/energie"
+                        className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                      >
+                        Gratis energiegids downloaden →
+                      </Link>
+                    </p>
                   ) : null}
 
                   {supplementRoute.length > 0 ? (

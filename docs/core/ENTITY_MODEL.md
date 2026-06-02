@@ -16,7 +16,7 @@
 | answers | jsonb | Ruwe antwoorden per data-tag (zie onder) |
 | domain_scores | jsonb | 6 domeinen, score 0-100 (zie onder) |
 | urgency_level | text | `critical`, `moderate`, `mild`, `healthy` |
-| profile_label | text | `Onrustige Slaper`, `Stressdrager`, `Lage Batterij`, `Overtrainer`, `In Balans` |
+| profile_label | text | `Onrustige Slaper`, `Stressdrager`, `Lage Batterij`, `In Balans` — engine-output via `getProfileLabel()`; **Overtrainer** is een afgeleid antwoordpatroon (`matchesOvertrainerAnswers`), geen persisted label |
 | age_range | text | `40-44`, `45-49`, `50-54`, `55+` |
 | marketing_email | text, nullable | — |
 | first_name | text, nullable | Optionele voornaam voor personalisatie (nurture-mails) |
@@ -306,6 +306,10 @@ Opgeslagen in `intake_sessions.domain_scores` (jsonb):
 }
 ```
 
+**Engine vs. pijler/thema-routing:** De scoring-engine berekent **6 domeinscores** (`energy_score` en `recovery_score` incl.). Intake-routing (primary theme, gids-opt-in, drawer) gebruikt **4 gemeten pijlers**: `sleep`, `stress`, `nutrition`, `movement` (`MeasuredPillarId`). `energy` en `recovery` hebben geen eigen `PillarId`, primary theme of `PILLAR_TO_GUIDE_THEMA`-key; ze sturen wel advies en secundaire links (bv. energiegids bij lage `energy_score`).
+
+**Profielpagina's vs. labels:** Live profielpagina's: `onrustige-slaper`, `stressdrager`, `lage-batterij`, `overtrainer`. `In Balans` heeft een engine-label maar geen profielpagina; `Overtrainer` heeft een profielpagina maar geen engine-label.
+
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: juni 2026*
