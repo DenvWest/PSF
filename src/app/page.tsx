@@ -5,6 +5,7 @@ import { absoluteUrl } from "@/lib/public-site-url";
 import HomeTrustSection from "@/components/homepage/HomeTrustSection";
 import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
 import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
+import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import "./homepage.css";
 
 const HOME_TITLE = "Minder energie na 40? Gratis Leefstijlcheck | PerfectSupplement";
@@ -56,6 +57,7 @@ export default function HomePage() {
         <HomeTrustSection />
         <LifestyleCheckSection />
         <HomeGuidesPromoSection />
+        <FloatingLeefstijlcheckCta />
       </div>
     </>
   );

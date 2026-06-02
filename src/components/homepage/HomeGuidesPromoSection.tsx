@@ -66,7 +66,7 @@ export default function HomeGuidesPromoSection() {
             <p className="mt-3 text-sm leading-relaxed text-stone-500">{secondaryLine}</p>
             <Link
               href={ctaHref}
-              className="mt-7 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover"
+              className="mt-7 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600 focus-visible:outline focus-visible:ring-2 focus-visible:ring-orange-500/50 focus-visible:ring-offset-2"
             >
               {cta}
             </Link>

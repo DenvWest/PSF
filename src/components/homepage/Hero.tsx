@@ -4,12 +4,7 @@ import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import { HOMEPAGE_HERO, HOMEPAGE_LIFESTYLE } from "@/data/homepage";
 
-const HERO_BULLETS = [
-  "Slaaptekort en verstoord herstel",
-  "Chronische stress en mentale druk",
-  "Te weinig beweging of juist te weinig herstel",
-  "Overgewicht en metabole gezondheid",
-] as const;
+const HERO_BULLET_SKIP = "Gerangschikt op waarschijnlijkheid en impact";
 
 function CheckIcon() {
   return (
@@ -50,7 +45,17 @@ function CheckBullet({
 }
 
 export default function Hero() {
-  const { primaryCta, secondaryCta, footnoteLabel, footnoteHref } = HOMEPAGE_HERO;
+  const {
+    bullets,
+    primaryCta,
+    footnoteLabel,
+    footnoteHref,
+    headline,
+    subheadline,
+    eyebrow,
+  } = HOMEPAGE_HERO;
+
+  const heroBullets = bullets.filter((bullet) => bullet !== HERO_BULLET_SKIP);
 
   return (
     <section className="relative border-b border-stone-200/50 bg-[#F7F5F0]">
@@ -60,29 +65,19 @@ export default function Hero() {
       <Container className="relative max-w-screen-xl">
         <div className="max-w-3xl py-[clamp(2.5rem,6vh,4.5rem)]">
           <p className="mb-5 inline-flex rounded-full border border-ps-green/35 bg-white/50 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-widest text-ps-green">
-            VOOR MANNEN 40+
+            {eyebrow}
           </p>
 
-          <h1 className="text-pretty text-4xl font-normal leading-[1.12] tracking-[0.01em] text-stone-900 sm:text-5xl lg:text-6xl">
-            <span className="block">Minder energie na je 40e?</span>
-            <span className="mt-1 block text-[0.92em] font-normal italic text-stone-500">
-              Meestal ligt het niet aan testosteron.
-            </span>
+          <h1 className="text-pretty text-3xl font-normal leading-[1.14] tracking-[0.01em] text-stone-900 sm:text-[2rem] sm:leading-[1.12] lg:text-[2.35rem]">
+            {headline}
           </h1>
 
-          <div className="mt-6 max-w-prose space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
-            <p>
-              Testosteron daalt geleidelijk na je 40e — maar bij de meeste mannen is dat niet
-              de hoofdoorzaak van vermoeidheid, minder libido of trager herstel.
-            </p>
-            <p>
-              Vaker spelen andere factoren een grotere rol: slaap, stress, lichaamsgewicht en
-              beweging.
-            </p>
-          </div>
+          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-stone-600 sm:text-base">
+            {subheadline}
+          </p>
 
           <ul className="mt-7 space-y-3">
-            {HERO_BULLETS.map((bullet, index) => (
+            {heroBullets.map((bullet, index) => (
               <CheckBullet key={bullet} index={index}>
                 {bullet}
               </CheckBullet>
@@ -101,7 +96,7 @@ export default function Hero() {
               href={`#${HOMEPAGE_LIFESTYLE.sectionId}`}
               className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-stone-300 bg-white px-6 py-3.5 text-sm font-medium text-stone-700 shadow-sm transition hover:border-stone-400 hover:bg-stone-50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-stone-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F5F0]"
             >
-              {secondaryCta}
+              Bekijk hoe het werkt
             </Link>
           </div>
 
