@@ -1,13 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { GUIDE_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { GuideThema } from "@/types/guide-opt-in";
+
+type GuideOptInFormVariant = "default" | "intake";
 
 interface GuideOptInFormProps {
   themaSlug: GuideThema;
   ctaText: string;
   successMessage: string;
+  /** Direct PDF na succes (intake-resultaten). */
+  pdfPath?: string | null;
+  variant?: GuideOptInFormVariant;
+  /** Intake: marketing al achtergelaten — geen dubbele checkbox. */
+  skipMarketingConsent?: boolean;
 }
 
 function emailLooseOk(value: string): boolean {
@@ -19,6 +27,9 @@ export function GuideOptInForm({
   themaSlug,
   ctaText,
   successMessage,
+  pdfPath = null,
+  variant = "default",
+  skipMarketingConsent = false,
 }: GuideOptInFormProps) {
   const [email, setEmail] = useState("");
   const [marketing, setMarketing] = useState(false);
@@ -35,7 +46,7 @@ export function GuideOptInForm({
       return;
     }
 
-    if (!marketing) {
+    if (!skipMarketingConsent && !marketing) {
       setErrorMessage(
         "Geef toestemming om de gids en tips per e-mail te ontvangen.",
       );
