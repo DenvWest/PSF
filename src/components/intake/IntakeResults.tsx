@@ -33,6 +33,8 @@ import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
+import { getIntakeGuideCta } from "@/lib/intake-guide-cta";
+import { GuideOptInForm } from "@/components/gids/GuideOptInForm";
 import { buildSummaryRows } from "@/lib/results-summary-rows";
 import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import FoundationPyramid, {
@@ -292,6 +294,8 @@ export default function IntakeResults({
   const themeLabel = getPillarById(primaryTheme)?.label ?? "";
   const hasThemeBacklink = Boolean(themeLinks.pillarHref || themeLinks.profileSlug);
   const primaryPillarHref = themeLinks.pillarHref ?? "/intake";
+  const guideCta = getIntakeGuideCta(primaryTheme);
+  const [guideFormOpen, setGuideFormOpen] = useState(false);
 
   const hasExploreContent =
     supplementRoute.length > 0 ||
@@ -378,20 +382,42 @@ export default function IntakeResults({
           ) : null}
 
           <div className="mt-5 text-center">
-            <Link
-              href={primaryPillarHref}
-              onClick={() => {
-                trackEvent("intake_cta_to_pillar", { theme_slug: primaryTheme });
-                emitIntakeClientEvent("intake.cta_to_pillar", {
-                  theme_slug: primaryTheme,
-                  session_id: sessionId,
-                });
-              }}
-              className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
-              style={{ background: "#C8956C" }}
-            >
-              {REVEAL_COPY.cta}
-            </Link>
+            {guideCta ? (
+              <div className="text-left">
+                {!guideFormOpen ? (
+                  <button
+                    type="button"
+                    onClick={() => setGuideFormOpen(true)}
+                    className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+                  >
+                    {guideCta.ctaLabel}
+                  </button>
+                ) : (
+                  <GuideOptInForm
+                    themaSlug={guideCta.thema}
+                    ctaText={guideCta.ctaLabel}
+                    successMessage={guideCta.successMessage}
+                    pdfPath={guideCta.pdfPath}
+                    variant="intake"
+                    skipMarketingConsent={hasMarketingEmail}
+                  />
+                )}
+              </div>
+            ) : (
+              <Link
+                href={primaryPillarHref}
+                onClick={() => {
+                  trackEvent("intake_cta_to_pillar", { theme_slug: primaryTheme });
+                  emitIntakeClientEvent("intake.cta_to_pillar", {
+                    theme_slug: primaryTheme,
+                    session_id: sessionId,
+                  });
+                }}
+                className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              >
+                {REVEAL_COPY.cta}
+              </Link>
+            )}
 
             {secondaryTheme ? (
               <Link

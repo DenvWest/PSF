@@ -4,10 +4,10 @@ import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { GuideThema } from "@/types/guide-opt-in";
 
 /** Pijlers met een PDF-gids; ontbrekende keys → fallback naar pijler-link-CTA. */
-const PILLAR_TO_GUIDE_THEMA = {
+const PILLAR_TO_GUIDE_THEMA: Partial<Record<MeasuredPillarId, GuideThema>> = {
   sleep: "slaap",
   stress: "stress",
-} as const satisfies Partial<Record<MeasuredPillarId, GuideThema>>;
+};
 
 export type IntakeGuideCta = {
   thema: GuideThema;
@@ -15,7 +15,6 @@ export type IntakeGuideCta = {
   pdfPath: string;
   successMessage: string;
   ctaLabel: string;
-  formSubmitLabel: string;
 };
 
 function guideHasPdf(thema: GuideThema): boolean {
@@ -23,7 +22,7 @@ function guideHasPdf(thema: GuideThema): boolean {
 }
 
 export function getIntakeGuideCta(pillar: MeasuredPillarId): IntakeGuideCta | null {
-  const thema = PILLAR_TO_GUIDE_THEMA[pillar as keyof typeof PILLAR_TO_GUIDE_THEMA];
+  const thema = PILLAR_TO_GUIDE_THEMA[pillar];
   if (!thema || !guideHasPdf(thema)) {
     return null;
   }
@@ -42,6 +41,5 @@ export function getIntakeGuideCta(pillar: MeasuredPillarId): IntakeGuideCta | nu
     pdfPath,
     successMessage: guide.optIn.successMessage,
     ctaLabel: `Download je gratis ${pillarLabel}-gids`,
-    formSubmitLabel: "Download gids",
   };
 }
