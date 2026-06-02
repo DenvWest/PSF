@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
@@ -16,9 +17,7 @@ export const metadata: Metadata = {
   title: "Herstel Verbeteren Na 40: Training, Voeding & Supplementen | PerfectSupplement",
   description:
     "Trager herstel na 40? Lees waarom spierherstel verandert en wat werkt: slaap, eiwit, rust, magnesium, omega-3, vitamine D, creatine en meer — onderbouwd en stap voor stap.",
-  alternates: {
-    canonical: "/herstel-verbeteren-na-40",
-  },
+  ...canonicalMetadata("/herstel-verbeteren-na-40"),
   openGraph: {
     title: "Herstel Verbeteren Na 40: De Complete Gids",
     description:

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -13,9 +14,7 @@ export const metadata: Metadata = {
   title: "Energie Na 40: Waarom Je Moe Bent en Wat Je Eraan Doet | PerfectSupplement",
   description:
     "Structureel moe na 40? Herkenning, oorzaken in begrijpelijke taal (slaap, ritme, eten, beweging) en wat je stap voor stap kunt doen.",
-  alternates: {
-    canonical: "/energie-na-40",
-  },
+  ...canonicalMetadata("/energie-na-40"),
   openGraph: {
     title: "Energie Na 40: Waarom Je Anders Bent (en Wat Je Eraan Doet)",
     description:

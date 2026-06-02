@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 
 export const metadata: Metadata = {
   title: "Onze methodologie | PerfectSupplement",
   description:
     "Hoe we supplementen beoordelen: criteria, weging en onafhankelijkheid. Transparant en herhaalbaar.",
-  alternates: { canonical: "/methodologie" },
+  ...canonicalMetadata("/methodologie"),
 };
 
 const vergelijkingen = [

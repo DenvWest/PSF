@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/public-site-url";
 
 export type BlogCategoryKey = "omega-3" | "magnesium" | "default";
 
@@ -119,16 +120,6 @@ export function formatPublishedLabel(isoDate: string): string {
   return d.toLocaleDateString("nl-NL", { month: "long", year: "numeric" });
 }
 
-function absoluteUrl(path: string): string | undefined {
-  const base = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!base) return undefined;
-  try {
-    return new URL(path, base.endsWith("/") ? base : `${base}/`).toString();
-  } catch {
-    return undefined;
-  }
-}
-
 /** Next.js metadata for article routes; uses title template from root layout. */
 export function buildArticlePageMetadata(slug: string): Metadata {
   const post = getBlogPostBySlug(slug);
@@ -138,14 +129,14 @@ export function buildArticlePageMetadata(slug: string): Metadata {
   const description = post.metaDescription?.trim() || post.excerpt;
   const cover = getCoverImageSrc(post);
   const canonicalPath = `/${post.slug}`;
-  const ogImage = absoluteUrl(cover) ?? cover;
+  const ogImage = cover.startsWith("http") ? cover : absoluteUrl(cover);
 
   return {
     title,
     description,
     keywords: post.keywords,
     alternates: {
-      canonical: canonicalPath,
+      canonical: absoluteUrl(canonicalPath),
     },
     openGraph: {
       type: "article",

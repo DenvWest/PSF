@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import {
   ABOUT_CONTACT,
@@ -20,7 +21,7 @@ import {
 export const metadata: Metadata = {
   title: ABOUT_METADATA.title,
   description: ABOUT_METADATA.description,
-  alternates: { canonical: "/over-ons" },
+  ...canonicalMetadata("/over-ons"),
 };
 
 const linkClass =

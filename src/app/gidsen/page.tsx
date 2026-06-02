@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { GUIDE_SLUGS, GUIDE_DATA } from "@/data/gids";
@@ -8,9 +9,7 @@ export const metadata: Metadata = {
   title: "Gidsen na 40: slaap, energie, stress en herstel | PerfectSupplement",
   description:
     "Overzicht van onze themagidsen voor mannen 40+. Kies slaap, energie, stress, herstel of testosteron — praktisch en zonder diagnoses.",
-  alternates: {
-    canonical: "/gidsen",
-  },
+  ...canonicalMetadata("/gidsen"),
 };
 
 export default function GidsenPage() {

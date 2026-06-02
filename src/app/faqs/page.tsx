@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import FaqSearch from "@/components/faq-search";
 import Container from "@/components/layout/Container";
 import { faqHelpCards, faqItems } from "@/data/contact-faq";
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   },
   description:
     "Veelgestelde vragen, snelle routes en contactopties van PerfectSupplement.",
-  alternates: { canonical: "/faqs" },
+  ...canonicalMetadata("/faqs"),
 };
 
 export default function FaqPage() {

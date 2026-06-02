@@ -15,6 +15,7 @@ import {
 } from "@/data/blog/categorieen";
 import type { BlogCategorie } from "@/types/blog";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
+import { absoluteUrl } from "@/lib/public-site-url";
 import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 
 interface Props {
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: config.metaTitle,
       description: config.metaDescription,
-      alternates: { canonical: `/blog/${categorie}` },
+      alternates: { canonical: absoluteUrl(`/blog/${categorie}`) },
     };
   }
 
@@ -49,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     keywords: artikel.keywords,
-    alternates: { canonical: blogArtikelPad(artikel) },
+    alternates: { canonical: absoluteUrl(blogArtikelPad(artikel)) },
     openGraph: {
       type: "article",
       title,

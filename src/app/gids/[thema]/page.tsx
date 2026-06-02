@@ -6,6 +6,7 @@ import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsRetu
 import { GuideOptInForm } from "@/components/gids/GuideOptInForm";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { GUIDE_SLUGS, getGuideData } from "@/data/gids";
+import { absoluteUrl } from "@/lib/public-site-url";
 import type { GuideThema } from "@/types/guide-opt-in";
 
 interface Props {
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: data.seo.title,
     description: data.seo.description,
-    alternates: { canonical: data.seo.canonical },
+    alternates: { canonical: absoluteUrl(data.seo.canonical) },
     openGraph: {
       title: data.seo.title,
       description: data.seo.description,

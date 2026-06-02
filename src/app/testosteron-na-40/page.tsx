@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
   title: "Testosteron na 40: wat verandert en wat helpt | PerfectSupplement",
   description:
     "Testosteron na 40 in begrijpelijke taal: leeftijdstrend, slaap, stress en training — zonder diagnoses. Links naar vergelijkingen en cluster-artikelen.",
-  alternates: { canonical: "/testosteron-na-40" },
+  ...canonicalMetadata("/testosteron-na-40"),
   openGraph: {
     title: "Testosteron Na 40: Complete Gids",
     description:

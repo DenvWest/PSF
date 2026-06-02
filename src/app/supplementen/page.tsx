@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import HubHero from "@/components/supplement-hub/HubHero";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     description:
       "Onafhankelijke supplementgidsen en vergelijkingen voor mannen 40+.",
   },
-  alternates: { canonical: "/supplementen" },
+  ...canonicalMetadata("/supplementen"),
 };
 
 const breadcrumbSchema = buildBreadcrumbSchema([

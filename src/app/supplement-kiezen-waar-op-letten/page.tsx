@@ -15,10 +15,7 @@ import {
 } from "@/data/page-content/supplement-kiezen-waar-op-letten";
 
 export function generateMetadata() {
-    return {
-        ...buildArticlePageMetadata("supplement-kiezen-waar-op-letten"),
-        alternates: { canonical: "/supplement-kiezen-waar-op-letten" },
-    };
+    return buildArticlePageMetadata("supplement-kiezen-waar-op-letten");
 }
 
 const relatedPages = [

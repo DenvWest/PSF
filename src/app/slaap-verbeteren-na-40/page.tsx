@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
@@ -12,9 +13,7 @@ export const metadata: Metadata = {
   title: "Slaap Verbeteren Na 40: Oorzaken, Tips & Supplementen | PerfectSupplement",
   description:
     "Slecht slapen na 40? Ontdek waarom je slaap verandert en wat je er nu aan doet. Van leefstijl tot supplementen — onderbouwd en praktisch.",
-  alternates: {
-    canonical: "/slaap-verbeteren-na-40",
-  },
+  ...canonicalMetadata("/slaap-verbeteren-na-40"),
   openGraph: {
     title: "Slaap Verbeteren Na 40: De Complete Gids",
     description:

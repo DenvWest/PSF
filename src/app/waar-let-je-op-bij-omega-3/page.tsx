@@ -14,10 +14,7 @@ import {
 } from "@/data/page-content/waar-let-je-op-bij-omega-3";
 
 export function generateMetadata() {
-    return {
-        ...buildArticlePageMetadata("waar-let-je-op-bij-omega-3"),
-        alternates: { canonical: "/waar-let-je-op-bij-omega-3" },
-    };
+    return buildArticlePageMetadata("waar-let-je-op-bij-omega-3");
 }
 
 const epaSection = deepDiveSections[0];

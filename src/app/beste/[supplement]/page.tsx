@@ -25,6 +25,7 @@ import {
   buildBreadcrumbSchema,
   buildItemListSchema,
 } from "@/lib/seo/structuredData";
+import { absoluteUrl } from "@/lib/public-site-url";
 import {
   isSupplementAvailable,
   getSupplementDisabledReason,
@@ -45,12 +46,12 @@ export async function generateMetadata({
   const data = getSupplementComparisonData(supplement);
   if (!data) return {};
 
-  const pageUrl = `https://perfectsupplement.nl/beste/${supplement}`;
+  const pageUrl = absoluteUrl(`/beste/${supplement}`);
 
   const metadata: Metadata = {
     title: data.seoTitle,
     description: data.seoDescription,
-    alternates: { canonical: `/beste/${supplement}` },
+    alternates: { canonical: pageUrl },
     openGraph: {
       title: data.seoTitle,
       description: data.seoDescription,
@@ -88,7 +89,7 @@ export default async function Page({ params }: PageProps) {
   const data = getSupplementComparisonData(supplement);
   if (!data) notFound();
 
-  const pageUrl = `https://perfectsupplement.nl/beste/${supplement}`;
+  const pageUrl = absoluteUrl(`/beste/${supplement}`);
   const topProductLabel = data.topProductLabel ?? "Topkeuze";
   const topProduct =
     data.products.find((p) => p.bestFor === topProductLabel) ?? data.products[0];

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getSupplementData, ALL_SUPPLEMENT_SLUGS } from "@/data/supplement-guides";
 import type { SupplementSlug } from "@/types/supplement-guide";
+import { absoluteUrl } from "@/lib/public-site-url";
 import SupplementPage from "@/components/supplement-guides/SupplementPage";
 
 type Props = { params: Promise<{ supplement: string }> };
@@ -16,11 +17,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
   const data = getSupplementData(supplement as SupplementSlug);
-  const ogUrl = `https://perfectsupplement.nl/supplementen/${supplement}`;
+  const ogUrl = absoluteUrl(`/supplementen/${supplement}`);
   return {
     title: data.metaTitle,
     description: data.metaDescription,
-    alternates: { canonical: `/supplementen/${supplement}` },
+    alternates: { canonical: ogUrl },
     openGraph: {
       title: data.metaTitle,
       description: data.metaDescription,

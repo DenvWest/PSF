@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -14,9 +15,7 @@ export const metadata: Metadata = {
     "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust | PerfectSupplement",
   description:
     "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
-  alternates: {
-    canonical: "/stress-verminderen-man",
-  },
+  ...canonicalMetadata("/stress-verminderen-man"),
   openGraph: {
     title: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
     description:

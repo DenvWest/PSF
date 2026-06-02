@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Hero from "@/components/homepage/Hero";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 import HomeTrustSection from "@/components/homepage/HomeTrustSection";
 import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
 import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   title: "Home",
   description:
     "Voor mannen 40+: ontdek in 3 minuten of vermoeidheid door leefstijl komt — niet door testosteron. Gratis Leefstijlcheck, 15 vragen.",
-  alternates: { canonical: "/" },
+  ...canonicalMetadata("/"),
 };
 
 export default function HomePage() {
