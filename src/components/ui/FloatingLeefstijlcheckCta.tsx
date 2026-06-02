@@ -14,15 +14,32 @@ export default function FloatingLeefstijlcheckCta() {
   useEffect(() => {
     if (dismissed) return;
 
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let hasRevealed = false;
+
+    function reveal() {
+      if (hasRevealed) return;
+      hasRevealed = true;
+      setRevealed(true);
+      window.removeEventListener("scroll", onScroll);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    }
+
     function onScroll() {
-      if (window.scrollY >= window.innerHeight) {
-        setRevealed(true);
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total > 0 && window.scrollY / total >= 0.25) {
+        reveal();
       }
     }
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    timeoutId = setTimeout(reveal, 6000);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    };
   }, [dismissed]);
 
   if (dismissed) return null;
