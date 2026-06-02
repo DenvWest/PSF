@@ -28,7 +28,7 @@ export const HOMEPAGE_HERO = {
   widget: {
     eyebrow: "Gratis",
     title: "Leefstijlcheck voor mannen 40+",
-    body: "15 vragen · 3 minuten · persoonlijk herstelplan op 6 domeinen.",
+    body: "15 vragen · 3 minuten · leefstijl-inzicht op 6 domeinen.",
     cta: "Start direct",
   },
   microCopy: DISCLAIMER_TEXTS.ctaMicro,
@@ -67,7 +67,7 @@ export const HOMEPAGE_TRUST = {
 export const HOMEPAGE_GUIDES_PROMO = {
   title: "Gratis gidsen na 40",
   body:
-    "Diepgaande PDF's over slaap, stress, energie, herstel en testosteron — praktisch, onderbouwd en zonder diagnoses. Eén overzicht, geen keuzestress op de homepage.",
+    "Diepgaande PDF's over slaap, stress, energie, herstel en testosteron — praktisch, onderbouwd",
   secondaryLine:
     "Je hoeft niet vooraf te weten welk thema past. De Leefstijlcheck hierboven ordenet dat voor je.",
   cta: "Bekijk de gidsen",
