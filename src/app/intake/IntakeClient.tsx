@@ -207,6 +207,8 @@ export default function IntakeClient() {
         }
       }
 
+      setHasActiveMarketingEmailConsent(intakeConsent.marketingEmail);
+
       setScores(computed);
       setSessionTimestamp(ts);
       setSessionId(id);

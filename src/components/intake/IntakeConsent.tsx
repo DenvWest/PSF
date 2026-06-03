@@ -73,6 +73,14 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
     fontFamily: "inherit",
   };
 
+  const benefitCardStyle = {
+    background: "rgba(200,149,108,0.1)",
+    border: "1px solid rgba(200,149,108,0.28)",
+    borderRadius: 14,
+    padding: "16px",
+    marginBottom: 16,
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center">
       {/* Fixed progress bar at 100% — all questions answered */}
@@ -207,17 +215,27 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
           </p>
         </div>
 
-        <p style={{ ...sectionLabelStyle, marginTop: 8 }}>E-mail (optioneel)</p>
+        <p style={{ ...sectionLabelStyle, marginTop: 8 }}>Bewaar je overzicht (optioneel)</p>
 
-        {/* Optional email */}
-        <div className="mb-4">
-          <label
-            className="mb-2 block text-[13px] font-medium"
-            style={{ color: "rgba(255,255,255,0.45)" }}
+        {/* Optional email — benefit card */}
+        <div style={benefitCardStyle}>
+          <p
+            className="mb-3"
+            style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.55 }}
           >
-            E-mail (optioneel) — voor je gratis gids en/of persoonlijke inzichten
+            Stuur je leefstijl-overzicht naar je mail — handig om later terug te vinden, ook op je
+            telefoon.
+          </p>
+
+          <label
+            htmlFor="consent-optional-email"
+            className="mb-2 block text-[13px] font-medium"
+            style={{ color: "rgba(255,255,255,0.55)" }}
+          >
+            E-mailadres (optioneel)
           </label>
           <input
+            id="consent-optional-email"
             type="email"
             name="consent-optional-email"
             autoComplete="email"
@@ -237,32 +255,47 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
               fontFamily: "inherit",
             }}
           />
+
+          <p
+            className="mt-2"
+            style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}
+          >
+            Je ziet je resultaat zo op het scherm. Met e-mail kun je het later terugvinden en
+            ontvang je korte vervolgstappen — max. één mail per paar dagen.
+          </p>
+
+          {/* Marketing consent (conditional) */}
+          {showMarketing ? (
+            <div className="mt-4">
+              <label
+                style={{
+                  ...cardStyle,
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  marginBottom: 0,
+                }}
+              >
+                <input
+                  type="checkbox"
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                  style={{ accentColor: "#C8956C" }}
+                  checked={marketing}
+                  onChange={(e) => setMarketing(e.target.checked)}
+                />
+                <span style={{ fontSize: 14, color: "rgba(255,255,255,0.8)", lineHeight: 1.5 }}>
+                  {INTAKE_CONSENT_TEXT.marketing_email}
+                </span>
+              </label>
+              <p className="mt-1.5 pl-7" style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+                <Link href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
+                  Privacyverklaring
+                </Link>
+              </p>
+            </div>
+          ) : null}
         </div>
 
-        {/* Marketing consent (conditional) */}
-        {showMarketing ? (
-          <div className="mb-8">
-            <label style={cardStyle}>
-              <input
-                type="checkbox"
-                className="mt-0.5 h-4 w-4 shrink-0"
-                style={{ accentColor: "#C8956C" }}
-                checked={marketing}
-                onChange={(e) => setMarketing(e.target.checked)}
-              />
-              <span style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.5 }}>
-                {INTAKE_CONSENT_TEXT.marketing_email}
-              </span>
-            </label>
-            <p className="mt-1.5 pl-7" style={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
-              <Link href="/privacy" style={{ color: "rgba(255,255,255,0.5)", fontWeight: 600 }}>
-                Privacyverklaring
-              </Link>
-            </p>
-          </div>
-        ) : (
-          <div className="mb-8" />
-        )}
+        <div className="mb-8" />
 
         {/* CTA */}
         <button
@@ -284,6 +317,14 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
               ? "Verder naar berekening →"
               : "Geef toestemming om verder te gaan"}
         </button>
+        {canProceed ? (
+          <p
+            className="mt-3 text-center"
+            style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", lineHeight: 1.5 }}
+          >
+            Zonder e-mail ga je direct door naar je overzicht.
+          </p>
+        ) : null}
       </div>
     </div>
   );

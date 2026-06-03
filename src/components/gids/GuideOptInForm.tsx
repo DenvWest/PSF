@@ -172,6 +172,12 @@ export function GuideOptInForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {isIntake && intakeMarketingConsentActive ? (
+        <p className="text-xs leading-relaxed text-intake-ink-muted">
+          Je ontvangt al vervolgstappen per mail. Vul je adres in om ook de thema-gids te
+          ontvangen.
+        </p>
+      ) : null}
       <div className={isIntake ? "flex flex-col gap-3" : "flex flex-col gap-3 sm:flex-row"}>
         <input
           type="email"

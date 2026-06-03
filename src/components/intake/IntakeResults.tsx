@@ -401,13 +401,21 @@ export default function IntakeResults({
               />
             ) : guideCta ? (
               <div className="text-left">
+                {hasActiveMarketingEmailConsent ? (
+                  <p className="mb-3 text-center text-xs leading-relaxed text-intake-ink-muted">
+                    Je ontvangt al vervolgstappen per mail. Hier kun je ook de{" "}
+                    {guideCta.pillarLabel.toLowerCase()}-gids aanvragen.
+                  </p>
+                ) : null}
                 {!guideFormOpen ? (
                   <button
                     type="button"
                     onClick={() => setGuideFormOpen(true)}
                     className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
                   >
-                    {guideCta.ctaLabel}
+                    {hasActiveMarketingEmailConsent
+                      ? `Ontvang ook de ${guideCta.pillarLabel.toLowerCase()}-gids`
+                      : guideCta.ctaLabel}
                   </button>
                 ) : (
                   <GuideOptInForm
