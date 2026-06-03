@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isGuideThema } from "@/data/gids";
 import { getClientIp } from "@/lib/client-ip";
+import { emitEvent } from "@/lib/events";
 import { sha256Hex } from "@/lib/consent-hashing";
 import { guideOptInConsentRow, validateGuideOptIn } from "@/lib/guide-consent";
 import { hasActiveIntakeMarketingEmailConsent } from "@/lib/intake-marketing-consent-server";
@@ -120,6 +121,14 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json({ error: "Verzenden mislukt" }, { status: 500 });
   }
+
+  void emitEvent({
+    eventType: "email.opted_in",
+    sessionId,
+    email,
+    payload: { source: "guide", thema },
+    deliveredTo: ["nurture"],
+  });
 
   return NextResponse.json({ success: true });
 }
