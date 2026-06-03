@@ -33,7 +33,7 @@ export default function PrivacyRevokeConsent({
 
   useEffect(() => {
     void getLastSession().then((s) => {
-      setHasSession(s != null);
+      setHasSession(s?.session != null);
       setLoading(false);
     });
   }, []);

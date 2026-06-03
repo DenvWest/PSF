@@ -101,7 +101,7 @@ type IntakeResultsProps = {
   symptoms: SymptomId[];
   sessionId: string | null;
   firstName?: string | null;
-  hasMarketingEmail?: boolean;
+  hasActiveMarketingEmailConsent?: boolean;
   hideLegacyPlanSections?: boolean;
   secondaryTheme?: PillarId | null;
   onRestart?: () => void;
@@ -240,7 +240,7 @@ export default function IntakeResults({
   symptoms,
   sessionId,
   firstName,
-  hasMarketingEmail = false,
+  hasActiveMarketingEmailConsent = false,
   hideLegacyPlanSections = false,
   secondaryTheme = null,
   onRestart,
@@ -380,7 +380,7 @@ export default function IntakeResults({
             {REVEAL_COPY.contextLine}
           </p>
 
-          {hasMarketingEmail ? (
+          {hasActiveMarketingEmailConsent ? (
             <p className="mt-4 text-center text-sm text-intake-ink-muted">
               {getMailConfirmation(firstName)}
             </p>
@@ -416,7 +416,6 @@ export default function IntakeResults({
                     successMessage={guideCta.successMessage}
                     pdfPath={guideCta.pdfPath}
                     variant="intake"
-                    skipMarketingConsent={hasMarketingEmail}
                   />
                 )}
               </div>

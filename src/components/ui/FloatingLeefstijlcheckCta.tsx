@@ -4,12 +4,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HOMEPAGE_HERO } from "@/data/homepage";
 import { CATEGORIES } from "@/data/intake-questions";
+import { useInBodyLeefstijlcheckCtaVisible } from "@/lib/use-in-body-leefstijlcheck-cta-visible";
 
 export default function FloatingLeefstijlcheckCta() {
   const { widget } = HOMEPAGE_HERO;
   const domainPreview = CATEGORIES.slice(0, 4);
   const [dismissed, setDismissed] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const inBodyCtaVisible = useInBodyLeefstijlcheckCtaVisible();
+  const isShown = revealed && !inBodyCtaVisible;
 
   useEffect(() => {
     if (dismissed) return;
@@ -31,9 +34,9 @@ export default function FloatingLeefstijlcheckCta() {
       clearTimeout(timeoutId);
     }
 
-    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     const timeoutId = setTimeout(reveal, 6000);
+    onScroll();
 
     return () => {
       window.removeEventListener("scroll", onScroll);
@@ -47,11 +50,12 @@ export default function FloatingLeefstijlcheckCta() {
     <aside
       role="complementary"
       aria-label="Leefstijlcheck"
+      aria-hidden={!isShown}
       className={[
         "fixed z-40 transition-all duration-500 ease-out",
         "max-sm:inset-x-3 max-sm:bottom-3 max-sm:max-w-none",
         "sm:bottom-6 sm:right-6 sm:max-w-[360px]",
-        revealed
+        isShown
           ? "pointer-events-auto translate-x-0 translate-y-0 opacity-100"
           : "pointer-events-none translate-x-6 translate-y-4 opacity-0 max-sm:translate-y-8",
       ].join(" ")}
@@ -101,8 +105,7 @@ export default function FloatingLeefstijlcheckCta() {
           href="/intake"
           className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-ps-green shadow-sm transition hover:bg-stone-50 sm:mt-6"
         >
-          {widget.cta}
-          <span aria-hidden="true">→</span>
+          Doe de Leefstijlcheck — gratis →
         </Link>
       </div>
     </aside>

@@ -3,6 +3,11 @@ import { isGuideThema } from "@/data/gids";
 import { getClientIp } from "@/lib/client-ip";
 import { sha256Hex } from "@/lib/consent-hashing";
 import { guideOptInConsentRow, validateGuideOptIn } from "@/lib/guide-consent";
+import { hasActiveIntakeMarketingEmailConsent } from "@/lib/intake-marketing-consent-server";
+import {
+  INTAKE_SESSION_COOKIE_NAME,
+  verifySignedIntakeSessionCookie,
+} from "@/lib/intake-session-cookie";
 import {
   hasActiveGuideSequence,
   scheduleGuideNurtureSequence,
@@ -53,7 +58,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: validated.error }, { status: 400 });
   }
 
-  const { email, thema } = validated.value;
+  const { email, thema, marketingConsent } = validated.value;
 
   if (!process.env.RESEND_API_KEY?.trim()) {
     return NextResponse.json({ error: "Verzenden mislukt" }, { status: 500 });
@@ -64,6 +69,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "Server configuratie fout" },
       { status: 500 },
+    );
+  }
+
+  const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
+  const sessionId = verifySignedIntakeSessionCookie(rawCookie);
+  const intakeMarketingActive = sessionId
+    ? await hasActiveIntakeMarketingEmailConsent(supabase, sessionId)
+    : false;
+
+  if (intakeMarketingActive && !marketingConsent) {
+    return NextResponse.json(
+      { error: "Geef toestemming om de gids en tips per e-mail te ontvangen." },
+      { status: 400 },
     );
   }
 
@@ -79,6 +97,7 @@ export async function POST(request: NextRequest) {
         thema,
         ipHash,
         uaHash,
+        marketingConsent,
       }),
     );
 

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import ArticleReadingProgressBar from '@/components/content/ArticleReadingProgressBar'
+import FloatingLeefstijlcheckCta from '@/components/ui/FloatingLeefstijlcheckCta'
 import { readingProgressFraction } from '@/lib/reading-metrics'
 
 interface PillarReadingChromeProps {
@@ -50,6 +51,7 @@ export default function PillarReadingChrome({ children }: PillarReadingChromePro
     <>
       <ArticleReadingProgressBar progress={progress} />
       <div ref={measureRef}>{children}</div>
+      <FloatingLeefstijlcheckCta />
     </>
   )
 }

@@ -43,7 +43,7 @@ function GuidesFanFallback() {
 }
 
 export default function HomeGuidesPromoSection() {
-  const { title, body, secondaryLine, cta, ctaHref, footnote, imageSrc, imageAlt } =
+  const { title, body, secondaryLine, cta, ctaHref, imageSrc, imageAlt } =
     HOMEPAGE_GUIDES_PROMO;
 
   return (
@@ -70,7 +70,6 @@ export default function HomeGuidesPromoSection() {
             >
               {cta}
             </Link>
-            <p className="mt-4 text-xs leading-relaxed text-stone-500">{footnote}</p>
           </div>
 
           <div className="relative flex justify-center lg:justify-end">

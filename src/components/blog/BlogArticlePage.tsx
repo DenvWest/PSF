@@ -2,6 +2,7 @@ import type { BlogArtikel, BlogSectie as BlogSectieData } from "@/types/blog";
 import { blogSectionDomId } from "@/lib/article-heading-id";
 import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { buildBlogTocItems } from "@/lib/article-toc";
+import { isLongBlogArticle } from "@/lib/blog-article-length";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import BlogCategorieBadge from "./BlogCategorieBadge";
@@ -25,6 +26,7 @@ import {
   STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
 } from "@/lib/redactie-standaarden";
 import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
+import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -57,6 +59,13 @@ export default function BlogArticlePage({
   const tocItems = buildBlogTocItems(artikel.slug, artikel.secties);
   const showReadingGutters = tocItems.length >= ARTICLE_HIDE_TOC_BELOW_ITEMS;
 
+  const showMidArticleCta = isLongBlogArticle(artikel);
+  const midIndex = Math.ceil(hoofdSecties.length / 2);
+  const sectiesVoorMid = showMidArticleCta
+    ? hoofdSecties.slice(0, midIndex)
+    : hoofdSecties;
+  const sectiesNaMid = showMidArticleCta ? hoofdSecties.slice(midIndex) : [];
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -77,6 +86,7 @@ export default function BlogArticlePage({
   };
 
   return (
+    <>
     <div className="min-h-0 bg-stone-50/80 pb-28 md:bg-stone-50/85 md:pb-32">
       <script
         type="application/ld+json"
@@ -133,13 +143,28 @@ export default function BlogArticlePage({
           tocItems={tocItems}
           hideTocBelowItemCount={ARTICLE_HIDE_TOC_BELOW_ITEMS}
         >
-          {hoofdSecties.map((sectie, index) => (
+          {sectiesVoorMid.map((sectie, index) => (
             <BlogSectie
               key={`${sectie.titel}-${String(index)}`}
               sectie={sectie}
               anchorId={blogSectionDomId(artikel.slug, index, sectie.titel)}
             />
           ))}
+
+          {showMidArticleCta ? (
+            <BlogIntakeCTA className="mx-auto mt-14 max-w-[min(38rem,100%)]" />
+          ) : null}
+
+          {sectiesNaMid.map((sectie, index) => {
+            const sectieIndex = midIndex + index;
+            return (
+              <BlogSectie
+                key={`${sectie.titel}-${String(sectieIndex)}`}
+                sectie={sectie}
+                anchorId={blogSectionDomId(artikel.slug, sectieIndex, sectie.titel)}
+              />
+            );
+          })}
 
           {artikel.stressPillarTurbo ? (
             <aside className="mt-6 rounded-xl border border-stone-200/90 bg-[color-mix(in_srgb,var(--ps-bg)_96%,transparent)] px-6 py-6 md:px-7 md:py-8">
@@ -199,5 +224,7 @@ export default function BlogArticlePage({
         <BlogIntakeCTA className="mx-auto mt-20 max-w-[min(38rem,100%)] md:mt-24" />
       </Container>
     </div>
+    <FloatingLeefstijlcheckCta />
+    </>
   );
 }

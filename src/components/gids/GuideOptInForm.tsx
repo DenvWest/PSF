@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GUIDE_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { GuideThema } from "@/types/guide-opt-in";
 
@@ -14,8 +14,6 @@ interface GuideOptInFormProps {
   /** Direct PDF na succes (intake-resultaten). */
   pdfPath?: string | null;
   variant?: GuideOptInFormVariant;
-  /** Intake: marketing al achtergelaten — geen dubbele checkbox. */
-  skipMarketingConsent?: boolean;
 }
 
 function emailLooseOk(value: string): boolean {
@@ -29,14 +27,49 @@ export function GuideOptInForm({
   successMessage,
   pdfPath = null,
   variant = "default",
-  skipMarketingConsent = false,
 }: GuideOptInFormProps) {
   const [email, setEmail] = useState("");
   const [marketing, setMarketing] = useState(false);
+  const [intakeMarketingConsentActive, setIntakeMarketingConsentActive] =
+    useState(false);
+  const [consentStatus, setConsentStatus] = useState<"loading" | "ready">(
+    "loading",
+  );
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
   );
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/intake/session", {
+          credentials: "include",
+          cache: "no-store",
+        });
+        const json = (await res.json().catch(() => null)) as
+          | { hasActiveMarketingEmailConsent?: boolean }
+          | null;
+        if (!cancelled) {
+          setIntakeMarketingConsentActive(
+            json?.hasActiveMarketingEmailConsent === true,
+          );
+        }
+      } catch {
+        if (!cancelled) {
+          setIntakeMarketingConsentActive(false);
+        }
+      } finally {
+        if (!cancelled) {
+          setConsentStatus("ready");
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,7 +79,9 @@ export function GuideOptInForm({
       return;
     }
 
-    if (!skipMarketingConsent && !marketing) {
+    const marketingConsent = intakeMarketingConsentActive || marketing;
+
+    if (!marketingConsent) {
       setErrorMessage(
         "Geef toestemming om de gids en tips per e-mail te ontvangen.",
       );
@@ -60,10 +95,11 @@ export function GuideOptInForm({
       const response = await fetch("/api/gids/opt-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           email: email.trim(),
           thema: themaSlug,
-          marketingConsent: true,
+          marketingConsent,
         }),
       });
 
@@ -152,7 +188,7 @@ export function GuideOptInForm({
         </button>
       </div>
 
-      {!skipMarketingConsent ? (
+      {consentStatus === "ready" && !intakeMarketingConsentActive ? (
         <label className={consentClass}>
           <input
             type="checkbox"

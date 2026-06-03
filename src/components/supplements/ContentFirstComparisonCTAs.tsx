@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import Container from "@/components/layout/Container";
-import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
-import { INTAKE_PROMO } from "@/data/homepage";
 import type { SupplementCategory } from "@/types/supplement";
+
+const LEEFSTIJLCHECK_CTA_BUTTON = "Doe de Leefstijlcheck — gratis →";
 
 const CHOOSER_LABEL: Record<SupplementCategory, string> = {
   magnesium: "magnesium",
@@ -53,19 +53,17 @@ export function ComparisonIntakeFallbackCta() {
         className="my-16 rounded-lg border border-stone-200 bg-stone-50 p-8"
       >
         <h2 className="font-display mb-2 text-lg text-stone-900">
-          Niet zeker welk supplement bij jóu past?
+          Niet zeker waar jij zou moeten beginnen?
         </h2>
-        <p className="mb-2 text-stone-600">
-          Je situatie is uniek. Ontdek welke supplementen bij jouw profiel horen — de Leefstijlcheck
-          geeft je dat inzicht in {INTAKE_PROMO.durationLabel}.
+        <p className="mb-6 text-stone-600">
+          De Leefstijlcheck geeft je in 3 min inzicht op 6 leefstijl-domeinen — zodat je weet waar
+          je aandacht het meeste oplevert.
         </p>
-        <IntakeCtaMicro className="mb-4 text-sm text-stone-500" />
         <Link
           href="/intake"
           className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover"
         >
-          Ontdek jouw herstelprofiel — gratis
-          <span aria-hidden="true">→</span>
+          {LEEFSTIJLCHECK_CTA_BUTTON}
         </Link>
       </section>
     </Container>

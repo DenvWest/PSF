@@ -15,6 +15,7 @@ import {
   signIntakeSessionId,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import { hasActiveIntakeMarketingEmailConsent } from "@/lib/intake-marketing-consent-server";
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
@@ -79,7 +80,18 @@ export async function GET(request: NextRequest) {
   const sessionId = verifySignedIntakeSessionCookie(rawCookie);
 
   if (!sessionId) {
-    return NextResponse.json({ session: null }, { status: 200 });
+    return NextResponse.json(
+      { session: null, hasActiveMarketingEmailConsent: false },
+      { status: 200 },
+    );
+  }
+
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
   }
 
   const loaded = await loadIntakeSessionPayloadBySessionId(sessionId);
@@ -97,10 +109,19 @@ export async function GET(request: NextRequest) {
   }
 
   if (!loaded.session) {
-    return NextResponse.json({ session: null }, { status: 200 });
+    return NextResponse.json(
+      { session: null, hasActiveMarketingEmailConsent: false },
+      { status: 200 },
+    );
   }
 
-  return NextResponse.json({ session: loaded.session }, { status: 200 });
+  const hasActiveMarketingEmailConsent =
+    await hasActiveIntakeMarketingEmailConsent(admin, sessionId);
+
+  return NextResponse.json(
+    { session: loaded.session, hasActiveMarketingEmailConsent },
+    { status: 200 },
+  );
 }
 
 export async function POST(request: NextRequest) {

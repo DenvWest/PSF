@@ -65,15 +65,13 @@ export const HOMEPAGE_TRUST = {
 } as const;
 
 export const HOMEPAGE_GUIDES_PROMO = {
-  title: "Gratis gidsen na 40",
+  title: "Gratis gidsen voor mannen 40+",
   body:
-    "Diepgaande PDF's over slaap, stress, energie, herstel en testosteron — praktisch, onderbouwd en zonder diagnoses. Eén overzicht, geen keuzestress op de homepage.",
+    "Slaap die minder diep is, energie die eerder opraakt, herstel dat langer duurt — na je 40e verandert er van alles, vaak geleidelijk. Deze vijf compacte gidsen over slaap, stress, energie, herstel en testosteron geven je grip op wat er speelt. Onderbouwd en praktisch, zonder hype en zonder diagnoses.",
   secondaryLine:
-    "Je hoeft niet vooraf te weten welk thema past. De Leefstijlcheck hierboven ordenet dat voor je.",
+    "Nog niet zeker welk thema bij jou past? Doe eerst de Leefstijlcheck hierboven. In 3 minuten weet je waar je het beste kunt beginnen.",
   cta: "Bekijk de gidsen",
   ctaHref: "/gidsen",
-  footnote:
-    "Liever direct persoonlijk? Start de Leefstijlcheck — die wijst je naar je profiel en relevante vervolgstappen.",
   imageSrc: "/images/home/Gidsen-Compacte-Gidsen.webp",
   imageAlt:
     "Gratis compacte gidsen voor mannen 40+: slaap, stress, energie, herstel en testosteron",

@@ -75,6 +75,8 @@ export default function IntakeClient() {
   const [intakeConsent, setIntakeConsent] = useState<IntakeConsentPayload | null>(
     null,
   );
+  const [hasActiveMarketingEmailConsent, setHasActiveMarketingEmailConsent] =
+    useState(false);
   // Toon een laadscherm alleen als de gebruiker via de mail-link (?resultaten=true) binnenkomt.
   // Zonder die param: intro direct zichtbaar, sessie wordt stil op de achtergrond gecheckt.
   const [isCheckingSession, setIsCheckingSession] = useState(hasResultsParam);
@@ -105,12 +107,13 @@ export default function IntakeClient() {
       }
 
       try {
-        const session = await getLastSession();
+        const loaded = await getLastSession();
         if (cancelled) return;
 
-        if (session && hasResultsParam) {
-          hydrateFromSession(session);
-        } else if (!session && hasResultsParam) {
+        if (loaded?.session && hasResultsParam) {
+          hydrateFromSession(loaded.session);
+          setHasActiveMarketingEmailConsent(loaded.hasActiveMarketingEmailConsent);
+        } else if (!loaded?.session && hasResultsParam) {
           setResultsDeepLinkMissing(true);
         }
       } catch {
@@ -293,6 +296,7 @@ export default function IntakeClient() {
     setHoneypotWebsite("");
     setIntakeTurnstileToken("");
     setIntakeConsent(null);
+    setHasActiveMarketingEmailConsent(false);
     setResultsDeepLinkMissing(false);
     router.replace("/intake");
   }
@@ -430,9 +434,7 @@ export default function IntakeClient() {
             symptoms={symptoms}
             sessionId={sessionId}
             firstName={normalizeFirstName(firstName)}
-            hasMarketingEmail={Boolean(
-              intakeConsent?.marketingEmail && intakeConsent?.marketingEmailAddress,
-            )}
+            hasActiveMarketingEmailConsent={hasActiveMarketingEmailConsent}
             secondaryTheme={
               scores && primaryTheme
                 ? getSecondaryTheme(scores, answers, primaryTheme)

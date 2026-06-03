@@ -98,7 +98,12 @@ export async function saveReminderEmail(email: string) {
   }
 }
 
-export async function getLastSession(): Promise<IntakeSessionPayload | null> {
+export type IntakeSessionGetResponse = {
+  session: IntakeSessionPayload | null;
+  hasActiveMarketingEmailConsent: boolean;
+};
+
+export async function getLastSession(): Promise<IntakeSessionGetResponse | null> {
   try {
     const response = await fetch("/api/intake/session", {
       method: "GET",
@@ -107,14 +112,22 @@ export async function getLastSession(): Promise<IntakeSessionPayload | null> {
     });
 
     const json = (await response.json().catch(() => null)) as
-      | { session?: IntakeSessionPayload | null; error?: string }
+      | {
+          session?: IntakeSessionPayload | null;
+          hasActiveMarketingEmailConsent?: boolean;
+          error?: string;
+        }
       | null;
 
     if (!response.ok) {
       return null;
     }
 
-    return json?.session ?? null;
+    return {
+      session: json?.session ?? null,
+      hasActiveMarketingEmailConsent:
+        json?.hasActiveMarketingEmailConsent === true,
+    };
   } catch {
     return null;
   }

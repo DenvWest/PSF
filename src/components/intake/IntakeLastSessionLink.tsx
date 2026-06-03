@@ -31,9 +31,9 @@ export default function IntakeLastSessionLink({
 
   useEffect(() => {
     let cancelled = false;
-    void getLastSession().then((session) => {
+    void getLastSession().then((loaded) => {
       if (!cancelled) {
-        setLastSession(session);
+        setLastSession(loaded?.session ?? null);
       }
     });
     return () => {

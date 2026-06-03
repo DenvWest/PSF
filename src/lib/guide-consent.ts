@@ -51,6 +51,7 @@ export function guideOptInConsentRow(options: {
   thema: GuideThema;
   ipHash: string;
   uaHash: string;
+  marketingConsent: boolean;
 }): {
   email: string;
   thema: string;
@@ -66,7 +67,7 @@ export function guideOptInConsentRow(options: {
     thema: options.thema,
     consent_type: "guide_marketing_email",
     consent_version: CONSENT_VERSION,
-    granted: true,
+    granted: options.marketingConsent,
     consent_text: GUIDE_CONSENT_TEXT.guide_marketing_email,
     ip_hash: options.ipHash,
     ua_hash: options.uaHash,
