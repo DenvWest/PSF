@@ -220,7 +220,6 @@ export async function getPlanContent(
   orgId?: string,
 ): Promise<PlanContent> {
   const organizationId = orgId ?? getDefaultOrganizationId();
-  const visibleTiers = new Set(await getVisibleTiers(organizationId));
   const ready = await themeHasCompletePlanContent(themeSlug, organizationId);
 
   if (!ready) {
@@ -232,38 +231,12 @@ export async function getPlanContent(
       answers,
       organizationId,
     );
-    const supplement = fallback.buckets.supplement;
-    const actions: PlanAction[] = [];
-
-    if (supplement) {
-      actions.push({
-        kind: "supplement",
-        slug: supplement.slug,
-        name: supplement.name,
-        description: supplement.description,
-        goalPhrase: supplement.goalPhrase,
-        claimText: supplement.description,
-        sourceLabel: "Zie vergelijkingspagina",
-        sourceUrl: supplement.comparisonPath ?? supplement.affiliateUrl,
-        affiliateUrl: supplement.affiliateUrl ?? supplement.comparisonPath,
-        comparisonPath: supplement.comparisonPath,
-        tier: supplement.tier,
-        isPaid: supplement.isPaid,
-        paidDisclosureKey: supplement.paidDisclosureKey,
-        paidDisclosureText: await resolvePaidDisclosureText(
-          supplement,
-          organizationId,
-        ),
-        externalProviderLabel: supplement.externalProviderLabel,
-        externalProviderUrl: supplement.externalProviderUrl,
-      });
-    }
 
     return {
       ready: false,
       themeSlug,
       source: fallback.source,
-      actions: actions.filter((action) => visibleTiers.has(action.tier)),
+      actions: [],
     };
   }
 
@@ -286,6 +259,7 @@ export async function getPlanContent(
     };
   }
 
+  const visibleTiers = new Set(await getVisibleTiers(organizationId));
   const actions: PlanAction[] = [];
 
   // Treden oplopend op tier. Tier 1-3 vereisen een gepubliceerde claim;

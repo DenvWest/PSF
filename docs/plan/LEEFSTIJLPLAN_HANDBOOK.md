@@ -146,6 +146,13 @@ of L1, geen nieuwe infrastructuur.
   zichtbare titel op dezelfde slip.
 - **Bestaande sessies** (van vóór de gate) hebben geen consent-cookie → tijdelijk
   geen tracking tot her-consent. Bewust, verklaart een dip in event-volume.
+- **Default-org `maxTier` (B1):** vóór PLAN live controleren op Supabase dat migratie
+  `20260604120000_default_org_max_tier.sql` is toegepast (`settings.maxTier = 3` voor
+  `00000000-0000-0000-0000-000000000001`). Zie [`PLAN_ENGINE_DECISION.md`](PLAN_ENGINE_DECISION.md).
+- **`getVisibleTiers` caching (B5):** per `getPlanContent`-call een
+  `organizations`-select zonder cache (anders dan `disclosureCache` in plan-content).
+  Lage impact zolang PLAN niet live is; bij live-gang org-scoped in-memory cache met TTL
+  of meeliften in org-context-laag overwegen.
 
 ## 9. Roadmap-status
 
