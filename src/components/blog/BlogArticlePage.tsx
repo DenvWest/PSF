@@ -250,7 +250,7 @@ export default function BlogArticlePage({
         <BlogIntakeCTA className="mx-auto mt-20 max-w-[min(38rem,100%)] md:mt-24" />
       </Container>
     </div>
-    <FloatingLeefstijlcheckCta />
+    <FloatingLeefstijlcheckCta revealOnTimer={false} />
     </>
   );
 }

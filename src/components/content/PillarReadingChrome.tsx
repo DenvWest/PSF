@@ -51,7 +51,7 @@ export default function PillarReadingChrome({ children }: PillarReadingChromePro
     <>
       <ArticleReadingProgressBar progress={progress} />
       <div ref={measureRef}>{children}</div>
-      <FloatingLeefstijlcheckCta />
+      <FloatingLeefstijlcheckCta revealOnTimer={false} />
     </>
   )
 }

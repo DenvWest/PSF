@@ -73,7 +73,19 @@ function LeefstijlcheckPromoCard({
   );
 }
 
-export default function FloatingLeefstijlcheckCta() {
+type FloatingLeefstijlcheckCtaProps = {
+  revealOnScroll?: boolean;
+  scrollThreshold?: number;
+  revealOnTimer?: boolean;
+  revealAfterMs?: number;
+};
+
+export default function FloatingLeefstijlcheckCta({
+  revealOnScroll = true,
+  scrollThreshold = 0.25,
+  revealOnTimer = true,
+  revealAfterMs = 6000,
+}: FloatingLeefstijlcheckCtaProps = {}) {
   const { widget } = HOMEPAGE_HERO;
   const domainPreview = CATEGORIES.slice(0, 4);
   const [dismissed, setDismissed] = useState(false);
@@ -101,31 +113,45 @@ export default function FloatingLeefstijlcheckCta() {
     if (dismissed) return;
 
     let hasRevealed = false;
-
-    function onScroll() {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      if (total > 0 && window.scrollY / total >= 0.25) {
-        reveal();
-      }
-    }
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     function reveal() {
       if (hasRevealed) return;
       hasRevealed = true;
       setRevealed(true);
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(timeoutId);
+      if (revealOnScroll) {
+        window.removeEventListener("scroll", onScroll);
+      }
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
     }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    const timeoutId = setTimeout(reveal, 6000);
-    onScroll();
+    function onScroll() {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total > 0 && window.scrollY / total >= scrollThreshold) {
+        reveal();
+      }
+    }
+
+    if (revealOnScroll) {
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+
+    if (revealOnTimer) {
+      timeoutId = setTimeout(reveal, revealAfterMs);
+    }
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(timeoutId);
+      if (revealOnScroll) {
+        window.removeEventListener("scroll", onScroll);
+      }
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
     };
-  }, [dismissed]);
+  }, [dismissed, revealOnScroll, scrollThreshold, revealOnTimer, revealAfterMs]);
 
   useEffect(() => {
     const media = window.matchMedia(FOOTER_DOCK_MEDIA);
