@@ -52,8 +52,8 @@ export default function HomeGuidesPromoSection() {
       aria-labelledby="gidsen-promo-heading"
     >
       <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          <div className="max-w-lg">
+        <div className="flex flex-col items-center gap-12 md:flex-row md:items-center lg:gap-12">
+          <div className="w-full min-w-0 max-w-lg md:flex-1 md:max-w-none">
             <h2
               id="gidsen-promo-heading"
               className="font-serif text-2xl text-stone-900 sm:text-3xl"
@@ -72,7 +72,7 @@ export default function HomeGuidesPromoSection() {
             </Link>
           </div>
 
-          <div className="relative flex justify-center lg:justify-end">
+          <div className="relative flex w-full min-w-0 max-w-md shrink-0 justify-center md:flex-1 md:max-w-none md:justify-center">
             {imageSrc ? (
               <Image
                 src={imageSrc}
