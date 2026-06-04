@@ -1,15 +1,33 @@
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
-const DEFAULT_VISIBLE_TIERS: readonly number[] = [1];
+const DEFAULT_MAX_TIER = 1;
+const MIN_TIER = 1;
+const MAX_TIER = 5;
 
 type OrgSettingsRow = { settings: Record<string, unknown> | null };
 
-export async function getVisibleTiers(orgId: string): Promise<number[]> {
-  const fallback = [...DEFAULT_VISIBLE_TIERS];
+function parseMaxTier(settings: Record<string, unknown>): number {
+  const raw = settings.maxTier;
+  if (
+    typeof raw !== "number" ||
+    !Number.isInteger(raw) ||
+    raw < MIN_TIER ||
+    raw > MAX_TIER
+  ) {
+    return DEFAULT_MAX_TIER;
+  }
 
+  return raw;
+}
+
+function tiersUpToMax(maxTier: number): number[] {
+  return Array.from({ length: maxTier }, (_, index) => index + 1);
+}
+
+export async function getVisibleTiers(orgId: string): Promise<number[]> {
   const admin = createSupabaseAdmin();
   if (!admin) {
-    return fallback;
+    return tiersUpToMax(DEFAULT_MAX_TIER);
   }
 
   const { data, error } = await admin
@@ -19,21 +37,8 @@ export async function getVisibleTiers(orgId: string): Promise<number[]> {
     .maybeSingle<OrgSettingsRow>();
 
   if (error || !data?.settings) {
-    return fallback;
+    return tiersUpToMax(DEFAULT_MAX_TIER);
   }
 
-  const raw = data.settings.visibleTiers;
-  if (!Array.isArray(raw)) {
-    return fallback;
-  }
-
-  const tiers = raw.filter(
-    (value): value is number =>
-      typeof value === "number" &&
-      Number.isInteger(value) &&
-      value >= 1 &&
-      value <= 5,
-  );
-
-  return tiers.length > 0 ? tiers : fallback;
+  return tiersUpToMax(parseMaxTier(data.settings));
 }
