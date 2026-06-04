@@ -23,15 +23,16 @@ export default function GidsenPage() {
                 Overzicht
               </p>
               <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                Gidsen na 40
+                Begrijp wat er na je 40e verandert
               </h1>
             </header>
 
             <section className="mt-10">
               <p className="text-lg text-gray-700 leading-relaxed">
-                Geen snelle fixes of vage beloftes — gewoon begrijpen waar het wringt
-                en wat je eraan doet. Kies je thema en ontvang de gratis PDF per
-                e-mail, of lees de complete gids op de website.
+                Slechter slapen, minder energie, trager herstel — na je 40e verandert
+                er van alles. Deze gidsen helpen je begrijpen wat er speelt en welke
+                stappen echt verschil maken. Geen hypes, geen wondermiddelen. Kies je
+                thema, ontvang de gratis PDF per e-mail of lees de complete gids online.
               </p>
             </section>
 
@@ -40,13 +41,16 @@ export default function GidsenPage() {
                 Leefstijl eerst
               </h2>
               <p className="mt-3 text-gray-700 leading-relaxed">
-                Geen affiliate in deze gidsen — wel praktische stappen vóór supplementen.
+                De grootste winst zit zelden in een supplement. Slaap, voeding, beweging
+                en herstel doen meestal het meeste — daarom beginnen deze gidsen daar.
+                Geen affiliate.
               </p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <div className="p-5 rounded-xl border border-stone-200 bg-stone-50">
                   <p className="font-semibold text-gray-900">Voeding na 40</p>
                   <p className="mt-2 text-sm text-gray-600">
-                    Eiwit, ritme en vetten — basis vóór vergelijkingen.
+                    Eiwit, ritme en vetten — de basis die na je 40e zwaarder telt.
+                    Praktische stappen vóór je aan supplementen denkt.
                   </p>
                   <Link
                     href="/voeding-na-40"
@@ -58,7 +62,8 @@ export default function GidsenPage() {
                 <div className="p-5 rounded-xl border border-stone-200 bg-stone-50">
                   <p className="font-semibold text-gray-900">Beweging na 40</p>
                   <p className="mt-2 text-sm text-gray-600">
-                    Krachttraining, herstel en ritme — zonder sportschool-hype.
+                    Kracht, herstel en ritme — zonder sportschool-hype. Wat werkt in
+                    een drukke week.
                   </p>
                   <Link
                     href="/beweging-na-40"
@@ -93,7 +98,7 @@ export default function GidsenPage() {
                           href={`/gids/${slug}`}
                           className="inline-flex items-center justify-center rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-800"
                         >
-                          Download gratis {guide.guideName} →
+                          Ontvang de gratis {guide.guideName} →
                         </Link>
                         <Link
                           href={guide.pillarHref}
