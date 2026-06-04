@@ -360,3 +360,36 @@ h6 {
   border-radius: 0.75rem;
   padding: 1rem 1.25rem;
 }
+
+/* ── Floating Leefstijlcheck ↔ footer dock ─────────────────────── */
+
+.floating-cta-footer-slot {
+  display: none;
+}
+
+html.has-floating-leefstijlcheck-cta .floating-cta-footer-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  html.has-floating-leefstijlcheck-cta .floating-cta-footer-layout {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 2rem;
+  }
+
+  html.has-floating-leefstijlcheck-cta .floating-cta-footer-slot {
+    display: block;
+    width: 360px;
+    flex-shrink: 0;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 639px) {
+  html.floating-cta-active .floating-cta-footer {
+    padding-bottom: 10rem;
+  }
+}

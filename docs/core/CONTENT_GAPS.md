@@ -8,9 +8,14 @@
 
 **Wave 6 (mei 2026) opgelost:**
 - `ComparisonProfileFits` op alle 8 `/supplementen/*` gidsen
-- Homepage: profiel-strip + tier-1 pillars (`/voeding-na-40`, `/beweging-na-40`)
 - Blog-categorie supplementen `themaHref` → `/supplementen`
 - `buildFaqSchema()` gedeeld door vergelijkingen (`FaqSection`) en supplement-gidsen
+
+**Wave 7 (juni 2026) — homepage + footer vereenvoudigd:**
+- Homepage: alleen Hero, trust, Leefstijlcheck, gidsen (geen tier-1 pillars, geen profiel-strip)
+- Footer: 2 linkkolommen (Platform + Over ons); profielen/pillars/vergelijkingen uit footer
+- `/profiel/*` ontdekking: intake-resultaten, nurture-mails, interne links op pillar/blog/profielpagina's
+- `/voeding-na-40` + `/beweging-na-40`: `/gidsen` hub + SEO-spinnenweb
 
 ---
 
@@ -20,7 +25,7 @@
 |---|---|
 | `/beste/zink` | Extra profiel-pagina's (stressdrager) — ✅ via ComparisonProfileFits |
 | `/supplementen/melatonine` (informatief) | Slaap-blogs, profiel onrustige-slaper — geen `/beste/melatonine` (compliance) |
-| `/profiel` | ✅ Homepage profiel-strip (Wave 6) |
+| `/profiel` | Intake-resultaten, nurture day-0, cross-links op profiel/pillar/blog-pagina's |
 
 **Wave 1 (mei 2026) opgelost:**
 - Cortisol-blogs → `/kennisbank/cortisol` + `/kennisbank/hpa-as`
