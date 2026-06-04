@@ -97,7 +97,7 @@ export default function TestosteronNa40Page() {
 
       <main className="pb-24 md:pb-28 py-12 md:py-16">
         <Container>
-          <div className="mx-auto max-w-3xl">
+          <div className="pillar-prose">
             <PillarReadingChrome>
             <article>
               <header>
@@ -416,7 +416,10 @@ export default function TestosteronNa40Page() {
                 </p>
 
                 <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-5">
-                  <h3 className="font-semibold text-gray-900">In onderzoek — geen hormoon-oplossing</h3>
+                  <h3 className="font-semibold text-gray-900">Supplementen in onderzoek</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-gray-500">
+                    geen hormoon-oplossing
+                  </p>
                   <p className="mt-3 text-sm leading-relaxed text-gray-700">
                     Geen supplement vervangt medisch advies — en geen combinatie van supplementen
                     vervangt slaap, kracht en herstel.

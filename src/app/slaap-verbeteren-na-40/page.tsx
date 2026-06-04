@@ -105,7 +105,7 @@ export default function SlaapVerbeterenNa40Page() {
 
       <main className="pb-24 md:pb-28 py-12 md:py-16">
         <Container>
-          <div className="max-w-3xl mx-auto">
+          <div className="pillar-prose">
             <PillarReadingChrome>
             <article>
 

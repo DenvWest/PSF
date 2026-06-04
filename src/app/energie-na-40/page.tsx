@@ -106,7 +106,7 @@ export default function EnergieNa40Page() {
 
       <main className="pb-24 md:pb-28 py-12 md:py-16">
         <Container>
-          <div className="max-w-3xl mx-auto">
+          <div className="pillar-prose">
             <PillarReadingChrome>
             <article>
               {/* 1. Hero */}
@@ -262,8 +262,11 @@ export default function EnergieNa40Page() {
 
               <section id="mitochondrien" className="mt-14">
                 <h3 className="font-serif text-2xl font-bold text-gray-900">
-                  Celenergie — kort, zonder medische claims
+                  Celenergie — kort en zonder jargon
                 </h3>
+                <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+                  zonder medische claims
+                </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Je lichaam maakt energie uit voeding en zuurstof — op een manier die je op school
                   misschien &ldquo;mitochondriën&rdquo; en &ldquo;ATP&rdquo; hoorde noemen. Belangrijk voor nu: beweging,
@@ -282,8 +285,11 @@ export default function EnergieNa40Page() {
 
               <section id="hormonen" className="mt-14">
                 <h3 className="font-serif text-2xl font-bold text-gray-900">
-                  Slaap, stress en eetritme (geen hormoon-diagnose)
+                  Slaap, stress en eetritme
                 </h3>
+                <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+                  geen hormoon-diagnose
+                </p>
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   Hormonen spelen mee bij energie en herstel, maar vanaf een webpagina kunnen we niet
                   zeggen wat jouw testosteron of andere waarden doen. Wél zien we in de praktijk dat

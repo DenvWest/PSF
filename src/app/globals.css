@@ -330,6 +330,36 @@ h6 {
   max-width: 720px;
 }
 
+/* ── Pillar & gids reading column ──────────────────────────────── */
+/* Comfortable measure (~65–70ch), tighter heading scale, even rhythm.
+   Section-level selectors use the child combinator so card/TOC/FAQ
+   copy keeps its own (smaller) sizing. */
+
+.pillar-prose {
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.pillar-prose :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+.pillar-prose section > h2 {
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+.pillar-prose section > h3 {
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.pillar-prose section > p,
+.pillar-prose section > ul,
+.pillar-prose section > ol {
+  text-wrap: pretty;
+}
+
 /* ── Symptomen heading — serif + tighter tracking ──────────────── */
 
 .ps-symptoom-h1 {

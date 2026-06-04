@@ -16,7 +16,7 @@ export default function GidsenPage() {
   return (
     <main className="py-12 md:py-16">
       <Container>
-        <div className="max-w-3xl mx-auto">
+        <div className="pillar-prose">
           <article>
             <header>
               <p className="text-sm font-semibold uppercase tracking-wider text-green-700">
@@ -88,18 +88,18 @@ export default function GidsenPage() {
                         <br />
                         {guide.heroSubtitle}
                       </p>
-                      <div className="mt-3 flex flex-col sm:flex-row gap-3 text-sm">
+                      <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
                         <Link
                           href={`/gids/${slug}`}
-                          className="font-semibold text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
+                          className="inline-flex items-center justify-center rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-800"
                         >
                           Download gratis {guide.guideName} →
                         </Link>
                         <Link
                           href={guide.pillarHref}
-                          className="text-stone-600 hover:text-ps-green underline underline-offset-[3px]"
+                          className="text-sm text-stone-600 underline decoration-stone-300 underline-offset-[3px] transition-colors hover:text-ps-green"
                         >
-                          Lees de complete gids online
+                          Lees de pillar →
                         </Link>
                       </div>
                     </div>
