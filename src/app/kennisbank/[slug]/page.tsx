@@ -11,11 +11,17 @@ import {
 import type { KennisbankTheme } from '@/data/kennisbank'
 import ArticleReferentiesFooter from '@/components/content/ArticleReferentiesFooter'
 import ArticleBodyReadingChrome from '@/components/content/ArticleBodyReadingChrome'
+import ArticleTableOfContents from '@/components/content/ArticleTableOfContents'
 import ReadingLayoutDesktopGutters from '@/components/content/ReadingLayoutDesktopGutters'
 import { renderInlineMarkdownLinks } from '@/components/blog/inlineMarkdownLinks'
 import { buildKennisbankTocItems } from '@/lib/article-toc'
 import { buildDefinedTermSchema } from '@/lib/seo/structuredData'
-import { READING_ROW_GAP_CLASS } from '@/lib/article-reading-columns'
+import {
+  READING_ROW_GAP_CLASS,
+  READING_TOC_COL_CLASS,
+  READING_RAIL_COL_CLASS,
+} from '@/lib/article-reading-columns'
+import ArticleSidebar from '@/components/article/ArticleSidebar'
 import {
   REDACTIE_VERANTWOORDELIJKE_STANDARD,
   STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
@@ -243,49 +249,73 @@ function TermPage({ slug }: { slug: string }) {
               </div>
             </div>
 
-            <ArticleBodyReadingChrome tocItems={tocItems} hideTocBelowItemCount={2}>
-                <section className={KB_SECTION_CLASS} aria-labelledby="wat-is-het">
-                  <h2 id="wat-is-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                    Wat is {term.term}?
-                  </h2>
-                  {renderParagraphs(term.content.whatIsIt)}
-                </section>
-
-                <section className={KB_SECTION_CLASS} aria-labelledby="hoe-werkt-het">
-                  <h2 id="hoe-werkt-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                    Hoe werkt het?
-                  </h2>
-                  {renderParagraphs(term.content.howItWorks)}
-                </section>
-
-                <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">
-                  <h2 id="waarom-dit-ertoe-doet" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                    Waarom dit ertoe doet voor jouw keuze
-                  </h2>
-                  {renderParagraphs(term.content.whyItMatters)}
-                </section>
-
-                {term.domeinMetBeperktCausaalBewijs ? (
-                  <aside
-                    className="mb-6 max-w-[72ch] rounded-lg border border-stone-200/90 bg-stone-50/80 px-4 py-3.5 text-[0.875rem] leading-relaxed text-stone-600 md:mb-8"
-                    role="note"
-                  >
-                    <strong className="font-semibold text-stone-800">Let op bij interpretatie:</strong> voor dit onderwerp
-                    is het causale interventiebewijs vaak beperkt, heterogeen of nog in ontwikkeling. De tekst beschrijft
-                    mechanismen en associaties uit de literatuur; dat is niet hetzelfde als een persoonlijke aanbeveling
-                    of een zorgpad.
-                  </aside>
-                ) : null}
-
-                <div className="mt-4 md:mt-6">
-                  <ArticleReferentiesFooter
-                    referenties={term.referenties}
-                    laatstBijgewerktOp={laatstDatum}
-                    wetenschappelijkGecontroleerdOp={laatstDatum}
-                    verantwoordelijke={verantwoordelijke}
+            <div className={`flex w-full min-w-0 flex-col lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}>
+              <aside className={`${READING_TOC_COL_CLASS} hidden min-h-0 lg:block`}>
+                <div className="sticky top-[var(--sticky-toc-offset)] max-h-[calc(100vh-var(--sticky-toc-offset)-2rem)] overflow-y-auto pb-14 pt-0.5 xl:pb-16">
+                  <ArticleSidebar
+                    headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
+                    clusterTitle={themeLabels[term.theme].title}
+                    clusterArticles={kennisbankTerms
+                      .filter((t) => t.theme === term.theme && t.slug !== term.slug)
+                      .slice(0, 8)
+                      .map((t) => ({ href: `/kennisbank/${t.slug}`, title: t.term }))}
+                    currentSlug={term.slug}
                   />
                 </div>
-              </ArticleBodyReadingChrome>
+              </aside>
+              <div className={`${READING_RAIL_COL_CLASS} hidden lg:flex`} aria-hidden="true">
+                <div className="relative min-h-24 w-[2px] flex-1 overflow-hidden rounded-full bg-stone-200/92" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
+                  <div className="mb-9 lg:hidden">
+                    <ArticleTableOfContents items={tocItems} activeId={null} />
+                  </div>
+
+                  <section className={KB_SECTION_CLASS} aria-labelledby="wat-is-het">
+                    <h2 id="wat-is-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                      Wat is {term.term}?
+                    </h2>
+                    {renderParagraphs(term.content.whatIsIt)}
+                  </section>
+
+                  <section className={KB_SECTION_CLASS} aria-labelledby="hoe-werkt-het">
+                    <h2 id="hoe-werkt-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                      Hoe werkt het?
+                    </h2>
+                    {renderParagraphs(term.content.howItWorks)}
+                  </section>
+
+                  <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">
+                    <h2 id="waarom-dit-ertoe-doet" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                      Waarom dit ertoe doet voor jouw keuze
+                    </h2>
+                    {renderParagraphs(term.content.whyItMatters)}
+                  </section>
+
+                  {term.domeinMetBeperktCausaalBewijs ? (
+                    <aside
+                      className="mb-6 max-w-[72ch] rounded-lg border border-stone-200/90 bg-stone-50/80 px-4 py-3.5 text-[0.875rem] leading-relaxed text-stone-600 md:mb-8"
+                      role="note"
+                    >
+                      <strong className="font-semibold text-stone-800">Let op bij interpretatie:</strong> voor dit onderwerp
+                      is het causale interventiebewijs vaak beperkt, heterogeen of nog in ontwikkeling. De tekst beschrijft
+                      mechanismen en associaties uit de literatuur; dat is niet hetzelfde als een persoonlijke aanbeveling
+                      of een zorgpad.
+                    </aside>
+                  ) : null}
+
+                  <div className="mt-4 md:mt-6">
+                    <ArticleReferentiesFooter
+                      referenties={term.referenties}
+                      laatstBijgewerktOp={laatstDatum}
+                      wetenschappelijkGecontroleerdOp={laatstDatum}
+                      verantwoordelijke={verantwoordelijke}
+                    />
+                  </div>
+                </ArticleBodyReadingChrome>
+              </div>
+            </div>
 
               {term.relatedComparisons.length > 0 ? (
                 <section aria-labelledby="kb-vergelijkingen" className="mx-auto mt-20 max-w-[min(var(--reading-layout-max-width),100%)] md:mt-[5.25rem]">
