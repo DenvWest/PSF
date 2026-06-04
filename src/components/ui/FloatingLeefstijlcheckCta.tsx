@@ -80,10 +80,14 @@ export default function FloatingLeefstijlcheckCta() {
   const [revealed, setRevealed] = useState(false);
   const [footerDocked, setFooterDocked] = useState(false);
   const [canDockToFooter, setCanDockToFooter] = useState(false);
-  const [footerSlot, setFooterSlot] = useState<HTMLElement | null>(null);
   const inBodyCtaVisible = useInBodyLeefstijlcheckCtaVisible();
   const isShown = revealed && !inBodyCtaVisible;
-  const isDocked = isShown && footerDocked && canDockToFooter && footerSlot !== null;
+  const wantsDock = isShown && footerDocked && canDockToFooter;
+  const footerSlot =
+    wantsDock && typeof document !== "undefined"
+      ? document.getElementById(LEEFSTIJLCHECK_FOOTER_SLOT_ID)
+      : null;
+  const isDocked = wantsDock && footerSlot !== null;
 
   useEffect(() => {
     if (dismissed) return undefined;
@@ -137,15 +141,10 @@ export default function FloatingLeefstijlcheckCta() {
   }, []);
 
   useEffect(() => {
-    setFooterSlot(document.getElementById(LEEFSTIJLCHECK_FOOTER_SLOT_ID));
-  }, []);
+    if (!canDockToFooter) return;
 
-  useEffect(() => {
     const footer = document.querySelector("footer");
-    if (!footer || !canDockToFooter) {
-      setFooterDocked(false);
-      return;
-    }
+    if (!footer) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => setFooterDocked(entry.isIntersecting),

@@ -43,7 +43,7 @@ export default function GidsenPage() {
               <p className="mt-3 text-gray-700 leading-relaxed">
                 De grootste winst zit zelden in een supplement. Slaap, voeding, beweging
                 en herstel doen meestal het meeste — daarom beginnen deze gidsen daar.
-                Geen affiliate.
+
               </p>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <div className="p-5 rounded-xl border border-stone-200 bg-stone-50">
