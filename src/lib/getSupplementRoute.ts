@@ -5,6 +5,7 @@ import {
 } from "@/data/supplement-routes";
 import type { DeficiencySignals, DomainScores, ProfileLabel } from "@/lib/intake-engine";
 import { getSortedDomains } from "@/lib/intake-engine";
+import { isComparisonAllowed } from "@/lib/comparison-availability";
 import { isSupplementAvailable } from "@/lib/supplement-availability";
 
 function intAnswer(answers: Record<string, number>, key: string): number {
@@ -116,9 +117,15 @@ export function getSupplementRoute(
   answers: Record<string, number>,
 ): SupplementRecommendation[] {
   const matched: SupplementRecommendation[] = [];
-  const availableDefinitions = SUPPLEMENT_ROUTE_DEFINITIONS.filter((d) =>
-    isSupplementAvailable(d.id),
-  );
+  const availableDefinitions = SUPPLEMENT_ROUTE_DEFINITIONS.filter((d) => {
+    if (!isSupplementAvailable(d.id)) {
+      return false;
+    }
+    if (d.hasComparison && !isComparisonAllowed(d.id)) {
+      return false;
+    }
+    return true;
+  });
 
   for (const def of availableDefinitions) {
     if (

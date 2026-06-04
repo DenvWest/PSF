@@ -32,7 +32,9 @@ Interne blueprint voorpaginatypen. SEO-, component- en data-afspraken staan ook 
 
 **Doel:** Conversie + affiliate; onafhankelijke vergelijking op criteria.
 
-**URL-patroon:** `/beste-[categorie]` (bijv. `/beste-magnesium`, `/beste-omega-3-supplement`)
+**URL-patroon:** `/beste/[slug]` (bijv. `/beste/magnesium`, `/beste/omega-3-supplement`). Legacy `/beste-*` redirect via `next.config.ts`.
+
+**App-route:** `src/app/beste/[supplement]/page.tsx`
 
 **Kernelementen:** JSON-LD (o.a. Product waar van toepassing), tabel, productcards, `BuyingGuide`, FAQ, affiliate disclosure, link naar **Supplementgids** (`guideHref` op `ComparisonPageData`).
 
@@ -77,7 +79,7 @@ Thema (/thema/stress)
   ↓ "Lees de gids →"
 Supplementgids (/supplementen/magnesium)           ← Dit blueprint
   ↓ "Welke scoort het beste? →"     ↓ "Wat verbetert nog meer? →"
-Vergelijking (/beste-magnesium)     Thema of Pillar (/slaap-verbeteren-na-40)
+Vergelijking (/beste/magnesium)     Thema of Pillar (/slaap-verbeteren-na-40)
   ↓                                   ↓
 Affiliate klik                      Leefstijlcheck (/intake)
 ```
@@ -114,7 +116,7 @@ _Niet gebruikt als enkelbron: platte `supplement-guides.ts` — gesplitste modul
 
 ### Melatonine (scope)
 
-Staat als **aanvullende gids** naast magnesium, omega-3, vitamine D, creatine en zink: `/supplementen/melatonine` + `/beste-melatonine`. Niet in elke roadmap-tabel gesomd, wél live in codebase.
+Melatonine: alleen informatieve gids `/supplementen/melatonine` + kennisbank (geen `/beste/melatonine` — compliance).
 
 ### Sectie-structuur
 
@@ -126,7 +128,7 @@ Staat als **aanvullende gids** naast magnesium, omega-3, vitamine D, creatine en
 6. **Welke vorm** — VormCards met dosering + use-case-tag; géén merken/prijzen.
 7. **Bij jouw klachten** — 3 cards → `/thema/[thema]`.
 8. **FAQ** — 3–5 items; accordions; gekoppeld aan FAQ JSON-LD.
-9. **CTA vergelijking** — sage-achtige achtergrond; primaire conversie naar `/beste-…`.
+9. **CTA vergelijking** — sage-achtige achtergrond; primaire conversie naar `/beste/[slug]` (niet voor `forbidden` ingredients).
 10. **Verdieping** — 2–3 bloglinks (kaarten).
 11. **CTA Leefstijl** — `/intake`.
 12. **Disclaimer** — `<MedicalDisclaimer />`.
@@ -135,7 +137,7 @@ Staat als **aanvullende gids** naast magnesium, omega-3, vitamine D, creatine en
 
 | CTA | Positie | Linkt naar |
 |---|---|---|
-| Vergelijking | Na FAQ | `/beste-[categorie]` |
+| Vergelijking | Na FAQ | `/beste/[slug]` |
 | Leefstijlcheck | Onderaan | `/intake` |
 
 ### Datamodel (`SupplementData`)

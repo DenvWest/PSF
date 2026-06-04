@@ -221,8 +221,8 @@ export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {
       "Eet vette vis minstens 2× per week of overweeg omega-3 uit voeding.",
       "Drink water vóór koffie in de ochtend.",
     ],
-    guideHref: undefined,
-    profileSlugs: [],
+    guideHref: "/voeding-na-40",
+    profileSlugs: ["lage-batterij"],
   },
   movement: {
     quickWins: [

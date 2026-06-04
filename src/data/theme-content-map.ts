@@ -18,8 +18,8 @@ export const THEME_CONTENT_MAP: Record<ThemeSlug, ThemeContentLinks> = {
     knowledgeSlugs: ["cortisol", "hpa-as", "nervus-vagus"],
   },
   nutrition: {
-    pillarHref: "/herstel-verbeteren-na-40",
-    profileSlug: null,
+    pillarHref: "/voeding-na-40",
+    profileSlug: "lage-batterij",
     knowledgeSlugs: ["eiwitbehoefte-na-40", "insulineresistentie"],
   },
   movement: {

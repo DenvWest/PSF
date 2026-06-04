@@ -18,6 +18,7 @@ const PILLAR_PADEN = [
   "/stress-verminderen-man",
   "/energie-na-40",
   "/herstel-verbeteren-na-40",
+  "/voeding-na-40",
   "/testosteron-na-40",
 ];
 

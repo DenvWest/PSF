@@ -17,11 +17,12 @@
 3. ✅ Pillar: `/energie-na-40`
 4. ✅ Pillar: `/herstel-verbeteren-na-40`
 5. ✅ Pillar: `/testosteron-na-40` (vijfde cluster)
+5b. ✅ Pillar: `/voeding-na-40` (tier-1 nutrition-ingang)
 6. ✅ Profiel: `/profiel/onrustige-slaper`
 7. ✅ Profiel: `/profiel/stressdrager`
 8. ✅ Profiel: `/profiel/lage-batterij`
 9. ✅ Profiel: `/profiel/overtrainer`
-10. ✅ 8 vergelijkingspagina's (omega-3, magnesium, ashwagandha, zink, creatine, vitamine D, melatonine, eiwitpoeder)
+10. ✅ 7 affiliate-vergelijkingen (`/beste/*`; melatonine alleen informatief via `/supplementen/melatonine`)
 11. ✅ 27 blogartikelen, 24 kennisbankbegrippen, 4 thema-hubs
 12. ✅ Slaapgids PDF + dag-0 nurture mail integratie
 13. ✅ SEO audit fixes (admin noindex, canonical consistentie)
@@ -46,9 +47,9 @@
 
 | # | Item | Type | Impact |
 |---|---|---|---|
-| 1 | Breadcrumb schema centraliseren | Tech | structured-data.ts vs seo/ merge |
-| 2 | Profiel-overzicht vanuit footer | SEO | Sitewide spinnenweb |
-| 3 | `/thema/herstel` hub of redirect | SEO | Link-gap sluiten |
+| 1 | Breadcrumb schema centraliseren | Tech | ✅ `structured-data.ts` re-exporteert `seo/structuredData.ts` |
+| 2 | Profiel-overzicht vanuit footer | SEO | ✅ footer → `/profiel` |
+| 3 | `/thema/herstel` hub of redirect | SEO | ✅ redirect → `/herstel-verbeteren-na-40` |
 | 4 | Mobile device testing checklist | QA | Doelgroep mobiel |
 
 ## Op de horizon (was Wave 6)

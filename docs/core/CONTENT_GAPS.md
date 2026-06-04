@@ -19,7 +19,7 @@
 | Pagina | Moet gelinkt worden vanuit |
 |---|---|
 | `/beste/zink` | Extra profiel-pagina's (stressdrager) — ✅ via ComparisonProfileFits |
-| `/beste/melatonine` | Slaap-blogs, profiel onrustige-slaper — ✅ via ComparisonProfileFits |
+| `/supplementen/melatonine` (informatief) | Slaap-blogs, profiel onrustige-slaper — geen `/beste/melatonine` (compliance) |
 | `/profiel` | ✅ Homepage profiel-strip (Wave 6) |
 
 **Wave 1 (mei 2026) opgelost:**
@@ -68,6 +68,12 @@
 
 ---
 
+## Gids-kwaliteit (thin-content drempel)
+
+- Doel: 1200–2000 woorden, evidence-sectie + FAQ per `/supplementen/*`
+- `forbidden` ingredients (melatonine): geen `productVergelijkingCta`, geen `/beste/*`
+- Maandelijks: Search Console op dubbele intent-paren (magnesium/melatonine blogs)
+
 ## Dubbele artikelen — audit (Wave 4)
 
 | Paar | Beslissing | Rol |
@@ -114,7 +120,7 @@ Cross-links toegevoegd; geen redirects nodig (verschillende zoekintentie).
 | Vitamine D | ✅ | vitamine-d-en-energie, vitamine-d-tekort-herkennen, kennisbank cross-links |
 | Eiwitbehoefte-na-40 | ✅ | eiwit-na-40 blog, krachttraining-blog, IntakeResults, profielen overtrainer/lage-batterij |
 | Nervus vagus | ✅ | ademhaling-tegen-stress, profiel stressdrager, stress-thema |
-| Oxidatieve stress | 💡 | Cross-cluster verbinder |
+| Oxidatieve stress | ✅ | omega-3 gids/blog, herstel-cluster; monitor kannibalisatie met mitochondriën-term |
 
 ---
 

@@ -87,7 +87,7 @@ Gevolg voor content: een interventie zonder gepubliceerde claim verschijnt **nie
 
 ---
 
-## Referentie-template: "slecht inslapen → melatonine"
+## Referentie-template: "slecht inslapen → magnesium (tier 3)"
 
 Zo modelleer je een specifiek symptoom. **Geen nieuw thema** — thema blijft `sleep`, het symptoom wordt getarget via een `answer`-trigger op `SLP_ONSET` (inslapen).
 
@@ -97,11 +97,11 @@ Zo modelleer je een specifiek symptoom. **Geen nieuw thema** — thema blijft `s
 | HERKENNING | recognition_line `SLP_ONSET <= 2`: "Je ligt lang wakker voordat je in slaap valt." (bestaat al) |
 | Tier 1 — `free_action` | "Inslaapritueel / wind-down" — trigger `answer SLP_ONSET <= 2` |
 | Tier 2 — `measurement` | "Slaaplog 7 dagen" — zelfde trigger (toekomstig betaald via `is_paid`/`external_provider_*`) |
-| Tier 3 — `supplement` | "Melatonine" — `is_paid = true`, `comparison_path = '/beste/melatonine'`, zelfde trigger |
+| Tier 3 — `supplement` | "Magnesium glycinaat" — `is_paid = true`, `comparison_path = '/beste/magnesium'`, zelfde trigger |
 | Evidence | per interventie 1 `evidence_claims`-rij op `status = 'published'` met EFSA-conforme bewoording |
 | UI nu | filter `tier = 1` → toont alleen het gratis inslaapritueel |
 
-De vergelijkingspagina `/beste/melatonine` is content in `src/data/supplements/` (aparte sessie, niet hier).
+**Melatonine:** `approved-claims` status `forbidden` — geen affiliate, geen tier-3 interventie, geen `/beste/melatonine`. Hooguit informatief via `/supplementen/melatonine` en `/kennisbank/melatonine`.
 
 **Belangrijk:** de werkelijke SQL-seed (interventie-rijen, triggers, claims) wordt pas geschreven nadat de EFSA-bewoording is goedgekeurd — dat is de copy-bron. Tot die tijd alleen dit model.
 

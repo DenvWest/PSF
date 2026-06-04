@@ -118,7 +118,7 @@ export const CATALOG: CatalogEntry[] = [
     themas: ["slaap"],
     topScore: maxProductScore(melatonineData.products),
     guideHref: "/supplementen/melatonine",
-    comparisonHref: "/beste/melatonine",
+    comparisonHref: null,
     comingSoon: false,
     icon: "🌙",
   },

@@ -13,8 +13,8 @@ import { CATALOG } from "@/data/supplement-hub/catalog";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
 import {
   buildBreadcrumbSchema,
-  buildItemListSchema,
-} from "@/lib/structured-data";
+  buildNamedItemListSchema,
+} from "@/lib/seo/structuredData";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +36,7 @@ const breadcrumbSchema = buildBreadcrumbSchema([
   { name: "Supplementen", url: "/supplementen" },
 ]);
 
-const itemListSchema = buildItemListSchema(
+const itemListSchema = buildNamedItemListSchema(
   "Supplementengidsen",
   CATALOG.filter((e) => !e.comingSoon).map((e) => ({
     name: e.name,

@@ -14,8 +14,7 @@ import {
   renderInlineMarkdownLinks,
   stripInlineMarkdownLinks,
 } from "@/components/blog/inlineMarkdownLinks";
-import { buildBreadcrumbSchema } from "@/lib/structured-data";
-import { buildFaqSchema } from "@/lib/seo/structuredData";
+import { buildBreadcrumbSchema, buildFaqSchema } from "@/lib/seo/structuredData";
 
 const SITE_URL = "https://perfectsupplement.nl";
 

@@ -24,12 +24,12 @@ Bij ELKE nieuwe pagina doorloop je deze 11 stappen:
 
 ## Blueprint 1: Vergelijkingspagina
 
-**URL:** `/beste-[supplement]` of `/[supplement]-vergelijken`
+**URL:** `/beste/[slug]` (bijv. `/beste/magnesium`). Legacy flat URLs redirecten via `next.config.ts`.
 **Doel:** Conversie via affiliate clicks
 
 ### Bestanden
 ```
-src/app/beste-[supplement]/page.tsx
+src/app/beste/[supplement]/page.tsx
 src/data/supplements/[supplement].ts
 src/components/supplements/ComparisonTable.tsx (herbruikbaar)
 ```
@@ -121,16 +121,16 @@ Zie `core/PERSONALIZATION_ENGINE.md` voor complete profiel-architectuur.
 
 | Van → Naar | Turbo-snippet |
 |---|---|
-| Homepage → `/beste-omega-3-supplement` | "Welke omega-3 is écht goed? Objectief vergeleken →" |
+| Homepage → `/beste/omega-3-supplement` | "Welke omega-3 is écht goed? Objectief vergeleken →" |
 | Homepage → `/beste-magnesium` | "Welke magnesium past bij jou? Vergelijk op vorm en prijs →" |
-| Homepage → `/beste-ashwagandha` | "Stress? Dit supplement wordt het meest onderzocht →" |
+| Homepage → `/beste/ashwagandha` | "Stress? Dit supplement wordt het meest onderzocht →" |
 
 ### Pillar pages
 
 | Van → Naar | Turbo-snippet |
 |---|---|
 | Pillar slaap → `/beste-magnesium` | "Welke magnesium vorm werkt het best voor slaap? Vergeleken →" |
-| Pillar slaap → `/beste-ashwagandha` | "Stress houdt je wakker? KSM-66 vs Sensoril — het verschil matteert →" |
+| Pillar slaap → `/beste/ashwagandha` | "Stress houdt je wakker? KSM-66 vs Sensoril — het verschil matteert →" |
 | Pillar slaap → `/profiel/onrustige-slaper` | "Wakker om 3 uur? Herken je dit patroon? →" |
 
 ### Profielpagina's
@@ -139,7 +139,7 @@ Zie `core/PERSONALIZATION_ENGINE.md` voor complete profiel-architectuur.
 |---|---|
 | Profiel slaper → Pillar slaap | "Slecht slapen na 40? Complete gids van oorzaak tot oplossing →" |
 | Profiel slaper → `/beste-magnesium` | "Welke magnesium past bij jouw slaapklachten? →" |
-| Profiel slaper → `/beste-ashwagandha` | "Stress houdt je wakker? Dit supplement kan helpen →" |
+| Profiel slaper → `/beste/ashwagandha` | "Stress houdt je wakker? Dit supplement kan helpen →" |
 
 ### Intake CTA (universeel)
 - "Ontdek in 3 minuten welke supplementen bij jou passen →"

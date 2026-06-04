@@ -47,11 +47,22 @@ import PyramidPillarDrawer, {
 } from "@/components/pyramid/PyramidPillarDrawer";
 import IntakeResultsSection from "@/components/intake/IntakeResultsSection";
 import LifestylePlan from "@/components/intake/LifestylePlan";
+import PlanContentSection from "@/components/intake/PlanContentSection";
+import {
+  PLAN_JOURNEY_THEME_SLUGS,
+  type PlanContent,
+} from "@/lib/content/plan-content";
 import {
   getConnectionFraming,
   getDisplayStatus,
   getDisplayStatusFraming,
 } from "@/lib/score-display";
+
+function isPlanJourneyTheme(
+  theme: PillarId,
+): theme is (typeof PLAN_JOURNEY_THEME_SLUGS)[number] {
+  return (PLAN_JOURNEY_THEME_SLUGS as readonly string[]).includes(theme);
+}
 
 const SUPPLEMENT_PILLAR: Record<string, PillarId> = {
   "magnesium-glycinaat": "sleep",
@@ -203,7 +214,11 @@ function buildPillarSupplementLinks(
     { pillar: "nutrition", label: "Vergelijk omega-3", href: "/beste/omega-3-supplement" },
     { pillar: "sleep", label: "Vergelijk magnesium", href: "/beste/magnesium" },
     { pillar: "movement", label: "Vergelijk creatine", href: "/beste/creatine" },
-    { pillar: "sleep", label: "Vergelijk melatonine", href: "/beste/melatonine" },
+    {
+      pillar: "sleep",
+      label: "Melatonine — wanneer wel en niet",
+      href: "/supplementen/melatonine",
+    },
     { pillar: "nutrition", label: "Vergelijk eiwitpoeder", href: "/beste/eiwitpoeder" },
   ];
 
@@ -252,6 +267,7 @@ export default function IntakeResults({
     text: string;
   } | null>(null);
   const [activePillar, setActivePillar] = useState<PillarId | null>(null);
+  const [planContent, setPlanContent] = useState<PlanContent | null>(null);
 
   const profile = getProfileLabel(scores);
   const advice = getAdvice(scores, answers, symptoms);
@@ -264,7 +280,10 @@ export default function IntakeResults({
     profile,
     answers,
   );
-  const excludeIds = supplementRoute.map((r) => r.id);
+  const suppressLegacySupplements =
+    planContent?.ready === true && planContent.actions.length > 0;
+  const displaySupplementRoute = suppressLegacySupplements ? [] : supplementRoute;
+  const excludeIds = displaySupplementRoute.map((r) => r.id);
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
   const pillarStatuses = buildPillarStatuses(scores);
   const primaryTheme = getPrimaryTheme(scores, answers);
@@ -280,7 +299,7 @@ export default function IntakeResults({
         .replace(/[^a-z0-9-]/g, "");
 
   const pillarSupplementLinks = buildPillarSupplementLinks(
-    supplementRoute,
+    displaySupplementRoute,
     deficiencySignals,
   );
   const activeDrawerData = activePillar
@@ -302,7 +321,7 @@ export default function IntakeResults({
   const showEnergyGuideLink = scores.energy_score < 40;
 
   const hasExploreContent =
-    supplementRoute.length > 0 ||
+    displaySupplementRoute.length > 0 ||
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
     kennisbankLinks.length > 0 ||
     (typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2) ||
@@ -318,6 +337,44 @@ export default function IntakeResults({
   }, []);
 
   const themeRevealedEmittedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isPlanJourneyTheme(primaryTheme)) {
+      setPlanContent(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const response = await fetch("/api/intake/plan-content", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            themeSlug: primaryTheme,
+            scores,
+            answers,
+          }),
+        });
+        if (!response.ok || cancelled) {
+          return;
+        }
+        const data = (await response.json()) as PlanContent;
+        if (!cancelled) {
+          setPlanContent(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setPlanContent(null);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [primaryTheme, scores, answers]);
 
   useEffect(() => {
     trackEvent("intake_results_viewed", { theme_slug: primaryTheme });
@@ -460,6 +517,13 @@ export default function IntakeResults({
           </div>
         </section>
 
+        {planContent && planContent.actions.length > 0 ? (
+          <PlanContentSection
+            actions={planContent.actions}
+            ready={planContent.ready}
+          />
+        ) : null}
+
         <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
           <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
             {REVEAL_COPY.pyramidDetailsSummary}
@@ -595,13 +659,16 @@ export default function IntakeResults({
                     </p>
                   ) : null}
 
-                  {supplementRoute.length > 0 ? (
+                  {displaySupplementRoute.length > 0 ? (
                     <div className="mb-5">
                       <h3 className="mb-3 text-sm font-semibold text-intake-ink">
                         Supplementen om te verkennen
                       </h3>
                       <SupplementAdviceDisclaimer variant="profile" />
-                      <SupplementRoute recommendations={supplementRoute} scores={scores} />
+                      <SupplementRoute
+                        recommendations={displaySupplementRoute}
+                        scores={scores}
+                      />
                       <p className="mt-4 text-sm text-intake-ink-muted">
                         Vragen?{" "}
                         <Link

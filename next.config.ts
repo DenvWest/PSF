@@ -42,7 +42,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/beste-melatonine",
-        destination: "/beste/melatonine",
+        destination: "/supplementen/melatonine",
+        permanent: true,
+      },
+      {
+        source: "/beste/melatonine",
+        destination: "/supplementen/melatonine",
         permanent: true,
       },
       {
@@ -73,6 +78,11 @@ const nextConfig: NextConfig = {
       {
         source: "/symptomen",
         destination: "/supplementen",
+        permanent: true,
+      },
+      {
+        source: "/thema/herstel",
+        destination: "/herstel-verbeteren-na-40",
         permanent: true,
       },
       {

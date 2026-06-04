@@ -512,10 +512,10 @@ export default function SlaapVerbeterenNa40Page() {
                     vorm, dosering en prijs per nacht.
                   </p>
                   <Link
-                    href="/beste/melatonine"
+                    href="/supplementen/melatonine"
                     className="mt-2 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
-                    Bekijk de melatonine vergelijking →
+                    Lees de melatonine-gids (informatief) →
                   </Link>
                 </div>
               </section>

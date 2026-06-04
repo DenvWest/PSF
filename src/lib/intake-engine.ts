@@ -1,4 +1,5 @@
 import type { QuestionId, SymptomId } from "@/data/intake-questions";
+import { isComparisonAllowed } from "@/lib/comparison-availability";
 import { COMPARISON_PATHS } from "@/lib/comparison-paths";
 
 export interface DomainScores {
@@ -278,6 +279,14 @@ function uniqueTopTexts(items: RankedItem<string>[]): string[] {
     .slice(0, 3);
 }
 
+function supplementAdviceAllowed(advice: SupplementAdvice): boolean {
+  if (!advice.link.startsWith("/beste/")) {
+    return true;
+  }
+  const slug = advice.link.replace(/^\/beste\//, "");
+  return isComparisonAllowed(slug);
+}
+
 function uniqueTopSupplements(
   items: RankedItem<SupplementAdvice>[],
 ): SupplementAdvice[] {
@@ -287,6 +296,9 @@ function uniqueTopSupplements(
     .sort((left, right) => left.priority - right.priority)
     .map((item) => item.value)
     .filter((value) => {
+      if (!supplementAdviceAllowed(value)) {
+        return false;
+      }
       if (seen.has(value.name)) {
         return false;
       }
@@ -512,12 +524,17 @@ export function getAdvice(
     pushRankedSupplement(
       supplements,
       {
-        name: "Melatonine",
+        name: "Magnesium glycinaat",
         reason:
-          "Je ligt regelmatig lang wakker terwijl stress beheersbaar lijkt. Melatonine kan helpen je slaap-waakritme te herstellen (bij minimaal 1 mg voor het slapen volgens claimvoorwaarden).",
-        link: COMPARISON_PATHS.melatonine,
+          "Je ligt regelmatig lang wakker terwijl stress beheersbaar lijkt. Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — vaak een eerste stap vóór supplementen voor timing.",
+        link: COMPARISON_PATHS.magnesium,
       },
       8,
+    );
+    pushRankedText(
+      quickWins,
+      "Bij vooral inslaapproblemen: eerst ritme en licht. Informatie over melatonine (geen productvergelijking) staat in de supplementgids.",
+      4,
     );
   }
 

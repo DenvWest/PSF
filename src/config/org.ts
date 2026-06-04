@@ -45,7 +45,6 @@ export const DEFAULT_ORG: OrgConfig = {
     "vitamine-d",
     "creatine",
     "zink",
-    "melatonine",
     "eiwitpoeder",
   ],
   affiliatePrefix: "",

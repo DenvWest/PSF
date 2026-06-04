@@ -524,12 +524,12 @@ describe("getAdvice", () => {
     expect(names).toContain("Omega-3 (EPA/DHA)");
   });
 
-  it("recommends melatonine when sleep onset is slow but stress is manageable", () => {
+  it("recommends magnesium when sleep onset is slow but stress is manageable", () => {
     const scores = makeScores({ sleep_score: 30 });
     const answers = makeAnswers({ SLP_ONSET: 1, STR_FREQ: 4 });
     const result = getAdvice(scores, answers, []);
     const names = result.supplements.map((s) => s.name);
-    expect(names).toContain("Melatonine");
+    expect(names).toContain("Magnesium glycinaat");
   });
 
   it("recommends vitamine D when sun exposure is low", () => {

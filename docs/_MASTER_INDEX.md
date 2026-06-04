@@ -14,10 +14,11 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 ## Wat is live (mei 2026)
 
-- 8 vergelijkingspagina's (omega-3, magnesium, ashwagandha, zink, creatine, vitamine D, melatonine, eiwitpoeder)
+- 7 vergelijkingspagina's met affiliate (`/beste/*`; geen melatonine — zie `COMPLIANCE.md`)
 - 4 pillar pages (`/slaap-verbeteren-na-40`, `/stress-verminderen-man`, `/energie-na-40`, `/herstel-verbeteren-na-40`)
 - 4 profielpagina's (onrustige-slaper, stressdrager, lage-batterij, overtrainer)
-- 21 blogartikelen, 17 kennisbankbegrippen, 4 thema-hubs
+- Actuele tellingen en slug-lijsten: `npm run generate-state` → `docs/PROJECT_STATE.md` (auto-gegenereerd)
+- Planning/status nieuwe pagina's: `docs/core/PAGE_ROADMAP.md` + `docs/core/CURRENT_SPRINT.md`
 - Intake flow: journey REVEAL → HERKENNING → FOCUS → PLAN (4 thema's), scoring, nurture, `domain_events`, evidence-chat API (`/api/chat`)
 - Admin dashboard
 

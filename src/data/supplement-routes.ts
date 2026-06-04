@@ -76,19 +76,6 @@ export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
     triggers: { anyOf: [] },
   },
   {
-    id: "melatonine",
-    name: "Melatonine",
-    reason:
-      "Melatonine draagt bij aan het verkorten van de tijd nodig om in slaap te vallen volgens officiële claimvoorwaarden — geen garantie tegen doorstress of slechte slapen‑gewoonte.",
-    priority: 5,
-    domains: ["Slaap"],
-    hasComparison: true,
-    affiliateUrl: COMPARISON_PATHS.melatonine,
-    triggers: {
-      anyOf: [{ deficiencySignal: "melatonine_signal" }],
-    },
-  },
-  {
     id: "creatine",
     name: "Creatine",
     reason:

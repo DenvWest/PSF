@@ -123,19 +123,19 @@ export const sleepPlanTemplate: LifestylePlanTemplate = {
           tags: ["supplement"],
         },
         {
-          id: "slp-melatonine-vergelijk",
+          id: "slp-melatonine-gids",
           title:
-            "Bekijk melatonine als je lang wakker ligt terwijl je avondroutine op orde is.",
+            "Lees wanneer melatonine wél en niet past — naast je avondroutine.",
           rationale: {
             body:
-              "Je ligt regelmatig lang wakker. Melatonine kan helpen je slaap-waakritme te herstellen " +
-              "(bij minimaal 1 mg voor het slapen volgens claimvoorwaarden) — naast vaste bedtijden, niet in plaats daarvan.",
+              "Je ligt regelmatig lang wakker. Melatonine is een timing-signaal, geen slaapmiddel — " +
+              "we verkopen geen productvergelijking; lees eerst de informatieve gids.",
           },
           showWhen: { type: "signal", signal: "melatonine_signal" },
           link: {
-            label: "Vergelijk melatonine",
-            href: COMPARISON_PATHS.melatonine,
-            kind: "comparison",
+            label: "Melatonine-gids",
+            href: "/supplementen/melatonine",
+            kind: "guide",
           },
           tags: ["supplement"],
         },

@@ -12,7 +12,7 @@
 |---|---|---|
 | `/testosteron-na-40` | ✅ Live | "testosteron na 40" |
 | `/supplementen-mannen-40` | 💡 | "supplementen mannen 40+" |
-| `/voeding-na-40` | 💡 | "voeding na 40" |
+| `/voeding-na-40` | ✅ Live | "voeding na 40" |
 
 ---
 

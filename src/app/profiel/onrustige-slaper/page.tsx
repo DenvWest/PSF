@@ -377,13 +377,19 @@ export default function OnrustigeSlaperPage() {
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">
-                    Welke melatonine past bij inslapen? Dosering en vorm — objectief vergeleken.
+                    Geen productvergelijking — wel uitleg over timing, dosering en IGJ-regels.
                   </p>
                   <Link
-                    href="/beste/melatonine"
+                    href="/supplementen/melatonine"
                     className="inline-block mt-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                   >
-                    Bekijk de melatonine vergelijking →
+                    Lees de melatonine-gids →
+                  </Link>
+                  <Link
+                    href="/beste/magnesium"
+                    className="inline-block mt-3 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                  >
+                    Vergelijk magnesium voor slaap →
                   </Link>
                 </div>
               </div>

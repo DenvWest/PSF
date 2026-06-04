@@ -1,8 +1,14 @@
 import type { SupplementProduct } from "@/types/supplement";
 
+const SITE_URL = "https://perfectsupplement.nl";
+
 export interface BreadcrumbItem {
   name: string;
   url: string;
+}
+
+function resolveSiteUrl(url: string): string {
+  return url.startsWith("http") ? url : `${SITE_URL}${url}`;
 }
 
 export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
@@ -13,7 +19,24 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url,
+      item: resolveSiteUrl(item.url),
+    })),
+  };
+}
+
+export function buildNamedItemListSchema(
+  listName: string,
+  entries: Array<{ name: string; url: string }>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: listName,
+    itemListElement: entries.map((entry, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: entry.name,
+      url: resolveSiteUrl(entry.url),
     })),
   };
 }

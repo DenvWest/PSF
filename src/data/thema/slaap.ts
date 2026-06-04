@@ -153,7 +153,6 @@ export const slaapThema: ThemaPageData = {
         reason:
           "Je lichaam maakt gemiddeld minder melatonine aan naarmate je ouder wordt. Melatonine draagt bij aan het verkorten van de inslaaptijd onder de officiële claimvoorwaarden — geschikt bij vooral ritme-/timingvragen na overleg bij langdurige klachten.",
         guideLink: "/supplementen/melatonine",
-        comparisonLink: "/beste/melatonine",
         icon: "🌙",
       },
     ],

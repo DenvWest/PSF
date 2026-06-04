@@ -45,7 +45,7 @@ Cursor-prompts moeten bevatten:
 | Data files | kebab-case | `affiliate-links.ts` |
 | Variabelen | camelCase | `supplementSlug` |
 | Types/Interfaces | PascalCase | `SupplementProduct` |
-| URLs/routes | kebab-case | `/beste-magnesium` |
+| URLs/routes | kebab-case | `/beste/magnesium` |
 | Image files | `Merk-Product.jpg` | `ArcticBlue-Visolie.jpg` |
 | Cookie keys | snake_case | `psf_intake_sid` |
 | Domain scores | snake_case (Engels) | `sleep_score`, `energy_score` |

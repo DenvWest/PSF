@@ -5,6 +5,7 @@ import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
 const exploreLinks = [
     { href: "/intake", label: "Leefstijlcheck" },
+    { href: "/profiel", label: "Herken je patroon?" },
     { href: "/supplementen", label: "Supplementen" },
     { href: "/gidsen", label: "Gidsen na 40" },
     { href: "/kennisbank", label: "Kennisbank" },
@@ -15,7 +16,7 @@ const vergelijkingLinks = [
     { href: "/beste/magnesium", label: "Beste magnesium" },
     { href: "/beste/omega-3-supplement", label: "Beste omega-3" },
     { href: "/beste/ashwagandha", label: "Beste ashwagandha" },
-    { href: "/beste/melatonine", label: "Beste melatonine" },
+    { href: "/supplementen/melatonine", label: "Melatonine (informatief)" },
 ];
 
 const infoLinks = [

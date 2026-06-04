@@ -114,8 +114,8 @@ ${ctaButton(
 </p>
 ${ctaButton(absoluteUrl("/beste/magnesium"), "Bekijk de magnesium vergelijking →")}
 <p style="margin-top: 12px;">
-  <a href="${absoluteUrl("/beste/melatonine")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
-    Of bekijk de melatonine vergelijking →
+  <a href="${absoluteUrl("/supplementen/melatonine")}" style="color: #3C7A56; font-weight: 600; font-size: 15px; text-decoration: underline;">
+    Lees de melatonine-gids (informatief) →
   </a>
 </p>
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">

@@ -40,6 +40,12 @@ PerfectSupplement vergelijkt en adviseert, maar verkoopt niet. Toch geldt de Cla
 ### Creatine ✅
 - Creatine verhoogt de fysieke prestatie bij opeenvolgende korte, intensieve inspanningen *(bij 3g/dag)*
 
+### Melatonine 🚫 GEEN AFFILIATE / GEEN INTERVENTIE
+- Status in `approved-claims.ts`: `forbidden`, `comparisonPath: null`
+- Boven 0,3 mg = geneesmiddel (IGJ); onder 0,3 mg mag geen gezondheidsclaim als supplement
+- **Geen** `/beste/melatonine`, geen intake-supplementroute, geen tier-3 PLAN-interventie
+- **Wel:** informatieve content (`/supplementen/melatonine`, `/kennisbank/melatonine`, blogs) zonder koop-CTA
+
 ### Ashwagandha ⚠️ ON-HOLD
 - Geen goedgekeurde EFSA-claim. Alle claims staan "on hold" (botanicals)
 - On-hold claims mogen voorlopig gebruikt worden mits: claim is ingediend bij EFSA, onderbouwing aannemelijk, disclaimer aanwezig

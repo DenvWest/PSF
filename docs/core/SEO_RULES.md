@@ -11,7 +11,7 @@
 | Type | Voorbeeld | Doel |
 |---|---|---|
 | Pillar page | `/slaap-verbeteren-na-40` | SEO-autoriteit op breed zoekwoord, linkt naar clusters |
-| Vergelijkingspagina | `/beste-magnesium` | Conversie + affiliate clicks |
+| Vergelijkingspagina | `/beste/magnesium` (route: `src/app/beste/[supplement]/`) | Conversie + affiliate clicks |
 | Blogpost | `/blog/cortisol-en-testosteron` | Long-tail traffic, topical authority |
 | Intake flow | `/intake` | Conversie (e-mail + data) |
 | Kennisbank | `/kennisbank/biobeschikbaarheid` | Semantische diepte, interne links |

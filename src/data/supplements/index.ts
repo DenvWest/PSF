@@ -5,7 +5,6 @@ import { ashwagandhaData } from "./ashwagandha";
 import { vitamineDData } from "./vitamine-d";
 import { creatineData } from "./creatine";
 import { zinkData } from "./zink";
-import { melatonineData } from "./melatonine";
 import { eiwitpoederData } from "./eiwitpoeder";
 
 const allSupplementData: Record<string, ComparisonPageData> = {
@@ -15,7 +14,6 @@ const allSupplementData: Record<string, ComparisonPageData> = {
   "vitamine-d": vitamineDData,
   creatine: creatineData,
   zink: zinkData,
-  melatonine: melatonineData,
   eiwitpoeder: eiwitpoederData,
 };
 
