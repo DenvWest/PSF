@@ -7,6 +7,7 @@ import BlogHubHero from "@/components/blog/BlogHubHero";
 import BlogUitgelicht from "@/components/blog/BlogUitgelicht";
 import BlogThemaLinks from "@/components/blog/BlogThemaLinks";
 import BlogCategorieKaart from "@/components/blog/BlogCategorieKaart";
+import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import {
   BLOG_BG_CLASS,
   BLOG_CONVERSION_SECTION_PY,
@@ -76,12 +77,12 @@ export default function BlogPage() {
       <BlogHubHero />
 
       <section
-        className={`${BLOG_BG_CLASS} pt-2 pb-14 md:pt-3 md:pb-16`}
+        className={`${BLOG_BG_CLASS} pb-20 pt-4 md:pb-28 md:pt-8`}
         aria-label="Categorieën"
       >
         <Container>
-          <div className="rounded-3xl bg-white p-5 shadow-sm shadow-stone-900/[0.04] md:p-8 lg:p-10">
-            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+          <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-6 ring-1 ring-stone-200/40 md:p-10 lg:p-12">
+            <div className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:gap-8">
               {ALLE_CATEGORIEEN.map((cat) => (
                 <BlogCategorieKaart
                   key={cat.id}
@@ -101,11 +102,13 @@ export default function BlogPage() {
         aria-label="Themagidsen"
       >
         <Container>
-          <div className="mx-auto max-w-2xl px-1">
+          <div className="mx-auto max-w-2xl border-t border-stone-200/80 px-1 pt-14 md:pt-20">
             <BlogThemaLinks />
           </div>
         </Container>
       </section>
+
+      <FloatingLeefstijlcheckCta revealOnTimer={false} />
     </>
   );
 }
