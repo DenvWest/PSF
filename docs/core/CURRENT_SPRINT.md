@@ -18,6 +18,7 @@
 4. ✅ Pillar: `/herstel-verbeteren-na-40`
 5. ✅ Pillar: `/testosteron-na-40` (vijfde cluster)
 5b. ✅ Pillar: `/voeding-na-40` (tier-1 nutrition-ingang)
+5c. ✅ Pillar: `/beweging-na-40` (tier-1 movement-ingang)
 6. ✅ Profiel: `/profiel/onrustige-slaper`
 7. ✅ Profiel: `/profiel/stressdrager`
 8. ✅ Profiel: `/profiel/lage-batterij`
@@ -33,7 +34,7 @@
 18. ✅ Cluster-blogs: `/blog/creatine-en-herstel`, `/blog/vitamine-d-en-energie`
 19. ✅ Kennisbank: testosteron, slaapschuld, overtrainingssyndroom
 20. ✅ Spinnenweb-links profielen ↔ cluster-blogs ↔ kennisbank
-21. ✅ Sitemap: alle 5 pillar pages
+21. ✅ Sitemap: alle pillar pages (incl. voeding, beweging)
 22. ✅ Wave 1 spinnenweb: inline KB-links (cortisol, HPA-as, melatonine, magnesiumvormen), stress/energie cornerstone → pillars, herstel-pillar KB-links
 23. ✅ Wave 2 spinnenweb: profiel-KB-links, IntakeResults kennisbank bij lage score, blog `/blog/eiwit-na-40`
 24. ✅ Wave 3 spinnenweb: blogs middagdip + krachttraining, kennisbank `vitamine-d`, energie-pillar insulineresistentie, profiel-links

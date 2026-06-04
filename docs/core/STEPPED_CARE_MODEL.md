@@ -103,7 +103,16 @@ Zo modelleer je een specifiek symptoom. **Geen nieuw thema** — thema blijft `s
 
 **Melatonine:** `approved-claims` status `forbidden` — geen affiliate, geen tier-3 interventie, geen `/beste/melatonine`. Hooguit informatief via `/supplementen/melatonine` en `/kennisbank/melatonine`.
 
-**Belangrijk:** de werkelijke SQL-seed (interventie-rijen, triggers, claims) wordt pas geschreven nadat de EFSA-bewoording is goedgekeurd — dat is de copy-bron. Tot die tijd alleen dit model.
+**Belangrijk:** de werkelijke SQL-seed (interventie-rijen, triggers, claims) wordt pas geschreven nadat de EFSA-bewoording is goedgekeurd — dat is de copy-bron.
+
+**Bestaande seeds (repo):**
+
+| Thema | Migratie |
+|---|---|
+| `sleep` | `supabase/migrations/20260529180000_evidence_sleep_plan.sql` |
+| `stress`, `nutrition`, `movement` | `supabase/migrations/20260529220000_evidence_stress_nutrition_movement.sql` |
+
+Tier-1 pillars: `nutrition` → `/voeding-na-40`, `movement` → `/beweging-na-40` (zie `CONTENT_MAP.md`).
 
 ---
 

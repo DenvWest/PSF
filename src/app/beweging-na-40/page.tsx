@@ -12,46 +12,46 @@ const LINK =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
 
 export const metadata: Metadata = {
-  title: "Voeding Na 40: Wat Mannen Vaak Missen | PerfectSupplement",
+  title: "Beweging Na 40: Kracht, Ritme en Herstel | PerfectSupplement",
   description:
-    "Eiwit, vetten, ritme en stabiliteit na 40 — zonder dieet-hype. Praktische stappen vóór supplementen, met links naar gidsen en kennisbank.",
-  ...canonicalMetadata("/voeding-na-40"),
+    "Krachttraining, cardio en herstel na 40 — zonder sportschool-hype. Praktische stappen vóór supplementen, met links naar blogs en kennisbank.",
+  ...canonicalMetadata("/beweging-na-40"),
   openGraph: {
-    title: "Voeding Na 40 — eerst basis, dan pas supplementen",
+    title: "Beweging Na 40 — eerst belasting en rust, dan pas supplementen",
     description:
-      "Herkenning, leefstijlstappen en wanneer vergelijkingen zinvol zijn — voor mannen 40+.",
-    url: "/voeding-na-40",
+      "Herkenning, trainingsritme en wanneer creatine of eiwit zinvol zijn — voor mannen 40+.",
+    url: "/beweging-na-40",
     type: "article",
   },
 };
 
 const articleSchema = buildArticleSchema({
-  headline: "Voeding Na 40: Wat Mannen Vaak Missen",
+  headline: "Beweging Na 40: Kracht, Ritme en Herstel",
   description:
-    "Eiwit, vetten, ritme en stabiliteit na 40 — praktische stappen vóór supplementen.",
-  path: "/voeding-na-40",
+    "Krachttraining, cardio en herstel na 40 — praktische stappen vóór supplementen.",
+  path: "/beweging-na-40",
   datePublished: "2026-06-04",
 });
 
 const faqSchema = buildFaqSchema([
   {
-    question: "Hoeveel eiwit heb ik nodig na 40?",
+    question: "Hoe vaak moet ik krachttrainen na 40?",
     answer:
-      "Veel mannen 40+ zitten structureel onder 1,2 g eiwit per kg lichaamsgewicht per dag. Bij actief trainen is 1,6–2,0 g/kg een gangbaar richtpunt in sportvoeding — bespreek structurele tekorten met je huisarts.",
+      "Twee tot drie korte krachtsessies per week zijn voor veel mannen een haalbaar startpunt. Consistentie en progressieve belasting tellen meer dan het perfecte schema — bespreek pijn of blessures met je huisarts of fysiotherapeut.",
   },
   {
-    question: "Moet ik meteen supplementen nemen?",
+    question: "Moet ik meteen creatine nemen?",
     answer:
-      "Nee. Eerst ritme, eiwit bij elke maaltijd, vette vis en voldoende vezels. Supplementen zijn een laatste stap als voeding en slaap op orde zijn — of als bloedonderzoek iets specifieks aangeeft.",
+      "Nee. Eerst slaap, voeding (voldoende eiwit) en een haalbaar trainingsritme. Creatine kan daarna een ondersteuning zijn bij krachttraining — geen vervanging van herstel of rustdagen.",
   },
   {
-    question: "Wat als ik weinig vis eet?",
+    question: "Wat als ik altijd moe ben na training?",
     answer:
-      "EPA en DHA komen vooral uit vette vis. Eet je minder dan twee porties per week, is omega-3 via voeding of supplement een logisch gespreksonderwerp — niet omdat marketing dat zegt, maar omdat de inname vaak laag is.",
+      "Dat kan wijzen op te veel volume, te weinig slaap of onvoldoende eiwit. Lees over overtraining en herstel; pas volume aan vóór je extra supplementen stapelt.",
   },
 ]);
 
-export default function VoedingNa40Page() {
+export default function BewegingNa40Page() {
   return (
     <>
       <script
@@ -73,20 +73,20 @@ export default function VoedingNa40Page() {
                     Leefstijl eerst
                   </p>
                   <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-                    Voeding Na 40: Wat Mannen Vaak Missen
+                    Beweging Na 40: Kracht, Ritme en Herstel
                   </h1>
                   <p className="mt-4 text-lg text-gray-600">
-                    Ken je dit: je eet “gezond genoeg”, maar herstel, energie en spiermassa
-                    voelen alsof ze achterlopen? Na 40 verandert hoe je lichaam eiwit gebruikt,
-                    hoe stabiel je bloedsuiker blijft en hoeveel je echt binnenkrijgt — zonder
-                    dat je meer hoeft te “willen”.
+                    Ken je dit: je traint nog “genoeg”, maar herstel duurt langer, spieren voelen
+                    trager terug en je bent vaker stijf? Na 40 verandert hoe snel je belastbaar
+                    bent — niet omdat bewegen niet meer werkt, maar omdat ritme en rust zwaarder
+                    meetellen.
                   </p>
                   <div className="mt-6 text-center">
                     <Link
                       href="/intake"
                       className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-green-700 px-8 py-3 text-sm font-semibold text-white no-underline hover:bg-green-800 transition-colors"
                     >
-                      Ontdek jouw voedingsprioriteit →
+                      Ontdek jouw bewegingsprofiel →
                     </Link>
                     <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   </div>
@@ -110,7 +110,7 @@ export default function VoedingNa40Page() {
                     </li>
                     <li>
                       <a href="#stappen" className={LINK}>
-                        Stappen zonder dieet-hype
+                        Stappen zonder sportschool-hype
                       </a>
                     </li>
                     <li>
@@ -131,17 +131,21 @@ export default function VoedingNa40Page() {
                     Herken je dit?
                   </h2>
                   <ul className="mt-4 space-y-3 text-gray-700 leading-relaxed list-disc pl-5">
-                    <li>Je ontbijt is koffie + boterham, en rond 11:00 valt je energie weg.</li>
-                    <li>Je traint, maar spiermassa voelt lastiger vast te houden.</li>
-                    <li>Je eet weinig vette vis; omega-3 komt vooral uit supplementenmarketing.</li>
-                    <li>Je avondmaaltijd is laat of eenzijdig (veel koolhydraten, weinig eiwit).</li>
+                    <li>Krachttraining voelt zwaarder dan vroeger; je herstelt een dag langer.</li>
+                    <li>Cardio of wandelen schiet er in drukke weken bij in.</li>
+                    <li>Je traint door “uit gewoonte” terwijl slaap of voeding achterblijven.</li>
+                    <li>Spierpijn blijft hangen zonder dat je bewust meer volume deed.</li>
                   </ul>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Herken je een patroon?{" "}
-                    <Link href="/profiel/lage-batterij" className={LINK}>
-                      Lees het profiel Lage Batterij
+                    Past dit bij jou? Bekijk{" "}
+                    <Link href="/profiel/overtrainer" className={LINK}>
+                      Overtrainer
                     </Link>{" "}
-                    of start de{" "}
+                    of{" "}
+                    <Link href="/profiel/lage-batterij" className={LINK}>
+                      Lage Batterij
+                    </Link>
+                    — of start de{" "}
                     <Link href="/intake" className={LINK}>
                       gratis Leefstijlcheck
                     </Link>
@@ -154,56 +158,53 @@ export default function VoedingNa40Page() {
                     Wat er na 40 verandert
                   </h2>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Spieronderhoud vraagt meer{" "}
+                    Spiermassa en kracht kunnen behouden blijven met voldoende{" "}
                     <Link href="/kennisbank/eiwitbehoefte-na-40" className={LINK}>
-                      eiwit per maaltijd
-                    </Link>{" "}
-                    dan vroeger — niet één enorme portie aan het eind van de dag. Tegelijk
-                    reageert veel mannen gevoeliger op snelle suikerpieken (
-                    <Link href="/kennisbank/insulineresistentie" className={LINK}>
-                      insulinegevoeligheid
+                      eiwit en belasting
                     </Link>
-                    ), vooral bij stress en weinig slaap.
+                    , maar herstel vraagt meer structuur. Te veel volume zonder rust kan
+                    aansluiten bij{" "}
+                    <Link href="/kennisbank/overtrainingssyndroom" className={LINK}>
+                      overbelasting
+                    </Link>{" "}
+                    — geen diagnose, wel een signaal om volume te capen.
                   </p>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Vetten blijven onderschat:{" "}
-                    <Link href="/kennisbank/epa-dha" className={LINK}>
-                      EPA en DHA
-                    </Link>{" "}
-                    uit vette vis ondersteunen normale hartfunctie en hersenfunctie binnen
-                    officiële claimkaders — geen wondermiddel tegen moeheid.
+                    Cardio en dagelijkse beweging blijven belangrijk voor ritme, bloedsuiker en
+                    slaap — niet als straf, maar als ondersteuning van je krachtwerk.
                   </p>
                 </section>
 
                 <section id="stappen" className="mt-12">
                   <h2 className="font-serif text-2xl font-bold text-gray-900">
-                    Stappen die wél passen in een drukke week
+                    Stappen die passen in een drukke week
                   </h2>
                   <ol className="mt-4 space-y-4 text-gray-700 leading-relaxed list-decimal pl-5">
                     <li>
-                      <strong>Eiwit bij elke maaltijd</strong> — eieren, kwark, vis, peulvruchten.
-                      Lees{" "}
+                      <strong>2× kracht per week</strong> — ook thuis met lichaamsgewicht. Lees{" "}
+                      <Link href="/blog/krachttraining-na-40" className={LINK}>
+                        krachttraining na 40
+                      </Link>
+                      .
+                    </li>
+                    <li>
+                      <strong>Rustdag na zware sessie</strong> — geen schuldgevoel, wel planning.
+                    </li>
+                    <li>
+                      <strong>Eiwit bij maaltijden</strong> — zie{" "}
+                      <Link href="/voeding-na-40" className={LINK}>
+                        voeding na 40
+                      </Link>{" "}
+                      en{" "}
                       <Link href="/blog/eiwit-na-40" className={LINK}>
                         eiwit na 40
                       </Link>
                       .
                     </li>
                     <li>
-                      <strong>Vaste eetmomenten</strong> — vooral ontbijt binnen 2 uur na opstaan
-                      helpt ritme en middagdip (
-                      <Link href="/blog/middagdip-bloedsuiker-na-40" className={LINK}>
-                        middagdip na 40
-                      </Link>
-                      ).
-                    </li>
-                    <li>
-                      <strong>Vette vis 2× per week</strong> — anders eerst voeding structureren
-                      vóór je omega-3 vergelijkt.
-                    </li>
-                    <li>
-                      <strong>Alcohol en slaap</strong> — zie{" "}
-                      <Link href="/blog/alcohol-slaap-energie-na-40" className={LINK}>
-                        alcohol, slaap en energie
+                      <strong>Slaap prioriteit</strong> — training zonder slaap versterkt vermoeidheid; zie{" "}
+                      <Link href="/slaap-verbeteren-na-40" className={LINK}>
+                        slaap na 40
                       </Link>
                       .
                     </li>
@@ -215,27 +216,28 @@ export default function VoedingNa40Page() {
                     Supplementen: pas als laatste stap
                   </h2>
                   <p className="mt-4 text-gray-700 leading-relaxed">
-                    Geen affiliate in deze pillar — wel doorverwijzingen als je basis op orde is:
+                    Geen affiliate in deze pillar — wel doorverwijzingen als basis en belasting
+                    kloppen:
                   </p>
                   <ul className="mt-4 space-y-3">
                     <li>
-                      <Link href="/supplementen/omega-3" className={LINK}>
-                        Omega-3 gids — wanneer voeding niet volstaat →
+                      <Link href="/supplementen/creatine" className={LINK}>
+                        Creatine gids — wanneer het past bij krachttraining →
                       </Link>
                     </li>
                     <li>
-                      <Link href="/beste/omega-3-supplement" className={LINK}>
-                        Objectieve omega-3 vergelijking (affiliate) →
+                      <Link href="/beste/creatine" className={LINK}>
+                        Objectieve creatine vergelijking (affiliate) →
                       </Link>
                     </li>
                     <li>
-                      <Link href="/supplementen/vitamine-d" className={LINK}>
-                        Vitamine D gids — vooral bij weinig zon →
+                      <Link href="/supplementen/eiwitpoeder" className={LINK}>
+                        Eiwitpoeder gids — als voeding niet volstaat →
                       </Link>
                     </li>
                     <li>
-                      <Link href="/energie-na-40" className={LINK}>
-                        Energie-pillar — als vermoeidheid je hoofdthema is →
+                      <Link href="/herstel-verbeteren-na-40" className={LINK}>
+                        Herstel-pillar — als training en slaap samen knellen →
                       </Link>
                     </li>
                   </ul>
@@ -248,20 +250,20 @@ export default function VoedingNa40Page() {
                   <div className="mt-6 space-y-6">
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        Hoeveel eiwit heb ik nodig?
+                        Kan ik beginnen zonder sportschool?
                       </h3>
                       <p className="mt-2 text-gray-700 leading-relaxed">
-                        Richt op structureel voldoende eiwit verspreid over de dag. Bij twijfel
-                        en aanhoudende klachten: bloedonderzoek via je huisarts.
+                        Ja. Lichaamsgewicht, elastieken of een paar dumbbells volstaan om te
+                        starten — consistentie eerst.
                       </p>
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        Wat als ik weinig vis eet?
+                        Wanneer is creatine logisch?
                       </h3>
                       <p className="mt-2 text-gray-700 leading-relaxed">
-                        Dan is omega-3 het meest logische supplementgesprek — na je basis op
-                        orde. Vergelijk pas als je weet hoeveel EPA/DHA je nodig hebt.
+                        Als je al structureel traint, voldoende eiwit eet en geen medische
+                        contra-indicatie hebt. Vergelijk pas na je basis op orde is.
                       </p>
                     </div>
                   </div>
@@ -269,7 +271,7 @@ export default function VoedingNa40Page() {
 
                 <div className="mt-12 rounded-2xl bg-ps-green/10 p-6 text-center">
                   <p className="text-gray-800 font-medium">
-                    Wil je weten of voeding, slaap of stress bij jou het zwaarst weegt?
+                    Wil je weten of beweging, slaap of voeding bij jou het zwaarst weegt?
                   </p>
                   <Link
                     href="/intake"

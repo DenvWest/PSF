@@ -17,10 +17,9 @@ bestanden. Eén rapport; Dennis beslist.
 - `CLAUDE.md` — sectie **"SEO standaarden — altijd toepassen"** (de norm).
 - `docs/core/SEO_RULES.md` — detailregels.
 - Schema-helpers: `src/lib/seo/structuredData.ts` — `buildBreadcrumbSchema`,
-  `buildItemListSchema`, `buildFaqSchema`, `buildDefinedTermSchema`.
-- Let op duplicatie: `src/lib/structured-data.ts` bevat een **tweede** kopie van
-  `buildBreadcrumbSchema` / `buildItemListSchema` (dit is de Wave 7-tech-debt
-  "structured-data.ts vs seo/ merge"). Meld welk bestand welke pagina voedt.
+  `buildItemListSchema`, `buildFaqSchema`, `buildDefinedTermSchema`, `buildArticleSchema`.
+- `src/lib/structured-data.ts` is een **re-export-alias** (geen tweede implementatie).
+- Pillar-pagina's (`/voeding-na-40`, `/beweging-na-40`, …): controleer inline JSON-LD vs helpers.
 - Rendering-punten: `src/components/blog/BlogArticlePage.tsx`,
   `src/components/supplement-guides/SupplementPage.tsx`,
   `src/components/supplements/FaqSection.tsx`,
@@ -48,8 +47,7 @@ Loop per page-type door `src/app/**` en de bijbehorende componenten. Controleer:
 | Route | Ontbreekt | Detail |
 |---|---|---|
 
-Plus één losse notitie over de dubbele schema-bron (welke routes nog de legacy
-`src/lib/structured-data.ts` gebruiken i.p.v. `src/lib/seo/structuredData.ts`).
+Optioneel: pillar-pagina's die nog inline `Article`/`FAQPage` objecten gebruiken i.p.v. `buildArticleSchema` / `buildFaqSchema`.
 
 ## Wat je NIET doet
 - Geen edits, geen commits, geen schema toevoegen of mergen.
@@ -59,7 +57,7 @@ Plus één losse notitie over de dubbele schema-bron (welke routes nog de legacy
 - [ ] Title/description/canonical per route gecheckt
 - [ ] h1-hiërarchie gecheckt
 - [ ] JSON-LD per page-type aanwezig
-- [ ] Dubbele schema-bron (structured-data.ts vs seo/) in kaart gebracht
+- [ ] Pillar JSON-LD via helpers waar mogelijk
 - [ ] Read-only — geen wijzigingen voorgesteld in code
 
 ---

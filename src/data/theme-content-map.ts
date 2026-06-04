@@ -23,7 +23,7 @@ export const THEME_CONTENT_MAP: Record<ThemeSlug, ThemeContentLinks> = {
     knowledgeSlugs: ["eiwitbehoefte-na-40", "insulineresistentie"],
   },
   movement: {
-    pillarHref: "/herstel-verbeteren-na-40",
+    pillarHref: "/beweging-na-40",
     profileSlug: "overtrainer",
     knowledgeSlugs: ["eiwitbehoefte-na-40", "overtrainingssyndroom"],
   },

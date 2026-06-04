@@ -6,10 +6,19 @@ import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 const exploreLinks = [
     { href: "/intake", label: "Leefstijlcheck" },
     { href: "/profiel", label: "Herken je patroon?" },
+    { href: "/voeding-na-40", label: "Voeding na 40" },
+    { href: "/beweging-na-40", label: "Beweging na 40" },
     { href: "/supplementen", label: "Supplementen" },
     { href: "/gidsen", label: "Gidsen na 40" },
     { href: "/kennisbank", label: "Kennisbank" },
     { href: "/blog", label: "Blog" },
+];
+
+const profielLinks = [
+    { href: "/profiel/onrustige-slaper", label: "Onrustige Slaper" },
+    { href: "/profiel/stressdrager", label: "Stressdrager" },
+    { href: "/profiel/lage-batterij", label: "Lage Batterij" },
+    { href: "/profiel/overtrainer", label: "Overtrainer" },
 ];
 
 const vergelijkingLinks = [
@@ -29,7 +38,7 @@ export default function Footer() {
     return (
         <footer className="border-t border-stone-200 bg-[var(--ps-bg)]">
             <Container>
-                <div className="grid gap-10 py-14 md:grid-cols-2 md:gap-12 lg:grid-cols-4 lg:gap-16 lg:py-16">
+                <div className="grid gap-10 py-14 md:grid-cols-2 md:gap-12 lg:grid-cols-5 lg:gap-12 lg:py-16">
                     <div className="md:col-span-1">
                         <Link href="/" className="inline-flex items-center gap-2.5">
                             <Image
@@ -56,6 +65,24 @@ export default function Footer() {
                         </h4>
                         <ul className="mt-4 space-y-2.5">
                             {exploreLinks.map((link) => (
+                                <li key={link.href}>
+                                    <Link
+                                        href={link.href}
+                                        className="text-sm text-stone-600 transition hover:text-stone-900"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-400">
+                            Profielen
+                        </h4>
+                        <ul className="mt-4 space-y-2.5">
+                            {profielLinks.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}

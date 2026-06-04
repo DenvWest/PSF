@@ -9,7 +9,7 @@
 Bij ELKE nieuwe pagina doorloop je deze 11 stappen:
 
 0. **Raadpleeg `core/WRITING_VOICE.md`** — toon, woorden, begrip → urgentie → actie
-1. **Raadpleeg `core/PAGE_ROADMAP.md`** — status en SEO-data van deze pagina
+1. **Raadpleeg `core/PAGE_ROADMAP.md`** + **`core/CONTENT_MAP.md`** — status, route en cluster
 2. **Kies het juiste blueprint** (zie onder)
 3. **Interne links** — welke 2-3 bestaande pagina's zijn semantisch gerelateerd?
 4. **Kennisbank-indexering** — welke termen komen voor? Eerste voorkomen inline linken
@@ -95,9 +95,10 @@ Zie `core/PERSONALIZATION_ENGINE.md` voor complete profiel-architectuur.
 2. **Hero** — H1, herkenningsmoment, categorie-label
 3. **Inhoudsopgave** (bij >800 woorden)
 4. **Content** — 800-1500 woorden, kennisbank-termen inline gelinkt
-5. **Vergelijking-link** — turbo-snippet → relevante vergelijkingspagina
-6. **CTA** — intake
-7. **Gerelateerde artikelen** — 2-3 links met turbo-snippets
+5. **Gids-link** — turbo-snippet → `/supplementen/[slug]` vóór elke `/beste/*`-link (melatonine: alleen gids)
+6. **Vergelijking-link** — turbo-snippet → relevante vergelijkingspagina (indien affiliate toegestaan)
+7. **CTA** — intake
+8. **Gerelateerde artikelen** — 2-3 links met turbo-snippets
 
 ---
 
@@ -122,14 +123,14 @@ Zie `core/PERSONALIZATION_ENGINE.md` voor complete profiel-architectuur.
 | Van → Naar | Turbo-snippet |
 |---|---|
 | Homepage → `/beste/omega-3-supplement` | "Welke omega-3 is écht goed? Objectief vergeleken →" |
-| Homepage → `/beste-magnesium` | "Welke magnesium past bij jou? Vergelijk op vorm en prijs →" |
+| Homepage → `/beste/magnesium` | "Welke magnesium past bij jou? Vergelijk op vorm en prijs →" |
 | Homepage → `/beste/ashwagandha` | "Stress? Dit supplement wordt het meest onderzocht →" |
 
 ### Pillar pages
 
 | Van → Naar | Turbo-snippet |
 |---|---|
-| Pillar slaap → `/beste-magnesium` | "Welke magnesium vorm werkt het best voor slaap? Vergeleken →" |
+| Pillar slaap → `/beste/magnesium` | "Welke magnesium vorm werkt het best voor slaap? Vergeleken →" |
 | Pillar slaap → `/beste/ashwagandha` | "Stress houdt je wakker? KSM-66 vs Sensoril — het verschil matteert →" |
 | Pillar slaap → `/profiel/onrustige-slaper` | "Wakker om 3 uur? Herken je dit patroon? →" |
 
@@ -138,7 +139,7 @@ Zie `core/PERSONALIZATION_ENGINE.md` voor complete profiel-architectuur.
 | Van → Naar | Turbo-snippet |
 |---|---|
 | Profiel slaper → Pillar slaap | "Slecht slapen na 40? Complete gids van oorzaak tot oplossing →" |
-| Profiel slaper → `/beste-magnesium` | "Welke magnesium past bij jouw slaapklachten? →" |
+| Profiel slaper → `/beste/magnesium` | "Welke magnesium past bij jouw slaapklachten? →" |
 | Profiel slaper → `/beste/ashwagandha` | "Stress houdt je wakker? Dit supplement kan helpen →" |
 
 ### Intake CTA (universeel)

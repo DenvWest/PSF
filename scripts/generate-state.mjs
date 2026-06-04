@@ -4,11 +4,13 @@ import { join } from "node:path";
 const ROOT = process.cwd();
 
 const PILLAR_ROUTES = [
+  "/beweging-na-40",
   "/energie-na-40",
   "/herstel-verbeteren-na-40",
   "/slaap-verbeteren-na-40",
   "/stress-verminderen-man",
   "/testosteron-na-40",
+  "/voeding-na-40",
 ];
 
 const THEMA_HUBS = ["slaap", "stress", "energie", "herstel"];

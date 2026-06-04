@@ -122,7 +122,7 @@ export const eiwitpoederGidsData: SupplementData = {
         href: "/gids/energie",
       },
       {
-        symptoom: "Stille Slijter",
+        symptoom: "Lage Batterij",
         tekst:
           "Als snacks, alcohol of te weinig volwaardige maaltijden je herstel ondermijnen, begint winst vaak bij voeding.",
         href: "/profiel/stille-slijter",

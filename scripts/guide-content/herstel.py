@@ -2,32 +2,32 @@
 # Herstelgids — zelfde PDF-layout als energie/stress via generate-guide-pdf.py
 
 _LINK_SLAAP = (
-    '<a href="https://perfectsupplement.nl/thema/slaap" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/thema/slaap</u></a>"
+    '<a href="https://perfectsupplement.nl/gids/slaap" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/gids/slaap</u></a>"
 )
 _LINK_STRESS = (
-    '<a href="https://perfectsupplement.nl/thema/stress" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/thema/stress</u></a>"
+    '<a href="https://perfectsupplement.nl/gids/stress" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/gids/stress</u></a>"
 )
 _LINK_ENERGIE = (
-    '<a href="https://perfectsupplement.nl/thema/energie" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/thema/energie</u></a>"
+    '<a href="https://perfectsupplement.nl/gids/energie" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/gids/energie</u></a>"
 )
 _LINK_MAG = (
-    '<a href="https://perfectsupplement.nl/beste-magnesium" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/beste-magnesium</u></a>"
+    '<a href="https://perfectsupplement.nl/beste/magnesium" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/beste/magnesium</u></a>"
 )
 _LINK_OMEGA = (
-    '<a href="https://perfectsupplement.nl/beste-omega-3-supplement" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/beste-omega-3-supplement</u></a>"
+    '<a href="https://perfectsupplement.nl/beste/omega-3-supplement" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/beste/omega-3-supplement</u></a>"
 )
 _LINK_ASH = (
-    '<a href="https://perfectsupplement.nl/beste-ashwagandha" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/beste-ashwagandha</u></a>"
+    '<a href="https://perfectsupplement.nl/beste/ashwagandha" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/beste/ashwagandha</u></a>"
 )
 _LINK_EIWIT = (
-    '<a href="https://perfectsupplement.nl/beste-eiwitpoeder" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/beste-eiwitpoeder</u></a>"
+    '<a href="https://perfectsupplement.nl/beste/eiwitpoeder" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/beste/eiwitpoeder</u></a>"
 )
 
 _GUIDE = {

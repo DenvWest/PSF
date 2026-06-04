@@ -81,7 +81,8 @@ psf/
 │   │   ├── chat-intake.ts           # Conversational intake state machine
 │   │   ├── api-middleware.ts        # public/internal/partner API auth
 │   │   ├── __tests__/               # Vitest unit tests
-│   │   ├── seo/                     # JSON-LD helpers
+│   │   ├── seo/structuredData.ts    # JSON-LD helpers (canonical)
+│   │   ├── structured-data.ts       # Re-export alias → seo/structuredData.ts
 │   │   ├── email-templates/         # Nurture e-mail templates
 │   │   ├── rate-limit.ts            # Rate limiter
 │   │   ├── rate-limit-config.ts     # Per-route limits

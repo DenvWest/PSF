@@ -2,12 +2,12 @@
 # Energiegids — zelfde PDF-layout als stress/slaap via generate-guide-pdf.py
 
 _LINK_SLAAP = (
-    '<a href="https://perfectsupplement.nl/thema/slaap" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/thema/slaap</u></a>"
+    '<a href="https://perfectsupplement.nl/gids/slaap" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/gids/slaap</u></a>"
 )
 _LINK_STRESS = (
-    '<a href="https://perfectsupplement.nl/thema/stress" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/thema/stress</u></a>"
+    '<a href="https://perfectsupplement.nl/gids/stress" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/gids/stress</u></a>"
 )
 
 _GUIDE = {

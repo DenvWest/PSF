@@ -5,6 +5,8 @@ import { absoluteUrl } from "@/lib/public-site-url";
 import HomeTrustSection from "@/components/homepage/HomeTrustSection";
 import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
 import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
+import HomeTier1Pillars from "@/components/homepage/HomeTier1Pillars";
+import HomeProfileStrip from "@/components/homepage/HomeProfileStrip";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import "./homepage.css";
 
@@ -55,8 +57,10 @@ export default function HomePage() {
       <div className="home">
         <Hero />
         <HomeTrustSection />
+        <HomeTier1Pillars />
         <LifestyleCheckSection />
         <HomeGuidesPromoSection />
+        <HomeProfileStrip />
         <FloatingLeefstijlcheckCta />
       </div>
     </>

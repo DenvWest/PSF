@@ -16,21 +16,26 @@
 | Intake flow | `/intake` | Conversie (e-mail + data) |
 | Kennisbank | `/kennisbank/biobeschikbaarheid` | Semantische diepte, interne links |
 | Profielpagina | `/profiel/onrustige-slaper` | SEO op profiellabel, CTA naar intake |
-| Thema-hub | `/thema/slaap` | Navigatie, clustert gerelateerde content |
+| Thema-hub (legacy) | `/thema/slaap` → redirect `/gids/slaap` | PDF-gids-flow; geen nieuwe content |
+| Tier-1 leefstijl-pillar | `/voeding-na-40`, `/beweging-na-40` | Niet-commerciële ingang vóór supplement-CTA's |
 
 ### Link-hiërarchie
 
 ```
 Homepage
-├── Pillar pages (4-6: slaap, stress, energie, hormonen, voeding, herstel)
-│   ├── Blogposts (3-8 per pillar, long-tail)
+├── Tier-1 pillars (voeding, beweging — geen affiliate in body)
+├── Thema-pillars (slaap, stress, energie, herstel, testosteron)
+│   ├── Blogposts (long-tail)
 │   │   └── Kennisbank-termen (inline links)
-│   └── Vergelijkingspagina's (1-2 per pillar)
-├── Profielpagina's (6 stuks, één per profiellabel)
-│   └── Linken naar relevante pillar + vergelijking
+│   ├── Supplementgids (/supplementen/*) — evidence vóór vergelijking
+│   └── Vergelijkingspagina's (/beste/*) — affiliate
+├── Profielpagina's (4: onrustige-slaper, stressdrager, lage-batterij, overtrainer)
+│   └── Linken naar pillar + gids + vergelijking
+├── PDF-gidsen (/gids/*) — legacy /thema/* redirect
 └── Intake (/intake)
-    └── Gelinkt vanaf elke pagina via CTA
 ```
+
+Zie [`CONTENT_MAP.md`](CONTENT_MAP.md) voor actuele routes.
 
 ### Interne link regels
 
@@ -81,7 +86,7 @@ Homepage
 | Profielpagina | `BreadcrumbList` + `Article` |
 | FAQ-secties | `FAQPage` |
 
-Implementatie via `src/lib/structured-data.ts` met helpers: `generateProductSchema()`, `generateArticleSchema()`, `generateFAQSchema()`.
+Implementatie via `src/lib/seo/structuredData.ts` (`buildBreadcrumbSchema`, `buildFaqSchema`, `buildItemListSchema`, `buildDefinedTermSchema`, `buildArticleSchema`). `src/lib/structured-data.ts` is een re-export-alias.
 
 ---
 
@@ -129,6 +134,25 @@ Drie fasen aandacht op elke pagina:
 3. **Mechanisme:** kort, geen jargon
 4. **Actie:** CTA naar intake of vergelijking
 5. **Bewijs:** PubMed of eigen vergelijking
+
+---
+
+## Kannibalisatie-bewaking (dubbele blog-paren)
+
+Bewust behouden paren (verschillende intentie) — maandelijks Search Console:
+
+| Paar | Actie bij overlap |
+|---|---|
+| `magnesium-en-slaap` + `magnesium-en-slaapkwaliteit` | Export queries waar beide URL's impressions hebben |
+| `melatonine-na-40` + `melatonine-wanneer-wel-niet` | Idem |
+
+**Beslisboom:**
+
+1. Export GSC: query + pagina, laatste 28 dagen.
+2. Als **>30% impressions** van een query naar **beide** URL's gaan **én** beide in top 10: intentie aanscherpen (H1/meta) of canonical naar sterkere URL.
+3. Anders: pair behouden; cross-links up-to-date houden.
+
+Zie ook [`CONTENT_GAPS.md`](CONTENT_GAPS.md) (Gids-kwaliteit + dubbele artikelen).
 
 ---
 

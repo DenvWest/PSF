@@ -8,7 +8,7 @@
 
 **Wave 6 (mei 2026) opgelost:**
 - `ComparisonProfileFits` op alle 8 `/supplementen/*` gidsen
-- Homepage: profiel-strip met link naar `/profiel` + 4 profielkaarten
+- Homepage: profiel-strip + tier-1 pillars (`/voeding-na-40`, `/beweging-na-40`)
 - Blog-categorie supplementen `themaHref` → `/supplementen`
 - `buildFaqSchema()` gedeeld door vergelijkingen (`FaqSection`) en supplement-gidsen
 
@@ -72,7 +72,22 @@
 
 - Doel: 1200–2000 woorden, evidence-sectie + FAQ per `/supplementen/*`
 - `forbidden` ingredients (melatonine): geen `productVergelijkingCta`, geen `/beste/*`
-- Maandelijks: Search Console op dubbele intent-paren (magnesium/melatonine blogs)
+- Maandelijks: Search Console op dubbele intent-paren (magnesium/melatonine blogs) — beslisboom in `SEO_RULES.md`
+
+### Gids-audit (juni 2026)
+
+| Gids | FAQ | ProfileFits | Opmerking |
+|---|---|---|---|
+| `/supplementen/magnesium` | ✅ | ✅ | Referentie-diepte |
+| `/supplementen/ashwagandha` | ✅ | ✅ | |
+| `/supplementen/omega-3` | ✅ | ✅ | |
+| `/supplementen/vitamine-d` | ✅ | ✅ | |
+| `/supplementen/melatonine` | ✅ | ✅ | Geen `/beste/melatonine` |
+| `/supplementen/creatine` | ✅ | ✅ | |
+| `/supplementen/zink` | ✅ | ✅ | |
+| `/supplementen/eiwitpoeder` | ✅ | ✅ | Profiellabel bijgewerkt |
+
+**Blog → gids → vergelijking:** nieuwe blogs verplicht eerst `/supplementen/*` (zie `CONTENT_SYSTEM.md` Blueprint 4). Audit: blogs met directe `/beste/*` zonder gids in dezelfde sectie prioriteit voor rewrite.
 
 ## Dubbele artikelen — audit (Wave 4)
 
@@ -134,7 +149,7 @@ Cross-links toegevoegd; geen redirects nodig (verschillende zoekintentie).
 - [x] Herstel-pillar kennisbank-links (Wave 1)
 - [x] Turbo-snippets op testosteron-pillar en cluster-blogs
 - [ ] Geen broken interne links (run `npm run build` — na deploy verifiëren)
-- [ ] Content-map bijgewerkt na elke nieuwe pagina
+- [ ] Content-map bijgewerkt: `docs/core/CONTENT_MAP.md` + `npm run generate-state`
 - [x] Kennisbank-termen whyItMatters markdown-links renderen (Wave 4)
 - [x] FAQ schema op vergelijkingen via gecentraliseerde `buildFaqSchema` (Wave 6)
 - [x] Supplement-gidsen hebben "past bij profiel X" blok (Wave 6)

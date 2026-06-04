@@ -15,7 +15,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 ## Wat is live (mei 2026)
 
 - 7 vergelijkingspagina's met affiliate (`/beste/*`; geen melatonine — zie `COMPLIANCE.md`)
-- 4 pillar pages (`/slaap-verbeteren-na-40`, `/stress-verminderen-man`, `/energie-na-40`, `/herstel-verbeteren-na-40`)
+- 7 pillar pages: slaap, stress, energie, herstel, testosteron, voeding, beweging (zie `core/CONTENT_MAP.md`)
 - 4 profielpagina's (onrustige-slaper, stressdrager, lage-batterij, overtrainer)
 - Actuele tellingen en slug-lijsten: `npm run generate-state` → `docs/PROJECT_STATE.md` (auto-gegenereerd)
 - Planning/status nieuwe pagina's: `docs/core/PAGE_ROADMAP.md` + `docs/core/CURRENT_SPRINT.md`
@@ -43,7 +43,8 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Document | Wat het beschrijft |
 |---|---|
 | [`core/INTAKE_SYSTEM.md`](core/INTAKE_SYSTEM.md) | 5-fasen flow, vragenlijst, scoring engine, beslislogica, profiellabels |
-| [`core/CONTENT_SYSTEM.md`](core/CONTENT_SYSTEM.md) | Content-map, turbo-snippets, Smart Content Module, page blueprints |
+| [`core/CONTENT_MAP.md`](core/CONTENT_MAP.md) | Canonieke routekaart (routes, clusters, profiel-koppelingen) |
+| [`core/CONTENT_SYSTEM.md`](core/CONTENT_SYSTEM.md) | Turbo-snippets, Smart Content Module, page blueprints |
 | [`core/AFFILIATE_SYSTEM.md`](core/AFFILIATE_SYSTEM.md) | Daisycon, Arctic Blue, link-structuur, Sub ID, click tracking |
 | [`core/EMAIL_SYSTEM.md`](core/EMAIL_SYSTEM.md) | Nurture sequence, Resend, cron, PDF-gidsen |
 | [`core/PERSONALIZATION_ENGINE.md`](core/PERSONALIZATION_ENGINE.md) | Profiel-architectuur, scoring triggers, 8-sectie structuur, spinnenweb per profiel |

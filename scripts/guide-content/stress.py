@@ -2,8 +2,8 @@
 # Content voor stressgids-PDF (zie README.md voor schema).
 
 _GUIDE_LINK = (
-    '<a href="https://perfectsupplement.nl/thema/slaap" color="#5A8F6A">'
-    "<u>perfectsupplement.nl/thema/slaap</u></a>"
+    '<a href="https://perfectsupplement.nl/gids/slaap" color="#5A8F6A">'
+    "<u>perfectsupplement.nl/gids/slaap</u></a>"
 )
 
 GUIDE = {

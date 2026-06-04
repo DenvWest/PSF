@@ -76,6 +76,35 @@ export function buildFaqSchema(
   };
 }
 
+export function buildArticleSchema(params: {
+  headline: string;
+  description: string;
+  path: string;
+  datePublished: string;
+  dateModified?: string;
+}) {
+  const modified = params.dateModified ?? params.datePublished;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: params.headline,
+    description: params.description,
+    author: {
+      "@type": "Organization",
+      name: "PerfectSupplement",
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "PerfectSupplement",
+      url: SITE_URL,
+    },
+    datePublished: params.datePublished,
+    dateModified: modified,
+    mainEntityOfPage: resolveSiteUrl(params.path),
+  };
+}
+
 export function buildDefinedTermSchema(params: {
   term: string;
   description: string;

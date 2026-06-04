@@ -13,7 +13,8 @@
 | `/testosteron-na-40` | ✅ Live | "testosteron na 40" |
 | `/supplementen-mannen-40` | 💡 | "supplementen mannen 40+" |
 | `/voeding-na-40` | ✅ Live | "voeding na 40" |
+| `/beweging-na-40` | ✅ Live | "beweging na 40" |
 
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: juni 2026*

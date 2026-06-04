@@ -35,6 +35,41 @@ export default function GidsenPage() {
               </p>
             </section>
 
+            <section className="mt-12" aria-label="Leefstijl-pillars">
+              <h2 className="font-serif text-3xl font-bold text-gray-900">
+                Leefstijl eerst
+              </h2>
+              <p className="mt-3 text-gray-700 leading-relaxed">
+                Geen affiliate in deze gidsen — wel praktische stappen vóór supplementen.
+              </p>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <div className="p-5 rounded-xl border border-stone-200 bg-stone-50">
+                  <p className="font-semibold text-gray-900">Voeding na 40</p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Eiwit, ritme en vetten — basis vóór vergelijkingen.
+                  </p>
+                  <Link
+                    href="/voeding-na-40"
+                    className="mt-3 inline-block text-sm font-semibold text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
+                  >
+                    Lees de pillar →
+                  </Link>
+                </div>
+                <div className="p-5 rounded-xl border border-stone-200 bg-stone-50">
+                  <p className="font-semibold text-gray-900">Beweging na 40</p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Krachttraining, herstel en ritme — zonder sportschool-hype.
+                  </p>
+                  <Link
+                    href="/beweging-na-40"
+                    className="mt-3 inline-block text-sm font-semibold text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
+                  >
+                    Lees de pillar →
+                  </Link>
+                </div>
+              </div>
+            </section>
+
             <section className="mt-12" aria-label="Themagidsen">
               <h2 className="font-serif text-3xl font-bold text-gray-900">
                 Kies je thema

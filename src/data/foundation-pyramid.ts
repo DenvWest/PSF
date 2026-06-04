@@ -230,7 +230,7 @@ export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {
       "Neem na elke 90 minuten zitten een korte wandeling van 5 minuten.",
       "Kies één vaste trainingsdag en zet die in je agenda.",
     ],
-    guideHref: undefined,
+    guideHref: "/beweging-na-40",
     profileSlugs: ["lage-batterij", "overtrainer"],
   },
   connection: {

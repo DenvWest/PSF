@@ -1,4 +1,5 @@
 export {
+  buildArticleSchema,
   buildBreadcrumbSchema,
   buildDefinedTermSchema,
   buildFaqSchema,
