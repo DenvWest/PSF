@@ -280,13 +280,18 @@ export default function IntakeResults({
     profile,
     answers,
   );
+  const primaryTheme = getPrimaryTheme(scores, answers);
+  const activePlanContent =
+    isPlanJourneyTheme(primaryTheme) &&
+    planContent?.themeSlug === primaryTheme
+      ? planContent
+      : null;
   const suppressLegacySupplements =
-    planContent?.ready === true && planContent.actions.length > 0;
+    activePlanContent?.ready === true && activePlanContent.actions.length > 0;
   const displaySupplementRoute = suppressLegacySupplements ? [] : supplementRoute;
   const excludeIds = displaySupplementRoute.map((r) => r.id);
   const kennisbankLinks = getLowDomainKennisbankLinks(scores);
   const pillarStatuses = buildPillarStatuses(scores);
-  const primaryTheme = getPrimaryTheme(scores, answers);
   const planTemplate = getPlanTemplate(primaryTheme);
 
   const isOvertrainerProfile = matchesOvertrainerAnswers(answers);
@@ -340,7 +345,6 @@ export default function IntakeResults({
 
   useEffect(() => {
     if (!isPlanJourneyTheme(primaryTheme)) {
-      setPlanContent(null);
       return;
     }
 
@@ -361,13 +365,11 @@ export default function IntakeResults({
           return;
         }
         const data = (await response.json()) as PlanContent;
-        if (!cancelled) {
+        if (!cancelled && data.themeSlug === primaryTheme) {
           setPlanContent(data);
         }
       } catch {
-        if (!cancelled) {
-          setPlanContent(null);
-        }
+        // Behoud vorige planContent; activePlanContent filtert op themeSlug.
       }
     })();
 
@@ -517,10 +519,10 @@ export default function IntakeResults({
           </div>
         </section>
 
-        {planContent && planContent.actions.length > 0 ? (
+        {activePlanContent && activePlanContent.actions.length > 0 ? (
           <PlanContentSection
-            actions={planContent.actions}
-            ready={planContent.ready}
+            actions={activePlanContent.actions}
+            ready={activePlanContent.ready}
           />
         ) : null}
 
