@@ -109,17 +109,9 @@ export default function BlogArticlePage({
 
       <header className="border-b border-stone-200/75 bg-white">
         <Container className="py-11 md:py-[3.25rem]">
-          <div
-            className={`flex min-w-0 flex-col lg:flex-row lg:items-start ${
-              showReadingGutters ? READING_ROW_GAP_CLASS : ""
-            }`}
-          >
-            {showReadingGutters ? <ReadingLayoutDesktopGutters /> : null}
-            <div
-              className={`min-w-0 w-full max-w-[min(72ch,calc(100%-0.75rem))] ${
-                showReadingGutters ? "mx-auto lg:mx-0" : "mx-auto"
-              }`}
-            >
+          <div className={`flex min-w-0 flex-col lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}>
+            <ReadingLayoutDesktopGutters />
+            <div className="min-w-0 w-full max-w-[min(72ch,calc(100%-0.75rem))] mx-auto lg:mx-0">
               <Breadcrumbs
                 items={[
                   { label: BLOG_HUB_LABEL, href: "/blog" },
@@ -154,23 +146,19 @@ export default function BlogArticlePage({
 
       <Container className="pt-14 md:pt-[4.25rem]">
         <div className={`flex w-full min-w-0 flex-col lg:flex-row lg:items-start ${READING_ROW_GAP_CLASS}`}>
-          {showReadingGutters ? (
-            <aside className={`${READING_TOC_COL_CLASS} hidden min-h-0 lg:block`}>
-              <div className="sticky top-[var(--sticky-toc-offset)] max-h-[calc(100vh-var(--sticky-toc-offset)-2rem)] overflow-y-auto pb-14 pt-0.5 xl:pb-16">
-                <ArticleSidebar
-                  headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
-                  clusterTitle={clusterTitle}
-                  clusterArticles={clusterArticles}
-                  currentSlug={artikel.slug}
-                />
-              </div>
-            </aside>
-          ) : null}
-          {showReadingGutters ? (
-            <div className={`${READING_RAIL_COL_CLASS} hidden lg:flex`} aria-hidden="true">
-              <div className="relative min-h-24 w-[2px] flex-1 overflow-hidden rounded-full bg-stone-200/92" />
+          <aside className={`${READING_TOC_COL_CLASS} hidden min-h-0 lg:block`}>
+            <div className="sticky top-[var(--sticky-toc-offset)] max-h-[calc(100vh-var(--sticky-toc-offset)-2rem)] overflow-y-auto pb-14 pt-0.5 xl:pb-16">
+              <ArticleSidebar
+                headings={tocItems.map((t) => ({ id: t.id, text: t.label }))}
+                clusterTitle={clusterTitle}
+                clusterArticles={clusterArticles}
+                currentSlug={artikel.slug}
+              />
             </div>
-          ) : null}
+          </aside>
+          <div className={`${READING_RAIL_COL_CLASS} hidden lg:flex`} aria-hidden="true">
+            <div className="relative min-h-24 w-[2px] flex-1 overflow-hidden rounded-full bg-stone-200/92" />
+          </div>
           <div className="min-w-0 flex-1">
             <ArticleBodyReadingChrome tocItems={[]} hideTocBelowItemCount={999}>
               {showReadingGutters ? (
