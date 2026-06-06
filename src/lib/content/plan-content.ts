@@ -112,6 +112,7 @@ export async function themeHasCompletePlanContent(
     .select("intervention_id")
     .eq("organization_id", organizationId)
     .eq("status", "published")
+    .eq("is_efsa_authorized", true)
     .in("intervention_id", interventionIds);
 
   if (claimsError || !claims?.length) {
@@ -151,6 +152,7 @@ async function getPublishedClaimForIntervention(
     .eq("organization_id", orgId)
     .eq("intervention_id", interventionId)
     .eq("status", "published")
+    .eq("is_efsa_authorized", true)
     .limit(1)
     .maybeSingle<EvidenceClaimRow>();
 
