@@ -1,8 +1,13 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   getInterventionsForTheme,
   type InterventionBuckets,
   type MatchedIntervention,
 } from "@/lib/content/match-interventions";
+import {
+  resolveCompletedPlanPhases,
+  resolveNurtureTierAction,
+} from "@/lib/content/resolve-nurture-tier";
 import type { ThemeSlug } from "@/lib/content/themes";
 import {
   calcDomainScores,
@@ -13,9 +18,29 @@ import {
 import type { NurtureInterventionHighlight } from "@/lib/email-templates/nurture/helpers";
 import type { NurtureEmailData } from "@/lib/email-templates/nurture/types";
 import { themeHasCompletePlanContent } from "@/lib/content/plan-content";
+import { buildPlanIntakeContext } from "@/lib/lifestyle-plan-eval";
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
-import { getPrimaryTheme } from "@/lib/primary-theme";
+import { getDefaultOrganizationId } from "@/lib/organization";
+import { getVisibleTiers } from "@/lib/org-settings";
+import { loadPlanProgress } from "@/lib/plan-progress";
+import {
+  getPrimaryTheme,
+  type MeasuredPillarId,
+} from "@/lib/primary-theme";
 import type { QuestionId, SymptomId } from "@/data/intake-questions";
+
+const MEASURED_PILLARS = new Set<MeasuredPillarId>([
+  "sleep",
+  "stress",
+  "nutrition",
+  "movement",
+]);
+
+export type NurturePlanGate = {
+  completedPlanPhases: number;
+  visibleTiers: number[];
+  organizationId: string;
+};
 
 function parseAnswers(raw: unknown): Record<string, number> | null {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
@@ -116,7 +141,17 @@ export async function getPlanInterventionBucketsForSession(
 export function interventionForNurtureDay(
   buckets: InterventionBuckets,
   sequenceDay: number,
+  gate?: Pick<NurturePlanGate, "completedPlanPhases" | "visibleTiers">,
 ): MatchedIntervention | null {
+  if (gate) {
+    return resolveNurtureTierAction(
+      buckets,
+      gate.visibleTiers,
+      gate.completedPlanPhases,
+      sequenceDay,
+    ).intervention;
+  }
+
   switch (sequenceDay) {
     case 3:
       return buckets.free_action;
@@ -127,6 +162,80 @@ export function interventionForNurtureDay(
     default:
       return null;
   }
+}
+
+function parseMeasuredPillar(domain: string): MeasuredPillarId | null {
+  const normalized = domain.trim().toLowerCase();
+  if (MEASURED_PILLARS.has(normalized as MeasuredPillarId)) {
+    return normalized as MeasuredPillarId;
+  }
+  return null;
+}
+
+export async function loadNurturePlanGate(
+  admin: SupabaseClient,
+  sessionId: string,
+  primaryDomain: string,
+): Promise<NurturePlanGate> {
+  const { data: sessionRow, error: sessionError } = await admin
+    .from("intake_sessions")
+    .select("organization_id")
+    .eq("id", sessionId)
+    .maybeSingle<{ organization_id: string | null }>();
+
+  if (sessionError) {
+    throw sessionError;
+  }
+
+  const organizationId = sessionRow?.organization_id ?? getDefaultOrganizationId();
+  const visibleTiers = await getVisibleTiers(organizationId);
+  const measuredDomain = parseMeasuredPillar(primaryDomain);
+
+  if (!measuredDomain) {
+    return {
+      completedPlanPhases: 0,
+      visibleTiers,
+      organizationId,
+    };
+  }
+
+  const loaded = await loadIntakeSessionPayloadBySessionId(sessionId);
+  if (!loaded.ok || !loaded.session) {
+    return {
+      completedPlanPhases: 0,
+      visibleTiers,
+      organizationId,
+    };
+  }
+
+  const session = loaded.session;
+  const answers = parseAnswers(session.answers);
+  const scores = isDomainScores(session.scores)
+    ? session.scores
+    : answers
+      ? calcDomainScores(answers as Record<QuestionId, number>)
+      : null;
+
+  if (!scores || !answers) {
+    return {
+      completedPlanPhases: 0,
+      visibleTiers,
+      organizationId,
+    };
+  }
+
+  const progress = await loadPlanProgress(admin, sessionId, measuredDomain);
+  const ctx = buildPlanIntakeContext(scores, answers, measuredDomain);
+
+  return {
+    completedPlanPhases: resolveCompletedPlanPhases(
+      measuredDomain,
+      ctx,
+      progress?.steps ?? null,
+    ),
+    visibleTiers,
+    organizationId,
+  };
 }
 
 export function nurtureInterventionHighlight(
@@ -149,13 +258,32 @@ export function nurtureInterventionHighlight(
 }
 
 export function resolveNurtureInterventionHighlight(
-  data: Pick<NurtureEmailData, "interventionBuckets" | "sequenceDay">,
+  data: Pick<
+    NurtureEmailData,
+    | "interventionBuckets"
+    | "sequenceDay"
+    | "completedPlanPhases"
+    | "visibleTiers"
+  >,
 ): NurtureInterventionHighlight | null {
   const buckets = data.interventionBuckets;
   if (!buckets) {
     return null;
   }
-  const intervention = interventionForNurtureDay(buckets, data.sequenceDay);
+
+  const gate =
+    data.visibleTiers !== undefined
+      ? {
+          completedPlanPhases: data.completedPlanPhases ?? 0,
+          visibleTiers: data.visibleTiers,
+        }
+      : undefined;
+
+  const intervention = interventionForNurtureDay(
+    buckets,
+    data.sequenceDay,
+    gate,
+  );
   if (!intervention) {
     return null;
   }

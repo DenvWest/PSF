@@ -1,5 +1,8 @@
 import { Resend } from "resend";
-import { getPlanInterventionBucketsForSession } from "@/lib/content/nurture-interventions";
+import {
+  getPlanInterventionBucketsForSession,
+  loadNurturePlanGate,
+} from "@/lib/content/nurture-interventions";
 import { themeHasCompletePlanContent } from "@/lib/content/plan-content";
 import type { ThemeSlug } from "@/lib/content/themes";
 import { getGuideNurtureEmailContent } from "@/lib/email-templates/guide-nurture";
@@ -184,11 +187,22 @@ export async function runPendingNurtureEmails(): Promise<{
         const nurtureInterventionDays = new Set([3, 14, 21]);
         const themeSlug = primaryDomain as ThemeSlug;
         const planReady = await themeHasCompletePlanContent(themeSlug);
-        const interventionBuckets =
+        const useInterventionBuckets =
           planReady &&
           mail.session_id &&
-          nurtureInterventionDays.has(mail.sequence_day)
-            ? await getPlanInterventionBucketsForSession(mail.session_id)
+          nurtureInterventionDays.has(mail.sequence_day);
+
+        const interventionBuckets = useInterventionBuckets
+          ? await getPlanInterventionBucketsForSession(mail.session_id!)
+          : null;
+
+        const planGate =
+          useInterventionBuckets && mail.session_id
+            ? await loadNurturePlanGate(
+                supabase,
+                mail.session_id,
+                primaryDomain,
+              )
             : null;
 
         const intakeContent = getNurtureEmailContent(
@@ -200,6 +214,8 @@ export async function runPendingNurtureEmails(): Promise<{
             urgencyLevel,
             firstName,
             interventionBuckets,
+            completedPlanPhases: planGate?.completedPlanPhases ?? 0,
+            visibleTiers: planGate?.visibleTiers,
           },
           {
             recipientEmail: email,

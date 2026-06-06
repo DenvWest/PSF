@@ -10,6 +10,7 @@ import type {
   ProfileLabel,
 } from "@/lib/intake-engine";
 import { getDefaultOrganizationId } from "@/lib/organization";
+import { filterByVisibleTiers } from "@/lib/content/resolve-nurture-tier";
 import { getVisibleTiers } from "@/lib/org-settings";
 import { getDisclaimer } from "@/lib/content/themes";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
@@ -261,7 +262,7 @@ export async function getPlanContent(
     };
   }
 
-  const visibleTiers = new Set(await getVisibleTiers(organizationId));
+  const visibleTiers = await getVisibleTiers(organizationId);
   const actions: PlanAction[] = [];
 
   // Treden oplopend op tier. Tier 1-3 vereisen een gepubliceerde claim;
@@ -290,6 +291,6 @@ export async function getPlanContent(
     ready: true,
     themeSlug,
     source: matched.source,
-    actions: actions.filter((action) => visibleTiers.has(action.tier)),
+    actions: filterByVisibleTiers(actions, visibleTiers),
   };
 }

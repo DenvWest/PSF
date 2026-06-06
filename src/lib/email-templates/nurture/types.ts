@@ -10,6 +10,10 @@ export interface NurtureEmailData {
   firstName?: string | null;
   /** Sleep-journey: zelfde interventies als PLAN-scherm (dag 3/14/21). */
   interventionBuckets?: InterventionBuckets | null;
+  /** Aantal afgeronde leefstijlplan-fasen (plan_progress); stuurt dag 14/21 tier-degradatie. */
+  completedPlanPhases?: number;
+  /** Org-tier-poort; zelfde bron als getPlanContent / getVisibleTiers. */
+  visibleTiers?: number[];
 }
 
 export type NurtureEmailDispatchContext = {
