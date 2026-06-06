@@ -87,6 +87,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 6 juni 2026 | Twee gescheiden datastromen (productkennis vs intake-AVG art. 9) + waardentrap = diepere personalisatie | `core/ARCHITECTURE.md` |
 | Mei 2026 | Geannuleerde profielen verwijderd, 4 definitieve profielen vastgelegd | `core/PERSONALIZATION_ENGINE.md` |
 | Mei 2026 | Ashwagandha uitgesloten van Foundation Stack (EFSA + NL verbod risico) | `core/COMPLIANCE.md` |
 | Mei 2026 | Content spinnenweb eerst, features later | `core/CURRENT_SPRINT.md` |

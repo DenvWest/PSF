@@ -28,6 +28,19 @@
 | Geen account-systeem | Drempel te hoog voor MVP, e-mail is genoeg | Auth0, Clerk |
 | Scoring in frontend | Directe feedback, geen server roundtrip | Server-side scoring |
 
+### Twee gescheiden datastromen
+
+De architectuur scheidt productkennis strikt van intake-antwoorden — ze hebben een andere AVG-status en mogen niet vermengen.
+
+1. **Productkennis** (merk, stof, dosering, getest/keurmerk) is **geen persoonsgegeven**. Hoort in een aparte knowledge base en mag later een LLM voeden.
+2. **Intake-antwoorden** zijn **bijzondere persoonsgegevens** (AVG art. 9, gezondheid). Gaan **niet zomaar** een LLM in: eerst écht anonimiseren. Gepseudonimiseerd ≠ anoniem — een herleidbare sleutel blijft een persoonsgegeven.
+
+De LLM-fasering zelf (regelgebaseerd tot 500+ gebruikers, daarna pas ML) staat in [`INTAKE_SYSTEM.md`](INTAKE_SYSTEM.md) → "Beslislogica".
+
+### Waardentrap-upgrade = diepere personalisatie
+
+Een betaalde/hogere trede in de waardentrap betekent **diepere personalisatie** (rijker voedingsprofiel, slimmere engine), **niet** een bloed- of diagnostiek-tier. Statusbepaling via meting blijft buiten scope (zie [`COMPLIANCE.md`](COMPLIANCE.md) → claimgrens inname vs status, en [`STEPPED_CARE_MODEL.md`](STEPPED_CARE_MODEL.md) voor tier-plaatsing).
+
 ## Projectstructuur
 
 ```

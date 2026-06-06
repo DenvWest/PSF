@@ -61,6 +61,7 @@ PerfectSupplement vergelijkt en adviseert, maar verkoopt niet. Toch geldt de Cla
 | Blogposts | Fysiologie is OK, maar zodra een supplement als oplossing wordt genoemd → EFSA-regels |
 | On-hold claims | Altijd met disclaimer: "Dit is geen goedgekeurde gezondheidsclaim" |
 | EFSA-tekst in code | **Letterlijk bewaren** — niet herschrijven bij refactoring |
+| Inname vs status | **Inname-inschatting MAG** ("op basis van je voeding krijg je waarschijnlijk te weinig magnesium binnen"). **Statusclaim/diagnose MAG NIET** ("je hebt een magnesiumtekort" — vereist meting, buiten scope). Geldt voor alle intake-output én engine-copy |
 
 ---
 

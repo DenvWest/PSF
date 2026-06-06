@@ -37,6 +37,10 @@ themes (breed: sleep, stress, nutrition, movement, connection)
 - **"Toon nu alleen gratis"** = de UI filtert op `tier = 1`. De rest van de trap staat klaar voor latere activatie zonder schemawijziging.
 - Betaalde acties (tier 3-5, `is_paid = true`) tonen een disclosure-regel uit `disclaimers` via `paid_disclosure_key` (default `paid_action_default`).
 
+> **Scope per tier — inname vs status.**
+> - **Tier 2 (`measurement`): self-report inname-verdieping toegestaan.** Activiteitsniveau, BMR/TDEE en geschatte macro/micro-inname uit de voedingsvragen — zelf-gerapporteerd, geen meting, geen lichaamsmateriaal, geen klinische waarde. Blijft binnen leefstijlcoach-scope. Output is een **inname-inschatting**, nooit een statusclaim (zie [`COMPLIANCE.md`](COMPLIANCE.md) → "Inname vs status").
+> - **Tier 4-5 met klinische meting (bv. bloedwaarden): referral-only.** Het platform verwijst extern (`external_provider_label` + `external_provider_url`), slaat niets op en duidt niets. Een waardentrap-upgrade betekent diepere personalisatie (rijker voedingsprofiel, slimmere engine), geen bloed-/diagnostiek-tier (zie [`ARCHITECTURE.md`](ARCHITECTURE.md) → "Waardentrap-upgrade = diepere personalisatie").
+
 ---
 
 ## Matching: hoe een interventie verschijnt
@@ -122,6 +126,7 @@ Tier-1 pillars: `nutrition` → `/voeding-na-40`, `movement` → `/beweging-na-4
 - Geen tweede primaire CTA naast de trap (één pad; de engine bepaalt de volgorde).
 - Geen affiliate/betaalde actie zonder disclosure-regel (`is_paid` → `paid_disclosure_key`).
 - Geen tier 1-3 interventie zonder `published` evidence-claim (rendert anders niet).
+- Geen bloedwaarde/lichaamsmateriaal opslaan of interpreteren — tier 4-5 met klinische meting is referral-only (extern verwijzen, niets opslaan, niets duiden).
 
 ---
 
