@@ -37,6 +37,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/DESIGN_TOKENS.md`](core/DESIGN_TOKENS.md) | Fonts, kleuren, spacing, component patterns, mobile-first |
 | [`core/COMPLIANCE.md`](core/COMPLIANCE.md) | EFSA claims, AVG, affiliate disclosure, medische disclaimers |
 | [`core/WRITING_VOICE.md`](core/WRITING_VOICE.md) | Schrijfstem: toon, woorden, herkennings-copy (weggever, nurture, profielen) |
+| [`core/BRAND_POSITIONING.md`](core/BRAND_POSITIONING.md) | Merkstrategie: propositie, differentiatie, social media, transparantie vs. moat |
 
 ### Layer 2 — Systems (hoe systemen werken)
 
@@ -73,6 +74,8 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | PLAN-scherm / interventies / tiers | `core/STEPPED_CARE_MODEL.md` + `core/ENTITY_MODEL.md` |
 | Nurture emails | `core/WRITING_VOICE.md` + `core/EMAIL_SYSTEM.md` + `core/PERSONALIZATION_ENGINE.md` |
 | Copy schrijven (herkenning, profiel, weggever) | `core/WRITING_VOICE.md` + `core/COMPLIANCE.md` |
+| Merk / social media / positionering | `core/BRAND_POSITIONING.md` + `core/WRITING_VOICE.md` |
+| FASE A nurture-implementatie | `plan/FASE_A_IMPLEMENTATIE.md` + `core/EMAIL_SYSTEM.md` |
 | Affiliate links | `core/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
 | Technische vraag | `core/ARCHITECTURE.md` + `core/CODE_CONVENTIONS.md` |
 | Database/data | `core/ENTITY_MODEL.md` |
@@ -87,6 +90,10 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 6 juni 2026 | FASE A implementatie-instructies: concrete werkvoor FASE A1–A6 (dag-0, CTA-resolver, Overtrainer, K1–K3, balansregel, mail-coherentie) | `plan/FASE_A_IMPLEMENTATIE.md` |
+| 6 juni 2026 | Merkpositionering: propositie, differentiatie, social media pijlers, transparantie vs. bescherming bedrijfsinformatie | `core/BRAND_POSITIONING.md` |
+| 6 juni 2026 | Geconsolideerd fundament-prioriteitenplan: één volgorde nurture + 0-meting→vervolg + n8n-events; zelf-rapportage NU, wearable/BIA als horizon | `plan/PLAN_FUNDAMENT_PRIORITEIT.md` |
+| 6 juni 2026 | Funnel- & datapriority: dag-0-scharnier sterk neerzetten, centrale CTA-resolver met leefstijl-guard, cross-domein-balansregel in mail, productschema normaliseren, ontbrekende funnel-events (`nurture.email_sent`); wearable/home-scan/agency als horizon mét drempels | `plan/PLAN_FUNNEL_DATA_PRIORITY.md` |
 | 6 juni 2026 | Analyse pijler-dekking: voeding is enige hard-kwantificeerbare pijler (scheefheid-risico), domein-interactielaag eerst versterken, cross-domein-balansregel, wearables als open beslispunt | `plan/ANALYSIS_PILLAR_COVERAGE.md` |
 | 6 juni 2026 | Plan meet- & personalisatielaag: tier-2 self-report inname-verdieping (PAL/BMR/TDEE/macro/micro), waarden→advies-matching, productkennis-RAG en anonimiseringspad | `plan/PLAN_MEASUREMENT_PERSONALIZATION.md` |
 | 6 juni 2026 | Twee gescheiden datastromen (productkennis vs intake-AVG art. 9) + waardentrap = diepere personalisatie | `core/ARCHITECTURE.md` |
