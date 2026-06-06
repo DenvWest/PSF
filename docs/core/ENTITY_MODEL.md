@@ -93,6 +93,24 @@ Legacy tabel voor de oude `/thema/*` flow, **vervangen door nurture_emails** (`s
 | rating | text | `positive` of `negative` |
 | comment | text, nullable | — |
 
+### plan_progress
+
+Pseudonieme voortgang per intake-sessie en leefstijldomein (leefstijlplan stap 3a). Bron-migratie: `supabase/migrations/20260602100000_plan_progress.sql`.
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| session_id | uuid, pk (deel) | FK naar intake_sessions, `on delete cascade` |
+| organization_id | uuid | FK naar organizations (default-tenant) |
+| domain | text, pk (deel) | Leefstijldomein (`sleep`, `stress`, `nutrition`, `movement`, …) |
+| template_version | text | Versie van het plantemplate |
+| current_phase_id | text | Huidige fase in het stepped-care-plan |
+| steps | jsonb | Voortgang per stap (default `{}`) |
+| started_at | timestamptz | — |
+| updated_at | timestamptz | — |
+| completed_at | timestamptz, nullable | — |
+
+Unique constraint: `(session_id, domain)`. Verwijderd bij AVG-revoke/delete via `cleanup_intake_session_linked_data()`.
+
 ### affiliate_clicks
 
 Product-klik tabel. **Niet aanraken / wijzigen zonder overleg.**
@@ -258,12 +276,12 @@ Bepaalt of een interventie verschijnt (per-symptoom personalisatie, bv. `answer 
 | domain_label | text | — |
 | intervention_id | uuid, nullable | FK naar interventions, `on delete set null` |
 | source_id | uuid | FK naar evidence_sources |
-| is_efsa_authorized | boolean | — |
+| is_efsa_authorized | boolean | EFSA-goedgekeurde claim; **bestaat maar wordt in de gating nog niet afgedwongen** (alleen `status='published'`; wordt in stap 1 gedicht) |
 | status | text | `draft`/`published`/`retired` |
 | search_vector | tsvector | FTS (generated) |
 | embedding | vector(1536), nullable | pgvector RAG |
 
-Onderbouwing per interventie. PLAN-trap tier 1-3 vereist een `published` claim. Zoeken via `search_evidence_claims()` (FTS + semantisch).
+Onderbouwing per interventie. PLAN-trap tier 1-3 vereist een `published` claim (doel: ook `is_efsa_authorized = true`). Zoeken via `search_evidence_claims()` (FTS + semantisch).
 
 ### domain_events
 
@@ -286,7 +304,7 @@ Append-only event log voor nurture, n8n en analytics.
 - RLS staat aan op alle tabellen als verdedigingslaag, maar **alle data-toegang loopt via de service_role-client** (`src/lib/supabase-admin.ts`), die RLS bypasst. Er is **geen anon-client** in gebruik (de oude `src/lib/supabase.ts` is verwijderd).
 - **Anon-policies** bestaan alleen op `guide_opt_ins` en `thema_nurture` (insert) — historisch; de app gebruikt ze niet meer.
 - **Authenticated org-isolatie** (tenant-scope via `auth.jwt() -> app_metadata -> organization_id`) op: intake_sessions, intake_feedback, intake_reminders, affiliate_clicks, organizations, themes, recognition_lines, interventions, intervention_triggers, disclaimers, evidence_sources, evidence_claims, domain_events. Voorbereid op toekomstige JWT/B2B-toegang; anon heeft geen toegang.
-- **Alleen service_role** (geen anon/authenticated policies): consent_records, recovery_tokens, cron_runs, en de productdatabase (products/ingredienten/evaluaties/doelgroep_match/conversies).
+- **Alleen service_role** (geen anon/authenticated policies): consent_records, recovery_tokens, cron_runs, plan_progress, en de productdatabase (products/ingredienten/evaluaties/doelgroep_match/conversies).
 - Admin dashboard gebruikt de service_role key.
 
 ---
