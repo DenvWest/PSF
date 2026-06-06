@@ -16,7 +16,7 @@ Auth-logica: [`src/lib/cron-auth.ts`](../../../lib/cron-auth.ts).
 
 | Job | Endpoint | Schedule | Doel | Auth |
 |-----|----------|----------|------|------|
-| **30-dagen reminders** | `GET`/`POST` `/api/send-reminders` | Dagelijks | `intake_reminders` day-30 + triggert ook nurture-batch | Bearer `CRON_SECRET` alleen (geen HMAC) |
+| **30-dagen reminders** | `GET`/`POST` `/api/send-reminders` | Dagelijks | `intake_reminders` day-30 via `getNurtureEmailContent` + nurture-batch (`runPendingNurtureEmails`) | Bearer `CRON_SECRET` alleen (geen HMAC) |
 
 Exacte cron-job.org schedules staan in het cron-job.org dashboard (niet in repo).
 
