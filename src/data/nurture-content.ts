@@ -69,10 +69,10 @@ export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
   stress_score: {
     intro: "Stress kwam naar voren als je grootste aandachtspunt.",
     supplement: {
-      name: "Ashwagandha",
+      name: "Leefstijlstappen",
       reason:
-        "Geen goedgekeurde EU‑claims: staat bij EFSA on‑hold. Sommige publicaties bespreken stressperceptie — gebruik alleen als je die context wilt (eigen risico).",
-      url: "/beste/ashwagandha",
+        "Chronische stress vraagt eerst aandacht voor slaapritme, voorspelbare routines en korte herstelmomenten — dat zijn de hefbomen met het meeste bewijs vóór je aan supplementen denkt.",
+      url: "/stress-verminderen-man",
     },
   },
   nutrition_score: {
@@ -219,7 +219,7 @@ export const nurtureContent: Record<
         "Stress verminderen hoeft niet ingewikkeld te zijn. Het gaat niet om grote veranderingen, maar om kleine momenten van herstel verspreid over de dag.",
       ],
       tip: "Quick win #1: 4-7-8 ademhaling (3 minuten, 2× per dag). Quick win #2: Wandel 15 minuten na de lunch — het verlaagt cortisol meetbaar. Quick win #3: Schrijf 's avonds 3 dingen op die goed gingen vandaag.",
-      cta: { text: "Ashwagandha: EFSA-context en vergelijkingspagina", url: "/beste/ashwagandha" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-man" },
     },
     "In Balans": {
       subject: "3 optimalisaties voor wie al goed scoort",
@@ -263,11 +263,11 @@ export const nurtureContent: Record<
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
         "Langdurige activering van de stress‑as heeft invloed op hormonen en nachtrust. Leefstijl (slaapritme, beweging, voorspelbare routines) wil je daarom eerst goed bekijken.",
-        "Ashwagandha staat bij EFSA op de on‑holdlijst voor gezondheidsclaims — geen Europese garantie‑claim over uitkomsten. Sommige studies bespreken stressperceptie of markers als context; bekijk extracts kritisch.",
+        "De eerste stap is leefstijl: vast slaapritme, dagelijkse beweging en korte rustmomenten. Supplementen komen pas in beeld als die basis op orde is — magnesium heeft onder EFSA-voorwaarden een claim op psychologische functie.",
       ],
       tip:
-        "Ashwagandha staat bij EFSA op de on‑holdlijst voor gezondheidsclaims — geen garantie‑uitspraken mogelijk zoals bij mineralen. Zie beste-ashwagandha voor objectieve productvergelijking en inhoudelijke uitleg.",
-      cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste/ashwagandha" },
+        "Focus deze week op één vaste routine: dezelfde bedtijd, 10 minuten wandelen na de lunch, en 3 minuten ademhaling voor het slapen.",
+      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-man" },
     },
     "In Balans": {
       subject: "Hoe je een goede basis vasthoudt na 40",
@@ -315,7 +315,7 @@ export const nurtureContent: Record<
         "Het effect van leefstijlveranderingen op cortisol is meetbaar na 2-4 weken. Je zit nu precies in die fase.",
       ],
       tip: "Voeg deze week iets toe: 5 minuten journaling voor het slapengaan. Schrijf op wat je bezighoudt — het 'legen' van je hoofd helpt je brein om los te laten.",
-      cta: { text: "Ashwagandha: on-hold context en vergelijking", url: "/beste/ashwagandha" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-man" },
     },
     "In Balans": {
       subject: "Halverwege: hoe houd je dit vol?",
@@ -363,7 +363,7 @@ export const nurtureContent: Record<
         "Over 9 dagen kun je de Leefstijlcheck opnieuw doen. Dan meet je of je stressscore is verbeterd.",
       ],
       tip: "Houd deze week vast wat werkt. Consistentie verslaat intensiteit.",
-      cta: { text: "Vergelijk ashwagandha supplementen", url: "/beste/ashwagandha" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
     "In Balans": {
       subject: "Drie weken: je goede gewoontes zijn stevig",
