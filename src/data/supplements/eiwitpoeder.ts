@@ -1,4 +1,5 @@
 import type { ComparisonPageData } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
 
 export const eiwitpoederData: ComparisonPageData = {
   category: "eiwitpoeder",
@@ -71,7 +72,7 @@ export const eiwitpoederData: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vital-nutrition-whey-proteine",
       name: "Whey Proteïne",
       brand: "Vital Nutrition",
@@ -109,8 +110,18 @@ export const eiwitpoederData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/vital-nutrition-whey-proteine.jpg",
       imageAlt: "Vital Nutrition Whey Proteïne verpakking",
-    },
-    {
+      werkzameStof: "eiwitpoeder",
+      vorm: "whey blend (poeder)",
+      doseringPerDagdosis: {
+        hoeveelheid: 25,
+        eenheid: "g",
+        elementair: false,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "orangefit-protein",
       name: "Protein",
       brand: "Orangefit",
@@ -147,8 +158,18 @@ export const eiwitpoederData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Orangefit-Protein.jpg",
       imageAlt: "Orangefit Protein verpakking",
-    },
-    {
+      werkzameStof: "eiwitpoeder",
+      vorm: "erwteneiwit (poeder)",
+      doseringPerDagdosis: {
+        hoeveelheid: 25,
+        eenheid: "g",
+        elementair: false,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "royal-green-whey-protein-isolate",
       name: "100% Whey Protein Isolate",
       brand: "Royal Green",
@@ -186,7 +207,17 @@ export const eiwitpoederData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Royal-Green-Whey-Protein-Isolate.jpg",
       imageAlt: "Royal Green 100% Whey Protein Isolate verpakking",
-    },
+      werkzameStof: "eiwitpoeder",
+      vorm: "whey isolaat (poeder)",
+      doseringPerDagdosis: {
+        hoeveelheid: 27,
+        eenheid: "g",
+        elementair: false,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

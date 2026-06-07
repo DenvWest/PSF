@@ -1,4 +1,10 @@
-import type { ComparisonPageData } from "@/types/supplement";
+import type { ComparisonPageData, EfsaClaimId } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
+
+const CREATINE_CLAIMS: EfsaClaimId[] = [
+  "creatine.performance",
+  "creatine.strength-55plus",
+];
 
 export const creatineData: ComparisonPageData = {
   category: "creatine",
@@ -68,7 +74,7 @@ export const creatineData: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vitalnutrition-creatine",
       name: "Vital Nutrition Creatine Monohydraat",
       brand: "Vital Nutrition",
@@ -104,8 +110,17 @@ export const creatineData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/vital-Nutrition-Creatine-Monohydraat.jpg",
       imageAlt: "Vital Nutrition Creatine Monohydraat 500g verpakking",
-    },
-    {
+      werkzameStof: "creatine",
+      vorm: "monohydraat (micronized)",
+      doseringPerDagdosis: {
+        hoeveelheid: 5,
+        eenheid: "g",
+        elementair: true,
+      },
+      efsaClaimIds: CREATINE_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "mattisson-creatine-creapure",
       name: "Mattisson Creatine Monohydraat Creapure®",
       brand: "Mattisson Healthstyle",
@@ -141,8 +156,17 @@ export const creatineData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Mattisson-Creatine-Monohydraat.jpg",
       imageAlt: "Mattisson Creatine Monohydraat Creapure 350g verpakking",
-    },
-    {
+      werkzameStof: "creatine",
+      vorm: "monohydraat (Creapure)",
+      doseringPerDagdosis: {
+        hoeveelheid: 5,
+        eenheid: "g",
+        elementair: true,
+      },
+      efsaClaimIds: CREATINE_CLAIMS,
+      thirdPartyTested: true,
+    }),
+    withClaimFields({
       slug: "vitaminstore-creatine",
       name: "Vitaminstore Creatine Monohydraat Poeder",
       brand: "Vitaminstore",
@@ -178,7 +202,16 @@ export const creatineData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vitaminestore-Creatine-Monohydraat.jpg",
       imageAlt: "Vitaminstore Creatine Monohydraat Poeder 250g verpakking",
-    },
+      werkzameStof: "creatine",
+      vorm: "monohydraat",
+      doseringPerDagdosis: {
+        hoeveelheid: 5,
+        eenheid: "g",
+        elementair: true,
+      },
+      efsaClaimIds: CREATINE_CLAIMS,
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

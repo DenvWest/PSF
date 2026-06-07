@@ -272,7 +272,7 @@ flowchart TB
 | [`COMPLIANCE.md`](COMPLIANCE.md) | EFSA, inname-vs-status, affiliate disclosure |
 | [`PERSONALIZATION_ENGINE.md`](PERSONALIZATION_ENGINE.md) | Profielen, triggers (intern kennis, niet social) |
 | [`PLAN_FUNDAMENT_PRIORITEIT.md`](../plan/PLAN_FUNDAMENT_PRIORITEIT.md) | Product-roadmap ↔ merkwaardentrap |
-| [`FASE_A_IMPLEMENTATIE.md`](../plan/FASE_A_IMPLEMENTATIE.md) | Concrete nurture-implementatie |
+| [`FASE_A_IMPLEMENTATIE.md`](../archive/FASE_A_IMPLEMENTATIE.md) | Concrete nurture-implementatie |
 | [`SEO_RULES.md`](SEO_RULES.md) | Spinnenweb, interne links |
 | [`AFFILIATE_SYSTEM.md`](AFFILIATE_SYSTEM.md) | Monetisatie (intern) |
 

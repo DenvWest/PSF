@@ -22,6 +22,9 @@ export const DOMAIN_EVENT_TYPES = [
   "email.opted_in",
   "consent.revoked",
   "evidence.chat_queried",
+  "nurture.email_sent",
+  "remeasure.invited",
+  "affiliate.click",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

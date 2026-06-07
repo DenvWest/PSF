@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { emitEvent } from "@/lib/events";
 import {
   getPlanInterventionBucketsForSession,
   loadNurturePlanGate,
@@ -270,6 +271,29 @@ export async function runPendingNurtureEmails(): Promise<{
       }
 
       sent += 1;
+
+      if (!isGuideSource(source) && mail.session_id) {
+        const profileLabel =
+          typeof mail.profile_label === "string" && mail.profile_label.trim()
+            ? mail.profile_label.trim()
+            : "jouw profiel";
+        const primaryDomain =
+          typeof mail.primary_domain === "string" && mail.primary_domain.trim()
+            ? mail.primary_domain.trim()
+            : "sleep";
+        void emitEvent({
+          eventType: "nurture.email_sent",
+          sessionId: mail.session_id,
+          email,
+          payload: {
+            sequence_day: mail.sequence_day,
+            profile_label: profileLabel,
+            primary_domain: primaryDomain,
+            status: "sent",
+          },
+          deliveredTo: ["n8n_webhook"],
+        });
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       console.error("[nurture-cron] mail failed:", mail.id, msg);

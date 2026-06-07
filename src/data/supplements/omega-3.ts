@@ -1,4 +1,13 @@
-import type { ComparisonPageData } from "@/types/supplement";
+import type { ComparisonPageData, EfsaClaimId } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
+
+const OMEGA3_ALL_CLAIMS: EfsaClaimId[] = [
+  "omega3.heart",
+  "omega3.brain-dha",
+  "omega3.vision-dha",
+];
+
+const OMEGA3_HEART_ONLY: EfsaClaimId[] = ["omega3.heart"];
 
 export const omega3Data: ComparisonPageData = {
   category: "omega-3",
@@ -72,7 +81,7 @@ export const omega3Data: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vitals-liquid-epadha",
       name: "Vitals Liquid EPA/DHA 1200mg",
       brand: "Vitals",
@@ -109,8 +118,19 @@ export const omega3Data: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vitalis-Visolie.jpg",
       imageAlt: "Vitals Liquid EPA/DHA 1200mg verpakking",
-    },
-    {
+      werkzameStof: "omega3",
+      vorm: "triglyceride (vloeibaar)",
+      doseringPerDagdosis: {
+        hoeveelheid: 1200,
+        eenheid: "mg",
+        elementair: false,
+        epaMg: 740,
+        dhaMg: 460,
+      },
+      efsaClaimIds: OMEGA3_ALL_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "arctic-blue-visolie",
       name: "Arctic Blue Visolie",
       brand: "Arctic Blue",
@@ -146,8 +166,19 @@ export const omega3Data: ComparisonPageData = {
       ],
       imageSrc: "/Arctic-Blue-Vis-Olie.png",
       imageAlt: "Arctic Blue Visolie verpakking",
-    },
-    {
+      werkzameStof: "omega3",
+      vorm: "triglyceride (vloeibaar)",
+      doseringPerDagdosis: {
+        hoeveelheid: 650,
+        eenheid: "mg",
+        elementair: false,
+        epaMg: 400,
+        dhaMg: 250,
+      },
+      efsaClaimIds: OMEGA3_ALL_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "mollers-omega-3-citroen",
       name: "Möller's Omega-3 Citroen",
       brand: "Möller's",
@@ -184,8 +215,19 @@ export const omega3Data: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Mollers-Omega-3-Citroen.jpg",
       imageAlt: "Möller's Omega-3 Citroen verpakking",
-    },
-    {
+      werkzameStof: "omega3",
+      vorm: "triglyceride (vloeibaar, levertraan)",
+      doseringPerDagdosis: {
+        hoeveelheid: 880,
+        eenheid: "mg",
+        elementair: false,
+        epaMg: 370,
+        dhaMg: 510,
+      },
+      efsaClaimIds: OMEGA3_ALL_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "minami-morepa-original",
       name: "Minami MorEPA Original",
       brand: "Minami",
@@ -222,7 +264,19 @@ export const omega3Data: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/More-EPA-Original.jpg",
       imageAlt: "Minami MorEPA Original verpakking",
-    },
+      werkzameStof: "omega3",
+      vorm: "triglyceride (softgel)",
+      doseringPerDagdosis: {
+        hoeveelheid: 850,
+        eenheid: "mg",
+        elementair: false,
+        epaMg: 590,
+        dhaMg: 130,
+        perServing: 1,
+      },
+      efsaClaimIds: OMEGA3_HEART_ONLY,
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

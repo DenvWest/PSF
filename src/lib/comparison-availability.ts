@@ -1,4 +1,7 @@
-import { approvedClaims } from "@/data/approved-claims";
+import {
+  approvedClaims,
+  type IngredientClaimKey,
+} from "@/data/approved-claims";
 
 /** Maps supplement route / comparison slug to `approvedClaims` record key. */
 const SLUG_TO_CLAIM_KEY: Record<string, string> = {
@@ -23,7 +26,7 @@ export function isComparisonAllowed(slug: string): boolean {
   if (!key) {
     return false;
   }
-  const entry = approvedClaims[key];
+  const entry = approvedClaims[key as IngredientClaimKey];
   if (!entry || entry.status === "forbidden") {
     return false;
   }
@@ -35,7 +38,7 @@ export function getAllowedComparisonPath(slug: string): string | null {
   if (!key) {
     return null;
   }
-  const entry = approvedClaims[key];
+  const entry = approvedClaims[key as IngredientClaimKey];
   if (!entry || !isComparisonAllowed(slug)) {
     return null;
   }

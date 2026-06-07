@@ -1,4 +1,5 @@
 import type { ComparisonPageData } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
 
 export const melatonineData: ComparisonPageData = {
   category: "melatonine",
@@ -70,7 +71,7 @@ export const melatonineData: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vital-nutrition-slaap-complex",
       name: "Slaap Complex",
       brand: "Vital Nutrition",
@@ -108,8 +109,18 @@ export const melatonineData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/vital-nutrition-slaap-complex.jpg",
       imageAlt: "Vital Nutrition Slaap Complex verpakking",
-    },
-    {
+      werkzameStof: "melatonine",
+      vorm: "slaapcomplex (capsule)",
+      doseringPerDagdosis: {
+        hoeveelheid: 0,
+        eenheid: "mg",
+        elementair: false,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "lucovitaal-melatonine-puur",
       name: "Melatonine Puur 299 mcg",
       brand: "Lucovitaal",
@@ -143,8 +154,18 @@ export const melatonineData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Lucovitaal-pure-melatonine.jpg",
       imageAlt: "Lucovitaal Melatonine Puur verpakking",
-    },
-    {
+      werkzameStof: "melatonine",
+      vorm: "pure melatonine (tablet)",
+      doseringPerDagdosis: {
+        hoeveelheid: 0.299,
+        eenheid: "mg",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "vitaminstore-nachtrust-complex",
       name: "Nachtrust Complex met Melatonine",
       brand: "Vitaminstore",
@@ -182,7 +203,17 @@ export const melatonineData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/vitaminstore-melatonine-nacht-complex.jpg",
       imageAlt: "Vitaminstore Nachtrust Complex met melatonine verpakking",
-    },
+      werkzameStof: "melatonine",
+      vorm: "nachtrustcomplex (vegicap)",
+      doseringPerDagdosis: {
+        hoeveelheid: 0,
+        eenheid: "mg",
+        elementair: false,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

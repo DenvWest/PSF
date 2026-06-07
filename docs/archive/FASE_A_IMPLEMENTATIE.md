@@ -1,6 +1,19 @@
 # FASE A — Implementatie-instructies (funnel-narratief)
 
-> **Layer 3 — Plan.** Concrete werkinstructies per stap A1–A6. Geen analyse — direct naar welk bestand, wat precies, waarom zo. Copy-voorbeelden zijn kopieerbaar als startpunt. Koppeling: [`PLAN_FUNDAMENT_PRIORITEIT.md`](PLAN_FUNDAMENT_PRIORITEIT.md) · [`PLAN_FUNNEL_DATA_PRIORITY.md`](PLAN_FUNNEL_DATA_PRIORITY.md) · [`ANALYSIS_PILLAR_COVERAGE.md`](ANALYSIS_PILLAR_COVERAGE.md) · [`BRAND_POSITIONING.md`](../core/BRAND_POSITIONING.md)
+> **✅ STATUS: GEÏMPLEMENTEERD (7 juni 2026).** Dit document is een *afgerond* plan en gearchiveerd — niet langer een openstaande opdracht. Alle stappen A1–A6 staan in `src/` en de bijbehorende tests draaien groen (`resolve-nurture-cta.test.ts` + `intake-engine.balance.test.ts`, 107 tests). Bouw hieruit **niets opnieuw**; gebruik het als naslag voor het *waarom* achter de huidige nurture-/engine-code. Vervolgwerk (meetlaag/events) staat in [`PLAN_MEASUREMENT_PERSONALIZATION.md`](../plan/PLAN_MEASUREMENT_PERSONALIZATION.md).
+>
+> | Stap | Onderwerp | Status | Bewijs in code |
+> |---|---|---|---|
+> | A1 | Dag-0 recap → eerste actie | ✅ | `renderWeakSpotBlock` + `weakSpotCopyForDomain` in `email-templates/nurture/helpers.ts`; groene guide-CTA verwijderd |
+> | A2 | Centrale CTA-resolver | ✅ | `src/lib/resolve-nurture-cta.ts` (`resolveNurtureCta`, `kind`) + test |
+> | A3 | Overtrainer eigen stem | ✅ | `NurtureProfileKey = ProfileLabelName \| "Overtrainer"`, eigen blokken dag 0–30, fallback verwijderd |
+> | A4 | K1–K3 domein-interactie | ✅ | `lowRecoveryNoLoad` / `sleepIssueNoStress` / `energyDipUnexplained` in `intake-engine.ts` |
+> | A5 | Cross-domein-balansregel | ✅ | `enforceCrossDomainBalance` + `nurtureOutputHasCrossDomainBalance` + `intake-engine.balance.test.ts` |
+> | A6 | Mail/scherm-coherentie | ✅ | `profileUrlForLabel` + "Herlees je profiel →"-anker in `helpers.ts` |
+>
+> **Opruiming na afronding:** ongebruikte `renderLifestyleOverviewBlock` (+ helper `lifestyleOverviewIntroHtml` en import uit `lifestyle-overview-display`) uit `helpers.ts` verwijderd op 7 juni 2026.
+
+> **Layer 3 — Plan.** Concrete werkinstructies per stap A1–A6. Geen analyse — direct naar welk bestand, wat precies, waarom zo. Copy-voorbeelden zijn kopieerbaar als startpunt. Koppeling: [`PLAN_FUNDAMENT_PRIORITEIT.md`](../plan/PLAN_FUNDAMENT_PRIORITEIT.md) · [`PLAN_FUNNEL_DATA_PRIORITY.md`](../plan/PLAN_FUNNEL_DATA_PRIORITY.md) · [`ANALYSIS_PILLAR_COVERAGE.md`](../plan/ANALYSIS_PILLAR_COVERAGE.md) · [`BRAND_POSITIONING.md`](../core/BRAND_POSITIONING.md)
 >
 > **Scope:** copy/resolver/engine — geen schema-migratie. Volgorde: A1 → A2 → A3 → A4 → A5; A6 naast A1–A5.
 
@@ -523,9 +536,9 @@ Geen mail met alleen één affiliate/compare-link als enige bestemming.
 
 | Document | Relevantie |
 |---|---|
-| [`PLAN_FUNDAMENT_PRIORITEIT.md`](PLAN_FUNDAMENT_PRIORITEIT.md) | Geconsolideerde volgorde; FASE A = eerste blok |
-| [`PLAN_FUNNEL_DATA_PRIORITY.md`](PLAN_FUNNEL_DATA_PRIORITY.md) | DEEL 1 analyse + aanbevelingen |
-| [`ANALYSIS_PILLAR_COVERAGE.md`](ANALYSIS_PILLAR_COVERAGE.md) | K1–K3 definitie, balansregel §2 |
+| [`PLAN_FUNDAMENT_PRIORITEIT.md`](../plan/PLAN_FUNDAMENT_PRIORITEIT.md) | Geconsolideerde volgorde; FASE A = eerste blok |
+| [`PLAN_FUNNEL_DATA_PRIORITY.md`](../plan/PLAN_FUNNEL_DATA_PRIORITY.md) | DEEL 1 analyse + aanbevelingen |
+| [`ANALYSIS_PILLAR_COVERAGE.md`](../plan/ANALYSIS_PILLAR_COVERAGE.md) | K1–K3 definitie, balansregel §2 |
 | [`BRAND_POSITIONING.md`](../core/BRAND_POSITIONING.md) | Propositie, differentiatie, social media |
 | [`WRITING_VOICE.md`](../core/WRITING_VOICE.md) | Copy-toon alle mails |
 | [`EMAIL_SYSTEM.md`](../core/EMAIL_SYSTEM.md) | Nurture-sequence, cron |

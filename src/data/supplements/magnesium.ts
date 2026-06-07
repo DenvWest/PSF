@@ -1,4 +1,12 @@
-import type { ComparisonPageData } from "@/types/supplement";
+import type { ComparisonPageData, EfsaClaimId } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
+
+const MAGNESIUM_SLEEP_CLAIMS: EfsaClaimId[] = [
+  "magnesium.nerve-function",
+  "magnesium.muscle-function",
+  "magnesium.fatigue",
+  "magnesium.psychological-function",
+];
 
 export const magnesiumData: ComparisonPageData = {
   category: "magnesium",
@@ -69,7 +77,7 @@ export const magnesiumData: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vitaminstore-super-magnesium",
       name: "Vitaminstore Super Magnesium",
       brand: "Vitaminstore",
@@ -104,8 +112,18 @@ export const magnesiumData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vitaminstore-Super-Magnesium.jpg",
       imageAlt: "Vitaminstore Super Magnesium verpakking",
-    },
-    {
+      werkzameStof: "magnesium",
+      vorm: "complex (bisglycinaat, citraat, tauraat, malaat, glycerofosfaat)",
+      doseringPerDagdosis: {
+        hoeveelheid: 200,
+        eenheid: "mg",
+        elementair: true,
+        perServing: 2,
+      },
+      efsaClaimIds: MAGNESIUM_SLEEP_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "viridian-bisglycinaat",
       name: "Viridian Magnesium Bisglycinate",
       brand: "Viridian",
@@ -141,8 +159,18 @@ export const magnesiumData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Viridian-Magnesium-Bisglycinate.jpg",
       imageAlt: "Viridian Magnesium Bisglycinate verpakking",
-    },
-    {
+      werkzameStof: "magnesium",
+      vorm: "bisglycinaat",
+      doseringPerDagdosis: {
+        hoeveelheid: 0,
+        eenheid: "mg",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "vital-nutrition-citraat",
       name: "Vital Nutrition Magnesium Citraat",
       brand: "Vital Nutrition",
@@ -177,7 +205,17 @@ export const magnesiumData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vitalnutrition-Magnesium-Citraat.jpg",
       imageAlt: "Vital Nutrition Magnesium Citraat verpakking",
-    },
+      werkzameStof: "magnesium",
+      vorm: "citraat",
+      doseringPerDagdosis: {
+        hoeveelheid: 200,
+        eenheid: "mg",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: MAGNESIUM_SLEEP_CLAIMS,
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

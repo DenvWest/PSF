@@ -1,7 +1,8 @@
 import type { DomainKey, NurtureProfileKey } from "@/data/nurture-content";
-import { approvedClaims } from "@/data/approved-claims";
+import type { IngredientClaimKey } from "@/data/approved-claims";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
 import { isComparisonAllowed } from "@/lib/comparison-availability";
+import { resolveGatedComparisonPath } from "@/lib/supplement-gate";
 
 export type NurtureSequenceDay = 0 | 3 | 7 | 14 | 21 | 30;
 
@@ -107,19 +108,15 @@ export function supplementCtaForProfile(
     return null;
   }
   for (const candidate of entry.candidates) {
-    const claim = approvedClaims[candidate];
-    if (
-      claim?.status === "approved" &&
-      claim.comparisonPath != null
-    ) {
-      const slug = slugFromComparisonPath(claim.comparisonPath);
-      if (slug && isComparisonAllowed(slug)) {
-        return {
-          text: entry.text,
-          url: claim.comparisonPath,
-          kind: "supplement",
-        };
-      }
+    const comparisonPath = resolveGatedComparisonPath(
+      candidate as IngredientClaimKey,
+    );
+    if (comparisonPath) {
+      return {
+        text: entry.text,
+        url: comparisonPath,
+        kind: "supplement",
+      };
     }
   }
   return null;

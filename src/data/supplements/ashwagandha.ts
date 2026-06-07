@@ -1,4 +1,5 @@
 import type { ComparisonPageData } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
 
 export const ashwagandhaData: ComparisonPageData = {
   category: "ashwagandha",
@@ -73,7 +74,7 @@ export const ashwagandhaData: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vitaminstore-ashwagandha-ksm66",
       name: "Vitaminstore Ashwagandha KSM-66",
       brand: "Vitaminstore",
@@ -111,8 +112,18 @@ export const ashwagandhaData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vitaminstore-Ashwagandha-KSM-66.jpg",
       imageAlt: "Vitaminstore Ashwagandha KSM-66 vegicaps verpakking",
-    },
-    {
+      werkzameStof: "ashwagandha",
+      vorm: "KSM-66 extract",
+      doseringPerDagdosis: {
+        hoeveelheid: 600,
+        eenheid: "mg",
+        elementair: false,
+        perServing: 2,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "vitalnutrition-ashwagandha-ksm66",
       name: "Vital Nutrition Ashwagandha KSM-66",
       brand: "Vital Nutrition",
@@ -150,8 +161,18 @@ export const ashwagandhaData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vital-Nutrition-Ashwagandha-KSM-66.jpg",
       imageAlt: "Vital Nutrition Ashwagandha KSM-66 capsules verpakking",
-    },
-    {
+      werkzameStof: "ashwagandha",
+      vorm: "KSM-66 extract",
+      doseringPerDagdosis: {
+        hoeveelheid: 300,
+        eenheid: "mg",
+        elementair: false,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: true,
+    }),
+    withClaimFields({
       slug: "vitaminstore-solgar-ashwagandha",
       name: "Solgar Ashwagandha Root Extract",
       brand: "Solgar Vitamins",
@@ -190,7 +211,17 @@ export const ashwagandhaData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Solgar-Vitamins-Ashwagandha Root.jpg",
       imageAlt: "Solgar Ashwagandha Root Extract vegicaps verpakking",
-    },
+      werkzameStof: "ashwagandha",
+      vorm: "wortelextract + heel kruid",
+      doseringPerDagdosis: {
+        hoeveelheid: 1,
+        eenheid: "mg",
+        elementair: false,
+        perServing: 1,
+      },
+      efsaClaimIds: [],
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

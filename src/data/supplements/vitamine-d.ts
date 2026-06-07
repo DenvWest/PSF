@@ -1,4 +1,12 @@
-import type { ComparisonPageData } from "@/types/supplement";
+import type { ComparisonPageData, EfsaClaimId } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
+
+const VITAMINE_D_CLAIMS: EfsaClaimId[] = [
+  "vitamineD.immune",
+  "vitamineD.bones",
+  "vitamineD.muscle",
+  "vitamineD.calcium-phosphorus",
+];
 
 export const vitamineDData: ComparisonPageData = {
   category: "vitamine-d",
@@ -73,7 +81,7 @@ export const vitamineDData: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vitaminstore-super-d3",
       name: "Vitaminstore Super D3 25 mcg",
       brand: "Vitaminstore",
@@ -110,8 +118,18 @@ export const vitamineDData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vitaminstore-Super-D3.jpg",
       imageAlt: "Vitaminstore Super D3 25 mcg softgels verpakking",
-    },
-    {
+      werkzameStof: "vitamineD",
+      vorm: "D3 (cholecalciferol)",
+      doseringPerDagdosis: {
+        hoeveelheid: 25,
+        eenheid: "ug",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: VITAMINE_D_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "vitalnutrition-vitamin-d3",
       name: "Vital Nutrition Vitamine D3 75 mcg",
       brand: "Vital Nutrition",
@@ -148,8 +166,18 @@ export const vitamineDData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Vital-Nutrition-Vitamin-D3.jpg",
       imageAlt: "Vital Nutrition Vitamine D3 75 mcg softgels verpakking",
-    },
-    {
+      werkzameStof: "vitamineD",
+      vorm: "D3 (cholecalciferol)",
+      doseringPerDagdosis: {
+        hoeveelheid: 75,
+        eenheid: "ug",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: VITAMINE_D_CLAIMS,
+      thirdPartyTested: true,
+    }),
+    withClaimFields({
       slug: "solgar-vitamin-d3",
       name: "Solgar Vitamin D-3 25 µg",
       brand: "Solgar Vitamins",
@@ -186,7 +214,17 @@ export const vitamineDData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Solgar-VitaminD-3.jpg",
       imageAlt: "Solgar Vitamin D-3 25 µg softgels verpakking",
-    },
+      werkzameStof: "vitamineD",
+      vorm: "D3 (cholecalciferol, levertraan)",
+      doseringPerDagdosis: {
+        hoeveelheid: 25,
+        eenheid: "ug",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: VITAMINE_D_CLAIMS,
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

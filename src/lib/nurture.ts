@@ -144,6 +144,21 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     deliveredTo: ["nurture"],
   });
 
+  if (resendId) {
+    void emitEvent({
+      eventType: "nurture.email_sent",
+      sessionId: input.sessionId,
+      email: input.email,
+      payload: {
+        sequence_day: 0,
+        profile_label: input.profileLabel,
+        primary_domain: input.primaryDomain,
+        status: "sent",
+      },
+      deliveredTo: ["n8n_webhook"],
+    });
+  }
+
   for (const row of pendingRows) {
     void emitEvent({
       eventType: "intake.completed",

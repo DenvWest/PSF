@@ -6,10 +6,6 @@ import {
 } from "@/lib/emails/shared";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { absoluteUrl, getPublicSiteUrl } from "@/lib/public-site-url";
-import {
-  buildLifestyleOverviewRows,
-  EMAIL_STATUS_PILL_STYLE,
-} from "@/lib/lifestyle-overview-display";
 import type { NurtureEmailDispatchContext } from "./types";
 
 const DOMAIN_IDS = [
@@ -118,16 +114,6 @@ export function nurtureNamePrefixHtml(firstName?: string | null): string {
   }
   const safe = cleaned.length > 60 ? cleaned.slice(0, 60) : cleaned;
   return `<p style="margin:0 0 4px 0;font-size:16px;line-height:1.6;color:#333333;">Hoi ${escapeHtml(safe)},</p>`;
-}
-
-function lifestyleOverviewIntroHtml(firstName?: string | null): string {
-  const raw = typeof firstName === "string" ? firstName.replace(/\s+/g, " ").trim() : "";
-  const cleaned = raw.replace(/[^a-zA-Zà-ïÀ-ÿĳĲ\s'-]/g, "").trim();
-  const safe = cleaned.length > 60 ? cleaned.slice(0, 60) : cleaned;
-  if (safe) {
-    return `<p style="margin:0 0 12px 0;font-size:15px;line-height:1.6;color:#404040;">${escapeHtml(safe)}, dit is wat we zien in je leefstijlgebieden:</p>`;
-  }
-  return `<p style="margin:0 0 12px 0;font-size:15px;line-height:1.6;color:#404040;">Dit is wat we zien in je leefstijlgebieden:</p>`;
 }
 
 export type Day0ProfileVoice = ProfileLabelName | "Overtrainer";
@@ -315,36 +301,6 @@ export function renderDay0MainRows(params: {
         <tr>
           <td style="padding:8px 28px 28px 28px;">
             ${nurtureCtaButton(ctaUrl, cta.text)}
-          </td>
-        </tr>`;
-}
-
-export function renderLifestyleOverviewBlock(
-  domainScores: Record<string, number>,
-  firstName?: string | null,
-): string {
-  const rows = buildLifestyleOverviewRows(domainScores);
-  const rowHtml = rows
-    .map((row) => {
-      const pill = EMAIL_STATUS_PILL_STYLE[row.status];
-      return `<tr>
-                <td style="padding:10px 14px;font-size:14px;color:#333333;border-bottom:1px solid #e7e5e4;">${escapeHtml(row.label)}</td>
-                <td style="padding:10px 14px;text-align:right;border-bottom:1px solid #e7e5e4;">
-                  <span style="display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;background-color:${pill.background};color:${pill.color};border:1px solid ${pill.border};">${escapeHtml(row.status)}</span>
-                </td>
-              </tr>`;
-    })
-    .join("\n");
-
-  return `
-        <tr>
-          <td style="padding:20px 28px 8px 28px;border-top:1px solid #E7E5E4;">
-            <p style="margin:0 0 8px 0;font-size:12px;font-weight:600;color:#666666;text-transform:uppercase;letter-spacing:0.05em;">Jouw leefstijlgebieden</p>
-            ${lifestyleOverviewIntroHtml(firstName)}
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 12px 0;border:1px solid #e7e5e4;border-radius:8px;border-collapse:separate;">
-              ${rowHtml}
-            </table>
-            <p style="margin:0 0 16px 0;font-size:14px;line-height:1.6;color:#555555;">Leefstijl is het fundament — supplementen vullen aan waar dit niet rond komt.</p>
           </td>
         </tr>`;
 }

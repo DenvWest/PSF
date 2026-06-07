@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
+import { emitEvent } from "@/lib/events";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import type { DomainScores } from "@/lib/intake-engine";
 import { getPrimaryTheme } from "@/lib/primary-theme";
@@ -226,6 +227,16 @@ export async function runPendingIntakeReminders(): Promise<{
       }
 
       sent += 1;
+
+      void emitEvent({
+        eventType: "remeasure.invited",
+        sessionId: row.session_id,
+        email,
+        payload: {
+          days_since_intake: 30,
+        },
+        deliveredTo: ["n8n_webhook"],
+      });
     } catch (err) {
       console.error("[intake-reminder-cron] mail failed:", row.id, err);
       errors += 1;

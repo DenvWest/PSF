@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { emitEvent } from "@/lib/events";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { consumeRateLimit } from "@/lib/rate-limit";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
@@ -79,6 +80,15 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  void emitEvent({
+    eventType: "affiliate.click",
+    payload: {
+      categorie: categorie.length > 0 ? categorie : null,
+      comparison_slug: product_id,
+    },
+    deliveredTo: ["n8n_webhook"],
+  });
 
   return NextResponse.json({ ok: true }, { status: 200 });
 }

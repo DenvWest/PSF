@@ -1,4 +1,12 @@
-import type { ComparisonPageData } from "@/types/supplement";
+import type { ComparisonPageData, EfsaClaimId } from "@/types/supplement";
+import { withClaimFields } from "@/lib/product-claim-fields";
+
+const ZINK_CLAIMS: EfsaClaimId[] = [
+  "zink.testosterone",
+  "zink.immune",
+  "zink.cognition",
+  "zink.oxidative-stress",
+];
 
 export const zinkData: ComparisonPageData = {
   category: "zink",
@@ -68,7 +76,7 @@ export const zinkData: ComparisonPageData = {
     },
   ],
   products: [
-    {
+    withClaimFields({
       slug: "vitalnutrition-zink",
       name: "Vital Nutrition Zink 15 mg",
       brand: "Vital Nutrition",
@@ -104,8 +112,18 @@ export const zinkData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/vital-nutrition-zink-methionine.jpg",
       imageAlt: "Vital Nutrition Zink Methionine 15 mg — 100 tabletten",
-    },
-    {
+      werkzameStof: "zink",
+      vorm: "zinkmethionine",
+      doseringPerDagdosis: {
+        hoeveelheid: 15,
+        eenheid: "mg",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: ZINK_CLAIMS,
+      thirdPartyTested: true,
+    }),
+    withClaimFields({
       slug: "solgar-zink-picolinaat",
       name: "Solgar Zinc Picolinate 22 mg",
       brand: "Solgar Vitamins",
@@ -141,8 +159,18 @@ export const zinkData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Solgar-vitamins-zink.jpg",
       imageAlt: "Solgar Zinc Picolinate 22 mg — 100 tabletten",
-    },
-    {
+      werkzameStof: "zink",
+      vorm: "zinkpicolinaat",
+      doseringPerDagdosis: {
+        hoeveelheid: 22,
+        eenheid: "mg",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: ZINK_CLAIMS,
+      thirdPartyTested: false,
+    }),
+    withClaimFields({
       slug: "bonusan-zinkmethionine",
       name: "Bonusan Zinkmethionine 15 mg",
       brand: "Bonusan",
@@ -178,7 +206,17 @@ export const zinkData: ComparisonPageData = {
       ],
       imageSrc: "/images/producten/Bonusan-zink-Methionine.jpg",
       imageAlt: "Bonusan Zinkmethionine 15 mg L-OptiZinc — 90 plantaardige capsules",
-    },
+      werkzameStof: "zink",
+      vorm: "L-OptiZinc (zinkmethionine)",
+      doseringPerDagdosis: {
+        hoeveelheid: 15,
+        eenheid: "mg",
+        elementair: true,
+        perServing: 1,
+      },
+      efsaClaimIds: ZINK_CLAIMS,
+      thirdPartyTested: false,
+    }),
   ],
   tableRows: [
     {

@@ -1,4 +1,20 @@
 import type { AffiliateSlug } from "@/data/affiliate-links";
+import type {
+  DosageUnit,
+  EfsaClaimId,
+  IngredientClaimKey,
+} from "@/data/approved-claims";
+
+export type { DosageUnit, EfsaClaimId, IngredientClaimKey };
+
+export interface DoseringPerDagdosis {
+  hoeveelheid: number;
+  eenheid: DosageUnit;
+  elementair: boolean;
+  perServing?: number;
+  epaMg?: number;
+  dhaMg?: number;
+}
 
 export type SupplementCategory =
   | "omega-3"
@@ -25,6 +41,12 @@ export interface SupplementProduct {
   variantTag: string;
   summary: string;
   specs: Array<{ label: string; value: string }>;
+  werkzameStof: IngredientClaimKey;
+  vorm: string;
+  doseringPerDagdosis: DoseringPerDagdosis;
+  efsaClaimIds: EfsaClaimId[];
+  voldoetAanClaimConditie: boolean;
+  thirdPartyTested: boolean;
   pros: string[];
   cons: string[];
   breakdown: ScoreBreakdown[];

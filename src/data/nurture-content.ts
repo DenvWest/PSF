@@ -1,6 +1,7 @@
 import type { ProfileLabel } from "@/lib/intake-engine";
 import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
+import { resolveDomainSupplementTip } from "@/lib/resolve-domain-supplement-tip";
 
 // ============================================================
 // Types
@@ -46,71 +47,7 @@ export interface DomainSupplementTip {
   supplement: SupplementTip;
 }
 
-// ============================================================
-// Domain-specifieke supplement-tips (gebruikt vanaf dag 14)
-// TODO: hardcoded /beste/magnesium en /beste/omega-3-supplement in dit tip-kanaal
-// lopen nog buiten approvedClaims/isComparisonAllowed/tier-gate om. Restrisico:
-// resolver onderdrukt de CTA bij on_hold/forbidden, maar de dag-14-tip linkt door
-// tot schema-normalisatie (fundament-plan B1) landt.
-// ============================================================
-
-export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
-  sleep_score: {
-    intro:
-      "Je slaap kwam uit de Leefstijlcheck als je grootste aandachtspunt.",
-    supplement: {
-      name: "Magnesium",
-      reason:
-        "Magnesium draagt bij tot een normale psychologische functie en tot vermindering van vermoeidheid (plus zenuwstelsel en spieren onder EU‑claims). Glycinaat is praktisch in een rustige avondroutine — naast vaste slapen-/lichtgewoonten.",
-      url: "/beste/magnesium",
-    },
-  },
-  energy_score: {
-    intro: "Je energieniveau was je laagste score in de Leefstijlcheck.",
-    supplement: {
-      name: "Omega-3",
-      reason:
-        "EPA en DHA dragen bij tot de normale werking van het hart en DHA tot instandhouding van normale hersenfunctie onder claimvoorwaarden — géén EU‑claim hier op ‘direct meer energie’.",
-      url: "/beste/omega-3-supplement",
-    },
-  },
-  stress_score: {
-    intro: "Stress kwam naar voren als je grootste aandachtspunt.",
-    supplement: {
-      name: "Leefstijlstappen",
-      reason:
-        "Chronische stress vraagt eerst aandacht voor slaapritme, voorspelbare routines en korte herstelmomenten — dat zijn de hefbomen met het meeste bewijs vóór je aan supplementen denkt.",
-      url: "/stress-verminderen-man",
-    },
-  },
-  nutrition_score: {
-    intro: "Je voeding — en met name je omega-3 inname — scoorde het laagst.",
-    supplement: {
-      name: "Omega-3",
-      reason:
-        "De meeste mannen krijgen te weinig EPA en DHA binnen via voeding. Een goed omega-3 supplement is vaak de makkelijkste eerste stap.",
-      url: "/beste/omega-3-supplement",
-    },
-  },
-  movement_score: {
-    intro: "Je bewegingspatroon heeft ruimte voor verbetering.",
-    supplement: {
-      name: "Magnesium",
-      reason:
-        "Magnesium draagt onder voorwaarden bij tot normale spierfunctie en vermindering van vermoeidheid — bruikbare context als je beweging opbouwt.",
-      url: "/beste/magnesium",
-    },
-  },
-  recovery_score: {
-    intro: "Je herstel scoorde het laagst — je lichaam krijgt niet genoeg rust.",
-    supplement: {
-      name: "Magnesium",
-      reason:
-        "Magnesium draagt bij tot vermindering van vermoeidheid en tot normale werking van spieren en het zenuwstelsel (EFSA onder voorwaarden) — waardevol als je hersteltijd structureel tekortkomt.",
-      url: "/beste/magnesium",
-    },
-  },
-};
+// Domain-specifieke supplement-tips (dag 14) — via resolveDomainSupplementTip + shared gate.
 
 // ============================================================
 // Urgentie-aanpassingen
@@ -719,7 +656,7 @@ export function buildNurtureEmail(
 
   const showSupplementTip = ["day14_halfweg"].includes(templateKey);
   const supplementTip = showSupplementTip
-    ? domainSupplementTips[weakestDomain]
+    ? resolveDomainSupplementTip(weakestDomain, opts?.planGate ?? null)
     : null;
 
   const urgencyTone =

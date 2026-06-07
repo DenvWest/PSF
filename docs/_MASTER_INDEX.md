@@ -75,7 +75,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Nurture emails | `core/WRITING_VOICE.md` + `core/EMAIL_SYSTEM.md` + `core/PERSONALIZATION_ENGINE.md` |
 | Copy schrijven (herkenning, profiel, weggever) | `core/WRITING_VOICE.md` + `core/COMPLIANCE.md` |
 | Merk / social media / positionering | `core/BRAND_POSITIONING.md` + `core/WRITING_VOICE.md` |
-| FASE A nurture-implementatie | `plan/FASE_A_IMPLEMENTATIE.md` + `core/EMAIL_SYSTEM.md` |
+| FASE A nurture-implementatie | `archive/FASE_A_IMPLEMENTATIE.md` + `core/EMAIL_SYSTEM.md` |
 | Affiliate links | `core/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
 | Technische vraag | `core/ARCHITECTURE.md` + `core/CODE_CONVENTIONS.md` |
 | Database/data | `core/ENTITY_MODEL.md` |
@@ -90,7 +90,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
-| 6 juni 2026 | FASE A implementatie-instructies: concrete werkvoor FASE A1–A6 (dag-0, CTA-resolver, Overtrainer, K1–K3, balansregel, mail-coherentie) | `plan/FASE_A_IMPLEMENTATIE.md` |
+| 6 juni 2026 | FASE A implementatie-instructies: concrete werkvoor FASE A1–A6 (dag-0, CTA-resolver, Overtrainer, K1–K3, balansregel, mail-coherentie) | `archive/FASE_A_IMPLEMENTATIE.md` |
 | 6 juni 2026 | Merkpositionering: propositie, differentiatie, social media pijlers, transparantie vs. bescherming bedrijfsinformatie | `core/BRAND_POSITIONING.md` |
 | 6 juni 2026 | Geconsolideerd fundament-prioriteitenplan: één volgorde nurture + 0-meting→vervolg + n8n-events; zelf-rapportage NU, wearable/BIA als horizon | `plan/PLAN_FUNDAMENT_PRIORITEIT.md` |
 | 6 juni 2026 | Funnel- & datapriority: dag-0-scharnier sterk neerzetten, centrale CTA-resolver met leefstijl-guard, cross-domein-balansregel in mail, productschema normaliseren, ontbrekende funnel-events (`nurture.email_sent`); wearable/home-scan/agency als horizon mét drempels | `plan/PLAN_FUNNEL_DATA_PRIORITY.md` |
