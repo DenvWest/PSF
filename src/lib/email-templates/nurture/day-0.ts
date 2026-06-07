@@ -1,12 +1,10 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
-import { buildNurtureEmail } from "@/data/nurture-content";
+import type { ProfileLabelName } from "@/data/nurture-content";
 import {
   resolveIntakeRecoveryUrl,
   escapeHtml,
-  nurtureCtaButton,
-  nurtureNamePrefixHtml,
-  renderLifestyleOverviewBlock,
-  renderPersonalizedRows,
+  renderDay0MainRows,
+  type Day0ProfileVoice,
   wrapNurtureBlock,
 } from "./helpers";
 import { absoluteUrl } from "@/lib/public-site-url";
@@ -94,11 +92,13 @@ function buildSleepGuideBlock(): string {
               We hebben een complete gids voor je klaargezet met een 7-dagen protocol,
               doseerschema's en de fouten die je slaap saboteren.
             </p>
-            <a href="${pdfUrl}"
-               style="display: inline-block; padding: 12px 24px; background-color: #2D5016; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
-              Download de Slaapgids (PDF) →
-            </a>
-            ${buildPdfGuideSignatureHtml(SLEEP_GUIDE_PS, 24)}
+            <p style="margin: 0 0 16px;">
+              <a href="${pdfUrl}"
+                 style="font-size: 16px; font-weight: 600; color: #2d4a3e; text-decoration: underline;">
+                Download de Slaapgids (PDF) →
+              </a>
+            </p>
+            ${buildPdfGuideSignatureHtml(SLEEP_GUIDE_PS, 0)}
           </td>
         </tr>`;
 }
@@ -173,76 +173,35 @@ function buildRecoveryGuideBlock(
         </tr>`;
 }
 
-function renderStressdragerDay0PersonalizedRows(
-  intakeUrl: string,
-  firstName?: string | null,
-): string {
-  const headline = firstName
-    ? "Dit valt op in jouw resultaten"
-    : "Hoi, dit valt op in jouw resultaten";
-  const breathingTip =
-    "Eén ding voor deze week: adem elke dag 5 minuten bewust uit (4 seconden in, 6 seconden uit). Langzaam uitademen helpt veel mensen om iets rustiger te worden — doe het ’s ochtends voor je je telefoon pakt.";
-  const prefix = nurtureNamePrefixHtml(firstName);
-  return `
-        <tr>
-          <td style="padding:8px 28px 16px 28px;">
-            <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:22px;line-height:1.25;color:#1a1a1a;font-weight:400;">
-              ${escapeHtml(headline)}
-            </h1>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:0 28px 28px 28px;">
-            ${prefix}
-            <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
-              Ik zie dat stress een grote rol speelt in jouw resultaten. Dat is geen oordeel — het is een patroon dat veel mannen na 40 herkennen, vaak zonder het zelf door te hebben.
-            </p>
-            <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
-              Je profiel is <strong>Stressdrager</strong>. Dat betekent niet dat je een burn-out hebt. Het betekent dat je zenuwstelsel langer ’aan’ staat dan goed voor je is — en dat je dat zelf vaak niet meer voelt.
-            </p>
-            <div style="background:#f5f5f0;border-left:3px solid #2d4a3e;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;">
-              <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(breathingTip)}</p>
-            </div>
-            ${nurtureCtaButton(intakeUrl, "Bekijk je leefstijl-overzicht")}
-          </td>
-        </tr>`;
-}
+const KNOWN_PROFILES: ProfileLabelName[] = [
+  "Onrustige Slaper",
+  "Lage Batterij",
+  "Stressdrager",
+  "In Balans",
+];
 
-function renderRecoveryLeadDay0PersonalizedRows(
-  intakeUrl: string,
-  isOvertrainerVoice: boolean,
-  firstName?: string | null,
-): string {
-  const headline = "Je lichaam vraagt om meer rust — dit zien we in je scores";
-  const opener = isOvertrainerVoice
-    ? "Je profiel is <strong>Overtrainer</strong>: veel belasting, te weinig buffer om weer op peil te komen. Dat zegt niets over je karakter — veel mannen 40+ lopen zo vast tussen ambitie en fysieke rek."
-    : "Je herstelsignaal in de Leefstijlcheck valt op: vaak veel trainen of weinig echte ontspanning. Daar past deze recovery-mail bij, ook als je andere domeinen hoger scoorden.";
-  const tip =
-    "Kies deze week twee geplande zware sessies en maak ze echt licht óf ruim ze op. Vervang ze door 30–40 minuten wandelen zonder stopwatchstress en ga een halfuur eerder naar bed twee avonden op rij klein, maar je systeem merkt het.";
-  const prefix = nurtureNamePrefixHtml(firstName);
-  return `
-        <tr>
-          <td style="padding:8px 28px 16px 28px;">
-            <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:22px;line-height:1.25;color:#1a1a1a;font-weight:400;">
-              ${escapeHtml(headline)}
-            </h1>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:0 28px 28px 28px;">
-            ${prefix}
-            <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
-              ${opener}
-            </p>
-            <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">
-              Geen oordeel — je wilt vooruit. Na 40 wordt het verschil tussen trainingsdruk en echte rust eerder zichtbaar; supplementen komen pas nadat volume en slaap eerlijk zijn tegen het licht gehouden.
-            </p>
-            <div style="background:#f5f5f0;border-left:3px solid #2d4a3e;padding:14px 18px;margin:18px 0;border-radius:0 4px 4px 0;">
-              <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(tip)}</p>
-            </div>
-            ${nurtureCtaButton(intakeUrl, "Bekijk je leefstijl-overzicht")}
-          </td>
-        </tr>`;
+function resolveDay0ProfileVoice(
+  profileLabel: string,
+  domainScores: Record<string, number>,
+): Day0ProfileVoice {
+  const trimmed = profileLabel.trim();
+  if (trimmed === "Overtrainer") {
+    return "Overtrainer";
+  }
+  const movementScore = parseDomainScore(domainScores.movement_score);
+  const recoveryScore = parseDomainScore(domainScores.recovery_score);
+  if (
+    Number.isFinite(movementScore) &&
+    Number.isFinite(recoveryScore) &&
+    movementScore >= 43 &&
+    recoveryScore <= 35
+  ) {
+    return "Overtrainer";
+  }
+  if ((KNOWN_PROFILES as string[]).includes(trimmed)) {
+    return trimmed as ProfileLabelName;
+  }
+  return "In Balans";
 }
 
 export function nurtureDay0Email(
@@ -250,12 +209,9 @@ export function nurtureDay0Email(
   ctx: NurtureEmailDispatchContext,
 ): { subject: string; html: string } {
   const intakeUrl = resolveIntakeRecoveryUrl(ctx);
-
-  const { subject, blocks, supplementTip } = buildNurtureEmail(
-    0,
+  const profileVoice = resolveDay0ProfileVoice(
     data.profileLabel,
     data.domainScores,
-    data.urgencyLevel ?? "moderate",
   );
 
   const sleepScore = parseDomainScore(data.domainScores.sleep_score);
@@ -277,49 +233,53 @@ export function nurtureDay0Email(
     recoveryScore <= 35;
 
   const isOvertrainerVoice =
-    data.profileLabel === "Overtrainer" || isOvertrainerPatternScores;
+    profileVoice === "Overtrainer" || isOvertrainerPatternScores;
 
   const showSleepGuide =
-    data.profileLabel === "Onrustige Slaper" || sleepScoreLowEnough;
+    profileVoice === "Onrustige Slaper" || sleepScoreLowEnough;
 
   const showStressGuide =
     !showSleepGuide &&
-    (data.profileLabel === "Stressdrager" || stressScoreLowEnough);
+    (profileVoice === "Stressdrager" || stressScoreLowEnough);
 
   const showEnergyGuide =
     !showSleepGuide &&
     !showStressGuide &&
-    (data.profileLabel === "Lage Batterij" || energyScoreLowEnough);
+    (profileVoice === "Lage Batterij" || energyScoreLowEnough);
 
   const showRecoveryGuide =
     !showSleepGuide &&
     !showStressGuide &&
     !showEnergyGuide &&
-    (data.profileLabel === "Overtrainer" ||
-      (Number.isFinite(recoveryScore) && recoveryScore < 50) ||
-      isOvertrainerPatternScores);
-
-  const stressProfileFirst = data.profileLabel === "Stressdrager";
+    (isOvertrainerVoice ||
+      (Number.isFinite(recoveryScore) && recoveryScore < 50));
 
   const stressProfileUrl = absoluteUrl("/profiel/stressdrager");
   const energyProfileUrl = absoluteUrl("/profiel/lage-batterij");
   const overtrainerProfileUrl = absoluteUrl("/profiel/overtrainer");
   const herstelThemaUrl = absoluteUrl("/gids/herstel");
 
-  const mainRows = stressProfileFirst
-    ? renderStressdragerDay0PersonalizedRows(intakeUrl, data.firstName)
-    : showRecoveryGuide
-      ? renderRecoveryLeadDay0PersonalizedRows(
-          intakeUrl,
-          isOvertrainerVoice,
-          data.firstName,
-        )
-      : renderPersonalizedRows(blocks, supplementTip, intakeUrl, data.firstName);
+  const mainRows = renderDay0MainRows({
+    profile: profileVoice,
+    domainScores: data.domainScores,
+    intakeUrl,
+    firstName: data.firstName,
+    headline:
+      profileVoice === "Stressdrager"
+        ? "Dit valt op in jouw resultaten"
+        : isOvertrainerVoice
+          ? "Je recovery vraagt nu je aandacht"
+          : undefined,
+  });
 
   let emailSubject: string;
-  if (stressProfileFirst) emailSubject = "Hoi, dit valt op in jouw resultaten";
-  else if (showRecoveryGuide) emailSubject = "Je recovery vraagt nu je aandacht";
-  else emailSubject = subject;
+  if (profileVoice === "Stressdrager") {
+    emailSubject = "Hoi, dit valt op in jouw resultaten";
+  } else if (showRecoveryGuide || isOvertrainerVoice) {
+    emailSubject = "Je recovery vraagt nu je aandacht";
+  } else {
+    emailSubject = "Je eerste stap na de Leefstijlcheck";
+  }
 
   const recoveryDeepDiveUrl = isOvertrainerVoice
     ? overtrainerProfileUrl
@@ -328,14 +288,8 @@ export function nurtureDay0Email(
     ? "Bekijk hier wat het Overtrainer-profiel inhoudt"
     : "Lees verder op het herstelthema";
 
-  const lifestyleOverviewBlock = renderLifestyleOverviewBlock(
-    data.domainScores,
-    data.firstName,
-  );
-
   const inner =
     mainRows +
-    lifestyleOverviewBlock +
     (showRecoveryGuide
       ? buildRecoveryGuideBlock(recoveryDeepDiveUrl, recoveryDeepDiveAnchor)
       : "") +

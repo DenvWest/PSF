@@ -1,4 +1,5 @@
 import type { InterventionBuckets } from "@/lib/content/match-interventions";
+import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
 
 export interface NurtureEmailData {
   profileLabel: string;
@@ -14,6 +15,8 @@ export interface NurtureEmailData {
   completedPlanPhases?: number;
   /** Org-tier-poort; zelfde bron als getPlanContent / getVisibleTiers. */
   visibleTiers?: number[];
+  /** Volledige plan-gate uit nurture-cron (dag 3/14/21). */
+  planGate?: NurturePlanGate | null;
 }
 
 export type NurtureEmailDispatchContext = {

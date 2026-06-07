@@ -584,6 +584,114 @@ describe("getAdvice", () => {
   });
 });
 
+// ─── K1–K3 cross-domain signals ───────────────────────────────────
+
+describe("K1 lowRecoveryNoLoad", () => {
+  it("triggers when recovery low and movement load minimal", () => {
+    const answers = makeAnswers({
+      RCV_PHYS: 1,
+      STR_RCV: 1,
+      MOV_CARD: 1,
+      MOV_STR: 1,
+    });
+    const scores = calcDomainScores(answers);
+    const signals = getDeficiencySignals(answers);
+    expect(signals.low_recovery_no_load).toBe(true);
+    expect(scores.recovery_score).toBeLessThan(45);
+
+    const advice = getAdvice(scores, answers, []);
+    expect(
+      advice.quickWins.some((w) => w.includes("Meer trainen is nu niet")),
+    ).toBe(true);
+  });
+
+  it("does not trigger at recovery boundary 45", () => {
+    const answers = makeAnswers({
+      MOV_CARD: 1,
+      MOV_STR: 1,
+      RCV_PHYS: 3,
+      STR_RCV: 3,
+    });
+    const scores = calcDomainScores(answers);
+    expect(scores.recovery_score).toBeGreaterThanOrEqual(45);
+    const signals = getDeficiencySignals(answers);
+    expect(signals.low_recovery_no_load).toBe(false);
+  });
+
+  it("does not trigger when movement load is 2 or higher", () => {
+    const answers = makeAnswers({ MOV_CARD: 2, MOV_STR: 1, RCV_PHYS: 1 });
+    const scores = calcDomainScores(answers);
+    expect(getMovementLoadFromAnswers(answers)).toBeGreaterThanOrEqual(2);
+    void scores;
+    const signals = getDeficiencySignals(answers);
+    expect(signals.low_recovery_no_load).toBe(false);
+  });
+});
+
+function getMovementLoadFromAnswers(answers: Record<string, number>): number {
+  return Math.max(answers.MOV_CARD ?? 0, answers.MOV_STR ?? 0);
+}
+
+describe("K2 sleepIssueNoStress", () => {
+  it("triggers when sleep onset slow and stress manageable", () => {
+    const answers = makeAnswers({ SLP_ONSET: 1, STR_FREQ: 4 });
+    const signals = getDeficiencySignals(answers);
+    expect(signals.sleep_issue_no_stress).toBe(true);
+    expect(signals.melatonine_signal).toBe(true);
+
+    const scores = calcDomainScores(answers);
+    const advice = getAdvice(scores, answers, []);
+    expect(advice.quickWins.some((w) => w.includes("bedtijd"))).toBe(true);
+    expect(advice.quickWins.some((w) => w.includes("Schermen weg"))).toBe(true);
+  });
+
+  it("does not trigger when stress is also high (low STR_FREQ)", () => {
+    const answers = makeAnswers({ SLP_ONSET: 1, STR_FREQ: 2 });
+    const signals = getDeficiencySignals(answers);
+    expect(signals.sleep_issue_no_stress).toBe(false);
+  });
+});
+
+describe("K3 energyDipUnexplained", () => {
+  it("triggers when energy low but sleep and nutrition adequate", () => {
+    const scores = makeScores({
+      energy_score: 35,
+      sleep_score: 55,
+      nutrition_score: 55,
+    });
+    const answers = makeAnswers({ NRG_PATN: 2, NRG_DEP: 2 });
+    const advice = getAdvice(scores, answers, []);
+    expect(advice.quickWins.some((w) => w.includes("wandelen"))).toBe(true);
+    expect(advice.quickWins.some((w) => w.includes("daglicht"))).toBe(true);
+  });
+
+  it("does not trigger when sleep score is below 50", () => {
+    const scores = makeScores({
+      energy_score: 35,
+      sleep_score: 45,
+      nutrition_score: 55,
+    });
+    const answers = makeAnswers({ NRG_PATN: 2, NRG_DEP: 2 });
+    const advice = getAdvice(scores, answers, []);
+    expect(
+      advice.quickWins.some((w) => w.includes("15 minuten wandelen na de lunch")),
+    ).toBe(false);
+  });
+
+  it("boundary: energy 39 triggers via getAdvice scores", () => {
+    const scores = makeScores({
+      energy_score: 39,
+      sleep_score: 50,
+      nutrition_score: 50,
+    });
+    const answers = makeAnswers();
+    const advice = getAdvice(scores, answers, []);
+    expect(
+      advice.quickWins.some((w) => w.includes("15 minuten wandelen na de lunch")),
+    ).toBe(true);
+  });
+});
+
 // ─── getSupplementRoute ───────────────────────────────────────────
 
 describe("getSupplementRoute", () => {

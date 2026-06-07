@@ -1,25 +1,9 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
-import { buildNurtureEmail } from "@/data/nurture-content";
-import {
-  resolveIntakeRecoveryUrl,
-  renderPersonalizedRows,
-  wrapNurtureBlock,
-} from "./helpers";
+import { renderNurtureDayInner } from "./prepare-nurture-mail";
 
 export function nurtureDay30Email(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
 ): { subject: string; html: string } {
-  const intakeUrl = resolveIntakeRecoveryUrl(ctx);
-
-  const { subject, blocks, supplementTip } = buildNurtureEmail(
-    30,
-    data.profileLabel,
-    data.domainScores,
-    data.urgencyLevel ?? "moderate",
-  );
-
-  const inner = renderPersonalizedRows(blocks, supplementTip, intakeUrl, data.firstName);
-
-  return { subject, html: wrapNurtureBlock(inner, ctx, false) };
+  return renderNurtureDayInner(data, ctx);
 }

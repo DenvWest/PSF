@@ -216,6 +216,7 @@ export async function runPendingNurtureEmails(): Promise<{
             interventionBuckets,
             completedPlanPhases: planGate?.completedPlanPhases ?? 0,
             visibleTiers: planGate?.visibleTiers,
+            planGate,
           },
           {
             recipientEmail: email,

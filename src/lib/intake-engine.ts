@@ -51,9 +51,86 @@ export interface AdviceResult {
   longTerm: string[];
 }
 
+interface RankedQuickWin {
+  priority: number;
+  text: string;
+  domain: DomainScoreKey;
+}
+
+interface RankedSupplementEntry {
+  priority: number;
+  value: SupplementAdvice;
+  domain: DomainScoreKey;
+}
+
 interface RankedItem<T> {
   priority: number;
   value: T;
+}
+
+const QUICK_WIN_FALLBACK_BY_DOMAIN: Record<DomainScoreKey, string> = {
+  sleep_score: "Kies een vaste bedtijd en houd die drie nachten aan.",
+  stress_score: "Neem 5 minuten voor rustige uitademing vóór je je telefoon pakt.",
+  energy_score: "Start de dag met een eiwitrijk moment vóór extra cafeïne.",
+  nutrition_score: "Plan 2× deze week vette vis of een eiwitrijke lunch.",
+  movement_score: "10 minuten daglicht vóór 10:00 — buiten, zonder telefoon.",
+  recovery_score: "Plan vandaag een echte rustdag — geen zware training.",
+};
+
+function inferSupplementDomain(advice: SupplementAdvice): DomainScoreKey {
+  if (advice.link.includes("magnesium")) {
+    return "sleep_score";
+  }
+  if (advice.link.includes("omega-3")) {
+    return "nutrition_score";
+  }
+  if (advice.link.includes("vitamine-d")) {
+    return "nutrition_score";
+  }
+  return "nutrition_score";
+}
+
+function pickStrongestQuickWinFromOtherDomain(
+  scores: DomainScores,
+  excludeDomain: DomainScoreKey,
+): RankedQuickWin | null {
+  const sorted = getSortedDomains(scores);
+  for (const entry of sorted) {
+    if (entry.key === excludeDomain) {
+      continue;
+    }
+    return {
+      priority: 1,
+      text: QUICK_WIN_FALLBACK_BY_DOMAIN[entry.key],
+      domain: entry.key,
+    };
+  }
+  return null;
+}
+
+function enforceCrossDomainBalance(
+  quickWins: RankedQuickWin[],
+  supplements: RankedSupplementEntry[],
+  scores: DomainScores,
+): RankedQuickWin[] {
+  if (supplements.length === 0) {
+    return quickWins;
+  }
+  const topSupplement = [...supplements].sort(
+    (left, right) => left.priority - right.priority,
+  )[0];
+  const supplementDomain = topSupplement.domain;
+  const hasOtherDomain = quickWins.some(
+    (item) => item.domain !== supplementDomain,
+  );
+  if (hasOtherDomain) {
+    return quickWins;
+  }
+  const fallback = pickStrongestQuickWinFromOtherDomain(scores, supplementDomain);
+  if (!fallback) {
+    return quickWins;
+  }
+  return [...quickWins, fallback];
 }
 
 interface RawSignals {
@@ -62,6 +139,9 @@ interface RawSignals {
   cortisolRisk: boolean;
   recoveryDeficit: boolean;
   energyCrashPattern: boolean;
+  lowRecoveryNoLoad: boolean;
+  sleepIssueNoStress: boolean;
+  energyDipUnexplained: boolean;
 }
 
 /** Snake_case signalen voor supplement-triggers (o.a. `getSupplementRoute`). */
@@ -73,14 +153,20 @@ export type DeficiencySignals = {
   melatonine_signal: boolean;
   /** Lage eiwitinname + trainen of traag herstel — hub/vergelijking, niet supplementroute. */
   protein_gap_signal: boolean;
+  /** K1: onderherstel zonder trainingsbelasting. */
+  low_recovery_no_load: boolean;
+  /** K2: inslaapprobleem terwijl stress beheersbaar lijkt. */
+  sleep_issue_no_stress: boolean;
+  /** K3: energiedip zonder slaap/voeding-verklaring. */
+  energy_dip_unexplained: boolean;
 };
 
 export function getDeficiencySignals(
   answers: Record<string, number>,
 ): DeficiencySignals {
-  const s = getSignals(answers);
-  const stressFrequency = getAnswer(answers, "STR_FREQ");
   const scores = calcDomainScores(answers);
+  const s = getSignals(answers, scores);
+  const stressFrequency = getAnswer(answers, "STR_FREQ");
   const movementLoad = getMovementLoad(answers);
   const rcvPhys = getAnswer(answers, "RCV_PHYS");
   const overtrainerPattern = movementLoad >= 3 && rcvPhys <= 1;
@@ -102,6 +188,9 @@ export function getDeficiencySignals(
     creatine_signal,
     melatonine_signal,
     protein_gap_signal,
+    low_recovery_no_load: s.lowRecoveryNoLoad,
+    sleep_issue_no_stress: s.sleepIssueNoStress,
+    energy_dip_unexplained: s.energyDipUnexplained,
   };
 }
 
@@ -199,7 +288,10 @@ function normalizeScore(total: number, max: number): number {
   return Math.round((total / max) * 100);
 }
 
-function getSignals(answers: Record<string, number>): RawSignals {
+function getSignals(
+  answers: Record<string, number>,
+  scores?: DomainScores,
+): RawSignals {
   const omega3Intake = getAnswer(answers, "NUT_O3");
   const sleepQuality = getAnswer(answers, "SLP_QUAL");
   const sleepConsistency = getAnswer(answers, "SLP_CONS");
@@ -210,6 +302,8 @@ function getSignals(answers: Record<string, number>): RawSignals {
   const sleepWake = getAnswer(answers, "SLP_WAKE");
   const energyPattern = getAnswer(answers, "NRG_PATN");
   const energyDependency = getAnswer(answers, "NRG_DEP");
+  const sleepOnset = getAnswer(answers, "SLP_ONSET");
+  const resolvedScores = scores ?? calcDomainScores(answers);
 
   return {
     omega3Deficiency: omega3Intake <= 1,
@@ -221,6 +315,13 @@ function getSignals(answers: Record<string, number>): RawSignals {
       energyPattern <= 2,
     recoveryDeficit: physicalRecovery <= 1 && movementLoad >= 3,
     energyCrashPattern: energyPattern <= 2 && energyDependency <= 2,
+    lowRecoveryNoLoad:
+      resolvedScores.recovery_score < 45 && movementLoad < 2,
+    sleepIssueNoStress: sleepOnset <= 2 && stressFrequency >= 3,
+    energyDipUnexplained:
+      resolvedScores.energy_score < 40 &&
+      resolvedScores.sleep_score >= 50 &&
+      resolvedScores.nutrition_score >= 50,
   };
 }
 
@@ -246,7 +347,7 @@ export function getAdvicePrimaryDomain(scores: DomainScores): DomainId {
   return getSortedDomains(scores)[0].domain;
 }
 
-function pushRankedText(
+function pushRankedLongTerm(
   items: RankedItem<string>[],
   value: string,
   priority: number,
@@ -254,12 +355,41 @@ function pushRankedText(
   items.push({ priority, value });
 }
 
+function pushRankedText(
+  items: RankedQuickWin[],
+  value: string,
+  priority: number,
+  domain: DomainScoreKey,
+): void {
+  items.push({ priority, text: value, domain });
+}
+
 function pushRankedSupplement(
-  items: RankedItem<SupplementAdvice>[],
+  items: RankedSupplementEntry[],
   value: SupplementAdvice,
   priority: number,
+  domain?: DomainScoreKey,
 ): void {
-  items.push({ priority, value });
+  items.push({
+    priority,
+    value,
+    domain: domain ?? inferSupplementDomain(value),
+  });
+}
+
+function uniqueTopQuickWins(items: RankedQuickWin[]): RankedQuickWin[] {
+  const seen = new Set<string>();
+
+  return items
+    .sort((left, right) => left.priority - right.priority)
+    .filter((item) => {
+      if (seen.has(item.text)) {
+        return false;
+      }
+      seen.add(item.text);
+      return true;
+    })
+    .slice(0, 3);
 }
 
 function uniqueTopTexts(items: RankedItem<string>[]): string[] {
@@ -288,7 +418,7 @@ function supplementAdviceAllowed(advice: SupplementAdvice): boolean {
 }
 
 function uniqueTopSupplements(
-  items: RankedItem<SupplementAdvice>[],
+  items: RankedSupplementEntry[],
 ): SupplementAdvice[] {
   const seen = new Set<string>();
 
@@ -474,11 +604,11 @@ export function getAdvice(
   answers: Record<string, number>,
   symptoms: SymptomId[],
 ): AdviceResult {
-  const quickWins: RankedItem<string>[] = [];
-  const supplements: RankedItem<SupplementAdvice>[] = [];
+  const quickWins: RankedQuickWin[] = [];
+  const supplements: RankedSupplementEntry[] = [];
   const longTerm: RankedItem<string>[] = [];
   const selectedSymptoms = new Set(symptoms);
-  const signals = getSignals(answers);
+  const signals = getSignals(answers, scores);
   const movementLoad = getMovementLoad(answers);
   const physicalRecovery = getAnswer(answers, "RCV_PHYS");
   const lifAlc = getAnswer(answers, "LIF_ALC");
@@ -488,7 +618,7 @@ export function getAdvice(
     weakestDomain.domain === "nutrition" && weakestDomain.score <= 60;
 
   if (nutritionScoreLow) {
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Twijfel je aan tekorten in vitamines of mineralen? Vraag bij aanhoudende klachten je huisarts om bloedonderzoek — zekerheid haal je bij de arts, niet uit een vragenlijst.",
       1,
@@ -500,6 +630,7 @@ export function getAdvice(
       quickWins,
       "Begin met 5 minuten ademhalingsoefening voor het slapen.",
       5,
+      "sleep_score",
     );
     pushRankedSupplement(
       supplements,
@@ -510,31 +641,80 @@ export function getAdvice(
         link: COMPARISON_PATHS.magnesium,
       },
       10,
+      "sleep_score",
     );
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Koppel een vast slaapritme aan een korte ademhalingsroutine in de avond.",
       5,
     );
   }
 
-  const slpOnset = getAnswer(answers, "SLP_ONSET");
-  const strFreq = getAnswer(answers, "STR_FREQ");
-  if (slpOnset <= 2 && strFreq >= 3) {
+  if (signals.lowRecoveryNoLoad) {
+    pushRankedText(
+      quickWins,
+      "Meer trainen is nu niet de oplossing — je lichaam vraagt om rust en slaap, niet extra volume.",
+      2,
+      "recovery_score",
+    );
+    pushRankedText(
+      quickWins,
+      "Plan vanavond een vaste bedtijd en houd die drie nachten aan — herstel begint bij slaap, niet bij extra sessies.",
+      3,
+      "sleep_score",
+    );
+    pushRankedText(
+      quickWins,
+      "Neem vandaag 5 minuten voor rustige uitademing vóór je je telefoon pakt — dat helpt je systeem landen.",
+      4,
+      "stress_score",
+    );
+  }
+
+  if (signals.sleepIssueNoStress) {
+    pushRankedText(
+      quickWins,
+      "Kies een vaste bedtijd en dim het licht een uur van tevoren — geen stressprotocol nodig, wel ritme.",
+      3,
+      "sleep_score",
+    );
+    pushRankedText(
+      quickWins,
+      "Schermen weg 60 min voor bed. Je brein heeft dat signaal nodig om af te schakelen.",
+      4,
+      "sleep_score",
+    );
     pushRankedSupplement(
       supplements,
       {
         name: "Magnesium glycinaat",
         reason:
-          "Je ligt regelmatig lang wakker terwijl stress beheersbaar lijkt. Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — vaak een eerste stap vóór supplementen voor timing.",
+          "Je ligt regelmatig lang wakker terwijl stress beheersbaar lijkt. Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — na ritme en licht.",
         link: COMPARISON_PATHS.magnesium,
       },
-      8,
+      10,
+      "sleep_score",
     );
     pushRankedText(
       quickWins,
       "Bij vooral inslaapproblemen: eerst ritme en licht. Informatie over melatonine (geen productvergelijking) staat in de supplementgids.",
+      5,
+      "sleep_score",
+    );
+  }
+
+  if (signals.energyDipUnexplained) {
+    pushRankedText(
+      quickWins,
+      "15 minuten wandelen na de lunch — daglicht en beweging vóór je aan supplementen denkt.",
+      3,
+      "movement_score",
+    );
+    pushRankedText(
+      quickWins,
+      "10 minuten buiten vóór 10:00. Daglicht reset je ritme en helpt vaak meer dan een extra kop koffie.",
       4,
+      "movement_score",
     );
   }
 
@@ -543,6 +723,7 @@ export function getAdvice(
       quickWins,
       "Plan 2–3 avonden per week zonder alcohol — je slaap en ochtendenergie profiteren daar vaak direct van.",
       6,
+      "sleep_score",
     );
   }
 
@@ -556,6 +737,7 @@ export function getAdvice(
         link: "/supplementen/vitamine-d",
       },
       25,
+      "nutrition_score",
     );
   }
 
@@ -565,6 +747,7 @@ export function getAdvice(
       quickWins,
       "Begin elke maaltijd eiwitrijk. Denk aan zuivel, eieren, vis, peulvruchten of vegetarisch.",
       2,
+      "nutrition_score",
     );
   }
 
@@ -573,8 +756,9 @@ export function getAdvice(
       quickWins,
       "Start de dag met een eiwitrijk ontbijt, nog voor extra cafeine.",
       15,
+      "energy_score",
     );
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Herstel eerst je voedingsbasis met regelmatige, volwaardige maaltijden voordat je energie in supplementen zoekt.",
       15,
@@ -591,8 +775,9 @@ export function getAdvice(
         link: COMPARISON_PATHS["omega-3-supplement"],
       },
       20,
+      "nutrition_score",
     );
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Werk toe naar 1-2 vaste momenten per week met vette vis of houd omega-3 suppletie structureel aan.",
       20,
@@ -604,6 +789,7 @@ export function getAdvice(
       quickWins,
       "Je traint hard maar herstelt slecht: plan vandaag een rustdag.",
       12,
+      "recovery_score",
     );
     pushRankedSupplement(
       supplements,
@@ -614,8 +800,9 @@ export function getAdvice(
         link: COMPARISON_PATHS.magnesium,
       },
       14,
+      "recovery_score",
     );
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Controleer je eiwitinname en bouw vaste rustdagen in om overbelasting te voorkomen.",
       12,
@@ -627,6 +814,7 @@ export function getAdvice(
       quickWins,
       "Zet stressmanagement deze week boven extra stimulanten of nieuwe supplementroutines.",
       2,
+      "stress_score",
     );
     pushRankedSupplement(
       supplements,
@@ -637,6 +825,7 @@ export function getAdvice(
         link: COMPARISON_PATHS.magnesium,
       },
       5,
+      "stress_score",
     );
     pushRankedSupplement(
       supplements,
@@ -647,8 +836,9 @@ export function getAdvice(
         link: "/supplementen/vitamine-d",
       },
       30,
+      "nutrition_score",
     );
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Breng eerst ritme terug in je dag: vaste slaaptijden, minder avondprikkels en geplande pauzes.",
       2,
@@ -665,6 +855,7 @@ export function getAdvice(
         link: COMPARISON_PATHS.magnesium,
       },
       16,
+      "sleep_score",
     );
   }
 
@@ -673,11 +864,12 @@ export function getAdvice(
       quickWins,
       "Schuif cafeine na 14:00 zoveel mogelijk naar nul om je energiedips niet verder te verdiepen.",
       18,
+      "energy_score",
     );
   }
 
   if (signals.recoveryDeficit && scores.recovery_score < 50) {
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Neem herstel net zo serieus als training: plan elke week minimaal een volledige rustdag.",
       18,
@@ -689,11 +881,12 @@ export function getAdvice(
       quickWins,
       "Houd je slaapkamer vanavond koel, donker en stil.",
       90,
+      "sleep_score",
     );
   }
 
   if (selectedSymptoms.has("stress")) {
-    pushRankedText(
+    pushRankedLongTerm(
       longTerm,
       "Blok vaste herstelmomenten in je agenda voordat je week volloopt.",
       90,
@@ -705,10 +898,16 @@ export function getAdvice(
       quickWins,
       "Maak na de lunch een wandeling van 10 minuten om je energieniveau te stabiliseren.",
       90,
+      "movement_score",
     );
   }
 
-  const topQuickWins = uniqueTopTexts(quickWins);
+  const topQuickWinsRaw = enforceCrossDomainBalance(
+    uniqueTopQuickWins(quickWins),
+    supplements,
+    scores,
+  );
+  const topQuickWins = topQuickWinsRaw.map((item) => item.text);
   const topSupplements = uniqueTopSupplements(supplements);
   const topLongTerm = uniqueTopTexts(longTerm);
 

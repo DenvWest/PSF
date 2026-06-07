@@ -10,6 +10,10 @@ PerfectSupplement vergelijkt en adviseert, maar verkoopt niet. Toch geldt de Cla
 
 **Geen medische claims — altijd "adviezen, geen diagnoses".**
 
+### Structurele leefstijl-eerst invariant (nurture + intake)
+
+Elke output met een supplement-suggestie bevat minstens één leefstijl-quick-win uit een **ander domein** dan het supplement-domein. Dit geldt op het intake-scherm (`getAdvice`) én in nurture-mails (dag 14/21). Doel: geen kale supplementlijst zonder leefstijl-hefboom — conform "leefstijl eerst" positionering.
+
 ---
 
 ## EFSA-goedgekeurde claims per supplement

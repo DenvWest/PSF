@@ -216,6 +216,9 @@ const baseSignals: DeficiencySignals = {
   creatine_signal: false,
   melatonine_signal: false,
   protein_gap_signal: false,
+  low_recovery_no_load: false,
+  sleep_issue_no_stress: false,
+  energy_dip_unexplained: false,
 };
 
 const profile: ProfileLabel = {

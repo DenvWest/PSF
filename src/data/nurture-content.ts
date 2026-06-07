@@ -1,4 +1,6 @@
 import type { ProfileLabel } from "@/lib/intake-engine";
+import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
+import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
 
 // ============================================================
 // Types
@@ -21,6 +23,8 @@ export type DomainKey =
   | "recovery_score";
 
 export type ProfileLabelName = ProfileLabel["name"];
+
+export type NurtureProfileKey = ProfileLabelName | "Overtrainer";
 
 export interface SupplementTip {
   name: string;
@@ -139,7 +143,7 @@ export const urgencyModifiers = {
 
 export const nurtureContent: Record<
   TemplateKey,
-  Record<ProfileLabelName, NurtureBlock>
+  Record<NurtureProfileKey, NurtureBlock>
 > = {
   // ── DAG 0: WELKOM ────────────────────────────────────────
   day0_welcome: {
@@ -187,6 +191,17 @@ export const nurtureContent: Record<
       tip: "Focus deze week op één domein dat je wilt verfijnen. Bekijk je leefstijl-overzicht en kies het gebied met de meeste groeimogelijkheid.",
       cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
+    Overtrainer: {
+      subject: "Je leefstijl-overzicht staat klaar",
+      preheader: "Herstel vraagt nu je aandacht — niet harder trainen",
+      greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
+      bodyParagraphs: [
+        "Je scores laten zien dat je lichaam meer rust nodig heeft dan je trainingsvolume suggereert. Dat is geen zwakte — het is een signaal dat volume en herstel uit balans zijn.",
+        "De eerste stap is niet harder trainen, maar twee lichte dagen plannen en slaap prioriteren.",
+      ],
+      tip: "Plan vandaag welke twee zware sessies deze week je schrapt of vervangt door licht bewegen.",
+      cta: { text: "Bekijk je profiel", url: "/profiel/overtrainer" },
+    },
   },
 
   // ── DAG 3: QUICK WINS ────────────────────────────────────
@@ -199,7 +214,7 @@ export const nurtureContent: Record<
         "Energie opbouwen gaat niet in één dag. Maar er zijn dingen die je vandaag kunt doen die je morgen al voelt.",
       ],
       tip: "Quick win #1: Stop na 14:00 met cafeïne. Quick win #2: Eet bij elke maaltijd een eiwitbron (eieren, vis, noten, kwark). Quick win #3: Ga 10 minuten naar buiten — daglicht in de ochtend reset je biologische klok.",
-      cta: { text: "Welk supplement past bij jouw profiel?", url: "/beste/omega-3-supplement" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
     "Onrustige Slaper": {
       subject: "3 dingen die je slaap deze week verbeteren",
@@ -209,7 +224,7 @@ export const nurtureContent: Record<
         "Slaapverbetering begint niet in bed — het begint overdag. Je lichaam heeft signalen nodig om te weten dat het tijd is om af te schakelen.",
       ],
       tip: "Quick win #1: Slaapkamer op 18°C (koel slapen = dieper slapen). Quick win #2: Geen schermen 60 min voor bed. Quick win #3: Zelfde bedtijd, ook in het weekend — je circadiaan ritme heeft regelmaat nodig.",
-      cta: { text: "Welk magnesium helpt bij slaap?", url: "/beste/magnesium" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
     "Stressdrager": {
       subject: "3 stressverlagers die je vandaag kunt proberen",
@@ -229,7 +244,17 @@ export const nurtureContent: Record<
         "Als je al goed scoort, zit de winst in de details. Kleine optimalisaties op het gebied van voeding, slaapkwaliteit en herstel leveren merkbaar verschil op.",
       ],
       tip: "Quick win #1: Eet 2× per week vette vis voor je omega-3 inname. Quick win #2: Controleer je slaapkwaliteit — even wakker worden is normaal, maar diepe slaap is cruciaal. Quick win #3: Plan één echte rustdag per week in.",
-      cta: { text: "Bekijk vergelijkingspagina's", url: "/beste/omega-3-supplement" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
+    },
+    Overtrainer: {
+      subject: "Wat doe je deze week minder?",
+      preheader: "Volume terug — herstel eerst",
+      greeting: "Drie dagen geleden deed je de Leefstijlcheck.",
+      bodyParagraphs: [
+        "Meer trainen is nu niet de oplossing. Je lichaam vraagt om ruimte om bij te komen — dat begint met minder belasting, niet met harder pushen.",
+      ],
+      tip: "Kies 2 zware sessies deze week en maak ze licht of schrap ze. Vervang ze door 30–40 minuten wandelen zonder stopwatch.",
+      cta: { text: "Bekijk je herstel-overzicht", url: "/intake" },
     },
   },
 
@@ -244,7 +269,7 @@ export const nurtureContent: Record<
         "Maar dit is geen onvermijdelijk verval. Met de juiste voeding, beweging en gerichte supplementen kun je dit proces vertragen en zelfs deels omkeren.",
       ],
       tip: "Deze week: check je vispatroon. EPA/DHA‑suppletie kan onder claimvoorwaarden hart‑ en hersenclaims ondersteunen — géén wonderpil voor middagdip.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
+      cta: { text: "Lees over energie na 40", url: "/energie-na-40" },
     },
     "Onrustige Slaper": {
       subject: "Slaap en brein: wat onderzoek laat zien",
@@ -255,7 +280,7 @@ export const nurtureContent: Record<
         "Magnesium heeft EU‑claims op zenuwstelsel, spieren, psychologische functie en vermoeidheid — veel mensen mikken glycinaat/bisglycinaat naar een rustige avondroutine naast slapen-/lichtgewoonten.",
       ],
       tip: "EFSA‑claims magnesium richten zich op onder meer psychologische functie en vermoeidheid — gebruik slaap-/lichtprotocol als eerste hefboom en stem suppletie af op een arts bij medicatie.",
-      cta: { text: "Vergelijk magnesium supplementen", url: "/beste/magnesium" },
+      cta: { text: "Lees de slaapgids voor mannen 40+", url: "/slaap-verbeteren-na-40" },
     },
     "Stressdrager": {
       subject: "Hoe chronische stress je lichaam beïnvloedt — en wat je kunt doen",
@@ -278,7 +303,18 @@ export const nurtureContent: Record<
         "Nu is het moment om te kijken waar nog winst zit. Omega-3 is voor de meeste mannen het laaghangende fruit: de meesten eten te weinig vette vis en missen EPA en DHA.",
       ],
       tip: "Check of je voldoende omega-3 binnenkrijgt. Als je minder dan 2× per week vette vis eet, is een supplement het overwegen waard.",
-      cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
+      cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
+    },
+    Overtrainer: {
+      subject: "Herstel vraagt meer dan training",
+      preheader: "Slaap en volume bepalen je vooruitgang",
+      greeting: "Een week geleden deed je de Leefstijlcheck.",
+      bodyParagraphs: [
+        "Na 40 is de marge tussen flinke vooruitgang en te weinig herstel kleiner. Dezelfde weekstructuur vraagt vaker om extra rust dan tien jaar geleden.",
+        "Supplementen komen pas nadat volume en slaap eerlijk zijn tegen het licht gehouden.",
+      ],
+      tip: "30–40 minuten wandelen zonder stopwatch — geen interval, geen PR. Alleen bewegen om je systeem te laten landen.",
+      cta: { text: "Lees het herstelthema", url: "/gids/herstel" },
     },
   },
 
@@ -328,6 +364,17 @@ export const nurtureContent: Record<
       tip: "Kies deze week één gewoonte die je wilt verankeren: elke dag wandelen, elke dag een eiwitrijk ontbijt, of elke avond schermvrij voor bed. Houd het bij voor de rest van de maand.",
       cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
+    Overtrainer: {
+      subject: "Halverwege: hoe voelt je herstel?",
+      preheader: "Slaapkwaliteit check-in",
+      greeting: "Twee weken geleden deed je de Leefstijlcheck.",
+      bodyParagraphs: [
+        "Als je volume hebt teruggeschroefd, zou je lichaam langzaam meer ruimte moeten voelen. Het effect is niet lineair — sommige dagen voelen beter, andere niet.",
+        "Slaap is nu je belangrijkste hefboom: halfuur eerder naar bed heeft meer impact dan nog een supplement.",
+      ],
+      tip: "Halfuur eerder naar bed, 2 avonden op rij. Geen schermen in die extra halfuur — lezen of stil zitten is genoeg.",
+      cta: { text: "Bekijk je herstel-overzicht", url: "/intake" },
+    },
   },
 
   // ── DAG 21: MOMENTUM ─────────────────────────────────────
@@ -376,6 +423,17 @@ export const nurtureContent: Record<
       tip: "Overweeg omega‑3 als je weinig vis eet: EU‑claims gaan over hart en (DHA) hersenen — geen etiketclaim op ‘meer energie’.",
       cta: { text: "Vergelijk omega-3 supplementen", url: "/beste/omega-3-supplement" },
     },
+    Overtrainer: {
+      subject: "Drie weken: magnesium als aanvulling?",
+      preheader: "Alleen na volume en slaap eerlijk gehouden",
+      greeting: "Drie weken geleden startte je met je leefstijl-overzicht.",
+      bodyParagraphs: [
+        "Als je volume hebt teruggeschroefd en slaap hebt geprioriteerd, kun je nu kijken of magnesium je herstel ondersteunt — niet als vervanging van rust, maar als aanvulling.",
+        "Magnesium draagt bij tot normale spierfunctie en vermindering van vermoeidheid onder EFSA-voorwaarden.",
+      ],
+      tip: "Check eerlijk: heb je echt 2 lichte dagen gehad en slaap voorrang gegeven? Pas dan is supplement de volgende stap.",
+      cta: { text: "Bekijk je herstel-overzicht", url: "/intake" },
+    },
   },
 
   // ── DAG 30: HERHAALMETING ────────────────────────────────
@@ -422,6 +480,16 @@ export const nurtureContent: Record<
       tip: "Doe de Leefstijlcheck opnieuw. Drie minuten, direct inzicht in je huidige staat.",
       cta: { text: "Doe de herhaalmeting", url: "/intake" },
     },
+    Overtrainer: {
+      subject: "30 dagen: vergelijk je recovery-score",
+      preheader: "Hermeting laat zien of volume en slaap hebben gewerkt",
+      greeting: "Een maand geleden deed je de Leefstijlcheck.",
+      bodyParagraphs: [
+        "Je hebt een maand gericht op volume terug en slaap eerst. De herhaalmeting laat je zien of je recovery-score is verbeterd — en waar nog winst zit.",
+      ],
+      tip: "Doe de Leefstijlcheck opnieuw en vergelijk je recovery-score met de start.",
+      cta: { text: "Doe de herhaalmeting", url: "/intake" },
+    },
   },
 };
 
@@ -455,6 +523,129 @@ export function getWeakestDomain(
   return weakest;
 }
 
+const ALL_DOMAINS: DomainKey[] = [
+  "sleep_score",
+  "energy_score",
+  "stress_score",
+  "nutrition_score",
+  "movement_score",
+  "recovery_score",
+];
+
+export function getDomainsByScoreAscending(
+  domainScores: Record<string, number>,
+): DomainKey[] {
+  return [...ALL_DOMAINS].sort((left, right) => {
+    const leftScore = domainScores[left] ?? 100;
+    const rightScore = domainScores[right] ?? 100;
+    return leftScore - rightScore;
+  });
+}
+
+const LIFESTYLE_TIP_BY_DOMAIN: Record<DomainKey, string> = {
+  stress_score: "5 min ademhaling vóór je telefoon pakt — vandaag nog.",
+  sleep_score: "Vaste bedtijd, 3 nachten aanhouden — ook in het weekend.",
+  energy_score: "Eiwitrijk eerste moment na opstaan — vóór de tweede kop koffie.",
+  recovery_score: "Plan 2 lichte dagen deze week — schrap of verlicht zware sessies.",
+  movement_score: "10 min daglicht vóór 10:00 — buiten, zonder telefoon.",
+  nutrition_score: "2× deze week vette vis of eiwitrijke lunch — geen perfect dieet nodig.",
+};
+
+const DAY_TIP_INDEX: Partial<Record<number, number>> = {
+  3: 0,
+  7: 1,
+  14: 2,
+};
+
+function urgencyTipPrefix(urgencyLevel: string): string {
+  if (urgencyLevel === "critical") {
+    return "Doe dit vandaag: ";
+  }
+  if (urgencyLevel === "mild" || urgencyLevel === "healthy") {
+    return "Kleine optimalisatie: ";
+  }
+  return "";
+}
+
+export function resolveLifestyleTipForDay(
+  domainScores: Record<string, number>,
+  sequenceDay: number,
+  urgencyLevel: string,
+): string | null {
+  const resolved = resolveLifestyleTipDomainForDay(
+    domainScores,
+    sequenceDay,
+    urgencyLevel,
+  );
+  return resolved?.tip ?? null;
+}
+
+export function resolveLifestyleTipDomainForDay(
+  domainScores: Record<string, number>,
+  sequenceDay: number,
+  urgencyLevel: string,
+): { tip: string; domain: DomainKey } | null {
+  const index = DAY_TIP_INDEX[sequenceDay];
+  if (index === undefined) {
+    return null;
+  }
+  const sorted = getDomainsByScoreAscending(domainScores);
+  const domain = sorted[index] ?? sorted[0];
+  const tip = `${urgencyTipPrefix(urgencyLevel)}${LIFESTYLE_TIP_BY_DOMAIN[domain]}`;
+  return { tip, domain };
+}
+
+export function pickLifestyleTipFromOtherDomain(
+  domainScores: Record<string, number>,
+  excludeDomain: DomainKey,
+  urgencyLevel: string,
+): string {
+  const sorted = getDomainsByScoreAscending(domainScores);
+  const other = sorted.find((domain) => domain !== excludeDomain) ?? sorted[0];
+  return `${urgencyTipPrefix(urgencyLevel)}${LIFESTYLE_TIP_BY_DOMAIN[other]}`;
+}
+
+export function nurtureOutputHasCrossDomainBalance(
+  tipDomain: DomainKey,
+  supplementDomain: DomainKey,
+): boolean {
+  return tipDomain !== supplementDomain;
+}
+
+const KNOWN_PROFILES: ProfileLabelName[] = [
+  "Onrustige Slaper",
+  "Lage Batterij",
+  "Stressdrager",
+  "In Balans",
+];
+
+export function resolveNurtureProfileKey(
+  profileLabel: string,
+  domainScores: Record<string, number>,
+): NurtureProfileKey {
+  const trimmed = profileLabel.trim();
+  if (trimmed === "Stilzitter" || trimmed === "Stille Slijter") {
+    return "Lage Batterij";
+  }
+  if (trimmed === "Overtrainer") {
+    return "Overtrainer";
+  }
+  const movementScore = domainScores.movement_score;
+  const recoveryScore = domainScores.recovery_score;
+  if (
+    Number.isFinite(movementScore) &&
+    Number.isFinite(recoveryScore) &&
+    movementScore >= 43 &&
+    recoveryScore <= 35
+  ) {
+    return "Overtrainer";
+  }
+  if ((KNOWN_PROFILES as string[]).includes(trimmed)) {
+    return trimmed as ProfileLabelName;
+  }
+  return "In Balans";
+}
+
 // ============================================================
 // Helper: map sequence dag naar template key
 // ============================================================
@@ -480,6 +671,11 @@ export function buildNurtureEmail(
   profileLabel: string,
   domainScores: Record<string, number>,
   urgencyLevel: string,
+  opts?: {
+    planGate?: NurturePlanGate | null;
+    resolvedCta?: ResolvedNurtureCta;
+    profileKey?: NurtureProfileKey;
+  },
 ): {
   subject: string;
   preheader: string;
@@ -488,20 +684,29 @@ export function buildNurtureEmail(
   urgencyTone: string;
 } {
   const templateKey = sequenceDayToTemplateKey(sequenceDay);
-  const trimmed = profileLabel.trim();
-  // Intake produceert geen losse recovery-labels; map bekende varianten naar
-  // bestaande content zodat ze niet naar de "In Balans" fallback vallen.
-  const normalizedLabel =
-    trimmed === "Stilzitter" ||
-    trimmed === "Overtrainer" ||
-    trimmed === "Stille Slijter"
-      ? "Lage Batterij"
-      : trimmed;
-  const knownLabel = normalizedLabel as ProfileLabelName;
+  const profileKey =
+    opts?.profileKey ??
+    resolveNurtureProfileKey(profileLabel, domainScores);
 
   const dayContent = nurtureContent[templateKey];
-  const blocks =
-    dayContent[knownLabel] ?? dayContent["In Balans"];
+  const blocksBase =
+    dayContent[profileKey] ?? dayContent["In Balans"];
+
+  let blocks = opts?.resolvedCta
+    ? {
+        ...blocksBase,
+        cta: { text: opts.resolvedCta.text, url: opts.resolvedCta.url },
+      }
+    : { ...blocksBase };
+
+  const lifestyleTip = resolveLifestyleTipForDay(
+    domainScores,
+    sequenceDay,
+    urgencyLevel,
+  );
+  if (lifestyleTip) {
+    blocks = { ...blocks, tip: lifestyleTip };
+  }
 
   const weakestDomain = getWeakestDomain(domainScores);
 
