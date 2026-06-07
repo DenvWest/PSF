@@ -110,6 +110,7 @@ export function prepareNurtureMailContent(data: NurtureEmailData): {
     ? { ...built.blocks, tip: interventionHighlight.body }
     : built.blocks;
 
+  // SELECTIE: statische candidates + approvedClaims-gate; tier-gate in resolveNurtureCta.
   const supplementTip = interventionHighlight ? null : built.supplementTip;
   const urgencyLevel = data.urgencyLevel ?? "moderate";
 

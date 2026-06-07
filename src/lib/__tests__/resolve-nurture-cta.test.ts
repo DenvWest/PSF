@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import {
   resolveNurtureCta,
   lifestyleCtaForProfile,
@@ -6,6 +6,7 @@ import {
   supplementCtaForProfile,
   type NurtureSequenceDay,
 } from "@/lib/resolve-nurture-cta";
+import * as comparisonAvailability from "@/lib/comparison-availability";
 import type { NurtureProfileKey } from "@/data/nurture-content";
 import type { DomainKey } from "@/data/nurture-content";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
@@ -129,6 +130,44 @@ describe("resolveNurtureCta", () => {
       }
     }
   });
+
+  it("on_hold ashwagandha wordt overgeslagen naar volgende kandidaat (magnesium)", () => {
+    const supplement = supplementCtaForProfile("Stressdrager");
+    expect(supplement).not.toBeNull();
+    expect(supplement?.url).toBe("/beste/magnesium");
+    expect(supplement?.kind).toBe("supplement");
+  });
+
+  it("geen kandidaat passeert gate — supplementCtaForProfile null en leefstijl-fallback", () => {
+    const spy = vi
+      .spyOn(comparisonAvailability, "isComparisonAllowed")
+      .mockReturnValue(false);
+
+    expect(supplementCtaForProfile("Onrustige Slaper")).toBeNull();
+
+    const result = resolveNurtureCta(
+      "Onrustige Slaper",
+      14,
+      gateFull,
+      true,
+      WEAKEST,
+    );
+    expect(result.kind).not.toBe("supplement");
+    expect(result.kind).toBe("lifestyle");
+
+    spy.mockRestore();
+  });
+
+  it("melatonine (forbidden, geen comparisonPath) verschijnt nooit als CTA", () => {
+    const supplement = supplementCtaForProfile("In Balans");
+    expect(supplement).not.toBeNull();
+    expect(supplement?.url).toBe("/beste/omega-3-supplement");
+    expect(supplement?.url).not.toContain("melatonine");
+  });
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 describe("lifestyleCtaForProfile", () => {

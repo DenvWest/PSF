@@ -1,11 +1,9 @@
-import { getArtikelBySlug } from "@/data/blog";
 import { domainNamesDutch, quickWinsByDomain } from "@/data/quick-wins";
 import {
   escapeHtml,
   nurtureCtaButton,
   nurtureEmailWrap,
 } from "@/lib/emails/shared";
-import { blogArtikelPad } from "@/lib/blog-artikel-pad";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { absoluteUrl, getPublicSiteUrl } from "@/lib/public-site-url";
 import {
@@ -39,62 +37,6 @@ export function domainLabelNl(domain: string): string {
 export function quickWinsForDomain(domain: string): string[] {
   const id = normalizeDomainId(domain);
   return quickWinsByDomain[id] ?? quickWinsByDomain.sleep;
-}
-
-/** Eerste voorkeur-slug per domein; wordt gecontroleerd met getArtikelBySlug. */
-const BLOG_SLUG_BY_DOMAIN: Record<string, string> = {
-  sleep: "magnesium-en-slaapkwaliteit",
-  stress: "cortisol-en-testosteron",
-  energy: "vitamine-d-en-energie",
-  nutrition: "omega-3-en-herstel",
-  movement: "testosteron-en-energie-na-40",
-  recovery: "creatine-en-herstel",
-};
-
-export function resolveBlogForDomain(domain: string): {
-  url: string;
-  title: string;
-  found: boolean;
-} {
-  const id = normalizeDomainId(domain);
-  const preferred = BLOG_SLUG_BY_DOMAIN[id] ?? BLOG_SLUG_BY_DOMAIN.sleep;
-  const artikel = getArtikelBySlug(preferred);
-  if (artikel) {
-    return {
-      url: absoluteUrl(blogArtikelPad(artikel)),
-      title: artikel.titel,
-      found: true,
-    };
-  }
-  return {
-    url: absoluteUrl("/blog"),
-    title: "",
-    found: false,
-  };
-}
-
-function genericDomainParagraph(domain: string): string {
-  const label = domainLabelNl(domain);
-  return `Thema ${escapeHtml(label)} draait om kleine, herhaalbare keuzes die je lichaam tijd geven om zich aan te passen — zonder perfectie-eisen.`;
-}
-
-export function day7BodyCopy(domain: string): { htmlBlock: string } {
-  const { url, title, found } = resolveBlogForDomain(domain);
-  const domeinNaam = domainLabelNl(domain);
-  if (found && title) {
-    return {
-      htmlBlock: `<p style="margin:0 0 16px 0;font-size:16px;line-height:1.6;color:#333333;">
-        Voor veel mannen vanaf 40 speelt ${escapeHtml(domeinNaam)} een grotere rol dan ze dagelijks merken.
-        In <a href="${escapeHtml(url)}" style="color:#1a1a1a;">${escapeHtml(title)}</a> lees je er meer over — inhoudelijk en zonder harde beloftes.
-      </p>`,
-    };
-  }
-  return {
-    htmlBlock: `<p style="margin:0 0 16px 0;font-size:16px;line-height:1.6;color:#333333;">
-      ${genericDomainParagraph(domain)}
-      Meer lezen over dit onderwerp? Start op <a href="${escapeHtml(absoluteUrl("/blog"))}" style="color:#1a1a1a;">het blog</a>.
-    </p>`,
-  };
 }
 
 export function resolveIntakeRecoveryUrl(

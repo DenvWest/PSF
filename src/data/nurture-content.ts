@@ -47,7 +47,11 @@ export interface DomainSupplementTip {
 }
 
 // ============================================================
-// Domain-specifieke supplement-tips (gebruikt in dag 3, 7, 14)
+// Domain-specifieke supplement-tips (gebruikt vanaf dag 14)
+// TODO: hardcoded /beste/magnesium en /beste/omega-3-supplement in dit tip-kanaal
+// lopen nog buiten approvedClaims/isComparisonAllowed/tier-gate om. Restrisico:
+// resolver onderdrukt de CTA bij on_hold/forbidden, maar de dag-14-tip linkt door
+// tot schema-normalisatie (fundament-plan B1) landt.
 // ============================================================
 
 export const domainSupplementTips: Record<DomainKey, DomainSupplementTip> = {
@@ -268,7 +272,8 @@ export const nurtureContent: Record<
         "Na 40 verandert je stofwisseling. Je mitochondriën — de energiecentrales van je cellen — worden minder efficiënt. Tegelijk daalt je testosteron geleidelijk, wat direct invloed heeft op je energieniveau.",
         "Maar dit is geen onvermijdelijk verval. Met de juiste voeding, beweging en gerichte supplementen kun je dit proces vertragen en zelfs deels omkeren.",
       ],
-      tip: "Deze week: check je vispatroon. EPA/DHA‑suppletie kan onder claimvoorwaarden hart‑ en hersenclaims ondersteunen — géén wonderpil voor middagdip.",
+      // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
+      tip: "Deze week: check je vispatroon en eiwitrijke maaltijden — voeding is de eerste hefboom voor energie.",
       cta: { text: "Lees over energie na 40", url: "/energie-na-40" },
     },
     "Onrustige Slaper": {
@@ -277,9 +282,10 @@ export const nurtureContent: Record<
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
         "Tijdens diepe slaap ruimt je brein afvalstoffen op via het glymfatisch systeem. Je spieren herstellen, je immuunsysteem wordt bijgevuld, en je groeihormoon piekt. Als die diepe slaap ontbreekt, bouw je een slaapschuld op die veel plekken raken.",
-        "Magnesium heeft EU‑claims op zenuwstelsel, spieren, psychologische functie en vermoeidheid — veel mensen mikken glycinaat/bisglycinaat naar een rustige avondroutine naast slapen-/lichtgewoonten.",
+        "Een rustig zenuwstelsel vóór het slapen is de hefboom: een vast avondritueel, gedimd licht en geen schermen het laatste halfuur helpen je systeem schakelen naar herstel.",
       ],
-      tip: "EFSA‑claims magnesium richten zich op onder meer psychologische functie en vermoeidheid — gebruik slaap-/lichtprotocol als eerste hefboom en stem suppletie af op een arts bij medicatie.",
+      // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
+      tip: "Vaste bedtijd en gedimd licht het laatste halfuur — je zenuwstelsel heeft dat signaal nodig om af te schakelen.",
       cta: { text: "Lees de slaapgids voor mannen 40+", url: "/slaap-verbeteren-na-40" },
     },
     "Stressdrager": {
@@ -288,7 +294,7 @@ export const nurtureContent: Record<
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
         "Langdurige activering van de stress‑as heeft invloed op hormonen en nachtrust. Leefstijl (slaapritme, beweging, voorspelbare routines) wil je daarom eerst goed bekijken.",
-        "De eerste stap is leefstijl: vast slaapritme, dagelijkse beweging en korte rustmomenten. Supplementen komen pas in beeld als die basis op orde is — magnesium heeft onder EFSA-voorwaarden een claim op psychologische functie.",
+        "De eerste stap is leefstijl: een vast slaapritme, dagelijkse beweging en korte rustmomenten. Pas als die basis staat, is een gerichte aanvulling zinvol om te overwegen.",
       ],
       tip:
         "Focus deze week op één vaste routine: dezelfde bedtijd, 10 minuten wandelen na de lunch, en 3 minuten ademhaling voor het slapen.",
@@ -300,9 +306,10 @@ export const nurtureContent: Record<
       greeting: "Een week geleden deed je de Leefstijlcheck.",
       bodyParagraphs: [
         "Een goede leefstijlbasis onderhoud je niet automatisch — het vraagt bewuste keuzes die je elke week opnieuw maakt. De mannen die na 40 vitaal blijven, zijn niet geluksvogels: ze hebben goede gewoontes die ze vasthouden.",
-        "Nu is het moment om te kijken waar nog winst zit. Omega-3 is voor de meeste mannen het laaghangende fruit: de meesten eten te weinig vette vis en missen EPA en DHA.",
+        "Nu is het moment om te kijken waar nog winst zit. Voor de meeste mannen ligt die in voeding: vaker vette vis, meer variatie, en consistent vasthouden wat al werkt.",
       ],
-      tip: "Check of je voldoende omega-3 binnenkrijgt. Als je minder dan 2× per week vette vis eet, is een supplement het overwegen waard.",
+      // Overschreven op dag 7 door resolveLifestyleTipForDay (DAY_TIP_INDEX).
+      tip: "Check je voedingspatroon: vaker vette vis en meer variatie op je bord houden je basis sterk.",
       cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
     },
     Overtrainer: {
@@ -710,11 +717,7 @@ export function buildNurtureEmail(
 
   const weakestDomain = getWeakestDomain(domainScores);
 
-  const showSupplementTip = [
-    "day3_quickwins",
-    "day7_deepdive",
-    "day14_halfweg",
-  ].includes(templateKey);
+  const showSupplementTip = ["day14_halfweg"].includes(templateKey);
   const supplementTip = showSupplementTip
     ? domainSupplementTips[weakestDomain]
     : null;

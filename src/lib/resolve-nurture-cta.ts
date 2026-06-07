@@ -64,28 +64,33 @@ const LIFESTYLE_BY_PROFILE: Record<
   },
 };
 
+// SELECTIE: statische candidates-lijst + approvedClaims-gate (zie supplementCtaForProfile).
+// Nieuwe slug toevoegen maakt 'm niet zichtbaar tot status approved + comparisonPath bestaat.
+// whey: geen approvedClaims-entry → blijft onzichtbaar als kandidaat.
+// omega3: nooit als energie-claim (zie approvedClaims.omega3.note).
+// stress_score is leefstijl (/stress-verminderen-man), geen /beste/-kandidaat.
 const SUPPLEMENT_BY_PROFILE: Partial<
-  Record<NurtureProfileKey, { text: string; claimKey: string }>
+  Record<NurtureProfileKey, { text: string; candidates: string[] }>
 > = {
   "Onrustige Slaper": {
     text: "Vergelijk magnesium supplementen",
-    claimKey: "magnesium",
+    candidates: ["magnesium"],
   },
   "Lage Batterij": {
     text: "Vergelijk omega-3 supplementen",
-    claimKey: "omega3",
+    candidates: ["omega3"],
   },
   Overtrainer: {
     text: "Vergelijk magnesium supplementen",
-    claimKey: "magnesium",
+    candidates: ["magnesium", "omega3", "whey"],
   },
   "In Balans": {
     text: "Vergelijk omega-3 supplementen",
-    claimKey: "omega3",
+    candidates: ["melatonine", "omega3"],
   },
   Stressdrager: {
     text: "Vergelijk magnesium supplementen",
-    claimKey: "magnesium",
+    candidates: ["ashwagandha", "magnesium"],
   },
 };
 
@@ -101,19 +106,23 @@ export function supplementCtaForProfile(
   if (!entry) {
     return null;
   }
-  const claim = approvedClaims[entry.claimKey];
-  if (!claim || claim.status !== "approved" || !claim.comparisonPath) {
-    return null;
+  for (const candidate of entry.candidates) {
+    const claim = approvedClaims[candidate];
+    if (
+      claim?.status === "approved" &&
+      claim.comparisonPath != null
+    ) {
+      const slug = slugFromComparisonPath(claim.comparisonPath);
+      if (slug && isComparisonAllowed(slug)) {
+        return {
+          text: entry.text,
+          url: claim.comparisonPath,
+          kind: "supplement",
+        };
+      }
+    }
   }
-  const slug = slugFromComparisonPath(claim.comparisonPath);
-  if (!slug || !isComparisonAllowed(slug)) {
-    return null;
-  }
-  return {
-    text: entry.text,
-    url: claim.comparisonPath,
-    kind: "supplement",
-  };
+  return null;
 }
 
 export function lifestyleCtaForProfile(
@@ -138,6 +147,8 @@ export function hasSupplementComparePath(
   return supplementCtaForProfile(profileKey) !== null;
 }
 
+// Personalisatie raakt framing/timing/volgorde; SELECTIE (welk middel, welke claim)
+// blijft statisch: approvedClaims + candidates + tier-gate.
 export function resolveNurtureCta(
   profileKey: NurtureProfileKey,
   sequenceDay: NurtureSequenceDay,
@@ -169,6 +180,7 @@ export function resolveNurtureCta(
     planGate != null && planGate.visibleTiers.includes(3) && hasComparePath;
 
   if ((sequenceDay === 14 || sequenceDay === 21) && tierAllowsSupplement) {
+    // SELECTIE: statische candidates + approvedClaims-gate; tier-gate hierboven.
     const supplement = supplementCtaForProfile(profileKey);
     if (supplement) {
       const slug = slugFromComparisonPath(supplement.url);
