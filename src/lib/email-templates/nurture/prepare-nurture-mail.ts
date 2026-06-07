@@ -33,11 +33,6 @@ export function renderNurtureDayInner(
     data.domainScores,
   );
 
-  const affiliateDisclaimer =
-    blocks.cta.url.startsWith("/beste/") ||
-    (interventionHighlight?.comparePath != null &&
-      interventionHighlight.comparePath.length > 0);
-
   const inner =
     renderPersonalizedRows(
       blocks,
@@ -46,6 +41,8 @@ export function renderNurtureDayInner(
       data.firstName,
       interventionHighlight,
     ) + renderProfileAnchorFooter(profileKey, intakeUrl);
+
+  const affiliateDisclaimer = inner.includes("/beste/");
 
   return {
     subject,
