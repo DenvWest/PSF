@@ -149,6 +149,60 @@ supplement-suggestie zichtbaar  ⇔
 
 ---
 
+### FASE C+ — 30-dagen-deltarapport (de bewijslaag)
+
+> **Statusnoot 7 juni 2026.** FASE A is volledig live (A1–A6 in `src/`, tests groen). FASE B is in uitvoering — het productschema/gating-werk (`product-claim-fields`, `supplement-gate`, `claim-condition`, uitgebreide `approved-claims`) staat al in de werkboom. Dit blok maakt de tot nu **impliciete** "remeasure" (C-spoor in het mermaid-diagram) expliciet als eigen fundament-feature.
+
+**Waarom dit een eigen fundament-blok is.** Vandaag emit de funnel `remeasure.invited` en zegt dag-30 *"Doe de herhaalmeting → /intake"*, maar er is **geen baseline-koppeling, geen delta en geen rapport**. De gebruiker doet de check opnieuw als een vreemde. Daarmee mist de funnel zijn sterkste troef: het bewijs dat de leefstijl-aanpak werkt. Het deltarapport tilt PerfectSupplement van *eenmalig advies* naar een **coachingsrelatie met bewijs** — en levert tegelijk de dataset die de "Consumentenbond van supplementen"-positionering later hard maakt.
+
+| # | Stap | Bron | Spoor | Afhankelijkheid |
+|---|---|---|---|---|
+| **C+1** | **Baseline-koppeling + snapshot:** link de dag-30-hermeting deterministisch aan de dag-0-sessie (recovery-token in de hermeting-link, niet e-mail-match). Bevries de dag-0 `domain_scores` + profiel + gekozen acties als onveranderlijke baseline. | FUNNEL §1A + MEASUREMENT §E | 1 + 2 | `remeasure.invited` (bestaat) |
+| **C+2** | **Deltaberekening + rapportpagina v1:** per domein `nieuw − baseline`, met eerlijke zelfrapportage-framing. Eén pagina, deelbaar, SEO-waardig. | MEASUREMENT §E | 1 + 2 | C+1 |
+| **C+3** | **Feedback-koppeling v2:** verrijk de delta met *welke acties zijn volgehouden* (`plan_progress`/check-ins) + één vraag "wat hielp het meest?". Maakt de delta uitlegbaar én voedt de aggregatie. | MEASUREMENT §B1 + F | 2 | C+2 + FASE C |
+| **C+4** | **Geanonimiseerde benchmark v3:** *"mannen met jouw profiel die deze acties volhielden, verbeterden gemiddeld +X (n=…)"* — pas mét `n` en `k ≥ 20`. | MEASUREMENT §F + D2 | 2 + 3 | C+3 + volume + anon-pad (F3) |
+
+**Rijpheidsladder — van anekdote naar bewijs.** Eén persoon over 30 dagen is ruis (zelfrapportage, regressie naar het gemiddelde, seizoen, placebo). "Mijn slaapscore ging +14" is geen bewijs; het wordt bewijs door volume + adherentie-koppeling over tijd.
+
+| Versie | Toont | Betrouwbaarheidsanker | Wanneer |
+|---|---|---|---|
+| **v1 — persoonlijke delta** (n=1) | Jouw scores dag 0 → dag 30 | Framing: *"je eigen ervaren verandering"*, richting niet schijnprecisie | C+1/C+2 — bouwbaar nu |
+| **v2 — feedback-gekoppeld** | Delta + volgehouden acties + "wat hielp" | Koppelt verbetering aan **gedrag**, niet aan toeval | C+3, naast FASE C |
+| **v3 — evidenced benchmark** (volume) | Profiel-gemiddelde delta met `n` | k-anonieme aggregatie (`k ≥ 20`) van baseline→delta-paren | C+4, bij 500+/2000+ (zie F4) |
+
+**Drie harde guardrails (anders breekt het de eigen positionering):**
+
+1. **Nooit toeschrijven aan een supplement.** "Je magnesium verbeterde je slaapscore" = impliciete efficacy-/gezondheidsclaim → verboden. Verbetering schrijf je toe aan **gedrag en de hele aanpak**, niet aan een product. EFSA-discipline blijft ([`COMPLIANCE.md`](../core/COMPLIANCE.md)).
+2. **Verandering, geen status.** "Je slaap is verbeterd" (ervaren verandering) mag; "je herstel is nu gezond" (statusoordeel) niet — dezelfde inname-vs-status-grens.
+3. **Aggregaat pas mét `n` en k-anon.** Geen benchmark-claim vóór `k ≥ 20`. Een te kleine `n` als bewijs presenteren ondermijnt juist de geloofwaardigheid.
+
+```mermaid
+flowchart LR
+  d0[Dag0_baseline_snapshot] --> invite[remeasure.invited]
+  invite --> d30[Dag30_hermeting]
+  d0 --> delta[Deltaberekening]
+  d30 --> delta
+  delta --> report[Rapport_v1_persoonlijk]
+  report --> feedback[Adherentie + wat_hielp]
+  feedback --> anon[k_anon_dataset]
+  anon --> benchmark[Benchmark_v3_evidenced]
+  benchmark -. valideert .-> rules[Engine_regels_K1_K3]
+```
+
+#### Wat je nu al kunt doen om de toekomst aan te sluiten (no-regret)
+
+> Kernprincipe: **data die je vandaag niet vastlegt, kun je morgen nooit analyseren.** Geschiedenis is niet te backfillen. Deze drie acties zijn goedkoop nu en onmisbaar later — ze blokkeren niets en openen v2/v3.
+
+| Nu-actie | Kosten nu | Wat het later mogelijk maakt |
+|---|---|---|
+| **Baseline-snapshot bevriezen** bij intake (scores + profiel + gekozen acties, met recovery-token-anker) | Klein — schrijfveld + token-koppeling | Elke latere delta, het hele rapport, alle benchmarks |
+| **Delta-events emitteren** zodra een hermeting binnenkomt (`remeasure.completed { profile, per_domain_delta }`, anoniem payload) — óók vóór de rapport-UI bestaat | Klein — één `emitEvent`-aanroep in het bestaande `DOMAIN_EVENT_TYPES`-patroon | Je verzamelt baseline→delta-paren vanaf dag één i.p.v. pas vanaf de UI-launch |
+| **Adherentie + feedback blijven loggen** (`plan_progress`, `intake_feedback`) en niet weggooien | Bestaat al | v2-narratief + v3-validatie van de engine-regels (FASE F spoor 1) |
+
+Met deze drie staat het fundament onder het rapport vóórdat je één pixel UI bouwt. De rapportpagina wordt dan een *weergave* van data die je al hebt, geen data-archeologie achteraf.
+
+---
+
 ### FASE D — Meetbaarheid (n8n-fundament)
 
 | # | Stap | Bron | Spoor | Afhankelijkheid |
@@ -162,6 +216,7 @@ supplement-suggestie zichtbaar  ⇔
 nurture.email_sent        { sequence_day, profile_label, primary_domain, status }
 nurture.email_failed      { sequence_day, error_class }
 remeasure.invited         { days_since_intake }
+remeasure.completed       { profile_label, per_domain_delta }   // anoniem payload — voedt C+ deltarapport/benchmark
 affiliate.click           { categorie, comparison_slug }   // spiegel, tabel blijft
 measurement.intake_estimate_completed
 measurement.gap_detected  // anoniem payload, gebande signalen
@@ -190,54 +245,50 @@ measurement.gap_detected  // anoniem payload, gebande signalen
 
 ---
 
-## Kritiek pad voor morgen
+## Kritiek pad voor morgen (geactualiseerd 7 juni 2026)
 
-**Morgen-werk (hoogste hefboom, geen schema):**
+FASE A is volledig live; het oude morgen-pad (A1→A5) is verzilverd. De hefboom verschuift naar **afhechten → meten → bewijzen**.
 
-```
-A1 → A2 → A3 → A4 → A5
-```
-
-Copy/resolver-werk bovenop bestaande poorten. Landt op de betrokkenheidspiek (dag 0) en zet het multi-domein-frame vóór de meetlaag live gaat.
-
-**Parallel naast morgen (data-/meet-fundament):**
+**Volgorde volgende sessie:**
 
 ```
-B1 → B3     (productschema + invariant)
-D1          (events — nádat A1–A5 richting staat)
+P0  Werkboom groen + FASE B-WIP committen   (productschema/gating staat al, maar rood)
+P1  D1 events-meetlus sluiten               (nurture.email_sent + remeasure.invited + D2 atomaire cron)
+P2  30-dagen-deltarapport v1 (FASE C+)       (baseline-koppeling + delta + rapportpagina)
 ```
 
-**Hangt aan fundament (niet morgen):**
+Nuance op de volgorde:
 
-- FASE C (tier-2 meetlaag) wacht op A4/A5 + B2.
+- **P0 eerst** omdat `events.ts` ín de ongecommitte FASE B-WIP zit — een rode boom blokkeert zowel meten (P1) als bouwen (P2). Dit is geen bureaucratie maar de voorwaarde om P1 schoon op te leveren.
+- **P1 vóór P2** omdat het rapport op `remeasure`-events en baseline-opslag leunt; en omdat de meetlus het enige is dat "FASE A werkt" van *aanname* naar *feit* tilt. Pas nu zinvol: de A-richting staat vast, dus je meet geen bewegend doel.
+- **P2 = jouw prioriteit + de proof-of-positioning** — zie FASE C+. Begin bij C+1 (baseline-koppeling): zonder deterministische dag-0↔dag-30-link is geen enkele delta betrouwbaar.
+
+**Hangt aan fundament (niet volgende sessie):**
+
+- FASE C (tier-2 meetlaag, PAL/Mifflin) wacht op B2 + C1-consent.
+- FASE C+ v2/v3 (feedback-koppeling, benchmark) wacht op FASE C + volume + anon-pad.
 - FASE F (n8n-pijplijn, LLM, anonimisering) wacht op B1 + D1 + volume.
 - Horizon (wearable/BIA) wacht op FASE A–D + Dennis-besluit.
 
 ```mermaid
 flowchart LR
-  subgraph morgen [Morgen]
-    A1m[A1_dag0]
-    A2m[A2_CTA_resolver]
-    A3m[A3_profiel]
-    A4m[A4_K1_K3]
-    A5m[A5_balans]
-    A1m --> A2m --> A3m --> A4m --> A5m
-  end
-
-  subgraph parallel [Parallel]
-    B1p[B1_productschema]
-    D1p[D1_events]
+  subgraph sessie [Volgende_sessie]
+    P0[P0_build_groen_FASE_B_commit]
+    P1[P1_D1_events_meetlus]
+    P2[P2_C+1_baseline_C+2_rapport]
+    P0 --> P1 --> P2
   end
 
   subgraph later [Later]
-    C[C_tier2_meetlaag]
+    C[FASE_C_tier2_meetlaag]
+    Cplus[C+_v2_v3_feedback_benchmark]
     F[F_n8n_LLM_horizon]
   end
 
-  A5m --> C
-  B1p --> C
-  A5m --> D1p
-  D1p --> F
+  P1 --> F
+  P2 --> Cplus
+  C --> Cplus
+  P0 --> C
 ```
 
 ---
@@ -336,10 +387,13 @@ Sommige opdrachten noemen "12 vragen"; [`INTAKE_SYSTEM.md`](../core/INTAKE_SYSTE
 | `is_efsa_authorized` in plan-gating | ✅ `15009fc` |
 | Stress-nurture los van ashwagandha | ✅ `066c9ba` |
 | `buildNurtureEmail` ontdubbeld, dood send-reminders-pad weg | ✅ `59333de` |
-| Centrale CTA-resolver | ❌ Open → A2 |
-| Per-profiel sequence-zwaartepunt | ❌ Open → A3 |
-| Cross-domein-balansregel in mail | ❌ Open → A5 |
+| Centrale CTA-resolver (A2) | ✅ Live — `src/lib/resolve-nurture-cta.ts` + tests (7 juni) |
+| Per-profiel sequence-zwaartepunt + Overtrainer-stem (A3) | ✅ Live — `NurtureProfileKey`, eigen blokken dag 0–30 (7 juni) |
+| Cross-domein-balansregel in mail + engine (A5) | ✅ Live — `enforceCrossDomainBalance` + balance/signals-tests (7 juni) |
+| K1–K3 domein-interactie (A4) | ✅ Live — `intake-engine.ts` + `intake-engine.signals.test.ts` (7 juni) |
+| FASE B productschema/gating | ⚠️ In uitvoering — WIP in werkboom (build groen + commit als P0) |
 | Atomaire cron-claim | ⚠️ Te verifiëren → D2 |
+| 30-dagen-deltarapport | ❌ Open → FASE C+ (alleen `remeasure.invited` bestaat, geen delta/rapport) |
 
 ---
 
