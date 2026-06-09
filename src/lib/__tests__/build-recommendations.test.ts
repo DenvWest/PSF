@@ -23,6 +23,7 @@ function makeSession(
     profile: "In Balans",
     timestamp: Date.now(),
     ageRange: null,
+    firstName: null,
   };
 }
 

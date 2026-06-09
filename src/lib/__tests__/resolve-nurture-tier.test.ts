@@ -27,10 +27,10 @@ function makeIntervention(
     externalProviderUrl: null,
     compositeScore: 10,
     scores: {
-      moeite: 3,
-      mechanisme: 3,
-      onderbouwing: 3,
-      veiligheid: 5,
+      scoreMoeite: 3,
+      scoreMechanisme: 3,
+      scoreOnderbouwing: 3,
+      scoreVeiligheid: 5,
     },
   };
 }

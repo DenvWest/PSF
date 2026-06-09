@@ -5,9 +5,11 @@ import type { DomainScores } from "@/lib/intake-engine";
 function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
   return {
     sleep_score: 70,
+    energy_score: 70,
     stress_score: 35,
     nutrition_score: 80,
     movement_score: 55,
+    recovery_score: 70,
     ...overrides,
   };
 }

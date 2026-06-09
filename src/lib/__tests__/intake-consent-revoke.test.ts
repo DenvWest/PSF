@@ -65,6 +65,7 @@ describe("intakeSessionRowToPayload", () => {
       profile_label: ANON_PROFILE_LABEL,
       created_at: "2026-05-21T10:00:00.000Z",
       age_range: null,
+      first_name: null,
     });
 
     expect(payload).toBeNull();

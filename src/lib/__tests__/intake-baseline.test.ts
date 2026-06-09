@@ -47,8 +47,8 @@ describe("buildRemeasureCompletedPayload", () => {
     urgencyLevel: "moderate",
     rulesVersion: "1.0.0",
     primaryTheme: "sleep",
-    symptomProfile: ["slecht_slapen"],
-    ageRange: "45-49",
+    symptomProfile: ["slaap"],
+    ageRange: "45–49",
   };
 
   it("builds anonymous payload without session identifiers", () => {

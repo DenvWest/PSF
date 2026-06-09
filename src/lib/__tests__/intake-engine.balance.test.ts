@@ -128,13 +128,14 @@ describe("nurtureOutputHasCrossDomainBalance", () => {
       movement_score: 80,
       recovery_score: 80,
     });
+    const scoresRecord = scores as unknown as Record<string, number>;
     const tip = pickLifestyleTipFromOtherDomain(
-      scores,
+      scoresRecord,
       "nutrition_score",
       "moderate",
     );
     expect(tip.length).toBeGreaterThan(10);
-    const meta = resolveLifestyleTipDomainForDay(scores, 14, "moderate");
+    const meta = resolveLifestyleTipDomainForDay(scoresRecord, 14, "moderate");
     if (meta?.domain === "nutrition_score") {
       expect(tip).not.toContain("vette vis");
     }

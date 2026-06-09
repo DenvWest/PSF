@@ -50,10 +50,10 @@ function makeMatchedIntervention(
     externalProviderUrl: null,
     compositeScore: 10,
     scores: {
-      moeite: 3,
-      mechanisme: 3,
-      onderbouwing: 3,
-      veiligheid: 5,
+      scoreMoeite: 3,
+      scoreMechanisme: 3,
+      scoreOnderbouwing: 3,
+      scoreVeiligheid: 5,
     },
   };
 }
@@ -150,7 +150,14 @@ function stubPlanContentAdmin(options: AdminStubOptions = {}) {
     }
 
     if (table === "evidence_claims") {
-      const query = makeThenableQuery((filters) => {
+      type ClaimQueryData =
+        | {
+            claim_text: string;
+            evidence_sources: { vancouver: string; url: null };
+          }
+        | null
+        | { intervention_id: string }[];
+      const query = makeThenableQuery<ClaimQueryData>((filters) => {
         const matched = filterClaims(claims, filters);
         if (typeof filters.intervention_id === "string") {
           const row = matched[0];
@@ -300,6 +307,7 @@ describe("getPlanContent tier-3 anti-lek invariant", () => {
     stubPlanContentAdmin({ claims });
     mockedGetInterventionsForTheme.mockResolvedValue({
       source: "database",
+      themeSlug: "sleep",
       buckets: {
         free_action: makeMatchedIntervention("free_action", 1),
         measurement: makeMatchedIntervention("measurement", 2),
