@@ -26,6 +26,13 @@ psql -U postgres -d perfectsupplement -f db/migrations/001_supplement_test_data.
 | `doelgroep_match` | Match-score per product per doelgroep met aanbevelingstekst |
 | `conversies` | Klik- en aankoopregistraties per product |
 
+## Overige migraties in deze set
+
+| Bestand | Beschrijving |
+|---------|-------------|
+| `004_create_thema_nurture.sql` | Deprecated legacy-tabel (`thema_nurture`); niet in `supabase/migrations/` |
+| `006_cron_runs.sql` | Cron healthcheck/audit trail; handmatig op Supabase vóór retention-cron |
+
 ## Categorieën
 
 Toegestane waarden voor `products.categorie`:

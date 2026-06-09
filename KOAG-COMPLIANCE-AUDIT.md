@@ -5,7 +5,7 @@
 
 ## Samenvatting
 
-- **Supplements geaudit (vergelijkingsdata `src/data/supplements/`):** 8 (magnesium, omega-3, ashwagandha, zink, melatonine, creatine, vitamine-d, eiwitpoeder)
+- **Supplements geaudit (vergelijkingsdata `src/data/supplements/`):** 7 (magnesium, omega-3, ashwagandha, zink, creatine, vitamine-d, eiwitpoeder)
 - **Problematische consumentclaims (niet‑EFSA of te stellig):** tientallen fragmenten vervangen of genuanceerd
 - **Fixes toegepast:** datafiles, `BuyingGuide.tsx`, `supplement-routes.ts`, hub `catalog.ts`, `intake-engine.ts`, `build-recommendations.ts`, content op diverse `/beste-*` pagina’s
 - **Ashwagandha-disclaimer:** uitgebreid op `/beste-ashwagandha` met link naar officiële internetconsultatie (Warenwet / voedingssupplementen en kruidenpreparaten)
@@ -60,11 +60,12 @@
 
 ### Melatonine
 
-**Problematische claims (voorbeelden):**
+**Status:** **Geen vergelijkingspagina (compliance)**
 
-- "ontspanning/stress" in productclaims voor blends met ashwagandha (ashwagandha zonder EU‑claimbasis)
-
-**Status:** Aangepast in `src/data/supplements/melatonine.ts`; intro op `/beste-melatonine` was al relatief voorzichtig
+- Commerciële footprint verwijderd in `b1f3f76`: geen `src/data/supplements/melatonine.ts`, geen `/beste/melatonine`, geen affiliate-slugs
+- `approved-claims.ts`: status `forbidden`, `comparisonPath: null`
+- Alleen informatieve content toegestaan: `src/data/supplement-guides/melatonine.ts` (`/supplementen/melatonine`), kennisbank-termen en blogs zonder koop-CTA
+- Governance-test `forbidden-no-live-footprint` groen sinds `b1f3f76`
 
 ---
 

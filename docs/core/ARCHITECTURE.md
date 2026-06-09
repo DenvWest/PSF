@@ -110,7 +110,10 @@ psf/
 │   ├── images/producten/            # Product images (Merk-Product.jpg)
 │   └── downloads/                   # PDF gidsen
 ├── docs/                            # Documentatiesysteem (core/ = source of truth)
-└── db/                              # Database migraties
+├── supabase/
+│   └── migrations/                  # App-DB schema (intake, content, events, compliance)
+└── db/
+    └── migrations/                  # Legacy/product-DB (products, thema_nurture, cron_runs) — psql, niet Supabase CLI
 ```
 
 ## Key file locations
@@ -134,6 +137,41 @@ psf/
 | Rate limiter | `src/lib/rate-limit.ts` + `src/lib/rate-limit-config.ts` |
 | IP detection | `src/lib/client-ip.ts` (cf-connecting-ip → x-forwarded-for → x-real-ip) |
 | Legacy URL redirects | `next.config.ts` (flat `/beste-*` → `/beste/[slug]`) |
+| App-DB migraties (Supabase) | `supabase/migrations/` (24 files) — intake, content-laag, events, plan_progress |
+| Product-DB migraties (psql) | `db/migrations/` (4 files) — zie [`db/README.md`](../../db/README.md) |
+| Cron healthcheck DDL | `db/migrations/006_cron_runs.sql` — handmatig op Supabase vóór retention-cron |
+
+### Database migraties
+
+Twee gescheiden migratiesets — **niet** door elkaar halen:
+
+- **`supabase/migrations/`** — app-schema via Supabase CLI (`supabase db reset`, `supabase db push`). Bevat intake, content-laag, events, compliance.
+- **`db/migrations/`** — productdatabase + legacy-tabellen (`thema_nurture`, `cron_runs`); uitvoeren met `psql -f`, **niet** automatisch via `deploy.sh`.
+- **`cron_runs`** staat alleen in `db/migrations/006_cron_runs.sql`. Verse `supabase db reset` maakt deze tabel niet aan — handmatig toepassen vóór retention-cron (zie [`src/app/api/cron/README.md`](../../src/app/api/cron/README.md)).
+
+```mermaid
+flowchart TB
+  subgraph supabaseMigrations ["supabase/migrations/ (24 files)"]
+    intake[intake_sessions, reminders, feedback]
+    content[themes, interventions, evidence]
+    events[domain_events, plan_progress]
+  end
+
+  subgraph dbMigrations ["db/migrations/ (4 files, psql)"]
+    products[products, ingredienten, conversies]
+    legacy[thema_nurture deprecated]
+    cron[cron_runs]
+  end
+
+  supabaseCLI["supabase db reset / CLI"]
+  psqlManual["psql -f db/migrations/..."]
+  appCode["Next.js app via service_role"]
+
+  supabaseCLI --> supabaseMigrations
+  psqlManual --> dbMigrations
+  supabaseMigrations --> appCode
+  cron --> appCode
+```
 
 ### Vergelijkings- vs gids-slugs
 
@@ -185,4 +223,4 @@ Server heeft alleen pull rights, nooit push. Nginx sets `proxy_set_header` corre
 
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: juni 2026*

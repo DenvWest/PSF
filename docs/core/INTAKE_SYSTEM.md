@@ -26,7 +26,7 @@ Geprioriteerde aanbeveling: eerst leefstijl ("quick wins"), dan supplementen. Pe
 30-dagenplan: gewoonten + supplementen + herhaalmeting.
 
 ### Fase 5 — Feedback
-Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen.
+Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen. Sessies worden gelabeld met `rules_version` voor latere delta-analyse over regelset-wijzigingen.
 
 ---
 

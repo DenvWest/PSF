@@ -20,7 +20,8 @@
 | age_range | text | `40-44`, `45-49`, `50-54`, `55+` |
 | marketing_email | text, nullable | — |
 | first_name | text, nullable | Optionele voornaam voor personalisatie (nurture-mails) |
-| organization_id | uuid, nullable | Voorbereid voor B2B white-label, niet in gebruik |
+| rules_version | text, nullable | Advies-engine semver (`RULES_VERSION` in `src/lib/intake-engine.ts`); join-key voor feedback/delta-segmentatie. Geen DB-default — app schrijft expliciet bij insert. Backfill: `'pre-1.0'`. Bron: `supabase/migrations/20260609120000_intake_sessions_rules_version.sql` |
+| organization_id | uuid, NOT NULL | Default-tenant via `getDefaultOrganizationId()` (`src/lib/organization.ts`); elke intake-sessie, event en affiliate-click krijgt dit veld. Single-tenant vandaag (`00000000-0000-0000-0000-000000000001`); RLS org-isolatie voorbereid op B2B/JWT. Bron: `supabase/migrations/20260412200000_organization_id.sql` |
 
 ### intake_reminders
 
@@ -173,6 +174,8 @@ Eenmalige recovery-links naar intake-resultaten.
 
 ### cron_runs
 
+Bron-migratie: `db/migrations/006_cron_runs.sql` — **niet** in `supabase/migrations/`. Handmatig toepassen op Supabase vóór retention-cron. Verse `supabase db reset` maakt deze tabel **niet** aan.
+
 | Kolom | Type | Beschrijving |
 |---|---|---|
 | id | uuid, pk | — |
@@ -276,18 +279,21 @@ Bepaalt of een interventie verschijnt (per-symptoom personalisatie, bv. `answer 
 | domain_label | text | — |
 | intervention_id | uuid, nullable | FK naar interventions, `on delete set null` |
 | source_id | uuid | FK naar evidence_sources |
-| is_efsa_authorized | boolean | EFSA-goedgekeurde claim; **bestaat maar wordt in de gating nog niet afgedwongen** (alleen `status='published'`; wordt in stap 1 gedicht) |
+| is_efsa_authorized | boolean | EFSA-goedgekeurde claim; **afgedwongen** in plan-gating sinds `15009fc` (`src/lib/content/plan-content.ts`: `.eq('is_efsa_authorized', true)`) |
 | status | text | `draft`/`published`/`retired` |
 | search_vector | tsvector | FTS (generated) |
 | embedding | vector(1536), nullable | pgvector RAG |
 
-Onderbouwing per interventie. PLAN-trap tier 1-3 vereist een `published` claim (doel: ook `is_efsa_authorized = true`). Zoeken via `search_evidence_claims()` (FTS + semantisch).
+Onderbouwing per interventie. PLAN-trap tier 1-3 vereist **beide**: `status = 'published'` **en** `is_efsa_authorized = true`. Zoeken via `search_evidence_claims()` (FTS + semantisch).
 
 ### domain_events
+
+Bron-migratie: `supabase/migrations/20260529200000_domain_events.sql`
 
 | Kolom | Type | Beschrijving |
 |---|---|---|
 | id | uuid, pk | — |
+| organization_id | uuid, NOT NULL | FK naar organizations (default-tenant) |
 | occurred_at | timestamptz | — |
 | event_type | text | — |
 | session_id | uuid, nullable | FK naar intake_sessions, `on delete set null` |

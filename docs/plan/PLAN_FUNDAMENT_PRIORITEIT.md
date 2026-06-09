@@ -151,7 +151,7 @@ supplement-suggestie zichtbaar  ⇔
 
 ### FASE C+ — 30-dagen-deltarapport (de bewijslaag)
 
-> **Statusnoot 7 juni 2026.** FASE A is volledig live (A1–A6 in `src/`, tests groen). FASE B is in uitvoering — het productschema/gating-werk (`product-claim-fields`, `supplement-gate`, `claim-condition`, uitgebreide `approved-claims`) staat al in de werkboom. Dit blok maakt de tot nu **impliciete** "remeasure" (C-spoor in het mermaid-diagram) expliciet als eigen fundament-feature.
+> **Statusnoot 9 juni 2026.** FASE A is volledig live (A1–A6 in `src/`, tests groen). FASE B is gecommit (`4d3ca33`, governance-tests `42576b2`, melatonine-cleanup `b1f3f76`). Werkboom schoon. Dit blok maakt de tot nu **impliciete** "remeasure" (C-spoor in het mermaid-diagram) expliciet als eigen fundament-feature.
 
 **Waarom dit een eigen fundament-blok is.** Vandaag emit de funnel `remeasure.invited` en zegt dag-30 *"Doe de herhaalmeting → /intake"*, maar er is **geen baseline-koppeling, geen delta en geen rapport**. De gebruiker doet de check opnieuw als een vreemde. Daarmee mist de funnel zijn sterkste troef: het bewijs dat de leefstijl-aanpak werkt. Het deltarapport tilt PerfectSupplement van *eenmalig advies* naar een **coachingsrelatie met bewijs** — en levert tegelijk de dataset die de "Consumentenbond van supplementen"-positionering later hard maakt.
 
@@ -245,21 +245,21 @@ measurement.gap_detected  // anoniem payload, gebande signalen
 
 ---
 
-## Kritiek pad voor morgen (geactualiseerd 7 juni 2026)
+## Kritiek pad voor morgen (geactualiseerd 9 juni 2026)
 
-FASE A is volledig live; het oude morgen-pad (A1→A5) is verzilverd. De hefboom verschuift naar **afhechten → meten → bewijzen**.
+FASE A is volledig live; het oude morgen-pad (A1→A5) is verzilverd. FASE B is gecommit. De hefboom verschuift naar **meten → bewijzen**.
 
 **Volgorde volgende sessie:**
 
 ```
-P0  Werkboom groen + FASE B-WIP committen   (productschema/gating staat al, maar rood)
+P0  FASE B productschema/gating           ✅ afgerond (4d3ca33 + 42576b2 + b1f3f76)
 P1  D1 events-meetlus sluiten               (nurture.email_sent + remeasure.invited + D2 atomaire cron)
 P2  30-dagen-deltarapport v1 (FASE C+)       (baseline-koppeling + delta + rapportpagina)
 ```
 
 Nuance op de volgorde:
 
-- **P0 eerst** omdat `events.ts` ín de ongecommitte FASE B-WIP zit — een rode boom blokkeert zowel meten (P1) als bouwen (P2). Dit is geen bureaucratie maar de voorwaarde om P1 schoon op te leveren.
+- **P1 is nu de hefboom** — meetlus tilt FASE A van *aanname* naar *feit*.
 - **P1 vóór P2** omdat het rapport op `remeasure`-events en baseline-opslag leunt; en omdat de meetlus het enige is dat "FASE A werkt" van *aanname* naar *feit* tilt. Pas nu zinvol: de A-richting staat vast, dus je meet geen bewegend doel.
 - **P2 = jouw prioriteit + de proof-of-positioning** — zie FASE C+. Begin bij C+1 (baseline-koppeling): zonder deterministische dag-0↔dag-30-link is geen enkele delta betrouwbaar.
 
@@ -391,7 +391,7 @@ Sommige opdrachten noemen "12 vragen"; [`INTAKE_SYSTEM.md`](../core/INTAKE_SYSTE
 | Per-profiel sequence-zwaartepunt + Overtrainer-stem (A3) | ✅ Live — `NurtureProfileKey`, eigen blokken dag 0–30 (7 juni) |
 | Cross-domein-balansregel in mail + engine (A5) | ✅ Live — `enforceCrossDomainBalance` + balance/signals-tests (7 juni) |
 | K1–K3 domein-interactie (A4) | ✅ Live — `intake-engine.ts` + `intake-engine.signals.test.ts` (7 juni) |
-| FASE B productschema/gating | ⚠️ In uitvoering — WIP in werkboom (build groen + commit als P0) |
+| FASE B productschema/gating | ✅ Gecommit (`4d3ca33` + `42576b2` + `b1f3f76`) |
 | Atomaire cron-claim | ⚠️ Te verifiëren → D2 |
 | 30-dagen-deltarapport | ❌ Open → FASE C+ (alleen `remeasure.invited` bestaat, geen delta/rapport) |
 
