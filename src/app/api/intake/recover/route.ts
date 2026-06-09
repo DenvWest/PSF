@@ -3,6 +3,11 @@ import {
   INTAKE_SESSION_COOKIE_NAME,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import {
+  INTAKE_REMEASURE_BASELINE_COOKIE_NAME,
+  REMEASURE_BASELINE_COOKIE_MAX_AGE_SEC,
+  signRemeasureBaselineSessionId,
+} from "@/lib/intake-remeasure-cookie";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -31,6 +36,24 @@ function setSessionCookie(signedCookie: string): NextResponse {
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: COOKIE_MAX_AGE_SEC,
+  });
+  return res;
+}
+
+function setRemeasureCookie(baselineSessionId: string): NextResponse {
+  const signed = signRemeasureBaselineSessionId(baselineSessionId);
+  if (!signed) {
+    return redirectToIntake();
+  }
+
+  const dest = new URL(`${getPublicSiteUrl()}/intake?hermeting=1`);
+  const res = NextResponse.redirect(dest);
+  res.cookies.set(INTAKE_REMEASURE_BASELINE_COOKIE_NAME, signed, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: REMEASURE_BASELINE_COOKIE_MAX_AGE_SEC,
   });
   return res;
 }
@@ -80,6 +103,7 @@ export async function GET(request: NextRequest) {
   }
 
   const token = request.nextUrl.searchParams.get("token")?.trim() ?? "";
+  const mode = request.nextUrl.searchParams.get("mode")?.trim() ?? "";
   if (token) {
     const result = await resolveRecoveryToken(token);
     if (!result.ok) {
@@ -92,6 +116,9 @@ export async function GET(request: NextRequest) {
         return existingSession;
       }
       return redirectToIntake();
+    }
+    if (mode === "remeasure") {
+      return setRemeasureCookie(result.sessionId);
     }
     return setSessionCookie(result.signedCookie);
   }

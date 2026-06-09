@@ -22,6 +22,25 @@
 | first_name | text, nullable | Optionele voornaam voor personalisatie (nurture-mails) |
 | rules_version | text, nullable | Advies-engine semver (`RULES_VERSION` in `src/lib/intake-engine.ts`); join-key voor feedback/delta-segmentatie. Geen DB-default — app schrijft expliciet bij insert. Backfill: `'pre-1.0'`. Bron: `supabase/migrations/20260609120000_intake_sessions_rules_version.sql` |
 | organization_id | uuid, NOT NULL | Default-tenant via `getDefaultOrganizationId()` (`src/lib/organization.ts`); elke intake-sessie, event en affiliate-click krijgt dit veld. Single-tenant vandaag (`00000000-0000-0000-0000-000000000001`); RLS org-isolatie voorbereid op B2B/JWT. Bron: `supabase/migrations/20260412200000_organization_id.sql` |
+| session_kind | text, NOT NULL | `initial` (dag-0) of `remeasure` (herhaalmeting). Default `initial`. Bron: `supabase/migrations/20260610100000_intake_baseline_remeasure.sql` |
+| baseline_session_id | uuid, nullable | FK naar dag-0-sessie; alleen gezet bij `session_kind = 'remeasure'` |
+
+### intake_baseline_snapshots
+
+Immutable dag-0 freeze voor delta-analyse. Overleeft `domain_scores`-nulling op de live rij bij consent-revoke; wordt wél verwijderd in `cleanup_intake_session_linked_data()`. Bron: `supabase/migrations/20260610100000_intake_baseline_remeasure.sql`.
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| session_id | uuid, pk | FK naar baseline `intake_sessions` |
+| organization_id | uuid, NOT NULL | tenant |
+| frozen_at | timestamptz | moment van freeze |
+| domain_scores | jsonb, NOT NULL | 6 domeinscores op dag 0 |
+| profile_label | text, NOT NULL | |
+| urgency_level | text, NOT NULL | |
+| rules_version | text, NOT NULL | engine semver op moment van freeze |
+| primary_theme | text, nullable | `getPrimaryTheme()` op dag 0 |
+| symptom_profile | text[] | symptoomselectie snapshot |
+| age_range | text, NOT NULL | |
 
 ### intake_reminders
 
@@ -310,7 +329,7 @@ Append-only event log voor nurture, n8n en analytics.
 - RLS staat aan op alle tabellen als verdedigingslaag, maar **alle data-toegang loopt via de service_role-client** (`src/lib/supabase-admin.ts`), die RLS bypasst. Er is **geen anon-client** in gebruik (de oude `src/lib/supabase.ts` is verwijderd).
 - **Anon-policies** bestaan alleen op `guide_opt_ins` en `thema_nurture` (insert) — historisch; de app gebruikt ze niet meer.
 - **Authenticated org-isolatie** (tenant-scope via `auth.jwt() -> app_metadata -> organization_id`) op: intake_sessions, intake_feedback, intake_reminders, affiliate_clicks, organizations, themes, recognition_lines, interventions, intervention_triggers, disclaimers, evidence_sources, evidence_claims, domain_events. Voorbereid op toekomstige JWT/B2B-toegang; anon heeft geen toegang.
-- **Alleen service_role** (geen anon/authenticated policies): consent_records, recovery_tokens, cron_runs, plan_progress, en de productdatabase (products/ingredienten/evaluaties/doelgroep_match/conversies).
+- **Alleen service_role** (geen anon/authenticated policies): consent_records, recovery_tokens, cron_runs, plan_progress, intake_baseline_snapshots, en de productdatabase (products/ingredienten/evaluaties/doelgroep_match/conversies).
 - Admin dashboard gebruikt de service_role key.
 
 ---

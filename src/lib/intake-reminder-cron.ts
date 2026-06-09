@@ -174,7 +174,9 @@ export async function runPendingIntakeReminders(): Promise<{
     const domainScores = parseDomainScores(session?.domain_scores);
     const primaryDomain = resolvePrimaryDomain(session);
     const recoveryUrl = row.session_id
-      ? await buildIntakeRecoveryUrlForSession(row.session_id)
+      ? await buildIntakeRecoveryUrlForSession(row.session_id, {
+          mode: "remeasure",
+        })
       : buildIntakeFallbackUrl();
     const listUnsubscribeUrl = buildNurtureUnsubscribeUrl(
       email,

@@ -56,6 +56,7 @@ export default function IntakeClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasResultsParam = searchParams.get("resultaten") === "true";
+  const hasRemeasureParam = searchParams.get("hermeting") === "1";
 
   const [phase, setPhase] = useState<Phase>("intro");
   const [firstName, setFirstName] = useState("");
@@ -375,6 +376,7 @@ export default function IntakeClient() {
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeIntro
             onStart={() => setPhase("symptoms")}
+            isRemeasure={hasRemeasureParam}
           />
         </div>
       )}

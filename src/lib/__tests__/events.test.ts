@@ -16,4 +16,8 @@ describe("isDomainEventType", () => {
   it("accepts evidence.chat_queried", () => {
     expect(isDomainEventType("evidence.chat_queried")).toBe(true);
   });
+
+  it("accepts remeasure.completed", () => {
+    expect(isDomainEventType("remeasure.completed")).toBe(true);
+  });
 });

@@ -7,6 +7,7 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 type IntakeIntroProps = {
   onStart: () => void;
+  isRemeasure?: boolean;
 };
 
 const THRESHOLD_ITEMS = [
@@ -15,7 +16,7 @@ const THRESHOLD_ITEMS = [
   "Geen e-mail verplicht",
 ] as const;
 
-export default function IntakeIntro({ onStart }: IntakeIntroProps) {
+export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntroProps) {
   return (
     <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-16 text-center">
       <div className="flex w-full max-w-lg flex-col items-center gap-8 md:gap-10">
@@ -35,19 +36,26 @@ export default function IntakeIntro({ onStart }: IntakeIntroProps) {
               letterSpacing: "-0.01em",
             }}
           >
-            Moe, wazig of altijd <em className="italic">aan</em>?
+            {isRemeasure ? (
+              <>Tijd voor je herhaalmeting</>
+            ) : (
+              <>
+                Moe, wazig of altijd <em className="italic">aan</em>?
+              </>
+            )}
           </h1>
 
           <p
             className="mx-auto max-w-md text-lg leading-relaxed"
             style={{ color: "rgba(255,255,255,0.6)" }}
           >
-            In 3 minuten krijg je een helder beeld van waar je leefstijl staat —
-            en wat je deze week kunt doen.
+            {isRemeasure
+              ? "Doe de check opnieuw — we vergelijken met je startpunt van 30 dagen geleden."
+              : "In 3 minuten krijg je een helder beeld van waar je leefstijl staat — en wat je deze week kunt doen."}
           </p>
         </div>
 
-        <IntakeResultPreviewCard />
+        {!isRemeasure ? <IntakeResultPreviewCard /> : null}
 
         <details
           className="max-w-md text-left text-xs"

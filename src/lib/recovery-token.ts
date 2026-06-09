@@ -19,9 +19,15 @@ export function getRecoveryTokenTtlMs(): number {
   return hours * 60 * 60 * 1000;
 }
 
-export function buildRecoveryUrl(rawToken: string): string {
+export function buildRecoveryUrl(
+  rawToken: string,
+  options?: { mode?: "view" | "remeasure" },
+): string {
   const site = getPublicSiteUrl();
   const qs = new URLSearchParams({ token: rawToken });
+  if (options?.mode === "remeasure") {
+    qs.set("mode", "remeasure");
+  }
   return `${site}/api/intake/recover?${qs.toString()}`;
 }
 
@@ -57,6 +63,7 @@ export async function createRecoveryToken(
 
 export async function buildIntakeRecoveryUrlForSession(
   sessionId: string | null | undefined,
+  options?: { mode?: "view" | "remeasure" },
 ): Promise<string> {
   if (!sessionId) {
     return buildIntakeFallbackUrl();
@@ -65,7 +72,7 @@ export async function buildIntakeRecoveryUrlForSession(
   if (!rawToken) {
     return buildIntakeFallbackUrl();
   }
-  return buildRecoveryUrl(rawToken);
+  return buildRecoveryUrl(rawToken, options);
 }
 
 export type RecoveryTokenVerifyResult =

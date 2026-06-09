@@ -10,7 +10,16 @@ import {
 } from "@/lib/intake-consent";
 import { deleteIntakeSessionForSession } from "@/lib/intake-consent-revoke";
 import { computeIntakePersistenceFields, validateIntakeSubmission } from "@/lib/intake-compute";
+import {
+  buildRemeasureCompletedPayload,
+  createBaselineSnapshot,
+  loadBaselineSnapshot,
+} from "@/lib/intake-baseline";
 import { RULES_VERSION } from "@/lib/intake-engine";
+import {
+  INTAKE_REMEASURE_BASELINE_COOKIE_NAME,
+  verifyRemeasureBaselineCookie,
+} from "@/lib/intake-remeasure-cookie";
 import {
   INTAKE_SESSION_COOKIE_NAME,
   signIntakeSessionId,
@@ -249,6 +258,29 @@ export async function POST(request: NextRequest) {
 
   const organizationId = getDefaultOrganizationId();
 
+  const remeasureBaselineId = verifyRemeasureBaselineCookie(
+    request.cookies.get(INTAKE_REMEASURE_BASELINE_COOKIE_NAME)?.value,
+  );
+  const isRemeasure = remeasureBaselineId !== null;
+
+  let baselineSnapshot = null;
+  if (isRemeasure) {
+    baselineSnapshot = await loadBaselineSnapshot(remeasureBaselineId);
+    if (!baselineSnapshot) {
+      logSecurityEvent("invalid_remeasure_baseline", {
+        remoteIp: clientIp,
+        baselineSessionId: remeasureBaselineId,
+      });
+      return NextResponse.json(
+        {
+          error:
+            "Je startpunt kon niet worden gevonden. Open de link uit je e-mail opnieuw.",
+        },
+        { status: 400 },
+      );
+    }
+  }
+
   const insert: IntakeSessionInsert = {
     organization_id: organizationId,
     symptom_profile: symptoms,
@@ -262,6 +294,8 @@ export async function POST(request: NextRequest) {
       : null,
     first_name: consent.firstName,
     rules_version: RULES_VERSION,
+    session_kind: isRemeasure ? "remeasure" : "initial",
+    baseline_session_id: isRemeasure ? remeasureBaselineId : null,
   };
 
   const { data: row, error } = await admin
@@ -299,20 +333,57 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  void emitEvent({
-    eventType: "intake.completed",
-    sessionId: row.id,
-    payload: {
-      profile_label: profile,
-      urgency_level: urgency,
-      theme_slug: getPrimaryTheme(scores, answers),
-      marketing_opt_in: consent.marketingEmail,
-    },
-    deliveredTo: ["nurture"],
-  });
+  if (isRemeasure && baselineSnapshot) {
+    const remeasurePayload = buildRemeasureCompletedPayload({
+      baseline: baselineSnapshot,
+      currentScores: scores,
+      currentRulesVersion: RULES_VERSION,
+    });
+
+    void emitEvent({
+      eventType: "remeasure.completed",
+      sessionId: row.id,
+      organizationId: baselineSnapshot.organizationId,
+      payload: remeasurePayload,
+      deliveredTo: ["nurture"],
+    });
+  } else {
+    const snapshotResult = await createBaselineSnapshot({
+      sessionId: row.id,
+      organizationId,
+      domainScores: scores,
+      profileLabel: profile,
+      urgencyLevel: urgency,
+      rulesVersion: RULES_VERSION,
+      primaryTheme: getPrimaryTheme(scores, answers),
+      symptomProfile: symptoms,
+      ageRange,
+    });
+
+    if (!snapshotResult.ok) {
+      console.error("[api/intake/session] baseline snapshot error:", snapshotResult.error);
+      await admin.from("intake_sessions").delete().eq("id", row.id);
+      return NextResponse.json(
+        { error: "Kon intake niet opslaan." },
+        { status: 500 },
+      );
+    }
+
+    void emitEvent({
+      eventType: "intake.completed",
+      sessionId: row.id,
+      payload: {
+        profile_label: profile,
+        urgency_level: urgency,
+        theme_slug: getPrimaryTheme(scores, answers),
+        marketing_opt_in: consent.marketingEmail,
+      },
+      deliveredTo: ["nurture"],
+    });
+  }
 
   const marketingAddr = consent.marketingEmailAddress?.trim();
-  if (consent.marketingEmail && marketingAddr) {
+  if (!isRemeasure && consent.marketingEmail && marketingAddr) {
     void emitEvent({
       eventType: "email.opted_in",
       sessionId: row.id,
@@ -355,6 +426,15 @@ export async function POST(request: NextRequest) {
     path: "/",
     maxAge: COOKIE_MAX_AGE_SEC,
   });
+  if (isRemeasure) {
+    res.cookies.set(INTAKE_REMEASURE_BASELINE_COOKIE_NAME, "", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 0,
+    });
+  }
   applyAnalyticsConsentCookie(res, consent.anonymousAnalytics);
 
   return res;

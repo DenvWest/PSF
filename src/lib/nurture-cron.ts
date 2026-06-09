@@ -182,7 +182,10 @@ export async function runPendingNurtureEmails(): Promise<{
             : "moderate";
 
         const recoveryUrl = mail.session_id
-          ? await buildIntakeRecoveryUrlForSession(mail.session_id)
+          ? await buildIntakeRecoveryUrlForSession(
+              mail.session_id,
+              mail.sequence_day === 30 ? { mode: "remeasure" } : undefined,
+            )
           : buildIntakeFallbackUrl();
 
         const nurtureInterventionDays = new Set([3, 14, 21]);

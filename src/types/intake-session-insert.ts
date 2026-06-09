@@ -13,4 +13,6 @@ export type IntakeSessionInsert = {
   marketing_email: string | null;
   first_name: string | null;
   rules_version: string;
+  session_kind?: "initial" | "remeasure";
+  baseline_session_id?: string | null;
 };
