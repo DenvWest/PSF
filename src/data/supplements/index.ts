@@ -1,8 +1,4 @@
-/**
- * Live affiliate-vergelijkingen op /beste/[slug].
- * melatonine.ts bestaat voor data-referentie maar staat bewust niet in de index
- * (COMPLIANCE: geen /beste/melatonine) — alleen /supplementen/melatonine.
- */
+/** Live affiliate-vergelijkingen op /beste/[slug]. Melatonine: geen vergelijking (compliance). */
 import type { ComparisonPageData } from "@/types/supplement";
 import { magnesiumData } from "./magnesium";
 import { omega3Data } from "./omega-3";

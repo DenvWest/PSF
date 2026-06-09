@@ -4,7 +4,6 @@ import { ashwagandhaData } from "@/data/supplements/ashwagandha";
 import { vitamineDData } from "@/data/supplements/vitamine-d";
 import { creatineData } from "@/data/supplements/creatine";
 import { zinkData } from "@/data/supplements/zink";
-import { melatonineData } from "@/data/supplements/melatonine";
 import { eiwitpoederData } from "@/data/supplements/eiwitpoeder";
 
 export type ThemaTag = "slaap" | "stress" | "energie" | "herstel";
@@ -114,9 +113,9 @@ export const CATALOG: CatalogEntry[] = [
   {
     slug: "melatonine",
     name: "Melatonine",
-    wiifm: "Puur, time-release en slaapcomplexen",
+    wiifm: "Timing-hormoon — wanneer wel en wanneer niet (informatief)",
     themas: ["slaap"],
-    topScore: maxProductScore(melatonineData.products),
+    topScore: null,
     guideHref: "/supplementen/melatonine",
     comparisonHref: null,
     comingSoon: false,

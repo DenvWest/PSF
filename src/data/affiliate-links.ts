@@ -54,14 +54,6 @@ export const affiliateLinks = {
   "viridian-bisglycinaat":
     "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=magnesium&dl=product%2Fsolgar-vitamins-magnesium-bisglycinate-1308886",
 
-  // Melatonine
-  "melatonine-vital-nutrition-slaap-complex":
-    "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=melatonine&dl=products%2Fslaap-complex%3F_pos%3D2%26_sid%3Dfc8b8fe2b%26_ss%3Dr",
-  "melatonine-lucovitaal-puur":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine&dl=product%2Flucovitaal-pure-melatonine-100-mcg-tabletten-163814",
-  "melatonine-vitaminstore-nachtrust":
-    "https://ds1.nl/c/?si=5676&li=1266442&wi=407296&ws=melatonine&dl=product%2Fvitaminstore-nachtrust-complex-met-melatonine-vegicaps-190775",
-
   // Eiwitpoeder
   "proteine-vital-nutrition-whey":
     "https://bdt9.net/c/?si=18988&li=1816067&wi=407296&ws=eiwitpoeder&dl=products%2Fwhey-proteine%3F_pos%3D1%26_sid%3D018a6fc58%26_ss%3Dr",

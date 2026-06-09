@@ -13,7 +13,6 @@ import { vitamineDData } from "@/data/supplements/vitamine-d";
 import { creatineData } from "@/data/supplements/creatine";
 import { zinkData } from "@/data/supplements/zink";
 import { eiwitpoederData } from "@/data/supplements/eiwitpoeder";
-import { melatonineData } from "@/data/supplements/melatonine";
 import { resolveDomainSupplementTip } from "@/lib/resolve-domain-supplement-tip";
 import {
   resolveNurtureCta,
@@ -71,7 +70,6 @@ const SUPPLEMENT_MODULES: Array<{ file: string; data: ComparisonPageData }> = [
   { file: "src/data/supplements/creatine.ts", data: creatineData },
   { file: "src/data/supplements/zink.ts", data: zinkData },
   { file: "src/data/supplements/eiwitpoeder.ts", data: eiwitpoederData },
-  { file: "src/data/supplements/melatonine.ts", data: melatonineData },
 ];
 
 function collectAffiliateSlugs(data: ComparisonPageData): string[] {
