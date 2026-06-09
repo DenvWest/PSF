@@ -10,6 +10,7 @@ import {
 } from "@/lib/intake-consent";
 import { deleteIntakeSessionForSession } from "@/lib/intake-consent-revoke";
 import { computeIntakePersistenceFields, validateIntakeSubmission } from "@/lib/intake-compute";
+import { RULES_VERSION } from "@/lib/intake-engine";
 import {
   INTAKE_SESSION_COOKIE_NAME,
   signIntakeSessionId,
@@ -25,6 +26,7 @@ import { scheduleNurtureSequence } from "@/lib/nurture";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
+import type { IntakeSessionInsert } from "@/types/intake-session-insert";
 
 const TURNSTILE_ACTION = "intake_submit";
 
@@ -247,21 +249,24 @@ export async function POST(request: NextRequest) {
 
   const organizationId = getDefaultOrganizationId();
 
+  const insert: IntakeSessionInsert = {
+    organization_id: organizationId,
+    symptom_profile: symptoms,
+    answers,
+    domain_scores: scores,
+    urgency_level: urgency,
+    profile_label: profile,
+    age_range: ageRange,
+    marketing_email: consent.marketingEmail
+      ? consent.marketingEmailAddress
+      : null,
+    first_name: consent.firstName,
+    rules_version: RULES_VERSION,
+  };
+
   const { data: row, error } = await admin
     .from("intake_sessions")
-    .insert({
-      organization_id: organizationId,
-      symptom_profile: symptoms,
-      answers,
-      domain_scores: scores,
-      urgency_level: urgency,
-      profile_label: profile,
-      age_range: ageRange,
-      marketing_email: consent.marketingEmail
-        ? consent.marketingEmailAddress
-        : null,
-      first_name: consent.firstName,
-    })
+    .insert(insert)
     .select("id")
     .single();
 
