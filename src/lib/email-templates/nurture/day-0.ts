@@ -1,5 +1,8 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
 import type { ProfileLabelName } from "@/data/nurture-content";
+import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
+import { lifestyleCtaForProfile } from "@/lib/resolve-nurture-cta";
+import { resolveNurtureProfileKey } from "@/data/nurture-content";
 import {
   resolveIntakeRecoveryUrl,
   escapeHtml,
@@ -207,7 +210,7 @@ function resolveDay0ProfileVoice(
 export function nurtureDay0Email(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
-): { subject: string; html: string } {
+): { subject: string; html: string; resolvedCta: ResolvedNurtureCta } {
   const intakeUrl = resolveIntakeRecoveryUrl(ctx);
   const profileVoice = resolveDay0ProfileVoice(
     data.profileLabel,
@@ -297,5 +300,10 @@ export function nurtureDay0Email(
     (showStressGuide ? buildStressGuideBlock(stressProfileUrl) : "") +
     (showEnergyGuide ? buildEnergyGuideBlock(energyProfileUrl) : "");
 
-  return { subject: emailSubject, html: wrapNurtureBlock(inner, ctx, false) };
+  const profileKey = resolveNurtureProfileKey(data.profileLabel, data.domainScores);
+  return {
+    subject: emailSubject,
+    html: wrapNurtureBlock(inner, ctx, false),
+    resolvedCta: lifestyleCtaForProfile(profileKey),
+  };
 }

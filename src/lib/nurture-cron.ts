@@ -4,6 +4,10 @@ import {
   getPlanInterventionBucketsForSession,
   loadNurturePlanGate,
 } from "@/lib/content/nurture-interventions";
+import {
+  slugFromComparisonPath,
+  type ResolvedNurtureCta,
+} from "@/lib/resolve-nurture-cta";
 import { themeHasCompletePlanContent } from "@/lib/content/plan-content";
 import type { ThemeSlug } from "@/lib/content/themes";
 import { getGuideNurtureEmailContent } from "@/lib/email-templates/guide-nurture";
@@ -142,6 +146,7 @@ export async function runPendingNurtureEmails(): Promise<{
       let subject: string;
       let html: string;
       let listUnsubscribeUrl: string;
+      let intakeResolvedCta: ResolvedNurtureCta | null = null;
 
       if (isGuideSource(source)) {
         const themaRaw =
@@ -255,6 +260,7 @@ export async function runPendingNurtureEmails(): Promise<{
         );
         subject = intakeContent.subject;
         html = intakeContent.html;
+        intakeResolvedCta = intakeContent.resolvedCta;
         listUnsubscribeUrl = buildNurtureUnsubscribeUrl(
           email,
           mail.session_id,
@@ -309,6 +315,10 @@ export async function runPendingNurtureEmails(): Promise<{
           typeof mail.primary_domain === "string" && mail.primary_domain.trim()
             ? mail.primary_domain.trim()
             : "sleep";
+        const ctaSlug =
+          intakeResolvedCta?.kind === "supplement"
+            ? (slugFromComparisonPath(intakeResolvedCta.url) ?? null)
+            : null;
         void emitEvent({
           eventType: "nurture.email_sent",
           sessionId: mail.session_id,
@@ -318,6 +328,10 @@ export async function runPendingNurtureEmails(): Promise<{
             profile_label: profileLabel,
             primary_domain: primaryDomain,
             status: "sent",
+            cta_kind: intakeResolvedCta?.kind ?? null,
+            cta_slug: ctaSlug,
+            candidate_rank: intakeResolvedCta?.candidateRank ?? null,
+            variant: null,
           },
           deliveredTo: ["n8n_webhook"],
         });

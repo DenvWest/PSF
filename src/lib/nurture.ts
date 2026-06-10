@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { emitEvent } from "@/lib/events";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
+import { slugFromComparisonPath } from "@/lib/resolve-nurture-cta";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { buildIntakeRecoveryUrlForSession } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
@@ -43,6 +44,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     urgency_level: input.urgencyLevel,
     first_name: input.firstName,
     status: "pending" as const,
+    variant: null,
   }));
 
   const domainScoresRecord: Record<string, number> = {
@@ -51,7 +53,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
 
   const recoveryUrl = await buildIntakeRecoveryUrlForSession(input.sessionId);
 
-  const { subject, html } = getNurtureEmailContent(
+  const { subject, html, resolvedCta } = getNurtureEmailContent(
     {
       sequenceDay: 0,
       profileLabel: input.profileLabel,
@@ -121,6 +123,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     sent_at: resendId ? now.toISOString() : null,
     resend_id: resendId ?? null,
     error_message: resendId ? null : day0ErrorMessage,
+    variant: null,
   };
 
   const { error } = await supabase
@@ -145,6 +148,10 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
   });
 
   if (resendId) {
+    const ctaSlug =
+      resolvedCta.kind === "supplement"
+        ? (slugFromComparisonPath(resolvedCta.url) ?? null)
+        : null;
     void emitEvent({
       eventType: "nurture.email_sent",
       sessionId: input.sessionId,
@@ -154,6 +161,10 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
         profile_label: input.profileLabel,
         primary_domain: input.primaryDomain,
         status: "sent",
+        cta_kind: resolvedCta.kind,
+        cta_slug: ctaSlug,
+        candidate_rank: resolvedCta.candidateRank,
+        variant: null,
       },
       deliveredTo: ["n8n_webhook"],
     });

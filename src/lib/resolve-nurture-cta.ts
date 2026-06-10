@@ -10,6 +10,8 @@ export type ResolvedNurtureCta = {
   text: string;
   url: string;
   kind: "lifestyle" | "pillar" | "supplement" | "remeasure";
+  /** Index in candidates[] die de gate doorliet; null bij niet-supplement CTAs. */
+  candidateRank: number | null;
 };
 
 const PILLAR_BY_DOMAIN: Record<DomainKey, { text: string; url: string }> = {
@@ -95,7 +97,7 @@ const SUPPLEMENT_BY_PROFILE: Partial<
   },
 };
 
-function slugFromComparisonPath(path: string): string | null {
+export function slugFromComparisonPath(path: string): string | null {
   const match = path.match(/^\/beste\/([^/?#]+)/);
   return match?.[1] ?? null;
 }
@@ -107,15 +109,16 @@ export function supplementCtaForProfile(
   if (!entry) {
     return null;
   }
-  for (const candidate of entry.candidates) {
+  for (let i = 0; i < entry.candidates.length; i++) {
     const comparisonPath = resolveGatedComparisonPath(
-      candidate as IngredientClaimKey,
+      entry.candidates[i] as IngredientClaimKey,
     );
     if (comparisonPath) {
       return {
         text: entry.text,
         url: comparisonPath,
         kind: "supplement",
+        candidateRank: i,
       };
     }
   }
@@ -126,7 +129,7 @@ export function lifestyleCtaForProfile(
   profileKey: NurtureProfileKey,
 ): ResolvedNurtureCta {
   const entry = LIFESTYLE_BY_PROFILE[profileKey];
-  return { ...entry, kind: "lifestyle" };
+  return { ...entry, kind: "lifestyle", candidateRank: null };
 }
 
 export function pillarCtaForProfile(
@@ -135,7 +138,7 @@ export function pillarCtaForProfile(
 ): ResolvedNurtureCta {
   void profileKey;
   const pillar = PILLAR_BY_DOMAIN[weakestDomain];
-  return { ...pillar, kind: "pillar" };
+  return { ...pillar, kind: "pillar", candidateRank: null };
 }
 
 export function hasSupplementComparePath(
@@ -170,6 +173,7 @@ export function resolveNurtureCta(
       text: "Doe de herhaalmeting",
       url: "/intake",
       kind: "remeasure",
+      candidateRank: null,
     };
   }
 

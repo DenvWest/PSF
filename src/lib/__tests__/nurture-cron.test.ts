@@ -1,15 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { runPendingNurtureEmails } from "@/lib/nurture-cron";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 
 // ---------------------------------------------------------------------------
 // Module mocks (hoisted — vi.hoisted zorgt dat deze vars beschikbaar zijn
 // voor de gehoisde vi.mock factories)
 // ---------------------------------------------------------------------------
 
-const { mockResendSend, mockEmitEvent } = vi.hoisted(() => ({
+const { mockResendSend, mockEmitEvent, mockGetNurtureEmailContent } = vi.hoisted(() => ({
   mockResendSend: vi.fn(),
   mockEmitEvent: vi.fn(),
+  mockGetNurtureEmailContent: vi.fn(),
 }));
 
 vi.mock("resend", () => ({
@@ -31,7 +33,7 @@ vi.mock("@/lib/nurture-unsubscribe", () => ({
   buildGuideUnsubscribeUrl: () => "https://example.com/unsub-guide",
 }));
 vi.mock("@/lib/email-templates/nurture", () => ({
-  getNurtureEmailContent: () => ({ subject: "Dag 7 test", html: "<p>test</p>" }),
+  getNurtureEmailContent: mockGetNurtureEmailContent,
 }));
 vi.mock("@/lib/content/nurture-interventions", () => ({
   getPlanInterventionBucketsForSession: vi.fn().mockResolvedValue(null),
@@ -41,6 +43,18 @@ vi.mock("@/lib/content/plan-content", () => ({
   themeHasCompletePlanContent: vi.fn().mockResolvedValue(false),
 }));
 vi.mock("@/data/gids", () => ({ isGuideThema: vi.fn().mockReturnValue(false) }));
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function makeResolvedCta(
+  kind: ResolvedNurtureCta["kind"],
+  url: string,
+  candidateRank: number | null = null,
+): ResolvedNurtureCta {
+  return { kind, url, text: "test CTA", candidateRank };
+}
 
 // ---------------------------------------------------------------------------
 // Supabase builder mock — queue-based terminal calls
@@ -117,6 +131,11 @@ describe("nurture-cron: atomaire claim-guard", () => {
       from: vi.fn().mockReturnValue(supaBuilder),
     } as unknown as ReturnType<typeof createSupabaseAdmin>);
     mockResendSend.mockResolvedValue({ data: { id: "resend-1" }, error: null });
+    mockGetNurtureEmailContent.mockReturnValue({
+      subject: "Dag 7 test",
+      html: "<p>test</p>",
+      resolvedCta: makeResolvedCta("lifestyle", "/intake"),
+    });
   });
 
   it("happy path: claim wint → send → status sent, result {sent:1, errors:0}", async () => {
@@ -178,5 +197,148 @@ describe("nurture-cron: atomaire claim-guard", () => {
       "claimed_at",
       expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P1: cta_kind / cta_slug / candidate_rank in nurture.email_sent
+// ---------------------------------------------------------------------------
+
+describe("nurture-cron: P1 — email_sent payload bevat CTA-velden", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    responseQueue = [];
+    supaBuilder = makeBuilder();
+    vi.mocked(createSupabaseAdmin).mockReturnValue({
+      from: vi.fn().mockReturnValue(supaBuilder),
+    } as unknown as ReturnType<typeof createSupabaseAdmin>);
+    mockResendSend.mockResolvedValue({ data: { id: "resend-1" }, error: null });
+  });
+
+  it("dag 14 supplement-mail: emitEvent krijgt cta_kind:'supplement', correcte cta_slug en candidate_rank", async () => {
+    mockGetNurtureEmailContent.mockReturnValue({
+      subject: "Dag 14 test",
+      html: "<p>magnesium</p>",
+      resolvedCta: makeResolvedCta("supplement", "/beste/magnesium", 0),
+    });
+
+    const mail14 = { ...INTAKE_MAIL, id: "mail-14", sequence_day: 14 };
+    responseQueue = [
+      OK,                                                      // stuck-recovery
+      { data: [mail14], error: null },                         // select pending
+      { data: { id: mail14.id }, error: null },                // claim wint
+      { data: { profile_label: "Onrustige Slaper" }, error: null }, // session check
+      OK,                                                      // update status='sent'
+    ];
+
+    await runPendingNurtureEmails();
+
+    const emitCall = mockEmitEvent.mock.calls.find(
+      (c: unknown[]) =>
+        (c[0] as { eventType?: string }).eventType === "nurture.email_sent",
+    );
+    expect(emitCall).toBeDefined();
+    const payload = (emitCall![0] as { payload: Record<string, unknown> }).payload;
+    expect(payload.cta_kind).toBe("supplement");
+    expect(payload.cta_slug).toBe("magnesium");
+    expect(payload.candidate_rank).toBe(0);
+    expect(payload.variant).toBeNull();
+  });
+
+  it("dag 21 supplement-mail met rank 1: candidate_rank === 1", async () => {
+    mockGetNurtureEmailContent.mockReturnValue({
+      subject: "Dag 21 test",
+      html: "<p>omega3</p>",
+      resolvedCta: makeResolvedCta("supplement", "/beste/omega-3-supplement", 1),
+    });
+
+    const mail21 = { ...INTAKE_MAIL, id: "mail-21", sequence_day: 21 };
+    responseQueue = [
+      OK,
+      { data: [mail21], error: null },
+      { data: { id: mail21.id }, error: null },
+      { data: { profile_label: "Onrustige Slaper" }, error: null },
+      OK,
+    ];
+
+    await runPendingNurtureEmails();
+
+    const emitCall = mockEmitEvent.mock.calls.find(
+      (c: unknown[]) =>
+        (c[0] as { eventType?: string }).eventType === "nurture.email_sent",
+    );
+    const payload = (emitCall![0] as { payload: Record<string, unknown> }).payload;
+    expect(payload.cta_kind).toBe("supplement");
+    expect(payload.cta_slug).toBe("omega-3-supplement");
+    expect(payload.candidate_rank).toBe(1);
+  });
+
+  it("dag 3 lifestyle-mail: cta_kind:'lifestyle', cta_slug:null, candidate_rank:null", async () => {
+    mockGetNurtureEmailContent.mockReturnValue({
+      subject: "Dag 3 test",
+      html: "<p>lifestyle</p>",
+      resolvedCta: makeResolvedCta("lifestyle", "/stress-verminderen-man"),
+    });
+
+    const mail3 = { ...INTAKE_MAIL, id: "mail-3", sequence_day: 3 };
+    responseQueue = [
+      OK,
+      { data: [mail3], error: null },
+      { data: { id: mail3.id }, error: null },
+      { data: { profile_label: "Onrustige Slaper" }, error: null },
+      OK,
+    ];
+
+    await runPendingNurtureEmails();
+
+    const emitCall = mockEmitEvent.mock.calls.find(
+      (c: unknown[]) =>
+        (c[0] as { eventType?: string }).eventType === "nurture.email_sent",
+    );
+    const payload = (emitCall![0] as { payload: Record<string, unknown> }).payload;
+    expect(payload.cta_kind).toBe("lifestyle");
+    expect(payload.cta_slug).toBeNull();
+    expect(payload.candidate_rank).toBeNull();
+    expect(payload.variant).toBeNull();
+  });
+
+  it("payload bevat geen PII-velden (email, naam, vrije tekst)", async () => {
+    mockGetNurtureEmailContent.mockReturnValue({
+      subject: "Dag 7 test",
+      html: "<p>test</p>",
+      resolvedCta: makeResolvedCta("pillar", "/slaap-verbeteren-na-40"),
+    });
+
+    const mail7 = { ...INTAKE_MAIL, id: "mail-7", sequence_day: 7 };
+    responseQueue = [
+      OK,
+      { data: [mail7], error: null },
+      { data: { id: mail7.id }, error: null },
+      { data: { profile_label: "Onrustige Slaper" }, error: null },
+      OK,
+    ];
+
+    await runPendingNurtureEmails();
+
+    const emitCall = mockEmitEvent.mock.calls.find(
+      (c: unknown[]) =>
+        (c[0] as { eventType?: string }).eventType === "nurture.email_sent",
+    );
+    expect(emitCall).toBeDefined();
+    const payload = (emitCall![0] as { payload: Record<string, unknown> }).payload;
+
+    const ALLOWED_KEYS = new Set([
+      "sequence_day",
+      "profile_label",
+      "primary_domain",
+      "status",
+      "cta_kind",
+      "cta_slug",
+      "candidate_rank",
+      "variant",
+    ]);
+    for (const key of Object.keys(payload)) {
+      expect(ALLOWED_KEYS.has(key), `Verboden payload-sleutel: ${key}`).toBe(true);
+    }
   });
 });

@@ -1,4 +1,5 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
+import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 import { nurtureDay0Email } from "./day-0";
 import { nurtureDay3Email } from "./day-3";
 import { nurtureDay7Email } from "./day-7";
@@ -10,11 +11,12 @@ export type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
 
 /**
  * Rendert onderwerp + HTML voor een nurture-stap op basis van `sequenceDay` (0, 3, 7, 14, 21, 30).
+ * Retourneert ook `resolvedCta` — de enige CTA die de gebruiker zag (single source of truth voor event-logging).
  */
 export function getNurtureEmailContent(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
-): { subject: string; html: string } {
+): { subject: string; html: string; resolvedCta: ResolvedNurtureCta } {
   const day = data.sequenceDay;
   switch (day) {
     case 0:

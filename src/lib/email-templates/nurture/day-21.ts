@@ -1,9 +1,10 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
+import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 import { renderNurtureDayInner } from "./prepare-nurture-mail";
 
 export function nurtureDay21Email(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
-): { subject: string; html: string } {
+): { subject: string; html: string; resolvedCta: ResolvedNurtureCta } {
   return renderNurtureDayInner(data, ctx);
 }

@@ -11,6 +11,7 @@ import {
   hasSupplementComparePath,
   resolveNurtureCta,
   type NurtureSequenceDay,
+  type ResolvedNurtureCta,
 } from "@/lib/resolve-nurture-cta";
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
 import type { NurtureInterventionHighlight } from "./helpers";
@@ -24,9 +25,9 @@ import {
 export function renderNurtureDayInner(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
-): { subject: string; html: string } {
+): { subject: string; html: string; resolvedCta: ResolvedNurtureCta } {
   const intakeUrl = resolveIntakeRecoveryUrl(ctx);
-  const { subject, blocks, supplementTip, interventionHighlight } =
+  const { subject, blocks, supplementTip, interventionHighlight, resolvedCta } =
     prepareNurtureMailContent(data);
   const profileKey = resolveNurtureProfileKey(
     data.profileLabel,
@@ -47,6 +48,7 @@ export function renderNurtureDayInner(
   return {
     subject,
     html: wrapNurtureBlock(inner, ctx, affiliateDisclaimer),
+    resolvedCta,
   };
 }
 
@@ -62,6 +64,7 @@ export function prepareNurtureMailContent(data: NurtureEmailData): {
   blocks: ReturnType<typeof buildNurtureEmail>["blocks"];
   supplementTip: ReturnType<typeof buildNurtureEmail>["supplementTip"];
   interventionHighlight: NurtureInterventionHighlight | null;
+  resolvedCta: ResolvedNurtureCta;
 } {
   const profileKey = resolveNurtureProfileKey(
     data.profileLabel,
@@ -140,6 +143,7 @@ export function prepareNurtureMailContent(data: NurtureEmailData): {
     blocks: blocksWithTip,
     supplementTip,
     interventionHighlight,
+    resolvedCta,
   };
 }
 
