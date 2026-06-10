@@ -208,15 +208,15 @@ export function day0OpeningLineForProfile(
 ): string {
   const openings: Record<Day0ProfileVoice, string> = {
     Stressdrager:
-      "Je zenuwstelsel staat langer aan dan je zelf merkt. Vandaag: 5 minuten ademhaling vóór je telefoon pakt — dat is het enige.",
+      "Je hebt net ingevuld dat stress je prioriteit is. Dat betekent waarschijnlijk dat de dag niet echt stopt als je thuis bent.",
     "Onrustige Slaper":
-      "Je slaap was het duidelijkste signaal. Vandaag: kies een vaste bedtijd en houd hem drie nachten aan.",
+      "Je hebt net ingevuld dat slaap je prioriteit is. Dat betekent waarschijnlijk dat je wakker wordt en al moe bent voordat de dag begint.",
     "Lage Batterij":
-      "Energie begint bij eiwit bij je eerste maaltijd. Niet de derde kop koffie.",
+      "Je hebt net ingevuld dat energie je prioriteit is. Dat betekent waarschijnlijk dat je energie op is lang voordat de dag voorbij is.",
     Overtrainer:
-      "Meer trainen is niet de oplossing — je lichaam heeft twee lichte dagen nodig. Plan ze nu.",
+      "Je hebt net ingevuld dat herstel je prioriteit is. Dat betekent waarschijnlijk dat je lichaam meer vraagt dan je het geeft.",
     "In Balans":
-      "Je basis staat goed. Vandaag: kies één domein om te verfijnen en doe daar één concrete stap.",
+      "Je hebt net je Leefstijlcheck ingevuld. Dat is een goed startpunt — hieronder zie je waar je nu staat.",
   };
   const line = openings[profile] ?? openings["In Balans"];
   const raw = typeof firstName === "string" ? firstName.replace(/\s+/g, " ").trim() : "";
@@ -232,23 +232,15 @@ export function resolveDay0PrimaryCta(profile: Day0ProfileVoice): {
   text: string;
   url: string;
 } {
-  const profilePath = profileUrlForLabel(profile);
-  if (profilePath) {
-    return { text: "Bekijk je profiel", url: profilePath };
-  }
   if (profile === "In Balans") {
     return { text: "Bekijk je leefstijl-overzicht", url: "/intake" };
   }
-  return { text: "Doe je eerste stap vandaag", url: "/intake" };
+  return { text: "Bekijk je resultaten", url: "/intake" };
 }
 
-export function renderWeakSpotBlock(
-  domainScores: Record<string, number>,
-  firstName?: string | null,
-): string {
-  const weakest = getWeakestDomain(domainScores);
-  const { label, statusLine, action } = weakSpotCopyForDomain(weakest);
-  void firstName;
+export function renderWeakSpotBlock(primaryDomain: string): string {
+  const domainKey = `${normalizeDomainId(primaryDomain)}_score` as DomainKey;
+  const { label, statusLine, action } = weakSpotCopyForDomain(domainKey);
   return `
         <tr>
           <td style="padding:20px 28px 8px 28px;border-top:1px solid #E7E5E4;">
@@ -262,12 +254,12 @@ export function renderWeakSpotBlock(
 
 export function renderDay0MainRows(params: {
   profile: Day0ProfileVoice;
-  domainScores: Record<string, number>;
+  primaryDomain: string;
   intakeUrl: string;
   firstName?: string | null;
   headline?: string;
 }): string {
-  const { profile, domainScores, intakeUrl, firstName, headline } = params;
+  const { profile, primaryDomain, intakeUrl, firstName, headline } = params;
   const opening = day0OpeningLineForProfile(profile, firstName);
   const cta = resolveDay0PrimaryCta(profile);
   const ctaUrl = cta.url === "/intake" ? intakeUrl : absoluteUrl(cta.url);
@@ -297,7 +289,7 @@ export function renderDay0MainRows(params: {
             <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">${escapeHtml(opening)}</p>
           </td>
         </tr>
-        ${renderWeakSpotBlock(domainScores, firstName)}
+        ${renderWeakSpotBlock(primaryDomain)}
         <tr>
           <td style="padding:8px 28px 28px 28px;">
             ${nurtureCtaButton(ctaUrl, cta.text)}
@@ -316,7 +308,6 @@ import type {
   ProfileLabelName,
   NurtureProfileKey,
 } from "@/data/nurture-content";
-import { getWeakestDomain } from "@/data/nurture-content";
 
 export type NurtureInterventionHighlight = {
   title: string;

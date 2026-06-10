@@ -42,7 +42,7 @@ const SLEEP_GUIDE_PS =
   "— Begin met één ding deze week. Vaste bedtijd is het meest onderschat — niet sexy, wel effectief.";
 
 const STRESS_GUIDE_PS =
-  "Eén ding dat je deze week nog kunt proberen: vijf minuten uitademen gericht uitvoeren vóór je je werkmail opent — het is klein, maar je zenuwstelsel merkt het verschil.";
+  "Eén ding dat je deze week nog kunt proberen: vijf minuten gericht uitademen vóór je je werkmail opent — het is klein, maar je merkt het verschil.";
 
 const ENERGY_GUIDE_PS =
   "Begin deze week klein met één ding: stabiel eiwit bij het eerste moment van eten na opstaan — dat helpt vaak meer dan nog een kop koffie.";
@@ -50,9 +50,8 @@ const ENERGY_GUIDE_PS =
 const RECOVERY_GUIDE_PS =
   "Plan vandaag welke twee harde blokken deze week wél plaatsmaken voor licht werk en meer slaap dat levert meer op dan nog een kop sterke espresso.";
 
-function buildStressGuideBlock(stressProfileUrl: string): string {
+function buildStressGuideBlock(): string {
   const pdfUrl = absoluteUrl("/downloads/stressgids-perfectsupplement.pdf");
-  const profileEsc = escapeHtml(stressProfileUrl);
   return `
         <tr>
           <td style="padding: 24px 28px; border-top: 1px solid #E7E5E4;">
@@ -67,12 +66,6 @@ function buildStressGuideBlock(stressProfileUrl: string): string {
             </p>
             <p style="margin: 0 0 16px; font-size: 14px; color: #404040; line-height: 1.6;">
               Geen verkooppraat. Vier pijlers, een 4-weken plan, en eerlijke informatie over wanneer je beter een professional inschakelt.
-            </p>
-            <p style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #333333;">
-              Wil je je profiel verder verkennen?
-              <a href="${profileEsc}" style="color:#2d4a3e; font-weight:600;">
-                Bekijk hier wat het Stressdrager-profiel inhoudt
-              </a>.
             </p>
             ${buildPdfGuideSignatureHtml(STRESS_GUIDE_PS, 0)}
           </td>
@@ -106,9 +99,8 @@ function buildSleepGuideBlock(): string {
         </tr>`;
 }
 
-function buildEnergyGuideBlock(profileUrl: string): string {
+function buildEnergyGuideBlock(): string {
   const pdfUrl = absoluteUrl("/downloads/energiegids-perfectsupplement.pdf");
-  const profileEsc = escapeHtml(profileUrl);
   return `
         <tr>
           <td style="padding: 24px 28px; border-top: 1px solid #E7E5E4;">
@@ -128,24 +120,14 @@ function buildEnergyGuideBlock(profileUrl: string): string {
               Als <strong>Lage Batterij</strong> is je energiehuishouding je belangrijkste aandachtspunt. In je Energiegids vind je concrete stappen — van voeding
               en bloedsuiker tot de supplementen die het meest evidence-based zijn.
             </p>
-            <p style="margin: 0 0 24px; font-size: 14px; color: #404040; line-height: 1.6;">
-              Wil je je profiel verder verdiepen?
-              <a href="${profileEsc}" style="color:#2d4a3e; font-weight:600;">
-                Bekijk hier wat het Lage Batterij-profiel inhoudt
-              </a>.
-            </p>
             ${buildPdfGuideSignatureHtml(ENERGY_GUIDE_PS, 0)}
           </td>
         </tr>`;
 }
 
-function buildRecoveryGuideBlock(
-  deepDiveUrl: string,
-  deepDiveAnchorText: string,
-): string {
+function buildRecoveryGuideBlock(): string {
   const pdfUrl = absoluteUrl("/downloads/herstelgids-perfectsupplement.pdf");
-  const deepEsc = escapeHtml(deepDiveUrl);
-  const anchorEsc = escapeHtml(deepDiveAnchorText);
+  const herstelUrl = escapeHtml(absoluteUrl("/gids/herstel"));
   return `
         <tr>
           <td style="padding: 24px 28px; border-top: 1px solid #E7E5E4;">
@@ -167,8 +149,8 @@ function buildRecoveryGuideBlock(
             </p>
             <p style="margin: 0 0 24px; font-size: 14px; color: #404040; line-height: 1.6;">
               Wil je verder lezen?
-              <a href="${deepEsc}" style="color:#2d4a3e; font-weight:600;">
-                ${anchorEsc}
+              <a href="${herstelUrl}" style="color:#2d4a3e; font-weight:600;">
+                Lees verder op het herstelthema
               </a>.
             </p>
             ${buildPdfGuideSignatureHtml(RECOVERY_GUIDE_PS, 0)}
@@ -257,14 +239,9 @@ export function nurtureDay0Email(
     (isOvertrainerVoice ||
       (Number.isFinite(recoveryScore) && recoveryScore < 50));
 
-  const stressProfileUrl = absoluteUrl("/profiel/stressdrager");
-  const energyProfileUrl = absoluteUrl("/profiel/lage-batterij");
-  const overtrainerProfileUrl = absoluteUrl("/profiel/overtrainer");
-  const herstelThemaUrl = absoluteUrl("/gids/herstel");
-
   const mainRows = renderDay0MainRows({
     profile: profileVoice,
-    domainScores: data.domainScores,
+    primaryDomain: data.primaryDomain,
     intakeUrl,
     firstName: data.firstName,
     headline:
@@ -284,21 +261,12 @@ export function nurtureDay0Email(
     emailSubject = "Je eerste stap na de Leefstijlcheck";
   }
 
-  const recoveryDeepDiveUrl = isOvertrainerVoice
-    ? overtrainerProfileUrl
-    : herstelThemaUrl;
-  const recoveryDeepDiveAnchor = isOvertrainerVoice
-    ? "Bekijk hier wat het Overtrainer-profiel inhoudt"
-    : "Lees verder op het herstelthema";
-
   const inner =
     mainRows +
-    (showRecoveryGuide
-      ? buildRecoveryGuideBlock(recoveryDeepDiveUrl, recoveryDeepDiveAnchor)
-      : "") +
+    (showRecoveryGuide ? buildRecoveryGuideBlock() : "") +
     (showSleepGuide ? buildSleepGuideBlock() : "") +
-    (showStressGuide ? buildStressGuideBlock(stressProfileUrl) : "") +
-    (showEnergyGuide ? buildEnergyGuideBlock(energyProfileUrl) : "");
+    (showStressGuide ? buildStressGuideBlock() : "") +
+    (showEnergyGuide ? buildEnergyGuideBlock() : "");
 
   const profileKey = resolveNurtureProfileKey(data.profileLabel, data.domainScores);
   return {
