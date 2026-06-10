@@ -4,6 +4,9 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp } from "@/lib/turnstile-verify";
+import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
+import { getPrimaryTheme } from "@/lib/primary-theme";
+import { emitEvent } from "@/lib/events";
 
 function toUuidOrNull(value: string | null | undefined): string | null {
   if (value == null || value === "") {
@@ -98,6 +101,27 @@ export async function POST(request: NextRequest) {
       { error: "Feedback kon niet worden opgeslagen." },
       { status: 500 },
     );
+  }
+
+  if (sessionId !== null) {
+    const loaded = await loadIntakeSessionPayloadBySessionId(sessionId);
+    if (loaded.ok && loaded.session !== null) {
+      const primaryDomain = getPrimaryTheme(loaded.session.scores, loaded.session.answers);
+      try {
+        await emitEvent({
+          eventType: "profile.recognition",
+          sessionId,
+          payload: {
+            rating,
+            profile_label: loaded.session.profile,
+            primary_domain: primaryDomain,
+          },
+          deliveredTo: [],
+        });
+      } catch (e) {
+        console.error("[api/intake/feedback] recognition event failed:", e);
+      }
+    }
   }
 
   return NextResponse.json({ ok: true }, { status: 200 });

@@ -26,6 +26,7 @@ export const DOMAIN_EVENT_TYPES = [
   "remeasure.invited",
   "remeasure.completed",
   "affiliate.click",
+  "profile.recognition",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];
