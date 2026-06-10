@@ -159,6 +159,7 @@ export function nurtureDay0Email(
     primaryDomain: data.primaryDomain,
     intakeUrl,
     firstName: data.firstName,
+    domainScores: data.domainScores,
   });
 
   const guideBlock =

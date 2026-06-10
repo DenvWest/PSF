@@ -1,5 +1,10 @@
 import { domainNamesDutch, quickWinsByDomain } from "@/data/quick-wins";
 import {
+  SUMMARY_PILLAR_IDS,
+  PILLAR_SCORE_KEYS,
+} from "@/data/foundation-pyramid";
+import { getDisplayStatus } from "@/lib/score-display";
+import {
   escapeHtml,
   nurtureCtaButton,
   nurtureEmailWrap,
@@ -242,15 +247,56 @@ export function renderWeakSpotBlock(primaryDomain: string): string {
         </tr>`;
 }
 
+const COUNT_WORDS: Record<number, string> = {
+  1: "één",
+  2: "twee",
+  3: "drie",
+  4: "vier",
+};
+
+export function day0AttentionLine(
+  domainScores: Record<string, number>,
+  primaryDomain: string,
+): string {
+  let count = 0;
+  for (const pillarId of SUMMARY_PILLAR_IDS) {
+    const scoreKey = PILLAR_SCORE_KEYS[pillarId] as string | undefined;
+    if (!scoreKey) continue;
+    const raw = domainScores[scoreKey];
+    const score = typeof raw === "number" ? raw : NaN;
+    const status = getDisplayStatus(score);
+    if (status === "Aandacht" || status === "Prioriteit") {
+      count++;
+    }
+  }
+
+  if (count === 0) return "";
+
+  const domainKey = `${normalizeDomainId(primaryDomain)}_score` as DomainKey;
+  const label = weakSpotCopyForDomain(domainKey).label;
+
+  if (count === 1) {
+    return `Eén gebied vraagt nu je aandacht: ${label}.`;
+  }
+
+  const total = SUMMARY_PILLAR_IDS.length;
+  const countWord = COUNT_WORDS[count] ?? String(count);
+  const totalWord = COUNT_WORDS[total] ?? String(total);
+  const capitalized = countWord.charAt(0).toUpperCase() + countWord.slice(1);
+  return `${capitalized} van je ${totalWord} gebieden vragen nu aandacht — ${label} het meest.`;
+}
+
 export function renderDay0MainRows(params: {
   primaryDomain: string;
   intakeUrl: string;
   firstName?: string | null;
+  domainScores: Record<string, number>;
 }): string {
-  const { primaryDomain, intakeUrl, firstName } = params;
+  const { primaryDomain, intakeUrl, firstName, domainScores } = params;
   const domain = normalizeDomainId(primaryDomain);
   const opening = day0OpeningLineForDomain(domain, firstName);
   const title = "Dit valt op in jouw resultaten";
+  const attentionLine = day0AttentionLine(domainScores, primaryDomain);
 
   const prefix = nurtureNamePrefixHtml(firstName);
   const nameAlreadyInOpening =
@@ -268,12 +314,14 @@ export function renderDay0MainRows(params: {
           <td style="padding:0 28px 10px 28px;">
             ${nameAlreadyInOpening ? "" : prefix}
             <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">${escapeHtml(opening)}</p>
+            ${attentionLine ? `<p style="margin:0 0 10px 0;font-size:15px;line-height:1.6;color:#555555;">${escapeHtml(attentionLine)}</p>` : ""}
           </td>
         </tr>
         ${renderWeakSpotBlock(primaryDomain)}
         <tr>
           <td style="padding:8px 28px 28px 28px;">
             ${nurtureCtaButton(intakeUrl, "Bekijk je resultaten")}
+            <p style="margin:12px 0 0 0;font-size:13px;line-height:1.6;color:#888888;text-align:center;">Dit is je startpunt. Over vier weken kijken we samen of het beweegt — geen oordeel, gewoon je eigen lijn.</p>
           </td>
         </tr>`;
 }

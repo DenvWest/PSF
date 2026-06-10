@@ -237,6 +237,70 @@ describe("dag-0 emotionele opening", () => {
   });
 });
 
+// ── P1a: score-patroon-zin ────────────────────────────────────────────────
+
+describe("dag-0 score-patroon-zin", () => {
+  it("3 SUMMARY-pijlers < 60, primaryDomain=movement → 'van je vier gebieden vragen nu aandacht' + 'Beweging het meest'", () => {
+    const data = buildData("In Balans", "movement", {
+      sleep_score: 35,
+      stress_score: 45,
+      nutrition_score: 38,
+      movement_score: 20,
+      energy_score: 50,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("van je vier gebieden vragen nu aandacht");
+    expect(html).toContain("Beweging");
+    expect(html).toContain("het meest");
+  });
+
+  it("slechts 1 SUMMARY-pijler < 60 → 'Eén gebied vraagt nu je aandacht'", () => {
+    const data = buildData("Onrustige Slaper", "sleep", {
+      sleep_score: 30,
+      stress_score: 75,
+      nutrition_score: 80,
+      movement_score: 70,
+      energy_score: 70,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("Eén gebied vraagt nu je aandacht");
+  });
+
+  it("0 SUMMARY-pijlers < 60 (In Balans) → geen aandacht-zin", () => {
+    const data = buildData("In Balans", "sleep", {
+      sleep_score: 65,
+      stress_score: 70,
+      nutrition_score: 72,
+      movement_score: 68,
+      energy_score: 80,
+      recovery_score: 75,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).not.toContain("van je vier gebieden vragen nu aandacht");
+    expect(html).not.toContain("Eén gebied vraagt nu je aandacht");
+  });
+});
+
+// ── P1b: nulpunt-zin ──────────────────────────────────────────────────────
+
+describe("dag-0 nulpunt-zin", () => {
+  it("html bevat 'Dit is je startpunt' en 'geen oordeel'", () => {
+    const data = buildData("In Balans", "sleep", {
+      sleep_score: 40,
+      stress_score: 60,
+      nutrition_score: 70,
+      movement_score: 65,
+      energy_score: 70,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("Dit is je startpunt");
+    expect(html).toContain("geen oordeel");
+  });
+});
+
 // ── Domein-consistentie: movement en nutrition ────────────────────────────
 
 describe("dag-0 domein-consistentie movement en nutrition", () => {
