@@ -164,6 +164,22 @@ Product-klik tabel. **Niet aanraken / wijzigen zonder overleg.**
 | timestamp | timestamptz | default now() |
 | organization_id | uuid | FK naar organizations (default-tenant) |
 
+#### `affiliate.click` — verrijkt spiegel-event in `domain_events` (P2)
+
+Naast de insert in `affiliate_clicks` emitteert `/api/affiliate/click` altijd een `affiliate.click`-event naar `domain_events`. Payload:
+
+| Veld | Aanwezig | Beschrijving |
+|---|---|---|
+| `categorie` | altijd | Supplement-categorie (bv. `"magnesium"`) of leeg |
+| `comparison_slug` | altijd | `product_id` uit de klik-request (bv. `"beste/magnesium"`) |
+| `session_id` | bij geldig token | Pseudoniem session-id uit het HMAC-attributietoken |
+| `sequence_day` | bij geldig token | Nurture-dag die de CTA leverde (0/3/7/14/21/30) |
+| `profile_label` | bij geldig token | Profiellabel van de sessie (engine-output, geen PII) |
+| `variant` | bij geldig token | A/B-label of `null` (fase-0 altijd `null`) |
+
+**HMAC-attributietoken (`nt`-queryparam):**  
+Nurture-e-mails bevatten een gesigneerde `?nt=`-parameter op `/beste/*`-CTA-links. Het token is een HMAC-SHA256-handtekening (secret: `NURTURE_ATTRIBUTION_SECRET`, fallback op `COOKIE_SECRET`; TTL 60 dagen). De client leest `nt` éénmalig op load via `src/lib/nurture-click-attribution.ts` en strip het daarna uit de URL via `history.replaceState` — het token lekt niet naar affiliate-partners in de Referer-header. De API-route valideert het token server-side via `resolveNurtureAttributionToken` (`src/lib/nurture-attribution-token.ts`); een ongeldig of verlopen token levert geen verrijking (event wordt alsnog geëmit, maar zonder attribuut-velden). Funnel-join: `nurture.email_sent{session_id} → affiliate.click{session_id}`.
+
 ---
 
 ## Multi-tenancy & toestemming

@@ -12,13 +12,13 @@ De kernvraag van de eerdere analyse: **kan de nurture-laag meerdere producten pe
 
 Antwoord in één zin: **de mechaniek staat, de meetbaarheid niet.** Het multi-product-mechanisme bestaat al — [`resolve-nurture-cta.ts`](../../src/lib/resolve-nurture-cta.ts) draagt per profiel een `candidates: string[]` en kiest het **eerste kandidaat-middel dat de gate haalt**. Dat is bewust statisch en YAGNI-correct: geen optimizer vóór volume. Maar precies dáárom is de huidige instrumentatie nog **blind**: je kunt achteraf niet zien wélk product een mail aanbood, of die aanbieding tot een klik leidde, of welke variant beter converteerde. Zonder die haakjes is "meten → testen → verbeteren" later niet mogelijk zonder retroactief gat in de data.
 
-**De drie blokkers vóór toekomstklaarheid (geen optimizer — alleen meet-haakjes):**
+**De drie blokkers vóór toekomstklaarheid (geen optimizer — alleen meet-haakjes) — alle drie gedaan (10 jun 2026):**
 
-1. **`nurture.email_sent` legt het gekozen product/CTA niet vast.** De payload bevat `sequence_day`, `profile_label`, `primary_domain`, `status` — maar niet `cta_kind` of de gekozen `comparison_slug`. Een mail die magnesium aanbood is in de event-stream niet te onderscheiden van een mail die een leefstijl-CTA gaf. → **meten welk product werd aangeboden is nu onmogelijk.**
-2. **`affiliate.click` is niet te koppelen aan de mail.** Het event ([`affiliate/click/route.ts`](../../src/app/api/affiliate/click/route.ts)) draagt `categorie` + `comparison_slug`, maar **geen `session_id`, geen `sequence_day`, geen `profile_label`, geen variant**. De funnel "mail → klik → conversie" is per product dus niet sluitbaar.
-3. **Geen variant-/experiment-dimensie.** Er is geen veld waarmee twee kandidaat-volgordes of twee copy-varianten tegen elkaar te meten zijn. A/B-testen vereist nu code-/schema-werk i.p.v. een config-flag.
+1. ✅ **`nurture.email_sent` legt het gekozen product/CTA vast (P1).** Payload bevat `cta_kind`, `cta_slug`, `candidate_rank`, `variant`. Dag-0 en cron-pad beide gedekt.
+2. ✅ **`affiliate.click` is koppelbaar aan de mail (P2).** Het event verrijkt met `session_id`, `sequence_day`, `profile_label`, `variant` via HMAC-attributietoken. Funnel `mail → klik → conversie` sluitbaar per product.
+3. ✅ **Variant-/experiment-dimensie klaargezet (P3).** `variant`-kolom op `nurture_emails` (nullable, fase-0 altijd `null`). A/B-test wordt een config-flag i.p.v. schema-wijziging.
 
-Deze drie zijn **instrumentatie, geen optimalisatie** — ze zijn goedkoop, anonimiserings-veilig, en ze zijn de voorwaarde om de optimizer (échte YAGNI) later te kunnen bouwen zónder data-gat. De rest van dit plan legt de loop, de governance-poort voor LLM-gebruik (DEEL 3) en de B2B-naden (DEEL 4) vast.
+Deze drie zijn **instrumentatie, geen optimalisatie** — ze zijn goedkoop, anonimiserings-veilig, en ze zijn de voorwaarde om de optimizer (échte YAGNI) later te kunnen bouwen zónder data-gat. De rest van dit plan legt de loop, de governance-poort voor LLM-gebruik (DEEL 3) en de B2B-naden (DEEL 4) vast. **Meet-loop fase 1 (DEEL 2) is ontgrendeld.**
 
 ---
 
@@ -62,7 +62,7 @@ De volgorde in `candidates[]` ís de prioriteit. `melatonine` (`forbidden`) en `
 | Wat je later wil meten | Kan het nu? | Waarom niet |
 |---|---|---|
 | Welk product bood mail X aan? | ❌ | `nurture.email_sent`-payload mist `cta_kind` + `comparison_slug` |
-| Leidde die aanbieding tot een klik? | ❌ | `affiliate.click` mist `session_id`/`sequence_day`/profiel → niet te joinen aan de mail |
+| Leidde die aanbieding tot een klik? | ✅ (P2) | `affiliate.click`-event verrijkt met `session_id`/`sequence_day`/`profile_label`/`variant` via HMAC-attributietoken |
 | Welke kandidaat-volgorde wint? | ❌ | geen variant-/experiment-id; één vaste volgorde |
 | Welk profiel klikt het meest door op welk middel? | ⚠️ deels | profiel zit in `nurture.email_sent`, maar zonder klik-join niet af te maken |
 | Leidde de mail-reeks tot hermeting (delta)? | ⚠️ deels | `remeasure.completed` bestaat, maar zonder mail→remeasure-join geen attributie |
@@ -74,7 +74,7 @@ De volgorde in `candidates[]` ís de prioriteit. `melatonine` (`forbidden`) en `
 | # | Status | Omschrijving |
 |---|---|---|
 | P1 | ✅ gedaan (10 jun 2026) | `nurture.email_sent` payload uitgebreid met `cta_kind`, `cta_slug`, `candidate_rank`, `variant` — zie commit `4ff2c34` |
-| P2 | ❌ open | Spiegel mail-context in `affiliate.click` via nurture-klik-token — aparte prompt |
+| P2 | ✅ gedaan (10 jun 2026) | HMAC-attributietoken (`nt`) op `/beste/*`-CTA's → `affiliate.click` verrijkt met `session_id`, `sequence_day`, `profile_label`, `variant`. Token gestript uit URL na load. |
 | P3 | ✅ gedaan (10 jun 2026) | `variant`-kolom (nullable) op `nurture_emails` + migratie `20260610130000_nurture_variant.sql` |
 | P4 | ✅ gedaan (10 jun 2026) | `session_id` loopt ononderbroken door `intake.completed → nurture.email_sent → remeasure.completed` — geen nieuwe identifier geïntroduceerd |
 
@@ -88,7 +88,7 @@ De volgorde in `candidates[]` ís de prioriteit. `melatonine` (`forbidden`) en `
   ```
   `ResolvedNurtureCta` uitgebreid met `candidateRank`; `getNurtureEmailContent` retourneert `resolvedCta` als single source of truth — niet opnieuw berekend. Dag-0 en cron-pad beide gedekt. Tests: `src/lib/__tests__/nurture-cron.test.ts` + `src/lib/__tests__/nurture-schedule.test.ts`.
 
-- **P2 ❌ — Spiegel mail-context in `affiliate.click`.** Geef de affiliate-klik-call een optionele herkomst mee (`session_id` of een nurture-token, `sequence_day`, `profile_label`) zodat de funnel `nurture.email_sent → affiliate.click` sluitbaar wordt. De `affiliate_clicks`-tabel zelf blijft ongemoeid (harde regel); dit raakt alleen het **spiegel-event** in `domain_events`. **Gepland in aparte prompt.**
+- **P2 ✅ — Spiegel mail-context in `affiliate.click`.** Nurture-e-mails bevatten een HMAC-gesigneerde `?nt=`-parameter op `/beste/*`-CTA-links (`NURTURE_ATTRIBUTION_SECRET`, fallback `COOKIE_SECRET`, TTL 60 dagen). De client strip `nt` éénmalig uit de URL via `history.replaceState` (lekt niet naar affiliate-partners). `/api/affiliate/click` valideert het token server-side en verrijkt het `affiliate.click`-spiegel-event in `domain_events` met `session_id`, `sequence_day`, `profile_label`, `variant`. De `affiliate_clicks`-tabel blijft ongemoeid. Funnel `nurture.email_sent → affiliate.click` is nu sluitbaar via `session_id`. Implementatie: `src/lib/nurture-attribution-token.ts`, `src/lib/nurture-click-attribution.ts`, `src/app/api/affiliate/click/route.ts`. Tests: `src/lib/__tests__/nurture-attribution-token.test.ts`, `src/lib/__tests__/nurture-click-attribution.test.ts`, `src/lib/__tests__/affiliate-click-route.test.ts`.
 
 - **P3 ✅ — Variant-dimensie (nullable, ongebruikt).** `variant text` kolom op `nurture_emails`; alle inserts zetten `variant: null`. Migratie `20260610130000_nurture_variant.sql` — idempotent, apply vóór deploy via `supabase db push`. Fase-1 A/B-test wordt een config-flag i.p.v. schema-wijziging.
 
@@ -125,7 +125,7 @@ Onveranderd t.o.v. [`PLAN_MEASUREMENT_PERSONALIZATION.md`](PLAN_MEASUREMENT_PERS
 
 | Fase | Drempel | Wat mag |
 |---|---|---|
-| **0 (nu)** | — | Instrumentatie (P1–P4). Statische selectie. **Geen** test, **geen** model. |
+| **0 (nu)** | — | Instrumentatie (P1–P4). Statische selectie. **Geen** test, **geen** model. ✅ Alle haakjes live (10 jun 2026). |
 | **1** | meet-haakjes live + eerste volume | Handmatige A/B via variant-flag; mens leest CTR/delta en past `candidates[]` aan. |
 | **2** | 500+ intakes + anonimiseringspad | Statistische patroonherkenning op k-anon-set → suggesties voor volgorde. |
 | **3** | 2000+ | Voorspellend model stelt **volgorde/triggers** bij — nooit claims, nooit selectie buiten de gate. |
@@ -231,16 +231,16 @@ Bij white-label verschuift de **AVG-rol**: per coach/agency kan een aparte verwe
 ## Gefaseerde implementatie-volgorde (afhankelijkheden, geen kalenderdata)
 
 1. **P1 ✅ — `nurture.email_sent` met `cta_kind`+`cta_slug`+`candidate_rank`.** Gedaan 10 jun 2026. Kritieke, retroactief-niet-inhaalbare schakel.
-2. **P2 ❌ — `affiliate.click` mail-herkomst (spiegel-event).** Naast 1. `affiliate_clicks`-tabel ongemoeid. Aparte prompt.
-3. **P4 ✅ — join-key door de funnel borgen.** Gedaan 10 jun 2026. Ruggengraat van de loop (`affiliate.click` wacht op P2).
-4. **P3 ✅ — variant-dimensie nullable klaarzetten.** Gedaan 10 jun 2026. Migratie `20260610130000_nurture_variant.sql`.
-5. **Meet-loop fase 1** — handmatige A/B + cijfers lezen (DEEL 2). Afhankelijk van 1–4.
+2. **P2 ✅ — `affiliate.click` mail-herkomst (spiegel-event).** Gedaan 10 jun 2026. HMAC-attributietoken op `/beste/*`-CTA's; `affiliate.click`-event verrijkt met `session_id`/`sequence_day`/`profile_label`/`variant`. `affiliate_clicks`-tabel ongemoeid.
+3. **P4 ✅ — join-key door de funnel borgen.** Gedaan 10 jun 2026. Ruggengraat van de loop.
+4. **P3 ✅ — variant-dimensie nullable klaarzetten.** Gedaan 10 jun 2026. Migratie `20260610130000_nurture_variant.sql` (⚠ apply vóór deploy via `supabase db push`).
+5. **Meet-loop fase 1** — handmatige A/B + cijfers lezen (DEEL 2). **Ontgrendeld** — alle meet-haakjes (P1–P4) zijn live.
 6. **Productkennis-RAG-spoor (DEEL 3A/3B).** Parallel, niet-blokkerend, geen persoonsdata.
 7. **Anonimiseringspad + governance-poort (3C).** Bij nadering 500-drempel; blokkeert het persoonsdata-LLM-spoor.
 8. **LLM-volgorde-/triggersuggestie (3, fase 2/3).** Alleen ná 7 + volume; output blijft achter de gate.
 9. **B2B-naden invullen (DEEL 4).** Alleen ná bewezen B2C-conversie; isolatie + DPA + per-org governance eerst.
 
-**Kritiek pad voor toekomstklaarheid:** **1 → 2 → 3 → 4** (de meet-haakjes). P1/P3/P4 gedaan; P2 (affiliate-klik-token) als enige open schakel.
+**Kritiek pad voor toekomstklaarheid:** **P1 → P2 → P3 → P4** (de meet-haakjes). Alle vier gedaan 10 jun 2026. Meet-loop fase 1 (DEEL 2) is ontgrendeld.
 
 ---
 
@@ -282,4 +282,4 @@ Bij white-label verschuift de **AVG-rol**: per coach/agency kan een aparte verwe
 
 ---
 
-*Opgesteld: 10 juni 2026. Planning-document — geen code, geen `src/`-wijziging, geen schema-migratie. Reconstructie + uitbreiding van de eerdere multi-product-/data-readiness-analyse. Pseudostructuur ter illustratie.*
+*Opgesteld: 10 juni 2026. Bijgewerkt: 10 juni 2026 (P1–P4 alle ✅; meet-loop fase 1 ontgrendeld). Planning-document — geen code, geen `src/`-wijziging, geen schema-migratie. Reconstructie + uitbreiding van de eerdere multi-product-/data-readiness-analyse. Pseudostructuur ter illustratie.*

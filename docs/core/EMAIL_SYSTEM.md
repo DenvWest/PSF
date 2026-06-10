@@ -68,10 +68,34 @@ Legacy `/thema/*` redirect naar `/gids/*`. Oude `thema_nurture`-tabel is uitgefa
 | Cron | `/api/cron/nurture` → `runPendingNurtureEmails()` |
 | Unsubscribe | `/api/unsubscribe` (intake-, guide- en legacy thema-tokens) |
 
+### Deploy-vereiste: `variant`-kolom op `nurture_emails`
+
+`src/lib/nurture.ts` en `src/lib/nurture-cron.ts` zetten bij elke insert `variant: null`. Bestaat de kolom niet op de live DB, dan falen **alle** nurture-inserts.
+
+**Apply vóór deploy** (Supabase dashboard → SQL Editor, of via CLI):
+
+```sql
+-- Aanbevolen: pas alle pending migraties tegelijk toe
+supabase db push
+```
+
+**Verificatie na apply:**
+
+```sql
+select column_name, data_type, is_nullable
+from information_schema.columns
+where table_schema = 'public'
+  and table_name  = 'nurture_emails'
+  and column_name = 'variant';
+-- Verwachte output: variant | text | YES
+```
+
+Migratie: `supabase/migrations/20260610130000_nurture_variant.sql` — idempotent (`add column if not exists`), veilig bij herhaling.
+
 ## 30-dagen reminder
 
 Aparte tabel `intake_reminders`. Trigger via cron-job.org.
 
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: juni 2026*
