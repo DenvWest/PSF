@@ -79,7 +79,6 @@ export const ABOUT_WHAT_WE_DO = {
   id: "wat-we-doen",
   title: "Wat wij voor je doen",
   leadPhrase: "Eerst inzicht, dan pas aanvullen.",
-  brandPrinciple: "Eerst de basis, dan de pil — in die volgorde, altijd.",
   intakeDisclaimer:
     "De Leefstijlcheck is een korte vragenlijst die helpt bij het ordenen van aandachtspunten — geen medische test en geen vervanging voor zorg.",
   privacyNoteBefore: "Je antwoorden worden versleuteld opgeslagen. Lees ons ",

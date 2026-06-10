@@ -221,9 +221,6 @@ export default function OverOnsPage() {
                 <div className="lg:hidden space-y-6">
                   <span className={eyebrowClass}>04 — Aanpak</span>
                   <h2 className={h2Class}>{ABOUT_WHAT_WE_DO.title}</h2>
-                  <p className="font-serif text-xl leading-snug text-stone-800 md:text-2xl">
-                    {ABOUT_WHAT_WE_DO.brandPrinciple}
-                  </p>
                   <p className={bodyClass}>
                     <span className="font-medium text-stone-800">
                       {ABOUT_WHAT_WE_DO.leadPhrase}
@@ -278,9 +275,6 @@ export default function OverOnsPage() {
                   <div className="pl-16 space-y-6">
                     <span className={eyebrowClass}>04 — Aanpak</span>
                     <h2 className={h2Class}>{ABOUT_WHAT_WE_DO.title}</h2>
-                    <p className="font-serif text-xl leading-snug text-stone-800 lg:text-2xl">
-                      {ABOUT_WHAT_WE_DO.brandPrinciple}
-                    </p>
                     <p className={bodyClass}>
                       <span className="font-medium text-stone-800">
                         {ABOUT_WHAT_WE_DO.leadPhrase}
