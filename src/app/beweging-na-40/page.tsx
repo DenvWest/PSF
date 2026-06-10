@@ -6,6 +6,7 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
+import PillarHeroIntakeCta from "@/components/content/PillarHeroIntakeCta";
 import { buildArticleSchema, buildFaqSchema } from "@/lib/seo/structuredData";
 
 const LINK =
@@ -82,12 +83,7 @@ export default function BewegingNa40Page() {
                     meetellen.
                   </p>
                   <div className="mt-6 text-center">
-                    <Link
-                      href="/intake"
-                      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-green-700 px-8 py-3 text-sm font-semibold text-white no-underline hover:bg-green-800 transition-colors"
-                    >
-                      Ontdek jouw bewegingsprofiel →
-                    </Link>
+                    <PillarHeroIntakeCta defaultLabel="Ontdek jouw bewegingsprofiel →" />
                     <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   </div>
                 </header>

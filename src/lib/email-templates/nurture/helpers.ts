@@ -116,8 +116,6 @@ export function nurtureNamePrefixHtml(firstName?: string | null): string {
   return `<p style="margin:0 0 4px 0;font-size:16px;line-height:1.6;color:#333333;">Hoi ${escapeHtml(safe)},</p>`;
 }
 
-export type Day0ProfileVoice = ProfileLabelName | "Overtrainer";
-
 const PROFILE_URLS: Partial<Record<NurtureProfileKey, string>> = {
   "Onrustige Slaper": "/profiel/onrustige-slaper",
   Stressdrager: "/profiel/stressdrager",
@@ -202,23 +200,25 @@ export function weakSpotCopyForDomain(domain: DomainKey): {
   return map[domain];
 }
 
-export function day0OpeningLineForProfile(
-  profile: Day0ProfileVoice,
+export function day0OpeningLineForDomain(
+  domain: (typeof DOMAIN_IDS)[number],
   firstName?: string | null,
 ): string {
-  const openings: Record<Day0ProfileVoice, string> = {
-    Stressdrager:
-      "Je hebt net ingevuld dat stress je prioriteit is. Dat betekent waarschijnlijk dat de dag niet echt stopt als je thuis bent.",
-    "Onrustige Slaper":
+  const openings: Record<(typeof DOMAIN_IDS)[number], string> = {
+    sleep:
       "Je hebt net ingevuld dat slaap je prioriteit is. Dat betekent waarschijnlijk dat je wakker wordt en al moe bent voordat de dag begint.",
-    "Lage Batterij":
+    stress:
+      "Je hebt net ingevuld dat stress je prioriteit is. Dat betekent waarschijnlijk dat de dag niet echt stopt als je thuis bent.",
+    energy:
       "Je hebt net ingevuld dat energie je prioriteit is. Dat betekent waarschijnlijk dat je energie op is lang voordat de dag voorbij is.",
-    Overtrainer:
+    recovery:
       "Je hebt net ingevuld dat herstel je prioriteit is. Dat betekent waarschijnlijk dat je lichaam meer vraagt dan je het geeft.",
-    "In Balans":
-      "Je hebt net je Leefstijlcheck ingevuld. Dat is een goed startpunt — hieronder zie je waar je nu staat.",
+    movement:
+      "Je hebt net ingevuld dat beweging je prioriteit is. Dat betekent waarschijnlijk dat je weet dat je meer zou willen bewegen, maar dat de dag het opslokt.",
+    nutrition:
+      "Je hebt net ingevuld dat voeding je prioriteit is. Dat betekent waarschijnlijk dat het er vaak bij inschiet als de dag druk wordt.",
   };
-  const line = openings[profile] ?? openings["In Balans"];
+  const line = openings[domain];
   const raw = typeof firstName === "string" ? firstName.replace(/\s+/g, " ").trim() : "";
   const cleaned = raw.replace(/[^a-zA-Zà-ïÀ-ÿĳĲ\s'-]/g, "").trim();
   if (cleaned) {
@@ -226,16 +226,6 @@ export function day0OpeningLineForProfile(
     return `${safe}, ${line.charAt(0).toLowerCase()}${line.slice(1)}`;
   }
   return line;
-}
-
-export function resolveDay0PrimaryCta(profile: Day0ProfileVoice): {
-  text: string;
-  url: string;
-} {
-  if (profile === "In Balans") {
-    return { text: "Bekijk je leefstijl-overzicht", url: "/intake" };
-  }
-  return { text: "Bekijk je resultaten", url: "/intake" };
 }
 
 export function renderWeakSpotBlock(primaryDomain: string): string {
@@ -253,23 +243,14 @@ export function renderWeakSpotBlock(primaryDomain: string): string {
 }
 
 export function renderDay0MainRows(params: {
-  profile: Day0ProfileVoice;
   primaryDomain: string;
   intakeUrl: string;
   firstName?: string | null;
-  headline?: string;
 }): string {
-  const { profile, primaryDomain, intakeUrl, firstName, headline } = params;
-  const opening = day0OpeningLineForProfile(profile, firstName);
-  const cta = resolveDay0PrimaryCta(profile);
-  const ctaUrl = cta.url === "/intake" ? intakeUrl : absoluteUrl(cta.url);
-  const title =
-    headline ??
-    (profile === "Stressdrager"
-      ? "Dit valt op in jouw resultaten"
-      : profile === "Overtrainer"
-        ? "Je recovery vraagt nu je aandacht"
-        : "Je eerste stap na de Leefstijlcheck");
+  const { primaryDomain, intakeUrl, firstName } = params;
+  const domain = normalizeDomainId(primaryDomain);
+  const opening = day0OpeningLineForDomain(domain, firstName);
+  const title = "Dit valt op in jouw resultaten";
 
   const prefix = nurtureNamePrefixHtml(firstName);
   const nameAlreadyInOpening =
@@ -292,7 +273,7 @@ export function renderDay0MainRows(params: {
         ${renderWeakSpotBlock(primaryDomain)}
         <tr>
           <td style="padding:8px 28px 28px 28px;">
-            ${nurtureCtaButton(ctaUrl, cta.text)}
+            ${nurtureCtaButton(intakeUrl, "Bekijk je resultaten")}
           </td>
         </tr>`;
 }
@@ -305,7 +286,6 @@ import type {
   DomainKey,
   NurtureBlock,
   DomainSupplementTip,
-  ProfileLabelName,
   NurtureProfileKey,
 } from "@/data/nurture-content";
 

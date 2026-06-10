@@ -1,5 +1,4 @@
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
-import type { ProfileLabelName } from "@/data/nurture-content";
 import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 import { lifestyleCtaForProfile } from "@/lib/resolve-nurture-cta";
 import { resolveNurtureProfileKey } from "@/data/nurture-content";
@@ -7,19 +6,10 @@ import {
   resolveIntakeRecoveryUrl,
   escapeHtml,
   renderDay0MainRows,
-  type Day0ProfileVoice,
+  normalizeDomainId,
   wrapNurtureBlock,
 } from "./helpers";
 import { absoluteUrl } from "@/lib/public-site-url";
-
-function parseDomainScore(raw: unknown): number {
-  if (typeof raw === "number" && Number.isFinite(raw)) return raw;
-  if (typeof raw === "string") {
-    const n = Number.parseFloat(raw);
-    return Number.isFinite(n) ? n : Number.NaN;
-  }
-  return Number.NaN;
-}
 
 function buildPdfGuideSignatureHtml(
   psBodyPlainText: string,
@@ -158,119 +148,35 @@ function buildRecoveryGuideBlock(): string {
         </tr>`;
 }
 
-const KNOWN_PROFILES: ProfileLabelName[] = [
-  "Onrustige Slaper",
-  "Lage Batterij",
-  "Stressdrager",
-  "In Balans",
-];
-
-function resolveDay0ProfileVoice(
-  profileLabel: string,
-  domainScores: Record<string, number>,
-): Day0ProfileVoice {
-  const trimmed = profileLabel.trim();
-  if (trimmed === "Overtrainer") {
-    return "Overtrainer";
-  }
-  const movementScore = parseDomainScore(domainScores.movement_score);
-  const recoveryScore = parseDomainScore(domainScores.recovery_score);
-  if (
-    Number.isFinite(movementScore) &&
-    Number.isFinite(recoveryScore) &&
-    movementScore >= 43 &&
-    recoveryScore <= 35
-  ) {
-    return "Overtrainer";
-  }
-  if ((KNOWN_PROFILES as string[]).includes(trimmed)) {
-    return trimmed as ProfileLabelName;
-  }
-  return "In Balans";
-}
-
 export function nurtureDay0Email(
   data: NurtureEmailData,
   ctx: NurtureEmailDispatchContext,
 ): { subject: string; html: string; resolvedCta: ResolvedNurtureCta } {
   const intakeUrl = resolveIntakeRecoveryUrl(ctx);
-  const profileVoice = resolveDay0ProfileVoice(
-    data.profileLabel,
-    data.domainScores,
-  );
-
-  const sleepScore = parseDomainScore(data.domainScores.sleep_score);
-  const sleepScoreLowEnough = Number.isFinite(sleepScore) && sleepScore < 50;
-
-  const stressScore = parseDomainScore(data.domainScores.stress_score);
-  const stressScoreLowEnough = Number.isFinite(stressScore) && stressScore < 50;
-
-  const energyScore = parseDomainScore(data.domainScores.energy_score);
-  const energyScoreLowEnough =
-    Number.isFinite(energyScore) && energyScore < 50;
-
-  const recoveryScore = parseDomainScore(data.domainScores.recovery_score);
-  const movementScore = parseDomainScore(data.domainScores.movement_score);
-  const isOvertrainerPatternScores =
-    Number.isFinite(movementScore) &&
-    Number.isFinite(recoveryScore) &&
-    movementScore >= 43 &&
-    recoveryScore <= 35;
-
-  const isOvertrainerVoice =
-    profileVoice === "Overtrainer" || isOvertrainerPatternScores;
-
-  const showSleepGuide =
-    profileVoice === "Onrustige Slaper" || sleepScoreLowEnough;
-
-  const showStressGuide =
-    !showSleepGuide &&
-    (profileVoice === "Stressdrager" || stressScoreLowEnough);
-
-  const showEnergyGuide =
-    !showSleepGuide &&
-    !showStressGuide &&
-    (profileVoice === "Lage Batterij" || energyScoreLowEnough);
-
-  const showRecoveryGuide =
-    !showSleepGuide &&
-    !showStressGuide &&
-    !showEnergyGuide &&
-    (isOvertrainerVoice ||
-      (Number.isFinite(recoveryScore) && recoveryScore < 50));
+  const domain = normalizeDomainId(data.primaryDomain);
 
   const mainRows = renderDay0MainRows({
-    profile: profileVoice,
     primaryDomain: data.primaryDomain,
     intakeUrl,
     firstName: data.firstName,
-    headline:
-      profileVoice === "Stressdrager"
-        ? "Dit valt op in jouw resultaten"
-        : isOvertrainerVoice
-          ? "Je recovery vraagt nu je aandacht"
-          : undefined,
   });
 
-  let emailSubject: string;
-  if (profileVoice === "Stressdrager") {
-    emailSubject = "Hoi, dit valt op in jouw resultaten";
-  } else if (showRecoveryGuide || isOvertrainerVoice) {
-    emailSubject = "Je recovery vraagt nu je aandacht";
-  } else {
-    emailSubject = "Je eerste stap na de Leefstijlcheck";
-  }
+  const guideBlock =
+    domain === "sleep"
+      ? buildSleepGuideBlock()
+      : domain === "stress"
+        ? buildStressGuideBlock()
+        : domain === "energy"
+          ? buildEnergyGuideBlock()
+          : domain === "recovery"
+            ? buildRecoveryGuideBlock()
+            : "";
 
-  const inner =
-    mainRows +
-    (showRecoveryGuide ? buildRecoveryGuideBlock() : "") +
-    (showSleepGuide ? buildSleepGuideBlock() : "") +
-    (showStressGuide ? buildStressGuideBlock() : "") +
-    (showEnergyGuide ? buildEnergyGuideBlock() : "");
+  const inner = mainRows + guideBlock;
 
   const profileKey = resolveNurtureProfileKey(data.profileLabel, data.domainScores);
   return {
-    subject: emailSubject,
+    subject: "Dit valt op in jouw resultaten",
     html: wrapNurtureBlock(inner, ctx, false),
     resolvedCta: lifestyleCtaForProfile(profileKey),
   };

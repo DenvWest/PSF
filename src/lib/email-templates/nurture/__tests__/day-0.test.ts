@@ -237,6 +237,91 @@ describe("dag-0 emotionele opening", () => {
   });
 });
 
+// ── Domein-consistentie: movement en nutrition ────────────────────────────
+
+describe("dag-0 domein-consistentie movement en nutrition", () => {
+  it("primaryDomain=movement → opening bevat 'beweging je prioriteit is'", () => {
+    const data = buildData("In Balans", "movement", {
+      sleep_score: 30,
+      stress_score: 50,
+      energy_score: 50,
+      nutrition_score: 50,
+      movement_score: 20,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("beweging je prioriteit is");
+  });
+
+  it("primaryDomain=movement → weakspot bevat 'Beweging heeft ruimte'", () => {
+    const data = buildData("In Balans", "movement", {
+      sleep_score: 30,
+      stress_score: 50,
+      energy_score: 50,
+      nutrition_score: 50,
+      movement_score: 20,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("Beweging heeft ruimte");
+  });
+
+  it("primaryDomain=movement → bevat GEEN 'GRATIS SLAAPGIDS'", () => {
+    const data = buildData("In Balans", "movement", {
+      sleep_score: 30,
+      stress_score: 50,
+      energy_score: 50,
+      nutrition_score: 50,
+      movement_score: 20,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).not.toContain("GRATIS SLAAPGIDS");
+  });
+
+  it("primaryDomain=movement → bevat NIET 'energie je prioriteit is'", () => {
+    const data = buildData("Lage Batterij", "movement", {
+      sleep_score: 30,
+      stress_score: 50,
+      energy_score: 15,
+      nutrition_score: 50,
+      movement_score: 20,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).not.toContain("energie je prioriteit is");
+  });
+
+  it("primaryDomain=nutrition → opening bevat 'voeding je prioriteit is'", () => {
+    const data = buildData("In Balans", "nutrition", {
+      sleep_score: 70,
+      stress_score: 70,
+      energy_score: 70,
+      nutrition_score: 20,
+      movement_score: 70,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("voeding je prioriteit is");
+  });
+
+  it("subject is altijd 'Dit valt op in jouw resultaten'", () => {
+    const domains = ["sleep", "stress", "energy", "movement", "nutrition", "recovery"];
+    for (const domain of domains) {
+      const data = buildData("In Balans", domain, {
+        sleep_score: 50,
+        stress_score: 50,
+        energy_score: 50,
+        nutrition_score: 50,
+        movement_score: 50,
+        recovery_score: 50,
+      });
+      const { subject } = nurtureDay0Email(data, CTX);
+      expect(subject).toBe("Dit valt op in jouw resultaten");
+    }
+  });
+});
+
 // ── P5: slechts één CTA-knop ──────────────────────────────────────────────
 
 describe("dag-0 één CTA-knop", () => {

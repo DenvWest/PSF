@@ -30,6 +30,7 @@ import { getPrimaryTheme } from "@/lib/primary-theme";
 import type { ThemeSlug } from "@/lib/content/themes";
 import { getThemeContentLinks } from "@/data/theme-content-map";
 import { getThemePillarHref } from "@/lib/intake-primary-pillar";
+import { withIntakeReturn } from "@/lib/intake-return-link";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
@@ -505,7 +506,7 @@ export default function IntakeResults({
               </div>
             ) : (
               <Link
-                href={primaryPillarHref}
+                href={withIntakeReturn(primaryPillarHref)}
                 onClick={() => {
                   trackEvent("intake_cta_to_pillar", { theme_slug: primaryTheme });
                   emitIntakeClientEvent("intake.cta_to_pillar", {
@@ -521,7 +522,7 @@ export default function IntakeResults({
 
             {secondaryTheme ? (
               <Link
-                href={getThemePillarHref(secondaryTheme)}
+                href={withIntakeReturn(getThemePillarHref(secondaryTheme))}
                 onClick={() => {
                   emitIntakeClientEvent("intake.cta_to_pillar", {
                     theme_slug: secondaryTheme,
