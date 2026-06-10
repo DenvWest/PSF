@@ -71,19 +71,28 @@ De volgorde in `candidates[]` ís de prioriteit. `melatonine` (`forbidden`) en `
 
 > Dit waren de "punten die nog aangepast moesten worden vóór YAGNI" uit de eerdere analyse. Het zijn **instrumentatie-haakjes**, geen optimizer. Elk is anonimiserings-veilig (alleen categorie/dag/slug/profiel, geen vrije tekst, geen lichaamsmaat).
 
-- **P1 — Verrijk `nurture.email_sent`-payload met de gekozen CTA.**
+| # | Status | Omschrijving |
+|---|---|---|
+| P1 | ✅ gedaan (10 jun 2026) | `nurture.email_sent` payload uitgebreid met `cta_kind`, `cta_slug`, `candidate_rank`, `variant` — zie commit `4ff2c34` |
+| P2 | ❌ open | Spiegel mail-context in `affiliate.click` via nurture-klik-token — aparte prompt |
+| P3 | ✅ gedaan (10 jun 2026) | `variant`-kolom (nullable) op `nurture_emails` + migratie `20260610130000_nurture_variant.sql` |
+| P4 | ✅ gedaan (10 jun 2026) | `session_id` loopt ononderbroken door `intake.completed → nurture.email_sent → remeasure.completed` — geen nieuwe identifier geïntroduceerd |
+
+- **P1 ✅ — Verrijk `nurture.email_sent`-payload met de gekozen CTA.**
   ```
   payload: { sequence_day, profile_label, primary_domain, status,
              cta_kind,            // 'lifestyle'|'pillar'|'supplement'|'remeasure'
-             cta_slug }           // bv. 'magnesium' | null bij niet-supplement
+             cta_slug,            // bv. 'magnesium' | null bij niet-supplement
+             candidate_rank,      // index in candidates[] die won | null
+             variant }            // altijd null in fase-0
   ```
-  De resolver retourneert `kind` + `url` al ([`ResolvedNurtureCta`](../../src/lib/resolve-nurture-cta.ts)); het is puur dóórgeven aan `emitEvent`. **Zonder P1 is geen enkele latere productmeting mogelijk** — dit is de kritieke schakel.
+  `ResolvedNurtureCta` uitgebreid met `candidateRank`; `getNurtureEmailContent` retourneert `resolvedCta` als single source of truth — niet opnieuw berekend. Dag-0 en cron-pad beide gedekt. Tests: `src/lib/__tests__/nurture-cron.test.ts` + `src/lib/__tests__/nurture-schedule.test.ts`.
 
-- **P2 — Spiegel mail-context in `affiliate.click`.** Geef de affiliate-klik-call een optionele herkomst mee (`session_id` of een nurture-token, `sequence_day`, `profile_label`) zodat de funnel `nurture.email_sent → affiliate.click` sluitbaar wordt. De `affiliate_clicks`-tabel zelf blijft ongemoeid (harde regel); dit raakt alleen het **spiegel-event** in `domain_events`.
+- **P2 ❌ — Spiegel mail-context in `affiliate.click`.** Geef de affiliate-klik-call een optionele herkomst mee (`session_id` of een nurture-token, `sequence_day`, `profile_label`) zodat de funnel `nurture.email_sent → affiliate.click` sluitbaar wordt. De `affiliate_clicks`-tabel zelf blijft ongemoeid (harde regel); dit raakt alleen het **spiegel-event** in `domain_events`. **Gepland in aparte prompt.**
 
-- **P3 — Reserveer een variant-dimensie (nullable, ongebruikt).** Voeg een optioneel `variant` / `experiment_id`-veld toe aan de nurture-rij + het event, **nu leeg gelaten**. Zo kan later een A/B-test (andere kandidaat-volgorde of copy) aan met een config-flag i.p.v. een schema-wijziging. Klaarzetten ≠ gebruiken — dit is de "toekomstklaar zonder herbouw"-haak.
+- **P3 ✅ — Variant-dimensie (nullable, ongebruikt).** `variant text` kolom op `nurture_emails`; alle inserts zetten `variant: null`. Migratie `20260610130000_nurture_variant.sql` — idempotent, apply vóór deploy via `supabase db push`. Fase-1 A/B-test wordt een config-flag i.p.v. schema-wijziging.
 
-- **P4 — Eén join-key door de funnel.** Borg dat `session_id` (nu pseudoniem) als consistente sleutel door `intake.completed → nurture.email_sent → affiliate.click → remeasure.completed` loopt, **binnen de service_role-grens**. Dit is de ruggengraat waarop zowel de meet-loop (DEEL 2) als later de k-anon-aggregatie (DEEL 3) steunt.
+- **P4 ✅ — Eén join-key door de funnel.** `session_id` (pseudoniem) loopt door `intake.completed → nurture.email_sent → remeasure.completed`. `affiliate.click` koppeling wacht op P2. Geen nieuwe identifier geïntroduceerd.
 
 **Volgorde-argument:** P1–P4 zijn de enige dingen die nú moeten, en alleen omdat ze **retroactief niet in te halen zijn** — een klik die vandaag niet aan een mail gekoppeld wordt, is morgen verloren. De optimizer eromheen is terecht uitgesteld.
 
@@ -221,17 +230,17 @@ Bij white-label verschuift de **AVG-rol**: per coach/agency kan een aparte verwe
 
 ## Gefaseerde implementatie-volgorde (afhankelijkheden, geen kalenderdata)
 
-1. **P1 — `nurture.email_sent` met `cta_kind`+`cta_slug`.** Geen afhankelijkheid. *Kan direct.* Kritieke, retroactief-niet-inhaalbare schakel.
-2. **P2 — `affiliate.click` mail-herkomst (spiegel-event).** Naast 1. `affiliate_clicks`-tabel ongemoeid.
-3. **P4 — join-key door de funnel borgen.** Naast 1/2; ruggengraat van de loop.
-4. **P3 — variant-dimensie nullable klaarzetten.** Naast 1–3; pas gebruikt in fase 1-test.
+1. **P1 ✅ — `nurture.email_sent` met `cta_kind`+`cta_slug`+`candidate_rank`.** Gedaan 10 jun 2026. Kritieke, retroactief-niet-inhaalbare schakel.
+2. **P2 ❌ — `affiliate.click` mail-herkomst (spiegel-event).** Naast 1. `affiliate_clicks`-tabel ongemoeid. Aparte prompt.
+3. **P4 ✅ — join-key door de funnel borgen.** Gedaan 10 jun 2026. Ruggengraat van de loop (`affiliate.click` wacht op P2).
+4. **P3 ✅ — variant-dimensie nullable klaarzetten.** Gedaan 10 jun 2026. Migratie `20260610130000_nurture_variant.sql`.
 5. **Meet-loop fase 1** — handmatige A/B + cijfers lezen (DEEL 2). Afhankelijk van 1–4.
 6. **Productkennis-RAG-spoor (DEEL 3A/3B).** Parallel, niet-blokkerend, geen persoonsdata.
 7. **Anonimiseringspad + governance-poort (3C).** Bij nadering 500-drempel; blokkeert het persoonsdata-LLM-spoor.
 8. **LLM-volgorde-/triggersuggestie (3, fase 2/3).** Alleen ná 7 + volume; output blijft achter de gate.
 9. **B2B-naden invullen (DEEL 4).** Alleen ná bewezen B2C-conversie; isolatie + DPA + per-org governance eerst.
 
-**Kritiek pad voor toekomstklaarheid:** **1 → 2 → 3 → 4** (de meet-haakjes). Alles daarna (optimizer, LLM, B2B) is terecht uitgesteld en hangt aan deze instrumentatie.
+**Kritiek pad voor toekomstklaarheid:** **1 → 2 → 3 → 4** (de meet-haakjes). P1/P3/P4 gedaan; P2 (affiliate-klik-token) als enige open schakel.
 
 ---
 

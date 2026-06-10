@@ -68,7 +68,8 @@ Immutable dag-0 freeze voor delta-analyse. Overleeft `domain_scores`-nulling op 
 | template_key | text, nullable | Audittrail, bv. `guide_slaap_day0` |
 | sequence_day | integer | `0`, `3`, `7`, `14`, `21`, `30` |
 | scheduled_at | timestamptz | — |
-| status | text | `pending`, `sent`, `failed`, `cancelled` |
+| status | text | `pending`, `sending`, `sent`, `failed`, `cancelled` |
+| claimed_at | timestamptz, nullable | Cron-claim timestamp; stuck-detectie >15 min |
 | sent_at | timestamptz, nullable | — |
 | resend_id | text, nullable | — |
 | error_message | text, nullable | — |
@@ -77,9 +78,27 @@ Immutable dag-0 freeze voor delta-analyse. Overleeft `domain_scores`-nulling op 
 | domain_scores | jsonb, nullable | Snapshot (intake) |
 | urgency_level | text, nullable | Snapshot (intake) |
 | first_name | text, nullable | Snapshot |
+| variant | text, nullable | A/B-variant-dimensie — **altijd `null` in fase-0**. Gereserveerd voor kandidaat-volgorde of copy-A/B; nu klaargezet zodat fase-1 experiment een config-flag is i.p.v. schema-wijziging. Bron: `supabase/migrations/20260610130000_nurture_variant.sql`. ⚠ Kolom moet bestaan vóór deploy (`supabase db push`). |
 
 Intake-nurture: `scheduleNurtureSequence` in `src/lib/nurture.ts`.  
 Gids-nurture: `scheduleGuideNurtureSequence` in `src/lib/guide-nurture.ts`.
+
+#### `nurture.email_sent` — anonimiserings-veilig event-contract (P1)
+
+Payload in `domain_events` bij elke verzonden nurture-mail (intake-stroom):
+
+| Veld | Type | Beschrijving |
+|---|---|---|
+| `sequence_day` | number | 0 / 3 / 7 / 14 / 21 / 30 |
+| `profile_label` | string | Profiellabel (engine-output, geen PII) |
+| `primary_domain` | string | Zwakste domein |
+| `status` | string | Altijd `"sent"` (failed-events worden niet geëmit) |
+| `cta_kind` | string | `"lifestyle"` \| `"pillar"` \| `"supplement"` \| `"remeasure"` |
+| `cta_slug` | string \| null | Supplement-slug (bv. `"magnesium"`) of `null` bij niet-supplement |
+| `candidate_rank` | number \| null | Index in `candidates[]` die de gate doorliet; `null` bij niet-supplement |
+| `variant` | null | Altijd `null` in fase-0; toekomstig A/B-label |
+
+Geen e-mail, naam, leeftijd of vrije tekst. `cta_slug` en `candidate_rank` worden afgeleid van de `ResolvedNurtureCta` die ook in de mailbody werd gebruikt (single source of truth). Funnel join-key: `session_id` (pseudoniem) loopt door `intake.completed → nurture.email_sent → remeasure.completed`.
 
 ### guide_opt_ins
 
