@@ -21,6 +21,7 @@ import {
   buildIntakeFallbackUrl,
   buildIntakeRecoveryUrlForSession,
 } from "@/lib/recovery-token";
+import { buildNurtureAttributionToken } from "@/lib/nurture-attribution-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import type { GuideThema } from "@/types/guide-opt-in";
@@ -239,6 +240,14 @@ export async function runPendingNurtureEmails(): Promise<{
               )
             : null;
 
+        const nurtureToken = mail.session_id
+          ? buildNurtureAttributionToken({
+              sessionId: mail.session_id,
+              sequenceDay: mail.sequence_day,
+              profileLabel,
+            })
+          : null;
+
         const intakeContent = getNurtureEmailContent(
           {
             sequenceDay: mail.sequence_day,
@@ -256,6 +265,7 @@ export async function runPendingNurtureEmails(): Promise<{
             recipientEmail: email,
             sessionId: mail.session_id,
             recoveryUrl,
+            nurtureToken: nurtureToken || null,
           },
         );
         subject = intakeContent.subject;

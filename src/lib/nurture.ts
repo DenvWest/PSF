@@ -4,6 +4,7 @@ import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
 import { slugFromComparisonPath } from "@/lib/resolve-nurture-cta";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { buildIntakeRecoveryUrlForSession } from "@/lib/recovery-token";
+import { buildNurtureAttributionToken } from "@/lib/nurture-attribution-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import type { DomainScores } from "@/lib/intake-engine";
@@ -53,6 +54,12 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
 
   const recoveryUrl = await buildIntakeRecoveryUrlForSession(input.sessionId);
 
+  const nurtureToken = buildNurtureAttributionToken({
+    sessionId: input.sessionId,
+    sequenceDay: 0,
+    profileLabel: input.profileLabel,
+  });
+
   const { subject, html, resolvedCta } = getNurtureEmailContent(
     {
       sequenceDay: 0,
@@ -66,6 +73,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
       recipientEmail: input.email,
       sessionId: input.sessionId,
       recoveryUrl,
+      nurtureToken: nurtureToken || null,
     },
   );
 

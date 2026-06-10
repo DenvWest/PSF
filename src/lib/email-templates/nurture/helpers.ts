@@ -325,12 +325,26 @@ export type NurtureInterventionHighlight = {
   comparePath?: string | null;
 };
 
+function appendNurtureToken(path: string, token: string | null | undefined): string {
+  if (!token) return path;
+  const sep = path.includes("?") ? "&" : "?";
+  return `${path}${sep}nt=${encodeURIComponent(token)}`;
+}
+
+function withNurtureToken(url: string, token: string | null | undefined): string {
+  if (!token || !url.startsWith("/beste/")) return url;
+  return appendNurtureToken(url, token);
+}
+
 export function renderInterventionHighlightHtml(
   highlight: NurtureInterventionHighlight,
+  nurtureToken?: string | null,
 ): string {
+  const rawPath = highlight.comparePath?.trim() ?? null;
+  const trackedPath = rawPath ? withNurtureToken(rawPath, nurtureToken) : null;
   const compareHtml =
-    highlight.comparePath && highlight.comparePath.trim()
-      ? `<p style="margin:12px 0 0 0;font-size:15px;line-height:1.6;color:#333333;"><a href="https://www.perfectsupplement.nl${escapeHtml(highlight.comparePath.trim())}" style="color:#2d4a3e;font-weight:600;text-decoration:underline;">Bekijk ${escapeHtml(highlight.title)} →</a></p>`
+    trackedPath
+      ? `<p style="margin:12px 0 0 0;font-size:15px;line-height:1.6;color:#333333;"><a href="https://www.perfectsupplement.nl${escapeHtml(trackedPath)}" style="color:#2d4a3e;font-weight:600;text-decoration:underline;">Bekijk ${escapeHtml(highlight.title)} →</a></p>`
       : "";
   return `
     <div style="margin:18px 0;padding:14px 18px;border:1px solid #e0e0d8;border-radius:4px;background:#fafaf7;">
@@ -347,6 +361,7 @@ export function renderPersonalizedRows(
   intakeUrl: string,
   firstName?: string | null,
   interventionHighlight?: NurtureInterventionHighlight | null,
+  nurtureToken?: string | null,
 ): string {
   const bodyHtml = block.bodyParagraphs
     .map(
@@ -360,20 +375,25 @@ export function renderPersonalizedRows(
       <p style="margin:0;font-size:15px;line-height:1.6;color:#1a1a1a;">${escapeHtml(block.tip)}</p>
     </div>`;
 
+  const supplementTipUrl = supplementTip
+    ? withNurtureToken(supplementTip.supplement.url, nurtureToken)
+    : null;
+
   const supplementHtml = interventionHighlight
-    ? renderInterventionHighlightHtml(interventionHighlight)
-    : supplementTip
+    ? renderInterventionHighlightHtml(interventionHighlight, nurtureToken)
+    : supplementTip && supplementTipUrl
       ? `
     <div style="margin:18px 0;padding:14px 18px;border:1px solid #e0e0d8;border-radius:4px;background:#fafaf7;">
       <p style="margin:0 0 6px 0;font-size:13px;color:#666;text-transform:uppercase;letter-spacing:.04em;font-weight:600;">Supplement-tip</p>
       <p style="margin:0 0 8px 0;font-size:15px;line-height:1.6;color:#333333;">${escapeHtml(supplementTip.intro)}</p>
       <p style="margin:0 0 8px 0;font-size:15px;line-height:1.6;color:#333333;"><strong>${escapeHtml(supplementTip.supplement.name)}</strong> — ${escapeHtml(supplementTip.supplement.reason)}</p>
-      <a href="https://www.perfectsupplement.nl${escapeHtml(supplementTip.supplement.url)}" style="font-size:14px;color:#2d4a3e;text-decoration:underline;">Vergelijk ${escapeHtml(supplementTip.supplement.name)} supplementen →</a>
+      <a href="https://www.perfectsupplement.nl${escapeHtml(supplementTipUrl)}" style="font-size:14px;color:#2d4a3e;text-decoration:underline;">Vergelijk ${escapeHtml(supplementTip.supplement.name)} supplementen →</a>
     </div>`
       : "";
 
-  const rawCtaTarget =
+  const rawCtaBase =
     block.cta.url === "/intake" ? intakeUrl : block.cta.url;
+  const rawCtaTarget = withNurtureToken(rawCtaBase, nurtureToken);
   const ctaUrl = rawCtaTarget.startsWith("http")
     ? rawCtaTarget
     : `https://www.perfectsupplement.nl${rawCtaTarget}`;

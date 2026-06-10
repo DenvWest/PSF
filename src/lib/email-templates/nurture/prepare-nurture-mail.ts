@@ -41,6 +41,7 @@ export function renderNurtureDayInner(
       intakeUrl,
       data.firstName,
       interventionHighlight,
+      ctx.nurtureToken,
     ) + renderProfileAnchorFooter(profileKey, intakeUrl);
 
   const affiliateDisclaimer = inner.includes("/beste/");

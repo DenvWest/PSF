@@ -3,6 +3,7 @@ export async function trackClick(data: {
   product_naam?: string;
   categorie?: string;
   pagina?: string;
+  nt?: string | null;
 }) {
   try {
     const res = await fetch("/api/affiliate/click", {

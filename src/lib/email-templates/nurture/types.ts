@@ -24,4 +24,6 @@ export type NurtureEmailDispatchContext = {
   sessionId?: string | null;
   /** Recovery-URL met eenmalige token; fallback naar /intake als niet gezet. */
   recoveryUrl?: string | null;
+  /** Nurture-attributietoken voor /beste/-CTA's; alleen opnemen als sessie bekend. */
+  nurtureToken?: string | null;
 };

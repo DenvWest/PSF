@@ -44,6 +44,10 @@ export default function AffiliateLink({
           merk: affiliateSlug.split('-').slice(0, -1).join('-') || affiliateSlug,
           positie_op_pagina: parseInt(position ?? '0', 10) || 0,
         });
+        const nt =
+          typeof window !== 'undefined'
+            ? new URLSearchParams(window.location.search).get('nt')
+            : null;
         trackClick({
           product_id: affiliateSlug,
           product_naam: affiliateSlug,
@@ -51,6 +55,7 @@ export default function AffiliateLink({
           pagina: typeof window !== 'undefined'
             ? window.location.pathname
             : '',
+          nt: nt ?? undefined,
         });
       }}
     >

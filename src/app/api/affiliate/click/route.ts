@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { emitEvent } from "@/lib/events";
 import { getDefaultOrganizationId } from "@/lib/organization";
+import { resolveNurtureAttributionToken } from "@/lib/nurture-attribution-token";
 import { consumeRateLimit } from "@/lib/rate-limit";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp } from "@/lib/turnstile-verify";
@@ -64,6 +65,7 @@ export async function POST(request: NextRequest) {
   const product_naam = normalizeField(record.product_naam, MAX_FIELD);
   const categorie = normalizeField(record.categorie, MAX_FIELD);
   const pagina = normalizeField(record.pagina, MAX_PAGINA);
+  const rawNt = normalizeField(record.nt, MAX_FIELD);
 
   const { error } = await admin.from("affiliate_clicks").insert({
     product_id,
@@ -81,11 +83,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const attribution = rawNt ? resolveNurtureAttributionToken(rawNt) : null;
+
   void emitEvent({
     eventType: "affiliate.click",
     payload: {
       categorie: categorie.length > 0 ? categorie : null,
       comparison_slug: product_id,
+      ...(attribution
+        ? {
+            session_id: attribution.sessionId,
+            sequence_day: attribution.sequenceDay,
+            profile_label: attribution.profileLabel,
+          }
+        : {}),
     },
     deliveredTo: ["n8n_webhook"],
   });
