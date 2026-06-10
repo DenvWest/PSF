@@ -1,0 +1,6 @@
+#!/bin/sh
+# Snelle gate: typecheck mag nooit rood naar een commit landen (zie FUNDAMENT P0).
+npx tsc --noEmit || {
+  echo "[pre-commit] tsc --noEmit faalt — commit geblokkeerd." >&2
+  exit 1
+}

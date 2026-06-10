@@ -9,7 +9,8 @@
     "lint": "eslint --max-warnings 0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "generate-state": "node scripts/generate-state.mjs"
+    "generate-state": "node scripts/generate-state.mjs",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.0",

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Volledige gate vóór de code de remote bereikt: typecheck + testsuite.
+npx tsc --noEmit || {
+  echo "[pre-push] tsc --noEmit faalt — push geblokkeerd." >&2
+  exit 1
+}
+npx vitest run || {
+  echo "[pre-push] vitest run faalt — push geblokkeerd." >&2
+  exit 1
+}
