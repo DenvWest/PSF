@@ -72,6 +72,13 @@ export async function runPendingNurtureEmails(): Promise<{
 
   const now = new Date().toISOString();
 
+  // Her-open rijen die langer dan 15 minuten in 'sending' hangen (process crash recovery).
+  await supabase
+    .from("nurture_emails")
+    .update({ status: "pending", claimed_at: null })
+    .eq("status", "sending")
+    .lt("claimed_at", new Date(Date.now() - 15 * 60 * 1000).toISOString());
+
   const { data: pendingEmails, error } = await supabase
     .from("nurture_emails")
     .select("*")
@@ -112,6 +119,24 @@ export async function runPendingNurtureEmails(): Promise<{
       typeof mail.source === "string" && mail.source.trim()
         ? mail.source.trim()
         : "intake";
+
+    // Atomaire claim: exactement één cron-run wint de UPDATE WHERE status='pending'.
+    const { data: claimed, error: claimErr } = await supabase
+      .from("nurture_emails")
+      .update({ status: "sending", claimed_at: new Date().toISOString() })
+      .eq("id", mail.id)
+      .eq("status", "pending")
+      .select("id")
+      .maybeSingle();
+
+    if (claimErr) {
+      console.error("[nurture-cron] claim failed:", mail.id, claimErr);
+      errors += 1;
+      continue;
+    }
+    if (!claimed) {
+      continue;
+    }
 
     try {
       let subject: string;

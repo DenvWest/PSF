@@ -35,6 +35,27 @@ describe("computePerDomainDelta", () => {
       recovery_score: 8,
     });
   });
+
+  it("retourneert nul voor identieke scores", () => {
+    const delta = computePerDomainDelta(baselineScores, baselineScores);
+    for (const v of Object.values(delta)) {
+      expect(v).toBe(0);
+    }
+  });
+
+  it("verwerkt negatieve delta correct (verslechtering)", () => {
+    const worse: typeof baselineScores = {
+      sleep_score: 30,
+      energy_score: 20,
+      stress_score: 40,
+      nutrition_score: 40,
+      movement_score: 55,
+      recovery_score: 25,
+    };
+    const delta = computePerDomainDelta(currentScores, worse);
+    expect(delta.sleep_score).toBe(-24);
+    expect(delta.energy_score).toBe(-22);
+  });
 });
 
 describe("buildRemeasureCompletedPayload", () => {

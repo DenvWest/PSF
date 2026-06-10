@@ -370,10 +370,9 @@ export default function OnrustigeSlaperPage() {
                   <h4 className="font-semibold text-slate-900 text-base">Melatonine</h4>
                   <div className="mt-3 space-y-3">
                     <p className="text-slate-600 leading-relaxed">
-                      Heb je vooral moeite met inslapen? Melatonine draagt bij aan het verkorten van de
-                      tijd die je nodig hebt om in slaap te vallen volgens de officiële EU‑claimtekst
-                      (dosis en timing volgens product/arts). Melatonine ondersteunt ritme en timing;
-                      het is géén alles-in-één oplossing voor slechte nachten door stress.
+                      Melatonine is een ritme- en timingsignaal: het vertelt je lichaam dat het nacht is.
+                      Bij vooral inslaap- of ritmevragen kan het op het juiste tijdstip en in de juiste
+                      dosis relevant zijn — bespreek dit met een arts of apotheker bij langdurige klachten.
                     </p>
                   </div>
                   <p className="text-slate-500 text-sm mt-4">

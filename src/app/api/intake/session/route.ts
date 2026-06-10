@@ -418,7 +418,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const res = NextResponse.json({ sessionId: row.id }, { status: 200 });
+  const responseData: { sessionId: string; rapportUrl?: string } = {
+    sessionId: row.id,
+  };
+  if (isRemeasure && remeasureBaselineId) {
+    const signedBase = signIntakeSessionId(remeasureBaselineId);
+    if (signedBase) {
+      responseData.rapportUrl = `/rapport/${encodeURIComponent(signed)}?base=${encodeURIComponent(signedBase)}`;
+    }
+  }
+
+  const res = NextResponse.json(responseData, { status: 200 });
   res.cookies.set(INTAKE_SESSION_COOKIE_NAME, signed, {
     httpOnly: true,
     sameSite: "lax",

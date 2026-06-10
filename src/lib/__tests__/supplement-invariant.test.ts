@@ -1,4 +1,4 @@
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it, expect } from "vitest";
 import {
@@ -161,9 +161,56 @@ const gateTier1Only = {
 describe("governance invariants", () => {
   // TODO invariant: elke claim in productdata verwijst alleen naar verified:true entries
 
+  function assertNoEditorialClaimVerb(): void {
+    const EDITORIAL_FILES = [
+      "src/app/profiel/onrustige-slaper/page.tsx",
+      "src/data/thema/slaap.ts",
+      "src/data/supplement-guides/melatonine.ts",
+      "src/data/kennisbank.ts",
+      "src/components/report/DeltaRow.tsx",
+      "src/components/report/DeltaRadar.tsx",
+      "src/app/rapport/[sid]/page.tsx",
+      "src/app/rapport/page.tsx",
+    ];
+    // Verboden: claim-werkwoord + inslaap binnen 40 tekens
+    const CLAIM_VERB_PATTERN = /(draagt\s+bij\s+aan|verkort).{0,40}inslaap/i;
+    // Verboden: verbatim EU-claim-kopie (claimtekst / claimvoorwaarden) — niet neutrale uitleg over het bestaan van EU-claims
+    const EU_CLAIM_PATTERN = /officiële\s+(EU[-\u2011]?)?\s*claim(?:tekst|voorwaarden)/i;
+
+    const violations: string[] = [];
+    for (const relPath of EDITORIAL_FILES) {
+      const content = readFileSync(join(process.cwd(), relPath), "utf8");
+      if (CLAIM_VERB_PATTERN.test(content) || EU_CLAIM_PATTERN.test(content)) {
+        violations.push(relPath);
+      }
+    }
+    expect(violations).toEqual([]);
+  }
+
+  function assertRapportNoAttribution(): void {
+    const RAPPORT_FILES = [
+      "src/components/report/DeltaRow.tsx",
+      "src/components/report/DeltaRadar.tsx",
+      "src/app/rapport/[sid]/page.tsx",
+      "src/app/rapport/page.tsx",
+    ];
+    const ATTRIBUTION_PATTERN = /werkte|dankzij|door\s+(magnesium|omega|ashwagandha|melatonine|vitamine)/i;
+
+    const violations: string[] = [];
+    for (const relPath of RAPPORT_FILES) {
+      const content = readFileSync(join(process.cwd(), relPath), "utf8");
+      if (ATTRIBUTION_PATTERN.test(content)) {
+        violations.push(relPath);
+      }
+    }
+    expect(violations).toEqual([]);
+  }
+
   const GOVERNANCE_INVARIANTS = [
     { id: "forbidden-no-live-footprint", run: assertForbiddenNoLiveFootprint },
     { id: "no-orphan-affiliate-slugs", run: assertNoOrphanAffiliateSlugs },
+    { id: "forbidden-no-editorial-claim-verb", run: assertNoEditorialClaimVerb },
+    { id: "rapport-no-supplement-attribution", run: assertRapportNoAttribution },
   ] as const;
 
   for (const invariant of GOVERNANCE_INVARIANTS) {

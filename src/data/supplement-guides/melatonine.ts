@@ -24,7 +24,7 @@ export const melatonineData: SupplementData = {
       {
         titel: "Slaapinitiatie",
         uitleg:
-          "Een lage dosis melatonine op het juiste tijdstip verkort de inslaapduur — met name bij mensen die later dan gewenst moe worden.",
+          "Een lage dosis melatonine op het juiste tijdstip kan het inslapen ondersteunen bij het opnieuw instellen van het ritme — met name bij mensen die later dan gewenst moe worden.",
       },
       {
         titel: "Circadiaans ritme herstellen",
@@ -34,7 +34,7 @@ export const melatonineData: SupplementData = {
       {
         titel: "Jetlag",
         uitleg:
-          "De meest bewezen toepassing van melatonine: het herstelt je slaap-waakcyclus na tijdzoneverandering significant sneller.",
+          "Een veelgebruikte toepassing van melatonine: het ondersteunt het opnieuw instellen van de slaap-waakcyclus na tijdzoneverandering.",
       },
       {
         titel: "Leeftijdsgerelateerde daling",
