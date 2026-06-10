@@ -20,3 +20,4 @@ COMPLIANCE-AUDIT-*.md
 nightly-compliance-audit.sh
 scripts/monthly-koag-audit.sh
 package-lock.json.backup
+tsconfig.tsbuildinfo
