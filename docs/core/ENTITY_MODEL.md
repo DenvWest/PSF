@@ -42,6 +42,22 @@ Immutable dag-0 freeze voor delta-analyse. Overleeft `domain_scores`-nulling op 
 | symptom_profile | text[] | symptoomselectie snapshot |
 | age_range | text, NOT NULL | |
 
+### intake_intake_log
+
+Pseudonieme periodieke voedings-zelfrapportage; substraat voor de zelf-evaluatie-lus (F0). Elke rij vertegenwoordigt één zelfrapport (inname, niet status) gekoppeld aan een intake-sessie. Verwijderd bij AVG-revoke/delete via `cleanup_intake_session_linked_data()`. Bron-migratie: `supabase/migrations/20260610140000_intake_intake_log.sql`.
+
+| Kolom | Type | Beschrijving |
+|---|---|---|
+| session_id | uuid, pk (deel) | FK naar intake_sessions, `on delete cascade` |
+| logged_at | timestamptz, pk (deel) | Tijdstip van het zelfrapport (samengestelde PK met session_id) |
+| organization_id | uuid, NOT NULL | FK naar organizations (default-tenant) |
+| raw_inputs | jsonb, NOT NULL | Ruwe invoer van de gebruiker (bron, altijd bewaard) |
+| estimate | jsonb, nullable | Afgeleide inname-inschatting; apart opgeslagen zodat het herberekenbaar is zonder de ruwe data te overschrijven |
+| estimate_version | text, nullable | Versie van de estimate-engine waarmee `estimate` is berekend |
+| created_at | timestamptz | Aanmaaktijdstip van de rij |
+
+RLS aan; geen anon/authenticated policies — alleen service_role via API-routes (zelfde patroon als `plan_progress`).
+
 ### intake_reminders
 
 | Kolom | Type | Beschrijving |

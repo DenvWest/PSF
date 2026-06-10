@@ -25,6 +25,13 @@ export const GUIDE_CONSENT_TEXT: Record<GuideConsentType, string> = {
     "Ik wil de gratis gids en relevante tips per e-mail ontvangen. Ik begrijp dat ik dit altijd kan intrekken.",
 };
 
+export type NutritionLogConsentType = "nutrition_intake_logging";
+
+export const NUTRITION_LOG_CONSENT_TEXT: Record<NutritionLogConsentType, string> = {
+  nutrition_intake_logging:
+    "Ik geef toestemming om mijn periodieke voedingsrapportage te verwerken voor een persoonlijke inname-inschatting en leefstijladvies. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
+};
+
 export const CONTACT_CONSENT_TEXT: Record<ConsentType, string> = {
   health_data_processing:
     "Ik geef toestemming voor de verwerking van de gegevens in dit bericht, inclusief eventuele gezondheidsgegevens, voor het beantwoorden van mijn vraag",
