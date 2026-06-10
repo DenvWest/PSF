@@ -111,6 +111,7 @@ type IntakeResultsProps = {
   answers: Record<string, number>;
   symptoms: SymptomId[];
   sessionId: string | null;
+  rapportUrl?: string | null;
   firstName?: string | null;
   hasActiveMarketingEmailConsent?: boolean;
   hideLegacyPlanSections?: boolean;
@@ -254,6 +255,7 @@ export default function IntakeResults({
   answers,
   symptoms,
   sessionId,
+  rapportUrl = null,
   firstName,
   hasActiveMarketingEmailConsent = false,
   hideLegacyPlanSections = false,
@@ -426,6 +428,21 @@ export default function IntakeResults({
             {heroTitle}
           </h1>
         </header>
+
+        {rapportUrl && (
+          <Link
+            href={rapportUrl}
+            className="mb-6 block rounded-2xl border border-intake-sage/40 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-intake-sage">
+              30-dagen hermeting
+            </p>
+            <p className="mt-1 text-sm font-medium text-intake-ink">
+              Bekijk je 30-dagen rapport — zo veranderde je beeld sinds de
+              startmeting →
+            </p>
+          </Link>
+        )}
 
         <section className="mb-6" aria-label="Jouw leefstijl-overzicht">
           <IntakeResultPreviewCard

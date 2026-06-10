@@ -11,7 +11,7 @@ export async function saveIntakeSession(data: {
   turnstileToken: string;
   website: string;
   consent: IntakeConsentPayload;
-}): Promise<string | null> {
+}): Promise<{ sessionId: string; rapportUrl: string | null } | null> {
   try {
     const response = await fetch("/api/intake/session", {
       method: "POST",
@@ -34,7 +34,7 @@ export async function saveIntakeSession(data: {
     });
 
     const json = (await response.json().catch(() => null)) as
-      | { sessionId?: string; error?: string }
+      | { sessionId?: string; rapportUrl?: string; error?: string }
       | null;
 
     if (!response.ok) {
@@ -43,7 +43,13 @@ export async function saveIntakeSession(data: {
     }
 
     const id = json?.sessionId;
-    return typeof id === "string" ? id : null;
+    if (typeof id !== "string") {
+      return null;
+    }
+    return {
+      sessionId: id,
+      rapportUrl: typeof json?.rapportUrl === "string" ? json.rapportUrl : null,
+    };
   } catch (e) {
     console.error("Save session error:", e);
     return null;

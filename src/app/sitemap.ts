@@ -26,6 +26,7 @@ const PILLAR_PADEN = [
 const STATISCHE_PADEN = [
   "/",
   "/intake",
+  "/rapport",
   "/supplementen",
   "/gidsen",
   "/over-ons",

@@ -70,6 +70,7 @@ export default function IntakeClient() {
   const [scores, setScores] = useState<DomainScores | null>(null);
   const [sessionTimestamp, setSessionTimestamp] = useState<number | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [rapportUrl, setRapportUrl] = useState<string | null>(null);
   const calculatingStartedAtRef = useRef(0);
   const [intakeTurnstileToken, setIntakeTurnstileToken] = useState("");
   const [honeypotWebsite, setHoneypotWebsite] = useState("");
@@ -187,7 +188,7 @@ export default function IntakeClient() {
       if (cancelled) {
         return;
       }
-      const id = await saveIntakeSession({
+      const saved = await saveIntakeSession({
         symptoms,
         answers,
         ageRange,
@@ -212,7 +213,8 @@ export default function IntakeClient() {
 
       setScores(computed);
       setSessionTimestamp(ts);
-      setSessionId(id);
+      setSessionId(saved?.sessionId ?? null);
+      setRapportUrl(saved?.rapportUrl ?? null);
       setPhase("results");
     })();
 
@@ -437,6 +439,7 @@ export default function IntakeClient() {
             answers={answers}
             symptoms={symptoms}
             sessionId={sessionId}
+            rapportUrl={rapportUrl}
             firstName={normalizeFirstName(firstName)}
             hasActiveMarketingEmailConsent={hasActiveMarketingEmailConsent}
             secondaryTheme={
