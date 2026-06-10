@@ -293,6 +293,7 @@ Kritiek pad voor de eerste waarde: **1 → 2 → 3 → 4 → 5 → 6**. Spoor 2 
 | [`INTAKE_SYSTEM.md`](../core/INTAKE_SYSTEM.md) | 15-vragen-intake, 6 domeinscores, regelgebaseerd tot 500+ |
 | [`ENTITY_MODEL.md`](../core/ENTITY_MODEL.md) | `intake_sessions`, `consent_records`, `domain_events`, productdatabase, `evidence_claims.embedding` |
 | [`PERSONALIZATION_ENGINE.md`](../core/PERSONALIZATION_ENGINE.md) | Profiellabels en triggers waar de meetlaag op aansluit |
+| [`PLAN_NUTRITION_SELFEVAL_LOOP.md`](PLAN_NUTRITION_SELFEVAL_LOOP.md) | Temporele lus bovenop deze meetlaag: 24h-zelfrapport → delta → advies, met `intake_intake_log` als substraat |
 
 ---
 

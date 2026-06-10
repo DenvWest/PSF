@@ -90,6 +90,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 10 juni 2026 | Voeding zelf-evaluatie-lus: 24h-zelfrapport → inname-inschatting → delta → leefstijl-eerst-dan-supplement-advies; `intake_intake_log` als temporeel substraat; cohort-vergelijking volume-gated; inname-vs-status-grens | `plan/PLAN_NUTRITION_SELFEVAL_LOOP.md` |
 | 10 juni 2026 | Nurture multi-product data-readiness: meet-haakjes P1–P4, meten→testen→verbeteren-loop, LLM-governance-poort G1–G7, B2B-naden via organization_id | `plan/PLAN_NURTURE_MULTIPRODUCT_DATA_READINESS.md` |
 | 6 juni 2026 | FASE A implementatie-instructies: concrete werkvoor FASE A1–A6 (dag-0, CTA-resolver, Overtrainer, K1–K3, balansregel, mail-coherentie) | `archive/FASE_A_IMPLEMENTATIE.md` |
 | 6 juni 2026 | Merkpositionering: propositie, differentiatie, social media pijlers, transparantie vs. bescherming bedrijfsinformatie | `core/BRAND_POSITIONING.md` |
