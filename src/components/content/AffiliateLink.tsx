@@ -1,10 +1,14 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { affiliateLinks, type AffiliateSlug } from "@/data/affiliate-links";
 import { trackAffiliateClick } from "@/lib/track-affiliate-click";
 import { trackAffiliateKlik } from "@/lib/ga4";
 import { trackClick } from "@/lib/track";
+import {
+  captureNurtureToken,
+  getNurtureToken,
+} from "@/lib/nurture-click-attribution";
 
 type AffiliateLinkProps = {
   affiliateSlug: AffiliateSlug;
@@ -21,6 +25,10 @@ export default function AffiliateLink({
   pageType,
   position,
 }: AffiliateLinkProps) {
+  useEffect(() => {
+    captureNurtureToken();
+  }, []);
+
   const href = affiliateLinks[affiliateSlug];
 
   if (!href) {
@@ -36,6 +44,7 @@ export default function AffiliateLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer sponsored"
+      referrerPolicy="strict-origin"
       className={className}
       onClick={() => {
         trackAffiliateClick(affiliateSlug, { pageType, position });
@@ -44,10 +53,6 @@ export default function AffiliateLink({
           merk: affiliateSlug.split('-').slice(0, -1).join('-') || affiliateSlug,
           positie_op_pagina: parseInt(position ?? '0', 10) || 0,
         });
-        const nt =
-          typeof window !== 'undefined'
-            ? new URLSearchParams(window.location.search).get('nt')
-            : null;
         trackClick({
           product_id: affiliateSlug,
           product_naam: affiliateSlug,
@@ -55,7 +60,7 @@ export default function AffiliateLink({
           pagina: typeof window !== 'undefined'
             ? window.location.pathname
             : '',
-          nt: nt ?? undefined,
+          nt: getNurtureToken() ?? undefined,
         });
       }}
     >

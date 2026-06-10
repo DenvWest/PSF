@@ -58,6 +58,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     sessionId: input.sessionId,
     sequenceDay: 0,
     profileLabel: input.profileLabel,
+    variant: null,
   });
 
   const { subject, html, resolvedCta } = getNurtureEmailContent(

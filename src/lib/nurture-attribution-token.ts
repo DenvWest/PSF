@@ -7,6 +7,7 @@ export type NurtureAttributionPayload = {
   sessionId: string;
   sequenceDay: number;
   profileLabel: string;
+  variant: string | null;
 };
 
 function getSecret(): string {
@@ -43,6 +44,7 @@ export function buildNurtureAttributionToken(
       sid: payload.sessionId,
       day: payload.sequenceDay,
       lbl: payload.profileLabel,
+      var: payload.variant ?? null,
       exp,
     }),
   ).toString("base64url");
@@ -84,8 +86,11 @@ export function resolveNurtureAttributionToken(
   const sid = typeof rec.sid === "string" ? rec.sid.trim() : "";
   const day = typeof rec.day === "number" ? Math.floor(rec.day) : -1;
   const lbl = typeof rec.lbl === "string" ? rec.lbl.trim() : "";
+  // var is optional — afwezig in tokens die vóór deze versie zijn aangemaakt (backward compat)
+  const variant =
+    typeof rec.var === "string" && rec.var.trim() ? rec.var.trim() : null;
 
   if (!sid || day < 0 || !lbl) return null;
 
-  return { sessionId: sid, sequenceDay: day, profileLabel: lbl };
+  return { sessionId: sid, sequenceDay: day, profileLabel: lbl, variant };
 }

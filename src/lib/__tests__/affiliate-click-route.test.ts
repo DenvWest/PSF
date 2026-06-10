@@ -104,11 +104,12 @@ describe("POST /api/affiliate/click — met geldig nurture-token", () => {
     delete process.env.COOKIE_SECRET;
   });
 
-  it("emitEvent draagt session_id, sequence_day en profile_label", async () => {
+  it("emitEvent draagt session_id, sequence_day, profile_label en variant", async () => {
     const token = buildNurtureAttributionToken({
       sessionId: "session-uuid-abc",
       sequenceDay: 14,
       profileLabel: "Stressdrager",
+      variant: "variant-b",
     });
 
     const { POST } = await import("@/app/api/affiliate/click/route");
@@ -132,6 +133,7 @@ describe("POST /api/affiliate/click — met geldig nurture-token", () => {
     expect(emitCall.payload.session_id).toBe("session-uuid-abc");
     expect(emitCall.payload.sequence_day).toBe(14);
     expect(emitCall.payload.profile_label).toBe("Stressdrager");
+    expect(emitCall.payload.variant).toBe("variant-b");
   });
 
   it("affiliate_clicks insert is ongewijzigd — geen extra token-velden", async () => {
@@ -139,6 +141,7 @@ describe("POST /api/affiliate/click — met geldig nurture-token", () => {
       sessionId: "session-uuid-xyz",
       sequenceDay: 21,
       profileLabel: "Onrustige Slaper",
+      variant: null,
     });
 
     const { POST } = await import("@/app/api/affiliate/click/route");
@@ -157,6 +160,7 @@ describe("POST /api/affiliate/click — met geldig nurture-token", () => {
       sessionId: "session-uuid-pii-check",
       sequenceDay: 7,
       profileLabel: "Lage Batterij",
+      variant: null,
     });
 
     const { POST } = await import("@/app/api/affiliate/click/route");
@@ -175,6 +179,7 @@ describe("POST /api/affiliate/click — met geldig nurture-token", () => {
       "session_id",
       "sequence_day",
       "profile_label",
+      "variant",
     ]);
     for (const key of Object.keys(payload)) {
       expect(ALLOWED_KEYS.has(key), `Verboden payload-sleutel: ${key}`).toBe(true);
@@ -211,5 +216,37 @@ describe("POST /api/affiliate/click — ongeldig nurture-token", () => {
     expect(emitCall.payload.session_id).toBeUndefined();
     expect(emitCall.payload.sequence_day).toBeUndefined();
     expect(emitCall.payload.profile_label).toBeUndefined();
+    expect(emitCall.payload.variant).toBeUndefined();
+  });
+});
+
+describe("POST /api/affiliate/click — variant: null in token", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockInsert.mockResolvedValue({ error: null });
+    process.env.COOKIE_SECRET = "test-secret-min-32-bytes-long!!xx";
+  });
+
+  afterEach(() => {
+    delete process.env.COOKIE_SECRET;
+  });
+
+  it("token met variant: null → event payload heeft variant: null", async () => {
+    const token = buildNurtureAttributionToken({
+      sessionId: "session-variant-null",
+      sequenceDay: 21,
+      profileLabel: "In Balans",
+      variant: null,
+    });
+
+    const { POST } = await import("@/app/api/affiliate/click/route");
+    const req = makeRequest({ product_id: "omega3", nt: token });
+    await POST(req as Parameters<typeof POST>[0]);
+
+    const emitCall = mockEmitEvent.mock.calls[0]?.[0] as {
+      payload: Record<string, unknown>;
+    };
+    expect(emitCall.payload.session_id).toBe("session-variant-null");
+    expect(emitCall.payload.variant).toBeNull();
   });
 });

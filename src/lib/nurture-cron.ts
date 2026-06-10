@@ -47,6 +47,7 @@ type NurtureEmailRow = {
   first_name: string | null;
   source: string | null;
   thema: string | null;
+  variant: string | null;
 };
 
 function parseDomainScores(raw: unknown): Record<string, number> {
@@ -240,11 +241,17 @@ export async function runPendingNurtureEmails(): Promise<{
               )
             : null;
 
+        const mailVariant =
+          typeof mail.variant === "string" && mail.variant.trim()
+            ? mail.variant.trim()
+            : null;
+
         const nurtureToken = mail.session_id
           ? buildNurtureAttributionToken({
               sessionId: mail.session_id,
               sequenceDay: mail.sequence_day,
               profileLabel,
+              variant: mailVariant,
             })
           : null;
 

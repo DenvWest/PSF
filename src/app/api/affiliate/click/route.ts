@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
             session_id: attribution.sessionId,
             sequence_day: attribution.sequenceDay,
             profile_label: attribution.profileLabel,
+            variant: attribution.variant,
           }
         : {}),
     },

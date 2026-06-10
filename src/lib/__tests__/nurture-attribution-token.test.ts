@@ -8,6 +8,7 @@ const TEST_PAYLOAD = {
   sessionId: "test-session-uuid-123",
   sequenceDay: 14,
   profileLabel: "Onrustige Slaper",
+  variant: null,
 };
 
 describe("nurture-attribution-token: round-trip", () => {
@@ -30,6 +31,17 @@ describe("nurture-attribution-token: round-trip", () => {
     expect(result!.sessionId).toBe(TEST_PAYLOAD.sessionId);
     expect(result!.sequenceDay).toBe(TEST_PAYLOAD.sequenceDay);
     expect(result!.profileLabel).toBe(TEST_PAYLOAD.profileLabel);
+    expect(result!.variant).toBeNull();
+  });
+
+  it("round-trip mét variant", () => {
+    const token = buildNurtureAttributionToken({
+      ...TEST_PAYLOAD,
+      variant: "variant-a",
+    });
+    const result = resolveNurtureAttributionToken(token);
+    expect(result).not.toBeNull();
+    expect(result!.variant).toBe("variant-a");
   });
 
   it("token is opaque (bevat geen leesbare session_id in de string)", () => {
@@ -77,6 +89,25 @@ describe("nurture-attribution-token: round-trip", () => {
     const parts = token.split(".");
     const wrongVersion = "v0." + parts.slice(1).join(".");
     expect(resolveNurtureAttributionToken(wrongVersion)).toBeNull();
+  });
+
+  it("oud token zonder var-veld → variant: null (backward compat)", async () => {
+    // Bouw een token handmatig zonder `var`-sleutel in de payload
+    const { createHmac } = await import("node:crypto");
+    const secret = process.env.COOKIE_SECRET!;
+    const exp = Date.now() + 60 * 24 * 60 * 60 * 1000;
+    const body = Buffer.from(
+      JSON.stringify({ sid: "old-session", day: 7, lbl: "Stressdrager", exp }),
+    ).toString("base64url");
+    const sig = createHmac("sha256", secret)
+      .update(`v1.${body}`)
+      .digest("base64url");
+    const oldToken = `v1.${body}.${sig}`;
+
+    const result = resolveNurtureAttributionToken(oldToken);
+    expect(result).not.toBeNull();
+    expect(result!.variant).toBeNull();
+    expect(result!.sessionId).toBe("old-session");
   });
 });
 
@@ -142,12 +173,13 @@ describe("nurture-attribution-token: affiliate.click payload-veiligheid", () => 
       sessionId: "session-uuid",
       sequenceDay: 21,
       profileLabel: "Stressdrager",
+      variant: null,
     });
     const result = resolveNurtureAttributionToken(token);
     expect(result).not.toBeNull();
 
     const keys = Object.keys(result!);
-    const ALLOWED = new Set(["sessionId", "sequenceDay", "profileLabel"]);
+    const ALLOWED = new Set(["sessionId", "sequenceDay", "profileLabel", "variant"]);
     for (const key of keys) {
       expect(ALLOWED.has(key), `Onverwachte sleutel: ${key}`).toBe(true);
     }
@@ -159,6 +191,7 @@ describe("nurture-attribution-token: affiliate.click payload-veiligheid", () => 
         sessionId: "session-uuid",
         sequenceDay: day,
         profileLabel: "Lage Batterij",
+        variant: null,
       });
       const result = resolveNurtureAttributionToken(token);
       expect(result).not.toBeNull();
