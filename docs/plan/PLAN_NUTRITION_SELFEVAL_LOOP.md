@@ -16,6 +16,37 @@ Het belichaamt het merkprincipe uit [`src/data/about.ts`](../../src/data/about.t
 
 ---
 
+## Implementatie-status (juni 2026)
+
+De eerste verticale snede staat: **van tap tot gegate affiliate-advies, met terugkerende delta.** Geverifieerd — `tsc` schoon, build slaagt, voedings-modules groen (78 unit-tests).
+
+| Stap | Wat is gebouwd | Status |
+|---|---|---|
+| **F0** | `intake_intake_log`-tabel + `nutrition_intake_logging`-consent + AVG-cleanup-haak | ✅ gecommit |
+| **F1** | `nutrition-intake-estimate.ts` + `nutrition-intake-statements.ts` + `src/data/nutrition/intake-reference.ts` (deterministische inschatting, inname-vs-status als systeem-eigenschap) | ✅ `70ca6a4` |
+| **F2** | `nutrition-advice.ts` — gap → leefstijl-eerst → EFSA-gated supplement (hergebruikt `approved-claims` + `isComparisonAllowed`) | ✅ `78cc804` |
+| **C0** | Capture-flow UI `NutritionCapture` + schrijf-route `/api/intake/nutrition-log` + `/intake/voeding` | ✅ `29ec061` |
+| **C1** | Contextuele tier-2-CTA op de resultatenpagina (alleen bij voeding-aandacht) + `intake.cta_to_nutrition_log`-event | ✅ `94a297f` |
+| **F3** | Delta bij her-log `nutrition-delta.ts` + `measurement.gap_detected` (anoniem) + delta in de UI | ✅ `5b07ef7` |
+| **F4** | Cohort-vergelijking "mannen zoals jij" via k-anon | ⬜ later — volume-gated (500+) |
+| **F5** | Model her-rangschikt advies-triggers | ⬜ later (2000+) |
+
+**De keten loopt end-to-end:** resultaten → (voeding aandacht?) CTA → 1-minuut-zelfrapport → `intake_intake_log` → inname-zin (F1) → leefstijl-eerst-dan-gegate-supplement (F2) → bij her-log "je inname bewoog" (F3). Twee funnel-events: `intake.cta_to_nutrition_log` (instap) en `measurement.gap_detected` (gap).
+
+**Borging:** geen log zonder geversioneerde consent; sessie alleen uit de getekende cookie; estimate server-side berekend; alle inname- én delta-zinnen door de verboden-woorden-filter (inname, niet status); supplement-suggesties alleen via de bestaande EFSA-poort (melatonine/ashwagandha per constructie uitgesloten).
+
+### Logische vervolgstappen (geen herbouw — alles op het bestaande substraat)
+
+1. **Eerst activeren & meten, niet bouwen.** Laat de flow live draaien en lees de twee events: instap-ratio (`intake.cta_to_nutrition_log`) en gap-frequentie (`measurement.gap_detected`). Pas bij signaal verder bouwen.
+2. **Re-log uitnodigen.** Een nurture-dag of resultaten-nudge die ~2 weken na de eerste log uitnodigt opnieuw te loggen — vult F3's delta-volume. Hergebruikt de bestaande nurture-cron + recovery-token; geen nieuw mechanisme.
+3. **Baseline-vs-nu naast vorige-vs-nu.** F3 vergelijkt met de vorige log; voeg "sinds je startpunt" toe — kleine uitbreiding op `nutrition-delta.ts`, het `intake_intake_log`-substraat draagt het al.
+4. **Zachte-pijler-lus.** [`PLAN_SOFTPILLAR_SELFEVAL_LOOP.md`](PLAN_SOFTPILLAR_SELFEVAL_LOOP.md) beschrijft de tegenhanger (stress/energie/beweging/herstel — delta *tegen jezelf* i.p.v. tegen een richtlijn). Zelfde substraat- en delta-patroon; dicht meteen de zwakke funnel-eindpunten van die pijlers.
+5. **Betaalde diepte (horizon).** BMR/TDEE/macro-laag of cohort als premium, via de bestaande `is_paid`/`tier`-flag — config, geen herbouw.
+
+**Aanbeveling:** stap 1 + 2. Je hebt nu een complete, ongeteste-in-het-wild keten; de hoogste waarde is **volume door de lus krijgen** (re-log-uitnodiging) en **kijken of mensen instappen en gaps dichten** — niet nóg een laag bouwen vóór er data stroomt.
+
+---
+
 ## Wat al staat (niet herbouwen)
 
 | Bouwsteen | Status | Bron |
