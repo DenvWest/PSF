@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { clarityTag } from "@/lib/clarity";
 import { NUTRITION_LOG_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { IntakeEstimate, NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
@@ -90,6 +91,8 @@ export default function NutritionCapture() {
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => { clarityTag("nutrition_flow", "started"); }, []);
+
   function handleAnswer(field: keyof NutritionSelfReport, value: number, index: number) {
     const next = { ...answers, [field]: value };
     setAnswers(next);
@@ -144,6 +147,7 @@ export default function NutritionCapture() {
         delta: NutrientDelta[] | null;
       };
 
+      clarityTag("nutrition_flow", "completed");
       setStep({
         kind: "result",
         estimate: data.estimate,

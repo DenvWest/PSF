@@ -41,22 +41,22 @@ export default function IntakeLastSessionLink({
     };
   }, []);
 
-  if (!lastSession) {
-    return null;
-  }
-
   const linkClass =
     theme === "dark"
       ? "text-[13px] text-white/35 underline decoration-white/15 underline-offset-[3px] transition hover:text-white/50"
       : "text-sm text-stone-500 underline decoration-stone-300 underline-offset-[3px] transition hover:text-stone-700";
 
   return (
-    <Link
-      href={INTAKE_RESULTS_HREF}
-      className={className ? `${linkClass} ${className}` : linkClass}
+    <div
+      className={className ? `min-h-[1.5rem] ${className}` : "min-h-[1.5rem]"}
+      aria-hidden={lastSession ? undefined : true}
     >
-      Laatste meting: {formatSessionDate(lastSession.timestamp)} — bekijk
-      resultaten →
-    </Link>
+      {lastSession ? (
+        <Link href={INTAKE_RESULTS_HREF} className={linkClass}>
+          Laatste meting: {formatSessionDate(lastSession.timestamp)} — bekijk
+          resultaten →
+        </Link>
+      ) : null}
+    </div>
   );
 }
