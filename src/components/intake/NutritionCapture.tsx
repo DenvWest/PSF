@@ -5,11 +5,12 @@ import Link from "next/link";
 import { NUTRITION_LOG_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { IntakeEstimate, NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
+import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
 
 type Step =
   | { kind: "question"; index: number }
   | { kind: "consent" }
-  | { kind: "result"; estimate: IntakeEstimate[]; statements: string[]; advice: NutritionAdviceItem[] }
+  | { kind: "result"; estimate: IntakeEstimate[]; statements: string[]; advice: NutritionAdviceItem[]; delta: NutrientDelta[] | null }
   | { kind: "error"; message: string };
 
 type QuestionDef = {
@@ -140,6 +141,7 @@ export default function NutritionCapture() {
         estimate: IntakeEstimate[];
         statements: string[];
         advice: NutritionAdviceItem[];
+        delta: NutrientDelta[] | null;
       };
 
       setStep({
@@ -147,6 +149,7 @@ export default function NutritionCapture() {
         estimate: data.estimate,
         statements: data.statements,
         advice: data.advice,
+        delta: data.delta ?? null,
       });
     } catch {
       setStep({ kind: "error", message: "Er ging iets mis. Probeer het opnieuw." });
@@ -158,6 +161,9 @@ export default function NutritionCapture() {
   if (step.kind === "result") {
     const lifestyle = step.advice.filter((a) => a.kind === "lifestyle");
     const supplements = step.advice.filter((a) => a.kind === "supplement");
+    const visibleDeltas = step.delta
+      ? step.delta.filter((d) => d.direction !== "unchanged")
+      : null;
 
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -187,6 +193,27 @@ export default function NutritionCapture() {
               ))}
             </ul>
           </section>
+
+          {visibleDeltas && visibleDeltas.length > 0 && (
+            <section aria-labelledby="delta-heading" className="mb-8">
+              <h2
+                id="delta-heading"
+                className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
+              >
+                Sinds je vorige check
+              </h2>
+              <ul className="flex flex-col gap-3">
+                {visibleDeltas.map((d, i) => (
+                  <li
+                    key={i}
+                    className="rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted"
+                  >
+                    {deltaStatementFor(d)}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {step.advice.length > 0 && (
             <section aria-labelledby="advice-heading">

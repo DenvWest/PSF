@@ -8,11 +8,15 @@ import { NextRequest } from "next/server";
 const {
   mockConsentInsert,
   mockLogInsert,
+  mockPrevLogSelect,
   mockVerifyCookie,
+  mockEmitEvent,
 } = vi.hoisted(() => ({
   mockConsentInsert: vi.fn(),
   mockLogInsert: vi.fn(),
+  mockPrevLogSelect: vi.fn(),
   mockVerifyCookie: vi.fn(),
+  mockEmitEvent: vi.fn(),
 }));
 
 vi.mock("@/lib/rate-limit", () => ({
@@ -34,11 +38,22 @@ vi.mock("@/lib/intake-session-cookie", () => ({
   INTAKE_SESSION_COOKIE_NAME: "psf_intake_sid",
   verifySignedIntakeSessionCookie: mockVerifyCookie,
 }));
+vi.mock("@/lib/events", () => ({
+  emitEvent: mockEmitEvent,
+}));
 vi.mock("@/lib/supabase-admin", () => ({
   createSupabaseAdmin: () => ({
     from: (table: string) => {
       if (table === "consent_records") return { insert: mockConsentInsert };
-      if (table === "intake_intake_log") return { insert: mockLogInsert };
+      if (table === "intake_intake_log") {
+        // Ondersteun zowel insert als select-chain (voor vorige log)
+        const selectChain = {
+          eq: () => selectChain,
+          order: () => selectChain,
+          limit: mockPrevLogSelect,
+        };
+        return { insert: mockLogInsert, select: () => selectChain };
+      }
       return { insert: vi.fn().mockResolvedValue({ error: null }) };
     },
   }),
@@ -83,6 +98,8 @@ describe("POST /api/intake/nutrition-log", () => {
     vi.clearAllMocks();
     mockConsentInsert.mockResolvedValue({ error: null });
     mockLogInsert.mockResolvedValue({ error: null });
+    mockPrevLogSelect.mockResolvedValue({ data: null });
+    mockEmitEvent.mockResolvedValue(undefined);
     mockVerifyCookie.mockReturnValue(VALID_SESSION_ID);
   });
 

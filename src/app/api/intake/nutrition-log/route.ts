@@ -12,11 +12,14 @@ import {
 import {
   estimateNutritionIntake,
   ESTIMATE_VERSION,
+  type IntakeEstimate,
   type NutritionSelfReport,
 } from "@/lib/nutrition-intake-estimate";
 import { intakeStatementFor } from "@/lib/nutrition-intake-statements";
 import { buildNutritionAdvice } from "@/lib/nutrition-advice";
 import { nutritionLogConsentRow } from "@/lib/nutrition-log-consent";
+import { compareNutritionEstimates, type NutrientDelta } from "@/lib/nutrition-delta";
+import { emitEvent } from "@/lib/events";
 
 const MAX_FIELD_VALUE = 21;
 
@@ -138,7 +141,27 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Haal de vorige log op (voor delta-berekening) — vóór de nieuwe insert.
+  let previousEstimate: IntakeEstimate[] | null = null;
+  const { data: prevRows } = await admin
+    .from("intake_intake_log")
+    .select("estimate")
+    .eq("session_id", sessionId)
+    .order("logged_at", { ascending: false })
+    .limit(1);
+
+  if (prevRows && prevRows.length > 0) {
+    const raw = prevRows[0].estimate;
+    if (Array.isArray(raw) && raw.length > 0) {
+      previousEstimate = raw as IntakeEstimate[];
+    }
+  }
+
   const estimate = estimateNutritionIntake(report);
+
+  const delta: NutrientDelta[] | null = previousEstimate
+    ? compareNutritionEstimates(previousEstimate, estimate)
+    : null;
 
   const { error: logError } = await admin.from("intake_intake_log").insert({
     session_id: sessionId,
@@ -156,8 +179,25 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Emit anoniem signaal — breekt de respons nooit.
+  try {
+    const nutrientsBelow = estimate
+      .filter((e) => e.band === "below")
+      .map((e) => e.nutrient);
+    if (nutrientsBelow.length > 0) {
+      await emitEvent({
+        eventType: "measurement.gap_detected",
+        sessionId,
+        payload: { nutrients_below: nutrientsBelow, estimate_version: ESTIMATE_VERSION },
+        deliveredTo: [],
+      });
+    }
+  } catch (emitErr) {
+    console.error("[api/intake/nutrition-log] gap_detected emit error:", emitErr);
+  }
+
   const statements = estimate.map(intakeStatementFor);
   const advice = buildNutritionAdvice(estimate);
 
-  return NextResponse.json({ estimate, statements, advice }, { status: 200 });
+  return NextResponse.json({ estimate, statements, advice, delta }, { status: 200 });
 }
