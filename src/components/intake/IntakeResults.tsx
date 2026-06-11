@@ -328,6 +328,10 @@ export default function IntakeResults({
   const [guideFormOpen, setGuideFormOpen] = useState(false);
   const showEnergyGuideLink = scores.energy_score < 40;
 
+  const nutritionStatus = getDisplayStatus(scores.nutrition_score);
+  const showNutritionLogCta =
+    nutritionStatus === "Aandacht" || nutritionStatus === "Prioriteit";
+
   const hasExploreContent =
     displaySupplementRoute.length > 0 ||
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
@@ -535,6 +539,25 @@ export default function IntakeResults({
               </Link>
             ) : null}
           </div>
+
+          {showNutritionLogCta ? (
+            <Link
+              href="/intake/voeding"
+              onClick={() => {
+                trackEvent("intake_cta_to_nutrition_log", {
+                  nutrition_status: nutritionStatus,
+                });
+                emitIntakeClientEvent("intake.cta_to_nutrition_log", {
+                  session_id: sessionId,
+                });
+              }}
+              className="mt-4 block rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
+            >
+              <p className="text-[13px] font-medium text-intake-sage">
+                Voeding vraagt aandacht — bekijk je voeding in 1 minuut →
+              </p>
+            </Link>
+          ) : null}
         </section>
 
         {activePlanContent && activePlanContent.actions.length > 0 ? (

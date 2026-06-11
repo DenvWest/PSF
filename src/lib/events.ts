@@ -9,6 +9,7 @@ export const DOMAIN_EVENT_TYPES = [
   "intake.completed",
   "intake.theme_revealed",
   "intake.cta_to_pillar",
+  "intake.cta_to_nutrition_log",
   "focus.viewed",
   "plan.viewed",
   "plan.action_clicked",
