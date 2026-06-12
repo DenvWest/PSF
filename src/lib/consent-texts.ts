@@ -32,6 +32,13 @@ export const NUTRITION_LOG_CONSENT_TEXT: Record<NutritionLogConsentType, string>
     "Ik geef toestemming om mijn periodieke voedingsrapportage te verwerken voor een persoonlijke inname-inschatting en leefstijladvies. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
 };
 
+export type DomainCheckinConsentType = "domain_checkin_logging";
+
+export const DOMAIN_CHECKIN_CONSENT_TEXT: Record<DomainCheckinConsentType, string> = {
+  domain_checkin_logging:
+    "Ik geef toestemming om mijn periodieke domein-checkin te verwerken voor een persoonlijk leefstijloverzicht en vervolgstappen. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
+};
+
 export const CONTACT_CONSENT_TEXT: Record<ConsentType, string> = {
   health_data_processing:
     "Ik geef toestemming voor de verwerking van de gegevens in dit bericht, inclusief eventuele gezondheidsgegevens, voor het beantwoorden van mijn vraag",

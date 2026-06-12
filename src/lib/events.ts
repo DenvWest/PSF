@@ -29,6 +29,8 @@ export const DOMAIN_EVENT_TYPES = [
   "affiliate.click",
   "profile.recognition",
   "measurement.gap_detected",
+  "measurement.checkin_completed",
+  "measurement.direction_detected",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

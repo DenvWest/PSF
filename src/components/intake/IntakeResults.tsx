@@ -336,6 +336,10 @@ export default function IntakeResults({
   const showMovementCheckinCta =
     movementStatus === "Aandacht" || movementStatus === "Prioriteit";
 
+  const stressStatus = getDisplayStatus(scores.stress_score);
+  const showStressCheckinCta =
+    stressStatus === "Aandacht" || stressStatus === "Prioriteit";
+
   const hasExploreContent =
     displaySupplementRoute.length > 0 ||
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
@@ -575,6 +579,22 @@ export default function IntakeResults({
             >
               <p className="text-[13px] font-medium text-intake-sage">
                 Beweging vraagt aandacht — check &apos;m in 1 minuut en kies je eerste stap →
+              </p>
+            </Link>
+          ) : null}
+
+          {showStressCheckinCta ? (
+            <Link
+              href="/intake/stress"
+              onClick={() =>
+                trackEvent("intake_cta_to_stress_checkin", {
+                  stress_status: stressStatus,
+                })
+              }
+              className="mt-4 block rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
+            >
+              <p className="text-[13px] font-medium text-intake-sage">
+                Stress vraagt aandacht — check &apos;m in 1 minuut en kies je eerste stap →
               </p>
             </Link>
           ) : null}
