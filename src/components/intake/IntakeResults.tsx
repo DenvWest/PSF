@@ -332,6 +332,10 @@ export default function IntakeResults({
   const showNutritionLogCta =
     nutritionStatus === "Aandacht" || nutritionStatus === "Prioriteit";
 
+  const movementStatus = getDisplayStatus(scores.movement_score);
+  const showMovementCheckinCta =
+    movementStatus === "Aandacht" || movementStatus === "Prioriteit";
+
   const hasExploreContent =
     displaySupplementRoute.length > 0 ||
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
@@ -555,6 +559,22 @@ export default function IntakeResults({
             >
               <p className="text-[13px] font-medium text-intake-sage">
                 Voeding vraagt aandacht — bekijk je voeding in 1 minuut →
+              </p>
+            </Link>
+          ) : null}
+
+          {showMovementCheckinCta ? (
+            <Link
+              href="/intake/beweging"
+              onClick={() =>
+                trackEvent("intake_cta_to_movement_checkin", {
+                  movement_status: movementStatus,
+                })
+              }
+              className="mt-4 block rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
+            >
+              <p className="text-[13px] font-medium text-intake-sage">
+                Beweging vraagt aandacht — check &apos;m in 1 minuut en kies je eerste stap →
               </p>
             </Link>
           ) : null}
