@@ -76,11 +76,11 @@ interface RankedItem<T> {
 
 export const QUICK_WIN_FALLBACK_BY_DOMAIN: Record<DomainScoreKey, string> = {
   sleep_score: "Kies een vaste bedtijd en houd die drie nachten aan.",
-  stress_score: "Neem 5 minuten voor rustige uitademing vóór je je telefoon pakt.",
+  stress_score: "Eén ding: pak je telefoon pas op na je eerste koffie. Morgen beginnen.",
   energy_score: "Start de dag met een eiwitrijk moment vóór extra cafeïne.",
-  nutrition_score: "Plan 2× deze week vette vis of een eiwitrijke lunch.",
+  nutrition_score: "Voeg bij je volgende maaltijd een eiwitbron toe — ei, kwark, of vis.",
   movement_score: "10 minuten daglicht vóór 10:00 — buiten, zonder telefoon.",
-  recovery_score: "Plan vandaag een echte rustdag — geen zware training.",
+  recovery_score: "Vandaag geen training. Je lichaam bouwt alleen tijdens herstel.",
 };
 
 function inferSupplementDomain(advice: SupplementAdvice): DomainScoreKey {

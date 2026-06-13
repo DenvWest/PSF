@@ -31,7 +31,7 @@ import type { ThemeSlug } from "@/lib/content/themes";
 import { getThemeContentLinks } from "@/data/theme-content-map";
 import { getThemePillarHref } from "@/lib/intake-primary-pillar";
 import { withIntakeReturn } from "@/lib/intake-return-link";
-import { DOMAIN_CHECKIN, PRIMARY_REASON } from "@/lib/domain-checkin";
+import { DOMAIN_CHECKIN } from "@/lib/domain-checkin";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
@@ -91,6 +91,17 @@ const REVOKE_SUCCESS =
   "Je toestemming is ingetrokken en je gegevens zijn geanonimiseerd.";
 
 const DELETE_SUCCESS = "Je intake-sessie is volledig verwijderd.";
+
+const PRIMARY_REASON = {
+  nutrition:
+    "Zonder een stevige voedingsbasis (genoeg eiwit en micronutrienten) werkt elke andere stap minder goed.",
+  stress:
+    "Bij aanhoudende stress is eerst rust en herstel zinvoller dan er beweging of supplementen bovenop.",
+  sleep:
+    "Slaap is het herstelvenster waar al je andere stappen op leunen — daarom eerst hier.",
+  movement:
+    "Meer bewegen zonder slaap en eiwitten op orde werkt averechts. Begin hier.",
+};
 
 const THEME_BACKLINK_COPY: Record<ThemeSlug, { pillar: string; profile: string }> = {
   sleep: {
