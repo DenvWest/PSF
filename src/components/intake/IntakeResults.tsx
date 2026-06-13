@@ -37,6 +37,7 @@ import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { getIntakeGuideCta } from "@/lib/intake-guide-cta";
 import { GuideOptInForm } from "@/components/gids/GuideOptInForm";
+import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
 import { buildSummaryRows } from "@/lib/results-summary-rows";
 import {
   getDisplayStatusTone,
@@ -663,6 +664,12 @@ export default function IntakeResults({
               </p>
             </div>
           </details>
+        ) : null}
+
+        {sessionId ? (
+          <div className="mb-6">
+            <MeasurementReminderOptIn sessionId={sessionId} />
+          </div>
         ) : null}
 
         {activePlanContent && activePlanContent.actions.length > 0 ? (

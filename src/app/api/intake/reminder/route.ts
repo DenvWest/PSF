@@ -1,12 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { sha256Hex } from "@/lib/consent-hashing";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import {
+  INTAKE_SESSION_COOKIE_NAME,
+  verifySignedIntakeSessionCookie,
+} from "@/lib/intake-session-cookie";
+import { measurementReminderConsentRow } from "@/lib/measurement-reminder-consent";
 import { getClientIp } from "@/lib/turnstile-verify";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
+
+function toUuidOrNull(value: unknown): string | null {
+  if (typeof value !== "string" || value === "") {
+    return null;
+  }
+  const ok = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+  return ok ? value : null;
+}
 
 function logSecurityEvent(
   event: string,
@@ -77,12 +93,54 @@ export async function POST(request: NextRequest) {
   const reminderDate = new Date();
   reminderDate.setDate(reminderDate.getDate() + 30);
 
+  const sessionIdFromBody = toUuidOrNull(bodyRecord.sessionId);
+  let sessionId: string | null = null;
+
+  if (sessionIdFromBody) {
+    const cookieSessionId = verifySignedIntakeSessionCookie(
+      request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value,
+    );
+    if (!cookieSessionId || cookieSessionId !== sessionIdFromBody) {
+      return NextResponse.json(
+        { error: "Sessie ongeldig. Doe de intake opnieuw via /intake." },
+        { status: 401 },
+      );
+    }
+    sessionId = sessionIdFromBody;
+
+    const ua = request.headers.get("user-agent") ?? "";
+    const ipHash = sha256Hex(clientIp);
+    const uaHash = sha256Hex(ua);
+    const organizationId = getDefaultOrganizationId();
+    const grantedAt = new Date().toISOString();
+
+    const consentRow = measurementReminderConsentRow({
+      sessionId,
+      organizationId,
+      ipHash,
+      uaHash,
+      grantedAt,
+    });
+
+    const { error: consentError } = await admin
+      .from("consent_records")
+      .insert(consentRow);
+
+    if (consentError) {
+      console.error("[api/intake/reminder] consent insert error:", consentError);
+      return NextResponse.json(
+        { error: "Kon toestemming niet vastleggen. Probeer het opnieuw." },
+        { status: 500 },
+      );
+    }
+  }
+
   const { error } = await admin.from("intake_reminders").insert({
     organization_id: getDefaultOrganizationId(),
     email,
     reminder_date: reminderDate.toISOString(),
     reminder_type: "day30",
-    session_id: null,
+    session_id: sessionId,
   });
 
   if (error) {
