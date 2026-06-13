@@ -5,11 +5,35 @@ import { slugFromComparisonPath } from "@/lib/resolve-nurture-cta";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { buildIntakeRecoveryUrlForSession } from "@/lib/recovery-token";
 import { buildNurtureAttributionToken } from "@/lib/nurture-attribution-token";
+import { cancelPendingGuideSequences } from "@/lib/guide-nurture";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import type { DomainScores } from "@/lib/intake-engine";
 
+const MAIN_NURTURE_SOURCE = "intake" as const;
 const SEQUENCE_DAYS = [0, 3, 7, 14, 21, 30] as const;
+
+export async function hasActiveMainNurture(email: string): Promise<boolean> {
+  const supabase = createSupabaseAdmin();
+  if (!supabase) {
+    return false;
+  }
+
+  const { data, error } = await supabase
+    .from("nurture_emails")
+    .select("id")
+    .eq("email", email)
+    .eq("source", MAIN_NURTURE_SOURCE)
+    .in("status", ["pending", "sent"])
+    .limit(1);
+
+  if (error) {
+    console.error("[nurture] active main check:", error);
+    return false;
+  }
+
+  return (data?.length ?? 0) > 0;
+}
 
 interface NurtureScheduleInput {
   sessionId: string;
@@ -28,11 +52,13 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     throw new Error("SUPABASE_CONFIG");
   }
 
+  await cancelPendingGuideSequences(input.email);
+
   const now = new Date();
 
   const laterDays = SEQUENCE_DAYS.filter((d) => d > 0);
   const pendingRows = laterDays.map((day) => ({
-    source: "intake" as const,
+    source: MAIN_NURTURE_SOURCE,
     session_id: input.sessionId,
     email: input.email,
     sequence_day: day,
@@ -118,7 +144,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
   }
 
   const day0Row = {
-    source: "intake" as const,
+    source: MAIN_NURTURE_SOURCE,
     session_id: input.sessionId,
     email: input.email,
     sequence_day: 0,

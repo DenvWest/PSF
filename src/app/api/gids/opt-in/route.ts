@@ -13,6 +13,7 @@ import {
   hasActiveGuideSequence,
   scheduleGuideNurtureSequence,
 } from "@/lib/guide-nurture";
+import { hasActiveMainNurture } from "@/lib/nurture";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
@@ -107,13 +108,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Opslaan mislukt" }, { status: 500 });
   }
 
+  const mainNurtureActive =
+    intakeMarketingActive || (await hasActiveMainNurture(email));
+
   const alreadyActive = await hasActiveGuideSequence(email, thema);
-  if (alreadyActive) {
+  if (alreadyActive && !mainNurtureActive) {
     return NextResponse.json({ success: true });
   }
 
   try {
-    await scheduleGuideNurtureSequence({ email, thema });
+    await scheduleGuideNurtureSequence({
+      email,
+      thema,
+      oneOffOnly: mainNurtureActive,
+    });
   } catch (err) {
     logSecurityEvent("nurture_schedule_failed", {
       remoteIp: clientIp,

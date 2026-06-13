@@ -34,9 +34,32 @@ export async function hasActiveGuideSequence(
   return (data?.length ?? 0) > 0;
 }
 
+export async function cancelPendingGuideSequences(email: string): Promise<number> {
+  const supabase = createSupabaseAdmin();
+  if (!supabase) {
+    return 0;
+  }
+
+  const { data, error } = await supabase
+    .from("nurture_emails")
+    .delete()
+    .eq("email", email)
+    .like("source", "guide_%")
+    .eq("status", "pending")
+    .select("id");
+
+  if (error) {
+    console.error("[guide-nurture] cancel pending:", error);
+    return 0;
+  }
+
+  return data?.length ?? 0;
+}
+
 export async function scheduleGuideNurtureSequence(input: {
   email: string;
   thema: GuideThema;
+  oneOffOnly?: boolean;
 }): Promise<number> {
   const supabase = createSupabaseAdmin();
   if (!supabase) {
@@ -105,6 +128,15 @@ export async function scheduleGuideNurtureSequence(input: {
     resend_id: resendId ?? null,
     error_message: resendId ? null : day0ErrorMessage,
   };
+
+  if (input.oneOffOnly) {
+    const { error } = await supabase.from("nurture_emails").insert([day0Row]);
+    if (error) {
+      console.error("[guide-nurture] insert failed:", error);
+      throw error;
+    }
+    return 1;
+  }
 
   const laterDays = GUIDE_SEQUENCE_DAYS.filter((d) => d > 0);
   const pendingRows = laterDays.map((day) => ({

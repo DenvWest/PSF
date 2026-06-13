@@ -31,6 +31,9 @@ vi.mock("@/lib/nurture-unsubscribe", () => ({
 vi.mock("@/lib/email-templates/nurture", () => ({
   getNurtureEmailContent: mockGetNurtureEmailContent,
 }));
+vi.mock("@/lib/guide-nurture", () => ({
+  cancelPendingGuideSequences: vi.fn().mockResolvedValue(0),
+}));
 
 // ---------------------------------------------------------------------------
 // Supabase stub — insert succeeds
