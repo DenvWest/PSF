@@ -15,7 +15,6 @@ import {
   getAdvice,
   getDeficiencySignals,
   getProfileLabel,
-  QUICK_WIN_FALLBACK_BY_DOMAIN,
 } from "@/lib/intake-engine";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import SupplementAdviceDisclaimer from "@/components/intake/SupplementAdviceDisclaimer";
@@ -32,6 +31,7 @@ import type { ThemeSlug } from "@/lib/content/themes";
 import { getThemeContentLinks } from "@/data/theme-content-map";
 import { getThemePillarHref } from "@/lib/intake-primary-pillar";
 import { withIntakeReturn } from "@/lib/intake-return-link";
+import { DOMAIN_CHECKIN, PRIMARY_REASON } from "@/lib/domain-checkin";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
@@ -334,27 +334,10 @@ export default function IntakeResults({
   const themeLinks = getThemeContentLinks(primaryTheme);
   const themeLabel = getPillarById(primaryTheme)?.label ?? "";
   const hasThemeBacklink = Boolean(themeLinks.pillarHref || themeLinks.profileSlug);
-  const primaryPillarHref = themeLinks.pillarHref ?? "/intake";
   const guideCta = getIntakeGuideCta(primaryTheme);
   const [guideFormOpen, setGuideFormOpen] = useState(false);
   const showEnergyGuideLink = scores.energy_score < 40;
-
-  const nutritionStatus = getDisplayStatus(scores.nutrition_score);
-  const showNutritionLogCta =
-    nutritionStatus === "Aandacht" || nutritionStatus === "Prioriteit";
-
-  const movementStatus = getDisplayStatus(scores.movement_score);
-  const showMovementCheckinCta =
-    movementStatus === "Aandacht" || movementStatus === "Prioriteit";
-
-  const stressStatus = getDisplayStatus(scores.stress_score);
-  const showStressCheckinCta =
-    stressStatus === "Aandacht" || stressStatus === "Prioriteit";
-
-  const sleepStatus = getDisplayStatus(scores.sleep_score);
-  const showSleepCheckinCta =
-    primaryTheme !== "sleep" &&
-    (sleepStatus === "Aandacht" || sleepStatus === "Prioriteit");
+  const primaryCheckin = DOMAIN_CHECKIN[primaryTheme];
 
   const hasExploreContent =
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
@@ -429,10 +412,6 @@ export default function IntakeResults({
   const vitaliteitStatus = vitaliteitBand(vitaliteitIndex);
   const vitaliteitTone = getDisplayStatusTone(vitaliteitStatus);
 
-  const primaryScoreKey = PILLAR_SCORE_KEYS[primaryTheme];
-  const heroQuickWin = primaryScoreKey
-    ? QUICK_WIN_FALLBACK_BY_DOMAIN[primaryScoreKey]
-    : undefined;
   const compactRows = summaryRows.filter((row) => row.label !== primaryLabel);
 
   const primaryQuickWin = quickWins[0];
@@ -495,14 +474,101 @@ export default function IntakeResults({
 
           <section className="mb-3 rounded-2xl border border-intake-card-border bg-intake-bg-elevated px-5 py-4">
             <h2 className="mb-2 text-base font-semibold leading-snug text-intake-ink">
-              Jouw grootste rem is {primaryLabel}. Hier is je eerste stap.
+              {themeLabel} is jouw grootste prioriteit
             </h2>
-            {heroQuickWin ? (
-              <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
-                {heroQuickWin}
-              </p>
-            ) : null}
+            <p className="m-0 mb-4 text-sm leading-relaxed text-intake-ink-muted">
+              {PRIMARY_REASON[primaryTheme]}
+            </p>
+            <Link
+              href={primaryCheckin.href}
+              onClick={() => {
+                trackEvent("intake_cta_to_primary_checkin", {
+                  domain: primaryTheme,
+                });
+                emitIntakeClientEvent("intake.cta_to_primary_checkin", {
+                  domain: primaryTheme,
+                  session_id: sessionId,
+                });
+              }}
+              className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+            >
+              Doe de {primaryCheckin.label}-check (1 min) →
+            </Link>
           </section>
+
+          {planTemplate || guideCta ? (
+            <div className="mb-3">
+              {planTemplate ? (
+                <LifestylePlan
+                  template={planTemplate}
+                  scores={scores}
+                  answers={answers}
+                  sessionId={sessionId}
+                  secondaryTheme={
+                    secondaryTheme && secondaryTheme !== "connection"
+                      ? secondaryTheme
+                      : null
+                  }
+                />
+              ) : guideCta ? (
+                <div className="text-left">
+                  {hasActiveMarketingEmailConsent ? (
+                    <p className="mb-3 text-center text-xs leading-relaxed text-intake-ink-muted">
+                      Je ontvangt al vervolgstappen per mail. Hier kun je ook de{" "}
+                      {guideCta.pillarLabel.toLowerCase()}-gids aanvragen.
+                    </p>
+                  ) : null}
+                  {!guideFormOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setGuideFormOpen(true)}
+                      className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+                    >
+                      {hasActiveMarketingEmailConsent
+                        ? `Ontvang ook de ${guideCta.pillarLabel.toLowerCase()}-gids`
+                        : guideCta.ctaLabel}
+                    </button>
+                  ) : (
+                    <GuideOptInForm
+                      themaSlug={guideCta.thema}
+                      ctaText={guideCta.ctaLabel}
+                      successMessage={guideCta.successMessage}
+                      pdfPath={guideCta.pdfPath}
+                      variant="intake"
+                    />
+                  )}
+                </div>
+              ) : null}
+
+              {secondaryTheme ? (
+                <Link
+                  href={withIntakeReturn(getThemePillarHref(secondaryTheme))}
+                  onClick={() => {
+                    emitIntakeClientEvent("intake.cta_to_pillar", {
+                      theme_slug: secondaryTheme,
+                      session_id: sessionId,
+                    });
+                  }}
+                  className="mt-3 block cursor-pointer text-[13px] font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                >
+                  Ook prioriteit: {getPillarById(secondaryTheme)?.label ?? "tweede gebied"} →
+                </Link>
+              ) : null}
+            </div>
+          ) : secondaryTheme ? (
+            <Link
+              href={withIntakeReturn(getThemePillarHref(secondaryTheme))}
+              onClick={() => {
+                emitIntakeClientEvent("intake.cta_to_pillar", {
+                  theme_slug: secondaryTheme,
+                  session_id: sessionId,
+                });
+              }}
+              className="mb-3 block cursor-pointer text-[13px] font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+            >
+              Ook prioriteit: {getPillarById(secondaryTheme)?.label ?? "tweede gebied"} →
+            </Link>
+          ) : null}
 
           <IntakeResultPreviewCard
             variant="live"
@@ -518,144 +584,6 @@ export default function IntakeResults({
             <p className="mt-4 text-center text-sm text-intake-ink-muted">
               {getMailConfirmation(firstName)}
             </p>
-          ) : null}
-
-          <div className="mt-5">
-            {planTemplate ? (
-              <LifestylePlan
-                template={planTemplate}
-                scores={scores}
-                answers={answers}
-                sessionId={sessionId}
-                secondaryTheme={
-                  secondaryTheme && secondaryTheme !== "connection"
-                    ? secondaryTheme
-                    : null
-                }
-              />
-            ) : guideCta ? (
-              <div className="text-left">
-                {hasActiveMarketingEmailConsent ? (
-                  <p className="mb-3 text-center text-xs leading-relaxed text-intake-ink-muted">
-                    Je ontvangt al vervolgstappen per mail. Hier kun je ook de{" "}
-                    {guideCta.pillarLabel.toLowerCase()}-gids aanvragen.
-                  </p>
-                ) : null}
-                {!guideFormOpen ? (
-                  <button
-                    type="button"
-                    onClick={() => setGuideFormOpen(true)}
-                    className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
-                  >
-                    {hasActiveMarketingEmailConsent
-                      ? `Ontvang ook de ${guideCta.pillarLabel.toLowerCase()}-gids`
-                      : guideCta.ctaLabel}
-                  </button>
-                ) : (
-                  <GuideOptInForm
-                    themaSlug={guideCta.thema}
-                    ctaText={guideCta.ctaLabel}
-                    successMessage={guideCta.successMessage}
-                    pdfPath={guideCta.pdfPath}
-                    variant="intake"
-                  />
-                )}
-              </div>
-            ) : (
-              <Link
-                href={withIntakeReturn(primaryPillarHref)}
-                onClick={() => {
-                  trackEvent("intake_cta_to_pillar", { theme_slug: primaryTheme });
-                  emitIntakeClientEvent("intake.cta_to_pillar", {
-                    theme_slug: primaryTheme,
-                    session_id: sessionId,
-                  });
-                }}
-                className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
-              >
-                {REVEAL_COPY.cta}
-              </Link>
-            )}
-
-            {secondaryTheme ? (
-              <Link
-                href={withIntakeReturn(getThemePillarHref(secondaryTheme))}
-                onClick={() => {
-                  emitIntakeClientEvent("intake.cta_to_pillar", {
-                    theme_slug: secondaryTheme,
-                    session_id: sessionId,
-                  });
-                }}
-                className="mt-3 block cursor-pointer text-[13px] font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-              >
-                Ook prioriteit: {getPillarById(secondaryTheme)?.label ?? "tweede gebied"} →
-              </Link>
-            ) : null}
-          </div>
-
-          {showNutritionLogCta ? (
-            <Link
-              href="/intake/voeding"
-              onClick={() => {
-                trackEvent("intake_cta_to_nutrition_log", {
-                  nutrition_status: nutritionStatus,
-                });
-                emitIntakeClientEvent("intake.cta_to_nutrition_log", {
-                  session_id: sessionId,
-                });
-              }}
-              className="mt-4 block rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
-            >
-              <p className="text-[13px] font-medium text-intake-sage">
-                Voeding vraagt aandacht — bekijk je voeding in 1 minuut →
-              </p>
-            </Link>
-          ) : null}
-
-          {showMovementCheckinCta ? (
-            <Link
-              href="/intake/beweging"
-              onClick={() =>
-                trackEvent("intake_cta_to_movement_checkin", {
-                  movement_status: movementStatus,
-                })
-              }
-              className="mt-4 block rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
-            >
-              <p className="text-[13px] font-medium text-intake-sage">
-                Beweging vraagt aandacht — check &apos;m in 1 minuut en kies je eerste stap →
-              </p>
-            </Link>
-          ) : null}
-
-          {showStressCheckinCta ? (
-            <Link
-              href="/intake/stress"
-              onClick={() =>
-                trackEvent("intake_cta_to_stress_checkin", {
-                  stress_status: stressStatus,
-                })
-              }
-              className="mt-4 block rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
-            >
-              <p className="text-[13px] font-medium text-intake-sage">
-                Stress vraagt aandacht — check &apos;m in 1 minuut en kies je eerste stap →
-              </p>
-            </Link>
-          ) : null}
-
-          {showSleepCheckinCta ? (
-            <Link
-              href="/intake/slaap"
-              onClick={() =>
-                trackEvent("intake_cta_to_sleep_checkin", { sleep_status: sleepStatus })
-              }
-              className="mt-4 block rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 no-underline transition-colors hover:bg-intake-sage/15"
-            >
-              <p className="text-[13px] font-medium text-intake-sage">
-                Slaap vraagt aandacht — check &apos;m in 1 minuut en kies je eerste stap →
-              </p>
-            </Link>
           ) : null}
         </section>
 

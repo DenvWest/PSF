@@ -2,13 +2,20 @@ import {
   getPillarById,
   PILLAR_SCORE_KEYS,
   SUMMARY_PILLAR_IDS,
+  type PillarId,
 } from "@/data/foundation-pyramid";
 import type { SummaryRow } from "@/components/intake/IntakeResultPreviewCard";
 import { summaryToneFromStatus } from "@/components/intake/IntakeResultPreviewCard";
 import type { ThemeSlug } from "@/lib/content/themes";
+import { DOMAIN_CHECKIN } from "@/lib/domain-checkin";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
 import { QUICK_WIN_FALLBACK_BY_DOMAIN } from "@/lib/intake-engine";
+import type { MeasuredPillarId } from "@/lib/primary-theme";
 import { getDisplayStatus } from "@/lib/score-display";
+
+function isMeasuredPillarId(pillarId: PillarId): pillarId is MeasuredPillarId {
+  return pillarId in DOMAIN_CHECKIN;
+}
 
 function buildSummaryRow(
   label: string,
@@ -42,7 +49,11 @@ export function buildSummaryRows(
       };
     }
 
-    return buildSummaryRow(label, scoreKey, scores);
+    const row = buildSummaryRow(label, scoreKey, scores);
+    if (isMeasuredPillarId(pillarId)) {
+      return { ...row, checkinHref: DOMAIN_CHECKIN[pillarId].href };
+    }
+    return row;
   });
 
   rows.push(buildSummaryRow("Herstel", "recovery_score", scores));

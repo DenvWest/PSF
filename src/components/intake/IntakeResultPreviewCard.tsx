@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   STATUS_TONE_CLASS,
   type DisplayStatus,
@@ -9,6 +10,7 @@ export type SummaryRow = {
   status: string;
   tone: DisplayStatusTone;
   quickWin?: string;
+  checkinHref?: string;
 };
 
 const PREVIEW_ROWS: SummaryRow[] = [
@@ -94,6 +96,16 @@ export default function IntakeResultPreviewCard({
               <p className="mt-2 text-xs leading-relaxed text-intake-ink-subtle">
                 {row.quickWin}
               </p>
+            ) : null}
+            {isLive &&
+            row.checkinHref &&
+            (row.status === "Aandacht" || row.status === "Prioriteit") ? (
+              <Link
+                href={row.checkinHref}
+                className="mt-2 inline-block text-xs font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+              >
+                verdiep in 1 min →
+              </Link>
             ) : null}
           </li>
         ))}

@@ -12,6 +12,7 @@ import { getClientIp } from "@/lib/turnstile-verify";
 const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "intake.theme_revealed",
   "intake.cta_to_pillar",
+  "intake.cta_to_primary_checkin",
   "focus.viewed",
   "plan.viewed",
   "plan.action_clicked",

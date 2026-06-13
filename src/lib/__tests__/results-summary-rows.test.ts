@@ -43,4 +43,27 @@ describe("buildSummaryRows", () => {
     const { primaryLabel } = buildSummaryRows(makeScores(), "stress");
     expect(primaryLabel).toBe("Stress");
   });
+
+  it("adds checkinHref for measured lifestyle domains but not herstel", () => {
+    const { rows } = buildSummaryRows(makeScores(), "stress");
+
+    expect(rows[0]).toMatchObject({
+      label: "Slaap",
+      checkinHref: "/intake/slaap",
+    });
+    expect(rows[1]).toMatchObject({
+      label: "Stress",
+      checkinHref: "/intake/stress",
+    });
+    expect(rows[2]).toMatchObject({
+      label: "Voeding",
+      checkinHref: "/intake/voeding",
+    });
+    expect(rows[3]).toMatchObject({
+      label: "Beweging",
+      checkinHref: "/intake/beweging",
+    });
+    expect(rows[4].label).toBe("Herstel");
+    expect(rows[4].checkinHref).toBeUndefined();
+  });
 });
