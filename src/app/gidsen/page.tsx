@@ -52,12 +52,20 @@ export default function GidsenPage() {
                     Eiwit, ritme en vetten — de basis die na je 40e zwaarder telt.
                     Praktische stappen vóór je aan supplementen denkt.
                   </p>
-                  <Link
-                    href="/voeding-na-40"
-                    className="mt-3 inline-block text-sm font-semibold text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
-                  >
-                    Lees de pillar →
-                  </Link>
+                  <div className="mt-4 flex flex-col gap-2">
+                    <Link
+                      href="/gids/voeding"
+                      className="inline-flex items-center justify-center rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-800"
+                    >
+                      Ontvang het stappenplan →
+                    </Link>
+                    <Link
+                      href="/voeding-na-40"
+                      className="text-sm text-stone-600 underline decoration-stone-300 underline-offset-[3px] transition-colors hover:text-ps-green"
+                    >
+                      Lees de pillar →
+                    </Link>
+                  </div>
                 </div>
                 <div className="p-5 rounded-xl border border-stone-200 bg-stone-50">
                   <p className="font-semibold text-gray-900">Beweging na 40</p>
@@ -65,12 +73,20 @@ export default function GidsenPage() {
                     Kracht, herstel en ritme — zonder sportschool-hype. Wat werkt in
                     een drukke week.
                   </p>
-                  <Link
-                    href="/beweging-na-40"
-                    className="mt-3 inline-block text-sm font-semibold text-ps-green underline decoration-ps-green/35 underline-offset-[3px]"
-                  >
-                    Lees de pillar →
-                  </Link>
+                  <div className="mt-4 flex flex-col gap-2">
+                    <Link
+                      href="/gids/beweging"
+                      className="inline-flex items-center justify-center rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-800"
+                    >
+                      Ontvang het stappenplan →
+                    </Link>
+                    <Link
+                      href="/beweging-na-40"
+                      className="text-sm text-stone-600 underline decoration-stone-300 underline-offset-[3px] transition-colors hover:text-ps-green"
+                    >
+                      Lees de pillar →
+                    </Link>
+                  </div>
                 </div>
               </div>
             </section>

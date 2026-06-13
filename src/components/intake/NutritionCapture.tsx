@@ -275,6 +275,28 @@ export default function NutritionCapture() {
               )}
             </section>
           )}
+
+          <div className="mt-10 space-y-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-5 text-center">
+            <p className="text-sm leading-relaxed text-intake-ink-muted">
+              Wil je week voor week begeleid worden? Ontvang het voedings-stappenplan per e-mail.
+            </p>
+            <Link
+              href="/gids/voeding"
+              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+            >
+              Ontvang je voedings-stappenplan →
+            </Link>
+            <p className="text-xs leading-relaxed text-intake-ink-subtle">
+              Of{" "}
+              <Link
+                href="/intake"
+                className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+              >
+                doe de volledige Leefstijlcheck
+              </Link>{" "}
+              voor jouw volgorde over alle pijlers.
+            </p>
+          </div>
         </div>
       </div>
     );

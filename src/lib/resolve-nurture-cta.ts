@@ -28,12 +28,12 @@ const PILLAR_BY_DOMAIN: Record<DomainKey, { text: string; url: string }> = {
     url: "/energie-na-40",
   },
   nutrition_score: {
-    text: "Lees over voeding na 40",
-    url: "/voeding-na-40",
+    text: "Ontvang je voedings-stappenplan",
+    url: "/gids/voeding",
   },
   movement_score: {
-    text: "Lees over beweging na 40",
-    url: "/beweging-na-40",
+    text: "Ontvang je beweging-stappenplan",
+    url: "/gids/beweging",
   },
   recovery_score: {
     text: "Lees het herstelthema",

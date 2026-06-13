@@ -618,10 +618,24 @@ export default function IntakeResults({
         ) : null}
 
         {activePlanContent && activePlanContent.actions.length > 0 ? (
-          <PlanContentSection
-            actions={activePlanContent.actions}
-            ready={activePlanContent.ready}
-          />
+          planTemplate ? (
+            <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
+              <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+                Supplementen en meetstappen (optioneel)
+              </summary>
+              <div className="border-t border-intake-divider px-2 pb-4 pt-2">
+                <PlanContentSection
+                  actions={activePlanContent.actions}
+                  ready={activePlanContent.ready}
+                />
+              </div>
+            </details>
+          ) : (
+            <PlanContentSection
+              actions={activePlanContent.actions}
+              ready={activePlanContent.ready}
+            />
+          )
         ) : null}
 
         <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">

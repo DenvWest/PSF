@@ -4,6 +4,8 @@ import { stressGuide } from "@/data/gids/stress";
 import { energieGuide } from "@/data/gids/energie";
 import { herstelGuide } from "@/data/gids/herstel";
 import { testosteronGuide } from "@/data/gids/testosteron";
+import { voedingGuide } from "@/data/gids/voeding";
+import { bewegingGuide } from "@/data/gids/beweging";
 
 export const GUIDE_DATA: Record<GuideThema, GuideOptInData> = {
   slaap: slaapGuide,
@@ -11,6 +13,8 @@ export const GUIDE_DATA: Record<GuideThema, GuideOptInData> = {
   energie: energieGuide,
   herstel: herstelGuide,
   testosteron: testosteronGuide,
+  voeding: voedingGuide,
+  beweging: bewegingGuide,
 };
 
 export const GUIDE_SLUGS = Object.keys(GUIDE_DATA) as GuideThema[];

@@ -221,7 +221,7 @@ export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {
       "Eet vette vis minstens 2× per week of overweeg omega-3 uit voeding.",
       "Drink water vóór koffie in de ochtend.",
     ],
-    guideHref: "/voeding-na-40",
+    guideHref: "/gids/voeding",
     profileSlugs: ["lage-batterij"],
   },
   movement: {
@@ -230,7 +230,7 @@ export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {
       "Neem na elke 90 minuten zitten een korte wandeling van 5 minuten.",
       "Kies één vaste trainingsdag en zet die in je agenda.",
     ],
-    guideHref: "/beweging-na-40",
+    guideHref: "/gids/beweging",
     profileSlugs: ["lage-batterij", "overtrainer"],
   },
   connection: {

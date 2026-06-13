@@ -6,7 +6,6 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
-import PillarHeroIntakeCta from "@/components/content/PillarHeroIntakeCta";
 import { buildArticleSchema, buildFaqSchema } from "@/lib/seo/structuredData";
 
 const LINK =
@@ -83,7 +82,18 @@ export default function BewegingNa40Page() {
                     meetellen.
                   </p>
                   <div className="mt-6 text-center">
-                    <PillarHeroIntakeCta defaultLabel="Ontdek jouw bewegingsprofiel →" />
+                    <Link
+                      href="/gids/beweging"
+                      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-green-700 px-8 py-3 text-sm font-semibold text-white no-underline hover:bg-green-800 transition-colors"
+                    >
+                      Ontvang je beweging-stappenplan →
+                    </Link>
+                    <p className="mt-3 text-sm text-gray-600">
+                      Of{" "}
+                      <Link href="/intake/beweging" className={LINK}>
+                        doe eerst de beweegcheck (1 min)
+                      </Link>
+                    </p>
                     <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
                   </div>
                 </header>
@@ -270,11 +280,17 @@ export default function BewegingNa40Page() {
                     Wil je weten of beweging, slaap of voeding bij jou het zwaarst weegt?
                   </p>
                   <Link
-                    href="/intake"
+                    href="/gids/beweging"
                     className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-6 py-3 text-sm font-bold text-white no-underline hover:opacity-90"
                   >
-                    Start de Leefstijlcheck →
+                    Ontvang je beweging-stappenplan →
                   </Link>
+                  <p className="mt-4 text-sm text-gray-600">
+                    Of{" "}
+                    <Link href="/intake" className={LINK}>
+                      doe de volledige Leefstijlcheck
+                    </Link>
+                  </p>
                 </div>
 
                 <MedicalDisclaimer className="mt-10" />

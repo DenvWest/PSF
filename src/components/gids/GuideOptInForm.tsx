@@ -13,6 +13,8 @@ interface GuideOptInFormProps {
   successMessage: string;
   /** Direct PDF na succes (intake-resultaten). */
   pdfPath?: string | null;
+  /** Web-only gids: link na succes wanneer geen PDF. */
+  webPlanHref?: string | null;
   variant?: GuideOptInFormVariant;
 }
 
@@ -26,6 +28,7 @@ export function GuideOptInForm({
   ctaText,
   successMessage,
   pdfPath = null,
+  webPlanHref = null,
   variant = "default",
 }: GuideOptInFormProps) {
   const [email, setEmail] = useState("");
@@ -148,6 +151,17 @@ export function GuideOptInForm({
             }
           >
             Open de PDF →
+          </Link>
+        ) : webPlanHref ? (
+          <Link
+            href={webPlanHref}
+            className={
+              isIntake
+                ? "mt-3 inline-flex min-h-[44px] items-center justify-center rounded-[10px] bg-intake-terra px-5 py-2.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+                : "mt-3 inline-flex rounded-xl bg-ps-green px-5 py-2.5 text-sm font-semibold text-white no-underline hover:bg-ps-green/90"
+            }
+          >
+            Start met je stappenplan →
           </Link>
         ) : null}
       </div>

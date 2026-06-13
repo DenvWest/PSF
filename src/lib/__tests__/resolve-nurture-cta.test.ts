@@ -181,7 +181,13 @@ describe("lifestyleCtaForProfile", () => {
 describe("pillarCtaForProfile", () => {
   it("volgt zwakste domein", () => {
     const cta = pillarCtaForProfile("Lage Batterij", "nutrition_score");
-    expect(cta.url).toBe("/voeding-na-40");
+    expect(cta.url).toBe("/gids/voeding");
+    expect(cta.kind).toBe("pillar");
+  });
+
+  it("beweging wijst naar gids-opt-in", () => {
+    const cta = pillarCtaForProfile("Overtrainer", "movement_score");
+    expect(cta.url).toBe("/gids/beweging");
     expect(cta.kind).toBe("pillar");
   });
 });

@@ -1,5 +1,7 @@
 import { slaapGuideTemplates } from "@/lib/email-templates/guide-nurture/slaap";
 import { stressGuideTemplates } from "@/lib/email-templates/guide-nurture/stress";
+import { voedingGuideTemplates } from "@/lib/email-templates/guide-nurture/voeding";
+import { bewegingGuideTemplates } from "@/lib/email-templates/guide-nurture/beweging";
 import { buildGenericGuideTemplates } from "@/lib/email-templates/guide-nurture/generic";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 import type { GuideThema } from "@/types/guide-opt-in";
@@ -9,6 +11,8 @@ const FULL_TEMPLATES: Partial<
 > = {
   slaap: slaapGuideTemplates,
   stress: stressGuideTemplates,
+  voeding: voedingGuideTemplates,
+  beweging: bewegingGuideTemplates,
 };
 
 export function getGuideNurtureTemplate(

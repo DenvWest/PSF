@@ -4,6 +4,8 @@ export const GUIDE_THEMAS = [
   "energie",
   "herstel",
   "testosteron",
+  "voeding",
+  "beweging",
 ] as const;
 
 export type GuideThema = (typeof GUIDE_THEMAS)[number];

@@ -16,6 +16,19 @@ import type {
 
 export const CHECKIN_STEP_ID = "slp-weekelijkse-check-in";
 
+export function resolveCheckinStepId(
+  template: LifestylePlanTemplate,
+): string | null {
+  for (const phase of template.phases) {
+    for (const step of phase.steps) {
+      if (step.tags?.includes("check-in")) {
+        return step.id;
+      }
+    }
+  }
+  return null;
+}
+
 type PlanProgressRow = {
   session_id: string;
   organization_id: string;
@@ -221,8 +234,10 @@ export async function upsertStepState(options: {
       ? { phaseId }
       : null;
 
+  const checkinStepId = resolveCheckinStepId(template);
   const checkinCompleted =
-    stepId === CHECKIN_STEP_ID &&
+    checkinStepId &&
+    stepId === checkinStepId &&
     toState === "done" &&
     previousStepState !== "done"
       ? { weekBucket: getCheckinWeekBucket(progress.startedAt) }

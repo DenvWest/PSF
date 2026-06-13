@@ -9,6 +9,19 @@ import { GUIDE_SLUGS, getGuideData } from "@/data/gids";
 import { absoluteUrl } from "@/lib/public-site-url";
 import type { GuideThema } from "@/types/guide-opt-in";
 
+const GUIDE_MICRO_CHECK: Partial<
+  Record<GuideThema, { href: string; label: string }>
+> = {
+  voeding: {
+    href: "/intake/voeding",
+    label: "Doe de snelle voedingscheck (1 min)",
+  },
+  beweging: {
+    href: "/intake/beweging",
+    label: "Doe de beweegcheck (1 min)",
+  },
+};
+
 interface Props {
   params: Promise<{ thema: string }>;
 }
@@ -39,6 +52,7 @@ export default async function GidsOptInPage({ params }: Props) {
   if (!data) notFound();
 
   const themaSlug = data.slug as GuideThema;
+  const microCheck = GUIDE_MICRO_CHECK[themaSlug];
 
   return (
     <main className="py-12 md:py-16">
@@ -110,6 +124,7 @@ export default async function GidsOptInPage({ params }: Props) {
                 themaSlug={themaSlug}
                 ctaText={data.optIn.ctaText}
                 successMessage={data.optIn.successMessage}
+                webPlanHref={data.pdfPath ? null : data.pillarHref}
               />
             </div>
           </section>
@@ -124,10 +139,19 @@ export default async function GidsOptInPage({ params }: Props) {
                 Lees de complete gids op de website →
               </Link>
             </p>
+            {microCheck ? (
+              <p className="mt-4">
+                Of{" "}
+                <Link href={microCheck.href} className="font-semibold text-ps-green hover:underline">
+                  {microCheck.label}
+                </Link>
+                .
+              </p>
+            ) : null}
             <p className="mt-4">
-              Of{" "}
+              Wil je het hele plaatje?{" "}
               <Link href="/intake" className="font-semibold text-ps-green hover:underline">
-                doe de gratis Leefstijlcheck
+                Doe de gratis Leefstijlcheck
               </Link>{" "}
               voor een persoonlijk herstelplan op basis van jouw antwoorden.
             </p>
