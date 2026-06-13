@@ -355,7 +355,6 @@ export default function IntakeResults({
     (sleepStatus === "Aandacht" || sleepStatus === "Prioriteit");
 
   const hasExploreContent =
-    displaySupplementRoute.length > 0 ||
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
     kennisbankLinks.length > 0 ||
     (typeof answers.NUT_PROT === "number" && answers.NUT_PROT <= 2) ||
@@ -642,6 +641,30 @@ export default function IntakeResults({
           ) : null}
         </section>
 
+        {displaySupplementRoute.length > 0 ? (
+          <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
+            <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+              Wil je weten welke supplementen bij jouw profiel passen?
+            </summary>
+            <div className="space-y-4 border-t border-intake-divider px-5 pb-5 pt-4">
+              <SupplementAdviceDisclaimer variant="profile" />
+              <SupplementRoute
+                recommendations={displaySupplementRoute}
+                scores={scores}
+              />
+              <p className="text-sm text-intake-ink-muted">
+                Vragen?{" "}
+                <Link
+                  href="/contact"
+                  className="font-medium text-intake-sage underline-offset-2 hover:underline"
+                >
+                  Stel ze →
+                </Link>
+              </p>
+            </div>
+          </details>
+        ) : null}
+
         {activePlanContent && activePlanContent.actions.length > 0 ? (
           <PlanContentSection
             actions={activePlanContent.actions}
@@ -782,28 +805,6 @@ export default function IntakeResults({
                         Gratis energiegids downloaden →
                       </Link>
                     </p>
-                  ) : null}
-
-                  {displaySupplementRoute.length > 0 ? (
-                    <div className="mb-5">
-                      <h3 className="mb-3 text-sm font-semibold text-intake-ink">
-                        Supplementen om te verkennen
-                      </h3>
-                      <SupplementAdviceDisclaimer variant="profile" />
-                      <SupplementRoute
-                        recommendations={displaySupplementRoute}
-                        scores={scores}
-                      />
-                      <p className="mt-4 text-sm text-intake-ink-muted">
-                        Vragen?{" "}
-                        <Link
-                          href="/contact"
-                          className="font-medium text-intake-sage underline-offset-2 hover:underline"
-                        >
-                          Stel ze →
-                        </Link>
-                      </p>
-                    </div>
                   ) : null}
 
                   {FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ? (

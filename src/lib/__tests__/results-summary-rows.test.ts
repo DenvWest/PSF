@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { buildSummaryRows } from "@/lib/results-summary-rows";
 import type { DomainScores } from "@/lib/intake-engine";
+import { QUICK_WIN_FALLBACK_BY_DOMAIN } from "@/lib/intake-engine";
 
 function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
   return {
@@ -15,7 +16,7 @@ function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
 }
 
 describe("buildSummaryRows", () => {
-  it("returns four rows in intro order with display statuses", () => {
+  it("returns five rows in intro order with display statuses and quick wins", () => {
     const { rows } = buildSummaryRows(makeScores(), "stress");
 
     expect(rows.map((row) => row.label)).toEqual([
@@ -23,11 +24,18 @@ describe("buildSummaryRows", () => {
       "Stress",
       "Voeding",
       "Beweging",
+      "Herstel",
     ]);
     expect(rows[1]).toMatchObject({
       label: "Stress",
       status: "Prioriteit",
       tone: "terra-deep",
+      quickWin: QUICK_WIN_FALLBACK_BY_DOMAIN.stress_score,
+    });
+    expect(rows[4]).toMatchObject({
+      label: "Herstel",
+      status: "Voldoende",
+      quickWin: QUICK_WIN_FALLBACK_BY_DOMAIN.recovery_score,
     });
   });
 

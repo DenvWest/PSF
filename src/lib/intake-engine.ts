@@ -74,7 +74,7 @@ interface RankedItem<T> {
   value: T;
 }
 
-const QUICK_WIN_FALLBACK_BY_DOMAIN: Record<DomainScoreKey, string> = {
+export const QUICK_WIN_FALLBACK_BY_DOMAIN: Record<DomainScoreKey, string> = {
   sleep_score: "Kies een vaste bedtijd en houd die drie nachten aan.",
   stress_score: "Neem 5 minuten voor rustige uitademing vóór je je telefoon pakt.",
   energy_score: "Start de dag met een eiwitrijk moment vóór extra cafeïne.",

@@ -8,6 +8,7 @@ export type SummaryRow = {
   label: string;
   status: string;
   tone: DisplayStatusTone;
+  quickWin?: string;
 };
 
 const PREVIEW_ROWS: SummaryRow[] = [
@@ -72,21 +73,28 @@ export default function IntakeResultPreviewCard({
         {displayRows.map((row) => (
           <li
             key={row.label}
-            className="flex items-center justify-between gap-3 rounded-xl border border-intake-divider bg-white/[0.03] px-3.5 py-2.5"
+            className="rounded-xl border border-intake-divider bg-white/[0.03] px-3.5 py-2.5"
           >
-            <span className="text-sm font-medium text-intake-ink">{row.label}</span>
-            <span className="flex shrink-0 items-center gap-1.5">
-              <span
-                className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${ROW_TONE_CLASS[row.tone]}`}
-              >
-                {row.status}
-              </span>
-              {primaryLabel && row.label === primaryLabel ? (
-                <span className="text-intake-ink-subtle" aria-hidden>
-                  →
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm font-medium text-intake-ink">{row.label}</span>
+              <span className="flex shrink-0 items-center gap-1.5">
+                <span
+                  className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${ROW_TONE_CLASS[row.tone]}`}
+                >
+                  {row.status}
                 </span>
-              ) : null}
-            </span>
+                {primaryLabel && row.label === primaryLabel ? (
+                  <span className="text-intake-ink-subtle" aria-hidden>
+                    →
+                  </span>
+                ) : null}
+              </span>
+            </div>
+            {isLive && row.quickWin ? (
+              <p className="mt-2 text-xs leading-relaxed text-intake-ink-subtle">
+                {row.quickWin}
+              </p>
+            ) : null}
           </li>
         ))}
       </ul>
