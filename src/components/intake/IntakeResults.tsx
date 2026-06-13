@@ -15,6 +15,7 @@ import {
   getAdvice,
   getDeficiencySignals,
   getProfileLabel,
+  QUICK_WIN_FALLBACK_BY_DOMAIN,
 } from "@/lib/intake-engine";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import SupplementAdviceDisclaimer from "@/components/intake/SupplementAdviceDisclaimer";
@@ -428,6 +429,12 @@ export default function IntakeResults({
   const vitaliteitStatus = vitaliteitBand(vitaliteitIndex);
   const vitaliteitTone = getDisplayStatusTone(vitaliteitStatus);
 
+  const primaryScoreKey = PILLAR_SCORE_KEYS[primaryTheme];
+  const heroQuickWin = primaryScoreKey
+    ? QUICK_WIN_FALLBACK_BY_DOMAIN[primaryScoreKey]
+    : undefined;
+  const compactRows = summaryRows.filter((row) => row.label !== primaryLabel);
+
   const primaryQuickWin = quickWins[0];
   const extraQuickWins = quickWins.slice(1);
   const primaryLongTermTip = longTermTips[0];
@@ -486,10 +493,20 @@ export default function IntakeResults({
             </span>
           </div>
 
+          <section className="mb-3 rounded-2xl border border-intake-card-border bg-intake-bg-elevated px-5 py-4">
+            <h2 className="mb-2 text-base font-semibold leading-snug text-intake-ink">
+              Jouw grootste rem is {primaryLabel}. Hier is je eerste stap.
+            </h2>
+            {heroQuickWin ? (
+              <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
+                {heroQuickWin}
+              </p>
+            ) : null}
+          </section>
+
           <IntakeResultPreviewCard
             variant="live"
-            rows={summaryRows}
-            primaryLabel={primaryLabel}
+            rows={compactRows}
             hideContextFooter
           />
 
@@ -645,7 +662,7 @@ export default function IntakeResults({
         {displaySupplementRoute.length > 0 ? (
           <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
             <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
-              Wil je weten welke supplementen bij jouw profiel passen?
+              {REVEAL_COPY.supplementOptInSummary}
             </summary>
             <div className="space-y-4 border-t border-intake-divider px-5 pb-5 pt-4">
               <SupplementAdviceDisclaimer variant="profile" />

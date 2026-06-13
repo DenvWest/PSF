@@ -4,4 +4,6 @@ export const REVEAL_COPY = {
   contextLine: "Op basis van je antwoorden. Geen medische diagnose.",
   pyramidDetailsSummary: "Hoe komt dit overzicht tot stand?",
   moreBackgroundSummary: "Meer achtergrond",
+  supplementOptInSummary:
+    "Wil je weten welke supplementen bij jouw profiel passen?",
 } as const;
