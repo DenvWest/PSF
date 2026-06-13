@@ -142,6 +142,8 @@ describe("POST /api/intake/feedback — profile.recognition event", () => {
     mockLoadSession.mockResolvedValue({ ok: true, session: MOCK_SESSION });
     mockEmitEvent.mockRejectedValue(new Error("webhook down"));
 
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
     const { POST } = await import("@/app/api/intake/feedback/route");
 
     const res = await POST(
@@ -152,5 +154,11 @@ describe("POST /api/intake/feedback — profile.recognition event", () => {
     );
 
     expect(res.status).toBe(200);
+    expect(errorSpy).toHaveBeenCalledWith(
+      "[api/intake/feedback] recognition event failed:",
+      expect.any(Error),
+    );
+
+    errorSpy.mockRestore();
   });
 });
