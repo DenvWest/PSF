@@ -330,17 +330,24 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
     expect(html).toContain("Beweging heeft ruimte");
   });
 
-  it("primaryDomain=movement → bevat GEEN 'GRATIS SLAAPGIDS'", () => {
-    const data = buildData("In Balans", "movement", {
-      sleep_score: 30,
-      stress_score: 50,
-      energy_score: 50,
-      nutrition_score: 50,
-      movement_score: 20,
-      recovery_score: 50,
-    });
-    const { html } = nurtureDay0Email(data, CTX);
-    expect(html).not.toContain("GRATIS SLAAPGIDS");
+  it("bevat geen PDF-gids-blok", () => {
+    const domains = ["sleep", "stress", "energy", "movement", "nutrition", "recovery"];
+    for (const domain of domains) {
+      const data = buildData("In Balans", domain, {
+        sleep_score: 30,
+        stress_score: 50,
+        energy_score: 50,
+        nutrition_score: 50,
+        movement_score: 20,
+        recovery_score: 50,
+      });
+      const { html } = nurtureDay0Email(data, CTX);
+      expect(html).not.toContain("GRATIS SLAAPGIDS");
+      expect(html).not.toContain("GRATIS ENERGIEGIDS");
+      expect(html).not.toContain("GRATIS HERSTELGIDS");
+      expect(html).not.toContain("Download de Slaapgids");
+      expect(html).not.toContain("Stressgids voor mannen");
+    }
   });
 
   it("primaryDomain=movement → bevat NIET 'energie je prioriteit is'", () => {
@@ -383,6 +390,38 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
       const { subject } = nurtureDay0Email(data, CTX);
       expect(subject).toBe("Dit valt op in jouw resultaten");
     }
+  });
+});
+
+// ── P1c: 'en verder'-regel bij extra aandachtsdomeinen ───────────────────
+
+describe("dag-0 en-verder-regel", () => {
+  it("2+ aandachtsdomeinen → compacte regel over andere domeinen", () => {
+    const data = buildData("In Balans", "movement", {
+      sleep_score: 35,
+      stress_score: 45,
+      nutrition_score: 38,
+      movement_score: 20,
+      energy_score: 50,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain(
+      "Je slaap en energie vroegen ook aandacht — daar komen we in de volgende mails op terug.",
+    );
+  });
+
+  it("slechts 1 aandachtsdomein → geen en-verder-regel", () => {
+    const data = buildData("Onrustige Slaper", "sleep", {
+      sleep_score: 30,
+      stress_score: 75,
+      nutrition_score: 80,
+      movement_score: 70,
+      energy_score: 70,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).not.toContain("daar komen we in de volgende mails op terug");
   });
 });
 

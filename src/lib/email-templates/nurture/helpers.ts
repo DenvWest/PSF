@@ -286,6 +286,37 @@ export function day0AttentionLine(
   return `${capitalized} van je ${totalWord} gebieden vragen nu aandacht — ${label} het meest.`;
 }
 
+export function day0FurtherAttentionLine(
+  domainScores: Record<string, number>,
+  primaryDomain: string,
+): string {
+  const primaryId = normalizeDomainId(primaryDomain);
+  const extraLabels: string[] = [];
+
+  for (const domainId of DOMAIN_IDS) {
+    if (domainId === primaryId) continue;
+    const scoreKey = `${domainId}_score`;
+    const raw = domainScores[scoreKey];
+    const score = typeof raw === "number" ? raw : NaN;
+    const status = getDisplayStatus(score);
+    if (status === "Aandacht" || status === "Prioriteit") {
+      const domainKey = `${domainId}_score` as DomainKey;
+      extraLabels.push(weakSpotCopyForDomain(domainKey).label.toLowerCase());
+    }
+    if (extraLabels.length >= 2) break;
+  }
+
+  if (extraLabels.length === 0) return "";
+
+  const joined =
+    extraLabels.length === 1
+      ? extraLabels[0]
+      : `${extraLabels[0]} en ${extraLabels[1]}`;
+  const verb = extraLabels.length === 1 ? "vroeg" : "vroegen";
+
+  return `Je ${joined} ${verb} ook aandacht — daar komen we in de volgende mails op terug.`;
+}
+
 export function renderDay0MainRows(params: {
   primaryDomain: string;
   intakeUrl: string;
@@ -297,6 +328,7 @@ export function renderDay0MainRows(params: {
   const opening = day0OpeningLineForDomain(domain, firstName);
   const title = "Dit valt op in jouw resultaten";
   const attentionLine = day0AttentionLine(domainScores, primaryDomain);
+  const furtherLine = day0FurtherAttentionLine(domainScores, primaryDomain);
 
   const prefix = nurtureNamePrefixHtml(firstName);
   const nameAlreadyInOpening =
@@ -315,6 +347,7 @@ export function renderDay0MainRows(params: {
             ${nameAlreadyInOpening ? "" : prefix}
             <p style="margin:0 0 14px 0;font-size:16px;line-height:1.6;color:#333333;">${escapeHtml(opening)}</p>
             ${attentionLine ? `<p style="margin:0 0 10px 0;font-size:15px;line-height:1.6;color:#555555;">${escapeHtml(attentionLine)}</p>` : ""}
+            ${furtherLine ? `<p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#666666;">${escapeHtml(furtherLine)}</p>` : ""}
           </td>
         </tr>
         ${renderWeakSpotBlock(primaryDomain)}
