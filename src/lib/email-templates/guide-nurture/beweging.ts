@@ -40,7 +40,10 @@ ${ctaButton(absoluteUrl("/beweging-na-40"), "Start met je stappenplan →")}
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Kies één oefening die je vandaag kunt doen: kniebuigingen tegen het aanrecht, opdrukken, of vaker de trap nemen. Consistentie telt meer dan het perfecte schema.
 </p>
-${ctaButton(absoluteUrl("/blog/krachttraining-na-40"), "Lees het 8-weken startprotocol →")}`,
+${ctaButton(absoluteUrl("/blog/krachttraining-na-40"), "Lees het 8-weken startprotocol →")}
+<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
+  <a href="${absoluteUrl("/intake/plan/movement")}" style="color: #3C7A56; text-decoration: underline;">Wil je stappen afvinken? Open je bewegingsplan →</a>
+</p>`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

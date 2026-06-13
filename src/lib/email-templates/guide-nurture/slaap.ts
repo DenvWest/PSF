@@ -43,7 +43,10 @@ ${ctaButton(absoluteUrl("/downloads/slaapgids-perfectsupplement.pdf"), "Download
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Op onze slaappagina leggen we uit hoe je dit ritme opbouwt — stap voor stap.
 </p>
-${ctaButton(absoluteUrl("/slaap-verbeteren-na-40"), "Lees het complete slaapprotocol →")}`,
+${ctaButton(absoluteUrl("/slaap-verbeteren-na-40"), "Lees het complete slaapprotocol →")}
+<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
+  <a href="${absoluteUrl("/intake/plan/sleep")}" style="color: #3C7A56; text-decoration: underline;">Wil je stappen afvinken? Open je slaapplan →</a>
+</p>`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

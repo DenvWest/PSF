@@ -58,7 +58,6 @@ import PyramidPillarDrawer, {
   type PillarDrawerStatus,
 } from "@/components/pyramid/PyramidPillarDrawer";
 import IntakeResultsSection from "@/components/intake/IntakeResultsSection";
-import LifestylePlan from "@/components/intake/LifestylePlan";
 import PlanContentSection from "@/components/intake/PlanContentSection";
 import {
   PLAN_JOURNEY_THEME_SLUGS,
@@ -496,21 +495,9 @@ export default function IntakeResults({
             </Link>
           </section>
 
-          {planTemplate || guideCta ? (
+          {guideCta || planTemplate || secondaryTheme ? (
             <div className="mb-3">
-              {planTemplate ? (
-                <LifestylePlan
-                  template={planTemplate}
-                  scores={scores}
-                  answers={answers}
-                  sessionId={sessionId}
-                  secondaryTheme={
-                    secondaryTheme && secondaryTheme !== "connection"
-                      ? secondaryTheme
-                      : null
-                  }
-                />
-              ) : guideCta ? (
+              {guideCta ? (
                 <div className="text-left">
                   {hasActiveMarketingEmailConsent ? (
                     <p className="mb-3 text-center text-xs leading-relaxed text-intake-ink-muted">
@@ -538,6 +525,17 @@ export default function IntakeResults({
                     />
                   )}
                 </div>
+              ) : null}
+
+              {planTemplate ? (
+                <p className="mt-3 text-center text-xs leading-relaxed text-intake-ink-muted">
+                  <Link
+                    href={`/intake/plan/${primaryTheme}`}
+                    className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+                  >
+                    Bekijk afvinkbaar stappenplan →
+                  </Link>
+                </p>
               ) : null}
 
               {secondaryTheme ? (
@@ -617,7 +615,9 @@ export default function IntakeResults({
           </div>
         ) : null}
 
-        {activePlanContent && activePlanContent.actions.length > 0 ? (
+        {activePlanContent &&
+        activePlanContent.actions.length > 0 &&
+        !guideCta ? (
           planTemplate ? (
             <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
               <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">

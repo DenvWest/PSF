@@ -17,3 +17,17 @@ export function getPlanTemplate(
 ): LifestylePlanTemplate | undefined {
   return PLAN_TEMPLATES[domain];
 }
+
+export const PLAN_TEMPLATE_DOMAINS = [
+  "sleep",
+  "nutrition",
+  "movement",
+] as const satisfies readonly MeasuredPillarId[];
+
+export type PlanTemplateDomain = (typeof PLAN_TEMPLATE_DOMAINS)[number];
+
+export function isPlanTemplateDomain(
+  value: string,
+): value is PlanTemplateDomain {
+  return (PLAN_TEMPLATE_DOMAINS as readonly string[]).includes(value);
+}
