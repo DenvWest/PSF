@@ -36,8 +36,6 @@ import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
-import { getIntakeGuideCta } from "@/lib/intake-guide-cta";
-import { GuideOptInForm } from "@/components/gids/GuideOptInForm";
 import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
 import { buildSummaryRows } from "@/lib/results-summary-rows";
 import {
@@ -333,8 +331,6 @@ export default function IntakeResults({
   const themeLinks = getThemeContentLinks(primaryTheme);
   const themeLabel = getPillarById(primaryTheme)?.label ?? "";
   const hasThemeBacklink = Boolean(themeLinks.pillarHref || themeLinks.profileSlug);
-  const guideCta = getIntakeGuideCta(primaryTheme);
-  const [guideFormOpen, setGuideFormOpen] = useState(false);
   const showEnergyGuideLink = scores.energy_score < 40;
   const primaryCheckin = DOMAIN_CHECKIN[primaryTheme];
 
@@ -495,40 +491,10 @@ export default function IntakeResults({
             </Link>
           </section>
 
-          {guideCta || planTemplate || secondaryTheme ? (
+          {planTemplate || secondaryTheme ? (
             <div className="mb-3">
-              {guideCta ? (
-                <div className="text-left">
-                  {hasActiveMarketingEmailConsent ? (
-                    <p className="mb-3 text-center text-xs leading-relaxed text-intake-ink-muted">
-                      Je ontvangt al vervolgstappen per mail. Hier kun je ook de{" "}
-                      {guideCta.pillarLabel.toLowerCase()}-gids aanvragen.
-                    </p>
-                  ) : null}
-                  {!guideFormOpen ? (
-                    <button
-                      type="button"
-                      onClick={() => setGuideFormOpen(true)}
-                      className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
-                    >
-                      {hasActiveMarketingEmailConsent
-                        ? `Ontvang ook de ${guideCta.pillarLabel.toLowerCase()}-gids`
-                        : guideCta.ctaLabel}
-                    </button>
-                  ) : (
-                    <GuideOptInForm
-                      themaSlug={guideCta.thema}
-                      ctaText={guideCta.ctaLabel}
-                      successMessage={guideCta.successMessage}
-                      pdfPath={guideCta.pdfPath}
-                      variant="intake"
-                    />
-                  )}
-                </div>
-              ) : null}
-
               {planTemplate ? (
-                <p className="mt-3 text-center text-xs leading-relaxed text-intake-ink-muted">
+                <p className="text-center text-xs leading-relaxed text-intake-ink-muted">
                   <Link
                     href={`/intake/plan/${primaryTheme}`}
                     className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
@@ -553,19 +519,6 @@ export default function IntakeResults({
                 </Link>
               ) : null}
             </div>
-          ) : secondaryTheme ? (
-            <Link
-              href={withIntakeReturn(getThemePillarHref(secondaryTheme))}
-              onClick={() => {
-                emitIntakeClientEvent("intake.cta_to_pillar", {
-                  theme_slug: secondaryTheme,
-                  session_id: sessionId,
-                });
-              }}
-              className="mb-3 block cursor-pointer text-[13px] font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-            >
-              Ook prioriteit: {getPillarById(secondaryTheme)?.label ?? "tweede gebied"} →
-            </Link>
           ) : null}
 
           <IntakeResultPreviewCard
@@ -615,9 +568,7 @@ export default function IntakeResults({
           </div>
         ) : null}
 
-        {activePlanContent &&
-        activePlanContent.actions.length > 0 &&
-        !guideCta ? (
+        {activePlanContent && activePlanContent.actions.length > 0 ? (
           planTemplate ? (
             <details className="group mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40">
               <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
