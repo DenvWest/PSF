@@ -38,6 +38,15 @@ import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { getIntakeGuideCta } from "@/lib/intake-guide-cta";
 import { GuideOptInForm } from "@/components/gids/GuideOptInForm";
 import { buildSummaryRows } from "@/lib/results-summary-rows";
+import {
+  getDisplayStatusTone,
+  STATUS_TONE_CLASS,
+} from "@/lib/score-display";
+import {
+  computeVitaliteit,
+  resolveVitaliteitFacets,
+  vitaliteitBand,
+} from "@/lib/vitaliteit";
 import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import FoundationPyramid, {
   type PillarStatus,
@@ -415,6 +424,9 @@ export default function IntakeResults({
     scores,
     primaryTheme,
   );
+  const vitaliteitIndex = computeVitaliteit(resolveVitaliteitFacets(scores));
+  const vitaliteitStatus = vitaliteitBand(vitaliteitIndex);
+  const vitaliteitTone = getDisplayStatusTone(vitaliteitStatus);
 
   const primaryQuickWin = quickWins[0];
   const extraQuickWins = quickWins.slice(1);
@@ -463,6 +475,17 @@ export default function IntakeResults({
         )}
 
         <section className="mb-6" aria-label="Jouw leefstijl-overzicht">
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-intake-card-border bg-intake-bg-elevated px-3.5 py-2.5">
+            <span className="text-sm font-medium text-intake-ink">
+              Jouw vitaliteit
+            </span>
+            <span
+              className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${STATUS_TONE_CLASS[vitaliteitTone]}`}
+            >
+              {vitaliteitStatus}
+            </span>
+          </div>
+
           <IntakeResultPreviewCard
             variant="live"
             rows={summaryRows}

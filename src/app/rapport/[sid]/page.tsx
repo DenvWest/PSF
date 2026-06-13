@@ -10,6 +10,10 @@ import {
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
 import { verifySignedIntakeSessionCookie } from "@/lib/intake-session-cookie";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import {
+  computeVitaliteit,
+  resolveVitaliteitFacets,
+} from "@/lib/vitaliteit";
 
 export const metadata: Metadata = {
   title: "Jouw 30-dagen beeld | PerfectSupplement",
@@ -100,6 +104,15 @@ export default async function RapportPage({
     baselineSnapshot.domainScores,
     remeasureScores,
   );
+  const baselineVitaliteitIndex = computeVitaliteit(
+    resolveVitaliteitFacets(baselineSnapshot.domainScores),
+  );
+  const currentVitaliteitIndex = computeVitaliteit(
+    resolveVitaliteitFacets(remeasureScores),
+  );
+  const vitaliteitDelta = currentVitaliteitIndex - baselineVitaliteitIndex;
+  const vitaliteitDirection =
+    vitaliteitDelta > 0 ? "up" : vitaliteitDelta < 0 ? "down" : "neutral";
 
   const daysSinceBaseline = Math.max(
     0,
@@ -144,6 +157,32 @@ export default async function RapportPage({
               Verandering per domein
             </h2>
             <div>
+              <div className="flex items-center justify-between py-3 border-b border-slate-100">
+                <span className="text-slate-700 font-medium text-sm">
+                  Jouw vitaliteit
+                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    aria-hidden="true"
+                    className={
+                      vitaliteitDirection === "up"
+                        ? "text-emerald-600 text-lg"
+                        : vitaliteitDirection === "down"
+                          ? "text-amber-500 text-lg"
+                          : "text-slate-400 text-lg"
+                    }
+                  >
+                    {vitaliteitDirection === "up"
+                      ? "▲"
+                      : vitaliteitDirection === "down"
+                        ? "▼"
+                        : "▬"}
+                  </span>
+                  <span className="font-semibold text-slate-700 text-sm">
+                    van {baselineVitaliteitIndex} naar {currentVitaliteitIndex}
+                  </span>
+                </div>
+              </div>
               {DOMAIN_KEYS.map((key) => (
                 <DeltaRow
                   key={key}
