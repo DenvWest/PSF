@@ -93,7 +93,25 @@ export function getPrimaryTheme(
     return TIEBREAK_ORDER[0];
   }
 
-  return pickLowestPillar(scores);
+  const base = pickLowestPillar(scores);
+
+  if (
+    base === "movement" &&
+    Number.isFinite(scores.movement_score) &&
+    scores.movement_score < 50
+  ) {
+    if (
+      Number.isFinite(scores.nutrition_score) &&
+      scores.nutrition_score < 45
+    ) {
+      return "nutrition";
+    }
+    if (Number.isFinite(scores.stress_score) && scores.stress_score < 40) {
+      return "stress";
+    }
+  }
+
+  return base;
 }
 
 /**

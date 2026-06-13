@@ -90,6 +90,49 @@ describe("getPrimaryTheme", () => {
     expect(getPrimaryTheme(scores, {})).toBe("sleep");
     expect(spy).toHaveBeenCalledOnce();
   });
+
+  it("overrides movement to stress when movement is lowest and stress is below 40", () => {
+    const scores = baseScores({ movement_score: 30, stress_score: 35 });
+    expect(getPrimaryTheme(scores, {})).toBe("stress");
+  });
+
+  it("overrides movement to nutrition when movement is lowest and nutrition is below 45", () => {
+    const scores = baseScores({ movement_score: 30, nutrition_score: 40 });
+    expect(getPrimaryTheme(scores, {})).toBe("nutrition");
+  });
+
+  it("prefers nutrition over stress when both thresholds are met", () => {
+    const scores = baseScores({
+      movement_score: 30,
+      nutrition_score: 40,
+      stress_score: 35,
+    });
+    expect(getPrimaryTheme(scores, {})).toBe("nutrition");
+  });
+
+  it("keeps movement when lowest but no nutrition or stress threshold is met", () => {
+    const scores = baseScores({
+      movement_score: 30,
+      stress_score: 55,
+      nutrition_score: 60,
+    });
+    expect(getPrimaryTheme(scores, {})).toBe("movement");
+  });
+
+  it("keeps sleep when sleep is lowest even with low movement", () => {
+    const scores = baseScores({ sleep_score: 30, movement_score: 35 });
+    expect(getPrimaryTheme(scores, {})).toBe("sleep");
+  });
+
+  it("keeps overtrainer override to movement despite low nutrition and stress", () => {
+    const scores = baseScores({
+      movement_score: 30,
+      nutrition_score: 40,
+      stress_score: 35,
+    });
+    const answers = { MOV_STR: 4, RCV_PHYS: 1 };
+    expect(getPrimaryTheme(scores, answers)).toBe("movement");
+  });
 });
 
 describe("getSecondaryTheme", () => {
