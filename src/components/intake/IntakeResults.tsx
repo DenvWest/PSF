@@ -38,6 +38,7 @@ import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
+import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
 import { buildSummaryRows, focusSecondaryCheckin } from "@/lib/results-summary-rows";
 import { getRecognitionLine, getVitalityFraming } from "@/lib/results-framing";
 import {
@@ -600,6 +601,14 @@ export default function IntakeResults({
         {sessionId ? (
           <div className="mb-6">
             <MeasurementReminderOptIn sessionId={sessionId} />
+          </div>
+        ) : null}
+
+        {sessionId ? (
+          <div className="mb-6">
+            <ProteinTargetCard
+              trainingLoad={Math.max(answers.MOV_STR ?? 0, answers.MOV_CARD ?? 0)}
+            />
           </div>
         ) : null}
 
