@@ -65,34 +65,11 @@ function getPillarsByScoreAscending(scores: DomainScores): MeasuredPillarId[] {
   });
 }
 
-/**
- * Primair thema = laagste gemeten gebied.
- *
- * - Overtrainer-patroon -> altijd "movement".
- * - Anders argmin over {sleep, stress, nutrition, movement} met vaste tiebreak.
- * - Status (Sterk/Voldoende/Aandacht/Prioriteit) is alleen display, geen input:
- *   ook "alles >= 80" levert nog het laagste gemeten thema op.
- * - Ontbrekende/niet-finite scores -> alle gelijk -> tiebreak-winnaar "sleep",
- *   met monitoring-log zodat we hydratie-gaten zien.
- */
-export function getPrimaryTheme(
-  scores: DomainScores,
-  answers: Record<string, number>,
-): MeasuredPillarId {
-  if (matchesOvertrainerAnswers(answers)) {
-    return "movement";
-  }
+/** Beweging telt als "staat er goed voor" vanaf Voldoende (>= 60, zie getDisplayStatus). */
+const MOVEMENT_OK_THRESHOLD = 60;
 
-  const allMissing = MEASURED_PILLARS.every(
-    (pillar) => !Number.isFinite(getPillarScore(scores, pillar)),
-  );
-  if (allMissing) {
-    console.error(
-      "[getPrimaryTheme] geen finite scores; fallback naar tiebreak-winnaar 'sleep'",
-    );
-    return TIEBREAK_ORDER[0];
-  }
-
+/** Laagste gemeten pijler, met de bestaande movement->nutrition/stress verfijning. */
+function resolveBaseTheme(scores: DomainScores): MeasuredPillarId {
   const base = pickLowestPillar(scores);
 
   if (
@@ -112,6 +89,43 @@ export function getPrimaryTheme(
   }
 
   return base;
+}
+
+/**
+ * Primair thema = laagste gemeten gebied.
+ *
+ * - Overtrainer-patroon -> alleen "movement" wanneer beweging ZELF zwak is (< 60).
+ *   Staat beweging er goed voor, dan zou "beweging is je grootste prioriteit" de
+ *   vitaliteit-strengthLine ("je beweging staat er goed voor") tegenspreken; dan wint
+ *   de echt zwakste pijler en is de overtrainer-nuance een herstel-note (prompt 2).
+ * - Anders argmin over {sleep, stress, nutrition, movement} met vaste tiebreak.
+ * - Status (Sterk/Voldoende/Aandacht/Prioriteit) is alleen display, geen input.
+ * - Ontbrekende/niet-finite scores -> alle gelijk -> tiebreak-winnaar "sleep",
+ *   met monitoring-log zodat we hydratie-gaten zien.
+ */
+export function getPrimaryTheme(
+  scores: DomainScores,
+  answers: Record<string, number>,
+): MeasuredPillarId {
+  const allMissing = MEASURED_PILLARS.every(
+    (pillar) => !Number.isFinite(getPillarScore(scores, pillar)),
+  );
+  if (allMissing) {
+    console.error(
+      "[getPrimaryTheme] geen finite scores; fallback naar tiebreak-winnaar 'sleep'",
+    );
+    return TIEBREAK_ORDER[0];
+  }
+
+  if (
+    matchesOvertrainerAnswers(answers) &&
+    Number.isFinite(scores.movement_score) &&
+    scores.movement_score < MOVEMENT_OK_THRESHOLD
+  ) {
+    return "movement";
+  }
+
+  return resolveBaseTheme(scores);
 }
 
 /**

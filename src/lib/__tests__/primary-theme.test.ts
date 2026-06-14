@@ -46,8 +46,14 @@ describe("getPrimaryTheme", () => {
     expect(getPrimaryTheme(scores, {})).toBe("movement");
   });
 
-  it("overrides to movement for overtrainer pattern", () => {
+  it("ignores overtrainer override when movement is strong (>= 60)", () => {
     const scores = baseScores({ sleep_score: 10, movement_score: 80 });
+    const answers = { MOV_STR: 4, RCV_PHYS: 1 };
+    expect(getPrimaryTheme(scores, answers)).toBe("sleep");
+  });
+
+  it("keeps overtrainer override to movement when movement is weak (< 60)", () => {
+    const scores = baseScores({ sleep_score: 55, movement_score: 30 });
     const answers = { MOV_STR: 4, RCV_PHYS: 1 };
     expect(getPrimaryTheme(scores, answers)).toBe("movement");
   });
