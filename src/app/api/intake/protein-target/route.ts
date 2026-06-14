@@ -11,6 +11,8 @@ import {
 } from "@/lib/intake-session-cookie";
 import { bodyMetricsConsentRow } from "@/lib/body-metrics-consent";
 import { computeProteinTarget } from "@/lib/protein-target";
+import { emitEvent } from "@/lib/events";
+import { nutritionSupplementGate } from "@/lib/nutrition-advice";
 
 function parseWeight(value: unknown): number | null {
   if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
@@ -118,5 +120,28 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ target }, { status: 200 });
+  // Gegate vervolgstap (voeding eerst, supplement tweede) — zelfde EFSA-poort als buildNutritionAdvice.
+  const gate = nutritionSupplementGate("protein");
+  const supplement = gate.allowed
+    ? { comparisonPath: gate.comparisonPath, claimText: gate.claimText }
+    : null;
+
+  // Anoniem signaal — NOOIT gewicht of grammen (reconstrueerbaar); alleen factor + belasting.
+  try {
+    await emitEvent({
+      eventType: "measurement.protein_target_computed",
+      sessionId,
+      payload: {
+        training_load: trainingLoad ?? null,
+        per_kg_low: target.perKgLow,
+        per_kg_high: target.perKgHigh,
+      },
+      deliveredTo: [],
+    });
+  } catch (emitErr) {
+    console.error("[api/intake/protein-target] computed emit error:", emitErr);
+  }
+
+  // Bereken-en-vergeet: het gewicht wordt NIET opgeslagen, alleen verwerkt.
+  return NextResponse.json({ target, supplement }, { status: 200 });
 }

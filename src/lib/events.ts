@@ -32,6 +32,8 @@ export const DOMAIN_EVENT_TYPES = [
   "measurement.gap_detected",
   "measurement.checkin_completed",
   "measurement.direction_detected",
+  "measurement.protein_target_computed",
+  "measurement.protein_cta_clicked",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { BODY_METRICS_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { ProteinTarget } from "@/lib/protein-target";
 
@@ -14,6 +16,10 @@ export default function ProteinTargetCard({ trainingLoad }: ProteinTargetCardPro
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<ProteinTarget | null>(null);
+  const [supplement, setSupplement] = useState<{
+    comparisonPath: string;
+    claimText: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const weightKg = Number.parseInt(weightInput, 10);
@@ -39,12 +45,16 @@ export default function ProteinTargetCard({ trainingLoad }: ProteinTargetCardPro
         );
         return;
       }
-      const data = (await res.json()) as { target: ProteinTarget | null };
+      const data = (await res.json()) as {
+        target: ProteinTarget | null;
+        supplement: { comparisonPath: string; claimText: string } | null;
+      };
       if (!data.target) {
         setError("Vul een geldig gewicht in (40–250 kg).");
         return;
       }
       setResult(data.target);
+      setSupplement(data.supplement);
     } catch {
       setError("Er ging iets mis. Probeer het opnieuw.");
     } finally {
@@ -73,6 +83,24 @@ export default function ProteinTargetCard({ trainingLoad }: ProteinTargetCardPro
           <p className="mt-1 text-xs text-intake-ink-subtle">
             ≈ {result.perKgLow}–{result.perKgHigh} g per kg lichaamsgewicht.
           </p>
+          {supplement ? (
+            <div className="mt-4 border-t border-intake-divider pt-4">
+              <Link
+                href={supplement.comparisonPath}
+                onClick={() =>
+                  emitIntakeClientEvent("measurement.protein_cta_clicked", {
+                    comparison_path: supplement.comparisonPath,
+                  })
+                }
+                className="block text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+              >
+                Vergelijk eiwitpoeders →
+              </Link>
+              <p className="mt-1 text-xs leading-relaxed text-intake-ink-subtle">
+                {supplement.claimText}
+              </p>
+            </div>
+          ) : null}
         </div>
       ) : (
         <div className="mt-4 space-y-4">

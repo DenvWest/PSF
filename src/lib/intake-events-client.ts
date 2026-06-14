@@ -14,6 +14,7 @@ type ClientEmitType = Extract<
   | "plan.theme_switched"
   | "plan.step_state_changed"
   | "plan.step_link_clicked"
+  | "measurement.protein_cta_clicked"
 >;
 
 export function emitIntakeClientEvent(

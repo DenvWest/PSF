@@ -21,6 +21,7 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "plan.theme_switched",
   "plan.step_state_changed",
   "plan.step_link_clicked",
+  "measurement.protein_cta_clicked",
 ]);
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
