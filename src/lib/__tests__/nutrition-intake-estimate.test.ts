@@ -77,17 +77,17 @@ describe("estimateNutritionIntake — vitamin_d", () => {
 });
 
 describe("estimateNutritionIntake — magnesium", () => {
-  it("1 portie groente/dag → below", () => {
+  it("1 portie magnesium-rijke voeding/dag → below", () => {
     const result = estimateNutritionIntake({ vegFruitPerDay: 1 });
     expect(bandFor(result, "magnesium")).toBe("below");
   });
 
-  it("3 porties groente/dag → around", () => {
+  it("3 porties magnesium-rijke voeding/dag → around", () => {
     const result = estimateNutritionIntake({ vegFruitPerDay: 3 });
     expect(bandFor(result, "magnesium")).toBe("around");
   });
 
-  it("4 porties groente/dag → meets", () => {
+  it("4 porties magnesium-rijke voeding/dag → meets", () => {
     const result = estimateNutritionIntake({ vegFruitPerDay: 4 });
     expect(bandFor(result, "magnesium")).toBe("meets");
   });

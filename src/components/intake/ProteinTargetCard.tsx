@@ -9,7 +9,7 @@ import type { ProteinTarget } from "@/lib/protein-target";
 type ProteinTargetCardProps = {
   /** Trainingsbelasting 1–4 uit de intake (max van MOV_STR/MOV_CARD). */
   trainingLoad?: number;
-  /** Eiwitrijke eetmomenten gisteren (NutritionSelfReport.proteinMealsPerDay) — voor de gat-brug. */
+  /** Eiwitrijke eetmomenten op een gewone dag (NutritionSelfReport.proteinMealsPerDay) — voor de gat-brug. */
   proteinMealsYesterday?: number;
 };
 
@@ -21,12 +21,12 @@ export default function ProteinTargetCard({
     typeof proteinMealsYesterday !== "number"
       ? null
       : proteinMealsYesterday <= 0
-        ? "Gisteren gaf je geen eiwitrijke eetmomenten aan."
+        ? "Op een gewone dag eet je geen eiwitrijke eetmomenten."
         : proteinMealsYesterday === 1
-          ? "Gisteren gaf je 1 eiwitrijk eetmoment aan."
+          ? "Op een gewone dag eet je 1 eiwitrijk eetmoment."
           : proteinMealsYesterday >= 3
-            ? "Gisteren gaf je 3 of meer eiwitrijke eetmomenten aan."
-            : `Gisteren gaf je ${proteinMealsYesterday} eiwitrijke eetmomenten aan.`;
+            ? "Op een gewone dag eet je 3 of meer eiwitrijke eetmomenten."
+            : `Op een gewone dag eet je ${proteinMealsYesterday} eiwitrijke eetmomenten.`;
   const showProteinNudge =
     typeof proteinMealsYesterday === "number" && proteinMealsYesterday < 3;
   const [weightInput, setWeightInput] = useState("");

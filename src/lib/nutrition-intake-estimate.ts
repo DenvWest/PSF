@@ -15,10 +15,11 @@ import {
 } from "@/data/nutrition/intake-reference";
 
 /** Semver van de engine — wordt opgeslagen in intake_intake_log.estimate_version (F0). */
-export const ESTIMATE_VERSION = "1.0.0";
+// 1.1.0: magnesium-vraag meet nu magnesium-rijke voeding i.p.v. groente/fruit; vragen naar gewoonte-venster (gewone dag/week).
+export const ESTIMATE_VERSION = "1.1.0";
 
 /**
- * Plat record van frequentie-antwoorden uit het 24h-zelfrapport.
+ * Plat record van frequentie-antwoorden uit het gewoonte-zelfrapport (gewone dag/week).
  * Dit is exact de vorm die in intake_intake_log.raw_inputs (F0) wordt opgeslagen.
  * Alle velden zijn optioneel — ontbrekende input levert band "around".
  */
@@ -27,7 +28,8 @@ export interface NutritionSelfReport {
   proteinMealsPerDay?: number;
   /** Porties vette vis (zalm, makreel, haring, sardines) per week. */
   oilyFishPerWeek?: number;
-  /** Porties groente en/of fruit per dag. */
+  /** Porties magnesium-rijke voeding (bladgroenten, noten, peulvruchten) op een gewone dag.
+   *  Storage-key blijft vegFruitPerDay voor backward-compat met bestaande raw_inputs. */
   vegFruitPerDay?: number;
   /** Porties zuivel (melk, yoghurt, kaas) per dag. */
   dairyServingsPerDay?: number;
@@ -84,7 +86,7 @@ function combineSignals(
 }
 
 /**
- * Schat de voedings-inname per nutriënt op basis van een 24h-zelfrapport.
+ * Schat de voedings-inname per nutriënt op basis van een gewoonte-zelfrapport (gewone dag/week).
  * Deterministisch, puur — dezelfde input geeft altijd dezelfde output.
  *
  * @param report - Frequentie-antwoorden van de gebruiker (F0: raw_inputs).
@@ -115,8 +117,8 @@ export function estimateNutritionIntake(
         break;
 
       case "magnesium":
-        // Magnesium: groente/fruit als primair signaal (bladgroenten, peulvruchten,
-        // noten zitten in vegFruitPerDay); vlees/peulvruchten als aanvullend signaal.
+        // Magnesium: magnesium-rijke voeding (bladgroenten, noten, peulvruchten) als primair
+        // signaal — opgeslagen onder vegFruitPerDay; vlees/peulvruchten als aanvullend signaal.
         signal = combineSignals([
           report.vegFruitPerDay,
           report.meatLegumesPerDay,

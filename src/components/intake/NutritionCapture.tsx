@@ -24,7 +24,7 @@ type QuestionDef = {
 const QUESTIONS: QuestionDef[] = [
   {
     field: "oilyFishPerWeek",
-    question: "Hoe vaak at je deze week vette vis?",
+    question: "Hoe vaak eet je in een gewone week vette vis?",
     options: [
       { label: "Niet", value: 0 },
       { label: "1×", value: 1 },
@@ -34,7 +34,7 @@ const QUESTIONS: QuestionDef[] = [
   },
   {
     field: "proteinMealsPerDay",
-    question: "Hoeveel eetmomenten waren eiwitrijk?",
+    question: "Hoeveel eetmomenten zijn op een gewone dag eiwitrijk?",
     options: [
       { label: "0", value: 0 },
       { label: "1", value: 1 },
@@ -44,7 +44,7 @@ const QUESTIONS: QuestionDef[] = [
   },
   {
     field: "vegFruitPerDay",
-    question: "Hoeveel porties groente of fruit at je gisteren?",
+    question: "Hoeveel porties bladgroenten, noten of peulvruchten eet je op een gewone dag?",
     options: [
       { label: "0–1 porties", value: 1 },
       { label: "2–3 porties", value: 2 },
@@ -54,7 +54,7 @@ const QUESTIONS: QuestionDef[] = [
   },
   {
     field: "dairyServingsPerDay",
-    question: "Porties zuivel per dag (melk, yoghurt, kaas)?",
+    question: "Hoeveel porties zuivel (melk, yoghurt, kaas) eet je op een gewone dag?",
     options: [
       { label: "0", value: 0 },
       { label: "1", value: 1 },
@@ -64,7 +64,7 @@ const QUESTIONS: QuestionDef[] = [
   },
   {
     field: "meatLegumesPerDay",
-    question: "Porties vlees, vis of peulvruchten per dag?",
+    question: "Hoeveel porties vlees, vis of peulvruchten eet je op een gewone dag?",
     options: [
       { label: "0", value: 0 },
       { label: "1", value: 1 },
@@ -74,7 +74,7 @@ const QUESTIONS: QuestionDef[] = [
   },
   {
     field: "sunExposurePerWeek",
-    question: "Hoe vaak was je ≥ 15 minuten buiten in daglicht?",
+    question: "Hoe vaak ben je in een gewone week ≥ 15 minuten buiten in daglicht?",
     options: [
       { label: "Zelden of nooit", value: 1 },
       { label: "2–3 keer", value: 3 },
@@ -164,11 +164,33 @@ export default function NutritionCapture() {
   }
 
   if (step.kind === "result") {
-    const lifestyle = step.advice.filter((a) => a.kind === "lifestyle");
-    const supplements = step.advice.filter((a) => a.kind === "supplement");
+    const lifestyle = step.advice.filter(
+      (a): a is Extract<NutritionAdviceItem, { kind: "lifestyle" }> =>
+        a.kind === "lifestyle" && a.nutrient !== "protein",
+    );
+    const supplements = step.advice.filter(
+      (a) => a.kind === "supplement" && a.nutrient !== "protein",
+    );
     const visibleDeltas = step.delta
       ? step.delta.filter((d) => d.direction !== "unchanged")
       : null;
+
+    const proteinIndex = step.estimate.findIndex((e) => e.nutrient === "protein");
+    const proteinStatement =
+      proteinIndex >= 0 ? step.statements[proteinIndex] : null;
+    const proteinAdvice = step.advice.filter((a) => a.nutrient === "protein");
+    const proteinLifestyle = proteinAdvice.find(
+      (a): a is Extract<NutritionAdviceItem, { kind: "lifestyle" }> =>
+        a.kind === "lifestyle",
+    );
+    const proteinSupplement = proteinAdvice.find(
+      (a): a is Extract<NutritionAdviceItem, { kind: "supplement" }> =>
+        a.kind === "supplement",
+    );
+
+    const otherStatements = step.statements
+      .map((text, i) => ({ text, nutrient: step.estimate[i]?.nutrient }))
+      .filter((row) => row.nutrient !== "protein");
 
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -180,6 +202,64 @@ export default function NutritionCapture() {
             Op basis van jouw antwoorden
           </p>
 
+          {proteinStatement ? (
+            <section
+              aria-labelledby="protein-heading"
+              className="mb-8 rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-5"
+            >
+              <h2
+                id="protein-heading"
+                className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-intake-terra"
+              >
+                Eiwit — jouw belangrijkste bouwsteen
+              </h2>
+              <p className="mb-4 text-sm leading-relaxed text-intake-ink">
+                {proteinStatement}
+              </p>
+
+              <details className="group rounded-[12px] border border-intake-card-border bg-intake-bg-elevated/40">
+                <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+                  Bereken je precieze eiwitdoel
+                </summary>
+                <div className="border-t border-intake-divider px-2 pb-3 pt-2">
+                  <ProteinTargetCard
+                    proteinMealsYesterday={answers.proteinMealsPerDay}
+                  />
+                </div>
+              </details>
+
+              {proteinLifestyle ? (
+                <div className="mt-4">
+                  <p className="mb-1 text-xs font-medium text-intake-ink-subtle">
+                    De basis — voeding eerst
+                  </p>
+                  <p className="rounded-[12px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3 text-sm leading-relaxed text-intake-ink">
+                    {proteinLifestyle.text}
+                  </p>
+                </div>
+              ) : null}
+
+              {proteinSupplement ? (
+                <div className="mt-3">
+                  <p className="mb-1 text-xs font-medium text-intake-ink-subtle">
+                    Aanvulling — indien gewenst
+                  </p>
+                  <Link
+                    href={proteinSupplement.comparisonPath}
+                    className="block rounded-[12px] border border-intake-terra/30 bg-intake-terra/5 px-4 py-3 text-sm leading-relaxed text-intake-ink transition-colors hover:bg-intake-terra/10"
+                  >
+                    <span className="block font-medium text-intake-terra">
+                      Vergelijk eiwitpoeder →
+                    </span>
+                    <span className="mt-1 block text-intake-ink-muted">
+                      {proteinSupplement.claimText}
+                    </span>
+                  </Link>
+                </div>
+              ) : null}
+            </section>
+          ) : null}
+
           <section aria-labelledby="statements-heading" className="mb-8">
             <h2
               id="statements-heading"
@@ -188,25 +268,16 @@ export default function NutritionCapture() {
               Inname per nutriënt
             </h2>
             <ul className="flex flex-col gap-3">
-              {step.statements.map((s, i) => (
+              {otherStatements.map((row, i) => (
                 <li
                   key={i}
                   className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink"
                 >
-                  {s}
+                  {row.text}
                 </li>
               ))}
             </ul>
           </section>
-
-          <details className="group mb-8 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated/40">
-            <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
-              Bereken je persoonlijke eiwitdoel
-            </summary>
-            <div className="border-t border-intake-divider px-3 pb-4 pt-3">
-              <ProteinTargetCard proteinMealsYesterday={answers.proteinMealsPerDay} />
-            </div>
-          </details>
 
           {visibleDeltas && visibleDeltas.length > 0 && (
             <section aria-labelledby="delta-heading" className="mb-8">
