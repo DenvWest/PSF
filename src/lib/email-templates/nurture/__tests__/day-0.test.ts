@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { nurtureDay0Email } from "@/lib/email-templates/nurture/day-0";
+import { day0InteractionLine } from "@/lib/email-templates/nurture/helpers";
 import type {
   NurtureEmailData,
   NurtureEmailDispatchContext,
@@ -176,10 +177,10 @@ describe("dag-0 weakspot-blok toont primair domein", () => {
   });
 });
 
-// ── P2: emotionele opening per profiel ──────────────────────────────────────
+// ── P2: domein-opening (bevinding + mechanisme) ───────────────────────────
 
-describe("dag-0 emotionele opening", () => {
-  it("Stressdrager — opening benoemt stress als prioriteit", () => {
+describe("dag-0 domein-opening", () => {
+  it("Stressdrager — opening benoemt stress als aandachtspunt + mechanisme", () => {
     const data = buildData("Stressdrager", "stress", {
       stress_score: 25,
       sleep_score: 50,
@@ -189,11 +190,11 @@ describe("dag-0 emotionele opening", () => {
       recovery_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    expect(html).toContain("stress je prioriteit is");
-    expect(html).toContain("dag niet echt stopt als je thuis bent");
+    expect(html).toContain("Stress kwam als je grootste aandachtspunt naar voren");
+    expect(html).toContain("verhoogd cortisol breekt spier af");
   });
 
-  it("Onrustige Slaper — opening benoemt slaap als prioriteit", () => {
+  it("Onrustige Slaper — opening benoemt slaap als aandachtspunt + mechanisme", () => {
     const data = buildData("Onrustige Slaper", "sleep", {
       stress_score: 50,
       sleep_score: 20,
@@ -203,11 +204,11 @@ describe("dag-0 emotionele opening", () => {
       recovery_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    expect(html).toContain("slaap je prioriteit is");
-    expect(html).toContain("wakker wordt en al moe bent");
+    expect(html).toContain("Slaap kwam als je grootste aandachtspunt naar voren");
+    expect(html).toContain("melatonine komt later op gang");
   });
 
-  it("Lage Batterij — opening benoemt energie als prioriteit", () => {
+  it("Lage Batterij — opening benoemt energie als aandachtspunt + mechanisme", () => {
     const data = buildData("Lage Batterij", "energy", {
       stress_score: 50,
       sleep_score: 50,
@@ -217,11 +218,11 @@ describe("dag-0 emotionele opening", () => {
       recovery_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    expect(html).toContain("energie je prioriteit is");
-    expect(html).toContain("energie op is lang voordat de dag voorbij is");
+    expect(html).toContain("Energie kwam als je grootste aandachtspunt naar voren");
+    expect(html).toContain("optelsom van je slaap, voeding en beweging");
   });
 
-  it("opening bevat NIET de oude koude copy over het zenuwstelsel", () => {
+  it("opening bevat NIET de oude input-herhaling of motivatie-gok", () => {
     const data = buildData("Stressdrager", "stress", {
       stress_score: 25,
       sleep_score: 50,
@@ -231,9 +232,9 @@ describe("dag-0 emotionele opening", () => {
       recovery_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    // Oude opening-copy mag er niet meer in zitten
+    expect(html).not.toContain("Je hebt net ingevuld dat");
+    expect(html).not.toContain("Dat betekent waarschijnlijk");
     expect(html).not.toContain("Je zenuwstelsel staat langer aan");
-    expect(html).not.toContain("zenuwstelsel staat langer aan");
   });
 });
 
@@ -304,7 +305,7 @@ describe("dag-0 nulpunt-zin", () => {
 // ── Domein-consistentie: movement en nutrition ────────────────────────────
 
 describe("dag-0 domein-consistentie movement en nutrition", () => {
-  it("primaryDomain=movement → opening bevat 'beweging je prioriteit is'", () => {
+  it("primaryDomain=movement → opening bevat aandachtspunt + mechanisme", () => {
     const data = buildData("In Balans", "movement", {
       sleep_score: 30,
       stress_score: 50,
@@ -314,7 +315,8 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
       recovery_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    expect(html).toContain("beweging je prioriteit is");
+    expect(html).toContain("Beweging kwam als je grootste aandachtspunt naar voren");
+    expect(html).toContain("spiermassa sneller dan je merkt");
   });
 
   it("primaryDomain=movement → weakspot bevat 'Beweging heeft ruimte'", () => {
@@ -350,7 +352,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
     }
   });
 
-  it("primaryDomain=movement → bevat NIET 'energie je prioriteit is'", () => {
+  it("primaryDomain=movement → bevat NIET de oude energie-prioriteit-copy", () => {
     const data = buildData("Lage Batterij", "movement", {
       sleep_score: 30,
       stress_score: 50,
@@ -363,7 +365,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
     expect(html).not.toContain("energie je prioriteit is");
   });
 
-  it("primaryDomain=nutrition → opening bevat 'voeding je prioriteit is'", () => {
+  it("primaryDomain=nutrition → opening bevat aandachtspunt + voedingsbodem", () => {
     const data = buildData("In Balans", "nutrition", {
       sleep_score: 70,
       stress_score: 70,
@@ -373,7 +375,8 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
       recovery_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    expect(html).toContain("voeding je prioriteit is");
+    expect(html).toContain("Voeding kwam als je grootste aandachtspunt naar voren");
+    expect(html).toContain("Je voedingsbodem bepaalt of de rest überhaupt werkt");
   });
 
   it("subject is altijd 'Dit valt op in jouw resultaten'", () => {
@@ -393,7 +396,74 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
   });
 });
 
-// ── P1c: 'en verder'-regel bij extra aandachtsdomeinen ───────────────────
+// ── P1c: interactie-regel of 'en verder'-regel (één slot) ─────────────────
+
+describe("dag-0 interactie-regel", () => {
+  it("movement + lage energie → interactie-regel in HTML", () => {
+    const scores = {
+      sleep_score: 50,
+      stress_score: 50,
+      energy_score: 30,
+      nutrition_score: 50,
+      movement_score: 20,
+      recovery_score: 50,
+    };
+    expect(day0InteractionLine("movement", scores)).toContain(
+      "Je energie staat óók onder druk",
+    );
+    const { html } = nurtureDay0Email(buildData("In Balans", "movement", scores), CTX);
+    expect(html).toContain("Daarom beginnen we niet bij meer trainen, maar bij de bron");
+    expect(html).not.toContain("daar komen we in de volgende mails op terug");
+  });
+
+  it("energy + redelijke slaap en voeding → interactie-regel in HTML", () => {
+    const scores = {
+      sleep_score: 55,
+      stress_score: 50,
+      energy_score: 20,
+      nutrition_score: 60,
+      movement_score: 50,
+      recovery_score: 50,
+    };
+    expect(day0InteractionLine("energy", scores)).toContain(
+      "Je slaap en voeding lijken redelijk op orde",
+    );
+    const { html } = nurtureDay0Email(buildData("Lage Batterij", "energy", scores), CTX);
+    expect(html).toContain("dan ligt de winst vaak in daglicht en beweging");
+  });
+
+  it("recovery + redelijke beweging → interactie-regel in HTML", () => {
+    const scores = {
+      sleep_score: 50,
+      stress_score: 50,
+      energy_score: 50,
+      nutrition_score: 50,
+      movement_score: 65,
+      recovery_score: 20,
+    };
+    expect(day0InteractionLine("recovery", scores)).toContain(
+      "Je beweegt volop maar je herstel blijft achter",
+    );
+    const { html } = nurtureDay0Email(buildData("Overtrainer", "recovery", scores), CTX);
+    expect(html).toContain("dat vraagt om meer rust, niet om meer volume");
+  });
+
+  it("geen match → lege interactie-regel, fallback naar en-verder", () => {
+    const scores = {
+      sleep_score: 35,
+      stress_score: 45,
+      nutrition_score: 38,
+      movement_score: 20,
+      energy_score: 50,
+      recovery_score: 50,
+    };
+    expect(day0InteractionLine("movement", scores)).toBe("");
+    const { html } = nurtureDay0Email(buildData("In Balans", "movement", scores), CTX);
+    expect(html).toContain(
+      "Je slaap en energie vroegen ook aandacht — daar komen we in de volgende mails op terug.",
+    );
+  });
+});
 
 describe("dag-0 en-verder-regel", () => {
   it("2+ aandachtsdomeinen → compacte regel over andere domeinen", () => {
@@ -422,6 +492,81 @@ describe("dag-0 en-verder-regel", () => {
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).not.toContain("daar komen we in de volgende mails op terug");
+  });
+});
+
+// ── Voeding-brug ────────────────────────────────────────────────────────────
+
+describe("dag-0 voeding-brug", () => {
+  it("nutrition Aandacht → voeding-check link aanwezig", () => {
+    const data = buildData("In Balans", "sleep", {
+      sleep_score: 30,
+      stress_score: 70,
+      energy_score: 70,
+      nutrition_score: 45,
+      movement_score: 70,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("Soms zit een deel hiervan in je voedingsbodem");
+    expect(html).toContain("/intake/voeding");
+    expect(html).toContain("Doe de voeding-check →");
+  });
+
+  it("primaryDomain=energy → voeding-check link aanwezig", () => {
+    const data = buildData("Lage Batterij", "energy", {
+      sleep_score: 70,
+      stress_score: 70,
+      energy_score: 20,
+      nutrition_score: 80,
+      movement_score: 70,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("Doe de voeding-check →");
+    expect(html).toContain("/intake/voeding");
+  });
+
+  it("primaryDomain=movement → voeding-check link aanwezig", () => {
+    const data = buildData("In Balans", "movement", {
+      sleep_score: 70,
+      stress_score: 70,
+      energy_score: 70,
+      nutrition_score: 80,
+      movement_score: 20,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).toContain("Doe de voeding-check →");
+  });
+
+  it("sleep primary + voeding Voldoende → geen voeding-brug", () => {
+    const data = buildData("Onrustige Slaper", "sleep", {
+      sleep_score: 30,
+      stress_score: 75,
+      energy_score: 70,
+      nutrition_score: 70,
+      movement_score: 70,
+      recovery_score: 70,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    expect(html).not.toContain("Doe de voeding-check →");
+    expect(html).not.toContain("/intake/voeding");
+  });
+
+  it("voeding-brug is tekstlink, geen tweede CTA-knop", () => {
+    const data = buildData("Lage Batterij", "energy", {
+      sleep_score: 50,
+      stress_score: 50,
+      energy_score: 20,
+      nutrition_score: 50,
+      movement_score: 50,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    const buttonMatches = html.match(/background-color:#2d4a3e[^"]*"[^>]*>[^<]*<\/a>/g);
+    expect((buttonMatches ?? []).length).toBeLessThanOrEqual(1);
+    expect(html).toContain("Doe de voeding-check →");
   });
 });
 

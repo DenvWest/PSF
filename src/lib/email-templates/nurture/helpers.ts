@@ -211,17 +211,17 @@ export function day0OpeningLineForDomain(
 ): string {
   const openings: Record<(typeof DOMAIN_IDS)[number], string> = {
     sleep:
-      "Je hebt net ingevuld dat slaap je prioriteit is. Dat betekent waarschijnlijk dat je wakker wordt en al moe bent voordat de dag begint.",
+      "Slaap kwam als je grootste aandachtspunt naar voren — en na je veertigste vergeeft je lichaam een korte nacht minder snel: melatonine komt later op gang, cortisol blijft langer actief. Geen onwil; wel iets waar je op kunt sturen.",
     stress:
-      "Je hebt net ingevuld dat stress je prioriteit is. Dat betekent waarschijnlijk dat de dag niet echt stopt als je thuis bent.",
+      "Stress kwam als je grootste aandachtspunt naar voren. Aanhoudende stress is na 40 niet zomaar 'erbij' — verhoogd cortisol breekt spier af, verstoort je slaap en remt je herstel. Fysiologie, geen aanstellerij.",
     energy:
-      "Je hebt net ingevuld dat energie je prioriteit is. Dat betekent waarschijnlijk dat je energie op is lang voordat de dag voorbij is.",
+      "Energie kwam als je grootste aandachtspunt naar voren — al is energie zelden het échte probleem. Het is meestal de optelsom van je slaap, voeding en beweging. Daarom kijken we eerst naar de bron, niet naar de zoveelste kop koffie.",
     recovery:
-      "Je hebt net ingevuld dat herstel je prioriteit is. Dat betekent waarschijnlijk dat je lichaam meer vraagt dan je het geeft.",
+      "Herstel kwam als je grootste aandachtspunt naar voren. Herstel is het moment waarop je lichaam opbouwt — gebeurt dat te weinig, dan stapelt de vermoeidheid op. De winst zit hier bijna nooit in méér doen, maar in meer ruimte.",
     movement:
-      "Je hebt net ingevuld dat beweging je prioriteit is. Dat betekent waarschijnlijk dat je weet dat je meer zou willen bewegen, maar dat de dag het opslokt.",
+      "Beweging kwam als je grootste aandachtspunt naar voren. Na je veertigste verlies je spiermassa sneller dan je merkt — niet door luiheid, maar omdat je spieren trager op prikkels reageren. Het goede nieuws: kracht is precies de hefboom die dat terugdraait.",
     nutrition:
-      "Je hebt net ingevuld dat voeding je prioriteit is. Dat betekent waarschijnlijk dat het er vaak bij inschiet als de dag druk wordt.",
+      "Voeding kwam als je grootste aandachtspunt naar voren. Je voedingsbodem bepaalt of de rest überhaupt werkt — en juist daar zakt de inname vaak ongemerkt onder wat je nodig hebt. Klein bijsturen levert hier meestal het meeste op.",
   };
   const line = openings[domain];
   const raw = typeof firstName === "string" ? firstName.replace(/\s+/g, " ").trim() : "";
@@ -317,6 +317,78 @@ export function day0FurtherAttentionLine(
   return `Je ${joined} ${verb} ook aandacht — daar komen we in de volgende mails op terug.`;
 }
 
+function day0DomainScore(
+  domainScores: Record<string, number>,
+  scoreKey: string,
+): number {
+  const raw = domainScores[scoreKey];
+  return typeof raw === "number" && Number.isFinite(raw) ? raw : NaN;
+}
+
+export function day0InteractionLine(
+  primaryDomain: string,
+  domainScores: Record<string, number>,
+): string {
+  const primaryId = normalizeDomainId(primaryDomain);
+
+  if (
+    primaryId === "movement" &&
+    day0DomainScore(domainScores, "energy_score") < 50
+  ) {
+    return "Je energie staat óók onder druk — en met weinig energie wordt bewegen alleen maar zwaarder. Daarom beginnen we niet bij meer trainen, maar bij de bron.";
+  }
+
+  if (
+    primaryId === "energy" &&
+    day0DomainScore(domainScores, "sleep_score") >= 50 &&
+    day0DomainScore(domainScores, "nutrition_score") >= 50
+  ) {
+    return "Je slaap en voeding lijken redelijk op orde terwijl je energie achterblijft — dan ligt de winst vaak in daglicht en beweging.";
+  }
+
+  if (
+    primaryId === "recovery" &&
+    day0DomainScore(domainScores, "movement_score") >= 50
+  ) {
+    return "Je beweegt volop maar je herstel blijft achter — dat vraagt om meer rust, niet om meer volume.";
+  }
+
+  return "";
+}
+
+function shouldShowDay0NutritionBridge(
+  primaryDomain: string,
+  domainScores: Record<string, number>,
+): boolean {
+  const primaryId = normalizeDomainId(primaryDomain);
+  if (primaryId === "energy" || primaryId === "movement") {
+    return true;
+  }
+  const nutritionStatus = getDisplayStatus(
+    day0DomainScore(domainScores, "nutrition_score"),
+  );
+  return nutritionStatus === "Aandacht" || nutritionStatus === "Prioriteit";
+}
+
+function renderDay0NutritionBridge(
+  primaryDomain: string,
+  domainScores: Record<string, number>,
+): string {
+  if (!shouldShowDay0NutritionBridge(primaryDomain, domainScores)) {
+    return "";
+  }
+  const voedingUrl = absoluteUrl("/intake/voeding");
+  return `
+        <tr>
+          <td style="padding:8px 28px 8px 28px;">
+            <p style="margin:0;font-size:14px;line-height:1.6;color:#666666;">
+              Soms zit een deel hiervan in je voedingsbodem. Wil je in één minuut zien hoe jouw inname zich verhoudt tot de richtlijn?
+              <a href="${escapeHtml(voedingUrl)}" style="color:#2d4a3e;font-weight:600;text-decoration:underline;">Doe de voeding-check →</a>
+            </p>
+          </td>
+        </tr>`;
+}
+
 export function renderDay0MainRows(params: {
   primaryDomain: string;
   intakeUrl: string;
@@ -328,7 +400,11 @@ export function renderDay0MainRows(params: {
   const opening = day0OpeningLineForDomain(domain, firstName);
   const title = "Dit valt op in jouw resultaten";
   const attentionLine = day0AttentionLine(domainScores, primaryDomain);
-  const furtherLine = day0FurtherAttentionLine(domainScores, primaryDomain);
+  const interactionLine = day0InteractionLine(primaryDomain, domainScores);
+  const furtherLine =
+    interactionLine ||
+    day0FurtherAttentionLine(domainScores, primaryDomain);
+  const nutritionBridge = renderDay0NutritionBridge(primaryDomain, domainScores);
 
   const prefix = nurtureNamePrefixHtml(firstName);
   const nameAlreadyInOpening =
@@ -351,6 +427,7 @@ export function renderDay0MainRows(params: {
           </td>
         </tr>
         ${renderWeakSpotBlock(primaryDomain)}
+        ${nutritionBridge}
         <tr>
           <td style="padding:8px 28px 28px 28px;">
             ${nurtureCtaButton(intakeUrl, "Bekijk je resultaten")}
