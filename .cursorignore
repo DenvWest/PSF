@@ -1,0 +1,10 @@
+# Secrets — nooit indexeren of als AI-context meesturen
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Lokale build/artifacts
+.next/
+node_modules/

@@ -46,6 +46,13 @@ export const BODY_METRICS_CONSENT_TEXT: Record<BodyMetricsConsentType, string> =
     "Ik geef toestemming om mijn gewicht te verwerken voor een persoonlijke eiwitrichtlijn (inname-advies). Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
 };
 
+export type AccountStorageConsentType = "account_storage";
+
+export const ACCOUNT_STORAGE_CONSENT_TEXT: Record<AccountStorageConsentType, string> = {
+  account_storage:
+    "Ik geef toestemming om mijn intake- en checkresultaten onder mijn e-mailadres te bewaren, zodat ik mijn vitaliteit en voortgang over tijd kan terugzien in een persoonlijk overzicht. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken, waarna mijn gegevens worden geanonimiseerd.",
+};
+
 export type MeasurementReminderConsentType = "measurement_reminder";
 
 export const MEASUREMENT_REMINDER_CONSENT_TEXT: Record<

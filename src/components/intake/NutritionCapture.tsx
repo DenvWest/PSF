@@ -8,6 +8,7 @@ import type { IntakeEstimate, NutritionSelfReport } from "@/lib/nutrition-intake
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
 import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
 import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
+import { nutrientReferences } from "@/data/nutrition/intake-reference";
 
 type Step =
   | { kind: "question"; index: number }
@@ -188,9 +189,20 @@ export default function NutritionCapture() {
         a.kind === "supplement",
     );
 
-    const otherStatements = step.statements
-      .map((text, i) => ({ text, nutrient: step.estimate[i]?.nutrient }))
-      .filter((row) => row.nutrient !== "protein");
+    const otherEstimates = step.estimate
+      .map((e, i) => ({
+        nutrient: e.nutrient,
+        band: e.band,
+        statement: step.statements[i],
+      }))
+      .filter((e) => e.nutrient !== "protein");
+    const otherGaps = otherEstimates.filter((e) => e.band === "below");
+    const otherOnTrack = otherEstimates.filter((e) => e.band !== "below");
+
+    const deltaImproved =
+      visibleDeltas?.filter((d) => d.direction === "improved") ?? [];
+    const deltaWorsened =
+      visibleDeltas?.filter((d) => d.direction === "worsened") ?? [];
 
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -260,47 +272,80 @@ export default function NutritionCapture() {
             </section>
           ) : null}
 
-          <section aria-labelledby="statements-heading" className="mb-8">
-            <h2
-              id="statements-heading"
-              className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
-            >
-              Inname per nutriënt
-            </h2>
-            <ul className="flex flex-col gap-3">
-              {otherStatements.map((row, i) => (
-                <li
-                  key={i}
-                  className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink"
-                >
-                  {row.text}
-                </li>
-              ))}
-            </ul>
-          </section>
+          {(otherGaps.length > 0 || otherOnTrack.length > 0) && (
+            <section aria-labelledby="statements-heading" className="mb-8">
+              <h2
+                id="statements-heading"
+                className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
+              >
+                Overige nutriënten
+              </h2>
+
+              {otherGaps.length > 0 && (
+                <ul className="mb-3 flex flex-col gap-3">
+                  {otherGaps.map((e) => (
+                    <li
+                      key={e.nutrient}
+                      className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink"
+                    >
+                      {e.statement}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {otherOnTrack.length > 0 && (
+                <details className="group rounded-[14px] border border-intake-card-border bg-intake-bg-elevated/40">
+                  <summary className="cursor-pointer list-none px-5 py-3.5 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+                    {otherOnTrack.length} nutriënt{otherOnTrack.length === 1 ? "" : "en"} zit{otherOnTrack.length === 1 ? "" : "ten"} op orde ✓
+                  </summary>
+                  <ul className="flex flex-col gap-3 border-t border-intake-divider px-3 pb-3 pt-3">
+                    {otherOnTrack.map((e) => (
+                      <li
+                        key={e.nutrient}
+                        className="rounded-[12px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3 text-sm leading-relaxed text-intake-ink-muted"
+                      >
+                        {e.statement}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </section>
+          )}
 
           {visibleDeltas && visibleDeltas.length > 0 && (
             <section aria-labelledby="delta-heading" className="mb-8">
               <h2
                 id="delta-heading"
-                className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
+                className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
               >
                 Sinds je vorige check
               </h2>
-              <ul className="flex flex-col gap-3">
-                {visibleDeltas.map((d, i) => (
-                  <li
-                    key={i}
-                    className="rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted"
-                  >
-                    {deltaStatementFor(d)}
-                  </li>
-                ))}
-              </ul>
+              <details className="group rounded-[14px] border border-intake-sage/30 bg-intake-sage/10">
+                <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-ink-muted [&::-webkit-details-marker]:hidden">
+                  {[
+                    deltaImproved.length > 0 ? `${deltaImproved.length} verbeterd` : null,
+                    deltaWorsened.length > 0 ? `${deltaWorsened.length} terug` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </summary>
+                <ul className="flex flex-col gap-3 border-t border-intake-divider px-3 pb-3 pt-3">
+                  {visibleDeltas.map((d, i) => (
+                    <li
+                      key={i}
+                      className="rounded-[12px] border border-intake-sage/30 bg-intake-sage/10 px-4 py-3 text-sm leading-relaxed text-intake-ink-muted"
+                    >
+                      {deltaStatementFor(d)}
+                    </li>
+                  ))}
+                </ul>
+              </details>
             </section>
           )}
 
-          {step.advice.length > 0 && (
+          {(lifestyle.length > 0 || supplements.length > 0) && (
             <section aria-labelledby="advice-heading">
               <h2
                 id="advice-heading"
@@ -342,7 +387,7 @@ export default function NutritionCapture() {
                             className="block rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-4 text-sm leading-relaxed text-intake-ink transition-colors hover:bg-intake-terra/10"
                           >
                             <span className="block font-medium text-intake-terra">
-                              Vergelijk supplementen →
+                              Vergelijk {nutrientReferences[item.nutrient].label} →
                             </span>
                             <span className="mt-1 block text-intake-ink-muted">
                               {item.claimText}
