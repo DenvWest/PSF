@@ -9,9 +9,26 @@ import type { ProteinTarget } from "@/lib/protein-target";
 type ProteinTargetCardProps = {
   /** Trainingsbelasting 1–4 uit de intake (max van MOV_STR/MOV_CARD). */
   trainingLoad?: number;
+  /** Eiwitrijke eetmomenten gisteren (NutritionSelfReport.proteinMealsPerDay) — voor de gat-brug. */
+  proteinMealsYesterday?: number;
 };
 
-export default function ProteinTargetCard({ trainingLoad }: ProteinTargetCardProps) {
+export default function ProteinTargetCard({
+  trainingLoad,
+  proteinMealsYesterday,
+}: ProteinTargetCardProps) {
+  const proteinMealsLine =
+    typeof proteinMealsYesterday !== "number"
+      ? null
+      : proteinMealsYesterday <= 0
+        ? "Gisteren gaf je geen eiwitrijke eetmomenten aan."
+        : proteinMealsYesterday === 1
+          ? "Gisteren gaf je 1 eiwitrijk eetmoment aan."
+          : proteinMealsYesterday >= 3
+            ? "Gisteren gaf je 3 of meer eiwitrijke eetmomenten aan."
+            : `Gisteren gaf je ${proteinMealsYesterday} eiwitrijke eetmomenten aan.`;
+  const showProteinNudge =
+    typeof proteinMealsYesterday === "number" && proteinMealsYesterday < 3;
   const [weightInput, setWeightInput] = useState("");
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -83,6 +100,17 @@ export default function ProteinTargetCard({ trainingLoad }: ProteinTargetCardPro
           <p className="mt-1 text-xs text-intake-ink-subtle">
             ≈ {result.perKgLow}–{result.perKgHigh} g per kg lichaamsgewicht.
           </p>
+          <p className="mt-3 text-xs leading-relaxed text-intake-ink-subtle">
+            Dat haal je doorgaans met 3–4 eiwitrijke eetmomenten over de dag verdeeld.
+          </p>
+          {proteinMealsLine ? (
+            <p className="mt-1 text-xs leading-relaxed text-intake-ink-subtle">
+              {proteinMealsLine}
+              {showProteinNudge
+                ? " Eén extra eiwitbron per maaltijd brengt je dichter bij je doel."
+                : ""}
+            </p>
+          ) : null}
           {supplement ? (
             <div className="mt-4 border-t border-intake-divider pt-4">
               <Link

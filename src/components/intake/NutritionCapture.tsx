@@ -7,6 +7,7 @@ import { NUTRITION_LOG_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { IntakeEstimate, NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
 import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
+import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
 
 type Step =
   | { kind: "question"; index: number }
@@ -197,6 +198,15 @@ export default function NutritionCapture() {
               ))}
             </ul>
           </section>
+
+          <details className="group mb-8 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated/40">
+            <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+              Bereken je persoonlijke eiwitdoel
+            </summary>
+            <div className="border-t border-intake-divider px-3 pb-4 pt-3">
+              <ProteinTargetCard proteinMealsYesterday={answers.proteinMealsPerDay} />
+            </div>
+          </details>
 
           {visibleDeltas && visibleDeltas.length > 0 && (
             <section aria-labelledby="delta-heading" className="mb-8">

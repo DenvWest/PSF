@@ -13,6 +13,7 @@ import { bodyMetricsConsentRow } from "@/lib/body-metrics-consent";
 import { computeProteinTarget } from "@/lib/protein-target";
 import { emitEvent } from "@/lib/events";
 import { nutritionSupplementGate } from "@/lib/nutrition-advice";
+import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 
 function parseWeight(value: unknown): number | null {
   if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
@@ -31,6 +32,15 @@ function parseTrainingLoad(value: unknown): number | undefined {
     return undefined;
   }
   return value;
+}
+
+function deriveTrainingLoadFromAnswers(
+  answers: Record<string, number>,
+): number | undefined {
+  const movStr = Number.isFinite(answers.MOV_STR) ? answers.MOV_STR : 0;
+  const movCard = Number.isFinite(answers.MOV_CARD) ? answers.MOV_CARD : 0;
+  const load = Math.max(movStr, movCard);
+  return load >= 1 ? Math.min(4, load) : undefined;
 }
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
@@ -82,7 +92,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const target = computeProteinTarget({ weightKg, trainingLoad });
+  // Trainingsbelasting server-side uit de sessie afleiden — de client niet vertrouwen
+  // voor de factor (anders manipuleerbaar). Val terug op de meegestuurde waarde.
+  const loaded = await loadIntakeSessionPayloadBySessionId(sessionId);
+  const sessionAnswers =
+    loaded.ok && loaded.session ? loaded.session.answers : {};
+  const effectiveTrainingLoad =
+    deriveTrainingLoadFromAnswers(sessionAnswers) ?? trainingLoad;
+
+  const target = computeProteinTarget({
+    weightKg,
+    trainingLoad: effectiveTrainingLoad,
+  });
   if (!target) {
     return NextResponse.json(
       { error: "Vul een geldig gewicht in (40–250 kg)." },
@@ -132,7 +153,7 @@ export async function POST(request: NextRequest) {
       eventType: "measurement.protein_target_computed",
       sessionId,
       payload: {
-        training_load: trainingLoad ?? null,
+        training_load: effectiveTrainingLoad ?? null,
         per_kg_low: target.perKgLow,
         per_kg_high: target.perKgHigh,
       },
