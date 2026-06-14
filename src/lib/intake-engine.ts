@@ -638,12 +638,18 @@ export function getAdvice(
       5,
       "sleep_score",
     );
+    pushRankedText(
+      quickWins,
+      "Voeg dagelijks bladgroenten, noten of peulvruchten toe — magnesium uit voeding gaat vóór supplement.",
+      6,
+      "nutrition_score",
+    );
     pushRankedSupplement(
       supplements,
       {
         name: "Magnesium glycinaat",
         reason:
-          "Je slaap- en stresscores geven samen een signaal; magnesium draagt bij tot normale psychologische functie, tot de normale werking van het zenuwstelsel en tot vermindering van vermoeidheid.",
+          "Na ritme en voeding: magnesium draagt bij tot normale psychologische functie, tot de normale werking van het zenuwstelsel en tot vermindering van vermoeidheid.",
         link: COMPARISON_PATHS.magnesium,
       },
       10,
@@ -690,12 +696,18 @@ export function getAdvice(
       4,
       "sleep_score",
     );
+    pushRankedText(
+      quickWins,
+      "Voeg dagelijks bladgroenten, noten of peulvruchten toe — magnesium uit voeding eerst.",
+      5,
+      "nutrition_score",
+    );
     pushRankedSupplement(
       supplements,
       {
         name: "Magnesium glycinaat",
         reason:
-          "Je ligt regelmatig lang wakker terwijl stress beheersbaar lijkt. Magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid — na ritme en licht.",
+          "Na ritme, licht en voeding: magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid.",
         link: COMPARISON_PATHS.magnesium,
       },
       10,
@@ -852,12 +864,18 @@ export function getAdvice(
   }
 
   if (signals.magnesiumSignal && !signals.cortisolRisk) {
+    pushRankedText(
+      quickWins,
+      "Voeg dagelijks bladgroenten, noten of peulvruchten toe aan je maaltijden — check in 1 minuut hoe je voeding eruitziet.",
+      5,
+      "nutrition_score",
+    );
     pushRankedSupplement(
       supplements,
       {
         name: "Magnesium glycinaat",
         reason:
-          "Je antwoorden tonen onder andere onrust rond slapen en herstel; magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid.",
+          "Na voeding en ritme: magnesium draagt bij tot normale psychologische functie en vermindering van vermoeidheid.",
         link: COMPARISON_PATHS.magnesium,
       },
       16,

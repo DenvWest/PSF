@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runPendingNurtureEmails } from "@/lib/nurture-cron";
+import { runNutritionRelogInvites } from "@/lib/nutrition-relog-nurture";
 import { verifyCronRequest } from "@/lib/cron-auth";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,13 @@ async function handleAuthorized(): Promise<NextResponse> {
 
   try {
     const nurture = await runPendingNurtureEmails();
-    return NextResponse.json(nurture);
+    const relog = await runNutritionRelogInvites();
+    return NextResponse.json({
+      sent: nurture.sent + relog.sent,
+      errors: nurture.errors + relog.errors,
+      nutritionRelogSent: relog.sent,
+      nutritionRelogErrors: relog.errors,
+    });
   } catch (err) {
     console.error("[api/cron/nurture]", err);
     return NextResponse.json(

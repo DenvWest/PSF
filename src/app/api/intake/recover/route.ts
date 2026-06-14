@@ -23,12 +23,25 @@ function logSecurityEvent(event: string, details: Record<string, unknown> = {}) 
   console.warn("[api/intake/recover][security]", { event, ...details });
 }
 
+const RECOVER_DEST: Record<string, string> = {
+  resultaten: "/intake?resultaten=true",
+  voeding: "/intake/voeding",
+};
+
+function resolveRecoverDest(request: NextRequest): string {
+  const destKey = request.nextUrl.searchParams.get("dest")?.trim() ?? "";
+  return RECOVER_DEST[destKey] ?? RECOVER_DEST.resultaten;
+}
+
 function redirectToIntake(): NextResponse {
   return NextResponse.redirect(new URL(`${getPublicSiteUrl()}/intake`));
 }
 
-function setSessionCookie(signedCookie: string): NextResponse {
-  const dest = new URL(`${getPublicSiteUrl()}/intake?resultaten=true`);
+function setSessionCookie(
+  signedCookie: string,
+  redirectPath = "/intake?resultaten=true",
+): NextResponse {
+  const dest = new URL(`${getPublicSiteUrl()}${redirectPath}`);
   const res = NextResponse.redirect(dest);
   res.cookies.set(INTAKE_SESSION_COOKIE_NAME, signedCookie, {
     httpOnly: true,
@@ -120,7 +133,7 @@ export async function GET(request: NextRequest) {
     if (mode === "remeasure") {
       return setRemeasureCookie(result.sessionId);
     }
-    return setSessionCookie(result.signedCookie);
+    return setSessionCookie(result.signedCookie, resolveRecoverDest(request));
   }
 
   const sid = request.nextUrl.searchParams.get("sid")?.trim() ?? "";

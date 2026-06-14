@@ -15,7 +15,7 @@ export const magnesiumData: SupplementData = {
   watIsHet: {
     titel: "Wat doet magnesium in je lichaam?",
     tekst:
-      "Magnesium is een mineraal dat je zenuwstelsel, spieren en energiehuishouding ondersteunt. Het speelt een sleutelrol bij de aanmaak van melatonine (je slaaphormoon) en bij het reguleren van cortisol (je stresshormoon). De [chelaatvorm](/kennisbank/chelaatvorm) — zoals bij glycinaat — beïnvloedt mede hoe goed magnesium wordt opgenomen. Veel mannen boven de 40 krijgen via voeding onvoldoende magnesium binnen — vooral bij stress, intensieve sport of alcoholgebruik neemt het verbruik toe.",
+      "Magnesium is een mineraal dat je zenuwstelsel, spieren en energiehuishouding ondersteunt. Het speelt een sleutelrol bij de aanmaak van melatonine (je slaaphormoon) en bij het reguleren van cortisol (je stresshormoon). De [chelaatvorm](/kennisbank/chelaatvorm) — zoals bij glycinaat — beïnvloedt mede hoe goed magnesium wordt opgenomen. Magnesium komt vooral uit bladgroenten, noten en peulvruchten; supplement is aanvulling als je inname uit voeding laag blijft.",
   },
 
   waaromRelevant: {
@@ -29,12 +29,12 @@ export const magnesiumData: SupplementData = {
       {
         titel: "Stressregulatie",
         uitleg:
-          "Bij chronische stress verbruikt je lichaam meer magnesium, waardoor een tekort de stressrespons verder versterkt.",
+          "Bij chronische stress verbruikt je lichaam meer magnesium — bladgroenten, noten en peulvruchten zijn de eerste bron.",
       },
       {
         titel: "Spierfunctie & herstel",
         uitleg:
-          "Essentieel voor spiercontractie en -ontspanning. Een tekort kan leiden tot krampen, stijfheid en trager herstel.",
+          "Essentieel voor spiercontractie en -ontspanning. Lage inname uit voeding kan samengaan met krampen of stijfheid — eerst voeding, dan aanvulling.",
       },
       {
         titel: "Energieproductie",
@@ -56,7 +56,7 @@ export const magnesiumData: SupplementData = {
       },
       {
         naam: "Magnesium citraat",
-        geschiktVoor: "Algemeen tekort aanvullen",
+        geschiktVoor: "Algemene aanvulling bij lage inname uit voeding",
         dosering: "200–400 mg elementair magnesium per dag",
         opmerking:
           "Goede opname, breed beschikbaar. Kan bij hogere doseringen laxerend werken.",

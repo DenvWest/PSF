@@ -34,6 +34,7 @@ import { withIntakeReturn } from "@/lib/intake-return-link";
 import { DOMAIN_CHECKIN } from "@/lib/domain-checkin";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
 import { getProteinEmphasis } from "@/lib/nutrition-protein-emphasis";
+import type { IntakeBand } from "@/lib/nutrition-intake-estimate";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
@@ -94,6 +95,18 @@ const REVOKE_SUCCESS =
   "Je toestemming is ingetrokken en je gegevens zijn geanonimiseerd.";
 
 const DELETE_SUCCESS = "Je intake-sessie is volledig verwijderd.";
+
+const BASIS_DRIE_COPY =
+  "Begin met drie ankers: eiwit bij elke maaltijd, groente of noten dagelijks, en vette vis twee keer per week. Check in één minuut hoe je dag eruitziet — dan zien we waar de basis nog wankel is.";
+
+function proteinBandFromNutProt(nutProt: number | undefined): IntakeBand | undefined {
+  if (typeof nutProt !== "number" || !Number.isFinite(nutProt)) {
+    return undefined;
+  }
+  if (nutProt < 2) return "below";
+  if (nutProt >= 3) return "meets";
+  return "around";
+}
 
 const PRIMARY_REASON = {
   nutrition:
@@ -258,7 +271,14 @@ function buildPillarSupplementLinks(
     appendLink(signalLinks[0].pillar, signalLinks[0]);
   }
   if (deficiencySignals.magnesium_signal) {
-    appendLink(signalLinks[1].pillar, signalLinks[1]);
+    appendLink("nutrition", {
+      label: "Doe de voedingscheck (1 min)",
+      href: "/intake/voeding",
+    });
+    appendLink("sleep", {
+      label: "Magnesium — normale psychologische functie",
+      href: "/beste/magnesium",
+    });
   }
   if (deficiencySignals.creatine_signal) {
     appendLink(signalLinks[2].pillar, signalLinks[2]);
@@ -301,7 +321,7 @@ export default function IntakeResults({
   const deficiencySignals = getDeficiencySignals(answers);
   const proteinEmphasis = getProteinEmphasis(
     { MOV_STR: answers.MOV_STR, MOV_CARD: answers.MOV_CARD },
-    "below",
+    proteinBandFromNutProt(answers.NUT_PROT),
   );
   const supplementRoute = getSupplementRoute(
     scores,
@@ -351,6 +371,11 @@ export default function IntakeResults({
   const hasThemeBacklink = Boolean(themeLinks.pillarHref || themeLinks.profileSlug);
   const showEnergyGuideLink = scores.energy_score < 40;
   const primaryCheckin = DOMAIN_CHECKIN[primaryTheme];
+  const nutritionStatus = getDisplayStatus(scores.nutrition_score);
+  const showNutritionBasis =
+    nutritionStatus === "Prioriteit" ||
+    nutritionStatus === "Aandacht" ||
+    primaryTheme === "nutrition";
 
   const hasExploreContent =
     FOUNDATION_STACK.filter((f) => !excludeIds.includes(f.id)).length > 0 ||
@@ -520,12 +545,49 @@ export default function IntakeResults({
                   domain: primaryTheme,
                   session_id: sessionId,
                 });
+                if (primaryTheme === "nutrition") {
+                  trackEvent("intake_cta_to_nutrition_log", {
+                    domain: "nutrition",
+                  });
+                  emitIntakeClientEvent("intake.cta_to_nutrition_log", {
+                    session_id: sessionId,
+                  });
+                }
               }}
               className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
             >
               Doe de {primaryCheckin.label}-check (1 min) →
             </Link>
           </section>
+
+          {showNutritionBasis ? (
+            <section className="mb-3 rounded-2xl border border-intake-sage/25 bg-intake-sage/5 px-5 py-4">
+              <h2 className="mb-2 text-base font-semibold leading-snug text-intake-ink">
+                Eerst de voedingsbasis
+              </h2>
+              <p className="m-0 text-sm leading-relaxed text-intake-ink-muted">
+                {BASIS_DRIE_COPY}
+              </p>
+              {primaryTheme !== "nutrition" &&
+              (nutritionStatus === "Prioriteit" ||
+                nutritionStatus === "Aandacht") ? (
+                <Link
+                  href="/intake/voeding"
+                  onClick={() => {
+                    trackEvent("intake_cta_to_nutrition_log", {
+                      domain: "nutrition",
+                    });
+                    emitIntakeClientEvent("intake.cta_to_nutrition_log", {
+                      session_id: sessionId,
+                    });
+                  }}
+                  className="mt-4 inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border border-intake-sage/40 bg-intake-bg-elevated px-6 py-3.5 text-sm font-bold text-intake-sage no-underline transition-colors hover:bg-intake-sage/10"
+                >
+                  Doe de voedingscheck (1 min) →
+                </Link>
+              ) : null}
+            </section>
+          ) : null}
 
           {planTemplate || secondaryTheme ? (
             <div className="mb-3">
@@ -799,8 +861,8 @@ export default function IntakeResults({
                     <section className="rounded-2xl border border-intake-terra/30 bg-intake-terra/10 p-4">
                       <h3 className="font-semibold text-intake-ink">Eiwit als aandachtspunt</h3>
                       <p className="mt-1 text-sm leading-relaxed text-intake-ink-muted">
-                        Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
-                        dag, wat het onderhouden van spiermassa lastiger maakt.
+                        Na 40+ en bij meer bewegen helpt voldoende eiwit spiermassa
+                        en herstel — verspreid over de dag, niet in één portie.
                         {proteinEmphasis.note ? (
                           <>
                             {" "}

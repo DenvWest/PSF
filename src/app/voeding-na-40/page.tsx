@@ -37,7 +37,7 @@ const faqSchema = buildFaqSchema([
   {
     question: "Hoeveel eiwit heb ik nodig na 40?",
     answer:
-      "Veel mannen 40+ zitten structureel onder 1,2 g eiwit per kg lichaamsgewicht per dag. Bij actief trainen is 1,6–2,0 g/kg een gangbaar richtpunt in sportvoeding — bespreek structurele tekorten met je huisarts.",
+      "Na 40+ en bij meer bewegen helpt voldoende eiwit spiermassa en herstel — verspreid over de dag, niet in één portie. Gangbare richtlijnen liggen rond 1,0–1,2 g/kg bij weinig training en hoger bij krachtwerk; exact hangt af van gewicht en activiteit. Bij aanhoudende klachten: bespreek inname met je huisarts.",
   },
   {
     question: "Moet ik meteen supplementen nemen?",

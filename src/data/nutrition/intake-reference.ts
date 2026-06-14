@@ -86,7 +86,7 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
   magnesium: {
     id: "magnesium",
     label: "Magnesium",
-    referenceLabel: "dagelijks groenten, peulvruchten of noten",
+    referenceLabel: "dagelijks bladgroenten, noten of peulvruchten",
     comparisonPath: "/beste/magnesium",
     thresholds: {
       belowMax: 2, // TODO review: < 2 porties groente/fruit per dag → "below"

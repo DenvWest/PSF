@@ -106,17 +106,34 @@ export const sleepPlanTemplate: LifestylePlanTemplate = {
           tags: ["ritme"],
         },
         {
-          id: "slp-magnesium-vergelijk",
+          id: "slp-magnesium-voeding",
           title:
-            "Vergelijk magnesium glycinaat als aanvulling naast je avondroutine.",
+            "Voeg dagelijks bladgroenten, noten of peulvruchten toe — check je voeding in 1 minuut.",
           rationale: {
             body:
-              "Je antwoorden tonen signalen rond slapen en herstel. Magnesium draagt bij tot normale psychologische functie, " +
-              "tot de normale werking van het zenuwstelsel en tot vermindering van vermoeidheid — geen vervanging voor ritme.",
+              "Magnesium uit voeding komt vooral uit bladgroenten, noten en peulvruchten. " +
+              "Eerst die basis; supplement is aanvulling, geen vervanging voor ritme.",
           },
           showWhen: { type: "signal", signal: "magnesium_signal" },
           link: {
-            label: "Vergelijk magnesium",
+            label: "Doe de voedingscheck",
+            href: "/intake/voeding",
+            kind: "article",
+          },
+          tags: ["voeding"],
+        },
+        {
+          id: "slp-magnesium-vergelijk",
+          title:
+            "Magnesium als aanvulling naast je avondroutine — alleen als voeding en ritme op orde zijn.",
+          rationale: {
+            body:
+              "Magnesium draagt bij tot normale psychologische functie, tot de normale werking van het zenuwstelsel " +
+              "en tot vermindering van vermoeidheid — geen vervanging voor ritme of voeding.",
+          },
+          showWhen: { type: "signal", signal: "magnesium_signal" },
+          link: {
+            label: "Magnesium — normale psychologische functie (EFSA)",
             href: COMPARISON_PATHS.magnesium,
             kind: "comparison",
           },

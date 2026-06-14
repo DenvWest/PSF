@@ -6,7 +6,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
   categorie: "supplementen",
   titel: "De complete magnesiumgids: vormen, dosering en gebruik voor mannen 40+",
   heroIntro:
-    "Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam — van energieproductie en spierherstel tot slaap en stressregulatie. Toch krijgt 40 tot 60 procent van de Nederlanders onvoldoende magnesium binnen via voeding. Een praktische gids over vormen, doseringen en wanneer suppletie zinvol is.",
+    "Magnesium is betrokken bij meer dan 300 enzymatische processen in het lichaam — van energieproductie en spierherstel tot slaap en stressregulatie. Het komt vooral uit bladgroenten, noten en peulvruchten; supplement is aanvulling, geen vervanging. Een praktische gids over vormen, doseringen en wanneer suppletie zinvol is.",
   leestijd: "16 min",
   gepubliceerdOp: "2026-04-18",
   laatstBijgewerktOp: "2026-05-23",
@@ -15,7 +15,7 @@ export const magnesiumEnSlaapkwaliteitData: BlogArtikel = {
       type: "tekst",
       titel: "Magnesium na je 40e: meer dan alleen ‘voor de nacht’",
       tekst:
-        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De gemiddelde inname via voeding in Nederland ligt op 270 tot 300 mg per dag — terwijl de aanbevolen dagelijkse hoeveelheid voor mannen op 350 tot 400 mg elementair magnesium ligt. Dat gat van 80 tot 120 mg is de reden dat magnesiumsuppletie voor veel mannen boven de 40 relevant kan zijn. Voor een korter, slaapgericht artikel: [magnesium voor slaap](/blog/magnesium-en-slaap).",
+        "[De beste magnesium supplementen](/beste/magnesium) leveren het mineraal dat onder meer een rol speelt in de aanmaak van ATP (de belangrijkste energiedrager in het lichaam), de regulatie van het stresssysteem, spiersamentrekking, hartritme en de productie van melatonine. Na je 40e neemt de efficiëntie waarmee het lichaam magnesium opneemt via de darm geleidelijk af, terwijl de behoefte door stress en intensiever sporten juist kan toenemen. De ADH voor magnesium is 375 mg per dag (Gezondheidsraad); via voeding krijg je vaak een deel daarvan — vooral uit bladgroenten, noten en peulvruchten. Supplement kan aanvullen als je inname uit voeding laag blijft. Voor een korter, slaapgericht artikel: [magnesium voor slaap](/blog/magnesium-en-slaap).",
     },
     {
       type: "opsomming",

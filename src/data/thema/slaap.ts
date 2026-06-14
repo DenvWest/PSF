@@ -42,9 +42,9 @@ export const slaapThema: ThemaPageData = {
         source: "Chrousos GP, Nat Rev Endocrinol, 2009",
       },
       {
-        title: "Magnesiumtekort",
+        title: "Magnesium uit voeding",
         description:
-          "Magnesium draagt bij tot de normale werking van het zenuwstelsel en normale spierfunctie, en bij voldoende dosis tot de vermindering van vermoeidheid en een normale psychologische functie. Bij een tekort — wat bij 40+ relatief veel voorkomt — wordt je systeem eerder ’te lang waak gehouden’. In een RCT werden met magnesium bisglycinaat vergeleken met placebo insomnierelatieve scores gemeten; onderzoeksresultaten overdraag niet 1‑op‑1 naar beloftes over slaap op het etiket.",
+          "Magnesium draagt bij tot de normale werking van het zenuwstelsel en normale spierfunctie, en bij voldoende dosis tot de vermindering van vermoeidheid en een normale psychologische functie. Het komt vooral uit bladgroenten, noten en peulvruchten — eerst die basis, supplement alleen als aanvulling. In een RCT werden met magnesium bisglycinaat vergeleken met placebo insomnierelatieve scores gemeten; onderzoeksresultaten overdraag niet 1‑op‑1 naar beloftes over slaap op het etiket.",
         icon: "⚡",
         source: "Schuster et al., Nat Sci Sleep, 2025 (RCT, n=155)",
       },

@@ -264,7 +264,7 @@ export const magnesiumData: ComparisonPageData = {
     {
       question: "Hoeveel magnesium per dag heb ik nodig?",
       answer:
-        "De aanbevolen dagelijkse hoeveelheid voor mannen is 350-400 mg. Via voeding krijg je gemiddeld 270-300 mg binnen. Het tekort van 80-120 mg kun je aanvullen met een supplement. Let op: kijk naar elementair magnesium, niet het totaalgewicht van de verbinding.",
+        "De ADH voor magnesium is 375 mg per dag (Gezondheidsraad). Via voeding krijg je vaak een deel daarvan — vooral uit bladgroenten, noten en peulvruchten. Supplement kan aanvullen als je inname uit voeding laag blijft; let op elementair magnesium op het etiket, niet het totaalgewicht van de verbinding.",
     },
     {
       question: "Wat is het verschil tussen elementair magnesium en totaal magnesium?",
