@@ -3,16 +3,28 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { clarityTag } from "@/lib/clarity";
+import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
 import { MOVEMENT_QUESTIONS } from "@/data/movement-checkin";
-import {
-  assessMovement,
-  type MovementDimensionResult,
-  type MovementSelfReport,
+import type {
+  MovementDimensionResult,
+  MovementSelfReport,
 } from "@/lib/movement-assessment";
+import type { MovementDirection } from "@/lib/movement-delta";
+
+type MovementStart = {
+  direction: MovementDirection;
+  statement: string;
+};
 
 type Step =
   | { kind: "question"; index: number }
-  | { kind: "result"; results: MovementDimensionResult[] };
+  | { kind: "consent" }
+  | {
+      kind: "result";
+      assessment: MovementDimensionResult[];
+      start: MovementStart | null;
+    }
+  | { kind: "error"; message: string };
 
 const TOTAL = MOVEMENT_QUESTIONS.length;
 
@@ -24,6 +36,8 @@ const DIMENSION_LABELS: Record<MovementDimensionResult["dimension"], string> = {
 export default function MovementCapture() {
   const [step, setStep] = useState<Step>({ kind: "question", index: 0 });
   const [answers, setAnswers] = useState<Partial<MovementSelfReport>>({});
+  const [consentChecked, setConsentChecked] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -36,14 +50,54 @@ export default function MovementCapture() {
     if (index + 1 < TOTAL) {
       setStep({ kind: "question", index: index + 1 });
     } else {
-      clarityTag("movement_flow", "completed");
-      setStep({ kind: "result", results: assessMovement(next) });
+      setStep({ kind: "consent" });
     }
   }
 
   function handleBack() {
-    if (step.kind === "question" && step.index > 0) {
+    if (step.kind === "consent") {
+      setStep({ kind: "question", index: TOTAL - 1 });
+    } else if (step.kind === "question" && step.index > 0) {
       setStep({ kind: "question", index: step.index - 1 });
+    }
+  }
+
+  async function handleSubmit() {
+    if (!consentChecked || submitting) return;
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/intake/movement-checkin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          report: { MOV_STR: answers.MOV_STR, MOV_CARD: answers.MOV_CARD },
+          consent: true,
+        }),
+      });
+
+      if (res.status === 401) {
+        setStep({ kind: "error", message: "401" });
+        return;
+      }
+
+      if (!res.ok) {
+        setStep({ kind: "error", message: "Opnieuw proberen" });
+        return;
+      }
+
+      const data = (await res.json()) as {
+        assessment: MovementDimensionResult[];
+        start: MovementStart | null;
+      };
+
+      clarityTag("movement_flow", "completed");
+      setStep({ kind: "result", assessment: data.assessment, start: data.start });
+    } catch {
+      setStep({ kind: "error", message: "Opnieuw proberen" });
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -60,6 +114,8 @@ export default function MovementCapture() {
   }
 
   if (step.kind === "result") {
+    const { assessment, start } = step;
+
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
         <Link
@@ -78,8 +134,17 @@ export default function MovementCapture() {
             Op basis van wat je nu doet
           </p>
 
+          {start && (
+            <div className="mb-8 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-intake-sage">
+                Sinds je start
+              </p>
+              {start.statement}
+            </div>
+          )}
+
           <div className="flex flex-col gap-8">
-            {step.results.map((result) => (
+            {assessment.map((result) => (
               <section
                 key={result.dimension}
                 aria-labelledby={`movement-${result.dimension}-heading`}
@@ -169,6 +234,108 @@ export default function MovementCapture() {
               </Link>{" "}
               voor jouw volgorde over alle pijlers.
             </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (step.kind === "error") {
+    if (step.message === "401") {
+      return (
+        <div className="relative flex min-h-screen flex-col items-center justify-center">
+          <div className="w-full max-w-lg px-6 py-12 text-center">
+            <p className="mb-6 text-base text-intake-ink">
+              Om je beweeg-check op te slaan, heb je eerst een Leefstijlcheck nodig.
+            </p>
+            <Link
+              href="/intake"
+              className="inline-block rounded-[12px] bg-intake-terra px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-intake-terra/90"
+            >
+              Start de Leefstijlcheck →
+            </Link>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="relative flex min-h-screen flex-col items-center justify-center">
+        <div className="w-full max-w-lg px-6 py-12 text-center">
+          <p className="mb-6 text-base text-intake-ink">{step.message}</p>
+          <button
+            type="button"
+            onClick={() => {
+              setStep({ kind: "question", index: 0 });
+              setAnswers({});
+              setConsentChecked(false);
+              setSelected(new Set());
+            }}
+            className="rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-colors hover:bg-intake-bg-elevated"
+          >
+            Opnieuw proberen
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step.kind === "consent") {
+    return (
+      <div className="relative flex min-h-screen flex-col items-center justify-center">
+        <div
+          className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
+          role="progressbar"
+          aria-valuenow={TOTAL}
+          aria-valuemin={1}
+          aria-valuemax={TOTAL}
+          aria-label="Voortgang beweegcheck"
+        >
+          <div className="h-full bg-intake-terra" style={{ width: "100%" }} />
+        </div>
+
+        <Link
+          href="/"
+          className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
+          aria-label="Sluiten"
+        >
+          ✕
+        </Link>
+
+        <div className="w-full max-w-lg px-6 py-12">
+          <h2 className="mb-6 text-center font-serif text-2xl font-normal text-intake-ink">
+            Jouw gegevens veilig opslaan
+          </h2>
+
+          <label className="flex cursor-pointer items-start gap-3 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4">
+            <input
+              type="checkbox"
+              checked={consentChecked}
+              onChange={(e) => setConsentChecked(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-intake-terra"
+            />
+            <span className="text-sm leading-relaxed text-intake-ink-muted">
+              {DOMAIN_CHECKIN_CONSENT_TEXT.domain_checkin_logging}
+            </span>
+          </label>
+
+          <div className="mt-10 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="border-none bg-transparent py-3 text-sm text-intake-ink-subtle transition-colors hover:text-intake-ink-muted"
+            >
+              ← Terug
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!consentChecked || submitting}
+              className="min-h-[44px] rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-all duration-200 hover:bg-intake-bg-elevated disabled:cursor-default disabled:opacity-30"
+            >
+              {submitting ? "Bezig…" : "Bekijk resultaten →"}
+            </button>
           </div>
         </div>
       </div>
