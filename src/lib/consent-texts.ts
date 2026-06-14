@@ -39,6 +39,13 @@ export const DOMAIN_CHECKIN_CONSENT_TEXT: Record<DomainCheckinConsentType, strin
     "Ik geef toestemming om mijn periodieke domein-checkin te verwerken voor een persoonlijk leefstijloverzicht en vervolgstappen. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
 };
 
+export type BodyMetricsConsentType = "body_metrics";
+
+export const BODY_METRICS_CONSENT_TEXT: Record<BodyMetricsConsentType, string> = {
+  body_metrics:
+    "Ik geef toestemming om mijn gewicht te verwerken voor een persoonlijke eiwitrichtlijn (inname-advies). Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
+};
+
 export type MeasurementReminderConsentType = "measurement_reminder";
 
 export const MEASUREMENT_REMINDER_CONSENT_TEXT: Record<
