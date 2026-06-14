@@ -116,7 +116,7 @@ const PRIMARY_REASON = {
   sleep:
     "Slaap is het herstelvenster waar al je andere stappen op leunen — daarom eerst hier.",
   movement:
-    "Meer bewegen zonder slaap en eiwitten op orde werkt averechts. Begin hier.",
+    "Met je basis — slaap, stress en eiwit — op orde is beweging de hefboom voor energie, kracht en stofwisseling. Begin hier.",
 };
 
 const THEME_BACKLINK_COPY: Record<ThemeSlug, { pillar: string; profile: string }> = {
@@ -455,6 +455,18 @@ export default function IntakeResults({
   );
   const recognitionLine = getRecognitionLine(symptoms);
   const vitalityFraming = getVitalityFraming(scores);
+  const isOvertrainerMovementPriority =
+    isOvertrainerProfile && primaryTheme === "movement";
+  const primaryHeading = isOvertrainerMovementPriority
+    ? "Beter herstellen is jouw grootste prioriteit"
+    : `${themeLabel} is jouw grootste prioriteit`;
+  const primaryReason = isOvertrainerMovementPriority
+    ? "Je traint stevig maar herstelt matig. Niet méér trainen — bouw bewust hersteldagen in, zodat je lichaam de training kan verwerken."
+    : PRIMARY_REASON[primaryTheme];
+  const overtrainerRecoveryNote =
+    isOvertrainerProfile && primaryTheme !== "movement"
+      ? "Je traint veel maar herstelt matig — plan bewust hersteldagen in."
+      : null;
 
   const primaryQuickWin = quickWins[0];
   const extraQuickWins = quickWins.slice(1);
@@ -508,11 +520,11 @@ export default function IntakeResults({
         )}
 
         <section className="mb-6" aria-label="Jouw leefstijl-overzicht">
-          <div className="mb-3 rounded-xl border border-intake-card-border bg-intake-bg-elevated px-3.5 py-2.5">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-sm font-medium text-intake-ink">
+          <div className="mb-3 rounded-2xl border border-intake-card-border bg-intake-bg-elevated px-5 py-4">
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
                 Jouw vitaliteit
-              </span>
+              </p>
               <span
                 className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${STATUS_TONE_CLASS[vitaliteitTone]}`}
               >
@@ -520,20 +532,28 @@ export default function IntakeResults({
               </span>
             </div>
             {vitalityFraming.driverLine || vitalityFraming.strengthLine ? (
-              <p className="mt-2 text-xs leading-relaxed text-intake-ink-subtle">
+              <p className="mt-2 text-sm leading-relaxed text-intake-ink-muted">
                 {[vitalityFraming.driverLine, vitalityFraming.strengthLine]
                   .filter(Boolean)
                   .join(" ")}
               </p>
             ) : null}
+            {overtrainerRecoveryNote ? (
+              <p className="mt-2 text-xs leading-relaxed text-intake-terra">
+                {overtrainerRecoveryNote}
+              </p>
+            ) : null}
           </div>
 
           <section className="mb-3 rounded-2xl border border-intake-card-border bg-intake-bg-elevated px-5 py-4">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
+              De grootste hefboom nu
+            </p>
             <h2 className="mb-2 text-base font-semibold leading-snug text-intake-ink">
-              {themeLabel} is jouw grootste prioriteit
+              {primaryHeading}
             </h2>
             <p className="m-0 mb-4 text-sm leading-relaxed text-intake-ink-muted">
-              {PRIMARY_REASON[primaryTheme]}
+              {primaryReason}
             </p>
             <Link
               href={primaryCheckin.href}
