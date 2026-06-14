@@ -33,6 +33,7 @@ import { getThemePillarHref } from "@/lib/intake-primary-pillar";
 import { withIntakeReturn } from "@/lib/intake-return-link";
 import { DOMAIN_CHECKIN } from "@/lib/domain-checkin";
 import { getLowDomainKennisbankLinks } from "@/lib/intake-kennisbank-links";
+import { getProteinEmphasis } from "@/lib/nutrition-protein-emphasis";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
@@ -297,6 +298,10 @@ export default function IntakeResults({
   const quickWins = advice.quickWins.slice(0, 3);
   const longTermTips = advice.longTerm.slice(0, 3);
   const deficiencySignals = getDeficiencySignals(answers);
+  const proteinEmphasis = getProteinEmphasis(
+    { MOV_STR: answers.MOV_STR, MOV_CARD: answers.MOV_CARD },
+    "below",
+  );
   const supplementRoute = getSupplementRoute(
     scores,
     deficiencySignals,
@@ -787,12 +792,10 @@ export default function IntakeResults({
                       <p className="mt-1 text-sm leading-relaxed text-intake-ink-muted">
                         Veel mannen 40+ halen onder de 1,2 g eiwit per kg lichaamsgewicht per
                         dag, wat het onderhouden van spiermassa lastiger maakt.
-                        {((typeof answers.MOV_CARD === "number" && answers.MOV_CARD >= 3) ||
-                          (typeof answers.MOV_STR === "number" && answers.MOV_STR >= 4)) ? (
+                        {proteinEmphasis.note ? (
                           <>
                             {" "}
-                            Bij actief bewegen helpt eiwitrijke voeding extra bij herstel en
-                            spieronderhoud.
+                            {proteinEmphasis.note}
                           </>
                         ) : null}
                       </p>
