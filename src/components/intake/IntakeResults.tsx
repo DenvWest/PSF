@@ -37,7 +37,8 @@ import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
-import { buildSummaryRows } from "@/lib/results-summary-rows";
+import { buildSummaryRows, focusSecondaryCheckin } from "@/lib/results-summary-rows";
+import { getRecognitionLine, getVitalityFraming } from "@/lib/results-framing";
 import {
   getDisplayStatusTone,
   STATUS_TONE_CLASS,
@@ -418,7 +419,11 @@ export default function IntakeResults({
   const vitaliteitStatus = vitaliteitBand(vitaliteitIndex);
   const vitaliteitTone = getDisplayStatusTone(vitaliteitStatus);
 
-  const compactRows = summaryRows.filter((row) => row.label !== primaryLabel);
+  const compactRows = focusSecondaryCheckin(
+    summaryRows.filter((row) => row.label !== primaryLabel),
+  );
+  const recognitionLine = getRecognitionLine(symptoms);
+  const vitalityFraming = getVitalityFraming(scores);
 
   const primaryQuickWin = quickWins[0];
   const extraQuickWins = quickWins.slice(1);
@@ -449,6 +454,11 @@ export default function IntakeResults({
           <h1 className="mb-2 font-serif text-[28px] font-normal leading-tight text-intake-ink">
             {heroTitle}
           </h1>
+          {recognitionLine ? (
+            <p className="mx-auto max-w-[34ch] text-sm leading-relaxed text-intake-ink-muted">
+              {recognitionLine}
+            </p>
+          ) : null}
         </header>
 
         {rapportUrl && (
@@ -467,15 +477,24 @@ export default function IntakeResults({
         )}
 
         <section className="mb-6" aria-label="Jouw leefstijl-overzicht">
-          <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-intake-card-border bg-intake-bg-elevated px-3.5 py-2.5">
-            <span className="text-sm font-medium text-intake-ink">
-              Jouw vitaliteit
-            </span>
-            <span
-              className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${STATUS_TONE_CLASS[vitaliteitTone]}`}
-            >
-              {vitaliteitStatus}
-            </span>
+          <div className="mb-3 rounded-xl border border-intake-card-border bg-intake-bg-elevated px-3.5 py-2.5">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm font-medium text-intake-ink">
+                Jouw vitaliteit
+              </span>
+              <span
+                className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${STATUS_TONE_CLASS[vitaliteitTone]}`}
+              >
+                {vitaliteitStatus}
+              </span>
+            </div>
+            {vitalityFraming.driverLine || vitalityFraming.strengthLine ? (
+              <p className="mt-2 text-xs leading-relaxed text-intake-ink-subtle">
+                {[vitalityFraming.driverLine, vitalityFraming.strengthLine]
+                  .filter(Boolean)
+                  .join(" ")}
+              </p>
+            ) : null}
           </div>
 
           <section className="mb-3 rounded-2xl border border-intake-card-border bg-intake-bg-elevated px-5 py-4">

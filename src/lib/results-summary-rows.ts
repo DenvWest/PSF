@@ -63,3 +63,33 @@ export function buildSummaryRows(
 
   return { rows, primaryLabel };
 }
+
+const CHECKIN_STATUS_RANK: Record<string, number> = {
+  Prioriteit: 0,
+  Aandacht: 1,
+};
+
+/**
+ * Beperkt de "verdiep in 1 min"-checklinks tot hoogstens één secundaire focus.
+ * De hoofdpijler heeft al de prominente check-CTA; de overige domeinen blijven
+ * stille context. Houdt de checkinHref alleen op de zwaarste rij (Prioriteit
+ * vóór Aandacht; bij gelijke status de canonieke pijlervolgorde) en strijkt de
+ * rest glad.
+ */
+export function focusSecondaryCheckin(rows: SummaryRow[]): SummaryRow[] {
+  const candidates = rows.filter(
+    (row) =>
+      row.checkinHref &&
+      (row.status === "Prioriteit" || row.status === "Aandacht"),
+  );
+  if (candidates.length === 0) {
+    return rows;
+  }
+  const keep = [...candidates].sort(
+    (a, b) =>
+      (CHECKIN_STATUS_RANK[a.status] ?? 9) - (CHECKIN_STATUS_RANK[b.status] ?? 9),
+  )[0];
+  return rows.map((row) =>
+    row.checkinHref && row !== keep ? { ...row, checkinHref: undefined } : row,
+  );
+}
