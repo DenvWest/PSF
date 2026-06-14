@@ -419,15 +419,17 @@ export default function SlaapVerbeterenNa40Page() {
                   <RefNote number={4} />
                   , waaronder de aanmaak en werking van GABA — de stof die het zenuwstelsel tot
                   rust brengt. Studies laten steeds weer zien dat extra magnesium de slaapkwaliteit
-                  verbetert, vooral bij mensen die te weinig magnesium binnenkrijgen
+                  verbetert, vooral wanneer de inname via voeding laag is
                   <RefNote number={1} />
                   <RefNote number={2} />.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
-                  Magnesiumtekort komt vaker voor dan gedacht: langdurige stress
+                  Magnesium zit vooral in bladgroenten, noten en peulvruchten — voeding waar veel
+                  mannen 40+ structureel te weinig van binnenkrijgen. Langdurige stress
                   <RefNote number={3} />
-                  , alcohol en een westers dieet arm aan groente en noten zorgen bij veel mannen voor
-                  een tekort. Na je 40e neemt de opname via de darmen ook iets af.
+                  {" "}en alcohol verhogen de behoefte, en na je 40e neemt de opname via de darmen
+                  iets af. De ADH is 375 mg; haal je dat niet uit voeding, dan kan een supplement
+                  aanvullen.
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Vorm maakt uit. Magnesiumoxide (goedkoop, in veel supermarkt-supplementen) wordt meestal
