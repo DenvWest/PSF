@@ -14,7 +14,7 @@ echo "📥 Pulling latest changes from Git..."
 git pull origin main
 
 echo "📦 Installing dependencies..."
-npm install --production=false
+npm ci
 
 echo "🏗️  Building production version..."
 npm run build
