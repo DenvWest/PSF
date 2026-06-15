@@ -86,7 +86,7 @@ Zie [`CONTENT_MAP.md`](CONTENT_MAP.md) voor actuele routes.
 | Profielpagina | `BreadcrumbList` + `Article` |
 | FAQ-secties | `FAQPage` |
 
-Implementatie via `src/lib/seo/structuredData.ts` (`buildBreadcrumbSchema`, `buildFaqSchema`, `buildItemListSchema`, `buildDefinedTermSchema`, `buildArticleSchema`). `src/lib/structured-data.ts` is een re-export-alias.
+Implementatie via `src/lib/seo/structuredData.ts` (`buildBreadcrumbSchema`, `buildFaqSchema`, `buildItemListSchema`, `buildDefinedTermSchema`, `buildArticleSchema`).
 
 ---
 

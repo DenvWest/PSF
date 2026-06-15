@@ -48,8 +48,8 @@
 
 | # | Item | Type | Impact |
 |---|---|---|---|
-| 1 | Breadcrumb schema centraliseren | Tech | ✅ `structured-data.ts` re-exporteert `seo/structuredData.ts` |
-| 2 | Profiel-overzicht vanuit footer | SEO | ✅ footer → `/profiel` |
+| 1 | Breadcrumb schema centraliseren | Tech | ✅ Alle schema-builders importeren direct uit `@/lib/seo/structuredData`; legacy shim verwijderd |
+| 2 | Profiel-overzicht vanuit footer | SEO | ✅ Footer linkt naar `/profiel`, `/juridisch` en `/cookies` |
 | 3 | `/thema/herstel` hub of redirect | SEO | ✅ redirect → `/herstel-verbeteren-na-40` |
 | 4 | Mobile device testing checklist | QA | Doelgroep mobiel |
 

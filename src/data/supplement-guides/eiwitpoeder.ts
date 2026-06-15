@@ -125,7 +125,7 @@ export const eiwitpoederGidsData: SupplementData = {
         symptoom: "Lage Batterij",
         tekst:
           "Als snacks, alcohol of te weinig volwaardige maaltijden je herstel ondermijnen, begint winst vaak bij voeding.",
-        href: "/profiel/stille-slijter",
+        href: "/profiel/lage-batterij",
       },
     ],
   },

@@ -8,6 +8,7 @@ const platformLinks = [
     { href: "/intake", label: "Leefstijlcheck" },
     { href: "/gidsen", label: "Gidsen na 40" },
     { href: "/supplementen", label: "Supplementen" },
+    { href: "/profiel", label: "Profielen" },
     { href: "/blog", label: "Blog" },
     { href: "/kennisbank", label: "Kennisbank" },
 ];
@@ -20,6 +21,8 @@ const infoLinks = [
 
 const legalLinks = [
     { href: "/privacy", label: "Privacy" },
+    { href: "/juridisch", label: "Juridisch" },
+    { href: "/cookies", label: "Cookies" },
     { href: "/disclaimer", label: "Disclaimer" },
     { href: "/medische-disclaimer", label: "Medische disclaimer" },
     { href: "/affiliate-disclosure", label: "Affiliate disclosure" },

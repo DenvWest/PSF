@@ -121,7 +121,7 @@ Melatonine: alleen informatieve gids `/supplementen/melatonine` + kennisbank (ge
 ### Sectie-structuur
 
 1. **Metadata** — `metaTitle` (≤60 tekens waar mogelijk), `metaDescription` (≤155), canonical, OG.
-2. **Structured data** — `Article`, `FAQPage`, **`BreadcrumbList`** (`buildBreadcrumbSchema` uit `@/lib/structured-data`): Home → Supplementen → naam.
+2. **Structured data** — `Article`, `FAQPage`, **`BreadcrumbList`** (`buildBreadcrumbSchema` uit `@/lib/seo/structuredData`): Home → Supplementen → naam.
 3. **Breadcrumb + hero** — Geen primaire CTA in hero.
 4. **Wat het doet** — sectie `#wat-doet` (inhoudelijke id’s kunnen per implementatie licht verschillen); inline link naar eerste relevante `/kennisbank/[term]` in `watIsHet.tekst` (Markdown-links via `renderInlineMarkdownLinks`).
 5. **Waarom na 40** — 4 cards, 2×2 / stack mobiel.

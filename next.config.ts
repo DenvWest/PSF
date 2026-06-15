@@ -67,7 +67,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/profiel/stille-slijter",
-        destination: "/profiel",
+        destination: "/profiel/lage-batterij",
         permanent: true,
       },
       {

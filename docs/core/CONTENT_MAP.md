@@ -17,7 +17,8 @@
 | Blog | `/blog/[slug]` | `/blog/eiwit-na-40` |
 | Kennisbank | `/kennisbank/[slug]` | `/kennisbank/cortisol` |
 | Legacy vergelijking | `/beste-*` | → 301 naar `/beste/[slug]` via `next.config.ts` |
-| Legacy thema-hub | `/thema/[slug]` | → 301 naar `/gids/[slug]` |
+| Legacy thema-hub | `/thema/herstel` | → 301 naar `/herstel-verbeteren-na-40` (pillar) |
+| Legacy thema-hub | `/thema/[overig]` | → 301 naar `/gids/[slug]` (catch-all) |
 
 ---
 
