@@ -36,7 +36,7 @@ function isDomainScores(value: unknown): value is DomainScores {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "intake_session",
     clientIp,
     getRateLimitConfig("intake_session"),

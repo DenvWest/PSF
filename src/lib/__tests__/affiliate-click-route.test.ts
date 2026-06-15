@@ -17,7 +17,7 @@ vi.mock("@/lib/organization", () => ({
   getDefaultOrganizationId: () => "org-uuid-default",
 }));
 vi.mock("@/lib/rate-limit", () => ({
-  consumeRateLimit: () => ({ allowed: true, retryAfterSeconds: 0 }),
+  consumeRateLimit: vi.fn().mockResolvedValue({ allowed: true, retryAfterSeconds: 0, remaining: 999 }),
 }));
 vi.mock("@/lib/turnstile-verify", () => ({
   getClientIp: () => "127.0.0.1",

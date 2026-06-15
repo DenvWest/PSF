@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
   }
 
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "admin_auth",
     clientIp,
     getRateLimitConfig("admin_auth"),

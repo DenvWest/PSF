@@ -39,7 +39,7 @@ function rateLimitedResponse(retryAfterSeconds: number) {
 
 export async function GET(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "intake_session",
     clientIp,
     getRateLimitConfig("intake_session"),
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "intake_session",
     clientIp,
     getRateLimitConfig("intake_session"),

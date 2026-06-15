@@ -11,6 +11,8 @@ import type {
 } from "@/lib/admin-dashboard-types";
 import { anonymizeEmailForAdmin } from "@/lib/nurture-unsubscribe";
 import type { DomainScores } from "@/lib/intake-engine";
+import { consumeRateLimit } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -318,6 +320,20 @@ export async function GET(request: NextRequest) {
   const token = request.cookies.get(ADMIN_TOKEN_COOKIE_NAME)?.value;
   if (!isValidAdminSessionCookie(token)) {
     return NextResponse.json({ error: "Niet geautoriseerd." }, { status: 401 });
+  }
+
+  const rateLimit = await consumeRateLimit(
+    `admin_data:${token}`,
+    getRateLimitConfig("admin_data"),
+  );
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Te veel verzoeken. Probeer het later opnieuw." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
   }
 
   const admin = createSupabaseAdmin();

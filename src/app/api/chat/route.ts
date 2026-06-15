@@ -16,7 +16,7 @@ import { getClientIp } from "@/lib/turnstile-verify";
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "evidence_chat",
     clientIp,
     getRateLimitConfig("evidence_chat"),

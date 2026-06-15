@@ -305,7 +305,7 @@ async function dispatchTokenUnsubscribe(token: string): Promise<NextResponse> {
 
 export async function GET(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "unsubscribe",
     clientIp,
     getRateLimitConfig("unsubscribe"),

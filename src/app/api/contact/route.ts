@@ -139,7 +139,7 @@ function logSecurityEvent(
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp("contact", clientIp, getRateLimitConfig("contact"));
+  const rateLimit = await consumeRateLimitForIp("contact", clientIp, getRateLimitConfig("contact"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });

@@ -15,7 +15,9 @@
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.0",
     "@supabase/supabase-js": "^2.103.0",
+    "@upstash/redis": "^1.38.0",
     "framer-motion": "^12.38.0",
+    "ioredis": "^5.11.1",
     "next": "^16.2.4",
     "nodemailer": "^8.0.5",
     "react": "19.2.3",
@@ -39,5 +41,8 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.6"
+  },
+  "overrides": {
+    "postcss": ">=8.5.10"
   }
 }

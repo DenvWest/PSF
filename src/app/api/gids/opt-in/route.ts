@@ -27,7 +27,7 @@ function logSecurityEvent(
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "gids_opt_in",
     clientIp,
     getRateLimitConfig("gids_opt_in"),

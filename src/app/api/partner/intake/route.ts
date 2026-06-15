@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { withPartnerApi } from "@/lib/api-middleware";
 import { createIntakeStrategy, type IntakeAnswers } from "@/lib/intake-strategy";
+import { consumeRateLimit } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +10,23 @@ export async function POST(request: Request) {
   const auth = withPartnerApi(request);
   if (!auth.authorized) {
     return auth.response;
+  }
+
+  const apiKey = request.headers.get("x-api-key");
+  if (apiKey) {
+    const rateLimit = await consumeRateLimit(
+      `partner_intake:${apiKey}`,
+      getRateLimitConfig("partner_intake"),
+    );
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
+      );
+    }
   }
 
   let body: IntakeAnswers;

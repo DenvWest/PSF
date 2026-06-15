@@ -40,7 +40,7 @@ function normalizeSingleLine(value: unknown): string {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp("intake_reminder", clientIp, getRateLimitConfig("intake_reminder"));
+  const rateLimit = await consumeRateLimitForIp("intake_reminder", clientIp, getRateLimitConfig("intake_reminder"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });

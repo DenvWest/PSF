@@ -64,7 +64,7 @@ function normalizeSingleLine(value: unknown): string {
 
 export async function GET(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp("intake_session", clientIp, getRateLimitConfig("intake_session"));
+  const rateLimit = await consumeRateLimitForIp("intake_session", clientIp, getRateLimitConfig("intake_session"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp("intake_session", clientIp, getRateLimitConfig("intake_session"));
+  const rateLimit = await consumeRateLimitForIp("intake_session", clientIp, getRateLimitConfig("intake_session"));
 
   if (!rateLimit.allowed) {
     logSecurityEvent("rate_limited", { remoteIp: clientIp });

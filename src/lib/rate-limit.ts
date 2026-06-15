@@ -1,65 +1,54 @@
 import { isWhitelistedIp } from "./rate-limit-config";
+import { memoryRateLimitBackend } from "./rate-limit-memory";
+import { createRedisRateLimitBackend } from "./rate-limit-redis";
+import type { RateLimitBackend, RateLimitOptions, RateLimitResult } from "./rate-limit-types";
 
-type RateLimitOptions = {
-  limit: number;
-  windowMs: number;
-};
+export type { RateLimitOptions, RateLimitResult } from "./rate-limit-types";
 
-type RateLimitResult = {
-  allowed: boolean;
-  remaining: number;
-  retryAfterSeconds: number;
-};
+let backend: RateLimitBackend | null | undefined;
+let memoryFallbackWarned = false;
 
-type RateLimitStore = Map<string, number[]>;
-
-declare global {
-  var __rateLimitStore__: RateLimitStore | undefined;
-}
-
-function getStore(): RateLimitStore {
-  if (!globalThis.__rateLimitStore__) {
-    globalThis.__rateLimitStore__ = new Map<string, number[]>();
+function resolveBackend(): RateLimitBackend {
+  if (backend !== undefined) {
+    return backend ?? memoryRateLimitBackend;
   }
-  return globalThis.__rateLimitStore__;
+
+  const redisBackend = createRedisRateLimitBackend();
+  if (redisBackend) {
+    backend = redisBackend;
+    return redisBackend;
+  }
+
+  backend = null;
+  return memoryRateLimitBackend;
 }
 
-export function consumeRateLimit(
+function warnMemoryFallback(): void {
+  if (memoryFallbackWarned) {
+    return;
+  }
+  memoryFallbackWarned = true;
+  console.warn(
+    "[rate-limit] Geen Redis-config — rate limiting is NIET cross-process veilig",
+  );
+}
+
+export async function consumeRateLimit(
   key: string,
   options: RateLimitOptions,
-): RateLimitResult {
-  const now = Date.now();
-  const windowStart = now - options.windowMs;
-  const store = getStore();
-  const existing = store.get(key) ?? [];
-  const active = existing.filter((timestamp) => timestamp > windowStart);
-
-  if (active.length >= options.limit) {
-    const oldestActive = active[0];
-    const retryAfterMs = Math.max(oldestActive + options.windowMs - now, 0);
-    store.set(key, active);
-    return {
-      allowed: false,
-      remaining: 0,
-      retryAfterSeconds: Math.ceil(retryAfterMs / 1000),
-    };
+): Promise<RateLimitResult> {
+  const activeBackend = resolveBackend();
+  if (activeBackend === memoryRateLimitBackend) {
+    warnMemoryFallback();
   }
-
-  active.push(now);
-  store.set(key, active);
-
-  return {
-    allowed: true,
-    remaining: Math.max(options.limit - active.length, 0),
-    retryAfterSeconds: 0,
-  };
+  return activeBackend.consume(key, options);
 }
 
-export function consumeRateLimitForIp(
+export async function consumeRateLimitForIp(
   keyPrefix: string,
   ip: string,
   options: RateLimitOptions,
-): RateLimitResult {
+): Promise<RateLimitResult> {
   if (isWhitelistedIp(ip)) {
     return {
       allowed: true,
@@ -68,4 +57,9 @@ export function consumeRateLimitForIp(
     };
   }
   return consumeRateLimit(`${keyPrefix}:${ip}`, options);
+}
+
+export function resetRateLimitBackendForTests(): void {
+  backend = undefined;
+  memoryFallbackWarned = false;
 }

@@ -68,7 +68,7 @@ describe("POST /api/gids/opt-in nurture dedup", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.RESEND_API_KEY = "re_test";
-    mockConsumeRateLimit.mockReturnValue({ allowed: true, retryAfterSeconds: 0 });
+    mockConsumeRateLimit.mockResolvedValue({ allowed: true, retryAfterSeconds: 0, remaining: 999 });
     mockGuideOptInInsert.mockResolvedValue({ error: null });
     mockHasActiveGuideSequence.mockResolvedValue(false);
     mockHasActiveMainNurture.mockResolvedValue(false);

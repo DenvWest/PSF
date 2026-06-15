@@ -17,7 +17,7 @@ vi.mock("@/lib/organization", () => ({
   getDefaultOrganizationId: () => "org-uuid-default",
 }));
 vi.mock("@/lib/rate-limit", () => ({
-  consumeRateLimitForIp: () => ({ allowed: true, retryAfterSeconds: 0 }),
+  consumeRateLimitForIp: vi.fn().mockResolvedValue({ allowed: true, retryAfterSeconds: 0, remaining: 999 }),
 }));
 vi.mock("@/lib/rate-limit-config", () => ({
   getRateLimitConfig: () => ({}),

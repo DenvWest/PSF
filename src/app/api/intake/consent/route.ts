@@ -5,6 +5,8 @@ import {
 } from "@/lib/intake-session-cookie";
 import { emitEvent } from "@/lib/events";
 import { revokeIntakeConsentForSession } from "@/lib/intake-consent-revoke";
+import { consumeRateLimit } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 function logSecurityEvent(
@@ -23,6 +25,21 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json(
       { error: "Geen geldige intake-sessie." },
       { status: 401 },
+    );
+  }
+
+  const rateLimit = await consumeRateLimit(
+    `intake_consent_delete:${sessionId}`,
+    getRateLimitConfig("intake_consent_delete"),
+  );
+  if (!rateLimit.allowed) {
+    logSecurityEvent("rate_limited", { sessionId });
+    return NextResponse.json(
+      { error: "Te veel pogingen. Probeer het later opnieuw." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
     );
   }
 

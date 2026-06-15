@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { withPartnerApi } from "@/lib/api-middleware";
+import { consumeRateLimit } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +10,23 @@ export async function GET(request: Request) {
   const auth = withPartnerApi(request);
   if (!auth.authorized) {
     return auth.response;
+  }
+
+  const apiKey = request.headers.get("x-api-key");
+  if (apiKey) {
+    const rateLimit = await consumeRateLimit(
+      `partner_analytics:${apiKey}`,
+      getRateLimitConfig("partner_analytics"),
+    );
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
+      );
+    }
   }
 
   const supabase = createSupabaseAdmin();

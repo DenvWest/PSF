@@ -47,7 +47,7 @@ function logSecurityEvent(event: string, details: Record<string, unknown> = {}) 
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimitForIp(
+  const rateLimit = await consumeRateLimitForIp(
     "intake_session",
     clientIp,
     getRateLimitConfig("intake_session"),

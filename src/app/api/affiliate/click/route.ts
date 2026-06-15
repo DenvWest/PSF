@@ -23,7 +23,7 @@ function normalizeField(value: unknown, max: number): string {
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
-  const rateLimit = consumeRateLimit(`affiliate_click:${clientIp}`, CLICK_RATE);
+  const rateLimit = await consumeRateLimit(`affiliate_click:${clientIp}`, CLICK_RATE);
 
   if (!rateLimit.allowed) {
     return NextResponse.json(
