@@ -11,7 +11,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
     pathname === "/admin" ||
     pathname.startsWith("/admin/") ||
     pathname === "/intake" ||
-    pathname.startsWith("/intake/");
+    pathname.startsWith("/intake/") ||
+    pathname === "/dashboard" ||
+    pathname.startsWith("/dashboard/");
 
   if (hideSiteChrome) {
     return <>{children}</>;

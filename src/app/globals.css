@@ -397,6 +397,33 @@ h6 {
   display: none;
 }
 
+.ps-dash {
+  --bg: #1a2e1a;
+  --panel: rgba(255, 255, 255, 0.05);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.95);
+  --text-muted: rgba(255, 255, 255, 0.60);
+  --text-subtle: rgba(255, 255, 255, 0.40);
+  --divider: rgba(255, 255, 255, 0.08);
+  --divider-strong: rgba(255, 255, 255, 0.16);
+  --sage: #5A8F6A;
+  --terra: #C8956C;
+  --terra-deep: #B07F52;
+  --f-serif: var(--font-heading, Georgia, serif);
+  --f-sans: var(--font-body, system-ui, sans-serif);
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--f-sans);
+  background: radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+.ps-dash ::selection {
+  background: rgba(90, 143, 106, 0.40);
+  color: #fff;
+}
+
 html.has-floating-leefstijlcheck-cta .floating-cta-footer-layout {
   display: flex;
   flex-direction: column;
