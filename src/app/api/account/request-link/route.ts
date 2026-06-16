@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { consumeRateLimit, consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
@@ -26,6 +27,41 @@ type AccountRow = {
   id: string;
   status: string | null;
 };
+
+async function linkSessionAndRecordConsent(
+  admin: SupabaseClient,
+  accountId: string,
+  sessionId: string,
+  clientIp: string,
+  ua: string,
+): Promise<void> {
+  const { error: sessionLinkError } = await admin
+    .from("intake_sessions")
+    .update({ account_id: accountId })
+    .eq("id", sessionId)
+    .is("account_id", null);
+
+  if (sessionLinkError) {
+    console.error("[api/account/request-link] session link error:", sessionLinkError);
+  }
+
+  const consentRow = accountStorageConsentRow({
+    sessionId,
+    organizationId: getDefaultOrganizationId(),
+    ipHash: sha256Hex(clientIp),
+    uaHash: sha256Hex(ua),
+  });
+
+  const { error: consentInsertError } = await admin
+    .from("consent_records")
+    .insert(consentRow);
+  if (consentInsertError) {
+    console.error(
+      "[api/account/request-link] account storage consent insert error:",
+      consentInsertError,
+    );
+  }
+}
 
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
@@ -111,8 +147,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true }, { status: 200 });
   }
 
+  const userAgent = request.headers.get("user-agent") ?? "";
+
   if (existingAccount && existingAccount.status !== "revoked") {
     account = existingAccount;
+  } else if (existingAccount && existingAccount.status === "revoked" && consent) {
+    const { error: reactivateError } = await admin
+      .from("accounts")
+      .update({ status: "active" })
+      .eq("id", existingAccount.id);
+
+    if (reactivateError) {
+      console.error("[api/account/request-link] account reactivate error:", reactivateError);
+      return NextResponse.json({ ok: true }, { status: 200 });
+    }
+
+    account = { ...existingAccount, status: "active" };
+
+    if (sessionId) {
+      await linkSessionAndRecordConsent(admin, account.id, sessionId, clientIp, userAgent);
+    }
   } else if (!existingAccount && consent && sessionId) {
     const { data: insertedAccount, error: insertAccountError } = await admin
       .from("accounts")
@@ -126,33 +180,7 @@ export async function POST(request: NextRequest) {
     }
 
     account = insertedAccount;
-
-    const { error: sessionLinkError } = await admin
-      .from("intake_sessions")
-      .update({ account_id: account.id })
-      .eq("id", sessionId)
-      .is("account_id", null);
-
-    if (sessionLinkError) {
-      console.error("[api/account/request-link] session link error:", sessionLinkError);
-    }
-
-    const consentRow = accountStorageConsentRow({
-      sessionId,
-      organizationId: getDefaultOrganizationId(),
-      ipHash: sha256Hex(clientIp),
-      uaHash: sha256Hex(request.headers.get("user-agent") ?? ""),
-    });
-
-    const { error: consentInsertError } = await admin
-      .from("consent_records")
-      .insert(consentRow);
-    if (consentInsertError) {
-      console.error(
-        "[api/account/request-link] account storage consent insert error:",
-        consentInsertError,
-      );
-    }
+    await linkSessionAndRecordConsent(admin, account.id, sessionId, clientIp, userAgent);
   }
 
   if (!account || account.status === "revoked") {

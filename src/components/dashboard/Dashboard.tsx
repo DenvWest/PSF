@@ -111,7 +111,8 @@ const VitalityRing = ({ state = "scored", value = 0, delta = null, size = 172, s
   );
 };
 
-const DashHeader = ({ onLogout }: { onLogout: () => void }) => {
+const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
+  const router = useRouter();
   const iconBtn = {
     width: 38,
     height: 38,
@@ -129,7 +130,7 @@ const DashHeader = ({ onLogout }: { onLogout: () => void }) => {
     <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
       <Wordmark />
       <div style={{ display: "flex", gap: 8 }}>
-        <button type="button" style={iconBtn} title="Instellingen">
+        <button type="button" style={iconBtn} title="Instellingen" onClick={() => router.push("/account")}>
           <Icons.Settings s={18} />
         </button>
         <button type="button" style={iconBtn} title="Uitloggen" onClick={onLogout}>
@@ -635,8 +636,8 @@ export default function Dashboard({ empty, checkId = "check1", retest = false }:
     }
   };
 
-  const onLogout = () => {
-    // TODO F1.2: eerst cookie wissen via /api/account/logout.
+  const onLogout = async () => {
+    await fetch("/api/account/logout", { method: "POST" });
     router.push("/account/login");
   };
 
