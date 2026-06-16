@@ -149,14 +149,6 @@ export default function StressCheckin() {
   if (step.kind === "result") {
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
-        <Link
-          href="/"
-          className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
-          aria-label="Sluiten"
-        >
-          ✕
-        </Link>
-
         <div className="w-full max-w-lg px-6 py-12">
           <h1 className="mb-2 text-center font-serif text-3xl font-normal text-intake-ink">
             Jouw stress-overzicht
@@ -296,14 +288,6 @@ export default function StressCheckin() {
           />
         </div>
 
-        <Link
-          href="/"
-          className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
-          aria-label="Sluiten"
-        >
-          ✕
-        </Link>
-
         <div className="w-full max-w-lg px-6 py-12">
           <h2 className="mb-6 text-center font-serif text-2xl font-normal text-intake-ink">
             Jouw gegevens veilig opslaan
@@ -363,14 +347,6 @@ export default function StressCheckin() {
           style={{ width: `${progressPct}%` }}
         />
       </div>
-
-      <Link
-        href="/"
-        className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
-        aria-label="Sluiten"
-      >
-        ✕
-      </Link>
 
       <div className="w-full max-w-lg px-6 py-12">
         <div className="mb-2 flex items-center justify-center gap-2">

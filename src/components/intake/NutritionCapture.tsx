@@ -481,14 +481,6 @@ export default function NutritionCapture() {
           <div className="h-full bg-intake-terra transition-[width] duration-300 ease-out" style={{ width: "100%" }} />
         </div>
 
-        <Link
-          href="/"
-          className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
-          aria-label="Sluiten"
-        >
-          ✕
-        </Link>
-
         <div className="w-full max-w-lg px-6 py-12">
           <h2 className="mb-6 text-center font-serif text-2xl font-normal text-intake-ink">
             Jouw gegevens veilig opslaan
@@ -549,14 +541,6 @@ export default function NutritionCapture() {
           style={{ width: `${progressPct}%` }}
         />
       </div>
-
-      <Link
-        href="/"
-        className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
-        aria-label="Sluiten"
-      >
-        ✕
-      </Link>
 
       <div className="w-full max-w-lg px-6 py-12">
         <div className="mb-2 flex items-center justify-center gap-2">

@@ -219,6 +219,13 @@ export const IDENTITY_FIELDS: IdentityField[] = [
   },
 ];
 
+export const PILLAR_CHECKIN_ROUTES: Partial<Record<PillarId, string>> = {
+  slaap: "/intake/slaap",
+  stress: "/intake/stress",
+  beweging: "/intake/beweging",
+  voeding: "/intake/voeding",
+};
+
 export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "nu", type: "now" },
   { id: "prioriteit", type: "priority" },
