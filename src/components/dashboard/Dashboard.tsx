@@ -6,20 +6,24 @@ import { useRouter } from "next/navigation";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
-import { CHECK_LOG, CHECKS, DASHBOARD_SECTIONS, IDENTITY_FIELDS, PILLAR, PILLARS, SIGNALS } from "@/data/dashboard";
+import { DASHBOARD_SECTIONS, IDENTITY_FIELDS, PILLAR, PILLARS, SIGNALS } from "@/data/dashboard";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
-import type { CheckId, DashboardModel, DashboardSectionType, PillarId, Signal } from "@/types/dashboard";
+import type {
+  DashboardData,
+  DashboardModel,
+  DashboardSectionType,
+  PillarId,
+  Signal,
+} from "@/types/dashboard";
 
 type DashboardProps = {
   empty?: boolean;
-  checkId?: "check1" | "check2";
-  retest?: boolean;
+  data?: DashboardData;
 };
 
 type SharedSectionProps = {
   empty?: boolean;
-  model: DashboardModel;
-  retest?: boolean;
+  model: DashboardModel | null;
   onCheck: () => void;
 };
 
@@ -141,7 +145,7 @@ const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
   );
 };
 
-const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel }) => (
+const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel | null }) => (
   <div style={{ marginBottom: 20 }}>
     <div style={{ fontFamily: "var(--f-serif)", fontSize: 30, color: "var(--text)", lineHeight: 1.1 }}>
       {empty ? "Goed dat je er bent." : "Welkom terug."}
@@ -149,16 +153,24 @@ const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel }) 
     <div style={{ fontSize: 14.5, color: "var(--text-muted)", marginTop: 8, lineHeight: 1.5, textWrap: "pretty" }}>
       {empty
         ? "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
-        : `${model.check.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`}
+        : model
+          ? `${model.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`
+          : ""}
     </div>
   </div>
 );
 
-const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => (
-  <Card glow="#5A8F6A" pad={24} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
+const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
+  if (!empty && !model) {
+    return null;
+  }
+  const currentModel = model as DashboardModel | null;
+
+  return (
+    <Card glow="#5A8F6A" pad={24} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
     <div style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "center" }}>
       <div style={{ display: "flex", justifyContent: "center", flex: "1 1 168px", minWidth: 168 }}>
-        <VitalityRing state={empty ? "locked" : "scored"} value={empty ? 0 : model.vitality} delta={empty ? null : model.vitalityDelta} />
+        <VitalityRing state={empty || !currentModel ? "locked" : "scored"} value={empty || !currentModel ? 0 : currentModel.vitality} delta={empty || !currentModel ? null : currentModel.vitalityDelta} />
       </div>
       <div style={{ flex: "2 1 240px", minWidth: 220 }}>
         {empty ? (
@@ -176,11 +188,11 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => (
           </>
         ) : (
           <>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: model.priority.color, marginBottom: 12, whiteSpace: "nowrap" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 12, whiteSpace: "nowrap" }}>
               <Icons.Target s={14} /> Je grootste hefboom
             </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>{model.priority.label}.</div>
-            <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>{model.priority.lever}</p>
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>{currentModel?.priority.label}.</div>
+            <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>{currentModel?.priority.lever}</p>
             <Button variant="secondary" onClick={onCheck} iconRight={<Icons.ArrowDown s={17} />}>
               Naar mijn plan
             </Button>
@@ -188,13 +200,24 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => (
         )}
       </div>
     </div>
-  </Card>
-);
+    </Card>
+  );
+};
 
 const LADDER_ROW_H = 60;
-const PrioritySection = ({ model, retest }: SharedSectionProps) => {
-  const { scores, ladder } = model;
-  const prevLadder = retest && model.check.prevId ? derivePriority(CHECKS[model.check.prevId].scores) : null;
+const PrioritySection = ({ model }: SharedSectionProps) => {
+  const hasModel = Boolean(model);
+  const ladder = model?.ladder ?? PILLARS;
+  const scores = model?.scores ?? {
+    slaap: 0,
+    energie: 0,
+    stress: 0,
+    voeding: 0,
+    beweging: 0,
+    herstel: 0,
+  };
+  const prevLadder =
+    model?.retest && model.prevScores ? derivePriority(model.prevScores) : null;
   const targetIdx = Object.fromEntries(ladder.map((p, i) => [p.id, i])) as Record<PillarId, number>;
   const startIdx = prevLadder
     ? (Object.fromEntries(prevLadder.map((p, i) => [p.id, i])) as Record<PillarId, number>)
@@ -203,7 +226,7 @@ const PrioritySection = ({ model, retest }: SharedSectionProps) => {
 
   useEffect(() => {
     // Alleen animeren bij een hertest; zonder hertest blijft pos de rustvolgorde (init = targetIdx).
-    if (!prevLadder) {
+    if (!hasModel || !prevLadder) {
       return;
     }
     const kick = window.setTimeout(() => setPos(startIdx), 0);
@@ -214,10 +237,14 @@ const PrioritySection = ({ model, retest }: SharedSectionProps) => {
       window.clearTimeout(t);
       window.clearTimeout(settle);
     };
-    // checkId is het enige signaal dat de ladder opnieuw moet animeren; de afgeleide
+    // De datum is hier het signaal voor een nieuwe check; de afgeleide
     // index-objecten zijn elke render nieuw en zouden de animatie in een lus trekken.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [model.checkId]);
+  }, [model?.date]);
+
+  if (!model) {
+    return null;
+  }
 
   return (
     <section>
@@ -271,6 +298,9 @@ const PrioritySection = ({ model, retest }: SharedSectionProps) => {
 };
 
 const PlanSection = ({ model }: SharedSectionProps) => {
+  if (!model) {
+    return null;
+  }
   const { lifestyle, supplement } = model;
   return (
     <section id="plan">
@@ -326,6 +356,9 @@ const PlanSection = ({ model }: SharedSectionProps) => {
 
 const SignalsSection = ({ model }: SharedSectionProps) => {
   const [showUpcoming, setShowUpcoming] = useState(false);
+  if (!model) {
+    return null;
+  }
   const connectedSignals = SIGNALS.filter((signal) => signal.status === "connected");
   const upcomingSignals = SIGNALS.filter((signal) => signal.status !== "connected");
 
@@ -375,7 +408,7 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
                 </div>
                 <DeltaBadge delta={model.deltaOf(pillar.id)} />
               </div>
-              <Sparkline data={model.check.trend[pillar.id]} color={pillar.color} />
+              <Sparkline data={model.trend[pillar.id]} color={pillar.color} />
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 10 }}>
                 <span style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", fontVariantNumeric: "tabular-nums" }}>{model.scores[pillar.id]}</span>
                 <span style={{ fontSize: 11, color: "var(--text-subtle)" }}>/ 100</span>
@@ -408,14 +441,17 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
         </div>
       )}
       <div style={{ fontSize: 12, color: "var(--text-subtle)", marginTop: 12, lineHeight: 1.5 }}>
-        Je HRV stijgt licht en <span style={{ color: "var(--text-muted)" }}>bevestigt je herstel-trend uit de check-in</span> — een wearable diagnosticeert niet, het bevestigt richting.
+        Wearable-signalen worden binnenkort toegevoegd ter bevestiging van je trends.
       </div>
     </section>
   );
 };
 
-const RetestSection = ({ model, retest }: SharedSectionProps) => {
-  if (!retest) {
+const RetestSection = ({ model }: SharedSectionProps) => {
+  if (!model) {
+    return null;
+  }
+  if (!model.retest || !model.prevScores) {
     return (
       <Card pad={20}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -431,28 +467,31 @@ const RetestSection = ({ model, retest }: SharedSectionProps) => {
     );
   }
 
-  const prev = CHECKS[model.check.prevId as CheckId];
-  const prevPriority = derivePriority(prev.scores)[0];
+  const prevScores = model.prevScores;
+  const prevPriority = derivePriority(prevScores)[0];
   const rows = [...PILLARS]
     .map((pillar) => ({
       pillar,
       now: model.scores[pillar.id],
-      was: prev.scores[pillar.id],
-      d: model.scores[pillar.id] - prev.scores[pillar.id],
+      was: prevScores[pillar.id],
+      d: model.scores[pillar.id] - prevScores[pillar.id],
     }))
     .sort((a, b) => Math.abs(b.d) - Math.abs(a.d));
+  const movedPriority = prevPriority.id !== model.priority.id;
 
   return (
     <section>
       <Card pad={22} glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.26)" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
-          <Icons.TrendUp s={14} /> Je hertest · {model.check.date}
+          <Icons.TrendUp s={14} /> Je hertest · {model.date}
         </div>
         <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>
-          Je prioriteit is verschoven van {prevPriority.label.toLowerCase()} naar {model.priority.label.toLowerCase()}.
+          {movedPriority
+            ? `Je prioriteit is verschoven van ${prevPriority.label.toLowerCase()} naar ${model.priority.label.toLowerCase()}.`
+            : `Je vertrekpunt blijft ${model.priority.label.toLowerCase()}.`}
         </div>
         <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 16px", textWrap: "pretty" }}>
-          Voeding werkte: <span style={{ color: "var(--sage)" }}>+14 in 30 dagen</span>. Maar je slaap zakte en is nu je vertrekpunt — daarom staat hierboven je plan én je aanvulling al anders.
+          Bekijk welke pijlers het meest zijn verschoven sinds je vorige check.
         </p>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {rows.map((row, i) => (
@@ -537,7 +576,7 @@ const IdentitySection = ({ empty }: SharedSectionProps) => {
 
 const HistorySection = ({ empty, model }: SharedSectionProps) => {
   const [open, setOpen] = useState(false);
-  if (empty) {
+  if (empty || !model) {
     return (
       <Card pad={20}>
         <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
@@ -552,7 +591,7 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
       </Card>
     );
   }
-  const past = CHECK_LOG.filter((entry) => entry.seq < model.check.seq).reverse();
+  const past = model.history.slice(0, -1).reverse();
   return (
     <section>
       <Card pad={0}>
@@ -620,9 +659,15 @@ const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps
   future: () => <FutureSection />,
 };
 
-export default function Dashboard({ empty, checkId = "check1", retest = false }: DashboardProps) {
+export default function Dashboard({ empty, data }: DashboardProps) {
   const router = useRouter();
-  const model = useMemo(() => (empty ? buildModel("check1") : buildModel(checkId)), [empty, checkId]);
+  const model = useMemo(
+    () =>
+      !empty && data?.current
+        ? buildModel(data.current, data.prev, data.history, data.retest)
+        : null,
+    [empty, data],
+  );
   const sections = empty ? DASHBOARD_SECTIONS.filter((section) => EMPTY_SECTIONS.includes(section.type)) : DASHBOARD_SECTIONS;
   const onCheck = () => {
     if (empty) {
@@ -649,7 +694,7 @@ export default function Dashboard({ empty, checkId = "check1", retest = false }:
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {sections.map((section) => (
             <section key={section.id} id={section.id}>
-              {SECTION_RENDERERS[section.type]({ empty, model, retest, onCheck })}
+              {SECTION_RENDERERS[section.type]({ empty, model, onCheck })}
             </section>
           ))}
         </div>

@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
+import { loadAccountDashboardData } from "@/lib/account-dashboard";
 import { getAccountFromCookie } from "@/lib/account-server";
+import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 
 export const metadata = {
   robots: {
@@ -20,12 +22,35 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   }
 
   const { state } = await searchParams;
-  const empty = state === "empty";
-  const retest = state === "retest";
+  if (state === "empty") {
+    return (
+      <div className="ps-dark">
+        <Dashboard empty />
+      </div>
+    );
+  }
+
+  if (state === "scored") {
+    return (
+      <div className="ps-dark">
+        <Dashboard data={buildDevDashboardData("scored")} />
+      </div>
+    );
+  }
+
+  if (state === "retest") {
+    return (
+      <div className="ps-dark">
+        <Dashboard data={buildDevDashboardData("retest")} />
+      </div>
+    );
+  }
+
+  const data = await loadAccountDashboardData(account.id);
 
   return (
     <div className="ps-dark">
-      <Dashboard empty={empty} checkId={retest ? "check2" : "check1"} retest={retest} />
+      <Dashboard empty={data.empty} data={data} />
     </div>
   );
 }

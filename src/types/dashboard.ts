@@ -91,6 +91,7 @@ export type Signal = {
 
 export type CheckScores = Record<PillarId, number>;
 export type CheckTrend = Record<PillarId, number[]>;
+export type CheckSnapshot = { scores: CheckScores; vitality: number; date: string };
 
 export type Check = {
   seq: number;
@@ -106,6 +107,14 @@ export type CheckLogEntry = {
   date: string;
   priority: PillarId;
   vitality: number;
+};
+
+export type DashboardData = {
+  empty: boolean;
+  current: (CheckSnapshot & { trend: CheckTrend }) | null;
+  prev: CheckSnapshot | null;
+  history: CheckLogEntry[];
+  retest: boolean;
 };
 
 export type IdentityField = {
@@ -131,8 +140,6 @@ export type LifestyleItem = {
 };
 
 export type DashboardModel = {
-  check: Check;
-  checkId: CheckId;
   scores: CheckScores;
   ladder: Pillar[];
   priority: Pillar;
@@ -141,5 +148,10 @@ export type DashboardModel = {
   vitalityDelta: number | null;
   lifestyle: LifestyleItem[];
   supplement: PillarSupplement | null;
+  trend: CheckTrend;
+  prevScores: CheckScores | null;
+  history: CheckLogEntry[];
+  retest: boolean;
+  date: string;
   deltaOf: (id: PillarId) => number;
 };
