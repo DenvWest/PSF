@@ -9,7 +9,7 @@ import { verifySignedIntakeSessionCookie } from "@/lib/intake-session-cookie";
 import { INTAKE_SESSION_COOKIE_NAME } from "@/lib/intake-session-cookie";
 import { accountStorageConsentRow } from "@/lib/account-storage-consent";
 import { getDefaultOrganizationId } from "@/lib/organization";
-import { createRawLoginToken, hashLoginToken, loginTokenExpiryIso } from "@/lib/account-login-token";
+import { createLoginCode, hashLoginCode, loginTokenExpiryIso } from "@/lib/account-login-token";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { sendAccountLoginEmail } from "@/lib/account-login-email";
 
@@ -187,10 +187,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true }, { status: 200 });
   }
 
-  const rawToken = createRawLoginToken();
+  const code = createLoginCode();
   const { error: tokenInsertError } = await admin.from("account_login_tokens").insert({
     account_id: account.id,
-    token_hash: hashLoginToken(rawToken),
+    token_hash: hashLoginCode(account.id, code),
     expires_at: loginTokenExpiryIso(),
   });
 
@@ -199,8 +199,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true }, { status: 200 });
   }
 
-  const verifyUrl = `${getPublicSiteUrl()}/api/account/verify?token=${rawToken}`;
-  const sendResult = await sendAccountLoginEmail({ email, verifyUrl });
+  const verifyUrl = `${getPublicSiteUrl()}/api/account/verify?aid=${account.id}&code=${code}`;
+  const sendResult = await sendAccountLoginEmail({ email, code, verifyUrl });
   if (!sendResult.ok) {
     console.error("[api/account/request-link] email send error:", sendResult.error);
   }

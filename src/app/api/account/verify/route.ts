@@ -3,13 +3,17 @@ import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
-import { hashLoginToken } from "@/lib/account-login-token";
+import { hashLoginCode } from "@/lib/account-login-token";
 import { absoluteUrl } from "@/lib/public-site-url";
 import {
   ACCOUNT_COOKIE_MAX_AGE_SECONDS,
   ACCOUNT_SESSION_COOKIE_NAME,
   signAccountCookie,
 } from "@/lib/account-session-cookie";
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const CODE_RE = /^\d{6}$/;
 
 type VerifyTokenRow = {
   account_id: string;
@@ -34,8 +38,9 @@ export async function GET(request: NextRequest) {
     return verifyRedirect();
   }
 
-  const token = request.nextUrl.searchParams.get("token");
-  if (!token) {
+  const aid = request.nextUrl.searchParams.get("aid");
+  const code = request.nextUrl.searchParams.get("code");
+  if (!aid || !UUID_RE.test(aid) || !code || !CODE_RE.test(code)) {
     return verifyRedirect();
   }
 
@@ -45,7 +50,7 @@ export async function GET(request: NextRequest) {
   }
 
   const nowIso = new Date().toISOString();
-  const tokenHash = hashLoginToken(token);
+  const tokenHash = hashLoginCode(aid, code);
   const { data: claimedToken, error: claimError } = await admin
     .from("account_login_tokens")
     .update({ used_at: nowIso })

@@ -118,6 +118,8 @@ export type TextFieldProps = {
   type?: TextFieldInputType;
   icon?: ReactNode;
   autoFocus?: boolean;
+  inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
+  autoComplete?: string;
 };
 
 export function TextField({
@@ -129,6 +131,8 @@ export function TextField({
   type = "text",
   icon,
   autoFocus = false,
+  inputMode,
+  autoComplete,
 }: TextFieldProps) {
   const [focused, setFocused] = useState(false);
 
@@ -179,6 +183,8 @@ export function TextField({
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
           autoFocus={autoFocus}
+          inputMode={inputMode}
+          autoComplete={autoComplete}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           style={{

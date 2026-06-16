@@ -1,22 +1,28 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AuthShell, TrustLine } from "@/components/account/AuthShell";
-import { ArrowRight, Lock, Mail, MailOpen, Refresh, Shield } from "@/components/app/icons";
+import { ArrowRight, Lock, Mail, Refresh, Shield } from "@/components/app/icons";
 import { Button, Checkbox, TextField } from "@/components/app/primitives";
 
 function isValidEmail(value: string) {
   return /\S+@\S+\.\S+/.test(value);
 }
 
-type MailSentViewProps = {
+type CodeEntryViewProps = {
   email: string;
   onResend: () => void;
   onChangeAddress: () => void;
 };
 
-function MailSentView({ email, onResend, onChangeAddress }: MailSentViewProps) {
+function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps) {
+  const router = useRouter();
+  const [code, setCode] = useState("");
   const [cooldown, setCooldown] = useState(30);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isCodeValid = /^\d{6}$/.test(code);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -36,6 +42,42 @@ function MailSentView({ email, onResend, onChangeAddress }: MailSentViewProps) {
 
   const restartCooldown = () => setCooldown(30);
 
+  const handleVerify = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!isCodeValid || isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/account/verify-code", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, code }),
+      });
+
+      if (response.status === 200) {
+        router.push("/dashboard");
+        return;
+      }
+
+      if (response.status === 429) {
+        setErrorMessage("Te veel pogingen, probeer het zo opnieuw.");
+        return;
+      }
+
+      setErrorMessage("De code klopt niet of is verlopen.");
+    } catch {
+      setErrorMessage("De code klopt niet of is verlopen.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <AuthShell>
       <article
@@ -48,32 +90,35 @@ function MailSentView({ email, onResend, onChangeAddress }: MailSentViewProps) {
           gap: 18,
         }}
       >
-        <div
-          style={{
-            width: 62,
-            height: 62,
-            borderRadius: 18,
-            background: "rgba(90,143,106,0.2)",
-            border: "1px solid rgba(90,143,106,0.35)",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "var(--sage)",
-          }}
-        >
-          <MailOpen s={29} />
-        </div>
         <header style={{ display: "grid", gap: 8 }}>
-          <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>Kijk even in je inbox.</h1>
+          <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>
+            Vul je inlogcode in
+          </h1>
           <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 15, lineHeight: 1.65 }}>
-            Als dit e-mailadres bij ons bekend is, sturen we je direct een veilige inloglink. Om je privacy te beschermen,
-            laten we niet weten of een adres bestaat.
-          </p>
-          <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 15, lineHeight: 1.65 }}>
-            Check <span style={{ color: "var(--text)" }}>{email}</span> - ook je spamfolder. De link is 15 minuten geldig
-            en eenmalig te gebruiken.
+            We mailden een 6-cijferige code naar{" "}
+            <span style={{ color: "var(--text)" }}>{email}</span>.
           </p>
         </header>
+
+        <form onSubmit={handleVerify} style={{ display: "grid", gap: 14 }}>
+          <TextField
+            label="Inlogcode"
+            value={code}
+            onChange={(value) => setCode(value.replace(/\D/g, "").slice(0, 6))}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            placeholder="123456"
+            autoFocus
+          />
+          {errorMessage ? (
+            <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-muted)" }}>{errorMessage}</p>
+          ) : null}
+          <Button type="submit" full disabled={!isCodeValid || isSubmitting} iconRight={<ArrowRight s={16} />}>
+            Inloggen
+          </Button>
+        </form>
+
         <section
           style={{
             borderTop: "1px solid var(--divider)",
@@ -82,7 +127,7 @@ function MailSentView({ email, onResend, onChangeAddress }: MailSentViewProps) {
             gap: 12,
           }}
         >
-          <p style={{ margin: 0, fontSize: 13, color: "var(--text-subtle)" }}>Geen mail ontvangen?</p>
+          <p style={{ margin: 0, fontSize: 13, color: "var(--text-subtle)" }}>Geen code ontvangen?</p>
           {cooldown > 0 ? (
             <div
               style={{
@@ -106,7 +151,7 @@ function MailSentView({ email, onResend, onChangeAddress }: MailSentViewProps) {
               }}
               icon={<Refresh s={16} />}
             >
-              Mail opnieuw sturen
+              Code opnieuw sturen
             </Button>
           )}
           <Button variant="ghost" size="sm" onClick={onChangeAddress}>
@@ -121,13 +166,13 @@ function MailSentView({ email, onResend, onChangeAddress }: MailSentViewProps) {
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(true);
-  const [view, setView] = useState<"login" | "mail-sent">("login");
+  const [view, setView] = useState<"login" | "code">("login");
   const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isEmailValid = useMemo(() => isValidEmail(email), [email]);
 
-  const requestMagicLink = async () => {
+  const requestLoginCode = async () => {
     const response = await fetch("/api/account/request-link", {
       method: "POST",
       headers: {
@@ -142,7 +187,7 @@ export default function LoginScreen() {
 
     if (response.status === 200) {
       setErrorMessage(null);
-      setView("mail-sent");
+      setView("code");
       return;
     }
 
@@ -163,7 +208,7 @@ export default function LoginScreen() {
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      await requestMagicLink();
+      await requestLoginCode();
     } catch {
       setErrorMessage("Er ging iets mis.");
     } finally {
@@ -171,12 +216,12 @@ export default function LoginScreen() {
     }
   };
 
-  if (view === "mail-sent") {
+  if (view === "code") {
     return (
-      <MailSentView
+      <CodeEntryView
         email={email}
         onResend={() => {
-          void requestMagicLink();
+          void requestLoginCode();
         }}
         onChangeAddress={() => setView("login")}
       />
@@ -198,8 +243,8 @@ export default function LoginScreen() {
         <header style={{ display: "grid", gap: 10 }}>
           <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>Welkom terug.</h1>
           <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 15, lineHeight: 1.65 }}>
-            Vul je e-mailadres in — je krijgt een veilige inloglink in je mail. Geen wachtwoord, geen account-gedoe; je
-            e-mail is genoeg.
+            Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord, geen
+            account-gedoe; je e-mail is genoeg.
           </p>
         </header>
 
@@ -238,12 +283,12 @@ export default function LoginScreen() {
             <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-muted)" }}>{errorMessage}</p>
           ) : null}
           <Button type="submit" full disabled={!isEmailValid || isSubmitting} iconRight={<ArrowRight s={16} />}>
-            Stuur me een inloglink
+            Stuur inlogcode
           </Button>
         </form>
 
         <section style={{ borderTop: "1px solid var(--divider)", paddingTop: 14, display: "grid", gap: 10 }}>
-          <TrustLine icon={<Lock s={15} />}>Geen wachtwoord. De link is veilig en 15 minuten geldig.</TrustLine>
+          <TrustLine icon={<Lock s={15} />}>Geen wachtwoord. De code is veilig en 15 minuten geldig.</TrustLine>
           <TrustLine icon={<Shield s={15} />}>Geen spam. Je e-mail wordt alleen gebruikt om je in te loggen.</TrustLine>
         </section>
       </article>
