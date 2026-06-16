@@ -681,6 +681,21 @@ export default function IntakeResults({
 
         {sessionId ? (
           <div className="mb-6">
+            <section className="mb-3 rounded-2xl border border-intake-sage/25 bg-intake-sage/5 px-5 py-4">
+              <h2 className="mb-1 text-base font-semibold leading-snug text-intake-ink">
+                Bewaar je voortgang
+              </h2>
+              <p className="mb-3 text-sm leading-relaxed text-intake-ink/70">
+                Maak een gratis account, dan onthoudt dit overzicht hoe het met je gaat — en of je vooruitgaat. Geen
+                wachtwoord: je e-mailadres is genoeg.
+              </p>
+              <Link
+                href="/account/login"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-intake-sage px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+              >
+                Bewaar mijn resultaat →
+              </Link>
+            </section>
             <MeasurementReminderOptIn sessionId={sessionId} />
           </div>
         ) : null}

@@ -198,7 +198,8 @@ export default function LoginScreen() {
         <header style={{ display: "grid", gap: 10 }}>
           <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>Welkom terug.</h1>
           <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 15, lineHeight: 1.65 }}>
-            Een plek die onthoudt hoe het met je gaat en wat je nodig hebt. Geen naam nodig. Je e-mailadres is genoeg.
+            Vul je e-mailadres in — je krijgt een veilige inloglink in je mail. Geen wachtwoord, geen account-gedoe; je
+            e-mail is genoeg.
           </p>
         </header>
 

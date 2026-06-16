@@ -157,6 +157,12 @@ export default function Header() {
                     </div>
 
                     <div className="flex items-center gap-2">
+                        <Link
+                            href="/account/login"
+                            className="hidden rounded-lg border border-stone-200 px-3 py-1.5 text-sm font-medium text-stone-700 transition hover:bg-stone-50 hover:text-stone-900 md:inline-flex"
+                        >
+                            Inloggen
+                        </Link>
                         <button
                             type="button"
                             aria-label="Open zoekfunctie"
@@ -431,6 +437,13 @@ export default function Header() {
 
                     <div className="flex h-[calc(100%-81px)] flex-col justify-between overflow-y-auto px-6 py-6">
                         <nav className="space-y-1">
+                            <Link
+                                href="/account/login"
+                                onClick={() => setMenuOpen(false)}
+                                className="block rounded-2xl bg-ps-green/10 px-4 py-3 text-base font-semibold text-ps-green transition hover:bg-ps-green/15"
+                            >
+                                Inloggen
+                            </Link>
                             {menuLinks.map((link) => (
                                 <Link
                                     key={link.href}
