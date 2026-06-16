@@ -20,7 +20,9 @@ export type RateLimitRoute =
   | "intake_consent_delete"
   | "admin_data"
   | "account_request_link"
-  | "account_verify";
+  | "account_verify"
+  | "account_claim"
+  | "account_revoke";
 
 const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   contact: "CONTACT_RATE_LIMIT",
@@ -40,6 +42,8 @@ const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   admin_data: "ADMIN_DATA_RATE_LIMIT",
   account_request_link: "ACCOUNT_REQUEST_LINK_RATE_LIMIT",
   account_verify: "ACCOUNT_VERIFY_RATE_LIMIT",
+  account_claim: "ACCOUNT_CLAIM_RATE_LIMIT",
+  account_revoke: "ACCOUNT_REVOKE_RATE_LIMIT",
 };
 
 const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
@@ -60,6 +64,8 @@ const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
   admin_data: "ADMIN_DATA_RATE_LIMIT_WINDOW_MS",
   account_request_link: "ACCOUNT_REQUEST_LINK_RATE_LIMIT_WINDOW_MS",
   account_verify: "ACCOUNT_VERIFY_RATE_LIMIT_WINDOW_MS",
+  account_claim: "ACCOUNT_CLAIM_RATE_LIMIT_WINDOW_MS",
+  account_revoke: "ACCOUNT_REVOKE_RATE_LIMIT_WINDOW_MS",
 };
 
 const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
@@ -80,6 +86,8 @@ const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   admin_data: { limit: 60, windowMs: 60 * 1000 },
   account_request_link: { limit: 5, windowMs: 15 * 60 * 1000 },
   account_verify: { limit: 30, windowMs: 15 * 60 * 1000 },
+  account_claim: { limit: 20, windowMs: 15 * 60 * 1000 },
+  account_revoke: { limit: 10, windowMs: 15 * 60 * 1000 },
 };
 
 const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
@@ -100,6 +108,8 @@ const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   admin_data: { limit: 1000, windowMs: 60 * 1000 },
   account_request_link: { limit: 1000, windowMs: 60 * 1000 },
   account_verify: { limit: 1000, windowMs: 60 * 1000 },
+  account_claim: { limit: 1000, windowMs: 60 * 1000 },
+  account_revoke: { limit: 1000, windowMs: 60 * 1000 },
 };
 
 export function parseEnvRateLimit(
