@@ -6,7 +6,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const mainLinks = [
-    { href: "/intake", label: "Leefstijlcheck" },
     { href: "/supplementen", label: "Supplementen" },
     { href: "/blog", label: "Blog" },
 ];
@@ -144,11 +143,7 @@ export default function Header() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={
-                                        link.href === "/intake"
-                                            ? "rounded-lg bg-ps-green/10 px-3 py-1.5 text-sm font-semibold text-ps-green transition hover:bg-ps-green/15"
-                                            : "text-sm font-medium text-stone-500 transition hover:text-stone-900"
-                                    }
+                                    className="text-sm font-medium text-stone-500 transition hover:text-stone-900"
                                 >
                                     {link.label}
                                 </Link>
@@ -159,9 +154,15 @@ export default function Header() {
                     <div className="flex items-center gap-2">
                         <Link
                             href="/account/login"
-                            className="hidden rounded-lg border border-stone-200 px-3 py-1.5 text-sm font-medium text-stone-700 transition hover:bg-stone-50 hover:text-stone-900 md:inline-flex"
+                            className="hidden rounded-lg border border-stone-200 px-3.5 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50 hover:text-stone-900 md:inline-flex"
                         >
                             Inloggen
+                        </Link>
+                        <Link
+                            href="/intake"
+                            className="hidden rounded-lg bg-ps-green px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-ps-green-hover md:inline-flex"
+                        >
+                            Doe de gratis check →
                         </Link>
                         <button
                             type="button"
@@ -437,6 +438,13 @@ export default function Header() {
 
                     <div className="flex h-[calc(100%-81px)] flex-col justify-between overflow-y-auto px-6 py-6">
                         <nav className="space-y-1">
+                            <Link
+                                href="/intake"
+                                onClick={() => setMenuOpen(false)}
+                                className="block rounded-2xl bg-ps-green px-4 py-3 text-base font-semibold text-white transition hover:bg-ps-green-hover"
+                            >
+                                Doe de gratis check →
+                            </Link>
                             <Link
                                 href="/account/login"
                                 onClick={() => setMenuOpen(false)}
