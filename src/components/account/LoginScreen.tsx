@@ -20,6 +20,7 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
   const router = useRouter();
   const [code, setCode] = useState("");
   const [cooldown, setCooldown] = useState(30);
+  const [secondsLeft, setSecondsLeft] = useState(15 * 60);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isCodeValid = /^\d{6}$/.test(code);
@@ -27,6 +28,22 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
   useEffect(() => {
     const interval = window.setInterval(() => {
       setCooldown((current) => {
+        if (current <= 1) {
+          window.clearInterval(interval);
+          return 0;
+        }
+        return current - 1;
+      });
+    }, 1000);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setSecondsLeft((current) => {
         if (current <= 1) {
           window.clearInterval(interval);
           return 0;
@@ -98,6 +115,15 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
             We mailden een 6-cijferige code naar{" "}
             <span style={{ color: "var(--text)" }}>{email}</span>.
           </p>
+          {secondsLeft > 0 ? (
+            <p style={{ margin: 0, fontSize: 12.5, color: "var(--text-subtle)" }}>
+              Je code verloopt over {Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, "0")}.
+            </p>
+          ) : (
+            <p style={{ margin: 0, fontSize: 12.5, color: "var(--terra)" }}>
+              Je code is verlopen — stuur een nieuwe.
+            </p>
+          )}
         </header>
 
         <form onSubmit={handleVerify} style={{ display: "grid", gap: 14 }}>
@@ -148,6 +174,7 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
               onClick={() => {
                 onResend();
                 restartCooldown();
+                setSecondsLeft(15 * 60);
               }}
               icon={<Refresh s={16} />}
             >

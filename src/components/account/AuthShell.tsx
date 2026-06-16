@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+import ExitButton from "@/components/app/ExitButton";
 import Wordmark from "@/components/app/Wordmark";
 
 type AuthShellProps = {
@@ -85,8 +87,19 @@ export function AuthShell({ children }: AuthShellProps) {
           gap: 20,
         }}
       >
-        <header style={{ marginBottom: 6 }}>
-          <Wordmark />
+        <header
+          style={{
+            marginBottom: 6,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+          }}
+        >
+          <Link href="/" aria-label="Naar de homepage" style={{ textDecoration: "none" }}>
+            <Wordmark />
+          </Link>
+          <ExitButton href="/" label="Naar de website" />
         </header>
         {children}
         <AuthFooter />

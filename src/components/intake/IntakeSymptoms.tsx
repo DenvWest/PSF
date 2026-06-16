@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useRef, useState } from "react";
 import {
   INTAKE_AGE_RANGE_OPTIONS,
   SYMPTOMS,
@@ -41,15 +40,6 @@ export default function IntakeSymptoms({
   const hasSelection = symptoms.length > 0;
   const canProceed = ageRange !== null && hasSelection;
 
-  // Hide the layout header, consistent with the question page.
-  useEffect(() => {
-    const header = document.querySelector<HTMLElement>(".intake-layout-header");
-    if (header) header.style.display = "none";
-    return () => {
-      if (header) header.style.display = "";
-    };
-  }, []);
-
   const handleToggle = (id: SymptomId) => {
     if (isProcessing.current) {
       return;
@@ -71,25 +61,6 @@ export default function IntakeSymptoms({
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
-      {/* Fixed close button — same position as the question page */}
-      <Link
-        href="/"
-        style={{
-          position: "fixed",
-          top: 16,
-          right: 16,
-          zIndex: 50,
-          color: "rgba(255,255,255,0.35)",
-          fontSize: 18,
-          lineHeight: 1,
-          textDecoration: "none",
-          padding: "4px 8px",
-        }}
-        aria-label="Sluiten"
-      >
-        ✕
-      </Link>
-
       {/* Honeypot — hidden from users and assistive tech */}
       <div
         className="absolute -left-[200vw] h-0 overflow-hidden opacity-0"

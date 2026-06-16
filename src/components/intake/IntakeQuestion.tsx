@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import {
   type Category,
   type IntakeQuestion as IntakeQuestionType,
@@ -49,14 +48,6 @@ export default function IntakeQuestion({
     isFirstRender.current = false;
   }, []);
 
-  useEffect(() => {
-    const header = document.querySelector<HTMLElement>(".intake-layout-header");
-    if (header) header.style.display = "none";
-    return () => {
-      if (header) header.style.display = "";
-    };
-  }, []);
-
   function handleOptionSelect(optionIndex: number) {
     if (locked) return;
     setSelectedOption(optionIndex);
@@ -90,14 +81,6 @@ export default function IntakeQuestion({
           style={{ width: `${progressPct}%` }}
         />
       </div>
-
-      <Link
-        href="/"
-        className="fixed right-4 top-4 z-50 px-2 py-1 text-lg leading-none text-intake-ink-subtle no-underline transition-colors hover:text-intake-ink"
-        aria-label="Sluiten"
-      >
-        ✕
-      </Link>
 
       <div className="w-full max-w-lg px-6 py-12">
         <div className="mb-2 flex items-center justify-center gap-2">

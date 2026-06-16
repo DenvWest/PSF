@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { INTAKE_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { IntakeConsentPayload } from "@/lib/intake-consent";
 
@@ -22,15 +22,6 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
   const [analytics, setAnalytics] = useState(false);
   const [optionalEmail, setOptionalEmail] = useState("");
   const [marketing, setMarketing] = useState(false);
-
-  // Take over full screen: hide the layout header.
-  useEffect(() => {
-    const header = document.querySelector<HTMLElement>(".intake-layout-header");
-    if (header) header.style.display = "none";
-    return () => {
-      if (header) header.style.display = "";
-    };
-  }, []);
 
   const showMarketing = emailLooseOk(optionalEmail);
   const marketingBlocked =
@@ -97,25 +88,6 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
       >
         <div style={{ height: "100%", width: "100%", background: "#C8956C" }} />
       </div>
-
-      {/* Fixed close button */}
-      <Link
-        href="/"
-        style={{
-          position: "fixed",
-          top: 16,
-          right: 16,
-          zIndex: 50,
-          color: "rgba(255,255,255,0.35)",
-          fontSize: 18,
-          lineHeight: 1,
-          textDecoration: "none",
-          padding: "4px 8px",
-        }}
-        aria-label="Sluiten"
-      >
-        ✕
-      </Link>
 
       {/* Centered content block */}
       <div className="w-full max-w-lg px-6 py-16">

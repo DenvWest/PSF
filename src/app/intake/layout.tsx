@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
+import ExitButton from "@/components/app/ExitButton";
 
 export default function IntakeLayout({ children }: { children: ReactNode }) {
   return (
@@ -22,18 +22,7 @@ export default function IntakeLayout({ children }: { children: ReactNode }) {
           boxSizing: "border-box",
         }}
       >
-        <Link
-          href="/"
-          style={{
-            color: "rgba(255,255,255,0.4)",
-            fontSize: 13,
-            textDecoration: "none",
-            letterSpacing: "0.01em",
-            padding: "4px 0",
-          }}
-        >
-          ✕ Sluiten
-        </Link>
+        <ExitButton href="/" />
       </div>
       <div style={{ flex: 1 }}>{children}</div>
     </div>
