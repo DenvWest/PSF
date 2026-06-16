@@ -37,7 +37,6 @@ const VitalityRing = ({ state = "scored", value = 0, delta = null, size = 172, s
 
   useEffect(() => {
     if (locked) {
-      setDisp(0);
       return;
     }
     let raf = 0;
@@ -202,18 +201,22 @@ const PrioritySection = ({ model, retest }: SharedSectionProps) => {
   const [pos, setPos] = useState(startIdx);
 
   useEffect(() => {
+    // Alleen animeren bij een hertest; zonder hertest blijft pos de rustvolgorde (init = targetIdx).
     if (!prevLadder) {
-      setPos(targetIdx);
       return;
     }
-    setPos(startIdx);
+    const kick = window.setTimeout(() => setPos(startIdx), 0);
     const t = window.setTimeout(() => setPos(targetIdx), 550);
     const settle = window.setTimeout(() => setPos(targetIdx), 1650);
     return () => {
+      window.clearTimeout(kick);
       window.clearTimeout(t);
       window.clearTimeout(settle);
     };
-  }, [model.checkId, prevLadder, startIdx, targetIdx]);
+    // checkId is het enige signaal dat de ladder opnieuw moet animeren; de afgeleide
+    // index-objecten zijn elke render nieuw en zouden de animatie in een lus trekken.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [model.checkId]);
 
   return (
     <section>
