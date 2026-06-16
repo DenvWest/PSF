@@ -122,22 +122,65 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(true);
   const [view, setView] = useState<"login" | "mail-sent">("login");
+  const [website, setWebsite] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isEmailValid = useMemo(() => isValidEmail(email), [email]);
 
-  const handleSend = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!isEmailValid) {
+  const requestMagicLink = async () => {
+    const response = await fetch("/api/account/request-link", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        consent,
+        website,
+      }),
+    });
+
+    if (response.status === 200) {
+      setErrorMessage(null);
+      setView("mail-sent");
       return;
     }
 
-    // TODO F1.2: POST /api/account/request-link
-    // TODO F1.2: account_storage-consent meesturen
-    void consent;
-    setView("mail-sent");
+    if (response.status === 429) {
+      setErrorMessage("Te veel pogingen, probeer het zo opnieuw.");
+      return;
+    }
+
+    setErrorMessage("Er ging iets mis.");
+  };
+
+  const handleSend = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!isEmailValid || isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    try {
+      await requestMagicLink();
+    } catch {
+      setErrorMessage("Er ging iets mis.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (view === "mail-sent") {
-    return <MailSentView email={email} onResend={() => undefined} onChangeAddress={() => setView("login")} />;
+    return (
+      <MailSentView
+        email={email}
+        onResend={() => {
+          void requestMagicLink();
+        }}
+        onChangeAddress={() => setView("login")}
+      />
+    );
   }
 
   return (
@@ -173,7 +216,27 @@ export default function LoginScreen() {
             Ik wil dat mijn check-ins bewaard worden zodat mijn account onthoudt wat ik eerder invulde. Opt-in, op elk
             moment intrekbaar.
           </Checkbox>
-          <Button type="submit" full disabled={!isEmailValid} iconRight={<ArrowRight s={16} />}>
+          <input
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            value={website}
+            onChange={(event) => setWebsite(event.target.value)}
+            name="website"
+            type="text"
+            style={{
+              position: "absolute",
+              left: "-9999px",
+              width: 1,
+              height: 1,
+              opacity: 0,
+              pointerEvents: "none",
+            }}
+          />
+          {errorMessage ? (
+            <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-muted)" }}>{errorMessage}</p>
+          ) : null}
+          <Button type="submit" full disabled={!isEmailValid || isSubmitting} iconRight={<ArrowRight s={16} />}>
             Stuur me een inloglink
           </Button>
         </form>

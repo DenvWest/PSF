@@ -18,7 +18,9 @@ export type RateLimitRoute =
   | "partner_intake"
   | "partner_analytics"
   | "intake_consent_delete"
-  | "admin_data";
+  | "admin_data"
+  | "account_request_link"
+  | "account_verify";
 
 const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   contact: "CONTACT_RATE_LIMIT",
@@ -36,6 +38,8 @@ const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   partner_analytics: "PARTNER_ANALYTICS_RATE_LIMIT",
   intake_consent_delete: "INTAKE_CONSENT_DELETE_RATE_LIMIT",
   admin_data: "ADMIN_DATA_RATE_LIMIT",
+  account_request_link: "ACCOUNT_REQUEST_LINK_RATE_LIMIT",
+  account_verify: "ACCOUNT_VERIFY_RATE_LIMIT",
 };
 
 const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
@@ -54,6 +58,8 @@ const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
   partner_analytics: "PARTNER_ANALYTICS_RATE_LIMIT_WINDOW_MS",
   intake_consent_delete: "INTAKE_CONSENT_DELETE_RATE_LIMIT_WINDOW_MS",
   admin_data: "ADMIN_DATA_RATE_LIMIT_WINDOW_MS",
+  account_request_link: "ACCOUNT_REQUEST_LINK_RATE_LIMIT_WINDOW_MS",
+  account_verify: "ACCOUNT_VERIFY_RATE_LIMIT_WINDOW_MS",
 };
 
 const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
@@ -72,6 +78,8 @@ const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   partner_analytics: { limit: 120, windowMs: 60 * 1000 },
   intake_consent_delete: { limit: 5, windowMs: 60 * 1000 },
   admin_data: { limit: 60, windowMs: 60 * 1000 },
+  account_request_link: { limit: 5, windowMs: 15 * 60 * 1000 },
+  account_verify: { limit: 30, windowMs: 15 * 60 * 1000 },
 };
 
 const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
@@ -90,6 +98,8 @@ const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   partner_analytics: { limit: 1000, windowMs: 60 * 1000 },
   intake_consent_delete: { limit: 1000, windowMs: 60 * 1000 },
   admin_data: { limit: 1000, windowMs: 60 * 1000 },
+  account_request_link: { limit: 1000, windowMs: 60 * 1000 },
+  account_verify: { limit: 1000, windowMs: 60 * 1000 },
 };
 
 export function parseEnvRateLimit(
