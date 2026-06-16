@@ -1,7 +1,7 @@
 "use client";
 
 import type { ButtonHTMLAttributes, CSSProperties, InputHTMLAttributes, ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Check } from "@/components/app/icons";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "terra";
@@ -245,5 +245,231 @@ export function Checkbox({ checked, onChange, children }: CheckboxProps) {
       </span>
       <span style={{ fontSize: 13.5, lineHeight: 1.5 }}>{children}</span>
     </button>
+  );
+}
+
+export type EyebrowProps = {
+  children: ReactNode;
+  color?: string;
+};
+
+export function Eyebrow({ children, color }: EyebrowProps) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        fontFamily: "var(--f-sans)",
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: "0.16em",
+        textTransform: "uppercase",
+        color: "var(--text-subtle)",
+      }}
+    >
+      <span style={{ width: 18, height: 1, background: color || "var(--divider-strong)" }} />
+      <span style={{ color: color || "var(--text-muted)" }}>{children}</span>
+    </div>
+  );
+}
+
+export type SectionHeaderProps = {
+  eyebrow?: string;
+  title?: string;
+  action?: ReactNode;
+  color?: string;
+};
+
+export function SectionHeader({ eyebrow, title, action, color }: SectionHeaderProps) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-end",
+        gap: 16,
+        marginBottom: 14,
+      }}
+    >
+      <div>
+        {eyebrow ? (
+          <div style={{ marginBottom: 8 }}>
+            <Eyebrow color={color}>{eyebrow}</Eyebrow>
+          </div>
+        ) : null}
+        {title ? (
+          <div
+            style={{
+              fontFamily: "var(--f-serif)",
+              fontSize: 21,
+              color: "var(--text)",
+              letterSpacing: "0.01em",
+              lineHeight: 1.1,
+            }}
+          >
+            {title}
+          </div>
+        ) : null}
+      </div>
+      {action}
+    </div>
+  );
+}
+
+export type CardProps = {
+  children: ReactNode;
+  style?: CSSProperties;
+  pad?: number;
+  glow?: string;
+  onClick?: () => void;
+};
+
+export function Card({ children, style, pad = 22, glow, onClick }: CardProps) {
+  const [hovering, setHovering] = useState(false);
+  const interactive = Boolean(onClick);
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      style={{
+        background: "var(--panel)",
+        border: "1px solid var(--panel-border)",
+        borderRadius: 24,
+        padding: pad,
+        position: "relative",
+        overflow: "hidden",
+        cursor: interactive ? "pointer" : "default",
+        transition: "border-color .2s, background .2s, transform .2s",
+        ...(interactive && hovering
+          ? { borderColor: "rgba(255,255,255,0.22)", background: "rgba(255,255,255,0.07)" }
+          : {}),
+        ...style,
+      }}
+    >
+      {glow ? (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background: `radial-gradient(120% 90% at 85% -10%, ${glow}22, transparent 60%)`,
+          }}
+        />
+      ) : null}
+      <div style={{ position: "relative" }}>{children}</div>
+    </div>
+  );
+}
+
+export type SparklineProps = {
+  data?: number[] | null;
+  color?: string;
+  w?: number;
+  h?: number;
+  empty?: boolean;
+};
+
+export function Sparkline({ data, color = "var(--sage)", w = 132, h = 40, empty }: SparklineProps) {
+  const gradientId = useId().replace(/:/g, "");
+
+  if (empty || !data || data.length < 2) {
+    return (
+      <svg width="100%" height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
+        <line
+          x1="0"
+          y1={h - 6}
+          x2={w}
+          y2={h - 6}
+          stroke="var(--divider-strong)"
+          strokeWidth="1.5"
+          strokeDasharray="3 5"
+        />
+      </svg>
+    );
+  }
+
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const span = max - min || 1;
+  const pad = 4;
+  const points = data.map((datum, i) => {
+    const x = pad + (i / (data.length - 1)) * (w - pad * 2);
+    const y = pad + (1 - (datum - min) / span) * (h - pad * 2);
+    return [x, y] as const;
+  });
+  const line = points
+    .map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`)
+    .join(" ");
+  const area = `${line} L${points[points.length - 1][0].toFixed(1)} ${h} L${points[0][0].toFixed(1)} ${h} Z`;
+  const last = points[points.length - 1];
+
+  return (
+    <svg width="100%" height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.22" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${gradientId})`} />
+      <path
+        d={line}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      <circle cx={last[0]} cy={last[1]} r="2.6" fill={color} />
+    </svg>
+  );
+}
+
+export type DeltaBadgeProps = {
+  delta?: number | null;
+  empty?: boolean;
+};
+
+export function DeltaBadge({ delta, empty }: DeltaBadgeProps) {
+  if (empty || delta == null) {
+    return (
+      <span style={{ fontSize: 12, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums" }}>
+        -
+      </span>
+    );
+  }
+
+  const up = delta >= 0;
+  const color = delta === 0 ? "var(--text-muted)" : up ? "var(--sage)" : "var(--terra)";
+  return (
+    <span style={{ fontSize: 12.5, color, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+      {up ? "+" : ""}
+      {delta}
+    </span>
+  );
+}
+
+export type SlotGridProps = {
+  children: ReactNode;
+  min?: number;
+  gap?: number;
+  cols?: number;
+};
+
+export function SlotGrid({ children, min = 150, gap = 12, cols }: SlotGridProps) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gap,
+        gridTemplateColumns: cols ? `repeat(${cols}, 1fr)` : `repeat(auto-fit, minmax(${min}px, 1fr))`,
+      }}
+    >
+      {children}
+    </div>
   );
 }

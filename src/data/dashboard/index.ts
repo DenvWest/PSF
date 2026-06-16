@@ -48,7 +48,7 @@ export const PILLARS: Pillar[] = [
     lever: "Begin bij je ademhaling - niet bij een supplement. Je stress-herstel verloopt traag.",
     quickWin: {
       title: "Box-breathing, 4 minuten",
-      detail: "4 tellen in, 4 vast, 4 uit. Verlaagt je hartslag meetbaar binnen een sessie.",
+      detail: "4 tellen in, 4 vast, 4 uit. Verlaagt je hartslag meetbaar binnen één sessie.",
     },
     supplement: {
       name: "Ashwagandha",
@@ -66,7 +66,7 @@ export const PILLARS: Pillar[] = [
     lever: "Begin bij je ontbijt - niet bij een supplement. Je voedingsbodem is je zwakste schakel; daar zit nu de meeste winst.",
     quickWin: {
       title: "Eiwitrijk ontbijt",
-      detail: "Begin bij je bord, niet bij een potje. 30 g eiwit voor 10 uur houdt je energie en trek stabiel.",
+      detail: "Begin bij je bord, niet bij een potje. 30 g eiwit vóór 10 uur houdt je energie en trek stabiel.",
     },
     supplement: {
       name: "Omega-3",
@@ -95,8 +95,8 @@ export const PILLARS: Pillar[] = [
     icon: "Heart",
     lever: "Begin bij je rust - niet bij een supplement. Herstel is waar alles samenkomt.",
     quickWin: {
-      title: "Een alcoholvrije avond extra",
-      detail: "Alcohol fragmenteert je herstel. Een avond minder zie je direct terug in je HRV.",
+      title: "Eén alcoholvrije avond extra",
+      detail: "Alcohol fragmenteert je herstel. Eén avond minder zie je direct terug in je HRV.",
     },
     supplement: null,
   },
@@ -200,7 +200,7 @@ export const IDENTITY_FIELDS: IdentityField[] = [
     icon: "Scale",
     value: "88 kg",
     unlocks: "Ontgrendelt je persoonlijke eiwitdoel",
-    outcome: "Je persoonlijke eiwitdoel: 130-145 g/dag",
+    outcome: "Je persoonlijke eiwitdoel: 130–145 g/dag",
   },
   {
     id: "lengte",
@@ -214,7 +214,7 @@ export const IDENTITY_FIELDS: IdentityField[] = [
     id: "werk",
     label: "Werk & beweging",
     icon: "Briefcase",
-    value: "3x sport/wk",
+    value: "3× sport/wk",
     unlocks: "Bepaalt je activiteitsniveau",
     outcome: "Je activiteitsniveau: Actief (PAL 1.8)",
   },

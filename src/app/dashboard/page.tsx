@@ -1,49 +1,25 @@
-"use client";
-
-import { Suspense, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 
-function DashboardPageContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const state = searchParams.get("state");
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
+type DashboardPageProps = {
+  searchParams: Promise<{ state?: string }>;
+};
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const { state } = await searchParams;
   const empty = state === "empty";
   const retest = state === "retest";
-  const checkId = retest ? "check2" : "check1";
 
-  const onCheck = useCallback(() => {
-    if (empty) {
-      router.push("/intake");
-      return;
-    }
-    const target = document.getElementById("plan");
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [empty, router]);
-
-  const onLogout = useCallback(() => {
-    // TODO(F1.2): POST /api/account/logout -> /account/login
-    router.push("/");
-  }, [router]);
-
+  // F1.4: gate achter getAccountFromCookie + proxy; nu nog open.
   return (
-    <Dashboard
-      empty={empty}
-      checkId={checkId}
-      retest={retest}
-      onLogout={onLogout}
-      onCheck={onCheck}
-    />
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <Suspense fallback={null}>
-      <DashboardPageContent />
-    </Suspense>
+    <div className="ps-dark">
+      <Dashboard empty={empty} checkId={retest ? "check2" : "check1"} retest={retest} />
+    </div>
   );
 }

@@ -1,28 +1,19 @@
-"use client";
+ "use client";
 
 import type { ReactElement } from "react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  CHECK_LOG,
-  CHECKS,
-  DASHBOARD_SECTIONS,
-  IDENTITY_FIELDS,
-  PILLAR,
-  PILLARS,
-  SIGNALS,
-} from "@/data/dashboard";
-import * as Icons from "@/components/dashboard/icons";
-import Wordmark from "@/components/dashboard/Wordmark";
+import { useRouter } from "next/navigation";
+import Wordmark from "@/components/app/Wordmark";
+import * as Icons from "@/components/app/icons";
+import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
+import { CHECK_LOG, CHECKS, DASHBOARD_SECTIONS, IDENTITY_FIELDS, PILLAR, PILLARS, SIGNALS } from "@/data/dashboard";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
-import type { CheckId, DashboardModel, DashboardSectionType, Pillar, PillarId } from "@/types/dashboard";
-import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/dashboard/primitives";
+import type { CheckId, DashboardModel, DashboardSectionType, PillarId, Signal } from "@/types/dashboard";
 
 type DashboardProps = {
   empty?: boolean;
-  checkId?: CheckId;
+  checkId?: "check1" | "check2";
   retest?: boolean;
-  onLogout: () => void;
-  onCheck: () => void;
 };
 
 type SharedSectionProps = {
@@ -157,8 +148,8 @@ const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel }) 
     </div>
     <div style={{ fontSize: 14.5, color: "var(--text-muted)", marginTop: 8, lineHeight: 1.5, textWrap: "pretty" }}>
       {empty
-        ? "Een check en dit dashboard begint te onthouden hoe het met je gaat - en waar je begint."
-        : `${model.check.date} - je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`}
+        ? "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
+        : `${model.check.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`}
     </div>
   </div>
 );
@@ -177,7 +168,7 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => (
             </div>
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>Doe je eerste check.</div>
             <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>
-              12 vragen, 3 minuten. Daarna weet je waar je staat - en bij welke pijler je begint.
+              12 vragen, 3 minuten. Daarna weet je waar je staat — en bij welke pijler je begint.
             </p>
             <Button onClick={onCheck} iconRight={<Icons.ArrowRight s={18} />}>
               Doe je eerste check
@@ -258,7 +249,7 @@ const PrioritySection = ({ model, retest }: SharedSectionProps) => {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 14.5, color: "var(--text)", fontWeight: focus ? 600 : 500 }}>{pillar.label}</span>
-                      {focus && <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600, whiteSpace: "nowrap" }}>{"<- hier begin je nu"}</span>}
+                      {focus && <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600, whiteSpace: "nowrap" }}>{"← hier begin je nu"}</span>}
                     </div>
                     <div style={{ height: 4, borderRadius: 3, background: "rgba(255,255,255,0.07)", overflow: "hidden", marginTop: 7 }}>
                       <div style={{ width: `${score}%`, height: "100%", background: pillar.color, opacity: focus ? 1 : 0.5, borderRadius: 3, transition: "opacity .5s" }} />
@@ -314,14 +305,14 @@ const PlanSection = ({ model }: SharedSectionProps) => {
               <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--text-muted)", border: "1px solid var(--divider)", borderRadius: 6, padding: "2px 7px" }}>Evidence {supplement.grade}</span>
             </div>
             <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5 }}>
-              <span style={{ color: "var(--terra)" }}>{supplement.signal}</span>{" -> "}
+              <span style={{ color: "var(--terra)" }}>{supplement.signal}</span>{" → "}
               {supplement.claim}.
             </div>
           </div>
-          <div style={{ fontSize: 11.5, color: "var(--text-subtle)", marginTop: 8, lineHeight: 1.5 }}>EFSA-toegestane bewoording. Een aanvulling op een gemeten gat - geen vervanging van het leefstijl-spoor.</div>
+          <div style={{ fontSize: 11.5, color: "var(--text-subtle)", marginTop: 8, lineHeight: 1.5 }}>EFSA-toegestane bewoording. Een aanvulling op een gemeten gat — geen vervanging van het leefstijl-spoor.</div>
           <div style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 10, fontSize: 11.5, color: "var(--text-muted)" }}>
             <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
-            <span>Onafhankelijk - wij verkopen niets zelf.</span>
+            <span>Onafhankelijk — wij verkopen niets zelf.</span>
           </div>
         </div>
       )}
@@ -334,7 +325,7 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
   const connectedSignals = SIGNALS.filter((signal) => signal.status === "connected");
   const upcomingSignals = SIGNALS.filter((signal) => signal.status !== "connected");
 
-  const renderSignal = (signal: (typeof SIGNALS)[number]) => {
+  const renderSignal = (signal: Signal) => {
     const connected = signal.status === "connected";
     const last = connected ? signal.data[signal.data.length - 1] : null;
     return (
@@ -413,7 +404,7 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
         </div>
       )}
       <div style={{ fontSize: 12, color: "var(--text-subtle)", marginTop: 12, lineHeight: 1.5 }}>
-        Je HRV stijgt licht en <span style={{ color: "var(--text-muted)" }}>bevestigt je herstel-trend uit de check-in</span> - een wearable diagnosticeert niet, het bevestigt richting.
+        Je HRV stijgt licht en <span style={{ color: "var(--text-muted)" }}>bevestigt je herstel-trend uit de check-in</span> — een wearable diagnosticeert niet, het bevestigt richting.
       </div>
     </section>
   );
@@ -429,7 +420,7 @@ const RetestSection = ({ model, retest }: SharedSectionProps) => {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Over 6 dagen: je voortgangscheck</div>
-            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2, lineHeight: 1.4 }}>Dan meten we of je hefboom werkte - en of je prioriteit verschuift.</div>
+            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2, lineHeight: 1.4 }}>Dan meten we of je hefboom werkte — en of je prioriteit verschuift.</div>
           </div>
         </div>
       </Card>
@@ -457,7 +448,7 @@ const RetestSection = ({ model, retest }: SharedSectionProps) => {
           Je prioriteit is verschoven van {prevPriority.label.toLowerCase()} naar {model.priority.label.toLowerCase()}.
         </div>
         <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 16px", textWrap: "pretty" }}>
-          Voeding werkte: <span style={{ color: "var(--sage)" }}>+14 in 30 dagen</span>. Maar je slaap zakte en is nu je vertrekpunt - daarom staat hierboven je plan en je aanvulling al anders.
+          Voeding werkte: <span style={{ color: "var(--sage)" }}>+14 in 30 dagen</span>. Maar je slaap zakte en is nu je vertrekpunt — daarom staat hierboven je plan én je aanvulling al anders.
         </p>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {rows.map((row, i) => (
@@ -465,9 +456,7 @@ const RetestSection = ({ model, retest }: SharedSectionProps) => {
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: row.pillar.color, flexShrink: 0 }} />
               <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>{row.pillar.label}</span>
               <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
-                {row.was}
-                {" -> "}
-                {row.now}
+                {row.was} → {row.now}
               </span>
               <span style={{ width: 34, textAlign: "right" }}>
                 <DeltaBadge delta={row.d} />
@@ -553,7 +542,7 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Je historie</div>
-            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2 }}>Elke check verschijnt hier - met je prioriteit van dat moment.</div>
+            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2 }}>Elke check verschijnt hier — met je prioriteit van dat moment.</div>
           </div>
         </div>
       </Card>
@@ -569,7 +558,7 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Eerdere checks</div>
-            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2 }}>{past.length} checks - je prioriteit schoof mee over tijd</div>
+            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2 }}>{past.length} checks · je prioriteit schoof mee over tijd</div>
           </div>
           <span style={{ color: "var(--text-subtle)", display: "flex", transition: "transform .25s", transform: open ? "rotate(180deg)" : "none" }}>
             <Icons.ChevronDown s={20} />
@@ -607,7 +596,7 @@ const FutureSection = () => (
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 14.5, color: "var(--text-muted)", fontWeight: 500 }}>Koppel je wearable</div>
-        <div style={{ fontSize: 12.5, color: "var(--text-subtle)", marginTop: 2 }}>Rustpols en slaapduur straks automatisch - het rooster groeit met je mee.</div>
+        <div style={{ fontSize: 12.5, color: "var(--text-subtle)", marginTop: 2 }}>Rustpols en slaapduur straks automatisch — het rooster groeit met je mee.</div>
       </div>
       <span style={{ fontSize: 11, color: "var(--text-subtle)", border: "1px solid var(--divider)", borderRadius: 999, padding: "4px 11px", whiteSpace: "nowrap" }}>Binnenkort</span>
     </div>
@@ -627,24 +616,43 @@ const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps
   future: () => <FutureSection />,
 };
 
-export default function Dashboard({ empty, checkId = "check1", retest = false, onLogout, onCheck }: DashboardProps) {
+export default function Dashboard({ empty, checkId = "check1", retest = false }: DashboardProps) {
+  const router = useRouter();
   const model = useMemo(() => (empty ? buildModel("check1") : buildModel(checkId)), [empty, checkId]);
   const sections = empty ? DASHBOARD_SECTIONS.filter((section) => EMPTY_SECTIONS.includes(section.type)) : DASHBOARD_SECTIONS;
+  const onCheck = () => {
+    if (empty) {
+      router.push("/intake");
+      return;
+    }
+
+    const target = document.getElementById("plan");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const onLogout = () => {
+    // TODO F1.2: eerst cookie wissen via /api/account/logout.
+    router.push("/account/login");
+  };
 
   return (
-    <div className="ps-dash">
+    <div>
       <main style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: "clamp(20px, 4vh, 36px) 18px 64px" }}>
         <DashHeader onLogout={onLogout} />
         <Greeting empty={empty} model={model} />
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {sections.map((section) => (
-            <div key={section.id}>{SECTION_RENDERERS[section.type]({ empty, model, retest, onCheck })}</div>
+            <section key={section.id} id={section.id}>
+              {SECTION_RENDERERS[section.type]({ empty, model, retest, onCheck })}
+            </section>
           ))}
         </div>
         <footer style={{ marginTop: 28, textAlign: "center", fontSize: 11.5, color: "var(--text-subtle)", lineHeight: 1.6 }}>
           PerfectSupplement geeft adviezen op basis van leefstijl, geen medische diagnoses.
           <br />
-          Je gegevens zijn van jou - exporteer of verwijder ze wanneer je wilt.
+          Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
         </footer>
       </main>
     </div>
