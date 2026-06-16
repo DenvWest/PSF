@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import ExitButton from "@/components/app/ExitButton";
+import { Suspense } from "react";
+import IntakeExit from "@/components/intake/IntakeExit";
 
 export default function IntakeLayout({ children }: { children: ReactNode }) {
   return (
@@ -22,7 +23,9 @@ export default function IntakeLayout({ children }: { children: ReactNode }) {
           boxSizing: "border-box",
         }}
       >
-        <ExitButton href="/" />
+        <Suspense fallback={null}>
+          <IntakeExit />
+        </Suspense>
       </div>
       <div style={{ flex: 1 }}>{children}</div>
     </div>

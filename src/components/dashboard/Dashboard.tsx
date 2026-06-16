@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
-import { DASHBOARD_SECTIONS, IDENTITY_FIELDS, PILLAR, PILLARS, SIGNALS } from "@/data/dashboard";
+import { DASHBOARD_SECTIONS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS } from "@/data/dashboard";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import type {
   DashboardData,
@@ -161,10 +161,12 @@ const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel | n
 );
 
 const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
+  const router = useRouter();
   if (!empty && !model) {
     return null;
   }
   const currentModel = model as DashboardModel | null;
+  const priorityCheckin = currentModel ? PILLAR_CHECKIN_ROUTES[currentModel.priority.id] : undefined;
 
   return (
     <Card glow="#5A8F6A" pad={24} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
@@ -193,9 +195,16 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
             </div>
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>{currentModel?.priority.label}.</div>
             <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>{currentModel?.priority.lever}</p>
-            <Button variant="secondary" onClick={onCheck} iconRight={<Icons.ArrowDown s={17} />}>
-              Naar mijn plan
-            </Button>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {priorityCheckin && (
+                <Button onClick={() => router.push(`${priorityCheckin}?from=dashboard`)} iconRight={<Icons.ArrowRight s={18} />}>
+                  Check-in op {currentModel?.priority.label.toLowerCase()}
+                </Button>
+              )}
+              <Button variant="secondary" onClick={onCheck} iconRight={<Icons.ArrowDown s={17} />}>
+                Naar mijn plan
+              </Button>
+            </div>
           </>
         )}
       </div>
@@ -355,6 +364,7 @@ const PlanSection = ({ model }: SharedSectionProps) => {
 };
 
 const SignalsSection = ({ model }: SharedSectionProps) => {
+  const router = useRouter();
   const [showUpcoming, setShowUpcoming] = useState(false);
   if (!model) {
     return null;
@@ -397,6 +407,7 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
       <SlotGrid min={150} gap={10}>
         {PILLARS.map((pillar) => {
           const Icon = Icons[pillar.icon];
+          const route = PILLAR_CHECKIN_ROUTES[pillar.id];
           return (
             <Card key={pillar.id} pad={15}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
@@ -413,6 +424,15 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
                 <span style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", fontVariantNumeric: "tabular-nums" }}>{model.scores[pillar.id]}</span>
                 <span style={{ fontSize: 11, color: "var(--text-subtle)" }}>/ 100</span>
               </div>
+              {route && (
+                <button
+                  type="button"
+                  onClick={() => router.push(`${route}?from=dashboard`)}
+                  style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", color: pillar.color, fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)" }}
+                >
+                  Check-in →
+                </button>
+              )}
             </Card>
           );
         })}

@@ -6,6 +6,7 @@ import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type {
   CheckLogEntry,
   CheckScores,
+  CheckTrend,
   DashboardData,
   PillarId,
 } from "@/types/dashboard";
@@ -27,17 +28,35 @@ const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
   "recovery_score",
 ];
 
+const PILLAR_IDS: PillarId[] = [
+  "slaap",
+  "energie",
+  "stress",
+  "voeding",
+  "beweging",
+  "herstel",
+];
+
+const CHECKIN_DOMAIN_TO_PILLAR: Record<string, PillarId> = {
+  sleep_score: "slaap",
+  stress_score: "stress",
+  movement_score: "beweging",
+};
+
 type SessionRow = {
+  id: string | null;
   domain_scores: unknown;
   created_at: string | null;
   profile_label: string | null;
 };
 
 type SessionSnapshot = {
+  id: string;
   scores: CheckScores;
   vitality: number;
   date: string;
   priority: PillarId;
+  ts: number;
 };
 
 function parseDomainScores(value: unknown): DomainScores | null {
@@ -90,7 +109,7 @@ export async function loadAccountDashboardData(
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("domain_scores,created_at,profile_label")
+    .select("id,domain_scores,created_at,profile_label")
     .eq("account_id", accountId)
     .order("created_at", { ascending: true });
 
@@ -102,13 +121,17 @@ export async function loadAccountDashboardData(
     .map((row) => {
       const profileLabel =
         typeof row.profile_label === "string" ? row.profile_label.trim() : "";
+      const sessionId = typeof row.id === "string" ? row.id.trim() : "";
       const createdAt =
         typeof row.created_at === "string" ? row.created_at.trim() : "";
       const domainScores = parseDomainScores(row.domain_scores);
+      const ts = new Date(createdAt).getTime();
 
       if (
+        !sessionId ||
         !domainScores ||
         !createdAt ||
+        !Number.isFinite(ts) ||
         !profileLabel ||
         profileLabel === ANON_PROFILE_LABEL
       ) {
@@ -120,10 +143,12 @@ export async function loadAccountDashboardData(
       const priority = derivePriority(scores)[0].id;
 
       return {
+        id: sessionId,
         scores,
         vitality,
         date: formatDashboardDate(createdAt),
         priority,
+        ts,
       };
     })
     .filter((row): row is SessionSnapshot => row !== null);
@@ -132,18 +157,79 @@ export async function loadAccountDashboardData(
     return EMPTY_DASHBOARD_DATA;
   }
 
-  const currentSnapshot = snapshots[snapshots.length - 1];
+  const sessionIds = snapshots.map((snapshot) => snapshot.id);
+  const { data: checkinData } = await admin
+    .from("intake_domain_checkin")
+    .select("session_id,domain_key,score,created_at")
+    .in("session_id", sessionIds)
+    .order("created_at", { ascending: true });
+
+  type Point = { value: number; ts: number };
+  const series: Record<PillarId, Point[]> = {
+    slaap: [],
+    energie: [],
+    stress: [],
+    voeding: [],
+    beweging: [],
+    herstel: [],
+  };
+
+  for (const snapshot of snapshots) {
+    for (const pillar of PILLAR_IDS) {
+      series[pillar].push({ value: snapshot.scores[pillar], ts: snapshot.ts });
+    }
+  }
+
+  type CheckinRow = {
+    domain_key: string;
+    score: unknown;
+    created_at: string;
+  };
+
+  for (const row of (checkinData ?? []) as CheckinRow[]) {
+    const pillar = CHECKIN_DOMAIN_TO_PILLAR[row.domain_key];
+    if (!pillar) {
+      continue;
+    }
+
+    const scoreObj = row.score;
+    const raw =
+      scoreObj && typeof scoreObj === "object"
+        ? (scoreObj as Record<string, unknown>)[row.domain_key]
+        : undefined;
+    const ts = new Date(row.created_at).getTime();
+
+    if (typeof raw !== "number" || !Number.isFinite(raw) || !Number.isFinite(ts)) {
+      continue;
+    }
+
+    series[pillar].push({ value: Math.round(raw), ts });
+  }
+
+  for (const pillar of PILLAR_IDS) {
+    series[pillar].sort((a, b) => a.ts - b.ts);
+  }
+
+  const currentScores = Object.fromEntries(
+    PILLAR_IDS.map((pillar) => [pillar, series[pillar][series[pillar].length - 1].value]),
+  ) as CheckScores;
+  const trend = Object.fromEntries(
+    PILLAR_IDS.map((pillar) => [pillar, series[pillar].slice(-6).map((point) => point.value)]),
+  ) as CheckTrend;
+  const currentDomainScores: DomainScores = {
+    sleep_score: currentScores.slaap,
+    energy_score: currentScores.energie,
+    stress_score: currentScores.stress,
+    nutrition_score: currentScores.voeding,
+    movement_score: currentScores.beweging,
+    recovery_score: currentScores.herstel,
+  };
+  const currentVitality = computeVitaliteit(resolveVitaliteitFacets(currentDomainScores));
+  const latestTs = Math.max(...PILLAR_IDS.map((pillar) => series[pillar][series[pillar].length - 1].ts));
+  const currentDate = formatDashboardDate(new Date(latestTs).toISOString());
+
   const prevSnapshot =
     snapshots.length > 1 ? snapshots[snapshots.length - 2] : null;
-  const trendSource = snapshots.slice(-6);
-  const trend = {
-    slaap: trendSource.map((snapshot) => snapshot.scores.slaap),
-    energie: trendSource.map((snapshot) => snapshot.scores.energie),
-    stress: trendSource.map((snapshot) => snapshot.scores.stress),
-    voeding: trendSource.map((snapshot) => snapshot.scores.voeding),
-    beweging: trendSource.map((snapshot) => snapshot.scores.beweging),
-    herstel: trendSource.map((snapshot) => snapshot.scores.herstel),
-  };
 
   const history: CheckLogEntry[] = snapshots.map((snapshot, index) => ({
     seq: index + 1,
@@ -155,9 +241,9 @@ export async function loadAccountDashboardData(
   return {
     empty: false,
     current: {
-      scores: currentSnapshot.scores,
-      vitality: currentSnapshot.vitality,
-      date: currentSnapshot.date,
+      scores: currentScores,
+      vitality: currentVitality,
+      date: currentDate,
       trend,
     },
     prev: prevSnapshot
