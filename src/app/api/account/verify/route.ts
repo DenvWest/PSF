@@ -4,6 +4,7 @@ import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 import { hashLoginToken } from "@/lib/account-login-token";
+import { absoluteUrl } from "@/lib/public-site-url";
 import {
   ACCOUNT_COOKIE_MAX_AGE_SECONDS,
   ACCOUNT_SESSION_COOKIE_NAME,
@@ -18,8 +19,8 @@ type AccountStatusRow = {
   status: string | null;
 };
 
-function verifyRedirect(request: NextRequest): NextResponse {
-  return NextResponse.redirect(new URL("/account/verify", request.url));
+function verifyRedirect(): NextResponse {
+  return NextResponse.redirect(absoluteUrl("/account/verify"));
 }
 
 export async function GET(request: NextRequest) {
@@ -30,17 +31,17 @@ export async function GET(request: NextRequest) {
     getRateLimitConfig("account_verify"),
   );
   if (!rateLimit.allowed) {
-    return verifyRedirect(request);
+    return verifyRedirect();
   }
 
   const token = request.nextUrl.searchParams.get("token");
   if (!token) {
-    return verifyRedirect(request);
+    return verifyRedirect();
   }
 
   const admin = createSupabaseAdmin();
   if (!admin) {
-    return verifyRedirect(request);
+    return verifyRedirect();
   }
 
   const nowIso = new Date().toISOString();
@@ -58,7 +59,7 @@ export async function GET(request: NextRequest) {
     if (claimError) {
       console.error("[api/account/verify] token claim error:", claimError);
     }
-    return verifyRedirect(request);
+    return verifyRedirect();
   }
 
   const { data: account, error: accountError } = await admin
@@ -71,15 +72,15 @@ export async function GET(request: NextRequest) {
     if (accountError) {
       console.error("[api/account/verify] account lookup error:", accountError);
     }
-    return verifyRedirect(request);
+    return verifyRedirect();
   }
 
   const signed = signAccountCookie(claimedToken.account_id);
   if (!signed) {
-    return verifyRedirect(request);
+    return verifyRedirect();
   }
 
-  const response = NextResponse.redirect(new URL("/dashboard", request.url));
+  const response = NextResponse.redirect(absoluteUrl("/dashboard"));
   response.cookies.set({
     name: ACCOUNT_SESSION_COOKIE_NAME,
     value: signed,
