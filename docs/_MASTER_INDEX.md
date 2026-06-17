@@ -10,9 +10,9 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 ## Huidige fase
 
-**Content foundation bouwen** — profielpagina's, pillar pages, cluster-blogs en interne links vullen. Geen nieuwe features tot het spinnenweb stevig staat.
+**Meet-, personalisatie- & identiteitslaag** — de content-foundation staat; de focus ligt nu op de meet-lus (zelfrapportage per domein), het persoonlijke account + dashboard (continuïteit-moat) en personalisatie (eiwit/PAL). Zie [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md) + [`plan/PLAN_MEASUREMENT_PERSONALIZATION.md`](plan/PLAN_MEASUREMENT_PERSONALIZATION.md). Content-spinnenweb = doorlopend onderhoud.
 
-## Wat is live (mei 2026)
+## Wat is live (juni 2026)
 
 - 7 vergelijkingspagina's met affiliate (`/beste/*`; geen melatonine — zie `COMPLIANCE.md`)
 - 7 pillar pages: slaap, stress, energie, herstel, testosteron, voeding, beweging (zie `core/CONTENT_MAP.md`)
@@ -21,6 +21,8 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 - Planning/status nieuwe pagina's: `docs/core/PAGE_ROADMAP.md` + `docs/core/CURRENT_SPRINT.md`
 - Intake flow: journey REVEAL → HERKENNING → FOCUS → PLAN (4 thema's), scoring, nurture, `domain_events`, evidence-chat API (`/api/chat`)
 - Admin dashboard
+- **Account & persoonlijk dashboard (juni 2026):** passwordless inlog (OTP-code + magic-link), `psf_account`-cookie, `/dashboard` met scores/trend/prioriteit per account, check-in-meet-lus — zie [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md)
+- **Meet-lussen:** voeding (`intake_intake_log`) + zachte pijlers (`intake_domain_checkin`: slaap/stress/beweging) met delta tegen baseline
 
 ---
 
@@ -50,6 +52,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/EMAIL_SYSTEM.md`](core/EMAIL_SYSTEM.md) | Nurture sequence, Resend, cron, PDF-gidsen |
 | [`core/PERSONALIZATION_ENGINE.md`](core/PERSONALIZATION_ENGINE.md) | Profiel-architectuur, scoring triggers, 8-sectie structuur, spinnenweb per profiel |
 | [`core/STEPPED_CARE_MODEL.md`](core/STEPPED_CARE_MODEL.md) | PLAN-journey per symptoom: tiers (gratis→meten→supplement→betaald), intervention_triggers, render-eisen |
+| [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md) | Passwordless account (OTP/magic-link), `psf_account`-cookie, claim/revoke, dashboard-dataflow, check-in-meet-lus (F1–F3) |
 
 ### Layer 3 — Work (tijdelijk, verandert regelmatig)
 
@@ -90,6 +93,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 14–17 juni 2026 | Account-identiteitslaag + persoonlijk dashboard: passwordless OTP-login (+ magic-link), `psf_account`-cookie (aparte secret), claim/revoke (omkeerbaar intrekken), dashboard op echte `intake_sessions`, check-in-meet-lus (F3b: `intake_domain_checkin` in de trend), login-vindbaarheid (IMU-header) | `core/ACCOUNT_DASHBOARD_SYSTEM.md` |
 | 10 juni 2026 | Voeding zelf-evaluatie-lus: 24h-zelfrapport → inname-inschatting → delta → leefstijl-eerst-dan-supplement-advies; `intake_intake_log` als temporeel substraat; cohort-vergelijking volume-gated; inname-vs-status-grens | `plan/PLAN_NUTRITION_SELFEVAL_LOOP.md` |
 | 10 juni 2026 | Nurture multi-product data-readiness: meet-haakjes P1–P4, meten→testen→verbeteren-loop, LLM-governance-poort G1–G7, B2B-naden via organization_id | `plan/PLAN_NURTURE_MULTIPRODUCT_DATA_READINESS.md` |
 | 6 juni 2026 | FASE A implementatie-instructies: concrete werkvoor FASE A1–A6 (dag-0, CTA-resolver, Overtrainer, K1–K3, balansregel, mail-coherentie) | `archive/FASE_A_IMPLEMENTATIE.md` |
@@ -106,4 +110,4 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 ---
 
-*Laatst bijgewerkt: juni 2026*
+*Laatst bijgewerkt: 17 juni 2026*

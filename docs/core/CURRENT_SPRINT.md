@@ -6,7 +6,7 @@
 
 ## Strategische prioriteit
 
-**Content spinnenweb versterken** — cluster-blogs, interne links en kennisbank-termen vullen om de bestaande pillar + profiel + vergelijking structuur te verbinden.
+**Meet-lus + account/dashboard (juni 2026).** De content-foundation staat; de focus ligt nu op de **continuïteit-moat**: een persoonlijk passwordless account, een `/dashboard` op echte data, en de check-in-meet-lus. Zie [`ACCOUNT_DASHBOARD_SYSTEM.md`](ACCOUNT_DASHBOARD_SYSTEM.md). Content-spinnenweb = doorlopend onderhoud, geen sprintfocus meer.
 
 ---
 
@@ -44,6 +44,26 @@
 
 ---
 
+## Account & dashboard epic (juni 2026)
+
+**Voltooid ✅**
+- F1 identiteitslaag: `accounts` + `account_login_tokens` + `intake_sessions.account_id`, account_storage-consent
+- F1.2 auth-kern → **OTP-inlogcode** (6-cijfer op de site + magic-link in de mail), `psf_account`-cookie (aparte secret, 90d)
+- F1.3 claim-by-email (RPC's) + revoke (intrekken omkeerbaar / verwijderen definitief)
+- F1.4 gate + account-beheer-scherm + logout
+- F2 dashboard op echte `intake_sessions` (Dutch pillar-mapping, `computeVitaliteit`, trend, prioriteit, historie)
+- F3 check-in-CTA's op het dashboard + F3b: `intake_domain_checkin` (slaap/stress/beweging) in de trend
+- Login-vindbaarheid: IMU-header (Inloggen + gratis check), post-check account-CTA, nav-frictie (dashboard↔home zonder uitloggen), header opgeschoond (zoek eruit)
+
+**Backlog (op urgentie)**
+1. Voeding in de trend via `intake_intake_log` (F3b-deel-2) — medium
+2. Identiteit-sectie scopen + bouwen (geslacht/gewicht/lengte/werk → eiwit/PAL; biometrie → voedingsadvies) — groot, eerst scope-besluit
+3. Nurture-mail-consolidatie (geen aparte login/welkomstmail bóvenop nurture)
+4. Resultaatscherm declutteren (diepte → dashboard, één primaire actie, twee e-mail-vragen samenvoegen)
+5. Wearables / objectieve signalen — toekomst
+
+---
+
 ## Volgende sprint (Wave 7)
 
 | # | Item | Type | Impact |
@@ -76,4 +96,4 @@
 
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: 17 juni 2026*
