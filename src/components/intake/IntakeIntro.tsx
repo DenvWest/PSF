@@ -115,6 +115,16 @@ export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntr
         </ul>
 
         <IntakeLastSessionLink theme="dark" />
+        <p className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+          Eerst zien wat je krijgt?{" "}
+          <Link
+            href="/hoe-werkt-dashboard"
+            className="underline underline-offset-2"
+            style={{ color: "rgba(255,255,255,0.72)" }}
+          >
+            Zo werkt je dashboard →
+          </Link>
+        </p>
 
         <MedicalDisclaimer variant="intake" theme="dark" />
       </div>

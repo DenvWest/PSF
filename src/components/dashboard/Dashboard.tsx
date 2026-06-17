@@ -845,6 +845,10 @@ export default function Dashboard({ empty, data }: DashboardProps) {
           ))}
         </div>
         <footer style={{ marginTop: 28, textAlign: "center", fontSize: 11.5, color: "var(--text-subtle)", lineHeight: 1.6 }}>
+          <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text-muted)", textDecoration: "underline", textUnderlineOffset: 2 }}>
+            Hoe werkt dit dashboard?
+          </Link>
+          <br />
           PerfectSupplement geeft adviezen op basis van leefstijl, geen medische diagnoses.
           <br />
           Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.

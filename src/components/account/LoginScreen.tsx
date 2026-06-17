@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { AuthShell, TrustLine } from "@/components/account/AuthShell";
 import { ArrowRight, Lock, Mail, Refresh, Shield } from "@/components/app/icons";
 import { Button, Checkbox, TextField } from "@/components/app/primitives";
@@ -317,6 +318,13 @@ export default function LoginScreen() {
         <section style={{ borderTop: "1px solid var(--divider)", paddingTop: 14, display: "grid", gap: 10 }}>
           <TrustLine icon={<Lock s={15} />}>Geen wachtwoord. De code is veilig en 15 minuten geldig.</TrustLine>
           <TrustLine icon={<Shield s={15} />}>Geen spam. Je e-mail wordt alleen gebruikt om je in te loggen.</TrustLine>
+          <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-subtle)" }}>
+            Nieuw hier?{" "}
+            <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}>
+              Bekijk hoe het dashboard werkt
+            </Link>
+            .
+          </p>
         </section>
       </article>
     </AuthShell>
