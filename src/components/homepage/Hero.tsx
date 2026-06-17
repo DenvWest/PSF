@@ -46,16 +46,10 @@ export default function Hero() {
   const {
     bullets,
     primaryCta,
-    footnoteLabel,
-    footnoteHref,
     headline,
     subheadline,
     eyebrow,
   } = HOMEPAGE_HERO;
-
-  const heroBullets = bullets.filter(
-    (bullet) => !(bullet as string).startsWith("Gerangschikt"),
-  );
 
   return (
     <section className="relative border-b border-stone-200/50 bg-[#F7F5F0]">
@@ -77,7 +71,7 @@ export default function Hero() {
           </p>
 
           <ul className="mt-7 space-y-3">
-            {heroBullets.map((bullet, index) => (
+            {bullets.map((bullet, index) => (
               <CheckBullet key={bullet} index={index}>
                 {bullet}
               </CheckBullet>
@@ -103,15 +97,6 @@ export default function Hero() {
           <IntakeCtaMicro className="mt-3 max-w-xl text-xs text-stone-500" />
 
           <IntakeLastSessionLink theme="light" className="mt-3 block" />
-
-          <p className="mt-4 text-xs text-stone-400">
-            <Link
-              href={footnoteHref}
-              className="underline decoration-stone-300 underline-offset-2 transition hover:text-stone-600 hover:decoration-stone-400"
-            >
-              {footnoteLabel}
-            </Link>
-          </p>
         </div>
       </Container>
     </section>

@@ -391,10 +391,12 @@ h6 {
   padding: 1rem 1.25rem;
 }
 
-/* ── Floating Leefstijlcheck ↔ footer dock ─────────────────────── */
+/* ── Floating Leefstijlcheck (mobiel) ─────────────────────────── */
 
-.floating-cta-footer-slot {
-  display: none;
+@media (max-width: 767px) {
+  html.floating-cta-active footer {
+    padding-bottom: 10rem;
+  }
 }
 
 .ps-dash {
@@ -453,31 +455,4 @@ h6 {
 
 .ps-dark input::placeholder {
   color: rgba(255, 255, 255, 0.34);
-}
-
-html.has-floating-leefstijlcheck-cta .floating-cta-footer-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-@media (min-width: 640px) {
-  html.has-floating-leefstijlcheck-cta .floating-cta-footer-layout {
-    flex-direction: row;
-    align-items: stretch;
-    gap: 2rem;
-  }
-
-  html.has-floating-leefstijlcheck-cta .floating-cta-footer-slot {
-    display: block;
-    width: 360px;
-    flex-shrink: 0;
-    align-self: stretch;
-  }
-}
-
-@media (max-width: 639px) {
-  html.floating-cta-active .floating-cta-footer {
-    padding-bottom: 10rem;
-  }
 }

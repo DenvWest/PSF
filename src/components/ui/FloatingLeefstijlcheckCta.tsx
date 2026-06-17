@@ -2,15 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { HOMEPAGE_HERO } from "@/data/homepage";
 import { CATEGORIES } from "@/data/intake-questions";
-import {
-  LEEFSTIJLCHECK_FOOTER_SLOT_ID,
-} from "@/lib/leefstijlcheck-footer-slot";
 import { useInBodyLeefstijlcheckCtaVisible } from "@/lib/use-in-body-leefstijlcheck-cta-visible";
-
-const FOOTER_DOCK_MEDIA = "(min-width: 640px)";
 
 function LeefstijlcheckPromoCard({
   widget,
@@ -90,17 +84,9 @@ export default function FloatingLeefstijlcheckCta({
   const domainPreview = CATEGORIES.slice(0, 4);
   const [dismissed, setDismissed] = useState(false);
   const [revealed, setRevealed] = useState(false);
-  const [footerDocked, setFooterDocked] = useState(false);
-  const [canDockToFooter, setCanDockToFooter] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const inBodyCtaVisible = useInBodyLeefstijlcheckCtaVisible();
   const isShown = revealed && !inBodyCtaVisible && isMobile;
-  const wantsDock = isShown && footerDocked && canDockToFooter;
-  const footerSlot =
-    wantsDock && typeof document !== "undefined"
-      ? document.getElementById(LEEFSTIJLCHECK_FOOTER_SLOT_ID)
-      : null;
-  const isDocked = wantsDock && footerSlot !== null;
 
   useEffect(() => {
     const m = window.matchMedia("(max-width: 767px)");
@@ -109,14 +95,6 @@ export default function FloatingLeefstijlcheckCta({
     m.addEventListener("change", sync);
     return () => m.removeEventListener("change", sync);
   }, []);
-
-  useEffect(() => {
-    if (dismissed) return undefined;
-
-    const root = document.documentElement;
-    root.classList.add("has-floating-leefstijlcheck-cta");
-    return () => root.classList.remove("has-floating-leefstijlcheck-cta");
-  }, [dismissed]);
 
   useEffect(() => {
     if (dismissed) return;
@@ -163,66 +141,16 @@ export default function FloatingLeefstijlcheckCta({
   }, [dismissed, revealOnScroll, scrollThreshold, revealOnTimer, revealAfterMs]);
 
   useEffect(() => {
-    const media = window.matchMedia(FOOTER_DOCK_MEDIA);
-
-    function syncCanDock() {
-      setCanDockToFooter(media.matches);
-    }
-
-    syncCanDock();
-    media.addEventListener("change", syncCanDock);
-
-    return () => media.removeEventListener("change", syncCanDock);
-  }, []);
-
-  useEffect(() => {
-    if (!canDockToFooter) return;
-
-    const footer = document.querySelector("footer");
-    if (!footer) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setFooterDocked(entry.isIntersecting),
-      { threshold: 0 },
-    );
-
-    observer.observe(footer);
-
-    return () => observer.disconnect();
-  }, [canDockToFooter]);
-
-  useEffect(() => {
     const root = document.documentElement;
-    if (isShown && !canDockToFooter) {
+    if (isShown) {
       root.classList.add("floating-cta-active");
       return () => root.classList.remove("floating-cta-active");
     }
     root.classList.remove("floating-cta-active");
     return undefined;
-  }, [isShown, canDockToFooter]);
+  }, [isShown]);
 
   if (dismissed) return null;
-
-  const card = (
-    <LeefstijlcheckPromoCard
-      widget={widget}
-      domainPreview={domainPreview}
-      onDismiss={() => setDismissed(true)}
-    />
-  );
-
-  if (isDocked) {
-    return createPortal(
-      <aside
-        role="complementary"
-        aria-label="Leefstijlcheck"
-        className="sticky bottom-6 w-full transition-all duration-500 ease-out"
-      >
-        {card}
-      </aside>,
-      footerSlot,
-    );
-  }
 
   return (
     <aside
@@ -231,14 +159,17 @@ export default function FloatingLeefstijlcheckCta({
       aria-hidden={!isShown}
       className={[
         "fixed z-40 transition-all duration-500 ease-out",
-        "max-sm:inset-x-3 max-sm:bottom-3 max-sm:max-w-none",
-        "sm:bottom-6 sm:right-6 sm:max-w-[360px]",
+        "inset-x-3 bottom-3 max-w-none",
         isShown
           ? "pointer-events-auto translate-x-0 translate-y-0 opacity-100"
-          : "pointer-events-none translate-x-6 translate-y-4 opacity-0 max-sm:translate-y-8",
+          : "pointer-events-none translate-y-8 opacity-0",
       ].join(" ")}
     >
-      {card}
+      <LeefstijlcheckPromoCard
+        widget={widget}
+        domainPreview={domainPreview}
+        onDismiss={() => setDismissed(true)}
+      />
     </aside>
   );
 }

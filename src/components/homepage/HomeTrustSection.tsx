@@ -32,18 +32,14 @@ const TRUST_ICONS = [
 ] as const;
 
 export default function HomeTrustSection() {
-  const { tagline, cards } = HOMEPAGE_TRUST;
+  const { cards } = HOMEPAGE_TRUST;
 
   return (
     <section
-      className="border-b border-stone-200/60 bg-[var(--ps-bg)] px-6 py-10 lg:px-8"
+      className="border-b border-stone-200/60 bg-[var(--ps-bg)] px-6 py-8 lg:px-8"
       aria-label="Vertrouwen en onderbouwing"
     >
       <div className="mx-auto max-w-screen-xl">
-        <p className="mb-8 text-center text-sm font-medium text-stone-700 sm:text-base">
-          {tagline}
-        </p>
-
         <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {cards.map((item, index) => (
             <li

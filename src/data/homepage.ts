@@ -13,14 +13,13 @@ export const INTAKE_PROMO = {
 
 export const HOMEPAGE_HERO = {
   eyebrow: "VOOR MANNEN 40+",
-  headline: "Zullen wij je helpen grip te krijgen op je energie, herstel en vitaliteit?",
+  headline: "Zullen wij je helpen aan een sterk, energiek en vitaal lichaam?",
   subheadline:
-    "Onafhankelijk platform voor mannen 40+ — eerst leefstijl, supplementen alleen waar het zinvol is. Gratis Leefstijlcheck in 3 minuten.",
+    "Wij maken van jouw leefstijl een helder overzicht — en geven je concrete vervolgstappen. Onafhankelijk platform voor mannen 40+, gratis in 3 minuten.",
   bullets: [
-    "Persoonlijke analyse van 6 leefstijldomeinen",
-    "Gerangschikt op waarschijnlijkheid en impact",
-    "Onafhankelijk en onderbouwd",
-    "Gratis en anoniem",
+    "Ontvang een duidelijk leefstijloverzicht op 6 domeinen",
+    "Één concrete beginstap — gerangschikt op impact",
+    "Geen hype: eerst leefstijl, supplementen alleen waar het zinvol is",
   ],
   primaryCta: "Start de Leefstijlcheck (3 min)",
   secondaryCta: "Bekijk de gidsen",
@@ -32,13 +31,9 @@ export const HOMEPAGE_HERO = {
     cta: "Start direct",
   },
   microCopy: DISCLAIMER_TEXTS.ctaMicro,
-  footnoteLabel: "Meer over testosteron na 40",
-  footnoteHref: "/testosteron-na-40",
 } as const;
 
 export const HOMEPAGE_TRUST = {
-  tagline:
-    "Het startpunt voor mannen 40+ die grip willen op energie en vitaliteit",
   stats: [
     { value: "15 vragen", label: "Persoonlijk inzicht" },
     { value: "3 minuten", label: "Gratis Leefstijlcheck" },
