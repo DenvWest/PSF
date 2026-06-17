@@ -5,6 +5,7 @@ import Wordmark from "@/components/app/Wordmark";
 
 type AuthShellProps = {
   children: ReactNode;
+  exitHref?: string;
 };
 
 function AuthFooter() {
@@ -52,7 +53,7 @@ export function TrustLine({ icon, children }: TrustLineProps) {
   );
 }
 
-export function AuthShell({ children }: AuthShellProps) {
+export function AuthShell({ children, exitHref = "/" }: AuthShellProps) {
   return (
     <main
       style={{
@@ -99,7 +100,7 @@ export function AuthShell({ children }: AuthShellProps) {
           <Link href="/" aria-label="Naar de homepage" style={{ textDecoration: "none" }}>
             <Wordmark />
           </Link>
-          <ExitButton href="/" label="Naar de website" />
+          <ExitButton href={exitHref} label={exitHref === "/" ? "Naar de website" : "Terug naar dashboard"} />
         </header>
         {children}
         <AuthFooter />

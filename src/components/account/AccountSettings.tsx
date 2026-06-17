@@ -181,7 +181,7 @@ export default function AccountSettings({ email }: AccountSettingsProps) {
   };
 
   return (
-    <AuthShell>
+    <AuthShell exitHref="/dashboard">
       <header style={{ display: "grid", gap: 6 }}>
         <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 30, lineHeight: 1.15 }}>Je account</h1>
         <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 14.5, lineHeight: 1.5 }}>{email}</p>

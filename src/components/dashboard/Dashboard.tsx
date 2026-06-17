@@ -2,6 +2,7 @@
 
 import type { ReactElement } from "react";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
@@ -132,7 +133,9 @@ const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
 
   return (
     <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-      <Wordmark />
+      <Link href="/" aria-label="Naar de website" style={{ textDecoration: "none" }}>
+        <Wordmark />
+      </Link>
       <div style={{ display: "flex", gap: 8 }}>
         <button type="button" style={iconBtn} title="Instellingen" onClick={() => router.push("/account")}>
           <Icons.Settings s={18} />
