@@ -94,7 +94,13 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  const response = NextResponse.next();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 
   const orgId = resolveOrgId(request);
   response.headers.set("x-org-id", orgId);

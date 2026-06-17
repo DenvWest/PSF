@@ -1,12 +1,11 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { usePathname } from "next/navigation";
+import { headers } from "next/headers";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 
-export default function AppShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
+export default async function AppShell({ children }: { children: ReactNode }) {
+  const requestHeaders = await headers();
+  const pathname = requestHeaders.get("x-pathname") ?? "/";
   const hideSiteChrome =
     pathname === "/admin" ||
     pathname.startsWith("/admin/") ||
