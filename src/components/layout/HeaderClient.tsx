@@ -136,7 +136,23 @@ export default function HeaderClient({
           className={`absolute right-0 top-0 h-full w-full max-w-sm border-l border-stone-200 bg-white shadow-2xl transition-transform duration-300 ease-out ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
         >
           <div className="flex items-center justify-between border-b border-stone-200 px-6 py-5">
-            <span className="text-sm font-semibold text-stone-900">Menu</span>
+            <Link
+              href="/"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Naar home"
+              className="inline-flex items-center gap-2"
+            >
+              <Image
+                src="/icon.png"
+                alt="PerfectSupplement logo"
+                width={24}
+                height={24}
+                className="h-6 w-6 rounded-md"
+              />
+              <span className="text-sm font-semibold text-stone-900">
+                PerfectSupplement
+              </span>
+            </Link>
             <button
               type="button"
               aria-label="Sluit menu"
