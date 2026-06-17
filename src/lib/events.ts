@@ -6,6 +6,9 @@ import {
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 export const DOMAIN_EVENT_TYPES = [
+  "account.created",
+  "account.logged_in",
+  "dashboard.first_checkin_started",
   "intake.completed",
   "intake.theme_revealed",
   "intake.cta_to_pillar",

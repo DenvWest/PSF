@@ -5,11 +5,16 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 import { hashLoginCode } from "@/lib/account-login-token";
 import { absoluteUrl } from "@/lib/public-site-url";
+import { emitEvent } from "@/lib/events";
 import {
   ACCOUNT_COOKIE_MAX_AGE_SECONDS,
   ACCOUNT_SESSION_COOKIE_NAME,
   signAccountCookie,
 } from "@/lib/account-session-cookie";
+import {
+  INTAKE_SESSION_COOKIE_NAME,
+  verifySignedIntakeSessionCookie,
+} from "@/lib/intake-session-cookie";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -21,6 +26,7 @@ type VerifyTokenRow = {
 
 type AccountStatusRow = {
   status: string | null;
+  email: string | null;
 };
 
 function verifyRedirect(): NextResponse {
@@ -69,7 +75,7 @@ export async function GET(request: NextRequest) {
 
   const { data: account, error: accountError } = await admin
     .from("accounts")
-    .select("status")
+    .select("status,email")
     .eq("id", claimedToken.account_id)
     .maybeSingle<AccountStatusRow>();
 
@@ -86,6 +92,18 @@ export async function GET(request: NextRequest) {
   }
 
   const response = NextResponse.redirect(absoluteUrl("/dashboard"));
+  const intakeSessionId = verifySignedIntakeSessionCookie(
+    request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value,
+  );
+  void emitEvent({
+    eventType: "account.logged_in",
+    sessionId: intakeSessionId,
+    email: account.email ?? undefined,
+    payload: {
+      login_method: "magic_link",
+    },
+    deliveredTo: ["posthog"],
+  });
   response.cookies.set({
     name: ACCOUNT_SESSION_COOKIE_NAME,
     value: signed,

@@ -9,6 +9,7 @@ import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
 import { DASHBOARD_SECTIONS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS } from "@/data/dashboard";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import type {
   DashboardData,
   DashboardModel,
@@ -28,6 +29,7 @@ type SharedSectionProps = {
   model: DashboardModel | null;
   data?: DashboardData;
   onCheck: () => void;
+  onDashboardCheckin: (route: string, pillarId: PillarId) => void;
 };
 
 type VitalityRingProps = {
@@ -165,8 +167,7 @@ const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel | n
   </div>
 );
 
-const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
-  const router = useRouter();
+const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSectionProps) => {
   if (!empty && !model) {
     return null;
   }
@@ -201,9 +202,12 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>{currentModel?.priority.label}.</div>
             <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>{currentModel?.priority.lever}</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {priorityCheckin && (
-                <Button onClick={() => router.push(`${priorityCheckin}?from=dashboard`)} iconRight={<Icons.ArrowRight s={18} />}>
-                  Check-in op {currentModel?.priority.label.toLowerCase()}
+              {priorityCheckin && currentModel && (
+                <Button
+                  onClick={() => onDashboardCheckin(priorityCheckin, currentModel.priority.id)}
+                  iconRight={<Icons.ArrowRight s={18} />}
+                >
+                  Check-in op {currentModel.priority.label.toLowerCase()}
                 </Button>
               )}
               <Button variant="secondary" onClick={onCheck} iconRight={<Icons.ArrowDown s={17} />}>
@@ -368,8 +372,7 @@ const PlanSection = ({ model }: SharedSectionProps) => {
   );
 };
 
-const SignalsSection = ({ model }: SharedSectionProps) => {
-  const router = useRouter();
+const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
   const [showUpcoming, setShowUpcoming] = useState(false);
   if (!model) {
     return null;
@@ -432,7 +435,7 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
               {route && (
                 <button
                   type="button"
-                  onClick={() => router.push(`${route}?from=dashboard`)}
+                  onClick={() => onDashboardCheckin(route, pillar.id)}
                   style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", color: pillar.color, fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)" }}
                 >
                   Check-in →
@@ -814,6 +817,14 @@ export default function Dashboard({ empty, data }: DashboardProps) {
     await fetch("/api/account/logout", { method: "POST" });
     router.push("/account/login");
   };
+  const onDashboardCheckin = (route: string, pillarId: PillarId) => {
+    emitIntakeClientEvent("dashboard.first_checkin_started", {
+      source: "dashboard",
+      pillar_id: pillarId,
+      route,
+    });
+    router.push(`${route}?from=dashboard`);
+  };
 
   return (
     <div>
@@ -823,7 +834,13 @@ export default function Dashboard({ empty, data }: DashboardProps) {
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {sections.map((section) => (
             <section key={section.id} id={section.id}>
-              {SECTION_RENDERERS[section.type]({ empty, model, data, onCheck })}
+              {SECTION_RENDERERS[section.type]({
+                empty,
+                model,
+                data,
+                onCheck,
+                onDashboardCheckin,
+              })}
             </section>
           ))}
         </div>

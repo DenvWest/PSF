@@ -5,11 +5,16 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 import { sha256Hex } from "@/lib/consent-hashing";
 import { hashLoginCode } from "@/lib/account-login-token";
+import { emitEvent } from "@/lib/events";
 import {
   ACCOUNT_COOKIE_MAX_AGE_SECONDS,
   ACCOUNT_SESSION_COOKIE_NAME,
   signAccountCookie,
 } from "@/lib/account-session-cookie";
+import {
+  INTAKE_SESSION_COOKIE_NAME,
+  verifySignedIntakeSessionCookie,
+} from "@/lib/intake-session-cookie";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
@@ -140,6 +145,18 @@ export async function POST(request: NextRequest) {
   }
 
   const response = NextResponse.json({ ok: true });
+  const intakeSessionId = verifySignedIntakeSessionCookie(
+    request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value,
+  );
+  void emitEvent({
+    eventType: "account.logged_in",
+    sessionId: intakeSessionId,
+    email,
+    payload: {
+      login_method: "code",
+    },
+    deliveredTo: ["posthog"],
+  });
   response.cookies.set({
     name: ACCOUNT_SESSION_COOKIE_NAME,
     value: signed,

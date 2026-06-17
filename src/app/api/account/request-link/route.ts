@@ -12,6 +12,7 @@ import { getDefaultOrganizationId } from "@/lib/organization";
 import { createLoginCode, hashLoginCode, loginTokenExpiryIso } from "@/lib/account-login-token";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { sendAccountLoginEmail } from "@/lib/account-login-email";
+import { emitEvent } from "@/lib/events";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
@@ -206,6 +207,15 @@ export async function POST(request: NextRequest) {
     }
 
     account = insertedAccount;
+    await emitEvent({
+      eventType: "account.created",
+      sessionId,
+      email,
+      payload: {
+        source: "intake_result",
+      },
+      deliveredTo: ["posthog"],
+    });
     await linkSessionAndRecordConsent(
       admin,
       account.id,

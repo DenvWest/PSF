@@ -10,6 +10,7 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 
 const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
+  "dashboard.first_checkin_started",
   "intake.theme_revealed",
   "intake.cta_to_pillar",
   "intake.cta_to_primary_checkin",
@@ -87,7 +88,8 @@ export async function POST(request: NextRequest) {
     typeof record.session_id === "string" ? record.session_id.trim() : "";
   const sessionId = cookieSessionId ?? (bodySessionId || null);
 
-  if (!sessionId) {
+  const sessionOptionalEvent = eventTypeRaw === "dashboard.first_checkin_started";
+  if (!sessionId && !sessionOptionalEvent) {
     return NextResponse.json({ error: "Geen geldige sessie." }, { status: 401 });
   }
 
@@ -107,7 +109,7 @@ export async function POST(request: NextRequest) {
 
   void emitEvent({
     eventType: eventTypeRaw,
-    sessionId,
+    sessionId: sessionId ?? null,
     email,
     payload,
     deliveredTo: ["posthog"],

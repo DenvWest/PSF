@@ -2,6 +2,7 @@ import type { DomainEventType } from "@/lib/events";
 
 type ClientEmitType = Extract<
   DomainEventType,
+  | "dashboard.first_checkin_started"
   | "intake.theme_revealed"
   | "intake.cta_to_pillar"
   | "intake.cta_to_nutrition_log"
