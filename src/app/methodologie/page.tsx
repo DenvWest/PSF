@@ -116,7 +116,7 @@ export default function MethodologiePage() {
         <Container>
           <section id="leefstijl-eerst" className="mt-12 text-base leading-relaxed text-stone-600 max-w-3xl">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900 mb-6">
-              Leefstijl eerst, supplementen tweede
+              Leefstijl eerst, supplementen als tweede optie
             </h2>
             <p>
               Wij geloven in de juiste volgorde. Slaaphygiëne, voeding, beweging en
