@@ -13,9 +13,9 @@ export const INTAKE_PROMO = {
 
 export const HOMEPAGE_HERO = {
   eyebrow: "VOOR MANNEN 40+",
-  headline: "Waar komt jouw verminderde energie écht vandaan?",
+  headline: "Zullen wij je helpen grip te krijgen op je energie, herstel en vitaliteit?",
   subheadline:
-    "Ontdek binnen 3 minuten welke leefstijlfactoren waarschijnlijk de grootste invloed hebben op jouw energie, herstel en vitaliteit.",
+    "Onafhankelijk platform voor mannen 40+ — eerst leefstijl, supplementen alleen waar het zinvol is. Gratis Leefstijlcheck in 3 minuten.",
   bullets: [
     "Persoonlijke analyse van 6 leefstijldomeinen",
     "Gerangschikt op waarschijnlijkheid en impact",
