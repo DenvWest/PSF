@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { emailHasActiveAccount } from "@/lib/account-server";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
 import { emitEvent } from "@/lib/events";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
@@ -104,6 +105,7 @@ function resolvePrimaryDomain(
 export async function runPendingIntakeReminders(): Promise<{
   sent: number;
   errors: number;
+  skipped: number;
 }> {
   const supabase = createSupabaseAdmin();
   if (!supabase) {
@@ -124,7 +126,7 @@ export async function runPendingIntakeReminders(): Promise<{
 
   const list = (reminderRows ?? []) as ReminderRow[];
   if (list.length === 0) {
-    return { sent: 0, errors: 0 };
+    return { sent: 0, errors: 0, skipped: 0 };
   }
 
   const sessionIds = [
@@ -154,11 +156,29 @@ export async function runPendingIntakeReminders(): Promise<{
   const siteUrl = getPublicSiteUrl();
   let sent = 0;
   let errors = 0;
+  let skipped = 0;
 
   for (const row of list) {
     const email = typeof row.email === "string" ? row.email.trim() : "";
     if (!email) {
       errors += 1;
+      continue;
+    }
+
+    if (await emailHasActiveAccount(supabase, email)) {
+      const { error: skipUpdateError } = await supabase
+        .from("intake_reminders")
+        .update({ sent: true })
+        .eq("id", row.id);
+      if (skipUpdateError) {
+        console.error(
+          "[intake-reminder-cron] Supabase update (skipped) error:",
+          skipUpdateError,
+        );
+        errors += 1;
+        continue;
+      }
+      skipped += 1;
       continue;
     }
 
@@ -245,5 +265,5 @@ export async function runPendingIntakeReminders(): Promise<{
     }
   }
 
-  return { sent, errors };
+  return { sent, errors, skipped };
 }

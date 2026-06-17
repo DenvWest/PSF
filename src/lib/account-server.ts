@@ -1,5 +1,6 @@
 import { getAccountIdFromCookie } from "@/lib/account-session-cookie";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 type AccountRow = {
   id: string;
@@ -29,4 +30,26 @@ export async function getAccountFromCookie(): Promise<AccountRow | null> {
   }
 
   return data;
+}
+
+export async function emailHasActiveAccount(
+  admin: SupabaseClient,
+  email: string,
+): Promise<boolean> {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) {
+    return false;
+  }
+
+  const { data, error } = await admin
+    .from("accounts")
+    .select("id,status")
+    .eq("email", normalized)
+    .maybeSingle();
+
+  if (error || !data) {
+    return false;
+  }
+
+  return (data as { status?: string }).status !== "revoked";
 }

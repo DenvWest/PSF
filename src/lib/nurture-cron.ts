@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { emailHasActiveAccount } from "@/lib/account-server";
 import { emitEvent } from "@/lib/events";
 import {
   getPlanInterventionBucketsForSession,
@@ -213,12 +214,15 @@ export async function runPendingNurtureEmails(): Promise<{
             ? mail.urgency_level.trim()
             : "moderate";
 
-        const recoveryUrl = mail.session_id
+        let recoveryUrl = mail.session_id
           ? await buildIntakeRecoveryUrlForSession(
               mail.session_id,
               mail.sequence_day === 30 ? { mode: "remeasure" } : undefined,
             )
           : buildIntakeFallbackUrl();
+        if (mail.sequence_day === 30 && (await emailHasActiveAccount(supabase, email))) {
+          recoveryUrl = `${siteUrl}/dashboard`;
+        }
 
         const nurtureInterventionDays = new Set([3, 14, 21]);
         const themeSlug = primaryDomain as ThemeSlug;
