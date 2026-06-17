@@ -51,7 +51,27 @@ export type DashboardIconName =
   | "Pill"
   | "Activity"
   | "ArrowDown"
-  | "Dot";
+  | "Dot"
+  | "Home"
+  | "RouteMap"
+  | "BarChart"
+  | "Calendar"
+  | "BookOpen";
+
+export type DashboardTabId =
+  | "vandaag"
+  | "roadmap"
+  | "voortgang"
+  | "hermeting"
+  | "adviezen";
+
+export type DashboardTab = {
+  id: DashboardTabId;
+  label: string;
+  icon: DashboardIconName;
+  title: string;
+  subtitle: string;
+};
 
 export type PillarSupplement = {
   name: string;

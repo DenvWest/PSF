@@ -319,3 +319,51 @@ export function Dot(props: IconProps) {
     </I>
   );
 }
+
+export function Home(props: IconProps) {
+  return (
+    <I {...props}>
+      <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+    </I>
+  );
+}
+
+export function RouteMap(props: IconProps) {
+  return (
+    <I {...props}>
+      <circle cx="6" cy="5.5" r="2.5" />
+      <circle cx="18" cy="18.5" r="2.5" />
+      <path d="M8.5 5.5H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5" />
+    </I>
+  );
+}
+
+export function BarChart(props: IconProps) {
+  return (
+    <I {...props}>
+      <line x1="6" y1="20" x2="6" y2="14" />
+      <line x1="12" y1="20" x2="12" y2="9" />
+      <line x1="18" y1="20" x2="18" y2="4" />
+    </I>
+  );
+}
+
+export function Calendar(props: IconProps) {
+  return (
+    <I {...props}>
+      <rect x="3" y="4.5" width="18" height="16.5" rx="2.5" />
+      <line x1="3" y1="9.5" x2="21" y2="9.5" />
+      <line x1="8" y1="2.5" x2="8" y2="6" />
+      <line x1="16" y1="2.5" x2="16" y2="6" />
+    </I>
+  );
+}
+
+export function BookOpen(props: IconProps) {
+  return (
+    <I {...props}>
+      <path d="M12 6.5C10.5 5 8.5 4.5 4 4.5V18c4.5 0 6.5.5 8 2 1.5-1.5 3.5-2 8-2V4.5c-4.5 0-6.5.5-8 2z" />
+      <line x1="12" y1="6.5" x2="12" y2="20" />
+    </I>
+  );
+}

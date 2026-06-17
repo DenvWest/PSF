@@ -3,6 +3,9 @@ import type {
   CheckId,
   CheckLogEntry,
   DashboardSection,
+  DashboardSectionType,
+  DashboardTab,
+  DashboardTabId,
   IdentityField,
   Pillar,
   PillarId,
@@ -237,3 +240,19 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "historie", type: "history" },
   { id: "toekomst", type: "future" },
 ];
+
+export const DASHBOARD_TABS: DashboardTab[] = [
+  { id: "vandaag", label: "Vandaag", icon: "Home", title: "Vandaag", subtitle: "Je score en je ene volgende stap." },
+  { id: "roadmap", label: "Roadmap", icon: "RouteMap", title: "Roadmap", subtitle: "Waar je begint, stap voor stap." },
+  { id: "voortgang", label: "Voortgang", icon: "BarChart", title: "Voortgang", subtitle: "Je levenslijn — geen losse momentopname." },
+  { id: "hermeting", label: "Hermeting", icon: "Calendar", title: "Hermeting", subtitle: "Meet of het werkt." },
+  { id: "adviezen", label: "Adviezen", icon: "BookOpen", title: "Adviezen", subtitle: "Objectief, geen verkoop." },
+];
+
+export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
+  vandaag: ["now", "identity"],
+  roadmap: ["priority", "plan"],
+  voortgang: ["signals", "nutritionIntake", "history"],
+  hermeting: ["retest", "future"],
+  adviezen: [],
+};

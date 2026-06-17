@@ -7,13 +7,15 @@ import { useRouter } from "next/navigation";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
-import { DASHBOARD_SECTIONS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS } from "@/data/dashboard";
+import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import type {
   DashboardData,
   DashboardModel,
   DashboardSectionType,
+  DashboardTab,
+  DashboardTabId,
   NutritionIntakeBand,
   PillarId,
   Signal,
@@ -791,8 +793,56 @@ const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps
   future: () => <FutureSection />,
 };
 
+const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
+  <div style={{ marginBottom: 20 }}>
+    <div style={{ fontFamily: "var(--f-serif)", fontSize: 26, color: "var(--text)", lineHeight: 1.15 }}>{tab.title}</div>
+    <div style={{ fontSize: 14, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.5, textWrap: "pretty" }}>{tab.subtitle}</div>
+  </div>
+);
+
+const AdviezenPlaceholder = () => (
+  <Card pad={22} style={{ borderStyle: "dashed", background: "rgba(255,255,255,0.015)" }}>
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
+      <Icons.BookOpen s={14} /> Adviezen
+    </div>
+    <div style={{ fontFamily: "var(--f-serif)", fontSize: 19, color: "var(--text)", lineHeight: 1.25, marginBottom: 6 }}>Binnenkort: adviezen op maat bij jouw prioriteit.</div>
+    <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>
+      Onafhankelijke uitleg en vergelijkingen die passen bij waar jij nu staat — met de onderbouwing erbij. Wij verkopen zelf niets.
+    </p>
+  </Card>
+);
+
+const DashTabBar = ({ tab, locked, onSelect }: { tab: DashboardTabId; locked: boolean; onSelect: (id: DashboardTabId) => void }) => (
+  <nav
+    aria-label="Dashboard-navigatie"
+    style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20, display: "flex", justifyContent: "center", background: "rgba(16,26,16,0.92)", backdropFilter: "blur(12px)", borderTop: "1px solid var(--panel-border)", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+  >
+    <div style={{ display: "flex", width: "100%", maxWidth: 600 }}>
+      {DASHBOARD_TABS.map((t) => {
+        const Icon = Icons[t.icon];
+        const active = t.id === tab;
+        const disabled = locked && t.id !== "vandaag";
+        return (
+          <button
+            key={t.id}
+            type="button"
+            disabled={disabled}
+            aria-current={active ? "page" : undefined}
+            onClick={() => onSelect(t.id)}
+            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "9px 4px 11px", background: "none", border: "none", cursor: disabled ? "default" : "pointer", color: active ? "var(--sage)" : disabled ? "var(--text-subtle)" : "var(--text-muted)", opacity: disabled ? 0.45 : 1, fontFamily: "var(--f-sans)" }}
+          >
+            <Icon s={20} />
+            <span style={{ fontSize: 11, fontWeight: active ? 600 : 500 }}>{t.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  </nav>
+);
+
 export default function Dashboard({ empty, data }: DashboardProps) {
   const router = useRouter();
+  const [tab, setTab] = useState<DashboardTabId>("vandaag");
   const model = useMemo(
     () =>
       !empty && data?.current
@@ -800,19 +850,22 @@ export default function Dashboard({ empty, data }: DashboardProps) {
         : null,
     [empty, data],
   );
-  const sections = empty ? DASHBOARD_SECTIONS.filter((section) => EMPTY_SECTIONS.includes(section.type)) : DASHBOARD_SECTIONS;
+
+  const locked = Boolean(empty);
+  const activeTab: DashboardTabId = locked ? "vandaag" : tab;
+  const tabMeta = DASHBOARD_TABS.find((t) => t.id === activeTab) ?? DASHBOARD_TABS[0];
+  const allowedTypes = TAB_SECTIONS[activeTab];
+  const sectionTypes = empty
+    ? allowedTypes.filter((type) => EMPTY_SECTIONS.includes(type))
+    : allowedTypes;
+
   const onCheck = () => {
     if (empty) {
       router.push("/intake");
       return;
     }
-
-    const target = document.getElementById("plan");
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    setTab("roadmap");
   };
-
   const onLogout = async () => {
     await fetch("/api/account/logout", { method: "POST" });
     router.push("/account/login");
@@ -826,23 +879,21 @@ export default function Dashboard({ empty, data }: DashboardProps) {
     router.push(`${route}?from=dashboard`);
   };
 
+  const sharedProps: SharedSectionProps = { empty, model, data, onCheck, onDashboardCheckin };
+
   return (
     <div>
-      <main style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: "clamp(20px, 4vh, 36px) 18px 64px" }}>
+      <main style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: "clamp(20px, 4vh, 36px) 18px calc(96px + env(safe-area-inset-bottom, 0px))" }}>
         <DashHeader onLogout={onLogout} />
-        <Greeting empty={empty} model={model} />
+        {activeTab === "vandaag" ? <Greeting empty={empty} model={model} /> : <DashTabHeader tab={tabMeta} />}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {sections.map((section) => (
-            <section key={section.id} id={section.id}>
-              {SECTION_RENDERERS[section.type]({
-                empty,
-                model,
-                data,
-                onCheck,
-                onDashboardCheckin,
-              })}
-            </section>
-          ))}
+          {sectionTypes.length === 0 ? (
+            <AdviezenPlaceholder />
+          ) : (
+            sectionTypes.map((type) => (
+              <section key={type}>{SECTION_RENDERERS[type](sharedProps)}</section>
+            ))
+          )}
         </div>
         <footer style={{ marginTop: 28, textAlign: "center", fontSize: 11.5, color: "var(--text-subtle)", lineHeight: 1.6 }}>
           <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text-muted)", textDecoration: "underline", textUnderlineOffset: 2 }}>
@@ -854,6 +905,7 @@ export default function Dashboard({ empty, data }: DashboardProps) {
           Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
         </footer>
       </main>
+      <DashTabBar tab={activeTab} locked={locked} onSelect={setTab} />
     </div>
   );
 }
