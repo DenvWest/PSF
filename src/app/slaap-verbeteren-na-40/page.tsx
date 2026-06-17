@@ -6,7 +6,7 @@ import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
 import { magnesiumReferences } from "@/data/references/magnesium";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
+import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 
 export const metadata: Metadata = {
@@ -103,7 +103,7 @@ export default function SlaapVerbeterenNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="pb-24 md:pb-28 py-12 md:py-16">
+      <main className="pb-16 md:pb-20 py-12 md:py-16">
         <Container>
           <div className="pillar-prose">
             <PillarReadingChrome>
@@ -756,7 +756,7 @@ export default function SlaapVerbeterenNa40Page() {
               </section>
 
               {/* 11. Eind-CTA */}
-              <section className="mt-14">
+              <section className="mt-14" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
                 <div className="text-center p-8 bg-green-50 rounded-2xl border border-green-200">
                   <h3 className="font-serif text-2xl font-bold text-gray-900">
                     Klaar om je slaap structureel aan te pakken?
@@ -783,7 +783,6 @@ export default function SlaapVerbeterenNa40Page() {
           </div>
         </Container>
       </main>
-      <PillarStickyIntakeCta />
     </>
   );
 }

@@ -5,7 +5,6 @@ import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
 import { buildArticleSchema, buildFaqSchema } from "@/lib/seo/structuredData";
 
 const LINK =
@@ -63,7 +62,7 @@ export default function BewegingNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="pb-24 md:pb-28 py-12 md:py-16">
+      <main className="pb-16 md:pb-20 py-12 md:py-16">
         <Container>
           <div className="pillar-prose">
             <PillarReadingChrome>
@@ -298,7 +297,6 @@ export default function BewegingNa40Page() {
             </PillarReadingChrome>
           </div>
         </Container>
-        <PillarStickyIntakeCta />
       </main>
     </>
   );

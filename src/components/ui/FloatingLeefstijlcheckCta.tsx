@@ -72,6 +72,7 @@ type FloatingLeefstijlcheckCtaProps = {
   scrollThreshold?: number;
   revealOnTimer?: boolean;
   revealAfterMs?: number;
+  showOnAllScreens?: boolean;
 };
 
 export default function FloatingLeefstijlcheckCta({
@@ -79,6 +80,7 @@ export default function FloatingLeefstijlcheckCta({
   scrollThreshold = 0.25,
   revealOnTimer = true,
   revealAfterMs = 6000,
+  showOnAllScreens = false,
 }: FloatingLeefstijlcheckCtaProps = {}) {
   const { widget } = HOMEPAGE_HERO;
   const domainPreview = CATEGORIES.slice(0, 4);
@@ -86,15 +88,16 @@ export default function FloatingLeefstijlcheckCta({
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const inBodyCtaVisible = useInBodyLeefstijlcheckCtaVisible();
-  const isShown = revealed && !inBodyCtaVisible && isMobile;
+  const isShown = revealed && !inBodyCtaVisible && (showOnAllScreens || isMobile);
 
   useEffect(() => {
+    if (showOnAllScreens) return;
     const m = window.matchMedia("(max-width: 767px)");
     const sync = () => setIsMobile(m.matches);
     sync();
     m.addEventListener("change", sync);
     return () => m.removeEventListener("change", sync);
-  }, []);
+  }, [showOnAllScreens]);
 
   useEffect(() => {
     if (dismissed) return;
@@ -159,7 +162,9 @@ export default function FloatingLeefstijlcheckCta({
       aria-hidden={!isShown}
       className={[
         "fixed z-40 transition-all duration-500 ease-out",
-        "inset-x-3 bottom-3 max-w-none",
+        showOnAllScreens
+          ? "inset-x-3 bottom-3 max-w-none md:inset-x-auto md:right-6 md:bottom-6 md:max-w-sm"
+          : "inset-x-3 bottom-3 max-w-none",
         isShown
           ? "pointer-events-auto translate-x-0 translate-y-0 opacity-100"
           : "pointer-events-none translate-y-8 opacity-0",

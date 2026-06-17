@@ -5,7 +5,7 @@ import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
+import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 
 const INLINE_LINK_CLASS =
   "font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green hover:text-ps-green-hover";
@@ -104,7 +104,7 @@ export default function EnergieNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="pb-24 md:pb-28 py-12 md:py-16">
+      <main className="pb-16 md:pb-20 py-12 md:py-16">
         <Container>
           <div className="pillar-prose">
             <PillarReadingChrome>
@@ -616,7 +616,7 @@ export default function EnergieNa40Page() {
               </section>
 
               {/* 12. CTA */}
-              <section id="leefstijlcheck" className="mt-14">
+              <section id="leefstijlcheck" className="mt-14" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
                 <div className="text-center p-8 bg-green-50 rounded-2xl border border-green-200">
                   <h2 className="font-serif text-2xl md:text-3xl font-bold text-gray-900">
                     Ontdek Waar Jij Staat
@@ -738,7 +738,6 @@ export default function EnergieNa40Page() {
           </div>
         </Container>
       </main>
-      <PillarStickyIntakeCta />
     </>
   );
 }

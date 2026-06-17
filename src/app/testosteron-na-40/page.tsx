@@ -6,7 +6,7 @@ import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
-import PillarStickyIntakeCta from "@/components/content/PillarStickyIntakeCta";
+import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { testosteronNa40References } from "@/data/references/testosteron-na-40";
 
 const LINK =
@@ -95,7 +95,7 @@ export default function TestosteronNa40Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <main className="pb-24 md:pb-28 py-12 md:py-16">
+      <main className="pb-16 md:pb-20 py-12 md:py-16">
         <Container>
           <div className="pillar-prose">
             <PillarReadingChrome>
@@ -545,7 +545,7 @@ export default function TestosteronNa40Page() {
                 </p>
               </section>
 
-              <section id="leefstijlcheck" className="mt-14 scroll-mt-24">
+              <section id="leefstijlcheck" className="mt-14 scroll-mt-24" {...{ [INBODY_LEEFSTIJLCHECK_CTA_ATTR]: "" }}>
                 <div className="rounded-2xl border border-green-200 bg-green-50 p-8 text-center">
                   <h2 className="font-serif text-2xl font-bold text-gray-900 md:text-3xl">
                     Ontdek Waar Jij Staat
@@ -593,7 +593,6 @@ export default function TestosteronNa40Page() {
           </div>
         </Container>
       </main>
-      <PillarStickyIntakeCta />
     </>
   );
 }
