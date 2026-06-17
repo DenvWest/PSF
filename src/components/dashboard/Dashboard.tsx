@@ -177,10 +177,10 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
   return (
     <Card glow="#5A8F6A" pad={24} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
     <div style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "center" }}>
-      <div style={{ display: "flex", justifyContent: "center", flex: "1 1 168px", minWidth: 168 }}>
+      <div style={{ display: "flex", justifyContent: "center", flex: "1 1 168px", minWidth: 148 }}>
         <VitalityRing state={empty || !currentModel ? "locked" : "scored"} value={empty || !currentModel ? 0 : currentModel.vitality} delta={empty || !currentModel ? null : currentModel.vitalityDelta} />
       </div>
-      <div style={{ flex: "2 1 240px", minWidth: 220 }}>
+      <div style={{ flex: "2 1 240px", minWidth: 0 }}>
         {empty ? (
           <>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
@@ -196,7 +196,7 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
           </>
         ) : (
           <>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 12, whiteSpace: "nowrap" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 12, flexWrap: "wrap" }}>
               <Icons.Target s={14} /> Je grootste hefboom
             </div>
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>{currentModel?.priority.label}.</div>
@@ -298,7 +298,7 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 14.5, color: "var(--text)", fontWeight: focus ? 600 : 500 }}>{pillar.label}</span>
-                      {focus && <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600, whiteSpace: "nowrap" }}>{"← hier begin je nu"}</span>}
+                      {focus && <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600 }}>{"← hier begin je nu"}</span>}
                     </div>
                     <div style={{ height: 4, borderRadius: 3, background: "rgba(255,255,255,0.07)", overflow: "hidden", marginTop: 7 }}>
                       <div style={{ width: `${score}%`, height: "100%", background: pillar.color, opacity: focus ? 1 : 0.5, borderRadius: 3, transition: "opacity .5s" }} />
@@ -628,7 +628,7 @@ const RetestSection = ({ model }: SharedSectionProps) => {
             <div key={row.pillar.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 2px", borderTop: i ? "1px solid var(--divider)" : "none" }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: row.pillar.color, flexShrink: 0 }} />
               <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>{row.pillar.label}</span>
-              <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+              <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums", textAlign: "right" }}>
                 {row.was} → {row.now}
               </span>
               <span style={{ width: 34, textAlign: "right" }}>
@@ -684,9 +684,9 @@ const IdentitySection = ({ empty }: SharedSectionProps) => {
                   <div style={{ fontSize: 12.5, color: done ? "var(--sage)" : "var(--text-subtle)", marginTop: 3, lineHeight: 1.4, textWrap: "pretty" }}>{done ? field.outcome || field.unlocks : field.unlocks}</div>
                 </div>
                 {done ? (
-                  <span style={{ fontSize: 12.5, color: "var(--text-muted)", fontWeight: 500, whiteSpace: "nowrap", flexShrink: 0 }}>{field.value}</span>
+                  <span style={{ fontSize: 12.5, color: "var(--text-muted)", fontWeight: 500, flexShrink: 0, textAlign: "right" }}>{field.value}</span>
                 ) : (
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, color: "var(--terra)", fontWeight: 500, whiteSpace: "nowrap", flexShrink: 0 }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, color: "var(--terra)", fontWeight: 500, flexShrink: 0 }}>
                     <Icons.Plus s={15} /> Invullen
                   </span>
                 )}
