@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HOMEPAGE_HERO } from "@/data/homepage";
 import { CATEGORIES } from "@/data/intake-questions";
+import { getLastSession } from "@/lib/intake-storage";
+import { resolvePrimaryMobileCta, type MobileCtaAction } from "@/lib/mobile-cta-state";
 import { useInBodyLeefstijlcheckCtaVisible } from "@/lib/use-in-body-leefstijlcheck-cta-visible";
 
 function LeefstijlcheckPromoCard({
@@ -67,6 +69,38 @@ function LeefstijlcheckPromoCard({
   );
 }
 
+function MobileQuickCta({
+  action,
+  onDismiss,
+}: {
+  action: MobileCtaAction;
+  onDismiss: () => void;
+}) {
+  return (
+    <div className="relative rounded-xl border border-stone-200 bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.12)]">
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="absolute right-1.5 top-1.5 flex h-9 w-9 items-center justify-center rounded-lg text-stone-400 transition hover:bg-stone-100 hover:text-stone-600"
+        aria-label="Sluit snelle actie"
+      >
+        <span aria-hidden className="text-lg leading-none">
+          ×
+        </span>
+      </button>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+        Snelle actie
+      </p>
+      <Link
+        href={action.href}
+        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-lg bg-ps-green px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
+      >
+        {action.label} →
+      </Link>
+    </div>
+  );
+}
+
 type FloatingLeefstijlcheckCtaProps = {
   revealOnScroll?: boolean;
   scrollThreshold?: number;
@@ -87,17 +121,58 @@ export default function FloatingLeefstijlcheckCta({
   const [dismissed, setDismissed] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hasIntakeSession, setHasIntakeSession] = useState(false);
   const inBodyCtaVisible = useInBodyLeefstijlcheckCtaVisible();
   const isShown = revealed && !inBodyCtaVisible && (showOnAllScreens || isMobile);
+  const primaryAction = resolvePrimaryMobileCta({
+    isLoggedIn,
+    hasIntakeSession,
+  });
 
   useEffect(() => {
-    if (showOnAllScreens) return;
     const m = window.matchMedia("(max-width: 767px)");
     const sync = () => setIsMobile(m.matches);
     sync();
     m.addEventListener("change", sync);
     return () => m.removeEventListener("change", sync);
-  }, [showOnAllScreens]);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void getLastSession().then((loaded) => {
+      if (!cancelled) {
+        setHasIntakeSession(Boolean(loaded?.session));
+      }
+    });
+
+    void fetch("/api/account/status", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          return null;
+        }
+        return (await response.json()) as { loggedIn?: boolean };
+      })
+      .then((payload) => {
+        if (!cancelled) {
+          setIsLoggedIn(payload?.loggedIn === true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setIsLoggedIn(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (dismissed) return;
@@ -170,11 +245,18 @@ export default function FloatingLeefstijlcheckCta({
           : "pointer-events-none translate-y-8 opacity-0",
       ].join(" ")}
     >
-      <LeefstijlcheckPromoCard
-        widget={widget}
-        domainPreview={domainPreview}
-        onDismiss={() => setDismissed(true)}
-      />
+      {isMobile ? (
+        <MobileQuickCta
+          action={primaryAction}
+          onDismiss={() => setDismissed(true)}
+        />
+      ) : (
+        <LeefstijlcheckPromoCard
+          widget={widget}
+          domainPreview={domainPreview}
+          onDismiss={() => setDismissed(true)}
+        />
+      )}
     </aside>
   );
 }
