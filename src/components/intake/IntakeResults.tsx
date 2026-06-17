@@ -38,7 +38,6 @@ import type { IntakeBand } from "@/lib/nutrition-intake-estimate";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
 import { getHeroTitle, getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
-import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
 import { buildSummaryRows, focusSecondaryCheckin } from "@/lib/results-summary-rows";
 import { getRecognitionLine, getVitalityFraming } from "@/lib/results-framing";
 import {
@@ -686,17 +685,16 @@ export default function IntakeResults({
                 Bewaar je voortgang
               </h2>
               <p className="mb-3 text-sm leading-relaxed text-intake-ink/70">
-                Maak een gratis account, dan onthoudt dit overzicht hoe het met je gaat — en of je vooruitgaat. Geen
-                wachtwoord: je e-mailadres is genoeg.
+                Maak een gratis account, dan onthoudt dit overzicht hoe het met je gaat, krijg je je 30-dagen
+                herinnering, en zie je of je vooruitgaat. Geen wachtwoord: je e-mailadres is genoeg.
               </p>
               <Link
                 href="/account/login"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-intake-sage px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
               >
-                Bewaar mijn resultaat →
+                Bewaar resultaat + herinnering →
               </Link>
             </section>
-            <MeasurementReminderOptIn sessionId={sessionId} />
           </div>
         ) : null}
 

@@ -32,6 +32,7 @@ async function linkSessionAndRecordConsent(
   admin: SupabaseClient,
   accountId: string,
   sessionId: string,
+  email: string,
   clientIp: string,
   ua: string,
 ): Promise<void> {
@@ -59,6 +60,22 @@ async function linkSessionAndRecordConsent(
     console.error(
       "[api/account/request-link] account storage consent insert error:",
       consentInsertError,
+    );
+  }
+
+  const reminderDate = new Date();
+  reminderDate.setDate(reminderDate.getDate() + 30);
+  const { error: reminderInsertError } = await admin.from("intake_reminders").insert({
+    organization_id: getDefaultOrganizationId(),
+    email,
+    reminder_date: reminderDate.toISOString(),
+    reminder_type: "day30",
+    session_id: sessionId,
+  });
+  if (reminderInsertError) {
+    console.error(
+      "[api/account/request-link] reminder insert error:",
+      reminderInsertError,
     );
   }
 }
@@ -136,6 +153,7 @@ export async function POST(request: NextRequest) {
   );
 
   let account: AccountRow | null = null;
+  let sessionLinked = false;
   const { data: existingAccount, error: accountError } = await admin
     .from("accounts")
     .select("id,status")
@@ -165,7 +183,15 @@ export async function POST(request: NextRequest) {
     account = { ...existingAccount, status: "active" };
 
     if (sessionId) {
-      await linkSessionAndRecordConsent(admin, account.id, sessionId, clientIp, userAgent);
+      await linkSessionAndRecordConsent(
+        admin,
+        account.id,
+        sessionId,
+        email,
+        clientIp,
+        userAgent,
+      );
+      sessionLinked = true;
     }
   } else if (!existingAccount && consent && sessionId) {
     const { data: insertedAccount, error: insertAccountError } = await admin
@@ -180,11 +206,30 @@ export async function POST(request: NextRequest) {
     }
 
     account = insertedAccount;
-    await linkSessionAndRecordConsent(admin, account.id, sessionId, clientIp, userAgent);
+    await linkSessionAndRecordConsent(
+      admin,
+      account.id,
+      sessionId,
+      email,
+      clientIp,
+      userAgent,
+    );
+    sessionLinked = true;
   }
 
   if (!account || account.status === "revoked") {
     return NextResponse.json({ ok: true }, { status: 200 });
+  }
+
+  if (consent && sessionId && !sessionLinked) {
+    await linkSessionAndRecordConsent(
+      admin,
+      account.id,
+      sessionId,
+      email,
+      clientIp,
+      userAgent,
+    );
   }
 
   const code = createLoginCode();
