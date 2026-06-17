@@ -13,6 +13,7 @@ export type DashboardSectionType =
   | "priority"
   | "plan"
   | "signals"
+  | "nutritionIntake"
   | "retest"
   | "identity"
   | "history"
@@ -109,12 +110,20 @@ export type CheckLogEntry = {
   vitality: number;
 };
 
+export type NutritionIntakeBand = "below" | "around" | "meets";
+
+export type NutritionIntakeItem = {
+  label: string;
+  band: NutritionIntakeBand;
+};
+
 export type DashboardData = {
   empty: boolean;
   current: (CheckSnapshot & { trend: CheckTrend }) | null;
   prev: CheckSnapshot | null;
   history: CheckLogEntry[];
   retest: boolean;
+  nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
 };
 
 export type IdentityField = {

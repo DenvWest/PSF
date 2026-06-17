@@ -59,5 +59,6 @@ export function buildDevDashboardData(
     prev,
     history,
     retest: mode === "retest",
+    nutritionIntake: null,
   };
 }

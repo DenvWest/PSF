@@ -1,5 +1,7 @@
 import { derivePriority } from "@/lib/dashboard-model";
+import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
+import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
@@ -17,6 +19,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   prev: null,
   history: [],
   retest: false,
+  nutritionIntake: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -163,6 +166,32 @@ export async function loadAccountDashboardData(
     .select("session_id,domain_key,score,created_at")
     .in("session_id", sessionIds)
     .order("created_at", { ascending: true });
+  const { data: logRows } = await admin
+    .from("intake_intake_log")
+    .select("estimate, logged_at")
+    .in("session_id", sessionIds)
+    .order("logged_at", { ascending: false })
+    .limit(1);
+
+  let nutritionIntake: DashboardData["nutritionIntake"] = null;
+  const latestLog = logRows?.[0];
+  if (latestLog && Array.isArray(latestLog.estimate)) {
+    const items = (latestLog.estimate as IntakeEstimate[])
+      .filter(
+        (entry) =>
+          entry &&
+          (entry.band === "below" || entry.band === "around" || entry.band === "meets") &&
+          typeof entry.nutrient === "string",
+      )
+      .map((entry) => ({
+        label:
+          nutrientReferences[entry.nutrient]?.label ?? String(entry.nutrient),
+        band: entry.band,
+      }));
+    if (items.length > 0 && typeof latestLog.logged_at === "string") {
+      nutritionIntake = { date: formatDashboardDate(latestLog.logged_at), items };
+    }
+  }
 
   type Point = { value: number; ts: number };
   const series: Record<PillarId, Point[]> = {
@@ -255,5 +284,6 @@ export async function loadAccountDashboardData(
       : null,
     history,
     retest: snapshots.length >= 2,
+    nutritionIntake,
   };
 }

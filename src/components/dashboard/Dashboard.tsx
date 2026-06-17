@@ -13,6 +13,7 @@ import type {
   DashboardData,
   DashboardModel,
   DashboardSectionType,
+  NutritionIntakeBand,
   PillarId,
   Signal,
 } from "@/types/dashboard";
@@ -25,6 +26,7 @@ type DashboardProps = {
 type SharedSectionProps = {
   empty?: boolean;
   model: DashboardModel | null;
+  data?: DashboardData;
   onCheck: () => void;
 };
 
@@ -470,6 +472,108 @@ const SignalsSection = ({ model }: SharedSectionProps) => {
   );
 };
 
+const NUTRITION_BAND: Record<
+  NutritionIntakeBand,
+  { label: string; color: string }
+> = {
+  below: { label: "Te laag", color: "var(--terra)" },
+  around: { label: "Rondom", color: "var(--text-muted)" },
+  meets: { label: "Op orde", color: "var(--sage)" },
+};
+
+const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
+  const router = useRouter();
+  const intake = data?.nutritionIntake ?? null;
+
+  return (
+    <section>
+      <SectionHeader
+        eyebrow="Voeding-inname"
+        title="Wat je binnenkrijgt"
+        action={
+          intake?.date ? (
+            <span style={{ fontSize: 12, color: "var(--text-subtle)" }}>
+              {intake.date}
+            </span>
+          ) : null
+        }
+      />
+      <Card pad={20}>
+        {intake ? (
+          <>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {intake.items.map((item, index) => {
+                const bandMeta = NUTRITION_BAND[item.band];
+                return (
+                  <div
+                    key={`${item.label}-${index}`}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 10,
+                      padding: "10px 2px",
+                      borderTop: index ? "1px solid var(--divider)" : "none",
+                    }}
+                  >
+                    <span style={{ fontSize: 14, color: "var(--text)" }}>
+                      {item.label}
+                    </span>
+                    <span
+                      style={{
+                        border: `1px solid ${bandMeta.color}44`,
+                        background: `${bandMeta.color}1a`,
+                        color: bandMeta.color,
+                        borderRadius: 999,
+                        padding: "2px 8px",
+                        fontSize: 11,
+                      }}
+                    >
+                      {bandMeta.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 12,
+                color: "var(--text-subtle)",
+                lineHeight: 1.5,
+              }}
+            >
+              Inname-inschatting t.o.v. een veelgebruikte richtlijn — geen status
+              of diagnose.
+            </div>
+          </>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <p
+              style={{
+                fontSize: 14,
+                color: "var(--text-muted)",
+                lineHeight: 1.5,
+                margin: 0,
+              }}
+            >
+              Doe een voedingscheck om je inname te zien.
+            </p>
+            <div>
+              <Button
+                variant="secondary"
+                onClick={() => router.push("/intake/voeding")}
+              >
+                Start voedingscheck
+              </Button>
+            </div>
+          </div>
+        )}
+      </Card>
+    </section>
+  );
+};
+
 const RetestSection = ({ model }: SharedSectionProps) => {
   if (!model) {
     return null;
@@ -676,6 +780,8 @@ const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
   signals: (props) => (props.empty ? null : <SignalsSection {...props} />),
+  nutritionIntake: (props) =>
+    props.empty ? null : <NutritionIntakeSection {...props} />,
   retest: (props) => (props.empty ? null : <RetestSection {...props} />),
   identity: (props) => <IdentitySection {...props} />,
   history: (props) => <HistorySection {...props} />,
@@ -717,7 +823,7 @@ export default function Dashboard({ empty, data }: DashboardProps) {
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {sections.map((section) => (
             <section key={section.id} id={section.id}>
-              {SECTION_RENDERERS[section.type]({ empty, model, onCheck })}
+              {SECTION_RENDERERS[section.type]({ empty, model, data, onCheck })}
             </section>
           ))}
         </div>

@@ -231,6 +231,7 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "prioriteit", type: "priority" },
   { id: "plan", type: "plan" },
   { id: "signalen", type: "signals" },
+  { id: "voeding-inname", type: "nutritionIntake" },
   { id: "hertest", type: "retest" },
   { id: "identiteit", type: "identity" },
   { id: "historie", type: "history" },
