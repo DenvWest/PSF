@@ -1,119 +1,102 @@
-import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
-const platformLinks = [
-    { href: "/intake", label: "Leefstijlcheck" },
-    { href: "/gidsen", label: "Gidsen na 40" },
-    { href: "/supplementen", label: "Supplementen" },
-    { href: "/profiel", label: "Profielen" },
-    { href: "/blog", label: "Blog" },
-    { href: "/kennisbank", label: "Kennisbank" },
-];
+const footerColumns = [
+    {
+        title: "Start hier",
+        links: [
+            { href: "/intake", label: "Leefstijlcheck" },
+            { href: "/gidsen", label: "Gidsen na 40" },
+            { href: "/profiel", label: "Profielen" },
+            { href: "/blog", label: "Blog" },
+            { href: "/kennisbank", label: "Kennisbank" },
+        ],
+    },
+    {
+        title: "Supplementen",
+        links: [
+            { href: "/supplementen", label: "Supplementgids" },
+            { href: "/supplementen", label: "Vergelijkingen" },
+            { href: "/methodologie", label: "Methodologie" },
+        ],
+    },
+    {
+        title: "PerfectSupplement",
+        links: [
+            { href: "/over-ons", label: "Over ons" },
+            { href: "/contact", label: "Contact" },
+            { href: "/faqs", label: "FAQ" },
+            { href: "/affiliate-disclosure", label: "Affiliate disclosure" },
+        ],
+    },
+    {
+        title: "Account",
+        links: [
+            { href: "/account/login", label: "Inloggen" },
+            { href: "/dashboard", label: "Mijn dashboard" },
+        ],
+    },
+] as const;
 
-const infoLinks = [
-    { href: "/methodologie", label: "Methodologie" },
-    { href: "/over-ons", label: "Over ons" },
-    { href: "/contact", label: "Contact" },
-];
-
-const legalLinks = [
+const bottomLegalLinks = [
     { href: "/privacy", label: "Privacy" },
     { href: "/juridisch", label: "Juridisch" },
     { href: "/cookies", label: "Cookies" },
     { href: "/disclaimer", label: "Disclaimer" },
     { href: "/medische-disclaimer", label: "Medische disclaimer" },
-    { href: "/affiliate-disclosure", label: "Affiliate disclosure" },
-    { href: "/faqs", label: "FAQ" },
-];
+] as const;
 
 export default function Footer() {
     return (
         <footer className="border-t border-stone-200 bg-[var(--ps-bg)]">
             <Container>
-                <div className="grid gap-10 py-12 md:grid-cols-2 md:gap-12 lg:grid-cols-12 lg:py-14">
-                    <div className="lg:col-span-5">
-                        <Link href="/" className="inline-flex items-center gap-2.5">
-                            <Image
-                                src="/icon.png"
-                                alt="PerfectSupplement logo"
-                                width={28}
-                                height={28}
-                                className="h-7 w-7 rounded-lg"
-                            />
-                            <span className="text-base font-semibold tracking-tight text-stone-900">
-                                Perfect<span className="text-stone-800">Supplement</span>
-                            </span>
-                        </Link>
-                        <p className="mt-4 max-w-md text-sm leading-relaxed text-stone-500">
-                            De rustige gids voor mannen 40+: eerst grip op slaap, stress en
-                            herstel — daarna pas supplementen. Gratis Leefstijlcheck,
-                            onafhankelijk en zonder sponsors.
-                        </p>
-                    </div>
-
-                    <div className="lg:col-span-3">
-                        <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-400">
-                            Platform
-                        </h4>
-                        <ul className="mt-4 space-y-2.5">
-                            {platformLinks.map((link) => (
-                                <li key={link.href}>
-                                    <Link
-                                        href={link.href}
-                                        className="text-sm text-stone-600 transition hover:text-stone-900"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="lg:col-span-4">
-                        <h4 className="text-xs font-semibold uppercase tracking-widest text-stone-400">
-                            Over ons
-                        </h4>
-                        <ul className="mt-4 space-y-2.5">
-                            {infoLinks.map((link) => (
-                                <li key={link.href}>
-                                    <Link
-                                        href={link.href}
-                                        className="text-sm text-stone-600 transition hover:text-stone-900"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                <div className="grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10 lg:py-14">
+                    {footerColumns.map((column) => (
+                        <div key={column.title}>
+                            <h4 className="text-sm font-semibold text-stone-900">
+                                {column.title}
+                            </h4>
+                            <ul className="mt-4 space-y-2.5">
+                                {column.links.map((link) => (
+                                    <li key={`${column.title}-${link.label}`}>
+                                        <Link
+                                            href={link.href}
+                                            className="text-sm text-stone-600 transition hover:text-stone-900"
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
                 </div>
 
-                <div className="border-t border-stone-100 py-6 space-y-3">
-                    <div className="flex flex-wrap gap-x-4 gap-y-1">
-                        {legalLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="text-xs text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline"
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </div>
+                <div className="border-t border-stone-100 py-5 text-center">
                     <p className="text-xs text-stone-400">
+                        © 2026 PerfectSupplement
+                        {bottomLegalLinks.map((link) => (
+                            <span key={link.href}>
+                                {" "}
+                                <span className="text-stone-300">·</span>{" "}
+                                <Link
+                                    href={link.href}
+                                    className="underline-offset-2 transition hover:text-stone-600 hover:underline"
+                                >
+                                    {link.label}
+                                </Link>
+                            </span>
+                        ))}
+                    </p>
+                    <p className="mt-2 text-xs text-stone-400">
                         {DISCLAIMER_TEXTS.footer}{" "}
-                        <Link href="/disclaimer" className="underline underline-offset-2 transition hover:text-stone-600">
+                        <Link
+                            href="/disclaimer"
+                            className="underline underline-offset-2 transition hover:text-stone-600"
+                        >
                             Meer →
                         </Link>
-                    </p>
-                    <p className="text-xs text-stone-400">
-                        © 2026 PerfectSupplement. Deze site bevat affiliate-links —{" "}
-                        <Link href="/affiliate-disclosure" className="underline underline-offset-2 transition hover:text-stone-600">
-                            lees meer
-                        </Link>
-                        .
                     </p>
                 </div>
             </Container>

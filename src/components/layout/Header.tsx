@@ -6,15 +6,15 @@ import { useState } from "react";
 
 const mainLinks = [
     { href: "/supplementen", label: "Supplementen" },
-    { href: "/blog", label: "Blog" },
-    { href: "/methodologie", label: "Methodologie" },
+    { href: "/gidsen", label: "Gidsen" },
 ];
 
 const menuLinks = [
     { href: "/", label: "Home" },
     { href: "/supplementen", label: "Supplementen" },
+    { href: "/gidsen", label: "Gidsen" },
     { href: "/blog", label: "Blog" },
-    { href: "/methodologie", label: "Methodologie" },
+    { href: "/kennisbank", label: "Kennisbank" },
 ];
 
 const infoLinks = [
