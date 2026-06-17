@@ -12,8 +12,8 @@ const mainLinks = [
 
 const menuLinks = [
     { href: "/", label: "Home" },
-    { href: "/intake", label: "Leefstijlcheck" },
     { href: "/supplementen", label: "Supplementen" },
+    { href: "/blog", label: "Blog" },
     { href: "/methodologie", label: "Methodologie" },
 ];
 

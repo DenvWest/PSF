@@ -87,7 +87,7 @@ export default function Hero() {
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
               href="/intake"
-              className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover hover:shadow-[0_6px_20px_rgba(90,143,106,0.32)] focus-visible:outline focus-visible:ring-2 focus-visible:ring-ps-green/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F5F0]"
+              className="inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg bg-ps-green px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-ps-green-hover focus-visible:outline focus-visible:ring-2 focus-visible:ring-ps-green/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F5F0]"
             >
               {primaryCta}
               <span aria-hidden="true">→</span>

@@ -92,14 +92,23 @@ export default function FloatingLeefstijlcheckCta({
   const [revealed, setRevealed] = useState(false);
   const [footerDocked, setFooterDocked] = useState(false);
   const [canDockToFooter, setCanDockToFooter] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const inBodyCtaVisible = useInBodyLeefstijlcheckCtaVisible();
-  const isShown = revealed && !inBodyCtaVisible;
+  const isShown = revealed && !inBodyCtaVisible && isMobile;
   const wantsDock = isShown && footerDocked && canDockToFooter;
   const footerSlot =
     wantsDock && typeof document !== "undefined"
       ? document.getElementById(LEEFSTIJLCHECK_FOOTER_SLOT_ID)
       : null;
   const isDocked = wantsDock && footerSlot !== null;
+
+  useEffect(() => {
+    const m = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsMobile(m.matches);
+    sync();
+    m.addEventListener("change", sync);
+    return () => m.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     if (dismissed) return undefined;
