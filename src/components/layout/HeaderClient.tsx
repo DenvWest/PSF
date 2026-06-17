@@ -2,25 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getLastSession } from "@/lib/intake-storage";
+import { resolvePrimaryMobileCta } from "@/lib/mobile-cta-state";
 
 const mainLinks = [
   { href: "/supplementen", label: "Supplementen" },
   { href: "/gidsen", label: "Gidsen" },
 ];
 
-const menuLinks = [
-  { href: "/", label: "Home" },
+const mobileMenuLinks = [
   { href: "/supplementen", label: "Supplementen" },
   { href: "/gidsen", label: "Gidsen" },
-  { href: "/blog", label: "Blog" },
-  { href: "/kennisbank", label: "Kennisbank" },
-];
-
-const infoLinks = [
-  { href: "/contact", label: "Contact" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/disclaimer", label: "Disclaimer" },
 ];
 
 type HeaderClientProps = {
@@ -33,6 +26,32 @@ export default function HeaderClient({
   accountLinkLabel,
 }: HeaderClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hasIntakeSession, setHasIntakeSession] = useState(false);
+  const isLoggedIn = accountLinkLabel === "Dashboard";
+
+  useEffect(() => {
+    let cancelled = false;
+    void getLastSession().then((loaded) => {
+      if (!cancelled) {
+        setHasIntakeSession(Boolean(loaded?.session));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const primaryMobileAction = useMemo(
+    () =>
+      resolvePrimaryMobileCta({
+        isLoggedIn,
+        hasIntakeSession,
+      }),
+    [isLoggedIn, hasIntakeSession],
+  );
+  const secondaryMobileAction = isLoggedIn
+    ? { href: "/intake", label: "Doe de gratis check" }
+    : { href: "/account/login", label: "Inloggen" };
 
   return (
     <>
@@ -142,20 +161,13 @@ export default function HeaderClient({
           <div className="flex h-[calc(100%-81px)] flex-col justify-between overflow-y-auto px-6 py-6">
             <nav className="space-y-1">
               <Link
-                href="/intake"
+                href={primaryMobileAction.href}
                 onClick={() => setMenuOpen(false)}
                 className="block rounded-2xl bg-ps-green px-4 py-3 text-base font-semibold text-white transition hover:bg-ps-green-hover"
               >
-                Doe de gratis check →
+                {primaryMobileAction.label} →
               </Link>
-              <Link
-                href={accountLinkHref}
-                onClick={() => setMenuOpen(false)}
-                className="block rounded-2xl bg-ps-green/10 px-4 py-3 text-base font-semibold text-ps-green transition hover:bg-ps-green/15"
-              >
-                {accountLinkLabel}
-              </Link>
-              {menuLinks.map((link) => (
+              {mobileMenuLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -167,22 +179,14 @@ export default function HeaderClient({
               ))}
             </nav>
 
-            <div className="mt-10 border-t border-stone-200 pt-6">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                Info
-              </p>
-              <div className="space-y-1">
-                {infoLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="block rounded-2xl px-4 py-3 text-sm font-medium text-stone-500 transition hover:bg-stone-50 hover:text-stone-900"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+            <div className="mt-8 border-t border-stone-200 pt-5">
+              <Link
+                href={secondaryMobileAction.href}
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-2xl bg-ps-green/10 px-4 py-3 text-base font-semibold text-ps-green transition hover:bg-ps-green/15"
+              >
+                {secondaryMobileAction.label}
+              </Link>
             </div>
           </div>
         </aside>
