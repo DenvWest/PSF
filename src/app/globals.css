@@ -360,6 +360,18 @@ h6 {
   text-wrap: pretty;
 }
 
+.guides-overview {
+  max-width: 46rem;
+}
+
+.guides-overview :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+.guides-overview section > p {
+  text-wrap: pretty;
+}
+
 /* ── Symptomen heading — serif + tighter tracking ──────────────── */
 
 .ps-symptoom-h1 {

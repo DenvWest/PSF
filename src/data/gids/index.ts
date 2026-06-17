@@ -19,6 +19,18 @@ export const GUIDE_DATA: Record<GuideThema, GuideOptInData> = {
 
 export const GUIDE_SLUGS = Object.keys(GUIDE_DATA) as GuideThema[];
 
+export type GuideDeliveryStatus = "pdf" | "email_sequence" | "coming_soon";
+
+export function getGuideDeliveryStatus(slug: GuideThema): GuideDeliveryStatus {
+  if (GUIDE_DATA[slug].pdfPath) return "pdf";
+  if (slug === "voeding" || slug === "beweging") return "email_sequence";
+  return "coming_soon";
+}
+
+export const THEMA_GUIDE_SLUGS = GUIDE_SLUGS.filter(
+  (slug) => slug !== "voeding" && slug !== "beweging",
+);
+
 export function getGuideData(slug: string): GuideOptInData | undefined {
   return GUIDE_DATA[slug as GuideThema];
 }
