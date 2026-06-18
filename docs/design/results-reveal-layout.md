@@ -286,12 +286,12 @@ Intake-disclaimer copy (niet inkorten): `src/lib/disclaimer-text.ts` → `DISCLA
 |--|------------------------------|------------------------------|
 | Shell | `ResultsRevealShell` + `ps-dark` full-bleed | Lichte host `#f8f7f4` + donkere kaart |
 | PSF.com | **Default** (`shellVariant` niet gezet) | Niet op B2C — alleen embed/B2B |
-| Continuïteit dashboard | Maximaal | Voor partner-sites |
-| Mobiel max-width | 480px | 480px (kaart) |
-| Desktop max-width | 720px (`lg:`) | 720px (`lg:`) |
+| Sluiten | `IntakeExit` in layout (één knop) | Zelfde of host-sluiting |
+| Mobiel max-width | 480px (`IntakeClient`) | 480px (kaart) |
+| Desktop max-width | 600px (`lg:` — gelijk aan dashboard) | 600px (`lg:`) |
 | Implementatie | `src/components/intake/ResultsRevealShell.tsx` | `variant="embedded-card"` prop |
 
-Desktop (`lg+`): hero ring + profiel naast elkaar; CTA max `max-w-md` gecentreerd.
+Desktop (`lg+`): hero ring + profiel naast elkaar; CTA max `max-w-md` gecentreerd. Breedte wordt gezet door `IntakeClient` op results-fase, niet alleen door de shell.
 
 ---
 
