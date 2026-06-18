@@ -22,6 +22,7 @@ import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { getMailConfirmation } from "@/lib/intake-greetings";
+import { isUsableFirstName } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { buildRevealModel } from "@/lib/reveal-model";
 import { buildRevealSupplementDisclosure } from "@/lib/reveal-supplement";
@@ -105,7 +106,9 @@ export default function IntakeResults({
             color: "var(--sage)",
           }}
         >
-          {REVEAL_COPY.eyebrow}
+          {isUsableFirstName(firstName)
+            ? `JOUW MOMENTOPNAME · ${firstName!.trim().toUpperCase()}`
+            : REVEAL_COPY.eyebrow}
         </p>
         <h1
           style={{
@@ -119,6 +122,33 @@ export default function IntakeResults({
         >
           {REVEAL_COPY.heroTitle}
         </h1>
+        {model.recognitionLine ? (
+          <p
+            style={{
+              margin: "12px auto 0",
+              maxWidth: 480,
+              fontSize: 15,
+              lineHeight: 1.6,
+              color: "var(--text-muted)",
+              textWrap: "pretty",
+            }}
+          >
+            {model.recognitionLine}
+          </p>
+        ) : null}
+        {emailLine ? (
+          <p
+            style={{
+              margin: "10px auto 0",
+              maxWidth: 480,
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: "var(--text-subtle)",
+            }}
+          >
+            {emailLine}
+          </p>
+        ) : null}
       </header>
 
       {/*
@@ -139,9 +169,14 @@ export default function IntakeResults({
           "lg:[grid-template-columns:minmax(340px,1fr)_minmax(380px,1.05fr)]",
         ].join(" ")}
       >
-        {/* Linker kolom rij 1: hero-kaart */}
-        <div className="lg:col-start-1 lg:row-start-1">
+        {/*
+          Linker kolom rij 1: hero-kaart + CTA als één visueel blok.
+          Op mobiel: hero → CTA direct (logisch: score zien → direct opslaan).
+          Op desktop: neemt de hele linker kolom rij 1 in beslag.
+        */}
+        <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
           <RevealHeroCard model={model} />
+          <RevealCtaStack />
         </div>
 
         {/* Rechter kolom rij 1: prioriteitsladder */}
@@ -161,12 +196,7 @@ export default function IntakeResults({
           </div>
         ) : null}
 
-        {/* Linker kolom rij 2 (dense): CTA + e-mailregel */}
-        <div className="lg:col-start-1">
-          <RevealCtaStack emailLine={emailLine} />
-        </div>
-
-        {/* Linker kolom rij 3 (dense): feedback */}
+        {/* Linker kolom rij 2 (dense): feedback */}
         <div className="lg:col-start-1">
           <IntakeFeedback sessionId={sessionId} />
         </div>
