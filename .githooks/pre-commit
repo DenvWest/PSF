@@ -1,5 +1,11 @@
 #!/bin/sh
-# Snelle gate: typecheck mag nooit rood naar een commit landen (zie FUNDAMENT P0).
+# Snelle gates vóór commit (zie CLAUDE.md + docs/core/CODE_CONVENTIONS.md).
+
+if grep -rn "console\.log" src/ 2>/dev/null; then
+  echo "[pre-commit] console.log gevonden in src/ — commit geblokkeerd." >&2
+  exit 1
+fi
+
 npx tsc --noEmit || {
   echo "[pre-commit] tsc --noEmit faalt — commit geblokkeerd." >&2
   exit 1

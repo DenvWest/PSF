@@ -34,6 +34,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 |---|---|
 | [`core/ARCHITECTURE.md`](core/ARCHITECTURE.md) | Stack, projectstructuur, file locations, deploy, server |
 | [`core/CODE_CONVENTIONS.md`](core/CODE_CONVENTIONS.md) | Code regels, workflow regels, Cursor-prompt format |
+| [`core/CURSOR_PROMPT_TEMPLATE.md`](core/CURSOR_PROMPT_TEMPLATE.md) | Vast skelet voor reproduceerbare Cursor-prompts |
 | [`core/SEO_RULES.md`](core/SEO_RULES.md) | Spinnenweb-architectuur, on-page SEO, structured data, canonical policy, link regels |
 | [`core/ENTITY_MODEL.md`](core/ENTITY_MODEL.md) | Database schema, domain scores, answers structuur, RLS |
 | [`core/DESIGN_TOKENS.md`](core/DESIGN_TOKENS.md) | Fonts, kleuren, spacing, component patterns, mobile-first |
@@ -81,6 +82,9 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | FASE A nurture-implementatie | `archive/FASE_A_IMPLEMENTATIE.md` + `core/EMAIL_SYSTEM.md` |
 | Affiliate links | `core/AFFILIATE_SYSTEM.md` + `core/COMPLIANCE.md` |
 | Technische vraag | `core/ARCHITECTURE.md` + `core/CODE_CONVENTIONS.md` |
+| Cursor-prompt schrijven | `core/CURSOR_PROMPT_TEMPLATE.md` |
+| Wekelijkse audits (read-only) | `cursors/weekly-routines-claude-code.md` |
+| Maandelijkse strategiereview | `cursors/monthly-strategy-review.md` |
 | Database/data | `core/ENTITY_MODEL.md` |
 | Planning/sprint | `core/CURRENT_SPRINT.md` |
 | Design/styling | `core/DESIGN_TOKENS.md` |
@@ -110,4 +114,4 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 ---
 
-*Laatst bijgewerkt: 17 juni 2026*
+*Laatst bijgewerkt: 18 juni 2026*

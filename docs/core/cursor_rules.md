@@ -1,3 +1,5 @@
+> **Legacy.** Gebruik [`docs/core/CURSOR_PROMPT_TEMPLATE.md`](CURSOR_PROMPT_TEMPLATE.md) + [`docs/core/CODE_CONVENTIONS.md`](CODE_CONVENTIONS.md) als bron. Dit bestand blijft als compacte referentie voor copy-paste in prompts.
+
 Je werkt aan PerfectSupplement (perfectsupplement.nl) — een data-gedreven gezondheidsplatform voor mannen 40+.
 
 ## Codebase context

@@ -27,7 +27,9 @@
 
 ## Cursor-prompt format
 
-Cursor-prompts moeten bevatten:
+Volledig skelet: [`CURSOR_PROMPT_TEMPLATE.md`](CURSOR_PROMPT_TEMPLATE.md) (Rol → Context → Taak → Constraints → Acceptatiecriterium → Verificatie).
+
+Korte checklist — elke prompt moet bevatten:
 
 1. **Complete production-ready content** (geen placeholders)
 2. **Exacte file paths** waar wijzigingen moeten
@@ -36,6 +38,8 @@ Cursor-prompts moeten bevatten:
 5. **Voorgestelde commit message** als comment: `# Voorgestelde commit: git add -A && git commit -m "feat: ..."`
 6. **Afsluitende regel:** *"Niet automatisch committen, stop na aanpassingen zodat ik de wijzigingen kan reviewen."*
 7. **Sprint-per-sprint:** stop en review na elke sprint, `npm run build` na elke sprint
+
+`console.log`-check wordt afgedwongen door `.githooks/pre-commit`; `npm run build` blijft handmatige/agent-verificatie (te traag voor pre-commit).
 
 ## Naming conventions
 
@@ -75,4 +79,4 @@ Cursor-prompts moeten bevatten:
 
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: juni 2026*
