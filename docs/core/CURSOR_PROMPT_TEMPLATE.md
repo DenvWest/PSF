@@ -110,6 +110,7 @@ Niet automatisch committen. Stop na aanpassingen zodat ik kan reviewen.
 | Situatie | Agent |
 |---|---|
 | Grote taak, meerdere bestanden, architectuurkeuze | **Plan mode** — ontwerp eerst, implementeer daarna |
+| UI/UX design resultaatscherm of dashboard (Claude Design) | **Design-prompt** — [`claude-design-results-reveal-prompt.md`](../cursors/claude-design-results-reveal-prompt.md) + [`results-reveal-layout.md`](../design/results-reveal-layout.md) |
 | Brede codebase-sweep ("waar raken affiliate-slugs elkaar?") | **Explore agent** |
 | Fix loopt vast of tweede mening nodig | **codex-rescue** |
 | Concrete, afgebakende codewijziging | Standaard agent met deze template |
@@ -123,6 +124,8 @@ Niet automatisch committen. Stop na aanpassingen zodat ik kan reviewen.
 | [`CODE_CONVENTIONS.md`](CODE_CONVENTIONS.md) | Git-workflow, naming, component patterns |
 | [`docs/cursors/weekly-routines-claude-code.md`](../cursors/weekly-routines-claude-code.md) | Wekelijkse read-only audits |
 | [`docs/cursors/monthly-strategy-review.md`](../cursors/monthly-strategy-review.md) | Maandelijkse markt/funnel/SWOT-review — **twee fasen**: schedule (Prompt A) + handmatige SQL-plak (Prompt B) |
+| [`docs/cursors/claude-design-results-reveal-prompt.md`](../cursors/claude-design-results-reveal-prompt.md) | Claude Design: intake-resultaten / REVEAL-scherm (A/B mockups) |
+| [`docs/design/results-reveal-layout.md`](../design/results-reveal-layout.md) | Layout-spec companion — tokens, spacing, compliance-zone |
 | [`CLAUDE.md`](../../CLAUDE.md) | Projectbrede regels (altijd) |
 
 ---

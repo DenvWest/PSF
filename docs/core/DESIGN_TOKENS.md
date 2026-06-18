@@ -14,13 +14,33 @@
 
 ## Kleuren
 
+### Light site (marketing, blog, vergelijkingen)
+
 | Token | Hex | Gebruik |
 |---|---|---|
-| Primary green | `#3C7A56` | CTA buttons, primaire accenten |
+| Primary green | `#3C7A56` | CTA buttons, primaire accenten (licht thema) |
 | Inline link green | `#5A8F6A` | Tekstlinks |
 | Hover green | `#4A7F5A` | Link/button hover |
-| Warm background | `#F7F5F0` | Pagina-achtergrond |
+| Warm background | `#F7F5F0` / `#f8f7f4` | Pagina-achtergrond |
 | Stone text | Tailwind stone palette | Body tekst |
+
+### Dark world (intake, dashboard, REVEAL)
+
+Gebruikt op Leefstijlcheck-resultaten, `/dashboard`, en het nieuwe REVEAL-scherm. Tokens in `src/app/globals.css` (`.ps-dark`, `.ps-dash`, `--intake-*`).
+
+| Token | Hex / waarde | Gebruik |
+|---|---|---|
+| Background | `#1a2e1a` | Pagina-achtergrond |
+| Gradient highlight | `#21381f` | Radial gradient bovenkant |
+| Sage | `#5A8F6A` | Primair accent, ring stroke, CTA |
+| Terra | `#C8956C` | Warmte, aandacht (geen secundaire CTA-fill op REVEAL) |
+| CTA tekst op sage | `#0f1c10` | Button label |
+| Panel | `rgba(255,255,255,0.05)` | Cards |
+| Panel border | `rgba(255,255,255,0.12)` | Card borders |
+
+**Pijlerkleuren (dashboard + REVEAL-ladder):** slaap `#5B6EAE`, energie `#C4873B`, stress `#8B6E99`, voeding `#5A8F6A`, beweging `#C26E4B`, herstel `#4A8A99` — zie `src/data/dashboard/index.ts`.
+
+**REVEAL layout-spec:** [`docs/design/results-reveal-layout.md`](../design/results-reveal-layout.md)
 
 ## Layout
 
@@ -49,4 +69,4 @@ Direct, warm, mannelijk zonder macho.
 
 ---
 
-*Laatst bijgewerkt: mei 2026*
+*Laatst bijgewerkt: juni 2026*
