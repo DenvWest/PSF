@@ -255,20 +255,19 @@ Sage fill, tekst `#0f1c10`, min-height 52px, full-width op mobiel.
 
 ### Trust & compliance zone
 
+Ingeklapte drawer **"Jouw gegevens & privacy"** (default gesloten). Geen full-width knoppen.
+
 ```html
 <footer class="reveal-trust">
-  <hr />
-  <!-- Optioneel: IntakeFeedback hierboven, compact -->
-  <p class="reveal-trust-text"><!-- DISCLAIMER_TEXTS.intake --></p>
-  <p class="reveal-trust-links">
-    <a href="/privacy">privacyverklaring</a> ·
-    <a href="/medische-disclaimer">medische disclaimer</a>
-  </p>
-  <div class="reveal-data-rights">
-    <button type="button" class="ghost">Toestemming intrekken & anonimiseren</button>
-    <button type="button" class="ghost destructive">Alles verwijderen</button>
-    <a href="/intake" class="subtle">Opnieuw beginnen</a>
-  </div>
+  <details>
+    <summary>Jouw gegevens & privacy</summary>
+    <p><!-- DISCLAIMER_TEXTS.intake, links uitgelijnd --></p>
+    <a>privacyverklaring</a> · <a>medische disclaimer</a>
+    <button class="text-link">Toestemming intrekken & anonimiseren</button>
+    <button class="text-link destructive">Alles verwijderen</button>
+    <button class="text-link subtle">Opnieuw beginnen</button>
+  </details>
+  <p class="copyright">© 2026 · Privacy · Disclaimer</p>
 </footer>
 ```
 
@@ -283,13 +282,16 @@ Intake-disclaimer copy (niet inkorten): `src/lib/disclaimer-text.ts` → `DISCLA
 
 ## 5. Richting A vs B
 
-| | Richting A — volledig donker | Richting B — lichte overgang |
+| | Richting A — `fullscreen-dark` | Richting B — `embedded-card` |
 |--|------------------------------|------------------------------|
-| Shell | `min-h-dvh` `.ps-dark` full-bleed | `#f8f7f4` page + `.ps-reveal` dark card |
-| Continuïteit dashboard | Maximaal | Iets minder — kaart voelt als "preview" |
-| Mobiel | Edge-to-edge dark | 16–24px margin rond donkere kaart |
-| Desktop | Full-bleed of max 720px centered | Gecentreerde kaart 720px op lichte bg |
-| Wanneer kiezen | Conversie > comfort | Minder visuele schok vanaf marketing |
+| Shell | `ResultsRevealShell` + `ps-dark` full-bleed | Lichte host `#f8f7f4` + donkere kaart |
+| PSF.com | **Default** (`shellVariant` niet gezet) | Niet op B2C — alleen embed/B2B |
+| Continuïteit dashboard | Maximaal | Voor partner-sites |
+| Mobiel max-width | 480px | 480px (kaart) |
+| Desktop max-width | 720px (`lg:`) | 720px (`lg:`) |
+| Implementatie | `src/components/intake/ResultsRevealShell.tsx` | `variant="embedded-card"` prop |
+
+Desktop (`lg+`): hero ring + profiel naast elkaar; CTA max `max-w-md` gecentreerd.
 
 ---
 

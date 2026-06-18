@@ -1,9 +1,14 @@
-/** Copy voor REVEAL — placeholders tot eigenaar definitieve teksten levert. Zie docs/copy/results-reveal.md */
+/** Copy voor REVEAL — zie docs/copy/results-reveal.md */
 export const REVEAL_COPY = {
-  cta: "Bekijk je eerste stap →",
+  heroTitle: "Dit is waar je nu staat.",
+  cta: "Bewaar dit en volg je voortgang →",
+  ctaSubtext: "Eén plek die onthoudt hoe het met je gaat.",
   contextLine: "Op basis van je antwoorden. Geen medische diagnose.",
-  pyramidDetailsSummary: "Hoe komt dit overzicht tot stand?",
-  moreBackgroundSummary: "Meer achtergrond",
-  supplementOptInSummary:
-    "Wil je weten welke supplementen bij jouw profiel passen?",
+  priorityEyebrow: "Prioriteit",
+  priorityTitle: "Waar je begint",
+  priorityHint: "zwakste bovenaan",
+  lifestyleTrack: "Spoor A · Leefstijl",
+  lifestyleWinLabel: "Hier zit je winst",
+  methodDetailsSummary: "Hoe komt dit overzicht tot stand?",
+  trustSummary: "Jouw gegevens & privacy",
 } as const;
