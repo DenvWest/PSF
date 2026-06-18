@@ -9,9 +9,11 @@ import VitalityRing from "@/components/app/VitalityRing";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
-import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLAR_COMPARISON_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
+import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
+import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
+import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type {
   DashboardData,
   DashboardModel,
@@ -710,9 +712,7 @@ const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
 
 const AdviezenSection = ({ model, onGoRoadmap }: { model: DashboardModel; onGoRoadmap: () => void }) => {
   const { priority } = model;
-  const supplement = priority.supplement;
-  const comparisonRoute = PILLAR_COMPARISON_ROUTES[priority.id];
-  const showSupplement = supplement != null && comparisonRoute != null;
+  const supplementDisclosure = buildSupplementDisclosure(priority, "dashboard");
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -729,17 +729,8 @@ const AdviezenSection = ({ model, onGoRoadmap }: { model: DashboardModel; onGoRo
           <div style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.5, marginTop: 5, textWrap: "pretty" }}>{priority.quickWin.detail}</div>
         </div>
       </Card>
-      {showSupplement ? (
-        <Card pad={20}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
-            <span style={{ fontFamily: "var(--f-serif)", fontSize: 18, color: "var(--text)" }}>{supplement.name}</span>
-            <span style={{ fontFamily: "var(--f-serif)", fontStyle: "italic", fontSize: 14, color: "var(--text-subtle)" }}>{supplement.form}</span>
-          </div>
-          <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5, marginBottom: 16, textWrap: "pretty" }}>{supplement.claim}.</div>
-          <Link href={comparisonRoute} style={{ fontSize: 14, fontWeight: 600, color: "var(--sage)", textDecoration: "underline", textUnderlineOffset: 2 }}>
-            Bekijk de onafhankelijke vergelijking
-          </Link>
-        </Card>
+      {supplementDisclosure ? (
+        <SupplementDisclosure data={supplementDisclosure} />
       ) : (
         <div>
           <Button variant="secondary" onClick={onGoRoadmap} iconRight={<Icons.ArrowRight s={18} />}>

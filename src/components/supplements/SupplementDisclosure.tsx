@@ -85,7 +85,7 @@ export default function SupplementDisclosure({ data }: SupplementDisclosureProps
           </span>
         </div>
         {data.onHold ? (
-          <p style={{ fontSize: 13, color: "var(--terra)", lineHeight: 1.5, margin: "0 0 8px" }}>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.88)", lineHeight: 1.5, margin: "0 0 8px" }}>
             Dit is geen goedgekeurde gezondheidsclaim.
           </p>
         ) : (

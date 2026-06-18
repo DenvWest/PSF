@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 
 export default function RevealCtaStack() {
@@ -9,6 +10,7 @@ export default function RevealCtaStack() {
       <div style={{ maxWidth: 448, margin: "0 auto", width: "100%" }}>
         <Link
           href="/account/login"
+          onClick={() => trackEvent(GA4_EVENTS.INTAKE_CTA_CLICKED)}
           style={{
             display: "flex",
             alignItems: "center",

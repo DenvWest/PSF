@@ -20,6 +20,7 @@ import { cortisolEnTestosteronData } from "./cortisol-en-testosteron";
 import { zinkEnTestosteronData } from "./zink-en-testosteron";
 import { omega3EnHerstelData } from "./omega-3-en-herstel";
 import { eiwitNa40Data } from "./eiwit-na-40";
+import { eiwitinnameTimingMannen40Data } from "./eiwitinname-timing-mannen-40";
 import { middagdipBloedsuikerNa40Data } from "./middagdip-bloedsuiker-na-40";
 import { krachttrainingNa40Data } from "./krachttraining-na-40";
 import { alcoholSlaapEnergieNa40Data } from "./alcohol-slaap-energie-na-40";
@@ -50,6 +51,7 @@ export const alleArtikelen: BlogArtikel[] = [
   zinkEnTestosteronData,
   omega3EnHerstelData,
   eiwitNa40Data,
+  eiwitinnameTimingMannen40Data,
   middagdipBloedsuikerNa40Data,
   krachttrainingNa40Data,
   alcoholSlaapEnergieNa40Data,

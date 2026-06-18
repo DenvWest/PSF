@@ -1,24 +1,46 @@
-import { describe, expect, it } from "vitest";
-import { buildRevealSupplementDisclosure } from "@/lib/reveal-supplement";
+import { describe, expect, it, vi } from "vitest";
+import { buildRevealSupplementDisclosure, buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import { PILLAR } from "@/data/dashboard";
 
-describe("buildRevealSupplementDisclosure", () => {
+describe("buildSupplementDisclosure", () => {
   it("returns omega-3 disclosure for voeding priority", () => {
-    const data = buildRevealSupplementDisclosure(PILLAR.voeding);
+    const data = buildSupplementDisclosure(PILLAR.voeding);
     expect(data).not.toBeNull();
     expect(data?.name).toBe("Omega-3");
     expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=results");
     expect(data?.onHold).toBe(false);
   });
 
+  it("uses dashboard from param in comparison path", () => {
+    const data = buildSupplementDisclosure(PILLAR.voeding, "dashboard");
+    expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=dashboard");
+  });
+
   it("returns on-hold ashwagandha for stress priority", () => {
-    const data = buildRevealSupplementDisclosure(PILLAR.stress);
+    const data = buildSupplementDisclosure(PILLAR.stress);
     expect(data).not.toBeNull();
     expect(data?.onHold).toBe(true);
     expect(data?.comparisonPath).toBe("/beste/ashwagandha?from=results");
   });
 
   it("returns null when pillar has no supplement", () => {
-    expect(buildRevealSupplementDisclosure(PILLAR.energie)).toBeNull();
+    expect(buildSupplementDisclosure(PILLAR.energie)).toBeNull();
+  });
+
+  it("returns null when supplement is disabled via killswitch", async () => {
+    vi.resetModules();
+    vi.doMock("@/lib/supplement-availability", () => ({
+      isSupplementAvailable: () => false,
+    }));
+    const { buildSupplementDisclosure: buildWithKillswitch } = await import("@/lib/reveal-supplement");
+    expect(buildWithKillswitch(PILLAR.stress)).toBeNull();
+    vi.resetModules();
+  });
+});
+
+describe("buildRevealSupplementDisclosure", () => {
+  it("delegates to buildSupplementDisclosure with results from param", () => {
+    const data = buildRevealSupplementDisclosure(PILLAR.voeding);
+    expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=results");
   });
 });

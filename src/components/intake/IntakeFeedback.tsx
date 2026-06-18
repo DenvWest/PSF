@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 import { saveIntakeFeedback } from "@/lib/intake-storage";
 
 type FeedbackChoice = "yes" | "partial" | "no" | null;
@@ -32,6 +33,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
       rating,
       withComment && comment.trim() !== "" ? comment.trim() : null,
     );
+    trackEvent(GA4_EVENTS.INTAKE_FEEDBACK_SUBMITTED, { rating });
     setSubmitting(false);
     setSubmitted(true);
   }
@@ -81,10 +83,12 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
       </p>
 
       {choice === null ? (
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <div role="group" aria-label="Feedbackkeuze" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <button
             type="button"
+            aria-pressed={choice === "yes"}
             onClick={() => {
+              setChoice("yes");
               void submit("positive", false);
             }}
             disabled={submitting}
@@ -99,6 +103,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
           </button>
           <button
             type="button"
+            aria-pressed={choice === "partial"}
             onClick={() => setChoice("partial")}
             disabled={submitting}
             style={{
@@ -112,7 +117,9 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
           </button>
           <button
             type="button"
+            aria-pressed={choice === "no"}
             onClick={() => {
+              setChoice("no");
               void submit("negative", false);
             }}
             disabled={submitting}

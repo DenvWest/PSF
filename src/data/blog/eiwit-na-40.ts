@@ -80,6 +80,7 @@ export const eiwitNa40Data: BlogArtikel = {
     "creatine-en-herstel",
     "krachttraining-na-40",
     "middagdip-bloedsuiker-na-40",
+    "eiwitinname-timing-mannen-40",
   ],
   metaTitle: "Eiwit na 40: hoeveel gram per dag man | PerfectSupplement",
   metaDescription:

@@ -18,10 +18,12 @@ export const PILLARS: Pillar[] = [
     label: "Slaap",
     color: "#5B6EAE",
     icon: "Moon",
-    lever: "Begin bij je avond - niet bij een supplement. Je slaap zakte het hardst; hier herstel je eerst de basis.",
+    lever:
+      "Je valt laat in of slaapt onrustig — begin bij je avondritme, niet bij een potje. Na 40 reageert je diepe slaap sneller op licht en schermen dan op supplementen.",
     quickWin: {
       title: "Vaste afbouw na 21:00",
-      detail: "Schermen weg, licht laag. Je diepe slaap reageert hier het snelst op.",
+      detail:
+        "Schermen weg, licht laag, vaste bedtijd. Je diepe slaap reageert hier het snelst op — één week consequent is genoeg om het verschil te merken.",
     },
     supplement: {
       name: "Magnesium",
@@ -36,10 +38,12 @@ export const PILLARS: Pillar[] = [
     label: "Energie",
     color: "#C4873B",
     icon: "Bolt",
-    lever: "Begin bij je ochtend - niet bij een supplement. Daglicht en ritme doen hier het meeste.",
+    lever:
+      "Je energie zakt na de lunch of 's ochtends — begin bij daglicht en ritme. Na 40 verschuift je bioklok; licht en eiwit doen hier meer dan een energie-pill.",
     quickWin: {
       title: "Daglicht binnen 30 min na opstaan",
-      detail: "10 minuten buiten zet je bioklok gelijk - stabielere energie overdag.",
+      detail:
+        "10 minuten buiten binnen een half uur na opstaan zet je bioklok gelijk. Dat stabiliseert je cortisolritme — en daarmee je energiecurve overdag.",
     },
     supplement: null,
   },
@@ -48,10 +52,12 @@ export const PILLARS: Pillar[] = [
     label: "Stress",
     color: "#8B6E99",
     icon: "Wind",
-    lever: "Begin bij je ademhaling - niet bij een supplement. Je stress-herstel verloopt traag.",
+    lever:
+      "Je blijft 'aan' staan na werk — begin bij je ademhaling, niet bij een supplement. Na 40 herstelt je stress-as trager; een korte reset helpt sneller dan je denkt.",
     quickWin: {
       title: "Box-breathing, 4 minuten",
-      detail: "4 tellen in, 4 vast, 4 uit. Verlaagt je hartslag meetbaar binnen één sessie.",
+      detail:
+        "4 tellen in, 4 vast, 4 uit — herhaal 4 minuten. Verlaagt je hartslag meetbaar binnen één sessie. Doe het vóór je telefoon pakt na het werk.",
     },
     supplement: {
       name: "Ashwagandha",
@@ -66,10 +72,12 @@ export const PILLARS: Pillar[] = [
     label: "Voeding",
     color: "#5A8F6A",
     icon: "Utensils",
-    lever: "Begin bij je ontbijt - niet bij een supplement. Je voedingsbodem is je zwakste schakel; daar zit nu de meeste winst.",
+    lever:
+      "Je ontbijt is te koolhydraat-dominant of te laat — begin bij je bord, niet bij een potje. Na 40 verliest je lichaam sneller spier en stabiliteit als eiwit tekortschiet.",
     quickWin: {
       title: "Eiwitrijk ontbijt",
-      detail: "Begin bij je bord, niet bij een potje. 30 g eiwit vóór 10 uur houdt je energie en trek stabiel.",
+      detail:
+        "30 g eiwit vóór 10 uur — ei + kwark of yoghurt met noten. Eiwit stabiliseert je bloedsuiker en remt spierverlies dat na je 40e versnelt. Begin bij je bord, niet bij een potje.",
     },
     supplement: {
       name: "Omega-3",
@@ -84,10 +92,12 @@ export const PILLARS: Pillar[] = [
     label: "Beweging",
     color: "#C26E4B",
     icon: "Footprints",
-    lever: "Begin bij je dag - niet bij een supplement. Meer beweging maakt de rest makkelijker.",
+    lever:
+      "Je zit te veel en beweegt te weinig overdag — begin bij een korte wandeling, niet bij een supplement. Meer dagelijkse beweging maakt slaap, herstel en energie allemaal makkelijker.",
     quickWin: {
       title: "10 min wandelen na het avondeten",
-      detail: "Een korte wandeling vlakt je bloedsuiker af en helpt je ontspannen richting de avond.",
+      detail:
+        "Een korte wandeling direct na het eten verlaagt je bloedsuikerrespons en helpt je ontspannen richting de avond. Geen sportkleding nodig — alleen schoenen.",
     },
     supplement: null,
   },
@@ -96,10 +106,12 @@ export const PILLARS: Pillar[] = [
     label: "Herstel",
     color: "#4A8A99",
     icon: "Heart",
-    lever: "Begin bij je rust - niet bij een supplement. Herstel is waar alles samenkomt.",
+    lever:
+      "Je herstelt langzaam na inspanning of alcohol — begin bij rust en slaap, niet bij extra training. Herstel is waar alles samenkomt: slaap, voeding en beweging.",
     quickWin: {
       title: "Eén alcoholvrije avond extra",
-      detail: "Alcohol fragmenteert je herstel. Eén avond minder zie je direct terug in je HRV.",
+      detail:
+        "Alcohol verlaagt je REM-slaap en remt spierherstel. Kies één vaste avond per week zonder drank — en merk het verschil in hoe je de volgende ochtend aanvoelt.",
     },
     supplement: null,
   },

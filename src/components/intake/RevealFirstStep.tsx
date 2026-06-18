@@ -2,6 +2,7 @@
 
 import { Leaf } from "@/components/app/icons";
 import { REVEAL_CARD_SHADOW, REVEAL_COPY } from "@/lib/results-reveal-copy";
+import { getPillarCrossDomainLine } from "@/lib/reveal-pillar-cross-domain";
 import type { RevealModel } from "@/lib/reveal-model";
 
 type RevealFirstStepProps = {
@@ -13,6 +14,7 @@ export default function RevealFirstStep({ model }: RevealFirstStepProps) {
   if (!firstStep) {
     return null;
   }
+  const crossDomainLine = getPillarCrossDomainLine(firstStep.pillar.id);
 
   return (
     <section aria-label="Je eerste stap">
@@ -87,6 +89,19 @@ export default function RevealFirstStep({ model }: RevealFirstStepProps) {
         >
           {firstStep.win.detail}
         </p>
+        {crossDomainLine ? (
+          <p
+            style={{
+              fontSize: 13,
+              color: "var(--text-subtle)",
+              lineHeight: 1.5,
+              margin: "10px 0 0",
+              textWrap: "pretty",
+            }}
+          >
+            {crossDomainLine}
+          </p>
+        ) : null}
       </article>
     </section>
   );

@@ -4,6 +4,8 @@ export const GA4_EVENTS = {
   AFFILIATE_KLIK: 'affiliate_klik',
   EMAIL_INGESCHREVEN: 'email_ingeschreven',
   PAGINA_TYPE: 'pagina_type',
+  INTAKE_CTA_CLICKED: 'intake_cta_clicked',
+  INTAKE_FEEDBACK_SUBMITTED: 'intake_feedback_submitted',
 } as const;
 
 export function trackEvent(

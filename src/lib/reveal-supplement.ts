@@ -1,10 +1,17 @@
 import { PILLAR_COMPARISON_ROUTES } from "@/data/dashboard";
 import { approvedClaims } from "@/data/approved-claims";
 import type { SupplementDisclosureData } from "@/components/supplements/SupplementDisclosure";
+import { isSupplementAvailable } from "@/lib/supplement-availability";
 import type { Pillar } from "@/types/dashboard";
 
 const QUALITY_RULE =
   "Kwaliteitskeuze op vorm en bron — niet het goedkoopste schap-potje";
+
+const SUPPLEMENT_SLUG: Partial<Record<Pillar["id"], string>> = {
+  slaap: "magnesium",
+  stress: "ashwagandha",
+  voeding: "omega-3-supplement",
+};
 
 function isSupplementOnHold(pillarId: Pillar["id"], supplementName: string): boolean {
   if (pillarId === "stress") {
@@ -15,12 +22,18 @@ function isSupplementOnHold(pillarId: Pillar["id"], supplementName: string): boo
   return entry?.status === "on_hold";
 }
 
-export function buildRevealSupplementDisclosure(
+export function buildSupplementDisclosure(
   priority: Pillar,
+  from: "results" | "dashboard" = "results",
 ): SupplementDisclosureData | null {
   const supplement = priority.supplement;
   const route = PILLAR_COMPARISON_ROUTES[priority.id];
   if (!supplement || !route) {
+    return null;
+  }
+
+  const slug = SUPPLEMENT_SLUG[priority.id];
+  if (slug && !isSupplementAvailable(slug)) {
     return null;
   }
 
@@ -31,7 +44,14 @@ export function buildRevealSupplementDisclosure(
     claim: supplement.claim,
     signal: supplement.signal,
     qualityRule: QUALITY_RULE,
-    comparisonPath: `${route}?from=results`,
+    comparisonPath: `${route}?from=${from}`,
     onHold: isSupplementOnHold(priority.id, supplement.name),
   };
+}
+
+/** @deprecated Use buildSupplementDisclosure */
+export function buildRevealSupplementDisclosure(
+  priority: Pillar,
+): SupplementDisclosureData | null {
+  return buildSupplementDisclosure(priority, "results");
 }

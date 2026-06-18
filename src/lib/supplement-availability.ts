@@ -7,10 +7,10 @@ export interface SupplementAvailability {
 const supplementAvailability: Record<string, SupplementAvailability> = {
   ashwagandha: {
     enabled: true,
-    // Als VWS verbod ingaat, verander naar:
-    // enabled: false,
-    // reason: 'Ashwagandha is per [datum] niet meer toegestaan als supplement in Nederland.',
-    // disabledSince: '2026-XX-XX',
+    // VWS-verbod verwacht per 1 jan 2027 (nog niet ingegaan, jun 2026).
+    // Bij ingang verbod: enabled: false zetten + reason/disabledSince invullen.
+    // reason: 'Ashwagandha is per 1 januari 2027 niet meer toegestaan als supplement in Nederland.',
+    // disabledSince: '2027-01-01',
   },
 }
 

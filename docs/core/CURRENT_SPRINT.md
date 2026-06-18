@@ -41,6 +41,7 @@
 25. ✅ Wave 4 spinnenweb: alcohol-blog (NRG_DEP), nervus vagus in ademhaling, KB markdown-rendering, Mg/melatonine cross-links
 26. ✅ Wave 5 spinnenweb: ComparisonProfileFits op 8 vergelijkingen, homepage thema-links incl. herstel, stress-categorie pillar, DefinedTerm schema
 27. ✅ Wave 6 spinnenweb: supplement-gids profiel-fits, homepage profielen, supplementen-categorie hub, FAQ schema gecentraliseerd
+28. ✅ Results reveal reskin (optie A): donkere dashboardwereld, 6-pijler ladder, SupplementDisclosure, IntakeFeedback 3-keuze, desktop magazine-layout
 
 ---
 
@@ -59,8 +60,17 @@
 1. Voeding in de trend via `intake_intake_log` (F3b-deel-2) — medium
 2. Identiteit-sectie scopen + bouwen (geslacht/gewicht/lengte/werk → eiwit/PAL; biometrie → voedingsadvies) — groot, eerst scope-besluit
 3. Nurture-mail-consolidatie (geen aparte login/welkomstmail bóvenop nurture)
-4. Resultaatscherm declutteren (diepte → dashboard, één primaire actie, twee e-mail-vragen samenvoegen)
+4. ~~Resultaatscherm declutteren~~ ✅ Voltooid (jun 2026): reveal reskin, één CTA, feedback-widget live
 5. Wearables / objectieve signalen — toekomst
+
+**Feedback monitoring (jun 2026):** IntakeFeedback 3-keuze widget live. Query in Supabase:
+```sql
+SELECT s.profile_label, f.rating, COUNT(*)
+FROM intake_feedback f
+JOIN intake_sessions s ON s.id = f.session_id
+GROUP BY s.profile_label, f.rating
+ORDER BY s.profile_label, f.rating;
+```
 
 ---
 
@@ -72,6 +82,7 @@
 | 2 | Profiel-overzicht vanuit footer | SEO | ✅ Footer linkt naar `/profiel`, `/juridisch` en `/cookies` |
 | 3 | `/thema/herstel` hub of redirect | SEO | ✅ redirect → `/herstel-verbeteren-na-40` |
 | 4 | Mobile device testing checklist | QA | Doelgroep mobiel |
+| 5 | Cluster-blog `/blog/eiwitinname-timing-mannen-40` | SEO | ✅ NUT_PROT + voeding-pillar ↔ eiwitpoeder |
 
 ## Op de horizon (was Wave 6)
 
@@ -96,4 +107,4 @@
 
 ---
 
-*Laatst bijgewerkt: 17 juni 2026*
+*Laatst bijgewerkt: 18 juni 2026*
