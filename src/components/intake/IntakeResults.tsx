@@ -9,7 +9,9 @@ import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import RevealCollapsiblePanel from "@/components/intake/RevealCollapsiblePanel";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealDashboardPreview from "@/components/intake/RevealDashboardPreview";
+import RevealLifestyleSecondary from "@/components/intake/RevealLifestyleSecondary";
 import RevealPath from "@/components/intake/RevealPath";
+import RevealPriorityPanel from "@/components/intake/RevealPriorityPanel";
 import ResultsRevealShell, {
   type ResultsRevealShellVariant,
 } from "@/components/intake/ResultsRevealShell";
@@ -56,6 +58,7 @@ function buildPillarStatuses(
 export default function IntakeResults({
   scores,
   answers,
+  symptoms,
   sessionId,
   rapportUrl = null,
   firstName,
@@ -69,11 +72,12 @@ export default function IntakeResults({
   const [previewOpen, setPreviewOpen] = useState(false);
   const primaryTheme = getPrimaryTheme(scores, answers);
   const isOvertrainer = matchesOvertrainerAnswers(answers);
-  const model = buildRevealModel(scores, isOvertrainer);
+  const model = buildRevealModel(scores, isOvertrainer, symptoms);
   const pillarStatuses = buildPillarStatuses(scores);
   const emailLine = hasActiveMarketingEmailConsent
     ? getMailConfirmation(firstName)
     : null;
+  const secondaryLifestyle = model.lifestyle[1];
 
   const openDashboardPreview = () => {
     setPreviewOpen(true);
@@ -107,19 +111,15 @@ export default function IntakeResults({
 
   return (
     <ResultsRevealShell variant={shellVariant}>
-      <header className="mb-5 text-center lg:mb-6">
+      <header className="mb-4 text-center lg:mb-5">
         <h1 className="font-serif text-[28px] font-normal leading-tight text-intake-ink lg:text-[30px]">
           {REVEAL_COPY.heroTitle}
         </h1>
       </header>
 
-      <RevealPath
-        model={model}
-        emailLine={emailLine}
-        onViewDashboard={openDashboardPreview}
-      />
+      <RevealPath model={model} emailLine={emailLine} />
 
-      <RevealCtaStack previewOpen={previewOpen} onPreviewToggle={toggleDashboardPreview} />
+      <RevealCtaStack previewOpen={previewOpen} onPreviewOpen={toggleDashboardPreview} />
 
       <div ref={previewScrollRef}>
         <RevealDashboardPreview model={model} open={previewOpen} />
@@ -134,6 +134,16 @@ export default function IntakeResults({
             Bekijk je 30-dagen rapport →
           </Link>
         </p>
+      ) : null}
+
+      <RevealCollapsiblePanel summary={REVEAL_COPY.priorityPanelSummary}>
+        <RevealPriorityPanel model={model} onViewDashboard={openDashboardPreview} />
+      </RevealCollapsiblePanel>
+
+      {secondaryLifestyle ? (
+        <RevealCollapsiblePanel summary={REVEAL_COPY.secondaryLifestyleSummary}>
+          <RevealLifestyleSecondary item={secondaryLifestyle} />
+        </RevealCollapsiblePanel>
       ) : null}
 
       <RevealCollapsiblePanel summary={REVEAL_COPY.methodDetailsSummary}>

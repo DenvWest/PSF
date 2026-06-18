@@ -5,32 +5,34 @@ import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 
 type RevealCtaStackProps = {
   previewOpen: boolean;
-  onPreviewToggle: () => void;
+  onPreviewOpen: () => void;
 };
 
-export default function RevealCtaStack({ previewOpen, onPreviewToggle }: RevealCtaStackProps) {
+export default function RevealCtaStack({ previewOpen, onPreviewOpen }: RevealCtaStackProps) {
   return (
-    <section aria-label="Dashboard acties" className="mb-5 mt-6 lg:mb-6">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-3">
-        <button
-          type="button"
-          onClick={onPreviewToggle}
-          aria-expanded={previewOpen}
-          aria-controls="dashboard-preview"
-          className="flex min-h-[52px] w-full cursor-pointer items-center justify-center rounded-[14px] border border-intake-sage/45 bg-intake-sage/10 px-6 text-[15px] font-semibold text-intake-ink transition-colors hover:border-intake-sage/65 hover:bg-intake-sage/15"
-        >
-          {previewOpen ? REVEAL_COPY.ctaPreviewOpen : REVEAL_COPY.ctaPreview}
-        </button>
+    <section aria-label="Bewaar je overzicht" className="mb-5 mt-5 lg:mb-6">
+      <div className="mx-auto w-full max-w-md">
         <Link
           href="/account/login"
           className="flex min-h-[52px] w-full items-center justify-center rounded-[14px] bg-intake-sage px-6 text-[15.5px] font-semibold text-[#0f1c10] no-underline transition-colors hover:bg-[#67a079]"
         >
           {REVEAL_COPY.cta}
         </Link>
+        <p className="mt-3 text-center text-sm leading-relaxed text-intake-ink-muted">
+          {REVEAL_COPY.ctaSubtext}
+        </p>
+        <p className="mt-3 text-center">
+          <button
+            type="button"
+            onClick={onPreviewOpen}
+            aria-expanded={previewOpen}
+            aria-controls="dashboard-preview"
+            className="cursor-pointer text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+          >
+            {previewOpen ? REVEAL_COPY.ctaPreviewLinkHide : REVEAL_COPY.ctaPreviewLink}
+          </button>
+        </p>
       </div>
-      <p className="mx-auto mt-3 max-w-md text-center text-sm leading-relaxed text-intake-ink-muted">
-        {REVEAL_COPY.ctaSubtext}
-      </p>
     </section>
   );
 }

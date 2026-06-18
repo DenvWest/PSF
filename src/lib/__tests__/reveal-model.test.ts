@@ -26,21 +26,24 @@ function scoresWithNutritionPriority(): DomainScores {
 
 describe("buildRevealModel", () => {
   it("geeft stress als prioriteit met twee leefstijlstappen", () => {
-    const model = buildRevealModel(scoresWithStressPriority(), false);
+    const model = buildRevealModel(scoresWithStressPriority(), false, ["stress"]);
     expect(model.priority.id).toBe("stress");
     expect(model.lifestyle).toHaveLength(2);
     expect(model.lifestyle[0].win.title).toBe("Box-breathing, 4 minuten");
     expect(model.lifestyle[0].role).toBe("prioriteit");
     expect(model.lifestyle[1].role).toBe("kracht");
+    expect(model.recognitionLine).toBe("Je begon met minder rust en meer prikkelbaarheid.");
+    expect(model.driverLine).toContain("stress");
     expect("supplement" in model).toBe(false);
   });
 
   it("toont top 3 pijlers in preview-ladder", () => {
-    const model = buildRevealModel(scoresWithNutritionPriority(), false);
+    const model = buildRevealModel(scoresWithNutritionPriority(), false, ["slaap"]);
     expect(model.priority.id).toBe("voeding");
     expect(model.topLadder).toHaveLength(3);
     expect(model.topLadder[0].id).toBe("voeding");
     expect(model.lifestyle[0].win.title).toBe("Eiwitrijk ontbijt");
+    expect(model.recognitionLine).toBe("Je begon met moeite met slapen.");
   });
 
   it("toont Overtrainer als profielnaam wanneer patroon actief is", () => {

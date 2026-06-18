@@ -1,6 +1,8 @@
+import type { SymptomId } from "@/data/intake-questions";
 import { derivePriority } from "@/lib/dashboard-model";
 import { getProfileLabel } from "@/lib/intake-engine";
 import type { DomainScores } from "@/lib/intake-engine";
+import { getRecognitionLine, getVitalityFraming } from "@/lib/results-framing";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type { CheckScores, Pillar } from "@/types/dashboard";
 
@@ -24,6 +26,9 @@ export type RevealLifestyleItem = {
 export type RevealModel = {
   vitality: number;
   profileName: string;
+  recognitionLine: string | null;
+  driverLine: string | null;
+  strengthLine: string | null;
   scores: CheckScores;
   ladder: Pillar[];
   topLadder: Pillar[];
@@ -35,6 +40,7 @@ export type RevealModel = {
 export function buildRevealModel(
   scores: DomainScores,
   isOvertrainer: boolean,
+  symptoms: SymptomId[] = [],
 ): RevealModel {
   const profile = getProfileLabel(scores);
   const checkScores = mapDomainScoresToCheckScores(scores);
@@ -43,10 +49,14 @@ export function buildRevealModel(
   const strongest = [...ladder]
     .sort((a, b) => checkScores[b.id] - checkScores[a.id])
     .filter((pillar) => pillar.id !== priority.id)[0];
+  const framing = getVitalityFraming(scores);
 
   return {
     vitality: computeVitaliteit(resolveVitaliteitFacets(scores)),
     profileName: isOvertrainer ? "Overtrainer" : profile.name,
+    recognitionLine: getRecognitionLine(symptoms),
+    driverLine: framing.driverLine,
+    strengthLine: framing.strengthLine,
     scores: checkScores,
     ladder,
     topLadder: ladder.slice(0, 3),

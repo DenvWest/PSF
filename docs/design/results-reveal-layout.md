@@ -116,47 +116,36 @@ Letter-spacing eyebrows: `0.12em–0.14em`. Geen tekst onder 12px behalve trust 
 
 ## 3. Layout-grid (mobiel, boven → onder)
 
+### Above the fold (instant begrijpelijk)
+
 ```
 ┌─────────────────────────────────────┐
-│ ✕ Sluiten (fixed, rechtsboven)      │
-├─────────────────────────────────────┤
-│ gap 20px                            │
-│ [H1] In drie stappen naar jouw      │
-│      overzicht                      │
-├─────────────────────────────────────┤
-│ [RevealPath] verticale lijn + 1–3   │
-│   Stap 1 · Waar je nu staat         │
-│     [HeroCard] ring + profiel       │
-│   Stap 2 · Waar je begint           │
-│     [PriorityFocusCard] #1 pijler   │
-│     teaser: dashboard 6 pijlers     │
-│   Stap 3 · Je eerste stap           │
-│     [LifestyleStepCard] Spoor A     │
-│       "Hier zit je winst"           │
-├─────────────────────────────────────┤
-│ gap 24px                            │
-│ [PrimaryCTA] sage filled, full-width│
-│ subtekst                            │
-│ optioneel: 30-dagen rapport link    │
-├─────────────────────────────────────┤
-│ gap 12px                            │
-│ [details] Hoe komt dit overzicht…   │
-│   + piramide + IntakeFeedback       │
-├─────────────────────────────────────┤
-│ divider --reveal-trust-divider      │
-│ [TrustStrip] MedicalDisclaimer      │
-│ [DataRights] ghost buttons          │
+│ [H1] Dit is waar je nu staat.       │
+│ herkenningszin (symptomen)          │
+│ [HeroCard] ring + profiel + driver  │
+│ [JourneyRail] Overzicht ● — Plan — Dashboard │
+│ [FirstStepCard] één stap → login    │
+│ [PrimaryCTA] sage filled            │
+│ tekstlink: dashboard preview        │
 └─────────────────────────────────────┘
+```
+
+### Below the fold (progressive disclosure)
+
+```
+├─ [details] Waar je begint (top-3 ladder)
+├─ [details] Ook goed om vast te houden
+├─ [dashboard preview] op tap (visueel mock)
+├─ [details] Hoe komt dit overzicht tot stand?
+└─ [details] Jouw gegevens & privacy
 ```
 
 ### Hiërarchie-regels
 
-- Boven CTA: max 3 genummerde stappen + één leefstijl-blok — **geen** 6-rij ladder, **geen** supplement
-- Stap 3 (leefstijl): glow + border (`--reveal-step-glow`) — visueel dominant
-- Stap 1 en 2: compacter; verticale verbindingslijn tussen stappen
-- Volledige prioriteitsladder hoort in **dashboard** na login (`PriorityLadder` in `PlanSection`)
-- `SupplementDisclosure` **niet** op REVEAL — alleen dashboard PLAN / vergelijkingspagina's
-- Precies **één** filled sage-knop op het scherm
+- Above fold: herkenning + **één** leefstijlstap + **één** sage CTA — geen tweede gelijkwaardige knop
+- Eerste-stap-kaart klikbaar → `/account/login`
+- Ladder, tweede stap, dashboard-preview standaard **ingeklapt**
+- Volledige 6-pijler ladder en supplement alleen in dashboard na login
 - Geen horizontale scroll; touch targets ≥ 44px
 
 ---
