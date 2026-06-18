@@ -57,36 +57,39 @@ Per richting: mockup + annotaties (spacing, font sizes, hex-codes) + component-c
 ### 1. Leefstijl-stappenplan
 De gebruiker moet voelen: *"Ik weet precies waar ik begin — niet met pillen."*
 
-Visuele flow:
-1. Momentopname (ring + profiel)
-2. Prioriteit (ladder)
-3. Eerste concrete stap (Spoor A)
-4. Pas daarna optioneel supplement (Spoor B, visueel ondergeschikt)
+Visuele flow (3-stappen pad):
+1. Momentopname (ring + profiel) — Stap 1
+2. Prioriteit-focus (één pijler, geen 6-rij ladder) — Stap 2
+3. Eerste concrete stap (Spoor A, dominant) — Stap 3
+4. Primaire CTA → account/login
+
+**Geen supplement op REVEAL** — stepped-care tier 3 hoort in dashboard PLAN-sectie.
 
 ### 2. Dashboard-uitnodiging
 De gebruiker moet voelen: *"Dit is mijn persoonlijke ruimte — ik wil dit bewaren."*
 
-- Zelfde ring, ladder en cards als `/dashboard`
+- Zelfde ring en card-tokens als `/dashboard`; volledige ladder alleen na login
 - Subtiele glimps: vergrendeld delta-icoon of "Trend zichtbaar na account" — **geen fake trenddata**
 
 ### 3. Winst helder
 De gebruiker moet voelen: *"Hier zit nu de meeste winst voor mij."*
 
 - Label **"Hier zit je winst"** op de leefstijl-stap
-- Prioriteit-pijler (Voeding) visueel dominant in ladder
+- Prioriteit-pijler (#1) in compacte focus-card; leefstijl-stap visueel dominant
 
 ---
 
 ## Schermopbouw (mobiel 375px, boven → onder)
 
-1. **Kop** — serif, ≤ 8 woorden, 2e persoon: *"Dit is waar je nu staat."*
-2. **Hero** — vitaliteitsring (53) + profiel *"Lage Batterij"* + *"Op basis van je antwoorden. Geen medische diagnose."*
-3. **Prioriteit** — *"Waar je begint"* — ladder, Voeding bovenaan, *"← hier begin je nu"*
-4. **Eerste stap** — Spoor A: *"Eiwitrijk ontbijt — 30 g eiwit vóór 10 uur houdt je energie stabiel."* + winst-label
-5. **Supplement-disclosure** (optioneel) — zie component-spec hieronder; alleen tonen bij EFSA-middel
-6. **Primaire CTA** — enige filled knop: *"Bewaar dit en volg je voortgang →"* + subtekst *"Eén plek die onthoudt hoe het met je gaat."*
-7. **Methodiek** — ingeklapt: *"Hoe komt dit overzicht tot stand?"*
-8. **Trust & compliance zone** — zie Blok 8
+1. **Kop** — serif: *"In drie stappen naar jouw overzicht"*
+2. **Stap 1** — vitaliteitsring (53) + profiel *"Lage Batterij"* + disclaimer
+3. **Stap 2** — `PriorityFocusCard`: Voeding #1, *"← hier begin je nu"*, teaser dashboard
+4. **Stap 3** — Spoor A leefstijl quick-win + *"Hier zit je winst"*
+5. **Primaire CTA** — enige filled knop: *"Bewaar dit en volg je voortgang →"* + subtekst *"Log in en bewaar dit — dan zie je je volledige prioriteit en voortgang."*
+6. **Methodiek** — ingeklapt: piramide + feedback
+7. **Trust & compliance zone** — zie Blok 8
+
+**Geen supplement-disclosure op REVEAL.**
 
 ---
 

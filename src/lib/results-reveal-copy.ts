@@ -1,14 +1,41 @@
 /** Copy voor REVEAL — zie docs/copy/results-reveal.md */
 export const REVEAL_COPY = {
   heroTitle: "Dit is waar je nu staat.",
-  cta: "Bewaar dit en volg je voortgang →",
-  ctaSubtext: "Eén plek die onthoudt hoe het met je gaat.",
   contextLine: "Op basis van je antwoorden. Geen medische diagnose.",
   priorityEyebrow: "Prioriteit",
   priorityTitle: "Waar je begint",
   priorityHint: "zwakste bovenaan",
+  ladderMoreCta: "Bekijk alle 6 pijlers in je dashboard →",
+  planEyebrow: "Je plan",
+  planTitle: "Leefstijl eerst",
   lifestyleTrack: "Spoor A · Leefstijl",
   lifestyleWinLabel: "Hier zit je winst",
+  lifestyleRolePrioriteit: "Start hier",
+  lifestyleRoleKracht: "Blijf dit vasthouden",
+  ctaPreview: "Zo ziet je dashboard eruit →",
+  ctaPreviewOpen: "Verberg dashboard-preview",
+  cta: "Bewaar dit en volg je voortgang →",
+  ctaSubtext:
+    "Log in om dit overzicht te bewaren — met alle pijlers, check-ins en je trend in één dashboard.",
+  dashboardPreviewSummary: "Zo ziet je dashboard eruit",
+  dashboardFrameTitle: "Jouw dashboard",
+  dashboardPreviewLockedLabel: "Trend zichtbaar na login",
+  dashboardPreviewIntro:
+    "Na login bewaar je dit overzicht op één plek — met check-ins en trend over tijd.",
+  dashboardPreviewNowTitle: "Nu beschikbaar",
+  dashboardPreviewNow: [
+    "Alle 6 pijlers met prioriteit en scores",
+    "Twee concrete leefstijlstappen per check",
+    "Korte domein-check-ins (slaap, stress, voeding, beweging)",
+    "Trend: zie wat verschuift sinds je vorige meting",
+  ],
+  dashboardPreviewLaterTitle: "Binnenkort",
+  dashboardPreviewLater: [
+    "30-dagen hermeting met je startpunt",
+    "Voedingslog en eiwitdoel op basis van je profiel",
+    "Diepere plannen per domein na check-in",
+  ],
+  dashboardPreviewLink: "Meer over je dashboard →",
   methodDetailsSummary: "Hoe komt dit overzicht tot stand?",
   trustSummary: "Jouw gegevens & privacy",
 } as const;

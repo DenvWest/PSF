@@ -46,7 +46,7 @@
 1. Identiteit-sectie echt vullen (geslacht/gewicht/lengte/werk → eiwitdoel/PAL; biometrie → voedingsadvies). Grootste item, vraagt eerst een scope-besluit (opslaan vs bereken-en-vergeet).
 2. Voeding in de trend via `intake_intake_log` (F3b-deel-2).
 3. Nurture-mail-consolidatie (geen aparte login/welkomstmail bóvenop de nurture-sequence).
-4. Resultaatscherm declutteren (diepte verplaatsen naar het dashboard).
+4. ~~Resultaatscherm declutteren~~ — **gedaan (jun 2026):** REVEAL = dashboard-trailer: top-3 ladder + 2 leefstijlstappen; volledige ladder en supplement alleen in dashboard na login; ingeklapte dashboard-preview onder CTA.
 5. Wearables / objectieve signalen (toekomst).
 
 *Laatst bijgewerkt: 17 juni 2026.*

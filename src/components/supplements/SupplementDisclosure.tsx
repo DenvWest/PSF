@@ -2,10 +2,19 @@
 
 import Link from "next/link";
 import { Pill } from "@/components/app/icons";
-import type { RevealSupplementDisclosure } from "@/lib/reveal-model";
+
+export type SupplementDisclosureData = {
+  name: string;
+  form: string;
+  grade: "A" | "B" | string;
+  claim: string;
+  comparisonPath: string;
+  onHold: boolean;
+  qualityReason: string;
+};
 
 type SupplementDisclosureProps = {
-  data: RevealSupplementDisclosure;
+  data: SupplementDisclosureData;
 };
 
 export default function SupplementDisclosure({ data }: SupplementDisclosureProps) {

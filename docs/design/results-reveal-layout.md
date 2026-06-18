@@ -121,32 +121,27 @@ Letter-spacing eyebrows: `0.12em–0.14em`. Geen tekst onder 12px behalve trust 
 │ ✕ Sluiten (fixed, rechtsboven)      │
 ├─────────────────────────────────────┤
 │ gap 20px                            │
-│ [H1] Dit is waar je nu staat.       │
+│ [H1] In drie stappen naar jouw      │
+│      overzicht                      │
 ├─────────────────────────────────────┤
-│ gap 20px                            │
-│ [HeroCard] ring 53 + Lage Batterij  │
-│            disclaimer 13px            │
-│            glimps: locked delta     │
+│ [RevealPath] verticale lijn + 1–3   │
+│   Stap 1 · Waar je nu staat         │
+│     [HeroCard] ring + profiel       │
+│   Stap 2 · Waar je begint           │
+│     [PriorityFocusCard] #1 pijler   │
+│     teaser: dashboard 6 pijlers     │
+│   Stap 3 · Je eerste stap           │
+│     [LifestyleStepCard] Spoor A     │
+│       "Hier zit je winst"           │
 ├─────────────────────────────────────┤
-│ gap 20px                            │
-│ [PriorityLadder] 6 rijen × 60px     │
-├─────────────────────────────────────┤
-│ gap 20px                            │
-│ [LifestyleStepCard] Spoor A         │
-│   "Hier zit je winst"               │
-├─────────────────────────────────────┤
-│ gap 12px (ondergeschikt)            │
-│ [SupplementDisclosure] Spoor B      │
-├─────────────────────────────────────┤
-│ gap 32px                            │
+│ gap 24px                            │
 │ [PrimaryCTA] sage filled, full-width│
 │ subtekst                            │
+│ optioneel: 30-dagen rapport link    │
 ├─────────────────────────────────────┤
 │ gap 12px                            │
 │ [details] Hoe komt dit overzicht…   │
-├─────────────────────────────────────┤
-│ gap 20px                            │
-│ [IntakeFeedback] compact (optioneel)│
+│   + piramide + IntakeFeedback       │
 ├─────────────────────────────────────┤
 │ divider --reveal-trust-divider      │
 │ [TrustStrip] MedicalDisclaimer      │
@@ -156,9 +151,11 @@ Letter-spacing eyebrows: `0.12em–0.14em`. Geen tekst onder 12px behalve trust 
 
 ### Hiërarchie-regels
 
-- Hero + ladder = above-the-fold op 375px (ring max 160px, compacte kop)
-- LifestyleStepCard: glow + border (`--reveal-step-glow`)
-- SupplementDisclosure: geen glow, lichtere bg, linkerrand 2px `--divider`
+- Boven CTA: max 3 genummerde stappen + één leefstijl-blok — **geen** 6-rij ladder, **geen** supplement
+- Stap 3 (leefstijl): glow + border (`--reveal-step-glow`) — visueel dominant
+- Stap 1 en 2: compacter; verticale verbindingslijn tussen stappen
+- Volledige prioriteitsladder hoort in **dashboard** na login (`PriorityLadder` in `PlanSection`)
+- `SupplementDisclosure` **niet** op REVEAL — alleen dashboard PLAN / vergelijkingspagina's
 - Precies **één** filled sage-knop op het scherm
 - Geen horizontale scroll; touch targets ≥ 44px
 
@@ -181,23 +178,31 @@ Letter-spacing eyebrows: `0.12em–0.14em`. Geen tekst onder 12px behalve trust 
 
 Ring: zelfde SVG-logica als `VitalityRing` in `Dashboard.tsx` — geen delta-regel op reveal.
 
-### PriorityLadder
+### RevealPath + PriorityFocusCard
 
 ```html
-<section aria-label="Waar je begint">
-  <header>
-    <span class="eyebrow">Prioriteit</span>
-    <h2>Waar je begint</h2>
-    <span class="hint">zwakste bovenaan</span>
-  </header>
-  <article class="reveal-card">
-    <!-- 6 rijen, hoogte 60px, focus rij 1: voeding -->
-    <!-- focus: bg pillar-color 12%, "← hier begin je nu", bar opacity 1 -->
-  </article>
-</section>
+<div class="reveal-path">
+  <!-- verticale lijn links, genummerde markers 1–3 -->
+  <section aria-label="Stap 1 — Waar je nu staat">
+    <span class="step-marker">1</span>
+    <span class="step-title">Waar je nu staat</span>
+    <!-- VitalityRing + profiel + disclaimer -->
+  </section>
+  <section aria-label="Stap 2 — Waar je begint">
+    <span class="step-marker">2</span>
+    <span class="step-title">Waar je begint</span>
+    <article class="priority-focus-card">
+      <!-- één pijler: label, score-balk, "← hier begin je nu" -->
+      <p class="dashboard-teaser">Alle 6 pijlers en je trend zie je in je dashboard.</p>
+    </article>
+  </section>
+  <section aria-label="Stap 3 — Je eerste stap">
+    <!-- LifestyleStepCard — zie hieronder -->
+  </section>
+</div>
 ```
 
-Placeholder-scores (locked): voeding 38, energie 45, slaap 52, stress 58, beweging 62, herstel 68.
+Volledige `PriorityLadder` (6 rijen × 60px) blijft in dashboard; niet op REVEAL.
 
 ### LifestyleStepCard
 
@@ -217,28 +222,7 @@ Placeholder-scores (locked): voeding 38, energie 45, slaap 52, stress 58, bewegi
 
 ### SupplementDisclosure
 
-```html
-<aside aria-label="Aanvullend supplement-advies" class="reveal-supplement">
-  <p class="track">Spoor B · Aanvulling, pas hierna</p>
-  <header>
-    <h3>Omega-3 <em>EPA/DHA</em></h3>
-    <span class="evidence-badge">Evidence A</span>
-  </header>
-  <p class="efsa-claim">draagt bij aan de normale werking van het hart</p>
-  <details>
-    <summary>ⓘ Waarom dit advies?</summary>
-    <ul>
-      <li>Kwaliteitskeuze vorm/bron</li>
-      <li>Wij kozen dit op kwaliteit, niet op commissie</li>
-    </ul>
-  </details>
-  <a href="/beste/omega-3-supplement">Bekijk de onafhankelijke vergelijking →</a>
-</aside>
-```
-
-**State on-hold** (ashwagandha-referentie): altijd zichtbaar `<p class="on-hold">Dit is geen goedgekeurde gezondheidsclaim.</p>`.
-
-Summary tap-target ≥ 44px. Geen modal. Geen koopknop.
+**Niet op REVEAL** (fase 1). Component blijft herbruikbaar op dashboard `PlanSection` en vergelijkingspagina's. Stepped-care: supplement = tier 3 op PLAN, niet op reveal.
 
 ### PrimaryCTA
 
@@ -247,7 +231,7 @@ Summary tap-target ≥ 44px. Geen modal. Geen koopknop.
   <button type="button" class="reveal-cta-primary">
     Bewaar dit en volg je voortgang →
   </button>
-  <p class="reveal-cta-sub">Eén plek die onthoudt hoe het met je gaat.</p>
+  <p class="reveal-cta-sub">Log in en bewaar dit — dan zie je je volledige prioriteit en voortgang.</p>
 </section>
 ```
 
@@ -317,9 +301,9 @@ Desktop (`lg+`): hero ring + profiel naast elkaar; CTA max `max-w-md` gecentreer
 | Prioriteit | Voeding |
 | Quick-win titel | Eiwitrijk ontbijt |
 | Quick-win detail | 30 g eiwit vóór 10 uur houdt je energie stabiel. |
-| Supplement | Omega-3 EPA/DHA, Evidence A |
-| EFSA-claim | draagt bij aan de normale werking van het hart |
-| Vergelijkingslink | /beste/omega-3-supplement |
+| Pad-titel | In drie stappen naar jouw overzicht |
+| Dashboard-teaser | Alle 6 pijlers en je trend zie je in je dashboard. |
+| Supplement op REVEAL | Geen — dashboard PLAN-sectie |
 
 ---
 
