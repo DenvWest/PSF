@@ -5,20 +5,14 @@ import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
 import type { PillarId } from "@/data/foundation-pyramid";
 import type { DomainScores } from "@/lib/intake-engine";
-import IntakeFeedback from "@/components/intake/IntakeFeedback";
-import RevealCollapsiblePanel from "@/components/intake/RevealCollapsiblePanel";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealDashboardPreview from "@/components/intake/RevealDashboardPreview";
-import RevealLifestyleSecondary from "@/components/intake/RevealLifestyleSecondary";
+import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
 import RevealPath from "@/components/intake/RevealPath";
-import RevealPriorityPanel from "@/components/intake/RevealPriorityPanel";
 import ResultsRevealShell, {
   type ResultsRevealShellVariant,
 } from "@/components/intake/ResultsRevealShell";
-import ResultsRevealTrust from "@/components/intake/ResultsRevealTrust";
-import FoundationPyramid, {
-  type PillarStatus,
-} from "@/components/pyramid/FoundationPyramid";
+import type { PillarStatus } from "@/components/pyramid/FoundationPyramid";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
@@ -77,7 +71,6 @@ export default function IntakeResults({
   const emailLine = hasActiveMarketingEmailConsent
     ? getMailConfirmation(firstName)
     : null;
-  const secondaryLifestyle = model.lifestyle[1];
 
   const openDashboardPreview = () => {
     setPreviewOpen(true);
@@ -117,7 +110,11 @@ export default function IntakeResults({
         </h1>
       </header>
 
-      <RevealPath model={model} emailLine={emailLine} />
+      <RevealPath
+        model={model}
+        emailLine={emailLine}
+        onViewDashboard={openDashboardPreview}
+      />
 
       <RevealCtaStack previewOpen={previewOpen} onPreviewOpen={toggleDashboardPreview} />
 
@@ -136,25 +133,9 @@ export default function IntakeResults({
         </p>
       ) : null}
 
-      <RevealCollapsiblePanel summary={REVEAL_COPY.priorityPanelSummary}>
-        <RevealPriorityPanel model={model} onViewDashboard={openDashboardPreview} />
-      </RevealCollapsiblePanel>
-
-      {secondaryLifestyle ? (
-        <RevealCollapsiblePanel summary={REVEAL_COPY.secondaryLifestyleSummary}>
-          <RevealLifestyleSecondary item={secondaryLifestyle} />
-        </RevealCollapsiblePanel>
-      ) : null}
-
-      <RevealCollapsiblePanel summary={REVEAL_COPY.methodDetailsSummary}>
-        <FoundationPyramid mode="personalized" pillarStatuses={pillarStatuses} />
-        <div className="mt-5 border-t border-intake-divider pt-5">
-          <IntakeFeedback sessionId={sessionId} />
-        </div>
-      </RevealCollapsiblePanel>
-
-      <ResultsRevealTrust
+      <RevealFooterPanel
         sessionId={sessionId}
+        pillarStatuses={pillarStatuses}
         onRestart={onRestart}
         onConsentRevoked={onConsentRevoked}
       />

@@ -11,6 +11,7 @@ type PriorityLadderPreviewProps = {
   scores: CheckScores;
   totalPillars: number;
   onViewDashboard: () => void;
+  embedded?: boolean;
 };
 
 export default function PriorityLadderPreview({
@@ -18,18 +19,13 @@ export default function PriorityLadderPreview({
   scores,
   totalPillars,
   onViewDashboard,
+  embedded = false,
 }: PriorityLadderPreviewProps) {
   const remaining = totalPillars - topLadder.length;
 
-  return (
-    <article
-      className="rounded-3xl border py-2"
-      style={{
-        background: "var(--panel, rgba(255,255,255,0.05))",
-        borderColor: "var(--panel-border, rgba(255,255,255,0.12))",
-      }}
-    >
-      <div style={{ height: topLadder.length * LADDER_ROW_H }}>
+  const content = (
+    <>
+      <div className={embedded ? "py-1" : undefined} style={{ height: topLadder.length * LADDER_ROW_H }}>
         <PriorityLadder ladder={topLadder} scores={scores} />
       </div>
       {remaining > 0 ? (
@@ -41,6 +37,22 @@ export default function PriorityLadderPreview({
           {REVEAL_COPY.ladderMoreCta}
         </button>
       ) : null}
+    </>
+  );
+
+  if (embedded) {
+    return content;
+  }
+
+  return (
+    <article
+      className="rounded-3xl border py-2"
+      style={{
+        background: "var(--panel, rgba(255,255,255,0.05))",
+        borderColor: "var(--panel-border, rgba(255,255,255,0.12))",
+      }}
+    >
+      {content}
     </article>
   );
 }

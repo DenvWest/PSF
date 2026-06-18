@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import RevealCollapsiblePanel from "@/components/intake/RevealCollapsiblePanel";
+import FoundationPyramid, {
+  type PillarStatus,
+} from "@/components/pyramid/FoundationPyramid";
+import type { PillarId } from "@/data/foundation-pyramid";
 import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { revokeIntakeConsent, deleteIntakeSession } from "@/lib/intake-storage";
@@ -18,17 +23,19 @@ const REVOKE_SUCCESS =
 
 const DELETE_SUCCESS = "Je intake-sessie is volledig verwijderd.";
 
-type ResultsRevealTrustProps = {
+type RevealFooterPanelProps = {
   sessionId: string | null;
+  pillarStatuses: Partial<Record<PillarId, PillarStatus>>;
   onRestart?: () => void;
   onConsentRevoked?: () => void;
 };
 
-export default function ResultsRevealTrust({
+export default function RevealFooterPanel({
   sessionId,
+  pillarStatuses,
   onRestart,
   onConsentRevoked,
-}: ResultsRevealTrustProps) {
+}: RevealFooterPanelProps) {
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState<{ kind: "success" | "error"; text: string } | null>(
     null,
@@ -36,23 +43,34 @@ export default function ResultsRevealTrust({
 
   return (
     <footer className="mt-2">
-      <RevealCollapsiblePanel summary={REVEAL_COPY.trustSummary}>
-        <p className="text-sm leading-relaxed text-intake-ink-muted">{DISCLAIMER_TEXTS.intake}</p>
-        <p className="mt-3 text-sm text-intake-ink-muted">
-          <Link
-            href="/privacy"
-            className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px]"
-          >
-            privacyverklaring
-          </Link>
-          {" · "}
-          <Link
-            href="/medische-disclaimer"
-            className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px]"
-          >
-            medische disclaimer
-          </Link>
+      <RevealCollapsiblePanel summary={REVEAL_COPY.footerPanelSummary}>
+        <p className="text-sm leading-relaxed text-intake-ink-muted">
+          {REVEAL_COPY.footerMethodIntro}
         </p>
+        <div className="mt-5 border-t border-intake-divider pt-5">
+          <FoundationPyramid mode="personalized" pillarStatuses={pillarStatuses} />
+        </div>
+        <div className="mt-5 border-t border-intake-divider pt-5">
+          <IntakeFeedback sessionId={sessionId} />
+        </div>
+        <div className="mt-5 border-t border-intake-divider pt-5">
+          <p className="text-sm leading-relaxed text-intake-ink-muted">{DISCLAIMER_TEXTS.intake}</p>
+          <p className="mt-3 text-sm text-intake-ink-muted">
+            <Link
+              href="/privacy"
+              className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px]"
+            >
+              privacyverklaring
+            </Link>
+            {" · "}
+            <Link
+              href="/medische-disclaimer"
+              className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px]"
+            >
+              medische disclaimer
+            </Link>
+          </p>
+        </div>
         {feedback ? (
           <p
             className={`mt-4 rounded-xl px-3 py-2.5 text-sm leading-snug ${

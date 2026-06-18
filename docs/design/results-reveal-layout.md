@@ -124,7 +124,7 @@ Letter-spacing eyebrows: `0.12em–0.14em`. Geen tekst onder 12px behalve trust 
 │ herkenningszin (symptomen)          │
 │ [HeroCard] ring + profiel + driver  │
 │ [JourneyRail] Overzicht ● — Plan — Dashboard │
-│ [FirstStepCard] één stap → login    │
+│ [WhereYouStart OPEN] ladder + quick-win → login │
 │ [PrimaryCTA] sage filled            │
 │ tekstlink: dashboard preview        │
 └─────────────────────────────────────┘
@@ -133,18 +133,18 @@ Letter-spacing eyebrows: `0.12em–0.14em`. Geen tekst onder 12px behalve trust 
 ### Below the fold (progressive disclosure)
 
 ```
-├─ [details] Waar je begint (top-3 ladder)
-├─ [details] Ook goed om vast te houden
 ├─ [dashboard preview] op tap (visueel mock)
-├─ [details] Hoe komt dit overzicht tot stand?
-└─ [details] Jouw gegevens & privacy
+└─ [details] Methodiek, privacy & disclaimer
+     piramide + feedback + disclaimer + data-rechten
 ```
 
 ### Hiërarchie-regels
 
-- Above fold: herkenning + **één** leefstijlstap + **één** sage CTA — geen tweede gelijkwaardige knop
-- Eerste-stap-kaart klikbaar → `/account/login`
-- Ladder, tweede stap, dashboard-preview standaard **ingeklapt**
+- Onder vitaliteit: precies **één** open blok (*Waar je begint*) met ladder + compacte quick-win
+- Geen tweede leefstijlstap (*Ook goed om vast te houden*) op REVEAL
+- Eén ingeklapte footer: methodiek + privacy + disclaimer
+- Quick-win strip klikbaar → `/account/login`
+- Dashboard-preview standaard gesloten (tekstlink)
 - Volledige 6-pijler ladder en supplement alleen in dashboard na login
 - Geen horizontale scroll; touch targets ≥ 44px
 

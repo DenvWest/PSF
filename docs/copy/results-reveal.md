@@ -13,9 +13,7 @@ tot vervanging. Wijzig alleen dit bestand + `src/lib/results-reveal-copy.ts`.
 | Herkenningszin | uit symptomen via `getRecognitionLine` | `model.recognitionLine` |
 | Driver/strength | uit scores via `getVitalityFraming` | `model.driverLine` / `strengthLine` |
 | Journey-rail | `Overzicht ● — Plan — Dashboard` | `journeyOverview` / `journeyPlan` / `journeyDashboard` |
-| Eerste stap kaart | klik → login | `RevealFirstStepCard` |
+| Waar je begint (open) | ladder + quick-win → login | `RevealWhereYouStart` |
 | Primaire CTA | `Bewaar dit en volg je voortgang →` | `REVEAL_COPY.cta` |
 | Preview-link | `Bekijk hoe je dashboard eruitziet` | `REVEAL_COPY.ctaPreviewLink` |
-| Ingeklapt: prioriteit | `Waar je begint` | `REVEAL_COPY.priorityPanelSummary` |
-| Ingeklapt: tweede stap | `Ook goed om vast te houden` | `REVEAL_COPY.secondaryLifestyleSummary` |
-| Methodiek / privacy | ongewijzigd | `methodDetailsSummary` / `trustSummary` |
+| Footer-panel | `Methodiek, privacy & disclaimer` | `REVEAL_COPY.footerPanelSummary` |
