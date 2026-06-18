@@ -321,7 +321,7 @@ export default function IntakeClient() {
 
   const shellClass =
     phase === "results"
-      ? `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px] lg:max-w-[600px]`
+      ? `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px] lg:max-w-[1080px]`
       : `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px]`;
 
   const showResultsDeepLinkFallback =

@@ -29,7 +29,7 @@ export default function ResultsRevealShell({
             : "w-full"
         }
       >
-        <main className="box-border w-full px-0 pb-10 pt-2 lg:px-2">{children}</main>
+        <main className="box-border w-full px-4 pb-10 pt-2 lg:px-7">{children}</main>
       </div>
     </div>
   );

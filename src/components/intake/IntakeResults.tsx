@@ -9,7 +9,8 @@ import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealFirstStep from "@/components/intake/RevealFirstStep";
 import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
-import RevealHeroGrid from "@/components/intake/RevealHeroGrid";
+import RevealHeroCard from "@/components/intake/RevealHeroCard";
+import RevealLadderCard from "@/components/intake/RevealLadderCard";
 import RevealMethodologyPanel from "@/components/intake/RevealMethodologyPanel";
 import ResultsRevealShell, {
   type ResultsRevealShellVariant,
@@ -89,7 +90,11 @@ export default function IntakeResults({
 
   return (
     <ResultsRevealShell variant={shellVariant}>
-      <header style={{ marginBottom: 20, textAlign: "center" }}>
+      {/*
+        Header: gecentreerd, boven de grid.
+        Op desktop: max-width bewust niet beperkt — vult de brede container.
+      */}
+      <header style={{ marginBottom: 24, textAlign: "center", padding: "0 4px" }}>
         <p
           style={{
             margin: "0 0 10px",
@@ -116,35 +121,87 @@ export default function IntakeResults({
         </h1>
       </header>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        <RevealHeroGrid model={model} />
-        <RevealFirstStep model={model} />
-        {supplementDisclosure ? <SupplementDisclosure data={supplementDisclosure} /> : null}
-        <RevealCtaStack emailLine={emailLine} />
-        <IntakeFeedback sessionId={sessionId} />
-        <RevealMethodologyPanel pillarStatuses={pillarStatuses} />
+      {/*
+        Twee-koloms magazine-grid op lg+, één kolom op mobiel.
+
+        DOM-volgorde = mobiele leesvolgorde:
+          hero → ladder → eerste-stap → supplement → CTA → feedback → methodiek → footer
+
+        Op lg+ herpositioneert CSS grid met grid-auto-flow dense:
+          Kolom 1: hero (rij 1) → CTA (rij 2, dense) → feedback (rij 3, dense)
+          Kolom 2: ladder (rij 1) → eerste-stap (rij 2) → supplement (rij 3)
+          Vol breed: methodiek → rapport → footer
+      */}
+      <div
+        className={[
+          "flex flex-col gap-5",
+          "lg:grid lg:grid-flow-dense lg:gap-x-10 lg:gap-y-5",
+          "lg:[grid-template-columns:minmax(340px,1fr)_minmax(380px,1.05fr)]",
+        ].join(" ")}
+      >
+        {/* Linker kolom rij 1: hero-kaart */}
+        <div className="lg:col-start-1 lg:row-start-1">
+          <RevealHeroCard model={model} />
+        </div>
+
+        {/* Rechter kolom rij 1: prioriteitsladder */}
+        <div className="lg:col-start-2 lg:row-start-1">
+          <RevealLadderCard model={model} />
+        </div>
+
+        {/* Rechter kolom rij 2: eerste stap */}
+        <div className="lg:col-start-2">
+          <RevealFirstStep model={model} />
+        </div>
+
+        {/* Rechter kolom rij 3: supplement (conditioneel) */}
+        {supplementDisclosure ? (
+          <div className="lg:col-start-2">
+            <SupplementDisclosure data={supplementDisclosure} />
+          </div>
+        ) : null}
+
+        {/* Linker kolom rij 2 (dense): CTA + e-mailregel */}
+        <div className="lg:col-start-1">
+          <RevealCtaStack emailLine={emailLine} />
+        </div>
+
+        {/* Linker kolom rij 3 (dense): feedback */}
+        <div className="lg:col-start-1">
+          <IntakeFeedback sessionId={sessionId} />
+        </div>
+
+        {/* Vol breed: methodiek */}
+        <div className="lg:col-[1/-1]">
+          <RevealMethodologyPanel pillarStatuses={pillarStatuses} />
+        </div>
+
+        {/* Vol breed: rapport-link (conditioneel) */}
+        {rapportUrl ? (
+          <div className="lg:col-[1/-1]" style={{ textAlign: "center" }}>
+            <Link
+              href={rapportUrl}
+              style={{
+                fontSize: 14,
+                color: "var(--sage)",
+                textDecoration: "underline",
+                textUnderlineOffset: 2,
+              }}
+            >
+              Bekijk je 30-dagen rapport →
+            </Link>
+          </div>
+        ) : null}
+
+        {/* Vol breed: footer (disclaimer, AVG, restart) */}
+        <div className="lg:col-[1/-1]">
+          <RevealFooterPanel
+            sessionId={sessionId}
+            onRestart={onRestart}
+            onConsentRevoked={onConsentRevoked}
+          />
+        </div>
       </div>
-
-      {rapportUrl ? (
-        <p style={{ margin: "16px 0 0", textAlign: "center", fontSize: 14 }}>
-          <Link
-            href={rapportUrl}
-            style={{
-              color: "var(--sage)",
-              textDecoration: "underline",
-              textUnderlineOffset: 2,
-            }}
-          >
-            Bekijk je 30-dagen rapport →
-          </Link>
-        </p>
-      ) : null}
-
-      <RevealFooterPanel
-        sessionId={sessionId}
-        onRestart={onRestart}
-        onConsentRevoked={onConsentRevoked}
-      />
     </ResultsRevealShell>
   );
 }
