@@ -229,6 +229,12 @@ export const PILLAR_CHECKIN_ROUTES: Partial<Record<PillarId, string>> = {
   voeding: "/intake/voeding",
 };
 
+export const PILLAR_COMPARISON_ROUTES: Partial<Record<PillarId, string>> = {
+  slaap: "/beste/magnesium",
+  stress: "/beste/ashwagandha",
+  voeding: "/beste/omega-3-supplement",
+};
+
 export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "nu", type: "now" },
   { id: "prioriteit", type: "priority" },
@@ -242,11 +248,46 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
 ];
 
 export const DASHBOARD_TABS: DashboardTab[] = [
-  { id: "vandaag", label: "Vandaag", icon: "Home", title: "Vandaag", subtitle: "Je score en je ene volgende stap." },
-  { id: "roadmap", label: "Roadmap", icon: "RouteMap", title: "Roadmap", subtitle: "Waar je begint, stap voor stap." },
-  { id: "voortgang", label: "Voortgang", icon: "BarChart", title: "Voortgang", subtitle: "Je levenslijn — geen losse momentopname." },
-  { id: "hermeting", label: "Hermeting", icon: "Calendar", title: "Hermeting", subtitle: "Meet of het werkt." },
-  { id: "adviezen", label: "Adviezen", icon: "BookOpen", title: "Adviezen", subtitle: "Objectief, geen verkoop." },
+  {
+    id: "vandaag",
+    label: "Vandaag",
+    icon: "Home",
+    title: "Vandaag",
+    subtitle: "Je score en je ene volgende stap.",
+    emptyHint: "",
+  },
+  {
+    id: "roadmap",
+    label: "Roadmap",
+    icon: "RouteMap",
+    title: "Roadmap",
+    subtitle: "Waar je begint, stap voor stap.",
+    emptyHint: "Na je eerste check zie je hier je prioriteitenladder en persoonlijk plan.",
+  },
+  {
+    id: "voortgang",
+    label: "Voortgang",
+    icon: "BarChart",
+    title: "Voortgang",
+    subtitle: "Je levenslijn — geen losse momentopname.",
+    emptyHint: "Hier volg je je scores en trends — zodra je eerste check binnen is.",
+  },
+  {
+    id: "hermeting",
+    label: "Hermeting",
+    icon: "Calendar",
+    title: "Hermeting",
+    subtitle: "Meet of het werkt.",
+    emptyHint: "Over 30 dagen meet je opnieuw of je leefstijl-stappen werken.",
+  },
+  {
+    id: "adviezen",
+    label: "Adviezen",
+    icon: "BookOpen",
+    title: "Adviezen",
+    subtitle: "Objectief, geen verkoop.",
+    emptyHint: "Objectieve adviezen passend bij jouw prioriteit — na je eerste check.",
+  },
 ];
 
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {

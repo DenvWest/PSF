@@ -71,6 +71,7 @@ export type DashboardTab = {
   icon: DashboardIconName;
   title: string;
   subtitle: string;
+  emptyHint: string;
 };
 
 export type PillarSupplement = {
@@ -144,6 +145,7 @@ export type DashboardData = {
   history: CheckLogEntry[];
   retest: boolean;
   nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
+  remeasure: { dueDate: string; daysUntil: number } | null;
 };
 
 export type IdentityField = {

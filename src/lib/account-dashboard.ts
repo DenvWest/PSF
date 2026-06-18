@@ -20,6 +20,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   history: [],
   retest: false,
   nutritionIntake: null,
+  remeasure: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -267,6 +268,15 @@ export async function loadAccountDashboardData(
     vitality: snapshot.vitality,
   }));
 
+  const firstSessionTs = snapshots[0].ts;
+  const due = new Date(firstSessionTs);
+  due.setUTCDate(due.getUTCDate() + 30);
+  const daysUntil = Math.ceil((due.getTime() - Date.now()) / 86_400_000);
+  const remeasure = {
+    dueDate: formatDashboardDate(due.toISOString()),
+    daysUntil,
+  };
+
   return {
     empty: false,
     current: {
@@ -285,5 +295,6 @@ export async function loadAccountDashboardData(
     history,
     retest: snapshots.length >= 2,
     nutritionIntake,
+    remeasure,
   };
 }

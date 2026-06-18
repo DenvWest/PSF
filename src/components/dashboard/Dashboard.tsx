@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
-import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
+import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLAR_COMPARISON_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import type {
@@ -32,6 +32,7 @@ type SharedSectionProps = {
   data?: DashboardData;
   onCheck: () => void;
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
+  onRemeasure: () => void;
 };
 
 type VitalityRingProps = {
@@ -579,24 +580,58 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
   );
 };
 
-const RetestSection = ({ model }: SharedSectionProps) => {
-  if (!model) {
-    return null;
-  }
-  if (!model.retest || !model.prevScores) {
+const RemeasureStrip = ({
+  remeasure,
+  onRemeasure,
+}: {
+  remeasure: NonNullable<DashboardData["remeasure"]>;
+  onRemeasure: () => void;
+}) => {
+  if (remeasure.daysUntil > 0) {
     return (
       <Card pad={20}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.04)", border: "1px solid var(--panel-border)", color: "var(--text-muted)" }}>
-            <Icons.Refresh s={18} />
+            <Icons.Calendar s={18} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Over 6 dagen: je voortgangscheck</div>
+            <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Over {remeasure.daysUntil} dagen: je hermeting</div>
             <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2, lineHeight: 1.4 }}>Dan meten we of je hefboom werkte — en of je prioriteit verschuift.</div>
           </div>
         </div>
       </Card>
     );
+  }
+
+  return (
+    <Card pad={20} glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.26)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+        <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.04)", border: "1px solid var(--panel-border)", color: "var(--text-muted)" }}>
+          <Icons.Refresh s={18} />
+        </div>
+        <div style={{ flex: "1 1 180px" }}>
+          <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Tijd voor je hermeting</div>
+          <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2, lineHeight: 1.4 }}>Meet opnieuw of je leefstijl-stappen werken.</div>
+        </div>
+        <Button onClick={onRemeasure} iconRight={<Icons.ArrowRight s={18} />}>
+          Doe je hermeting nu
+        </Button>
+      </div>
+    </Card>
+  );
+};
+
+const RetestSection = ({ model, data, onRemeasure }: SharedSectionProps) => {
+  if (!model) {
+    return null;
+  }
+
+  const remeasureStrip = data?.remeasure ? (
+    <RemeasureStrip remeasure={data.remeasure} onRemeasure={onRemeasure} />
+  ) : null;
+
+  if (!model.retest || !model.prevScores) {
+    return remeasureStrip ? <section>{remeasureStrip}</section> : null;
   }
 
   const prevScores = model.prevScores;
@@ -612,7 +647,8 @@ const RetestSection = ({ model }: SharedSectionProps) => {
   const movedPriority = prevPriority.id !== model.priority.id;
 
   return (
-    <section>
+    <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {remeasureStrip}
       <Card pad={22} glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.26)" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
           <Icons.TrendUp s={14} /> Je hertest · {model.date}
@@ -800,19 +836,70 @@ const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
   </div>
 );
 
-const AdviezenPlaceholder = () => (
-  <Card pad={22} style={{ borderStyle: "dashed", background: "rgba(255,255,255,0.015)" }}>
-    <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
-      <Icons.BookOpen s={14} /> Adviezen
-    </div>
-    <div style={{ fontFamily: "var(--f-serif)", fontSize: 19, color: "var(--text)", lineHeight: 1.25, marginBottom: 6 }}>Binnenkort: adviezen op maat bij jouw prioriteit.</div>
-    <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>
-      Onafhankelijke uitleg en vergelijkingen die passen bij waar jij nu staat — met de onderbouwing erbij. Wij verkopen zelf niets.
-    </p>
-  </Card>
-);
+const AdviezenSection = ({ model, onGoRoadmap }: { model: DashboardModel; onGoRoadmap: () => void }) => {
+  const { priority } = model;
+  const supplement = priority.supplement;
+  const comparisonRoute = PILLAR_COMPARISON_ROUTES[priority.id];
+  const showSupplement = supplement != null && comparisonRoute != null;
 
-const DashTabBar = ({ tab, locked, onSelect }: { tab: DashboardTabId; locked: boolean; onSelect: (id: DashboardTabId) => void }) => (
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <Card pad={20} style={{ borderColor: "rgba(90,143,106,0.26)" }} glow="#5A8F6A">
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+          <span style={{ width: 30, height: 30, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(90,143,106,0.18)", color: "var(--sage)", border: "1px solid rgba(90,143,106,0.32)" }}>
+            <Icons.Leaf s={17} />
+          </span>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>Leefstijl eerst</div>
+        </div>
+        <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 14px", textWrap: "pretty" }}>{priority.lever}</p>
+        <div style={{ padding: "14px 2px", borderTop: "1px solid var(--divider)" }}>
+          <div style={{ fontSize: 15, color: "var(--text)", fontWeight: 600 }}>{priority.quickWin.title}</div>
+          <div style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.5, marginTop: 5, textWrap: "pretty" }}>{priority.quickWin.detail}</div>
+        </div>
+      </Card>
+      {showSupplement ? (
+        <Card pad={20}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+            <span style={{ fontFamily: "var(--f-serif)", fontSize: 18, color: "var(--text)" }}>{supplement.name}</span>
+            <span style={{ fontFamily: "var(--f-serif)", fontStyle: "italic", fontSize: 14, color: "var(--text-subtle)" }}>{supplement.form}</span>
+          </div>
+          <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5, marginBottom: 16, textWrap: "pretty" }}>{supplement.claim}.</div>
+          <Link href={comparisonRoute} style={{ fontSize: 14, fontWeight: 600, color: "var(--sage)", textDecoration: "underline", textUnderlineOffset: 2 }}>
+            Bekijk de onafhankelijke vergelijking
+          </Link>
+        </Card>
+      ) : (
+        <div>
+          <Button variant="secondary" onClick={onGoRoadmap} iconRight={<Icons.ArrowRight s={18} />}>
+            Bekijk je roadmap
+          </Button>
+        </div>
+      )}
+      <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--text-muted)" }}>
+        <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
+        <span>Objectief — wij verkopen zelf niets.</span>
+      </div>
+    </div>
+  );
+};
+
+const EmptyTabState = ({ tab, onCheck }: { tab: DashboardTab; onCheck: () => void }) => {
+  const Icon = Icons[tab.icon];
+  return (
+    <Card pad={22} style={{ borderStyle: "dashed", background: "rgba(255,255,255,0.015)" }}>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
+        <Icon s={14} /> {tab.label}
+      </div>
+      <div style={{ fontFamily: "var(--f-serif)", fontSize: 19, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>{tab.title}</div>
+      <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>{tab.emptyHint}</p>
+      <Button onClick={onCheck} iconRight={<Icons.ArrowRight s={18} />}>
+        Doe je eerste check
+      </Button>
+    </Card>
+  );
+};
+
+const DashTabBar = ({ tab, onSelect }: { tab: DashboardTabId; onSelect: (id: DashboardTabId) => void }) => (
   <nav
     aria-label="Dashboard-navigatie"
     style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20, display: "flex", justifyContent: "center", background: "rgba(16,26,16,0.92)", backdropFilter: "blur(12px)", borderTop: "1px solid var(--panel-border)", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
@@ -821,15 +908,13 @@ const DashTabBar = ({ tab, locked, onSelect }: { tab: DashboardTabId; locked: bo
       {DASHBOARD_TABS.map((t) => {
         const Icon = Icons[t.icon];
         const active = t.id === tab;
-        const disabled = locked && t.id !== "vandaag";
         return (
           <button
             key={t.id}
             type="button"
-            disabled={disabled}
             aria-current={active ? "page" : undefined}
             onClick={() => onSelect(t.id)}
-            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "9px 4px 11px", background: "none", border: "none", cursor: disabled ? "default" : "pointer", color: active ? "var(--sage)" : disabled ? "var(--text-subtle)" : "var(--text-muted)", opacity: disabled ? 0.45 : 1, fontFamily: "var(--f-sans)" }}
+            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "9px 4px 11px", background: "none", border: "none", cursor: "pointer", color: active ? "var(--sage)" : "var(--text-muted)", fontFamily: "var(--f-sans)" }}
           >
             <Icon s={20} />
             <span style={{ fontSize: 11, fontWeight: active ? 600 : 500 }}>{t.label}</span>
@@ -851,10 +936,8 @@ export default function Dashboard({ empty, data }: DashboardProps) {
     [empty, data],
   );
 
-  const locked = Boolean(empty);
-  const activeTab: DashboardTabId = locked ? "vandaag" : tab;
-  const tabMeta = DASHBOARD_TABS.find((t) => t.id === activeTab) ?? DASHBOARD_TABS[0];
-  const allowedTypes = TAB_SECTIONS[activeTab];
+  const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
+  const allowedTypes = TAB_SECTIONS[tab];
   const sectionTypes = empty
     ? allowedTypes.filter((type) => EMPTY_SECTIONS.includes(type))
     : allowedTypes;
@@ -878,18 +961,23 @@ export default function Dashboard({ empty, data }: DashboardProps) {
     });
     router.push(`${route}?from=dashboard`);
   };
+  const onRemeasure = () => {
+    router.push("/intake?from=dashboard");
+  };
 
-  const sharedProps: SharedSectionProps = { empty, model, data, onCheck, onDashboardCheckin };
+  const sharedProps: SharedSectionProps = { empty, model, data, onCheck, onDashboardCheckin, onRemeasure };
 
   return (
     <div>
       <main style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: "clamp(20px, 4vh, 36px) 18px calc(96px + env(safe-area-inset-bottom, 0px))" }}>
         <DashHeader onLogout={onLogout} />
-        {activeTab === "vandaag" ? <Greeting empty={empty} model={model} /> : <DashTabHeader tab={tabMeta} />}
+        {tab === "vandaag" ? <Greeting empty={empty} model={model} /> : <DashTabHeader tab={tabMeta} />}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {sectionTypes.length === 0 ? (
-            <AdviezenPlaceholder />
-          ) : (
+          {empty && tab !== "vandaag" ? (
+            <EmptyTabState tab={tabMeta} onCheck={onCheck} />
+          ) : tab === "adviezen" && model ? (
+            <AdviezenSection model={model} onGoRoadmap={() => setTab("roadmap")} />
+          ) : sectionTypes.length === 0 ? null : (
             sectionTypes.map((type) => (
               <section key={type}>{SECTION_RENDERERS[type](sharedProps)}</section>
             ))
@@ -905,7 +993,7 @@ export default function Dashboard({ empty, data }: DashboardProps) {
           Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
         </footer>
       </main>
-      <DashTabBar tab={activeTab} locked={locked} onSelect={setTab} />
+      <DashTabBar tab={tab} onSelect={setTab} />
     </div>
   );
 }

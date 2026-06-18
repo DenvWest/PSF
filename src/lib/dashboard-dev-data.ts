@@ -60,5 +60,9 @@ export function buildDevDashboardData(
     history,
     retest: mode === "retest",
     nutritionIntake: null,
+    remeasure:
+      mode === "retest"
+        ? { dueDate: "10 jul 2026", daysUntil: -8 }
+        : { dueDate: "10 jul 2026", daysUntil: 22 },
   };
 }
