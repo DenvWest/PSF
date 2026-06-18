@@ -14,6 +14,11 @@
 - **Endpoints** (`src/app/api/account/`): `request-link` (code mailen; **altijd generieke 200** = non-enumerating; rate-limited per IP én per e-mail), `verify` (GET — klik-link `aid`+`code` → cookie → `/dashboard`), `verify-code` (POST — on-site code-invoer), `logout`, `claim-sessions`, `revoke`.
 - **Brute-force-cap:** de 6-cijfer-code is zwak; de beveiliging is de **rate-limiting** (per e-mail + per IP) + 15 min TTL + eenmaligheid.
 
+### Sessie-hardening
+
+- **(a)** Tokenformaat is nu `accountId.issuedAt.sig`; server-side wordt 90 dagen afgedwongen. Oude 2-delige cookies zijn ongeldig na deploy — gebruikers moeten opnieuw inloggen.
+- **(b) BACKLOG:** `#2` `session_version`-kolom op `accounts` voor echte "overal uitloggen"/per-account-intrekking (vóór partner-trials); `#3` optioneel sliding refresh (cookie vernieuwen bij activiteit).
+
 ## Account-lifecycle
 
 - **Aanmaken:** nieuw e-mailadres → alléén bij `consent === true` + een actieve `psf_intake_sid` (het acquisitiemoment ná een check). Account-storage-consent wordt vastgelegd in `consent_records`.
