@@ -6,6 +6,7 @@ import { Lock } from "@/components/app/icons";
 type VitalityRingProps = {
   state?: "locked" | "scored";
   value?: number;
+  delta?: number | null;
   size?: number;
   stroke?: number;
   showLockedHint?: boolean;
@@ -14,6 +15,7 @@ type VitalityRingProps = {
 export default function VitalityRing({
   state = "scored",
   value = 0,
+  delta = null,
   size = 160,
   stroke = 13,
   showLockedHint = false,
@@ -52,9 +54,9 @@ export default function VitalityRing({
   const pct = Math.max(0, Math.min(100, disp)) / 100;
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90" aria-hidden>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+      <div style={{ position: "relative", width: size, height: size }}>
+        <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }} aria-hidden>
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -80,7 +82,7 @@ export default function VitalityRing({
               cy={size / 2}
               r={r}
               fill="none"
-              stroke="var(--sage, #5A8F6A)"
+              stroke="var(--sage)"
               strokeWidth={stroke}
               strokeLinecap="round"
               strokeDasharray={c}
@@ -89,35 +91,72 @@ export default function VitalityRing({
             />
           )}
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <div
-            className="font-serif leading-none tabular-nums"
             style={{
+              fontFamily: "var(--f-serif)",
               fontSize: size * 0.32,
-              color: locked
-                ? "var(--text-subtle, rgba(255,255,255,0.4))"
-                : "var(--text, rgba(255,255,255,0.95))",
+              color: locked ? "var(--text-subtle)" : "var(--text)",
+              lineHeight: 1,
+              fontVariantNumeric: "tabular-nums",
             }}
           >
             {locked ? "—" : Math.round(disp)}
           </div>
           <div
-            className="mt-1.5 text-xs uppercase tracking-[0.12em]"
-            style={{ color: "var(--text-subtle, rgba(255,255,255,0.4))" }}
+            style={{
+              fontSize: 12,
+              color: "var(--text-subtle)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              marginTop: 6,
+            }}
           >
             Vitaliteit
           </div>
         </div>
       </div>
-      {showLockedHint ? (
-        <div
-          className="flex items-center gap-1.5 text-xs"
-          style={{ color: "var(--text-subtle, rgba(255,255,255,0.4))" }}
-        >
-          <Lock s={13} />
-          <span>Trend zichtbaar na account</span>
-        </div>
-      ) : null}
+      {locked ? (
+        showLockedHint ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 12,
+              color: "var(--text-subtle)",
+            }}
+          >
+            <Lock s={13} />
+            <span>Trend zichtbaar na account</span>
+          </div>
+        ) : (
+          <div style={{ fontSize: 12.5, color: "var(--text-subtle)" }}>Nog geen score</div>
+        )
+      ) : (
+        delta != null && (
+          <div
+            style={{
+              fontSize: 12.5,
+              fontWeight: 600,
+              color: delta >= 0 ? "var(--sage)" : "var(--terra)",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {delta >= 0 ? "+" : ""}
+            {delta} sinds je vorige check
+          </div>
+        )
+      )}
     </div>
   );
 }

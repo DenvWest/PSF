@@ -1,102 +1,192 @@
 "use client";
 
-import type { ComponentType } from "react";
+import type { ComponentType, CSSProperties } from "react";
+import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import type { CheckScores, Pillar } from "@/types/dashboard";
+import type { CheckScores, Pillar, PillarId } from "@/types/dashboard";
 
-const LADDER_ROW_H = 60;
+export const LADDER_ROW_H = 60;
 
 type PriorityLadderProps = {
   ladder: Pillar[];
   scores: CheckScores;
+  positions?: Record<PillarId, number>;
+  focusRowHref?: string;
+  focusRowAriaLabel?: string;
 };
 
-export default function PriorityLadder({ ladder, scores }: PriorityLadderProps) {
+function LadderRowContent({
+  pillar,
+  rank,
+  score,
+  focus,
+}: {
+  pillar: Pillar;
+  rank: number;
+  score: number;
+  focus: boolean;
+}) {
+  const Icon = Icons[pillar.icon as keyof typeof Icons] as ComponentType<{ s?: number }>;
+
   return (
-    <div className="relative" style={{ height: ladder.length * LADDER_ROW_H }}>
+    <>
+      <div
+        style={{
+          width: 24,
+          fontFamily: "var(--f-serif)",
+          fontSize: 16,
+          color: focus ? pillar.color : "var(--text-subtle)",
+          textAlign: "center",
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {rank}
+      </div>
+      <div
+        style={{
+          width: 32,
+          height: 32,
+          borderRadius: 9,
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: `${pillar.color}1f`,
+          color: pillar.color,
+          border: `1px solid ${pillar.color}33`,
+        }}
+      >
+        {Icon ? <Icon s={16} /> : null}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <span
+            style={{
+              fontSize: 14.5,
+              color: "var(--text)",
+              fontWeight: focus ? 600 : 500,
+            }}
+          >
+            {pillar.label}
+          </span>
+          {focus ? (
+            <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600 }}>
+              ← hier begin je nu
+            </span>
+          ) : null}
+        </div>
+        <div
+          style={{
+            height: 4,
+            borderRadius: 3,
+            background: "rgba(255,255,255,0.07)",
+            overflow: "hidden",
+            marginTop: 7,
+          }}
+        >
+          <div
+            style={{
+              width: `${score}%`,
+              height: "100%",
+              background: pillar.color,
+              opacity: focus ? 1 : 0.5,
+              borderRadius: 3,
+              transition: "opacity .5s",
+            }}
+          />
+        </div>
+      </div>
+      <div
+        style={{
+          fontFamily: "var(--f-serif)",
+          fontSize: 19,
+          color: focus ? "var(--text)" : "var(--text-muted)",
+          fontVariantNumeric: "tabular-nums",
+          width: 28,
+          textAlign: "right",
+        }}
+      >
+        {score}
+      </div>
+    </>
+  );
+}
+
+export default function PriorityLadder({
+  ladder,
+  scores,
+  positions,
+  focusRowHref,
+  focusRowAriaLabel,
+}: PriorityLadderProps) {
+  const animated = positions != null;
+
+  const rowInnerStyle = (focus: boolean, pillar: Pillar): CSSProperties => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    height: "100%",
+    padding: "0 12px",
+    borderRadius: 16,
+    background: focus ? `${pillar.color}1f` : "transparent",
+    transition: "background .5s",
+    textDecoration: "none",
+    color: "inherit",
+    width: "100%",
+    minHeight: 44,
+    boxSizing: "border-box",
+  });
+
+  return (
+    <div style={{ position: "relative", height: ladder.length * LADDER_ROW_H }}>
       {ladder.slice(1).map((_, i) => (
         <div
           key={`divider-${i}`}
-          className="absolute left-3 right-3 h-px"
           style={{
+            position: "absolute",
+            left: 12,
+            right: 12,
             top: (i + 1) * LADDER_ROW_H,
-            background: "var(--divider, rgba(255,255,255,0.08))",
+            height: 1,
+            background: "var(--divider)",
           }}
         />
       ))}
-      {ladder.map((pillar, idx) => {
-        const Icon = Icons[pillar.icon as keyof typeof Icons] as ComponentType<{ s?: number }>;
-        const score = scores[pillar.id];
+      {ladder.map((pillar, staticIdx) => {
+        const idx = positions ? positions[pillar.id] : staticIdx;
         const focus = idx === 0;
+        const score = scores[pillar.id];
+        const rank = idx + 1;
 
         return (
           <div
             key={pillar.id}
-            className="absolute inset-x-0 top-0 flex items-center gap-3 px-3"
-            style={{ height: LADDER_ROW_H, transform: `translateY(${idx * LADDER_ROW_H}px)` }}
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              height: LADDER_ROW_H,
+              transform: `translateY(${idx * LADDER_ROW_H}px)`,
+              transition: animated ? "transform .85s cubic-bezier(.4,0,.2,1)" : undefined,
+            }}
           >
-            <div
-              className="flex h-full w-full items-center gap-3 rounded-2xl"
-              style={{ background: focus ? `${pillar.color}1f` : "transparent" }}
-            >
-              <div
-                className="w-6 text-center font-serif text-base tabular-nums"
-                style={{ color: focus ? pillar.color : "var(--text-subtle, rgba(255,255,255,0.4))" }}
+            {focus && focusRowHref ? (
+              <Link
+                href={focusRowHref}
+                aria-label={
+                  focusRowAriaLabel ??
+                  `Bewaar dit overzicht — begin bij ${pillar.label.toLowerCase()}`
+                }
+                style={rowInnerStyle(focus, pillar)}
               >
-                {idx + 1}
+                <LadderRowContent pillar={pillar} rank={rank} score={score} focus={focus} />
+              </Link>
+            ) : (
+              <div style={rowInnerStyle(focus, pillar)}>
+                <LadderRowContent pillar={pillar} rank={rank} score={score} focus={focus} />
               </div>
-              <div
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px]"
-                style={{
-                  background: `${pillar.color}1f`,
-                  color: pillar.color,
-                  border: `1px solid ${pillar.color}33`,
-                }}
-              >
-                {Icon ? <Icon s={16} /> : null}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className="text-[14.5px]"
-                    style={{
-                      color: "var(--text, rgba(255,255,255,0.95))",
-                      fontWeight: focus ? 600 : 500,
-                    }}
-                  >
-                    {pillar.label}
-                  </span>
-                  {focus ? (
-                    <span className="text-[11px] font-semibold" style={{ color: pillar.color }}>
-                      ← hier begin je nu
-                    </span>
-                  ) : null}
-                </div>
-                <div
-                  className="mt-1.5 h-1 overflow-hidden rounded-sm"
-                  style={{ background: "rgba(255,255,255,0.07)" }}
-                >
-                  <div
-                    className="h-full rounded-sm"
-                    style={{
-                      width: `${score}%`,
-                      background: pillar.color,
-                      opacity: focus ? 1 : 0.5,
-                    }}
-                  />
-                </div>
-              </div>
-              <div
-                className="w-7 text-right font-serif text-lg tabular-nums"
-                style={{
-                  color: focus
-                    ? "var(--text, rgba(255,255,255,0.95))"
-                    : "var(--text-muted, rgba(255,255,255,0.6))",
-                }}
-              >
-                {score}
-              </div>
-            </div>
+            )}
           </div>
         );
       })}

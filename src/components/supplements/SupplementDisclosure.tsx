@@ -8,9 +8,10 @@ export type SupplementDisclosureData = {
   form: string;
   grade: "A" | "B" | string;
   claim: string;
+  signal: string;
+  qualityRule: string;
   comparisonPath: string;
   onHold: boolean;
-  qualityReason: string;
 };
 
 type SupplementDisclosureProps = {
@@ -21,67 +22,121 @@ export default function SupplementDisclosure({ data }: SupplementDisclosureProps
   return (
     <aside
       aria-label="Aanvullend supplement-advies"
-      className="border-l-2 pl-3.5"
-      style={{ borderColor: "var(--divider, rgba(255,255,255,0.08))" }}
+      style={{
+        marginTop: 4,
+        paddingLeft: 14,
+        borderLeft: "2px solid var(--divider)",
+      }}
     >
-      <div className="mb-2 flex items-center gap-2">
-        <Pill s={14} style={{ color: "var(--text-subtle, rgba(255,255,255,0.4))" }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0 8px" }}>
+        <Pill s={14} style={{ color: "var(--text-subtle)" }} />
         <span
-          className="text-[11.5px] uppercase tracking-[0.1em]"
-          style={{ color: "var(--text-subtle, rgba(255,255,255,0.4))" }}
+          style={{
+            fontSize: 11.5,
+            color: "var(--text-subtle)",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+          }}
         >
           Spoor B · Aanvulling, pas hierna
         </span>
       </div>
       <div
-        className="rounded-2xl border p-4"
         style={{
           background: "rgba(255,255,255,0.025)",
-          borderColor: "var(--divider, rgba(255,255,255,0.08))",
+          border: "1px solid var(--divider)",
+          borderRadius: 16,
+          padding: 16,
         }}
       >
-        <div className="mb-1 flex flex-wrap items-baseline gap-2">
-          <span className="font-serif text-lg" style={{ color: "var(--text, rgba(255,255,255,0.95))" }}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "baseline",
+            gap: 8,
+            marginBottom: 4,
+          }}
+        >
+          <span style={{ fontFamily: "var(--f-serif)", fontSize: 18, color: "var(--text)" }}>
             {data.name}
           </span>
           <span
-            className="font-serif text-sm italic"
-            style={{ color: "var(--text-subtle, rgba(255,255,255,0.4))" }}
+            style={{
+              fontFamily: "var(--f-serif)",
+              fontStyle: "italic",
+              fontSize: 14,
+              color: "var(--text-subtle)",
+            }}
           >
             {data.form}
           </span>
           <span
-            className="ml-auto rounded-md border px-2 py-0.5 text-[11px]"
             style={{
-              color: "var(--text-muted, rgba(255,255,255,0.6))",
-              borderColor: "var(--divider, rgba(255,255,255,0.08))",
+              marginLeft: "auto",
+              fontSize: 11,
+              color: "var(--text-muted)",
+              border: "1px solid var(--divider)",
+              borderRadius: 6,
+              padding: "2px 7px",
             }}
           >
             Evidence {data.grade}
           </span>
         </div>
         {data.onHold ? (
-          <p className="mb-2 text-sm text-intake-terra">
+          <p style={{ fontSize: 13, color: "var(--terra)", lineHeight: 1.5, margin: "0 0 8px" }}>
             Dit is geen goedgekeurde gezondheidsclaim.
           </p>
         ) : (
-          <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted, rgba(255,255,255,0.6))" }}>
-            {data.claim}
+          <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5, margin: "0 0 8px" }}>
+            {data.claim}.
           </p>
         )}
-        <details className="mt-3">
-          <summary className="min-h-11 cursor-pointer list-none text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
+        <details>
+          <summary
+            style={{
+              minHeight: 44,
+              display: "flex",
+              alignItems: "center",
+              cursor: "pointer",
+              listStyle: "none",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "var(--sage)",
+            }}
+            className="[&::-webkit-details-marker]:hidden"
+          >
             ⓘ Waarom dit advies?
           </summary>
-          <ul className="mt-2 space-y-1.5 pl-4 text-sm leading-relaxed" style={{ color: "var(--text-muted, rgba(255,255,255,0.6))" }}>
-            <li className="list-disc">{data.qualityReason}</li>
-            <li className="list-disc">Wij kozen dit op kwaliteit, niet op commissie.</li>
+          <ul
+            style={{
+              margin: "8px 0 0",
+              paddingLeft: 16,
+              fontSize: 13,
+              color: "var(--text-muted)",
+              lineHeight: 1.55,
+            }}
+          >
+            <li style={{ marginBottom: 6 }}>{data.signal}</li>
+            <li style={{ marginBottom: 6 }}>{data.qualityRule}</li>
+            <li>Wij kozen dit op kwaliteit, niet op commissie.</li>
           </ul>
         </details>
       </div>
       <Link
         href={data.comparisonPath}
-        className="mt-3 inline-block min-h-11 py-2 text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px]"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          minHeight: 44,
+          marginTop: 10,
+          fontSize: 14,
+          fontWeight: 600,
+          color: "var(--sage)",
+          textDecoration: "underline",
+          textUnderlineOffset: 2,
+        }}
       >
         Bekijk de onafhankelijke vergelijking →
       </Link>

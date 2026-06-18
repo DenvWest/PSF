@@ -4,6 +4,8 @@ import type { ReactElement } from "react";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import PriorityLadder from "@/components/app/PriorityLadder";
+import VitalityRing from "@/components/app/VitalityRing";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
@@ -33,94 +35,6 @@ type SharedSectionProps = {
   onCheck: () => void;
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
-};
-
-type VitalityRingProps = {
-  state?: "locked" | "scored";
-  value?: number;
-  delta?: number | null;
-  size?: number;
-  stroke?: number;
-};
-
-const VitalityRing = ({ state = "scored", value = 0, delta = null, size = 172, stroke = 13 }: VitalityRingProps) => {
-  const locked = state === "locked";
-  const [disp, setDisp] = useState(0);
-
-  useEffect(() => {
-    if (locked) {
-      return;
-    }
-    let raf = 0;
-    let start: number | undefined;
-    const dur = 1150;
-    const tick = (t: number) => {
-      if (!start) start = t;
-      const p = Math.min(1, (t - start) / dur);
-      const e = 1 - Math.pow(1 - p, 3);
-      setDisp(e * value);
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    const settle = window.setTimeout(() => setDisp(value), dur + 150);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(settle);
-    };
-  }, [value, locked]);
-
-  const r = (size - stroke) / 2;
-  const c = 2 * Math.PI * r;
-  const pct = Math.max(0, Math.min(100, disp)) / 100;
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-      <div style={{ position: "relative", width: size, height: size }}>
-        <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
-          {locked ? (
-            <circle
-              cx={size / 2}
-              cy={size / 2}
-              r={r}
-              fill="none"
-              stroke="rgba(255,255,255,0.16)"
-              strokeWidth={stroke}
-              strokeLinecap="round"
-              strokeDasharray="2 10"
-            />
-          ) : (
-            <circle
-              cx={size / 2}
-              cy={size / 2}
-              r={r}
-              fill="none"
-              stroke="var(--sage)"
-              strokeWidth={stroke}
-              strokeLinecap="round"
-              strokeDasharray={c}
-              strokeDashoffset={c * (1 - pct)}
-              style={{ filter: "drop-shadow(0 0 6px rgba(90,143,106,0.4))" }}
-            />
-          )}
-        </svg>
-        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ fontFamily: "var(--f-serif)", fontSize: size * 0.32, color: locked ? "var(--text-subtle)" : "var(--text)", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{locked ? "—" : Math.round(disp)}</div>
-          <div style={{ fontSize: 12, color: "var(--text-subtle)", letterSpacing: "0.12em", textTransform: "uppercase", marginTop: 6 }}>Vitaliteit</div>
-        </div>
-      </div>
-      {locked ? (
-        <div style={{ fontSize: 12.5, color: "var(--text-subtle)" }}>Nog geen score</div>
-      ) : (
-        delta != null && (
-          <div style={{ fontSize: 12.5, fontWeight: 600, color: delta >= 0 ? "var(--sage)" : "var(--terra)", fontVariantNumeric: "tabular-nums" }}>
-            {delta >= 0 ? "+" : ""}
-            {delta} sinds je vorige check
-          </div>
-        )
-      )}
-    </div>
-  );
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -181,7 +95,7 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
     <Card glow="#5A8F6A" pad={24} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
     <div style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "center" }}>
       <div style={{ display: "flex", justifyContent: "center", flex: "1 1 168px", minWidth: 148 }}>
-        <VitalityRing state={empty || !currentModel ? "locked" : "scored"} value={empty || !currentModel ? 0 : currentModel.vitality} delta={empty || !currentModel ? null : currentModel.vitalityDelta} />
+        <VitalityRing state={empty || !currentModel ? "locked" : "scored"} value={empty || !currentModel ? 0 : currentModel.vitality} delta={empty || !currentModel ? null : currentModel.vitalityDelta} size={172} />
       </div>
       <div style={{ flex: "2 1 240px", minWidth: 0 }}>
         {empty ? (
@@ -225,7 +139,6 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
   );
 };
 
-const LADDER_ROW_H = 60;
 const PrioritySection = ({ model }: SharedSectionProps) => {
   const hasModel = Boolean(model);
   const ladder = model?.ladder ?? PILLARS;
@@ -271,48 +184,7 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
     <section>
       <SectionHeader eyebrow="Prioriteit" title="Waar je nu begint" action={<span style={{ fontSize: 12, color: "var(--text-subtle)" }}>zwakste bovenaan</span>} />
       <Card pad={8}>
-        <div style={{ position: "relative", height: ladder.length * LADDER_ROW_H }}>
-          {ladder.slice(1).map((_, i) => (
-            <div key={`d${i}`} style={{ position: "absolute", left: 12, right: 12, top: (i + 1) * LADDER_ROW_H, height: 1, background: "var(--divider)" }} />
-          ))}
-          {ladder.map((pillar) => {
-            const Icon = Icons[pillar.icon];
-            const score = scores[pillar.id];
-            const idx = pos[pillar.id];
-            const focus = idx === 0;
-            return (
-              <div
-                key={pillar.id}
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  height: LADDER_ROW_H,
-                  transform: `translateY(${idx * LADDER_ROW_H}px)`,
-                  transition: "transform .85s cubic-bezier(.4,0,.2,1)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 12, height: "100%", padding: "0 12px", borderRadius: 16, background: focus ? `${pillar.color}1f` : "transparent", transition: "background .5s" }}>
-                  <div style={{ width: 24, fontFamily: "var(--f-serif)", fontSize: 16, color: focus ? pillar.color : "var(--text-subtle)", textAlign: "center", fontVariantNumeric: "tabular-nums" }}>{idx + 1}</div>
-                  <div style={{ width: 32, height: 32, borderRadius: 9, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: `${pillar.color}1f`, color: pillar.color, border: `1px solid ${pillar.color}33` }}>
-                    <Icon s={16} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 14.5, color: "var(--text)", fontWeight: focus ? 600 : 500 }}>{pillar.label}</span>
-                      {focus && <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600 }}>{"← hier begin je nu"}</span>}
-                    </div>
-                    <div style={{ height: 4, borderRadius: 3, background: "rgba(255,255,255,0.07)", overflow: "hidden", marginTop: 7 }}>
-                      <div style={{ width: `${score}%`, height: "100%", background: pillar.color, opacity: focus ? 1 : 0.5, borderRadius: 3, transition: "opacity .5s" }} />
-                    </div>
-                  </div>
-                  <div style={{ fontFamily: "var(--f-serif)", fontSize: 19, color: focus ? "var(--text)" : "var(--text-muted)", fontVariantNumeric: "tabular-nums", width: 28, textAlign: "right" }}>{score}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <PriorityLadder ladder={ladder} scores={scores} positions={pos} />
       </Card>
     </section>
   );

@@ -3,25 +3,54 @@
 import { useState } from "react";
 import { saveIntakeFeedback } from "@/lib/intake-storage";
 
+type FeedbackChoice = "yes" | "partial" | "no" | null;
+
 type IntakeFeedbackProps = {
   sessionId: string | null;
 };
 
+const pillBase = {
+  flex: 1,
+  minHeight: 44,
+  cursor: "pointer",
+  borderRadius: 10,
+  fontSize: 14,
+  fontWeight: 600,
+  fontFamily: "var(--f-sans)",
+} as const;
+
 export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
-  const [rating, setRating] = useState<"positive" | "negative" | null>(null);
+  const [choice, setChoice] = useState<FeedbackChoice>(null);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  async function submit(rating: "positive" | "negative", withComment: boolean) {
+    setSubmitting(true);
+    await saveIntakeFeedback(
+      sessionId,
+      rating,
+      withComment && comment.trim() !== "" ? comment.trim() : null,
+    );
+    setSubmitting(false);
+    setSubmitted(true);
+  }
+
   if (submitted) {
     return (
       <div
-        className="mb-5 rounded-2xl px-6 py-8 text-center"
-        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+        style={{
+          marginBottom: 20,
+          borderRadius: 16,
+          padding: "24px 20px",
+          textAlign: "center",
+          background: "var(--panel)",
+          border: "1px solid var(--panel-border)",
+        }}
       >
-        <p className="text-[15px]" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <p style={{ fontSize: 16, color: "var(--text-muted)", margin: 0 }}>
           Bedankt voor je feedback{" "}
-          <span className="text-intake-sage" aria-hidden>
+          <span style={{ color: "var(--sage)" }} aria-hidden>
             ✓
           </span>
         </p>
@@ -31,75 +60,112 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
 
   return (
     <div
-      className="mb-5 rounded-2xl px-6 py-7"
-      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+      style={{
+        marginBottom: 20,
+        borderRadius: 16,
+        padding: "24px 20px",
+        background: "var(--panel)",
+        border: "1px solid var(--panel-border)",
+      }}
     >
       <p
-        className="mb-5 text-center text-[15px] font-semibold"
-        style={{ color: "rgba(255,255,255,0.7)" }}
+        style={{
+          margin: "0 0 16px",
+          textAlign: "center",
+          fontSize: 16,
+          fontWeight: 600,
+          color: "var(--text-muted)",
+        }}
       >
         Herken je jezelf in dit advies?
       </p>
 
-      {rating === null ? (
-        <div className="flex gap-3">
+      {choice === null ? (
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <button
             type="button"
-            onClick={() => setRating("positive")}
-            className="flex-1 cursor-pointer rounded-[10px] border border-intake-sage/40 bg-intake-sage/15 py-3 text-sm font-semibold text-intake-sage transition-colors"
+            onClick={() => {
+              void submit("positive", false);
+            }}
+            disabled={submitting}
+            style={{
+              ...pillBase,
+              border: "1px solid rgba(90,143,106,0.40)",
+              background: "rgba(90,143,106,0.15)",
+              color: "var(--sage)",
+            }}
           >
-            Ja, klopt
+            Ja, herkenbaar
           </button>
           <button
             type="button"
-            onClick={() => setRating("negative")}
-            className="flex-1 cursor-pointer rounded-[10px] py-3 text-sm font-semibold transition-colors"
+            onClick={() => setChoice("partial")}
+            disabled={submitting}
             style={{
+              ...pillBase,
+              border: "1px solid var(--panel-border)",
               background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "rgba(255,255,255,0.5)",
-              fontFamily: "inherit",
+              color: "var(--text-muted)",
             }}
           >
-            Niet helemaal
+            Deels
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              void submit("negative", false);
+            }}
+            disabled={submitting}
+            style={{
+              ...pillBase,
+              border: "1px solid var(--panel-border)",
+              background: "rgba(255,255,255,0.07)",
+              color: "var(--text-muted)",
+            }}
+          >
+            Niet echt
           </button>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value.slice(0, 500))}
             placeholder="Wil je iets toelichten? (optioneel)"
             rows={4}
             maxLength={500}
-            className="box-border w-full resize-y rounded-[10px] px-3 py-2.5 text-sm outline-none"
             style={{
+              boxSizing: "border-box",
+              width: "100%",
+              resize: "vertical",
+              borderRadius: 10,
+              padding: "10px 12px",
+              fontSize: 14,
+              outline: "none",
               background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              color: "rgba(255,255,255,0.82)",
-              fontFamily: "inherit",
+              border: "1px solid var(--panel-border)",
+              color: "var(--text)",
+              fontFamily: "var(--f-sans)",
             }}
           />
           <button
             type="button"
             disabled={submitting}
             onClick={() => {
-              void (async () => {
-                setSubmitting(true);
-                await saveIntakeFeedback(
-                  sessionId,
-                  rating,
-                  comment.trim() === "" ? null : comment.trim(),
-                );
-                setSubmitting(false);
-                setSubmitted(true);
-              })();
+              void submit(choice === "partial" ? "positive" : "negative", true);
             }}
-            className="cursor-pointer rounded-[10px] border-none py-3.5 text-sm font-semibold disabled:cursor-default disabled:opacity-60"
             style={{
-              background: "#C8956C",
-              color: "white",
-              fontFamily: "inherit",
+              minHeight: 44,
+              cursor: submitting ? "default" : "pointer",
+              borderRadius: 10,
+              border: "none",
+              padding: "12px 16px",
+              fontSize: 14,
+              fontWeight: 600,
+              background: "var(--sage)",
+              color: "#0f1c10",
+              fontFamily: "var(--f-sans)",
+              opacity: submitting ? 0.6 : 1,
             }}
           >
             Verstuur feedback

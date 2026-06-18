@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import type { SymptomId } from "@/data/intake-questions";
 import type { PillarId } from "@/data/foundation-pyramid";
 import type { DomainScores } from "@/lib/intake-engine";
+import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
-import RevealDashboardPreview from "@/components/intake/RevealDashboardPreview";
+import RevealFirstStep from "@/components/intake/RevealFirstStep";
 import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
-import RevealPath from "@/components/intake/RevealPath";
+import RevealHeroGrid from "@/components/intake/RevealHeroGrid";
+import RevealMethodologyPanel from "@/components/intake/RevealMethodologyPanel";
 import ResultsRevealShell, {
   type ResultsRevealShellVariant,
 } from "@/components/intake/ResultsRevealShell";
+import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import type { PillarStatus } from "@/components/pyramid/FoundationPyramid";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -20,6 +23,7 @@ import { getPrimaryTheme } from "@/lib/primary-theme";
 import { getMailConfirmation } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { buildRevealModel } from "@/lib/reveal-model";
+import { buildRevealSupplementDisclosure } from "@/lib/reveal-supplement";
 import { getDisplayStatus } from "@/lib/score-display";
 
 type IntakeResultsProps = {
@@ -62,33 +66,14 @@ export default function IntakeResults({
   onConsentRevoked,
 }: IntakeResultsProps) {
   const themeRevealedEmittedRef = useRef(false);
-  const previewScrollRef = useRef<HTMLDivElement>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
   const primaryTheme = getPrimaryTheme(scores, answers);
   const isOvertrainer = matchesOvertrainerAnswers(answers);
   const model = buildRevealModel(scores, isOvertrainer, symptoms);
   const pillarStatuses = buildPillarStatuses(scores);
+  const supplementDisclosure = buildRevealSupplementDisclosure(model.priority);
   const emailLine = hasActiveMarketingEmailConsent
     ? getMailConfirmation(firstName)
     : null;
-
-  const openDashboardPreview = () => {
-    setPreviewOpen(true);
-  };
-
-  const toggleDashboardPreview = () => {
-    setPreviewOpen((open) => !open);
-  };
-
-  useEffect(() => {
-    if (!previewOpen) {
-      return;
-    }
-    const frame = window.requestAnimationFrame(() => {
-      previewScrollRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [previewOpen]);
 
   useEffect(() => {
     trackEvent("intake_results_viewed", { theme_slug: primaryTheme });
@@ -104,29 +89,51 @@ export default function IntakeResults({
 
   return (
     <ResultsRevealShell variant={shellVariant}>
-      <header className="mb-4 text-center lg:mb-5">
-        <h1 className="font-serif text-[28px] font-normal leading-tight text-intake-ink lg:text-[30px]">
+      <header style={{ marginBottom: 20, textAlign: "center" }}>
+        <p
+          style={{
+            margin: "0 0 10px",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--sage)",
+          }}
+        >
+          {REVEAL_COPY.eyebrow}
+        </p>
+        <h1
+          style={{
+            margin: 0,
+            fontFamily: "var(--f-serif)",
+            fontSize: 28,
+            fontWeight: 400,
+            lineHeight: 1.15,
+            color: "var(--text)",
+          }}
+        >
           {REVEAL_COPY.heroTitle}
         </h1>
       </header>
 
-      <RevealPath
-        model={model}
-        emailLine={emailLine}
-        onViewDashboard={openDashboardPreview}
-      />
-
-      <RevealCtaStack previewOpen={previewOpen} onPreviewOpen={toggleDashboardPreview} />
-
-      <div ref={previewScrollRef}>
-        <RevealDashboardPreview model={model} open={previewOpen} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <RevealHeroGrid model={model} />
+        <RevealFirstStep model={model} />
+        {supplementDisclosure ? <SupplementDisclosure data={supplementDisclosure} /> : null}
+        <RevealCtaStack emailLine={emailLine} />
+        <IntakeFeedback sessionId={sessionId} />
+        <RevealMethodologyPanel pillarStatuses={pillarStatuses} />
       </div>
 
       {rapportUrl ? (
-        <p className="mb-4 text-center text-sm">
+        <p style={{ margin: "16px 0 0", textAlign: "center", fontSize: 14 }}>
           <Link
             href={rapportUrl}
-            className="text-intake-sage underline-offset-2 hover:underline"
+            style={{
+              color: "var(--sage)",
+              textDecoration: "underline",
+              textUnderlineOffset: 2,
+            }}
           >
             Bekijk je 30-dagen rapport →
           </Link>
@@ -135,7 +142,6 @@ export default function IntakeResults({
 
       <RevealFooterPanel
         sessionId={sessionId}
-        pillarStatuses={pillarStatuses}
         onRestart={onRestart}
         onConsentRevoked={onConsentRevoked}
       />

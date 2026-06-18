@@ -4,34 +4,55 @@ import Link from "next/link";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 
 type RevealCtaStackProps = {
-  previewOpen: boolean;
-  onPreviewOpen: () => void;
+  emailLine?: string | null;
 };
 
-export default function RevealCtaStack({ previewOpen, onPreviewOpen }: RevealCtaStackProps) {
+export default function RevealCtaStack({ emailLine }: RevealCtaStackProps) {
   return (
-    <section aria-label="Bewaar je overzicht" className="mb-5 mt-5 lg:mb-6">
-      <div className="mx-auto w-full max-w-md">
+    <section aria-label="Bewaar je overzicht" style={{ margin: "20px 0" }}>
+      <div style={{ maxWidth: 448, margin: "0 auto", width: "100%" }}>
         <Link
           href="/account/login"
-          className="flex min-h-[52px] w-full items-center justify-center rounded-[14px] bg-intake-sage px-6 text-[15.5px] font-semibold text-[#0f1c10] no-underline transition-colors hover:bg-[#67a079]"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 52,
+            width: "100%",
+            borderRadius: 14,
+            background: "var(--sage)",
+            padding: "0 24px",
+            fontSize: 15.5,
+            fontWeight: 600,
+            color: "#0f1c10",
+            textDecoration: "none",
+          }}
         >
           {REVEAL_COPY.cta}
         </Link>
-        <p className="mt-3 text-center text-sm leading-relaxed text-intake-ink-muted">
+        <p
+          style={{
+            marginTop: 12,
+            textAlign: "center",
+            fontSize: 16,
+            lineHeight: 1.55,
+            color: "var(--text-muted)",
+          }}
+        >
           {REVEAL_COPY.ctaSubtext}
         </p>
-        <p className="mt-3 text-center">
-          <button
-            type="button"
-            onClick={onPreviewOpen}
-            aria-expanded={previewOpen}
-            aria-controls="dashboard-preview"
-            className="cursor-pointer text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+        {emailLine ? (
+          <p
+            style={{
+              marginTop: 8,
+              textAlign: "center",
+              fontSize: 14,
+              color: "var(--text-muted)",
+            }}
           >
-            {previewOpen ? REVEAL_COPY.ctaPreviewLinkHide : REVEAL_COPY.ctaPreviewLink}
-          </button>
-        </p>
+            {emailLine}
+          </p>
+        ) : null}
       </div>
     </section>
   );
