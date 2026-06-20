@@ -3,7 +3,6 @@ import { PILLAR } from "@/data/dashboard";
 import {
   calcDomainScores,
   getDeficiencySignals,
-  getProfileLabel,
   RULES_VERSION,
   type DomainScores,
 } from "@/lib/intake-engine";
