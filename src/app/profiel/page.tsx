@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { PROFILE_PAGES } from "@/data/profiles";
 
 export const metadata: Metadata = {
@@ -60,7 +61,7 @@ export default function ProfielOverzichtPage() {
               href="/intake"
               className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl transition-colors"
             >
-              Ontdek jouw herstelprofiel — gratis
+              {INTAKE_CTA.discoverOverviewShort}
             </Link>
           </div>
         </div>

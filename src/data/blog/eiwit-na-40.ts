@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { toRefs } from "@/lib/referentie-bewijs";
 
 export const eiwitNa40Data: BlogArtikel = {
@@ -55,7 +56,7 @@ export const eiwitNa40Data: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: "Turbo: ontdek jouw profiel",
+      titel: INTAKE_CTA.blogTurboProfile,
       tekst:
         "In de [Leefstijlcheck](/intake) zie je hoe eiwit, beweging en herstel samenkomen in één scorebeeld — handig als je niet weet waar je moet beginnen. Herken je veel trainen met weinig herstel? Bekijk ook het profiel [Overtrainer](/profiel/overtrainer).",
     },

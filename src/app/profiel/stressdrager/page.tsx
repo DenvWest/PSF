@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -335,7 +336,7 @@ export default function StressdragerPage() {
                   href="/intake"
                   className="inline-flex items-center mt-8 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl transition-colors text-base"
                 >
-                  Ontdek jouw profiel — match met Stressdrager
+                  {intakeCtaMatchProfile("Stressdrager")}
                 </Link>
               </div>
             </section>

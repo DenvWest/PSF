@@ -8,6 +8,7 @@ import {
   THEMA_GUIDE_SLUGS,
   getGuideDeliveryStatus,
 } from "@/data/gids";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import type { GuideThema } from "@/types/guide-opt-in";
 
 export const metadata: Metadata = {
@@ -179,7 +180,7 @@ export default function GidsenPage() {
                   href="/intake"
                   className="mt-5 inline-block rounded-lg bg-green-700 px-8 py-3 font-semibold text-white transition-colors hover:bg-green-800"
                 >
-                  Ontdek jouw herstelprofiel — gratis →
+                  {INTAKE_CTA.discoverOverview}
                 </Link>
               </div>
             </section>

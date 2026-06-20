@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { emailHasActiveAccount } from "@/lib/account-server";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { emitEvent } from "@/lib/events";
 import {
   getPlanInterventionBucketsForSession,
@@ -200,7 +201,7 @@ export async function runPendingNurtureEmails(): Promise<{
         const profileLabel =
           typeof mail.profile_label === "string" && mail.profile_label.trim()
             ? mail.profile_label.trim()
-            : "jouw profiel";
+            : INTAKE_CTA.nurtureProfileFallback;
         const firstName =
           typeof mail.first_name === "string" && mail.first_name.trim()
             ? mail.first_name.trim()
@@ -331,7 +332,7 @@ export async function runPendingNurtureEmails(): Promise<{
         const profileLabel =
           typeof mail.profile_label === "string" && mail.profile_label.trim()
             ? mail.profile_label.trim()
-            : "jouw profiel";
+            : INTAKE_CTA.nurtureProfileFallback;
         const primaryDomain =
           typeof mail.primary_domain === "string" && mail.primary_domain.trim()
             ? mail.primary_domain.trim()

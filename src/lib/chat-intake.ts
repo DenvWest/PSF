@@ -1,7 +1,7 @@
 // EXPERIMENTAL: scaffold for future multi-tenant work. Not used by production pages. Do not refactor production routes against this API yet.
 
 import type { SymptomId } from "@/data/intake-questions";
-import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
+import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import { createIntakeStrategy, type IntakeAnswers, type IntakeResults } from "./intake-strategy";
 
 export interface ChatMessage {
@@ -155,11 +155,11 @@ function computeResults(state: ChatIntakeState): ChatIntakeState {
 
 function formatResults(results: IntakeResults): string {
   const { profile, urgency, advice } = results;
-  let msg = `Je profiel: **${profile.name}**\n`;
+  let msg = `${INTAKE_CTA.chatPatternPrefix} **${profile.name}**\n`;
   msg += `Status: ${urgency.label}\n\n`;
 
   if (advice.quickWins.length > 0) {
-    msg += "**Quick wins:**\n";
+    msg += `**${INTAKE_CTA.chatBeginStepsHeading}**\n`;
     for (const win of advice.quickWins) {
       msg += `• ${win}\n`;
     }

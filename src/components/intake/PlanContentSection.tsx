@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import type { PlanAction } from "@/lib/content/plan-content";
 
 const TIER_LABELS: Record<number, string> = {
@@ -45,7 +46,7 @@ export default function PlanContentSection({
   return (
     <section
       className="mb-6 rounded-2xl border border-intake-card-border bg-intake-bg-elevated/60 px-5 py-4"
-      aria-label="Jouw stappenplan"
+      aria-label={INTAKE_CTA.planStepsAriaLabel}
     >
       <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
         {ready ? "Jouw volgorde" : "Eerst dit"}

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
-
-const LEEFSTIJLCHECK_CTA_BUTTON = "Doe de Leefstijlcheck — gratis →";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 
 interface BlogIntakeCTAProps {
   className?: string;
@@ -15,17 +14,16 @@ export default function BlogIntakeCTA({ className = "" }: BlogIntakeCTAProps) {
     >
       <p className="ps-eyebrow">Persoonlijk inzicht</p>
       <p className="mt-3 font-display text-xl font-semibold text-stone-900 md:text-2xl">
-        Ontdek waar jouw lichaam om herstel vraagt
+        {INTAKE_CTA.blogHeadline}
       </p>
       <p className="mt-2 text-sm text-stone-500">
-        15 vragen · 3 min · gratis en anoniem — inzicht op 6 leefstijl-domeinen. Geen medische
-        test.
+        {INTAKE_CTA.blogSubline}
       </p>
       <Link
         href="/intake"
         className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-lg bg-ps-green px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ps-green-hover"
       >
-        {LEEFSTIJLCHECK_CTA_BUTTON}
+        {INTAKE_CTA.primaryButton}
       </Link>
     </div>
   );

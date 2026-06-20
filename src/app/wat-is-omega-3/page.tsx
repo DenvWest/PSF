@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import {
     BlogArticleExcerpt,
     BlogArticleIntro,
@@ -283,7 +284,7 @@ export default function WhatIsOmega3Page() {
                                 href="/intake"
                                 className="inline-block bg-ps-green text-white rounded-xl px-8 py-4 text-base font-semibold hover:bg-ps-green-hover transition-colors"
                             >
-                                Ontdek jouw herstelprofiel — gratis →
+                                {INTAKE_CTA.discoverOverview}
                             </Link>
                         </div>
                     </section>

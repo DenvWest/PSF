@@ -1,3 +1,4 @@
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import type { ProfileLabel } from "@/lib/intake-engine";
 import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
@@ -195,7 +196,7 @@ export const nurtureContent: Record<
         "Meer trainen is nu niet de oplossing. Je lichaam vraagt om ruimte om bij te komen — dat begint met minder belasting, niet met harder pushen.",
       ],
       tip: "Kies 2 zware sessies deze week en maak ze licht of schrap ze. Vervang ze door 30–40 minuten wandelen zonder stopwatch.",
-      cta: { text: "Bekijk je herstel-overzicht", url: "/intake" },
+      cta: { text: INTAKE_CTA.nurtureOverview, url: "/intake" },
     },
   },
 
@@ -317,7 +318,7 @@ export const nurtureContent: Record<
         "Slaap is nu je belangrijkste hefboom: halfuur eerder naar bed heeft meer impact dan nog een supplement.",
       ],
       tip: "Halfuur eerder naar bed, 2 avonden op rij. Geen schermen in die extra halfuur — lezen of stil zitten is genoeg.",
-      cta: { text: "Bekijk je herstel-overzicht", url: "/intake" },
+      cta: { text: INTAKE_CTA.nurtureOverview, url: "/intake" },
     },
   },
 
@@ -376,7 +377,7 @@ export const nurtureContent: Record<
         "Magnesium draagt bij tot normale spierfunctie en vermindering van vermoeidheid onder EFSA-voorwaarden.",
       ],
       tip: "Check eerlijk: heb je echt 2 lichte dagen gehad en slaap voorrang gegeven? Pas dan is supplement de volgende stap.",
-      cta: { text: "Bekijk je herstel-overzicht", url: "/intake" },
+      cta: { text: INTAKE_CTA.nurtureOverview, url: "/intake" },
     },
   },
 

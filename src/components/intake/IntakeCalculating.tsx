@@ -3,6 +3,7 @@
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 
 const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
@@ -80,10 +81,10 @@ export default function IntakeCalculating({
             color: "rgba(255,255,255,0.88)",
           }}
         >
-          Je profiel wordt berekend...
+          {INTAKE_CTA.calculating}
         </h2>
         <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
-          Scores, signalen en advies op maat
+          Leefstijl-inzicht op basis van je antwoorden
         </p>
 
         {needsHumanVerification && turnstileSiteKey ? (

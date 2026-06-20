@@ -208,13 +208,13 @@ export default function HerstelVerbeterenNa40Page() {
                     Train je hard, maar blijf je achter de feiten aanlopen?
                   </p>
                   <p className="mt-2 text-gray-600">
-                    Dan past mogelijk het herstelprofiel bij jou: hoge belasting, te weinig buffers.
+                    Dan past mogelijk het leefstijlpatroon Overtrainer bij jou: hoge belasting, te weinig buffers.
                   </p>
                   <Link
                     href="/profiel/overtrainer"
                     className="mt-3 inline-block text-green-700 font-semibold hover:text-green-800"
                   >
-                    Bekijk het herstelprofiel →
+                    Bekijk het profiel Overtrainer →
                   </Link>
                 </div>
                 <p className="mt-6 text-gray-700 leading-relaxed">In deze gids leer je:</p>

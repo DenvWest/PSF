@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import Container from "@/components/layout/Container";
 import {
     BlogArticleExcerpt,
@@ -410,7 +411,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                         href="/intake"
                         className="mt-6 inline-block rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white hover:bg-stone-700"
                     >
-                        Ontdek jouw herstelprofiel — gratis →
+                        {INTAKE_CTA.discoverOverview}
                     </Link>
                 </div>
             </Container>

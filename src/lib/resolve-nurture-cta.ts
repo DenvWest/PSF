@@ -1,3 +1,4 @@
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import type { DomainKey, NurtureProfileKey } from "@/data/nurture-content";
 import type { IngredientClaimKey } from "@/data/approved-claims";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
@@ -58,7 +59,7 @@ const LIFESTYLE_BY_PROFILE: Record<
     url: "/intake",
   },
   Overtrainer: {
-    text: "Bekijk je herstel-overzicht",
+    text: INTAKE_CTA.nurtureOverview,
     url: "/intake",
   },
   "In Balans": {

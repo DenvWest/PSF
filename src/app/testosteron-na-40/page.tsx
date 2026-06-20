@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -180,7 +181,7 @@ export default function TestosteronNa40Page() {
               </p>
 
               <p className="mt-6 text-sm text-gray-500">
-                Benieuwd hoe jouw profiel scoort? Scroll naar beneden voor de gratis Leefstijlcheck.
+                {INTAKE_CTA.testosteronTeaser}
               </p>
 
               <section id="herkenning" className="mt-12 scroll-mt-24">

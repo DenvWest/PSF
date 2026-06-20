@@ -1,5 +1,5 @@
 import { ThemaPageData } from "@/types/thema";
-import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
+import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 
 export const stressThema: ThemaPageData = {
   slug: "stress",
@@ -199,7 +199,7 @@ export const stressThema: ThemaPageData = {
       "15 vragen, 3 minuten",
       "Scores op 6 leefstijldomeinen",
       INTAKE_DELIVERABLE.premiumFeatureBullet,
-      "Gerichte supplementroute op basis van jouw profiel",
+      INTAKE_CTA.supplementFeature,
     ],
     ctaText: "Start de Leefstijlcheck",
     ctaLink: "/intake",

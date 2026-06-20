@@ -47,7 +47,7 @@ export const DASHBOARD_ROUTE_STEPS: DashboardRouteStep[] = [
     step: 6,
     title: "Bijsturen",
     description:
-      "Leefstijlstappen eerst. Alleen als dat past bij jouw profiel: een onafhankelijke supplementvergelijking — geen verkooppraat.",
+      "Leefstijlstappen eerst. Alleen als dat past bij jouw leefstijlpatroon: een onafhankelijke supplementvergelijking — geen verkooppraat.",
     timeLabel: "Doorlopend",
   },
 ];
@@ -120,7 +120,7 @@ export const DASHBOARD_ROUTE_FAQ = [
   {
     question: "Krijg ik supplementadvies?",
     answer:
-      "Alleen als het past bij jouw profiel en leefstijlstappen. PerfectSupplement zet leefstijl eerst. Supplementen zijn een optionele trede — altijd onafhankelijk vergeleken, zonder sponsors.",
+      "Alleen als het past bij jouw leefstijlpatroon en leefstijlstappen. PerfectSupplement zet leefstijl eerst. Supplementen zijn een optionele trede — altijd onafhankelijk vergeleken, zonder sponsors.",
   },
 ] as const;
 

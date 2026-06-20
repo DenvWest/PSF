@@ -1,6 +1,7 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { intakeCtaMatchProfile } from "@/lib/intake-product-copy";
 import AshwagandhaOnHoldDisclaimer from "@/components/compliance/AshwagandhaOnHoldDisclaimer";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
@@ -235,7 +236,7 @@ export default async function ProfielPage({ params }: Props) {
                   href="/intake"
                   className="inline-flex items-center mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 h-12 rounded-lg transition-colors"
                 >
-                  Ontdek jouw profiel — match met {profile.label}
+                  {intakeCtaMatchProfile(profile.label)}
                 </Link>
               </div>
             </section>

@@ -1,4 +1,5 @@
 import type { BlogArtikel } from "@/types/blog";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { toRefs } from "@/lib/referentie-bewijs";
 
 export const creatineEnHerstelData: BlogArtikel = {
@@ -25,7 +26,7 @@ export const creatineEnHerstelData: BlogArtikel = {
     },
     {
       type: "tekst",
-      titel: "Past dit bij jouw profiel?",
+      titel: INTAKE_CTA.blogSectionProfile,
       tekst:
         "Als je veel traint, weinig buffer voelt en herstel structureel onder druk staat, sluit dit thema aan bij het profiel [Overtrainer](/profiel/overtrainer) — niet als label, maar als herkenningspatroon. De Leefstijlcheck op [/intake](/intake) helpt je prioriteiten te zetten vóór je extra supplementen stapelt.",
     },

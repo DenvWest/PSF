@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { emailHasActiveAccount } from "@/lib/account-server";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
 import { emitEvent } from "@/lib/events";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
@@ -186,7 +187,7 @@ export async function runPendingIntakeReminders(): Promise<{
     const profileLabel =
       typeof session?.profile_label === "string" && session.profile_label.trim()
         ? session.profile_label.trim()
-        : "jouw profiel";
+        : INTAKE_CTA.nurtureProfileFallback;
     const urgencyLevel =
       typeof session?.urgency_level === "string" && session.urgency_level.trim()
         ? session.urgency_level.trim()
