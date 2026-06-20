@@ -7,6 +7,7 @@ import RelevantieCard from "./RelevantieCard";
 import SymptoomLinkCard from "./SymptoomLinkCard";
 import FAQItem from "./FAQItem";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfileFits";
 import { getProfileFitsForGuideSlug } from "@/data/supplement-profile-fits";
@@ -309,7 +310,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
                   ✓ Scores op 6 leefstijldomeinen
                 </span>
                 <span className="text-sm text-white/70">
-                  ✓ Persoonlijk Herstelplan met quick wins
+                  ✓ {INTAKE_DELIVERABLE.premiumFeatureBullet}
                 </span>
                 <span className="text-sm text-white/70">
                   ✓ Gerichte supplementroute op basis van jouw profiel

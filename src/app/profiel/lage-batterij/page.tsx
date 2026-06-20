@@ -399,7 +399,7 @@ export default function LageBatterijPage() {
                 </h2>
                 <p className="text-slate-600 mt-4 leading-relaxed max-w-xl mx-auto">
                   In 3 minuten weet je waar je staat op 6 gezondheidsdomeinen — en krijg je een
-                  persoonlijk Herstelplan met concrete stappen.
+                  persoonlijk leefstijloverzicht met concrete stappen.
                 </p>
                 <IntakeCtaMicro className="mt-4 max-w-xl mx-auto text-sm text-slate-500" />
                 <Link

@@ -1,13 +1,14 @@
 import type { QuestionId } from "@/data/intake-questions";
 import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 
 export const INTAKE_PROMO = {
   questionCount: 15,
   durationLabel: "3 minuten",
-  subline: "15 vragen, 3 minuten — direct een persoonlijk herstelplan.",
+  subline: INTAKE_DELIVERABLE.subline,
   sublineShort: "Check in 3 minuten hoe jouw leefstijl invloed heeft.",
   sublineWithResult: "15 vragen, 3 minuten, persoonlijk resultaat.",
-  sublineWithAdvice: "15 vragen, 3 minuten — persoonlijk herstelplan.",
+  sublineWithAdvice: INTAKE_DELIVERABLE.sublineShort,
   heroCta: "Start de Leefstijlcheck (3 min)",
 } as const;
 
@@ -50,7 +51,7 @@ export const HOMEPAGE_TRUST = {
     },
     {
       label: "3 minuten",
-      description: "15 vragen, persoonlijk herstelplan",
+      description: `15 vragen, persoonlijk ${INTAKE_DELIVERABLE.label}`,
     },
     {
       label: "Gratis",

@@ -3,6 +3,7 @@ import {
   DASHBOARD_ROUTE_FAQ,
   DASHBOARD_ROUTE_STEPS,
 } from "@/data/dashboard-route";
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 
 describe("dashboard-route", () => {
   it("defines exactly 6 route steps in order", () => {
@@ -10,6 +11,12 @@ describe("dashboard-route", () => {
     expect(DASHBOARD_ROUTE_STEPS.map((step) => step.step)).toEqual([
       1, 2, 3, 4, 5, 6,
     ]);
+  });
+
+  it("names step 2 with compliance-safe leefstijloverzicht label", () => {
+    expect(DASHBOARD_ROUTE_STEPS[1]?.title).toBe(
+      INTAKE_DELIVERABLE.labelCapitalized,
+    );
   });
 
   it("includes required fields on every step", () => {

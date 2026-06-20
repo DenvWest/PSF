@@ -172,7 +172,7 @@ export default function GidsenPage() {
                 </h3>
                 <p className="mt-3 max-w-lg text-gray-600">
                   De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en
-                  energieprofiel in kaart. Je krijgt een persoonlijk herstelplan —
+                  energieprofiel in kaart. Je krijgt een persoonlijk leefstijloverzicht —
                   gratis, zonder registratie.
                 </p>
                 <Link

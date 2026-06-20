@@ -153,7 +153,7 @@ export default async function GidsOptInPage({ params }: Props) {
               <Link href="/intake" className="font-semibold text-ps-green hover:underline">
                 Doe de gratis Leefstijlcheck
               </Link>{" "}
-              voor een persoonlijk herstelplan op basis van jouw antwoorden.
+              voor een persoonlijk leefstijloverzicht op basis van jouw antwoorden.
             </p>
           </section>
 

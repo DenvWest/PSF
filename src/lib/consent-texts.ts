@@ -1,3 +1,5 @@
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
+
 /** Versie van de getoonde toestemmingsteksten (audittrail). */
 export const CONSENT_VERSION = "2.1" as const;
 
@@ -69,5 +71,5 @@ export const CONTACT_CONSENT_TEXT: Record<ConsentType, string> = {
   anonymous_analytics:
     "Ik sta anonieme analyse van mijn bericht toe voor productverbetering",
   marketing_email:
-    "Ik wil e-mailupdates ontvangen over mijn herstelplan",
+    INTAKE_DELIVERABLE.consentLabel,
 };

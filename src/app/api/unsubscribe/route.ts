@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientIp } from "@/lib/client-ip";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import {
   decodeGuideUnsubscribeToken,
   decodeNurtureUnsubscribeToken,
@@ -148,7 +149,7 @@ async function handleIntakeUnsubscribe(
 
   return htmlPage(
     "Je bent uitgeschreven",
-    "Je ontvangt geen verdere herstelplan-e-mails op dit adres. Geplande berichten in deze reeks zijn geannuleerd.",
+    INTAKE_DELIVERABLE.unsubscribeMessage,
     200,
   );
 }

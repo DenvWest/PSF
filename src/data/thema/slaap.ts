@@ -1,4 +1,5 @@
 import { ThemaPageData } from "@/types/thema";
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 
 export const slaapThema: ThemaPageData = {
   slug: "slaap",
@@ -194,11 +195,11 @@ export const slaapThema: ThemaPageData = {
     sectionLabel: "PERSOONLIJK ADVIES",
     title: "Wil je weten wat er bij jou speelt?",
     subtitle:
-      "De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 15 vragen. Je krijgt een persoonlijk Herstelplan met concrete stappen.",
+      `De Leefstijlcheck analyseert je slaap, stress, energie, voeding, beweging en herstel in 15 vragen. ${INTAKE_DELIVERABLE.premiumSubtitleSuffix}`,
     features: [
       "15 vragen, 3 minuten",
       "Scores op 6 leefstijldomeinen",
-      "Persoonlijk Herstelplan met quick wins",
+      INTAKE_DELIVERABLE.premiumFeatureBullet,
       "Gerichte supplementroute op basis van jouw profiel",
     ],
     ctaText: "Start de Leefstijlcheck",

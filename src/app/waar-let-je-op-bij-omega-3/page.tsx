@@ -372,7 +372,7 @@ export default function WaarLetJeOpBijOmega3Page() {
                             Weet jij welk supplement bij jou past?
                         </p>
                         <p className="text-base text-stone-500 leading-relaxed mb-6 max-w-md mx-auto">
-                            15 vragen, 3 minuten — direct een persoonlijk herstelplan.
+                            15 vragen, 3 minuten — direct een persoonlijk leefstijloverzicht.
                         </p>
                         <Link
                             href="/intake"

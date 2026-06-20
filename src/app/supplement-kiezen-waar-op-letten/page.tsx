@@ -403,7 +403,7 @@ export default function SupplementKiezenWaarOpLettenPage() {
                         Weet jij welk supplement bij jou past?
                     </p>
                     <p className="mt-2 text-sm text-stone-500">
-                        15 vragen, 3 minuten — direct een persoonlijk herstelplan.
+                        15 vragen, 3 minuten — direct een persoonlijk leefstijloverzicht.
                     </p>
                     <IntakeCtaMicro className="mt-4 text-sm text-stone-500" />
                     <Link

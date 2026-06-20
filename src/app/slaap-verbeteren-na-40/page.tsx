@@ -763,7 +763,7 @@ export default function SlaapVerbeterenNa40Page() {
                   </h3>
                   <p className="mt-3 text-gray-600 max-w-lg mx-auto">
                     De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en energieprofiel in
-                    kaart. Je krijgt een persoonlijk herstelplan — gratis, zonder registratie.
+                    kaart. Je krijgt een persoonlijk leefstijloverzicht — gratis, zonder registratie.
                   </p>
                   <Link
                     href="/intake"

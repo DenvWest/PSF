@@ -1,6 +1,7 @@
 // EXPERIMENTAL: scaffold for future multi-tenant work. Not used by production pages. Do not refactor production routes against this API yet.
 
 import type { SymptomId } from "@/data/intake-questions";
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import { createIntakeStrategy, type IntakeAnswers, type IntakeResults } from "./intake-strategy";
 
 export interface ChatMessage {
@@ -58,7 +59,7 @@ export function createInitialChatState(): ChatIntakeState {
       {
         role: "assistant",
         content:
-          "Hallo! Ik help je met een korte leefstijlcheck. Ik stel je 15 vragen over slaap, energie, stress, voeding, beweging, herstel en leefstijl. Op basis van je antwoorden krijg je een persoonlijk Herstelplan. Laten we beginnen!\n\nHoe beoordeel je je slaapkwaliteit? (1 = slecht, 4 = uitstekend)",
+          `Hallo! Ik help je met een korte leefstijlcheck. Ik stel je 15 vragen over slaap, energie, stress, voeding, beweging, herstel en leefstijl. Op basis van je antwoorden krijg je een persoonlijk ${INTAKE_DELIVERABLE.labelCapitalized}. Laten we beginnen!\n\nHoe beoordeel je je slaapkwaliteit? (1 = slecht, 4 = uitstekend)`,
       },
     ],
     collectedAnswers: {},

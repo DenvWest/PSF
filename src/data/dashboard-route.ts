@@ -1,3 +1,5 @@
+import { INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
+
 export type DashboardRouteStep = {
   step: number;
   title: string;
@@ -15,7 +17,7 @@ export const DASHBOARD_ROUTE_STEPS: DashboardRouteStep[] = [
   },
   {
     step: 2,
-    title: "Herstelplan",
+    title: INTAKE_DELIVERABLE.labelCapitalized,
     description:
       "Je ziet welke pijler nu het meeste lekt en één concrete beginstap — gerangschikt op impact, niet op hype.",
     timeLabel: "Direct",
@@ -24,7 +26,7 @@ export const DASHBOARD_ROUTE_STEPS: DashboardRouteStep[] = [
     step: 3,
     title: "Dashboard",
     description:
-      "Bewaar je overzicht op één plek: prioriteitenladder, persoonlijk plan en trends over tijd.",
+      "Bewaar je overzicht op één plek: prioriteitenladder, persoonlijke prioriteiten en trends over tijd.",
     timeLabel: "Gratis account",
   },
   {
@@ -108,7 +110,7 @@ export const DASHBOARD_ROUTE_FAQ = [
   {
     question: "Moet ik een account aanmaken?",
     answer:
-      "Nee, voor je eerste resultaat niet. Je kunt de Leefstijlcheck anoniem doen en direct je herstelplan zien. Een gratis account is handig als je je voortgang wilt bewaren en check-ins wilt bijhouden.",
+      `Nee, voor je eerste resultaat niet. Je kunt de Leefstijlcheck anoniem doen en direct je ${INTAKE_DELIVERABLE.label} zien. Een gratis account is handig als je je voortgang wilt bewaren en check-ins wilt bijhouden.`,
   },
   {
     question: "Hoe vaak moet ik inchecken?",
@@ -125,5 +127,5 @@ export const DASHBOARD_ROUTE_FAQ = [
 export const DASHBOARD_ROUTE_METADATA = {
   title: "Hoe Werkt Jouw Dashboard? | PerfectSupplement",
   description:
-    "Je route in 6 stappen: Leefstijlcheck, herstelplan, dashboard, check-ins en hermeting. Gratis overzicht voor mannen 40+ — zonder diagnose.",
+    `Je route in 6 stappen: Leefstijlcheck, ${INTAKE_DELIVERABLE.label}, dashboard, check-ins en hermeting. Gratis overzicht voor mannen 40+ — zonder diagnose.`,
 } as const;
