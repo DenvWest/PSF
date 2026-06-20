@@ -6,6 +6,8 @@ export const GA4_EVENTS = {
   PAGINA_TYPE: 'pagina_type',
   INTAKE_CTA_CLICKED: 'intake_cta_clicked',
   INTAKE_FEEDBACK_SUBMITTED: 'intake_feedback_submitted',
+  DASHBOARD_UNLOCK_VIEWED: 'dashboard_unlock_viewed',
+  DASHBOARD_UNLOCK_CTA_CLICKED: 'dashboard_unlock_cta_clicked',
 } as const;
 
 export function trackEvent(

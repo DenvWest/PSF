@@ -23,7 +23,8 @@ export default function AppShellClient({
     pathname === "/account" ||
     pathname.startsWith("/account/") ||
     pathname === "/dashboard" ||
-    pathname.startsWith("/dashboard/");
+    pathname.startsWith("/dashboard/") ||
+    pathname === "/hoe-werkt-dashboard";
 
   if (hideSiteChrome) {
     return <>{children}</>;

@@ -59,6 +59,25 @@ export function buildItemListSchema(
   };
 }
 
+export function buildHowToSchema(params: {
+  name: string;
+  description: string;
+  steps: Array<{ name: string; text: string }>;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: params.name,
+    description: params.description,
+    step: params.steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
+}
+
 export function buildFaqSchema(
   questions: Array<{ question: string; answer: string }>,
 ) {
