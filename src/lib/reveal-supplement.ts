@@ -1,6 +1,7 @@
 import { approvedClaims } from "@/data/approved-claims";
 import type { SupplementDisclosureData } from "@/components/supplements/SupplementDisclosure";
 import { RULES_VERSION } from "@/lib/intake-engine";
+import { explainRecommendation } from "@/lib/recommendation-explainer";
 import { getPillarRecommendation } from "@/lib/recommendation-engine";
 import type { Pillar } from "@/types/dashboard";
 import type { RecommendationInput } from "@/types/recommendation";
@@ -53,6 +54,15 @@ export function buildSupplementDisclosure(
     return null;
   }
 
+  const explanation = explainRecommendation(recommendation, {
+    lifestyleStep: priority.quickWin,
+    supplement: {
+      name: supplement.name,
+      claim: supplement.claim,
+      grade: supplement.grade,
+    },
+  });
+
   return {
     name: supplement.name,
     form: supplement.form,
@@ -62,6 +72,7 @@ export function buildSupplementDisclosure(
     qualityRule: QUALITY_RULE,
     comparisonPath: `${recommendation.comparisonPath}?from=${from}`,
     onHold: isSupplementOnHold(supplement.name),
+    explanation,
   };
 }
 

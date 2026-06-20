@@ -9,6 +9,23 @@ describe("buildSupplementDisclosure", () => {
     expect(data?.name).toBe("Omega-3");
     expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=results");
     expect(data?.onHold).toBe(false);
+    expect(data?.explanation).toBeDefined();
+    expect(data?.explanation.lifestyleFirst).toContain("Eiwitrijk ontbijt");
+    expect(data?.explanation.factors.length).toBeGreaterThanOrEqual(1);
+    expect(data?.explanation.trustLine).toBe(
+      "Wij kozen dit op kwaliteit, niet op commissie.",
+    );
+  });
+
+  it("returns magnesium disclosure for slaap priority with explanation", () => {
+    const data = buildSupplementDisclosure(PILLAR.slaap);
+    expect(data).not.toBeNull();
+    expect(data?.explanation).toBeDefined();
+    expect(data?.explanation.lifestyleFirst).toContain("Vaste afbouw na 21:00");
+    expect(data?.explanation.factors.length).toBeGreaterThanOrEqual(1);
+    expect(data?.explanation.trustLine).toBe(
+      "Wij kozen dit op kwaliteit, niet op commissie.",
+    );
   });
 
   it("uses dashboard from param in comparison path", () => {

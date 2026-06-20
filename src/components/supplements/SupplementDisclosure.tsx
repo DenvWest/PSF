@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Pill } from "@/components/app/icons";
+import type { RecommendationExplanation } from "@/types/recommendation-explanation";
 
 export type SupplementDisclosureData = {
   name: string;
@@ -12,6 +13,7 @@ export type SupplementDisclosureData = {
   qualityRule: string;
   comparisonPath: string;
   onHold: boolean;
+  explanation: RecommendationExplanation;
 };
 
 type SupplementDisclosureProps = {
@@ -109,6 +111,17 @@ export default function SupplementDisclosure({ data }: SupplementDisclosureProps
           >
             ⓘ Waarom dit advies?
           </summary>
+          <p
+            style={{
+              margin: "8px 0 0",
+              fontSize: 13,
+              fontWeight: 500,
+              color: "var(--text-muted)",
+              lineHeight: 1.55,
+            }}
+          >
+            {data.explanation.lifestyleFirst}
+          </p>
           <ul
             style={{
               margin: "8px 0 0",
@@ -118,9 +131,13 @@ export default function SupplementDisclosure({ data }: SupplementDisclosureProps
               lineHeight: 1.55,
             }}
           >
-            <li style={{ marginBottom: 6 }}>{data.signal}</li>
-            <li style={{ marginBottom: 6 }}>{data.qualityRule}</li>
-            <li>Wij kozen dit op kwaliteit, niet op commissie.</li>
+            {data.explanation.factors.map((factor, index) => (
+              <li key={index} style={{ marginBottom: 6 }}>
+                {factor.text}
+              </li>
+            ))}
+            <li style={{ marginBottom: 6 }}>{data.explanation.supplementRationale}</li>
+            <li>{data.explanation.trustLine}</li>
           </ul>
         </details>
       </div>
