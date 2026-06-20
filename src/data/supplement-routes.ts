@@ -30,6 +30,7 @@ export type SupplementRecommendation = {
   fallbackOnly?: boolean;
 };
 
+/** @deprecated Derived from supplement-catalog.ts — use recommendation-engine instead. */
 export const SUPPLEMENT_ROUTE_DEFINITIONS: SupplementRecommendation[] = [
   {
     id: "omega-3",

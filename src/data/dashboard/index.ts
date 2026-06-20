@@ -59,13 +59,7 @@ export const PILLARS: Pillar[] = [
       detail:
         "4 tellen in, 4 vast, 4 uit — herhaal 4 minuten. Verlaagt je hartslag meetbaar binnen één sessie. Doe het vóór je telefoon pakt na het werk.",
     },
-    supplement: {
-      name: "Ashwagandha",
-      form: "KSM-66",
-      grade: "B",
-      signal: "Je stress-herstel verloopt traag",
-      claim: "ondersteunt het omgaan met stress",
-    },
+    supplement: null,
   },
   {
     id: "voeding",
@@ -241,9 +235,9 @@ export const PILLAR_CHECKIN_ROUTES: Partial<Record<PillarId, string>> = {
   voeding: "/intake/voeding",
 };
 
+/** @deprecated Derived from supplement-catalog.ts — use recommendation-engine instead. */
 export const PILLAR_COMPARISON_ROUTES: Partial<Record<PillarId, string>> = {
   slaap: "/beste/magnesium",
-  stress: "/beste/ashwagandha",
   voeding: "/beste/omega-3-supplement",
 };
 

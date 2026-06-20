@@ -1,11 +1,12 @@
 import { approvedClaims } from "@/data/approved-claims";
-import { DOMAIN_SUPPLEMENT_CANDIDATES } from "@/data/domain-supplement-candidates";
 import type {
   DomainKey,
   DomainSupplementTip,
 } from "@/data/nurture-content";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
-import { resolveGatedComparisonPath } from "@/lib/supplement-gate";
+import { RULES_VERSION } from "@/lib/intake-engine";
+import { getRecommendations } from "@/lib/recommendation-engine";
+import type { RecommendationInput } from "@/types/recommendation";
 
 const TIP_INTRO_BY_DOMAIN: Record<DomainKey, string> = {
   sleep_score:
@@ -92,32 +93,59 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
   },
 };
 
+const NURTURE_ENGINE_STUB: RecommendationInput = {
+  scores: {
+    sleep_score: 0,
+    energy_score: 0,
+    stress_score: 0,
+    nutrition_score: 0,
+    movement_score: 0,
+    recovery_score: 0,
+  },
+  signals: {
+    omega3_deficiency: false,
+    magnesium_signal: false,
+    cortisol_risk: false,
+    creatine_signal: false,
+    melatonine_signal: false,
+    protein_gap_signal: false,
+    low_recovery_no_load: false,
+    sleep_issue_no_stress: false,
+    energy_dip_unexplained: false,
+  },
+  profileLabel: { name: "In Balans", domain: "nutrition", score: 0 },
+  answers: {},
+  rulesVersion: RULES_VERSION,
+};
+
 export function resolveDomainSupplementTip(
   domain: DomainKey,
   _planGate: NurturePlanGate | null,
 ): DomainSupplementTip {
-  const candidates = DOMAIN_SUPPLEMENT_CANDIDATES[domain];
+  const [recommendation] = getRecommendations(NURTURE_ENGINE_STUB, {
+    source: "nurture",
+    domain,
+  });
 
-  for (const ingredientKey of candidates) {
-    const comparisonPath = resolveGatedComparisonPath(ingredientKey);
-    if (!comparisonPath) {
-      continue;
+  if (recommendation?.available && recommendation.comparisonPath) {
+    const claimKey = recommendation.supplementId === "magnesium-glycinaat"
+      ? "magnesium"
+      : recommendation.supplementId === "omega-3"
+        ? "omega3"
+        : null;
+    const copy = claimKey ? TIP_COPY_BY_INGREDIENT[claimKey] : null;
+    const entry = claimKey ? approvedClaims[claimKey] : null;
+
+    if (copy && entry) {
+      return {
+        intro: TIP_INTRO_BY_DOMAIN[domain],
+        supplement: {
+          name: copy.name,
+          reason: copy.reason,
+          url: recommendation.comparisonPath,
+        },
+      };
     }
-
-    const entry = approvedClaims[ingredientKey];
-    const copy = TIP_COPY_BY_INGREDIENT[ingredientKey];
-    if (!entry || !copy) {
-      continue;
-    }
-
-    return {
-      intro: TIP_INTRO_BY_DOMAIN[domain],
-      supplement: {
-        name: copy.name,
-        reason: copy.reason,
-        url: comparisonPath,
-      },
-    };
   }
 
   return LIFESTYLE_FALLBACK_BY_DOMAIN[domain];

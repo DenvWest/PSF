@@ -16,11 +16,8 @@ describe("buildSupplementDisclosure", () => {
     expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=dashboard");
   });
 
-  it("returns on-hold ashwagandha for stress priority", () => {
-    const data = buildSupplementDisclosure(PILLAR.stress);
-    expect(data).not.toBeNull();
-    expect(data?.onHold).toBe(true);
-    expect(data?.comparisonPath).toBe("/beste/ashwagandha?from=results");
+  it("returns null for stress priority (leefstijl-only, no supplement CTA)", () => {
+    expect(buildSupplementDisclosure(PILLAR.stress)).toBeNull();
   });
 
   it("returns null when pillar has no supplement", () => {
@@ -33,7 +30,7 @@ describe("buildSupplementDisclosure", () => {
       isSupplementAvailable: () => false,
     }));
     const { buildSupplementDisclosure: buildWithKillswitch } = await import("@/lib/reveal-supplement");
-    expect(buildWithKillswitch(PILLAR.stress)).toBeNull();
+    expect(buildWithKillswitch(PILLAR.slaap)).toBeNull();
     vi.resetModules();
   });
 });

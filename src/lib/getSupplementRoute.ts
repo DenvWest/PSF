@@ -1,114 +1,38 @@
-import {
-  SUPPLEMENT_ROUTE_DEFINITIONS,
-  type SupplementRecommendation,
-  type SupplementTriggerClause,
-} from "@/data/supplement-routes";
+import { getCatalogEntryById } from "@/data/supplement-catalog";
+import type { SupplementRecommendation } from "@/data/supplement-routes";
 import type { DeficiencySignals, DomainScores, ProfileLabel } from "@/lib/intake-engine";
-import { getSortedDomains } from "@/lib/intake-engine";
-import { isComparisonAllowed } from "@/lib/comparison-availability";
-import { isSupplementAvailable } from "@/lib/supplement-availability";
+import { RULES_VERSION } from "@/lib/intake-engine";
+import { getRecommendations, matchesOvertrainerAnswers } from "@/lib/recommendation-engine";
 
-function intAnswer(answers: Record<string, number>, key: string): number {
-  const v = answers[key];
-  return typeof v === "number" ? v : 0;
-}
+export { matchesOvertrainerAnswers };
 
-function matchesZink(scores: DomainScores): boolean {
-  return (
-    scores.recovery_score < 40 ||
-    scores.nutrition_score < 40 ||
-    getSortedDomains(scores)[0].domain === "recovery"
-  );
-}
-
-function getMovementLoad(answers: Record<string, number>): number {
-  return Math.max(
-    intAnswer(answers, "MOV_CARD"),
-    intAnswer(answers, "MOV_STR"),
-  );
-}
-
-/** Overtrainer-patroon uit intake-spec: veel bewegen, weinig fysiek herstel (geen apart profiellabel in engine). */
-export function matchesOvertrainerAnswers(answers: Record<string, number>): boolean {
-  return getMovementLoad(answers) >= 3 && intAnswer(answers, "RCV_PHYS") <= 1;
-}
-
-function matchesCreatine(
-  scores: DomainScores,
-  profileLabel: ProfileLabel,
-  answers: Record<string, number>,
-): boolean {
-  const movementLoad = getMovementLoad(answers);
-  const strengthTraining = intAnswer(answers, "MOV_STR");
-
-  const activeExerciser = movementLoad >= 2 || strengthTraining >= 3;
-  const poorRecovery = scores.recovery_score < 50;
-  const cognitiveLoad = scores.energy_score < 50 && scores.stress_score < 50;
-  const relevantProfile =
-    getSortedDomains(scores)[0].domain === "recovery" ||
-    profileLabel.name === "Lage Batterij";
-
-  return (
-    activeExerciser ||
-    poorRecovery ||
-    cognitiveLoad ||
-    relevantProfile ||
-    matchesOvertrainerAnswers(answers)
-  );
-}
-
-function clauseMatches(
-  clause: SupplementTriggerClause,
-  scores: DomainScores,
-  deficiencySignals: DeficiencySignals,
-  profileLabel: ProfileLabel,
-): boolean {
-  const checks: boolean[] = [];
-
-  if (clause.deficiencySignal !== undefined) {
-    checks.push(deficiencySignals[clause.deficiencySignal]);
-  }
-
-  if (clause.domainBelow) {
-    const { domain, threshold } = clause.domainBelow;
-    checks.push(scores[domain] < threshold);
-  }
-
-  if (clause.domainAbove) {
-    const { domain, threshold } = clause.domainAbove;
-    checks.push(scores[domain] > threshold);
-  }
-
-  if (clause.profileLabel !== undefined) {
-    checks.push(profileLabel.name === clause.profileLabel);
-  }
-
-  return checks.length > 0 && checks.every(Boolean);
-}
-
-function definitionMatches(
-  def: SupplementRecommendation,
-  scores: DomainScores,
-  deficiencySignals: DeficiencySignals,
-  profileLabel: ProfileLabel,
-  answers: Record<string, number>,
-): boolean {
-  if (def.fallbackOnly) {
-    return false;
-  }
-
-  if (def.id === "zink") {
-    return matchesZink(scores);
-  }
-
-  if (def.id === "creatine") {
-    return matchesCreatine(scores, profileLabel, answers);
-  }
-
-  return def.triggers.anyOf.some((clause) =>
-    clauseMatches(clause, scores, deficiencySignals, profileLabel),
-  );
-}
+const ROUTE_NAMES: Record<string, { name: string; reason: string }> = {
+  "omega-3": {
+    name: "Omega-3 (EPA/DHA)",
+    reason:
+      "Je visinname is laag of je voedingsscore vraagt om een brede basis. EPA en DHA dragen bij tot de normale werking van het hart; DHA bovendien tot instandhouding van hersenfunctie en gezichtsvermogen (bij voldoende dagdosis volgens claimvoorwaarden).",
+  },
+  "magnesium-glycinaat": {
+    name: "Magnesium glycinaat",
+    reason:
+      "Je routine of energie-indicator vraagt om ondersteuning via mineralen. Magnesium draagt o.a. bij tot vermindering van vermoeidheid en tot normale psychologische functie; bisglycinaat is een veelgekozen vorm.",
+  },
+  zink: {
+    name: "Zink",
+    reason:
+      "Zink draagt onder meer bij tot normale eiwitsynthese en een normaal functionerend immuunsysteem — een logische optie als je profiel hierop stuurt.",
+  },
+  creatine: {
+    name: "Creatine",
+    reason:
+      "Creatine ondersteunt fosfaat‑buffering voor korte bursts; onder EU‑claims kan het bij langdurige adequate inname (minimaal 3 g/dag) onder voorwaarden iets bijdragen aan ultrakorte spiertaken — geen belofte op algemene energie.",
+  },
+  "vitamine-d3": {
+    name: "Vitamine D3",
+    reason:
+      "Een praktische basis voor bijna elk profiel: vitamine D speelt mee bij botten, spieren en immuunfunctie — zeker als er weinig zon is.",
+  },
+};
 
 export function getSupplementRoute(
   domainScores: DomainScores,
@@ -116,44 +40,38 @@ export function getSupplementRoute(
   profileLabel: ProfileLabel,
   answers: Record<string, number>,
 ): SupplementRecommendation[] {
-  const matched: SupplementRecommendation[] = [];
-  const availableDefinitions = SUPPLEMENT_ROUTE_DEFINITIONS.filter((d) => {
-    if (!isSupplementAvailable(d.id)) {
-      return false;
-    }
-    if (d.hasComparison && !isComparisonAllowed(d.id)) {
-      return false;
-    }
-    return true;
-  });
+  const recommendations = getRecommendations(
+    {
+      scores: domainScores,
+      signals: deficiencySignals,
+      profileLabel,
+      answers,
+      rulesVersion: RULES_VERSION,
+    },
+    { source: "route" },
+  );
 
-  for (const def of availableDefinitions) {
-    if (
-      definitionMatches(
-        def,
-        domainScores,
-        deficiencySignals,
-        profileLabel,
-        answers,
-      )
-    ) {
-      matched.push(def);
+  const routes: SupplementRecommendation[] = [];
+
+  for (const recommendation of recommendations) {
+    const catalogEntry = getCatalogEntryById(recommendation.supplementId);
+    if (!catalogEntry) {
+      continue;
     }
+
+    const copy = ROUTE_NAMES[recommendation.supplementId];
+    routes.push({
+      id: catalogEntry.id,
+      name: copy?.name ?? catalogEntry.id,
+      reason: copy?.reason ?? "",
+      priority: catalogEntry.priority,
+      domains: catalogEntry.domains,
+      hasComparison: catalogEntry.hasComparison,
+      affiliateUrl: catalogEntry.comparisonPath ?? "",
+      triggers: catalogEntry.routeTriggers ?? { anyOf: [] },
+      ...(catalogEntry.fallbackOnly ? { fallbackOnly: true } : {}),
+    });
   }
 
-  if (matched.length === 0) {
-    const fallback = availableDefinitions.find((d) => d.fallbackOnly);
-    if (fallback) {
-      matched.push(fallback);
-    }
-  }
-
-  const byId = new Map<string, SupplementRecommendation>();
-  for (const item of matched.sort((a, b) => a.priority - b.priority)) {
-    if (!byId.has(item.id)) {
-      byId.set(item.id, item);
-    }
-  }
-
-  return [...byId.values()].slice(0, 3);
+  return routes;
 }

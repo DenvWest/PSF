@@ -1,7 +1,9 @@
-import { SUPPLEMENT_ROUTE_DEFINITIONS } from "@/data/supplement-routes";
 import { catalogBySlug } from "@/data/supplement-hub/catalog";
-import { getDeficiencySignals } from "@/lib/intake-engine";
+import { getCatalogEntryByHubSlug } from "@/data/supplement-catalog";
+import { RULES_VERSION, getDeficiencySignals, getProfileLabel } from "@/lib/intake-engine";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
+import { getRecommendations } from "@/lib/recommendation-engine";
+
 export type RecommendedSupplement = {
   slug: string;
   name: string;
@@ -12,135 +14,84 @@ export type RecommendedSupplement = {
   icon: string;
 };
 
-/** Maps hub catalog slugs to `supplement-routes` definition ids. */
-const HUB_SLUG_TO_ROUTE_ID: Record<string, string> = {
-  magnesium: "magnesium-glycinaat",
-  "omega-3": "omega-3",
-  ashwagandha: "ashwagandha",
-  zink: "zink",
-  creatine: "creatine",
-  "vitamine-d": "vitamine-d3",
+const HUB_REASON_BY_SLUG: Record<string, string> = {
+  magnesium:
+    "Magnesium draagt bij tot normale psychologische functie en tot vermindering van vermoeidheid — passend bij je scores, naast leefstijl.",
+  "omega-3":
+    "Je eet zelden vette vis — een omega-3 supplement kan dat aanvullen.",
+  eiwitpoeder:
+    "Je eiwitinname uit voeding lijkt laag terwijl je traint of traag herstelt — poeder kan helpen je dagdoel te halen naast volwaardige maaltijden.",
+  creatine:
+    "Creatine ondersteunt korte, intense spieroutput bij voldoende dagdosis (EU‑claimcontext) — geen algemene energiebelofte.",
+  "vitamine-d":
+    "In Nederland krijgen de meeste mannen te weinig vitamine D — een goede basislijn.",
 };
 
-function comparisonHrefFromSupplementRoutes(slug: string): string | null {
-  const routeId = HUB_SLUG_TO_ROUTE_ID[slug];
-  const def = routeId
-    ? SUPPLEMENT_ROUTE_DEFINITIONS.find((d) => d.id === routeId)
-    : undefined;
-  if (!def) return null;
-  if (def.affiliateUrl.startsWith("/beste/")) return def.affiliateUrl;
-  return null;
-}
-
-type LegacyPick = { slug: string; name: string; icon: string; reason: string };
-
-/**
- * Bepaalt welke supplementen op de hub worden aanbevolen (legacy regels,
- * gelijk aan de eerdere `getPersonalizedRecommendations`).
- * `comparisonHref` wordt waar mogelijk aangevuld via `supplement-routes`
- * (`affiliateUrl` voor /beste/* pagina's).
- */
-function selectLegacyHubRecommendations(
+function hubReasonForSlug(
+  slug: string,
   session: IntakeSessionPayload,
-): LegacyPick[] {
-  const { scores, answers } = session;
-  const recommendations: LegacyPick[] = [];
-
-  if (scores.sleep_score < 50 || scores.stress_score < 50) {
-    recommendations.push({
-      slug: "magnesium",
-      name: "Magnesium",
-      icon: "⚡",
-      reason:
-        scores.sleep_score < 50 && scores.stress_score < 50
-          ? "Magnesium draagt bij tot normale psychologische functie en tot vermindering van vermoeidheid — passend bij je scores, neven leefstijl."
-          : scores.sleep_score < 50
-            ? "Magnesium draagt bij tot een normale psychologische functie; check je routine naast andere slaaphygiëne."
-            : "Magnesium draagt bij tot de normale werking van het zenuwstelsel en een normale psychologische functie.",
-    });
+): string {
+  if (slug === "magnesium") {
+    const { scores } = session;
+    if (scores.sleep_score < 50 && scores.stress_score < 50) {
+      return HUB_REASON_BY_SLUG.magnesium;
+    }
+    if (scores.sleep_score < 50) {
+      return "Magnesium draagt bij tot een normale psychologische functie; check je routine naast andere slaaphygiëne.";
+    }
+    if (scores.stress_score < 50) {
+      return "Magnesium draagt bij tot de normale werking van het zenuwstelsel en een normale psychologische functie.";
+    }
+    return "Magnesium draagt bij tot normale spierfunctie — relevant naast je herstelscore.";
   }
 
-  const omega3Answer = answers["NUT_O3"] ?? 0;
-  if (omega3Answer <= 1 || scores.nutrition_score < 40) {
-    recommendations.push({
-      slug: "omega-3",
-      name: "Omega-3",
-      icon: "🐟",
-      reason:
-        omega3Answer <= 1
-          ? "Je eet zelden vette vis — een omega-3 supplement kan dat aanvullen."
-          : "Je voedingspatroon heeft ruimte voor verbetering — omega-3 is een goede basis.",
-    });
+  if (slug === "omega-3") {
+    const omega3Answer = session.answers.NUT_O3 ?? 0;
+    return omega3Answer <= 1
+      ? HUB_REASON_BY_SLUG["omega-3"]
+      : "Je voedingspatroon heeft ruimte voor verbetering — omega-3 is een goede basis.";
   }
 
-  const deficiencySignals = getDeficiencySignals(answers);
-  if (
-    deficiencySignals.protein_gap_signal &&
-    !recommendations.find((r) => r.slug === "eiwitpoeder")
-  ) {
-    recommendations.push({
-      slug: "eiwitpoeder",
-      name: "Eiwitpoeder",
-      icon: "🥛",
-      reason:
-        "Je eiwitinname uit voeding lijkt laag terwijl je traint of traag herstelt — poeder kan helpen je dagdoel te halen naast volwaardige maaltijden.",
-    });
-  }
-
-  if (scores.energy_score < 40) {
-    recommendations.push({
-      slug: "creatine",
-      name: "Creatine",
-      icon: "💪",
-      reason:
-        "Creatine ondersteunt korte, intense spieroutput bij voldoende dagdosis (EU‑claimcontext) — geen algemene energiebelofte.",
-    });
-  }
-
-  if (
-    scores.recovery_score < 40 &&
-    !recommendations.find((r) => r.slug === "magnesium")
-  ) {
-    recommendations.push({
-      slug: "magnesium",
-      name: "Magnesium",
-      icon: "⚡",
-      reason:
-        "Magnesium draagt bij tot normale spierfunctie — relevant naast je herstelscore.",
-    });
-  }
-
-  if (recommendations.length < 2) {
-    recommendations.push({
-      slug: "vitamine-d",
-      name: "Vitamine D3 + K2",
-      icon: "☀️",
-      reason:
-        "In Nederland krijgen de meeste mannen te weinig vitamine D — een goede basislijn.",
-    });
-  }
-
-  return recommendations.slice(0, 3);
+  return HUB_REASON_BY_SLUG[slug] ?? "";
 }
 
 export function buildRecommendations(
   session: IntakeSessionPayload,
 ): RecommendedSupplement[] {
-  const picks = selectLegacyHubRecommendations(session);
+  const input = {
+    scores: session.scores,
+    signals: getDeficiencySignals(session.answers),
+    profileLabel: getProfileLabel(session.scores),
+    answers: session.answers,
+    rulesVersion: RULES_VERSION,
+  };
+
+  const recommendations = getRecommendations(input, { source: "hub" });
   const out: RecommendedSupplement[] = [];
 
-  for (const pick of picks) {
-    const catalog = catalogBySlug[pick.slug];
-    if (!catalog) continue;
+  for (const recommendation of recommendations) {
+    const slug = recommendation.hubSlug;
+    if (!slug) {
+      continue;
+    }
 
+    const catalog = catalogBySlug[slug];
+    if (!catalog) {
+      continue;
+    }
+
+    const catalogEntry = getCatalogEntryByHubSlug(slug);
     const comparisonHref =
-      catalog.comparisonHref ?? comparisonHrefFromSupplementRoutes(pick.slug);
+      catalog.comparisonHref ??
+      (catalogEntry?.comparisonPath?.startsWith("/beste/")
+        ? catalogEntry.comparisonPath
+        : null);
 
     out.push({
-      slug: pick.slug,
-      name: pick.name,
+      slug,
+      name: catalog.name,
       wiifm: catalog.wiifm,
-      reason: pick.reason,
+      reason: hubReasonForSlug(slug, session),
       guideHref: catalog.guideHref,
       comparisonHref,
       icon: catalog.icon,
