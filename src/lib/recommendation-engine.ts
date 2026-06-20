@@ -117,6 +117,42 @@ function clauseMatches(
   return triggered.length > 0 ? triggered : null;
 }
 
+function collectAllEntryTriggers(
+  entry: SupplementCatalogEntry,
+  input: RecommendationInput,
+): RecommendationTriggerReason[] {
+  if (entry.fallbackOnly) {
+    return [];
+  }
+
+  if (entry.customMatcher === "zink") {
+    return matchesZink(input.scores)
+      ? [{ type: "domain_below", domain: "recovery_score", score: input.scores.recovery_score, threshold: 40 }]
+      : [];
+  }
+
+  if (entry.customMatcher === "creatine") {
+    return matchesCreatine(input.scores, input.profileLabel, input.answers)
+      ? [{ type: "hub_legacy", rule: "creatine_custom_matcher" }]
+      : [];
+  }
+
+  const triggered: RecommendationTriggerReason[] = [];
+  for (const clause of entry.routeTriggers?.anyOf ?? []) {
+    const reasons = clauseMatches(
+      clause,
+      input.scores,
+      input.signals,
+      input.profileLabel,
+    );
+    if (reasons) {
+      triggered.push(...reasons);
+    }
+  }
+
+  return triggered;
+}
+
 function routeEntryMatches(
   entry: SupplementCatalogEntry,
   input: RecommendationInput,
@@ -375,10 +411,15 @@ export function getPillarRecommendation(
     return null;
   }
 
+  const triggeredBy = collectAllEntryTriggers(entry, input);
+
   return toRankedRecommendation(
     entry,
     1,
-    buildReason([{ type: "pillar", pillarId }], entry.claimKey),
+    buildReason(
+      triggeredBy.length > 0 ? triggeredBy : [{ type: "pillar", pillarId }],
+      entry.claimKey,
+    ),
   );
 }
 

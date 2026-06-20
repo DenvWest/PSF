@@ -1,10 +1,25 @@
 import { describe, expect, it, vi } from "vitest";
 import { buildRevealSupplementDisclosure, buildSupplementDisclosure } from "@/lib/reveal-supplement";
+import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { PILLAR } from "@/data/dashboard";
+import type { DomainScores } from "@/lib/intake-engine";
+
+const balancedScores: DomainScores = {
+  sleep_score: 70,
+  energy_score: 70,
+  stress_score: 70,
+  nutrition_score: 70,
+  movement_score: 70,
+  recovery_score: 70,
+};
+
+function fallbackInput(scores: DomainScores = balancedScores) {
+  return buildRecommendationInput({ scores });
+}
 
 describe("buildSupplementDisclosure", () => {
   it("returns omega-3 disclosure for voeding priority", () => {
-    const data = buildSupplementDisclosure(PILLAR.voeding);
+    const data = buildSupplementDisclosure(PILLAR.voeding, fallbackInput());
     expect(data).not.toBeNull();
     expect(data?.name).toBe("Omega-3");
     expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=results");
@@ -18,7 +33,7 @@ describe("buildSupplementDisclosure", () => {
   });
 
   it("returns magnesium disclosure for slaap priority with explanation", () => {
-    const data = buildSupplementDisclosure(PILLAR.slaap);
+    const data = buildSupplementDisclosure(PILLAR.slaap, fallbackInput());
     expect(data).not.toBeNull();
     expect(data?.explanation).toBeDefined();
     expect(data?.explanation.lifestyleFirst).toContain("Vaste afbouw na 21:00");
@@ -29,16 +44,28 @@ describe("buildSupplementDisclosure", () => {
   });
 
   it("uses dashboard from param in comparison path", () => {
-    const data = buildSupplementDisclosure(PILLAR.voeding, "dashboard");
+    const data = buildSupplementDisclosure(PILLAR.voeding, fallbackInput(), "dashboard");
     expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=dashboard");
   });
 
+  it("returns richer explanation factors for low nutrition score and omega3 signal", () => {
+    const input = buildRecommendationInput({
+      scores: { ...balancedScores, nutrition_score: 40 },
+      answers: { NUT_O3: 1 },
+    });
+    const data = buildSupplementDisclosure(PILLAR.voeding, input);
+
+    expect(data?.explanation.factors.length).toBeGreaterThanOrEqual(2);
+    expect(data?.explanation.factors.some((factor) => factor.kind === "measurement")).toBe(true);
+    expect(data?.explanation.factors.some((factor) => factor.kind === "signal")).toBe(true);
+  });
+
   it("returns null for stress priority (leefstijl-only, no supplement CTA)", () => {
-    expect(buildSupplementDisclosure(PILLAR.stress)).toBeNull();
+    expect(buildSupplementDisclosure(PILLAR.stress, fallbackInput())).toBeNull();
   });
 
   it("returns null when pillar has no supplement", () => {
-    expect(buildSupplementDisclosure(PILLAR.energie)).toBeNull();
+    expect(buildSupplementDisclosure(PILLAR.energie, fallbackInput())).toBeNull();
   });
 
   it("returns null when supplement is disabled via killswitch", async () => {
@@ -47,14 +74,15 @@ describe("buildSupplementDisclosure", () => {
       isSupplementAvailable: () => false,
     }));
     const { buildSupplementDisclosure: buildWithKillswitch } = await import("@/lib/reveal-supplement");
-    expect(buildWithKillswitch(PILLAR.slaap)).toBeNull();
+    expect(buildWithKillswitch(PILLAR.slaap, fallbackInput())).toBeNull();
     vi.resetModules();
   });
 });
 
 describe("buildRevealSupplementDisclosure", () => {
   it("delegates to buildSupplementDisclosure with results from param", () => {
-    const data = buildRevealSupplementDisclosure(PILLAR.voeding);
+    const input = fallbackInput();
+    const data = buildRevealSupplementDisclosure(PILLAR.voeding, input);
     expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=results");
   });
 });

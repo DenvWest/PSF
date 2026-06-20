@@ -1,4 +1,5 @@
 import { PILLARS, TIE_ORDER } from "@/data/dashboard";
+import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
 import type {
   CheckLogEntry,
   CheckScores,
@@ -45,6 +46,7 @@ export function buildModel(
 
   return {
     scores,
+    domainScores: mapCheckScoresToDomainScores(scores),
     ladder,
     priority,
     strongest,

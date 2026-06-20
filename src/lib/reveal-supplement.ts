@@ -1,6 +1,5 @@
 import { approvedClaims } from "@/data/approved-claims";
 import type { SupplementDisclosureData } from "@/components/supplements/SupplementDisclosure";
-import { RULES_VERSION } from "@/lib/intake-engine";
 import { explainRecommendation } from "@/lib/recommendation-explainer";
 import { getPillarRecommendation } from "@/lib/recommendation-engine";
 import type { Pillar } from "@/types/dashboard";
@@ -8,31 +7,6 @@ import type { RecommendationInput } from "@/types/recommendation";
 
 const QUALITY_RULE =
   "Kwaliteitskeuze op vorm en bron — niet het goedkoopste schap-potje";
-
-const PILLAR_ENGINE_STUB: RecommendationInput = {
-  scores: {
-    sleep_score: 0,
-    energy_score: 0,
-    stress_score: 0,
-    nutrition_score: 0,
-    movement_score: 0,
-    recovery_score: 0,
-  },
-  signals: {
-    omega3_deficiency: false,
-    magnesium_signal: false,
-    cortisol_risk: false,
-    creatine_signal: false,
-    melatonine_signal: false,
-    protein_gap_signal: false,
-    low_recovery_no_load: false,
-    sleep_issue_no_stress: false,
-    energy_dip_unexplained: false,
-  },
-  profileLabel: { name: "In Balans", domain: "nutrition", score: 0 },
-  answers: {},
-  rulesVersion: RULES_VERSION,
-};
 
 function isSupplementOnHold(supplementName: string): boolean {
   const key = supplementName.toLowerCase().split(/\s+/)[0];
@@ -42,6 +16,7 @@ function isSupplementOnHold(supplementName: string): boolean {
 
 export function buildSupplementDisclosure(
   priority: Pillar,
+  input: RecommendationInput,
   from: "results" | "dashboard" = "results",
 ): SupplementDisclosureData | null {
   const supplement = priority.supplement;
@@ -49,7 +24,7 @@ export function buildSupplementDisclosure(
     return null;
   }
 
-  const recommendation = getPillarRecommendation(PILLAR_ENGINE_STUB, priority.id);
+  const recommendation = getPillarRecommendation(input, priority.id);
   if (!recommendation?.available || !recommendation.comparisonPath) {
     return null;
   }
@@ -79,6 +54,7 @@ export function buildSupplementDisclosure(
 /** @deprecated Use buildSupplementDisclosure */
 export function buildRevealSupplementDisclosure(
   priority: Pillar,
+  input: RecommendationInput,
 ): SupplementDisclosureData | null {
-  return buildSupplementDisclosure(priority, "results");
+  return buildSupplementDisclosure(priority, input, "results");
 }

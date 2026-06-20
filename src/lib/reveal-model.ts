@@ -17,6 +17,17 @@ export function mapDomainScoresToCheckScores(domainScores: DomainScores): CheckS
   };
 }
 
+export function mapCheckScoresToDomainScores(scores: CheckScores): DomainScores {
+  return {
+    sleep_score: scores.slaap,
+    energy_score: scores.energie,
+    stress_score: scores.stress,
+    nutrition_score: scores.voeding,
+    movement_score: scores.beweging,
+    recovery_score: scores.herstel,
+  };
+}
+
 export type RevealLifestyleItem = {
   pillar: Pillar;
   win: Pillar["quickWin"];

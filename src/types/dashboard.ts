@@ -1,4 +1,5 @@
 import type { DeltaReport } from "@/types/delta-report";
+import type { DomainScores } from "@/lib/intake-engine";
 
 export type PillarId =
   | "slaap"
@@ -175,6 +176,7 @@ export type LifestyleItem = {
 
 export type DashboardModel = {
   scores: CheckScores;
+  domainScores: DomainScores;
   ladder: Pillar[];
   priority: Pillar;
   strongest: Pillar;

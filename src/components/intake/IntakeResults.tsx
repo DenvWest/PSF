@@ -25,7 +25,8 @@ import { getMailConfirmation } from "@/lib/intake-greetings";
 import { isUsableFirstName } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { buildRevealModel } from "@/lib/reveal-model";
-import { buildRevealSupplementDisclosure } from "@/lib/reveal-supplement";
+import { buildRecommendationInput } from "@/lib/recommendation-input";
+import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import { getDisplayStatus } from "@/lib/score-display";
 
 type IntakeResultsProps = {
@@ -72,7 +73,8 @@ export default function IntakeResults({
   const isOvertrainer = matchesOvertrainerAnswers(answers);
   const model = buildRevealModel(scores, isOvertrainer, symptoms);
   const pillarStatuses = buildPillarStatuses(scores);
-  const supplementDisclosure = buildRevealSupplementDisclosure(model.priority);
+  const input = buildRecommendationInput({ scores, answers });
+  const supplementDisclosure = buildSupplementDisclosure(model.priority, input, "results");
   const emailLine = hasActiveMarketingEmailConsent
     ? getMailConfirmation(firstName)
     : null;

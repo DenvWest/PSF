@@ -16,6 +16,7 @@ import {
 } from "@/data/measurement-config";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
+import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type {
   DashboardData,
@@ -824,7 +825,8 @@ const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
 
 const AdviezenSection = ({ model, onGoRoadmap }: { model: DashboardModel; onGoRoadmap: () => void }) => {
   const { priority } = model;
-  const supplementDisclosure = buildSupplementDisclosure(priority, "dashboard");
+  const input = buildRecommendationInput({ scores: model.domainScores });
+  const supplementDisclosure = buildSupplementDisclosure(priority, input, "dashboard");
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
