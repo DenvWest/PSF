@@ -18,43 +18,38 @@ export const DASHBOARD_UNLOCK_PROGRESS = {
 } as const;
 
 export const DASHBOARD_UNLOCK_HERO = {
-  eyebrow: "Jouw momentopname · 2 van 3 klaar",
-  title: "Je weet nu waar het lekt — maar zonder account verdwijnt dit morgen weer.",
+  eyebrow: "Check afgerond · laatste stap",
+  title: "Bewaar je leefstijl-overzicht",
+  lead: "Zonder account verlies je je prioriteit zodra je dit tabblad sluit.",
   subtitle:
-    "Bewaar je prioriteit, je eerste stap en je voortgang op één plek. Gratis. Geen wachtwoord.",
+    "Gratis login via je mail — je ladder, stappen en voortgang blijven op één plek. Geen wachtwoord.",
 } as const;
 
 export const DASHBOARD_UNLOCK_RECOGNITION = {
   sectionLabel: "Herkenbaar?",
   quotes: [
-    "Ik heb dit al vaker gedaan — volgende week begin ik weer opnieuw.",
     "Ik weet wat ik moet doen, maar zonder overzicht houd ik het niet vol.",
-    "Als ik dit tabblad sluit, is mijn check weg — en dat irriteert me.",
+    "Als ik dit tabblad sluit, begin ik volgende week opnieuw.",
   ],
 } as const;
 
 export const DASHBOARD_UNLOCK_GAINS = {
-  title: "Met dashboard (gratis)",
+  title: "Met dashboard",
   items: [
-    'Je volledige prioriteitsladder blijft bewaard — inclusief "← hier begin je nu"',
-    "Korte check-ins (±1 min) houden je ritme vast tussen werkdagen door",
-    "Na ~30 dagen zie je wat echt verschuift sinds je vorige meting",
-    "Eén plek voor leefstijlstappen, trends en hermeting — geen losse screenshots",
-    "Je data blijft van jou: exporteer of verwijder wanneer je wilt",
+    "Prioriteitsladder en eerste stap blijven bewaard",
+    "Check-ins en hermeting houden je plan volgbaar",
+    "Je data blijft van jou — exporteer of verwijder wanneer je wilt",
   ],
 } as const;
 
 export const DASHBOARD_UNLOCK_LOSSES = {
-  title: "Zonder account (nu)",
+  title: "Zonder account",
   items: [
     "Je momentopname verdwijnt als je het tabblad sluit",
-    "Geen trend — je ziet niet of je eerste stap effect had",
-    "Geen reminder voor je volgende check-in of hermeting",
-    "Volgende week start je opnieuw op gevoel, niet op data",
-    "Je 3 minuten check levert dan geen blijvend anker op",
+    "Geen trend of reminder voor je volgende stap",
+    "Je start opnieuw op gevoel, niet op data",
   ],
-  closingLine:
-    "Je hebt de check al gedaan. Bewaren kost 30 seconden — opnieuw beginnen kost weken.",
+  closingLine: "Bewaren kost 30 seconden.",
 } as const;
 
 export const DASHBOARD_UNLOCK_LOCKED_FEATURES = [
@@ -76,37 +71,14 @@ export const DASHBOARD_UNLOCK_CTA = {
   label: "Gratis · geen wachtwoord",
   primaryLabel: "Bewaar mijn overzicht →",
   primaryHref: "/account/login",
-  subtext: "Log in via je mail — je ziet meteen je volledige ladder en voortgang.",
+  subtext: "We sturen een loginlink naar je mail.",
   intakeFallbackLabel: "Nog geen check gedaan? Start de Leefstijlcheck →",
   intakeFallbackHref: "/intake",
-  trustLines: [
-    "Adviezen, geen diagnoses",
-    "Onafhankelijk — geen sponsors",
-    "AVG-proof — intrekken of verwijderen wanneer je wilt",
-  ],
+  trustLine: "Adviezen, geen diagnoses · Onafhankelijk · AVG-proof",
 } as const;
 
 export const DASHBOARD_UNLOCK_SOCIAL_PROOF = {
   line: "Mannen 40+ gebruiken het dashboard om niet elke maand opnieuw te beginnen.",
-  testimonials: [
-    {
-      name: "Mark",
-      age: 47,
-      quote:
-        "Eindelijk één plek waar ik zie wat ik al gedaan heb — geen Excel meer.",
-    },
-    {
-      name: "Peter",
-      age: 52,
-      quote: "De check-in duurt een minuut. Dat houd ik vol tussen meetings door.",
-    },
-    {
-      name: "Rob",
-      age: 44,
-      quote:
-        "Na 30 dagen zag ik dat mijn slaapscore echt omhoog ging. Dat motiveert.",
-    },
-  ],
 } as const;
 
 export const DASHBOARD_UNLOCK_ROUTE_ACCORDION = {

@@ -36,7 +36,7 @@ function persistVariantCookie(variant: DashboardUnlockVariant) {
 function ProgressStrip() {
   return (
     <section aria-label="Voortgang naar dashboard">
-      <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-medium uppercase tracking-[0.08em] text-[var(--text-subtle)] sm:text-[11px] sm:tracking-[0.12em]">
+      <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] font-medium uppercase tracking-[0.06em] text-[var(--text-subtle)] sm:gap-2 sm:text-[11px] sm:tracking-[0.12em]">
         {DASHBOARD_UNLOCK_PROGRESS.steps.map((step) => (
           <span
             key={step.id}
@@ -44,7 +44,7 @@ function ProgressStrip() {
           >
             {step.done ? "✓ " : "○ "}
             {step.label}
-            <span className="mt-0.5 block normal-case tracking-normal text-[var(--text-subtle)]">
+            <span className="mt-0.5 hidden normal-case tracking-normal text-[var(--text-subtle)] sm:block">
               {step.detail}
             </span>
           </span>
@@ -72,20 +72,20 @@ function ProgressStrip() {
 
 function GainLossContrast() {
   return (
-    <section aria-labelledby="gain-loss-heading" className="space-y-4">
+    <section aria-labelledby="gain-loss-heading" className="space-y-3">
       <h2 id="gain-loss-heading" className="sr-only">
         Met of zonder account
       </h2>
-      <div className="grid gap-4 lg:grid-cols-5">
-        <article className="rounded-2xl border border-[rgba(90,143,106,0.32)] bg-[rgba(90,143,106,0.08)] p-4 lg:col-span-3">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-5 lg:gap-6">
+        <article className="rounded-2xl border border-[rgba(90,143,106,0.32)] bg-[rgba(90,143,106,0.08)] p-4 sm:p-5 lg:p-6">
           <h3 className="mb-3 text-sm font-semibold text-[var(--sage)]">
             {DASHBOARD_UNLOCK_GAINS.title}
           </h3>
-          <ul className="space-y-2.5">
+          <ul className="space-y-2">
             {DASHBOARD_UNLOCK_GAINS.items.map((item) => (
               <li
                 key={item}
-                className="flex gap-2 text-sm leading-relaxed text-[var(--text)]"
+                className="flex gap-2.5 text-[15px] leading-snug text-[var(--text)]"
               >
                 <span className="shrink-0 text-[var(--sage)]" aria-hidden>
                   ✓
@@ -95,15 +95,15 @@ function GainLossContrast() {
             ))}
           </ul>
         </article>
-        <article className="rounded-2xl border border-[rgba(200,149,108,0.25)] bg-[rgba(200,149,108,0.06)] p-4 lg:col-span-2">
+        <article className="rounded-2xl border border-[rgba(200,149,108,0.25)] bg-[rgba(200,149,108,0.06)] p-4 sm:p-5 lg:p-6">
           <h3 className="mb-3 text-sm font-semibold text-[var(--terra)]">
             {DASHBOARD_UNLOCK_LOSSES.title}
           </h3>
-          <ul className="space-y-2.5">
+          <ul className="space-y-2">
             {DASHBOARD_UNLOCK_LOSSES.items.map((item) => (
               <li
                 key={item}
-                className="flex gap-2 text-sm leading-relaxed text-[var(--text-muted)]"
+                className="flex gap-2.5 text-[15px] leading-snug text-[var(--text-muted)]"
               >
                 <span className="shrink-0 text-[var(--terra)]" aria-hidden>
                   ✗
@@ -114,7 +114,7 @@ function GainLossContrast() {
           </ul>
         </article>
       </div>
-      <p className="text-sm leading-relaxed text-[var(--text-muted)]">
+      <p className="text-sm text-[var(--text-subtle)]">
         {DASHBOARD_UNLOCK_LOSSES.closingLine}
       </p>
     </section>
@@ -139,7 +139,7 @@ function UnlockSqueezeZone({
       ([entry]) => {
         onCtaVisibleChange(entry?.isIntersecting ?? false);
       },
-      { threshold: 0.2 },
+      { threshold: 0, rootMargin: "0px 0px -72px 0px" },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -149,7 +149,7 @@ function UnlockSqueezeZone({
     <section
       ref={ctaRef}
       aria-label="Bewaar je overzicht"
-      className="rounded-2xl border border-[rgba(90,143,106,0.24)] bg-gradient-to-b from-[rgba(33,56,31,0.95)] to-[rgba(26,46,26,0.98)] p-5 md:p-6"
+      className="rounded-2xl border border-[rgba(90,143,106,0.24)] bg-gradient-to-b from-[rgba(33,56,31,0.95)] to-[rgba(26,46,26,0.98)] p-4 sm:p-5 md:p-6"
     >
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--sage)]">
         {DASHBOARD_UNLOCK_CTA.label}
@@ -166,22 +166,12 @@ function UnlockSqueezeZone({
       >
         {DASHBOARD_UNLOCK_CTA.primaryLabel}
       </Link>
-      <p className="mt-3 text-center text-base leading-relaxed text-[var(--text-muted)]">
+      <p className="mt-3 text-center text-[15px] leading-snug text-[var(--text-muted)]">
         {DASHBOARD_UNLOCK_CTA.subtext}
       </p>
-      <ul className="mt-4 space-y-2">
-        {DASHBOARD_UNLOCK_CTA.trustLines.map((line) => (
-          <li
-            key={line}
-            className="flex items-start gap-2 text-xs leading-relaxed text-[var(--text-subtle)]"
-          >
-            <span className="mt-0.5 text-[var(--sage)]" aria-hidden>
-              ✓
-            </span>
-            <span>{line}</span>
-          </li>
-        ))}
-      </ul>
+      <p className="mt-4 text-center text-xs leading-relaxed text-[var(--text-subtle)]">
+        {DASHBOARD_UNLOCK_CTA.trustLine}
+      </p>
       <p className="mt-5 text-center text-sm">
         <Link
           href={DASHBOARD_UNLOCK_CTA.intakeFallbackHref}
@@ -225,18 +215,18 @@ function StickyCtaBar({
 
 function RecognitionSection() {
   return (
-    <section aria-labelledby="recognition-heading">
+    <section aria-labelledby="recognition-heading" className="hidden xl:block">
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
         {DASHBOARD_UNLOCK_RECOGNITION.sectionLabel}
       </p>
       <h2 id="recognition-heading" className="sr-only">
         Herkenningscitaten
       </h2>
-      <ul className="mt-4 space-y-3">
+      <ul className="mt-3 space-y-2">
         {DASHBOARD_UNLOCK_RECOGNITION.quotes.map((quote) => (
           <li
             key={quote}
-            className="rounded-xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-sm leading-relaxed text-[var(--text-muted)]"
+            className="rounded-xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-sm leading-snug text-[var(--text-muted)]"
           >
             &ldquo;{quote}&rdquo;
           </li>
@@ -262,55 +252,46 @@ function SqueezeContent({
 
       <ProgressStrip />
 
-      <header className="mt-6 sm:mt-8">
+      <header className="mt-5 max-w-2xl sm:mt-8 lg:max-w-3xl">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--sage)]">
           {DASHBOARD_UNLOCK_HERO.eyebrow}
         </p>
         <h1
-          className="mt-3 text-[clamp(1.375rem,5vw,2rem)] leading-[1.15] text-[var(--text)]"
+          className="mt-2.5 text-[1.375rem] leading-[1.15] text-[var(--text)] sm:mt-3 sm:text-[clamp(1.625rem,4vw,2.5rem)]"
           style={{ fontFamily: "var(--f-serif)", fontWeight: 400 }}
         >
-          &ldquo;{DASHBOARD_UNLOCK_HERO.title}&rdquo;
+          {DASHBOARD_UNLOCK_HERO.title}
         </h1>
-        <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--text-muted)]">
+        <p className="mt-2.5 text-base leading-snug text-[var(--text)] sm:mt-3 sm:text-[17px]">
+          {DASHBOARD_UNLOCK_HERO.lead}
+        </p>
+        <p className="mt-2 text-[15px] leading-relaxed text-[var(--text-muted)] sm:text-base">
           {DASHBOARD_UNLOCK_HERO.subtitle}
         </p>
       </header>
 
-      <div className="mt-6 flex flex-col gap-6 sm:mt-8 sm:gap-8 lg:grid lg:grid-cols-2 lg:items-start">
-        <div className="flex flex-col gap-6 sm:gap-8">
-          <GainLossContrast />
-          <DashboardUnlockPreview />
-          <UnlockSqueezeZone
-            variant={variant}
-            onCtaVisibleChange={setPrimaryCtaVisible}
-          />
-        </div>
-        <div className="flex flex-col gap-6 sm:gap-8">
-          <RecognitionSection />
+      <div className="mt-6 space-y-5 sm:mt-8 sm:space-y-8 lg:mt-10 lg:space-y-10">
+        <GainLossContrast />
+
+        <div className="flex flex-col gap-5 sm:gap-6 xl:grid xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] xl:items-start xl:gap-10">
+          <div className="order-1 xl:order-2">
+            <div className="flex flex-col gap-5 sm:gap-6">
+              <UnlockSqueezeZone
+                variant={variant}
+                onCtaVisibleChange={setPrimaryCtaVisible}
+              />
+              <RecognitionSection />
+            </div>
+          </div>
+          <div className="order-2 xl:order-1">
+            <DashboardUnlockPreview />
+          </div>
         </div>
       </div>
 
-      <section className="mt-10 rounded-2xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.03)] p-5">
-        <p className="text-sm leading-relaxed text-[var(--text-muted)]">
-          {DASHBOARD_UNLOCK_SOCIAL_PROOF.line}
-        </p>
-        <ul className="mt-4 grid gap-3 md:grid-cols-3">
-          {DASHBOARD_UNLOCK_SOCIAL_PROOF.testimonials.map((item) => (
-            <li
-              key={item.name}
-              className="rounded-xl border border-white/8 bg-white/[0.03] p-3"
-            >
-              <p className="text-sm leading-relaxed text-[var(--text-muted)]">
-                &ldquo;{item.quote}&rdquo;
-              </p>
-              <p className="mt-2 text-xs text-[var(--text-subtle)]">
-                {item.name}, {item.age}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <p className="mt-6 text-center text-sm text-[var(--text-subtle)] sm:mt-8 lg:mt-10">
+        {DASHBOARD_UNLOCK_SOCIAL_PROOF.line}
+      </p>
 
       <details className="group mt-8 rounded-2xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.03)]">
         <summary className="cursor-pointer list-none px-5 py-4 text-base font-semibold text-[var(--text)] marker:content-none [&::-webkit-details-marker]:hidden">
@@ -430,9 +411,9 @@ export default function DashboardUnlockSqueeze({
 
   if (variant === "b") {
     return (
-      <div className="min-h-dvh overflow-x-hidden bg-[#f8f7f4] px-3 py-4 sm:px-6 sm:py-6">
-        <div className="ps-dark mx-auto w-full max-w-[720px] overflow-hidden rounded-2xl shadow-[0_24px_64px_rgba(15,28,16,0.18)] sm:rounded-3xl">
-          <main className="box-border w-full min-w-0 px-3 pb-24 pt-4 sm:px-6 sm:pb-10 sm:pt-5 lg:px-8">
+      <div className="min-h-dvh overflow-x-hidden bg-[#f8f7f4] sm:px-6 sm:py-8">
+        <div className="ps-dark mx-auto w-full max-w-6xl overflow-hidden shadow-[0_24px_64px_rgba(15,28,16,0.18)] sm:rounded-3xl">
+          <main className="box-border w-full min-w-0 px-4 pb-28 pt-4 sm:px-8 sm:pb-10 sm:pt-6 lg:px-10">
             <SqueezeContent variant={variant} />
           </main>
         </div>
@@ -442,7 +423,7 @@ export default function DashboardUnlockSqueeze({
 
   return (
     <div className="ps-dark min-h-dvh w-full overflow-x-hidden">
-      <main className="mx-auto box-border w-full min-w-0 max-w-[600px] px-3 pb-24 pt-4 sm:px-6 sm:pb-10 sm:pt-5 lg:max-w-[960px] lg:px-8">
+      <main className="mx-auto box-border w-full min-w-0 max-w-6xl px-4 pb-28 pt-4 sm:px-8 sm:pb-10 sm:pt-6 lg:px-10">
         <SqueezeContent variant={variant} />
       </main>
     </div>
