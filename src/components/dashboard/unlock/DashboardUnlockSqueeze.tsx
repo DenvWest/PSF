@@ -36,19 +36,22 @@ function persistVariantCookie(variant: DashboardUnlockVariant) {
 function ProgressStrip() {
   return (
     <section aria-label="Voortgang naar dashboard">
-      <div className="mb-2 flex items-center justify-between gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--text-subtle)]">
+      <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-medium uppercase tracking-[0.08em] text-[var(--text-subtle)] sm:text-[11px] sm:tracking-[0.12em]">
         {DASHBOARD_UNLOCK_PROGRESS.steps.map((step) => (
           <span
             key={step.id}
-            className={step.done ? "text-[var(--sage)]" : "text-[var(--terra)]"}
+            className={`leading-snug ${step.done ? "text-[var(--sage)]" : "text-[var(--terra)]"}`}
           >
             {step.done ? "✓ " : "○ "}
             {step.label}
+            <span className="mt-0.5 block normal-case tracking-normal text-[var(--text-subtle)]">
+              {step.detail}
+            </span>
           </span>
         ))}
       </div>
       <div
-        className="h-1.5 overflow-hidden rounded-full bg-white/10"
+        className="mb-2 mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"
         role="progressbar"
         aria-valuenow={DASHBOARD_UNLOCK_PROGRESS.percent}
         aria-valuemin={0}
@@ -220,6 +223,29 @@ function StickyCtaBar({
   );
 }
 
+function RecognitionSection() {
+  return (
+    <section aria-labelledby="recognition-heading">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
+        {DASHBOARD_UNLOCK_RECOGNITION.sectionLabel}
+      </p>
+      <h2 id="recognition-heading" className="sr-only">
+        Herkenningscitaten
+      </h2>
+      <ul className="mt-4 space-y-3">
+        {DASHBOARD_UNLOCK_RECOGNITION.quotes.map((quote) => (
+          <li
+            key={quote}
+            className="rounded-xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-sm leading-relaxed text-[var(--text-muted)]"
+          >
+            &ldquo;{quote}&rdquo;
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function SqueezeContent({
   variant,
 }: {
@@ -236,12 +262,12 @@ function SqueezeContent({
 
       <ProgressStrip />
 
-      <header className="mt-8">
+      <header className="mt-6 sm:mt-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--sage)]">
           {DASHBOARD_UNLOCK_HERO.eyebrow}
         </p>
         <h1
-          className="mt-3 text-[28px] leading-[1.15] text-[var(--text)] md:text-[32px]"
+          className="mt-3 text-[clamp(1.375rem,5vw,2rem)] leading-[1.15] text-[var(--text)]"
           style={{ fontFamily: "var(--f-serif)", fontWeight: 400 }}
         >
           &ldquo;{DASHBOARD_UNLOCK_HERO.title}&rdquo;
@@ -251,37 +277,17 @@ function SqueezeContent({
         </p>
       </header>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:items-start">
-        <div className="space-y-8">
+      <div className="mt-6 flex flex-col gap-6 sm:mt-8 sm:gap-8 lg:grid lg:grid-cols-2 lg:items-start">
+        <div className="flex flex-col gap-6 sm:gap-8">
+          <GainLossContrast />
           <DashboardUnlockPreview />
           <UnlockSqueezeZone
             variant={variant}
             onCtaVisibleChange={setPrimaryCtaVisible}
           />
         </div>
-        <div className="space-y-8">
-          <section aria-labelledby="recognition-heading">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--text-subtle)]">
-              {DASHBOARD_UNLOCK_RECOGNITION.sectionLabel}
-            </p>
-            <h2
-              id="recognition-heading"
-              className="sr-only"
-            >
-              Herkenningscitaten
-            </h2>
-            <ul className="mt-4 space-y-3">
-              {DASHBOARD_UNLOCK_RECOGNITION.quotes.map((quote) => (
-                <li
-                  key={quote}
-                  className="rounded-xl border border-[var(--panel-border)] bg-[rgba(255,255,255,0.04)] px-4 py-3 text-sm leading-relaxed text-[var(--text-muted)]"
-                >
-                  &ldquo;{quote}&rdquo;
-                </li>
-              ))}
-            </ul>
-          </section>
-          <GainLossContrast />
+        <div className="flex flex-col gap-6 sm:gap-8">
+          <RecognitionSection />
         </div>
       </div>
 
@@ -424,9 +430,9 @@ export default function DashboardUnlockSqueeze({
 
   if (variant === "b") {
     return (
-      <div className="min-h-dvh bg-[#f8f7f4] px-4 py-6 sm:px-6">
-        <div className="ps-dark mx-auto w-full max-w-[720px] overflow-hidden rounded-3xl shadow-[0_24px_64px_rgba(15,28,16,0.18)]">
-          <main className="px-4 pb-24 pt-5 sm:px-6 md:pb-10 lg:px-8">
+      <div className="min-h-dvh overflow-x-hidden bg-[#f8f7f4] px-3 py-4 sm:px-6 sm:py-6">
+        <div className="ps-dark mx-auto w-full max-w-[720px] overflow-hidden rounded-2xl shadow-[0_24px_64px_rgba(15,28,16,0.18)] sm:rounded-3xl">
+          <main className="box-border w-full min-w-0 px-3 pb-24 pt-4 sm:px-6 sm:pb-10 sm:pt-5 lg:px-8">
             <SqueezeContent variant={variant} />
           </main>
         </div>
@@ -435,8 +441,8 @@ export default function DashboardUnlockSqueeze({
   }
 
   return (
-    <div className="ps-dark min-h-dvh w-full">
-      <main className="mx-auto w-full max-w-[600px] px-4 pb-24 pt-5 sm:px-6 md:pb-10 lg:max-w-[960px] lg:px-8">
+    <div className="ps-dark min-h-dvh w-full overflow-x-hidden">
+      <main className="mx-auto box-border w-full min-w-0 max-w-[600px] px-3 pb-24 pt-4 sm:px-6 sm:pb-10 sm:pt-5 lg:max-w-[960px] lg:px-8">
         <SqueezeContent variant={variant} />
       </main>
     </div>

@@ -38,12 +38,12 @@ export default function DashboardUnlockPreview() {
           </p>
         </div>
 
-        <div className="space-y-4 p-4 md:p-5">
-          <div className="flex flex-col items-center gap-3 rounded-2xl border border-[rgba(90,143,106,0.22)] bg-[rgba(255,255,255,0.03)] px-4 py-5">
+        <div className="space-y-4 p-3 sm:p-4 md:p-5">
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-[rgba(90,143,106,0.22)] bg-[rgba(255,255,255,0.03)] px-3 py-4 sm:px-4 sm:py-5">
             <VitalityRing
               value={DASHBOARD_UNLOCK_PREVIEW.vitality}
-              size={140}
-              stroke={12}
+              size={120}
+              stroke={11}
             />
             <span
               className="inline-flex items-center rounded-full border border-[rgba(90,143,106,0.32)] bg-[rgba(90,143,106,0.16)] px-3.5 py-1.5 text-lg text-[var(--text)]"
@@ -81,14 +81,14 @@ export default function DashboardUnlockPreview() {
             className="rounded-2xl border border-[var(--panel-border)] bg-[var(--panel)] p-2"
             style={{ boxShadow: REVEAL_CARD_SHADOW }}
           >
-            <header className="flex items-end justify-between gap-3 px-3 pb-1 pt-2">
+            <header className="flex flex-col gap-1 px-2 pb-1 pt-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3 sm:px-3">
               <h3
-                className="m-0 text-xl text-[var(--text)]"
+                className="m-0 text-lg text-[var(--text)] sm:text-xl"
                 style={{ fontFamily: "var(--f-serif)", fontWeight: 400 }}
               >
                 Waar je begint
               </h3>
-              <span className="text-xs text-[var(--text-subtle)]">
+              <span className="text-[11px] text-[var(--text-subtle)] sm:text-xs">
                 Zwakste pijler bovenaan
               </span>
             </header>
