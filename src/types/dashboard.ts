@@ -1,3 +1,5 @@
+import type { DeltaReport } from "@/types/delta-report";
+
 export type PillarId =
   | "slaap"
   | "energie"
@@ -146,6 +148,7 @@ export type DashboardData = {
   retest: boolean;
   nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
   remeasure: { dueDate: string; daysUntil: number } | null;
+  deltaReport: DeltaReport | null;
 };
 
 export type IdentityField = {

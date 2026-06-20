@@ -11,6 +11,9 @@ import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
+import {
+  perfectSupplementMeasurementConfig,
+} from "@/data/measurement-config";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
@@ -37,6 +40,7 @@ type SharedSectionProps = {
   onCheck: () => void;
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
+  onGoRoadmap: () => void;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -495,7 +499,7 @@ const RemeasureStrip = ({
   );
 };
 
-const RetestSection = ({ model, data, onRemeasure }: SharedSectionProps) => {
+const RetestSection = ({ model, data, onRemeasure, onGoRoadmap }: SharedSectionProps) => {
   if (!model) {
     return null;
   }
@@ -504,7 +508,115 @@ const RetestSection = ({ model, data, onRemeasure }: SharedSectionProps) => {
     <RemeasureStrip remeasure={data.remeasure} onRemeasure={onRemeasure} />
   ) : null;
 
-  if (!model.retest || !model.prevScores) {
+  if (!model.retest) {
+    return remeasureStrip ? <section>{remeasureStrip}</section> : null;
+  }
+
+  const deltaReport = data?.deltaReport ?? null;
+  const domainConfigById = new Map(
+    perfectSupplementMeasurementConfig.domains.map((domain) => [domain.id, domain]),
+  );
+
+  if (deltaReport) {
+    const { vitality, method, perDomain, coupling, movedPriority } = deltaReport;
+    const forwardPillar = model.priority;
+    const baselinePriorityLabel = movedPriority
+      ? (domainConfigById.get(movedPriority.from)?.label ?? movedPriority.from)
+      : null;
+    const currentPriorityLabel = movedPriority
+      ? (domainConfigById.get(movedPriority.to)?.label ?? movedPriority.to)
+      : forwardPillar.label;
+
+    return (
+      <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {remeasureStrip}
+        <Card pad={22} glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.26)" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
+            <Icons.TrendUp s={14} /> Je hermeting · {model.date}
+          </div>
+          <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>
+            Zo veranderde je beeld in {method.daysBetween} dagen.
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 2px", borderBottom: "1px solid var(--divider)", marginBottom: 4 }}>
+            <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>Jouw vitaliteit</span>
+            <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums" }}>
+              van {vitality.was} naar {vitality.now}
+            </span>
+            <span style={{ width: 34, textAlign: "right" }}>
+              <DeltaBadge delta={vitality.delta} />
+            </span>
+          </div>
+          {method.sameInstrument && method.selfReported && method.directional && method.notDiagnosis && (
+            <p style={{ fontSize: 12.5, color: "var(--text-subtle)", lineHeight: 1.55, margin: "14px 0 16px", textWrap: "pretty" }}>
+              Zelfde vragen, zelfde schaal als je startmeting. Dit is je ervaren verandering — richting, geen schijnprecisie. Geen diagnose.
+            </p>
+          )}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {perDomain.map((row, i) => {
+              const domain = domainConfigById.get(row.domainId);
+              return (
+                <div key={row.domainId} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 2px", borderTop: i ? "1px solid var(--divider)" : "none" }}>
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: domain?.color ?? "var(--text-subtle)", flexShrink: 0 }} />
+                  <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>{domain?.label ?? row.domainId}</span>
+                  <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums", textAlign: "right" }}>
+                    {row.was} → {row.now}
+                  </span>
+                  <span style={{ width: 34, textAlign: "right" }}>
+                    <DeltaBadge delta={row.delta} />
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+
+        {coupling.length > 0 && (
+          <Card pad={20}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
+              <Icons.Check s={14} /> Wat je volhield
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {coupling.map((entry) => {
+                const domainLabel = domainConfigById.get(entry.domainId)?.label ?? entry.domainId;
+                return (
+                  <p key={`${entry.domainId}-${entry.action}`} style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>
+                    Je hield <span style={{ color: "var(--text)", fontWeight: 500 }}>{entry.action}</span> vast — en je{" "}
+                    <span style={{ color: "var(--text)", fontWeight: 500 }}>{domainLabel.toLowerCase()}</span> bewoog{" "}
+                    <span style={{ color: "var(--sage)", fontWeight: 600 }}>+{entry.delta}</span>.
+                  </p>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
+        <Card pad={20} glow="#5A8F6A" style={{ borderColor: "rgba(90,143,106,0.26)" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
+            <Icons.Target s={14} /> Waar je nu verder bouwt
+          </div>
+          <div style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>
+            {movedPriority
+              ? `Je prioriteit is verschoven van ${baselinePriorityLabel?.toLowerCase()} naar ${currentPriorityLabel.toLowerCase()}.`
+              : `Je vertrekpunt blijft ${forwardPillar.label.toLowerCase()}.`}
+          </div>
+          <div style={{ fontSize: 15, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>
+            {forwardPillar.quickWin.title}
+          </div>
+          <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 8px", textWrap: "pretty" }}>
+            {forwardPillar.quickWin.detail}
+          </p>
+          <p style={{ fontSize: 13, color: "var(--text-subtle)", lineHeight: 1.55, margin: "0 0 16px", textWrap: "pretty" }}>
+            {forwardPillar.lever}
+          </p>
+          <Button variant="secondary" onClick={onGoRoadmap} iconRight={<Icons.ArrowRight s={18} />}>
+            Bekijk je roadmap
+          </Button>
+        </Card>
+      </section>
+    );
+  }
+
+  if (!model.prevScores) {
     return remeasureStrip ? <section>{remeasureStrip}</section> : null;
   }
 
@@ -828,7 +940,15 @@ export default function Dashboard({ empty, data }: DashboardProps) {
     router.push("/intake?from=dashboard");
   };
 
-  const sharedProps: SharedSectionProps = { empty, model, data, onCheck, onDashboardCheckin, onRemeasure };
+  const sharedProps: SharedSectionProps = {
+    empty,
+    model,
+    data,
+    onCheck,
+    onDashboardCheckin,
+    onRemeasure,
+    onGoRoadmap: () => setTab("roadmap"),
+  };
 
   return (
     <div>

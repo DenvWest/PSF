@@ -1,4 +1,8 @@
-import { CHECK_LOG, CHECKS } from "@/data/dashboard";
+import { CHECK_LOG, CHECKS, PILLAR } from "@/data/dashboard";
+import {
+  perfectSupplementMeasurementConfig,
+} from "@/data/measurement-config";
+import { buildDeltaReport } from "@/lib/delta-report";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type {
   Check,
@@ -8,8 +12,9 @@ import type {
   CheckSnapshot,
   DashboardData,
 } from "@/types/dashboard";
+import type { DomainScores } from "@/lib/intake-engine";
 
-function toDomainScores(scores: CheckScores) {
+function toDomainScores(scores: CheckScores): DomainScores {
   return {
     sleep_score: scores.slaap,
     energy_score: scores.energie,
@@ -50,6 +55,26 @@ export function buildDevDashboardData(
           }
         : null;
 
+  const deltaReport =
+    mode === "retest"
+      ? buildDeltaReport({
+          baseline: toDomainScores(CHECKS.check1.scores),
+          current: toDomainScores(CHECKS.check2.scores),
+          daysBetween: 30,
+          sustainedActions: [
+            {
+              domainId: "nutrition_score",
+              action: PILLAR.voeding.quickWin.title,
+            },
+            {
+              domainId: "movement_score",
+              action: PILLAR.beweging.quickWin.title,
+            },
+          ],
+          config: perfectSupplementMeasurementConfig,
+        })
+      : null;
+
   return {
     empty: false,
     current: {
@@ -64,5 +89,6 @@ export function buildDevDashboardData(
       mode === "retest"
         ? { dueDate: "10 jul 2026", daysUntil: -8 }
         : { dueDate: "10 jul 2026", daysUntil: 22 },
+    deltaReport,
   };
 }

@@ -1,6 +1,12 @@
 import { derivePriority } from "@/lib/dashboard-model";
+import { PILLAR } from "@/data/dashboard";
+import {
+  perfectSupplementMeasurementConfig,
+} from "@/data/measurement-config";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
+import { buildDeltaReport } from "@/lib/delta-report";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
+import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
@@ -12,6 +18,8 @@ import type {
   DashboardData,
   PillarId,
 } from "@/types/dashboard";
+import type { SustainedAction } from "@/types/delta-report";
+import type { PlanStepProgress } from "@/types/lifestyle-plan";
 
 const EMPTY_DASHBOARD_DATA: DashboardData = {
   empty: true,
@@ -21,6 +29,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   retest: false,
   nutritionIntake: null,
   remeasure: null,
+  deltaReport: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -46,6 +55,22 @@ const CHECKIN_DOMAIN_TO_PILLAR: Record<string, PillarId> = {
   stress_score: "stress",
   movement_score: "beweging",
 };
+
+const MEASURED_DOMAIN_TO_SCORE_KEY: Record<MeasuredPillarId, DomainScoreKey> = {
+  sleep: "sleep_score",
+  stress: "stress_score",
+  nutrition: "nutrition_score",
+  movement: "movement_score",
+};
+
+const MEASURED_DOMAIN_TO_PILLAR: Record<MeasuredPillarId, PillarId> = {
+  sleep: "slaap",
+  stress: "stress",
+  nutrition: "voeding",
+  movement: "beweging",
+};
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 type SessionRow = {
   id: string | null;
@@ -90,6 +115,73 @@ function formatDashboardDate(createdAt: string): string {
       year: "numeric",
     })
     .replace(".", "");
+}
+
+function mapCheckScoresToDomainScores(scores: CheckScores): DomainScores {
+  return {
+    sleep_score: scores.slaap,
+    energy_score: scores.energie,
+    stress_score: scores.stress,
+    nutrition_score: scores.voeding,
+    movement_score: scores.beweging,
+    recovery_score: scores.herstel,
+  };
+}
+
+function hasDoneStep(steps: Record<string, PlanStepProgress> | null): boolean {
+  if (!steps) {
+    return false;
+  }
+  return Object.values(steps).some((step) => step.state === "done");
+}
+
+function parseMeasuredDomain(value: unknown): MeasuredPillarId | null {
+  if (
+    value === "sleep" ||
+    value === "stress" ||
+    value === "nutrition" ||
+    value === "movement"
+  ) {
+    return value;
+  }
+  return null;
+}
+
+function buildSustainedActions(
+  rows: Array<{ domain: unknown; steps: unknown }>,
+): SustainedAction[] {
+  const seen = new Set<DomainScoreKey>();
+  const actions: SustainedAction[] = [];
+
+  for (const row of rows) {
+    const measuredDomain = parseMeasuredDomain(row.domain);
+    if (!measuredDomain) {
+      continue;
+    }
+
+    const domainId = MEASURED_DOMAIN_TO_SCORE_KEY[measuredDomain];
+    if (seen.has(domainId)) {
+      continue;
+    }
+
+    const steps =
+      row.steps && typeof row.steps === "object" && !Array.isArray(row.steps)
+        ? (row.steps as Record<string, PlanStepProgress>)
+        : null;
+
+    if (!hasDoneStep(steps)) {
+      continue;
+    }
+
+    const pillarId = MEASURED_DOMAIN_TO_PILLAR[measuredDomain];
+    actions.push({
+      domainId,
+      action: PILLAR[pillarId].quickWin.title,
+    });
+    seen.add(domainId);
+  }
+
+  return actions;
 }
 
 function mapDomainScoresToCheckScores(domainScores: DomainScores): CheckScores {
@@ -173,6 +265,10 @@ export async function loadAccountDashboardData(
     .in("session_id", sessionIds)
     .order("logged_at", { ascending: false })
     .limit(1);
+  const { data: planProgressRows } = await admin
+    .from("plan_progress")
+    .select("session_id, domain, steps")
+    .in("session_id", sessionIds);
 
   let nutritionIntake: DashboardData["nutritionIntake"] = null;
   const latestLog = logRows?.[0];
@@ -277,6 +373,23 @@ export async function loadAccountDashboardData(
     daysUntil,
   };
 
+  const baselineDomainScores = mapCheckScoresToDomainScores(snapshots[0].scores);
+  const daysBetween = Math.max(
+    0,
+    Math.round((latestTs - firstSessionTs) / MS_PER_DAY),
+  );
+  const sustainedActions = buildSustainedActions(planProgressRows ?? []);
+  const deltaReport =
+    snapshots.length >= 2
+      ? buildDeltaReport({
+          baseline: baselineDomainScores,
+          current: currentDomainScores,
+          daysBetween,
+          sustainedActions,
+          config: perfectSupplementMeasurementConfig,
+        })
+      : null;
+
   return {
     empty: false,
     current: {
@@ -296,5 +409,6 @@ export async function loadAccountDashboardData(
     retest: snapshots.length >= 2,
     nutritionIntake,
     remeasure,
+    deltaReport,
   };
 }
