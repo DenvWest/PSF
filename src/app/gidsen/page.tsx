@@ -1,193 +1,105 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { canonicalMetadata } from "@/lib/seo/canonical";
+import GuideCard from "@/components/gidsen/GuideCard";
 import Container from "@/components/layout/Container";
-import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import {
-  GUIDE_DATA,
-  THEMA_GUIDE_SLUGS,
-  getGuideDeliveryStatus,
-} from "@/data/gids";
-import { INTAKE_CTA } from "@/lib/intake-product-copy";
-import type { GuideThema } from "@/types/guide-opt-in";
+  FILTER_CATEGORIES,
+  filterGuides,
+  type FilterCategory,
+} from "@/data/guides";
+import { canonicalMetadata } from "@/lib/seo/canonical";
 
 export const metadata: Metadata = {
-  title: "Gidsen na 40: slaap, energie, stress en herstel | PerfectSupplement",
+  title: "Gratis gidsen: slaap, stress, energie en herstel | PerfectSupplement",
   description:
-    "Overzicht van onze themagidsen voor mannen 40+. Kies slaap, energie, stress, herstel of testosteron — praktisch en zonder diagnoses.",
+    "Compacte, onderbouwde gidsen voor mannen 40+. Kies slaap, stress, energie, herstel of testosteron — gratis download via e-mail.",
   ...canonicalMetadata("/gidsen"),
 };
 
-const primaryCtaClassName =
-  "inline-flex items-center justify-center rounded-lg bg-green-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-800";
+type GidsenPageProps = {
+  searchParams: Promise<{ filter?: string }>;
+};
 
-const pillarLinkClassName =
-  "text-sm text-stone-600 underline decoration-stone-300 underline-offset-[3px] transition-colors hover:text-ps-green";
+function resolveFilter(filterParam: string | undefined): FilterCategory | "alle" {
+  if (!filterParam || filterParam === "alle") {
+    return "alle";
+  }
 
-function GuideCardActions({
-  slug,
-  guideName,
-  pillarHref,
-  pdfCtaLabel,
-}: {
-  slug: GuideThema;
-  guideName: string;
-  pillarHref: string;
-  pdfCtaLabel?: string;
-}) {
-  const status = getGuideDeliveryStatus(slug);
-  const statusLabel =
-    status === "pdf"
-      ? "PDF beschikbaar"
-      : status === "email_sequence"
-        ? "Stappenplan per e-mail"
-        : "Komt binnenkort";
-  const statusClassName =
-    status === "coming_soon"
-      ? "bg-stone-100 text-stone-600"
-      : "bg-green-100 text-green-800";
-
-  return (
-    <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-      <span
-        className={`inline-flex w-fit rounded-full px-2.5 py-1 text-xs font-medium ${statusClassName}`}
-      >
-        {statusLabel}
-      </span>
-      {status === "pdf" ? (
-        <Link href={`/gids/${slug}`} className={primaryCtaClassName}>
-          {pdfCtaLabel ?? `Ontvang de gratis ${guideName} →`}
-        </Link>
-      ) : null}
-      {status === "email_sequence" ? (
-        <Link href={`/gids/${slug}`} className={primaryCtaClassName}>
-          Ontvang het stappenplan per e-mail →
-        </Link>
-      ) : null}
-      {status === "coming_soon" ? (
-        <p className="text-sm text-stone-500">Komt binnenkort</p>
-      ) : null}
-      <Link href={pillarHref} className={pillarLinkClassName}>
-        Lees de pillar →
-      </Link>
-    </div>
+  const match = FILTER_CATEGORIES.find(
+    (category) => category.key === filterParam,
   );
+
+  if (!match || match.key === "alle") {
+    return "alle";
+  }
+
+  return match.key;
 }
 
-export default function GidsenPage() {
-  const voedingGuide = GUIDE_DATA.voeding;
-  const bewegingGuide = GUIDE_DATA.beweging;
+export default async function GidsenPage({ searchParams }: GidsenPageProps) {
+  const params = await searchParams;
+  const activeFilter = resolveFilter(params.filter);
+  const guides = filterGuides(activeFilter);
 
   return (
-    <main className="py-12 md:py-16">
-      <Container>
-        <div className="guides-overview w-full">
-          <article>
-            <header>
-              <p className="text-sm font-semibold uppercase tracking-wider text-green-700">
-                Overzicht
-              </p>
-              <h1 className="mt-2 font-serif text-4xl font-bold text-gray-900 md:text-5xl">
-                Begrijp wat er na je 40e verandert
-              </h1>
-            </header>
+    <main className="bg-[#F7F5F0] text-[#1B2620]">
+      <Container className="py-16 pb-24">
+        <header className="max-w-[720px]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#D8D3C6] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-[#5A8F6A]">
+            <span
+              aria-hidden
+              className="h-1.5 w-1.5 rounded-full bg-[#5A8F6A]"
+            />
+            Gratis gidsen
+          </div>
+          <h1 className="mt-6 font-serif text-[clamp(34px,5vw,56px)] font-normal leading-[1.04] tracking-[-0.015em]">
+            Begin bij rust, ritme en herstel.
+          </h1>
+          <p className="mt-5 max-w-[620px] text-[clamp(16px,1.6vw,19px)] leading-relaxed text-[#5A6560]">
+            Compacte, onderbouwde gidsen voor mannen 40+. Geen wondermiddelen
+            — wel houdbare gewoontes die je energie, slaap en veerkracht
+            ondersteunen. Elke gids is een instap, geen eindpunt.
+          </p>
+        </header>
 
-            <section className="mt-10">
-              <p className="text-lg leading-relaxed text-gray-700">
-                Slechter slapen, minder energie, trager herstel — na je 40e verandert
-                er van alles. Deze gidsen helpen je begrijpen wat er speelt en welke
-                stappen echt verschil maken. Geen hypes, geen wondermiddelen. Kies je
-                thema, ontvang de gratis PDF per e-mail of lees de complete gids online.
-              </p>
-            </section>
+        <nav
+          aria-label="Filter gidsen"
+          className="mt-10 flex flex-wrap gap-2.5 border-b border-[#E7E3D8] pb-2"
+        >
+          {FILTER_CATEGORIES.map((category) => {
+            const isActive = activeFilter === category.key;
+            const href =
+              category.key === "alle" ? "/gidsen" : `/gidsen?filter=${category.key}`;
 
-            <section className="mt-12 w-full" aria-label="Leefstijl-pillars">
-              <h2 className="font-serif text-3xl font-bold text-gray-900">
-                Leefstijl eerst
-              </h2>
-              <p className="mt-3 leading-relaxed text-gray-700">
-                De grootste winst zit zelden in een supplement. Slaap, voeding, beweging
-                en herstel doen meestal het meeste — daarom beginnen deze gidsen daar.
-              </p>
-              <div className="mt-6 grid w-full gap-4 sm:grid-cols-2">
-                <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
-                  <p className="font-semibold text-gray-900">Voeding na 40</p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Eiwit, ritme en vetten — de basis die na je 40e zwaarder telt.
-                    Praktische stappen vóór je aan supplementen denkt.
-                  </p>
-                  <GuideCardActions
-                    slug="voeding"
-                    guideName={voedingGuide.guideName}
-                    pillarHref={voedingGuide.pillarHref}
-                  />
-                </div>
-                <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
-                  <p className="font-semibold text-gray-900">Beweging na 40</p>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Kracht, herstel en ritme — zonder sportschool-hype. Wat werkt in
-                    een drukke week.
-                  </p>
-                  <GuideCardActions
-                    slug="beweging"
-                    guideName={bewegingGuide.guideName}
-                    pillarHref={bewegingGuide.pillarHref}
-                  />
-                </div>
-              </div>
-            </section>
+            return (
+              <Link
+                key={category.key}
+                href={href}
+                className={`min-h-11 rounded-full border px-4 py-2 text-[13.5px] font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "border-[#5A8F6A] bg-[#5A8F6A] text-white"
+                    : "border-[#E4E0D6] bg-white text-[#46514B] hover:border-[#5A8F6A]/40"
+                }`}
+              >
+                {category.label}
+              </Link>
+            );
+          })}
+        </nav>
 
-            <section className="mt-12 w-full" aria-label="Themagidsen">
-              <h2 className="font-serif text-3xl font-bold text-gray-900">
-                Kies je thema
-              </h2>
+        <section
+          aria-label="Gidsen overzicht"
+          className="mt-10 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6"
+        >
+          {guides.map((guide) => (
+            <GuideCard key={guide.key} guide={guide} />
+          ))}
+        </section>
 
-              <div className="mt-6 space-y-4">
-                {THEMA_GUIDE_SLUGS.map((slug) => {
-                  const guide = GUIDE_DATA[slug];
-                  return (
-                    <div
-                      key={slug}
-                      className="rounded-xl border border-stone-200 bg-stone-50 p-5"
-                    >
-                      <p className="text-sm leading-relaxed text-gray-700">
-                        <strong className="text-gray-900">{guide.optIn.title}</strong>
-                        <br />
-                        {guide.heroSubtitle}
-                      </p>
-                      <GuideCardActions
-                        slug={slug}
-                        guideName={guide.guideName}
-                        pillarHref={guide.pillarHref}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="mt-14 w-full">
-              <div className="rounded-2xl border border-green-200 bg-green-50 p-8">
-                <h3 className="font-serif text-2xl font-bold text-gray-900">
-                  Wil je weten waar je staat?
-                </h3>
-                <p className="mt-3 max-w-lg text-gray-600">
-                  De Leefstijlcheck brengt in 3 minuten jouw slaap-, stress- en
-                  energieprofiel in kaart. Je krijgt een persoonlijk leefstijloverzicht —
-                  gratis, zonder registratie.
-                </p>
-                <Link
-                  href="/intake"
-                  className="mt-5 inline-block rounded-lg bg-green-700 px-8 py-3 font-semibold text-white transition-colors hover:bg-green-800"
-                >
-                  {INTAKE_CTA.discoverOverview}
-                </Link>
-              </div>
-            </section>
-
-            <MedicalDisclaimer />
-          </article>
-        </div>
+        <p className="mt-12 text-center text-sm text-[#8A9189]">
+          Elke gids verbindt door naar de bijbehorende pillar, je profiel en de
+          gratis Leefstijlcheck.
+        </p>
       </Container>
     </main>
   );
