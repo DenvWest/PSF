@@ -3,6 +3,7 @@ import { stressGuideTemplates } from "@/lib/email-templates/guide-nurture/stress
 import { voedingGuideTemplates } from "@/lib/email-templates/guide-nurture/voeding";
 import { bewegingGuideTemplates } from "@/lib/email-templates/guide-nurture/beweging";
 import { buildGenericGuideTemplates } from "@/lib/email-templates/guide-nurture/generic";
+import { personalizeGuideEmailHtml } from "@/lib/email-templates/guide-nurture/shared";
 import type { GuideNurtureDay, GuideNurtureTemplate } from "@/lib/email-templates/guide-nurture/types";
 import type { GuideThema } from "@/types/guide-opt-in";
 
@@ -31,14 +32,19 @@ export function getGuideNurtureEmailContent(
   thema: GuideThema,
   sequenceDay: number,
   unsubscribeUrl: string,
+  options?: { firstName?: string | null },
 ): { subject: string; html: string } | null {
   const day = sequenceDay as GuideNurtureDay;
   const template = getGuideNurtureTemplate(thema, day);
   if (!template) {
     return null;
   }
+  const html = template.html(unsubscribeUrl);
   return {
     subject: template.subject,
-    html: template.html(unsubscribeUrl),
+    html:
+      day === 0
+        ? personalizeGuideEmailHtml(html, options?.firstName)
+        : html,
   };
 }

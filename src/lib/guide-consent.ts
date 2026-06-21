@@ -3,15 +3,32 @@ import {
   GUIDE_CONSENT_TEXT,
   type GuideConsentType,
 } from "@/lib/consent-texts";
+import { isUsableFirstName } from "@/lib/intake-greetings";
 import type { GuideThema } from "@/types/guide-opt-in";
 
 const EMAIL_LOOSE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const FIRST_NAME_MAX = 40;
 
 export type GuideOptInPayload = {
   email: string;
   thema: GuideThema;
   marketingConsent: boolean;
+  firstName: string | null;
 };
+
+function normalizeFirstName(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  if (trimmed.length > FIRST_NAME_MAX || !isUsableFirstName(trimmed)) {
+    return null;
+  }
+  return trimmed;
+}
 
 export function validateGuideOptIn(
   body: Record<string, unknown>,
@@ -29,6 +46,15 @@ export function validateGuideOptIn(
     return { ok: false, error: "Vul een geldig e-mailadres in." };
   }
 
+  const firstName = normalizeFirstName(body.firstName);
+  if (
+    typeof body.firstName === "string" &&
+    body.firstName.trim() &&
+    !firstName
+  ) {
+    return { ok: false, error: "Vul een geldige voornaam in." };
+  }
+
   if (!isValidThema(thema)) {
     return { ok: false, error: "Onbekend thema." };
   }
@@ -42,7 +68,12 @@ export function validateGuideOptIn(
 
   return {
     ok: true,
-    value: { email, thema, marketingConsent },
+    value: {
+      email,
+      thema,
+      marketingConsent,
+      firstName: normalizeFirstName(body.firstName),
+    },
   };
 }
 

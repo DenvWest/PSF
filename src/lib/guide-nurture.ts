@@ -60,6 +60,7 @@ export async function scheduleGuideNurtureSequence(input: {
   email: string;
   thema: GuideThema;
   oneOffOnly?: boolean;
+  firstName?: string | null;
 }): Promise<number> {
   const supabase = createSupabaseAdmin();
   if (!supabase) {
@@ -79,6 +80,7 @@ export async function scheduleGuideNurtureSequence(input: {
     input.thema,
     0,
     unsubscribeUrl,
+    { firstName: input.firstName },
   );
   if (!day0Content) {
     throw new Error("GUIDE_TEMPLATE_DAY0");
@@ -123,6 +125,7 @@ export async function scheduleGuideNurtureSequence(input: {
     template_key: guideTemplateKey(input.thema, 0),
     sequence_day: 0,
     scheduled_at: now.toISOString(),
+    first_name: input.firstName ?? null,
     status: resendId ? ("sent" as const) : ("failed" as const),
     sent_at: resendId ? now.toISOString() : null,
     resend_id: resendId ?? null,
@@ -149,6 +152,7 @@ export async function scheduleGuideNurtureSequence(input: {
     scheduled_at: new Date(
       now.getTime() + day * 24 * 60 * 60 * 1000,
     ).toISOString(),
+    first_name: input.firstName ?? null,
     status: "pending" as const,
   }));
 

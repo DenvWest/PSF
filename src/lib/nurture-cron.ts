@@ -164,6 +164,10 @@ export async function runPendingNurtureEmails(): Promise<{
           thema,
           mail.sequence_day,
           listUnsubscribeUrl,
+          {
+            firstName:
+              typeof mail.first_name === "string" ? mail.first_name : null,
+          },
         );
         if (!content) {
           throw new Error("Gids-template niet gevonden");

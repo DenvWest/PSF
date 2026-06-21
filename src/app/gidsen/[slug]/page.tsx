@@ -11,6 +11,7 @@ import {
   getGuideBySlug,
 } from "@/data/guides";
 import { canonicalMetadata } from "@/lib/seo/canonical";
+import type { GuideThema } from "@/types/guide-opt-in";
 
 type GuideLandingPageProps = {
   params: Promise<{ slug: string }>;
@@ -62,7 +63,11 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
   } as CSSProperties;
 
   return (
-    <GuideOptInRoot guideTitle={guide.title} accent={guide.accent}>
+    <GuideOptInRoot
+      guideKey={guide.key as GuideThema}
+      guideTitle={guide.title}
+      accent={guide.accent}
+    >
       <main
         className="bg-[#F7F5F0] text-[#1B2620]"
         style={accentStyle}

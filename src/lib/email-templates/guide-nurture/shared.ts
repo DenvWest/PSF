@@ -1,3 +1,6 @@
+import { escapeHtml } from "@/lib/emails/shared";
+import { isUsableFirstName } from "@/lib/intake-greetings";
+
 export function emailWrapper(
   content: string,
   unsubscribeUrl: string,
@@ -21,4 +24,16 @@ export function ctaButton(url: string, text: string): string {
       ${text}
     </a>
   `;
+}
+
+export function personalizeGuideEmailHtml(
+  html: string,
+  firstName: string | null | undefined,
+): string {
+  if (!isUsableFirstName(firstName)) {
+    return html;
+  }
+
+  const greeting = `<p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">Hoi ${escapeHtml(firstName!.trim())},</p>`;
+  return html.replace(/(<h1\b)/i, `${greeting}$1`);
 }

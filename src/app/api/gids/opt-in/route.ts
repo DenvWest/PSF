@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: validated.error }, { status: 400 });
   }
 
-  const { email, thema, marketingConsent } = validated.value;
+  const { email, thema, marketingConsent, firstName } = validated.value;
 
   if (!process.env.RESEND_API_KEY?.trim()) {
     return NextResponse.json({ error: "Verzenden mislukt" }, { status: 500 });
@@ -121,6 +121,7 @@ export async function POST(request: NextRequest) {
       email,
       thema,
       oneOffOnly: mainNurtureActive,
+      firstName,
     });
   } catch (err) {
     logSecurityEvent("nurture_schedule_failed", {

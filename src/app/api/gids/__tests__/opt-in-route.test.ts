@@ -85,6 +85,7 @@ describe("POST /api/gids/opt-in nurture dedup", () => {
       email: "lead@example.com",
       thema: "slaap",
       oneOffOnly: true,
+      firstName: null,
     });
   });
 
@@ -95,6 +96,7 @@ describe("POST /api/gids/opt-in nurture dedup", () => {
       email: "lead@example.com",
       thema: "slaap",
       oneOffOnly: false,
+      firstName: null,
     });
   });
 
