@@ -1,3 +1,4 @@
+import type { DomainScoreKey } from "@/lib/intake-engine";
 import type {
   Check,
   CheckId,
@@ -32,6 +33,7 @@ export const PILLARS: Pillar[] = [
       signal: "Je valt laat in en slaapt onrustig",
       claim: "draagt bij aan een normale werking van het zenuwstelsel",
     },
+    hubRoute: "/slaap-verbeteren-na-40",
   },
   {
     id: "energie",
@@ -46,6 +48,7 @@ export const PILLARS: Pillar[] = [
         "10 minuten buiten binnen een half uur na opstaan zet je bioklok gelijk. Dat stabiliseert je cortisolritme — en daarmee je energiecurve overdag.",
     },
     supplement: null,
+    hubRoute: "/energie-na-40",
   },
   {
     id: "stress",
@@ -60,6 +63,7 @@ export const PILLARS: Pillar[] = [
         "4 tellen in, 4 vast, 4 uit — herhaal 4 minuten. Verlaagt je hartslag meetbaar binnen één sessie. Doe het vóór je telefoon pakt na het werk.",
     },
     supplement: null,
+    hubRoute: "/stress-verminderen-man",
   },
   {
     id: "voeding",
@@ -80,6 +84,7 @@ export const PILLARS: Pillar[] = [
       signal: "Je eet zelden vette vis",
       claim: "draagt bij aan de normale werking van het hart",
     },
+    hubRoute: "/voeding-na-40",
   },
   {
     id: "beweging",
@@ -94,6 +99,7 @@ export const PILLARS: Pillar[] = [
         "Een korte wandeling direct na het eten verlaagt je bloedsuikerrespons en helpt je ontspannen richting de avond. Geen sportkleding nodig — alleen schoenen.",
     },
     supplement: null,
+    hubRoute: "/beweging-na-40",
   },
   {
     id: "herstel",
@@ -108,12 +114,31 @@ export const PILLARS: Pillar[] = [
         "Alcohol verlaagt je REM-slaap en remt spierherstel. Kies één vaste avond per week zonder drank — en merk het verschil in hoe je de volgende ochtend aanvoelt.",
     },
     supplement: null,
+    hubRoute: "/herstel-verbeteren-na-40",
   },
 ];
 
 export const PILLAR: Record<PillarId, Pillar> = Object.fromEntries(
   PILLARS.map((pillar) => [pillar.id, pillar]),
 ) as Record<PillarId, Pillar>;
+
+export const SCORE_KEY_BY_PILLAR: Record<PillarId, DomainScoreKey> = {
+  slaap: "sleep_score",
+  energie: "energy_score",
+  stress: "stress_score",
+  voeding: "nutrition_score",
+  beweging: "movement_score",
+  herstel: "recovery_score",
+};
+
+export const PILLAR_BY_SCORE_KEY: Record<DomainScoreKey, PillarId> = {
+  sleep_score: "slaap",
+  energy_score: "energie",
+  stress_score: "stress",
+  nutrition_score: "voeding",
+  movement_score: "beweging",
+  recovery_score: "herstel",
+};
 
 export const TIE_ORDER: PillarId[] = [
   "slaap",

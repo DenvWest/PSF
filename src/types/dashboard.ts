@@ -98,6 +98,7 @@ export type Pillar = {
   lever: string;
   quickWin: PillarQuickWin;
   supplement: PillarSupplement | null;
+  hubRoute: string;
 };
 
 export type SignalStatus = "connected" | "binnenkort";
