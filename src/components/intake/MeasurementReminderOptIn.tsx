@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { clarityTag } from "@/lib/clarity";
 import { MEASUREMENT_REMINDER_CONSENT_TEXT } from "@/lib/consent-texts";
+import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
 type MeasurementReminderOptInProps = {
   sessionId: string;
@@ -54,6 +56,8 @@ export function MeasurementReminderOptIn({
       if (!response.ok) {
         throw new Error(data.error ?? "Verzenden mislukt");
       }
+      trackEvent(GA4_EVENTS.REMEASURE_OPTIN_SUBMITTED);
+      clarityTag("remeasure_optin", "submitted");
       setStatus("success");
     } catch (err) {
       setStatus("error");

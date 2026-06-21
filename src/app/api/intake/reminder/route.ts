@@ -10,6 +10,7 @@ import {
 } from "@/lib/intake-session-cookie";
 import { measurementReminderConsentRow } from "@/lib/measurement-reminder-consent";
 import { getClientIp } from "@/lib/turnstile-verify";
+import { emitEvent } from "@/lib/events";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_EMAIL_LENGTH = 254;
@@ -150,6 +151,14 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  void emitEvent({
+    eventType: "remeasure.invited",
+    sessionId,
+    email,
+    payload: { source: "intake_results" },
+    deliveredTo: ["posthog"],
+  });
 
   return NextResponse.json({ ok: true }, { status: 200 });
 }

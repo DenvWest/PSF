@@ -8,6 +8,8 @@ export const GA4_EVENTS = {
   INTAKE_FEEDBACK_SUBMITTED: 'intake_feedback_submitted',
   DASHBOARD_UNLOCK_VIEWED: 'dashboard_unlock_viewed',
   DASHBOARD_UNLOCK_CTA_CLICKED: 'dashboard_unlock_cta_clicked',
+  HOME_PROFILE_CLICK: 'home_profile_click',
+  REMEASURE_OPTIN_SUBMITTED: 'remeasure_optin_submitted',
 } as const;
 
 export function trackEvent(

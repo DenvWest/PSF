@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import { clarityTag } from "@/lib/clarity";
+import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
 const PROFILES = [
   {
@@ -43,6 +47,12 @@ export default function HomeProfileStrip() {
               <Link
                 href={`/profiel/${profile.slug}`}
                 className="block h-full rounded-xl border border-stone-200 bg-white p-5 transition hover:border-ps-green/40 hover:shadow-sm"
+                onClick={() => {
+                  trackEvent(GA4_EVENTS.HOME_PROFILE_CLICK, {
+                    profile_slug: profile.slug,
+                  });
+                  clarityTag("home_profile_click", profile.slug);
+                }}
               >
                 <p className="font-semibold text-stone-900">{profile.label}</p>
                 <p className="mt-2 text-sm text-stone-500 leading-relaxed">{profile.hint}</p>
