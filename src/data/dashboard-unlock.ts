@@ -2,27 +2,17 @@ import { DASHBOARD_ROUTE_FAQ, DASHBOARD_ROUTE_STEPS } from "@/data/dashboard-rou
 import type { PillarId } from "@/types/dashboard";
 
 export const DASHBOARD_UNLOCK_METADATA = {
-  title: "Bewaar Je Leefstijl-Overzicht | PerfectSupplement",
+  title: "Hoe Werkt Jouw Dashboard? | PerfectSupplement",
   description:
-    "Je Leefstijlcheck is klaar — bewaar je prioriteit, check-ins en voortgang gratis. Geen wachtwoord. Onafhankelijk advies voor mannen 40+, geen diagnose.",
-} as const;
-
-export const DASHBOARD_UNLOCK_PROGRESS = {
-  percent: 67,
-  steps: [
-    { id: "check", label: "Check", detail: "± 3 min", done: true },
-    { id: "overview", label: "Overzicht", detail: "Direct", done: true },
-    { id: "save", label: "Bewaren", detail: "± 30 sec", done: false },
-  ],
-  microcopy: "Je bent er bijna — nog één stap.",
+    "Zo werkt je dashboard na de Leefstijlcheck: van check naar meetbaar overzicht met prioriteit, check-ins en hermeting. Gratis, geen wachtwoord — voor mannen 40+, zonder diagnose.",
 } as const;
 
 export const DASHBOARD_UNLOCK_HERO = {
-  eyebrow: "Check afgerond · laatste stap",
-  title: "Bewaar je leefstijl-overzicht",
-  lead: "Zonder account verlies je je prioriteit zodra je dit tabblad sluit.",
+  eyebrow: "Jouw route na de Leefstijlcheck",
+  title: "Zo werkt je dashboard",
+  lead: "Van check naar meetbaar overzicht: je ziet waar je staat, wat verschuift en welke stap nu logisch is.",
   subtitle:
-    "Gratis login via je mail — je ladder, stappen en voortgang blijven op één plek. Geen wachtwoord.",
+    "Geen diagnose — wel een praktische route met meetmomenten. Een gratis account (geen wachtwoord) bewaart je overzicht en voortgang.",
 } as const;
 
 export const DASHBOARD_UNLOCK_RECOGNITION = {
@@ -49,7 +39,7 @@ export const DASHBOARD_UNLOCK_LOSSES = {
     "Geen trend of reminder voor je volgende stap",
     "Je start opnieuw op gevoel, niet op data",
   ],
-  closingLine: "Bewaren kost 30 seconden.",
+  closingLine: "Gratis account, geen wachtwoord — in 30 seconden klaar.",
 } as const;
 
 export const DASHBOARD_UNLOCK_LOCKED_FEATURES = [
@@ -68,12 +58,11 @@ export const DASHBOARD_UNLOCK_LOCKED_FEATURES = [
 ] as const;
 
 export const DASHBOARD_UNLOCK_CTA = {
-  label: "Gratis · geen wachtwoord",
-  primaryLabel: "Bewaar mijn overzicht →",
-  primaryHref: "/account/login",
-  subtext: "We sturen een loginlink naar je mail.",
-  intakeFallbackLabel: "Nog geen check gedaan? Start de Leefstijlcheck →",
-  intakeFallbackHref: "/intake",
+  label: "Gratis · 3 minuten",
+  primaryLabel: "Start de Leefstijlcheck →",
+  primaryHref: "/intake",
+  secondaryLabel: "Ik heb al een check gedaan — open dashboard →",
+  secondaryHref: "/account/login",
   trustLine: "Adviezen, geen diagnoses · Onafhankelijk · AVG-proof",
 } as const;
 

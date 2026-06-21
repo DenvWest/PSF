@@ -11,7 +11,6 @@ import {
   DASHBOARD_UNLOCK_GAINS,
   DASHBOARD_UNLOCK_HERO,
   DASHBOARD_UNLOCK_LOSSES,
-  DASHBOARD_UNLOCK_PROGRESS,
   DASHBOARD_UNLOCK_RECOGNITION,
   DASHBOARD_UNLOCK_ROUTE_ACCORDION,
   DASHBOARD_UNLOCK_SOCIAL_PROOF,
@@ -31,43 +30,6 @@ type DashboardUnlockSqueezeProps = {
 function persistVariantCookie(variant: DashboardUnlockVariant) {
   const maxAge = 60 * 60 * 24 * 30;
   document.cookie = `${DASHBOARD_UNLOCK_VARIANT_COOKIE}=${variant}; path=/; max-age=${maxAge}; samesite=lax`;
-}
-
-function ProgressStrip() {
-  return (
-    <section aria-label="Voortgang naar dashboard">
-      <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] font-medium uppercase tracking-[0.06em] text-[var(--text-subtle)] sm:gap-2 sm:text-[11px] sm:tracking-[0.12em]">
-        {DASHBOARD_UNLOCK_PROGRESS.steps.map((step) => (
-          <span
-            key={step.id}
-            className={`leading-snug ${step.done ? "text-[var(--sage)]" : "text-[var(--terra)]"}`}
-          >
-            {step.done ? "✓ " : "○ "}
-            {step.label}
-            <span className="mt-0.5 hidden normal-case tracking-normal text-[var(--text-subtle)] sm:block">
-              {step.detail}
-            </span>
-          </span>
-        ))}
-      </div>
-      <div
-        className="mb-2 mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"
-        role="progressbar"
-        aria-valuenow={DASHBOARD_UNLOCK_PROGRESS.percent}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="Voortgang"
-      >
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-[var(--terra)] to-[var(--sage)]"
-          style={{ width: `${DASHBOARD_UNLOCK_PROGRESS.percent}%` }}
-        />
-      </div>
-      <p className="mt-2 text-sm text-[var(--text-muted)]">
-        {DASHBOARD_UNLOCK_PROGRESS.microcopy}
-      </p>
-    </section>
-  );
 }
 
 function GainLossContrast() {
@@ -148,7 +110,7 @@ function UnlockSqueezeZone({
   return (
     <section
       ref={ctaRef}
-      aria-label="Bewaar je overzicht"
+      aria-label="Begin met je dashboard"
       className="rounded-2xl border border-[rgba(90,143,106,0.24)] bg-gradient-to-b from-[rgba(33,56,31,0.95)] to-[rgba(26,46,26,0.98)] p-4 sm:p-5 md:p-6"
     >
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--sage)]">
@@ -166,19 +128,16 @@ function UnlockSqueezeZone({
       >
         {DASHBOARD_UNLOCK_CTA.primaryLabel}
       </Link>
-      <p className="mt-3 text-center text-[15px] leading-snug text-[var(--text-muted)]">
-        {DASHBOARD_UNLOCK_CTA.subtext}
+      <p className="mt-4 text-center text-sm">
+        <Link
+          href={DASHBOARD_UNLOCK_CTA.secondaryHref}
+          className="text-[var(--text-muted)] underline decoration-white/20 underline-offset-2 transition hover:text-[var(--text)] hover:decoration-white/40"
+        >
+          {DASHBOARD_UNLOCK_CTA.secondaryLabel}
+        </Link>
       </p>
       <p className="mt-4 text-center text-xs leading-relaxed text-[var(--text-subtle)]">
         {DASHBOARD_UNLOCK_CTA.trustLine}
-      </p>
-      <p className="mt-5 text-center text-sm">
-        <Link
-          href={DASHBOARD_UNLOCK_CTA.intakeFallbackHref}
-          className="text-[var(--text-muted)] underline decoration-white/20 underline-offset-2 transition hover:text-[var(--text)] hover:decoration-white/40"
-        >
-          {DASHBOARD_UNLOCK_CTA.intakeFallbackLabel}
-        </Link>
       </p>
     </section>
   );
@@ -249,8 +208,6 @@ function SqueezeContent({
         <Wordmark size={0.92} />
         <ExitButton href="/" />
       </div>
-
-      <ProgressStrip />
 
       <header className="mt-5 max-w-2xl sm:mt-8 lg:max-w-3xl">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--sage)]">
