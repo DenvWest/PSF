@@ -323,6 +323,13 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
                   Check-in →
                 </button>
               )}
+              <Link
+                href={pillar.hubRoute}
+                onClick={() => emitIntakeClientEvent("dashboard.cta_to_hub", { pillar: pillar.id })}
+                style={{ display: "inline-block", marginTop: 8, color: "var(--text-subtle)", fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)", textDecoration: "none" }}
+              >
+                Lees over {pillar.label} →
+              </Link>
             </Card>
           );
         })}
