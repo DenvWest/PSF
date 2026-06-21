@@ -5,6 +5,7 @@ import Container from "@/components/layout/Container";
 import { ReferenceList } from "@/components/references/ReferenceList";
 import { RefNote } from "@/components/references/RefNote";
 import { magnesiumReferences } from "@/data/references/magnesium";
+import DomainHubConnector from "@/components/content/DomainHubConnector";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
@@ -776,9 +777,9 @@ export default function SlaapVerbeterenNa40Page() {
 
               <ReferenceList references={magnesiumReferences} />
 
-              <MedicalDisclaimer />
-
             </article>
+            <DomainHubConnector pillarId="slaap" />
+            <MedicalDisclaimer />
             </PillarReadingChrome>
           </div>
         </Container>

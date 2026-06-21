@@ -4,6 +4,7 @@ import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import DomainHubConnector from "@/components/content/DomainHubConnector";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { buildArticleSchema, buildFaqSchema } from "@/lib/seo/structuredData";
 
@@ -292,8 +293,9 @@ export default function BewegingNa40Page() {
                   </p>
                 </div>
 
-                <MedicalDisclaimer className="mt-10" />
               </article>
+              <DomainHubConnector pillarId="beweging" />
+              <MedicalDisclaimer className="mt-10" />
             </PillarReadingChrome>
           </div>
         </Container>

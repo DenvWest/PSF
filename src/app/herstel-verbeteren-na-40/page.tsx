@@ -7,6 +7,7 @@ import { RefNote } from "@/components/references/RefNote";
 import { herstelVerbeterenNa40References } from "@/data/references/herstel-verbeteren-na-40";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import DomainHubConnector from "@/components/content/DomainHubConnector";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 
@@ -832,7 +833,10 @@ export default function HerstelVerbeterenNa40Page() {
               </section>
 
               <ReferenceList references={herstelVerbeterenNa40References} />
-              <MedicalDisclaimer />
+
+            </article>
+            <DomainHubConnector pillarId="herstel" />
+            <MedicalDisclaimer />
 
               <footer className="mt-8 pt-8 border-t border-stone-200">
                 <p className="text-sm text-gray-400 italic leading-relaxed">
@@ -841,7 +845,6 @@ export default function HerstelVerbeterenNa40Page() {
                   of pijn op de borst.
                 </p>
               </footer>
-            </article>
             </PillarReadingChrome>
           </div>
         </Container>
