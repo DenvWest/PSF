@@ -982,6 +982,8 @@ export default function Dashboard({ empty, data }: DashboardProps) {
           <br />
           PerfectSupplement geeft adviezen op basis van leefstijl, geen medische diagnoses.
           <br />
+          Je scores zijn een reflectie van je eigen antwoorden — geen medische meetwaarden.
+          <br />
           Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
         </footer>
       </main>
