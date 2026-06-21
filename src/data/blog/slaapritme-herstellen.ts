@@ -6,7 +6,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
   categorie: "slaap",
   titel: "Slaapritme Herstellen in 7 Dagen: Een Dag-voor-Dag Protocol",
   heroIntro:
-    "Je slaapritme is verstoord. Misschien al weken. De wekker staat op 6:30, maar je lichaam denkt dat het 1 uur is. Of je slaapt 's weekends tot 9 uur en betaalt dat de hele week terug. Dit protocol geeft je een concreet actieplan — vanavond te starten, zonder medicatie.",
+    "Een verschoven slaapritme is iets wat veel mannen 40+ herkennen — soms al weken. De wekker staat op 6:30, maar je lichaam denkt dat het 1 uur is. Of je slaapt 's weekends tot 9 uur en betaalt dat de hele week terug. Dit protocol geeft je een concreet actieplan — vanavond te starten, zonder medicatie.",
   leestijd: "7 min",
   gepubliceerdOp: "2026-05-02",
   secties: [
@@ -88,7 +88,7 @@ export const slaapritmeHerstellenData: BlogArtikel = {
   ],
   metaTitle: "Slaapritme Herstellen in 7 Dagen | PerfectSupplement",
   metaDescription:
-    "Je slaapritme is verstoord. Hier is een 7-dagen protocol dat je vanavond kunt starten — zonder medicatie.",
+    "Een verschoven slaapritme herken je vaak na je 40e. Hier is een 7-dagen protocol dat je vanavond kunt starten — zonder medicatie.",
   keywords: [
     "slaapritme herstellen",
     "circadiaan ritme",
