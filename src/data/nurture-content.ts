@@ -105,7 +105,7 @@ export const nurtureContent: Record<
       preheader: "Je slaapscore laat zien waar je kunt verbeteren",
       greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
       bodyParagraphs: [
-        "Je resultaten wijzen op een verstoord slaappatroon. Dat heeft impact op alles — je energie, je stemming, je herstel.",
+        "Je gaf aan dat slaap nu een aandachtspunt is. Dat raakt vaak ook je energie, je stemming en je herstel.",
         "Het goede nieuws: slaap is een van de domeinen waar je het snelst verbetering kunt zien met de juiste aanpassingen.",
       ],
       tip: "Probeer vanavond je schermtijd te stoppen 60 minuten voor het slapengaan. Lees een boek, doe een ademhalingsoefening, of ga gewoon even zitten. Je brein heeft dat signaal nodig om af te schakelen.",
@@ -117,7 +117,7 @@ export const nurtureContent: Record<
       greeting: "Goed dat je de Leefstijlcheck hebt gedaan.",
       bodyParagraphs: [
         "Je resultaten laten zien dat stress een structurele rol speelt in hoe je je voelt. Dat is niet zwak — het is je lichaam dat aangeeft dat het herstel nodig heeft.",
-        "Chronische stress remt je testosteronproductie, verstoort je slaap en vreet aan je energie. Maar er zijn concrete stappen die helpen.",
+        "Aanhoudende stress wordt vaak als belastend ervaren — voor je slaap, je energie en je veerkracht. Het goede nieuws: er zijn concrete stappen die helpen.",
       ],
       tip: "Begin vandaag met 3 minuten ademhalingsoefening: 4 tellen inademen, 7 tellen vasthouden, 8 tellen uitademen. Doe dit voor het slapengaan. Het activeert je parasympathisch zenuwstelsel.",
       cta: { text: "Bekijk je leefstijl-overzicht", url: "/intake" },
