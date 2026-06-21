@@ -128,6 +128,15 @@ RLS is aan. Anon kan inserts doen op sessions, reminders en feedback.
 - Turbo-snippet boven interne link-blokken: 1-2 zinnen die triggeren om door te klikken
 - Gedragsbeïnvloedende copy: herkenning → validatie → mechanisme → actie → bewijs
 
+## Meet-standaarden — altijd toepassen
+
+- Bij elke nieuwe of geactiveerde CTA, knop, keuze-vertakking, opt-in of affiliate-link: bouw de meting mee in DEZELFDE wijziging.
+- Drie lagen — kies wat past: `domain_events` (durable, PostHog + n8n) · GA4 `trackEvent` · Clarity `clarityTag`
+- Nieuw client-event vereist registratie op drie plekken: `src/lib/events.ts` + `src/lib/intake-events-client.ts` + allowlist in `src/app/api/intake/events/route.ts`
+- Hergebruik bestaande event-types vóór je nieuwe verzint
+- Geen PII in GA4/Clarity-payloads; geen dormant component activeren zonder meetpunt
+- Meld bij elke afronding: "Meetpunt: <event(s)> — hier lees je het effect af."
+
 ## Server
 
 - SSH: `root@178.104.75.207`
