@@ -267,6 +267,14 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
               </div>
             ) : (
               <>
+                <div className="mb-6 flex items-end justify-between md:mb-8">
+                  <h2 className="font-serif text-xl text-stone-900 md:text-2xl">
+                    {activePijler || activeType ? "Resultaten" : "Alle inzichten"}
+                  </h2>
+                  <span className="text-sm text-stone-500">
+                    {filtered.length} {filtered.length === 1 ? "inzicht" : "inzichten"}
+                  </span>
+                </div>
                 {showFeatured ? (
                   <FeaturedInsightCard item={filtered[0]} />
                 ) : null}
