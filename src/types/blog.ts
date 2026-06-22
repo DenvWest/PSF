@@ -2,6 +2,8 @@ import type { ReferentieItem } from "@/types/referenties";
 
 export type BlogCategorie = "stress" | "slaap" | "energie" | "supplementen";
 
+export type BlogCalloutVariant = "kerninzicht" | "letop" | "tip";
+
 export type BlogSectieType = "tekst" | "opsomming";
 
 export type BlogEvidenceNiveau = "sterk" | "redelijk" | "beperkt" | "vroeg";
@@ -29,6 +31,8 @@ export interface BlogSectie {
    * Optionele markering als sectie rust op beperkt, heterogeen of gedateerd bewijs (geen diagnoses).
    */
   bewijsKanttekening?: string;
+  /** Inline inzicht-blokken binnen de sectie — geen eigen kop of TOC-entry. */
+  callouts?: { variant: BlogCalloutVariant; tekst: string }[];
 }
 
 export interface BlogSupplementCTA {

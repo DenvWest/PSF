@@ -1,6 +1,7 @@
 import type { BlogSectie as BlogSectieType } from "@/types/blog";
 import { renderInlineMarkdownLinks } from "@/components/blog/inlineMarkdownLinks";
 import ArticleEvidenceNiveau from "@/components/content/ArticleEvidenceNiveau";
+import InsightBlock from "@/components/content/InsightBlock";
 import { blogSubsectionDomId } from "@/lib/article-heading-id";
 
 interface BlogSectieProps {
@@ -72,6 +73,16 @@ export default function BlogSectie({ sectie, anchorId }: BlogSectieProps) {
               );
             })}
           </ol>
+        </div>
+      )}
+
+      {sectie.callouts && sectie.callouts.length > 0 && (
+        <div className="mt-7 flex flex-col gap-4 md:mt-8">
+          {sectie.callouts.map((c, i) => (
+            <InsightBlock key={i} variant={c.variant}>
+              {renderInlineMarkdownLinks(c.tekst)}
+            </InsightBlock>
+          ))}
         </div>
       )}
 

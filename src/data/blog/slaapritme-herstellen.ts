@@ -21,6 +21,13 @@ export const slaapritmeHerstellenData: BlogArtikel = {
       titel: "Wat is je circadiaan ritme eigenlijk?",
       tekst:
         "Je [circadiaan ritme](/kennisbank/circadiaan-ritme) is je interne 24-uursklok. Het stuurt wanneer je slaperig wordt, wanneer je alert bent, wanneer je lichaamstemperatuur daalt en wanneer je cortisol stijgt. Die klok zit in de hypothalamus en wordt primair gestuurd door licht. 's Ochtends licht → cortisolpiek → alertheid. Invallende duisternis → melatonine → slaperigheid. Dat ritme synchroniseert zichzelf elke dag opnieuw — maar alleen als je hem de juiste signalen geeft. Doe je dat niet consistent, dan verschuift je biologische klok langzaam. Je wordt later moe, later wakker, en voelt je de hele dag een halve slag achter lopen.",
+      callouts: [
+        {
+          variant: "kerninzicht",
+          tekst:
+            "Niet het aantal uren telt, maar de regelmaat — één vaste opstijdtijd doet meer voor je ritme dan een uur extra slaap in het weekend.",
+        },
+      ],
     },
     {
       type: "opsomming",
