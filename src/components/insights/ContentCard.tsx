@@ -42,6 +42,7 @@ export default function ContentCard({ item }: { item: InsightItem }) {
           {item.readingTime ? (
             <span>{item.readingTime} leestijd</span>
           ) : null}
+          <span>{item.niveau}</span>
         </div>
 
         <h3 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-stone-900 transition group-hover:text-stone-700 md:text-xl">

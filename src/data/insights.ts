@@ -60,6 +60,10 @@ function blogTypeFromLeestijd(leestijd: string): InsightType {
   return parseLeestijdMinuten(leestijd) >= 8 ? "deepdive" : "artikel";
 }
 
+function niveauFromType(type: InsightType): "Basis" | "Verdiepend" {
+  return type === "deepdive" ? "Verdiepend" : "Basis";
+}
+
 function resolvePijler(slug: string, fallback: PillarId | null): PillarId {
   const pijler = INSIGHT_PIJLER_OVERRIDE[slug] ?? fallback;
   if (!pijler) {
@@ -76,13 +80,16 @@ function normalizeBlogArtikel(
     BLOG_CATEGORIE_TO_PIJLER[artikel.categorie],
   );
 
+  const type = blogTypeFromLeestijd(artikel.leestijd);
+
   return {
     slug: artikel.slug,
     href: artikel.pad ?? `/blog/${artikel.slug}`,
     title: artikel.titel,
     excerpt: artikel.samenvatting,
     pijler,
-    type: blogTypeFromLeestijd(artikel.leestijd),
+    type,
+    niveau: niveauFromType(type),
     readingTime: artikel.leestijd,
     source: "blog",
   };
@@ -96,13 +103,16 @@ function normalizeKennisbankTerm(
     KENNISBANK_THEME_TO_PIJLER[term.theme],
   );
 
+  const type = "begrip" as const;
+
   return {
     slug: term.slug,
     href: `/kennisbank/${term.slug}`,
     title: term.term,
     excerpt: term.shortDefinition,
     pijler,
-    type: "begrip",
+    type,
+    niveau: niveauFromType(type),
     source: "kennisbank",
   };
 }

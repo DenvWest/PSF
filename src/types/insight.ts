@@ -9,6 +9,7 @@ export interface InsightItem {
   excerpt: string;
   pijler: PillarId;
   type: InsightType;
+  niveau: "Basis" | "Verdiepend";
   readingTime?: string;
   source: "blog" | "kennisbank";
 }

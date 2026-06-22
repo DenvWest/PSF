@@ -41,6 +41,7 @@ export default function FeaturedInsightCard({ item }: { item: InsightItem }) {
             {item.readingTime ? (
               <span>{item.readingTime} leestijd</span>
             ) : null}
+            <span>{item.niveau}</span>
           </div>
         </div>
 
