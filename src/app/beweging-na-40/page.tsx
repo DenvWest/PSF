@@ -5,6 +5,7 @@ import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
+import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { buildArticleSchema, buildFaqSchema } from "@/lib/seo/structuredData";
 
@@ -295,6 +296,7 @@ export default function BewegingNa40Page() {
 
               </article>
               <DomainHubConnector pillarId="beweging" />
+              <DomainInsightsTeaser pillarId="beweging" />
               <MedicalDisclaimer className="mt-10" />
             </PillarReadingChrome>
           </div>

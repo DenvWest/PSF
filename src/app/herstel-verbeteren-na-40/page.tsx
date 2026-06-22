@@ -8,6 +8,7 @@ import { herstelVerbeterenNa40References } from "@/data/references/herstel-verbe
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
+import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 
@@ -836,6 +837,7 @@ export default function HerstelVerbeterenNa40Page() {
 
             </article>
             <DomainHubConnector pillarId="herstel" />
+            <DomainInsightsTeaser pillarId="herstel" />
             <MedicalDisclaimer />
 
               <footer className="mt-8 pt-8 border-t border-stone-200">

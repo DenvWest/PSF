@@ -5,6 +5,7 @@ import Container from "@/components/layout/Container";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import DomainHubConnector from "@/components/content/DomainHubConnector";
+import DomainInsightsTeaser from "@/components/insights/DomainInsightsTeaser";
 import PillarReadingChrome from "@/components/content/PillarReadingChrome";
 import { INBODY_LEEFSTIJLCHECK_CTA_ATTR } from "@/lib/leefstijlcheck-inbody-cta";
 
@@ -669,6 +670,7 @@ export default function StressVerminderenManPage() {
 
             </article>
             <DomainHubConnector pillarId="stress" />
+            <DomainInsightsTeaser pillarId="stress" />
             <MedicalDisclaimer />
 
               <footer className="mt-8 pt-8 border-t border-stone-200">
