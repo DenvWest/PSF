@@ -11,5 +11,6 @@ export interface InsightItem {
   type: InsightType;
   niveau: "Basis" | "Verdiepend";
   readingTime?: string;
+  publishedAt?: string;
   source: "blog" | "kennisbank";
 }

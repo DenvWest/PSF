@@ -18,6 +18,7 @@ import { PILLAR, PILLARS } from "@/data/dashboard";
 import {
   buildInsightFilterHref,
   filterInsights,
+  getRecentInsights,
   INSIGHT_TYPES_IN_DATA,
 } from "@/data/insights";
 import { canonicalMetadata } from "@/lib/seo/canonical";
@@ -65,6 +66,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
   const { pijler: pijlerParam, type: typeParam } = await searchParams;
   const activePijler = parsePijler(pijlerParam);
   const activeType = parseType(typeParam);
+  const recent = getRecentInsights(3);
 
   const filtered = filterInsights({
     pijler: activePijler,
@@ -157,18 +159,38 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
         </section>
 
         {!activePijler && !activeType && (
-          <section aria-label="Verken per domein" className="pb-8 md:pb-10">
-            <Container>
-              <h2 className="mb-5 font-serif text-xl text-stone-900 md:text-2xl">
-                Verken per domein
-              </h2>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                {PILLARS.map((p) => (
-                  <FocusAreaCard key={p.id} pillarId={p.id} />
-                ))}
-              </div>
-            </Container>
-          </section>
+          <>
+            <section aria-label="Verken per domein" className="pb-8 md:pb-10">
+              <Container>
+                <h2 className="mb-5 font-serif text-xl text-stone-900 md:text-2xl">
+                  Verken per domein
+                </h2>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  {PILLARS.map((p) => (
+                    <FocusAreaCard key={p.id} pillarId={p.id} />
+                  ))}
+                </div>
+              </Container>
+            </section>
+
+            {recent.length > 0 && (
+              <section aria-label="Net verschenen" className="pb-8 md:pb-10">
+                <Container>
+                  <h2 className="mb-5 font-serif text-xl text-stone-900 md:text-2xl">
+                    Net verschenen
+                  </h2>
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {recent.map((item) => (
+                      <ContentCard
+                        key={`${item.source}-${item.slug}`}
+                        item={item}
+                      />
+                    ))}
+                  </div>
+                </Container>
+              </section>
+            )}
+          </>
         )}
 
         <section aria-label="Filters" className="pb-8 md:pb-10">

@@ -91,6 +91,7 @@ function normalizeBlogArtikel(
     type,
     niveau: niveauFromType(type),
     readingTime: artikel.leestijd,
+    publishedAt: artikel.gepubliceerdOp,
     source: "blog",
   };
 }
@@ -139,6 +140,15 @@ export function filterInsights(filters: {
     if (filters.type && item.type !== filters.type) return false;
     return true;
   });
+}
+
+export function getRecentInsights(n = 3): InsightItem[] {
+  return allInsights
+    .filter((i) => Boolean(i.publishedAt))
+    .sort((a, b) =>
+      (b.publishedAt as string).localeCompare(a.publishedAt as string),
+    )
+    .slice(0, n);
 }
 
 export function buildInsightFilterHref(filters: {
