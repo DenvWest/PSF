@@ -9,6 +9,7 @@ import BlogCategorieBadge from "./BlogCategorieBadge";
 import BlogMeta from "./BlogMeta";
 import BlogSectie from "./BlogSectie";
 import BlogSamenvatting from "./BlogSamenvatting";
+import BlogKernpunten from "./BlogKernpunten";
 import BlogSupplementCTA from "./BlogSupplementCTA";
 import BlogCornerstoneLink from "./BlogCornerstoneLink";
 import Link from "next/link";
@@ -201,6 +202,12 @@ export default function BlogArticlePage({
                     Lees de hoofdstuk‑gids: stress verminderen na 40
                   </Link>
                 </aside>
+              ) : null}
+
+              {artikel.kernpunten && artikel.kernpunten.length > 0 ? (
+                <div className="mt-14">
+                  <BlogKernpunten punten={artikel.kernpunten} />
+                </div>
               ) : null}
 
               <div className="mt-14">

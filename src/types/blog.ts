@@ -80,4 +80,6 @@ export interface BlogArtikel {
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
+  /** Compacte actiepunten in het dark Kernpunten-blok — optioneel, render-when-present. */
+  kernpunten?: string[];
 }

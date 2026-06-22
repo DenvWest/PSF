@@ -72,6 +72,11 @@ export const slaapritmeHerstellenData: BlogArtikel = {
         "Dit artikel is informatief van aard en vervangt geen medisch advies. Raadpleeg een arts bij aanhoudende slaapproblemen of bij twijfel over supplementgebruik. PerfectSupplement geeft informatie, geen diagnoses.",
     },
   ],
+  kernpunten: [
+    "Eén vaste opstijdtijd verankert je ritme sneller dan een uur extra slaap in het weekend.",
+    "Cafeïne stopt het best na 14:00 — de helft werkt 's avonds nog door.",
+    "Ochtendlicht binnen een uur na opstaan is het krachtigste signaal voor je biologische klok.",
+  ],
   samenvatting:
     "Een verstoord slaapritme herstel je door je biologische klok dagelijks dezelfde signalen te geven: één vaste opstijdtijd, cafeïne stop na 14:00, schermen weg voor bed en ochtendlicht. Magnesium glycinaat (EFSA: zenuwstelsel/spieren) en eventueel lage melatonine (0,3 mg) worden in protocollen genoemd. Na zeven dagen ben je op weg — volledige verankering duurt 2 tot 3 weken.",
   supplementCTA: {
