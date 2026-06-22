@@ -1,13 +1,7 @@
 import Link from "next/link";
-import { INSIGHT_TYPE_LABELS } from "@/components/insights/ContentCard";
+import { INSIGHT_TYPE_DOT, INSIGHT_TYPE_LABELS } from "@/components/insights/ContentCard";
 import { PILLAR } from "@/data/dashboard";
-import type { InsightItem, InsightType } from "@/types/insight";
-
-const INSIGHT_TYPE_DOT: Record<InsightType, string> = {
-  artikel: "#A8A29E",
-  deepdive: "#284E3E",
-  begrip: "#5A8F6A",
-};
+import type { InsightItem } from "@/types/insight";
 
 export default function FeaturedInsightCard({ item }: { item: InsightItem }) {
   const pijlerLabel = PILLAR[item.pijler].label;
@@ -51,9 +45,9 @@ export default function FeaturedInsightCard({ item }: { item: InsightItem }) {
         </div>
 
         <div className="flex min-w-0 flex-col p-6 md:p-8">
-          <h2 className="font-serif text-2xl font-semibold leading-snug tracking-tight text-stone-900 transition group-hover:text-stone-700 md:text-3xl">
+          <h3 className="font-serif text-2xl font-semibold leading-snug tracking-tight text-stone-900 transition group-hover:text-stone-700 md:text-3xl">
             {item.title}
-          </h2>
+          </h3>
 
           <p className="mt-4 line-clamp-3 text-base leading-relaxed text-stone-500">
             {item.excerpt}

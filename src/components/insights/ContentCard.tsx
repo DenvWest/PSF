@@ -8,7 +8,7 @@ export const INSIGHT_TYPE_LABELS: Record<InsightType, string> = {
   begrip: "Begrip",
 };
 
-const INSIGHT_TYPE_DOT: Record<InsightType, string> = {
+export const INSIGHT_TYPE_DOT: Record<InsightType, string> = {
   artikel: "#A8A29E",
   deepdive: "#284E3E",
   begrip: "#5A8F6A",
@@ -44,9 +44,9 @@ export default function ContentCard({ item }: { item: InsightItem }) {
           ) : null}
         </div>
 
-        <h2 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-stone-900 transition group-hover:text-stone-700 md:text-xl">
+        <h3 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-stone-900 transition group-hover:text-stone-700 md:text-xl">
           {item.title}
-        </h2>
+        </h3>
 
         <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-stone-500">
           {item.excerpt}
