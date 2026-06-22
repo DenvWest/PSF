@@ -6,6 +6,7 @@ import ContentCard, {
 } from "@/components/insights/ContentCard";
 import FeaturedInsightCard from "@/components/insights/FeaturedInsightCard";
 import FocusAreaCard from "@/components/insights/FocusAreaCard";
+import SupplementsRouteBlock from "@/components/insights/SupplementsRouteBlock";
 import {
   BLOG_BG_CLASS,
   BLOG_HERO_H1,
@@ -289,6 +290,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
             </aside>
           </Container>
         </section>
+        <SupplementsRouteBlock />
       </main>
     </>
   );
