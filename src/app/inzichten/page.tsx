@@ -4,6 +4,7 @@ import Container from "@/components/layout/Container";
 import ContentCard, {
   INSIGHT_TYPE_LABELS,
 } from "@/components/insights/ContentCard";
+import FocusAreaCard from "@/components/insights/FocusAreaCard";
 import {
   BLOG_BG_CLASS,
   BLOG_HERO_H1,
@@ -150,6 +151,21 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
             </div>
           </Container>
         </section>
+
+        {!activePijler && !activeType && (
+          <section aria-label="Verken per domein" className="pb-8 md:pb-10">
+            <Container>
+              <h2 className="mb-5 font-serif text-xl text-stone-900 md:text-2xl">
+                Verken per domein
+              </h2>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {PILLARS.map((p) => (
+                  <FocusAreaCard key={p.id} pillarId={p.id} />
+                ))}
+              </div>
+            </Container>
+          </section>
+        )}
 
         <section aria-label="Filters" className="pb-8 md:pb-10">
           <Container>
