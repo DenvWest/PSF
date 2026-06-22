@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import ContentCard, {
+  INSIGHT_TYPE_LABELS,
+} from "@/components/insights/ContentCard";
 import {
   BLOG_BG_CLASS,
   BLOG_HERO_H1,
@@ -16,19 +19,13 @@ import {
 } from "@/data/insights";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import type { PillarId } from "@/types/dashboard";
-import type { InsightItem, InsightType } from "@/types/insight";
+import type { InsightType } from "@/types/insight";
 
 export const metadata: Metadata = {
   title: "Inzichten — Artikelen & Begrippen per Domein | PerfectSupplement",
   description:
     "Artikelen, deep dives en begrippen over slaap, stress, energie en herstel — gefilterd op wat voor jou relevant is. Start met je domein of doe de Leefstijlcheck.",
   ...canonicalMetadata("/inzichten"),
-};
-
-const INSIGHT_TYPE_LABELS: Record<InsightType, string> = {
-  artikel: "Artikel",
-  deepdive: "Deep dive",
-  begrip: "Begrip",
 };
 
 const VALID_PIJLERS = new Set<PillarId>(
@@ -60,41 +57,6 @@ function chipClass(active: boolean): string {
 type InzichtenPageProps = {
   searchParams: Promise<{ pijler?: string; type?: string }>;
 };
-
-function InsightCard({ item }: { item: InsightItem }) {
-  const pijlerLabel = PILLAR[item.pijler].label;
-  const typeLabel = INSIGHT_TYPE_LABELS[item.type];
-
-  return (
-    <article className="flex min-h-0 flex-col rounded-2xl border border-stone-200/60 border-l-2 border-l-stone-400 bg-[var(--ps-surface)] p-7 shadow-sm shadow-stone-900/[0.04] transition duration-300 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md">
-      <Link href={item.href} className="group flex min-h-0 flex-1 flex-col">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-stone-500">
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 font-medium text-stone-700">
-            {pijlerLabel}
-          </span>
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 font-medium text-stone-600">
-            {typeLabel}
-          </span>
-          {item.readingTime ? (
-            <span>{item.readingTime} leestijd</span>
-          ) : null}
-        </div>
-
-        <h2 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-stone-900 transition group-hover:text-stone-700 md:text-xl">
-          {item.title}
-        </h2>
-
-        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-stone-500">
-          {item.excerpt}
-        </p>
-
-        <p className="mt-auto pt-6 text-sm text-stone-500 transition group-hover:text-stone-700">
-          Lees →
-        </p>
-      </Link>
-    </article>
-  );
-}
 
 export default async function InzichtenPage({ searchParams }: InzichtenPageProps) {
   const { pijler: pijlerParam, type: typeParam } = await searchParams;
@@ -264,7 +226,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
             ) : (
               <div className="grid gap-5 sm:grid-cols-2 lg:gap-6">
                 {filtered.map((item) => (
-                  <InsightCard key={`${item.source}-${item.slug}`} item={item} />
+                  <ContentCard key={`${item.source}-${item.slug}`} item={item} />
                 ))}
               </div>
             )}
