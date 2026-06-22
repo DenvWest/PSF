@@ -69,6 +69,8 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
     pijler: activePijler,
     type: activeType,
   });
+  const showFeatured = !activePijler && !activeType && filtered.length > 0;
+  const gridItems = showFeatured ? filtered.slice(1) : filtered;
 
   const hubRoute = activePijler
     ? PILLAR[activePijler].hubRoute
@@ -242,10 +244,14 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
               </div>
             ) : (
               <>
-                <FeaturedInsightCard item={filtered[0]} />
-                {filtered.length > 1 ? (
-                  <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:mt-6 lg:gap-6">
-                    {filtered.slice(1).map((item) => (
+                {showFeatured ? (
+                  <FeaturedInsightCard item={filtered[0]} />
+                ) : null}
+                {gridItems.length > 0 ? (
+                  <div
+                    className={`${showFeatured ? "mt-5 lg:mt-6 " : ""}grid gap-5 sm:grid-cols-2 lg:gap-6`}
+                  >
+                    {gridItems.map((item) => (
                       <ContentCard
                         key={`${item.source}-${item.slug}`}
                         item={item}
