@@ -121,7 +121,14 @@ function normalizeKennisbankTerm(
 export const allInsights: InsightItem[] = [
   ...alleArtikelen.map(normalizeBlogArtikel),
   ...kennisbankTerms.map(normalizeKennisbankTerm),
-].sort((a, b) => a.title.localeCompare(b.title, "nl"));
+].sort((a, b) => {
+  if (a.publishedAt && b.publishedAt) {
+    return b.publishedAt.localeCompare(a.publishedAt);
+  }
+  if (a.publishedAt) return -1;
+  if (b.publishedAt) return 1;
+  return a.title.localeCompare(b.title, "nl");
+});
 
 export const INSIGHT_TYPES_IN_DATA: InsightType[] = [
   ...new Set(allInsights.map((item) => item.type)),

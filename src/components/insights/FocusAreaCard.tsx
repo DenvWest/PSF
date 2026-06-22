@@ -5,31 +5,55 @@ import { PILLAR } from "@/data/dashboard";
 import { trackEvent } from "@/lib/ga4";
 import type { PillarId } from "@/types/dashboard";
 
-export default function FocusAreaCard({ pillarId }: { pillarId: PillarId }) {
+type FocusAreaCardProps = {
+  pillarId: PillarId;
+  articleCount?: number;
+};
+
+export default function FocusAreaCard({
+  pillarId,
+  articleCount,
+}: FocusAreaCardProps) {
   const pillar = PILLAR[pillarId];
+  const initial = pillar.label.charAt(0);
 
   return (
-    <Link
-      href={pillar.hubRoute}
-      onClick={() => trackEvent("focus_area_click", { pillar: pillarId })}
-      className="group flex min-h-[172px] flex-col rounded-2xl border border-stone-200 bg-white p-5 shadow-sm shadow-stone-900/[0.04] transition duration-300 hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
-    >
-      <div className="flex items-center gap-2.5">
-        <span
-          className="h-2.5 w-2.5 shrink-0 rounded-full"
-          style={{ backgroundColor: pillar.color }}
-          aria-hidden
-        />
-        <span className="font-serif text-base font-normal text-stone-900">
-          {pillar.label}
-        </span>
-      </div>
-      <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-stone-500">
-        {pillar.lever}
-      </p>
-      <p className="mt-auto pt-4 text-sm font-medium text-stone-700 transition group-hover:text-stone-900">
-        Verken {pillar.label} →
-      </p>
-    </Link>
+    <article className="flex min-h-[172px] flex-col rounded-[18px] border border-[#E7E5E4] bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-stone-300 hover:shadow-[0_16px_32px_-16px_rgba(28,25,23,0.2)]">
+      <Link
+        href={`/inzichten?pijler=${pillarId}`}
+        onClick={() =>
+          trackEvent("focus_area_click", {
+            pillar: pillarId,
+            destination: "feed",
+          })
+        }
+        className="group flex min-h-0 flex-1 flex-col gap-3"
+      >
+        <div className="flex items-start justify-between">
+          <span className="grid h-[42px] w-[42px] place-items-center rounded-xl bg-[#EEF3EF] font-display text-xl text-[#5A8F6A]">
+            {initial}
+          </span>
+        </div>
+        <div>
+          <h3 className="font-display text-[19px] font-normal text-stone-900">
+            {pillar.label}
+          </h3>
+          <p className="mt-1 line-clamp-2 text-[13px] leading-[1.45] text-stone-500">
+            {pillar.lever}
+          </p>
+        </div>
+        {articleCount !== undefined ? (
+          <span className="mt-auto text-[12.5px] text-stone-400">
+            {articleCount} {articleCount === 1 ? "artikel" : "artikelen"}
+          </span>
+        ) : null}
+      </Link>
+      <Link
+        href={pillar.hubRoute}
+        className="mt-2 text-xs text-stone-400 underline decoration-stone-300/60 underline-offset-[3px] transition hover:text-stone-600 hover:decoration-stone-400"
+      >
+        Lees de {pillar.label.toLowerCase()}-gids →
+      </Link>
+    </article>
   );
 }

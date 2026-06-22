@@ -1,26 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
-import ContentCard, {
-  INSIGHT_TYPE_LABELS,
-} from "@/components/insights/ContentCard";
+import ContentCard from "@/components/insights/ContentCard";
 import FeaturedInsightCard from "@/components/insights/FeaturedInsightCard";
 import FocusAreaCard from "@/components/insights/FocusAreaCard";
-import InzichtenCheckCta from "@/components/insights/InzichtenCheckCta";
+import InzichtenFilterBar from "@/components/insights/InzichtenFilterBar";
+import InzichtenHubHero from "@/components/insights/InzichtenHubHero";
 import SupplementsRouteBlock from "@/components/insights/SupplementsRouteBlock";
-import {
-  BLOG_BG_CLASS,
-  BLOG_HERO_H1,
-  BLOG_HERO_INTRO,
-  BLOG_HERO_PB,
-  BLOG_HERO_PT,
-} from "@/components/blog/blog-layout";
+import { BLOG_BG_CLASS, BLOG_HERO_PT } from "@/components/blog/blog-layout";
 import { PILLAR, PILLARS } from "@/data/dashboard";
 import {
-  buildInsightFilterHref,
   filterInsights,
+  getInsightsByPijler,
   getRecentInsights,
-  INSIGHT_TYPES_IN_DATA,
 } from "@/data/insights";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import type { PillarId } from "@/types/dashboard";
@@ -53,17 +45,6 @@ function parseType(value: string | undefined): InsightType | undefined {
   return value as InsightType;
 }
 
-function chipClass(active: boolean): string {
-  return active
-    ? "border-stone-900 bg-stone-900 text-white"
-    : "border-stone-200 bg-white text-stone-700 hover:border-stone-300 hover:bg-stone-50";
-}
-
-function feedHref(pijler?: PillarId, type?: InsightType): string {
-  const href = buildInsightFilterHref({ pijler, type });
-  return href === "/inzichten" ? "/inzichten?alles=1" : href;
-}
-
 type InzichtenPageProps = {
   searchParams: Promise<{ pijler?: string; type?: string; alles?: string }>;
 };
@@ -74,7 +55,12 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
   const activeType = parseType(typeParam);
   const allesActive = alles === "1";
   const isFeed = Boolean(activePijler || activeType || allesActive);
-  const recent = getRecentInsights(3);
+
+  const articleCounts = Object.fromEntries(
+    PILLARS.map((p) => [p.id, getInsightsByPijler(p.id).length]),
+  ) as Record<PillarId, number>;
+  const hubFeatured = getRecentInsights(1)[0];
+  const latestInsights = getRecentInsights(3);
 
   const filtered = filterInsights({
     pijler: activePijler,
@@ -86,9 +72,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
   const hubRoute = activePijler
     ? PILLAR[activePijler].hubRoute
     : "/slaap-verbeteren-na-40";
-  const hubLabel = activePijler
-    ? PILLAR[activePijler].label
-    : "Slaap";
+  const hubLabel = activePijler ? PILLAR[activePijler].label : "Slaap";
 
   return (
     <>
@@ -133,73 +117,58 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
       />
 
       <main className={BLOG_BG_CLASS}>
-        <section className={`${BLOG_HERO_PT} ${BLOG_HERO_PB}`}>
-          <Container>
-            <nav aria-label="Breadcrumb" className="mb-12 md:mb-16">
-              <ol className="flex items-center gap-2 text-[0.8125rem] tracking-wide text-stone-400">
-                <li>
-                  <Link href="/" className="transition hover:text-stone-600">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden className="select-none">
-                  ›
-                </li>
-                <li className="font-medium text-stone-600">Inzichten</li>
-              </ol>
-            </nav>
-
-            <div className="max-w-3xl">
-              <div className="mb-6 flex items-center gap-3 md:mb-8">
-                <div className="h-px w-8 bg-stone-300/90" aria-hidden />
-                <p className="ps-eyebrow tracking-[0.14em]">Inzichten</p>
-              </div>
-              <h1 className={`${BLOG_HERO_H1} md:leading-[1.05]`}>
-                Alles wat je lichaam probeert te vertellen — per domein
-              </h1>
-              <p className={`${BLOG_HERO_INTRO} mt-8 md:mt-10`}>
-                Artikelen, deep dives en begrippen uit één feed. Filter op het
-                domein dat voor jou speelt: slaap, stress, energie, voeding,
-                beweging of herstel.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-4 md:mt-10">
-                <InzichtenCheckCta />
-                {!isFeed && (
-                  <Link
-                    href="/inzichten?alles=1"
-                    className="text-sm font-medium text-stone-600 underline decoration-stone-400/50 underline-offset-[3px] transition hover:text-stone-900 hover:decoration-stone-500"
-                  >
-                    of bekijk alle inzichten →
-                  </Link>
-                )}
-              </div>
-            </div>
-          </Container>
-        </section>
-
-        {!isFeed && (
+        {!isFeed ? (
           <>
-            <section aria-label="Verken per domein" className="pb-8 md:pb-10">
+            <InzichtenHubHero />
+
+            <section aria-label="Verken per domein" className="pb-4 md:pb-6">
               <Container>
-                <h2 className="mb-5 font-serif text-xl text-stone-900 md:text-2xl">
-                  Verken per domein
-                </h2>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <div className="mb-5 md:mb-6">
+                  <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]">
+                    Leefstijl — start hier
+                  </p>
+                  <h2 className="mt-2 font-display text-[28px] font-normal text-stone-900">
+                    Zes domeinen, één systeem
+                  </h2>
+                </div>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
                   {PILLARS.map((p) => (
-                    <FocusAreaCard key={p.id} pillarId={p.id} />
+                    <FocusAreaCard
+                      key={p.id}
+                      pillarId={p.id}
+                      articleCount={articleCounts[p.id]}
+                    />
                   ))}
                 </div>
               </Container>
             </section>
 
-            {recent.length > 0 && (
-              <section aria-label="Net verschenen" className="pb-8 md:pb-10">
+            {hubFeatured ? (
+              <section aria-label="Uitgelicht" className="pb-4 md:pb-6">
                 <Container>
-                  <h2 className="mb-5 font-serif text-xl text-stone-900 md:text-2xl">
-                    Net verschenen
-                  </h2>
+                  <FeaturedInsightCard item={hubFeatured} />
+                </Container>
+              </section>
+            ) : null}
+
+            <SupplementsRouteBlock />
+
+            {latestInsights.length > 0 ? (
+              <section aria-label="Net verschenen" className="pb-16 md:pb-20">
+                <Container>
+                  <div className="mb-5 flex items-end justify-between">
+                    <h2 className="font-display text-[28px] font-normal text-stone-900">
+                      Net verschenen
+                    </h2>
+                    <Link
+                      href="/inzichten?alles=1"
+                      className="text-sm font-semibold text-stone-700 transition hover:text-stone-900"
+                    >
+                      Alles bekijken →
+                    </Link>
+                  </div>
                   <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {recent.map((item) => (
+                    {latestInsights.map((item) => (
                       <ContentCard
                         key={`${item.source}-${item.slug}`}
                         item={item}
@@ -208,137 +177,103 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                   </div>
                 </Container>
               </section>
-            )}
+            ) : null}
+          </>
+        ) : (
+          <>
+            <section className={`${BLOG_HERO_PT} pb-9 md:pb-10`}>
+              <Container>
+                <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]">
+                  Inzichten
+                </p>
+                <h1 className="mt-3 max-w-[20ch] font-display text-[clamp(2rem,4.5vw,2.875rem)] font-normal leading-[1.1] tracking-[-0.02em] text-stone-900">
+                  Alles wat we weten over beter leven
+                </h1>
+                <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-stone-600">
+                  Blog, guides, deep dives en begrippen — geordend naar de
+                  leefstijlpijler waar ze bij horen. Filter op wat jou nu
+                  bezighoudt.
+                </p>
+              </Container>
+            </section>
+
+            <InzichtenFilterBar
+              activePijler={activePijler}
+              activeType={activeType}
+              count={filtered.length}
+            />
+
+            <section aria-label="Content" className="pb-16 md:pb-20">
+              <Container>
+                {filtered.length === 0 ? (
+                  <div className="mt-6 rounded-[20px] border border-dashed border-[#D6D3D1] px-5 py-[70px] text-center">
+                    <p className="text-base text-stone-500">
+                      Geen artikelen voor deze combinatie.
+                    </p>
+                    <Link
+                      href="/inzichten?alles=1"
+                      className="mt-4 inline-flex min-h-[44px] items-center rounded-full bg-[#0E1A14] px-[22px] py-2.5 text-sm font-semibold text-[#F7F5F0] transition hover:bg-[#0E1A14]/90"
+                    >
+                      Wis filters
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    {showFeatured ? (
+                      <div className="mt-6">
+                        <FeaturedInsightCard item={filtered[0]} />
+                      </div>
+                    ) : null}
+                    {gridItems.length > 0 ? (
+                      <div
+                        className={`${showFeatured ? "mt-7 " : "mt-6 "}grid gap-5 sm:grid-cols-2 lg:grid-cols-3`}
+                      >
+                        {gridItems.map((item) => (
+                          <ContentCard
+                            key={`${item.source}-${item.slug}`}
+                            item={item}
+                          />
+                        ))}
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </Container>
+            </section>
+
+            <section className="pb-16 md:pb-20">
+              <Container>
+                <aside className="mx-auto max-w-2xl border-t border-[#E7E5E4] pt-10">
+                  <p className="text-sm leading-relaxed text-stone-600">
+                    Wil je weten waar jij staat op{" "}
+                    {activePijler
+                      ? hubLabel.toLowerCase()
+                      : "slaap, stress en energie"}
+                    ? De{" "}
+                    <Link
+                      href="/intake"
+                      className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]"
+                    >
+                      Leefstijlcheck
+                    </Link>{" "}
+                    geeft je zes scores en een persoonlijk profiel — in
+                    ongeveer vijf minuten.
+                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-stone-600">
+                    Meer context per domein vind je in onze{" "}
+                    <Link
+                      href={hubRoute}
+                      className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]"
+                    >
+                      {hubLabel}-gids
+                    </Link>
+                    . Daar lees je wat werkt vóór je aan supplementen denkt.
+                  </p>
+                </aside>
+              </Container>
+            </section>
           </>
         )}
-
-        {isFeed && (
-          <section aria-label="Filters" className="pb-8 md:pb-10">
-            <Container>
-              <div className="space-y-6 rounded-2xl border border-stone-200/70 bg-white/90 p-6 ring-1 ring-stone-200/40 md:p-8">
-                <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-stone-500">
-                    Domein
-                  </h2>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Link
-                      href={feedHref(undefined, activeType)}
-                      className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(!activePijler)}`}
-                    >
-                      Alles
-                    </Link>
-                    {PILLARS.map((pillar) => (
-                      <Link
-                        key={pillar.id}
-                        href={feedHref(pillar.id, activeType)}
-                        className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(activePijler === pillar.id)}`}
-                      >
-                        {pillar.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-stone-500">
-                    Type
-                  </h2>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Link
-                      href={feedHref(activePijler, undefined)}
-                      className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(!activeType)}`}
-                    >
-                      Alles
-                    </Link>
-                    {INSIGHT_TYPES_IN_DATA.map((type) => (
-                      <Link
-                        key={type}
-                        href={feedHref(activePijler, type)}
-                        className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(activeType === type)}`}
-                      >
-                        {INSIGHT_TYPE_LABELS[type]}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Container>
-          </section>
-        )}
-
-        <section aria-label="Content" className="pb-20 md:pb-28">
-          <Container>
-            {isFeed ? (
-              filtered.length === 0 ? (
-                <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-10 text-center ring-1 ring-stone-200/40">
-                  <p className="text-stone-600">
-                    Geen artikelen voor deze combinatie.
-                  </p>
-                  <Link
-                    href="/inzichten?alles=1"
-                    className="mt-4 inline-block text-sm font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green"
-                  >
-                    Wis filters
-                  </Link>
-                </div>
-              ) : (
-                <>
-                  <div className="mb-6 flex items-end justify-between md:mb-8">
-                    <h2 className="font-serif text-xl text-stone-900 md:text-2xl">
-                      {activePijler || activeType ? "Resultaten" : "Alle inzichten"}
-                    </h2>
-                    <span className="text-sm text-stone-500">
-                      {filtered.length}{" "}
-                      {filtered.length === 1 ? "inzicht" : "inzichten"}
-                    </span>
-                  </div>
-                  {showFeatured ? (
-                    <FeaturedInsightCard item={filtered[0]} />
-                  ) : null}
-                  {gridItems.length > 0 ? (
-                    <div
-                      className={`${showFeatured ? "mt-5 lg:mt-6 " : ""}grid gap-5 sm:grid-cols-2 lg:gap-6`}
-                    >
-                      {gridItems.map((item) => (
-                        <ContentCard
-                          key={`${item.source}-${item.slug}`}
-                          item={item}
-                        />
-                      ))}
-                    </div>
-                  ) : null}
-                </>
-              )
-            ) : null}
-
-            <aside className="mx-auto mt-16 max-w-2xl border-t border-stone-200/80 pt-14 md:mt-20 md:pt-16">
-              <p className="text-sm leading-relaxed text-stone-600">
-                Wil je weten waar jij staat op{" "}
-                {activePijler ? hubLabel.toLowerCase() : "slaap, stress en energie"}?
-                De{" "}
-                <Link
-                  href="/intake"
-                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green"
-                >
-                  Leefstijlcheck
-                </Link>{" "}
-                geeft je zes scores en een persoonlijk profiel — in ongeveer vijf
-                minuten.
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-stone-600">
-                Meer context per domein vind je in onze{" "}
-                <Link
-                  href={hubRoute}
-                  className="font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green"
-                >
-                  {hubLabel}-gids
-                </Link>
-                . Daar lees je wat werkt vóór je aan supplementen denkt.
-              </p>
-            </aside>
-          </Container>
-        </section>
-        <SupplementsRouteBlock />
       </main>
     </>
   );

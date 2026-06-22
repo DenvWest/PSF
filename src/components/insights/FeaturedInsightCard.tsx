@@ -1,62 +1,77 @@
 import Link from "next/link";
-import { INSIGHT_TYPE_DOT, INSIGHT_TYPE_LABELS } from "@/components/insights/ContentCard";
+import {
+  INSIGHT_TYPE_DOT,
+  INSIGHT_TYPE_LABELS,
+} from "@/components/insights/ContentCard";
 import { PILLAR } from "@/data/dashboard";
 import type { InsightItem } from "@/types/insight";
+
+function MetaDot() {
+  return (
+    <span
+      className="h-[3px] w-[3px] rounded-full bg-stone-300"
+      aria-hidden
+    />
+  );
+}
 
 export default function FeaturedInsightCard({ item }: { item: InsightItem }) {
   const pijlerLabel = PILLAR[item.pijler].label;
   const typeLabel = INSIGHT_TYPE_LABELS[item.type];
-  const c = PILLAR[item.pijler].color;
 
   return (
-    <article
-      className="overflow-hidden rounded-2xl border border-stone-200/60 border-l-2 bg-[var(--ps-surface)] shadow-sm shadow-stone-900/[0.04] transition duration-300 hover:border-stone-300 hover:shadow-md"
-      style={{ borderLeftColor: c }}
-    >
+    <article className="overflow-hidden rounded-[24px] border border-[#E7E5E4] bg-white transition duration-300 hover:shadow-[0_26px_54px_-22px_rgba(28,25,23,0.24)]">
       <Link
         href={item.href}
-        className="group grid min-w-0 gap-0 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]"
+        className="group grid min-w-0 md:grid-cols-[1.05fr_1fr]"
       >
         <div
-          className="flex min-w-0 flex-col justify-center gap-4 p-6 md:p-8"
-          style={{ backgroundColor: `${c}1A` }}
+          className="flex min-h-[240px] items-end bg-[repeating-linear-gradient(135deg,#EFEDE7,#EFEDE7_13px,#F4F2EC_13px,#F4F2EC_26px)] p-5 md:min-h-[320px] md:p-[22px]"
+          aria-hidden
         >
-          <span className="self-start rounded-full bg-stone-900 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
-            Uitgelicht
+          <span className="rounded-md border border-[#E7E5E4] bg-[#F7F5F0] px-2.5 py-1 font-mono text-[11px] text-stone-400">
+            redactionele hero · 16:10
           </span>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-stone-500">
-            <span
-              className="rounded-full px-2.5 py-0.5 font-medium"
-              style={{ color: c, backgroundColor: `${c}26` }}
-            >
-              {pijlerLabel}
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-0.5 font-medium text-stone-600">
+        </div>
+
+        <div className="flex flex-col justify-center gap-[18px] p-7 md:p-11">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-[0.05em] text-stone-600">
               <span
-                className="h-1.5 w-1.5 rounded-full"
+                className="h-[7px] w-[7px] rounded-full"
                 style={{ backgroundColor: INSIGHT_TYPE_DOT[item.type] }}
+                aria-hidden
               />
               {typeLabel}
             </span>
-            {item.readingTime ? (
-              <span>{item.readingTime} leestijd</span>
-            ) : null}
-            <span>{item.niveau}</span>
+            <span className="rounded-full bg-[#EEF3EF] px-2.5 py-1 text-[11.5px] font-semibold uppercase tracking-[0.05em] text-[#5A8F6A]">
+              Uitgelicht
+            </span>
           </div>
-        </div>
 
-        <div className="flex min-w-0 flex-col p-6 md:p-8">
-          <h3 className="font-serif text-2xl font-semibold leading-snug tracking-tight text-stone-900 transition group-hover:text-stone-700 md:text-3xl">
+          <h3 className="font-display text-[clamp(1.5rem,3vw,2.0625rem)] font-normal leading-[1.18] tracking-[-0.01em] text-stone-900 transition group-hover:text-stone-700">
             {item.title}
           </h3>
 
-          <p className="mt-4 line-clamp-3 text-base leading-relaxed text-stone-500">
+          <p className="line-clamp-3 text-base leading-[1.65] text-stone-600">
             {item.excerpt}
           </p>
 
-          <p className="mt-auto pt-6 text-sm text-stone-500 transition group-hover:text-stone-700">
+          <div className="flex items-center gap-3 text-[13px] text-stone-500">
+            {item.readingTime ? (
+              <>
+                <span>{item.readingTime}</span>
+                <MetaDot />
+              </>
+            ) : null}
+            <span>{item.niveau}</span>
+            <MetaDot />
+            <span>{pijlerLabel}</span>
+          </div>
+
+          <span className="text-[15px] font-semibold text-[#0E1A14]">
             Lees artikel →
-          </p>
+          </span>
         </div>
       </Link>
     </article>
