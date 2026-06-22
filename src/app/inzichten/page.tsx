@@ -4,6 +4,7 @@ import Container from "@/components/layout/Container";
 import ContentCard from "@/components/insights/ContentCard";
 import FeaturedInsightCard from "@/components/insights/FeaturedInsightCard";
 import FocusAreaCard from "@/components/insights/FocusAreaCard";
+import InzichtenContextStrip from "@/components/insights/InzichtenContextStrip";
 import InzichtenFilterBar from "@/components/insights/InzichtenFilterBar";
 import InzichtenHubHero from "@/components/insights/InzichtenHubHero";
 import SupplementsRouteBlock from "@/components/insights/SupplementsRouteBlock";
@@ -14,9 +15,10 @@ import {
   getInsightsByPijler,
   getRecentInsights,
 } from "@/data/insights";
+import { getInzichtenVisitorContext } from "@/lib/inzichten-visitor-context";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import type { PillarId } from "@/types/dashboard";
-import type { InsightType } from "@/types/insight";
+import type { InsightItem, InsightType } from "@/types/insight";
 
 export const metadata: Metadata = {
   title: "Inzichten — Artikelen & Begrippen per Domein | PerfectSupplement",
@@ -56,11 +58,43 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
   const allesActive = alles === "1";
   const isFeed = Boolean(activePijler || activeType || allesActive);
 
+  const visitorContext = await getInzichtenVisitorContext();
+  const hasContext = Boolean(visitorContext);
+
   const articleCounts = Object.fromEntries(
     PILLARS.map((p) => [p.id, getInsightsByPijler(p.id).length]),
   ) as Record<PillarId, number>;
-  const hubFeatured = getRecentInsights(1)[0];
-  const latestInsights = getRecentInsights(3);
+
+  const orderedPillarIds =
+    visitorContext?.orderedPillarIds ?? PILLARS.map((p) => p.id);
+
+  const priorityItems: InsightItem[] = visitorContext
+    ? filterInsights({ pijler: visitorContext.priorityPillarId })
+    : [];
+
+  let hubFeatured: InsightItem | undefined;
+  let bottomGridItems: InsightItem[] = [];
+  let bottomSectionLabel = "Net verschenen";
+  let bottomSectionSubcopy: string | null = null;
+  let bottomSectionLink: { href: string; label: string } | null = {
+    href: "/inzichten?alles=1",
+    label: "Alles bekijken →",
+  };
+
+  if (hasContext && !isFeed && priorityItems.length > 0) {
+    hubFeatured = priorityItems[0];
+    bottomGridItems = priorityItems.slice(1, 4);
+    bottomSectionLabel = "Speelt voor jou nu";
+    bottomSectionSubcopy =
+      "Op basis van je laatste check-in — niet je clicks";
+    bottomSectionLink = {
+      href: `/inzichten?pijler=${visitorContext!.priorityPillarId}`,
+      label: `Alles over ${visitorContext!.priorityLabel.toLowerCase()} →`,
+    };
+  } else if (!isFeed) {
+    hubFeatured = getRecentInsights(1)[0];
+    bottomGridItems = getRecentInsights(3);
+  }
 
   const filtered = filterInsights({
     pijler: activePijler,
@@ -119,7 +153,21 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
       <main className={BLOG_BG_CLASS}>
         {!isFeed ? (
           <>
-            <InzichtenHubHero />
+            <InzichtenHubHero
+              priorityLabel={
+                hasContext ? visitorContext!.priorityLabel : undefined
+              }
+              priorityPillarId={
+                hasContext ? visitorContext!.priorityPillarId : undefined
+              }
+            />
+
+            {hasContext ? (
+              <InzichtenContextStrip
+                priorityPillarId={visitorContext!.priorityPillarId}
+                priorityLabel={visitorContext!.priorityLabel}
+              />
+            ) : null}
 
             <section aria-label="Verken per domein" className="pb-4 md:pb-6">
               <Container>
@@ -132,11 +180,15 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                   </h2>
                 </div>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-                  {PILLARS.map((p) => (
+                  {orderedPillarIds.map((pillarId) => (
                     <FocusAreaCard
-                      key={p.id}
-                      pillarId={p.id}
-                      articleCount={articleCounts[p.id]}
+                      key={pillarId}
+                      pillarId={pillarId}
+                      articleCount={articleCounts[pillarId]}
+                      highlight={
+                        hasContext &&
+                        pillarId === visitorContext!.priorityPillarId
+                      }
                     />
                   ))}
                 </div>
@@ -153,22 +205,34 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
 
             <SupplementsRouteBlock />
 
-            {latestInsights.length > 0 ? (
-              <section aria-label="Net verschenen" className="pb-16 md:pb-20">
+            {bottomGridItems.length > 0 ? (
+              <section
+                aria-label={bottomSectionLabel}
+                className="pb-16 md:pb-20"
+              >
                 <Container>
-                  <div className="mb-5 flex items-end justify-between">
-                    <h2 className="font-display text-[28px] font-normal text-stone-900">
-                      Net verschenen
-                    </h2>
-                    <Link
-                      href="/inzichten?alles=1"
-                      className="text-sm font-semibold text-stone-700 transition hover:text-stone-900"
-                    >
-                      Alles bekijken →
-                    </Link>
+                  <div className="mb-5 flex items-end justify-between gap-4">
+                    <div>
+                      <h2 className="font-display text-[28px] font-normal text-stone-900">
+                        {bottomSectionLabel}
+                      </h2>
+                      {bottomSectionSubcopy ? (
+                        <p className="mt-1 text-sm text-stone-500">
+                          {bottomSectionSubcopy}
+                        </p>
+                      ) : null}
+                    </div>
+                    {bottomSectionLink ? (
+                      <Link
+                        href={bottomSectionLink.href}
+                        className="shrink-0 text-sm font-semibold text-stone-700 transition hover:text-stone-900"
+                      >
+                        {bottomSectionLink.label}
+                      </Link>
+                    ) : null}
                   </div>
                   <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {latestInsights.map((item) => (
+                    {bottomGridItems.map((item) => (
                       <ContentCard
                         key={`${item.source}-${item.slug}`}
                         item={item}
@@ -196,6 +260,14 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                 </p>
               </Container>
             </section>
+
+            {hasContext ? (
+              <InzichtenContextStrip
+                priorityPillarId={visitorContext!.priorityPillarId}
+                priorityLabel={visitorContext!.priorityLabel}
+                variant="feed"
+              />
+            ) : null}
 
             <InzichtenFilterBar
               activePijler={activePijler}

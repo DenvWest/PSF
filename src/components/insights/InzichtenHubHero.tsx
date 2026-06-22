@@ -2,8 +2,17 @@ import Container from "@/components/layout/Container";
 import InzichtenHubActions from "@/components/insights/InzichtenHubActions";
 import PersonalPathBridge from "@/components/insights/PersonalPathBridge";
 import { BLOG_HERO_PT } from "@/components/blog/blog-layout";
+import type { PillarId } from "@/types/dashboard";
 
-export default function InzichtenHubHero() {
+type InzichtenHubHeroProps = {
+  priorityLabel?: string;
+  priorityPillarId?: PillarId;
+};
+
+export default function InzichtenHubHero({
+  priorityLabel,
+  priorityPillarId,
+}: InzichtenHubHeroProps) {
   return (
     <section className={`${BLOG_HERO_PT} pb-10 md:pb-12`}>
       <Container>
@@ -30,7 +39,10 @@ export default function InzichtenHubHero() {
               <InzichtenHubActions />
             </div>
           </div>
-          <PersonalPathBridge />
+          <PersonalPathBridge
+            priorityLabel={priorityLabel}
+            priorityPillarId={priorityPillarId}
+          />
         </div>
       </Container>
     </section>
