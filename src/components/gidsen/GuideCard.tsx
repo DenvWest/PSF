@@ -48,12 +48,22 @@ export default function GuideCard({ guide }: GuideCardProps) {
 
       <div
         className="mt-[18px] flex items-center gap-2 border-t border-[#F0ECE2] pt-[18px] text-[14.5px] font-semibold"
-        style={{ color: "color-mix(in srgb, var(--ac) 78%, #1B2620)" }}
+        style={
+          guide.comingSoon
+            ? { color: "#8A9189" }
+            : { color: "color-mix(in srgb, var(--ac) 78%, #1B2620)" }
+        }
       >
-        Download gratis
-        <span className="text-[17px] leading-none" aria-hidden>
-          →
-        </span>
+        {guide.comingSoon ? (
+          "Binnenkort beschikbaar"
+        ) : (
+          <>
+            Download gratis
+            <span className="text-[17px] leading-none" aria-hidden>
+              →
+            </span>
+          </>
+        )}
       </div>
     </Link>
   );

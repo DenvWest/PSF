@@ -127,7 +127,11 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
                   ))}
                 </ul>
 
-                <GuideOptIn variant="hero" />
+                <GuideOptIn
+                  variant="hero"
+                  comingSoon={guide.comingSoon}
+                  comingSoonHref={guide.contentHref}
+                />
               </div>
 
               <aside className="sticky top-24 flex min-w-[280px] flex-[1_1_340px] flex-col items-center">
@@ -135,8 +139,10 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
                   <GidsCover title={guide.title} accent={guide.accent} />
                 </div>
                 <div className="mt-2 flex flex-wrap justify-center gap-2.5">
-                  {["≈ 20 min leeswerk", "PDF direct", "Onderbouwd"].map(
-                    (label) => (
+                  {(guide.comingSoon
+                    ? ["≈ 20 min leeswerk", "Binnenkort beschikbaar", "Onderbouwd"]
+                    : ["≈ 20 min leeswerk", "PDF direct", "Onderbouwd"]
+                  ).map((label) => (
                       <div
                         key={label}
                         className="flex items-center gap-2 rounded-full border border-[#ECE8DD] bg-white px-4 py-2.5"
@@ -297,11 +303,26 @@ export default async function GuideLandingPage({ params }: GuideLandingPageProps
               Klaar om te beginnen?
             </h2>
             <p className="mx-auto mt-4 max-w-[480px] text-[17px] leading-relaxed text-[#9FB0A6]">
-              Laat je e-mail achter en ontvang de gids{" "}
-              <strong className="text-[#E7EDE8]">{guide.title}</strong> direct
-              in je inbox.
+              {guide.comingSoon ? (
+                <>
+                  De PDF-gids{" "}
+                  <strong className="text-[#E7EDE8]">{guide.title}</strong> is
+                  binnenkort beschikbaar. Intussen lees je alles op onze
+                  webgids.
+                </>
+              ) : (
+                <>
+                  Laat je e-mail achter en ontvang de gids{" "}
+                  <strong className="text-[#E7EDE8]">{guide.title}</strong>{" "}
+                  direct in je inbox.
+                </>
+              )}
             </p>
-            <GuideOptIn variant="dark" />
+            <GuideOptIn
+              variant="dark"
+              comingSoon={guide.comingSoon}
+              comingSoonHref={guide.contentHref}
+            />
           </Container>
         </section>
 

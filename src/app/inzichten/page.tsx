@@ -4,6 +4,7 @@ import Container from "@/components/layout/Container";
 import ContentCard, {
   INSIGHT_TYPE_LABELS,
 } from "@/components/insights/ContentCard";
+import FeaturedInsightCard from "@/components/insights/FeaturedInsightCard";
 import FocusAreaCard from "@/components/insights/FocusAreaCard";
 import {
   BLOG_BG_CLASS,
@@ -240,11 +241,19 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                 </Link>
               </div>
             ) : (
-              <div className="grid gap-5 sm:grid-cols-2 lg:gap-6">
-                {filtered.map((item) => (
-                  <ContentCard key={`${item.source}-${item.slug}`} item={item} />
-                ))}
-              </div>
+              <>
+                <FeaturedInsightCard item={filtered[0]} />
+                {filtered.length > 1 ? (
+                  <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:mt-6 lg:gap-6">
+                    {filtered.slice(1).map((item) => (
+                      <ContentCard
+                        key={`${item.source}-${item.slug}`}
+                        item={item}
+                      />
+                    ))}
+                  </div>
+                ) : null}
+              </>
             )}
 
             <aside className="mx-auto mt-16 max-w-2xl border-t border-stone-200/80 pt-14 md:mt-20 md:pt-16">

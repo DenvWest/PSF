@@ -17,6 +17,10 @@ export type Guide = {
   tag: string;
   focusCategories: FilterCategory[];
   promise: string;
+  /** PDF-download nog niet live — toon coming-soon i.p.v. download-CTA */
+  comingSoon?: boolean;
+  /** Webgids-URL wanneer comingSoon (bijv. pillar-pagina) */
+  contentHref?: string;
   heroTitle: string;
   heroSub: string;
   benefits: string[];
@@ -258,6 +262,8 @@ export const GUIDES: Guide[] = [
     accent: "oklch(0.71 0.095 82)",
     tag: "Hormonale balans",
     focusCategories: ["hormonaal", "energie-vitaliteit"],
+    comingSoon: true,
+    contentHref: "/testosteron-na-40",
     promise:
       "Leefstijlfactoren die je vitaliteit en veerkracht ondersteunen.",
     heroTitle: "De leefstijl achter je vitaliteit.",

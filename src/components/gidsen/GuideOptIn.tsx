@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   createContext,
   useCallback,
@@ -168,6 +169,8 @@ export function GuideOptInRoot({
 
 type GuideOptInProps = {
   variant: GuideOptInVariant;
+  comingSoon?: boolean;
+  comingSoonHref?: string;
 };
 
 function personalizedInboxLine(firstName: string, guideTitle: string): string {
@@ -178,7 +181,11 @@ function personalizedInboxLine(firstName: string, guideTitle: string): string {
   return `We hebben de gids ${guideTitle} onderweg gezet. Geen mail binnen een paar minuten? Kijk even in je spam.`;
 }
 
-export default function GuideOptIn({ variant }: GuideOptInProps) {
+export default function GuideOptIn({
+  variant,
+  comingSoon = false,
+  comingSoonHref,
+}: GuideOptInProps) {
   const {
     guideTitle,
     accent,
@@ -199,6 +206,48 @@ export default function GuideOptIn({ variant }: GuideOptInProps) {
   } as CSSProperties;
 
   const displayName = firstName.trim();
+
+  if (comingSoon) {
+    const boxClass =
+      variant === "hero"
+        ? "mt-9 rounded-[20px] border border-[#ECE8DD] bg-white p-7 text-center shadow-[0_12px_32px_-22px_rgba(30,40,34,.4)]"
+        : "mx-auto mt-8 max-w-[440px] rounded-[18px] border border-white/10 bg-white/[0.06] p-7 text-center";
+
+    const badgeClass =
+      variant === "hero"
+        ? "inline-flex rounded-full bg-[#1B2620] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white"
+        : "inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#E7EDE8]";
+
+    const bodyClass =
+      variant === "hero"
+        ? "mt-4 text-[15px] leading-[1.55] text-[#5A6560]"
+        : "mt-4 text-[14.5px] leading-[1.55] text-[#9FB0A6]";
+
+    const linkClass =
+      variant === "hero"
+        ? "mt-5 inline-flex min-h-11 items-center rounded-xl bg-[#102018] px-5 py-2.5 text-sm font-bold text-white no-underline transition hover:bg-[#1B3326]"
+        : "mt-5 inline-flex min-h-11 items-center rounded-xl px-5 py-2.5 text-sm font-bold text-[#102018] no-underline";
+
+    const linkStyle =
+      variant === "dark" ? ({ background: "var(--ac)" } as CSSProperties) : undefined;
+
+    return (
+      <div className={boxClass} style={accentStyle}>
+        <span className={badgeClass}>Binnenkort beschikbaar</span>
+        <p className={bodyClass}>
+          We werken aan de gratis PDF-download. Intussen vind je alle inhoud op
+          onze webgids over {guideTitle.toLowerCase()}.
+        </p>
+        <Link
+          href={comingSoonHref ?? "/gidsen"}
+          className={linkClass}
+          style={linkStyle}
+        >
+          Lees de webgids →
+        </Link>
+      </div>
+    );
+  }
 
   if (variant === "hero") {
     return (
