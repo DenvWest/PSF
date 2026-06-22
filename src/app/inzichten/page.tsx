@@ -6,6 +6,7 @@ import ContentCard, {
 } from "@/components/insights/ContentCard";
 import FeaturedInsightCard from "@/components/insights/FeaturedInsightCard";
 import FocusAreaCard from "@/components/insights/FocusAreaCard";
+import InzichtenCheckCta from "@/components/insights/InzichtenCheckCta";
 import SupplementsRouteBlock from "@/components/insights/SupplementsRouteBlock";
 import {
   BLOG_BG_CLASS,
@@ -58,21 +59,28 @@ function chipClass(active: boolean): string {
     : "border-stone-200 bg-white text-stone-700 hover:border-stone-300 hover:bg-stone-50";
 }
 
+function feedHref(pijler?: PillarId, type?: InsightType): string {
+  const href = buildInsightFilterHref({ pijler, type });
+  return href === "/inzichten" ? "/inzichten?alles=1" : href;
+}
+
 type InzichtenPageProps = {
-  searchParams: Promise<{ pijler?: string; type?: string }>;
+  searchParams: Promise<{ pijler?: string; type?: string; alles?: string }>;
 };
 
 export default async function InzichtenPage({ searchParams }: InzichtenPageProps) {
-  const { pijler: pijlerParam, type: typeParam } = await searchParams;
+  const { pijler: pijlerParam, type: typeParam, alles } = await searchParams;
   const activePijler = parsePijler(pijlerParam);
   const activeType = parseType(typeParam);
+  const allesActive = alles === "1";
+  const isFeed = Boolean(activePijler || activeType || allesActive);
   const recent = getRecentInsights(3);
 
   const filtered = filterInsights({
     pijler: activePijler,
     type: activeType,
   });
-  const showFeatured = !activePijler && !activeType && filtered.length > 0;
+  const showFeatured = isFeed && filtered.length > 0;
   const gridItems = showFeatured ? filtered.slice(1) : filtered;
 
   const hubRoute = activePijler
@@ -154,11 +162,22 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                 domein dat voor jou speelt: slaap, stress, energie, voeding,
                 beweging of herstel.
               </p>
+              <div className="mt-8 flex flex-wrap items-center gap-4 md:mt-10">
+                <InzichtenCheckCta />
+                {!isFeed && (
+                  <Link
+                    href="/inzichten?alles=1"
+                    className="text-sm font-medium text-stone-600 underline decoration-stone-400/50 underline-offset-[3px] transition hover:text-stone-900 hover:decoration-stone-500"
+                  >
+                    of bekijk alle inzichten →
+                  </Link>
+                )}
+              </div>
             </div>
           </Container>
         </section>
 
-        {!activePijler && !activeType && (
+        {!isFeed && (
           <>
             <section aria-label="Verken per domein" className="pb-8 md:pb-10">
               <Container>
@@ -193,105 +212,104 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
           </>
         )}
 
-        <section aria-label="Filters" className="pb-8 md:pb-10">
-          <Container>
-            <div className="space-y-6 rounded-2xl border border-stone-200/70 bg-white/90 p-6 ring-1 ring-stone-200/40 md:p-8">
-              <div>
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-stone-500">
-                  Domein
-                </h2>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Link
-                    href={buildInsightFilterHref({ type: activeType })}
-                    className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(!activePijler)}`}
-                  >
-                    Alles
-                  </Link>
-                  {PILLARS.map((pillar) => (
+        {isFeed && (
+          <section aria-label="Filters" className="pb-8 md:pb-10">
+            <Container>
+              <div className="space-y-6 rounded-2xl border border-stone-200/70 bg-white/90 p-6 ring-1 ring-stone-200/40 md:p-8">
+                <div>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-stone-500">
+                    Domein
+                  </h2>
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <Link
-                      key={pillar.id}
-                      href={buildInsightFilterHref({
-                        pijler: pillar.id,
-                        type: activeType,
-                      })}
-                      className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(activePijler === pillar.id)}`}
+                      href={feedHref(undefined, activeType)}
+                      className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(!activePijler)}`}
                     >
-                      {pillar.label}
+                      Alles
                     </Link>
-                  ))}
+                    {PILLARS.map((pillar) => (
+                      <Link
+                        key={pillar.id}
+                        href={feedHref(pillar.id, activeType)}
+                        className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(activePijler === pillar.id)}`}
+                      >
+                        {pillar.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-stone-500">
-                  Type
-                </h2>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Link
-                    href={buildInsightFilterHref({ pijler: activePijler })}
-                    className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(!activeType)}`}
-                  >
-                    Alles
-                  </Link>
-                  {INSIGHT_TYPES_IN_DATA.map((type) => (
+                <div>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-stone-500">
+                    Type
+                  </h2>
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <Link
-                      key={type}
-                      href={buildInsightFilterHref({
-                        pijler: activePijler,
-                        type,
-                      })}
-                      className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(activeType === type)}`}
+                      href={feedHref(activePijler, undefined)}
+                      className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(!activeType)}`}
                     >
-                      {INSIGHT_TYPE_LABELS[type]}
+                      Alles
                     </Link>
-                  ))}
+                    {INSIGHT_TYPES_IN_DATA.map((type) => (
+                      <Link
+                        key={type}
+                        href={feedHref(activePijler, type)}
+                        className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${chipClass(activeType === type)}`}
+                      >
+                        {INSIGHT_TYPE_LABELS[type]}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </Container>
-        </section>
+            </Container>
+          </section>
+        )}
 
         <section aria-label="Content" className="pb-20 md:pb-28">
           <Container>
-            {filtered.length === 0 ? (
-              <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-10 text-center ring-1 ring-stone-200/40">
-                <p className="text-stone-600">
-                  Geen artikelen voor deze combinatie.
-                </p>
-                <Link
-                  href="/inzichten"
-                  className="mt-4 inline-block text-sm font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green"
-                >
-                  Wis filters
-                </Link>
-              </div>
-            ) : (
-              <>
-                <div className="mb-6 flex items-end justify-between md:mb-8">
-                  <h2 className="font-serif text-xl text-stone-900 md:text-2xl">
-                    {activePijler || activeType ? "Resultaten" : "Alle inzichten"}
-                  </h2>
-                  <span className="text-sm text-stone-500">
-                    {filtered.length} {filtered.length === 1 ? "inzicht" : "inzichten"}
-                  </span>
-                </div>
-                {showFeatured ? (
-                  <FeaturedInsightCard item={filtered[0]} />
-                ) : null}
-                {gridItems.length > 0 ? (
-                  <div
-                    className={`${showFeatured ? "mt-5 lg:mt-6 " : ""}grid gap-5 sm:grid-cols-2 lg:gap-6`}
+            {isFeed ? (
+              filtered.length === 0 ? (
+                <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-10 text-center ring-1 ring-stone-200/40">
+                  <p className="text-stone-600">
+                    Geen artikelen voor deze combinatie.
+                  </p>
+                  <Link
+                    href="/inzichten?alles=1"
+                    className="mt-4 inline-block text-sm font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] transition hover:decoration-ps-green"
                   >
-                    {gridItems.map((item) => (
-                      <ContentCard
-                        key={`${item.source}-${item.slug}`}
-                        item={item}
-                      />
-                    ))}
+                    Wis filters
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-6 flex items-end justify-between md:mb-8">
+                    <h2 className="font-serif text-xl text-stone-900 md:text-2xl">
+                      {activePijler || activeType ? "Resultaten" : "Alle inzichten"}
+                    </h2>
+                    <span className="text-sm text-stone-500">
+                      {filtered.length}{" "}
+                      {filtered.length === 1 ? "inzicht" : "inzichten"}
+                    </span>
                   </div>
-                ) : null}
-              </>
-            )}
+                  {showFeatured ? (
+                    <FeaturedInsightCard item={filtered[0]} />
+                  ) : null}
+                  {gridItems.length > 0 ? (
+                    <div
+                      className={`${showFeatured ? "mt-5 lg:mt-6 " : ""}grid gap-5 sm:grid-cols-2 lg:gap-6`}
+                    >
+                      {gridItems.map((item) => (
+                        <ContentCard
+                          key={`${item.source}-${item.slug}`}
+                          item={item}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                </>
+              )
+            ) : null}
 
             <aside className="mx-auto mt-16 max-w-2xl border-t border-stone-200/80 pt-14 md:mt-20 md:pt-16">
               <p className="text-sm leading-relaxed text-stone-600">
