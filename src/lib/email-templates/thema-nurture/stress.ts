@@ -76,7 +76,7 @@ ${ctaButton(
   Op onze stresspagina leggen we uit hoe je dat schakelmoment opbouwt — praktisch en haalbaar na 40.
 </p>
 ${ctaButton(
-          absoluteUrl("/stress-verminderen-man"),
+          absoluteUrl("/stress-verminderen-na-40"),
           "Lees de complete stressgids op de site →",
         )}
 <p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">

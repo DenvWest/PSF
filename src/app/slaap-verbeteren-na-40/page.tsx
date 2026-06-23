@@ -603,7 +603,7 @@ export default function SlaapVerbeterenNa40Page() {
                     Chronische stress en slaap zijn nauw verbonden. Als je merkt dat je &apos;s nachts wakker wordt met een hoofd vol gedachten, kan stress de onderliggende oorzaak zijn.
                   </p>
                   <Link
-                    href="/stress-verminderen-man"
+                    href="/stress-verminderen-na-40"
                     className="mt-2 inline-block font-medium text-ps-green underline decoration-ps-green/35 underline-offset-[3px] text-sm"
                   >
                     Lees de gids: Stress Verminderen na 40 →

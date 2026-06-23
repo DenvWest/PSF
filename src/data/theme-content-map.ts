@@ -13,7 +13,7 @@ export const THEME_CONTENT_MAP: Record<ThemeSlug, ThemeContentLinks> = {
     knowledgeSlugs: ["melatonine", "cortisol", "magnesiumvormen"],
   },
   stress: {
-    pillarHref: "/stress-verminderen-man",
+    pillarHref: "/stress-verminderen-na-40",
     profileSlug: "stressdrager",
     knowledgeSlugs: ["cortisol", "hpa-as", "nervus-vagus"],
   },

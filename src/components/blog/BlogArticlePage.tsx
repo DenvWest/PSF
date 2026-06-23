@@ -196,7 +196,7 @@ export default function BlogArticlePage({
                   <p className="font-display text-lg font-medium text-stone-900 md:text-xl">Meer diepgang bij stress?</p>
                   <p className="mt-3 max-w-[70ch] text-[0.9375rem] leading-[1.75] text-stone-600">{artikel.stressPillarTurbo}</p>
                   <Link
-                    href="/stress-verminderen-man"
+                    href="/stress-verminderen-na-40"
                     className="mt-4 inline-flex text-[0.875rem] font-medium text-stone-800 underline decoration-stone-300 decoration-1 underline-offset-[3px] transition hover:text-stone-950 hover:decoration-stone-500"
                   >
                     Lees de hoofdstuk‑gids: stress verminderen na 40

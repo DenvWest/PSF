@@ -176,7 +176,7 @@ export const nurtureContent: Record<
         "Stress verminderen hoeft niet ingewikkeld te zijn. Het gaat niet om grote veranderingen, maar om kleine momenten van herstel verspreid over de dag.",
       ],
       tip: "Quick win #1: 4-7-8 ademhaling (3 minuten, 2× per dag). Quick win #2: Wandel 15 minuten na de lunch — het verlaagt cortisol meetbaar. Quick win #3: Schrijf 's avonds 3 dingen op die goed gingen vandaag.",
-      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-man" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-na-40" },
     },
     "In Balans": {
       subject: "3 optimalisaties voor wie al goed scoort",
@@ -236,7 +236,7 @@ export const nurtureContent: Record<
       ],
       tip:
         "Focus deze week op één vaste routine: dezelfde bedtijd, 10 minuten wandelen na de lunch, en 3 minuten ademhaling voor het slapen.",
-      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-man" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-na-40" },
     },
     "In Balans": {
       subject: "Hoe je een goede basis vasthoudt na 40",
@@ -296,7 +296,7 @@ export const nurtureContent: Record<
         "Het effect van leefstijlveranderingen op cortisol is meetbaar na 2-4 weken. Je zit nu precies in die fase.",
       ],
       tip: "Voeg deze week iets toe: 5 minuten journaling voor het slapengaan. Schrijf op wat je bezighoudt — het 'legen' van je hoofd helpt je brein om los te laten.",
-      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-man" },
+      cta: { text: "Lees de praktische stressgids", url: "/stress-verminderen-na-40" },
     },
     "In Balans": {
       subject: "Halverwege: hoe houd je dit vol?",

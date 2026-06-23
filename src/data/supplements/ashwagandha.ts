@@ -32,7 +32,7 @@ export const ashwagandhaData: ComparisonPageData = {
   ],
   readAlsoCards: [
     {
-      href: "/stress-verminderen-man",
+      href: "/stress-verminderen-na-40",
       text: "Stress na 40: herkenning, slaap en een concreet weekplan — zonder medisch jargon.",
       cta: "Naar stress-pillar →",
     },

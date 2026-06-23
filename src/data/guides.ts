@@ -148,7 +148,7 @@ export const GUIDES: Guide[] = [
       {
         label: "Pillar: Mentale balans",
         sub: "Alles over stress, focus en herstel.",
-        href: "/stress-verminderen-man",
+        href: "/stress-verminderen-na-40",
       },
       {
         label: "Jouw profiel",

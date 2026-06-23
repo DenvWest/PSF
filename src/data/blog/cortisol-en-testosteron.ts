@@ -6,7 +6,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
   categorie: "stress",
   titel: "Cortisol en testosteron na 40: stress, verhalen en wat onderzoek redelijkerwijs zegt",
   heroIntro:
-    "Op internet klinkt het alsof elke stresspiep je testosteron “kills”. De werkelijkheid is genuanceerder: beide hormonen hangen samen met leefstijl en leeftijd, maar individuele labwaarden fluctueren en correlaties zijn geen simpele knoppen om thuis te draaien. Dit artikel verbindt [stress verminderen als man](/stress-verminderen-man) met het begrip [testosteron in de kennisbank](/kennisbank/testosteron) — zonder diagnose — en wijst naar tools zoals [ashwagandha vergelijken](/beste/ashwagandha) alleen als tweede lijn.",
+    "Op internet klinkt het alsof elke stresspiep je testosteron “kills”. De werkelijkheid is genuanceerder: beide hormonen hangen samen met leefstijl en leeftijd, maar individuele labwaarden fluctueren en correlaties zijn geen simpele knoppen om thuis te draaien. Dit artikel verbindt [stress verminderen als man](/stress-verminderen-na-40) met het begrip [testosteron in de kennisbank](/kennisbank/testosteron) — zonder diagnose — en wijst naar tools zoals [ashwagandha vergelijken](/beste/ashwagandha) alleen als tweede lijn.",
   leestijd: "12 min",
   gepubliceerdOp: "2026-05-14",
   laatstBijgewerktOp: "2026-05-14",
@@ -35,7 +35,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
       items: [
         "Sleepkwaliteit en regelmaat eerst; zie [slaapritme herstellen](/blog/slaapritme-herstellen).",
         "Krachttraining en eiwit: ondersteunen spierbehoud — relevant naast hormoonverhalen.",
-        "Stressroutes: [ademhaling tegen stress](/blog/ademhaling-tegen-stress) en de [stress-pillar](/stress-verminderen-man).",
+        "Stressroutes: [ademhaling tegen stress](/blog/ademhaling-tegen-stress) en de [stress-pillar](/stress-verminderen-na-40).",
         "Supplementen alleen als tweede lijn: bijv. [ashwagandha](/beste/ashwagandha) inhoudelijk vergelijken — geen vervanging van zorg.",
       ],
     },
@@ -50,7 +50,7 @@ export const cortisolEnTestosteronData: BlogArtikel = {
     "Cortisol en testosteron horen bij complexe regelsystemen — geen cartoon van ‘hoog vs laag’. Pak slaap, training en stress eerst aan; zoek medische evaluatie bij aanhoudende klachten; gebruik supplementen vergelijkend en voorzichtig.",
   cornerstoneLink: {
     label: "Stress verminderen — pillar voor mannen 40+",
-    href: "/stress-verminderen-man",
+    href: "/stress-verminderen-na-40",
   },
   vergelijkingExtraLink: {
     label: "Ashwagandha supplementen vergelijken",

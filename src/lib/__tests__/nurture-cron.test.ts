@@ -277,7 +277,7 @@ describe("nurture-cron: P1 — email_sent payload bevat CTA-velden", () => {
     mockGetNurtureEmailContent.mockReturnValue({
       subject: "Dag 3 test",
       html: "<p>lifestyle</p>",
-      resolvedCta: makeResolvedCta("lifestyle", "/stress-verminderen-man"),
+      resolvedCta: makeResolvedCta("lifestyle", "/stress-verminderen-na-40"),
     });
 
     const mail3 = { ...INTAKE_MAIL, id: "mail-3", sequence_day: 3 };

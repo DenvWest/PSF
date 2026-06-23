@@ -40,7 +40,7 @@ ${ctaButton(absoluteUrl("/downloads/stressgids-perfectsupplement.pdf"), "Downloa
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   De grootste val: denken dat je "even door moet" tot het rustiger wordt. Je stress-as blijft dan op stand — ook 's nachts. Herstel begint met kleine pauzes, niet met harder werken.
 </p>
-${ctaButton(absoluteUrl("/stress-verminderen-man"), "Lees het complete stressprotocol →")}`,
+${ctaButton(absoluteUrl("/stress-verminderen-na-40"), "Lees het complete stressprotocol →")}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),
@@ -88,7 +88,7 @@ ${ctaButton(absoluteUrl("/supplementen/ashwagandha"), "Lees de ashwagandhagids �
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Mannen die merkbaar minder gespannen zijn, veranderen zelden alles tegelijk. Ze kiezen één anker — ademhaling, wandeling, vaste bedtijd — en houden die 3 weken vol.
 </p>
-${ctaButton(absoluteUrl("/stress-verminderen-man"), "Terug naar het stressprotocol →")}`,
+${ctaButton(absoluteUrl("/stress-verminderen-na-40"), "Terug naar het stressprotocol →")}`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

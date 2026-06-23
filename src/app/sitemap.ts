@@ -15,7 +15,7 @@ const VERGELIJKINGS_PADEN = SUPPLEMENT_SLUGS.map((s) => `/beste/${s}`);
 
 const PILLAR_PADEN = [
   "/slaap-verbeteren-na-40",
-  "/stress-verminderen-man",
+  "/stress-verminderen-na-40",
   "/energie-na-40",
   "/herstel-verbeteren-na-40",
   "/voeding-na-40",

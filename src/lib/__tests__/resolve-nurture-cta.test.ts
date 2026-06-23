@@ -173,7 +173,7 @@ afterEach(() => {
 describe("lifestyleCtaForProfile", () => {
   it("Stressdrager wijst naar stressgids", () => {
     const cta = lifestyleCtaForProfile("Stressdrager");
-    expect(cta.url).toBe("/stress-verminderen-man");
+    expect(cta.url).toBe("/stress-verminderen-na-40");
     expect(cta.kind).toBe("lifestyle");
   });
 });

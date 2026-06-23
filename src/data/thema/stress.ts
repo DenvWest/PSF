@@ -177,7 +177,7 @@ export const stressThema: ThemaPageData = {
   },
 
   pillarPage: {
-    href: "/stress-verminderen-man",
+    href: "/stress-verminderen-na-40",
     title: "De complete gids: stress verminderen na 40",
     description:
       "Van de HPA-as en cortisol-testosteron balans tot een concreet vierwekenplan. Alles wat op deze pagina in het kort staat, uitgewerkt met bronnen en context.",

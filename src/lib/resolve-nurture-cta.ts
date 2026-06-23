@@ -22,7 +22,7 @@ const PILLAR_BY_DOMAIN: Record<DomainKey, { text: string; url: string }> = {
   },
   stress_score: {
     text: "Lees de praktische stressgids",
-    url: "/stress-verminderen-man",
+    url: "/stress-verminderen-na-40",
   },
   energy_score: {
     text: "Lees over energie na 40",
@@ -48,7 +48,7 @@ const LIFESTYLE_BY_PROFILE: Record<
 > = {
   Stressdrager: {
     text: "Lees de praktische stressgids",
-    url: "/stress-verminderen-man",
+    url: "/stress-verminderen-na-40",
   },
   "Onrustige Slaper": {
     text: "Bekijk je slaap-overzicht",
@@ -72,7 +72,7 @@ const LIFESTYLE_BY_PROFILE: Record<
 // Nieuwe slug toevoegen maakt 'm niet zichtbaar tot status approved + comparisonPath bestaat.
 // whey: geen approvedClaims-entry → blijft onzichtbaar als kandidaat.
 // omega3: nooit als energie-claim (zie approvedClaims.omega3.note).
-// stress_score is leefstijl (/stress-verminderen-man), geen /beste/-kandidaat.
+// stress_score is leefstijl (/stress-verminderen-na-40), geen /beste/-kandidaat.
 const SUPPLEMENT_BY_PROFILE: Partial<
   Record<NurtureProfileKey, { text: string; candidates: string[] }>
 > = {

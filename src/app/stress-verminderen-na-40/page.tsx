@@ -17,12 +17,12 @@ export const metadata: Metadata = {
     "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust | PerfectSupplement",
   description:
     "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Praktische stappen — zonder diagnoses of vage adviezen.",
-  ...canonicalMetadata("/stress-verminderen-man"),
+  ...canonicalMetadata("/stress-verminderen-na-40"),
   openGraph: {
     title: "Stress Verminderen na 40: Van Altijd 'Aan' Naar Meer Rust",
     description:
       "Langdurige stress voelt zwaarder na 40: slaap, energie en rust. Hier lees je wat je zelf kunt doen.",
-    url: "/stress-verminderen-man",
+    url: "/stress-verminderen-na-40",
     type: "article",
   },
 };
@@ -45,7 +45,7 @@ const articleSchema = {
   },
   datePublished: "2026-05-07",
   dateModified: "2026-05-07",
-  mainEntityOfPage: "https://perfectsupplement.nl/stress-verminderen-man",
+  mainEntityOfPage: "https://perfectsupplement.nl/stress-verminderen-na-40",
 };
 
 const faqSchema = {

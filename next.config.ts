@@ -86,6 +86,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/stress-verminderen-man",
+        destination: "/stress-verminderen-na-40",
+        permanent: true,
+      },
+      {
         source: "/thema/:thema",
         destination: "/gids/:thema",
         permanent: true,

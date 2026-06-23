@@ -175,7 +175,7 @@ export const stressdragerProfile: ProfilePageData = {
   },
 
   relatedPillar: {
-    href: "/stress-verminderen-man",
+    href: "/stress-verminderen-na-40",
     turboSnippet:
       "Stress na 40: herkenning, slaap, energie en een concreet weekplan — zonder medisch jargon als diagnose.",
   },

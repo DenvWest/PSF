@@ -61,7 +61,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
       name: "Leefstijlstappen",
       reason:
         "Chronische stress vraagt eerst aandacht voor slaapritme, voorspelbare routines en korte herstelmomenten — dat zijn de hefbomen met het meeste bewijs vóór je aan supplementen denkt.",
-      url: "/stress-verminderen-man",
+      url: "/stress-verminderen-na-40",
     },
   },
   nutrition_score: {

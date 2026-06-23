@@ -35,6 +35,8 @@ PerfectSupplement is de **onafhankelijke supplementen-gids voor mannen 40+** die
 
 **Secundair (later):** coaches zonder BIG via white-label (`organization_id`) — zelfde leefstijlcoach-scope, geen klinische duiding.
 
+**Architectuurprincipe (no-regret):** de datalaag (`SupplementCategory` in `src/types/supplement.ts`, `ThemaPageData` in `src/types/thema.ts`, profielen, intake-scoring) is symptoom-gebaseerd en gender-neutraal — geen aanname over doelgroep in schema of types. De contentlaag (copy, blog, nurture-mails) is bewust scherp gericht op de primaire doelgroep. URL's volgen leeftijd/thema (`-na-40`-conventie), nooit gender — zo blijft een eventuele toekomstige doelgroepuitbreiding een contentvraagstuk, geen architectuurmigratie.
+
 ---
 
 ## 3. Differentiatiematrix

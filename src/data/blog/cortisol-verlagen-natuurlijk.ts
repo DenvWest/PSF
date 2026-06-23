@@ -66,7 +66,7 @@ export const cortisolVerlagenData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: stress verminderen na 40",
-    href: "/stress-verminderen-man",
+    href: "/stress-verminderen-na-40",
   },
   gerelateerdeSluggen: [
     "cortisol-en-testosteron",

@@ -63,7 +63,7 @@ export const PILLARS: Pillar[] = [
         "4 tellen in, 4 vast, 4 uit — herhaal 4 minuten. Verlaagt je hartslag meetbaar binnen één sessie. Doe het vóór je telefoon pakt na het werk.",
     },
     supplement: null,
-    hubRoute: "/stress-verminderen-man",
+    hubRoute: "/stress-verminderen-na-40",
   },
   {
     id: "voeding",

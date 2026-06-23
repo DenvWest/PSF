@@ -421,7 +421,7 @@ export default function HerstelVerbeterenNa40Page() {
                 </p>
                 <p className="mt-3 text-gray-700 leading-relaxed">
                   Veel mentale onrust naast fysieke belasting?{" "}
-                  <Link href="/stress-verminderen-man" className={INLINE_LINK_THEME}>
+                  <Link href="/stress-verminderen-na-40" className={INLINE_LINK_THEME}>
                     Lees de stressgids
                   </Link>
                 </p>
@@ -635,7 +635,7 @@ export default function HerstelVerbeterenNa40Page() {
                     herstelstand.
                   </p>
                   <Link
-                    href="/stress-verminderen-man"
+                    href="/stress-verminderen-na-40"
                     className={`mt-2 inline-block ${INLINE_LINK_THEME} text-sm`}
                   >
                     Stress verminderen (man 40+) →

@@ -69,7 +69,7 @@ export const ashwagandhaData: BlogArtikel = {
   },
   cornerstoneLink: {
     label: "Hoofdstuk-gids: stress verminderen na 40",
-    href: "/stress-verminderen-man",
+    href: "/stress-verminderen-na-40",
   },
   gerelateerdeSluggen: [
     "cortisol-verlagen-natuurlijk",

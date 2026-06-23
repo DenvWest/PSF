@@ -385,7 +385,7 @@ export default function EnergieNa40Page() {
                 <p className="mt-4 text-gray-700 leading-relaxed">
                   <strong className="text-gray-900">Speelt stress ook een rol bij je vermoeidheid?</strong>{" "}
                   Lees de complete gids:{" "}
-                  <Link href="/stress-verminderen-man" className={INLINE_LINK_CLASS}>
+                  <Link href="/stress-verminderen-na-40" className={INLINE_LINK_CLASS}>
                     Stress verminderen na 40
                   </Link>
                 </p>
@@ -569,7 +569,7 @@ export default function EnergieNa40Page() {
                     testosteron en verstoort je slaap — een dubbele aanslag op je energie.
                   </p>
                   <Link
-                    href="/stress-verminderen-man"
+                    href="/stress-verminderen-na-40"
                     className="mt-2 inline-block text-sm font-semibold text-ps-green hover:underline"
                   >
                     Lees de gids: Stress Verminderen na 40 →

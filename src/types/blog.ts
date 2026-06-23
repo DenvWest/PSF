@@ -75,7 +75,7 @@ export interface BlogArtikel {
   inhoudelijkeVerantwoordelijke?: string;
   /** Korte leestekst onder de hero (bewijs‑informed toon). */
   leesNuanceOnderHero?: string;
-  /** Langere zin voor blok naar `/stress-verminderen-man` (alleen stress-pillar-cluster). */
+  /** Langere zin voor blok naar `/stress-verminderen-na-40` (alleen stress-pillar-cluster). */
   stressPillarTurbo?: string;
   metaTitle?: string;
   metaDescription?: string;

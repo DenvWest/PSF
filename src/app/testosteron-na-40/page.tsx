@@ -269,7 +269,7 @@ export default function TestosteronNa40Page() {
                     cortisol en testosteron
                   </Link>{" "}
                   en de gids{" "}
-                  <Link href="/stress-verminderen-man" className={LINK}>
+                  <Link href="/stress-verminderen-na-40" className={LINK}>
                     stress verminderen
                   </Link>{" "}
                   voor wat je met je gedrag kunt doen — vóór je aan supplementen denkt.
