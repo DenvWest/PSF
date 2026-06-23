@@ -7,10 +7,14 @@ export type KennisbankTheme =
   | 'supplementwetenschap'
   | 'longevity'
 
+export type KennisbankInsightTier = 1 | 2 | 3
+
 export interface KennisbankTerm {
   slug: string
   term: string
   theme: KennisbankTheme
+  /** 1 = basis SEO, 2 = verdieping, 3 = interventie/supplement-context. */
+  insightTier: KennisbankInsightTier
   shortDefinition: string
   content: {
     whatIsIt: string
@@ -85,6 +89,7 @@ export const themeLabels: Record<KennisbankTheme, {
 export const kennisbankTerms: KennisbankTerm[] = [
   {
     slug: 'biobeschikbaarheid',
+    insightTier: 1,
     term: 'Biobeschikbaarheid',
     theme: 'supplementwetenschap',
     shortDefinition: 'Het percentage van een stof dat je lichaam daadwerkelijk opneemt en kan gebruiken.',
@@ -116,6 +121,7 @@ Je individuele darmgezondheid. Ontstekingen, medicijngebruik of een verstoord mi
   },
   {
     slug: 'chelaatvorm',
+    insightTier: 1,
     term: 'Chelaatvorm',
     theme: 'supplementwetenschap',
     shortDefinition: 'Een mineraal gebonden aan een aminozuur, waardoor je lichaam het veel beter opneemt.',
@@ -143,6 +149,7 @@ Een gecheleerd mineraal is beschermd door het aminozuur. Het reist intact naar j
   },
   {
     slug: 'adaptogens',
+    insightTier: 3,
     term: 'Adaptogens',
     theme: 'supplementwetenschap',
     shortDefinition:
@@ -173,6 +180,7 @@ Onderzoek gebruikt nog steeds uiteenlopende plantendelen, doses en extractprofie
   },
   {
     slug: 'epa-dha',
+    insightTier: 3,
     term: 'EPA en DHA',
     theme: 'supplementwetenschap',
     shortDefinition: 'De twee actieve omega-3 vetzuren die je lichaam niet zelf aanmaakt.',
@@ -200,6 +208,7 @@ EFSA-goedgekeurde claims: EPA+DHA dragen bij aan een normale hartfunctie (bij 25
   },
   {
     slug: 'circadiaan-ritme',
+    insightTier: 2,
     term: 'Circadiaan Ritme',
     theme: 'lichaam-veroudering',
     shortDefinition: 'Je interne 24-uursklok die slaap, hormonen, energie en stofwisseling aanstuurt.',
@@ -229,6 +238,7 @@ Na 40 wordt dit systeem gevoeliger voor verstoring. Blauw licht van schermen ond
 
   {
     slug: 'adh',
+    insightTier: 1,
     term: 'ADH (Aanbevolen Dagelijkse Hoeveelheid)',
     theme: 'supplementwetenschap',
     shortDefinition: 'De Nederlandse richtlijn voor de minimale dagelijkse inname van vitamines en mineralen.',
@@ -256,6 +266,7 @@ Belangrijk: de ADH is een referentiewaarde, geen persoonlijk advies. Iemand die 
   },
   {
     slug: 'efsa-claims',
+    insightTier: 1,
     term: 'EFSA-claims',
     theme: 'supplementwetenschap',
     shortDefinition: 'Door de Europese voedselautoriteit goedgekeurde uitspraken over wat een supplement mag beweren.',
@@ -283,6 +294,7 @@ Er is een tussencategorie: "on hold" claims. Dit zijn claims voor botanische sto
   },
   {
     slug: 'derde-partij-testen',
+    insightTier: 1,
     term: 'Derde-partij Testen',
     theme: 'supplementwetenschap',
     shortDefinition: 'Onafhankelijke laboratoriumtesten die controleren of in een supplement zit wat er op het etiket staat.',
@@ -310,6 +322,7 @@ Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is wein
   },
   {
     slug: 'slaaphygiene',
+    insightTier: 2,
     term: 'Slaaphygiëne',
     theme: 'leefstijl-herstel',
     shortDefinition: 'Het geheel van gewoontes en omgevingsfactoren dat de kwaliteit van je slaap bepaalt.',
@@ -345,6 +358,7 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
   },
   {
     slug: 'eiwitbehoefte-na-40',
+    insightTier: 2,
     term: 'Eiwitbehoefte na 40',
     theme: 'leefstijl-herstel',
     shortDefinition: 'Na 40 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mannen eten te weinig.',
@@ -372,6 +386,7 @@ Dit betekent dat het niet alleen gaat om hoeveel eiwit je per dag eet, maar ook 
   },
   {
     slug: 'healthspan',
+    insightTier: 1,
     term: 'Healthspan',
     theme: 'longevity',
     shortDefinition: 'Het aantal jaren dat je in goede gezondheid leeft — niet hoe oud je wordt, maar hoe goed.',
@@ -399,6 +414,7 @@ De vijf pijlers waar onderzoekers naar kijken: slaapkwaliteit, voedingspatroon, 
   },
   {
     slug: 'hpa-as',
+    insightTier: 2,
     term: 'HPA-as (hypothalamus-hypofyse-bijnier-as)',
     theme: 'lichaam-veroudering',
     shortDefinition:
@@ -430,6 +446,7 @@ Ashwagandha en magnesium worden vaak gekozen bij spanning en slaap; die keuzes p
   },
   {
     slug: 'cortisol',
+    insightTier: 3,
     term: 'Cortisol',
     theme: 'lichaam-veroudering',
     shortDefinition:
@@ -461,6 +478,7 @@ Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, v
   },
   {
     slug: 'melatonine',
+    insightTier: 3,
     term: 'Melatonine',
     theme: 'lichaam-veroudering',
     shortDefinition:
@@ -493,6 +511,7 @@ Verbeter eerst het ritme (licht overdag, dimmen ’s avonds, vaste tijden): dat 
   },
   {
     slug: 'mitochondrien',
+    insightTier: 2,
     term: 'Mitochondriën',
     theme: 'lichaam-veroudering',
     shortDefinition:
@@ -524,6 +543,7 @@ Combi die vaak werkt: structureel bewegen + voldoende eiwit + gerichte supplemen
   },
   {
     slug: 'nervus-vagus',
+    insightTier: 2,
     term: 'Nervus vagus (zwerfzenuw)',
     theme: 'leefstijl-herstel',
     shortDefinition:
@@ -556,6 +576,7 @@ Combineer dit met eerlijke grenzen op werkdruk; supplementen zijn hooguit een tw
   },
   {
     slug: 'atp',
+    insightTier: 2,
     term: 'ATP (adenosinetrifosfaat)',
     theme: 'supplementwetenschap',
     shortDefinition:
@@ -587,6 +608,7 @@ Lees vergelijkingen dus op dosering, vorm en zuiverheid — en blijf slaap en ei
   },
   {
     slug: 'testosteron',
+    insightTier: 3,
     term: 'Testosteron',
     theme: 'lichaam-veroudering',
     shortDefinition:
@@ -616,6 +638,7 @@ Labtesten (totaal en soms vrij testosteron) horen in medische context: interpret
   },
   {
     slug: 'slaapschuld',
+    insightTier: 2,
     term: 'Slaapschuld',
     theme: 'leefstijl-herstel',
     shortDefinition:
@@ -645,6 +668,7 @@ Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme 
   },
   {
     slug: 'magnesiumvormen',
+    insightTier: 3,
     term: 'Magnesiumvormen',
     theme: 'supplementwetenschap',
     shortDefinition:
@@ -674,6 +698,7 @@ Transparantie op het etiket (elementair mg, vorm, geen verkapte blends) is waar 
   },
   {
     slug: 'overtrainingssyndroom',
+    insightTier: 2,
     term: 'Overtrainingssyndroom',
     theme: 'leefstijl-herstel',
     shortDefinition:
@@ -703,6 +728,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
   },
   {
     slug: 'vitamine-d',
+    insightTier: 3,
     term: 'Vitamine D',
     theme: 'lichaam-veroudering',
     shortDefinition:
@@ -729,6 +755,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
   },
   {
     slug: 'insulineresistentie',
+    insightTier: 3,
     term: 'Insulineresistentie',
     theme: 'lichaam-veroudering',
     shortDefinition:
@@ -754,6 +781,7 @@ Diagnose hoort bij sportmedisch/zorgprofessional bij aanhoudende klachten; onlin
   },
   {
     slug: 'oxidatieve-stress',
+    insightTier: 3,
     term: 'Oxidatieve stress',
     theme: 'longevity',
     shortDefinition:

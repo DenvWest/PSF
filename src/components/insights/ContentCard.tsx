@@ -23,13 +23,19 @@ function MetaDot() {
   );
 }
 
-export default function ContentCard({ item }: { item: InsightItem }) {
+export default function ContentCard({
+  item,
+  onClick,
+}: {
+  item: InsightItem;
+  onClick?: () => void;
+}) {
   const pijlerLabel = PILLAR[item.pijler].label;
   const typeLabel = INSIGHT_TYPE_LABELS[item.type];
 
   return (
     <article className="flex min-h-[218px] flex-col rounded-[18px] border border-[#E7E5E4] bg-white p-[22px] transition duration-300 hover:-translate-y-[3px] hover:border-stone-300 hover:shadow-[0_14px_30px_-14px_rgba(28,25,23,0.18)]">
-      <Link href={item.href} className="group flex min-h-0 flex-1 flex-col gap-3">
+      <Link href={item.href} className="group flex min-h-0 flex-1 flex-col gap-3" onClick={onClick}>
         <div className="flex items-center gap-2">
           <span
             className="h-[7px] w-[7px] shrink-0 rounded-full"

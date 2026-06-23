@@ -7,12 +7,15 @@ import FocusAreaCard from "@/components/insights/FocusAreaCard";
 import InzichtenContextStrip from "@/components/insights/InzichtenContextStrip";
 import InzichtenFilterBar from "@/components/insights/InzichtenFilterBar";
 import InzichtenHubHero from "@/components/insights/InzichtenHubHero";
+import InzichtenPremiumKennisbank from "@/components/insights/InzichtenPremiumKennisbank";
+import InzichtenPremiumKennisbankUpsell from "@/components/insights/InzichtenPremiumKennisbankUpsell";
 import SupplementsRouteBlock from "@/components/insights/SupplementsRouteBlock";
 import { BLOG_BG_CLASS, BLOG_HERO_PT } from "@/components/blog/blog-layout";
 import { PILLAR, PILLARS } from "@/data/dashboard";
 import {
   filterInsights,
   getInsightsByPijler,
+  getPremiumKennisbankInsights,
   getRecentInsights,
 } from "@/data/insights";
 import { getInzichtenVisitorContext } from "@/lib/inzichten-visitor-context";
@@ -48,15 +51,28 @@ function parseType(value: string | undefined): InsightType | undefined {
 }
 
 type InzichtenPageProps = {
-  searchParams: Promise<{ pijler?: string; type?: string; alles?: string }>;
+  searchParams: Promise<{
+    pijler?: string;
+    type?: string;
+    alles?: string;
+    kennisbank?: string;
+  }>;
 };
 
 export default async function InzichtenPage({ searchParams }: InzichtenPageProps) {
-  const { pijler: pijlerParam, type: typeParam, alles } = await searchParams;
+  const {
+    pijler: pijlerParam,
+    type: typeParam,
+    alles,
+    kennisbank: kennisbankParam,
+  } = await searchParams;
   const activePijler = parsePijler(pijlerParam);
   const activeType = parseType(typeParam);
   const allesActive = alles === "1";
-  const isFeed = Boolean(activePijler || activeType || allesActive);
+  const isPremiumFeed = kennisbankParam === "premium";
+  const isFeed = Boolean(
+    activePijler || activeType || allesActive || isPremiumFeed,
+  );
 
   const visitorContext = await getInzichtenVisitorContext();
   const hasContext = Boolean(visitorContext);
@@ -107,6 +123,21 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
     ? PILLAR[activePijler].hubRoute
     : "/slaap-verbeteren-na-40";
   const hubLabel = activePijler ? PILLAR[activePijler].label : "Slaap";
+
+  const premiumFeedCount =
+    isPremiumFeed && hasContext
+      ? getPremiumKennisbankInsights(
+          activePijler ? { pijler: activePijler } : undefined,
+        ).length
+      : 0;
+
+  if (isPremiumFeed && !hasContext) {
+    return (
+      <main className={BLOG_BG_CLASS}>
+        <InzichtenPremiumKennisbankUpsell />
+      </main>
+    );
+  }
 
   return (
     <>
@@ -204,6 +235,13 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
               </section>
             ) : null}
 
+            {hasContext ? (
+              <InzichtenPremiumKennisbank
+                priorityPillarId={visitorContext!.priorityPillarId}
+                priorityLabel={visitorContext!.priorityLabel}
+              />
+            ) : null}
+
             <SupplementsRouteBlock />
 
             {bottomGridItems.length > 0 ? (
@@ -242,6 +280,49 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                   </div>
                 </Container>
               </section>
+            ) : null}
+          </>
+        ) : isPremiumFeed ? (
+          <>
+            <section className={`${BLOG_HERO_PT} pb-9 md:pb-10`}>
+              <Container>
+                <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]">
+                  Verdiepende begrippen
+                </p>
+                <h1 className="mt-3 max-w-[24ch] font-display text-[clamp(2rem,4.5vw,2.875rem)] font-normal leading-[1.1] tracking-[-0.02em] text-stone-900">
+                  Kennisbank na je check-in
+                </h1>
+                <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-stone-600">
+                  Verdiepende begrippen uit de kennisbank — gekoppeld aan wat je
+                  in je dashboard ziet. Geen losse SEO-feed: dit is je
+                  {activePijler
+                    ? ` ${hubLabel.toLowerCase()}-context`
+                    : " persoonlijke context"}
+                  .
+                </p>
+                <p className="mt-2 text-sm text-stone-500">
+                  {premiumFeedCount}{" "}
+                  {premiumFeedCount === 1 ? "begrip" : "begrippen"}
+                </p>
+              </Container>
+            </section>
+
+            {hasContext ? (
+              <InzichtenContextStrip
+                priorityPillarId={visitorContext!.priorityPillarId}
+                priorityLabel={visitorContext!.priorityLabel}
+                profileLabel={visitorContext!.profileLabel}
+                variant="feed"
+              />
+            ) : null}
+
+            {hasContext ? (
+              <InzichtenPremiumKennisbank
+                priorityPillarId={visitorContext!.priorityPillarId}
+                priorityLabel={visitorContext!.priorityLabel}
+                mode="feed"
+                feedPijler={activePijler}
+              />
             ) : null}
           </>
         ) : (

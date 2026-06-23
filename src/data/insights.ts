@@ -115,7 +115,33 @@ function normalizeKennisbankTerm(
     type,
     niveau: niveauFromType(type),
     source: "kennisbank",
+    insightTier: term.insightTier,
   };
+}
+
+export function isPremiumKennisbankInsight(item: InsightItem): boolean {
+  return (
+    item.source === "kennisbank" &&
+    item.insightTier !== undefined &&
+    item.insightTier >= 2 &&
+    item.insightTier <= 3
+  );
+}
+
+export function getPremiumKennisbankInsights(filters?: {
+  pijler?: PillarId;
+}): InsightItem[] {
+  return allInsights.filter((item) => {
+    if (!isPremiumKennisbankInsight(item)) return false;
+    if (filters?.pijler && item.pijler !== filters.pijler) return false;
+    return true;
+  });
+}
+
+export function buildPremiumKennisbankHref(pijler?: PillarId): string {
+  const params = new URLSearchParams({ kennisbank: "premium" });
+  if (pijler) params.set("pijler", pijler);
+  return `/inzichten?${params.toString()}#premium-kennisbank`;
 }
 
 export const allInsights: InsightItem[] = [
