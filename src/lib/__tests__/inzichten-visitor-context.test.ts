@@ -26,6 +26,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   remeasure: null,
   deltaReport: null,
   profileLabel: null,
+  answers: null,
 };
 
 const DASHBOARD_WITH_DATA: DashboardData = {
@@ -57,6 +58,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   remeasure: null,
   deltaReport: null,
   profileLabel: "Onrustige Slaper",
+  answers: null,
 };
 
 beforeEach(() => {

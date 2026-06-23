@@ -11,6 +11,7 @@ import { getClientIp } from "@/lib/turnstile-verify";
 
 const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "dashboard.first_checkin_started",
+  "dashboard.vitality_scored",
   "dashboard.cta_to_hub",
   "intake.theme_revealed",
   "intake.cta_to_pillar",
@@ -89,7 +90,9 @@ export async function POST(request: NextRequest) {
     typeof record.session_id === "string" ? record.session_id.trim() : "";
   const sessionId = cookieSessionId ?? (bodySessionId || null);
 
-  const sessionOptionalEvent = eventTypeRaw === "dashboard.first_checkin_started";
+  const sessionOptionalEvent =
+    eventTypeRaw === "dashboard.first_checkin_started" ||
+    eventTypeRaw === "dashboard.vitality_scored";
   if (!sessionId && !sessionOptionalEvent) {
     return NextResponse.json({ error: "Geen geldige sessie." }, { status: 401 });
   }

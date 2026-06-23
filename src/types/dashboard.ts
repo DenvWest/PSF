@@ -152,6 +152,7 @@ export type DashboardData = {
   remeasure: { dueDate: string; daysUntil: number } | null;
   deltaReport: DeltaReport | null;
   profileLabel: string | null;
+  answers: Record<string, number> | null;
 };
 
 export type IdentityField = {
@@ -190,6 +191,7 @@ export type DashboardModel = {
   prevScores: CheckScores | null;
   history: CheckLogEntry[];
   retest: boolean;
+  answers: Record<string, number> | null;
   date: string;
   deltaOf: (id: PillarId) => number;
 };

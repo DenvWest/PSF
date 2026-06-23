@@ -9,6 +9,7 @@ export const DOMAIN_EVENT_TYPES = [
   "account.created",
   "account.logged_in",
   "dashboard.first_checkin_started",
+  "dashboard.vitality_scored",
   "dashboard.cta_to_hub",
   "intake.completed",
   "intake.theme_revealed",

@@ -22,6 +22,7 @@ export function buildModel(
   prev: CheckSnapshot | null,
   history: CheckLogEntry[],
   retest: boolean,
+  answers: Record<string, number> | null,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -58,6 +59,7 @@ export function buildModel(
     prevScores: prev?.scores ?? null,
     history,
     retest,
+    answers,
     date: current.date,
     deltaOf,
   };

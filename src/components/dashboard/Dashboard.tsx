@@ -1,7 +1,7 @@
  "use client";
 
 import type { ReactElement } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
@@ -16,6 +16,8 @@ import {
   perfectSupplementMeasurementConfig,
 } from "@/data/measurement-config";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
+import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
+import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
@@ -98,6 +100,46 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
   }
   const currentModel = model as DashboardModel | null;
   const priorityCheckin = currentModel ? PILLAR_CHECKIN_ROUTES[currentModel.priority.id] : undefined;
+  const explainer =
+    currentModel &&
+    getVitalityExplainer({
+      vitality: currentModel.vitality,
+      vitalityDelta: currentModel.vitalityDelta,
+      priorityId: currentModel.priority.id,
+      priorityScore: currentModel.scores[currentModel.priority.id],
+      answers: currentModel.answers,
+      domainScores: currentModel.domainScores,
+    });
+  const habitKernel =
+    currentModel &&
+    buildHabitScoreKernel({
+      vitality: currentModel.vitality,
+      priorityId: currentModel.priority.id,
+      priorityScore: currentModel.scores[currentModel.priority.id],
+      answers: currentModel.answers,
+      domainScores: currentModel.domainScores,
+    });
+  const emittedKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!currentModel || !habitKernel) {
+      return;
+    }
+    const eventKey = `${currentModel.date}:${currentModel.vitality}:${habitKernel.driverHabitId}`;
+    if (emittedKeyRef.current === eventKey) {
+      return;
+    }
+    emittedKeyRef.current = eventKey;
+    emitIntakeClientEvent("dashboard.vitality_scored", {
+      source: "dashboard_today",
+      vitality_score: currentModel.vitality,
+      vitality_band: habitKernel.vitalityBand,
+      confidence: habitKernel.confidence,
+      driver_pillar: habitKernel.driverPillarId,
+      driver_pillar_score: habitKernel.driverPillarScore,
+      driver_habit_id: habitKernel.driverHabitId,
+    });
+  }, [currentModel, habitKernel]);
 
   return (
     <Card glow="#5A8F6A" pad={24} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
@@ -125,7 +167,27 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
               <Icons.Target s={14} /> Je grootste hefboom
             </div>
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>{currentModel?.priority.label}.</div>
-            <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>{currentModel?.priority.lever}</p>
+            {habitKernel && (
+              <p style={{ fontSize: 12, color: "var(--text-subtle)", lineHeight: 1.45, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                Driver: {habitKernel.driverPillarLabel} {habitKernel.driverPillarScore}
+              </p>
+            )}
+            {explainer?.map((paragraph, index) =>
+              paragraph ? (
+                <p
+                  key={index}
+                  style={{
+                    fontSize: 14,
+                    color: "var(--text-muted)",
+                    lineHeight: 1.55,
+                    margin: index < 2 ? "0 0 10px" : "0 0 18px",
+                    textWrap: "pretty",
+                  }}
+                >
+                  {paragraph}
+                </p>
+              ) : null,
+            )}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
               {priorityCheckin && currentModel && (
                 <Button
@@ -546,6 +608,13 @@ const RetestSection = ({ model, data, onRemeasure, onGoRoadmap }: SharedSectionP
     const currentPriorityLabel = movedPriority
       ? (domainConfigById.get(movedPriority.to)?.label ?? movedPriority.to)
       : forwardPillar.label;
+    const forwardHabitKernel = buildHabitScoreKernel({
+      vitality: model.vitality,
+      priorityId: forwardPillar.id,
+      priorityScore: model.scores[forwardPillar.id],
+      answers: model.answers,
+      domainScores: model.domainScores,
+    });
 
     return (
       <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -626,7 +695,7 @@ const RetestSection = ({ model, data, onRemeasure, onGoRoadmap }: SharedSectionP
             {forwardPillar.quickWin.detail}
           </p>
           <p style={{ fontSize: 13, color: "var(--text-subtle)", lineHeight: 1.55, margin: "0 0 16px", textWrap: "pretty" }}>
-            {forwardPillar.lever}
+            {forwardHabitKernel.driverLinkLine}
           </p>
           <Button variant="secondary" onClick={onGoRoadmap} iconRight={<Icons.ArrowRight s={18} />}>
             Bekijk je roadmap
@@ -928,7 +997,13 @@ export default function Dashboard({ empty, data }: DashboardProps) {
   const model = useMemo(
     () =>
       !empty && data?.current
-        ? buildModel(data.current, data.prev, data.history, data.retest)
+        ? buildModel(
+            data.current,
+            data.prev,
+            data.history,
+            data.retest,
+            data.answers,
+          )
         : null,
     [empty, data],
   );

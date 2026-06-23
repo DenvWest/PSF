@@ -14,6 +14,37 @@ import type {
 } from "@/types/dashboard";
 import type { DomainScores } from "@/lib/intake-engine";
 
+const DEV_INTAKE_ANSWERS: Record<string, number> = {
+  SLP_QUAL: 3,
+  SLP_CONS: 2,
+  SLP_ONSET: 3,
+  SLP_WAKE: 3,
+  NRG_PATN: 3,
+  NRG_DEP: 4,
+  STR_FREQ: 2,
+  STR_RCV: 2,
+  NUT_O3: 1,
+  NUT_PROT: 2,
+  MOV_STR: 4,
+  MOV_CARD: 4,
+  RCV_PHYS: 2,
+  LIF_ALC: 4,
+  LIF_SUN: 3,
+};
+
+function devAnswersForCheck(checkId: "check1" | "check2"): Record<string, number> {
+  if (checkId === "check1") {
+    return DEV_INTAKE_ANSWERS;
+  }
+  return {
+    ...DEV_INTAKE_ANSWERS,
+    SLP_QUAL: 2,
+    SLP_ONSET: 2,
+    NUT_PROT: 3,
+    NUT_O3: 2,
+  };
+}
+
 function toDomainScores(scores: CheckScores): DomainScores {
   return {
     sleep_score: scores.slaap,
@@ -91,5 +122,6 @@ export function buildDevDashboardData(
         : { dueDate: "10 jul 2026", daysUntil: 22 },
     deltaReport,
     profileLabel: "Lage Batterij",
+    answers: devAnswersForCheck(mode === "retest" ? "check2" : "check1"),
   };
 }

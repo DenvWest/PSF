@@ -31,6 +31,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   remeasure: null,
   deltaReport: null,
   profileLabel: null,
+  answers: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -78,6 +79,7 @@ type SessionRow = {
   domain_scores: unknown;
   created_at: string | null;
   profile_label: string | null;
+  answers: unknown;
 };
 
 type SessionSnapshot = {
@@ -88,6 +90,7 @@ type SessionSnapshot = {
   priority: PillarId;
   ts: number;
   profileLabel: string;
+  answers: Record<string, number> | null;
 };
 
 function parseDomainScores(value: unknown): DomainScores | null {
@@ -107,6 +110,23 @@ function parseDomainScores(value: unknown): DomainScores | null {
   }
 
   return scores;
+}
+
+function parseAnswers(value: unknown): Record<string, number> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const record = value as Record<string, unknown>;
+  const answers: Record<string, number> = {};
+
+  for (const [key, raw] of Object.entries(record)) {
+    if (typeof raw === "number" && Number.isFinite(raw)) {
+      answers[key] = raw;
+    }
+  }
+
+  return Object.keys(answers).length > 0 ? answers : null;
 }
 
 function formatDashboardDate(createdAt: string): string {
@@ -207,7 +227,7 @@ export async function loadAccountDashboardData(
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("id,domain_scores,created_at,profile_label")
+    .select("id,domain_scores,created_at,profile_label,answers")
     .eq("account_id", accountId)
     .order("created_at", { ascending: true });
 
@@ -248,6 +268,7 @@ export async function loadAccountDashboardData(
         priority,
         ts,
         profileLabel,
+        answers: parseAnswers(row.answers),
       };
     })
     .filter((row): row is SessionSnapshot => row !== null);
@@ -414,5 +435,6 @@ export async function loadAccountDashboardData(
     remeasure,
     deltaReport,
     profileLabel: snapshots[snapshots.length - 1].profileLabel,
+    answers: snapshots[snapshots.length - 1].answers,
   };
 }
