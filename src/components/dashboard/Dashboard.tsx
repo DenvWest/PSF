@@ -1,6 +1,6 @@
  "use client";
 
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,9 +18,12 @@ import {
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
+import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
+import { trackEvent } from "@/lib/ga4";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
+import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import type {
   DashboardData,
   DashboardModel,
@@ -44,7 +47,7 @@ type SharedSectionProps = {
   onCheck: () => void;
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
-  onGoRoadmap: () => void;
+  onGoVandaag: () => void;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -76,6 +79,170 @@ const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
         </button>
       </div>
     </header>
+  );
+};
+
+const CollapsibleSection = ({
+  eyebrow,
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  eyebrow: string;
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) => {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <section>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "14px 2px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "left",
+          color: "var(--text)",
+          fontFamily: "var(--f-sans)",
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 4 }}>
+            {eyebrow}
+          </div>
+          <div style={{ fontFamily: "var(--f-serif)", fontSize: 19, lineHeight: 1.25 }}>{title}</div>
+        </div>
+        <span style={{ color: "var(--text-muted)", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }}>
+          <Icons.ChevronDown s={18} />
+        </span>
+      </button>
+      {open ? <div style={{ marginTop: 4 }}>{children}</div> : null}
+    </section>
+  );
+};
+
+const ActiveHabitCard = ({
+  habit,
+  habitKernel,
+  onCompleted,
+}: {
+  habit: ActivePlanHabit;
+  habitKernel: ReturnType<typeof buildHabitScoreKernel>;
+  onCompleted: () => void;
+}) => {
+  const [state, setState] = useState(habit.state);
+  const [busy, setBusy] = useState(false);
+  const done = state === "done";
+
+  const markDone = async () => {
+    if (done || busy) {
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const body =
+        habit.source === "plan" && habit.domain && habit.phaseId
+          ? {
+              domain: habit.domain,
+              phaseId: habit.phaseId,
+              stepId: habit.stepId,
+              toState: "done",
+            }
+          : {
+              mode: "kernel",
+              stepId: habit.stepId,
+              toState: "done",
+            };
+
+      const response = await fetch("/api/account/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      setState("done");
+      onCompleted();
+
+      emitIntakeClientEvent("plan.step_state_changed", {
+        source: "dashboard_today",
+        domain: habit.domain,
+        phase_id: habit.phaseId,
+        step_id: habit.stepId,
+        from: habit.state ?? "todo",
+        to: "done",
+        driver_pillar: habitKernel.driverPillarId,
+        driver_habit_id: habitKernel.driverHabitId,
+        vitality_band: habitKernel.vitalityBand,
+        confidence: habitKernel.confidence,
+      });
+      trackEvent("dashboard_habit_completed", {
+        step_id: habit.stepId,
+        source: habit.source,
+        driver_pillar: habitKernel.driverPillarId,
+      });
+      clarityTag("dashboard_habit", habit.stepId);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div style={{ marginTop: 18, paddingTop: 18, borderTop: "1px solid var(--divider)" }}>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
+        <Icons.Check s={14} /> Stap 1 · Je habit nu
+      </div>
+      <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+        <button
+          type="button"
+          aria-label={done ? "Habit afgerond" : "Markeer habit als gedaan"}
+          disabled={done || busy}
+          onClick={() => void markDone()}
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: "50%",
+            flexShrink: 0,
+            marginTop: 2,
+            border: done ? "none" : "1.5px solid var(--divider-strong)",
+            background: done ? "var(--sage)" : "transparent",
+            color: done ? "#0f1c10" : "var(--text-subtle)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: done || busy ? "default" : "pointer",
+          }}
+        >
+          {done ? <Icons.Check s={14} /> : null}
+        </button>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 15, color: "var(--text)", fontWeight: 600, lineHeight: 1.45, textWrap: "pretty" }}>{habit.title}</div>
+          {habit.detail ? (
+            <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.5, margin: "6px 0 0", textWrap: "pretty" }}>{habit.detail}</p>
+          ) : null}
+          {habit.planHref ? (
+            <Link href={habit.planHref} style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, fontSize: 13, color: "var(--sage)", textDecoration: "none" }}>
+              Volledig plan bekijken
+              <Icons.ArrowRight s={15} />
+            </Link>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -119,6 +286,27 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
       answers: currentModel.answers,
       domainScores: currentModel.domainScores,
     });
+  const [habitCompleted, setHabitCompleted] = useState(
+    currentModel?.activeHabit?.state === "done",
+  );
+  const recommendationInput = currentModel
+    ? buildRecommendationInput({ scores: currentModel.domainScores })
+    : null;
+  const lifestyleStep = currentModel?.activeHabit
+    ? {
+        title: currentModel.activeHabit.title,
+        detail: currentModel.activeHabit.detail ?? "",
+      }
+    : currentModel?.priority.quickWin;
+  const supplementDisclosure =
+    currentModel && recommendationInput
+      ? buildSupplementDisclosure(
+          currentModel.priority,
+          recommendationInput,
+          "dashboard",
+          lifestyleStep,
+        )
+      : null;
   const emittedKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -180,7 +368,7 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
                     fontSize: 14,
                     color: "var(--text-muted)",
                     lineHeight: 1.55,
-                    margin: index < 2 ? "0 0 10px" : "0 0 18px",
+                    margin: index < 2 ? "0 0 10px" : "0 0 0",
                     textWrap: "pretty",
                   }}
                 >
@@ -188,19 +376,32 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
                 </p>
               ) : null,
             )}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {priorityCheckin && currentModel && (
+            {currentModel?.activeHabit && habitKernel ? (
+              <ActiveHabitCard
+                habit={currentModel.activeHabit}
+                habitKernel={habitKernel}
+                onCompleted={() => setHabitCompleted(true)}
+              />
+            ) : null}
+            {supplementDisclosure && habitCompleted ? (
+              <div style={{ marginTop: 18, paddingTop: 18, borderTop: "1px solid var(--divider)" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12 }}>
+                  <Icons.Pill s={14} /> Stap 2 · Aanvulling, pas hierna
+                </div>
+                <SupplementDisclosure data={supplementDisclosure} />
+              </div>
+            ) : null}
+            {priorityCheckin && currentModel ? (
+              <div style={{ marginTop: 16 }}>
                 <Button
+                  variant="secondary"
                   onClick={() => onDashboardCheckin(priorityCheckin, currentModel.priority.id)}
                   iconRight={<Icons.ArrowRight s={18} />}
                 >
-                  Check-in op {currentModel.priority.label.toLowerCase()}
+                  Verdiep met check-in op {currentModel.priority.label.toLowerCase()}
                 </Button>
-              )}
-              <Button variant="secondary" onClick={onCheck} iconRight={<Icons.ArrowDown s={17} />}>
-                Naar mijn plan
-              </Button>
-            </div>
+              </div>
+            ) : null}
           </>
         )}
       </div>
@@ -251,12 +452,14 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
   }
 
   return (
-    <section>
-      <SectionHeader eyebrow="Prioriteit" title="Waar je nu begint" action={<span style={{ fontSize: 12, color: "var(--text-subtle)" }}>zwakste bovenaan</span>} />
-      <Card pad={8}>
-        <PriorityLadder ladder={ladder} scores={scores} positions={pos} />
-      </Card>
-    </section>
+    <CollapsibleSection eyebrow="Roadmap" title="Waar je nu begint">
+      <>
+        <SectionHeader eyebrow="Prioriteit" title="Je pijlerladder" action={<span style={{ fontSize: 12, color: "var(--text-subtle)" }}>zwakste bovenaan</span>} />
+        <Card pad={8}>
+          <PriorityLadder ladder={ladder} scores={scores} positions={pos} />
+        </Card>
+      </>
+    </CollapsibleSection>
   );
 };
 
@@ -264,56 +467,17 @@ const PlanSection = ({ model }: SharedSectionProps) => {
   if (!model) {
     return null;
   }
-  const { lifestyle, supplement } = model;
+
   return (
-    <section id="plan">
-      <SectionHeader eyebrow="Je plan" title="Leefstijl eerst" />
-      <Card pad={20} style={{ borderColor: "rgba(90,143,106,0.26)" }} glow="#5A8F6A">
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          <span style={{ width: 30, height: 30, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(90,143,106,0.18)", color: "var(--sage)", border: "1px solid rgba(90,143,106,0.32)" }}>
-            <Icons.Leaf s={17} />
-          </span>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>Spoor A · Leefstijl</div>
-          <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.1em" }}>Hier zit je winst</span>
+    <CollapsibleSection eyebrow="Adviezen" title="Objectief, geen verkoop">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <RecommendedInsights pillarId={model.priority.id} />
+        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--text-muted)" }}>
+          <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
+          <span>Objectief — wij verkopen zelf niets.</span>
         </div>
-        {lifestyle.map((item, i) => (
-          <div key={item.pillar.id} style={{ display: "flex", gap: 13, padding: "14px 2px", borderTop: i ? "1px solid var(--divider)" : "none" }}>
-            <span style={{ width: 22, height: 22, borderRadius: "50%", flexShrink: 0, marginTop: 2, border: "1.5px solid var(--divider-strong)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-subtle)" }} />
-            <div style={{ flex: 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 15, color: "var(--text)", fontWeight: 600 }}>{item.win.title}</span>
-                <span style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: item.pillar.color, background: `${item.pillar.color}1f`, border: `1px solid ${item.pillar.color}33`, borderRadius: 999, padding: "2px 8px" }}>{item.pillar.label}</span>
-              </div>
-              <div style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.5, marginTop: 5, textWrap: "pretty" }}>{item.win.detail}</div>
-            </div>
-          </div>
-        ))}
-      </Card>
-      {supplement && (
-        <div style={{ marginTop: 10, paddingLeft: 14, borderLeft: "2px solid var(--divider)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0 8px" }}>
-            <Icons.Pill s={14} style={{ color: "var(--text-subtle)" }} />
-            <span style={{ fontSize: 11.5, color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.1em" }}>Spoor B · Aanvulling, pas hierna</span>
-          </div>
-          <div style={{ background: "rgba(255,255,255,0.025)", border: "1px solid var(--divider)", borderRadius: 16, padding: 16 }}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
-              <span style={{ fontFamily: "var(--f-serif)", fontSize: 18, color: "var(--text)" }}>{supplement.name}</span>
-              <span style={{ fontFamily: "var(--f-serif)", fontStyle: "italic", fontSize: 14, color: "var(--text-subtle)" }}>{supplement.form}</span>
-              <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--text-muted)", border: "1px solid var(--divider)", borderRadius: 6, padding: "2px 7px" }}>Evidence {supplement.grade}</span>
-            </div>
-            <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5 }}>
-              <span style={{ color: "var(--terra)" }}>{supplement.signal}</span>{" → "}
-              {supplement.claim}.
-            </div>
-          </div>
-          <div style={{ fontSize: 11.5, color: "var(--text-subtle)", marginTop: 8, lineHeight: 1.5 }}>EFSA-toegestane bewoording. Een aanvulling op een gemeten gat — geen vervanging van het leefstijl-spoor.</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 10, fontSize: 11.5, color: "var(--text-muted)" }}>
-            <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
-            <span>Onafhankelijk — wij verkopen niets zelf.</span>
-          </div>
-        </div>
-      )}
-    </section>
+      </div>
+    </CollapsibleSection>
   );
 };
 
@@ -581,7 +745,7 @@ const RemeasureStrip = ({
   );
 };
 
-const RetestSection = ({ model, data, onRemeasure, onGoRoadmap }: SharedSectionProps) => {
+const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionProps) => {
   if (!model) {
     return null;
   }
@@ -689,16 +853,16 @@ const RetestSection = ({ model, data, onRemeasure, onGoRoadmap }: SharedSectionP
               : `Je vertrekpunt blijft ${forwardPillar.label.toLowerCase()}.`}
           </div>
           <div style={{ fontSize: 15, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>
-            {forwardPillar.quickWin.title}
+            {model.activeHabit?.title ?? forwardPillar.quickWin.title}
           </div>
           <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 8px", textWrap: "pretty" }}>
-            {forwardPillar.quickWin.detail}
+            {model.activeHabit?.detail ?? forwardPillar.quickWin.detail}
           </p>
           <p style={{ fontSize: 13, color: "var(--text-subtle)", lineHeight: 1.55, margin: "0 0 16px", textWrap: "pretty" }}>
             {forwardHabitKernel.driverLinkLine}
           </p>
-          <Button variant="secondary" onClick={onGoRoadmap} iconRight={<Icons.ArrowRight s={18} />}>
-            Bekijk je roadmap
+          <Button variant="secondary" onClick={onGoVandaag} iconRight={<Icons.ArrowRight s={18} />}>
+            Ga naar vandaag
           </Button>
         </Card>
       </section>
@@ -911,44 +1075,6 @@ const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
   </div>
 );
 
-const AdviezenSection = ({ model, onGoRoadmap }: { model: DashboardModel; onGoRoadmap: () => void }) => {
-  const { priority } = model;
-  const input = buildRecommendationInput({ scores: model.domainScores });
-  const supplementDisclosure = buildSupplementDisclosure(priority, input, "dashboard");
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <Card pad={20} style={{ borderColor: "rgba(90,143,106,0.26)" }} glow="#5A8F6A">
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          <span style={{ width: 30, height: 30, borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(90,143,106,0.18)", color: "var(--sage)", border: "1px solid rgba(90,143,106,0.32)" }}>
-            <Icons.Leaf s={17} />
-          </span>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>Leefstijl eerst</div>
-        </div>
-        <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 14px", textWrap: "pretty" }}>{priority.lever}</p>
-        <div style={{ padding: "14px 2px", borderTop: "1px solid var(--divider)" }}>
-          <div style={{ fontSize: 15, color: "var(--text)", fontWeight: 600 }}>{priority.quickWin.title}</div>
-          <div style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.5, marginTop: 5, textWrap: "pretty" }}>{priority.quickWin.detail}</div>
-        </div>
-      </Card>
-      {supplementDisclosure ? (
-        <SupplementDisclosure data={supplementDisclosure} />
-      ) : (
-        <div>
-          <Button variant="secondary" onClick={onGoRoadmap} iconRight={<Icons.ArrowRight s={18} />}>
-            Bekijk je roadmap
-          </Button>
-        </div>
-      )}
-      <RecommendedInsights pillarId={priority.id} />
-      <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--text-muted)" }}>
-        <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
-        <span>Objectief — wij verkopen zelf niets.</span>
-      </div>
-    </div>
-  );
-};
-
 const EmptyTabState = ({ tab, onCheck }: { tab: DashboardTab; onCheck: () => void }) => {
   const Icon = Icons[tab.icon];
   return (
@@ -1003,6 +1129,8 @@ export default function Dashboard({ empty, data }: DashboardProps) {
             data.history,
             data.retest,
             data.answers,
+            data.planProgress,
+            data.planDomain,
           )
         : null,
     [empty, data],
@@ -1019,7 +1147,7 @@ export default function Dashboard({ empty, data }: DashboardProps) {
       router.push("/intake");
       return;
     }
-    setTab("roadmap");
+    setTab("vandaag");
   };
   const onLogout = async () => {
     await fetch("/api/account/logout", { method: "POST" });
@@ -1044,7 +1172,7 @@ export default function Dashboard({ empty, data }: DashboardProps) {
     onCheck,
     onDashboardCheckin,
     onRemeasure,
-    onGoRoadmap: () => setTab("roadmap"),
+    onGoVandaag: () => setTab("vandaag"),
   };
 
   return (
@@ -1055,8 +1183,6 @@ export default function Dashboard({ empty, data }: DashboardProps) {
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {empty && tab !== "vandaag" ? (
             <EmptyTabState tab={tabMeta} onCheck={onCheck} />
-          ) : tab === "adviezen" && model ? (
-            <AdviezenSection model={model} onGoRoadmap={() => setTab("roadmap")} />
           ) : sectionTypes.length === 0 ? null : (
             sectionTypes.map((type) => (
               <section key={type}>{SECTION_RENDERERS[type](sharedProps)}</section>

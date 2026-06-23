@@ -27,6 +27,9 @@ const EMPTY_DASHBOARD: DashboardData = {
   deltaReport: null,
   profileLabel: null,
   answers: null,
+  sessionId: null,
+  planProgress: null,
+  planDomain: null,
 };
 
 const DASHBOARD_WITH_DATA: DashboardData = {
@@ -59,6 +62,9 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   deltaReport: null,
   profileLabel: "Onrustige Slaper",
   answers: null,
+  sessionId: "session-1",
+  planProgress: null,
+  planDomain: "sleep",
 };
 
 beforeEach(() => {

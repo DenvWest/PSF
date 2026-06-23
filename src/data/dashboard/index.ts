@@ -288,14 +288,6 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     emptyHint: "",
   },
   {
-    id: "roadmap",
-    label: "Roadmap",
-    icon: "RouteMap",
-    title: "Roadmap",
-    subtitle: "Waar je begint, stap voor stap.",
-    emptyHint: "Na je eerste check zie je hier je prioriteitenladder en persoonlijk plan.",
-  },
-  {
     id: "voortgang",
     label: "Voortgang",
     icon: "BarChart",
@@ -311,20 +303,10 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     subtitle: "Meet of het werkt.",
     emptyHint: "Over 30 dagen meet je opnieuw of je leefstijl-stappen werken.",
   },
-  {
-    id: "adviezen",
-    label: "Adviezen",
-    icon: "BookOpen",
-    title: "Adviezen",
-    subtitle: "Objectief, geen verkoop.",
-    emptyHint: "Objectieve adviezen passend bij jouw prioriteit — na je eerste check.",
-  },
 ];
 
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
-  vandaag: ["now", "identity"],
-  roadmap: ["priority", "plan"],
+  vandaag: ["now", "priority", "plan", "identity"],
   voortgang: ["signals", "nutritionIntake", "history"],
   hermeting: ["retest", "future"],
-  adviezen: [],
 };

@@ -1,13 +1,15 @@
 import { PILLARS, TIE_ORDER } from "@/data/dashboard";
+import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
 import type {
   CheckLogEntry,
   CheckScores,
   CheckSnapshot,
-  DashboardData,
   DashboardModel,
   Pillar,
 } from "@/types/dashboard";
+import type { MeasuredPillarId } from "@/lib/primary-theme";
+import type { PlanProgress } from "@/types/lifestyle-plan";
 
 export function derivePriority(scores: CheckScores): Pillar[] {
   return [...PILLARS].sort(
@@ -18,11 +20,18 @@ export function derivePriority(scores: CheckScores): Pillar[] {
 }
 
 export function buildModel(
-  current: NonNullable<DashboardData["current"]>,
+  current: {
+    scores: CheckScores;
+    vitality: number;
+    date: string;
+    trend: DashboardModel["trend"];
+  },
   prev: CheckSnapshot | null,
   history: CheckLogEntry[],
   retest: boolean,
   answers: Record<string, number> | null,
+  planProgress: PlanProgress | null,
+  planDomain: MeasuredPillarId | null,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -45,6 +54,15 @@ export function buildModel(
     return trend[trend.length - 1] - trend[trend.length - 2];
   };
 
+  const activeHabit = buildActivePlanHabit({
+    priorityId: priority.id,
+    priorityScore: scores[priority.id],
+    vitality,
+    domainScores: mapCheckScoresToDomainScores(scores),
+    answers,
+    progress: planProgress,
+  });
+
   return {
     scores,
     domainScores: mapCheckScoresToDomainScores(scores),
@@ -62,5 +80,8 @@ export function buildModel(
     answers,
     date: current.date,
     deltaOf,
+    activeHabit,
+    planDomain,
+    planProgress,
   };
 }

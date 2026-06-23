@@ -1,5 +1,8 @@
 import type { DeltaReport } from "@/types/delta-report";
 import type { DomainScores } from "@/lib/intake-engine";
+import type { MeasuredPillarId } from "@/lib/primary-theme";
+import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
+import type { PlanProgress } from "@/types/lifestyle-plan";
 
 export type PillarId =
   | "slaap"
@@ -61,12 +64,7 @@ export type DashboardIconName =
   | "Calendar"
   | "BookOpen";
 
-export type DashboardTabId =
-  | "vandaag"
-  | "roadmap"
-  | "voortgang"
-  | "hermeting"
-  | "adviezen";
+export type DashboardTabId = "vandaag" | "voortgang" | "hermeting";
 
 export type DashboardTab = {
   id: DashboardTabId;
@@ -153,6 +151,9 @@ export type DashboardData = {
   deltaReport: DeltaReport | null;
   profileLabel: string | null;
   answers: Record<string, number> | null;
+  sessionId: string | null;
+  planProgress: PlanProgress | null;
+  planDomain: MeasuredPillarId | null;
 };
 
 export type IdentityField = {
@@ -194,4 +195,7 @@ export type DashboardModel = {
   answers: Record<string, number> | null;
   date: string;
   deltaOf: (id: PillarId) => number;
+  activeHabit: ActivePlanHabit | null;
+  planDomain: MeasuredPillarId | null;
+  planProgress: PlanProgress | null;
 };

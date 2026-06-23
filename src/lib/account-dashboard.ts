@@ -1,4 +1,5 @@
 import { derivePriority } from "@/lib/dashboard-model";
+import { resolvePlanDomain } from "@/lib/dashboard-active-plan";
 import { PILLAR } from "@/data/dashboard";
 import {
   perfectSupplementMeasurementConfig,
@@ -9,6 +10,7 @@ import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
+import { loadPlanProgress } from "@/lib/plan-progress";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type {
@@ -32,6 +34,9 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   deltaReport: null,
   profileLabel: null,
   answers: null,
+  sessionId: null,
+  planProgress: null,
+  planDomain: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -403,6 +408,30 @@ export async function loadAccountDashboardData(
     Math.round((latestTs - firstSessionTs) / MS_PER_DAY),
   );
   const sustainedActions = buildSustainedActions(planProgressRows ?? []);
+  const latestSnapshot = snapshots[snapshots.length - 1];
+  const latestAnswers = latestSnapshot.answers;
+  const latestDomainScores = mapCheckScoresToDomainScores(currentScores);
+  const planDomain =
+    latestAnswers != null
+      ? resolvePlanDomain(
+          derivePriority(currentScores)[0].id,
+          latestDomainScores,
+          latestAnswers,
+        )
+      : null;
+  let planProgress = null;
+  if (planDomain && latestSnapshot.id) {
+    try {
+      planProgress = await loadPlanProgress(
+        admin,
+        latestSnapshot.id,
+        planDomain,
+      );
+    } catch {
+      planProgress = null;
+    }
+  }
+
   const deltaReport =
     snapshots.length >= 2
       ? buildDeltaReport({
@@ -434,7 +463,10 @@ export async function loadAccountDashboardData(
     nutritionIntake,
     remeasure,
     deltaReport,
-    profileLabel: snapshots[snapshots.length - 1].profileLabel,
-    answers: snapshots[snapshots.length - 1].answers,
+    profileLabel: latestSnapshot.profileLabel,
+    answers: latestAnswers,
+    sessionId: latestSnapshot.id,
+    planProgress,
+    planDomain,
   };
 }

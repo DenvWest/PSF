@@ -18,6 +18,7 @@ export function buildSupplementDisclosure(
   priority: Pillar,
   input: RecommendationInput,
   from: "results" | "dashboard" = "results",
+  lifestyleStepOverride?: Pillar["quickWin"],
 ): SupplementDisclosureData | null {
   const supplement = priority.supplement;
   if (!supplement) {
@@ -30,7 +31,7 @@ export function buildSupplementDisclosure(
   }
 
   const explanation = explainRecommendation(recommendation, {
-    lifestyleStep: priority.quickWin,
+    lifestyleStep: lifestyleStepOverride ?? priority.quickWin,
     supplement: {
       name: supplement.name,
       claim: supplement.claim,

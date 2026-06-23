@@ -123,5 +123,8 @@ export function buildDevDashboardData(
     deltaReport,
     profileLabel: "Lage Batterij",
     answers: devAnswersForCheck(mode === "retest" ? "check2" : "check1"),
+    sessionId: "dev-session",
+    planProgress: null,
+    planDomain: "nutrition",
   };
 }
