@@ -9,6 +9,7 @@ import VitalityRing from "@/components/app/VitalityRing";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
+import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
 import {
@@ -325,7 +326,7 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
               )}
               <Link
                 href={pillar.hubRoute}
-                onClick={() => emitIntakeClientEvent("dashboard.cta_to_hub", { pillar: pillar.id })}
+                onClick={() => emitIntakeClientEvent("dashboard.cta_to_hub", { pillar: pillar.id, destination: "hub" })}
                 style={{ display: "inline-block", marginTop: 8, color: "var(--text-subtle)", fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)", textDecoration: "none" }}
               >
                 Lees over {pillar.label} →
@@ -859,6 +860,7 @@ const AdviezenSection = ({ model, onGoRoadmap }: { model: DashboardModel; onGoRo
           </Button>
         </div>
       )}
+      <RecommendedInsights pillarId={priority.id} />
       <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--text-muted)" }}>
         <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
         <span>Objectief — wij verkopen zelf niets.</span>
