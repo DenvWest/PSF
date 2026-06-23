@@ -33,9 +33,9 @@ const relatedPages = [
         description: "Bekijk producten naast elkaar in een compact overzicht.",
     },
     {
-        href: "/beste/omega-3-supplement",
-        title: "Beste omega 3 supplement",
-        description: "Ga direct naar de beste overall, budget en premium keuzes.",
+        href: "/supplement-kiezen-waar-op-letten",
+        title: "Supplement kiezen: waar op letten?",
+        description: "Algemene checklist voor kwaliteit, dosering en betrouwbaarheid.",
     },
     {
         href: "/methodologie",

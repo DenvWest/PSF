@@ -36,9 +36,9 @@ const relatedPages = [
         description: "Dieper ingaan op dosering, transparantie en prijs per dag bij visolie en algenolie.",
     },
     {
-        href: "/beste/magnesium",
-        title: "Magnesium vergelijken",
-        description: "Vormen en toepassingen naast elkaar.",
+        href: "/methodologie",
+        title: "Onze methodologie",
+        description: "Lees hoe producten worden geselecteerd en beoordeeld.",
     },
 ];
 
