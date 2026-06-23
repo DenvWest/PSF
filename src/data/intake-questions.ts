@@ -280,10 +280,10 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     question: "Hoeveel zon en buitenlicht krijg je gemiddeld?",
     subtitle: "Vitamine D uit zonlicht is na je 40e extra relevant in Nederland",
     options: [
-      { label: "Veel buiten of ik slik al vitamine D", value: 4 },
-      { label: "Redelijk, regelmatig naar buiten", value: 3 },
-      { label: "Weinig zon, geen supplement", value: 2 },
-      { label: "Bijna alleen binnen, geen supplement", value: 1 },
+      { label: "Dagelijks, ook in de winter", value: 4 },
+      { label: "Regelmatig, meestal overdag buiten", value: 3 },
+      { label: "Weinig, vooral binnen", value: 2 },
+      { label: "Bijna nooit, vooral binnen", value: 1 },
     ],
   },
 ] as const satisfies readonly IntakeQuestion[];

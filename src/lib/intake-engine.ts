@@ -745,6 +745,8 @@ export function getAdvice(
     );
   }
 
+  // Tijdelijk: lifSun <= 2 kan ook supplementeerders raken tot takesSupplements
+  // (Fase 1, stap "Lichaam & risico") die trigger uitsluit.
   if (lifSun <= 2) {
     pushRankedSupplement(
       supplements,
