@@ -626,7 +626,7 @@ export function getAdvice(
   if (nutritionScoreLow) {
     pushRankedLongTerm(
       longTerm,
-      "Twijfel je aan tekorten in vitamines of mineralen? Vraag bij aanhoudende klachten je huisarts om bloedonderzoek — zekerheid haal je bij de arts, niet uit een vragenlijst.",
+      "Twijfel je of je voeding voldoende vitamines en mineralen levert? Vraag bij aanhoudende klachten je huisarts om bloedonderzoek — zekerheid haal je bij de arts, niet uit een vragenlijst.",
       1,
     );
   }

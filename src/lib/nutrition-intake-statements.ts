@@ -20,6 +20,7 @@ export const FORBIDDEN_STATUS_PHRASES: string[] = [
   "deficientie",
   "je waarden",
   "bloedwaarde",
+  "bloedsuiker",
   "diagnose",
   "te weinig in je bloed",
   "gemeten",
