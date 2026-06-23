@@ -76,7 +76,9 @@ export default function HeaderClient({
             </Link>
 
             <nav className="hidden items-center gap-7 md:flex">
-              {mainLinks.map((link) => (
+              {mainLinks
+                .filter((link) => link.href !== "/inzichten" || isLoggedIn)
+                .map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -194,7 +196,9 @@ export default function HeaderClient({
               >
                 {primaryMobileAction.label} →
               </Link>
-              {mobileMenuLinks.map((link) => (
+              {mobileMenuLinks
+                .filter((link) => link.href !== "/inzichten" || isLoggedIn)
+                .map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}

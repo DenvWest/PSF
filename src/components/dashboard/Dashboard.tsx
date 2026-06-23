@@ -380,9 +380,9 @@ const NUTRITION_BAND: Record<
   NutritionIntakeBand,
   { label: string; color: string }
 > = {
-  below: { label: "Te laag", color: "var(--terra)" },
-  around: { label: "Rondom", color: "var(--text-muted)" },
-  meets: { label: "Op orde", color: "var(--sage)" },
+  below: { label: "Onder richtlijn", color: "var(--terra)" },
+  around: { label: "Rond richtlijn", color: "var(--text-muted)" },
+  meets: { label: "Op richtlijn", color: "var(--sage)" },
 };
 
 const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
