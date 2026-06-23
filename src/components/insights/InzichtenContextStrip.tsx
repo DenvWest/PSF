@@ -65,7 +65,7 @@ export default function InzichtenContextStrip({
           <p className="mt-2 text-sm leading-relaxed text-stone-600">
             Op basis van je laatste check-in. Meer detail in je dashboard.
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="mt-4">
             <Link
               href={`/inzichten?pijler=${priorityPillarId}`}
               onClick={() =>
@@ -77,18 +77,6 @@ export default function InzichtenContextStrip({
               className="inline-flex min-h-[44px] items-center rounded-full bg-[#0E1A14] px-5 py-2.5 text-sm font-semibold text-[#F7F5F0] transition hover:bg-[#0E1A14]/90"
             >
               Bekijk {priorityLabel.toLowerCase()}-inzichten →
-            </Link>
-            <Link
-              href="/dashboard"
-              onClick={() =>
-                trackEvent("inzichten_context_strip_click", {
-                  destination: "dashboard",
-                  pillar: priorityPillarId,
-                })
-              }
-              className="inline-flex min-h-[44px] items-center rounded-full border border-[#E7E5E4] bg-white px-5 py-2.5 text-sm font-semibold text-stone-800 transition hover:border-stone-400"
-            >
-              Open dashboard →
             </Link>
           </div>
         </div>

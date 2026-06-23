@@ -61,12 +61,6 @@ export default function FocusAreaCard({
           </span>
         ) : null}
       </Link>
-      <Link
-        href={pillar.hubRoute}
-        className="mt-2 text-xs text-stone-400 underline decoration-stone-300/60 underline-offset-[3px] transition hover:text-stone-600 hover:decoration-stone-400"
-      >
-        Lees de {pillar.label.toLowerCase()}-gids →
-      </Link>
     </article>
   );
 }

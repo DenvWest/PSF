@@ -184,14 +184,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
       <main className={BLOG_BG_CLASS}>
         {!isFeed ? (
           <>
-            <InzichtenHubHero
-              priorityLabel={
-                hasContext ? visitorContext!.priorityLabel : undefined
-              }
-              priorityPillarId={
-                hasContext ? visitorContext!.priorityPillarId : undefined
-              }
-            />
+            <InzichtenHubHero />
 
             {hasContext ? (
               <InzichtenContextStrip

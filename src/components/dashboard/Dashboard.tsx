@@ -324,17 +324,28 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
                   Check-in →
                 </button>
               )}
-              <Link
-                href={pillar.hubRoute}
-                onClick={() => emitIntakeClientEvent("dashboard.cta_to_hub", { pillar: pillar.id, destination: "hub" })}
-                style={{ display: "inline-block", marginTop: 8, color: "var(--text-subtle)", fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)", textDecoration: "none" }}
-              >
-                Lees over {pillar.label} →
-              </Link>
             </Card>
           );
         })}
       </SlotGrid>
+      <div style={{ marginTop: 10, textAlign: "right" }}>
+        <Link
+          href="/inzichten"
+          onClick={() =>
+            emitIntakeClientEvent("dashboard.cta_to_hub", {
+              destination: "hub",
+            })
+          }
+          style={{
+            fontSize: 12,
+            color: "var(--text-subtle)",
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          Alle inzichten →
+        </Link>
+      </div>
       <div style={{ fontSize: 11.5, color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.12em", margin: "18px 2px 10px" }}>Objectieve signalen</div>
       <SlotGrid min={150} gap={10}>
         {connectedSignals.map(renderSignal)}

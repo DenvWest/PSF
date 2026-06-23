@@ -154,3 +154,11 @@ RLS is aan. Anon kan inserts doen op sessions, reminders en feedback.
 - Direct en concreet — geen onnodige inleidingen
 - Werkende code, geen pseudo-code
 - Bij keuzes: geef je aanbeveling met onderbouwing, niet 5 opties zonder mening
+
+## UX-beslissingen (juni 2026)
+
+- /inzichten staat in top-nav als 3e item (na Supplementen, vóór Gidsen)
+- PersonalPathBridge verwijderd uit InzichtenHubHero (doublure met ContextStrip)
+- FocusAreaCard: 1 link per kaart (gids-link geschrapt)
+- Dashboard SignalsSection: "Lees over →" per kaart vervangen door 1 sectie-footer naar /inzichten
+- InzichtenContextStrip (hub-variant): 1 CTA (feed), "Open dashboard →" verwijderd

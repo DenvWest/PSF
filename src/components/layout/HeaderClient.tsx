@@ -3,16 +3,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { trackEvent } from "@/lib/ga4";
 import { getLastSession } from "@/lib/intake-storage";
 import { resolvePrimaryMobileCta } from "@/lib/mobile-cta-state";
 
 const mainLinks = [
   { href: "/supplementen", label: "Supplementen" },
+  { href: "/inzichten", label: "Inzichten" },
   { href: "/gidsen", label: "Gidsen" },
 ];
 
 const mobileMenuLinks = [
   { href: "/supplementen", label: "Supplementen" },
+  { href: "/inzichten", label: "Inzichten" },
   { href: "/gidsen", label: "Gidsen" },
 ];
 
@@ -77,6 +80,14 @@ export default function HeaderClient({
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={
+                    link.href === "/inzichten"
+                      ? () =>
+                          trackEvent("inzichten_hub_nav_click", {
+                            source: "header",
+                          })
+                      : undefined
+                  }
                   className="text-sm font-medium text-stone-500 transition hover:text-stone-900"
                 >
                   {link.label}
@@ -187,7 +198,14 @@ export default function HeaderClient({
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => {
+                    if (link.href === "/inzichten") {
+                      trackEvent("inzichten_hub_nav_click", {
+                        source: "header",
+                      });
+                    }
+                    setMenuOpen(false);
+                  }}
                   className="block rounded-2xl px-4 py-3 text-base font-medium text-stone-800 transition hover:bg-stone-50 hover:text-stone-900"
                 >
                   {link.label}
