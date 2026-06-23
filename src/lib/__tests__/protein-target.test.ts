@@ -13,13 +13,20 @@ describe("computeProteinTarget", () => {
 
   it("lage trainingsbelasting → conservatieve range", () => {
     expect(computeProteinTarget({ weightKg: 90, trainingLoad: 1 })).toMatchObject({
+      perKgLow: 1.0,
+      perKgHigh: 1.2,
+    });
+  });
+
+  it("matige trainingsbelasting → actieve range", () => {
+    expect(computeProteinTarget({ weightKg: 90, trainingLoad: 2 })).toMatchObject({
       perKgLow: 1.2,
       perKgHigh: 1.4,
     });
   });
 
   it("ontbrekende trainingsbelasting → basis 40+ range", () => {
-    expect(computeProteinTarget({ weightKg: 80 })?.perKgLow).toBe(1.2);
+    expect(computeProteinTarget({ weightKg: 80 })?.perKgLow).toBe(1.0);
   });
 
   it("weigert ongeldig gewicht", () => {

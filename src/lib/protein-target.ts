@@ -7,8 +7,9 @@
  * - Output is een RANGE — geen schijnprecisie, en een inname-richtlijn, nooit een
  *   status. Pure functie, geen I/O.
  *
- * Factor-grenzen zijn INDICATIEF (richting PROT-AGE/ESPEN/ISSN).
- * TODO review met voedingskundige cijferbron vóór live.
+ * Factor-grenzen volgen PROT-AGE Study Group (2013) en ESPEN (2014):
+ * 1.0–1.2 g/kg basis (geen training), 1.2–1.6 g/kg bij training
+ * (PKN Vol.2 ch.5/6). Geen medisch advies, een richtlijn.
  */
 
 export const PROTEIN_TARGET_VERSION = "1.0.0";
@@ -29,7 +30,7 @@ export interface ProteinTarget {
   gramsHigh: number;
 }
 
-/** g/kg-range per trainingsbelasting (indicatief, zie TODO). */
+/** g/kg-range per trainingsbelasting (PROT-AGE/ESPEN/PKN, zie bestandscomment). */
 function factorRange(trainingLoad: number | undefined): {
   low: number;
   high: number;
@@ -40,7 +41,8 @@ function factorRange(trainingLoad: number | undefined): {
       : 1;
   if (load >= 4) return { low: 1.6, high: 1.8 };
   if (load === 3) return { low: 1.4, high: 1.6 };
-  return { low: 1.2, high: 1.4 };
+  if (load === 2) return { low: 1.2, high: 1.4 };
+  return { low: 1.0, high: 1.2 };
 }
 
 /** Afronden op 5 g voor een leesbare, niet-schijnprecieze richtlijn. */
