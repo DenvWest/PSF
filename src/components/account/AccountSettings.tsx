@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/account/AuthShell";
+import * as Icons from "@/components/app/icons";
 import { Button, Card } from "@/components/app/primitives";
+import { IDENTITY_FIELDS } from "@/data/dashboard";
 
 type AccountSettingsProps = {
   email: string;
@@ -212,6 +214,45 @@ export default function AccountSettings({ email }: AccountSettingsProps) {
           {claim.message}
         </p>
       )}
+
+      <Card glow="#C8956C" pad={22} style={{ borderColor: "rgba(200,149,108,0.26)" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--terra)", marginBottom: 10 }}>
+          <Icons.Spark s={14} /> Profiel
+        </div>
+        <div style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", lineHeight: 1.2 }}>Maak het persoonlijk</div>
+        <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "8px 0 18px", textWrap: "pretty" }}>
+          Geslacht, gewicht, lengte en werk berekenen je persoonlijke eiwitdoel en activiteitsniveau.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {IDENTITY_FIELDS.map((field, i) => {
+            const Icon = Icons[field.icon];
+            const done = Boolean(field.value);
+            return (
+              <div key={field.id} style={{ display: "flex", alignItems: "center", gap: 13, padding: "12px 2px", borderTop: i ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+                <div style={{ width: 34, height: 34, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: done ? "rgba(90,143,106,0.16)" : "rgba(255,255,255,0.04)", border: `1px solid ${done ? "rgba(90,143,106,0.32)" : "var(--panel-border)"}`, color: done ? "var(--sage)" : "var(--text-subtle)" }}>
+                  <Icon s={16} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, color: "var(--text)", fontWeight: 500 }}>{field.label}</div>
+                  <div style={{ fontSize: 12.5, color: "var(--text-subtle)", marginTop: 3, lineHeight: 1.4, textWrap: "pretty" }}>{field.unlocks}</div>
+                </div>
+                {done ? (
+                  <span style={{ fontSize: 12.5, color: "var(--text-muted)", fontWeight: 500, flexShrink: 0 }}>{field.value}</span>
+                ) : (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, color: "var(--terra)", fontWeight: 500, flexShrink: 0 }}>
+                    <Icons.Plus s={15} /> Invullen
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 18 }}>
+          <Button variant="terra" full iconRight={<Icons.ArrowRight s={18} />}>
+            Vul je profiel aan
+          </Button>
+        </div>
+      </Card>
 
       <Card pad={20}>
         <p style={{ margin: "0 0 16px", fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55 }}>

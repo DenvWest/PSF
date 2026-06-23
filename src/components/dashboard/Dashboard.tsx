@@ -11,7 +11,7 @@ import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
-import { DASHBOARD_TABS, IDENTITY_FIELDS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
+import { DASHBOARD_TABS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
 import {
   perfectSupplementMeasurementConfig,
 } from "@/data/measurement-config";
@@ -130,6 +130,8 @@ const CollapsibleSection = ({
   );
 };
 
+const SECTION_DIVIDER = "1px solid rgba(255,255,255,0.06)";
+
 const ActiveHabitCard = ({
   habit,
   habitKernel,
@@ -202,8 +204,8 @@ const ActiveHabitCard = ({
   };
 
   return (
-    <div style={{ marginTop: 18, paddingTop: 18, borderTop: "1px solid var(--divider)" }}>
-      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
+    <div style={{ paddingTop: 24 }}>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
         <Icons.Check s={14} /> Stap 1 · Je habit nu
       </div>
       <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -261,12 +263,11 @@ const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel | n
   </div>
 );
 
-const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSectionProps) => {
+const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
   if (!empty && !model) {
     return null;
   }
   const currentModel = model as DashboardModel | null;
-  const priorityCheckin = currentModel ? PILLAR_CHECKIN_ROUTES[currentModel.priority.id] : undefined;
   const explainer =
     currentModel &&
     getVitalityExplainer({
@@ -330,15 +331,12 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
   }, [currentModel, habitKernel]);
 
   return (
-    <Card glow="#5A8F6A" pad={24} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
-    <div style={{ display: "flex", gap: 24, flexWrap: "wrap", alignItems: "center" }}>
-      <div style={{ display: "flex", justifyContent: "center", flex: "1 1 168px", minWidth: 148 }}>
-        <VitalityRing state={empty || !currentModel ? "locked" : "scored"} value={empty || !currentModel ? 0 : currentModel.vitality} delta={empty || !currentModel ? null : currentModel.vitalityDelta} size={172} />
-      </div>
-      <div style={{ flex: "2 1 240px", minWidth: 0 }}>
-        {empty ? (
-          <>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
+    <Card glow="#5A8F6A" pad={28} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
+      {empty ? (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 20 }}>
+          <VitalityRing state="locked" value={0} delta={null} size={200} />
+          <div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
               <Icons.Spark s={14} /> Begin hier
             </div>
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>Doe je eerste check.</div>
@@ -348,27 +346,49 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
             <Button onClick={onCheck} iconRight={<Icons.ArrowRight s={18} />}>
               Doe je eerste check
             </Button>
-          </>
-        ) : (
-          <>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 12, flexWrap: "wrap" }}>
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, paddingBottom: 24, borderBottom: SECTION_DIVIDER }}>
+            <VitalityRing
+              state="scored"
+              value={currentModel?.vitality ?? 0}
+              delta={currentModel?.vitalityDelta ?? null}
+              size={200}
+            />
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontFamily: "var(--f-serif)", fontSize: 17, color: "var(--text-muted)" }}>
+                Vitaliteit {currentModel?.vitality}
+              </span>
+              {currentModel?.vitalityDelta != null ? (
+                <DeltaBadge delta={currentModel.vitalityDelta} />
+              ) : null}
+            </div>
+          </div>
+
+          <div
+            style={{
+              paddingTop: 24,
+              paddingBottom: currentModel?.activeHabit ? 24 : 0,
+              borderBottom: currentModel?.activeHabit ? SECTION_DIVIDER : "none",
+            }}
+          >
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 10 }}>
               <Icons.Target s={14} /> Je grootste hefboom
             </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>{currentModel?.priority.label}.</div>
-            {habitKernel && (
-              <p style={{ fontSize: 12, color: "var(--text-subtle)", lineHeight: 1.45, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                Driver: {habitKernel.driverPillarLabel} {habitKernel.driverPillarScore}
-              </p>
-            )}
-            {explainer?.map((paragraph, index) =>
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 10 }}>
+              {currentModel?.priority.label}.
+            </div>
+            {explainer?.slice(0, 2).map((paragraph, index) =>
               paragraph ? (
                 <p
                   key={index}
                   style={{
                     fontSize: 14,
                     color: "var(--text-muted)",
-                    lineHeight: 1.55,
-                    margin: index < 2 ? "0 0 10px" : "0 0 0",
+                    lineHeight: 1.6,
+                    margin: index === 0 ? "0 0 10px" : "0",
                     textWrap: "pretty",
                   }}
                 >
@@ -376,36 +396,26 @@ const NowSection = ({ empty, model, onCheck, onDashboardCheckin }: SharedSection
                 </p>
               ) : null,
             )}
-            {currentModel?.activeHabit && habitKernel ? (
-              <ActiveHabitCard
-                habit={currentModel.activeHabit}
-                habitKernel={habitKernel}
-                onCompleted={() => setHabitCompleted(true)}
-              />
-            ) : null}
-            {supplementDisclosure && habitCompleted ? (
-              <div style={{ marginTop: 18, paddingTop: 18, borderTop: "1px solid var(--divider)" }}>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.13em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12 }}>
-                  <Icons.Pill s={14} /> Stap 2 · Aanvulling, pas hierna
-                </div>
-                <SupplementDisclosure data={supplementDisclosure} />
+          </div>
+
+          {currentModel?.activeHabit && habitKernel ? (
+            <ActiveHabitCard
+              habit={currentModel.activeHabit}
+              habitKernel={habitKernel}
+              onCompleted={() => setHabitCompleted(true)}
+            />
+          ) : null}
+
+          {supplementDisclosure && habitCompleted ? (
+            <div style={{ marginTop: 24, paddingTop: 24, borderTop: SECTION_DIVIDER }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12 }}>
+                <Icons.Pill s={14} /> Stap 2 · Aanvulling, pas hierna
               </div>
-            ) : null}
-            {priorityCheckin && currentModel ? (
-              <div style={{ marginTop: 16 }}>
-                <Button
-                  variant="secondary"
-                  onClick={() => onDashboardCheckin(priorityCheckin, currentModel.priority.id)}
-                  iconRight={<Icons.ArrowRight s={18} />}
-                >
-                  Verdiep met check-in op {currentModel.priority.label.toLowerCase()}
-                </Button>
-              </div>
-            ) : null}
-          </>
-        )}
-      </div>
-    </div>
+              <SupplementDisclosure data={supplementDisclosure} />
+            </div>
+          ) : null}
+        </div>
+      )}
     </Card>
   );
 };
@@ -919,68 +929,6 @@ const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionP
   );
 };
 
-const IdentitySection = ({ empty }: SharedSectionProps) => {
-  const fields = empty ? IDENTITY_FIELDS.map((field) => ({ ...field, value: null })) : IDENTITY_FIELDS;
-  const filled = fields.filter((field) => field.value).length;
-  return (
-    <section>
-      <Card glow="#C8956C" pad={22} style={{ borderColor: "rgba(200,149,108,0.26)" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--terra)", marginBottom: 10 }}>
-          <Icons.Spark s={14} /> Maak het persoonlijk
-        </div>
-        <div style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", lineHeight: 1.2 }}>Elk veld dat je invult, ontgrendelt iets.</div>
-        <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "8px 0 0", textWrap: "pretty" }}>
-          Geen profiel om het profiel - geslacht, gewicht, lengte en werk berekenen je persoonlijke eiwitdoel en activiteitsniveau.
-        </p>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "18px 0 16px" }}>
-          <div style={{ flex: 1, height: 6, borderRadius: 4, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
-            {filled > 0 && <div style={{ width: `${(filled / fields.length) * 100}%`, height: "100%", background: "var(--terra)", borderRadius: 4, transition: "width .6s" }} />}
-          </div>
-          <span style={{ fontSize: 12.5, color: "var(--text-muted)", fontVariantNumeric: "tabular-nums" }}>
-            {filled}/{fields.length} ingevuld
-          </span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {fields.map((field, i) => {
-            const Icon = Icons[field.icon];
-            const done = Boolean(field.value);
-            return (
-              <div key={field.id} style={{ display: "flex", alignItems: "center", gap: 13, padding: "12px 2px", borderTop: i ? "1px solid var(--divider)" : "none" }}>
-                <div style={{ width: 34, height: 34, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: done ? "rgba(90,143,106,0.16)" : "rgba(255,255,255,0.04)", border: `1px solid ${done ? "rgba(90,143,106,0.32)" : "var(--panel-border)"}`, color: done ? "var(--sage)" : "var(--text-subtle)" }}>
-                  <Icon s={16} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                    <span style={{ fontSize: 14, color: "var(--text)", fontWeight: 500 }}>{field.label}</span>
-                    {done && (
-                      <span style={{ width: 17, height: 17, borderRadius: "50%", background: "var(--sage)", color: "#0f1c10", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <Icons.Check s={11} sw={3} />
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: 12.5, color: done ? "var(--sage)" : "var(--text-subtle)", marginTop: 3, lineHeight: 1.4, textWrap: "pretty" }}>{done ? field.outcome || field.unlocks : field.unlocks}</div>
-                </div>
-                {done ? (
-                  <span style={{ fontSize: 12.5, color: "var(--text-muted)", fontWeight: 500, flexShrink: 0, textAlign: "right" }}>{field.value}</span>
-                ) : (
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 13, color: "var(--terra)", fontWeight: 500, flexShrink: 0 }}>
-                    <Icons.Plus s={15} /> Invullen
-                  </span>
-                )}
-              </div>
-            );
-          })}
-        </div>
-        <div style={{ marginTop: 16 }}>
-          <Button variant="terra" full iconRight={<Icons.ArrowRight s={18} />}>
-            {filled === 0 ? "Vul je profiel aan" : "Maak het af"}
-          </Button>
-        </div>
-      </Card>
-    </section>
-  );
-};
-
 const HistorySection = ({ empty, model }: SharedSectionProps) => {
   const [open, setOpen] = useState(false);
   if (empty || !model) {
@@ -1053,7 +1001,7 @@ const FutureSection = () => (
   </section>
 );
 
-const EMPTY_SECTIONS: DashboardSectionType[] = ["now", "identity", "history", "future"];
+const EMPTY_SECTIONS: DashboardSectionType[] = ["now", "history", "future"];
 
 const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps) => ReactElement | null> = {
   now: (props) => <NowSection {...props} />,
@@ -1063,7 +1011,7 @@ const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps
   nutritionIntake: (props) =>
     props.empty ? null : <NutritionIntakeSection {...props} />,
   retest: (props) => (props.empty ? null : <RetestSection {...props} />),
-  identity: (props) => <IdentitySection {...props} />,
+  identity: () => null,
   history: (props) => <HistorySection {...props} />,
   future: () => <FutureSection />,
 };
