@@ -10,12 +10,14 @@ import type { PillarId } from "@/types/dashboard";
 type InzichtenContextStripProps = {
   priorityPillarId: PillarId;
   priorityLabel: string;
+  profileLabel?: string | null;
   variant?: "hub" | "feed";
 };
 
 export default function InzichtenContextStrip({
   priorityPillarId,
   priorityLabel,
+  profileLabel,
   variant = "hub",
 }: InzichtenContextStripProps) {
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function InzichtenContextStrip({
           <p className="font-display text-lg text-stone-900 md:text-xl">
             Je laagste domein is{" "}
             <span className="text-[#5A8F6A]">{priorityLabel.toLowerCase()}</span>
+            {profileLabel ? <> — als {profileLabel}</> : null}
             {" — "}begin hier
           </p>
           <p className="mt-2 text-sm leading-relaxed text-stone-600">

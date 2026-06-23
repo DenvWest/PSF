@@ -90,5 +90,6 @@ export function buildDevDashboardData(
         ? { dueDate: "10 jul 2026", daysUntil: -8 }
         : { dueDate: "10 jul 2026", daysUntil: 22 },
     deltaReport,
+    profileLabel: "Lage Batterij",
   };
 }

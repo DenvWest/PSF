@@ -166,6 +166,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
               <InzichtenContextStrip
                 priorityPillarId={visitorContext!.priorityPillarId}
                 priorityLabel={visitorContext!.priorityLabel}
+                profileLabel={visitorContext!.profileLabel}
               />
             ) : null}
 

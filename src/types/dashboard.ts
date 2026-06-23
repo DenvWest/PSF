@@ -151,6 +151,7 @@ export type DashboardData = {
   nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
   remeasure: { dueDate: string; daysUntil: number } | null;
   deltaReport: DeltaReport | null;
+  profileLabel: string | null;
 };
 
 export type IdentityField = {

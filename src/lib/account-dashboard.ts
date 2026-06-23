@@ -30,6 +30,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   nutritionIntake: null,
   remeasure: null,
   deltaReport: null,
+  profileLabel: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -86,6 +87,7 @@ type SessionSnapshot = {
   date: string;
   priority: PillarId;
   ts: number;
+  profileLabel: string;
 };
 
 function parseDomainScores(value: unknown): DomainScores | null {
@@ -245,6 +247,7 @@ export async function loadAccountDashboardData(
         date: formatDashboardDate(createdAt),
         priority,
         ts,
+        profileLabel,
       };
     })
     .filter((row): row is SessionSnapshot => row !== null);
@@ -410,5 +413,6 @@ export async function loadAccountDashboardData(
     nutritionIntake,
     remeasure,
     deltaReport,
+    profileLabel: snapshots[snapshots.length - 1].profileLabel,
   };
 }

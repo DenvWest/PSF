@@ -29,6 +29,6 @@ export async function getInzichtenVisitorContext(): Promise<InzichtenVisitorCont
     priorityPillarId: priority.id,
     priorityLabel: PILLAR[priority.id].label,
     orderedPillarIds: ordered.map((pillar) => pillar.id),
-    profileLabel: null,
+    profileLabel: dashboard.profileLabel,
   };
 }
