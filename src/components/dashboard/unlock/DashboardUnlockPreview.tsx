@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import PriorityLadder, { LADDER_ROW_H } from "@/components/app/PriorityLadder";
 import VitalityRing from "@/components/app/VitalityRing";
 import { Lock } from "@/components/app/icons";
@@ -59,12 +60,19 @@ export default function DashboardUnlockPreview() {
                 stroke={11}
               />
             </div>
-            <span
-              className="inline-flex items-center rounded-full border border-[rgba(90,143,106,0.32)] bg-[rgba(90,143,106,0.16)] px-3 py-1 text-base text-[var(--text)] sm:px-3.5 sm:py-1.5 sm:text-lg"
+            <p
+              className="text-center text-sm leading-snug text-[var(--text)] sm:text-[15px]"
+              style={{ textWrap: "pretty" }}
+            >
+              {DASHBOARD_UNLOCK_PREVIEW.focusLine}
+            </p>
+            <Link
+              href={DASHBOARD_UNLOCK_PREVIEW.focusPillarHref}
+              className="inline-flex items-center rounded-full border border-[rgba(90,143,106,0.32)] bg-[rgba(90,143,106,0.16)] px-3 py-1 text-base text-[var(--text)] no-underline sm:px-3.5 sm:py-1.5 sm:text-lg"
               style={{ fontFamily: "var(--f-serif)" }}
             >
-              {DASHBOARD_UNLOCK_PREVIEW.profileName}
-            </span>
+              Lees over {DASHBOARD_UNLOCK_PREVIEW.focusPillarLabel.toLowerCase()} →
+            </Link>
             <p className="text-center text-xs leading-snug text-[var(--text-subtle)] sm:text-[13px]">
               {DASHBOARD_UNLOCK_PREVIEW.firstStepTitle} —{" "}
               {DASHBOARD_UNLOCK_PREVIEW.firstStepDetail}

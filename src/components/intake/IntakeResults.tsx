@@ -20,7 +20,6 @@ import SupplementDisclosure from "@/components/supplements/SupplementDisclosure"
 import type { PillarStatus } from "@/components/pyramid/FoundationPyramid";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
-import { matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { getMailConfirmation } from "@/lib/intake-greetings";
 import { isUsableFirstName } from "@/lib/intake-greetings";
@@ -71,8 +70,7 @@ export default function IntakeResults({
 }: IntakeResultsProps) {
   const themeRevealedEmittedRef = useRef(false);
   const primaryTheme = getPrimaryTheme(scores, answers);
-  const isOvertrainer = matchesOvertrainerAnswers(answers);
-  const model = buildRevealModel(scores, isOvertrainer, symptoms);
+  const model = buildRevealModel(scores, answers, symptoms);
   const pillarStatuses = buildPillarStatuses(scores);
   const input = buildRecommendationInput({ scores, answers });
   const supplementDisclosure = buildSupplementDisclosure(model.priority, input, "results");
@@ -178,7 +176,7 @@ export default function IntakeResults({
           Op desktop: neemt de hele linker kolom rij 1 in beslag.
         */}
         <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
-          <RevealHeroCard model={model} />
+          <RevealHeroCard model={model} sessionId={sessionId} />
           <RevealCtaStack />
         </div>
 

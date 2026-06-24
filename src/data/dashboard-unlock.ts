@@ -75,7 +75,9 @@ export const DASHBOARD_UNLOCK_ROUTE_ACCORDION = {
 } as const;
 
 export const DASHBOARD_UNLOCK_PREVIEW = {
-  profileName: "Lage Batterij",
+  focusLine: "Vooral voeding vraagt nu aandacht.",
+  focusPillarLabel: "Voeding",
+  focusPillarHref: "/voeding-na-40",
   vitality: 53,
   priorityId: "voeding" satisfies PillarId,
   scores: {

@@ -1,10 +1,12 @@
+import { PILLARS } from "@/data/dashboard";
 import type { SymptomId } from "@/data/intake-questions";
 import { derivePriority } from "@/lib/dashboard-model";
-import { getProfileLabel } from "@/lib/intake-engine";
 import type { DomainScores } from "@/lib/intake-engine";
+import { MEASURED_DOMAIN_TO_PILLAR } from "@/lib/measured-pillar-map";
+import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { getRecognitionLine, getVitalityFraming } from "@/lib/results-framing";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
-import type { CheckScores, Pillar } from "@/types/dashboard";
+import type { CheckScores, Pillar, PillarId } from "@/types/dashboard";
 
 export function mapDomainScoresToCheckScores(domainScores: DomainScores): CheckScores {
   return {
@@ -36,7 +38,10 @@ export type RevealLifestyleItem = {
 
 export type RevealModel = {
   vitality: number;
-  profileName: string;
+  primaryTheme: MeasuredPillarId;
+  primaryPillarId: PillarId;
+  primaryPillarLabel: string;
+  primaryPillarHref: string;
   recognitionLine: string | null;
   driverLine: string | null;
   strengthLine: string | null;
@@ -48,12 +53,27 @@ export type RevealModel = {
   lifestyle: RevealLifestyleItem[];
 };
 
+function resolvePrimaryPillar(primaryTheme: MeasuredPillarId): {
+  primaryPillarId: PillarId;
+  primaryPillarLabel: string;
+  primaryPillarHref: string;
+} {
+  const primaryPillarId = MEASURED_DOMAIN_TO_PILLAR[primaryTheme];
+  const pillar = PILLARS.find((entry) => entry.id === primaryPillarId);
+  return {
+    primaryPillarId,
+    primaryPillarLabel: pillar?.label ?? primaryPillarId,
+    primaryPillarHref: pillar?.hubRoute ?? "/intake",
+  };
+}
+
 export function buildRevealModel(
   scores: DomainScores,
-  isOvertrainer: boolean,
+  answers: Record<string, number>,
   symptoms: SymptomId[] = [],
 ): RevealModel {
-  const profile = getProfileLabel(scores);
+  const primaryTheme = getPrimaryTheme(scores, answers);
+  const primaryPillar = resolvePrimaryPillar(primaryTheme);
   const checkScores = mapDomainScoresToCheckScores(scores);
   const ladder = derivePriority(checkScores);
   const priority = ladder[0];
@@ -64,7 +84,8 @@ export function buildRevealModel(
 
   return {
     vitality: computeVitaliteit(resolveVitaliteitFacets(scores)),
-    profileName: isOvertrainer ? "Overtrainer" : profile.name,
+    primaryTheme,
+    ...primaryPillar,
     recognitionLine: getRecognitionLine(symptoms),
     driverLine: framing.driverLine,
     strengthLine: framing.strengthLine,
