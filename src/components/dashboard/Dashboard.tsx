@@ -15,7 +15,9 @@ import { DASHBOARD_TABS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SE
 import {
   perfectSupplementMeasurementConfig,
 } from "@/data/measurement-config";
+import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
+import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { clarityTag } from "@/lib/clarity";
@@ -537,6 +539,9 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
         {PILLARS.map((pillar) => {
           const Icon = Icons[pillar.icon];
           const route = PILLAR_CHECKIN_ROUTES[pillar.id];
+          const pillarId = pillar.id;
+          const readout = isReadoutDomain(pillarId);
+          const presentation = readout ? getReadoutPresentation(pillarId) : null;
           return (
             <Card key={pillar.id} pad={15}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
@@ -545,6 +550,9 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
                     <Icon s={16} />
                   </span>
                   <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>{pillar.label}</span>
+                  {readout && (
+                    <span style={{ fontSize: 10, color: "var(--text-subtle)", letterSpacing: "0.1em", textTransform: "uppercase" }}>rapport</span>
+                  )}
                 </div>
                 <DeltaBadge delta={model.deltaOf(pillar.id)} />
               </div>
@@ -553,14 +561,31 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
                 <span style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", fontVariantNumeric: "tabular-nums" }}>{model.scores[pillar.id]}</span>
                 <span style={{ fontSize: 11, color: "var(--text-subtle)" }}>/ 100</span>
               </div>
-              {route && (
-                <button
-                  type="button"
-                  onClick={() => onDashboardCheckin(route, pillar.id)}
-                  style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", color: pillar.color, fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)" }}
-                >
-                  Check-in →
-                </button>
+              {readout && presentation ? (
+                <>
+                  <p style={{ fontSize: 11.5, color: "var(--text-subtle)", marginTop: 8, marginBottom: 0 }}>
+                    Uitkomst · aangedreven door {presentation.driverLabels.join(" · ")}
+                  </p>
+                  {presentation.primaryCta && (
+                    <button
+                      type="button"
+                      onClick={() => onDashboardCheckin(presentation.primaryCta!.route, presentation.primaryCta!.pillarId)}
+                      style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", color: pillar.color, fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)" }}
+                    >
+                      Werk aan je {presentation.primaryCta.label.toLowerCase()} →
+                    </button>
+                  )}
+                </>
+              ) : (
+                route && (
+                  <button
+                    type="button"
+                    onClick={() => onDashboardCheckin(route, pillar.id)}
+                    style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", color: pillar.color, fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)" }}
+                  >
+                    Check-in →
+                  </button>
+                )
               )}
             </Card>
           );
