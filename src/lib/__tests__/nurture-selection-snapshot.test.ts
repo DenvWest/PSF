@@ -18,12 +18,6 @@ const gateFull: NurturePlanGate = {
   organizationId: "org-1",
 };
 
-const gateTier1Only: NurturePlanGate = {
-  visibleTiers: [1],
-  completedPlanPhases: 0,
-  organizationId: "org-1",
-};
-
 const PROFILES: NurtureProfileKey[] = [
   "Onrustige Slaper",
   "Lage Batterij",
