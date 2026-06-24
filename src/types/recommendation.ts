@@ -31,6 +31,7 @@ export interface RankedRecommendation {
   reason: RecommendationReason;
   available: boolean;
   hubSlug?: string;
+  tier?: number;
 }
 
 export type RecommendationSource = "route" | "hub" | "nurture";

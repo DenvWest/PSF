@@ -272,6 +272,7 @@ function toRankedRecommendation(
     reason,
     available,
     hubSlug: entry.hubSlug,
+    tier: 3,
   };
 }
 

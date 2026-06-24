@@ -154,6 +154,7 @@ describe("scheduleNurtureSequence: dag-0 nurture.email_sent payload", () => {
       "cta_slug",
       "candidate_rank",
       "variant",
+      "rules_version",
     ]);
     for (const key of Object.keys(payload)) {
       expect(ALLOWED_KEYS.has(key), `Verboden payload-sleutel: ${key}`).toBe(true);

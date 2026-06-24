@@ -336,6 +336,7 @@ describe("nurture-cron: P1 — email_sent payload bevat CTA-velden", () => {
       "cta_slug",
       "candidate_rank",
       "variant",
+      "rules_version",
     ]);
     for (const key of Object.keys(payload)) {
       expect(ALLOWED_KEYS.has(key), `Verboden payload-sleutel: ${key}`).toBe(true);

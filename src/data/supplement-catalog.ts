@@ -27,6 +27,7 @@ export interface SupplementCatalogEntry {
   hasComparison: boolean;
   domains: string[];
   priority: number;
+  tier: 3;
   fallbackOnly?: boolean;
   pillarIds?: PillarId[];
   hubSlug?: string;
@@ -34,6 +35,19 @@ export interface SupplementCatalogEntry {
   hubRules?: HubLegacyRule[];
   customMatcher?: "zink" | "creatine";
 }
+
+export interface ServiceReferralOffer {
+  id: string;
+  domains: string[];
+  priority: number;
+  tier: 4 | 5;
+  externalProviderLabel: string;
+  externalProviderUrl: string;
+  isPaid?: boolean;
+  paidDisclosureKey?: string | null;
+}
+
+export type OfferCatalogEntry = SupplementCatalogEntry | ServiceReferralOffer;
 
 export const SUPPLEMENT_CATALOG: SupplementCatalogEntry[] = [
   {
@@ -44,6 +58,7 @@ export const SUPPLEMENT_CATALOG: SupplementCatalogEntry[] = [
     hasComparison: true,
     domains: ["Voeding", "Energie", "Herstel"],
     priority: 1,
+    tier: 3,
     pillarIds: ["voeding"],
     hubSlug: "omega-3",
     routeTriggers: {
@@ -62,6 +77,7 @@ export const SUPPLEMENT_CATALOG: SupplementCatalogEntry[] = [
     hasComparison: true,
     domains: ["Slaap", "Stress", "Herstel"],
     priority: 2,
+    tier: 3,
     pillarIds: ["slaap"],
     hubSlug: "magnesium",
     routeTriggers: {
@@ -81,6 +97,7 @@ export const SUPPLEMENT_CATALOG: SupplementCatalogEntry[] = [
     hasComparison: true,
     domains: ["Voeding", "Herstel", "Stress"],
     priority: 4,
+    tier: 3,
     hubSlug: "zink",
     routeTriggers: { anyOf: [] },
     customMatcher: "zink",
@@ -93,6 +110,7 @@ export const SUPPLEMENT_CATALOG: SupplementCatalogEntry[] = [
     hasComparison: true,
     domains: ["Beweging", "Herstel"],
     priority: 20,
+    tier: 3,
     hubSlug: "creatine",
     routeTriggers: { anyOf: [] },
     hubRules: ["energy_below_40"],
@@ -106,6 +124,7 @@ export const SUPPLEMENT_CATALOG: SupplementCatalogEntry[] = [
     hasComparison: true,
     domains: ["Voeding", "Herstel"],
     priority: 15,
+    tier: 3,
     hubSlug: "eiwitpoeder",
     hubRules: ["protein_gap_signal"],
   },
@@ -117,9 +136,23 @@ export const SUPPLEMENT_CATALOG: SupplementCatalogEntry[] = [
     hasComparison: false,
     domains: ["Energie", "Immuun", "Beweging"],
     priority: 50,
+    tier: 3,
     hubSlug: "vitamine-d",
     fallbackOnly: true,
     hubRules: ["vitamin_d_fallback"],
+  },
+];
+
+export const SERVICE_REFERRAL_OFFERS: ServiceReferralOffer[] = [
+  {
+    id: "slaap-coaching-referral",
+    domains: ["Slaap", "Herstel"],
+    priority: 90,
+    tier: 4,
+    externalProviderLabel: "Onafhankelijke slaapcoaching (doorverwijzing)",
+    externalProviderUrl: "https://example.org/slaapcoaching",
+    isPaid: true,
+    paidDisclosureKey: "paid_referral_default",
   },
 ];
 
