@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LifestylePlan from "@/components/intake/LifestylePlan";
@@ -16,7 +17,11 @@ type IntakePlanPageProps = {
   domain: PlanTemplateDomain;
 };
 
-const planHeaderActions = <IntakeLayoutActions />;
+const planHeaderActions = (
+  <Suspense fallback={null}>
+    <IntakeLayoutActions />
+  </Suspense>
+);
 
 export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
   const router = useRouter();
