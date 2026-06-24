@@ -3,6 +3,7 @@ import type { ProfileLabel } from "@/lib/intake-engine";
 import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
 import { resolveDomainSupplementTip } from "@/lib/resolve-domain-supplement-tip";
+import type { RecommendationInput } from "@/types/recommendation";
 
 // ============================================================
 // Types
@@ -620,6 +621,7 @@ export function buildNurtureEmail(
     planGate?: NurturePlanGate | null;
     resolvedCta?: ResolvedNurtureCta;
     profileKey?: NurtureProfileKey;
+    input?: RecommendationInput | null;
   },
 ): {
   subject: string;
@@ -657,7 +659,11 @@ export function buildNurtureEmail(
 
   const showSupplementTip = ["day14_halfweg"].includes(templateKey);
   const supplementTip = showSupplementTip
-    ? resolveDomainSupplementTip(weakestDomain, opts?.planGate ?? null)
+    ? resolveDomainSupplementTip(
+        weakestDomain,
+        opts?.planGate ?? null,
+        opts?.input ?? null,
+      )
     : null;
 
   const urgencyTone =

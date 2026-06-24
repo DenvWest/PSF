@@ -17,6 +17,8 @@ export interface NurtureEmailData {
   visibleTiers?: number[];
   /** Volledige plan-gate uit nurture-cron (dag 3/14/21). */
   planGate?: NurturePlanGate | null;
+  /** Antwoorden uit de sessie; voedt score-bewuste supplement-selectie (dag 14). Afwezig = signaal-blinde fallback. */
+  answers?: Record<string, number>;
 }
 
 export type NurtureEmailDispatchContext = {

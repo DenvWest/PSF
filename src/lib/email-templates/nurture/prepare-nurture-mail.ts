@@ -13,6 +13,8 @@ import {
   type NurtureSequenceDay,
   type ResolvedNurtureCta,
 } from "@/lib/resolve-nurture-cta";
+import { buildRecommendationInput } from "@/lib/recommendation-input";
+import type { DomainScores } from "@/lib/intake-engine";
 import type { NurtureEmailData, NurtureEmailDispatchContext } from "./types";
 import type { NurtureInterventionHighlight } from "./helpers";
 import {
@@ -99,12 +101,19 @@ export function prepareNurtureMailContent(data: NurtureEmailData): {
     weakestDomain,
   );
 
+  const recommendationInput = data.answers
+    ? buildRecommendationInput({
+        scores: data.domainScores as unknown as DomainScores,
+        answers: data.answers,
+      })
+    : null;
+
   const built = buildNurtureEmail(
     data.sequenceDay,
     data.profileLabel,
     data.domainScores,
     data.urgencyLevel ?? "moderate",
-    { planGate, resolvedCta, profileKey },
+    { planGate, resolvedCta, profileKey, input: recommendationInput },
   );
 
   let blocksWithTip = interventionHighlight

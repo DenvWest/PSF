@@ -93,6 +93,7 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
   },
 };
 
+/** Geen-sessie-fallback: all-zero input wanneer answers ontbreken (GDPR of legacy pad). */
 const NURTURE_ENGINE_STUB: RecommendationInput = {
   scores: {
     sleep_score: 0,
@@ -120,9 +121,12 @@ const NURTURE_ENGINE_STUB: RecommendationInput = {
 
 export function resolveDomainSupplementTip(
   domain: DomainKey,
-  _planGate: NurturePlanGate | null,
+  planGate: NurturePlanGate | null,
+  input?: RecommendationInput | null,
 ): DomainSupplementTip {
-  const [recommendation] = getRecommendations(NURTURE_ENGINE_STUB, {
+  void planGate;
+  const effectiveInput = input ?? NURTURE_ENGINE_STUB;
+  const [recommendation] = getRecommendations(effectiveInput, {
     source: "nurture",
     domain,
   });

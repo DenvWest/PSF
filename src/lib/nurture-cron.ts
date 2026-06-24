@@ -14,6 +14,7 @@ import { themeHasCompletePlanContent } from "@/lib/content/plan-content";
 import type { ThemeSlug } from "@/lib/content/themes";
 import { getGuideNurtureEmailContent } from "@/lib/email-templates/guide-nurture";
 import { getNurtureEmailContent } from "@/lib/email-templates/nurture";
+import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 import {
   buildGuideUnsubscribeUrl,
   buildNurtureUnsubscribeUrl,
@@ -264,6 +265,19 @@ export async function runPendingNurtureEmails(): Promise<{
             })
           : null;
 
+        const needsAnswers =
+          mail.session_id &&
+          (mail.sequence_day === 14 || mail.sequence_day === 21);
+        let sessionAnswers: Record<string, number> | undefined;
+        if (needsAnswers) {
+          const loaded = await loadIntakeSessionPayloadBySessionId(
+            mail.session_id!,
+          );
+          sessionAnswers = loaded.ok
+            ? loaded.session?.answers ?? undefined
+            : undefined;
+        }
+
         const intakeContent = getNurtureEmailContent(
           {
             sequenceDay: mail.sequence_day,
@@ -276,6 +290,7 @@ export async function runPendingNurtureEmails(): Promise<{
             completedPlanPhases: planGate?.completedPlanPhases ?? 0,
             visibleTiers: planGate?.visibleTiers,
             planGate,
+            answers: sessionAnswers,
           },
           {
             recipientEmail: email,
