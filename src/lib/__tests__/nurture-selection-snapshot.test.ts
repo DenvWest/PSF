@@ -2,14 +2,25 @@ import { describe, it, expect } from "vitest";
 import {
   resolveNurtureCta,
   supplementCtaForProfile,
+  type NurtureSequenceDay,
 } from "@/lib/resolve-nurture-cta";
 import { resolveDomainSupplementTip } from "@/lib/resolve-domain-supplement-tip";
-import type { NurtureProfileKey, DomainKey } from "@/data/nurture-content";
+import {
+  approvedClaims,
+  type IngredientClaimKey,
+} from "@/data/approved-claims";
+import type { DomainKey, NurtureProfileKey } from "@/data/nurture-content";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
 
 const gateFull: NurturePlanGate = {
   visibleTiers: [1, 2, 3],
   completedPlanPhases: 2,
+  organizationId: "org-1",
+};
+
+const gateTier1Only: NurturePlanGate = {
+  visibleTiers: [1],
+  completedPlanPhases: 0,
   organizationId: "org-1",
 };
 
@@ -21,7 +32,7 @@ const PROFILES: NurtureProfileKey[] = [
   "Overtrainer",
 ];
 
-const DAYS = [7, 14, 21] as const;
+const DAYS: NurtureSequenceDay[] = [7, 14, 21];
 
 const DOMAINS: DomainKey[] = [
   "sleep_score",
@@ -32,31 +43,33 @@ const DOMAINS: DomainKey[] = [
   "recovery_score",
 ];
 
-const FORBIDDEN_SLUGS = [
-  "ashwagandha",
-  "melatonine",
-  "whey",
-  "creatine",
-  "zink",
-  "eiwitpoeder",
-] as const;
+const SLUG_TO_CLAIM: Record<string, IngredientClaimKey> = {
+  magnesium: "magnesium",
+  "omega-3-supplement": "omega3",
+  ashwagandha: "ashwagandha",
+  melatonine: "melatonine",
+  creatine: "creatine",
+  zink: "zink",
+  eiwitpoeder: "eiwitpoeder",
+  "vitamine-d": "vitamineD",
+};
 
 describe("nurture selection snapshot", () => {
-  it("CTA-snapshot", () => {
-    const snapshot: Record<string, string> = {};
+  it("CTA-snapshot (gedrag)", () => {
+    const map: Record<string, string> = {};
     for (const profile of PROFILES) {
       for (const day of DAYS) {
-        const result = resolveNurtureCta(
+        const cta = resolveNurtureCta(
           profile,
           day,
           gateFull,
           true,
           "sleep_score",
         );
-        snapshot[`${profile}|${day}`] = `${result.kind}:${result.url}`;
+        map[`${profile}|${day}`] = `${cta.kind}:${cta.url}`;
       }
     }
-    expect(snapshot).toMatchInlineSnapshot(`
+    expect(map).toMatchInlineSnapshot(`
       {
         "In Balans|14": "supplement:/beste/omega-3-supplement",
         "In Balans|21": "supplement:/beste/omega-3-supplement",
@@ -77,13 +90,13 @@ describe("nurture selection snapshot", () => {
     `);
   });
 
-  it("tip-snapshot", () => {
-    const snapshot: Record<string, string> = {};
+  it("tip-snapshot (gedrag)", () => {
+    const map: Record<string, string> = {};
     for (const domain of DOMAINS) {
       const tip = resolveDomainSupplementTip(domain, gateFull);
-      snapshot[domain] = `${tip.supplement.name}|${tip.supplement.url}`;
+      map[domain] = `${tip.supplement.name}|${tip.supplement.url}`;
     }
-    expect(snapshot).toMatchInlineSnapshot(`
+    expect(map).toMatchInlineSnapshot(`
       {
         "energy_score": "Leefstijlstappen|/energie-na-40",
         "movement_score": "Magnesium|/beste/magnesium",
@@ -95,13 +108,20 @@ describe("nurture selection snapshot", () => {
     `);
   });
 
-  it("forbidden-baseline", () => {
+  it("compliance-invariant (status-based, GEEN slug-blacklist)", () => {
+    // De ENIGE harde nurture-invariant is "resolved stof heeft status === 'approved'".
+    // Dit sluit alleen on_hold (ashwagandha) en forbidden (melatonine) uit.
+    // creatine/zink/eiwitpoeder zijn approved en bewust NIET geblacklist — hun plaatsing
+    // in nurture volgt later via de meetlaag (gemeten gap), niet via een verbod.
     for (const profile of PROFILES) {
       const cta = supplementCtaForProfile(profile);
-      if (cta) {
-        const slug = cta.url.replace(/^\/beste\//, "");
-        expect(FORBIDDEN_SLUGS).not.toContain(slug);
+      if (!cta) {
+        continue;
       }
+      const slug = cta.url.replace(/^\/beste\//, "");
+      const claimKey = SLUG_TO_CLAIM[slug];
+      expect(claimKey, `onbekende slug: ${slug}`).toBeDefined();
+      expect(approvedClaims[claimKey!].status).toBe("approved");
     }
   });
 });
