@@ -25,6 +25,7 @@ import {
   buildIntakeRecoveryUrlForSession,
 } from "@/lib/recovery-token";
 import { buildNurtureAttributionToken } from "@/lib/nurture-attribution-token";
+import { RULES_VERSION } from "@/lib/intake-engine";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import type { GuideThema } from "@/types/guide-opt-in";
@@ -373,6 +374,7 @@ export async function runPendingNurtureEmails(): Promise<{
             cta_slug: ctaSlug,
             candidate_rank: intakeResolvedCta?.candidateRank ?? null,
             variant: null,
+            rules_version: RULES_VERSION,
           },
           deliveredTo: ["n8n_webhook"],
         });

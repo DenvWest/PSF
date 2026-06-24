@@ -3,7 +3,9 @@ import type { DomainKey, NurtureProfileKey } from "@/data/nurture-content";
 import type { IngredientClaimKey } from "@/data/approved-claims";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
 import { isComparisonAllowed } from "@/lib/comparison-availability";
+import { getRecommendations, getCatalogEntry } from "@/lib/recommendation-engine";
 import { resolveGatedComparisonPath } from "@/lib/supplement-gate";
+import type { RecommendationInput } from "@/types/recommendation";
 
 export type NurtureSequenceDay = 0 | 3 | 7 | 14 | 21 | 30;
 
@@ -68,35 +70,52 @@ const LIFESTYLE_BY_PROFILE: Record<
   },
 };
 
-// SELECTIE: statische candidates-lijst + approvedClaims-gate (zie supplementCtaForProfile).
-// Nieuwe slug toevoegen maakt 'm niet zichtbaar tot status approved + comparisonPath bestaat.
-// whey: geen approvedClaims-entry → blijft onzichtbaar als kandidaat.
-// omega3: nooit als energie-claim (zie approvedClaims.omega3.note).
-// stress_score is leefstijl (/stress-verminderen-na-40), geen /beste/-kandidaat.
-const SUPPLEMENT_BY_PROFILE: Partial<
-  Record<NurtureProfileKey, { text: string; candidates: string[] }>
-> = {
-  "Onrustige Slaper": {
-    text: "Vergelijk magnesium supplementen",
-    candidates: ["magnesium"],
-  },
-  "Lage Batterij": {
-    text: "Vergelijk omega-3 supplementen",
-    candidates: ["omega3"],
-  },
-  Overtrainer: {
-    text: "Vergelijk magnesium supplementen",
-    candidates: ["magnesium", "omega3", "whey"],
-  },
-  "In Balans": {
-    text: "Vergelijk omega-3 supplementen",
-    candidates: ["melatonine", "omega3"],
-  },
-  Stressdrager: {
-    text: "Vergelijk magnesium supplementen",
-    candidates: ["ashwagandha", "magnesium"],
-  },
+// Allow-list: alleen deze claims mogen in nurture. on_hold/forbidden/route-only
+// (ashwagandha/melatonine/zink/creatine/eiwitpoeder/whey) kunnen per constructie niet verschijnen.
+const NURTURE_CLAIM_PREFERENCE: Record<NurtureProfileKey, IngredientClaimKey[]> = {
+  "Onrustige Slaper": ["magnesium", "omega3"],
+  "Lage Batterij": ["omega3", "magnesium"],
+  Overtrainer: ["magnesium", "omega3"],
+  "In Balans": ["omega3", "magnesium"],
+  Stressdrager: ["magnesium", "omega3"],
 };
+const CTA_TEXT_BY_CLAIM: Partial<Record<IngredientClaimKey, string>> = {
+  magnesium: "Vergelijk magnesium supplementen",
+  omega3: "Vergelijk omega-3 supplementen",
+};
+
+function claimOrderForProfile(
+  profileKey: NurtureProfileKey,
+  input?: RecommendationInput | null,
+): IngredientClaimKey[] {
+  const preference = NURTURE_CLAIM_PREFERENCE[profileKey];
+  if (!input) {
+    return preference;
+  }
+
+  const preferenceSet = new Set<IngredientClaimKey>(preference);
+  const engineClaims = getRecommendations(input, { source: "route" })
+    .map((rec) => getCatalogEntry(rec.supplementId)?.claimKey)
+    .filter(
+      (claimKey): claimKey is IngredientClaimKey =>
+        claimKey != null && preferenceSet.has(claimKey),
+    );
+
+  const seen = new Set<IngredientClaimKey>();
+  const ordered: IngredientClaimKey[] = [];
+  for (const claimKey of engineClaims) {
+    if (!seen.has(claimKey)) {
+      seen.add(claimKey);
+      ordered.push(claimKey);
+    }
+  }
+  for (const claimKey of preference) {
+    if (!seen.has(claimKey)) {
+      ordered.push(claimKey);
+    }
+  }
+  return ordered;
+}
 
 export function slugFromComparisonPath(path: string): string | null {
   const match = path.match(/^\/beste\/([^/?#]+)/);
@@ -105,22 +124,27 @@ export function slugFromComparisonPath(path: string): string | null {
 
 export function supplementCtaForProfile(
   profileKey: NurtureProfileKey,
+  input?: RecommendationInput | null,
 ): ResolvedNurtureCta | null {
-  const entry = SUPPLEMENT_BY_PROFILE[profileKey];
-  if (!entry) {
+  const preference = NURTURE_CLAIM_PREFERENCE[profileKey];
+  if (!preference) {
     return null;
   }
-  for (let i = 0; i < entry.candidates.length; i++) {
-    const comparisonPath = resolveGatedComparisonPath(
-      entry.candidates[i] as IngredientClaimKey,
-    );
-    if (comparisonPath) {
-      return {
-        text: entry.text,
-        url: comparisonPath,
-        kind: "supplement",
-        candidateRank: i,
-      };
+
+  const claimOrder = claimOrderForProfile(profileKey, input);
+  for (let i = 0; i < claimOrder.length; i++) {
+    const claimKey = claimOrder[i];
+    const path = resolveGatedComparisonPath(claimKey);
+    if (path) {
+      const slug = slugFromComparisonPath(path);
+      if (slug && isComparisonAllowed(slug)) {
+        return {
+          text: CTA_TEXT_BY_CLAIM[claimKey] ?? "Vergelijk supplementen",
+          url: path,
+          kind: "supplement",
+          candidateRank: i,
+        };
+      }
     }
   }
   return null;
@@ -144,18 +168,20 @@ export function pillarCtaForProfile(
 
 export function hasSupplementComparePath(
   profileKey: NurtureProfileKey,
+  input?: RecommendationInput | null,
 ): boolean {
-  return supplementCtaForProfile(profileKey) !== null;
+  return supplementCtaForProfile(profileKey, input) !== null;
 }
 
 // Personalisatie raakt framing/timing/volgorde; SELECTIE (welk middel, welke claim)
-// blijft statisch: approvedClaims + candidates + tier-gate.
+// loopt via allow-list + engine-gate + tier-gate.
 export function resolveNurtureCta(
   profileKey: NurtureProfileKey,
   sequenceDay: NurtureSequenceDay,
   planGate: NurturePlanGate | null,
   hasComparePath: boolean,
   weakestDomain: DomainKey,
+  input?: RecommendationInput | null,
 ): ResolvedNurtureCta {
   if (sequenceDay <= 3) {
     return lifestyleCtaForProfile(profileKey);
@@ -182,8 +208,7 @@ export function resolveNurtureCta(
     planGate != null && planGate.visibleTiers.includes(3) && hasComparePath;
 
   if ((sequenceDay === 14 || sequenceDay === 21) && tierAllowsSupplement) {
-    // SELECTIE: statische candidates + approvedClaims-gate; tier-gate hierboven.
-    const supplement = supplementCtaForProfile(profileKey);
+    const supplement = supplementCtaForProfile(profileKey, input);
     if (supplement) {
       const slug = slugFromComparisonPath(supplement.url);
       if (slug && isComparisonAllowed(slug)) {

@@ -76,12 +76,20 @@ export function prepareNurtureMailContent(data: NurtureEmailData): {
   const weakestDomain = getWeakestDomain(data.domainScores);
   const sequenceDay = toSequenceDay(data.sequenceDay);
 
+  const recommendationInput = data.answers
+    ? buildRecommendationInput({
+        scores: data.domainScores as unknown as DomainScores,
+        answers: data.answers,
+      })
+    : null;
+
   const interventionHighlight = resolveNurtureInterventionHighlight(data);
   const highlightHasCompare =
     typeof interventionHighlight?.comparePath === "string" &&
     interventionHighlight.comparePath.trim().length > 0;
   const hasComparePath =
-    highlightHasCompare || hasSupplementComparePath(profileKey);
+    highlightHasCompare ||
+    hasSupplementComparePath(profileKey, recommendationInput);
 
   const planGate =
     data.planGate ??
@@ -99,14 +107,8 @@ export function prepareNurtureMailContent(data: NurtureEmailData): {
     planGate,
     hasComparePath,
     weakestDomain,
+    recommendationInput,
   );
-
-  const recommendationInput = data.answers
-    ? buildRecommendationInput({
-        scores: data.domainScores as unknown as DomainScores,
-        answers: data.answers,
-      })
-    : null;
 
   const built = buildNurtureEmail(
     data.sequenceDay,

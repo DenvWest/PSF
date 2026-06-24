@@ -7,9 +7,12 @@ import {
   type NurtureSequenceDay,
 } from "@/lib/resolve-nurture-cta";
 import * as comparisonAvailability from "@/lib/comparison-availability";
+import { buildRecommendationInput } from "@/lib/recommendation-input";
 import type { NurtureProfileKey } from "@/data/nurture-content";
 import type { DomainKey } from "@/data/nurture-content";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
+import type { DomainScores } from "@/lib/intake-engine";
+import type { RecommendationInput } from "@/types/recommendation";
 
 const PROFILES: NurtureProfileKey[] = [
   "Stressdrager",
@@ -43,6 +46,58 @@ function assertNoForbiddenCompareUrl(url: string): void {
   const forbidden = ["ashwagandha"];
   expect(forbidden).not.toContain(slug);
 }
+
+const ALLOWED_SUPPLEMENT_URLS = new Set([
+  "/beste/magnesium",
+  "/beste/omega-3-supplement",
+]);
+
+const FORBIDDEN_SUPPLEMENT_SLUGS = [
+  "ashwagandha",
+  "melatonine",
+  "whey",
+  "zink",
+  "creatine",
+  "eiwitpoeder",
+] as const;
+
+function assertSupplementCtaCompliance(
+  cta: ReturnType<typeof supplementCtaForProfile>,
+): void {
+  if (!cta) {
+    return;
+  }
+  expect(ALLOWED_SUPPLEMENT_URLS.has(cta.url)).toBe(true);
+  const slug = cta.url.replace(/^\/beste\//, "");
+  expect(FORBIDDEN_SUPPLEMENT_SLUGS).not.toContain(slug);
+}
+
+function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
+  return {
+    sleep_score: 70,
+    energy_score: 70,
+    stress_score: 70,
+    nutrition_score: 70,
+    movement_score: 70,
+    recovery_score: 70,
+    ...overrides,
+  };
+}
+
+const VARIED_RECOMMENDATION_INPUTS: RecommendationInput[] = [
+  buildRecommendationInput({
+    scores: makeScores({ sleep_score: 30 }),
+    answers: { SLP_QUAL: 1, SLP_CONS: 1 },
+  }),
+  buildRecommendationInput({
+    scores: makeScores({ energy_score: 25 }),
+    answers: { NRG_PATN: 1, NRG_DEP: 1 },
+  }),
+  buildRecommendationInput({
+    scores: makeScores({ recovery_score: 25, movement_score: 75 }),
+    answers: { MOV_CARD: 4, MOV_STR: 4, RCV_PHYS: 1 },
+  }),
+];
 
 describe("resolveNurtureCta", () => {
   for (const profile of PROFILES) {
@@ -190,4 +245,18 @@ describe("pillarCtaForProfile", () => {
     expect(cta.url).toBe("/gids/beweging");
     expect(cta.kind).toBe("pillar");
   });
+});
+
+describe("supplementCtaForProfile allow-list compliance", () => {
+  for (const profile of PROFILES) {
+    it(`${profile} zonder input — alleen allow-list URLs of null`, () => {
+      assertSupplementCtaCompliance(supplementCtaForProfile(profile));
+    });
+
+    for (const [index, input] of VARIED_RECOMMENDATION_INPUTS.entries()) {
+      it(`${profile} met varied input ${index + 1} — alleen allow-list URLs of null`, () => {
+        assertSupplementCtaCompliance(supplementCtaForProfile(profile, input));
+      });
+    }
+  }
 });

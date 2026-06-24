@@ -8,7 +8,7 @@ import { buildNurtureAttributionToken } from "@/lib/nurture-attribution-token";
 import { cancelPendingGuideSequences } from "@/lib/guide-nurture";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
-import type { DomainScores } from "@/lib/intake-engine";
+import { RULES_VERSION, type DomainScores } from "@/lib/intake-engine";
 
 const MAIN_NURTURE_SOURCE = "intake" as const;
 const SEQUENCE_DAYS = [0, 3, 7, 14, 21, 30] as const;
@@ -200,6 +200,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
         cta_slug: ctaSlug,
         candidate_rank: resolvedCta.candidateRank,
         variant: null,
+        rules_version: RULES_VERSION,
       },
       deliveredTo: ["n8n_webhook"],
     });
