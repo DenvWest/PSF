@@ -1,4 +1,5 @@
 import { alleArtikelen } from "@/data/blog";
+import { getContentMetadata } from "@/data/insight-metadata";
 import {
   kennisbankTerms,
   type KennisbankTheme,
@@ -93,6 +94,7 @@ function normalizeBlogArtikel(
     readingTime: artikel.leestijd,
     publishedAt: artikel.gepubliceerdOp,
     source: "blog",
+    ...getContentMetadata(artikel.slug),
   };
 }
 
@@ -116,6 +118,7 @@ function normalizeKennisbankTerm(
     niveau: niveauFromType(type),
     source: "kennisbank",
     insightTier: term.insightTier,
+    ...getContentMetadata(term.slug),
   };
 }
 
