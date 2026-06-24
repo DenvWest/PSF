@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildActivePlanHabit, resolvePlanDomain } from "@/lib/dashboard-active-plan";
 import { nutritionPlanTemplate } from "@/data/lifestyle-plans/nutrition";
+import { stressPlanTemplate } from "@/data/lifestyle-plans/stress";
 
 const DEV_ANSWERS: Record<string, number> = {
   SLP_QUAL: 3,
@@ -36,6 +37,23 @@ describe("dashboard-active-plan", () => {
     ).toBe("nutrition");
   });
 
+  it("maps stress priority to stress plan domain", () => {
+    expect(
+      resolvePlanDomain(
+        "stress",
+        {
+          sleep_score: 58,
+          energy_score: 54,
+          stress_score: 35,
+          nutrition_score: 47,
+          movement_score: 71,
+          recovery_score: 51,
+        },
+        DEV_ANSWERS,
+      ),
+    ).toBe("stress");
+  });
+
   it("returns first visible nutrition plan step when no progress exists", () => {
     const habit = buildActivePlanHabit({
       priorityId: "voeding",
@@ -56,6 +74,29 @@ describe("dashboard-active-plan", () => {
     expect(habit?.source).toBe("plan");
     expect(habit?.domain).toBe("nutrition");
     expect(habit?.stepId).toBe(nutritionPlanTemplate.phases[0]?.steps[0]?.id);
+    expect(habit?.state).toBe("todo");
+  });
+
+  it("returns first visible stress plan step when no progress exists", () => {
+    const habit = buildActivePlanHabit({
+      priorityId: "stress",
+      priorityScore: 35,
+      vitality: 53,
+      domainScores: {
+        sleep_score: 58,
+        energy_score: 54,
+        stress_score: 35,
+        nutrition_score: 47,
+        movement_score: 71,
+        recovery_score: 51,
+      },
+      answers: DEV_ANSWERS,
+      progress: null,
+    });
+
+    expect(habit?.source).toBe("plan");
+    expect(habit?.domain).toBe("stress");
+    expect(habit?.stepId).toBe(stressPlanTemplate.phases[0]?.steps[0]?.id);
     expect(habit?.state).toBe("todo");
   });
 

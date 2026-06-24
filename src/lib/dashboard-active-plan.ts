@@ -17,6 +17,7 @@ import type {
 
 const PILLAR_TO_PLAN_DOMAIN: Partial<Record<PillarId, MeasuredPillarId>> = {
   slaap: "sleep",
+  stress: "stress",
   voeding: "nutrition",
   beweging: "movement",
 };
