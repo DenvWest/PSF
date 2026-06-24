@@ -264,20 +264,11 @@ const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel | n
 );
 
 const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
-  if (!empty && !model) {
-    return null;
-  }
   const currentModel = model as DashboardModel | null;
-  const explainer =
-    currentModel &&
-    getVitalityExplainer({
-      vitality: currentModel.vitality,
-      vitalityDelta: currentModel.vitalityDelta,
-      priorityId: currentModel.priority.id,
-      priorityScore: currentModel.scores[currentModel.priority.id],
-      answers: currentModel.answers,
-      domainScores: currentModel.domainScores,
-    });
+  const [habitCompleted, setHabitCompleted] = useState(
+    currentModel?.activeHabit?.state === "done",
+  );
+  const emittedKeyRef = useRef<string | null>(null);
   const habitKernel =
     currentModel &&
     buildHabitScoreKernel({
@@ -287,28 +278,6 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
       answers: currentModel.answers,
       domainScores: currentModel.domainScores,
     });
-  const [habitCompleted, setHabitCompleted] = useState(
-    currentModel?.activeHabit?.state === "done",
-  );
-  const recommendationInput = currentModel
-    ? buildRecommendationInput({ scores: currentModel.domainScores })
-    : null;
-  const lifestyleStep = currentModel?.activeHabit
-    ? {
-        title: currentModel.activeHabit.title,
-        detail: currentModel.activeHabit.detail ?? "",
-      }
-    : currentModel?.priority.quickWin;
-  const supplementDisclosure =
-    currentModel && recommendationInput
-      ? buildSupplementDisclosure(
-          currentModel.priority,
-          recommendationInput,
-          "dashboard",
-          lifestyleStep,
-        )
-      : null;
-  const emittedKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!currentModel || !habitKernel) {
@@ -329,6 +298,39 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
       driver_habit_id: habitKernel.driverHabitId,
     });
   }, [currentModel, habitKernel]);
+
+  if (!empty && !model) {
+    return null;
+  }
+
+  const explainer =
+    currentModel &&
+    getVitalityExplainer({
+      vitality: currentModel.vitality,
+      vitalityDelta: currentModel.vitalityDelta,
+      priorityId: currentModel.priority.id,
+      priorityScore: currentModel.scores[currentModel.priority.id],
+      answers: currentModel.answers,
+      domainScores: currentModel.domainScores,
+    });
+  const recommendationInput = currentModel
+    ? buildRecommendationInput({ scores: currentModel.domainScores })
+    : null;
+  const lifestyleStep = currentModel?.activeHabit
+    ? {
+        title: currentModel.activeHabit.title,
+        detail: currentModel.activeHabit.detail ?? "",
+      }
+    : currentModel?.priority.quickWin;
+  const supplementDisclosure =
+    currentModel && recommendationInput
+      ? buildSupplementDisclosure(
+          currentModel.priority,
+          recommendationInput,
+          "dashboard",
+          lifestyleStep,
+        )
+      : null;
 
   return (
     <Card glow="#5A8F6A" pad={28} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
