@@ -7,6 +7,10 @@ import {
   type NurtureSequenceDay,
 } from "@/lib/resolve-nurture-cta";
 import * as comparisonAvailability from "@/lib/comparison-availability";
+import {
+  approvedClaims,
+  type IngredientClaimKey,
+} from "@/data/approved-claims";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import type { NurtureProfileKey } from "@/data/nurture-content";
 import type { DomainKey } from "@/data/nurture-content";
@@ -47,29 +51,27 @@ function assertNoForbiddenCompareUrl(url: string): void {
   expect(forbidden).not.toContain(slug);
 }
 
-const ALLOWED_SUPPLEMENT_URLS = new Set([
-  "/beste/magnesium",
-  "/beste/omega-3-supplement",
-]);
+const SLUG_TO_CLAIM: Record<string, IngredientClaimKey> = {
+  magnesium: "magnesium",
+  "omega-3-supplement": "omega3",
+  ashwagandha: "ashwagandha",
+  melatonine: "melatonine",
+  creatine: "creatine",
+  zink: "zink",
+  eiwitpoeder: "eiwitpoeder",
+  "vitamine-d": "vitamineD",
+};
 
-const FORBIDDEN_SUPPLEMENT_SLUGS = [
-  "ashwagandha",
-  "melatonine",
-  "whey",
-  "zink",
-  "creatine",
-  "eiwitpoeder",
-] as const;
-
-function assertSupplementCtaCompliance(
+function assertApprovedOrNull(
   cta: ReturnType<typeof supplementCtaForProfile>,
 ): void {
   if (!cta) {
     return;
   }
-  expect(ALLOWED_SUPPLEMENT_URLS.has(cta.url)).toBe(true);
   const slug = cta.url.replace(/^\/beste\//, "");
-  expect(FORBIDDEN_SUPPLEMENT_SLUGS).not.toContain(slug);
+  const claimKey = SLUG_TO_CLAIM[slug];
+  expect(claimKey, `onbekende slug: ${slug}`).toBeDefined();
+  expect(approvedClaims[claimKey!].status).toBe("approved");
 }
 
 function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
@@ -84,18 +86,18 @@ function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
   };
 }
 
-const VARIED_RECOMMENDATION_INPUTS: RecommendationInput[] = [
+const COMPLIANCE_INPUTS: RecommendationInput[] = [
   buildRecommendationInput({
-    scores: makeScores({ sleep_score: 30 }),
-    answers: { SLP_QUAL: 1, SLP_CONS: 1 },
+    scores: makeScores({ sleep_score: 20 }),
+    answers: {},
   }),
   buildRecommendationInput({
-    scores: makeScores({ energy_score: 25 }),
-    answers: { NRG_PATN: 1, NRG_DEP: 1 },
+    scores: makeScores({ nutrition_score: 20 }),
+    answers: {},
   }),
   buildRecommendationInput({
-    scores: makeScores({ recovery_score: 25, movement_score: 75 }),
-    answers: { MOV_CARD: 4, MOV_STR: 4, RCV_PHYS: 1 },
+    scores: makeScores({ recovery_score: 20 }),
+    answers: {},
   }),
 ];
 
@@ -247,15 +249,17 @@ describe("pillarCtaForProfile", () => {
   });
 });
 
-describe("supplementCtaForProfile allow-list compliance", () => {
+// PERMANENTE compliance-invariant — overleeft latere meetlaag-uitbreiding.
+// Exact huidige gedrag (magnesium/omega-3) zit in nurture-selection-snapshot.test.ts.
+describe("supplementCtaForProfile status-based compliance", () => {
   for (const profile of PROFILES) {
-    it(`${profile} zonder input — alleen allow-list URLs of null`, () => {
-      assertSupplementCtaCompliance(supplementCtaForProfile(profile));
+    it(`${profile} zonder input — alleen approved claims of null`, () => {
+      assertApprovedOrNull(supplementCtaForProfile(profile));
     });
 
-    for (const [index, input] of VARIED_RECOMMENDATION_INPUTS.entries()) {
-      it(`${profile} met varied input ${index + 1} — alleen allow-list URLs of null`, () => {
-        assertSupplementCtaCompliance(supplementCtaForProfile(profile, input));
+    for (const [index, input] of COMPLIANCE_INPUTS.entries()) {
+      it(`${profile} met compliance input ${index + 1} — alleen approved claims of null`, () => {
+        assertApprovedOrNull(supplementCtaForProfile(profile, input));
       });
     }
   }

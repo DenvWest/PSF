@@ -70,8 +70,12 @@ const LIFESTYLE_BY_PROFILE: Record<
   },
 };
 
-// Allow-list: alleen deze claims mogen in nurture. on_hold/forbidden/route-only
-// (ashwagandha/melatonine/zink/creatine/eiwitpoeder/whey) kunnen per constructie niet verschijnen.
+// NURTURE_CLAIM_PREFERENCE is de per-profiel ELIGIBLE-set zoals die vandaag door een
+// gemeten gap in de e-mailpijplijn wordt gedragen (magnesium/omega-3). Geen blacklist:
+// creatine/zink/eiwitpoeder zijn approved en horen thuis op herstel/beweging/voeding —
+// nurture-opname volgt via meetlaag, niet via een verbod. Harde compliance-poort:
+// resolveGatedComparisonPath (status === "approved") sluit on_hold (ashwagandha) en
+// forbidden (melatonine) uit.
 const NURTURE_CLAIM_PREFERENCE: Record<NurtureProfileKey, IngredientClaimKey[]> = {
   "Onrustige Slaper": ["magnesium", "omega3"],
   "Lage Batterij": ["omega3", "magnesium"],
