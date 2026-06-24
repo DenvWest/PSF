@@ -89,6 +89,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Planning/sprint | `core/CURRENT_SPRINT.md` |
 | Design/styling | `core/DESIGN_TOKENS.md` |
 | Architectuur-strategie analyse (Claude prompt) | `cursors/architecture-strategy-analysis-prompt.md` |
+| Plan-fase / premium tier / n8n-triage analyse (Claude prompt) | `cursors/claude-analyse-plan-fase-n8n-tier-prompt.md` |
 | Evidence-chat / n8n (fase 8) | `core/EVIDENCE_CHAT.md` |
 
 ---
