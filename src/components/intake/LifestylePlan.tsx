@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   buildPlanIntakeContext,
@@ -24,6 +24,7 @@ type LifestylePlanProps = {
   answers: Record<string, number>;
   sessionId: string | null;
   secondaryTheme?: MeasuredPillarId | null;
+  headerActions?: ReactNode;
 };
 
 const HORIZON_LABELS = {
@@ -175,6 +176,7 @@ export default function LifestylePlan({
   answers,
   sessionId,
   secondaryTheme = null,
+  headerActions,
 }: LifestylePlanProps) {
   const ctx = useMemo(
     () => buildPlanIntakeContext(scores, answers, template.domain, secondaryTheme),
@@ -353,12 +355,19 @@ export default function LifestylePlan({
   return (
     <article className="text-left" aria-label={template.title}>
       <header className="mb-5">
-        <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
-          Jouw leefstijlplan
-        </p>
-        <h2 className="font-serif text-[22px] font-normal leading-tight text-intake-ink">
-          {template.title}
-        </h2>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
+              Jouw leefstijlplan
+            </p>
+            <h2 className="font-serif text-[22px] font-normal leading-tight text-intake-ink">
+              {template.title}
+            </h2>
+          </div>
+          {headerActions ? (
+            <div className="shrink-0 pt-0.5">{headerActions}</div>
+          ) : null}
+        </div>
       </header>
 
       <section className="mb-5 rounded-xl border border-intake-card-border bg-intake-bg-elevated/50 px-4 py-4">

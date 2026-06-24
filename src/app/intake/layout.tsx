@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import { Suspense } from "react";
-import IntakeExit from "@/components/intake/IntakeExit";
+import IntakeLayoutHeader from "@/components/intake/IntakeLayoutHeader";
 
 export default function IntakeLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,21 +11,7 @@ export default function IntakeLayout({ children }: { children: ReactNode }) {
         flexDirection: "column",
       }}
     >
-      <div
-        className="intake-layout-header"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          padding: "20px 24px 12px",
-          width: "100%",
-          boxSizing: "border-box",
-        }}
-      >
-        <Suspense fallback={null}>
-          <IntakeExit />
-        </Suspense>
-      </div>
+      <IntakeLayoutHeader />
       <div style={{ flex: 1 }}>{children}</div>
     </div>
   );

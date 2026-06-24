@@ -75,6 +75,7 @@ describe("dashboard-active-plan", () => {
     expect(habit?.domain).toBe("nutrition");
     expect(habit?.stepId).toBe(nutritionPlanTemplate.phases[0]?.steps[0]?.id);
     expect(habit?.state).toBe("todo");
+    expect(habit?.planHref).toBe("/intake/plan/nutrition?from=dashboard");
   });
 
   it("returns first visible stress plan step when no progress exists", () => {

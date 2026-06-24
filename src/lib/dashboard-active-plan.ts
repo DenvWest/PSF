@@ -144,7 +144,7 @@ export function buildActivePlanHabit(options: {
       title: kernel.nextBestHabit.replace(/^Focus nu:\s*/i, ""),
       detail: kernel.driverHabitLine,
       state: null,
-      planHref: `/intake/plan/${planDomain}`,
+      planHref: `/intake/plan/${planDomain}?from=dashboard`,
     };
   }
 
@@ -165,6 +165,6 @@ export function buildActivePlanHabit(options: {
     title: activeStep.title,
     detail: activeStep.rationale?.body ?? null,
     state,
-    planHref: `/intake/plan/${planDomain}`,
+    planHref: `/intake/plan/${planDomain}?from=dashboard`,
   };
 }

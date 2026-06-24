@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import DashboardBackLink from "@/components/app/DashboardBackLink";
 import ExitButton from "@/components/app/ExitButton";
 import Wordmark from "@/components/app/Wordmark";
 
@@ -100,7 +101,10 @@ export function AuthShell({ children, exitHref = "/" }: AuthShellProps) {
           <Link href="/" aria-label="Naar de homepage" style={{ textDecoration: "none" }}>
             <Wordmark />
           </Link>
-          <ExitButton href={exitHref} label={exitHref === "/" ? "Naar de website" : "Terug naar dashboard"} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {exitHref === "/dashboard" ? <DashboardBackLink surface="account" /> : null}
+            <ExitButton href={exitHref} label={exitHref === "/" ? "Naar de website" : "Terug naar dashboard"} />
+          </div>
         </header>
         {children}
         <AuthFooter />

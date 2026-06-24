@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LifestylePlan from "@/components/intake/LifestylePlan";
+import IntakeLayoutActions from "@/components/intake/IntakeLayoutActions";
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
 import {
   getPlanTemplate,
@@ -14,6 +15,8 @@ import { getPrimaryTheme, getSecondaryTheme } from "@/lib/primary-theme";
 type IntakePlanPageProps = {
   domain: PlanTemplateDomain;
 };
+
+const planHeaderActions = <IntakeLayoutActions />;
 
 export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
   const router = useRouter();
@@ -74,8 +77,19 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
 
   if (loading || !scores || !answers) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center px-6 py-12">
-        <p className="text-sm text-intake-ink-subtle">Plan laden…</p>
+      <div className="mx-auto w-full max-w-[480px] px-6 pb-10 pt-3">
+        <header className="mb-5 flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
+              Jouw leefstijlplan
+            </p>
+            <div className="h-7 w-48 animate-pulse rounded bg-white/5" aria-hidden />
+          </div>
+          <div className="shrink-0 pt-0.5">{planHeaderActions}</div>
+        </header>
+        <div className="flex min-h-[40vh] items-center justify-center">
+          <p className="text-sm text-intake-ink-subtle">Plan laden…</p>
+        </div>
       </div>
     );
   }
@@ -84,7 +98,7 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
   const secondaryTheme = getSecondaryTheme(scores, answers, primaryTheme);
 
   return (
-    <div className="mx-auto w-full max-w-[480px] px-6 pb-10 pt-4">
+    <div className="mx-auto w-full max-w-[480px] px-6 pb-10 pt-3">
       <IntakeResultsReturnBanner />
       <LifestylePlan
         template={template}
@@ -92,6 +106,7 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
         answers={answers}
         sessionId={sessionId}
         secondaryTheme={secondaryTheme}
+        headerActions={planHeaderActions}
       />
     </div>
   );
