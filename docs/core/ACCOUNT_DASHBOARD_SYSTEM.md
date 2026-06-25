@@ -11,13 +11,14 @@
 
 - **Inlogcode (OTP):** e-mail → 6-cijferige code (`createLoginCode`), op de site invoeren. De mail bevat óók een klik-link als alternatief. Token = `sha256(\`${accountId}.${code}\`)` in `account_login_tokens` (15 min, eenmalig via `used_at`).
 - **Cookie:** `psf_account`, HMAC met een **aparte** `ACCOUNT_COOKIE_SECRET` (los van de intake-`COOKIE_SECRET`), httpOnly/secure/sameSite=lax, 90 dagen (`account-session-cookie.ts`).
-- **Endpoints** (`src/app/api/account/`): `request-link` (code mailen; **altijd generieke 200** = non-enumerating; rate-limited per IP én per e-mail), `verify` (GET — klik-link `aid`+`code` → cookie → `/dashboard`), `verify-code` (POST — on-site code-invoer), `logout`, `claim-sessions`, `revoke`.
+- **Endpoints** (`src/app/api/account/`): `request-link` (code mailen; **altijd generieke 200** = non-enumerating; rate-limited per IP én per e-mail), `verify` (GET — stateless redirect naar `/account/verify`; POST — claimt het token en zet de cookie, aangeroepen door die pagina), `verify-code` (POST — on-site code-invoer), `logout`, `claim-sessions`, `revoke`.
 - **Brute-force-cap:** de 6-cijfer-code is zwak; de beveiliging is de **rate-limiting** (per e-mail + per IP) + 15 min TTL + eenmaligheid.
 
 ### Sessie-hardening
 
 - **(a)** Tokenformaat is nu `accountId.issuedAt.sig`; server-side wordt 90 dagen afgedwongen. Oude 2-delige cookies zijn ongeldig na deploy — gebruikers moeten opnieuw inloggen.
 - **(b) BACKLOG:** `#2` `session_version`-kolom op `accounts` voor echte "overal uitloggen"/per-account-intrekking (vóór partner-trials); `#3` optioneel sliding refresh (cookie vernieuwen bij activiteit).
+- **(c)** `verify`-GET authenticeert niet meer direct op het ophalen van de URL — dat was gevoelig voor e-mail-linkscanners/prefetch (bv. Outlook Safe Links) die de eenmalige code verbruiken vóór de gebruiker zelf klikt. De klik-link gaat nu naar `/account/verify` (pagina), die de code zelf via een POST-fetch verzilvert — vereist JS-executie, in tegenstelling tot een kale HTTP-GET door een scanner.
 
 ## Account-lifecycle
 

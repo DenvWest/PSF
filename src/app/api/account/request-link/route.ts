@@ -254,7 +254,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true }, { status: 200 });
   }
 
-  const verifyUrl = `${getPublicSiteUrl()}/api/account/verify?aid=${account.id}&code=${code}`;
+  const verifyUrl = `${getPublicSiteUrl()}/account/verify?aid=${account.id}&code=${code}`;
   const sendResult = await sendAccountLoginEmail({ email, code, verifyUrl });
   if (!sendResult.ok) {
     console.error("[api/account/request-link] email send error:", sendResult.error);

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LinkExpiredScreen from "@/components/account/LinkExpiredScreen";
+import VerifyAccountScreen from "@/components/account/VerifyAccountScreen";
 
 export const metadata: Metadata = {
   robots: {
@@ -8,11 +8,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AccountVerifyPage() {
-  // F1.2: hier komt de echte token-verify; succes → cookie + redirect /dashboard, fout → dit scherm
+type SearchParams = Promise<{ aid?: string; code?: string }>;
+
+export default async function AccountVerifyPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const { aid, code } = await searchParams;
+
   return (
     <div className="ps-dark" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <LinkExpiredScreen />
+      <VerifyAccountScreen aid={aid ?? null} code={code ?? null} />
     </div>
   );
 }
