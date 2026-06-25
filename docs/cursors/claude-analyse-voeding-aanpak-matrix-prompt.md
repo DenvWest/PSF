@@ -1,5 +1,7 @@
 # Prompt — Voeding-eerst Aanpak-matrix, nutriënten & cross-pijler-koppeling (PerfectSupplement)
 
+> ⚠️ **Status: gedeeltelijk achterhaald (25 juni 2026).** De **evidence × moeite**-as in dit document is vervangen door **prioriteit × moeite, met evidence backstage (data, niet UI)** — zie het moat-besluit en `src/data/approach/category-taxonomy.ts` (`evidenceNiveau` = backstage veld, nooit als label in de UI). Gebruik dit document **niet** als bron voor de matrix-as. De nutriënten-gap-, cross-pijler-koppeling- en meetinstrument-analyses (secties C, E, F, H) blijven wél geldig.
+
 > **Gebruik:** kopieer alles onder **Prompt (copy-paste)** naar Claude in VS Code. Voeg de **screenshot van de Aanpak-matrix (Voeding)** toe als bijlage. Claude levert **alleen analyse** (A t/m J), geen code. Voeg optioneel toe: `CLAUDE.md`, `docs/core/BRAND_POSITIONING.md`, `docs/core/STEPPED_CARE_MODEL.md`, `docs/plan/ANALYSIS_PILLAR_COVERAGE.md`.
 
 ---
