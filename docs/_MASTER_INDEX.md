@@ -98,6 +98,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 26 juni 2026 | IA prioriteit × moeite-matrix: positioneringsgrid (geen takenlijst), evidence als korte credibility-tag (geen as), vier kwadranten met verdienmodel (Q1 gratis = vertrouwen, Q2 betaald = persoonlijk programma), twee gescheiden klikdoelen (evidence→bron, CTA→actie/upsell), coach-first→playbook→LLM | `plan/PLAN_PRIORITEIT_MOEITE_MATRIX.md` |
 | 14–17 juni 2026 | Account-identiteitslaag + persoonlijk dashboard: passwordless OTP-login (+ magic-link), `psf_account`-cookie (aparte secret), claim/revoke (omkeerbaar intrekken), dashboard op echte `intake_sessions`, check-in-meet-lus (F3b: `intake_domain_checkin` in de trend), login-vindbaarheid (IMU-header) | `core/ACCOUNT_DASHBOARD_SYSTEM.md` |
 | 10 juni 2026 | Voeding zelf-evaluatie-lus: 24h-zelfrapport → inname-inschatting → delta → leefstijl-eerst-dan-supplement-advies; `intake_intake_log` als temporeel substraat; cohort-vergelijking volume-gated; inname-vs-status-grens | `plan/PLAN_NUTRITION_SELFEVAL_LOOP.md` |
 | 10 juni 2026 | Nurture multi-product data-readiness: meet-haakjes P1–P4, meten→testen→verbeteren-loop, LLM-governance-poort G1–G7, B2B-naden via organization_id | `plan/PLAN_NURTURE_MULTIPRODUCT_DATA_READINESS.md` |
@@ -115,4 +116,4 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 ---
 
-*Laatst bijgewerkt: 18 juni 2026*
+*Laatst bijgewerkt: 26 juni 2026*
