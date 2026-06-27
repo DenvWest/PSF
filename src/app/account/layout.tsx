@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import type { Viewport } from "next";
-import AccountBodyLock from "@/components/account/AccountBodyLock";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -11,19 +10,14 @@ export const viewport: Viewport = {
 export default function AccountLayout({ children }: { children: ReactNode }) {
   return (
     <div
-      className="ps-dark ps-account-shell"
+      className="ps-dark ps-account-root"
       style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 0,
+        minHeight: "100dvh",
+        background: "#1a2e1a",
         display: "flex",
         flexDirection: "column",
-        overflowY: "auto",
-        WebkitOverflowScrolling: "touch",
-        backgroundColor: "#1a2e1a",
       }}
     >
-      <AccountBodyLock />
       {children}
     </div>
   );
