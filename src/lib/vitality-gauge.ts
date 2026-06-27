@@ -20,12 +20,23 @@ export interface VitalityBand {
 }
 
 export const VITALITY_BANDS: VitalityBand[] = [
-  { id: "uit_balans", label: "Uit balans", min: 0, color: "#C2674B" },
-  { id: "op_gang", label: "Op gang", min: 35, color: "#C8956C" },
-  { id: "goed", label: "Goed", min: 55, color: "#B9A24E" },
-  { id: "sterk", label: "Sterk", min: 70, color: "#6FA77E" },
-  { id: "optimaal", label: "Optimaal", min: 85, color: "#5A8F6A" },
+  { id: "uit_balans", label: "Uit balans", min: 0, color: "#C24B4B" },
+  { id: "op_gang", label: "Op gang", min: 35, color: "#D4824A" },
+  { id: "goed", label: "Goed", min: 55, color: "#C4A035" },
+  { id: "sterk", label: "Sterk", min: 70, color: "#5FA872" },
+  { id: "optimaal", label: "Optimaal", min: 85, color: "#3D8B5A" },
 ];
+
+/** Korte booglabels voor de hero-gauge — uppercase, premium, rood→groen. */
+export const VITALITY_BAND_ARC_LABELS: Record<VitalityBandId, string> = {
+  uit_balans: "Uit koers",
+  op_gang: "Wankel",
+  goed: "Op peil",
+  sterk: "Sterk",
+  optimaal: "Top",
+};
+
+export const VITALITY_SCORE_MAX = 100;
 
 export function getVitalityBand(score: number): VitalityBand {
   const clamped = Number.isFinite(score) ? Math.min(100, Math.max(0, score)) : 0;

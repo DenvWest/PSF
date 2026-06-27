@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import VitalityRing from "@/components/app/VitalityRing";
+import VitalityScoreCard from "@/components/app/VitalityScoreCard";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
-import { REVEAL_CARD_SHADOW, REVEAL_COPY } from "@/lib/results-reveal-copy";
+import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import type { RevealModel } from "@/lib/reveal-model";
 
 type RevealHeroCardProps = {
   model: RevealModel;
   sessionId: string | null;
+  firstName?: string | null;
 };
 
-export default function RevealHeroCard({ model, sessionId }: RevealHeroCardProps) {
+export default function RevealHeroCard({ model, sessionId, firstName = null }: RevealHeroCardProps) {
   const focusLine =
     model.driverLine ??
     `Begin bij ${model.primaryPillarLabel.toLowerCase()} — hier ligt je eerste hefboom.`;
@@ -33,79 +34,29 @@ export default function RevealHeroCard({ model, sessionId }: RevealHeroCardProps
   }
 
   return (
-    <article
-      aria-label="Jouw vitaliteit"
-      style={{
-        borderRadius: 24,
-        border: "1px solid rgba(90,143,106,0.28)",
-        background: "var(--panel)",
-        padding: "24px 20px",
-        boxShadow: REVEAL_CARD_SHADOW,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 12,
-      }}
-    >
-      <VitalityRing value={model.vitality} size={160} />
-      <p
-        style={{
-          fontSize: 15,
-          lineHeight: 1.5,
-          color: "var(--text)",
-          textAlign: "center",
-          margin: 0,
-          maxWidth: 280,
-          textWrap: "pretty",
-        }}
-      >
-        {focusLine}
-      </p>
-      {model.strengthLine ? (
-        <p
-          style={{
-            fontSize: 13,
-            lineHeight: 1.45,
-            color: "var(--text-muted)",
-            textAlign: "center",
-            margin: 0,
-            maxWidth: 280,
-            textWrap: "pretty",
-          }}
-        >
-          {model.strengthLine}
-        </p>
-      ) : null}
-      <Link
-        href={model.primaryPillarHref}
-        onClick={handlePillarClick}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          borderRadius: 999,
-          padding: "6px 14px",
-          fontFamily: "var(--f-serif)",
-          fontSize: 18,
-          color: "var(--text)",
-          background: "rgba(90,143,106,0.16)",
-          border: "1px solid rgba(90,143,106,0.32)",
-          textDecoration: "none",
-        }}
-      >
-        Lees over {model.primaryPillarLabel.toLowerCase()} →
-      </Link>
-      <p
-        style={{
-          fontSize: 13,
-          color: "var(--text-subtle)",
-          textAlign: "center",
-          margin: 0,
-          lineHeight: 1.45,
-        }}
-      >
-        {REVEAL_COPY.contextLine}
-      </p>
-    </article>
+    <VitalityScoreCard
+      value={model.vitality}
+      firstName={firstName}
+      bodyLine={focusLine}
+      showRhythm={false}
+      footer={
+        <div className="flex flex-col items-center gap-4 text-center">
+          {model.strengthLine ? (
+            <p className="m-0 max-w-[320px] text-[14px] font-medium leading-relaxed text-[#57534e]">
+              {model.strengthLine}
+            </p>
+          ) : null}
+          <Link
+            href={model.primaryPillarHref}
+            onClick={handlePillarClick}
+            className="inline-flex min-h-[44px] items-center rounded-full border border-[rgba(90,143,106,0.35)] bg-white px-5 text-[18px] text-[#1c1917] no-underline shadow-[0_4px_14px_rgba(15,28,16,0.08)] transition-all hover:border-[#5A8F6A] hover:shadow-[0_6px_18px_rgba(90,143,106,0.18)]"
+            style={{ fontFamily: "var(--f-serif, Georgia, serif)" }}
+          >
+            Lees over {model.primaryPillarLabel.toLowerCase()} →
+          </Link>
+          <p className="m-0 text-[13px] font-medium leading-relaxed text-[#a8a29e]">{REVEAL_COPY.contextLine}</p>
+        </div>
+      }
+    />
   );
 }

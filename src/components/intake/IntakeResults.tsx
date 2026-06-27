@@ -176,7 +176,7 @@ export default function IntakeResults({
           Op desktop: neemt de hele linker kolom rij 1 in beslag.
         */}
         <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
-          <RevealHeroCard model={model} sessionId={sessionId} />
+          <RevealHeroCard model={model} sessionId={sessionId} firstName={firstName} />
           <RevealCtaStack />
         </div>
 

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
 import VitalityGauge from "@/components/app/VitalityGauge";
+import VitalityScoreCard from "@/components/app/VitalityScoreCard";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
@@ -380,49 +381,46 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
     ? buildPriorityInterventionHref(currentModel)
     : null;
 
+  if (empty) {
+    return (
+      <VitalityScoreCard
+        locked
+        onCta={() => {
+          clarityTag("dashboard_vitaalscore_cta", "empty");
+          trackEvent("dashboard_first_check_cta", { surface: "vitaalscore_card" });
+          onCheck();
+        }}
+      />
+    );
+  }
+
   return (
-    <Card glow="#5A8F6A" pad={28} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
-      {empty ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 20 }}>
-          <VitalityGauge value={0} locked size={200} />
-          <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
-              <Icons.Spark s={14} /> Begin hier
-            </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: "var(--text)", lineHeight: 1.2, marginBottom: 8 }}>Doe je eerste check.</div>
-            <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>
-              12 vragen, 3 minuten. Daarna weet je waar je staat — en bij welke pijler je begint.
-            </p>
-            <Button onClick={onCheck} iconRight={<Icons.ArrowRight s={18} />}>
-              Doe je eerste check
-            </Button>
-          </div>
-        </div>
-      ) : (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <VitalityScoreCard
+        value={currentModel?.vitality ?? 0}
+        delta={currentModel?.vitalityDelta ?? null}
+        bodyLine={explainer?.[0]}
+        history={currentModel?.history ?? []}
+      />
+
+      <Card glow="#5A8F6A" pad={28} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, paddingBottom: 24, borderBottom: SECTION_DIVIDER }}>
-            <VitalityGauge
-              value={currentModel?.vitality ?? 0}
-              delta={currentModel?.vitalityDelta ?? null}
-              size={208}
-            />
-            <div style={{ width: "100%" }}>
-              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12, textAlign: "center" }}>
-                Per categorie
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, justifyItems: "center" }}>
-                {PILLARS.map((pillar) => (
-                  <VitalityGauge
-                    key={pillar.id}
-                    value={currentModel?.scores[pillar.id] ?? 0}
-                    label={pillar.label}
-                    size={86}
-                    stroke={8}
-                    compact
-                    showBandLabel={false}
-                  />
-                ))}
-              </div>
+          <div style={{ paddingBottom: 24, borderBottom: SECTION_DIVIDER }}>
+            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12, textAlign: "center" }}>
+              Per categorie
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, justifyItems: "center" }}>
+              {PILLARS.map((pillar) => (
+                <VitalityGauge
+                  key={pillar.id}
+                  value={currentModel?.scores[pillar.id] ?? 0}
+                  label={pillar.label}
+                  size={86}
+                  stroke={8}
+                  compact
+                  showBandLabel={false}
+                />
+              ))}
             </div>
           </div>
 
@@ -532,8 +530,8 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
             </div>
           ) : null}
         </div>
-      )}
-    </Card>
+      </Card>
+    </div>
   );
 };
 

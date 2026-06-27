@@ -472,3 +472,59 @@ html.floating-cta-active footer {
 .ps-dark input::placeholder {
   color: rgba(255, 255, 255, 0.34);
 }
+
+/* ── Vitaalscore gauge animaties ─────────────────────────────── */
+
+@keyframes vitaalscore-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes vitaalscore-dot-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(90, 143, 106, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(90, 143, 106, 0.75));
+  }
+}
+
+@keyframes vitaalscore-number-in {
+  from {
+    opacity: 0.4;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.vitaalscore-pulse {
+  transform-origin: center;
+  animation: vitaalscore-pulse 3.2s ease-in-out infinite;
+}
+
+.vitaalscore-dot {
+  animation: vitaalscore-dot-pulse 2.4s ease-in-out infinite;
+}
+
+.vitaalscore-number {
+  animation: vitaalscore-number-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitaalscore-pulse,
+  .vitaalscore-dot,
+  .vitaalscore-number {
+    animation: none;
+  }
+}
