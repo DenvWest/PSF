@@ -1,7 +1,43 @@
 import { isUsableFirstName } from "@/lib/intake-greetings";
+import type { DomainScores } from "@/lib/intake-engine";
+import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityBand, getVitalityBandMessage } from "@/lib/vitality-gauge";
+import type { PillarId } from "@/types/dashboard";
 
-export const VITALITY_SCORE_EYEBROW = "Jouw vitaalscore";
+export type VitalityScoreCardCopyInput = {
+  firstName: string | null | undefined;
+  vitality: number;
+  priorityId: PillarId;
+  priorityScore: number;
+  answers: Record<string, number> | null;
+  domainScores: DomainScores;
+};
+
+export type VitalityScoreCardCopy = {
+  heading: string;
+  body: string;
+};
+
+export function getVitalityScoreCardCopy(
+  input: VitalityScoreCardCopyInput,
+): VitalityScoreCardCopy {
+  const bandLabel = getVitalityBand(input.vitality).label.toLowerCase();
+  const heading = isUsableFirstName(input.firstName)
+    ? `${input.firstName!.trim()}, je bent ${bandLabel}.`
+    : `Je bent ${bandLabel}.`;
+
+  const kernel = buildHabitScoreKernel({
+    vitality: input.vitality,
+    priorityId: input.priorityId,
+    priorityScore: input.priorityScore,
+    answers: input.answers,
+    domainScores: input.domainScores,
+  });
+
+  const body = `${kernel.driverPillarLabel} is je prioriteit. ${kernel.driverHabitLine} ${kernel.nextBestHabit}`;
+
+  return { heading, body };
+}
 
 export function getVitalityScoreHeading(
   firstName: string | null | undefined,
@@ -51,6 +87,21 @@ export function getVitalityScoreBandHint(vitality: number): string | null {
 }
 
 export const VITALITY_SCORE_CTA = "Doe de check";
+
+export const VITALITY_INSIGHTS_CTA = "Bekijk je inzichten";
+
+export const VITALITY_INSIGHTS_UPSELL_HEADING = "Wil je je vitaalscore verbeteren?";
+
+export const VITALITY_INSIGHTS_UPSELL_BODY =
+  "Ontdek eenvoudige stappen om gezonder te worden.";
+
+export const VITALITY_INSIGHTS_UPSELL_CTA = "Vitaalscore verbeteren";
+
+export const METINGEN_EYEBROW = "Metingen";
+
+export const METINGEN_DOMAINS_LABEL = "Voldoende leefstijldomein";
+
+export const METINGEN_RHYTHM_LABEL = "Huidige meetreeks";
 
 export const VITALITY_RHYTHM_EYEBROW = "Jouw ritme";
 

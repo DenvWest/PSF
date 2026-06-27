@@ -39,6 +39,7 @@ import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
+import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
@@ -506,9 +507,9 @@ const VitalityScoreSection = ({
     return null;
   }
 
-  const explainer = getVitalityExplainer({
+  const cardCopy = getVitalityScoreCardCopy({
+    firstName: data?.firstName ?? null,
     vitality: currentModel.vitality,
-    vitalityDelta: currentModel.vitalityDelta,
     priorityId: currentModel.priority.id,
     priorityScore: currentModel.scores[currentModel.priority.id],
     answers: currentModel.answers,
@@ -522,7 +523,8 @@ const VitalityScoreSection = ({
         value={currentModel.vitality}
         delta={currentModel.vitalityDelta}
         firstName={data?.firstName ?? null}
-        bodyLine={explainer?.[0]}
+        headingLine={cardCopy.heading}
+        bodyLine={cardCopy.body}
         showRhythm={false}
         onInsightsClick={() => {
           trackEvent("dashboard_inzichten_cta_click", { surface: "voortgang" });
@@ -3145,9 +3147,9 @@ export default function Dashboard({
         <DashHeader onLogout={onLogout} />
         {tab === "vandaag" ? (
           <Greeting empty={empty} model={model} />
-        ) : tab === "voortgang" && voortgangScreen !== "hub" ? null : (
+        ) : tab !== "voortgang" ? (
           <DashTabHeader tab={tabMeta} />
-        )}
+        ) : null}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {empty && tab !== "voortgang" ? (
             <EmptyTabState tab={tabMeta} onCheck={onCheck} />

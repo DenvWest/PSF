@@ -122,6 +122,7 @@ export function buildDevDashboardData(
         : { dueDate: "10 jul 2026", daysUntil: 22 },
     deltaReport,
     profileLabel: "Lage Batterij",
+    firstName: "Dennis",
     answers: devAnswersForCheck(mode === "retest" ? "check2" : "check1"),
     sessionId: "dev-session",
     planProgress: null,

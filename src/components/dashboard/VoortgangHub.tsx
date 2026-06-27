@@ -19,8 +19,7 @@ import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import {
-  getVitalityScoreBody,
-  getVitalityScoreHeading,
+  getVitalityScoreCardCopy,
   VITALITY_INSIGHTS_UPSELL_BODY,
   VITALITY_INSIGHTS_UPSELL_CTA,
   VITALITY_INSIGHTS_UPSELL_HEADING,
@@ -468,6 +467,14 @@ function VitaalscoreInzichtenView({
   onBack: () => void;
 }) {
   const upsellShownRef = useRef(false);
+  const cardCopy = getVitalityScoreCardCopy({
+    firstName,
+    vitality: model.vitality,
+    priorityId: model.priority.id,
+    priorityScore: model.scores[model.priority.id],
+    answers: model.answers,
+    domainScores: model.domainScores,
+  });
   const explainer = getVitalityExplainer({
     vitality: model.vitality,
     vitalityDelta: model.vitalityDelta,
@@ -476,8 +483,8 @@ function VitaalscoreInzichtenView({
     answers: model.answers,
     domainScores: model.domainScores,
   });
-  const heading = getVitalityScoreHeading(firstName, false);
-  const body = getVitalityScoreBody(false, model.vitality, explainer[0]);
+  const heading = cardCopy.heading;
+  const body = cardCopy.body;
   const tipLines = [explainer[1], explainer[2]].filter(Boolean);
 
   useEffect(() => {

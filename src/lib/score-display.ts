@@ -3,7 +3,19 @@
 // in de UI ziet. Drempels en labels zijn een bewuste compliance-keuze (KOAG):
 // geen numerieke totaalscore, geen leeftijds-percentielen.
 
+import { PILLARS } from "@/data/dashboard";
+import type { CheckScores } from "@/types/dashboard";
+
 export type DisplayStatus = "Sterk" | "Voldoende" | "Aandacht" | "Prioriteit";
+
+export const LIFESTYLE_DOMAIN_COUNT = PILLARS.length;
+
+export function countSufficientDomains(scores: CheckScores): number {
+  return PILLARS.filter((pillar) => {
+    const status = getDisplayStatus(scores[pillar.id]);
+    return status === "Voldoende" || status === "Sterk";
+  }).length;
+}
 
 export type DisplayStatusTone = "sage" | "neutral" | "terra" | "terra-deep";
 

@@ -156,6 +156,7 @@ export type DashboardData = {
   remeasure: { dueDate: string; daysUntil: number } | null;
   deltaReport: DeltaReport | null;
   profileLabel: string | null;
+  firstName: string | null;
   answers: Record<string, number> | null;
   sessionId: string | null;
   planProgress: PlanProgress | null;

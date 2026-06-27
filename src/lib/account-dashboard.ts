@@ -33,6 +33,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   remeasure: null,
   deltaReport: null,
   profileLabel: null,
+  firstName: null,
   answers: null,
   sessionId: null,
   planProgress: null,
@@ -84,6 +85,7 @@ type SessionRow = {
   domain_scores: unknown;
   created_at: string | null;
   profile_label: string | null;
+  first_name: string | null;
   answers: unknown;
 };
 
@@ -95,6 +97,7 @@ type SessionSnapshot = {
   priority: PillarId;
   ts: number;
   profileLabel: string;
+  firstName: string | null;
   answers: Record<string, number> | null;
 };
 
@@ -232,7 +235,7 @@ export async function loadAccountDashboardData(
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("id,domain_scores,created_at,profile_label,answers")
+    .select("id,domain_scores,created_at,profile_label,first_name,answers")
     .eq("account_id", accountId)
     .order("created_at", { ascending: true });
 
@@ -249,6 +252,11 @@ export async function loadAccountDashboardData(
         typeof row.created_at === "string" ? row.created_at.trim() : "";
       const domainScores = parseDomainScores(row.domain_scores);
       const ts = new Date(createdAt).getTime();
+
+      const answers = parseAnswers(row.answers);
+      const rawFirstName =
+        typeof row.first_name === "string" ? row.first_name.trim() : "";
+      const firstName = rawFirstName.length > 0 ? rawFirstName : null;
 
       if (
         !sessionId ||
@@ -273,7 +281,8 @@ export async function loadAccountDashboardData(
         priority,
         ts,
         profileLabel,
-        answers: parseAnswers(row.answers),
+        answers,
+        firstName,
       };
     })
     .filter((row): row is SessionSnapshot => row !== null);
@@ -478,6 +487,7 @@ export async function loadAccountDashboardData(
     remeasure,
     deltaReport,
     profileLabel: latestSnapshot.profileLabel,
+    firstName: latestSnapshot.firstName,
     answers: latestAnswers,
     sessionId: latestSnapshot.id,
     planProgress,

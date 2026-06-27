@@ -12,7 +12,7 @@ import {
   VITALITY_RHYTHM_CURRENT,
   VITALITY_RHYTHM_EYEBROW,
   VITALITY_SCORE_CTA,
-  VITALITY_SCORE_EYEBROW,
+  VITALITY_INSIGHTS_CTA,
 } from "@/lib/vitality-score-copy";
 import type { CheckLogEntry } from "@/types/dashboard";
 
@@ -21,8 +21,10 @@ type VitalityScoreCardProps = {
   locked?: boolean;
   delta?: number | null;
   firstName?: string | null;
+  headingLine?: string | null;
   bodyLine?: string | null;
   onCta?: () => void;
+  onInsightsClick?: () => void;
   ctaHref?: string;
   ctaLabel?: string;
   history?: CheckLogEntry[];
@@ -36,8 +38,10 @@ export default function VitalityScoreCard({
   locked = false,
   delta = null,
   firstName = null,
+  headingLine = null,
   bodyLine = null,
   onCta,
+  onInsightsClick,
   ctaHref,
   ctaLabel = VITALITY_SCORE_CTA,
   history = [],
@@ -47,13 +51,13 @@ export default function VitalityScoreCard({
 }: VitalityScoreCardProps) {
   const dark = tone === "dark";
   const rhythm = computeCheckinRhythm(history);
-  const heading = getVitalityScoreHeading(firstName, locked);
+  const heading = headingLine?.trim() || getVitalityScoreHeading(firstName, locked);
   const body = getVitalityScoreBody(locked, value, bodyLine);
   const bandHint = !locked && !bodyLine ? getVitalityScoreBandHint(value) : null;
 
   return (
     <article
-      aria-label="Jouw vitaalscore"
+      aria-label="Leefstijlscore"
       className={`vitaalscore-card overflow-hidden rounded-[28px] border ${
         dark
           ? "border-white/10 bg-gradient-to-b from-[#19271d] to-[#0f1b12] shadow-[0_22px_60px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl"
@@ -61,15 +65,7 @@ export default function VitalityScoreCard({
       }`}
     >
       <div className="px-6 pb-6 pt-7 sm:px-8 sm:pb-8 sm:pt-9">
-        <p
-          className={`m-0 text-center text-[11px] font-extrabold uppercase tracking-[0.2em] ${
-            dark ? "text-[#7FB28E]" : "text-[#5A8F6A]"
-          }`}
-        >
-          {VITALITY_SCORE_EYEBROW}
-        </p>
-
-        <div className="mt-1 flex justify-center sm:mt-2">
+        <div className="flex justify-center">
           <VitalityGauge
             value={value}
             locked={locked}
@@ -129,6 +125,26 @@ export default function VitalityScoreCard({
           ) : null}
         </div>
       </div>
+
+      {!locked && onInsightsClick ? (
+        <div
+          className={`border-t ${
+            dark ? "border-white/10 bg-white/[0.03]" : "border-[#ebe7e2] bg-[#faf9f7]"
+          }`}
+        >
+          <button
+            type="button"
+            onClick={onInsightsClick}
+            className={`flex min-h-[52px] w-full cursor-pointer items-center justify-center border-0 bg-transparent px-6 py-4 text-[12px] font-extrabold uppercase tracking-[0.16em] transition-colors sm:px-8 ${
+              dark
+                ? "text-[#9BC9A8] hover:text-[#B8DCC2]"
+                : "text-[#5A8F6A] hover:text-[#4A7F5A]"
+            }`}
+          >
+            {VITALITY_INSIGHTS_CTA}
+          </button>
+        </div>
+      ) : null}
 
       {showRhythm ? (
         <div

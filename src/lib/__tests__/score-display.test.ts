@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  countSufficientDomains,
   getDisplayStatus,
   getDisplayStatusFraming,
   getDisplayStatusTone,
+  LIFESTYLE_DOMAIN_COUNT,
 } from "@/lib/score-display";
 
 describe("getDisplayStatus", () => {
@@ -32,5 +34,40 @@ describe("getDisplayStatusFraming", () => {
     const text = getDisplayStatusFraming("Slaap", "Aandacht");
     expect(text).toContain("aandachtspunt");
     expect(text).not.toMatch(/\d/);
+  });
+});
+
+describe("countSufficientDomains", () => {
+  const baseScores = {
+    slaap: 50,
+    energie: 50,
+    stress: 50,
+    voeding: 50,
+    beweging: 50,
+    herstel: 50,
+  };
+
+  it("counts domains with score >= 60", () => {
+    expect(
+      countSufficientDomains({
+        ...baseScores,
+        slaap: 80,
+        voeding: 65,
+        beweging: 59,
+      }),
+    ).toBe(2);
+  });
+
+  it("counts all six when every domain is sufficient", () => {
+    expect(
+      countSufficientDomains({
+        slaap: 80,
+        energie: 70,
+        stress: 60,
+        voeding: 85,
+        beweging: 62,
+        herstel: 90,
+      }),
+    ).toBe(LIFESTYLE_DOMAIN_COUNT);
   });
 });

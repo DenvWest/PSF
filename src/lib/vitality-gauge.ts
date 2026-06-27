@@ -27,13 +27,13 @@ export const VITALITY_BANDS: VitalityBand[] = [
   { id: "optimaal", label: "Optimaal", min: 85, color: "#3D8B5A" },
 ];
 
-/** Korte booglabels voor de hero-gauge — uppercase, premium, rood→groen. */
+/** Booglabels voor de hero-gauge — gelijk aan bandlabels, uppercase via SVG. */
 export const VITALITY_BAND_ARC_LABELS: Record<VitalityBandId, string> = {
-  uit_balans: "Uit spoor",
-  op_gang: "Uit balans",
+  uit_balans: "Uit balans",
+  op_gang: "Op gang",
   goed: "Goed",
-  sterk: "Super",
-  optimaal: "Helemaal top",
+  sterk: "Sterk",
+  optimaal: "Optimaal",
 };
 
 export const VITALITY_SCORE_MAX = 100;

@@ -3,6 +3,7 @@ import {
   getVitalityBand,
   getVitalityBandMessage,
   VITALITY_BANDS,
+  VITALITY_BAND_ARC_LABELS,
 } from "@/lib/vitality-gauge";
 
 describe("getVitalityBand", () => {
@@ -24,5 +25,13 @@ describe("getVitalityBandMessage", () => {
   it("includes the optional category label", () => {
     const message = getVitalityBandMessage(90, "Je voeding");
     expect(message).toContain("Je voeding");
+  });
+});
+
+describe("VITALITY_BAND_ARC_LABELS", () => {
+  it("matches band labels for consistent gauge copy", () => {
+    for (const band of VITALITY_BANDS) {
+      expect(VITALITY_BAND_ARC_LABELS[band.id]).toBe(band.label);
+    }
   });
 });

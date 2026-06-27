@@ -429,9 +429,9 @@ export default function VitalityGauge({
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill={active ? segment.color : dark ? "rgba(255,255,255,0.36)" : "rgba(15,28,16,0.32)"}
-                    fontSize={isCurrent ? 12 : active ? 11 : 10.5}
+                    fontSize={isCurrent ? 15 : active ? 13.5 : 12.5}
                     fontWeight={isCurrent ? 800 : active ? 700 : 600}
-                    letterSpacing="0.12em"
+                    letterSpacing="0.10em"
                     style={{
                       fontFamily: "var(--f-sans, system-ui, sans-serif)",
                       textTransform: "uppercase",
