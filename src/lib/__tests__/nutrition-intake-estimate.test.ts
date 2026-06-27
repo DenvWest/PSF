@@ -241,7 +241,7 @@ describe("COMPLIANCE: statementHasForbiddenPhrase detecteert verboden taal", () 
   it("schone inname-zin → false", () => {
     expect(
       statementHasForbiddenPhrase(
-        "Je Omega-3-inname lijkt aan de lage kant t.o.v. een veelgebruikte richtlijn."
+        "Je Omega-3-inname lijkt aan de lage kant — op basis van hoe vaak je het eet, naast een algemene vuistregel (2× vette vis per week)."
       )
     ).toBe(false);
   });

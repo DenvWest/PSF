@@ -1,7 +1,8 @@
 /**
  * Centrale inname-vs-status-formuleringslaag (F1).
  *
- * Elke output-zin is "geschatte inname t.o.v. een veelgebruikte richtlijn".
+ * Elke output-zin is een grove frequentie-inschatting naast een algemene vuistregel —
+ * nooit een richtlijn-/normclaim, nooit een statusclaim.
  * NOOIT: "tekort", "deficiëntie", "je waarden", "diagnose", "te weinig in je bloed".
  * Compliance is een systeem-eigenschap (statementHasForbiddenPhrase), geen reviewtaak per zin.
  */
@@ -41,11 +42,13 @@ type BandTemplate = (label: string, referenceLabel: string) => string;
 
 const BAND_TEMPLATES: Record<IntakeBand, BandTemplate> = {
   below: (label, referenceLabel) =>
-    `Je ${label}-inname lijkt aan de lage kant t.o.v. een veelgebruikte richtlijn (${referenceLabel}).`,
+    `Je ${label}-inname lijkt aan de lage kant — op basis van hoe vaak je het eet, naast een algemene vuistregel (${referenceLabel}).`,
+  // around en meets claimen bewust géén "op orde": een frequentie-screener kan een
+  // mogelijk aandachtspunt signaleren, maar zegt niets over portie, kwaliteit of opname.
   around: (label, _referenceLabel) =>
-    `Je ${label}-inname zit rond een veelgebruikte richtlijn.`,
+    `Je ${label}-inname geeft op basis van je frequentie geen aandachtspunt.`,
   meets: (label, _referenceLabel) =>
-    `Je ${label}-inname lijkt op orde t.o.v. een veelgebruikte richtlijn.`,
+    `Je ${label}-inname geeft op basis van je frequentie geen aandachtspunt.`,
 };
 
 /**

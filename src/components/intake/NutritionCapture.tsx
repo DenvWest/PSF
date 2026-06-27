@@ -211,7 +211,7 @@ export default function NutritionCapture() {
             Jouw inname-overzicht
           </h1>
           <p className="mb-8 text-center text-sm text-intake-ink-subtle">
-            Op basis van jouw antwoorden
+            Een grove inschatting op basis van hoe vaak je iets eet — geen meting van je werkelijke inname.
           </p>
 
           {proteinStatement ? (
@@ -297,7 +297,7 @@ export default function NutritionCapture() {
               {otherOnTrack.length > 0 && (
                 <details className="group rounded-[14px] border border-intake-card-border bg-intake-bg-elevated/40">
                   <summary className="cursor-pointer list-none px-5 py-3.5 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
-                    {otherOnTrack.length} nutriënt{otherOnTrack.length === 1 ? "" : "en"} zit{otherOnTrack.length === 1 ? "" : "ten"} op orde ✓
+                    {otherOnTrack.length} nutriënt{otherOnTrack.length === 1 ? "" : "en"} zonder aandachtspunt op je frequentie
                   </summary>
                   <ul className="flex flex-col gap-3 border-t border-intake-divider px-3 pb-3 pt-3">
                     {otherOnTrack.map((e) => (

@@ -3,8 +3,10 @@
  * Productkennis — geen persoonsdata.
  * De enige plek met referentiecijfers; hardcode deze NIET in de engine.
  *
- * Drempelgetallen zijn INDICATIEF.
- * TODO review met copy-/cijferbron (Gezondheidsraad ADH / EFSA DRV).
+ * Drempelgetallen zijn INDICATIEF — vuistregels, geen gevalideerde norm.
+ * De UI noemt ze daarom expliciet "vuistregel", niet "richtlijn".
+ * TODO vervang door gebronde grenzen (Gezondheidsraad ADH / EFSA DRV / Voedingscentrum)
+ *      vóór er weer norm-/richtlijn-taal in de UI terugkeert.
  */
 
 import type { IngredientClaimKey } from "@/data/approved-claims";

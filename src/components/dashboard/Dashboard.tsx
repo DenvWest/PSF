@@ -643,9 +643,9 @@ const NUTRITION_BAND: Record<
   NutritionIntakeBand,
   { label: string; color: string }
 > = {
-  below: { label: "Onder richtlijn", color: "var(--terra)" },
-  around: { label: "Rond richtlijn", color: "var(--text-muted)" },
-  meets: { label: "Op richtlijn", color: "var(--sage)" },
+  below: { label: "Aan de lage kant", color: "var(--terra)" },
+  around: { label: "Geen aandachtspunt", color: "var(--text-muted)" },
+  meets: { label: "Geen aandachtspunt", color: "var(--text-muted)" },
 };
 
 const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
@@ -710,8 +710,8 @@ const NutritionIntakeSection = ({ data }: SharedSectionProps) => {
                 lineHeight: 1.5,
               }}
             >
-              Inname-inschatting t.o.v. een veelgebruikte richtlijn — geen status
-              of diagnose.
+              Grove inschatting op basis van hoe vaak je eet — een vuistregel,
+              geen meting, status of diagnose.
             </div>
           </>
         ) : (
