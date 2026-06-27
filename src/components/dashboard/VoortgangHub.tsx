@@ -76,7 +76,7 @@ function HubCard({
         textAlign: "left",
       }}
     >
-      <Card pad={16}>
+      <Card pad={16} surface="light">
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div
             style={{
@@ -86,8 +86,8 @@ function HubCard({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid var(--panel-border)",
+              background: premium ? "#fdf6ef" : "#e8f5ee",
+              border: `1px solid ${premium ? "rgba(200,149,108,0.25)" : "rgba(90,143,106,0.2)"}`,
               color: premium ? "var(--terra, #C8956C)" : "var(--sage)",
               flexShrink: 0,
             }}

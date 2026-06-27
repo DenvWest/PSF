@@ -328,12 +328,30 @@ export type CardProps = {
   style?: CSSProperties;
   pad?: number;
   glow?: string;
+  surface?: "dark" | "light";
   onClick?: () => void;
 };
 
-export function Card({ children, style, pad = 22, glow, onClick }: CardProps) {
+export function Card({
+  children,
+  style,
+  pad = 22,
+  glow,
+  surface = "dark",
+  onClick,
+}: CardProps) {
   const [hovering, setHovering] = useState(false);
   const interactive = Boolean(onClick);
+  const light = surface === "light";
+
+  const baseBackground = light ? "#ffffff" : "var(--panel)";
+  const baseBorder = light ? "1px solid #e4e0da" : "1px solid var(--panel-border)";
+  const hoverStyles: CSSProperties =
+    interactive && hovering
+      ? light
+        ? { borderColor: "#5A8F6A", background: "#faf9f7" }
+        : { borderColor: "rgba(255,255,255,0.22)", background: "rgba(255,255,255,0.07)" }
+      : {};
 
   return (
     <div
@@ -341,17 +359,15 @@ export function Card({ children, style, pad = 22, glow, onClick }: CardProps) {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       style={{
-        background: "var(--panel)",
-        border: "1px solid var(--panel-border)",
+        background: baseBackground,
+        border: baseBorder,
         borderRadius: 24,
         padding: pad,
         position: "relative",
         overflow: "hidden",
         cursor: interactive ? "pointer" : "default",
         transition: "border-color .2s, background .2s, transform .2s",
-        ...(interactive && hovering
-          ? { borderColor: "rgba(255,255,255,0.22)", background: "rgba(255,255,255,0.07)" }
-          : {}),
+        ...hoverStyles,
         ...style,
       }}
     >

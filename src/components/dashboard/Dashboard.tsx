@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
+import VitalityGauge from "@/components/app/VitalityGauge";
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
@@ -476,7 +477,7 @@ const VitalityScoreSection = ({
     return (
       <VitalityScoreCard
         locked
-        tone="dark"
+        tone="light"
         onCta={() => {
           clarityTag("dashboard_vitaalscore_cta", "empty");
           trackEvent("dashboard_first_check_cta", {
@@ -504,7 +505,7 @@ const VitalityScoreSection = ({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <VitalityScoreCard
-        tone="dark"
+        tone="light"
         value={currentModel.vitality}
         delta={currentModel.vitalityDelta}
         bodyLine={explainer?.[0]}
@@ -2232,6 +2233,362 @@ const IdentitySection = () => {
   );
 };
 
+const MEDITERRANEAN_PRODUCTS: { icon: string; label: string }[] = [
+  { icon: "🫒", label: "Olijfolie" },
+  { icon: "🐟", label: "Vette vis" },
+  { icon: "🥜", label: "Noten" },
+  { icon: "🫘", label: "Peulvruchten" },
+];
+
+const KOMPAS_LIGHT = {
+  text: "#1c1917",
+  muted: "#57534e",
+  subtle: "#78716c",
+  border: "#e4e0da",
+  innerBorder: "#ebe7e2",
+  innerBg: "#faf9f7",
+} as const;
+
+const KompasLightPanel = ({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) => (
+  <div
+    className={`overflow-hidden rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white shadow-[0_16px_48px_rgba(15,28,16,0.10)] ${className}`}
+  >
+    {children}
+  </div>
+);
+
+const KompasSectionHeader = ({
+  eyebrow,
+  title,
+  action,
+}: {
+  eyebrow?: string;
+  title?: string;
+  action?: ReactNode;
+}) => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-end",
+      gap: 16,
+      marginBottom: 14,
+    }}
+  >
+    <div>
+      {eyebrow ? (
+        <div
+          style={{
+            marginBottom: 8,
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: KOMPAS_LIGHT.subtle,
+          }}
+        >
+          {eyebrow}
+        </div>
+      ) : null}
+      {title ? (
+        <div
+          style={{
+            fontFamily: "var(--f-serif)",
+            fontSize: 21,
+            color: KOMPAS_LIGHT.text,
+            letterSpacing: "0.01em",
+            lineHeight: 1.1,
+          }}
+        >
+          {title}
+        </div>
+      ) : null}
+    </div>
+    {action}
+  </div>
+);
+
+const SoonPill = ({ label = "Binnenkort" }: { label?: string }) => (
+  <span
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 5,
+      fontSize: 11,
+      fontWeight: 700,
+      letterSpacing: "0.04em",
+      color: "var(--terra, #C8956C)",
+      border: "1px solid rgba(200,149,108,0.4)",
+      borderRadius: 999,
+      padding: "4px 11px",
+      whiteSpace: "nowrap",
+    }}
+  >
+    <Icons.Spark s={12} /> {label}
+  </span>
+);
+
+const DomainBackBar = ({ onBack }: { onBack: () => void }) => (
+  <button
+    type="button"
+    onClick={onBack}
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 6,
+      padding: "8px 2px",
+      background: "none",
+      border: "none",
+      cursor: "pointer",
+      color: KOMPAS_LIGHT.muted,
+      fontFamily: "var(--f-sans)",
+      fontSize: 13.5,
+      fontWeight: 600,
+      alignSelf: "flex-start",
+    }}
+  >
+    <Icons.ChevronRight s={16} style={{ transform: "rotate(180deg)" }} /> Kompas
+  </button>
+);
+
+const DomainSoonScreen = ({
+  model,
+  domain,
+  onBack,
+}: {
+  model: DashboardModel;
+  domain: PillarId;
+  onBack: () => void;
+}) => {
+  const pillar = PILLAR[domain];
+  return (
+    <KompasLightPanel className="-mt-2 p-5">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <DomainBackBar onBack={onBack} />
+        <Card pad={24} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 14 }}>
+            <VitalityGauge value={model.scores[domain] ?? 0} label={pillar.label} size={120} stroke={10} compact showBandLabel={false} theme="light" />
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
+              {pillar.label}
+            </div>
+            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.55, margin: 0, maxWidth: 330, textWrap: "pretty" }}>
+              {pillar.lever}
+            </p>
+            <SoonPill />
+          </div>
+        </Card>
+      </div>
+    </KompasLightPanel>
+  );
+};
+
+const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () => void }) => {
+  const premiumShownRef = useRef(false);
+
+  useEffect(() => {
+    if (premiumShownRef.current) {
+      return;
+    }
+    premiumShownRef.current = true;
+    trackEvent("dashboard_voeding_premium_upsell", { surface: "kompas_voeding" });
+    clarityTag("dashboard_voeding_premium", "shown");
+  }, []);
+
+  const session: IntakeSessionPayload = {
+    sessionId: "",
+    symptoms: [],
+    answers: model.answers ?? {},
+    scores: model.domainScores,
+    urgency: "",
+    profile: "",
+    timestamp: Date.now(),
+    ageRange: null,
+    firstName: null,
+  };
+  const recommendations = buildRecommendations(session);
+  const pillar = PILLAR.voeding;
+
+  return (
+    <KompasLightPanel className="-mt-2 p-5">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <DomainBackBar onBack={onBack} />
+
+        <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <VitalityGauge value={model.scores.voeding ?? 0} label="Voeding" size={86} stroke={8} compact showBandLabel={false} theme="light" />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: pillar.color, marginBottom: 6 }}>
+                Mediterraan
+              </div>
+              <div style={{ fontFamily: "var(--f-serif)", fontSize: 25, color: KOMPAS_LIGHT.text, lineHeight: 1.1 }}>
+                Voeding
+              </div>
+              <p style={{ fontSize: 13.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: "6px 0 0", textWrap: "pretty" }}>
+                Producten en supplementen, objectief gekozen op kwaliteit — niet op commissie.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: "#fff" }}>
+          <Icons.Search s={18} style={{ color: KOMPAS_LIGHT.subtle }} />
+          <span style={{ flex: 1, fontSize: 14.5, color: KOMPAS_LIGHT.subtle }}>Zoek product of supplement</span>
+          <SoonPill />
+        </div>
+
+        <section aria-label="Aanbevolen supplementen">
+          <KompasSectionHeader eyebrow="Aanbevolen" title="Supplementen voor jou" />
+          {recommendations.length > 0 ? (
+            <Card pad={8} surface="light">
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {recommendations.map((rec, index) => {
+                  const href = rec.comparisonHref ?? rec.guideHref;
+                  return (
+                    <Link
+                      key={rec.slug}
+                      href={href}
+                      onClick={() => {
+                        trackEvent("dashboard_voeding_supplement_click", { slug: rec.slug, target: href });
+                        clarityTag("dashboard_voeding_supplement", rec.slug);
+                      }}
+                      style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 10px", textDecoration: "none", color: "inherit", borderTop: index ? `1px solid ${KOMPAS_LIGHT.innerBorder}` : "none" }}
+                    >
+                      <span style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, background: KOMPAS_LIGHT.innerBg, border: `1px solid ${KOMPAS_LIGHT.innerBorder}` }} aria-hidden>
+                        {rec.icon}
+                      </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>{rec.name}</div>
+                        <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, marginTop: 2, textWrap: "pretty" }}>{rec.wiifm}</div>
+                      </div>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12, fontWeight: 600, color: "var(--sage)", flexShrink: 0 }}>
+                        Vergelijk <Icons.ChevronRight s={15} />
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </Card>
+          ) : (
+            <Card pad={20} surface="light">
+              <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
+                Doe de check om persoonlijke aanbevelingen te zien.
+              </p>
+            </Card>
+          )}
+        </section>
+
+        <section aria-label="Mediterrane producten">
+          <KompasSectionHeader eyebrow="Mediterraan" title="Producten" action={<SoonPill />} />
+          <Card pad={18} surface="light">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+              {MEDITERRANEAN_PRODUCTS.map((product) => (
+                <div key={product.label} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 14, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: KOMPAS_LIGHT.innerBg }}>
+                  <span style={{ fontSize: 22 }} aria-hidden>{product.icon}</span>
+                  <span style={{ fontSize: 14.5, color: KOMPAS_LIGHT.text }}>{product.label}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
+              <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
+              <span style={{ fontSize: 12.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5 }}>
+                Binnenkort objectief vergeleken — net als onze supplementen.
+              </span>
+            </div>
+          </Card>
+        </section>
+
+        <Card pad={20} surface="light" glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.35)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
+              <Icons.Lock s={14} /> Premium
+            </div>
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
+              kcal &amp; macro&apos;s bijhouden
+            </div>
+            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
+              Liever tóch calorieën en macro&apos;s volgen, met persoonlijke doelen? Dat komt in de premium-versie.
+            </p>
+            <SoonPill />
+          </div>
+        </Card>
+
+        <Link
+          href="/inzichten"
+          onClick={() => trackEvent("dashboard_voeding_leefstijl_click", { surface: "kompas_voeding" })}
+          style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 18px", borderRadius: 16, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: "#fff", textDecoration: "none", color: "inherit" }}
+        >
+          <Icons.BookOpen s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
+          <span style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>Leefstijl &amp; inzichten</span>
+          <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
+        </Link>
+      </div>
+    </KompasLightPanel>
+  );
+};
+
+const KompasHome = ({ model }: SharedSectionProps) => {
+  const currentModel = model as DashboardModel | null;
+  const [openDomain, setOpenDomain] = useState<PillarId | null>(null);
+
+  if (!currentModel) {
+    return null;
+  }
+
+  const open = (domain: PillarId) => {
+    trackEvent("dashboard_kompas_domain_open", { domain });
+    clarityTag("dashboard_kompas_domain", domain);
+    setOpenDomain(domain);
+  };
+
+  if (openDomain === "voeding") {
+    return <VoedingScreen model={currentModel} onBack={() => setOpenDomain(null)} />;
+  }
+  if (openDomain) {
+    return <DomainSoonScreen model={currentModel} domain={openDomain} onBack={() => setOpenDomain(null)} />;
+  }
+
+  return (
+    <section aria-label="Domeinen" className="-mt-2">
+      <KompasLightPanel className="p-5">
+        <h2
+          className="m-0 font-serif text-[22px] leading-tight text-[#1c1917]"
+          style={{ fontFamily: "var(--f-serif)" }}
+        >
+          Waar wil je aan werken?
+        </h2>
+        <div className="mt-4 grid grid-cols-3 gap-2.5">
+          {PILLARS.map((pillar) => (
+            <button
+              key={pillar.id}
+              type="button"
+              onClick={() => open(pillar.id)}
+              aria-label={`Open ${pillar.label}`}
+              className="flex min-h-[120px] cursor-pointer flex-col items-center justify-center rounded-[20px] border border-[#ebe7e2] bg-white px-1.5 py-3.5 shadow-sm transition active:scale-[0.98] hover:border-[#5A8F6A]"
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              <VitalityGauge
+                value={currentModel.scores[pillar.id] ?? 0}
+                label={pillar.label}
+                size={88}
+                stroke={8}
+                compact
+                showBandLabel={false}
+                theme="light"
+              />
+            </button>
+          ))}
+        </div>
+      </KompasLightPanel>
+    </section>
+  );
+};
+
 const EMPTY_SECTIONS: DashboardSectionType[] = ["vitalityScore"];
 
 const SECTION_RENDERERS: Record<
@@ -2242,6 +2599,7 @@ const SECTION_RENDERERS: Record<
   vitalityScore: (props) => <VitalityScoreSection {...props} />,
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
+  kompasHome: (props) => (props.empty ? null : <KompasHome {...props} />),
   signals: (props) => (props.empty ? null : <SignalsSection {...props} />),
   nutritionIntake: (props) =>
     props.empty ? null : <NutritionIntakeSection {...props} />,
@@ -2488,8 +2846,15 @@ export default function Dashboard({
     onVoortgangScreenChange: setVoortgangScreen,
   };
 
+  const surfaceClass =
+    tab === "vandaag"
+      ? "ps-dash-surface-kompas"
+      : tab === "voortgang"
+        ? "ps-dash-surface-voortgang"
+        : "";
+
   return (
-    <div>
+    <div className={`min-h-dvh ${surfaceClass}`}>
       <main
         style={{
           width: "100%",
@@ -2517,18 +2882,19 @@ export default function Dashboard({
           )}
         </div>
         <footer
+          className={tab === "voortgang" ? "ps-dash-footer-voortgang" : undefined}
           style={{
             marginTop: 28,
             textAlign: "center",
             fontSize: 11.5,
-            color: "var(--text-subtle)",
+            color: tab === "voortgang" ? "rgba(255,255,255,0.55)" : "var(--text-subtle)",
             lineHeight: 1.6,
           }}
         >
           <Link
             href="/hoe-werkt-dashboard"
             style={{
-              color: "var(--text-muted)",
+              color: tab === "voortgang" ? "rgba(255,255,255,0.72)" : "var(--text-muted)",
               textDecoration: "underline",
               textUnderlineOffset: 2,
             }}

@@ -488,6 +488,46 @@ html.floating-cta-active footer {
   color: rgba(255, 255, 255, 0.34);
 }
 
+/* ── Dashboard tab surfaces ──────────────────────────────────── */
+
+.ps-dash-surface-kompas {
+  background-color: #1a2e1a;
+  background-image:
+    radial-gradient(ellipse 130% 70% at 50% -8%, rgba(127, 178, 142, 0.42) 0%, rgba(33, 56, 31, 0.75) 38%, transparent 68%),
+    radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
+}
+
+.ps-dash-surface-voortgang {
+  --text: #1c1917;
+  --text-muted: #57534e;
+  --text-subtle: #78716c;
+  --panel: #ffffff;
+  --panel-border: #e4e0da;
+  --divider: #ebe7e2;
+  --divider-strong: #d6d3d1;
+  background-color: #1a2e1a;
+  background-image: linear-gradient(
+    180deg,
+    #fefdfb 0%,
+    #faf9f7 45%,
+    #e8f0ea 62%,
+    #1a2e1a 72%,
+    #1a2e1a 100%
+  );
+}
+
+.ps-dash-surface-voortgang ::selection {
+  background: rgba(90, 143, 106, 0.28);
+  color: #1c1917;
+}
+
+@media (min-width: 768px) {
+  .ps-dash-surface-kompas,
+  .ps-dash-surface-voortgang {
+    background-attachment: fixed;
+  }
+}
+
 /* ── Vitaalscore gauge animaties ─────────────────────────────── */
 
 @keyframes vitaalscore-pulse {
