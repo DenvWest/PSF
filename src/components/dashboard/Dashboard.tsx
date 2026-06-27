@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
-import VitalityGauge from "@/components/app/VitalityGauge";
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
@@ -18,6 +17,8 @@ import {
   Sparkline,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
+import VoortgangHub from "@/components/dashboard/VoortgangHub";
+import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import {
   DASHBOARD_TABS,
@@ -65,10 +66,12 @@ type SharedSectionProps = {
   model: DashboardModel | null;
   data?: DashboardData;
   isMember: boolean;
+  tab: DashboardTabId;
   onCheck: () => void;
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
   onGoVandaag: () => void;
+  onVoortgangScreenChange?: (screen: VoortgangScreen) => void;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -508,41 +511,6 @@ const VitalityScoreSection = ({
         history={currentModel.history}
       />
 
-      <Card pad={20}>
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--text-subtle)",
-            marginBottom: 12,
-            textAlign: "center",
-          }}
-        >
-          Per categorie
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 8,
-            justifyItems: "center",
-          }}
-        >
-          {PILLARS.map((pillar) => (
-            <VitalityGauge
-              key={pillar.id}
-              value={currentModel.scores[pillar.id] ?? 0}
-              label={pillar.label}
-              size={86}
-              stroke={8}
-              compact
-              showBandLabel={false}
-            />
-          ))}
-        </div>
-      </Card>
     </div>
   );
 };
@@ -2284,6 +2252,23 @@ const SECTION_RENDERERS: Record<
     props.empty ? null : <StatisticsSection {...props} />,
   recommendations: (props) =>
     props.empty ? null : <RecommendationsSection {...props} />,
+  voortgangHub: (props) =>
+    props.empty ? null : (
+      <VoortgangHub
+        model={props.model}
+        data={props.data}
+        isMember={props.isMember}
+        tab={props.tab}
+        unlockedStatistics={
+          <>
+            <SignalsSection {...props} />
+            <NutritionIntakeSection {...props} />
+            <HistorySection {...props} />
+          </>
+        }
+        onScreenChange={props.onVoortgangScreenChange}
+      />
+    ),
   future: () => <FutureSection />,
 };
 
@@ -2437,6 +2422,8 @@ export default function Dashboard({
   const [tab, setTab] = useState<DashboardTabId>(
     empty ? "voortgang" : "vandaag",
   );
+  const [voortgangScreen, setVoortgangScreen] =
+    useState<VoortgangScreen>("hub");
   const model = useMemo(
     () =>
       !empty && data?.current
@@ -2482,15 +2469,23 @@ export default function Dashboard({
     router.push("/intake?from=dashboard");
   };
 
+  useEffect(() => {
+    if (tab !== "voortgang") {
+      setVoortgangScreen("hub");
+    }
+  }, [tab]);
+
   const sharedProps: SharedSectionProps = {
     empty,
     model,
     data,
     isMember,
+    tab,
     onCheck,
     onDashboardCheckin,
     onRemeasure,
     onGoVandaag: () => setTab("vandaag"),
+    onVoortgangScreenChange: setVoortgangScreen,
   };
 
   return (
@@ -2507,7 +2502,7 @@ export default function Dashboard({
         <DashHeader onLogout={onLogout} />
         {tab === "vandaag" ? (
           <Greeting empty={empty} model={model} />
-        ) : (
+        ) : tab === "voortgang" && voortgangScreen !== "hub" ? null : (
           <DashTabHeader tab={tabMeta} />
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

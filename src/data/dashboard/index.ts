@@ -277,6 +277,7 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "identiteit", type: "identity" },
   { id: "historie", type: "history" },
   { id: "aanraders", type: "recommendations" },
+  { id: "voortgang-hub", type: "voortgangHub" },
   { id: "statistieken", type: "statistics" },
   { id: "toekomst", type: "future" },
 ];
@@ -310,6 +311,6 @@ export const DASHBOARD_TABS: DashboardTab[] = [
 
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
   vandaag: ["now", "priority", "plan"],
-  voortgang: ["vitalityScore", "recommendations", "identity", "statistics"],
+  voortgang: ["vitalityScore", "voortgangHub"],
   hermeting: ["retest", "future"],
 };

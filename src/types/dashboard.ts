@@ -26,6 +26,7 @@ export type DashboardSectionType =
   | "history"
   | "statistics"
   | "recommendations"
+  | "voortgangHub"
   | "future";
 
 export type DashboardIconName =
