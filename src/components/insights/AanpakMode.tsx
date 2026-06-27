@@ -3,63 +3,68 @@ import Container from "@/components/layout/Container";
 import ApproachCardLink from "@/components/insights/ApproachCardLink";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { loadAccountDashboardData } from "@/lib/account-dashboard";
-import { PILLAR } from "@/data/dashboard";
-import { catalogBySlug } from "@/data/supplement-hub/catalog";
-import { EIWIT_CARD_COPY, isEiwitPriority } from "@/data/approach/eiwit-card";
+import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
+import {
+  buildRecommendations,
+  type RecommendedSupplement,
+} from "@/lib/build-recommendations";
+import {
+  getSupplementCardCopy,
+  MOEITE_LABEL,
+} from "@/data/approach/supplement-cards";
 
-function EiwitCard() {
-  const voedingHub = PILLAR.voeding.hubRoute;
-  const guideHref = catalogBySlug.eiwitpoeder?.guideHref ?? "/supplementen/eiwitpoeder";
-  const comparisonHref = catalogBySlug.eiwitpoeder?.comparisonHref ?? null;
+function ApproachCard({
+  rec,
+  isTop,
+}: {
+  rec: RecommendedSupplement;
+  isTop: boolean;
+}) {
+  const copy = getSupplementCardCopy(rec.slug, rec.name);
+  const showComparison =
+    Boolean(rec.comparisonHref) && rec.comparisonHref !== rec.guideHref;
 
   return (
     <article className="rounded-[20px] border border-[#E7E5E4] bg-white p-6 md:p-8">
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-[#EEF3EF] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5A8F6A]">
-          {EIWIT_CARD_COPY.prioriteitLabel}
+          {isTop ? "Prioriteit · hoog" : "Prioriteit · middel"}
         </span>
         <span className="rounded-full bg-[#FAF9F7] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-stone-500 ring-1 ring-[#E7E5E4]">
-          {EIWIT_CARD_COPY.moeiteLabel}
+          {MOEITE_LABEL[copy.moeite]}
         </span>
       </div>
 
-      <h2 className="mt-4 font-display text-[26px] font-normal text-stone-900">
-        {EIWIT_CARD_COPY.title}
-      </h2>
+      <h3 className="mt-4 font-display text-[22px] font-normal text-stone-900">
+        {copy.title}
+      </h3>
       <p className="mt-2 max-w-[60ch] text-[15px] leading-relaxed text-stone-600">
-        {EIWIT_CARD_COPY.why}
+        {rec.reason}
       </p>
-
-      <Link
-        href={guideHref}
-        className="mt-4 inline-flex items-center rounded-md bg-[#F0FAF3] px-3 py-2 text-[13px] font-semibold text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]"
-      >
-        {EIWIT_CARD_COPY.evidenceLabel} ›
-      </Link>
 
       <div className="mt-5">
         <ApproachCardLink
-          href={voedingHub}
-          destination="approach_eiwit_gids"
+          href={rec.guideHref}
+          destination={`approach_${rec.slug}_gids`}
           className="inline-flex min-h-[44px] items-center rounded-full bg-[#0E1A14] px-[22px] py-2.5 text-sm font-semibold text-[#F7F5F0] transition hover:bg-[#0E1A14]/90"
         >
-          {EIWIT_CARD_COPY.ctaLabel}
+          Zo pak je het aan →
         </ApproachCardLink>
       </div>
 
-      {comparisonHref ? (
+      {showComparison && rec.comparisonHref ? (
         <div className="mt-5 flex items-start gap-2 border-t border-[#F0EEEC] pt-4">
           <span className="mt-0.5 shrink-0 rounded-[3px] border border-[#D6D3D1] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.06em] text-stone-400">
             adv
           </span>
           <p className="text-[13px] leading-relaxed text-stone-400">
-            {EIWIT_CARD_COPY.affiliateLead}{" "}
+            Haal je het niet uit voeding?{" "}
             <ApproachCardLink
-              href={comparisonHref}
-              destination="approach_eiwit_vergelijk"
+              href={rec.comparisonHref}
+              destination={`approach_${rec.slug}_vergelijk`}
               className="text-stone-600 underline decoration-stone-300 underline-offset-2 transition hover:text-stone-800"
             >
-              {EIWIT_CARD_COPY.affiliateLink}
+              Vergelijk {rec.name.toLowerCase()} →
             </ApproachCardLink>
           </p>
         </div>
@@ -72,8 +77,14 @@ export default async function AanpakMode() {
   const account = await getAccountFromCookie();
   const dashboard = account ? await loadAccountDashboardData(account.id) : null;
   const hasContext = Boolean(dashboard && !dashboard.empty && dashboard.current);
-  const answers = dashboard?.answers ?? null;
-  const showEiwit = hasContext && isEiwitPriority(answers);
+
+  let recommendations: RecommendedSupplement[] = [];
+  if (hasContext && dashboard?.sessionId) {
+    const loaded = await loadIntakeSessionPayloadBySessionId(dashboard.sessionId);
+    if (loaded.ok && loaded.session) {
+      recommendations = buildRecommendations(loaded.session);
+    }
+  }
 
   return (
     <section aria-label="Jouw aanpak" className="pb-16 md:pb-20">
@@ -108,12 +119,26 @@ export default async function AanpakMode() {
               </span>
             </div>
 
-            {showEiwit ? (
-              <EiwitCard />
+            {recommendations.length > 0 ? (
+              <>
+                <div className="mb-4 rounded-r-lg border-l-[3px] border-[#5A8F6A] bg-[#EEF3EF] py-3 pl-4 pr-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#3D6B4F]">
+                    Grootste winst, kleinste stap
+                  </p>
+                  <p className="mt-1 text-sm text-[#3D6B4F]">
+                    Begin hier: veel effect, lage drempel. Voeding eerst, supplement als aanvulling.
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  {recommendations.map((rec, index) => (
+                    <ApproachCard key={rec.slug} rec={rec} isTop={index === 0} />
+                  ))}
+                </div>
+              </>
             ) : (
               <div className="rounded-[20px] border border-dashed border-[#D6D3D1] px-5 py-12 text-center">
                 <p className="text-base text-stone-500">
-                  Op dit moment geen grote eiwit-winst voor jou — mooi. Je volgende kansen verschijnen hier na je volgende check-in.
+                  Op dit moment geen specifieke aanpak-tips uit je check — je leefstijl-basis zit goed. Nieuwe kansen verschijnen hier na je volgende check-in.
                 </p>
               </div>
             )}
