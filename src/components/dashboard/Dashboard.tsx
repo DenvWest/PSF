@@ -18,6 +18,7 @@ import {
   Sparkline,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
+import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
@@ -75,8 +76,9 @@ type SharedSectionProps = {
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
   onGoVandaag: () => void;
-  onVoortgangScreenChange?: (screen: VoortgangScreen) => void;
-  initialVoortgangScreen?: VoortgangScreen;
+  voortgangScreen: VoortgangScreen;
+  onVoortgangScreenChange: (screen: VoortgangScreen) => void;
+  onOpenInzichten: () => void;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -443,7 +445,10 @@ const Greeting = ({
 const VitalityScoreSection = ({
   empty,
   model,
+  data,
   onCheck,
+  voortgangScreen,
+  onOpenInzichten,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const emittedKeyRef = useRef<string | null>(null);
@@ -497,6 +502,10 @@ const VitalityScoreSection = ({
     return null;
   }
 
+  if (voortgangScreen !== "hub") {
+    return null;
+  }
+
   const explainer = getVitalityExplainer({
     vitality: currentModel.vitality,
     vitalityDelta: currentModel.vitalityDelta,
@@ -507,15 +516,21 @@ const VitalityScoreSection = ({
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <VitalityScoreCard
         tone="light"
         value={currentModel.vitality}
         delta={currentModel.vitalityDelta}
+        firstName={data?.firstName ?? null}
         bodyLine={explainer?.[0]}
-        history={currentModel.history}
+        showRhythm={false}
+        onInsightsClick={() => {
+          trackEvent("dashboard_inzichten_cta_click", { surface: "voortgang" });
+          clarityTag("dashboard_voortgang", "inzichten_cta");
+          onOpenInzichten();
+        }}
       />
-
+      <MetingenCard scores={currentModel.scores} history={currentModel.history} />
     </div>
   );
 };
@@ -2869,6 +2884,7 @@ const SECTION_RENDERERS: Record<
         data={props.data}
         isMember={props.isMember}
         tab={props.tab}
+        screen={props.voortgangScreen}
         unlockedStatistics={
           <>
             <SignalsSection {...props} />
@@ -2877,7 +2893,6 @@ const SECTION_RENDERERS: Record<
           </>
         }
         onScreenChange={props.onVoortgangScreenChange}
-        initialScreen={props.initialVoortgangScreen}
       />
     ),
   future: () => <FutureSection />,
@@ -3099,8 +3114,9 @@ export default function Dashboard({
     onDashboardCheckin,
     onRemeasure,
     onGoVandaag: () => setTab("vandaag"),
+    voortgangScreen,
     onVoortgangScreenChange: setVoortgangScreen,
-    initialVoortgangScreen,
+    onOpenInzichten: () => setVoortgangScreen("inzichten"),
   };
 
   const isVoortgangDetail = tab === "voortgang" && voortgangScreen !== "hub";

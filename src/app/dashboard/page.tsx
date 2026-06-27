@@ -20,6 +20,7 @@ type DashboardPageProps = {
 const VALID_TABS = new Set<DashboardTabId>(["vandaag", "voortgang", "hermeting"]);
 const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
+  "inzichten",
   "favorieten",
   "statistieken",
   "lichaamssamenstelling",

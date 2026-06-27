@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import {
@@ -12,15 +12,26 @@ import {
 } from "@/components/app/primitives";
 import { IDENTITY_FIELDS, PILLARS } from "@/data/dashboard";
 import { buildRecommendations } from "@/lib/build-recommendations";
+import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
+import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
+import { getVitalityExplainer } from "@/lib/vitality-explainer";
+import {
+  getVitalityScoreBody,
+  getVitalityScoreHeading,
+  VITALITY_INSIGHTS_UPSELL_BODY,
+  VITALITY_INSIGHTS_UPSELL_CTA,
+  VITALITY_INSIGHTS_UPSELL_HEADING,
+} from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
 import type { DashboardData, DashboardModel, DashboardTabId } from "@/types/dashboard";
 
 export type VoortgangScreen =
   | "hub"
+  | "inzichten"
   | "favorieten"
   | "statistieken"
   | "lichaamssamenstelling";
@@ -30,9 +41,9 @@ type VoortgangHubProps = {
   data?: DashboardData;
   isMember: boolean;
   tab: DashboardTabId;
+  screen: VoortgangScreen;
   unlockedStatistics: ReactNode;
-  initialScreen?: VoortgangScreen;
-  onScreenChange?: (screen: VoortgangScreen) => void;
+  onScreenChange: (screen: VoortgangScreen) => void;
 };
 
 function handleSupplementenHubClick() {
@@ -424,6 +435,166 @@ function FavorietenView({
   );
 }
 
+function BlurredInsightTips({ tips }: { tips: string[] }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {tips.map((tip) => (
+        <Card key={tip} pad={16}>
+          <div
+            style={{
+              fontSize: 14,
+              color: "var(--text)",
+              lineHeight: 1.55,
+              textWrap: "pretty",
+            }}
+          >
+            {tip}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function VitaalscoreInzichtenView({
+  model,
+  firstName,
+  isMember,
+  onBack,
+}: {
+  model: DashboardModel;
+  firstName: string | null;
+  isMember: boolean;
+  onBack: () => void;
+}) {
+  const upsellShownRef = useRef(false);
+  const explainer = getVitalityExplainer({
+    vitality: model.vitality,
+    vitalityDelta: model.vitalityDelta,
+    priorityId: model.priority.id,
+    priorityScore: model.scores[model.priority.id],
+    answers: model.answers,
+    domainScores: model.domainScores,
+  });
+  const heading = getVitalityScoreHeading(firstName, false);
+  const body = getVitalityScoreBody(false, model.vitality, explainer[0]);
+  const tipLines = [explainer[1], explainer[2]].filter(Boolean);
+
+  useEffect(() => {
+    if (isMember || upsellShownRef.current) {
+      return;
+    }
+    upsellShownRef.current = true;
+    trackEvent("dashboard_inzichten_upsell", {
+      state: "locked",
+      surface: "voortgang",
+    });
+    clarityTag("dashboard_voortgang", "inzichten_locked");
+  }, [isMember]);
+
+  return (
+    <section aria-label="Jouw inzichten" style={{ paddingTop: 16 }}>
+      <VoortgangSubHeader title="Jouw inzichten" onBack={onBack} />
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <VitalityGauge
+            value={model.vitality}
+            size={260}
+            stroke={18}
+            variant="hero"
+            theme="light"
+            tone="light"
+            showBandLabel={false}
+          />
+        </div>
+
+        <div style={{ textAlign: "center", padding: "0 8px" }}>
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: "var(--f-serif)",
+              fontSize: 24,
+              fontWeight: 400,
+              color: "var(--text)",
+              lineHeight: 1.2,
+            }}
+          >
+            {heading}
+          </h2>
+          <p
+            style={{
+              margin: "12px 0 0",
+              fontSize: 15,
+              color: "var(--text-muted)",
+              lineHeight: 1.55,
+              textWrap: "pretty",
+            }}
+          >
+            {body}
+          </p>
+        </div>
+
+        {!isMember ? (
+          <>
+            <div
+              style={{
+                filter: "blur(5px)",
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+              aria-hidden
+            >
+              <BlurredInsightTips tips={tipLines} />
+            </div>
+
+            <div style={{ textAlign: "center", padding: "8px 8px 0" }}>
+              <div
+                style={{
+                  fontFamily: "var(--f-serif)",
+                  fontSize: 21,
+                  color: "var(--text)",
+                  lineHeight: 1.3,
+                  marginBottom: 6,
+                }}
+              >
+                {VITALITY_INSIGHTS_UPSELL_HEADING}
+              </div>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "var(--text-muted)",
+                  lineHeight: 1.55,
+                  margin: "0 0 18px",
+                  textWrap: "pretty",
+                }}
+              >
+                {VITALITY_INSIGHTS_UPSELL_BODY}
+              </p>
+              <Button
+                variant="terra"
+                full
+                size="lg"
+                icon={<Icons.Lock s={18} />}
+                onClick={() => {
+                  trackEvent("dashboard_inzichten_upsell_click", {
+                    surface: "voortgang",
+                  });
+                  clarityTag("dashboard_voortgang", "inzichten_upsell_click");
+                }}
+              >
+                {VITALITY_INSIGHTS_UPSELL_CTA}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <RecommendedInsights pillarId={model.priority.id} />
+        )}
+      </div>
+    </section>
+  );
+}
+
 function StatistiekenView({
   isMember,
   unlockedStatistics,
@@ -763,21 +934,19 @@ export default function VoortgangHub({
   data,
   isMember,
   tab,
+  screen,
   unlockedStatistics,
-  initialScreen = "hub",
   onScreenChange,
 }: VoortgangHubProps) {
-  const [screen, setScreen] = useState<VoortgangScreen>(initialScreen);
+  const setScreen = (next: VoortgangScreen) => {
+    onScreenChange(next);
+  };
 
   useEffect(() => {
     if (tab !== "voortgang") {
-      setScreen("hub");
+      onScreenChange("hub");
     }
-  }, [tab]);
-
-  useEffect(() => {
-    onScreenChange?.(screen);
-  }, [screen, onScreenChange]);
+  }, [tab, onScreenChange]);
 
   const navigate = (next: VoortgangScreen) => {
     setScreen(next);
@@ -789,7 +958,11 @@ export default function VoortgangHub({
       setScreen("statistieken");
       return;
     }
-    if (screen === "favorieten" || screen === "statistieken") {
+    if (
+      screen === "favorieten" ||
+      screen === "statistieken" ||
+      screen === "inzichten"
+    ) {
       setScreen("hub");
     }
   };
@@ -802,6 +975,17 @@ export default function VoortgangHub({
 
   if (!model) {
     return null;
+  }
+
+  if (screen === "inzichten") {
+    return (
+      <VitaalscoreInzichtenView
+        model={model}
+        firstName={data?.firstName ?? null}
+        isMember={isMember}
+        onBack={goBack}
+      />
+    );
   }
 
   if (screen === "favorieten") {
