@@ -37,6 +37,8 @@ import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
+import { buildRecommendations } from "@/lib/build-recommendations";
+import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
@@ -2129,6 +2131,84 @@ const StatisticsSection = (props: SharedSectionProps) => {
   );
 };
 
+const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
+  if (!model) {
+    return null;
+  }
+
+  const session: IntakeSessionPayload = {
+    sessionId: data?.sessionId ?? "",
+    symptoms: [],
+    answers: model.answers ?? {},
+    scores: model.domainScores,
+    urgency: "",
+    profile: data?.profileLabel ?? "",
+    timestamp: Date.now(),
+    ageRange: null,
+    firstName: null,
+  };
+
+  const recommendations = buildRecommendations(session);
+
+  if (recommendations.length === 0) {
+    return null;
+  }
+
+  return (
+    <section aria-label="Jouw aanraders">
+      <SectionHeader eyebrow="Jouw aanraders" title="Wat past bij jouw scores" />
+      <Card pad={8}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {recommendations.map((rec, index) => {
+            const href = rec.comparisonHref ?? rec.guideHref;
+            return (
+              <Link
+                key={rec.slug}
+                href={href}
+                onClick={() => {
+                  trackEvent("dashboard_aanrader_click", { slug: rec.slug, target: href });
+                  clarityTag("dashboard_aanrader", rec.slug);
+                  emitIntakeClientEvent("dashboard.aanrader_clicked", {
+                    slug: rec.slug,
+                    target: href,
+                    surface: "voortgang",
+                  });
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "14px 10px",
+                  textDecoration: "none",
+                  color: "inherit",
+                  borderTop: index ? "1px solid var(--divider)" : "none",
+                }}
+              >
+                <span style={{ fontSize: 22, flexShrink: 0 }} aria-hidden>
+                  {rec.icon}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: "var(--text)", lineHeight: 1.25 }}>
+                    {rec.name}
+                  </div>
+                  <div style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5, marginTop: 2, textWrap: "pretty" }}>
+                    {rec.wiifm}
+                  </div>
+                </div>
+                <Icons.ChevronRight s={18} style={{ color: "var(--text-subtle)", flexShrink: 0 }} />
+              </Link>
+            );
+          })}
+        </div>
+      </Card>
+      <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--text-muted)", marginTop: 10 }}>
+        <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
+        <span>Algemene oriëntatie op basis van je antwoorden — geen persoonlijk medisch advies. Wij verkopen zelf niets.</span>
+      </div>
+    </section>
+  );
+};
+
 const EMPTY_SECTIONS: DashboardSectionType[] = ["vitalityScore"];
 
 const SECTION_RENDERERS: Record<
@@ -2147,6 +2227,8 @@ const SECTION_RENDERERS: Record<
   history: (props) => <HistorySection {...props} />,
   statistics: (props) =>
     props.empty ? null : <StatisticsSection {...props} />,
+  recommendations: (props) =>
+    props.empty ? null : <RecommendationsSection {...props} />,
   future: () => <FutureSection />,
 };
 

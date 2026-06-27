@@ -11,6 +11,7 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.first_checkin_started",
   "dashboard.vitality_scored",
   "dashboard.cta_to_hub",
+  "dashboard.aanrader_clicked",
   "intake.completed",
   "intake.theme_revealed",
   "intake.cta_to_pillar",
