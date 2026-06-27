@@ -54,12 +54,14 @@ import type {
 type DashboardProps = {
   empty?: boolean;
   data?: DashboardData;
+  isMember?: boolean;
 };
 
 type SharedSectionProps = {
   empty?: boolean;
   model: DashboardModel | null;
   data?: DashboardData;
+  isMember: boolean;
   onCheck: () => void;
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
@@ -2042,6 +2044,91 @@ const FutureSection = () => (
   </section>
 );
 
+const StatisticsSection = (props: SharedSectionProps) => {
+  const upsellShownRef = useRef(false);
+
+  useEffect(() => {
+    if (props.isMember || upsellShownRef.current) {
+      return;
+    }
+    upsellShownRef.current = true;
+    trackEvent("dashboard_statistieken_upsell", {
+      state: "locked",
+      surface: "voortgang",
+    });
+    clarityTag("dashboard_statistieken", "locked");
+  }, [props.isMember]);
+
+  if (!props.isMember) {
+    return (
+      <section aria-label="Statistieken">
+        <SectionHeader eyebrow="Statistieken" title="Je cijfers over tijd" />
+        <Card
+          pad={24}
+          glow="#C8956C"
+          style={{ borderColor: "rgba(200,149,108,0.26)" }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--text-subtle)",
+              }}
+            >
+              <Icons.Lock s={14} /> Lidmaatschap
+            </div>
+            <p
+              style={{
+                fontSize: 14,
+                color: "var(--text-muted)",
+                lineHeight: 1.6,
+                margin: 0,
+                textWrap: "pretty",
+              }}
+            >
+              Volg je HRV, rustpols en slaapduur, je voedingsinname en je
+              volledige checkgeschiedenis — gebundeld op één plek, over tijd.
+              Binnenkort beschikbaar met lidmaatschap.
+            </p>
+            <span
+              style={{
+                display: "inline-flex",
+                alignSelf: "flex-start",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                fontWeight: 600,
+                color: "var(--terra, #C8956C)",
+                border: "1px solid rgba(200,149,108,0.4)",
+                borderRadius: 999,
+                padding: "5px 12px",
+              }}
+            >
+              <Icons.Spark s={13} /> Binnenkort
+            </span>
+          </div>
+        </Card>
+      </section>
+    );
+  }
+
+  return (
+    <CollapsibleSection eyebrow="Statistieken" title="Je cijfers over tijd">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <SignalsSection {...props} />
+        <NutritionIntakeSection {...props} />
+        <HistorySection {...props} />
+      </div>
+    </CollapsibleSection>
+  );
+};
+
 const EMPTY_SECTIONS: DashboardSectionType[] = ["vitalityScore"];
 
 const SECTION_RENDERERS: Record<
@@ -2058,6 +2145,8 @@ const SECTION_RENDERERS: Record<
   retest: (props) => (props.empty ? null : <RetestSection {...props} />),
   identity: () => null,
   history: (props) => <HistorySection {...props} />,
+  statistics: (props) =>
+    props.empty ? null : <StatisticsSection {...props} />,
   future: () => <FutureSection />,
 };
 
@@ -2202,7 +2291,11 @@ const DashTabBar = ({
   </nav>
 );
 
-export default function Dashboard({ empty, data }: DashboardProps) {
+export default function Dashboard({
+  empty,
+  data,
+  isMember = false,
+}: DashboardProps) {
   const router = useRouter();
   const [tab, setTab] = useState<DashboardTabId>(
     empty ? "voortgang" : "vandaag",
@@ -2256,6 +2349,7 @@ export default function Dashboard({ empty, data }: DashboardProps) {
     empty,
     model,
     data,
+    isMember,
     onCheck,
     onDashboardCheckin,
     onRemeasure,
