@@ -13,6 +13,7 @@ type PriorityLadderProps = {
   positions?: Record<PillarId, number>;
   focusRowHref?: string;
   focusRowAriaLabel?: string;
+  onFocusRowClick?: () => void;
 };
 
 function LadderRowContent({
@@ -118,6 +119,7 @@ export default function PriorityLadder({
   positions,
   focusRowHref,
   focusRowAriaLabel,
+  onFocusRowClick,
 }: PriorityLadderProps) {
   const animated = positions != null;
 
@@ -174,6 +176,7 @@ export default function PriorityLadder({
             {focus && focusRowHref ? (
               <Link
                 href={focusRowHref}
+                onClick={onFocusRowClick}
                 aria-label={
                   focusRowAriaLabel ??
                   `Bewaar dit overzicht — begin bij ${pillar.label.toLowerCase()}`

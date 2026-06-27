@@ -1,3 +1,4 @@
+import { PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
 import { getPlanTemplate } from "@/data/lifestyle-plans";
 import type { QuestionId } from "@/data/intake-questions";
 import {
@@ -8,7 +9,7 @@ import {
 import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import type { DomainScores } from "@/lib/intake-engine";
-import type { PillarId } from "@/types/dashboard";
+import type { DashboardModel, PillarId } from "@/types/dashboard";
 import type {
   PlanProgress,
   PlanStep,
@@ -32,6 +33,32 @@ export type ActivePlanHabit = {
   state: PlanStepState | null;
   planHref: string | null;
 };
+
+export function buildPriorityInterventionHref(
+  model: Pick<DashboardModel, "priority" | "domainScores" | "answers" | "activeHabit">,
+): string | null {
+  if (model.activeHabit?.planHref) {
+    return model.activeHabit.planHref;
+  }
+
+  if (model.answers) {
+    const planDomain = resolvePlanDomain(
+      model.priority.id,
+      model.domainScores,
+      model.answers,
+    );
+    if (planDomain && getPlanTemplate(planDomain)) {
+      return `/intake/plan/${planDomain}?from=dashboard`;
+    }
+  }
+
+  const checkin = PILLAR_CHECKIN_ROUTES[model.priority.id];
+  if (checkin) {
+    return `${checkin}?from=dashboard`;
+  }
+
+  return model.priority.hubRoute ?? null;
+}
 
 export function resolvePlanDomain(
   priorityId: PillarId,

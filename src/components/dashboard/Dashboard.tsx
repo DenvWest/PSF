@@ -17,6 +17,9 @@ import {
 } from "@/data/measurement-config";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
+import {
+  buildPriorityInterventionHref,
+} from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -133,6 +136,46 @@ const CollapsibleSection = ({
 };
 
 const SECTION_DIVIDER = "1px solid rgba(255,255,255,0.06)";
+
+function trackDashboardInterventionClick(
+  source: "hefboom" | "ladder",
+  model: DashboardModel,
+  href: string,
+): void {
+  const pillar = model.priority.id;
+  const destination = href.includes("/intake/plan/")
+    ? "plan"
+    : href.startsWith("/intake/")
+      ? "checkin"
+      : "hub";
+
+  if (destination === "plan") {
+    emitIntakeClientEvent("plan.action_clicked", {
+      source: `dashboard_${source}`,
+      pillar_id: pillar,
+      href,
+    });
+  } else if (destination === "checkin") {
+    emitIntakeClientEvent("dashboard.first_checkin_started", {
+      source: `dashboard_${source}`,
+      pillar_id: pillar,
+      route: href.split("?")[0],
+    });
+  } else {
+    emitIntakeClientEvent("intake.cta_to_pillar", {
+      source: `dashboard_${source}`,
+      theme_slug: pillar,
+      hub_route: href,
+    });
+  }
+
+  trackEvent("dashboard_intervention_click", {
+    source,
+    pillar,
+    destination,
+  });
+  clarityTag("dashboard_intervention", source);
+}
 
 const ActiveHabitCard = ({
   habit,
@@ -333,6 +376,9 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
           lifestyleStep,
         )
       : null;
+  const interventionHref = currentModel
+    ? buildPriorityInterventionHref(currentModel)
+    : null;
 
   return (
     <Card glow="#5A8F6A" pad={28} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
@@ -378,27 +424,85 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
               borderBottom: currentModel?.activeHabit ? SECTION_DIVIDER : "none",
             }}
           >
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 10 }}>
-              <Icons.Target s={14} /> Je grootste hefboom
-            </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 10 }}>
-              {currentModel?.priority.label}.
-            </div>
-            {explainer?.slice(0, 2).map((paragraph, index) =>
-              paragraph ? (
-                <p
-                  key={index}
+            {interventionHref && currentModel ? (
+              <Link
+                href={interventionHref}
+                onClick={() =>
+                  trackDashboardInterventionClick("hefboom", currentModel, interventionHref)
+                }
+                aria-label={`Start bij ${currentModel.priority.label.toLowerCase()} — je grootste hefboom`}
+                style={{
+                  display: "block",
+                  textDecoration: "none",
+                  color: "inherit",
+                  cursor: "pointer",
+                  margin: "-4px -6px",
+                  padding: "4px 6px",
+                  borderRadius: 12,
+                }}
+              >
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: currentModel.priority.color, marginBottom: 10 }}>
+                  <Icons.Target s={14} /> Je grootste hefboom
+                </div>
+                <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 10 }}>
+                  {currentModel.priority.label}.
+                </div>
+                {explainer?.slice(0, 2).map((paragraph, index) =>
+                  paragraph ? (
+                    <p
+                      key={index}
+                      style={{
+                        fontSize: 14,
+                        color: "var(--text-muted)",
+                        lineHeight: 1.6,
+                        margin: index === 0 ? "0 0 10px" : "0",
+                        textWrap: "pretty",
+                      }}
+                    >
+                      {paragraph}
+                    </p>
+                  ) : null,
+                )}
+                <span
                   style={{
-                    fontSize: 14,
-                    color: "var(--text-muted)",
-                    lineHeight: 1.6,
-                    margin: index === 0 ? "0 0 10px" : "0",
-                    textWrap: "pretty",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: currentModel.priority.color,
+                    marginTop: 4,
                   }}
                 >
-                  {paragraph}
-                </p>
-              ) : null,
+                  Start hier
+                  <Icons.ArrowRight s={14} />
+                </span>
+              </Link>
+            ) : (
+              <>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 10 }}>
+                  <Icons.Target s={14} /> Je grootste hefboom
+                </div>
+                <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 10 }}>
+                  {currentModel?.priority.label}.
+                </div>
+                {explainer?.slice(0, 2).map((paragraph, index) =>
+                  paragraph ? (
+                    <p
+                      key={index}
+                      style={{
+                        fontSize: 14,
+                        color: "var(--text-muted)",
+                        lineHeight: 1.6,
+                        margin: index === 0 ? "0 0 10px" : "0",
+                        textWrap: "pretty",
+                      }}
+                    >
+                      {paragraph}
+                    </p>
+                  ) : null,
+                )}
+              </>
             )}
           </div>
 
@@ -465,12 +569,25 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
     return null;
   }
 
+  const interventionHref = buildPriorityInterventionHref(model);
+
   return (
     <CollapsibleSection eyebrow="Roadmap" title="Waar je nu begint">
       <>
         <SectionHeader eyebrow="Prioriteit" title="Je pijlerladder" action={<span style={{ fontSize: 12, color: "var(--text-subtle)" }}>zwakste bovenaan</span>} />
         <Card pad={8}>
-          <PriorityLadder ladder={ladder} scores={scores} positions={pos} />
+          <PriorityLadder
+            ladder={ladder}
+            scores={scores}
+            positions={pos}
+            focusRowHref={interventionHref ?? undefined}
+            focusRowAriaLabel={`Start bij ${model.priority.label.toLowerCase()} — je prioriteit nu`}
+            onFocusRowClick={
+              interventionHref
+                ? () => trackDashboardInterventionClick("ladder", model, interventionHref)
+                : undefined
+            }
+          />
         </Card>
       </>
     </CollapsibleSection>
@@ -591,24 +708,6 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
           );
         })}
       </SlotGrid>
-      <div style={{ marginTop: 10, textAlign: "right" }}>
-        <Link
-          href="/inzichten"
-          onClick={() =>
-            emitIntakeClientEvent("dashboard.cta_to_hub", {
-              destination: "hub",
-            })
-          }
-          style={{
-            fontSize: 12,
-            color: "var(--text-subtle)",
-            fontWeight: 600,
-            textDecoration: "none",
-          }}
-        >
-          Alle inzichten →
-        </Link>
-      </div>
       <div style={{ fontSize: 11.5, color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.12em", margin: "18px 2px 10px" }}>Objectieve signalen</div>
       <SlotGrid min={150} gap={10}>
         {connectedSignals.map(renderSignal)}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildActivePlanHabit, resolvePlanDomain } from "@/lib/dashboard-active-plan";
+import { buildActivePlanHabit, buildPriorityInterventionHref, resolvePlanDomain } from "@/lib/dashboard-active-plan";
 import { nutritionPlanTemplate } from "@/data/lifestyle-plans/nutrition";
 import { stressPlanTemplate } from "@/data/lifestyle-plans/stress";
 
@@ -119,5 +119,43 @@ describe("dashboard-active-plan", () => {
     });
 
     expect(habit).toBeNull();
+  });
+
+  it("builds plan href for intervention when priority has a lifestyle plan", () => {
+    const href = buildPriorityInterventionHref({
+      priority: { id: "stress" } as never,
+      domainScores: {
+        sleep_score: 58,
+        energy_score: 54,
+        stress_score: 35,
+        nutrition_score: 47,
+        movement_score: 71,
+        recovery_score: 51,
+      },
+      answers: DEV_ANSWERS,
+      activeHabit: null,
+    });
+
+    expect(href).toBe("/intake/plan/stress?from=dashboard");
+  });
+
+  it("prefers active habit plan href for intervention", () => {
+    const href = buildPriorityInterventionHref({
+      priority: { id: "voeding" } as never,
+      domainScores: {
+        sleep_score: 58,
+        energy_score: 54,
+        stress_score: 47,
+        nutrition_score: 38,
+        movement_score: 71,
+        recovery_score: 51,
+      },
+      answers: DEV_ANSWERS,
+      activeHabit: {
+        planHref: "/intake/plan/nutrition?from=dashboard",
+      } as never,
+    });
+
+    expect(href).toBe("/intake/plan/nutrition?from=dashboard");
   });
 });
