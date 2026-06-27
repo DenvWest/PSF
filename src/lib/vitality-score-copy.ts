@@ -99,7 +99,10 @@ export const VITALITY_INSIGHTS_UPSELL_CTA = "Vitaalscore verbeteren";
 
 export const METINGEN_EYEBROW = "Metingen";
 
-export const METINGEN_DOMAINS_LABEL = "Voldoende leefstijldomein";
+export const METINGEN_DOMAINS_LABEL = "Domeinen op peil";
+
+export const METINGEN_DOMAINS_HINT =
+  "Domeinen die meetellen in je vitaalscore, met score 55 of hoger.";
 
 export const METINGEN_RHYTHM_LABEL = "Huidige meetreeks";
 

@@ -1,3 +1,5 @@
+import type { CheckScores, PillarId } from "@/types/dashboard";
+
 /**
  * 5-banden vitaliteitsschaal voor de gauge-weergave (totaal + per categorie).
  *
@@ -37,6 +39,26 @@ export const VITALITY_BAND_ARC_LABELS: Record<VitalityBandId, string> = {
 };
 
 export const VITALITY_SCORE_MAX = 100;
+
+export const VITALITY_ON_PEIL_MIN =
+  VITALITY_BANDS.find((band) => band.id === "goed")?.min ?? 55;
+
+/** Pijlers die meetellen in computeVitaliteit — energie valt buiten de index. */
+export const VITALITY_FACET_PILLAR_IDS: readonly PillarId[] = [
+  "slaap",
+  "stress",
+  "voeding",
+  "beweging",
+  "herstel",
+];
+
+export const VITALITY_FACET_COUNT = VITALITY_FACET_PILLAR_IDS.length;
+
+export function countVitalityFacetsOnPeil(scores: CheckScores): number {
+  return VITALITY_FACET_PILLAR_IDS.filter(
+    (id) => scores[id] >= VITALITY_ON_PEIL_MIN,
+  ).length;
+}
 
 export function getVitalityBand(score: number): VitalityBand {
   const clamped = Number.isFinite(score) ? Math.min(100, Math.max(0, score)) : 0;
