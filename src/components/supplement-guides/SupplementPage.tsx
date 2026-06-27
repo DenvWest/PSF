@@ -9,6 +9,7 @@ import FAQItem from "./FAQItem";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { INTAKE_CTA, INTAKE_DELIVERABLE } from "@/lib/intake-product-copy";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
 import { ComparisonProfileFits } from "@/components/supplements/ComparisonProfileFits";
 import { getProfileFitsForGuideSlug } from "@/data/supplement-profile-fits";
 import {
@@ -79,6 +80,7 @@ export default function SupplementPage({ data }: SupplementPageProps) {
 
       <div className="border-b border-stone-200/80 bg-white">
         <Container className="py-10 md:py-14">
+          <VoortgangReturnBanner surface="gids" />
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },

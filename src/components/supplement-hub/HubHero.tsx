@@ -2,6 +2,7 @@ import Link from "next/link";
 import Container from "@/components/layout/Container";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
+import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
 
 type HubHeroProps = {
   hasSession: boolean;
@@ -14,6 +15,7 @@ export default function HubHero({ hasSession }: HubHeroProps) {
       aria-label="Supplementen hub introductie"
     >
       <Container className="relative pt-16 pb-20 md:pt-24 md:pb-28">
+        <VoortgangReturnBanner surface="supplementen" />
         <div className="mb-8">
           <Breadcrumbs
             items={[

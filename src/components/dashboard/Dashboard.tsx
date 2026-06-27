@@ -61,6 +61,8 @@ type DashboardProps = {
   empty?: boolean;
   data?: DashboardData;
   isMember?: boolean;
+  initialTab?: DashboardTabId;
+  initialVoortgangScreen?: VoortgangScreen;
 };
 
 type SharedSectionProps = {
@@ -74,6 +76,7 @@ type SharedSectionProps = {
   onRemeasure: () => void;
   onGoVandaag: () => void;
   onVoortgangScreenChange?: (screen: VoortgangScreen) => void;
+  initialVoortgangScreen?: VoortgangScreen;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -2874,6 +2877,7 @@ const SECTION_RENDERERS: Record<
           </>
         }
         onScreenChange={props.onVoortgangScreenChange}
+        initialScreen={props.initialVoortgangScreen}
       />
     ),
   future: () => <FutureSection />,
@@ -3024,13 +3028,16 @@ export default function Dashboard({
   empty,
   data,
   isMember = false,
+  initialTab,
+  initialVoortgangScreen,
 }: DashboardProps) {
   const router = useRouter();
   const [tab, setTab] = useState<DashboardTabId>(
-    empty ? "voortgang" : "vandaag",
+    initialTab ?? (empty ? "voortgang" : "vandaag"),
   );
-  const [voortgangScreen, setVoortgangScreen] =
-    useState<VoortgangScreen>("hub");
+  const [voortgangScreen, setVoortgangScreen] = useState<VoortgangScreen>(
+    initialVoortgangScreen ?? "hub",
+  );
   const model = useMemo(
     () =>
       !empty && data?.current
@@ -3093,6 +3100,7 @@ export default function Dashboard({
     onRemeasure,
     onGoVandaag: () => setTab("vandaag"),
     onVoortgangScreenChange: setVoortgangScreen,
+    initialVoortgangScreen,
   };
 
   const surfaceClass =

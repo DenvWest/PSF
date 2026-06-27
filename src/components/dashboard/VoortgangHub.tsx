@@ -16,6 +16,7 @@ import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
+import { withVoortgangReturn } from "@/lib/voortgang-return-link";
 import type { DashboardData, DashboardModel, DashboardTabId } from "@/types/dashboard";
 
 export type VoortgangScreen =
@@ -30,8 +31,14 @@ type VoortgangHubProps = {
   isMember: boolean;
   tab: DashboardTabId;
   unlockedStatistics: ReactNode;
+  initialScreen?: VoortgangScreen;
   onScreenChange?: (screen: VoortgangScreen) => void;
 };
+
+function handleSupplementenHubClick() {
+  trackEvent("dashboard_voortgang_supplementen_click", { surface: "voortgang" });
+  clarityTag("dashboard_voortgang", "supplementen");
+}
 
 const MOCK_TREND = [42, 48, 45, 52, 49, 55];
 
@@ -267,8 +274,12 @@ function FavorietenView({
   };
 
   const recommendations = buildRecommendations(session);
-  const topHref =
-    recommendations[0]?.comparisonHref ?? recommendations[0]?.guideHref ?? "/supplementen";
+  const topHref = withVoortgangReturn(
+    recommendations[0]?.comparisonHref ??
+      recommendations[0]?.guideHref ??
+      "/supplementen",
+  );
+  const supplementenHref = withVoortgangReturn("/supplementen");
 
   return (
     <section aria-label="Favorieten">
@@ -302,7 +313,7 @@ function FavorietenView({
         <Card pad={8} style={{ marginBottom: 20 }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             {recommendations.map((rec, index) => {
-              const href = rec.comparisonHref ?? rec.guideHref;
+              const href = withVoortgangReturn(rec.comparisonHref ?? rec.guideHref);
               return (
                 <Link
                   key={rec.slug}
@@ -374,16 +385,22 @@ function FavorietenView({
             </Button>
           </Link>
         ) : (
-          <Link href="/supplementen" style={{ textDecoration: "none" }}>
+          <Link
+            href={supplementenHref}
+            style={{ textDecoration: "none" }}
+            onClick={handleSupplementenHubClick}
+          >
             <Button variant="primary" full>
               Ontdek supplementen
             </Button>
           </Link>
         )}
-        <Link href="/supplementen" style={{ textDecoration: "none" }}>
-          <Button variant="ghost" full>
-            Alle supplementen bekijken
-          </Button>
+        <Link
+          href={supplementenHref}
+          onClick={handleSupplementenHubClick}
+          className="inline-flex w-full items-center justify-center rounded-xl border border-[var(--sage)] bg-[rgba(90,143,106,0.12)] px-5 py-[13px] text-[14.5px] font-semibold text-[var(--sage)] no-underline transition hover:bg-[rgba(90,143,106,0.2)]"
+        >
+          Alle supplementen bekijken
         </Link>
       </div>
 
@@ -747,9 +764,10 @@ export default function VoortgangHub({
   isMember,
   tab,
   unlockedStatistics,
+  initialScreen = "hub",
   onScreenChange,
 }: VoortgangHubProps) {
-  const [screen, setScreen] = useState<VoortgangScreen>("hub");
+  const [screen, setScreen] = useState<VoortgangScreen>(initialScreen);
 
   useEffect(() => {
     if (tab !== "voortgang") {
