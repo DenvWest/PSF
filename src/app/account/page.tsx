@@ -15,9 +15,5 @@ export default async function AccountPage() {
     redirect("/account/login");
   }
 
-  return (
-    <div className="ps-dark" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <AccountSettings email={account.email} />
-    </div>
-  );
+  return <AccountSettings email={account.email} />;
 }

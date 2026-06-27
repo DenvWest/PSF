@@ -430,11 +430,12 @@ html.floating-cta-active footer {
   --f-serif: var(--font-heading, Georgia, serif);
   --f-sans: var(--font-body, system-ui, sans-serif);
   min-height: 100vh;
+  min-height: 100dvh;
   color: var(--text);
   font-family: var(--f-sans);
-  background: radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%),
-    var(--bg);
-  background-attachment: fixed;
+  background-color: var(--bg);
+  background-image: radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
+  background-attachment: scroll;
 }
 
 .ps-dash ::selection {
@@ -457,11 +458,28 @@ html.floating-cta-active footer {
   --f-serif: var(--font-heading, Georgia, serif);
   --f-sans: var(--font-body, system-ui, sans-serif);
   min-height: 100vh;
+  min-height: 100dvh;
   color: var(--text);
   font-family: var(--f-sans);
-  background: radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%),
-    var(--bg);
-  background-attachment: fixed;
+  background-color: var(--bg);
+  background-image: radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
+  background-attachment: scroll;
+}
+
+.ps-account-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+@media (min-width: 768px) {
+  .ps-dash,
+  .ps-dark {
+    background-attachment: fixed;
+  }
 }
 
 .ps-dark ::selection {

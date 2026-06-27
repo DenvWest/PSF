@@ -59,10 +59,12 @@ export function AuthShell({ children, exitHref = "/" }: AuthShellProps) {
     <main
       style={{
         position: "relative",
-        minHeight: "100vh",
+        flex: 1,
+        width: "100%",
         display: "flex",
-        justifyContent: "center",
-        padding: "clamp(28px, 7vh, 72px) 18px 22px",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "clamp(28px, 7vh, 72px) 18px calc(22px + env(safe-area-inset-bottom, 0px))",
       }}
     >
       <div
@@ -84,6 +86,7 @@ export function AuthShell({ children, exitHref = "/" }: AuthShellProps) {
           zIndex: 1,
           width: "100%",
           maxWidth: 408,
+          flex: 1,
           display: "flex",
           flexDirection: "column",
           gap: 20,

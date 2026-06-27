@@ -16,9 +16,5 @@ export default async function AccountLoginPage() {
     redirect("/dashboard");
   }
 
-  return (
-    <div className="ps-dark" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <LoginScreen />
-    </div>
-  );
+  return <LoginScreen />;
 }

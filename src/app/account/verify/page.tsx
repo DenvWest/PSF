@@ -17,9 +17,5 @@ export default async function AccountVerifyPage({
 }) {
   const { aid, code } = await searchParams;
 
-  return (
-    <div className="ps-dark" style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <VerifyAccountScreen aid={aid ?? null} code={code ?? null} />
-    </div>
-  );
+  return <VerifyAccountScreen aid={aid ?? null} code={code ?? null} />;
 }
