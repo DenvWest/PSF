@@ -29,13 +29,13 @@ import { trackEvent } from "@/lib/ga4";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
+import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
 import type {
   DashboardData,
   DashboardModel,
   DashboardSectionType,
   DashboardTab,
   DashboardTabId,
-  NutritionIntakeBand,
   PillarId,
   Signal,
 } from "@/types/dashboard";
@@ -736,15 +736,6 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
       </div>
     </section>
   );
-};
-
-const NUTRITION_BAND: Record<
-  NutritionIntakeBand,
-  { label: string; color: string }
-> = {
-  below: { label: "Aan de lage kant", color: "var(--terra)" },
-  around: { label: "Geen aandachtspunt", color: "var(--text-muted)" },
-  meets: { label: "Geen aandachtspunt", color: "var(--text-muted)" },
 };
 
 const NutritionIntakeSection = ({ data }: SharedSectionProps) => {

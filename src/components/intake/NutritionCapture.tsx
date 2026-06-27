@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { clarityTag } from "@/lib/clarity";
 import { NUTRITION_LOG_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { IntakeEstimate, NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
-import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
-import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
-import { nutrientReferences } from "@/data/nutrition/intake-reference";
+import { type NutrientDelta } from "@/lib/nutrition-delta";
+import NutritionResultView from "@/components/intake/NutritionResultView";
 
 type Step =
   | { kind: "question"; index: number }
@@ -88,6 +88,8 @@ const QUESTIONS: QuestionDef[] = [
 const TOTAL = QUESTIONS.length;
 
 export default function NutritionCapture() {
+  const searchParams = useSearchParams();
+  const fromDashboard = searchParams.get("from") === "dashboard";
   const [step, setStep] = useState<Step>({ kind: "question", index: 0 });
   const [answers, setAnswers] = useState<Partial<NutritionSelfReport>>({});
   const [consentChecked, setConsentChecked] = useState(false);
@@ -165,266 +167,14 @@ export default function NutritionCapture() {
   }
 
   if (step.kind === "result") {
-    const lifestyle = step.advice.filter(
-      (a): a is Extract<NutritionAdviceItem, { kind: "lifestyle" }> =>
-        a.kind === "lifestyle" && a.nutrient !== "protein",
-    );
-    const supplements = step.advice.filter(
-      (a) => a.kind === "supplement" && a.nutrient !== "protein",
-    );
-    const visibleDeltas = step.delta
-      ? step.delta.filter((d) => d.direction !== "unchanged")
-      : null;
-
-    const proteinIndex = step.estimate.findIndex((e) => e.nutrient === "protein");
-    const proteinStatement =
-      proteinIndex >= 0 ? step.statements[proteinIndex] : null;
-    const proteinAdvice = step.advice.filter((a) => a.nutrient === "protein");
-    const proteinLifestyle = proteinAdvice.find(
-      (a): a is Extract<NutritionAdviceItem, { kind: "lifestyle" }> =>
-        a.kind === "lifestyle",
-    );
-    const proteinSupplement = proteinAdvice.find(
-      (a): a is Extract<NutritionAdviceItem, { kind: "supplement" }> =>
-        a.kind === "supplement",
-    );
-
-    const otherEstimates = step.estimate
-      .map((e, i) => ({
-        nutrient: e.nutrient,
-        band: e.band,
-        statement: step.statements[i],
-      }))
-      .filter((e) => e.nutrient !== "protein");
-    const otherGaps = otherEstimates.filter((e) => e.band === "below");
-    const otherOnTrack = otherEstimates.filter((e) => e.band !== "below");
-
-    const deltaImproved =
-      visibleDeltas?.filter((d) => d.direction === "improved") ?? [];
-    const deltaWorsened =
-      visibleDeltas?.filter((d) => d.direction === "worsened") ?? [];
-
     return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center">
-        <div className="w-full max-w-lg px-6 py-12">
-          <h1 className="mb-2 text-center font-serif text-3xl font-normal text-intake-ink">
-            Jouw inname-overzicht
-          </h1>
-          <p className="mb-8 text-center text-sm text-intake-ink-subtle">
-            Een grove inschatting op basis van hoe vaak je iets eet — geen meting van je werkelijke inname.
-          </p>
-
-          {proteinStatement ? (
-            <section
-              aria-labelledby="protein-heading"
-              className="mb-8 rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-5"
-            >
-              <h2
-                id="protein-heading"
-                className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-intake-terra"
-              >
-                Eiwit — jouw belangrijkste bouwsteen
-              </h2>
-              <p className="mb-4 text-sm leading-relaxed text-intake-ink">
-                {proteinStatement}
-              </p>
-
-              <details className="group rounded-[12px] border border-intake-card-border bg-intake-bg-elevated/40">
-                <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
-                  Bereken je precieze eiwitdoel
-                </summary>
-                <div className="border-t border-intake-divider px-2 pb-3 pt-2">
-                  <ProteinTargetCard
-                    proteinMealsYesterday={answers.proteinMealsPerDay}
-                  />
-                </div>
-              </details>
-
-              {proteinLifestyle ? (
-                <div className="mt-4">
-                  <p className="mb-1 text-xs font-medium text-intake-ink-subtle">
-                    De basis — voeding eerst
-                  </p>
-                  <p className="rounded-[12px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3 text-sm leading-relaxed text-intake-ink">
-                    {proteinLifestyle.text}
-                  </p>
-                </div>
-              ) : null}
-
-              {proteinSupplement ? (
-                <div className="mt-3">
-                  <p className="mb-1 text-xs font-medium text-intake-ink-subtle">
-                    Aanvulling — indien gewenst
-                  </p>
-                  <Link
-                    href={proteinSupplement.comparisonPath}
-                    className="block rounded-[12px] border border-intake-terra/30 bg-intake-terra/5 px-4 py-3 text-sm leading-relaxed text-intake-ink transition-colors hover:bg-intake-terra/10"
-                  >
-                    <span className="block font-medium text-intake-terra">
-                      Vergelijk eiwitpoeder →
-                    </span>
-                    <span className="mt-1 block text-intake-ink-muted">
-                      {proteinSupplement.claimText}
-                    </span>
-                  </Link>
-                </div>
-              ) : null}
-            </section>
-          ) : null}
-
-          {(otherGaps.length > 0 || otherOnTrack.length > 0) && (
-            <section aria-labelledby="statements-heading" className="mb-8">
-              <h2
-                id="statements-heading"
-                className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
-              >
-                Overige nutriënten
-              </h2>
-
-              {otherGaps.length > 0 && (
-                <ul className="mb-3 flex flex-col gap-3">
-                  {otherGaps.map((e) => (
-                    <li
-                      key={e.nutrient}
-                      className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink"
-                    >
-                      {e.statement}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {otherOnTrack.length > 0 && (
-                <details className="group rounded-[14px] border border-intake-card-border bg-intake-bg-elevated/40">
-                  <summary className="cursor-pointer list-none px-5 py-3.5 text-sm font-medium text-intake-sage [&::-webkit-details-marker]:hidden">
-                    {otherOnTrack.length} nutriënt{otherOnTrack.length === 1 ? "" : "en"} zonder aandachtspunt op je frequentie
-                  </summary>
-                  <ul className="flex flex-col gap-3 border-t border-intake-divider px-3 pb-3 pt-3">
-                    {otherOnTrack.map((e) => (
-                      <li
-                        key={e.nutrient}
-                        className="rounded-[12px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3 text-sm leading-relaxed text-intake-ink-muted"
-                      >
-                        {e.statement}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              )}
-            </section>
-          )}
-
-          {visibleDeltas && visibleDeltas.length > 0 && (
-            <section aria-labelledby="delta-heading" className="mb-8">
-              <h2
-                id="delta-heading"
-                className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
-              >
-                Sinds je vorige check
-              </h2>
-              <details className="group rounded-[14px] border border-intake-sage/30 bg-intake-sage/10">
-                <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-intake-ink-muted [&::-webkit-details-marker]:hidden">
-                  {[
-                    deltaImproved.length > 0 ? `${deltaImproved.length} verbeterd` : null,
-                    deltaWorsened.length > 0 ? `${deltaWorsened.length} terug` : null,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </summary>
-                <ul className="flex flex-col gap-3 border-t border-intake-divider px-3 pb-3 pt-3">
-                  {visibleDeltas.map((d, i) => (
-                    <li
-                      key={i}
-                      className="rounded-[12px] border border-intake-sage/30 bg-intake-sage/10 px-4 py-3 text-sm leading-relaxed text-intake-ink-muted"
-                    >
-                      {deltaStatementFor(d)}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </section>
-          )}
-
-          {(lifestyle.length > 0 || supplements.length > 0) && (
-            <section aria-labelledby="advice-heading">
-              <h2
-                id="advice-heading"
-                className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
-              >
-                Advies
-              </h2>
-
-              {lifestyle.length > 0 && (
-                <div className="mb-6">
-                  <p className="mb-3 text-xs font-medium text-intake-ink-subtle">
-                    De basis — leefstijl
-                  </p>
-                  <ul className="flex flex-col gap-3">
-                    {lifestyle.map((item, i) => (
-                      <li
-                        key={i}
-                        className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink"
-                      >
-                        {item.text}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {supplements.length > 0 && (
-                <div>
-                  <p className="mb-3 text-xs font-medium text-intake-ink-subtle">
-                    Aanvulling — indien gewenst
-                  </p>
-                  <ul className="flex flex-col gap-3">
-                    {supplements.map((item, i) => {
-                      if (item.kind !== "supplement") return null;
-                      return (
-                        <li key={i}>
-                          <Link
-                            href={item.comparisonPath}
-                            className="block rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-4 text-sm leading-relaxed text-intake-ink transition-colors hover:bg-intake-terra/10"
-                          >
-                            <span className="block font-medium text-intake-terra">
-                              Vergelijk {nutrientReferences[item.nutrient].label} →
-                            </span>
-                            <span className="mt-1 block text-intake-ink-muted">
-                              {item.claimText}
-                            </span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-            </section>
-          )}
-
-          <div className="mt-10 space-y-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-5 text-center">
-            <p className="text-sm leading-relaxed text-intake-ink-muted">
-              Wil je week voor week begeleid worden? Ontvang het voedings-stappenplan per e-mail.
-            </p>
-            <Link
-              href="/gids/voeding"
-              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
-            >
-              Ontvang je voedings-stappenplan →
-            </Link>
-            <p className="text-xs leading-relaxed text-intake-ink-subtle">
-              Of{" "}
-              <Link
-                href="/intake"
-                className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-              >
-                doe de volledige Leefstijlcheck
-              </Link>{" "}
-              voor jouw volgorde over alle pijlers.
-            </p>
-          </div>
-        </div>
-      </div>
+      <NutritionResultView
+        estimate={step.estimate}
+        advice={step.advice}
+        delta={step.delta}
+        proteinMealsPerDay={answers.proteinMealsPerDay}
+        fromDashboard={fromDashboard}
+      />
     );
   }
 
