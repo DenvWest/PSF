@@ -30,18 +30,13 @@ import {
   SIGNALS,
   TAB_SECTIONS,
 } from "@/data/dashboard";
-import { PROFILE_COPY, SIGNAL_COPY } from "@/data/explanation-copy";
 import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
-import { profileUrlForLabel } from "@/lib/email-templates/nurture/helpers";
-import { getDeficiencySignals, getProfileLabel } from "@/lib/intake-engine";
-import type { DeficiencySignals, ProfileLabel } from "@/lib/intake-engine";
 import { getDisplayStatus, getDisplayStatusTone } from "@/lib/score-display";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
-import { getVitalityBand } from "@/lib/vitality-gauge";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -409,13 +404,11 @@ const ActiveHabitCard = ({
 const Greeting = ({
   empty,
   model,
-  compact,
 }: {
   empty?: boolean;
   model: DashboardModel | null;
-  compact?: boolean;
 }) => (
-  <div style={{ marginBottom: compact ? 12 : 20 }}>
+  <div style={{ marginBottom: 20 }}>
     <div
       style={{
         fontFamily: "var(--f-serif)",
@@ -426,23 +419,21 @@ const Greeting = ({
     >
       {empty ? "Goed dat je er bent." : "Welkom terug."}
     </div>
-    {!compact ? (
-      <div
-        style={{
-          fontSize: 14.5,
-          color: "var(--text-muted)",
-          marginTop: 8,
-          lineHeight: 1.5,
-          textWrap: "pretty",
-        }}
-      >
-        {empty
-          ? "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
-          : model
-            ? `${model.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`
-            : ""}
-      </div>
-    ) : null}
+    <div
+      style={{
+        fontSize: 14.5,
+        color: "var(--text-muted)",
+        marginTop: 8,
+        lineHeight: 1.5,
+        textWrap: "pretty",
+      }}
+    >
+      {empty
+        ? "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
+        : model
+          ? `${model.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`
+          : ""}
+    </div>
   </div>
 );
 
@@ -2358,17 +2349,6 @@ const KompasLooseCard = ({
   </div>
 );
 
-function resolveKompasProfileLabel(
-  model: DashboardModel,
-  data?: DashboardData,
-): ProfileLabel["name"] {
-  const fromData = data?.profileLabel?.trim();
-  if (fromData) {
-    return fromData as ProfileLabel["name"];
-  }
-  return getProfileLabel(model.domainScores).name;
-}
-
 const STATUS_BADGE_COLOR: Record<
   ReturnType<typeof getDisplayStatusTone>,
   string
@@ -2379,7 +2359,7 @@ const STATUS_BADGE_COLOR: Record<
   "terra-deep": "#B45309",
 };
 
-type KompasView = PillarId | "activiteiten" | "trend" | "checkOverview";
+type KompasView = PillarId | "activiteiten" | "trend";
 
 const KompasRowCard = ({
   onClick,
@@ -2448,88 +2428,32 @@ const DomainBackBar = ({ onBack }: { onBack: () => void }) => (
   </button>
 );
 
-const KompasCheckHero = ({
-  model,
-  profileLabel,
-  onOpen,
-}: {
-  model: DashboardModel;
-  profileLabel: ProfileLabel["name"];
-  onOpen: () => void;
-}) => {
-  const band = getVitalityBand(model.vitality);
-  const profileCopy =
-    PROFILE_COPY[profileLabel] ??
-    "Je check laat een duidelijk aandachtspunt zien.";
-
-  return (
-    <button
-      type="button"
-      onClick={onOpen}
-      aria-label="Open je leefstijlcheck-overzicht"
-      className="-mt-3 w-full cursor-pointer rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-5 text-left shadow-[0_16px_48px_rgba(15,28,16,0.10)] transition active:scale-[0.99] hover:border-[#5A8F6A]"
-      style={{ fontFamily: "var(--f-sans)" }}
-    >
-      <div className="flex items-start gap-3">
-        <div className="shrink-0">
-          <VitalityGauge
-            value={model.vitality}
-            label="Vitaliteit"
-            size={100}
-            stroke={9}
-            compact
-            showBandLabel={false}
-            theme="light"
-          />
-        </div>
-        <div
-          className="h-[88px] w-[88px] shrink-0 rounded-2xl bg-[#f4f2ee]"
-          aria-hidden
-        />
-      </div>
-      <div className="mt-4">
-        <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#78716c]">
-          Jouw leefstijlcheck
-        </div>
-        <div
-          className="mt-1 text-[22px] leading-tight text-[#1c1917]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          {profileLabel}
-        </div>
-        <p className="mt-1.5 text-[14px] leading-snug text-[#57534e]" style={{ textWrap: "pretty" }}>
-          {profileCopy}
-        </p>
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <span className="text-[13px] font-semibold text-[#57534e]">
-            {model.vitality}/100 · {band.label}
-          </span>
-          <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
-        </div>
-      </div>
-    </button>
-  );
-};
-
 const KompasDomainRow = ({
   label,
   score,
   color,
   isPriority,
   onClick,
-  readonly = false,
 }: {
   label: string;
   score: number;
   color: string;
   isPriority?: boolean;
-  onClick?: () => void;
-  readonly?: boolean;
+  onClick: () => void;
 }) => {
   const status = getDisplayStatus(score);
   const tone = getDisplayStatusTone(status);
-  const content = (
-    <>
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`Open ${label}`}
+      className={`w-full cursor-pointer rounded-[18px] border bg-white p-3.5 text-left shadow-sm transition active:scale-[0.99] hover:border-[#5A8F6A] ${
+        isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
+      }`}
+      style={{ fontFamily: "var(--f-sans)" }}
+    >
       <div className="flex items-center justify-between gap-2">
         <span
           className="text-base text-[#1c1917]"
@@ -2550,159 +2474,7 @@ const KompasDomainRow = ({
           style={{ width: `${Math.min(100, Math.max(0, score))}%`, background: color }}
         />
       </div>
-    </>
-  );
-
-  if (readonly) {
-    return (
-      <div
-        className={`rounded-[18px] border bg-white p-3.5 ${
-          isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
-        }`}
-      >
-        {content}
-      </div>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={`Open ${label}`}
-      className={`w-full cursor-pointer rounded-[18px] border bg-white p-3.5 text-left shadow-sm transition active:scale-[0.99] hover:border-[#5A8F6A] ${
-        isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
-      }`}
-      style={{ fontFamily: "var(--f-sans)" }}
-    >
-      {content}
     </button>
-  );
-};
-
-const KompasCheckOverviewScreen = ({
-  model,
-  data,
-  onBack,
-}: {
-  model: DashboardModel;
-  data?: DashboardData;
-  onBack: () => void;
-}) => {
-  const profileLabel = resolveKompasProfileLabel(model, data);
-  const profileCopy =
-    PROFILE_COPY[profileLabel] ??
-    "Je check laat een duidelijk aandachtspunt zien.";
-  const explainer = getVitalityExplainer({
-    vitality: model.vitality,
-    vitalityDelta: model.vitalityDelta,
-    priorityId: model.priority.id,
-    priorityScore: model.scores[model.priority.id],
-    answers: model.answers,
-    domainScores: model.domainScores,
-  });
-  const profileHref = profileUrlForLabel(
-    profileLabel as Parameters<typeof profileUrlForLabel>[0],
-  );
-  const signalEntries = model.answers
-    ? (
-        Object.entries(getDeficiencySignals(model.answers)) as [
-          keyof DeficiencySignals,
-          boolean,
-        ][]
-      ).filter(([, active]) => active)
-    : [];
-
-  return (
-    <div className="-mt-3 flex flex-col gap-4">
-      <KompasLightPanel className="p-5">
-        <DomainBackBar onBack={onBack} />
-        <div className="mt-2 flex flex-col items-center text-center">
-          <VitalityGauge
-            value={model.vitality}
-            delta={model.vitalityDelta}
-            size={220}
-            stroke={16}
-            variant="hero"
-            theme="light"
-            tone="light"
-            showBandLabel={false}
-          />
-        </div>
-        <div className="mt-4 text-center">
-          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#78716c]">
-            Jouw profiel
-          </div>
-          <div
-            className="mt-1 text-[24px] leading-tight text-[#1c1917]"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            {profileLabel}
-          </div>
-          <p className="mx-auto mt-2 max-w-[320px] text-[14px] leading-relaxed text-[#57534e] text-wrap-pretty">
-            {profileCopy}
-          </p>
-          {explainer?.[0] ? (
-            <p className="mx-auto mt-2 max-w-[320px] text-[13px] font-medium leading-relaxed text-[#78716c] text-wrap-pretty">
-              {explainer[0]}
-            </p>
-          ) : null}
-        </div>
-      </KompasLightPanel>
-
-      <KompasLooseCard>
-        <KompasSectionHeader title="Wat uit je check naar voren kwam" />
-        <div className="flex flex-col gap-2.5">
-          {PILLARS.map((pillar) => {
-            const score = model.scores[pillar.id] ?? 0;
-            const isPriority = pillar.id === model.priority.id;
-            return (
-              <KompasDomainRow
-                key={pillar.id}
-                label={pillar.label}
-                score={score}
-                color={pillar.color}
-                isPriority={isPriority}
-                readonly
-              />
-            );
-          })}
-        </div>
-        {signalEntries.length > 0 ? (
-          <div className="mt-4 border-t border-[#ebe7e2] pt-4">
-            <div className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#78716c]">
-              Signaal uit je antwoorden
-            </div>
-            <div className="flex flex-col gap-2">
-              {signalEntries.slice(0, 3).map(([key]) => (
-                <div
-                  key={key}
-                  className="rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7] px-3.5 py-2.5 text-[13px] leading-snug text-[#57534e]"
-                >
-                  {SIGNAL_COPY[key]}
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
-      </KompasLooseCard>
-
-      {profileHref ? (
-        <Link
-          href={profileHref}
-          onClick={() =>
-            trackEvent("dashboard_kompas_profile_click", {
-              profile: profileLabel,
-              surface: "check_overview",
-            })
-          }
-          className="flex items-center justify-center gap-2 rounded-[18px] border border-[#e4e0da] bg-white px-4 py-3.5 text-[14px] font-semibold text-[#5A8F6A] no-underline shadow-sm"
-        >
-          Lees meer over {profileLabel}
-          <Icons.ChevronRight s={16} />
-        </Link>
-      ) : null}
-    </div>
   );
 };
 
@@ -2956,21 +2728,13 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
   );
 };
 
-const KompasHome = ({ model, data }: SharedSectionProps) => {
+const KompasHome = ({ model }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const [view, setView] = useState<KompasView | null>(null);
 
   if (!currentModel) {
     return null;
   }
-
-  const profileLabel = resolveKompasProfileLabel(currentModel, data);
-
-  const openCheckOverview = () => {
-    trackEvent("dashboard_kompas_check_hero_open", { surface: "kompas_home" });
-    clarityTag("dashboard_kompas_view", "check_overview");
-    setView("checkOverview");
-  };
 
   const openDomain = (domain: PillarId) => {
     trackEvent("dashboard_kompas_domain_open", { domain });
@@ -2990,15 +2754,6 @@ const KompasHome = ({ model, data }: SharedSectionProps) => {
     setView("trend");
   };
 
-  if (view === "checkOverview") {
-    return (
-      <KompasCheckOverviewScreen
-        model={currentModel}
-        data={data}
-        onBack={() => setView(null)}
-      />
-    );
-  }
   if (view === "voeding") {
     return <VoedingScreen model={currentModel} onBack={() => setView(null)} />;
   }
@@ -3033,13 +2788,7 @@ const KompasHome = ({ model, data }: SharedSectionProps) => {
   }
 
   return (
-    <section aria-label="Kompas" className="kompas-loose-stack -mt-3 flex flex-col gap-4">
-      <KompasCheckHero
-        model={currentModel}
-        profileLabel={profileLabel}
-        onOpen={openCheckOverview}
-      />
-
+    <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
       <KompasLooseCard>
         <h2
           className="m-0 text-[18px] leading-tight text-[#1c1917]"
@@ -3366,7 +3115,7 @@ export default function Dashboard({
       >
         <DashHeader onLogout={onLogout} />
         {tab === "vandaag" ? (
-          <Greeting empty={empty} model={model} compact={!empty} />
+          <Greeting empty={empty} model={model} />
         ) : tab === "voortgang" && voortgangScreen !== "hub" ? null : (
           <DashTabHeader tab={tabMeta} />
         )}
