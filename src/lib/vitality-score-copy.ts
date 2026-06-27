@@ -104,7 +104,10 @@ export const METINGEN_DOMAINS_LABEL = "Domeinen op peil";
 export const METINGEN_DOMAINS_HINT =
   "Domeinen die meetellen in je vitaalscore, met score 55 of hoger.";
 
-export const METINGEN_RHYTHM_LABEL = "Huidige meetreeks";
+export const METINGEN_RHYTHM_LABEL = "Check-reeks";
+
+export const METINGEN_RHYTHM_HINT =
+  "Opeenvolgende dagen waarop je de Leefstijlcheck deed — geen dagelijkse gewoonte-tracker.";
 
 export const VITALITY_RHYTHM_EYEBROW = "Jouw ritme";
 

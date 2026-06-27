@@ -10,6 +10,7 @@ import {
   METINGEN_DOMAINS_HINT,
   METINGEN_DOMAINS_LABEL,
   METINGEN_EYEBROW,
+  METINGEN_RHYTHM_HINT,
   METINGEN_RHYTHM_LABEL,
 } from "@/lib/vitality-score-copy";
 import type { CheckLogEntry, CheckScores } from "@/types/dashboard";
@@ -84,6 +85,7 @@ export default function MetingenCard({
               className={`mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] ${
                 dark ? "text-white/55" : "text-[#78716c]"
               }`}
+              title={METINGEN_RHYTHM_HINT}
             >
               {METINGEN_RHYTHM_LABEL}
             </div>

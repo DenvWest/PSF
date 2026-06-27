@@ -12,6 +12,7 @@ import {
 } from "@/components/app/primitives";
 import { IDENTITY_FIELDS, PILLARS } from "@/data/dashboard";
 import { buildRecommendations } from "@/lib/build-recommendations";
+import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
@@ -597,6 +598,8 @@ function VitaalscoreInzichtenView({
         ) : (
           <RecommendedInsights pillarId={model.priority.id} />
         )}
+
+        <MetingenCard scores={model.scores} history={model.history} />
       </div>
     </section>
   );
