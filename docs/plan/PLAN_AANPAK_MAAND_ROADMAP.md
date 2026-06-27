@@ -97,6 +97,15 @@ Ashwagandha blijft on-hold (regulatory), melatonine zonder affiliate — zie [`C
 
 ---
 
+## 4b. Tweede mode: Onderbouwing (niet een Artikelen-/blog-dubbel)
+
+**Besluit (27 juni 2026).** De "Artikelen"-tab op /inzichten dupliceert nu blog + kennisbank (beide eigen routes). Hij wordt **"Onderbouwing"**: een interventie-georiënteerde lens op bestaande inzichten, geordend prioriteit×moeite (weinig moeite + hoge prioriteit boven → aflopend), elk doorlinkend naar gids + vergelijking. Zo wordt /inzichten één funnel: **Aanpak (wat) → Onderbouwing (waarom, evidence) → Vergelijking (koop)** — conversion-gericht, Consumentenbond-conform (evidence eerst).
+
+- **Datamodel ondersteunt het al:** `InsightItem` ([`../../src/types/insight.ts`](../../src/types/insight.ts)) heeft `relatedSupplementId`, `gapSignal`, `planPhase`, `tier` — genoeg om per interventie-supplement te groeperen en op prioriteit te ordenen. Geen nieuwe content, een andere lens.
+- **De Aanpak-kaart krijgt z'n "Zo zit het"-evidence-link terug** → de onderbouwing met dat `relatedSupplementId` (niet een los blog-artikel).
+- **Geen content-verlies:** algemene discovery blijft op /blog + /kennisbank (eigen SEO); de /inzichten-feed was alleen aggregatie.
+- **Fasering:** Week 3/4-bouwstap, ná de Aanpak-kant (eerst F2 + meten). Randvoorwaarde vóór de feed-aggregatie weg mag: interne links die nu via /inzichten lopen moeten door /blog + /kennisbank worden overgenomen (geen verweesde content / broken links). Affiliate blijft op de comparison-page.
+
 ## 5. Guardrails (scope-bewaking, doorlopend)
 
 - **Engine = SSOT.** Supplementen toevoegen/weghalen = in de recommendation-engine, niet in de UI.
