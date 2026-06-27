@@ -13,36 +13,74 @@ import {
   estimateNutritionIntake,
   ESTIMATE_VERSION,
   type IntakeEstimate,
-  type NutritionSelfReport,
 } from "@/lib/nutrition-intake-estimate";
+import {
+  computeNutritionScore,
+  nutritionReportFromAnswers,
+} from "@/lib/nutrition-score";
+import { getVitalityBand } from "@/lib/vitality-gauge";
+import {
+  NUTRITION_QUESTIONS,
+  type SliderQuestion,
+} from "@/data/nutrition/lifescore-questions";
 import { intakeStatementFor } from "@/lib/nutrition-intake-statements";
 import { buildNutritionAdvice } from "@/lib/nutrition-advice";
 import { nutritionLogConsentRow } from "@/lib/nutrition-log-consent";
 import { compareNutritionEstimates, type NutrientDelta } from "@/lib/nutrition-delta";
 import { emitEvent } from "@/lib/events";
 
-const MAX_FIELD_VALUE = 21;
+const SLIDER_IDS = new Set(
+  NUTRITION_QUESTIONS.filter(
+    (question): question is SliderQuestion => question.kind === "slider",
+  ).map((question) => question.id),
+);
 
-function clampField(value: unknown): number | undefined {
-  if (value === undefined || value === null) return undefined;
-  if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
-    return undefined;
-  }
-  return Math.min(value, MAX_FIELD_VALUE);
+const ALLERGY_QUESTION = NUTRITION_QUESTIONS.find(
+  (question) => question.kind === "multi" && question.id === "allergies",
+);
+const ALLERGY_VALUES = new Set(
+  ALLERGY_QUESTION && ALLERGY_QUESTION.kind === "multi"
+    ? ALLERGY_QUESTION.options.map((option) => option.value)
+    : [],
+);
+
+const PREFERENCE_VALUES = new Set(["none", "pescatarian", "vegetarian", "vegan"]);
+
+interface ParsedAnswers {
+  sliders: Record<string, number>;
+  allergies: string[];
+  preference: string;
 }
 
-function parseReport(raw: unknown): NutritionSelfReport | null {
+function parseAnswers(raw: unknown): ParsedAnswers | null {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
   const r = raw as Record<string, unknown>;
 
-  return {
-    proteinMealsPerDay: clampField(r.proteinMealsPerDay),
-    oilyFishPerWeek: clampField(r.oilyFishPerWeek),
-    vegFruitPerDay: clampField(r.vegFruitPerDay),
-    dairyServingsPerDay: clampField(r.dairyServingsPerDay),
-    meatLegumesPerDay: clampField(r.meatLegumesPerDay),
-    sunExposurePerWeek: clampField(r.sunExposurePerWeek),
-  };
+  const slidersRaw = r.sliders;
+  if (!slidersRaw || typeof slidersRaw !== "object" || Array.isArray(slidersRaw)) {
+    return null;
+  }
+
+  const sliders: Record<string, number> = {};
+  for (const [key, value] of Object.entries(slidersRaw as Record<string, unknown>)) {
+    if (!SLIDER_IDS.has(key)) continue;
+    if (typeof value === "number" && Number.isInteger(value) && value >= 0 && value <= 32) {
+      sliders[key] = value;
+    }
+  }
+
+  const allergies = Array.isArray(r.allergies)
+    ? (r.allergies as unknown[])
+        .filter((item): item is string => typeof item === "string" && ALLERGY_VALUES.has(item))
+        .slice(0, 12)
+    : [];
+
+  const preference =
+    typeof r.preference === "string" && PREFERENCE_VALUES.has(r.preference)
+      ? r.preference
+      : "none";
+
+  return { sliders, allergies, preference };
 }
 
 function logSecurityEvent(
@@ -91,13 +129,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const report = parseReport(bodyRecord.report);
-  if (report === null) {
+  const answers = parseAnswers(bodyRecord.answers);
+  if (answers === null) {
     return NextResponse.json(
-      { error: "Ongeldig rapport-formaat." },
+      { error: "Ongeldig antwoord-formaat." },
       { status: 400 },
     );
   }
+
+  const report = nutritionReportFromAnswers(answers.sliders);
+  const score = computeNutritionScore(answers.sliders);
+  const band = getVitalityBand(score);
 
   const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
   const sessionId = verifySignedIntakeSessionCookie(rawCookie);
@@ -166,9 +208,15 @@ export async function POST(request: NextRequest) {
   const { error: logError } = await admin.from("intake_intake_log").insert({
     session_id: sessionId,
     organization_id: organizationId,
-    raw_inputs: report,
+    raw_inputs: {
+      sliders: answers.sliders,
+      allergies: answers.allergies,
+      preference: answers.preference,
+      report,
+    },
     estimate,
     estimate_version: ESTIMATE_VERSION,
+    nutrition_score: score,
   });
 
   if (logError) {
@@ -179,8 +227,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Emit anoniem signaal — breekt de respons nooit.
+  // Emit anonieme signalen — breken de respons nooit.
   try {
+    await emitEvent({
+      eventType: "measurement.checkin_completed",
+      sessionId,
+      payload: {
+        domain: "nutrition",
+        nutrition_score: score,
+        band: band.id,
+        estimate_version: ESTIMATE_VERSION,
+      },
+      deliveredTo: ["posthog", "n8n_webhook"],
+    });
+
     const nutrientsBelow = estimate
       .filter((e) => e.band === "below")
       .map((e) => e.nutrient);
@@ -193,11 +253,14 @@ export async function POST(request: NextRequest) {
       });
     }
   } catch (emitErr) {
-    console.error("[api/intake/nutrition-log] gap_detected emit error:", emitErr);
+    console.error("[api/intake/nutrition-log] emit error:", emitErr);
   }
 
   const statements = estimate.map(intakeStatementFor);
   const advice = buildNutritionAdvice(estimate);
 
-  return NextResponse.json({ estimate, statements, advice, delta }, { status: 200 });
+  return NextResponse.json(
+    { estimate, statements, advice, delta, score, band },
+    { status: 200 },
+  );
 }

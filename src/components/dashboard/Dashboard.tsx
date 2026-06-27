@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
-import VitalityRing from "@/components/app/VitalityRing";
+import VitalityGauge from "@/components/app/VitalityGauge";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
@@ -384,7 +384,7 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
     <Card glow="#5A8F6A" pad={28} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
       {empty ? (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 20 }}>
-          <VitalityRing state="locked" value={0} delta={null} size={200} />
+          <VitalityGauge value={0} locked size={200} />
           <div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
               <Icons.Spark s={14} /> Begin hier
@@ -400,20 +400,29 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, paddingBottom: 24, borderBottom: SECTION_DIVIDER }}>
-            <VitalityRing
-              state="scored"
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, paddingBottom: 24, borderBottom: SECTION_DIVIDER }}>
+            <VitalityGauge
               value={currentModel?.vitality ?? 0}
               delta={currentModel?.vitalityDelta ?? null}
-              size={200}
+              size={208}
             />
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontFamily: "var(--f-serif)", fontSize: 17, color: "var(--text-muted)" }}>
-                Vitaliteit {currentModel?.vitality}
-              </span>
-              {currentModel?.vitalityDelta != null ? (
-                <DeltaBadge delta={currentModel.vitalityDelta} />
-              ) : null}
+            <div style={{ width: "100%" }}>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12, textAlign: "center" }}>
+                Per categorie
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, justifyItems: "center" }}>
+                {PILLARS.map((pillar) => (
+                  <VitalityGauge
+                    key={pillar.id}
+                    value={currentModel?.scores[pillar.id] ?? 0}
+                    label={pillar.label}
+                    size={86}
+                    stroke={8}
+                    compact
+                    showBandLabel={false}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 

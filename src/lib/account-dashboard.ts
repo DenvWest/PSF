@@ -290,17 +290,16 @@ export async function loadAccountDashboardData(
     .order("created_at", { ascending: true });
   const { data: logRows } = await admin
     .from("intake_intake_log")
-    .select("estimate, logged_at")
+    .select("estimate, logged_at, nutrition_score")
     .in("session_id", sessionIds)
-    .order("logged_at", { ascending: false })
-    .limit(1);
+    .order("logged_at", { ascending: true });
   const { data: planProgressRows } = await admin
     .from("plan_progress")
     .select("session_id, domain, steps")
     .in("session_id", sessionIds);
 
   let nutritionIntake: DashboardData["nutritionIntake"] = null;
-  const latestLog = logRows?.[0];
+  const latestLog = logRows?.[logRows.length - 1];
   if (latestLog && Array.isArray(latestLog.estimate)) {
     const items = (latestLog.estimate as IntakeEstimate[])
       .filter(
@@ -359,6 +358,21 @@ export async function loadAccountDashboardData(
     }
 
     series[pillar].push({ value: Math.round(raw), ts });
+  }
+
+  type LogRow = { logged_at: unknown; nutrition_score: unknown };
+  for (const row of (logRows ?? []) as LogRow[]) {
+    if (typeof row.nutrition_score !== "number" || !Number.isFinite(row.nutrition_score)) {
+      continue;
+    }
+    if (typeof row.logged_at !== "string") {
+      continue;
+    }
+    const ts = new Date(row.logged_at).getTime();
+    if (!Number.isFinite(ts)) {
+      continue;
+    }
+    series.voeding.push({ value: Math.round(row.nutrition_score), ts });
   }
 
   for (const pillar of PILLAR_IDS) {

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
+import VitalityGauge from "@/components/app/VitalityGauge";
 import {
   nutrientReferences,
   type NutrientId,
@@ -13,8 +14,10 @@ import {
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
+import { getVitalityBandMessage } from "@/lib/vitality-gauge";
 
 interface NutritionResultViewProps {
+  score: number;
   estimate: IntakeEstimate[];
   advice: NutritionAdviceItem[];
   delta: NutrientDelta[] | null;
@@ -30,6 +33,7 @@ function badgeClassName(band: IntakeEstimate["band"]): string {
 }
 
 export default function NutritionResultView({
+  score,
   estimate,
   advice,
   delta,
@@ -73,14 +77,22 @@ export default function NutritionResultView({
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center">
       <div className="w-full max-w-lg px-6 py-12">
-        <h1 className="mb-2 text-center font-serif text-3xl font-normal text-intake-ink">
-          Jouw inname-overzicht
+        <h1 className="mb-6 text-center font-serif text-3xl font-normal text-intake-ink">
+          Je voedingsscore
         </h1>
-        <p className="mb-6 text-center text-sm text-intake-ink-subtle">
-          Een grove inschatting op basis van hoe vaak je iets eet — geen meting
-          van je werkelijke inname.
+
+        <div className="mb-4 flex justify-center">
+          <VitalityGauge value={score} label="Voeding" size={208} delta={null} theme="light" />
+        </div>
+
+        <p className="mb-8 text-center text-sm leading-relaxed text-intake-ink-muted">
+          {getVitalityBandMessage(score, "Je voeding")} Een reflectie van hoe vaak je
+          iets eet — geen diagnose.
         </p>
 
+        <h2 className="mb-2 text-center font-serif text-xl font-normal text-intake-ink">
+          Wat je binnenkrijgt
+        </h2>
         <p className="mb-4 text-center text-sm font-medium text-intake-ink">
           {summaryLine}
         </p>

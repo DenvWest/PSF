@@ -65,13 +65,23 @@ vi.mock("@/lib/supabase-admin", () => ({
 
 const VALID_SESSION_ID = "550e8400-e29b-41d4-a716-446655440000";
 
-const VALID_REPORT = {
-  oilyFishPerWeek: 0,
-  proteinMealsPerDay: 1,
-  vegFruitPerDay: 1,
-  dairyServingsPerDay: 1,
-  meatLegumesPerDay: 1,
-  sunExposurePerWeek: 1,
+const VALID_SLIDERS: Record<string, number> = {
+  fruit: 3,
+  berries: 2,
+  vegetables: 1,
+  wholegrain: 2,
+  oilyFish: 1,
+  proteinMeals: 1,
+  meatLegumes: 1,
+  dairy: 1,
+  sugaryDrinks: 2,
+  daylight: 2,
+};
+
+const VALID_ANSWERS = {
+  sliders: VALID_SLIDERS,
+  allergies: [] as string[],
+  preference: "none",
 };
 
 function makeRequest(
@@ -107,11 +117,11 @@ describe("POST /api/intake/nutrition-log", () => {
     vi.resetModules();
   });
 
-  it("geldige sessie + consent true + report → consent-rij en log-rij ge-insert; response 200 met estimate, statements, advice", async () => {
+  it("geldige sessie + consent true + answers → consent-rij en log-rij ge-insert; response 200 met estimate, statements, advice, score", async () => {
     const { POST } = await import("@/app/api/intake/nutrition-log/route");
 
     const res = await POST(
-      makeRequest({ report: VALID_REPORT, consent: true }, "signed-cookie-value"),
+      makeRequest({ answers: VALID_ANSWERS, consent: true }, "signed-cookie-value"),
     );
 
     expect(res.status).toBe(200);
@@ -126,7 +136,12 @@ describe("POST /api/intake/nutrition-log", () => {
     const logArg = mockLogInsert.mock.calls[0][0] as Record<string, unknown>;
     expect(logArg.session_id).toBe(VALID_SESSION_ID);
     expect(logArg.organization_id).toBe("org-uuid-default");
-    expect(logArg.raw_inputs).toEqual(VALID_REPORT);
+    expect(logArg.raw_inputs).toMatchObject({
+      sliders: VALID_SLIDERS,
+      allergies: [],
+      preference: "none",
+    });
+    expect(typeof logArg.nutrition_score).toBe("number");
     expect(Array.isArray(logArg.estimate)).toBe(true);
     expect(typeof logArg.estimate_version).toBe("string");
 
@@ -134,43 +149,56 @@ describe("POST /api/intake/nutrition-log", () => {
       estimate: unknown[];
       statements: string[];
       advice: unknown[];
+      score: number;
+      band: { id: string };
     };
     expect(Array.isArray(data.estimate)).toBe(true);
     expect(data.estimate.length).toBeGreaterThan(0);
     expect(Array.isArray(data.statements)).toBe(true);
     expect(data.statements.length).toBe(data.estimate.length);
     expect(Array.isArray(data.advice)).toBe(true);
+    expect(typeof data.score).toBe("number");
+    expect(data.score).toBeGreaterThanOrEqual(0);
+    expect(data.score).toBeLessThanOrEqual(100);
+    expect(typeof data.band.id).toBe("string");
   });
 
-  it("estimate in response en log-insert komt uit estimateNutritionIntake (server-berekend), niet uit body", async () => {
+  it("estimate en score worden server-berekend uit de slider-antwoorden, niet uit body", async () => {
     const { estimateNutritionIntake } = await import("@/lib/nutrition-intake-estimate");
+    const { computeNutritionScore, nutritionReportFromAnswers } = await import(
+      "@/lib/nutrition-score"
+    );
     const { POST } = await import("@/app/api/intake/nutrition-log/route");
 
     const bodyWithFakeEstimate = {
-      report: VALID_REPORT,
+      answers: VALID_ANSWERS,
       consent: true,
       estimate: [{ nutrient: "protein", band: "meets", referenceLabel: "FAKE" }],
+      score: 999,
     };
 
-    const res = await POST(
-      makeRequest(bodyWithFakeEstimate, "signed-cookie-value"),
-    );
+    const res = await POST(makeRequest(bodyWithFakeEstimate, "signed-cookie-value"));
 
     expect(res.status).toBe(200);
 
-    const expected = estimateNutritionIntake(VALID_REPORT);
-    const logArg = mockLogInsert.mock.calls[0][0] as Record<string, unknown>;
-    expect(logArg.estimate).toEqual(expected);
+    const expectedReport = nutritionReportFromAnswers(VALID_SLIDERS);
+    const expectedEstimate = estimateNutritionIntake(expectedReport);
+    const expectedScore = computeNutritionScore(VALID_SLIDERS);
 
-    const data = (await res.json()) as { estimate: unknown };
-    expect(data.estimate).toEqual(expected);
+    const logArg = mockLogInsert.mock.calls[0][0] as Record<string, unknown>;
+    expect(logArg.estimate).toEqual(expectedEstimate);
+    expect(logArg.nutrition_score).toBe(expectedScore);
+
+    const data = (await res.json()) as { estimate: unknown; score: number };
+    expect(data.estimate).toEqual(expectedEstimate);
+    expect(data.score).toBe(expectedScore);
   });
 
   it("consent false → 400, GEEN insert", async () => {
     const { POST } = await import("@/app/api/intake/nutrition-log/route");
 
     const res = await POST(
-      makeRequest({ report: VALID_REPORT, consent: false }, "signed-cookie-value"),
+      makeRequest({ answers: VALID_ANSWERS, consent: false }, "signed-cookie-value"),
     );
 
     expect(res.status).toBe(400);
@@ -186,9 +214,7 @@ describe("POST /api/intake/nutrition-log", () => {
 
     const { POST } = await import("@/app/api/intake/nutrition-log/route");
 
-    const res = await POST(
-      makeRequest({ report: VALID_REPORT, consent: true }),
-    );
+    const res = await POST(makeRequest({ answers: VALID_ANSWERS, consent: true }));
 
     expect(res.status).toBe(401);
     expect(mockConsentInsert).not.toHaveBeenCalled();
@@ -199,7 +225,19 @@ describe("POST /api/intake/nutrition-log", () => {
     const { POST } = await import("@/app/api/intake/nutrition-log/route");
 
     const res = await POST(
-      makeRequest({ report: VALID_REPORT }, "signed-cookie-value"),
+      makeRequest({ answers: VALID_ANSWERS }, "signed-cookie-value"),
+    );
+
+    expect(res.status).toBe(400);
+    expect(mockConsentInsert).not.toHaveBeenCalled();
+    expect(mockLogInsert).not.toHaveBeenCalled();
+  });
+
+  it("ongeldig answers-formaat → 400, GEEN insert", async () => {
+    const { POST } = await import("@/app/api/intake/nutrition-log/route");
+
+    const res = await POST(
+      makeRequest({ answers: "nope", consent: true }, "signed-cookie-value"),
     );
 
     expect(res.status).toBe(400);
@@ -213,7 +251,7 @@ describe("POST /api/intake/nutrition-log", () => {
     const { POST } = await import("@/app/api/intake/nutrition-log/route");
 
     const res = await POST(
-      makeRequest({ report: VALID_REPORT, consent: true }, "signed-cookie-value"),
+      makeRequest({ answers: VALID_ANSWERS, consent: true }, "signed-cookie-value"),
     );
 
     expect(res.status).toBe(500);

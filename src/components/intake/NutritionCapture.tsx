@@ -4,102 +4,86 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { clarityTag } from "@/lib/clarity";
+import { trackEvent } from "@/lib/ga4";
 import { NUTRITION_LOG_CONSENT_TEXT } from "@/lib/consent-texts";
-import type { IntakeEstimate, NutritionSelfReport } from "@/lib/nutrition-intake-estimate";
+import {
+  NUTRITION_QUESTIONS,
+  type NutritionQuestion,
+  type NutritionScale,
+} from "@/data/nutrition/lifescore-questions";
+import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
 import { type NutrientDelta } from "@/lib/nutrition-delta";
+import IntakeSlider from "@/components/intake/IntakeSlider";
 import NutritionResultView from "@/components/intake/NutritionResultView";
 
 type Step =
   | { kind: "question"; index: number }
   | { kind: "consent" }
-  | { kind: "result"; estimate: IntakeEstimate[]; statements: string[]; advice: NutritionAdviceItem[]; delta: NutrientDelta[] | null }
+  | {
+      kind: "result";
+      estimate: IntakeEstimate[];
+      statements: string[];
+      advice: NutritionAdviceItem[];
+      delta: NutrientDelta[] | null;
+      score: number;
+    }
   | { kind: "error"; message: string };
 
-type QuestionDef = {
-  field: keyof NutritionSelfReport;
-  question: string;
-  options: { label: string; value: number }[];
-};
+const TOTAL = NUTRITION_QUESTIONS.length;
 
-const QUESTIONS: QuestionDef[] = [
-  {
-    field: "oilyFishPerWeek",
-    question: "Hoe vaak eet je in een gewone week vette vis?",
-    options: [
-      { label: "Niet", value: 0 },
-      { label: "1×", value: 1 },
-      { label: "2×", value: 2 },
-      { label: "3× of vaker", value: 3 },
-    ],
-  },
-  {
-    field: "proteinMealsPerDay",
-    question: "Hoeveel eetmomenten zijn op een gewone dag eiwitrijk?",
-    options: [
-      { label: "0", value: 0 },
-      { label: "1", value: 1 },
-      { label: "2", value: 2 },
-      { label: "3 of meer", value: 3 },
-    ],
-  },
-  {
-    field: "vegFruitPerDay",
-    question: "Hoeveel porties bladgroenten, noten of peulvruchten eet je op een gewone dag?",
-    options: [
-      { label: "0–1 porties", value: 1 },
-      { label: "2–3 porties", value: 2 },
-      { label: "4–5 porties", value: 4 },
-      { label: "5 of meer", value: 5 },
-    ],
-  },
-  {
-    field: "dairyServingsPerDay",
-    question: "Hoeveel porties zuivel (melk, yoghurt, kaas) eet je op een gewone dag?",
-    options: [
-      { label: "0", value: 0 },
-      { label: "1", value: 1 },
-      { label: "2", value: 2 },
-      { label: "3 of meer", value: 3 },
-    ],
-  },
-  {
-    field: "meatLegumesPerDay",
-    question: "Hoeveel porties vlees, vis of peulvruchten eet je op een gewone dag?",
-    options: [
-      { label: "0", value: 0 },
-      { label: "1", value: 1 },
-      { label: "2", value: 2 },
-      { label: "3 of meer", value: 3 },
-    ],
-  },
-  {
-    field: "sunExposurePerWeek",
-    question: "Hoe vaak ben je in een gewone week ≥ 15 minuten buiten in daglicht?",
-    options: [
-      { label: "Zelden of nooit", value: 1 },
-      { label: "2–3 keer", value: 3 },
-      { label: "4–5 keer", value: 5 },
-      { label: "Dagelijks", value: 7 },
-    ],
-  },
-];
+function sliderAxisLabels(scale: NutritionScale): { min: string; max: string } {
+  switch (scale) {
+    case "percentage":
+      return { min: "0%", max: "100%" };
+    case "perDay":
+      return { min: "Nooit", max: "Veel" };
+    case "perWeek":
+      return { min: "Nooit", max: "Vaak" };
+    case "frequency":
+    default:
+      return { min: "Nooit", max: "Vaak" };
+  }
+}
 
-const TOTAL = QUESTIONS.length;
+function proteinMealsFromSliders(sliders: Record<string, number>): number | undefined {
+  const question = NUTRITION_QUESTIONS.find(
+    (item): item is Extract<NutritionQuestion, { kind: "slider" }> =>
+      item.kind === "slider" && item.id === "proteinMeals",
+  );
+  if (!question) {
+    return undefined;
+  }
+  const index = sliders.proteinMeals ?? question.defaultIndex;
+  const stop = question.stops[Math.min(Math.max(0, index), question.stops.length - 1)];
+  return stop.report?.proteinMealsPerDay;
+}
+
+function sliderDefaults(): Record<string, number> {
+  const defaults: Record<string, number> = {};
+  for (const question of NUTRITION_QUESTIONS) {
+    if (question.kind === "slider") {
+      defaults[question.id] = question.defaultIndex;
+    }
+  }
+  return defaults;
+}
 
 export default function NutritionCapture() {
   const searchParams = useSearchParams();
   const fromDashboard = searchParams.get("from") === "dashboard";
   const [step, setStep] = useState<Step>({ kind: "question", index: 0 });
-  const [answers, setAnswers] = useState<Partial<NutritionSelfReport>>({});
+  const [sliders, setSliders] = useState<Record<string, number>>(sliderDefaults);
+  const [allergies, setAllergies] = useState<string[]>([]);
+  const [preference, setPreference] = useState<string | null>(null);
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => { clarityTag("nutrition_flow", "started"); }, []);
+  useEffect(() => {
+    clarityTag("nutrition_flow", "started");
+  }, []);
 
-  function handleAnswer(field: keyof NutritionSelfReport, value: number, index: number) {
-    const next = { ...answers, [field]: value };
-    setAnswers(next);
+  function goNext(index: number) {
     if (index + 1 < TOTAL) {
       setStep({ kind: "question", index: index + 1 });
     } else {
@@ -115,6 +99,14 @@ export default function NutritionCapture() {
     }
   }
 
+  function toggleAllergy(value: string) {
+    setAllergies((current) =>
+      current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value],
+    );
+  }
+
   async function handleSubmit() {
     if (!consentChecked || submitting) return;
     setSubmitting(true);
@@ -124,14 +116,14 @@ export default function NutritionCapture() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ report: answers, consent: true }),
+        body: JSON.stringify({
+          answers: { sliders, allergies, preference: preference ?? "none" },
+          consent: true,
+        }),
       });
 
       if (res.status === 401) {
-        setStep({
-          kind: "error",
-          message: "401",
-        });
+        setStep({ kind: "error", message: "401" });
         return;
       }
 
@@ -149,15 +141,23 @@ export default function NutritionCapture() {
         statements: string[];
         advice: NutritionAdviceItem[];
         delta: NutrientDelta[] | null;
+        score: number;
+        band?: { id: string };
       };
 
       clarityTag("nutrition_flow", "completed");
+      trackEvent("nutrition_check_completed", {
+        nutrition_score: data.score,
+        band: data.band?.id ?? "unknown",
+        from: fromDashboard ? "dashboard" : "direct",
+      });
       setStep({
         kind: "result",
         estimate: data.estimate,
         statements: data.statements,
         advice: data.advice,
         delta: data.delta ?? null,
+        score: data.score,
       });
     } catch {
       setStep({ kind: "error", message: "Er ging iets mis. Probeer het opnieuw." });
@@ -169,10 +169,11 @@ export default function NutritionCapture() {
   if (step.kind === "result") {
     return (
       <NutritionResultView
+        score={step.score}
         estimate={step.estimate}
         advice={step.advice}
         delta={step.delta}
-        proteinMealsPerDay={answers.proteinMealsPerDay}
+        proteinMealsPerDay={proteinMealsFromSliders(sliders)}
         fromDashboard={fromDashboard}
       />
     );
@@ -205,7 +206,9 @@ export default function NutritionCapture() {
             type="button"
             onClick={() => {
               setStep({ kind: "question", index: 0 });
-              setAnswers({});
+              setSliders(sliderDefaults());
+              setAllergies([]);
+              setPreference(null);
               setConsentChecked(false);
             }}
             className="rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-colors hover:bg-intake-bg-elevated"
@@ -223,9 +226,9 @@ export default function NutritionCapture() {
         <div
           className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
           role="progressbar"
-          aria-valuenow={TOTAL}
+          aria-valuenow={TOTAL + 1}
           aria-valuemin={1}
-          aria-valuemax={TOTAL}
+          aria-valuemax={TOTAL + 1}
           aria-label="Voortgang voedingscheck"
         >
           <div className="h-full bg-intake-terra transition-[width] duration-300 ease-out" style={{ width: "100%" }} />
@@ -261,9 +264,9 @@ export default function NutritionCapture() {
               type="button"
               onClick={handleSubmit}
               disabled={!consentChecked || submitting}
-              className="min-h-[44px] rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-all duration-200 hover:bg-intake-bg-elevated disabled:cursor-default disabled:opacity-30"
+              className="min-h-[44px] rounded-[12px] bg-intake-sage px-6 py-3 text-sm font-semibold text-[#0f1c10] transition-all duration-200 hover:opacity-90 disabled:cursor-default disabled:opacity-30"
             >
-              {submitting ? "Bezig…" : "Bekijk resultaten →"}
+              {submitting ? "Bezig…" : "Bekijk je score →"}
             </button>
           </div>
         </div>
@@ -271,17 +274,21 @@ export default function NutritionCapture() {
     );
   }
 
-  // question step
-  const q = QUESTIONS[step.index];
-  const progressPct = ((step.index + 1) / (TOTAL + 1)) * 100;
-  const questionNumber = String(step.index + 1).padStart(2, "0");
+  if (step.kind !== "question") {
+    return null;
+  }
+
+  const questionIndex = step.index;
+  const question = NUTRITION_QUESTIONS[questionIndex];
+  const progressPct = ((questionIndex + 1) / (TOTAL + 1)) * 100;
+  const questionNumber = String(questionIndex + 1).padStart(2, "0");
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
       <div
         className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
         role="progressbar"
-        aria-valuenow={step.index + 1}
+        aria-valuenow={questionIndex + 1}
         aria-valuemin={1}
         aria-valuemax={TOTAL + 1}
         aria-label="Voortgang voedingscheck"
@@ -302,26 +309,22 @@ export default function NutritionCapture() {
         </div>
 
         <p className="mb-8 text-center text-sm text-intake-ink-subtle">
-          Vraag {step.index + 1} van {TOTAL}
+          Vraag {questionIndex + 1} van {TOTAL}
         </p>
 
         <div className="min-h-[400px] animate-[fadeIn_200ms_ease-out]">
-          <h2 className="mb-10 text-center font-serif text-2xl font-normal leading-snug text-intake-ink md:text-3xl">
-            {q.question}
+          <h2 className="mb-3 text-center font-serif text-2xl font-normal leading-snug text-intake-ink md:text-3xl">
+            {question.prompt}
           </h2>
+          {question.helper ? (
+            <p className="mb-10 text-center text-sm leading-relaxed text-intake-ink-subtle">
+              {question.helper}
+            </p>
+          ) : (
+            <div className="mb-10" />
+          )}
 
-          <div className="flex flex-col gap-3">
-            {q.options.map((opt, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => handleAnswer(q.field, opt.value, step.index)}
-                className="block w-full min-h-[44px] rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-left text-base font-medium leading-snug text-intake-ink-muted transition-all duration-200 ease-out hover:border-intake-terra/40 hover:bg-intake-bg-elevated/90 hover:text-intake-ink"
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
+          {renderQuestionBody(question)}
         </div>
 
         <div className="mt-10 flex items-center justify-between">
@@ -330,16 +333,104 @@ export default function NutritionCapture() {
             onClick={handleBack}
             className="border-none bg-transparent py-3 text-sm text-intake-ink-subtle transition-colors hover:text-intake-ink-muted disabled:cursor-default"
             style={{
-              cursor: step.index > 0 ? "pointer" : "default",
-              visibility: step.index > 0 ? "visible" : "hidden",
+              cursor: questionIndex > 0 ? "pointer" : "default",
+              visibility: questionIndex > 0 ? "visible" : "hidden",
             }}
           >
             ← Terug
           </button>
 
-          <span />
+          {question.kind === "single" ? (
+            <span />
+          ) : (
+            <button
+              type="button"
+              onClick={() => goNext(questionIndex)}
+              className="min-h-[44px] rounded-[12px] bg-intake-sage px-6 py-3 text-sm font-semibold text-[#0f1c10] transition-all duration-200 hover:opacity-90"
+            >
+              Volgende →
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
+
+  function renderQuestionBody(q: NutritionQuestion) {
+    if (q.kind === "slider") {
+      const current = sliders[q.id] ?? q.defaultIndex;
+      const axis = sliderAxisLabels(q.scale);
+      return (
+        <IntakeSlider
+          labels={q.stops.map((stop) => stop.label)}
+          value={current}
+          onChange={(index) => setSliders((prev) => ({ ...prev, [q.id]: index }))}
+          minLabel={axis.min}
+          maxLabel={axis.max}
+          ariaLabel={q.prompt}
+        />
+      );
+    }
+
+    if (q.kind === "multi") {
+      return (
+        <div className="flex flex-col gap-3">
+          {q.options.map((opt) => {
+            const selected = allergies.includes(opt.value);
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => toggleAllergy(opt.value)}
+                className={`flex w-full min-h-[44px] items-center justify-between rounded-[14px] border px-5 py-4 text-left text-base font-medium leading-snug transition-all duration-200 ease-out ${
+                  selected
+                    ? "border-intake-sage/60 bg-intake-sage/15 text-intake-ink"
+                    : "border-intake-card-border bg-intake-bg-elevated text-intake-ink-muted hover:border-intake-sage/40 hover:text-intake-ink"
+                }`}
+              >
+                <span>{opt.label}</span>
+                <span
+                  aria-hidden
+                  className={`flex h-5 w-5 items-center justify-center rounded-full border text-xs ${
+                    selected
+                      ? "border-intake-sage bg-intake-sage text-[#0f1c10]"
+                      : "border-intake-card-border text-transparent"
+                  }`}
+                >
+                  ✓
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col gap-3">
+        {q.options.map((opt) => {
+          const selected = preference === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              aria-pressed={selected}
+              onClick={() => {
+                setPreference(opt.value);
+                goNext(questionIndex);
+              }}
+              className={`block w-full min-h-[44px] rounded-[14px] border px-5 py-4 text-left text-base font-medium leading-snug transition-all duration-200 ease-out ${
+                selected
+                  ? "border-intake-sage/60 bg-intake-sage/15 text-intake-ink"
+                  : "border-intake-card-border bg-intake-bg-elevated text-intake-ink-muted hover:border-intake-sage/40 hover:text-intake-ink"
+              }`}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 }
