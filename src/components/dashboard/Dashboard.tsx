@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import type { ReactElement, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -9,18 +9,28 @@ import VitalityGauge from "@/components/app/VitalityGauge";
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
-import { Button, Card, DeltaBadge, SectionHeader, SlotGrid, Sparkline } from "@/components/app/primitives";
+import {
+  Button,
+  Card,
+  DeltaBadge,
+  SectionHeader,
+  SlotGrid,
+  Sparkline,
+} from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
-import { DASHBOARD_TABS, PILLAR, PILLAR_CHECKIN_ROUTES, PILLARS, SIGNALS, TAB_SECTIONS } from "@/data/dashboard";
 import {
-  perfectSupplementMeasurementConfig,
-} from "@/data/measurement-config";
+  DASHBOARD_TABS,
+  PILLAR,
+  PILLAR_CHECKIN_ROUTES,
+  PILLARS,
+  SIGNALS,
+  TAB_SECTIONS,
+} from "@/data/dashboard";
+import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
-import {
-  buildPriorityInterventionHref,
-} from "@/lib/dashboard-active-plan";
+import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -72,15 +82,36 @@ const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
   } as const;
 
   return (
-    <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-      <Link href="/" aria-label="Naar de website" style={{ textDecoration: "none" }}>
+    <header
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 24,
+      }}
+    >
+      <Link
+        href="/"
+        aria-label="Naar de website"
+        style={{ textDecoration: "none" }}
+      >
         <Wordmark />
       </Link>
       <div style={{ display: "flex", gap: 8 }}>
-        <button type="button" style={iconBtn} title="Instellingen" onClick={() => router.push("/account")}>
+        <button
+          type="button"
+          style={iconBtn}
+          title="Instellingen"
+          onClick={() => router.push("/account")}
+        >
           <Icons.Settings s={18} />
         </button>
-        <button type="button" style={iconBtn} title="Uitloggen" onClick={onLogout}>
+        <button
+          type="button"
+          style={iconBtn}
+          title="Uitloggen"
+          onClick={onLogout}
+        >
           <Icons.LogOut s={18} />
         </button>
       </div>
@@ -122,12 +153,35 @@ const CollapsibleSection = ({
         }}
       >
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 4 }}>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--text-subtle)",
+              marginBottom: 4,
+            }}
+          >
             {eyebrow}
           </div>
-          <div style={{ fontFamily: "var(--f-serif)", fontSize: 19, lineHeight: 1.25 }}>{title}</div>
+          <div
+            style={{
+              fontFamily: "var(--f-serif)",
+              fontSize: 19,
+              lineHeight: 1.25,
+            }}
+          >
+            {title}
+          </div>
         </div>
-        <span style={{ color: "var(--text-muted)", transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }}>
+        <span
+          style={{
+            color: "var(--text-muted)",
+            transform: open ? "rotate(180deg)" : "none",
+            transition: "transform 0.2s ease",
+          }}
+        >
           <Icons.ChevronDown s={18} />
         </span>
       </button>
@@ -251,7 +305,19 @@ const ActiveHabitCard = ({
 
   return (
     <div style={{ paddingTop: 24 }}>
-      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 7,
+          fontSize: 11,
+          fontWeight: 500,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "var(--sage)",
+          marginBottom: 12,
+        }}
+      >
         <Icons.Check s={14} /> Stap 1 · Je habit nu
       </div>
       <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -278,12 +344,43 @@ const ActiveHabitCard = ({
           {done ? <Icons.Check s={14} /> : null}
         </button>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, color: "var(--text)", fontWeight: 600, lineHeight: 1.45, textWrap: "pretty" }}>{habit.title}</div>
+          <div
+            style={{
+              fontSize: 15,
+              color: "var(--text)",
+              fontWeight: 600,
+              lineHeight: 1.45,
+              textWrap: "pretty",
+            }}
+          >
+            {habit.title}
+          </div>
           {habit.detail ? (
-            <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.5, margin: "6px 0 0", textWrap: "pretty" }}>{habit.detail}</p>
+            <p
+              style={{
+                fontSize: 13.5,
+                color: "var(--text-muted)",
+                lineHeight: 1.5,
+                margin: "6px 0 0",
+                textWrap: "pretty",
+              }}
+            >
+              {habit.detail}
+            </p>
           ) : null}
           {habit.planHref ? (
-            <Link href={habit.planHref} style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, fontSize: 13, color: "var(--sage)", textDecoration: "none" }}>
+            <Link
+              href={habit.planHref}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                marginTop: 10,
+                fontSize: 13,
+                color: "var(--sage)",
+                textDecoration: "none",
+              }}
+            >
               Volledig plan bekijken
               <Icons.ArrowRight s={15} />
             </Link>
@@ -294,12 +391,33 @@ const ActiveHabitCard = ({
   );
 };
 
-const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel | null }) => (
+const Greeting = ({
+  empty,
+  model,
+}: {
+  empty?: boolean;
+  model: DashboardModel | null;
+}) => (
   <div style={{ marginBottom: 20 }}>
-    <div style={{ fontFamily: "var(--f-serif)", fontSize: 30, color: "var(--text)", lineHeight: 1.1 }}>
+    <div
+      style={{
+        fontFamily: "var(--f-serif)",
+        fontSize: 30,
+        color: "var(--text)",
+        lineHeight: 1.1,
+      }}
+    >
       {empty ? "Goed dat je er bent." : "Welkom terug."}
     </div>
-    <div style={{ fontSize: 14.5, color: "var(--text-muted)", marginTop: 8, lineHeight: 1.5, textWrap: "pretty" }}>
+    <div
+      style={{
+        fontSize: 14.5,
+        color: "var(--text-muted)",
+        marginTop: 8,
+        lineHeight: 1.5,
+        textWrap: "pretty",
+      }}
+    >
       {empty
         ? "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
         : model
@@ -309,11 +427,12 @@ const Greeting = ({ empty, model }: { empty?: boolean; model: DashboardModel | n
   </div>
 );
 
-const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
+const VitalityScoreSection = ({
+  empty,
+  model,
+  onCheck,
+}: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
-  const [habitCompleted, setHabitCompleted] = useState(
-    currentModel?.activeHabit?.state === "done",
-  );
   const emittedKeyRef = useRef<string | null>(null);
   const habitKernel =
     currentModel &&
@@ -344,6 +463,99 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
       driver_habit_id: habitKernel.driverHabitId,
     });
   }, [currentModel, habitKernel]);
+
+  if (empty) {
+    return (
+      <VitalityScoreCard
+        locked
+        tone="dark"
+        onCta={() => {
+          clarityTag("dashboard_vitaalscore_cta", "empty");
+          trackEvent("dashboard_first_check_cta", {
+            surface: "vitaalscore_card",
+          });
+          onCheck();
+        }}
+      />
+    );
+  }
+
+  if (!currentModel) {
+    return null;
+  }
+
+  const explainer = getVitalityExplainer({
+    vitality: currentModel.vitality,
+    vitalityDelta: currentModel.vitalityDelta,
+    priorityId: currentModel.priority.id,
+    priorityScore: currentModel.scores[currentModel.priority.id],
+    answers: currentModel.answers,
+    domainScores: currentModel.domainScores,
+  });
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <VitalityScoreCard
+        tone="dark"
+        value={currentModel.vitality}
+        delta={currentModel.vitalityDelta}
+        bodyLine={explainer?.[0]}
+        history={currentModel.history}
+      />
+
+      <Card pad={20}>
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--text-subtle)",
+            marginBottom: 12,
+            textAlign: "center",
+          }}
+        >
+          Per categorie
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 8,
+            justifyItems: "center",
+          }}
+        >
+          {PILLARS.map((pillar) => (
+            <VitalityGauge
+              key={pillar.id}
+              value={currentModel.scores[pillar.id] ?? 0}
+              label={pillar.label}
+              size={86}
+              stroke={8}
+              compact
+              showBandLabel={false}
+            />
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+const NowSection = ({ empty, model }: SharedSectionProps) => {
+  const currentModel = model as DashboardModel | null;
+  const [habitCompleted, setHabitCompleted] = useState(
+    currentModel?.activeHabit?.state === "done",
+  );
+  const habitKernel =
+    currentModel &&
+    buildHabitScoreKernel({
+      vitality: currentModel.vitality,
+      priorityId: currentModel.priority.id,
+      priorityScore: currentModel.scores[currentModel.priority.id],
+      answers: currentModel.answers,
+      domainScores: currentModel.domainScores,
+    });
 
   if (!empty && !model) {
     return null;
@@ -382,158 +594,184 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
     : null;
 
   if (empty) {
-    return (
-      <VitalityScoreCard
-        locked
-        tone="dark"
-        onCta={() => {
-          clarityTag("dashboard_vitaalscore_cta", "empty");
-          trackEvent("dashboard_first_check_cta", { surface: "vitaalscore_card" });
-          onCheck();
-        }}
-      />
-    );
+    return null;
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <VitalityScoreCard
-        tone="dark"
-        value={currentModel?.vitality ?? 0}
-        delta={currentModel?.vitalityDelta ?? null}
-        bodyLine={explainer?.[0]}
-        history={currentModel?.history ?? []}
-      />
-
-      <Card glow="#5A8F6A" pad={28} style={{ borderColor: "rgba(90,143,106,0.28)" }}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ paddingBottom: 24, borderBottom: SECTION_DIVIDER }}>
-            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12, textAlign: "center" }}>
-              Per categorie
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, justifyItems: "center" }}>
-              {PILLARS.map((pillar) => (
-                <VitalityGauge
-                  key={pillar.id}
-                  value={currentModel?.scores[pillar.id] ?? 0}
-                  label={pillar.label}
-                  size={86}
-                  stroke={8}
-                  compact
-                  showBandLabel={false}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div
-            style={{
-              paddingTop: 24,
-              paddingBottom: currentModel?.activeHabit ? 24 : 0,
-              borderBottom: currentModel?.activeHabit ? SECTION_DIVIDER : "none",
-            }}
-          >
-            {interventionHref && currentModel ? (
-              <Link
-                href={interventionHref}
-                onClick={() =>
-                  trackDashboardInterventionClick("hefboom", currentModel, interventionHref)
-                }
-                aria-label={`Start bij ${currentModel.priority.label.toLowerCase()} — je grootste hefboom`}
+    <Card
+      glow="#5A8F6A"
+      pad={28}
+      style={{ borderColor: "rgba(90,143,106,0.28)" }}
+    >
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div
+          style={{
+            paddingBottom: currentModel?.activeHabit ? 24 : 0,
+            borderBottom: currentModel?.activeHabit ? SECTION_DIVIDER : "none",
+          }}
+        >
+          {interventionHref && currentModel ? (
+            <Link
+              href={interventionHref}
+              onClick={() =>
+                trackDashboardInterventionClick(
+                  "hefboom",
+                  currentModel,
+                  interventionHref,
+                )
+              }
+              aria-label={`Start bij ${currentModel.priority.label.toLowerCase()} — je grootste hefboom`}
+              style={{
+                display: "block",
+                textDecoration: "none",
+                color: "inherit",
+                cursor: "pointer",
+                margin: "-4px -6px",
+                padding: "4px 6px",
+                borderRadius: 12,
+              }}
+            >
+              <div
                 style={{
-                  display: "block",
-                  textDecoration: "none",
-                  color: "inherit",
-                  cursor: "pointer",
-                  margin: "-4px -6px",
-                  padding: "4px 6px",
-                  borderRadius: 12,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 7,
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: currentModel.priority.color,
+                  marginBottom: 10,
                 }}
               >
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: currentModel.priority.color, marginBottom: 10 }}>
-                  <Icons.Target s={14} /> Je grootste hefboom
-                </div>
-                <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 10 }}>
-                  {currentModel.priority.label}.
-                </div>
-                {explainer?.slice(0, 2).map((paragraph, index) =>
-                  paragraph ? (
-                    <p
-                      key={index}
-                      style={{
-                        fontSize: 14,
-                        color: "var(--text-muted)",
-                        lineHeight: 1.6,
-                        margin: index === 0 ? "0 0 10px" : "0",
-                        textWrap: "pretty",
-                      }}
-                    >
-                      {paragraph}
-                    </p>
-                  ) : null,
-                )}
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 5,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: currentModel.priority.color,
-                    marginTop: 4,
-                  }}
-                >
-                  Start hier
-                  <Icons.ArrowRight s={14} />
-                </span>
-              </Link>
-            ) : (
-              <>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: currentModel?.priority.color, marginBottom: 10 }}>
-                  <Icons.Target s={14} /> Je grootste hefboom
-                </div>
-                <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: "var(--text)", lineHeight: 1.2, marginBottom: 10 }}>
-                  {currentModel?.priority.label}.
-                </div>
-                {explainer?.slice(0, 2).map((paragraph, index) =>
-                  paragraph ? (
-                    <p
-                      key={index}
-                      style={{
-                        fontSize: 14,
-                        color: "var(--text-muted)",
-                        lineHeight: 1.6,
-                        margin: index === 0 ? "0 0 10px" : "0",
-                        textWrap: "pretty",
-                      }}
-                    >
-                      {paragraph}
-                    </p>
-                  ) : null,
-                )}
-              </>
-            )}
-          </div>
-
-          {currentModel?.activeHabit && habitKernel ? (
-            <ActiveHabitCard
-              habit={currentModel.activeHabit}
-              habitKernel={habitKernel}
-              onCompleted={() => setHabitCompleted(true)}
-            />
-          ) : null}
-
-          {supplementDisclosure && habitCompleted ? (
-            <div style={{ marginTop: 24, paddingTop: 24, borderTop: SECTION_DIVIDER }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-subtle)", marginBottom: 12 }}>
-                <Icons.Pill s={14} /> Stap 2 · Aanvulling, pas hierna
+                <Icons.Target s={14} /> Je grootste hefboom
               </div>
-              <SupplementDisclosure data={supplementDisclosure} />
-            </div>
-          ) : null}
+              <div
+                style={{
+                  fontFamily: "var(--f-serif)",
+                  fontSize: 22,
+                  color: "var(--text)",
+                  lineHeight: 1.2,
+                  marginBottom: 10,
+                }}
+              >
+                {currentModel.priority.label}.
+              </div>
+              {explainer?.slice(0, 2).map((paragraph, index) =>
+                paragraph ? (
+                  <p
+                    key={index}
+                    style={{
+                      fontSize: 14,
+                      color: "var(--text-muted)",
+                      lineHeight: 1.6,
+                      margin: index === 0 ? "0 0 10px" : "0",
+                      textWrap: "pretty",
+                    }}
+                  >
+                    {paragraph}
+                  </p>
+                ) : null,
+              )}
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: currentModel.priority.color,
+                  marginTop: 4,
+                }}
+              >
+                Start hier
+                <Icons.ArrowRight s={14} />
+              </span>
+            </Link>
+          ) : (
+            <>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 7,
+                  fontSize: 11,
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: currentModel?.priority.color,
+                  marginBottom: 10,
+                }}
+              >
+                <Icons.Target s={14} /> Je grootste hefboom
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--f-serif)",
+                  fontSize: 22,
+                  color: "var(--text)",
+                  lineHeight: 1.2,
+                  marginBottom: 10,
+                }}
+              >
+                {currentModel?.priority.label}.
+              </div>
+              {explainer?.slice(0, 2).map((paragraph, index) =>
+                paragraph ? (
+                  <p
+                    key={index}
+                    style={{
+                      fontSize: 14,
+                      color: "var(--text-muted)",
+                      lineHeight: 1.6,
+                      margin: index === 0 ? "0 0 10px" : "0",
+                      textWrap: "pretty",
+                    }}
+                  >
+                    {paragraph}
+                  </p>
+                ) : null,
+              )}
+            </>
+          )}
         </div>
-      </Card>
-    </div>
+
+        {currentModel?.activeHabit && habitKernel ? (
+          <ActiveHabitCard
+            habit={currentModel.activeHabit}
+            habitKernel={habitKernel}
+            onCompleted={() => setHabitCompleted(true)}
+          />
+        ) : null}
+
+        {supplementDisclosure && habitCompleted ? (
+          <div
+            style={{
+              marginTop: 24,
+              paddingTop: 24,
+              borderTop: SECTION_DIVIDER,
+            }}
+          >
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: "var(--text-subtle)",
+                marginBottom: 12,
+              }}
+            >
+              <Icons.Pill s={14} /> Stap 2 · Aanvulling, pas hierna
+            </div>
+            <SupplementDisclosure data={supplementDisclosure} />
+          </div>
+        ) : null}
+      </div>
+    </Card>
   );
 };
 
@@ -550,9 +788,14 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
   };
   const prevLadder =
     model?.retest && model.prevScores ? derivePriority(model.prevScores) : null;
-  const targetIdx = Object.fromEntries(ladder.map((p, i) => [p.id, i])) as Record<PillarId, number>;
+  const targetIdx = Object.fromEntries(
+    ladder.map((p, i) => [p.id, i]),
+  ) as Record<PillarId, number>;
   const startIdx = prevLadder
-    ? (Object.fromEntries(prevLadder.map((p, i) => [p.id, i])) as Record<PillarId, number>)
+    ? (Object.fromEntries(prevLadder.map((p, i) => [p.id, i])) as Record<
+        PillarId,
+        number
+      >)
     : targetIdx;
   const [pos, setPos] = useState(startIdx);
 
@@ -583,7 +826,15 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
   return (
     <CollapsibleSection eyebrow="Roadmap" title="Waar je nu begint">
       <>
-        <SectionHeader eyebrow="Prioriteit" title="Je pijlerladder" action={<span style={{ fontSize: 12, color: "var(--text-subtle)" }}>zwakste bovenaan</span>} />
+        <SectionHeader
+          eyebrow="Prioriteit"
+          title="Je pijlerladder"
+          action={
+            <span style={{ fontSize: 12, color: "var(--text-subtle)" }}>
+              zwakste bovenaan
+            </span>
+          }
+        />
         <Card pad={8}>
           <PriorityLadder
             ladder={ladder}
@@ -593,7 +844,12 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
             focusRowAriaLabel={`Start bij ${model.priority.label.toLowerCase()} — je prioriteit nu`}
             onFocusRowClick={
               interventionHref
-                ? () => trackDashboardInterventionClick("ladder", model, interventionHref)
+                ? () =>
+                    trackDashboardInterventionClick(
+                      "ladder",
+                      model,
+                      interventionHref,
+                    )
                 : undefined
             }
           />
@@ -612,7 +868,15 @@ const PlanSection = ({ model }: SharedSectionProps) => {
     <CollapsibleSection eyebrow="Adviezen" title="Objectief, geen verkoop">
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <RecommendedInsights pillarId={model.priority.id} />
-        <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--text-muted)" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            fontSize: 11.5,
+            color: "var(--text-muted)",
+          }}
+        >
           <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
           <span>Objectief — wij verkopen zelf niets.</span>
         </div>
@@ -626,32 +890,112 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
   if (!model) {
     return null;
   }
-  const connectedSignals = SIGNALS.filter((signal) => signal.status === "connected");
-  const upcomingSignals = SIGNALS.filter((signal) => signal.status !== "connected");
+  const connectedSignals = SIGNALS.filter(
+    (signal) => signal.status === "connected",
+  );
+  const upcomingSignals = SIGNALS.filter(
+    (signal) => signal.status !== "connected",
+  );
 
   const renderSignal = (signal: Signal) => {
     const connected = signal.status === "connected";
     const last = connected ? signal.data[signal.data.length - 1] : null;
     return (
-      <Card key={signal.id} pad={15} style={connected ? undefined : { borderStyle: "dashed", background: "rgba(255,255,255,0.015)" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+      <Card
+        key={signal.id}
+        pad={15}
+        style={
+          connected
+            ? undefined
+            : { borderStyle: "dashed", background: "rgba(255,255,255,0.015)" }
+        }
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 10,
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ color: connected ? signal.color : "var(--text-subtle)", display: "flex" }}>
+            <span
+              style={{
+                color: connected ? signal.color : "var(--text-subtle)",
+                display: "flex",
+              }}
+            >
               <Icons.Activity s={16} />
             </span>
-            <span style={{ fontSize: 13, color: connected ? "var(--text)" : "var(--text-muted)", fontWeight: 500 }}>{signal.label}</span>
+            <span
+              style={{
+                fontSize: 13,
+                color: connected ? "var(--text)" : "var(--text-muted)",
+                fontWeight: 500,
+              }}
+            >
+              {signal.label}
+            </span>
           </div>
           {connected ? (
-            <span style={{ fontSize: 10.5, color: signal.color, border: `1px solid ${signal.color}44`, background: `${signal.color}1a`, borderRadius: 999, padding: "2px 8px" }}>verbonden</span>
+            <span
+              style={{
+                fontSize: 10.5,
+                color: signal.color,
+                border: `1px solid ${signal.color}44`,
+                background: `${signal.color}1a`,
+                borderRadius: 999,
+                padding: "2px 8px",
+              }}
+            >
+              verbonden
+            </span>
           ) : (
-            <span style={{ fontSize: 10.5, color: "var(--text-subtle)", border: "1px solid var(--divider)", borderRadius: 999, padding: "2px 8px" }}>binnenkort</span>
+            <span
+              style={{
+                fontSize: 10.5,
+                color: "var(--text-subtle)",
+                border: "1px solid var(--divider)",
+                borderRadius: 999,
+                padding: "2px 8px",
+              }}
+            >
+              binnenkort
+            </span>
           )}
         </div>
-        <Sparkline data={connected ? signal.data : null} color={signal.color} empty={!connected} h={34} />
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 8 }}>
-          <span style={{ fontFamily: "var(--f-serif)", fontSize: 18, color: connected ? "var(--text)" : "var(--text-subtle)", fontVariantNumeric: "tabular-nums" }}>
+        <Sparkline
+          data={connected ? signal.data : null}
+          color={signal.color}
+          empty={!connected}
+          h={34}
+        />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            marginTop: 8,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--f-serif)",
+              fontSize: 18,
+              color: connected ? "var(--text)" : "var(--text-subtle)",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
             {connected ? `${last}` : "—"}
-            <span style={{ fontSize: 11, color: "var(--text-subtle)", marginLeft: 2 }}>{signal.unit}</span>
+            <span
+              style={{
+                fontSize: 11,
+                color: "var(--text-subtle)",
+                marginLeft: 2,
+              }}
+            >
+              {signal.unit}
+            </span>
           </span>
         </div>
       </Card>
@@ -660,45 +1004,121 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
 
   return (
     <section>
-      <SectionHeader eyebrow="Signalen & trend" title="Wat er beweegt" action={<span style={{ fontSize: 12, color: "var(--text-subtle)" }}>laatste 6 checks</span>} />
+      <SectionHeader
+        eyebrow="Signalen & trend"
+        title="Wat er beweegt"
+        action={
+          <span style={{ fontSize: 12, color: "var(--text-subtle)" }}>
+            laatste 6 checks
+          </span>
+        }
+      />
       <SlotGrid min={150} gap={10}>
         {PILLARS.map((pillar) => {
           const Icon = Icons[pillar.icon];
           const route = PILLAR_CHECKIN_ROUTES[pillar.id];
           const pillarId = pillar.id;
           const readout = isReadoutDomain(pillarId);
-          const presentation = readout ? getReadoutPresentation(pillarId) : null;
+          const presentation = readout
+            ? getReadoutPresentation(pillarId)
+            : null;
           return (
             <Card key={pillar.id} pad={15}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 12,
+                }}
+              >
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ color: pillar.color, display: "flex" }}>
                     <Icon s={16} />
                   </span>
-                  <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>{pillar.label}</span>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      color: "var(--text)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {pillar.label}
+                  </span>
                   {readout && (
-                    <span style={{ fontSize: 10, color: "var(--text-subtle)", letterSpacing: "0.1em", textTransform: "uppercase" }}>rapport</span>
+                    <span
+                      style={{
+                        fontSize: 10,
+                        color: "var(--text-subtle)",
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      rapport
+                    </span>
                   )}
                 </div>
                 <DeltaBadge delta={model.deltaOf(pillar.id)} />
               </div>
               <Sparkline data={model.trend[pillar.id]} color={pillar.color} />
-              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 10 }}>
-                <span style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", fontVariantNumeric: "tabular-nums" }}>{model.scores[pillar.id]}</span>
-                <span style={{ fontSize: 11, color: "var(--text-subtle)" }}>/ 100</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--f-serif)",
+                    fontSize: 20,
+                    color: "var(--text)",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {model.scores[pillar.id]}
+                </span>
+                <span style={{ fontSize: 11, color: "var(--text-subtle)" }}>
+                  / 100
+                </span>
               </div>
               {readout && presentation ? (
                 <>
-                  <p style={{ fontSize: 11.5, color: "var(--text-subtle)", marginTop: 8, marginBottom: 0 }}>
-                    Uitkomst · aangedreven door {presentation.driverLabels.join(" · ")}
+                  <p
+                    style={{
+                      fontSize: 11.5,
+                      color: "var(--text-subtle)",
+                      marginTop: 8,
+                      marginBottom: 0,
+                    }}
+                  >
+                    Uitkomst · aangedreven door{" "}
+                    {presentation.driverLabels.join(" · ")}
                   </p>
                   {presentation.primaryCta && (
                     <button
                       type="button"
-                      onClick={() => onDashboardCheckin(presentation.primaryCta!.route, presentation.primaryCta!.pillarId)}
-                      style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", color: pillar.color, fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)" }}
+                      onClick={() =>
+                        onDashboardCheckin(
+                          presentation.primaryCta!.route,
+                          presentation.primaryCta!.pillarId,
+                        )
+                      }
+                      style={{
+                        marginTop: 10,
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                        color: pillar.color,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        fontFamily: "var(--f-sans)",
+                      }}
                     >
-                      Werk aan je {presentation.primaryCta.label.toLowerCase()} →
+                      Werk aan je {presentation.primaryCta.label.toLowerCase()}{" "}
+                      →
                     </button>
                   )}
                 </>
@@ -707,7 +1127,17 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
                   <button
                     type="button"
                     onClick={() => onDashboardCheckin(route, pillar.id)}
-                    style={{ marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer", color: pillar.color, fontSize: 12, fontWeight: 600, fontFamily: "var(--f-sans)" }}
+                    style={{
+                      marginTop: 10,
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      color: pillar.color,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: "var(--f-sans)",
+                    }}
                   >
                     Check-in →
                   </button>
@@ -717,19 +1147,57 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
           );
         })}
       </SlotGrid>
-      <div style={{ fontSize: 11.5, color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.12em", margin: "18px 2px 10px" }}>Objectieve signalen</div>
+      <div
+        style={{
+          fontSize: 11.5,
+          color: "var(--text-subtle)",
+          textTransform: "uppercase",
+          letterSpacing: "0.12em",
+          margin: "18px 2px 10px",
+        }}
+      >
+        Objectieve signalen
+      </div>
       <SlotGrid min={150} gap={10}>
         {connectedSignals.map(renderSignal)}
         <button
           type="button"
           onClick={() => setShowUpcoming((v) => !v)}
-          style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", gap: 10, padding: 15, borderRadius: 24, cursor: "pointer", textAlign: "left", border: "1px dashed var(--panel-border)", background: "rgba(255,255,255,0.015)", color: "var(--text-muted)" }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            gap: 10,
+            padding: 15,
+            borderRadius: 24,
+            cursor: "pointer",
+            textAlign: "left",
+            border: "1px dashed var(--panel-border)",
+            background: "rgba(255,255,255,0.015)",
+            color: "var(--text-muted)",
+          }}
         >
-          <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, borderRadius: 9, border: "1px solid var(--divider)", color: "var(--text-subtle)", transform: showUpcoming ? "rotate(45deg)" : "none", transition: "transform .25s" }}>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 30,
+              height: 30,
+              borderRadius: 9,
+              border: "1px solid var(--divider)",
+              color: "var(--text-subtle)",
+              transform: showUpcoming ? "rotate(45deg)" : "none",
+              transition: "transform .25s",
+            }}
+          >
             <Icons.Plus s={16} />
           </span>
           <span style={{ fontSize: 12.5, lineHeight: 1.35 }}>
-            {showUpcoming ? "Verberg komende signalen" : `${upcomingSignals.length} komende signalen`}
+            {showUpcoming
+              ? "Verberg komende signalen"
+              : `${upcomingSignals.length} komende signalen`}
           </span>
         </button>
       </SlotGrid>
@@ -740,8 +1208,16 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
           </SlotGrid>
         </div>
       )}
-      <div style={{ fontSize: 12, color: "var(--text-subtle)", marginTop: 12, lineHeight: 1.5 }}>
-        Wearable-signalen worden binnenkort toegevoegd ter bevestiging van je trends.
+      <div
+        style={{
+          fontSize: 12,
+          color: "var(--text-subtle)",
+          marginTop: 12,
+          lineHeight: 1.5,
+        }}
+      >
+        Wearable-signalen worden binnenkort toegevoegd ter bevestiging van je
+        trends.
       </div>
     </section>
   );
@@ -851,12 +1327,38 @@ const RemeasureStrip = ({
     return (
       <Card pad={20}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.04)", border: "1px solid var(--panel-border)", color: "var(--text-muted)" }}>
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 11,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--panel-border)",
+              color: "var(--text-muted)",
+            }}
+          >
             <Icons.Calendar s={18} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Over {remeasure.daysUntil} dagen: je hermeting</div>
-            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2, lineHeight: 1.4 }}>Dan meten we of je hefboom werkte — en of je prioriteit verschuift.</div>
+            <div
+              style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}
+            >
+              Over {remeasure.daysUntil} dagen: je hermeting
+            </div>
+            <div
+              style={{
+                fontSize: 12.5,
+                color: "var(--text-muted)",
+                marginTop: 2,
+                lineHeight: 1.4,
+              }}
+            >
+              Dan meten we of je hefboom werkte — en of je prioriteit
+              verschuift.
+            </div>
           </div>
         </div>
       </Card>
@@ -864,14 +1366,50 @@ const RemeasureStrip = ({
   }
 
   return (
-    <Card pad={20} glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.26)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-        <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.04)", border: "1px solid var(--panel-border)", color: "var(--text-muted)" }}>
+    <Card
+      pad={20}
+      glow="#C8956C"
+      style={{ borderColor: "rgba(200,149,108,0.26)" }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          flexWrap: "wrap",
+        }}
+      >
+        <div
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 11,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid var(--panel-border)",
+            color: "var(--text-muted)",
+          }}
+        >
           <Icons.Refresh s={18} />
         </div>
         <div style={{ flex: "1 1 180px" }}>
-          <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Tijd voor je hermeting</div>
-          <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2, lineHeight: 1.4 }}>Meet opnieuw of je leefstijl-stappen werken.</div>
+          <div
+            style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}
+          >
+            Tijd voor je hermeting
+          </div>
+          <div
+            style={{
+              fontSize: 12.5,
+              color: "var(--text-muted)",
+              marginTop: 2,
+              lineHeight: 1.4,
+            }}
+          >
+            Meet opnieuw of je leefstijl-stappen werken.
+          </div>
         </div>
         <Button onClick={onRemeasure} iconRight={<Icons.ArrowRight s={18} />}>
           Doe je hermeting nu
@@ -881,7 +1419,12 @@ const RemeasureStrip = ({
   );
 };
 
-const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionProps) => {
+const RetestSection = ({
+  model,
+  data,
+  onRemeasure,
+  onGoVandaag,
+}: SharedSectionProps) => {
   if (!model) {
     return null;
   }
@@ -896,11 +1439,15 @@ const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionP
 
   const deltaReport = data?.deltaReport ?? null;
   const domainConfigById = new Map(
-    perfectSupplementMeasurementConfig.domains.map((domain) => [domain.id, domain]),
+    perfectSupplementMeasurementConfig.domains.map((domain) => [
+      domain.id,
+      domain,
+    ]),
   );
 
   if (deltaReport) {
-    const { vitality, method, perDomain, coupling, movedPriority } = deltaReport;
+    const { vitality, method, perDomain, coupling, movedPriority } =
+      deltaReport;
     const forwardPillar = model.priority;
     const baselinePriorityLabel = movedPriority
       ? (domainConfigById.get(movedPriority.from)?.label ?? movedPriority.from)
@@ -919,35 +1466,115 @@ const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionP
     return (
       <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {remeasureStrip}
-        <Card pad={22} glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.26)" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
+        <Card
+          pad={22}
+          glow="#C8956C"
+          style={{ borderColor: "rgba(200,149,108,0.26)" }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 7,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--terra)",
+              marginBottom: 12,
+            }}
+          >
             <Icons.TrendUp s={14} /> Je hermeting · {model.date}
           </div>
-          <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>
+          <div
+            style={{
+              fontFamily: "var(--f-serif)",
+              fontSize: 21,
+              color: "var(--text)",
+              lineHeight: 1.25,
+              marginBottom: 8,
+            }}
+          >
             Zo veranderde je beeld in {method.daysBetween} dagen.
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 2px", borderBottom: "1px solid var(--divider)", marginBottom: 4 }}>
-            <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>Jouw vitaliteit</span>
-            <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "12px 2px",
+              borderBottom: "1px solid var(--divider)",
+              marginBottom: 4,
+            }}
+          >
+            <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
+              Jouw vitaliteit
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: "var(--text-subtle)",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
               van {vitality.was} naar {vitality.now}
             </span>
             <span style={{ width: 34, textAlign: "right" }}>
               <DeltaBadge delta={vitality.delta} />
             </span>
           </div>
-          {method.sameInstrument && method.selfReported && method.directional && method.notDiagnosis && (
-            <p style={{ fontSize: 12.5, color: "var(--text-subtle)", lineHeight: 1.55, margin: "14px 0 16px", textWrap: "pretty" }}>
-              Zelfde vragen, zelfde schaal als je startmeting. Dit is je ervaren verandering — richting, geen schijnprecisie. Geen diagnose.
-            </p>
-          )}
+          {method.sameInstrument &&
+            method.selfReported &&
+            method.directional &&
+            method.notDiagnosis && (
+              <p
+                style={{
+                  fontSize: 12.5,
+                  color: "var(--text-subtle)",
+                  lineHeight: 1.55,
+                  margin: "14px 0 16px",
+                  textWrap: "pretty",
+                }}
+              >
+                Zelfde vragen, zelfde schaal als je startmeting. Dit is je
+                ervaren verandering — richting, geen schijnprecisie. Geen
+                diagnose.
+              </p>
+            )}
           <div style={{ display: "flex", flexDirection: "column" }}>
             {perDomain.map((row, i) => {
               const domain = domainConfigById.get(row.domainId);
               return (
-                <div key={row.domainId} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 2px", borderTop: i ? "1px solid var(--divider)" : "none" }}>
-                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: domain?.color ?? "var(--text-subtle)", flexShrink: 0 }} />
-                  <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>{domain?.label ?? row.domainId}</span>
-                  <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums", textAlign: "right" }}>
+                <div
+                  key={row.domainId}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "11px 2px",
+                    borderTop: i ? "1px solid var(--divider)" : "none",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: domain?.color ?? "var(--text-subtle)",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
+                    {domain?.label ?? row.domainId}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      color: "var(--text-subtle)",
+                      fontVariantNumeric: "tabular-nums",
+                      textAlign: "right",
+                    }}
+                  >
                     {row.was} → {row.now}
                   </span>
                   <span style={{ width: 34, textAlign: "right" }}>
@@ -961,17 +1588,49 @@ const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionP
 
         {coupling.length > 0 && (
           <Card pad={20}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 12 }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--sage)",
+                marginBottom: 12,
+              }}
+            >
               <Icons.Check s={14} /> Wat je volhield
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {coupling.map((entry) => {
-                const domainLabel = domainConfigById.get(entry.domainId)?.label ?? entry.domainId;
+                const domainLabel =
+                  domainConfigById.get(entry.domainId)?.label ?? entry.domainId;
                 return (
-                  <p key={`${entry.domainId}-${entry.action}`} style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>
-                    Je hield <span style={{ color: "var(--text)", fontWeight: 500 }}>{entry.action}</span> vast — en je{" "}
-                    <span style={{ color: "var(--text)", fontWeight: 500 }}>{domainLabel.toLowerCase()}</span> bewoog{" "}
-                    <span style={{ color: "var(--sage)", fontWeight: 600 }}>+{entry.delta}</span>.
+                  <p
+                    key={`${entry.domainId}-${entry.action}`}
+                    style={{
+                      fontSize: 13.5,
+                      color: "var(--text-muted)",
+                      lineHeight: 1.55,
+                      margin: 0,
+                      textWrap: "pretty",
+                    }}
+                  >
+                    Je hield{" "}
+                    <span style={{ color: "var(--text)", fontWeight: 500 }}>
+                      {entry.action}
+                    </span>{" "}
+                    vast — en je{" "}
+                    <span style={{ color: "var(--text)", fontWeight: 500 }}>
+                      {domainLabel.toLowerCase()}
+                    </span>{" "}
+                    bewoog{" "}
+                    <span style={{ color: "var(--sage)", fontWeight: 600 }}>
+                      +{entry.delta}
+                    </span>
+                    .
                   </p>
                 );
               })}
@@ -979,25 +1638,76 @@ const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionP
           </Card>
         )}
 
-        <Card pad={20} glow="#5A8F6A" style={{ borderColor: "rgba(90,143,106,0.26)" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
+        <Card
+          pad={20}
+          glow="#5A8F6A"
+          style={{ borderColor: "rgba(90,143,106,0.26)" }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 7,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--sage)",
+              marginBottom: 10,
+            }}
+          >
             <Icons.Target s={14} /> Waar je nu verder bouwt
           </div>
-          <div style={{ fontFamily: "var(--f-serif)", fontSize: 20, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>
+          <div
+            style={{
+              fontFamily: "var(--f-serif)",
+              fontSize: 20,
+              color: "var(--text)",
+              lineHeight: 1.25,
+              marginBottom: 8,
+            }}
+          >
             {movedPriority
               ? `Je prioriteit is verschoven van ${baselinePriorityLabel?.toLowerCase()} naar ${currentPriorityLabel.toLowerCase()}.`
               : `Je vertrekpunt blijft ${forwardPillar.label.toLowerCase()}.`}
           </div>
-          <div style={{ fontSize: 15, color: "var(--text)", fontWeight: 600, marginBottom: 6 }}>
+          <div
+            style={{
+              fontSize: 15,
+              color: "var(--text)",
+              fontWeight: 600,
+              marginBottom: 6,
+            }}
+          >
             {model.activeHabit?.title ?? forwardPillar.quickWin.title}
           </div>
-          <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 8px", textWrap: "pretty" }}>
+          <p
+            style={{
+              fontSize: 13.5,
+              color: "var(--text-muted)",
+              lineHeight: 1.55,
+              margin: "0 0 8px",
+              textWrap: "pretty",
+            }}
+          >
             {model.activeHabit?.detail ?? forwardPillar.quickWin.detail}
           </p>
-          <p style={{ fontSize: 13, color: "var(--text-subtle)", lineHeight: 1.55, margin: "0 0 16px", textWrap: "pretty" }}>
+          <p
+            style={{
+              fontSize: 13,
+              color: "var(--text-subtle)",
+              lineHeight: 1.55,
+              margin: "0 0 16px",
+              textWrap: "pretty",
+            }}
+          >
             {forwardHabitKernel.driverLinkLine}
           </p>
-          <Button variant="secondary" onClick={onGoVandaag} iconRight={<Icons.ArrowRight s={18} />}>
+          <Button
+            variant="secondary"
+            onClick={onGoVandaag}
+            iconRight={<Icons.ArrowRight s={18} />}
+          >
             Ga naar Kompas
           </Button>
         </Card>
@@ -1024,24 +1734,82 @@ const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionP
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {remeasureStrip}
-      <Card pad={22} glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.26)" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
+      <Card
+        pad={22}
+        glow="#C8956C"
+        style={{ borderColor: "rgba(200,149,108,0.26)" }}
+      >
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 7,
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--terra)",
+            marginBottom: 12,
+          }}
+        >
           <Icons.TrendUp s={14} /> Je hertest · {model.date}
         </div>
-        <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>
+        <div
+          style={{
+            fontFamily: "var(--f-serif)",
+            fontSize: 21,
+            color: "var(--text)",
+            lineHeight: 1.25,
+            marginBottom: 8,
+          }}
+        >
           {movedPriority
             ? `Je prioriteit is verschoven van ${prevPriority.label.toLowerCase()} naar ${model.priority.label.toLowerCase()}.`
             : `Je vertrekpunt blijft ${model.priority.label.toLowerCase()}.`}
         </div>
-        <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 16px", textWrap: "pretty" }}>
+        <p
+          style={{
+            fontSize: 13.5,
+            color: "var(--text-muted)",
+            lineHeight: 1.55,
+            margin: "0 0 16px",
+            textWrap: "pretty",
+          }}
+        >
           Bekijk welke pijlers het meest zijn verschoven sinds je vorige check.
         </p>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {rows.map((row, i) => (
-            <div key={row.pillar.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 2px", borderTop: i ? "1px solid var(--divider)" : "none" }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: row.pillar.color, flexShrink: 0 }} />
-              <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>{row.pillar.label}</span>
-              <span style={{ fontSize: 13, color: "var(--text-subtle)", fontVariantNumeric: "tabular-nums", textAlign: "right" }}>
+            <div
+              key={row.pillar.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "11px 2px",
+                borderTop: i ? "1px solid var(--divider)" : "none",
+              }}
+            >
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: row.pillar.color,
+                  flexShrink: 0,
+                }}
+              />
+              <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
+                {row.pillar.label}
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "var(--text-subtle)",
+                  fontVariantNumeric: "tabular-nums",
+                  textAlign: "right",
+                }}
+              >
                 {row.was} → {row.now}
               </span>
               <span style={{ width: 34, textAlign: "right" }}>
@@ -1061,12 +1829,36 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
     return (
       <Card pad={20}>
         <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.04)", border: "1px solid var(--panel-border)", color: "var(--text-subtle)" }}>
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 11,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--panel-border)",
+              color: "var(--text-subtle)",
+            }}
+          >
             <Icons.Clock s={18} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Je historie</div>
-            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2 }}>Elke check verschijnt hier — met je prioriteit van dat moment.</div>
+            <div
+              style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}
+            >
+              Je historie
+            </div>
+            <div
+              style={{
+                fontSize: 12.5,
+                color: "var(--text-muted)",
+                marginTop: 2,
+              }}
+            >
+              Elke check verschijnt hier — met je prioriteit van dat moment.
+            </div>
           </div>
         </div>
       </Card>
@@ -1076,15 +1868,55 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
   return (
     <section>
       <Card pad={0}>
-        <div onClick={() => setOpen(!open)} style={{ display: "flex", alignItems: "center", gap: 13, padding: "18px 20px", cursor: "pointer" }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.04)", border: "1px solid var(--panel-border)", color: "var(--text-muted)" }}>
+        <div
+          onClick={() => setOpen(!open)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 13,
+            padding: "18px 20px",
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 11,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--panel-border)",
+              color: "var(--text-muted)",
+            }}
+          >
             <Icons.Clock s={18} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}>Eerdere checks</div>
-            <div style={{ fontSize: 12.5, color: "var(--text-muted)", marginTop: 2 }}>{past.length} checks · je prioriteit schoof mee over tijd</div>
+            <div
+              style={{ fontSize: 14.5, color: "var(--text)", fontWeight: 500 }}
+            >
+              Eerdere checks
+            </div>
+            <div
+              style={{
+                fontSize: 12.5,
+                color: "var(--text-muted)",
+                marginTop: 2,
+              }}
+            >
+              {past.length} checks · je prioriteit schoof mee over tijd
+            </div>
           </div>
-          <span style={{ color: "var(--text-subtle)", display: "flex", transition: "transform .25s", transform: open ? "rotate(180deg)" : "none" }}>
+          <span
+            style={{
+              color: "var(--text-subtle)",
+              display: "flex",
+              transition: "transform .25s",
+              transform: open ? "rotate(180deg)" : "none",
+            }}
+          >
             <Icons.ChevronDown s={20} />
           </span>
         </div>
@@ -1093,15 +1925,52 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
             {past.map((history, i) => {
               const priority = PILLAR[history.priority];
               return (
-                <div key={`${history.seq}-${i}`} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 0", borderTop: "1px solid var(--divider)" }}>
+                <div
+                  key={`${history.seq}-${i}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "13px 0",
+                    borderTop: "1px solid var(--divider)",
+                  }}
+                >
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, color: "var(--text)" }}>{history.date}</div>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11.5, marginTop: 4 }}>
-                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: priority.color }} />
-                      <span style={{ color: "var(--text-muted)" }}>prioriteit: {priority.label.toLowerCase()}</span>
+                    <div style={{ fontSize: 14, color: "var(--text)" }}>
+                      {history.date}
+                    </div>
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: 11.5,
+                        marginTop: 4,
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 7,
+                          height: 7,
+                          borderRadius: "50%",
+                          background: priority.color,
+                        }}
+                      />
+                      <span style={{ color: "var(--text-muted)" }}>
+                        prioriteit: {priority.label.toLowerCase()}
+                      </span>
                     </div>
                   </div>
-                  <div style={{ fontFamily: "var(--f-serif)", fontSize: 17, color: "var(--text)", fontVariantNumeric: "tabular-nums" }}>{history.vitality}</div>
+                  <div
+                    style={{
+                      fontFamily: "var(--f-serif)",
+                      fontSize: 17,
+                      color: "var(--text)",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {history.vitality}
+                  </div>
                 </div>
               );
             })}
@@ -1114,23 +1983,73 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
 
 const FutureSection = () => (
   <section>
-    <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "18px 20px", borderRadius: 24, border: "1px dashed var(--panel-border)", background: "rgba(255,255,255,0.015)" }}>
-      <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.03)", border: "1px solid var(--divider)", color: "var(--text-subtle)" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        padding: "18px 20px",
+        borderRadius: 24,
+        border: "1px dashed var(--panel-border)",
+        background: "rgba(255,255,255,0.015)",
+      }}
+    >
+      <div
+        style={{
+          width: 38,
+          height: 38,
+          borderRadius: 11,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid var(--divider)",
+          color: "var(--text-subtle)",
+        }}
+      >
         <Icons.Watch s={18} />
       </div>
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 14.5, color: "var(--text-muted)", fontWeight: 500 }}>Koppel je wearable</div>
-        <div style={{ fontSize: 12.5, color: "var(--text-subtle)", marginTop: 2 }}>Rustpols en slaapduur straks automatisch — het rooster groeit met je mee.</div>
+        <div
+          style={{
+            fontSize: 14.5,
+            color: "var(--text-muted)",
+            fontWeight: 500,
+          }}
+        >
+          Koppel je wearable
+        </div>
+        <div
+          style={{ fontSize: 12.5, color: "var(--text-subtle)", marginTop: 2 }}
+        >
+          Rustpols en slaapduur straks automatisch — het rooster groeit met je
+          mee.
+        </div>
       </div>
-      <span style={{ fontSize: 11, color: "var(--text-subtle)", border: "1px solid var(--divider)", borderRadius: 999, padding: "4px 11px", whiteSpace: "nowrap" }}>Binnenkort</span>
+      <span
+        style={{
+          fontSize: 11,
+          color: "var(--text-subtle)",
+          border: "1px solid var(--divider)",
+          borderRadius: 999,
+          padding: "4px 11px",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Binnenkort
+      </span>
     </div>
   </section>
 );
 
-const EMPTY_SECTIONS: DashboardSectionType[] = ["now", "history", "future"];
+const EMPTY_SECTIONS: DashboardSectionType[] = ["vitalityScore"];
 
-const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps) => ReactElement | null> = {
+const SECTION_RENDERERS: Record<
+  DashboardSectionType,
+  (props: SharedSectionProps) => ReactElement | null
+> = {
   now: (props) => <NowSection {...props} />,
+  vitalityScore: (props) => <VitalityScoreSection {...props} />,
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
   signals: (props) => (props.empty ? null : <SignalsSection {...props} />),
@@ -1144,20 +2063,80 @@ const SECTION_RENDERERS: Record<DashboardSectionType, (props: SharedSectionProps
 
 const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
   <div style={{ marginBottom: 20 }}>
-    <div style={{ fontFamily: "var(--f-serif)", fontSize: 26, color: "var(--text)", lineHeight: 1.15 }}>{tab.title}</div>
-    <div style={{ fontSize: 14, color: "var(--text-muted)", marginTop: 6, lineHeight: 1.5, textWrap: "pretty" }}>{tab.subtitle}</div>
+    <div
+      style={{
+        fontFamily: "var(--f-serif)",
+        fontSize: 26,
+        color: "var(--text)",
+        lineHeight: 1.15,
+      }}
+    >
+      {tab.title}
+    </div>
+    <div
+      style={{
+        fontSize: 14,
+        color: "var(--text-muted)",
+        marginTop: 6,
+        lineHeight: 1.5,
+        textWrap: "pretty",
+      }}
+    >
+      {tab.subtitle}
+    </div>
   </div>
 );
 
-const EmptyTabState = ({ tab, onCheck }: { tab: DashboardTab; onCheck: () => void }) => {
+const EmptyTabState = ({
+  tab,
+  onCheck,
+}: {
+  tab: DashboardTab;
+  onCheck: () => void;
+}) => {
   const Icon = Icons[tab.icon];
   return (
-    <Card pad={22} style={{ borderStyle: "dashed", background: "rgba(255,255,255,0.015)" }}>
-      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--sage)", marginBottom: 10 }}>
+    <Card
+      pad={22}
+      style={{ borderStyle: "dashed", background: "rgba(255,255,255,0.015)" }}
+    >
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 7,
+          fontSize: 11,
+          fontWeight: 600,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: "var(--sage)",
+          marginBottom: 10,
+        }}
+      >
         <Icon s={14} /> {tab.label}
       </div>
-      <div style={{ fontFamily: "var(--f-serif)", fontSize: 19, color: "var(--text)", lineHeight: 1.25, marginBottom: 8 }}>{tab.title}</div>
-      <p style={{ fontSize: 13.5, color: "var(--text-muted)", lineHeight: 1.55, margin: "0 0 18px", textWrap: "pretty" }}>{tab.emptyHint}</p>
+      <div
+        style={{
+          fontFamily: "var(--f-serif)",
+          fontSize: 19,
+          color: "var(--text)",
+          lineHeight: 1.25,
+          marginBottom: 8,
+        }}
+      >
+        {tab.title}
+      </div>
+      <p
+        style={{
+          fontSize: 13.5,
+          color: "var(--text-muted)",
+          lineHeight: 1.55,
+          margin: "0 0 18px",
+          textWrap: "pretty",
+        }}
+      >
+        {tab.emptyHint}
+      </p>
       <Button onClick={onCheck} iconRight={<Icons.ArrowRight s={18} />}>
         Doe je eerste check
       </Button>
@@ -1165,10 +2144,28 @@ const EmptyTabState = ({ tab, onCheck }: { tab: DashboardTab; onCheck: () => voi
   );
 };
 
-const DashTabBar = ({ tab, onSelect }: { tab: DashboardTabId; onSelect: (id: DashboardTabId) => void }) => (
+const DashTabBar = ({
+  tab,
+  onSelect,
+}: {
+  tab: DashboardTabId;
+  onSelect: (id: DashboardTabId) => void;
+}) => (
   <nav
     aria-label="Dashboard-navigatie"
-    style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 20, display: "flex", justifyContent: "center", background: "rgba(16,26,16,0.92)", backdropFilter: "blur(12px)", borderTop: "1px solid var(--panel-border)", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+    style={{
+      position: "fixed",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 20,
+      display: "flex",
+      justifyContent: "center",
+      background: "rgba(16,26,16,0.92)",
+      backdropFilter: "blur(12px)",
+      borderTop: "1px solid var(--panel-border)",
+      paddingBottom: "env(safe-area-inset-bottom, 0px)",
+    }}
   >
     <div style={{ display: "flex", width: "100%", maxWidth: 600 }}>
       {DASHBOARD_TABS.map((t) => {
@@ -1180,10 +2177,24 @@ const DashTabBar = ({ tab, onSelect }: { tab: DashboardTabId; onSelect: (id: Das
             type="button"
             aria-current={active ? "page" : undefined}
             onClick={() => onSelect(t.id)}
-            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "9px 4px 11px", background: "none", border: "none", cursor: "pointer", color: active ? "var(--sage)" : "var(--text-muted)", fontFamily: "var(--f-sans)" }}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+              padding: "9px 4px 11px",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: active ? "var(--sage)" : "var(--text-muted)",
+              fontFamily: "var(--f-sans)",
+            }}
           >
             <Icon s={20} />
-            <span style={{ fontSize: 11, fontWeight: active ? 600 : 500 }}>{t.label}</span>
+            <span style={{ fontSize: 11, fontWeight: active ? 600 : 500 }}>
+              {t.label}
+            </span>
           </button>
         );
       })}
@@ -1193,7 +2204,9 @@ const DashTabBar = ({ tab, onSelect }: { tab: DashboardTabId; onSelect: (id: Das
 
 export default function Dashboard({ empty, data }: DashboardProps) {
   const router = useRouter();
-  const [tab, setTab] = useState<DashboardTabId>("vandaag");
+  const [tab, setTab] = useState<DashboardTabId>(
+    empty ? "voortgang" : "vandaag",
+  );
   const model = useMemo(
     () =>
       !empty && data?.current
@@ -1251,26 +2264,57 @@ export default function Dashboard({ empty, data }: DashboardProps) {
 
   return (
     <div>
-      <main style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: "clamp(20px, 4vh, 36px) 18px calc(96px + env(safe-area-inset-bottom, 0px))" }}>
+      <main
+        style={{
+          width: "100%",
+          maxWidth: 600,
+          margin: "0 auto",
+          padding:
+            "clamp(20px, 4vh, 36px) 18px calc(96px + env(safe-area-inset-bottom, 0px))",
+        }}
+      >
         <DashHeader onLogout={onLogout} />
-        {tab === "vandaag" ? <Greeting empty={empty} model={model} /> : <DashTabHeader tab={tabMeta} />}
+        {tab === "vandaag" ? (
+          <Greeting empty={empty} model={model} />
+        ) : (
+          <DashTabHeader tab={tabMeta} />
+        )}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {empty && tab !== "vandaag" ? (
+          {empty && tab !== "voortgang" ? (
             <EmptyTabState tab={tabMeta} onCheck={onCheck} />
           ) : sectionTypes.length === 0 ? null : (
             sectionTypes.map((type) => (
-              <section key={type}>{SECTION_RENDERERS[type](sharedProps)}</section>
+              <section key={type}>
+                {SECTION_RENDERERS[type](sharedProps)}
+              </section>
             ))
           )}
         </div>
-        <footer style={{ marginTop: 28, textAlign: "center", fontSize: 11.5, color: "var(--text-subtle)", lineHeight: 1.6 }}>
-          <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text-muted)", textDecoration: "underline", textUnderlineOffset: 2 }}>
+        <footer
+          style={{
+            marginTop: 28,
+            textAlign: "center",
+            fontSize: 11.5,
+            color: "var(--text-subtle)",
+            lineHeight: 1.6,
+          }}
+        >
+          <Link
+            href="/hoe-werkt-dashboard"
+            style={{
+              color: "var(--text-muted)",
+              textDecoration: "underline",
+              textUnderlineOffset: 2,
+            }}
+          >
             Hoe werkt dit dashboard?
           </Link>
           <br />
-          PerfectSupplement geeft adviezen op basis van leefstijl, geen medische diagnoses.
+          PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
+          diagnoses.
           <br />
-          Je scores zijn een reflectie van je eigen antwoorden — geen medische meetwaarden.
+          Je scores zijn een reflectie van je eigen antwoorden — geen medische
+          meetwaarden.
           <br />
           Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
         </footer>

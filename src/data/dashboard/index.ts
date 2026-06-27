@@ -267,6 +267,7 @@ export const PILLAR_COMPARISON_ROUTES: Partial<Record<PillarId, string>> = {
 };
 
 export const DASHBOARD_SECTIONS: DashboardSection[] = [
+  { id: "vitaalscore", type: "vitalityScore" },
   { id: "nu", type: "now" },
   { id: "prioriteit", type: "priority" },
   { id: "plan", type: "plan" },
@@ -284,15 +285,15 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     label: "Kompas",
     icon: "Compass",
     title: "Kompas",
-    subtitle: "Je score en je ene volgende stap.",
-    emptyHint: "",
+    subtitle: "Je volgende stap — en wat je vandaag doet.",
+    emptyHint: "Doe je eerste check — dan weet je waar je begint en wat je vandaag kunt doen.",
   },
   {
     id: "voortgang",
     label: "Voortgang",
     icon: "BarChart",
     title: "Voortgang",
-    subtitle: "Je levenslijn — geen losse momentopname.",
+    subtitle: "Je vitaalscore, je ritme en je levenslijn.",
     emptyHint: "Hier volg je je scores en trends — zodra je eerste check binnen is.",
   },
   {
@@ -307,6 +308,6 @@ export const DASHBOARD_TABS: DashboardTab[] = [
 
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
   vandaag: ["now", "priority", "plan"],
-  voortgang: ["signals", "nutritionIntake", "history"],
+  voortgang: ["vitalityScore", "signals", "nutritionIntake", "history"],
   hermeting: ["retest", "future"],
 };

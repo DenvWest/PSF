@@ -16,6 +16,7 @@ export type CheckId = "check1" | "check2";
 
 export type DashboardSectionType =
   | "now"
+  | "vitalityScore"
   | "priority"
   | "plan"
   | "signals"
