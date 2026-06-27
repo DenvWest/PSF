@@ -46,11 +46,6 @@ function arcPath(
   return `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`;
 }
 
-function segmentMidAngle(startAngle: number, sweep: number, min: number, max: number): number {
-  const midPct = (min + max) / 2 / 100;
-  return startAngle + sweep * midPct;
-}
-
 function scoreToAngle(startAngle: number, sweep: number, score: number): number {
   return startAngle + (sweep * Math.min(VITALITY_SCORE_MAX, Math.max(0, score))) / VITALITY_SCORE_MAX;
 }
@@ -118,6 +113,7 @@ export default function VitalityGauge({
   const fillGradientId = useId().replace(/:/g, "");
   const glowGradientId = useId().replace(/:/g, "");
   const innerGradientId = useId().replace(/:/g, "");
+  const labelArcId = useId().replace(/:/g, "");
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -183,7 +179,7 @@ export default function VitalityGauge({
     const dark = tone === "dark";
     const progressAngle = scoreToAngle(startAngle, sweep, clamped);
     const [dotX, dotY] = polar(cx, cy, r, progressAngle);
-    const labelRadius = r + 30;
+    const labelRadius = r + heroStroke / 2 + 16;
     const tickInner = r - heroStroke / 2 - 1;
     const tickOuter = r + heroStroke / 2 + 1;
     const tickAngles = collectTickAngles(startAngle, sweep);
@@ -421,31 +417,31 @@ export default function VitalityGauge({
             ) : null}
 
             {VITALITY_BANDS.map((segment, index) => {
-              const next = VITALITY_BANDS[index + 1];
-              const min = segment.min;
-              const max = next ? next.min : VITALITY_SCORE_MAX;
-              const angle = segmentMidAngle(startAngle, sweep, min, max);
-              const [lx, ly] = polar(cx, cy, labelRadius, angle);
-              const active = !locked && clamped >= min;
+              const slotStart = startAngle + (sweep * index) / VITALITY_BANDS.length;
+              const slotEnd = startAngle + (sweep * (index + 1)) / VITALITY_BANDS.length;
+              const pathId = `${labelArcId}-${segment.id}`;
+              const active = !locked && clamped >= segment.min;
               const isCurrent = !locked && band.id === segment.id;
               return (
-                <text
-                  key={`label-${segment.id}`}
-                  x={lx}
-                  y={ly}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fill={active ? segment.color : dark ? "rgba(255,255,255,0.32)" : "rgba(15,28,16,0.28)"}
-                  fontSize={isCurrent ? 11.5 : 10}
-                  fontWeight={isCurrent ? 800 : active ? 700 : 600}
-                  letterSpacing="0.09em"
-                  style={{
-                    fontFamily: "var(--f-sans, system-ui, sans-serif)",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {VITALITY_BAND_ARC_LABELS[segment.id]}
-                </text>
+                <g key={`label-${segment.id}`}>
+                  <path id={pathId} d={arcPath(cx, cy, labelRadius, slotStart, slotEnd)} fill="none" stroke="none" />
+                  <text
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fill={active ? segment.color : dark ? "rgba(255,255,255,0.36)" : "rgba(15,28,16,0.32)"}
+                    fontSize={isCurrent ? 12 : active ? 11 : 10.5}
+                    fontWeight={isCurrent ? 800 : active ? 700 : 600}
+                    letterSpacing="0.12em"
+                    style={{
+                      fontFamily: "var(--f-sans, system-ui, sans-serif)",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    <textPath href={`#${pathId}`} startOffset="50%">
+                      {VITALITY_BAND_ARC_LABELS[segment.id]}
+                    </textPath>
+                  </text>
+                </g>
               );
             })}
           </svg>

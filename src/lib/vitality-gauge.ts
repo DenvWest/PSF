@@ -29,11 +29,11 @@ export const VITALITY_BANDS: VitalityBand[] = [
 
 /** Korte booglabels voor de hero-gauge — uppercase, premium, rood→groen. */
 export const VITALITY_BAND_ARC_LABELS: Record<VitalityBandId, string> = {
-  uit_balans: "Uit koers",
-  op_gang: "Wankel",
-  goed: "Op peil",
-  sterk: "Sterk",
-  optimaal: "Top",
+  uit_balans: "Uit spoor",
+  op_gang: "Uit balans",
+  goed: "Goed",
+  sterk: "Super",
+  optimaal: "Helemaal top",
 };
 
 export const VITALITY_SCORE_MAX = 100;
