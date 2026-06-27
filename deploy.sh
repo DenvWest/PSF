@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e  # Stop bij errors
 
+echo "🔍 Checking for uncommitted changes..."
+if [[ -n $(git status -s) ]]; then
+    echo "⚠️  Je hebt uncommitted changes. Commit ze eerst."
+    git status -s
+    exit 1
+fi
+
+echo "📤 Pushing to GitHub (pre-push hook draait tsc + vitest)..."
+git push origin main
+
+echo ""
 echo "🚀 Deploying PerfectSupplement to Hetzner..."
 echo ""
 
@@ -36,19 +47,3 @@ EOF
 
 echo ""
 echo "✨ Done! Your site is live."
-
-#!/bin/bash
-set -e
-
-echo "🔍 Checking for uncommitted changes..."
-if [[ -n $(git status -s) ]]; then
-    echo "⚠️  You have uncommitted changes. Commit them first!"
-    git status -s
-    exit 1
-fi
-
-echo "📤 Pushing to GitHub..."
-git push origin main
-
-echo "🚀 Deploying to Hetzner..."
-# ... rest van het script

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
+import AanpakMode from "@/components/insights/AanpakMode";
 import ContentCard from "@/components/insights/ContentCard";
 import FeaturedInsightCard from "@/components/insights/FeaturedInsightCard";
 import FocusAreaCard from "@/components/insights/FocusAreaCard";
 import InzichtenContextStrip from "@/components/insights/InzichtenContextStrip";
 import InzichtenFilterBar from "@/components/insights/InzichtenFilterBar";
 import InzichtenHubHero from "@/components/insights/InzichtenHubHero";
+import InzichtenModeSwitch from "@/components/insights/InzichtenModeSwitch";
 import InzichtenPremiumKennisbank from "@/components/insights/InzichtenPremiumKennisbank";
 import InzichtenPremiumKennisbankUpsell from "@/components/insights/InzichtenPremiumKennisbankUpsell";
 import SupplementsRouteBlock from "@/components/insights/SupplementsRouteBlock";
@@ -56,6 +58,7 @@ type InzichtenPageProps = {
     type?: string;
     alles?: string;
     kennisbank?: string;
+    weergave?: string;
   }>;
 };
 
@@ -65,11 +68,13 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
     type: typeParam,
     alles,
     kennisbank: kennisbankParam,
+    weergave: weergaveParam,
   } = await searchParams;
   const activePijler = parsePijler(pijlerParam);
   const activeType = parseType(typeParam);
   const allesActive = alles === "1";
   const isPremiumFeed = kennisbankParam === "premium";
+  const showAanpak = weergaveParam === "aanpak";
   const isFeed = Boolean(
     activePijler || activeType || allesActive || isPremiumFeed,
   );
@@ -184,6 +189,16 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
       <main className={BLOG_BG_CLASS}>
         {!isFeed ? (
           <>
+            <section aria-label="Weergave" className="pt-8 md:pt-10">
+              <Container>
+                <InzichtenModeSwitch active={showAanpak ? "aanpak" : "artikelen"} />
+              </Container>
+            </section>
+
+            {showAanpak ? (
+              <AanpakMode />
+            ) : (
+              <>
             <InzichtenHubHero />
 
             {hasContext ? (
@@ -274,6 +289,8 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                 </Container>
               </section>
             ) : null}
+              </>
+            )}
           </>
         ) : isPremiumFeed ? (
           <>
