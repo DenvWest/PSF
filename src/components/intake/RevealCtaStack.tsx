@@ -9,7 +9,7 @@ export default function RevealCtaStack() {
     <section aria-label="Bewaar je overzicht" style={{ margin: "20px 0" }}>
       <div style={{ maxWidth: 448, margin: "0 auto", width: "100%" }}>
         <Link
-          href="/account/login"
+          href="/account/login?from=intake"
           onClick={() => trackEvent(GA4_EVENTS.INTAKE_CTA_CLICKED)}
           style={{
             display: "flex",

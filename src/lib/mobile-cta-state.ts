@@ -20,7 +20,7 @@ export function resolvePrimaryMobileCta(options: {
 
   if (options.hasIntakeSession) {
     return {
-      href: "/account/login",
+      href: "/account/login?from=intake",
       label: "Bewaar in dashboard",
       intent: "save",
     };

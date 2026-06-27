@@ -48,7 +48,7 @@ export default function RevealLadderCard({ model }: RevealLadderCardProps) {
           <PriorityLadder
             ladder={model.ladder}
             scores={model.scores}
-            focusRowHref="/account/login"
+            focusRowHref="/account/login?from=intake"
             focusRowAriaLabel="Bewaar dit en volg je voortgang — begin bij je prioriteit"
           />
         </div>

@@ -10,11 +10,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function AccountLoginPage() {
+type AccountLoginPageProps = {
+  searchParams: Promise<{ from?: string }>;
+};
+
+export default async function AccountLoginPage({ searchParams }: AccountLoginPageProps) {
   const account = await getAccountFromCookie();
   if (account) {
     redirect("/dashboard");
   }
 
-  return <LoginScreen />;
+  const { from } = await searchParams;
+  const fromIntake = from === "intake";
+
+  return <LoginScreen fromIntake={fromIntake} />;
 }

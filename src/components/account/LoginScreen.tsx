@@ -1,14 +1,29 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthShell, TrustLine } from "@/components/account/AuthShell";
 import { ArrowRight, Lock, Mail, Refresh, Shield } from "@/components/app/icons";
 import { Button, Checkbox, TextField } from "@/components/app/primitives";
+import { clarityTag } from "@/lib/clarity";
+import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
+
+const CONTACT_EMAIL_STORAGE_KEY = "ps_contact_email";
 
 function isValidEmail(value: string) {
   return /\S+@\S+\.\S+/.test(value);
+}
+
+function readStoredContactEmail(): string {
+  if (typeof window === "undefined") {
+    return "";
+  }
+  try {
+    return sessionStorage.getItem(CONTACT_EMAIL_STORAGE_KEY) ?? "";
+  } catch {
+    return "";
+  }
 }
 
 type CodeEntryViewProps = {
@@ -191,24 +206,35 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
   );
 }
 
-export default function LoginScreen() {
+type LoginScreenProps = {
+  fromIntake?: boolean;
+};
+
+export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(true);
   const [view, setView] = useState<"login" | "code">("login");
   const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAutoSending, setIsAutoSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const autoSendAttemptedRef = useRef(false);
   const isEmailValid = useMemo(() => isValidEmail(email), [email]);
 
-  const requestLoginCode = async () => {
+  const requestLoginCode = async (
+    targetEmail?: string,
+    options?: { consent?: boolean },
+  ): Promise<boolean> => {
+    const addr = targetEmail ?? email;
+    const useConsent = options?.consent ?? consent;
     const response = await fetch("/api/account/request-link", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email,
-        consent,
+        email: addr,
+        consent: useConsent,
         website,
       }),
     });
@@ -216,16 +242,55 @@ export default function LoginScreen() {
     if (response.status === 200) {
       setErrorMessage(null);
       setView("code");
-      return;
+      return true;
     }
 
     if (response.status === 429) {
       setErrorMessage("Te veel pogingen, probeer het zo opnieuw.");
-      return;
+      return false;
     }
 
     setErrorMessage("Er ging iets mis.");
+    return false;
   };
+
+  useEffect(() => {
+    if (!fromIntake) {
+      return;
+    }
+
+    clarityTag("login_source", "intake_result");
+
+    const storedEmail = readStoredContactEmail();
+    const hasEmail = isValidEmail(storedEmail);
+
+    if (storedEmail) {
+      setEmail(storedEmail);
+      setConsent(true);
+    }
+
+    trackEvent(GA4_EVENTS.INTAKE_LOGIN_BRIDGE_VIEWED, {
+      has_email: hasEmail,
+      auto_sent: hasEmail,
+    });
+
+    if (!hasEmail || autoSendAttemptedRef.current) {
+      return;
+    }
+
+    autoSendAttemptedRef.current = true;
+    setIsAutoSending(true);
+
+    void (async () => {
+      try {
+        await requestLoginCode(storedEmail, { consent: true });
+      } catch {
+        setErrorMessage("Er ging iets mis.");
+      } finally {
+        setIsAutoSending(false);
+      }
+    })();
+  }, [fromIntake]);
 
   const handleSend = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -256,6 +321,40 @@ export default function LoginScreen() {
     );
   }
 
+  if (isAutoSending) {
+    return (
+      <AuthShell>
+        <article
+          style={{
+            border: "1px solid var(--panel-border)",
+            background: "var(--panel)",
+            borderRadius: 22,
+            padding: "24px 22px",
+            display: "grid",
+            gap: 18,
+          }}
+        >
+          <header style={{ display: "grid", gap: 10 }}>
+            <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>
+              Bedankt voor het invullen van de Leefstijlcheck.
+            </h1>
+            <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 15, lineHeight: 1.65 }}>
+              We sturen je inlogcode naar{" "}
+              <span style={{ color: "var(--text)" }}>{email}</span>…
+            </p>
+          </header>
+        </article>
+      </AuthShell>
+    );
+  }
+
+  const loginTitle = fromIntake
+    ? "Bedankt voor het invullen van de Leefstijlcheck."
+    : "Welkom terug.";
+  const loginLead = fromIntake
+    ? "We sturen een inlogcode naar je mail — geen wachtwoord nodig."
+    : "Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord, geen account-gedoe; je e-mail is genoeg.";
+
   return (
     <AuthShell>
       <article
@@ -269,10 +368,11 @@ export default function LoginScreen() {
         }}
       >
         <header style={{ display: "grid", gap: 10 }}>
-          <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>Welkom terug.</h1>
+          <h1 style={{ margin: 0, fontFamily: "var(--f-serif)", fontSize: 33, lineHeight: 1.1 }}>
+            {loginTitle}
+          </h1>
           <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 15, lineHeight: 1.65 }}>
-            Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord, geen
-            account-gedoe; je e-mail is genoeg.
+            {loginLead}
           </p>
         </header>
 
@@ -318,13 +418,15 @@ export default function LoginScreen() {
         <section style={{ borderTop: "1px solid var(--divider)", paddingTop: 14, display: "grid", gap: 10 }}>
           <TrustLine icon={<Lock s={15} />}>Geen wachtwoord. De code is veilig en 15 minuten geldig.</TrustLine>
           <TrustLine icon={<Shield s={15} />}>Geen spam. Je e-mail wordt alleen gebruikt om je in te loggen.</TrustLine>
-          <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-subtle)" }}>
-            Nieuw hier?{" "}
-            <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}>
-              Bekijk hoe het dashboard werkt
-            </Link>
-            .
-          </p>
+          {!fromIntake ? (
+            <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-subtle)" }}>
+              Nieuw hier?{" "}
+              <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}>
+                Bekijk hoe het dashboard werkt
+              </Link>
+              .
+            </p>
+          ) : null}
         </section>
       </article>
     </AuthShell>

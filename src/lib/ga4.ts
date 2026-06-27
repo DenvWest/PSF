@@ -5,6 +5,7 @@ export const GA4_EVENTS = {
   EMAIL_INGESCHREVEN: 'email_ingeschreven',
   PAGINA_TYPE: 'pagina_type',
   INTAKE_CTA_CLICKED: 'intake_cta_clicked',
+  INTAKE_LOGIN_BRIDGE_VIEWED: 'intake_login_bridge_viewed',
   INTAKE_FEEDBACK_SUBMITTED: 'intake_feedback_submitted',
   DASHBOARD_UNLOCK_VIEWED: 'dashboard_unlock_viewed',
   DASHBOARD_UNLOCK_CTA_CLICKED: 'dashboard_unlock_cta_clicked',
