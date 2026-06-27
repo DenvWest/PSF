@@ -59,6 +59,7 @@ export type DashboardIconName =
   | "ArrowDown"
   | "Dot"
   | "Home"
+  | "Compass"
   | "RouteMap"
   | "BarChart"
   | "Calendar"

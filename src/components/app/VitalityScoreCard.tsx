@@ -28,6 +28,7 @@ type VitalityScoreCardProps = {
   history?: CheckLogEntry[];
   showRhythm?: boolean;
   footer?: ReactNode;
+  tone?: "light" | "dark";
 };
 
 export default function VitalityScoreCard({
@@ -42,7 +43,9 @@ export default function VitalityScoreCard({
   history = [],
   showRhythm = true,
   footer,
+  tone = "light",
 }: VitalityScoreCardProps) {
+  const dark = tone === "dark";
   const rhythm = computeCheckinRhythm(history);
   const heading = getVitalityScoreHeading(firstName, locked);
   const body = getVitalityScoreBody(locked, value, bodyLine);
@@ -51,10 +54,18 @@ export default function VitalityScoreCard({
   return (
     <article
       aria-label="Jouw vitaalscore"
-      className="vitaalscore-card overflow-hidden rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white shadow-[0_16px_48px_rgba(15,28,16,0.10),0_2px_8px_rgba(15,28,16,0.04)]"
+      className={`vitaalscore-card overflow-hidden rounded-[28px] border ${
+        dark
+          ? "border-white/10 bg-gradient-to-b from-[#19271d] to-[#0f1b12] shadow-[0_22px_60px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl"
+          : "border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white shadow-[0_16px_48px_rgba(15,28,16,0.10),0_2px_8px_rgba(15,28,16,0.04)]"
+      }`}
     >
       <div className="px-6 pb-6 pt-7 sm:px-8 sm:pb-8 sm:pt-9">
-        <p className="m-0 text-center text-[11px] font-extrabold uppercase tracking-[0.2em] text-[#5A8F6A]">
+        <p
+          className={`m-0 text-center text-[11px] font-extrabold uppercase tracking-[0.2em] ${
+            dark ? "text-[#7FB28E]" : "text-[#5A8F6A]"
+          }`}
+        >
           {VITALITY_SCORE_EYEBROW}
         </p>
 
@@ -67,22 +78,31 @@ export default function VitalityScoreCard({
             stroke={18}
             variant="hero"
             theme="light"
+            tone={tone}
             showBandLabel={false}
           />
         </div>
 
         <div className="mt-2 text-center sm:mt-3">
           <h2
-            className="m-0 text-[26px] leading-[1.12] text-[#1c1917] sm:text-[30px]"
+            className={`m-0 text-[26px] leading-[1.12] sm:text-[30px] ${dark ? "text-white" : "text-[#1c1917]"}`}
             style={{ fontFamily: "var(--f-serif, Georgia, serif)", fontWeight: 400 }}
           >
             {heading}
           </h2>
-          <p className="mx-auto mt-3.5 max-w-[340px] text-[15px] font-medium leading-relaxed text-[#44403c] sm:text-[16px]">
+          <p
+            className={`mx-auto mt-3.5 max-w-[340px] text-[15px] font-medium leading-relaxed sm:text-[16px] ${
+              dark ? "text-white/70" : "text-[#44403c]"
+            }`}
+          >
             {body}
           </p>
           {bandHint ? (
-            <p className="mx-auto mt-2 max-w-[340px] text-[13px] font-semibold leading-snug text-[#5A8F6A]">
+            <p
+              className={`mx-auto mt-2 max-w-[340px] text-[13px] font-semibold leading-snug ${
+                dark ? "text-[#9BC9A8]" : "text-[#5A8F6A]"
+              }`}
+            >
               {bandHint}
             </p>
           ) : null}
@@ -111,38 +131,56 @@ export default function VitalityScoreCard({
       </div>
 
       {showRhythm ? (
-        <div className="border-t border-[#ebe7e2] bg-[#faf9f7] px-6 py-5 sm:px-8">
+        <div
+          className={`border-t px-6 py-5 sm:px-8 ${
+            dark ? "border-white/10 bg-white/[0.03]" : "border-[#ebe7e2] bg-[#faf9f7]"
+          }`}
+        >
           <div className="mb-4 flex items-center justify-center gap-2">
-            <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#78716c]">
+            <span
+              className={`text-[11px] font-extrabold uppercase tracking-[0.18em] ${
+                dark ? "text-white/55" : "text-[#78716c]"
+              }`}
+            >
               {VITALITY_RHYTHM_EYEBROW}
             </span>
             <span
-              className="inline-flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#e8f5ee] text-[10px] font-extrabold text-[#5A8F6A]"
+              className={`inline-flex h-[18px] w-[18px] items-center justify-center rounded-full text-[10px] font-extrabold ${
+                dark ? "bg-[#7FB28E]/15 text-[#9BC9A8]" : "bg-[#e8f5ee] text-[#5A8F6A]"
+              }`}
               aria-hidden
             >
               i
             </span>
           </div>
-          <div className="grid grid-cols-2 divide-x divide-[#e4e0da]">
+          <div className={`grid grid-cols-2 divide-x ${dark ? "divide-white/10" : "divide-[#e4e0da]"}`}>
             <div className="px-4 text-center">
               <div
-                className="text-[34px] leading-none text-[#1c1917] sm:text-[38px]"
+                className={`text-[34px] leading-none sm:text-[38px] ${dark ? "text-white" : "text-[#1c1917]"}`}
                 style={{ fontFamily: "var(--f-serif, Georgia, serif)" }}
               >
                 {formatRhythmDays(rhythm.currentDays)}
               </div>
-              <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+              <div
+                className={`mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] ${
+                  dark ? "text-white/55" : "text-[#78716c]"
+                }`}
+              >
                 {VITALITY_RHYTHM_CURRENT}
               </div>
             </div>
             <div className="px-4 text-center">
               <div
-                className="text-[34px] leading-none text-[#1c1917] sm:text-[38px]"
+                className={`text-[34px] leading-none sm:text-[38px] ${dark ? "text-white" : "text-[#1c1917]"}`}
                 style={{ fontFamily: "var(--f-serif, Georgia, serif)" }}
               >
                 {formatRhythmDays(rhythm.longestDays)}
               </div>
-              <div className="mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+              <div
+                className={`mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] ${
+                  dark ? "text-white/55" : "text-[#78716c]"
+                }`}
+              >
                 {VITALITY_RHYTHM_BEST}
               </div>
             </div>
@@ -151,7 +189,13 @@ export default function VitalityScoreCard({
       ) : null}
 
       {footer ? (
-        <div className="border-t border-[#ebe7e2] bg-[#faf9f7] px-6 py-5 sm:px-8">{footer}</div>
+        <div
+          className={`border-t px-6 py-5 sm:px-8 ${
+            dark ? "border-white/10 bg-white/[0.03]" : "border-[#ebe7e2] bg-[#faf9f7]"
+          }`}
+        >
+          {footer}
+        </div>
       ) : null}
     </article>
   );

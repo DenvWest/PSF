@@ -19,6 +19,7 @@ type VitalityGaugeProps = {
   compact?: boolean;
   theme?: "dark" | "light";
   variant?: "default" | "hero";
+  tone?: "light" | "dark";
 };
 
 const DEFAULT_START = 135;
@@ -110,11 +111,21 @@ export default function VitalityGauge({
   compact = false,
   theme = "dark",
   variant = "default",
+  tone = "light",
 }: VitalityGaugeProps) {
   const [disp, setDisp] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
   const fillGradientId = useId().replace(/:/g, "");
   const glowGradientId = useId().replace(/:/g, "");
   const innerGradientId = useId().replace(/:/g, "");
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setReduceMotion(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   useEffect(() => {
     if (locked) {
@@ -169,6 +180,7 @@ export default function VitalityGauge({
   const labelColor = isLight ? "rgba(15,28,16,0.42)" : "rgba(255,255,255,0.4)";
 
   if (isHero) {
+    const dark = tone === "dark";
     const progressAngle = scoreToAngle(startAngle, sweep, clamped);
     const [dotX, dotY] = polar(cx, cy, r, progressAngle);
     const labelRadius = r + 30;
@@ -206,7 +218,7 @@ export default function VitalityGauge({
                 <stop offset="100%" stopColor="rgba(90,143,106,0)" />
               </radialGradient>
               <filter id={`${fillGradientId}-glow`} x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feGaussianBlur stdDeviation={dark ? "6" : "4"} result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
@@ -221,14 +233,14 @@ export default function VitalityGauge({
             <path
               d={arcPath(cx, cy, r, startAngle, startAngle + sweep)}
               fill="none"
-              stroke="#ebe9e4"
+              stroke={dark ? "rgba(255,255,255,0.06)" : "#ebe9e4"}
               strokeWidth={trackStroke}
               strokeLinecap="round"
             />
             <path
               d={arcPath(cx, cy, r, startAngle, startAngle + sweep)}
               fill="none"
-              stroke="rgba(255,255,255,0.65)"
+              stroke={dark ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.65)"}
               strokeWidth={trackStroke - 4}
               strokeLinecap="round"
             />
@@ -277,7 +289,7 @@ export default function VitalityGauge({
                   <path
                     d={arcPath(cx, cy, r, progressAngle, startAngle + sweep)}
                     fill="none"
-                    stroke="rgba(255,255,255,0.35)"
+                    stroke={dark ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.35)"}
                     strokeWidth={heroStroke - 1}
                     strokeLinecap="butt"
                   />
@@ -372,6 +384,42 @@ export default function VitalityGauge({
               </>
             ) : null}
 
+            {dark && !locked ? (
+              <g>
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={innerR + 20}
+                  fill="none"
+                  stroke="rgba(127,178,142,0.10)"
+                  strokeWidth={1}
+                />
+                <g style={{ transformOrigin: "center" }}>
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={innerR + 30}
+                    fill="none"
+                    stroke="rgba(127,178,142,0.22)"
+                    strokeWidth={1}
+                    strokeDasharray="1 8"
+                    strokeLinecap="round"
+                  />
+                  {!reduceMotion ? (
+                    <animateTransform
+                      attributeName="transform"
+                      attributeType="XML"
+                      type="rotate"
+                      from={`0 ${cx} ${cy}`}
+                      to={`360 ${cx} ${cy}`}
+                      dur="90s"
+                      repeatCount="indefinite"
+                    />
+                  ) : null}
+                </g>
+              </g>
+            ) : null}
+
             {VITALITY_BANDS.map((segment, index) => {
               const next = VITALITY_BANDS[index + 1];
               const min = segment.min;
@@ -387,7 +435,7 @@ export default function VitalityGauge({
                   y={ly}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fill={active ? segment.color : "rgba(15,28,16,0.28)"}
+                  fill={active ? segment.color : dark ? "rgba(255,255,255,0.32)" : "rgba(15,28,16,0.28)"}
                   fontSize={isCurrent ? 11.5 : 10}
                   fontWeight={isCurrent ? 800 : active ? 700 : 600}
                   letterSpacing="0.09em"
@@ -440,7 +488,7 @@ export default function VitalityGauge({
                 fontFamily: "var(--f-serif, Georgia, serif)",
                 fontSize: size * 0.24,
                 fontWeight: 400,
-                color: locked ? scoreColor : "#fff",
+                color: locked ? (dark ? "rgba(255,255,255,0.45)" : scoreColor) : "#fff",
                 lineHeight: 1,
                 fontVariantNumeric: "tabular-nums",
                 textShadow: locked ? undefined : "0 2px 10px rgba(15,28,16,0.28)",
@@ -452,7 +500,11 @@ export default function VitalityGauge({
               style={{
                 fontSize: size * 0.068,
                 fontWeight: 700,
-                color: locked ? "rgba(15,28,16,0.30)" : "rgba(255,255,255,0.82)",
+                color: locked
+                  ? dark
+                    ? "rgba(255,255,255,0.30)"
+                    : "rgba(15,28,16,0.30)"
+                  : "rgba(255,255,255,0.82)",
                 letterSpacing: "0.12em",
                 marginTop: 4,
               }}

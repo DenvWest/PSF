@@ -338,6 +338,15 @@ export function RouteMap(props: IconProps) {
   );
 }
 
+export function Compass(props: IconProps) {
+  return (
+    <I {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m15 9-2 5-5 2 2-5z" />
+    </I>
+  );
+}
+
 export function BarChart(props: IconProps) {
   return (
     <I {...props}>

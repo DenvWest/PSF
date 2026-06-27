@@ -385,6 +385,7 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
     return (
       <VitalityScoreCard
         locked
+        tone="dark"
         onCta={() => {
           clarityTag("dashboard_vitaalscore_cta", "empty");
           trackEvent("dashboard_first_check_cta", { surface: "vitaalscore_card" });
@@ -397,6 +398,7 @@ const NowSection = ({ empty, model, onCheck }: SharedSectionProps) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <VitalityScoreCard
+        tone="dark"
         value={currentModel?.vitality ?? 0}
         delta={currentModel?.vitalityDelta ?? null}
         bodyLine={explainer?.[0]}
@@ -996,7 +998,7 @@ const RetestSection = ({ model, data, onRemeasure, onGoVandaag }: SharedSectionP
             {forwardHabitKernel.driverLinkLine}
           </p>
           <Button variant="secondary" onClick={onGoVandaag} iconRight={<Icons.ArrowRight s={18} />}>
-            Ga naar vandaag
+            Ga naar Kompas
           </Button>
         </Card>
       </section>

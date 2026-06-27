@@ -281,9 +281,9 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
 export const DASHBOARD_TABS: DashboardTab[] = [
   {
     id: "vandaag",
-    label: "Vandaag",
-    icon: "Home",
-    title: "Vandaag",
+    label: "Kompas",
+    icon: "Compass",
+    title: "Kompas",
     subtitle: "Je score en je ene volgende stap.",
     emptyHint: "",
   },
