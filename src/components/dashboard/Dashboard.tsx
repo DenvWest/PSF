@@ -2134,7 +2134,7 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
     scores: model.domainScores,
     urgency: "",
     profile: data?.profileLabel ?? "",
-    timestamp: Date.now(),
+    timestamp: 0,
     ageRange: null,
     firstName: null,
   };
@@ -2623,7 +2623,7 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
     scores: model.domainScores,
     urgency: "",
     profile: "",
-    timestamp: Date.now(),
+    timestamp: 0,
     ageRange: null,
     firstName: null,
   };
@@ -3077,12 +3077,19 @@ export default function Dashboard({
     ? allowedTypes.filter((type) => EMPTY_SECTIONS.includes(type))
     : allowedTypes;
 
+  const selectTab = (nextTab: DashboardTabId) => {
+    if (nextTab !== "voortgang") {
+      setVoortgangScreen("hub");
+    }
+    setTab(nextTab);
+  };
+
   const onCheck = () => {
     if (empty) {
       router.push("/intake");
       return;
     }
-    setTab("vandaag");
+    selectTab("vandaag");
   };
   const onLogout = async () => {
     await fetch("/api/account/logout", { method: "POST" });
@@ -3100,12 +3107,6 @@ export default function Dashboard({
     router.push("/intake?from=dashboard");
   };
 
-  useEffect(() => {
-    if (tab !== "voortgang") {
-      setVoortgangScreen("hub");
-    }
-  }, [tab]);
-
   const sharedProps: SharedSectionProps = {
     empty,
     model,
@@ -3115,7 +3116,7 @@ export default function Dashboard({
     onCheck,
     onDashboardCheckin,
     onRemeasure,
-    onGoVandaag: () => setTab("vandaag"),
+    onGoVandaag: () => selectTab("vandaag"),
     voortgangScreen,
     onVoortgangScreenChange: setVoortgangScreen,
     onOpenInzichten: () => setVoortgangScreen("inzichten"),
@@ -3195,7 +3196,7 @@ export default function Dashboard({
           Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
         </footer>
       </main>
-      <DashTabBar tab={tab} onSelect={setTab} />
+      <DashTabBar tab={tab} onSelect={selectTab} />
     </div>
   );
 }

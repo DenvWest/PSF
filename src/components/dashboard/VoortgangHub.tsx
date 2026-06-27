@@ -278,7 +278,7 @@ function FavorietenView({
     scores: model.domainScores,
     urgency: "",
     profile: data?.profileLabel ?? "",
-    timestamp: Date.now(),
+    timestamp: 0,
     ageRange: null,
     firstName: null,
   };

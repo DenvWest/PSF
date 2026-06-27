@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthShell, TrustLine } from "@/components/account/AuthShell";
@@ -211,8 +211,15 @@ type LoginScreenProps = {
 };
 
 export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
-  const [email, setEmail] = useState("");
-  const [consent, setConsent] = useState(true);
+  const [email, setEmail] = useState(() =>
+    fromIntake ? readStoredContactEmail() : "",
+  );
+  const [consent, setConsent] = useState(() => {
+    if (!fromIntake) {
+      return true;
+    }
+    return Boolean(readStoredContactEmail());
+  });
   const [view, setView] = useState<"login" | "code">("login");
   const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -221,38 +228,41 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
   const autoSendAttemptedRef = useRef(false);
   const isEmailValid = useMemo(() => isValidEmail(email), [email]);
 
-  const requestLoginCode = async (
-    targetEmail?: string,
-    options?: { consent?: boolean },
-  ): Promise<boolean> => {
-    const addr = targetEmail ?? email;
-    const useConsent = options?.consent ?? consent;
-    const response = await fetch("/api/account/request-link", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: addr,
-        consent: useConsent,
-        website,
-      }),
-    });
+  const requestLoginCode = useCallback(
+    async (
+      targetEmail?: string,
+      options?: { consent?: boolean },
+    ): Promise<boolean> => {
+      const addr = targetEmail ?? email;
+      const useConsent = options?.consent ?? consent;
+      const response = await fetch("/api/account/request-link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: addr,
+          consent: useConsent,
+          website,
+        }),
+      });
 
-    if (response.status === 200) {
-      setErrorMessage(null);
-      setView("code");
-      return true;
-    }
+      if (response.status === 200) {
+        setErrorMessage(null);
+        setView("code");
+        return true;
+      }
 
-    if (response.status === 429) {
-      setErrorMessage("Te veel pogingen, probeer het zo opnieuw.");
+      if (response.status === 429) {
+        setErrorMessage("Te veel pogingen, probeer het zo opnieuw.");
+        return false;
+      }
+
+      setErrorMessage("Er ging iets mis.");
       return false;
-    }
-
-    setErrorMessage("Er ging iets mis.");
-    return false;
-  };
+    },
+    [consent, email, website],
+  );
 
   useEffect(() => {
     if (!fromIntake) {
@@ -263,11 +273,6 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
 
     const storedEmail = readStoredContactEmail();
     const hasEmail = isValidEmail(storedEmail);
-
-    if (storedEmail) {
-      setEmail(storedEmail);
-      setConsent(true);
-    }
 
     trackEvent(GA4_EVENTS.INTAKE_LOGIN_BRIDGE_VIEWED, {
       has_email: hasEmail,
@@ -290,7 +295,7 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
         setIsAutoSending(false);
       }
     })();
-  }, [fromIntake]);
+  }, [fromIntake, requestLoginCode]);
 
   const handleSend = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
