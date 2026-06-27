@@ -161,7 +161,7 @@ function VoortgangSubHeader({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        marginBottom: 20,
+        marginBottom: 24,
       }}
     >
       <button
@@ -282,7 +282,7 @@ function FavorietenView({
   const supplementenHref = withVoortgangReturn("/supplementen");
 
   return (
-    <section aria-label="Favorieten">
+    <section aria-label="Favorieten" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Favorieten" onBack={onBack} />
       <div
         style={{
@@ -459,7 +459,7 @@ function StatistiekenView({
   };
 
   return (
-    <section aria-label="Statistieken">
+    <section aria-label="Statistieken" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Statistieken" onBack={onBack} />
 
       {!isMember ? (
@@ -613,7 +613,7 @@ function LichaamssamenstellingView({
   const locked = !isMember;
 
   return (
-    <section aria-label="Lichaamssamenstelling">
+    <section aria-label="Lichaamssamenstelling" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Lichaamssamenstelling" onBack={onBack} />
 
       <div style={{ paddingBottom: locked ? 88 : 0 }}>

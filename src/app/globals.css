@@ -521,9 +521,32 @@ html.floating-cta-active footer {
   color: #1c1917;
 }
 
+.ps-dash-surface-voortgang-detail {
+  --text: #1c1917;
+  --text-muted: #57534e;
+  --text-subtle: #78716c;
+  --panel: #ffffff;
+  --panel-border: #e4e0da;
+  --divider: #ebe7e2;
+  --divider-strong: #d6d3d1;
+  background-color: #faf9f7;
+  background-image: linear-gradient(
+    180deg,
+    #fefdfb 0%,
+    #faf9f7 55%,
+    #e8f0ea 100%
+  );
+}
+
+.ps-dash-surface-voortgang-detail ::selection {
+  background: rgba(90, 143, 106, 0.28);
+  color: #1c1917;
+}
+
 @media (min-width: 768px) {
   .ps-dash-surface-kompas,
-  .ps-dash-surface-voortgang {
+  .ps-dash-surface-voortgang,
+  .ps-dash-surface-voortgang-detail {
     background-attachment: fixed;
   }
 }

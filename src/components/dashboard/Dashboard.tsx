@@ -3103,12 +3103,17 @@ export default function Dashboard({
     initialVoortgangScreen,
   };
 
+  const isVoortgangDetail = tab === "voortgang" && voortgangScreen !== "hub";
+  const isVoortgangHubDarkFooter = tab === "voortgang" && voortgangScreen === "hub";
+
   const surfaceClass =
     tab === "vandaag"
       ? "ps-dash-surface-kompas"
-      : tab === "voortgang"
-        ? "ps-dash-surface-voortgang"
-        : "";
+      : isVoortgangDetail
+        ? "ps-dash-surface-voortgang-detail"
+        : tab === "voortgang"
+          ? "ps-dash-surface-voortgang"
+          : "";
 
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
@@ -3144,14 +3149,18 @@ export default function Dashboard({
             marginTop: 28,
             textAlign: "center",
             fontSize: 11.5,
-            color: tab === "voortgang" ? "rgba(255,255,255,0.55)" : "var(--text-subtle)",
+            color: isVoortgangHubDarkFooter
+              ? "rgba(255,255,255,0.55)"
+              : "var(--text-subtle)",
             lineHeight: 1.6,
           }}
         >
           <Link
             href="/hoe-werkt-dashboard"
             style={{
-              color: tab === "voortgang" ? "rgba(255,255,255,0.72)" : "var(--text-muted)",
+              color: isVoortgangHubDarkFooter
+                ? "rgba(255,255,255,0.72)"
+                : "var(--text-muted)",
               textDecoration: "underline",
               textUnderlineOffset: 2,
             }}
