@@ -310,6 +310,6 @@ export const DASHBOARD_TABS: DashboardTab[] = [
 
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
   vandaag: ["now", "priority", "plan"],
-  voortgang: ["vitalityScore", "recommendations", "statistics"],
+  voortgang: ["vitalityScore", "recommendations", "identity", "statistics"],
   hermeting: ["retest", "future"],
 };

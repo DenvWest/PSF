@@ -21,6 +21,7 @@ import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import {
   DASHBOARD_TABS,
+  IDENTITY_FIELDS,
   PILLAR,
   PILLAR_CHECKIN_ROUTES,
   PILLARS,
@@ -2209,6 +2210,60 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
   );
 };
 
+const IdentitySection = () => {
+  const shownRef = useRef(false);
+
+  useEffect(() => {
+    if (shownRef.current) {
+      return;
+    }
+    shownRef.current = true;
+    trackEvent("dashboard_lichaamssamenstelling_getoond", { surface: "voortgang" });
+    clarityTag("dashboard_lichaamssamenstelling", "scaffold");
+  }, []);
+
+  return (
+    <section aria-label="Lichaamssamenstelling">
+      <SectionHeader eyebrow="Lichaamssamenstelling" title="Voor een persoonlijk doel" />
+      <Card pad={20}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {IDENTITY_FIELDS.map((field, index) => {
+            const Icon = Icons[field.icon];
+            return (
+              <div
+                key={field.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "12px 2px",
+                  borderTop: index ? "1px solid var(--divider)" : "none",
+                }}
+              >
+                <div style={{ width: 34, height: 34, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.04)", border: "1px solid var(--panel-border)", color: "var(--text-muted)", flexShrink: 0 }}>
+                  <Icon s={16} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, color: "var(--text)" }}>{field.label}</div>
+                  <div style={{ fontSize: 12.5, color: "var(--text-subtle)", lineHeight: 1.45, marginTop: 1, textWrap: "pretty" }}>
+                    {field.unlocks}
+                  </div>
+                </div>
+                <span style={{ fontSize: 13, color: field.value ? "var(--text)" : "var(--text-subtle)", flexShrink: 0 }}>
+                  {field.value ?? "—"}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: "var(--terra, #C8956C)", border: "1px solid rgba(200,149,108,0.4)", borderRadius: 999, padding: "5px 12px" }}>
+          <Icons.Spark s={13} /> Binnenkort in te vullen
+        </div>
+      </Card>
+    </section>
+  );
+};
+
 const EMPTY_SECTIONS: DashboardSectionType[] = ["vitalityScore"];
 
 const SECTION_RENDERERS: Record<
@@ -2223,7 +2278,7 @@ const SECTION_RENDERERS: Record<
   nutritionIntake: (props) =>
     props.empty ? null : <NutritionIntakeSection {...props} />,
   retest: (props) => (props.empty ? null : <RetestSection {...props} />),
-  identity: () => null,
+  identity: (props) => (props.empty ? null : <IdentitySection />),
   history: (props) => <HistorySection {...props} />,
   statistics: (props) =>
     props.empty ? null : <StatisticsSection {...props} />,
