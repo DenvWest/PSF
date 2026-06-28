@@ -78,6 +78,12 @@ export default function CookieConsentBanner() {
   const [view, setView] = useState<BannerView>("intro");
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const titleRef = useRef<HTMLHeadingElement>(null);
   const open = consentState === "unset" || preferenceRequest !== null;
 
@@ -144,7 +150,7 @@ export default function CookieConsentBanner() {
     }
   }
 
-  if (!open) {
+  if (!mounted || !open) {
     return null;
   }
 
