@@ -6,61 +6,48 @@ import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 
 export default function RevealCtaStack() {
   return (
-    <section
-      aria-label="Bewaar je overzicht"
-      style={{
-        borderRadius: 22,
-        background: "var(--panel)",
-        border: "1px solid var(--panel-border)",
-        boxShadow: "0 20px 48px -26px rgba(15,28,16,0.5)",
-        padding: "22px 20px",
-        display: "grid",
-        gap: 12,
-        textAlign: "center",
-      }}
-    >
-      <p
-        style={{
-          margin: 0,
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color: "var(--sage)",
-        }}
-      >
-        Bewaar je overzicht
-      </p>
-      <Link
-        href="/account/login?from=intake"
-        onClick={() => trackEvent(GA4_EVENTS.INTAKE_CTA_CLICKED)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 54,
-          width: "100%",
-          borderRadius: 14,
-          background: "var(--sage)",
-          padding: "0 24px",
-          fontSize: 16,
-          fontWeight: 700,
-          color: "#0f1c10",
-          textDecoration: "none",
-        }}
-      >
-        {REVEAL_COPY.cta}
-      </Link>
-      <p
-        style={{
-          margin: 0,
-          fontSize: 14.5,
-          lineHeight: 1.55,
-          color: "var(--text-muted)",
-        }}
-      >
-        {REVEAL_COPY.ctaSubtext}
-      </p>
+    <section aria-label="Bewaar je overzicht" className="reveal-cta-premium reveal-premium-panel">
+      <div className="reveal-cta-premium__inner">
+        <div className="reveal-cta-premium__top">
+          <span className="reveal-premium-panel__badge">{REVEAL_COPY.ctaBadge}</span>
+          <div className="reveal-cta-premium__journey" aria-hidden>
+            <span className="reveal-cta-premium__journey-active">
+              <span className="reveal-cta-premium__journey-dot" />
+              {REVEAL_COPY.ctaJourneyActive}
+            </span>
+            {REVEAL_COPY.ctaJourneySteps.map((step) => (
+              <span key={step}>· {step}</span>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="reveal-premium-panel__eyebrow">{REVEAL_COPY.ctaEyebrow}</p>
+          <h2 className="reveal-cta-premium__headline">{REVEAL_COPY.ctaHeadline}</h2>
+        </div>
+
+        <ul className="reveal-cta-premium__benefits" aria-label="Wat je dashboard biedt">
+          {REVEAL_COPY.ctaBenefits.map((benefit) => (
+            <li key={benefit} className="reveal-cta-premium__benefit">
+              <span className="reveal-cta-premium__benefit-mark" aria-hidden>
+                ✓
+              </span>
+              <span>{benefit}</span>
+            </li>
+          ))}
+        </ul>
+
+        <Link
+          href="/account/login?from=intake"
+          onClick={() => trackEvent(GA4_EVENTS.INTAKE_CTA_CLICKED)}
+          className="reveal-cta-premium__button"
+        >
+          {REVEAL_COPY.cta}
+        </Link>
+
+        <p className="reveal-cta-premium__sub">{REVEAL_COPY.ctaSubtext}</p>
+        <p className="reveal-cta-premium__trust">{REVEAL_COPY.ctaTrustLine}</p>
+      </div>
     </section>
   );
 }

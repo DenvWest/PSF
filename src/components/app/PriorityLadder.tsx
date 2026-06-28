@@ -13,6 +13,7 @@ type PriorityLadderProps = {
   positions?: Record<PillarId, number>;
   focusRowHref?: string;
   focusRowAriaLabel?: string;
+  focusHint?: string;
   onFocusRowClick?: () => void;
 };
 
@@ -21,11 +22,13 @@ function LadderRowContent({
   rank,
   score,
   focus,
+  focusHint = "← hier begin je nu",
 }: {
   pillar: Pillar;
   rank: number;
   score: number;
   focus: boolean;
+  focusHint?: string;
 }) {
   const Icon = Icons[pillar.icon as keyof typeof Icons] as ComponentType<{ s?: number }>;
 
@@ -72,7 +75,7 @@ function LadderRowContent({
           </span>
           {focus ? (
             <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600 }}>
-              ← hier begin je nu
+              {focusHint}
             </span>
           ) : null}
         </div>
@@ -119,6 +122,7 @@ export default function PriorityLadder({
   positions,
   focusRowHref,
   focusRowAriaLabel,
+  focusHint,
   onFocusRowClick,
 }: PriorityLadderProps) {
   const animated = positions != null;
@@ -183,11 +187,23 @@ export default function PriorityLadder({
                 }
                 style={rowInnerStyle(focus, pillar)}
               >
-                <LadderRowContent pillar={pillar} rank={rank} score={score} focus={focus} />
+                <LadderRowContent
+                  pillar={pillar}
+                  rank={rank}
+                  score={score}
+                  focus={focus}
+                  focusHint={focusHint}
+                />
               </Link>
             ) : (
               <div style={rowInnerStyle(focus, pillar)}>
-                <LadderRowContent pillar={pillar} rank={rank} score={score} focus={focus} />
+                <LadderRowContent
+                  pillar={pillar}
+                  rank={rank}
+                  score={score}
+                  focus={focus}
+                  focusHint={focusHint}
+                />
               </div>
             )}
           </div>

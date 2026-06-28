@@ -1,8 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { computeCheckinRhythm } from "@/lib/checkin-rhythm";
+import { getVitalityBand } from "@/lib/vitality-gauge";
 import {
   formatRhythmDays,
   getVitalityScoreBandHint,
@@ -31,6 +32,11 @@ type VitalityScoreCardProps = {
   showRhythm?: boolean;
   footer?: ReactNode;
   tone?: "light" | "dark";
+  layoutVariant?: "default" | "reveal-premium";
+  revealBadge?: string;
+  revealMeta?: string;
+  revealEyebrow?: string;
+  revealSignalLabel?: string;
 };
 
 export default function VitalityScoreCard({
@@ -48,12 +54,85 @@ export default function VitalityScoreCard({
   showRhythm = true,
   footer,
   tone = "light",
+  layoutVariant = "default",
+  revealBadge,
+  revealMeta,
+  revealEyebrow,
+  revealSignalLabel,
 }: VitalityScoreCardProps) {
   const dark = tone === "dark";
   const rhythm = computeCheckinRhythm(history);
   const heading = headingLine?.trim() || getVitalityScoreHeading(firstName, locked);
   const body = getVitalityScoreBody(locked, value, bodyLine);
   const bandHint = !locked && !bodyLine ? getVitalityScoreBandHint(value) : null;
+  const band = getVitalityBand(value);
+
+  if (layoutVariant === "reveal-premium") {
+    return (
+      <article
+        aria-label="Leefstijlscore"
+        className="reveal-vitality-premium reveal-premium-panel"
+      >
+        <div className="reveal-vitality-premium__inner reveal-premium-panel__inner">
+          <div className="reveal-premium-panel__top">
+            {revealBadge ? (
+              <span className="reveal-premium-panel__badge">{revealBadge}</span>
+            ) : null}
+            {revealMeta ? (
+              <span className="reveal-premium-panel__meta">{revealMeta}</span>
+            ) : null}
+          </div>
+
+          <div className="reveal-vitality-premium__instrument">
+            <div className="reveal-vitality-premium__instrument-grid" aria-hidden />
+            <div className="reveal-vitality-premium__instrument-ring" aria-hidden />
+            <div className="reveal-vitality-premium__gauge">
+              <VitalityGauge
+                value={value}
+                locked={locked}
+                delta={delta}
+                size={300}
+                stroke={18}
+                variant="hero"
+                theme="dark"
+                tone="dark"
+                showBandLabel={false}
+              />
+            </div>
+          </div>
+
+          <div className="reveal-vitality-premium__signal">
+            {revealEyebrow ? (
+              <p className="reveal-premium-panel__eyebrow">{revealEyebrow}</p>
+            ) : null}
+            <h2 className="reveal-vitality-premium__heading">{heading}</h2>
+            <div className="reveal-vitality-premium__band-row">
+              <span
+                className="reveal-vitality-premium__band"
+                style={
+                  {
+                    "--reveal-vitality-band-color": band.color,
+                  } as CSSProperties
+                }
+              >
+                <span className="reveal-vitality-premium__band-dot" aria-hidden />
+                {band.label}
+              </span>
+              <span className="reveal-vitality-premium__score">
+                {Math.round(value)}/100
+              </span>
+            </div>
+            {revealSignalLabel ? (
+              <p className="reveal-vitality-premium__signal-label">{revealSignalLabel}</p>
+            ) : null}
+            <p className="reveal-vitality-premium__body">{body}</p>
+          </div>
+
+          {footer ? <div className="reveal-vitality-premium__footer">{footer}</div> : null}
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article

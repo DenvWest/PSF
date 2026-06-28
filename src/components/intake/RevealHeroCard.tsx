@@ -1,6 +1,7 @@
 "use client";
 
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
+import { getMomentopnameHeading } from "@/lib/intake-greetings";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import type { RevealModel } from "@/lib/reveal-model";
 
@@ -18,19 +19,21 @@ export default function RevealHeroCard({ model, firstName = null }: RevealHeroCa
     <VitalityScoreCard
       value={model.vitality}
       firstName={firstName}
+      headingLine={getMomentopnameHeading(firstName)}
       bodyLine={focusLine}
       showRhythm={false}
+      layoutVariant="reveal-premium"
+      revealBadge={REVEAL_COPY.vitalityBadge}
+      revealMeta={REVEAL_COPY.vitalityMeta}
+      revealEyebrow={REVEAL_COPY.vitalityEyebrow}
+      revealSignalLabel={REVEAL_COPY.vitalitySignalLabel}
       footer={
-        <div className="flex flex-col items-center gap-4 text-center">
+        <>
           {model.strengthLine ? (
-            <p className="m-0 max-w-[320px] text-[14px] font-medium leading-relaxed text-[#57534e]">
-              {model.strengthLine}
-            </p>
+            <p className="reveal-vitality-premium__strength">{model.strengthLine}</p>
           ) : null}
-          <p className="m-0 text-[13px] font-medium leading-relaxed text-[#a8a29e]">
-            {REVEAL_COPY.contextLine}
-          </p>
-        </div>
+          <p className="reveal-vitality-premium__disclaimer">{REVEAL_COPY.contextLine}</p>
+        </>
       }
     />
   );

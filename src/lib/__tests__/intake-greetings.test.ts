@@ -3,6 +3,7 @@ import {
   isUsableFirstName,
   getHeroTitle,
   getMailConfirmation,
+  getMomentopnameHeading,
 } from "@/lib/intake-greetings";
 import { normalizeFirstName } from "@/lib/intake-consent";
 
@@ -59,6 +60,28 @@ describe("getHeroTitle", () => {
 
   it("trims surrounding whitespace from name", () => {
     expect(getHeroTitle("  Jan  ")).toBe("Jouw leefstijloverzicht, Jan");
+  });
+});
+
+describe("getMomentopnameHeading", () => {
+  it("returns fallback for null", () => {
+    expect(getMomentopnameHeading(null)).toBe("Jouw momentopname");
+  });
+
+  it("returns fallback for empty string", () => {
+    expect(getMomentopnameHeading("")).toBe("Jouw momentopname");
+  });
+
+  it("returns fallback for lone dash", () => {
+    expect(getMomentopnameHeading("-")).toBe("Jouw momentopname");
+  });
+
+  it("includes name when usable", () => {
+    expect(getMomentopnameHeading("Jan")).toBe("Jan, jouw momentopname");
+  });
+
+  it("trims surrounding whitespace from name", () => {
+    expect(getMomentopnameHeading("  Jan  ")).toBe("Jan, jouw momentopname");
   });
 });
 

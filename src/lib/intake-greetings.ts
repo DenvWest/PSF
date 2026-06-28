@@ -5,6 +5,13 @@ export function isUsableFirstName(value: string | null | undefined): boolean {
   return HAS_LETTER.test(value);
 }
 
+export function getMomentopnameHeading(firstName: string | null | undefined): string {
+  if (isUsableFirstName(firstName)) {
+    return `${firstName!.trim()}, jouw momentopname`;
+  }
+  return "Jouw momentopname";
+}
+
 export function getHeroTitle(firstName: string | null | undefined): string {
   if (isUsableFirstName(firstName)) {
     const name = firstName!.trim();

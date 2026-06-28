@@ -164,7 +164,7 @@ export default function VitalityGauge({
   const clamped = Math.min(VITALITY_SCORE_MAX, Math.max(0, displayDisp));
   const band = getVitalityBand(value);
   const progressEnd = scoreToAngle(startAngle, sweep, clamped);
-  const isLight = theme === "light" || isHero;
+  const isLight = (theme === "light" || isHero) && tone !== "dark";
   const trackMuted = isLight ? "rgba(15,28,16,0.10)" : "rgba(255,255,255,0.14)";
   const scoreColor = locked
     ? isLight
