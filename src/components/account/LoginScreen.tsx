@@ -236,6 +236,7 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
   );
   const [isCheckingEligibility, setIsCheckingEligibility] = useState(false);
   const [view, setView] = useState<"login" | "code">("login");
+  const [forceLogin, setForceLogin] = useState(false);
   const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAutoSending, setIsAutoSending] = useState(false);
@@ -252,7 +253,7 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
       }),
     [emailEligibleForLogin, fromIntake, hasIntakeSession, isEmailValid],
   );
-  const isLoginAction = primaryAction === "login";
+  const isLoginAction = forceLogin || primaryAction === "login";
 
   const requestLoginCode = useCallback(
     async (
@@ -486,7 +487,7 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
     : INTAKE_CTA.startCheck;
   const primaryButtonDisabled = isLoginAction
     ? !isEmailValid || isSubmitting || isCheckingEligibility
-    : isSubmitting;
+    : isSubmitting || isCheckingEligibility;
 
   return (
     <AuthShell>
@@ -565,13 +566,37 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
             <TrustLine icon={<Shield s={15} />}>Gratis · 3 minuten · geen account nodig voor je resultaat</TrustLine>
           )}
           {!fromIntake && !fromVoortgang && !isLoginAction ? (
-            <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-subtle)" }}>
-              Nieuw hier?{" "}
-              <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}>
-                Bekijk hoe het dashboard werkt
-              </Link>
-              .
-            </p>
+            <>
+              <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-subtle)" }}>
+                Nieuw hier?{" "}
+                <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}>
+                  Bekijk hoe het dashboard werkt
+                </Link>
+                .
+              </p>
+              <p style={{ margin: "2px 0 0", fontSize: 12.5, color: "var(--text-subtle)" }}>
+                Al een account?{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForceLogin(true);
+                    clarityTag("login_intent", "manual_login_link");
+                  }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    font: "inherit",
+                    color: "var(--text)",
+                    textDecoration: "underline",
+                    textUnderlineOffset: 2,
+                    cursor: "pointer",
+                  }}
+                >
+                  Log direct in
+                </button>
+              </p>
+            </>
           ) : null}
         </section>
       </article>
