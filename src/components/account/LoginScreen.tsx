@@ -231,9 +231,10 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
     return Boolean(readStoredContactEmail());
   });
   const [hasIntakeSession, setHasIntakeSession] = useState(fromIntake);
-  const [emailEligibleForLogin, setEmailEligibleForLogin] = useState<boolean | null>(
-    null,
-  );
+  const [fetchedEligibility, setFetchedEligibility] = useState<{
+    email: string;
+    eligible: boolean;
+  } | null>(null);
   const [isCheckingEligibility, setIsCheckingEligibility] = useState(false);
   const [view, setView] = useState<"login" | "code">("login");
   const [forceLogin, setForceLogin] = useState(false);
@@ -243,6 +244,16 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const autoSendAttemptedRef = useRef(false);
   const isEmailValid = useMemo(() => isValidEmail(email), [email]);
+  const shouldCheckEligibility = !fromIntake && !hasIntakeSession && isEmailValid;
+  const emailEligibleForLogin = useMemo(() => {
+    if (!shouldCheckEligibility) {
+      return null;
+    }
+    if (fetchedEligibility?.email === email) {
+      return fetchedEligibility.eligible;
+    }
+    return null;
+  }, [shouldCheckEligibility, fetchedEligibility, email]);
   const primaryAction = useMemo(
     () =>
       resolveLoginPrimaryAction({
@@ -309,13 +320,7 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
   }, [fromIntake]);
 
   useEffect(() => {
-    if (fromIntake || hasIntakeSession) {
-      setEmailEligibleForLogin(null);
-      return;
-    }
-
-    if (!isEmailValid) {
-      setEmailEligibleForLogin(null);
+    if (!shouldCheckEligibility) {
       return;
     }
 
@@ -336,11 +341,14 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
             | { primaryAction?: LoginPrimaryAction }
             | null;
           if (!controller.signal.aborted) {
-            setEmailEligibleForLogin(json?.primaryAction === "login");
+            setFetchedEligibility({
+              email,
+              eligible: json?.primaryAction === "login",
+            });
           }
         } catch {
           if (!controller.signal.aborted) {
-            setEmailEligibleForLogin(null);
+            setFetchedEligibility(null);
           }
         } finally {
           if (!controller.signal.aborted) {
@@ -354,7 +362,7 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
       controller.abort();
       window.clearTimeout(timer);
     };
-  }, [email, fromIntake, hasIntakeSession, isEmailValid]);
+  }, [email, shouldCheckEligibility]);
 
   useEffect(() => {
     clarityTag("login_primary_action", primaryAction);

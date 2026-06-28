@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { NextRequest, NextResponse } from "next/server";
-import { ANALYTICS_CONSENT_STATE_COOKIE_NAME } from "@/lib/analytics-consent-client";
+import { ANALYTICS_CONSENT_STATE_COOKIE_NAME } from "@/lib/analytics-consent-constants";
 
 export const ANALYTICS_CONSENT_COOKIE_NAME = "psf_analytics_consent";
 

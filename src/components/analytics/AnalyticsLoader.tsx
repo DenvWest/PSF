@@ -1,14 +1,13 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import {
-  ANALYTICS_GRANTED_EVENT,
   CLARITY_PROJECT_ID,
   GA_MEASUREMENT_ID,
-  readAnalyticsConsentStateClient,
 } from "@/lib/analytics-consent-client";
+import { useAnalyticsGranted } from "@/lib/analytics-consent-hooks";
 import { callClarity } from "@/lib/clarity";
 
 const CLARITY_BLOCKED_PREFIXES = [
@@ -25,18 +24,9 @@ function isClaritySensitivePath(pathname: string): boolean {
 }
 
 export default function AnalyticsLoader() {
-  const [granted, setGranted] = useState(false);
+  const granted = useAnalyticsGranted();
   const pathname = usePathname();
   const clarityBlocked = isClaritySensitivePath(pathname);
-
-  useEffect(() => {
-    if (readAnalyticsConsentStateClient() === "granted") {
-      setGranted(true);
-    }
-    const onGranted = () => setGranted(true);
-    window.addEventListener(ANALYTICS_GRANTED_EVENT, onGranted);
-    return () => window.removeEventListener(ANALYTICS_GRANTED_EVENT, onGranted);
-  }, []);
 
   useEffect(() => {
     if (!granted) {

@@ -6,10 +6,12 @@ import CookieConsentSettings from "@/components/analytics/CookieConsentSettings"
 import {
   ANALYTICS_GRANTED_EVENT,
   COOKIE_PREFERENCES_EVENT,
+  dispatchAnalyticsConsentChanged,
   GA_MEASUREMENT_ID,
   type CookiePreferencesDetail,
   readAnalyticsConsentStateClient,
 } from "@/lib/analytics-consent-client";
+import { useAnalyticsConsentState } from "@/lib/analytics-consent-hooks";
 import { callClarity } from "@/lib/clarity";
 
 const ANALYTICS_COOKIE_PREFIXES = ["_ga", "_gid", "_gat", "_clck", "_clsk"];
@@ -69,23 +71,23 @@ function analyticsEnabledFromState(): boolean {
 }
 
 export default function CookieConsentBanner() {
-  const [open, setOpen] = useState(false);
+  const consentState = useAnalyticsConsentState();
+  const [preferenceRequest, setPreferenceRequest] = useState<CookiePreferencesDetail | null>(
+    null,
+  );
   const [view, setView] = useState<BannerView>("intro");
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const open = consentState === "unset" || preferenceRequest !== null;
 
   const openBanner = useCallback((options?: { openSettings?: boolean }) => {
     setAnalyticsEnabled(analyticsEnabledFromState());
     setView(options?.openSettings ? "settings" : "intro");
-    setOpen(true);
+    setPreferenceRequest(options ?? {});
   }, []);
 
   useEffect(() => {
-    if (readAnalyticsConsentStateClient() === "unset") {
-      openBanner();
-    }
-
     const onPreferences = (event: Event) => {
       const detail = (event as CustomEvent<CookiePreferencesDetail>).detail;
       openBanner({ openSettings: detail?.openSettings === true });
@@ -117,10 +119,11 @@ export default function CookieConsentBanner() {
         setBusy(false);
         return false;
       }
+      dispatchAnalyticsConsentChanged();
       if (granted) {
         window.dispatchEvent(new Event(ANALYTICS_GRANTED_EVENT));
         setBusy(false);
-        setOpen(false);
+        setPreferenceRequest(null);
         setView("intro");
         return true;
       }
@@ -132,7 +135,7 @@ export default function CookieConsentBanner() {
         return true;
       }
       setBusy(false);
-      setOpen(false);
+      setPreferenceRequest(null);
       setView("intro");
       return true;
     } catch {
