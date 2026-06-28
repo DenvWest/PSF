@@ -320,9 +320,11 @@ export default function PrivacyPage() {
             <section>
                 <h2 className="text-xl font-semibold text-stone-900">Cookies</h2>
                 <p className="mt-3">
-                    Functionele cookies zijn nodig voor de werking van de site en worden geplaatst zonder
-                    voorafgaande toestemming via de cookiebanner. Analytische cookies (Google Analytics)
-                    plaatsen we pas nadat je daarvoor toestemming geeft.
+                    Functionele cookies zijn nodig voor de werking van de site en plaatsen
+                    we zonder voorafgaande toestemming. Analytische cookies (Google Analytics
+                    en Microsoft Clarity) plaatsen we pas nadat je daarvoor toestemming geeft
+                    via de cookiebanner. Je kunt je keuze op elk moment wijzigen via
+                    &lsquo;Cookievoorkeuren&rsquo; onderaan elke pagina.
                 </p>
                 <div className="mt-4 overflow-x-auto rounded-3xl border border-stone-200">
                     <table className="min-w-full text-left text-sm">
@@ -340,9 +342,19 @@ export default function PrivacyPage() {
                                 <td className="px-4 py-3">90 dagen</td>
                             </tr>
                             <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 font-mono text-stone-700">psf_analytics_state</td>
+                                <td className="px-4 py-3">Functioneel (onthoudt je cookiekeuze)</td>
+                                <td className="px-4 py-3">90 dagen</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3 font-mono text-stone-700">_ga / _ga_*</td>
-                                <td className="px-4 py-3">Analytisch (Google Analytics)</td>
+                                <td className="px-4 py-3">Analytisch (Google Analytics) — alleen na toestemming</td>
                                 <td className="px-4 py-3">14 maanden</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 font-mono text-stone-700">_clck / _clsk</td>
+                                <td className="px-4 py-3">Analytisch (Microsoft Clarity) — alleen na toestemming</td>
+                                <td className="px-4 py-3">1 jaar</td>
                             </tr>
                         </tbody>
                     </table>

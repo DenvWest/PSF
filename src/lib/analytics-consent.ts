@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { NextRequest, NextResponse } from "next/server";
+import { ANALYTICS_CONSENT_STATE_COOKIE_NAME } from "@/lib/analytics-consent-client";
 
 export const ANALYTICS_CONSENT_COOKIE_NAME = "psf_analytics_consent";
 
@@ -93,6 +94,33 @@ export function applyAnalyticsConsentCookie(
 export function clearAnalyticsConsentCookie(response: NextResponse): void {
   response.cookies.set(ANALYTICS_CONSENT_COOKIE_NAME, "", {
     httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
+export function applyAnalyticsConsentStateCookie(
+  response: NextResponse,
+  granted: boolean,
+): void {
+  response.cookies.set(
+    ANALYTICS_CONSENT_STATE_COOKIE_NAME,
+    granted ? "granted" : "denied",
+    {
+      httpOnly: false,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: COOKIE_MAX_AGE_SEC,
+    },
+  );
+}
+
+export function clearAnalyticsConsentStateCookie(response: NextResponse): void {
+  response.cookies.set(ANALYTICS_CONSENT_STATE_COOKIE_NAME, "", {
+    httpOnly: false,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",

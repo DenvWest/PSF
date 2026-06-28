@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import Script from "next/script";
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
+import AnalyticsLoader from "@/components/analytics/AnalyticsLoader";
+import CookieConsentBanner from "@/components/analytics/CookieConsentBanner";
 import AppShell from "@/components/layout/AppShell";
 import "./globals.css";
 
@@ -52,30 +53,9 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[var(--ps-bg)] text-stone-900 antialiased">
-        <Script id="microsoft-clarity" strategy="afterInteractive">
-          {`(function(c,l,a,r,i,t,y){
-    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-  })(window, document, "clarity", "script", "whkrgimj6f");`}
-        </Script>
-
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-EVHN1F8ZQW"
-          strategy="afterInteractive"
-        />
-
-        <Script id="ga-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            window.gtag = gtag;
-            gtag('js', new Date());
-            gtag('config', 'G-EVHN1F8ZQW');
-          `}
-        </Script>
-
+        <AnalyticsLoader />
         <AppShell>{children}</AppShell>
+        <CookieConsentBanner />
       </body>
     </html>
   );

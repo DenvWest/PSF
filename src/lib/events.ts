@@ -29,6 +29,7 @@ export const DOMAIN_EVENT_TYPES = [
   "plan.checkin_completed",
   "email.opted_in",
   "consent.revoked",
+  "consent.analytics_set",
   "evidence.chat_queried",
   "nurture.email_sent",
   "remeasure.invited",

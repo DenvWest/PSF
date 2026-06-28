@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CookiePreferencesButton from "@/components/analytics/CookiePreferencesButton";
 import Container from "@/components/layout/Container";
 import { DISCLAIMER_TEXTS } from "@/lib/disclaimer-text";
 
@@ -88,6 +89,14 @@ export default function Footer() {
                                 </Link>
                             </span>
                         ))}
+                        <span>
+                            {" "}
+                            <span className="text-stone-300">·</span>{" "}
+                            <CookiePreferencesButton
+                                label="Cookievoorkeuren"
+                                className="underline-offset-2 transition hover:text-stone-600 hover:underline"
+                            />
+                        </span>
                     </p>
                     <p className="mt-2 text-xs text-stone-400">
                         {DISCLAIMER_TEXTS.footer}{" "}

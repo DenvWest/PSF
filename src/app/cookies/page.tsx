@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CookiePreferencesButton from "@/components/analytics/CookiePreferencesButton";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
 
 export const metadata: Metadata = {
@@ -46,8 +47,10 @@ export default function CookiesPage() {
                     <div>
                         <h3 className="font-semibold text-stone-900">Analytische cookies</h3>
                         <p className="mt-1">
-                            Deze cookies helpen ons begrijpen hoe bezoekers de website gebruiken, zodat we
-                            navigatie, content en prestaties kunnen verbeteren.
+                            Deze cookies (Google Analytics en Microsoft Clarity) helpen ons
+                            begrijpen hoe bezoekers de website gebruiken, zodat we navigatie,
+                            content en prestaties kunnen verbeteren. We plaatsen ze alleen nadat
+                            je daarvoor toestemming hebt gegeven.
                         </p>
                     </div>
 
@@ -72,11 +75,21 @@ export default function CookiesPage() {
             </section>
 
             <section>
-                <h2 className="text-xl font-semibold text-stone-900">4. Cookies beheren</h2>
+                <h2 className="text-xl font-semibold text-stone-900">4. Je cookievoorkeuren beheren</h2>
                 <p className="mt-3">
-                    Je kunt cookies beheren, blokkeren of verwijderen via de instellingen van je browser.
-                    Houd er rekening mee dat sommige onderdelen van de website minder goed kunnen werken
-                    wanneer cookies zijn uitgeschakeld.
+                    Analytische cookies plaatsen we alleen met jouw toestemming. Je kunt je
+                    keuze op elk moment wijzigen of intrekken:
+                </p>
+                <div className="mt-4">
+                    <CookiePreferencesButton
+                        label="Cookievoorkeuren wijzigen"
+                        className="rounded-md border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:bg-stone-100"
+                    />
+                </div>
+                <p className="mt-4">
+                    Daarnaast kun je cookies beheren, blokkeren of verwijderen via de
+                    instellingen van je browser. Houd er rekening mee dat sommige onderdelen
+                    van de website minder goed kunnen werken wanneer cookies zijn uitgeschakeld.
                 </p>
             </section>
 
