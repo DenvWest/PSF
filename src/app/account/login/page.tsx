@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import LoginScreen from "@/components/account/LoginScreen";
+import { parseAccountLoginFrom } from "@/lib/account-login-href";
 import { getAccountFromCookie } from "@/lib/account-server";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default async function AccountLoginPage({ searchParams }: AccountLoginPag
   }
 
   const { from } = await searchParams;
-  const fromIntake = from === "intake";
+  const loginFrom = parseAccountLoginFrom(from);
 
-  return <LoginScreen fromIntake={fromIntake} />;
+  return <LoginScreen loginFrom={loginFrom} />;
 }

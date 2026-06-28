@@ -20,6 +20,7 @@ export type RateLimitRoute =
   | "intake_consent_delete"
   | "admin_data"
   | "account_request_link"
+  | "account_login_eligibility"
   | "account_verify"
   | "account_verify_code"
   | "account_claim"
@@ -42,6 +43,7 @@ const ENV_LIMIT_KEYS: Record<RateLimitRoute, string> = {
   intake_consent_delete: "INTAKE_CONSENT_DELETE_RATE_LIMIT",
   admin_data: "ADMIN_DATA_RATE_LIMIT",
   account_request_link: "ACCOUNT_REQUEST_LINK_RATE_LIMIT",
+  account_login_eligibility: "ACCOUNT_LOGIN_ELIGIBILITY_RATE_LIMIT",
   account_verify: "ACCOUNT_VERIFY_RATE_LIMIT",
   account_verify_code: "ACCOUNT_VERIFY_CODE_RATE_LIMIT",
   account_claim: "ACCOUNT_CLAIM_RATE_LIMIT",
@@ -65,6 +67,7 @@ const ENV_WINDOW_KEYS: Record<RateLimitRoute, string> = {
   intake_consent_delete: "INTAKE_CONSENT_DELETE_RATE_LIMIT_WINDOW_MS",
   admin_data: "ADMIN_DATA_RATE_LIMIT_WINDOW_MS",
   account_request_link: "ACCOUNT_REQUEST_LINK_RATE_LIMIT_WINDOW_MS",
+  account_login_eligibility: "ACCOUNT_LOGIN_ELIGIBILITY_RATE_LIMIT_WINDOW_MS",
   account_verify: "ACCOUNT_VERIFY_RATE_LIMIT_WINDOW_MS",
   account_verify_code: "ACCOUNT_VERIFY_CODE_RATE_LIMIT_WINDOW_MS",
   account_claim: "ACCOUNT_CLAIM_RATE_LIMIT_WINDOW_MS",
@@ -88,6 +91,7 @@ const PRODUCTION_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   intake_consent_delete: { limit: 5, windowMs: 60 * 1000 },
   admin_data: { limit: 60, windowMs: 60 * 1000 },
   account_request_link: { limit: 5, windowMs: 15 * 60 * 1000 },
+  account_login_eligibility: { limit: 20, windowMs: 15 * 60 * 1000 },
   account_verify: { limit: 30, windowMs: 15 * 60 * 1000 },
   account_verify_code: { limit: 6, windowMs: 15 * 60 * 1000 },
   account_claim: { limit: 20, windowMs: 15 * 60 * 1000 },
@@ -111,6 +115,7 @@ const DEVELOPMENT_LIMITS: Record<RateLimitRoute, RateLimitConfig> = {
   intake_consent_delete: { limit: 1000, windowMs: 60 * 1000 },
   admin_data: { limit: 1000, windowMs: 60 * 1000 },
   account_request_link: { limit: 1000, windowMs: 60 * 1000 },
+  account_login_eligibility: { limit: 1000, windowMs: 60 * 1000 },
   account_verify: { limit: 1000, windowMs: 60 * 1000 },
   account_verify_code: { limit: 1000, windowMs: 60 * 1000 },
   account_claim: { limit: 1000, windowMs: 60 * 1000 },

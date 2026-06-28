@@ -3,7 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { trackEvent } from "@/lib/ga4";
+import { buildAccountLoginHref } from "@/lib/account-login-href";
 import { getLastSession } from "@/lib/intake-storage";
 import { resolvePrimaryMobileCta } from "@/lib/mobile-cta-state";
 
@@ -28,9 +30,25 @@ export default function HeaderClient({
   accountLinkHref,
   accountLinkLabel,
 }: HeaderClientProps) {
+  const searchParams = useSearchParams();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasIntakeSession, setHasIntakeSession] = useState(false);
   const isLoggedIn = accountLinkLabel === "Dashboard";
+
+  const pageSearchParams = useMemo(
+    () => Object.fromEntries(searchParams.entries()),
+    [searchParams],
+  );
+
+  const resolvedAccountLinkHref = useMemo(() => {
+    if (isLoggedIn) {
+      return accountLinkHref;
+    }
+    return buildAccountLoginHref({
+      hasIntakeSession,
+      searchParams: pageSearchParams,
+    });
+  }, [accountLinkHref, hasIntakeSession, isLoggedIn, pageSearchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -54,7 +72,7 @@ export default function HeaderClient({
   );
   const secondaryMobileAction = isLoggedIn
     ? { href: "/intake", label: "Doe de gratis check" }
-    : { href: "/account/login", label: "Inloggen" };
+    : { href: resolvedAccountLinkHref, label: "Inloggen" };
 
   return (
     <>
@@ -100,7 +118,7 @@ export default function HeaderClient({
 
           <div className="flex items-center gap-2">
             <Link
-              href={accountLinkHref}
+              href={resolvedAccountLinkHref}
               className="hidden rounded-lg border border-stone-200 px-3.5 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-50 hover:text-stone-900 md:inline-flex"
             >
               {accountLinkLabel}

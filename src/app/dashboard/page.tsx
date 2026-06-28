@@ -41,12 +41,15 @@ function parseInitialVoortgangScreen(screen?: string): VoortgangScreen | undefin
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const { state, tab, screen } = await searchParams;
+
   const account = await getAccountFromCookie();
   if (!account) {
+    if (tab === "voortgang") {
+      redirect("/account/login?from=voortgang");
+    }
     redirect("/account/login");
   }
-
-  const { state, tab, screen } = await searchParams;
   const initialTab = parseInitialTab(tab);
   const initialVoortgangScreen = parseInitialVoortgangScreen(screen);
 

@@ -8,6 +8,13 @@ import { ArrowRight, Lock, Mail, Refresh, Shield } from "@/components/app/icons"
 import { Button, Checkbox, TextField } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
+import type { AccountLoginFrom } from "@/lib/account-login-href";
+import { INTAKE_CTA } from "@/lib/intake-product-copy";
+import { getLastSession } from "@/lib/intake-storage";
+import {
+  resolveLoginPrimaryAction,
+  type LoginPrimaryAction,
+} from "@/lib/login-primary-action";
 
 const CONTACT_EMAIL_STORAGE_KEY = "ps_contact_email";
 
@@ -207,10 +214,13 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
 }
 
 type LoginScreenProps = {
-  fromIntake?: boolean;
+  loginFrom?: AccountLoginFrom | "default";
 };
 
-export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
+export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps) {
+  const router = useRouter();
+  const fromIntake = loginFrom === "intake";
+  const fromVoortgang = loginFrom === "voortgang";
   const [email, setEmail] = useState(() =>
     fromIntake ? readStoredContactEmail() : "",
   );
@@ -220,6 +230,11 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
     }
     return Boolean(readStoredContactEmail());
   });
+  const [hasIntakeSession, setHasIntakeSession] = useState(fromIntake);
+  const [emailEligibleForLogin, setEmailEligibleForLogin] = useState<boolean | null>(
+    null,
+  );
+  const [isCheckingEligibility, setIsCheckingEligibility] = useState(false);
   const [view, setView] = useState<"login" | "code">("login");
   const [website, setWebsite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -227,6 +242,17 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const autoSendAttemptedRef = useRef(false);
   const isEmailValid = useMemo(() => isValidEmail(email), [email]);
+  const primaryAction = useMemo(
+    () =>
+      resolveLoginPrimaryAction({
+        fromIntake,
+        hasIntakeSession,
+        emailEligibleForLogin,
+        emailValid: isEmailValid,
+      }),
+    [emailEligibleForLogin, fromIntake, hasIntakeSession, isEmailValid],
+  );
+  const isLoginAction = primaryAction === "login";
 
   const requestLoginCode = useCallback(
     async (
@@ -265,41 +291,131 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
   );
 
   useEffect(() => {
-    if (!fromIntake) {
+    if (fromIntake) {
       return;
     }
 
-    clarityTag("login_source", "intake_result");
-
-    const storedEmail = readStoredContactEmail();
-    const hasEmail = isValidEmail(storedEmail);
-
-    trackEvent(GA4_EVENTS.INTAKE_LOGIN_BRIDGE_VIEWED, {
-      has_email: hasEmail,
-      auto_sent: hasEmail,
+    let cancelled = false;
+    void getLastSession().then((loaded) => {
+      if (!cancelled) {
+        setHasIntakeSession(Boolean(loaded?.session));
+      }
     });
 
-    if (!hasEmail || autoSendAttemptedRef.current) {
+    return () => {
+      cancelled = true;
+    };
+  }, [fromIntake]);
+
+  useEffect(() => {
+    if (fromIntake || hasIntakeSession) {
+      setEmailEligibleForLogin(null);
       return;
     }
 
-    autoSendAttemptedRef.current = true;
-    setIsAutoSending(true);
+    if (!isEmailValid) {
+      setEmailEligibleForLogin(null);
+      return;
+    }
 
-    void (async () => {
-      try {
-        await requestLoginCode(storedEmail, { consent: true });
-      } catch {
-        setErrorMessage("Er ging iets mis.");
-      } finally {
-        setIsAutoSending(false);
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      setIsCheckingEligibility(true);
+      void (async () => {
+        try {
+          const response = await fetch("/api/account/login-eligibility", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+            signal: controller.signal,
+          });
+          const json = (await response.json().catch(() => null)) as
+            | { primaryAction?: LoginPrimaryAction }
+            | null;
+          if (!controller.signal.aborted) {
+            setEmailEligibleForLogin(json?.primaryAction === "login");
+          }
+        } catch {
+          if (!controller.signal.aborted) {
+            setEmailEligibleForLogin(null);
+          }
+        } finally {
+          if (!controller.signal.aborted) {
+            setIsCheckingEligibility(false);
+          }
+        }
+      })();
+    }, 350);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
+  }, [email, fromIntake, hasIntakeSession, isEmailValid]);
+
+  useEffect(() => {
+    clarityTag("login_primary_action", primaryAction);
+  }, [primaryAction]);
+
+  useEffect(() => {
+    if (fromIntake) {
+      clarityTag("login_source", "intake_result");
+
+      const storedEmail = readStoredContactEmail();
+      const hasEmail = isValidEmail(storedEmail);
+
+      trackEvent(GA4_EVENTS.INTAKE_LOGIN_BRIDGE_VIEWED, {
+        has_email: hasEmail,
+        auto_sent: hasEmail,
+        source: "intake",
+      });
+
+      if (!hasEmail || autoSendAttemptedRef.current) {
+        return;
       }
-    })();
-  }, [fromIntake, requestLoginCode]);
 
-  const handleSend = async (event: FormEvent<HTMLFormElement>) => {
+      autoSendAttemptedRef.current = true;
+      setIsAutoSending(true);
+
+      void (async () => {
+        try {
+          await requestLoginCode(storedEmail, { consent: true });
+        } catch {
+          setErrorMessage("Er ging iets mis.");
+        } finally {
+          setIsAutoSending(false);
+        }
+      })();
+      return;
+    }
+
+    if (fromVoortgang) {
+      clarityTag("login_source", "voortgang");
+      trackEvent(GA4_EVENTS.INTAKE_LOGIN_BRIDGE_VIEWED, {
+        has_email: false,
+        auto_sent: false,
+        source: "voortgang",
+      });
+    }
+  }, [fromIntake, fromVoortgang, requestLoginCode]);
+
+  const handlePrimarySubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!isEmailValid || isSubmitting) {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!isLoginAction) {
+      trackEvent(GA4_EVENTS.INTAKE_CTA_CLICKED, {
+        source: fromVoortgang ? "login_voortgang" : "login_screen",
+      });
+      router.push("/intake");
+      return;
+    }
+
+    if (!isEmailValid) {
       return;
     }
 
@@ -355,10 +471,22 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
 
   const loginTitle = fromIntake
     ? "Bedankt voor het invullen van de Leefstijlcheck."
-    : "Welkom terug.";
+    : fromVoortgang
+      ? "Log in of start je check"
+      : "Welkom terug.";
   const loginLead = fromIntake
     ? "We sturen een inlogcode naar je mail — geen wachtwoord nodig."
-    : "Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord, geen account-gedoe; je e-mail is genoeg.";
+    : isLoginAction
+      ? "Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord nodig."
+      : fromVoortgang
+        ? "Nog geen Leefstijlcheck gedaan? Start gratis (3 min). Heb je al een account? Vul je e-mail in om in te loggen."
+        : "Nog geen check gedaan? Start de Leefstijlcheck. Heb je al een account? Vul je e-mail in om in te loggen.";
+  const primaryButtonLabel = isLoginAction
+    ? "Stuur inlogcode"
+    : INTAKE_CTA.startCheck;
+  const primaryButtonDisabled = isLoginAction
+    ? !isEmailValid || isSubmitting || isCheckingEligibility
+    : isSubmitting;
 
   return (
     <AuthShell>
@@ -381,7 +509,7 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
           </p>
         </header>
 
-        <form onSubmit={handleSend} style={{ display: "grid", gap: 14 }}>
+        <form onSubmit={handlePrimarySubmit} style={{ display: "grid", gap: 14 }}>
           <TextField
             label="E-mailadres"
             value={email}
@@ -391,10 +519,12 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
             autoFocus
             icon={<Mail s={17} />}
           />
-          <Checkbox checked={consent} onChange={setConsent}>
-            Ik wil dat mijn check-ins bewaard worden zodat mijn account onthoudt wat ik eerder invulde. Opt-in, op elk
-            moment intrekbaar.
-          </Checkbox>
+          {isLoginAction ? (
+            <Checkbox checked={consent} onChange={setConsent}>
+              Ik wil dat mijn check-ins bewaard worden zodat mijn account onthoudt wat ik eerder invulde. Opt-in, op elk
+              moment intrekbaar.
+            </Checkbox>
+          ) : null}
           <input
             tabIndex={-1}
             autoComplete="off"
@@ -415,15 +545,26 @@ export default function LoginScreen({ fromIntake = false }: LoginScreenProps) {
           {errorMessage ? (
             <p style={{ margin: 0, fontSize: 13.5, color: "var(--text-muted)" }}>{errorMessage}</p>
           ) : null}
-          <Button type="submit" full disabled={!isEmailValid || isSubmitting} iconRight={<ArrowRight s={16} />}>
-            Stuur inlogcode
+          <Button
+            type="submit"
+            full
+            disabled={primaryButtonDisabled}
+            iconRight={<ArrowRight s={16} />}
+          >
+            {primaryButtonLabel}
           </Button>
         </form>
 
         <section style={{ borderTop: "1px solid var(--divider)", paddingTop: 14, display: "grid", gap: 10 }}>
-          <TrustLine icon={<Lock s={15} />}>Geen wachtwoord. De code is veilig en 15 minuten geldig.</TrustLine>
-          <TrustLine icon={<Shield s={15} />}>Geen spam. Je e-mail wordt alleen gebruikt om je in te loggen.</TrustLine>
-          {!fromIntake ? (
+          {isLoginAction ? (
+            <>
+              <TrustLine icon={<Lock s={15} />}>Geen wachtwoord. De code is veilig en 15 minuten geldig.</TrustLine>
+              <TrustLine icon={<Shield s={15} />}>Geen spam. Je e-mail wordt alleen gebruikt om je in te loggen.</TrustLine>
+            </>
+          ) : (
+            <TrustLine icon={<Shield s={15} />}>Gratis · 3 minuten · geen account nodig voor je resultaat</TrustLine>
+          )}
+          {!fromIntake && !fromVoortgang && !isLoginAction ? (
             <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-subtle)" }}>
               Nieuw hier?{" "}
               <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}>
