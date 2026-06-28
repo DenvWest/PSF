@@ -6,7 +6,6 @@ import type { SymptomId } from "@/data/intake-questions";
 import type { PillarId } from "@/data/foundation-pyramid";
 import type { DomainScores } from "@/lib/intake-engine";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
-import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
 import RevealHeroCard from "@/components/intake/RevealHeroCard";
@@ -194,12 +193,6 @@ export default function IntakeResults({
             >
               Bekijk je 30-dagen rapport →
             </Link>
-          </div>
-        ) : null}
-
-        {sessionId ? (
-          <div className="lg:col-[1/-1]">
-            <MeasurementReminderOptIn sessionId={sessionId} />
           </div>
         ) : null}
 
