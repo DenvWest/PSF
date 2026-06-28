@@ -43,8 +43,8 @@ type BannerView = "intro" | "settings";
 
 const primaryButtonClass =
   "min-h-[44px] w-full rounded-lg bg-ps-green px-4 py-3 text-sm font-semibold text-white transition hover:bg-ps-green-hover disabled:cursor-not-allowed disabled:opacity-60";
-const outlineButtonClass =
-  "min-h-[44px] w-full rounded-lg border border-ps-green bg-white px-4 py-3 text-sm font-semibold text-ps-green transition hover:bg-ps-green-light disabled:cursor-not-allowed disabled:opacity-60";
+const tertiaryButtonClass =
+  "min-h-[44px] w-full rounded-lg px-4 py-3 text-sm font-medium text-stone-600 transition hover:bg-stone-50 hover:text-stone-900 disabled:cursor-not-allowed disabled:opacity-60";
 
 function analyticsEnabledFromState(): boolean {
   return readAnalyticsConsentStateClient() === "granted";
@@ -128,10 +128,8 @@ export default function CookieConsentBanner() {
 
   return (
     <aside
-      role="dialog"
-      aria-modal="true"
+      role="region"
       aria-labelledby={titleId}
-      aria-live="polite"
       className="fixed inset-x-0 bottom-0 z-50 px-4 pb-4 sm:px-6 sm:pb-6"
     >
       <div
@@ -163,37 +161,37 @@ export default function CookieConsentBanner() {
               .
             </p>
             <div className="mt-5 grid gap-2.5 sm:gap-3">
-              <button
-                type="button"
-                disabled={busy}
-                aria-busy={busy}
-                onClick={() => void persistConsent(true, "banner")}
-                className={primaryButtonClass}
-              >
-                Alles accepteren
-              </button>
               <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
                 <button
                   type="button"
                   disabled={busy}
-                  onClick={() => {
-                    setAnalyticsEnabled(analyticsEnabledFromState());
-                    setView("settings");
-                  }}
-                  className={outlineButtonClass}
+                  aria-busy={busy}
+                  onClick={() => void persistConsent(true, "banner")}
+                  className={primaryButtonClass}
                 >
-                  Instellingen
+                  Alles accepteren
                 </button>
                 <button
                   type="button"
                   disabled={busy}
                   aria-busy={busy}
                   onClick={() => void persistConsent(false, "banner")}
-                  className={outlineButtonClass}
+                  className={primaryButtonClass}
                 >
                   Alles afwijzen
                 </button>
               </div>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setAnalyticsEnabled(analyticsEnabledFromState());
+                  setView("settings");
+                }}
+                className={tertiaryButtonClass}
+              >
+                Instellingen
+              </button>
             </div>
           </>
         ) : (
