@@ -8,16 +8,13 @@ import type { DomainScores } from "@/lib/intake-engine";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
 import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
-import RevealFirstStep from "@/components/intake/RevealFirstStep";
 import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
 import RevealHeroCard from "@/components/intake/RevealHeroCard";
 import RevealLadderCard from "@/components/intake/RevealLadderCard";
-import RevealMethodologyPanel from "@/components/intake/RevealMethodologyPanel";
 import ResultsRevealShell, {
   type ResultsRevealShellVariant,
 } from "@/components/intake/ResultsRevealShell";
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
-import type { PillarStatus } from "@/components/pyramid/FoundationPyramid";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { getPrimaryTheme } from "@/lib/primary-theme";
@@ -27,7 +24,6 @@ import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import { buildRevealModel } from "@/lib/reveal-model";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
-import { getDisplayStatus } from "@/lib/score-display";
 
 type IntakeResultsProps = {
   scores: DomainScores;
@@ -44,18 +40,6 @@ type IntakeResultsProps = {
   onConsentRevoked?: () => void;
 };
 
-function buildPillarStatuses(
-  scores: DomainScores,
-): Partial<Record<PillarId, PillarStatus>> {
-  return {
-    stress: getDisplayStatus(scores.stress_score),
-    sleep: getDisplayStatus(scores.sleep_score),
-    nutrition: getDisplayStatus(scores.nutrition_score),
-    movement: getDisplayStatus(scores.movement_score),
-    connection: "Niet gemeten",
-  };
-}
-
 export default function IntakeResults({
   scores,
   answers,
@@ -71,7 +55,6 @@ export default function IntakeResults({
   const themeRevealedEmittedRef = useRef(false);
   const primaryTheme = getPrimaryTheme(scores, answers);
   const model = buildRevealModel(scores, answers, symptoms);
-  const pillarStatuses = buildPillarStatuses(scores);
   const input = buildRecommendationInput({ scores, answers });
   const supplementDisclosure = buildSupplementDisclosure(model.priority, input, "results");
   const emailLine = hasActiveMarketingEmailConsent
@@ -156,12 +139,12 @@ export default function IntakeResults({
         Twee-koloms magazine-grid op lg+, één kolom op mobiel.
 
         DOM-volgorde = mobiele leesvolgorde:
-          hero → ladder → eerste-stap → supplement → CTA → feedback → methodiek → footer
+          hero → ladder → supplement → feedback → rapport → footer
 
         Op lg+ herpositioneert CSS grid met grid-auto-flow dense:
-          Kolom 1: hero (rij 1) → CTA (rij 2, dense) → feedback (rij 3, dense)
-          Kolom 2: ladder (rij 1) → eerste-stap (rij 2) → supplement (rij 3)
-          Vol breed: methodiek → rapport → footer
+          Kolom 1: hero + CTA (rij 1) → feedback (dense)
+          Kolom 2: ladder (rij 1) → supplement (rij 2)
+          Vol breed: rapport → measurement opt-in → footer
       */}
       <div
         className={[
@@ -176,7 +159,7 @@ export default function IntakeResults({
           Op desktop: neemt de hele linker kolom rij 1 in beslag.
         */}
         <div className="flex flex-col gap-4 lg:col-start-1 lg:row-start-1">
-          <RevealHeroCard model={model} sessionId={sessionId} firstName={firstName} />
+          <RevealHeroCard model={model} firstName={firstName} />
           <RevealCtaStack />
         </div>
 
@@ -185,12 +168,7 @@ export default function IntakeResults({
           <RevealLadderCard model={model} />
         </div>
 
-        {/* Rechter kolom rij 2: eerste stap */}
-        <div className="lg:col-start-2">
-          <RevealFirstStep model={model} />
-        </div>
-
-        {/* Rechter kolom rij 3: supplement (conditioneel) */}
+        {/* Rechter kolom rij 2: supplement (conditioneel) */}
         {supplementDisclosure ? (
           <div className="lg:col-start-2">
             <SupplementDisclosure data={supplementDisclosure} tone="light" />
@@ -200,11 +178,6 @@ export default function IntakeResults({
         {/* Linker kolom rij 2 (dense): feedback */}
         <div className="lg:col-start-1">
           <IntakeFeedback sessionId={sessionId} />
-        </div>
-
-        {/* Vol breed: methodiek */}
-        <div className="lg:col-[1/-1]">
-          <RevealMethodologyPanel pillarStatuses={pillarStatuses} />
         </div>
 
         {/* Vol breed: rapport-link (conditioneel) */}
