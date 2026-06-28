@@ -258,6 +258,19 @@ export async function POST(request: NextRequest) {
   const sendResult = await sendAccountLoginEmail({ email, code, verifyUrl });
   if (!sendResult.ok) {
     console.error("[api/account/request-link] email send error:", sendResult.error);
+    await emitEvent({
+      eventType: "account.login_email_failed",
+      sessionId,
+      email,
+      payload: {
+        source: sessionId ? "intake_result" : "login_screen",
+      },
+      deliveredTo: ["posthog"],
+    });
+    return NextResponse.json(
+      { error: "We konden je inlogcode niet versturen. Probeer het zo opnieuw." },
+      { status: 502 },
+    );
   }
 
   return NextResponse.json({ ok: true }, { status: 200 });
