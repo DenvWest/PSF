@@ -484,7 +484,7 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
       ? "Log in of start je check"
       : "Welkom terug.";
   const loginLead = fromIntake
-    ? "We sturen een inlogcode naar je mail — geen wachtwoord nodig."
+    ? "Sla je resultaten op in je persoonlijke dashboard. We sturen een inlogcode naar je mail — geen wachtwoord nodig."
     : isLoginAction
       ? "Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord nodig."
       : fromVoortgang

@@ -7,8 +7,8 @@ export const REVEAL_COPY = {
   priorityHint: "zwakste bovenaan",
   lifestyleTrack: "Spoor A · Leefstijl",
   durationBadge: "± 2 minuten",
-  cta: "Bewaar dit en volg je voortgang →",
-  ctaSubtext: "Eén plek die onthoudt hoe het met je gaat.",
+  cta: "Bewaar dit in je dashboard →",
+  ctaSubtext: "Je persoonlijke dashboard onthoudt hoe het met je gaat — en wijst je volgende stap aan.",
   footerPanelSummary: "Hoe komt dit overzicht tot stand?",
   footerMethodIntro:
     "Leefstijl eerst — van herkenning naar één concrete stap, daarna volg je je voortgang in je dashboard.",
