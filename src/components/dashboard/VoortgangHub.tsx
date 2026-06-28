@@ -14,6 +14,7 @@ import { IDENTITY_FIELDS, PILLARS } from "@/data/dashboard";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
+import WaitlistButton from "@/components/dashboard/WaitlistButton";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -22,7 +23,6 @@ import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import {
   getVitalityScoreCardCopy,
   VITALITY_INSIGHTS_UPSELL_BODY,
-  VITALITY_INSIGHTS_UPSELL_CTA,
   VITALITY_INSIGHTS_UPSELL_HEADING,
 } from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
@@ -579,20 +579,11 @@ function VitaalscoreInzichtenView({
               >
                 {VITALITY_INSIGHTS_UPSELL_BODY}
               </p>
-              <Button
-                variant="terra"
-                full
-                size="lg"
-                icon={<Icons.Lock s={18} />}
-                onClick={() => {
-                  trackEvent("dashboard_inzichten_upsell_click", {
-                    surface: "voortgang",
-                  });
-                  clarityTag("dashboard_voortgang", "inzichten_upsell_click");
-                }}
-              >
-                {VITALITY_INSIGHTS_UPSELL_CTA}
-              </Button>
+              <WaitlistButton
+                feature="inzichten"
+                surface="voortgang"
+                label="Zet me op de wachtlijst"
+              />
             </div>
           </>
         ) : (
@@ -669,19 +660,11 @@ function StatistiekenView({
             >
               Begrijp jezelf beter.
             </p>
-            <Button
-              variant="terra"
-              full
-              icon={<Icons.Lock s={16} />}
-              onClick={() => {
-                trackEvent("dashboard_statistieken_upsell_click", {
-                  surface: "voortgang",
-                });
-                clarityTag("dashboard_statistieken", "upsell_click");
-              }}
-            >
-              Statistieken bekijken
-            </Button>
+            <WaitlistButton
+              feature="statistieken"
+              surface="voortgang"
+              label="Zet me op de wachtlijst"
+            />
           </div>
         </div>
       ) : (
@@ -919,20 +902,11 @@ function LichaamssamenstellingView({
             zIndex: 10,
           }}
         >
-          <Button
-            variant="terra"
-            full
-            size="lg"
-            icon={<Icons.Lock s={18} />}
-            onClick={() => {
-              trackEvent("dashboard_lichaamssamenstelling_upsell_click", {
-                surface: "voortgang",
-              });
-              clarityTag("dashboard_lichaamssamenstelling", "upsell_click");
-            }}
-          >
-            Ontgrendel metingen
-          </Button>
+          <WaitlistButton
+            feature="lichaamssamenstelling"
+            surface="voortgang"
+            label="Zet me op de wachtlijst"
+          />
         </div>
       ) : null}
     </section>

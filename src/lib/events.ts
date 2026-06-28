@@ -28,6 +28,7 @@ export const DOMAIN_EVENT_TYPES = [
   "plan.phase_completed",
   "plan.step_link_clicked",
   "plan.checkin_completed",
+  "premium.waitlist_joined",
   "email.opted_in",
   "consent.revoked",
   "consent.analytics_set",

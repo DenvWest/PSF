@@ -468,7 +468,9 @@ html.floating-cta-active footer {
   color: var(--text);
   font-family: var(--f-sans);
   background-color: var(--bg);
-  background-image: radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
+  background-image:
+    radial-gradient(ellipse 130% 70% at 50% -8%, rgba(127, 178, 142, 0.42) 0%, rgba(33, 56, 31, 0.75) 38%, transparent 68%),
+    radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
   background-attachment: scroll;
 }
 
