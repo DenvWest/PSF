@@ -109,7 +109,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
             style={{
               ...pillBase,
               border: "1px solid var(--panel-border)",
-              background: "rgba(255,255,255,0.07)",
+              background: "rgba(15,28,16,0.04)",
               color: "var(--text-muted)",
             }}
           >
@@ -126,7 +126,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
             style={{
               ...pillBase,
               border: "1px solid var(--panel-border)",
-              background: "rgba(255,255,255,0.07)",
+              background: "rgba(15,28,16,0.04)",
               color: "var(--text-muted)",
             }}
           >
@@ -149,7 +149,7 @@ export default function IntakeFeedback({ sessionId }: IntakeFeedbackProps) {
               padding: "10px 12px",
               fontSize: 14,
               outline: "none",
-              background: "rgba(255,255,255,0.07)",
+              background: "rgba(15,28,16,0.04)",
               border: "1px solid var(--panel-border)",
               color: "var(--text)",
               fontFamily: "var(--f-sans)",

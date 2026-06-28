@@ -70,7 +70,7 @@ export function MeasurementReminderOptIn({
   if (status === "success") {
     return (
       <div className="rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-5">
-        <p className="text-sm font-semibold text-intake-ink">
+        <p className="text-sm font-semibold text-[#1c1917]">
           Herinnering ingesteld — over 30 dagen ontvang je een mail om opnieuw te meten.
         </p>
       </div>
@@ -79,10 +79,10 @@ export function MeasurementReminderOptIn({
 
   return (
     <section
-      className="rounded-2xl border border-intake-card-border bg-intake-bg-elevated px-5 py-5"
+      className="rounded-2xl border border-[#e4e0da] bg-white px-5 py-5"
       aria-label="30-dagen hermeting opt-in"
     >
-      <h2 className="mb-4 text-sm font-semibold text-intake-ink">
+      <h2 className="mb-4 text-sm font-semibold text-[#1c1917]">
         Wil je over 30 dagen zien hoe je vitaliteitsindex is veranderd?
       </h2>
 
@@ -96,7 +96,7 @@ export function MeasurementReminderOptIn({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="je@email.nl"
-            className="w-full rounded-[10px] border border-intake-card-border bg-intake-bg px-4 py-3 text-sm text-intake-ink placeholder:text-intake-ink-subtle focus:border-intake-terra focus:outline-none focus:ring-1 focus:ring-intake-terra"
+            className="w-full rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-4 py-3 text-sm text-[#1c1917] placeholder:text-[#a8a29e] focus:border-intake-terra focus:outline-none focus:ring-1 focus:ring-intake-terra"
           />
           <button
             type="submit"
@@ -107,12 +107,12 @@ export function MeasurementReminderOptIn({
           </button>
         </div>
 
-        <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-intake-ink-muted">
+        <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-[#57534e]">
           <input
             type="checkbox"
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
-            className="mt-0.5 h-4 w-4 rounded border-intake-card-border text-intake-sage focus:ring-intake-sage"
+            className="mt-0.5 h-4 w-4 rounded border-[#e4e0da] text-intake-sage focus:ring-intake-sage"
           />
           <span>{MEASUREMENT_REMINDER_CONSENT_TEXT.measurement_reminder}</span>
         </label>
@@ -127,7 +127,7 @@ export function MeasurementReminderOptIn({
         />
 
         {errorMessage ? (
-          <p className="text-xs text-red-300" role="alert">
+          <p className="text-xs text-red-600" role="alert">
             {errorMessage}
           </p>
         ) : null}

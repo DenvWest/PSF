@@ -321,16 +321,19 @@ export default function IntakeClient() {
 
   const shellClass =
     phase === "results"
-      ? `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px] lg:max-w-[1080px]`
+      ? `${dmSans.variable} ${dmSerifDisplay.variable} w-full`
       : `${dmSans.variable} ${dmSerifDisplay.variable} mx-auto w-full max-w-[480px]`;
 
   const showResultsDeepLinkFallback =
     !isCheckingSession && hasResultsParam && resultsDeepLinkMissing;
 
-  const shellStyle: CSSProperties = {
-    fontFamily: "var(--font-intake-body), system-ui, sans-serif",
-    color: "rgba(255,255,255,0.9)",
-  };
+  const shellStyle: CSSProperties =
+    phase === "results"
+      ? { fontFamily: "var(--font-intake-body), system-ui, sans-serif" }
+      : {
+          fontFamily: "var(--font-intake-body), system-ui, sans-serif",
+          color: "rgba(255,255,255,0.9)",
+        };
 
   return (
     <div className={shellClass} style={shellStyle}>

@@ -64,7 +64,7 @@ export default function IntakeResults({
   rapportUrl = null,
   firstName,
   hasActiveMarketingEmailConsent = false,
-  shellVariant = "fullscreen-dark",
+  shellVariant = "fullscreen",
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
@@ -193,7 +193,7 @@ export default function IntakeResults({
         {/* Rechter kolom rij 3: supplement (conditioneel) */}
         {supplementDisclosure ? (
           <div className="lg:col-start-2">
-            <SupplementDisclosure data={supplementDisclosure} />
+            <SupplementDisclosure data={supplementDisclosure} tone="light" />
           </div>
         ) : null}
 

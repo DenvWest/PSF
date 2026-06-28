@@ -18,9 +18,14 @@ export type SupplementDisclosureData = {
 
 type SupplementDisclosureProps = {
   data: SupplementDisclosureData;
+  tone?: "dark" | "light";
 };
 
-export default function SupplementDisclosure({ data }: SupplementDisclosureProps) {
+export default function SupplementDisclosure({
+  data,
+  tone = "dark",
+}: SupplementDisclosureProps) {
+  const light = tone === "light";
   return (
     <aside
       aria-label="Aanvullend supplement-advies"
@@ -45,7 +50,7 @@ export default function SupplementDisclosure({ data }: SupplementDisclosureProps
       </div>
       <div
         style={{
-          background: "rgba(255,255,255,0.025)",
+          background: light ? "#ffffff" : "rgba(255,255,255,0.025)",
           border: "1px solid var(--divider)",
           borderRadius: 16,
           padding: 16,
@@ -87,7 +92,14 @@ export default function SupplementDisclosure({ data }: SupplementDisclosureProps
           </span>
         </div>
         {data.onHold ? (
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.88)", lineHeight: 1.5, margin: "0 0 8px" }}>
+          <p
+            style={{
+              fontSize: 13,
+              color: light ? "var(--text)" : "rgba(255,255,255,0.88)",
+              lineHeight: 1.5,
+              margin: "0 0 8px",
+            }}
+          >
             Dit is geen goedgekeurde gezondheidsclaim.
           </p>
         ) : (

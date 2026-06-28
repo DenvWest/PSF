@@ -38,18 +38,18 @@ export default function RevealFooterPanel({
         style={{
           fontSize: 12,
           lineHeight: 1.6,
-          color: "rgba(255,255,255,0.22)",
+          color: "rgba(255,255,255,0.55)",
           margin: "0 0 12px",
         }}
       >
         {DISCLAIMER_TEXTS.intake}
       </p>
-      <p style={{ fontSize: 14, color: "var(--text-muted)", margin: "0 0 16px" }}>
+      <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", margin: "0 0 16px" }}>
         <Link
           href="/privacy"
           style={{
             fontWeight: 500,
-            color: "rgba(255,255,255,0.50)",
+            color: "rgba(255,255,255,0.72)",
             textDecoration: "underline",
             textUnderlineOffset: 3,
           }}
@@ -61,7 +61,7 @@ export default function RevealFooterPanel({
           href="/medische-disclaimer"
           style={{
             fontWeight: 500,
-            color: "rgba(255,255,255,0.50)",
+            color: "rgba(255,255,255,0.72)",
             textDecoration: "underline",
             textUnderlineOffset: 3,
           }}
@@ -85,8 +85,8 @@ export default function RevealFooterPanel({
             background:
               feedback.kind === "success"
                 ? "rgba(90,143,106,0.10)"
-                : "rgba(127,29,29,0.20)",
-            color: feedback.kind === "success" ? "var(--text)" : "rgb(254,202,202)",
+                : "rgba(220,38,38,0.08)",
+            color: feedback.kind === "success" ? "var(--text)" : "#b91c1c",
           }}
           role={feedback.kind === "error" ? "alert" : "status"}
         >
@@ -120,12 +120,12 @@ export default function RevealFooterPanel({
               minHeight: 44,
               cursor: busy ? "default" : "pointer",
               borderRadius: 12,
-              border: "1px solid var(--divider)",
+              border: "1px solid rgba(255,255,255,0.28)",
               padding: "10px 12px",
               textAlign: "left",
               fontSize: 13,
               fontWeight: 500,
-              color: "var(--text-muted)",
+              color: "rgba(255,255,255,0.72)",
               background: "transparent",
               fontFamily: "var(--f-sans)",
             }}
@@ -156,7 +156,7 @@ export default function RevealFooterPanel({
               minHeight: 44,
               cursor: busy ? "default" : "pointer",
               borderRadius: 12,
-              border: "1px solid rgba(248,113,113,0.25)",
+              border: "1px solid rgba(248,113,113,0.40)",
               padding: "10px 12px",
               textAlign: "left",
               fontSize: 13,
@@ -182,7 +182,7 @@ export default function RevealFooterPanel({
             background: "none",
             padding: 0,
             fontSize: 13,
-            color: "var(--text-subtle)",
+            color: "rgba(255,255,255,0.55)",
             textDecoration: "underline",
             textUnderlineOffset: 4,
             fontFamily: "var(--f-sans)",
@@ -198,7 +198,7 @@ export default function RevealFooterPanel({
           paddingBottom: 8,
           textAlign: "center",
           fontSize: 12,
-          color: "var(--text-subtle)",
+          color: "rgba(255,255,255,0.55)",
         }}
       >
         <Link

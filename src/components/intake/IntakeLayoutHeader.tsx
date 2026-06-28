@@ -1,13 +1,15 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import IntakeLayoutActions from "@/components/intake/IntakeLayoutActions";
 
 export default function IntakeLayoutHeader() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isPlanPage = pathname.startsWith("/intake/plan");
+  const isResultsPage = searchParams.get("resultaten") === "true";
 
-  if (isPlanPage) {
+  if (isPlanPage || isResultsPage) {
     return null;
   }
 
