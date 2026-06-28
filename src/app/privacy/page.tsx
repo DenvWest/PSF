@@ -352,9 +352,14 @@ export default function PrivacyPage() {
                                 <td className="px-4 py-3">14 maanden</td>
                             </tr>
                             <tr className="border-t border-stone-200">
-                                <td className="px-4 py-3 font-mono text-stone-700">_clck / _clsk</td>
+                                <td className="px-4 py-3 font-mono text-stone-700">_clck</td>
                                 <td className="px-4 py-3">Analytisch (Microsoft Clarity) — alleen na toestemming</td>
                                 <td className="px-4 py-3">1 jaar</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 font-mono text-stone-700">_clsk</td>
+                                <td className="px-4 py-3">Analytisch (Microsoft Clarity) — alleen na toestemming</td>
+                                <td className="px-4 py-3">1 dag</td>
                             </tr>
                         </tbody>
                     </table>

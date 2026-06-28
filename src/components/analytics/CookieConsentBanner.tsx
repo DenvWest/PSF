@@ -9,6 +9,35 @@ import {
   type CookiePreferencesDetail,
   readAnalyticsConsentStateClient,
 } from "@/lib/analytics-consent-client";
+import { callClarity } from "@/lib/clarity";
+
+const ANALYTICS_COOKIE_PREFIXES = ["_ga", "_gid", "_gat", "_clck", "_clsk"];
+
+function purgeAnalyticsCookies(): void {
+  if (typeof document === "undefined") {
+    return;
+  }
+  const host = window.location.hostname;
+  const domains = new Set<string>(["", host, `.${host}`]);
+  const parts = host.split(".");
+  if (parts.length > 2) {
+    const registrable = parts.slice(-2).join(".");
+    domains.add(registrable);
+    domains.add(`.${registrable}`);
+  }
+  const names = document.cookie
+    .split("; ")
+    .map((entry) => entry.split("=")[0])
+    .filter((name) =>
+      ANALYTICS_COOKIE_PREFIXES.some((prefix) => name.startsWith(prefix)),
+    );
+  for (const name of names) {
+    for (const domain of domains) {
+      const domainPart = domain ? `; domain=${domain}` : "";
+      document.cookie = `${name}=; Max-Age=0; path=/${domainPart}`;
+    }
+  }
+}
 
 type BannerView = "intro" | "settings";
 
@@ -58,6 +87,7 @@ export default function CookieConsentBanner() {
     granted: boolean,
     source: "banner" | "settings" | "footer",
   ): Promise<boolean> {
+    const wasGranted = readAnalyticsConsentStateClient() === "granted";
     setBusy(true);
     try {
       const res = await fetch("/api/consent/analytics", {
@@ -71,6 +101,15 @@ export default function CookieConsentBanner() {
       }
       if (granted) {
         window.dispatchEvent(new Event(ANALYTICS_GRANTED_EVENT));
+        setOpen(false);
+        setView("intro");
+        return true;
+      }
+      if (wasGranted) {
+        callClarity("stop");
+        purgeAnalyticsCookies();
+        window.location.reload();
+        return true;
       }
       setOpen(false);
       setView("intro");

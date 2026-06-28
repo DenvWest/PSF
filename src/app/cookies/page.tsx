@@ -50,7 +50,9 @@ export default function CookiesPage() {
                             Deze cookies (Google Analytics en Microsoft Clarity) helpen ons
                             begrijpen hoe bezoekers de website gebruiken, zodat we navigatie,
                             content en prestaties kunnen verbeteren. We plaatsen ze alleen nadat
-                            je daarvoor toestemming hebt gegeven.
+                            je daarvoor toestemming hebt gegeven. Op pagina&apos;s met persoonlijke
+                            gezondheidsgegevens — de leefstijlcheck, je rapport en je dashboard —
+                            schakelen we sessie-opnames (Microsoft Clarity) uit.
                         </p>
                     </div>
 
