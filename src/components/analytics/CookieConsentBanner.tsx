@@ -6,6 +6,7 @@ import CookieConsentSettings from "@/components/analytics/CookieConsentSettings"
 import {
   ANALYTICS_GRANTED_EVENT,
   COOKIE_PREFERENCES_EVENT,
+  GA_MEASUREMENT_ID,
   type CookiePreferencesDetail,
   readAnalyticsConsentStateClient,
 } from "@/lib/analytics-consent-client";
@@ -37,6 +38,23 @@ function purgeAnalyticsCookies(): void {
       document.cookie = `${name}=; Max-Age=0; path=/${domainPart}`;
     }
   }
+}
+
+function disableGoogleAnalytics(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  // Officiële GA opt-out: GA schrijft hierna geen hits/cookies meer, ook niet tijdens unload.
+  (window as unknown as Record<string, unknown>)[
+    `ga-disable-${GA_MEASUREMENT_ID}`
+  ] = true;
+  const gtag = (window as unknown as {
+    gtag?: (...args: unknown[]) => void;
+  }).gtag;
+  gtag?.("consent", "update", {
+    analytics_storage: "denied",
+    ad_storage: "denied",
+  });
 }
 
 type BannerView = "intro" | "settings";
@@ -101,16 +119,19 @@ export default function CookieConsentBanner() {
       }
       if (granted) {
         window.dispatchEvent(new Event(ANALYTICS_GRANTED_EVENT));
+        setBusy(false);
         setOpen(false);
         setView("intro");
         return true;
       }
       if (wasGranted) {
+        disableGoogleAnalytics();
         callClarity("stop");
         purgeAnalyticsCookies();
         window.location.reload();
         return true;
       }
+      setBusy(false);
       setOpen(false);
       setView("intro");
       return true;

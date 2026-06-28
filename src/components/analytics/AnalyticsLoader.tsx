@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   ANALYTICS_GRANTED_EVENT,
+  CLARITY_PROJECT_ID,
+  GA_MEASUREMENT_ID,
   readAnalyticsConsentStateClient,
 } from "@/lib/analytics-consent-client";
 import { callClarity } from "@/lib/clarity";
-
-const GA_MEASUREMENT_ID = "G-EVHN1F8ZQW";
-const CLARITY_PROJECT_ID = "whkrgimj6f";
 
 const CLARITY_BLOCKED_PREFIXES = [
   "/intake",

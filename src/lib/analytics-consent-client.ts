@@ -1,6 +1,8 @@
 export const ANALYTICS_CONSENT_STATE_COOKIE_NAME = "psf_analytics_state";
 export const ANALYTICS_GRANTED_EVENT = "psf:analytics-granted";
 export const COOKIE_PREFERENCES_EVENT = "psf:cookie-preferences";
+export const GA_MEASUREMENT_ID = "G-EVHN1F8ZQW";
+export const CLARITY_PROJECT_ID = "whkrgimj6f";
 
 export type AnalyticsConsentState = "granted" | "denied" | "unset";
 
