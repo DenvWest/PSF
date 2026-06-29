@@ -14,9 +14,10 @@ export const REVEAL_COPY = {
   ladderFocusHint: "← hier begin je",
   lifestyleTrack: "Spoor A · Leefstijl",
   durationBadge: "± 2 minuten",
-  dashboardTeaseTitle: "Zo gaat het verder in je dashboard",
-  dashboardTeaseLead:
-    "Je score, prioriteiten en volgende stap — één plek die met je meegroeit.",
+  dashboardTeaseTitle: "Dit wacht op je in je dashboard",
+  dashboardTeaseLead: "Eén plek voor score, prioriteit en voortgang.",
+  dashboardMockLabel: "Jouw dashboard",
+  dashboardScoreStartHint: "start",
   cta: "Bewaar dit in je dashboard →",
   ctaSubtext: "Gratis inloggen — alles staat klaar wanneer jij er tijd voor hebt.",
   ctaTrustLine: "Adviezen, geen diagnoses",
@@ -30,19 +31,10 @@ export const REVEAL_COPY = {
     "Leefstijl eerst — van herkenning naar één concrete stap, daarna volg je je voortgang in je dashboard.",
 } as const;
 
-export const REVEAL_DASHBOARD_TEASE_TABS = [
-  {
-    label: "Kompas",
-    description: "Je volgende stap — elke dag concreet.",
-  },
-  {
-    label: "Voortgang",
-    description: "Score, ritme en trends over tijd.",
-  },
-  {
-    label: "Hermeting",
-    description: "Over ~30 dagen opnieuw meten wat werkt.",
-  },
+export const REVEAL_DASHBOARD_WINS = [
+  "Je score blijft bewaard — geen opnieuw invullen",
+  "Prioriteit en volgende stap staan klaar in Kompas",
+  "Hermeting over ~30 dagen ingepland",
 ] as const;
 
 export const REVEAL_CARD_SHADOW =
