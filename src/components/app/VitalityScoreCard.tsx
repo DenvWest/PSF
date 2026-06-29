@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import VitalityGauge from "@/components/app/VitalityGauge";
+import RevealVitalityInstrument from "@/components/intake/RevealVitalityInstrument";
 import { computeCheckinRhythm } from "@/lib/checkin-rhythm";
 import { getVitalityBand } from "@/lib/vitality-gauge";
 import {
@@ -74,8 +75,6 @@ export default function VitalityScoreCard({
   const band = getVitalityBand(value);
 
   if (layoutVariant === "reveal-story") {
-    const gaugeStroke = Math.round(revealGaugeSize * 0.065);
-
     return (
       <div aria-label="Leefstijlscore" className="reveal-story-identity reveal-story-identity--vertical">
         <div className="reveal-story-identity__copy">
@@ -83,33 +82,12 @@ export default function VitalityScoreCard({
           {profileHook ? <p className="reveal-story-hook">{profileHook}</p> : null}
         </div>
 
-        <div className="reveal-story-identity__gauge">
-          <VitalityGauge
-            value={value}
-            locked={locked}
-            delta={delta}
-            size={revealGaugeSize}
-            stroke={gaugeStroke}
-            variant="hero"
-            theme="dark"
-            tone="dark"
-            showBandLabel={false}
-          />
-          <div className="reveal-story-identity__band-row">
-            <span
-              className="reveal-story-identity__band"
-              style={
-                {
-                  "--reveal-vitality-band-color": band.color,
-                } as CSSProperties
-              }
-            >
-              <span className="reveal-story-identity__band-dot" aria-hidden />
-              {band.label}
-            </span>
-            <span className="reveal-story-identity__score">{Math.round(value)}/100</span>
-          </div>
-        </div>
+        <RevealVitalityInstrument
+          value={value}
+          locked={locked}
+          delta={delta}
+          variant="hero"
+        />
 
         {footer ? <div className="reveal-story-identity__insights">{footer}</div> : null}
       </div>

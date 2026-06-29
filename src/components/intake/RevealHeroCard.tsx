@@ -31,7 +31,6 @@ export default function RevealHeroCard({
       kicker={kicker}
       profileName={profile.name}
       profileHook={profileHook}
-      revealGaugeSize={200}
       footer={
         <div className="reveal-story-insights">
           {model.strengthLine ? (

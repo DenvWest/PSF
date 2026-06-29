@@ -1,108 +1,93 @@
 "use client";
 
-import { Leaf } from "@/components/app/icons";
-import { REVEAL_CARD_SHADOW, REVEAL_COPY } from "@/lib/results-reveal-copy";
-import { getPillarCrossDomainLine } from "@/lib/reveal-pillar-cross-domain";
+import { buildRecommendationInput } from "@/lib/recommendation-input";
+import { REVEAL_COPY } from "@/lib/results-reveal-copy";
+import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
+import { resolveRevealFirstStep } from "@/lib/reveal-first-step";
 import type { RevealModel } from "@/lib/reveal-model";
 
 type RevealFirstStepProps = {
   model: RevealModel;
+  answers: Record<string, number>;
 };
 
-export default function RevealFirstStep({ model }: RevealFirstStepProps) {
-  const firstStep = model.lifestyle[0];
-  if (!firstStep) {
-    return null;
-  }
-  const crossDomainLine = getPillarCrossDomainLine(firstStep.pillar.id);
+export default function RevealFirstStep({ model, answers }: RevealFirstStepProps) {
+  const input = buildRecommendationInput({
+    scores: mapCheckScoresToDomainScores(model.scores),
+    answers,
+  });
+  const step = resolveRevealFirstStep(model, input);
 
   return (
-    <section aria-label="Je eerste stap">
-      <article
-        style={{
-          borderRadius: 24,
-          border: "1px solid rgba(90,143,106,0.26)",
-          background: "var(--panel)",
-          padding: 20,
-          boxShadow: REVEAL_CARD_SHADOW,
-        }}
-      >
-        <header
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 10,
-            marginBottom: 14,
-            flexWrap: "wrap",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 9,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "rgba(90,143,106,0.18)",
-                color: "var(--sage)",
-                border: "1px solid rgba(90,143,106,0.32)",
-              }}
-            >
-              <Leaf s={17} />
+    <article className="reveal-first-step reveal-first-step--premium">
+      <section className="reveal-first-step__lane reveal-first-step__lane--now">
+        <header className="reveal-first-step__lane-head">
+          <span className="reveal-first-step__lane-badge reveal-first-step__lane-badge--now">
+            {step.lifestyleTrack}
+          </span>
+          <span className="reveal-first-step__lane-meta">{REVEAL_COPY.firstStepNowMeta}</span>
+        </header>
+        <h3 className="reveal-first-step__title">{step.lifestyle.title}</h3>
+        <p className="reveal-first-step__detail">{step.lifestyle.detail}</p>
+      </section>
+
+      {step.qualifiesForSupplement && step.supplement ? (
+        <section className="reveal-first-step__lane reveal-first-step__lane--supplement">
+          <header className="reveal-first-step__lane-head">
+            <span className="reveal-first-step__lane-badge reveal-first-step__lane-badge--later">
+              {REVEAL_COPY.firstStepLaterLabel}
             </span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text)" }}>
-              {REVEAL_COPY.lifestyleTrack}
+          </header>
+          <p className="reveal-first-step__qualify">
+            <span className="reveal-first-step__qualify-label">
+              {REVEAL_COPY.firstStepQualifyLabel}
             </span>
+            {step.supplement.signal}
+          </p>
+          <div className="reveal-first-step__product">
+            <div className="reveal-first-step__product-main">
+              <span className="reveal-first-step__supplement-name">{step.supplement.name}</span>
+              <span className="reveal-first-step__supplement-form">{step.supplement.form}</span>
+            </div>
+            <span className="reveal-first-step__grade">{step.supplement.grade}</span>
           </div>
-          <span
-            style={{
-              fontSize: 11,
-              color: "var(--text-subtle)",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-            }}
-          >
-            {REVEAL_COPY.durationBadge}
+          <p className="reveal-first-step__quality">{step.supplement.qualityRule}</p>
+          <p className="reveal-first-step__rationale">{step.supplement.rationale}</p>
+        </section>
+      ) : (
+        <section className="reveal-first-step__lane reveal-first-step__lane--supplement-muted">
+          <header className="reveal-first-step__lane-head">
+            <span className="reveal-first-step__lane-badge reveal-first-step__lane-badge--later">
+              {REVEAL_COPY.firstStepLaterLabel}
+            </span>
+          </header>
+          <p className="reveal-first-step__detail">{REVEAL_COPY.firstStepNoSupplementLead}</p>
+        </section>
+      )}
+
+      <section className="reveal-first-step__lane reveal-first-step__lane--upcoming">
+        <header className="reveal-first-step__lane-head">
+          <span className="reveal-first-step__lane-badge reveal-first-step__lane-badge--upcoming">
+            {REVEAL_COPY.firstStepUpcomingLabel}
           </span>
         </header>
-        <h3
-          style={{
-            fontSize: 15,
-            fontWeight: 600,
-            color: "var(--text)",
-            margin: 0,
-          }}
-        >
-          {firstStep.win.title}
-        </h3>
-        <p
-          style={{
-            fontSize: 16,
-            color: "var(--text-muted)",
-            lineHeight: 1.55,
-            margin: "8px 0 0",
-            textWrap: "pretty",
-          }}
-        >
-          {firstStep.win.detail}
-        </p>
-        {crossDomainLine ? (
-          <p
-            style={{
-              fontSize: 13,
-              color: "var(--text-subtle)",
-              lineHeight: 1.5,
-              margin: "10px 0 0",
-              textWrap: "pretty",
-            }}
-          >
-            {crossDomainLine}
-          </p>
-        ) : null}
-      </article>
-    </section>
+        <ul className="reveal-first-step__upcoming">
+          {step.upcoming.map((feature) => (
+            <li key={feature.label} className="reveal-first-step__upcoming-item">
+              <span className="reveal-first-step__upcoming-dot" aria-hidden />
+              <div className="reveal-first-step__upcoming-copy">
+                <span className="reveal-first-step__upcoming-label">{feature.label}</span>
+                <span className="reveal-first-step__upcoming-detail">{feature.detail}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <p className="reveal-first-step__bridge">{REVEAL_COPY.firstStepDashboardBridge}</p>
+      {step.supplement ? (
+        <p className="reveal-first-step__trust">{step.supplement.trustLine}</p>
+      ) : null}
+    </article>
   );
 }

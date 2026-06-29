@@ -64,7 +64,7 @@ export default function IntakeResults({
     <ResultsRevealShell variant={shellVariant}>
       <div className="reveal-results-flow flex flex-col gap-5 pt-2 lg:gap-7 lg:pt-4">
         <section aria-label="Jouw leefstijloverzicht" className="reveal-results-act">
-          <RevealStoryPath model={model} profile={profile} firstName={firstName} />
+          <RevealStoryPath model={model} profile={profile} answers={answers} firstName={firstName} />
         </section>
 
         <section aria-label="Feedback" className="reveal-results-act reveal-results-act--feedback">

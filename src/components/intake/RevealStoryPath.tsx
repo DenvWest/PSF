@@ -3,9 +3,9 @@
 import type { ReactNode } from "react";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealDashboardTease from "@/components/intake/RevealDashboardTease";
+import RevealFirstStep from "@/components/intake/RevealFirstStep";
 import RevealHeroCard from "@/components/intake/RevealHeroCard";
 import RevealLadderCard from "@/components/intake/RevealLadderCard";
-import RevealQuickWin from "@/components/intake/RevealQuickWin";
 import type { ProfileLabel } from "@/lib/intake-engine";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import type { RevealModel } from "@/lib/reveal-model";
@@ -13,6 +13,7 @@ import type { RevealModel } from "@/lib/reveal-model";
 type RevealStoryPathProps = {
   model: RevealModel;
   profile: ProfileLabel;
+  answers: Record<string, number>;
   firstName?: string | null;
 };
 
@@ -45,6 +46,7 @@ function PathStep({ step, label, title, children, isLast = false }: PathStepProp
 export default function RevealStoryPath({
   model,
   profile,
+  answers,
   firstName = null,
 }: RevealStoryPathProps) {
   return (
@@ -68,15 +70,15 @@ export default function RevealStoryPath({
           label={REVEAL_COPY.pathStepPriority}
           title={REVEAL_COPY.whereYouStartTitle}
         >
-          <RevealLadderCard model={model} showQuickWin={false} />
+          <RevealLadderCard model={model} />
         </PathStep>
 
         <PathStep
           step="03"
           label={REVEAL_COPY.pathStepAction}
-          title="Waar je mee start"
+          title={REVEAL_COPY.firstStepTitle}
         >
-          <RevealQuickWin model={model} variant="path" />
+          <RevealFirstStep model={model} answers={answers} />
         </PathStep>
 
         <PathStep

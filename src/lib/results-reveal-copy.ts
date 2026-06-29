@@ -18,6 +18,16 @@ export const REVEAL_COPY = {
   dashboardTeaseLead: "Eén plek voor score, prioriteit en voortgang.",
   dashboardMockLabel: "Jouw dashboard",
   dashboardScoreStartHint: "start",
+  firstStepTitle: "Dit heb je nu — en wat er op je wacht",
+  firstStepNowLabel: "Nu · leefstijl",
+  firstStepNowMeta: "Direct toepasbaar",
+  firstStepLaterLabel: "Pas daarna · aanvulling",
+  firstStepUpcomingLabel: "In je dashboard",
+  firstStepQualifyLabel: "Je profiel past bij:",
+  firstStepNoSupplementLead:
+    "Eerst je bord en ritme — in je dashboard zie je later of een gerichte aanvulling logisch is.",
+  firstStepSupplementHint: "Supplement pas als je bord op orde is",
+  firstStepDashboardBridge: "Open je dashboard — stappenplan en vergelijking staan klaar",
   cta: "Bewaar dit in je dashboard →",
   ctaSubtext: "Gratis inloggen — alles staat klaar wanneer jij er tijd voor hebt.",
   ctaTrustLine: "Adviezen, geen diagnoses",
@@ -35,6 +45,21 @@ export const REVEAL_DASHBOARD_WINS = [
   "Je score blijft bewaard — geen opnieuw invullen",
   "Prioriteit en volgende stap staan klaar in Kompas",
   "Hermeting over ~30 dagen ingepland",
+] as const;
+
+export const REVEAL_FIRST_STEP_UPCOMING = [
+  {
+    label: "Prijs-kwaliteit vergelijking",
+    detail: "Per supplement — onafhankelijk, geen schap-potje",
+  },
+  {
+    label: "Voortgang & trend",
+    detail: "Zie of je stappen blijven hangen",
+  },
+  {
+    label: "Hermeting ~30 dagen",
+    detail: "Volgende meetmoment automatisch klaar",
+  },
 ] as const;
 
 export const REVEAL_CARD_SHADOW =
