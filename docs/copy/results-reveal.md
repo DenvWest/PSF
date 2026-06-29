@@ -9,11 +9,11 @@ tot vervanging. Wijzig alleen dit bestand + `src/lib/results-reveal-copy.ts`.
 
 | Plek | Placeholder | Huidige fallback in code |
 |---|---|---|
-| `<h1>` hero | `Dit is waar je nu staat.` | `REVEAL_COPY.heroTitle` |
+| Momentopname eyebrow | `JOUW MOMENTOPNAME · ANONIEM` | `REVEAL_COPY.eyebrow` |
+| Profiel hook | dynamisch via `PROFILE_COPY` + `getProfileLabel` | `RevealHeroCard` |
 | Herkenningszin | uit symptomen via `getRecognitionLine` | `model.recognitionLine` |
-| Driver/strength | uit scores via `getVitalityFraming` | `model.driverLine` / `strengthLine` |
-| Journey-rail | `Overzicht ● — Plan — Dashboard` | `journeyOverview` / `journeyPlan` / `journeyDashboard` |
-| Waar je begint (open) | ladder + quick-win → login | `RevealWhereYouStart` |
+| Driver/strength | uit scores via `getVitalityFraming` | footer in `RevealHeroCard` |
+| Waar je begint | top-3 ladder + quick win | `RevealLadderCard` + `RevealQuickWin` |
 | Primaire CTA | `Bewaar dit in je dashboard →` | `REVEAL_COPY.cta` |
-| Preview-link | `Bekijk hoe je dashboard eruitziet` | `REVEAL_COPY.ctaPreviewLink` |
-| Footer-panel | `Methodiek, privacy & disclaimer` | `REVEAL_COPY.footerPanelSummary` |
+| CTA headline | `Bewaar je overzicht` | `REVEAL_COPY.ctaHeadline` |
+| Feedback | `Herken je jezelf in dit overzicht?` | `REVEAL_COPY.feedbackTitle` |

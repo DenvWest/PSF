@@ -1,39 +1,46 @@
 "use client";
 
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
-import { getMomentopnameHeading } from "@/lib/intake-greetings";
-import { REVEAL_COPY } from "@/lib/results-reveal-copy";
+import { PROFILE_COPY } from "@/data/explanation-copy";
+import { isUsableFirstName } from "@/lib/intake-greetings";
+import type { ProfileLabel } from "@/lib/intake-engine";
 import type { RevealModel } from "@/lib/reveal-model";
 
 type RevealHeroCardProps = {
   model: RevealModel;
+  profile: ProfileLabel;
   firstName?: string | null;
 };
 
-export default function RevealHeroCard({ model, firstName = null }: RevealHeroCardProps) {
+export default function RevealHeroCard({
+  model,
+  profile,
+  firstName = null,
+}: RevealHeroCardProps) {
   const focusLine =
     model.driverLine ??
     `Begin bij ${model.primaryPillarLabel.toLowerCase()} — hier ligt je eerste hefboom.`;
+  const profileHook = PROFILE_COPY[profile.name];
+  const kicker = isUsableFirstName(firstName) ? `${firstName!.trim()},` : null;
 
   return (
     <VitalityScoreCard
       value={model.vitality}
-      firstName={firstName}
-      headingLine={getMomentopnameHeading(firstName)}
-      bodyLine={focusLine}
       showRhythm={false}
-      layoutVariant="reveal-premium"
-      revealBadge={REVEAL_COPY.vitalityBadge}
-      revealMeta={REVEAL_COPY.vitalityMeta}
-      revealEyebrow={REVEAL_COPY.vitalityEyebrow}
-      revealSignalLabel={REVEAL_COPY.vitalitySignalLabel}
+      layoutVariant="reveal-story"
+      kicker={kicker}
+      profileName={profile.name}
+      profileHook={profileHook}
+      revealGaugeSize={200}
       footer={
-        <>
+        <div className="reveal-story-insights">
           {model.strengthLine ? (
-            <p className="reveal-vitality-premium__strength">{model.strengthLine}</p>
+            <p className="reveal-story-insights__line reveal-story-insights__line--strength">
+              {model.strengthLine}
+            </p>
           ) : null}
-          <p className="reveal-vitality-premium__disclaimer">{REVEAL_COPY.contextLine}</p>
-        </>
+          <p className="reveal-story-insights__line">{focusLine}</p>
+        </div>
       }
     />
   );

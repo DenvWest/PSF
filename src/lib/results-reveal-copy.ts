@@ -3,41 +3,47 @@ export const REVEAL_COPY = {
   eyebrow: "JOUW MOMENTOPNAME · ANONIEM",
   heroTitle: "Dit is waar je nu staat.",
   contextLine: "Datapunt op basis van je antwoorden — geen diagnose, wel richting.",
-  vitalityBadge: "Live snapshot",
-  vitalityMeta: "15 variabelen · 6 pijlers",
-  vitalityEyebrow: "Leefstijlindex",
-  vitalitySignalLabel: "Prioriteitssignaal",
+  pathIntro: "Dit is je leefstijlverhaal — van herkenning naar je dashboard.",
+  pathStepProfile: "Herkenning",
+  pathStepPriority: "Prioriteit",
+  pathStepAction: "Eerste stap",
+  pathStepDashboard: "Jouw dashboard",
+  pathStepSave: "Bewaren",
   whereYouStartTitle: "Waar je begint",
   priorityHint: "laagste score bovenaan",
-  ladderBadge: "Prioriteitsmatrix",
-  ladderMeta: "6 pijlers · realtime ranking",
-  ladderEyebrow: "Focusroute",
-  ladderFocusHint: "← startpunt",
+  ladderFocusHint: "← hier begin je",
   lifestyleTrack: "Spoor A · Leefstijl",
   durationBadge: "± 2 minuten",
-  ctaEyebrow: "Jouw dashboard",
-  ctaHeadline: "Bewaar je overzicht — en zie waar je staat over 30 dagen",
-  ctaBadge: "Gratis · geen wachtwoord",
-  ctaJourneyActive: "Overzicht",
-  ctaJourneySteps: ["Voortgang", "Plan"] as const,
-  ctaBenefits: [
-    "Score en prioriteiten blijven bewaard",
-    "Check-ins houden je plan volgbaar",
-    "Hermeting over ~30 dagen ingepland",
-  ] as const,
+  dashboardTeaseTitle: "Zo gaat het verder in je dashboard",
+  dashboardTeaseLead:
+    "Je score, prioriteiten en volgende stap — één plek die met je meegroeit.",
   cta: "Bewaar dit in je dashboard →",
-  ctaSubtext:
-    "Log in gratis. Je score, prioriteiten en volgende stap blijven klaarstaan wanneer jij er tijd voor hebt.",
-  ctaTrustLine: "Adviezen, geen diagnoses · Onafhankelijk · AVG-proof",
+  ctaSubtext: "Gratis inloggen — alles staat klaar wanneer jij er tijd voor hebt.",
+  ctaTrustLine: "Adviezen, geen diagnoses",
   feedbackBadge: "Validatie",
   feedbackMeta: "5 seconden",
   feedbackEyebrow: "Jouw oordeel",
-  feedbackTitle: "Herken je jezelf in dit advies?",
+  feedbackTitle: "Herken je jezelf in dit overzicht?",
   feedbackSubtext: "Eén vraag — helpt ons de index scherper te maken.",
   footerPanelSummary: "Hoe komt dit overzicht tot stand?",
   footerMethodIntro:
     "Leefstijl eerst — van herkenning naar één concrete stap, daarna volg je je voortgang in je dashboard.",
 } as const;
+
+export const REVEAL_DASHBOARD_TEASE_TABS = [
+  {
+    label: "Kompas",
+    description: "Je volgende stap — elke dag concreet.",
+  },
+  {
+    label: "Voortgang",
+    description: "Score, ritme en trends over tijd.",
+  },
+  {
+    label: "Hermeting",
+    description: "Over ~30 dagen opnieuw meten wat werkt.",
+  },
+] as const;
 
 export const REVEAL_CARD_SHADOW =
   "0 40px 90px -40px rgba(15,28,16,0.55), 0 0 0 1px rgba(255,255,255,0.04)";

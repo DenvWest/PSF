@@ -95,80 +95,83 @@ export default function RevealFooterPanel({
       ) : null}
 
       {sessionId && feedback?.kind !== "success" ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 12 }}>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => {
-              if (!window.confirm(REVOKE_CONFIRM)) {
-                return;
-              }
-              void (async () => {
-                setBusy(true);
-                setFeedback(null);
-                const result = await revokeIntakeConsent();
-                setBusy(false);
-                if (result.ok) {
-                  setFeedback({ kind: "success", text: REVOKE_SUCCESS });
-                  window.setTimeout(() => onConsentRevoked?.(), 2800);
+        <details className="reveal-footer-legal">
+          <summary className="reveal-footer-legal__summary">Privacy & rechten</summary>
+          <div className="reveal-footer-legal__actions">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                if (!window.confirm(REVOKE_CONFIRM)) {
                   return;
                 }
-                setFeedback({ kind: "error", text: result.error });
-              })();
-            }}
-            style={{
-              minHeight: 44,
-              cursor: busy ? "default" : "pointer",
-              borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.28)",
-              padding: "10px 12px",
-              textAlign: "left",
-              fontSize: 13,
-              fontWeight: 500,
-              color: "rgba(255,255,255,0.72)",
-              background: "transparent",
-              fontFamily: "var(--f-sans)",
-            }}
-          >
-            {busy ? "Bezig…" : "Toestemming intrekken & anonimiseren"}
-          </button>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => {
-              if (!window.confirm(DELETE_CONFIRM)) {
-                return;
-              }
-              void (async () => {
-                setBusy(true);
-                setFeedback(null);
-                const result = await deleteIntakeSession();
-                setBusy(false);
-                if (result.ok) {
-                  setFeedback({ kind: "success", text: DELETE_SUCCESS });
-                  window.setTimeout(() => onConsentRevoked?.(), 2800);
+                void (async () => {
+                  setBusy(true);
+                  setFeedback(null);
+                  const result = await revokeIntakeConsent();
+                  setBusy(false);
+                  if (result.ok) {
+                    setFeedback({ kind: "success", text: REVOKE_SUCCESS });
+                    window.setTimeout(() => onConsentRevoked?.(), 2800);
+                    return;
+                  }
+                  setFeedback({ kind: "error", text: result.error });
+                })();
+              }}
+              style={{
+                minHeight: 44,
+                cursor: busy ? "default" : "pointer",
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.28)",
+                padding: "10px 12px",
+                textAlign: "left",
+                fontSize: 13,
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.72)",
+                background: "transparent",
+                fontFamily: "var(--f-sans)",
+              }}
+            >
+              {busy ? "Bezig…" : "Toestemming intrekken & anonimiseren"}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                if (!window.confirm(DELETE_CONFIRM)) {
                   return;
                 }
-                setFeedback({ kind: "error", text: result.error });
-              })();
-            }}
-            style={{
-              minHeight: 44,
-              cursor: busy ? "default" : "pointer",
-              borderRadius: 12,
-              border: "1px solid rgba(248,113,113,0.40)",
-              padding: "10px 12px",
-              textAlign: "left",
-              fontSize: 13,
-              fontWeight: 500,
-              color: "rgba(254,202,202,0.90)",
-              background: "transparent",
-              fontFamily: "var(--f-sans)",
-            }}
-          >
-            {busy ? "Bezig…" : "Alles verwijderen"}
-          </button>
-        </div>
+                void (async () => {
+                  setBusy(true);
+                  setFeedback(null);
+                  const result = await deleteIntakeSession();
+                  setBusy(false);
+                  if (result.ok) {
+                    setFeedback({ kind: "success", text: DELETE_SUCCESS });
+                    window.setTimeout(() => onConsentRevoked?.(), 2800);
+                    return;
+                  }
+                  setFeedback({ kind: "error", text: result.error });
+                })();
+              }}
+              style={{
+                minHeight: 44,
+                cursor: busy ? "default" : "pointer",
+                borderRadius: 12,
+                border: "1px solid rgba(248,113,113,0.40)",
+                padding: "10px 12px",
+                textAlign: "left",
+                fontSize: 13,
+                fontWeight: 500,
+                color: "rgba(254,202,202,0.90)",
+                background: "transparent",
+                fontFamily: "var(--f-sans)",
+              }}
+            >
+              {busy ? "Bezig…" : "Alles verwijderen"}
+            </button>
+          </div>
+        </details>
       ) : null}
 
       {onRestart ? (

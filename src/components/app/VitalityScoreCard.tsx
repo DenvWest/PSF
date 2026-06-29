@@ -32,11 +32,14 @@ type VitalityScoreCardProps = {
   showRhythm?: boolean;
   footer?: ReactNode;
   tone?: "light" | "dark";
-  layoutVariant?: "default" | "reveal-premium";
-  revealBadge?: string;
-  revealMeta?: string;
+  layoutVariant?: "default" | "reveal-premium" | "reveal-story";
+  revealMomentopnameEyebrow?: string;
   revealEyebrow?: string;
-  revealSignalLabel?: string;
+  kicker?: string | null;
+  profileName?: string | null;
+  profileHook?: string | null;
+  recognitionLine?: string | null;
+  revealGaugeSize?: number;
 };
 
 export default function VitalityScoreCard({
@@ -55,10 +58,13 @@ export default function VitalityScoreCard({
   footer,
   tone = "light",
   layoutVariant = "default",
-  revealBadge,
-  revealMeta,
+  revealMomentopnameEyebrow,
   revealEyebrow,
-  revealSignalLabel,
+  kicker = null,
+  profileName = null,
+  profileHook = null,
+  recognitionLine = null,
+  revealGaugeSize = 220,
 }: VitalityScoreCardProps) {
   const dark = tone === "dark";
   const rhythm = computeCheckinRhythm(history);
@@ -67,19 +73,76 @@ export default function VitalityScoreCard({
   const bandHint = !locked && !bodyLine ? getVitalityScoreBandHint(value) : null;
   const band = getVitalityBand(value);
 
+  if (layoutVariant === "reveal-story") {
+    const gaugeStroke = Math.round(revealGaugeSize * 0.065);
+
+    return (
+      <div aria-label="Leefstijlscore" className="reveal-story-identity reveal-story-identity--vertical">
+        <div className="reveal-story-identity__copy">
+          {kicker ? <p className="reveal-story-kicker">{kicker}</p> : null}
+          {profileHook ? <p className="reveal-story-hook">{profileHook}</p> : null}
+        </div>
+
+        <div className="reveal-story-identity__gauge">
+          <VitalityGauge
+            value={value}
+            locked={locked}
+            delta={delta}
+            size={revealGaugeSize}
+            stroke={gaugeStroke}
+            variant="hero"
+            theme="dark"
+            tone="dark"
+            showBandLabel={false}
+          />
+          <div className="reveal-story-identity__band-row">
+            <span
+              className="reveal-story-identity__band"
+              style={
+                {
+                  "--reveal-vitality-band-color": band.color,
+                } as CSSProperties
+              }
+            >
+              <span className="reveal-story-identity__band-dot" aria-hidden />
+              {band.label}
+            </span>
+            <span className="reveal-story-identity__score">{Math.round(value)}/100</span>
+          </div>
+        </div>
+
+        {footer ? <div className="reveal-story-identity__insights">{footer}</div> : null}
+      </div>
+    );
+  }
+
   if (layoutVariant === "reveal-premium") {
+    const gaugeStroke = Math.round(revealGaugeSize * 0.06);
+
     return (
       <article
         aria-label="Leefstijlscore"
         className="reveal-vitality-premium reveal-premium-panel"
       >
         <div className="reveal-vitality-premium__inner reveal-premium-panel__inner">
-          <div className="reveal-premium-panel__top">
-            {revealBadge ? (
-              <span className="reveal-premium-panel__badge">{revealBadge}</span>
+          <div className="reveal-vitality-premium__intro">
+            {revealMomentopnameEyebrow ? (
+              <p className="reveal-premium-panel__eyebrow">{revealMomentopnameEyebrow}</p>
             ) : null}
-            {revealMeta ? (
-              <span className="reveal-premium-panel__meta">{revealMeta}</span>
+            <h2 className="reveal-vitality-premium__heading">{heading}</h2>
+            {profileName ? (
+              <div className="reveal-vitality-premium__profile">
+                {revealEyebrow ? (
+                  <p className="reveal-premium-panel__eyebrow">{revealEyebrow}</p>
+                ) : null}
+                <p className="reveal-vitality-premium__profile-name">{profileName}</p>
+                {profileHook ? (
+                  <p className="reveal-vitality-premium__profile-hook">{profileHook}</p>
+                ) : null}
+              </div>
+            ) : null}
+            {recognitionLine ? (
+              <p className="reveal-vitality-premium__recognition">{recognitionLine}</p>
             ) : null}
           </div>
 
@@ -91,8 +154,8 @@ export default function VitalityScoreCard({
                 value={value}
                 locked={locked}
                 delta={delta}
-                size={300}
-                stroke={18}
+                size={revealGaugeSize}
+                stroke={gaugeStroke}
                 variant="hero"
                 theme="dark"
                 tone="dark"
@@ -102,10 +165,6 @@ export default function VitalityScoreCard({
           </div>
 
           <div className="reveal-vitality-premium__signal">
-            {revealEyebrow ? (
-              <p className="reveal-premium-panel__eyebrow">{revealEyebrow}</p>
-            ) : null}
-            <h2 className="reveal-vitality-premium__heading">{heading}</h2>
             <div className="reveal-vitality-premium__band-row">
               <span
                 className="reveal-vitality-premium__band"
@@ -122,10 +181,6 @@ export default function VitalityScoreCard({
                 {Math.round(value)}/100
               </span>
             </div>
-            {revealSignalLabel ? (
-              <p className="reveal-vitality-premium__signal-label">{revealSignalLabel}</p>
-            ) : null}
-            <p className="reveal-vitality-premium__body">{body}</p>
           </div>
 
           {footer ? <div className="reveal-vitality-premium__footer">{footer}</div> : null}
