@@ -17,7 +17,6 @@ export const REVEAL_COPY = {
   durationBadge: "± 2 minuten",
   dashboardTeaseTitle: "Dit wacht op je in je dashboard",
   dashboardTeaseLead: "Na inloggen staat dit in je dashboard.",
-  dashboardScrollToSave: "Verder naar bewaar-stap ↓",
   dashboardMockLabel: "Jouw dashboard",
   dashboardScoreStartHint: "start",
   profileEyebrow: "JOUW STARTPROFIEL",

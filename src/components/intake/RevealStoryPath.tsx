@@ -62,7 +62,7 @@ export default function RevealStoryPath({
           <RevealHeroCard model={model} profile={profile} firstName={firstName} />
         </PathStep>
 
-        <PathStep step="02" title={REVEAL_COPY.stepTitleStart}>
+        <PathStep step="02" title={REVEAL_COPY.stepTitleStart} stepId="reveal-step-start">
           <RevealStartSection model={model} answers={answers} />
         </PathStep>
 

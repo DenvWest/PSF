@@ -4,6 +4,7 @@ import RevealVitalityInstrument from "@/components/intake/RevealVitalityInstrume
 import { PROFILE_COPY } from "@/data/explanation-copy";
 import type { ProfileLabel } from "@/lib/intake-engine";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
+import { scrollToRevealStep } from "@/lib/reveal-scroll";
 import type { RevealModel } from "@/lib/reveal-model";
 
 type RevealHeroCardProps = {
@@ -42,13 +43,16 @@ export default function RevealHeroCard({ model, profile }: RevealHeroCardProps) 
         ) : null}
       </div>
 
-      <p
-        className="m-0 inline-flex items-center justify-center gap-2 border-t border-[#ebe7e2] pt-3.5 text-[12px] font-bold uppercase tracking-[0.12em]"
+      <button
+        type="button"
+        aria-label={`Bekijk je startpunt — ${model.primaryPillarLabel}`}
+        onClick={() => scrollToRevealStep("start")}
+        className="m-0 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] border-0 border-t border-[#ebe7e2] bg-transparent pt-3.5 text-[12px] font-bold uppercase tracking-[0.12em] transition hover:bg-[rgba(90,143,106,0.06)]"
         style={{ color: pillarColor }}
       >
         <span className="inline-block h-2 w-2 rounded-full" style={{ background: pillarColor }} aria-hidden />
         {REVEAL_COPY.priorityBridgePrefix} {model.primaryPillarLabel}
-      </p>
+      </button>
     </article>
   );
 }
