@@ -6,18 +6,25 @@ import {
   type RevealDashboardRow,
 } from "@/lib/results-reveal-copy";
 import type { RevealModel } from "@/lib/reveal-model";
+import type { PillarId } from "@/types/dashboard";
+
+const PRODUCT_PILLARS = new Set<PillarId>(["voeding", "slaap"]);
 
 type RevealDashboardTeaseProps = {
   model: RevealModel;
 };
 
 export default function RevealDashboardTease({ model }: RevealDashboardTeaseProps) {
+  const prioritySub = PRODUCT_PILLARS.has(model.primaryPillarId)
+    ? REVEAL_COPY.dashboardRowPrioritySubProduct
+    : REVEAL_COPY.dashboardRowPrioritySubLifestyle;
+
   const rows: RevealDashboardRow[] = [
     {
       key: "priority",
       dotColor: model.priority.color,
       title: model.primaryPillarLabel,
-      subtitle: REVEAL_COPY.dashboardRowPrioritySub,
+      subtitle: prioritySub,
       soon: false,
     },
     ...REVEAL_DASHBOARD_ROWS,

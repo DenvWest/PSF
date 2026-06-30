@@ -85,8 +85,6 @@ export default function VitalityScoreCard({
         <RevealVitalityInstrument
           value={value}
           locked={locked}
-          delta={delta}
-          variant="hero"
         />
 
         {footer ? <div className="reveal-story-identity__insights">{footer}</div> : null}

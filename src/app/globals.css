@@ -990,6 +990,33 @@ html.floating-cta-active footer {
   border-color: rgba(127, 178, 142, 0.22);
 }
 
+.reveal-priority-bar--link {
+  padding: 0;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.reveal-priority-bar--link:hover {
+  border-color: var(--path-sage);
+}
+
+.reveal-priority-bar--link:active {
+  transform: scale(0.99);
+}
+
+.reveal-priority-bar__link {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.625rem 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.reveal-priority-bar__chevron {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--path-ink-subtle);
+}
+
 .reveal-priority-bar__head {
   display: flex;
   align-items: center;
@@ -1013,9 +1040,13 @@ html.floating-cta-active footer {
   flex-shrink: 0;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--path-sage);
+  color: var(--hint-color, #5A8F6A);
+  background: color-mix(in srgb, var(--hint-color, #5A8F6A) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hint-color, #5A8F6A) 32%, transparent);
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
 }
 
 .reveal-priority-bar__value {

@@ -5,8 +5,21 @@ import {
 } from "@/lib/results-reveal-copy";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { RevealModel } from "@/lib/reveal-model";
-import type { PillarQuickWin } from "@/types/dashboard";
+import type { PillarId, PillarQuickWin } from "@/types/dashboard";
 import type { RecommendationInput } from "@/types/recommendation";
+
+/**
+ * Theme-supplement: leefstijldomeinen zonder eigen supplement koppelen aan het
+ * supplement dat hun EFSA-thema dekt. Magnesium (slaap-pijler) dekt zenuwstelsel,
+ * spierfunctie, vermindering van vermoeidheid en normale psychologische functie —
+ * dus stress/herstel/energie. Voorkomt de voeding/omega-3-fallback die niet bij de
+ * leefstijlstap (bv. box-breathing) past. Zie docs/core/COMPLIANCE.md.
+ */
+const THEME_SUPPLEMENT_PILLAR: Partial<Record<PillarId, PillarId>> = {
+  stress: "slaap",
+  herstel: "slaap",
+  energie: "slaap",
+};
 
 export type RevealFirstStepSupplement = {
   name: string;
@@ -57,19 +70,27 @@ export function resolveRevealFirstStep(
   input: RecommendationInput,
 ): RevealFirstStep {
   const lifestyle = resolveLifestyleQuickWin(model);
+
   const priorityDisclosure = buildSupplementDisclosure(
     model.priority,
     input,
     "results",
     lifestyle,
   );
+
+  const themePillarId = THEME_SUPPLEMENT_PILLAR[model.priority.id];
+  const themeDisclosure = themePillarId
+    ? buildSupplementDisclosure(PILLAR[themePillarId], input, "results", lifestyle)
+    : null;
+
   const voedingDisclosure = buildSupplementDisclosure(
     PILLAR.voeding,
     input,
     "results",
     lifestyle,
   );
-  const disclosure = priorityDisclosure ?? voedingDisclosure;
+
+  const disclosure = priorityDisclosure ?? themeDisclosure ?? voedingDisclosure;
 
   return {
     lifestyleTrack: REVEAL_COPY.firstStepNowLabel,

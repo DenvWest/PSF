@@ -16,6 +16,7 @@ export default function RevealLadderCard({ model }: RevealLadderCardProps) {
         ladder={model.topLadder}
         scores={model.scores}
         startHint={REVEAL_COPY.ladderFocusHint}
+        startHref="/account/login?from=intake"
       />
     </div>
   );
