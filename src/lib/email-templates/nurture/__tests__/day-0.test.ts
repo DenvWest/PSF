@@ -191,7 +191,7 @@ describe("dag-0 domein-opening", () => {
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Stress kwam als je grootste aandachtspunt naar voren");
-    expect(html).toContain("verhoogd cortisol breekt spier af");
+    expect(html).toContain("je merkt het in je slaap");
   });
 
   it("Onrustige Slaper — opening benoemt slaap als aandachtspunt + mechanisme", () => {

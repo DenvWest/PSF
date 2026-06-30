@@ -38,7 +38,7 @@ ${ctaButton(absoluteUrl("/downloads/stressgids-perfectsupplement.pdf"), "Downloa
   Doorduwen is geen herstel
 </h1>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
-  De grootste val: denken dat je "even door moet" tot het rustiger wordt. Je stress-as blijft dan op stand — ook 's nachts. Herstel begint met kleine pauzes, niet met harder werken.
+  De grootste val: denken dat je "even door moet" tot het rustiger wordt. Je blijft dan gespannen — ook 's nachts kom je niet echt tot rust. Herstel begint met kleine pauzes, niet met harder werken.
 </p>
 ${ctaButton(absoluteUrl("/stress-verminderen-na-40"), "Lees het complete stressprotocol →")}`,
         unsubscribeUrl,

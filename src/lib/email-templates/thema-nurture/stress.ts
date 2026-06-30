@@ -67,10 +67,10 @@ ${ctaButton(
   Heb je de Stressgids al doorgenomen? Dan is dit het belangrijkste inzicht om te onthouden:
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  <strong>Je lichaam herstelt niet van “even niets doen” als je hoofd nog vol gas staat.</strong>
+  <strong>“Even niets doen” werkt niet als je hoofd nog vol gas staat.</strong>
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 16px;">
-  Veel mannen plannen rust na werktijd — maar blijven mentaal in dezelfde versnelling. Dan blijft je stress-as actief en voel je je ’s avonds opgebrand zonder echt uitgerust te zijn. Echte recovery is een schakelmoment: van aandacht naar het nu, niet alleen minder taken.
+  Veel mannen plannen rust na werktijd — maar blijven mentaal in dezelfde versnelling. Dan blijf je ’s avonds toch ‘aan’ en voel je je opgebrand zonder echt uitgerust te zijn. Echte recovery is een schakelmoment: van aandacht naar het nu, niet alleen minder taken.
 </p>
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Op onze stresspagina leggen we uit hoe je dat schakelmoment opbouwt — praktisch en haalbaar na 40.

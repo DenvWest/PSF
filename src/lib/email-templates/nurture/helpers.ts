@@ -213,7 +213,7 @@ export function day0OpeningLineForDomain(
     sleep:
       "Slaap kwam als je grootste aandachtspunt naar voren — en na je veertigste vergeeft je lichaam een korte nacht minder snel: melatonine komt later op gang, cortisol blijft langer actief. Geen onwil; wel iets waar je op kunt sturen.",
     stress:
-      "Stress kwam als je grootste aandachtspunt naar voren. Aanhoudende stress is na 40 niet zomaar 'erbij' — verhoogd cortisol breekt spier af, verstoort je slaap en remt je herstel. Fysiologie, geen aanstellerij.",
+      "Stress kwam als je grootste aandachtspunt naar voren. Aanhoudende stress is na 40 niet zomaar 'erbij' — je merkt het in je slaap, je herstel en hoe snel je weer 'aan' staat. Geen aanstellerij; wel iets waar je op kunt sturen.",
     energy:
       "Energie kwam als je grootste aandachtspunt naar voren — al is energie zelden het échte probleem. Het is meestal de optelsom van je slaap, voeding en beweging. Daarom kijken we eerst naar de bron, niet naar de zoveelste kop koffie.",
     recovery:
