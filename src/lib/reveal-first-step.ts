@@ -1,3 +1,4 @@
+import type { SupplementDisclosureData } from "@/components/supplements/SupplementDisclosure";
 import { PILLAR } from "@/data/dashboard";
 import {
   REVEAL_COPY,
@@ -5,7 +6,7 @@ import {
 } from "@/lib/results-reveal-copy";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { RevealModel } from "@/lib/reveal-model";
-import type { PillarId, PillarQuickWin } from "@/types/dashboard";
+import type { Pillar, PillarId, PillarQuickWin } from "@/types/dashboard";
 import type { RecommendationInput } from "@/types/recommendation";
 
 /**
@@ -44,6 +45,10 @@ export type RevealFirstStep = {
   upcoming: readonly RevealUpcomingFeature[];
 };
 
+export type ResolveRevealFirstStepOptions = {
+  selectedPillar?: Pillar;
+};
+
 function isWeakFirstStep(priority: RevealModel["priority"]): boolean {
   return priority.id === "herstel" || /alcohol/i.test(priority.quickWin.title);
 }
@@ -65,20 +70,30 @@ function resolveLifestyleQuickWin(model: RevealModel): PillarQuickWin {
   return PILLAR.voeding.quickWin;
 }
 
-export function resolveRevealFirstStep(
+function resolveLifestyleForSelection(
   model: RevealModel,
-  input: RecommendationInput,
-): RevealFirstStep {
-  const lifestyle = resolveLifestyleQuickWin(model);
+  selectedPillar?: Pillar,
+): PillarQuickWin {
+  if (!selectedPillar || selectedPillar.id === model.priority.id) {
+    return resolveLifestyleQuickWin(model);
+  }
 
-  const priorityDisclosure = buildSupplementDisclosure(
-    model.priority,
+  return selectedPillar.quickWin;
+}
+
+function resolveSupplementDisclosure(
+  selectedPillar: Pillar,
+  input: RecommendationInput,
+  lifestyle: PillarQuickWin,
+): SupplementDisclosureData | null {
+  const pillarDisclosure = buildSupplementDisclosure(
+    selectedPillar,
     input,
     "results",
     lifestyle,
   );
 
-  const themePillarId = THEME_SUPPLEMENT_PILLAR[model.priority.id];
+  const themePillarId = THEME_SUPPLEMENT_PILLAR[selectedPillar.id];
   const themeDisclosure = themePillarId
     ? buildSupplementDisclosure(PILLAR[themePillarId], input, "results", lifestyle)
     : null;
@@ -90,7 +105,17 @@ export function resolveRevealFirstStep(
     lifestyle,
   );
 
-  const disclosure = priorityDisclosure ?? themeDisclosure ?? voedingDisclosure;
+  return pillarDisclosure ?? themeDisclosure ?? voedingDisclosure;
+}
+
+export function resolveRevealFirstStep(
+  model: RevealModel,
+  input: RecommendationInput,
+  options?: ResolveRevealFirstStepOptions,
+): RevealFirstStep {
+  const selectedPillar = options?.selectedPillar ?? model.priority;
+  const lifestyle = resolveLifestyleForSelection(model, options?.selectedPillar);
+  const disclosure = resolveSupplementDisclosure(selectedPillar, input, lifestyle);
 
   return {
     lifestyleTrack: REVEAL_COPY.firstStepNowLabel,

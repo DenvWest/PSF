@@ -8,10 +8,12 @@ import {
 import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
 import { resolveRevealFirstStep } from "@/lib/reveal-first-step";
 import type { RevealModel } from "@/lib/reveal-model";
+import type { Pillar } from "@/types/dashboard";
 
 type RevealFirstStepProps = {
   model: RevealModel;
   answers: Record<string, number>;
+  selectedPillar: Pillar;
 };
 
 function teaser(detail: string): string {
@@ -19,12 +21,12 @@ function teaser(detail: string): string {
   return /[.!?]$/.test(first) ? first : `${first}.`;
 }
 
-export default function RevealFirstStep({ model, answers }: RevealFirstStepProps) {
+export default function RevealFirstStep({ model, answers, selectedPillar }: RevealFirstStepProps) {
   const input = buildRecommendationInput({
     scores: mapCheckScoresToDomainScores(model.scores),
     answers,
   });
-  const step = resolveRevealFirstStep(model, input);
+  const step = resolveRevealFirstStep(model, input, { selectedPillar });
 
   return (
     <div className="grid gap-3">

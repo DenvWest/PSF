@@ -45,7 +45,30 @@ describe("resolveRevealFirstStep", () => {
     expect(step.qualifiesForSupplement).toBe(true);
     expect(step.supplement?.name).toBe("Omega-3");
     expect(step.supplement?.signal.length).toBeGreaterThan(0);
-    expect(step.supplement?.qualityRule).toContain("Kwaliteitskeuze");
+    expect(step.supplement?.qualityRule).toContain("Leefstijl eerst");
+  });
+
+  it("shows selected pillar quickWin when user picks chip 2", () => {
+    const scores = makeScores({
+      stress_score: 25,
+      nutrition_score: 35,
+      recovery_score: 50,
+      sleep_score: 55,
+    });
+    const answers: Record<string, number> = {};
+    const model = buildRevealModel(scores, answers);
+    const input = buildRecommendationInput({ scores, answers });
+
+    expect(model.priority.id).toBe("stress");
+    expect(model.topLadder[1]?.id).toBe("voeding");
+
+    const step = resolveRevealFirstStep(model, input, {
+      selectedPillar: model.topLadder[1],
+    });
+
+    expect(step.lifestyle.title).toBe(PILLAR.voeding.quickWin.title);
+    expect(step.qualifiesForSupplement).toBe(true);
+    expect(step.supplement?.name).toBe("Omega-3");
   });
 
   it("includes upcoming dashboard features", () => {

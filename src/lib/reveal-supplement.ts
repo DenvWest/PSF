@@ -6,7 +6,7 @@ import type { Pillar } from "@/types/dashboard";
 import type { RecommendationInput } from "@/types/recommendation";
 
 const QUALITY_RULE =
-  "Kwaliteitskeuze op vorm en bron — niet het goedkoopste schap-potje";
+  "Leefstijl eerst — pas daarna een supplement objectief op kwaliteit gekozen";
 
 function isSupplementOnHold(supplementName: string): boolean {
   const key = supplementName.toLowerCase().split(/\s+/)[0];

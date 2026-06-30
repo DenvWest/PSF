@@ -3,9 +3,8 @@
 import type { ReactNode } from "react";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealDashboardTease from "@/components/intake/RevealDashboardTease";
-import RevealFirstStep from "@/components/intake/RevealFirstStep";
+import RevealStartSection from "@/components/intake/RevealStartSection";
 import RevealHeroCard from "@/components/intake/RevealHeroCard";
-import RevealStartChips from "@/components/intake/RevealStartChips";
 import type { ProfileLabel } from "@/lib/intake-engine";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import type { RevealModel } from "@/lib/reveal-model";
@@ -60,10 +59,7 @@ export default function RevealStoryPath({
         </PathStep>
 
         <PathStep step="02" title={REVEAL_COPY.stepTitleStart}>
-          <div className="grid gap-3 px-1">
-            <RevealStartChips model={model} startHref="/account/login?from=intake" />
-            <RevealFirstStep model={model} answers={answers} />
-          </div>
+          <RevealStartSection model={model} answers={answers} />
         </PathStep>
 
         <PathStep step="03" title={REVEAL_COPY.stepTitleDashboard}>
