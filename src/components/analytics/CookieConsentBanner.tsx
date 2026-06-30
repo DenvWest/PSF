@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import CookieConsentSettings from "@/components/analytics/CookieConsentSettings";
 import {
   ANALYTICS_GRANTED_EVENT,
@@ -70,6 +70,18 @@ function analyticsEnabledFromState(): boolean {
   return readAnalyticsConsentStateClient() === "granted";
 }
 
+function subscribeClientMounted(): () => void {
+  return () => {};
+}
+
+function getClientMountedSnapshot(): boolean {
+  return true;
+}
+
+function getServerMountedSnapshot(): boolean {
+  return false;
+}
+
 export default function CookieConsentBanner() {
   const consentState = useAnalyticsConsentState();
   const [preferenceRequest, setPreferenceRequest] = useState<CookiePreferencesDetail | null>(
@@ -78,11 +90,11 @@ export default function CookieConsentBanner() {
   const [view, setView] = useState<BannerView>("intro");
   const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    subscribeClientMounted,
+    getClientMountedSnapshot,
+    getServerMountedSnapshot,
+  );
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   const open = consentState === "unset" || preferenceRequest !== null;
