@@ -14,9 +14,9 @@ export const SIGNAL_COPY: Record<keyof DeficiencySignals, string> = {
   omega3_deficiency: "Je eet zelden vette vis",
   magnesium_signal:
     "Je slaap- of stresspatroon wijst op extra ondersteuning via magnesium",
-  cortisol_risk: "Je stress blijft lang aan staan — je lichaam herstelt trager",
+  cortisol_risk: "Je spanning blijft lang hangen — ontspannen en uitrusten kosten je merkbaar meer tijd",
   creatine_signal:
-    "Je traint regelmatig en herstelt langzamer dan je zou verwachten",
+    "Je traint regelmatig en merkt dat je na inspanning langer moe blijft",
   melatonine_signal:
     "Je valt moeilijk in slaap terwijl je stress hoog blijft",
   protein_gap_signal: "Je eiwitinname blijft waarschijnlijk achter",
@@ -35,7 +35,7 @@ export function domainBelowTemplate(label: string): string {
 export const PROFILE_COPY: Record<ProfileLabel["name"], string> = {
   "Onrustige Slaper": "Je slaappatroon is je zwakste schakel",
   "Lage Batterij": "Je energiecurve zakt sneller dan je lichaam bijhoudt",
-  Stressdrager: "Je stress-as blijft langer actief dan nodig",
+  Stressdrager: "Na een drukke dag sta je nog lang 'aan' — ontspannen lukt niet vanzelf",
   "In Balans": "Je profiel wijst op een specifiek aandachtspunt",
 };
 

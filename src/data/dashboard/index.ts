@@ -56,7 +56,7 @@ export const PILLARS: Pillar[] = [
     color: "#8B6E99",
     icon: "Wind",
     lever:
-      "Je blijft 'aan' staan na werk — begin bij je ademhaling, niet bij een supplement. Na 40 herstelt je stress-as trager; een korte reset helpt sneller dan je denkt.",
+      "Je blijft 'aan' staan na werk — begin bij je ademhaling, niet bij een supplement. Na 40 kost terugschakelen na spanning meer moeite; een korte reset helpt sneller dan je denkt.",
     quickWin: {
       title: "Box-breathing, 4 minuten",
       detail:
