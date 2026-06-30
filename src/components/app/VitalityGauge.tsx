@@ -21,6 +21,7 @@ type VitalityGaugeProps = {
   variant?: "default" | "hero";
   tone?: "light" | "dark";
   layoutPadding?: number;
+  heroDisc?: "bright" | "kompas";
 };
 
 const DEFAULT_START = 135;
@@ -90,6 +91,7 @@ export default function VitalityGauge({
   variant = "default",
   tone = "light",
   layoutPadding = 0,
+  heroDisc = "bright",
 }: VitalityGaugeProps) {
   const [disp, setDisp] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -183,6 +185,7 @@ export default function VitalityGauge({
     const heroScoreSize = showBandLabel ? size * 0.24 : size * 0.26;
     const heroMaxSize = showBandLabel ? size * 0.068 : size * 0.072;
     const arcCompact = size <= 240;
+    const kompasDisc = heroDisc === "kompas";
 
     function segmentOpacity(segmentMin: number, nextMin: number | undefined): number {
       if (locked) {
@@ -206,26 +209,52 @@ export default function VitalityGauge({
         <div style={{ position: "relative", width: heroWidth, height: heroHeight }}>
           <svg width={heroWidth} height={heroHeight} aria-hidden style={{ overflow: "visible" }}>
             <defs>
-              <radialGradient id={innerGradientId} cx="48%" cy="40%" r="58%">
-                <stop offset="0%" stopColor="#E4F5E9" />
-                <stop offset="28%" stopColor="#B8E0C4" />
-                <stop offset="58%" stopColor="#6FA77E" />
-                <stop offset="100%" stopColor="#3D7248" />
-              </radialGradient>
-              <radialGradient id={innerHighlightId} cx="38%" cy="28%" r="52%">
-                <stop offset="0%" stopColor="rgba(255,255,255,0.68)" />
-                <stop offset="45%" stopColor="rgba(255,255,255,0.12)" />
-                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-              </radialGradient>
-              <radialGradient id={innerShadowId} cx="52%" cy="62%" r="54%">
-                <stop offset="55%" stopColor="rgba(255,255,255,0)" />
-                <stop offset="100%" stopColor={dark ? "rgba(12,28,18,0.30)" : "rgba(29,58,38,0.26)"} />
-              </radialGradient>
-              <radialGradient id={innerRimId} cx="50%" cy="50%" r="50%">
-                <stop offset="82%" stopColor="rgba(255,255,255,0)" />
-                <stop offset="92%" stopColor="rgba(255,255,255,0.35)" />
-                <stop offset="100%" stopColor="rgba(255,255,255,0.12)" />
-              </radialGradient>
+              {kompasDisc ? (
+                <>
+                  <radialGradient id={innerGradientId} cx="50%" cy="32%" r="68%">
+                    <stop offset="0%" stopColor="#2a4628" />
+                    <stop offset="38%" stopColor="#21381f" />
+                    <stop offset="100%" stopColor="#1a2e1a" />
+                  </radialGradient>
+                  <radialGradient id={innerHighlightId} cx="50%" cy="22%" r="55%">
+                    <stop offset="0%" stopColor="rgba(127, 178, 142, 0.35)" />
+                    <stop offset="45%" stopColor="rgba(127, 178, 142, 0.08)" />
+                    <stop offset="100%" stopColor="rgba(127, 178, 142, 0)" />
+                  </radialGradient>
+                  <radialGradient id={innerShadowId} cx="52%" cy="68%" r="54%">
+                    <stop offset="55%" stopColor="rgba(255,255,255,0)" />
+                    <stop offset="100%" stopColor="rgba(8, 18, 10, 0.42)" />
+                  </radialGradient>
+                  <radialGradient id={innerRimId} cx="50%" cy="50%" r="50%">
+                    <stop offset="82%" stopColor="rgba(255,255,255,0)" />
+                    <stop offset="92%" stopColor="rgba(127, 178, 142, 0.22)" />
+                    <stop offset="100%" stopColor="rgba(127, 178, 142, 0.08)" />
+                  </radialGradient>
+                </>
+              ) : (
+                <>
+                  <radialGradient id={innerGradientId} cx="48%" cy="40%" r="58%">
+                    <stop offset="0%" stopColor="#E4F5E9" />
+                    <stop offset="28%" stopColor="#B8E0C4" />
+                    <stop offset="58%" stopColor="#6FA77E" />
+                    <stop offset="100%" stopColor="#3D7248" />
+                  </radialGradient>
+                  <radialGradient id={innerHighlightId} cx="38%" cy="28%" r="52%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.68)" />
+                    <stop offset="45%" stopColor="rgba(255,255,255,0.12)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                  </radialGradient>
+                  <radialGradient id={innerShadowId} cx="52%" cy="62%" r="54%">
+                    <stop offset="55%" stopColor="rgba(255,255,255,0)" />
+                    <stop offset="100%" stopColor={dark ? "rgba(12,28,18,0.30)" : "rgba(29,58,38,0.26)"} />
+                  </radialGradient>
+                  <radialGradient id={innerRimId} cx="50%" cy="50%" r="50%">
+                    <stop offset="82%" stopColor="rgba(255,255,255,0)" />
+                    <stop offset="92%" stopColor="rgba(255,255,255,0.35)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.12)" />
+                  </radialGradient>
+                </>
+              )}
               <radialGradient id={glowGradientId} cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stopColor={dark ? "rgba(90,143,106,0.32)" : "rgba(90,143,106,0.22)"} />
                 <stop offset="100%" stopColor="rgba(90,143,106,0)" />
@@ -376,8 +405,14 @@ export default function VitalityGauge({
               cx={cx}
               cy={cy}
               r={innerR + 3}
-              fill={locked ? "rgba(90,143,106,0.06)" : "rgba(61,114,72,0.12)"}
-              stroke="rgba(255,255,255,0.5)"
+              fill={
+                locked
+                  ? "rgba(90,143,106,0.06)"
+                  : kompasDisc
+                    ? "rgba(127,178,142,0.18)"
+                    : "rgba(61,114,72,0.12)"
+              }
+              stroke={kompasDisc ? "rgba(127,178,142,0.28)" : "rgba(255,255,255,0.5)"}
               strokeWidth={2}
             />
 
