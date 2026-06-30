@@ -16,13 +16,13 @@ export const REVEAL_COPY = {
   lifestyleTrack: "Spoor A · Leefstijl",
   durationBadge: "± 2 minuten",
   dashboardTeaseTitle: "Dit wacht op je in je dashboard",
-  dashboardTeaseLead: "Dit staat klaar zodra je inlogt — niets opnieuw invullen.",
+  dashboardTeaseLead: "Na inloggen staat dit in je dashboard.",
   dashboardMockLabel: "Jouw dashboard",
   dashboardScoreStartHint: "start",
   profileEyebrow: "JOUW STARTPROFIEL",
   profileStepTitle: "Waar je nu staat",
   startStepTitle: "Waar je begint — en je eerste stap",
-  startChipsHint: "Je grootste hefbomen — begin bij de laagste.",
+  startChipsHint: "Je grootste prioriteiten — begin bij de eerste.",
   priorityBridgePrefix: "Je startpunt:",
   dashboardRowPrioritySubProduct: "Je startpunt — supplementen objectief vergeleken op kwaliteit",
   dashboardRowPrioritySubLifestyle: "Je startpunt, plan en voortgang staan klaar",
@@ -47,7 +47,18 @@ export const REVEAL_COPY = {
   footerPanelSummary: "Hoe komt dit overzicht tot stand?",
   footerMethodIntro:
     "Leefstijl eerst — van herkenning naar één concrete stap, daarna volg je je voortgang in je dashboard.",
+  stepTitleRecognition: "Herkenning — waar je nu staat",
+  stepTitleStart: "Je startpunt — en eerste stap",
+  stepTitleDashboard: "Je dashboard — wat klaarstaat",
+  stepTitleSave: "Klaar om door te gaan?",
+  firstStepApproachTitle: "Zo kozen we je eerste stap",
 } as const;
+
+export const REVEAL_FIRST_STEP_APPROACH = [
+  { label: "Grootste prioriteit", detail: "je laagste score eerst" },
+  { label: "Minste moeite", detail: "een stap die vandaag al past" },
+  { label: "Meeste bewijs", detail: "wat aantoonbaar werkt" },
+] as const;
 
 export type RevealDashboardRow = {
   key: string;

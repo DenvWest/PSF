@@ -35,7 +35,7 @@ export function domainBelowTemplate(label: string): string {
 export const PROFILE_COPY: Record<ProfileLabel["name"], string> = {
   "Onrustige Slaper": "Je slaappatroon is je zwakste schakel",
   "Lage Batterij": "Je energiecurve zakt sneller dan je lichaam bijhoudt",
-  Stressdrager: "Na een drukke dag sta je nog lang 'aan' — ontspannen lukt niet vanzelf",
+  Stressdrager: "Spanning zakt bij jou minder snel weg dan je zou willen",
   "In Balans": "Je profiel wijst op een specifiek aandachtspunt",
 };
 

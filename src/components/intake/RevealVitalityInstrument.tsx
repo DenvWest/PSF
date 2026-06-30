@@ -14,7 +14,7 @@ function useHeroGaugeSize() {
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
-    const apply = () => setSize(mq.matches ? 236 : 200);
+    const apply = () => setSize(mq.matches ? 248 : 216);
     apply();
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
@@ -40,7 +40,7 @@ export default function RevealVitalityInstrument({
         stroke={stroke}
         variant="hero"
         theme="light"
-        showBandLabel
+        showBandLabel={false}
       />
     </div>
   );

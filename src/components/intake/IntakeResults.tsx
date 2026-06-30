@@ -68,7 +68,7 @@ export default function IntakeResults({
         </section>
 
         <section aria-label="Feedback" className="reveal-results-act reveal-results-act--feedback">
-          <IntakeFeedback sessionId={sessionId} variant="reveal-premium" />
+          <IntakeFeedback sessionId={sessionId} variant="reveal-light" />
         </section>
 
         {rapportUrl ? (

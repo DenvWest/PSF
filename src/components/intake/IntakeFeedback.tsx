@@ -9,7 +9,7 @@ type FeedbackChoice = "yes" | "partial" | "no" | null;
 
 type IntakeFeedbackProps = {
   sessionId: string | null;
-  variant?: "default" | "embedded" | "reveal-premium";
+  variant?: "default" | "embedded" | "reveal-premium" | "reveal-light";
 };
 
 const pillBase = {
@@ -30,6 +30,7 @@ export default function IntakeFeedback({
   const [submitting, setSubmitting] = useState(false);
   const embedded = variant === "embedded";
   const revealPremium = variant === "reveal-premium";
+  const revealLight = variant === "reveal-light";
 
   const cardStyle = revealPremium
     ? undefined
@@ -80,6 +81,96 @@ export default function IntakeFeedback({
     trackEvent(GA4_EVENTS.INTAKE_FEEDBACK_SUBMITTED, { rating });
     setSubmitting(false);
     setSubmitted(true);
+  }
+
+  if (revealLight) {
+    if (submitted) {
+      return (
+        <div className="mx-auto w-full max-w-[600px] rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-6 text-center shadow-[0_16px_48px_rgba(15,28,16,0.10)]">
+          <p className="m-0 text-[15px] text-[#57534e]">
+            Bedankt voor je feedback{" "}
+            <span className="text-[#5A8F6A]" aria-hidden>
+              ✓
+            </span>
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mx-auto w-full max-w-[600px] rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-6 shadow-[0_16px_48px_rgba(15,28,16,0.10)]">
+        <div className="mb-4 flex items-center justify-between">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#78716c]">
+            {REVEAL_COPY.feedbackEyebrow}
+          </span>
+          <span className="text-[11px] text-[#a8a29e]">{REVEAL_COPY.feedbackMeta}</span>
+        </div>
+        <h2
+          className="m-0 text-[20px] leading-tight text-[#1c1917]"
+          style={{ fontFamily: "var(--f-serif, Georgia, serif)", fontWeight: 400 }}
+        >
+          {REVEAL_COPY.feedbackTitle}
+        </h2>
+        <p className="mb-4 mt-1.5 text-[13.5px] leading-relaxed text-[#57534e]">
+          {REVEAL_COPY.feedbackSubtext}
+        </p>
+        {choice === null ? (
+          <div role="group" aria-label="Feedbackkeuze" className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setChoice("yes");
+                void submit("positive", false);
+              }}
+              disabled={submitting}
+              className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[rgba(90,143,106,0.4)] bg-[rgba(90,143,106,0.12)] px-3 text-[14px] font-semibold text-[#5A8F6A]"
+            >
+              Ja, herkenbaar
+            </button>
+            <button
+              type="button"
+              onClick={() => setChoice("partial")}
+              disabled={submitting}
+              className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[#e4e0da] bg-white px-3 text-[14px] font-semibold text-[#57534e]"
+            >
+              Deels
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setChoice("no");
+                void submit("negative", false);
+              }}
+              disabled={submitting}
+              className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[#e4e0da] bg-white px-3 text-[14px] font-semibold text-[#57534e]"
+            >
+              Niet echt
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value.slice(0, 500))}
+              placeholder="Wil je iets toelichten? (optioneel)"
+              rows={4}
+              maxLength={500}
+              className="box-border w-full resize-y rounded-[10px] border border-[#e4e0da] bg-white p-3 text-[14px] text-[#1c1917] outline-none"
+            />
+            <button
+              type="button"
+              disabled={submitting}
+              onClick={() => {
+                void submit(choice === "partial" ? "positive" : "negative", true);
+              }}
+              className="min-h-[44px] cursor-pointer rounded-[10px] border-0 bg-[#5A8F6A] px-4 text-[14px] font-semibold text-[#0f1c10]"
+            >
+              Verstuur feedback
+            </button>
+          </div>
+        )}
+      </div>
+    );
   }
 
   if (revealPremium) {

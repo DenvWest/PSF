@@ -19,13 +19,12 @@ type RevealStoryPathProps = {
 
 type PathStepProps = {
   step: string;
-  label: string;
   title: string;
   children: ReactNode;
   isLast?: boolean;
 };
 
-function PathStep({ step, label, title, children, isLast = false }: PathStepProps) {
+function PathStep({ step, title, children, isLast = false }: PathStepProps) {
   return (
     <li className={`reveal-path-step${isLast ? " reveal-path-step--last" : ""}`}>
       <div className="reveal-path-step__rail" aria-hidden>
@@ -34,7 +33,6 @@ function PathStep({ step, label, title, children, isLast = false }: PathStepProp
       </div>
       <div className="reveal-path-step__content">
         <header className="reveal-path-step__header">
-          <p className="reveal-path-step__label">{label}</p>
           <h2 className="reveal-path-step__title">{title}</h2>
         </header>
         <div className="reveal-path-step__panel">{children}</div>
@@ -57,39 +55,22 @@ export default function RevealStoryPath({
       </header>
 
       <ol className="reveal-path__track">
-        <PathStep
-          step="01"
-          label={REVEAL_COPY.pathStepProfile}
-          title={REVEAL_COPY.profileStepTitle}
-        >
+        <PathStep step="01" title={REVEAL_COPY.stepTitleRecognition}>
           <RevealHeroCard model={model} profile={profile} firstName={firstName} />
         </PathStep>
 
-        <PathStep
-          step="02"
-          label={REVEAL_COPY.pathStepStart}
-          title={REVEAL_COPY.startStepTitle}
-        >
-          <div className="grid gap-3">
+        <PathStep step="02" title={REVEAL_COPY.stepTitleStart}>
+          <div className="grid gap-3 px-1">
             <RevealStartChips model={model} startHref="/account/login?from=intake" />
             <RevealFirstStep model={model} answers={answers} />
           </div>
         </PathStep>
 
-        <PathStep
-          step="03"
-          label={REVEAL_COPY.pathStepDashboard}
-          title={REVEAL_COPY.dashboardTeaseTitle}
-        >
+        <PathStep step="03" title={REVEAL_COPY.stepTitleDashboard}>
           <RevealDashboardTease model={model} />
         </PathStep>
 
-        <PathStep
-          step="04"
-          label={REVEAL_COPY.pathStepSave}
-          title="Klaar om door te gaan?"
-          isLast
-        >
+        <PathStep step="04" title={REVEAL_COPY.stepTitleSave} isLast>
           <RevealCtaStack />
         </PathStep>
       </ol>
