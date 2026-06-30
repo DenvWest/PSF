@@ -44,31 +44,6 @@ export default function RevealFooterPanel({
       >
         {DISCLAIMER_TEXTS.intake}
       </p>
-      <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", margin: "0 0 16px" }}>
-        <Link
-          href="/privacy"
-          style={{
-            fontWeight: 500,
-            color: "rgba(255,255,255,0.72)",
-            textDecoration: "underline",
-            textUnderlineOffset: 3,
-          }}
-        >
-          privacyverklaring
-        </Link>
-        {" · "}
-        <Link
-          href="/medische-disclaimer"
-          style={{
-            fontWeight: 500,
-            color: "rgba(255,255,255,0.72)",
-            textDecoration: "underline",
-            textUnderlineOffset: 3,
-          }}
-        >
-          medische disclaimer
-        </Link>
-      </p>
 
       {feedback ? (
         <p
@@ -212,10 +187,10 @@ export default function RevealFooterPanel({
         </Link>
         {" · "}
         <Link
-          href="/disclaimer"
+          href="/medische-disclaimer"
           style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 }}
         >
-          Disclaimer
+          Medische disclaimer
         </Link>
         {" · "}
         © 2026 PerfectSupplement

@@ -83,6 +83,80 @@ export default function IntakeFeedback({
     setSubmitted(true);
   }
 
+  function submitChoice() {
+    if (choice === null) {
+      return;
+    }
+    void submit(choice === "no" ? "negative" : "positive", comment.trim() !== "");
+  }
+
+  const followupFields = (
+    <div className="flex flex-col gap-3">
+      <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value.slice(0, 500))}
+        placeholder="Wil je iets toelichten? (optioneel)"
+        rows={4}
+        maxLength={500}
+        className={
+          revealLight
+            ? "box-border w-full resize-y rounded-[10px] border border-[#e4e0da] bg-white p-3 text-[14px] text-[#1c1917] outline-none"
+            : revealPremium
+              ? "reveal-feedback-premium__textarea"
+              : undefined
+        }
+        style={
+          revealLight || revealPremium
+            ? undefined
+            : {
+                boxSizing: "border-box",
+                width: "100%",
+                resize: "vertical",
+                borderRadius: 10,
+                padding: "10px 12px",
+                fontSize: 14,
+                outline: "none",
+                background: "rgba(15,28,16,0.04)",
+                border: "1px solid var(--panel-border)",
+                color: "var(--text)",
+                fontFamily: "var(--f-sans)",
+              }
+        }
+      />
+      <button
+        type="button"
+        disabled={submitting}
+        onClick={submitChoice}
+        className={
+          revealLight
+            ? "min-h-[44px] cursor-pointer rounded-[10px] border-0 bg-[#5A8F6A] px-4 text-[14px] font-semibold text-[#0f1c10]"
+            : revealPremium
+              ? "reveal-feedback-premium__submit"
+              : undefined
+        }
+        style={
+          revealLight || revealPremium
+            ? undefined
+            : {
+                minHeight: 44,
+                cursor: submitting ? "default" : "pointer",
+                borderRadius: 10,
+                border: "none",
+                padding: "12px 16px",
+                fontSize: 14,
+                fontWeight: 600,
+                background: "var(--sage)",
+                color: "#0f1c10",
+                fontFamily: "var(--f-sans)",
+                opacity: submitting ? 0.6 : 1,
+              }
+        }
+      >
+        Verstuur feedback
+      </button>
+    </div>
+  );
+
   if (revealLight) {
     if (submitted) {
       return (
@@ -98,77 +172,61 @@ export default function IntakeFeedback({
     }
 
     return (
-      <div className="mx-auto w-full max-w-[600px] rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-6 shadow-[0_16px_48px_rgba(15,28,16,0.10)]">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#78716c]">
-            {REVEAL_COPY.feedbackEyebrow}
-          </span>
-          <span className="text-[11px] text-[#a8a29e]">{REVEAL_COPY.feedbackMeta}</span>
-        </div>
-        <h2
-          className="m-0 text-[20px] leading-tight text-[#1c1917]"
-          style={{ fontFamily: "var(--f-serif, Georgia, serif)", fontWeight: 400 }}
+      <div className="mx-auto w-full max-w-[600px]">
+        <details
+          className="reveal-feedback-disclosure reveal-feedback-disclosure--light"
+          onToggle={(event) => {
+            if ((event.currentTarget as HTMLDetailsElement).open) {
+              trackEvent("reveal_feedback_opened");
+            }
+          }}
         >
-          {REVEAL_COPY.feedbackTitle}
-        </h2>
-        <p className="mb-4 mt-1.5 text-[13.5px] leading-relaxed text-[#57534e]">
-          {REVEAL_COPY.feedbackSubtext}
-        </p>
-        {choice === null ? (
-          <div role="group" aria-label="Feedbackkeuze" className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setChoice("yes");
-                void submit("positive", false);
-              }}
-              disabled={submitting}
-              className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[rgba(90,143,106,0.4)] bg-[rgba(90,143,106,0.12)] px-3 text-[14px] font-semibold text-[#5A8F6A]"
+          <summary className="reveal-feedback-disclosure__summary">
+            <span>{REVEAL_COPY.feedbackEyebrow}</span>
+            <span className="reveal-feedback-disclosure__meta">{REVEAL_COPY.feedbackMeta}</span>
+          </summary>
+          <div className="reveal-feedback-disclosure__body">
+            <h2
+              className="m-0 text-[20px] leading-tight text-[#1c1917]"
+              style={{ fontFamily: "var(--f-serif, Georgia, serif)", fontWeight: 400 }}
             >
-              Ja, herkenbaar
-            </button>
-            <button
-              type="button"
-              onClick={() => setChoice("partial")}
-              disabled={submitting}
-              className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[#e4e0da] bg-white px-3 text-[14px] font-semibold text-[#57534e]"
-            >
-              Deels
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setChoice("no");
-                void submit("negative", false);
-              }}
-              disabled={submitting}
-              className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[#e4e0da] bg-white px-3 text-[14px] font-semibold text-[#57534e]"
-            >
-              Niet echt
-            </button>
+              {REVEAL_COPY.feedbackTitle}
+            </h2>
+            <p className="mb-4 mt-1.5 text-[13.5px] leading-relaxed text-[#57534e]">
+              {REVEAL_COPY.feedbackSubtext}
+            </p>
+            {choice === null ? (
+              <div role="group" aria-label="Feedbackkeuze" className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setChoice("yes")}
+                  disabled={submitting}
+                  className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[rgba(90,143,106,0.4)] bg-[rgba(90,143,106,0.12)] px-3 text-[14px] font-semibold text-[#5A8F6A]"
+                >
+                  Ja, herkenbaar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setChoice("partial")}
+                  disabled={submitting}
+                  className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[#e4e0da] bg-white px-3 text-[14px] font-semibold text-[#57534e]"
+                >
+                  Deels
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setChoice("no")}
+                  disabled={submitting}
+                  className="min-h-[44px] flex-1 cursor-pointer rounded-[12px] border border-[#e4e0da] bg-white px-3 text-[14px] font-semibold text-[#57534e]"
+                >
+                  Niet echt
+                </button>
+              </div>
+            ) : (
+              followupFields
+            )}
           </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value.slice(0, 500))}
-              placeholder="Wil je iets toelichten? (optioneel)"
-              rows={4}
-              maxLength={500}
-              className="box-border w-full resize-y rounded-[10px] border border-[#e4e0da] bg-white p-3 text-[14px] text-[#1c1917] outline-none"
-            />
-            <button
-              type="button"
-              disabled={submitting}
-              onClick={() => {
-                void submit(choice === "partial" ? "positive" : "negative", true);
-              }}
-              className="min-h-[44px] cursor-pointer rounded-[10px] border-0 bg-[#5A8F6A] px-4 text-[14px] font-semibold text-[#0f1c10]"
-            >
-              Verstuur feedback
-            </button>
-          </div>
-        )}
+        </details>
       </div>
     );
   }
@@ -212,10 +270,7 @@ export default function IntakeFeedback({
               <button
                 type="button"
                 aria-pressed={choice === "yes"}
-                onClick={() => {
-                  setChoice("yes");
-                  void submit("positive", false);
-                }}
+                onClick={() => setChoice("yes")}
                 disabled={submitting}
                 className="reveal-feedback-premium__pill reveal-feedback-premium__pill--yes"
               >
@@ -233,10 +288,7 @@ export default function IntakeFeedback({
               <button
                 type="button"
                 aria-pressed={choice === "no"}
-                onClick={() => {
-                  setChoice("no");
-                  void submit("negative", false);
-                }}
+                onClick={() => setChoice("no")}
                 disabled={submitting}
                 className="reveal-feedback-premium__pill"
               >
@@ -244,26 +296,7 @@ export default function IntakeFeedback({
               </button>
             </div>
           ) : (
-            <div className="reveal-feedback-premium__followup">
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value.slice(0, 500))}
-                placeholder="Wil je iets toelichten? (optioneel)"
-                rows={4}
-                maxLength={500}
-                className="reveal-feedback-premium__textarea"
-              />
-              <button
-                type="button"
-                disabled={submitting}
-                onClick={() => {
-                  void submit(choice === "partial" ? "positive" : "negative", true);
-                }}
-                className="reveal-feedback-premium__submit"
-              >
-                Verstuur feedback
-              </button>
-            </div>
+            <div className="reveal-feedback-premium__followup">{followupFields}</div>
           )}
         </div>
       </div>
@@ -301,10 +334,7 @@ export default function IntakeFeedback({
           <button
             type="button"
             aria-pressed={choice === "yes"}
-            onClick={() => {
-              setChoice("yes");
-              void submit("positive", false);
-            }}
+            onClick={() => setChoice("yes")}
             disabled={submitting}
             style={{
               ...pillStyle,
@@ -332,10 +362,7 @@ export default function IntakeFeedback({
           <button
             type="button"
             aria-pressed={choice === "no"}
-            onClick={() => {
-              setChoice("no");
-              void submit("negative", false);
-            }}
+            onClick={() => setChoice("no")}
             disabled={submitting}
             style={{
               ...pillStyle,
@@ -348,50 +375,7 @@ export default function IntakeFeedback({
           </button>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value.slice(0, 500))}
-            placeholder="Wil je iets toelichten? (optioneel)"
-            rows={4}
-            maxLength={500}
-            style={{
-              boxSizing: "border-box",
-              width: "100%",
-              resize: "vertical",
-              borderRadius: 10,
-              padding: "10px 12px",
-              fontSize: 14,
-              outline: "none",
-              background: "rgba(15,28,16,0.04)",
-              border: "1px solid var(--panel-border)",
-              color: "var(--text)",
-              fontFamily: "var(--f-sans)",
-            }}
-          />
-          <button
-            type="button"
-            disabled={submitting}
-            onClick={() => {
-              void submit(choice === "partial" ? "positive" : "negative", true);
-            }}
-            style={{
-              minHeight: 44,
-              cursor: submitting ? "default" : "pointer",
-              borderRadius: 10,
-              border: "none",
-              padding: "12px 16px",
-              fontSize: 14,
-              fontWeight: 600,
-              background: "var(--sage)",
-              color: "#0f1c10",
-              fontFamily: "var(--f-sans)",
-              opacity: submitting ? 0.6 : 1,
-            }}
-          >
-            Verstuur feedback
-          </button>
-        </div>
+        followupFields
       )}
     </div>
   );

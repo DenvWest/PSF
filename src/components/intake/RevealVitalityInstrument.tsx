@@ -12,12 +12,12 @@ type RevealVitalityInstrumentProps = {
 };
 
 function useHeroGaugeLayout() {
-  const [layout, setLayout] = useState({ size: 260, padding: 28 });
+  const [layout, setLayout] = useState({ size: 220, padding: 40 });
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
     const apply = () =>
-      setLayout(mq.matches ? { size: 280, padding: 32 } : { size: 260, padding: 28 });
+      setLayout(mq.matches ? { size: 280, padding: 32 } : { size: 220, padding: 40 });
     apply();
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);

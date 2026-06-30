@@ -172,7 +172,7 @@ export default function VitalityGauge({
     const innerR = r * 0.58;
     const progressAngle = scoreToAngle(startAngle, sweep, clamped);
     const [dotX, dotY] = polar(cx, cy, r, progressAngle);
-    const labelRadius = r + heroStroke / 2 + 16;
+    const labelRadius = r + heroStroke / 2 + (size <= 240 ? 12 : 16);
     const tickInner = r - heroStroke / 2 - 1;
     const tickOuter = r + heroStroke / 2 + 1;
     const zoneBoundaryScores = VITALITY_BANDS.slice(1).map((segment) => segment.min);
@@ -182,6 +182,7 @@ export default function VitalityGauge({
     const innerRimId = `${innerGradientId}-rim`;
     const heroScoreSize = showBandLabel ? size * 0.24 : size * 0.26;
     const heroMaxSize = showBandLabel ? size * 0.068 : size * 0.072;
+    const arcCompact = size <= 240;
 
     function segmentOpacity(segmentMin: number, nextMin: number | undefined): number {
       if (locked) {
@@ -467,9 +468,21 @@ export default function VitalityGauge({
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill={active ? segment.color : dark ? "rgba(255,255,255,0.36)" : "rgba(15,28,16,0.32)"}
-                    fontSize={isCurrent ? 15 : active ? 13.5 : 12.5}
+                    fontSize={
+                      isCurrent
+                        ? arcCompact
+                          ? 11
+                          : 15
+                        : active
+                          ? arcCompact
+                            ? 10
+                            : 13.5
+                          : arcCompact
+                            ? 9.5
+                            : 12.5
+                    }
                     fontWeight={isCurrent ? 800 : active ? 700 : 600}
-                    letterSpacing="0.10em"
+                    letterSpacing={arcCompact ? "0.06em" : "0.10em"}
                     style={{
                       fontFamily: "var(--f-sans, system-ui, sans-serif)",
                       textTransform: "uppercase",

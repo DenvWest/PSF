@@ -884,7 +884,9 @@ html.floating-cta-active footer {
   display: grid;
   justify-items: center;
   gap: 0.5rem;
-  width: max-content;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .reveal-vitality-instrument__signal {
@@ -2210,6 +2212,45 @@ html.floating-cta-active footer {
   flex-direction: column;
   gap: 10px;
   padding: 0 12px 12px;
+}
+
+.reveal-feedback-disclosure--light {
+  border-radius: 28px;
+  border: 1px solid #e4e0da;
+  background: linear-gradient(180deg, #fefdfb 0%, #ffffff 100%);
+  box-shadow: 0 16px 48px rgba(15, 28, 16, 0.1);
+}
+
+.reveal-feedback-disclosure__summary {
+  display: flex;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #78716c;
+  font-family: var(--f-sans);
+}
+
+.reveal-feedback-disclosure__summary::-webkit-details-marker {
+  display: none;
+}
+
+.reveal-feedback-disclosure__meta {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: #a8a29e;
+}
+
+.reveal-feedback-disclosure__body {
+  padding: 0 1.25rem 1.25rem;
 }
 
 .reveal-results-act--feedback {
