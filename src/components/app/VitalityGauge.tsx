@@ -153,7 +153,6 @@ export default function VitalityGauge({
   const heroStroke = Math.max(stroke, 24);
   const trackStroke = heroStroke + 6;
   const r = (Math.min(width, height) - trackStroke) / 2 - (isHero ? 8 : 1);
-  const innerR = isHero ? r * 0.58 : 0;
   const displayDisp = locked ? 0 : disp;
   const clamped = Math.min(VITALITY_SCORE_MAX, Math.max(0, displayDisp));
   const band = getVitalityBand(value);
