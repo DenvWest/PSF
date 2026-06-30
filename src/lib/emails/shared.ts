@@ -33,6 +33,32 @@ export function nurtureFooterBlock(
           </tr>`;
 }
 
+type NurtureCtaLink = { href: string; label: string };
+
+function nurtureCtaCell(
+  link: NurtureCtaLink,
+  variant: "primary" | "secondary",
+  paddingRight?: string,
+): string {
+  const baseStyle =
+    "display:inline-block;padding:14px 20px;font-size:15px;font-weight:600;text-decoration:none;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;";
+  const linkStyle =
+    variant === "primary"
+      ? `${baseStyle}color:#ffffff;background-color:#1a1a1a;`
+      : `${baseStyle}color:#1a1a1a;background-color:#ffffff;border:1px solid #1a1a1a;`;
+  const tdStyle = paddingRight ? `padding-right:${paddingRight};` : "";
+
+  return `<td class="nurture-dual-cta-cell" style="${tdStyle}">
+                    <table role="presentation" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="border-radius:10px;">
+                          <a href="${escapeHtml(link.href)}" class="nurture-dual-cta-${variant}" style="${linkStyle}">${escapeHtml(link.label)}</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>`;
+}
+
 export function nurtureCtaButton(href: string, label: string): string {
   return `<table role="presentation" cellspacing="0" cellpadding="0" style="margin-top:8px;">
                 <tr>
@@ -41,6 +67,15 @@ export function nurtureCtaButton(href: string, label: string): string {
                       ${escapeHtml(label)}
                     </a>
                   </td>
+                </tr>
+              </table>`;
+}
+
+export function nurtureDualCtaRow(primary: NurtureCtaLink, secondary: NurtureCtaLink): string {
+  return `<table role="presentation" cellspacing="0" cellpadding="0" class="nurture-dual-cta-row" style="margin-top:8px;">
+                <tr>
+                  ${nurtureCtaCell(primary, "primary", "8px")}
+                  ${nurtureCtaCell(secondary, "secondary")}
                 </tr>
               </table>`;
 }
@@ -58,6 +93,14 @@ export function nurtureEmailWrap(
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    @media (max-width: 480px) {
+      .nurture-dual-cta-row tr { display: block !important; }
+      .nurture-dual-cta-cell { display: block !important; padding-right: 0 !important; padding-bottom: 8px !important; }
+      .nurture-dual-cta-primary,
+      .nurture-dual-cta-secondary { display: block !important; width: 100% !important; text-align: center !important; box-sizing: border-box !important; }
+    }
+  </style>
 </head>
 <body style="margin:0;padding:0;background-color:#FAFAF7;font-family:Georgia,'Times New Roman',serif;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#FAFAF7;padding:32px 16px;">

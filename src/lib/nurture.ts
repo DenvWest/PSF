@@ -6,6 +6,8 @@ import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
 import { buildIntakeRecoveryUrlForSession } from "@/lib/recovery-token";
 import { buildNurtureAttributionToken } from "@/lib/nurture-attribution-token";
 import { cancelPendingGuideSequences } from "@/lib/guide-nurture";
+import { emailHasActiveAccount } from "@/lib/account-server";
+import { resolveNurtureDashboardUrl } from "@/lib/nurture-dashboard-url";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 import { RULES_VERSION, type DomainScores } from "@/lib/intake-engine";
@@ -79,6 +81,8 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
   };
 
   const recoveryUrl = await buildIntakeRecoveryUrlForSession(input.sessionId);
+  const hasAccount = await emailHasActiveAccount(supabase, input.email);
+  const dashboardUrl = resolveNurtureDashboardUrl(hasAccount);
 
   const nurtureToken = buildNurtureAttributionToken({
     sessionId: input.sessionId,
@@ -100,6 +104,7 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
       recipientEmail: input.email,
       sessionId: input.sessionId,
       recoveryUrl,
+      dashboardUrl,
       nurtureToken: nurtureToken || null,
     },
   );

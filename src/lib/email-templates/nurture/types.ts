@@ -28,4 +28,6 @@ export type NurtureEmailDispatchContext = {
   recoveryUrl?: string | null;
   /** Nurture-attributietoken voor /beste/-CTA's; alleen opnemen als sessie bekend. */
   nurtureToken?: string | null;
+  /** Dashboard- of login-URL voor dag-0 secundaire CTA. */
+  dashboardUrl?: string | null;
 };

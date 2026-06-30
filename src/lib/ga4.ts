@@ -11,6 +11,7 @@ export const GA4_EVENTS = {
   DASHBOARD_UNLOCK_CTA_CLICKED: 'dashboard_unlock_cta_clicked',
   HOME_PROFILE_CLICK: 'home_profile_click',
   REMEASURE_OPTIN_SUBMITTED: 'remeasure_optin_submitted',
+  NURTURE_DASHBOARD_CTA_CLICKED: 'nurture_dashboard_cta_clicked',
 } as const;
 
 export function trackEvent(

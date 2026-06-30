@@ -9,6 +9,7 @@ import { Button, Checkbox, TextField } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 import type { AccountLoginFrom } from "@/lib/account-login-href";
+import { NURTURE_DAY0_DASHBOARD_REF } from "@/lib/nurture-dashboard-url";
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { getLastSession } from "@/lib/intake-storage";
 import {
@@ -215,9 +216,13 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
 
 type LoginScreenProps = {
   loginFrom?: AccountLoginFrom | "default";
+  nurtureRef?: string | null;
 };
 
-export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps) {
+export default function LoginScreen({
+  loginFrom = "default",
+  nurtureRef = null,
+}: LoginScreenProps) {
   const router = useRouter();
   const fromIntake = loginFrom === "intake";
   const fromVoortgang = loginFrom === "voortgang";
@@ -367,6 +372,14 @@ export default function LoginScreen({ loginFrom = "default" }: LoginScreenProps)
   useEffect(() => {
     clarityTag("login_primary_action", primaryAction);
   }, [primaryAction]);
+
+  useEffect(() => {
+    if (nurtureRef === NURTURE_DAY0_DASHBOARD_REF) {
+      trackEvent(GA4_EVENTS.NURTURE_DASHBOARD_CTA_CLICKED, {
+        source: "day0_email",
+      });
+    }
+  }, [nurtureRef]);
 
   useEffect(() => {
     if (fromIntake) {

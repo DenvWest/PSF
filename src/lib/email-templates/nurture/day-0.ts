@@ -4,6 +4,7 @@ import { lifestyleCtaForProfile } from "@/lib/resolve-nurture-cta";
 import { resolveNurtureProfileKey } from "@/data/nurture-content";
 import {
   resolveIntakeRecoveryUrl,
+  resolveNurtureDashboardUrlFromContext,
   renderDay0MainRows,
   wrapNurtureBlock,
 } from "./helpers";
@@ -13,10 +14,12 @@ export function nurtureDay0Email(
   ctx: NurtureEmailDispatchContext,
 ): { subject: string; html: string; resolvedCta: ResolvedNurtureCta } {
   const intakeUrl = resolveIntakeRecoveryUrl(ctx);
+  const dashboardUrl = resolveNurtureDashboardUrlFromContext(ctx);
 
   const mainRows = renderDay0MainRows({
     primaryDomain: data.primaryDomain,
     intakeUrl,
+    dashboardUrl,
     firstName: data.firstName,
     domainScores: data.domainScores,
   });

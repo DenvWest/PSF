@@ -7,11 +7,16 @@ import type {
 } from "@/lib/email-templates/nurture/types";
 
 const RECOVERY_URL = "https://www.perfectsupplement.nl/api/intake/recover?token=abc123";
+const DASHBOARD_LOGIN_URL =
+  "https://www.perfectsupplement.nl/account/login?from=intake&ref=nurture-day0-dashboard";
+const DASHBOARD_URL =
+  "https://www.perfectsupplement.nl/dashboard?ref=nurture-day0-dashboard";
 
 const CTX: NurtureEmailDispatchContext = {
   recipientEmail: "test@example.com",
   sessionId: "sess-123",
   recoveryUrl: RECOVERY_URL,
+  dashboardUrl: DASHBOARD_LOGIN_URL,
 };
 
 function buildData(
@@ -554,7 +559,7 @@ describe("dag-0 voeding-brug", () => {
     expect(html).not.toContain("/intake/voeding");
   });
 
-  it("voeding-brug is tekstlink, geen tweede CTA-knop", () => {
+  it("voeding-brug is tekstlink, geen derde CTA-knop", () => {
     const data = buildData("Lage Batterij", "energy", {
       sleep_score: 50,
       stress_score: 50,
@@ -564,16 +569,16 @@ describe("dag-0 voeding-brug", () => {
       recovery_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    const buttonMatches = html.match(/background-color:#2d4a3e[^"]*"[^>]*>[^<]*<\/a>/g);
-    expect((buttonMatches ?? []).length).toBeLessThanOrEqual(1);
+    expect(html.match(/class="nurture-dual-cta-primary"/g)?.length ?? 0).toBe(1);
+    expect(html.match(/class="nurture-dual-cta-secondary"/g)?.length ?? 0).toBe(1);
     expect(html).toContain("Doe de voeding-check →");
   });
 });
 
-// ── P5: slechts één CTA-knop ──────────────────────────────────────────────
+// ── P5: twee CTA-knoppen naast elkaar ───────────────────────────────────────
 
-describe("dag-0 één CTA-knop", () => {
-  it("Stressdrager — geen tweede knop naar een /profiel/-pagina", () => {
+describe("dag-0 dual CTA-knoppen", () => {
+  it("bevat Bekijk je resultaten en Zie dashboard", () => {
     const data = buildData("Stressdrager", "stress", {
       stress_score: 25,
       sleep_score: 50,
@@ -583,8 +588,64 @@ describe("dag-0 één CTA-knop", () => {
       recovery_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
-    // Tel het aantal CTA-knop-stijlpatronen (background-color knop)
-    const buttonMatches = html.match(/background-color:#2d4a3e[^"]*"[^>]*>[^<]*<\/a>/g);
-    expect((buttonMatches ?? []).length).toBeLessThanOrEqual(1);
+    expect(html).toContain("Bekijk je resultaten");
+    expect(html).toContain("Zie dashboard");
+    expect(html).toContain('class="nurture-dual-cta-row"');
+    expect(html.match(/class="nurture-dual-cta-primary"/g)?.length ?? 0).toBe(1);
+    expect(html.match(/class="nurture-dual-cta-secondary"/g)?.length ?? 0).toBe(1);
+  });
+
+  it("Stressdrager — geen knop naar een /profiel/-pagina", () => {
+    const data = buildData("Stressdrager", "stress", {
+      stress_score: 25,
+      sleep_score: 50,
+      energy_score: 50,
+      nutrition_score: 50,
+      movement_score: 50,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, CTX);
+    const ctaButtonMatch = html.match(/href="([^"]*)"[^>]*>[^<]*Bekijk je resultaten/);
+    if (ctaButtonMatch) {
+      expect(ctaButtonMatch[1]).not.toMatch(/\/profiel\//);
+    }
+    const dashboardMatch = html.match(/href="([^"]*)"[^>]*>[^<]*Zie dashboard/);
+    if (dashboardMatch) {
+      expect(dashboardMatch[1]).not.toMatch(/\/profiel\//);
+    }
+  });
+
+  it("dashboard-knop gebruikt login-URL zonder account", () => {
+    const data = buildData("Stressdrager", "stress", {
+      stress_score: 25,
+      sleep_score: 50,
+      energy_score: 50,
+      nutrition_score: 50,
+      movement_score: 50,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, {
+      ...CTX,
+      dashboardUrl: DASHBOARD_LOGIN_URL,
+    });
+    expect(html).toMatch(
+      /href="https:\/\/www\.perfectsupplement\.nl\/account\/login\?from=intake(?:&amp;|&)ref=nurture-day0-dashboard"/,
+    );
+  });
+
+  it("dashboard-knop gebruikt dashboard-URL met account", () => {
+    const data = buildData("Stressdrager", "stress", {
+      stress_score: 25,
+      sleep_score: 50,
+      energy_score: 50,
+      nutrition_score: 50,
+      movement_score: 50,
+      recovery_score: 50,
+    });
+    const { html } = nurtureDay0Email(data, {
+      ...CTX,
+      dashboardUrl: DASHBOARD_URL,
+    });
+    expect(html).toContain(DASHBOARD_URL);
   });
 });

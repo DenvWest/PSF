@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 type AccountLoginPageProps = {
-  searchParams: Promise<{ from?: string }>;
+  searchParams: Promise<{ from?: string; ref?: string }>;
 };
 
 export default async function AccountLoginPage({ searchParams }: AccountLoginPageProps) {
@@ -21,8 +21,8 @@ export default async function AccountLoginPage({ searchParams }: AccountLoginPag
     redirect("/dashboard");
   }
 
-  const { from } = await searchParams;
+  const { from, ref } = await searchParams;
   const loginFrom = parseAccountLoginFrom(from);
 
-  return <LoginScreen loginFrom={loginFrom} />;
+  return <LoginScreen loginFrom={loginFrom} nurtureRef={ref ?? null} />;
 }

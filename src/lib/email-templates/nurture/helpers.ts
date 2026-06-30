@@ -7,9 +7,11 @@ import { getDisplayStatus } from "@/lib/score-display";
 import {
   escapeHtml,
   nurtureCtaButton,
+  nurtureDualCtaRow,
   nurtureEmailWrap,
 } from "@/lib/emails/shared";
 import { buildNurtureUnsubscribeUrl } from "@/lib/nurture-unsubscribe";
+import { resolveNurtureDashboardUrl } from "@/lib/nurture-dashboard-url";
 import { absoluteUrl, getPublicSiteUrl } from "@/lib/public-site-url";
 import type { NurtureEmailDispatchContext } from "./types";
 
@@ -47,6 +49,15 @@ export function resolveIntakeRecoveryUrl(
     return ctx.recoveryUrl.trim();
   }
   return `${getPublicSiteUrl()}/intake`;
+}
+
+export function resolveNurtureDashboardUrlFromContext(
+  ctx: Pick<NurtureEmailDispatchContext, "dashboardUrl">,
+): string {
+  if (typeof ctx.dashboardUrl === "string" && ctx.dashboardUrl.trim()) {
+    return ctx.dashboardUrl.trim();
+  }
+  return resolveNurtureDashboardUrl(false);
 }
 
 /** @deprecated Gebruik recoveryUrl in dispatch context (createRecoveryToken). */
@@ -392,10 +403,11 @@ function renderDay0NutritionBridge(
 export function renderDay0MainRows(params: {
   primaryDomain: string;
   intakeUrl: string;
+  dashboardUrl: string;
   firstName?: string | null;
   domainScores: Record<string, number>;
 }): string {
-  const { primaryDomain, intakeUrl, firstName, domainScores } = params;
+  const { primaryDomain, intakeUrl, dashboardUrl, firstName, domainScores } = params;
   const domain = normalizeDomainId(primaryDomain);
   const opening = day0OpeningLineForDomain(domain, firstName);
   const title = "Dit valt op in jouw resultaten";
@@ -430,7 +442,10 @@ export function renderDay0MainRows(params: {
         ${nutritionBridge}
         <tr>
           <td style="padding:8px 28px 28px 28px;">
-            ${nurtureCtaButton(intakeUrl, "Bekijk je resultaten")}
+            ${nurtureDualCtaRow(
+              { href: intakeUrl, label: "Bekijk je resultaten" },
+              { href: dashboardUrl, label: "Zie dashboard" },
+            )}
             <p style="margin:12px 0 0 0;font-size:13px;line-height:1.6;color:#888888;text-align:center;">Dit is je startpunt. Over vier weken kijken we samen of het beweegt — geen oordeel, gewoon je eigen lijn.</p>
           </td>
         </tr>`;
