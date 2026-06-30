@@ -15,9 +15,13 @@ export const REVEAL_COPY = {
   lifestyleTrack: "Spoor A · Leefstijl",
   durationBadge: "± 2 minuten",
   dashboardTeaseTitle: "Dit wacht op je in je dashboard",
-  dashboardTeaseLead: "Eén plek voor score, prioriteit en voortgang.",
+  dashboardTeaseLead: "Dit staat klaar zodra je inlogt — niets opnieuw invullen.",
   dashboardMockLabel: "Jouw dashboard",
   dashboardScoreStartHint: "start",
+  profileEyebrow: "JOUW STARTPROFIEL",
+  profileStepTitle: "Waar je nu staat",
+  priorityBridgePrefix: "Je startpunt:",
+  dashboardRowPrioritySub: "Je startpunt — objectief vergeleken op kwaliteit",
   firstStepTitle: "Dit heb je nu — en wat er op je wacht",
   firstStepNowLabel: "Nu · leefstijl",
   firstStepNowMeta: "Direct toepasbaar",
@@ -40,6 +44,31 @@ export const REVEAL_COPY = {
   footerMethodIntro:
     "Leefstijl eerst — van herkenning naar één concrete stap, daarna volg je je voortgang in je dashboard.",
 } as const;
+
+export type RevealDashboardRow = {
+  key: string;
+  dotColor: string;
+  title: string;
+  subtitle: string;
+  soon: boolean;
+};
+
+export const REVEAL_DASHBOARD_ROWS: RevealDashboardRow[] = [
+  {
+    key: "voortgang",
+    dotColor: "#78716c",
+    title: "Voortgang & trend",
+    subtitle: "Zie of je stappen blijven hangen",
+    soon: true,
+  },
+  {
+    key: "hermeting",
+    dotColor: "#78716c",
+    title: "Hermeting ~30 dagen",
+    subtitle: "Je volgende meetmoment staat klaar",
+    soon: true,
+  },
+];
 
 export const REVEAL_DASHBOARD_WINS = [
   "Je score blijft bewaard — geen opnieuw invullen",

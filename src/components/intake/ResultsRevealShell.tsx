@@ -22,7 +22,7 @@ export default function ResultsRevealShell({
       className={
         embedded
           ? "min-h-dvh bg-[#f8f7f4] px-4 py-6 sm:px-6"
-          : "ps-dash-surface-voortgang min-h-dvh w-full"
+          : "ps-dash-surface-kompas min-h-dvh w-full"
       }
       style={brandStyle}
     >
@@ -30,7 +30,7 @@ export default function ResultsRevealShell({
         className={
           embedded
             ? "ps-dark mx-auto w-full max-w-[480px] rounded-3xl shadow-[0_24px_64px_rgba(15,28,16,0.18)] lg:max-w-[600px]"
-            : "mx-auto w-full max-w-[1080px]"
+            : "mx-auto w-full max-w-[600px]"
         }
       >
         <main className="box-border w-full px-4 pb-10 pt-2 lg:px-7">{children}</main>

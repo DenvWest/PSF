@@ -60,7 +60,7 @@ export default function RevealStoryPath({
         <PathStep
           step="01"
           label={REVEAL_COPY.pathStepProfile}
-          title={profile.name}
+          title={REVEAL_COPY.profileStepTitle}
         >
           <RevealHeroCard model={model} profile={profile} firstName={firstName} />
         </PathStep>
