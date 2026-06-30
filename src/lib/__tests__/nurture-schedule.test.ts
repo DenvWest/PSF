@@ -36,15 +36,29 @@ vi.mock("@/lib/guide-nurture", () => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Supabase stub — insert succeeds
+// Supabase stub — insert succeeds, accounts lookup returns no active account
 // ---------------------------------------------------------------------------
 
-function makeSupabaseStub() {
-  const b: Record<string, unknown> = {};
-  const chain = () => b;
-  b.from = vi.fn(chain);
-  b.insert = vi.fn(() => Promise.resolve({ data: null, error: null }));
-  return b;
+function makeAccountSelectChain(hasActiveAccount = false) {
+  const maybeSingle = vi.fn(async () => ({
+    data: hasActiveAccount ? { id: "acc-1", status: "active" } : null,
+    error: null,
+  }));
+  const eq = vi.fn(() => ({ maybeSingle }));
+  const select = vi.fn(() => ({ eq }));
+  return { select, eq, maybeSingle };
+}
+
+function makeSupabaseStub(hasActiveAccount = false) {
+  const accountChain = makeAccountSelectChain(hasActiveAccount);
+  const insert = vi.fn(() => Promise.resolve({ data: null, error: null }));
+  const from = vi.fn((table: string) => {
+    if (table === "accounts") {
+      return { select: accountChain.select };
+    }
+    return { insert };
+  });
+  return { from, insert, accountChain };
 }
 
 // ---------------------------------------------------------------------------

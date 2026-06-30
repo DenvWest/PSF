@@ -59,12 +59,28 @@ function makeDeleteChain(result: { data: unknown[] | null; error: unknown }) {
 
 type NurtureInsertRow = { status: string; sequence_day: number };
 
+function makeAccountSelectChain(hasActiveAccount = false) {
+  const maybeSingle = vi.fn(async () => ({
+    data: hasActiveAccount ? { id: "acc-1", status: "active" } : null,
+    error: null,
+  }));
+  const eq = vi.fn(() => ({ maybeSingle }));
+  const select = vi.fn(() => ({ eq }));
+  return { select, eq, maybeSingle };
+}
+
 function makeInsertStub() {
   const insert = vi.fn<
     (rows: NurtureInsertRow[]) => Promise<{ data: null; error: null }>
   >(async () => ({ data: null, error: null }));
-  const from = vi.fn(() => ({ insert }));
-  return { from, insert };
+  const accountChain = makeAccountSelectChain();
+  const from = vi.fn((table: string) => {
+    if (table === "accounts") {
+      return { select: accountChain.select };
+    }
+    return { insert };
+  });
+  return { from, insert, accountChain };
 }
 
 function getInsertedRows(
@@ -184,6 +200,7 @@ describe("scheduleNurtureSequence guide dedup", () => {
 
   it("cancels pending guide sequences before scheduling intake nurture", async () => {
     const deleteChain = makeDeleteChain({ data: [{ id: "pending-guide" }], error: null });
+    const accountChain = makeAccountSelectChain();
     const insert = vi.fn(async () => ({ data: null, error: null }));
     const from = vi.fn((table: string) => {
       if (table === "nurture_emails") {
@@ -191,6 +208,9 @@ describe("scheduleNurtureSequence guide dedup", () => {
           delete: deleteChain.deleteFn,
           insert,
         };
+      }
+      if (table === "accounts") {
+        return { select: accountChain.select };
       }
       return { insert };
     });
