@@ -767,6 +767,12 @@ html.floating-cta-active footer {
   backdrop-filter: none;
 }
 
+.reveal-path-step__panel:has(.reveal-vitality-instrument) {
+  overflow: visible;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
 .reveal-path__disclaimer {
   position: relative;
   z-index: 1;

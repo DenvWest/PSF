@@ -20,6 +20,7 @@ type VitalityGaugeProps = {
   theme?: "dark" | "light";
   variant?: "default" | "hero";
   tone?: "light" | "dark";
+  layoutPadding?: number;
 };
 
 const DEFAULT_START = 135;
@@ -88,6 +89,7 @@ export default function VitalityGauge({
   theme = "dark",
   variant = "default",
   tone = "light",
+  layoutPadding = 0,
 }: VitalityGaugeProps) {
   const [disp, setDisp] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -158,6 +160,16 @@ export default function VitalityGauge({
 
   if (isHero) {
     const dark = tone === "dark";
+    const pad = layoutPadding;
+    const canvasSize = size + pad * 2;
+    const heroWidth = canvasSize;
+    const heroHeight = canvasSize;
+    const cx = heroWidth / 2;
+    const cy = heroHeight / 2;
+    const heroStroke = Math.max(stroke, 24);
+    const trackStroke = heroStroke + 6;
+    const r = (size - trackStroke) / 2 - 8;
+    const innerR = r * 0.58;
     const progressAngle = scoreToAngle(startAngle, sweep, clamped);
     const [dotX, dotY] = polar(cx, cy, r, progressAngle);
     const labelRadius = r + heroStroke / 2 + 16;
@@ -168,6 +180,8 @@ export default function VitalityGauge({
     const innerHighlightId = `${innerGradientId}-hi`;
     const innerShadowId = `${innerGradientId}-sh`;
     const innerRimId = `${innerGradientId}-rim`;
+    const heroScoreSize = showBandLabel ? size * 0.24 : size * 0.26;
+    const heroMaxSize = showBandLabel ? size * 0.068 : size * 0.072;
 
     function segmentOpacity(segmentMin: number, nextMin: number | undefined): number {
       if (locked) {
@@ -188,8 +202,8 @@ export default function VitalityGauge({
         className="vitaalscore-gauge"
         style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}
       >
-        <div style={{ position: "relative", width, height }}>
-          <svg width={width} height={height} aria-hidden style={{ overflow: "visible" }}>
+        <div style={{ position: "relative", width: heroWidth, height: heroHeight }}>
+          <svg width={heroWidth} height={heroHeight} aria-hidden style={{ overflow: "visible" }}>
             <defs>
               <radialGradient id={innerGradientId} cx="48%" cy="40%" r="58%">
                 <stop offset="0%" stopColor="#E4F5E9" />
@@ -487,7 +501,7 @@ export default function VitalityGauge({
               pointerEvents: "none",
             }}
           >
-            {!locked && clamped > 0 ? (
+            {!locked && clamped > 0 && showBandLabel ? (
               <div
                 style={{
                   fontSize: 10,
@@ -506,7 +520,7 @@ export default function VitalityGauge({
               className={locked ? undefined : "vitaalscore-number"}
               style={{
                 fontFamily: "var(--f-serif, Georgia, serif)",
-                fontSize: size * 0.24,
+                fontSize: heroScoreSize,
                 fontWeight: 400,
                 color: locked ? (dark ? "rgba(255,255,255,0.45)" : scoreColor) : "#fff",
                 lineHeight: 1,
@@ -518,7 +532,7 @@ export default function VitalityGauge({
             </div>
             <div
               style={{
-                fontSize: size * 0.068,
+                fontSize: heroMaxSize,
                 fontWeight: 700,
                 color: locked
                   ? dark
@@ -526,7 +540,7 @@ export default function VitalityGauge({
                     : "rgba(15,28,16,0.30)"
                   : "rgba(255,255,255,0.82)",
                 letterSpacing: "0.12em",
-                marginTop: 4,
+                marginTop: showBandLabel ? 4 : 6,
               }}
             >
               /{VITALITY_SCORE_MAX}

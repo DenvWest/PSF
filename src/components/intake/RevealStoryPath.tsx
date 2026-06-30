@@ -21,11 +21,15 @@ type PathStepProps = {
   title: string;
   children: ReactNode;
   isLast?: boolean;
+  stepId?: string;
 };
 
-function PathStep({ step, title, children, isLast = false }: PathStepProps) {
+function PathStep({ step, title, children, isLast = false, stepId }: PathStepProps) {
   return (
-    <li className={`reveal-path-step${isLast ? " reveal-path-step--last" : ""}`}>
+    <li
+      id={stepId}
+      className={`reveal-path-step${isLast ? " reveal-path-step--last" : ""}`}
+    >
       <div className="reveal-path-step__rail" aria-hidden>
         <span className="reveal-path-step__node">{step}</span>
         {!isLast ? <span className="reveal-path-step__line" /> : null}
@@ -66,7 +70,7 @@ export default function RevealStoryPath({
           <RevealDashboardTease model={model} />
         </PathStep>
 
-        <PathStep step="04" title={REVEAL_COPY.stepTitleSave} isLast>
+        <PathStep step="04" title={REVEAL_COPY.stepTitleSave} isLast stepId="reveal-step-save">
           <RevealCtaStack />
         </PathStep>
       </ol>

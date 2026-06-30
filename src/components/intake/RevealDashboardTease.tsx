@@ -5,6 +5,7 @@ import {
   REVEAL_DASHBOARD_ROWS,
   type RevealDashboardRow,
 } from "@/lib/results-reveal-copy";
+import { trackEvent } from "@/lib/ga4";
 import type { RevealModel } from "@/lib/reveal-model";
 import type { PillarId } from "@/types/dashboard";
 
@@ -66,6 +67,16 @@ export default function RevealDashboardTease({ model }: RevealDashboardTeaseProp
           </li>
         ))}
       </ul>
+      <button
+        type="button"
+        onClick={() => {
+          trackEvent("reveal_scroll_to_save");
+          document.getElementById("reveal-step-save")?.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="cursor-pointer border-0 bg-transparent p-0 text-center text-[13px] font-semibold text-[#5A8F6A] underline decoration-[rgba(90,143,106,0.35)] underline-offset-[3px]"
+      >
+        {REVEAL_COPY.dashboardScrollToSave}
+      </button>
     </div>
   );
 }
