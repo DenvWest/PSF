@@ -42,7 +42,10 @@ export default function RevealVitalityInstrument({
         variant="hero"
         theme="light"
         showBandLabel
-        heroDisc="bright"
+        heroDisc="kompas"
+        heroRingInset={4}
+        heroCenterNudgeX={-5}
+        heroInnerDiscRatio={0.63}
         layoutPadding={padding}
       />
     </div>

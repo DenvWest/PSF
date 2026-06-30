@@ -22,6 +22,12 @@ type VitalityGaugeProps = {
   tone?: "light" | "dark";
   layoutPadding?: number;
   heroDisc?: "bright" | "kompas";
+  /** Hero: afstand van boog tot canvasrand (default 8). Lager = grotere ring. */
+  heroRingInset?: number;
+  /** Hero: horizontale verschuiving van boog + center (px, negatief = links). */
+  heroCenterNudgeX?: number;
+  /** Hero: straal binnenschijf t.o.v. boog (default 0.58). Hoger = grotere schijf. */
+  heroInnerDiscRatio?: number;
 };
 
 const DEFAULT_START = 135;
@@ -92,6 +98,9 @@ export default function VitalityGauge({
   tone = "light",
   layoutPadding = 0,
   heroDisc = "bright",
+  heroRingInset = 8,
+  heroCenterNudgeX = 0,
+  heroInnerDiscRatio = 0.58,
 }: VitalityGaugeProps) {
   const [disp, setDisp] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -166,12 +175,12 @@ export default function VitalityGauge({
     const canvasSize = size + pad * 2;
     const heroWidth = canvasSize;
     const heroHeight = canvasSize;
-    const cx = heroWidth / 2;
+    const cx = heroWidth / 2 + heroCenterNudgeX;
     const cy = heroHeight / 2;
     const heroStroke = Math.max(stroke, 24);
     const trackStroke = heroStroke + 6;
-    const r = (size - trackStroke) / 2 - 8;
-    const innerR = r * 0.58;
+    const r = (size - trackStroke) / 2 - heroRingInset;
+    const innerR = r * heroInnerDiscRatio;
     const progressAngle = scoreToAngle(startAngle, sweep, clamped);
     const [dotX, dotY] = polar(cx, cy, r, progressAngle);
     const labelRadius = r + heroStroke / 2 + (size <= 240 ? 12 : 16);
@@ -552,9 +561,9 @@ export default function VitalityGauge({
             {!locked && clamped > 0 && showBandLabel ? (
               <div
                 style={{
-                  fontSize: 10,
+                  fontSize: arcCompact ? 9 : 10,
                   fontWeight: 800,
-                  letterSpacing: "0.14em",
+                  letterSpacing: arcCompact ? "0.10em" : "0.14em",
                   textTransform: "uppercase",
                   color: "rgba(255,255,255,0.92)",
                   marginBottom: 6,
