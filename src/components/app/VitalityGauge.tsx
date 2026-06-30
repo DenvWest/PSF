@@ -164,9 +164,7 @@ export default function VitalityGauge({
     const tickInner = r - heroStroke / 2 - 1;
     const tickOuter = r + heroStroke / 2 + 1;
     const zoneBoundaryScores = VITALITY_BANDS.slice(1).map((segment) => segment.min);
-    const quarterScores = [25, 50, 75];
-    const tickZoneColor = dark ? "rgba(255,255,255,0.95)" : "#FBFAF6";
-    const tickQuarterColor = dark ? "rgba(255,255,255,0.42)" : "rgba(251,250,246,0.72)";
+    const tickZoneColor = dark ? "rgba(255,255,255,0.5)" : "rgba(24,38,28,0.34)";
     const innerHighlightId = `${innerGradientId}-hi`;
     const innerShadowId = `${innerGradientId}-sh`;
     const innerRimId = `${innerGradientId}-rim`;
@@ -335,7 +333,7 @@ export default function VitalityGauge({
               </>
             )}
 
-            {/* Zone-grenzen — crisp scheidingen tussen de 5 banden */}
+            {/* Zone-grenzen — vier identieke, crisp scheidingen tussen de 5 banden */}
             {zoneBoundaryScores.map((score) =>
               radialTickLine(
                 cx,
@@ -343,22 +341,9 @@ export default function VitalityGauge({
                 scoreToAngle(startAngle, sweep, score),
                 tickInner,
                 tickOuter,
-                2.25,
+                2,
                 tickZoneColor,
                 `zone-${score}`,
-              ),
-            )}
-            {/* Kwartschaal — subtiele rand-maatstreepjes (25/50/75) */}
-            {quarterScores.map((score) =>
-              radialTickLine(
-                cx,
-                cy,
-                scoreToAngle(startAngle, sweep, score),
-                tickOuter - 7,
-                tickOuter,
-                1.25,
-                tickQuarterColor,
-                `quarter-${score}`,
               ),
             )}
 
