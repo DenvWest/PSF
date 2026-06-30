@@ -5,7 +5,7 @@ import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealDashboardTease from "@/components/intake/RevealDashboardTease";
 import RevealFirstStep from "@/components/intake/RevealFirstStep";
 import RevealHeroCard from "@/components/intake/RevealHeroCard";
-import RevealLadderCard from "@/components/intake/RevealLadderCard";
+import RevealStartChips from "@/components/intake/RevealStartChips";
 import type { ProfileLabel } from "@/lib/intake-engine";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 import type { RevealModel } from "@/lib/reveal-model";
@@ -67,22 +67,17 @@ export default function RevealStoryPath({
 
         <PathStep
           step="02"
-          label={REVEAL_COPY.pathStepPriority}
-          title={REVEAL_COPY.whereYouStartTitle}
+          label={REVEAL_COPY.pathStepStart}
+          title={REVEAL_COPY.startStepTitle}
         >
-          <RevealLadderCard model={model} />
+          <div className="grid gap-3">
+            <RevealStartChips model={model} startHref="/account/login?from=intake" />
+            <RevealFirstStep model={model} answers={answers} />
+          </div>
         </PathStep>
 
         <PathStep
           step="03"
-          label={REVEAL_COPY.pathStepAction}
-          title={REVEAL_COPY.firstStepTitle}
-        >
-          <RevealFirstStep model={model} answers={answers} />
-        </PathStep>
-
-        <PathStep
-          step="04"
           label={REVEAL_COPY.pathStepDashboard}
           title={REVEAL_COPY.dashboardTeaseTitle}
         >
@@ -90,7 +85,7 @@ export default function RevealStoryPath({
         </PathStep>
 
         <PathStep
-          step="05"
+          step="04"
           label={REVEAL_COPY.pathStepSave}
           title="Klaar om door te gaan?"
           isLast

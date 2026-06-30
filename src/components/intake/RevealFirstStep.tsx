@@ -11,6 +11,11 @@ type RevealFirstStepProps = {
   answers: Record<string, number>;
 };
 
+function teaser(detail: string): string {
+  const first = detail.split(". ")[0].trim();
+  return /[.!?]$/.test(first) ? first : `${first}.`;
+}
+
 export default function RevealFirstStep({ model, answers }: RevealFirstStepProps) {
   const input = buildRecommendationInput({
     scores: mapCheckScoresToDomainScores(model.scores),
@@ -28,7 +33,7 @@ export default function RevealFirstStep({ model, answers }: RevealFirstStepProps
           <span className="reveal-first-step__lane-meta">{REVEAL_COPY.firstStepNowMeta}</span>
         </header>
         <h3 className="reveal-first-step__title">{step.lifestyle.title}</h3>
-        <p className="reveal-first-step__detail">{step.lifestyle.detail}</p>
+        <p className="reveal-first-step__detail">{teaser(step.lifestyle.detail)}</p>
       </section>
 
       {step.qualifiesForSupplement && step.supplement ? (
@@ -38,12 +43,6 @@ export default function RevealFirstStep({ model, answers }: RevealFirstStepProps
               {REVEAL_COPY.firstStepLaterLabel}
             </span>
           </header>
-          <p className="reveal-first-step__qualify">
-            <span className="reveal-first-step__qualify-label">
-              {REVEAL_COPY.firstStepQualifyLabel}
-            </span>
-            {step.supplement.signal}
-          </p>
           <div className="reveal-first-step__product">
             <div className="reveal-first-step__product-main">
               <span className="reveal-first-step__supplement-name">{step.supplement.name}</span>
@@ -52,7 +51,6 @@ export default function RevealFirstStep({ model, answers }: RevealFirstStepProps
             <span className="reveal-first-step__grade">{step.supplement.grade}</span>
           </div>
           <p className="reveal-first-step__quality">{step.supplement.qualityRule}</p>
-          <p className="reveal-first-step__rationale">{step.supplement.rationale}</p>
         </section>
       ) : (
         <section className="reveal-first-step__lane reveal-first-step__lane--supplement-muted">
@@ -64,30 +62,6 @@ export default function RevealFirstStep({ model, answers }: RevealFirstStepProps
           <p className="reveal-first-step__detail">{REVEAL_COPY.firstStepNoSupplementLead}</p>
         </section>
       )}
-
-      <section className="reveal-first-step__lane reveal-first-step__lane--upcoming">
-        <header className="reveal-first-step__lane-head">
-          <span className="reveal-first-step__lane-badge reveal-first-step__lane-badge--upcoming">
-            {REVEAL_COPY.firstStepUpcomingLabel}
-          </span>
-        </header>
-        <ul className="reveal-first-step__upcoming">
-          {step.upcoming.map((feature) => (
-            <li key={feature.label} className="reveal-first-step__upcoming-item">
-              <span className="reveal-first-step__upcoming-dot" aria-hidden />
-              <div className="reveal-first-step__upcoming-copy">
-                <span className="reveal-first-step__upcoming-label">{feature.label}</span>
-                <span className="reveal-first-step__upcoming-detail">{feature.detail}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <p className="reveal-first-step__bridge">{REVEAL_COPY.firstStepDashboardBridge}</p>
-      {step.supplement ? (
-        <p className="reveal-first-step__trust">{step.supplement.trustLine}</p>
-      ) : null}
     </article>
   );
 }
