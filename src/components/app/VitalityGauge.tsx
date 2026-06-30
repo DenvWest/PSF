@@ -71,28 +71,9 @@ function radialTickLine(
       y2={y2}
       stroke={color}
       strokeWidth={strokeWidth}
-      strokeLinecap="round"
+      strokeLinecap="butt"
     />
   );
-}
-
-function collectTickAngles(startAngle: number, sweep: number): { angle: number; major: boolean }[] {
-  const angles = new Map<number, boolean>();
-
-  for (const pct of [0, 0.25, 0.5, 0.75, 1]) {
-    const angle = Math.round((startAngle + sweep * pct) * 100) / 100;
-    angles.set(angle, pct === 0 || pct === 1 || pct === 0.5);
-  }
-
-  for (const segment of VITALITY_BANDS) {
-    const angle = Math.round(scoreToAngle(startAngle, sweep, segment.min) * 100) / 100;
-    angles.set(angle, true);
-  }
-  angles.set(Math.round(scoreToAngle(startAngle, sweep, VITALITY_SCORE_MAX) * 100) / 100, true);
-
-  return [...angles.entries()]
-    .map(([angle, major]) => ({ angle, major }))
-    .sort((a, b) => a.angle - b.angle);
 }
 
 export default function VitalityGauge({
@@ -180,11 +161,12 @@ export default function VitalityGauge({
     const progressAngle = scoreToAngle(startAngle, sweep, clamped);
     const [dotX, dotY] = polar(cx, cy, r, progressAngle);
     const labelRadius = r + heroStroke / 2 + 16;
-    const tickInner = r - heroStroke / 2 - 2;
-    const tickOuter = r + heroStroke / 2 + (dark ? 2 : 3);
-    const tickAngles = collectTickAngles(startAngle, sweep);
-    const majorTickColor = dark ? "rgba(255,255,255,0.92)" : "rgba(15,28,16,0.62)";
-    const minorTickColor = dark ? "rgba(255,255,255,0.55)" : "rgba(15,28,16,0.30)";
+    const tickInner = r - heroStroke / 2 - 1;
+    const tickOuter = r + heroStroke / 2 + 1;
+    const zoneBoundaryScores = VITALITY_BANDS.slice(1).map((segment) => segment.min);
+    const quarterScores = [25, 50, 75];
+    const tickZoneColor = dark ? "rgba(255,255,255,0.95)" : "#FBFAF6";
+    const tickQuarterColor = dark ? "rgba(255,255,255,0.42)" : "rgba(251,250,246,0.72)";
     const innerHighlightId = `${innerGradientId}-hi`;
     const innerShadowId = `${innerGradientId}-sh`;
     const innerRimId = `${innerGradientId}-rim`;
@@ -353,16 +335,30 @@ export default function VitalityGauge({
               </>
             )}
 
-            {tickAngles.map(({ angle, major }) =>
+            {/* Zone-grenzen — crisp scheidingen tussen de 5 banden */}
+            {zoneBoundaryScores.map((score) =>
               radialTickLine(
                 cx,
                 cy,
-                angle,
+                scoreToAngle(startAngle, sweep, score),
                 tickInner,
                 tickOuter,
-                major ? 2.75 : 1.75,
-                major ? majorTickColor : minorTickColor,
-                `tick-${angle}`,
+                2.25,
+                tickZoneColor,
+                `zone-${score}`,
+              ),
+            )}
+            {/* Kwartschaal — subtiele rand-maatstreepjes (25/50/75) */}
+            {quarterScores.map((score) =>
+              radialTickLine(
+                cx,
+                cy,
+                scoreToAngle(startAngle, sweep, score),
+                tickOuter - 7,
+                tickOuter,
+                1.25,
+                tickQuarterColor,
+                `quarter-${score}`,
               ),
             )}
 
