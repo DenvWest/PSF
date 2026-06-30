@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import RevealCtaStack from "@/components/intake/RevealCtaStack";
 import RevealDashboardTease from "@/components/intake/RevealDashboardTease";
 import RevealStartSection from "@/components/intake/RevealStartSection";
@@ -52,7 +53,11 @@ export default function RevealStoryPath({
 }: RevealStoryPathProps) {
   return (
     <article className="reveal-path" aria-label="Jouw leefstijlverhaal">
-      <header className="reveal-path__intro">
+      <IntakeInBoxExit
+        className="absolute right-3 top-3 z-10 sm:right-4 sm:top-4"
+        variant="on-light"
+      />
+      <header className="reveal-path__intro reveal-path__intro--with-exit">
         <p className="reveal-path__eyebrow">{REVEAL_COPY.eyebrow}</p>
         <p className="reveal-path__lead">{REVEAL_COPY.pathIntro}</p>
       </header>

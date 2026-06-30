@@ -3,7 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import ExitButton from "@/components/app/ExitButton";
 
-export default function IntakeExit() {
+type IntakeExitProps = {
+  variant?: "on-dark" | "on-light";
+};
+
+export default function IntakeExit({ variant = "on-dark" }: IntakeExitProps) {
   const params = useSearchParams();
   const href = params.get("from") === "dashboard" ? "/dashboard" : "/";
 
@@ -11,6 +15,7 @@ export default function IntakeExit() {
     <ExitButton
       href={href}
       label={href === "/dashboard" ? "Terug naar dashboard" : "Sluiten"}
+      variant={variant}
     />
   );
 }

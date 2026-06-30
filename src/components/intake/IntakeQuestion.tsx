@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import {
   type Category,
   type IntakeQuestion as IntakeQuestionType,
@@ -82,7 +83,8 @@ export default function IntakeQuestion({
         />
       </div>
 
-      <div className="w-full max-w-lg px-6 py-12">
+      <div className="relative w-full max-w-lg px-6 py-12">
+        <IntakeInBoxExit className="absolute right-6 top-0" />
         <div className="mb-2 flex items-center justify-center gap-2">
           <span className="text-[15px]" aria-hidden>
             {category.icon}

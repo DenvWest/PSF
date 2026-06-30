@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
@@ -18,8 +19,9 @@ const THRESHOLD_ITEMS = [
 
 export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntroProps) {
   return (
-    <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-16 text-center">
-      <div className="flex w-full max-w-lg flex-col items-center gap-8 md:gap-10">
+    <div className="flex min-h-dvh flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="relative flex w-full max-w-lg flex-col items-center gap-8 pt-11 md:gap-10">
+        <IntakeInBoxExit className="absolute right-0 top-0" />
         <p
           className="text-sm font-semibold uppercase"
           style={{ letterSpacing: "0.2em", color: "rgba(255,255,255,0.5)" }}

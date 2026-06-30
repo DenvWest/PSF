@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import {
   INTAKE_AGE_RANGE_OPTIONS,
   SYMPTOMS,
@@ -79,7 +80,8 @@ export default function IntakeSymptoms({
       </div>
 
       {/* Centered content block */}
-      <div className="animate-[fadeIn_200ms_ease-out] w-full max-w-lg px-6 py-10">
+      <div className="animate-[fadeIn_200ms_ease-out] relative w-full max-w-lg px-6 py-10">
+        <IntakeInBoxExit className="absolute right-6 top-0" />
         <button
           type="button"
           onClick={onBack}

@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import IntakeCalculating from "@/components/intake/IntakeCalculating";
 import IntakeConsent from "@/components/intake/IntakeConsent";
+import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
 import IntakeResults from "@/components/intake/IntakeResults";
@@ -337,20 +338,25 @@ export default function IntakeClient() {
 
   return (
     <div className={shellClass} style={shellStyle}>
-      {isCheckingSession && (
-        <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-          <div
-            className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white/80"
-            role="status"
-            aria-label="Laden"
-          />
-          <span className="text-sm text-white/60">Laden&hellip;</span>
+      {isCheckingSession && hasResultsParam && (
+        <div className="mx-auto w-full max-w-[600px] px-4">
+          <IntakeInBoxExit className="mb-1 pt-2" />
+          <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
+            <div
+              className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white/80"
+              role="status"
+              aria-label="Laden"
+            />
+            <span className="text-sm text-white/60">Laden&hellip;</span>
+          </div>
         </div>
       )}
 
       {showResultsDeepLinkFallback && (
-        <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-6 py-12 text-center animate-[fadeIn_300ms_ease-out]">
-          <div className="flex w-full max-w-lg flex-col items-center gap-6">
+        <div className="mx-auto w-full max-w-[600px] px-4 animate-[fadeIn_300ms_ease-out]">
+          <IntakeInBoxExit className="mb-1 pt-2" />
+          <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center py-12 text-center">
+            <div className="flex w-full max-w-lg flex-col items-center gap-6">
             <h1
               className="text-2xl font-normal leading-tight md:text-3xl"
               style={{
@@ -375,6 +381,7 @@ export default function IntakeClient() {
               Naar de intake
             </button>
           </div>
+        </div>
         </div>
       )}
 

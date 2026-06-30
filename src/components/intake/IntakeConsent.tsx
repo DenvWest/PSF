@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
+import Link from "next/link";
 import { INTAKE_CONSENT_TEXT } from "@/lib/consent-texts";
 import type { IntakeConsentPayload } from "@/lib/intake-consent";
 
@@ -90,7 +91,8 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
       </div>
 
       {/* Centered content block */}
-      <div className="w-full max-w-lg px-6 py-16">
+      <div className="relative w-full max-w-lg px-6 py-16">
+        <IntakeInBoxExit className="absolute right-6 top-6" />
         {/* Back + label */}
         <div className="mb-6 flex items-center justify-between">
           <button

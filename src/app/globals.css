@@ -650,6 +650,10 @@ html.floating-cta-active footer {
   text-align: center;
 }
 
+.reveal-path__intro--with-exit {
+  padding-right: 2.5rem;
+}
+
 .reveal-path__eyebrow {
   margin: 0 0 0.5rem;
   font-size: 10px;
