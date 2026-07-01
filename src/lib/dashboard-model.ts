@@ -1,4 +1,5 @@
 import { PILLARS, TIE_ORDER } from "@/data/dashboard";
+import { isReadoutDomain } from "@/lib/domain-role";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { getPriorityPillar } from "@/lib/priority-pillar";
 import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
@@ -13,11 +14,15 @@ import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 
 export function derivePriority(scores: CheckScores): Pillar[] {
-  return [...PILLARS].sort(
-    (a, b) =>
-      scores[a.id] - scores[b.id] ||
-      TIE_ORDER.indexOf(a.id) - TIE_ORDER.indexOf(b.id),
-  );
+  const sortByScore = (pillars: Pillar[]) =>
+    [...pillars].sort(
+      (a, b) =>
+        scores[a.id] - scores[b.id] ||
+        TIE_ORDER.indexOf(a.id) - TIE_ORDER.indexOf(b.id),
+    );
+  const intervention = PILLARS.filter((pillar) => !isReadoutDomain(pillar.id));
+  const readout = PILLARS.filter((pillar) => isReadoutDomain(pillar.id));
+  return [...sortByScore(intervention), ...sortByScore(readout)];
 }
 
 export function buildModel(

@@ -6,6 +6,9 @@ import {
   LEEFSTIJLCHECK_EVIDENCE_BY_ID,
   LEEFSTIJLCHECK_EVIDENCE_PILLARS,
   LEEFSTIJLCHECK_INTERPRETATION_NOTES,
+  LEEFSTIJLCHECK_INTERVENTION_DOMAINS,
+  LEEFSTIJLCHECK_READOUT_DOMAINS,
+  LEEFSTIJLCHECK_READOUT_MODEL_NOTES,
   LEEFSTIJLCHECK_REFERENCE_LIBRARY,
   LEEFSTIJLCHECK_TRANSPARANTIE_NOTES,
   type EvidenceReference,
@@ -107,6 +110,48 @@ export default function OnderbouwingPage() {
           <h2 className={sectionTitleClass}>Hoe interpreteren wij de resultaten?</h2>
           <ul className="mt-4 space-y-2 text-base leading-relaxed text-stone-600">
             {LEEFSTIJLCHECK_INTERPRETATION_NOTES.map((item) => (
+              <li key={item}>- {item}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-14 max-w-4xl">
+          <h2 className={sectionTitleClass}>Waarom interventie- en rapportdomeinen?</h2>
+          <p className="mt-4 text-base leading-relaxed text-stone-600">
+            De Leefstijlcheck onderscheidt <strong>gedrag waar je op stuurt</strong> van{" "}
+            <strong>hoe je het ervaart</strong>. Dat sluit aan bij internationale
+            leefstijlmodellen (MEDLIFE, WHO 24-uurs) en meetliteratuur rond vitaliteit
+            en fatigue.
+          </p>
+          <h3 className="mt-8 font-display text-xl font-semibold text-stone-900">
+            Interventiedomeinen
+          </h3>
+          <ul className="mt-3 space-y-2 text-base leading-relaxed text-stone-600">
+            {LEEFSTIJLCHECK_INTERVENTION_DOMAINS.map((item) => (
+              <li key={item}>- {item}</li>
+            ))}
+          </ul>
+          <h3 className="mt-8 font-display text-xl font-semibold text-stone-900">
+            Rapportdomeinen
+          </h3>
+          <div className="mt-4 space-y-4">
+            {LEEFSTIJLCHECK_READOUT_DOMAINS.map((domain) => (
+              <article
+                key={domain.id}
+                className="rounded-xl border border-stone-200 bg-white p-5"
+              >
+                <h4 className="font-semibold text-stone-900">{domain.label}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                  {domain.description}
+                </p>
+                <p className="mt-2 text-sm text-stone-500">
+                  Aangedreven door: {domain.drivers}
+                </p>
+              </article>
+            ))}
+          </div>
+          <ul className="mt-6 space-y-2 text-base leading-relaxed text-stone-600">
+            {LEEFSTIJLCHECK_READOUT_MODEL_NOTES.map((item) => (
               <li key={item}>- {item}</li>
             ))}
           </ul>

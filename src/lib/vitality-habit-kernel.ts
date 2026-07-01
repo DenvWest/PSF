@@ -42,7 +42,7 @@ const PILLAR_QUESTIONS: Record<PillarId, QuestionId[]> = {
   stress: ["STR_FREQ", "STR_RCV"],
   voeding: ["NUT_O3", "NUT_PROT"],
   beweging: ["MOV_STR", "MOV_CARD"],
-  herstel: ["RCV_PHYS", "STR_RCV"],
+  herstel: ["RCV_PHYS"],
 };
 
 const FACET_LABEL: Record<FacetKey, string> = {

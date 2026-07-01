@@ -3,6 +3,7 @@
 import type { ComponentType, CSSProperties } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
+import { isReadoutDomain } from "@/lib/domain-role";
 import type { CheckScores, Pillar, PillarId } from "@/types/dashboard";
 
 export const LADDER_ROW_H = 60;
@@ -76,6 +77,19 @@ function LadderRowContent({
           {focus ? (
             <span style={{ fontSize: 11, color: pillar.color, fontWeight: 600 }}>
               {focusHint}
+            </span>
+          ) : null}
+          {isReadoutDomain(pillar.id) ? (
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--text-subtle)",
+              }}
+            >
+              Rapport
             </span>
           ) : null}
         </div>

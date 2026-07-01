@@ -209,6 +209,14 @@ const DOMAIN_SCORE_KEYS: readonly DomainScoreKey[] = [
   "recovery_score",
 ];
 
+/** Gedragsdomeinen waarop gestuurd wordt — geen readout (energie/herstel). */
+export const INTERVENTION_DOMAIN_SCORE_KEYS: readonly DomainScoreKey[] = [
+  "sleep_score",
+  "stress_score",
+  "nutrition_score",
+  "movement_score",
+] as const;
+
 const DOMAIN_KEY_TO_ID: Record<DomainScoreKey, DomainId> = {
   sleep_score: "sleep",
   energy_score: "energy",
@@ -343,6 +351,22 @@ export function getSortedDomains(scores: DomainScores): Array<{
   })).sort((left, right) => left.score - right.score);
 }
 
+export function getSortedInterventionDomains(scores: DomainScores): Array<{
+  key: DomainScoreKey;
+  domain: DomainId;
+  score: number;
+}> {
+  return INTERVENTION_DOMAIN_SCORE_KEYS.map((key) => ({
+    key,
+    domain: DOMAIN_KEY_TO_ID[key],
+    score: scores[key],
+  })).sort((left, right) => left.score - right.score);
+}
+
+function getInterventionScoreValues(scores: DomainScores): number[] {
+  return INTERVENTION_DOMAIN_SCORE_KEYS.map((key) => scores[key]);
+}
+
 /** Primaire aandachtsdomein voor advies (kan afwijken van het profiel-label). */
 export function getAdvicePrimaryDomain(scores: DomainScores): DomainId {
   // Slaap krijgt bewust voorrang vóór getSortedDomains — ook bij profiel-label.
@@ -350,7 +374,7 @@ export function getAdvicePrimaryDomain(scores: DomainScores): DomainId {
     return "sleep";
   }
 
-  return getSortedDomains(scores)[0].domain;
+  return getSortedInterventionDomains(scores)[0].domain;
 }
 
 function pushRankedLongTerm(
@@ -472,15 +496,12 @@ export function calcDomainScores(
       getAnswer(answers, "MOV_STR") + getAnswer(answers, "MOV_CARD"),
       8,
     ),
-    recovery_score: normalizeScore(
-      getAnswer(answers, "RCV_PHYS") + getStressRecoveryAnswer(answers),
-      7,
-    ),
+    recovery_score: normalizeScore(getAnswer(answers, "RCV_PHYS"), 3),
   };
 }
 
 export function getUrgency(scores: DomainScores): UrgencyResult {
-  const values = Object.values(scores);
+  const values = getInterventionScoreValues(scores);
   const under30 = values.filter((value) => value < 30).length;
   const under50 = values.filter((value) => value < 50).length;
   const under60 = values.filter((value) => value < 60).length;
@@ -541,7 +562,7 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     };
   }
 
-  const sorted = getSortedDomains(scores);
+  const sorted = getSortedInterventionDomains(scores);
   const primary = sorted[0];
 
   if (primary.score > 60) {
@@ -619,7 +640,7 @@ export function getAdvice(
   const physicalRecovery = getAnswer(answers, "RCV_PHYS");
   const lifAlc = getAnswer(answers, "LIF_ALC");
   const lifSun = getAnswer(answers, "LIF_SUN");
-  const weakestDomain = getSortedDomains(scores)[0];
+  const weakestDomain = getSortedInterventionDomains(scores)[0];
   const nutritionScoreLow =
     weakestDomain.domain === "nutrition" && weakestDomain.score <= 60;
 

@@ -104,7 +104,7 @@ export const METINGEN_DOMAINS_LABEL = "Domeinen op peil";
 export const METINGEN_DOMAINS_SHORT_LABEL = "Domeinen";
 
 export const METINGEN_DOMAINS_HINT =
-  "Domeinen die meetellen in je vitaalscore, met score 55 of hoger.";
+  "Interventiedomeinen in je vitaalscore (slaap, stress, voeding, beweging, herstel) met score 55 of hoger. Energie is een apart rapportdomein.";
 
 export const METINGEN_RHYTHM_LABEL = "Check-reeks";
 

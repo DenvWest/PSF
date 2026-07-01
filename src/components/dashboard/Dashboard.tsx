@@ -2454,12 +2454,14 @@ const KompasDomainRow = ({
   score,
   color,
   isPriority,
+  isReadout,
   onClick,
 }: {
   label: string;
   score: number;
   color: string;
   isPriority?: boolean;
+  isReadout?: boolean;
   onClick: () => void;
 }) => {
   const status = getDisplayStatus(score);
@@ -2482,12 +2484,19 @@ const KompasDomainRow = ({
         >
           {label}
         </span>
-        <span
-          className="shrink-0 text-[11px] font-bold uppercase tracking-[0.06em]"
-          style={{ color: STATUS_BADGE_COLOR[tone] }}
-        >
-          {status}
-        </span>
+        <div className="flex shrink-0 items-center gap-2">
+          {isReadout ? (
+            <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
+              Rapport
+            </span>
+          ) : null}
+          <span
+            className="shrink-0 text-[11px] font-bold uppercase tracking-[0.06em]"
+            style={{ color: STATUS_BADGE_COLOR[tone] }}
+          >
+            {status}
+          </span>
+        </div>
       </div>
       <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#ebe7e2]">
         <div
@@ -2830,6 +2839,7 @@ const KompasHome = ({ model }: SharedSectionProps) => {
                 score={score}
                 color={pillar.color}
                 isPriority={pillar.id === currentModel.priority.id}
+                isReadout={isReadoutDomain(pillar.id)}
                 onClick={() => openDomain(pillar.id)}
               />
             );

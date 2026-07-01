@@ -84,12 +84,25 @@ describe("calcDomainScores", () => {
     expect(scores.movement_score).toBe(100);
   });
 
-  it("calculates recovery_score from RCV_PHYS + STR_RCV (max 7)", () => {
+  it("calculates recovery_score from RCV_PHYS only (max 3)", () => {
     const scores = calcDomainScores(makeAnswers({ RCV_PHYS: 3, STR_RCV: 4 }));
     expect(scores.recovery_score).toBe(100);
   });
 
-  it("reads legacy STR_RECV for stress/recovery when STR_RCV is absent", () => {
+  it("does not count STR_RCV in recovery_score (stress only)", () => {
+    const withHighStressRecovery = calcDomainScores(
+      makeAnswers({ RCV_PHYS: 1, STR_RCV: 4 }),
+    );
+    const withLowStressRecovery = calcDomainScores(
+      makeAnswers({ RCV_PHYS: 1, STR_RCV: 1 }),
+    );
+    expect(withHighStressRecovery.recovery_score).toBe(
+      withLowStressRecovery.recovery_score,
+    );
+    expect(withHighStressRecovery.recovery_score).toBeLessThan(50);
+  });
+
+  it("reads legacy STR_RECV for stress when STR_RCV is absent", () => {
     const scores = calcDomainScores({ STR_FREQ: 4, STR_RECV: 4, RCV_PHYS: 3 });
     expect(scores.stress_score).toBe(100);
     expect(scores.recovery_score).toBe(100);
@@ -157,15 +170,17 @@ describe("getUrgency", () => {
     expect(result.level).toBe("moderate");
   });
 
-  it("returns moderate when 3+ domains are under 50", () => {
+  it("returns moderate when 3+ intervention domains are under 50", () => {
     const result = getUrgency(
-      makeScores({ sleep_score: 40, stress_score: 45, energy_score: 35 }),
+      makeScores({ sleep_score: 40, stress_score: 45, nutrition_score: 35 }),
     );
     expect(result.level).toBe("moderate");
   });
 
-  it("returns healthy when all domains above 60", () => {
-    const result = getUrgency(makeScores({ sleep_score: 65, energy_score: 70 }));
+  it("returns healthy when all intervention domains above 60 (readout excluded)", () => {
+    const result = getUrgency(
+      makeScores({ sleep_score: 65, energy_score: 20, recovery_score: 15 }),
+    );
     expect(result.level).toBe("healthy");
   });
 

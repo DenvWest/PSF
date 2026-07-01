@@ -94,9 +94,13 @@ Scoring engine: `src/lib/intake-engine.ts`
 | stress | STR_FREQ + STR_RCV | 8 |
 | voeding | NUT_O3 + NUT_PROT | 7 |
 | beweging | MOV_STR + MOV_CARD | 8 |
-| herstel | RCV_PHYS + STR_RCV | 7 |
+| herstel | RCV_PHYS | 3 |
+
+`STR_RCV` telt **niet** mee in `recovery_score` — alleen in `stress_score` (juli 2026 scoringfix).
 
 ### Urgentieniveaus
+
+Berekend op **interventiedomeinen** (slaap, stress, voeding, beweging). Energie en herstel sturen urgentie niet.
 
 | Level | Conditie |
 |---|---|

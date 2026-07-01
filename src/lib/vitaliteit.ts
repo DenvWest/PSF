@@ -27,6 +27,7 @@ const FACET_KEYS: FacetKey[] = [
   "recovery",
 ];
 
+/** Vitality bewust zonder energy_score: energie is een readout, geen interventiedomein. */
 export function resolveVitaliteitFacets(
   scores: DomainScores,
   biometrics?: unknown,

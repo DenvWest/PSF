@@ -52,6 +52,38 @@ export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Bronnen worden periodiek herzien door nieuwe reviews en richtlijnen te screenen op kwaliteit en relevantie.",
   "Nieuwe studies worden alleen toegevoegd als methodologische kwaliteit en toepasbaarheid voldoende zijn.",
   "Bij belangrijke nieuwe evidence kan de onderbouwingstekst en sterkteclassificatie worden geactualiseerd.",
+  "Per juli 2026: herstelscore telt alleen fysiek herstel (RCV_PHYS); stressherstel (STR_RCV) hoort bij stress.",
+];
+
+export const LEEFSTIJLCHECK_INTERVENTION_DOMAINS = [
+  "Slaap — ritme, kwaliteit en nachtelijk herstel",
+  "Stress — frequentie en herstelmomenten overdag",
+  "Voeding — voedingspatroon en eiwit/omega-3",
+  "Beweging — kracht en cardio",
+] as const;
+
+export const LEEFSTIJLCHECK_READOUT_DOMAINS = [
+  {
+    id: "energie",
+    label: "Energie",
+    description:
+      "Hoe je je energie overdag ervaart en waar je op leunt — een rapport, geen gedragsdomein op zich.",
+    drivers: "slaap, voeding, beweging",
+  },
+  {
+    id: "herstel",
+    label: "Herstel",
+    description:
+      "Hoe snel je herstelt na inspanning — een rapport dat samenhangt met slaap, beweging en stress.",
+    drivers: "slaap, beweging, stress",
+  },
+] as const;
+
+export const LEEFSTIJLCHECK_READOUT_MODEL_NOTES: string[] = [
+  "Internationale modellen (MEDLIFE, WHO 24-uurs, Positieve Gezondheid) gebruiken geen aparte domeinen ‘energie’ of ‘herstel’.",
+  "Energie en vitaliteit worden in literatuur gemeten als uitkomst (bijv. Subjective Vitality Scale, SF-36 Vitality).",
+  "Herstel wordt in leefstijlliteratuur benaderd via rust, slaap en belastingsbalans — niet als parallel gedragsdomein.",
+  "Daarom sturen alleen de vier interventiedomeinen je prioriteit en urgentie; energie en herstel zijn rapportages.",
 ];
 
 const sleepRefs: EvidenceReference[] = [
