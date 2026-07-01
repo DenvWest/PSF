@@ -1,7 +1,11 @@
 import { approvedClaims } from "@/data/approved-claims";
 import type { SupplementDisclosureData } from "@/components/supplements/SupplementDisclosure";
 import { explainRecommendation } from "@/lib/recommendation-explainer";
-import { getPillarRecommendation } from "@/lib/recommendation-engine";
+import {
+  getCatalogEntry,
+  getPillarRecommendation,
+} from "@/lib/recommendation-engine";
+import { resolveGatedComparisonPath } from "@/lib/supplement-gate";
 import type { Pillar } from "@/types/dashboard";
 import type { RecommendationInput } from "@/types/recommendation";
 
@@ -26,7 +30,13 @@ export function buildSupplementDisclosure(
   }
 
   const recommendation = getPillarRecommendation(input, priority.id);
-  if (!recommendation?.available || !recommendation.comparisonPath) {
+  if (!recommendation?.available) {
+    return null;
+  }
+
+  const entry = getCatalogEntry(recommendation.supplementId);
+  const gatedPath = entry ? resolveGatedComparisonPath(entry.claimKey) : null;
+  if (!gatedPath) {
     return null;
   }
 
@@ -46,7 +56,7 @@ export function buildSupplementDisclosure(
     claim: supplement.claim,
     signal: supplement.signal,
     qualityRule: QUALITY_RULE,
-    comparisonPath: `${recommendation.comparisonPath}?from=${from}`,
+    comparisonPath: `${gatedPath}?from=${from}`,
     onHold: isSupplementOnHold(supplement.name),
     explanation,
   };

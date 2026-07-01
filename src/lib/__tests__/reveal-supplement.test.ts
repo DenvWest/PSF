@@ -2,7 +2,14 @@ import { describe, expect, it, vi } from "vitest";
 import { buildRevealSupplementDisclosure, buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { PILLAR } from "@/data/dashboard";
-import type { DomainScores } from "@/lib/intake-engine";
+import {
+  getDeficiencySignals,
+  getProfileLabel,
+  RULES_VERSION,
+  type DomainScores,
+} from "@/lib/intake-engine";
+import { isGatedComparisonPathAllowed } from "@/lib/supplement-gate";
+import type { RecommendationInput } from "@/types/recommendation";
 
 const balancedScores: DomainScores = {
   sleep_score: 70,
@@ -84,5 +91,36 @@ describe("buildRevealSupplementDisclosure", () => {
     const input = fallbackInput();
     const data = buildRevealSupplementDisclosure(PILLAR.voeding, input);
     expect(data?.comparisonPath).toBe("/beste/omega-3-supplement?from=results");
+  });
+});
+
+describe("approved-only gate (F-inv-3)", () => {
+  it("only returns comparison paths that pass resolveGatedComparisonPath", () => {
+    const scores: DomainScores = {
+      sleep_score: 25,
+      energy_score: 70,
+      stress_score: 70,
+      nutrition_score: 25,
+      movement_score: 70,
+      recovery_score: 70,
+    };
+    const answers = { NUT_O3: 1, SLP_QUAL: 1 };
+    const input: RecommendationInput = {
+      scores,
+      signals: getDeficiencySignals(answers),
+      profileLabel: getProfileLabel(scores),
+      answers,
+      rulesVersion: RULES_VERSION,
+    };
+
+    for (const pillar of Object.values(PILLAR)) {
+      const disclosure = buildSupplementDisclosure(pillar, input);
+      if (!disclosure) {
+        continue;
+      }
+
+      const path = disclosure.comparisonPath.replace(/\?from=.*$/, "");
+      expect(isGatedComparisonPathAllowed(path)).toBe(true);
+    }
   });
 });

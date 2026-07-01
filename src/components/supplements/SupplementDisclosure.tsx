@@ -153,22 +153,24 @@ export default function SupplementDisclosure({
           </ul>
         </details>
       </div>
-      <Link
-        href={data.comparisonPath}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          minHeight: 44,
-          marginTop: 10,
-          fontSize: 14,
-          fontWeight: 600,
-          color: "var(--sage)",
-          textDecoration: "underline",
-          textUnderlineOffset: 2,
-        }}
-      >
-        Bekijk de onafhankelijke vergelijking →
-      </Link>
+      {!data.onHold && data.comparisonPath ? (
+        <Link
+          href={data.comparisonPath}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            minHeight: 44,
+            marginTop: 10,
+            fontSize: 14,
+            fontWeight: 600,
+            color: "var(--sage)",
+            textDecoration: "underline",
+            textUnderlineOffset: 2,
+          }}
+        >
+          Bekijk de onafhankelijke vergelijking →
+        </Link>
+      ) : null}
     </aside>
   );
 }
