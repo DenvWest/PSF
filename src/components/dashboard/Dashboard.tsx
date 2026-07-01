@@ -2810,14 +2810,17 @@ const KompasHome = ({ model }: SharedSectionProps) => {
   return (
     <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
       <KompasLooseCard>
-        <h2
-          className="m-0 text-[18px] leading-tight text-[#1c1917]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          Je domeinen
-        </h2>
+        <div className="flex items-center justify-between gap-2">
+          <h2
+            className="m-0 text-[18px] leading-tight text-[#1c1917]"
+            style={{ fontFamily: "var(--f-serif)" }}
+          >
+            Je domeinen
+          </h2>
+          <span className="shrink-0 text-xs text-[#78716c]">zwakste bovenaan</span>
+        </div>
         <div className="mt-3 flex flex-col gap-2.5">
-          {PILLARS.map((pillar) => {
+          {currentModel.ladder.map((pillar) => {
             const score = currentModel.scores[pillar.id] ?? 0;
             return (
               <KompasDomainRow
