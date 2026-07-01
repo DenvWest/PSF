@@ -6,7 +6,12 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 import { emitEvent } from "@/lib/events";
 
-const FEATURES = ["inzichten", "statistieken", "lichaamssamenstelling"] as const;
+const FEATURES = [
+  "inzichten",
+  "statistieken",
+  "lichaamssamenstelling",
+  "beweging-coach",
+] as const;
 type Feature = (typeof FEATURES)[number];
 
 function isFeature(value: string): value is Feature {

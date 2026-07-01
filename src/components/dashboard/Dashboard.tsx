@@ -18,6 +18,7 @@ import {
   Sparkline,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
+import BewegingScreen from "@/components/dashboard/BewegingScreen";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
@@ -2785,6 +2786,9 @@ const KompasHome = ({ model }: SharedSectionProps) => {
     setView("trend");
   };
 
+  if (view === "beweging") {
+    return <BewegingScreen model={currentModel} onBack={() => setView(null)} />;
+  }
   if (view === "voeding") {
     return <VoedingScreen model={currentModel} onBack={() => setView(null)} />;
   }

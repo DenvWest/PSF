@@ -6,7 +6,11 @@ import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 
-type WaitlistFeature = "inzichten" | "statistieken" | "lichaamssamenstelling";
+type WaitlistFeature =
+  | "inzichten"
+  | "statistieken"
+  | "lichaamssamenstelling"
+  | "beweging-coach";
 
 type WaitlistButtonProps = {
   feature: WaitlistFeature;

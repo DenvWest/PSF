@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { buildRecommendations } from "@/lib/build-recommendations";
+import {
+  buildMovementRecommendations,
+  buildRecommendations,
+  getMovementNutritionHint,
+} from "@/lib/build-recommendations";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 
 function makeSession(
@@ -55,5 +59,70 @@ describe("buildRecommendations", () => {
     });
     const recommendations = buildRecommendations(session);
     expect(recommendations.some((r) => r.slug === "eiwitpoeder")).toBe(false);
+  });
+});
+
+describe("buildMovementRecommendations", () => {
+  it("includes eiwitpoeder when protein_gap_signal is active", () => {
+    const session = makeSession({
+      NUT_PROT: 1,
+      MOV_STR: 3,
+      MOV_CARD: 2,
+      NUT_O3: 3,
+      RCV_PHYS: 2,
+      STR_RCV: 3,
+    });
+    const recommendations = buildMovementRecommendations(session);
+    expect(recommendations.some((r) => r.slug === "eiwitpoeder")).toBe(true);
+    expect(recommendations.some((r) => r.slug === "omega-3")).toBe(false);
+  });
+
+  it("excludes magnesium when recovery is ok", () => {
+    const session = makeSession(
+      {
+        NUT_PROT: 3,
+        MOV_STR: 1,
+        MOV_CARD: 1,
+        NUT_O3: 3,
+        RCV_PHYS: 3,
+        STR_RCV: 3,
+      },
+      { sleep_score: 30, stress_score: 30, recovery_score: 60 },
+    );
+    const recommendations = buildMovementRecommendations(session);
+    expect(recommendations.some((r) => r.slug === "magnesium")).toBe(false);
+  });
+
+  it("includes magnesium when recovery is low and engine recommends it", () => {
+    const session = makeSession(
+      {
+        NUT_PROT: 3,
+        MOV_STR: 1,
+        MOV_CARD: 1,
+        NUT_O3: 3,
+        RCV_PHYS: 1,
+        STR_RCV: 2,
+      },
+      { sleep_score: 30, stress_score: 30, recovery_score: 35 },
+    );
+    const all = buildRecommendations(session);
+    const movement = buildMovementRecommendations(session);
+    if (all.some((r) => r.slug === "magnesium")) {
+      expect(movement.some((r) => r.slug === "magnesium")).toBe(true);
+    }
+  });
+});
+
+describe("getMovementNutritionHint", () => {
+  it("mentions protein gap when signal is active", () => {
+    const session = makeSession({
+      NUT_PROT: 1,
+      MOV_STR: 3,
+      MOV_CARD: 2,
+      NUT_O3: 3,
+      RCV_PHYS: 2,
+      STR_RCV: 3,
+    });
+    expect(getMovementNutritionHint(session)).toMatch(/eiwit/i);
   });
 });

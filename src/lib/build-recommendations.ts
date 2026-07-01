@@ -100,3 +100,27 @@ export function buildRecommendations(
 
   return out;
 }
+
+const MOVEMENT_SUPPLEMENT_SLUGS = new Set(["creatine", "eiwitpoeder"]);
+
+export function getMovementNutritionHint(session: IntakeSessionPayload): string {
+  const signals = getDeficiencySignals(session.answers);
+  if (signals.protein_gap_signal) {
+    return "Je eiwit uit voeding lijkt laag terwijl je traint — kracht zonder eiwit is half werk.";
+  }
+  if (session.scores.nutrition_score < 50) {
+    return "Je voedingsscore laat ruimte — check of je bord je training ondersteunt.";
+  }
+  return "Check of je voeding je training ondersteunt — eerst tafel, dan potje.";
+}
+
+export function buildMovementRecommendations(
+  session: IntakeSessionPayload,
+): RecommendedSupplement[] {
+  return buildRecommendations(session).filter((rec) => {
+    if (rec.slug === "magnesium") {
+      return session.scores.recovery_score < 50;
+    }
+    return MOVEMENT_SUPPLEMENT_SLUGS.has(rec.slug);
+  });
+}
