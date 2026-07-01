@@ -15,6 +15,7 @@ export type IntakeSubmitResult = {
   primaryTheme: MeasuredPillarId | null;
   /** null = preview-pad (geen persistentie); boolean = uit de opgeslagen consent. */
   marketingEmailActive: boolean | null;
+  mainNurtureSkipped: boolean;
 };
 
 type UseIntakeSubmitParams = {
@@ -70,6 +71,7 @@ export function useIntakeSubmit({
           rapportUrl: null,
           primaryTheme: null,
           marketingEmailActive: null,
+          mainNurtureSkipped: false,
         });
       }, CALCULATING_MIN_MS);
       return () => window.clearTimeout(timer);
@@ -122,6 +124,7 @@ export function useIntakeSubmit({
         rapportUrl: saved?.rapportUrl ?? null,
         primaryTheme: saved?.primaryTheme ?? null,
         marketingEmailActive: consent.marketingEmail,
+        mainNurtureSkipped: saved?.mainNurtureSkipped === true,
       });
     })();
 

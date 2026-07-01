@@ -7,6 +7,7 @@ import type { PillarId } from "@/data/foundation-pyramid";
 import type { DomainScores } from "@/lib/intake-engine";
 import { getProfileLabel } from "@/lib/intake-engine";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
+import IntakeMarketingContinuityNotice from "@/components/intake/IntakeMarketingContinuityNotice";
 import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
 import RevealStoryPath from "@/components/intake/RevealStoryPath";
 import ResultsRevealShell, {
@@ -30,6 +31,7 @@ type IntakeResultsProps = {
   primaryTheme?: MeasuredPillarId | null;
   shellVariant?: ResultsRevealShellVariant;
   onRestart?: () => void;
+  mainNurtureSkipped?: boolean;
   onConsentRevoked?: () => void;
 };
 
@@ -43,6 +45,7 @@ export default function IntakeResults({
   primaryTheme: primaryThemeProp = null,
   shellVariant = "fullscreen",
   onRestart,
+  mainNurtureSkipped = false,
   onConsentRevoked,
 }: IntakeResultsProps) {
   const themeRevealedEmittedRef = useRef(false);
@@ -68,6 +71,16 @@ export default function IntakeResults({
         <section aria-label="Jouw leefstijloverzicht" className="reveal-results-act">
           <RevealStoryPath model={model} profile={profile} answers={answers} firstName={firstName} />
         </section>
+
+        {mainNurtureSkipped ? (
+          <section aria-label="E-mail vervolg" className="reveal-results-act">
+            <IntakeMarketingContinuityNotice
+              hasActiveAccount={false}
+              mainNurtureActive
+              variant="results"
+            />
+          </section>
+        ) : null}
 
         <section aria-label="Feedback" className="reveal-results-act reveal-results-act--feedback">
           <IntakeFeedback sessionId={sessionId} variant="reveal-light" />

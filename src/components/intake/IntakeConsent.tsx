@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import IntakeMarketingContinuityNotice from "@/components/intake/IntakeMarketingContinuityNotice";
 import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import Link from "next/link";
 import { INTAKE_CONSENT_TEXT } from "@/lib/consent-texts";
@@ -23,11 +24,59 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
   const [analytics, setAnalytics] = useState(false);
   const [optionalEmail, setOptionalEmail] = useState("");
   const [marketing, setMarketing] = useState(false);
+  const [continuity, setContinuity] = useState({
+    mainNurtureActive: false,
+    hasActiveAccount: false,
+  });
+
 
   const showMarketing = emailLooseOk(optionalEmail);
   const marketingBlocked =
     showMarketing && marketing && !emailLooseOk(optionalEmail.trim());
   const canProceed = health && !marketingBlocked;
+
+  useEffect(() => {
+    const addr = optionalEmail.trim();
+    if (!emailLooseOk(addr)) {
+      setContinuity({ mainNurtureActive: false, hasActiveAccount: false });
+      return;
+    }
+
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const response = await fetch("/api/intake/marketing-continuity", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ email: addr }),
+          });
+          const json = (await response.json().catch(() => null)) as
+            | {
+                mainNurtureActive?: boolean;
+                hasActiveAccount?: boolean;
+              }
+            | null;
+          if (cancelled) return;
+          setContinuity({
+            mainNurtureActive: json?.mainNurtureActive === true,
+            hasActiveAccount: json?.hasActiveAccount === true,
+          });
+        } catch {
+          if (!cancelled) {
+            setContinuity({ mainNurtureActive: false, hasActiveAccount: false });
+          }
+        }
+      })();
+    }, 400);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [optionalEmail]);
+
 
   function handleContinue() {
     if (!canProceed) return;
@@ -266,6 +315,15 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
                 </Link>
               </p>
             </div>
+          ) : null}
+
+          {(continuity.mainNurtureActive || continuity.hasActiveAccount) &&
+          showMarketing ? (
+            <IntakeMarketingContinuityNotice
+              hasActiveAccount={continuity.hasActiveAccount}
+              mainNurtureActive={continuity.mainNurtureActive}
+              variant="consent"
+            />
           ) : null}
         </div>
 

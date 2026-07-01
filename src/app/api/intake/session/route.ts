@@ -385,17 +385,10 @@ export async function POST(request: NextRequest) {
   }
 
   const marketingAddr = consent.marketingEmailAddress?.trim();
+  let mainNurtureSkipped = false;
   if (!isRemeasure && consent.marketingEmail && marketingAddr) {
-    void emitEvent({
-      eventType: "email.opted_in",
-      sessionId: row.id,
-      email: marketingAddr,
-      payload: { source: "intake_session" },
-      deliveredTo: ["nurture"],
-    });
-
     try {
-      await scheduleMainNurtureIfInactive({
+      const nurtureResult = await scheduleMainNurtureIfInactive({
         sessionId: row.id,
         email: marketingAddr,
         profileLabel: profile,
@@ -404,6 +397,31 @@ export async function POST(request: NextRequest) {
         urgencyLevel: urgency,
         firstName: consent.firstName,
       });
+      if (nurtureResult === "skipped_active") {
+        mainNurtureSkipped = true;
+        console.warn("[api/intake/session] main nurture skipped (active day-0)", {
+          sessionId: row.id,
+          email: marketingAddr,
+        });
+        void emitEvent({
+          eventType: "nurture.skipped",
+          sessionId: row.id,
+          email: marketingAddr,
+          payload: {
+            reason: "active_day0",
+            source: "intake_session",
+          },
+          deliveredTo: ["n8n_webhook"],
+        });
+      } else {
+        void emitEvent({
+          eventType: "email.opted_in",
+          sessionId: row.id,
+          email: marketingAddr,
+          payload: { source: "intake_session" },
+          deliveredTo: ["nurture"],
+        });
+      }
     } catch (nurtureErr) {
       console.error(
         "[api/intake/session] scheduleNurtureSequence:",
@@ -425,11 +443,15 @@ export async function POST(request: NextRequest) {
     rapportUrl?: string;
     scores: DomainScores;
     primaryTheme: MeasuredPillarId;
+    mainNurtureSkipped?: boolean;
   } = {
     sessionId: row.id,
     scores,
     primaryTheme,
   };
+  if (mainNurtureSkipped) {
+    responseData.mainNurtureSkipped = true;
+  }
   if (isRemeasure && remeasureBaselineId) {
     const signedBase = signIntakeSessionId(remeasureBaselineId);
     if (signedBase) {

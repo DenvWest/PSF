@@ -5,6 +5,7 @@ import {
   scheduleGuideNurtureSequence,
 } from "@/lib/guide-nurture";
 import {
+  cancelPendingMainNurtureSequences,
   hasActiveMainNurture,
   scheduleMainNurtureIfInactive,
   scheduleNurtureSequence,
@@ -44,13 +45,23 @@ vi.mock("@/lib/email-templates/nurture", () => ({
   getNurtureEmailContent: mockGetNurtureEmailContent,
 }));
 
-function makeSelectChain(result: { data: unknown[] | null; error: unknown }) {
+function makeActiveMainSelectChain(result: { data: unknown[] | null; error: unknown }) {
   const limit = vi.fn(async () => result);
-  const inFn = vi.fn(() => ({ limit }));
-  const eqSecond = vi.fn(() => ({ in: inFn }));
-  const eqFirst = vi.fn(() => ({ eq: eqSecond }));
-  const select = vi.fn(() => ({ eq: eqFirst }));
-  return { select, eqFirst, eqSecond, inFn, limit };
+  const eqStatus = vi.fn(() => ({ limit }));
+  const eqDay = vi.fn(() => ({ eq: eqStatus }));
+  const eqSource = vi.fn(() => ({ eq: eqDay }));
+  const eqEmail = vi.fn(() => ({ eq: eqSource }));
+  const select = vi.fn(() => ({ eq: eqEmail }));
+  return { select, eqEmail, eqSource, eqDay, eqStatus, limit };
+}
+
+function makeMainPendingDeleteChain(result: { data: unknown[] | null; error: unknown }) {
+  const select = vi.fn(async () => result);
+  const eqStatus = vi.fn(() => ({ select }));
+  const eqSource = vi.fn(() => ({ eq: eqStatus }));
+  const eqEmail = vi.fn(() => ({ eq: eqSource }));
+  const deleteFn = vi.fn(() => ({ eq: eqEmail }));
+  return { deleteFn, eqEmail, eqSource, eqStatus, select };
 }
 
 function makeDeleteChain(result: { data: unknown[] | null; error: unknown }) {
@@ -101,24 +112,45 @@ describe("hasActiveMainNurture", () => {
     vi.clearAllMocks();
   });
 
-  it("returns true when pending or sent intake nurture exists", async () => {
-    const chain = makeSelectChain({ data: [{ id: "row-1" }], error: null });
+  it("returns true when a sent day-0 intake nurture exists", async () => {
+    const chain = makeActiveMainSelectChain({ data: [{ id: "row-1" }], error: null });
     vi.mocked(createSupabaseAdmin).mockReturnValue({
       from: vi.fn(() => ({ select: chain.select })),
     } as unknown as ReturnType<typeof createSupabaseAdmin>);
 
     await expect(hasActiveMainNurture("lead@example.com")).resolves.toBe(true);
-    expect(chain.eqSecond).toHaveBeenCalledWith("source", "intake");
-    expect(chain.inFn).toHaveBeenCalledWith("status", ["pending", "sent"]);
+    expect(chain.eqSource).toHaveBeenCalledWith("source", "intake");
+    expect(chain.eqDay).toHaveBeenCalledWith("sequence_day", 0);
+    expect(chain.eqStatus).toHaveBeenCalledWith("status", "sent");
   });
 
-  it("returns false when no intake nurture exists", async () => {
-    const chain = makeSelectChain({ data: [], error: null });
+  it("returns false when only pending follow-ups exist (no sent day-0)", async () => {
+    const chain = makeActiveMainSelectChain({ data: [], error: null });
     vi.mocked(createSupabaseAdmin).mockReturnValue({
       from: vi.fn(() => ({ select: chain.select })),
     } as unknown as ReturnType<typeof createSupabaseAdmin>);
 
     await expect(hasActiveMainNurture("lead@example.com")).resolves.toBe(false);
+  });
+});
+
+describe("cancelPendingMainNurtureSequences", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("deletes pending intake nurture rows for the email", async () => {
+    const chain = makeMainPendingDeleteChain({
+      data: [{ id: "p1" }, { id: "p2" }],
+      error: null,
+    });
+    vi.mocked(createSupabaseAdmin).mockReturnValue({
+      from: vi.fn(() => ({ delete: chain.deleteFn })),
+    } as unknown as ReturnType<typeof createSupabaseAdmin>);
+
+    await expect(cancelPendingMainNurtureSequences("lead@example.com")).resolves.toBe(2);
+    expect(chain.eqSource).toHaveBeenCalledWith("source", "intake");
+    expect(chain.eqStatus).toHaveBeenCalledWith("status", "pending");
   });
 });
 
@@ -195,10 +227,16 @@ describe("scheduleGuideNurtureSequence", () => {
 describe("scheduleMainNurtureIfInactive", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockResendSend.mockResolvedValue({ data: { id: "resend-intake-0" }, error: null });
+    mockGetNurtureEmailContent.mockReturnValue({
+      subject: "Dag 0",
+      html: "<p>intake</p>",
+      resolvedCta: { kind: "lifestyle", url: "/intake", text: "CTA", candidateRank: null },
+    });
   });
 
-  it("skipt scheduling wanneer er al een actieve hoofd-nurture is", async () => {
-    const chain = makeSelectChain({ data: [{ id: "existing" }], error: null });
+  it("skipt scheduling wanneer dag-0 al verzonden is", async () => {
+    const chain = makeActiveMainSelectChain({ data: [{ id: "existing" }], error: null });
     vi.mocked(createSupabaseAdmin).mockReturnValue({
       from: vi.fn(() => ({ select: chain.select })),
     } as unknown as ReturnType<typeof createSupabaseAdmin>);
@@ -222,6 +260,65 @@ describe("scheduleMainNurtureIfInactive", () => {
 
     expect(result).toBe("skipped_active");
     expect(mockResendSend).not.toHaveBeenCalled();
+  });
+
+  it("schedules opnieuw na mislukte dag-0 (geen sent day-0, wel stale pending)", async () => {
+    const activeChain = makeActiveMainSelectChain({ data: [], error: null });
+    const mainDeleteChain = makeMainPendingDeleteChain({
+      data: [{ id: "stale-pending" }],
+      error: null,
+    });
+    const guideDeleteChain = makeDeleteChain({ data: [], error: null });
+    const accountChain = makeAccountSelectChain();
+    const insert = vi.fn(async () => ({ data: null, error: null }));
+    let deleteCallCount = 0;
+    const deleteFn = vi.fn(() => {
+      deleteCallCount += 1;
+      return deleteCallCount === 1
+        ? mainDeleteChain.deleteFn()
+        : guideDeleteChain.deleteFn();
+    });
+
+    const from = vi.fn((table: string) => {
+      if (table === "nurture_emails") {
+        return {
+          select: activeChain.select,
+          delete: deleteFn,
+          insert,
+        };
+      }
+      if (table === "accounts") {
+        return { select: accountChain.select };
+      }
+      return { insert };
+    });
+
+    vi.mocked(createSupabaseAdmin).mockReturnValue({
+      from,
+    } as unknown as ReturnType<typeof createSupabaseAdmin>);
+
+    const result = await scheduleMainNurtureIfInactive({
+      sessionId: "session-retry",
+      email: "retry@example.com",
+      profileLabel: "Onrustige Slaper",
+      primaryDomain: "sleep",
+      domainScores: {
+        sleep_score: 40,
+        energy_score: 35,
+        stress_score: 50,
+        nutrition_score: 45,
+        movement_score: 60,
+        recovery_score: 30,
+      },
+      urgencyLevel: "moderate",
+      firstName: null,
+    });
+
+    expect(result).toBe("scheduled");
+    expect(mainDeleteChain.eqStatus).toHaveBeenCalledWith("status", "pending");
+    expect(guideDeleteChain.like).toHaveBeenCalledWith("source", "guide_%");
+    expect(mockResendSend).toHaveBeenCalledOnce();
+    expect(insert).toHaveBeenCalled();
   });
 });
 

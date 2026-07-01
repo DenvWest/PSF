@@ -29,8 +29,24 @@ Beide gebruiken dezelfde sequentiedagen: **0, 3, 7, 14, 21, 30**. Cron: `src/lib
 ### Dag-0 flow
 
 1. Intake completion → `src/app/api/intake/session/route.ts`
-2. `scheduleNurtureSequence` in `src/lib/nurture.ts`
-3. Dag-0 direct via Resend; dagen 3–30 `pending` in `nurture_emails`
+2. `scheduleMainNurtureIfInactive` in `src/lib/nurture.ts` (dedup op **e-mailniveau**: skip alleen als dag-0 al `sent` is voor dat adres)
+3. `scheduleNurtureSequence` → dag-0 direct via Resend; dagen 3–30 `pending` in `nurture_emails`
+
+**Dedup (F-002):** her-intake met hetzelfde marketing-adres stuurt **geen** tweede welkomstmail zolang dag-0 al `sent` is. Na mislukte dag-0 (`failed`) worden verweesde `pending`-rijen opgeruimd en wordt opnieuw geprobeerd. Serverlog: `[api/intake/session] main nurture skipped (active day-0)`.
+
+### Her-intake vs hermeting vs dev-testen
+
+| Pad | Trigger | Welkomstmail (dag-0)? | Alternatief voor gebruiker |
+|---|---|---|---|
+| Eerste intake | `session_kind = initial`, nieuw marketing-adres | Ja — direct via Resend + pending 3–30 | Recovery-link in mail |
+| Her-intake zelfde e-mail | Nieuwe `initial` sessie, zelfde adres, dag-0 al `sent` | **Nee** — F-002 skip | Dashboard (`/account/login` → `/dashboard`); bestaande nurture-sequence loopt door |
+| Hermeting | `?hermeting=1` + baseline-cookie, `session_kind = remeasure` | Nee — marketing-blok wordt overgeslagen | Rapport/delta; uitnodiging via dag-30-mail |
+
+**Productregel:** één hoofd-nurture per marketing-e-mailadres. `marketing_email` staat per sessie in `intake_sessions`; dedup en sequence-lifecycle werken op **e-mailniveau** in `nurture_emails`.
+
+**Dev-testen:** hergebruik van hetzelfde testadres triggert F-002 (geen tweede welkomstmail). Gebruik een vers e-mailadres, of verwijder testrijen: `delete from nurture_emails where email = '...' and source = 'intake'`.
+
+**Meetpunten:** `nurture.email_sent` (sequence_day 0) = mail verstuurd · `nurture.skipped` (reason `active_day0`) = her-intake dedup · `email.opted_in` alleen bij daadwerkelijke sequence-start.
 
 ---
 
@@ -98,4 +114,4 @@ Aparte tabel `intake_reminders`. Trigger via cron-job.org.
 
 ---
 
-*Laatst bijgewerkt: juni 2026*
+*Laatst bijgewerkt: juli 2026*

@@ -26,7 +26,8 @@ export async function hasActiveMainNurture(email: string): Promise<boolean> {
     .select("id")
     .eq("email", email)
     .eq("source", MAIN_NURTURE_SOURCE)
-    .in("status", ["pending", "sent"])
+    .eq("sequence_day", 0)
+    .eq("status", "sent")
     .limit(1);
 
   if (error) {
@@ -35,6 +36,30 @@ export async function hasActiveMainNurture(email: string): Promise<boolean> {
   }
 
   return (data?.length ?? 0) > 0;
+}
+
+export async function cancelPendingMainNurtureSequences(
+  email: string,
+): Promise<number> {
+  const supabase = createSupabaseAdmin();
+  if (!supabase) {
+    return 0;
+  }
+
+  const { data, error } = await supabase
+    .from("nurture_emails")
+    .delete()
+    .eq("email", email)
+    .eq("source", MAIN_NURTURE_SOURCE)
+    .eq("status", "pending")
+    .select("id");
+
+  if (error) {
+    console.error("[nurture] cancel pending main:", error);
+    return 0;
+  }
+
+  return data?.length ?? 0;
 }
 
 interface NurtureScheduleInput {
@@ -225,6 +250,7 @@ export async function scheduleMainNurtureIfInactive(
   if (await hasActiveMainNurture(input.email)) {
     return "skipped_active";
   }
+  await cancelPendingMainNurtureSequences(input.email);
   await scheduleNurtureSequence(input);
   return "scheduled";
 }

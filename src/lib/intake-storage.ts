@@ -52,6 +52,7 @@ export async function saveIntakeSession(data: {
   rapportUrl: string | null;
   scores: DomainScores | null;
   primaryTheme: MeasuredPillarId | null;
+  mainNurtureSkipped: boolean;
 } | null> {
   try {
     const response = await fetch("/api/intake/session", {
@@ -80,6 +81,7 @@ export async function saveIntakeSession(data: {
           rapportUrl?: string;
           scores?: unknown;
           primaryTheme?: unknown;
+          mainNurtureSkipped?: boolean;
           error?: string;
         }
       | null;
@@ -98,6 +100,7 @@ export async function saveIntakeSession(data: {
       rapportUrl: typeof json?.rapportUrl === "string" ? json.rapportUrl : null,
       scores: parseDomainScores(json?.scores),
       primaryTheme: parseMeasuredPillar(json?.primaryTheme),
+      mainNurtureSkipped: json?.mainNurtureSkipped === true,
     };
   } catch (e) {
     console.error("Save session error:", e);

@@ -18,7 +18,7 @@
 | urgency_level | text | `critical`, `moderate`, `mild`, `healthy` |
 | profile_label | text | `Onrustige Slaper`, `Stressdrager`, `Lage Batterij`, `In Balans` — engine-output via `getProfileLabel()`; **Overtrainer** is een afgeleid antwoordpatroon (`matchesOvertrainerAnswers`), geen persisted label |
 | age_range | text | `40-44`, `45-49`, `50-54`, `55+` |
-| marketing_email | text, nullable | — |
+| marketing_email | text, nullable | Snapshot op sessie-niveau bij intake-completion. Nurture-dedup (`hasActiveMainNurture`) en sequence-lifecycle in `nurture_emails` werken op **e-mailniveau** — her-intake met hetzelfde adres start geen tweede dag-0 (F-002). Zie [`EMAIL_SYSTEM.md`](EMAIL_SYSTEM.md) § her-intake. |
 | first_name | text, nullable | Optionele voornaam voor personalisatie (nurture-mails) |
 | rules_version | text, nullable | Advies-engine semver (`RULES_VERSION` in `src/lib/intake-engine.ts`); join-key voor feedback/delta-segmentatie. Geen DB-default — app schrijft expliciet bij insert. Backfill: `'pre-1.0'`. Bron: `supabase/migrations/20260609120000_intake_sessions_rules_version.sql` |
 | organization_id | uuid, NOT NULL | Default-tenant via `getDefaultOrganizationId()` (`src/lib/organization.ts`); elke intake-sessie, event en affiliate-click krijgt dit veld. Single-tenant vandaag (`00000000-0000-0000-0000-000000000001`); RLS org-isolatie voorbereid op B2B/JWT. Bron: `supabase/migrations/20260412200000_organization_id.sql` |
@@ -96,7 +96,7 @@ RLS aan; geen anon/authenticated policies — alleen service_role via API-routes
 | first_name | text, nullable | Snapshot |
 | variant | text, nullable | A/B-variant-dimensie — **altijd `null` in fase-0**. Gereserveerd voor kandidaat-volgorde of copy-A/B; nu klaargezet zodat fase-1 experiment een config-flag is i.p.v. schema-wijziging. Bron: `supabase/migrations/20260610130000_nurture_variant.sql`. ⚠ Kolom moet bestaan vóór deploy (`supabase db push`). |
 
-Intake-nurture: `scheduleNurtureSequence` in `src/lib/nurture.ts`.  
+Intake-nurture: `scheduleMainNurtureIfInactive` → `scheduleNurtureSequence` in `src/lib/nurture.ts` (dedup: dag-0 al `sent` voor dit e-mailadres).  
 Gids-nurture: `scheduleGuideNurtureSequence` in `src/lib/guide-nurture.ts`.
 
 #### `nurture.email_sent` — anonimiserings-veilig event-contract (P1)
@@ -115,6 +115,17 @@ Payload in `domain_events` bij elke verzonden nurture-mail (intake-stroom):
 | `variant` | null | Altijd `null` in fase-0; toekomstig A/B-label |
 
 Geen e-mail, naam, leeftijd of vrije tekst. `cta_slug` en `candidate_rank` worden afgeleid van de `ResolvedNurtureCta` die ook in de mailbody werd gebruikt (single source of truth). Funnel join-key: `session_id` (pseudoniem) loopt door `intake.completed → nurture.email_sent → remeasure.completed`.
+
+#### `nurture.skipped` — her-intake dedup (F-002)
+
+Payload bij F-002 skip (dag-0 al `sent` voor dit e-mailadres):
+
+| Veld | Type | Beschrijving |
+|---|---|---|
+| `reason` | string | `"active_day0"` |
+| `source` | string | `"intake_session"` |
+
+Geen PII in payload. `email` op de event-rij is functioneel voor nurture-join; niet naar GA4/Clarity.
 
 ### guide_opt_ins
 

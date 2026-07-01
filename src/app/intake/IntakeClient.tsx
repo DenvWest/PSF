@@ -80,6 +80,7 @@ export default function IntakeClient() {
   );
   const [hasActiveMarketingEmailConsent, setHasActiveMarketingEmailConsent] =
     useState(false);
+  const [mainNurtureSkipped, setMainNurtureSkipped] = useState(false);
   // Toon een laadscherm alleen als de gebruiker via de mail-link (?resultaten=true) binnenkomt.
   // Zonder die param: intro direct zichtbaar, sessie wordt stil op de achtergrond gecheckt.
   const [isCheckingSession, setIsCheckingSession] = useState(hasResultsParam);
@@ -160,6 +161,7 @@ export default function IntakeClient() {
       if (result.marketingEmailActive !== null) {
         setHasActiveMarketingEmailConsent(result.marketingEmailActive);
       }
+      setMainNurtureSkipped(result.mainNurtureSkipped);
       setPhase("results");
     },
   });
@@ -236,6 +238,7 @@ export default function IntakeClient() {
     setIntakeTurnstileToken("");
     setIntakeConsent(null);
     setHasActiveMarketingEmailConsent(false);
+    setMainNurtureSkipped(false);
     setResultsDeepLinkMissing(false);
     router.replace("/intake");
   }
@@ -388,6 +391,7 @@ export default function IntakeClient() {
             rapportUrl={rapportUrl}
             firstName={normalizeFirstName(firstName)}
             hasActiveMarketingEmailConsent={hasActiveMarketingEmailConsent}
+            mainNurtureSkipped={mainNurtureSkipped}
             primaryTheme={primaryTheme}
             secondaryTheme={
               scores && primaryTheme
