@@ -1,5 +1,7 @@
 import { PILLAR } from "@/data/dashboard";
 import { derivePriority } from "@/lib/dashboard-model";
+import { getPriorityPillarId } from "@/lib/priority-pillar";
+import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
 import type { CheckScores, PillarId } from "@/types/dashboard";
 
 export type VisitorPersonalization = {
@@ -14,11 +16,14 @@ export function derivePersonalization(
   profileLabel: string | null,
 ): VisitorPersonalization {
   const ordered = derivePriority(scores);
-  const priority = ordered[0];
+  const priorityPillarId = getPriorityPillarId(
+    mapCheckScoresToDomainScores(scores),
+    {},
+  );
 
   return {
-    priorityPillarId: priority.id,
-    priorityLabel: PILLAR[priority.id].label,
+    priorityPillarId,
+    priorityLabel: PILLAR[priorityPillarId].label,
     orderedPillarIds: ordered.map((pillar) => pillar.id),
     profileLabel,
   };

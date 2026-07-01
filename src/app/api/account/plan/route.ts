@@ -14,7 +14,7 @@ import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp } from "@/lib/turnstile-verify";
-import { derivePriority } from "@/lib/dashboard-model";
+import { getPriorityPillar } from "@/lib/priority-pillar";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { CheckScores } from "@/types/dashboard";
@@ -58,7 +58,7 @@ function buildDriverPayload(
   domainScores: ReturnType<typeof mapCheckScoresToDomainScores>,
   answers: Record<string, number>,
 ) {
-  const priority = derivePriority(scores)[0];
+  const priority = getPriorityPillar(domainScores, answers);
   const vitality = computeVitaliteit(resolveVitaliteitFacets(domainScores));
   const kernel = buildHabitScoreKernel({
     vitality,

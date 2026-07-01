@@ -18,7 +18,7 @@ describe("derivePersonalization", () => {
       { slaap: 70, energie: 40, stress: 60, voeding: 65, beweging: 75, herstel: 80 },
       null,
     );
-    expect(result.priorityPillarId).toBe("energie");
+    expect(result.priorityPillarId).toBe("stress");
     expect(result.profileLabel).toBeNull();
   });
 });
