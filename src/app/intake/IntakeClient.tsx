@@ -19,16 +19,15 @@ import {
   type SymptomId,
 } from "@/data/intake-questions";
 import type { DomainScores } from "@/lib/intake-engine";
-import { calcDomainScores } from "@/lib/intake-engine";
 import {
   normalizeFirstName,
   type IntakeConsentPayload,
 } from "@/lib/intake-consent";
 import {
   getLastSession,
-  saveIntakeSession,
   type IntakeSessionPayload,
 } from "@/lib/intake-storage";
+import { useIntakeSubmit } from "@/lib/use-intake-submit";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -143,97 +142,27 @@ export default function IntakeClient() {
     }
   }, [phase, hasResultsParam, router]);
 
-  useEffect(() => {
-    if (phase !== "calculating") {
-      return;
-    }
-
-    const computed = calcDomainScores(answers);
-    const ts = Date.now();
-    const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-
-    if (ageRange === null) {
-      const timer = window.setTimeout(() => {
-        setScores(computed);
-        setSessionTimestamp(ts);
-        setSessionId(null);
-        setPhase("results");
-      }, 2000);
-      return () => window.clearTimeout(timer);
-    }
-
-    if (!turnstileSiteKey) {
-      const timer = window.setTimeout(() => {
-        setScores(computed);
-        setSessionTimestamp(ts);
-        setSessionId(null);
-        setPhase("results");
-      }, 2000);
-      return () => window.clearTimeout(timer);
-    }
-
-    if (!intakeTurnstileToken) {
-      return;
-    }
-
-    if (!intakeConsent) {
-      return;
-    }
-
-    let cancelled = false;
-    const start = calculatingStartedAtRef.current;
-
-    void (async () => {
-      const wait = Math.max(0, 2000 - (Date.now() - start));
-      if (wait > 0) {
-        await new Promise((r) => setTimeout(r, wait));
-      }
-      if (cancelled) {
-        return;
-      }
-      const saved = await saveIntakeSession({
-        symptoms,
-        answers,
-        ageRange,
-        turnstileToken: intakeTurnstileToken,
-        website: honeypotWebsite,
-        consent: intakeConsent,
-      });
-      if (cancelled) {
-        return;
-      }
-
-      const savedEmail = intakeConsent.marketingEmailAddress;
-      if (savedEmail) {
-        try {
-          sessionStorage.setItem("ps_contact_email", savedEmail);
-        } catch {
-          // sessionStorage niet beschikbaar
-        }
-      }
-
-      setHasActiveMarketingEmailConsent(intakeConsent.marketingEmail);
-
-      setScores(saved?.scores ?? computed);
-      setServerPrimaryTheme(saved?.primaryTheme ?? null);
-      setSessionTimestamp(ts);
-      setSessionId(saved?.sessionId ?? null);
-      setRapportUrl(saved?.rapportUrl ?? null);
-      setPhase("results");
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    phase,
+  useIntakeSubmit({
+    active: phase === "calculating",
     answers,
     symptoms,
     ageRange,
-    intakeTurnstileToken,
+    turnstileToken: intakeTurnstileToken,
     honeypotWebsite,
-    intakeConsent,
-  ]);
+    consent: intakeConsent,
+    calculatingStartedAtRef,
+    onComplete: (result) => {
+      setScores(result.scores);
+      setSessionTimestamp(result.sessionTimestamp);
+      setSessionId(result.sessionId);
+      setRapportUrl(result.rapportUrl);
+      setServerPrimaryTheme(result.primaryTheme);
+      if (result.marketingEmailActive !== null) {
+        setHasActiveMarketingEmailConsent(result.marketingEmailActive);
+      }
+      setPhase("results");
+    },
+  });
 
   function toggleSymptom(id: SymptomId) {
     setSymptoms((prev) =>
