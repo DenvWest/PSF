@@ -1,4 +1,6 @@
-// EXPERIMENTAL: scaffold for future multi-tenant work. Not used by production pages. Do not refactor production routes against this API yet.
+// Multi-tenant intake-scaffold. Gebruikt door /api/partner/intake (form) en chat-intake (chat).
+// Supplementadvies uit getAdvice passeert hier de approved-only gate (resolveGatedComparisonPath),
+// zodat partner/chat nooit een on_hold/forbidden /beste-link naar buiten sturen.
 
 import type { SymptomId } from "@/data/intake-questions";
 import type {
@@ -15,6 +17,7 @@ import {
   getAdvice,
   getDeficiencySignals,
 } from "./intake-engine";
+import { isGatedComparisonPathAllowed } from "@/lib/supplement-gate";
 
 export interface IntakeAnswers {
   answers: Record<string, number>;
@@ -36,6 +39,18 @@ export interface IntakeStrategy {
   computeResults(input: IntakeAnswers): IntakeResults;
 }
 
+export function gateAdviceSupplements(advice: AdviceResult): AdviceResult {
+  return {
+    ...advice,
+    supplements: advice.supplements.filter((supplement) => {
+      if (!supplement.link.startsWith("/beste/")) {
+        return true;
+      }
+      return isGatedComparisonPathAllowed(supplement.link);
+    }),
+  };
+}
+
 export class FormIntakeStrategy implements IntakeStrategy {
   readonly type = "form" as const;
 
@@ -43,7 +58,9 @@ export class FormIntakeStrategy implements IntakeStrategy {
     const scores = calcDomainScores(input.answers);
     const urgency = getUrgency(scores);
     const profile = getProfileLabel(scores);
-    const advice = getAdvice(scores, input.answers, input.symptoms);
+    const advice = gateAdviceSupplements(
+      getAdvice(scores, input.answers, input.symptoms),
+    );
     const signals = getDeficiencySignals(input.answers);
 
     return { scores, urgency, profile, advice, signals };
@@ -57,7 +74,9 @@ export class ChatIntakeStrategy implements IntakeStrategy {
     const scores = calcDomainScores(input.answers);
     const urgency = getUrgency(scores);
     const profile = getProfileLabel(scores);
-    const advice = getAdvice(scores, input.answers, input.symptoms);
+    const advice = gateAdviceSupplements(
+      getAdvice(scores, input.answers, input.symptoms),
+    );
     const signals = getDeficiencySignals(input.answers);
 
     return { scores, urgency, profile, advice, signals };

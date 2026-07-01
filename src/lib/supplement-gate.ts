@@ -32,6 +32,15 @@ export function resolveGatedComparisonPath(
   return entry.comparisonPath;
 }
 
+export function isGatedComparisonPathAllowed(comparisonPath: string): boolean {
+  for (const key of Object.keys(approvedClaims) as IngredientClaimKey[]) {
+    if (approvedClaims[key].comparisonPath === comparisonPath) {
+      return resolveGatedComparisonPath(key) === comparisonPath;
+    }
+  }
+  return false;
+}
+
 export function isSupplementSuggestionAllowed(
   ingredientKey: IngredientClaimKey,
   ctx?: SupplementGateContext,
