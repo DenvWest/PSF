@@ -10,6 +10,7 @@ import {
   LEEFSTIJLCHECK_READOUT_DOMAINS,
   LEEFSTIJLCHECK_READOUT_MODEL_NOTES,
   LEEFSTIJLCHECK_REFERENCE_LIBRARY,
+  LEEFSTIJLCHECK_SDT_MODEL_NOTES,
   LEEFSTIJLCHECK_STRENGTH_DISCLAIMER,
   LEEFSTIJLCHECK_TRANSPARANTIE_NOTES,
   type EvidenceReference,
@@ -153,6 +154,35 @@ export default function OnderbouwingPage() {
           </div>
           <ul className="mt-6 space-y-2 text-base leading-relaxed text-stone-600">
             {LEEFSTIJLCHECK_READOUT_MODEL_NOTES.map((item) => (
+              <li key={item}>- {item}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-14 max-w-4xl">
+          <h2 className={sectionTitleClass}>Hoe dit model werkt</h2>
+          <p className="mt-4 text-base leading-relaxed text-stone-600">
+            De check kijkt naar drie lagen die op elkaar inwerken: onderaan de
+            determinanten (waarom je volhoudt), daarboven je gedrag, en bovenaan wat
+            je ervaart. Ze beïnvloeden elkaar — er is geen strakke eenrichtingsvolgorde.
+          </p>
+          <figure
+            className="mt-6 rounded-2xl border border-stone-200 bg-white p-6"
+            aria-label="Drielaags model: determinanten dragen gedrag, gedrag leidt tot uitkomsten; vervulde basisbehoeften geven ook direct energie."
+          >
+            <ol className="space-y-3 text-sm leading-relaxed text-stone-700">
+              <li><strong>Determinanten</strong> — Autonomie · Competentie · Verbinding <span className="text-stone-400">(parallel)</span></li>
+              <li aria-hidden className="text-stone-400">↓</li>
+              <li><strong>Gedrag</strong> — Slaap · Stress · Voeding · Beweging · Verbinding</li>
+              <li aria-hidden className="text-stone-400">↓</li>
+              <li><strong>Uitkomsten</strong> — Energie · Herstel <span className="text-stone-400">(rapport)</span></li>
+            </ol>
+            <p className="mt-3 text-xs text-stone-500">
+              Vervulde basisbehoeften geven óók direct energie — niet alleen via gedrag.
+            </p>
+          </figure>
+          <ul className="mt-6 space-y-2 text-base leading-relaxed text-stone-600">
+            {LEEFSTIJLCHECK_SDT_MODEL_NOTES.map((item) => (
               <li key={item}>- {item}</li>
             ))}
           </ul>

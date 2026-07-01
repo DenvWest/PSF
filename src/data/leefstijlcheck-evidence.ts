@@ -36,7 +36,7 @@ export type EvidenceTheme =
 
 export const LEEFSTIJLCHECK_EVIDENCE_PILLARS: string[] = [
   "Mediterrane leefstijl als breed leefstijlpatroon (voeding, ritme, beweging, herstel en sociale context).",
-  "Self-Determination Theory (autonomie, competentie en verbondenheid) voor duurzame gedragsverandering.",
+  "Self-Determination Theory: autonomie, competentie en verbondenheid zijn drie gelijkwaardige, parallelle basisbehoeften (geen volgorde) die samen duurzame motivatie en gedragsverandering dragen.",
   "Leefstijlwetenschap met prioriteit voor umbrella reviews, meta-analyses, systematische reviews en internationale richtlijnen.",
   "Gedragsbehoud via kleine haalbare stappen, zelfregulatie en gewoontevorming.",
 ];
@@ -57,6 +57,7 @@ export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Bij belangrijke nieuwe evidence kan de onderbouwingstekst en sterkteclassificatie worden geactualiseerd.",
   "Per juli 2026: herstelscore telt alleen fysiek herstel (RCV_PHYS); stressherstel (STR_RCV) hoort bij stress.",
   "Per juli 2026 (rules_version 1.2.0): vitaliteit = 4 interventiedomeinen; profiellabel driver-based.",
+  "Per juli 2026: het conceptuele model is verduidelijkt naar drie lagen (determinanten, gedrag, uitkomsten); de basisbehoeften worden als parallel beschreven en de 'energie-batterij' is als causaal mechanisme losgelaten.",
 ];
 
 export const LEEFSTIJLCHECK_INTERVENTION_DOMAINS = [
@@ -88,6 +89,16 @@ export const LEEFSTIJLCHECK_READOUT_MODEL_NOTES: string[] = [
   "Energie en vitaliteit worden in literatuur gemeten als uitkomst (bijv. Subjective Vitality Scale, SF-36 Vitality).",
   "Herstel wordt in leefstijlliteratuur benaderd via rust, slaap en belastingsbalans — niet als parallel gedragsdomein.",
   "Daarom sturen alleen de vier interventiedomeinen je prioriteit en urgentie; energie en herstel zijn rapportages.",
+];
+
+export const LEEFSTIJLCHECK_SDT_MODEL_NOTES: string[] = [
+  "We onderscheiden drie lagen: determinanten (waarom je iets volhoudt), gedrag (waar je op stuurt) en uitkomsten (wat je merkt).",
+  "Determinanten zijn de psychologische basisbehoeften uit de Self-Determination Theory: autonomie, competentie en verbondenheid — drie gelijkwaardige behoeften die parallel werken, niet in een vaste volgorde.",
+  "Gedrag = de interventiedomeinen slaap, stress, voeding, beweging en verbinding (plus leefstijlfactoren zoals alcohol en daglicht).",
+  "Uitkomsten = energie en herstel: rapporten die je leefstijl weerspiegelen, geen domeinen waar je los op stuurt.",
+  "Vervulde basisbehoeften geven niet alleen via gedrag meer energie, maar ook direct: iets doen omdat je het zelf wilt kost minder en levert meer op dan iets moeten.",
+  "Energie en herstel hangen samen (inspanning vraagt herstel), maar we presenteren dat niet als een simpele 'batterij die leegloopt' — dat mechanisme is wetenschappelijk omstreden.",
+  "Deze check is een leefstijlinstrument voor bewustwording en gedragsverandering — geen diagnose en geen behandeladvies.",
 ];
 
 const sleepRefs: EvidenceReference[] = [
