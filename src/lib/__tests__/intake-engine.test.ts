@@ -7,6 +7,7 @@ import {
   getDeficiencySignals,
   getSortedDomains,
   getAdvicePrimaryDomain,
+  isInterventionProfileDomain,
   type DomainScores,
 } from "@/lib/intake-engine";
 function makeAnswers(overrides: Record<string, number> = {}): Record<string, number> {
@@ -229,11 +230,12 @@ describe("getProfileLabel", () => {
     expect(result.name).toBe("Onrustige Slaper");
   });
 
-  it("returns 'Lage Batterij' when energy < 40", () => {
+  it("returns 'Lage Batterij' when energy < 40 with intervention driver domain", () => {
     const scores = makeScores({ energy_score: 30 });
     const result = getProfileLabel(scores);
     expect(result.name).toBe("Lage Batterij");
-    expect(result.domain).toBe("energy");
+    expect(result.domain).toBe("sleep");
+    expect(isInterventionProfileDomain(result.domain)).toBe(true);
   });
 
   it("returns 'Lage Batterij' when movement < 35", () => {
@@ -243,14 +245,39 @@ describe("getProfileLabel", () => {
     expect(result.domain).toBe("movement");
   });
 
-  it("picks energy domain when both energy and movement are low and energy is lower", () => {
+  it("prefers movement when movement < 35 even if energy is also low", () => {
     const scores = makeScores({ energy_score: 25, movement_score: 30 });
     const result = getProfileLabel(scores);
     expect(result.name).toBe("Lage Batterij");
-    expect(result.domain).toBe("energy");
+    expect(result.domain).toBe("movement");
   });
 
-  it("picks movement domain when movement is lower", () => {
+  it("picks lowest energy driver when only energy readout is low", () => {
+    const scores = makeScores({
+      energy_score: 25,
+      movement_score: 40,
+      sleep_score: 70,
+      nutrition_score: 35,
+      stress_score: 70,
+    });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Lage Batterij");
+    expect(result.domain).toBe("nutrition");
+  });
+
+  it("never assigns a readout domain to profile.domain", () => {
+    const cases: DomainScores[] = [
+      makeScores({ energy_score: 10 }),
+      makeScores({ movement_score: 20 }),
+      makeScores({ sleep_score: 20, energy_score: 20 }),
+    ];
+    for (const scores of cases) {
+      const result = getProfileLabel(scores);
+      expect(isInterventionProfileDomain(result.domain)).toBe(true);
+    }
+  });
+
+  it("picks movement domain when movement is lower than energy driver", () => {
     const scores = makeScores({ energy_score: 35, movement_score: 20 });
     const result = getProfileLabel(scores);
     expect(result.name).toBe("Lage Batterij");

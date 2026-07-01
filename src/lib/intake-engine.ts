@@ -5,8 +5,10 @@ import { COMPARISON_PATHS } from "@/lib/comparison-paths";
 /**
  * Changelog — bump bij ELKE wijziging in beslis-/adviesregels; voeg één regel toe.
  * 1.0.0 — initiële regelset
+ * 1.1.0 — recovery_score alleen RCV_PHYS; urgentie/priority op interventiedomeinen
+ * 1.2.0 — vitaliteit = 4 interventiedomeinen; profiellabel driver-based
  */
-export const RULES_VERSION = "1.1.0" as const;
+export const RULES_VERSION = "1.2.0" as const;
 
 export interface DomainScores {
   sleep_score: number;
@@ -176,6 +178,7 @@ export function getDeficiencySignals(
   const movementLoad = getMovementLoad(answers);
   const rcvPhys = getAnswer(answers, "RCV_PHYS");
   const overtrainerPattern = movementLoad >= 3 && rcvPhys <= 1;
+  /** Answer/driver-based signaal — recovery als 6e domein-rang, niet als priority-pijler. */
   const recoveryPrimary = getSortedDomains(scores)[0].domain === "recovery";
   const creatine_signal =
     (scores.recovery_score < 50 && movementLoad >= 3) ||
@@ -198,6 +201,36 @@ export function getDeficiencySignals(
     sleep_issue_no_stress: s.sleepIssueNoStress,
     energy_dip_unexplained: s.energyDipUnexplained,
   };
+}
+
+const ENERGY_DRIVER_SCORE_KEYS: ReadonlyArray<{
+  domain: Extract<DomainId, "sleep" | "nutrition" | "movement">;
+  key: DomainScoreKey;
+}> = [
+  { domain: "sleep", key: "sleep_score" },
+  { domain: "nutrition", key: "nutrition_score" },
+  { domain: "movement", key: "movement_score" },
+];
+
+function pickLowestEnergyDriverDomain(scores: DomainScores): {
+  domain: Extract<DomainId, "sleep" | "nutrition" | "movement">;
+  score: number;
+} {
+  let best = ENERGY_DRIVER_SCORE_KEYS[0];
+  for (const candidate of ENERGY_DRIVER_SCORE_KEYS.slice(1)) {
+    const candidateScore = scores[candidate.key];
+    const bestScore = scores[best.key];
+    if (candidateScore < bestScore) {
+      best = candidate;
+    }
+  }
+  return { domain: best.domain, score: scores[best.key] };
+}
+
+export function isInterventionProfileDomain(
+  domain: DomainId,
+): domain is Exclude<DomainId, "energy" | "recovery"> {
+  return domain !== "energy" && domain !== "recovery";
 }
 
 const DOMAIN_SCORE_KEYS: readonly DomainScoreKey[] = [
@@ -541,24 +574,20 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     };
   }
 
-  if (scores.energy_score < 40 || scores.movement_score < 35) {
-    const energyLow = scores.energy_score < 40;
-    const movementLow = scores.movement_score < 35;
-    let domain: DomainId;
-    if (energyLow && movementLow) {
-      domain =
-        scores.energy_score <= scores.movement_score ? "energy" : "movement";
-    } else if (energyLow) {
-      domain = "energy";
-    } else {
-      domain = "movement";
-    }
-    const score =
-      domain === "energy" ? scores.energy_score : scores.movement_score;
+  if (scores.movement_score < 35) {
     return {
       name: "Lage Batterij",
-      domain,
-      score,
+      domain: "movement",
+      score: scores.movement_score,
+    };
+  }
+
+  if (scores.energy_score < 40) {
+    const driver = pickLowestEnergyDriverDomain(scores);
+    return {
+      name: "Lage Batterij",
+      domain: driver.domain,
+      score: driver.score,
     };
   }
 

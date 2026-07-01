@@ -1,6 +1,8 @@
 # INTAKE SYSTEM — PerfectSupplement
 
 > **Layer 2 — Systems.** Hoe de intake flow werkt.
+>
+> **Concepten:** zie [DOMAIN_MODEL.md](./DOMAIN_MODEL.md) voor interventie vs readout, vitaliteit, profiel en prioriteit.
 
 ---
 
@@ -111,14 +113,17 @@ Berekend op **interventiedomeinen** (slaap, stress, voeding, beweging). Energie 
 
 ### Profiellabels
 
-| Profiel | Trigger | Primaire score |
+| Profiel | Trigger | `profile.domain` (altijd interventie) |
 |---|---|---|
-| Onrustige Slaper | `sleep_score < 40` | sleep_score |
-| Stressdrager | `stress_score < 40` | stress_score |
-| Lage Batterij | `energy_score < 40` of `movement_score < 35` | energy_score / movement_score |
-| In Balans | Alle domeinen ≥ 40 | hoogste domein |
+| Onrustige Slaper | `sleep_score < 40` | sleep |
+| Stressdrager | `stress_score < 40` | stress |
+| Lage Batterij | `movement_score < 35` | movement |
+| Lage Batterij | `energy_score < 40` (readout) | laagste energie-driver: slaap, voeding of beweging |
+| In Balans | geen triggers hierboven | laagste interventiedomein |
 
-**Prioriteit bij meerdere matches:** slaap > stress > energie/beweging. Nutrition en recovery hebben geen eigen profiellabel.
+**Vitaliteitsscore (rules_version ≥ 1.2.0):** gemiddelde van slaap, stress, voeding, beweging — energie en herstel zijn readouts en tellen niet mee.
+
+**Prioriteit bij meerdere matches:** slaap > stress > voeding > beweging (zie `DOMAIN_MODEL.md`). Nutrition heeft geen eigen profiellabel.
 
 **Overtrainer-patroon:** Geen apart profiellabel in de engine. Het patroon (`max(MOV_CARD, MOV_STR) ≥ 3` EN `RCV_PHYS ≤ 1`) wordt herkend in `getSupplementRoute` en op de resultatenpagina. Er bestaat een `/profiel/overtrainer` pagina.
 

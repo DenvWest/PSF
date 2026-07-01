@@ -562,6 +562,7 @@ const NowSection = ({ empty, model }: SharedSectionProps) => {
     getVitalityExplainer({
       vitality: currentModel.vitality,
       vitalityDelta: currentModel.vitalityDelta,
+      vitalityDeltaComparable: currentModel.vitalityDeltaNote == null,
       priorityId: currentModel.priority.id,
       priorityScore: currentModel.scores[currentModel.priority.id],
       answers: currentModel.answers,

@@ -192,11 +192,21 @@ Meta-analyse SDT-interventies (Ntoumanis et al., 2021): effecten op motivatie en
 
 ## Geïmplementeerde wijzigingen (juli 2026)
 
+### rules_version 1.1.0
+
 1. `recovery_score` = alleen `RCV_PHYS` (max 3)  
 2. `getUrgency()` = alleen interventiedomeinen  
 3. `derivePriority()` = interventiedomeinen bovenaan ladder, readouts onderaan  
 4. UI: readout-pijlers gelabeld als “Rapport”  
 5. Onderbouwing-pagina: sectie interventie vs. rapport
+
+### rules_version 1.2.0 (optie 7-strikt)
+
+6. Vitaliteitsscore = gemiddelde van 4 interventiedomeinen (recovery uit facets)  
+7. `getProfileLabel()`: “Lage Batterij” driver-based — `profile.domain` nooit readout  
+8. Delta-guard over `rules_version`-grens (herstel + vitaliteit)  
+9. Nurture-tip-ladder alleen interventiedomeinen  
+10. Architectuurdocument: `docs/core/DOMAIN_MODEL.md`
 
 ---
 

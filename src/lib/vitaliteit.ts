@@ -2,7 +2,7 @@ import type { DomainScores } from "@/lib/intake-engine";
 import { getDisplayStatus, type DisplayStatus } from "@/lib/score-display";
 
 export type FacetSource = "self_report" | "wearable";
-export type FacetKey = "sleep" | "stress" | "nutrition" | "movement" | "recovery";
+export type FacetKey = "sleep" | "stress" | "nutrition" | "movement";
 
 export interface VitaliteitFacet {
   key: FacetKey;
@@ -16,7 +16,6 @@ const FACET_SCORE_KEYS: Record<FacetKey, keyof DomainScores> = {
   stress: "stress_score",
   nutrition: "nutrition_score",
   movement: "movement_score",
-  recovery: "recovery_score",
 };
 
 const FACET_KEYS: FacetKey[] = [
@@ -24,10 +23,9 @@ const FACET_KEYS: FacetKey[] = [
   "stress",
   "nutrition",
   "movement",
-  "recovery",
 ];
 
-/** Vitality bewust zonder energy_score: energie is een readout, geen interventiedomein. */
+/** Vitality = gemiddelde van 4 interventiedomeinen; energie en herstel zijn readouts. */
 export function resolveVitaliteitFacets(
   scores: DomainScores,
   biometrics?: unknown,

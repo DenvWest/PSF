@@ -10,6 +10,7 @@ import {
   LEEFSTIJLCHECK_READOUT_DOMAINS,
   LEEFSTIJLCHECK_READOUT_MODEL_NOTES,
   LEEFSTIJLCHECK_REFERENCE_LIBRARY,
+  LEEFSTIJLCHECK_STRENGTH_DISCLAIMER,
   LEEFSTIJLCHECK_TRANSPARANTIE_NOTES,
   type EvidenceReference,
 } from "@/data/leefstijlcheck-evidence";
@@ -174,6 +175,9 @@ export default function OnderbouwingPage() {
 
         <section className="mt-16">
           <h2 className={sectionTitleClass}>Onderbouwing per vraag</h2>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-stone-500">
+            {LEEFSTIJLCHECK_STRENGTH_DISCLAIMER}
+          </p>
           <div className="mt-6 space-y-6">
             {QUESTIONS.map((question, index) => {
               const evidence = LEEFSTIJLCHECK_EVIDENCE_BY_ID[question.id];

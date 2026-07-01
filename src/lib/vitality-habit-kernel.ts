@@ -1,9 +1,5 @@
 import type { QuestionId } from "@/data/intake-questions";
 import { getDisplayStatus, type DisplayStatus } from "@/lib/score-display";
-import {
-  resolveVitaliteitFacets,
-  type FacetKey,
-} from "@/lib/vitaliteit";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { PillarId } from "@/types/dashboard";
 
@@ -45,14 +41,6 @@ const PILLAR_QUESTIONS: Record<PillarId, QuestionId[]> = {
   herstel: ["RCV_PHYS"],
 };
 
-const FACET_LABEL: Record<FacetKey, string> = {
-  sleep: "slaap",
-  stress: "stress",
-  nutrition: "voeding",
-  movement: "beweging",
-  recovery: "herstel",
-};
-
 function getAnswer(answers: Record<string, number>, id: QuestionId): number {
   const value = answers[id];
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
@@ -72,14 +60,6 @@ function resolveWeakestQuestion(
     }
   }
   return weakest;
-}
-
-function getWeakestVitalityFacet(scores: DomainScores): FacetKey | null {
-  const facets = resolveVitaliteitFacets(scores)
-    .filter((facet) => Number.isFinite(facet.value))
-    .sort((a, b) => a.value - b.value);
-
-  return facets[0]?.key ?? null;
 }
 
 function resolveDriverHabitLine(id: QuestionId, value: number): string {
@@ -202,14 +182,7 @@ export function buildHabitScoreKernel(input: HabitKernelInput): HabitScoreKernel
   const driverHabitId = `${weakest.id}:${weakest.value}`;
   const driverHabitLine = resolveDriverHabitLine(weakest.id, weakest.value);
 
-  const driverLinkLine =
-    input.priorityId === "energie"
-      ? (() => {
-          const facet = getWeakestVitalityFacet(input.domainScores);
-          const facetText = facet ? FACET_LABEL[facet] : "je leefstijl";
-          return `Energie staat op ${input.priorityScore}; je laagste factor zit in ${facetText} en houdt vitaliteit op ${input.vitality}.`;
-        })()
-      : `${label} staat op ${input.priorityScore} en houdt vitaliteit op ${input.vitality}.`;
+  const driverLinkLine = `${label} staat op ${input.priorityScore} en houdt vitaliteit op ${input.vitality}.`;
 
   return {
     vitalityBand,

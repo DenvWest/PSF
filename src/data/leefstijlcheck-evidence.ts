@@ -48,11 +48,15 @@ export const LEEFSTIJLCHECK_INTERPRETATION_NOTES: string[] = [
   "Uitkomsten zijn bedoeld voor bewustwording, prioritering en duurzame gedragsverandering in kleine stappen.",
 ];
 
+export const LEEFSTIJLCHECK_STRENGTH_DISCLAIMER =
+  "Sterren per vraag meten signaalsterkte (is dit een valide leefstijlsignaal?). Domeinschaal-sterkte voor energie/herstel als zelfstandig domein staat in het evaluatierapport — dat is lager dan de signaalsterkte van losse items.";
+
 export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Bronnen worden periodiek herzien door nieuwe reviews en richtlijnen te screenen op kwaliteit en relevantie.",
   "Nieuwe studies worden alleen toegevoegd als methodologische kwaliteit en toepasbaarheid voldoende zijn.",
   "Bij belangrijke nieuwe evidence kan de onderbouwingstekst en sterkteclassificatie worden geactualiseerd.",
   "Per juli 2026: herstelscore telt alleen fysiek herstel (RCV_PHYS); stressherstel (STR_RCV) hoort bij stress.",
+  "Per juli 2026 (rules_version 1.2.0): vitaliteit = 4 interventiedomeinen; profiellabel driver-based.",
 ];
 
 export const LEEFSTIJLCHECK_INTERVENTION_DOMAINS = [
@@ -355,10 +359,10 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
         "Een lager antwoord wordt vaak gezien binnen patronen met grotere schommelingen in ritme, herstel of dagstructuur.",
     },
     strength: {
-      stars: 4,
-      label: "Sterk bewijs",
+      stars: 3,
+      label: "Redelijk bewijs",
       rationale:
-        "Meerdere domeinoverstijgende reviews ondersteunen energie als relevante leefstijluitkomst.",
+        "Sterk als leefstijlsignaal; zwakker als zelfstandige domeinschaal (readout, geen interventiedomein).",
     },
     references: [...movementRefs.slice(0, 2), ...sleepRefs.slice(0, 2), behaviorRefs[3]],
   },
@@ -381,7 +385,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
       stars: 3,
       label: "Redelijk bewijs",
       rationale:
-        "Goede gedragsmatige plausibiliteit, met vooral observationeel bewijs en minder directe RCT-ketens.",
+        "Gedragsmatige plausibiliteit; als domeinschaal beperkt — deels compensatiegedrag, geen gevalideerde schaal.",
     },
     references: [...behaviorRefs, nutritionRefs[3]],
   },
