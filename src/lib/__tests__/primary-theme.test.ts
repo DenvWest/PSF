@@ -3,7 +3,6 @@ import type { DomainScores } from "@/lib/intake-engine";
 import {
   getPrimaryTheme,
   getSecondaryTheme,
-  type MeasuredPillarId,
 } from "@/lib/primary-theme";
 
 function baseScores(overrides: Partial<DomainScores> = {}): DomainScores {
@@ -18,14 +17,6 @@ function baseScores(overrides: Partial<DomainScores> = {}): DomainScores {
     ...overrides,
   };
 }
-
-const MEASURED_PILLARS: MeasuredPillarId[] = [
-  "sleep",
-  "stress",
-  "nutrition",
-  "movement",
-  "connection",
-];
 
 describe("getPrimaryTheme", () => {
   it("picks sleep when sleep_score is lowest", () => {
