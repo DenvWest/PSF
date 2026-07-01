@@ -13,7 +13,9 @@ import type {
   DomainScores,
   ProfileLabel,
 } from "@/lib/intake-engine";
-import { getSupplementRoute } from "@/lib/getSupplementRoute";
+import { RULES_VERSION } from "@/lib/intake-engine";
+import { ROUTE_NAMES } from "@/lib/getSupplementRoute";
+import { getRecommendations, getCatalogEntry } from "@/lib/recommendation-engine";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -291,35 +293,42 @@ function pickTopPerKind(
   return buckets;
 }
 
-function buildFallbackBuckets(
+export function buildFallbackBuckets(
   scores: DomainScores,
   deficiencySignals: DeficiencySignals,
   profileLabel: ProfileLabel,
   answers: Record<string, number>,
 ): InterventionBuckets {
-  const routes = getSupplementRoute(
-    scores,
-    deficiencySignals,
-    profileLabel,
-    answers,
+  const recommendations = getRecommendations(
+    {
+      scores,
+      signals: deficiencySignals,
+      profileLabel,
+      answers,
+      rulesVersion: RULES_VERSION,
+    },
+    { source: "route" },
   );
-  const top = routes[0];
+  const top = recommendations[0];
   if (!top) {
     return { free_action: null, measurement: null, supplement: null };
   }
+
+  const copy = ROUTE_NAMES[top.supplementId];
+  const entry = getCatalogEntry(top.supplementId);
 
   return {
     free_action: null,
     measurement: null,
     supplement: {
-      id: top.id,
-      slug: top.id,
-      name: top.name,
+      id: top.supplementId,
+      slug: top.supplementId,
+      name: copy?.name ?? top.supplementId,
       kind: "supplement",
-      description: top.reason,
+      description: copy?.reason ?? "",
       goalPhrase: null,
-      affiliateUrl: top.affiliateUrl,
-      comparisonPath: top.hasComparison ? top.affiliateUrl : null,
+      affiliateUrl: top.comparisonPath,
+      comparisonPath: entry?.hasComparison ? top.comparisonPath : null,
       tier: 3,
       isPaid: true,
       paidDisclosureKey: "paid_action_default",

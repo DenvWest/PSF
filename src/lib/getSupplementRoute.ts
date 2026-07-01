@@ -6,7 +6,7 @@ import { getRecommendations, matchesOvertrainerAnswers } from "@/lib/recommendat
 
 export { matchesOvertrainerAnswers };
 
-const ROUTE_NAMES: Record<string, { name: string; reason: string }> = {
+export const ROUTE_NAMES: Record<string, { name: string; reason: string }> = {
   "omega-3": {
     name: "Omega-3 (EPA/DHA)",
     reason:

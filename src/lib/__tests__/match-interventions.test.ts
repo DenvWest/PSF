@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildFallbackBuckets,
   interventionTriggersMatch,
   type InterventionTriggerRow,
 } from "@/lib/content/match-interventions";
 import type { DeficiencySignals, DomainScores, ProfileLabel } from "@/lib/intake-engine";
+import { getRecommendations } from "@/lib/recommendation-engine";
+import { buildRecommendationInput } from "@/lib/recommendation-input";
 
 const baseScores: DomainScores = {
   sleep_score: 70,
@@ -137,5 +140,45 @@ describe("interventionTriggersMatch", () => {
         answers: {},
       }),
     ).toBe(true);
+  });
+});
+
+describe("buildFallbackBuckets engine-parity", () => {
+  it("supplement-bucket komt uit getRecommendations(route)[0]", () => {
+    const input = buildRecommendationInput({
+      scores: {
+        sleep_score: 30, energy_score: 40, stress_score: 30,
+        nutrition_score: 45, movement_score: 60, recovery_score: 40,
+      },
+      answers: {},
+    });
+    const buckets = buildFallbackBuckets(
+      input.scores, input.signals, input.profileLabel, input.answers,
+    );
+    const top = getRecommendations(input, { source: "route" })[0];
+
+    expect(top).toBeDefined();
+    expect(buckets.supplement?.slug).toBe(top?.supplementId);
+    expect(buckets.supplement?.affiliateUrl).toBe(top?.comparisonPath);
+  });
+});
+
+describe("buildFallbackBuckets engine-parity", () => {
+  it("supplement-bucket komt uit getRecommendations(route)[0]", () => {
+    const input = buildRecommendationInput({
+      scores: {
+        sleep_score: 30, energy_score: 40, stress_score: 30,
+        nutrition_score: 45, movement_score: 60, recovery_score: 40,
+      },
+      answers: {},
+    });
+    const buckets = buildFallbackBuckets(
+      input.scores, input.signals, input.profileLabel, input.answers,
+    );
+    const top = getRecommendations(input, { source: "route" })[0];
+
+    expect(top).toBeDefined();
+    expect(buckets.supplement?.slug).toBe(top?.supplementId);
+    expect(buckets.supplement?.affiliateUrl).toBe(top?.comparisonPath);
   });
 });
