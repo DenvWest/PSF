@@ -9,6 +9,7 @@ import {
   validateIntakeConsent,
 } from "@/lib/intake-consent";
 import { deleteIntakeSessionForSession } from "@/lib/intake-consent-revoke";
+import { rollbackIntakeSession } from "@/lib/intake-session-rollback";
 import { computeIntakePersistenceFields, validateIntakeSubmission } from "@/lib/intake-compute";
 import {
   buildRemeasureCompletedPayload,
@@ -326,7 +327,7 @@ export async function POST(request: NextRequest) {
 
   if (consentError) {
     console.error("[api/intake/session] consent insert error:", consentError);
-    await admin.from("intake_sessions").delete().eq("id", row.id);
+    await rollbackIntakeSession(admin, row.id);
     return NextResponse.json(
       { error: "Kon toestemming niet vastleggen. Probeer het opnieuw." },
       { status: 500 },
@@ -362,7 +363,7 @@ export async function POST(request: NextRequest) {
 
     if (!snapshotResult.ok) {
       console.error("[api/intake/session] baseline snapshot error:", snapshotResult.error);
-      await admin.from("intake_sessions").delete().eq("id", row.id);
+      await rollbackIntakeSession(admin, row.id);
       return NextResponse.json(
         { error: "Kon intake niet opslaan." },
         { status: 500 },
