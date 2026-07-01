@@ -73,6 +73,7 @@ type SharedSectionProps = {
   data?: DashboardData;
   isMember: boolean;
   tab: DashboardTabId;
+  kompasResetSignal: number;
   onCheck: () => void;
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
@@ -2871,7 +2872,8 @@ const SECTION_RENDERERS: Record<
   vitalityScore: (props) => <VitalityScoreSection {...props} />,
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
-  kompasHome: (props) => (props.empty ? null : <KompasHome {...props} />),
+  kompasHome: (props) =>
+    props.empty ? null : <KompasHome key={`kompas-${props.kompasResetSignal}`} {...props} />,
   signals: (props) => (props.empty ? null : <SignalsSection {...props} />),
   nutritionIntake: (props) =>
     props.empty ? null : <NutritionIntakeSection {...props} />,
@@ -3055,6 +3057,7 @@ export default function Dashboard({
   const [tab, setTab] = useState<DashboardTabId>(
     initialTab ?? (empty ? "voortgang" : "vandaag"),
   );
+  const [kompasResetSignal, setKompasResetSignal] = useState(0);
   const [voortgangScreen, setVoortgangScreen] = useState<VoortgangScreen>(
     initialVoortgangScreen ?? "hub",
   );
@@ -3081,6 +3084,19 @@ export default function Dashboard({
     : allowedTypes;
 
   const selectTab = (nextTab: DashboardTabId) => {
+    if (nextTab === "vandaag" && tab === "vandaag") {
+      setKompasResetSignal((prev) => prev + 1);
+      trackEvent("dashboard_kompas_tab_reset", { source: "tabbar" });
+      clarityTag("dashboard_kompas_view", "home_reset");
+    }
+    if (nextTab === "voortgang" && tab === "voortgang" && voortgangScreen !== "hub") {
+      setVoortgangScreen("hub");
+      trackEvent("dashboard_voortgang_tab_reset", {
+        source: "tabbar",
+        from_screen: voortgangScreen,
+      });
+      clarityTag("dashboard_voortgang", "hub_reset");
+    }
     if (nextTab !== "voortgang") {
       setVoortgangScreen("hub");
     }
@@ -3116,6 +3132,7 @@ export default function Dashboard({
     data,
     isMember,
     tab,
+    kompasResetSignal,
     onCheck,
     onDashboardCheckin,
     onRemeasure,
