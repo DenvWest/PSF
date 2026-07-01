@@ -7,7 +7,7 @@ import { AuthShell, TrustLine } from "@/components/account/AuthShell";
 import { ArrowRight, Lock, Mail, Refresh, Shield } from "@/components/app/icons";
 import { Button, Checkbox, TextField } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
-import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
+import { GA4_EVENTS, trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import type { AccountLoginFrom } from "@/lib/account-login-href";
 import { NURTURE_DAY0_DASHBOARD_REF } from "@/lib/nurture-dashboard-url";
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
@@ -592,6 +592,17 @@ export default function LoginScreen({
                 Nieuw hier?{" "}
                 <Link href="/hoe-werkt-dashboard" style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}>
                   Bekijk hoe het dashboard werkt
+                </Link>
+                {" · "}
+                <Link
+                  href="/onderbouwing"
+                  onClick={() => {
+                    trackOnderbouwingLinkClick({ surface: "login_help" });
+                    clarityTag("onderbouwing_link", "login_help");
+                  }}
+                  style={{ color: "var(--text)", textDecoration: "underline", textUnderlineOffset: 2 }}
+                >
+                  Onderbouwing
                 </Link>
                 .
               </p>

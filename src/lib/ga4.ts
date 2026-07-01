@@ -9,6 +9,7 @@ export const GA4_EVENTS = {
   INTAKE_FEEDBACK_SUBMITTED: 'intake_feedback_submitted',
   DASHBOARD_UNLOCK_VIEWED: 'dashboard_unlock_viewed',
   DASHBOARD_UNLOCK_CTA_CLICKED: 'dashboard_unlock_cta_clicked',
+  ONDERBOUWING_LINK_CLICKED: 'onderbouwing_link_clicked',
   HOME_PROFILE_CLICK: 'home_profile_click',
   REMEASURE_OPTIN_SUBMITTED: 'remeasure_optin_submitted',
   NURTURE_DASHBOARD_CTA_CLICKED: 'nurture_dashboard_cta_clicked',
@@ -42,4 +43,12 @@ export function trackPaginaType(type:
   'vergelijking' | 'blog' | 'supplement'
 ) {
   trackEvent(GA4_EVENTS.PAGINA_TYPE, { type });
+}
+
+export function trackOnderbouwingLinkClick(params: {
+  surface: "dashboard_footer" | "login_help";
+  tab?: string;
+  screen?: string;
+}) {
+  trackEvent(GA4_EVENTS.ONDERBOUWING_LINK_CLICKED, params);
 }

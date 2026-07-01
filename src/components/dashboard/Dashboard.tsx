@@ -42,7 +42,7 @@ import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
-import { trackEvent } from "@/lib/ga4";
+import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
@@ -3205,6 +3205,27 @@ export default function Dashboard({
             }}
           >
             Hoe werkt dit dashboard?
+          </Link>
+          <span aria-hidden> · </span>
+          <Link
+            href="/onderbouwing"
+            onClick={() => {
+              trackOnderbouwingLinkClick({
+                surface: "dashboard_footer",
+                tab,
+                screen: voortgangScreen,
+              });
+              clarityTag("onderbouwing_link", "dashboard_footer");
+            }}
+            style={{
+              color: isVoortgangHubDarkFooter
+                ? "rgba(255,255,255,0.72)"
+                : "var(--text-muted)",
+              textDecoration: "underline",
+              textUnderlineOffset: 2,
+            }}
+          >
+            Onderbouwing
           </Link>
           <br />
           PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
