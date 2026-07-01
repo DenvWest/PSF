@@ -42,6 +42,15 @@ describe("verifyCronRequest", () => {
     expect(result.authorized).toBe(false);
   });
 
+  it("rejects a same-length but wrong bearer token (timing-safe)", () => {
+    const sameLengthWrong = "XXXX-cron-secret-abc123";
+    expect(sameLengthWrong).toHaveLength(TEST_SECRET.length);
+    const result = verifyCronRequest(
+      makeRequest({ Authorization: `Bearer ${sameLengthWrong}` }),
+    );
+    expect(result.authorized).toBe(false);
+  });
+
   it("authorizes valid HMAC signature", () => {
     const timestamp = Date.now().toString();
     const signature = createHmac("sha256", TEST_SECRET)

@@ -28,7 +28,13 @@ function verifyBearerToken(request: Request, secret: string): boolean {
   const token = trimmed.toLowerCase().startsWith("bearer ")
     ? trimmed.slice(7).trim()
     : trimmed;
-  return token === secret;
+
+  const tokenBuffer = Buffer.from(token);
+  const secretBuffer = Buffer.from(secret);
+  if (tokenBuffer.length !== secretBuffer.length) {
+    return false;
+  }
+  return timingSafeEqual(tokenBuffer, secretBuffer);
 }
 
 function verifyHmacSignature(request: Request, secret: string): boolean {
