@@ -293,20 +293,26 @@ export async function loadAccountDashboardData(
   }
 
   const sessionIds = snapshots.map((snapshot) => snapshot.id);
-  const { data: checkinData } = await admin
-    .from("intake_domain_checkin")
-    .select("session_id,domain_key,score,created_at")
-    .in("session_id", sessionIds)
-    .order("created_at", { ascending: true });
-  const { data: logRows } = await admin
-    .from("intake_intake_log")
-    .select("estimate, logged_at, nutrition_score")
-    .in("session_id", sessionIds)
-    .order("logged_at", { ascending: true });
-  const { data: planProgressRows } = await admin
-    .from("plan_progress")
-    .select("session_id, domain, steps")
-    .in("session_id", sessionIds);
+  const [
+    { data: checkinData },
+    { data: logRows },
+    { data: planProgressRows },
+  ] = await Promise.all([
+    admin
+      .from("intake_domain_checkin")
+      .select("session_id,domain_key,score,created_at")
+      .in("session_id", sessionIds)
+      .order("created_at", { ascending: true }),
+    admin
+      .from("intake_intake_log")
+      .select("estimate, logged_at, nutrition_score")
+      .in("session_id", sessionIds)
+      .order("logged_at", { ascending: true }),
+    admin
+      .from("plan_progress")
+      .select("session_id, domain, steps")
+      .in("session_id", sessionIds),
+  ]);
 
   let nutritionIntake: DashboardData["nutritionIntake"] = null;
   const latestLog = logRows?.[logRows.length - 1];
