@@ -43,13 +43,12 @@ export const VITALITY_SCORE_MAX = 100;
 export const VITALITY_ON_PEIL_MIN =
   VITALITY_BANDS.find((band) => band.id === "goed")?.min ?? 55;
 
-/** Pijlers die meetellen in computeVitaliteit — energie valt buiten de index. */
+/** Pijlers die meetellen in computeVitaliteit — alleen de 4 interventiedomeinen. */
 export const VITALITY_FACET_PILLAR_IDS: readonly PillarId[] = [
   "slaap",
   "stress",
   "voeding",
   "beweging",
-  "herstel",
 ];
 
 export const VITALITY_FACET_COUNT = VITALITY_FACET_PILLAR_IDS.length;

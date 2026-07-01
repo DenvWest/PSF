@@ -36,7 +36,6 @@ const FACET_LABEL: Record<FacetKey, string> = {
   stress: "stress",
   nutrition: "voeding",
   movement: "beweging",
-  recovery: "herstel",
 };
 
 export type VitalityFraming = {

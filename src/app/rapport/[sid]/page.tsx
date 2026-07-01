@@ -4,10 +4,12 @@ import { notFound } from "next/navigation";
 import { DeltaRadar } from "@/components/report/DeltaRadar";
 import { DeltaRow } from "@/components/report/DeltaRow";
 import {
-  computePerDomainDelta,
   loadBaselineSnapshot,
+  sanitizePerDomainDelta,
 } from "@/lib/intake-baseline";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
+import { RULES_VERSION } from "@/lib/intake-engine";
+import { hasMethodologyChange, isVitalityDeltaComparable } from "@/lib/rules-version";
 import { verifySignedIntakeSessionCookie } from "@/lib/intake-session-cookie";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import {
@@ -42,15 +44,15 @@ const DOMAIN_KEYS: DomainScoreKey[] = [
 type Params = Promise<{ sid: string }>;
 type SearchParams = Promise<{ base?: string }>;
 
-async function loadRemeasureScores(
+async function loadRemeasureSession(
   remeasureSessionId: string,
-): Promise<DomainScores | null> {
+): Promise<{ scores: DomainScores; rulesVersion: string } | null> {
   const admin = createSupabaseAdmin();
   if (!admin) return null;
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("domain_scores")
+    .select("domain_scores, rules_version")
     .eq("id", remeasureSessionId)
     .maybeSingle();
 
@@ -67,7 +69,13 @@ async function loadRemeasureScores(
     }
     scores[key] = record[key] as number;
   }
-  return scores;
+
+  const rulesVersion =
+    typeof data.rules_version === "string" && data.rules_version.trim()
+      ? data.rules_version.trim()
+      : RULES_VERSION;
+
+  return { scores, rulesVersion };
 }
 
 export default async function RapportPage({
@@ -91,28 +99,48 @@ export default async function RapportPage({
     notFound();
   }
 
-  const [remeasureScores, baselineSnapshot] = await Promise.all([
-    loadRemeasureScores(remeasureSessionId),
+  const [remeasureSession, baselineSnapshot] = await Promise.all([
+    loadRemeasureSession(remeasureSessionId),
     loadBaselineSnapshot(baselineSessionId),
   ]);
 
-  if (!remeasureScores || !baselineSnapshot) {
+  if (!remeasureSession || !baselineSnapshot) {
     notFound();
   }
 
-  const delta = computePerDomainDelta(
-    baselineSnapshot.domainScores,
-    remeasureScores,
+  const remeasureScores = remeasureSession.scores;
+  const currentRulesVersion = remeasureSession.rulesVersion;
+  const methodologyChanged = hasMethodologyChange(
+    baselineSnapshot.rulesVersion,
+    currentRulesVersion,
   );
+  const delta = sanitizePerDomainDelta({
+    baseline: baselineSnapshot.domainScores,
+    current: remeasureScores,
+    baselineRulesVersion: baselineSnapshot.rulesVersion,
+    currentRulesVersion,
+  });
   const baselineVitaliteitIndex = computeVitaliteit(
     resolveVitaliteitFacets(baselineSnapshot.domainScores),
   );
   const currentVitaliteitIndex = computeVitaliteit(
     resolveVitaliteitFacets(remeasureScores),
   );
-  const vitaliteitDelta = currentVitaliteitIndex - baselineVitaliteitIndex;
+  const vitalityComparable = isVitalityDeltaComparable(
+    baselineSnapshot.rulesVersion,
+    currentRulesVersion,
+  );
+  const vitaliteitDelta = vitalityComparable
+    ? currentVitaliteitIndex - baselineVitaliteitIndex
+    : null;
   const vitaliteitDirection =
-    vitaliteitDelta > 0 ? "up" : vitaliteitDelta < 0 ? "down" : "neutral";
+    vitaliteitDelta == null
+      ? "neutral"
+      : vitaliteitDelta > 0
+        ? "up"
+        : vitaliteitDelta < 0
+          ? "down"
+          : "neutral";
 
   const daysSinceBaseline = Math.max(
     0,
@@ -146,6 +174,7 @@ export default async function RapportPage({
               baseline={baselineSnapshot.domainScores}
               current={remeasureScores}
               daysSinceBaseline={daysSinceBaseline}
+              methodologyChanged={methodologyChanged}
             />
           </section>
 
@@ -179,7 +208,9 @@ export default async function RapportPage({
                         : "▬"}
                   </span>
                   <span className="font-semibold text-slate-700 text-sm">
-                    van {baselineVitaliteitIndex} naar {currentVitaliteitIndex}
+                    {vitalityComparable
+                      ? `van ${baselineVitaliteitIndex} naar ${currentVitaliteitIndex}`
+                      : "Methodiek gewijzigd — niet vergelijkbaar"}
                   </span>
                 </div>
               </div>

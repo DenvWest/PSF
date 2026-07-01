@@ -121,7 +121,12 @@ export type Signal = {
 
 export type CheckScores = Record<PillarId, number>;
 export type CheckTrend = Record<PillarId, number[]>;
-export type CheckSnapshot = { scores: CheckScores; vitality: number; date: string };
+export type CheckSnapshot = {
+  scores: CheckScores;
+  vitality: number;
+  date: string;
+  rulesVersion?: string;
+};
 
 export type Check = {
   seq: number;
@@ -193,6 +198,7 @@ export type DashboardModel = {
   strongest: Pillar;
   vitality: number;
   vitalityDelta: number | null;
+  vitalityDeltaNote: string | null;
   lifestyle: LifestyleItem[];
   supplement: PillarSupplement | null;
   trend: CheckTrend;

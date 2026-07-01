@@ -54,10 +54,10 @@ describe("countVitalityFacetsOnPeil", () => {
 
   it("derives threshold from goed band", () => {
     expect(VITALITY_ON_PEIL_MIN).toBe(55);
-    expect(VITALITY_FACET_COUNT).toBe(5);
+    expect(VITALITY_FACET_COUNT).toBe(4);
   });
 
-  it("counts all five facets when each is on peil (alignment case)", () => {
+  it("counts all four intervention facets when each is on peil", () => {
     const scores: CheckScores = {
       ...baseScores,
       slaap: 58,
@@ -66,7 +66,7 @@ describe("countVitalityFacetsOnPeil", () => {
       beweging: 58,
       herstel: 58,
     };
-    expect(countVitalityFacetsOnPeil(scores)).toBe(5);
+    expect(countVitalityFacetsOnPeil(scores)).toBe(4);
     expect(getVitalityBand(58).id).toBe("goed");
   });
 
@@ -90,6 +90,6 @@ describe("countVitalityFacetsOnPeil", () => {
       movement_score: scores.beweging,
       recovery_score: scores.herstel,
     };
-    expect(computeVitaliteit(resolveVitaliteitFacets(domainScores))).toBe(53);
+    expect(computeVitaliteit(resolveVitaliteitFacets(domainScores))).toBe(54);
   });
 });

@@ -6,6 +6,7 @@ export type DeltaRadarProps = {
   baseline: Record<DomainScoreKey, number>;
   current: Record<DomainScoreKey, number>;
   daysSinceBaseline?: number;
+  methodologyChanged?: boolean;
 };
 
 const DOMAIN_LABELS: Record<DomainScoreKey, string> = {
@@ -53,7 +54,12 @@ function buildPath(
     .join(" ");
 }
 
-export function DeltaRadar({ baseline, current, daysSinceBaseline }: DeltaRadarProps) {
+export function DeltaRadar({
+  baseline,
+  current,
+  daysSinceBaseline,
+  methodologyChanged = false,
+}: DeltaRadarProps) {
   const SIZE = 220;
   const CX = SIZE / 2;
   const CY = SIZE / 2;
@@ -141,6 +147,13 @@ export function DeltaRadar({ baseline, current, daysSinceBaseline }: DeltaRadarP
           );
         })}
       </svg>
+
+      {methodologyChanged ? (
+        <p className="max-w-xs text-center text-xs text-slate-500">
+          Methodiek gewijzigd sinds je baseline — herstel- en vitaliteitsdelta zijn niet
+          1-op-1 vergelijkbaar.
+        </p>
+      ) : null}
 
       {/* Legenda */}
       <div className="flex items-center gap-4 text-xs text-slate-500">

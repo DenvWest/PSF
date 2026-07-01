@@ -479,6 +479,7 @@ function VitaalscoreInzichtenView({
   const explainer = getVitalityExplainer({
     vitality: model.vitality,
     vitalityDelta: model.vitalityDelta,
+    vitalityDeltaComparable: model.vitalityDeltaNote == null,
     priorityId: model.priority.id,
     priorityScore: model.scores[model.priority.id],
     answers: model.answers,

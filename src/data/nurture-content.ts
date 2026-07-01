@@ -1,5 +1,6 @@
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import type { ProfileLabel } from "@/lib/intake-engine";
+import { INTERVENTION_DOMAIN_SCORE_KEYS } from "@/lib/intake-engine";
 import type { ResolvedNurtureCta } from "@/lib/resolve-nurture-cta";
 import type { NurturePlanGate } from "@/lib/content/nurture-interventions";
 import { resolveDomainSupplementTip } from "@/lib/resolve-domain-supplement-tip";
@@ -446,16 +447,9 @@ export const nurtureContent: Record<
 export function getWeakestDomain(
   domainScores: Record<string, number>,
 ): DomainKey {
-  const domains: DomainKey[] = [
-    "sleep_score",
-    "energy_score",
-    "stress_score",
-    "nutrition_score",
-    "movement_score",
-    "recovery_score",
-  ];
+  const domains = INTERVENTION_DOMAIN_SCORE_KEYS as DomainKey[];
 
-  let weakest: DomainKey = "sleep_score";
+  let weakest: DomainKey = domains[0];
   let lowestScore = Infinity;
 
   for (const domain of domains) {
@@ -469,14 +463,7 @@ export function getWeakestDomain(
   return weakest;
 }
 
-const ALL_DOMAINS: DomainKey[] = [
-  "sleep_score",
-  "energy_score",
-  "stress_score",
-  "nutrition_score",
-  "movement_score",
-  "recovery_score",
-];
+const ALL_DOMAINS: DomainKey[] = [...INTERVENTION_DOMAIN_SCORE_KEYS];
 
 export function getDomainsByScoreAscending(
   domainScores: Record<string, number>,

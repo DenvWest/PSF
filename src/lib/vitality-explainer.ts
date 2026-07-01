@@ -10,17 +10,21 @@ export type VitalityExplainer = readonly [string, string, string];
 export function getVitalityExplainer(input: {
   vitality: number;
   vitalityDelta: number | null;
+  vitalityDeltaComparable?: boolean;
   priorityId: PillarId;
   priorityScore: number;
   answers: Record<string, number> | null;
   domainScores: DomainScores;
 }): VitalityExplainer {
-  const deltaText =
-    input.vitalityDelta !== null && input.vitalityDelta !== 0
-      ? input.vitalityDelta > 0
-        ? ` (+${input.vitalityDelta})`
-        : ` (${input.vitalityDelta})`
-      : "";
+  const showDelta =
+    input.vitalityDeltaComparable !== false &&
+    input.vitalityDelta !== null &&
+    input.vitalityDelta !== 0;
+  const deltaText = showDelta
+    ? input.vitalityDelta! > 0
+      ? ` (+${input.vitalityDelta})`
+      : ` (${input.vitalityDelta})`
+    : "";
   const line1 = `${getVitalityScoreMeaning(input.vitality)}${deltaText}`;
   const kernel = buildHabitScoreKernel({
     vitality: input.vitality,

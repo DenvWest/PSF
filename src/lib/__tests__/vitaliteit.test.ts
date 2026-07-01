@@ -18,17 +18,16 @@ const sampleScores: DomainScores = {
 };
 
 describe("resolveVitaliteitFacets", () => {
-  it("levert 5 facets met self_report, weight 1.0 en juiste value-mapping", () => {
+  it("levert 4 interventie-facets met self_report, weight 1.0 en juiste value-mapping", () => {
     const facets = resolveVitaliteitFacets(sampleScores);
 
-    expect(facets).toHaveLength(5);
+    expect(facets).toHaveLength(4);
 
     const expected: Record<FacetKey, number> = {
       sleep: 70,
       stress: 60,
       nutrition: 50,
       movement: 40,
-      recovery: 30,
     };
 
     for (const facet of facets) {
@@ -46,7 +45,7 @@ describe("resolveVitaliteitFacets", () => {
 describe("computeVitaliteit", () => {
   it("geeft het gewogen gemiddelde terug", () => {
     const facets = resolveVitaliteitFacets(sampleScores);
-    expect(computeVitaliteit(facets)).toBe(50);
+    expect(computeVitaliteit(facets)).toBe(55);
   });
 
   it("geeft 0 bij lege input", () => {

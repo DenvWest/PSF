@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildRemeasureCompletedPayload,
   computePerDomainDelta,
+  sanitizePerDomainDelta,
   type BaselineSnapshot,
 } from "@/lib/intake-baseline";
 import type { DomainScores } from "@/lib/intake-engine";
@@ -85,7 +86,32 @@ describe("buildRemeasureCompletedPayload", () => {
     expect(payload.rules_version_baseline).toBe("1.0.0");
     expect(payload.rules_version_current).toBe("1.0.0");
     expect(payload.days_since_baseline).toBe(30);
+    expect(payload.methodology_changed).toBe(false);
     expect(payload).not.toHaveProperty("session_id");
     expect(payload).not.toHaveProperty("email");
+  });
+
+  it("zeros recovery delta and flags methodology change across rules versions", () => {
+    const payload = buildRemeasureCompletedPayload({
+      baseline,
+      currentScores,
+      currentRulesVersion: "1.2.0",
+      completedAt: new Date("2026-06-09T10:00:00.000Z"),
+    });
+
+    expect(payload.methodology_changed).toBe(true);
+    expect(payload.per_domain_delta.recovery_score).toBe(0);
+    expect(payload.per_domain_delta.sleep_score).toBe(14);
+  });
+
+  it("sanitizePerDomainDelta zeros recovery when baseline predates 1.1.0", () => {
+    const delta = sanitizePerDomainDelta({
+      baseline: baselineScores,
+      current: currentScores,
+      baselineRulesVersion: "1.0.0",
+      currentRulesVersion: "1.2.0",
+    });
+    expect(delta.recovery_score).toBe(0);
+    expect(delta.sleep_score).toBe(14);
   });
 });

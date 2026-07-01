@@ -4,6 +4,10 @@ import {
   type DomainScores,
   RULES_VERSION,
 } from "@/lib/intake-engine";
+import {
+  hasMethodologyChange,
+  isRecoveryDeltaComparable,
+} from "@/lib/rules-version";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -35,6 +39,7 @@ export type RemeasureCompletedPayload = {
   rules_version_baseline: string;
   rules_version_current: string;
   days_since_baseline: number;
+  methodology_changed: boolean;
 };
 
 export type CreateBaselineSnapshotInput = {
@@ -60,6 +65,23 @@ export function computePerDomainDelta(
   return delta;
 }
 
+export function sanitizePerDomainDelta(input: {
+  baseline: DomainScores;
+  current: DomainScores;
+  baselineRulesVersion: string;
+  currentRulesVersion: string;
+}): Record<DomainScoreKey, number> {
+  const delta = computePerDomainDelta(input.baseline, input.current);
+  const recoveryComparable = isRecoveryDeltaComparable(
+    input.baselineRulesVersion,
+    input.currentRulesVersion,
+  );
+  if (!recoveryComparable) {
+    delta.recovery_score = 0;
+  }
+  return delta;
+}
+
 export function buildRemeasureCompletedPayload(input: {
   baseline: BaselineSnapshot;
   currentScores: DomainScores;
@@ -74,15 +96,24 @@ export function buildRemeasureCompletedPayload(input: {
     Math.round((completedAt.getTime() - frozenAt.getTime()) / msPerDay),
   );
 
+  const currentRulesVersion = input.currentRulesVersion ?? RULES_VERSION;
+  const methodologyChanged = hasMethodologyChange(
+    input.baseline.rulesVersion,
+    currentRulesVersion,
+  );
+
   return {
     profile_label: input.baseline.profileLabel,
-    per_domain_delta: computePerDomainDelta(
-      input.baseline.domainScores,
-      input.currentScores,
-    ),
+    per_domain_delta: sanitizePerDomainDelta({
+      baseline: input.baseline.domainScores,
+      current: input.currentScores,
+      baselineRulesVersion: input.baseline.rulesVersion,
+      currentRulesVersion,
+    }),
     rules_version_baseline: input.baseline.rulesVersion,
-    rules_version_current: input.currentRulesVersion ?? RULES_VERSION,
+    rules_version_current: currentRulesVersion,
     days_since_baseline: daysSinceBaseline,
+    methodology_changed: methodologyChanged,
   };
 }
 
