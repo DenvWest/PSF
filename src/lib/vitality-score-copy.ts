@@ -101,10 +101,14 @@ export const METINGEN_EYEBROW = "Metingen";
 
 export const METINGEN_DOMAINS_LABEL = "Domeinen op peil";
 
+export const METINGEN_DOMAINS_SHORT_LABEL = "Domeinen";
+
 export const METINGEN_DOMAINS_HINT =
   "Domeinen die meetellen in je vitaalscore, met score 55 of hoger.";
 
 export const METINGEN_RHYTHM_LABEL = "Check-reeks";
+
+export const METINGEN_RHYTHM_SHORT_LABEL = "Reeks";
 
 export const METINGEN_RHYTHM_HINT =
   "Opeenvolgende dagen waarop je de Leefstijlcheck deed — geen dagelijkse gewoonte-tracker.";
