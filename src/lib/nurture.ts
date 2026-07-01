@@ -227,3 +227,13 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
 
   return 1 + pendingRows.length;
 }
+
+export async function scheduleMainNurtureIfInactive(
+  input: NurtureScheduleInput,
+): Promise<"scheduled" | "skipped_active"> {
+  if (await hasActiveMainNurture(input.email)) {
+    return "skipped_active";
+  }
+  await scheduleNurtureSequence(input);
+  return "scheduled";
+}

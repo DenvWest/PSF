@@ -3,7 +3,11 @@ import {
   cancelPendingGuideSequences,
   scheduleGuideNurtureSequence,
 } from "@/lib/guide-nurture";
-import { hasActiveMainNurture, scheduleNurtureSequence } from "@/lib/nurture";
+import {
+  hasActiveMainNurture,
+  scheduleMainNurtureIfInactive,
+  scheduleNurtureSequence,
+} from "@/lib/nurture";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 const { mockResendSend, mockGetGuideNurtureEmailContent, mockGetNurtureEmailContent } =
@@ -184,6 +188,39 @@ describe("scheduleGuideNurtureSequence", () => {
     expect(rows[0]?.sequence_day).toBe(0);
     expect(rows[0]?.status).toBe("sent");
     expect(mockResendSend).toHaveBeenCalledOnce();
+  });
+});
+
+describe("scheduleMainNurtureIfInactive", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("skipt scheduling wanneer er al een actieve hoofd-nurture is", async () => {
+    const chain = makeSelectChain({ data: [{ id: "existing" }], error: null });
+    vi.mocked(createSupabaseAdmin).mockReturnValue({
+      from: vi.fn(() => ({ select: chain.select })),
+    } as unknown as ReturnType<typeof createSupabaseAdmin>);
+
+    const result = await scheduleMainNurtureIfInactive({
+      sessionId: "session-uuid",
+      email: "dup@example.com",
+      profileLabel: "Onrustige Slaper",
+      primaryDomain: "sleep",
+      domainScores: {
+        sleep_score: 40,
+        energy_score: 35,
+        stress_score: 50,
+        nutrition_score: 45,
+        movement_score: 60,
+        recovery_score: 30,
+      },
+      urgencyLevel: "moderate",
+      firstName: null,
+    });
+
+    expect(result).toBe("skipped_active");
+    expect(mockResendSend).not.toHaveBeenCalled();
   });
 });
 

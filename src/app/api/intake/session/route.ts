@@ -31,7 +31,7 @@ import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { emitEvent } from "@/lib/events";
-import { scheduleNurtureSequence } from "@/lib/nurture";
+import { scheduleMainNurtureIfInactive } from "@/lib/nurture";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
@@ -393,7 +393,7 @@ export async function POST(request: NextRequest) {
     });
 
     try {
-      await scheduleNurtureSequence({
+      await scheduleMainNurtureIfInactive({
         sessionId: row.id,
         email: marketingAddr,
         profileLabel: profile,
