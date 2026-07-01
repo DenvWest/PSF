@@ -4,6 +4,7 @@ import { derivePriority } from "@/lib/dashboard-model";
 import type { DomainScores } from "@/lib/intake-engine";
 import { MEASURED_DOMAIN_TO_PILLAR } from "@/lib/measured-pillar-map";
 import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
+import { getPriorityPillar } from "@/lib/priority-pillar";
 import { getRecognitionLine, getVitalityFraming } from "@/lib/results-framing";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type { CheckScores, Pillar, PillarId } from "@/types/dashboard";
@@ -76,7 +77,7 @@ export function buildRevealModel(
   const primaryPillar = resolvePrimaryPillar(primaryTheme);
   const checkScores = mapDomainScoresToCheckScores(scores);
   const ladder = derivePriority(checkScores);
-  const priority = ladder[0];
+  const priority = getPriorityPillar(scores, answers);
   const strongest = [...ladder]
     .sort((a, b) => checkScores[b.id] - checkScores[a.id])
     .filter((pillar) => pillar.id !== priority.id)[0];

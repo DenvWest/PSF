@@ -6,7 +6,7 @@ import { COMPARISON_PATHS } from "@/lib/comparison-paths";
  * Changelog — bump bij ELKE wijziging in beslis-/adviesregels; voeg één regel toe.
  * 1.0.0 — initiële regelset
  */
-export const RULES_VERSION = "1.0.0" as const;
+export const RULES_VERSION = "1.1.0" as const;
 
 export interface DomainScores {
   sleep_score: number;

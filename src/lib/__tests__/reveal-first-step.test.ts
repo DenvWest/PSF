@@ -25,7 +25,7 @@ describe("resolveRevealFirstStep", () => {
     const model = buildRevealModel(scores, answers);
     const input = buildRecommendationInput({ scores, answers });
 
-    expect(model.priority.id).toBe("herstel");
+    expect(model.priority.id).toBe("slaap");
     const step = resolveRevealFirstStep(model, input);
 
     expect(step.lifestyle.title.toLowerCase()).not.toContain("alcohol");

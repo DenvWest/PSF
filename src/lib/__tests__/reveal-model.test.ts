@@ -74,12 +74,28 @@ describe("buildRevealModel", () => {
 
   it("primaryTheme en driverLine volgen scores, niet getProfileLabel-archetype", () => {
     const model = buildRevealModel(scoresScreenshotMismatch(), EMPTY_ANSWERS);
-    expect(model.priority.id).toBe("beweging");
+    expect(model.priority.id).toBe("voeding");
     // movement<50 + nutrition<45 → primary-theme refinement kiest nutrition
     expect(model.primaryTheme).toBe("nutrition");
     expect(model.primaryPillarId).toBe("voeding");
     expect(model.primaryPillarHref).toBe("/voeding-na-40");
     expect(model.driverLine).toContain("beweging");
     expect("profileName" in model).toBe(false);
+  });
+
+  it("primaryPillarId === priority.id voor élke score-vector (ook energie/herstel laagst)", () => {
+    const energieLaagst: DomainScores = {
+      sleep_score: 60, energy_score: 20, stress_score: 70,
+      nutrition_score: 70, movement_score: 70, recovery_score: 70,
+    };
+    const herstelLaagst: DomainScores = {
+      sleep_score: 60, energy_score: 70, stress_score: 70,
+      nutrition_score: 70, movement_score: 70, recovery_score: 20,
+    };
+    for (const scores of [energieLaagst, herstelLaagst]) {
+      const model = buildRevealModel(scores, EMPTY_ANSWERS);
+      expect(model.priority.id).toBe(model.primaryPillarId);
+      expect(["slaap", "stress", "voeding", "beweging"]).toContain(model.priority.id);
+    }
   });
 });

@@ -1,4 +1,5 @@
 import { derivePriority } from "@/lib/dashboard-model";
+import { getPriorityPillar } from "@/lib/priority-pillar";
 import { resolvePlanDomain } from "@/lib/dashboard-active-plan";
 import { PILLAR } from "@/data/dashboard";
 import {
@@ -271,7 +272,7 @@ export async function loadAccountDashboardData(
 
       const scores = mapDomainScoresToCheckScores(domainScores);
       const vitality = computeVitaliteit(resolveVitaliteitFacets(domainScores));
-      const priority = derivePriority(scores)[0].id;
+      const priority = getPriorityPillar(domainScores, answers ?? {}).id;
 
       return {
         id: sessionId,

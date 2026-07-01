@@ -1,5 +1,6 @@
 import { PILLARS, TIE_ORDER } from "@/data/dashboard";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
+import { getPriorityPillar } from "@/lib/priority-pillar";
 import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
 import type {
   CheckLogEntry,
@@ -35,7 +36,7 @@ export function buildModel(
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
-  const priority = ladder[0];
+  const priority = getPriorityPillar(mapCheckScoresToDomainScores(scores), answers ?? {});
   const strongest = [...PILLARS]
     .sort((a, b) => scores[b.id] - scores[a.id])
     .filter((pillar) => pillar.id !== priority.id)[0];
