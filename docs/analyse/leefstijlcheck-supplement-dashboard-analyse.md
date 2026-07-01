@@ -4,6 +4,17 @@
 > `bestand:regelnummer`. Doelgroep van het product: mannen 40+, mobiel-first (375px).
 > Principe: *adviezen, geen diagnoses*. Monetisatie via affiliate → routing naar `/beste/*`.
 > Datum analyse: 21 juni 2026.
+>
+> **Update (1 juli 2026) — grotendeels uitgevoerd (t/m D5, deels).** Dit is een historisch analyse-doc;
+> de code is de bron van waarheid. Via de remediation-sprint zijn afgehandeld:
+> - **D1** (stress-routing + ashwagandha): één measured priority-bron in reveal/dashboard/nurture,
+>   ashwagandha/on_hold achter de approved-only gate, `PILLAR_COMPARISON_ROUTES` verwijderd.
+> - **D4/D5 (deels)**: `getRecommendations` is de route-SSOT; `buildFallbackBuckets` en de PLAN-fallback
+>   consumeren de engine, de legacy `getSupplementRoute` + dode routing-data zijn verwijderd.
+>
+> Nog open: **D6–D8** (explainability-laag, `getDeficiencySignals`/`profile_label` als routing-input,
+> delta→advies-terugkoppeling) en de resterende D5-consumers. Lees de bevindingen hieronder als
+> historische context, niet als huidige staat.
 
 ---
 
