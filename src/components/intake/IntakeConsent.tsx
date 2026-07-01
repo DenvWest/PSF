@@ -24,13 +24,18 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
   const [analytics, setAnalytics] = useState(false);
   const [optionalEmail, setOptionalEmail] = useState("");
   const [marketing, setMarketing] = useState(false);
-  const [continuity, setContinuity] = useState({
-    mainNurtureActive: false,
-    hasActiveAccount: false,
-  });
-
+  const [continuityLookup, setContinuityLookup] = useState<{
+    email: string;
+    mainNurtureActive: boolean;
+    hasActiveAccount: boolean;
+  } | null>(null);
 
   const showMarketing = emailLooseOk(optionalEmail);
+  const trimmedEmail = optionalEmail.trim();
+  const continuityForDisplay =
+    showMarketing && continuityLookup?.email === trimmedEmail
+      ? continuityLookup
+      : { mainNurtureActive: false, hasActiveAccount: false };
   const marketingBlocked =
     showMarketing && marketing && !emailLooseOk(optionalEmail.trim());
   const canProceed = health && !marketingBlocked;
@@ -38,7 +43,6 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
   useEffect(() => {
     const addr = optionalEmail.trim();
     if (!emailLooseOk(addr)) {
-      setContinuity({ mainNurtureActive: false, hasActiveAccount: false });
       return;
     }
 
@@ -59,13 +63,18 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
               }
             | null;
           if (cancelled) return;
-          setContinuity({
+          setContinuityLookup({
+            email: addr,
             mainNurtureActive: json?.mainNurtureActive === true,
             hasActiveAccount: json?.hasActiveAccount === true,
           });
         } catch {
           if (!cancelled) {
-            setContinuity({ mainNurtureActive: false, hasActiveAccount: false });
+            setContinuityLookup({
+              email: addr,
+              mainNurtureActive: false,
+              hasActiveAccount: false,
+            });
           }
         }
       })();
@@ -317,11 +326,12 @@ export default function IntakeConsent({ onContinue, onBack }: IntakeConsentProps
             </div>
           ) : null}
 
-          {(continuity.mainNurtureActive || continuity.hasActiveAccount) &&
+          {(continuityForDisplay.mainNurtureActive ||
+            continuityForDisplay.hasActiveAccount) &&
           showMarketing ? (
             <IntakeMarketingContinuityNotice
-              hasActiveAccount={continuity.hasActiveAccount}
-              mainNurtureActive={continuity.mainNurtureActive}
+              hasActiveAccount={continuityForDisplay.hasActiveAccount}
+              mainNurtureActive={continuityForDisplay.mainNurtureActive}
               variant="consent"
             />
           ) : null}
