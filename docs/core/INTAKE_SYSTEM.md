@@ -19,7 +19,7 @@ Herkenning → Diagnose → Advies → Actie → Feedback
 Gebruiker selecteert symptomen. Opgeslagen als `symptom_profile` in Supabase.
 
 ### Fase 2 — Diagnose (de kern)
-15 vragen, 7 categorieën, max 3–4 minuten. Resultaat: `domain_scores` per domein.
+16 vragen, 8 categorieën, max 3–4 minuten. Resultaat: `domain_scores` per domein.
 
 ### Fase 3 — Advies (Herstelplan)
 Geprioriteerde aanbeveling: eerst leefstijl ("quick wins"), dan supplementen. Persoonlijk, niet catalogus.
@@ -32,7 +32,7 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen. Sessies wo
 
 ---
 
-## Vragenlijst (15 vragen, 7 categorieën)
+## Vragenlijst (16 vragen, 8 categorieën)
 
 ### Slaap
 | Vraag | Variabele | Bereik |
@@ -53,6 +53,11 @@ Herhaalmeting na 30 dagen. Delta per domein. Aanbevelingen aanpassen. Sessies wo
 |---|---|---|
 | "Hoe vaak gestrest of overprikkeld?" | stress_frequency (STR_FREQ) | 1-4 |
 | "Rust komen en herstelmomenten op drukke dagen?" | stress_recovery (STR_RCV) | 1-4 |
+
+### Verbinding
+| Vraag | Variabele | Bereik |
+|---|---|---|
+| "Mensen om je heen bij wie je echt jezelf kunt zijn?" | social_connection (CON_SOC) | 1-4 |
 
 ### Voeding
 | Vraag | Variabele | Bereik |
@@ -96,13 +101,14 @@ Scoring engine: `src/lib/intake-engine.ts`
 | stress | STR_FREQ + STR_RCV | 8 |
 | voeding | NUT_O3 + NUT_PROT | 7 |
 | beweging | MOV_STR + MOV_CARD | 8 |
+| verbinding | CON_SOC | 4 |
 | herstel | RCV_PHYS | 3 |
 
 `STR_RCV` telt **niet** mee in `recovery_score` — alleen in `stress_score` (juli 2026 scoringfix).
 
 ### Urgentieniveaus
 
-Berekend op **interventiedomeinen** (slaap, stress, voeding, beweging). Energie en herstel sturen urgentie niet.
+Berekend op **interventiedomeinen** (slaap, stress, voeding, beweging, verbinding). Energie en herstel sturen urgentie niet.
 
 | Level | Conditie |
 |---|---|
@@ -121,9 +127,9 @@ Berekend op **interventiedomeinen** (slaap, stress, voeding, beweging). Energie 
 | Lage Batterij | `energy_score < 40` (readout) | laagste energie-driver: slaap, voeding of beweging |
 | In Balans | geen triggers hierboven | laagste interventiedomein |
 
-**Vitaliteitsscore (rules_version ≥ 1.2.0):** gemiddelde van slaap, stress, voeding, beweging — energie en herstel zijn readouts en tellen niet mee.
+**Vitaliteitsscore (rules_version ≥ 1.3.0):** gemiddelde van slaap, stress, voeding, beweging en verbinding — energie en herstel zijn readouts en tellen niet mee.
 
-**Prioriteit bij meerdere matches:** slaap > stress > voeding > beweging (zie `DOMAIN_MODEL.md`). Nutrition heeft geen eigen profiellabel.
+**Prioriteit bij meerdere matches:** slaap > stress > voeding > beweging > verbinding (zie `DOMAIN_MODEL.md`). Nutrition en verbinding hebben geen eigen profiellabel.
 
 **Overtrainer-patroon:** Geen apart profiellabel in de engine. Het patroon (`max(MOV_CARD, MOV_STR) ≥ 3` EN `RCV_PHYS ≤ 1`) wordt herkend in `getSupplementRoute` en op de resultatenpagina. Er bestaat een `/profiel/overtrainer` pagina.
 
@@ -153,7 +159,7 @@ Regelgebaseerd (fase 1). Geen AI/ML tot 500+ gebruikers.
 ## UX principes
 
 - Eén vraag per scherm op mobiel
-- Voortgangsindicator: 15 vragen
+- Voortgangsindicator: 16 vragen
 - Directe visuele feedback na elke categorie
 - Geen vragen overslaan (systeem heeft alle data nodig)
 - Totale invultijd: max 3–4 minuten

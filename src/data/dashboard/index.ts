@@ -116,6 +116,21 @@ export const PILLARS: Pillar[] = [
     supplement: null,
     hubRoute: "/herstel-verbeteren-na-40",
   },
+  {
+    id: "verbinding",
+    label: "Verbinding",
+    color: "#7A8A6B",
+    icon: "User",
+    lever:
+      "Je staat er vaak alleen voor of contact schiet erbij in — begin klein: één betekenisvol moment per week. Sociale steun draagt je veerkracht, juist na 40.",
+    quickWin: {
+      title: "Eén contactmoment deze week",
+      detail:
+        "Plan bewust één moment met iemand die je energie geeft — kort bellen, samen wandelen of eten. Sociale steun is een van de sterkste voorspellers van veerkracht op lange termijn.",
+    },
+    supplement: null,
+    hubRoute: "/inzichten",
+  },
 ];
 
 export const PILLAR: Record<PillarId, Pillar> = Object.fromEntries(
@@ -129,6 +144,7 @@ export const SCORE_KEY_BY_PILLAR: Record<PillarId, DomainScoreKey> = {
   voeding: "nutrition_score",
   beweging: "movement_score",
   herstel: "recovery_score",
+  verbinding: "connection_score",
 };
 
 export const PILLAR_BY_SCORE_KEY: Record<DomainScoreKey, PillarId> = {
@@ -138,6 +154,7 @@ export const PILLAR_BY_SCORE_KEY: Record<DomainScoreKey, PillarId> = {
   nutrition_score: "voeding",
   movement_score: "beweging",
   recovery_score: "herstel",
+  connection_score: "verbinding",
 };
 
 export const TIE_ORDER: PillarId[] = [
@@ -147,6 +164,7 @@ export const TIE_ORDER: PillarId[] = [
   "voeding",
   "beweging",
   "herstel",
+  "verbinding",
 ];
 
 export const SIGNALS: Signal[] = [
@@ -184,7 +202,15 @@ export const CHECKS: Record<CheckId, Check> = {
     seq: 3,
     date: "10 jun 2026",
     short: "10 juni",
-    scores: { slaap: 58, energie: 54, stress: 47, voeding: 38, beweging: 71, herstel: 51 },
+    scores: {
+      slaap: 58,
+      energie: 54,
+      stress: 47,
+      voeding: 38,
+      beweging: 71,
+      herstel: 51,
+      verbinding: 62,
+    },
     trend: {
       slaap: [49, 52, 51, 54, 56, 58],
       energie: [49, 50, 53, 52, 53, 54],
@@ -192,6 +218,7 @@ export const CHECKS: Record<CheckId, Check> = {
       voeding: [31, 33, 32, 35, 37, 38],
       beweging: [62, 65, 66, 68, 70, 71],
       herstel: [50, 49, 52, 50, 52, 51],
+      verbinding: [58, 59, 60, 61, 62, 62],
     },
   },
   check2: {
@@ -199,7 +226,15 @@ export const CHECKS: Record<CheckId, Check> = {
     date: "10 jul 2026",
     short: "10 juli",
     prevId: "check1",
-    scores: { slaap: 44, energie: 57, stress: 50, voeding: 52, beweging: 73, herstel: 54 },
+    scores: {
+      slaap: 44,
+      energie: 57,
+      stress: 50,
+      voeding: 52,
+      beweging: 73,
+      herstel: 54,
+      verbinding: 66,
+    },
     trend: {
       slaap: [58, 55, 52, 49, 46, 44],
       energie: [54, 55, 56, 55, 56, 57],
@@ -207,6 +242,7 @@ export const CHECKS: Record<CheckId, Check> = {
       voeding: [38, 41, 45, 48, 50, 52],
       beweging: [71, 72, 72, 73, 73, 73],
       herstel: [51, 52, 53, 53, 54, 54],
+      verbinding: [62, 63, 64, 65, 66, 66],
     },
   },
 };

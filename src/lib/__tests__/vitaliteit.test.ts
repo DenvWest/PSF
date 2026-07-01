@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { DomainScores } from "@/lib/intake-engine";
+import { INTERVENTION_DOMAIN_SCORE_KEYS } from "@/lib/intake-engine";
 import {
   computeVitaliteit,
   resolveVitaliteitFacets,
@@ -15,19 +16,21 @@ const sampleScores: DomainScores = {
   nutrition_score: 50,
   movement_score: 40,
   recovery_score: 30,
+  connection_score: 55,
 };
 
 describe("resolveVitaliteitFacets", () => {
-  it("levert 4 interventie-facets met self_report, weight 1.0 en juiste value-mapping", () => {
+  it("levert 5 interventie-facets met self_report, weight 1.0 en juiste value-mapping", () => {
     const facets = resolveVitaliteitFacets(sampleScores);
 
-    expect(facets).toHaveLength(4);
+    expect(facets).toHaveLength(5);
 
     const expected: Record<FacetKey, number> = {
       sleep: 70,
       stress: 60,
       nutrition: 50,
       movement: 40,
+      connection: 55,
     };
 
     for (const facet of facets) {
@@ -39,6 +42,15 @@ describe("resolveVitaliteitFacets", () => {
     expect(facets.some((facet) => facet.key === "sleep" && facet.value === 99)).toBe(
       false,
     );
+  });
+
+  it("default ontbrekende connection_score naar 0 (pre-1.3.0 sessies)", () => {
+    const { connection_score: _ignored, ...withoutConnection } = sampleScores;
+    void _ignored;
+    const facets = resolveVitaliteitFacets(withoutConnection as DomainScores);
+    const connection = facets.find((facet) => facet.key === "connection");
+    expect(connection?.value).toBe(0);
+    expect(computeVitaliteit(facets)).toBe(44);
   });
 });
 
@@ -67,5 +79,21 @@ describe("vitaliteitBand", () => {
     expect(vitaliteitBand(65)).toBe("Voldoende");
     expect(vitaliteitBand(45)).toBe("Aandacht");
     expect(vitaliteitBand(20)).toBe("Prioriteit");
+  });
+});
+
+describe("intervention facet invariant", () => {
+  it("heeft voor elke INTERVENTION_DOMAIN_SCORE_KEY een vitaliteits-facet", () => {
+    const facets = resolveVitaliteitFacets(sampleScores);
+    const facetScoreKeys = facets.map((facet) => {
+      if (facet.key === "sleep") return "sleep_score";
+      if (facet.key === "stress") return "stress_score";
+      if (facet.key === "nutrition") return "nutrition_score";
+      if (facet.key === "movement") return "movement_score";
+      return "connection_score";
+    });
+    for (const key of INTERVENTION_DOMAIN_SCORE_KEYS) {
+      expect(facetScoreKeys).toContain(key);
+    }
   });
 });

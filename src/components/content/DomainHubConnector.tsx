@@ -16,6 +16,7 @@ const PILLAR_DOT_CLASS: Record<PillarId, string> = {
   voeding: "bg-[#5A8F6A]",
   beweging: "bg-[#C26E4B]",
   herstel: "bg-[#4A8A99]",
+  verbinding: "bg-[#7A8A6B]",
 };
 
 export default function DomainHubConnector({ pillarId }: DomainHubConnectorProps) {

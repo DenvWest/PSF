@@ -16,6 +16,7 @@ const INTERVENTION_IDS = new Set<PillarId>([
   "stress",
   "voeding",
   "beweging",
+  "verbinding",
 ]);
 const READOUT_IDS: ReadoutPillarId[] = ["energie", "herstel"];
 
@@ -27,7 +28,7 @@ describe("domain-role", () => {
     }
   });
 
-  it("partitie: interventie = slaap/stress/voeding/beweging; readout = energie/herstel", () => {
+  it("partitie: interventie = slaap/stress/voeding/beweging/verbinding; readout = energie/herstel", () => {
     const interventionIds = PILLARS.filter(
       (p) => DOMAIN_ROLE[p.id] === "intervention",
     ).map((p) => p.id);

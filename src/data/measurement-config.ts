@@ -11,6 +11,7 @@ const PILLAR_TO_DOMAIN_KEY: Record<PillarId, DomainScoreKey> = {
   voeding: "nutrition_score",
   beweging: "movement_score",
   herstel: "recovery_score",
+  verbinding: "connection_score",
 };
 
 export const perfectSupplementMeasurementConfig: MeasurementConfig = {

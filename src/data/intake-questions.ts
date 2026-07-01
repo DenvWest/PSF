@@ -20,6 +20,7 @@ export type CategoryId =
   | "slaap"
   | "energie"
   | "stress"
+  | "verbinding"
   | "voeding"
   | "beweging"
   | "herstel"
@@ -41,6 +42,7 @@ export type QuestionId =
   | "NRG_DEP"
   | "STR_FREQ"
   | "STR_RCV"
+  | "CON_SOC"
   | "NUT_O3"
   | "NUT_PROT"
   | "MOV_STR"
@@ -89,6 +91,7 @@ export const CATEGORIES: readonly Category[] = [
   { id: "slaap", label: "Slaap", icon: "🌙", color: "#5B6EAE" },
   { id: "energie", label: "Energie", icon: "⚡", color: "#C4873B" },
   { id: "stress", label: "Stress", icon: "🧠", color: "#8B6E99" },
+  { id: "verbinding", label: "Verbinding", icon: "🤝", color: "#7A8A6B" },
   { id: "voeding", label: "Voeding", icon: "🥗", color: "var(--ps-green)" },
   { id: "beweging", label: "Beweging", icon: "🏃", color: "#C26E4B" },
   { id: "herstel", label: "Herstel", icon: "🔄", color: "#4A8A99" },
@@ -190,6 +193,21 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
       { label: "Het kost tijd, maar ik vind wel herstelmomenten", value: 3 },
       { label: "Stress stapelt op of herstel blijft achterwege", value: 2 },
       { label: "Ik neem stress mee en kom niet aan ontspanning", value: 1 },
+    ],
+  },
+  {
+    id: "CON_SOC",
+    category: "verbinding",
+    questionIndex: 1,
+    question:
+      "Heb je mensen om je heen bij wie je echt jezelf kunt zijn en op wie je kunt terugvallen?",
+    subtitle:
+      "Denk aan partner, vrienden of familie waar je op drukke of mindere dagen op kunt bouwen.",
+    options: [
+      { label: "Ja, meerdere — ik voel me verbonden en gesteund", value: 4 },
+      { label: "Eén of twee, dat voelt voldoende", value: 3 },
+      { label: "Beperkt — ik mis soms echt contact", value: 2 },
+      { label: "Nauwelijks — ik sta er meestal alleen voor", value: 1 },
     ],
   },
   {

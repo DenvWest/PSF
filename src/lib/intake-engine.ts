@@ -7,8 +7,9 @@ import { COMPARISON_PATHS } from "@/lib/comparison-paths";
  * 1.0.0 — initiële regelset
  * 1.1.0 — recovery_score alleen RCV_PHYS; urgentie/priority op interventiedomeinen
  * 1.2.0 — vitaliteit = 4 interventiedomeinen; profiellabel driver-based
+ * 1.3.0 — verbinding als 5e interventiedomein (CON_SOC); vitaliteit = 5 interventiedomeinen
  */
-export const RULES_VERSION = "1.2.0" as const;
+export const RULES_VERSION = "1.3.0" as const;
 
 export interface DomainScores {
   sleep_score: number;
@@ -17,6 +18,16 @@ export interface DomainScores {
   nutrition_score: number;
   movement_score: number;
   recovery_score: number;
+  connection_score: number;
+}
+
+/** Pre-1.3.0 stored sessions may lack connection_score in domain_scores JSON. */
+export function hydrateDomainScores(scores: DomainScores): DomainScores {
+  const connection = scores.connection_score;
+  if (typeof connection === "number" && Number.isFinite(connection)) {
+    return scores;
+  }
+  return { ...scores, connection_score: 0 };
 }
 
 export type DomainId =
@@ -25,7 +36,8 @@ export type DomainId =
   | "stress"
   | "nutrition"
   | "movement"
-  | "recovery";
+  | "recovery"
+  | "connection";
 
 export type DomainScoreKey = keyof DomainScores;
 
@@ -83,6 +95,8 @@ export const QUICK_WIN_FALLBACK_BY_DOMAIN: Record<DomainScoreKey, string> = {
   nutrition_score: "Voeg bij je volgende maaltijd een eiwitbron toe — ei, kwark, of vis.",
   movement_score: "10 minuten daglicht vóór 10:00 — buiten, zonder telefoon.",
   recovery_score: "Vandaag geen training. Je lichaam bouwt alleen tijdens herstel.",
+  connection_score:
+    "Plan deze week één betekenisvol contact — kort bellen of samen iets doen telt.",
 };
 
 function inferSupplementDomain(advice: SupplementAdvice): DomainScoreKey {
@@ -240,6 +254,7 @@ const DOMAIN_SCORE_KEYS: readonly DomainScoreKey[] = [
   "nutrition_score",
   "movement_score",
   "recovery_score",
+  "connection_score",
 ];
 
 /** Gedragsdomeinen waarop gestuurd wordt — geen readout (energie/herstel). */
@@ -248,6 +263,7 @@ export const INTERVENTION_DOMAIN_SCORE_KEYS: readonly DomainScoreKey[] = [
   "stress_score",
   "nutrition_score",
   "movement_score",
+  "connection_score",
 ] as const;
 
 const DOMAIN_KEY_TO_ID: Record<DomainScoreKey, DomainId> = {
@@ -257,9 +273,10 @@ const DOMAIN_KEY_TO_ID: Record<DomainScoreKey, DomainId> = {
   nutrition_score: "nutrition",
   movement_score: "movement",
   recovery_score: "recovery",
+  connection_score: "connection",
 };
 
-type NamedProfileDomain = Exclude<DomainId, "nutrition" | "recovery">;
+type NamedProfileDomain = Exclude<DomainId, "nutrition" | "recovery" | "connection">;
 
 const NAMED_DOMAIN_LABELS: Record<NamedProfileDomain, ProfileLabel["name"]> = {
   sleep: "Onrustige Slaper",
@@ -274,7 +291,11 @@ function firstNonNutritionRecoveryDomain(
 ): (typeof sorted)[number] | undefined {
   for (let i = startIndex; i < sorted.length; i++) {
     const entry = sorted[i];
-    if (entry.domain !== "nutrition" && entry.domain !== "recovery") {
+    if (
+      entry.domain !== "nutrition" &&
+      entry.domain !== "recovery" &&
+      entry.domain !== "connection"
+    ) {
       return entry;
     }
   }
@@ -530,6 +551,7 @@ export function calcDomainScores(
       8,
     ),
     recovery_score: normalizeScore(getAnswer(answers, "RCV_PHYS"), 3),
+    connection_score: normalizeScore(getAnswer(answers, "CON_SOC"), 4),
   };
 }
 
@@ -610,6 +632,14 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     };
   }
 
+  if (primary.domain === "connection") {
+    return {
+      name: "In Balans",
+      domain: "connection",
+      score: primary.score,
+    };
+  }
+
   if (primary.domain === "recovery") {
     const fallback = firstNonNutritionRecoveryDomain(sorted, 1);
     if (fallback) {
@@ -629,7 +659,11 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
   if (primary.domain === "movement") {
     for (let i = 1; i < sorted.length; i++) {
       const entry = sorted[i];
-      if (entry.domain === "nutrition" || entry.domain === "recovery") {
+      if (
+        entry.domain === "nutrition" ||
+        entry.domain === "recovery" ||
+        entry.domain === "connection"
+      ) {
         continue;
       }
       if (entry.domain === "energy" && scores.energy_score >= 40) {

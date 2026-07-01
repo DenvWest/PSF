@@ -24,7 +24,8 @@ export type DomainKey =
   | "stress_score"
   | "nutrition_score"
   | "movement_score"
-  | "recovery_score";
+  | "recovery_score"
+  | "connection_score";
 
 export type ProfileLabelName = ProfileLabel["name"];
 
@@ -482,6 +483,8 @@ const LIFESTYLE_TIP_BY_DOMAIN: Record<DomainKey, string> = {
   recovery_score: "Plan 2 lichte dagen deze week — schrap of verlicht zware sessies.",
   movement_score: "10 min daglicht vóór 10:00 — buiten, zonder telefoon.",
   nutrition_score: "2× deze week vette vis of eiwitrijke lunch — geen perfect dieet nodig.",
+  connection_score:
+    "Plan deze week één betekenisvol contact — kort bellen of samen iets doen telt.",
 };
 
 const DAY_TIP_INDEX: Partial<Record<number, number>> = {

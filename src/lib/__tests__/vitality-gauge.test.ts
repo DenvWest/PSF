@@ -50,14 +50,15 @@ describe("countVitalityFacetsOnPeil", () => {
     voeding: 50,
     beweging: 50,
     herstel: 50,
+    verbinding: 50,
   };
 
   it("derives threshold from goed band", () => {
     expect(VITALITY_ON_PEIL_MIN).toBe(55);
-    expect(VITALITY_FACET_COUNT).toBe(4);
+    expect(VITALITY_FACET_COUNT).toBe(5);
   });
 
-  it("counts all four intervention facets when each is on peil", () => {
+  it("counts all five intervention facets when each is on peil", () => {
     const scores: CheckScores = {
       ...baseScores,
       slaap: 58,
@@ -65,8 +66,9 @@ describe("countVitalityFacetsOnPeil", () => {
       voeding: 58,
       beweging: 58,
       herstel: 58,
+      verbinding: 58,
     };
-    expect(countVitalityFacetsOnPeil(scores)).toBe(4);
+    expect(countVitalityFacetsOnPeil(scores)).toBe(5);
     expect(getVitalityBand(58).id).toBe("goed");
   });
 
@@ -81,7 +83,7 @@ describe("countVitalityFacetsOnPeil", () => {
 
   it("matches dev check1 facet scores", () => {
     const scores = CHECKS.check1.scores;
-    expect(countVitalityFacetsOnPeil(scores)).toBe(2);
+    expect(countVitalityFacetsOnPeil(scores)).toBe(3);
     const domainScores = {
       sleep_score: scores.slaap,
       energy_score: scores.energie,
@@ -89,7 +91,8 @@ describe("countVitalityFacetsOnPeil", () => {
       nutrition_score: scores.voeding,
       movement_score: scores.beweging,
       recovery_score: scores.herstel,
+      connection_score: scores.verbinding,
     };
-    expect(computeVitaliteit(resolveVitaliteitFacets(domainScores))).toBe(54);
+    expect(computeVitaliteit(resolveVitaliteitFacets(domainScores))).toBe(55);
   });
 });

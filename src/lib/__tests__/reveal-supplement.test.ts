@@ -18,6 +18,7 @@ const balancedScores: DomainScores = {
   nutrition_score: 70,
   movement_score: 70,
   recovery_score: 70,
+    connection_score: 70,
 };
 
 function fallbackInput(scores: DomainScores = balancedScores) {
@@ -103,6 +104,7 @@ describe("approved-only gate (F-inv-3)", () => {
       nutrition_score: 25,
       movement_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     };
     const answers = { NUT_O3: 1, SLP_QUAL: 1 };
     const input: RecommendationInput = {

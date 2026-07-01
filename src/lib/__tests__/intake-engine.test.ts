@@ -6,6 +6,7 @@ import {
   getAdvice,
   getDeficiencySignals,
   getSortedDomains,
+  getSortedInterventionDomains,
   getAdvicePrimaryDomain,
   isInterventionProfileDomain,
   type DomainScores,
@@ -25,6 +26,7 @@ function makeAnswers(overrides: Record<string, number> = {}): Record<string, num
     MOV_STR: 3,
     MOV_CARD: 3,
     RCV_PHYS: 3,
+    CON_SOC: 3,
     LIF_ALC: 3,
     LIF_SUN: 3,
     ...overrides,
@@ -39,6 +41,7 @@ function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
     nutrition_score: 70,
     movement_score: 70,
     recovery_score: 70,
+    connection_score: 70,
     ...overrides,
   };
 }
@@ -54,6 +57,7 @@ describe("calcDomainScores", () => {
     expect(scores.nutrition_score).toBe(0);
     expect(scores.movement_score).toBe(0);
     expect(scores.recovery_score).toBe(0);
+    expect(scores.connection_score).toBe(0);
   });
 
   it("calculates sleep_score from SLP_QUAL + SLP_CONS + SLP_ONSET + SLP_WAKE (max 15)", () => {
@@ -83,6 +87,13 @@ describe("calcDomainScores", () => {
       makeAnswers({ MOV_STR: 4, MOV_CARD: 4 }),
     );
     expect(scores.movement_score).toBe(100);
+  });
+
+  it("calculates connection_score from CON_SOC (max 4)", () => {
+    expect(calcDomainScores(makeAnswers({ CON_SOC: 1 })).connection_score).toBe(25);
+    expect(calcDomainScores(makeAnswers({ CON_SOC: 2 })).connection_score).toBe(50);
+    expect(calcDomainScores(makeAnswers({ CON_SOC: 3 })).connection_score).toBe(75);
+    expect(calcDomainScores(makeAnswers({ CON_SOC: 4 })).connection_score).toBe(100);
   });
 
   it("calculates recovery_score from RCV_PHYS only (max 3)", () => {
@@ -180,7 +191,15 @@ describe("getUrgency", () => {
 
   it("returns healthy when all intervention domains above 60 (readout excluded)", () => {
     const result = getUrgency(
-      makeScores({ sleep_score: 65, energy_score: 20, recovery_score: 15 }),
+      makeScores({
+        sleep_score: 65,
+        stress_score: 65,
+        nutrition_score: 65,
+        movement_score: 65,
+        connection_score: 65,
+        energy_score: 20,
+        recovery_score: 15,
+      }),
     );
     expect(result.level).toBe("healthy");
   });
@@ -298,16 +317,34 @@ describe("getProfileLabel", () => {
       energy_score: 70,
       movement_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const result = getProfileLabel(scores);
     expect(result.name).toBe("In Balans");
     expect(result.domain).toBe("nutrition");
   });
 
-  it("falls back from recovery domain to next named domain", () => {
+  it("returns In Balans when connection is lowest intervention domain", () => {
     const scores = makeScores({
-      recovery_score: 40,
-      sleep_score: 45,
+      connection_score: 30,
+      sleep_score: 70,
+      stress_score: 70,
+      nutrition_score: 70,
+      movement_score: 70,
+      energy_score: 70,
+      recovery_score: 70,
+    });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("In Balans");
+    expect(result.domain).toBe("connection");
+    expect(result.name).not.toBe("Verbinding");
+  });
+
+  it("uses sleep label when sleep is lowest intervention despite low recovery readout", () => {
+    const scores = makeScores({
+      recovery_score: 25,
+      connection_score: 70,
+      sleep_score: 35,
       stress_score: 70,
       energy_score: 70,
       movement_score: 70,
@@ -316,6 +353,24 @@ describe("getProfileLabel", () => {
     const result = getProfileLabel(scores);
     expect(result.name).toBe("Onrustige Slaper");
     expect(result.domain).toBe("sleep");
+  });
+});
+
+// ─── getSortedInterventionDomains ─────────────────────────────────
+
+describe("getSortedInterventionDomains", () => {
+  it("returns 5 intervention domains", () => {
+    const sorted = getSortedInterventionDomains(makeScores());
+    expect(sorted).toHaveLength(5);
+    expect(sorted.map((entry) => entry.domain)).toEqual(
+      expect.arrayContaining([
+        "sleep",
+        "stress",
+        "nutrition",
+        "movement",
+        "connection",
+      ]),
+    );
   });
 });
 
@@ -334,9 +389,9 @@ describe("getSortedDomains", () => {
     expect(sorted[sorted.length - 1].score).toBeGreaterThanOrEqual(sorted[0].score);
   });
 
-  it("returns all 6 domains", () => {
+  it("returns all 7 domains", () => {
     const sorted = getSortedDomains(makeScores());
-    expect(sorted).toHaveLength(6);
+    expect(sorted).toHaveLength(7);
   });
 
   it("maintains stable order for equal scores", () => {
@@ -347,9 +402,10 @@ describe("getSortedDomains", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const sorted = getSortedDomains(scores);
-    expect(sorted).toHaveLength(6);
+    expect(sorted).toHaveLength(7);
     expect(sorted.every((d) => d.score === 50)).toBe(true);
   });
 
@@ -581,7 +637,8 @@ describe("getAdvice", () => {
   });
 
   it("deduplicates supplement recommendations", () => {
-    const scores = makeScores({ sleep_score: 20, stress_score: 20, recovery_score: 20 });
+    const scores = makeScores({ sleep_score: 20, stress_score: 20, recovery_score: 20,
+    connection_score: 20 });
     const answers = makeAnswers({
       SLP_QUAL: 1, SLP_CONS: 1, STR_FREQ: 1, STR_RCV: 1,
       NRG_PATN: 1, MOV_CARD: 4, RCV_PHYS: 1,

@@ -781,7 +781,7 @@ const PrioritySection = ({ model }: SharedSectionProps) => {
     stress: 0,
     voeding: 0,
     beweging: 0,
-    herstel: 0,
+    herstel: 0, verbinding: 0,
   };
   const prevLadder =
     model?.retest && model.prevScores ? derivePriority(model.prevScores) : null;

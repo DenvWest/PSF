@@ -48,6 +48,7 @@ const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
   "nutrition_score",
   "movement_score",
   "recovery_score",
+  "connection_score",
 ];
 
 const PILLAR_IDS: PillarId[] = [
@@ -57,6 +58,7 @@ const PILLAR_IDS: PillarId[] = [
   "voeding",
   "beweging",
   "herstel",
+  "verbinding",
 ];
 
 const CHECKIN_DOMAIN_TO_PILLAR: Record<string, PillarId> = {
@@ -70,6 +72,7 @@ const MEASURED_DOMAIN_TO_SCORE_KEY: Record<MeasuredPillarId, DomainScoreKey> = {
   stress: "stress_score",
   nutrition: "nutrition_score",
   movement: "movement_score",
+  connection: "connection_score",
 };
 
 const MEASURED_DOMAIN_TO_PILLAR: Record<MeasuredPillarId, PillarId> = {
@@ -77,6 +80,7 @@ const MEASURED_DOMAIN_TO_PILLAR: Record<MeasuredPillarId, PillarId> = {
   stress: "stress",
   nutrition: "voeding",
   movement: "beweging",
+  connection: "verbinding",
 };
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -112,6 +116,10 @@ function parseDomainScores(value: unknown): DomainScores | null {
 
   for (const key of DOMAIN_SCORE_KEYS) {
     const raw = record[key];
+    if (key === "connection_score" && (raw === undefined || raw === null)) {
+      scores[key] = 0;
+      continue;
+    }
     if (typeof raw !== "number" || !Number.isFinite(raw)) {
       return null;
     }
@@ -156,6 +164,7 @@ function mapCheckScoresToDomainScores(scores: CheckScores): DomainScores {
     nutrition_score: scores.voeding,
     movement_score: scores.beweging,
     recovery_score: scores.herstel,
+    connection_score: scores.verbinding,
   };
 }
 
@@ -171,7 +180,8 @@ function parseMeasuredDomain(value: unknown): MeasuredPillarId | null {
     value === "sleep" ||
     value === "stress" ||
     value === "nutrition" ||
-    value === "movement"
+    value === "movement" ||
+    value === "connection"
   ) {
     return value;
   }
@@ -223,6 +233,7 @@ function mapDomainScoresToCheckScores(domainScores: DomainScores): CheckScores {
     voeding: Math.round(domainScores.nutrition_score),
     beweging: Math.round(domainScores.movement_score),
     herstel: Math.round(domainScores.recovery_score),
+    verbinding: Math.round(domainScores.connection_score),
   };
 }
 
@@ -342,6 +353,7 @@ export async function loadAccountDashboardData(
     voeding: [],
     beweging: [],
     herstel: [],
+    verbinding: [],
   };
 
   for (const snapshot of snapshots) {
@@ -408,6 +420,7 @@ export async function loadAccountDashboardData(
     nutrition_score: currentScores.voeding,
     movement_score: currentScores.beweging,
     recovery_score: currentScores.herstel,
+    connection_score: currentScores.verbinding,
   };
   const currentVitality = computeVitaliteit(resolveVitaliteitFacets(currentDomainScores));
   const latestTs = Math.max(...PILLAR_IDS.map((pillar) => series[pillar][series[pillar].length - 1].ts));

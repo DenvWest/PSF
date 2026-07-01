@@ -12,6 +12,7 @@ function scoresWithStressPriority(): DomainScores {
     nutrition_score: 43,
     movement_score: 62,
     recovery_score: 68,
+    connection_score: 68,
   };
 }
 
@@ -23,6 +24,7 @@ function scoresWithNutritionPriority(): DomainScores {
     nutrition_score: 38,
     movement_score: 62,
     recovery_score: 68,
+    connection_score: 68,
   };
 }
 
@@ -34,6 +36,7 @@ function scoresScreenshotMismatch(): DomainScores {
     nutrition_score: 29,
     movement_score: 25,
     recovery_score: 57,
+    connection_score: 57,
   };
 }
 
@@ -87,15 +90,17 @@ describe("buildRevealModel", () => {
     const energieLaagst: DomainScores = {
       sleep_score: 60, energy_score: 20, stress_score: 70,
       nutrition_score: 70, movement_score: 70, recovery_score: 70,
+    connection_score: 70,
     };
     const herstelLaagst: DomainScores = {
       sleep_score: 60, energy_score: 70, stress_score: 70,
       nutrition_score: 70, movement_score: 70, recovery_score: 20,
+    connection_score: 20,
     };
     for (const scores of [energieLaagst, herstelLaagst]) {
       const model = buildRevealModel(scores, EMPTY_ANSWERS);
       expect(model.priority.id).toBe(model.primaryPillarId);
-      expect(["slaap", "stress", "voeding", "beweging"]).toContain(model.priority.id);
+      expect(["slaap", "stress", "voeding", "beweging", "verbinding"]).toContain(model.priority.id);
     }
   });
 

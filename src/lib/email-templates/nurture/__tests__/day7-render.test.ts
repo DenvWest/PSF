@@ -16,6 +16,7 @@ const BASE_SCORES: Record<string, number> = {
   nutrition_score: 50,
   movement_score: 50,
   recovery_score: 50,
+    connection_score: 50,
 };
 
 const PROFILE_FIXTURES: Record<
@@ -43,6 +44,7 @@ const PROFILE_FIXTURES: Record<
       nutrition_score: 72,
       movement_score: 66,
       recovery_score: 69,
+    connection_score: 69,
     },
   },
   Overtrainer: {
@@ -51,6 +53,7 @@ const PROFILE_FIXTURES: Record<
       ...BASE_SCORES,
       movement_score: 50,
       recovery_score: 25,
+    connection_score: 25,
     },
   },
 };

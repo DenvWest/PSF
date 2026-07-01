@@ -61,7 +61,7 @@ const GENERIC_OPENING: Record<ThemeSlug, string> = {
   movement:
     "Op basis van je antwoorden lijkt beweging nu je grootste hefboom — dat herkennen veel mannen 40+ met drukke werkweken.",
   connection:
-    "Verbinding meten we niet in deze intake — wel relevant voor veerkracht op lange termijn.",
+    "Op basis van je antwoorden lijkt verbinding nu een aandachtspunt — sociaal contact en steun dragen je veerkracht, juist na 40.",
 };
 
 const STATIC_HEFBOOM: Record<ThemeSlug, string> = {
@@ -74,7 +74,7 @@ const STATIC_HEFBOOM: Record<ThemeSlug, string> = {
   movement:
     "Beweging en kracht houden spieren en stofwisseling op peil — vooral na 40. Te veel zonder herstel kan averechts werken; **balans** is hier de hefboom.",
   connection:
-    "Verbinding meten we niet in deze intake — sociaal contact en doel dragen wel bij aan veerkracht op lange termijn.",
+    "Verbinding en steun bepalen hoeveel je aankunt. Eén vast contactmoment per week doet vaak **meer** dan nog een product of protocol.",
 };
 
 const FOCUS_SCREEN_DISCLAIMER =
@@ -161,6 +161,15 @@ const STATIC_RECOGNITION_LINES: Partial<
       priority: 2,
     },
   ],
+  connection: [
+    {
+      body_text: "Je mist soms echt contact of staat er vaak alleen voor.",
+      match_question_id: "CON_SOC",
+      match_operator: "<=",
+      match_value: 2,
+      priority: 1,
+    },
+  ],
 };
 
 function themeFromPillar(slug: ThemeSlug): ThemeContent {
@@ -169,7 +178,7 @@ function themeFromPillar(slug: ThemeSlug): ThemeContent {
     slug,
     label: pillar?.label ?? slug,
     sublabel: pillar?.sublabel ?? "",
-    isMeasured: slug !== "connection",
+    isMeasured: true,
     hefboomText: STATIC_HEFBOOM[slug],
     disclaimerKey: "focus_screen",
   };

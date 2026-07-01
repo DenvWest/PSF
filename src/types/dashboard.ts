@@ -10,7 +10,8 @@ export type PillarId =
   | "stress"
   | "voeding"
   | "beweging"
-  | "herstel";
+  | "herstel"
+  | "verbinding";
 
 export type CheckId = "check1" | "check2";
 

@@ -30,6 +30,7 @@ const PILLAR_LABEL: Record<PillarId, string> = {
   voeding: "Voeding",
   beweging: "Beweging",
   herstel: "Herstel",
+  verbinding: "Verbinding",
 };
 
 const PILLAR_QUESTIONS: Record<PillarId, QuestionId[]> = {
@@ -39,6 +40,7 @@ const PILLAR_QUESTIONS: Record<PillarId, QuestionId[]> = {
   voeding: ["NUT_O3", "NUT_PROT"],
   beweging: ["MOV_STR", "MOV_CARD"],
   herstel: ["RCV_PHYS"],
+  verbinding: ["CON_SOC"],
 };
 
 function getAnswer(answers: Record<string, number>, id: QuestionId): number {
@@ -97,6 +99,9 @@ function resolveDriverHabitLine(id: QuestionId, value: number): string {
       ? "Herstel na belasting duurt te lang."
       : "Je hersteltempo blijft achter.";
   }
+  if (id === "CON_SOC" && value <= 2) {
+    return "Betekenisvol contact of steun schiet erbij in.";
+  }
   if (id === "NRG_PATN" && value <= 2) {
     return "Je energiecurve is instabiel.";
   }
@@ -136,6 +141,9 @@ function resolveNextBestHabit(id: QuestionId, value: number): string {
   }
   if (id === "RCV_PHYS" && value <= 2) {
     return "Focus nu: plan herstel net zo strak als training.";
+  }
+  if (id === "CON_SOC" && value <= 2) {
+    return "Focus nu: plan één vast contactmoment deze week.";
   }
   if (id === "NRG_PATN" && value <= 2) {
     return "Focus nu: start je ochtend met daglicht en eiwit.";

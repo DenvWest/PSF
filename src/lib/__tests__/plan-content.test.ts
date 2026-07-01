@@ -214,6 +214,7 @@ const baseScores: DomainScores = {
   nutrition_score: 50,
   movement_score: 55,
   recovery_score: 45,
+    connection_score: 45,
 };
 
 const baseSignals: DeficiencySignals = {

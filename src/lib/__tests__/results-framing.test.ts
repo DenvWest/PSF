@@ -10,6 +10,7 @@ function baseScores(overrides: Partial<DomainScores> = {}): DomainScores {
     nutrition_score: 70,
     movement_score: 70,
     recovery_score: 70,
+    connection_score: 70,
     ...overrides,
   };
 }
@@ -60,6 +61,7 @@ describe("getVitalityFraming", () => {
         nutrition_score: 30,
         movement_score: 35,
         recovery_score: 38,
+    connection_score: 38,
       }),
     );
     expect(framing.strengthLine).toBeNull();

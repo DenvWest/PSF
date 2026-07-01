@@ -5,13 +5,14 @@ import {
 import type { DomainScores } from "@/lib/intake-engine";
 import { matchesOvertrainerAnswers } from "@/lib/recommendation-engine";
 
-export type MeasuredPillarId = Exclude<PillarId, "connection">;
+export type MeasuredPillarId = PillarId;
 
 const TIEBREAK_ORDER: readonly MeasuredPillarId[] = [
   "sleep",
   "stress",
   "nutrition",
   "movement",
+  "connection",
 ];
 
 const MEASURED_PILLARS: readonly MeasuredPillarId[] = TIEBREAK_ORDER;

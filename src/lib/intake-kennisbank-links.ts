@@ -41,6 +41,11 @@ const DOMAIN_KENNISBANK: Record<
     label: "Overtraining uitgelegd",
     href: "/kennisbank/overtrainingssyndroom",
   },
+  connection_score: {
+    domainLabel: "Verbinding",
+    label: "Sociale steun en veerkracht",
+    href: "/inzichten",
+  },
 };
 
 export function getLowDomainKennisbankLinks(

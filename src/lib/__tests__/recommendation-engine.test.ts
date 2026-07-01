@@ -34,6 +34,7 @@ const balancedScores: DomainScores = {
   nutrition_score: 70,
   movement_score: 70,
   recovery_score: 70,
+    connection_score: 70,
 };
 
 describe("recommendation-engine hub parity", () => {

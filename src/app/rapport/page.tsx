@@ -24,6 +24,7 @@ const EXAMPLE_BASELINE: Record<DomainScoreKey, number> = {
   nutrition_score: 50,
   movement_score: 45,
   recovery_score: 35,
+  connection_score: 40,
 };
 
 const EXAMPLE_CURRENT: Record<DomainScoreKey, number> = {
@@ -33,6 +34,7 @@ const EXAMPLE_CURRENT: Record<DomainScoreKey, number> = {
   nutrition_score: 55,
   movement_score: 52,
   recovery_score: 48,
+  connection_score: 58,
 };
 
 const EXAMPLE_DELTA: Array<{ label: string; delta: number }> = [

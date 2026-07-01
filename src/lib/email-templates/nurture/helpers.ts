@@ -212,6 +212,11 @@ export function weakSpotCopyForDomain(domain: DomainKey): {
       statusLine: "Voeding is je zwakste pijler",
       action: "2× deze week vette vis of eiwitrijke lunch",
     },
+    connection_score: {
+      label: "Verbinding",
+      statusLine: "Contact en steun vragen aandacht",
+      action: "Plan één betekenisvol contactmoment deze week",
+    },
   };
   return map[domain];
 }

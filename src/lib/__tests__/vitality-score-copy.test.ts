@@ -24,6 +24,7 @@ const DOMAIN_SCORES = {
   nutrition_score: 47,
   movement_score: 71,
   recovery_score: 51,
+    connection_score: 51,
 };
 
 describe("getVitalityScoreCardCopy", () => {

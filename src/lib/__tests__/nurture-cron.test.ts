@@ -108,6 +108,7 @@ const INTAKE_MAIL = {
     nutrition_score: 45,
     movement_score: 60,
     recovery_score: 30,
+    connection_score: 30,
   },
   session_id: "session-uuid-1",
   urgency_level: "moderate",

@@ -16,6 +16,7 @@ function makeScores(overrides: Partial<DomainScores>): DomainScores {
     nutrition_score: BASELINE,
     movement_score: BASELINE,
     recovery_score: BASELINE,
+    connection_score: BASELINE,
     ...overrides,
   };
 }

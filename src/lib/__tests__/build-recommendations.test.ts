@@ -17,6 +17,7 @@ function makeSession(
       nutrition_score: 35,
       movement_score: 75,
       recovery_score: 45,
+    connection_score: 45,
       ...scoreOverrides,
     },
     urgency: "mild",

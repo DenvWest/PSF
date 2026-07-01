@@ -16,6 +16,7 @@ const DOMAIN_LABELS: Record<DomainScoreKey, string> = {
   nutrition_score: "Voeding",
   movement_score: "Beweging",
   recovery_score: "Herstel",
+  connection_score: "Verbinding",
 };
 
 const DOMAIN_KEYS: DomainScoreKey[] = [
@@ -25,6 +26,7 @@ const DOMAIN_KEYS: DomainScoreKey[] = [
   "nutrition_score",
   "movement_score",
   "recovery_score",
+  "connection_score",
 ];
 
 function polarToCartesian(

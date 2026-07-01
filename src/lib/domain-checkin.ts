@@ -5,6 +5,7 @@ export const DOMAIN_CHECKIN: Record<MeasuredPillarId, { href: string; label: str
   stress: { href: "/intake/stress", label: "stress" },
   nutrition: { href: "/intake/voeding", label: "voeding" },
   movement: { href: "/intake/beweging", label: "beweging" },
+  connection: { href: "/inzichten", label: "verbinding" },
 };
 
 export const PRIMARY_REASON: Record<MeasuredPillarId, string> = {
@@ -16,4 +17,6 @@ export const PRIMARY_REASON: Record<MeasuredPillarId, string> = {
     "Slaap is het herstelvenster waar al je andere stappen op leunen — daarom eerst hier.",
   movement:
     "Met je basis op orde is beweging de hefboom die kracht, energie en stofwisseling terugbrengt.",
+  connection:
+    "Sociale steun draagt je veerkracht — begin klein met één betekenisvol contactmoment per week.",
 };

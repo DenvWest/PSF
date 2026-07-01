@@ -13,6 +13,7 @@ const DOMAIN_SCORE_KEYS = [
   "nutrition_score",
   "movement_score",
   "recovery_score",
+  "connection_score",
 ] as const;
 
 function parseDomainScores(value: unknown): DomainScores | null {
@@ -23,6 +24,10 @@ function parseDomainScores(value: unknown): DomainScores | null {
   const out = {} as DomainScores;
   for (const key of DOMAIN_SCORE_KEYS) {
     const raw = record[key];
+    if (key === "connection_score" && (raw === undefined || raw === null)) {
+      out[key] = 0;
+      continue;
+    }
     if (typeof raw !== "number" || !Number.isFinite(raw)) {
       return null;
     }
@@ -35,7 +40,8 @@ function parseMeasuredPillar(value: unknown): MeasuredPillarId | null {
   return value === "sleep" ||
     value === "stress" ||
     value === "nutrition" ||
-    value === "movement"
+    value === "movement" ||
+    value === "connection"
     ? value
     : null;
 }

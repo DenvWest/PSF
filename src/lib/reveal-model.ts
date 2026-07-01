@@ -16,6 +16,7 @@ export function mapDomainScoresToCheckScores(domainScores: DomainScores): CheckS
     voeding: Math.round(domainScores.nutrition_score),
     beweging: Math.round(domainScores.movement_score),
     herstel: Math.round(domainScores.recovery_score),
+    verbinding: Math.round(domainScores.connection_score),
   };
 }
 
@@ -27,6 +28,7 @@ export function mapCheckScoresToDomainScores(scores: CheckScores): DomainScores 
     nutrition_score: scores.voeding,
     movement_score: scores.beweging,
     recovery_score: scores.herstel,
+    connection_score: scores.verbinding,
   };
 }
 

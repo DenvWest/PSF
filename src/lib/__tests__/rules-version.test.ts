@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   compareRulesVersions,
   hasMethodologyChange,
+  isConnectionDeltaComparable,
   isRecoveryDeltaComparable,
   isVitalityDeltaComparable,
   parseRulesVersion,
@@ -28,13 +29,20 @@ describe("rules-version", () => {
     expect(isRecoveryDeltaComparable("1.1.0", "1.2.0")).toBe(true);
   });
 
-  it("flags vitality delta incomparable across 1.2.0 boundary", () => {
-    expect(isVitalityDeltaComparable("1.1.0", "1.2.0")).toBe(false);
+  it("flags vitality delta incomparable across 1.3.0 boundary", () => {
+    expect(isVitalityDeltaComparable("1.2.0", "1.3.0")).toBe(false);
+    expect(isVitalityDeltaComparable("1.3.0", "1.3.0")).toBe(true);
     expect(isVitalityDeltaComparable("1.2.0", "1.2.0")).toBe(true);
+  });
+
+  it("flags connection delta incomparable across 1.3.0 boundary", () => {
+    expect(isConnectionDeltaComparable("1.2.0", "1.3.0")).toBe(false);
+    expect(isConnectionDeltaComparable("1.3.0", "1.3.0")).toBe(true);
   });
 
   it("detects methodology change across version boundaries", () => {
     expect(hasMethodologyChange("1.0.0", "1.2.0")).toBe(true);
-    expect(hasMethodologyChange("1.2.0", "1.2.0")).toBe(false);
+    expect(hasMethodologyChange("1.2.0", "1.3.0")).toBe(true);
+    expect(hasMethodologyChange("1.3.0", "1.3.0")).toBe(false);
   });
 });

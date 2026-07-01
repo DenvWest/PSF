@@ -45,8 +45,11 @@ export function isRulesVersionBefore(
 /** Recovery-delta alleen vergelijkbaar vanaf 1.1.0 (RCV_PHYS-only). */
 export const RECOVERY_DELTA_COMPARABLE_FROM = "1.1.0" as const;
 
-/** Vitaliteit-delta alleen vergelijkbaar vanaf 1.2.0 (4 interventie-facets). */
-export const VITALITY_DELTA_COMPARABLE_FROM = "1.2.0" as const;
+/** Vitaliteit-delta alleen vergelijkbaar vanaf 1.3.0 (5 interventie-facets). */
+export const VITALITY_DELTA_COMPARABLE_FROM = "1.3.0" as const;
+
+/** Verbinding-delta alleen vergelijkbaar vanaf 1.3.0 (CON_SOC). */
+export const CONNECTION_DELTA_COMPARABLE_FROM = "1.3.0" as const;
 
 export function isRecoveryDeltaComparable(
   baselineVersion: string,
@@ -74,12 +77,26 @@ export function isVitalityDeltaComparable(
   );
 }
 
+export function isConnectionDeltaComparable(
+  baselineVersion: string,
+  currentVersion: string,
+): boolean {
+  if (baselineVersion === currentVersion) {
+    return true;
+  }
+  return (
+    !isRulesVersionBefore(baselineVersion, CONNECTION_DELTA_COMPARABLE_FROM) &&
+    !isRulesVersionBefore(currentVersion, CONNECTION_DELTA_COMPARABLE_FROM)
+  );
+}
+
 export function hasMethodologyChange(
   baselineVersion: string,
   currentVersion: string,
 ): boolean {
   return (
     !isRecoveryDeltaComparable(baselineVersion, currentVersion) ||
-    !isVitalityDeltaComparable(baselineVersion, currentVersion)
+    !isVitalityDeltaComparable(baselineVersion, currentVersion) ||
+    !isConnectionDeltaComparable(baselineVersion, currentVersion)
   );
 }

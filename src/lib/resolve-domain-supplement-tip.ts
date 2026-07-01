@@ -18,6 +18,8 @@ const TIP_INTRO_BY_DOMAIN: Record<DomainKey, string> = {
   movement_score: "Je bewegingspatroon heeft ruimte voor verbetering.",
   recovery_score:
     "Je herstel scoorde het laagst — je lichaam krijgt niet genoeg rust.",
+  connection_score:
+    "Verbinding kwam naar voren als aandachtspunt — sociale steun draagt je veerkracht.",
 };
 
 const TIP_COPY_BY_INGREDIENT: Record<
@@ -91,6 +93,15 @@ const LIFESTYLE_FALLBACK_BY_DOMAIN: Record<DomainKey, DomainSupplementTip> = {
       url: "/gids/herstel",
     },
   },
+  connection_score: {
+    intro: TIP_INTRO_BY_DOMAIN.connection_score,
+    supplement: {
+      name: "Leefstijlstappen",
+      reason:
+        "Verbinding begint klein: één vast contactmoment per week met iemand die je energie geeft — dat is de hefboom met het meeste bewijs vóór je aan producten denkt.",
+      url: "/inzichten",
+    },
+  },
 };
 
 /** Geen-sessie-fallback: all-zero input wanneer answers ontbreken (GDPR of legacy pad). */
@@ -102,6 +113,7 @@ const NURTURE_ENGINE_STUB: RecommendationInput = {
     nutrition_score: 0,
     movement_score: 0,
     recovery_score: 0,
+    connection_score: 0,
   },
   signals: {
     omega3_deficiency: false,

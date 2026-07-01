@@ -2,7 +2,7 @@ import type { DomainScores } from "@/lib/intake-engine";
 import { getDisplayStatus, type DisplayStatus } from "@/lib/score-display";
 
 export type FacetSource = "self_report" | "wearable";
-export type FacetKey = "sleep" | "stress" | "nutrition" | "movement";
+export type FacetKey = "sleep" | "stress" | "nutrition" | "movement" | "connection";
 
 export interface VitaliteitFacet {
   key: FacetKey;
@@ -16,6 +16,7 @@ const FACET_SCORE_KEYS: Record<FacetKey, keyof DomainScores> = {
   stress: "stress_score",
   nutrition: "nutrition_score",
   movement: "movement_score",
+  connection: "connection_score",
 };
 
 const FACET_KEYS: FacetKey[] = [
@@ -23,21 +24,25 @@ const FACET_KEYS: FacetKey[] = [
   "stress",
   "nutrition",
   "movement",
+  "connection",
 ];
 
-/** Vitality = gemiddelde van 4 interventiedomeinen; energie en herstel zijn readouts. */
+/** Vitality = gemiddelde van 5 interventiedomeinen; energie en herstel zijn readouts. */
 export function resolveVitaliteitFacets(
   scores: DomainScores,
   biometrics?: unknown,
 ): VitaliteitFacet[] {
   void biometrics;
 
-  return FACET_KEYS.map((key) => ({
-    key,
-    value: scores[FACET_SCORE_KEYS[key]],
-    source: "self_report" as const,
-    weight: 1.0,
-  }));
+  return FACET_KEYS.map((key) => {
+    const raw = scores[FACET_SCORE_KEYS[key]];
+    return {
+      key,
+      value: typeof raw === "number" && Number.isFinite(raw) ? raw : 0,
+      source: "self_report" as const,
+      weight: 1.0,
+    };
+  });
 }
 
 export function computeVitaliteit(facets: VitaliteitFacet[]): number {

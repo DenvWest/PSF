@@ -57,6 +57,7 @@ export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Bij belangrijke nieuwe evidence kan de onderbouwingstekst en sterkteclassificatie worden geactualiseerd.",
   "Per juli 2026: herstelscore telt alleen fysiek herstel (RCV_PHYS); stressherstel (STR_RCV) hoort bij stress.",
   "Per juli 2026 (rules_version 1.2.0): vitaliteit = 4 interventiedomeinen; profiellabel driver-based.",
+  "Per juli 2026 (rules_version 1.3.0): verbinding als 5e interventiedomein (CON_SOC); vitaliteit = 5 interventiedomeinen.",
   "Per juli 2026: het conceptuele model is verduidelijkt naar drie lagen (determinanten, gedrag, uitkomsten); de basisbehoeften worden als parallel beschreven en de 'energie-batterij' is als causaal mechanisme losgelaten.",
 ];
 
@@ -65,6 +66,7 @@ export const LEEFSTIJLCHECK_INTERVENTION_DOMAINS = [
   "Stress — frequentie en herstelmomenten overdag",
   "Voeding — voedingspatroon en eiwit/omega-3",
   "Beweging — kracht en cardio",
+  "Verbinding — sociale steun en betekenisvol contact",
 ] as const;
 
 export const LEEFSTIJLCHECK_READOUT_DOMAINS = [
@@ -232,6 +234,31 @@ const behaviorRefs: EvidenceReference[] = [
     apa: "Michie S, Richardson M, Johnston M, et al. The Behavior Change Technique Taxonomy (v1). Ann Behav Med. 2013.",
     doi: "10.1007/s12160-013-9486-6",
     pmid: "23512568",
+  },
+];
+
+const socialConnectionRefs: EvidenceReference[] = [
+  {
+    apa: "Holt-Lunstad J, Smith TB, Baker M, et al. Loneliness and social isolation as risk factors: meta-analytic review. Perspect Psychol Sci. 2015.",
+    doi: "10.1177/1745691614568352",
+    pmid: "25910392",
+  },
+  {
+    apa: "Santini ZI, Koyanagi A, Tyrovolas S, et al. Social relationships and depression: systematic review and meta-analysis. J Affect Disord. 2015.",
+    doi: "10.1016/j.jad.2014.12.049",
+    pmid: "25594509",
+  },
+  {
+    apa: "Umberson D, Montez JK. Social relationships and health: a flashpoint for health policy. J Health Soc Behav. 2010.",
+    doi: "10.1177/0022146510383501",
+    pmid: "20943583",
+  },
+  {
+    apa: "Nielsen L, Meilstrup C, Nelausen MK, et al. Promotion of social and emotional competence: a meta-analysis. Educ Res Rev. 2015.",
+    doi: "10.1016/j.edurev.2015.02.003",
+  },
+  {
+    apa: "Berkman LF, Krishna A. Social network epidemiology. In: Social Epidemiology. 2014.",
   },
 ];
 
@@ -537,6 +564,29 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
         "Zeer brede en consistente onderbouwing in richtlijnen en meta-analyses.",
     },
     references: movementRefs,
+  },
+  {
+    questionId: "CON_SOC",
+    whyThisQuestion:
+      "Sociale steun en betekenisvol contact zijn een meetbaar leefstijlpatroon dat samenhangt met veerkracht en volhouden van andere gewoonten.",
+    scientificRationale: [
+      "Meta-analyses tonen dat sociale verbondenheid en steun samenhangen met betere gezondheidsuitkomsten op populatieniveau — als leefstijlfactor, geen diagnose.",
+      "Self-Determination Theory benadrukt verbondenheid als parallelle basisbehoefte naast autonomie en competentie voor duurzame gedragsverandering.",
+      "Blue Zones-onderzoek wijst op 'belonging' als terugkerend patroon in lang gezonde leefgemeenschappen.",
+    ],
+    answerMeaning: {
+      higherAlignment:
+        "Een hoger antwoord sluit meer aan bij leefstijlpatronen met betekenisvolle steun en contact waar je op kunt bouwen.",
+      lowerAlignment:
+        "Een lager antwoord wordt vaker gezien binnen patronen met minder sociale steun of contact dat schiet erbij in.",
+    },
+    strength: {
+      stars: 5,
+      label: "Zeer sterk bewijs",
+      rationale:
+        "Sterke meta-analytische onderbouwing voor sociale steun als leefstijl- en veerkrachtfactor.",
+    },
+    references: socialConnectionRefs,
   },
   {
     questionId: "RCV_PHYS",

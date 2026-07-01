@@ -11,6 +11,7 @@ function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
     nutrition_score: 80,
     movement_score: 55,
     recovery_score: 70,
+    connection_score: 70,
     ...overrides,
   };
 }

@@ -291,6 +291,7 @@ const DOMAIN_KEYS: readonly (keyof DomainScores)[] = [
   "nutrition_score",
   "movement_score",
   "recovery_score",
+  "connection_score",
 ] as const;
 
 function isDomainScores(value: unknown): value is DomainScores {
@@ -298,9 +299,13 @@ function isDomainScores(value: unknown): value is DomainScores {
     return false;
   }
   const o = value as Record<string, unknown>;
-  return DOMAIN_KEYS.every(
-    (k) => typeof o[k] === "number" && Number.isFinite(o[k] as number),
-  );
+  return DOMAIN_KEYS.every((k) => {
+    const raw = o[k];
+    if (k === "connection_score" && (raw === undefined || raw === null)) {
+      return true;
+    }
+    return typeof raw === "number" && Number.isFinite(raw as number);
+  });
 }
 
 function totalScoreFromDomains(ds: DomainScores | null): number | null {
@@ -398,6 +403,7 @@ export async function GET(request: NextRequest) {
     nutrition_score: 0,
     movement_score: 0,
     recovery_score: 0,
+    connection_score: 0,
   };
   let domainAvgDenominator = 0;
   const ageCounts = new Map<string, number>(

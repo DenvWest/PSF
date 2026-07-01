@@ -73,11 +73,16 @@ function isDomainScores(value: unknown): value is DomainScores {
     "nutrition_score",
     "movement_score",
     "recovery_score",
+    "connection_score",
   ];
   const record = value as Record<string, unknown>;
-  return keys.every(
-    (key) => typeof record[key] === "number" && Number.isFinite(record[key]),
-  );
+  return keys.every((key) => {
+    const raw = record[key];
+    if (key === "connection_score" && (raw === undefined || raw === null)) {
+      return true;
+    }
+    return typeof raw === "number" && Number.isFinite(raw);
+  });
 }
 
 function resolvePrimaryDomain(

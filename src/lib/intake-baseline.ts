@@ -6,6 +6,7 @@ import {
 } from "@/lib/intake-engine";
 import {
   hasMethodologyChange,
+  isConnectionDeltaComparable,
   isRecoveryDeltaComparable,
 } from "@/lib/rules-version";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
@@ -18,6 +19,7 @@ const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
   "nutrition_score",
   "movement_score",
   "recovery_score",
+  "connection_score",
 ];
 
 export type BaselineSnapshot = {
@@ -79,6 +81,13 @@ export function sanitizePerDomainDelta(input: {
   if (!recoveryComparable) {
     delta.recovery_score = 0;
   }
+  const connectionComparable = isConnectionDeltaComparable(
+    input.baselineRulesVersion,
+    input.currentRulesVersion,
+  );
+  if (!connectionComparable) {
+    delta.connection_score = 0;
+  }
   return delta;
 }
 
@@ -127,6 +136,10 @@ function parseDomainScores(value: unknown): DomainScores | null {
 
   for (const key of DOMAIN_SCORE_KEYS) {
     const raw = record[key];
+    if (key === "connection_score" && (raw === undefined || raw === null)) {
+      scores[key] = 0;
+      continue;
+    }
     if (typeof raw !== "number" || !Number.isFinite(raw)) {
       return null;
     }

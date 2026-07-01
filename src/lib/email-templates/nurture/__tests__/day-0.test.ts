@@ -46,6 +46,7 @@ describe("dag-0 primaire CTA-knop", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain(RECOVERY_URL);
@@ -59,6 +60,7 @@ describe("dag-0 primaire CTA-knop", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     // CTA-knop mag geen /profiel/ bevatten
@@ -78,6 +80,7 @@ describe("dag-0 primaire CTA-knop", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain(RECOVERY_URL);
@@ -91,6 +94,7 @@ describe("dag-0 primaire CTA-knop", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain(RECOVERY_URL);
@@ -104,6 +108,7 @@ describe("dag-0 primaire CTA-knop", () => {
       nutrition_score: 66,
       movement_score: 65,
       recovery_score: 69,
+    connection_score: 69,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain(RECOVERY_URL);
@@ -117,6 +122,7 @@ describe("dag-0 primaire CTA-knop", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).not.toContain("/intake/resultaten");
@@ -134,6 +140,7 @@ describe("dag-0 weakspot-blok toont primair domein", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     // Weakspot header bevat "STRESS" (uppercase in HTML)
@@ -150,6 +157,7 @@ describe("dag-0 weakspot-blok toont primair domein", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Slaap is je duidelijkste signaal");
@@ -163,6 +171,7 @@ describe("dag-0 weakspot-blok toont primair domein", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Energie staat onder druk");
@@ -176,6 +185,7 @@ describe("dag-0 weakspot-blok toont primair domein", () => {
       nutrition_score: 30,
       movement_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Voeding is je zwakste pijler");
@@ -193,6 +203,7 @@ describe("dag-0 domein-opening", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Stress kwam als je grootste aandachtspunt naar voren");
@@ -207,6 +218,7 @@ describe("dag-0 domein-opening", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Slaap kwam als je grootste aandachtspunt naar voren");
@@ -221,6 +233,7 @@ describe("dag-0 domein-opening", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Energie kwam als je grootste aandachtspunt naar voren");
@@ -235,6 +248,7 @@ describe("dag-0 domein-opening", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).not.toContain("Je hebt net ingevuld dat");
@@ -254,6 +268,7 @@ describe("dag-0 score-patroon-zin", () => {
       movement_score: 20,
       energy_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("van je vier gebieden vragen nu aandacht");
@@ -269,6 +284,7 @@ describe("dag-0 score-patroon-zin", () => {
       movement_score: 70,
       energy_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Eén gebied vraagt nu je aandacht");
@@ -282,6 +298,7 @@ describe("dag-0 score-patroon-zin", () => {
       movement_score: 68,
       energy_score: 80,
       recovery_score: 75,
+    connection_score: 75,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).not.toContain("van je vier gebieden vragen nu aandacht");
@@ -300,6 +317,7 @@ describe("dag-0 nulpunt-zin", () => {
       movement_score: 65,
       energy_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Dit is je startpunt");
@@ -318,6 +336,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
       nutrition_score: 50,
       movement_score: 20,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Beweging kwam als je grootste aandachtspunt naar voren");
@@ -332,6 +351,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
       nutrition_score: 50,
       movement_score: 20,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Beweging heeft ruimte");
@@ -347,6 +367,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
         nutrition_score: 50,
         movement_score: 20,
         recovery_score: 50,
+    connection_score: 50,
       });
       const { html } = nurtureDay0Email(data, CTX);
       expect(html).not.toContain("GRATIS SLAAPGIDS");
@@ -365,6 +386,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
       nutrition_score: 50,
       movement_score: 20,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).not.toContain("energie je prioriteit is");
@@ -378,6 +400,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
       nutrition_score: 20,
       movement_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Voeding kwam als je grootste aandachtspunt naar voren");
@@ -394,6 +417,7 @@ describe("dag-0 domein-consistentie movement en nutrition", () => {
         nutrition_score: 50,
         movement_score: 50,
         recovery_score: 50,
+    connection_score: 50,
       });
       const { subject } = nurtureDay0Email(data, CTX);
       expect(subject).toBe("Dit valt op in jouw resultaten");
@@ -412,6 +436,7 @@ describe("dag-0 interactie-regel", () => {
       nutrition_score: 50,
       movement_score: 20,
       recovery_score: 50,
+    connection_score: 50,
     };
     expect(day0InteractionLine("movement", scores)).toContain(
       "Je energie staat óók onder druk",
@@ -429,6 +454,7 @@ describe("dag-0 interactie-regel", () => {
       nutrition_score: 60,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     };
     expect(day0InteractionLine("energy", scores)).toContain(
       "Je slaap en voeding lijken redelijk op orde",
@@ -445,6 +471,7 @@ describe("dag-0 interactie-regel", () => {
       nutrition_score: 50,
       movement_score: 65,
       recovery_score: 20,
+    connection_score: 20,
     };
     expect(day0InteractionLine("recovery", scores)).toContain(
       "Je beweegt volop maar je herstel blijft achter",
@@ -461,6 +488,7 @@ describe("dag-0 interactie-regel", () => {
       movement_score: 20,
       energy_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     };
     expect(day0InteractionLine("movement", scores)).toBe("");
     const { html } = nurtureDay0Email(buildData("In Balans", "movement", scores), CTX);
@@ -479,6 +507,7 @@ describe("dag-0 en-verder-regel", () => {
       movement_score: 20,
       energy_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain(
@@ -494,6 +523,7 @@ describe("dag-0 en-verder-regel", () => {
       movement_score: 70,
       energy_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).not.toContain("daar komen we in de volgende mails op terug");
@@ -511,6 +541,7 @@ describe("dag-0 voeding-brug", () => {
       nutrition_score: 45,
       movement_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Soms zit een deel hiervan in je voedingsbodem");
@@ -526,6 +557,7 @@ describe("dag-0 voeding-brug", () => {
       nutrition_score: 80,
       movement_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Doe de voeding-check →");
@@ -540,6 +572,7 @@ describe("dag-0 voeding-brug", () => {
       nutrition_score: 80,
       movement_score: 20,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Doe de voeding-check →");
@@ -553,6 +586,7 @@ describe("dag-0 voeding-brug", () => {
       nutrition_score: 70,
       movement_score: 70,
       recovery_score: 70,
+    connection_score: 70,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).not.toContain("Doe de voeding-check →");
@@ -567,6 +601,7 @@ describe("dag-0 voeding-brug", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html.match(/class="nurture-dual-cta-primary"/g)?.length ?? 0).toBe(1);
@@ -586,6 +621,7 @@ describe("dag-0 dual CTA-knoppen", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     expect(html).toContain("Bekijk je resultaten");
@@ -603,6 +639,7 @@ describe("dag-0 dual CTA-knoppen", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, CTX);
     const ctaButtonMatch = html.match(/href="([^"]*)"[^>]*>[^<]*Bekijk je resultaten/);
@@ -623,6 +660,7 @@ describe("dag-0 dual CTA-knoppen", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, {
       ...CTX,
@@ -641,6 +679,7 @@ describe("dag-0 dual CTA-knoppen", () => {
       nutrition_score: 50,
       movement_score: 50,
       recovery_score: 50,
+    connection_score: 50,
     });
     const { html } = nurtureDay0Email(data, {
       ...CTX,

@@ -45,6 +45,7 @@ describe("countSufficientDomains", () => {
     voeding: 50,
     beweging: 50,
     herstel: 50,
+    verbinding: 50,
   };
 
   it("counts domains with score >= 60", () => {
@@ -67,6 +68,7 @@ describe("countSufficientDomains", () => {
         voeding: 85,
         beweging: 62,
         herstel: 90,
+    verbinding: 90,
       }),
     ).toBe(LIFESTYLE_DOMAIN_COUNT);
   });

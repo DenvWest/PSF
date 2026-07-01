@@ -11,6 +11,7 @@ export const DOMAIN_ROLE: Record<PillarId, DomainRole> = {
   stress: "intervention",
   voeding: "intervention",
   beweging: "intervention",
+  verbinding: "intervention",
   energie: "readout",
   herstel: "readout",
 };

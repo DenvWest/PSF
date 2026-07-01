@@ -66,10 +66,6 @@ export function getDisplayStatusFraming(
   return STATUS_FRAMING[status](domainLabel);
 }
 
-export function getConnectionFraming(): string {
-  return "Verbinding meten we niet in deze intake — wel relevant voor veerkracht op lange termijn.";
-}
-
 export const STATUS_TONE_CLASS: Record<DisplayStatusTone, string> = {
   sage: "border-intake-sage/40 bg-intake-sage/15 text-intake-sage",
   neutral: "border-intake-card-border bg-intake-bg text-intake-ink-muted",

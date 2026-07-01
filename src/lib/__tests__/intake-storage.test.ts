@@ -8,6 +8,7 @@ const okScores = {
   nutrition_score: 50,
   movement_score: 50,
   recovery_score: 50,
+    connection_score: 50,
 };
 
 const baseInput = {

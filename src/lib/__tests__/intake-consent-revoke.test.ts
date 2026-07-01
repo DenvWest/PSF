@@ -7,6 +7,7 @@ import {
   revokeIntakeConsentForSession,
 } from "@/lib/intake-consent-revoke";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
+import type { DomainScores } from "@/lib/intake-engine";
 import { intakeSessionRowToPayload } from "@/lib/intake-session-payload";
 
 describe("isAnonymizedProfileLabel", () => {
@@ -60,6 +61,7 @@ describe("intakeSessionRowToPayload", () => {
         nutrition_score: 0,
         movement_score: 0,
         recovery_score: 0,
+    connection_score: 0,
       },
       urgency_level: ANON_PROFILE_LABEL,
       profile_label: ANON_PROFILE_LABEL,
@@ -69,6 +71,29 @@ describe("intakeSessionRowToPayload", () => {
     });
 
     expect(payload).toBeNull();
+  });
+
+  it("hydrateert ontbrekende connection_score bij laden uit database", () => {
+    const payload = intakeSessionRowToPayload({
+      id: "00000000-0000-4000-8000-000000000002",
+      symptom_profile: ["slaap"],
+      answers: { SLP_QUAL: 2 },
+      domain_scores: {
+        sleep_score: 50,
+        energy_score: 60,
+        stress_score: 40,
+        nutrition_score: 55,
+        movement_score: 45,
+        recovery_score: 35,
+      } as DomainScores,
+      urgency_level: "Matig",
+      profile_label: "In Balans",
+      created_at: "2026-06-01T10:00:00.000Z",
+      age_range: "45–49",
+      first_name: "Jan",
+    });
+
+    expect(payload?.scores.connection_score).toBe(0);
   });
 });
 

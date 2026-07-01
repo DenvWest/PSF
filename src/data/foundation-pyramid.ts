@@ -194,6 +194,7 @@ export const PILLAR_SCORE_KEYS: Partial<
   sleep: "sleep_score",
   nutrition: "nutrition_score",
   movement: "movement_score",
+  connection: "connection_score",
 };
 
 export const PILLAR_DRAWER_FALLBACKS: Record<PillarId, PillarDrawerFallback> = {

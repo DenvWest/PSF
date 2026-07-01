@@ -42,6 +42,10 @@ const PILLAR_BY_DOMAIN: Record<DomainKey, { text: string; url: string }> = {
     text: "Lees het herstelthema",
     url: "/gids/herstel",
   },
+  connection_score: {
+    text: "Bekijk je inzichten over verbinding",
+    url: "/inzichten",
+  },
 };
 
 const LIFESTYLE_BY_PROFILE: Record<

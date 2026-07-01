@@ -1,5 +1,5 @@
 import type { IntakeAgeRange } from "@/data/intake-questions";
-import type { DomainScores } from "@/lib/intake-engine";
+import { hydrateDomainScores, type DomainScores } from "@/lib/intake-engine";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 
 export type IntakeSessionPayload = {
@@ -61,7 +61,7 @@ export function intakeSessionRowToPayload(
     sessionId: row.id,
     symptoms: row.symptom_profile,
     answers: row.answers,
-    scores: row.domain_scores,
+    scores: hydrateDomainScores(row.domain_scores),
     urgency: row.urgency_level,
     profile: profileLabel,
     timestamp: new Date(row.created_at).getTime(),

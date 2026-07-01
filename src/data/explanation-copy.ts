@@ -8,6 +8,7 @@ export const DOMAIN_LABELS: Record<keyof DomainScores, string> = {
   nutrition_score: "Voeding",
   movement_score: "Beweging",
   recovery_score: "Herstel",
+  connection_score: "Verbinding",
 };
 
 export const SIGNAL_COPY: Record<keyof DeficiencySignals, string> = {
@@ -65,6 +66,8 @@ export const HUB_RULE_COPY: Record<string, string> = {
     "Je bewegingspatroon is je prioriteit in de opvolging",
   nurture_domain_recovery_score:
     "Je herstel is je prioriteit in de opvolging",
+  nurture_domain_connection_score:
+    "Je verbinding is je prioriteit in de opvolging",
 };
 
 export const PILLAR_CONTEXT_COPY: Record<PillarId, string> = {
@@ -74,6 +77,7 @@ export const PILLAR_CONTEXT_COPY: Record<PillarId, string> = {
   voeding: "Je eet zelden vette vis — voeding is je prioriteit",
   beweging: "",
   herstel: "",
+  verbinding: "",
 };
 
 export const LIFESTYLE_FIRST_GENERIC =

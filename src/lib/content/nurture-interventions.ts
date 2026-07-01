@@ -34,6 +34,7 @@ const MEASURED_PILLARS = new Set<MeasuredPillarId>([
   "stress",
   "nutrition",
   "movement",
+  "connection",
 ]);
 
 export type NurturePlanGate = {
@@ -79,9 +80,16 @@ function isDomainScores(value: unknown): value is DomainScores {
     "nutrition_score",
     "movement_score",
     "recovery_score",
+    "connection_score",
   ];
   const o = value as Record<string, unknown>;
-  return keys.every((k) => typeof o[k] === "number" && Number.isFinite(o[k]));
+  return keys.every((k) => {
+    const raw = o[k];
+    if (k === "connection_score" && (raw === undefined || raw === null)) {
+      return true;
+    }
+    return typeof raw === "number" && Number.isFinite(raw);
+  });
 }
 
 export async function getPlanInterventionBucketsForSession(

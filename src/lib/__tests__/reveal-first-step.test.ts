@@ -14,13 +14,14 @@ function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
     nutrition_score: 70,
     movement_score: 70,
     recovery_score: 70,
+    connection_score: 70,
     ...overrides,
   };
 }
 
 describe("resolveRevealFirstStep", () => {
   it("avoids alcohol headline when herstel is priority", () => {
-    const scores = makeScores({ recovery_score: 25, sleep_score: 55 });
+    const scores = makeScores({ recovery_score: 25, sleep_score: 55, connection_score: 70 });
     const answers: Record<string, number> = {};
     const model = buildRevealModel(scores, answers);
     const input = buildRecommendationInput({ scores, answers });
@@ -33,7 +34,8 @@ describe("resolveRevealFirstStep", () => {
   });
 
   it("uses priority quickWin for voeding priority with supplement qualification", () => {
-    const scores = makeScores({ nutrition_score: 20, recovery_score: 55 });
+    const scores = makeScores({ nutrition_score: 20, recovery_score: 55,
+    connection_score: 55 });
     const answers: Record<string, number> = {};
     const model = buildRevealModel(scores, answers);
     const input = buildRecommendationInput({ scores, answers });
@@ -53,6 +55,7 @@ describe("resolveRevealFirstStep", () => {
       stress_score: 25,
       nutrition_score: 35,
       recovery_score: 50,
+    connection_score: 50,
       sleep_score: 55,
     });
     const answers: Record<string, number> = {};
@@ -72,7 +75,8 @@ describe("resolveRevealFirstStep", () => {
   });
 
   it("includes upcoming dashboard features", () => {
-    const scores = makeScores({ recovery_score: 25 });
+    const scores = makeScores({ recovery_score: 25,
+    connection_score: 25 });
     const answers: Record<string, number> = {};
     const model = buildRevealModel(scores, answers);
     const input = buildRecommendationInput({ scores, answers });

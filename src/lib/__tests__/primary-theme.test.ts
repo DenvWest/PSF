@@ -14,6 +14,7 @@ function baseScores(overrides: Partial<DomainScores> = {}): DomainScores {
     nutrition_score: 70,
     movement_score: 70,
     recovery_score: 70,
+    connection_score: 70,
     ...overrides,
   };
 }
@@ -23,6 +24,7 @@ const MEASURED_PILLARS: MeasuredPillarId[] = [
   "stress",
   "nutrition",
   "movement",
+  "connection",
 ];
 
 describe("getPrimaryTheme", () => {
@@ -68,11 +70,9 @@ describe("getPrimaryTheme", () => {
     expect(getPrimaryTheme(scores, {})).toBe("sleep");
   });
 
-  it("never returns connection", () => {
-    const scores = baseScores({ sleep_score: 10 });
-    const theme = getPrimaryTheme(scores, {});
-    expect(MEASURED_PILLARS).toContain(theme);
-    expect(theme).not.toBe("connection");
+  it("picks connection when connection_score is lowest", () => {
+    const scores = baseScores({ connection_score: 25 });
+    expect(getPrimaryTheme(scores, {})).toBe("connection");
   });
 
   it("still picks lowest measured pillar when all scores >= 80", () => {
@@ -81,6 +81,7 @@ describe("getPrimaryTheme", () => {
       stress_score: 88,
       nutrition_score: 82,
       movement_score: 90,
+      connection_score: 83,
     });
     expect(getPrimaryTheme(scores, {})).toBe("nutrition");
   });
@@ -92,6 +93,7 @@ describe("getPrimaryTheme", () => {
       stress_score: Number.NaN,
       nutrition_score: Number.NaN,
       movement_score: Number.NaN,
+      connection_score: Number.NaN,
     });
     expect(getPrimaryTheme(scores, {})).toBe("sleep");
     expect(spy).toHaveBeenCalledOnce();

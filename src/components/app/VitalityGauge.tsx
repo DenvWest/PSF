@@ -102,6 +102,7 @@ export default function VitalityGauge({
   heroCenterNudgeX = 0,
   heroInnerDiscRatio = 0.58,
 }: VitalityGaugeProps) {
+  const safeValue = Number.isFinite(value) ? value : 0;
   const [disp, setDisp] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
   const fillGradientId = useId().replace(/:/g, "");
@@ -130,18 +131,18 @@ export default function VitalityGauge({
       }
       const p = Math.min(1, (t - start) / dur);
       const e = 1 - Math.pow(1 - p, 4);
-      setDisp(e * value);
+      setDisp(e * safeValue);
       if (p < 1) {
         raf = requestAnimationFrame(tick);
       }
     };
     raf = requestAnimationFrame(tick);
-    const settle = window.setTimeout(() => setDisp(value), dur + 120);
+    const settle = window.setTimeout(() => setDisp(safeValue), dur + 120);
     return () => {
       cancelAnimationFrame(raf);
       window.clearTimeout(settle);
     };
-  }, [value, locked]);
+  }, [safeValue, locked]);
 
   const isHero = variant === "hero";
   const startAngle = isHero ? HERO_START : DEFAULT_START;
@@ -155,7 +156,7 @@ export default function VitalityGauge({
   const r = (Math.min(width, height) - trackStroke) / 2 - (isHero ? 8 : 1);
   const displayDisp = locked ? 0 : disp;
   const clamped = Math.min(VITALITY_SCORE_MAX, Math.max(0, displayDisp));
-  const band = getVitalityBand(value);
+  const band = getVitalityBand(safeValue);
   const progressEnd = scoreToAngle(startAngle, sweep, clamped);
   const isLight = (theme === "light" || isHero) && tone !== "dark";
   const trackMuted = isLight ? "rgba(15,28,16,0.10)" : "rgba(255,255,255,0.14)";
@@ -584,7 +585,7 @@ export default function VitalityGauge({
                 textShadow: locked ? undefined : "0 2px 10px rgba(15,28,16,0.28)",
               }}
             >
-              {locked ? "0" : Math.round(disp)}
+              {locked ? "0" : Math.round(Number.isFinite(disp) ? disp : 0)}
             </div>
             <div
               style={{

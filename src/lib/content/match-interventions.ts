@@ -115,7 +115,8 @@ function isDomainScoreKey(field: string): field is keyof DomainScores {
     field === "stress_score" ||
     field === "nutrition_score" ||
     field === "movement_score" ||
-    field === "recovery_score"
+    field === "recovery_score" ||
+    field === "connection_score"
   );
 }
 

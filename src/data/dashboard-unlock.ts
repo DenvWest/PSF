@@ -87,6 +87,7 @@ export const DASHBOARD_UNLOCK_PREVIEW = {
     stress: 58,
     beweging: 62,
     herstel: 68,
+    verbinding: 62,
   } satisfies Record<PillarId, number>,
   firstStepTitle: "Eiwitrijk ontbijt",
   firstStepDetail: "30 g eiwit vóór 10 uur",

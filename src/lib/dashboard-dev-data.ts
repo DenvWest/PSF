@@ -28,6 +28,7 @@ const DEV_INTAKE_ANSWERS: Record<string, number> = {
   MOV_STR: 4,
   MOV_CARD: 4,
   RCV_PHYS: 2,
+  CON_SOC: 2,
   LIF_ALC: 4,
   LIF_SUN: 3,
 };
@@ -53,6 +54,7 @@ function toDomainScores(scores: CheckScores): DomainScores {
     nutrition_score: scores.voeding,
     movement_score: scores.beweging,
     recovery_score: scores.herstel,
+    connection_score: scores.verbinding,
   };
 }
 

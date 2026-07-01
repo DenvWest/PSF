@@ -39,6 +39,7 @@ function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
     nutrition_score: 70,
     movement_score: 70,
     recovery_score: 70,
+    connection_score: 70,
     ...overrides,
   };
 }
@@ -92,7 +93,8 @@ describe("enforceCrossDomainBalance via getAdvice", () => {
         answers: makeAnswers({ NUT_O3: 1 }),
       },
       {
-        scores: makeScores({ recovery_score: 30 }),
+        scores: makeScores({ recovery_score: 30,
+    connection_score: 30 }),
         answers: makeAnswers({ MOV_STR: 4, MOV_CARD: 4, RCV_PHYS: 1 }),
       },
     ];
@@ -127,6 +129,7 @@ describe("nurtureOutputHasCrossDomainBalance", () => {
       stress_score: 80,
       movement_score: 80,
       recovery_score: 80,
+    connection_score: 80,
     });
     const scoresRecord = scores as unknown as Record<string, number>;
     const tip = pickLifestyleTipFromOtherDomain(

@@ -73,6 +73,12 @@ const DOMAIN_BAND_LABELS: Record<
     mid: "Herstel — gemiddeld",
     high: "Herstel — sterk",
   },
+  connection_score: {
+    domain: "Verbinding",
+    low: "Verbinding — laag in jouw antwoorden",
+    mid: "Verbinding — gemiddeld",
+    high: "Verbinding — sterk",
+  },
 };
 
 export function getDomainScoreBandLabel(
@@ -90,6 +96,7 @@ const DOMAIN_QUESTION_COUNTS: Partial<Record<DomainScoreKey, number>> = {
   nutrition_score: 2,
   movement_score: 2,
   recovery_score: 1,
+  connection_score: 1,
 };
 
 export function getDomainBandContext(key: DomainScoreKey): string {

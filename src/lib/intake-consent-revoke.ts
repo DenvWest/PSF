@@ -8,6 +8,7 @@ const ANON_DOMAIN_SCORES = {
   nutrition_score: 0,
   movement_score: 0,
   recovery_score: 0,
+  connection_score: 0,
 } as const;
 
 const REVOKE_RPC = "revoke_intake_session_consent";

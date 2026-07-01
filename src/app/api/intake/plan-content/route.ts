@@ -28,10 +28,15 @@ function isDomainScores(value: unknown): value is DomainScores {
     "nutrition_score",
     "movement_score",
     "recovery_score",
+    "connection_score",
   ] as const;
-  return keys.every(
-    (key) => typeof scores[key] === "number" && Number.isFinite(scores[key]),
-  );
+  return keys.every((key) => {
+    const raw = scores[key];
+    if (key === "connection_score" && (raw === undefined || raw === null)) {
+      return true;
+    }
+    return typeof raw === "number" && Number.isFinite(raw);
+  });
 }
 
 export async function POST(request: NextRequest) {

@@ -14,6 +14,7 @@ const baselineScores: DomainScores = {
   nutrition_score: 45,
   movement_score: 60,
   recovery_score: 30,
+    connection_score: 30,
 };
 
 const currentScores: DomainScores = {
@@ -23,6 +24,7 @@ const currentScores: DomainScores = {
   nutrition_score: 45,
   movement_score: 65,
   recovery_score: 38,
+    connection_score: 38,
 };
 
 describe("computePerDomainDelta", () => {
@@ -34,6 +36,7 @@ describe("computePerDomainDelta", () => {
       nutrition_score: 0,
       movement_score: 5,
       recovery_score: 8,
+    connection_score: 8,
     });
   });
 
@@ -52,6 +55,7 @@ describe("computePerDomainDelta", () => {
       nutrition_score: 40,
       movement_score: 55,
       recovery_score: 25,
+    connection_score: 25,
     };
     const delta = computePerDomainDelta(currentScores, worse);
     expect(delta.sleep_score).toBe(-24);

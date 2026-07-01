@@ -15,6 +15,7 @@ const baseScores: DomainScores = {
   nutrition_score: 70,
   movement_score: 70,
   recovery_score: 70,
+    connection_score: 70,
 };
 
 const baseSignals: DeficiencySignals = {
@@ -149,6 +150,7 @@ describe("buildFallbackBuckets engine-parity", () => {
       scores: {
         sleep_score: 30, energy_score: 40, stress_score: 30,
         nutrition_score: 45, movement_score: 60, recovery_score: 40,
+    connection_score: 40,
       },
       answers: {},
     });
@@ -169,6 +171,7 @@ describe("buildFallbackBuckets engine-parity", () => {
       scores: {
         sleep_score: 30, energy_score: 40, stress_score: 30,
         nutrition_score: 45, movement_score: 60, recovery_score: 40,
+    connection_score: 40,
       },
       answers: {},
     });

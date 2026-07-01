@@ -20,7 +20,7 @@ import type { DomainScores } from "@/lib/intake-engine";
 import type { CheckScores } from "@/types/dashboard";
 import type { PlanStepState } from "@/types/lifestyle-plan";
 
-const MEASURED_PILLARS = ["sleep", "stress", "nutrition", "movement"] as const;
+const MEASURED_PILLARS = ["sleep", "stress", "nutrition", "movement", "connection"] as const;
 const STEP_STATES = ["todo", "doing", "done", "skipped"] as const;
 const KERNEL_MODE = "kernel";
 
@@ -50,6 +50,7 @@ function mapSessionScoresToCheckScores(scores: DomainScores): CheckScores {
     voeding: Math.round(scores.nutrition_score ?? 0),
     beweging: Math.round(scores.movement_score ?? 0),
     herstel: Math.round(scores.recovery_score ?? 0),
+    verbinding: Math.round(scores.connection_score ?? 0),
   };
 }
 

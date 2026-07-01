@@ -139,6 +139,16 @@ export const CATEGORY_TAXONOMY = [
     insightSlugs: [],
   },
   {
+    id: "verbinding-steun",
+    domain: "verbinding",
+    label: "Sociale steun",
+    description: "Mensen om op terug te vallen.",
+    source: "self_report",
+    questionId: "CON_SOC",
+    evidenceNiveau: "sterk",
+    insightSlugs: [],
+  },
+  {
     id: "voeding-eiwit",
     domain: "voeding",
     label: "Eiwit",

@@ -6,4 +6,5 @@ export const MEASURED_DOMAIN_TO_PILLAR: Record<MeasuredPillarId, PillarId> = {
   stress: "stress",
   nutrition: "voeding",
   movement: "beweging",
+  connection: "verbinding",
 };
