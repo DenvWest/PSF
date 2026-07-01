@@ -16,7 +16,7 @@ import {
   createBaselineSnapshot,
   loadBaselineSnapshot,
 } from "@/lib/intake-baseline";
-import { RULES_VERSION } from "@/lib/intake-engine";
+import { RULES_VERSION, type DomainScores } from "@/lib/intake-engine";
 import {
   INTAKE_REMEASURE_BASELINE_COOKIE_NAME,
   verifyRemeasureBaselineCookie,
@@ -419,8 +419,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const responseData: { sessionId: string; rapportUrl?: string } = {
+  const responseData: { sessionId: string; rapportUrl?: string; scores: DomainScores } = {
     sessionId: row.id,
+    scores,
   };
   if (isRemeasure && remeasureBaselineId) {
     const signedBase = signIntakeSessionId(remeasureBaselineId);

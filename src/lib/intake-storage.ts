@@ -1,8 +1,34 @@
 import type { IntakeAgeRange } from "@/data/intake-questions";
 import type { IntakeConsentPayload } from "@/lib/intake-consent";
+import type { DomainScores } from "@/lib/intake-engine";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 
 export type { IntakeSessionPayload };
+
+const DOMAIN_SCORE_KEYS = [
+  "sleep_score",
+  "energy_score",
+  "stress_score",
+  "nutrition_score",
+  "movement_score",
+  "recovery_score",
+] as const;
+
+function parseDomainScores(value: unknown): DomainScores | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const record = value as Record<string, unknown>;
+  const out = {} as DomainScores;
+  for (const key of DOMAIN_SCORE_KEYS) {
+    const raw = record[key];
+    if (typeof raw !== "number" || !Number.isFinite(raw)) {
+      return null;
+    }
+    out[key] = raw;
+  }
+  return out;
+}
 
 export async function saveIntakeSession(data: {
   symptoms: string[];
@@ -11,7 +37,7 @@ export async function saveIntakeSession(data: {
   turnstileToken: string;
   website: string;
   consent: IntakeConsentPayload;
-}): Promise<{ sessionId: string; rapportUrl: string | null } | null> {
+}): Promise<{ sessionId: string; rapportUrl: string | null; scores: DomainScores | null } | null> {
   try {
     const response = await fetch("/api/intake/session", {
       method: "POST",
@@ -34,7 +60,7 @@ export async function saveIntakeSession(data: {
     });
 
     const json = (await response.json().catch(() => null)) as
-      | { sessionId?: string; rapportUrl?: string; error?: string }
+      | { sessionId?: string; rapportUrl?: string; scores?: unknown; error?: string }
       | null;
 
     if (!response.ok) {
@@ -49,6 +75,7 @@ export async function saveIntakeSession(data: {
     return {
       sessionId: id,
       rapportUrl: typeof json?.rapportUrl === "string" ? json.rapportUrl : null,
+      scores: parseDomainScores(json?.scores),
     };
   } catch (e) {
     console.error("Save session error:", e);

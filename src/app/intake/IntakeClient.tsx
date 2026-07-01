@@ -212,7 +212,7 @@ export default function IntakeClient() {
 
       setHasActiveMarketingEmailConsent(intakeConsent.marketingEmail);
 
-      setScores(computed);
+      setScores(saved?.scores ?? computed);
       setSessionTimestamp(ts);
       setSessionId(saved?.sessionId ?? null);
       setRapportUrl(saved?.rapportUrl ?? null);
