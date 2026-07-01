@@ -33,7 +33,7 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { emitEvent } from "@/lib/events";
 import { scheduleMainNurtureIfInactive } from "@/lib/nurture";
-import { getPrimaryTheme } from "@/lib/primary-theme";
+import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
 import type { IntakeSessionInsert } from "@/types/intake-session-insert";
@@ -251,6 +251,7 @@ export async function POST(request: NextRequest) {
 
   const { ageRange, symptoms, answers } = validated.value;
   const { scores, urgency, profile } = computeIntakePersistenceFields(answers);
+  const primaryTheme = getPrimaryTheme(scores, answers);
   const consent = consentValidated.value;
 
   const ua = request.headers.get("user-agent") ?? "";
@@ -356,7 +357,7 @@ export async function POST(request: NextRequest) {
       profileLabel: profile,
       urgencyLevel: urgency,
       rulesVersion: RULES_VERSION,
-      primaryTheme: getPrimaryTheme(scores, answers),
+      primaryTheme,
       symptomProfile: symptoms,
       ageRange,
     });
@@ -376,7 +377,7 @@ export async function POST(request: NextRequest) {
       payload: {
         profile_label: profile,
         urgency_level: urgency,
-        theme_slug: getPrimaryTheme(scores, answers),
+        theme_slug: primaryTheme,
         marketing_opt_in: consent.marketingEmail,
       },
       deliveredTo: ["nurture"],
@@ -398,7 +399,7 @@ export async function POST(request: NextRequest) {
         sessionId: row.id,
         email: marketingAddr,
         profileLabel: profile,
-        primaryDomain: getPrimaryTheme(scores, answers),
+        primaryDomain: primaryTheme,
         domainScores: scores,
         urgencyLevel: urgency,
         firstName: consent.firstName,
@@ -419,9 +420,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const responseData: { sessionId: string; rapportUrl?: string; scores: DomainScores } = {
+  const responseData: {
+    sessionId: string;
+    rapportUrl?: string;
+    scores: DomainScores;
+    primaryTheme: MeasuredPillarId;
+  } = {
     sessionId: row.id,
     scores,
+    primaryTheme,
   };
   if (isRemeasure && remeasureBaselineId) {
     const signedBase = signIntakeSessionId(remeasureBaselineId);

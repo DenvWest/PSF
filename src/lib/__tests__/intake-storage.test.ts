@@ -55,4 +55,28 @@ describe("saveIntakeSession", () => {
     expect(res?.sessionId).toBe("s1");
     expect(res?.scores).toBeNull();
   });
+
+  it("geeft de server-primaryTheme terug", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ sessionId: "s1", scores: okScores, primaryTheme: "sleep" }),
+      })),
+    );
+    const res = await saveIntakeSession(baseInput);
+    expect(res?.primaryTheme).toBe("sleep");
+  });
+
+  it("primaryTheme = null bij een ongeldige waarde", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ sessionId: "s1", primaryTheme: "banana" }),
+      })),
+    );
+    const res = await saveIntakeSession(baseInput);
+    expect(res?.primaryTheme).toBeNull();
+  });
 });

@@ -14,7 +14,7 @@ import ResultsRevealShell, {
 } from "@/components/intake/ResultsRevealShell";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
-import { getPrimaryTheme } from "@/lib/primary-theme";
+import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { buildRevealModel } from "@/lib/reveal-model";
 
 type IntakeResultsProps = {
@@ -27,6 +27,7 @@ type IntakeResultsProps = {
   hasActiveMarketingEmailConsent?: boolean;
   hideLegacyPlanSections?: boolean;
   secondaryTheme?: PillarId | null;
+  primaryTheme?: MeasuredPillarId | null;
   shellVariant?: ResultsRevealShellVariant;
   onRestart?: () => void;
   onConsentRevoked?: () => void;
@@ -39,14 +40,15 @@ export default function IntakeResults({
   sessionId,
   rapportUrl = null,
   firstName,
+  primaryTheme: primaryThemeProp = null,
   shellVariant = "fullscreen",
   onRestart,
   onConsentRevoked,
 }: IntakeResultsProps) {
   const themeRevealedEmittedRef = useRef(false);
-  const primaryTheme = getPrimaryTheme(scores, answers);
+  const primaryTheme = primaryThemeProp ?? getPrimaryTheme(scores, answers);
   const profile = getProfileLabel(scores);
-  const model = buildRevealModel(scores, answers, symptoms);
+  const model = buildRevealModel(scores, answers, symptoms, primaryTheme);
 
   useEffect(() => {
     trackEvent("intake_results_viewed", { theme_slug: primaryTheme });

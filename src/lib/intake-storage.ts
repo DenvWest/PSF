@@ -1,3 +1,4 @@
+import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeAgeRange } from "@/data/intake-questions";
 import type { IntakeConsentPayload } from "@/lib/intake-consent";
 import type { DomainScores } from "@/lib/intake-engine";
@@ -30,6 +31,15 @@ function parseDomainScores(value: unknown): DomainScores | null {
   return out;
 }
 
+function parseMeasuredPillar(value: unknown): MeasuredPillarId | null {
+  return value === "sleep" ||
+    value === "stress" ||
+    value === "nutrition" ||
+    value === "movement"
+    ? value
+    : null;
+}
+
 export async function saveIntakeSession(data: {
   symptoms: string[];
   answers: Record<string, number>;
@@ -37,7 +47,12 @@ export async function saveIntakeSession(data: {
   turnstileToken: string;
   website: string;
   consent: IntakeConsentPayload;
-}): Promise<{ sessionId: string; rapportUrl: string | null; scores: DomainScores | null } | null> {
+}): Promise<{
+  sessionId: string;
+  rapportUrl: string | null;
+  scores: DomainScores | null;
+  primaryTheme: MeasuredPillarId | null;
+} | null> {
   try {
     const response = await fetch("/api/intake/session", {
       method: "POST",
@@ -60,7 +75,13 @@ export async function saveIntakeSession(data: {
     });
 
     const json = (await response.json().catch(() => null)) as
-      | { sessionId?: string; rapportUrl?: string; scores?: unknown; error?: string }
+      | {
+          sessionId?: string;
+          rapportUrl?: string;
+          scores?: unknown;
+          primaryTheme?: unknown;
+          error?: string;
+        }
       | null;
 
     if (!response.ok) {
@@ -76,6 +97,7 @@ export async function saveIntakeSession(data: {
       sessionId: id,
       rapportUrl: typeof json?.rapportUrl === "string" ? json.rapportUrl : null,
       scores: parseDomainScores(json?.scores),
+      primaryTheme: parseMeasuredPillar(json?.primaryTheme),
     };
   } catch (e) {
     console.error("Save session error:", e);

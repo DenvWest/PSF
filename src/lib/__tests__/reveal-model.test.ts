@@ -98,4 +98,11 @@ describe("buildRevealModel", () => {
       expect(["slaap", "stress", "voeding", "beweging"]).toContain(model.priority.id);
     }
   });
+
+  it("gebruikt de geïnjecteerde primaryTheme i.p.v. te herberekenen", () => {
+    const model = buildRevealModel(scoresWithStressPriority(), EMPTY_ANSWERS, [], "sleep");
+    expect(model.primaryTheme).toBe("sleep");
+    expect(model.primaryPillarId).toBe("slaap");
+    expect(model.priority.id).toBe("slaap");
+  });
 });

@@ -11,7 +11,7 @@ import IntakeIntro from "@/components/intake/IntakeIntro";
 import IntakeQuestion from "@/components/intake/IntakeQuestion";
 import IntakeResults from "@/components/intake/IntakeResults";
 import IntakeSymptoms from "@/components/intake/IntakeSymptoms";
-import { getPrimaryTheme, getSecondaryTheme } from "@/lib/primary-theme";
+import { getPrimaryTheme, getSecondaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import {
   CATEGORIES,
   QUESTIONS,
@@ -69,6 +69,7 @@ export default function IntakeClient() {
     Record<string, number>
   >({});
   const [scores, setScores] = useState<DomainScores | null>(null);
+  const [serverPrimaryTheme, setServerPrimaryTheme] = useState<MeasuredPillarId | null>(null);
   const [sessionTimestamp, setSessionTimestamp] = useState<number | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [rapportUrl, setRapportUrl] = useState<string | null>(null);
@@ -90,6 +91,7 @@ export default function IntakeClient() {
     setAgeRange(session.ageRange);
     setAnswers(session.answers);
     setScores(session.scores);
+    setServerPrimaryTheme(null);
     setSessionTimestamp(session.timestamp);
     setSessionId(session.sessionId);
     setFirstName(session.firstName ?? "");
@@ -213,6 +215,7 @@ export default function IntakeClient() {
       setHasActiveMarketingEmailConsent(intakeConsent.marketingEmail);
 
       setScores(saved?.scores ?? computed);
+      setServerPrimaryTheme(saved?.primaryTheme ?? null);
       setSessionTimestamp(ts);
       setSessionId(saved?.sessionId ?? null);
       setRapportUrl(saved?.rapportUrl ?? null);
@@ -297,6 +300,7 @@ export default function IntakeClient() {
     setAnswers({});
     setAnsweredIndices({});
     setScores(null);
+    setServerPrimaryTheme(null);
     setSessionTimestamp(null);
     setSessionId(null);
     setHoneypotWebsite("");
@@ -318,7 +322,7 @@ export default function IntakeClient() {
     ? CATEGORIES.find((c) => c.id === currentQuestion.category)
     : undefined;
 
-  const primaryTheme = scores ? getPrimaryTheme(scores, answers) : null;
+  const primaryTheme = serverPrimaryTheme ?? (scores ? getPrimaryTheme(scores, answers) : null);
 
   const shellClass =
     phase === "results"
@@ -455,6 +459,7 @@ export default function IntakeClient() {
             rapportUrl={rapportUrl}
             firstName={normalizeFirstName(firstName)}
             hasActiveMarketingEmailConsent={hasActiveMarketingEmailConsent}
+            primaryTheme={primaryTheme}
             secondaryTheme={
               scores && primaryTheme
                 ? getSecondaryTheme(scores, answers, primaryTheme)
