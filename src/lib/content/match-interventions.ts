@@ -14,7 +14,7 @@ import type {
   ProfileLabel,
 } from "@/lib/intake-engine";
 import { RULES_VERSION } from "@/lib/intake-engine";
-import { ROUTE_NAMES } from "@/lib/getSupplementRoute";
+import { ROUTE_NAMES } from "@/data/supplement-route-copy";
 import { getRecommendations, getCatalogEntry } from "@/lib/recommendation-engine";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";

@@ -9,8 +9,6 @@ import {
   getAdvicePrimaryDomain,
   type DomainScores,
 } from "@/lib/intake-engine";
-import { getSupplementRoute } from "@/lib/getSupplementRoute";
-
 function makeAnswers(overrides: Record<string, number> = {}): Record<string, number> {
   return {
     SLP_QUAL: 3,
@@ -689,29 +687,5 @@ describe("K3 energyDipUnexplained", () => {
     expect(
       advice.quickWins.some((w) => w.includes("15 minuten wandelen na de lunch")),
     ).toBe(true);
-  });
-});
-
-// ─── getSupplementRoute ───────────────────────────────────────────
-
-describe("getSupplementRoute", () => {
-  it("does not recommend ashwagandha for low stress and sleep scores", () => {
-    const answers = makeAnswers({
-      SLP_QUAL: 1,
-      SLP_CONS: 1,
-      STR_FREQ: 1,
-      STR_RCV: 1,
-    });
-    const scores = calcDomainScores(answers);
-    const profile = getProfileLabel(scores);
-    const deficiencySignals = getDeficiencySignals(answers);
-    const routes = getSupplementRoute(
-      scores,
-      deficiencySignals,
-      profile,
-      answers,
-    );
-    const names = routes.map((r) => r.name);
-    expect(names).not.toContain("Ashwagandha");
   });
 });

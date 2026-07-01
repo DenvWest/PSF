@@ -3,7 +3,7 @@ import {
   type PillarId,
 } from "@/data/foundation-pyramid";
 import type { DomainScores } from "@/lib/intake-engine";
-import { matchesOvertrainerAnswers } from "@/lib/getSupplementRoute";
+import { matchesOvertrainerAnswers } from "@/lib/recommendation-engine";
 
 export type MeasuredPillarId = Exclude<PillarId, "connection">;
 

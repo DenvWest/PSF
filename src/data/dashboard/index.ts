@@ -260,12 +260,6 @@ export const PILLAR_CHECKIN_ROUTES: Partial<Record<PillarId, string>> = {
   voeding: "/intake/voeding",
 };
 
-/** @deprecated Derived from supplement-catalog.ts — use recommendation-engine instead. */
-export const PILLAR_COMPARISON_ROUTES: Partial<Record<PillarId, string>> = {
-  slaap: "/beste/magnesium",
-  voeding: "/beste/omega-3-supplement",
-};
-
 export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "vitaalscore", type: "vitalityScore" },
   { id: "nu", type: "now" },

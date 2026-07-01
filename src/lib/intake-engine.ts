@@ -150,7 +150,7 @@ interface RawSignals {
   energyDipUnexplained: boolean;
 }
 
-/** Snake_case signalen voor supplement-triggers (o.a. `getSupplementRoute`). */
+/** Snake_case signalen voor supplement-triggers (o.a. recommendation-engine). */
 export type DeficiencySignals = {
   omega3_deficiency: boolean;
   magnesium_signal: boolean;

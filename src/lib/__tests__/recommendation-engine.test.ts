@@ -7,7 +7,6 @@ import {
   type DomainScores,
 } from "@/lib/intake-engine";
 import { buildRecommendations } from "@/lib/build-recommendations";
-import { getSupplementRoute } from "@/lib/getSupplementRoute";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import {
@@ -36,41 +35,6 @@ const balancedScores: DomainScores = {
   movement_score: 70,
   recovery_score: 70,
 };
-
-describe("recommendation-engine route parity", () => {
-  it("matches getSupplementRoute paths for low sleep/stress profile", () => {
-    const answers = {
-      SLP_QUAL: 1,
-      SLP_CONS: 1,
-      SLP_ONSET: 1,
-      SLP_WAKE: 1,
-      NRG_PATN: 3,
-      NRG_DEP: 3,
-      STR_FREQ: 1,
-      STR_RCV: 1,
-      NUT_O3: 3,
-      NUT_PROT: 3,
-      MOV_STR: 2,
-      MOV_CARD: 2,
-      RCV_PHYS: 2,
-      LIF_ALC: 2,
-      LIF_SUN: 2,
-    };
-    const input = makeInput(answers);
-    const engineRoutes = getRecommendations(input, { source: "route" }).map(
-      (item) => item.comparisonPath,
-    );
-    const legacyRoutes = getSupplementRoute(
-      input.scores,
-      input.signals,
-      input.profileLabel,
-      input.answers,
-    ).map((item) => item.affiliateUrl);
-
-    expect(engineRoutes).toEqual(legacyRoutes);
-    expect(engineRoutes.some((path) => path.includes("ashwagandha"))).toBe(false);
-  });
-});
 
 describe("recommendation-engine hub parity", () => {
   it("matches buildRecommendations slugs for nutrition-focused session", () => {
