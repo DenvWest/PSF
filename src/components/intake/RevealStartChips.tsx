@@ -1,6 +1,7 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import type { ComponentType, CSSProperties } from "react";
+import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { REVEAL_COPY } from "@/lib/results-reveal-copy";
@@ -35,6 +36,10 @@ export default function RevealStartChips({
         {model.topLadder.map((pillar, index) => {
           const score = model.scores[pillar.id];
           const isSelected = selectedIndex === index;
+          const Icon = Icons[pillar.icon as keyof typeof Icons] as ComponentType<{
+            s?: number;
+          }>;
+
           return (
             <li key={pillar.id}>
               <button
@@ -42,33 +47,31 @@ export default function RevealStartChips({
                 aria-pressed={isSelected}
                 aria-label={`Bekijk eerste stap voor ${pillar.label}`}
                 onClick={() => handleSelect(index, pillar.id)}
-                className="flex h-full w-full cursor-pointer flex-col gap-1 rounded-[14px] border bg-white px-2.5 py-2.5 text-left transition active:scale-[0.98]"
+                className={`reveal-priority-chip${isSelected ? " reveal-priority-chip--selected" : ""}`}
                 style={
                   {
+                    "--chip-color": pillar.color,
                     borderColor: isSelected ? pillar.color : "#ebe7e2",
-                    boxShadow: isSelected ? `inset 0 0 0 1px ${pillar.color}` : "none",
                   } as CSSProperties
                 }
               >
-                <span className="flex items-center gap-1.5">
-                  <span
-                    className="inline-block h-2 w-2 shrink-0 rounded-full"
-                    style={{ background: pillar.color }}
-                    aria-hidden
-                  />
-                  <span className="truncate text-[13px] font-semibold text-[#1c1917]">
-                    {pillar.label}
-                  </span>
-                </span>
                 <span
-                  className="text-[18px] leading-none text-[#1c1917]"
+                  className="reveal-priority-chip__icon"
+                  style={{ background: `${pillar.color}1f`, color: pillar.color }}
+                  aria-hidden
+                >
+                  <Icon s={22} />
+                </span>
+                <span className="reveal-priority-chip__label">{pillar.label}</span>
+                <span
+                  className="reveal-priority-chip__score"
                   style={{ fontFamily: "var(--f-serif, Georgia, serif)" }}
                 >
                   {score}
                 </span>
                 {isSelected ? (
                   <span
-                    className="text-[9px] font-bold uppercase tracking-[0.06em]"
+                    className="reveal-priority-chip__hint"
                     style={{ color: pillar.color }}
                   >
                     {REVEAL_COPY.ladderFocusHint}

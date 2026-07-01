@@ -1096,10 +1096,96 @@ html.floating-cta-active footer {
 }
 
 .reveal-first-step--premium {
-  border-radius: 14px;
+  border-radius: 24px;
   overflow: hidden;
-  border: 1px solid rgba(127, 178, 142, 0.18);
+  border: 1px solid #ebe7e2;
   background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 28, 16, 0.05);
+}
+
+.reveal-first-step__approach {
+  display: grid;
+  gap: 0.625rem;
+  padding: 1rem 1rem 0.875rem;
+  border-bottom: 1px solid #ebe7e2;
+}
+
+.reveal-first-step__approach-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--path-ink-subtle);
+}
+
+.reveal-first-step__approach-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.reveal-first-step__approach-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--path-ink-muted);
+}
+
+.reveal-first-step__approach-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  margin-top: 0.45rem;
+  border-radius: 50%;
+  background: var(--path-sage);
+}
+
+.reveal-first-step__approach-label {
+  font-weight: 600;
+  color: var(--path-ink);
+}
+
+.reveal-first-step__pillar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.5rem;
+}
+
+.reveal-first-step__pillar-row--muted {
+  opacity: 0.72;
+}
+
+.reveal-first-step__icon-square {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.reveal-first-step__icon-square--muted {
+  background: #f5f5f4;
+  color: #a8a29e;
+}
+
+.reveal-first-step__duration-pill {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--path-ink-subtle);
+  background: #f5f5f4;
+  border: 1px solid #ebe7e2;
 }
 
 .reveal-first-step__lane {
@@ -1115,8 +1201,8 @@ html.floating-cta-active footer {
 
 .reveal-first-step__lane--now {
   background:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(127, 178, 142, 0.12) 0%, transparent 70%),
-    rgba(127, 178, 142, 0.06);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(127, 178, 142, 0.08) 0%, transparent 70%),
+    rgba(127, 178, 142, 0.04);
 }
 
 .reveal-first-step__lane--supplement {
@@ -1151,8 +1237,8 @@ html.floating-cta-active footer {
 
 .reveal-first-step__lane-badge--now {
   color: #0f1c10;
-  background: linear-gradient(180deg, #9bc9a8 0%, #7fb28e 100%);
-  box-shadow: 0 0 12px rgba(127, 178, 142, 0.35);
+  background: #d4e8da;
+  border: 1px solid rgba(90, 143, 106, 0.28);
 }
 
 .reveal-first-step__lane-badge--later {
@@ -1253,8 +1339,8 @@ html.floating-cta-active footer {
   font-size: 12px;
   font-weight: 800;
   color: #0f1c10;
-  background: linear-gradient(180deg, #c4dfc9 0%, #7fb28e 100%);
-  box-shadow: 0 0 10px rgba(127, 178, 142, 0.3);
+  background: #d4e8da;
+  border: 1px solid rgba(90, 143, 106, 0.28);
 }
 
 .reveal-first-step__quality {
@@ -1350,6 +1436,181 @@ html.floating-cta-active footer {
   .reveal-first-step__title {
     font-size: 18px;
   }
+
+  .reveal-first-step__approach {
+    padding: 1.125rem 1.125rem 1rem;
+  }
+}
+
+/* ── Priority chips (startpunt) ───────────────────────────────── */
+
+.reveal-priority-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 0.625rem 0.75rem;
+  border-radius: 18px;
+  border: 1px solid #ebe7e2;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+
+.reveal-priority-chip:active {
+  transform: scale(0.98);
+}
+
+.reveal-priority-chip--selected {
+  background: #eef4ef;
+}
+
+.reveal-priority-chip__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.reveal-priority-chip__label {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--path-ink);
+}
+
+.reveal-priority-chip__score {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--path-ink);
+}
+
+.reveal-priority-chip__hint {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Dashboard tease list card ───────────────────────────────── */
+
+.reveal-dashboard-tease {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.reveal-dashboard-tease__lead {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--path-ink-muted);
+}
+
+.reveal-dashboard-tease__card {
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid #ebe7e2;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 28, 16, 0.05);
+}
+
+.reveal-dashboard-tease__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 52px;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: inherit;
+}
+
+.reveal-dashboard-tease__row--divider {
+  border-top: 1px solid #ebe7e2;
+}
+
+.reveal-dashboard-tease__row--soon {
+  opacity: 0.62;
+}
+
+.reveal-dashboard-tease__row--interactive {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.reveal-dashboard-tease__row--interactive:hover {
+  background: rgba(90, 143, 106, 0.04);
+}
+
+.reveal-dashboard-tease__row--interactive:active {
+  transform: scale(0.995);
+}
+
+.reveal-dashboard-tease__leading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 14px;
+  background: #faf9f7;
+  flex-shrink: 0;
+}
+
+.reveal-dashboard-tease__leading--muted {
+  background: #f5f5f4;
+  color: #a8a29e;
+}
+
+.reveal-dashboard-tease__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.reveal-dashboard-tease__title {
+  font-size: 1rem;
+  line-height: 1.25;
+  color: var(--path-ink);
+}
+
+.reveal-dashboard-tease__subtitle {
+  margin-top: 0.125rem;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--path-ink-muted);
+}
+
+.reveal-dashboard-tease__cta {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--path-sage);
+}
+
+.reveal-dashboard-tease__soon-pill {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 149, 108, 0.4);
+  padding: 0.25rem 0.625rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #c8956c;
+  white-space: nowrap;
 }
 
 .reveal-path-dashboard {

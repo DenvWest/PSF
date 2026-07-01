@@ -22,7 +22,7 @@ export default function ResultsRevealShell({
       className={
         embedded
           ? "min-h-dvh bg-[#f8f7f4] px-4 py-6 sm:px-6"
-          : "ps-dash-surface-kompas min-h-dvh w-full"
+          : "min-h-dvh w-full bg-[#f8f7f4]"
       }
       style={brandStyle}
     >
