@@ -175,18 +175,6 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     throw error;
   }
 
-  void emitEvent({
-    eventType: "intake.completed",
-    sessionId: input.sessionId,
-    email: input.email,
-    payload: {
-      profile_label: input.profileLabel,
-      primary_domain: input.primaryDomain,
-      urgency_level: input.urgencyLevel,
-    },
-    deliveredTo: ["nurture"],
-  });
-
   if (resendId) {
     const ctaSlug =
       resolvedCta.kind === "supplement"
@@ -211,15 +199,18 @@ export async function scheduleNurtureSequence(input: NurtureScheduleInput) {
     });
   }
 
-  for (const row of pendingRows) {
+  if (pendingRows.length > 0) {
     void emitEvent({
-      eventType: "intake.completed",
+      eventType: "nurture.scheduled",
       sessionId: input.sessionId,
       email: input.email,
       payload: {
-        nurture_sequence_day: row.sequence_day,
-        scheduled_at: row.scheduled_at,
-        status: row.status,
+        primary_domain: input.primaryDomain,
+        profile_label: input.profileLabel,
+        urgency_level: input.urgencyLevel,
+        scheduled_count: pendingRows.length,
+        sequence_days: pendingRows.map((row) => row.sequence_day),
+        rules_version: RULES_VERSION,
       },
       deliveredTo: ["n8n_webhook"],
     });

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { emitEvent } from "@/lib/events";
 import {
   cancelPendingGuideSequences,
   scheduleGuideNurtureSequence,
@@ -275,5 +276,44 @@ describe("scheduleNurtureSequence guide dedup", () => {
 
     expect(deleteChain.like).toHaveBeenCalledWith("source", "guide_%");
     expect(insert).toHaveBeenCalled();
+  });
+
+  it("emit géén intake.completed en precies één nurture.scheduled", async () => {
+    const deleteChain = makeDeleteChain({ data: [{ id: "pending-guide" }], error: null });
+    const accountChain = makeAccountSelectChain();
+    const insert = vi.fn(async () => ({ data: null, error: null }));
+    const from = vi.fn((table: string) => {
+      if (table === "nurture_emails") {
+        return { delete: deleteChain.deleteFn, insert };
+      }
+      if (table === "accounts") {
+        return { select: accountChain.select };
+      }
+      return { insert };
+    });
+    vi.mocked(createSupabaseAdmin).mockReturnValue({
+      from,
+    } as unknown as ReturnType<typeof createSupabaseAdmin>);
+
+    await scheduleNurtureSequence({
+      sessionId: "session-uuid",
+      email: "lead@example.com",
+      profileLabel: "Onrustige Slaper",
+      primaryDomain: "sleep",
+      domainScores: {
+        sleep_score: 40,
+        energy_score: 35,
+        stress_score: 50,
+        nutrition_score: 45,
+        movement_score: 60,
+        recovery_score: 30,
+      },
+      urgencyLevel: "moderate",
+      firstName: null,
+    });
+
+    const emittedTypes = vi.mocked(emitEvent).mock.calls.map((call) => call[0].eventType);
+    expect(emittedTypes).not.toContain("intake.completed");
+    expect(emittedTypes.filter((type) => type === "nurture.scheduled")).toHaveLength(1);
   });
 });

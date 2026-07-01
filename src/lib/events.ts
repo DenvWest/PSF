@@ -34,6 +34,7 @@ export const DOMAIN_EVENT_TYPES = [
   "consent.analytics_set",
   "evidence.chat_queried",
   "nurture.email_sent",
+  "nurture.scheduled",
   "remeasure.invited",
   "remeasure.completed",
   "affiliate.click",
