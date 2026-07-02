@@ -28,6 +28,10 @@ type SleepReport = {
   SLP_QUAL: number;
   grip: number | null;
   duur: number | null;
+  winddown: number | null;
+  nightload: number | null;
+  morninglight: number | null;
+  sleepconfidence: number | null;
 };
 
 function parseIntField(value: unknown, min: number, max: number): number | null {
@@ -66,7 +70,39 @@ function parseReport(raw: unknown): SleepReport | null {
   const duur =
     duurRaw === undefined || duurRaw === null ? null : parseDuurField(duurRaw);
 
-  return { SLP_ONSET, SLP_WAKE, SLP_CONS, SLP_QUAL, grip, duur };
+  const winddownRaw = r.winddown;
+  const winddown =
+    winddownRaw === undefined || winddownRaw === null
+      ? null
+      : parseIntField(winddownRaw, 1, 4);
+  const nightloadRaw = r.nightload;
+  const nightload =
+    nightloadRaw === undefined || nightloadRaw === null
+      ? null
+      : parseIntField(nightloadRaw, 1, 4);
+  const morninglightRaw = r.morninglight;
+  const morninglight =
+    morninglightRaw === undefined || morninglightRaw === null
+      ? null
+      : parseIntField(morninglightRaw, 1, 4);
+  const sleepconfidenceRaw = r.sleepconfidence;
+  const sleepconfidence =
+    sleepconfidenceRaw === undefined || sleepconfidenceRaw === null
+      ? null
+      : parseIntField(sleepconfidenceRaw, 1, 4);
+
+  return {
+    SLP_ONSET,
+    SLP_WAKE,
+    SLP_CONS,
+    SLP_QUAL,
+    grip,
+    duur,
+    winddown,
+    nightload,
+    morninglight,
+    sleepconfidence,
+  };
 }
 
 function logSecurityEvent(
@@ -165,7 +201,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { SLP_ONSET, SLP_WAKE, SLP_CONS, SLP_QUAL, grip, duur } = report;
+  const {
+    SLP_ONSET,
+    SLP_WAKE,
+    SLP_CONS,
+    SLP_QUAL,
+    grip,
+    duur,
+    winddown,
+    nightload,
+    morninglight,
+    sleepconfidence,
+  } = report;
   const scored = { SLP_ONSET, SLP_WAKE, SLP_CONS, SLP_QUAL };
   const currentScore = sleepScoreFromReport(scored);
 
@@ -184,7 +231,18 @@ export async function POST(request: NextRequest) {
     session_id: sessionId,
     organization_id: organizationId,
     domain_key: "sleep_score",
-    raw_inputs: { SLP_ONSET, SLP_WAKE, SLP_CONS, SLP_QUAL, grip, duur },
+    raw_inputs: {
+      SLP_ONSET,
+      SLP_WAKE,
+      SLP_CONS,
+      SLP_QUAL,
+      grip,
+      duur,
+      winddown,
+      nightload,
+      morninglight,
+      sleepconfidence,
+    },
     score: { sleep_score: currentScore },
     rules_version: RULES_VERSION,
   });
@@ -206,6 +264,10 @@ export async function POST(request: NextRequest) {
         rules_version: RULES_VERSION,
         grip,
         duur,
+        winddown,
+        nightload,
+        morninglight,
+        sleepconfidence,
       },
       deliveredTo: [],
     });

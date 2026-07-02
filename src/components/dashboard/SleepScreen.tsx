@@ -9,8 +9,8 @@ import { Card } from "@/components/app/primitives";
 import WaitlistButton from "@/components/dashboard/WaitlistButton";
 import { PILLAR } from "@/data/dashboard";
 import {
-  buildStressRecommendations,
-  getStressNutritionHint,
+  buildSleepRecommendations,
+  getSleepNutritionHint,
 } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -25,26 +25,26 @@ const KOMPAS_LIGHT = {
   innerBg: "#faf9f7",
 } as const;
 
-const RESET_TOOLS: {
+const SLEEP_TOOLS: {
   icon: string;
   label: string;
   href: string | null;
   slug: string;
 }[] = [
   {
-    icon: "🫁",
-    label: "Ademhaling",
-    href: "/blog/ademhaling-tegen-stress",
-    slug: "ademhaling",
+    icon: "🌅",
+    label: "Ochtendlicht",
+    href: "/blog/slaapritme-herstellen",
+    slug: "ochtendlicht",
   },
   {
-    icon: "🧭",
-    label: "Overgangsritueel",
-    href: "/blog/stress-werk-grenzen-stellen",
-    slug: "overgangsritueel",
+    icon: "☕",
+    label: "Cafeine-cutoff",
+    href: "/blog/alcohol-slaap-energie-na-40",
+    slug: "cafeine_cutoff",
   },
-  { icon: "👀", label: "Ogen ontspannen", href: null, slug: "ogen" },
-  { icon: "🌿", label: "Schermvrije reset", href: null, slug: "schermvrij" },
+  { icon: "🌙", label: "Avondafbouw", href: null, slug: "avondafbouw" },
+  { icon: "⏰", label: "Vaste wektijd", href: null, slug: "vaste_wektijd" },
 ];
 
 const KompasLightPanel = ({ children }: { children: ReactNode }) => (
@@ -174,9 +174,7 @@ const FooterLink = ({
     }}
   >
     {icon}
-    <span
-      style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}
-    >
+    <span style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
       {label}
     </span>
     <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
@@ -197,7 +195,7 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   };
 }
 
-export default function StressScreen({
+export default function SleepScreen({
   model,
   onBack,
 }: {
@@ -206,22 +204,22 @@ export default function StressScreen({
 }) {
   const premiumShownRef = useRef(false);
   const coachShownRef = useRef(false);
-  const pillar = PILLAR.stress;
+  const pillar = PILLAR.slaap;
   const session = sessionFromModel(model);
-  const nutritionHint = getStressNutritionHint(session);
-  const recommendations = buildStressRecommendations(session);
+  const nutritionHint = getSleepNutritionHint(session);
+  const recommendations = buildSleepRecommendations(session);
 
   useEffect(() => {
     if (premiumShownRef.current) return;
     premiumShownRef.current = true;
-    trackEvent("dashboard_stress_premium_upsell", { surface: "kompas_stress" });
-    clarityTag("dashboard_stress_premium", "shown");
+    trackEvent("dashboard_slaap_premium_upsell", { surface: "kompas_slaap" });
+    clarityTag("dashboard_slaap_premium", "shown");
   }, []);
 
   useEffect(() => {
     if (coachShownRef.current) return;
     coachShownRef.current = true;
-    trackEvent("dashboard_stress_coach_waitlist_shown", { surface: "kompas_stress" });
+    trackEvent("dashboard_slaap_coach_waitlist_shown", { surface: "kompas_slaap" });
   }, []);
 
   return (
@@ -232,8 +230,8 @@ export default function StressScreen({
         <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <VitalityGauge
-              value={model.scores.stress ?? 0}
-              label="Stress"
+              value={model.scores.slaap ?? 0}
+              label="Slaap"
               size={86}
               stroke={8}
               compact
@@ -251,12 +249,12 @@ export default function StressScreen({
                   marginBottom: 6,
                 }}
               >
-                Ritme &amp; reset
+                Ritme &amp; herstel
               </div>
               <div
                 style={{ fontFamily: "var(--f-serif)", fontSize: 25, color: KOMPAS_LIGHT.text, lineHeight: 1.1 }}
               >
-                Stress
+                Slaap
               </div>
               <p
                 style={{
@@ -267,17 +265,17 @@ export default function StressScreen({
                   textWrap: "pretty",
                 }}
               >
-                Stapsgewijs stress reguleren.
+                Stapsgewijs beter slapen met vaste routines.
               </p>
             </div>
           </div>
         </Card>
 
         <Link
-          href="/intake/stress?from=dashboard&kompas=stress"
+          href="/intake/slaap?from=dashboard&kompas=slaap"
           onClick={() => {
-            trackEvent("dashboard_stress_checkin_click", { surface: "kompas_stress" });
-            clarityTag("dashboard_stress_checkin", "click");
+            trackEvent("dashboard_slaap_checkin_click", { surface: "kompas_slaap" });
+            clarityTag("dashboard_slaap_checkin", "click");
           }}
           style={{
             display: "flex",
@@ -291,115 +289,67 @@ export default function StressScreen({
             color: "inherit",
           }}
         >
-          <Icons.Wind s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
+          <Icons.Moon s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
           <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
-            Doe de stress-check (1 min)
+            Doe de slaap-check (1 min)
           </span>
           <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
         </Link>
 
         <section aria-label="Leefstijl eerst">
-          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Korte herstelmomenten" />
+          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Ritme-hefbomen" />
           <Card pad={18} surface="light">
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div
-                style={{
-                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                  borderRadius: 14,
-                  padding: "12px 14px",
-                  background: KOMPAS_LIGHT.innerBg,
-                }}
-              >
+              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
                 <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Fysiologische zucht
+                  Vaste wektijd
                 </div>
                 <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  2 korte neusinhalingen + 1 lange uitademing, 3 tot 5 rondes.
+                  Kies 1 wektijd en houd die ook in het weekend aan.
+                </div>
+              </div>
+              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
+                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
+                  Ochtendlicht
+                </div>
+                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
+                  Binnen 60 minuten na opstaan 10 minuten buitenlicht.
                 </div>
                 <Link
-                  href="/blog/ademhaling-tegen-stress"
+                  href="/blog/slaapritme-herstellen"
                   onClick={() => {
-                    trackEvent("dashboard_stress_breathing_click", {
-                      surface: "kompas_stress",
-                    });
+                    trackEvent("dashboard_slaap_leefstijl_click", { tool: "ochtendlicht", surface: "kompas_slaap" });
+                    clarityTag("dashboard_slaap_leefstijl", "ochtendlicht");
                   }}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 3,
-                    marginTop: 8,
-                    textDecoration: "none",
-                    fontSize: 12.5,
-                    color: "var(--sage)",
-                    fontWeight: 600,
-                  }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 3, marginTop: 8, textDecoration: "none", fontSize: 12.5, color: "var(--sage)", fontWeight: 600 }}
                 >
-                  Ademhaling uitleg <Icons.ChevronRight s={14} />
+                  Ritme verbeteren <Icons.ChevronRight s={14} />
                 </Link>
               </div>
-              <div
-                style={{
-                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                  borderRadius: 14,
-                  padding: "12px 14px",
-                  background: KOMPAS_LIGHT.innerBg,
-                }}
-              >
+              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
                 <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Lang uitademen
+                  Avondafbouw
                 </div>
                 <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  4 seconden in, 8 seconden uit, 2 minuten.
+                  Laatste 45 minuten: schermlicht dimmen, rustiger tempo, vaste volgorde.
                 </div>
               </div>
-              <div
-                style={{
-                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                  borderRadius: 14,
-                  padding: "12px 14px",
-                  background: KOMPAS_LIGHT.innerBg,
-                }}
-              >
+              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
                 <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Ogen ontspannen
+                  Cafeine-cutoff
                 </div>
                 <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  Kijk 20 seconden ver weg om je focus en spanning te resetten.
-                </div>
-              </div>
-              <div
-                style={{
-                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                  borderRadius: 14,
-                  padding: "12px 14px",
-                  background: KOMPAS_LIGHT.innerBg,
-                }}
-              >
-                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Overgangsritueel
-                </div>
-                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  Telefoon weg, 1 minuut ademhaling, en bewust afronden: werk is klaar.
+                  Stop met cafeine na de lunch, zodat je slaapdruk niet wordt geremd.
                 </div>
                 <Link
-                  href="/blog/stress-werk-grenzen-stellen"
+                  href="/blog/alcohol-slaap-energie-na-40"
                   onClick={() => {
-                    trackEvent("dashboard_stress_ritueel_click", {
-                      surface: "kompas_stress",
-                    });
+                    trackEvent("dashboard_slaap_leefstijl_click", { tool: "cafeine_cutoff", surface: "kompas_slaap" });
+                    clarityTag("dashboard_slaap_leefstijl", "cafeine_cutoff");
                   }}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 3,
-                    marginTop: 8,
-                    textDecoration: "none",
-                    fontSize: 12.5,
-                    color: "var(--sage)",
-                    fontWeight: 600,
-                  }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 3, marginTop: 8, textDecoration: "none", fontSize: 12.5, color: "var(--sage)", fontWeight: 600 }}
                 >
-                  Grenzen na werk <Icons.ChevronRight s={14} />
+                  Avondprikkels beperken <Icons.ChevronRight s={14} />
                 </Link>
               </div>
             </div>
@@ -411,61 +361,27 @@ export default function StressScreen({
           <Card pad={18} surface="light">
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: KOMPAS_LIGHT.subtle,
-                    marginBottom: 8,
-                  }}
-                >
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle, marginBottom: 8 }}>
                   Eerst je basis
                 </div>
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: KOMPAS_LIGHT.muted,
-                    lineHeight: 1.55,
-                    margin: "0 0 12px",
-                    textWrap: "pretty",
-                  }}
-                >
+                <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.55, margin: "0 0 12px", textWrap: "pretty" }}>
                   {nutritionHint}
                 </p>
                 <Link
-                  href="/intake/voeding?from=dashboard&kompas=stress"
+                  href="/intake/voeding?from=dashboard&kompas=slaap"
                   onClick={() => {
-                    trackEvent("dashboard_stress_voeding_click", { surface: "kompas_stress" });
-                    clarityTag("dashboard_stress_voeding", "click");
+                    trackEvent("dashboard_slaap_voeding_click", { surface: "kompas_slaap" });
+                    clarityTag("dashboard_slaap_voeding", "click");
                   }}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    color: "var(--sage)",
-                    textDecoration: "none",
-                  }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13.5, fontWeight: 600, color: "var(--sage)", textDecoration: "none" }}
                 >
                   Doe de voedingscheck <Icons.ChevronRight s={15} />
                 </Link>
               </div>
 
               <div style={{ borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`, paddingTop: 14 }}>
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: KOMPAS_LIGHT.subtle,
-                    marginBottom: 10,
-                  }}
-                >
-                  Supplementen — als je ritme staat
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle, marginBottom: 10 }}>
+                  Supplementen — pas na je basis
                 </div>
                 {recommendations.length > 0 ? (
                   <div style={{ display: "flex", flexDirection: "column" }}>
@@ -476,12 +392,12 @@ export default function StressScreen({
                           key={rec.slug}
                           href={href}
                           onClick={() => {
-                            trackEvent("dashboard_stress_supplement_click", {
+                            trackEvent("dashboard_slaap_supplement_click", {
                               slug: rec.slug,
                               target: href,
-                              surface: "kompas_stress",
+                              surface: "kompas_slaap",
                             });
-                            clarityTag("dashboard_stress_supplement", rec.slug);
+                            clarityTag("dashboard_slaap_supplement", rec.slug);
                           }}
                           style={{
                             display: "flex",
@@ -493,57 +409,18 @@ export default function StressScreen({
                             borderTop: index ? `1px solid ${KOMPAS_LIGHT.innerBorder}` : "none",
                           }}
                         >
-                          <span
-                            style={{
-                              width: 40,
-                              height: 40,
-                              borderRadius: 12,
-                              flexShrink: 0,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: 20,
-                              background: KOMPAS_LIGHT.innerBg,
-                              border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                            }}
-                            aria-hidden
-                          >
+                          <span style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, background: KOMPAS_LIGHT.innerBg, border: `1px solid ${KOMPAS_LIGHT.innerBorder}` }} aria-hidden>
                             {rec.icon}
                           </span>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div
-                              style={{
-                                fontFamily: "var(--f-serif)",
-                                fontSize: 16,
-                                color: KOMPAS_LIGHT.text,
-                                lineHeight: 1.2,
-                              }}
-                            >
+                            <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
                               {rec.name}
                             </div>
-                            <div
-                              style={{
-                                fontSize: 13,
-                                color: KOMPAS_LIGHT.muted,
-                                lineHeight: 1.5,
-                                marginTop: 2,
-                                textWrap: "pretty",
-                              }}
-                            >
+                            <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, marginTop: 2, textWrap: "pretty" }}>
                               {rec.wiifm}
                             </div>
                           </div>
-                          <span
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 3,
-                              fontSize: 12,
-                              fontWeight: 600,
-                              color: "var(--sage)",
-                              flexShrink: 0,
-                            }}
-                          >
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12, fontWeight: 600, color: "var(--sage)", flexShrink: 0 }}>
                             Vergelijk <Icons.ChevronRight s={15} />
                           </span>
                         </Link>
@@ -551,16 +428,8 @@ export default function StressScreen({
                     })}
                   </div>
                 ) : (
-                  <p
-                    style={{
-                      fontSize: 13.5,
-                      color: KOMPAS_LIGHT.muted,
-                      lineHeight: 1.5,
-                      margin: 0,
-                      textWrap: "pretty",
-                    }}
-                  >
-                    Eerst ritme en herstelmomenten. Supplementen voeg je pas toe als basisstappen staan.
+                  <p style={{ fontSize: 13.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0, textWrap: "pretty" }}>
+                    Eerst ritme, licht en vaste tijden. Supplementen zijn een aanvulling, geen startpunt.
                   </p>
                 )}
               </div>
@@ -568,16 +437,14 @@ export default function StressScreen({
           </Card>
         </section>
 
-        <section aria-label="Reset tools">
-          <KompasSectionHeader eyebrow="Reset tools" title="Voor drukke dagen" action={<SoonPill />} />
+        <section aria-label="Slaaproutine tools">
+          <KompasSectionHeader eyebrow="Slaaproutine tools" title="Voor drukke avonden" action={<SoonPill />} />
           <Card pad={18} surface="light">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
-              {RESET_TOOLS.map((tool) => {
+              {SLEEP_TOOLS.map((tool) => {
                 const inner = (
                   <>
-                    <span style={{ fontSize: 22 }} aria-hidden>
-                      {tool.icon}
-                    </span>
+                    <span style={{ fontSize: 22 }} aria-hidden>{tool.icon}</span>
                     <span style={{ fontSize: 14.5, color: KOMPAS_LIGHT.text }}>{tool.label}</span>
                   </>
                 );
@@ -598,10 +465,8 @@ export default function StressScreen({
                       key={tool.slug}
                       href={tool.href}
                       onClick={() => {
-                        trackEvent("dashboard_stress_ritueel_click", {
-                          tool: tool.slug,
-                          target: tool.href ?? "",
-                        });
+                        trackEvent("dashboard_slaap_tool_click", { tool: tool.slug, target: tool.href ?? "" });
+                        clarityTag("dashboard_slaap_tool", tool.slug);
                       }}
                       style={boxStyle}
                     >
@@ -619,7 +484,7 @@ export default function StressScreen({
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
               <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
               <span style={{ fontSize: 12.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5 }}>
-                Binnenkort: stressroutines die je aan je dag kunt koppelen, zonder extra app-gedoe.
+                Binnenkort: routines die je direct aan je dagritme kunt koppelen.
               </span>
             </div>
           </Card>
@@ -627,96 +492,50 @@ export default function StressScreen({
 
         <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}33` }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: KOMPAS_LIGHT.subtle,
-              }}
-            >
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
               Begeleiding
             </div>
-            <div
-              style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}
-            >
-              Stress-coach inplannen
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
+              Slaap-coach inplannen
             </div>
-            <p
-              style={{
-                fontSize: 14,
-                color: KOMPAS_LIGHT.muted,
-                lineHeight: 1.6,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              Werk met iemand die je helpt je ritme en grenzen vol te houden. Meld je aan voor
-              de wachtlijst.
+            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
+              Werk met iemand die je helpt ritme en avondafbouw vol te houden. Meld je aan voor de wachtlijst.
             </p>
-            <WaitlistButton
-              feature="stress-coach"
-              surface="kompas_stress"
-              label="Zet me op de wachtlijst"
-            />
+            <WaitlistButton feature="slaap-coach" surface="kompas_slaap" label="Zet me op de wachtlijst" />
           </div>
         </Card>
 
         <Card pad={20} surface="light" glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.35)" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: KOMPAS_LIGHT.subtle,
-              }}
-            >
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
               <Icons.Lock s={14} /> Premium · app
             </div>
-            <div
-              style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}
-            >
-              Stresslog in de app
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
+              Slaaplog in de app
             </div>
-            <p
-              style={{
-                fontSize: 14,
-                color: KOMPAS_LIGHT.muted,
-                lineHeight: 1.6,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              Log triggers, herstelmomenten en je avond-afbouw. Zo zie je wat werkt voordat stress
-              zich opstapelt.
+            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
+              Houd je bedtijd, opstaatijd en avondprikkels bij in een vast ritme-overzicht. Binnenkort in premium.
             </p>
             <SoonPill />
           </div>
         </Card>
 
         <FooterLink
-          href="/intake/plan/stress?from=dashboard&kompas=stress"
+          href="/intake/plan/sleep?from=dashboard&kompas=slaap"
           icon={<Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Je stressplan"
+          label="Je slaapplan"
           onClick={() => {
-            trackEvent("dashboard_stress_plan_click", { surface: "kompas_stress" });
+            trackEvent("dashboard_slaap_plan_click", { surface: "kompas_slaap" });
+            clarityTag("dashboard_slaap_footer", "plan");
           }}
         />
         <FooterLink
-          href="/gids/stress"
+          href="/gids/slaap"
           icon={<Icons.Mail s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Gratis Stressgids"
+          label="Gratis Slaapgids"
           onClick={() => {
-            trackEvent("dashboard_stress_gids_click", { surface: "kompas_stress" });
+            trackEvent("dashboard_slaap_gids_click", { surface: "kompas_slaap" });
+            clarityTag("dashboard_slaap_footer", "gids");
           }}
         />
         <FooterLink
@@ -724,7 +543,8 @@ export default function StressScreen({
           icon={<Icons.BookOpen s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
           label="Leefstijl & inzichten"
           onClick={() => {
-            trackEvent("dashboard_stress_leefstijl_click", { surface: "kompas_stress" });
+            trackEvent("dashboard_slaap_leefstijl_footer_click", { surface: "kompas_slaap" });
+            clarityTag("dashboard_slaap_footer", "inzichten");
           }}
         />
       </div>

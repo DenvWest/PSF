@@ -95,6 +95,61 @@ export const SLEEP_REGIE_QUESTION = {
   ],
 };
 
+export type SleepContextField =
+  | "winddown"
+  | "nightload"
+  | "morninglight"
+  | "sleepconfidence";
+
+export type SleepContextQuestion = {
+  field: SleepContextField;
+  question: string;
+  options: { label: string; value: number }[];
+};
+
+export const SLEEP_CONTEXT_QUESTIONS: SleepContextQuestion[] = [
+  {
+    field: "winddown",
+    question: "Hoe vaak bouw je je avond bewust af in het laatste uur voor bed?",
+    options: [
+      { label: "Bijna elke avond", value: 4 },
+      { label: "Regelmatig", value: 3 },
+      { label: "Af en toe", value: 2 },
+      { label: "Bijna nooit", value: 1 },
+    ],
+  },
+  {
+    field: "nightload",
+    question: "Hoe vaak neem je stress of piekergedachten mee naar bed?",
+    options: [
+      { label: "Zelden", value: 4 },
+      { label: "Soms", value: 3 },
+      { label: "Regelmatig", value: 2 },
+      { label: "Bijna elke avond", value: 1 },
+    ],
+  },
+  {
+    field: "morninglight",
+    question: "Hoe vaak zie je binnen een uur na opstaan daglicht buiten?",
+    options: [
+      { label: "Bijna elke dag", value: 4 },
+      { label: "Meerdere dagen per week", value: 3 },
+      { label: "Soms", value: 2 },
+      { label: "Bijna nooit", value: 1 },
+    ],
+  },
+  {
+    field: "sleepconfidence",
+    question: "Hoeveel vertrouwen heb je dat je slaap de komende 2 weken verbetert?",
+    options: [
+      { label: "Veel vertrouwen", value: 4 },
+      { label: "Redelijk vertrouwen", value: 3 },
+      { label: "Twijfel", value: 2 },
+      { label: "Weinig vertrouwen", value: 1 },
+    ],
+  },
+];
+
 export const SLEEP_STATEMENTS: Record<SleepDimensionKey, Record<SleepBand, string>> = {
   inslapen: {
     aandacht: "Inslapen kost je nu vaak moeite — daar valt de meeste rust te winnen.",

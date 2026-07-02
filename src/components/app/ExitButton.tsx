@@ -4,12 +4,14 @@ type ExitButtonProps = {
   href?: string;
   label?: string;
   variant?: "on-dark" | "on-light";
+  onClick?: () => void;
 };
 
 export default function ExitButton({
   href = "/",
   label = "Sluiten",
   variant = "on-dark",
+  onClick,
 }: ExitButtonProps) {
   const surfaceClass =
     variant === "on-light"
@@ -19,6 +21,7 @@ export default function ExitButton({
   return (
     <Link
       href={href}
+      onClick={onClick}
       aria-label={label}
       className={`inline-flex h-9 w-9 items-center justify-center rounded-xl border no-underline transition ${surfaceClass}`}
     >

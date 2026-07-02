@@ -11,7 +11,8 @@ type WaitlistFeature =
   | "statistieken"
   | "lichaamssamenstelling"
   | "beweging-coach"
-  | "stress-coach";
+  | "stress-coach"
+  | "slaap-coach";
 
 type WaitlistButtonProps = {
   feature: WaitlistFeature;

@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   buildMovementRecommendations,
+  buildSleepRecommendations,
   buildRecommendations,
   getMovementNutritionHint,
+  getSleepNutritionHint,
 } from "@/lib/build-recommendations";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 
@@ -124,5 +126,42 @@ describe("getMovementNutritionHint", () => {
       STR_RCV: 3,
     });
     expect(getMovementNutritionHint(session)).toMatch(/eiwit/i);
+  });
+});
+
+describe("buildSleepRecommendations", () => {
+  it("returns only sleep-relevant supplement slugs", () => {
+    const session = makeSession(
+      {
+        NUT_PROT: 3,
+        MOV_STR: 1,
+        MOV_CARD: 1,
+        NUT_O3: 3,
+        RCV_PHYS: 1,
+        STR_RCV: 2,
+      },
+      { sleep_score: 30, stress_score: 35 },
+    );
+    const recommendations = buildSleepRecommendations(session);
+    expect(
+      recommendations.every((rec) => ["magnesium", "melatonine"].includes(rec.slug)),
+    ).toBe(true);
+  });
+});
+
+describe("getSleepNutritionHint", () => {
+  it("advises evening nutrition basics when nutrition score is low", () => {
+    const session = makeSession(
+      {
+        NUT_PROT: 1,
+        MOV_STR: 2,
+        MOV_CARD: 2,
+        NUT_O3: 2,
+        RCV_PHYS: 2,
+        STR_RCV: 2,
+      },
+      { nutrition_score: 35 },
+    );
+    expect(getSleepNutritionHint(session)).toMatch(/voedingsscore/i);
   });
 });

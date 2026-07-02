@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 
@@ -9,14 +10,35 @@ type DashboardBackLinkProps = {
 };
 
 export default function DashboardBackLink({ surface }: DashboardBackLinkProps) {
+  const searchParams = useSearchParams();
+  const fromDashboard = searchParams.get("from") === "dashboard";
+  const kompas = searchParams.get("kompas");
+  const validKompas = new Set([
+    "slaap",
+    "energie",
+    "stress",
+    "voeding",
+    "beweging",
+    "herstel",
+    "verbinding",
+  ]);
+  const originDomain = kompas && validKompas.has(kompas) ? kompas : null;
+  const href =
+    fromDashboard && originDomain
+      ? `/dashboard?tab=vandaag&kompas=${originDomain}`
+      : "/dashboard";
+
   function handleClick() {
     clarityTag("dashboard_back", surface);
-    trackEvent("dashboard_back_click", { surface });
+    trackEvent("dashboard_back_click", {
+      surface,
+      origin_domain: originDomain ?? "none",
+    });
   }
 
   return (
     <Link
-      href="/dashboard"
+      href={href}
       onClick={handleClick}
       aria-label="Terug naar dashboard"
       className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3.5 text-[13px] font-medium text-white/75 no-underline transition hover:border-white/20 hover:bg-white/10 hover:text-white"

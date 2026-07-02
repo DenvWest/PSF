@@ -72,6 +72,17 @@ function sliderDefaults(): Record<string, number> {
 export default function NutritionCapture() {
   const searchParams = useSearchParams();
   const fromDashboard = searchParams.get("from") === "dashboard";
+  const kompas = searchParams.get("kompas");
+  const validKompas = new Set([
+    "slaap",
+    "energie",
+    "stress",
+    "voeding",
+    "beweging",
+    "herstel",
+    "verbinding",
+  ]);
+  const originDomain = kompas && validKompas.has(kompas) ? kompas : null;
   const [step, setStep] = useState<Step>({ kind: "question", index: 0 });
   const [sliders, setSliders] = useState<Record<string, number>>(sliderDefaults);
   const [allergies, setAllergies] = useState<string[]>([]);
@@ -175,6 +186,7 @@ export default function NutritionCapture() {
         delta={step.delta}
         proteinMealsPerDay={proteinMealsFromSliders(sliders)}
         fromDashboard={fromDashboard}
+        originDomain={originDomain}
       />
     );
   }

@@ -103,6 +103,7 @@ export function buildRecommendations(
 
 const MOVEMENT_SUPPLEMENT_SLUGS = new Set(["creatine", "eiwitpoeder"]);
 const STRESS_SUPPLEMENT_SLUGS = new Set(["magnesium"]);
+const SLEEP_SUPPLEMENT_SLUGS = new Set(["magnesium", "melatonine"]);
 
 export function getMovementNutritionHint(session: IntakeSessionPayload): string {
   const signals = getDeficiencySignals(session.answers);
@@ -142,5 +143,23 @@ export function buildStressRecommendations(
 ): RecommendedSupplement[] {
   return buildRecommendations(session).filter((rec) =>
     STRESS_SUPPLEMENT_SLUGS.has(rec.slug),
+  );
+}
+
+export function getSleepNutritionHint(session: IntakeSessionPayload): string {
+  if (session.scores.nutrition_score < 50) {
+    return "Je voedingsscore laat ruimte: bouw je avond rustiger op met regelmaat, eiwit en vezelrijke maaltijden.";
+  }
+  if (session.scores.stress_score < 50) {
+    return "Je basisvoeding staat redelijk. Houd avondprikkels laag en kies voor voorspelbare maaltijden op drukke dagen.";
+  }
+  return "Je basis staat redelijk; houd je avond simpel en voorspelbaar zodat je slaapdruk beter kan opbouwen.";
+}
+
+export function buildSleepRecommendations(
+  session: IntakeSessionPayload,
+): RecommendedSupplement[] {
+  return buildRecommendations(session).filter((rec) =>
+    SLEEP_SUPPLEMENT_SLUGS.has(rec.slug),
   );
 }

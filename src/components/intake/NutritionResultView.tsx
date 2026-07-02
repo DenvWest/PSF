@@ -23,6 +23,7 @@ interface NutritionResultViewProps {
   delta: NutrientDelta[] | null;
   proteinMealsPerDay?: number;
   fromDashboard: boolean;
+  originDomain: string | null;
 }
 
 function badgeClassName(band: IntakeEstimate["band"]): string {
@@ -39,6 +40,7 @@ export default function NutritionResultView({
   delta,
   proteinMealsPerDay,
   fromDashboard,
+  originDomain,
 }: NutritionResultViewProps) {
   const gaps = estimate.filter((e) => e.band === "below");
   const proteinEstimate = estimate.find((e) => e.nutrient === "protein");
@@ -71,8 +73,15 @@ export default function NutritionResultView({
   const focusRef = focusNutrient ? nutrientReferences[focusNutrient] : null;
 
   function handleDashboardReturn() {
-    trackEvent("nutrition_result_dashboard_return", { from: "dashboard" });
+    trackEvent("nutrition_result_dashboard_return", {
+      from: "dashboard",
+      origin_domain: originDomain ?? "none",
+    });
   }
+  const dashboardHref =
+    fromDashboard && originDomain
+      ? `/dashboard?tab=vandaag&kompas=${originDomain}`
+      : "/dashboard";
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -232,7 +241,7 @@ export default function NutritionResultView({
         <div className="mt-8 space-y-4 text-center">
           {fromDashboard ? (
             <Link
-              href="/dashboard"
+              href={dashboardHref}
               onClick={handleDashboardReturn}
               className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
             >

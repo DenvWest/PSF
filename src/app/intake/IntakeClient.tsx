@@ -139,9 +139,12 @@ export default function IntakeClient() {
 
   useEffect(() => {
     if (phase === "results" && !hasResultsParam) {
-      router.replace("/intake?resultaten=true", { scroll: false });
+      const nextParams = new URLSearchParams(searchParams.toString());
+      nextParams.set("resultaten", "true");
+      const nextQuery = nextParams.toString();
+      router.replace(`/intake${nextQuery ? `?${nextQuery}` : ""}`, { scroll: false });
     }
-  }, [phase, hasResultsParam, router]);
+  }, [phase, hasResultsParam, router, searchParams]);
 
   useIntakeSubmit({
     active: phase === "calculating",

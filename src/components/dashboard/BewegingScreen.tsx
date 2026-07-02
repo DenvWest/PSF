@@ -292,7 +292,7 @@ export default function BewegingScreen({
         </Card>
 
         <Link
-          href="/intake/beweging?from=dashboard"
+          href="/intake/beweging?from=dashboard&kompas=beweging"
           onClick={() => {
             trackEvent("dashboard_beweging_checkin_click", { surface: "kompas_beweging" });
             clarityTag("dashboard_beweging_checkin", "click");
@@ -360,7 +360,7 @@ export default function BewegingScreen({
                   {nutritionHint}
                 </p>
                 <Link
-                  href="/intake/voeding?from=dashboard"
+                  href="/intake/voeding?from=dashboard&kompas=beweging"
                   onClick={() => {
                     trackEvent("dashboard_beweging_voeding_click", { surface: "kompas_beweging" });
                     clarityTag("dashboard_beweging_voeding", "click");
@@ -644,7 +644,7 @@ export default function BewegingScreen({
         </Card>
 
         <FooterLink
-          href="/intake/plan/movement?from=dashboard"
+          href="/intake/plan/movement?from=dashboard&kompas=beweging"
           icon={<Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
           label="Je bewegingsplan"
           onClick={() => {

@@ -3,7 +3,7 @@
 import type { ReactElement, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
@@ -19,6 +19,7 @@ import {
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import BewegingScreen from "@/components/dashboard/BewegingScreen";
+import SleepScreen from "@/components/dashboard/SleepScreen";
 import StressScreen from "@/components/dashboard/StressScreen";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
@@ -2387,6 +2388,16 @@ const STATUS_BADGE_COLOR: Record<
 
 type KompasView = PillarId | "activiteiten" | "trend";
 
+const KOMPAS_DOMAIN_IDS = new Set<PillarId>([
+  "slaap",
+  "energie",
+  "stress",
+  "voeding",
+  "beweging",
+  "herstel",
+  "verbinding",
+]);
+
 const KompasRowCard = ({
   onClick,
   ariaLabel,
@@ -2763,46 +2774,80 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
   );
 };
 
-const KompasHome = ({ model, initialKompasView }: SharedSectionProps) => {
+const KompasHome = ({ model }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
-  const [view, setView] = useState<KompasView | null>(initialKompasView ?? null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [overlayView, setOverlayView] = useState<Extract<KompasView, "activiteiten" | "trend"> | null>(null);
 
   if (!currentModel) {
     return null;
   }
 
+  const kompasParam = searchParams.get("kompas");
+  const domainView =
+    kompasParam && KOMPAS_DOMAIN_IDS.has(kompasParam as PillarId)
+      ? (kompasParam as PillarId)
+      : null;
+
+  const navigateKompas = (domain: PillarId | null, mode: "push" | "replace" = "push") => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.set("tab", "vandaag");
+    if (domain) {
+      nextParams.set("kompas", domain);
+    } else {
+      nextParams.delete("kompas");
+    }
+    const query = nextParams.toString();
+    const href = query ? `${pathname}?${query}` : pathname;
+    if (mode === "replace") {
+      router.replace(href, { scroll: false });
+      return;
+    }
+    router.push(href, { scroll: false });
+  };
+
   const openDomain = (domain: PillarId) => {
     trackEvent("dashboard_kompas_domain_open", { domain });
     clarityTag("dashboard_kompas_domain", domain);
-    setView(domain);
+    setOverlayView(null);
+    navigateKompas(domain, "push");
   };
 
   const closeView = () => {
-    setView(null);
+    if (overlayView) {
+      setOverlayView(null);
+      return;
+    }
+    navigateKompas(null, "push");
   };
 
   const openActiviteiten = () => {
     trackEvent("dashboard_kompas_activiteiten_open", { surface: "kompas_home" });
     clarityTag("dashboard_kompas_view", "activiteiten");
-    setView("activiteiten");
+    setOverlayView("activiteiten");
   };
 
   const openTrend = () => {
     trackEvent("dashboard_kompas_trend_open", { surface: "kompas_home" });
     clarityTag("dashboard_kompas_view", "trend");
-    setView("trend");
+    setOverlayView("trend");
   };
 
-  if (view === "beweging") {
+  if (domainView === "beweging") {
     return <BewegingScreen model={currentModel} onBack={closeView} />;
   }
-  if (view === "stress") {
+  if (domainView === "stress") {
     return <StressScreen model={currentModel} onBack={closeView} />;
   }
-  if (view === "voeding") {
+  if (domainView === "slaap") {
+    return <SleepScreen model={currentModel} onBack={closeView} />;
+  }
+  if (domainView === "voeding") {
     return <VoedingScreen model={currentModel} onBack={closeView} />;
   }
-  if (view === "activiteiten") {
+  if (overlayView === "activiteiten") {
     return (
       <KompasSoonScreen
         onBack={closeView}
@@ -2812,7 +2857,7 @@ const KompasHome = ({ model, initialKompasView }: SharedSectionProps) => {
       />
     );
   }
-  if (view === "trend") {
+  if (overlayView === "trend") {
     return (
       <KompasSoonScreen
         onBack={closeView}
@@ -2822,11 +2867,11 @@ const KompasHome = ({ model, initialKompasView }: SharedSectionProps) => {
       />
     );
   }
-  if (view) {
+  if (domainView) {
     return (
       <DomainSoonScreen
         model={currentModel}
-        domain={view}
+        domain={domainView}
         onBack={closeView}
       />
     );
@@ -3146,7 +3191,7 @@ export default function Dashboard({
       pillar_id: pillarId,
       route,
     });
-    router.push(`${route}?from=dashboard`);
+    router.push(`${route}?from=dashboard&kompas=${pillarId}`);
   };
   const onRemeasure = () => {
     router.push("/intake?from=dashboard");

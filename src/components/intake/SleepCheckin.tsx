@@ -6,12 +6,14 @@ import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
 import {
   SLEEP_QUESTIONS,
+  SLEEP_CONTEXT_QUESTIONS,
   SLEEP_DUUR_QUESTION,
   SLEEP_REGIE_QUESTION,
   type SleepBand,
 } from "@/data/sleep-checkin";
 import type { SleepAssessment } from "@/lib/sleep-assessment";
 import type { SleepDirection } from "@/lib/sleep-delta";
+import { trackEvent } from "@/lib/ga4";
 
 type SleepReport = {
   SLP_ONSET?: number;
@@ -20,6 +22,10 @@ type SleepReport = {
   SLP_QUAL?: number;
   duur?: number;
   grip?: number;
+  winddown?: number;
+  nightload?: number;
+  morninglight?: number;
+  sleepconfidence?: number;
 };
 
 type SleepStart = {
@@ -53,6 +59,7 @@ const ALL_QUESTIONS: QuestionDef[] = [
   ...SLEEP_QUESTIONS,
   SLEEP_DUUR_QUESTION,
   SLEEP_REGIE_QUESTION,
+  ...SLEEP_CONTEXT_QUESTIONS,
 ];
 
 const TOTAL = ALL_QUESTIONS.length;
@@ -109,6 +116,10 @@ export default function SleepCheckin() {
             SLP_QUAL: answers.SLP_QUAL,
             duur: answers.duur,
             grip: answers.grip,
+            winddown: answers.winddown,
+            nightload: answers.nightload,
+            morninglight: answers.morninglight,
+            sleepconfidence: answers.sleepconfidence,
           },
           consent: true,
         }),
@@ -131,6 +142,7 @@ export default function SleepCheckin() {
       };
 
       clarityTag("sleep_flow", "completed");
+      trackEvent("sleep_checkin_completed", { surface: "intake_slaap" });
       setStep({
         kind: "result",
         assessment: data.assessment,
@@ -159,6 +171,19 @@ export default function SleepCheckin() {
   if (step.kind === "result") {
     const { assessment, start, regie } = step;
     const focus = assessment.focus;
+    const contextHints: string[] = [];
+    if ((answers.nightload ?? 4) <= 2) {
+      contextHints.push("Je hoofd blijft 's avonds nog actief. Een korte afronding vóór bed helpt je zenuwstelsel zakken.");
+    }
+    if ((answers.morninglight ?? 4) <= 2) {
+      contextHints.push("Je ritme mist ochtendankers. Daglicht in de ochtend maakt inslapen later op de dag makkelijker.");
+    }
+    if ((answers.winddown ?? 4) <= 2) {
+      contextHints.push("Je avond schakelt laat terug. Een vaste afbouwvolgorde van 20-30 minuten maakt verschil.");
+    }
+    if ((answers.sleepconfidence ?? 4) <= 2) {
+      contextHints.push("Twijfel is logisch. Focus op 1 kleine stap voor 3 avonden achter elkaar in plaats van alles tegelijk.");
+    }
 
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -269,6 +294,19 @@ export default function SleepCheckin() {
           {regie && (
             <div className="mt-8 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
               {regie.reflection}
+            </div>
+          )}
+
+          {contextHints.length > 0 && (
+            <div className="mt-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
+                Ritme &amp; herstel
+              </p>
+              <ul className="list-disc space-y-2 pl-5">
+                {contextHints.slice(0, 2).map((hint) => (
+                  <li key={hint}>{hint}</li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
