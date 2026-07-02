@@ -67,6 +67,7 @@ type DashboardProps = {
   isMember?: boolean;
   initialTab?: DashboardTabId;
   initialVoortgangScreen?: VoortgangScreen;
+  initialKompasView?: PillarId;
 };
 
 type SharedSectionProps = {
@@ -83,6 +84,7 @@ type SharedSectionProps = {
   voortgangScreen: VoortgangScreen;
   onVoortgangScreenChange: (screen: VoortgangScreen) => void;
   onOpenInzichten: () => void;
+  initialKompasView?: PillarId;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -2761,9 +2763,9 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
   );
 };
 
-const KompasHome = ({ model }: SharedSectionProps) => {
+const KompasHome = ({ model, initialKompasView }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
-  const [view, setView] = useState<KompasView | null>(null);
+  const [view, setView] = useState<KompasView | null>(initialKompasView ?? null);
 
   if (!currentModel) {
     return null;
@@ -2773,6 +2775,10 @@ const KompasHome = ({ model }: SharedSectionProps) => {
     trackEvent("dashboard_kompas_domain_open", { domain });
     clarityTag("dashboard_kompas_domain", domain);
     setView(domain);
+  };
+
+  const closeView = () => {
+    setView(null);
   };
 
   const openActiviteiten = () => {
@@ -2788,18 +2794,18 @@ const KompasHome = ({ model }: SharedSectionProps) => {
   };
 
   if (view === "beweging") {
-    return <BewegingScreen model={currentModel} onBack={() => setView(null)} />;
+    return <BewegingScreen model={currentModel} onBack={closeView} />;
   }
   if (view === "stress") {
-    return <StressScreen model={currentModel} onBack={() => setView(null)} />;
+    return <StressScreen model={currentModel} onBack={closeView} />;
   }
   if (view === "voeding") {
-    return <VoedingScreen model={currentModel} onBack={() => setView(null)} />;
+    return <VoedingScreen model={currentModel} onBack={closeView} />;
   }
   if (view === "activiteiten") {
     return (
       <KompasSoonScreen
-        onBack={() => setView(null)}
+        onBack={closeView}
         title="Activiteiten logboek"
         body="Log dagelijks wat je deed — wandeling, stretching, alcoholvrije avond. Zo zie je of je leefstijl-stappen blijven hangen."
         teaser={currentModel.activeHabit?.title ?? null}
@@ -2809,7 +2815,7 @@ const KompasHome = ({ model }: SharedSectionProps) => {
   if (view === "trend") {
     return (
       <KompasSoonScreen
-        onBack={() => setView(null)}
+        onBack={closeView}
         title="Trend — levenslijn urgentie"
         body="Je levenslijn laat zien hoe je prioriteit en urgentie verschuiven over checks — zodat je ziet of het werkt."
         showChartPlaceholder
@@ -2821,7 +2827,7 @@ const KompasHome = ({ model }: SharedSectionProps) => {
       <DomainSoonScreen
         model={currentModel}
         domain={view}
-        onBack={() => setView(null)}
+        onBack={closeView}
       />
     );
   }
@@ -3071,6 +3077,7 @@ export default function Dashboard({
   isMember = false,
   initialTab,
   initialVoortgangScreen,
+  initialKompasView,
 }: DashboardProps) {
   const router = useRouter();
   const [tab, setTab] = useState<DashboardTabId>(
@@ -3159,6 +3166,7 @@ export default function Dashboard({
     voortgangScreen,
     onVoortgangScreenChange: setVoortgangScreen,
     onOpenInzichten: () => setVoortgangScreen("inzichten"),
+    initialKompasView,
   };
 
   const isVoortgangDetail = tab === "voortgang" && voortgangScreen !== "hub";

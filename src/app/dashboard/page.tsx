@@ -4,7 +4,7 @@ import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
 import { loadAccountDashboardData } from "@/lib/account-dashboard";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
-import type { DashboardTabId } from "@/types/dashboard";
+import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 export const metadata = {
   robots: {
@@ -14,7 +14,12 @@ export const metadata = {
 };
 
 type DashboardPageProps = {
-  searchParams: Promise<{ state?: string; tab?: string; screen?: string }>;
+  searchParams: Promise<{
+    state?: string;
+    tab?: string;
+    screen?: string;
+    kompas?: string;
+  }>;
 };
 
 const VALID_TABS = new Set<DashboardTabId>(["vandaag", "voortgang", "hermeting"]);
@@ -40,8 +45,25 @@ function parseInitialVoortgangScreen(screen?: string): VoortgangScreen | undefin
   return undefined;
 }
 
+const VALID_KOMPAS_VIEWS = new Set<PillarId>([
+  "slaap",
+  "energie",
+  "stress",
+  "voeding",
+  "beweging",
+  "herstel",
+  "verbinding",
+]);
+
+function parseInitialKompasView(kompas?: string): PillarId | undefined {
+  if (kompas && VALID_KOMPAS_VIEWS.has(kompas as PillarId)) {
+    return kompas as PillarId;
+  }
+  return undefined;
+}
+
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  const { state, tab, screen } = await searchParams;
+  const { state, tab, screen, kompas } = await searchParams;
 
   const account = await getAccountFromCookie();
   if (!account) {
@@ -52,10 +74,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   }
   const initialTab = parseInitialTab(tab);
   const initialVoortgangScreen = parseInitialVoortgangScreen(screen);
+  const initialKompasView = parseInitialKompasView(kompas);
 
   const dashboardProps = {
     initialTab,
     initialVoortgangScreen,
+    initialKompasView,
   };
 
   if (state === "empty") {
