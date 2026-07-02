@@ -11,6 +11,7 @@ import {
   type PlanTemplateDomain,
 } from "@/data/lifestyle-plans";
 import type { DomainScores } from "@/lib/intake-engine";
+import { getLastSession } from "@/lib/intake-storage";
 import { getPrimaryTheme, getSecondaryTheme } from "@/lib/primary-theme";
 
 type IntakePlanPageProps = {
@@ -36,30 +37,21 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
 
     void (async () => {
       try {
-        const response = await fetch("/api/intake/session", {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const json = (await response.json().catch(() => null)) as {
-          session?: {
-            sessionId: string;
-            scores: DomainScores;
-            answers: Record<string, number>;
-          } | null;
-        } | null;
+        const loaded = await getLastSession();
+        const session = loaded?.session;
 
         if (cancelled) {
           return;
         }
 
-        if (!json?.session) {
+        if (!session) {
           router.replace("/intake");
           return;
         }
 
-        setSessionId(json.session.sessionId);
-        setScores(json.session.scores);
-        setAnswers(json.session.answers);
+        setSessionId(session.sessionId);
+        setScores(session.scores);
+        setAnswers(session.answers);
       } catch {
         if (!cancelled) {
           router.replace("/intake");

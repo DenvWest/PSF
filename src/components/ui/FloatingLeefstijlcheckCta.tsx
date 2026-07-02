@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HOMEPAGE_HERO } from "@/data/homepage";
 import { CATEGORIES } from "@/data/intake-questions";
-import { getLastSession } from "@/lib/intake-storage";
+import { getAccountStatus, getLastSession } from "@/lib/intake-storage";
 import { resolvePrimaryMobileCta, type MobileCtaAction } from "@/lib/mobile-cta-state";
 import { useInBodyLeefstijlcheckCtaVisible } from "@/lib/use-in-body-leefstijlcheck-cta-visible";
 
@@ -147,17 +147,7 @@ export default function FloatingLeefstijlcheckCta({
       }
     });
 
-    void fetch("/api/account/status", {
-      method: "GET",
-      credentials: "include",
-      cache: "no-store",
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          return null;
-        }
-        return (await response.json()) as { loggedIn?: boolean };
-      })
+    void getAccountStatus()
       .then((payload) => {
         if (!cancelled) {
           setIsLoggedIn(payload?.loggedIn === true);

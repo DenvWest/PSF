@@ -167,7 +167,23 @@ export type IntakeSessionGetResponse = {
   hasActiveMarketingEmailConsent: boolean;
 };
 
-export async function getLastSession(): Promise<IntakeSessionGetResponse | null> {
+type AccountStatusResponse = {
+  loggedIn: boolean;
+};
+
+const REQUEST_DEDUPE_WINDOW_MS = 1200;
+
+let lastSessionInFlight: Promise<IntakeSessionGetResponse | null> | null = null;
+let lastSessionCache:
+  | { value: IntakeSessionGetResponse | null; expiresAt: number }
+  | null = null;
+
+let accountStatusInFlight: Promise<AccountStatusResponse | null> | null = null;
+let accountStatusCache:
+  | { value: AccountStatusResponse | null; expiresAt: number }
+  | null = null;
+
+async function fetchLastSession(): Promise<IntakeSessionGetResponse | null> {
   try {
     const response = await fetch("/api/intake/session", {
       method: "GET",
@@ -194,6 +210,73 @@ export async function getLastSession(): Promise<IntakeSessionGetResponse | null>
     };
   } catch {
     return null;
+  }
+}
+
+export async function getLastSession(): Promise<IntakeSessionGetResponse | null> {
+  const now = Date.now();
+  if (lastSessionCache && lastSessionCache.expiresAt > now) {
+    return lastSessionCache.value;
+  }
+  if (lastSessionInFlight) {
+    return lastSessionInFlight;
+  }
+
+  lastSessionInFlight = fetchLastSession().then((value) => {
+    lastSessionCache = {
+      value,
+      expiresAt: Date.now() + REQUEST_DEDUPE_WINDOW_MS,
+    };
+    return value;
+  });
+
+  try {
+    return await lastSessionInFlight;
+  } finally {
+    lastSessionInFlight = null;
+  }
+}
+
+async function fetchAccountStatus(): Promise<AccountStatusResponse | null> {
+  try {
+    const response = await fetch("/api/account/status", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const payload = (await response.json().catch(() => null)) as {
+      loggedIn?: boolean;
+    } | null;
+    return { loggedIn: payload?.loggedIn === true };
+  } catch {
+    return null;
+  }
+}
+
+export async function getAccountStatus(): Promise<AccountStatusResponse | null> {
+  const now = Date.now();
+  if (accountStatusCache && accountStatusCache.expiresAt > now) {
+    return accountStatusCache.value;
+  }
+  if (accountStatusInFlight) {
+    return accountStatusInFlight;
+  }
+
+  accountStatusInFlight = fetchAccountStatus().then((value) => {
+    accountStatusCache = {
+      value,
+      expiresAt: Date.now() + REQUEST_DEDUPE_WINDOW_MS,
+    };
+    return value;
+  });
+
+  try {
+    return await accountStatusInFlight;
+  } finally {
+    accountStatusInFlight = null;
   }
 }
 
