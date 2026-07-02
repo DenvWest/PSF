@@ -552,7 +552,7 @@ export default function BewegingScreen({
                 lineHeight: 1.2,
               }}
             >
-              Plan-coach inplannen
+              Onafhankelijke bewegingscoach
             </div>
             <p
               style={{
@@ -563,8 +563,8 @@ export default function BewegingScreen({
                 textWrap: "pretty",
               }}
             >
-              Persoonlijke begeleiding bij je opbouw — kracht, conditie en herstel in één lijn. We
-              bouwen dit in de app; meld je aan voor de wachtlijst.
+              Werk met een onafhankelijke coach die je helpt je opbouw vol te houden. Geen
+              merkverkoop, wel begeleiding op kracht, conditie en herstel.
             </p>
             <WaitlistButton
               feature="beweging-coach"
@@ -609,7 +609,8 @@ export default function BewegingScreen({
                 textWrap: "pretty",
               }}
             >
-              Houd volume, zwaarte en herstel bij — en koppel het aan je plan-coach. De app komt
+              Houd volume, zwaarte en herstel bij — en koppel het aan je onafhankelijke coach. De
+              app komt
               later; premium houdt alles in één plek.
             </p>
             <SoonPill />

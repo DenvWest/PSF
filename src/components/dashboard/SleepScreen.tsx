@@ -469,10 +469,11 @@ export default function SleepScreen({
               Begeleiding
             </div>
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
-              Slaap-coach inplannen
+              Onafhankelijke slaapcoach
             </div>
             <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
-              Werk met iemand die je helpt ritme en avondafbouw vol te houden. Meld je aan voor de wachtlijst.
+              Werk met een onafhankelijke coach die je helpt ritme en avondafbouw vol te houden. Geen
+              merkverkoop, wel begeleiding op slaapgedrag en routines.
             </p>
             <WaitlistButton feature="slaap-coach" surface="kompas_slaap" label="Zet me op de wachtlijst" />
           </div>

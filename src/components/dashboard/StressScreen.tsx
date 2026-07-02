@@ -617,7 +617,7 @@ export default function StressScreen({
             <div
               style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}
             >
-              Stress-coach inplannen
+              Onafhankelijke stress-coach
             </div>
             <p
               style={{
