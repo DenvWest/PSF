@@ -21,6 +21,7 @@ import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import BewegingScreen from "@/components/dashboard/BewegingScreen";
 import SleepScreen from "@/components/dashboard/SleepScreen";
 import StressScreen from "@/components/dashboard/StressScreen";
+import WaitlistButton from "@/components/dashboard/WaitlistButton";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
@@ -2630,8 +2631,9 @@ const DomainSoonScreen = ({
   );
 };
 
-const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () => void }) => {
+const VoedingScreen = ({ model }: { model: DashboardModel }) => {
   const premiumShownRef = useRef(false);
+  const coachShownRef = useRef(false);
 
   useEffect(() => {
     if (premiumShownRef.current) {
@@ -2640,6 +2642,14 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
     premiumShownRef.current = true;
     trackEvent("dashboard_voeding_premium_upsell", { surface: "kompas_voeding" });
     clarityTag("dashboard_voeding_premium", "shown");
+  }, []);
+
+  useEffect(() => {
+    if (coachShownRef.current) {
+      return;
+    }
+    coachShownRef.current = true;
+    trackEvent("dashboard_voeding_coach_waitlist_shown", { surface: "kompas_voeding" });
   }, []);
 
   const session: IntakeSessionPayload = {
@@ -2659,8 +2669,6 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
   return (
     <KompasLightPanel className="-mt-3 p-5">
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <DomainBackBar onBack={onBack} />
-
         <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <VitalityGauge value={model.scores.voeding ?? 0} label="Voeding" size={86} stroke={8} compact showBandLabel={false} theme="light" />
@@ -2678,14 +2686,105 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
           </div>
         </Card>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: "#fff" }}>
+        <Link
+          href="/intake/voeding?from=dashboard&kompas=voeding"
+          onClick={() => {
+            trackEvent("dashboard_voeding_checkin_click", { surface: "kompas_voeding" });
+            clarityTag("dashboard_voeding_checkin", "click");
+          }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+            padding: "14px 16px",
+            borderRadius: 16,
+            border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+            background: "#fff",
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Icons.Activity s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
+            <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
+              Doe de voedingscheck (1 min)
+            </span>
+            <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
+          </div>
+          <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.45, margin: "0 0 0 30px", textWrap: "pretty" }}>
+            Krijg een snelle nulmeting van je basis en kies je eerste stap.
+          </p>
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => {
+            trackEvent("dashboard_voeding_search_click", { surface: "kompas_voeding", state: "coming_soon" });
+            clarityTag("dashboard_voeding_search", "click");
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "14px 16px",
+            borderRadius: 16,
+            border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+            background: "#fff",
+            width: "100%",
+            cursor: "pointer",
+          }}
+        >
           <Icons.Search s={18} style={{ color: KOMPAS_LIGHT.subtle }} />
-          <span style={{ flex: 1, fontSize: 14.5, color: KOMPAS_LIGHT.subtle }}>Zoek product of supplement</span>
+          <span style={{ flex: 1, fontSize: 14.5, color: KOMPAS_LIGHT.subtle, textAlign: "left" }}>
+            Zoek product of supplement
+          </span>
           <SoonPill />
-        </div>
+        </button>
+
+        <section aria-label="Leefstijl eerst">
+          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Voedingsbasis" />
+          <Card pad={18} surface="light">
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: KOMPAS_LIGHT.innerBg }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: KOMPAS_LIGHT.text, marginBottom: 4 }}>
+                  Eiwitanker per maaltijd
+                </div>
+                <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
+                  Start met 1 eiwitbron per maaltijd zodat je verzadiging en herstel stabieler worden.
+                </p>
+              </div>
+              <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: KOMPAS_LIGHT.innerBg }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: KOMPAS_LIGHT.text, marginBottom: 4 }}>
+                  Vezelritme over de dag
+                </div>
+                <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
+                  Bouw per eetmoment groente, peulvruchten of volkoren op. Dit dempt pieken en houdt energie rustiger.
+                </p>
+              </div>
+              <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: KOMPAS_LIGHT.innerBg }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: KOMPAS_LIGHT.text, marginBottom: 4 }}>
+                  Vast maaltijdvenster
+                </div>
+                <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
+                  Eet op voorspelbare tijden. Zo stuur je rust in eetdrang en maak je je basis meetbaar.
+                </p>
+              </div>
+              <Link
+                href="/inzichten"
+                onClick={() => {
+                  trackEvent("dashboard_voeding_leefstijl_click", { surface: "kompas_voeding" });
+                  clarityTag("dashboard_voeding_leefstijl", "click");
+                }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13.5, fontWeight: 600, color: "var(--sage)", textDecoration: "none", marginTop: 2 }}
+              >
+                Lees leefstijl &amp; inzichten <Icons.ChevronRight s={15} />
+              </Link>
+            </div>
+          </Card>
+        </section>
 
         <section aria-label="Aanbevolen supplementen">
-          <KompasSectionHeader eyebrow="Aanbevolen" title="Supplementen voor jou" />
+          <KompasSectionHeader eyebrow="Daarna gericht" title="Supplementen voor jou" />
           {recommendations.length > 0 ? (
             <Card pad={8} surface="light">
               <div style={{ display: "flex", flexDirection: "column" }}>
@@ -2745,6 +2844,26 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
           </Card>
         </section>
 
+        <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}33` }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
+              Begeleiding
+            </div>
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
+              Onafhankelijke voedingscoach
+            </div>
+            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
+              Werk met een onafhankelijke coach die je helpt je basis vol te houden. Geen merkverkoop, wel
+              begeleiding op ritme, keuzes en consistentie.
+            </p>
+            <WaitlistButton
+              feature="voeding-coach"
+              surface="kompas_voeding"
+              label="Zet me op de wachtlijst"
+            />
+          </div>
+        </Card>
+
         <Card pad={20} surface="light" glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.35)" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
@@ -2759,16 +2878,6 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
             <SoonPill />
           </div>
         </Card>
-
-        <Link
-          href="/inzichten"
-          onClick={() => trackEvent("dashboard_voeding_leefstijl_click", { surface: "kompas_voeding" })}
-          style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 18px", borderRadius: 16, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: "#fff", textDecoration: "none", color: "inherit" }}
-        >
-          <Icons.BookOpen s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
-          <span style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>Leefstijl &amp; inzichten</span>
-          <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
-        </Link>
       </div>
     </KompasLightPanel>
   );
@@ -2845,7 +2954,7 @@ const KompasHome = ({ model }: SharedSectionProps) => {
     return <SleepScreen model={currentModel} />;
   }
   if (domainView === "voeding") {
-    return <VoedingScreen model={currentModel} onBack={closeView} />;
+    return <VoedingScreen model={currentModel} />;
   }
   if (overlayView === "activiteiten") {
     return (

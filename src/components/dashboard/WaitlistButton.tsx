@@ -10,6 +10,7 @@ type WaitlistFeature =
   | "inzichten"
   | "statistieken"
   | "lichaamssamenstelling"
+  | "voeding-coach"
   | "beweging-coach"
   | "stress-coach"
   | "slaap-coach";
