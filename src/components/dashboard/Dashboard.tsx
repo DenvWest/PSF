@@ -2836,13 +2836,13 @@ const KompasHome = ({ model }: SharedSectionProps) => {
   };
 
   if (domainView === "beweging") {
-    return <BewegingScreen model={currentModel} onBack={closeView} />;
+    return <BewegingScreen model={currentModel} />;
   }
   if (domainView === "stress") {
-    return <StressScreen model={currentModel} onBack={closeView} />;
+    return <StressScreen model={currentModel} />;
   }
   if (domainView === "slaap") {
-    return <SleepScreen model={currentModel} onBack={closeView} />;
+    return <SleepScreen model={currentModel} />;
   }
   if (domainView === "voeding") {
     return <VoedingScreen model={currentModel} onBack={closeView} />;
@@ -3125,6 +3125,8 @@ export default function Dashboard({
   initialKompasView,
 }: DashboardProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [tab, setTab] = useState<DashboardTabId>(
     initialTab ?? (empty ? "voortgang" : "vandaag"),
   );
@@ -3154,7 +3156,18 @@ export default function Dashboard({
     ? allowedTypes.filter((type) => EMPTY_SECTIONS.includes(type))
     : allowedTypes;
 
+  const resetKompasToHome = () => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.set("tab", "vandaag");
+    nextParams.delete("kompas");
+    const query = nextParams.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
   const selectTab = (nextTab: DashboardTabId) => {
+    if (nextTab === "vandaag") {
+      resetKompasToHome();
+    }
     if (nextTab === "vandaag" && tab === "vandaag") {
       setKompasResetSignal((prev) => prev + 1);
       trackEvent("dashboard_kompas_tab_reset", { source: "tabbar" });

@@ -37,12 +37,7 @@ export default function IntakeExit({ variant = "on-dark" }: IntakeExitProps) {
           ? "voeding"
           : null;
   const kompasTarget = kompasFromParam ?? kompasFromPath;
-  const href =
-    fromDashboard && kompasTarget
-      ? `/dashboard?tab=vandaag&kompas=${kompasTarget}`
-      : fromDashboard
-        ? "/dashboard"
-        : "/";
+  const href = fromDashboard ? "/dashboard?tab=vandaag" : "/";
   const targetLabel =
     href.startsWith("/dashboard") && kompasTarget ? `dashboard_${kompasTarget}` : href;
 

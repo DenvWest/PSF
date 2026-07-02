@@ -124,29 +124,6 @@ const SoonPill = ({ label = "Binnenkort" }: { label?: string }) => (
   </span>
 );
 
-const DomainBackBar = ({ onBack }: { onBack: () => void }) => (
-  <button
-    type="button"
-    onClick={onBack}
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 6,
-      padding: "8px 2px",
-      background: "none",
-      border: "none",
-      cursor: "pointer",
-      color: KOMPAS_LIGHT.muted,
-      fontFamily: "var(--f-sans)",
-      fontSize: 13.5,
-      fontWeight: 600,
-      alignSelf: "flex-start",
-    }}
-  >
-    <Icons.ChevronRight s={16} style={{ transform: "rotate(180deg)" }} /> Kompas
-  </button>
-);
-
 const FooterLink = ({
   href,
   icon,
@@ -199,10 +176,8 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
 
 export default function StressScreen({
   model,
-  onBack,
 }: {
   model: DashboardModel;
-  onBack: () => void;
 }) {
   const premiumShownRef = useRef(false);
   const coachShownRef = useRef(false);
@@ -227,8 +202,6 @@ export default function StressScreen({
   return (
     <KompasLightPanel>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <DomainBackBar onBack={onBack} />
-
         <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <VitalityGauge

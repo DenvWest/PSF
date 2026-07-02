@@ -11,7 +11,6 @@ type DashboardBackLinkProps = {
 
 export default function DashboardBackLink({ surface }: DashboardBackLinkProps) {
   const searchParams = useSearchParams();
-  const fromDashboard = searchParams.get("from") === "dashboard";
   const kompas = searchParams.get("kompas");
   const validKompas = new Set([
     "slaap",
@@ -23,10 +22,7 @@ export default function DashboardBackLink({ surface }: DashboardBackLinkProps) {
     "verbinding",
   ]);
   const originDomain = kompas && validKompas.has(kompas) ? kompas : null;
-  const href =
-    fromDashboard && originDomain
-      ? `/dashboard?tab=vandaag&kompas=${originDomain}`
-      : "/dashboard";
+  const href = "/dashboard?tab=vandaag";
 
   function handleClick() {
     clarityTag("dashboard_back", surface);
