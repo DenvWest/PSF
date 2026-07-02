@@ -102,6 +102,7 @@ export function buildRecommendations(
 }
 
 const MOVEMENT_SUPPLEMENT_SLUGS = new Set(["creatine", "eiwitpoeder"]);
+const STRESS_SUPPLEMENT_SLUGS = new Set(["magnesium"]);
 
 export function getMovementNutritionHint(session: IntakeSessionPayload): string {
   const signals = getDeficiencySignals(session.answers);
@@ -123,4 +124,23 @@ export function buildMovementRecommendations(
     }
     return MOVEMENT_SUPPLEMENT_SLUGS.has(rec.slug);
   });
+}
+
+export function getStressNutritionHint(session: IntakeSessionPayload): string {
+  const signals = getDeficiencySignals(session.answers);
+  if (signals.cortisol_risk) {
+    return "Kies op drukke dagen voor regelmaat met eiwit en vezels; stabiel eten helpt je stress-as rustiger schakelen.";
+  }
+  if (session.scores.nutrition_score < 50) {
+    return "Je voedingsscore laat ruimte: begin met vaste maaltijden, voldoende eiwit en vezels.";
+  }
+  return "Je basis staat redelijk; houd regelmaat en volwaardige voeding vast voor beter stressherstel.";
+}
+
+export function buildStressRecommendations(
+  session: IntakeSessionPayload,
+): RecommendedSupplement[] {
+  return buildRecommendations(session).filter((rec) =>
+    STRESS_SUPPLEMENT_SLUGS.has(rec.slug),
+  );
 }

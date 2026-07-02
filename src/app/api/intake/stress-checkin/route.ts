@@ -25,6 +25,12 @@ type StressReport = {
   STR_FREQ: number;
   STR_RCV: number;
   grip: number | null;
+  STR_AUTO: number | null;
+  STR_COMP: number | null;
+  STR_REFL: number | null;
+  STR_AWARE: number | null;
+  STR_BLOCK: number | null;
+  STR_CHARGE: number | null;
 };
 
 function parseIntField(value: unknown, min: number, max: number): number | null {
@@ -48,7 +54,24 @@ function parseReport(raw: unknown): StressReport | null {
       ? null
       : parseIntField(gripRaw, 1, 5);
 
-  return { STR_FREQ, STR_RCV, grip };
+  const STR_AUTO = parseIntField(r.STR_AUTO ?? null, 1, 4);
+  const STR_COMP = parseIntField(r.STR_COMP ?? null, 1, 4);
+  const STR_REFL = parseIntField(r.STR_REFL ?? null, 1, 4);
+  const STR_AWARE = parseIntField(r.STR_AWARE ?? null, 1, 4);
+  const STR_BLOCK = parseIntField(r.STR_BLOCK ?? null, 1, 4);
+  const STR_CHARGE = parseIntField(r.STR_CHARGE ?? null, 1, 4);
+
+  return {
+    STR_FREQ,
+    STR_RCV,
+    grip,
+    STR_AUTO,
+    STR_COMP,
+    STR_REFL,
+    STR_AWARE,
+    STR_BLOCK,
+    STR_CHARGE,
+  };
 }
 
 function logSecurityEvent(
@@ -147,7 +170,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { STR_FREQ, STR_RCV, grip } = report;
+  const {
+    STR_FREQ,
+    STR_RCV,
+    grip,
+    STR_AUTO,
+    STR_COMP,
+    STR_REFL,
+    STR_AWARE,
+    STR_BLOCK,
+    STR_CHARGE,
+  } = report;
   const scored = { STR_FREQ, STR_RCV };
   const currentScore = stressScoreFromReport(scored);
 
@@ -166,7 +199,17 @@ export async function POST(request: NextRequest) {
     session_id: sessionId,
     organization_id: organizationId,
     domain_key: "stress_score",
-    raw_inputs: { STR_FREQ, STR_RCV, grip },
+    raw_inputs: {
+      STR_FREQ,
+      STR_RCV,
+      grip,
+      STR_AUTO,
+      STR_COMP,
+      STR_REFL,
+      STR_AWARE,
+      STR_BLOCK,
+      STR_CHARGE,
+    },
     score: { stress_score: currentScore },
     rules_version: RULES_VERSION,
   });

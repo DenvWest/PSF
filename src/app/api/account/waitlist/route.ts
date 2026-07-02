@@ -11,6 +11,7 @@ const FEATURES = [
   "statistieken",
   "lichaamssamenstelling",
   "beweging-coach",
+  "stress-coach",
 ] as const;
 type Feature = (typeof FEATURES)[number];
 

@@ -5,9 +5,12 @@ import Link from "next/link";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
 import {
+  STRESS_DEEP_QUESTIONS,
   STRESS_QUESTIONS,
   STRESS_REGIE_QUESTION,
+  stressDeepReflection,
 } from "@/data/stress-checkin";
+import type { StressDeepField } from "@/data/stress-checkin";
 import type { StressDimensionResult } from "@/lib/stress-assessment";
 import type { StressDirection } from "@/lib/stress-delta";
 
@@ -15,6 +18,12 @@ type StressReport = {
   STR_FREQ?: number;
   STR_RCV?: number;
   grip?: number;
+  STR_AUTO?: number;
+  STR_COMP?: number;
+  STR_REFL?: number;
+  STR_AWARE?: number;
+  STR_BLOCK?: number;
+  STR_CHARGE?: number;
 };
 
 type StressStart = {
@@ -47,6 +56,7 @@ type QuestionDef = {
 const ALL_QUESTIONS: QuestionDef[] = [
   ...STRESS_QUESTIONS,
   STRESS_REGIE_QUESTION,
+  ...STRESS_DEEP_QUESTIONS,
 ];
 
 const TOTAL = ALL_QUESTIONS.length;
@@ -99,6 +109,12 @@ export default function StressCheckin() {
             STR_FREQ: answers.STR_FREQ,
             STR_RCV: answers.STR_RCV,
             grip: answers.grip,
+            STR_AUTO: answers.STR_AUTO,
+            STR_COMP: answers.STR_COMP,
+            STR_REFL: answers.STR_REFL,
+            STR_AWARE: answers.STR_AWARE,
+            STR_BLOCK: answers.STR_BLOCK,
+            STR_CHARGE: answers.STR_CHARGE,
           },
           consent: true,
         }),
@@ -226,6 +242,17 @@ export default function StressCheckin() {
               {step.regie.reflection}
             </div>
           )}
+
+          <div className="mt-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
+            {stressDeepReflection({
+              STR_AUTO: answers.STR_AUTO as number | undefined,
+              STR_COMP: answers.STR_COMP as number | undefined,
+              STR_REFL: answers.STR_REFL as number | undefined,
+              STR_AWARE: answers.STR_AWARE as number | undefined,
+              STR_BLOCK: answers.STR_BLOCK as number | undefined,
+              STR_CHARGE: answers.STR_CHARGE as number | undefined,
+            } satisfies Partial<Record<StressDeepField, number>>)}
+          </div>
         </div>
       </div>
     );

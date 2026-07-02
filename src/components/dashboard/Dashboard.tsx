@@ -19,6 +19,7 @@ import {
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import BewegingScreen from "@/components/dashboard/BewegingScreen";
+import StressScreen from "@/components/dashboard/StressScreen";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
@@ -2658,7 +2659,7 @@ const VoedingScreen = ({ model, onBack }: { model: DashboardModel; onBack: () =>
                 Voeding
               </div>
               <p style={{ fontSize: 13.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: "6px 0 0", textWrap: "pretty" }}>
-                Producten en supplementen, objectief gekozen op kwaliteit — niet op commissie.
+                Stapsgewijs voeding optimaliseren.
               </p>
             </div>
           </div>
@@ -2788,6 +2789,9 @@ const KompasHome = ({ model }: SharedSectionProps) => {
 
   if (view === "beweging") {
     return <BewegingScreen model={currentModel} onBack={() => setView(null)} />;
+  }
+  if (view === "stress") {
+    return <StressScreen model={currentModel} onBack={() => setView(null)} />;
   }
   if (view === "voeding") {
     return <VoedingScreen model={currentModel} onBack={() => setView(null)} />;

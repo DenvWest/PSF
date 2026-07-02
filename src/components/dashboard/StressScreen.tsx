@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import VitalityGauge from "@/components/app/VitalityGauge";
@@ -8,8 +9,8 @@ import { Card } from "@/components/app/primitives";
 import WaitlistButton from "@/components/dashboard/WaitlistButton";
 import { PILLAR } from "@/data/dashboard";
 import {
-  buildMovementRecommendations,
-  getMovementNutritionHint,
+  buildStressRecommendations,
+  getStressNutritionHint,
 } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -24,39 +25,29 @@ const KOMPAS_LIGHT = {
   innerBg: "#faf9f7",
 } as const;
 
-const MOVEMENT_MODALITIES: {
+const RESET_TOOLS: {
   icon: string;
   label: string;
   href: string | null;
-  modality: string;
+  slug: string;
 }[] = [
   {
-    icon: "💪",
-    label: "Krachttraining",
-    href: "/blog/krachttraining-na-40",
-    modality: "krachttraining",
+    icon: "🫁",
+    label: "Ademhaling",
+    href: "/blog/ademhaling-tegen-stress",
+    slug: "ademhaling",
   },
   {
-    icon: "🚶",
-    label: "Stevig wandelen",
-    href: null,
-    modality: "wandelen",
+    icon: "🧭",
+    label: "Overgangsritueel",
+    href: "/blog/stress-werk-grenzen-stellen",
+    slug: "overgangsritueel",
   },
-  {
-    icon: "🛌",
-    label: "Rust & herstel",
-    href: "/herstel-verbeteren-na-40",
-    modality: "herstel",
-  },
-  {
-    icon: "❤️",
-    label: "Zone 2 cardio",
-    href: null,
-    modality: "zone2",
-  },
+  { icon: "👀", label: "Ogen ontspannen", href: null, slug: "ogen" },
+  { icon: "🌿", label: "Schermvrije reset", href: null, slug: "schermvrij" },
 ];
 
-const KompasLightPanel = ({ children }: { children: React.ReactNode }) => (
+const KompasLightPanel = ({ children }: { children: ReactNode }) => (
   <div className="-mt-3 overflow-hidden rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-5 shadow-[0_16px_48px_rgba(15,28,16,0.10)]">
     {children}
   </div>
@@ -69,7 +60,7 @@ const KompasSectionHeader = ({
 }: {
   eyebrow?: string;
   title?: string;
-  action?: React.ReactNode;
+  action?: ReactNode;
 }) => (
   <div
     style={{
@@ -163,7 +154,7 @@ const FooterLink = ({
   onClick,
 }: {
   href: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   onClick: () => void;
 }) => (
@@ -183,7 +174,9 @@ const FooterLink = ({
     }}
   >
     {icon}
-    <span style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
+    <span
+      style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}
+    >
       {label}
     </span>
     <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
@@ -204,7 +197,7 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   };
 }
 
-export default function BewegingScreen({
+export default function StressScreen({
   model,
   onBack,
 }: {
@@ -213,28 +206,22 @@ export default function BewegingScreen({
 }) {
   const premiumShownRef = useRef(false);
   const coachShownRef = useRef(false);
-  const pillar = PILLAR.beweging;
+  const pillar = PILLAR.stress;
   const session = sessionFromModel(model);
-  const nutritionHint = getMovementNutritionHint(session);
-  const recommendations = buildMovementRecommendations(session);
-  const showActiveStep =
-    model.activeHabit?.domain === "movement" && model.activeHabit.title;
+  const nutritionHint = getStressNutritionHint(session);
+  const recommendations = buildStressRecommendations(session);
 
   useEffect(() => {
-    if (premiumShownRef.current) {
-      return;
-    }
+    if (premiumShownRef.current) return;
     premiumShownRef.current = true;
-    trackEvent("dashboard_beweging_premium_upsell", { surface: "kompas_beweging" });
-    clarityTag("dashboard_beweging_premium", "shown");
+    trackEvent("dashboard_stress_premium_upsell", { surface: "kompas_stress" });
+    clarityTag("dashboard_stress_premium", "shown");
   }, []);
 
   useEffect(() => {
-    if (coachShownRef.current) {
-      return;
-    }
+    if (coachShownRef.current) return;
     coachShownRef.current = true;
-    trackEvent("dashboard_beweging_coach_waitlist_shown", { surface: "kompas_beweging" });
+    trackEvent("dashboard_stress_coach_waitlist_shown", { surface: "kompas_stress" });
   }, []);
 
   return (
@@ -245,8 +232,8 @@ export default function BewegingScreen({
         <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <VitalityGauge
-              value={model.scores.beweging ?? 0}
-              label="Beweging"
+              value={model.scores.stress ?? 0}
+              label="Stress"
               size={86}
               stroke={8}
               compact
@@ -264,17 +251,12 @@ export default function BewegingScreen({
                   marginBottom: 6,
                 }}
               >
-                Kracht &amp; conditie
+                Ritme &amp; reset
               </div>
               <div
-                style={{
-                  fontFamily: "var(--f-serif)",
-                  fontSize: 25,
-                  color: KOMPAS_LIGHT.text,
-                  lineHeight: 1.1,
-                }}
+                style={{ fontFamily: "var(--f-serif)", fontSize: 25, color: KOMPAS_LIGHT.text, lineHeight: 1.1 }}
               >
-                Beweging
+                Stress
               </div>
               <p
                 style={{
@@ -285,22 +267,22 @@ export default function BewegingScreen({
                   textWrap: "pretty",
                 }}
               >
-                Stapsgewijs kracht en conditie opbouwen.
+                Stapsgewijs stress reguleren.
               </p>
             </div>
           </div>
         </Card>
 
         <Link
-          href="/intake/beweging?from=dashboard"
+          href="/intake/stress?from=dashboard"
           onClick={() => {
-            trackEvent("dashboard_beweging_checkin_click", { surface: "kompas_beweging" });
-            clarityTag("dashboard_beweging_checkin", "click");
+            trackEvent("dashboard_stress_checkin_click", { surface: "kompas_stress" });
+            clarityTag("dashboard_stress_checkin", "click");
           }}
           style={{
             display: "flex",
-            flexDirection: "column",
-            gap: 6,
+            alignItems: "center",
+            gap: 12,
             padding: "14px 16px",
             borderRadius: 16,
             border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
@@ -309,30 +291,123 @@ export default function BewegingScreen({
             color: "inherit",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Icons.Activity s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
-            <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
-              Doe de beweegcheck (1 min)
-            </span>
-            <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
-          </div>
-          {showActiveStep ? (
-            <p
-              style={{
-                fontSize: 13,
-                color: KOMPAS_LIGHT.muted,
-                lineHeight: 1.45,
-                margin: "0 0 0 30px",
-                textWrap: "pretty",
-              }}
-            >
-              Actieve stap: {model.activeHabit?.title}
-            </p>
-          ) : null}
+          <Icons.Wind s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
+          <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
+            Doe de stress-check (1 min)
+          </span>
+          <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
         </Link>
 
+        <section aria-label="Leefstijl eerst">
+          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Korte herstelmomenten" />
+          <Card pad={18} surface="light">
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div
+                style={{
+                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+                  borderRadius: 14,
+                  padding: "12px 14px",
+                  background: KOMPAS_LIGHT.innerBg,
+                }}
+              >
+                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
+                  Fysiologische zucht
+                </div>
+                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
+                  2 korte neusinhalingen + 1 lange uitademing, 3 tot 5 rondes.
+                </div>
+                <Link
+                  href="/blog/ademhaling-tegen-stress"
+                  onClick={() => {
+                    trackEvent("dashboard_stress_breathing_click", {
+                      surface: "kompas_stress",
+                    });
+                  }}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 3,
+                    marginTop: 8,
+                    textDecoration: "none",
+                    fontSize: 12.5,
+                    color: "var(--sage)",
+                    fontWeight: 600,
+                  }}
+                >
+                  Ademhaling uitleg <Icons.ChevronRight s={14} />
+                </Link>
+              </div>
+              <div
+                style={{
+                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+                  borderRadius: 14,
+                  padding: "12px 14px",
+                  background: KOMPAS_LIGHT.innerBg,
+                }}
+              >
+                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
+                  Lang uitademen
+                </div>
+                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
+                  4 seconden in, 8 seconden uit, 2 minuten.
+                </div>
+              </div>
+              <div
+                style={{
+                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+                  borderRadius: 14,
+                  padding: "12px 14px",
+                  background: KOMPAS_LIGHT.innerBg,
+                }}
+              >
+                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
+                  Ogen ontspannen
+                </div>
+                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
+                  Kijk 20 seconden ver weg om je focus en spanning te resetten.
+                </div>
+              </div>
+              <div
+                style={{
+                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+                  borderRadius: 14,
+                  padding: "12px 14px",
+                  background: KOMPAS_LIGHT.innerBg,
+                }}
+              >
+                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
+                  Overgangsritueel
+                </div>
+                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
+                  Telefoon weg, 1 minuut ademhaling, en bewust afronden: werk is klaar.
+                </div>
+                <Link
+                  href="/blog/stress-werk-grenzen-stellen"
+                  onClick={() => {
+                    trackEvent("dashboard_stress_ritueel_click", {
+                      surface: "kompas_stress",
+                    });
+                  }}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 3,
+                    marginTop: 8,
+                    textDecoration: "none",
+                    fontSize: 12.5,
+                    color: "var(--sage)",
+                    fontWeight: 600,
+                  }}
+                >
+                  Grenzen na werk <Icons.ChevronRight s={14} />
+                </Link>
+              </div>
+            </div>
+          </Card>
+        </section>
+
         <section aria-label="Voeding en supplementen">
-          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Voeding & supplementen" />
+          <KompasSectionHeader eyebrow="Ondersteunend" title="Voeding & supplementen" />
           <Card pad={18} surface="light">
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
@@ -346,7 +421,7 @@ export default function BewegingScreen({
                     marginBottom: 8,
                   }}
                 >
-                  Voeding optimaliseren
+                  Eerst je basis
                 </div>
                 <p
                   style={{
@@ -362,8 +437,8 @@ export default function BewegingScreen({
                 <Link
                   href="/intake/voeding?from=dashboard"
                   onClick={() => {
-                    trackEvent("dashboard_beweging_voeding_click", { surface: "kompas_beweging" });
-                    clarityTag("dashboard_beweging_voeding", "click");
+                    trackEvent("dashboard_stress_voeding_click", { surface: "kompas_stress" });
+                    clarityTag("dashboard_stress_voeding", "click");
                   }}
                   style={{
                     display: "inline-flex",
@@ -379,12 +454,7 @@ export default function BewegingScreen({
                 </Link>
               </div>
 
-              <div
-                style={{
-                  borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                  paddingTop: 14,
-                }}
-              >
+              <div style={{ borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`, paddingTop: 14 }}>
                 <div
                   style={{
                     fontSize: 12,
@@ -395,7 +465,7 @@ export default function BewegingScreen({
                     marginBottom: 10,
                   }}
                 >
-                  Supplementen — als je basis staat
+                  Supplementen — als je ritme staat
                 </div>
                 {recommendations.length > 0 ? (
                   <div style={{ display: "flex", flexDirection: "column" }}>
@@ -406,12 +476,12 @@ export default function BewegingScreen({
                           key={rec.slug}
                           href={href}
                           onClick={() => {
-                            trackEvent("dashboard_beweging_supplement_click", {
+                            trackEvent("dashboard_stress_supplement_click", {
                               slug: rec.slug,
                               target: href,
-                              surface: "kompas_beweging",
+                              surface: "kompas_stress",
                             });
-                            clarityTag("dashboard_beweging_supplement", rec.slug);
+                            clarityTag("dashboard_stress_supplement", rec.slug);
                           }}
                           style={{
                             display: "flex",
@@ -490,7 +560,7 @@ export default function BewegingScreen({
                       textWrap: "pretty",
                     }}
                   >
-                    Geen supplement-signalen — focus eerst op voeding en je plan.
+                    Eerst ritme en herstelmomenten. Supplementen voeg je pas toe als basisstappen staan.
                   </p>
                 )}
               </div>
@@ -498,17 +568,17 @@ export default function BewegingScreen({
           </Card>
         </section>
 
-        <section aria-label="Bewegingsvormen">
-          <KompasSectionHeader eyebrow="Opbouw" title="Bewegingsvormen" action={<SoonPill />} />
+        <section aria-label="Reset tools">
+          <KompasSectionHeader eyebrow="Reset tools" title="Voor drukke dagen" action={<SoonPill />} />
           <Card pad={18} surface="light">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
-              {MOVEMENT_MODALITIES.map((item) => {
+              {RESET_TOOLS.map((tool) => {
                 const inner = (
                   <>
                     <span style={{ fontSize: 22 }} aria-hidden>
-                      {item.icon}
+                      {tool.icon}
                     </span>
-                    <span style={{ fontSize: 14.5, color: KOMPAS_LIGHT.text }}>{item.label}</span>
+                    <span style={{ fontSize: 14.5, color: KOMPAS_LIGHT.text }}>{tool.label}</span>
                   </>
                 );
                 const boxStyle = {
@@ -522,15 +592,15 @@ export default function BewegingScreen({
                   textDecoration: "none" as const,
                   color: "inherit" as const,
                 };
-                if (item.href) {
+                if (tool.href) {
                   return (
                     <Link
-                      key={item.modality}
-                      href={item.href}
+                      key={tool.slug}
+                      href={tool.href}
                       onClick={() => {
-                        trackEvent("dashboard_beweging_modality_click", {
-                          modality: item.modality,
-                          target: item.href ?? "",
+                        trackEvent("dashboard_stress_ritueel_click", {
+                          tool: tool.slug,
+                          target: tool.href ?? "",
                         });
                       }}
                       style={boxStyle}
@@ -540,7 +610,7 @@ export default function BewegingScreen({
                   );
                 }
                 return (
-                  <div key={item.modality} style={boxStyle}>
+                  <div key={tool.slug} style={boxStyle}>
                     {inner}
                   </div>
                 );
@@ -549,7 +619,7 @@ export default function BewegingScreen({
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
               <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
               <span style={{ fontSize: 12.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5 }}>
-                Binnenkort: protocollen en oefeningen objectief vergeleken.
+                Binnenkort: stressroutines die je aan je dag kunt koppelen, zonder extra app-gedoe.
               </span>
             </div>
           </Card>
@@ -572,14 +642,9 @@ export default function BewegingScreen({
               Begeleiding
             </div>
             <div
-              style={{
-                fontFamily: "var(--f-serif)",
-                fontSize: 21,
-                color: KOMPAS_LIGHT.text,
-                lineHeight: 1.2,
-              }}
+              style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}
             >
-              Plan-coach inplannen
+              Stress-coach inplannen
             </div>
             <p
               style={{
@@ -590,12 +655,12 @@ export default function BewegingScreen({
                 textWrap: "pretty",
               }}
             >
-              Persoonlijke begeleiding bij je opbouw — kracht, conditie en herstel in één lijn. We
-              bouwen dit in de app; meld je aan voor de wachtlijst.
+              Werk met iemand die je helpt je ritme en grenzen vol te houden. Meld je aan voor
+              de wachtlijst.
             </p>
             <WaitlistButton
-              feature="beweging-coach"
-              surface="kompas_beweging"
+              feature="stress-coach"
+              surface="kompas_stress"
               label="Zet me op de wachtlijst"
             />
           </div>
@@ -618,14 +683,9 @@ export default function BewegingScreen({
               <Icons.Lock s={14} /> Premium · app
             </div>
             <div
-              style={{
-                fontFamily: "var(--f-serif)",
-                fontSize: 21,
-                color: KOMPAS_LIGHT.text,
-                lineHeight: 1.2,
-              }}
+              style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}
             >
-              Trainingslog in de app
+              Stresslog in de app
             </div>
             <p
               style={{
@@ -636,27 +696,27 @@ export default function BewegingScreen({
                 textWrap: "pretty",
               }}
             >
-              Houd volume, zwaarte en herstel bij — en koppel het aan je plan-coach. De app komt
-              later; premium houdt alles in één plek.
+              Log triggers, herstelmomenten en je avond-afbouw. Zo zie je wat werkt voordat stress
+              zich opstapelt.
             </p>
             <SoonPill />
           </div>
         </Card>
 
         <FooterLink
-          href="/intake/plan/movement?from=dashboard"
+          href="/intake/plan/stress?from=dashboard"
           icon={<Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Je bewegingsplan"
+          label="Je stressplan"
           onClick={() => {
-            trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging" });
+            trackEvent("dashboard_stress_plan_click", { surface: "kompas_stress" });
           }}
         />
         <FooterLink
-          href="/gids/beweging"
+          href="/gids/stress"
           icon={<Icons.Mail s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Gratis Bewegingsgids"
+          label="Gratis Stressgids"
           onClick={() => {
-            trackEvent("dashboard_beweging_gids_click", { surface: "kompas_beweging" });
+            trackEvent("dashboard_stress_gids_click", { surface: "kompas_stress" });
           }}
         />
         <FooterLink
@@ -664,7 +724,7 @@ export default function BewegingScreen({
           icon={<Icons.BookOpen s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
           label="Leefstijl & inzichten"
           onClick={() => {
-            trackEvent("dashboard_beweging_leefstijl_click", { surface: "kompas_beweging" });
+            trackEvent("dashboard_stress_leefstijl_click", { surface: "kompas_stress" });
           }}
         />
       </div>

@@ -1,5 +1,12 @@
 export type StressDimensionKey = "spanning" | "herstel";
 export type StressBand = "aandacht" | "redelijk" | "sterk";
+export type StressDeepField =
+  | "STR_AUTO"
+  | "STR_COMP"
+  | "STR_REFL"
+  | "STR_AWARE"
+  | "STR_BLOCK"
+  | "STR_CHARGE";
 
 export type StressQuestion = {
   field: "STR_FREQ" | "STR_RCV";
@@ -48,6 +55,75 @@ export const STRESS_REGIE_QUESTION = {
   ],
 };
 
+export const STRESS_DEEP_QUESTIONS: {
+  field: StressDeepField;
+  question: string;
+  options: { label: string; value: number }[];
+}[] = [
+  {
+    field: "STR_AUTO",
+    question:
+      "Als je merkt dat stress opbouwt, voel je dan dat je daar zelf invloed op hebt?",
+    options: [
+      { label: "Ik weet goed hoe ik mijn spanning kan verlagen", value: 4 },
+      { label: "Meestal lukt dat wel", value: 3 },
+      { label: "Soms, maar vaak ook niet", value: 2 },
+      { label: "Nee, stress overkomt me meestal", value: 1 },
+    ],
+  },
+  {
+    field: "STR_COMP",
+    question:
+      "Hoeveel vertrouwen heb je dat je ook op drukke dagen een gezonde gewoonte kunt volhouden?",
+    options: [
+      { label: "Heel veel vertrouwen", value: 4 },
+      { label: "Redelijk veel", value: 3 },
+      { label: "Beperkt", value: 2 },
+      { label: "Nauwelijks", value: 1 },
+    ],
+  },
+  {
+    field: "STR_REFL",
+    question: "Wat gebeurt er meestal als jij veel stress ervaart?",
+    options: [
+      { label: "Ik zoek bewust herstel", value: 4 },
+      { label: "Ik blijf doorgaan", value: 3 },
+      { label: "Ik stel gezonde keuzes uit", value: 2 },
+      { label: "Ik weet eigenlijk niet goed wat er gebeurt", value: 1 },
+    ],
+  },
+  {
+    field: "STR_AWARE",
+    question: "Hoe vaak merk je pas achteraf dat je eigenlijk te gespannen was?",
+    options: [
+      { label: "Bijna nooit", value: 4 },
+      { label: "Soms", value: 3 },
+      { label: "Regelmatig", value: 2 },
+      { label: "Heel vaak", value: 1 },
+    ],
+  },
+  {
+    field: "STR_BLOCK",
+    question: "Wat houdt je het vaakst tegen om een paar minuten voor jezelf te nemen?",
+    options: [
+      { label: "Ik vergeet het", value: 4 },
+      { label: "Ik heb geen tijd", value: 3 },
+      { label: "Ik voel me schuldig als ik niets doe", value: 2 },
+      { label: "Ik weet niet goed wat helpt", value: 1 },
+    ],
+  },
+  {
+    field: "STR_CHARGE",
+    question: "Wanneer voelde je je voor het laatst echt opgeladen?",
+    options: [
+      { label: "Vandaag", value: 4 },
+      { label: "Afgelopen week", value: 3 },
+      { label: "Afgelopen maand", value: 2 },
+      { label: "Dat kan ik me nauwelijks herinneren", value: 1 },
+    ],
+  },
+];
+
 // Gedrag/beleving tegen jezelf — nooit norm/status.
 export const STRESS_STATEMENTS: Record<StressDimensionKey, Record<StressBand, string>> = {
   spanning: {
@@ -90,4 +166,18 @@ export function regieReflection(grip: number): string {
   if (grip === 3)
     return "Je bent op weg. De stappen die je koos maken je grip stap voor stap groter.";
   return "Mooi — je pakt dit zelf op. Houd vast wat voor jou werkt.";
+}
+
+export function stressDeepReflection(values: Partial<Record<StressDeepField, number>>): string {
+  const autonomy = values.STR_AUTO ?? 3;
+  const competence = values.STR_COMP ?? 3;
+  const charge = values.STR_CHARGE ?? 3;
+
+  if (autonomy <= 2 || competence <= 2) {
+    return "Je winst zit nu in simpele, vaste rituelen. Kies 1 resetmoment dat elke dag terugkomt.";
+  }
+  if (charge <= 2) {
+    return "Je herstelvoorraad is laag. Plan deze week bewust twee avonden met minder prikkels.";
+  }
+  return "Je basis is sterk. Veranker je ritme met vaste overgangsmomenten zodat stress minder opstapelt.";
 }
