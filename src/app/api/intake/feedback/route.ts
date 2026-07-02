@@ -7,6 +7,10 @@ import { getClientIp } from "@/lib/turnstile-verify";
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 import { getPrimaryTheme } from "@/lib/primary-theme";
 import { emitEvent } from "@/lib/events";
+import {
+  INTAKE_SESSION_COOKIE_NAME,
+  verifySignedIntakeSessionCookie,
+} from "@/lib/intake-session-cookie";
 
 function toUuidOrNull(value: string | null | undefined): string | null {
   if (value == null || value === "") {
@@ -61,6 +65,20 @@ export async function POST(request: NextRequest) {
   }
 
   const bodyRecord = body as Record<string, unknown>;
+  const cookieSessionId = verifySignedIntakeSessionCookie(
+    request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value,
+  );
+  const bodySessionId = toUuidOrNull(
+    typeof bodyRecord.sessionId === "string" ? bodyRecord.sessionId : null,
+  );
+  if (cookieSessionId && bodySessionId && bodySessionId !== cookieSessionId) {
+    logSecurityEvent("session_mismatch", { remoteIp: clientIp });
+    return NextResponse.json(
+      { error: "Sessie komt niet overeen." },
+      { status: 403 },
+    );
+  }
+  const sessionId = cookieSessionId ?? null;
   const website = normalizeSingleLine(bodyRecord.website);
 
   if (website) {
@@ -76,9 +94,6 @@ export async function POST(request: NextRequest) {
   const commentRaw = bodyRecord.comment;
   const comment =
     typeof commentRaw === "string" ? commentRaw.trim().slice(0, 500) : "";
-  const sessionId = toUuidOrNull(
-    typeof bodyRecord.sessionId === "string" ? bodyRecord.sessionId : null,
-  );
 
   const admin = createSupabaseAdmin();
   if (!admin) {

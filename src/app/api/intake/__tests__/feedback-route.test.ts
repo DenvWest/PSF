@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NextRequest } from "next/server";
 
 // ---------------------------------------------------------------------------
 // Module mocks
@@ -36,6 +37,10 @@ vi.mock("@/lib/intake-session-server", () => ({
 vi.mock("@/lib/primary-theme", () => ({
   getPrimaryTheme: mockGetPrimaryTheme,
 }));
+vi.mock("@/lib/intake-session-cookie", () => ({
+  INTAKE_SESSION_COOKIE_NAME: "psf_intake_sid",
+  verifySignedIntakeSessionCookie: (raw?: string) => (raw ? raw : null),
+}));
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -57,10 +62,17 @@ const MOCK_SESSION = {
   answers: {},
 };
 
-function makeRequest(body: Record<string, unknown>): Request {
-  return new Request("http://localhost/api/intake/feedback", {
+function makeRequest(
+  body: Record<string, unknown>,
+  cookieSid?: string,
+): NextRequest {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (cookieSid) headers.cookie = `psf_intake_sid=${cookieSid}`;
+  return new NextRequest("http://localhost/api/intake/feedback", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(body),
   });
 }
@@ -90,8 +102,7 @@ describe("POST /api/intake/feedback — profile.recognition event", () => {
       makeRequest({
         rating: "positive",
         comment: "Heel herkenbaar — dit is PII",
-        sessionId: VALID_SESSION_ID,
-      }) as Parameters<typeof POST>[0],
+      }, VALID_SESSION_ID),
     );
 
     expect(res.status).toBe(200);
@@ -114,9 +125,7 @@ describe("POST /api/intake/feedback — profile.recognition event", () => {
   it("sessionId null → emitEvent NIET aangeroepen, response 200", async () => {
     const { POST } = await import("@/app/api/intake/feedback/route");
 
-    const res = await POST(
-      makeRequest({ rating: "negative" }) as Parameters<typeof POST>[0],
-    );
+    const res = await POST(makeRequest({ rating: "negative" }));
 
     expect(res.status).toBe(200);
     expect(mockEmitEvent).not.toHaveBeenCalled();
@@ -131,8 +140,7 @@ describe("POST /api/intake/feedback — profile.recognition event", () => {
     const res = await POST(
       makeRequest({
         rating: "positive",
-        sessionId: VALID_SESSION_ID,
-      }) as Parameters<typeof POST>[0],
+      }, VALID_SESSION_ID),
     );
 
     expect(res.status).toBe(200);
@@ -150,8 +158,7 @@ describe("POST /api/intake/feedback — profile.recognition event", () => {
     const res = await POST(
       makeRequest({
         rating: "positive",
-        sessionId: VALID_SESSION_ID,
-      }) as Parameters<typeof POST>[0],
+      }, VALID_SESSION_ID),
     );
 
     expect(res.status).toBe(200);
@@ -161,5 +168,38 @@ describe("POST /api/intake/feedback — profile.recognition event", () => {
     );
 
     errorSpy.mockRestore();
+  });
+
+  it("cookie sessie A + body sessie B (mismatch) → 403, geen insert, geen emit", async () => {
+    const OTHER_ID = "11111111-1111-4111-8111-111111111111";
+    const { POST } = await import("@/app/api/intake/feedback/route");
+
+    const res = await POST(
+      makeRequest(
+        { rating: "positive", sessionId: OTHER_ID },
+        VALID_SESSION_ID,
+      ),
+    );
+
+    expect(res.status).toBe(403);
+    expect(mockInsert).not.toHaveBeenCalled();
+    expect(mockEmitEvent).not.toHaveBeenCalled();
+  });
+
+  it("body sessionId zónder cookie → anoniem opgeslagen (session_id null), geen emit", async () => {
+    const { POST } = await import("@/app/api/intake/feedback/route");
+
+    const res = await POST(
+      makeRequest({ rating: "positive", sessionId: VALID_SESSION_ID }),
+    );
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledOnce();
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        session_id: null,
+      }),
+    );
+    expect(mockEmitEvent).not.toHaveBeenCalled();
   });
 });
