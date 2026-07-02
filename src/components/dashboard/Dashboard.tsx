@@ -19,6 +19,7 @@ import {
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import BewegingScreen from "@/components/dashboard/BewegingScreen";
+import DomainTopNav from "@/components/dashboard/DomainTopNav";
 import SleepScreen from "@/components/dashboard/SleepScreen";
 import StressScreen from "@/components/dashboard/StressScreen";
 import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
@@ -2604,17 +2605,14 @@ const KompasSoonScreen = ({
 const DomainSoonScreen = ({
   model,
   domain,
-  onBack,
 }: {
   model: DashboardModel;
   domain: PillarId;
-  onBack: () => void;
 }) => {
   const pillar = PILLAR[domain];
   return (
     <KompasLightPanel className="-mt-3 p-5">
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <DomainBackBar onBack={onBack} />
         <Card pad={24} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 14 }}>
             <VitalityGauge value={model.scores[domain] ?? 0} label={pillar.label} size={120} stroke={10} compact showBandLabel={false} theme="light" />
@@ -2933,6 +2931,43 @@ const KompasHome = ({ model }: SharedSectionProps) => {
     navigateKompas(null, "push");
   };
 
+  const handleDomainBack = () => {
+    if (!domainView) {
+      return;
+    }
+    trackEvent("dashboard_kompas_domain_back_click", { from_domain: domainView });
+    clarityTag("dashboard_kompas_topnav", "back");
+    closeView();
+  };
+
+  const handleDomainSwitch = (toDomain: PillarId) => {
+    if (!domainView || toDomain === domainView) {
+      return;
+    }
+    trackEvent("dashboard_kompas_domain_switch_click", {
+      from_domain: domainView,
+      to_domain: toDomain,
+      surface: "top_nav",
+    });
+    clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
+    setOverlayView(null);
+    navigateKompas(toDomain, "replace");
+  };
+
+  const withDomainTopNav = (content: ReactElement) =>
+    domainView ? (
+      <div className="-mt-0.5 flex flex-col gap-3.5">
+        <DomainTopNav
+          activeDomain={domainView}
+          onBack={handleDomainBack}
+          onSwitch={handleDomainSwitch}
+        />
+        {content}
+      </div>
+    ) : (
+      content
+    );
+
   const openActiviteiten = () => {
     trackEvent("dashboard_kompas_activiteiten_open", { surface: "kompas_home" });
     clarityTag("dashboard_kompas_view", "activiteiten");
@@ -2946,19 +2981,19 @@ const KompasHome = ({ model }: SharedSectionProps) => {
   };
 
   if (domainView === "beweging") {
-    return <BewegingScreen model={currentModel} />;
+    return withDomainTopNav(<BewegingScreen model={currentModel} />);
   }
   if (domainView === "stress") {
-    return <StressScreen model={currentModel} />;
+    return withDomainTopNav(<StressScreen model={currentModel} />);
   }
   if (domainView === "slaap") {
-    return <SleepScreen model={currentModel} />;
+    return withDomainTopNav(<SleepScreen model={currentModel} />);
   }
   if (domainView === "voeding") {
-    return <VoedingScreen model={currentModel} />;
+    return withDomainTopNav(<VoedingScreen model={currentModel} />);
   }
   if (domainView === "verbinding") {
-    return <VerbindingScreen model={currentModel} />;
+    return withDomainTopNav(<VerbindingScreen model={currentModel} />);
   }
   if (overlayView === "activiteiten") {
     return (
@@ -2981,12 +3016,8 @@ const KompasHome = ({ model }: SharedSectionProps) => {
     );
   }
   if (domainView) {
-    return (
-      <DomainSoonScreen
-        model={currentModel}
-        domain={domainView}
-        onBack={closeView}
-      />
+    return withDomainTopNav(
+      <DomainSoonScreen model={currentModel} domain={domainView} />,
     );
   }
 
