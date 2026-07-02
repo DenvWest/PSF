@@ -14,6 +14,7 @@ const FEATURES = [
   "beweging-coach",
   "stress-coach",
   "slaap-coach",
+  "verbinding-coach",
 ] as const;
 type Feature = (typeof FEATURES)[number];
 

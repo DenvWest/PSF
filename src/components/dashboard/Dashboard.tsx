@@ -21,6 +21,7 @@ import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import BewegingScreen from "@/components/dashboard/BewegingScreen";
 import SleepScreen from "@/components/dashboard/SleepScreen";
 import StressScreen from "@/components/dashboard/StressScreen";
+import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
 import WaitlistButton from "@/components/dashboard/WaitlistButton";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
@@ -2955,6 +2956,9 @@ const KompasHome = ({ model }: SharedSectionProps) => {
   }
   if (domainView === "voeding") {
     return <VoedingScreen model={currentModel} />;
+  }
+  if (domainView === "verbinding") {
+    return <VerbindingScreen model={currentModel} />;
   }
   if (overlayView === "activiteiten") {
     return (
