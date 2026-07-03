@@ -47,8 +47,8 @@ export default function RevealVitalityInstrument({
           size={size}
           stroke={stroke}
           variant="hero"
-          theme="dark"
-          tone="dark"
+          theme="light"
+          tone="light"
           showBandLabel
           heroDisc="kompas"
           heroRingInset={4}
