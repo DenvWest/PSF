@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import VitalityGauge from "@/components/app/VitalityGauge";
+import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
 import WaitlistButton from "@/components/dashboard/WaitlistButton";
@@ -124,15 +124,7 @@ export default function VerbindingScreen({
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <VitalityGauge
-              value={model.scores.verbinding ?? 0}
-              label="Verbinding"
-              size={86}
-              stroke={8}
-              compact
-              showBandLabel={false}
-              theme="light"
-            />
+            <KompasDomainGauge value={model.scores.verbinding ?? 0} label="Verbinding" />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{

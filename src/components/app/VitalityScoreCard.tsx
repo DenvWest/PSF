@@ -175,7 +175,7 @@ export default function VitalityScoreCard({
       }`}
     >
       <div className="px-6 pb-6 pt-7 sm:px-8 sm:pb-8 sm:pt-9">
-        <div className="flex justify-center">
+        <div className="vitaalscore-card__gauge-zone -mx-6 sm:-mx-8">
           <VitalityGauge
             value={value}
             locked={locked}
@@ -191,26 +191,29 @@ export default function VitalityScoreCard({
 
         <div className="mt-2 text-center sm:mt-3">
           <h2
-            className={`m-0 text-[26px] leading-[1.12] sm:text-[30px] ${dark ? "text-white" : "text-[#1c1917]"}`}
+            className={`m-0 text-[28px] leading-[1.1] sm:text-[32px] ${dark ? "text-white" : "text-[#1c1917]"}`}
             style={{ fontFamily: "var(--f-serif, Georgia, serif)", fontWeight: 400 }}
           >
             {heading}
           </h2>
           <p
-            className={`mx-auto mt-3.5 max-w-[340px] text-[15px] font-medium leading-relaxed sm:text-[16px] ${
+            className={`mx-auto mt-3.5 max-w-[360px] text-[15px] font-medium leading-[1.65] sm:text-[15px] ${
               dark ? "text-white/70" : "text-[#44403c]"
             }`}
           >
             {body}
           </p>
           {bandHint ? (
-            <p
-              className={`mx-auto mt-2 max-w-[340px] text-[13px] font-semibold leading-snug ${
-                dark ? "text-[#9BC9A8]" : "text-[#5A8F6A]"
-              }`}
-            >
-              {bandHint}
-            </p>
+            <div className="vitaalscore-card__band-hint">
+              <span className="vitaalscore-card__band-hint-pill">
+                <span
+                  className="vitaalscore-card__band-hint-dot"
+                  style={{ background: band.color }}
+                  aria-hidden
+                />
+                {bandHint}
+              </span>
+            </div>
           ) : null}
 
           {locked && (onCta || ctaHref) ? (

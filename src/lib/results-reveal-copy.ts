@@ -19,6 +19,7 @@ export const REVEAL_COPY = {
   dashboardTeaseLead: "Na inloggen staat dit in je dashboard.",
   dashboardMockLabel: "Jouw dashboard",
   dashboardScoreStartHint: "start",
+  vitalityScoreEyebrow: "Je vitaliteitsscore",
   profileEyebrow: "JOUW STARTPROFIEL",
   profileStepTitle: "Waar je nu staat",
   startStepTitle: "Waar je begint — en je eerste stap",

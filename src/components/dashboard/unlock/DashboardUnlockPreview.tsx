@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import PriorityLadder, { LADDER_ROW_H } from "@/components/app/PriorityLadder";
-import VitalityRing from "@/components/app/VitalityRing";
+import VitalityGauge from "@/components/app/VitalityGauge";
 import { Lock } from "@/components/app/icons";
 import {
   DASHBOARD_UNLOCK_LOCKED_FEATURES,
@@ -47,17 +47,23 @@ export default function DashboardUnlockPreview() {
         <div className="space-y-3 p-3 sm:space-y-4 sm:p-4 md:p-5">
           <div className="flex flex-col items-center gap-2.5 rounded-2xl border border-[rgba(90,143,106,0.22)] bg-[rgba(255,255,255,0.03)] px-3 py-3.5 sm:gap-3 sm:px-4 sm:py-5">
             <div className="sm:hidden">
-              <VitalityRing
+              <VitalityGauge
                 value={DASHBOARD_UNLOCK_PREVIEW.vitality}
                 size={100}
-                stroke={10}
+                stroke={12}
+                compact
+                showBandLabel
+                theme="light"
               />
             </div>
             <div className="hidden sm:block">
-              <VitalityRing
+              <VitalityGauge
                 value={DASHBOARD_UNLOCK_PREVIEW.vitality}
                 size={120}
-                stroke={11}
+                stroke={14}
+                compact
+                showBandLabel
+                theme="light"
               />
             </div>
             <p

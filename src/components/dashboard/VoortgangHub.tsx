@@ -506,10 +506,10 @@ function VitaalscoreInzichtenView({
       <VoortgangSubHeader title="Jouw inzichten" onBack={onBack} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className="vitaalscore-card__gauge-zone" style={{ marginInline: -8 }}>
           <VitalityGauge
             value={model.vitality}
-            size={260}
+            size={300}
             stroke={18}
             variant="hero"
             theme="light"

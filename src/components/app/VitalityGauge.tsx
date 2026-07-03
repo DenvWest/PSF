@@ -187,7 +187,7 @@ export default function VitalityGauge({
     const tickInner = r - heroStroke / 2 - 1;
     const tickOuter = r + heroStroke / 2 + 1;
     const zoneBoundaryScores = VITALITY_BANDS.slice(1).map((segment) => segment.min);
-    const tickZoneColor = dark ? "rgba(255,255,255,0.5)" : "rgba(24,38,28,0.34)";
+    const tickZoneColor = dark ? "rgba(255,255,255,0.48)" : "rgba(24,38,28,0.32)";
     const innerHighlightId = `${innerGradientId}-hi`;
     const innerShadowId = `${innerGradientId}-sh`;
     const innerRimId = `${innerGradientId}-rim`;
@@ -202,13 +202,17 @@ export default function VitalityGauge({
       }
       const segEnd = nextMin ?? VITALITY_SCORE_MAX;
       if (clamped >= segEnd) {
-        return 0.98;
+        return 0.97;
       }
       if (clamped >= segmentMin) {
-        return 0.88;
+        return 0.9;
       }
-      return dark ? 0.42 : 0.52;
+      return dark ? 0.4 : 0.48;
     }
+
+    const ambientFieldId = `${fillGradientId}-ambient`;
+    const dotFilterId = `${fillGradientId}-dot`;
+    const ambientColor = locked ? "#5A8F6A" : band.color;
 
     return (
       <div
@@ -265,11 +269,25 @@ export default function VitalityGauge({
                 </>
               )}
               <radialGradient id={glowGradientId} cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor={dark ? "rgba(90,143,106,0.32)" : "rgba(90,143,106,0.22)"} />
+                <stop offset="0%" stopColor={dark ? "rgba(90,143,106,0.28)" : "rgba(90,143,106,0.18)"} />
                 <stop offset="100%" stopColor="rgba(90,143,106,0)" />
               </radialGradient>
+              <radialGradient id={ambientFieldId} cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={ambientColor} stopOpacity={dark ? 0.14 : 0.09} />
+                <stop offset="65%" stopColor={ambientColor} stopOpacity={dark ? 0.05 : 0.03} />
+                <stop offset="100%" stopColor={ambientColor} stopOpacity={0} />
+              </radialGradient>
+              <filter id={dotFilterId} x="-120%" y="-120%" width="340%" height="340%">
+                <feDropShadow
+                  dx="0"
+                  dy="1"
+                  stdDeviation="3.5"
+                  floodColor={locked ? "#5A8F6A" : band.color}
+                  floodOpacity="0.55"
+                />
+              </filter>
               <filter id={`${fillGradientId}-glow`} x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation={dark ? "5.5" : "3.5"} result="blur" />
+                <feGaussianBlur stdDeviation={dark ? "5" : "3.5"} result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
@@ -280,40 +298,43 @@ export default function VitalityGauge({
               </filter>
             </defs>
 
+            <circle
+              cx={cx}
+              cy={cy}
+              r={r + heroStroke / 2 + 18}
+              fill={`url(#${ambientFieldId})`}
+            />
+
             {!locked ? (
-              <g opacity={dark ? 1 : 0.85}>
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r={r + heroStroke / 2 + 10}
-                  fill="none"
-                  stroke={dark ? "rgba(127,178,142,0.08)" : "rgba(90,143,106,0.06)"}
-                  strokeWidth={1}
-                />
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r={r + heroStroke / 2 + 18}
-                  fill="none"
-                  stroke={dark ? "rgba(127,178,142,0.05)" : "rgba(90,143,106,0.04)"}
-                  strokeWidth={1}
-                />
-              </g>
+              <circle
+                cx={cx}
+                cy={cy}
+                r={r + heroStroke / 2 + 9}
+                fill="none"
+                stroke={dark ? "rgba(127,178,142,0.07)" : "rgba(90,143,106,0.05)"}
+                strokeWidth={1}
+              />
             ) : null}
 
-            {/* Buitenste basisring — dik, zacht, premium */}
             <path
               d={arcPath(cx, cy, r, startAngle, startAngle + sweep)}
               fill="none"
-              stroke={dark ? "rgba(255,255,255,0.06)" : "#ebe9e4"}
-              strokeWidth={trackStroke}
+              stroke={dark ? "rgba(0,0,0,0.28)" : "rgba(15,28,16,0.09)"}
+              strokeWidth={trackStroke + 2}
               strokeLinecap="round"
             />
             <path
               d={arcPath(cx, cy, r, startAngle, startAngle + sweep)}
               fill="none"
-              stroke={dark ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.65)"}
-              strokeWidth={trackStroke - 4}
+              stroke={dark ? "rgba(255,255,255,0.05)" : "#ede9e3"}
+              strokeWidth={trackStroke}
+              strokeLinecap="round"
+            />
+            <path
+              d={arcPath(cx, cy, r - heroStroke * 0.18, startAngle, startAngle + sweep)}
+              fill="none"
+              stroke={dark ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.52)"}
+              strokeWidth={heroStroke * 0.28}
               strokeLinecap="round"
             />
 
@@ -344,16 +365,26 @@ export default function VitalityGauge({
                   const segStart = startAngle + (sweep * segment.min) / VITALITY_SCORE_MAX;
                   const segEnd =
                     startAngle + (sweep * (next ? next.min : VITALITY_SCORE_MAX)) / VITALITY_SCORE_MAX;
+                  const reached = clamped >= segment.min;
                   return (
-                    <path
-                      key={`track-${segment.id}`}
-                      d={arcPath(cx, cy, r, segStart, segEnd)}
-                      fill="none"
-                      stroke={segment.color}
-                      strokeOpacity={segmentOpacity(segment.min, next?.min)}
-                      strokeWidth={heroStroke}
-                      strokeLinecap="butt"
-                    />
+                    <g key={`track-${segment.id}`}>
+                      <path
+                        d={arcPath(cx, cy, r, segStart, segEnd)}
+                        fill="none"
+                        stroke={segment.color}
+                        strokeOpacity={segmentOpacity(segment.min, next?.min)}
+                        strokeWidth={heroStroke}
+                        strokeLinecap="butt"
+                      />
+                      <path
+                        d={arcPath(cx, cy, r - heroStroke * 0.22, segStart, segEnd)}
+                        fill="none"
+                        stroke="rgba(255,255,255,1)"
+                        strokeOpacity={reached ? 0.13 : 0.05}
+                        strokeWidth={heroStroke * 0.28}
+                        strokeLinecap="butt"
+                      />
+                    </g>
                   );
                 })}
 
@@ -362,7 +393,7 @@ export default function VitalityGauge({
                     d={arcPath(cx, cy, r, startAngle, progressAngle)}
                     fill="none"
                     stroke={band.color}
-                    strokeWidth={heroStroke + 1}
+                    strokeWidth={heroStroke + 2}
                     strokeLinecap="round"
                     filter={`url(#${fillGradientId}-glow)`}
                     opacity={0.98}
@@ -374,13 +405,13 @@ export default function VitalityGauge({
                     <circle
                       cx={dotX}
                       cy={dotY}
-                      r={10}
+                      r={9}
                       fill="#fff"
                       stroke={band.color}
-                      strokeWidth={3}
-                      className="vitaalscore-dot"
+                      strokeWidth={2.5}
+                      filter={`url(#${dotFilterId})`}
                     />
-                    <circle cx={dotX} cy={dotY} r={4.5} fill={band.color} />
+                    <circle cx={dotX} cy={dotY} r={4} fill={band.color} />
                   </>
                 ) : null}
               </>
@@ -416,13 +447,13 @@ export default function VitalityGauge({
               r={innerR + 3}
               fill={
                 locked
-                  ? "rgba(90,143,106,0.06)"
+                  ? "rgba(90,143,106,0.05)"
                   : kompasDisc
-                    ? "rgba(127,178,142,0.18)"
-                    : "rgba(61,114,72,0.12)"
+                    ? "rgba(127,178,142,0.16)"
+                    : "rgba(61,114,72,0.10)"
               }
-              stroke={kompasDisc ? "rgba(127,178,142,0.28)" : "rgba(255,255,255,0.5)"}
-              strokeWidth={2}
+              stroke={kompasDisc ? "rgba(127,178,142,0.26)" : "rgba(255,255,255,0.48)"}
+              strokeWidth={1.5}
             />
 
             {/* Hoofdschijf met schaduw */}
@@ -430,9 +461,9 @@ export default function VitalityGauge({
               cx={cx}
               cy={cy}
               r={innerR}
-              fill={locked ? "rgba(90,143,106,0.10)" : `url(#${innerGradientId})`}
-              stroke={locked ? "rgba(90,143,106,0.20)" : "rgba(255,255,255,0.38)"}
-              strokeWidth={3}
+              fill={locked ? "rgba(90,143,106,0.08)" : `url(#${innerGradientId})`}
+              stroke={locked ? "rgba(90,143,106,0.18)" : "rgba(255,255,255,0.35)"}
+              strokeWidth={2.5}
               filter={locked ? undefined : `url(#${fillGradientId}-disc)`}
             />
 
@@ -447,29 +478,29 @@ export default function VitalityGauge({
                   cy={cy}
                   r={innerR - 10}
                   fill="none"
-                  stroke="rgba(255,255,255,0.24)"
-                  strokeWidth={1}
+                  stroke="rgba(255,255,255,0.18)"
+                  strokeWidth={0.75}
                 />
                 <circle
                   cx={cx}
                   cy={cy}
                   r={innerR - 18}
                   fill="none"
-                  stroke={dark ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.14)"}
-                  strokeWidth={0.75}
+                  stroke={dark ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.11)"}
+                  strokeWidth={0.5}
                 />
               </>
             ) : null}
 
-            {!locked ? (
+            {!locked && kompasDisc ? (
               <g>
                 <circle
                   cx={cx}
                   cy={cy}
                   r={innerR + 20}
                   fill="none"
-                  stroke={dark ? "rgba(127,178,142,0.10)" : "rgba(90,143,106,0.08)"}
-                  strokeWidth={1}
+                  stroke="rgba(127,178,142,0.06)"
+                  strokeWidth={0.75}
                 />
                 <g style={{ transformOrigin: "center" }}>
                   <circle
@@ -477,8 +508,8 @@ export default function VitalityGauge({
                     cy={cy}
                     r={innerR + 30}
                     fill="none"
-                    stroke={dark ? "rgba(127,178,142,0.22)" : "rgba(90,143,106,0.14)"}
-                    strokeWidth={1}
+                    stroke="rgba(127,178,142,0.05)"
+                    strokeWidth={0.75}
                     strokeDasharray="1 8"
                     strokeLinecap="round"
                   />
@@ -489,7 +520,7 @@ export default function VitalityGauge({
                       type="rotate"
                       from={`0 ${cx} ${cy}`}
                       to={`360 ${cx} ${cy}`}
-                      dur={dark ? "90s" : "120s"}
+                      dur="180s"
                       repeatCount="indefinite"
                     />
                   ) : null}
@@ -505,28 +536,35 @@ export default function VitalityGauge({
               const pathId = `${labelArcId}-${segment.id}`;
               const active = !locked && clamped >= segment.min;
               const isCurrent = !locked && band.id === segment.id;
+              const labelColor = isCurrent
+                ? segment.color
+                : active
+                  ? `${segment.color}DD`
+                  : dark
+                    ? "rgba(255,255,255,0.28)"
+                    : "rgba(15,28,16,0.28)";
               return (
                 <g key={`label-${segment.id}`}>
                   <path id={pathId} d={arcPath(cx, cy, labelRadius, slotStart, slotEnd)} fill="none" stroke="none" />
                   <text
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    fill={active ? segment.color : dark ? "rgba(255,255,255,0.36)" : "rgba(15,28,16,0.32)"}
+                    fill={labelColor}
                     fontSize={
                       isCurrent
                         ? arcCompact
                           ? 11
-                          : 15
+                          : 14
                         : active
                           ? arcCompact
-                            ? 10
-                            : 13.5
-                          : arcCompact
                             ? 9.5
-                            : 12.5
+                            : 13
+                          : arcCompact
+                            ? 9
+                            : 12
                     }
-                    fontWeight={isCurrent ? 800 : active ? 700 : 600}
-                    letterSpacing={arcCompact ? "0.06em" : "0.10em"}
+                    fontWeight={isCurrent ? 800 : active ? 700 : 500}
+                    letterSpacing={arcCompact ? "0.07em" : "0.09em"}
                     style={{
                       fontFamily: "var(--f-sans, system-ui, sans-serif)",
                       textTransform: "uppercase",

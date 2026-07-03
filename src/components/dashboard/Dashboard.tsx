@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
-import VitalityGauge from "@/components/app/VitalityGauge";
+import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
 import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
@@ -2793,7 +2793,7 @@ const DomainSoonScreen = ({
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Card pad={24} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 14 }}>
-            <VitalityGauge value={model.scores[domain] ?? 0} label={pillar.label} size={120} stroke={10} compact showBandLabel={false} theme="light" />
+            <KompasDomainGauge value={model.scores[domain] ?? 0} label={pillar.label} />
             <div style={{ fontFamily: "var(--f-serif)", fontSize: 22, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
               {pillar.label}
             </div>
@@ -2848,7 +2848,7 @@ const VoedingScreen = ({ model }: { model: DashboardModel }) => {
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <VitalityGauge value={model.scores.voeding ?? 0} label="Voeding" size={86} stroke={8} compact showBandLabel={false} theme="light" />
+            <KompasDomainGauge value={model.scores.voeding ?? 0} label="Voeding" />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: pillar.color, marginBottom: 6 }}>
                 Mediterraan
