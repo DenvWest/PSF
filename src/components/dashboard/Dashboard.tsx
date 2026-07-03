@@ -2379,6 +2379,165 @@ const KompasLooseCard = ({
   </div>
 );
 
+const KompasVandaagCard = ({ model }: { model: DashboardModel }) => {
+  const shownRef = useRef(false);
+  const habit = model.activeHabit;
+  const [habitState, setHabitState] = useState(habit?.state ?? null);
+  const [busy, setBusy] = useState(false);
+  const done = habitState === "done";
+
+  const habitKernel = buildHabitScoreKernel({
+    vitality: model.vitality,
+    priorityId: model.priority.id,
+    priorityScore: model.scores[model.priority.id],
+    answers: model.answers,
+    domainScores: model.domainScores,
+  });
+
+  const interventionHref = buildPriorityInterventionHref(model);
+
+  useEffect(() => {
+    if (shownRef.current) {
+      return;
+    }
+    shownRef.current = true;
+    trackEvent("dashboard_vandaag_card_shown", {
+      has_active_habit: Boolean(model.activeHabit),
+      priority: model.priority.id,
+    });
+    clarityTag("dashboard_vandaag", "shown");
+  }, [model.activeHabit, model.priority.id]);
+
+  const markDone = async () => {
+    if (!habit || !habitKernel || done || busy) {
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const body =
+        habit.source === "plan" && habit.domain && habit.phaseId
+          ? {
+              domain: habit.domain,
+              phaseId: habit.phaseId,
+              stepId: habit.stepId,
+              toState: "done",
+            }
+          : {
+              mode: "kernel",
+              stepId: habit.stepId,
+              toState: "done",
+            };
+
+      const response = await fetch("/api/account/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      setHabitState("done");
+
+      emitIntakeClientEvent("plan.step_state_changed", {
+        source: "dashboard_vandaag",
+        domain: habit.domain,
+        phase_id: habit.phaseId,
+        step_id: habit.stepId,
+        from: habit.state ?? "todo",
+        to: "done",
+        driver_pillar: habitKernel.driverPillarId,
+        driver_habit_id: habitKernel.driverHabitId,
+        vitality_band: habitKernel.vitalityBand,
+        confidence: habitKernel.confidence,
+      });
+      trackEvent("dashboard_habit_completed", {
+        step_id: habit.stepId,
+        source: habit.source,
+        driver_pillar: habitKernel.driverPillarId,
+      });
+      clarityTag("dashboard_habit", habit.stepId);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <KompasLooseCard>
+      <div className="mb-3 inline-flex flex-wrap items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#78716c]">
+        <Icons.Target s={14} />
+        <span style={{ color: model.priority.color }}>{model.priority.label}</span>
+        <span>· Je grootste hefboom · vandaag</span>
+      </div>
+
+      {habit && habitKernel ? (
+        <div className="flex items-start gap-3">
+          <button
+            type="button"
+            aria-label={done ? "Habit afgerond" : "Markeer habit als gedaan"}
+            disabled={done || busy}
+            onClick={() => void markDone()}
+            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+            style={{
+              border: done ? "none" : "1.5px solid #e4e0da",
+              background: done ? "var(--sage)" : "transparent",
+              color: done ? "#0f1c10" : "#78716c",
+              cursor: done || busy ? "default" : "pointer",
+            }}
+          >
+            {done ? <Icons.Check s={14} /> : null}
+          </button>
+          <div className="min-w-0 flex-1">
+            <div className="text-[15px] font-semibold leading-snug text-[#1c1917] text-pretty">
+              {habit.title}
+            </div>
+            {habit.detail ? (
+              <p className="mt-1.5 text-[13.5px] leading-normal text-[#78716c] text-pretty">
+                {habit.detail}
+              </p>
+            ) : null}
+            {habit.planHref ? (
+              <Link
+                href={habit.planHref}
+                className="mt-2.5 inline-flex items-center gap-1.5 text-[13px] no-underline"
+                style={{ color: "var(--sage)" }}
+              >
+                Volledig plan bekijken
+                <Icons.ArrowRight s={15} />
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div className="text-[15px] font-semibold leading-snug text-[#1c1917] text-pretty">
+            {model.priority.quickWin.title}
+          </div>
+          <p className="mt-1.5 text-[13.5px] leading-normal text-[#78716c] text-pretty">
+            {model.priority.quickWin.detail}
+          </p>
+          {interventionHref ? (
+            <Link
+              href={interventionHref}
+              onClick={() =>
+                trackDashboardInterventionClick("hefboom", model, interventionHref)
+              }
+              className="mt-2.5 inline-flex items-center gap-1.5 text-[13px] font-semibold no-underline"
+              style={{ color: "var(--sage)" }}
+            >
+              Start hier
+              <Icons.ArrowRight s={14} />
+            </Link>
+          ) : null}
+        </div>
+      )}
+    </KompasLooseCard>
+  );
+};
+
 const STATUS_BADGE_COLOR: Record<
   ReturnType<typeof getDisplayStatusTone>,
   string
@@ -3023,6 +3182,7 @@ const KompasHome = ({ model }: SharedSectionProps) => {
 
   return (
     <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
+      <KompasVandaagCard model={currentModel} />
       <KompasLooseCard>
         <div className="flex items-center justify-between gap-2">
           <h2
