@@ -19,9 +19,7 @@ export default function RevealHeroCard({ model, profile }: RevealHeroCardProps) 
 
   return (
     <article aria-label="Jouw startprofiel" className="grid gap-4 text-center">
-      <div className="flex justify-center">
-        <RevealVitalityInstrument value={model.vitality} />
-      </div>
+      <RevealVitalityInstrument value={model.vitality} />
 
       <div className="grid gap-1.5">
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#78716c]">

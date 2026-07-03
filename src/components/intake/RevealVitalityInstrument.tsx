@@ -4,7 +4,6 @@ import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { getVitalityBand } from "@/lib/vitality-gauge";
-import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 
 type RevealVitalityInstrumentProps = {
   value: number;
@@ -38,11 +37,9 @@ export default function RevealVitalityInstrument({
 
   return (
     <div
-      className={`reveal-vitality-instrument-shell${className ? ` ${className}` : ""}`}
+      className={`reveal-vitality-instrument-shell reveal-vitality-instrument-shell--light${className ? ` ${className}` : ""}`}
       aria-label="Je vitaliteitsscore"
     >
-      <p className="reveal-vitality-instrument-shell__eyebrow">{REVEAL_COPY.vitalityScoreEyebrow}</p>
-
       <div className="reveal-vitality-instrument">
         <VitalityGauge
           value={value}
@@ -55,7 +52,7 @@ export default function RevealVitalityInstrument({
           showBandLabel
           heroDisc="kompas"
           heroRingInset={4}
-          heroCenterNudgeX={-5}
+          heroCenterNudgeX={0}
           heroInnerDiscRatio={0.63}
           layoutPadding={padding}
         />
@@ -63,7 +60,7 @@ export default function RevealVitalityInstrument({
         {!locked ? (
           <div className="reveal-vitality-instrument__signal">
             <span
-              className="reveal-vitality-instrument__band reveal-vitality-instrument__band--dark"
+              className="reveal-vitality-instrument__band"
               style={
                 {
                   "--reveal-vitality-band-color": band.color,
@@ -73,7 +70,7 @@ export default function RevealVitalityInstrument({
               <span className="reveal-vitality-instrument__band-dot" aria-hidden />
               {band.label}
             </span>
-            <span className="reveal-vitality-instrument__score reveal-vitality-instrument__score--dark">
+            <span className="reveal-vitality-instrument__score">
               {Math.round(value)}/100
             </span>
           </div>

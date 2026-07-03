@@ -888,35 +888,21 @@ html.floating-cta-active footer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   width: 100%;
-  max-width: 340px;
   margin-inline: auto;
-  padding: 32px 24px;
-  border-radius: 28px;
-  background-color: #1a2e1a;
-  background-image:
-    radial-gradient(ellipse 130% 70% at 50% -8%, rgba(127, 178, 142, 0.42) 0%, rgba(33, 56, 31, 0.75) 38%, transparent 68%),
-    radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
 }
 
-.reveal-vitality-instrument-shell__eyebrow {
-  margin: 0;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(127, 178, 142, 0.85);
+.reveal-vitality-instrument-shell--light {
+  max-width: none;
+  padding: 0;
+  background: transparent;
 }
 
-.reveal-vitality-instrument__band--dark {
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(127, 178, 142, 0.12);
-  border-color: rgba(127, 178, 142, 0.28);
-}
-
-.reveal-vitality-instrument__score--dark {
-  color: rgba(255, 255, 255, 0.55);
+.reveal-vitality-instrument-shell--light .reveal-vitality-instrument {
+  width: 100%;
+  justify-items: center;
 }
 
 .vitaalscore-card__gauge-zone {
