@@ -20,6 +20,7 @@ export type DashboardSectionType =
   | "vitalityScore"
   | "priority"
   | "plan"
+  | "vandaagCard"
   | "kompasHome"
   | "signals"
   | "nutritionIntake"

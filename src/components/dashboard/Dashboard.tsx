@@ -2379,20 +2379,15 @@ const KompasLooseCard = ({
   </div>
 );
 
-const KompasVandaagCard = ({ model }: { model: DashboardModel }) => {
+const VandaagCard = ({ model }: { model: DashboardModel }) => {
   const shownRef = useRef(false);
   const habit = model.activeHabit;
-  const [habitState, setHabitState] = useState(habit?.state ?? null);
+  const domain = model.priority.id;
+  const actionKey = habit?.stepId ?? null;
+  const [done, setDone] = useState(false);
+  const [streak, setStreak] = useState(0);
   const [busy, setBusy] = useState(false);
-  const done = habitState === "done";
-
-  const habitKernel = buildHabitScoreKernel({
-    vitality: model.vitality,
-    priorityId: model.priority.id,
-    priorityScore: model.scores[model.priority.id],
-    answers: model.answers,
-    domainScores: model.domainScores,
-  });
+  const [loaded, setLoaded] = useState(false);
 
   const interventionHref = buildPriorityInterventionHref(model);
 
@@ -2408,58 +2403,69 @@ const KompasVandaagCard = ({ model }: { model: DashboardModel }) => {
     clarityTag("dashboard_vandaag", "shown");
   }, [model.activeHabit, model.priority.id]);
 
-  const markDone = async () => {
-    if (!habit || !habitKernel || done || busy) {
+  useEffect(() => {
+    if (!actionKey) {
+      setLoaded(true);
       return;
     }
 
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await fetch(
+          `/api/account/daily-log?domain=${encodeURIComponent(domain)}`,
+          { credentials: "include" },
+        );
+        if (!response.ok || cancelled) {
+          return;
+        }
+        const state = (await response.json()) as { keys: string[]; streak: number };
+        if (cancelled) {
+          return;
+        }
+        setDone(state.keys.includes(actionKey));
+        setStreak(state.streak);
+      } finally {
+        if (!cancelled) {
+          setLoaded(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [domain, actionKey]);
+
+  const toggleDaily = async () => {
+    if (!actionKey || busy) {
+      return;
+    }
+
+    const nextDone = !done;
     setBusy(true);
     try {
-      const body =
-        habit.source === "plan" && habit.domain && habit.phaseId
-          ? {
-              domain: habit.domain,
-              phaseId: habit.phaseId,
-              stepId: habit.stepId,
-              toState: "done",
-            }
-          : {
-              mode: "kernel",
-              stepId: habit.stepId,
-              toState: "done",
-            };
-
-      const response = await fetch("/api/account/plan", {
+      const response = await fetch("/api/account/daily-log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(body),
+        body: JSON.stringify({ domain, actionKey, done: nextDone }),
       });
 
       if (!response.ok) {
         return;
       }
 
-      setHabitState("done");
+      const state = (await response.json()) as { keys: string[]; streak: number };
+      setDone(state.keys.includes(actionKey));
+      setStreak(state.streak);
 
-      emitIntakeClientEvent("plan.step_state_changed", {
-        source: "dashboard_vandaag",
-        domain: habit.domain,
-        phase_id: habit.phaseId,
-        step_id: habit.stepId,
-        from: habit.state ?? "todo",
-        to: "done",
-        driver_pillar: habitKernel.driverPillarId,
-        driver_habit_id: habitKernel.driverHabitId,
-        vitality_band: habitKernel.vitalityBand,
-        confidence: habitKernel.confidence,
+      trackEvent("dashboard_vandaag_action_toggled", {
+        domain,
+        done: nextDone,
+        streak: state.streak,
       });
-      trackEvent("dashboard_habit_completed", {
-        step_id: habit.stepId,
-        source: habit.source,
-        driver_pillar: habitKernel.driverPillarId,
-      });
-      clarityTag("dashboard_habit", habit.stepId);
+      clarityTag("dashboard_vandaag", nextDone ? "done" : "undone");
     } finally {
       setBusy(false);
     }
@@ -2470,22 +2476,23 @@ const KompasVandaagCard = ({ model }: { model: DashboardModel }) => {
       <div className="mb-3 inline-flex flex-wrap items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#78716c]">
         <Icons.Target s={14} />
         <span style={{ color: model.priority.color }}>{model.priority.label}</span>
-        <span>· Je grootste hefboom · vandaag</span>
+        <span>· op basis van je laatste check-in</span>
       </div>
 
-      {habit && habitKernel ? (
+      {habit ? (
         <div className="flex items-start gap-3">
           <button
             type="button"
-            aria-label={done ? "Habit afgerond" : "Markeer habit als gedaan"}
-            disabled={done || busy}
-            onClick={() => void markDone()}
+            aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
+            aria-pressed={done}
+            disabled={!loaded || busy}
+            onClick={() => void toggleDaily()}
             className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
             style={{
               border: done ? "none" : "1.5px solid #e4e0da",
               background: done ? "var(--sage)" : "transparent",
               color: done ? "#0f1c10" : "#78716c",
-              cursor: done || busy ? "default" : "pointer",
+              cursor: !loaded || busy ? "default" : "pointer",
             }}
           >
             {done ? <Icons.Check s={14} /> : null}
@@ -2498,6 +2505,18 @@ const KompasVandaagCard = ({ model }: { model: DashboardModel }) => {
               <p className="mt-1.5 text-[13.5px] leading-normal text-[#78716c] text-pretty">
                 {habit.detail}
               </p>
+            ) : null}
+            <button
+              type="button"
+              disabled={!loaded || busy}
+              onClick={() => void toggleDaily()}
+              className="mt-2 inline-flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[13px] font-medium text-[#78716c]"
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              Gedaan vandaag
+            </button>
+            {streak >= 2 ? (
+              <p className="mt-1 text-[12px] text-[#78716c]">{streak} dagen op rij</p>
             ) : null}
             {habit.planHref ? (
               <Link
@@ -3199,7 +3218,6 @@ const KompasHome = ({ model, data, onRemeasure }: SharedSectionProps) => {
 
   return (
     <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
-      <KompasVandaagCard model={currentModel} />
       {showRemeasureReminder ? (
         <KompasLooseCard>
           <div className="flex flex-wrap items-center gap-3">
@@ -3292,6 +3310,8 @@ const SECTION_RENDERERS: Record<
   vitalityScore: (props) => <VitalityScoreSection {...props} />,
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
+  vandaagCard: (props) =>
+    props.empty || !props.model ? null : <VandaagCard model={props.model} />,
   kompasHome: (props) =>
     props.empty ? null : <KompasHome key={`kompas-${props.kompasResetSignal}`} {...props} />,
   signals: (props) => (props.empty ? null : <SignalsSection {...props} />),
@@ -3324,6 +3344,20 @@ const SECTION_RENDERERS: Record<
     ),
   future: () => <FutureSection />,
 };
+
+function renderDashboardSection(
+  type: DashboardSectionType,
+  props: SharedSectionProps,
+): ReactElement | null {
+  const renderer = SECTION_RENDERERS[type];
+  if (typeof renderer === "function") {
+    return renderer(props);
+  }
+  if (type === "vandaagCard" && !props.empty && props.model) {
+    return <VandaagCard model={props.model} />;
+  }
+  return null;
+}
 
 const DashTabHeader = ({ tab }: { tab: DashboardTab }) => (
   <div style={{ marginBottom: 20 }}>
@@ -3612,7 +3646,7 @@ export default function Dashboard({
           ) : sectionTypes.length === 0 ? null : (
             sectionTypes.map((type) => (
               <section key={type}>
-                {SECTION_RENDERERS[type](sharedProps)}
+                {renderDashboardSection(type, sharedProps)}
               </section>
             ))
           )}

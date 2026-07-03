@@ -301,6 +301,7 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "nu", type: "now" },
   { id: "prioriteit", type: "priority" },
   { id: "plan", type: "plan" },
+  { id: "vandaag-kaart", type: "vandaagCard" },
   { id: "kompas-home", type: "kompasHome" },
   { id: "signalen", type: "signals" },
   { id: "voeding-inname", type: "nutritionIntake" },
@@ -341,7 +342,7 @@ export const DASHBOARD_TABS: DashboardTab[] = [
 ];
 
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
-  vandaag: ["kompasHome"],
+  vandaag: ["vandaagCard", "kompasHome"],
   voortgang: ["vitalityScore", "voortgangHub"],
   hermeting: ["retest", "future"],
 };

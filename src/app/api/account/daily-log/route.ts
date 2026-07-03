@@ -5,8 +5,17 @@ import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 import { getDailyActionState, toggleDailyAction } from "@/lib/daily-action-log";
+import { emitEvent } from "@/lib/events";
 
-const DOMAINS = ["slaap", "energie", "stress", "voeding", "beweging", "herstel"] as const;
+const DOMAINS = [
+  "slaap",
+  "energie",
+  "stress",
+  "voeding",
+  "beweging",
+  "herstel",
+  "verbinding",
+] as const;
 
 function isDomain(value: string): boolean {
   return (DOMAINS as readonly string[]).includes(value);
@@ -83,5 +92,17 @@ export async function POST(request: NextRequest) {
 
   await toggleDailyAction(admin, account.id, domain, actionKey, done);
   const state = await getDailyActionState(admin, account.id, domain);
+
+  void emitEvent({
+    eventType: "dashboard.daily_action_toggled",
+    email: account.email ?? undefined,
+    payload: {
+      domain,
+      action_key: actionKey,
+      done,
+      streak: state.streak,
+    },
+  });
+
   return NextResponse.json({ ok: true, ...state }, { status: 200 });
 }

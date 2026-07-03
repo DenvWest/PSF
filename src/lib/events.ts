@@ -13,6 +13,7 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.vitality_scored",
   "dashboard.cta_to_hub",
   "dashboard.aanrader_clicked",
+  "dashboard.daily_action_toggled",
   "intake.completed",
   "intake.theme_revealed",
   "intake.cta_to_pillar",
