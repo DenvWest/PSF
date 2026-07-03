@@ -3041,12 +3041,29 @@ const VoedingScreen = ({ model }: { model: DashboardModel }) => {
   );
 };
 
-const KompasHome = ({ model }: SharedSectionProps) => {
+const KompasHome = ({ model, data, onRemeasure }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [overlayView, setOverlayView] = useState<Extract<KompasView, "activiteiten" | "trend"> | null>(null);
+  const reminderShownRef = useRef(false);
+  const showRemeasureReminder =
+    Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
+
+  useEffect(() => {
+    if (!showRemeasureReminder || reminderShownRef.current) {
+      return;
+    }
+    reminderShownRef.current = true;
+    trackEvent("dashboard_hermeting_reminder_shown", { surface: "kompas_home" });
+  }, [showRemeasureReminder]);
+
+  const handleRemeasureReminderClick = () => {
+    trackEvent("dashboard_hermeting_reminder_click", { surface: "kompas_home" });
+    clarityTag("dashboard_hermeting", "kompas_cta");
+    onRemeasure();
+  };
 
   if (!currentModel) {
     return null;
@@ -3183,6 +3200,35 @@ const KompasHome = ({ model }: SharedSectionProps) => {
   return (
     <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
       <KompasVandaagCard model={currentModel} />
+      {showRemeasureReminder ? (
+        <KompasLooseCard>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] border border-[#ebe7e2] bg-[#faf9f7] text-[#78716c]">
+              <Icons.Refresh s={18} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div
+                className="text-[15px] font-medium leading-snug text-[#1c1917]"
+                style={{ fontFamily: "var(--f-serif)" }}
+              >
+                Tijd voor je hermeting
+              </div>
+              <p className="mt-1 text-[13px] leading-snug text-[#78716c] text-pretty">
+                Meet opnieuw of je leefstijl-stappen werken.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleRemeasureReminderClick}
+              className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[10px] border-none bg-[var(--sage)] px-4 py-2.5 text-[13px] font-semibold text-[#0f1c10]"
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              Doe je hermeting nu
+              <Icons.ArrowRight s={15} />
+            </button>
+          </div>
+        </KompasLooseCard>
+      ) : null}
       <KompasLooseCard>
         <div className="flex items-center justify-between gap-2">
           <h2

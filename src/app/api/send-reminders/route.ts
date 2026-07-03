@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyCronRequest } from "@/lib/cron-auth";
 import { runPendingIntakeReminders } from "@/lib/intake-reminder-cron";
 import { runPendingNurtureEmails } from "@/lib/nurture-cron";
+import { runPendingRemeasureReminders } from "@/lib/remeasure-reminder-cron";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,8 @@ async function handleAuthorized(): Promise<NextResponse> {
   try {
     const reminders = await runPendingIntakeReminders();
     const nurture = await runPendingNurtureEmails();
-    return NextResponse.json({ ...reminders, nurture });
+    const remeasure = await runPendingRemeasureReminders();
+    return NextResponse.json({ ...reminders, nurture, remeasure });
   } catch (err) {
     console.error("[api/send-reminders]", err);
     return NextResponse.json(

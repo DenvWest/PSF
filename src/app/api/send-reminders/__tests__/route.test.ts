@@ -1,14 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockReminders, mockNurture } = vi.hoisted(() => ({
+const { mockReminders, mockNurture, mockRemeasure } = vi.hoisted(() => ({
   mockReminders: vi.fn(),
   mockNurture: vi.fn(),
+  mockRemeasure: vi.fn(),
 }));
 vi.mock("@/lib/intake-reminder-cron", () => ({
   runPendingIntakeReminders: mockReminders,
 }));
 vi.mock("@/lib/nurture-cron", () => ({
   runPendingNurtureEmails: mockNurture,
+}));
+vi.mock("@/lib/remeasure-reminder-cron", () => ({
+  runPendingRemeasureReminders: mockRemeasure,
 }));
 
 function makeRequest(headers: Record<string, string> = {}): Request {
@@ -27,6 +31,7 @@ describe("POST /api/send-reminders — cron auth", () => {
     delete process.env.CRON_ALLOWED_IPS;
     mockReminders.mockResolvedValue({ sent: 0 });
     mockNurture.mockResolvedValue({ sent: 0 });
+    mockRemeasure.mockResolvedValue({ scanned: 0, sent: 0, skipped: 0 });
   });
   afterEach(() => {
     process.env = { ...OLD_ENV };
@@ -52,6 +57,7 @@ describe("POST /api/send-reminders — cron auth", () => {
     expect(res.status).toBe(200);
     expect(mockReminders).toHaveBeenCalledOnce();
     expect(mockNurture).toHaveBeenCalledOnce();
+    expect(mockRemeasure).toHaveBeenCalledOnce();
   });
 
   it("CRON_SECRET ontbreekt → 503", async () => {
