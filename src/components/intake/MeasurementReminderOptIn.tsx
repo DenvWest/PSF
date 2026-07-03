@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { clarityTag } from "@/lib/clarity";
 import { MEASUREMENT_REMINDER_CONSENT_TEXT } from "@/lib/consent-texts";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
@@ -17,12 +17,22 @@ function emailLooseOk(value: string): boolean {
 export function MeasurementReminderOptIn({
   sessionId,
 }: MeasurementReminderOptInProps) {
+  const shownRef = useRef(false);
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
   );
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (shownRef.current) {
+      return;
+    }
+    shownRef.current = true;
+    trackEvent(GA4_EVENTS.REMEASURE_OPTIN_SHOWN);
+    clarityTag("remeasure_optin", "shown");
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -82,9 +92,12 @@ export function MeasurementReminderOptIn({
       className="rounded-2xl border border-[#e4e0da] bg-white px-5 py-5"
       aria-label="30-dagen hermeting opt-in"
     >
-      <h2 className="mb-4 text-sm font-semibold text-[#1c1917]">
-        Wil je over 30 dagen zien hoe je vitaliteitsindex is veranderd?
+      <h2 className="mb-2 text-sm font-semibold text-[#1c1917]">
+        Over 30 dagen meet je opnieuw — wij herinneren je eraan.
       </h2>
+      <p className="mb-4 text-xs leading-relaxed text-[#57534e]">
+        Zo zie je of je leefstijl-stappen effect hebben.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col gap-3">

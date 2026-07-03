@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import type { SymptomId } from "@/data/intake-questions";
 import type { PillarId } from "@/data/foundation-pyramid";
 import type { DomainScores } from "@/lib/intake-engine";
 import { getProfileLabel } from "@/lib/intake-engine";
 import IntakeFeedback from "@/components/intake/IntakeFeedback";
+import { MeasurementReminderOptIn } from "@/components/intake/MeasurementReminderOptIn";
 import IntakeMarketingContinuityNotice from "@/components/intake/IntakeMarketingContinuityNotice";
 import RevealFooterPanel from "@/components/intake/RevealFooterPanel";
 import RevealStoryPath from "@/components/intake/RevealStoryPath";
@@ -42,13 +44,21 @@ export default function IntakeResults({
   sessionId,
   rapportUrl = null,
   firstName,
+  hasActiveMarketingEmailConsent = false,
   primaryTheme: primaryThemeProp = null,
   shellVariant = "fullscreen",
   onRestart,
   mainNurtureSkipped = false,
   onConsentRevoked,
 }: IntakeResultsProps) {
+  const searchParams = useSearchParams();
   const themeRevealedEmittedRef = useRef(false);
+  const isRemeasureFlow = searchParams.get("hermeting") === "1";
+  const showMeasurementReminderOptIn =
+    Boolean(sessionId) &&
+    !hasActiveMarketingEmailConsent &&
+    !isRemeasureFlow &&
+    !rapportUrl;
   const primaryTheme = primaryThemeProp ?? getPrimaryTheme(scores, answers);
   const profile = getProfileLabel(scores);
   const model = buildRevealModel(scores, answers, symptoms, primaryTheme);
@@ -100,6 +110,12 @@ export default function IntakeResults({
               Bekijk je 30-dagen rapport →
             </Link>
           </div>
+        ) : null}
+
+        {showMeasurementReminderOptIn && sessionId ? (
+          <section aria-label="30-dagen hermeting" className="reveal-results-act">
+            <MeasurementReminderOptIn sessionId={sessionId} />
+          </section>
         ) : null}
 
         <RevealFooterPanel

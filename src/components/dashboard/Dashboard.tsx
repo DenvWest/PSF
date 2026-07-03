@@ -3591,7 +3591,7 @@ export default function Dashboard({
     router.push(`${route}?from=dashboard&kompas=${pillarId}`);
   };
   const onRemeasure = () => {
-    router.push("/intake?from=dashboard");
+    window.location.assign("/api/account/remeasure/start");
   };
 
   const sharedProps: SharedSectionProps = {

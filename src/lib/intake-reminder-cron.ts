@@ -11,6 +11,7 @@ import {
   buildIntakeRecoveryUrlForSession,
 } from "@/lib/recovery-token";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPublicSiteUrl } from "@/lib/public-site-url";
 
 let resendClient: Resend | null = null;
@@ -104,6 +105,29 @@ function resolvePrimaryDomain(
   return "sleep";
 }
 
+const MAIN_NURTURE_SOURCE = "intake" as const;
+
+export async function emailHasNurtureDay30Scheduled(
+  supabase: SupabaseClient,
+  email: string,
+): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("nurture_emails")
+    .select("id")
+    .eq("email", email)
+    .eq("source", MAIN_NURTURE_SOURCE)
+    .eq("sequence_day", 30)
+    .in("status", ["pending", "sent"])
+    .limit(1);
+
+  if (error) {
+    console.error("[intake-reminder-cron] nurture day-30 check:", error);
+    return false;
+  }
+
+  return (data?.length ?? 0) > 0;
+}
+
 /**
  * Verstuurt openstaande `intake_reminders` (alleen `day30` / `30d`).
  * De nurture-sequentie loopt via `nurture_emails` + `runPendingNurtureEmails`.
@@ -179,6 +203,23 @@ export async function runPendingIntakeReminders(): Promise<{
       if (skipUpdateError) {
         console.error(
           "[intake-reminder-cron] Supabase update (skipped) error:",
+          skipUpdateError,
+        );
+        errors += 1;
+        continue;
+      }
+      skipped += 1;
+      continue;
+    }
+
+    if (await emailHasNurtureDay30Scheduled(supabase, email)) {
+      const { error: skipUpdateError } = await supabase
+        .from("intake_reminders")
+        .update({ sent: true })
+        .eq("id", row.id);
+      if (skipUpdateError) {
+        console.error(
+          "[intake-reminder-cron] Supabase update (nurture dedup) error:",
           skipUpdateError,
         );
         errors += 1;
