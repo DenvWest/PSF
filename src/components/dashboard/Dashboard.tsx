@@ -2389,7 +2389,8 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
   const [done, setDone] = useState(false);
   const [streak, setStreak] = useState(0);
   const [busy, setBusy] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [fetchLoaded, setFetchLoaded] = useState(false);
+  const loaded = !actionKey || fetchLoaded;
 
   const interventionHref = buildPriorityInterventionHref(model);
 
@@ -2407,7 +2408,6 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
 
   useEffect(() => {
     if (!actionKey) {
-      setLoaded(true);
       return;
     }
 
@@ -2429,13 +2429,14 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
         setStreak(state.streak);
       } finally {
         if (!cancelled) {
-          setLoaded(true);
+          setFetchLoaded(true);
         }
       }
     })();
 
     return () => {
       cancelled = true;
+      setFetchLoaded(false);
     };
   }, [domain, actionKey]);
 
