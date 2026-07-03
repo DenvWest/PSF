@@ -18,6 +18,7 @@ export default function KompasDomainGauge({ value, label }: KompasDomainGaugePro
       stroke={14}
       compact
       showBandLabel
+      showDomainLabel={false}
       theme={darkTone ? "dark" : "light"}
       tone={darkTone ? "dark" : "light"}
     />

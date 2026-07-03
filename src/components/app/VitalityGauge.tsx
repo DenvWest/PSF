@@ -16,6 +16,7 @@ type VitalityGaugeProps = {
   locked?: boolean;
   delta?: number | null;
   showBandLabel?: boolean;
+  showDomainLabel?: boolean;
   compact?: boolean;
   theme?: "dark" | "light";
   variant?: "default" | "hero";
@@ -92,6 +93,7 @@ export default function VitalityGauge({
   locked = false,
   delta = null,
   showBandLabel = true,
+  showDomainLabel = true,
   compact = false,
   theme = "dark",
   variant = "default",
@@ -661,6 +663,11 @@ export default function VitalityGauge({
     );
   }
 
+  const kompasCompact = compact && !showDomainLabel;
+  const scoreFontSize = size * (kompasCompact ? 0.26 : 0.3);
+  const bandFontSize = kompasCompact ? 9 : compact ? 11 : 13;
+  const centerGap = kompasCompact ? 1 : 2;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: compact ? 4 : 12 }}>
       <div style={{ position: "relative", width: size, height: size }}>
@@ -725,13 +732,13 @@ export default function VitalityGauge({
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            gap: 2,
+            gap: centerGap,
           }}
         >
           <div
             style={{
               fontFamily: "var(--f-serif, Georgia, serif)",
-              fontSize: size * 0.3,
+              fontSize: scoreFontSize,
               color: scoreColor,
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
@@ -742,26 +749,28 @@ export default function VitalityGauge({
           {!locked && showBandLabel ? (
             <div
               style={{
-                fontSize: compact ? 11 : 13,
+                fontSize: bandFontSize,
                 fontWeight: 600,
                 color: band.color,
-                marginTop: 2,
+                marginTop: kompasCompact ? 0 : 2,
               }}
             >
               {band.label}
             </div>
           ) : null}
-          <div
-            style={{
-              fontSize: compact ? 10 : 11.5,
-              color: labelColor,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              marginTop: compact ? 1 : 4,
-            }}
-          >
-            {label}
-          </div>
+          {showDomainLabel ? (
+            <div
+              style={{
+                fontSize: compact ? 10 : 11.5,
+                color: labelColor,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                marginTop: compact ? 1 : 4,
+              }}
+            >
+              {label}
+            </div>
+          ) : null}
         </div>
       </div>
       {!locked && delta != null ? (
