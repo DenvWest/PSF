@@ -30,6 +30,14 @@ const OUTPUT_DIRS = [
   "/home/dennisvanwestbroek/Documenten/documenten/perfectsupplement/privacy",
 ];
 
+/** Extra submap in Documenten-archief per PDF (root = privacy-map zelf). */
+const ARCHIVE_SUBDIRS = {
+  "Privacyverklaring_PerfectSupplement_nl.pdf": "",
+  "Verwerkingsregister_PerfectSupplement_nl.pdf": "verwerkingsregister",
+  "DPIA_PerfectSupplement_nl.pdf": "dpia",
+  "Datalekprocedure_PerfectSupplement_nl.pdf": "",
+};
+
 const DOCUMENTS = [
   {
     input: join(root, "docs/legal/Privacyverklaring_PerfectSupplement_nl.md"),
@@ -50,6 +58,13 @@ const DOCUMENTS = [
     output: "DPIA_PerfectSupplement_nl.pdf",
     title: "Data Protection Impact Assessment",
     subtitle: "AVG art. 35 — versie 1.1 — 4 juli 2026",
+    internal: true,
+  },
+  {
+    input: join(root, "docs/legal/Datalekprocedure_PerfectSupplement_nl.md"),
+    output: "Datalekprocedure_PerfectSupplement_nl.pdf",
+    title: "Datalekprocedure",
+    subtitle: "AVG art. 33/34 — intern document — 4 juli 2026",
     internal: true,
   },
 ];
@@ -129,7 +144,10 @@ function main() {
     printPdf(htmlPath, primaryPdf);
 
     for (const dir of OUTPUT_DIRS.slice(1)) {
-      copyFileSync(primaryPdf, join(dir, doc.output));
+      const sub = ARCHIVE_SUBDIRS[doc.output] ?? "";
+      const targetDir = sub ? join(dir, sub) : dir;
+      mkdirSync(targetDir, { recursive: true });
+      copyFileSync(primaryPdf, join(targetDir, doc.output));
     }
 
     console.log(`✓ ${doc.output}`);

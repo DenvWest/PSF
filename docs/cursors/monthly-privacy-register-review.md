@@ -9,9 +9,11 @@
 
 ## Scheduling (Cursor)
 
+**Status:** handmatig instellen in Cursor UI (niet via repo te automatiseren).
+
 1. Open Cursor → **Schedule** (cloud agent / `/schedule`)
 2. Stel in: **1× per maand**, 1e werkdag 08:00
-3. Plak [Prompt](#prompt-copy-paste) hieronder
+3. Plak de prompt uit [`monthly-privacy-register-review-schedule.md`](monthly-privacy-register-review-schedule.md)
 
 Complementair aan: [`weekly-routines-claude-code.md`](weekly-routines-claude-code.md) (technische routines) en [`monthly-koag-audit.md`](monthly-koag-audit.md) (claims).
 

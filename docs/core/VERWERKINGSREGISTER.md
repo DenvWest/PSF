@@ -207,9 +207,9 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 | Hetzner | Geaccepteerd (DPA in productvoorwaarden) | EU (Duitsland) | `DPA_en hetzner.pdf -compressed.pdf` |
 | Cloudflare | Geaccepteerd (Customer DPA v6.4, apr 2026) | Wereldwijd | `cloudflare_customer_dpa-v6.4_april_3_2026.pdf` |
 | Resend | Geaccepteerd (DPA) | VS (DPF) | `resend-dpa-signed.pdf` |
-| Google (Analytics 4) | Geaccepteerd **23-11-2022** in GA4 Accountinstellingen | VS (DPF + Google Ads Data Processing Terms) | `google analytics volledig DPA .png` (screenshot 4 jul 2026) |
-| Microsoft (Clarity) | Geaccepteerd (Microsoft Product and Services DPA) | VS (DPF) | `MicrosoftProductandServicesDPAClarity.docx` |
-| Zoho CRM | **Nog controleren** — geen bestand in archief | EU | Zoho Admin → legal/DPA controleren en PDF toevoegen aan archief |
+| Google (Analytics 4) | Geaccepteerd **23-11-2022** in GA4 Accountinstellingen | VS (DPF + Google Ads Data Processing Terms) | `dpa/Google_Analytics_DPA_geaccepteerd_2026-07-04.png` |
+| Microsoft (Clarity) | Geaccepteerd (Microsoft Product and Services DPA) | VS (DPF) | `dpa/MicrosoftProductandServicesDPAClarity.docx` |
+| Zoho CRM | **Te accepteren** — checklist `docs/legal/Zoho_CRM_DPA_accepteren.md` | EU | Na acceptatie: `dpa/Zoho_CRM_DPA_geaccepteerd_[datum].pdf` |
 
 **Niet actief in productie (geen verwerkersovereenkomst nodig zolang uit):**
 
@@ -238,3 +238,4 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 | 2026-07-04 | Privacyverklaring gesynchroniseerd; PostHog/n8n als niet-actief vastgelegd |
 | 2026-07-04 | Verwerkersovereenkomsten ingevuld; archief in `Documenten/.../privacy/` (Zoho nog open) |
 | 2026-07-04 | GA DPA-screenshot gearchiveerd; losse datalekprocedure-one-pager toegevoegd |
+| 2026-07-04 | Archiefstructuur `privacy/` (dpa/, dpia/, verwerkingsregister/, incidenten/); GA-filename gecorrigeerd; Zoho DPA-checklist toegevoegd |

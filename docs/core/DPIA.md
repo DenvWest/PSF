@@ -45,7 +45,7 @@ Volwassen websitebezoekers (doelgroep mannen ±40+) die vrijwillig de Leefstijlc
 | Resend | E-mail | VS — DPF, DPA geaccepteerd |
 | Google Analytics 4 | Webanalyse | VS — DPF; DPA geaccepteerd 23-11-2022 |
 | Microsoft Clarity | Heatmaps/recordings | VS — DPF; Microsoft Product and Services DPA |
-| Zoho CRM | Contactformulier | EU — DPA nog in archief controleren |
+| Zoho CRM | Contactformulier | EU — DPA accepteren via [`Zoho_CRM_DPA_accepteren.md`](../legal/Zoho_CRM_DPA_accepteren.md) |
 
 Volledige lijst en archiefpaden: [`VERWERKINGSREGISTER.md`](VERWERKINGSREGISTER.md) §Verwerkersovereenkomsten.
 
@@ -107,7 +107,7 @@ Praktische one-pager (PDF): [`docs/legal/Datalekprocedure_PerfectSupplement_nl.m
 
 Met bovenstaande maatregelen is het restrisico **laag**. Het hoogste resterende aandachtspunt is **R4 (functie-creep richting medische interpretatie)** — beheerst via compliance-tests en disclaimers. Voorafgaande raadpleging van de AP (art. 36) is **niet** nodig.
 
-**Open administratief punt:** Zoho CRM DPA nog toevoegen aan archief (verwerkingsregister).
+**Open administratief punt:** Zoho CRM DPA — acceptatie en archivering via [`docs/legal/Zoho_CRM_DPA_accepteren.md`](../legal/Zoho_CRM_DPA_accepteren.md).
 
 **Volgende herziening gepland:** juli 2027 (jaarlijks) of eerder bij wezenlijke wijziging in verwerking.
 
@@ -115,7 +115,7 @@ Met bovenstaande maatregelen is het restrisico **laag**. Het hoogste resterende 
 
 - [x] Verwerkingsverantwoordelijke: Dennis van Westbroek, KVK 74667653, info@perfectsupplement.nl
 - [x] FG: niet aangesteld — niet verplicht bij huidige schaal en risicoprofiel (eenmanszaak, beperkte verwerking)
-- [x] Verwerkersovereenkomsten (art. 28): Supabase, Hetzner, Cloudflare, Resend, Google Analytics, Microsoft Clarity — geaccepteerd en gearchiveerd (Zoho: controleren)
+- [x] Verwerkersovereenkomsten (art. 28): Supabase, Hetzner, Cloudflare, Resend, Google Analytics, Microsoft Clarity — geaccepteerd en gearchiveerd (Zoho: checklist `docs/legal/Zoho_CRM_DPA_accepteren.md`)
 - [x] Toestemmingsvakjes standaard uit (geen pre-check) — bevestigd in code
 - [x] Procedure datalekmelding (art. 33/34) — §4.1
 - [x] Periodieke herziening: jaarlijks (volgende: juli 2027)
