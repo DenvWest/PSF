@@ -229,12 +229,7 @@ export default function LoginScreen({
   const [email, setEmail] = useState(() =>
     fromIntake ? readStoredContactEmail() : "",
   );
-  const [consent, setConsent] = useState(() => {
-    if (!fromIntake) {
-      return true;
-    }
-    return Boolean(readStoredContactEmail());
-  });
+  const [consent, setConsent] = useState(false);
   const [hasIntakeSession, setHasIntakeSession] = useState(fromIntake);
   const [fetchedEligibility, setFetchedEligibility] = useState<{
     email: string;

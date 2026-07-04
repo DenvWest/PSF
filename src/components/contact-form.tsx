@@ -4,6 +4,7 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { type FormEvent, useRef, useState } from "react";
 import { handleSendEmail } from "@/lib/contact";
+import { CONTACT_CONSENT_TEXT } from "@/lib/consent-texts";
 import contactFormStyles from "./contact-form.module.css";
 
 function getField(name: string, form: FormData): string {
@@ -42,6 +43,7 @@ export default function ContactForm({
       return "";
     }
   });
+  const [healthConsent, setHealthConsent] = useState(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,6 +65,13 @@ export default function ContactForm({
     if (!EMAIL_REGEX.test(email)) {
       setResponseKind("error");
       setResponseMessage("Vul een geldig e-mailadres in.");
+      return;
+    }
+    if (!healthConsent) {
+      setResponseKind("error");
+      setResponseMessage(
+        "Zonder toestemming voor de verwerking van je gegevens (inclusief eventuele gezondheidsgegevens) kunnen we je bericht niet verwerken.",
+      );
       return;
     }
     if (!turnstileSiteKey) {
@@ -87,7 +96,7 @@ export default function ContactForm({
         turnstileToken,
         website,
         consent: {
-          healthDataProcessing: true,
+          healthDataProcessing: healthConsent,
           anonymousAnalytics: false,
           marketingEmail: false,
         },
@@ -104,6 +113,7 @@ export default function ContactForm({
         form.reset();
         setNameValue("");
         setEmailValue("");
+        setHealthConsent(false);
         setTurnstileToken("");
         return;
       }
@@ -168,6 +178,18 @@ export default function ContactForm({
         <div className={contactFormStyles.formField}>
           <label htmlFor="contact-message">Bericht</label>
           <textarea id="contact-message" name="message" rows={5} required />
+        </div>
+
+        <div className={contactFormStyles.consentField}>
+          <input
+            type="checkbox"
+            id="contact-consent-health"
+            checked={healthConsent}
+            onChange={(e) => setHealthConsent(e.target.checked)}
+          />
+          <label htmlFor="contact-consent-health">
+            {CONTACT_CONSENT_TEXT.health_data_processing}
+          </label>
         </div>
 
         <div className={contactFormStyles.turnstileWrapper}>
