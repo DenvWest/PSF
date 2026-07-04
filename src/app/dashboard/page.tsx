@@ -3,6 +3,7 @@ import Dashboard from "@/components/dashboard/Dashboard";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
 import { loadAccountDashboardData } from "@/lib/account-dashboard";
 import { getAccountFromCookie } from "@/lib/account-server";
+import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
@@ -107,10 +108,16 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   }
 
   const data = await loadAccountDashboardData(account.id);
+  const hasTrendsFeature = await hasFeature(account.id, "trends");
 
   return (
     <div className="ps-dark">
-      <Dashboard empty={data.empty} data={data} {...dashboardProps} />
+      <Dashboard
+        empty={data.empty}
+        data={data}
+        hasTrendsFeature={hasTrendsFeature}
+        {...dashboardProps}
+      />
     </div>
   );
 }

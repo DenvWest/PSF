@@ -2,6 +2,7 @@
 
 import type { ReactElement, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
@@ -31,8 +32,12 @@ import StressScreen from "@/components/dashboard/StressScreen";
 import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
-import VoortgangHub from "@/components/dashboard/VoortgangHub";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
+
+const VoortgangHub = dynamic(
+  () => import("@/components/dashboard/VoortgangHub"),
+  { ssr: false },
+);
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import {
   DASHBOARD_TABS,
@@ -77,6 +82,7 @@ type DashboardProps = {
   empty?: boolean;
   data?: DashboardData;
   isMember?: boolean;
+  hasTrendsFeature?: boolean;
   initialTab?: DashboardTabId;
   initialVoortgangScreen?: VoortgangScreen;
   initialKompasView?: PillarId;
@@ -87,6 +93,7 @@ type SharedSectionProps = {
   model: DashboardModel | null;
   data?: DashboardData;
   isMember: boolean;
+  hasTrendsFeature: boolean;
   tab: DashboardTabId;
   kompasResetSignal: number;
   onCheck: () => void;
@@ -3466,6 +3473,7 @@ const SECTION_RENDERERS: Record<
         model={props.model}
         data={props.data}
         isMember={props.isMember}
+        hasTrendsFeature={props.hasTrendsFeature}
         tab={props.tab}
         screen={props.voortgangScreen}
         unlockedStatistics={
@@ -3640,6 +3648,7 @@ export default function Dashboard({
   empty,
   data,
   isMember = false,
+  hasTrendsFeature = false,
   initialTab,
   initialVoortgangScreen,
   initialKompasView,
@@ -3735,6 +3744,7 @@ export default function Dashboard({
     model,
     data,
     isMember,
+    hasTrendsFeature,
     tab,
     kompasResetSignal,
     onCheck,

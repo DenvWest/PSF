@@ -27,6 +27,7 @@ import {
 } from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
+import { resolveTrendsAccess } from "@/lib/entitlement-access";
 import type { DashboardData, DashboardModel, DashboardTabId } from "@/types/dashboard";
 
 export type VoortgangScreen =
@@ -40,6 +41,7 @@ type VoortgangHubProps = {
   model: DashboardModel | null;
   data?: DashboardData;
   isMember: boolean;
+  hasTrendsFeature?: boolean;
   tab: DashboardTabId;
   screen: VoortgangScreen;
   unlockedStatistics: ReactNode;
@@ -460,14 +462,17 @@ function VitaalscoreInzichtenView({
   model,
   firstName,
   isMember,
+  hasTrendsFeature,
   onBack,
 }: {
   model: DashboardModel;
   firstName: string | null;
   isMember: boolean;
+  hasTrendsFeature: boolean;
   onBack: () => void;
 }) {
   const upsellShownRef = useRef(false);
+  const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
   const cardCopy = getVitalityScoreCardCopy({
     firstName,
     vitality: model.vitality,
@@ -490,7 +495,7 @@ function VitaalscoreInzichtenView({
   const tipLines = [explainer[1], explainer[2]].filter(Boolean);
 
   useEffect(() => {
-    if (isMember || upsellShownRef.current) {
+    if (trendsUnlocked || upsellShownRef.current) {
       return;
     }
     upsellShownRef.current = true;
@@ -499,7 +504,7 @@ function VitaalscoreInzichtenView({
       surface: "voortgang",
     });
     clarityTag("dashboard_voortgang", "inzichten_locked");
-  }, [isMember]);
+  }, [trendsUnlocked]);
 
   return (
     <section aria-label="Jouw inzichten" style={{ paddingTop: 16 }}>
@@ -544,7 +549,7 @@ function VitaalscoreInzichtenView({
           </p>
         </div>
 
-        {!isMember ? (
+        {!trendsUnlocked ? (
           <>
             <div
               style={{
@@ -594,19 +599,22 @@ function VitaalscoreInzichtenView({
 
 function StatistiekenView({
   isMember,
+  hasTrendsFeature,
   unlockedStatistics,
   onBack,
   onOpenLichaam,
 }: {
   isMember: boolean;
+  hasTrendsFeature: boolean;
   unlockedStatistics: ReactNode;
   onBack: () => void;
   onOpenLichaam: () => void;
 }) {
   const upsellShownRef = useRef(false);
+  const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
 
   useEffect(() => {
-    if (isMember || upsellShownRef.current) {
+    if (trendsUnlocked || upsellShownRef.current) {
       return;
     }
     upsellShownRef.current = true;
@@ -615,7 +623,7 @@ function StatistiekenView({
       surface: "voortgang",
     });
     clarityTag("dashboard_statistieken", "locked");
-  }, [isMember]);
+  }, [trendsUnlocked]);
 
   const openLichaam = () => {
     trackEvent("dashboard_voortgang_hub_click", {
@@ -630,7 +638,7 @@ function StatistiekenView({
     <section aria-label="Statistieken" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Statistieken" onBack={onBack} />
 
-      {!isMember ? (
+      {!trendsUnlocked ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <BlurredSignalsPreview />
           <div style={{ textAlign: "center", padding: "0 8px" }}>
@@ -749,12 +757,15 @@ function ChartCard({
 
 function LichaamssamenstellingView({
   isMember,
+  hasTrendsFeature,
   onBack,
 }: {
   isMember: boolean;
+  hasTrendsFeature: boolean;
   onBack: () => void;
 }) {
   const shownRef = useRef(false);
+  const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
 
   useEffect(() => {
     if (shownRef.current) {
@@ -765,7 +776,7 @@ function LichaamssamenstellingView({
     clarityTag("dashboard_lichaamssamenstelling", "premium_scaffold");
   }, []);
 
-  const locked = !isMember;
+  const locked = !trendsUnlocked;
 
   return (
     <section aria-label="Lichaamssamenstelling" style={{ paddingTop: 16 }}>
@@ -887,6 +898,7 @@ export default function VoortgangHub({
   model,
   data,
   isMember,
+  hasTrendsFeature = false,
   tab,
   screen,
   unlockedStatistics,
@@ -937,6 +949,7 @@ export default function VoortgangHub({
         model={model}
         firstName={data?.firstName ?? null}
         isMember={isMember}
+        hasTrendsFeature={hasTrendsFeature}
         onBack={goBack}
       />
     );
@@ -950,6 +963,7 @@ export default function VoortgangHub({
     return (
       <StatistiekenView
         isMember={isMember}
+        hasTrendsFeature={hasTrendsFeature}
         unlockedStatistics={unlockedStatistics}
         onBack={goBack}
         onOpenLichaam={() => navigate("lichaamssamenstelling")}
@@ -959,7 +973,11 @@ export default function VoortgangHub({
 
   if (screen === "lichaamssamenstelling") {
     return (
-      <LichaamssamenstellingView isMember={isMember} onBack={goBack} />
+      <LichaamssamenstellingView
+        isMember={isMember}
+        hasTrendsFeature={hasTrendsFeature}
+        onBack={goBack}
+      />
     );
   }
 
