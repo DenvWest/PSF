@@ -7,6 +7,7 @@ import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { trackEvent } from "@/lib/ga4";
 import type { Pillar, PillarId } from "@/types/dashboard";
 
@@ -141,6 +142,11 @@ export function DomainDeepTool({
     }
     shownRef.current = true;
     trackEvent("domain_tool_snapshot_viewed", {
+      domain,
+      layer: "free",
+      has_checkin: hasDomainCheckin,
+    });
+    emitAccountClientEvent("domain_tool.snapshot_viewed", {
       domain,
       layer: "free",
       has_checkin: hasDomainCheckin,
@@ -296,6 +302,10 @@ export function DeepToolMeetModule({
     }
     clickedRef.current = true;
     trackEvent("domain_tool_tier_preview_click", { domain, target_tier: 1 });
+    emitAccountClientEvent("domain_tool.tier_preview_clicked", {
+      domain,
+      target_tier: 1,
+    });
     clarityTag("domain_tool_tier_preview", `${domain}_t1`);
   };
 

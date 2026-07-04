@@ -14,6 +14,8 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.cta_to_hub",
   "dashboard.aanrader_clicked",
   "dashboard.daily_action_toggled",
+  "domain_tool.snapshot_viewed",
+  "domain_tool.tier_preview_clicked",
   "intake.completed",
   "intake.theme_revealed",
   "intake.cta_to_pillar",

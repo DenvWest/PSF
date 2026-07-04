@@ -166,6 +166,7 @@ export async function POST(request: NextRequest) {
   void emitEvent({
     eventType: "premium.waitlist_joined",
     email: account.email,
+    organizationId: account.organization_id,
     payload: {
       feature: STORED_FEATURE,
       surface,
@@ -178,6 +179,7 @@ export async function POST(request: NextRequest) {
     void emitEvent({
       eventType: "premium.price_indicated",
       email: account.email,
+      organizationId: account.organization_id,
       payload: {
         feature: STORED_FEATURE,
         surface,

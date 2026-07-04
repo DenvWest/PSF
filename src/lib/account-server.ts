@@ -6,6 +6,7 @@ type AccountRow = {
   id: string;
   email: string;
   status: string;
+  organization_id: string;
 };
 
 export async function getAccountFromCookie(): Promise<AccountRow | null> {
@@ -21,7 +22,7 @@ export async function getAccountFromCookie(): Promise<AccountRow | null> {
 
   const { data, error } = await admin
     .from("accounts")
-    .select("id,email,status")
+    .select("id,email,status,organization_id")
     .eq("id", accountId)
     .maybeSingle<AccountRow>();
 
