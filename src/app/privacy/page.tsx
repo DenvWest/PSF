@@ -186,6 +186,19 @@ export default function PrivacyPage() {
                             </tr>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3 align-top">
+                                    Premium-wachtlijst en launch-mail
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    Art. 6 lid 1 sub a AVG (expliciete toestemming voor launch-mail); wachtlijst
+                                    zonder mail-opt-in: art. 6 lid 1 sub f AVG (productvalidatie)
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    Account-id, optionele prijsband, wachtlijst-intentie; bij opt-in e-mailadres
+                                    via je account
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
                                     Affiliate-klikmeting
                                 </td>
                                 <td className="px-4 py-3 align-top">Art. 6 lid 1 sub f AVG (gerechtvaardigd belang)</td>

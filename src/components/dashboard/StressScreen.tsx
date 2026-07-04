@@ -6,7 +6,7 @@ import Link from "next/link";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
-import WaitlistButton from "@/components/dashboard/WaitlistButton";
+import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
 import {
   buildStressRecommendations,
@@ -180,7 +180,6 @@ export default function StressScreen({
   model: DashboardModel;
 }) {
   const premiumShownRef = useRef(false);
-  const coachShownRef = useRef(false);
   const pillar = PILLAR.stress;
   const session = sessionFromModel(model);
   const nutritionHint = getStressNutritionHint(session);
@@ -191,12 +190,6 @@ export default function StressScreen({
     premiumShownRef.current = true;
     trackEvent("dashboard_stress_premium_upsell", { surface: "kompas_stress" });
     clarityTag("dashboard_stress_premium", "shown");
-  }, []);
-
-  useEffect(() => {
-    if (coachShownRef.current) return;
-    coachShownRef.current = true;
-    trackEvent("dashboard_stress_coach_waitlist_shown", { surface: "kompas_stress" });
   }, []);
 
   return (
@@ -590,83 +583,9 @@ export default function StressScreen({
           </Card>
         </section>
 
-        <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}33` }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: KOMPAS_LIGHT.subtle,
-              }}
-            >
-              Begeleiding
-            </div>
-            <div
-              style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}
-            >
-              Onafhankelijke stress-coach
-            </div>
-            <p
-              style={{
-                fontSize: 14,
-                color: KOMPAS_LIGHT.muted,
-                lineHeight: 1.6,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              Werk met iemand die je helpt je ritme en grenzen vol te houden. Meld je aan voor
-              de wachtlijst.
-            </p>
-            <WaitlistButton
-              feature="stress-coach"
-              surface="kompas_stress"
-              label="Zet me op de wachtlijst"
-            />
-          </div>
-        </Card>
-
-        <Card pad={20} surface="light" glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.35)" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: KOMPAS_LIGHT.subtle,
-              }}
-            >
-              <Icons.Lock s={14} /> Premium · app
-            </div>
-            <div
-              style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}
-            >
-              Stresslog in de app
-            </div>
-            <p
-              style={{
-                fontSize: 14,
-                color: KOMPAS_LIGHT.muted,
-                lineHeight: 1.6,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              Log triggers, herstelmomenten en je avond-afbouw. Zo zie je wat werkt voordat stress
-              zich opstapelt.
-            </p>
-            <SoonPill />
-          </div>
-        </Card>
+        <div style={{ padding: "4px 2px 0" }}>
+          <KompasBegeleidingLink surface="kompas_stress" />
+        </div>
 
         <FooterLink
           href="/intake/plan/stress?from=dashboard&kompas=stress"

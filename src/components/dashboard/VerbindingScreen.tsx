@@ -6,7 +6,7 @@ import Link from "next/link";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
-import WaitlistButton from "@/components/dashboard/WaitlistButton";
+import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -103,7 +103,6 @@ export default function VerbindingScreen({
   model: DashboardModel;
 }) {
   const premiumShownRef = useRef(false);
-  const coachShownRef = useRef(false);
   const pillar = PILLAR.verbinding;
 
   useEffect(() => {
@@ -111,12 +110,6 @@ export default function VerbindingScreen({
     premiumShownRef.current = true;
     trackEvent("dashboard_verbinding_premium_upsell", { surface: "kompas_verbinding" });
     clarityTag("dashboard_verbinding_premium", "shown");
-  }, []);
-
-  useEffect(() => {
-    if (coachShownRef.current) return;
-    coachShownRef.current = true;
-    trackEvent("dashboard_verbinding_coach_waitlist_shown", { surface: "kompas_verbinding" });
   }, []);
 
   return (
@@ -274,39 +267,9 @@ export default function VerbindingScreen({
           </Card>
         </section>
 
-        <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}33` }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
-              Begeleiding
-            </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
-              Onafhankelijke vitaliteitscoach
-            </div>
-            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
-              Krijg begeleiding op ritme en keuzes, zonder merkverkoop. Start op de wachtlijst.
-            </p>
-            <WaitlistButton
-              feature="verbinding-coach"
-              surface="kompas_verbinding"
-              label="Zet me op de wachtlijst"
-            />
-          </div>
-        </Card>
-
-        <Card pad={20} surface="light" glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.35)" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
-              <Icons.Lock s={14} /> Premium · app
-            </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
-              Verbindingslog in de app
-            </div>
-            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
-              Zie je sociale ritme, merk sneller wanneer je terugtrekt en krijg 1 kleine volgende stap.
-            </p>
-            <SoonPill />
-          </div>
-        </Card>
+        <div style={{ padding: "4px 2px 0" }}>
+          <KompasBegeleidingLink surface="kompas_verbinding" />
+        </div>
 
         <Card pad={18} surface="light">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>

@@ -72,6 +72,16 @@ export const MEASUREMENT_REMINDER_CONSENT_TEXT: Record<
     "Ik wil over 30 dagen een herinnering ontvangen om mijn vitaliteitsoverzicht opnieuw te meten. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
 };
 
+export type PremiumLaunchEmailConsentType = "premium_launch_email";
+
+export const PREMIUM_LAUNCH_EMAIL_CONSENT_TEXT: Record<
+  PremiumLaunchEmailConsentType,
+  string
+> = {
+  premium_launch_email:
+    "Ik wil per e-mail bericht ontvangen zodra premium begeleiding live is. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
+};
+
 export const CONTACT_CONSENT_TEXT: Record<
   Exclude<ConsentType, "affiliate_marketing">,
   string

@@ -6,7 +6,7 @@ import Link from "next/link";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
-import WaitlistButton from "@/components/dashboard/WaitlistButton";
+import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
 import {
   buildSleepRecommendations,
@@ -178,7 +178,6 @@ export default function SleepScreen({
   model: DashboardModel;
 }) {
   const premiumShownRef = useRef(false);
-  const coachShownRef = useRef(false);
   const pillar = PILLAR.slaap;
   const session = sessionFromModel(model);
   const nutritionHint = getSleepNutritionHint(session);
@@ -189,12 +188,6 @@ export default function SleepScreen({
     premiumShownRef.current = true;
     trackEvent("dashboard_slaap_premium_upsell", { surface: "kompas_slaap" });
     clarityTag("dashboard_slaap_premium", "shown");
-  }, []);
-
-  useEffect(() => {
-    if (coachShownRef.current) return;
-    coachShownRef.current = true;
-    trackEvent("dashboard_slaap_coach_waitlist_shown", { surface: "kompas_slaap" });
   }, []);
 
   return (
@@ -455,36 +448,9 @@ export default function SleepScreen({
           </Card>
         </section>
 
-        <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}33` }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
-              Begeleiding
-            </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
-              Onafhankelijke slaapcoach
-            </div>
-            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
-              Werk met een onafhankelijke coach die je helpt ritme en avondafbouw vol te houden. Geen
-              merkverkoop, wel begeleiding op slaapgedrag en routines.
-            </p>
-            <WaitlistButton feature="slaap-coach" surface="kompas_slaap" label="Zet me op de wachtlijst" />
-          </div>
-        </Card>
-
-        <Card pad={20} surface="light" glow="#C8956C" style={{ borderColor: "rgba(200,149,108,0.35)" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle }}>
-              <Icons.Lock s={14} /> Premium · app
-            </div>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 21, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
-              Slaaplog in de app
-            </div>
-            <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.6, margin: 0, textWrap: "pretty" }}>
-              Houd je bedtijd, opstaatijd en avondprikkels bij in een vast ritme-overzicht. Binnenkort in premium.
-            </p>
-            <SoonPill />
-          </div>
-        </Card>
+        <div style={{ padding: "4px 2px 0" }}>
+          <KompasBegeleidingLink surface="kompas_slaap" />
+        </div>
 
         <FooterLink
           href="/intake/plan/sleep?from=dashboard&kompas=slaap"

@@ -103,7 +103,13 @@ export function buildRecommendations(
 
 const MOVEMENT_SUPPLEMENT_SLUGS = new Set(["creatine", "eiwitpoeder"]);
 const STRESS_SUPPLEMENT_SLUGS = new Set(["magnesium"]);
-const SLEEP_SUPPLEMENT_SLUGS = new Set(["magnesium", "melatonine"]);
+const SLEEP_SUPPLEMENT_SLUGS = new Set(["magnesium"]);
+
+export const RECOMMENDATION_DOMAIN_SLUG_SETS = {
+  movement: MOVEMENT_SUPPLEMENT_SLUGS,
+  stress: STRESS_SUPPLEMENT_SLUGS,
+  sleep: SLEEP_SUPPLEMENT_SLUGS,
+} as const;
 
 export function getMovementNutritionHint(session: IntakeSessionPayload): string {
   const signals = getDeficiencySignals(session.answers);

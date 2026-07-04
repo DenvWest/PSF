@@ -14,7 +14,7 @@ import { IDENTITY_FIELDS, PILLARS } from "@/data/dashboard";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
-import WaitlistButton from "@/components/dashboard/WaitlistButton";
+import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -574,17 +574,12 @@ function VitaalscoreInzichtenView({
                   fontSize: 14,
                   color: "var(--text-muted)",
                   lineHeight: 1.55,
-                  margin: "0 0 18px",
+                  margin: 0,
                   textWrap: "pretty",
                 }}
               >
                 {VITALITY_INSIGHTS_UPSELL_BODY}
               </p>
-              <WaitlistButton
-                feature="inzichten"
-                surface="voortgang"
-                label="Zet me op de wachtlijst"
-              />
             </div>
           </>
         ) : (
@@ -655,17 +650,12 @@ function StatistiekenView({
                 fontSize: 14,
                 color: "var(--text-muted)",
                 lineHeight: 1.55,
-                margin: "0 0 18px",
+                margin: 0,
                 textWrap: "pretty",
               }}
             >
               Begrijp jezelf beter.
             </p>
-            <WaitlistButton
-              feature="statistieken"
-              surface="voortgang"
-              label="Zet me op de wachtlijst"
-            />
           </div>
         </div>
       ) : (
@@ -781,7 +771,7 @@ function LichaamssamenstellingView({
     <section aria-label="Lichaamssamenstelling" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Lichaamssamenstelling" onBack={onBack} />
 
-      <div style={{ paddingBottom: locked ? 88 : 0 }}>
+      <div style={{ paddingBottom: locked ? 24 : 0 }}>
         <Card pad={20} style={{ marginBottom: 16 }}>
           <div
             style={{
@@ -889,27 +879,6 @@ function LichaamssamenstellingView({
           </>
         )}
       </div>
-
-      {locked ? (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            right: 0,
-            bottom: "calc(72px + env(safe-area-inset-bottom, 0px))",
-            padding: "0 18px 12px",
-            maxWidth: 600,
-            margin: "0 auto",
-            zIndex: 10,
-          }}
-        >
-          <WaitlistButton
-            feature="lichaamssamenstelling"
-            surface="voortgang"
-            label="Zet me op de wachtlijst"
-          />
-        </div>
-      ) : null}
     </section>
   );
 }
@@ -997,6 +966,7 @@ export default function VoortgangHub({
   return (
     <section aria-label="Voortgang navigatie">
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <PremiumWaitlistCard surface="voortgang" />
         <HubCard
           icon={<Icons.Heart s={20} />}
           title="Favorieten"

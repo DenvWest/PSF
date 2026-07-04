@@ -20,7 +20,6 @@ import {
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import BewegingScreen from "@/components/dashboard/BewegingScreen";
 import {
-  DeepToolCoachModule,
   DeepToolMeetModule,
   DeepToolSectionHeader,
   DEEP_TOOL_LIGHT,
@@ -30,7 +29,7 @@ import DomainTopNav from "@/components/dashboard/DomainTopNav";
 import SleepScreen from "@/components/dashboard/SleepScreen";
 import StressScreen from "@/components/dashboard/StressScreen";
 import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
-import WaitlistButton from "@/components/dashboard/WaitlistButton";
+import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangHub from "@/components/dashboard/VoortgangHub";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
@@ -2855,16 +2854,6 @@ const VoedingScreen = ({
   model: DashboardModel;
   nutritionIntake: DashboardData["nutritionIntake"];
 }) => {
-  const coachShownRef = useRef(false);
-
-  useEffect(() => {
-    if (coachShownRef.current) {
-      return;
-    }
-    coachShownRef.current = true;
-    trackEvent("dashboard_voeding_coach_waitlist_shown", { surface: "kompas_voeding" });
-  }, []);
-
   const session: IntakeSessionPayload = {
     sessionId: "",
     symptoms: [],
@@ -3195,17 +3184,9 @@ const VoedingScreen = ({
           note="Je lengte en gewicht deel je pas als je start — eerder vragen we er niet om."
         />
 
-        <DeepToolCoachModule
-          title="Onafhankelijke voedingscoach"
-          description="Elke week een persoonlijke terugkoppeling op je eigen check-ins — leefstijlbegeleiding, geen diagnose. Geen merkverkoop, wel hulp bij ritme, keuzes en consistentie."
-          accentColor={pillar.color}
-        >
-          <WaitlistButton
-            feature="voeding-coach"
-            surface="kompas_voeding"
-            label="Zet me op de wachtlijst"
-          />
-        </DeepToolCoachModule>
+        <div style={{ padding: "4px 2px 0" }}>
+          <KompasBegeleidingLink surface="kompas_voeding" />
+        </div>
     </DomainDeepTool>
   );
 };

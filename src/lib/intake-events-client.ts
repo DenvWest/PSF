@@ -8,7 +8,6 @@ type ClientEmitType = Extract<
   | "dashboard.aanrader_clicked"
   | "intake.theme_revealed"
   | "intake.cta_to_pillar"
-  | "intake.cta_to_nutrition_log"
   | "intake.cta_to_primary_checkin"
   | "focus.viewed"
   | "plan.viewed"

@@ -195,6 +195,20 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Beveiligingsmaatregelen** | Alleen gepubliceerde claims; disclaimer; geen diagnose-taal |
 | **Doorgifte buiten EU** | Nee |
 
+### 13. Premium-wachtlijst & launch-mail
+
+| | |
+|---|---|
+| **Doel** | Intentie voor premium begeleiding vastleggen; optioneel e-mail bij productlaunch |
+| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig op de wachtlijst staan |
+| **Soort gegevens** | Account-id, feature-key (`premium-coaching`), optionele prijsband, bron-surface; bij launch-opt-in: e-mailadres (via account), consent-record |
+| **Bijzondere gegevens** | Nee in `premium_waitlist`; launch-mail koppelt aan account met gekoppelde intake |
+| **Ontvangers** | Supabase (`premium_waitlist`, `consent_records`); bij launch: Resend (VS — DPF) |
+| **Grondslag** | Art. 6 lid 1 sub a (toestemming launch-mail); wachtlijst zonder mail-opt-in: art. 6 lid 1 sub f (productvalidatie) |
+| **Bewaartermijn** | Wachtlijst tot launch + 12 maanden daarna of tot intrekking; consent-records 5 jaar na intrekking |
+| **Beveiligingsmaatregelen** | Alleen ingelogde accounts; expliciete checkbox voor launch-mail; consent-tekst + versie in `consent_records` |
+| **Doorgifte buiten EU** | Ja — alleen bij launch-mail via Resend (VS, DPF) |
+
 ---
 
 ## Verwerkersovereenkomsten (art. 28)

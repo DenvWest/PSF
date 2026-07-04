@@ -5,7 +5,9 @@ import {
   buildRecommendations,
   getMovementNutritionHint,
   getSleepNutritionHint,
+  RECOMMENDATION_DOMAIN_SLUG_SETS,
 } from "@/lib/build-recommendations";
+import { approvedClaims, type IngredientClaimKey } from "@/data/approved-claims";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 
 function makeSession(
@@ -144,8 +146,27 @@ describe("buildSleepRecommendations", () => {
     );
     const recommendations = buildSleepRecommendations(session);
     expect(
-      recommendations.every((rec) => ["magnesium", "melatonine"].includes(rec.slug)),
+      recommendations.every((rec) => rec.slug === "magnesium"),
     ).toBe(true);
+  });
+});
+
+const SLUG_TO_CLAIM: Record<string, IngredientClaimKey> = {
+  magnesium: "magnesium",
+  melatonine: "melatonine",
+  creatine: "creatine",
+  eiwitpoeder: "eiwitpoeder",
+};
+
+describe("RECOMMENDATION_DOMAIN_SLUG_SETS compliance", () => {
+  it("bevat geen forbidden claim slugs", () => {
+    for (const set of Object.values(RECOMMENDATION_DOMAIN_SLUG_SETS)) {
+      for (const slug of set) {
+        const claimKey = SLUG_TO_CLAIM[slug];
+        expect(claimKey, `onbekende slug in set: ${slug}`).toBeDefined();
+        expect(approvedClaims[claimKey!].status).not.toBe("forbidden");
+      }
+    }
   });
 });
 
