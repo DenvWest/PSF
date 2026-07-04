@@ -5,7 +5,8 @@
 
 **Laatst bijgewerkt:** 2026-07-04  
 **Volgende geplande controle:** 2026-08-01 (maandelijks)  
-**Eigenaar:** Dennis van Westbroek — verwerkingsverantwoordelijke
+**Eigenaar:** Dennis van Westbroek — verwerkingsverantwoordelijke  
+**Archief verwerkersovereenkomsten:** `Documenten/documenten/perfectsupplement/privacy/`
 
 ---
 
@@ -105,8 +106,8 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Bijzondere gegevens** | Nee — intake-antwoorden worden niet naar analytics gestuurd |
 | **Ontvangers** | Google Analytics (VS, DPF); Microsoft Clarity (VS, DPF/SCC) |
 | **Grondslag** | Art. 6 lid 1 sub a (toestemming via cookiebanner) |
-| **Bewaartermijn** | GA4: 14 maanden; Clarity cookies: 1 dag–1 jaar |
-| **Beveiligingsmaatregelen** | Consent-gate vóór laden scripts; Google Consent Mode v2 default-deny; modal cookiebanner met granulariteit (statistieken + marketing); affiliate-gate op partnerlinks; `consent_records`-audit bij banner-actie; Clarity uit op gezondheidsroutes; `psf_analytics_state` / `psf_marketing_state` onthouden keuze |
+| **Bewaartermijn** | GA4: 14 maanden (GA4 property controleren); Clarity cookies: 1 dag–1 jaar |
+| **Beveiligingsmaatregelen** | Consent-gate vóór laden scripts; Google Consent Mode v2 default-deny; modal cookiebanner met granulariteit (statistieken + marketing); affiliate-gate op partnerlinks; `consent_records`-audit bij banner-actie; Clarity uit op gezondheidsroutes; GA DPA geaccepteerd 23-11-2022; geen health data naar analytics |
 | **Doorgifte buiten EU** | Ja — VS (DPF) |
 
 ### 7. Interne product-events (domain_events)
@@ -198,15 +199,17 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 
 ## Verwerkersovereenkomsten (art. 28)
 
-| Verwerker | Status | Locatie |
-|---|---|---|
-| Supabase | `[VUL IN: bevestig getekend + archieflocatie]` | EU |
-| Hetzner | `[VUL IN]` | EU |
-| Cloudflare | `[VUL IN]` | Wereldwijd |
-| Resend | `[VUL IN]` | VS (DPF) |
-| Google (Analytics) | `[VUL IN]` | VS (DPF) |
-| Microsoft (Clarity) | `[VUL IN]` | VS (DPF) |
-| Zoho CRM | `[VUL IN]` | EU |
+Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaarden in het product** (licentie/DPA-flow); geen aparte handtekening vereist. Bewijs = geaccepteerde voorwaarden + archiefbestand of screenshot met datum.
+
+| Verwerker | Status | Locatie data | Archief / bewijs |
+|---|---|---|---|
+| Supabase | Geaccepteerd (DPA 2026-06-01) | EU (Frankfurt) | `Supabase+DPA+260601.pdf` (+ `Supabase+TIA+250314.pdf`) |
+| Hetzner | Geaccepteerd (DPA in productvoorwaarden) | EU (Duitsland) | `DPA_en hetzner.pdf -compressed.pdf` |
+| Cloudflare | Geaccepteerd (Customer DPA v6.4, apr 2026) | Wereldwijd | `cloudflare_customer_dpa-v6.4_april_3_2026.pdf` |
+| Resend | Geaccepteerd (DPA) | VS (DPF) | `resend-dpa-signed.pdf` |
+| Google (Analytics 4) | Geaccepteerd **23-11-2022** in GA4 Accountinstellingen | VS (DPF + Google Ads Data Processing Terms) | `google analytics volledig DPA .png` (screenshot 4 jul 2026) |
+| Microsoft (Clarity) | Geaccepteerd (Microsoft Product and Services DPA) | VS (DPF) | `MicrosoftProductandServicesDPAClarity.docx` |
+| Zoho CRM | **Nog controleren** — geen bestand in archief | EU | Zoho Admin → legal/DPA controleren en PDF toevoegen aan archief |
 
 **Niet actief in productie (geen verwerkersovereenkomst nodig zolang uit):**
 
@@ -223,7 +226,7 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 2. **Bij wezenlijke wijziging** (nieuwe verwerker, nieuw dattype, nieuwe tabel/API): update dit register **in dezelfde PR** als de codewijziging.
 3. **Datum**: elke inhoudelijke wijziging krijgt een nieuwe `Laatst bijgewerkt`-datum + regel in de wijzigingslog. Een kale controle zonder wijziging hoeft de hoofddatum niet te veranderen — alleen de logregel.
 4. **DPIA**: apart document (`DPIA.md` + PDF in `docs/legal/pdf/`); herziening jaarlijks of bij wezenlijke risicowijziging. Verwerkingsregister en DPIA verwijzen naar elkaar maar dienen verschillende AVG-artikelen.
-5. **PDF's opnieuw genereren:** `npm run generate-legal-pdfs` (schrijft naar `docs/legal/pdf/` en `Documenten/.../privacy/`).
+5. **PDF's opnieuw genereren:** `npm run generate-legal-pdfs` (privacy, register, DPIA, datalekprocedure).
 
 ---
 
@@ -233,3 +236,5 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 |---|---|
 | 2026-07-04 | Eerste versie in repo — samengesteld uit privacyverklaring, DPIA PDF (apr 2026), codebase |
 | 2026-07-04 | Privacyverklaring gesynchroniseerd; PostHog/n8n als niet-actief vastgelegd |
+| 2026-07-04 | Verwerkersovereenkomsten ingevuld; archief in `Documenten/.../privacy/` (Zoho nog open) |
+| 2026-07-04 | GA DPA-screenshot gearchiveerd; losse datalekprocedure-one-pager toegevoegd |

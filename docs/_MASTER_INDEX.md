@@ -87,7 +87,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Cursor-prompt schrijven | `core/CURSOR_PROMPT_TEMPLATE.md` |
 | Wekelijkse audits (read-only) | `cursors/weekly-routines-claude-code.md` |
 | Maandelijkse strategiereview | `cursors/monthly-strategy-review.md` |
-| AVG / verwerkingsregister / DPIA | `core/VERWERKINGSREGISTER.md` + `core/DPIA.md` + `cursors/monthly-privacy-register-review.md` |
+| AVG / verwerkingsregister / DPIA | `core/VERWERKINGSREGISTER.md` + `core/DPIA.md` + `legal/Datalekprocedure_PerfectSupplement_nl.md` + `cursors/monthly-privacy-register-review.md` |
 | Database/data | `core/ENTITY_MODEL.md` |
 | Planning/sprint | `core/CURRENT_SPRINT.md` |
 | Design/styling | `core/DESIGN_TOKENS.md` |
