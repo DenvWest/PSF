@@ -1,28 +1,20 @@
-import { timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import {
   ADMIN_TOKEN_COOKIE_NAME,
   getAdminSecret,
+  verifyAdminPassword,
 } from "@/lib/admin-auth";
+import { signAdminCookie } from "@/lib/admin-session-cookie";
 import { getClientIp } from "@/lib/client-ip";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
-
-function safeStringEqual(a: string, b: string): boolean {
-  const ba = Buffer.from(a, "utf8");
-  const bb = Buffer.from(b, "utf8");
-  if (ba.length !== bb.length) {
-    return false;
-  }
-  return timingSafeEqual(ba, bb);
-}
 
 /** `path: "/"` zodat het token ook bij `/api/admin/*` wordt meegestuurd. */
 const COOKIE_BASE = {
   httpOnly: true,
   sameSite: "strict" as const,
   path: "/",
-  maxAge: 86400,
+  maxAge: 43200,
 };
 
 export async function POST(request: NextRequest) {
@@ -64,13 +56,21 @@ export async function POST(request: NextRequest) {
       ? (body as { password: string }).password
       : "";
 
-  if (!safeStringEqual(password, adminPassword)) {
+  if (!verifyAdminPassword(password, adminPassword)) {
     return NextResponse.json({ error: "Onjuist wachtwoord" }, { status: 401 });
+  }
+
+  const sessionToken = signAdminCookie();
+  if (!sessionToken) {
+    return NextResponse.json(
+      { error: "Admin is niet geconfigureerd op de server." },
+      { status: 503 },
+    );
   }
 
   const isProd = process.env.NODE_ENV === "production";
   const res = NextResponse.json({ success: true });
-  res.cookies.set(ADMIN_TOKEN_COOKIE_NAME, adminSecret, {
+  res.cookies.set(ADMIN_TOKEN_COOKIE_NAME, sessionToken, {
     ...COOKIE_BASE,
     secure: isProd,
   });

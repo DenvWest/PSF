@@ -3,7 +3,7 @@ import {
   ADMIN_TOKEN_COOKIE_NAME,
   isValidAdminSessionCookie,
 } from "@/lib/admin-auth";
-import { DEFAULT_ORG_ID } from "@/config/org";
+import { resolveOrgIdFromHost } from "@/lib/org-resolver";
 
 function requiresAdminAuth(pathname: string): boolean {
   const isAdminArea =
@@ -78,7 +78,7 @@ function buildContentSecurityPolicy() {
   return directives.join("; ");
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   if (requiresAdminAuth(pathname)) {
@@ -94,9 +94,18 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  const response = NextResponse.next();
+  const host = request.headers.get("host") ?? "";
+  const orgId = await resolveOrgIdFromHost(host, request.headers.get("x-org-id"));
 
-  const orgId = resolveOrgId(request);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-org-id", orgId);
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+
   response.headers.set("x-org-id", orgId);
 
   const isSecureRequest =
@@ -121,22 +130,6 @@ export function proxy(request: NextRequest) {
   }
 
   return response;
-}
-
-function resolveOrgId(request: NextRequest): string {
-  const headerOrg = request.headers.get("x-org-id");
-  if (headerOrg) return headerOrg;
-
-  const host = request.headers.get("host") ?? "";
-  const parts = host.split(".");
-  if (parts.length >= 3) {
-    const subdomain = parts[0];
-    if (subdomain !== "www" && subdomain !== "perfectsupplement") {
-      return subdomain;
-    }
-  }
-
-  return DEFAULT_ORG_ID;
 }
 
 export const config = {
