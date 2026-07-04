@@ -106,7 +106,7 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Ontvangers** | Google Analytics (VS, DPF); Microsoft Clarity (VS, DPF/SCC) |
 | **Grondslag** | Art. 6 lid 1 sub a (toestemming via cookiebanner) |
 | **Bewaartermijn** | GA4: 14 maanden; Clarity cookies: 1 dag–1 jaar |
-| **Beveiligingsmaatregelen** | Consent-gate vóór laden scripts; `psf_analytics_state` onthoudt keuze |
+| **Beveiligingsmaatregelen** | Consent-gate vóór laden scripts; Google Consent Mode v2 default-deny; modal cookiebanner met granulariteit (statistieken + marketing); affiliate-gate op partnerlinks; `consent_records`-audit bij banner-actie; Clarity uit op gezondheidsroutes; `psf_analytics_state` / `psf_marketing_state` onthouden keuze |
 | **Doorgifte buiten EU** | Ja — VS (DPF) |
 
 ### 7. Interne product-events (domain_events)

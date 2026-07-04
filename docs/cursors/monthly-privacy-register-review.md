@@ -56,6 +56,7 @@ Taken:
 2) Scan op drift:
    - supabase/migrations/ (nieuwe tabellen/kolommen met PII)
    - src/lib/consent-texts.ts (nieuwe scopes)
+   - src/data/cookie-inventory.ts (sync met cookiebanner Details-tab en /cookies)
    - src/app/api/** (nieuwe endpoints met persoonsgegevens)
    - package.json / env-usage (nieuwe verwerkers)
 3) Rapporteer inconsistenties tussen de drie documentlagen

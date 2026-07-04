@@ -62,6 +62,12 @@ export default function AnalyticsLoader() {
             function gtag(){window.dataLayer.push(arguments);}
             window.gtag = gtag;
             gtag('js', new Date());
+            gtag('consent', 'update', {
+              analytics_storage: 'granted',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied'
+            });
             gtag('config', '${GA_MEASUREMENT_ID}');
           `}
       </Script>

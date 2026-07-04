@@ -6,10 +6,14 @@ export const CONSENT_VERSION = "2.1" as const;
 export type ConsentType =
   | "health_data_processing"
   | "anonymous_analytics"
-  | "marketing_email";
+  | "marketing_email"
+  | "affiliate_marketing";
 
 /** Teksten exact zoals op het intake-scherm (NL). */
-export const INTAKE_CONSENT_TEXT: Record<ConsentType, string> = {
+export const INTAKE_CONSENT_TEXT: Record<
+  Exclude<ConsentType, "affiliate_marketing">,
+  string
+> = {
   health_data_processing:
     "Ik geef toestemming voor de verwerking van mijn gezondheidsgegevens voor persoonlijk supplementadvies",
   anonymous_analytics:
@@ -17,6 +21,9 @@ export const INTAKE_CONSENT_TEXT: Record<ConsentType, string> = {
   marketing_email:
     "Ik wil mijn leefstijl-overzicht en korte vervolgstappen per e-mail ontvangen, afgestemd op mijn antwoorden over slaap, stress, energie, voeding en beweging. Ik begrijp dat hiervoor mijn gezondheidsgegevens worden gebruikt en kan dit intrekken via de uitschrijflink in elke mail.",
 };
+
+export const BANNER_AFFILIATE_MARKETING_CONSENT_TEXT =
+  "Ik sta marketingcookies toe voor het registreren van verwijzingen via affiliate partnerlinks";
 
 /** Teksten contactformulier (NL); zelfde consent_type-waarden als intake. */
 export type GuideConsentType = "guide_marketing_email";
@@ -65,7 +72,10 @@ export const MEASUREMENT_REMINDER_CONSENT_TEXT: Record<
     "Ik wil over 30 dagen een herinnering ontvangen om mijn vitaliteitsoverzicht opnieuw te meten. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
 };
 
-export const CONTACT_CONSENT_TEXT: Record<ConsentType, string> = {
+export const CONTACT_CONSENT_TEXT: Record<
+  Exclude<ConsentType, "affiliate_marketing">,
+  string
+> = {
   health_data_processing:
     "Ik geef toestemming voor de verwerking van de gegevens in dit bericht, inclusief eventuele gezondheidsgegevens, voor het beantwoorden van mijn vraag",
   anonymous_analytics:

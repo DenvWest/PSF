@@ -14,6 +14,7 @@ export const GA4_EVENTS = {
   REMEASURE_OPTIN_SHOWN: 'remeasure_optin_shown',
   REMEASURE_OPTIN_SUBMITTED: 'remeasure_optin_submitted',
   NURTURE_DASHBOARD_CTA_CLICKED: 'nurture_dashboard_cta_clicked',
+  COOKIE_MARKETING_GATE: 'cookie_marketing_gate',
 } as const;
 
 export function trackEvent(

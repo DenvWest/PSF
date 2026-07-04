@@ -1,4 +1,8 @@
-import { ANALYTICS_CONSENT_STATE_COOKIE_NAME } from "@/lib/analytics-consent-constants";
+import {
+  ANALYTICS_CONSENT_META_COOKIE_NAME,
+  ANALYTICS_CONSENT_STATE_COOKIE_NAME,
+} from "@/lib/analytics-consent-constants";
+import type { AnalyticsConsentMeta } from "@/lib/analytics-consent";
 
 export { ANALYTICS_CONSENT_STATE_COOKIE_NAME };
 export const ANALYTICS_GRANTED_EVENT = "psf:analytics-granted";
@@ -38,6 +42,31 @@ export function readAnalyticsConsentStateClient(): AnalyticsConsentState {
   if (value === "granted") return "granted";
   if (value === "denied") return "denied";
   return "unset";
+}
+
+export function readAnalyticsConsentMetaClient(): AnalyticsConsentMeta | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const match = document.cookie
+    .split("; ")
+    .find((c) => c.startsWith(`${ANALYTICS_CONSENT_META_COOKIE_NAME}=`));
+  if (!match) {
+    return null;
+  }
+  try {
+    const raw = decodeURIComponent(match.slice(match.indexOf("=") + 1));
+    const parsed = JSON.parse(raw) as AnalyticsConsentMeta;
+    if (
+      typeof parsed.id === "string" &&
+      typeof parsed.grantedAt === "string"
+    ) {
+      return parsed;
+    }
+  } catch {
+    return null;
+  }
+  return null;
 }
 
 export function dispatchAnalyticsConsentChanged(): void {

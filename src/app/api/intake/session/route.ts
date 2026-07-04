@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   applyAnalyticsConsentCookie,
+  applyAnalyticsConsentStateCookie,
   clearAnalyticsConsentCookie,
 } from "@/lib/analytics-consent";
 import { sha256Hex } from "@/lib/consent-hashing";
@@ -477,6 +478,7 @@ export async function POST(request: NextRequest) {
     });
   }
   applyAnalyticsConsentCookie(res, consent.anonymousAnalytics);
+  applyAnalyticsConsentStateCookie(res, consent.anonymousAnalytics);
 
   return res;
 }

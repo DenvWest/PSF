@@ -1,6 +1,9 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import type { NextRequest, NextResponse } from "next/server";
-import { ANALYTICS_CONSENT_STATE_COOKIE_NAME } from "@/lib/analytics-consent-constants";
+import {
+  ANALYTICS_CONSENT_META_COOKIE_NAME,
+  ANALYTICS_CONSENT_STATE_COOKIE_NAME,
+} from "@/lib/analytics-consent-constants";
 
 export const ANALYTICS_CONSENT_COOKIE_NAME = "psf_analytics_consent";
 
@@ -120,6 +123,38 @@ export function applyAnalyticsConsentStateCookie(
 
 export function clearAnalyticsConsentStateCookie(response: NextResponse): void {
   response.cookies.set(ANALYTICS_CONSENT_STATE_COOKIE_NAME, "", {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
+export type AnalyticsConsentMeta = {
+  id: string;
+  grantedAt: string;
+};
+
+export function applyAnalyticsConsentMetaCookie(
+  response: NextResponse,
+  meta: AnalyticsConsentMeta,
+): void {
+  response.cookies.set(
+    ANALYTICS_CONSENT_META_COOKIE_NAME,
+    JSON.stringify(meta),
+    {
+      httpOnly: false,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: COOKIE_MAX_AGE_SEC,
+    },
+  );
+}
+
+export function clearAnalyticsConsentMetaCookie(response: NextResponse): void {
+  response.cookies.set(ANALYTICS_CONSENT_META_COOKIE_NAME, "", {
     httpOnly: false,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
