@@ -1,9 +1,10 @@
 # DPIA — PerfectSupplement Leefstijlcheck
 
 > **Layer 1 — Core.** Gegevensbeschermingseffectbeoordeling (AVG art. 35) voor de verwerking van gezondheidsgegevens via de Leefstijlcheck, het dashboard en de nurture-mails.
-> Verwante docs: `COMPLIANCE.md` (claim-/medische regels), privacyverklaring (`src/app/privacy/page.tsx`), toestemmingsteksten (`src/lib/consent-texts.ts`).
+> Verwante docs: [`VERWERKINGSREGISTER.md`](VERWERKINGSREGISTER.md) (art. 30), `COMPLIANCE.md` (claim-/medische regels), privacyverklaring (`src/app/privacy/page.tsx`), toestemmingsteksten (`src/lib/consent-texts.ts`).
 
-> Opgesteld 2026-06-21. Status: **concept ter vaststelling**. Onderdelen gemarkeerd met `[VUL IN]` vereisen organisatorische input die niet uit de codebase blijkt.
+> Opgesteld 2026-06-21 · **Versie 1.1 — 4 juli 2026**. Status: **concept ter vaststelling** (PDF-snapshot v1.0 van 12 april 2026 vervangen door v1.1). Onderdelen gemarkeerd met `[VUL IN]` vereisen organisatorische input die niet uit de codebase blijkt.
+> **Onderhoud:** jaarlijks of bij wezenlijke risicowijziging. Maandelijkse drift-check via `docs/cursors/monthly-privacy-register-review.md`.
 
 ---
 

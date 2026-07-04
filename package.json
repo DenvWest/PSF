@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "generate-state": "node scripts/generate-state.mjs",
+    "generate-legal-pdfs": "node scripts/generate-legal-pdfs.mjs",
     "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {

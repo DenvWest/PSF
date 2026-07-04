@@ -19,7 +19,7 @@ export default function PrivacyPage() {
             title="Privacyverklaring"
             intro={
                 <>
-                    Laatst bijgewerkt: 21 mei 2026. PerfectSupplement is een initiatief van Dennis
+                    Laatst bijgewerkt: 4 juli 2026. PerfectSupplement is een initiatief van Dennis
                     van Westbroek, KVK 74667653.
                 </>
             }
@@ -59,6 +59,15 @@ export default function PrivacyPage() {
                     </div>
 
                     <div>
+                        <h3 className="font-semibold text-stone-900">Account en dashboard</h3>
+                        <p className="mt-2">
+                            Als je vrijwillig inlogt, verwerken we je e-mailadres en een technische
+                            accountkoppeling zodat je je voortgang en trends over meerdere checks heen
+                            kunt bekijken. Inlogcodes zijn kort geldig en eenmalig te gebruiken.
+                        </p>
+                    </div>
+
+                    <div>
                         <h3 className="font-semibold text-stone-900">
                             Contactformulier en optioneel e-mailadres
                         </h3>
@@ -72,12 +81,15 @@ export default function PrivacyPage() {
                     <div>
                         <h3 className="font-semibold text-stone-900">Automatisch verzamelde gegevens</h3>
                         <p className="mt-2">
-                            Voor inzicht in het gebruik van de site gebruiken we Google Analytics met
-                            cookies. Cloudflare Turnstile wordt ingezet ter bescherming tegen misbruik en
-                            plaatst geen trackingcookies voor advertentiedoeleinden. Voor de intake wordt een
+                            Voor inzicht in het gebruik van de site gebruiken we Google Analytics en
+                            Microsoft Clarity, alleen na toestemming via de cookiebanner. Cloudflare
+                            Turnstile wordt ingezet ter bescherming tegen misbruik en plaatst geen
+                            trackingcookies voor advertentiedoeleinden. Voor de intake wordt een
                             functioneel sessiecookie{" "}
                             <span className="font-mono text-stone-700">psf_intake_sid</span> gebruikt om je
-                            voortgang technisch vast te leggen.
+                            voortgang technisch vast te leggen. Met aparte toestemming slaan we
+                            geanonimiseerde productevents op in onze eigen database (geen ruwe
+                            intake-antwoorden).
                         </p>
                     </div>
                 </div>
@@ -108,6 +120,18 @@ export default function PrivacyPage() {
                                 </td>
                                 <td className="px-4 py-3 align-top">
                                     Intake-antwoorden (waaronder mogelijke gezondheidsgegevens)
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
+                                    Account en persoonlijk dashboard
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    Art. 9 lid 2 sub a AVG (expliciete toestemming bij koppeling), in
+                                    combinatie met art. 6 lid 1 sub a AVG
+                                </td>
+                                <td className="px-4 py-3 align-top">
+                                    E-mailadres, accountkoppeling, gekoppelde intake-sessies
                                 </td>
                             </tr>
                             <tr className="border-t border-stone-200">
@@ -146,7 +170,27 @@ export default function PrivacyPage() {
                                 <td className="px-4 py-3 align-top">Inzicht in gebruik van de website</td>
                                 <td className="px-4 py-3 align-top">Art. 6 lid 1 sub a AVG (toestemming)</td>
                                 <td className="px-4 py-3 align-top">
-                                    Via Google Analytics verzamelde gebruiks- en apparaatgegevens
+                                    Via Google Analytics en Microsoft Clarity verzamelde gebruiks- en
+                                    apparaatgegevens
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
+                                    Productverbetering (geanonimiseerde events)
+                                </td>
+                                <td className="px-4 py-3 align-top">Art. 6 lid 1 sub a AVG (toestemming)</td>
+                                <td className="px-4 py-3 align-top">
+                                    Pseudonieme sessie-id, event-type en categorische metadata (geen ruwe
+                                    antwoorden of scores)
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
+                                    Affiliate-klikmeting
+                                </td>
+                                <td className="px-4 py-3 align-top">Art. 6 lid 1 sub f AVG (gerechtvaardigd belang)</td>
+                                <td className="px-4 py-3 align-top">
+                                    Product-slug, timestamp, optioneel pseudonieme sessie-id
                                 </td>
                             </tr>
                         </tbody>
@@ -228,8 +272,22 @@ export default function PrivacyPage() {
                                 <td className="px-4 py-3">90 dagen</td>
                             </tr>
                             <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Affiliate-klikregistraties</td>
+                                <td className="px-4 py-3">90 dagen</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Geanonimiseerde productevents</td>
+                                <td className="px-4 py-3">
+                                    Volgt intake-retentie (max. 24 maanden); anonimiseren bij intrekking
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Google Analytics</td>
                                 <td className="px-4 py-3">14 maanden</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Microsoft Clarity</td>
+                                <td className="px-4 py-3">1 dag tot 1 jaar (cookie-afhankelijk)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -337,6 +395,11 @@ export default function PrivacyPage() {
                         </thead>
                         <tbody>
                             <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 font-mono text-stone-700">psf_account</td>
+                                <td className="px-4 py-3">Functioneel (ingelogde account-sessie)</td>
+                                <td className="px-4 py-3">90 dagen</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3 font-mono text-stone-700">psf_intake_sid</td>
                                 <td className="px-4 py-3">Functioneel (sessie / intake)</td>
                                 <td className="px-4 py-3">90 dagen</td>
@@ -383,7 +446,11 @@ export default function PrivacyPage() {
                         <tbody>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Supabase</td>
-                                <td className="px-4 py-3">Database / hosting — EU (Frankfurt)</td>
+                                <td className="px-4 py-3">Database — EU (Frankfurt)</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Hetzner</td>
+                                <td className="px-4 py-3">Applicatiehosting (webserver) — EU (Duitsland)</td>
                             </tr>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Cloudflare</td>
@@ -394,6 +461,10 @@ export default function PrivacyPage() {
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Google Analytics</td>
                                 <td className="px-4 py-3">Webanalyse — Verenigde Staten, EU-US Data Privacy Framework</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Microsoft Clarity</td>
+                                <td className="px-4 py-3">Webanalyse (heatmaps) — Verenigde Staten, EU-US Data Privacy Framework</td>
                             </tr>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Zoho CRM</td>

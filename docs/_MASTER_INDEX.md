@@ -39,6 +39,8 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/ENTITY_MODEL.md`](core/ENTITY_MODEL.md) | Database schema, domain scores, answers structuur, RLS |
 | [`core/DESIGN_TOKENS.md`](core/DESIGN_TOKENS.md) | Fonts, kleuren, spacing, component patterns, mobile-first |
 | [`core/COMPLIANCE.md`](core/COMPLIANCE.md) | EFSA claims, AVG, affiliate disclosure, medische disclaimers |
+| [`core/VERWERKINGSREGISTER.md`](core/VERWERKINGSREGISTER.md) | AVG art. 30 — verwerkingsregister (intern, maandelijks onderhoud) |
+| [`core/DPIA.md`](core/DPIA.md) | AVG art. 35 — DPIA gezondheidsgegevens (intern) |
 | [`core/WRITING_VOICE.md`](core/WRITING_VOICE.md) | Schrijfstem: toon, woorden, herkennings-copy (weggever, nurture, profielen) |
 | [`core/BRAND_POSITIONING.md`](core/BRAND_POSITIONING.md) | Merkstrategie: propositie, differentiatie, social media, transparantie vs. moat |
 
@@ -85,6 +87,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Cursor-prompt schrijven | `core/CURSOR_PROMPT_TEMPLATE.md` |
 | Wekelijkse audits (read-only) | `cursors/weekly-routines-claude-code.md` |
 | Maandelijkse strategiereview | `cursors/monthly-strategy-review.md` |
+| AVG / verwerkingsregister / DPIA | `core/VERWERKINGSREGISTER.md` + `core/DPIA.md` + `cursors/monthly-privacy-register-review.md` |
 | Database/data | `core/ENTITY_MODEL.md` |
 | Planning/sprint | `core/CURRENT_SPRINT.md` |
 | Design/styling | `core/DESIGN_TOKENS.md` |
