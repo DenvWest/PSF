@@ -196,8 +196,8 @@ export const METHODOLOGY_AFFILIATE_FOOTNOTE = {
 
 export const METHODOLOGY_CTA = {
   title: "Start met de Leefstijlcheck",
-  lead: "Vijf hefbomen in drie minuten — gratis, zonder account.",
+  lead: "Krijg in drie minuten een helder leefstijloverzicht.",
   buttonLabel: "Start de Leefstijlcheck",
   href: "/intake",
-  footnote: "Geen account nodig · Je gegevens worden anoniem verwerkt",
+  privacySummary: "Gratis · geen account · AVG-proof",
 } as const;

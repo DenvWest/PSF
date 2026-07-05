@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { INTAKE_PRIVACY_DISCLOSURE } from "@/data/intake-privacy-disclosure";
 import { METHODOLOGY_CTA } from "@/data/methodology";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
@@ -29,7 +30,26 @@ export default function MethodologyIntakeCta() {
             <span aria-hidden="true">→</span>
           </Link>
         </div>
-        <p className="mt-4 text-xs text-[#F7F5F0]/45">{METHODOLOGY_CTA.footnote}</p>
+        <details className="mx-auto mt-4 max-w-md text-left text-xs text-[#F7F5F0]/45">
+          <summary className="cursor-pointer list-none text-center text-[#F7F5F0]/55 [&::-webkit-details-marker]:hidden">
+            {METHODOLOGY_CTA.privacySummary}
+          </summary>
+          <ul className="mt-3 space-y-2 text-center">
+            {INTAKE_PRIVACY_DISCLOSURE.bullets.map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
+            <li>
+              Meer in onze{" "}
+              <Link
+                href="/privacy"
+                className="underline underline-offset-2 hover:text-[#F7F5F0]/70"
+              >
+                {INTAKE_PRIVACY_DISCLOSURE.privacyLinkLabel}
+              </Link>
+              .
+            </li>
+          </ul>
+        </details>
       </div>
     </section>
   );

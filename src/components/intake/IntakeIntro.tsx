@@ -6,6 +6,7 @@ import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { LEEFSTIJL_DISCLAIMER } from "@/data/leefstijl-disclaimer";
+import { INTAKE_PRIVACY_DISCLOSURE } from "@/data/intake-privacy-disclosure";
 
 type IntakeIntroProps = {
   onStart: () => void;
@@ -86,12 +87,9 @@ export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntr
             Wat doen we met je antwoorden?
           </summary>
           <ul className="mt-3 space-y-2 pl-4">
-            <li>Je antwoorden zijn gezondheidsgegevens (AVG art. 9).</li>
-            <li>
-              We slaan ze pas op nadat je aan het einde expliciet toestemming
-              geeft.
-            </li>
-            <li>Je kunt je toestemming op elk moment intrekken.</li>
+            {INTAKE_PRIVACY_DISCLOSURE.bullets.map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
             <li>
               Meer in onze{" "}
               <Link
@@ -102,7 +100,7 @@ export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntr
                   textUnderlineOffset: 3,
                 }}
               >
-                privacyverklaring
+                {INTAKE_PRIVACY_DISCLOSURE.privacyLinkLabel}
               </Link>
               .
             </li>
