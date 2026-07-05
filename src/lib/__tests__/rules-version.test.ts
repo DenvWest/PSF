@@ -32,6 +32,7 @@ describe("rules-version", () => {
   it("flags vitality delta incomparable across 1.3.0 boundary", () => {
     expect(isVitalityDeltaComparable("1.2.0", "1.3.0")).toBe(false);
     expect(isVitalityDeltaComparable("1.3.0", "1.3.0")).toBe(true);
+    expect(isVitalityDeltaComparable("1.3.0", "1.3.1")).toBe(true);
     expect(isVitalityDeltaComparable("1.2.0", "1.2.0")).toBe(true);
   });
 

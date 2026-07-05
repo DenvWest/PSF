@@ -493,6 +493,7 @@ describe("getDeficiencySignals", () => {
   });
 
   it("detects creatine signal when recovery is low and movement is high", () => {
+    // Tak recovery_score < 50 && movementLoad >= 3 — niet recoveryPrimary.
     const signals = getDeficiencySignals(
       makeAnswers({ MOV_CARD: 4, MOV_STR: 3, RCV_PHYS: 1, STR_RCV: 1 }),
     );
@@ -500,6 +501,7 @@ describe("getDeficiencySignals", () => {
   });
 
   it("does not flag creatine for sedentary low-recovery person", () => {
+    // Beweging (25) is laagste domein, niet herstel — geen enkele creatine-tak actief.
     const signals = getDeficiencySignals(
       makeAnswers({ MOV_CARD: 1, MOV_STR: 1, RCV_PHYS: 1, STR_RCV: 3 }),
     );

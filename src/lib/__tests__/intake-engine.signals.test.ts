@@ -19,6 +19,7 @@ function makeAnswers(overrides: Record<string, number> = {}): Record<string, num
     MOV_STR: 3,
     MOV_CARD: 3,
     RCV_PHYS: 3,
+    CON_SOC: 3,
     ...overrides,
   };
 }
@@ -88,5 +89,24 @@ describe("K3 — energy_dip_unexplained (energiedip zónder slaap/voeding-verkla
       }),
     );
     expect(signals.energy_dip_unexplained).toBe(false);
+  });
+});
+
+describe("creatine_signal — recoveryPrimary-tak (1.3.1)", () => {
+  it("triggert NIET bij herstel laagste domein zonder trainingsbelasting", () => {
+    // recovery_score 67 (RCV_PHYS 2), herstel laagste domein; movementLoad 1.
+    // Vóór 1.3.1 true via recoveryPrimary; na fix false (geen creatine bij niet-trainer).
+    const signals = getDeficiencySignals(
+      makeAnswers({ RCV_PHYS: 2, MOV_STR: 1, MOV_CARD: 1, CON_SOC: 4 }),
+    );
+    expect(signals.creatine_signal).toBe(false);
+  });
+
+  it("triggert bij herstel laagste domein mét matige trainingsbelasting", () => {
+    // movementLoad 2; herstel (33) laagste domein — recoveryPrimary is enige actieve tak.
+    const signals = getDeficiencySignals(
+      makeAnswers({ RCV_PHYS: 1, MOV_STR: 2, MOV_CARD: 1, CON_SOC: 4 }),
+    );
+    expect(signals.creatine_signal).toBe(true);
   });
 });

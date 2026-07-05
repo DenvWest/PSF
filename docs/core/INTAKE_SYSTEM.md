@@ -129,6 +129,8 @@ Berekend op **interventiedomeinen** (slaap, stress, voeding, beweging, verbindin
 
 **Vitaliteitsscore (rules_version ≥ 1.3.0):** gemiddelde van slaap, stress, voeding, beweging en verbinding — energie en herstel zijn readouts en tellen niet mee.
 
+**1.3.1 (jul 2026):** creatine_signal recoveryPrimary-tak vereist movementLoad >= 2 — geen creatine-routing meer bij niet-trainers. Scores/vitaliteit ongewijzigd; delta's blijven vergelijkbaar met 1.3.0.
+
 **Prioriteit bij meerdere matches:** slaap > stress > voeding > beweging > verbinding (zie `DOMAIN_MODEL.md`). Nutrition en verbinding hebben geen eigen profiellabel.
 
 **Overtrainer-patroon:** Geen apart profiellabel in de engine. Het patroon (`max(MOV_CARD, MOV_STR) ≥ 3` EN `RCV_PHYS ≤ 1`) wordt herkend in `getSupplementRoute` en op de resultatenpagina. Er bestaat een `/profiel/overtrainer` pagina.

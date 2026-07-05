@@ -8,8 +8,9 @@ import { COMPARISON_PATHS } from "@/lib/comparison-paths";
  * 1.1.0 — recovery_score alleen RCV_PHYS; urgentie/priority op interventiedomeinen
  * 1.2.0 — vitaliteit = 4 interventiedomeinen; profiellabel driver-based
  * 1.3.0 — verbinding als 5e interventiedomein (CON_SOC); vitaliteit = 5 interventiedomeinen
+ * 1.3.1 — creatine_signal recoveryPrimary vereist movementLoad >= 2
  */
-export const RULES_VERSION = "1.3.0" as const;
+export const RULES_VERSION = "1.3.1" as const;
 
 export interface DomainScores {
   sleep_score: number;
@@ -192,8 +193,9 @@ export function getDeficiencySignals(
   const movementLoad = getMovementLoad(answers);
   const rcvPhys = getAnswer(answers, "RCV_PHYS");
   const overtrainerPattern = movementLoad >= 3 && rcvPhys <= 1;
-  /** Answer/driver-based signaal — recovery als 6e domein-rang, niet als priority-pijler. */
-  const recoveryPrimary = getSortedDomains(scores)[0].domain === "recovery";
+  /** Herstel als laagste domein telt alleen als signaal-tak bij matige+ trainingsbelasting (1.3.1). */
+  const recoveryPrimary =
+    getSortedDomains(scores)[0].domain === "recovery" && movementLoad >= 2;
   const creatine_signal =
     (scores.recovery_score < 50 && movementLoad >= 3) ||
     recoveryPrimary ||
