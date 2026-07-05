@@ -99,7 +99,7 @@ export default function MethodologyDashboardPreview() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="-mx-4 overflow-x-auto border-b border-white/10 px-3 pb-3 md:-mx-5 md:px-4">
-        <nav aria-label="Dashboard tabbladen" className="flex min-w-max gap-1">
+        <nav aria-label="Dashboard tabbladen" className="flex min-w-max gap-1" role="tablist">
           {PREVIEW_TABS.map((tab) => {
             const isActive = tab.id === activeTab;
 
@@ -107,7 +107,10 @@ export default function MethodologyDashboardPreview() {
               <button
                 key={tab.id}
                 type="button"
+                role="tab"
+                id={`methodologie-dashboard-tab-${tab.id}`}
                 aria-selected={isActive}
+                aria-controls={`methodologie-dashboard-panel-${tab.id}`}
                 onClick={() => handleTabClick(tab.id as PreviewTabId)}
                 className={`rounded-t-lg px-3 py-2 text-xs font-medium transition ${
                   isActive ? "bg-[#0f1c10] text-white" : "text-stone-400 hover:text-stone-300"
@@ -120,7 +123,12 @@ export default function MethodologyDashboardPreview() {
         </nav>
       </div>
 
-      <div className="flex flex-1 flex-col pt-4">
+      <div
+        className="flex flex-1 flex-col pt-4"
+        role="tabpanel"
+        id={`methodologie-dashboard-panel-${activeTab}`}
+        aria-labelledby={`methodologie-dashboard-tab-${activeTab}`}
+      >
         <ActivePanel />
       </div>
     </div>
