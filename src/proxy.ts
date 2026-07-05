@@ -3,6 +3,10 @@ import {
   ADMIN_TOKEN_COOKIE_NAME,
   isValidAdminSessionCookie,
 } from "@/lib/admin-auth";
+import {
+  ACCOUNT_SESSION_COOKIE_NAME,
+  verifyAccountCookie,
+} from "@/lib/account-session-cookie";
 import { resolveOrgIdFromHost } from "@/lib/org-resolver";
 
 function requiresAdminAuth(pathname: string): boolean {
@@ -80,6 +84,13 @@ function buildContentSecurityPolicy() {
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  if (pathname === "/account/login") {
+    const accountCookie = request.cookies.get(ACCOUNT_SESSION_COOKIE_NAME)?.value;
+    if (verifyAccountCookie(accountCookie)) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  }
 
   if (requiresAdminAuth(pathname)) {
     const token = request.cookies.get(ADMIN_TOKEN_COOKIE_NAME)?.value;
