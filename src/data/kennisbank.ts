@@ -152,6 +152,7 @@ Een gecheleerd mineraal is beschermd door het aminozuur. Het reist intact naar j
   {
     slug: 'adaptogens',
     insightTier: 3,
+    publicFullContent: true,
     term: 'Adaptogens',
     theme: 'supplementwetenschap',
     shortDefinition:
@@ -324,7 +325,7 @@ Let op: "laboratorium getest" op een etiket zonder te vermelden welk lab is wein
   },
   {
     slug: 'slaaphygiene',
-    insightTier: 2,
+    insightTier: 1,
     term: 'Slaaphygiëne',
     theme: 'leefstijl-herstel',
     shortDefinition: 'Het geheel van gewoontes en omgevingsfactoren dat de kwaliteit van je slaap bepaalt.',
@@ -360,7 +361,7 @@ Een wind-down routine — een vast signaal aan je lichaam dat het tijd is om af 
   },
   {
     slug: 'eiwitbehoefte-na-40',
-    insightTier: 2,
+    insightTier: 1,
     term: 'Eiwitbehoefte na 40',
     theme: 'leefstijl-herstel',
     shortDefinition: 'Na 40 heeft je lichaam meer eiwit nodig om spiermassa te behouden — maar de meeste mannen eten te weinig.',
@@ -672,6 +673,7 @@ Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme 
   {
     slug: 'magnesiumvormen',
     insightTier: 3,
+    publicFullContent: true,
     term: 'Magnesiumvormen',
     theme: 'supplementwetenschap',
     shortDefinition:
