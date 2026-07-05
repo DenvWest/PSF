@@ -126,6 +126,7 @@ export default function CookieConsentBanner() {
   );
 
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const contentPanelRef = useRef<HTMLDivElement>(null);
   const isFirstVisit = consentState === "unset";
   const open = isFirstVisit || preferenceRequest !== null;
   const savedStatisticsEnabled = statisticsEnabledFromState();
@@ -157,6 +158,24 @@ export default function CookieConsentBanner() {
       titleRef.current?.focus();
     }
   }, [open, activeTab]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    contentPanelRef.current?.scrollTo({ top: 0 });
+  }, [activeTab, open]);
 
   async function persistConsent(payload: CookieConsentPayload): Promise<boolean> {
     const wasStatisticsGranted = readAnalyticsConsentStateClient() === "granted";
@@ -227,16 +246,16 @@ export default function CookieConsentBanner() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-transparent p-4 sm:items-center sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-transparent px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:items-center sm:p-6"
       role="presentation"
     >
       <aside
         role="dialog"
         aria-modal="true"
         aria-labelledby="cookie-modal-title"
-        className="flex w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-[0_20px_60px_rgba(28,25,23,0.16)]"
+        className="flex w-full max-w-2xl max-h-[min(92dvh,calc(100dvh-2rem-env(safe-area-inset-bottom,0px)))] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-[0_20px_60px_rgba(28,25,23,0.16)]"
       >
-        <header className="flex items-center justify-between gap-4 border-b border-stone-200 px-5 py-3 sm:px-6">
+        <header className="flex shrink-0 items-center justify-between gap-4 border-b border-stone-200 px-5 py-3 sm:px-6">
           <div className="flex items-center gap-2.5 sm:gap-3">
             <Image
               src="/icon.png"
@@ -265,7 +284,7 @@ export default function CookieConsentBanner() {
 
         <nav
           aria-label="Cookie-instellingen"
-          className="flex gap-6 border-b border-stone-200 px-5 sm:px-6"
+          className="flex shrink-0 gap-6 border-b border-stone-200 px-5 sm:px-6"
         >
           {(Object.keys(TAB_LABELS) as ConsentTab[]).map((tab) => (
             <button
@@ -284,9 +303,10 @@ export default function CookieConsentBanner() {
         </nav>
 
         <div
-          className={`px-5 py-4 sm:px-6 sm:py-5 ${
+          ref={contentPanelRef}
+          className={`min-h-0 flex-1 px-5 py-4 sm:px-6 sm:py-5 ${
             scrollableContent
-              ? "max-h-[min(65vh,560px)] overflow-y-auto"
+              ? "overflow-y-auto overscroll-y-contain"
               : "overflow-visible"
           }`}
         >
@@ -313,7 +333,7 @@ export default function CookieConsentBanner() {
           ) : null}
         </div>
 
-        <footer className="border-t border-stone-200 bg-white px-5 py-3 sm:px-6">
+        <footer className="shrink-0 border-t border-stone-200 bg-white px-5 py-3 pb-[env(safe-area-inset-bottom,0px)] sm:px-6">
           {activeTab === "consent" && hasUnsavedChanges ? (
             <button
               type="button"
