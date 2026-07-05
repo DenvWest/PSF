@@ -1,0 +1,3 @@
+/** Canonieke leefstijlcoach-positionering (moat-rapport §3E / besluit §3G #6). */
+export const LEEFSTIJL_DISCLAIMER =
+  "PerfectSupplement geeft leefstijl- en voedingsinformatie en vergelijkt supplementen op basis van Europees goedgekeurde gezondheidsclaims (EFSA). We zijn geen artsen en stellen geen diagnoses: de Leefstijlcheck ordent aandachtspunten op basis van wat je zelf invult — het is geen medische test en geen vervanging voor zorg. Op basis van je antwoorden schatten we je inname in; we meten geen bloedwaarden en doen geen uitspraken over tekorten in je lichaam. Bij aanhoudende of ernstige klachten, medicijngebruik of twijfel: ga naar je huisarts.";

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 import Container from "@/components/layout/Container";
+import LeefstijlDisclaimerBlock from "@/components/legal/LeefstijlDisclaimerBlock";
 
 export const metadata: Metadata = {
   title: "Onze methodologie | PerfectSupplement",
@@ -231,6 +232,10 @@ export default function MethodologiePage() {
               </div>
             </section>
           </div>
+
+          <section className="my-16">
+            <LeefstijlDisclaimerBlock className="mx-auto max-w-3xl" />
+          </section>
 
           <section className="my-16">
             <div className="bg-gradient-to-br from-ps-green to-ps-green-hover text-white rounded-2xl p-8 lg:p-12 text-center">

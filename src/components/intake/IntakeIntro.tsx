@@ -5,6 +5,7 @@ import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
 import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
+import { LEEFSTIJL_DISCLAIMER } from "@/data/leefstijl-disclaimer";
 
 type IntakeIntroProps = {
   onStart: () => void;
@@ -58,6 +59,21 @@ export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntr
         </div>
 
         {!isRemeasure ? <IntakeResultPreviewCard /> : null}
+
+        <details
+          className="max-w-md text-left text-xs"
+          style={{ color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}
+        >
+          <summary
+            className="cursor-pointer list-none text-center [&::-webkit-details-marker]:hidden"
+            style={{ color: "rgba(255,255,255,0.45)" }}
+          >
+            Leefstijlcoach, geen arts
+          </summary>
+          <p className="mt-3 text-center" style={{ color: "rgba(255,255,255,0.4)" }}>
+            {LEEFSTIJL_DISCLAIMER}
+          </p>
+        </details>
 
         <details
           className="max-w-md text-left text-xs"

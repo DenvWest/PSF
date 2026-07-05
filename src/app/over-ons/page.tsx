@@ -17,6 +17,7 @@ import {
   ABOUT_TRUST,
   ABOUT_WHAT_WE_DO,
 } from "@/data/about";
+import LeefstijlDisclaimerBlock from "@/components/legal/LeefstijlDisclaimerBlock";
 
 export const metadata: Metadata = {
   title: ABOUT_METADATA.title,
@@ -432,6 +433,13 @@ export default function OverOnsPage() {
                     {ABOUT_CTA.buttonLabel} →
                   </Link>
                 </p>
+              </div>
+            </section>
+
+            {/* ── LEEFSTIJL-DISCLAIMER ─────────────────────────────────── */}
+            <section className="pb-16 md:pb-20">
+              <div className="mx-auto max-w-2xl">
+                <LeefstijlDisclaimerBlock />
               </div>
             </section>
 

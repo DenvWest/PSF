@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContentPageLayout from "@/components/layout/ContentPageLayout";
+import { LEEFSTIJL_DISCLAIMER } from "@/data/leefstijl-disclaimer";
 
 export const metadata: Metadata = {
   title: "Medische Disclaimer | PerfectSupplement",
@@ -55,6 +56,11 @@ export default function MedischeDisclaimerPage() {
                         Het gebruik van informatie van deze website en het gebruik van supplementen gebeurt volledig
                         op eigen verantwoordelijkheid.
                     </p>
+            </section>
+
+            <section>
+                <h2 className="text-xl font-semibold text-stone-900">5. Leefstijlcheck en inname-inschatting</h2>
+                <p className="mt-3">{LEEFSTIJL_DISCLAIMER}</p>
             </section>
         </ContentPageLayout>
     );
