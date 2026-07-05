@@ -28,7 +28,9 @@ import {
 } from '@/lib/redactie-standaarden'
 import KennisbankThemaPageContent from '@/components/kennisbank/KennisbankThemaPageContent'
 import KennisbankVerdiepingGate from '@/components/kennisbank/KennisbankVerdiepingGate'
+import KennisbankTier1FooterCta from '@/components/kennisbank/KennisbankTier1FooterCta'
 import InsightPhaseNote from '@/components/insights/InsightPhaseNote'
+import { KENNISBANK_THEME_TO_PIJLER } from '@/data/insights'
 import { getContentMetadata } from '@/data/insight-metadata'
 import { KB_HUB_LABEL } from '@/components/kennisbank/kennisbank-layout'
 import { canAccessVerdieping } from '@/lib/kennisbank-access'
@@ -174,6 +176,9 @@ async function TermPage({ slug }: { slug: string }) {
     term.insightTier >= 2 &&
     !term.publicFullContent &&
     !(await canAccessVerdieping())
+
+  const showTier1Footer =
+    !isGated && (term.insightTier === 1 || Boolean(term.publicFullContent))
 
   const relatedTerms = term.relatedSlugs
     .map((s) => getTermBySlug(s))
@@ -381,24 +386,31 @@ async function TermPage({ slug }: { slug: string }) {
                 </section>
               ) : null}
 
-              <section
-                className="mx-auto mt-20 max-w-[min(38rem,100%)] border border-stone-200/90 bg-white px-7 py-10 text-center md:mt-24 md:px-10 md:py-12"
-                aria-label="Leefstijlcheck"
-              >
-                <h2 className="font-display text-[1.375rem] font-semibold leading-snug text-stone-900 md:text-2xl">
-                  Leefstijl en supplementen structureren
-                </h2>
-                <p className="mx-auto mt-4 max-w-[36ch] text-[0.9375rem] leading-[1.75] text-stone-600">
-                  De Leefstijlcheck is een korte vragenlijst. Het overzicht helpt bij het ordenen van aandachtspunten —
-                  géén medische test en geen vervanging voor zorg.
-                </p>
-                <Link
-                  href="/intake"
-                  className="mt-8 inline-flex min-h-11 items-center justify-center rounded-md border border-stone-800/90 bg-stone-900 px-7 text-[0.875rem] font-medium text-white transition hover:bg-stone-800"
+              {showTier1Footer ? (
+                <KennisbankTier1FooterCta
+                  termSlug={term.slug}
+                  pillarId={KENNISBANK_THEME_TO_PIJLER[term.theme]}
+                />
+              ) : (
+                <section
+                  className="mx-auto mt-20 max-w-[min(38rem,100%)] border border-stone-200/90 bg-white px-7 py-10 text-center md:mt-24 md:px-10 md:py-12"
+                  aria-label="Leefstijlcheck"
                 >
-                  Start de Leefstijlcheck
-                </Link>
-              </section>
+                  <h2 className="font-display text-[1.375rem] font-semibold leading-snug text-stone-900 md:text-2xl">
+                    Leefstijl en supplementen structureren
+                  </h2>
+                  <p className="mx-auto mt-4 max-w-[36ch] text-[0.9375rem] leading-[1.75] text-stone-600">
+                    De Leefstijlcheck is een korte vragenlijst. Het overzicht helpt bij het ordenen van aandachtspunten —
+                    géén medische test en geen vervanging voor zorg.
+                  </p>
+                  <Link
+                    href="/intake"
+                    className="mt-8 inline-flex min-h-11 items-center justify-center rounded-md border border-stone-800/90 bg-stone-900 px-7 text-[0.875rem] font-medium text-white transition hover:bg-stone-800"
+                  >
+                    Start de Leefstijlcheck
+                  </Link>
+                </section>
+              )}
             </article>
           </div>
         </Container>
