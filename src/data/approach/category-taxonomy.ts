@@ -47,7 +47,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "SLP_ONSET",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["melatonine-na-40", "circadiaan-ritme"],
   },
   {
     id: "slaap-doorslapen",
@@ -57,7 +57,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "SLP_WAKE",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["magnesium-en-slaap", "cortisol-en-slaap"],
   },
   {
     id: "slaap-ritme",
@@ -67,7 +67,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "SLP_CONS",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["slaapritme-herstellen", "circadiaan-ritme", "melatonine"],
   },
   {
     id: "slaap-kwaliteit",
@@ -77,7 +77,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "SLP_QUAL",
     evidenceNiveau: "redelijk",
-    insightSlugs: [],
+    insightSlugs: ["magnesium-en-slaapkwaliteit", "slaapschuld"],
   },
   {
     id: "slaap-hrv",
@@ -117,7 +117,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "STR_FREQ",
     evidenceNiveau: "redelijk",
-    insightSlugs: [],
+    insightSlugs: ["cortisol-verlagen-natuurlijk", "hpa-as"],
   },
   {
     id: "stress-herstelmomenten",
@@ -127,7 +127,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "STR_RCV",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["ademhaling-tegen-stress", "nervus-vagus"],
   },
   {
     id: "stress-ademhaling",
@@ -136,7 +136,7 @@ export const CATEGORY_TAXONOMY = [
     description: "Ademhaling en ontspanning als dagelijkse gewoonte.",
     source: "none",
     evidenceNiveau: "redelijk",
-    insightSlugs: [],
+    insightSlugs: ["ademhaling-tegen-stress"],
   },
   {
     id: "verbinding-steun",
@@ -146,7 +146,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "CON_SOC",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["stress-werk-grenzen-stellen"],
   },
   {
     id: "voeding-eiwit",
@@ -156,7 +156,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "NUT_PROT",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["eiwitbehoefte-na-40", "eiwit-na-40"],
   },
   {
     id: "voeding-vetzuren",
@@ -166,7 +166,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "NUT_O3",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["wat-is-omega-3", "epa-dha"],
   },
   {
     id: "voeding-vezels",
@@ -175,7 +175,7 @@ export const CATEGORY_TAXONOMY = [
     description: "Vezelrijk eten als onderdeel van je voedingspatroon.",
     source: "none",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["middagdip-bloedsuiker-na-40"],
   },
   {
     id: "voeding-ritme",
@@ -184,7 +184,7 @@ export const CATEGORY_TAXONOMY = [
     description: "Regelmaat in je eetmomenten.",
     source: "none",
     evidenceNiveau: "redelijk",
-    insightSlugs: [],
+    insightSlugs: ["middagdip-bloedsuiker-na-40"],
   },
   {
     id: "beweging-kracht",
@@ -194,7 +194,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "MOV_STR",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["krachttraining-na-40", "creatine-en-herstel"],
   },
   {
     id: "beweging-cardio",
@@ -204,7 +204,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "MOV_CARD",
     evidenceNiveau: "sterk",
-    insightSlugs: [],
+    insightSlugs: ["energie-verhogen-natuurlijk"],
   },
   {
     id: "beweging-dagelijkse-activiteit",

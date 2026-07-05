@@ -32,6 +32,14 @@ describe("content metadata overlay", () => {
     );
   });
 
+  it("elke insight heeft minstens theme in CONTENT_METADATA", () => {
+    for (const item of allInsights) {
+      const meta = CONTENT_METADATA[item.slug];
+      expect(meta?.theme, `geen theme voor ${item.slug}`).toBeDefined();
+    }
+    expect(Object.keys(CONTENT_METADATA).length).toBe(allInsights.length);
+  });
+
   it("geseede slug draagt metadata door normalizer", () => {
     const tagged = allInsights.find((i) => i.slug === "eiwitbehoefte-na-40");
     expect(tagged?.relatedSupplementId).toBeDefined();

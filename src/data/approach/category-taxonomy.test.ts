@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SIGNALS } from "@/data/dashboard";
+import { allInsights } from "@/data/insights";
 import {
   CATEGORY_TAXONOMY,
   getCategoriesForDomain,
@@ -84,6 +85,15 @@ describe("category-taxonomy", () => {
 
     for (const id of wearableIds) {
       expect(SIGNAL_IDS.has(id)).toBe(true);
+    }
+  });
+
+  it("insightSlugs verwijzen naar bestaande content-slugs", () => {
+    const SLUGS = new Set(allInsights.map((i) => i.slug));
+    for (const category of CATEGORY_TAXONOMY) {
+      for (const slug of category.insightSlugs) {
+        expect(SLUGS.has(slug), `${category.id} → ${slug}`).toBe(true);
+      }
     }
   });
 });
