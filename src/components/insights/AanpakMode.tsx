@@ -12,6 +12,8 @@ import {
   getSupplementCardCopy,
   MOEITE_LABEL,
 } from "@/data/approach/supplement-cards";
+import AanpakQ1EiwitHero from "@/components/insights/AanpakQ1EiwitHero";
+import { shouldShowAanpakQ1EiwitHero } from "@/lib/aanpak-q1-eiwit";
 
 function ApproachCard({
   rec,
@@ -77,6 +79,7 @@ export default async function AanpakMode() {
   const account = await getAccountFromCookie();
   const dashboard = account ? await loadAccountDashboardData(account.id) : null;
   const hasContext = Boolean(dashboard && !dashboard.empty && dashboard.current);
+  const showQ1EiwitHero = hasContext && shouldShowAanpakQ1EiwitHero(dashboard?.answers);
 
   let recommendations: RecommendedSupplement[] = [];
   if (hasContext && dashboard?.sessionId) {
@@ -119,29 +122,49 @@ export default async function AanpakMode() {
               </span>
             </div>
 
-            {recommendations.length > 0 ? (
-              <>
+            {showQ1EiwitHero ? (
+              <div className="mb-6">
                 <div className="mb-4 rounded-r-lg border-l-[3px] border-[#5A8F6A] bg-[#EEF3EF] py-3 pl-4 pr-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#3D6B4F]">
                     Grootste winst, kleinste stap
                   </p>
                   <p className="mt-1 text-sm text-[#3D6B4F]">
-                    Begin hier: veel effect, lage drempel. Voeding eerst, supplement als aanvulling.
+                    Voeding eerst — supplement als aanvulling.
                   </p>
                 </div>
+                <AanpakQ1EiwitHero />
+              </div>
+            ) : null}
+
+            {recommendations.length > 0 ? (
+              <>
+                {!showQ1EiwitHero ? (
+                  <div className="mb-4 rounded-r-lg border-l-[3px] border-[#5A8F6A] bg-[#EEF3EF] py-3 pl-4 pr-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#3D6B4F]">
+                      Grootste winst, kleinste stap
+                    </p>
+                    <p className="mt-1 text-sm text-[#3D6B4F]">
+                      Begin hier: veel effect, lage drempel. Voeding eerst, supplement als aanvulling.
+                    </p>
+                  </div>
+                ) : (
+                  <h2 className="mb-4 font-display text-lg font-normal text-stone-900">
+                    Aanvullend: supplementen uit je check
+                  </h2>
+                )}
                 <div className="space-y-4">
                   {recommendations.map((rec, index) => (
-                    <ApproachCard key={rec.slug} rec={rec} isTop={index === 0} />
+                    <ApproachCard key={rec.slug} rec={rec} isTop={index === 0 && !showQ1EiwitHero} />
                   ))}
                 </div>
               </>
-            ) : (
+            ) : !showQ1EiwitHero ? (
               <div className="rounded-[20px] border border-dashed border-[#D6D3D1] px-5 py-12 text-center">
                 <p className="text-base text-stone-500">
                   Op dit moment geen specifieke aanpak-tips uit je check — je leefstijl-basis zit goed. Nieuwe kansen verschijnen hier na je volgende check-in.
                 </p>
               </div>
-            )}
+            ) : null}
           </>
         )}
       </Container>
