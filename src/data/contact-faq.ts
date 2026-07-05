@@ -10,7 +10,7 @@ export const faqHelpCards = [
   {
     title: "Methodologie",
     description:
-      "Lees hoe wij supplementen beoordelen op basis van transparantie, dosering en kwaliteit.",
+      "Hoe PerfectSupplement werkt: Leefstijlcheck, persoonlijke voortgang en onafhankelijke supplementvergelijking.",
     href: "/methodologie",
   },
   {
@@ -29,7 +29,7 @@ export const faqHelpCards = [
 export const faqItems: FaqItem[] = [
   {
     q: "Hoe beoordelen jullie supplementen?",
-    a: "We kijken onder meer naar dosering, vorm, transparantie van etikettering, prijs per werkzame eenheid en hoe duidelijk de bron en samenstelling zijn. Waar mogelijk leggen we de link met gangbare wetenschappelijke richtlijnen. De volledige aanpak staat beschreven in onze methodologie.",
+    a: "PerfectSupplement begint met de Leefstijlcheck op vijf hefbomen — slaap, stress, voeding, beweging en verbinding. Supplementen vergelijken we daarnaast op vaste criteria: dosering, vorm, transparantie, prijs per werkzame eenheid en hoe duidelijk bron en samenstelling zijn. De volledige aanpak staat op onze methodologiepagina.",
   },
   {
     q: "Geven jullie medisch advies?",

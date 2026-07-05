@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import Script from "next/script";
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import AnalyticsLoader from "@/components/analytics/AnalyticsLoader";
 import CookieConsentBanner from "@/components/analytics/CookieConsentBanner";
@@ -52,10 +51,9 @@ export default function RootLayout({
           name="0107f4118169ab8"
           content="9822d5dcfc9e7853d2ef69971e75efc8"
         />
-      </head>
-      <body className="bg-[var(--ps-bg)] text-stone-900 antialiased">
-        <Script id="google-consent-default" strategy="beforeInteractive">
-          {`window.dataLayer = window.dataLayer || [];
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('consent', 'default', {
   analytics_storage: 'denied',
@@ -63,8 +61,11 @@ gtag('consent', 'default', {
   ad_user_data: 'denied',
   ad_personalization: 'denied',
   wait_for_update: 500
-});`}
-        </Script>
+});`,
+          }}
+        />
+      </head>
+      <body className="bg-[var(--ps-bg)] text-stone-900 antialiased">
         <AnalyticsLoader />
         <AppShell>{children}</AppShell>
         <CookieConsentBanner />

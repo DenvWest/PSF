@@ -117,7 +117,7 @@ export default function OnderbouwingPage() {
           </ul>
         </section>
 
-        <section className="mt-14 max-w-4xl">
+        <section id="interventie-rapport" className="mt-14 max-w-4xl scroll-mt-28">
           <h2 className={sectionTitleClass}>Waarom interventie- en rapportdomeinen?</h2>
           <p className="mt-4 text-base leading-relaxed text-stone-600">
             De Leefstijlcheck onderscheidt <strong>gedrag waar je op stuurt</strong> van{" "}

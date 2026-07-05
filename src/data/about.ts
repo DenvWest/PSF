@@ -90,13 +90,13 @@ export const ABOUT_WHAT_WE_DO = {
   evidenceParagraph:
     "Onze vergelijkingen volgen vaste criteria en waar mogelijk EFSA-toegelaten claims. Per product vind je bronnen en toelichting onderaan de vergelijkingspagina — de volledige uitleg staat op onze methodologiepagina.",
   paragraphs: [
-    "Met onze vragenlijst vul je in een paar minuten je antwoorden in over slaap, stress, energie, voeding, beweging en herstel. Je krijgt een overzicht van aandachtspunten en algemene leefstijltips — geen medisch advies en geen persoonlijk behandelplan.",
+    "Met onze Leefstijlcheck vul je in een paar minuten je antwoorden in over vijf hefbomen: slaap, stress, voeding, beweging en verbinding. Energie en herstel zijn signalen die je merkt — uitkomsten, geen knoppen om direct aan te draaien. Je krijgt een overzicht van aandachtspunten en algemene leefstijltips — geen medisch advies en geen persoonlijk behandelplan.",
     "Daarnaast vergelijken wij supplementen op vaste criteria: dosering, biobeschikbaarheid, prijs-kwaliteit en transparantie. Elk product doorloopt hetzelfde stramien — ongeacht het merk.",
     "Dit platform is er niet om je meer te laten kopen. Het is er om je grip te geven: beter begrijpen wat je doet, scherpere keuzes maken en minder afhankelijk te worden van glimmende verpakkingen en halve verhalen.",
   ],
   methodologieLink: {
     href: "/methodologie",
-    label: "Lees onze volledige methodologie",
+    label: "Lees hoe PerfectSupplement werkt",
   },
   intakeLink: {
     href: "/intake",

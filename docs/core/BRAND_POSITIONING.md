@@ -17,7 +17,7 @@ PerfectSupplement is de **onafhankelijke supplementen-gids voor mannen 40+** die
 | Onafhankelijk | Geen eigen producten; affiliate volgt de redactionele keuze, niet andersom |
 | Leefstijl eerst | Elke aanbeveling begint met gedrag; supplement is tier 3, niet tier 1 |
 | Evidence-based | EFSA-claims letterlijk; geen hype, geen energie-claims op omega-3 |
-| Persoonlijk | 6 domeinen, profiellabel, nurture op maat — geen generiek advies |
+| Persoonlijk | 5 interventiedomeinen + 2 readouts, profiellabel, nurture op maat — geen generiek advies |
 | Eerlijk over grenzen | Adviezen, geen diagnoses; inname-inschatting, geen statusclaim |
 
 **Wat we niet zijn:**
@@ -45,7 +45,7 @@ PerfectSupplement is de **onafhankelijke supplementen-gids voor mannen 40+** die
 |---|---|---|---|
 | **Advies-basis** | Merk, commissie, hype | Productscores, reviews | EFSA-claims, deterministische engine |
 | **Volgorde** | Supplement first | Vergelijk en kies | Leefstijl eerst → supplement als aanvulling |
-| **Personalisatie** | Geen of quiz-met-affiliate-uitkomst | Geen | 6 domeinen, 4 profielen, nurture 30 dagen |
+| **Personalisatie** | Geen of quiz-met-affiliate-uitkomst | Geen | 5 hefbomen + 2 signalen, 4 profielen, nurture 30 dagen |
 | **Claim-taal** | "Boost je energie", "detox" | Vaak vaag | Exacte EFSA-formulering + dosering |
 | **Belang** | Max commissie, eigen merk | Traffic, clicks | Beste keuze wint; onafhankelijk |
 | **Doelgroep** | Iedereen | Iedereen | Man 40+ (sarcopenie, cortisol, herstel, testosteron-context) |
@@ -62,7 +62,7 @@ flowchart LR
   end
 
   subgraph ps [PerfectSupplement]
-    symptoom2[Symptoom] --> profiel[Profiel_6_domeinen]
+    symptoom2[Symptoom] --> profiel[Profiel_5_hefbomen]
     profiel --> leefstijl[Leefstijl_eerst]
     leefstijl --> supplement[Supplement_EFSA_gated]
   end
@@ -93,14 +93,14 @@ Transparantie over keuzes **bouwt vertrouwen** — vooral als je ook zegt wat je
 
 | Deel publiek | Voorbeeld | Waarom het werkt |
 |---|---|---|
-| Methodologie op hoofdlijnen | "6 leefstijl-domeinen, leefstijl eerst" | Onderscheidt zonder engine te lekken |
+| Methodologie op hoofdlijnen | "5 leefstijl-hefbomen, leefstijl eerst" | Onderscheidt zonder engine te lekken |
 | EFSA-standpunten | "Omega-3 heeft geen energie-claim — wij claimen dat niet" | Autoriteit + eerlijkheid |
 | Uitsluitingen | "Ashwagandha on-hold; melatonine geen affiliate" | Niemand anders zegt dit hardop |
 | Profielen | Onrustige Slaper, Stressdrager, Lage Batterij, Overtrainer | Herkennings-content = social media brandstof |
 | Dosering/vorm-uitleg | "Magnesium bisglycinaat vs oxide — waarom het verschil uitmaakt" | Educatie, geen verkoop |
 | Inname vs status | "Wij schatten inname, geen bloedwaarden" | Compliance + verwachtingsmanagement |
 
-**In content mag je zeggen:** "We gebruiken een persoonlijk profiel op basis van 6 leefstijl-domeinen."
+**In content mag je zeggen:** "We gebruiken een persoonlijk profiel op basis van vijf leefstijl-hefbomen — slaap, stress, voeding, beweging en verbinding."
 
 **Niet zeggen:** "stress_score < 40 triggert profiel Stressdrager."
 
@@ -237,7 +237,7 @@ flowchart TB
 → "Geen goedgekeurde EFSA-claim, en er is een reëel verbod-risico in Nederland. Wij adviseren alleen wat we onderbouwd kunnen verantwoorden."
 
 **"Hoe persoonlijk is het echt?"**
-→ "Je krijgt een profiel op basis van 6 leefstijl-domeinen — slaap, stress, energie, voeding, beweging, herstel. Daaruit volgen concrete acties, niet een generieke supplementlijst."
+→ "Je krijgt een profiel op basis van vijf hefbomen — slaap, stress, voeding, beweging en verbinding. Energie en herstel zijn signalen die je merkt. Daaruit volgen concrete acties, niet een generieke supplementlijst."
 
 **"Zijn jullie een coach / arts?"**
 → "Nee. Wij zijn een onafhankelijke gids. Adviezen, geen diagnoses. Bij aanhoudende klachten: huisarts of specialist."

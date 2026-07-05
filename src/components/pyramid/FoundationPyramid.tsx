@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 //
 // Modes:
 // - preview: volledig statisch (toekomstig gebruik elders, niet op intake-intro)
+// - methodologyPreview: highlight leefstijl + vitaliteit (outcomes) voor /methodologie
 // - personalized: alleen leefstijl-pijlers klikbaar; drawer via onPillarClick (caller)
 
 import {
@@ -32,6 +33,7 @@ export type PillarStatus =
 
 type FoundationPyramidProps =
   | { mode: "preview" }
+  | { mode: "methodologyPreview" }
   | {
       mode: "personalized";
       pillarStatuses: Partial<Record<PillarId, PillarStatus>>;
@@ -112,10 +114,22 @@ function statusForPillar(
 function LayerLabel({
   layer,
   yCenter,
+  readableLabels = false,
 }: {
   layer: PyramidLayer;
   yCenter: number;
+  readableLabels?: boolean;
 }) {
+  const eyebrowClass = readableLabels
+    ? "fill-intake-ink-subtle text-[10px] font-semibold uppercase tracking-[0.14em]"
+    : "fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]";
+  const labelClass = readableLabels
+    ? "fill-intake-ink text-[12px] font-medium"
+    : "fill-intake-ink text-[11px] font-medium";
+  const subtitleClass = readableLabels
+    ? "fill-intake-ink-muted text-[10px]"
+    : "fill-intake-ink-muted text-[9px]";
+
   if (layer.id === "vitality") {
     return (
       <>
@@ -123,7 +137,7 @@ function LayerLabel({
           x={CX}
           y={yCenter - 8}
           textAnchor="middle"
-          className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
+          className={eyebrowClass}
         >
           {layer.eyebrow}
         </text>
@@ -131,7 +145,7 @@ function LayerLabel({
           x={CX}
           y={yCenter + 6}
           textAnchor="middle"
-          className="fill-intake-ink text-[11px] font-medium"
+          className={labelClass}
         >
           {layer.label}
         </text>
@@ -146,7 +160,7 @@ function LayerLabel({
           x={CX}
           y={yCenter - 12}
           textAnchor="middle"
-          className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
+          className={eyebrowClass}
         >
           {layer.eyebrow}
         </text>
@@ -154,7 +168,7 @@ function LayerLabel({
           x={CX}
           y={yCenter + 2}
           textAnchor="middle"
-          className="fill-intake-ink text-[11px] font-medium"
+          className={labelClass}
         >
           {layer.label}
         </text>
@@ -163,7 +177,7 @@ function LayerLabel({
             x={CX}
             y={yCenter + 14}
             textAnchor="middle"
-            className="fill-intake-ink-muted text-[9px]"
+            className={subtitleClass}
           >
             {layer.subtitle}
           </text>
@@ -179,7 +193,7 @@ function LayerLabel({
         x={CX}
         y={yCenter - 6}
         textAnchor="middle"
-        className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
+        className={eyebrowClass}
       >
         {layer.eyebrow}
       </text>
@@ -187,7 +201,7 @@ function LayerLabel({
         x={CX}
         y={yCenter + titleOffset}
         textAnchor="middle"
-        className="fill-intake-ink text-[11px] font-medium"
+        className={labelClass}
       >
         {layer.label}
       </text>
@@ -196,7 +210,7 @@ function LayerLabel({
           x={CX}
           y={yCenter + 18}
           textAnchor="middle"
-          className="fill-intake-ink-muted text-[9px]"
+          className={subtitleClass}
         >
           {layer.subtitle}
         </text>
@@ -443,6 +457,17 @@ function LifestylePillars({
 }
 
 export default function FoundationPyramid(props: FoundationPyramidProps) {
+  const readableLabels = props.mode !== "personalized";
+  const lifestyleEyebrowClass = readableLabels
+    ? "fill-intake-ink-subtle text-[10px] font-semibold uppercase tracking-[0.14em]"
+    : "fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]";
+  const lifestyleLabelClass = readableLabels
+    ? "fill-intake-ink text-[12px] font-medium"
+    : "fill-intake-ink text-[11px] font-medium";
+  const lifestyleSubtitleClass = readableLabels
+    ? "fill-intake-ink-muted text-[10px]"
+    : "fill-intake-ink-muted text-[9px]";
+
   return (
     <div className="mx-auto w-full max-w-[480px] md:max-w-[640px]">
       <svg
@@ -461,25 +486,39 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
           const layer = getLayerMeta(geom.id);
           const yCenter = (geom.yTop + geom.yBottom) / 2;
           const isLifestyle = geom.id === "lifestyle";
+          const isOutcomes = geom.id === "outcomes";
+          const isMethodology = props.mode === "methodologyPreview";
+
+          const fill = isLifestyle
+            ? "rgba(90, 143, 106, 0.14)"
+            : isMethodology && isOutcomes
+              ? "rgba(200, 149, 108, 0.10)"
+              : "var(--intake-bg-elevated)";
+
+          const stroke = isLifestyle
+            ? "var(--intake-terra)"
+            : isMethodology && isOutcomes
+              ? "var(--intake-sage)"
+              : "var(--intake-card-border)";
+
+          const strokeWidth = isLifestyle || (isMethodology && isOutcomes) ? 1.5 : 1;
 
           return (
             <g key={geom.id}>
               <polygon
                 points={trapezoidPoints(geom)}
-                fill={
-                  isLifestyle
-                    ? "rgba(90, 143, 106, 0.14)"
-                    : "var(--intake-bg-elevated)"
-                }
-                stroke={
-                  isLifestyle ? "var(--intake-terra)" : "var(--intake-card-border)"
-                }
-                strokeWidth={isLifestyle ? 1.5 : 1}
+                fill={fill}
+                stroke={stroke}
+                strokeWidth={strokeWidth}
                 pointerEvents="none"
               />
               {!isLifestyle ? (
                 <g pointerEvents="none">
-                  <LayerLabel layer={layer} yCenter={yCenter} />
+                  <LayerLabel
+                    layer={layer}
+                    yCenter={yCenter}
+                    readableLabels={readableLabels}
+                  />
                 </g>
               ) : (
                 <g>
@@ -488,7 +527,7 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
                     y={geom.yTop + 14}
                     textAnchor="middle"
                     pointerEvents="none"
-                    className="fill-intake-ink-subtle text-[9px] font-semibold uppercase tracking-[0.14em]"
+                    className={lifestyleEyebrowClass}
                   >
                     {layer.eyebrow}
                   </text>
@@ -497,7 +536,7 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
                     y={geom.yTop + 28}
                     textAnchor="middle"
                     pointerEvents="none"
-                    className="fill-intake-ink text-[11px] font-medium"
+                    className={lifestyleLabelClass}
                   >
                     {layer.label}
                   </text>
@@ -507,7 +546,7 @@ export default function FoundationPyramid(props: FoundationPyramidProps) {
                       y={geom.yTop + 42}
                       textAnchor="middle"
                       pointerEvents="none"
-                      className="fill-intake-ink-muted text-[9px]"
+                      className={lifestyleSubtitleClass}
                     >
                       {layer.subtitle}
                     </text>

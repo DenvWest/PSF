@@ -10,6 +10,7 @@ export const GA4_EVENTS = {
   DASHBOARD_UNLOCK_VIEWED: 'dashboard_unlock_viewed',
   DASHBOARD_UNLOCK_CTA_CLICKED: 'dashboard_unlock_cta_clicked',
   ONDERBOUWING_LINK_CLICKED: 'onderbouwing_link_clicked',
+  METHODOLOGIE_DASHBOARD_TAB: 'methodologie_dashboard_tab',
   HOME_PROFILE_CLICK: 'home_profile_click',
   REMEASURE_OPTIN_SHOWN: 'remeasure_optin_shown',
   REMEASURE_OPTIN_SUBMITTED: 'remeasure_optin_submitted',
