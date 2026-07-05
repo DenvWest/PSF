@@ -671,6 +671,38 @@ Inhalen van slaap in het weekend helpt deels, maar lost een verstoord weekritme 
     ]),
   },
   {
+    slug: 'sociale-verbinding',
+    insightTier: 1,
+    term: 'Sociale verbinding',
+    theme: 'leefstijl-herstel',
+    shortDefinition:
+      'Mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen — een van de sterkst onderbouwde leefstijlfactoren voor gezond ouder worden.',
+    content: {
+      whatIsIt: `Sociale verbinding gaat niet over hoeveel mensen je kent, maar over de kwaliteit van een handvol relaties: mensen bij wie je jezelf kunt zijn en op wie je kunt terugvallen als het tegenzit. Voor veel mannen boven de 40 versmalt dat netwerk ongemerkt — werk, gezin en agenda eten de vriendschappen op die vroeger vanzelf gingen.
+
+In grote overzichtsstudies hangt het ontbreken van zulke steun samen met een hoger risico op vroegtijdig overlijden — in de orde van grootte van bekende risicofactoren als roken en overgewicht. Dat maakt verbinding geen 'soft' thema, maar een volwaardig leefstijldomein, naast slaap, stress, voeding en beweging.`,
+      howItWorks: `Het mechanisme loopt via je stress-systeem. Betrouwbaar contact dempt de stressrespons: in gezelschap van mensen die je vertrouwt, komt je lichaam sneller terug in de herstelstand. Chronisch gebrek aan steun houdt datzelfde systeem juist licht geactiveerd — met doorwerking op slaap, energie en herstel.
+
+Daarnaast werkt verbinding via gedrag: wie ergens verwacht wordt, beweegt meer, drinkt gemiddeld minder en houdt routines makkelijker vol. Steun ontvangen en grenzen stellen zijn daarbij verschillende vaardigheden — een vol werkleven is geen vervanging voor mensen bij wie je terecht kunt.`,
+      whyItMatters: `Er bestaat geen supplement voor dit domein — en dat zeggen we er nadrukkelijk bij. De winst zit in gedrag: één vast contactmoment per week met iemand bij wie je jezelf kunt zijn, is een kleinere stap dan het klinkt en een van de best onderbouwde leefstijlacties die er zijn.
+
+In de Leefstijlcheck telt verbinding mee als interventiedomein. Scoort het bij jou laag, begin dan niet met méér agenda-items, maar met één terugkerend moment — bellen, wandelen, sporten met dezelfde persoon. Herhaling bouwt de terugvalbasis, niet de grootte van je netwerk.`,
+    },
+    relatedSlugs: ['nervus-vagus', 'cortisol', 'healthspan'],
+    relatedComparisons: [],
+    metaTitle: 'Sociale verbinding en gezondheid na je 40e | PerfectSupplement',
+    metaDescription:
+      'Waarom sociale verbinding een volwaardig leefstijldomein is voor mannen 40+: wat het met je stress-systeem doet, wat de wetenschap zegt en welke kleine stap het meest oplevert. Geen supplement — bewust.',
+    referenties: toRefs([
+      'Holt-Lunstad J, Smith TB, Layton JB. Social relationships and mortality risk: a meta-analytic review. PLoS Med. 2010.',
+      'Holt-Lunstad J, Smith TB, Baker M, et al. Loneliness and social isolation as risk factors for mortality: a meta-analytic review. Perspect Psychol Sci. 2015.',
+      'Santini ZI, Koyanagi A, Tyrovolas S, et al. The association between social relationships and depression: a systematic review. J Affect Disord. 2015.',
+      'Umberson D, Montez JK. Social relationships and health: a flashpoint for health policy. J Health Soc Behav. 2010.',
+      'Valtorta NK, Kanaan M, Gilbody S, et al. Loneliness and social isolation as risk factors for coronary heart disease and stroke: systematic review and meta-analysis. Heart. 2016.',
+    ]),
+    laatstBijgewerktOp: '2026-07-05',
+  },
+  {
     slug: 'magnesiumvormen',
     insightTier: 3,
     publicFullContent: true,

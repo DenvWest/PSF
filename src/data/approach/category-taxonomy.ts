@@ -146,7 +146,7 @@ export const CATEGORY_TAXONOMY = [
     source: "self_report",
     questionId: "CON_SOC",
     evidenceNiveau: "sterk",
-    insightSlugs: ["stress-werk-grenzen-stellen"],
+    insightSlugs: ["sociale-verbinding", "stress-werk-grenzen-stellen"],
   },
   {
     id: "voeding-eiwit",

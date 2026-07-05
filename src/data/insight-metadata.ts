@@ -151,6 +151,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   "oxidatieve-stress": { theme: "movement" },
   slaaphygiene: { theme: "sleep", planPhase: 1 },
   slaapschuld: { theme: "sleep", gapSignal: "sleep_issue_no_stress" },
+  "sociale-verbinding": { theme: "connection" },
   testosteron: { theme: "movement" },
   "vitamine-d": {
     theme: "nutrition",

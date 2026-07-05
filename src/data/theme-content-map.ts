@@ -30,7 +30,7 @@ export const THEME_CONTENT_MAP: Record<ThemeSlug, ThemeContentLinks> = {
   connection: {
     pillarHref: null,
     profileSlug: null,
-    knowledgeSlugs: [],
+    knowledgeSlugs: ["sociale-verbinding"],
   },
 };
 
