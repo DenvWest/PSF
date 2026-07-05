@@ -36,6 +36,8 @@ import {
 } from "@/lib/redactie-standaarden";
 import { BLOG_HUB_LABEL } from "@/components/blog/blog-layout";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
+import InsightPhaseNote from "@/components/insights/InsightPhaseNote";
+import { getContentMetadata } from "@/data/insight-metadata";
 
 interface BlogArticlePageProps {
   artikel: BlogArtikel;
@@ -76,6 +78,7 @@ export default function BlogArticlePage({
 
   const showMidArticleCta = isLongBlogArticle(artikel);
   const midIndex = Math.ceil(hoofdSecties.length / 2);
+  const { planPhase } = getContentMetadata(artikel.slug);
   const sectiesVoorMid = showMidArticleCta
     ? hoofdSecties.slice(0, midIndex)
     : hoofdSecties;
@@ -247,6 +250,8 @@ export default function BlogArticlePage({
             </ArticleBodyReadingChrome>
           </div>
         </div>
+
+        {planPhase ? <InsightPhaseNote planPhase={planPhase} /> : null}
 
         {gerelateerde.length > 0 ? (
           <div className="mx-auto mt-20 max-w-[min(var(--reading-layout-max-width),100%)] md:mt-24">

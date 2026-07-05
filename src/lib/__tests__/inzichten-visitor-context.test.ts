@@ -16,6 +16,22 @@ vi.mock("@/lib/account-dashboard", () => ({
   loadAccountDashboardData: mockLoadAccountDashboardData,
 }));
 
+const DEV_ANSWERS: Record<string, number> = {
+  SLP_QUAL: 3,
+  SLP_CONS: 2,
+  SLP_ONSET: 3,
+  SLP_WAKE: 3,
+  NRG_PATN: 3,
+  NRG_DEP: 4,
+  STR_FREQ: 2,
+  STR_RCV: 2,
+  NUT_O3: 1,
+  NUT_PROT: 2,
+  MOV_STR: 4,
+  MOV_CARD: 4,
+  RCV_PHYS: 2,
+};
+
 const EMPTY_DASHBOARD: DashboardData = {
   empty: true,
   current: null,
@@ -43,7 +59,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
       voeding: 65,
       beweging: 75,
       herstel: 80,
-    verbinding: 80,
+      verbinding: 80,
     },
     vitality: 62,
     date: "10 jun 2026",
@@ -69,6 +85,11 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   sessionId: "session-1",
   planProgress: null,
   planDomain: "sleep",
+};
+
+const DASHBOARD_WITH_ANSWERS: DashboardData = {
+  ...DASHBOARD_WITH_DATA,
+  answers: DEV_ANSWERS,
 };
 
 beforeEach(() => {
@@ -108,5 +129,23 @@ describe("getInzichtenVisitorContext", () => {
     expect(result?.priorityLabel).toBe("Slaap");
     expect(result?.orderedPillarIds[0]).toBe("slaap");
     expect(result?.profileLabel).toBe("Onrustige Slaper");
+    expect(result?.gapSignals).toBeNull();
+    expect(result?.activePlan).toBeNull();
+  });
+
+  it("geeft gapSignals en activePlan bij answers", async () => {
+    mockGetAccountFromCookie.mockResolvedValue({
+      id: "acc-1",
+      email: "a@b.nl",
+      status: "active",
+    });
+    mockLoadAccountDashboardData.mockResolvedValue(DASHBOARD_WITH_ANSWERS);
+    const result = await getInzichtenVisitorContext();
+    expect(result).not.toBeNull();
+    expect(result?.gapSignals).not.toBeNull();
+    expect(typeof result?.gapSignals?.protein_gap_signal).toBe("boolean");
+    expect(result?.activePlan).not.toBeNull();
+    expect(result?.activePlan?.planHref).toMatch(/^\/intake\/plan\//);
+    expect(result?.activePlan?.stepTitle.length).toBeGreaterThan(0);
   });
 });

@@ -6,9 +6,11 @@ import ContentCard from "@/components/insights/ContentCard";
 import FeaturedInsightCard from "@/components/insights/FeaturedInsightCard";
 import FocusAreaCard from "@/components/insights/FocusAreaCard";
 import InzichtenContextStrip from "@/components/insights/InzichtenContextStrip";
+import InzichtenFocusViewedPing from "@/components/insights/InzichtenFocusViewedPing";
 import InzichtenFilterBar from "@/components/insights/InzichtenFilterBar";
 import InzichtenHubHero from "@/components/insights/InzichtenHubHero";
 import InzichtenModeSwitch from "@/components/insights/InzichtenModeSwitch";
+import InzichtenPlanBridgeCard from "@/components/insights/InzichtenPlanBridgeCard";
 import InzichtenPremiumKennisbank from "@/components/insights/InzichtenPremiumKennisbank";
 import InzichtenPremiumKennisbankUpsell from "@/components/insights/InzichtenPremiumKennisbankUpsell";
 import SupplementsRouteBlock from "@/components/insights/SupplementsRouteBlock";
@@ -90,7 +92,20 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
     visitorContext?.orderedPillarIds ?? PILLARS.map((p) => p.id);
 
   const priorityItems: InsightItem[] = visitorContext
-    ? filterInsights({ pijler: visitorContext.priorityPillarId })
+    ? (() => {
+        const items = filterInsights({
+          pijler: visitorContext.priorityPillarId,
+        });
+        if (!visitorContext.gapSignals) return items;
+        const signals = visitorContext.gapSignals;
+        return [...items].sort((a, b) => {
+          const aHit =
+            a.gapSignal && signals[a.gapSignal] === true ? 1 : 0;
+          const bHit =
+            b.gapSignal && signals[b.gapSignal] === true ? 1 : 0;
+          return bHit - aHit;
+        });
+      })()
     : [];
 
   let hubFeatured: InsightItem | undefined;
@@ -207,6 +222,25 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                 priorityLabel={visitorContext!.priorityLabel}
                 profileLabel={visitorContext!.profileLabel}
               />
+            ) : null}
+
+            {hasContext ? (
+              <InzichtenFocusViewedPing
+                priorityPillarId={visitorContext!.priorityPillarId}
+                hasPlan={Boolean(visitorContext!.activePlan)}
+              />
+            ) : null}
+
+            {hasContext && visitorContext!.activePlan ? (
+              <section aria-label="Jouw plan" className="pb-4 md:pb-6">
+                <Container>
+                  <InzichtenPlanBridgeCard
+                    stepTitle={visitorContext!.activePlan.stepTitle}
+                    planHref={visitorContext!.activePlan.planHref}
+                    priorityPillarId={visitorContext!.priorityPillarId}
+                  />
+                </Container>
+              </section>
             ) : null}
 
             <section aria-label="Verken per domein" className="pb-4 md:pb-6">

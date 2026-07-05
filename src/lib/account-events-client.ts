@@ -4,6 +4,7 @@ type ClientEmitType = Extract<
   DomainEventType,
   | "domain_tool.snapshot_viewed"
   | "domain_tool.tier_preview_clicked"
+  | "focus.viewed"
 >;
 
 export function emitAccountClientEvent(

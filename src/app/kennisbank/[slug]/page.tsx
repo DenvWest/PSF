@@ -28,6 +28,8 @@ import {
 } from '@/lib/redactie-standaarden'
 import KennisbankThemaPageContent from '@/components/kennisbank/KennisbankThemaPageContent'
 import KennisbankVerdiepingGate from '@/components/kennisbank/KennisbankVerdiepingGate'
+import InsightPhaseNote from '@/components/insights/InsightPhaseNote'
+import { getContentMetadata } from '@/data/insight-metadata'
 import { KB_HUB_LABEL } from '@/components/kennisbank/kennisbank-layout'
 import { canAccessVerdieping } from '@/lib/kennisbank-access'
 
@@ -182,6 +184,7 @@ async function TermPage({ slug }: { slug: string }) {
     : buildKennisbankTocItems(term)
   const laatstDatum = term.laatstBijgewerktOp ?? STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM
   const verantwoordelijke = term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD
+  const { planPhase } = getContentMetadata(term.slug)
 
   const definedTermSchema = buildDefinedTermSchema({
     term: term.term,
@@ -287,6 +290,8 @@ async function TermPage({ slug }: { slug: string }) {
                     </h2>
                     {renderParagraphs(term.content.whatIsIt)}
                   </section>
+
+                  {planPhase ? <InsightPhaseNote planPhase={planPhase} /> : null}
 
                   {isGated ? (
                     <div className={`${KB_SECTION_CLASS} border-b-0`}>
