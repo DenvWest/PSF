@@ -2933,19 +2933,26 @@ const VoedingScreen = ({
                       <span style={{ fontSize: 14, color: KOMPAS_LIGHT.text }}>
                         {item.label}
                       </span>
-                      <span
-                        style={{
-                          border: `1px solid ${SNAPSHOT_BAND_COLOR[item.band]}44`,
-                          background: `${SNAPSHOT_BAND_COLOR[item.band]}14`,
-                          color: SNAPSHOT_BAND_COLOR[item.band],
-                          borderRadius: 999,
-                          padding: "2px 8px",
-                          fontSize: 11,
-                          fontWeight: 600,
-                        }}
-                      >
-                        {NUTRITION_BAND[item.band].label}
-                      </span>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        {item.previousBand ? (
+                          <span style={{ fontSize: 11, color: KOMPAS_LIGHT.subtle }}>
+                            was: {NUTRITION_BAND[item.previousBand].label.toLowerCase()}
+                          </span>
+                        ) : null}
+                        <span
+                          style={{
+                            border: `1px solid ${SNAPSHOT_BAND_COLOR[item.band]}44`,
+                            background: `${SNAPSHOT_BAND_COLOR[item.band]}14`,
+                            color: SNAPSHOT_BAND_COLOR[item.band],
+                            borderRadius: 999,
+                            padding: "2px 8px",
+                            fontSize: 11,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {NUTRITION_BAND[item.band].label}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -3189,6 +3196,7 @@ const VoedingScreen = ({
             "Weektrend: zie of je basis richting je vuistregels beweegt",
           ]}
           note="Je lengte en gewicht deel je pas als je start — eerder vragen we er niet om."
+          teaser="Jouw eiwitdoel: ●● g — wordt berekend zodra je start"
         />
 
         <div style={{ padding: "4px 2px 0" }}>

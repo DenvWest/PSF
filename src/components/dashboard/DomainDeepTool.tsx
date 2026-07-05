@@ -285,12 +285,14 @@ export function DeepToolMeetModule({
   description,
   bullets,
   note,
+  teaser,
 }: {
   domain: PillarId;
   title: string;
   description: string;
   bullets: string[];
   note?: string;
+  teaser?: string;
 }) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const clickedRef = useRef(false);
@@ -343,6 +345,17 @@ export function DeepToolMeetModule({
         </p>
         {previewOpen ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {teaser ? (
+              <div
+                style={{
+                  fontFamily: "var(--f-serif)",
+                  fontSize: 17,
+                  color: DEEP_TOOL_LIGHT.text,
+                }}
+              >
+                {teaser}
+              </div>
+            ) : null}
             {bullets.map((bullet) => (
               <div
                 key={bullet}
@@ -377,6 +390,27 @@ export function DeepToolMeetModule({
                 {note}
               </p>
             ) : null}
+            <Link
+              href="/dashboard?tab=voortgang"
+              onClick={() => {
+                trackEvent("dashboard_kompas_begeleiding_link_click", {
+                  surface: `meetmodule_${domain}`,
+                });
+                clarityTag("dashboard_kompas_begeleiding", `meetmodule_${domain}`);
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                alignSelf: "flex-start",
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: "var(--sage)",
+                textDecoration: "none",
+              }}
+            >
+              Zet me op de wachtlijst →
+            </Link>
           </div>
         ) : null}
         <button
@@ -407,54 +441,6 @@ export function DeepToolMeetModule({
           />
         </button>
         <DeepToolSoonPill label="Binnenkort in premium" />
-      </div>
-    </Card>
-  );
-}
-
-/** Laag 2 — Begeleiding (T2). Leefstijlbegeleiding, geen diagnose; children = WaitlistButton of SoonPill. */
-export function DeepToolCoachModule({
-  title,
-  description,
-  accentColor,
-  children,
-}: {
-  title: string;
-  description: string;
-  accentColor: string;
-  children: ReactNode;
-}) {
-  return (
-    <Card
-      pad={20}
-      surface="light"
-      glow={accentColor}
-      style={{ borderColor: `${accentColor}33` }}
-    >
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={eyebrowStyle}>Premium · begeleiding</div>
-        <div
-          style={{
-            fontFamily: "var(--f-serif)",
-            fontSize: 21,
-            color: DEEP_TOOL_LIGHT.text,
-            lineHeight: 1.2,
-          }}
-        >
-          {title}
-        </div>
-        <p
-          style={{
-            fontSize: 14,
-            color: DEEP_TOOL_LIGHT.muted,
-            lineHeight: 1.6,
-            margin: 0,
-            textWrap: "pretty",
-          }}
-        >
-          {description}
-        </p>
-        {children}
       </div>
     </Card>
   );

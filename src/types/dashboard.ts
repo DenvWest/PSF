@@ -151,6 +151,8 @@ export type NutritionIntakeBand = "below" | "around" | "meets";
 export type NutritionIntakeItem = {
   label: string;
   band: NutritionIntakeBand;
+  /** Alleen gezet als er een vorige log is én de band veranderde. */
+  previousBand?: NutritionIntakeBand;
 };
 
 export type DashboardData = {

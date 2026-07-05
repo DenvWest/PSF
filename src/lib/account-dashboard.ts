@@ -7,6 +7,7 @@ import {
 } from "@/data/measurement-config";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import { buildDeltaReport } from "@/lib/delta-report";
+import { compareNutritionEstimates } from "@/lib/nutrition-delta";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
@@ -19,6 +20,7 @@ import type {
   CheckScores,
   CheckTrend,
   DashboardData,
+  NutritionIntakeBand,
   PillarId,
 } from "@/types/dashboard";
 import type { SustainedAction } from "@/types/delta-report";
@@ -327,6 +329,26 @@ export async function loadAccountDashboardData(
 
   let nutritionIntake: DashboardData["nutritionIntake"] = null;
   const latestLog = logRows?.[logRows.length - 1];
+  const previousLog = logRows?.[logRows.length - 2];
+
+  let changedBandByNutrient: Map<string, NutritionIntakeBand> | undefined;
+  if (
+    previousLog &&
+    latestLog &&
+    Array.isArray(previousLog.estimate) &&
+    Array.isArray(latestLog.estimate)
+  ) {
+    const deltas = compareNutritionEstimates(
+      previousLog.estimate as IntakeEstimate[],
+      latestLog.estimate as IntakeEstimate[],
+    );
+    changedBandByNutrient = new Map(
+      deltas
+        .filter((d) => d.direction !== "unchanged")
+        .map((d) => [d.nutrient, d.from as NutritionIntakeBand]),
+    );
+  }
+
   if (latestLog && Array.isArray(latestLog.estimate)) {
     const items = (latestLog.estimate as IntakeEstimate[])
       .filter(
@@ -339,6 +361,9 @@ export async function loadAccountDashboardData(
         label:
           nutrientReferences[entry.nutrient]?.label ?? String(entry.nutrient),
         band: entry.band,
+        ...(changedBandByNutrient?.has(entry.nutrient)
+          ? { previousBand: changedBandByNutrient.get(entry.nutrient)! }
+          : {}),
       }));
     if (items.length > 0 && typeof latestLog.logged_at === "string") {
       nutritionIntake = { date: formatDashboardDate(latestLog.logged_at), items };
