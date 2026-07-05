@@ -95,7 +95,7 @@ describe("explainRecommendation", () => {
     expect(result.factors).toHaveLength(1);
     expect(result.factors[0].kind).toBe("context");
     expect(result.factors[0].text).toBe(
-      "Je eet zelden vette vis — voeding is je prioriteit",
+      "Voeding kwam in jouw antwoorden het laagst naar voren — daar begin je",
     );
   });
 

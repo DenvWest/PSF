@@ -15,11 +15,11 @@ export const SIGNAL_COPY: Record<keyof DeficiencySignals, string> = {
   omega3_deficiency: "Je eet zelden vette vis",
   magnesium_signal:
     "Je slaap- of stresspatroon wijst op extra ondersteuning via magnesium",
-  cortisol_risk: "Je spanning blijft lang hangen — ontspannen en uitrusten kosten je merkbaar meer tijd",
-  creatine_signal:
-    "Je traint regelmatig en merkt dat je na inspanning langer moe blijft",
+  cortisol_risk:
+    "Je gaf aan vaak gestrest te zijn, met een onregelmatig slaapritme en lage dagenergie — dat patroon vraagt eerst om ritme en herstelmomenten",
+  creatine_signal: "Herstel kwam laag uit jouw antwoorden",
   melatonine_signal:
-    "Je valt moeilijk in slaap terwijl je stress hoog blijft",
+    "Inslapen kost je tijd, terwijl stress in jouw antwoorden beheersbaar lijkt",
   protein_gap_signal: "Je eiwitinname blijft waarschijnlijk achter",
   low_recovery_no_load:
     "Je herstel blijft achter zonder duidelijke trainingsbelasting",
@@ -35,7 +35,8 @@ export function domainBelowTemplate(label: string): string {
 
 export const PROFILE_COPY: Record<ProfileLabel["name"], string> = {
   "Onrustige Slaper": "Je slaappatroon is je zwakste schakel",
-  "Lage Batterij": "Je energiecurve zakt sneller dan je lichaam bijhoudt",
+  "Lage Batterij":
+    "Energie of beweging kwam laag uit jouw antwoorden — daar zit je snelste winst",
   Stressdrager: "Spanning zakt bij jou langzaam weg",
   "In Balans": "Je profiel wijst op een specifiek aandachtspunt",
 };
@@ -71,10 +72,10 @@ export const HUB_RULE_COPY: Record<string, string> = {
 };
 
 export const PILLAR_CONTEXT_COPY: Record<PillarId, string> = {
-  slaap: "Je valt laat in en slaapt onrustig — slaap is je prioriteit",
+  slaap: "Slaap kwam in jouw antwoorden het laagst naar voren — daar begin je",
   energie: "",
   stress: "",
-  voeding: "Je eet zelden vette vis — voeding is je prioriteit",
+  voeding: "Voeding kwam in jouw antwoorden het laagst naar voren — daar begin je",
   beweging: "",
   herstel: "",
   verbinding: "",

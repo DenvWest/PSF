@@ -58,7 +58,7 @@ export function getVitalityScoreBody(
   explainerLine?: string | null,
 ): string {
   if (locked) {
-    return "Slaap, stress, voeding en beweging — samengebracht in één score. Zie waar je lekt, en waar je het snelst winst pakt.";
+    return "Slaap, stress, voeding, beweging en verbinding — samengebracht in één score. Zie waar je lekt, en waar je het snelst winst pakt.";
   }
   if (explainerLine?.trim()) {
     return explainerLine.trim();
@@ -104,7 +104,7 @@ export const METINGEN_DOMAINS_LABEL = "Domeinen op peil";
 export const METINGEN_DOMAINS_SHORT_LABEL = "Domeinen";
 
 export const METINGEN_DOMAINS_HINT =
-  "Interventiedomeinen in je vitaalscore (slaap, stress, voeding, beweging) met score 55 of hoger. Energie en herstel zijn aparte rapportdomeinen.";
+  "Interventiedomeinen in je vitaalscore (slaap, stress, voeding, beweging, verbinding) met score 55 of hoger. Energie en herstel zijn aparte rapportdomeinen.";
 
 export const METINGEN_RHYTHM_LABEL = "Check-reeks";
 

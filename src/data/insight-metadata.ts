@@ -68,10 +68,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
   },
   "melatonine-na-40": { theme: "sleep", gapSignal: "melatonine_signal" },
   "melatonine-wanneer-wel-niet": { theme: "sleep" },
-  "middagdip-bloedsuiker-na-40": {
-    theme: "nutrition",
-    gapSignal: "omega3_deficiency",
-  },
+  "middagdip-bloedsuiker-na-40": { theme: "nutrition" },
   "omega-3-concentratie-energie": {
     theme: "nutrition",
     gapSignal: "omega3_deficiency",
@@ -151,10 +148,7 @@ export const CONTENT_METADATA: Record<string, ContentMetadata> = {
     gapSignal: "creatine_signal",
     profile: "Overtrainer",
   },
-  "oxidatieve-stress": {
-    theme: "movement",
-    relatedSupplementId: "omega-3",
-  },
+  "oxidatieve-stress": { theme: "movement" },
   slaaphygiene: { theme: "sleep", planPhase: 1 },
   slaapschuld: { theme: "sleep", gapSignal: "sleep_issue_no_stress" },
   testosteron: { theme: "movement" },
