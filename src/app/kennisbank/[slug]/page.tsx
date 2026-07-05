@@ -27,7 +27,9 @@ import {
   STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM,
 } from '@/lib/redactie-standaarden'
 import KennisbankThemaPageContent from '@/components/kennisbank/KennisbankThemaPageContent'
+import KennisbankVerdiepingGate from '@/components/kennisbank/KennisbankVerdiepingGate'
 import { KB_HUB_LABEL } from '@/components/kennisbank/kennisbank-layout'
+import { canAccessVerdieping } from '@/lib/kennisbank-access'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -162,15 +164,22 @@ function ThemaPage({ theme }: { theme: KennisbankTheme }) {
 
 // ── TERM-DETAILPAGINA ───────────────────────────────────────────────────────
 
-function TermPage({ slug }: { slug: string }) {
+async function TermPage({ slug }: { slug: string }) {
   const term = getTermBySlug(slug)
   if (!term) notFound()
+
+  const isGated =
+    term.insightTier >= 2 &&
+    !term.publicFullContent &&
+    !(await canAccessVerdieping())
 
   const relatedTerms = term.relatedSlugs
     .map((s) => getTermBySlug(s))
     .filter((t): t is NonNullable<typeof t> => t !== undefined)
 
-  const tocItems = buildKennisbankTocItems(term)
+  const tocItems = isGated
+    ? buildKennisbankTocItems(term).filter((t) => t.id === 'wat-is-het')
+    : buildKennisbankTocItems(term)
   const laatstDatum = term.laatstBijgewerktOp ?? STANDAARD_INHOUD_HIUDIGE_REVIEW_DATUM
   const verantwoordelijke = term.inhoudelijkeVerantwoordelijke ?? REDACTIE_VERANTWOORDELIJKE_STANDARD
 
@@ -279,40 +288,48 @@ function TermPage({ slug }: { slug: string }) {
                     {renderParagraphs(term.content.whatIsIt)}
                   </section>
 
-                  <section className={KB_SECTION_CLASS} aria-labelledby="hoe-werkt-het">
-                    <h2 id="hoe-werkt-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                      Hoe werkt het?
-                    </h2>
-                    {renderParagraphs(term.content.howItWorks)}
-                  </section>
+                  {isGated ? (
+                    <div className={`${KB_SECTION_CLASS} border-b-0`}>
+                      <KennisbankVerdiepingGate termSlug={term.slug} termName={term.term} />
+                    </div>
+                  ) : (
+                    <>
+                      <section className={KB_SECTION_CLASS} aria-labelledby="hoe-werkt-het">
+                        <h2 id="hoe-werkt-het" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                          Hoe werkt het?
+                        </h2>
+                        {renderParagraphs(term.content.howItWorks)}
+                      </section>
 
-                  <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">
-                    <h2 id="waarom-dit-ertoe-doet" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
-                      Waarom dit ertoe doet voor jouw keuze
-                    </h2>
-                    {renderParagraphs(term.content.whyItMatters)}
-                  </section>
+                      <section className={KB_SECTION_CLASS} aria-labelledby="waarom-dit-ertoe-doet">
+                        <h2 id="waarom-dit-ertoe-doet" className={`${KB_H2_CLASS} mb-6 md:mb-7`} tabIndex={-1}>
+                          Waarom dit ertoe doet voor jouw keuze
+                        </h2>
+                        {renderParagraphs(term.content.whyItMatters)}
+                      </section>
 
-                  {term.domeinMetBeperktCausaalBewijs ? (
-                    <aside
-                      className="mb-6 max-w-[72ch] rounded-lg border border-stone-200/90 bg-stone-50/80 px-4 py-3.5 text-[0.875rem] leading-relaxed text-stone-600 md:mb-8"
-                      role="note"
-                    >
-                      <strong className="font-semibold text-stone-800">Let op bij interpretatie:</strong> voor dit onderwerp
-                      is het causale interventiebewijs vaak beperkt, heterogeen of nog in ontwikkeling. De tekst beschrijft
-                      mechanismen en associaties uit de literatuur; dat is niet hetzelfde als een persoonlijke aanbeveling
-                      of een zorgpad.
-                    </aside>
-                  ) : null}
+                      {term.domeinMetBeperktCausaalBewijs ? (
+                        <aside
+                          className="mb-6 max-w-[72ch] rounded-lg border border-stone-200/90 bg-stone-50/80 px-4 py-3.5 text-[0.875rem] leading-relaxed text-stone-600 md:mb-8"
+                          role="note"
+                        >
+                          <strong className="font-semibold text-stone-800">Let op bij interpretatie:</strong> voor dit onderwerp
+                          is het causale interventiebewijs vaak beperkt, heterogeen of nog in ontwikkeling. De tekst beschrijft
+                          mechanismen en associaties uit de literatuur; dat is niet hetzelfde als een persoonlijke aanbeveling
+                          of een zorgpad.
+                        </aside>
+                      ) : null}
 
-                  <div className="mt-4 md:mt-6">
-                    <ArticleReferentiesFooter
-                      referenties={term.referenties}
-                      laatstBijgewerktOp={laatstDatum}
-                      wetenschappelijkGecontroleerdOp={laatstDatum}
-                      verantwoordelijke={verantwoordelijke}
-                    />
-                  </div>
+                      <div className="mt-4 md:mt-6">
+                        <ArticleReferentiesFooter
+                          referenties={term.referenties}
+                          laatstBijgewerktOp={laatstDatum}
+                          wetenschappelijkGecontroleerdOp={laatstDatum}
+                          verantwoordelijke={verantwoordelijke}
+                        />
+                      </div>
+                    </>
+                  )}
                 </ArticleBodyReadingChrome>
               </div>
             </div>

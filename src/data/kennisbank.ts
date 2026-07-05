@@ -15,6 +15,8 @@ export interface KennisbankTerm {
   theme: KennisbankTheme
   /** 1 = basis SEO, 2 = verdieping, 3 = interventie/supplement-context. */
   insightTier: KennisbankInsightTier
+  /** Handtekening-uitzondering: volledig publiek ondanks tier >= 2 (bv. melatonine-uitsluiting). */
+  publicFullContent?: boolean
   shortDefinition: string
   content: {
     whatIsIt: string
@@ -479,6 +481,7 @@ Kies altijd op kwaliteit, dosering en je totale plaatje (slaapritme, beweging, v
   {
     slug: 'melatonine',
     insightTier: 3,
+    publicFullContent: true,
     term: 'Melatonine',
     theme: 'lichaam-veroudering',
     shortDefinition:

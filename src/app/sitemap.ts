@@ -71,6 +71,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "monthly",
   );
 
+  const inzichten = entries(["/inzichten"], 0.8, "weekly");
+
   const kennisbank = entries(
     ["/kennisbank", ...kennisbankTerms.map((t) => `/kennisbank/${t.slug}`)],
     0.7,
@@ -99,6 +101,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...pillars,
     ...profielen,
     ...gids,
+    ...inzichten,
     ...kennisbank,
     ...blog,
     ...statisch,
