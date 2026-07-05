@@ -297,10 +297,10 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
             <section className={`${BLOG_HERO_PT} pb-9 md:pb-10`}>
               <Container>
                 <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]">
-                  Verdiepende begrippen
+                  Kennisbank
                 </p>
                 <h1 className="mt-3 max-w-[24ch] font-display text-[clamp(2rem,4.5vw,2.875rem)] font-normal leading-[1.1] tracking-[-0.02em] text-stone-900">
-                  Kennisbank na je check-in
+                  Verdieping na je check
                 </h1>
                 <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-stone-600">
                   Verdiepende begrippen uit de kennisbank — gekoppeld aan wat je
@@ -308,7 +308,7 @@ export default async function InzichtenPage({ searchParams }: InzichtenPageProps
                   {activePijler
                     ? ` ${hubLabel.toLowerCase()}-context`
                     : " persoonlijke context"}
-                  .
+                  . Gratis met je account — geen abonnement nodig.
                 </p>
                 <p className="mt-2 text-sm text-stone-500">
                   {premiumFeedCount}{" "}

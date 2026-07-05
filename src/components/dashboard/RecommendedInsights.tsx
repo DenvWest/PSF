@@ -89,7 +89,7 @@ export default function RecommendedInsights({ pillarId }: { pillarId: PillarId }
             textDecoration: "none",
           }}
         >
-          Verdiepende begrippen →
+          Verdieping na je check →
         </Link>
         <Link
           href={`/inzichten?pijler=${pillarId}`}

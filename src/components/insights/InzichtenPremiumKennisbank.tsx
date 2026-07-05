@@ -64,7 +64,7 @@ export default function InzichtenPremiumKennisbank({
     return (
       <section
         id="premium-kennisbank"
-        aria-label="Verdiepende begrippen"
+        aria-label="Verdieping na je check"
         className="pb-16 md:pb-20 scroll-mt-24"
       >
         <Container>
@@ -90,7 +90,7 @@ export default function InzichtenPremiumKennisbank({
   return (
     <section
       id="premium-kennisbank"
-      aria-label="Verdiepende begrippen"
+      aria-label="Verdieping na je check"
       className="pb-4 md:pb-6 scroll-mt-24"
     >
       <Container>
@@ -98,13 +98,13 @@ export default function InzichtenPremiumKennisbank({
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4 md:mb-6">
             <div>
               <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]">
-                Verdiepend — voor jou
+                Verdieping na je check
               </p>
               <h2 className="mt-2 font-display text-[28px] font-normal text-stone-900">
                 Begrippen bij je check-in
               </h2>
               <p className="mt-1 text-sm text-stone-600">
-                Verdiepende kennisbank — passend bij {priorityLabel.toLowerCase()}
+                Gratis met je account — passend bij {priorityLabel.toLowerCase()}
               </p>
             </div>
             <Link

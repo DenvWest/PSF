@@ -8,15 +8,16 @@ export default function InzichtenPremiumKennisbankUpsell() {
     <section className={`${BLOG_HERO_PT} pb-9 md:pb-10`}>
       <Container>
         <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#5A8F6A]">
-          Verdiepende begrippen
+          Kennisbank
         </p>
         <h1 className="mt-3 max-w-[24ch] font-display text-[clamp(2rem,4.5vw,2.875rem)] font-normal leading-[1.1] tracking-[-0.02em] text-stone-900">
-          Kennisbank na je Leefstijlcheck
+          Verdieping na je check
         </h1>
         <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-stone-600">
-          Verdiepende begrippen uit de kennisbank zijn beschikbaar voor
-          account-houders die de Leefstijlcheck afgerond hebben. Zo koppelen we
-          achtergrondkennis aan wat je in je dashboard ziet.
+          <strong>Gratis — geen abonnement nodig.</strong> Verdiepende begrippen
+          uit de kennisbank lees je na je gratis Leefstijlcheck, ingelogd met je
+          account. Zo koppelen we achtergrondkennis aan wat je in je dashboard
+          ziet.
         </p>
       </Container>
     </section>
@@ -24,8 +25,9 @@ export default function InzichtenPremiumKennisbankUpsell() {
       <Container>
         <div className="mx-auto max-w-xl rounded-[20px] border border-[#E7E5E4] bg-white px-6 py-10 text-center">
           <p className="text-base leading-relaxed text-stone-600">
-            Maak eerst je Leefstijlcheck en log in om verdiepende begrippen te
-            zien — of log in als je al een account hebt.
+            Maak eerst je gratis Leefstijlcheck en log in om de verdieping te
+            lezen — of log direct in als je al een account hebt. Dit is geen
+            betaalde functie.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
