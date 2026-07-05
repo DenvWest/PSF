@@ -24,11 +24,15 @@ describe("premium kennisbank filter", () => {
     expect(premium.some((item) => item.slug === "biobeschikbaarheid")).toBe(
       false,
     );
+    expect(premium.some((item) => item.slug === "slaaphygiene")).toBe(false);
+    expect(premium.some((item) => item.slug === "eiwitbehoefte-na-40")).toBe(
+      false,
+    );
   });
 
   it("bevat tier 2 en tier 3 begrippen", () => {
     const premium = getPremiumKennisbankInsights();
-    expect(premium.some((item) => item.slug === "slaaphygiene")).toBe(true);
+    expect(premium.some((item) => item.slug === "circadiaan-ritme")).toBe(true);
     expect(premium.some((item) => item.slug === "cortisol")).toBe(true);
   });
 
