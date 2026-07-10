@@ -68,6 +68,11 @@ import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
+import {
+  getCachedDailyLog,
+  setCachedDailyLog,
+} from "@/lib/daily-log-client";
+import { parseKompasFromUrl, syncDashboardKompasParam } from "@/lib/dashboard-url";
 import type {
   DashboardData,
   DashboardModel,
@@ -2452,6 +2457,14 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
       return;
     }
 
+    const cached = getCachedDailyLog(domain);
+    if (cached) {
+      setDone(cached.keys.includes(actionKey));
+      setStreak(cached.streak);
+      setFetchLoaded(true);
+      return;
+    }
+
     let cancelled = false;
     void (async () => {
       try {
@@ -2466,6 +2479,7 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
         if (cancelled) {
           return;
         }
+        setCachedDailyLog(domain, state);
         setDone(state.keys.includes(actionKey));
         setStreak(state.streak);
       } finally {
@@ -2477,7 +2491,6 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
 
     return () => {
       cancelled = true;
-      setFetchLoaded(false);
     };
   }, [domain, actionKey]);
 
@@ -2501,6 +2514,7 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
       }
 
       const state = (await response.json()) as { keys: string[]; streak: number };
+      setCachedDailyLog(domain, state);
       setDone(state.keys.includes(actionKey));
       setStreak(state.streak);
 
@@ -3261,15 +3275,24 @@ const VoedingScreen = ({
   );
 };
 
-const KompasHome = ({ model, data, onRemeasure }: SharedSectionProps) => {
+const KompasHome = ({ model, data, onRemeasure, initialKompasView }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [domainView, setDomainView] = useState<PillarId | null>(
+    () => initialKompasView ?? null,
+  );
   const [overlayView, setOverlayView] = useState<Extract<KompasView, "activiteiten" | "trend"> | null>(null);
   const reminderShownRef = useRef(false);
   const showRemeasureReminder =
     Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
+
+  useEffect(() => {
+    const onPopState = () => {
+      setDomainView(parseKompasFromUrl(window.location.href));
+      setOverlayView(null);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     if (!showRemeasureReminder || reminderShownRef.current) {
@@ -3289,34 +3312,16 @@ const KompasHome = ({ model, data, onRemeasure }: SharedSectionProps) => {
     return null;
   }
 
-  const kompasParam = searchParams.get("kompas");
-  const domainView =
-    kompasParam && KOMPAS_DOMAIN_IDS.has(kompasParam as PillarId)
-      ? (kompasParam as PillarId)
-      : null;
-
-  const navigateKompas = (domain: PillarId | null, mode: "push" | "replace" = "push") => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    nextParams.set("tab", "vandaag");
-    if (domain) {
-      nextParams.set("kompas", domain);
-    } else {
-      nextParams.delete("kompas");
-    }
-    const query = nextParams.toString();
-    const href = query ? `${pathname}?${query}` : pathname;
-    if (mode === "replace") {
-      router.replace(href, { scroll: false });
-      return;
-    }
-    router.push(href, { scroll: false });
+  const setKompasDomain = (domain: PillarId | null) => {
+    setDomainView(domain);
+    syncDashboardKompasParam(domain);
   };
 
   const openDomain = (domain: PillarId) => {
     trackEvent("dashboard_kompas_domain_open", { domain });
     clarityTag("dashboard_kompas_domain", domain);
     setOverlayView(null);
-    navigateKompas(domain, "push");
+    setKompasDomain(domain);
   };
 
   const closeView = () => {
@@ -3324,7 +3329,7 @@ const KompasHome = ({ model, data, onRemeasure }: SharedSectionProps) => {
       setOverlayView(null);
       return;
     }
-    navigateKompas(null, "push");
+    setKompasDomain(null);
   };
 
   const handleDomainBack = () => {
@@ -3347,7 +3352,7 @@ const KompasHome = ({ model, data, onRemeasure }: SharedSectionProps) => {
     });
     clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
     setOverlayView(null);
-    navigateKompas(toDomain, "replace");
+    setKompasDomain(toDomain);
   };
 
   const withDomainTopNav = (content: ReactElement) =>

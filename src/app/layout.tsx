@@ -45,7 +45,11 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="nl" className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
+    <html
+      lang="nl"
+      data-scroll-behavior="smooth"
+      className={`${dmSerifDisplay.variable} ${dmSans.variable}`}
+    >
       <head>
         <meta
           name="0107f4118169ab8"
