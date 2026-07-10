@@ -76,28 +76,31 @@ export default function PremiumWaitlistCard({
 
   if (state === "joined") {
     return (
-      <Card pad={20}>
-        <div
-          role="status"
-          style={{
-            textAlign: "center",
-            padding: "13px 16px",
-            borderRadius: 12,
-            border: "1px solid rgba(90,143,106,0.4)",
-            background: "rgba(90,143,106,0.12)",
-            color: "var(--text)",
-            fontSize: 14,
-            fontWeight: 600,
-          }}
-        >
-          Je staat op de wachtlijst — we laten het weten zodra het er is.
-        </div>
-      </Card>
+      <div id="premium-begeleiding">
+        <Card pad={20}>
+          <div
+            role="status"
+            style={{
+              textAlign: "center",
+              padding: "13px 16px",
+              borderRadius: 12,
+              border: "1px solid rgba(90,143,106,0.4)",
+              background: "rgba(90,143,106,0.12)",
+              color: "var(--text)",
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            Je staat op de wachtlijst — we laten het weten zodra het er is.
+          </div>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <Card pad={20}>
+    <div id="premium-begeleiding">
+      <Card pad={20}>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
           <div
@@ -225,5 +228,6 @@ export default function PremiumWaitlistCard({
         ) : null}
       </div>
     </Card>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
+import { PREMIUM_BEGELEIDING_HREF } from "@/components/dashboard/KompasBegeleidingLink";
 import { Card } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
@@ -391,7 +392,7 @@ export function DeepToolMeetModule({
               </p>
             ) : null}
             <Link
-              href="/dashboard?tab=voortgang"
+              href={PREMIUM_BEGELEIDING_HREF}
               onClick={() => {
                 trackEvent("dashboard_kompas_begeleiding_link_click", {
                   surface: `meetmodule_${domain}`,

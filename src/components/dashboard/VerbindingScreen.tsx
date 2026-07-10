@@ -267,9 +267,7 @@ export default function VerbindingScreen({
           </Card>
         </section>
 
-        <div style={{ padding: "4px 2px 0" }}>
-          <KompasBegeleidingLink surface="kompas_verbinding" />
-        </div>
+        <KompasBegeleidingLink surface="kompas_verbinding" />
 
         <Card pad={18} surface="light">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>

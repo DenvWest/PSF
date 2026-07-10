@@ -3256,9 +3256,7 @@ const VoedingScreen = ({
           teaser="Jouw eiwitdoel: ●● g — wordt berekend zodra je start"
         />
 
-        <div style={{ padding: "4px 2px 0" }}>
-          <KompasBegeleidingLink surface="kompas_voeding" />
-        </div>
+        <KompasBegeleidingLink surface="kompas_voeding" />
     </DomainDeepTool>
   );
 };
@@ -3765,6 +3763,11 @@ export default function Dashboard({
     ? allowedTypes.filter((type) => EMPTY_SECTIONS.includes(type))
     : allowedTypes;
 
+  const VALID_TAB_IDS = useMemo(
+    () => new Set<DashboardTabId>(DASHBOARD_TABS.map((t) => t.id)),
+    [],
+  );
+
   const resetKompasToHome = () => {
     const nextParams = new URLSearchParams(searchParams.toString());
     nextParams.set("tab", "vandaag");
@@ -3773,9 +3776,54 @@ export default function Dashboard({
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
 
+  const syncTabToUrl = (nextTab: DashboardTabId) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.set("tab", nextTab);
+    if (nextTab !== "vandaag") {
+      nextParams.delete("kompas");
+    }
+    const query = nextParams.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (!tabParam || !VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
+      return;
+    }
+    const parsedTab = tabParam as DashboardTabId;
+    if (parsedTab === tab) {
+      return;
+    }
+    if (parsedTab !== "voortgang") {
+      setVoortgangScreen("hub");
+    } else {
+      setVoortgangScreen("hub");
+    }
+    setTab(parsedTab);
+  }, [searchParams, tab, VALID_TAB_IDS]);
+
+  useEffect(() => {
+    if (tab !== "voortgang" || voortgangScreen !== "hub") {
+      return;
+    }
+    if (typeof window === "undefined" || window.location.hash !== "#premium-begeleiding") {
+      return;
+    }
+    const frameId = requestAnimationFrame(() => {
+      document.getElementById("premium-begeleiding")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [tab, voortgangScreen]);
+
   const selectTab = (nextTab: DashboardTabId) => {
     if (nextTab === "vandaag") {
       resetKompasToHome();
+    } else {
+      syncTabToUrl(nextTab);
     }
     if (nextTab === "vandaag" && tab === "vandaag") {
       setKompasResetSignal((prev) => prev + 1);

@@ -587,9 +587,7 @@ export default function StressScreen({
           </Card>
         </section>
 
-        <div style={{ padding: "4px 2px 0" }}>
-          <KompasBegeleidingLink surface="kompas_stress" />
-        </div>
+        <KompasBegeleidingLink surface="kompas_stress" />
 
         <FooterLink
           href="/intake/plan/stress?from=dashboard&kompas=stress"

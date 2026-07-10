@@ -452,9 +452,7 @@ export default function SleepScreen({
           </Card>
         </section>
 
-        <div style={{ padding: "4px 2px 0" }}>
-          <KompasBegeleidingLink surface="kompas_slaap" />
-        </div>
+        <KompasBegeleidingLink surface="kompas_slaap" />
 
         <FooterLink
           href="/intake/plan/sleep?from=dashboard&kompas=slaap"

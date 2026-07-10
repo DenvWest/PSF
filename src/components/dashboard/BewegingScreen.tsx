@@ -517,9 +517,7 @@ export default function BewegingScreen({
           </Card>
         </section>
 
-        <div style={{ padding: "4px 2px 0" }}>
-          <KompasBegeleidingLink surface="kompas_beweging" />
-        </div>
+        <KompasBegeleidingLink surface="kompas_beweging" />
 
         <FooterLink
           href="/intake/plan/movement?from=dashboard&kompas=beweging"
