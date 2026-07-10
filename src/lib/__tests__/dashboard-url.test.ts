@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { describe, expect, it, vi } from "vitest";
-import { parseKompasFromUrl, syncDashboardKompasParam } from "@/lib/dashboard-url";
+import { parseKompasFromUrl, syncDashboardKompasParam, syncDashboardTabParam } from "@/lib/dashboard-url";
 
 describe("parseKompasFromUrl", () => {
   it("parses valid kompas param", () => {
@@ -40,6 +40,26 @@ describe("syncDashboardKompasParam", () => {
     const clearedUrl = replaceState.mock.calls[1]?.[2] as string;
     expect(clearedUrl).toContain("tab=vandaag");
     expect(clearedUrl).not.toContain("kompas=");
+
+    window.history.replaceState = original;
+  });
+});
+
+describe("syncDashboardTabParam", () => {
+  it("sets the tab in the URL without navigation and clears kompas for non-vandaag tabs", () => {
+    const original = window.history.replaceState;
+    const replaceState = vi.fn();
+    window.history.replaceState = replaceState as typeof window.history.replaceState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=vandaag&kompas=slaap"),
+    });
+
+    syncDashboardTabParam("voortgang");
+    const nextUrl = replaceState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("tab=voortgang");
+    expect(nextUrl).not.toContain("kompas=");
 
     window.history.replaceState = original;
   });

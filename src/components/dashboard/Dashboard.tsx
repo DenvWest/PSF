@@ -4,7 +4,7 @@ import type { ReactElement, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
@@ -72,7 +72,11 @@ import {
   getCachedDailyLog,
   setCachedDailyLog,
 } from "@/lib/daily-log-client";
-import { parseKompasFromUrl, syncDashboardKompasParam } from "@/lib/dashboard-url";
+import {
+  parseKompasFromUrl,
+  syncDashboardKompasParam,
+  syncDashboardTabParam,
+} from "@/lib/dashboard-url";
 import type {
   DashboardData,
   DashboardModel,
@@ -3737,7 +3741,6 @@ export default function Dashboard({
   initialKompasView,
 }: DashboardProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [tab, setTab] = useState<DashboardTabId>(
     initialTab ?? (empty ? "voortgang" : "vandaag"),
@@ -3774,39 +3777,34 @@ export default function Dashboard({
   );
 
   const resetKompasToHome = () => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    nextParams.set("tab", "vandaag");
-    nextParams.delete("kompas");
-    const query = nextParams.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    syncDashboardKompasParam(null);
   };
 
   const syncTabToUrl = (nextTab: DashboardTabId) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    nextParams.set("tab", nextTab);
-    if (nextTab !== "vandaag") {
-      nextParams.delete("kompas");
-    }
-    const query = nextParams.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    syncDashboardTabParam(nextTab);
   };
 
+  const tabRef = useRef(tab);
   useEffect(() => {
+    tabRef.current = tab;
+  });
+
+  useEffect(() => {
+    // Tab-bar-klikken lopen via history.replaceState en wijzigen searchParams
+    // NIET → dit effect vuurt daar niet (geen flash). Alleen echte Next-navigaties
+    // (bv. de <Link> naar ?tab=voortgang in KompasBegeleidingLink, of back/forward)
+    // veranderen searchParams en synchroniseren de tab hier.
     const tabParam = searchParams.get("tab");
     if (!tabParam || !VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
       return;
     }
     const parsedTab = tabParam as DashboardTabId;
-    if (parsedTab === tab) {
+    if (parsedTab === tabRef.current) {
       return;
     }
-    if (parsedTab !== "voortgang") {
-      setVoortgangScreen("hub");
-    } else {
-      setVoortgangScreen("hub");
-    }
+    setVoortgangScreen("hub");
     setTab(parsedTab);
-  }, [searchParams, tab, VALID_TAB_IDS]);
+  }, [searchParams, VALID_TAB_IDS]);
 
   useEffect(() => {
     if (tab !== "voortgang" || voortgangScreen !== "hub") {

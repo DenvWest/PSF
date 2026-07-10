@@ -1,4 +1,4 @@
-import type { PillarId } from "@/types/dashboard";
+import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 const KOMPAS_DOMAIN_IDS = new Set<PillarId>([
   "slaap",
@@ -29,6 +29,18 @@ export function syncDashboardKompasParam(domain: PillarId | null): void {
   if (domain) {
     url.searchParams.set("kompas", domain);
   } else {
+    url.searchParams.delete("kompas");
+  }
+  window.history.replaceState(null, "", url.toString());
+}
+
+export function syncDashboardTabParam(tab: DashboardTabId): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const url = new URL(window.location.href);
+  url.searchParams.set("tab", tab);
+  if (tab !== "vandaag") {
     url.searchParams.delete("kompas");
   }
   window.history.replaceState(null, "", url.toString());
