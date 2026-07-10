@@ -99,6 +99,8 @@ Tabellen:
 
 RLS is aan. Anon kan inserts doen op sessions, reminders en feedback.
 
+Schema check: `npm run check:db-schema` (vereist `supabase link`).
+
 ## Live features (april 2026)
 
 - Homepage met hero gericht op symptomen
