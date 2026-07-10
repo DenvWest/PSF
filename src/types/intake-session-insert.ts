@@ -15,4 +15,12 @@ export type IntakeSessionInsert = {
   rules_version: string;
   session_kind?: "initial" | "remeasure";
   baseline_session_id?: string | null;
+  recommendations?: {
+    supplements: string[];
+    quick_wins: string[];
+    urgency: string;
+    profile_label: string;
+    rules_version: string;
+  } | null;
+  referral_source?: string | null;
 };

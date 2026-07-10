@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import IntakeLastSessionLink from "@/components/intake/IntakeLastSessionLink";
@@ -19,7 +20,21 @@ const THRESHOLD_ITEMS = [
   "Geen e-mail verplicht",
 ] as const;
 
+const REFERRAL_COOKIE = "psf_referral_source";
+const REFERRAL_MAX_AGE_SEC = 60 * 60 * 24 * 90; // 90 dagen, match intake cookie
+
 export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntroProps) {
+  useEffect(() => {
+    const utm = new URLSearchParams(window.location.search)
+      .get("utm_source")
+      ?.replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 200);
+    if (!utm) return;
+    const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+    document.cookie = `${REFERRAL_COOKIE}=${encodeURIComponent(utm)}; path=/; max-age=${REFERRAL_MAX_AGE_SEC}; SameSite=Lax${secure}`;
+  }, []);
+
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center px-6 py-16 text-center">
       <div className="relative flex w-full max-w-lg flex-col items-center gap-8 pt-11 md:gap-10">

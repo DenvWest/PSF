@@ -17,7 +17,8 @@ import {
   createBaselineSnapshot,
   loadBaselineSnapshot,
 } from "@/lib/intake-baseline";
-import { RULES_VERSION, type DomainScores } from "@/lib/intake-engine";
+import { RULES_VERSION, getAdvice, type DomainScores } from "@/lib/intake-engine";
+import { gateAdviceSupplements } from "@/lib/intake-strategy";
 import {
   INTAKE_REMEASURE_BASELINE_COOKIE_NAME,
   verifyRemeasureBaselineCookie,
@@ -55,6 +56,17 @@ function logSecurityEvent(
   details: Record<string, unknown> = {},
 ) {
   console.warn("[api/intake/session][security]", { event, ...details });
+}
+
+function normalizeReferralSource(raw: string | undefined): string | null {
+  if (!raw) return null;
+  try {
+    const decoded = decodeURIComponent(raw);
+    const normalized = decoded.replace(/\s+/g, " ").trim().slice(0, 200);
+    return normalized.length > 0 ? normalized : null;
+  } catch {
+    return null;
+  }
 }
 
 function normalizeSingleLine(value: unknown): string {
@@ -255,6 +267,36 @@ export async function POST(request: NextRequest) {
   const primaryTheme = getPrimaryTheme(scores, answers);
   const consent = consentValidated.value;
 
+  const referralSource = normalizeReferralSource(
+    request.cookies.get("psf_referral_source")?.value,
+  );
+
+  // Snapshot uit getAdvice (gated), niet buildRevealModel — analytics-bron T=0;
+  // opgeslagen advies kan afwijken van reveal-framing/volgorde in IntakeResults.
+  let recommendations: {
+    supplements: string[];
+    quick_wins: string[];
+    urgency: string;
+    profile_label: string;
+    rules_version: string;
+  } | null = null;
+  try {
+    const advice = gateAdviceSupplements(
+      getAdvice(scores, answers, symptoms),
+    );
+    recommendations = {
+      supplements: advice.supplements.map((s) => s.name),
+      quick_wins: advice.quickWins,
+      urgency,
+      profile_label: profile,
+      rules_version: RULES_VERSION,
+    };
+  } catch (err) {
+    // Analytics mag intake-insert nooit breken
+    console.error("[api/intake/session] recommendations snapshot failed:", err);
+    recommendations = null;
+  }
+
   const ua = request.headers.get("user-agent") ?? "";
   const ipHash = sha256Hex(clientIp);
   const uaHash = sha256Hex(ua);
@@ -299,6 +341,8 @@ export async function POST(request: NextRequest) {
     rules_version: RULES_VERSION,
     session_kind: isRemeasure ? "remeasure" : "initial",
     baseline_session_id: isRemeasure ? remeasureBaselineId : null,
+    recommendations,
+    referral_source: referralSource,
   };
 
   const { data: row, error } = await admin
