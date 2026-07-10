@@ -3,6 +3,10 @@ import { getCatalogEntryByHubSlug } from "@/data/supplement-catalog";
 import { RULES_VERSION, getDeficiencySignals, getProfileLabel } from "@/lib/intake-engine";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { getRecommendations } from "@/lib/recommendation-engine";
+import {
+  canShowSupplementStrip,
+  type SupplementEligibilityOptions,
+} from "@/lib/supplement-eligibility";
 
 export type RecommendedSupplement = {
   slug: string;
@@ -57,7 +61,12 @@ function hubReasonForSlug(
 
 export function buildRecommendations(
   session: IntakeSessionPayload,
+  options?: SupplementEligibilityOptions,
 ): RecommendedSupplement[] {
+  if (!canShowSupplementStrip(options)) {
+    return [];
+  }
+
   const input = {
     scores: session.scores,
     signals: getDeficiencySignals(session.answers),
@@ -124,8 +133,9 @@ export function getMovementNutritionHint(session: IntakeSessionPayload): string 
 
 export function buildMovementRecommendations(
   session: IntakeSessionPayload,
+  options?: SupplementEligibilityOptions,
 ): RecommendedSupplement[] {
-  return buildRecommendations(session).filter((rec) => {
+  return buildRecommendations(session, options).filter((rec) => {
     if (rec.slug === "magnesium") {
       return session.scores.recovery_score < 50;
     }
@@ -146,8 +156,9 @@ export function getStressNutritionHint(session: IntakeSessionPayload): string {
 
 export function buildStressRecommendations(
   session: IntakeSessionPayload,
+  options?: SupplementEligibilityOptions,
 ): RecommendedSupplement[] {
-  return buildRecommendations(session).filter((rec) =>
+  return buildRecommendations(session, options).filter((rec) =>
     STRESS_SUPPLEMENT_SLUGS.has(rec.slug),
   );
 }
@@ -164,8 +175,9 @@ export function getSleepNutritionHint(session: IntakeSessionPayload): string {
 
 export function buildSleepRecommendations(
   session: IntakeSessionPayload,
+  options?: SupplementEligibilityOptions,
 ): RecommendedSupplement[] {
-  return buildRecommendations(session).filter((rec) =>
+  return buildRecommendations(session, options).filter((rec) =>
     SLEEP_SUPPLEMENT_SLUGS.has(rec.slug),
   );
 }

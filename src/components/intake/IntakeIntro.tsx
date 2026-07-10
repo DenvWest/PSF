@@ -8,6 +8,9 @@ import IntakeResultPreviewCard from "@/components/intake/IntakeResultPreviewCard
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { LEEFSTIJL_DISCLAIMER } from "@/data/leefstijl-disclaimer";
 import { INTAKE_PRIVACY_DISCLOSURE } from "@/data/intake-privacy-disclosure";
+import {
+  setReferralCookiesFromSearchParams,
+} from "@/lib/referral-attribution";
 
 type IntakeIntroProps = {
   onStart: () => void;
@@ -20,19 +23,9 @@ const THRESHOLD_ITEMS = [
   "Geen e-mail verplicht",
 ] as const;
 
-const REFERRAL_COOKIE = "psf_referral_source";
-const REFERRAL_MAX_AGE_SEC = 60 * 60 * 24 * 90; // 90 dagen, match intake cookie
-
 export default function IntakeIntro({ onStart, isRemeasure = false }: IntakeIntroProps) {
   useEffect(() => {
-    const utm = new URLSearchParams(window.location.search)
-      .get("utm_source")
-      ?.replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 200);
-    if (!utm) return;
-    const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
-    document.cookie = `${REFERRAL_COOKIE}=${encodeURIComponent(utm)}; path=/; max-age=${REFERRAL_MAX_AGE_SEC}; SameSite=Lax${secure}`;
+    setReferralCookiesFromSearchParams(new URLSearchParams(window.location.search));
   }, []);
 
   return (

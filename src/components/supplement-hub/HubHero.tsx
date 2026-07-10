@@ -4,11 +4,13 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import { IntakeCtaMicro } from "@/components/common/IntakeCtaMicro";
 import { VoortgangReturnBanner } from "@/components/dashboard/VoortgangReturnBanner";
 
+export type SupplementHubState = "no_intake" | "needs_nutrition" | "ready";
+
 type HubHeroProps = {
-  hasSession: boolean;
+  hubState: SupplementHubState;
 };
 
-export default function HubHero({ hasSession }: HubHeroProps) {
+export default function HubHero({ hubState }: HubHeroProps) {
   return (
     <section
       className="relative overflow-hidden bg-gradient-to-b from-[#F7F5F0] to-white"
@@ -26,31 +28,33 @@ export default function HubHero({ hasSession }: HubHeroProps) {
         </div>
 
         <div className="max-w-2xl">
-          <h1 className="font-display text-4xl md:text-6xl font-bold tracking-tight text-stone-900 leading-tight">
+          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-stone-900 md:text-6xl">
             Welk supplement past bij jou?
           </h1>
-          <p className="text-lg text-stone-500 leading-relaxed max-w-xl mt-4">
+          <p className="mt-4 max-w-xl text-lg leading-relaxed text-stone-500">
             Onafhankelijke gidsen en vergelijkingen — gebaseerd op wetenschap,
             niet op marketing.
           </p>
 
           <div className="mt-8">
-            {hasSession ? (
-              <a
-                href="#aanbevolen"
-                className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white hover:bg-ps-green-hover transition-all shadow-sm hover:shadow-md scroll-smooth"
-              >
-                Bekijk je aanbevelingen ↓
-              </a>
-            ) : (
+            {hubState === "no_intake" ? (
               <Link
                 href="/intake"
-                className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white hover:bg-ps-green-hover transition-all shadow-sm hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md"
               >
                 Ontdek welke supplementen bij jou passen →
               </Link>
+            ) : (
+              <a
+                href="#aanbevolen"
+                className="inline-flex items-center gap-2 rounded-xl bg-ps-green px-8 py-4 text-base font-semibold text-white shadow-sm transition-all hover:bg-ps-green-hover hover:shadow-md scroll-smooth"
+              >
+                {hubState === "needs_nutrition"
+                  ? "Doe je voedingscheck ↓"
+                  : "Bekijk je aanbevelingen ↓"}
+              </a>
             )}
-            {!hasSession ? (
+            {hubState === "no_intake" ? (
               <IntakeCtaMicro className="mt-4 max-w-xl text-sm text-stone-500" />
             ) : null}
           </div>

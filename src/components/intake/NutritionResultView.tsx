@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import {
@@ -55,6 +56,19 @@ export default function NutritionResultView({
     (a): a is Extract<NutritionAdviceItem, { kind: "supplement" }> =>
       a.kind === "supplement",
   );
+  const supplementRevealTracked = useRef(false);
+
+  useEffect(() => {
+    if (supplementRevealTracked.current || supplements.length === 0) {
+      return;
+    }
+    supplementRevealTracked.current = true;
+    trackEvent("nutrition_supplement_revealed", {
+      count: supplements.length,
+      nutrients: supplements.map((item) => item.nutrient).join(","),
+      from: fromDashboard ? "dashboard" : "direct",
+    });
+  }, [supplements, fromDashboard]);
 
   const visibleDeltas = delta
     ? delta.filter((d) => d.direction !== "unchanged")

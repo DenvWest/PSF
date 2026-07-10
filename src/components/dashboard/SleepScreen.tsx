@@ -174,14 +174,18 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
 
 export default function SleepScreen({
   model,
+  nutritionLogCompleted = false,
 }: {
   model: DashboardModel;
+  nutritionLogCompleted?: boolean;
 }) {
   const premiumShownRef = useRef(false);
   const pillar = PILLAR.slaap;
   const session = sessionFromModel(model);
   const nutritionHint = getSleepNutritionHint(session);
-  const recommendations = buildSleepRecommendations(session);
+  const recommendations = buildSleepRecommendations(session, {
+    nutritionLogCompleted,
+  });
 
   useEffect(() => {
     if (premiumShownRef.current) return;

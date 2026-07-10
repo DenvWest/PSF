@@ -183,14 +183,18 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
 
 export default function BewegingScreen({
   model,
+  nutritionLogCompleted = false,
 }: {
   model: DashboardModel;
+  nutritionLogCompleted?: boolean;
 }) {
   const premiumShownRef = useRef(false);
   const pillar = PILLAR.beweging;
   const session = sessionFromModel(model);
   const nutritionHint = getMovementNutritionHint(session);
-  const recommendations = buildMovementRecommendations(session);
+  const recommendations = buildMovementRecommendations(session, {
+    nutritionLogCompleted,
+  });
   const showActiveStep =
     model.activeHabit?.domain === "movement" && model.activeHabit.title;
 
@@ -446,7 +450,9 @@ export default function BewegingScreen({
                       textWrap: "pretty",
                     }}
                   >
-                    Geen supplement-signalen — focus eerst op voeding en je plan.
+                    {nutritionLogCompleted
+                      ? "Geen supplement-signalen — focus eerst op voeding en je plan."
+                      : "Doe eerst de voedingscheck voordat we supplementen tonen — eerst tafel, dan potje."}
                   </p>
                 )}
               </div>

@@ -62,6 +62,7 @@ import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import { buildRecommendations } from "@/lib/build-recommendations";
+import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
@@ -2164,7 +2165,41 @@ const RecommendationsSection = ({ model, data }: SharedSectionProps) => {
     firstName: null,
   };
 
-  const recommendations = buildRecommendations(session);
+  const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
+  const recommendations = buildRecommendations(session, eligibility);
+  const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
+
+  if (!nutritionLogCompleted) {
+    return (
+      <section aria-label="Voedingscheck">
+        <SectionHeader eyebrow="Eerst je bord" title="Doe de voedingscheck" />
+        <Card pad={16}>
+          <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.55, margin: 0, textWrap: "pretty" }}>
+            Supplementadvies tonen we pas na je voedingscheck — leefstijl eerst, in die volgorde.
+          </p>
+          <Link
+            href="/intake/voeding?from=dashboard"
+            onClick={() => {
+              trackEvent("dashboard_voedingscheck_cta_click", { surface: "voortgang_aanraders" });
+              clarityTag("dashboard_voedingscheck_cta", "voortgang");
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              marginTop: 14,
+              fontSize: 14,
+              fontWeight: 600,
+              color: "var(--sage)",
+              textDecoration: "none",
+            }}
+          >
+            Start voedingscheck (1 min) <Icons.ChevronRight s={16} />
+          </Link>
+        </Card>
+      </section>
+    );
+  }
 
   if (recommendations.length === 0) {
     return null;
@@ -2872,7 +2907,9 @@ const VoedingScreen = ({
     ageRange: null,
     firstName: null,
   };
-  const recommendations = buildRecommendations(session);
+  const eligibility = buildRecommendationsEligibility(nutritionIntake);
+  const recommendations = buildRecommendations(session, eligibility);
+  const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
   const pillar = PILLAR.voeding;
   const intakeLines = buildNutritionIntakeLines(model.answers ?? {});
 
@@ -3180,8 +3217,28 @@ const VoedingScreen = ({
           ) : (
             <Card pad={20} surface="light">
               <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
-                Doe de check om persoonlijke aanbevelingen te zien.
+                {nutritionLogCompleted
+                  ? "Geen supplement-signalen op basis van je check — focus op je leefstijlstappen."
+                  : "Doe eerst de voedingscheck. Supplementen tonen we pas daarna — eerst je bord, dan gericht vergelijken."}
               </p>
+              {!nutritionLogCompleted ? (
+                <Link
+                  href="/intake/voeding?from=dashboard&kompas=voeding"
+                  onClick={() => trackCheckinClick("supplement_gate")}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    marginTop: 14,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "var(--sage)",
+                    textDecoration: "none",
+                  }}
+                >
+                  Doe de voedingscheck (1 min) <Icons.ChevronRight s={15} />
+                </Link>
+              ) : null}
             </Card>
           )}
         </section>
@@ -3322,13 +3379,28 @@ const KompasHome = ({ model, data, onRemeasure }: SharedSectionProps) => {
   };
 
   if (domainView === "beweging") {
-    return withDomainTopNav(<BewegingScreen model={currentModel} />);
+    return withDomainTopNav(
+      <BewegingScreen
+        model={currentModel}
+        nutritionLogCompleted={buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true}
+      />,
+    );
   }
   if (domainView === "stress") {
-    return withDomainTopNav(<StressScreen model={currentModel} />);
+    return withDomainTopNav(
+      <StressScreen
+        model={currentModel}
+        nutritionLogCompleted={buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true}
+      />,
+    );
   }
   if (domainView === "slaap") {
-    return withDomainTopNav(<SleepScreen model={currentModel} />);
+    return withDomainTopNav(
+      <SleepScreen
+        model={currentModel}
+        nutritionLogCompleted={buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true}
+      />,
+    );
   }
   if (domainView === "voeding") {
     return withDomainTopNav(

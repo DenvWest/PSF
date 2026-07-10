@@ -8,6 +8,7 @@ import {
   buildRecommendations,
   type RecommendedSupplement,
 } from "@/lib/build-recommendations";
+import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import {
   getSupplementCardCopy,
   MOEITE_LABEL,
@@ -81,11 +82,18 @@ export default async function AanpakMode() {
   const hasContext = Boolean(dashboard && !dashboard.empty && dashboard.current);
   const showQ1EiwitHero = hasContext && shouldShowAanpakQ1EiwitHero(dashboard?.answers);
 
+  const nutritionLogCompleted =
+    buildRecommendationsEligibility(dashboard?.nutritionIntake).nutritionLogCompleted ===
+    true;
+
   let recommendations: RecommendedSupplement[] = [];
   if (hasContext && dashboard?.sessionId) {
     const loaded = await loadIntakeSessionPayloadBySessionId(dashboard.sessionId);
     if (loaded.ok && loaded.session) {
-      recommendations = buildRecommendations(loaded.session);
+      recommendations = buildRecommendations(
+        loaded.session,
+        buildRecommendationsEligibility(dashboard?.nutritionIntake),
+      );
     }
   }
 
@@ -160,9 +168,23 @@ export default async function AanpakMode() {
               </>
             ) : !showQ1EiwitHero ? (
               <div className="rounded-[20px] border border-dashed border-[#D6D3D1] px-5 py-12 text-center">
-                <p className="text-base text-stone-500">
-                  Op dit moment geen specifieke aanpak-tips uit je check — je leefstijl-basis zit goed. Nieuwe kansen verschijnen hier na je volgende check-in.
-                </p>
+                {nutritionLogCompleted ? (
+                  <p className="text-base text-stone-500">
+                    Op dit moment geen specifieke aanpak-tips uit je check — je leefstijl-basis zit goed. Nieuwe kansen verschijnen hier na je volgende check-in.
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-base text-stone-600">
+                      Supplementadvies tonen we pas na je voedingscheck — eerst je bord, dan gericht vergelijken.
+                    </p>
+                    <Link
+                      href="/intake/voeding"
+                      className="mt-5 inline-flex min-h-[44px] items-center rounded-full bg-[#5A8F6A] px-[22px] py-2.5 text-sm font-semibold text-white transition hover:bg-[#4A7F5A]"
+                    >
+                      Start voedingscheck →
+                    </Link>
+                  </>
+                )}
               </div>
             ) : null}
           </>

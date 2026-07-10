@@ -176,14 +176,18 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
 
 export default function StressScreen({
   model,
+  nutritionLogCompleted = false,
 }: {
   model: DashboardModel;
+  nutritionLogCompleted?: boolean;
 }) {
   const premiumShownRef = useRef(false);
   const pillar = PILLAR.stress;
   const session = sessionFromModel(model);
   const nutritionHint = getStressNutritionHint(session);
-  const recommendations = buildStressRecommendations(session);
+  const recommendations = buildStressRecommendations(session, {
+    nutritionLogCompleted,
+  });
 
   useEffect(() => {
     if (premiumShownRef.current) return;

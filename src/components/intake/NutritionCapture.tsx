@@ -5,6 +5,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
+import {
+  isYoutubeReferral,
+  setReferralCookiesFromSearchParams,
+} from "@/lib/referral-attribution";
 import { NUTRITION_LOG_CONSENT_TEXT } from "@/lib/consent-texts";
 import {
   NUTRITION_QUESTIONS,
@@ -89,9 +93,21 @@ export default function NutritionCapture() {
   const [preference, setPreference] = useState<string | null>(null);
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [fromYoutube, setFromYoutube] = useState(false);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setReferralCookiesFromSearchParams(params);
+    const youtube = isYoutubeReferral(params);
+    setFromYoutube(youtube);
     clarityTag("nutrition_flow", "started");
+    if (youtube) {
+      trackEvent("nutrition_youtube_landing", {
+        utm_campaign: params.get("utm_campaign") ?? "",
+        utm_content: params.get("utm_content") ?? "",
+      });
+      clarityTag("nutrition_referral", "youtube");
+    }
   }, []);
 
   function goNext(index: number) {
@@ -160,7 +176,11 @@ export default function NutritionCapture() {
       trackEvent("nutrition_check_completed", {
         nutrition_score: data.score,
         band: data.band?.id ?? "unknown",
-        from: fromDashboard ? "dashboard" : "direct",
+        from: fromDashboard ? "dashboard" : fromYoutube ? "youtube" : "direct",
+      });
+      trackEvent("nutrition_log_completed", {
+        nutrition_score: data.score,
+        from: fromDashboard ? "dashboard" : fromYoutube ? "youtube" : "direct",
       });
       setStep({
         kind: "result",
@@ -312,6 +332,18 @@ export default function NutritionCapture() {
       </div>
 
       <div className="w-full max-w-lg px-6 py-12">
+        {fromYoutube && questionIndex === 0 ? (
+          <div className="mb-6 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-4 py-3 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-intake-terra">
+              Vanuit YouTube
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-intake-ink-muted">
+              Eerst je bord — dan pas supplement. Deze check laat zien waar je
+              frequentie tekortschiet. Geen diagnose, wel concrete stappen.
+            </p>
+          </div>
+        ) : null}
+
         <div className="mb-2 flex items-center justify-center gap-2">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
             <span className="text-intake-terra">{questionNumber}</span>

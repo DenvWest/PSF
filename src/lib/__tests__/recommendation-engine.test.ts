@@ -72,7 +72,7 @@ describe("recommendation-engine hub parity", () => {
       timestamp: Date.now(),
       ageRange: null,
       firstName: null,
-    }).map((item) => item.slug);
+    }, { nutritionLogCompleted: true }).map((item) => item.slug);
 
     expect(engineSlugs).toEqual(legacySlugs);
   });

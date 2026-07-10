@@ -11,6 +11,8 @@ import SupplementCatalog from "@/components/supplement-hub/SupplementCatalog";
 import { MedicalDisclaimer } from "@/components/common/MedicalDisclaimer";
 import { CATALOG } from "@/data/supplement-hub/catalog";
 import { getIntakeSessionFromCookie } from "@/lib/intake-session-server";
+import { hasNutritionLogForSession } from "@/lib/nutrition-log-server";
+import type { SupplementHubState } from "@/components/supplement-hub/HubHero";
 import {
   buildBreadcrumbSchema,
   buildNamedItemListSchema,
@@ -50,6 +52,16 @@ export default async function SupplementenPage() {
   const { verifiedSessionId, session } = await getIntakeSessionFromCookie();
   const hasIntakeCookie = verifiedSessionId !== null;
   const hasSession = hasIntakeCookie && session !== null;
+  const nutritionLogCompleted =
+    hasSession && verifiedSessionId
+      ? await hasNutritionLogForSession(verifiedSessionId)
+      : false;
+
+  const hubState: SupplementHubState = !hasIntakeCookie
+    ? "no_intake"
+    : nutritionLogCompleted
+      ? "ready"
+      : "needs_nutrition";
 
   return (
     <>
@@ -60,7 +72,7 @@ export default async function SupplementenPage() {
 
       <div>
         {/* 1. Hero */}
-        <HubHero hasSession={hasIntakeCookie} />
+        <HubHero hubState={hubState} />
 
         {/* 2. Alle supplementgidsen */}
         <section id="supplementgidsen" aria-label="Alle supplementgidsen" className="mt-16 md:mt-20">
@@ -74,7 +86,10 @@ export default async function SupplementenPage() {
           <Container>
             {hasSession ? (
               <>
-                <RecommendedForYou session={session!} />
+                <RecommendedForYou
+                  session={session!}
+                  nutritionLogCompleted={nutritionLogCompleted}
+                />
                 <ProfileUpdateLink />
               </>
             ) : (

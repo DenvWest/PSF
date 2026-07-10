@@ -12,6 +12,7 @@ import {
 } from "@/components/app/primitives";
 import { IDENTITY_FIELDS, PILLARS } from "@/data/dashboard";
 import { buildRecommendations } from "@/lib/build-recommendations";
+import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
@@ -286,7 +287,9 @@ function FavorietenView({
     firstName: null,
   };
 
-  const recommendations = buildRecommendations(session);
+  const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
+  const recommendations = buildRecommendations(session, eligibility);
+  const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
   const topHref = withVoortgangReturn(
     recommendations[0]?.comparisonHref ??
       recommendations[0]?.guideHref ??
@@ -399,12 +402,21 @@ function FavorietenView({
           </Link>
         ) : (
           <Link
-            href={supplementenHref}
+            href={nutritionLogCompleted ? supplementenHref : "/intake/voeding?from=dashboard"}
             style={{ textDecoration: "none" }}
-            onClick={handleSupplementenHubClick}
+            onClick={() => {
+              if (!nutritionLogCompleted) {
+                trackEvent("dashboard_voedingscheck_cta_click", { surface: "voortgang_favorieten" });
+                clarityTag("dashboard_voedingscheck_cta", "voortgang_favorieten");
+                return;
+              }
+              handleSupplementenHubClick();
+            }}
           >
             <Button variant="primary" full>
-              Ontdek supplementen
+              {nutritionLogCompleted
+                ? "Ontdek supplementen"
+                : "Start voedingscheck (1 min)"}
             </Button>
           </Link>
         )}

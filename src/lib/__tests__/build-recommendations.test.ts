@@ -25,7 +25,7 @@ function makeSession(
       nutrition_score: 35,
       movement_score: 75,
       recovery_score: 45,
-    connection_score: 45,
+      connection_score: 45,
       ...scoreOverrides,
     },
     urgency: "mild",
@@ -35,6 +35,8 @@ function makeSession(
     firstName: null,
   };
 }
+
+const LOGGED_IN = { nutritionLogCompleted: true as const };
 
 describe("buildRecommendations", () => {
   it("includes eiwitpoeder when protein_gap_signal is active", () => {
@@ -46,7 +48,8 @@ describe("buildRecommendations", () => {
       RCV_PHYS: 2,
       STR_RCV: 3,
     });
-    const recommendations = buildRecommendations(session);
+    const eligibility = LOGGED_IN;
+    const recommendations = buildRecommendations(session, eligibility);
     expect(recommendations.some((r) => r.slug === "eiwitpoeder")).toBe(true);
     const protein = recommendations.find((r) => r.slug === "eiwitpoeder");
     expect(protein?.comparisonHref).toBe("/beste/eiwitpoeder");
@@ -61,8 +64,24 @@ describe("buildRecommendations", () => {
       RCV_PHYS: 3,
       STR_RCV: 3,
     });
-    const recommendations = buildRecommendations(session);
+    const eligibility = LOGGED_IN;
+    const recommendations = buildRecommendations(session, eligibility);
     expect(recommendations.some((r) => r.slug === "eiwitpoeder")).toBe(false);
+  });
+
+  it("returns no supplements until nutrition log is completed", () => {
+    const session = makeSession({
+      NUT_PROT: 1,
+      MOV_STR: 3,
+      MOV_CARD: 2,
+      NUT_O3: 3,
+      RCV_PHYS: 2,
+      STR_RCV: 3,
+    });
+    expect(buildRecommendations(session)).toEqual([]);
+    expect(buildRecommendations(session, { nutritionLogCompleted: false })).toEqual(
+      [],
+    );
   });
 });
 
@@ -76,7 +95,7 @@ describe("buildMovementRecommendations", () => {
       RCV_PHYS: 2,
       STR_RCV: 3,
     });
-    const recommendations = buildMovementRecommendations(session);
+    const recommendations = buildMovementRecommendations(session, LOGGED_IN);
     expect(recommendations.some((r) => r.slug === "eiwitpoeder")).toBe(true);
     expect(recommendations.some((r) => r.slug === "omega-3")).toBe(false);
   });
@@ -93,7 +112,7 @@ describe("buildMovementRecommendations", () => {
       },
       { sleep_score: 30, stress_score: 30, recovery_score: 60 },
     );
-    const recommendations = buildMovementRecommendations(session);
+    const recommendations = buildMovementRecommendations(session, LOGGED_IN);
     expect(recommendations.some((r) => r.slug === "magnesium")).toBe(false);
   });
 
@@ -109,8 +128,8 @@ describe("buildMovementRecommendations", () => {
       },
       { sleep_score: 30, stress_score: 30, recovery_score: 35 },
     );
-    const all = buildRecommendations(session);
-    const movement = buildMovementRecommendations(session);
+    const all = buildRecommendations(session, LOGGED_IN);
+    const movement = buildMovementRecommendations(session, LOGGED_IN);
     if (all.some((r) => r.slug === "magnesium")) {
       expect(movement.some((r) => r.slug === "magnesium")).toBe(true);
     }
@@ -144,7 +163,7 @@ describe("buildSleepRecommendations", () => {
       },
       { sleep_score: 30, stress_score: 35 },
     );
-    const recommendations = buildSleepRecommendations(session);
+    const recommendations = buildSleepRecommendations(session, LOGGED_IN);
     expect(
       recommendations.every((rec) => rec.slug === "magnesium"),
     ).toBe(true);
