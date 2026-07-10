@@ -202,6 +202,7 @@ export default function NutritionCapture() {
       <NutritionResultView
         score={step.score}
         estimate={step.estimate}
+        statements={step.statements}
         advice={step.advice}
         delta={step.delta}
         proteinMealsPerDay={proteinMealsFromSliders(sliders)}
