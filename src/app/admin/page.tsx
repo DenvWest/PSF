@@ -152,6 +152,13 @@ export default function AdminDashboardPage() {
           >
             Nurture-mail
           </Link>
+          <Link
+            href="/admin/affiliate"
+            onClick={() => setMenuOpen(false)}
+            className="rounded-lg px-3 py-2 text-[#1a1a1a] hover:bg-[#F8F7F4]"
+          >
+            Affiliate
+          </Link>
         </nav>
         <div className="border-t p-4" style={{ borderColor: "#e8e6e1" }}>
           <a
