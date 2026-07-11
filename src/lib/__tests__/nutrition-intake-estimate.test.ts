@@ -91,6 +91,13 @@ describe("estimateNutritionIntake — magnesium", () => {
     const result = estimateNutritionIntake({ vegFruitPerDay: 4 });
     expect(bandFor(result, "magnesium")).toBe("meets");
   });
+
+  it("noten/zaden/week verrijkt magnesium-signaal", () => {
+    const lowVeg = estimateNutritionIntake({ vegFruitPerDay: 1, nutsSeedsLegumesPerWeek: 0 });
+    const withNuts = estimateNutritionIntake({ vegFruitPerDay: 1, nutsSeedsLegumesPerWeek: 4 });
+    expect(bandFor(lowVeg, "magnesium")).toBe("below");
+    expect(bandFor(withNuts, "magnesium")).not.toBe("below");
+  });
 });
 
 describe("estimateNutritionIntake — zinc", () => {

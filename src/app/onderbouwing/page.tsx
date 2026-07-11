@@ -13,8 +13,11 @@ import {
   LEEFSTIJLCHECK_SDT_MODEL_NOTES,
   LEEFSTIJLCHECK_STRENGTH_DISCLAIMER,
   LEEFSTIJLCHECK_TRANSPARANTIE_NOTES,
-  type EvidenceReference,
 } from "@/data/leefstijlcheck-evidence";
+import EvidenceReferenceList, {
+  formatEvidenceReference,
+} from "@/components/evidence/EvidenceReferenceList";
+import EvidenceStars from "@/components/evidence/EvidenceStars";
 import { canonicalMetadata } from "@/lib/seo/canonical";
 
 export const metadata: Metadata = {
@@ -26,22 +29,6 @@ export const metadata: Metadata = {
 
 const sectionTitleClass =
   "font-display text-2xl md:text-3xl font-semibold tracking-tight text-stone-900";
-
-function EvidenceStars({ stars, label }: { stars: 3 | 4 | 5; label: string }) {
-  return (
-    <p className="text-sm font-medium text-stone-700">
-      {"★".repeat(stars)}
-      {"☆".repeat(5 - stars)} {label}
-    </p>
-  );
-}
-
-function renderRef(ref: EvidenceReference) {
-  const meta: string[] = [];
-  if (ref.doi) meta.push(`DOI: ${ref.doi}`);
-  if (ref.pmid) meta.push(`PMID: ${ref.pmid}`);
-  return `${ref.apa}${meta.length ? ` (${meta.join(" · ")})` : ""}`;
-}
 
 export default function OnderbouwingPage() {
   const themeOrder = [
@@ -189,6 +176,20 @@ export default function OnderbouwingPage() {
         </section>
 
         <section className="mt-14 max-w-4xl">
+          <h2 className={sectionTitleClass}>Onderbouwing per product</h2>
+          <p className="mt-4 text-base leading-relaxed text-stone-600">
+            Naast de Leefstijlcheck hebben we aparte onderbouwing voor de snelle
+            voedingscheck — andere vragen, andere frequentie-proxy&apos;s.
+          </p>
+          <Link
+            href="/onderbouwing/voeding"
+            className="mt-4 inline-flex rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-50"
+          >
+            Voedingscheck onderbouwing →
+          </Link>
+        </section>
+
+        <section className="mt-14 max-w-4xl">
           <h2 className={sectionTitleClass}>Onze wetenschappelijke uitgangspunten</h2>
           <p className="mt-4 text-base leading-relaxed text-stone-600">
             De onderbouwing volgt een evidence-hierarchie met prioriteit voor
@@ -275,11 +276,7 @@ export default function OnderbouwingPage() {
                       <h4 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
                         Bronnen
                       </h4>
-                      <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-relaxed text-stone-600">
-                        {evidence.references.map((ref) => (
-                          <li key={renderRef(ref)}>{renderRef(ref)}</li>
-                        ))}
-                      </ol>
+                      <EvidenceReferenceList references={evidence.references} />
                     </section>
                   </div>
                 </article>
@@ -310,7 +307,7 @@ export default function OnderbouwingPage() {
                 </h3>
                 <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm leading-relaxed text-stone-600">
                   {LEEFSTIJLCHECK_REFERENCE_LIBRARY[theme].map((ref) => (
-                    <li key={renderRef(ref)}>{renderRef(ref)}</li>
+                    <li key={formatEvidenceReference(ref)}>{formatEvidenceReference(ref)}</li>
                   ))}
                 </ol>
               </article>

@@ -11,11 +11,34 @@ import {
   getUsableClaims,
   type IngredientClaimKey,
 } from "@/data/approved-claims";
+import { buildLifestyleAction } from "@/data/nutrition/portion-dictionary";
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { isComparisonAllowed } from "@/lib/comparison-availability";
 import { slugFromComparisonPath } from "@/lib/resolve-nurture-cta";
+import { seasonFromDate } from "@/lib/nutrition-season";
+import {
+  personalizeLifestyleText,
+  type NutritionAdviceContext,
+  type NutritionPreference,
+} from "@/lib/nutrition-advice-personalization";
+
+export interface BuildNutritionAdviceOptions {
+  adviceDate?: Date;
+  preference?: NutritionPreference;
+  allergies?: string[];
+}
+
+export function getNutrientLifestyleAction(
+  nutrient: NutrientId,
+  adviceDate = new Date(),
+): string {
+  if (nutrient === "vitamin_d") {
+    return buildLifestyleAction("vitamin_d", { season: seasonFromDate(adviceDate) });
+  }
+  return nutrientReferences[nutrient].lifestyleAction;
+}
 
 export type NutritionAdviceItem =
   | { kind: "lifestyle"; nutrient: NutrientId; priority: 1; text: string }
@@ -75,20 +98,26 @@ export function nutritionSupplementGate(nutrient: NutrientId): GateResult {
  * Puur, deterministisch, geen I/O.
  */
 export function buildNutritionAdvice(
-  estimates: IntakeEstimate[]
+  estimates: IntakeEstimate[],
+  options: BuildNutritionAdviceOptions = {},
 ): NutritionAdviceItem[] {
+  const adviceDate = options.adviceDate ?? new Date();
+  const ctx: NutritionAdviceContext = {
+    preference: options.preference ?? "none",
+    allergies: options.allergies ?? [],
+  };
   const items: NutritionAdviceItem[] = [];
 
   for (const estimate of estimates) {
     if (estimate.band !== "below") continue;
 
-    const ref = nutrientReferences[estimate.nutrient];
+    const baseText = getNutrientLifestyleAction(estimate.nutrient, adviceDate);
 
     items.push({
       kind: "lifestyle",
       nutrient: estimate.nutrient,
       priority: 1,
-      text: ref.lifestyleAction,
+      text: personalizeLifestyleText(estimate.nutrient, baseText, ctx),
     });
 
     const gate = nutritionSupplementGate(estimate.nutrient);

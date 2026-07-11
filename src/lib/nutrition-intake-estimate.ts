@@ -15,8 +15,8 @@ import {
 } from "@/data/nutrition/intake-reference";
 
 /** Semver van de engine — wordt opgeslagen in intake_intake_log.estimate_version (F0). */
-// 1.1.0: magnesium-vraag meet nu magnesium-rijke voeding i.p.v. groente/fruit; vragen naar gewoonte-venster (gewone dag/week).
-export const ESTIMATE_VERSION = "1.1.0";
+// 1.2.0: nutsSeedsLegumesPerWeek toegevoegd als magnesium-proxy.
+export const ESTIMATE_VERSION = "1.2.0";
 
 /**
  * Plat record van frequentie-antwoorden uit het gewoonte-zelfrapport (gewone dag/week).
@@ -37,6 +37,8 @@ export interface NutritionSelfReport {
   meatLegumesPerDay?: number;
   /** Keer per week buiten (huid aan daglicht, min. 15 minuten). */
   sunExposurePerWeek?: number;
+  /** Noten, zaden of peulvruchten los van warme maaltijd — per week. */
+  nutsSeedsLegumesPerWeek?: number;
 }
 
 /** Drie inname-banden t.o.v. een veelgebruikte richtlijn. */
@@ -117,11 +119,10 @@ export function estimateNutritionIntake(
         break;
 
       case "magnesium":
-        // Magnesium: magnesium-rijke voeding (bladgroenten, noten, peulvruchten) als primair
-        // signaal — opgeslagen onder vegFruitPerDay; vlees/peulvruchten als aanvullend signaal.
         signal = combineSignals([
           report.vegFruitPerDay,
           report.meatLegumesPerDay,
+          report.nutsSeedsLegumesPerWeek,
         ]);
         break;
 

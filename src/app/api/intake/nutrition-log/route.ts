@@ -15,19 +15,16 @@ import {
   type IntakeEstimate,
 } from "@/lib/nutrition-intake-estimate";
 import {
-  computeNutritionScore,
-  nutritionReportFromAnswers,
-} from "@/lib/nutrition-score";
-import { getVitalityBand } from "@/lib/vitality-gauge";
-import {
   NUTRITION_QUESTIONS,
   type SliderQuestion,
 } from "@/data/nutrition/lifescore-questions";
-import { intakeStatementFor } from "@/lib/nutrition-intake-statements";
-import { buildNutritionAdvice } from "@/lib/nutrition-advice";
-import { nutritionLogConsentRow } from "@/lib/nutrition-log-consent";
-import { compareNutritionEstimates, type NutrientDelta } from "@/lib/nutrition-delta";
 import { emitEvent } from "@/lib/events";
+import { nutritionLogConsentRow } from "@/lib/nutrition-log-consent";
+import {
+  buildNutritionLogResponse,
+  type NutritionPreference,
+} from "@/lib/nutrition-log-response";
+import { computeNutritionScore, nutritionReportFromAnswers } from "@/lib/nutrition-score";
 
 const SLIDER_IDS = new Set(
   NUTRITION_QUESTIONS.filter(
@@ -139,7 +136,6 @@ export async function POST(request: NextRequest) {
 
   const report = nutritionReportFromAnswers(answers.sliders);
   const score = computeNutritionScore(answers.sliders);
-  const band = getVitalityBand(score);
 
   const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
   const sessionId = verifySignedIntakeSessionCookie(rawCookie);
@@ -201,9 +197,14 @@ export async function POST(request: NextRequest) {
 
   const estimate = estimateNutritionIntake(report);
 
-  const delta: NutrientDelta[] | null = previousEstimate
-    ? compareNutritionEstimates(previousEstimate, estimate)
-    : null;
+  const responsePayload = buildNutritionLogResponse(
+    {
+      sliders: answers.sliders,
+      allergies: answers.allergies,
+      preference: answers.preference as NutritionPreference,
+    },
+    previousEstimate,
+  );
 
   const { error: logError } = await admin.from("intake_intake_log").insert({
     session_id: sessionId,
@@ -235,7 +236,7 @@ export async function POST(request: NextRequest) {
       payload: {
         domain: "nutrition",
         nutrition_score: score,
-        band: band.id,
+        band: responsePayload.band.id,
         estimate_version: ESTIMATE_VERSION,
       },
       deliveredTo: ["posthog", "n8n_webhook"],
@@ -256,11 +257,5 @@ export async function POST(request: NextRequest) {
     console.error("[api/intake/nutrition-log] emit error:", emitErr);
   }
 
-  const statements = estimate.map(intakeStatementFor);
-  const advice = buildNutritionAdvice(estimate);
-
-  return NextResponse.json(
-    { estimate, statements, advice, delta, score, band },
-    { status: 200 },
-  );
+  return NextResponse.json(responsePayload, { status: 200 });
 }

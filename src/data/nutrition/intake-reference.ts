@@ -10,6 +10,7 @@
  */
 
 import type { IngredientClaimKey } from "@/data/approved-claims";
+import { buildLifestyleAction } from "@/data/nutrition/portion-dictionary";
 
 export type NutrientId =
   | "protein"
@@ -68,8 +69,7 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
       belowMax: 2, // TODO review: < 2 eiwitrijke maaltijden/dag → "below"
       meetsMin: 3, // TODO review: ≥ 3 eiwitrijke maaltijden/dag → "meets"
     },
-    lifestyleAction:
-      "Begin elke maaltijd met een eiwitbron: ei, kwark, kipfilet, peulvruchten of vis.",
+    lifestyleAction: buildLifestyleAction("protein"),
     claimKey: "eiwitpoeder",
   },
   omega3: {
@@ -81,8 +81,7 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
       belowMax: 1, // TODO review: < 1× vette vis/week → "below"
       meetsMin: 2, // TODO review: ≥ 2× vette vis/week → "meets"
     },
-    lifestyleAction:
-      "Eet deze week 2× vette vis — zalm, makreel of haring.",
+    lifestyleAction: buildLifestyleAction("omega3"),
     claimKey: "omega3",
   },
   magnesium: {
@@ -94,8 +93,7 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
       belowMax: 2, // TODO review: < 2 porties groente/fruit per dag → "below"
       meetsMin: 4, // TODO review: ≥ 4 porties groente/fruit per dag → "meets"
     },
-    lifestyleAction:
-      "Voeg dagelijks bladgroenten, noten of peulvruchten toe aan je maaltijden.",
+    lifestyleAction: buildLifestyleAction("magnesium"),
     claimKey: "magnesium",
   },
   vitamin_d: {
@@ -107,8 +105,7 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
       belowMax: 1, // TODO review: < 1× buiten/week → "below"
       meetsMin: 3, // TODO review: ≥ 3× buiten/week → "meets"
     },
-    lifestyleAction:
-      "Ga elke dag minimaal 15 minuten buiten — huid aan daglicht, ook in de winter.",
+    lifestyleAction: buildLifestyleAction("vitamin_d", { season: "summer" }),
     claimKey: "vitamineD",
   },
   zinc: {
@@ -120,8 +117,7 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
       belowMax: 1, // TODO review: < 1 portie vlees/vis/peulvruchten per dag → "below"
       meetsMin: 2, // TODO review: ≥ 2 porties per dag → "meets"
     },
-    lifestyleAction:
-      "Eet dagelijks een portie vlees, vis, eieren of peulvruchten voor voldoende zink.",
+    lifestyleAction: buildLifestyleAction("zinc"),
     claimKey: "zink",
   },
 };

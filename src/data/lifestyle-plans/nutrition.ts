@@ -35,7 +35,7 @@ export const nutritionPlanTemplate: LifestylePlanTemplate = {
       steps: [
         {
           id: "nut-eiwit-per-maaltijd",
-          title: "Begin elke maaltijd met 20–30 g eiwit — vlees, vis, eieren, kwark of peulvruchten.",
+          title: "Begin elke maaltijd met 20–30 g eiwit — 2 eieren + kwark, 100 g kip of 135 g linzen.",
           rationale: {
             body:
               "Voldoende eiwit per maaltijd ondersteunt spiermassa en herstel — vooral relevant na 40. " +
@@ -54,7 +54,7 @@ export const nutritionPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "nut-vette-vis",
-          title: "Plan deze week minstens één portie vette vis (zalm, makreel, haring).",
+          title: "Plan deze week 1–2 porties vette vis (100–150 g zalm, makreel of haring).",
           rationale: {
             body:
               "EPA en DHA komen vooral uit vette vis. Eet je minder dan twee porties per week, is omega-3 later het logische gesprek — eerst voeding.",

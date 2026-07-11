@@ -2436,11 +2436,18 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
   const habit = model.activeHabit;
   const domain = model.priority.id;
   const actionKey = habit?.stepId ?? null;
+  const cachedDailyLog = actionKey ? getCachedDailyLog(domain) : null;
+
   const [done, setDone] = useState(false);
   const [streak, setStreak] = useState(0);
   const [busy, setBusy] = useState(false);
   const [fetchLoaded, setFetchLoaded] = useState(false);
-  const loaded = !actionKey || fetchLoaded;
+  const resolvedDone =
+    cachedDailyLog && actionKey
+      ? cachedDailyLog.keys.includes(actionKey)
+      : done;
+  const resolvedStreak = cachedDailyLog?.streak ?? streak;
+  const loaded = !actionKey || cachedDailyLog !== null || fetchLoaded;
 
   const interventionHref = buildPriorityInterventionHref(model);
 
@@ -2461,11 +2468,7 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
       return;
     }
 
-    const cached = getCachedDailyLog(domain);
-    if (cached) {
-      setDone(cached.keys.includes(actionKey));
-      setStreak(cached.streak);
-      setFetchLoaded(true);
+    if (getCachedDailyLog(domain)) {
       return;
     }
 
@@ -2503,7 +2506,7 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
       return;
     }
 
-    const nextDone = !done;
+    const nextDone = !resolvedDone;
     setBusy(true);
     try {
       const response = await fetch("/api/account/daily-log", {
@@ -2545,19 +2548,19 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
         <div className="flex items-start gap-3">
           <button
             type="button"
-            aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
-            aria-pressed={done}
+            aria-label={resolvedDone ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
+            aria-pressed={resolvedDone}
             disabled={!loaded || busy}
             onClick={() => void toggleDaily()}
             className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
             style={{
-              border: done ? "none" : "1.5px solid #e4e0da",
-              background: done ? "var(--sage)" : "transparent",
-              color: done ? "#0f1c10" : "#78716c",
+              border: resolvedDone ? "none" : "1.5px solid #e4e0da",
+              background: resolvedDone ? "var(--sage)" : "transparent",
+              color: resolvedDone ? "#0f1c10" : "#78716c",
               cursor: !loaded || busy ? "default" : "pointer",
             }}
           >
-            {done ? <Icons.Check s={14} /> : null}
+            {resolvedDone ? <Icons.Check s={14} /> : null}
           </button>
           <div className="min-w-0 flex-1">
             <div className="text-[15px] font-semibold leading-snug text-[#1c1917] text-pretty">
@@ -2577,8 +2580,8 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
             >
               Gedaan vandaag
             </button>
-            {streak >= 2 ? (
-              <p className="mt-1 text-[12px] text-[#78716c]">{streak} dagen op rij</p>
+            {resolvedStreak >= 2 ? (
+              <p className="mt-1 text-[12px] text-[#78716c]">{resolvedStreak} dagen op rij</p>
             ) : null}
             {habit.planHref ? (
               <Link
@@ -2630,16 +2633,6 @@ const STATUS_BADGE_COLOR: Record<
 };
 
 type KompasView = PillarId | "activiteiten" | "trend";
-
-const KOMPAS_DOMAIN_IDS = new Set<PillarId>([
-  "slaap",
-  "energie",
-  "stress",
-  "voeding",
-  "beweging",
-  "herstel",
-  "verbinding",
-]);
 
 const KompasRowCard = ({
   onClick,
@@ -2939,6 +2932,13 @@ const VoedingScreen = ({
     clarityTag("dashboard_voeding_checkin", "click");
   };
 
+  const trackResultReopen = () => {
+    trackEvent("nutrition_result_reopen_click", {
+      surface: "dashboard_voeding",
+    });
+    clarityTag("nutrition_result_reopen", "dashboard");
+  };
+
   return (
     <DomainDeepTool
       domain="voeding"
@@ -2950,10 +2950,22 @@ const VoedingScreen = ({
       hasDomainCheckin={nutritionIntake !== null}
       checkin={{
         href: "/intake/voeding?from=dashboard&kompas=voeding",
-        label: "Doe de voedingscheck (1 min)",
-        description: "Krijg een snelle nulmeting van je basis en kies je eerste stap.",
+        label: "Doe voedingscheck",
+        description: "Snelle nulmeting van je basis",
+        iconKey: "Leaf",
         onClick: () => trackCheckinClick("header"),
       }}
+      secondaryCheckin={
+        nutritionLogCompleted
+          ? {
+              href: "/intake/voeding?resultaten=true&from=dashboard",
+              label: "Bekijk je resultaat",
+              description: "Je laatste inname-inschatting",
+              iconKey: "BarChart",
+              onClick: trackResultReopen,
+            }
+          : null
+      }
     >
         <section aria-label="Inname-snapshot">
           <DeepToolSectionHeader
@@ -3279,11 +3291,20 @@ const VoedingScreen = ({
   );
 };
 
-const KompasHome = ({ model, data, onRemeasure, initialKompasView }: SharedSectionProps) => {
+const KompasHome = ({
+  model,
+  data,
+  onRemeasure,
+  initialKompasView,
+  kompasResetSignal: _kompasResetSignal,
+}: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
-  const [domainView, setDomainView] = useState<PillarId | null>(
-    () => initialKompasView ?? null,
-  );
+  const [domainView, setDomainView] = useState<PillarId | null>(() => {
+    if (typeof window !== "undefined") {
+      return parseKompasFromUrl(window.location.href);
+    }
+    return initialKompasView ?? null;
+  });
   const [overlayView, setOverlayView] = useState<Extract<KompasView, "activiteiten" | "trend"> | null>(null);
   const reminderShownRef = useRef(false);
   const showRemeasureReminder =
@@ -3825,13 +3846,13 @@ export default function Dashboard({
   const selectTab = (nextTab: DashboardTabId) => {
     if (nextTab === "vandaag") {
       resetKompasToHome();
+      setKompasResetSignal((prev) => prev + 1);
+      if (tab === "vandaag") {
+        trackEvent("dashboard_kompas_tab_reset", { source: "tabbar" });
+        clarityTag("dashboard_kompas_view", "home_reset");
+      }
     } else {
       syncTabToUrl(nextTab);
-    }
-    if (nextTab === "vandaag" && tab === "vandaag") {
-      setKompasResetSignal((prev) => prev + 1);
-      trackEvent("dashboard_kompas_tab_reset", { source: "tabbar" });
-      clarityTag("dashboard_kompas_view", "home_reset");
     }
     if (nextTab === "voortgang" && tab === "voortgang" && voortgangScreen !== "hub") {
       setVoortgangScreen("hub");

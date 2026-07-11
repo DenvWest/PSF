@@ -96,6 +96,11 @@ export default function VoedingNa40Page() {
                       </Link>
                     </p>
                     <IntakeCtaMicro className="mx-auto mt-4 max-w-lg text-sm text-gray-500" />
+                    <p className="mt-3 text-sm text-gray-600">
+                      <Link href="/onderbouwing/voeding" className={LINK}>
+                        Hoe we de voedingscheck meten →
+                      </Link>
+                    </p>
                   </div>
                 </header>
 

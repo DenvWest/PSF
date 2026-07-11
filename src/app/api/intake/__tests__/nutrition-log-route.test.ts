@@ -69,6 +69,7 @@ const VALID_SLIDERS: Record<string, number> = {
   fruit: 3,
   berries: 2,
   vegetables: 1,
+  nutsSeedsLegumes: 1,
   wholegrain: 2,
   oilyFish: 1,
   proteinMeals: 1,
@@ -149,6 +150,7 @@ describe("POST /api/intake/nutrition-log", () => {
       estimate: unknown[];
       statements: string[];
       advice: unknown[];
+      lifestyleExtras: unknown[];
       score: number;
       band: { id: string };
     };
@@ -157,6 +159,7 @@ describe("POST /api/intake/nutrition-log", () => {
     expect(Array.isArray(data.statements)).toBe(true);
     expect(data.statements.length).toBe(data.estimate.length);
     expect(Array.isArray(data.advice)).toBe(true);
+    expect(Array.isArray(data.lifestyleExtras)).toBe(true);
     expect(typeof data.score).toBe("number");
     expect(data.score).toBeGreaterThanOrEqual(0);
     expect(data.score).toBeLessThanOrEqual(100);

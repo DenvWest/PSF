@@ -8,17 +8,26 @@ import {
   nutrientReferences,
   type NutrientId,
 } from "@/data/nutrition/intake-reference";
+import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
+import type { LifestyleExtra } from "@/lib/nutrition-lifestyle-extras";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { deltaStatementFor, type NutrientDelta } from "@/lib/nutrition-delta";
 import { getVitalityBandMessage } from "@/lib/vitality-gauge";
+import NutritionEvidenceDisclosure from "@/components/evidence/NutritionEvidenceDisclosure";
+import {
+  evidenceForExtra,
+  evidenceForGap,
+} from "@/data/nutrition/nutrient-evidence-map";
+import { withNutritionReturn } from "@/lib/nutrition-return-link";
 
 interface NutritionResultViewProps {
   score: number;
   estimate: IntakeEstimate[];
   statements: string[];
   advice: NutritionAdviceItem[];
+  lifestyleExtras?: LifestyleExtra[];
   delta: NutrientDelta[] | null;
   proteinMealsPerDay?: number;
   fromDashboard: boolean;
@@ -33,6 +42,7 @@ export default function NutritionResultView({
   estimate,
   statements,
   advice,
+  lifestyleExtras = [],
   delta,
   proteinMealsPerDay,
   fromDashboard,
@@ -52,6 +62,37 @@ export default function NutritionResultView({
       a.kind === "supplement",
   );
   const supplementRevealTracked = useRef(false);
+  const lifestyleExtraTracked = useRef(false);
+
+  function lifestyleTextFor(nutrient: NutrientId): string {
+    const fromAdvice = advice.find(
+      (item): item is Extract<NutritionAdviceItem, { kind: "lifestyle" }> =>
+        item.kind === "lifestyle" && item.nutrient === nutrient,
+    );
+    return fromAdvice?.text ?? nutrientReferences[nutrient].lifestyleAction;
+  }
+
+  useEffect(() => {
+    if (lifestyleExtraTracked.current || lifestyleExtras.length === 0) {
+      return;
+    }
+    lifestyleExtraTracked.current = true;
+    trackEvent("nutrition_lifestyle_extra_shown", {
+      extra_ids: lifestyleExtras.map((item) => item.id).join(","),
+      from: fromDashboard ? "dashboard" : "direct",
+    });
+    for (const extra of lifestyleExtras) {
+      if (extra.id === "fiber_low_wholegrain") {
+        clarityTag("nutrition_extra", "fiber");
+      }
+      if (extra.id === "b12_vegan") {
+        clarityTag("nutrition_extra", "b12");
+      }
+      if (extra.id === "sugar_high_signal") {
+        clarityTag("nutrition_extra", "sugar");
+      }
+    }
+  }, [lifestyleExtras, fromDashboard]);
 
   useEffect(() => {
     if (supplementRevealTracked.current || supplements.length === 0) {
@@ -87,10 +128,10 @@ export default function NutritionResultView({
       origin_domain: originDomain ?? "none",
     });
   }
-  const dashboardHref =
-    fromDashboard && originDomain
-      ? `/dashboard?tab=vandaag&kompas=${originDomain}`
-      : "/dashboard";
+  const dashboardHref = fromDashboard ? "/dashboard?tab=vandaag" : "/dashboard";
+
+  const evidenceFrom = fromDashboard ? "dashboard" : "direct";
+  const focusGapEvidence = focusNutrient ? evidenceForGap(focusNutrient) : null;
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-12">
@@ -137,8 +178,18 @@ export default function NutritionResultView({
               Focus: {focusRef.label}
             </h2>
             <p className="text-sm leading-relaxed text-[#1c1917]">
-              {focusRef.lifestyleAction}
+              {lifestyleTextFor(focusNutrient)}
             </p>
+
+            {focusGapEvidence ? (
+              <NutritionEvidenceDisclosure
+                evidence={focusGapEvidence.primary}
+                secondaryQuestionIds={focusGapEvidence.secondaryIds}
+                surface="result"
+                contextId={focusNutrient!}
+                from={evidenceFrom}
+              />
+            ) : null}
 
             {focusNutrient === "protein" ? (
               <details className="group mt-4 rounded-[12px] border border-[#ebe7e2] bg-white/60">
@@ -161,13 +212,42 @@ export default function NutritionResultView({
           </p>
         )}
 
+        {lifestyleExtras.length > 0 ? (
+          <section
+            aria-labelledby="lifestyle-extras-heading"
+            className="mb-6 rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7] px-5 py-5"
+          >
+            <h2
+              id="lifestyle-extras-heading"
+              className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#78716c]"
+            >
+              Ook relevant voor jou
+            </h2>
+            <ul className="flex flex-col gap-3">
+              {lifestyleExtras.map((extra) => (
+                <li key={extra.id}>
+                  <p className="text-sm leading-relaxed text-[#1c1917]">{extra.text}</p>
+                  <NutritionEvidenceDisclosure
+                    evidence={evidenceForExtra(extra.id)}
+                    surface="result"
+                    contextId={extra.id}
+                    from={evidenceFrom}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
         {otherGaps.length > 0 ? (
           <details className="group mb-4 rounded-[14px] border border-[#ebe7e2] bg-[#faf9f7]">
             <summary className="cursor-pointer list-none px-5 py-3.5 text-sm font-medium text-[#5A8F6A] [&::-webkit-details-marker]:hidden">
               Jouw stappen ({otherGaps.length})
             </summary>
             <ul className="flex flex-col gap-2 border-t border-[#ebe7e2] px-3 pb-3 pt-3">
-              {otherGaps.map((e) => (
+              {otherGaps.map((e) => {
+                const gapEvidence = evidenceForGap(e.nutrient);
+                return (
                 <li
                   key={e.nutrient}
                   className="rounded-[12px] border border-[#ebe7e2] bg-white px-4 py-3 text-sm leading-relaxed text-[#1c1917]"
@@ -176,9 +256,17 @@ export default function NutritionResultView({
                     {nutrientReferences[e.nutrient].label}
                   </span>
                   {" — "}
-                  {nutrientReferences[e.nutrient].lifestyleAction}
+                  {lifestyleTextFor(e.nutrient)}
+                  <NutritionEvidenceDisclosure
+                    evidence={gapEvidence.primary}
+                    secondaryQuestionIds={gapEvidence.secondaryIds}
+                    surface="result"
+                    contextId={e.nutrient}
+                    from={evidenceFrom}
+                  />
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </details>
         ) : null}
@@ -260,6 +348,14 @@ export default function NutritionResultView({
               voor jouw volgorde over alle pijlers.
             </p>
           ) : null}
+          <p className="text-xs leading-relaxed text-[#78716c]">
+            <Link
+              href={withNutritionReturn("/onderbouwing/voeding")}
+              className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] hover:decoration-[#5A8F6A]"
+            >
+              Wetenschappelijke onderbouwing van de voedingscheck
+            </Link>
+          </p>
         </div>
       </div>
     </div>

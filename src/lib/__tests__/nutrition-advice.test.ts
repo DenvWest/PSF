@@ -1,12 +1,14 @@
 import { describe, it, expect } from "vitest";
 import {
   buildNutritionAdvice,
+  getNutrientLifestyleAction,
   nutritionSupplementGate,
   type NutritionAdviceItem,
 } from "@/lib/nutrition-advice";
 import { statementHasForbiddenPhrase, FORBIDDEN_STATUS_PHRASES } from "@/lib/nutrition-intake-statements";
 import { getUsableClaims } from "@/data/approved-claims";
 import { nutrientReferences, NUTRIENT_IDS } from "@/data/nutrition/intake-reference";
+import { allLifestyleActionTexts, buildLifestyleAction } from "@/data/nutrition/portion-dictionary";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 
@@ -195,6 +197,53 @@ describe("buildNutritionAdvice — ordering bij meerdere gaps", () => {
     const result = buildNutritionAdvice(estimates);
     const nutrients = result.map((i) => i.nutrient);
     expect(nutrients.every((n) => n === "omega3")).toBe(true);
+  });
+});
+
+// ─── G. Portie-woordenboek + seizoensvitamine D ─────────────────────────────
+
+describe("portion-dictionary — lifestyleAction copy", () => {
+  it("bevat gram-equivalenten voor eiwit", () => {
+    expect(buildLifestyleAction("protein")).toContain("20–30 g");
+    expect(buildLifestyleAction("protein")).toContain("100 g kip");
+  });
+
+  it("bevat gram-equivalenten voor omega-3", () => {
+    expect(buildLifestyleAction("omega3")).toContain("100–150 g");
+  });
+
+  it("vitamine D winter vs zomer verschillen", () => {
+    const summer = buildLifestyleAction("vitamin_d", { season: "summer" });
+    const winter = buildLifestyleAction("vitamin_d", { season: "winter" });
+    expect(summer).not.toBe(winter);
+    expect(winter).toContain("10 µg");
+    expect(summer).toContain("buiten");
+  });
+
+  it("getNutrientLifestyleAction gebruikt winter-copy in oktober", () => {
+    const october = getNutrientLifestyleAction("vitamin_d", new Date("2026-10-15"));
+    const june = getNutrientLifestyleAction("vitamin_d", new Date("2026-06-15"));
+    expect(october).toContain("10 µg");
+    expect(june).toContain("buiten");
+  });
+
+  it("buildNutritionAdvice past vitamine D-copy aan op adviceDate", () => {
+    const winter = buildNutritionAdvice([gapEstimate("vitamin_d")], {
+      adviceDate: new Date("2026-01-15"),
+    });
+    const summer = buildNutritionAdvice([gapEstimate("vitamin_d")], {
+      adviceDate: new Date("2026-07-15"),
+    });
+    const winterText = winter.find((i) => i.kind === "lifestyle")?.text ?? "";
+    const summerText = summer.find((i) => i.kind === "lifestyle")?.text ?? "";
+    expect(winterText).toContain("10 µg");
+    expect(summerText).toContain("buiten");
+  });
+
+  it("alle lifestyle-teksten uit portion-dictionary zijn compliance-veilig", () => {
+    for (const text of allLifestyleActionTexts()) {
+      expect(statementHasForbiddenPhrase(text), `"${text}"`).toBe(false);
+    }
   });
 });
 
