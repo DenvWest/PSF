@@ -72,7 +72,10 @@ export default function NutritionEvidenceDisclosure({
           </p>
         ) : null}
         <Link
-          href={withNutritionReturn(`/onderbouwing/voeding#${evidence.questionId}`)}
+          href={withNutritionReturn(
+            `/onderbouwing/voeding#${evidence.questionId}`,
+            from === "dashboard" ? "dashboard" : undefined,
+          )}
           className="inline-block text-xs font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] hover:decoration-[#5A8F6A]"
         >
           Volledige onderbouwing →

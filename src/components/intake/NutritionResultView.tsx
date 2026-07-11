@@ -350,7 +350,10 @@ export default function NutritionResultView({
           ) : null}
           <p className="text-xs leading-relaxed text-[#78716c]">
             <Link
-              href={withNutritionReturn("/onderbouwing/voeding")}
+              href={withNutritionReturn(
+                "/onderbouwing/voeding",
+                fromDashboard ? "dashboard" : undefined,
+              )}
               className="font-medium text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] hover:decoration-[#5A8F6A]"
             >
               Wetenschappelijke onderbouwing van de voedingscheck

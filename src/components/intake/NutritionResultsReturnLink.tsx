@@ -6,7 +6,7 @@ import { clarityTag } from "@/lib/clarity";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 import {
   hasNutritionReturnParam,
-  NUTRITION_RESULTS_HREF,
+  nutritionResultsHref,
 } from "@/lib/nutrition-return-link";
 
 export default function NutritionResultsReturnLink() {
@@ -17,10 +17,12 @@ export default function NutritionResultsReturnLink() {
     return null;
   }
 
+  const origin = params.from === "dashboard" ? "dashboard" : undefined;
+
   return (
     <nav aria-label="Terug naar voedingscheck-resultaat" className="mb-6">
       <Link
-        href={NUTRITION_RESULTS_HREF}
+        href={nutritionResultsHref(origin)}
         onClick={() => {
           trackEvent(GA4_EVENTS.NUTRITION_ONDERBOUWING_RETURN_CLICK, {
             surface: "onderbouwing",
