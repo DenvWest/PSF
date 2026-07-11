@@ -219,6 +219,7 @@ export function syncDietContext(
   sliders: Record<string, number>,
   optOutChecked: Record<string, boolean>,
   ctx: DietContext,
+  previousCtx?: DietContext,
 ): { sliders: Record<string, number>; optOutChecked: Record<string, boolean> } {
   const nextSliders = { ...sliders };
   const nextOptOut = { ...optOutChecked };
@@ -231,7 +232,11 @@ export function syncDietContext(
       nextSliders[id] = 0;
       nextOptOut[id] = true;
     } else {
-      if (nextOptOut[id] && !shouldAutoOptOut(id, ctx)) {
+      // Herstel naar default als de slider een opt-out was, óf als hij onder de
+      // vorige context geskipt was en dat nu niet meer is. Een gebruikers-0 op een
+      // niet eerder geskipte slider blijft ongemoeid.
+      const wasSkipped = previousCtx ? shouldSkipSlider(id, previousCtx) : false;
+      if (nextOptOut[id] || wasSkipped) {
         nextOptOut[id] = false;
         resetSliderToDefault(id, nextSliders);
       }
@@ -240,7 +245,7 @@ export function syncDietContext(
 
   if (shouldSkipBreadthSlider("wholegrain", ctx)) {
     nextSliders.wholegrain = 0;
-  } else if (nextSliders.wholegrain === 0) {
+  } else if (previousCtx && shouldSkipBreadthSlider("wholegrain", previousCtx)) {
     resetSliderToDefault("wholegrain", nextSliders);
   }
 

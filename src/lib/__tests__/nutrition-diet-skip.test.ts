@@ -90,20 +90,32 @@ describe("applyDietDefaults / syncDietContext", () => {
     expect(result.oilyFish).toBe(0);
   });
 
-  it("sync reset bij deselect allergie", () => {
-    const withAllergy = syncDietContext(
-      { oilyFish: 0 },
-      { oilyFish: false },
-      { preference: "none", allergies: ["vis"] },
+  it("herstelt een geskipte slider naar default bij vervallen dieet-conditie", () => {
+    const dairyDefault = nutritionSliderQuestion("dairy")?.defaultIndex;
+    const vegan = syncDietContext(
+      { dairy: dairyDefault ?? 1 },
+      {},
+      { preference: "vegan", allergies: [] },
     );
-    expect(withAllergy.sliders.oilyFish).toBe(0);
+    expect(vegan.sliders.dairy).toBe(0);
 
-    const without = syncDietContext(
-      withAllergy.sliders,
-      withAllergy.optOutChecked,
+    const vegetarian = syncDietContext(
+      vegan.sliders,
+      vegan.optOutChecked,
+      { preference: "vegetarian", allergies: [] },
+      { preference: "vegan", allergies: [] },
+    );
+    expect(vegetarian.sliders.dairy).toBe(dairyDefault);
+  });
+
+  it("laat een gebruikers-0 op een niet-geskipte slider met rust", () => {
+    const result = syncDietContext(
+      { dairy: 0 },
+      {},
+      { preference: "none", allergies: ["noten"] },
       { preference: "none", allergies: [] },
     );
-    expect(without.sliders.oilyFish).toBe(nutritionSliderQuestion("oilyFish")?.defaultIndex);
+    expect(result.sliders.dairy).toBe(0);
   });
 
   it("eieren-allergie → proteinMeals opt-out", () => {

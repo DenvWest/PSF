@@ -287,8 +287,9 @@ export default function NutritionCapture() {
     nextCtx: DietContext,
     currentSliders: Record<string, number>,
     currentOptOut: Record<string, boolean>,
+    previousCtx?: DietContext,
   ) {
-    const synced = syncDietContext(currentSliders, currentOptOut, nextCtx);
+    const synced = syncDietContext(currentSliders, currentOptOut, nextCtx, previousCtx);
     setSliders(synced.sliders);
     setOptOutChecked(synced.optOutChecked);
     trackNewSkips(nextCtx);
@@ -434,7 +435,7 @@ export default function NutritionCapture() {
     }
     const nextCtx = dietContext(value, allergies);
     setPreference(value);
-    runDietSync(nextCtx, sliders, optOutChecked);
+    runDietSync(nextCtx, sliders, optOutChecked, ctx);
     goToAfterDietOrBreadth(nextCtx);
   }
 
@@ -449,7 +450,7 @@ export default function NutritionCapture() {
   function goNextFromMeta(index: number) {
     if (index === 0) {
       const nextCtx = dietContext(preference, allergies);
-      runDietSync(nextCtx, sliders, optOutChecked);
+      runDietSync(nextCtx, sliders, optOutChecked, ctx);
       setStep({ kind: "meta", index: 1 });
     }
   }
@@ -637,7 +638,7 @@ export default function NutritionCapture() {
 
     const nextCtx = dietContext(preference, nextAllergies);
     setAllergies(nextAllergies);
-    runDietSync(nextCtx, sliders, optOutChecked);
+    runDietSync(nextCtx, sliders, optOutChecked, ctx);
 
     if (preference && isPreferenceDisabled(preference, nextAllergies)) {
       setPreference(null);
