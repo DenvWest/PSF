@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { consumeRateLimitForIp } from "@/lib/rate-limit";
+import { getRateLimitConfig } from "@/lib/rate-limit-config";
+import { getClientIp } from "@/lib/turnstile-verify";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import {
   INTAKE_SESSION_COOKIE_NAME,
@@ -47,6 +50,23 @@ function parseStoredAnswers(raw: unknown): NutritionAnswers | null {
 }
 
 export async function GET(request: NextRequest) {
+  const clientIp = getClientIp(request);
+  const rateLimit = await consumeRateLimitForIp(
+    "intake_log_read",
+    clientIp,
+    getRateLimitConfig("intake_log_read"),
+  );
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Te veel pogingen. Probeer het over een paar minuten opnieuw." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
   const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
   const sessionId = verifySignedIntakeSessionCookie(rawCookie);
 
