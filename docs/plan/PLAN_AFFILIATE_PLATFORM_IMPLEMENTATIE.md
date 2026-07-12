@@ -29,21 +29,21 @@ Expliciet benoemd, zoals gevraagd. Elke keuze met reden.
 
 | # | Keuze | Waarom |
 |---|---|---|
-| A1 | **Nieuwe repo `partnerdesk`**, los van psf | Ander product, andere lifecycle; geen vervuiling van perfectsupplement. |
-| A2 | **Next.js (App Router) + TypeScript strict + Tailwind + shadcn/ui** | Bekende stack (= snelheid); shadcn levert Drawer, Dialog, cmdk-palette, Popover kant-en-klaar. |
-| A3 | **Supabase (nieuw project): Postgres + Storage + Auth + pgvector** | Storage lost document/banner-opslag op; pgvector maakt het schema RAG-klaar (§20); bekende workflow. Migraties via SQL-bestanden in repo, uitgevoerd via Dashboard SQL Editor (zelfde werkwijze als psf). |
-| A4 | **Eén gebruiker**: Supabase Auth met e-mail-allowlist van 1 adres; RLS simpel (authenticated = alles) | Geen rollenmodel. Auth bestaat alleen omdat de app op internet staat. |
+| A1 | ~~Nieuwe repo `partnerdesk`~~ → **in de psf-app onder `/admin`** (herziening 12 jul) | Hergebruik van auth, deploy, Supabase en conventies; admin-shell-omkering per besluit Dennis. |
+| A2 | **Next.js (App Router) + TypeScript strict + Tailwind + shadcn/ui** — shadcn uitsluitend scoped in `components/partnerdesk/ui/`, onder voorbehoud (zie herzieningsblok) | Bekende stack (= snelheid); shadcn levert Drawer, Dialog, cmdk-palette, Popover kant-en-klaar. |
+| A3 | ~~Nieuw Supabase-project~~ → **zelfde Supabase-project als psf**, tabellen met `pd_`-prefix; Storage-bucket `partner-documents` (private); pgvector pas activeren in F4 | Storage lost document/banner-opslag op; pgvector maakt het schema RAG-klaar (§20). Migraties via SQL-bestanden in repo, uitgevoerd via Dashboard SQL Editor (zelfde werkwijze als psf). |
+| A4 | **Eén gebruiker**: ~~Supabase Auth~~ → bestaande psf-admin-login (proxy-guard); RLS deny-all, toegang alleen via service-role server-side | Geen rollenmodel. Auth bestaat al; geen tweede systeem bouwen. |
 | A5 | **Lezen via Server Components, muteren via Server Actions die altijd door een service-laag gaan** (`src/lib/services/`) | Eén mutatie-pad ⇒ tijdlijn-events en signaal-herberekening kunnen nooit vergeten worden; AI krijgt later dezelfde functies als tools (§20). |
 | A6 | **Geldbedragen in centen (int), percentages `numeric(5,2)`, datums `date`, momenten `timestamptz` (UTC)** | Geen float-geld; contract- en geldigheidslogica is dag-granulair. |
 | A7 | **Alleen EUR** | Alle huidige partners zijn EUR. Andere valuta = import-fout, geen half multi-currency. |
 | A8 | **IDs: `uuid` (gen_random_uuid), overal, stabiel, nooit hergebruikt** | AI-first-eis: stabiele verwijzingen vanuit events, embeddings en documenten. |
 | A9 | **Archiveren i.p.v. verwijderen** voor partner, contact, contract, commissieregel, product, campagne (`archived_at`). Hard delete alleen voor taken, saved views, labels | Historie (tijdlijn, conversies, AI-context) mag nooit dangling raken. |
-| A10 | **Cron = systemd-timer op de VPS** die elke 5 min `POST /api/jobs/tick` aanroept met secret-header; de tick-handler bepaalt zelf wat er moet draaien (signalen elk kwartier, feeds per schema, checks nachtelijks) | Eén simpel mechanisme, logs op de server, geen vendor lock-in, geen queue-infra. |
+| A10 | **Cron = systemd-timer op de VPS** die elke 5 min `POST /api/jobs/tick` aanroept met secret-header (hergebruik `cron-auth.ts`-patroon); **pas vanaf F2** — in F1 volstaat recompute na elke mutatie + bij laden van Vandaag | Eén simpel mechanisme, logs op de server, geen vendor lock-in, geen queue-infra. |
 | A11 | **API-credentials versleuteld op applicatieniveau** (AES-256-GCM, key in env), nooit in zoekindex/exports/logs | Simpel en afdoende voor single-tenant. |
 | A12 | **Desktop-first; mobiel = raadplegen + notitie/taak** | Backoffice-tool. Feed-mapping en bulk-acties zijn desktop-only. |
 | A13 | Volumes waarop ontworpen wordt: ≤ 100 partners, ≤ 50k producten, ≤ 100k conversies/jaar | Bepaalt: geen zoek-infra (pg_trgm volstaat), geen queue, geen caching-laag. |
 | A14 | **Wachtwoorden van netwerk-logins blijven in de wachtwoordmanager**; app slaat alleen login-URL + gebruikersnaam op | Geen secrets-beheer bouwen dat elders beter bestaat. |
-| A15 | Deploy: Hetzner VPS, systemd, Nginx — zelfde patroon als psf | Bekende operatie. |
+| A15 | Deploy: ~~zelfde patroon als psf~~ → **mee met psf** (systemd `perfectsupplement`, `deploy.sh`) | Geen tweede operatie te onderhouden. |
 | A16 | UI-taal Nederlands, code Engels | Consistent met bestaande werkwijze. |
 
 ---
@@ -60,24 +60,26 @@ Expliciet benoemd, zoals gevraagd. Elke keuze met reden.
 ## 2. Technische fundering
 
 ```
-partnerdesk/
-├── src/
-│   ├── app/                  # routes: /, /partners, /partners/[id], /producten, /campagnes,
-│   │   │                     # /rapportages, /taken, /instellingen, /login, /api/jobs/tick
-│   ├── components/           # ui/ (shadcn), dossier/, dashboard/, tables/, search/
-│   ├── lib/
-│   │   ├── services/         # partner.ts, contract.ts, commission.ts, feed.ts, task.ts,
-│   │   │   │                 # signal.ts, timeline.ts, document.ts, search.ts, importer/
-│   │   ├── db/               # supabase client (server), generated types
-│   │   ├── validation/       # zod-schema's, gedeeld client/server
-│   │   └── jobs/             # tick-dispatcher, signal-engine, feed-sync, checks
-│   └── types/
-├── supabase/migrations/      # genummerde .sql, uitgevoerd via Dashboard
-└── tests/                    # vitest (services), playwright (smoke per fase)
+src/app/admin/                    # de shell: layout.tsx (zijbalk) + routes
+├── page.tsx                      # Vandaag [F1, tot dan redirect → partners]
+├── partners/ · partners/[slug]/  # lijst + dossier
+├── taken/ · instellingen/
+├── producten/ · campagnes/ · rapportages/   [F2/F3]
+├── site/                         # bestaand intake-dashboard (verhuisd van page.tsx)
+├── affiliate/ · login/           # blijven staan
+src/app/api/jobs/tick/            # [F2] systemd-timer-endpoint (cron-auth-patroon)
+src/components/partnerdesk/       # ui/ (shadcn, scoped) · dossier/ · dashboard/ · tables/ · search/
+src/lib/partnerdesk/
+├── services/                     # partner.ts, contract.ts, commission.ts, task.ts,
+│                                 # signal.ts, timeline.ts, document.ts, search.ts, [F2] feed.ts, importer/
+├── validation/                   # zod-schema's, gedeeld client/server
+└── jobs/                         # signal-engine; [F2] tick-dispatcher, feed-sync, checks
+src/types/partnerdesk.ts
+supabase/migrations/              # pd_-migraties, uitgevoerd via Dashboard SQL Editor
 ```
 
 - **Mutatie-contract**: elke service-mutatie doet in één transactie: (1) validatie (zod), (2) schrijf, (3) tijdlijn-event indien relevant (§10), (4) `recomputeSignalsFor(subject)` (§11). UI-code raakt nooit rechtstreeks tabellen aan.
-- **Tests**: vitest verplicht op `commission.resolve()`, signal-engine, feed-diff en cancel-by-berekening (dit is de business-kern); Playwright-smoke per fase-oplevering.
+- **Tests**: vitest verplicht op `commission.resolve()`, signal-engine, feed-diff en cancel-by-berekening (dit is de business-kern); handmatige smoke-checklist per fase-oplevering (geen Playwright, zie herzieningsblok).
 - **Verificatie-standaard**: `tsc --noEmit` + `vitest run` groen vóór elke oplevering.
 
 ---
@@ -407,8 +409,8 @@ Label ──n:m── Partner
 
 Per pagina: doel · onderdelen · tabellen/kaarten · filters/sortering · badges/waarschuwingen · lege/loading/fout-staat · desktop/mobiel. Loading-principe overal: server-rendered, paginawissel < 200 ms; suspense-skeleton alléén op tabellen met > 1 query; actieknoppen tonen inline spinner na 300 ms. Fout-principe overal: mutatie-fout = toast met herleesbare melding + "opnieuw"; page-fout = foutkader met details-uitklap, nooit een witte pagina.
 
-### 5.1 [F1] `/login`
-Doel: toegang. E-mail + wachtwoord (Supabase Auth), allowlist van 1 adres. Fout: "Onjuiste inlog". Geen registratie, geen wachtwoord-vergeten-flow in F1 (reset via Supabase dashboard — bewuste schuld, §15).
+### 5.1 [F1] Login — vervallen (herziening 12 jul)
+Toegang loopt via de bestaande `/admin/login` + proxy-guard van psf. Geen nieuw login-scherm, geen Supabase Auth.
 
 ### 5.2 [F1] `/` — Vandaag
 - **Doel**: in één oogopslag zien wat aandacht vraagt; alles ≤ 1 klik van de oplossing.
@@ -818,7 +820,7 @@ Alle validaties in zod (`lib/validation/`), gedeeld client (inline feedback) + s
 - Cron: systemd-timer + tick-route; geen queue. Feed-sync sequentieel.
 - Zoek: pg_trgm; geen aparte zoekinfra.
 - Dashboard-refresh: router revalidate; geen realtime.
-- Geen wachtwoord-reset-flow (Supabase dashboard); geen 2FA in-app (staat op Supabase Auth-niveau).
+- Geen eigen login/reset-flow — toegang via de bestaande psf-admin-login (herziening 12 jul).
 - Rapportage-queries direct op conversions; materialized views pas > 100k rijen.
 
 **Schaalbaar ontworpen (goedkoop nu, waardevol later):** embeddings/ai_extractions-schema vanaf F1 in migraties (leeg tot F4) · `raw jsonb` op clicks/conversions (her-interpreteerbaar bij API-wijzigingen) · importer per netwerk achter één interface (`NetworkImporter`) zodat Awin/TradeTracker later één bestand is.
@@ -838,12 +840,12 @@ Alle validaties in zod (`lib/validation/`), gedeeld client (inline feedback) + s
 - ✓ Dashboard-signalen verschijnen ≤ 15 min na conditie (engine) én direct na mutatie (recompute); snooze vereist reden; auto-resolve werkt.
 - ✓ ⌘K vindt partner, contact (op e-mail), contractnummer, notitie-tekst; Enter deep-linkt naar sectie.
 - ✓ Inline edit overal in dossier: Enter/Esc/blur-gedrag + UndoToast + conflict-toast (EC-110).
-- ✓ `tsc --noEmit` + `vitest run` groen; Playwright-smoke: login → partner aanmaken → contract + regel → paspoort klopt → signaal zichtbaar.
+- ✓ `tsc --noEmit` + `vitest run` groen; handmatige smoke: login → partner aanmaken → contract + regel → paspoort klopt → signaal zichtbaar.
 
 **Bouwvolgorde** (elke taak zelfstandig opleverbaar):
-1. Repo-scaffold: Next.js + TS strict + Tailwind + shadcn/ui + vitest + Playwright; CI-script (tsc, vitest).
-2. Supabase-project; migratie 001: networks, partners, labels, partner_labels, categories, contacts, contracts, commission_rules, commission_tiers, documents, timeline_events, tasks, signals, saved_views, user_prefs, settings, recent_visits + indexes + RLS (authenticated-all) + revoke update/delete op timeline_events.
-3. Auth: Supabase Auth, allowlist-check in middleware, /login, sessie-guard.
+1. Admin-shell in psf: nieuw `/admin`-layout met zijbalk (PartnerDesk-items + "Site"-groep), bestaand dashboard verhuist ongewijzigd naar `/admin/site`, routes-skeleton; shadcn-basis scoped in `components/partnerdesk/ui/`.
+2. Migratie 001 (`pd_`-prefix): pd_networks, pd_partners, pd_labels, pd_partner_labels, pd_categories, pd_contacts, pd_contracts, pd_commission_rules, pd_commission_tiers, pd_documents, pd_timeline_events, pd_tasks, pd_signals, pd_saved_views, pd_user_prefs, pd_settings, pd_recent_visits + indexes + RLS aan zónder policies (deny-all) + revoke update/delete op pd_timeline_events. Uitvoeren via Dashboard SQL Editor.
+3. Auth: vervalt — bestaande `/admin/login` + proxy-guard; alle db-toegang via `createSupabaseAdmin()`.
 4. `lib/db` + type-generatie; `lib/validation` zod-schema's (§13).
 5. AppShell + SidebarNav + routes-skeleton + EmptyState/Toast/ConfirmDialog.
 6. Service-laag-fundament: transactie-helper, `timeline.record()`, `recomputeSignalsFor()` (no-op checks), mutatie-contract (A5).
@@ -860,7 +862,7 @@ Alle validaties in zod (`lib/validation/`), gedeeld client (inline feedback) + s
 17. ⌘K: search-service + CommandPalette + recent_visits + deep-link-ankers.
 18. Instellingen: netwerken, categorieën, labels; JSON-export.
 19. Keyboard-map + sticky-gedrag + mobiele pass (dossier, taken, dashboard).
-20. Seed met echte partners (Daisycon-programma's, Arctic Blue); Playwright-smoke; oplevering.
+20. Seed met echte partners (Daisycon-programma's, Arctic Blue); handmatige smoke-checklist; oplevering.
 
 ---
 
