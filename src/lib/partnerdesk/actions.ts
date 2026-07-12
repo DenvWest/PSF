@@ -100,11 +100,32 @@ export async function updatePartnerFieldAction(input: {
 
   try {
     const db = getPartnerDeskDb();
+
+    // Statuswijziging als systeem-event vastleggen (met oud→nieuw voor de diff).
+    let previousStatus: string | null = null;
+    if (field === "status") {
+      const { data } = await db
+        .from("pd_partners")
+        .select("status")
+        .eq("id", partnerId)
+        .maybeSingle();
+      previousStatus = (data?.status as string | null) ?? null;
+    }
+
     const { error } = await db
       .from("pd_partners")
       .update({ [field]: nextValue, updated_at: new Date().toISOString() })
       .eq("id", partnerId);
     if (error) return { ok: false, error: error.message };
+
+    if (field === "status" && previousStatus && previousStatus !== nextValue) {
+      await recordTimelineEvent(db, {
+        partnerId,
+        actor: "system",
+        kind: "partner_status_changed",
+        metadata: { from: previousStatus, to: nextValue },
+      });
+    }
 
     await recomputeSignalsForPartner(db, partnerId);
     revalidatePath("/admin/partners");

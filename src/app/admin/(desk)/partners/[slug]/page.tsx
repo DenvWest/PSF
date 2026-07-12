@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CollapsibleSection } from "@/components/partnerdesk/CollapsibleSection";
+import { ContactsSection } from "@/components/partnerdesk/ContactsSection";
 import { InlineField } from "@/components/partnerdesk/InlineField";
 import { PassportCard } from "@/components/partnerdesk/PassportCard";
 import {
@@ -11,7 +12,15 @@ import {
   PARTNER_STATUS_LABEL,
   StatusBadge,
 } from "@/components/partnerdesk/StatusBadge";
-import { getPartnerBySlug } from "@/lib/partnerdesk/queries";
+import { TasksSection } from "@/components/partnerdesk/TasksSection";
+import { TimelineSection } from "@/components/partnerdesk/TimelineSection";
+import {
+  getPartnerBySlug,
+  getPartnerContacts,
+  getPartnerOpenCounts,
+  getPartnerTasks,
+  getPartnerTimeline,
+} from "@/lib/partnerdesk/queries";
 import { PARTNER_STATUSES } from "@/lib/partnerdesk/validation";
 
 export const dynamic = "force-dynamic";
@@ -36,9 +45,7 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
 }
 
 function Placeholder({ plak }: { plak: string }) {
-  return (
-    <p className="text-sm text-[var(--ps-muted)]">Komt in {plak}.</p>
-  );
+  return <p className="text-sm text-[var(--ps-muted)]">Komt in {plak}.</p>;
 }
 
 export default async function PartnerDossierPage({
@@ -51,6 +58,13 @@ export default async function PartnerDossierPage({
   if (!dossier) notFound();
 
   const { partner, network, networks, categories } = dossier;
+  const [contacts, timeline, tasks, counts] = await Promise.all([
+    getPartnerContacts(partner.id),
+    getPartnerTimeline(partner.id),
+    getPartnerTasks(partner.id),
+    getPartnerOpenCounts(partner.id),
+  ]);
+  const primaryContact = contacts.find((c) => c.is_primary) ?? null;
 
   const statusOptions = PARTNER_STATUSES.map((s) => ({
     value: s,
@@ -66,10 +80,7 @@ export default async function PartnerDossierPage({
     <div>
       <header className="sticky top-0 z-10 border-b border-[var(--ps-border)] bg-[var(--ps-surface)]/95 backdrop-blur">
         <div className="mx-auto max-w-6xl px-8 py-4">
-          <Link
-            href="/admin/partners"
-            className="text-sm text-[var(--ps-body)] hover:underline"
-          >
+          <Link href="/admin/partners" className="text-sm text-[var(--ps-body)] hover:underline">
             ← Partners
           </Link>
           <div className="mt-2 flex items-center gap-3">
@@ -89,16 +100,22 @@ export default async function PartnerDossierPage({
         <SectionAnchorNav sections={SECTIONS} />
 
         <div className="min-w-0 flex-1 space-y-5">
-          <PassportCard partner={partner} />
+          <PassportCard
+            partner={partner}
+            primaryContact={primaryContact}
+            openTasks={counts.openTasks}
+            openSignals={counts.openSignals}
+          />
 
           <CollapsibleSection id="algemeen" title="Algemene gegevens">
             <div className="divide-y divide-[var(--ps-border)]">
               <FieldRow label="Naam">
-                <InlineField partnerId={partner.id} field="name" value={partner.name} />
+                <InlineField entity="partner" id={partner.id} field="name" value={partner.name} />
               </FieldRow>
               <FieldRow label="Status">
                 <InlineField
-                  partnerId={partner.id}
+                  entity="partner"
+                  id={partner.id}
                   field="status"
                   value={partner.status}
                   variant="select"
@@ -107,7 +124,8 @@ export default async function PartnerDossierPage({
               </FieldRow>
               <FieldRow label="Netwerk">
                 <InlineField
-                  partnerId={partner.id}
+                  entity="partner"
+                  id={partner.id}
                   field="network_id"
                   value={partner.network_id}
                   variant="select"
@@ -116,7 +134,8 @@ export default async function PartnerDossierPage({
               </FieldRow>
               <FieldRow label="Categorie">
                 <InlineField
-                  partnerId={partner.id}
+                  entity="partner"
+                  id={partner.id}
                   field="category_id"
                   value={partner.category_id ?? ""}
                   variant="select"
@@ -125,7 +144,8 @@ export default async function PartnerDossierPage({
               </FieldRow>
               <FieldRow label="Website">
                 <InlineField
-                  partnerId={partner.id}
+                  entity="partner"
+                  id={partner.id}
                   field="website"
                   value={partner.website ?? ""}
                   renderValue={(v) => (
@@ -141,29 +161,18 @@ export default async function PartnerDossierPage({
                 />
               </FieldRow>
               <FieldRow label="Login-URL">
-                <InlineField
-                  partnerId={partner.id}
-                  field="login_url"
-                  value={partner.login_url ?? ""}
-                />
+                <InlineField entity="partner" id={partner.id} field="login_url" value={partner.login_url ?? ""} />
               </FieldRow>
               <FieldRow label="Gebruikersnaam">
-                <InlineField
-                  partnerId={partner.id}
-                  field="login_username"
-                  value={partner.login_username ?? ""}
-                />
+                <InlineField entity="partner" id={partner.id} field="login_username" value={partner.login_username ?? ""} />
               </FieldRow>
               <FieldRow label="Accountmanager">
-                <InlineField
-                  partnerId={partner.id}
-                  field="account_manager"
-                  value={partner.account_manager ?? ""}
-                />
+                <InlineField entity="partner" id={partner.id} field="account_manager" value={partner.account_manager ?? ""} />
               </FieldRow>
               <FieldRow label="Omschrijving">
                 <InlineField
-                  partnerId={partner.id}
+                  entity="partner"
+                  id={partner.id}
                   field="description"
                   value={partner.description ?? ""}
                   variant="textarea"
@@ -176,9 +185,10 @@ export default async function PartnerDossierPage({
             </p>
           </CollapsibleSection>
 
-          <CollapsibleSection id="contactpersonen" title="Contactpersonen" defaultOpen={false}>
-            <Placeholder plak="plak 2" />
+          <CollapsibleSection id="contactpersonen" title="Contactpersonen">
+            <ContactsSection partnerId={partner.id} slug={slug} contacts={contacts} />
           </CollapsibleSection>
+
           <CollapsibleSection id="contracten" title="Contracten" defaultOpen={false}>
             <Placeholder plak="plak 3" />
           </CollapsibleSection>
@@ -188,11 +198,18 @@ export default async function PartnerDossierPage({
           <CollapsibleSection id="documenten" title="Materiaal & documenten" defaultOpen={false}>
             <Placeholder plak="plak 3" />
           </CollapsibleSection>
-          <CollapsibleSection id="tijdlijn" title="Tijdlijn" defaultOpen={false}>
-            <Placeholder plak="plak 2" />
+
+          <CollapsibleSection id="tijdlijn" title="Tijdlijn">
+            <TimelineSection
+              partnerId={partner.id}
+              slug={slug}
+              events={timeline}
+              contacts={contacts}
+            />
           </CollapsibleSection>
-          <CollapsibleSection id="taken" title="Taken" defaultOpen={false}>
-            <Placeholder plak="plak 2" />
+
+          <CollapsibleSection id="taken" title="Taken">
+            <TasksSection partnerId={partner.id} slug={slug} tasks={tasks} />
           </CollapsibleSection>
         </div>
       </div>

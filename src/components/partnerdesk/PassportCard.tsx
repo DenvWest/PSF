@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { DeskIcon } from "@/components/partnerdesk/DeskIcon";
-import type { PdPartner } from "@/types/partnerdesk";
+import { lastContactLabel } from "@/lib/partnerdesk/contact-recency";
+import { todayIso } from "@/lib/partnerdesk/dates";
+import type { PdContact, PdPartner } from "@/types/partnerdesk";
 
 function Row({
   label,
@@ -37,7 +39,18 @@ function Row({
  * alleen Login gevuld uit de partnergegevens; contract/commissie/contactpersoon
  * volgen in plak 2/3, feed/API in fase 2/3.
  */
-export function PassportCard({ partner }: { partner: PdPartner }) {
+export function PassportCard({
+  partner,
+  primaryContact,
+  openTasks,
+  openSignals,
+}: {
+  partner: PdPartner;
+  primaryContact: PdContact | null;
+  openTasks: number;
+  openSignals: number;
+}) {
+  const now = todayIso();
   return (
     <div className="rounded-xl border border-[var(--ps-border)] bg-[var(--ps-surface)] px-5 py-4">
       <div className="mb-2 flex items-center justify-between">
@@ -55,8 +68,21 @@ export function PassportCard({ partner }: { partner: PdPartner }) {
         <Row label="Cookieduur" href="#contracten" muted>
           —
         </Row>
-        <Row label="Contactpersoon" href="#contactpersonen" muted>
-          nog invullen →
+        <Row
+          label="Contactpersoon"
+          href="#contactpersonen"
+          muted={!primaryContact}
+        >
+          {primaryContact ? (
+            <span>
+              {primaryContact.name}
+              <span className="ml-1 text-[var(--ps-muted)]">
+                · {lastContactLabel(primaryContact.last_contact_at, now)}
+              </span>
+            </span>
+          ) : (
+            "nog invullen →"
+          )}
         </Row>
         <Row
           label="Login"
@@ -78,8 +104,13 @@ export function PassportCard({ partner }: { partner: PdPartner }) {
         <Row label="API" muted>
           — (fase 3)
         </Row>
-        <Row label="Openstaand" href="#taken" muted>
-          0 taken · 0 signalen
+        <Row
+          label="Openstaand"
+          href="#taken"
+          muted={openTasks === 0 && openSignals === 0}
+        >
+          {openTasks} {openTasks === 1 ? "taak" : "taken"} · {openSignals}{" "}
+          {openSignals === 1 ? "signaal" : "signalen"}
         </Row>
       </div>
     </div>

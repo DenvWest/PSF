@@ -2,9 +2,12 @@ import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import type {
   PartnerListRow,
   PdCategory,
+  PdContact,
   PdLabel,
   PdNetwork,
   PdPartner,
+  PdTask,
+  PdTimelineEvent,
 } from "@/types/partnerdesk";
 
 export async function listNetworks(): Promise<PdNetwork[]> {
@@ -77,6 +80,107 @@ export async function listPartners(): Promise<PartnerListRow[]> {
     labels: labelsByPartner.get(partner.id) ?? [],
     openSignalCount: signalCount.get(partner.id) ?? 0,
   }));
+}
+
+export async function getPartnerContacts(partnerId: string): Promise<PdContact[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("pd_contacts")
+    .select("*")
+    .eq("partner_id", partnerId)
+    .is("archived_at", null)
+    .order("is_primary", { ascending: false })
+    .order("name");
+  if (error) throw new Error(`pd_contacts: ${error.message}`);
+  return (data ?? []) as PdContact[];
+}
+
+export async function getPartnerTimeline(
+  partnerId: string,
+  limit = 50,
+): Promise<PdTimelineEvent[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("pd_timeline_events")
+    .select("*")
+    .eq("partner_id", partnerId)
+    .order("occurred_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(`pd_timeline_events: ${error.message}`);
+  return (data ?? []) as PdTimelineEvent[];
+}
+
+export async function getPartnerTasks(partnerId: string): Promise<PdTask[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("pd_tasks")
+    .select("*")
+    .eq("partner_id", partnerId)
+    .eq("status", "open")
+    .order("due_on", { ascending: true, nullsFirst: false });
+  if (error) throw new Error(`pd_tasks: ${error.message}`);
+  return (data ?? []) as PdTask[];
+}
+
+export interface PartnerOpenCounts {
+  openTasks: number;
+  openSignals: number;
+}
+
+export async function getPartnerOpenCounts(
+  partnerId: string,
+): Promise<PartnerOpenCounts> {
+  const db = getPartnerDeskDb();
+  const [tasksRes, signalsRes] = await Promise.all([
+    db
+      .from("pd_tasks")
+      .select("id", { count: "exact", head: true })
+      .eq("partner_id", partnerId)
+      .eq("status", "open"),
+    db
+      .from("pd_signals")
+      .select("id", { count: "exact", head: true })
+      .eq("partner_id", partnerId)
+      .eq("status", "open"),
+  ]);
+  return {
+    openTasks: tasksRes.count ?? 0,
+    openSignals: signalsRes.count ?? 0,
+  };
+}
+
+export interface TaskWithPartner {
+  task: PdTask;
+  partnerName: string | null;
+  partnerSlug: string | null;
+}
+
+/** Alle open taken over partners heen, voor /admin/taken. */
+export async function listOpenTasks(): Promise<TaskWithPartner[]> {
+  const db = getPartnerDeskDb();
+  const [tasksRes, partnersRes] = await Promise.all([
+    db
+      .from("pd_tasks")
+      .select("*")
+      .eq("status", "open")
+      .order("due_on", { ascending: true, nullsFirst: false }),
+    db.from("pd_partners").select("id, name, slug"),
+  ]);
+  if (tasksRes.error) throw new Error(`pd_tasks: ${tasksRes.error.message}`);
+  const partnerById = new Map(
+    (partnersRes.data ?? []).map((p) => [
+      p.id as string,
+      { name: p.name as string, slug: p.slug as string },
+    ]),
+  );
+  return ((tasksRes.data ?? []) as PdTask[]).map((task) => {
+    const p = task.partner_id ? partnerById.get(task.partner_id) : undefined;
+    return {
+      task,
+      partnerName: p?.name ?? null,
+      partnerSlug: p?.slug ?? null,
+    };
+  });
 }
 
 export interface PartnerDossier {

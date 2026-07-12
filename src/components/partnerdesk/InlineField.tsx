@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { updatePartnerFieldAction } from "@/lib/partnerdesk/actions";
-import type { EditablePartnerField } from "@/lib/partnerdesk/validation";
+import { updateContactFieldAction } from "@/lib/partnerdesk/contact-actions";
 
 interface Option {
   value: string;
@@ -10,9 +10,11 @@ interface Option {
 }
 
 interface InlineFieldProps {
-  partnerId: string;
-  field: EditablePartnerField;
+  entity: "partner" | "contact";
+  id: string;
+  field: string;
   value: string;
+  slug?: string;
   variant?: "text" | "textarea" | "select";
   options?: Option[];
   placeholder?: string;
@@ -21,9 +23,11 @@ interface InlineFieldProps {
 }
 
 export function InlineField({
-  partnerId,
+  entity,
+  id,
   field,
   value,
+  slug,
   variant = "text",
   options,
   placeholder = "— nog invullen",
@@ -58,11 +62,15 @@ export function InlineField({
       return;
     }
     startTransition(async () => {
-      const result = await updatePartnerFieldAction({
-        partnerId,
-        field,
-        value: draft,
-      });
+      const result =
+        entity === "partner"
+          ? await updatePartnerFieldAction({ partnerId: id, field, value: draft })
+          : await updateContactFieldAction({
+              contactId: id,
+              field,
+              value: draft,
+              slug,
+            });
       if (!result.ok) {
         setError(result.error);
         return;
