@@ -59,6 +59,7 @@ export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Per juli 2026 (rules_version 1.2.0): vitaliteit = 4 interventiedomeinen; profiellabel driver-based.",
   "Per juli 2026 (rules_version 1.3.0): verbinding als 5e interventiedomein (CON_SOC); vitaliteit = 5 interventiedomeinen.",
   "Per juli 2026: het conceptuele model is verduidelijkt naar drie lagen (determinanten, gedrag, uitkomsten); de basisbehoeften worden als parallel beschreven en de 'energie-batterij' is als causaal mechanisme losgelaten.",
+  "Per juli 2026: verbinding-onderbouwing verbreed met de mortaliteits-meta-analyse (2010), de buffering-hypothese en sociale-netwerklagen (kwaliteit vs kwantiteit).",
 ];
 
 export const LEEFSTIJLCHECK_INTERVENTION_DOMAINS = [
@@ -238,6 +239,21 @@ const behaviorRefs: EvidenceReference[] = [
 ];
 
 const socialConnectionRefs: EvidenceReference[] = [
+  {
+    apa: "Holt-Lunstad J, Smith TB, Layton JB. Social relationships and mortality risk: a meta-analytic review. PLoS Med. 2010.",
+    doi: "10.1371/journal.pmed.1000316",
+    pmid: "20668659",
+  },
+  {
+    apa: "Cohen S, Wills TA. Stress, social support, and the buffering hypothesis. Psychol Bull. 1985.",
+    doi: "10.1037/0033-2909.98.2.310",
+    pmid: "3901065",
+  },
+  {
+    apa: "Sutcliffe A, Dunbar R, Binder J, Arrow H. Relationships and the social brain: integrating psychological and evolutionary perspectives. Br J Psychol. 2012.",
+    doi: "10.1111/j.2044-8295.2011.02061.x",
+    pmid: "22506741",
+  },
   {
     apa: "Holt-Lunstad J, Smith TB, Baker M, et al. Loneliness and social isolation as risk factors: meta-analytic review. Perspect Psychol Sci. 2015.",
     doi: "10.1177/1745691614568352",
@@ -570,6 +586,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
     whyThisQuestion:
       "Sociale steun en betekenisvol contact zijn een meetbaar leefstijlpatroon dat samenhangt met veerkracht en volhouden van andere gewoonten.",
     scientificRationale: [
+      "Kwaliteit weegt zwaarder dan kwantiteit: enkele sterke, gelijkwaardige relaties bufferen stress effectiever dan een groot netwerk — sociale netwerken zijn gelaagd en de binnenste laag draagt de meeste steun.",
       "Meta-analyses tonen dat sociale verbondenheid en steun samenhangen met betere gezondheidsuitkomsten op populatieniveau — als leefstijlfactor, geen diagnose.",
       "Self-Determination Theory benadrukt verbondenheid als parallelle basisbehoefte naast autonomie en competentie voor duurzame gedragsverandering.",
       "Blue Zones-onderzoek wijst op 'belonging' als terugkerend patroon in lang gezonde leefgemeenschappen.",
@@ -669,6 +686,21 @@ export const LEEFSTIJLCHECK_REFERENCE_LIBRARY: Record<
   stress: stressRefs,
   motivatie: behaviorRefs,
   "sociale-verbinding": [
+    {
+      apa: "Holt-Lunstad J, Smith TB, Layton JB. Social relationships and mortality risk: a meta-analytic review. PLoS Med. 2010.",
+      doi: "10.1371/journal.pmed.1000316",
+      pmid: "20668659",
+    },
+    {
+      apa: "Cohen S, Wills TA. Stress, social support, and the buffering hypothesis. Psychol Bull. 1985.",
+      doi: "10.1037/0033-2909.98.2.310",
+      pmid: "3901065",
+    },
+    {
+      apa: "Sutcliffe A, Dunbar R, Binder J, Arrow H. Relationships and the social brain: integrating psychological and evolutionary perspectives. Br J Psychol. 2012.",
+      doi: "10.1111/j.2044-8295.2011.02061.x",
+      pmid: "22506741",
+    },
     {
       apa: "Holt-Lunstad J, Smith TB, Baker M, et al. Loneliness and social isolation as risk factors: meta-analytic review. Perspect Psychol Sci. 2015.",
       doi: "10.1177/1745691614568352",

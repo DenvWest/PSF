@@ -143,7 +143,7 @@ function resolveNextBestHabit(id: QuestionId, value: number): string {
     return "Focus nu: plan herstel net zo strak als training.";
   }
   if (id === "CON_SOC" && value <= 2) {
-    return "Focus nu: plan één vast contactmoment deze week.";
+    return "Focus nu: enkele sterke contacten dragen meer dan een groot netwerk — investeer deze week in één daarvan.";
   }
   if (id === "NRG_PATN" && value <= 2) {
     return "Focus nu: start je ochtend met daglicht en eiwit.";

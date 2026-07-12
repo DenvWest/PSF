@@ -28,7 +28,9 @@ Drie conclusies:
 | **Voeding** | 2 vragen (`NUT_O3`, `NUT_PROT`) + `LIF_SUN`/`LIF_ALC` | **Volledige meet-laag** (PAL/BMR/TDEE, macro, micro) — plan A | **JA — de enige.** ADH/EFSA DRV/RI als harde ijklat |
 | **Beweging** | 2 vragen (`MOV_STR`, `MOV_CARD`), score 0–100 | PAL-afleiding (deelt input met voedingslaag); trainings-/stappen-tracking als optie (§4) | **Half** — PAL-banden zijn gevestigd, maar het is een activiteits-classificatie, geen tekort-referentie |
 | **Herstel** | 1 vraag (`RCV_PHYS`) + gedeelde `STR_RCV`, score 0–100 | Geen eigen pad; sterk **interactie-afhankelijk** (beweging, slaap, stress) | **Nee** — zacht; dunste pijler (slechts 1 eigen vraag) |
-| **Verbinding** *(connection)* | **Niet gescoord** — bestaat als content-`theme` in `ENTITY_MODEL`, niet in de engine | Geen | **Nee** — geen meetvraag; puur content/HERKENNING |
+| **Verbinding** *(connection)* | 1 vraag (`CON_SOC`), score 0–100 — gescoord sinds rules_version 1.3.0 | Geen check-in of plan-template | **Nee** — zacht |
+
+*Geactualiseerd 11 juli 2026: verbinding wordt sinds rules_version 1.3.0 gescoord (`CON_SOC`) — de rij hierboven is bijgewerkt. De kernobservatie blijft gelden: alleen voeding heeft een harde externe referentiewaarde.*
 
 **Kernobservatie:** kolom (c) is voor zes van de zeven pijlers "nee/half". **Alleen voeding** krijgt door het plan een harde, externe referentiewaarde. Dat asymmetrie-feit is de motor achter het scheefheid-risico in §2.
 
@@ -117,7 +119,7 @@ Hoe slaap/stress/herstel/beweging(/verbinding) later óók kunnen verdiepen **bi
 | **Stress** | Herstelmomenten-/piek-tracking (zelf-rapport dagdeel); optioneel HRV/rusthartslag als leefstijl-proxy (§ hieronder) |
 | **Herstel** | Subjectieve hersteldagboek (spierpijn, frisheid bij ontwaken); afgeleid uit slaap+stress-interactie (§3) |
 | **Beweging** | Stappen-/trainingsfrequentie-tracking (zelf-rapport of wearable); voedt PAL preciezer (deelt input met voedingslaag) |
-| **Verbinding** | Blijft content/HERKENNING; geen meetvraag — bewust zacht, geen kwantificering forceren |
+| **Verbinding** | Gescoord sinds rules_version 1.3.0 (`CON_SOC`); verdieping (check-in, leefstijlplan, eigen profiellabel) is een open punt — zie `PLAN_LEEFSTIJLCHECK_UITVOERING.md` stap S5/S6 |
 
 Gemeenschappelijk principe: het blijft **zelf-gerapporteerde of gedragsdata**, afgezet tegen *eigen baseline* (delta), nooit tegen een klinische norm. Dat houdt het aan de leefstijlcoach-kant van de grens en respecteert "geen statusclaim".
 
@@ -159,7 +161,7 @@ Slaap, HRV en rusthartslag uit een smartwatch zijn **leefstijl-tracking, geen me
 1. **Wearable-/smartwatch-integratie (HRV, slaap, rusthartslag) — ja of nee?** Trekt de scheefheid recht en kwantificeert de niet-voedingspijlers, maar voegt een art. 9-zware databron, externe afhankelijkheid en grensbewakings-risico toe (§4). Bepaalt of stap 4 in de roadmap komt. **Geen aanbeveling van mijn kant — strategische keuze.**
 2. **Eerste tranche kruisregels:** akkoord met K1–K3 (onderherstel-zonder-training, slaap-zonder-stress, energie-zonder-slaap/voeding) als eerste set, of een andere selectie uit §3?
 3. **Hardheid van de balansregel:** moet de cross-domein-balansregel (§2) een *harde invariant* zijn (advies mét supplement faalt de test zonder ander-domein quick-win) of een zachte voorkeur? Aanbeveling neigt naar hard, maar de strengheid is een productkeuze.
-4. **Verbinding-pijler:** bewust zacht/content-only houden, of op termijn een gescoorde domein-vraag toevoegen? Nu geen meetvraag.
+4. **Verbinding-pijler:** de meetvraag (`CON_SOC`) bestaat al sinds rules_version 1.3.0 — dat is geen open punt meer. Vervolgbeslispunt: eigen profiellabel, leefstijlplan en check-in uitbouwen (zie `LEEFSTIJLCHECK_SCOPE_REVIEW.md` §2g en `PLAN_LEEFSTIJLCHECK_UITVOERING.md` stap S5/S6).
 
 ---
 

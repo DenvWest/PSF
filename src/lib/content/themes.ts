@@ -74,7 +74,7 @@ const STATIC_HEFBOOM: Record<ThemeSlug, string> = {
   movement:
     "Beweging en kracht houden spieren en stofwisseling op peil — vooral na 40. Te veel zonder herstel kan averechts werken; **balans** is hier de hefboom.",
   connection:
-    "Verbinding en steun bepalen hoeveel je aankunt. Eén vast contactmoment per week doet vaak **meer** dan nog een product of protocol.",
+    "Verbinding en steun bepalen hoeveel je aankunt. Het gaat niet om veel contacten — **een paar mensen bij wie je tot rust komt** doen vaak meer dan nog een product of protocol.",
 };
 
 const FOCUS_SCREEN_DISCLAIMER =
