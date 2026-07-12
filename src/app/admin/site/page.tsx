@@ -122,14 +122,14 @@ export default function AdminDashboardPage() {
         </div>
         <nav className="flex flex-1 flex-col gap-1 px-3 py-4 text-sm">
           <Link
-            href="/admin"
+            href="/admin/site"
             onClick={() => setMenuOpen(false)}
             className="rounded-lg bg-[#F8F7F4] px-3 py-2 font-medium text-[#1a1a1a]"
           >
             Dashboard
           </Link>
           <Link
-            href="/admin#sessions"
+            href="/admin/site#sessions"
             scroll
             onClick={() => setMenuOpen(false)}
             className="rounded-lg px-3 py-2 text-[#1a1a1a] hover:bg-[#F8F7F4]"
@@ -137,7 +137,7 @@ export default function AdminDashboardPage() {
             Sessies
           </Link>
           <Link
-            href="/admin#feedback"
+            href="/admin/site#feedback"
             scroll
             onClick={() => setMenuOpen(false)}
             className="rounded-lg px-3 py-2 text-[#1a1a1a] hover:bg-[#F8F7F4]"
@@ -145,7 +145,7 @@ export default function AdminDashboardPage() {
             Feedback
           </Link>
           <Link
-            href="/admin#nurture"
+            href="/admin/site#nurture"
             scroll
             onClick={() => setMenuOpen(false)}
             className="rounded-lg px-3 py-2 text-[#1a1a1a] hover:bg-[#F8F7F4]"
