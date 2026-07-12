@@ -1,9 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CollapsibleSection } from "@/components/partnerdesk/CollapsibleSection";
+import { CommissionSection } from "@/components/partnerdesk/CommissionSection";
 import { ContactsSection } from "@/components/partnerdesk/ContactsSection";
+import { ContractsSection } from "@/components/partnerdesk/ContractsSection";
 import { InlineField } from "@/components/partnerdesk/InlineField";
-import { PassportCard } from "@/components/partnerdesk/PassportCard";
+import {
+  PassportCard,
+  type PassportCommission,
+  type PassportContract,
+} from "@/components/partnerdesk/PassportCard";
 import {
   SectionAnchorNav,
   type DossierSection,
@@ -14,8 +20,13 @@ import {
 } from "@/components/partnerdesk/StatusBadge";
 import { TasksSection } from "@/components/partnerdesk/TasksSection";
 import { TimelineSection } from "@/components/partnerdesk/TimelineSection";
+import { resolveCommissions } from "@/lib/partnerdesk/commission-resolution";
+import { contractStatus } from "@/lib/partnerdesk/contract-status";
+import { todayIso } from "@/lib/partnerdesk/dates";
+import { COMMISSION_KIND_LABEL, formatCommissionValue } from "@/lib/partnerdesk/format";
 import {
   getPartnerBySlug,
+  getPartnerCommercials,
   getPartnerContacts,
   getPartnerOpenCounts,
   getPartnerTasks,
@@ -58,13 +69,41 @@ export default async function PartnerDossierPage({
   if (!dossier) notFound();
 
   const { partner, network, networks, categories } = dossier;
-  const [contacts, timeline, tasks, counts] = await Promise.all([
+  const [contacts, timeline, tasks, counts, commercials] = await Promise.all([
     getPartnerContacts(partner.id),
     getPartnerTimeline(partner.id),
     getPartnerTasks(partner.id),
     getPartnerOpenCounts(partner.id),
+    getPartnerCommercials(partner.id),
   ]);
   const primaryContact = contacts.find((c) => c.is_primary) ?? null;
+
+  const today = todayIso();
+  const resolution = resolveCommissions(commercials.rules, commercials.contracts, today);
+  const primaryGroup = resolution.groups[0];
+  const commissionNow: PassportCommission | null = primaryGroup
+    ? {
+        label: `${formatCommissionValue(
+          primaryGroup.kind,
+          primaryGroup.winner.rate_percent,
+          primaryGroup.winner.amount_cents,
+        )} ${COMMISSION_KIND_LABEL[primaryGroup.kind]}`,
+        validUntil: primaryGroup.validUntil,
+      }
+    : null;
+
+  const activeContract =
+    commercials.contracts.find(
+      (c) => contractStatus(c.starts_on, c.ends_on, today) === "active",
+    ) ?? commercials.contracts[0];
+  const passportContract: PassportContract | null = activeContract
+    ? {
+        number: activeContract.number,
+        cancelBy: activeContract.cancel_by,
+        endsOn: activeContract.ends_on,
+        cookieDays: activeContract.cookie_days,
+      }
+    : null;
 
   const statusOptions = PARTNER_STATUSES.map((s) => ({
     value: s,
@@ -103,6 +142,8 @@ export default async function PartnerDossierPage({
           <PassportCard
             partner={partner}
             primaryContact={primaryContact}
+            commissionNow={commissionNow}
+            contract={passportContract}
             openTasks={counts.openTasks}
             openSignals={counts.openSignals}
           />
@@ -189,14 +230,29 @@ export default async function PartnerDossierPage({
             <ContactsSection partnerId={partner.id} slug={slug} contacts={contacts} />
           </CollapsibleSection>
 
-          <CollapsibleSection id="contracten" title="Contracten" defaultOpen={false}>
-            <Placeholder plak="plak 3" />
+          <CollapsibleSection id="contracten" title="Contracten">
+            <ContractsSection
+              partnerId={partner.id}
+              slug={slug}
+              today={today}
+              contracts={commercials.contracts}
+              rules={commercials.rules}
+              documents={commercials.documents}
+            />
           </CollapsibleSection>
-          <CollapsibleSection id="commissies" title="Commissies" defaultOpen={false}>
-            <Placeholder plak="plak 3" />
+          <CollapsibleSection id="commissies" title="Commissies">
+            <CommissionSection
+              partnerId={partner.id}
+              slug={slug}
+              today={today}
+              contracts={commercials.contracts}
+              rules={commercials.rules}
+              tiers={commercials.tiers}
+              categories={categories}
+            />
           </CollapsibleSection>
           <CollapsibleSection id="documenten" title="Materiaal & documenten" defaultOpen={false}>
-            <Placeholder plak="plak 3" />
+            <Placeholder plak="plak 5" />
           </CollapsibleSection>
 
           <CollapsibleSection id="tijdlijn" title="Tijdlijn">

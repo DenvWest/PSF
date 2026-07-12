@@ -1,5 +1,35 @@
 // Weergave-helpers (NL). Puur presentatie; geen business-logica.
 
+import type { CommissionKind } from "@/types/partnerdesk";
+
+export function formatMoney(cents: number | null): string {
+  if (cents === null || cents === undefined) return "—";
+  return new Intl.NumberFormat("nl-NL", {
+    style: "currency",
+    currency: "EUR",
+  }).format(cents / 100);
+}
+
+export const COMMISSION_KIND_LABEL: Record<CommissionKind, string> = {
+  cps_percent: "CPS %",
+  cps_fixed: "CPS vast",
+  cpl: "CPL (lead)",
+  cpc: "CPC (klik)",
+  cpa: "CPA (actie)",
+};
+
+/** Toont de waarde van een commissieregel afhankelijk van het type. */
+export function formatCommissionValue(
+  kind: CommissionKind,
+  ratePercent: number | null,
+  amountCents: number | null,
+): string {
+  if (kind === "cps_percent") {
+    return ratePercent === null ? "—" : `${ratePercent}%`;
+  }
+  return formatMoney(amountCents);
+}
+
 export function formatNlDay(iso: string | null): string {
   if (!iso) return "—";
   const d = new Date(iso.length <= 10 ? `${iso}T12:00:00` : iso);

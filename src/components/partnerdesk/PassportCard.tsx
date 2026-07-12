@@ -2,7 +2,19 @@ import type { ReactNode } from "react";
 import { DeskIcon } from "@/components/partnerdesk/DeskIcon";
 import { lastContactLabel } from "@/lib/partnerdesk/contact-recency";
 import { todayIso } from "@/lib/partnerdesk/dates";
+import { formatNlDay } from "@/lib/partnerdesk/format";
 import type { PdContact, PdPartner } from "@/types/partnerdesk";
+
+export interface PassportCommission {
+  label: string;
+  validUntil: string | null;
+}
+export interface PassportContract {
+  number: string;
+  cancelBy: string | null;
+  endsOn: string | null;
+  cookieDays: number | null;
+}
 
 function Row({
   label,
@@ -42,11 +54,15 @@ function Row({
 export function PassportCard({
   partner,
   primaryContact,
+  commissionNow,
+  contract,
   openTasks,
   openSignals,
 }: {
   partner: PdPartner;
   primaryContact: PdContact | null;
+  commissionNow: PassportCommission | null;
+  contract: PassportContract | null;
   openTasks: number;
   openSignals: number;
 }) {
@@ -59,14 +75,36 @@ export function PassportCard({
         </h2>
       </div>
       <div className="divide-y divide-[var(--ps-border)]">
-        <Row label="Commissie nu" href="#commissies" muted>
-          nog geen contract
+        <Row label="Commissie nu" href="#commissies" muted={!commissionNow}>
+          {commissionNow ? (
+            <span>
+              {commissionNow.label}
+              {commissionNow.validUntil && (
+                <span className="ml-1 text-[var(--ps-muted)]">
+                  · t/m {formatNlDay(commissionNow.validUntil)}
+                </span>
+              )}
+            </span>
+          ) : (
+            "nog geen regel"
+          )}
         </Row>
-        <Row label="Contract" href="#contracten" muted>
-          nog invullen →
+        <Row label="Contract" href="#contracten" muted={!contract}>
+          {contract ? (
+            <span>
+              {contract.number}
+              {contract.cancelBy && (
+                <span className="ml-1 text-[var(--ps-muted)]">
+                  · opzeggen vóór {formatNlDay(contract.cancelBy)}
+                </span>
+              )}
+            </span>
+          ) : (
+            "nog invullen →"
+          )}
         </Row>
-        <Row label="Cookieduur" href="#contracten" muted>
-          —
+        <Row label="Cookieduur" href="#contracten" muted={!contract?.cookieDays}>
+          {contract?.cookieDays != null ? `${contract.cookieDays} dagen` : "—"}
         </Row>
         <Row
           label="Contactpersoon"

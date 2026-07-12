@@ -176,6 +176,21 @@ export interface PdSignal {
   resolved_at: string | null;
 }
 
+export interface PdDocument {
+  id: string;
+  created_at: string;
+  partner_id: string;
+  contract_id: string | null;
+  timeline_event_id: string | null;
+  kind: DocumentKind;
+  title: string;
+  storage_path: string;
+  mime_type: string | null;
+  file_size: number | null;
+  origin: string | null;
+  version: number;
+}
+
 /** Partner + afgeleide velden voor de lijst- en dossierweergave. */
 export interface PartnerListRow {
   partner: PdPartner;

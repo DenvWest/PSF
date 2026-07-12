@@ -2,7 +2,11 @@ import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
 import type {
   PartnerListRow,
   PdCategory,
+  PdCommissionRule,
+  PdCommissionTier,
   PdContact,
+  PdContract,
+  PdDocument,
   PdLabel,
   PdNetwork,
   PdPartner,
@@ -181,6 +185,69 @@ export async function listOpenTasks(): Promise<TaskWithPartner[]> {
       partnerSlug: p?.slug ?? null,
     };
   });
+}
+
+export interface PartnerCommercials {
+  contracts: PdContract[];
+  rules: PdCommissionRule[];
+  tiers: PdCommissionTier[];
+  documents: PdDocument[];
+}
+
+/** Contracten, commissieregels, staffels en documenten van één partner. */
+export async function getPartnerCommercials(
+  partnerId: string,
+): Promise<PartnerCommercials> {
+  const db = getPartnerDeskDb();
+
+  const [contractsRes, documentsRes] = await Promise.all([
+    db
+      .from("pd_contracts")
+      .select("*")
+      .eq("partner_id", partnerId)
+      .is("archived_at", null)
+      .order("starts_on", { ascending: false }),
+    db
+      .from("pd_documents")
+      .select("*")
+      .eq("partner_id", partnerId)
+      .order("created_at", { ascending: false }),
+  ]);
+  if (contractsRes.error) throw new Error(`pd_contracts: ${contractsRes.error.message}`);
+
+  const contracts = (contractsRes.data ?? []) as PdContract[];
+  const contractIds = contracts.map((c) => c.id);
+
+  let rules: PdCommissionRule[] = [];
+  let tiers: PdCommissionTier[] = [];
+  if (contractIds.length > 0) {
+    const rulesRes = await db
+      .from("pd_commission_rules")
+      .select("*")
+      .in("contract_id", contractIds)
+      .is("archived_at", null)
+      .order("created_at", { ascending: false });
+    if (rulesRes.error) throw new Error(`pd_commission_rules: ${rulesRes.error.message}`);
+    rules = (rulesRes.data ?? []) as PdCommissionRule[];
+
+    const ruleIds = rules.map((r) => r.id);
+    if (ruleIds.length > 0) {
+      const tiersRes = await db
+        .from("pd_commission_tiers")
+        .select("*")
+        .in("commission_rule_id", ruleIds)
+        .order("threshold_cents", { ascending: true });
+      if (tiersRes.error) throw new Error(`pd_commission_tiers: ${tiersRes.error.message}`);
+      tiers = (tiersRes.data ?? []) as PdCommissionTier[];
+    }
+  }
+
+  return {
+    contracts,
+    rules,
+    tiers,
+    documents: (documentsRes.data ?? []) as PdDocument[],
+  };
 }
 
 export interface PartnerDossier {

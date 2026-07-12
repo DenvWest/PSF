@@ -1,7 +1,12 @@
 // Handgeschreven validatie (geen zod in dit project). Gedeeld door client (inline
 // feedback) en server (bron van waarheid). Retourneert een foutregel of null.
 
-import type { PartnerStatus } from "@/types/partnerdesk";
+import type {
+  CommissionKind,
+  CommissionRuleType,
+  CommissionScope,
+  PartnerStatus,
+} from "@/types/partnerdesk";
 
 export const PARTNER_STATUSES: PartnerStatus[] = [
   "onboarding",
@@ -116,6 +121,86 @@ export function validateContactFieldValue(
     default:
       return null;
   }
+}
+
+// ── Contracten ──────────────────────────────────────────────────────────────
+
+export interface ContractInput {
+  number: string;
+  startsOn: string;
+  endsOn: string | null;
+  noticePeriodDays: number | null;
+  cookieDays: number | null;
+  exclusivity: string | null;
+  approvalTerms: string | null;
+  autoRenews: boolean;
+  notes: string | null;
+}
+
+export function validateContract(input: ContractInput): string | null {
+  if (!input.number.trim()) return "Contractnummer is verplicht.";
+  if (!input.startsOn) return "Startdatum is verplicht.";
+  if (input.endsOn && input.endsOn < input.startsOn) {
+    return "Einddatum ligt vóór de startdatum.";
+  }
+  if (input.noticePeriodDays !== null && input.noticePeriodDays < 0) {
+    return "Opzegtermijn kan niet negatief zijn.";
+  }
+  if (input.cookieDays !== null && input.cookieDays < 0) {
+    return "Cookieduur kan niet negatief zijn.";
+  }
+  return null;
+}
+
+// ── Commissieregels ─────────────────────────────────────────────────────────
+
+export const COMMISSION_KINDS: CommissionKind[] = [
+  "cps_percent",
+  "cps_fixed",
+  "cpl",
+  "cpc",
+  "cpa",
+];
+export const COMMISSION_SCOPES: CommissionScope[] = ["all", "category"];
+export const COMMISSION_RULE_TYPES: CommissionRuleType[] = [
+  "standard",
+  "exception",
+  "promo",
+  "bonus",
+];
+
+export interface CommissionRuleInput {
+  kind: CommissionKind;
+  ratePercent: number | null;
+  amountCents: number | null;
+  scope: CommissionScope;
+  categoryId: string | null;
+  ruleType: CommissionRuleType;
+  validFrom: string | null;
+  validTo: string | null;
+}
+
+export function validateCommissionRule(input: CommissionRuleInput): string | null {
+  if (!COMMISSION_KINDS.includes(input.kind)) return "Onbekend commissietype.";
+  if (input.kind === "cps_percent") {
+    if (input.ratePercent === null) return "Percentage is verplicht.";
+    if (input.ratePercent < 0 || input.ratePercent > 100) {
+      return "Percentage moet tussen 0 en 100 liggen.";
+    }
+  } else {
+    if (input.amountCents === null) return "Bedrag is verplicht.";
+    if (input.amountCents < 0) return "Bedrag kan niet negatief zijn.";
+  }
+  if (input.scope === "category" && !input.categoryId) {
+    return "Kies een categorie voor een categorieregel.";
+  }
+  if (input.ruleType === "promo" && !input.validTo) {
+    return "Een tijdelijke actie heeft een einddatum nodig.";
+  }
+  if (input.validFrom && input.validTo && input.validTo < input.validFrom) {
+    return "Einddatum ligt vóór de startdatum.";
+  }
+  return null;
 }
 
 /**
