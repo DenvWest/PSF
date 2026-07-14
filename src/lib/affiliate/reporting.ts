@@ -3,11 +3,13 @@ import type { AfAffiliate } from "@/types/affiliate";
 
 export interface AffiliateReportRow {
   affiliate: Pick<AfAffiliate, "id" | "ref" | "display_name">;
+  clicks: number;
   leads: number;
   sales: number;
   revenueCents: number;
   commissionCents: number;
   conversionPct: number | null; // sales / leads
+  epcCents: number | null; // commissie per klik
 }
 
 export interface AffiliateReport {
@@ -27,7 +29,7 @@ export async function getProgramReport(
 ): Promise<AffiliateReport> {
   const db = getAffiliateDb();
 
-  const [affiliatesRes, conversionsRes] = await Promise.all([
+  const [affiliatesRes, conversionsRes, clicksRes] = await Promise.all([
     db.from("af_affiliates").select("id, ref, display_name").is("archived_at", null),
     db
       .from("af_conversions")
@@ -35,7 +37,17 @@ export async function getProgramReport(
       .neq("status", "rejected")
       .gte("occurred_at", `${fromIso}T00:00:00.000Z`)
       .lte("occurred_at", `${toIso}T23:59:59.999Z`),
+    db
+      .from("af_clicks")
+      .select("affiliate_id")
+      .gte("occurred_at", `${fromIso}T00:00:00.000Z`)
+      .lte("occurred_at", `${toIso}T23:59:59.999Z`),
   ]);
+
+  const clicksByAffiliate = new Map<string, number>();
+  for (const c of (clicksRes.data ?? []) as { affiliate_id: string }[]) {
+    clicksByAffiliate.set(c.affiliate_id, (clicksByAffiliate.get(c.affiliate_id) ?? 0) + 1);
+  }
 
   const affiliates = (affiliatesRes.data ?? []) as AffiliateReportRow["affiliate"][];
   const conversions = (conversionsRes.data ?? []) as {
@@ -75,13 +87,17 @@ export async function getProgramReport(
   const rows: AffiliateReportRow[] = affiliates
     .map((affiliate) => {
       const a = agg.get(affiliate.id) ?? { leads: 0, sales: 0, revenue: 0 };
+      const clicks = clicksByAffiliate.get(affiliate.id) ?? 0;
+      const commissionCents = commissionByAffiliate.get(affiliate.id) ?? 0;
       return {
         affiliate,
+        clicks,
         leads: a.leads,
         sales: a.sales,
         revenueCents: a.revenue,
-        commissionCents: commissionByAffiliate.get(affiliate.id) ?? 0,
+        commissionCents,
         conversionPct: a.leads > 0 ? Math.round((a.sales / a.leads) * 100) : null,
+        epcCents: clicks > 0 ? Math.round(commissionCents / clicks) : null,
       };
     })
     .sort((x, y) => y.commissionCents - x.commissionCents);

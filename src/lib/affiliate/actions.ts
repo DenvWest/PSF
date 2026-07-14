@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getAffiliateDb, refFromName } from "@/lib/affiliate/db";
 import { recomputeAffiliateAccruals } from "@/lib/affiliate/af-ledger";
 import {
+  AFFILIATE_TERMS_VERSION,
   validateAffiliate,
   validateAffiliateName,
   validateAfRule,
@@ -74,7 +75,20 @@ export async function updateAffiliateAction(
         email: input.email?.trim() || null,
         status: input.status,
         notes: input.notes?.trim() || null,
+        iban: input.iban?.replace(/\s+/g, "").toUpperCase() || null,
+        payout_name: input.payoutName?.trim() || null,
+        vat_number: input.vatNumber?.trim() || null,
+        coc_number: input.cocNumber?.trim() || null,
+        country: input.country?.trim() || null,
+        address: input.address?.trim() || null,
+        payout_threshold_cents: input.payoutThresholdCents ?? 0,
         updated_at: new Date().toISOString(),
+        ...(input.termsAccepted
+          ? {
+              terms_accepted_at: new Date().toISOString(),
+              terms_version: AFFILIATE_TERMS_VERSION,
+            }
+          : {}),
       })
       .eq("id", input.affiliateId);
     if (updateError) return { ok: false, error: updateError.message };

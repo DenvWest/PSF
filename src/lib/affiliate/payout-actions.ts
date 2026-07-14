@@ -19,13 +19,18 @@ export async function createPayoutAction(input: {
 }): Promise<ActionResult> {
   try {
     const db = getAffiliateDb();
-    const [approvedRes, itemsRes] = await Promise.all([
+    const [approvedRes, itemsRes, affiliateRes] = await Promise.all([
       db
         .from("af_ledger_entries")
         .select("id, amount_cents")
         .eq("affiliate_id", input.affiliateId)
         .eq("state", "approved"),
       db.from("af_payout_items").select("ledger_entry_id"),
+      db
+        .from("af_affiliates")
+        .select("payout_threshold_cents")
+        .eq("id", input.affiliateId)
+        .maybeSingle(),
     ]);
     const used = new Set((itemsRes.data ?? []).map((i) => i.ledger_entry_id as string));
     const entries = (approvedRes.data ?? []).filter((e) => !used.has(e.id as string));
@@ -33,6 +38,14 @@ export async function createPayoutAction(input: {
 
     const total = entries.reduce((s, e) => s + (e.amount_cents as number), 0);
     if (total <= 0) return { ok: false, error: "Saldo is niet positief." };
+
+    const threshold = (affiliateRes.data?.payout_threshold_cents as number | undefined) ?? 0;
+    if (total < threshold) {
+      return {
+        ok: false,
+        error: `Saldo (${(total / 100).toFixed(2).replace(".", ",")}) ligt onder de uitbetaaldrempel (${(threshold / 100).toFixed(2).replace(".", ",")}).`,
+      };
+    }
 
     const { data: payout, error } = await db
       .from("af_payouts")

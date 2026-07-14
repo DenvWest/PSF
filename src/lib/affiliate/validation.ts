@@ -27,19 +27,39 @@ export function validateOptionalEmail(value: string): string | null {
   return EMAIL_RE.test(trimmed) ? null : "Geen geldig e-mailadres.";
 }
 
+/** Huidige versie van de programmavoorwaarden die een affiliate accepteert. */
+export const AFFILIATE_TERMS_VERSION = "2026-07";
+
 export interface AffiliateInput {
   displayName: string;
   company: string | null;
   email: string | null;
   status: AffiliateStatus;
   notes: string | null;
+  iban?: string | null;
+  payoutName?: string | null;
+  vatNumber?: string | null;
+  cocNumber?: string | null;
+  country?: string | null;
+  address?: string | null;
+  payoutThresholdCents?: number;
+  termsAccepted?: boolean;
 }
 
 export function validateAffiliate(input: AffiliateInput): string | null {
   const nameError = validateAffiliateName(input.displayName);
   if (nameError) return nameError;
   if (!AFFILIATE_STATUSES.includes(input.status)) return "Onbekende status.";
-  return validateOptionalEmail(input.email ?? "");
+  const emailError = validateOptionalEmail(input.email ?? "");
+  if (emailError) return emailError;
+  if (input.payoutThresholdCents != null && input.payoutThresholdCents < 0) {
+    return "Uitbetaaldrempel kan niet negatief zijn.";
+  }
+  const iban = input.iban?.replace(/\s+/g, "") ?? "";
+  if (iban && !/^[A-Z]{2}[0-9A-Z]{13,32}$/.test(iban.toUpperCase())) {
+    return "IBAN heeft geen geldig formaat.";
+  }
+  return null;
 }
 
 export interface AfRuleInput {

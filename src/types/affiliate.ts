@@ -18,7 +18,7 @@ export type AfLedgerState = "pending" | "approved" | "paid" | "rejected";
 export interface AfSource {
   id: string;
   created_at: string;
-  kind: "manual" | "csv" | "network" | "bookkeeping" | "psp";
+  kind: "manual" | "csv" | "network" | "bookkeeping" | "psp" | "tracking";
   name: string;
   config: Record<string, unknown>;
   is_active: boolean;
@@ -38,6 +38,15 @@ export interface AfAffiliate {
   payout_details: Record<string, unknown>;
   notes: string | null;
   archived_at: string | null;
+  iban: string | null;
+  payout_name: string | null;
+  vat_number: string | null;
+  coc_number: string | null;
+  country: string | null;
+  address: string | null;
+  payout_threshold_cents: number;
+  terms_accepted_at: string | null;
+  terms_version: string | null;
 }
 
 export interface AfCommissionRule {

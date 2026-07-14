@@ -5,9 +5,16 @@ import { useState, useTransition, type FormEvent } from "react";
 import { createAfLinkAction, deleteAfLinkAction } from "@/lib/affiliate/actions";
 import type { AfLink } from "@/types/affiliate";
 
+// Trackbare deel-link: loopt via /r/<ref> zodat de klik wordt gelogd (af_clicks)
+// en de attributie-cookie wordt gezet, waarna doorverwezen wordt naar het doel.
 function buildUrl(targetUrl: string, ref: string): string {
-  const sep = targetUrl.includes("?") ? "&" : "?";
-  return `${targetUrl}${sep}ref=${encodeURIComponent(ref)}`;
+  try {
+    const u = new URL(targetUrl, "https://perfectsupplement.nl");
+    const to = `${u.pathname}${u.search}`;
+    return `${u.origin}/r/${encodeURIComponent(ref)}?to=${encodeURIComponent(to)}`;
+  } catch {
+    return `https://perfectsupplement.nl/r/${encodeURIComponent(ref)}`;
+  }
 }
 
 export function AfLinksSection({

@@ -17,16 +17,18 @@ export function AfReportExport({
   to: string;
 }) {
   function onExport() {
-    const header = ["ref", "naam", "leads", "sales", "omzet_eur", "commissie_eur", "conversie_pct"];
+    const header = ["ref", "naam", "clicks", "leads", "sales", "omzet_eur", "commissie_eur", "conversie_pct", "epc_eur"];
     const lines = rows.map((r) =>
       [
         r.affiliate.ref,
         r.affiliate.display_name,
+        r.clicks,
         r.leads,
         r.sales,
         (r.revenueCents / 100).toFixed(2),
         (r.commissionCents / 100).toFixed(2),
         r.conversionPct ?? "",
+        r.epcCents !== null ? (r.epcCents / 100).toFixed(2) : "",
       ]
         .map(csvCell)
         .join(","),

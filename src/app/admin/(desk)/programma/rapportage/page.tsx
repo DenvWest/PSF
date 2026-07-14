@@ -19,13 +19,15 @@ export default async function RapportagePage({
 
   const totals = report.rows.reduce(
     (acc, r) => ({
+      clicks: acc.clicks + r.clicks,
       leads: acc.leads + r.leads,
       sales: acc.sales + r.sales,
       revenue: acc.revenue + r.revenueCents,
       commission: acc.commission + r.commissionCents,
     }),
-    { leads: 0, sales: 0, revenue: 0, commission: 0 },
+    { clicks: 0, leads: 0, sales: 0, revenue: 0, commission: 0 },
   );
+  const totalEpc = totals.clicks > 0 ? Math.round(totals.commission / totals.clicks) : null;
 
   const inputCls = "rounded-md border border-[var(--ps-border)] px-2.5 py-1.5 text-sm";
 
@@ -61,11 +63,13 @@ export default async function RapportagePage({
           <thead>
             <tr className="border-b border-[var(--ps-border)] text-left text-xs uppercase tracking-wide text-[var(--ps-muted)]">
               <th className="px-5 py-3 font-medium">Affiliate</th>
+              <th className="px-5 py-3 font-medium text-right">Clicks</th>
               <th className="px-5 py-3 font-medium text-right">Leads</th>
               <th className="px-5 py-3 font-medium text-right">Sales</th>
               <th className="px-5 py-3 font-medium text-right">Conv.%</th>
               <th className="px-5 py-3 font-medium text-right">Omzet</th>
               <th className="px-5 py-3 font-medium text-right">Commissie</th>
+              <th className="px-5 py-3 font-medium text-right">EPC</th>
             </tr>
           </thead>
           <tbody>
@@ -76,22 +80,26 @@ export default async function RapportagePage({
                     {r.affiliate.display_name}
                   </Link>
                 </td>
+                <td className="px-5 py-3 text-right text-[var(--ps-body)]">{r.clicks}</td>
                 <td className="px-5 py-3 text-right text-[var(--ps-body)]">{r.leads}</td>
                 <td className="px-5 py-3 text-right text-[var(--ps-body)]">{r.sales}</td>
                 <td className="px-5 py-3 text-right text-[var(--ps-body)]">{r.conversionPct !== null ? `${r.conversionPct}%` : "—"}</td>
                 <td className="px-5 py-3 text-right text-[var(--ps-body)]">{formatMoney(r.revenueCents)}</td>
                 <td className="px-5 py-3 text-right font-medium">{formatMoney(r.commissionCents)}</td>
+                <td className="px-5 py-3 text-right text-[var(--ps-body)]">{r.epcCents !== null ? formatMoney(r.epcCents) : "—"}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr className="border-t border-[var(--ps-border)] font-semibold">
               <td className="px-5 py-3">Totaal</td>
+              <td className="px-5 py-3 text-right">{totals.clicks}</td>
               <td className="px-5 py-3 text-right">{totals.leads}</td>
               <td className="px-5 py-3 text-right">{totals.sales}</td>
               <td className="px-5 py-3 text-right">—</td>
               <td className="px-5 py-3 text-right">{formatMoney(totals.revenue)}</td>
               <td className="px-5 py-3 text-right">{formatMoney(totals.commission)}</td>
+              <td className="px-5 py-3 text-right">{totalEpc !== null ? formatMoney(totalEpc) : "—"}</td>
             </tr>
           </tfoot>
         </table>

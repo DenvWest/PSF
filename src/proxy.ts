@@ -8,6 +8,10 @@ import {
   verifyAccountCookie,
 } from "@/lib/account-session-cookie";
 import { resolveOrgIdFromHost } from "@/lib/org-resolver";
+import {
+  AFFILIATE_REF_COOKIE,
+  REFERRAL_MAX_AGE_SEC,
+} from "@/lib/referral-attribution";
 
 function requiresAdminAuth(pathname: string): boolean {
   const isAdminArea =
@@ -138,6 +142,18 @@ export async function proxy(request: NextRequest) {
       "Strict-Transport-Security",
       "max-age=31536000; includeSubDomains; preload",
     );
+  }
+
+  // Affiliate-attributie: vang ?ref= op élke instappagina (niet alleen /intake).
+  // First-click binnen het venster: al gezette ref niet overschrijven.
+  const refParam = request.nextUrl.searchParams.get("ref")?.trim().slice(0, 200);
+  if (refParam && !request.cookies.get(AFFILIATE_REF_COOKIE)) {
+    response.cookies.set(AFFILIATE_REF_COOKIE, refParam, {
+      path: "/",
+      maxAge: REFERRAL_MAX_AGE_SEC,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
   }
 
   return response;
