@@ -17,6 +17,7 @@ interface NavItem {
 const DESK_ITEMS: NavItem[] = [
   { label: "Vandaag", href: "/admin", icon: "today" },
   { label: "Partners", href: "/admin/partners", icon: "partners" },
+  { label: "Affiliates", href: "/admin/programma", icon: "program" },
   { label: "Taken", href: "/admin/taken", icon: "tasks" },
   { label: "Instellingen", href: "/admin/instellingen", icon: "settings" },
 ];
@@ -28,6 +29,7 @@ const SITE_ITEMS: NavItem[] = [
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/admin/partners") return pathname.startsWith("/admin/partners");
+  if (href === "/admin/programma") return pathname.startsWith("/admin/programma");
   return pathname === href;
 }
 

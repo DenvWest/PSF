@@ -7,6 +7,7 @@ export type DeskIconName =
   | "settings"
   | "site"
   | "affiliate"
+  | "program"
   | "logout"
   | "chevron"
   | "plus"
@@ -20,6 +21,7 @@ const PATHS: Record<DeskIconName, string> = {
     "M12 15a3 3 0 100-6 3 3 0 000 6zM19 12a7 7 0 00-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 00-1.7-1L14.5 2h-5l-.3 2.9a7 7 0 00-1.7 1l-2.4-1-2 3.4 2 1.6a7 7 0 000 2l-2 1.6 2 3.4 2.4-1a7 7 0 001.7 1l.3 2.9h5l.3-2.9a7 7 0 001.7-1l2.4 1 2-3.4-2-1.6a7 7 0 00.1-1z",
   site: "M3 12a9 9 0 1018 0 9 9 0 00-18 0zM3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18",
   affiliate: "M9 15l6-6M10.5 8.5l1-1a3 3 0 014 4l-1 1M13.5 15.5l-1 1a3 3 0 01-4-4l1-1",
+  program: "M4 11a4 4 0 118 0M2 20a6 6 0 0112 0M16 7a3 3 0 110 6M15 20a5 5 0 017-4.6",
   logout: "M15 12H4m0 0l4-4m-4 4l4 4M14 4h5v16h-5",
   chevron: "M9 6l6 6-6 6",
   plus: "M12 5v14M5 12h14",
