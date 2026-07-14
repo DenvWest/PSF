@@ -6,6 +6,7 @@ import type {
   AfConversion,
   AfLedgerEntry,
   AfLink,
+  AfPayout,
 } from "@/types/affiliate";
 
 /** Affiliates voor de lijst, met afgeleide regel-/linkcount. */
@@ -120,4 +121,15 @@ export async function getAffiliateLedger(affiliateId: string): Promise<Affiliate
     if (e.state === "paid") paidCents += e.amount_cents;
   }
   return { entries, outstandingCents, approvedCents, paidCents };
+}
+
+export async function getAffiliatePayouts(affiliateId: string): Promise<AfPayout[]> {
+  const db = getAffiliateDb();
+  const { data, error } = await db
+    .from("af_payouts")
+    .select("*")
+    .eq("affiliate_id", affiliateId)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`af_payouts: ${error.message}`);
+  return (data ?? []) as AfPayout[];
 }

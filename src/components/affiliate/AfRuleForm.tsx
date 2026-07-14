@@ -37,6 +37,7 @@ export function AfRuleForm({
   const [validTo, setValidTo] = useState(existing?.valid_to ?? "");
 
   const isPercent = valueType === "percent";
+  const percentOnLead = isPercent && appliesTo === "lead";
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -111,6 +112,12 @@ export function AfRuleForm({
         </label>
       </div>
 
+      {percentOnLead && (
+        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          Een percentage op een lead levert €0 — een lead heeft geen omzet. Gebruik
+          een vast bedrag voor leads.
+        </p>
+      )}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <div className="flex justify-end gap-2">

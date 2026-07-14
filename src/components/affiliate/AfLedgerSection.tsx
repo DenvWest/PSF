@@ -27,6 +27,12 @@ function Tile({ label, cents, accent }: { label: string; cents: number; accent?:
 }
 
 export function AfLedgerSection({ ledger }: { ledger: AffiliateLedger }) {
+  // €0-accruals (bijv. percentage op een lead) tellen niet en worden verborgen;
+  // ze blijven wel in de database staan zodat de conversie niet ten onrechte als
+  // "geen commissie" wordt gemarkeerd.
+  const entries = ledger.entries.filter(
+    (e) => !(e.kind === "accrual" && e.amount_cents === 0),
+  );
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-3">
@@ -35,7 +41,7 @@ export function AfLedgerSection({ ledger }: { ledger: AffiliateLedger }) {
         <Tile label="Uitbetaald" cents={ledger.paidCents} />
       </div>
 
-      {ledger.entries.length === 0 ? (
+      {entries.length === 0 ? (
         <p className="text-sm text-[var(--ps-muted)]">Nog geen grootboekregels.</p>
       ) : (
         <div className="overflow-hidden rounded-lg border border-[var(--ps-border)]">
@@ -50,7 +56,7 @@ export function AfLedgerSection({ ledger }: { ledger: AffiliateLedger }) {
               </tr>
             </thead>
             <tbody>
-              {ledger.entries.map((e) => (
+              {entries.map((e) => (
                 <tr key={e.id} className="border-b border-[var(--ps-border)] last:border-0">
                   <td className="px-3 py-2">{KIND_LABEL[e.kind] ?? e.kind}</td>
                   <td className="px-3 py-2 text-[var(--ps-body)]">{e.period}</td>

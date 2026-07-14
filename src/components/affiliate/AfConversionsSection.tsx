@@ -7,6 +7,7 @@ import {
   recordManualConversionAction,
   setConversionStatusAction,
 } from "@/lib/affiliate/conversion-actions";
+import { recomputeAffiliateAction } from "@/lib/affiliate/actions";
 import { formatMoney, formatNlDay } from "@/lib/partnerdesk/format";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import type { AfConversion, AfConversionType } from "@/types/affiliate";
@@ -21,14 +22,38 @@ export function AfConversionsSection({
   affiliateId,
   affiliateRef,
   conversions,
+  accruedConversionIds,
 }: {
   affiliateId: string;
   affiliateRef: string;
   conversions: AfConversion[];
+  accruedConversionIds: string[];
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [recomputeNote, setRecomputeNote] = useState<string | null>(null);
+
+  const accrued = new Set(accruedConversionIds);
+  const missing = conversions.filter((c) => c.status !== "rejected" && !accrued.has(c.id));
+
+  function recompute() {
+    setError(null);
+    setRecomputeNote(null);
+    startTransition(async () => {
+      const result = await recomputeAffiliateAction({ affiliateId, ref: affiliateRef });
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setRecomputeNote(
+        result.data.created > 0
+          ? `${result.data.created} conversie(s) alsnog van commissie voorzien.`
+          : "Geen nieuwe commissie — controleer of er een passende commissieafspraak is (type + geldigheid).",
+      );
+      router.refresh();
+    });
+  }
 
   const [type, setType] = useState<AfConversionType>("sale");
   const [occurredOn, setOccurredOn] = useState(todayIso());
@@ -93,6 +118,24 @@ export function AfConversionsSection({
 
   return (
     <div className="space-y-4">
+      {missing.length > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          <span>
+            {missing.length} conversie(s) zonder geldende commissieafspraak — er is geen
+            regel die dit type/deze datum dekt.
+          </span>
+          <button
+            type="button"
+            onClick={recompute}
+            disabled={pending}
+            className="shrink-0 rounded-md border border-amber-300 px-2.5 py-1 text-xs font-medium hover:bg-amber-100 disabled:opacity-50"
+          >
+            Herbereken commissie
+          </button>
+        </div>
+      )}
+      {recomputeNote && <p className="text-xs text-[var(--ps-green-hover)]">{recomputeNote}</p>}
+
       {conversions.length === 0 ? (
         <p className="text-sm text-[var(--ps-muted)]">Nog geen conversies.</p>
       ) : (
@@ -117,6 +160,11 @@ export function AfConversionsSection({
                     <td className="px-3 py-2 text-right">{c.type === "sale" ? formatMoney(c.revenue_cents) : "—"}</td>
                     <td className="px-3 py-2">
                       <span className={`inline-flex rounded-full px-2 py-0.5 text-xs ${s.cls}`}>{s.label}</span>
+                      {c.status !== "rejected" && !accrued.has(c.id) && (
+                        <span className="ml-1 inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-700" title="Geen geldende commissieafspraak voor dit type/deze datum">
+                          geen commissie
+                        </span>
+                      )}
                     </td>
                     <td className="px-3 py-2 text-right">
                       <span className="flex justify-end gap-2 text-xs text-[var(--ps-body)]">

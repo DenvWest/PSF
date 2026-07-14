@@ -67,6 +67,32 @@ export async function accrueForConversion(
   return { ok: true, accrued: true };
 }
 
+/**
+ * Backfill: maakt accruals voor conversies die er nog geen hebben (bijv. omdat er
+ * bij registratie nog geen passende commissieafspraak was). Draait na het toevoegen/
+ * wijzigen van een regel en via de "Herbereken commissie"-knop. Wijzigt bewust
+ * NOOIT reeds geboekte accruals (append-only, bevroren snapshot) — alleen ontbrekende.
+ */
+export async function recomputeAffiliateAccruals(
+  db: SupabaseClient,
+  affiliateId: string,
+): Promise<number> {
+  const [conversionsRes, accrualsRes] = await Promise.all([
+    db.from("af_conversions").select("id").eq("affiliate_id", affiliateId).neq("status", "rejected"),
+    db.from("af_ledger_entries").select("conversion_id").eq("affiliate_id", affiliateId).eq("kind", "accrual"),
+  ]);
+  const withAccrual = new Set(
+    (accrualsRes.data ?? []).map((a) => a.conversion_id as string),
+  );
+  let created = 0;
+  for (const c of conversionsRes.data ?? []) {
+    if (withAccrual.has(c.id as string)) continue;
+    const r = await accrueForConversion(db, c.id as string);
+    if (r.accrued) created += 1;
+  }
+  return created;
+}
+
 /** Zet de accrual van een goedgekeurde conversie op 'approved' (klaar voor uitbetaling). */
 export async function approveConversionAccrual(
   db: SupabaseClient,

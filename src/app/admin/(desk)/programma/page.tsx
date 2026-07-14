@@ -22,6 +22,8 @@ export default async function ProgrammaPage() {
           <h1 className="text-2xl font-semibold">Affiliates</h1>
           <p className="mt-0.5 text-sm text-[var(--ps-body)]">
             {rows.length} {rows.length === 1 ? "affiliate" : "affiliates"} in je programma
+            {" · "}
+            <Link href="/admin/programma/rapportage" className="hover:underline">Rapportage →</Link>
           </p>
         </div>
         <NewAffiliatePanel />

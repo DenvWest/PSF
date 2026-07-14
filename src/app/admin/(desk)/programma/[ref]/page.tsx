@@ -4,12 +4,14 @@ import { AffiliateForm } from "@/components/affiliate/AffiliateForm";
 import { AfConversionsSection } from "@/components/affiliate/AfConversionsSection";
 import { AfLedgerSection } from "@/components/affiliate/AfLedgerSection";
 import { AfLinksSection } from "@/components/affiliate/AfLinksSection";
+import { AfPayoutSection } from "@/components/affiliate/AfPayoutSection";
 import { AfRulesSection } from "@/components/affiliate/AfRulesSection";
 import { CollapsibleSection } from "@/components/partnerdesk/CollapsibleSection";
 import {
   getAffiliateByRef,
   getAffiliateConversions,
   getAffiliateLedger,
+  getAffiliatePayouts,
 } from "@/lib/affiliate/queries";
 
 export const dynamic = "force-dynamic";
@@ -30,10 +32,14 @@ export default async function AffiliateDossierPage({
   if (!dossier) notFound();
 
   const { affiliate, rules, links } = dossier;
-  const [conversions, ledger] = await Promise.all([
+  const [conversions, ledger, payouts] = await Promise.all([
     getAffiliateConversions(affiliate.id),
     getAffiliateLedger(affiliate.id),
+    getAffiliatePayouts(affiliate.id),
   ]);
+  const accruedConversionIds = ledger.entries
+    .filter((e) => e.kind === "accrual" && e.conversion_id)
+    .map((e) => e.conversion_id as string);
 
   return (
     <div>
@@ -68,11 +74,25 @@ export default async function AffiliateDossierPage({
         </CollapsibleSection>
 
         <CollapsibleSection id="conversies" title="Conversies">
-          <AfConversionsSection affiliateId={affiliate.id} affiliateRef={affiliate.ref} conversions={conversions} />
+          <AfConversionsSection
+            affiliateId={affiliate.id}
+            affiliateRef={affiliate.ref}
+            conversions={conversions}
+            accruedConversionIds={accruedConversionIds}
+          />
         </CollapsibleSection>
 
         <CollapsibleSection id="grootboek" title="Grootboek & commissie">
           <AfLedgerSection ledger={ledger} />
+        </CollapsibleSection>
+
+        <CollapsibleSection id="uitbetalingen" title="Uitbetalingen">
+          <AfPayoutSection
+            affiliateId={affiliate.id}
+            affiliateRef={affiliate.ref}
+            approvedCents={ledger.approvedCents}
+            payouts={payouts}
+          />
         </CollapsibleSection>
       </div>
     </div>

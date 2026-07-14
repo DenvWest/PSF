@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAffiliateDb, refFromName } from "@/lib/affiliate/db";
+import { recomputeAffiliateAccruals } from "@/lib/affiliate/af-ledger";
 import {
   validateAffiliate,
   validateAffiliateName,
@@ -126,6 +127,8 @@ export async function createAfRuleAction(
       .from("af_commission_rules")
       .insert({ affiliate_id: input.affiliateId, ...ruleRow(input) });
     if (insertError) return { ok: false, error: insertError.message };
+    // Backfill: conversies zonder accrual krijgen er nu mogelijk wél één.
+    await recomputeAffiliateAccruals(db, input.affiliateId);
     revalidate(input.ref);
     return { ok: true };
   } catch (err) {
@@ -134,7 +137,7 @@ export async function createAfRuleAction(
 }
 
 export async function updateAfRuleAction(
-  input: AfRuleInput & { ruleId: string; ref?: string },
+  input: AfRuleInput & { ruleId: string; affiliateId: string; ref?: string },
 ): Promise<ActionResult> {
   const error = validateAfRule(input);
   if (error) return { ok: false, error };
@@ -145,8 +148,24 @@ export async function updateAfRuleAction(
       .update(ruleRow(input))
       .eq("id", input.ruleId);
     if (updateError) return { ok: false, error: updateError.message };
+    await recomputeAffiliateAccruals(db, input.affiliateId);
     revalidate(input.ref);
     return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
+  }
+}
+
+/** Handmatige herberekening: vult ontbrekende accruals aan (bijv. na regelwijziging). */
+export async function recomputeAffiliateAction(input: {
+  affiliateId: string;
+  ref?: string;
+}): Promise<ActionResult<{ created: number }>> {
+  try {
+    const db = getAffiliateDb();
+    const created = await recomputeAffiliateAccruals(db, input.affiliateId);
+    revalidate(input.ref);
+    return { ok: true, data: { created } };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Onbekende fout." };
   }

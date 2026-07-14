@@ -98,6 +98,20 @@ export interface AfLedgerEntry {
   note: string | null;
 }
 
+export type AfPayoutStatus = "draft" | "approved" | "sent" | "paid" | "failed";
+
+export interface AfPayout {
+  id: string;
+  created_at: string;
+  affiliate_id: string;
+  period: string;
+  total_cents: number;
+  status: AfPayoutStatus;
+  bookkeeping_ref: string | null;
+  psp_ref: string | null;
+  paid_at: string | null;
+}
+
 /** Affiliate + afgeleide tellingen voor de lijstweergave. */
 export interface AffiliateListRow {
   affiliate: AfAffiliate;
