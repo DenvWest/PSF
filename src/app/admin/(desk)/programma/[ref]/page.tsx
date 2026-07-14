@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AffiliateForm } from "@/components/affiliate/AffiliateForm";
+import { AfConversionsSection } from "@/components/affiliate/AfConversionsSection";
+import { AfLedgerSection } from "@/components/affiliate/AfLedgerSection";
 import { AfLinksSection } from "@/components/affiliate/AfLinksSection";
 import { AfRulesSection } from "@/components/affiliate/AfRulesSection";
 import { CollapsibleSection } from "@/components/partnerdesk/CollapsibleSection";
-import { getAffiliateByRef } from "@/lib/affiliate/queries";
+import {
+  getAffiliateByRef,
+  getAffiliateConversions,
+  getAffiliateLedger,
+} from "@/lib/affiliate/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +30,10 @@ export default async function AffiliateDossierPage({
   if (!dossier) notFound();
 
   const { affiliate, rules, links } = dossier;
+  const [conversions, ledger] = await Promise.all([
+    getAffiliateConversions(affiliate.id),
+    getAffiliateLedger(affiliate.id),
+  ]);
 
   return (
     <div>
@@ -57,10 +67,12 @@ export default async function AffiliateDossierPage({
           <AfLinksSection affiliateId={affiliate.id} affiliateRef={affiliate.ref} links={links} />
         </CollapsibleSection>
 
-        <CollapsibleSection id="prestaties" title="Prestaties & commissie" defaultOpen={false}>
-          <p className="text-sm text-[var(--ps-muted)]">
-            Conversies, grootboek en uitbetalingen komen in plak A2–A4.
-          </p>
+        <CollapsibleSection id="conversies" title="Conversies">
+          <AfConversionsSection affiliateId={affiliate.id} affiliateRef={affiliate.ref} conversions={conversions} />
+        </CollapsibleSection>
+
+        <CollapsibleSection id="grootboek" title="Grootboek & commissie">
+          <AfLedgerSection ledger={ledger} />
         </CollapsibleSection>
       </div>
     </div>

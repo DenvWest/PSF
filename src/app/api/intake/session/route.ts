@@ -4,7 +4,9 @@ import {
   applyAnalyticsConsentStateCookie,
   clearAnalyticsConsentCookie,
 } from "@/lib/analytics-consent";
+import { attributeIntakeLead } from "@/lib/affiliate/conversions";
 import { sha256Hex } from "@/lib/consent-hashing";
+import { AFFILIATE_REF_COOKIE } from "@/lib/referral-attribution";
 import {
   intakeConsentRows,
   validateIntakeConsent,
@@ -379,6 +381,13 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  // Eigen affiliate-programma: lead attribueren aan de tracking-ref (fail-open).
+  await attributeIntakeLead(admin, {
+    sessionId: row.id,
+    affRef: request.cookies.get(AFFILIATE_REF_COOKIE)?.value ?? null,
+    occurredAt: new Date().toISOString(),
+  });
 
   if (isRemeasure && baselineSnapshot) {
     const remeasurePayload = buildRemeasureCompletedPayload({

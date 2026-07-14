@@ -3,6 +3,8 @@ import type {
   AffiliateListRow,
   AfAffiliate,
   AfCommissionRule,
+  AfConversion,
+  AfLedgerEntry,
   AfLink,
 } from "@/types/affiliate";
 
@@ -75,4 +77,47 @@ export async function getAffiliateByRef(ref: string): Promise<AffiliateDossier |
     rules: (rulesRes.data ?? []) as AfCommissionRule[],
     links: (linksRes.data ?? []) as AfLink[],
   };
+}
+
+export async function getAffiliateConversions(
+  affiliateId: string,
+  limit = 100,
+): Promise<AfConversion[]> {
+  const db = getAffiliateDb();
+  const { data, error } = await db
+    .from("af_conversions")
+    .select("*")
+    .eq("affiliate_id", affiliateId)
+    .order("occurred_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(`af_conversions: ${error.message}`);
+  return (data ?? []) as AfConversion[];
+}
+
+export interface AffiliateLedger {
+  entries: AfLedgerEntry[];
+  outstandingCents: number; // pending + approved (nog verschuldigd)
+  approvedCents: number; // klaar voor uitbetaling
+  paidCents: number;
+}
+
+export async function getAffiliateLedger(affiliateId: string): Promise<AffiliateLedger> {
+  const db = getAffiliateDb();
+  const { data, error } = await db
+    .from("af_ledger_entries")
+    .select("*")
+    .eq("affiliate_id", affiliateId)
+    .order("posted_at", { ascending: false });
+  if (error) throw new Error(`af_ledger_entries: ${error.message}`);
+  const entries = (data ?? []) as AfLedgerEntry[];
+
+  let outstandingCents = 0;
+  let approvedCents = 0;
+  let paidCents = 0;
+  for (const e of entries) {
+    if (e.state === "pending" || e.state === "approved") outstandingCents += e.amount_cents;
+    if (e.state === "approved") approvedCents += e.amount_cents;
+    if (e.state === "paid") paidCents += e.amount_cents;
+  }
+  return { entries, outstandingCents, approvedCents, paidCents };
 }
