@@ -107,8 +107,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     );
   }
 
-  const data = await loadAccountDashboardData(account.id);
-  const hasTrendsFeature = await hasFeature(account.id, "trends");
+  const [data, hasTrendsFeature] = await Promise.all([
+    loadAccountDashboardData(account.id),
+    hasFeature(account.id, "trends"),
+  ]);
 
   return (
     <div className="ps-dark">

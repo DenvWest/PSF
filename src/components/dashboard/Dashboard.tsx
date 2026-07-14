@@ -34,9 +34,29 @@ import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink"
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
 
+const VoortgangHubSkeleton = () => (
+  <div
+    className="animate-pulse"
+    style={{ display: "flex", flexDirection: "column", gap: 16 }}
+    aria-busy="true"
+  >
+    {[0, 1, 2].map((i) => (
+      <div
+        key={i}
+        style={{
+          height: i === 0 ? 132 : 96,
+          borderRadius: 24,
+          border: "1px solid var(--panel-border)",
+          background: "var(--panel)",
+        }}
+      />
+    ))}
+  </div>
+);
+
 const VoortgangHub = dynamic(
   () => import("@/components/dashboard/VoortgangHub"),
-  { ssr: false },
+  { ssr: false, loading: () => <VoortgangHubSkeleton /> },
 );
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import {
@@ -487,15 +507,19 @@ const VitalityScoreSection = ({
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const emittedKeyRef = useRef<string | null>(null);
-  const habitKernel =
-    currentModel &&
-    buildHabitScoreKernel({
-      vitality: currentModel.vitality,
-      priorityId: currentModel.priority.id,
-      priorityScore: currentModel.scores[currentModel.priority.id],
-      answers: currentModel.answers,
-      domainScores: currentModel.domainScores,
-    });
+  const habitKernel = useMemo(
+    () =>
+      currentModel
+        ? buildHabitScoreKernel({
+            vitality: currentModel.vitality,
+            priorityId: currentModel.priority.id,
+            priorityScore: currentModel.scores[currentModel.priority.id],
+            answers: currentModel.answers,
+            domainScores: currentModel.domainScores,
+          })
+        : null,
+    [currentModel],
+  );
 
   useEffect(() => {
     if (!currentModel || !habitKernel) {
@@ -576,23 +600,25 @@ const NowSection = ({ empty, model }: SharedSectionProps) => {
   const [habitCompleted, setHabitCompleted] = useState(
     currentModel?.activeHabit?.state === "done",
   );
-  const habitKernel =
-    currentModel &&
-    buildHabitScoreKernel({
-      vitality: currentModel.vitality,
-      priorityId: currentModel.priority.id,
-      priorityScore: currentModel.scores[currentModel.priority.id],
-      answers: currentModel.answers,
-      domainScores: currentModel.domainScores,
-    });
+  const habitKernel = useMemo(
+    () =>
+      currentModel
+        ? buildHabitScoreKernel({
+            vitality: currentModel.vitality,
+            priorityId: currentModel.priority.id,
+            priorityScore: currentModel.scores[currentModel.priority.id],
+            answers: currentModel.answers,
+            domainScores: currentModel.domainScores,
+          })
+        : null,
+    [currentModel],
+  );
 
-  if (!empty && !model) {
-    return null;
-  }
-
-  const explainer =
-    currentModel &&
-    getVitalityExplainer({
+  const derived = useMemo(() => {
+    if (!currentModel) {
+      return null;
+    }
+    const explainer = getVitalityExplainer({
       vitality: currentModel.vitality,
       vitalityDelta: currentModel.vitalityDelta,
       vitalityDeltaComparable: currentModel.vitalityDeltaNote == null,
@@ -601,27 +627,32 @@ const NowSection = ({ empty, model }: SharedSectionProps) => {
       answers: currentModel.answers,
       domainScores: currentModel.domainScores,
     });
-  const recommendationInput = currentModel
-    ? buildRecommendationInput({ scores: currentModel.domainScores })
-    : null;
-  const lifestyleStep = currentModel?.activeHabit
-    ? {
-        title: currentModel.activeHabit.title,
-        detail: currentModel.activeHabit.detail ?? "",
-      }
-    : currentModel?.priority.quickWin;
-  const supplementDisclosure =
-    currentModel && recommendationInput
-      ? buildSupplementDisclosure(
-          currentModel.priority,
-          recommendationInput,
-          "dashboard",
-          lifestyleStep,
-        )
-      : null;
-  const interventionHref = currentModel
-    ? buildPriorityInterventionHref(currentModel)
-    : null;
+    const recommendationInput = buildRecommendationInput({
+      scores: currentModel.domainScores,
+    });
+    const lifestyleStep = currentModel.activeHabit
+      ? {
+          title: currentModel.activeHabit.title,
+          detail: currentModel.activeHabit.detail ?? "",
+        }
+      : currentModel.priority.quickWin;
+    const supplementDisclosure = buildSupplementDisclosure(
+      currentModel.priority,
+      recommendationInput,
+      "dashboard",
+      lifestyleStep,
+    );
+    const interventionHref = buildPriorityInterventionHref(currentModel);
+    return { explainer, supplementDisclosure, interventionHref };
+  }, [currentModel]);
+
+  if (!empty && !model) {
+    return null;
+  }
+
+  const explainer = derived?.explainer ?? null;
+  const supplementDisclosure = derived?.supplementDisclosure ?? null;
+  const interventionHref = derived?.interventionHref ?? null;
 
   if (empty) {
     return null;
@@ -2907,22 +2938,30 @@ const VoedingScreen = ({
   model: DashboardModel;
   nutritionIntake: DashboardData["nutritionIntake"];
 }) => {
-  const session: IntakeSessionPayload = {
-    sessionId: "",
-    symptoms: [],
-    answers: model.answers ?? {},
-    scores: model.domainScores,
-    urgency: "",
-    profile: "",
-    timestamp: 0,
-    ageRange: null,
-    firstName: null,
-  };
-  const eligibility = buildRecommendationsEligibility(nutritionIntake);
-  const recommendations = buildRecommendations(session, eligibility);
+  const eligibility = useMemo(
+    () => buildRecommendationsEligibility(nutritionIntake),
+    [nutritionIntake],
+  );
+  const recommendations = useMemo(() => {
+    const session: IntakeSessionPayload = {
+      sessionId: "",
+      symptoms: [],
+      answers: model.answers ?? {},
+      scores: model.domainScores,
+      urgency: "",
+      profile: "",
+      timestamp: 0,
+      ageRange: null,
+      firstName: null,
+    };
+    return buildRecommendations(session, eligibility);
+  }, [model.answers, model.domainScores, eligibility]);
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
   const pillar = PILLAR.voeding;
-  const intakeLines = buildNutritionIntakeLines(model.answers ?? {});
+  const intakeLines = useMemo(
+    () => buildNutritionIntakeLines(model.answers ?? {}),
+    [model.answers],
+  );
 
   const trackCheckinClick = (placement: string) => {
     trackEvent("dashboard_voeding_checkin_click", {
@@ -3309,6 +3348,12 @@ const KompasHome = ({
   const reminderShownRef = useRef(false);
   const showRemeasureReminder =
     Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
+  const nutritionLogCompleted = useMemo(
+    () =>
+      buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted ===
+      true,
+    [data?.nutritionIntake],
+  );
 
   useEffect(() => {
     const onPopState = () => {
@@ -3410,7 +3455,7 @@ const KompasHome = ({
     return withDomainTopNav(
       <BewegingScreen
         model={currentModel}
-        nutritionLogCompleted={buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true}
+        nutritionLogCompleted={nutritionLogCompleted}
       />,
     );
   }
@@ -3418,7 +3463,7 @@ const KompasHome = ({
     return withDomainTopNav(
       <StressScreen
         model={currentModel}
-        nutritionLogCompleted={buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true}
+        nutritionLogCompleted={nutritionLogCompleted}
       />,
     );
   }
@@ -3426,7 +3471,7 @@ const KompasHome = ({
     return withDomainTopNav(
       <SleepScreen
         model={currentModel}
-        nutritionLogCompleted={buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true}
+        nutritionLogCompleted={nutritionLogCompleted}
       />,
     );
   }
