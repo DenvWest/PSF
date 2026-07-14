@@ -144,6 +144,13 @@ export default function AdminAffiliatePage() {
         </div>
         <nav className="flex flex-1 flex-col gap-1 px-3 py-4 text-sm">
           <Link
+            href="/admin"
+            onClick={() => setMenuOpen(false)}
+            className="mb-1 rounded-lg border border-[#5A8F6A]/30 bg-[#e8f5ee] px-3 py-2 font-medium text-[#4A7F5A] hover:bg-[#d8ede0]"
+          >
+            ← PartnerDesk
+          </Link>
+          <Link
             href="/admin/site"
             onClick={() => setMenuOpen(false)}
             className="rounded-lg px-3 py-2 text-[#1a1a1a] hover:bg-[#F8F7F4]"

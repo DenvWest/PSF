@@ -18,8 +18,12 @@ interface InlineFieldProps {
   variant?: "text" | "textarea" | "select";
   options?: Option[];
   placeholder?: string;
-  /** Optioneel: hoe de leeswaarde getoond wordt (bijv. als link). */
-  renderValue?: (value: string) => React.ReactNode;
+  /** Toont naast de waarde een "open"-link (bijv. voor website/login-URL). */
+  asLink?: boolean;
+}
+
+function normalizeUrl(value: string): string {
+  return value.includes("://") ? value : `https://${value}`;
 }
 
 export function InlineField({
@@ -31,7 +35,7 @@ export function InlineField({
   variant = "text",
   options,
   placeholder = "— nog invullen",
-  renderValue,
+  asLink = false,
 }: InlineFieldProps) {
   const [editing, setEditing] = useState(false);
   const [current, setCurrent] = useState(value);
@@ -141,21 +145,30 @@ export function InlineField({
       : current;
 
   return (
-    <button
-      type="button"
-      onClick={begin}
-      className={`group -mx-2 flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-sm hover:bg-[var(--ps-bg)] ${
-        pending ? "opacity-60" : ""
-      }`}
-      title="Klik om te bewerken"
-    >
-      <span className={isEmpty ? "text-[var(--ps-muted)]" : "text-[var(--ps-ink)]"}>
-        {isEmpty
-          ? placeholder
-          : renderValue
-            ? renderValue(current)
-            : selectLabel}
-      </span>
-    </button>
+    <div className="-mx-2 flex items-center gap-1">
+      <button
+        type="button"
+        onClick={begin}
+        className={`group flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1 text-left text-sm hover:bg-[var(--ps-bg)] ${
+          pending ? "opacity-60" : ""
+        }`}
+        title="Klik om te bewerken"
+      >
+        <span className={`truncate ${isEmpty ? "text-[var(--ps-muted)]" : "text-[var(--ps-ink)]"}`}>
+          {isEmpty ? placeholder : selectLabel}
+        </span>
+      </button>
+      {asLink && !isEmpty && (
+        <a
+          href={normalizeUrl(current)}
+          target="_blank"
+          rel="noreferrer"
+          className="shrink-0 px-1 text-[var(--ps-body)] hover:text-[var(--ps-ink)]"
+          title="Openen in nieuw tabblad"
+        >
+          ↗
+        </a>
+      )}
+    </div>
   );
 }

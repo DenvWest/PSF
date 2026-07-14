@@ -210,20 +210,11 @@ export default async function PartnerDossierPage({
                   id={partner.id}
                   field="website"
                   value={partner.website ?? ""}
-                  renderValue={(v) => (
-                    <a
-                      href={v.includes("://") ? v : `https://${v}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:underline"
-                    >
-                      {v}
-                    </a>
-                  )}
+                  asLink
                 />
               </FieldRow>
               <FieldRow label="Login-URL">
-                <InlineField entity="partner" id={partner.id} field="login_url" value={partner.login_url ?? ""} />
+                <InlineField entity="partner" id={partner.id} field="login_url" value={partner.login_url ?? ""} asLink />
               </FieldRow>
               <FieldRow label="Gebruikersnaam">
                 <InlineField entity="partner" id={partner.id} field="login_username" value={partner.login_username ?? ""} />
