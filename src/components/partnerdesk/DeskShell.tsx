@@ -14,7 +14,7 @@ interface NavItem {
 }
 
 const DESK_ITEMS: NavItem[] = [
-  { label: "Vandaag", href: "/admin", icon: "today", disabled: true, hint: "plak 4" },
+  { label: "Vandaag", href: "/admin", icon: "today" },
   { label: "Partners", href: "/admin/partners", icon: "partners" },
   { label: "Taken", href: "/admin/taken", icon: "tasks" },
   { label: "Instellingen", href: "/admin/instellingen", icon: "settings" },

@@ -1,4 +1,6 @@
 import { getPartnerDeskDb } from "@/lib/partnerdesk/db";
+import { daysUntil } from "@/lib/partnerdesk/contract-status";
+import { todayIso } from "@/lib/partnerdesk/dates";
 import type {
   PartnerListRow,
   PdCategory,
@@ -10,6 +12,7 @@ import type {
   PdLabel,
   PdNetwork,
   PdPartner,
+  PdSignal,
   PdTask,
   PdTimelineEvent,
 } from "@/types/partnerdesk";
@@ -248,6 +251,96 @@ export async function getPartnerCommercials(
     tiers,
     documents: (documentsRes.data ?? []) as PdDocument[],
   };
+}
+
+export interface SignalWithPartner {
+  signal: PdSignal;
+  partnerName: string | null;
+  partnerSlug: string | null;
+}
+
+/** Open signalen over partners heen, voor het Vandaag-dashboard. */
+export async function listOpenSignals(): Promise<SignalWithPartner[]> {
+  const db = getPartnerDeskDb();
+  const [signalsRes, partnersRes] = await Promise.all([
+    db
+      .from("pd_signals")
+      .select("*")
+      .eq("status", "open")
+      .order("severity", { ascending: true }) // 'amber' < 'red' alfabetisch; herordend in UI
+      .order("created_at", { ascending: true }),
+    db.from("pd_partners").select("id, name, slug"),
+  ]);
+  if (signalsRes.error) throw new Error(`pd_signals: ${signalsRes.error.message}`);
+  const partnerById = new Map(
+    (partnersRes.data ?? []).map((p) => [
+      p.id as string,
+      { name: p.name as string, slug: p.slug as string },
+    ]),
+  );
+  return ((signalsRes.data ?? []) as PdSignal[]).map((signal) => {
+    const p = signal.partner_id ? partnerById.get(signal.partner_id) : undefined;
+    return { signal, partnerName: p?.name ?? null, partnerSlug: p?.slug ?? null };
+  });
+}
+
+export interface ExpiryEvent {
+  date: string;
+  kind: "end" | "cancel";
+  contractNumber: string;
+  partnerName: string;
+  partnerSlug: string;
+  daysLeft: number;
+}
+
+/** Contract-eindes en opzegdeadlines binnen N dagen, voor de verloopkalender. */
+export async function listUpcomingExpiries(withinDays = 90): Promise<ExpiryEvent[]> {
+  const db = getPartnerDeskDb();
+  const today = todayIso();
+  const [contractsRes, partnersRes] = await Promise.all([
+    db.from("pd_contracts").select("*").is("archived_at", null),
+    db.from("pd_partners").select("id, name, slug"),
+  ]);
+  const partnerById = new Map(
+    (partnersRes.data ?? []).map((p) => [
+      p.id as string,
+      { name: p.name as string, slug: p.slug as string },
+    ]),
+  );
+  const events: ExpiryEvent[] = [];
+  for (const c of (contractsRes.data ?? []) as PdContract[]) {
+    const p = partnerById.get(c.partner_id);
+    if (!p) continue;
+    for (const [date, kind] of [
+      [c.ends_on, "end"] as const,
+      [c.cancel_by, "cancel"] as const,
+    ]) {
+      const days = daysUntil(date, today);
+      if (date && days !== null && days >= 0 && days <= withinDays) {
+        events.push({
+          date,
+          kind,
+          contractNumber: c.number,
+          partnerName: p.name,
+          partnerSlug: p.slug,
+          daysLeft: days,
+        });
+      }
+    }
+  }
+  return events.sort((a, b) => a.daysLeft - b.daysLeft);
+}
+
+export async function listRecentPartners(limit = 5): Promise<PdPartner[]> {
+  const db = getPartnerDeskDb();
+  const { data, error } = await db
+    .from("pd_partners")
+    .select("*")
+    .is("archived_at", null)
+    .order("updated_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(`pd_partners: ${error.message}`);
+  return (data ?? []) as PdPartner[];
 }
 
 export interface PartnerDossier {
