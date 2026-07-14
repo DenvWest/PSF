@@ -2,14 +2,16 @@
 
 ## Wat dit project is
 
-PerfectSupplement (perfectsupplement.nl) is een onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Focus: slaap, stress, energie, herstel. Monetisatie via affiliate links (Daisycon, Arctic Blue direct). Positionering: "De Consumentenbond van supplementen" — objectief, wetenschappelijk onderbouwd.
+PerfectSupplement (perfectsupplement.nl) is een onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Focus: slaap, stress, energie, herstel. Positionering: "De Consumentenbond van supplementen" — objectief, wetenschappelijk onderbouwd.
+
+**Monetisatie.** Huidig/live: externe affiliate links (Daisycon, Arctic Blue direct) op de vergelijkingspagina's. In opbouw (2026): eigen partnerbeheer (**PartnerDesk**) en een **eigen affiliate-programma** rondom Leefstijlcheck — zie "Interne platformen (2026)".
 
 ## Tech stack — wijzig niet zonder overleg
 
 - Next.js 16 App Router, TypeScript strict
 - Tailwind CSS (in JSX, geen aparte CSS behalve globals.css)
 - Supabase (Postgres + RLS, geen Firebase)
-- Hetzner VPS (Fedora, Nginx, PM2, Let's Encrypt)
+- Hetzner VPS (Fedora, Nginx, systemd, Let's Encrypt)
 - Resend voor transactionele e-mail
 - Fonts: DM Sans (body) + DM Serif Display (headings)
 - Pad alias: `@/` = `src/`
@@ -65,10 +67,11 @@ src/
 
 ### Git & deploy
 - **NOOIT automatisch committen.** Stop altijd na aanpassingen zodat Dennis kan reviewen.
-- Draai `npm run build` voordat je klaar bent — build errors moeten opgelost zijn.
+- Verifieer met `npx tsc --noEmit` + `vitest` + `eslint --max-warnings 0` (de pre-push hook draait tsc+vitest). Draai **NIET** `next build` of `rm -rf .next` terwijl `next dev` live is — dat crasht de dev-server; de productie-build draait op de server via `deploy.sh`.
 - Draai `grep -rn "console.log" src/` voor elke commit — geen debug-logging in productie.
 - `.env.local` NOOIT overschrijven of committen.
-- Na env var wijzigingen op server: `pm2 restart perfectsupplement --update-env`
+- Server-lockfile met `npx npm@10.8.2 install` genereren (server npm 10/node 20 vs lokaal npm 11/node 24; anders faalt `npm ci` op de server).
+- Na env var wijzigingen op server: `sudo systemctl restart perfectsupplement`
 
 ### Affiliate links
 - Daisycon: voor Vitaminstore.nl en VitalNutrition.nl
@@ -99,6 +102,10 @@ Tabellen:
 
 RLS is aan. Anon kan inserts doen op sessions, reminders en feedback.
 
+Verder in gebruik: `accounts` + `account_entitlements` (account-login/premium), en twee interne tabelfamilies (zie "Interne platformen"): **`pd_*`** (PartnerDesk) en **`af_*`** (affiliate-programma). Die zijn **RLS deny-all** (geen policies) en uitsluitend server-side benaderbaar via `createSupabaseAdmin()` (service-role); nooit via de anon-client.
+
+**Migraties**: SQL-bestand in `supabase/migrations/`, uitvoeren via de **Supabase Dashboard SQL Editor** — NOOIT `supabase db push` (de remote CLI-historie is leeg). `SUPABASE_SERVICE_ROLE_KEY` heeft een `sb_secret_`-waarde (niet de legacy `eyJ`-JWT).
+
 Schema check: `npm run check:db-schema` (vereist `supabase link`).
 
 ## Live features (april 2026)
@@ -107,7 +114,7 @@ Schema check: `npm run check:db-schema` (vereist `supabase link`).
 - Intake flow op /intake: 5 fases, 15 vragen, scoring → Herstelplan
 - Scoring engine: 6 domeinen, urgentieniveaus, profiellabels ("Lage Batterij", "Onrustige Slaper", etc.)
 - Nurture e-mailsequence (dag 0-30, 6 templates via Resend)
-- Admin dashboard op /admin
+- Admin op /admin = PartnerDesk-shell (partner-/affiliate-beheer + Vandaag-dashboard); het oude intake-dashboard staat onder /admin/site
 - Vergelijkingspagina's: /beste/omega-3-supplement, /beste/magnesium, /beste/ashwagandha
 - Rate limiter (in-memory sliding window)
 - AVG/GDPR compliance
@@ -139,11 +146,20 @@ Schema check: `npm run check:db-schema` (vereist `supabase link`).
 - Geen PII in GA4/Clarity-payloads; geen dormant component activeren zonder meetpunt
 - Meld bij elke afronding: "Meetpunt: <event(s)> — hier lees je het effect af."
 
+## Interne platformen (2026)
+
+Twee admin-only platformen onder `/admin`, los van de consumenten-site. Beide **mono-tenant**, service-role-only, en gebouwd in reviewbare "plakken". Details in `docs/plan/`.
+
+- **PartnerDesk** (`pd_*`, `src/lib/partnerdesk/`, `src/components/partnerdesk/`) — beheer van *upstream* partnerrelaties (merchants/netwerken waar jij commissie van ontvangt): dossier, contracten, commissieregels + resolutie, contacten, tijdlijn, taken, signalen (Vandaag-dashboard), ⌘K. Fase 1 compleet. Zie `PRODUCTVISIE_AFFILIATE_PLATFORM.md` + `PLAN_AFFILIATE_PLATFORM_IMPLEMENTATIE.md`.
+- **Affiliate-programma** (`af_*`, `src/lib/affiliate/`, route `/admin/programma`) — je *eigen* affiliate-programma (*downstream*: partners die Leefstijlcheck promoten en die jíj uitbetaalt). Append-only grootboek in centen, attributie via `psf_aff_ref`-cookie (lead=intake, sale=premium), commissie-resolutie, handmatige uitbetaling + `af_financial_events`-outbox (n8n/boekhouding later). App-first; n8n/Daisycon zijn optionele, uitgestelde adapters. Zie `ARCHITECTUUR_AFFILIATE_AUTOMATISERING.md` + `PLAN_FASE3A_AFFILIATE_KERN.md`.
+
+De drie betekenissen van "affiliate" niet verwarren: `affiliate_clicks` (uitgaande merchant-kliks, NIET aanraken) ≠ `pd_partners` (upstream) ≠ `af_affiliates` (eigen programma).
+
 ## Server
 
 - SSH: `root@178.104.75.207`
 - App dir: `/root/perfectsupplement`
-- Deploy: `bash deploy.sh` (git pull + npm ci + build + pm2 restart)
+- Deploy: `bash deploy.sh` (vereist schone working tree → push → ssh → git pull + npm ci + build + `sudo systemctl restart perfectsupplement`)
 - Env: `/root/perfectsupplement/.env`
 
 ## Schrijfstem
