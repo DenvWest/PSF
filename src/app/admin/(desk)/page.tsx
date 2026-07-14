@@ -3,6 +3,7 @@ import { ExpiryCalendarStrip } from "@/components/partnerdesk/ExpiryCalendarStri
 import { SignalRow } from "@/components/partnerdesk/SignalRow";
 import { TaskRow } from "@/components/partnerdesk/TaskRow";
 import Link from "next/link";
+import { after } from "next/server";
 import { todayIso } from "@/lib/partnerdesk/dates";
 import {
   listOpenSignals,
@@ -25,7 +26,9 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 }
 
 export default async function VandaagPage() {
-  await syncAllSignals();
+  // Sync draait ná de response (niet blokkerend) en hooguit 1×/dag; mutaties
+  // houden signalen sowieso vers. Zie syncAllSignals().
+  after(() => syncAllSignals());
 
   const today = todayIso();
   const [signals, taskItems, expiries, recent] = await Promise.all([

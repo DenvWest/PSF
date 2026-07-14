@@ -34,10 +34,15 @@ async function reconcileScope(
   const existingByKey = new Map(existing.map((e) => [e.dedupe_key, e]));
   const desiredKeys = new Set(desired.map((d) => d.dedupeKey));
 
+  // Writes worden verzameld en parallel weggeschreven i.p.v. seriële await-per-rij:
+  // nieuwe signalen in één insert, auto-resolve in één update, de rest concurrent.
+  const inserts: Record<string, unknown>[] = [];
+  const writes: PromiseLike<unknown>[] = [];
+
   for (const d of desired) {
     const ex = existingByKey.get(d.dedupeKey);
     if (!ex) {
-      await db.from("pd_signals").insert({
+      inserts.push({
         type: d.type,
         severity: d.severity,
         subject_type: d.subjectType,
@@ -48,51 +53,63 @@ async function reconcileScope(
         status: "open",
         last_seen_at: now,
       });
-      continue;
-    }
-    if (ex.status === "resolved") {
-      await db
-        .from("pd_signals")
-        .update({
-          status: "open",
-          severity: d.severity,
-          payload: d.payload,
-          last_seen_at: now,
-          resolved_at: null,
-          reopen_count: ex.reopen_count + 1,
-        })
-        .eq("id", ex.id);
+    } else if (ex.status === "resolved") {
+      writes.push(
+        db
+          .from("pd_signals")
+          .update({
+            status: "open",
+            severity: d.severity,
+            payload: d.payload,
+            last_seen_at: now,
+            resolved_at: null,
+            reopen_count: ex.reopen_count + 1,
+          })
+          .eq("id", ex.id),
+      );
     } else if (ex.status === "snoozed" && ex.snoozed_until && ex.snoozed_until < today) {
-      await db
-        .from("pd_signals")
-        .update({
-          status: "open",
-          severity: d.severity,
-          payload: d.payload,
-          last_seen_at: now,
-          snoozed_until: null,
-          reopen_count: ex.reopen_count + 1,
-        })
-        .eq("id", ex.id);
+      writes.push(
+        db
+          .from("pd_signals")
+          .update({
+            status: "open",
+            severity: d.severity,
+            payload: d.payload,
+            last_seen_at: now,
+            snoozed_until: null,
+            reopen_count: ex.reopen_count + 1,
+          })
+          .eq("id", ex.id),
+      );
     } else {
-      await db
-        .from("pd_signals")
-        .update({ severity: d.severity, payload: d.payload, last_seen_at: now })
-        .eq("id", ex.id);
+      writes.push(
+        db
+          .from("pd_signals")
+          .update({ severity: d.severity, payload: d.payload, last_seen_at: now })
+          .eq("id", ex.id),
+      );
     }
   }
 
-  for (const ex of existing) {
-    if (
-      (ex.status === "open" || ex.status === "snoozed") &&
-      !desiredKeys.has(ex.dedupe_key)
-    ) {
-      await db
+  const staleIds = existing
+    .filter(
+      (ex) =>
+        (ex.status === "open" || ex.status === "snoozed") &&
+        !desiredKeys.has(ex.dedupe_key),
+    )
+    .map((ex) => ex.id);
+
+  if (inserts.length > 0) writes.push(db.from("pd_signals").insert(inserts));
+  if (staleIds.length > 0) {
+    writes.push(
+      db
         .from("pd_signals")
         .update({ status: "resolved", resolved_at: now })
-        .eq("id", ex.id);
-    }
+        .in("id", staleIds),
+    );
   }
+
+  await Promise.all(writes);
 }
 
 /** BR-04: automatische opzeg-taak op cancel_by − 14 dgn (idempotent via dedupe_key). */
@@ -102,22 +119,24 @@ async function ensureCancelDeadlineTasks(
   partnerName: string,
   today: string,
 ): Promise<void> {
-  for (const c of contracts) {
-    if (c.archived_at || !c.cancel_by) continue;
-    const days = daysUntil(c.cancel_by, today);
-    if (days === null || days < 0 || days > 14) continue;
-    await db.from("pd_tasks").upsert(
-      {
-        partner_id: c.partner_id,
-        contract_id: c.id,
-        title: `Opzeggen of verlengen: ${partnerName} ${c.number}`,
-        due_on: c.cancel_by,
-        source: "system",
-        dedupe_key: `cancel_by:${c.id}`,
-      },
-      { onConflict: "dedupe_key", ignoreDuplicates: true },
-    );
-  }
+  const rows = contracts
+    .filter((c) => {
+      if (c.archived_at || !c.cancel_by) return false;
+      const days = daysUntil(c.cancel_by, today);
+      return days !== null && days >= 0 && days <= 14;
+    })
+    .map((c) => ({
+      partner_id: c.partner_id,
+      contract_id: c.id,
+      title: `Opzeggen of verlengen: ${partnerName} ${c.number}`,
+      due_on: c.cancel_by,
+      source: "system",
+      dedupe_key: `cancel_by:${c.id}`,
+    }));
+  if (rows.length === 0) return;
+  await db
+    .from("pd_tasks")
+    .upsert(rows, { onConflict: "dedupe_key", ignoreDuplicates: true });
 }
 
 /**
@@ -177,13 +196,29 @@ export async function recomputeSignalsForPartner(
   await ensureCancelDeadlineTasks(db, contracts, partner.name, today);
 }
 
+let lastFullSyncDay: string | null = null;
+
 /**
- * Volledige sync over alle partners; draait bij het laden van "Vandaag" zodat
- * signalen ook kloppen als er tijd verstreek zonder mutatie (drempeloverschrijding).
+ * Volledige sync over alle partners. Draait hooguit één keer per dag per
+ * serverproces: mutaties houden signalen al vers via recomputeSignalsForPartner,
+ * dus deze full-sync vangt enkel tijd-gedreven drempeloverschrijdingen op. De
+ * Vandaag-pagina draait dit via `after()`, buiten het render-pad. `force` negeert
+ * de dag-guard (bijv. een cron of test).
  */
-export async function syncAllSignals(): Promise<void> {
-  const db = getPartnerDeskDb();
+export async function syncAllSignals(force = false): Promise<void> {
   const today = todayIso();
+  if (!force && lastFullSyncDay === today) return;
+  lastFullSyncDay = today;
+  try {
+    await runFullSync(today);
+  } catch (err) {
+    lastFullSyncDay = null; // laat een volgende load het opnieuw proberen
+    throw err;
+  }
+}
+
+async function runFullSync(today: string): Promise<void> {
+  const db = getPartnerDeskDb();
 
   const [partnersRes, contractsRes, contactsRes, tasksRes, signalsRes] =
     await Promise.all([

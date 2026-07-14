@@ -263,7 +263,7 @@ export async function getPartnerCommercials(
   const [contractsRes, documentsRes] = await Promise.all([
     db
       .from("pd_contracts")
-      .select("*")
+      .select("*, pd_commission_rules(*, pd_commission_tiers(*))")
       .eq("partner_id", partnerId)
       .is("archived_at", null)
       .order("starts_on", { ascending: false }),
@@ -275,32 +275,29 @@ export async function getPartnerCommercials(
   ]);
   if (contractsRes.error) throw new Error(`pd_contracts: ${contractsRes.error.message}`);
 
-  const contracts = (contractsRes.data ?? []) as PdContract[];
-  const contractIds = contracts.map((c) => c.id);
+  // Regels en staffels komen genest mee in één round-trip; hier platgeslagen naar
+  // de vlakke arrays die de UI verwacht. Gearchiveerde regels vallen weg.
+  type RuleRow = PdCommissionRule & { pd_commission_tiers?: PdCommissionTier[] };
+  type ContractRow = PdContract & { pd_commission_rules?: RuleRow[] };
 
-  let rules: PdCommissionRule[] = [];
-  let tiers: PdCommissionTier[] = [];
-  if (contractIds.length > 0) {
-    const rulesRes = await db
-      .from("pd_commission_rules")
-      .select("*")
-      .in("contract_id", contractIds)
-      .is("archived_at", null)
-      .order("created_at", { ascending: false });
-    if (rulesRes.error) throw new Error(`pd_commission_rules: ${rulesRes.error.message}`);
-    rules = (rulesRes.data ?? []) as PdCommissionRule[];
+  const contracts: PdContract[] = [];
+  const rules: PdCommissionRule[] = [];
+  const tiers: PdCommissionTier[] = [];
 
-    const ruleIds = rules.map((r) => r.id);
-    if (ruleIds.length > 0) {
-      const tiersRes = await db
-        .from("pd_commission_tiers")
-        .select("*")
-        .in("commission_rule_id", ruleIds)
-        .order("threshold_cents", { ascending: true });
-      if (tiersRes.error) throw new Error(`pd_commission_tiers: ${tiersRes.error.message}`);
-      tiers = (tiersRes.data ?? []) as PdCommissionTier[];
+  for (const row of (contractsRes.data ?? []) as ContractRow[]) {
+    const { pd_commission_rules, ...contract } = row;
+    contracts.push(contract);
+    for (const ruleRow of pd_commission_rules ?? []) {
+      const { pd_commission_tiers, ...rule } = ruleRow;
+      if (rule.archived_at) continue;
+      rules.push(rule);
+      for (const tier of pd_commission_tiers ?? []) tiers.push(tier);
     }
   }
+
+  // Volgorde gelijk aan de oude geketende queries: regels nieuwste eerst, staffels oplopend.
+  rules.sort((a, b) => b.created_at.localeCompare(a.created_at));
+  tiers.sort((a, b) => a.threshold_cents - b.threshold_cents);
 
   return {
     contracts,
