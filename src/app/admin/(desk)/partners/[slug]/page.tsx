@@ -4,7 +4,10 @@ import { CollapsibleSection } from "@/components/partnerdesk/CollapsibleSection"
 import { CommissionSection } from "@/components/partnerdesk/CommissionSection";
 import { ContactsSection } from "@/components/partnerdesk/ContactsSection";
 import { ContractsSection } from "@/components/partnerdesk/ContractsSection";
+import { DocumentsSection } from "@/components/partnerdesk/DocumentsSection";
 import { InlineField } from "@/components/partnerdesk/InlineField";
+import { PartnerAdminActions } from "@/components/partnerdesk/PartnerAdminActions";
+import { PartnerLabels } from "@/components/partnerdesk/PartnerLabels";
 import {
   PassportCard,
   type PassportCommission,
@@ -28,9 +31,13 @@ import {
   getPartnerBySlug,
   getPartnerCommercials,
   getPartnerContacts,
+  getPartnerLabels,
   getPartnerOpenCounts,
   getPartnerTasks,
   getPartnerTimeline,
+  listLabels,
+  signImageDocuments,
+  signStoragePath,
 } from "@/lib/partnerdesk/queries";
 import { PARTNER_STATUSES } from "@/lib/partnerdesk/validation";
 
@@ -55,10 +62,6 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
   );
 }
 
-function Placeholder({ plak }: { plak: string }) {
-  return <p className="text-sm text-[var(--ps-muted)]">Komt in {plak}.</p>;
-}
-
 export default async function PartnerDossierPage({
   params,
 }: {
@@ -69,14 +72,22 @@ export default async function PartnerDossierPage({
   if (!dossier) notFound();
 
   const { partner, network, networks, categories } = dossier;
-  const [contacts, timeline, tasks, counts, commercials] = await Promise.all([
-    getPartnerContacts(partner.id),
-    getPartnerTimeline(partner.id),
-    getPartnerTasks(partner.id),
-    getPartnerOpenCounts(partner.id),
-    getPartnerCommercials(partner.id),
-  ]);
+  const [contacts, timeline, tasks, counts, commercials, partnerLabels, allLabels, logoUrl] =
+    await Promise.all([
+      getPartnerContacts(partner.id),
+      getPartnerTimeline(partner.id),
+      getPartnerTasks(partner.id),
+      getPartnerOpenCounts(partner.id),
+      getPartnerCommercials(partner.id),
+      getPartnerLabels(partner.id),
+      listLabels(),
+      signStoragePath(partner.logo_path),
+    ]);
   const primaryContact = contacts.find((c) => c.is_primary) ?? null;
+
+  const previewUrls = Object.fromEntries(
+    await signImageDocuments(commercials.documents),
+  );
 
   const today = todayIso();
   const resolution = resolveCommissions(commercials.rules, commercials.contracts, today);
@@ -119,10 +130,17 @@ export default async function PartnerDossierPage({
     <div>
       <header className="sticky top-0 z-10 border-b border-[var(--ps-border)] bg-[var(--ps-surface)]/95 backdrop-blur">
         <div className="mx-auto max-w-6xl px-8 py-4">
-          <Link href="/admin/partners" className="text-sm text-[var(--ps-body)] hover:underline">
-            ← Partners
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link href="/admin/partners" className="text-sm text-[var(--ps-body)] hover:underline">
+              ← Partners
+            </Link>
+            <PartnerAdminActions partnerId={partner.id} slug={slug} hasLogo={Boolean(partner.logo_path)} />
+          </div>
           <div className="mt-2 flex items-center gap-3">
+            {logoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoUrl} alt={`${partner.name} logo`} className="h-9 w-9 rounded object-contain" />
+            )}
             <h1 className="text-2xl font-semibold">{partner.name}</h1>
             <StatusBadge status={partner.status} />
             {network && (
@@ -131,6 +149,9 @@ export default async function PartnerDossierPage({
                 {network.kind === "direct" ? " · direct" : ""}
               </span>
             )}
+          </div>
+          <div className="mt-2">
+            <PartnerLabels partnerId={partner.id} slug={slug} current={partnerLabels} all={allLabels} />
           </div>
         </div>
       </header>
@@ -252,7 +273,12 @@ export default async function PartnerDossierPage({
             />
           </CollapsibleSection>
           <CollapsibleSection id="documenten" title="Materiaal & documenten" defaultOpen={false}>
-            <Placeholder plak="plak 5" />
+            <DocumentsSection
+              partnerId={partner.id}
+              slug={slug}
+              documents={commercials.documents}
+              previewUrls={previewUrls}
+            />
           </CollapsibleSection>
 
           <CollapsibleSection id="tijdlijn" title="Tijdlijn">

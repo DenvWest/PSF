@@ -112,7 +112,7 @@ async function ensureCancelDeadlineTasks(
         contract_id: c.id,
         title: `Opzeggen of verlengen: ${partnerName} ${c.number}`,
         due_on: c.cancel_by,
-        source: "opzegdeadline",
+        source: "system",
         dedupe_key: `cancel_by:${c.id}`,
       },
       { onConflict: "dedupe_key", ignoreDuplicates: true },

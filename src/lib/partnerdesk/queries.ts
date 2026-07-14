@@ -37,13 +37,70 @@ export async function listCategories(): Promise<PdCategory[]> {
   return (data ?? []) as PdCategory[];
 }
 
-/** Partners voor de lijst, met afgeleide netwerk-/categorienaam, labels en signaalcount. */
-export async function listPartners(): Promise<PartnerListRow[]> {
+export async function listLabels(): Promise<PdLabel[]> {
   const db = getPartnerDeskDb();
+  const { data, error } = await db.from("pd_labels").select("*").order("name");
+  if (error) throw new Error(`pd_labels: ${error.message}`);
+  return (data ?? []) as PdLabel[];
+}
+
+export async function getPartnerLabels(partnerId: string): Promise<PdLabel[]> {
+  const db = getPartnerDeskDb();
+  const { data: links } = await db
+    .from("pd_partner_labels")
+    .select("label_id")
+    .eq("partner_id", partnerId);
+  const ids = (links ?? []).map((l) => l.label_id as string);
+  if (ids.length === 0) return [];
+  const { data } = await db.from("pd_labels").select("*").in("id", ids);
+  return (data ?? []) as PdLabel[];
+}
+
+/** Kortlevende signed URL voor één storage-pad (bijv. partnerlogo). */
+export async function signStoragePath(
+  path: string | null,
+): Promise<string | null> {
+  if (!path) return null;
+  const db = getPartnerDeskDb();
+  const { data } = await db.storage
+    .from("partner-documents")
+    .createSignedUrl(path, 300);
+  return data?.signedUrl ?? null;
+}
+
+/** Kortlevende signed URLs voor afbeelding-documenten (banners/logo's/screenshots). */
+export async function signImageDocuments(
+  documents: PdDocument[],
+): Promise<Map<string, string>> {
+  const imageDocs = documents.filter((d) =>
+    ["banner", "logo", "screenshot"].includes(d.kind),
+  );
+  const urls = new Map<string, string>();
+  if (imageDocs.length === 0) return urls;
+  const db = getPartnerDeskDb();
+  await Promise.all(
+    imageDocs.map(async (d) => {
+      const { data } = await db.storage
+        .from("partner-documents")
+        .createSignedUrl(d.storage_path, 300);
+      if (data?.signedUrl) urls.set(d.id, data.signedUrl);
+    }),
+  );
+  return urls;
+}
+
+/** Partners voor de lijst, met afgeleide netwerk-/categorienaam, labels en signaalcount. */
+export async function listPartners(archived = false): Promise<PartnerListRow[]> {
+  const db = getPartnerDeskDb();
+
+  const partnerQuery = db.from("pd_partners").select("*").order("name");
+  const filtered = archived
+    ? partnerQuery.not("archived_at", "is", null)
+    : partnerQuery.is("archived_at", null);
 
   const [partnersRes, networksRes, categoriesRes, labelLinksRes, labelsRes, signalsRes] =
     await Promise.all([
-      db.from("pd_partners").select("*").is("archived_at", null).order("name"),
+      filtered,
       db.from("pd_networks").select("id, name"),
       db.from("pd_categories").select("id, name"),
       db.from("pd_partner_labels").select("partner_id, label_id"),

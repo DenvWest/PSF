@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { CommandPalette } from "@/components/partnerdesk/CommandPalette";
 import { DeskIcon, type DeskIconName } from "@/components/partnerdesk/DeskIcon";
 
 interface NavItem {
@@ -75,7 +76,38 @@ function NavLink({
 
 export function DeskShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const chord = useRef(false);
+
+  // `g`-chords: g d/p/t/i navigeren, mits je niet in een veld typt.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const el = e.target as HTMLElement | null;
+      if (el && ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName)) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (chord.current) {
+        chord.current = false;
+        const dest: Record<string, string> = {
+          d: "/admin",
+          p: "/admin/partners",
+          t: "/admin/taken",
+          i: "/admin/instellingen",
+        };
+        if (dest[e.key]) {
+          e.preventDefault();
+          router.push(dest[e.key]);
+        }
+        return;
+      }
+      if (e.key === "g") {
+        chord.current = true;
+        setTimeout(() => (chord.current = false), 800);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [router]);
 
   return (
     <div className="flex min-h-screen bg-[var(--ps-bg)] text-[var(--ps-ink)]">
@@ -145,6 +177,7 @@ export function DeskShell({ children }: { children: ReactNode }) {
       </aside>
 
       <main className="min-w-0 flex-1">{children}</main>
+      <CommandPalette />
     </div>
   );
 }
