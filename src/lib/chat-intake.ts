@@ -24,14 +24,20 @@ const QUESTION_MAP: Record<string, { label: string; domain: string }> = {
   SLP_ONSET: { label: "Hoe lang duurt inslapen gemiddeld?", domain: "slaap" },
   SLP_WAKE: { label: "Hoe vaak word je 's nachts wakker?", domain: "slaap" },
   NRG_PATN: { label: "Hoe is je energiepatroon over de dag?", domain: "energie" },
-  NRG_DEP: { label: "Hoeveel ben je afhankelijk van cafeïne, suiker of alcohol?", domain: "energie" },
+  NRG_DEP: {
+    label: "Heb je oppeppers nodig om de dag door te komen?",
+    domain: "energie",
+  },
   STR_FREQ: { label: "Hoe vaak ervaar je stress?", domain: "stress" },
   STR_RCV: {
     label: "Lukt rust komen en herstelmomenten op drukke dagen?",
     domain: "stress",
   },
   NUT_O3: { label: "Hoe vaak eet je vette vis of omega-3 rijke voeding?", domain: "voeding" },
-  NUT_PROT: { label: "Hoe beoordeel je je eiwitinname?", domain: "voeding" },
+  NUT_PROT: {
+    label: "Hoe vaak bevat een maaltijd eiwit bij jou?",
+    domain: "voeding",
+  },
   MOV_STR: { label: "Hoe vaak doe je krachttraining?", domain: "beweging" },
   MOV_CARD: { label: "Hoe vaak beweeg je matig intensief (praten lukt, zingen niet)?", domain: "beweging" },
   RCV_PHYS: { label: "Hoe goed herstelt je lichaam na inspanning?", domain: "herstel" },

@@ -10,8 +10,8 @@
  * inter-item-correlaties (slaap), domeinscore- en vitaliteitspercentielen,
  * urgentie- en bandverdeling. Nooit losse sessies, e-mails of namen.
  *
- * Scores worden HERBEREKEND uit `answers` met de HUIDIGE engine-formules
- * (normalizeScore = round(sum/max*100); vitaliteit = gemiddelde 5 domeinen),
+ * Scores worden HERBEREKEND uit `answers` — regelset-bewust:
+ * < 1.4.0: sum/max×100; ≥ 1.4.0: item (waarde−1)/(max−1)×100, domein=gemiddelde.
  * en vergeleken met de opgeslagen `domain_scores` om drift te detecteren.
  *
  * Gebruik:
@@ -63,7 +63,7 @@ const QUESTIONS = [
   { id: "STR_RCV", domain: "stress", min: 1, max: 4 },
   { id: "CON_SOC", domain: "connection", min: 1, max: 4 },
   { id: "NUT_O3", domain: "nutrition", min: 1, max: 3 },
-  { id: "NUT_PROT", domain: "nutrition", min: 1, max: 4 },
+  { id: "NUT_PROT", domain: "nutrition", min: 0, max: 4 },
   { id: "MOV_STR", domain: "movement", min: 1, max: 4 },
   { id: "MOV_CARD", domain: "movement", min: 1, max: 4 },
   { id: "RCV_PHYS", domain: "recovery", min: 1, max: 3 },
@@ -81,9 +81,8 @@ const DOMAIN_ITEMS = {
   connection: ["CON_SOC"],
 };
 
-// Domein-max = som van optie-maxima (spiegelt calcDomainScores). Recovery/connection
-// enkel-item. Energie/herstel zijn readouts, tellen niet mee in vitaliteit.
-const DOMAIN_MAX = { sleep: 15, energy: 8, stress: 8, nutrition: 7, movement: 8, recovery: 3, connection: 4 };
+// Legacy domein-max (pre-1.4.0 sum/max); post-1.4.0 gebruikt item-herskalering.
+const _DOMAIN_MAX = { sleep: 15, energy: 8, stress: 8, nutrition: 7, movement: 8, recovery: 3, connection: 4 };
 const INTERVENTION_DOMAINS = ["sleep", "stress", "nutrition", "movement", "connection"];
 
 // STR_RCV legacy-aliassen (spiegelt getStressRecoveryAnswer).
@@ -96,21 +95,83 @@ function stressRecovery(a) {
 function num(v) {
   return typeof v === "number" && Number.isFinite(v) ? v : 0;
 }
-function normalizeScore(total, max) {
+function normalizeScoreLegacy(total, max) {
   return Math.round((total / max) * 100);
 }
 
-// Herbereken domeinscores + vitaliteit uit answers (huidige engine-math).
-function computeScores(a) {
-  const sleep = normalizeScore(num(a.SLP_QUAL) + num(a.SLP_CONS) + num(a.SLP_ONSET) + num(a.SLP_WAKE), 15);
-  const energy = normalizeScore(num(a.NRG_PATN) + num(a.NRG_DEP), 8);
-  const stress = normalizeScore(num(a.STR_FREQ) + stressRecovery(a), 8);
-  const nutrition = normalizeScore(num(a.NUT_O3) + num(a.NUT_PROT), 7);
-  const movement = normalizeScore(num(a.MOV_STR) + num(a.MOV_CARD), 8);
-  const recovery = normalizeScore(num(a.RCV_PHYS), 3);
-  const connection = normalizeScore(num(a.CON_SOC), 4);
+function scaleItem(value, maxOption) {
+  if (!Number.isFinite(value) || value <= 0 || value > maxOption) return null;
+  if (maxOption <= 1) return 100;
+  return Math.round(((value - 1) / (maxOption - 1)) * 100);
+}
+
+function averageItems(items) {
+  const scored = items.filter((v) => v !== null);
+  if (!scored.length) return 0;
+  return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
+}
+
+function isBefore140(version) {
+  if (!version || typeof version !== "string") return false;
+  const m = /^(\d+)\.(\d+)\.(\d+)$/.exec(version.trim());
+  if (!m) return false;
+  const major = Number(m[1]);
+  const minor = Number(m[2]);
+  const patch = Number(m[3]);
+  if (major < 1) return true;
+  if (major > 1) return false;
+  if (minor < 4) return true;
+  if (minor > 4) return false;
+  return patch < 0;
+}
+
+function computeScoresLegacy(a) {
+  const sleep = normalizeScoreLegacy(num(a.SLP_QUAL) + num(a.SLP_CONS) + num(a.SLP_ONSET) + num(a.SLP_WAKE), 15);
+  const energy = normalizeScoreLegacy(num(a.NRG_PATN) + num(a.NRG_DEP), 8);
+  const stress = normalizeScoreLegacy(num(a.STR_FREQ) + stressRecovery(a), 8);
+  const nutrition = normalizeScoreLegacy(num(a.NUT_O3) + num(a.NUT_PROT), 7);
+  const movement = normalizeScoreLegacy(num(a.MOV_STR) + num(a.MOV_CARD), 8);
+  const recovery = normalizeScoreLegacy(num(a.RCV_PHYS), 3);
+  const connection = normalizeScoreLegacy(num(a.CON_SOC), 4);
   const vitality = Math.round((sleep + stress + nutrition + movement + connection) / 5);
   return { sleep, energy, stress, nutrition, movement, recovery, connection, vitality };
+}
+
+function computeScoresV140(a) {
+  const sleep = averageItems([
+    scaleItem(num(a.SLP_QUAL), 4),
+    scaleItem(num(a.SLP_CONS), 3),
+    scaleItem(num(a.SLP_ONSET), 4),
+    scaleItem(num(a.SLP_WAKE), 4),
+  ]);
+  const energy = averageItems([
+    scaleItem(num(a.NRG_PATN), 4),
+    scaleItem(num(a.NRG_DEP), 4),
+  ]);
+  const stress = averageItems([
+    scaleItem(num(a.STR_FREQ), 4),
+    scaleItem(stressRecovery(a), 4),
+  ]);
+  const nutProt = num(a.NUT_PROT);
+  const nutrition = averageItems([
+    scaleItem(num(a.NUT_O3), 3),
+    nutProt === 0 ? null : scaleItem(nutProt, 4),
+  ]);
+  const movement = averageItems([
+    scaleItem(num(a.MOV_STR), 4),
+    scaleItem(num(a.MOV_CARD), 4),
+  ]);
+  const recovery = scaleItem(num(a.RCV_PHYS), 3) ?? 0;
+  const connection = scaleItem(num(a.CON_SOC), 4) ?? 0;
+  const vitality = Math.round((sleep + stress + nutrition + movement + connection) / 5);
+  return { sleep, energy, stress, nutrition, movement, recovery, connection, vitality };
+}
+
+function computeScores(a, rulesVersion) {
+  if (isBefore140(rulesVersion)) {
+    return computeScoresLegacy(a);
+  }
+  return computeScoresV140(a);
 }
 function displayBand(score) {
   if (!Number.isFinite(score)) return "Voldoende";
@@ -275,7 +336,8 @@ function analyseGroup(rows) {
   let driftComparable = 0;
 
   for (let k = 0; k < answers.length; k++) {
-    const s = computeScores(answers[k]);
+    const rulesVersion = rows[k].rules_version ?? "1.4.0";
+    const s = computeScores(answers[k], rulesVersion);
     for (const d of Object.keys(domainVals)) domainVals[d].push(s[d]);
     vitalityVals.push(s.vitality);
     urgencyCount[urgency(s)]++;
@@ -334,7 +396,7 @@ function renderReport(byVersion, totalN, generatedAt) {
   const L = [];
   L.push("# Item-analyse — psychometrische baseline Leefstijlcheck");
   L.push("");
-  L.push(`*Automatisch gegenereerd door \`scripts/item-analyse.mjs\` op ${generatedAt}. Alleen aggregaten — geen individuele sessies, e-mails of namen. Scores zijn HERBEREKEND uit \`answers\` met de engine-formules van RULES_VERSION 1.3.x (pre-S3-bump); dit is de nulmeting voor de vóór/ná-vergelijking bij 1.4.0.*`);
+  L.push(`*Automatisch gegenereerd door \`scripts/item-analyse.mjs\` op ${generatedAt}. Alleen aggregaten — geen individuele sessies, e-mails of namen. Scores zijn HERBEREKEND uit \`answers\` regelset-bewust (< 1.4.0: sum/max; ≥ 1.4.0: item-herskalering). Drift-check vergelijkt herberekening met opgeslagen \`domain_scores\` per sessie.*`);
   L.push("");
   L.push("> **Duiding staat onderaan** en wordt handmatig geschreven (niet door het script). Her-draaien overschrijft dit bestand inclusief de duiding-sectie — daarna opnieuw duiden.");
   L.push("");
@@ -405,7 +467,7 @@ function renderReport(byVersion, totalN, generatedAt) {
       );
     }
     L.push("");
-    L.push(`*Effectieve vloer per domein = normalizeScore(aantal_items, max) — bij optie-min 1 ligt de laagst mogelijke score dus boven 0. Sleep-min ≈ ${normalizeScore(4, 15)}, energy/stress/movement-min ≈ ${normalizeScore(2, 8)}, nutrition-min ≈ ${normalizeScore(2, 7)}, recovery-min ≈ ${normalizeScore(1, 3)}, connection-min ≈ ${normalizeScore(1, 4)}. Dit is het kern-artefact dat S3 herschaalt.*`);
+    L.push(`*1.4.0+: slechtste item = 0, domein = gemiddelde item-scores. Legacy (< 1.4.0) vloer-artefact: sleep-min ≈ ${normalizeScoreLegacy(4, 15)}, movement-min ≈ ${normalizeScoreLegacy(2, 8)} — zie ITEM_ANALYSE_BASELINE duiding vóór S3.*`);
     L.push("");
 
     // Vitaliteit.

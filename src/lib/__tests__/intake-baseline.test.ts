@@ -118,4 +118,18 @@ describe("buildRemeasureCompletedPayload", () => {
     expect(delta.recovery_score).toBe(0);
     expect(delta.sleep_score).toBe(14);
   });
+
+  it("sanitizePerDomainDelta zeros ALL domains across the 1.4.0 item-scale boundary", () => {
+    const delta = sanitizePerDomainDelta({
+      baseline: baselineScores,
+      current: currentScores,
+      baselineRulesVersion: "1.3.1",
+      currentRulesVersion: "1.4.0",
+    });
+    // De item-herschaling maakt élk domein onvergelijkbaar — geen enkel schaal-artefact
+    // mag als "verandering" naar de UI of de per_domain_delta-events lekken.
+    for (const value of Object.values(delta)) {
+      expect(value).toBe(0);
+    }
+  });
 });

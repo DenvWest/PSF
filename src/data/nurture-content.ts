@@ -552,6 +552,7 @@ const KNOWN_PROFILES: ProfileLabelName[] = [
   "Onrustige Slaper",
   "Lage Batterij",
   "Stressdrager",
+  "Overtrainer",
   "In Balans",
 ];
 

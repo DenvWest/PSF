@@ -48,6 +48,9 @@ export const RECOVERY_DELTA_COMPARABLE_FROM = "1.1.0" as const;
 /** Vitaliteit-delta alleen vergelijkbaar vanaf 1.3.0 (5 interventie-facets). */
 export const VITALITY_DELTA_COMPARABLE_FROM = "1.3.0" as const;
 
+/** Item-herskalering (1.4.0): domeinscores niet vergelijkbaar over deze grens. */
+export const ITEM_SCALE_COMPARABLE_FROM = "1.4.0" as const;
+
 /** Verbinding-delta alleen vergelijkbaar vanaf 1.3.0 (CON_SOC). */
 export const CONNECTION_DELTA_COMPARABLE_FROM = "1.3.0" as const;
 
@@ -90,6 +93,18 @@ export function isConnectionDeltaComparable(
   );
 }
 
+export function isItemScaleDeltaComparable(
+  baselineVersion: string,
+  currentVersion: string,
+): boolean {
+  if (baselineVersion === currentVersion) {
+    return true;
+  }
+  const baselineOld = isRulesVersionBefore(baselineVersion, ITEM_SCALE_COMPARABLE_FROM);
+  const currentOld = isRulesVersionBefore(currentVersion, ITEM_SCALE_COMPARABLE_FROM);
+  return baselineOld === currentOld;
+}
+
 export function hasMethodologyChange(
   baselineVersion: string,
   currentVersion: string,
@@ -97,6 +112,7 @@ export function hasMethodologyChange(
   return (
     !isRecoveryDeltaComparable(baselineVersion, currentVersion) ||
     !isVitalityDeltaComparable(baselineVersion, currentVersion) ||
-    !isConnectionDeltaComparable(baselineVersion, currentVersion)
+    !isConnectionDeltaComparable(baselineVersion, currentVersion) ||
+    !isItemScaleDeltaComparable(baselineVersion, currentVersion)
   );
 }

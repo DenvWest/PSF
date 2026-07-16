@@ -61,6 +61,7 @@ export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Per juli 2026: het conceptuele model is verduidelijkt naar drie lagen (determinanten, gedrag, uitkomsten); de basisbehoeften worden als parallel beschreven en de 'energie-batterij' is als causaal mechanisme losgelaten.",
   "Per juli 2026: verbinding-onderbouwing verbreed met de mortaliteits-meta-analyse (2010), de buffering-hypothese en sociale-netwerklagen (kwaliteit vs kwantiteit).",
   "Per juli 2026: MOV_CARD geherformuleerd naar matig-intensief bewegen met spreektest-anker en zone-2-toelichting; LIF_SUN-toelichting geherformuleerd naar daglicht-eerst. Inclusievere vraagteksten, geen waarde-wijziging.",
+  "Per juli 2026 (rules_version 1.4.0): item-herskalering naar echte 0–100-schaal; NUT_PROT onbekend telt niet mee; CON_SOC kwaliteit-first; NRG_DEP herbouwd als compensatie-construct; urgentiedrempels ongewijzigd (empirische herijking wacht op N≥~100).",
 ];
 
 export const LEEFSTIJLCHECK_INTERVENTION_DOMAINS = [
@@ -309,10 +310,10 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
   {
     questionId: "SLP_QUAL",
     whyThisQuestion:
-      "Slaapkwaliteit is een kernindicator van herstel en dagelijks functioneren binnen leefstijlwetenschap.",
+      "Hoe vaak je uitgerust wakker wordt is een kernindicator van herstel en dagelijks functioneren.",
     scientificRationale: [
       "Internationale slaapconsensus beschrijft ervaren slaapkwaliteit als relevant leefstijlsignaal naast slaapduur.",
-      "Systematische reviews tonen dat stabiele slaapkwaliteit samenhangt met beter energieritme, stemming en dagelijks functioneren.",
+      "Frequentie-ankers (PSQI-logica) houden de antwoordskala ordinaal en vergelijkbaar tussen respondenten.",
       "In leefstijlbegeleiding is slaapkwaliteit bruikbaar om prioriteiten te kiezen zonder medische diagnose te stellen.",
     ],
     answerMeaning: {
@@ -424,17 +425,17 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
   {
     questionId: "NRG_DEP",
     whyThisQuestion:
-      "Afhankelijkheid van stimulanten of snelle oppeppers geeft inzicht in energiemanagement binnen de leefstijl.",
+      "Compensatie-afhankelijkheid (extra oppeppers) laat zien hoe stabiel je basisritme is — los van incidentele koffie.",
     scientificRationale: [
-      "Gedragsliteratuur beschrijft dat compenserend gedrag (veel cafeine/suiker/alcohol) vaak past bij onstabiele routines.",
-      "Voedings- en gedragsreviews tonen dat energiemanagement samenhangt met regelmaat, slaap en maaltijdkwaliteit.",
-      "Deze vraag helpt onderscheid maken tussen structurele en tijdelijke energieaanpak.",
+      "Compensatiegedrag wordt in gedragsliteratuur gebruikt als readout wanneer slaap, voeding of herstel tekortschiet.",
+      "Matige koffieconsumptie is in umbrella-reviews niet consistent negatief geassocieerd — de vraag richt zich op noodzaak, niet op genot.",
+      "Alcohol valt buiten dit item (LIF_ALC); één construct per vraag ondersteunt valide signaaltoewijzing.",
     ],
     answerMeaning: {
       higherAlignment:
-        "Een hoger antwoord past binnen meer intrinsiek energiemanagement en sluit aan bij stabielere dagelijkse gewoonten.",
+        "Een hoger antwoord past bij meer intrinsieke dagenergie zonder structurele oppeppers.",
       lowerAlignment:
-        "Een lager antwoord is kenmerkend voor externe oppepmomenten en wordt vaker gezien bij minder consistente basisroutines.",
+        "Een lager antwoord wijst op vaker compensatiegedrag om de dag vol te houden.",
     },
     strength: {
       stars: 3,
@@ -442,7 +443,14 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
       rationale:
         "Gedragsmatige plausibiliteit; als domeinschaal beperkt — deels compensatiegedrag, geen gevalideerde schaal.",
     },
-    references: [...behaviorRefs, nutritionRefs[3]],
+    references: [
+      ...behaviorRefs,
+      {
+        apa: "Poole R, Kennedy OJ, Roderick P, et al. Coffee consumption and health: umbrella review of meta-analyses of multiple health outcomes. BMJ. 2017.",
+        doi: "10.1136/bmj.j5024",
+        pmid: "29167102",
+      },
+    ],
   },
   {
     questionId: "STR_FREQ",
@@ -516,17 +524,17 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
   {
     questionId: "NUT_PROT",
     whyThisQuestion:
-      "Regelmatige eiwitinname ondersteunt behoud van spierfunctie en herstel binnen een actieve leefstijl.",
+      "Regelmatige eiwitmomenten per maaltijd ondersteunen behoud van spierfunctie en herstel binnen een actieve leefstijl.",
     scientificRationale: [
       "Richtlijnen en reviews benadrukken voldoende eiwitinname, vooral bij ouder worden en fysieke activiteit.",
-      "Verdeling van eiwit over de dag wordt in leefstijl- en sportvoedingsliteratuur relevant gevonden.",
+      "Gedragsankers (hoe vaak per dag) vermijden kennis-bias; onbekendheid wordt niet als slechtste inname gescoord.",
       "De vraag helpt voedingskwaliteit en herstelgedrag praktisch in kaart te brengen.",
     ],
     answerMeaning: {
       higherAlignment:
-        "Een hoger antwoord past binnen leefstijlpatronen met meer aandacht voor herstel en kwalitatieve maaltijdopbouw.",
+        "Een hoger antwoord past binnen leefstijlpatronen met structurele eiwitmomenten over de dag.",
       lowerAlignment:
-        "Een lager antwoord is kenmerkend voor minder structurele eiwitmomenten en minder doelgerichte voedingsplanning.",
+        "Een lager antwoord is kenmerkend voor minder frequente eiwitmomenten; onbekend telt niet mee in de score.",
     },
     strength: {
       stars: 4,
@@ -594,7 +602,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
     ],
     answerMeaning: {
       higherAlignment:
-        "Een hoger antwoord sluit meer aan bij leefstijlpatronen met betekenisvolle steun en contact waar je op kunt bouwen.",
+        "Een hoger antwoord sluit aan bij ervaren steun-adequaatheid — kwaliteit en zelfoordeel wegen zwaarder dan netwerkomvang.",
       lowerAlignment:
         "Een lager antwoord wordt vaker gezien binnen patronen met minder sociale steun of contact dat schiet erbij in.",
     },

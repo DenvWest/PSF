@@ -9,7 +9,7 @@ import {
 describe("movementScoreFromReport", () => {
   it("schaalt MOV_STR + MOV_CARD naar 0–100", () => {
     expect(movementScoreFromReport({ MOV_STR: 4, MOV_CARD: 4 })).toBe(100);
-    expect(movementScoreFromReport({ MOV_STR: 1, MOV_CARD: 1 })).toBe(25);
+    expect(movementScoreFromReport({ MOV_STR: 1, MOV_CARD: 1 })).toBe(0);
   });
 });
 

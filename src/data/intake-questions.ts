@@ -33,6 +33,9 @@ export interface Category {
   color: string;
 }
 
+/** Sentinel: eiwitinname onbekend — telt niet mee in voedingsscore (rules_version ≥ 1.4.0). */
+export const NUT_PROT_UNKNOWN = 0 as const;
+
 export type QuestionId =
   | "SLP_QUAL"
   | "SLP_CONS"
@@ -103,12 +106,12 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "SLP_QUAL",
     category: "slaap",
     questionIndex: 1,
-    question: "Hoe voel je je gemiddeld als je wakker wordt?",
+    question: "Hoe vaak word je uitgerust en helder wakker?",
     options: [
-      { label: "Uitgerust en helder", value: 4 },
-      { label: "Redelijk, maar niet optimaal", value: 3 },
-      { label: "Wisselend, verschilt per dag", value: 2 },
-      { label: "Moe, alsof ik niet geslapen heb", value: 1 },
+      { label: "Bijna elke ochtend", value: 4 },
+      { label: "De meeste ochtenden", value: 3 },
+      { label: "Een paar ochtenden per week", value: 2 },
+      { label: "Zelden of nooit", value: 1 },
     ],
   },
   {
@@ -162,12 +165,15 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "NRG_DEP",
     category: "energie",
     questionIndex: 2,
-    question: "Waar leun je op voor energie?",
+    question:
+      "Heb je oppeppers nodig om de dag door te komen (extra koffie, energiedrank, zoetigheid)?",
+    subtitle:
+      "Gewone koffie bij je ontbijt telt niet — het gaat om wat je nodig hebt om overeind te blijven.",
     options: [
-      { label: "Ik heb weinig stimulanten nodig", value: 4 },
-      { label: "Koffie of energiedrank (1-2 per dag)", value: 3 },
-      { label: "Regelmatig suiker of snacks als opkikker", value: 2 },
-      { label: "Alcohol als ontspanning (meerdere keren per week)", value: 1 },
+      { label: "Nee, zelden", value: 4 },
+      { label: "Soms, op zware dagen", value: 3 },
+      { label: "De meeste dagen wel", value: 2 },
+      { label: "Zonder kom ik de dag niet door", value: 1 },
     ],
   },
   {
@@ -204,10 +210,10 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     subtitle:
       "Denk aan partner, vrienden of familie waar je op drukke of mindere dagen op kunt bouwen.",
     options: [
-      { label: "Ja, meerdere — ik voel me verbonden en gesteund", value: 4 },
-      { label: "Eén of twee, dat voelt voldoende", value: 3 },
-      { label: "Beperkt — ik mis soms echt contact", value: 2 },
-      { label: "Nauwelijks — ik sta er meestal alleen voor", value: 1 },
+      { label: "Ja, en dat voelt ruim voldoende", value: 4 },
+      { label: "Ja, een paar — en dat is genoeg voor mij", value: 4 },
+      { label: "Er zijn mensen, maar ik mis soms echt contact", value: 2 },
+      { label: "Ik heb weinig mensen om op terug te vallen", value: 1 },
     ],
   },
   {
@@ -225,23 +231,13 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "NUT_PROT",
     category: "voeding",
     questionIndex: 2,
-    question: "Hoeveel eiwitrijke producten eet je per dag?",
-    subtitle:
-      "Denk aan vlees, vis, eieren, zuivel, peulvruchten, noten",
+    question:
+      "Hoe vaak bevat een maaltijd bij jou een flinke portie eiwit (vlees, vis, eieren, zuivel, peulvruchten)?",
     options: [
-      {
-        label: "Elke maaltijd bevat een goede eiwitbron",
-        value: 4,
-      },
-      {
-        label: "1–2 maaltijden met eiwit, de rest niet bewust",
-        value: 3,
-      },
-      { label: "Ik eet weinig bewust eiwit", value: 2 },
-      {
-        label: "Ik weet het niet / ik let er niet op",
-        value: 1,
-      },
+      { label: "(Vrijwel) elke maaltijd", value: 4 },
+      { label: "1–2 maaltijden per dag", value: 3 },
+      { label: "Niet elke dag", value: 2 },
+      { label: "Zelden — of ik weet het echt niet", value: NUT_PROT_UNKNOWN },
     ],
   },
   {

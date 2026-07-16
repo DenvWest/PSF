@@ -58,6 +58,28 @@ describe("buildModel priority", () => {
     expect(model.vitalityDeltaNote).toContain("Methodiek gewijzigd");
   });
 
+  it("suppresses vitality delta across the 1.4.0 item-scale boundary (1.3.1 baseline)", () => {
+    const scores: CheckScores = {
+      slaap: 60, energie: 70, stress: 70, voeding: 70, beweging: 70, herstel: 20,
+      verbinding: 20,
+    };
+    const trend: CheckTrend = {
+      slaap: [60, 65], energie: [70, 70], stress: [70, 70], voeding: [70, 70],
+      beweging: [70, 70], herstel: [20, 20], verbinding: [20, 20],
+    };
+    const model = buildModel(
+      { scores, vitality: 55, date: "10 jul 2026", trend },
+      { scores, vitality: 50, date: "10 jun 2026", rulesVersion: "1.3.1" },
+      [],
+      true,
+      null,
+      null,
+      null,
+    );
+    expect(model.vitalityDelta).toBeNull();
+    expect(model.vitalityDeltaNote).toContain("Methodiek gewijzigd");
+  });
+
   it("suppresses vitality delta when baseline rules version predates 1.2.0", () => {
     const scores: CheckScores = {
       slaap: 60, energie: 70, stress: 70, voeding: 70, beweging: 70, herstel: 20,

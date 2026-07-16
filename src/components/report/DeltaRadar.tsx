@@ -152,7 +152,7 @@ export function DeltaRadar({
 
       {methodologyChanged ? (
         <p className="max-w-xs text-center text-xs text-slate-500">
-          Methodiek gewijzigd sinds je baseline — herstel- en vitaliteitsdelta zijn niet
+          Methodiek gewijzigd sinds je baseline — je domein- en vitaliteitsscores zijn niet
           1-op-1 vergelijkbaar.
         </p>
       ) : null}

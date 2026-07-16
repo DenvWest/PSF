@@ -1,6 +1,8 @@
 import type { QuestionId, SymptomId } from "@/data/intake-questions";
+import { NUT_PROT_UNKNOWN } from "@/data/intake-questions";
 import { isComparisonAllowed } from "@/lib/comparison-availability";
 import { COMPARISON_PATHS } from "@/lib/comparison-paths";
+import { isRulesVersionBefore } from "@/lib/rules-version";
 
 /**
  * Changelog — bump bij ELKE wijziging in beslis-/adviesregels; voeg één regel toe.
@@ -9,8 +11,11 @@ import { COMPARISON_PATHS } from "@/lib/comparison-paths";
  * 1.2.0 — vitaliteit = 4 interventiedomeinen; profiellabel driver-based
  * 1.3.0 — verbinding als 5e interventiedomein (CON_SOC); vitaliteit = 5 interventiedomeinen
  * 1.3.1 — creatine_signal recoveryPrimary vereist movementLoad >= 2
+ * 1.4.0 — item-herskalering (waarde−1)/(max−1)×100, domein=gemiddelde; NUT_PROT onbekend=0;
+ *           CON_SOC kwaliteit-first; NRG_DEP compensatie-construct; movement-label Overtrainer;
+ *           urgentie-drempels <30/<50/<60 behouden (empirische herijking deferred tot N≥~100)
  */
-export const RULES_VERSION = "1.3.1" as const;
+export const RULES_VERSION = "1.4.0" as const;
 
 export interface DomainScores {
   sleep_score: number;
@@ -55,6 +60,7 @@ export interface ProfileLabel {
     | "Onrustige Slaper"
     | "Lage Batterij"
     | "Stressdrager"
+    | "Overtrainer"
     | "In Balans";
   domain: DomainId;
   score: number;
@@ -202,9 +208,13 @@ export function getDeficiencySignals(
     overtrainerPattern;
   const sleepOnset = getAnswer(answers, "SLP_ONSET");
   const melatonine_signal = sleepOnset <= 2 && stressFrequency >= 3;
-  const proteinIntake = getAnswer(answers, "NUT_PROT");
+  const proteinRaw = answers.NUT_PROT;
+  const proteinIntake =
+    typeof proteinRaw === "number" && Number.isFinite(proteinRaw) ? proteinRaw : 0;
+  const proteinKnownLow =
+    proteinIntake !== NUT_PROT_UNKNOWN && proteinIntake >= 1 && proteinIntake <= 2;
   const protein_gap_signal =
-    proteinIntake <= 2 &&
+    proteinKnownLow &&
     (movementLoad >= 2 || rcvPhys <= 1 || overtrainerPattern);
   return {
     omega3_deficiency: s.omega3Deficiency,
@@ -284,7 +294,7 @@ const NAMED_DOMAIN_LABELS: Record<NamedProfileDomain, ProfileLabel["name"]> = {
   sleep: "Onrustige Slaper",
   energy: "Lage Batterij",
   stress: "Stressdrager",
-  movement: "Lage Batterij",
+  movement: "Overtrainer",
 };
 
 function firstNonNutritionRecoveryDomain(
@@ -356,6 +366,90 @@ function getMovementLoad(answers: Record<string, number>): number {
 
 function normalizeScore(total: number, max: number): number {
   return Math.round((total / max) * 100);
+}
+
+function scaleItemScore(value: number, maxOption: number): number | null {
+  if (!Number.isFinite(value) || value <= 0 || value > maxOption) {
+    return null;
+  }
+  if (maxOption <= 1) {
+    return 100;
+  }
+  return Math.round(((value - 1) / (maxOption - 1)) * 100);
+}
+
+function averageItemScores(items: Array<number | null>): number {
+  const scored = items.filter((item): item is number => item !== null);
+  if (scored.length === 0) {
+    return 0;
+  }
+  return Math.round(scored.reduce((sum, item) => sum + item, 0) / scored.length);
+}
+
+function nutritionProteinItemScore(value: number): number | null {
+  if (value === NUT_PROT_UNKNOWN) {
+    return null;
+  }
+  return scaleItemScore(value, 4);
+}
+
+function calcDomainScoresLegacy(answers: Record<string, number>): DomainScores {
+  return {
+    sleep_score: normalizeScore(
+      getAnswer(answers, "SLP_QUAL") +
+        getAnswer(answers, "SLP_CONS") +
+        getAnswer(answers, "SLP_ONSET") +
+        getAnswer(answers, "SLP_WAKE"),
+      15,
+    ),
+    energy_score: normalizeScore(
+      getAnswer(answers, "NRG_PATN") + getAnswer(answers, "NRG_DEP"),
+      8,
+    ),
+    stress_score: normalizeScore(
+      getAnswer(answers, "STR_FREQ") + getStressRecoveryAnswer(answers),
+      8,
+    ),
+    nutrition_score: normalizeScore(
+      getAnswer(answers, "NUT_O3") + getAnswer(answers, "NUT_PROT"),
+      7,
+    ),
+    movement_score: normalizeScore(
+      getAnswer(answers, "MOV_STR") + getAnswer(answers, "MOV_CARD"),
+      8,
+    ),
+    recovery_score: normalizeScore(getAnswer(answers, "RCV_PHYS"), 3),
+    connection_score: normalizeScore(getAnswer(answers, "CON_SOC"), 4),
+  };
+}
+
+function calcDomainScoresV140(answers: Record<string, number>): DomainScores {
+  return {
+    sleep_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "SLP_QUAL"), 4),
+      scaleItemScore(getAnswer(answers, "SLP_CONS"), 3),
+      scaleItemScore(getAnswer(answers, "SLP_ONSET"), 4),
+      scaleItemScore(getAnswer(answers, "SLP_WAKE"), 4),
+    ]),
+    energy_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "NRG_PATN"), 4),
+      scaleItemScore(getAnswer(answers, "NRG_DEP"), 4),
+    ]),
+    stress_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "STR_FREQ"), 4),
+      scaleItemScore(getStressRecoveryAnswer(answers), 4),
+    ]),
+    nutrition_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "NUT_O3"), 3),
+      nutritionProteinItemScore(getAnswer(answers, "NUT_PROT")),
+    ]),
+    movement_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "MOV_STR"), 4),
+      scaleItemScore(getAnswer(answers, "MOV_CARD"), 4),
+    ]),
+    recovery_score: scaleItemScore(getAnswer(answers, "RCV_PHYS"), 3) ?? 0,
+    connection_score: scaleItemScore(getAnswer(answers, "CON_SOC"), 4) ?? 0,
+  };
 }
 
 function getSignals(
@@ -527,34 +621,12 @@ function uniqueTopSupplements(
 
 export function calcDomainScores(
   answers: Record<string, number>,
+  rulesVersion: string = RULES_VERSION,
 ): DomainScores {
-  return {
-    sleep_score: normalizeScore(
-      getAnswer(answers, "SLP_QUAL") +
-        getAnswer(answers, "SLP_CONS") +
-        getAnswer(answers, "SLP_ONSET") +
-        getAnswer(answers, "SLP_WAKE"),
-      15,
-    ),
-    energy_score: normalizeScore(
-      getAnswer(answers, "NRG_PATN") + getAnswer(answers, "NRG_DEP"),
-      8,
-    ),
-    stress_score: normalizeScore(
-      getAnswer(answers, "STR_FREQ") + getStressRecoveryAnswer(answers),
-      8,
-    ),
-    nutrition_score: normalizeScore(
-      getAnswer(answers, "NUT_O3") + getAnswer(answers, "NUT_PROT"),
-      7,
-    ),
-    movement_score: normalizeScore(
-      getAnswer(answers, "MOV_STR") + getAnswer(answers, "MOV_CARD"),
-      8,
-    ),
-    recovery_score: normalizeScore(getAnswer(answers, "RCV_PHYS"), 3),
-    connection_score: normalizeScore(getAnswer(answers, "CON_SOC"), 4),
-  };
+  if (isRulesVersionBefore(rulesVersion, "1.4.0")) {
+    return calcDomainScoresLegacy(answers);
+  }
+  return calcDomainScoresV140(answers);
 }
 
 export function getUrgency(scores: DomainScores): UrgencyResult {
@@ -600,7 +672,7 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
 
   if (scores.movement_score < 35) {
     return {
-      name: "Lage Batterij",
+      name: "Overtrainer",
       domain: "movement",
       score: scores.movement_score,
     };

@@ -9,7 +9,7 @@ import {
 } from "@/lib/intake-baseline";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
 import { RULES_VERSION } from "@/lib/intake-engine";
-import { hasMethodologyChange, isVitalityDeltaComparable } from "@/lib/rules-version";
+import { hasMethodologyChange } from "@/lib/rules-version";
 import { verifySignedIntakeSessionCookie } from "@/lib/intake-session-cookie";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import {
@@ -128,10 +128,9 @@ export default async function RapportPage({
   const currentVitaliteitIndex = computeVitaliteit(
     resolveVitaliteitFacets(remeasureScores),
   );
-  const vitalityComparable = isVitalityDeltaComparable(
-    baselineSnapshot.rulesVersion,
-    currentRulesVersion,
-  );
+  // Vitaliteitsdelta alleen tonen als géén methodiek-wijziging de scores onvergelijkbaar
+  // maakt — inclusief de 1.4.0 item-herschaling (isVitalityDeltaComparable dekt die grens niet).
+  const vitalityComparable = !methodologyChanged;
   const vitaliteitDelta = vitalityComparable
     ? currentVitaliteitIndex - baselineVitaliteitIndex
     : null;

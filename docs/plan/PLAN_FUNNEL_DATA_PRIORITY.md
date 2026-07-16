@@ -22,7 +22,18 @@ De supplement-datastroom is consistent maar **niet genormaliseerd**: merk/stof/d
 
 ---
 
-## Status van de eerdere nurture-zwaktes (5–6 juni)
+## Backlog-signaal — intake-voltooiingen (16 jul 2026)
+
+**Context:** S2 item-analyse (`npm run analyse:items`) tegen **productie**-Supabase leverde **N=1** voltooide `intake_sessions` (rules_version 1.3.1). Hostname `.env.local` = prod bevestigd. Dit is **geen scoring-bug** maar een **funnel-/distributiesignaal**: vrijwel geen verkeer dat de check afrondt.
+
+**Actie (prioriteit funnel, los van S3/S4):**
+- GA4/PostHog: funnel `landing → /intake start → vraag 1 → … → intake_completed` — waar valt het weg?
+- Clarity: recordings op `/intake` bij lage N.
+- Na S3 live: `analyse:items` opnieuw draaien; drempel-herijking pas bij N≥~100.
+
+**Niet doen:** urgentie-drempels tunen op N=1; S3 uitstellen tot "er data is".
+
+---
 
 | Zwakte (eerdere nurture-analyse) | Status | Waar |
 |---|---|---|

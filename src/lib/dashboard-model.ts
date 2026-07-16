@@ -3,7 +3,7 @@ import { isReadoutDomain } from "@/lib/domain-role";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { getPriorityPillar } from "@/lib/priority-pillar";
 import { RULES_VERSION } from "@/lib/intake-engine";
-import { isVitalityDeltaComparable } from "@/lib/rules-version";
+import { hasMethodologyChange } from "@/lib/rules-version";
 import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
 import type {
   CheckLogEntry,
@@ -51,7 +51,7 @@ export function buildModel(
   const vitality = current.vitality;
   const baselineRulesVersion = prev?.rulesVersion ?? RULES_VERSION;
   const vitalityComparable = prev
-    ? isVitalityDeltaComparable(baselineRulesVersion, RULES_VERSION)
+    ? !hasMethodologyChange(baselineRulesVersion, RULES_VERSION)
     : true;
   const vitalityDelta =
     prev && vitalityComparable ? current.vitality - prev.vitality : null;

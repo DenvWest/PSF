@@ -17,6 +17,7 @@ function makeAnswers(overrides: Record<string, number> = {}): Record<string, num
     MOV_STR: 3,
     MOV_CARD: 3,
     RCV_PHYS: 3,
+    CON_SOC: 3,
     LIF_ALC: 3,
     LIF_SUN: 3,
     ...overrides,

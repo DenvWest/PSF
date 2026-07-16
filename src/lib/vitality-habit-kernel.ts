@@ -1,4 +1,5 @@
 import type { QuestionId } from "@/data/intake-questions";
+import { NUT_PROT_UNKNOWN } from "@/data/intake-questions";
 import { getDisplayStatus, type DisplayStatus } from "@/lib/score-display";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { PillarId } from "@/types/dashboard";
@@ -53,21 +54,34 @@ function resolveWeakestQuestion(
   answers: Record<string, number>,
 ): { id: QuestionId; value: number } {
   const ids = PILLAR_QUESTIONS[priorityId];
-  let weakest = { id: ids[0], value: getAnswer(answers, ids[0]) || 99 };
+  const scoreValue = (id: QuestionId, raw: number): number => {
+    if (id === "NUT_PROT" && raw === NUT_PROT_UNKNOWN) {
+      return 99;
+    }
+    return raw || 99;
+  };
+
+  const firstRaw = getAnswer(answers, ids[0]);
+  let weakest = {
+    id: ids[0],
+    value: firstRaw,
+    sortValue: scoreValue(ids[0], firstRaw),
+  };
 
   for (const id of ids.slice(1)) {
-    const value = getAnswer(answers, id) || 99;
-    if (value < weakest.value) {
-      weakest = { id, value };
+    const raw = getAnswer(answers, id);
+    const sortValue = scoreValue(id, raw);
+    if (sortValue < weakest.sortValue) {
+      weakest = { id, value: raw, sortValue };
     }
   }
-  return weakest;
+  return { id: weakest.id, value: weakest.value };
 }
 
 function resolveDriverHabitLine(id: QuestionId, value: number): string {
-  if (id === "NUT_PROT" && value <= 2) {
+  if (id === "NUT_PROT" && value >= 1 && value <= 2) {
     return value === 1
-      ? "Je let nauwelijks op je eiwitinname."
+      ? "Je eiwitinname komt zelden terug in je maaltijden."
       : "Je eiwitinname blijft nu te laag.";
   }
   if (id === "NUT_O3" && value <= 2) {
@@ -106,13 +120,13 @@ function resolveDriverHabitLine(id: QuestionId, value: number): string {
     return "Je energiecurve is instabiel.";
   }
   if (id === "NRG_DEP" && value <= 2) {
-    return "Je leunt te vaak op snelle prikkels voor energie.";
+    return "Je leunt regelmatig op oppeppers om de dag door te komen.";
   }
   return "Je leefstijlritme is nog niet stabiel genoeg.";
 }
 
 function resolveNextBestHabit(id: QuestionId, value: number): string {
-  if (id === "NUT_PROT" && value <= 2) {
+  if (id === "NUT_PROT" && value >= 1 && value <= 2) {
     return "Focus nu: zet bij elke maaltijd eerst een eiwitbron neer.";
   }
   if (id === "NUT_O3" && value <= 2) {
@@ -149,7 +163,7 @@ function resolveNextBestHabit(id: QuestionId, value: number): string {
     return "Focus nu: start je ochtend met daglicht en eiwit.";
   }
   if (id === "NRG_DEP" && value <= 2) {
-    return "Focus nu: vervang een prikkelmoment door een herstelmoment.";
+    return "Focus nu: vervang één oppepmoment door rust, water of een eiwit-snack.";
   }
   return "Focus nu: kies één habit en houd die zeven dagen vast.";
 }

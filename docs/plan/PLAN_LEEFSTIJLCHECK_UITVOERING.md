@@ -32,7 +32,7 @@
 | S0 | Evidence-, habit- & docs-sync (was "L0") | **1** | — | Nee | Laag | ~1 sessie | ✅ (12 jul) |
 | S1 | Bias- & framing-copy (zonder waarde-wijziging) | **1** | — | Nee | Laag | ~1 sessie | ✅ (16 jul) |
 | S2 | Item-analyse-script + baseline-rapport | **2** | — (vóór S3!) | Nee | Laag | ~1 sessie | ✅ (16 jul) — N=1, geen empirische baseline; S3 = math-gedreven |
-| S3 | Engine-bump 1.4.0: herskalering + validiteitsfixes | **3** | S2 (baseline eerst) | **Ja** | Middel | 1–2 sessies | ⬜ |
+| S3 | Engine-bump 1.4.0: herskalering + validiteitsfixes | **3** | S2 (baseline eerst) | **Ja** | Middel | 1–2 sessies | ✅ (16 jul) |
 | S4 | Vraagset-herverdeling 16→17 (bump 1.5.0) | **4** | S3 | **Ja** | Middel–hoog | 1–2 sessies | ⬜ |
 | S5 | Verbinding-fundament: plan + label + content-map | **5** | S0 (copy klaar) | Nee* | Middel | ~1 sessie | ⬜ |
 | S6 | Verbinding-check-in (gratis) + premium plan-gate + SVS-anker | **6** | S5, besluit DB-opslag | Nee | Middel–hoog | 2–3 sessies | ⬜ |
@@ -162,6 +162,27 @@
 **Meetpunt:** `intake_completed` + verdeling urgentieniveaus vóór/ná (S2-script na live-gang opnieuw draaien als vervolg-sessie).
 **Voorgestelde commit:** `feat(engine): RULES_VERSION 1.4.0 — item-herskalering, drempel-herijking, CON_SOC/NUT_PROT/NRG_DEP-validiteitsfixes, movement-label`
 
+**Uitgevoerd 16 jul 2026 — resultaat en afwijkingen:**
+- **Databron bevestigd:** `.env.local` = productie (`dbqnvhvwesufwppathzd.supabase.co`). N=1 is een funnel-/verkeerssignaal, geen S3-blocker — zie backlog-notitie in `PLAN_FUNNEL_DATA_PRIORITY.md`.
+- **Item-herskalering** in `calcDomainScores` (1.4.0): `(waarde−1)/(max−1)×100`, domein=gemiddelde; legacy via `rulesVersion`-parameter voor hermeting/analyse.
+- **Urgentie-drempels** `<30/<50/<60` **behouden**; empirische herijking uitgesteld tot N≥~100 (S2-baseline N=1). Banden in `score-display.ts` ongewijzigd.
+- **CON_SOC** kwaliteit-first (dubbele waarde 4); **NUT_PROT** onbekend=`NUT_PROT_UNKNOWN` (0), excluded from score; **NRG_DEP** herbouwd; **SLP_QUAL** frequentie-ankers; **movement-label** → `Overtrainer` in `ProfileLabel`-union.
+- **`isItemScaleDeltaComparable`** + `hasMethodologyChange` uitgebreid voor 1.3.x↔1.4.0-grens.
+- **`scripts/item-analyse.mjs`** regelset-bewuste herberekening; na live-gang opnieuw draaien voor vóór/ná.
+- Tests bijgewerkt; `item-analyse.mjs` + plan-docs; geen commit door agent.
+
+**S3-review + hardening (16 jul, 2e sessie) — 3 P1-bugs gevonden en gefixt:**
+De 1.4.0-implementatie was correct op engine-niveau (all-min→0, NUT_PROT-onbekend excluded, legacy-dispatch, CON_SOC dubbele-4 — alle test-locked), maar de **hermeting-delta lekte het schaal-artefact op drie plekken**:
+1. **`dashboard-model.ts`** — vitaliteitsdelta gated op `isVitalityDeltaComparable` (checkt alleen de 1.3.0-grens, niet 1.4.0). Een 1.3.1→1.4.0-hermeting toonde een verzonnen delta zónder "methodiek gewijzigd"-melding. → gate nu `!hasMethodologyChange`.
+2. **`app/rapport/[sid]/page.tsx`** — zelfde bug op de hermeting-pagina: radar meldde "methodiek gewijzigd", maar de vitaliteitsrij eronder toonde tóch een op/neer-delta. → `vitalityComparable = !methodologyChanged`.
+3. **`intake-baseline.ts::sanitizePerDomainDelta`** — nulde alleen recovery + connection bij incomparabiliteit, maar de item-herschaling raakt **álle** domeinen; sleep/stress/nutrition/movement-delta's lekten als artefact naar de UI én de `per_domain_delta`-events. → alle delta's op 0 bij `!isItemScaleDeltaComparable`.
+Plus: `DeltaRadar`-disclaimer verbreed ("herstel- en vitaliteitsdelta" → "domein- en vitaliteitsscores"), en **NRG_DEP-evidence** kreeg de ontbrekende koffie-onderbouwing (Poole 2017, BMJ, DOI 10.1136/bmj.j5024) — de rationale claimde "koffie niet consistent negatief" maar citeerde een ongerelateerde koolhydraat-review. 3 regressietests toegevoegd (item-scale-grens: rules-version, dashboard, baseline). tsc + 1171 vitest + eslint groen.
+
+**Openstaande P2's (product-besluit, niet blokkerend voor 1.4.0):**
+- **"Overtrainer" voor lage beweging is semantisch scheef.** `movement_score < 35` = weinig bewegen (sedentair), maar het `/profiel/overtrainer`-content beschrijft juist *veel* volume + weinig herstel. Expertreview §9.5 endorseert de label = "Overtrainer" (content-consistentie), dus 1.4.0 is spec-conform — maar de échte overtrainer-detectie (`movementLoad ≥ 3 && RCV_PHYS ≤ 1`) staat los in `getDeficiencySignals`. Overweeg later een apart "onderbeweger"-label (vergt nieuw /profiel + nurture = S4/S5-scope). Ook: `resolveNurtureProfileKey` gebruikt de tegengestelde definitie (movement ≥43 + recovery ≤35) — twee Overtrainer-betekenissen naast elkaar.
+- **Per-domein trend-sparkline** in `account-dashboard.ts` mengt scores over de 1.4.0-grens (pre-existing designlimiet; zichtbare delta wél gefixt, de historische trendlijn niet).
+- **`resolveNurtureProfileKey`-drempels** (43/35) mogelijk op oude schaal geijkt — post-herschaling verifiëren.
+
 ---
 
 ## S4 — Vraagset-herverdeling 16→17 (bump 1.5.0, of gecombineerd met S3)
@@ -267,3 +288,4 @@
 | 12 jul 2026 | S0 | Uitgevoerd: habit-kernel CON_SOC-regel, `STATIC_HEFBOOM.connection`, evidence (3 refs × 2 plekken + rationale-bullet + transparantie-note), `connection.md` herschreven, `ANALYSIS_PILLAR_COVERAGE.md` gecorrigeerd. Afwijking: CON_SOC-habitregel op verzoek Dennis herzien naar feit-eerst variant (zie sectie hierboven). tsc + vitest groen (123 files / 1095 tests). Niet gecommit. |
 | 16 jul 2026 | S1 | Uitgevoerd: MOV_CARD herformuleerd (spreektest/zone-2-variant gekozen door Dennis, incl. subtitle; consistent in intake + movement-check-in + chat-label + evidence-copy), LIF_SUN-subtitle daglicht-eerst, `vitalityScoreFraming` op resultaatscherm (RevealHeroCard), transparantie-note toegevoegd. S1.3-inventaris: bewust geen wijziging (één-pad-principe + feit-eerst-besluit; keuze-architectuur = S7). 0 `value:`-velden geraakt; tsc + vitest groen (131 files / 1164 tests) + eslint schoon. Niet gecommit. |
 | 16 jul 2026 | S2 | Uitgevoerd: `scripts/item-analyse.mjs` + `npm run analyse:items` + rapport `docs/research/ITEM_ANALYSE_BASELINE.md`. **N=1 → geen empirische baseline**; script/engine-math gevalideerd via drift=0. Gevolg: S3 math-gedreven, drempels behouden, empirische herijking uitgesteld (N≥100). Databron (dev vs prod) bevestigen vóór S3. Geen `src/`-wijziging. Niet gecommit. |
+| 16 jul 2026 | S3-review | 1.4.0 (door Cursor gebouwd) gereviewd + gehardend. Engine correct (test-locked). **3 P1-delta-bugs gefixt** (dashboard + rapport vitaliteitsgate misten 1.4.0-grens; `sanitizePerDomainDelta` nulde niet álle domeinen) + DeltaRadar-copy + ontbrekende Poole 2017-koffieref op NRG_DEP. 3 regressietests. tsc + vitest groen (131 files / 1171 tests) + eslint schoon. P2-restpunten (Overtrainer-semantiek, trend-sparkline over grens, nurture-drempels) genoteerd in S3-sectie. Niet gecommit. |

@@ -46,7 +46,7 @@ function makeScores(overrides: Partial<DomainScores> = {}): DomainScores {
   };
 }
 
-// ─── calcDomainScores ─────────────────────────────────────────────
+// ─── calcDomainScores (1.4.0 item-herskalering) ───────────────────
 
 describe("calcDomainScores", () => {
   it("returns all zeros for empty answers", () => {
@@ -60,45 +60,45 @@ describe("calcDomainScores", () => {
     expect(scores.connection_score).toBe(0);
   });
 
-  it("calculates sleep_score from SLP_QUAL + SLP_CONS + SLP_ONSET + SLP_WAKE (max 15)", () => {
+  it("calculates sleep_score as average of four item-scaled scores", () => {
     const scores = calcDomainScores(
       makeAnswers({ SLP_QUAL: 4, SLP_CONS: 3, SLP_ONSET: 4, SLP_WAKE: 4 }),
     );
     expect(scores.sleep_score).toBe(100);
   });
 
-  it("calculates energy_score from NRG_PATN + NRG_DEP (max 8)", () => {
+  it("calculates energy_score from NRG_PATN + NRG_DEP item averages", () => {
     const scores = calcDomainScores(makeAnswers({ NRG_PATN: 4, NRG_DEP: 4 }));
     expect(scores.energy_score).toBe(100);
   });
 
-  it("calculates stress_score from STR_FREQ + STR_RCV (max 8)", () => {
+  it("calculates stress_score from STR_FREQ + STR_RCV item averages", () => {
     const scores = calcDomainScores(makeAnswers({ STR_FREQ: 4, STR_RCV: 4 }));
     expect(scores.stress_score).toBe(100);
   });
 
-  it("calculates nutrition_score from NUT_O3 + NUT_PROT (max 7)", () => {
+  it("calculates nutrition_score 50/50 from NUT_O3 and NUT_PROT", () => {
     const scores = calcDomainScores(makeAnswers({ NUT_O3: 3, NUT_PROT: 4 }));
     expect(scores.nutrition_score).toBe(100);
   });
 
-  it("calculates movement_score from MOV_STR + MOV_CARD (max 8)", () => {
+  it("calculates movement_score from MOV_STR + MOV_CARD item averages", () => {
     const scores = calcDomainScores(
       makeAnswers({ MOV_STR: 4, MOV_CARD: 4 }),
     );
     expect(scores.movement_score).toBe(100);
   });
 
-  it("calculates connection_score from CON_SOC (max 4)", () => {
-    expect(calcDomainScores(makeAnswers({ CON_SOC: 1 })).connection_score).toBe(25);
-    expect(calcDomainScores(makeAnswers({ CON_SOC: 2 })).connection_score).toBe(50);
-    expect(calcDomainScores(makeAnswers({ CON_SOC: 3 })).connection_score).toBe(75);
+  it("calculates connection_score from CON_SOC item scale (0/33/67/100)", () => {
+    expect(calcDomainScores(makeAnswers({ CON_SOC: 1 })).connection_score).toBe(0);
+    expect(calcDomainScores(makeAnswers({ CON_SOC: 2 })).connection_score).toBe(33);
     expect(calcDomainScores(makeAnswers({ CON_SOC: 4 })).connection_score).toBe(100);
   });
 
-  it("calculates recovery_score from RCV_PHYS only (max 3)", () => {
-    const scores = calcDomainScores(makeAnswers({ RCV_PHYS: 3, STR_RCV: 4 }));
-    expect(scores.recovery_score).toBe(100);
+  it("calculates recovery_score from RCV_PHYS only (0/50/100)", () => {
+    expect(calcDomainScores(makeAnswers({ RCV_PHYS: 1 })).recovery_score).toBe(0);
+    expect(calcDomainScores(makeAnswers({ RCV_PHYS: 2 })).recovery_score).toBe(50);
+    expect(calcDomainScores(makeAnswers({ RCV_PHYS: 3 })).recovery_score).toBe(100);
   });
 
   it("does not count STR_RCV in recovery_score (stress only)", () => {
@@ -111,7 +111,7 @@ describe("calcDomainScores", () => {
     expect(withHighStressRecovery.recovery_score).toBe(
       withLowStressRecovery.recovery_score,
     );
-    expect(withHighStressRecovery.recovery_score).toBeLessThan(50);
+    expect(withHighStressRecovery.recovery_score).toBe(0);
   });
 
   it("reads legacy STR_RECV for stress when STR_RCV is absent", () => {
@@ -120,16 +120,48 @@ describe("calcDomainScores", () => {
     expect(scores.recovery_score).toBe(100);
   });
 
-  it("normalizes partial scores correctly", () => {
+  it("worst-case all-min answers yield domain score 0", () => {
     const scores = calcDomainScores(
-      makeAnswers({ SLP_QUAL: 2, SLP_CONS: 1, SLP_ONSET: 0, SLP_WAKE: 0 }),
+      makeAnswers({
+        SLP_QUAL: 1,
+        SLP_CONS: 1,
+        SLP_ONSET: 1,
+        SLP_WAKE: 1,
+        NRG_PATN: 1,
+        NRG_DEP: 1,
+        STR_FREQ: 1,
+        STR_RCV: 1,
+        NUT_O3: 1,
+        NUT_PROT: 1,
+        MOV_STR: 1,
+        MOV_CARD: 1,
+        RCV_PHYS: 1,
+        CON_SOC: 1,
+      }),
     );
-    expect(scores.sleep_score).toBe(Math.round((3 / 15) * 100));
+    expect(scores.sleep_score).toBe(0);
+    expect(scores.energy_score).toBe(0);
+    expect(scores.nutrition_score).toBe(0);
+    expect(scores.movement_score).toBe(0);
+    expect(scores.connection_score).toBe(0);
+    expect(scores.recovery_score).toBe(0);
   });
 
-  it("handles missing individual questions as 0", () => {
+  it("excludes NUT_PROT unknown (0) from nutrition average", () => {
+    expect(calcDomainScores(makeAnswers({ NUT_O3: 3, NUT_PROT: 0 })).nutrition_score).toBe(
+      100,
+    );
+    expect(calcDomainScores(makeAnswers({ NUT_O3: 1, NUT_PROT: 0 })).nutrition_score).toBe(
+      0,
+    );
+    expect(calcDomainScores(makeAnswers({ NUT_O3: 0, NUT_PROT: 0 })).nutrition_score).toBe(
+      0,
+    );
+  });
+
+  it("handles missing individual questions as unscored (0 domain if none left)", () => {
     const scores = calcDomainScores({ SLP_QUAL: 3 });
-    expect(scores.sleep_score).toBe(Math.round((3 / 15) * 100));
+    expect(scores.sleep_score).toBe(67);
     expect(scores.energy_score).toBe(0);
   });
 
@@ -156,6 +188,7 @@ describe("calcDomainScores", () => {
       MOV_STR: 4,
       MOV_CARD: 4,
       RCV_PHYS: 3,
+      CON_SOC: 4,
       LIF_ALC: 4,
       LIF_SUN: 4,
     });
@@ -166,6 +199,16 @@ describe("calcDomainScores", () => {
     expect(scores.nutrition_score).toBe(100);
     expect(scores.movement_score).toBe(100);
     expect(scores.recovery_score).toBe(100);
+    expect(scores.connection_score).toBe(100);
+  });
+
+  it("uses legacy sum/max formula when rulesVersion < 1.4.0", () => {
+    const answers = makeAnswers({ CON_SOC: 1, NUT_PROT: 1 });
+    const legacy = calcDomainScores(answers, "1.3.1");
+    expect(legacy.connection_score).toBe(25);
+    expect(legacy.nutrition_score).toBe(Math.round((3 + 1) / 7 * 100));
+    const modern = calcDomainScores(answers, "1.4.0");
+    expect(modern.connection_score).toBe(0);
   });
 });
 
@@ -257,17 +300,17 @@ describe("getProfileLabel", () => {
     expect(isInterventionProfileDomain(result.domain)).toBe(true);
   });
 
-  it("returns 'Lage Batterij' when movement < 35", () => {
+  it("returns 'Overtrainer' when movement < 35", () => {
     const scores = makeScores({ movement_score: 30 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Lage Batterij");
+    expect(result.name).toBe("Overtrainer");
     expect(result.domain).toBe("movement");
   });
 
   it("prefers movement when movement < 35 even if energy is also low", () => {
     const scores = makeScores({ energy_score: 25, movement_score: 30 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Lage Batterij");
+    expect(result.name).toBe("Overtrainer");
     expect(result.domain).toBe("movement");
   });
 
@@ -299,7 +342,7 @@ describe("getProfileLabel", () => {
   it("picks movement domain when movement is lower than energy driver", () => {
     const scores = makeScores({ energy_score: 35, movement_score: 20 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Lage Batterij");
+    expect(result.name).toBe("Overtrainer");
     expect(result.domain).toBe("movement");
   });
 
@@ -536,6 +579,13 @@ describe("getDeficiencySignals", () => {
     expect(signals.protein_gap_signal).toBe(true);
   });
 
+  it("does not flag protein_gap when NUT_PROT is unknown (0)", () => {
+    const signals = getDeficiencySignals(
+      makeAnswers({ NUT_PROT: 0, MOV_STR: 4, RCV_PHYS: 1 }),
+    );
+    expect(signals.protein_gap_signal).toBe(false);
+  });
+
   it("does not flag protein_gap when NUT_PROT low but sedentary with ok recovery", () => {
     const signals = getDeficiencySignals(
       makeAnswers({ NUT_PROT: 1, MOV_STR: 1, MOV_CARD: 1, RCV_PHYS: 3 }),
@@ -712,7 +762,7 @@ describe("K1 lowRecoveryNoLoad", () => {
       STR_RCV: 3,
     });
     const scores = calcDomainScores(answers);
-    expect(scores.recovery_score).toBeGreaterThanOrEqual(45);
+    expect(scores.recovery_score).toBe(100);
     const signals = getDeficiencySignals(answers);
     expect(signals.low_recovery_no_load).toBe(false);
   });

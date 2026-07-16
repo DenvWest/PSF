@@ -12,7 +12,8 @@ describe("shouldShowAanpakQ1EiwitHero", () => {
     expect(shouldShowAanpakQ1EiwitHero({ NUT_PROT: 2 })).toBe(true);
   });
 
-  it("false bij NUT_PROT 3 of 4", () => {
+  it("false bij NUT_PROT 0 (onbekend), 3 of 4", () => {
+    expect(shouldShowAanpakQ1EiwitHero({ NUT_PROT: 0 })).toBe(false);
     expect(shouldShowAanpakQ1EiwitHero({ NUT_PROT: 3 })).toBe(false);
     expect(shouldShowAanpakQ1EiwitHero({ NUT_PROT: 4 })).toBe(false);
   });

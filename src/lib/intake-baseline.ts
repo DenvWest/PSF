@@ -7,6 +7,7 @@ import {
 import {
   hasMethodologyChange,
   isConnectionDeltaComparable,
+  isItemScaleDeltaComparable,
   isRecoveryDeltaComparable,
 } from "@/lib/rules-version";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
@@ -74,6 +75,20 @@ export function sanitizePerDomainDelta(input: {
   currentRulesVersion: string;
 }): Record<DomainScoreKey, number> {
   const delta = computePerDomainDelta(input.baseline, input.current);
+  // De 1.4.0 item-herschaling verandert de schaal van ÁLLE domeinen; over die grens
+  // is geen enkele domein-delta 1-op-1 vergelijkbaar. Nul dan het hele verschil —
+  // anders lekt een puur schaal-artefact naar de UI én de per_domain_delta-events.
+  if (
+    !isItemScaleDeltaComparable(
+      input.baselineRulesVersion,
+      input.currentRulesVersion,
+    )
+  ) {
+    for (const key of DOMAIN_SCORE_KEYS) {
+      delta[key] = 0;
+    }
+    return delta;
+  }
   const recoveryComparable = isRecoveryDeltaComparable(
     input.baselineRulesVersion,
     input.currentRulesVersion,
