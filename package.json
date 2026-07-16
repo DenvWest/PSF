@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "generate-state": "node scripts/generate-state.mjs",
     "generate-legal-pdfs": "node scripts/generate-legal-pdfs.mjs",
+    "analyse:items": "node scripts/item-analyse.mjs",
     "check:db-schema": "bash scripts/check-supabase-schema.sh",
     "prepare": "git config core.hooksPath .githooks"
   },

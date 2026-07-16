@@ -31,7 +31,7 @@
 |---|------|------|-----------------|---------------|--------|--------|--------|
 | S0 | Evidence-, habit- & docs-sync (was "L0") | **1** | — | Nee | Laag | ~1 sessie | ✅ (12 jul) |
 | S1 | Bias- & framing-copy (zonder waarde-wijziging) | **1** | — | Nee | Laag | ~1 sessie | ✅ (16 jul) |
-| S2 | Item-analyse-script + baseline-rapport | **2** | — (vóór S3!) | Nee | Laag | ~1 sessie | ⬜ |
+| S2 | Item-analyse-script + baseline-rapport | **2** | — (vóór S3!) | Nee | Laag | ~1 sessie | ✅ (16 jul) — N=1, geen empirische baseline; S3 = math-gedreven |
 | S3 | Engine-bump 1.4.0: herskalering + validiteitsfixes | **3** | S2 (baseline eerst) | **Ja** | Middel | 1–2 sessies | ⬜ |
 | S4 | Vraagset-herverdeling 16→17 (bump 1.5.0) | **4** | S3 | **Ja** | Middel–hoog | 1–2 sessies | ⬜ |
 | S5 | Verbinding-fundament: plan + label + content-map | **5** | S0 (copy klaar) | Nee* | Middel | ~1 sessie | ⬜ |
@@ -129,6 +129,13 @@
 **Acceptatie:** script draait lokaal met bestaande env zonder errors · rapport bevat alle bovengenoemde metrieken · geen wijziging in `src/`.
 **Risico/valkuil:** privacy — het rapport bevat alleen aggregaten, nooit losse sessies of e-mails. Bij lage N (< ~100 per generatie): rapporteer dat expliciet en trek geen harde conclusies.
 **Voorgestelde commit:** `feat(analyse): item-analyse-script + psychometrische baseline leefstijlcheck`
+
+**Uitgevoerd 16 jul 2026 — resultaat en afwijkingen:**
+- **Script gebouwd** (`scripts/item-analyse.mjs` + `npm run analyse:items`). Alle voorgeschreven metrieken zitten erin: item-verdeling/SD/vloer/plafond, item-rest-correlaties (complete-case, domeinen ≥2 items), slaap-inter-item-matrix, domein- en vitaliteitspercentielen, urgentie- + bandverdeling, N per `rules_version`. Extra t.o.v. de instructie: **integriteitscheck** (herberekende scores vs. opgeslagen `domain_scores` → driftdetectie) — dit valideert dat het script de engine-math exact spiegelt. Env-namen: `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (uit `src/lib/supabase-admin.ts`), niet via `supabase link`; het script leest ze uit `process.env` of parseert `.env.local` zónder waarden te printen. Rules-version-kolom = `rules_version` (geverifieerd via migratie `20260609120000`).
+- **KERNBEVINDING: N = 1.** De via `.env.local` bereikbare database bevat exact één sessie. Er is dus **geen empirische baseline** — SD/correlaties/percentielen zijn betekenisloos. Het rapport (`docs/research/ITEM_ANALYSE_BASELINE.md`) zegt dit expliciet in de duiding.
+- **Gevolg voor S3 (dwingend):** de percentiel-herijking van urgentiedrempels valt op de **else-tak** van de S3-instructie → drempels `<30/<50/<60` behouden, herschaling puur math-/theorie-gedreven, empirische drempel-herijking uitstellen tot N ≥ ~100. Het vloer-artefact (effectieve domein-min 25–33, `<30` onbereikbaar voor meer-item-domeinen) is wél wiskundig bewezen en rechtvaardigt S3 zonder data.
+- **Openstaand vóór S3 — databron bevestigen:** onduidelijk of `.env.local` naar dev of productie wijst (mag `.env.local` niet inzien). Als dev: opnieuw draaien met productie-env. Als productie: de intake-funnel heeft ~geen voltooiingen — een verkeer-/distributiesignaal los van deze herziening.
+- Geen `src/`-wijziging (geverifieerd). Alleen `scripts/`, `package.json`, rapport.
 
 ---
 
@@ -259,3 +266,4 @@
 | 11 jul 2026 | — | Plan opgesteld; besluiten vastgelegd (check-in gratis / plan premium); S0-instructies overgenomen uit de eerdere L0-prompt |
 | 12 jul 2026 | S0 | Uitgevoerd: habit-kernel CON_SOC-regel, `STATIC_HEFBOOM.connection`, evidence (3 refs × 2 plekken + rationale-bullet + transparantie-note), `connection.md` herschreven, `ANALYSIS_PILLAR_COVERAGE.md` gecorrigeerd. Afwijking: CON_SOC-habitregel op verzoek Dennis herzien naar feit-eerst variant (zie sectie hierboven). tsc + vitest groen (123 files / 1095 tests). Niet gecommit. |
 | 16 jul 2026 | S1 | Uitgevoerd: MOV_CARD herformuleerd (spreektest/zone-2-variant gekozen door Dennis, incl. subtitle; consistent in intake + movement-check-in + chat-label + evidence-copy), LIF_SUN-subtitle daglicht-eerst, `vitalityScoreFraming` op resultaatscherm (RevealHeroCard), transparantie-note toegevoegd. S1.3-inventaris: bewust geen wijziging (één-pad-principe + feit-eerst-besluit; keuze-architectuur = S7). 0 `value:`-velden geraakt; tsc + vitest groen (131 files / 1164 tests) + eslint schoon. Niet gecommit. |
+| 16 jul 2026 | S2 | Uitgevoerd: `scripts/item-analyse.mjs` + `npm run analyse:items` + rapport `docs/research/ITEM_ANALYSE_BASELINE.md`. **N=1 → geen empirische baseline**; script/engine-math gevalideerd via drift=0. Gevolg: S3 math-gedreven, drempels behouden, empirische herijking uitgesteld (N≥100). Databron (dev vs prod) bevestigen vóór S3. Geen `src/`-wijziging. Niet gecommit. |
