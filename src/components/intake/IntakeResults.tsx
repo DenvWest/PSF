@@ -15,7 +15,7 @@ import RevealStoryPath from "@/components/intake/RevealStoryPath";
 import ResultsRevealShell, {
   type ResultsRevealShellVariant,
 } from "@/components/intake/ResultsRevealShell";
-import { trackEvent } from "@/lib/ga4";
+import { trackEvent, trackQuizVoltooid } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { buildRevealModel } from "@/lib/reveal-model";
@@ -65,6 +65,10 @@ export default function IntakeResults({
 
   useEffect(() => {
     trackEvent("intake_results_viewed", { theme_slug: primaryTheme });
+    trackQuizVoltooid({
+      doelgroep: profile.name,
+      hoofd_symptoom: symptoms[0] ?? primaryTheme,
+    });
     if (themeRevealedEmittedRef.current) {
       return;
     }
@@ -73,7 +77,7 @@ export default function IntakeResults({
       theme_slug: primaryTheme,
       session_id: sessionId,
     });
-  }, [primaryTheme, sessionId]);
+  }, [primaryTheme, profile.name, sessionId, symptoms]);
 
   return (
     <ResultsRevealShell variant={shellVariant}>

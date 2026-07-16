@@ -17,6 +17,8 @@ export const DOMAIN_EVENT_TYPES = [
   "domain_tool.snapshot_viewed",
   "domain_tool.tier_preview_clicked",
   "intake.completed",
+  "intake.started",
+  "intake.phase_completed",
   "intake.theme_revealed",
   "intake.cta_to_pillar",
   "intake.cta_to_nutrition_log",

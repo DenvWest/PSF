@@ -14,6 +14,8 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "dashboard.vitality_scored",
   "dashboard.cta_to_hub",
   "dashboard.aanrader_clicked",
+  "intake.started",
+  "intake.phase_completed",
   "intake.theme_revealed",
   "intake.cta_to_pillar",
   "intake.cta_to_primary_checkin",
@@ -93,7 +95,9 @@ export async function POST(request: NextRequest) {
 
   const sessionOptionalEvent =
     eventTypeRaw === "dashboard.first_checkin_started" ||
-    eventTypeRaw === "dashboard.vitality_scored";
+    eventTypeRaw === "dashboard.vitality_scored" ||
+    eventTypeRaw === "intake.started" ||
+    eventTypeRaw === "intake.phase_completed";
   if (!sessionId && !sessionOptionalEvent) {
     return NextResponse.json({ error: "Geen geldige sessie." }, { status: 401 });
   }

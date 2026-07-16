@@ -27,6 +27,10 @@ import {
   getLastSession,
   type IntakeSessionPayload,
 } from "@/lib/intake-storage";
+import {
+  trackIntakePhaseCompleted,
+  trackIntakeStartFromIntro,
+} from "@/lib/intake-funnel-tracking";
 import { useIntakeSubmit } from "@/lib/use-intake-submit";
 
 const dmSans = DM_Sans({
@@ -165,6 +169,7 @@ export default function IntakeClient() {
         setHasActiveMarketingEmailConsent(result.marketingEmailActive);
       }
       setMainNurtureSkipped(result.mainNurtureSkipped);
+      trackIntakePhaseCompleted("calculating");
       setPhase("results");
     },
   });
@@ -182,6 +187,7 @@ export default function IntakeClient() {
     if (currentQ < QUESTIONS.length - 1) {
       setCurrentQ((c) => c + 1);
     } else {
+      trackIntakePhaseCompleted("questions");
       setPhase("consent");
     }
   }
@@ -195,6 +201,7 @@ export default function IntakeClient() {
     });
     calculatingStartedAtRef.current = Date.now();
     setIntakeTurnstileToken("");
+    trackIntakePhaseCompleted("consent");
     setPhase("calculating");
   }
 
@@ -203,6 +210,7 @@ export default function IntakeClient() {
     setAnswers({});
     setAnsweredIndices({});
     setIntakeConsent(null);
+    trackIntakePhaseCompleted("symptoms");
     setPhase("questions");
   }
 
@@ -329,7 +337,10 @@ export default function IntakeClient() {
         !showResultsDeepLinkFallback && (
         <div className="animate-[fadeIn_300ms_ease-out]">
           <IntakeIntro
-            onStart={() => setPhase("symptoms")}
+            onStart={() => {
+              trackIntakeStartFromIntro();
+              setPhase("symptoms");
+            }}
             isRemeasure={hasRemeasureParam}
           />
         </div>
