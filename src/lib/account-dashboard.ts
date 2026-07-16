@@ -18,6 +18,7 @@ import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type {
   CheckLogEntry,
   CheckScores,
+  CheckSnapshot,
   CheckTrend,
   DashboardData,
   NutritionIntakeBand,
@@ -94,9 +95,10 @@ type SessionRow = {
   profile_label: string | null;
   first_name: string | null;
   answers: unknown;
+  rules_version: string | null;
 };
 
-type SessionSnapshot = {
+export type AccountSessionSnapshot = {
   id: string;
   scores: CheckScores;
   vitality: number;
@@ -106,7 +108,29 @@ type SessionSnapshot = {
   profileLabel: string;
   firstName: string | null;
   answers: Record<string, number> | null;
+  rulesVersion: string;
 };
+
+export function mapSessionSnapshotToPrev(
+  snapshot: Pick<
+    AccountSessionSnapshot,
+    "scores" | "vitality" | "date" | "rulesVersion"
+  >,
+): CheckSnapshot {
+  return {
+    scores: snapshot.scores,
+    vitality: snapshot.vitality,
+    date: snapshot.date,
+    rulesVersion: snapshot.rulesVersion,
+  };
+}
+
+function parseRulesVersion(value: unknown): string {
+  if (typeof value === "string" && value.trim()) {
+    return value.trim();
+  }
+  return "1.0.0";
+}
 
 function parseDomainScores(value: unknown): DomainScores | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -249,7 +273,7 @@ export async function loadAccountDashboardData(
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("id,domain_scores,created_at,profile_label,first_name,answers")
+    .select("id,domain_scores,created_at,profile_label,first_name,answers,rules_version")
     .eq("account_id", accountId)
     .order("created_at", { ascending: true });
 
@@ -257,7 +281,7 @@ export async function loadAccountDashboardData(
     return EMPTY_DASHBOARD_DATA;
   }
 
-  const snapshots: SessionSnapshot[] = (data as SessionRow[])
+  const snapshots: AccountSessionSnapshot[] = (data as SessionRow[])
     .map((row) => {
       const profileLabel =
         typeof row.profile_label === "string" ? row.profile_label.trim() : "";
@@ -297,9 +321,10 @@ export async function loadAccountDashboardData(
         profileLabel,
         answers,
         firstName,
+        rulesVersion: parseRulesVersion(row.rules_version),
       };
     })
-    .filter((row): row is SessionSnapshot => row !== null);
+    .filter((row): row is AccountSessionSnapshot => row !== null);
 
   if (snapshots.length === 0) {
     return EMPTY_DASHBOARD_DATA;
@@ -508,6 +533,8 @@ export async function loadAccountDashboardData(
           daysBetween,
           sustainedActions,
           config: perfectSupplementMeasurementConfig,
+          baselineRulesVersion: snapshots[0].rulesVersion,
+          currentRulesVersion: latestSnapshot.rulesVersion,
         })
       : null;
 
@@ -519,13 +546,7 @@ export async function loadAccountDashboardData(
       date: currentDate,
       trend,
     },
-    prev: prevSnapshot
-      ? {
-          scores: prevSnapshot.scores,
-          vitality: prevSnapshot.vitality,
-          date: prevSnapshot.date,
-        }
-      : null,
+    prev: prevSnapshot ? mapSessionSnapshotToPrev(prevSnapshot) : null,
     history,
     retest: snapshots.length >= 2,
     nutritionIntake,

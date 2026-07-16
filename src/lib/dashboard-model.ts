@@ -49,7 +49,7 @@ export function buildModel(
     .sort((a, b) => scores[b.id] - scores[a.id])
     .filter((pillar) => pillar.id !== priority.id)[0];
   const vitality = current.vitality;
-  const baselineRulesVersion = prev?.rulesVersion ?? RULES_VERSION;
+  const baselineRulesVersion = prev?.rulesVersion ?? "1.0.0";
   const vitalityComparable = prev
     ? !hasMethodologyChange(baselineRulesVersion, RULES_VERSION)
     : true;

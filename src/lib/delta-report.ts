@@ -1,5 +1,9 @@
-import { computePerDomainDelta } from "@/lib/intake-baseline";
+import {
+  computePerDomainDelta,
+  sanitizePerDomainDelta,
+} from "@/lib/intake-baseline";
 import type { DomainScoreKey } from "@/lib/intake-engine";
+import { hasMethodologyChange } from "@/lib/rules-version";
 import type {
   BuildDeltaReportInput,
   CouplingEntry,
@@ -15,14 +19,26 @@ function resolveDirection(delta: number): DeltaDirection {
   return "neutral";
 }
 
+function resolveRulesVersions(input: BuildDeltaReportInput): {
+  baselineRulesVersion: string;
+  currentRulesVersion: string;
+} | null {
+  const { baselineRulesVersion, currentRulesVersion } = input;
+  if (!baselineRulesVersion || !currentRulesVersion) {
+    return null;
+  }
+  return { baselineRulesVersion, currentRulesVersion };
+}
+
 function buildVitalityDelta(
   baseline: BuildDeltaReportInput["baseline"],
   current: BuildDeltaReportInput["current"],
   indexFormula: BuildDeltaReportInput["config"]["indexFormula"],
+  methodologyChanged: boolean,
 ): VitalityDelta {
   const was = indexFormula(baseline);
   const now = indexFormula(current);
-  const delta = now - was;
+  const delta = methodologyChanged ? 0 : now - was;
   return { was, now, delta, direction: resolveDirection(delta) };
 }
 
@@ -30,8 +46,19 @@ function buildPerDomain(
   baseline: BuildDeltaReportInput["baseline"],
   current: BuildDeltaReportInput["current"],
   config: BuildDeltaReportInput["config"],
+  rulesVersions: {
+    baselineRulesVersion: string;
+    currentRulesVersion: string;
+  } | null,
 ): DomainDeltaEntry[] {
-  const deltas = computePerDomainDelta(baseline, current);
+  const deltas = rulesVersions
+    ? sanitizePerDomainDelta({
+        baseline,
+        current,
+        baselineRulesVersion: rulesVersions.baselineRulesVersion,
+        currentRulesVersion: rulesVersions.currentRulesVersion,
+      })
+    : computePerDomainDelta(baseline, current);
 
   return config.domains
     .map((domain) => {
@@ -103,11 +130,23 @@ function buildCoupling(
 
 export function buildDeltaReport(input: BuildDeltaReportInput): DeltaReport {
   const { baseline, current, daysBetween, sustainedActions, config } = input;
-  const perDomain = buildPerDomain(baseline, current, config);
+  const rulesVersions = resolveRulesVersions(input);
+  const methodologyChanged = rulesVersions
+    ? hasMethodologyChange(
+        rulesVersions.baselineRulesVersion,
+        rulesVersions.currentRulesVersion,
+      )
+    : false;
+  const perDomain = buildPerDomain(baseline, current, config, rulesVersions);
 
   return {
     perDomain,
-    vitality: buildVitalityDelta(baseline, current, config.indexFormula),
+    vitality: buildVitalityDelta(
+      baseline,
+      current,
+      config.indexFormula,
+      methodologyChanged,
+    ),
     movedPriority: buildMovedPriority(baseline, current, config),
     coupling: buildCoupling(sustainedActions, perDomain),
     method: {
@@ -117,5 +156,6 @@ export function buildDeltaReport(input: BuildDeltaReportInput): DeltaReport {
       notDiagnosis: true,
       daysBetween,
     },
+    methodologyChanged,
   };
 }

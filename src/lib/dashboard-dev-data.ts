@@ -4,6 +4,7 @@ import {
 } from "@/data/measurement-config";
 import { buildDeltaReport } from "@/lib/delta-report";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
+import { RULES_VERSION } from "@/lib/intake-engine";
 import type {
   Check,
   CheckId,
@@ -105,6 +106,8 @@ export function buildDevDashboardData(
             },
           ],
           config: perfectSupplementMeasurementConfig,
+          baselineRulesVersion: RULES_VERSION,
+          currentRulesVersion: RULES_VERSION,
         })
       : null;
 

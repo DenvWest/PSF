@@ -54,6 +54,7 @@ export type DeltaReport = {
   movedPriority: { from: DomainScoreKey; to: DomainScoreKey } | null;
   coupling: CouplingEntry[];
   method: DeltaMethod;
+  methodologyChanged: boolean;
 };
 
 export type BuildDeltaReportInput = {
@@ -62,4 +63,6 @@ export type BuildDeltaReportInput = {
   daysBetween: number;
   sustainedActions: SustainedAction[];
   config: MeasurementConfig;
+  baselineRulesVersion?: string;
+  currentRulesVersion?: string;
 };
