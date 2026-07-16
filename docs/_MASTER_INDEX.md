@@ -12,7 +12,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 **Meet-, personalisatie- & identiteitslaag** — de content-foundation staat; de focus ligt nu op de meet-lus (zelfrapportage per domein), het persoonlijke account + dashboard (continuïteit-moat) en personalisatie (eiwit/PAL). Zie [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md) + [`plan/PLAN_MEASUREMENT_PERSONALIZATION.md`](plan/PLAN_MEASUREMENT_PERSONALIZATION.md). Content-spinnenweb = doorlopend onderhoud.
 
-## Wat is live (juni 2026)
+## Wat is live (juli 2026)
 
 - 7 vergelijkingspagina's met affiliate (`/beste/*`; geen melatonine — zie `COMPLIANCE.md`)
 - 7 pillar pages: slaap, stress, energie, herstel, testosteron, voeding, beweging (zie `core/CONTENT_MAP.md`)
@@ -23,6 +23,14 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 - Admin dashboard
 - **Account & persoonlijk dashboard (juni 2026):** passwordless inlog (OTP-code + magic-link), `psf_account`-cookie, `/dashboard` met scores/trend/prioriteit per account, check-in-meet-lus — zie [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md)
 - **Meet-lussen:** voeding (`intake_intake_log`) + zachte pijlers (`intake_domain_checkin`: slaap/stress/beweging) met delta tegen baseline
+- Scoring engine **1.4.0** (item-herskalering; `rules_version` op nieuwe sessies)
+- Hermeting-delta gegate over methodiek-grens (dashboard + rapport)
+- Intake funnel-events: `intake.started`, `intake.phase_completed` (+ GA4 `quiz_gestart` / `intake_phase_completed`)
+- Account durable events: `/api/account/events` (`domain_tool.*`, `focus.viewed`)
+- Entitlements: `src/lib/db/entitlements.ts` (capabilities `trends`, `coach`, `q2`)
+- Premium waitlist geconsolideerd (`premium-coaching` + `price_indication` banden)
+- Psychometrische baseline: [`research/ITEM_ANALYSE_BASELINE.md`](research/ITEM_ANALYSE_BASELINE.md) (`npm run analyse:items`)
+- Prod N=2 voltooide intakes (16 jul 2026) — distributiesignaal, geen scoring-bug
 
 ---
 
@@ -104,6 +112,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 16 juli 2026 | Pre-traffic gates: 1.4.0 live, funnel-events, waitlist-migratie prod, item-baseline N=2 | `core/CURRENT_SPRINT.md` + `research/ITEM_ANALYSE_BASELINE.md` |
 | 16 juli 2026 | Lifestyle Planning Engine: generieke leefstijlarchitectuur onder Kompas; content-laag (leefstijlplan) + planning-laag (`lp_*`); Beweegplan (hoofdactiviteiten + beweegsnacks) als eerste module | `plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md` |
 | 27 juni 2026 | Aanpak-modus maand-roadmap (27 jun–24 jul): één categorie diep (sport/kracht: eiwit→kracht→creatine) als bewezen sjabloon vóór breedte; nutriënt-personalisatie = surfacing van bestaande lib (computeProteinTarget/movement-pal) in de Aanpak-kaart; categorie-map als visie; meet-vóór-uitbreiden | `plan/PLAN_AANPAK_MAAND_ROADMAP.md` |
 | 26 juni 2026 | IA prioriteit × moeite-matrix: positioneringsgrid (geen takenlijst), evidence als korte credibility-tag (geen as), vier kwadranten met verdienmodel (Q1 gratis = vertrouwen, Q2 betaald = persoonlijk programma), twee gescheiden klikdoelen (evidence→bron, CTA→actie/upsell), coach-first→playbook→LLM | `plan/PLAN_PRIORITEIT_MOEITE_MATRIX.md` |

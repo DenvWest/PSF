@@ -6,7 +6,7 @@
 
 ## Strategische prioriteit
 
-**Meet-lus + account/dashboard (juni 2026).** De content-foundation staat; de focus ligt nu op de **continuïteit-moat**: een persoonlijk passwordless account, een `/dashboard` op echte data, en de check-in-meet-lus. Zie [`ACCOUNT_DASHBOARD_SYSTEM.md`](ACCOUNT_DASHBOARD_SYSTEM.md). Content-spinnenweb = doorlopend onderhoud, geen sprintfocus meer.
+**Juli 2026 — pre-traffic / meet-lus.** De content-foundation en account/dashboard staan; de focus ligt nu op **meten vóór schaal**: funnel-events, item-baseline onder 1.4.0, en week-0 aflezing zodra verkeer komt. Zie [`ACCOUNT_DASHBOARD_SYSTEM.md`](ACCOUNT_DASHBOARD_SYSTEM.md) + [`docs/research/ITEM_ANALYSE_BASELINE.md`](../research/ITEM_ANALYSE_BASELINE.md). Content-spinnenweb = doorlopend onderhoud, geen sprintfocus.
 
 ---
 
@@ -74,6 +74,22 @@ ORDER BY s.profile_label, f.rating;
 
 ---
 
+## Juli 2026 — pre-traffic gates (voltooid)
+
+- Engine **1.4.0** + item-analyse baseline (S2/S3; `npm run analyse:items`)
+- Delta-gating hermeting over `rules_version`-grens (dashboard + rapport + `buildDeltaReport`)
+- Intake funnel-events per fase (`intake.started` → `intake.phase_completed`)
+- Account-events route + entitlements SSOT (`src/lib/db/entitlements.ts`)
+- Premium waitlist consolidatie prod (migratie `20260704120000`)
+
+## Actief juli 2026 (niet bouwen vóór verkeer)
+
+- Week-0 funnel aflezen (PostHog/`domain_events` + GA4; **alleen consented cohort**)
+- Cookie + GA4 checklists afvinken (`docs/cursors/cookie-consent-pre-deploy-checklist.md`, `ga4-account-hardening-checklist.md`)
+- Geen S4/S6, geen Stripe, geen drempel-tuning op N&lt;100
+
+---
+
 ## Volgende sprint (Wave 7)
 
 | # | Item | Type | Impact |
@@ -107,4 +123,4 @@ ORDER BY s.profile_label, f.rating;
 
 ---
 
-*Laatst bijgewerkt: 18 juni 2026*
+*Laatst bijgewerkt: 16 juli 2026*
