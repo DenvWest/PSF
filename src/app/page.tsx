@@ -8,9 +8,9 @@ import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import "./homepage.css";
 
-const HOME_TITLE = "Minder energie na 40? Gratis Leefstijlcheck | PerfectSupplement";
+const HOME_TITLE = "Minder energie na 40? Zo vind je de oorzaak";
 const HOME_DESCRIPTION =
-  "In 3 minuten inzicht in slaap, stress, energie en herstel — zonder diagnose. Gratis, anoniem en onafhankelijk. Geen sponsors, geen verkooppraat.";
+  "Minder energie na 40 is vaak geen ‘gewoon ouder worden’. Ontdek in 3 minuten wat je leefstijl doet met slaap, stress en herstel. Gratis check.";
 
 export const metadata: Metadata = {
   title: { absolute: HOME_TITLE },
