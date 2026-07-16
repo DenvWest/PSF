@@ -16,6 +16,20 @@
 | Item-analyse baseline | ✅ | `docs/research/ITEM_ANALYSE_BASELINE.md` — N=2 (1.3.1 + 1.4.0) |
 | Cookie-consent pre-deploy checklist | ✅ | `docs/cursors/cookie-consent-pre-deploy-checklist.md` — 10/10 prod |
 | GA4 account hardening | ✅ | `docs/cursors/ga4-account-hardening-checklist.md` — land NL, delen uit, retentie 14m |
+| Sentry error monitoring | Code ✅ / DSN prod ⏳ | `src/lib/sentry-scrub.ts`; zie prod-stappen hieronder |
+
+---
+
+## Sentry prod-activering (Dennis)
+
+1. Maak Sentry-project aan met **EU data residency**.
+2. Accepteer DPA in Sentry → archiveer in `Documenten/.../privacy/dpa/`.
+3. Zet in `/root/perfectsupplement/.env`:
+   - `SENTRY_DSN=https://…`
+   - `SENTRY_ENVIRONMENT=production` (optioneel)
+4. `sudo systemctl restart perfectsupplement`
+5. Verifieer: één test-exception in Sentry dashboard; geen health-data in payload.
+6. `npm run generate-legal-pdfs` na register/privacy-wijziging.
 
 ---
 

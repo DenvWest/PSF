@@ -82,8 +82,10 @@ export default function PrivacyPage() {
                         <h3 className="font-semibold text-stone-900">Automatisch verzamelde gegevens</h3>
                         <p className="mt-2">
                             Voor inzicht in het gebruik van de site gebruiken we Google Analytics en
-                            Microsoft Clarity, alleen na toestemming via de cookiebanner. Cloudflare
-                            Turnstile wordt ingezet ter bescherming tegen misbruik en plaatst geen
+                            Microsoft Clarity, alleen na toestemming via de cookiebanner. Voor technische
+                            stabiliteit kunnen we anonieme foutmeldingen (stack traces, URL, apparaattype)
+                            via Sentry verwerken — zonder intake-antwoorden of gezondheidsgegevens.
+                            Cloudflare Turnstile wordt ingezet ter bescherming tegen misbruik en plaatst geen
                             trackingcookies voor advertentiedoeleinden. Voor de intake wordt een
                             functioneel sessiecookie{" "}
                             <span className="font-mono text-stone-700">psf_intake_sid</span> gebruikt om je
@@ -199,6 +201,15 @@ export default function PrivacyPage() {
                             </tr>
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3 align-top">
+                                    Technische foutmonitoring (stabiliteit)
+                                </td>
+                                <td className="px-4 py-3 align-top">Art. 6 lid 1 sub f AVG (gerechtvaardigd belang)</td>
+                                <td className="px-4 py-3 align-top">
+                                    Anonieme foutmeldingen (stack trace, URL, apparaattype; geen intake-data)
+                                </td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 align-top">
                                     Affiliate-klikmeting
                                 </td>
                                 <td className="px-4 py-3 align-top">Art. 6 lid 1 sub f AVG (gerechtvaardigd belang)</td>
@@ -301,6 +312,10 @@ export default function PrivacyPage() {
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Microsoft Clarity</td>
                                 <td className="px-4 py-3">1 dag tot 1 jaar (cookie-afhankelijk)</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Sentry (foutmonitoring)</td>
+                                <td className="px-4 py-3">90 dagen</td>
                             </tr>
                         </tbody>
                     </table>
@@ -486,6 +501,12 @@ export default function PrivacyPage() {
                             <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3">Resend</td>
                                 <td className="px-4 py-3">E-mail — Verenigde Staten, EU-US Data Privacy Framework</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3">Sentry</td>
+                                <td className="px-4 py-3">
+                                    Foutmonitoring — EU (indien geconfigureerd); geen gezondheidsdata in events
+                                </td>
                             </tr>
                         </tbody>
                     </table>
