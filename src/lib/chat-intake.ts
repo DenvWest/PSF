@@ -33,7 +33,7 @@ const QUESTION_MAP: Record<string, { label: string; domain: string }> = {
   NUT_O3: { label: "Hoe vaak eet je vette vis of omega-3 rijke voeding?", domain: "voeding" },
   NUT_PROT: { label: "Hoe beoordeel je je eiwitinname?", domain: "voeding" },
   MOV_STR: { label: "Hoe vaak doe je krachttraining?", domain: "beweging" },
-  MOV_CARD: { label: "Hoe vaak doe je cardio of intensieve sport?", domain: "beweging" },
+  MOV_CARD: { label: "Hoe vaak beweeg je matig intensief (praten lukt, zingen niet)?", domain: "beweging" },
   RCV_PHYS: { label: "Hoe goed herstelt je lichaam na inspanning?", domain: "herstel" },
   LIF_ALC: { label: "Hoe vaak drink je 3+ glazen alcohol op één avond?", domain: "leefstijl" },
   LIF_SUN: { label: "Hoeveel zon en buitenlicht krijg je?", domain: "leefstijl" },

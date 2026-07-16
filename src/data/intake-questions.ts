@@ -260,7 +260,9 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "MOV_CARD",
     category: "beweging",
     questionIndex: 2,
-    question: "Hoe vaak doe je cardio of intensieve sport (hardlopen, fietsen, teamsport)?",
+    question:
+      "Hoe vaak beweeg je matig intensief — stevig doorwandelen, fietsen of sport waarbij praten nog lukt, maar zingen niet?",
+    subtitle: "Dit tempo (zone 2) traint je conditie — de basis onder je energie en herstel.",
     options: [
       { label: "3x per week of meer", value: 4 },
       { label: "1-2x per week", value: 3 },
@@ -296,7 +298,8 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     category: "leefstijl",
     questionIndex: 2,
     question: "Hoeveel zon en buitenlicht krijg je gemiddeld?",
-    subtitle: "Vitamine D uit zonlicht is na je 40e extra relevant in Nederland",
+    subtitle:
+      "Buitenlicht zet je biologische klok — belangrijk voor slaap en energie. In de zomer maakt je huid er ook vitamine D mee aan.",
     options: [
       { label: "Dagelijks, ook in de winter", value: 4 },
       { label: "Regelmatig, meestal overdag buiten", value: 3 },

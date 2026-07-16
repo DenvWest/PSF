@@ -21,6 +21,13 @@ export default function RevealHeroCard({ model, profile }: RevealHeroCardProps) 
     <article aria-label="Jouw startprofiel" className="grid gap-4 text-center">
       <RevealVitalityInstrument value={model.vitality} />
 
+      <p
+        className="mx-auto max-w-[40ch] text-[12px] leading-relaxed text-[#78716c]"
+        style={{ textWrap: "pretty" }}
+      >
+        {REVEAL_COPY.vitalityScoreFraming}
+      </p>
+
       <div className="grid gap-1.5">
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#78716c]">
           {REVEAL_COPY.profileEyebrow}

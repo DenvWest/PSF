@@ -23,7 +23,8 @@ export const MOVEMENT_QUESTIONS: MovementQuestion[] = [
   {
     field: "MOV_CARD",
     dimension: "conditie",
-    question: "Hoe vaak doe je cardio of intensieve sport (hardlopen, fietsen, teamsport)?",
+    question:
+      "Hoe vaak beweeg je matig intensief — stevig doorwandelen, fietsen of sport waarbij praten nog lukt, maar zingen niet?",
     options: [
       { label: "3x per week of meer", value: 4 },
       { label: "1-2x per week", value: 3 },

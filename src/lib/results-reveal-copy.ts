@@ -20,6 +20,8 @@ export const REVEAL_COPY = {
   dashboardMockLabel: "Jouw dashboard",
   dashboardScoreStartHint: "start",
   vitalityScoreEyebrow: "Je vitaliteitsscore",
+  vitalityScoreFraming:
+    "Geen medische test: we meten hoe goed je leefstijl je vitaliteit ondersteunt — vijf pijlers, elk even zwaar. Energie en herstel zijn je uitlezing.",
   profileEyebrow: "JOUW STARTPROFIEL",
   profileStepTitle: "Waar je nu staat",
   startStepTitle: "Waar je begint — en je eerste stap",

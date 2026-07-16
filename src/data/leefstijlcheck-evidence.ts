@@ -60,6 +60,7 @@ export const LEEFSTIJLCHECK_TRANSPARANTIE_NOTES: string[] = [
   "Per juli 2026 (rules_version 1.3.0): verbinding als 5e interventiedomein (CON_SOC); vitaliteit = 5 interventiedomeinen.",
   "Per juli 2026: het conceptuele model is verduidelijkt naar drie lagen (determinanten, gedrag, uitkomsten); de basisbehoeften worden als parallel beschreven en de 'energie-batterij' is als causaal mechanisme losgelaten.",
   "Per juli 2026: verbinding-onderbouwing verbreed met de mortaliteits-meta-analyse (2010), de buffering-hypothese en sociale-netwerklagen (kwaliteit vs kwantiteit).",
+  "Per juli 2026: MOV_CARD geherformuleerd naar matig-intensief bewegen met spreektest-anker en zone-2-toelichting; LIF_SUN-toelichting geherformuleerd naar daglicht-eerst. Inclusievere vraagteksten, geen waarde-wijziging.",
 ];
 
 export const LEEFSTIJLCHECK_INTERVENTION_DOMAINS = [
@@ -561,7 +562,7 @@ export const LEEFSTIJLCHECK_QUESTION_EVIDENCE: QuestionEvidence[] = [
   {
     questionId: "MOV_CARD",
     whyThisQuestion:
-      "Cardio-activiteit geeft inzicht in aerobe belasting en dagelijke bewegingsdosis.",
+      "Matig-intensieve beweging (zone 2, spreektest-anker) geeft inzicht in de aerobe basis en wekelijkse bewegingsdosis.",
     scientificRationale: [
       "WHO-richtlijnen beschrijven wekelijkse matig-intensieve tot intensieve activiteit als basis voor fitheid.",
       "Meta-analyses tonen dat meer cardiorespiratoire activiteit samenhangt met betere functionele uitkomsten.",

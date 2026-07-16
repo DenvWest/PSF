@@ -30,7 +30,7 @@
 | # | Stap | Prio | Afhankelijk van | RULES_VERSION | Risico | Omvang | Status |
 |---|------|------|-----------------|---------------|--------|--------|--------|
 | S0 | Evidence-, habit- & docs-sync (was "L0") | **1** | — | Nee | Laag | ~1 sessie | ✅ (12 jul) |
-| S1 | Bias- & framing-copy (zonder waarde-wijziging) | **1** | — | Nee | Laag | ~1 sessie | ⬜ |
+| S1 | Bias- & framing-copy (zonder waarde-wijziging) | **1** | — | Nee | Laag | ~1 sessie | ✅ (16 jul) |
 | S2 | Item-analyse-script + baseline-rapport | **2** | — (vóór S3!) | Nee | Laag | ~1 sessie | ⬜ |
 | S3 | Engine-bump 1.4.0: herskalering + validiteitsfixes | **3** | S2 (baseline eerst) | **Ja** | Middel | 1–2 sessies | ⬜ |
 | S4 | Vraagset-herverdeling 16→17 (bump 1.5.0) | **4** | S3 | **Ja** | Middel–hoog | 1–2 sessies | ⬜ |
@@ -99,6 +99,12 @@
 **Acceptatie:** geen enkel `value:`-veld gewijzigd in `intake-questions.ts` (diff-check) · framing-zin zichtbaar op resultaat · tsc + vitest groen · 375px-check resultaatscherm.
 **Meetpunt:** `intake_completed` + bestaande score-events; geen nieuw event (geen nieuwe CTA).
 **Voorgestelde commit:** `fix(leefstijlcheck): S1 inclusieve vraag-copy (MOV_CARD, LIF_SUN) + niet-medische scoreframing`
+
+**Uitgevoerd 16 jul 2026 — afwijkingen t.o.v. deze instructie:**
+- **MOV_CARD-formulering herzien door Dennis tijdens uitvoering.** De plan-tekst ("Hoe vaak beweeg je stevig — flink doorwandelen, fietsen, hardlopen of sport waarvan je hartslag omhoog gaat?") is afgekeurd; op zijn keuze is de vraag wetenschappelijk verankerd op matig-intensief/zone 2 met spreektest-anker: `"Hoe vaak beweeg je matig intensief — stevig doorwandelen, fietsen of sport waarbij praten nog lukt, maar zingen niet?"` + nieuwe subtitle `"Dit tempo (zone 2) traint je conditie — de basis onder je energie en herstel."` (WHO 2020-basis uit expertreview §7; bias-doel — wandelaars/fietsforensen tellen mee — blijft behaald.)
+- **Consistentie-uitbreiding buiten het genoemde bestand:** dezelfde MOV_CARD-herformulering doorgevoerd in `src/data/movement-checkin/index.ts` (check-in stelt letterlijk dezelfde vraag; werkafspraak 5 — baseline↔hermeting moet hetzelfde construct meten) en verkort in het `chat-intake.ts`-label. Evidence-copy `whyThisQuestion` (MOV_CARD) meebewogen naar het matig-intensief-construct.
+- **S1.3 bewust géén copy-wijziging.** Inventaris: engine-quick-wins (`getAdvice`) en `PILLAR_DRAWER_FALLBACKS` bieden al meerdere opties; de `resolveNextBestHabit`-regels zijn enkelvoudig maar concreet en feit-gebonden, en het één-pad-principe is een gedocumenteerde ontwerpbeslissing (STEPPED_CARE_MODEL: "de engine bepaalt de volgorde — geen keuzestress"). "Kies wat bij je past"-toevoegingen zouden botsen met het feit-eerst-besluit uit S0. Volledige keuze-architectuur blijft S7.
+- **S1.2 implementatie:** nieuwe copy-key `vitalityScoreFraming` in `results-reveal-copy.ts`, gerenderd in `RevealHeroCard` direct onder het score-instrument (geen nieuwe component). 375px: zelfde patroon als bestaande hero-paragraaf (`mx-auto max-w-[40ch]`), visueel na te lopen bij review.
 
 ---
 
@@ -252,3 +258,4 @@
 |-------|------|------------------|
 | 11 jul 2026 | — | Plan opgesteld; besluiten vastgelegd (check-in gratis / plan premium); S0-instructies overgenomen uit de eerdere L0-prompt |
 | 12 jul 2026 | S0 | Uitgevoerd: habit-kernel CON_SOC-regel, `STATIC_HEFBOOM.connection`, evidence (3 refs × 2 plekken + rationale-bullet + transparantie-note), `connection.md` herschreven, `ANALYSIS_PILLAR_COVERAGE.md` gecorrigeerd. Afwijking: CON_SOC-habitregel op verzoek Dennis herzien naar feit-eerst variant (zie sectie hierboven). tsc + vitest groen (123 files / 1095 tests). Niet gecommit. |
+| 16 jul 2026 | S1 | Uitgevoerd: MOV_CARD herformuleerd (spreektest/zone-2-variant gekozen door Dennis, incl. subtitle; consistent in intake + movement-check-in + chat-label + evidence-copy), LIF_SUN-subtitle daglicht-eerst, `vitalityScoreFraming` op resultaatscherm (RevealHeroCard), transparantie-note toegevoegd. S1.3-inventaris: bewust geen wijziging (één-pad-principe + feit-eerst-besluit; keuze-architectuur = S7). 0 `value:`-velden geraakt; tsc + vitest groen (131 files / 1164 tests) + eslint schoon. Niet gecommit. |
