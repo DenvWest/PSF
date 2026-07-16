@@ -19,6 +19,19 @@ LifestylePlanTemplate (content, data)  +  PlanProgress (pseudonieme staat)
 Schrijf inhoud dus nooit in Word/PDF, maar in het getypte template. Weergave
 (Tailwind/JSX) hoort in het component, niet in de data.
 
+### Content-laag vs planning-laag
+
+Het leefstijlplan heeft **twee complementaire lagen**:
+
+| Laag | Vraag | SSOT |
+|------|-------|------|
+| **Content / checklist** (dit handboek) | *Wat* doe je in week 1–12? | `LifestylePlanTemplate` + `PlanProgress` |
+| **Planning / uitvoering** (Kompas) | *Wanneer* en *met welke prioriteit*? | Lifestyle Planning Engine — zie [`ARCHITECTUUR_LIFESTYLE_PLANNER.md`](ARCHITECTUUR_LIFESTYLE_PLANNER.md) |
+
+De checklist-laag blijft session-scoped (`plan_progress`); de planning-laag is
+account-scoped (`lp_*`-tabellen) en dekt scheduling, beweegsnacks, agenda,
+wearables en notificaties. **Beweegplan** is de eerste module (`movement`).
+
 ## 2. Personalisatie-ladder (begin met advies, word persoonlijker)
 
 | Laag | Bron | Waar het leeft |
@@ -48,6 +61,7 @@ of L1, geen nieuwe infrastructuur.
 | Analytics-consent-cookie | `src/lib/analytics-consent.ts` |
 | DB-schema + revoke-RPC's | `supabase/migrations/*_plan_progress.sql` |
 | Tracking-/privacy-contract | `docs/plan/tracking-en-privacy.md` |
+| Planning-engine (Kompas) | `docs/plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md` |
 
 ## 4. Harde regels (niet zonder reden breken)
 
@@ -163,4 +177,4 @@ of L1, geen nieuwe infrastructuur.
 - [ ] Tweede domein (stress) als bevestiging van de blauwdruk.
 - [ ] n8n event-routing (gedrag i.p.v. kalender).
 - [ ] B2B-coach-laag (L3).
-```
+- [ ] Lifestyle Planning Engine — Fase 1 (Beweegplan): zie [`ARCHITECTUUR_LIFESTYLE_PLANNER.md`](ARCHITECTUUR_LIFESTYLE_PLANNER.md).

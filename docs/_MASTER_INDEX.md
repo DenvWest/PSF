@@ -56,6 +56,8 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | [`core/PERSONALIZATION_ENGINE.md`](core/PERSONALIZATION_ENGINE.md) | Profiel-architectuur, scoring triggers, 8-sectie structuur, spinnenweb per profiel |
 | [`core/STEPPED_CARE_MODEL.md`](core/STEPPED_CARE_MODEL.md) | PLAN-journey per symptoom: tiers (gratis→meten→supplement→betaald), intervention_triggers, render-eisen |
 | [`core/ACCOUNT_DASHBOARD_SYSTEM.md`](core/ACCOUNT_DASHBOARD_SYSTEM.md) | Passwordless account (OTP/magic-link), `psf_account`-cookie, claim/revoke, dashboard-dataflow, check-in-meet-lus (F1–F3) |
+| [`plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md`](plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md) | Lifestyle Planning Engine (Kompas): scheduling, prioriteit, beweegsnacks, agenda/wearables, notificaties — Beweegplan als eerste module |
+| [`plan/LEEFSTIJLPLAN_HANDBOOK.md`](plan/LEEFSTIJLPLAN_HANDBOOK.md) | Leefstijlplan content/checklist-laag (templates, voortgang, events) |
 
 ### Layer 3 — Work (tijdelijk, verandert regelmatig)
 
@@ -94,6 +96,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Architectuur-strategie analyse (Claude prompt) | `cursors/architecture-strategy-analysis-prompt.md` |
 | Plan-fase / premium tier / n8n-triage analyse (Claude prompt) | `cursors/claude-analyse-plan-fase-n8n-tier-prompt.md` |
 | Evidence-chat / n8n (fase 8) | `core/EVIDENCE_CHAT.md` |
+| Kompas planner / Beweegplan | `plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md` + `plan/LEEFSTIJLPLAN_HANDBOOK.md` |
 
 ---
 
@@ -101,6 +104,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 | Datum | Beslissing | Gedocumenteerd in |
 |---|---|---|
+| 16 juli 2026 | Lifestyle Planning Engine: generieke leefstijlarchitectuur onder Kompas; content-laag (leefstijlplan) + planning-laag (`lp_*`); Beweegplan (hoofdactiviteiten + beweegsnacks) als eerste module | `plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md` |
 | 27 juni 2026 | Aanpak-modus maand-roadmap (27 jun–24 jul): één categorie diep (sport/kracht: eiwit→kracht→creatine) als bewezen sjabloon vóór breedte; nutriënt-personalisatie = surfacing van bestaande lib (computeProteinTarget/movement-pal) in de Aanpak-kaart; categorie-map als visie; meet-vóór-uitbreiden | `plan/PLAN_AANPAK_MAAND_ROADMAP.md` |
 | 26 juni 2026 | IA prioriteit × moeite-matrix: positioneringsgrid (geen takenlijst), evidence als korte credibility-tag (geen as), vier kwadranten met verdienmodel (Q1 gratis = vertrouwen, Q2 betaald = persoonlijk programma), twee gescheiden klikdoelen (evidence→bron, CTA→actie/upsell), coach-first→playbook→LLM | `plan/PLAN_PRIORITEIT_MOEITE_MATRIX.md` |
 | 14–17 juni 2026 | Account-identiteitslaag + persoonlijk dashboard: passwordless OTP-login (+ magic-link), `psf_account`-cookie (aparte secret), claim/revoke (omkeerbaar intrekken), dashboard op echte `intake_sessions`, check-in-meet-lus (F3b: `intake_domain_checkin` in de trend), login-vindbaarheid (IMU-header) | `core/ACCOUNT_DASHBOARD_SYSTEM.md` |
@@ -120,4 +124,4 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 
 ---
 
-*Laatst bijgewerkt: 27 juni 2026*
+*Laatst bijgewerkt: 16 juli 2026*
