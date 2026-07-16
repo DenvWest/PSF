@@ -16,20 +16,33 @@
 | Item-analyse baseline | ✅ | `docs/research/ITEM_ANALYSE_BASELINE.md` — N=2 (1.3.1 + 1.4.0) |
 | Cookie-consent pre-deploy checklist | ✅ | `docs/cursors/cookie-consent-pre-deploy-checklist.md` — 10/10 prod |
 | GA4 account hardening | ✅ | `docs/cursors/ga4-account-hardening-checklist.md` — land NL, delen uit, retentie 14m |
-| Sentry error monitoring | Code ✅ / DSN prod ⏳ | `src/lib/sentry-scrub.ts`; zie prod-stappen hieronder |
+| Sentry error monitoring | ✅ | DPA 5.1.0 + EU-regio; prod `SENTRY_DSN`; scrubber `src/lib/sentry-scrub.ts` |
 
 ---
 
-## Sentry prod-activering (Dennis)
+## Sentry prod-activering — afgerond 16 jul 2026
 
-1. Maak Sentry-project aan met **EU data residency**.
-2. Accepteer DPA in Sentry → archiveer in `Documenten/.../privacy/dpa/`.
-3. Zet in `/root/perfectsupplement/.env`:
-   - `SENTRY_DSN=https://…`
-   - `SENTRY_ENVIRONMENT=production` (optioneel)
-4. `sudo systemctl restart perfectsupplement`
-5. Verifieer: één test-exception in Sentry dashboard; geen health-data in payload.
-6. `npm run generate-legal-pdfs` na register/privacy-wijziging.
+| Stap | Status |
+|---|---|
+| EU-project + DPA 5.1.0 | ✅ |
+| Prod `.env`: `SENTRY_DSN` + `SENTRY_ENVIRONMENT=production` | ✅ (let op: hoofdletters `SENTRY_DSN`, niet `sentry_DSN`) |
+| Service restart | ✅ |
+| Smoke test | ✅ `sentry-smoke-test-psf-2026-07-16` |
+| Register + legal PDF's | ✅ |
+
+### Sentry UI — errors only (handmatig controleren)
+
+In project **javascript-nextjs** → Settings:
+
+| Feature | Gewenst |
+|---|---|
+| Session Replay | **UIT** |
+| Performance / Tracing | **UIT** (code: `tracesSampleRate: 0`) |
+| Seer / AI | **UIT** |
+| Alerts | Alleen **nieuwe issues** (geen spam) |
+| Legal → Use of aggregated identifying data | **UIT** (org-niveau — bevestigd) |
+
+Smoke test: open Issues → zoek `sentry-smoke-test-psf-2026-07-16` → payload mag **geen** `domain_scores`, `answers`, `symptom_profile`, e-mail of cookies bevatten.
 
 ---
 

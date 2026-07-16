@@ -222,7 +222,7 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Bewaartermijn** | 90 dagen (Sentry default) |
 | **Beveiligingsmaatregelen** | `beforeSend`-scrubber; `sendDefaultPii: false`; geen DSN = geen verzending; DPA vereist vóór prod-DSN |
 | **Doorgifte buiten EU** | Alleen indien Sentry-project buiten EU staat — standaard EU-project aanbevolen |
-| **Niet actief** | Zonder `SENTRY_DSN` in omgeving is Sentry uitgeschakeld (code voorbereid, geen events) |
+| **Actief** | Prod-DSN geconfigureerd; scrubber + `sendDefaultPii: false`; alleen errors (geen Replay) |
 
 ---
 
@@ -239,7 +239,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 | Google (Analytics 4) | Geaccepteerd **23-11-2022** in GA4 Accountinstellingen | VS (DPF + Google Ads Data Processing Terms) | `dpa/Google_Analytics_DPA_geaccepteerd_2026-07-04.png` |
 | Microsoft (Clarity) | Geaccepteerd (Microsoft Product and Services DPA) | VS (DPF) | `dpa/MicrosoftProductandServicesDPAClarity.docx` |
 | Zoho CRM | **Te accepteren** — checklist `docs/legal/Zoho_CRM_DPA_accepteren.md` | EU | Na acceptatie: `dpa/Zoho_CRM_DPA_geaccepteerd_[datum].pdf` |
-| Sentry | **Te accepteren vóór prod-DSN** — DPA in Sentry-account | EU (projectregio) | Na acceptatie: `dpa/Sentry_DPA_geaccepteerd_[datum].pdf` |
+| Sentry | Geaccepteerd (DPA 5.1.0, 16 jul 2026) | EU (projectregio) | `dpa/Sentry_DPA_geaccepteerd_2026-07-16.png` |
 
 **Niet actief in productie (geen verwerkersovereenkomst nodig zolang uit):**
 
@@ -264,7 +264,8 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
-| 2026-07-16 | Sentry error monitoring toegevoegd (code + scrubber; DPA/DSN prod nog door Dennis) |
+| 2026-07-16 | Sentry DPA 5.1.0 geaccepteerd + prod-DSN actief (EU-regio; aggregated identifying data uit) |
+| 2026-07-16 | Sentry error monitoring toegevoegd (code + scrubber) |
 | 2026-07-16 | Cookie-consent pre-deploy checklist afgevink (prod) |
 | 2026-07-16 | GA4 account hardening gecontroleerd (land NL, delen uit, retentie 14m) |
 | 2026-07-04 | Eerste versie in repo — samengesteld uit privacyverklaring, DPIA PDF (apr 2026), codebase |
