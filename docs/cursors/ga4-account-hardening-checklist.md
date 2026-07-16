@@ -1,7 +1,7 @@
 # GA4 account hardening — verificatiechecklist
 
 **Property:** `G-EVHN1F8ZQW` (PerfectSupplement)  
-**Laatst gecontroleerd:** _[vul datum in na verificatie]_  
+**Laatst gecontroleerd:** 2026-07-16  
 **DPA:** geaccepteerd 23-11-2022 — archief `dpa/Google_Analytics_DPA_geaccepteerd_2026-07-04.png`
 
 Gebruik deze checklist in [Google Analytics](https://analytics.google.com/) → Admin. Code-side mitigatie (consent-gate, geen health data) staat al in de repo; dit zijn **accountinstellingen** die alleen in GA4 zelf te wijzigen zijn.
@@ -12,7 +12,7 @@ Gebruik deze checklist in [Google Analytics](https://analytics.google.com/) → 
 
 | Instelling | Gewenst | Gecontroleerd |
 |---|---|---|
-| Account → Accountinstellingen → **Land** | **Nederland** | [ ] |
+| Account → Accountinstellingen → **Land** | **Nederland** | [x] |
 
 ---
 
@@ -22,11 +22,11 @@ Admin → Accountinstellingen → **Gegevens delen en -verzameling**:
 
 | Instelling | Gewenst | Gecontroleerd |
 |---|---|---|
-| Google-producten en -services | **Uit** (of minimaal) | [ ] |
-| Modellering | **Uit** | [ ] |
-| Technische ondersteuning | Naar behoefte (mag aan voor support) | [ ] |
-| Accountspecialisten | **Uit** | [ ] |
-| Aanbevelingen voor uw bedrijf | **Uit** | [ ] |
+| Google-producten en -services | **Uit** (of minimaal) | [x] |
+| Modellering | **Uit** | [x] |
+| Technische ondersteuning | Naar behoefte (mag aan voor support) | [x] |
+| Accountspecialisten | **Uit** | [x] |
+| Aanbevelingen voor uw bedrijf | **Uit** | [x] |
 
 ---
 
@@ -36,8 +36,8 @@ Admin → Property → **Gegevensretentie**:
 
 | Instelling | Gewenst | Gecontroleerd |
 |---|---|---|
-| Bewaartermijn voor eventgegevens | **14 maanden** | [ ] |
-| Gegevens van terugkerende gebruikers resetten | **Uit** (tenzij bewuste keuze) | [ ] |
+| Bewaartermijn voor eventgegevens | **14 maanden** | [x] |
+| Gegevens van terugkerende gebruikers resetten | **Uit** (tenzij bewuste keuze) | [x] |
 
 ---
 

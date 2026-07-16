@@ -248,6 +248,8 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-07-16 | Cookie-consent pre-deploy checklist afgevink (prod) |
+| 2026-07-16 | GA4 account hardening gecontroleerd (land NL, delen uit, retentie 14m) |
 | 2026-07-04 | Eerste versie in repo — samengesteld uit privacyverklaring, DPIA PDF (apr 2026), codebase |
 | 2026-07-04 | Privacyverklaring gesynchroniseerd; PostHog/n8n als niet-actief vastgelegd |
 | 2026-07-04 | Verwerkersovereenkomsten ingevuld; archief in `Documenten/.../privacy/` (Zoho nog open) |
