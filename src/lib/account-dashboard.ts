@@ -551,6 +551,8 @@ export async function loadAccountDashboardData(
         source: priorityPrefRow.source,
         timeBucket: priorityPrefRow.timeBucket,
         scheduledTime: priorityPrefRow.scheduledTime,
+        planStepDismissedDate: priorityPrefRow.planStepDismissedDate,
+        planStepsHidden: priorityPrefRow.planStepsHidden,
         updatedAt: priorityPrefRow.updatedAt,
       }
     : null;

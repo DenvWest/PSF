@@ -158,7 +158,6 @@ export function buildDayTimeline(
   routineBlocks: AgendaBlockRecord[],
   externalBlocks: TimelineBlock[] = [],
 ): TimelineBlock[] {
-  const analysisBlock = buildAnalysisBlock(model, slot);
   const dayRoutineBlocks = routineBlocks
     .filter((block) => block.date === slot.date)
     .map(mapRoutineBlock);
@@ -166,7 +165,18 @@ export function buildDayTimeline(
     block.id.startsWith(`external:${slot.date}:`),
   );
 
-  return [...dayRoutineBlocks, ...dayExternalBlocks, analysisBlock].sort(
+  const timelineBlocks = [...dayRoutineBlocks, ...dayExternalBlocks];
+  const planStepHidden =
+    model.planStepsHidden ||
+    (slot.isToday &&
+      model.planStepDismissedDate != null &&
+      model.planStepDismissedDate === slot.date);
+
+  if (!planStepHidden) {
+    timelineBlocks.push(buildAnalysisBlock(model, slot));
+  }
+
+  return timelineBlocks.sort(
     (left, right) => timeToMinutes(left.startTime) - timeToMinutes(right.startTime),
   );
 }

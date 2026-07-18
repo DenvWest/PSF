@@ -13,8 +13,16 @@ export type AccountPriorityPref = {
   source: PriorityPrefSource;
   timeBucket: TimeBucket | null;
   scheduledTime: string | null;
+  planStepDismissedDate: string | null;
+  planStepsHidden: boolean;
   updatedAt: string;
 };
+
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+export function isIsoDate(value: string): boolean {
+  return ISO_DATE_PATTERN.test(value);
+}
 
 export const TIME_BUCKETS: readonly TimeBucket[] = [
   "ochtend",
@@ -126,20 +134,77 @@ type PrefRowBase = {
   source: string;
   time_bucket: string | null;
   updated_at: string;
+  plan_step_dismissed_date?: string | null;
+  plan_steps_hidden?: boolean | null;
 };
 
 type PrefRow = PrefRowBase & {
   scheduled_time?: string | null;
 };
 
-const PREF_SELECT_BASE =
-  "pillar_id, source, time_bucket, updated_at" as const;
-const PREF_SELECT_WITH_SCHEDULED_TIME =
-  "pillar_id, source, time_bucket, scheduled_time, updated_at" as const;
+const PREF_SELECT_LEGACY = "pillar_id, source, time_bucket, updated_at" as const;
+
+type PrefColumnFlags = {
+  scheduledTime: boolean;
+  planStepDismissedDate: boolean;
+  planStepsHidden: boolean;
+};
+
+const FULL_PREF_COLUMNS: PrefColumnFlags = {
+  scheduledTime: true,
+  planStepDismissedDate: true,
+  planStepsHidden: true,
+};
+
+function isMissingPrefColumn(
+  error: { message?: string } | null,
+  column: string,
+): boolean {
+  const message = error?.message ?? "";
+  return message.includes(column) && message.includes("schema cache");
+}
 
 function isMissingScheduledTimeColumn(error: { message?: string } | null): boolean {
-  const message = error?.message ?? "";
-  return message.includes("scheduled_time") && message.includes("schema cache");
+  return isMissingPrefColumn(error, "scheduled_time");
+}
+
+function isMissingPlanStepDismissedColumn(error: { message?: string } | null): boolean {
+  return isMissingPrefColumn(error, "plan_step_dismissed_date");
+}
+
+function isMissingPlanStepsHiddenColumn(error: { message?: string } | null): boolean {
+  return isMissingPrefColumn(error, "plan_steps_hidden");
+}
+
+function buildPrefSelect(flags: PrefColumnFlags): string {
+  const columns = ["pillar_id", "source", "time_bucket"];
+  if (flags.scheduledTime) {
+    columns.push("scheduled_time");
+  }
+  if (flags.planStepDismissedDate) {
+    columns.push("plan_step_dismissed_date");
+  }
+  if (flags.planStepsHidden) {
+    columns.push("plan_steps_hidden");
+  }
+  columns.push("updated_at");
+  return columns.join(", ");
+}
+
+function stripMissingPrefColumn(
+  flags: PrefColumnFlags,
+  error: { message?: string } | null,
+): PrefColumnFlags | null {
+  if (isMissingScheduledTimeColumn(error)) {
+    return { ...flags, scheduledTime: false };
+  }
+  if (isMissingPlanStepDismissedColumn(error)) {
+    return { ...flags, planStepDismissedDate: false };
+  }
+  if (isMissingPlanStepsHiddenColumn(error)) {
+    return { ...flags, planStepsHidden: false };
+  }
+  return null;
 }
 
 function mapPrefRow(row: PrefRow): AccountPriorityPref | null {
@@ -157,6 +222,8 @@ function mapPrefRow(row: PrefRow): AccountPriorityPref | null {
     source: row.source,
     timeBucket,
     scheduledTime,
+    planStepDismissedDate: row.plan_step_dismissed_date ?? null,
+    planStepsHidden: row.plan_steps_hidden ?? false,
     updatedAt: row.updated_at,
   };
 }
@@ -165,29 +232,39 @@ export async function getAccountPriorityPref(
   admin: SupabaseAdmin,
   accountId: string,
 ): Promise<AccountPriorityPref | null> {
-  const withScheduledTime = await admin
-    .from("account_priority_pref")
-    .select(PREF_SELECT_WITH_SCHEDULED_TIME)
-    .eq("account_id", accountId)
-    .maybeSingle<PrefRow>();
+  let flags: PrefColumnFlags = { ...FULL_PREF_COLUMNS };
 
-  if (!isMissingScheduledTimeColumn(withScheduledTime.error)) {
-    if (withScheduledTime.error || !withScheduledTime.data) {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const result = await admin
+      .from("account_priority_pref")
+      .select(buildPrefSelect(flags))
+      .eq("account_id", accountId)
+      .maybeSingle<PrefRow>();
+
+    if (!result.error) {
+      if (!result.data) {
+        return null;
+      }
+      return mapPrefRow(result.data);
+    }
+
+    const nextFlags = stripMissingPrefColumn(flags, result.error);
+    if (!nextFlags) {
       return null;
     }
-    return mapPrefRow(withScheduledTime.data);
+    flags = nextFlags;
   }
 
-  const base = await admin
+  const legacy = await admin
     .from("account_priority_pref")
-    .select(PREF_SELECT_BASE)
+    .select(PREF_SELECT_LEGACY)
     .eq("account_id", accountId)
     .maybeSingle<PrefRowBase>();
 
-  if (base.error || !base.data) {
+  if (legacy.error || !legacy.data) {
     return null;
   }
-  return mapPrefRow(base.data);
+  return mapPrefRow(legacy.data);
 }
 
 export async function upsertAccountPriorityPref(
@@ -199,6 +276,8 @@ export async function upsertAccountPriorityPref(
     source: PriorityPrefSource;
     timeBucket?: TimeBucket | null;
     scheduledTime?: string | null;
+    planStepDismissedDate?: string | null;
+    planStepsHidden?: boolean;
   },
 ): Promise<AccountPriorityPref> {
   const existing = await getAccountPriorityPref(admin, accountId);
@@ -211,11 +290,21 @@ export async function upsertAccountPriorityPref(
   let timeBucket =
     input.timeBucket !== undefined ? input.timeBucket : (existing?.timeBucket ?? null);
 
+  const planStepDismissedDate =
+    input.planStepDismissedDate !== undefined
+      ? input.planStepDismissedDate
+      : (existing?.planStepDismissedDate ?? null);
+
+  const planStepsHidden =
+    input.planStepsHidden !== undefined
+      ? input.planStepsHidden
+      : (existing?.planStepsHidden ?? false);
+
   if (scheduledTime) {
     timeBucket = deriveTimeBucketFromLocalTime(scheduledTime);
   }
 
-  const basePayload = {
+  const corePayload = {
     account_id: accountId,
     organization_id: organizationId,
     pillar_id: input.pillarId,
@@ -224,44 +313,42 @@ export async function upsertAccountPriorityPref(
     updated_at: new Date().toISOString(),
   };
 
-  const withScheduledTime = await admin
-    .from("account_priority_pref")
-    .upsert(
-      {
-        ...basePayload,
-        scheduled_time: scheduledTime,
-      },
-      { onConflict: "account_id" },
-    )
-    .select(PREF_SELECT_WITH_SCHEDULED_TIME)
-    .single<PrefRow>();
+  let flags: PrefColumnFlags = { ...FULL_PREF_COLUMNS };
 
-  if (!isMissingScheduledTimeColumn(withScheduledTime.error)) {
-    if (withScheduledTime.error || !withScheduledTime.data) {
-      throw new Error(withScheduledTime.error?.message ?? "Kon focus-voorkeur niet opslaan.");
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const upsertPayload: Record<string, unknown> = { ...corePayload };
+    if (flags.scheduledTime) {
+      upsertPayload.scheduled_time = scheduledTime;
     }
-    const mapped = mapPrefRow(withScheduledTime.data);
-    if (!mapped) {
-      throw new Error("Ongeldige focus-voorkeur opgeslagen.");
+    if (flags.planStepDismissedDate) {
+      upsertPayload.plan_step_dismissed_date = planStepDismissedDate;
     }
-    return mapped;
+    if (flags.planStepsHidden) {
+      upsertPayload.plan_steps_hidden = planStepsHidden;
+    }
+
+    const result = await admin
+      .from("account_priority_pref")
+      .upsert(upsertPayload, { onConflict: "account_id" })
+      .select(buildPrefSelect(flags))
+      .single<PrefRow>();
+
+    if (!result.error && result.data) {
+      const mapped = mapPrefRow(result.data);
+      if (!mapped) {
+        throw new Error("Ongeldige focus-voorkeur opgeslagen.");
+      }
+      return mapped;
+    }
+
+    const nextFlags = stripMissingPrefColumn(flags, result.error);
+    if (!nextFlags) {
+      throw new Error(result.error?.message ?? "Kon focus-voorkeur niet opslaan.");
+    }
+    flags = nextFlags;
   }
 
-  const fallback = await admin
-    .from("account_priority_pref")
-    .upsert(basePayload, { onConflict: "account_id" })
-    .select(PREF_SELECT_BASE)
-    .single<PrefRowBase>();
-
-  if (fallback.error || !fallback.data) {
-    throw new Error(fallback.error?.message ?? "Kon focus-voorkeur niet opslaan.");
-  }
-
-  const mapped = mapPrefRow(fallback.data);
-  if (!mapped) {
-    throw new Error("Ongeldige focus-voorkeur opgeslagen.");
-  }
-  return mapped;
+  throw new Error("Kon focus-voorkeur niet opslaan.");
 }
 
 export async function updateAccountTimeBucket(
@@ -300,4 +387,71 @@ export async function deleteAccountPriorityPref(
   accountId: string,
 ): Promise<void> {
   await admin.from("account_priority_pref").delete().eq("account_id", accountId);
+}
+
+async function upsertPlanStepDismissedDate(
+  admin: SupabaseAdmin,
+  accountId: string,
+  organizationId: string,
+  input: {
+    pillarId: PillarId;
+    source: PriorityPrefSource;
+    planStepDismissedDate: string | null;
+  },
+): Promise<AccountPriorityPref> {
+  const existing = await getAccountPriorityPref(admin, accountId);
+  return upsertAccountPriorityPref(admin, accountId, organizationId, {
+    pillarId: existing?.pillarId ?? input.pillarId,
+    source: existing?.source ?? input.source,
+    timeBucket: existing?.timeBucket ?? null,
+    scheduledTime: existing?.scheduledTime ?? null,
+    planStepDismissedDate: input.planStepDismissedDate,
+  });
+}
+
+export async function dismissPlanStepForDate(
+  admin: SupabaseAdmin,
+  accountId: string,
+  organizationId: string,
+  date: string,
+  fallback: { pillarId: PillarId; source: PriorityPrefSource },
+): Promise<AccountPriorityPref> {
+  if (!isIsoDate(date)) {
+    throw new Error("Ongeldige datum.");
+  }
+  return upsertPlanStepDismissedDate(admin, accountId, organizationId, {
+    pillarId: fallback.pillarId,
+    source: fallback.source,
+    planStepDismissedDate: date,
+  });
+}
+
+export async function restorePlanStep(
+  admin: SupabaseAdmin,
+  accountId: string,
+  organizationId: string,
+  fallback: { pillarId: PillarId; source: PriorityPrefSource },
+): Promise<AccountPriorityPref> {
+  return upsertPlanStepDismissedDate(admin, accountId, organizationId, {
+    pillarId: fallback.pillarId,
+    source: fallback.source,
+    planStepDismissedDate: null,
+  });
+}
+
+export async function setPlanStepsHidden(
+  admin: SupabaseAdmin,
+  accountId: string,
+  organizationId: string,
+  hidden: boolean,
+  fallback: { pillarId: PillarId; source: PriorityPrefSource },
+): Promise<AccountPriorityPref> {
+  const existing = await getAccountPriorityPref(admin, accountId);
+  return upsertAccountPriorityPref(admin, accountId, organizationId, {
+    pillarId: existing?.pillarId ?? fallback.pillarId,
+    source: existing?.source ?? fallback.source,
+    timeBucket: existing?.timeBucket ?? null,
+    scheduledTime: existing?.scheduledTime ?? null,
+    planStepsHidden: hidden,
+  });
 }

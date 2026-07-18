@@ -105,6 +105,56 @@ describe("buildDayTimeline", () => {
     );
     expect(analysis.endTime).toBe(expectedEnd);
   });
+
+  it("omits analysis block when plan step is dismissed for today", () => {
+    const model = buildFixtureModel({
+      slaap: 44,
+      energie: 57,
+      stress: 50,
+      voeding: 52,
+      beweging: 73,
+      herstel: 54,
+      verbinding: 66,
+    });
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    const dismissedModel = {
+      ...model,
+      planStepDismissedDate: todaySlot.date,
+    };
+    const timeline = buildDayTimeline(dismissedModel, todaySlot, []);
+    expect(timeline.some((block) => block.kind === "analysis")).toBe(false);
+  });
+
+  it("omits analysis block when all plan steps are hidden", () => {
+    const model = buildFixtureModel({
+      slaap: 44,
+      energie: 57,
+      stress: 50,
+      voeding: 52,
+      beweging: 73,
+      herstel: 54,
+      verbinding: 66,
+    });
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    const hiddenModel = {
+      ...model,
+      planStepsHidden: true,
+    };
+    const timeline = buildDayTimeline(hiddenModel, todaySlot, []);
+    expect(timeline.some((block) => block.kind === "analysis")).toBe(false);
+  });
 });
 
 describe("timeline layout helpers", () => {

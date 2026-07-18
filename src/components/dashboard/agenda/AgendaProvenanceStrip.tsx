@@ -52,7 +52,7 @@ export default function AgendaProvenanceStrip({ model, slot }: AgendaProvenanceS
           →
         </span>
         <FlowStep
-          label={model.priorityIsUserChosen ? "Jij" : "Plan"}
+          label={model.priorityIsUserChosen ? "Jij" : "Advies"}
           domainLabel={model.priority.label}
           color={model.priority.color}
         />

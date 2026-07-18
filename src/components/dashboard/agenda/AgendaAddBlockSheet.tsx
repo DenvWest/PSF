@@ -10,15 +10,25 @@ import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 
+type HiddenPlanStep = {
+  title: string;
+  domainLabel: string;
+  color: string;
+  reason: "today" | "all";
+};
+
 type AgendaAddBlockSheetProps = {
   date: string;
   busy?: boolean;
   archivedBlocks?: AgendaBlockRecord[];
+  hiddenPlanStep?: HiddenPlanStep | null;
   initialStartTime?: string;
   initialEndTime?: string;
   createSurface?: "agenda_add_sheet" | "agenda_timeline_tap";
   onClose: () => void;
   onRestore?: (blockId: string) => Promise<void>;
+  onRestorePlanStep?: () => Promise<void>;
+  onShowAllPlanSteps?: () => Promise<void>;
   onSubmit: (input: {
     date: string;
     categoryId: AgendaCategoryId;
@@ -32,11 +42,14 @@ export default function AgendaAddBlockSheet({
   date,
   busy = false,
   archivedBlocks = [],
+  hiddenPlanStep = null,
   initialStartTime,
   initialEndTime,
   createSurface = "agenda_add_sheet",
   onClose,
   onRestore,
+  onRestorePlanStep,
+  onShowAllPlanSteps,
   onSubmit,
 }: AgendaAddBlockSheetProps) {
   const [categoryId, setCategoryId] = useState<AgendaCategoryId>("persoonlijke_routine");
@@ -103,6 +116,73 @@ export default function AgendaAddBlockSheet({
           Sluit
         </button>
       </div>
+
+      {hiddenPlanStep ? (
+        <div className="mb-5 rounded-[12px] border border-[#e4e0da] bg-white px-3 py-2.5">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+            Verborgen stap uit je plan
+          </p>
+          <div
+            className="flex items-center justify-between gap-3"
+            style={{ borderLeftWidth: 3, borderLeftColor: hiddenPlanStep.color, paddingLeft: 10 }}
+          >
+            <div className="min-w-0 flex-1">
+              <p
+                className="m-0 truncate text-[14px] font-medium text-[#1c1917]"
+                style={{ fontFamily: "var(--f-serif)" }}
+              >
+                {hiddenPlanStep.title}
+              </p>
+              <p className="mt-0.5 text-[12px] text-[#78716c]">{hiddenPlanStep.domainLabel}</p>
+            </div>
+            <button
+              type="button"
+              disabled={
+                busy ||
+                (hiddenPlanStep.reason === "all" ? !onShowAllPlanSteps : !onRestorePlanStep)
+              }
+              onClick={() => {
+                void (async () => {
+                  try {
+                    if (hiddenPlanStep.reason === "all") {
+                      if (!onShowAllPlanSteps) {
+                        return;
+                      }
+                      await onShowAllPlanSteps();
+                      trackEvent("agenda_plan_step_restored", {
+                        surface: "agenda_add_sheet",
+                        scope: "all",
+                      });
+                      clarityTag("agenda_plan_step", "shown_all");
+                      return;
+                    }
+
+                    if (!onRestorePlanStep) {
+                      return;
+                    }
+                    await onRestorePlanStep();
+                    trackEvent("agenda_plan_step_restored", {
+                      surface: "agenda_add_sheet",
+                      scope: "today",
+                    });
+                    clarityTag("agenda_plan_step", "restored_today");
+                  } catch (restoreError) {
+                    setError(
+                      restoreError instanceof Error
+                        ? restoreError.message
+                        : "Kon plan-stap niet terugzetten.",
+                    );
+                  }
+                })();
+              }}
+              className="inline-flex min-h-9 shrink-0 cursor-pointer items-center rounded-full border border-[#e4e0da] bg-[#faf9f7] px-3 text-[12px] font-semibold text-[var(--sage)] disabled:opacity-60"
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              {hiddenPlanStep.reason === "all" ? "Toon plan-stappen weer" : "Terugzetten"}
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
         Categorie

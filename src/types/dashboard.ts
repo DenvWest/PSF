@@ -15,6 +15,8 @@ export type AccountPriorityPrefData = {
   source: PriorityPrefSource;
   timeBucket: TimeBucket | null;
   scheduledTime: string | null;
+  planStepDismissedDate: string | null;
+  planStepsHidden: boolean;
   updatedAt: string;
 };
 
@@ -220,6 +222,8 @@ export type DashboardModel = {
   priorityIsUserChosen: boolean;
   timeBucket: TimeBucket | null;
   scheduledTime: string | null;
+  planStepDismissedDate: string | null;
+  planStepsHidden: boolean;
   strongest: Pillar;
   vitality: number;
   vitalityDelta: number | null;

@@ -29,6 +29,13 @@ type DraftSlot = {
   endTime: string;
 };
 
+type HiddenPlanStep = {
+  title: string;
+  domainLabel: string;
+  color: string;
+  reason: "today" | "all";
+};
+
 type AgendaDayTimelineProps = {
   model: DashboardModel;
   slot: WeekDaySlot;
@@ -48,6 +55,11 @@ type AgendaDayTimelineProps = {
   onDeleteBlock: (blockId: string) => Promise<void>;
   archivedBlocks?: AgendaBlockRecord[];
   onRestoreBlock?: (blockId: string) => Promise<void>;
+  hiddenPlanStep?: HiddenPlanStep | null;
+  onDismissPlanStep?: () => Promise<void>;
+  onRestorePlanStep?: () => Promise<void>;
+  onHideAllPlanSteps?: () => Promise<void>;
+  onShowAllPlanSteps?: () => Promise<void>;
 };
 
 function formatDayHeading(isoDate: string, isToday: boolean): string {
@@ -74,6 +86,11 @@ export default function AgendaDayTimeline({
   onDeleteBlock,
   archivedBlocks = [],
   onRestoreBlock,
+  hiddenPlanStep = null,
+  onDismissPlanStep,
+  onRestorePlanStep,
+  onHideAllPlanSteps,
+  onShowAllPlanSteps,
 }: AgendaDayTimelineProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
@@ -249,7 +266,10 @@ export default function AgendaDayTimeline({
           initialEndTime={draftSlot?.endTime}
           createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
           archivedBlocks={archivedForDay}
+          hiddenPlanStep={slot.isToday ? hiddenPlanStep : null}
           onRestore={onRestoreBlock}
+          onRestorePlanStep={onRestorePlanStep}
+          onShowAllPlanSteps={onShowAllPlanSteps}
           onClose={closeSheet}
           onSubmit={onCreateBlock}
         />
@@ -265,6 +285,20 @@ export default function AgendaDayTimeline({
         onScheduledTimeChange={onScheduledTimeChange}
         onToggleDone={(blockId, done) => void onToggleBlockDone(blockId, done)}
         onDelete={(blockId) => void onDeleteBlock(blockId)}
+        onDismissPlanStep={
+          onDismissPlanStep
+            ? () => {
+                void onDismissPlanStep();
+              }
+            : undefined
+        }
+        onHideAllPlanSteps={
+          onHideAllPlanSteps
+            ? () => {
+                void onHideAllPlanSteps();
+              }
+            : undefined
+        }
       />
     </section>
   );

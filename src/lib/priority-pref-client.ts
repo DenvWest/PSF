@@ -52,13 +52,88 @@ export async function postPrioritySelection(input: {
     throw new Error(await readApiError(response, "Kon focus niet opslaan."));
   }
   const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
+  return mapPriorityPrefResponse(payload);
+}
+
+function mapPriorityPrefResponse(
+  payload: AccountPriorityPrefData & { ok?: boolean },
+): AccountPriorityPrefData {
   return {
     pillarId: payload.pillarId,
     source: payload.source,
     timeBucket: payload.timeBucket ?? null,
     scheduledTime: payload.scheduledTime ?? null,
+    planStepDismissedDate: payload.planStepDismissedDate ?? null,
+    planStepsHidden: payload.planStepsHidden ?? false,
     updatedAt: payload.updatedAt,
   };
+}
+
+export async function postDismissPlanStep(input: {
+  date: string;
+  surface: string;
+}): Promise<AccountPriorityPrefData> {
+  const response = await fetch("/api/account/priority-pref", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      action: "dismiss_plan_step",
+      date: input.date,
+      surface: input.surface,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(await readApiError(response, "Kon plan-stap niet verbergen."));
+  }
+  const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
+  return mapPriorityPrefResponse(payload);
+}
+
+export async function postRestorePlanStep(input: {
+  surface: string;
+}): Promise<AccountPriorityPrefData> {
+  const response = await fetch("/api/account/priority-pref", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      action: "restore_plan_step",
+      surface: input.surface,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(await readApiError(response, "Kon plan-stap niet terugzetten."));
+  }
+  const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
+  return mapPriorityPrefResponse(payload);
+}
+
+export async function postSetPlanStepsHidden(input: {
+  hidden: boolean;
+  surface: string;
+}): Promise<AccountPriorityPrefData> {
+  const response = await fetch("/api/account/priority-pref", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      action: input.hidden ? "hide_all_plan_steps" : "show_all_plan_steps",
+      surface: input.surface,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(
+      await readApiError(
+        response,
+        input.hidden
+          ? "Kon plan-stappen niet verbergen."
+          : "Kon plan-stappen niet weer tonen.",
+      ),
+    );
+  }
+  const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
+  return mapPriorityPrefResponse(payload);
 }
 
 export async function postTimeBucket(input: {
@@ -79,13 +154,7 @@ export async function postTimeBucket(input: {
     throw new Error(await readApiError(response, "Kon tijdvak niet opslaan."));
   }
   const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
-  return {
-    pillarId: payload.pillarId,
-    source: payload.source,
-    timeBucket: payload.timeBucket ?? null,
-    scheduledTime: payload.scheduledTime ?? null,
-    updatedAt: payload.updatedAt,
-  };
+  return mapPriorityPrefResponse(payload);
 }
 
 export async function postScheduledTime(input: {
@@ -106,13 +175,7 @@ export async function postScheduledTime(input: {
     throw new Error(await readApiError(response, "Kon tijdstip niet opslaan."));
   }
   const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
-  return {
-    pillarId: payload.pillarId,
-    source: payload.source,
-    timeBucket: payload.timeBucket ?? null,
-    scheduledTime: payload.scheduledTime ?? null,
-    updatedAt: payload.updatedAt,
-  };
+  return mapPriorityPrefResponse(payload);
 }
 
 export async function resetPriorityPref(): Promise<void> {

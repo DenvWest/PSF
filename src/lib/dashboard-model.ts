@@ -45,6 +45,8 @@ export function buildModel(
   chosenPriorityId: PillarId | null = null,
   timeBucket: TimeBucket | null = null,
   scheduledTime: string | null = null,
+  planStepDismissedDate: string | null = null,
+  planStepsHidden = false,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -100,6 +102,8 @@ export function buildModel(
     priorityIsUserChosen,
     timeBucket,
     scheduledTime,
+    planStepDismissedDate,
+    planStepsHidden,
     strongest,
     vitality,
     vitalityDelta,

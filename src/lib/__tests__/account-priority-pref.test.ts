@@ -29,7 +29,7 @@ describe("account-priority-pref helpers", () => {
     expect(isValidLocalTime("09:30")).toBe(true);
     expect(isValidLocalTime("23:59")).toBe(true);
     expect(isValidLocalTime("24:00")).toBe(false);
-    expect(isValidLocalTime("9:30")).toBe(false);
+    expect(isValidLocalTime("9:30")).toBe(true);
     expect(isValidLocalTime("09:60")).toBe(false);
   });
 

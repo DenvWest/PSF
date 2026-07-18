@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAccountFromCookie } from "@/lib/account-server";
 import {
   deleteAccountPriorityPref,
+  dismissPlanStepForDate,
   getAccountPriorityPref,
+  isIsoDate,
   isPinablePillarId,
   isPriorityPrefSource,
   isTimeBucket,
   isValidLocalTime,
+  restorePlanStep,
+  setPlanStepsHidden,
   upsertAccountPriorityPref,
   updateAccountScheduledTime,
   updateAccountTimeBucket,
@@ -98,6 +102,135 @@ export async function POST(request: NextRequest) {
   if (action === "reset") {
     await deleteAccountPriorityPref(admin, account.id);
     return NextResponse.json({ ok: true, pillarId: null }, { status: 200 });
+  }
+
+  const resolveFallbackPref = async () => {
+    const existing = await getAccountPriorityPref(admin, account.id);
+    const pillarId =
+      existing?.pillarId ??
+      (enginePillarId && isPinablePillarId(enginePillarId) ? enginePillarId : null);
+    const source = existing?.source ?? "accept_engine";
+    if (!pillarId) {
+      return null;
+    }
+    return { pillarId, source };
+  };
+
+  if (action === "dismiss_plan_step") {
+    const dateRaw = typeof record.date === "string" ? record.date.trim() : "";
+    if (!isIsoDate(dateRaw)) {
+      return NextResponse.json({ error: "Ongeldige datum." }, { status: 400 });
+    }
+
+    const fallback = await resolveFallbackPref();
+    if (!fallback) {
+      return NextResponse.json({ error: "Geen focus beschikbaar." }, { status: 400 });
+    }
+
+    const pref = await dismissPlanStepForDate(
+      admin,
+      account.id,
+      account.organization_id,
+      dateRaw,
+      fallback,
+    );
+
+    void emitEvent({
+      eventType: "agenda.plan_step_dismissed",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        date: dateRaw,
+        pillar_id: pref.pillarId,
+        surface,
+        scope: "today",
+      },
+    });
+
+    return NextResponse.json({ ok: true, ...pref }, { status: 200 });
+  }
+
+  if (action === "restore_plan_step") {
+    const fallback = await resolveFallbackPref();
+    if (!fallback) {
+      return NextResponse.json({ error: "Geen focus beschikbaar." }, { status: 400 });
+    }
+
+    const pref = await restorePlanStep(
+      admin,
+      account.id,
+      account.organization_id,
+      fallback,
+    );
+
+    void emitEvent({
+      eventType: "agenda.plan_step_restored",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        pillar_id: pref.pillarId,
+        surface,
+        scope: "today",
+      },
+    });
+
+    return NextResponse.json({ ok: true, ...pref }, { status: 200 });
+  }
+
+  if (action === "hide_all_plan_steps") {
+    const fallback = await resolveFallbackPref();
+    if (!fallback) {
+      return NextResponse.json({ error: "Geen focus beschikbaar." }, { status: 400 });
+    }
+
+    const pref = await setPlanStepsHidden(
+      admin,
+      account.id,
+      account.organization_id,
+      true,
+      fallback,
+    );
+
+    void emitEvent({
+      eventType: "agenda.plan_step_dismissed",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        pillar_id: pref.pillarId,
+        surface,
+        scope: "all",
+      },
+    });
+
+    return NextResponse.json({ ok: true, ...pref }, { status: 200 });
+  }
+
+  if (action === "show_all_plan_steps") {
+    const fallback = await resolveFallbackPref();
+    if (!fallback) {
+      return NextResponse.json({ error: "Geen focus beschikbaar." }, { status: 400 });
+    }
+
+    const pref = await setPlanStepsHidden(
+      admin,
+      account.id,
+      account.organization_id,
+      false,
+      fallback,
+    );
+
+    void emitEvent({
+      eventType: "agenda.plan_step_restored",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        pillar_id: pref.pillarId,
+        surface,
+        scope: "all",
+      },
+    });
+
+    return NextResponse.json({ ok: true, ...pref }, { status: 200 });
   }
 
   if (action === "set_time_bucket") {

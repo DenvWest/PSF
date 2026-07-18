@@ -6,6 +6,7 @@ import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
 import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanceStrip";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
+import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
 import {
   createAgendaBlock,
   deleteAgendaBlock,
@@ -20,7 +21,7 @@ import {
 } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackAgendaDaySelected, trackEvent } from "@/lib/ga4";
-import { postScheduledTime } from "@/lib/priority-pref-client";
+import { postDismissPlanStep, postRestorePlanStep, postScheduledTime, postSetPlanStepsHidden } from "@/lib/priority-pref-client";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { AccountPriorityPrefData, DashboardModel } from "@/types/dashboard";
@@ -59,6 +60,27 @@ export default function AgendaScreen({
   const todayTimeBucket = model.timeBucket ?? deriveDefaultTimeBucket();
   const weekStart = slots[0]?.date ?? todaySlot.date;
   const weekEnd = slots[slots.length - 1]?.date ?? todaySlot.date;
+  const hiddenPlanStep = useMemo(() => {
+    const isTodayDismissed = model.planStepDismissedDate === todaySlot.date;
+    const isAllHidden = model.planStepsHidden;
+    if (!isTodayDismissed && !isAllHidden) {
+      return null;
+    }
+    return {
+      title: model.activeHabit?.title ?? todaySlot.title,
+      domainLabel: model.priority.label,
+      color: model.priority.color,
+      reason: isAllHidden ? ("all" as const) : ("today" as const),
+    };
+  }, [
+    model.activeHabit?.title,
+    model.planStepDismissedDate,
+    model.planStepsHidden,
+    model.priority.color,
+    model.priority.label,
+    todaySlot.date,
+    todaySlot.title,
+  ]);
 
   useEffect(() => {
     if (shownRef.current) {
@@ -212,6 +234,57 @@ export default function AgendaScreen({
     }
   };
 
+  const handleDismissPlanStep = async () => {
+    setPrefBusy(true);
+    try {
+      const pref = await postDismissPlanStep({
+        date: todaySlot.date,
+        surface: "agenda_block_detail",
+      });
+      onPrefUpdated(pref);
+    } finally {
+      setPrefBusy(false);
+    }
+  };
+
+  const handleRestorePlanStep = async () => {
+    setPrefBusy(true);
+    try {
+      const pref = await postRestorePlanStep({
+        surface: "agenda_add_sheet",
+      });
+      onPrefUpdated(pref);
+    } finally {
+      setPrefBusy(false);
+    }
+  };
+
+  const handleHideAllPlanSteps = async () => {
+    setPrefBusy(true);
+    try {
+      const pref = await postSetPlanStepsHidden({
+        hidden: true,
+        surface: "agenda_block_detail",
+      });
+      onPrefUpdated(pref);
+    } finally {
+      setPrefBusy(false);
+    }
+  };
+
+  const handleShowAllPlanSteps = async () => {
+    setPrefBusy(true);
+    try {
+      const pref = await postSetPlanStepsHidden({
+        hidden: false,
+        surface: "agenda_add_sheet",
+      });
+      onPrefUpdated(pref);
+    } finally {
+      setPrefBusy(false);
+    }
+  };
+
   const handleVoortgangLink = () => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
       surface: "agenda",
@@ -251,8 +324,15 @@ export default function AgendaScreen({
           onDeleteBlock={handleDeleteBlock}
           archivedBlocks={blocksLoaded ? archivedBlocks : []}
           onRestoreBlock={handleRestoreBlock}
+          hiddenPlanStep={hiddenPlanStep}
+          onDismissPlanStep={handleDismissPlanStep}
+          onRestorePlanStep={handleRestorePlanStep}
+          onHideAllPlanSteps={handleHideAllPlanSteps}
+          onShowAllPlanSteps={handleShowAllPlanSteps}
         />
       </AgendaShellSection>
+
+      <AgendaPriorityTestPanel model={model} onPrefUpdated={onPrefUpdated} />
 
       <AgendaShellSection>
         <button

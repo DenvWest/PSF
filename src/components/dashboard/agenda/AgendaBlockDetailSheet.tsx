@@ -20,6 +20,8 @@ type AgendaBlockDetailSheetProps = {
   onScheduledTimeChange?: (scheduledTime: string) => void;
   onToggleDone?: (blockId: string, done: boolean) => void;
   onDelete?: (blockId: string) => void;
+  onDismissPlanStep?: () => void;
+  onHideAllPlanSteps?: () => void;
 };
 
 function CategoryIcon({
@@ -43,6 +45,8 @@ export default function AgendaBlockDetailSheet({
   onScheduledTimeChange,
   onToggleDone,
   onDelete,
+  onDismissPlanStep,
+  onHideAllPlanSteps,
 }: AgendaBlockDetailSheetProps) {
   const titleId = useId();
   const panelRef = useRef<HTMLElement>(null);
@@ -116,15 +120,60 @@ export default function AgendaBlockDetailSheet({
 
         <div className="overflow-y-auto px-4 py-4 md:px-6">
           {isAnalysis ? (
-            <AgendaTodayHero
-              model={model}
-              slot={block.slot!}
-              prefBusy={prefBusy}
-              variant="detail"
-              actionSurface="agenda_block_detail"
-              onCompletionChange={onCompletionChange}
-              onScheduledTimeChange={onScheduledTimeChange}
-            />
+            <>
+              <AgendaTodayHero
+                model={model}
+                slot={block.slot!}
+                prefBusy={prefBusy}
+                variant="detail"
+                actionSurface="agenda_block_detail"
+                onCompletionChange={onCompletionChange}
+                onScheduledTimeChange={onScheduledTimeChange}
+              />
+              {block.slot?.isToday && onDismissPlanStep ? (
+                <>
+                  <button
+                    type="button"
+                    disabled={busy || prefBusy}
+                    onClick={() => {
+                      onDismissPlanStep();
+                      trackEvent("agenda_plan_step_dismissed", {
+                        surface: "agenda_block_detail",
+                        scope: "today",
+                      });
+                      clarityTag("agenda_plan_step", "hidden_today");
+                      onClose();
+                    }}
+                    className="mt-4 inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-[12px] border border-[#e4e0da] bg-[#faf9f7] px-4 text-[14px] font-medium text-[#78716c] disabled:opacity-60"
+                    style={{ fontFamily: "var(--f-sans)" }}
+                  >
+                    Verberg vandaag
+                  </button>
+                  {onHideAllPlanSteps ? (
+                    <button
+                      type="button"
+                      disabled={busy || prefBusy}
+                      onClick={() => {
+                        onHideAllPlanSteps();
+                        trackEvent("agenda_plan_step_dismissed", {
+                          surface: "agenda_block_detail",
+                          scope: "all",
+                        });
+                        clarityTag("agenda_plan_step", "hidden_all");
+                        onClose();
+                      }}
+                      className="mt-2 inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[12px] border-none bg-transparent px-4 text-[13px] font-medium text-[#78716c] underline decoration-[#d6d3d1] underline-offset-2 disabled:opacity-60"
+                      style={{ fontFamily: "var(--f-sans)" }}
+                    >
+                      Toon geen plan-stappen meer
+                    </button>
+                  ) : null}
+                  <p className="mt-2 text-[12px] leading-normal text-[#78716c]">
+                    Terugzetten kan via Moment.
+                  </p>
+                </>
+              ) : null}
+            </>
           ) : (
             <article
               className="rounded-[16px] border border-[#ebe7e2] bg-white p-4 shadow-[0_2px_12px_rgba(15,28,16,0.04)]"

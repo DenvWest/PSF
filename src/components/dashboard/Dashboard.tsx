@@ -32,6 +32,7 @@ import StressScreen from "@/components/dashboard/StressScreen";
 import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
 import AgendaScreen from "@/components/dashboard/agenda/AgendaScreen";
 import AgendaTeaser from "@/components/dashboard/agenda/AgendaTeaser";
+import AgendaFocusPicker from "@/components/dashboard/agenda/AgendaFocusPicker";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
@@ -83,6 +84,7 @@ import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
 import {
   postPrioritySelection,
+  resetPriorityPref,
 } from "@/lib/priority-pref-client";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -3192,6 +3194,7 @@ const KompasHome = ({
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const [prefBusy, setPrefBusy] = useState(false);
+  const [focusExpanded, setFocusExpanded] = useState(false);
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
     if (typeof window !== "undefined") {
       return parseKompasFromUrl(window.location.href);
@@ -3434,6 +3437,56 @@ const KompasHome = ({
           </div>
         </KompasLooseCard>
       ) : null}
+      <KompasLooseCard>
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+              Focus vandaag
+            </p>
+            <p
+              className="mt-1 text-[16px] font-medium text-[#1c1917]"
+              style={{ fontFamily: "var(--f-serif)" }}
+            >
+              {currentModel.priority.label}
+            </p>
+            {currentModel.priorityIsUserChosen ? (
+              <p className="mt-1 text-[12px] text-[#78716c]">
+                Jij koos · advies was {currentModel.enginePriority.label.toLowerCase()}
+              </p>
+            ) : (
+              <p className="mt-1 text-[12px] text-[#78716c]">
+                Op basis van je analyse
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            disabled={prefBusy}
+            onClick={() => setFocusExpanded((open) => !open)}
+            aria-expanded={focusExpanded}
+            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-full border border-[#e4e0da] bg-white px-3 text-[12px] font-semibold text-[var(--sage)] disabled:opacity-60"
+            style={{ fontFamily: "var(--f-sans)" }}
+          >
+            {focusExpanded ? "Sluit" : "Wijzig"}
+          </button>
+        </div>
+        {focusExpanded ? (
+          <AgendaFocusPicker
+            model={currentModel}
+            busy={prefBusy}
+            onSelectPillar={(pillarId) => void saveKompasPriority(pillarId, "user_selected")}
+            onAcceptEngine={() =>
+              void saveKompasPriority(currentModel.enginePriority.id, "accept_engine")
+            }
+            onReset={() => {
+              setPrefBusy(true);
+              void resetPriorityPref()
+                .then(() => onPrefUpdated(null))
+                .finally(() => setPrefBusy(false));
+            }}
+          />
+        ) : null}
+      </KompasLooseCard>
       <KompasLooseCard>
         <div className="flex items-center justify-between gap-2">
           <h2
@@ -3734,6 +3787,8 @@ export default function Dashboard({
             priorityPref?.pillarId ?? null,
             priorityPref?.timeBucket ?? null,
             priorityPref?.scheduledTime ?? null,
+            priorityPref?.planStepDismissedDate ?? null,
+            priorityPref?.planStepsHidden ?? false,
           )
         : null,
     [empty, data, priorityPref],
