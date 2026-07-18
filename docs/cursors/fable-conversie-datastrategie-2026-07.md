@@ -261,4 +261,12 @@ Geen commit. Stop na de wijzigingen voor review.
 
 ---
 
+## Addendum — premium-prijs juli 2026 (Voortgang-polish)
+
+**WTP-instrument verschoven:** de prijsbanden-vraag ("Wat zou je per maand redelijk vinden?") is uit de waitlist-UI gehaald — enquête-gevoel, te veel frictie. WTP meten we niet meer primair in-product; `price_indication` in de API blijft optioneel voor latere tooling.
+
+**Desk research NL (juli 2026):** VitaTrack ~€4/m (platform-only), Rondom app ~€35–50/jaar (leefstijltraject-context), Coolioo360 ~€299/jaar (premium monitoring, andere categorie), wearables €300+/jaar all-in. **Conclusie:** Plus **€49/jaar** blijft plausibel voor coaching-intentie + trends; founding **€29** jaar 1 als launch-instrument (niet als feature-cut). UI toont tot Stripe live een soft prijsanker zonder €-getal.
+
+---
+
 *Opgesteld: 4 juli 2026 (Fable-sessie conversie & datastrategie). Geen code gewijzigd, geen commits.*

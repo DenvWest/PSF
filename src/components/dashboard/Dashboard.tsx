@@ -3320,6 +3320,7 @@ const SECTION_RENDERERS: Record<
         hasTrendsFeature={props.hasTrendsFeature}
         tab={props.tab}
         screen={props.voortgangScreen}
+        freeStatistics={<HistorySection {...props} />}
         unlockedStatistics={
           <>
             <StatistiekenPriorityOverTime

@@ -1,20 +1,29 @@
-import { PREMIUM_STATISTIEKEN_VALUE_PROPS } from "@/data/dashboard/premium-value-props";
+import {
+  getPremiumValuePropsByIds,
+  PREMIUM_HUB_VALUE_PROP_IDS,
+  PREMIUM_SOFT_UPSELL_PROP_IDS,
+  PREMIUM_STATISTIEKEN_VALUE_PROPS,
+} from "@/data/dashboard/premium-value-props";
 
 type PremiumValuePropsListProps = {
-  variant?: "full" | "comingSoonOnly";
+  variant?: "hub" | "softUpsell" | "comingSoonOnly";
 };
 
 export default function PremiumValuePropsList({
-  variant = "full",
+  variant = "hub",
 }: PremiumValuePropsListProps) {
   const items =
     variant === "comingSoonOnly"
       ? PREMIUM_STATISTIEKEN_VALUE_PROPS.filter((item) => item.comingSoon)
-      : PREMIUM_STATISTIEKEN_VALUE_PROPS;
+      : variant === "softUpsell"
+        ? getPremiumValuePropsByIds(PREMIUM_SOFT_UPSELL_PROP_IDS)
+        : getPremiumValuePropsByIds(PREMIUM_HUB_VALUE_PROP_IDS);
 
   if (items.length === 0) {
     return null;
   }
+
+  const compact = variant === "softUpsell";
 
   return (
     <ul
@@ -24,7 +33,7 @@ export default function PremiumValuePropsList({
         padding: 0,
         display: "flex",
         flexDirection: "column",
-        gap: 12,
+        gap: compact ? 8 : 12,
         textAlign: "left",
       }}
     >
@@ -41,7 +50,7 @@ export default function PremiumValuePropsList({
             <div style={{ minWidth: 0 }}>
               <div
                 style={{
-                  fontSize: 14,
+                  fontSize: compact ? 13 : 14,
                   fontWeight: 600,
                   color: "var(--text)",
                   lineHeight: 1.35,
@@ -49,17 +58,19 @@ export default function PremiumValuePropsList({
               >
                 {item.title}
               </div>
-              <p
-                style={{
-                  fontSize: 13,
-                  color: "var(--text-muted)",
-                  lineHeight: 1.5,
-                  margin: "4px 0 0",
-                  textWrap: "pretty",
-                }}
-              >
-                {item.body}
-              </p>
+              {!compact ? (
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "var(--text-muted)",
+                    lineHeight: 1.5,
+                    margin: "4px 0 0",
+                    textWrap: "pretty",
+                  }}
+                >
+                  {item.body}
+                </p>
+              ) : null}
             </div>
             {item.comingSoon ? (
               <span

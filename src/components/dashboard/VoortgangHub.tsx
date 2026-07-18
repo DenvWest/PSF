@@ -4,13 +4,9 @@ import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import {
-  Button,
-  Card,
-  SlotGrid,
-  Sparkline,
-} from "@/components/app/primitives";
-import { IDENTITY_FIELDS, PILLARS } from "@/data/dashboard";
+import { Button, Card, Sparkline } from "@/components/app/primitives";
+import { IDENTITY_FIELDS } from "@/data/dashboard";
+import { PREMIUM_STATISTIEKEN_SOFT_UPSELL } from "@/data/dashboard/premium-value-props";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
@@ -47,6 +43,7 @@ type VoortgangHubProps = {
   hasTrendsFeature?: boolean;
   tab: DashboardTabId;
   screen: VoortgangScreen;
+  freeStatistics: ReactNode;
   unlockedStatistics: ReactNode;
   onScreenChange: (screen: VoortgangScreen) => void;
 };
@@ -218,52 +215,61 @@ function VoortgangSubHeader({
   );
 }
 
-function BlurredSignalsPreview() {
+function StatistiekenSoftUpsell({ onOpenWaitlist }: { onOpenWaitlist: () => void }) {
   return (
     <div
       style={{
-        filter: "blur(6px)",
-        pointerEvents: "none",
-        userSelect: "none",
+        padding: "18px 16px",
+        borderRadius: 14,
+        border: "1px solid rgba(200,149,108,0.22)",
+        background: "rgba(200,149,108,0.06)",
       }}
-      aria-hidden
     >
-      <SlotGrid min={150} gap={10}>
-        {PILLARS.slice(0, 4).map((pillar) => {
-          const Icon = Icons[pillar.icon];
-          return (
-            <Card key={pillar.id} pad={15}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginBottom: 12,
-                }}
-              >
-                <span style={{ color: pillar.color, display: "flex" }}>
-                  <Icon s={16} />
-                </span>
-                <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>
-                  {pillar.label}
-                </span>
-              </div>
-              <Sparkline data={MOCK_TREND} color={pillar.color} />
-              <div style={{ marginTop: 10 }}>
-                <span
-                  style={{
-                    fontFamily: "var(--f-serif)",
-                    fontSize: 20,
-                    color: "var(--text)",
-                  }}
-                >
-                  —
-                </span>
-              </div>
-            </Card>
-          );
-        })}
-      </SlotGrid>
+      <div
+        style={{
+          fontFamily: "var(--f-serif)",
+          fontSize: 19,
+          color: "var(--text)",
+          lineHeight: 1.3,
+          marginBottom: 8,
+        }}
+      >
+        {PREMIUM_STATISTIEKEN_SOFT_UPSELL.heading}
+      </div>
+      <p
+        style={{
+          fontSize: 14,
+          color: "var(--text-muted)",
+          lineHeight: 1.55,
+          margin: "0 0 14px",
+          textWrap: "pretty",
+        }}
+      >
+        {PREMIUM_STATISTIEKEN_SOFT_UPSELL.body}
+      </p>
+      <PremiumValuePropsList variant="softUpsell" />
+      <button
+        type="button"
+        onClick={onOpenWaitlist}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          marginTop: 16,
+          padding: 0,
+          border: "none",
+          background: "none",
+          fontSize: 14,
+          fontWeight: 600,
+          color: "var(--terra, #C8956C)",
+          cursor: "pointer",
+          textDecoration: "underline",
+          textUnderlineOffset: 3,
+        }}
+      >
+        {PREMIUM_STATISTIEKEN_SOFT_UPSELL.cta}
+        <Icons.ArrowRight s={16} />
+      </button>
     </div>
   );
 }
@@ -615,16 +621,20 @@ function StatistiekenView({
   model,
   isMember,
   hasTrendsFeature,
+  freeStatistics,
   unlockedStatistics,
   onBack,
   onOpenLichaam,
+  onOpenWaitlist,
 }: {
   model: DashboardModel;
   isMember: boolean;
   hasTrendsFeature: boolean;
+  freeStatistics: ReactNode;
   unlockedStatistics: ReactNode;
   onBack: () => void;
   onOpenLichaam: () => void;
+  onOpenWaitlist: () => void;
 }) {
   const upsellShownRef = useRef(false);
   const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
@@ -660,21 +670,8 @@ function StatistiekenView({
 
         {!trendsUnlocked ? (
           <>
-            <BlurredSignalsPreview />
-            <div style={{ padding: "0 4px" }}>
-              <div
-                style={{
-                  fontFamily: "var(--f-serif)",
-                  fontSize: 21,
-                  color: "var(--text)",
-                  lineHeight: 1.3,
-                  marginBottom: 12,
-                }}
-              >
-                Statistieken van je voortgang?
-              </div>
-              <PremiumValuePropsList />
-            </div>
+            {freeStatistics}
+            <StatistiekenSoftUpsell onOpenWaitlist={onOpenWaitlist} />
           </>
         ) : (
           <>
@@ -915,6 +912,7 @@ export default function VoortgangHub({
   hasTrendsFeature = false,
   tab,
   screen,
+  freeStatistics,
   unlockedStatistics,
   onScreenChange,
 }: VoortgangHubProps) {
@@ -953,6 +951,22 @@ export default function VoortgangHub({
     setScreen(destination);
   };
 
+  const openPremiumWaitlist = () => {
+    trackEvent("dashboard_statistieken_upsell", {
+      state: "locked",
+      surface: "voortgang",
+      cta: "soft_upsell",
+    });
+    clarityTag("dashboard_statistieken", "soft_upsell_click");
+    setScreen("hub");
+    requestAnimationFrame(() => {
+      document.getElementById("premium-begeleiding")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
+
   if (!model) {
     return null;
   }
@@ -979,9 +993,11 @@ export default function VoortgangHub({
         model={model}
         isMember={isMember}
         hasTrendsFeature={hasTrendsFeature}
+        freeStatistics={freeStatistics}
         unlockedStatistics={unlockedStatistics}
         onBack={goBack}
         onOpenLichaam={() => navigate("lichaamssamenstelling")}
+        onOpenWaitlist={openPremiumWaitlist}
       />
     );
   }
@@ -1009,8 +1025,7 @@ export default function VoortgangHub({
         <HubCard
           icon={<Icons.BarChart s={20} />}
           title="Statistieken"
-          subtitle="Jouw lijn, trends en checkgeschiedenis"
-          premium
+          subtitle="Jouw lijn en checkgeschiedenis — trends met Plus"
           onClick={() => openHub("statistieken")}
         />
       </div>
