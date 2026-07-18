@@ -1,10 +1,6 @@
 "use client";
 
 import { PILLAR } from "@/data/dashboard";
-import {
-  deriveSuggestedTimeBucket,
-  timeBucketLabel,
-} from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import type { TimelineBlock } from "@/types/agenda";
 
@@ -13,25 +9,11 @@ type AgendaPlanStepStripProps = {
   onOpenDetail: () => void;
 };
 
-function resolveTimeHint(block: TimelineBlock): string {
-  if (!block.slot) {
-    return block.startTime;
-  }
-
-  if (block.slot.isToday) {
-    return block.startTime;
-  }
-
-  const bucket = deriveSuggestedTimeBucket(block.slot.domain);
-  return `${timeBucketLabel(bucket).toLowerCase()} · ${block.startTime}`;
-}
-
 export default function AgendaPlanStepStrip({
   block,
   onOpenDetail,
 }: AgendaPlanStepStripProps) {
   const accentColor = block.domain ? PILLAR[block.domain].color : "var(--sage)";
-  const timeHint = resolveTimeHint(block);
 
   return (
     <button
@@ -60,7 +42,6 @@ export default function AgendaPlanStepStrip({
           {block.title}
         </p>
       </div>
-      <span className="shrink-0 text-[12px] tabular-nums text-[#78716c]">{timeHint}</span>
     </button>
   );
 }
