@@ -19,6 +19,10 @@ type ClientEmitType = Extract<
   | "plan.theme_switched"
   | "plan.step_state_changed"
   | "plan.step_link_clicked"
+  | "plan.phase_expanded"
+  | "plan.daily_rhythm_clicked"
+  | "plan.week_category_selected"
+  | "wearable.interest_clicked"
   | "measurement.protein_cta_clicked"
 >;
 

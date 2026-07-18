@@ -9,6 +9,7 @@ import {
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { loadPlanProgress, upsertStepState } from "@/lib/plan-progress";
+import { loadMovementRecoveryContext } from "@/lib/movement-recovery-context";
 import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
@@ -71,7 +72,11 @@ export async function GET(request: NextRequest) {
 
   try {
     const progress = await loadPlanProgress(admin, sessionId, domainRaw);
-    return NextResponse.json({ progress }, { status: 200 });
+    const recoveryContext =
+      domainRaw === "movement"
+        ? await loadMovementRecoveryContext(sessionId)
+        : null;
+    return NextResponse.json({ progress, recoveryContext }, { status: 200 });
   } catch {
     return NextResponse.json(
       { error: "Kon voortgang niet laden." },

@@ -70,3 +70,17 @@ export const MOVEMENT_DEEPEN: Record<MovementDimensionKey, string> = {
     "Wil je verder? Begin met stevig wandelen of traplopen, daarna 2× per week 30 min matig intensief (zone 2). " +
     "Praten-nog-lukt is je test — geen hartslagmeter nodig.",
 };
+
+export type MovementRecoveryFeelField = "RCV_FEEL";
+
+export const MOVEMENT_RECOVERY_QUESTION = {
+  field: "RCV_FEEL" as MovementRecoveryFeelField,
+  question: "Hoe hersteld voel je je vandaag?",
+  options: [
+    { label: "Fris — klaar voor belasting", value: 5 },
+    { label: "Redelijk — lichte sessie lukt", value: 4 },
+    { label: "Matig — liever rustig aan", value: 3 },
+    { label: "Moe — liever licht of rust", value: 2 },
+    { label: "Uitgeput — liever rust", value: 1 },
+  ],
+} as const;

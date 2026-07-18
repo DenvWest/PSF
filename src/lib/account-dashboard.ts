@@ -13,6 +13,7 @@ import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { loadPlanProgress } from "@/lib/plan-progress";
+import { loadMovementRecoveryTrend } from "@/lib/movement-recovery-context";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type {
@@ -34,6 +35,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   history: [],
   retest: false,
   nutritionIntake: null,
+  movementRecoveryTrend: [],
   remeasure: null,
   deltaReport: null,
   profileLabel: null,
@@ -335,6 +337,7 @@ export async function loadAccountDashboardData(
     { data: checkinData },
     { data: logRows },
     { data: planProgressRows },
+    movementRecoveryTrend,
   ] = await Promise.all([
     admin
       .from("intake_domain_checkin")
@@ -350,6 +353,7 @@ export async function loadAccountDashboardData(
       .from("plan_progress")
       .select("session_id, domain, steps")
       .in("session_id", sessionIds),
+    loadMovementRecoveryTrend(sessionIds),
   ]);
 
   let nutritionIntake: DashboardData["nutritionIntake"] = null;
@@ -550,6 +554,7 @@ export async function loadAccountDashboardData(
     history,
     retest: snapshots.length >= 2,
     nutritionIntake,
+    movementRecoveryTrend,
     remeasure,
     deltaReport,
     profileLabel: latestSnapshot.profileLabel,

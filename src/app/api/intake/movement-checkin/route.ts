@@ -23,6 +23,7 @@ import { emitEvent } from "@/lib/events";
 type MovementReport = {
   MOV_STR: number;
   MOV_CARD: number;
+  RCV_FEEL?: number;
 };
 
 function parseIntField(value: unknown, min: number, max: number): number | null {
@@ -38,7 +39,14 @@ function parseReport(raw: unknown): MovementReport | null {
   const MOV_STR = parseIntField(r.MOV_STR, 1, 4);
   const MOV_CARD = parseIntField(r.MOV_CARD, 1, 4);
   if (MOV_STR === null || MOV_CARD === null) return null;
-  return { MOV_STR, MOV_CARD };
+  const RCV_FEEL =
+    r.RCV_FEEL === undefined || r.RCV_FEEL === null
+      ? undefined
+      : parseIntField(r.RCV_FEEL, 1, 5) ?? undefined;
+  if (r.RCV_FEEL !== undefined && r.RCV_FEEL !== null && RCV_FEEL === undefined) {
+    return null;
+  }
+  return { MOV_STR, MOV_CARD, ...(RCV_FEEL !== undefined ? { RCV_FEEL } : {}) };
 }
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
@@ -131,7 +139,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { MOV_STR, MOV_CARD } = report;
+  const { MOV_STR, MOV_CARD, RCV_FEEL } = report;
   const currentScore = movementScoreFromReport(report);
 
   const baseline = await loadBaselineSnapshot(sessionId);
@@ -142,11 +150,16 @@ export async function POST(request: NextRequest) {
     ? { direction, statement: movementStartStatement(direction) }
     : null;
 
+  const rawInputs: Record<string, number> = { MOV_STR, MOV_CARD };
+  if (RCV_FEEL !== undefined) {
+    rawInputs.RCV_FEEL = RCV_FEEL;
+  }
+
   const { error: checkinError } = await admin.from("intake_domain_checkin").insert({
     session_id: sessionId,
     organization_id: organizationId,
     domain_key: "movement_score",
-    raw_inputs: { MOV_STR, MOV_CARD },
+    raw_inputs: rawInputs,
     score: { movement_score: currentScore },
     rules_version: RULES_VERSION,
   });

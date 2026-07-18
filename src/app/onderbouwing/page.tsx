@@ -13,6 +13,7 @@ import {
   LEEFSTIJLCHECK_SDT_MODEL_NOTES,
   LEEFSTIJLCHECK_STRENGTH_DISCLAIMER,
   LEEFSTIJLCHECK_TRANSPARANTIE_NOTES,
+  MOV_SED_EVIDENCE,
 } from "@/data/leefstijlcheck-evidence";
 import EvidenceReferenceList, {
   formatEvidenceReference,
@@ -215,7 +216,8 @@ export default function OnderbouwingPage() {
               return (
                 <article
                   key={question.id}
-                  className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+                  id={question.id}
+                  className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm scroll-mt-28"
                 >
                   <h3 className="font-display text-xl font-semibold text-stone-900">
                     Vraag {index + 1}
@@ -282,6 +284,57 @@ export default function OnderbouwingPage() {
                 </article>
               );
             })}
+            <article
+              id={MOV_SED_EVIDENCE.id}
+              className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm scroll-mt-28"
+            >
+              <h3 className="font-display text-xl font-semibold text-stone-900">
+                {MOV_SED_EVIDENCE.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-stone-500">
+                Aanvullende onderbouwing voor het bewegingsplan — geen aparte intake-vraag.
+              </p>
+              <div className="mt-6 space-y-5">
+                <section>
+                  <h4 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
+                    Waarom dit onderdeel?
+                  </h4>
+                  <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                    {MOV_SED_EVIDENCE.whyThisQuestion}
+                  </p>
+                </section>
+                <section>
+                  <h4 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
+                    Wetenschappelijke onderbouwing
+                  </h4>
+                  <ul className="mt-2 space-y-1 text-sm leading-relaxed text-stone-600">
+                    {MOV_SED_EVIDENCE.scientificRationale.map((line) => (
+                      <li key={line}>- {line}</li>
+                    ))}
+                  </ul>
+                </section>
+                <section>
+                  <h4 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
+                    Sterkte van het bewijs
+                  </h4>
+                  <div className="mt-2">
+                    <EvidenceStars
+                      stars={MOV_SED_EVIDENCE.strength.stars}
+                      label={MOV_SED_EVIDENCE.strength.label}
+                    />
+                    <p className="mt-1 text-sm leading-relaxed text-stone-600">
+                      {MOV_SED_EVIDENCE.strength.rationale}
+                    </p>
+                  </div>
+                </section>
+                <section>
+                  <h4 className="text-sm font-semibold uppercase tracking-wide text-stone-800">
+                    Bronnen
+                  </h4>
+                  <EvidenceReferenceList references={MOV_SED_EVIDENCE.references} />
+                </section>
+              </div>
+            </article>
           </div>
         </section>
 

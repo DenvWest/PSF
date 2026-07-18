@@ -163,6 +163,7 @@ export type DashboardData = {
   history: CheckLogEntry[];
   retest: boolean;
   nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
+  movementRecoveryTrend: { date: string; value: number }[];
   remeasure: { dueDate: string; daysUntil: number } | null;
   deltaReport: DeltaReport | null;
   profileLabel: string | null;

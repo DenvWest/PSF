@@ -18,8 +18,19 @@ import { getMovementTrack } from "@/lib/movement-plan-track";
 import { getPlanCrossDomainChips } from "@/lib/plan-cross-domain-chips";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
+import MovementWeekCategoryPanel from "@/components/intake/MovementWeekCategoryPanel";
+import {
+  buildMovementDailyRhythm,
+  type MovementDailyRhythm,
+} from "@/lib/movement-daily-rhythm";
+import { isMovementWeekPhase } from "@/lib/movement-week-categories";
+import {
+  buildMovementRecoveryHint,
+  buildMovementRecoveryInput,
+} from "@/lib/movement-recovery-hint";
 import type {
   LifestylePlanTemplate,
+  PlanPhase,
   PlanProgress,
   PlanStep,
   PlanStepLink,
@@ -112,6 +123,7 @@ function PlanStepRow({
   state,
   disabled,
   busy,
+  readOnly = false,
   onToggleDone,
   onSkip,
   onLinkClick,
@@ -121,12 +133,43 @@ function PlanStepRow({
   state: PlanStepState;
   disabled: boolean;
   busy: boolean;
+  readOnly?: boolean;
   onToggleDone: (phaseId: string, stepId: string, next: PlanStepState) => void;
   onSkip: (phaseId: string, stepId: string) => void;
   onLinkClick?: (stepId: string, link: PlanStepLink) => void;
 }) {
   const checked = state === "done";
   const skipped = state === "skipped";
+
+  if (readOnly) {
+    return (
+      <li className="rounded-xl border border-intake-divider bg-intake-bg/60 px-4 py-3">
+        <div className="flex items-start gap-3">
+          <span
+            className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] ${
+              checked
+                ? "bg-intake-sage/20 text-intake-sage"
+                : skipped
+                  ? "bg-intake-divider text-intake-ink-subtle"
+                  : "border border-intake-divider text-transparent"
+            }`}
+            aria-hidden
+          >
+            {checked ? "✓" : skipped ? "—" : ""}
+          </span>
+          <p
+            className={`text-sm leading-relaxed ${
+              checked || skipped
+                ? "text-intake-ink-subtle line-through"
+                : "text-intake-ink-muted"
+            }`}
+          >
+            {step.title}
+          </p>
+        </div>
+      </li>
+    );
+  }
 
   return (
     <li
@@ -186,6 +229,222 @@ function PlanStepRow({
         </div>
       </div>
     </li>
+  );
+}
+
+function PlanPhaseTabs({
+  phases,
+  activePhaseIndex,
+  onSelect,
+}: {
+  phases: LifestylePlanTemplate["phases"];
+  activePhaseIndex: number;
+  onSelect: (phaseId: string) => void;
+}) {
+  return (
+    <nav
+      aria-label="Planfasen"
+      className="mb-3 flex gap-2 overflow-x-auto pb-1"
+    >
+      {phases.map((phase, index) => {
+        const isActive = index === activePhaseIndex;
+        return (
+          <button
+            key={phase.id}
+            type="button"
+            onClick={() => onSelect(phase.id)}
+            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              isActive
+                ? "border-intake-sage bg-intake-sage/10 text-intake-sage"
+                : "border-intake-card-border bg-intake-bg text-intake-ink-muted hover:border-intake-sage/30"
+            }`}
+          >
+            {HORIZON_LABELS[phase.horizon]}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+function PlanPhaseSection({
+  phase,
+  template,
+  displayProgress,
+  isActive,
+  isLocked,
+  isPast,
+  isExpanded,
+  phaseComplete,
+  visibleSteps,
+  nutrientBridgeItems,
+  dailyRhythm,
+  recoveryHint,
+  busyStepId,
+  sessionId,
+  onToggleExpand,
+  onToggleDone,
+  onSkip,
+  onLinkClick,
+  onBridgeItemClick,
+  onCrossDomainClick,
+}: {
+  phase: PlanPhase;
+  template: LifestylePlanTemplate;
+  displayProgress: PlanProgress | null;
+  isActive: boolean;
+  isLocked: boolean;
+  isPast: boolean;
+  isExpanded: boolean;
+  phaseComplete: boolean;
+  visibleSteps: PlanStep[];
+  nutrientBridgeItems: NutrientBridgeItem[];
+  dailyRhythm: MovementDailyRhythm | null;
+  recoveryHint: ReturnType<typeof buildMovementRecoveryHint>;
+  busyStepId: string | null;
+  sessionId: string | null;
+  onToggleExpand: () => void;
+  onToggleDone: (phaseId: string, stepId: string, next: PlanStepState) => void;
+  onSkip: (phaseId: string, stepId: string) => void;
+  onLinkClick: (stepId: string, link: PlanStepLink, surface?: "step" | "nutrient_bridge") => void;
+  onBridgeItemClick: (item: NutrientBridgeItem) => void;
+  onCrossDomainClick: (pillarId: string) => void;
+}) {
+  const readOnly = !isActive;
+  const useWeekCategories =
+    isMovementWeekPhase(phase.id, template.domain) && dailyRhythm !== null;
+  const sectionTone = isActive
+    ? "border-intake-card-border bg-intake-bg-elevated/40"
+    : isLocked
+      ? "border-intake-divider bg-intake-bg/40"
+      : "border-intake-divider bg-intake-bg/60";
+
+  return (
+    <section
+      id={`phase-section-${phase.id}`}
+      aria-labelledby={`phase-title-${phase.id}`}
+      className={`rounded-2xl border px-4 py-3 ${sectionTone} ${isLocked && !isExpanded ? "opacity-80" : ""}`}
+    >
+      <button
+        type="button"
+        className="flex w-full items-start justify-between gap-3 text-left"
+        aria-expanded={isExpanded}
+        aria-controls={`phase-panel-${phase.id}`}
+        onClick={onToggleExpand}
+      >
+        <div className="min-w-0">
+          <p
+            className={`text-[10px] font-semibold uppercase tracking-[0.14em] ${
+              isActive ? "text-intake-sage" : "text-intake-ink-subtle"
+            }`}
+          >
+            {HORIZON_LABELS[phase.horizon]}
+          </p>
+          <h3
+            id={`phase-title-${phase.id}`}
+            className={`mt-0.5 font-semibold ${
+              isActive ? "text-base text-intake-ink" : "text-sm text-intake-ink-muted"
+            }`}
+          >
+            {phase.title}
+          </h3>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {isLocked ? (
+            <span className="text-xs text-intake-ink-subtle" aria-hidden>
+              🔒
+            </span>
+          ) : null}
+          {isPast && phaseComplete ? (
+            <span className="rounded-full bg-intake-sage/15 px-2 py-0.5 text-xs font-semibold text-intake-sage">
+              Klaar
+            </span>
+          ) : null}
+          <span className="text-intake-ink-subtle" aria-hidden>
+            {isExpanded ? "▾" : "▸"}
+          </span>
+        </div>
+      </button>
+
+      {isExpanded ? (
+        <div id={`phase-panel-${phase.id}`} className="mt-3 border-t border-intake-divider pt-3">
+          {isLocked ? (
+            <p className="mb-3 text-xs leading-relaxed text-intake-ink-subtle">
+              Nog niet actief — wel alvast bekijken. Rond eerst de vorige fase af om stappen af te vinken.
+            </p>
+          ) : null}
+          {isPast && !isLocked ? (
+            <p className="mb-3 text-xs leading-relaxed text-intake-ink-subtle">
+              Terugblik — deze fase is afgerond.
+            </p>
+          ) : null}
+
+          {phase.intro ? (
+            <p className="mb-4 text-sm leading-relaxed text-intake-ink-muted">
+              {phase.intro.body}
+            </p>
+          ) : null}
+
+          {useWeekCategories ? (
+            <MovementWeekCategoryPanel
+              phaseId={phase.id}
+              domain={template.domain}
+              templateVersion={template.version}
+              visibleSteps={visibleSteps}
+              dailyRhythm={dailyRhythm}
+              recoveryHint={recoveryHint}
+              readOnly={readOnly}
+              getStepState={(stepId) => getStepState(displayProgress, stepId)}
+              renderStepRow={(step) => (
+                <PlanStepRow
+                  key={step.id}
+                  step={step}
+                  phaseId={phase.id}
+                  state={getStepState(displayProgress, step.id)}
+                  disabled={!sessionId || readOnly}
+                  readOnly={readOnly}
+                  busy={busyStepId === step.id}
+                  onToggleDone={onToggleDone}
+                  onSkip={onSkip}
+                  onLinkClick={onLinkClick}
+                />
+              )}
+            />
+          ) : (
+            <ul className="space-y-3">
+              {visibleSteps.map((step) => (
+                <PlanStepRow
+                  key={step.id}
+                  step={step}
+                  phaseId={phase.id}
+                  state={getStepState(displayProgress, step.id)}
+                  disabled={!sessionId || readOnly}
+                  readOnly={readOnly}
+                  busy={busyStepId === step.id}
+                  onToggleDone={onToggleDone}
+                  onSkip={onSkip}
+                  onLinkClick={onLinkClick}
+                />
+              ))}
+            </ul>
+          )}
+
+          {template.domain === "movement" && isActive ? (
+            <NutrientBridgeSection
+              items={nutrientBridgeItems}
+              onItemClick={onBridgeItemClick}
+            />
+          ) : null}
+
+          {isActive ? (
+            <CrossDomainChips
+              domain={template.domain}
+              onChipClick={onCrossDomainClick}
+            />
+          ) : null}
+        </div>
+      ) : null}
+    </section>
   );
 }
 
@@ -317,9 +576,26 @@ export default function LifestylePlan({
     [template.domain, ctx],
   );
 
+  const dailyRhythm = useMemo(
+    () =>
+      template.domain === "movement" ? buildMovementDailyRhythm(ctx) : null,
+    [template.domain, ctx],
+  );
+
   const loadKey = sessionId ? `${sessionId}:${template.domain}` : null;
   const [loadedKey, setLoadedKey] = useState<string | null>(null);
   const [progress, setProgress] = useState<PlanProgress | null>(null);
+  const [rcvFeel, setRcvFeel] = useState<number | null>(null);
+
+  const recoveryHint = useMemo(() => {
+    if (template.domain !== "movement") {
+      return null;
+    }
+    return buildMovementRecoveryHint(
+      buildMovementRecoveryInput(scores, answers, rcvFeel ?? undefined),
+    );
+  }, [template.domain, scores, answers, rcvFeel]);
+
   const loading = loadKey !== null && loadedKey !== loadKey;
   const displayProgress = loadedKey === loadKey ? progress : null;
   const [busyStepId, setBusyStepId] = useState<string | null>(null);
@@ -329,6 +605,64 @@ export default function LifestylePlan({
   const activePhaseIndex = useMemo(
     () => getActivePhaseIndex(template, ctx, displayProgress),
     [template, ctx, displayProgress],
+  );
+
+  const activePhaseId = template.phases[activePhaseIndex]?.id ?? "";
+  const [expandedPhaseIds, setExpandedPhaseIds] = useState<Set<string>>(
+    () => new Set(activePhaseId ? [activePhaseId] : []),
+  );
+  const [trackedActivePhaseId, setTrackedActivePhaseId] = useState(activePhaseId);
+
+  if (activePhaseId !== trackedActivePhaseId) {
+    setTrackedActivePhaseId(activePhaseId);
+    if (activePhaseId && !expandedPhaseIds.has(activePhaseId)) {
+      setExpandedPhaseIds((prev) => new Set([...prev, activePhaseId]));
+    }
+  }
+
+  const handlePhaseToggle = useCallback(
+    (phaseId: string) => {
+      setExpandedPhaseIds((prev) => {
+        const next = new Set(prev);
+        const expanded = !next.has(phaseId);
+        if (expanded) {
+          next.add(phaseId);
+        } else {
+          next.delete(phaseId);
+        }
+        emitIntakeClientEvent("plan.phase_expanded", {
+          domain: template.domain,
+          phase_id: phaseId,
+          expanded,
+          template_version: template.version,
+        });
+        return next;
+      });
+    },
+    [template.domain, template.version],
+  );
+
+  const handlePhaseTabSelect = useCallback(
+    (phaseId: string) => {
+      setExpandedPhaseIds((prev) => {
+        if (prev.has(phaseId)) {
+          return prev;
+        }
+        const next = new Set([...prev, phaseId]);
+        emitIntakeClientEvent("plan.phase_expanded", {
+          domain: template.domain,
+          phase_id: phaseId,
+          expanded: true,
+          template_version: template.version,
+        });
+        return next;
+      });
+      document.getElementById(`phase-section-${phaseId}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    },
+    [template.domain, template.version],
   );
 
   useEffect(() => {
@@ -345,11 +679,16 @@ export default function LifestylePlan({
           { credentials: "include", cache: "no-store" },
         );
         const json = (await response.json().catch(() => null)) as
-          | { progress?: PlanProgress | null; error?: string }
+          | {
+              progress?: PlanProgress | null;
+              recoveryContext?: { rcvFeel: number | null } | null;
+              error?: string;
+            }
           | null;
 
         if (!cancelled && response.ok) {
           setProgress(json?.progress ?? null);
+          setRcvFeel(json?.recoveryContext?.rcvFeel ?? null);
           setError(null);
         }
       } catch {
@@ -589,6 +928,12 @@ export default function LifestylePlan({
         </p>
       ) : null}
 
+      <PlanPhaseTabs
+        phases={template.phases}
+        activePhaseIndex={activePhaseIndex}
+        onSelect={handlePhaseTabSelect}
+      />
+
       <div className="space-y-3">
         {template.phases.map((phase, phaseIndex) => {
           const visibleSteps = selectVisibleSteps(phase, ctx).filter(
@@ -599,105 +944,30 @@ export default function LifestylePlan({
           const isPast = phaseIndex < activePhaseIndex;
           const phaseComplete = isPhaseComplete(phase, ctx, displayProgress?.steps ?? {});
 
-          if (!isActive && (isPast || isLocked)) {
-            return (
-              <section
-                key={phase.id}
-                aria-labelledby={`phase-title-${phase.id}`}
-                className={`rounded-xl border px-4 py-3 ${
-                  isLocked
-                    ? "border-intake-divider bg-intake-bg/40 opacity-70"
-                    : "border-intake-divider bg-intake-bg/60"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
-                      {HORIZON_LABELS[phase.horizon]}
-                    </p>
-                    <h3
-                      id={`phase-title-${phase.id}`}
-                      className="mt-0.5 text-sm font-medium text-intake-ink-muted"
-                    >
-                      {phase.title}
-                    </h3>
-                  </div>
-                  {isLocked ? (
-                    <span className="shrink-0 text-xs text-intake-ink-subtle" aria-hidden>
-                      🔒
-                    </span>
-                  ) : null}
-                  {isPast && phaseComplete ? (
-                    <span className="shrink-0 rounded-full bg-intake-sage/15 px-2 py-0.5 text-xs font-semibold text-intake-sage">
-                      Klaar
-                    </span>
-                  ) : null}
-                </div>
-                {isLocked ? (
-                  <p className="mt-2 text-xs text-intake-ink-subtle">
-                    Rond eerst de vorige fase af.
-                  </p>
-                ) : null}
-              </section>
-            );
-          }
-
           return (
-            <section
+            <PlanPhaseSection
               key={phase.id}
-              aria-labelledby={`phase-title-${phase.id}`}
-              className="rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40 px-4 py-4"
-            >
-              <div className="mb-3 flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-sage">
-                    {HORIZON_LABELS[phase.horizon]}
-                  </p>
-                  <h3
-                    id={`phase-title-${phase.id}`}
-                    className="mt-1 text-base font-semibold text-intake-ink"
-                  >
-                    {phase.title}
-                  </h3>
-                </div>
-              </div>
-
-              {phase.intro ? (
-                <p className="mb-4 text-sm leading-relaxed text-intake-ink-muted">
-                  {phase.intro.body}
-                </p>
-              ) : null}
-
-              <ul className="space-y-3">
-                {visibleSteps.map((step) => (
-                  <PlanStepRow
-                    key={step.id}
-                    step={step}
-                    phaseId={phase.id}
-                    state={getStepState(displayProgress, step.id)}
-                    disabled={!sessionId}
-                    busy={busyStepId === step.id}
-                    onToggleDone={handleToggleDone}
-                    onSkip={handleSkip}
-                    onLinkClick={(stepId, link) => handleLinkClick(stepId, link, "step")}
-                  />
-                ))}
-              </ul>
-
-              {template.domain === "movement" && isActive ? (
-                <NutrientBridgeSection
-                  items={nutrientBridgeItems}
-                  onItemClick={handleBridgeItemClick}
-                />
-              ) : null}
-
-              {isActive ? (
-                <CrossDomainChips
-                  domain={template.domain}
-                  onChipClick={handleCrossDomainClick}
-                />
-              ) : null}
-            </section>
+              phase={phase}
+              template={template}
+              displayProgress={displayProgress}
+              isActive={isActive}
+              isLocked={isLocked}
+              isPast={isPast}
+              isExpanded={expandedPhaseIds.has(phase.id)}
+              phaseComplete={phaseComplete}
+              visibleSteps={visibleSteps}
+              nutrientBridgeItems={nutrientBridgeItems}
+              dailyRhythm={dailyRhythm}
+              recoveryHint={recoveryHint}
+              busyStepId={busyStepId}
+              sessionId={sessionId}
+              onToggleExpand={() => handlePhaseToggle(phase.id)}
+              onToggleDone={handleToggleDone}
+              onSkip={handleSkip}
+              onLinkClick={handleLinkClick}
+              onBridgeItemClick={handleBridgeItemClick}
+              onCrossDomainClick={handleCrossDomainClick}
+            />
           );
         })}
       </div>

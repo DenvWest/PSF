@@ -752,3 +752,34 @@ export const LEEFSTIJLCHECK_EVIDENCE_BY_ID: Record<QuestionId, QuestionEvidence>
     },
     {} as Record<QuestionId, QuestionEvidence>,
   );
+
+/** Plan-onderbouwing: sedentair gedrag doorbreken (geen intake-vraag). */
+export type SupplementalPlanEvidence = {
+  id: string;
+  title: string;
+  whyThisQuestion: string;
+  scientificRationale: string[];
+  strength: QuestionEvidence["strength"];
+  references: EvidenceReference[];
+};
+
+export const MOV_SED_EVIDENCE: SupplementalPlanEvidence = {
+  id: "MOV_SED",
+  title: "Zittend gedrag doorbreken (beweegsnacks)",
+  whyThisQuestion:
+    "Lang onafgebroken zitten is los van sport een eigen risicofactor. Korte onderbrekingen elke 20–30 minuten passen bij sedentary-behaviour-richtlijnen.",
+  scientificRationale: [
+    "WHO 2020 adviseert sedentair gedrag te beperken en regelmatig te onderbreken met lichte activiteit.",
+    "Korte beweegpauzes kunnen metabole en circulatie-effecten verbeteren zonder een volledige trainingssessie.",
+    "Dagelijkse stappen zijn een praktische proxy voor algemene beweging — richting, geen diagnose.",
+  ],
+  strength: {
+    stars: 4,
+    label: "Sterk bewijs",
+    rationale:
+      "Internationale richtlijnen en narratieve reviews ondersteunen sedentary breaks; stappen-doelen zijn indicatief.",
+  },
+  references: movementRefs.filter((ref) =>
+    ref.apa.includes("Bull FC") || ref.apa.includes("Stamatakis"),
+  ),
+};

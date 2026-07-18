@@ -9,7 +9,11 @@ import {
 import { resolveGatedComparisonPath } from "@/lib/supplement-gate";
 import { getUsableClaims } from "@/data/approved-claims";
 
-export type MovementSelfReport = { MOV_STR?: number; MOV_CARD?: number };
+export type MovementSelfReport = {
+  MOV_STR?: number;
+  MOV_CARD?: number;
+  RCV_FEEL?: number;
+};
 export type MovementSupplement = { comparisonPath: string; claimText: string };
 
 export type MovementDimensionResult = {

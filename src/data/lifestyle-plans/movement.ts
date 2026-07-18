@@ -4,7 +4,7 @@ import type { LifestylePlanTemplate } from "@/types/lifestyle-plan";
 export const movementPlanTemplate: LifestylePlanTemplate = {
   domain: "movement",
   guideThema: "beweging",
-  version: "1.2",
+  version: "1.4",
   title: "Bewegingsplan na 40",
   recognition: {
     heading: "Dit herken je misschien",
@@ -27,11 +27,10 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
     {
       id: "mov-phase-deze-week",
       horizon: "deze-week",
-      title: "Deze week: één krachtprikkel thuis",
+      title: "Deze week: kies je focus",
       intro: {
         body:
-          "Geen sportschool nodig — kies één oefening die je vandaag kunt doen, of houd je bestaande ritme scherp. " +
-          "Vink af wat je gedaan hebt; consistentie telt meer dan perfectie.",
+          "Kies een categorie — één focus per keer. Geen sportschool nodig; vink af wat je gedaan hebt.",
       },
       steps: [
         {

@@ -34,7 +34,10 @@ import AgendaScreen from "@/components/dashboard/agenda/AgendaScreen";
 import AgendaTeaser from "@/components/dashboard/agenda/AgendaTeaser";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
+import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
+import { resolveTrendsAccess } from "@/lib/entitlement-access";
 
 const VoortgangHubSkeleton = () => (
   <div
@@ -2041,8 +2044,24 @@ const HistorySection = ({ empty, model }: SharedSectionProps) => {
   );
 };
 
-const FutureSection = () => (
+const FutureSection = () => {
+  const handleWearableInterest = () => {
+    emitAccountClientEvent("wearable.interest_clicked", {
+      surface: "dashboard_future",
+      feature: "wearable_connect",
+    });
+    trackEvent("wearable_interest", { surface: "dashboard_future" });
+    clarityTag("wearable_interest", "dashboard_future");
+  };
+
+  return (
   <section>
+    <button
+      type="button"
+      onClick={handleWearableInterest}
+      className="w-full text-left"
+      aria-label="Interesse in wearable-koppeling — binnenkort beschikbaar"
+    >
     <div
       style={{
         display: "flex",
@@ -2052,6 +2071,7 @@ const FutureSection = () => (
         borderRadius: 24,
         border: "1px dashed var(--panel-border)",
         background: "rgba(255,255,255,0.015)",
+        cursor: "pointer",
       }}
     >
       <div
@@ -2099,8 +2119,10 @@ const FutureSection = () => (
         Binnenkort
       </span>
     </div>
+    </button>
   </section>
-);
+  );
+};
 
 const StatisticsSection = (props: SharedSectionProps) => {
   const upsellShownRef = useRef(false);
@@ -2179,6 +2201,12 @@ const StatisticsSection = (props: SharedSectionProps) => {
   return (
     <CollapsibleSection eyebrow="Statistieken" title="Je cijfers over tijd">
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {resolveTrendsAccess(props.hasTrendsFeature, props.isMember) ? (
+          <section aria-label="Herstelgevoel trend">
+            <SectionHeader eyebrow="Trends" title="Herstel vs. training" />
+            <MovementRecoveryTrendsCard trend={props.data?.movementRecoveryTrend ?? []} />
+          </section>
+        ) : null}
         <SignalsSection {...props} />
         <NutritionIntakeSection {...props} />
         <HistorySection {...props} />

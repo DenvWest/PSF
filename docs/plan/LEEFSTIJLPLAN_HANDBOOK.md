@@ -60,8 +60,33 @@ fase (`buildMovementNutrientBridge` in `src/lib/movement-nutrient-bridge.ts`):
 5. Meet: `plan.step_link_clicked` met `surface: "nutrient_bridge"` + GA4
    `movement_nutrient_bridge`.
 
-Shell-wijzigingen (collapsed rationale, alleen actieve fase open) gelden voor alle
+Shell-wijzigingen (collapsed rationale, klikbare fase-accordeon) gelden voor alle
 domein-plannen in `LifestylePlan.tsx`.
+
+### UX-patroon: dagelijks ritme (movement v1.3+)
+
+**v1.4:** dagelijks ritme zit **in** Deze week als categorieknop (Kracht · Conditie · Dagelijks ritme),
+niet meer als losse strip boven de fases. SSOT: `src/lib/movement-week-categories.ts`,
+UI: `MovementWeekCategoryPanel.tsx`, embedded rhythm: `MovementDailyRhythmContent.tsx`.
+
+Boven de weekfasen stond eerder een vaste **Dagelijks ritme**-strip (`MovementDailyRhythmStrip`,
+SSOT `src/data/movement/daily-rhythm.ts`, builder `src/lib/movement-daily-rhythm.ts`):
+
+1. **Beweegsnack** — onderbreek zitten elke 20–30 min (WHO sedentary behaviour); 3–4
+   gepersonaliseerde micro-opties (`mov-snack-*`, aligned met planner-doc §14.2).
+2. **Stappen** — haalbare richting per PAL-band (`derivePAL`), geen diagnose.
+3. Onderbouwing via `#MOV_SED` op `/onderbouwing` (`MOV_SED_EVIDENCE`).
+4. Scheiding `main` (weekfases) vs `micro` (dagelijks ritmo) — snacks tellen niet mee
+   in week-kracht/conditie-checklist.
+5. Meet: `plan.daily_rhythm_clicked`, `plan.week_category_selected`, GA4
+   `movement_daily_rhythm` / `movement_week_category`.
+
+### Hobby overlay (L1.5) — DEFER
+
+Sport-hobby koppelen aan automatische kracht/conditie-oefeningen (`MOV_HOBBY` intake,
+`src/data/movement/hobby-prescriptions.ts`, merge via overlay) — **niet in v1**.
+Fallback zonder hobby: longevity-baseline (`movement-plan-track.ts`). Zie
+`ARCHITECTUUR_LIFESTYLE_PLANNER.md` §14.1 `mov-sport-session`.
 
 ## 3. Bestandskaart (waar zit wat)
 
