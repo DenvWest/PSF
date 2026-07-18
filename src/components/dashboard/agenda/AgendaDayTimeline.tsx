@@ -1,14 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { MouseEvent } from "react";
-import * as Icons from "@/components/app/icons";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import { AgendaFocusPanel, AgendaFocusPill } from "@/components/dashboard/agenda/AgendaMetaRow";
 import { clarityTag } from "@/lib/clarity";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
+import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanceStrip";
 import {
   buildDayTimeline,
   buildPlanStepBlock,
@@ -66,6 +66,11 @@ type AgendaDayTimelineProps = {
   onSelectPillar: (pillarId: PillarId) => void;
   onAcceptEngine: () => void;
   onResetFocus: () => void;
+  weekStrip?: ReactNode;
+  onRegisterFooterActions?: (actions: {
+    openAddSheet: () => void;
+    blockBusy: boolean;
+  }) => void;
 };
 
 function formatDayHeading(isoDate: string, isToday: boolean): string {
@@ -100,6 +105,8 @@ export default function AgendaDayTimeline({
   onSelectPillar,
   onAcceptEngine,
   onResetFocus,
+  weekStrip,
+  onRegisterFooterActions,
 }: AgendaDayTimelineProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [focusExpanded, setFocusExpanded] = useState(false);
@@ -153,16 +160,16 @@ export default function AgendaDayTimeline({
     setFocusExpanded(true);
   };
 
-  const openHeaderSheet = () => {
-    if (addOpen) {
-      closeSheet();
-      return;
-    }
+  const openHeaderSheet = useCallback(() => {
     closeFocus();
     setSelectedBlockId(null);
     setDraftSlot(null);
     setAddOpen(true);
-  };
+  }, []);
+
+  useEffect(() => {
+    onRegisterFooterActions?.({ openAddSheet: openHeaderSheet, blockBusy });
+  }, [blockBusy, onRegisterFooterActions, openHeaderSheet]);
 
   const openDetail = (blockId: string) => {
     closeSheet();
@@ -187,7 +194,7 @@ export default function AgendaDayTimeline({
 
   return (
     <section aria-label="Dagtijdlijn">
-      <div className="mb-4">
+      <div className="mb-3">
         <div className="flex items-end justify-between gap-3">
           <h2
             className="m-0 min-w-0 flex-1 text-[20px] font-medium capitalize text-[#1c1917]"
@@ -195,7 +202,7 @@ export default function AgendaDayTimeline({
           >
             {formatDayHeading(slot.date, slot.isToday)}
           </h2>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 items-center">
             {slot.isToday ? (
               <AgendaFocusPill
                 model={model}
@@ -204,19 +211,13 @@ export default function AgendaDayTimeline({
                 onToggle={openHeaderFocus}
               />
             ) : null}
-            <button
-              type="button"
-              disabled={blockBusy}
-              onClick={openHeaderSheet}
-              aria-expanded={addOpen}
-              className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#e4e0da] bg-white px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors disabled:opacity-60"
-              style={{ fontFamily: "var(--f-sans)" }}
-            >
-              {addOpen ? null : <Icons.Plus s={14} />}
-              {addOpen ? "Annuleer" : "Moment"}
-            </button>
           </div>
         </div>
+        <AgendaProvenanceStrip
+          model={model}
+          slot={slot}
+          className="mt-2 pb-0.5"
+        />
         {slot.isToday && focusExpanded ? (
           <div className="mt-3">
             <AgendaFocusPanel
@@ -238,6 +239,8 @@ export default function AgendaDayTimeline({
           />
         </div>
       ) : null}
+
+      {weekStrip ? <div className="mb-4">{weekStrip}</div> : null}
 
       <div className="flex gap-3">
         <div
@@ -318,27 +321,26 @@ export default function AgendaDayTimeline({
         </div>
       </div>
 
-      {addOpen ? (
-        <AgendaAddBlockSheet
-          key={
-            draftSlot
-              ? `tap-${slot.date}-${draftSlot.startTime}-${draftSlot.endTime}`
-              : `header-${slot.date}`
-          }
-          date={slot.date}
-          busy={blockBusy}
-          initialStartTime={draftSlot?.startTime}
-          initialEndTime={draftSlot?.endTime}
-          createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
-          archivedBlocks={archivedForDay}
-          hiddenPlanStep={hiddenPlanStep}
-          onRestore={onRestoreBlock}
-          onRestorePlanStep={onRestorePlanStep}
-          onShowAllPlanSteps={onShowAllPlanSteps}
-          onClose={closeSheet}
-          onSubmit={onCreateBlock}
-        />
-      ) : null}
+      <AgendaAddBlockSheet
+        key={
+          draftSlot
+            ? `tap-${slot.date}-${draftSlot.startTime}-${draftSlot.endTime}`
+            : `header-${slot.date}`
+        }
+        open={addOpen}
+        date={slot.date}
+        busy={blockBusy}
+        initialStartTime={draftSlot?.startTime}
+        initialEndTime={draftSlot?.endTime}
+        createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
+        archivedBlocks={archivedForDay}
+        hiddenPlanStep={hiddenPlanStep}
+        onRestore={onRestoreBlock}
+        onRestorePlanStep={onRestorePlanStep}
+        onShowAllPlanSteps={onShowAllPlanSteps}
+        onClose={closeSheet}
+        onSubmit={onCreateBlock}
+      />
 
       <AgendaBlockDetailSheet
         block={selectedBlock}

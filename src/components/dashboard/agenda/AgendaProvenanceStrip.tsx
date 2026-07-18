@@ -8,6 +8,7 @@ import type { DashboardModel } from "@/types/dashboard";
 type AgendaProvenanceStripProps = {
   model: DashboardModel;
   slot: WeekDaySlot;
+  className?: string;
 };
 
 function FlowStep({
@@ -36,12 +37,16 @@ function FlowStep({
   );
 }
 
-export default function AgendaProvenanceStrip({ model, slot }: AgendaProvenanceStripProps) {
+export default function AgendaProvenanceStrip({
+  model,
+  slot,
+  className = "",
+}: AgendaProvenanceStripProps) {
   const planHref = model.activeHabit?.planHref;
   const agendaLabel = slot.isToday ? "Vandaag" : slot.dayLabel;
 
   return (
-    <div className="flex items-start justify-between gap-3 px-5 pb-1 pt-5">
+    <div className={`flex items-start justify-between gap-3 ${className}`.trim()}>
       <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
         <FlowStep
           label="Kompas"

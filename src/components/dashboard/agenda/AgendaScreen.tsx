@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
-import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanceStrip";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
@@ -62,6 +61,10 @@ export default function AgendaScreen({
   const [blocksLoaded, setBlocksLoaded] = useState(false);
   const [prefBusy, setPrefBusy] = useState(false);
   const [blockBusy, setBlockBusy] = useState(false);
+  const footerActionsRef = useRef<{
+    openAddSheet: () => void;
+    blockBusy: boolean;
+  } | null>(null);
 
   const selectedSlot = slots.find((slot) => slot.date === selectedDate) ?? todaySlot;
   const todayTimeBucket = model.timeBucket ?? deriveDefaultTimeBucket();
@@ -327,6 +330,17 @@ export default function AgendaScreen({
     }
   };
 
+  const handleRegisterFooterActions = useCallback(
+    (actions: { openAddSheet: () => void; blockBusy: boolean }) => {
+      footerActionsRef.current = actions;
+    },
+    [],
+  );
+
+  const handleOpenAddSheet = () => {
+    footerActionsRef.current?.openAddSheet();
+  };
+
   const handleVoortgangLink = () => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
       surface: "agenda",
@@ -337,22 +351,7 @@ export default function AgendaScreen({
 
   return (
     <AgendaShell accentColor={model.priority.color}>
-      <AgendaProvenanceStrip model={model} slot={selectedSlot} />
-
-      <AgendaShellSection className="border-b-0 pb-2">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
-          Deze week
-        </p>
-        <AgendaWeekStrip
-          slots={slots}
-          selectedDate={selectedDate}
-          completedKeys={weekState.completedKeys}
-          todayTimeBucket={todayTimeBucket}
-          onSelect={handleSelect}
-        />
-      </AgendaShellSection>
-
-      <AgendaShellSection className="border-t-0 pt-2 pb-5">
+      <AgendaShellSection className="!pt-3 pb-5">
         <AgendaDayTimeline
           model={model}
           slot={selectedSlot}
@@ -378,21 +377,46 @@ export default function AgendaScreen({
             void saveAgendaPriority(model.enginePriority.id, "accept_engine")
           }
           onResetFocus={() => void handleResetFocus()}
+          onRegisterFooterActions={handleRegisterFooterActions}
+          weekStrip={
+            <AgendaWeekStrip
+              slots={slots}
+              selectedDate={selectedDate}
+              completedKeys={weekState.completedKeys}
+              todayTimeBucket={todayTimeBucket}
+              onSelect={handleSelect}
+            />
+          }
         />
       </AgendaShellSection>
 
       <AgendaPriorityTestPanel model={model} onPrefUpdated={onPrefUpdated} />
 
-      <AgendaShellSection>
-        <button
-          type="button"
-          onClick={handleVoortgangLink}
-          className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[13px] font-medium text-[var(--sage)]"
-          style={{ fontFamily: "var(--f-sans)" }}
-        >
-          Hoe verschuift je analyse?
-          <Icons.ArrowRight s={14} />
-        </button>
+      <AgendaShellSection className="pt-3">
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            disabled={blockBusy}
+            onClick={handleOpenAddSheet}
+            aria-haspopup="dialog"
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-[var(--sage)] bg-[var(--sage)] px-3 text-[13px] font-semibold text-[#0f1c10] transition-opacity disabled:opacity-60"
+            style={{ fontFamily: "var(--f-sans)" }}
+          >
+            <Icons.Plus s={14} />
+            Moment
+          </button>
+          <button
+            type="button"
+            onClick={handleVoortgangLink}
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-1 rounded-full border border-[#e4e0da] bg-white px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors hover:border-[#d6d3d1]"
+            style={{ fontFamily: "var(--f-sans)" }}
+          >
+            <span className="text-pretty leading-snug">Hoe verschuift je analyse?</span>
+            <span className="shrink-0" aria-hidden>
+              <Icons.ArrowRight s={14} />
+            </span>
+          </button>
+        </div>
       </AgendaShellSection>
     </AgendaShell>
   );
