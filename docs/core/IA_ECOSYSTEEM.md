@@ -107,9 +107,10 @@ Sluit aan op de bestaande 5-tab bottom-nav ("Roadmap-first") in `src/app/dashboa
 
 1. **Vandaag** — laatste check-in + 1 prioriteit. Copy: *"op basis van je laatste check-in"* — **niet** "live gemeten" (er zijn geen sensoren; dat was een overclaim die botst met de compliance- en positioneringsregels).
 2. **6 domein-tegels** — score, status, kleur, → naar de (publieke) domein-ingang. Hier wordt 6 = 6 zichtbaar; dit is de enige plek waar de score per domein leeft.
-3. **Aanbevolen voor jou** — content op profiel/scores (niet op clicks); pull uit `/inzichten` op het laagste domein.
-4. **Aanbevolen supplementen** → `/beste/*`, met disclaimer "advies, geen diagnose".
-5. **Hermeting-reminder** — sluit de lus.
+3. **Voortgang — leefstijllijn** — per interventiedomein symbool · curve · punt (analyse primair); leefstijlplan/agenda = actie secundair. Zie `DOMAIN_MODEL.md` §5.1.
+4. **Aanbevolen voor jou** — content op profiel/scores (niet op clicks); pull uit `/inzichten` op het laagste domein.
+5. **Aanbevolen supplementen** → `/beste/*`, met disclaimer "advies, geen diagnose".
+6. **Hermeting-reminder** — sluit de lus.
 
 ## 6. URL- & naamstrategie
 

@@ -36,6 +36,29 @@
 - **F3b:** `intake_domain_checkin` (slaap/stress/beweging) wordt **gemerged in de per-pijler-trend** → een check-in beweegt score/vitaliteit/prioriteit. Historie/hertest blijven sessie-gebaseerd (volledige checks).
 - **Nog leeg:** objectieve signalen (wearables) = "binnenkort"; identiteit-sectie (geslacht/gewicht/lengte/werk) = invul-prompt (data nog niet verzameld).
 
+### Domein-deep & Voortgang: analyse vóór actie (jul 2026)
+
+Per interventiedomein (slaap, stress, voeding, beweging, verbinding):
+
+1. **Analyse (primair)** — score + **leefstijllijn** (`LeefstijllijnSection`: symbool · sparkline · huidig punt + begin/eind-delta uit bestaande trendreeks) + check-in-CTA.
+2. **Actie (secundair)** — leefstijlplan-checklist (`/intake/plan/{domain}`) en dagelijkse habit; nooit als hero boven de trend.
+
+Voortgang-tab: leefstijllijn op hub-niveau (alle 5 interventies). Readouts (energie, herstel) blijven rapportlaag — geen leefstijllijn-slot, wel apart tonen met "Rapport"-label.
+
+Componenten: `src/components/dashboard/LeefstijllijnSection.tsx`, `src/lib/leefstijllijn.ts`.
+
+### Signaalbronnen — horizon (geen build vóór verkeer + DPIA)
+
+Analyse-laag is **bron-agnostisch**: zelfrapportage nu; objectieve bronnen later op dezelfde pijp.
+
+| Bron | Fase | Doel | Status |
+|------|------|------|--------|
+| Zelfrapportage (intake + domein-check-ins) | NU | Score + trend per interventiedomein | Live |
+| Wearable (HRV, rustpols, slaapduur) | ≥2 | Verrijking analyse/trend; geen diagnose | API 503; `wearable.interest_clicked` |
+| AI-bril / camera-inname (voeding e.d.) | horizon | Optionele capture-laag → zelfde check-in/score-as | Geen productie; DPIA + register vóór activatie |
+
+Regels: geen wearable/AI-bril in pre-traffic slice; geen scores in calendar/shareable; blended prioriteit pas na expliciet Dennis-ja + privacy-gate ([`ANALYSIS_PILLAR_COVERAGE.md`](../plan/ANALYSIS_PILLAR_COVERAGE.md) §4).
+
 ## Belangrijke bestanden
 
 - **Auth:** `lib/account-session-cookie.ts`, `lib/account-login-token.ts`, `lib/account-login-email.ts`, `lib/account-server.ts`; `app/api/account/*`.
@@ -50,4 +73,4 @@
 4. ~~Resultaatscherm declutteren~~ — **gedaan (jun 2026):** REVEAL = dashboard-trailer: top-3 ladder + 2 leefstijlstappen; volledige ladder en supplement alleen in dashboard na login; ingeklapte dashboard-preview onder CTA.
 5. Wearables / objectieve signalen (toekomst).
 
-*Laatst bijgewerkt: 17 juni 2026.*
+*Laatst bijgewerkt: 18 juli 2026.*

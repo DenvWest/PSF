@@ -16,6 +16,7 @@ import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
+import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -995,21 +996,24 @@ export default function VoortgangHub({
 
   return (
     <section aria-label="Voortgang navigatie">
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <PremiumWaitlistCard surface="voortgang" />
-        <HubCard
-          icon={<Icons.Heart s={20} />}
-          title="Favorieten"
-          subtitle="Supplementen die bij je scores passen"
-          onClick={() => openHub("favorieten")}
-        />
-        <HubCard
-          icon={<Icons.BarChart s={20} />}
-          title="Statistieken"
-          subtitle="Trends, voeding en checkgeschiedenis"
-          premium
-          onClick={() => openHub("statistieken")}
-        />
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <LeefstijllijnSection model={model} surface="voortgang" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <PremiumWaitlistCard surface="voortgang" />
+          <HubCard
+            icon={<Icons.Heart s={20} />}
+            title="Favorieten"
+            subtitle="Supplementen die bij je scores passen"
+            onClick={() => openHub("favorieten")}
+          />
+          <HubCard
+            icon={<Icons.BarChart s={20} />}
+            title="Statistieken"
+            subtitle="Trends, voeding en checkgeschiedenis"
+            premium
+            onClick={() => openHub("statistieken")}
+          />
+        </div>
       </div>
     </section>
   );

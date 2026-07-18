@@ -6,6 +6,7 @@ import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
+import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import { PILLAR } from "@/data/dashboard";
 import {
   buildMovementRecommendations,
@@ -251,6 +252,13 @@ export default function BewegingScreen({
           </div>
         </Card>
 
+        <LeefstijllijnSection
+          model={model}
+          surface="domain"
+          compact
+          focusPillarId="beweging"
+        />
+
         <Link
           href="/intake/beweging?from=dashboard&kompas=beweging"
           onClick={() => {
@@ -263,8 +271,8 @@ export default function BewegingScreen({
             gap: 6,
             padding: "14px 16px",
             borderRadius: 16,
-            border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-            background: "#fff",
+            border: `1px solid ${pillar.color}44`,
+            background: `${pillar.color}0a`,
             textDecoration: "none",
             color: "inherit",
           }}
@@ -288,45 +296,19 @@ export default function BewegingScreen({
             >
               Actieve stap: {model.activeHabit?.title}
             </p>
-          ) : null}
-        </Link>
-
-        <Link
-          href="/intake/plan/movement?from=dashboard&kompas=beweging"
-          onClick={() => {
-            trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging_spoor" });
-            clarityTag("dashboard_beweging_plan", "spoor");
-          }}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-            padding: "14px 16px",
-            borderRadius: 16,
-            border: `1px solid ${pillar.color}44`,
-            background: `${pillar.color}0a`,
-            textDecoration: "none",
-            color: "inherit",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
-            <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
-              Jouw bewegingsspoor
-            </span>
-            <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
-          </div>
-          <p
-            style={{
-              fontSize: 13,
-              color: KOMPAS_LIGHT.muted,
-              lineHeight: 1.45,
-              margin: "0 0 0 30px",
-              textWrap: "pretty",
-            }}
-          >
-            Lichte weekacties plus voedingssteun — eiwit eerst, supplementen daarna.
-          </p>
+          ) : (
+            <p
+              style={{
+                fontSize: 13,
+                color: KOMPAS_LIGHT.muted,
+                lineHeight: 1.45,
+                margin: "0 0 0 30px",
+                textWrap: "pretty",
+              }}
+            >
+              Op basis van je laatste check-in — geen live-gemeten claims.
+            </p>
+          )}
         </Link>
 
         <section aria-label="Voeding en supplementen">
@@ -560,7 +542,7 @@ export default function BewegingScreen({
         <FooterLink
           href="/intake/plan/movement?from=dashboard&kompas=beweging"
           icon={<Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Je bewegingsplan"
+          label="Stappen afvinken — bewegingsplan"
           onClick={() => {
             trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging" });
           }}

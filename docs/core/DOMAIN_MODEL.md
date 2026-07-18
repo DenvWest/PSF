@@ -149,6 +149,19 @@ Driver-mapping: energie ← slaap · voeding · beweging; herstel ← slaap · b
 - Vitaliteitsscore-uitleg noemt alleen de 5 interventiedomeinen.
 - Geen copy noemt energie/herstel een "interventiedomein".
 
+### 5.1 Domein-UI: analyse primair, plan secundair (jul 2026)
+
+Per interventiedomein geldt één hiërarchie in dashboard/Kompas — **zonder** hernoemen van bestaande plan-routes of templates:
+
+| Laag | Vraag | UI | SSOT |
+|------|-------|-----|------|
+| **Analyse** | Waar sta ik / hoe beweegt het? | Score + leefstijllijn (symbool · curve · punt) + check-in-CTA | `intake_sessions`, `intake_domain_checkin`, `intake_nutrition_log` → trend in `account-dashboard.ts` |
+| **Actie** | Wat doe ik eraan? | Leefstijlplan-checklist + dagelijkse habit/agenda | `LifestylePlanTemplate` + `plan_progress` / `daily_action_log` |
+
+- **Leefstijllijn** toont uitsluitend de **5 interventiedomeinen**; energie/herstel blijven readout (rapport + drivers), geen eigen plan-slot.
+- **Naming blijft:** "Bewegingsplan", `/intake/plan/movement`, `movementPlanTemplate` — geen rename naar "analyse".
+- **Wearables / AI-bril (horizon):** extra signaalbronnen op de analyse-laag (`WearableSignalSnapshot`), niet op de checklist. Zie `ACCOUNT_DASHBOARD_SYSTEM.md` §Signaalbronnen.
+
 ---
 
 ## 6. Transparantie & communicatie

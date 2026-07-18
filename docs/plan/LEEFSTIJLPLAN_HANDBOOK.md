@@ -26,6 +26,7 @@ Het leefstijlplan heeft **twee complementaire lagen**:
 | Laag | Vraag | SSOT |
 |------|-------|------|
 | **Content / checklist** (dit handboek) | *Wat* doe je in week 1–12? | `LifestylePlanTemplate` + `PlanProgress` |
+| **Analyse / meting** (Kompas) | *Waar sta je / hoe beweegt het?* | Check-ins + leefstijllijn — zie [`DOMAIN_MODEL.md`](../core/DOMAIN_MODEL.md) §5.1 |
 | **Planning / uitvoering** (Kompas) | *Wanneer* en *met welke prioriteit*? | Lifestyle Planning Engine — zie [`ARCHITECTUUR_LIFESTYLE_PLANNER.md`](ARCHITECTUUR_LIFESTYLE_PLANNER.md) |
 
 De checklist-laag blijft session-scoped (`plan_progress`); de planning-laag is

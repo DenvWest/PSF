@@ -1,4 +1,6 @@
-/** Normalized wearable snapshot — no raw vendor payloads (see ARCHITECTUUR_LIFESTYLE_PLANNER §8.3). */
+/** Normalized wearable snapshot — no raw vendor payloads (see ARCHITECTUUR_LIFESTYLE_PLANNER §8.3).
+ *  Feeds the analyse-laag (trend/check-in enrichment), not LifestylePlan checklists.
+ *  AI-bril / camera-inname (horizon) would use the same snapshot shape after DPIA + consent. */
 export type WearableSignalSnapshot = {
   capturedAt: string;
   stepsToday: number | null;
