@@ -1,93 +1,112 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
 import type { MovementDailyRhythm } from "@/lib/movement-daily-rhythm";
+import type { NutrientBridgeItem } from "@/lib/movement-nutrient-bridge";
+import {
+  buildMovementSpoorDetail,
+  buildMovementWeekRoadmap,
+  parseSpoorFromUrl,
+  syncPlanSpoorParam,
+} from "@/lib/movement-week-roadmap";
 import {
   DEFAULT_WEEK_CATEGORY,
   filterStepsForCategory,
-  getCategoryStatus,
-  WEEK_CATEGORY_OPTIONS,
   type WeekCategory,
 } from "@/lib/movement-week-categories";
 import MovementDailyRhythmContent from "@/components/intake/MovementDailyRhythmContent";
-import MovementRecoveryBanner from "@/components/intake/MovementRecoveryBanner";
-import type { PlanStep, PlanStepState } from "@/types/lifestyle-plan";
+import MovementSpoorDetail from "@/components/intake/MovementSpoorDetail";
+import MovementWeekRoadmap from "@/components/intake/MovementWeekRoadmap";
+import type { PlanIntakeContext, PlanStep, PlanStepLink, PlanStepState } from "@/types/lifestyle-plan";
 import type { MovementRecoveryHint } from "@/lib/movement-recovery-hint";
-import { REST_DAY_STEP_ID } from "@/lib/movement-recovery-hint";
 
 type MovementWeekCategoryPanelProps = {
   phaseId: string;
   domain: string;
   templateVersion: string;
+  ctx: PlanIntakeContext;
   visibleSteps: PlanStep[];
   dailyRhythm: MovementDailyRhythm;
+  nutrientBridgeItems: NutrientBridgeItem[];
   readOnly: boolean;
   recoveryHint?: MovementRecoveryHint | null;
   getStepState: (stepId: string) => PlanStepState;
-  renderStepRow: (step: PlanStep) => ReactNode;
+  renderStepRow: (
+    step: PlanStep,
+    options?: { showRationale?: boolean; variant?: "primary" | "alternative" },
+  ) => ReactNode;
+  onBridgeItemClick: (item: NutrientBridgeItem) => void;
+  onLinkClick: (stepId: string, link: PlanStepLink) => void;
 };
 
-function CategoryStatusDot({ status }: { status: ReturnType<typeof getCategoryStatus> }) {
-  if (status === "na") {
-    return null;
-  }
-  const tone =
-    status === "done"
-      ? "bg-intake-sage"
-      : status === "partial"
-        ? "bg-intake-terra/80"
-        : "bg-intake-ink-subtle/40";
-  return (
-    <span
-      className={`ml-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full ${tone}`}
-      aria-hidden
-    />
-  );
+function getStepById(steps: readonly PlanStep[], stepId: string): PlanStep | undefined {
+  return steps.find((step) => step.id === stepId);
 }
 
 export default function MovementWeekCategoryPanel({
   phaseId,
   domain,
   templateVersion,
+  ctx,
   visibleSteps,
   dailyRhythm,
+  nutrientBridgeItems,
   readOnly,
   recoveryHint = null,
   getStepState,
   renderStepRow,
+  onBridgeItemClick,
+  onLinkClick,
 }: MovementWeekCategoryPanelProps) {
-  const [category, setCategory] = useState<WeekCategory>(DEFAULT_WEEK_CATEGORY);
+  const [activeSpoor, setActiveSpoor] = useState<WeekCategory | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+    return parseSpoorFromUrl(window.location.href);
+  });
 
-  const selectCategory = (next: WeekCategory) => {
-    setCategory(next);
-    emitIntakeClientEvent("plan.week_category_selected", {
-      domain,
-      phase_id: phaseId,
-      category: next,
-      template_version: templateVersion,
-    });
-    trackEvent("movement_week_category", {
-      category: next,
-      phase_id: phaseId,
-    });
-    clarityTag("movement_week_category", next);
-  };
+  const roadmap = useMemo(
+    () => buildMovementWeekRoadmap(ctx, visibleSteps, getStepState, recoveryHint),
+    [ctx, visibleSteps, getStepState, recoveryHint],
+  );
 
-  const categorySteps = filterStepsForCategory(visibleSteps, category);
-  const orderedKrachtSteps =
-    category === "kracht" && recoveryHint?.promoteRustdagStep
-      ? [
-          ...categorySteps.filter((step) => step.id === REST_DAY_STEP_ID),
-          ...categorySteps.filter((step) => step.id !== REST_DAY_STEP_ID),
-        ]
-      : categorySteps;
+  const openSpoor = useCallback(
+    (category: WeekCategory) => {
+      setActiveSpoor(category);
+      syncPlanSpoorParam(category);
+      emitIntakeClientEvent("plan.week_category_selected", {
+        domain,
+        phase_id: phaseId,
+        category,
+        template_version: templateVersion,
+      });
+      trackEvent("movement_week_category", {
+        category,
+        phase_id: phaseId,
+      });
+      clarityTag("movement_week_category", category);
+    },
+    [domain, phaseId, templateVersion],
+  );
+
+  const closeSpoor = useCallback(() => {
+    setActiveSpoor(null);
+    syncPlanSpoorParam(null);
+  }, []);
+
+  const detail = useMemo(() => {
+    if (!activeSpoor) {
+      return null;
+    }
+    return buildMovementSpoorDetail(ctx, visibleSteps, activeSpoor, recoveryHint);
+  }, [activeSpoor, ctx, visibleSteps, recoveryHint]);
 
   const stepList = (steps: PlanStep[]) => (
     <ul className="space-y-3">
-      {steps.map((step) => renderStepRow(step))}
+      {steps.map((step) => renderStepRow(step, { showRationale: true }))}
     </ul>
   );
 
@@ -97,12 +116,17 @@ export default function MovementWeekCategoryPanel({
 
     return (
       <div className="space-y-5">
+        <MovementWeekRoadmap
+          roadmap={roadmap}
+          readOnly
+          onSpoorSelect={() => undefined}
+          onOndersteuningSelect={() => undefined}
+        />
         {krachtSteps.length > 0 ? (
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-intake-ink-subtle">
               Kracht
             </p>
-            {recoveryHint ? <MovementRecoveryBanner hint={recoveryHint} /> : null}
             {stepList(krachtSteps)}
           </div>
         ) : null}
@@ -132,56 +156,34 @@ export default function MovementWeekCategoryPanel({
     );
   }
 
+  if (activeSpoor && detail) {
+    return (
+      <MovementSpoorDetail
+        detail={detail}
+        domain={domain}
+        templateVersion={templateVersion}
+        dailyRhythm={dailyRhythm}
+        nutrientBridgeItems={nutrientBridgeItems}
+        onBack={closeSpoor}
+        onBridgeItemClick={onBridgeItemClick}
+        onEvidenceClick={onLinkClick}
+        renderStepRow={(stepId, variant) => {
+          const step = getStepById(visibleSteps, stepId);
+          if (!step) {
+            return null;
+          }
+          return renderStepRow(step, { showRationale: true, variant });
+        }}
+      />
+    );
+  }
+
   return (
-    <div>
-      <nav
-        aria-label="Deze week categorieën"
-        className="mb-4 flex flex-wrap gap-2"
-      >
-        {WEEK_CATEGORY_OPTIONS.map((option) => {
-          const active = category === option.id;
-          const status = getCategoryStatus(visibleSteps, option.id, getStepState);
-          return (
-            <button
-              key={option.id}
-              type="button"
-              aria-pressed={active}
-              onClick={() => selectCategory(option.id)}
-              className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                active
-                  ? "border-intake-sage bg-intake-sage/10 text-intake-sage"
-                  : "border-intake-card-border bg-intake-bg text-intake-ink-muted hover:border-intake-sage/30"
-              }`}
-            >
-              {option.label}
-              <CategoryStatusDot status={status} />
-            </button>
-          );
-        })}
-      </nav>
-
-      {category === "kracht" && recoveryHint ? (
-        <MovementRecoveryBanner hint={recoveryHint} />
-      ) : null}
-
-      {category === "dagelijks_ritme" ? (
-        <MovementDailyRhythmContent
-          rhythm={dailyRhythm}
-          domain={domain}
-          templateVersion={templateVersion}
-          embedded
-        />
-      ) : categorySteps.length > 0 ? (
-        <ul className="space-y-3">
-          {(category === "kracht" ? orderedKrachtSteps : categorySteps).map((step) =>
-            renderStepRow(step),
-          )}
-        </ul>
-      ) : (
-        <p className="text-sm text-intake-ink-subtle">
-          Geen acties in deze categorie voor jouw profiel.
-        </p>
-      )}
-    </div>
+    <MovementWeekRoadmap
+      roadmap={roadmap}
+      onSpoorSelect={openSpoor}
+      onOndersteuningSelect={() => openSpoor("kracht")}
+      onTodaySelect={() => openSpoor(DEFAULT_WEEK_CATEGORY)}
+    />
   );
 }

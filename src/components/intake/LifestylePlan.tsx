@@ -19,10 +19,15 @@ import type { DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import MovementWeekCategoryPanel from "@/components/intake/MovementWeekCategoryPanel";
 import {
+  getMicroRationale,
+} from "@/lib/movement-week-roadmap";
+import {
   buildMovementDailyRhythm,
   type MovementDailyRhythm,
 } from "@/lib/movement-daily-rhythm";
-import { isMovementWeekPhase } from "@/lib/movement-week-categories";
+import {
+  isMovementWeekPhase,
+} from "@/lib/movement-week-categories";
 import {
   buildMovementRecoveryHint,
   buildMovementRecoveryInput,
@@ -123,6 +128,7 @@ function PlanStepRow({
   disabled,
   busy,
   readOnly = false,
+  showRationale = false,
   onToggleDone,
   onSkip,
   onLinkClick,
@@ -133,6 +139,7 @@ function PlanStepRow({
   disabled: boolean;
   busy: boolean;
   readOnly?: boolean;
+  showRationale?: boolean;
   onToggleDone: (phaseId: string, stepId: string, next: PlanStepState) => void;
   onSkip: (phaseId: string, stepId: string) => void;
   onLinkClick?: (stepId: string, link: PlanStepLink) => void;
@@ -199,7 +206,12 @@ function PlanStepRow({
           >
             {step.title}
           </p>
-          {step.rationale ? (
+          {showRationale && step.rationale && !checked && !skipped ? (
+            <p className="mt-1.5 text-xs leading-relaxed text-intake-ink-subtle">
+              {getMicroRationale(step.rationale.body)}
+            </p>
+          ) : null}
+          {showRationale && step.rationale ? (
             <details className="mt-2 group">
               <summary className="cursor-pointer text-xs font-medium text-intake-ink-subtle underline decoration-intake-divider underline-offset-2 hover:text-intake-ink-muted">
                 Waarom?
@@ -222,7 +234,7 @@ function PlanStepRow({
               onClick={() => onSkip(phaseId, step.id)}
               className="mt-2 text-xs font-medium text-intake-ink-subtle underline decoration-intake-divider underline-offset-2 hover:text-intake-ink-muted"
             >
-              Overslaan
+              Past deze week niet
             </button>
           ) : null}
         </div>
@@ -269,6 +281,7 @@ function PlanPhaseTabs({
 function PlanPhaseSection({
   phase,
   template,
+  ctx,
   displayProgress,
   isActive,
   isLocked,
@@ -290,6 +303,7 @@ function PlanPhaseSection({
 }: {
   phase: PlanPhase;
   template: LifestylePlanTemplate;
+  ctx: ReturnType<typeof buildPlanIntakeContext>;
   displayProgress: PlanProgress | null;
   isActive: boolean;
   isLocked: boolean;
@@ -378,7 +392,7 @@ function PlanPhaseSection({
             </p>
           ) : null}
 
-          {phase.intro ? (
+          {phase.intro && !useWeekCategories ? (
             <p className="mb-4 text-sm leading-relaxed text-intake-ink-muted">
               {phase.intro.body}
             </p>
@@ -389,12 +403,16 @@ function PlanPhaseSection({
               phaseId={phase.id}
               domain={template.domain}
               templateVersion={template.version}
+              ctx={ctx}
               visibleSteps={visibleSteps}
               dailyRhythm={dailyRhythm}
+              nutrientBridgeItems={nutrientBridgeItems}
               recoveryHint={recoveryHint}
               readOnly={readOnly}
               getStepState={(stepId) => getStepState(displayProgress, stepId)}
-              renderStepRow={(step) => (
+              onBridgeItemClick={onBridgeItemClick}
+              onLinkClick={(stepId, link) => onLinkClick(stepId, link, "step")}
+              renderStepRow={(step, options) => (
                 <PlanStepRow
                   key={step.id}
                   step={step}
@@ -402,6 +420,7 @@ function PlanPhaseSection({
                   state={getStepState(displayProgress, step.id)}
                   disabled={!sessionId || readOnly}
                   readOnly={readOnly}
+                  showRationale={options?.showRationale ?? false}
                   busy={busyStepId === step.id}
                   onToggleDone={onToggleDone}
                   onSkip={onSkip}
@@ -428,14 +447,14 @@ function PlanPhaseSection({
             </ul>
           )}
 
-          {template.domain === "movement" && isActive ? (
+          {template.domain === "movement" && isActive && !useWeekCategories ? (
             <NutrientBridgeSection
               items={nutrientBridgeItems}
               onItemClick={onBridgeItemClick}
             />
           ) : null}
 
-          {isActive ? (
+          {isActive && !useWeekCategories ? (
             <CrossDomainChips
               domain={template.domain}
               onChipClick={onCrossDomainClick}
@@ -885,6 +904,7 @@ export default function LifestylePlan({
               key={phase.id}
               phase={phase}
               template={template}
+              ctx={ctx}
               displayProgress={displayProgress}
               isActive={isActive}
               isLocked={isLocked}

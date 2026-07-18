@@ -44,25 +44,44 @@ wearables en notificaties. **Beweegplan** is de eerste module (`movement`).
 Regel: voeg waarde toe op de laagst mogelijke laag. Een nieuwe tip is meestal L0
 of L1, geen nieuwe infrastructuur.
 
-### UX-patroon: thin movement + thick bridge (movement v1.2+)
+### UX-patroon: thin hub, thick spoor-detail (movement v1.6+)
 
-Web toont **geen** intro-blokken meer (track-banner, herkenning, mechanism) — direct
-fase-tabs en checklist. Template-data (`recognition`, `mechanism`) blijft in
-`movement.ts` e.a. voor PDF/nurture; mechanism per stap via `rationale` (▶ Waarom?).
+Web toont **geen** scroll-intro en **geen** dichte weekbriefing. Template-data
+(`recognition`, `mechanism`) blijft SSOT in `movement.ts` voor PDF/nurture.
 
-Personalisatie op web zit in fase-inhoud: weekcategorieën, recovery-banner,
-nutriëntbrug onder actieve fase (`buildMovementNutrientBridge` in
-`src/lib/movement-nutrient-bridge.ts`):
+**Volgorde op “Deze week”** (hub → in-page drill-down):
 
-1. Weekacties eerst (checkbox) — geen supplement-first viewport.
-2. Brug altijd met eiwit/macro → `/intake/voeding`; creatine/Mg conditioneel via
-   bestaande `showWhen`/signalen.
+```
+fase-tabs → week-roadmap (hub) → [klik spoor] → spoor-detail → terug naar hub
+```
+
+**Hub** (`MovementWeekRoadmap.tsx`, builder `src/lib/movement-week-roadmap.ts`):
+
+- 1 track-regel + voortgang (“X van Y sporen”)
+- optionele vandaag-regel (recovery-hint, 1 regel)
+- 3 klikbare spoor-rijen (Kracht · Conditie · Dagelijks ritme) — Kompas-chevrons
+- 1 rij “Voeding & supplementen →” opent spoor Kracht (ondersteuning)
+- URL-sync: `?spoor=kracht|conditie|dagelijks-ritme`
+
+**Spoor-detail** (`MovementSpoorDetail.tsx`) — pas na doorklikken:
+
+1. Hook (1–2 zinnen, L1)
+2. Jouw acties + vinkjes (`PlanStepRow`, rationale alleen hier)
+3. Alternatief (secundaire stappen)
+4. ▶ Waarom dit werkt (mechanism-samenvatting)
+5. Meer onderbouwing (evidence-links)
+6. Ondersteuning alleen op spoor **Kracht**
+
+Personalisatie op web zit in hub + spoor-detail + nutriëntbrug op Kracht-detail
+(`buildMovementNutrientBridge` in `src/lib/movement-nutrient-bridge.ts`):
+
+1. Weekacties vóór supplement — geen supplement-first viewport.
+2. Brug op Kracht-detail; hub toont alleen chevron-rij.
 3. Stappen met tag `nutrient-bridge` blijven in het template (PDF/n8n) maar worden
    niet dubbel in de checklist gerenderd.
-4. Cross-domein chips via `getPlanCrossDomainChips` — leefstijl-wins uit andere
-   Kompas-domeinen (herstel, energie voor movement).
-5. Meet: `plan.step_link_clicked` met `surface: "nutrient_bridge"` + GA4
-   `movement_nutrient_bridge`.
+4. Cross-domein chips alleen op niet-movement-week fases.
+5. Meet: `plan.viewed`, `plan.week_category_selected`, `plan.step_state_changed`;
+   Clarity `plan_surface=week_roadmap|spoor_detail`; funnel viewed → category → step_state_changed.
 
 Shell-wijzigingen (klikbare fase-accordeon, geen intro-scroll) gelden voor alle
 domein-plannen in `LifestylePlan.tsx`.
