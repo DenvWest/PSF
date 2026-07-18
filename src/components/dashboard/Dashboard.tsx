@@ -17,6 +17,7 @@ import {
   SectionHeader,
   SlotGrid,
   Sparkline,
+  Spinner,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import {
@@ -188,6 +189,7 @@ type SharedSectionProps = {
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
   const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
   const iconBtn = {
     width: 38,
     height: 38,
@@ -198,7 +200,7 @@ const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
     background: "rgba(255,255,255,0.04)",
     border: "1px solid var(--panel-border)",
     color: "var(--text-muted)",
-    cursor: "pointer",
+    cursor: loggingOut ? "wait" : "pointer",
   } as const;
 
   return (
@@ -230,9 +232,15 @@ const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
           type="button"
           style={iconBtn}
           title="Uitloggen"
-          onClick={onLogout}
+          disabled={loggingOut}
+          aria-busy={loggingOut || undefined}
+          onClick={async () => {
+            if (loggingOut) return;
+            setLoggingOut(true);
+            await onLogout();
+          }}
         >
-          <Icons.LogOut s={18} />
+          {loggingOut ? <Spinner s={18} /> : <Icons.LogOut s={18} />}
         </button>
       </div>
     </header>
@@ -1436,6 +1444,8 @@ const RemeasureStrip = ({
   remeasure: NonNullable<DashboardData["remeasure"]>;
   onRemeasure: () => void;
 }) => {
+  const [remeasuring, setRemeasuring] = useState(false);
+
   if (remeasure.daysUntil > 0) {
     return (
       <Card pad={20}>
@@ -1524,7 +1534,15 @@ const RemeasureStrip = ({
             Meet opnieuw of je leefstijl-stappen werken.
           </div>
         </div>
-        <Button onClick={onRemeasure} iconRight={<Icons.ArrowRight s={18} />}>
+        <Button
+          loading={remeasuring}
+          iconRight={<Icons.ArrowRight s={18} />}
+          onClick={() => {
+            if (remeasuring) return;
+            setRemeasuring(true);
+            onRemeasure();
+          }}
+        >
           Doe je hermeting nu
         </Button>
       </div>

@@ -7,6 +7,15 @@ import { Check } from "@/components/app/icons";
 type ButtonVariant = "primary" | "secondary" | "ghost" | "terra";
 type ButtonSize = "sm" | "md" | "lg";
 
+export function Spinner({ s = 16 }: { s?: number }) {
+  return (
+    <svg className="animate-spin" width={s} height={s} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" strokeOpacity="0.25" />
+      <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export type ButtonProps = {
   children: ReactNode;
   variant?: ButtonVariant;
@@ -14,6 +23,7 @@ export type ButtonProps = {
   full?: boolean;
   icon?: ReactNode;
   iconRight?: ReactNode;
+  loading?: boolean;
 } & Pick<ButtonHTMLAttributes<HTMLButtonElement>, "onClick" | "disabled" | "type">;
 
 const buttonSizes: Record<ButtonSize, CSSProperties> = {
@@ -67,18 +77,21 @@ export function Button({
   full = false,
   icon,
   iconRight,
+  loading = false,
   onClick,
   disabled = false,
   type = "button",
 }: ButtonProps) {
   const [hovering, setHovering] = useState(false);
   const colors = useMemo(() => getButtonColors(variant, hovering), [hovering, variant]);
+  const isDisabled = disabled || loading;
 
   return (
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      disabled={isDisabled}
+      aria-busy={loading || undefined}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       style={{
@@ -93,14 +106,14 @@ export function Button({
         borderColor: colors.borderColor,
         background: colors.backgroundColor,
         color: colors.color,
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled ? 0.45 : 1,
+        cursor: loading ? "wait" : isDisabled ? "not-allowed" : "pointer",
+        opacity: loading ? 0.85 : disabled ? 0.45 : 1,
         fontWeight: variant === "primary" || variant === "terra" ? 600 : 500,
         letterSpacing: "0.01em",
         transition: "all 140ms ease",
       }}
     >
-      {icon}
+      {loading ? <Spinner s={16} /> : icon}
       <span>{children}</span>
       {iconRight}
     </button>
