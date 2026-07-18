@@ -1,6 +1,11 @@
 /** @vitest-environment jsdom */
 import { describe, expect, it, vi } from "vitest";
-import { parseKompasFromUrl, syncDashboardKompasParam, syncDashboardTabParam } from "@/lib/dashboard-url";
+import {
+  buildDashboardVandaagHref,
+  parseKompasFromUrl,
+  syncDashboardKompasParam,
+  syncDashboardTabParam,
+} from "@/lib/dashboard-url";
 
 describe("parseKompasFromUrl", () => {
   it("parses valid kompas param", () => {
@@ -18,38 +23,91 @@ describe("parseKompasFromUrl", () => {
   });
 });
 
+describe("buildDashboardVandaagHref", () => {
+  it("builds vandaag tab without kompas", () => {
+    expect(buildDashboardVandaagHref()).toBe("/dashboard?tab=vandaag");
+    expect(buildDashboardVandaagHref(null)).toBe("/dashboard?tab=vandaag");
+  });
+
+  it("includes kompas when provided", () => {
+    expect(buildDashboardVandaagHref("stress")).toBe("/dashboard?tab=vandaag&kompas=stress");
+  });
+});
+
 describe("syncDashboardKompasParam", () => {
-  it("updates kompas in URL without navigation", () => {
-    const original = window.history.replaceState;
-    const replaceState = vi.fn();
-    window.history.replaceState = replaceState as typeof window.history.replaceState;
+  it("pushState on domain open, switch, and close", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
 
     Object.defineProperty(window, "location", {
       configurable: true,
-      value: new URL("http://localhost/dashboard?tab=voortgang"),
+      value: new URL("http://localhost/dashboard?tab=vandaag"),
     });
 
-    syncDashboardKompasParam("beweging");
-
-    expect(replaceState).toHaveBeenCalledOnce();
-    const nextUrl = replaceState.mock.calls[0]?.[2] as string;
+    syncDashboardKompasParam("stress");
+    expect(pushState).toHaveBeenCalledOnce();
+    let nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=vandaag");
+    expect(nextUrl).toContain("kompas=stress");
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(nextUrl),
+    });
+    pushState.mockClear();
+
+    syncDashboardKompasParam("stress");
+    expect(pushState).not.toHaveBeenCalled();
+
+    syncDashboardKompasParam("beweging");
+    expect(pushState).toHaveBeenCalledOnce();
+    nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("kompas=beweging");
 
-    syncDashboardKompasParam(null);
-    const clearedUrl = replaceState.mock.calls[1]?.[2] as string;
-    expect(clearedUrl).toContain("tab=vandaag");
-    expect(clearedUrl).not.toContain("kompas=");
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(nextUrl),
+    });
+    pushState.mockClear();
 
-    window.history.replaceState = original;
+    syncDashboardKompasParam(null);
+    expect(pushState).toHaveBeenCalledOnce();
+    nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("tab=vandaag");
+    expect(nextUrl).not.toContain("kompas=");
+
+    window.history.pushState = originalPush;
+  });
+
+  it("pushState when switching from another tab to vandaag home", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=agenda"),
+    });
+
+    syncDashboardKompasParam(null);
+    expect(pushState).toHaveBeenCalledOnce();
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("tab=vandaag");
+    expect(nextUrl).not.toContain("kompas=");
+
+    window.history.pushState = originalPush;
   });
 });
 
 describe("syncDashboardTabParam", () => {
-  it("sets the tab in the URL without navigation and clears kompas for non-vandaag tabs", () => {
-    const original = window.history.replaceState;
+  it("pushState on tab change and clears kompas for non-vandaag tabs", () => {
+    const originalReplace = window.history.replaceState;
+    const originalPush = window.history.pushState;
     const replaceState = vi.fn();
+    const pushState = vi.fn();
     window.history.replaceState = replaceState as typeof window.history.replaceState;
+    window.history.pushState = pushState as typeof window.history.pushState;
 
     Object.defineProperty(window, "location", {
       configurable: true,
@@ -57,10 +115,21 @@ describe("syncDashboardTabParam", () => {
     });
 
     syncDashboardTabParam("voortgang");
-    const nextUrl = replaceState.mock.calls[0]?.[2] as string;
+    expect(pushState).toHaveBeenCalledOnce();
+    expect(replaceState).not.toHaveBeenCalled();
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=voortgang");
     expect(nextUrl).not.toContain("kompas=");
 
-    window.history.replaceState = original;
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(nextUrl),
+    });
+    pushState.mockClear();
+    syncDashboardTabParam("voortgang");
+    expect(pushState).not.toHaveBeenCalled();
+
+    window.history.replaceState = originalReplace;
+    window.history.pushState = originalPush;
   });
 });

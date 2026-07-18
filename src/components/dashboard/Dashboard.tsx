@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactElement, ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -3620,11 +3620,30 @@ export default function Dashboard({
     tabRef.current = tab;
   });
 
+  const syncTabFromLocation = useCallback(() => {
+    const tabParam = new URL(window.location.href).searchParams.get("tab");
+    if (!tabParam || !VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
+      return;
+    }
+    const parsedTab = tabParam as DashboardTabId;
+    if (parsedTab === tabRef.current) {
+      return;
+    }
+    setVoortgangScreen("hub");
+    setTab(parsedTab);
+  }, [VALID_TAB_IDS]);
+
   useEffect(() => {
-    // Tab-bar-klikken lopen via history.replaceState en wijzigen searchParams
-    // NIET → dit effect vuurt daar niet (geen flash). Alleen echte Next-navigaties
-    // (bv. de <Link> naar ?tab=voortgang in KompasBegeleidingLink, of back/forward)
-    // veranderen searchParams en synchroniseren de tab hier.
+    const onPopState = () => {
+      syncTabFromLocation();
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [syncTabFromLocation]);
+
+  useEffect(() => {
+    // Tab-bar-klikken lopen via history.pushState → popstate-listener hierboven.
+    // Dit effect blijft voor echte Next-navigaties (bv. KompasBegeleidingLink).
     const tabParam = searchParams.get("tab");
     if (!tabParam || !VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
       return;
