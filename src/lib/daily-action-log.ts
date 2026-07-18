@@ -1,16 +1,10 @@
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { getCalendarWeekDates, todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 
 type SupabaseAdmin = NonNullable<ReturnType<typeof createSupabaseAdmin>>;
 
-const APP_TIMEZONE = "Europe/Amsterdam";
-
 export function todayInAppTimezone(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: APP_TIMEZONE,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  return todayInAgendaTimezone();
 }
 
 export type DailyActionState = {
@@ -72,6 +66,37 @@ export async function getDailyActionState(
   );
 
   return { date: today, keys, streak: computeStreak(distinctDates, today) };
+}
+
+export type DailyActionWeekState = {
+  today: string;
+  dates: string[];
+  completedKeys: string[];
+};
+
+export async function getDailyActionWeekState(
+  admin: SupabaseAdmin,
+  accountId: string,
+): Promise<DailyActionWeekState> {
+  const today = todayInAppTimezone();
+  const dates = getCalendarWeekDates(today);
+  const startDate = dates[0] ?? today;
+  const endDate = dates[dates.length - 1] ?? today;
+
+  const { data } = await admin
+    .from("daily_action_log")
+    .select("log_date, domain")
+    .eq("account_id", accountId)
+    .gte("log_date", startDate)
+    .lte("log_date", endDate);
+
+  const completedKeys = Array.from(
+    new Set(
+      (data ?? []).map((row) => `${row.log_date as string}:${row.domain as string}`),
+    ),
+  );
+
+  return { today, dates, completedKeys };
 }
 
 function computeStreak(distinctDatesDesc: string[], today: string): number {

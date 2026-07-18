@@ -15,17 +15,19 @@ De vooruit-gegenereerde 7-dagen schedule (architectuur **B**) blijft; het intera
 
 ---
 
-## 0b. Precursor (pre-trigger, jul 2026)
+## 0b. Precursor → Agenda-tab (jul 2026)
 
-**Vóór** de weekagenda-MVP: herontwerp van `VandaagCard` op Kompas tot één **1-slot prioriteit-check-in** — geen nieuwe tab, route of tabel.
+**Vóór** de tweakable weekagenda-MVP: aparte **Agenda-tab** (tussen Kompas en Voortgang) met weekpreview + interactieve vandaag-check-in — geen `agenda_preferences`, geen swap/tweak.
 
-| Precursor (nu) | Weekagenda (DEFER) |
+| Agenda-tab (nu) | Weekagenda MVP (DEFER) |
 |---|---|
-| Auto tier-1 lifestyle-stap uit prioriteit 1 | 7-dagen schedule + multi-domein-mix |
-| Evidence = link (“Waarom?” → `/onderbouwing`) | Swap binnen domein + tijdvak-bucket |
-| Completie = `daily_action_log` | + `agenda_preferences` + `agenda.slot_tweaked` |
+| 7-dagen weekstrip (preview, gecentreerd op vandaag) | Zelfde strip + persistente prefs |
+| Vandaag: tier-1 lifestyle-stap + rationale + Waarom? + gedaan | + swap binnen domein + tijdvak-bucket |
+| Andere dagen: read-only preview + evidence-link | + interactieve tweak |
+| Completie = `daily_action_log` | + `agenda.slot_tweaked` |
+| Kompas-tab: domeinen + teaser naar Agenda | — |
 
-Copy: weg met “Vandaag · PRIORITEIT · Op basis van je laatste check-in” — één rustige check-in (actie + waarom + gedaan). Prioriteit blijft engine, geen UI-jargon. Meetpunten: hergebruik `dashboard_vandaag_*`, daily-log toggle, onderbouwing-click — geen nieuwe domain_events.
+Meetpunten: `dashboard_tab_selected`, `agenda_day_selected`, hergebruik `dashboard_vandaag_*` + `onderbouwing_link_clicked` (surfaces `agenda_today` / `agenda_preview`).
 
 ---
 

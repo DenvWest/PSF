@@ -301,7 +301,7 @@ export const DASHBOARD_SECTIONS: DashboardSection[] = [
   { id: "nu", type: "now" },
   { id: "prioriteit", type: "priority" },
   { id: "plan", type: "plan" },
-  { id: "vandaag-kaart", type: "vandaagCard" },
+  { id: "agenda-teaser", type: "agendaTeaser" },
   { id: "kompas-home", type: "kompasHome" },
   { id: "signalen", type: "signals" },
   { id: "voeding-inname", type: "nutritionIntake" },
@@ -320,8 +320,16 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     label: "Kompas",
     icon: "Compass",
     title: "Kompas",
-    subtitle: "Je volgende stap — en wat je vandaag doet.",
-    emptyHint: "Doe je eerste check — dan weet je waar je begint en wat je vandaag kunt doen.",
+    subtitle: "Je domeinen — waar je kunt verdiepen.",
+    emptyHint: "Doe je eerste check — dan weet je waar je begint.",
+  },
+  {
+    id: "agenda",
+    label: "Agenda",
+    icon: "RouteMap",
+    title: "Agenda",
+    subtitle: "Je week en je stap vandaag — met onderbouwing.",
+    emptyHint: "Doe je eerste check — dan staat hier je weekoverzicht.",
   },
   {
     id: "voortgang",
@@ -342,7 +350,8 @@ export const DASHBOARD_TABS: DashboardTab[] = [
 ];
 
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
-  vandaag: ["vandaagCard", "kompasHome"],
+  vandaag: ["agendaTeaser", "kompasHome"],
+  agenda: ["agendaHome"],
   voortgang: ["vitalityScore", "voortgangHub"],
   hermeting: ["retest", "future"],
 };

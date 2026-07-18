@@ -30,6 +30,8 @@ import DomainTopNav from "@/components/dashboard/DomainTopNav";
 import SleepScreen from "@/components/dashboard/SleepScreen";
 import StressScreen from "@/components/dashboard/StressScreen";
 import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
+import AgendaScreen from "@/components/dashboard/agenda/AgendaScreen";
+import AgendaTeaser from "@/components/dashboard/agenda/AgendaTeaser";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
@@ -74,18 +76,13 @@ import { getDisplayStatus, getDisplayStatusTone } from "@/lib/score-display";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
-import {
-  buildVandaagFollowUp,
-  buildVandaagOnderbouwingHref,
-  getVandaagContextLine,
-} from "@/lib/vandaag-card-links";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
-import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
+import { trackEvent, trackDashboardTabSelected, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
@@ -93,10 +90,6 @@ import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
-import {
-  getCachedDailyLog,
-  setCachedDailyLog,
-} from "@/lib/daily-log-client";
 import {
   parseKompasFromUrl,
   syncDashboardKompasParam,
@@ -135,6 +128,7 @@ type SharedSectionProps = {
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
   onGoVandaag: () => void;
+  onGoAgenda: () => void;
   voortgangScreen: VoortgangScreen;
   onVoortgangScreenChange: (screen: VoortgangScreen) => void;
   onOpenInzichten: () => void;
@@ -2467,262 +2461,6 @@ const KompasLooseCard = ({
   </div>
 );
 
-const VandaagCard = ({ model }: { model: DashboardModel }) => {
-  const shownRef = useRef(false);
-  const habit = model.activeHabit;
-  const domain = model.priority.id;
-  const actionKey = habit?.stepId ?? null;
-  const cachedDailyLog = actionKey ? getCachedDailyLog(domain) : null;
-
-  const [done, setDone] = useState(false);
-  const [streak, setStreak] = useState(0);
-  const [busy, setBusy] = useState(false);
-  const [fetchLoaded, setFetchLoaded] = useState(false);
-  const resolvedDone =
-    cachedDailyLog && actionKey
-      ? cachedDailyLog.keys.includes(actionKey)
-      : done;
-  const resolvedStreak = cachedDailyLog?.streak ?? streak;
-  const loaded = !actionKey || cachedDailyLog !== null || fetchLoaded;
-
-  const interventionHref = buildPriorityInterventionHref(model);
-  const contextLine = getVandaagContextLine(model.priority, habit);
-  const onderbouwingHref = buildVandaagOnderbouwingHref(domain);
-  const followUp = buildVandaagFollowUp(domain);
-  const showHabitDetail = Boolean(habit?.detail && habit.detail !== contextLine);
-
-  useEffect(() => {
-    if (shownRef.current) {
-      return;
-    }
-    shownRef.current = true;
-    trackEvent("dashboard_vandaag_card_shown", {
-      has_active_habit: Boolean(model.activeHabit),
-      priority: model.priority.id,
-    });
-    clarityTag("dashboard_vandaag", "shown");
-  }, [model.activeHabit, model.priority.id]);
-
-  useEffect(() => {
-    if (!actionKey) {
-      return;
-    }
-
-    if (getCachedDailyLog(domain)) {
-      return;
-    }
-
-    let cancelled = false;
-    void (async () => {
-      try {
-        const response = await fetch(
-          `/api/account/daily-log?domain=${encodeURIComponent(domain)}`,
-          { credentials: "include" },
-        );
-        if (!response.ok || cancelled) {
-          return;
-        }
-        const state = (await response.json()) as { keys: string[]; streak: number };
-        if (cancelled) {
-          return;
-        }
-        setCachedDailyLog(domain, state);
-        setDone(state.keys.includes(actionKey));
-        setStreak(state.streak);
-      } finally {
-        if (!cancelled) {
-          setFetchLoaded(true);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [domain, actionKey]);
-
-  const toggleDaily = async () => {
-    if (!actionKey || busy) {
-      return;
-    }
-
-    const nextDone = !resolvedDone;
-    setBusy(true);
-    try {
-      const response = await fetch("/api/account/daily-log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ domain, actionKey, done: nextDone }),
-      });
-
-      if (!response.ok) {
-        return;
-      }
-
-      const state = (await response.json()) as { keys: string[]; streak: number };
-      setCachedDailyLog(domain, state);
-      setDone(state.keys.includes(actionKey));
-      setStreak(state.streak);
-
-      trackEvent("dashboard_vandaag_action_toggled", {
-        domain,
-        done: nextDone,
-        streak: state.streak,
-      });
-      clarityTag("dashboard_vandaag", nextDone ? "done" : "undone");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <KompasLooseCard>
-      <h2
-        className="font-serif text-[19px] leading-snug text-[#1c1917]"
-        style={{ fontFamily: "var(--f-serif)" }}
-      >
-        Jouw stap vandaag
-      </h2>
-
-      {habit ? (
-        <div className="mt-4">
-          <p
-            className="text-[16px] font-semibold leading-snug text-[#1c1917] text-pretty"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            {habit.title}
-          </p>
-
-          {contextLine ? (
-            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
-              {contextLine}{" "}
-              <Link
-                href={onderbouwingHref}
-                onClick={() => {
-                  trackOnderbouwingLinkClick({ surface: "vandaag_card", domain });
-                  clarityTag("onderbouwing_link", "vandaag_card");
-                }}
-                className="font-medium text-[#78716c] underline decoration-[#d6d3d1] underline-offset-2"
-              >
-                Waarom?
-              </Link>
-            </p>
-          ) : null}
-
-          {showHabitDetail ? (
-            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
-              {habit.detail}
-            </p>
-          ) : null}
-
-          <button
-            type="button"
-            aria-label={resolvedDone ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
-            aria-pressed={resolvedDone}
-            disabled={!loaded || busy}
-            onClick={() => void toggleDaily()}
-            className="mt-4 flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors"
-            style={{
-              borderColor: resolvedDone ? "var(--sage)" : "#e4e0da",
-              background: resolvedDone ? "rgba(90, 143, 106, 0.08)" : "#faf9f7",
-              cursor: !loaded || busy ? "default" : "pointer",
-              fontFamily: "var(--f-sans)",
-            }}
-          >
-            <span
-              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
-              style={{
-                border: resolvedDone ? "none" : "1.5px solid #e4e0da",
-                background: resolvedDone ? "var(--sage)" : "transparent",
-                color: resolvedDone ? "#0f1c10" : "#78716c",
-              }}
-            >
-              {resolvedDone ? <Icons.Check s={14} /> : null}
-            </span>
-            <span className="text-[14px] font-medium text-[#1c1917]">
-              {resolvedDone ? "Gedaan" : "Markeer als gedaan"}
-            </span>
-          </button>
-
-          {resolvedStreak >= 2 ? (
-            <p className="mt-2 text-[12px] text-[#78716c]">{resolvedStreak} dagen op rij</p>
-          ) : null}
-
-          {resolvedDone ? (
-            <div className="mt-4 border-t border-[#e4e0da] pt-4">
-              <p className="text-[13px] text-[#78716c]">
-                Morgen staat hier je volgende stap.
-              </p>
-              <Link
-                href={followUp.href}
-                className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium no-underline"
-                style={{ color: "var(--sage)" }}
-              >
-                {followUp.label}
-                <Icons.ArrowRight s={14} />
-              </Link>
-            </div>
-          ) : null}
-
-          {habit.planHref ? (
-            <Link
-              href={habit.planHref}
-              className="mt-3 inline-flex items-center gap-1.5 text-[13px] no-underline"
-              style={{ color: "var(--sage)" }}
-            >
-              Volledig plan bekijken
-              <Icons.ArrowRight s={15} />
-            </Link>
-          ) : null}
-        </div>
-      ) : (
-        <div className="mt-4">
-          <p
-            className="text-[16px] font-semibold leading-snug text-[#1c1917] text-pretty"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            {model.priority.quickWin.title}
-          </p>
-
-          {contextLine ? (
-            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
-              {contextLine}{" "}
-              <Link
-                href={onderbouwingHref}
-                onClick={() => {
-                  trackOnderbouwingLinkClick({ surface: "vandaag_card", domain });
-                  clarityTag("onderbouwing_link", "vandaag_card");
-                }}
-                className="font-medium text-[#78716c] underline decoration-[#d6d3d1] underline-offset-2"
-              >
-                Waarom?
-              </Link>
-            </p>
-          ) : (
-            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
-              {model.priority.quickWin.detail}
-            </p>
-          )}
-
-          {interventionHref ? (
-            <Link
-              href={interventionHref}
-              onClick={() =>
-                trackDashboardInterventionClick("hefboom", model, interventionHref)
-              }
-              className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold no-underline"
-              style={{ color: "var(--sage)" }}
-            >
-              Start hier
-              <Icons.ArrowRight s={14} />
-            </Link>
-          ) : null}
-        </div>
-      )}
-    </KompasLooseCard>
-  );
-};
 
 const STATUS_BADGE_COLOR: Record<
   ReturnType<typeof getDisplayStatusTone>,
@@ -3677,8 +3415,12 @@ const SECTION_RENDERERS: Record<
   vitalityScore: (props) => <VitalityScoreSection {...props} />,
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
-  vandaagCard: (props) =>
-    props.empty || !props.model ? null : <VandaagCard model={props.model} />,
+  agendaTeaser: (props) =>
+    props.empty || !props.model ? null : (
+      <AgendaTeaser model={props.model} onOpenAgenda={props.onGoAgenda} />
+    ),
+  agendaHome: (props) =>
+    props.empty || !props.model ? null : <AgendaScreen model={props.model} />,
   kompasHome: (props) =>
     props.empty ? null : <KompasHome key={`kompas-${props.kompasResetSignal}`} {...props} />,
   signals: (props) => (props.empty ? null : <SignalsSection {...props} />),
@@ -3720,9 +3462,6 @@ function renderDashboardSection(
   const renderer = SECTION_RENDERERS[type];
   if (typeof renderer === "function") {
     return renderer(props);
-  }
-  if (type === "vandaagCard" && !props.empty && props.model) {
-    return <VandaagCard model={props.model} />;
   }
   return null;
 }
@@ -3960,6 +3699,10 @@ export default function Dashboard({
   }, [tab, voortgangScreen]);
 
   const selectTab = (nextTab: DashboardTabId) => {
+    if (nextTab !== tab) {
+      trackDashboardTabSelected(nextTab);
+      clarityTag("dashboard_tab", nextTab);
+    }
     if (nextTab === "vandaag") {
       resetKompasToHome();
       setKompasResetSignal((prev) => prev + 1);
@@ -4019,6 +3762,7 @@ export default function Dashboard({
     onDashboardCheckin,
     onRemeasure,
     onGoVandaag: () => selectTab("vandaag"),
+    onGoAgenda: () => selectTab("agenda"),
     voortgangScreen,
     onVoortgangScreenChange: setVoortgangScreen,
     onOpenInzichten: () => setVoortgangScreen("inzichten"),
@@ -4029,7 +3773,7 @@ export default function Dashboard({
   const isVoortgangHubDarkFooter = tab === "voortgang" && voortgangScreen === "hub";
 
   const surfaceClass =
-    tab === "vandaag"
+    tab === "vandaag" || tab === "agenda"
       ? "ps-dash-surface-kompas"
       : isVoortgangDetail
         ? "ps-dash-surface-voortgang-detail"

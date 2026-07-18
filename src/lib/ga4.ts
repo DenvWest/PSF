@@ -55,10 +55,27 @@ export function trackPaginaType(type:
 }
 
 export function trackOnderbouwingLinkClick(params: {
-  surface: "dashboard_footer" | "login_help" | "vandaag_card";
+  surface:
+    | "dashboard_footer"
+    | "login_help"
+    | "vandaag_card"
+    | "agenda_today"
+    | "agenda_preview";
   tab?: string;
   screen?: string;
   domain?: string;
 }) {
   trackEvent(GA4_EVENTS.ONDERBOUWING_LINK_CLICKED, params);
+}
+
+export function trackDashboardTabSelected(tab: string) {
+  trackEvent("dashboard_tab_selected", { tab });
+}
+
+export function trackAgendaDaySelected(params: {
+  day_offset: number;
+  is_today: boolean;
+  domain: string;
+}) {
+  trackEvent("agenda_day_selected", params);
 }

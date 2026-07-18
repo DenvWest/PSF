@@ -23,7 +23,7 @@ type DashboardPageProps = {
   }>;
 };
 
-const VALID_TABS = new Set<DashboardTabId>(["vandaag", "voortgang", "hermeting"]);
+const VALID_TABS = new Set<DashboardTabId>(["vandaag", "agenda", "voortgang", "hermeting"]);
 const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
   "inzichten",

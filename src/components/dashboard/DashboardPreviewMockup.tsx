@@ -1,10 +1,11 @@
 import { DASHBOARD_ROUTE_PREVIEW } from "@/data/dashboard-route";
 import { DASHBOARD_TABS } from "@/data/dashboard";
 
-const ANNOTATED_TABS = new Set(["vandaag", "voortgang", "hermeting"]);
+const ANNOTATED_TABS = new Set(["vandaag", "agenda", "voortgang", "hermeting"]);
 
 const TAB_ANNOTATIONS: Partial<Record<(typeof DASHBOARD_TABS)[number]["id"], string>> = {
-  vandaag: "Hier zie je je score, habit en prioriteit",
+  vandaag: "Hier verdiep je per domein",
+  agenda: "Hier zie je je week en vink je vandaag af",
   voortgang: "Hier volg je scores en trends over tijd",
   hermeting: "Hier plan je je volgende meting",
 };

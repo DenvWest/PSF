@@ -4,7 +4,7 @@ import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
-import { getDailyActionState, toggleDailyAction } from "@/lib/daily-action-log";
+import { getDailyActionState, getDailyActionWeekState, toggleDailyAction } from "@/lib/daily-action-log";
 import { emitEvent } from "@/lib/events";
 
 const DOMAINS = [
@@ -33,16 +33,24 @@ export async function GET(request: NextRequest) {
   if (!account) {
     return NextResponse.json({ error: "Niet ingelogd." }, { status: 401 });
   }
-  const domain = (new URL(request.url).searchParams.get("domain") ?? "").trim();
-  if (!isDomain(domain)) {
-    return NextResponse.json({ error: "Ongeldig domein." }, { status: 400 });
-  }
+  const params = new URL(request.url).searchParams;
+  const range = params.get("range");
   const admin = createSupabaseAdmin();
   if (!admin) {
     return NextResponse.json(
       { error: "Database is nog niet geconfigureerd op de server." },
       { status: 503 },
     );
+  }
+
+  if (range === "7") {
+    const weekState = await getDailyActionWeekState(admin, account.id);
+    return NextResponse.json(weekState, { status: 200 });
+  }
+
+  const domain = (params.get("domain") ?? "").trim();
+  if (!isDomain(domain)) {
+    return NextResponse.json({ error: "Ongeldig domein." }, { status: 400 });
   }
   const state = await getDailyActionState(admin, account.id, domain);
   return NextResponse.json(state, { status: 200 });

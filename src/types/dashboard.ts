@@ -20,7 +20,8 @@ export type DashboardSectionType =
   | "vitalityScore"
   | "priority"
   | "plan"
-  | "vandaagCard"
+  | "agendaTeaser"
+  | "agendaHome"
   | "kompasHome"
   | "signals"
   | "nutritionIntake"
@@ -72,7 +73,7 @@ export type DashboardIconName =
   | "Calendar"
   | "BookOpen";
 
-export type DashboardTabId = "vandaag" | "voortgang" | "hermeting";
+export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
 
 export type DashboardTab = {
   id: DashboardTabId;

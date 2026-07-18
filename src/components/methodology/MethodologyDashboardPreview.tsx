@@ -5,9 +5,9 @@ import { DASHBOARD_UNLOCK_LOCKED_FEATURES } from "@/data/dashboard-unlock";
 import { DASHBOARD_TABS } from "@/data/dashboard";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
 
-type PreviewTabId = "vandaag" | "voortgang" | "hermeting";
+type PreviewTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
 
-const PREVIEW_TAB_IDS: PreviewTabId[] = ["vandaag", "voortgang", "hermeting"];
+const PREVIEW_TAB_IDS: PreviewTabId[] = ["vandaag", "agenda", "voortgang", "hermeting"];
 
 const PREVIEW_TABS = DASHBOARD_TABS.filter((tab) =>
   PREVIEW_TAB_IDS.includes(tab.id as PreviewTabId),
@@ -78,8 +78,25 @@ function HermetingPanel() {
   );
 }
 
+function AgendaPanel() {
+  const tab = PREVIEW_TABS.find((item) => item.id === "agenda");
+
+  return (
+    <div className="rounded-xl border border-white/10 bg-[#0f1c10] p-4">
+      <p className="text-xs font-medium uppercase tracking-wider text-stone-500">
+        Agenda
+      </p>
+      <p className="mt-1 text-sm font-semibold text-white">{tab?.subtitle}</p>
+      <p className="mt-3 text-xs leading-relaxed text-stone-400">
+        Weekoverzicht met je stap vandaag — afvinken, onderbouwing lezen, en vooruitkijken.
+      </p>
+    </div>
+  );
+}
+
 const PANELS: Record<PreviewTabId, () => ReactNode> = {
   vandaag: VandaagPanel,
+  agenda: AgendaPanel,
   voortgang: VoortgangPanel,
   hermeting: HermetingPanel,
 };
