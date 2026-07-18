@@ -114,6 +114,14 @@ function resolveScheduledTime(model: DashboardModel, slot: WeekDaySlot): string 
   return deriveDefaultScheduledTime(bucket);
 }
 
+function isPlanStepHidden(model: DashboardModel, slot: WeekDaySlot): boolean {
+  return (
+    model.planStepsHidden ||
+    (model.planStepDismissedDate != null &&
+      model.planStepDismissedDate === slot.date)
+  );
+}
+
 function buildAnalysisBlock(model: DashboardModel, slot: WeekDaySlot): TimelineBlock {
   const startTime = resolveScheduledTime(model, slot);
   const startMinutes = timeToMinutes(startTime);
@@ -137,6 +145,16 @@ function buildAnalysisBlock(model: DashboardModel, slot: WeekDaySlot): TimelineB
   };
 }
 
+export function buildPlanStepBlock(
+  model: DashboardModel,
+  slot: WeekDaySlot,
+): TimelineBlock | null {
+  if (isPlanStepHidden(model, slot)) {
+    return null;
+  }
+  return buildAnalysisBlock(model, slot);
+}
+
 function mapRoutineBlock(block: AgendaBlockRecord): TimelineBlock {
   const kind = block.source.startsWith("external:") ? "external" : "routine";
   return {
@@ -153,7 +171,7 @@ function mapRoutineBlock(block: AgendaBlockRecord): TimelineBlock {
 }
 
 export function buildDayTimeline(
-  model: DashboardModel,
+  _model: DashboardModel,
   slot: WeekDaySlot,
   routineBlocks: AgendaBlockRecord[],
   externalBlocks: TimelineBlock[] = [],
@@ -166,15 +184,6 @@ export function buildDayTimeline(
   );
 
   const timelineBlocks = [...dayRoutineBlocks, ...dayExternalBlocks];
-  const planStepHidden =
-    model.planStepsHidden ||
-    (slot.isToday &&
-      model.planStepDismissedDate != null &&
-      model.planStepDismissedDate === slot.date);
-
-  if (!planStepHidden) {
-    timelineBlocks.push(buildAnalysisBlock(model, slot));
-  }
 
   return timelineBlocks.sort(
     (left, right) => timeToMinutes(left.startTime) - timeToMinutes(right.startTime),

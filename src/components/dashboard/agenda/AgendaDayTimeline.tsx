@@ -7,8 +7,10 @@ import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockShe
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import { clarityTag } from "@/lib/clarity";
+import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
 import {
   buildDayTimeline,
+  buildPlanStepBlock,
   formatTimelineHour,
   getBlockTimelineStyle,
   getHourMarkerTopPx,
@@ -33,7 +35,7 @@ type HiddenPlanStep = {
   title: string;
   domainLabel: string;
   color: string;
-  reason: "today" | "all";
+  reason: "day" | "all";
 };
 
 type AgendaDayTimelineProps = {
@@ -56,7 +58,7 @@ type AgendaDayTimelineProps = {
   archivedBlocks?: AgendaBlockRecord[];
   onRestoreBlock?: (blockId: string) => Promise<void>;
   hiddenPlanStep?: HiddenPlanStep | null;
-  onDismissPlanStep?: () => Promise<void>;
+  onDismissPlanStep?: (date: string) => Promise<void>;
   onRestorePlanStep?: () => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
@@ -95,14 +97,20 @@ export default function AgendaDayTimeline({
   const [addOpen, setAddOpen] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const planStep = useMemo(
+    () => buildPlanStepBlock(model, slot),
+    [model, slot],
+  );
   const blocks = useMemo(
     () => buildDayTimeline(model, slot, routineBlocks),
     [model, slot, routineBlocks],
   );
-  const selectedBlock = useMemo(
-    () => blocks.find((block) => block.id === selectedBlockId) ?? null,
-    [blocks, selectedBlockId],
-  );
+  const selectedBlock = useMemo(() => {
+    if (planStep?.id === selectedBlockId) {
+      return planStep;
+    }
+    return blocks.find((block) => block.id === selectedBlockId) ?? null;
+  }, [blocks, planStep, selectedBlockId]);
   const nowLinePercent = slot.isToday ? getNowLinePercent() : null;
   const hourLabels = getTimelineHourLabels();
   const ghostStyle = draftSlot
@@ -173,6 +181,15 @@ export default function AgendaDayTimeline({
           {addOpen ? "Annuleer" : "Moment"}
         </button>
       </div>
+
+      {planStep ? (
+        <div className="mb-3">
+          <AgendaPlanStepStrip
+            block={planStep}
+            onOpenDetail={() => openDetail(planStep.id)}
+          />
+        </div>
+      ) : null}
 
       <div className="flex gap-3">
         <div
@@ -266,7 +283,7 @@ export default function AgendaDayTimeline({
           initialEndTime={draftSlot?.endTime}
           createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
           archivedBlocks={archivedForDay}
-          hiddenPlanStep={slot.isToday ? hiddenPlanStep : null}
+          hiddenPlanStep={hiddenPlanStep}
           onRestore={onRestoreBlock}
           onRestorePlanStep={onRestorePlanStep}
           onShowAllPlanSteps={onShowAllPlanSteps}
@@ -287,8 +304,8 @@ export default function AgendaDayTimeline({
         onDelete={(blockId) => void onDeleteBlock(blockId)}
         onDismissPlanStep={
           onDismissPlanStep
-            ? () => {
-                void onDismissPlanStep();
+            ? (date) => {
+                void onDismissPlanStep(date);
               }
             : undefined
         }

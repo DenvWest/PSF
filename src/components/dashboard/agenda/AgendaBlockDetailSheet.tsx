@@ -20,7 +20,7 @@ type AgendaBlockDetailSheetProps = {
   onScheduledTimeChange?: (scheduledTime: string) => void;
   onToggleDone?: (blockId: string, done: boolean) => void;
   onDelete?: (blockId: string) => void;
-  onDismissPlanStep?: () => void;
+  onDismissPlanStep?: (date: string) => void;
   onHideAllPlanSteps?: () => void;
 };
 
@@ -130,24 +130,24 @@ export default function AgendaBlockDetailSheet({
                 onCompletionChange={onCompletionChange}
                 onScheduledTimeChange={onScheduledTimeChange}
               />
-              {block.slot?.isToday && onDismissPlanStep ? (
+              {block.slot && onDismissPlanStep ? (
                 <>
                   <button
                     type="button"
                     disabled={busy || prefBusy}
                     onClick={() => {
-                      onDismissPlanStep();
+                      onDismissPlanStep(block.slot!.date);
                       trackEvent("agenda_plan_step_dismissed", {
                         surface: "agenda_block_detail",
-                        scope: "today",
+                        scope: "day",
                       });
-                      clarityTag("agenda_plan_step", "hidden_today");
+                      clarityTag("agenda_plan_step", "hidden_day");
                       onClose();
                     }}
                     className="mt-4 inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-[12px] border border-[#e4e0da] bg-[#faf9f7] px-4 text-[14px] font-medium text-[#78716c] disabled:opacity-60"
                     style={{ fontFamily: "var(--f-sans)" }}
                   >
-                    Verberg vandaag
+                    Verberg op deze dag
                   </button>
                   {onHideAllPlanSteps ? (
                     <button

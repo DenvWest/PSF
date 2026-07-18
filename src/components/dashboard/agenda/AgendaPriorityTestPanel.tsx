@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { PILLARS } from "@/data/dashboard";
 import { isInterventionDomain } from "@/lib/domain-role";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
-import { buildDayTimeline } from "@/lib/agenda-timeline";
+import { buildPlanStepBlock } from "@/lib/agenda-timeline";
 import { postPrioritySelection } from "@/lib/priority-pref-client";
 import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
@@ -25,8 +25,7 @@ export default function AgendaPriorityTestPanel({
   }, [model]);
 
   const analysisVisible = useMemo(() => {
-    const blocks = buildDayTimeline(model, todaySlot, []);
-    return blocks.some((block) => block.kind === "analysis");
+    return buildPlanStepBlock(model, todaySlot) != null;
   }, [model, todaySlot]);
 
   if (!enabled) {

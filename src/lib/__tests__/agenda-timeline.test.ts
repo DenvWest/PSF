@@ -3,6 +3,7 @@ import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import {
   ANALYSIS_BLOCK_DURATION_MINUTES,
   buildDayTimeline,
+  buildPlanStepBlock,
   DEFAULT_BLOCK_DURATION_MINUTES,
   getBlockTimelineStyle,
   getHourMarkerTopPx,
@@ -36,17 +37,19 @@ function buildFixtureModel(scores: CheckScores) {
   );
 }
 
+const FIXTURE_SCORES: CheckScores = {
+  slaap: 44,
+  energie: 57,
+  stress: 50,
+  voeding: 52,
+  beweging: 73,
+  herstel: 54,
+  verbinding: 66,
+};
+
 describe("buildDayTimeline", () => {
-  it("merges analysis block with routine blocks sorted by time", () => {
-    const model = buildFixtureModel({
-      slaap: 44,
-      energie: 57,
-      stress: 50,
-      voeding: 52,
-      beweging: 73,
-      herstel: 54,
-      verbinding: 66,
-    });
+  it("returns only routine blocks sorted by time", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
     const slots = buildWeekSchedulePreview(model);
     const todaySlot = slots.find((slot) => slot.isToday);
     expect(todaySlot).toBeDefined();
@@ -70,22 +73,15 @@ describe("buildDayTimeline", () => {
     ];
 
     const timeline = buildDayTimeline(model, todaySlot, routineBlocks);
-    expect(timeline).toHaveLength(2);
+    expect(timeline).toHaveLength(1);
     expect(timeline[0]?.id).toBe("block-1");
-    expect(timeline[1]?.kind).toBe("analysis");
-    expect(timeline[1]?.source).toBe("analysis");
+    expect(timeline.some((block) => block.kind === "analysis")).toBe(false);
   });
+});
 
-  it("derives analysis end time from start plus default duration", () => {
-    const model = buildFixtureModel({
-      slaap: 44,
-      energie: 57,
-      stress: 50,
-      voeding: 52,
-      beweging: 73,
-      herstel: 54,
-      verbinding: 66,
-    });
+describe("buildPlanStepBlock", () => {
+  it("builds an analysis block for the selected day", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
     const slots = buildWeekSchedulePreview(model);
     const todaySlot = slots.find((slot) => slot.isToday);
     expect(todaySlot).toBeDefined();
@@ -93,29 +89,36 @@ describe("buildDayTimeline", () => {
       return;
     }
 
-    const timeline = buildDayTimeline(model, todaySlot, []);
-    const analysis = timeline.find((block) => block.kind === "analysis");
-    expect(analysis).toBeDefined();
-    if (!analysis) {
+    const planStep = buildPlanStepBlock(model, todaySlot);
+    expect(planStep).toBeDefined();
+    expect(planStep?.kind).toBe("analysis");
+    expect(planStep?.source).toBe("analysis");
+    expect(planStep?.id).toBe(`analysis:${todaySlot.date}`);
+  });
+
+  it("derives end time from start plus default duration", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    const planStep = buildPlanStepBlock(model, todaySlot);
+    expect(planStep).toBeDefined();
+    if (!planStep) {
       return;
     }
 
     const expectedEnd = minutesToTime(
-      timeToMinutes(analysis.startTime) + ANALYSIS_BLOCK_DURATION_MINUTES,
+      timeToMinutes(planStep.startTime) + ANALYSIS_BLOCK_DURATION_MINUTES,
     );
-    expect(analysis.endTime).toBe(expectedEnd);
+    expect(planStep.endTime).toBe(expectedEnd);
   });
 
-  it("omits analysis block when plan step is dismissed for today", () => {
-    const model = buildFixtureModel({
-      slaap: 44,
-      energie: 57,
-      stress: 50,
-      voeding: 52,
-      beweging: 73,
-      herstel: 54,
-      verbinding: 66,
-    });
+  it("returns null when plan step is dismissed for today", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
     const slots = buildWeekSchedulePreview(model);
     const todaySlot = slots.find((slot) => slot.isToday);
     expect(todaySlot).toBeDefined();
@@ -127,20 +130,27 @@ describe("buildDayTimeline", () => {
       ...model,
       planStepDismissedDate: todaySlot.date,
     };
-    const timeline = buildDayTimeline(dismissedModel, todaySlot, []);
-    expect(timeline.some((block) => block.kind === "analysis")).toBe(false);
+    expect(buildPlanStepBlock(dismissedModel, todaySlot)).toBeNull();
   });
 
-  it("omits analysis block when all plan steps are hidden", () => {
-    const model = buildFixtureModel({
-      slaap: 44,
-      energie: 57,
-      stress: 50,
-      voeding: 52,
-      beweging: 73,
-      herstel: 54,
-      verbinding: 66,
-    });
+  it("returns null when plan step is dismissed for a non-today slot", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const previewSlot = slots.find((slot) => !slot.isToday);
+    expect(previewSlot).toBeDefined();
+    if (!previewSlot) {
+      return;
+    }
+
+    const dismissedModel = {
+      ...model,
+      planStepDismissedDate: previewSlot.date,
+    };
+    expect(buildPlanStepBlock(dismissedModel, previewSlot)).toBeNull();
+  });
+
+  it("returns null when all plan steps are hidden", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
     const slots = buildWeekSchedulePreview(model);
     const todaySlot = slots.find((slot) => slot.isToday);
     expect(todaySlot).toBeDefined();
@@ -152,8 +162,7 @@ describe("buildDayTimeline", () => {
       ...model,
       planStepsHidden: true,
     };
-    const timeline = buildDayTimeline(hiddenModel, todaySlot, []);
-    expect(timeline.some((block) => block.kind === "analysis")).toBe(false);
+    expect(buildPlanStepBlock(hiddenModel, todaySlot)).toBeNull();
   });
 });
 

@@ -14,7 +14,7 @@ type HiddenPlanStep = {
   title: string;
   domainLabel: string;
   color: string;
-  reason: "today" | "all";
+  reason: "day" | "all";
 };
 
 type AgendaAddBlockSheetProps = {
@@ -163,9 +163,9 @@ export default function AgendaAddBlockSheet({
                     await onRestorePlanStep();
                     trackEvent("agenda_plan_step_restored", {
                       surface: "agenda_add_sheet",
-                      scope: "today",
+                      scope: "day",
                     });
-                    clarityTag("agenda_plan_step", "restored_today");
+                    clarityTag("agenda_plan_step", "restored_day");
                   } catch (restoreError) {
                     setError(
                       restoreError instanceof Error

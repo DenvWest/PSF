@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
         date: dateRaw,
         pillar_id: pref.pillarId,
         surface,
-        scope: "today",
+        scope: "day",
       },
     });
 
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
       payload: {
         pillar_id: pref.pillarId,
         surface,
-        scope: "today",
+        scope: "day",
       },
     });
 

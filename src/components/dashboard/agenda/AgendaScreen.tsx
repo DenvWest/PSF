@@ -61,16 +61,16 @@ export default function AgendaScreen({
   const weekStart = slots[0]?.date ?? todaySlot.date;
   const weekEnd = slots[slots.length - 1]?.date ?? todaySlot.date;
   const hiddenPlanStep = useMemo(() => {
-    const isTodayDismissed = model.planStepDismissedDate === todaySlot.date;
+    const isDayDismissed = model.planStepDismissedDate === selectedSlot.date;
     const isAllHidden = model.planStepsHidden;
-    if (!isTodayDismissed && !isAllHidden) {
+    if (!isDayDismissed && !isAllHidden) {
       return null;
     }
     return {
-      title: model.activeHabit?.title ?? todaySlot.title,
+      title: model.activeHabit?.title ?? selectedSlot.title,
       domainLabel: model.priority.label,
       color: model.priority.color,
-      reason: isAllHidden ? ("all" as const) : ("today" as const),
+      reason: isAllHidden ? ("all" as const) : ("day" as const),
     };
   }, [
     model.activeHabit?.title,
@@ -78,8 +78,8 @@ export default function AgendaScreen({
     model.planStepsHidden,
     model.priority.color,
     model.priority.label,
-    todaySlot.date,
-    todaySlot.title,
+    selectedSlot.date,
+    selectedSlot.title,
   ]);
 
   useEffect(() => {
@@ -234,11 +234,11 @@ export default function AgendaScreen({
     }
   };
 
-  const handleDismissPlanStep = async () => {
+  const handleDismissPlanStep = async (date: string) => {
     setPrefBusy(true);
     try {
       const pref = await postDismissPlanStep({
-        date: todaySlot.date,
+        date,
         surface: "agenda_block_detail",
       });
       onPrefUpdated(pref);
