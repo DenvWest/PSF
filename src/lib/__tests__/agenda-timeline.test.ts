@@ -3,9 +3,17 @@ import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import {
   ANALYSIS_BLOCK_DURATION_MINUTES,
   buildDayTimeline,
+  DEFAULT_BLOCK_DURATION_MINUTES,
   getBlockTimelineStyle,
+  getHourMarkerTopPx,
   getNowLinePercent,
+  getTimelineTrackHeightPx,
   minutesToTime,
+  positionToTimelineTime,
+  snapTimelineMinutes,
+  TIMELINE_END_MINUTES,
+  TIMELINE_START_MINUTES,
+  TIMELINE_TOTAL_MINUTES,
   timeToMinutes,
 } from "@/lib/agenda-timeline";
 import { buildModel } from "@/lib/dashboard-model";
@@ -109,5 +117,42 @@ describe("timeline layout helpers", () => {
   it("returns null now line outside visible hours", () => {
     const beforeTimeline = new Date("2026-07-18T04:00:00.000Z");
     expect(getNowLinePercent(beforeTimeline)).toBeNull();
+  });
+});
+
+describe("tap-to-create helpers", () => {
+  const HOUR_HEIGHT_PX = 52;
+  const TRACK_HEIGHT_PX = getTimelineTrackHeightPx(HOUR_HEIGHT_PX);
+
+  it("snaps minutes to the nearest 15-minute step", () => {
+    expect(snapTimelineMinutes(timeToMinutes("14:07"))).toBe(timeToMinutes("14:00"));
+    expect(snapTimelineMinutes(timeToMinutes("14:08"))).toBe(timeToMinutes("14:15"));
+  });
+
+  it("maps top of track to 07:00", () => {
+    const result = positionToTimelineTime(0, TRACK_HEIGHT_PX);
+    expect(result.startTime).toBe("07:00");
+    expect(result.endTime).toBe(
+      minutesToTime(timeToMinutes("07:00") + DEFAULT_BLOCK_DURATION_MINUTES),
+    );
+  });
+
+  it("maps 11:00 grid line to 11:00 start time", () => {
+    const offsetY = getHourMarkerTopPx(11, HOUR_HEIGHT_PX);
+    const result = positionToTimelineTime(offsetY, TRACK_HEIGHT_PX);
+    expect(result.startTime).toBe("11:00");
+    expect(result.endTime).toBe("11:30");
+  });
+
+  it("maps middle of track to roughly mid-day", () => {
+    const result = positionToTimelineTime(TRACK_HEIGHT_PX / 2, TRACK_HEIGHT_PX);
+    const startMinutes = timeToMinutes(result.startTime);
+    const midMinutes = TIMELINE_START_MINUTES + TIMELINE_TOTAL_MINUTES / 2;
+    expect(Math.abs(startMinutes - snapTimelineMinutes(midMinutes))).toBeLessThanOrEqual(15);
+  });
+
+  it("clamps bottom of track within 22:00", () => {
+    const result = positionToTimelineTime(TRACK_HEIGHT_PX, TRACK_HEIGHT_PX);
+    expect(timeToMinutes(result.endTime)).toBeLessThanOrEqual(TIMELINE_END_MINUTES);
   });
 });

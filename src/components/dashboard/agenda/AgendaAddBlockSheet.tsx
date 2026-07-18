@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import { SELECTABLE_AGENDA_CATEGORIES } from "@/data/agenda/categories";
-import { isValidLocalTime } from "@/lib/account-priority-pref";
+import { normalizeLocalTime } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import type { AgendaCategoryId } from "@/types/agenda";
@@ -12,6 +12,9 @@ import type { AgendaCategoryId } from "@/types/agenda";
 type AgendaAddBlockSheetProps = {
   date: string;
   busy?: boolean;
+  initialStartTime?: string;
+  initialEndTime?: string;
+  createSurface?: "agenda_add_sheet" | "agenda_timeline_tap";
   onClose: () => void;
   onSubmit: (input: {
     date: string;
@@ -25,13 +28,16 @@ type AgendaAddBlockSheetProps = {
 export default function AgendaAddBlockSheet({
   date,
   busy = false,
+  initialStartTime,
+  initialEndTime,
+  createSurface = "agenda_add_sheet",
   onClose,
   onSubmit,
 }: AgendaAddBlockSheetProps) {
   const [categoryId, setCategoryId] = useState<AgendaCategoryId>("persoonlijke_routine");
   const [title, setTitle] = useState("");
-  const [startTime, setStartTime] = useState("12:00");
-  const [endTime, setEndTime] = useState("12:30");
+  const [startTime, setStartTime] = useState(initialStartTime ?? "12:00");
+  const [endTime, setEndTime] = useState(initialEndTime ?? "12:30");
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
@@ -40,32 +46,43 @@ export default function AgendaAddBlockSheet({
       setError("Geef je moment een titel.");
       return;
     }
-    if (!isValidLocalTime(startTime) || !isValidLocalTime(endTime)) {
+
+    const normalizedStart = normalizeLocalTime(startTime);
+    const normalizedEnd = normalizeLocalTime(endTime);
+    if (!normalizedStart || !normalizedEnd) {
       setError("Kies een geldig tijdvenster.");
       return;
     }
 
-    const [startH, startM] = startTime.split(":").map(Number);
-    const [endH, endM] = endTime.split(":").map(Number);
+    const [startH, startM] = normalizedStart.split(":").map(Number);
+    const [endH, endM] = normalizedEnd.split(":").map(Number);
     if (startH * 60 + startM >= endH * 60 + endM) {
       setError("Eindtijd moet na starttijd liggen.");
       return;
     }
 
     setError(null);
-    await onSubmit({
-      date,
-      categoryId,
-      title: trimmedTitle,
-      startTime,
-      endTime,
-    });
-    trackEvent("agenda_block_created", {
-      category_id: categoryId,
-      surface: "agenda_add_sheet",
-    });
-    clarityTag("agenda_block", "created");
-    onClose();
+    try {
+      await onSubmit({
+        date,
+        categoryId,
+        title: trimmedTitle,
+        startTime: normalizedStart,
+        endTime: normalizedEnd,
+      });
+      trackEvent("agenda_block_created", {
+        category_id: categoryId,
+        surface: createSurface,
+      });
+      clarityTag("agenda_block", "created");
+      onClose();
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Kon dit moment niet opslaan.",
+      );
+    }
   };
 
   return (

@@ -14,10 +14,13 @@ import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 export const TIMELINE_START_HOUR = 7;
 export const TIMELINE_END_HOUR = 22;
+export const TIMELINE_SEGMENT_COUNT = TIMELINE_END_HOUR - TIMELINE_START_HOUR;
 export const TIMELINE_START_MINUTES = TIMELINE_START_HOUR * 60;
 export const TIMELINE_END_MINUTES = TIMELINE_END_HOUR * 60;
 export const TIMELINE_TOTAL_MINUTES = TIMELINE_END_MINUTES - TIMELINE_START_MINUTES;
 export const ANALYSIS_BLOCK_DURATION_MINUTES = 45;
+export const DEFAULT_BLOCK_DURATION_MINUTES = 30;
+export const TIMELINE_SNAP_MINUTES = 15;
 
 const HOUR_LABELS = Array.from(
   { length: TIMELINE_END_HOUR - TIMELINE_START_HOUR + 1 },
@@ -26,6 +29,16 @@ const HOUR_LABELS = Array.from(
 
 export function getTimelineHourLabels(): number[] {
   return HOUR_LABELS;
+}
+
+export function getTimelineTrackHeightPx(hourHeightPx: number): number {
+  return TIMELINE_SEGMENT_COUNT * hourHeightPx;
+}
+
+export function getHourMarkerTopPx(hour: number, hourHeightPx: number): number {
+  const trackHeight = getTimelineTrackHeightPx(hourHeightPx);
+  const hourIndex = hour - TIMELINE_START_HOUR;
+  return (hourIndex / TIMELINE_SEGMENT_COUNT) * trackHeight;
 }
 
 export function timeToMinutes(time: string): number {
@@ -41,6 +54,34 @@ export function minutesToTime(totalMinutes: number): string {
 
 export function clampTimelineMinutes(minutes: number): number {
   return Math.min(Math.max(minutes, TIMELINE_START_MINUTES), TIMELINE_END_MINUTES);
+}
+
+export function snapTimelineMinutes(
+  minutes: number,
+  step = TIMELINE_SNAP_MINUTES,
+): number {
+  return Math.round(minutes / step) * step;
+}
+
+export function positionToTimelineTime(
+  offsetY: number,
+  trackHeightPx: number,
+  durationMinutes = DEFAULT_BLOCK_DURATION_MINUTES,
+): { startTime: string; endTime: string } {
+  if (trackHeightPx <= 0) {
+    return { startTime: "12:00", endTime: "12:30" };
+  }
+
+  const ratio = Math.min(Math.max(offsetY / trackHeightPx, 0), 1);
+  const rawMinutes = TIMELINE_START_MINUTES + ratio * TIMELINE_TOTAL_MINUTES;
+  const snappedStart = clampTimelineMinutes(snapTimelineMinutes(rawMinutes));
+  const endMinutes = clampTimelineMinutes(snappedStart + durationMinutes);
+  const startMinutes = Math.max(TIMELINE_START_MINUTES, endMinutes - durationMinutes);
+
+  return {
+    startTime: minutesToTime(startMinutes),
+    endTime: minutesToTime(endMinutes),
+  };
 }
 
 export function getBlockTimelineStyle(startTime: string, endTime: string): {

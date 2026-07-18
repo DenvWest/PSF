@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
-import AgendaMetaRow from "@/components/dashboard/agenda/AgendaMetaRow";
 import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanceStrip";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
@@ -19,14 +18,10 @@ import {
 } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackAgendaDaySelected, trackEvent } from "@/lib/ga4";
-import {
-  postPrioritySelection,
-  postScheduledTime,
-  resetPriorityPref,
-} from "@/lib/priority-pref-client";
+import { postScheduledTime } from "@/lib/priority-pref-client";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
-import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
+import type { AccountPriorityPrefData, DashboardModel } from "@/types/dashboard";
 
 type AgendaScreenProps = {
   model: DashboardModel;
@@ -54,7 +49,6 @@ export default function AgendaScreen({
   });
   const [routineBlocks, setRoutineBlocks] = useState<AgendaBlockRecord[]>([]);
   const [blocksLoaded, setBlocksLoaded] = useState(false);
-  const [focusExpanded, setFocusExpanded] = useState(false);
   const [prefBusy, setPrefBusy] = useState(false);
   const [blockBusy, setBlockBusy] = useState(false);
 
@@ -140,32 +134,6 @@ export default function AgendaScreen({
     clarityTag("dashboard_agenda", slot.isToday ? "day_today" : "day_preview");
   };
 
-  const savePriority = async (
-    pillarId: PillarId,
-    source: "user_selected" | "accept_engine",
-  ) => {
-    setPrefBusy(true);
-    try {
-      const pref = await postPrioritySelection({
-        pillarId,
-        source,
-        surface: "agenda",
-        timeBucket: model.timeBucket,
-        scheduledTime: model.scheduledTime,
-      });
-      onPrefUpdated(pref);
-      setFocusExpanded(false);
-      trackEvent("dashboard_priority_selected", {
-        pillar_id: pillarId,
-        source,
-        surface: "agenda",
-      });
-      clarityTag("dashboard_priority", pillarId);
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
   const handleScheduledTime = async (scheduledTime: string) => {
     setPrefBusy(true);
     try {
@@ -187,22 +155,6 @@ export default function AgendaScreen({
     }
   };
 
-  const handleReset = async () => {
-    setPrefBusy(true);
-    try {
-      await resetPriorityPref();
-      onPrefUpdated(null);
-      setFocusExpanded(false);
-      trackEvent("dashboard_priority_selected", {
-        pillar_id: model.enginePriority.id,
-        source: "accept_engine",
-        surface: "agenda_reset",
-      });
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
   const handleCreateBlock = async (input: {
     date: string;
     categoryId: AgendaCategoryId;
@@ -214,8 +166,6 @@ export default function AgendaScreen({
     try {
       await createAgendaBlock(input);
       await refreshRoutineBlocks();
-    } catch {
-      // keep current blocks on failure
     } finally {
       setBlockBusy(false);
     }
@@ -282,19 +232,10 @@ export default function AgendaScreen({
       </AgendaShellSection>
 
       <AgendaShellSection>
-        <AgendaMetaRow
-          model={model}
-          busy={prefBusy}
-          focusExpanded={focusExpanded}
-          onToggleFocus={() => setFocusExpanded((open) => !open)}
-          onSelectPillar={(pillarId) => void savePriority(pillarId, "user_selected")}
-          onAcceptEngine={() => void savePriority(model.enginePriority.id, "accept_engine")}
-          onReset={() => void handleReset()}
-        />
         <button
           type="button"
           onClick={handleVoortgangLink}
-          className="mt-4 inline-flex min-h-11 cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[13px] font-medium text-[var(--sage)]"
+          className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[13px] font-medium text-[var(--sage)]"
           style={{ fontFamily: "var(--f-sans)" }}
         >
           Hoe verschuift je analyse?

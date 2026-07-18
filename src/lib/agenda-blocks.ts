@@ -1,5 +1,5 @@
 import { isAgendaCategoryId } from "@/data/agenda/categories";
-import { isValidLocalTime } from "@/lib/account-priority-pref";
+import { isValidLocalTime, normalizeLocalTime } from "@/lib/account-priority-pref";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import type {
   AgendaBlockRecord,
@@ -44,12 +44,38 @@ export function isIsoDate(value: string): boolean {
 }
 
 export function isValidTimeRange(startTime: string, endTime: string): boolean {
-  if (!isValidLocalTime(startTime) || !isValidLocalTime(endTime)) {
+  const normalizedStart = normalizeLocalTime(startTime);
+  const normalizedEnd = normalizeLocalTime(endTime);
+  if (!normalizedStart || !normalizedEnd) {
     return false;
   }
-  const [startH, startM] = startTime.split(":").map(Number);
-  const [endH, endM] = endTime.split(":").map(Number);
+  const [startH, startM] = normalizedStart.split(":").map(Number);
+  const [endH, endM] = normalizedEnd.split(":").map(Number);
   return startH * 60 + startM < endH * 60 + endM;
+}
+
+export function normalizeCreateBlockInput(
+  input: CreateAgendaBlockInput,
+): CreateAgendaBlockInput | null {
+  const title = input.title.trim();
+  const startTime = normalizeLocalTime(input.startTime);
+  const endTime = normalizeLocalTime(input.endTime);
+  if (!title || !startTime || !endTime || !isIsoDate(input.date)) {
+    return null;
+  }
+  if (!isAgendaCategoryId(input.categoryId)) {
+    return null;
+  }
+  if (!isValidTimeRange(startTime, endTime)) {
+    return null;
+  }
+  return {
+    date: input.date,
+    categoryId: input.categoryId,
+    title,
+    startTime,
+    endTime,
+  };
 }
 
 function mapRow(row: AgendaBlockRow): AgendaBlockRecord | null {
@@ -78,20 +104,34 @@ function mapRow(row: AgendaBlockRow): AgendaBlockRecord | null {
 export function validateCreateBlockInput(
   input: CreateAgendaBlockInput,
 ): string | null {
-  if (!isIsoDate(input.date)) {
-    return "Ongeldige datum.";
-  }
-  if (!isAgendaCategoryId(input.categoryId)) {
-    return "Ongeldige categorie.";
-  }
-  const title = input.title.trim();
-  if (!title || title.length > MAX_TITLE_LENGTH) {
-    return "Ongeldige titel.";
-  }
-  if (!isValidTimeRange(input.startTime, input.endTime)) {
+  const normalized = normalizeCreateBlockInput(input);
+  if (!normalized) {
+    if (!isIsoDate(input.date)) {
+      return "Ongeldige datum.";
+    }
+    if (!isAgendaCategoryId(input.categoryId)) {
+      return "Ongeldige categorie.";
+    }
+    const title = input.title.trim();
+    if (!title || title.length > MAX_TITLE_LENGTH) {
+      return "Ongeldige titel.";
+    }
     return "Ongeldig tijdvenster.";
   }
+  if (normalized.title.length > MAX_TITLE_LENGTH) {
+    return "Ongeldige titel.";
+  }
   return null;
+}
+
+function mapAgendaBlocksDbError(message: string): string {
+  if (
+    message.includes("agenda_blocks") &&
+    (message.includes("schema cache") || message.includes("does not exist"))
+  ) {
+    return "Agenda-opslag is nog niet geactiveerd. Voer de database-migratie uit in Supabase.";
+  }
+  return message;
 }
 
 export function validateUpdateBlockInput(
@@ -159,16 +199,21 @@ export async function createBlock(
     throw new Error(validationError);
   }
 
+  const normalized = normalizeCreateBlockInput(input);
+  if (!normalized) {
+    throw new Error("Ongeldige invoer.");
+  }
+
   const { data, error } = await admin
     .from("agenda_blocks")
     .insert({
       account_id: accountId,
       organization_id: organizationId,
-      date: input.date,
-      category_id: input.categoryId,
-      title: input.title.trim(),
-      start_time: input.startTime,
-      end_time: input.endTime,
+      date: normalized.date,
+      category_id: normalized.categoryId,
+      title: normalized.title,
+      start_time: normalized.startTime,
+      end_time: normalized.endTime,
       source: "routine",
       status: "open",
     })
@@ -178,7 +223,7 @@ export async function createBlock(
     .single<AgendaBlockRow>();
 
   if (error || !data) {
-    throw new Error(error?.message ?? "Kon blok niet aanmaken.");
+    throw new Error(mapAgendaBlocksDbError(error?.message ?? "Kon blok niet aanmaken."));
   }
 
   const mapped = mapRow(data);

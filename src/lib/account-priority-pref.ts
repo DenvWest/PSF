@@ -24,8 +24,23 @@ export const TIME_BUCKETS: readonly TimeBucket[] = [
 
 const LOCAL_TIME_PATTERN = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
+export function normalizeLocalTime(value: string): string | null {
+  const trimmed = value.trim();
+  const match = trimmed.match(/^(\d{1,2}):([0-5]\d)(?::[0-5]\d)?$/);
+  if (!match) {
+    return null;
+  }
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (hours > 23) {
+    return null;
+  }
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
 export function isValidLocalTime(value: string): boolean {
-  return LOCAL_TIME_PATTERN.test(value);
+  const normalized = normalizeLocalTime(value);
+  return normalized !== null && LOCAL_TIME_PATTERN.test(normalized);
 }
 
 export function isTimeBucket(value: string): value is TimeBucket {
@@ -106,13 +121,26 @@ export function deriveSuggestedTimeBucket(
   return deriveDefaultTimeBucket(now);
 }
 
-type PrefRow = {
+type PrefRowBase = {
   pillar_id: string;
   source: string;
   time_bucket: string | null;
-  scheduled_time: string | null;
   updated_at: string;
 };
+
+type PrefRow = PrefRowBase & {
+  scheduled_time?: string | null;
+};
+
+const PREF_SELECT_BASE =
+  "pillar_id, source, time_bucket, updated_at" as const;
+const PREF_SELECT_WITH_SCHEDULED_TIME =
+  "pillar_id, source, time_bucket, scheduled_time, updated_at" as const;
+
+function isMissingScheduledTimeColumn(error: { message?: string } | null): boolean {
+  const message = error?.message ?? "";
+  return message.includes("scheduled_time") && message.includes("schema cache");
+}
 
 function mapPrefRow(row: PrefRow): AccountPriorityPref | null {
   if (!isPinablePillarId(row.pillar_id) || !isPriorityPrefSource(row.source)) {
@@ -137,16 +165,29 @@ export async function getAccountPriorityPref(
   admin: SupabaseAdmin,
   accountId: string,
 ): Promise<AccountPriorityPref | null> {
-  const { data, error } = await admin
+  const withScheduledTime = await admin
     .from("account_priority_pref")
-    .select("pillar_id, source, time_bucket, scheduled_time, updated_at")
+    .select(PREF_SELECT_WITH_SCHEDULED_TIME)
     .eq("account_id", accountId)
     .maybeSingle<PrefRow>();
 
-  if (error || !data) {
+  if (!isMissingScheduledTimeColumn(withScheduledTime.error)) {
+    if (withScheduledTime.error || !withScheduledTime.data) {
+      return null;
+    }
+    return mapPrefRow(withScheduledTime.data);
+  }
+
+  const base = await admin
+    .from("account_priority_pref")
+    .select(PREF_SELECT_BASE)
+    .eq("account_id", accountId)
+    .maybeSingle<PrefRowBase>();
+
+  if (base.error || !base.data) {
     return null;
   }
-  return mapPrefRow(data);
+  return mapPrefRow(base.data);
 }
 
 export async function upsertAccountPriorityPref(
@@ -174,28 +215,49 @@ export async function upsertAccountPriorityPref(
     timeBucket = deriveTimeBucketFromLocalTime(scheduledTime);
   }
 
-  const { data, error } = await admin
+  const basePayload = {
+    account_id: accountId,
+    organization_id: organizationId,
+    pillar_id: input.pillarId,
+    source: input.source,
+    time_bucket: timeBucket,
+    updated_at: new Date().toISOString(),
+  };
+
+  const withScheduledTime = await admin
     .from("account_priority_pref")
     .upsert(
       {
-        account_id: accountId,
-        organization_id: organizationId,
-        pillar_id: input.pillarId,
-        source: input.source,
-        time_bucket: timeBucket,
+        ...basePayload,
         scheduled_time: scheduledTime,
-        updated_at: new Date().toISOString(),
       },
       { onConflict: "account_id" },
     )
-    .select("pillar_id, source, time_bucket, scheduled_time, updated_at")
+    .select(PREF_SELECT_WITH_SCHEDULED_TIME)
     .single<PrefRow>();
 
-  if (error || !data) {
-    throw new Error(error?.message ?? "Kon focus-voorkeur niet opslaan.");
+  if (!isMissingScheduledTimeColumn(withScheduledTime.error)) {
+    if (withScheduledTime.error || !withScheduledTime.data) {
+      throw new Error(withScheduledTime.error?.message ?? "Kon focus-voorkeur niet opslaan.");
+    }
+    const mapped = mapPrefRow(withScheduledTime.data);
+    if (!mapped) {
+      throw new Error("Ongeldige focus-voorkeur opgeslagen.");
+    }
+    return mapped;
   }
 
-  const mapped = mapPrefRow(data);
+  const fallback = await admin
+    .from("account_priority_pref")
+    .upsert(basePayload, { onConflict: "account_id" })
+    .select(PREF_SELECT_BASE)
+    .single<PrefRowBase>();
+
+  if (fallback.error || !fallback.data) {
+    throw new Error(fallback.error?.message ?? "Kon focus-voorkeur niet opslaan.");
+  }
+
+  const mapped = mapPrefRow(fallback.data);
   if (!mapped) {
     throw new Error("Ongeldige focus-voorkeur opgeslagen.");
   }

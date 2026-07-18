@@ -4,6 +4,18 @@ import type {
   UpdateAgendaBlockInput,
 } from "@/types/agenda";
 
+async function readApiError(response: Response, fallback: string): Promise<string> {
+  try {
+    const payload = (await response.json()) as { error?: string };
+    if (payload.error?.trim()) {
+      return payload.error.trim();
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return fallback;
+}
+
 export async function fetchAgendaBlocks(
   startDate: string,
   endDate: string,
@@ -13,7 +25,7 @@ export async function fetchAgendaBlocks(
     credentials: "include",
   });
   if (!response.ok) {
-    throw new Error("Kon agenda-blokken niet laden.");
+    throw new Error(await readApiError(response, "Kon agenda-blokken niet laden."));
   }
   const payload = (await response.json()) as { blocks?: AgendaBlockRecord[] };
   return payload.blocks ?? [];
@@ -29,7 +41,7 @@ export async function createAgendaBlock(
     body: JSON.stringify(input),
   });
   if (!response.ok) {
-    throw new Error("Kon blok niet toevoegen.");
+    throw new Error(await readApiError(response, "Kon blok niet toevoegen."));
   }
   const payload = (await response.json()) as { block: AgendaBlockRecord };
   return payload.block;
@@ -46,7 +58,7 @@ export async function updateAgendaBlock(
     body: JSON.stringify(input),
   });
   if (!response.ok) {
-    throw new Error("Kon blok niet bijwerken.");
+    throw new Error(await readApiError(response, "Kon blok niet bijwerken."));
   }
   const payload = (await response.json()) as { block: AgendaBlockRecord };
   return payload.block;
@@ -58,6 +70,6 @@ export async function deleteAgendaBlock(blockId: string): Promise<void> {
     credentials: "include",
   });
   if (!response.ok) {
-    throw new Error("Kon blok niet verwijderen.");
+    throw new Error(await readApiError(response, "Kon blok niet verwijderen."));
   }
 }

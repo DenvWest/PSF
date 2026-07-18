@@ -1,25 +1,32 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { MouseEvent } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
+import { clarityTag } from "@/lib/clarity";
 import {
   buildDayTimeline,
   formatTimelineHour,
   getBlockTimelineStyle,
+  getHourMarkerTopPx,
   getNowLinePercent,
   getTimelineHourLabels,
-  TIMELINE_END_HOUR,
-  TIMELINE_START_HOUR,
+  getTimelineTrackHeightPx,
+  positionToTimelineTime,
 } from "@/lib/agenda-timeline";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { DashboardModel } from "@/types/dashboard";
 
 const HOUR_HEIGHT_PX = 52;
-const TIMELINE_HEIGHT_PX =
-  (TIMELINE_END_HOUR - TIMELINE_START_HOUR + 1) * HOUR_HEIGHT_PX;
+const TIMELINE_HEIGHT_PX = getTimelineTrackHeightPx(HOUR_HEIGHT_PX);
+
+type DraftSlot = {
+  startTime: string;
+  endTime: string;
+};
 
 type AgendaDayTimelineProps = {
   model: DashboardModel;
@@ -64,12 +71,39 @@ export default function AgendaDayTimeline({
   onDeleteBlock,
 }: AgendaDayTimelineProps) {
   const [addOpen, setAddOpen] = useState(false);
+  const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const blocks = useMemo(
     () => buildDayTimeline(model, slot, routineBlocks),
     [model, slot, routineBlocks],
   );
   const nowLinePercent = slot.isToday ? getNowLinePercent() : null;
   const hourLabels = getTimelineHourLabels();
+  const ghostStyle = draftSlot
+    ? getBlockTimelineStyle(draftSlot.startTime, draftSlot.endTime)
+    : null;
+
+  const openHeaderSheet = () => {
+    setDraftSlot(null);
+    setAddOpen((open) => !open);
+  };
+
+  const handleRailClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (blockBusy) {
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offsetY = event.clientY - rect.top;
+    const nextDraft = positionToTimelineTime(offsetY, rect.height);
+    setDraftSlot(nextDraft);
+    setAddOpen(true);
+    clarityTag("agenda_block", "tap_create");
+  };
+
+  const closeSheet = () => {
+    setAddOpen(false);
+    setDraftSlot(null);
+  };
 
   return (
     <section aria-label="Dagtijdlijn">
@@ -83,8 +117,8 @@ export default function AgendaDayTimeline({
         <button
           type="button"
           disabled={blockBusy}
-          onClick={() => setAddOpen((open) => !open)}
-          aria-expanded={addOpen}
+          onClick={openHeaderSheet}
+          aria-expanded={addOpen && draftSlot === null}
           className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#e4e0da] bg-white px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors disabled:opacity-60"
           style={{ fontFamily: "var(--f-sans)" }}
         >
@@ -99,11 +133,11 @@ export default function AgendaDayTimeline({
           style={{ height: TIMELINE_HEIGHT_PX }}
           aria-hidden
         >
-          {hourLabels.map((hour, index) => (
+          {hourLabels.map((hour) => (
             <span
               key={hour}
               className="absolute right-0 -translate-y-1/2 text-[11px] font-medium tabular-nums text-[#a8a29e]"
-              style={{ top: index * HOUR_HEIGHT_PX }}
+              style={{ top: getHourMarkerTopPx(hour, HOUR_HEIGHT_PX) }}
             >
               {formatTimelineHour(hour)}
             </span>
@@ -114,14 +148,33 @@ export default function AgendaDayTimeline({
           className="relative min-w-0 flex-1 rounded-[18px] border border-[#ebe7e2] bg-[#fcfbfa]"
           style={{ height: TIMELINE_HEIGHT_PX }}
         >
-          {hourLabels.map((hour, index) => (
+          <button
+            type="button"
+            disabled={blockBusy}
+            aria-label="Voeg leefstijlmoment toe op dit tijdstip"
+            onClick={handleRailClick}
+            className="absolute inset-0 z-0 cursor-pointer border-none bg-transparent transition-colors hover:bg-[#f5f3f0] disabled:cursor-not-allowed disabled:opacity-60"
+          />
+
+          {hourLabels.map((hour) => (
             <div
               key={`grid-${hour}`}
               className="pointer-events-none absolute inset-x-0 border-t border-[#f0ece7]"
-              style={{ top: index * HOUR_HEIGHT_PX }}
+              style={{ top: getHourMarkerTopPx(hour, HOUR_HEIGHT_PX) }}
               aria-hidden
             />
           ))}
+
+          {ghostStyle && addOpen && draftSlot ? (
+            <div
+              className="pointer-events-none absolute inset-x-2 z-[5] rounded-[14px] border border-dashed border-[var(--sage)] bg-[rgba(90,143,106,0.08)]"
+              style={{
+                top: `${ghostStyle.topPercent}%`,
+                height: `${ghostStyle.heightPercent}%`,
+              }}
+              aria-hidden
+            />
+          ) : null}
 
           {nowLinePercent !== null ? (
             <div
@@ -164,9 +217,17 @@ export default function AgendaDayTimeline({
 
       {addOpen ? (
         <AgendaAddBlockSheet
+          key={
+            draftSlot
+              ? `tap-${slot.date}-${draftSlot.startTime}-${draftSlot.endTime}`
+              : `header-${slot.date}`
+          }
           date={slot.date}
           busy={blockBusy}
-          onClose={() => setAddOpen(false)}
+          initialStartTime={draftSlot?.startTime}
+          initialEndTime={draftSlot?.endTime}
+          createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
+          onClose={closeSheet}
           onSubmit={onCreateBlock}
         />
       ) : null}

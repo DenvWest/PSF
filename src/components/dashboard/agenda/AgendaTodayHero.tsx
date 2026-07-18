@@ -48,15 +48,6 @@ function pickSupportingLine(
   return null;
 }
 
-function formatPreviewDate(isoDate: string): string {
-  return new Intl.DateTimeFormat("nl-NL", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    timeZone: "Europe/Amsterdam",
-  }).format(new Date(`${isoDate}T12:00:00.000Z`));
-}
-
 export default function AgendaTodayHero({
   model,
   slot,
@@ -86,7 +77,6 @@ export default function AgendaTodayHero({
   const supportingLine = pickSupportingLine(slot, contextLine);
   const onderbouwingHref = slot.evidenceHref;
   const followUp = buildVandaagFollowUp(domain);
-  const previewDateLabel = formatPreviewDate(slot.date);
   const activeBucket = model.timeBucket ?? deriveDefaultTimeBucket();
 
   useEffect(() => {
@@ -182,12 +172,6 @@ export default function AgendaTodayHero({
       className="rounded-[16px] border border-[#ebe7e2] bg-white p-4 shadow-[0_2px_12px_rgba(15,28,16,0.04)]"
       style={{ borderLeftWidth: 2, borderLeftColor: pillar.color }}
     >
-      {!isToday ? (
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
-          Voorgesteld · {previewDateLabel}
-        </p>
-      ) : null}
-
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[#78716c]">
           <span

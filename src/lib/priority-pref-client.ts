@@ -7,12 +7,24 @@ import type { PriorityPrefSource } from "@/lib/account-priority-pref";
 
 export type PriorityPrefResponse = AccountPriorityPrefData | { pillarId: null };
 
+async function readApiError(response: Response, fallback: string): Promise<string> {
+  try {
+    const payload = (await response.json()) as { error?: string };
+    if (payload.error?.trim()) {
+      return payload.error.trim();
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return fallback;
+}
+
 export async function fetchPriorityPref(): Promise<PriorityPrefResponse> {
   const response = await fetch("/api/account/priority-pref", {
     credentials: "include",
   });
   if (!response.ok) {
-    throw new Error("Kon focus-voorkeur niet laden.");
+    throw new Error(await readApiError(response, "Kon focus-voorkeur niet laden."));
   }
   return (await response.json()) as PriorityPrefResponse;
 }
@@ -37,7 +49,7 @@ export async function postPrioritySelection(input: {
     }),
   });
   if (!response.ok) {
-    throw new Error("Kon focus niet opslaan.");
+    throw new Error(await readApiError(response, "Kon focus niet opslaan."));
   }
   const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
   return {
@@ -64,7 +76,7 @@ export async function postTimeBucket(input: {
     }),
   });
   if (!response.ok) {
-    throw new Error("Kon tijdvak niet opslaan.");
+    throw new Error(await readApiError(response, "Kon tijdvak niet opslaan."));
   }
   const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
   return {
@@ -91,7 +103,7 @@ export async function postScheduledTime(input: {
     }),
   });
   if (!response.ok) {
-    throw new Error("Kon tijdstip niet opslaan.");
+    throw new Error(await readApiError(response, "Kon tijdstip niet opslaan."));
   }
   const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
   return {
@@ -111,6 +123,6 @@ export async function resetPriorityPref(): Promise<void> {
     body: JSON.stringify({ action: "reset" }),
   });
   if (!response.ok) {
-    throw new Error("Kon focus niet resetten.");
+    throw new Error(await readApiError(response, "Kon focus niet resetten."));
   }
 }
