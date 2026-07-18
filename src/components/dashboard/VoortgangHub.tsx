@@ -611,12 +611,14 @@ function VitaalscoreInzichtenView({
 }
 
 function StatistiekenView({
+  model,
   isMember,
   hasTrendsFeature,
   unlockedStatistics,
   onBack,
   onOpenLichaam,
 }: {
+  model: DashboardModel;
   isMember: boolean;
   hasTrendsFeature: boolean;
   unlockedStatistics: ReactNode;
@@ -651,8 +653,11 @@ function StatistiekenView({
     <section aria-label="Statistieken" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Statistieken" onBack={onBack} />
 
-      {!trendsUnlocked ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <LeefstijllijnSection model={model} surface="voortgang" />
+
+        {!trendsUnlocked ? (
+          <>
           <BlurredSignalsPreview />
           <div style={{ textAlign: "center", padding: "0 8px" }}>
             <div
@@ -678,12 +683,11 @@ function StatistiekenView({
               Begrijp jezelf beter.
             </p>
           </div>
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {unlockedStatistics}
-        </div>
-      )}
+          </>
+        ) : (
+          unlockedStatistics
+        )}
+      </div>
 
       <div style={{ marginTop: 16 }}>
         <HubCard
@@ -975,6 +979,7 @@ export default function VoortgangHub({
   if (screen === "statistieken") {
     return (
       <StatistiekenView
+        model={model}
         isMember={isMember}
         hasTrendsFeature={hasTrendsFeature}
         unlockedStatistics={unlockedStatistics}
@@ -996,24 +1001,21 @@ export default function VoortgangHub({
 
   return (
     <section aria-label="Voortgang navigatie">
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <LeefstijllijnSection model={model} surface="voortgang" />
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <PremiumWaitlistCard surface="voortgang" />
-          <HubCard
-            icon={<Icons.Heart s={20} />}
-            title="Favorieten"
-            subtitle="Supplementen die bij je scores passen"
-            onClick={() => openHub("favorieten")}
-          />
-          <HubCard
-            icon={<Icons.BarChart s={20} />}
-            title="Statistieken"
-            subtitle="Trends, voeding en checkgeschiedenis"
-            premium
-            onClick={() => openHub("statistieken")}
-          />
-        </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <PremiumWaitlistCard surface="voortgang" />
+        <HubCard
+          icon={<Icons.Heart s={20} />}
+          title="Favorieten"
+          subtitle="Supplementen die bij je scores passen"
+          onClick={() => openHub("favorieten")}
+        />
+        <HubCard
+          icon={<Icons.BarChart s={20} />}
+          title="Statistieken"
+          subtitle="Jouw lijn, trends en checkgeschiedenis"
+          premium
+          onClick={() => openHub("statistieken")}
+        />
       </div>
     </section>
   );

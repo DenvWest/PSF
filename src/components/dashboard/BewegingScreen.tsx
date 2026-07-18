@@ -4,9 +4,8 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
-import { Card } from "@/components/app/primitives";
+import { Card, DeltaBadge, Sparkline } from "@/components/app/primitives";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
-import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
 import { PILLAR } from "@/data/dashboard";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
@@ -16,6 +15,7 @@ import {
 } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
+import { buildDomainTrendRow } from "@/lib/leefstijllijn";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type { DashboardModel } from "@/types/dashboard";
 
@@ -211,6 +211,8 @@ export default function BewegingScreen({
   }, []);
 
   const logEnabled = isMovementLogEnabled();
+  const trendRow = buildDomainTrendRow(model, "beweging");
+  const hasTrend = trendRow.trend.length >= 2;
 
   const voedingSupplementSection = (
     <section aria-label="Voeding en supplementen">
@@ -425,14 +427,42 @@ export default function BewegingScreen({
               </p>
             </div>
           </div>
+          {hasTrend ? (
+            <div
+              style={{
+                marginTop: 14,
+                paddingTop: 14,
+                borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                  marginBottom: 8,
+                }}
+              >
+                {trendRow.baselineScore != null ? (
+                  <span
+                    style={{
+                      fontSize: 11,
+                      color: KOMPAS_LIGHT.subtle,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    Begin {trendRow.baselineScore}
+                  </span>
+                ) : (
+                  <span />
+                )}
+                <DeltaBadge delta={trendRow.delta} empty={trendRow.delta == null} />
+              </div>
+              <Sparkline data={trendRow.trend} color={pillar.color} h={34} />
+            </div>
+          ) : null}
         </Card>
-
-        <LeefstijllijnSection
-          model={model}
-          surface="domain"
-          compact
-          focusPillarId="beweging"
-        />
 
         {logEnabled ? <MovementLogPanel /> : null}
 
@@ -473,19 +503,7 @@ export default function BewegingScreen({
             >
               Actieve stap: {model.activeHabit?.title}
             </p>
-          ) : (
-            <p
-              style={{
-                fontSize: 13,
-                color: KOMPAS_LIGHT.muted,
-                lineHeight: 1.45,
-                margin: "0 0 0 30px",
-                textWrap: "pretty",
-              }}
-            >
-              Op basis van je laatste check-in — geen live-gemeten claims.
-            </p>
-          )}
+          ) : null}
         </Link>
 
         {logEnabled ? (
