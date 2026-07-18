@@ -46,9 +46,13 @@ of L1, geen nieuwe infrastructuur.
 
 ### UX-patroon: thin movement + thick bridge (movement v1.2+)
 
-Bewegingsplan gebruikt een **licht spoor** (track-banner uit `MOV_STR`/`MOV_CARD`,
-1–2 weekacties, mechanism ingeklapt) plus een vaste **nutriëntbrug** onder de actieve
-fase (`buildMovementNutrientBridge` in `src/lib/movement-nutrient-bridge.ts`):
+Web toont **geen** intro-blokken meer (track-banner, herkenning, mechanism) — direct
+fase-tabs en checklist. Template-data (`recognition`, `mechanism`) blijft in
+`movement.ts` e.a. voor PDF/nurture; mechanism per stap via `rationale` (▶ Waarom?).
+
+Personalisatie op web zit in fase-inhoud: weekcategorieën, recovery-banner,
+nutriëntbrug onder actieve fase (`buildMovementNutrientBridge` in
+`src/lib/movement-nutrient-bridge.ts`):
 
 1. Weekacties eerst (checkbox) — geen supplement-first viewport.
 2. Brug altijd met eiwit/macro → `/intake/voeding`; creatine/Mg conditioneel via
@@ -60,7 +64,7 @@ fase (`buildMovementNutrientBridge` in `src/lib/movement-nutrient-bridge.ts`):
 5. Meet: `plan.step_link_clicked` met `surface: "nutrient_bridge"` + GA4
    `movement_nutrient_bridge`.
 
-Shell-wijzigingen (collapsed rationale, klikbare fase-accordeon) gelden voor alle
+Shell-wijzigingen (klikbare fase-accordeon, geen intro-scroll) gelden voor alle
 domein-plannen in `LifestylePlan.tsx`.
 
 ### UX-patroon: dagelijks ritme (movement v1.3+)

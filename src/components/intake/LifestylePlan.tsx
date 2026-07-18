@@ -14,7 +14,6 @@ import {
   buildMovementNutrientBridge,
   type NutrientBridgeItem,
 } from "@/lib/movement-nutrient-bridge";
-import { getMovementTrack } from "@/lib/movement-plan-track";
 import { getPlanCrossDomainChips } from "@/lib/plan-cross-domain-chips";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
@@ -448,18 +447,6 @@ function PlanPhaseSection({
   );
 }
 
-function MovementTrackBanner({ label, summary }: { label: string; summary: string }) {
-  return (
-    <div className="mb-5 rounded-xl border border-intake-sage/25 bg-intake-sage/8 px-4 py-3">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-sage">
-        Jouw bewegingsspoor
-      </p>
-      <p className="mt-1 text-sm font-semibold text-intake-ink">{label}</p>
-      <p className="mt-1 text-xs leading-relaxed text-intake-ink-muted">{summary}</p>
-    </div>
-  );
-}
-
 function NutrientBridgeSection({
   items,
   onItemClick,
@@ -563,11 +550,6 @@ export default function LifestylePlan({
   const ctx = useMemo(
     () => buildPlanIntakeContext(scores, answers, template.domain, secondaryTheme),
     [scores, answers, template.domain, secondaryTheme],
-  );
-
-  const movementTrack = useMemo(
-    () => (template.domain === "movement" ? getMovementTrack(ctx) : null),
-    [template.domain, ctx],
   );
 
   const nutrientBridgeItems = useMemo(
@@ -716,10 +698,7 @@ export default function LifestylePlan({
       domain: template.domain,
       template_version: template.version,
     });
-    if (template.domain === "movement" && movementTrack) {
-      clarityTag("movement_track", movementTrack.label);
-    }
-  }, [loading, template.domain, template.version, movementTrack]);
+  }, [loading, template.domain, template.version]);
 
   const persistStepState = useCallback(
     async (
@@ -859,7 +838,7 @@ export default function LifestylePlan({
 
   return (
     <article className="text-left" aria-label={template.title}>
-      <header className="mb-5">
+      <header className="mb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
@@ -874,49 +853,6 @@ export default function LifestylePlan({
           ) : null}
         </div>
       </header>
-
-      {movementTrack ? (
-        <MovementTrackBanner
-          label={movementTrack.label}
-          summary={movementTrack.summary}
-        />
-      ) : null}
-
-      <section className="mb-4 rounded-xl border border-intake-card-border bg-intake-bg-elevated/50 px-4 py-3">
-        {template.recognition.heading ? (
-          <h3 className="mb-1.5 text-sm font-semibold text-intake-ink">
-            {template.recognition.heading}
-          </h3>
-        ) : null}
-        <p className="text-sm leading-relaxed text-intake-ink-muted">
-          {template.recognition.body.split("\n\n")[0]}
-        </p>
-      </section>
-
-      <details className="group mb-5 rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3">
-        <summary className="cursor-pointer text-sm font-semibold text-intake-ink marker:content-none [&::-webkit-details-marker]:hidden">
-          <span className="underline decoration-intake-divider underline-offset-2 group-open:no-underline">
-            {template.mechanism.heading ?? "Waarom na 40?"}
-          </span>
-        </summary>
-        <div className="mt-3 border-t border-intake-divider pt-3">
-          {template.mechanism.body.split("\n\n").map((paragraph, index) => (
-            <p
-              key={`mechanism-${index}`}
-              className={`text-sm leading-relaxed text-intake-ink-muted ${
-                index > 0 ? "mt-3" : ""
-              }`}
-            >
-              {paragraph}
-            </p>
-          ))}
-          {template.mechanism.source ? (
-            <p className="mt-3 text-xs leading-relaxed text-intake-ink-subtle">
-              {template.mechanism.source}
-            </p>
-          ) : null}
-        </div>
-      </details>
 
       {loading ? (
         <p className="mb-4 text-sm text-intake-ink-subtle">Plan laden…</p>
