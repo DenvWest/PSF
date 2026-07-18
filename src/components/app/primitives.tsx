@@ -92,6 +92,7 @@ export function Button({
       onClick={onClick}
       disabled={isDisabled}
       aria-busy={loading || undefined}
+      className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage)]"
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       style={{
@@ -230,6 +231,7 @@ export function Checkbox({ checked, onChange, children }: CheckboxProps) {
     <button
       type="button"
       onClick={() => onChange(!checked)}
+      className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage)]"
       style={{
         display: "flex",
         alignItems: "flex-start",
@@ -368,7 +370,24 @@ export function Card({
 
   return (
     <div
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      className={
+        interactive
+          ? "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage)]"
+          : undefined
+      }
       onClick={onClick}
+      onKeyDown={
+        interactive
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onClick?.();
+              }
+            }
+          : undefined
+      }
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       style={{
