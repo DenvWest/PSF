@@ -5,6 +5,7 @@ import type { MouseEvent } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
+import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import { clarityTag } from "@/lib/clarity";
 import {
   buildDayTimeline,
@@ -45,6 +46,8 @@ type AgendaDayTimelineProps = {
   }) => Promise<void>;
   onToggleBlockDone: (blockId: string, done: boolean) => Promise<void>;
   onDeleteBlock: (blockId: string) => Promise<void>;
+  archivedBlocks?: AgendaBlockRecord[];
+  onRestoreBlock?: (blockId: string) => Promise<void>;
 };
 
 function formatDayHeading(isoDate: string, isToday: boolean): string {
@@ -69,12 +72,19 @@ export default function AgendaDayTimeline({
   onCreateBlock,
   onToggleBlockDone,
   onDeleteBlock,
+  archivedBlocks = [],
+  onRestoreBlock,
 }: AgendaDayTimelineProps) {
   const [addOpen, setAddOpen] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const blocks = useMemo(
     () => buildDayTimeline(model, slot, routineBlocks),
     [model, slot, routineBlocks],
+  );
+  const selectedBlock = useMemo(
+    () => blocks.find((block) => block.id === selectedBlockId) ?? null,
+    [blocks, selectedBlockId],
   );
   const nowLinePercent = slot.isToday ? getNowLinePercent() : null;
   const hourLabels = getTimelineHourLabels();
@@ -82,9 +92,33 @@ export default function AgendaDayTimeline({
     ? getBlockTimelineStyle(draftSlot.startTime, draftSlot.endTime)
     : null;
 
-  const openHeaderSheet = () => {
+  const archivedForDay = useMemo(
+    () => archivedBlocks.filter((block) => block.date === slot.date),
+    [archivedBlocks, slot.date],
+  );
+
+  const closeSheet = () => {
+    setAddOpen(false);
     setDraftSlot(null);
-    setAddOpen((open) => !open);
+  };
+
+  const closeDetail = () => {
+    setSelectedBlockId(null);
+  };
+
+  const openHeaderSheet = () => {
+    if (addOpen) {
+      closeSheet();
+      return;
+    }
+    setSelectedBlockId(null);
+    setDraftSlot(null);
+    setAddOpen(true);
+  };
+
+  const openDetail = (blockId: string) => {
+    closeSheet();
+    setSelectedBlockId(blockId);
   };
 
   const handleRailClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -95,14 +129,10 @@ export default function AgendaDayTimeline({
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetY = event.clientY - rect.top;
     const nextDraft = positionToTimelineTime(offsetY, rect.height);
+    setSelectedBlockId(null);
     setDraftSlot(nextDraft);
     setAddOpen(true);
     clarityTag("agenda_block", "tap_create");
-  };
-
-  const closeSheet = () => {
-    setAddOpen(false);
-    setDraftSlot(null);
   };
 
   return (
@@ -118,12 +148,12 @@ export default function AgendaDayTimeline({
           type="button"
           disabled={blockBusy}
           onClick={openHeaderSheet}
-          aria-expanded={addOpen && draftSlot === null}
+          aria-expanded={addOpen}
           className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#e4e0da] bg-white px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors disabled:opacity-60"
           style={{ fontFamily: "var(--f-sans)" }}
         >
-          <Icons.Plus s={14} />
-          Moment
+          {addOpen ? null : <Icons.Plus s={14} />}
+          {addOpen ? "Annuleer" : "Moment"}
         </button>
       </div>
 
@@ -192,23 +222,14 @@ export default function AgendaDayTimeline({
             return (
               <div
                 key={block.id}
-                className="absolute inset-x-2 z-10"
+                className="absolute inset-x-2 z-10 overflow-hidden"
                 style={{
                   top: `${style.topPercent}%`,
                   height: `${style.heightPercent}%`,
                   zIndex: 10 + index,
                 }}
               >
-                <AgendaBlockCard
-                  block={block}
-                  model={model}
-                  prefBusy={prefBusy}
-                  busy={blockBusy}
-                  onCompletionChange={onCompletionChange}
-                  onScheduledTimeChange={onScheduledTimeChange}
-                  onToggleDone={(blockId, done) => void onToggleBlockDone(blockId, done)}
-                  onDelete={(blockId) => void onDeleteBlock(blockId)}
-                />
+                <AgendaBlockCard block={block} onOpenDetail={() => openDetail(block.id)} />
               </div>
             );
           })}
@@ -227,10 +248,24 @@ export default function AgendaDayTimeline({
           initialStartTime={draftSlot?.startTime}
           initialEndTime={draftSlot?.endTime}
           createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
+          archivedBlocks={archivedForDay}
+          onRestore={onRestoreBlock}
           onClose={closeSheet}
           onSubmit={onCreateBlock}
         />
       ) : null}
+
+      <AgendaBlockDetailSheet
+        block={selectedBlock}
+        model={model}
+        prefBusy={prefBusy}
+        busy={blockBusy}
+        onClose={closeDetail}
+        onCompletionChange={onCompletionChange}
+        onScheduledTimeChange={onScheduledTimeChange}
+        onToggleDone={(blockId, done) => void onToggleBlockDone(blockId, done)}
+        onDelete={(blockId) => void onDeleteBlock(blockId)}
+      />
     </section>
   );
 }

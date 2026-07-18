@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAccountFromCookie } from "@/lib/account-server";
-import { deleteBlock, updateBlock } from "@/lib/agenda-blocks";
+import { deleteBlock, restoreBlock, updateBlock } from "@/lib/agenda-blocks";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { emitEvent } from "@/lib/events";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -53,6 +53,34 @@ export async function PATCH(
   }
 
   const record = body as Record<string, unknown>;
+
+  if (record.restore === true) {
+    const admin = createSupabaseAdmin();
+    if (!admin) {
+      return NextResponse.json(
+        { error: "Database is nog niet geconfigureerd op de server." },
+        { status: 503 },
+      );
+    }
+
+    const block = await restoreBlock(admin, account.id, id);
+    if (!block) {
+      return NextResponse.json({ error: "Blok niet gevonden." }, { status: 404 });
+    }
+
+    void emitEvent({
+      eventType: "agenda.block_restored",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        category_id: block.categoryId,
+        source: block.source,
+      },
+    });
+
+    return NextResponse.json({ ok: true, block }, { status: 200 });
+  }
+
   const patch: {
     title?: string;
     startTime?: string;

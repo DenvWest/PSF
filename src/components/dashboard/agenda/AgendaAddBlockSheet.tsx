@@ -5,17 +5,20 @@ import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import { SELECTABLE_AGENDA_CATEGORIES } from "@/data/agenda/categories";
 import { normalizeLocalTime } from "@/lib/account-priority-pref";
+import { getAgendaCategory } from "@/data/agenda/categories";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import type { AgendaCategoryId } from "@/types/agenda";
+import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 
 type AgendaAddBlockSheetProps = {
   date: string;
   busy?: boolean;
+  archivedBlocks?: AgendaBlockRecord[];
   initialStartTime?: string;
   initialEndTime?: string;
   createSurface?: "agenda_add_sheet" | "agenda_timeline_tap";
   onClose: () => void;
+  onRestore?: (blockId: string) => Promise<void>;
   onSubmit: (input: {
     date: string;
     categoryId: AgendaCategoryId;
@@ -28,10 +31,12 @@ type AgendaAddBlockSheetProps = {
 export default function AgendaAddBlockSheet({
   date,
   busy = false,
+  archivedBlocks = [],
   initialStartTime,
   initialEndTime,
   createSurface = "agenda_add_sheet",
   onClose,
+  onRestore,
   onSubmit,
 }: AgendaAddBlockSheetProps) {
   const [categoryId, setCategoryId] = useState<AgendaCategoryId>("persoonlijke_routine");
@@ -132,7 +137,7 @@ export default function AgendaAddBlockSheet({
 
       <label className="mb-4 block">
         <span className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
-          Titel
+          Hoe noem je dit moment?
         </span>
         <input
           type="text"
@@ -191,6 +196,70 @@ export default function AgendaAddBlockSheet({
         <Icons.Plus s={16} />
         Toevoegen
       </button>
+
+      {archivedBlocks.length > 0 ? (
+        <div className="mt-5 border-t border-[#e4e0da] pt-4">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+            Verborgen momenten
+          </p>
+          <p className="mb-3 text-[12px] leading-normal text-[#78716c]">
+            Je kunt een eerder verborgen moment hier terugzetten op je agenda.
+          </p>
+          <ul className="m-0 flex list-none flex-col gap-2 p-0">
+            {archivedBlocks.map((block) => {
+              const category = getAgendaCategory(block.categoryId);
+              return (
+                <li
+                  key={block.id}
+                  className="flex items-center justify-between gap-3 rounded-[12px] border border-[#e4e0da] bg-white px-3 py-2.5"
+                  style={{ borderLeftWidth: 3, borderLeftColor: category.color }}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className="m-0 truncate text-[14px] font-medium text-[#1c1917]"
+                      style={{ fontFamily: "var(--f-serif)" }}
+                    >
+                      {block.title}
+                    </p>
+                    <p className="mt-0.5 text-[12px] tabular-nums text-[#78716c]">
+                      {block.startTime} – {block.endTime}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={busy || !onRestore}
+                    onClick={() => {
+                      if (!onRestore) {
+                        return;
+                      }
+                      void (async () => {
+                        try {
+                          await onRestore(block.id);
+                          trackEvent("agenda_block_restored", {
+                            category_id: block.categoryId,
+                            surface: "agenda_add_sheet",
+                          });
+                          clarityTag("agenda_block", "restored");
+                        } catch (restoreError) {
+                          setError(
+                            restoreError instanceof Error
+                              ? restoreError.message
+                              : "Kon moment niet terugzetten.",
+                          );
+                        }
+                      })();
+                    }}
+                    className="inline-flex min-h-9 shrink-0 cursor-pointer items-center rounded-full border border-[#e4e0da] bg-[#faf9f7] px-3 text-[12px] font-semibold text-[var(--sage)] disabled:opacity-60"
+                    style={{ fontFamily: "var(--f-sans)" }}
+                  >
+                    Terugzetten
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
 }

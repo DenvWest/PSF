@@ -60,7 +60,8 @@ export function trackOnderbouwingLinkClick(params: {
     | "login_help"
     | "vandaag_card"
     | "agenda_today"
-    | "agenda_preview";
+    | "agenda_preview"
+    | "agenda_block_detail";
   tab?: string;
   screen?: string;
   domain?: string;

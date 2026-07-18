@@ -25,7 +25,11 @@ type AgendaBlockRow = {
   status: string;
   external_provider: string | null;
   external_ref: string | null;
+  deleted_at?: string | null;
 };
+
+const BLOCK_SELECT =
+  "id, date, category_id, title, start_time, end_time, source, status, external_provider, external_ref, deleted_at";
 
 function isAgendaBlockStatus(value: string): value is AgendaBlockStatus {
   return value === "open" || value === "done";
@@ -98,6 +102,7 @@ function mapRow(row: AgendaBlockRow): AgendaBlockRecord | null {
     status: row.status,
     externalProvider: row.external_provider,
     externalRef: row.external_ref,
+    deletedAt: row.deleted_at ?? null,
   };
 }
 
@@ -170,14 +175,37 @@ export async function listBlocksForRange(
 ): Promise<AgendaBlockRecord[]> {
   const { data, error } = await admin
     .from("agenda_blocks")
-    .select(
-      "id, date, category_id, title, start_time, end_time, source, status, external_provider, external_ref",
-    )
+    .select(BLOCK_SELECT)
     .eq("account_id", accountId)
+    .is("deleted_at", null)
     .gte("date", startDate)
     .lte("date", endDate)
     .order("date", { ascending: true })
     .order("start_time", { ascending: true });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return (data as AgendaBlockRow[])
+    .map(mapRow)
+    .filter((block): block is AgendaBlockRecord => block !== null);
+}
+
+export async function listArchivedBlocksForRange(
+  admin: SupabaseAdmin,
+  accountId: string,
+  startDate: string,
+  endDate: string,
+): Promise<AgendaBlockRecord[]> {
+  const { data, error } = await admin
+    .from("agenda_blocks")
+    .select(BLOCK_SELECT)
+    .eq("account_id", accountId)
+    .not("deleted_at", "is", null)
+    .gte("date", startDate)
+    .lte("date", endDate)
+    .order("deleted_at", { ascending: false });
 
   if (error || !data) {
     return [];
@@ -217,9 +245,7 @@ export async function createBlock(
       source: "routine",
       status: "open",
     })
-    .select(
-      "id, date, category_id, title, start_time, end_time, source, status, external_provider, external_ref",
-    )
+    .select(BLOCK_SELECT)
     .single<AgendaBlockRow>();
 
   if (error || !data) {
@@ -265,9 +291,8 @@ export async function updateBlock(
     .update(patch)
     .eq("account_id", accountId)
     .eq("id", blockId)
-    .select(
-      "id, date, category_id, title, start_time, end_time, source, status, external_provider, external_ref",
-    )
+    .is("deleted_at", null)
+    .select(BLOCK_SELECT)
     .maybeSingle<AgendaBlockRow>();
 
   if (error || !data) {
@@ -284,10 +309,38 @@ export async function deleteBlock(
 ): Promise<boolean> {
   const { data, error } = await admin
     .from("agenda_blocks")
-    .delete()
+    .update({
+      deleted_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
     .eq("account_id", accountId)
     .eq("id", blockId)
+    .is("deleted_at", null)
     .select("id");
 
   return !error && (data?.length ?? 0) > 0;
+}
+
+export async function restoreBlock(
+  admin: SupabaseAdmin,
+  accountId: string,
+  blockId: string,
+): Promise<AgendaBlockRecord | null> {
+  const { data, error } = await admin
+    .from("agenda_blocks")
+    .update({
+      deleted_at: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("account_id", accountId)
+    .eq("id", blockId)
+    .not("deleted_at", "is", null)
+    .select(BLOCK_SELECT)
+    .maybeSingle<AgendaBlockRow>();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapRow(data);
 }

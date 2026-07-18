@@ -10,6 +10,8 @@ import {
   createAgendaBlock,
   deleteAgendaBlock,
   fetchAgendaBlocks,
+  fetchArchivedAgendaBlocks,
+  restoreAgendaBlock,
   updateAgendaBlock,
 } from "@/lib/agenda-blocks-client";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
@@ -48,6 +50,7 @@ export default function AgendaScreen({
     loaded: false,
   });
   const [routineBlocks, setRoutineBlocks] = useState<AgendaBlockRecord[]>([]);
+  const [archivedBlocks, setArchivedBlocks] = useState<AgendaBlockRecord[]>([]);
   const [blocksLoaded, setBlocksLoaded] = useState(false);
   const [prefBusy, setPrefBusy] = useState(false);
   const [blockBusy, setBlockBusy] = useState(false);
@@ -92,8 +95,12 @@ export default function AgendaScreen({
 
   const refreshRoutineBlocks = useCallback(async () => {
     try {
-      const blocks = await fetchAgendaBlocks(weekStart, weekEnd);
+      const [blocks, archived] = await Promise.all([
+        fetchAgendaBlocks(weekStart, weekEnd),
+        fetchArchivedAgendaBlocks(weekStart, weekEnd),
+      ]);
       setRoutineBlocks(blocks);
+      setArchivedBlocks(archived);
       setBlocksLoaded(true);
     } catch {
       setBlocksLoaded(true);
@@ -108,9 +115,13 @@ export default function AgendaScreen({
     let cancelled = false;
     void (async () => {
       try {
-        const blocks = await fetchAgendaBlocks(weekStart, weekEnd);
+        const [blocks, archived] = await Promise.all([
+          fetchAgendaBlocks(weekStart, weekEnd),
+          fetchArchivedAgendaBlocks(weekStart, weekEnd),
+        ]);
         if (!cancelled) {
           setRoutineBlocks(blocks);
+          setArchivedBlocks(archived);
           setBlocksLoaded(true);
         }
       } catch {
@@ -191,6 +202,16 @@ export default function AgendaScreen({
     }
   };
 
+  const handleRestoreBlock = async (blockId: string) => {
+    setBlockBusy(true);
+    try {
+      await restoreAgendaBlock(blockId);
+      await refreshRoutineBlocks();
+    } finally {
+      setBlockBusy(false);
+    }
+  };
+
   const handleVoortgangLink = () => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
       surface: "agenda",
@@ -228,6 +249,8 @@ export default function AgendaScreen({
           onCreateBlock={handleCreateBlock}
           onToggleBlockDone={handleToggleBlockDone}
           onDeleteBlock={handleDeleteBlock}
+          archivedBlocks={blocksLoaded ? archivedBlocks : []}
+          onRestoreBlock={handleRestoreBlock}
         />
       </AgendaShellSection>
 

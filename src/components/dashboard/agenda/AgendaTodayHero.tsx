@@ -28,6 +28,8 @@ type AgendaTodayHeroProps = {
   model: DashboardModel;
   slot: WeekDaySlot;
   prefBusy?: boolean;
+  variant?: "default" | "detail";
+  actionSurface?: "agenda_today" | "agenda_block_detail";
   onCompletionChange?: () => void;
   onScheduledTimeChange?: (scheduledTime: string) => void;
 };
@@ -52,6 +54,8 @@ export default function AgendaTodayHero({
   model,
   slot,
   prefBusy = false,
+  variant = "default",
+  actionSurface = "agenda_today",
   onCompletionChange,
   onScheduledTimeChange,
 }: AgendaTodayHeroProps) {
@@ -87,11 +91,11 @@ export default function AgendaTodayHero({
     trackEvent("dashboard_vandaag_card_shown", {
       has_active_habit: Boolean(model.activeHabit),
       priority: model.priority.id,
-      surface: "agenda_today",
+      surface: actionSurface,
       user_chosen: model.priorityIsUserChosen,
     });
     clarityTag("dashboard_agenda", "today_shown");
-  }, [isToday, model.activeHabit, model.priority.id, model.priorityIsUserChosen]);
+  }, [isToday, model.activeHabit, model.priority.id, model.priorityIsUserChosen, actionSurface]);
 
   useEffect(() => {
     if (!isToday || !actionKey) {
@@ -158,7 +162,7 @@ export default function AgendaTodayHero({
         domain,
         done: nextDone,
         streak: state.streak,
-        surface: "agenda_today",
+        surface: actionSurface,
       });
       clarityTag("dashboard_agenda", nextDone ? "done" : "undone");
       onCompletionChange?.();
@@ -167,9 +171,16 @@ export default function AgendaTodayHero({
     }
   };
 
+  const domainLabel =
+    variant === "detail" ? `${pillar.label} · stap uit je plan` : pillar.label;
+
   return (
     <article
-      className="rounded-[16px] border border-[#ebe7e2] bg-white p-4 shadow-[0_2px_12px_rgba(15,28,16,0.04)]"
+      className={
+        variant === "detail"
+          ? "rounded-[16px] border border-[#ebe7e2] bg-white p-4"
+          : "rounded-[16px] border border-[#ebe7e2] bg-white p-4 shadow-[0_2px_12px_rgba(15,28,16,0.04)]"
+      }
       style={{ borderLeftWidth: 2, borderLeftColor: pillar.color }}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
@@ -179,7 +190,7 @@ export default function AgendaTodayHero({
             style={{ background: pillar.color }}
             aria-hidden
           />
-          {pillar.label}
+          {domainLabel}
         </span>
         {isToday && onScheduledTimeChange ? (
           <button
@@ -273,10 +284,17 @@ export default function AgendaTodayHero({
           href={onderbouwingHref}
           onClick={() => {
             trackOnderbouwingLinkClick({
-              surface: isToday ? "agenda_today" : "agenda_preview",
+              surface: actionSurface === "agenda_block_detail" ? "agenda_block_detail" : isToday ? "agenda_today" : "agenda_preview",
               domain,
             });
-            clarityTag("onderbouwing_link", isToday ? "agenda_today" : "agenda_preview");
+            clarityTag(
+              "onderbouwing_link",
+              actionSurface === "agenda_block_detail"
+                ? "agenda_block_detail"
+                : isToday
+                  ? "agenda_today"
+                  : "agenda_preview",
+            );
           }}
           className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
           style={{ color: "#78716c" }}

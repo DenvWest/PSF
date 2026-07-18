@@ -19,6 +19,7 @@ export const DOMAIN_EVENT_TYPES = [
   "agenda.block_created",
   "agenda.block_toggled",
   "agenda.block_deleted",
+  "agenda.block_restored",
   "domain_tool.snapshot_viewed",
   "domain_tool.tier_preview_clicked",
   "intake.completed",

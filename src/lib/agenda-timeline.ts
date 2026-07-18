@@ -96,7 +96,7 @@ export function getBlockTimelineStyle(startTime: string, endTime: string): {
     ((end - start) / TIMELINE_TOTAL_MINUTES) * 100;
   return {
     topPercent,
-    heightPercent: Math.max(heightPercent, 6),
+    heightPercent: Math.max(heightPercent, 4),
   };
 }
 

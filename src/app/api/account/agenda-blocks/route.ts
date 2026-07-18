@@ -3,6 +3,7 @@ import { getAccountFromCookie } from "@/lib/account-server";
 import {
   createBlock,
   isIsoDate,
+  listArchivedBlocksForRange,
   listBlocksForRange,
 } from "@/lib/agenda-blocks";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
@@ -29,6 +30,7 @@ export async function GET(request: NextRequest) {
   const params = new URL(request.url).searchParams;
   const startDate = (params.get("startDate") ?? "").trim();
   const endDate = (params.get("endDate") ?? "").trim();
+  const archived = params.get("archived") === "1";
 
   if (!isIsoDate(startDate) || !isIsoDate(endDate)) {
     return NextResponse.json({ error: "Ongeldige datumbereik." }, { status: 400 });
@@ -42,7 +44,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const blocks = await listBlocksForRange(admin, account.id, startDate, endDate);
+  const blocks = archived
+    ? await listArchivedBlocksForRange(admin, account.id, startDate, endDate)
+    : await listBlocksForRange(admin, account.id, startDate, endDate);
   return NextResponse.json({ blocks }, { status: 200 });
 }
 

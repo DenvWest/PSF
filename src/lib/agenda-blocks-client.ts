@@ -19,8 +19,12 @@ async function readApiError(response: Response, fallback: string): Promise<strin
 export async function fetchAgendaBlocks(
   startDate: string,
   endDate: string,
+  options?: { archived?: boolean },
 ): Promise<AgendaBlockRecord[]> {
   const params = new URLSearchParams({ startDate, endDate });
+  if (options?.archived) {
+    params.set("archived", "1");
+  }
   const response = await fetch(`/api/account/agenda-blocks?${params.toString()}`, {
     credentials: "include",
   });
@@ -29,6 +33,13 @@ export async function fetchAgendaBlocks(
   }
   const payload = (await response.json()) as { blocks?: AgendaBlockRecord[] };
   return payload.blocks ?? [];
+}
+
+export async function fetchArchivedAgendaBlocks(
+  startDate: string,
+  endDate: string,
+): Promise<AgendaBlockRecord[]> {
+  return fetchAgendaBlocks(startDate, endDate, { archived: true });
 }
 
 export async function createAgendaBlock(
@@ -70,6 +81,20 @@ export async function deleteAgendaBlock(blockId: string): Promise<void> {
     credentials: "include",
   });
   if (!response.ok) {
-    throw new Error(await readApiError(response, "Kon blok niet verwijderen."));
+    throw new Error(await readApiError(response, "Kon moment niet verbergen."));
   }
+}
+
+export async function restoreAgendaBlock(blockId: string): Promise<AgendaBlockRecord> {
+  const response = await fetch(`/api/account/agenda-blocks/${encodeURIComponent(blockId)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ restore: true }),
+  });
+  if (!response.ok) {
+    throw new Error(await readApiError(response, "Kon moment niet terugzetten."));
+  }
+  const payload = (await response.json()) as { block: AgendaBlockRecord };
+  return payload.block;
 }

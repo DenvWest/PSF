@@ -49,6 +49,7 @@ export type AgendaBlockRecord = {
   status: AgendaBlockStatus;
   externalProvider: string | null;
   externalRef: string | null;
+  deletedAt?: string | null;
 };
 
 export type TimelineBlockKind = "analysis" | "routine" | "external";
