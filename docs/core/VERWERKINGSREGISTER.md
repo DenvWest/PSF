@@ -252,6 +252,20 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; geen scores/labels in pref of analytics-events |
 | **Doorgifte buiten EU** | Nee |
 
+### 17. Agenda dagblokken (persoonlijke routines)
+
+| | |
+|---|---|
+| **Doel** | Door de gebruiker toegevoegde leefstijlmomenten (categorie, titel, tijdvenster) vastleggen in de persoonlijke dagagenda — naast het analyse-blok uit Kompas/Plan |
+| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig een routine toevoegen |
+| **Soort gegevens** | Account-id, organization-id, datum, category_id (enum), titel (vrije tekst, max 120 tekens), start_time/end_time (HH:MM), source (`routine`; `external:*` gereserveerd), status (`open`/`done`), optioneel external_provider/external_ref (gereserveerd voor latere koppelingen) |
+| **Bijzondere gegevens** | Ja — gezondheidsgerelateerde planning (incl. optionele categorie medicatie als vrije-tekst titel door gebruiker; geen voorschrift/diagnose), gekoppeld aan account met art. 9-intake |
+| **Ontvangers** | Supabase (`agenda_blocks`, EU Frankfurt) — geen nieuwe verwerker |
+| **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming via account-storage-consent) + art. 6 lid 1 sub a |
+| **Bewaartermijn** | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering (cascade) |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; geen scores in blokken of analytics-events; product-events `agenda.block_*` alleen categorisch |
+| **Doorgifte buiten EU** | Nee (externe agenda/wearable-koppelingen nog niet actief; kolommen gereserveerd) |
+
 ---
 
 ## Verwerkersovereenkomsten (art. 28)
@@ -292,6 +306,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-07-18 | Verwerking 17 toegevoegd: agenda dagblokken (`agenda_blocks`) — persoonlijke routines met categorie/tijdvenster, RLS deny-all, art. 9 (toestemming); events `agenda.block_created` / `agenda.block_toggled` / `agenda.block_deleted` categorisch; privacy-pagina bijgewerkt |
 | 2026-07-18 | Verwerking 16 uitgebreid: `account_priority_pref.scheduled_time` (HH:MM) toegevoegd naast afgeleid time_bucket; privacy-pagina bijgewerkt |
 | 2026-07-18 | Verwerking 16 toegevoegd: dashboard focus-voorkeur (`account_priority_pref`) — pillar + tijdvak, RLS deny-all, art. 9 (toestemming); events `dashboard.priority_selected` / `dashboard.time_bucket_set` categorisch |
 | 2026-07-18 | Verwerking 15 toegevoegd: bewegingssessie-log (zelfrapportage) — nieuwe tabel `movement_session_log`, account-scoped RLS deny-all, art. 9 (toestemming); product-event `movement.session_logged` categorisch (valt onder §7). DPIA §1.3/§1.5 meegewijzigd |

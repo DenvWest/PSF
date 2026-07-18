@@ -3,7 +3,7 @@
 import { PILLAR } from "@/data/dashboard";
 import type { TimeBucket } from "@/lib/account-priority-pref";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
-import { isWeekSlotCompleted } from "@/lib/agenda-week-preview";
+import { isWeekSlotCompleted, todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import * as Icons from "@/components/app/icons";
 
 type AgendaWeekStripProps = {
@@ -14,6 +14,13 @@ type AgendaWeekStripProps = {
   onSelect: (slot: WeekDaySlot) => void;
 };
 
+function dayPhase(slot: WeekDaySlot, today: string): "past" | "today" | "future" {
+  if (slot.isToday) {
+    return "today";
+  }
+  return slot.date < today ? "past" : "future";
+}
+
 export default function AgendaWeekStrip({
   slots,
   selectedDate,
@@ -21,13 +28,17 @@ export default function AgendaWeekStrip({
   todayTimeBucket = null,
   onSelect,
 }: AgendaWeekStripProps) {
+  const today = todayInAgendaTimezone();
+
   return (
-    <div className="grid grid-cols-7 gap-1" role="tablist" aria-label="Weekoverzicht">
+    <div className="grid grid-cols-7 gap-1.5" role="tablist" aria-label="Weekoverzicht">
       {slots.map((slot) => {
         const selected = slot.date === selectedDate;
         const completed = isWeekSlotCompleted(slot, completedKeys);
         const pillar = PILLAR[slot.domain];
-        const isToday = slot.isToday;
+        const phase = dayPhase(slot, today);
+        const isToday = phase === "today";
+        const isPast = phase === "past";
         const bucketHint =
           isToday && todayTimeBucket ? todayTimeBucket.charAt(0).toUpperCase() : null;
 
@@ -39,40 +50,66 @@ export default function AgendaWeekStrip({
             aria-selected={selected}
             aria-label={`${slot.dayLabel}, ${pillar.label}${completed ? ", gedaan" : ""}${isToday ? ", vandaag" : ""}${bucketHint ? `, ${todayTimeBucket}` : ""}`}
             onClick={() => onSelect(slot)}
-            className="flex flex-col items-center gap-1 rounded-xl border px-0.5 py-2 transition-colors"
+            className="group flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 py-2.5 transition-all duration-200 ease-out"
             style={{
-              borderColor: selected ? "var(--sage)" : "transparent",
-              background: selected ? "rgba(90, 143, 106, 0.08)" : "transparent",
+              borderColor: selected
+                ? "var(--sage)"
+                : isToday
+                  ? pillar.color
+                  : isPast
+                    ? "#ebe7e2"
+                    : "#f0ece7",
+              background: selected
+                ? "rgba(90, 143, 106, 0.1)"
+                : isToday
+                  ? `${pillar.color}10`
+                  : isPast
+                    ? "#faf9f7"
+                    : "white",
+              boxShadow: isToday
+                ? `inset 0 0 0 1px ${pillar.color}33`
+                : selected
+                  ? "0 4px 14px rgba(90, 143, 106, 0.12)"
+                  : "none",
               cursor: "pointer",
               fontFamily: "var(--f-sans)",
+              opacity: isPast && !selected ? 0.72 : 1,
             }}
           >
             <span
-              className="text-[10px] font-medium"
+              className="text-[10px] font-semibold uppercase tracking-[0.08em]"
               style={{
                 color: isToday ? pillar.color : selected ? "#1c1917" : "#78716c",
-                fontWeight: isToday ? 700 : 500,
               }}
             >
               {isToday ? "Nu" : slot.dayLabel}
             </span>
+
             <span
-              className="h-2 w-2 rounded-full"
-              style={{ background: pillar.color }}
+              className="relative flex h-3 w-3 items-center justify-center rounded-full transition-transform duration-200 group-hover:scale-110"
+              style={{
+                background: pillar.color,
+                boxShadow: isToday ? `0 0 0 3px ${pillar.color}22` : "none",
+              }}
               aria-hidden
             />
-            <span className="flex h-3.5 w-3.5 items-center justify-center">
+
+            <span className="flex h-4 w-4 items-center justify-center">
               {completed ? (
-                <Icons.Check s={11} style={{ color: "var(--sage)" }} />
+                <Icons.Check s={12} style={{ color: "var(--sage)" }} />
               ) : bucketHint ? (
                 <span
-                  className="text-[9px] font-semibold leading-none text-[#78716c]"
+                  className="text-[9px] font-bold leading-none text-[#78716c]"
                   aria-hidden
                 >
                   {bucketHint}
                 </span>
               ) : (
-                <span className="h-1 w-1 rounded-full bg-[#e4e0da]" aria-hidden />
+                <span
+                  className="h-1 w-1 rounded-full"
+                  style={{ background: isPast ? "#d6d3d1" : "#e4e0da" }}
+                  aria-hidden
+                />
               )}
             </span>
           </button>

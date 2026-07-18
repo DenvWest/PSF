@@ -66,6 +66,9 @@ export default function PrivacyPage() {
                             kunt bekijken. Inlogcodes zijn kort geldig en eenmalig te gebruiken.
                             Optioneel kun je in het dashboard een interventiefocus en tijdstip
                             (uur en minuut) opslaan — zonder dat we daarmee je analyse-scores wijzigen.
+                            Je kunt ook zelf leefstijlmomenten toevoegen aan je dagagenda (categorie,
+                            titel en tijdvenster); die staan los van je analyse en worden alleen gebruikt
+                            om je persoonlijke planning te tonen.
                         </p>
                     </div>
 

@@ -7,6 +7,12 @@ import AgendaMetaRow from "@/components/dashboard/agenda/AgendaMetaRow";
 import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanceStrip";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
+import {
+  createAgendaBlock,
+  deleteAgendaBlock,
+  fetchAgendaBlocks,
+  updateAgendaBlock,
+} from "@/lib/agenda-blocks-client";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import {
   deriveDefaultTimeBucket,
@@ -18,6 +24,7 @@ import {
   postScheduledTime,
   resetPriorityPref,
 } from "@/lib/priority-pref-client";
+import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
@@ -45,11 +52,16 @@ export default function AgendaScreen({
     completedKeys: new Set(),
     loaded: false,
   });
+  const [routineBlocks, setRoutineBlocks] = useState<AgendaBlockRecord[]>([]);
+  const [blocksLoaded, setBlocksLoaded] = useState(false);
   const [focusExpanded, setFocusExpanded] = useState(false);
   const [prefBusy, setPrefBusy] = useState(false);
+  const [blockBusy, setBlockBusy] = useState(false);
 
   const selectedSlot = slots.find((slot) => slot.date === selectedDate) ?? todaySlot;
   const todayTimeBucket = model.timeBucket ?? deriveDefaultTimeBucket();
+  const weekStart = slots[0]?.date ?? todaySlot.date;
+  const weekEnd = slots[slots.length - 1]?.date ?? todaySlot.date;
 
   useEffect(() => {
     if (shownRef.current) {
@@ -84,9 +96,39 @@ export default function AgendaScreen({
     })();
   }, []);
 
+  const refreshRoutineBlocks = useCallback(async () => {
+    try {
+      const blocks = await fetchAgendaBlocks(weekStart, weekEnd);
+      setRoutineBlocks(blocks);
+      setBlocksLoaded(true);
+    } catch {
+      setBlocksLoaded(true);
+    }
+  }, [weekEnd, weekStart]);
+
   useEffect(() => {
     refreshWeekState();
   }, [model.date, refreshWeekState]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const blocks = await fetchAgendaBlocks(weekStart, weekEnd);
+        if (!cancelled) {
+          setRoutineBlocks(blocks);
+          setBlocksLoaded(true);
+        }
+      } catch {
+        if (!cancelled) {
+          setBlocksLoaded(true);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [weekEnd, weekStart]);
 
   const handleSelect = (slot: WeekDaySlot) => {
     setSelectedDate(slot.date);
@@ -161,6 +203,44 @@ export default function AgendaScreen({
     }
   };
 
+  const handleCreateBlock = async (input: {
+    date: string;
+    categoryId: AgendaCategoryId;
+    title: string;
+    startTime: string;
+    endTime: string;
+  }) => {
+    setBlockBusy(true);
+    try {
+      await createAgendaBlock(input);
+      await refreshRoutineBlocks();
+    } catch {
+      // keep current blocks on failure
+    } finally {
+      setBlockBusy(false);
+    }
+  };
+
+  const handleToggleBlockDone = async (blockId: string, done: boolean) => {
+    setBlockBusy(true);
+    try {
+      await updateAgendaBlock(blockId, { status: done ? "done" : "open" });
+      await refreshRoutineBlocks();
+    } finally {
+      setBlockBusy(false);
+    }
+  };
+
+  const handleDeleteBlock = async (blockId: string) => {
+    setBlockBusy(true);
+    try {
+      await deleteAgendaBlock(blockId);
+      await refreshRoutineBlocks();
+    } finally {
+      setBlockBusy(false);
+    }
+  };
+
   const handleVoortgangLink = () => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
       surface: "agenda",
@@ -173,7 +253,7 @@ export default function AgendaScreen({
     <AgendaShell accentColor={model.priority.color}>
       <AgendaProvenanceStrip model={model} slot={selectedSlot} />
 
-      <AgendaShellSection>
+      <AgendaShellSection className="border-b-0 pb-2">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
           Deze week
         </p>
@@ -186,13 +266,18 @@ export default function AgendaScreen({
         />
       </AgendaShellSection>
 
-      <AgendaShellSection className="py-5">
+      <AgendaShellSection className="border-t-0 pt-2 pb-5">
         <AgendaDayTimeline
           model={model}
           slot={selectedSlot}
+          routineBlocks={blocksLoaded ? routineBlocks : []}
           prefBusy={prefBusy}
+          blockBusy={blockBusy}
           onCompletionChange={refreshWeekState}
           onScheduledTimeChange={(scheduledTime) => void handleScheduledTime(scheduledTime)}
+          onCreateBlock={handleCreateBlock}
+          onToggleBlockDone={handleToggleBlockDone}
+          onDeleteBlock={handleDeleteBlock}
         />
       </AgendaShellSection>
 

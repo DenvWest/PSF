@@ -1,34 +1,44 @@
 "use client";
 
-import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
+import { useMemo, useState } from "react";
+import * as Icons from "@/components/app/icons";
+import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
+import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import {
-  deriveDefaultTimeBucket,
-  deriveSuggestedTimeBucket,
-  type TimeBucket,
-} from "@/lib/account-priority-pref";
+  buildDayTimeline,
+  formatTimelineHour,
+  getBlockTimelineStyle,
+  getNowLinePercent,
+  getTimelineHourLabels,
+  TIMELINE_END_HOUR,
+  TIMELINE_START_HOUR,
+} from "@/lib/agenda-timeline";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
+import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { DashboardModel } from "@/types/dashboard";
+
+const HOUR_HEIGHT_PX = 52;
+const TIMELINE_HEIGHT_PX =
+  (TIMELINE_END_HOUR - TIMELINE_START_HOUR + 1) * HOUR_HEIGHT_PX;
 
 type AgendaDayTimelineProps = {
   model: DashboardModel;
   slot: WeekDaySlot;
+  routineBlocks: AgendaBlockRecord[];
   prefBusy: boolean;
+  blockBusy?: boolean;
   onCompletionChange?: () => void;
   onScheduledTimeChange: (scheduledTime: string) => void;
+  onCreateBlock: (input: {
+    date: string;
+    categoryId: AgendaCategoryId;
+    title: string;
+    startTime: string;
+    endTime: string;
+  }) => Promise<void>;
+  onToggleBlockDone: (blockId: string, done: boolean) => Promise<void>;
+  onDeleteBlock: (blockId: string) => Promise<void>;
 };
-
-type ZoneConfig = {
-  bucket: TimeBucket;
-  label: string;
-  start: string;
-  end: string;
-};
-
-const ZONES: ZoneConfig[] = [
-  { bucket: "ochtend", label: "Ochtend", start: "07:00", end: "12:00" },
-  { bucket: "middag", label: "Middag", start: "12:00", end: "17:00" },
-  { bucket: "avond", label: "Avond", start: "17:00", end: "22:00" },
-];
 
 function formatDayHeading(isoDate: string, isToday: boolean): string {
   const formatted = new Intl.DateTimeFormat("nl-NL", {
@@ -41,99 +51,125 @@ function formatDayHeading(isoDate: string, isToday: boolean): string {
   return isToday ? `Vandaag · ${formatted}` : formatted;
 }
 
-function resolveActiveBucket(model: DashboardModel, slot: WeekDaySlot): TimeBucket {
-  if (slot.isToday) {
-    return model.timeBucket ?? deriveDefaultTimeBucket();
-  }
-  return deriveSuggestedTimeBucket(slot.domain);
-}
-
-function FreeSpaceZone() {
-  return (
-    <div
-      className="min-h-[52px] rounded-xl border border-dashed border-[#e4e0da] px-3 py-3"
-      aria-hidden
-    >
-      <p className="m-0 text-[11px] text-[#a8a29e]">Ruimte voor een leefstijlmoment</p>
-    </div>
-  );
-}
-
 export default function AgendaDayTimeline({
   model,
   slot,
+  routineBlocks,
   prefBusy,
+  blockBusy = false,
   onCompletionChange,
   onScheduledTimeChange,
+  onCreateBlock,
+  onToggleBlockDone,
+  onDeleteBlock,
 }: AgendaDayTimelineProps) {
-  const activeBucket = resolveActiveBucket(model, slot);
+  const [addOpen, setAddOpen] = useState(false);
+  const blocks = useMemo(
+    () => buildDayTimeline(model, slot, routineBlocks),
+    [model, slot, routineBlocks],
+  );
+  const nowLinePercent = slot.isToday ? getNowLinePercent() : null;
+  const hourLabels = getTimelineHourLabels();
 
   return (
     <section aria-label="Dagtijdlijn">
-      <h2
-        className="mb-4 text-[18px] font-medium capitalize text-[#1c1917]"
-        style={{ fontFamily: "var(--f-serif)" }}
-      >
-        {formatDayHeading(slot.date, slot.isToday)}
-      </h2>
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <h2
+          className="m-0 text-[20px] font-medium capitalize text-[#1c1917]"
+          style={{ fontFamily: "var(--f-serif)" }}
+        >
+          {formatDayHeading(slot.date, slot.isToday)}
+        </h2>
+        <button
+          type="button"
+          disabled={blockBusy}
+          onClick={() => setAddOpen((open) => !open)}
+          aria-expanded={addOpen}
+          className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#e4e0da] bg-white px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors disabled:opacity-60"
+          style={{ fontFamily: "var(--f-sans)" }}
+        >
+          <Icons.Plus s={14} />
+          Moment
+        </button>
+      </div>
 
-      <div className="relative">
+      <div className="flex gap-3">
         <div
-          className="absolute bottom-3 left-[18px] top-3 w-px bg-[#e4e0da]"
+          className="relative w-11 shrink-0"
+          style={{ height: TIMELINE_HEIGHT_PX }}
           aria-hidden
-        />
+        >
+          {hourLabels.map((hour, index) => (
+            <span
+              key={hour}
+              className="absolute right-0 -translate-y-1/2 text-[11px] font-medium tabular-nums text-[#a8a29e]"
+              style={{ top: index * HOUR_HEIGHT_PX }}
+            >
+              {formatTimelineHour(hour)}
+            </span>
+          ))}
+        </div>
 
-        <div className="flex flex-col gap-0">
-          {ZONES.map((zone, index) => {
-            const isActive = zone.bucket === activeBucket;
-            const isLast = index === ZONES.length - 1;
+        <div
+          className="relative min-w-0 flex-1 rounded-[18px] border border-[#ebe7e2] bg-[#fcfbfa]"
+          style={{ height: TIMELINE_HEIGHT_PX }}
+        >
+          {hourLabels.map((hour, index) => (
+            <div
+              key={`grid-${hour}`}
+              className="pointer-events-none absolute inset-x-0 border-t border-[#f0ece7]"
+              style={{ top: index * HOUR_HEIGHT_PX }}
+              aria-hidden
+            />
+          ))}
 
+          {nowLinePercent !== null ? (
+            <div
+              className="pointer-events-none absolute inset-x-0 z-20 flex items-center"
+              style={{ top: `${nowLinePercent}%` }}
+              aria-hidden
+            >
+              <span className="h-2 w-2 rounded-full bg-[var(--sage)]" />
+              <span className="h-px flex-1 bg-[var(--sage)]" />
+            </div>
+          ) : null}
+
+          {blocks.map((block, index) => {
+            const style = getBlockTimelineStyle(block.startTime, block.endTime);
             return (
-              <div key={zone.bucket} className="relative pb-5 last:pb-0">
-                <div className="flex items-start gap-3">
-                  <div className="flex w-9 shrink-0 flex-col items-end pt-0.5">
-                    <span className="text-[11px] font-medium tabular-nums text-[#78716c]">
-                      {zone.start}
-                    </span>
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <div className="mb-2 flex items-baseline justify-between gap-2">
-                      <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
-                        {zone.label}
-                      </p>
-                      {!isLast ? (
-                        <span className="text-[10px] tabular-nums text-[#a8a29e]">
-                          {zone.end}
-                        </span>
-                      ) : (
-                        <span className="text-[10px] tabular-nums text-[#a8a29e]">
-                          22:00
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="rounded-xl bg-[#faf9f7] p-2">
-                      {isActive ? (
-                        <AgendaTodayHero
-                          key={slot.date}
-                          model={model}
-                          slot={slot}
-                          prefBusy={prefBusy}
-                          onCompletionChange={onCompletionChange}
-                          onScheduledTimeChange={onScheduledTimeChange}
-                        />
-                      ) : (
-                        <FreeSpaceZone />
-                      )}
-                    </div>
-                  </div>
-                </div>
+              <div
+                key={block.id}
+                className="absolute inset-x-2 z-10"
+                style={{
+                  top: `${style.topPercent}%`,
+                  height: `${style.heightPercent}%`,
+                  zIndex: 10 + index,
+                }}
+              >
+                <AgendaBlockCard
+                  block={block}
+                  model={model}
+                  prefBusy={prefBusy}
+                  busy={blockBusy}
+                  onCompletionChange={onCompletionChange}
+                  onScheduledTimeChange={onScheduledTimeChange}
+                  onToggleDone={(blockId, done) => void onToggleBlockDone(blockId, done)}
+                  onDelete={(blockId) => void onDeleteBlock(blockId)}
+                />
               </div>
             );
           })}
         </div>
       </div>
+
+      {addOpen ? (
+        <AgendaAddBlockSheet
+          date={slot.date}
+          busy={blockBusy}
+          onClose={() => setAddOpen(false)}
+          onSubmit={onCreateBlock}
+        />
+      ) : null}
     </section>
   );
 }
