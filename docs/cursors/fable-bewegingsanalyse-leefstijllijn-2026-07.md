@@ -21,7 +21,9 @@ later op consumeert.**
 **Sessie-volgorde:**
 1. Agenda-architectuur + refine + verdict — gedraaid en gelockt (18 jul)
 2. Deze prompt (analyse-SSOT / leefstijllijn)
-3. Handoff-prompts pas ná akkoord op het verdict
+3. Volgende productprompt: gedaan-log × modaliteiten
+   (`fable-beweging-gedaan-log-2026-07.md`) — pas ná akkoord op dit verdict
+4. Implementatie-handoffs pas ná akkoord op beide verdicts
 
 **Scope-besluit:** geen code, geen commits — output is een rapport. Handoffs alleen als
 titel + 1 zin.
@@ -171,9 +173,13 @@ F2 Leefstijllijn-datamodel (kern, langetermijn) —
      "live gemeten"-claim.
    - Readouts (energie/herstel): buiten de 5 lijnen; wel delta/drivers op hermeting — geen
      agenda-slot (agenda-lock).
-   - Gap-tabel: welke data ontbreekt voor echte multi-resolutie (voeding nog niet in de trend
-     — F3b-deel-2 backlog; verbinding zonder check-in-route; punten zonder datum-as). Geen
-     fake interpolatie verzinnen.
+   - Gap-tabel: welke data ontbreekt voor echte multi-resolutie. Let op: voeding zit wél in
+     de trend via intake_nutrition_log (account-dashboard.ts:445-458), maar niet via de
+     intake_domain_checkin-merge (F3b = alleen slaap/stress/beweging) — bron-asymmetrie, geen
+     "geen trend". Verbinding heeft geen check-in-route; en de datum-as wordt weggegooid bij
+     trend-bouw (slice(-6).map(point => point.value), account-dashboard.ts:467-469) →
+     multi-resolutie is niet afleidbaar zonder modeluitbreiding. Geen fake interpolatie
+     verzinnen.
 
 F3 Laag-contracten (verplicht: tekstdiagram + interface in woorden) — schrijf drie contracten:
    1. Analyse → Domein-deep / Voortgang: wat de UI mag tonen (score, lijn, delta, bron-label,
@@ -264,8 +270,9 @@ Code-spotchecks (minimaal deze; breid uit waar een claim erom vraagt):
 - src/lib/wearable/ — signal-snapshot.ts (parse), recovery-fit.ts (planning-comment!),
   movement-recovery-bridge.ts (grens-casus)
 - src/app/api/account/wearable/snapshot/route.ts — 503-gate
-- src/lib/account-dashboard.ts — trend-merge intake_sessions + intake_domain_checkin
-  (±r.337-467)
+- src/lib/account-dashboard.ts — trend-merge intake_sessions + intake_domain_checkin +
+  intake_nutrition_log (≈r.335-469; voeding-push r.445-458, datum-as weggegooid r.467-469)
+- src/data/dashboard/index.ts — PILLAR_CHECKIN_ROUTES (r.292: 4 domeinen, géén verbinding)
 - src/data/lifestyle-plans/movement.ts — movementPlanTemplate v1.4, "Bewegingsplan na 40"
 - src/lib/lifestyle-plan-eval.ts — selectVisibleSteps (r.79-87), computeCurrentPhaseId (r.104)
 - src/lib/daily-action-log.ts — agenda-completie-waarheid (account-scoped dag-toggle)
@@ -281,9 +288,15 @@ Code-spotchecks (minimaal deze; breid uit waar een claim erom vraagt):
   geen slot; scores nooit in reminder/ICS; verbinding quickWin-only.
 - Ontwerp only: lp_*-tabellen, Calendar-OAuth, multi-resolutie leefstijllijn, wearable-enable,
   AI-bril.
-- Gaps: voeding nog niet in de trend (F3b-deel-2 backlog, ACCOUNT_DASHBOARD_SYSTEM.md);
-  verbinding heeft geen check-in-route (PILLAR_CHECKIN_ROUTES = 4 domeinen); trend-punten
-  dragen geen datum-as in het row-model → multi-resolutie is nu niet af te leiden.
+- Gaps: voeding zit wél in de trend via intake_nutrition_log (account-dashboard.ts:445-458),
+  maar niet via de intake_domain_checkin-merge (F3b = alleen slaap/stress/beweging) —
+  bron-asymmetrie t.o.v. de andere interventies. ACCOUNT_DASHBOARD_SYSTEM.md noemt
+  "F3b-deel-2 / voeding in trend" nog als open backlog — dat is stale t.o.v. code: neem code
+  als waarheid en zet dit in de Dennis-checklist als doc-sync, niet als productgat.
+  Verbinding heeft geen check-in-route (PILLAR_CHECKIN_ROUTES = 4 domeinen,
+  src/data/dashboard/index.ts:292); en timestamps worden weggegooid bij trend-bouw
+  (slice(-6).map(point => point.value), account-dashboard.ts:467-469) → multi-resolutie is
+  nu niet af te leiden zonder modeluitbreiding.
 - Spanning 1: DOMAIN_MODEL §5.1 "geen rename" (r.162) vs Dennis-hypothese H1
   (Bewegingsanalyse als producttaal).
 - Spanning 2: planner §8.2 + recovery-fit.ts (signalen → planning/intensiteit) vs
@@ -333,5 +346,8 @@ Code-spotchecks (minimaal deze; breid uit waar een claim erom vraagt):
    bijgewerkt en waar landt de herstel-hint (analyse-context vs planning).
 4. **Pre-traffic-scope** — welke analyse-slices mogen vóór week-0 (F6-antwoord) zonder de
    agenda-DEFER te schenden; noteer triggers.
-5. **Handoffs** — max 3 pas laten uitwerken in aparte sessies, ná akkoord op verdict en
-   fasering (verwacht: leefstijllijn-resolutie, domein-shell-pariteit, wearable-analyse-bridge).
+5. **Volgende sessie** — draai
+   [`fable-beweging-gedaan-log-2026-07.md`](fable-beweging-gedaan-log-2026-07.md)
+   (gedaan-log × modaliteiten × 0→hermeting) ná akkoord op dit verdict.
+6. **Implementatie-handoffs** — pas ná akkoord op beide verdicts (verwacht o.a.
+   leefstijllijn-resolutie, gedaan-log beweging; wearable-bridge later).
