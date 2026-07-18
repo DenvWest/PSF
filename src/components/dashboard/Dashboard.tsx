@@ -3671,17 +3671,10 @@ export default function Dashboard({
     onPrefUpdated: setPriorityPrefOverride,
   };
 
-  const isVoortgangDetail = tab === "voortgang" && voortgangScreen !== "hub";
-  const isVoortgangHubDarkFooter = tab === "voortgang" && voortgangScreen === "hub";
-
   const surfaceClass =
-    tab === "vandaag" || tab === "agenda"
+    tab === "vandaag" || tab === "agenda" || tab === "voortgang"
       ? "ps-dash-surface-kompas"
-      : isVoortgangDetail
-        ? "ps-dash-surface-voortgang-detail"
-        : tab === "voortgang"
-          ? "ps-dash-surface-voortgang"
-          : "";
+      : "";
 
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
@@ -3712,23 +3705,18 @@ export default function Dashboard({
           )}
         </div>
         <footer
-          className={tab === "voortgang" ? "ps-dash-footer-voortgang" : undefined}
           style={{
             marginTop: 28,
             textAlign: "center",
             fontSize: 11.5,
-            color: isVoortgangHubDarkFooter
-              ? "rgba(255,255,255,0.55)"
-              : "var(--text-subtle)",
+            color: "var(--text-subtle)",
             lineHeight: 1.6,
           }}
         >
           <Link
             href="/hoe-werkt-dashboard"
             style={{
-              color: isVoortgangHubDarkFooter
-                ? "rgba(255,255,255,0.72)"
-                : "var(--text-muted)",
+              color: "var(--text-muted)",
               textDecoration: "underline",
               textUnderlineOffset: 2,
             }}
@@ -3747,9 +3735,7 @@ export default function Dashboard({
               clarityTag("onderbouwing_link", "dashboard_footer");
             }}
             style={{
-              color: isVoortgangHubDarkFooter
-                ? "rgba(255,255,255,0.72)"
-                : "var(--text-muted)",
+              color: "var(--text-muted)",
               textDecoration: "underline",
               textUnderlineOffset: 2,
             }}

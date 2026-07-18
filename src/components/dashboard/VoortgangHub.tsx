@@ -56,6 +56,12 @@ function handleSupplementenHubClick() {
 
 const MOCK_TREND = [42, 48, 45, 52, 49, 55];
 
+const VOORTGANG_LIGHT = {
+  text: "#1c1917",
+  muted: "#57534e",
+  subtle: "#78716c",
+} as const;
+
 const premiumBadgeStyle = {
   display: "inline-flex",
   alignItems: "center",
@@ -128,7 +134,7 @@ function HubCard({
                 style={{
                   fontFamily: "var(--f-serif)",
                   fontSize: 18,
-                  color: "var(--text)",
+                  color: VOORTGANG_LIGHT.text,
                   lineHeight: 1.2,
                 }}
               >
@@ -143,7 +149,7 @@ function HubCard({
             <div
               style={{
                 fontSize: 13,
-                color: "var(--text-muted)",
+                color: VOORTGANG_LIGHT.muted,
                 marginTop: 3,
                 lineHeight: 1.45,
                 textWrap: "pretty",
@@ -154,7 +160,7 @@ function HubCard({
           </div>
           <Icons.ChevronRight
             s={18}
-            style={{ color: "var(--text-subtle)", flexShrink: 0 }}
+            style={{ color: VOORTGANG_LIGHT.subtle, flexShrink: 0 }}
           />
         </div>
       </Card>
