@@ -242,9 +242,9 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 
 | | |
 |---|---|
-| **Doel** | Door de gebruiker gekozen interventiefocus en dagdeel (ochtend/middag/avond) vastleggen voor Agenda/Kompas — zonder de analyse-scores te wijzigen |
-| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig focus of tijdvak instellen |
-| **Soort gegevens** | Account-id, organization-id, pillar_id (enum), source (`user_selected` \| `accept_engine`), optioneel time_bucket (enum), updated_at |
+| **Doel** | Door de gebruiker gekozen interventiefocus en tijdstip (uur/minuut, lokaal) vastleggen voor Agenda/Kompas — zonder de analyse-scores te wijzigen |
+| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig focus of tijdstip instellen |
+| **Soort gegevens** | Account-id, organization-id, pillar_id (enum), source (`user_selected` \| `accept_engine`), optioneel time_bucket (enum, afgeleid), optioneel scheduled_time (HH:MM), updated_at |
 | **Bijzondere gegevens** | Ja — gezondheidsgerelateerde focuskeuze, gekoppeld aan account met art. 9-intake |
 | **Ontvangers** | Supabase (`account_priority_pref`, EU Frankfurt) — geen nieuwe verwerker |
 | **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming via account-storage-consent) + art. 6 lid 1 sub a |
@@ -292,6 +292,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-07-18 | Verwerking 16 uitgebreid: `account_priority_pref.scheduled_time` (HH:MM) toegevoegd naast afgeleid time_bucket; privacy-pagina bijgewerkt |
 | 2026-07-18 | Verwerking 16 toegevoegd: dashboard focus-voorkeur (`account_priority_pref`) — pillar + tijdvak, RLS deny-all, art. 9 (toestemming); events `dashboard.priority_selected` / `dashboard.time_bucket_set` categorisch |
 | 2026-07-18 | Verwerking 15 toegevoegd: bewegingssessie-log (zelfrapportage) — nieuwe tabel `movement_session_log`, account-scoped RLS deny-all, art. 9 (toestemming); product-event `movement.session_logged` categorisch (valt onder §7). DPIA §1.3/§1.5 meegewijzigd |
 | 2026-07-16 | Sentry DPA 5.1.0 geaccepteerd + prod-DSN actief (EU-regio; aggregated identifying data uit) |

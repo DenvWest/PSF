@@ -6,7 +6,9 @@ import {
   isPinablePillarId,
   isPriorityPrefSource,
   isTimeBucket,
+  isValidLocalTime,
   upsertAccountPriorityPref,
+  updateAccountScheduledTime,
   updateAccountTimeBucket,
   type TimeBucket,
 } from "@/lib/account-priority-pref";
@@ -130,6 +132,47 @@ export async function POST(request: NextRequest) {
       organizationId: account.organization_id,
       payload: {
         time_bucket: timeBucketRaw,
+        scheduled_time: pref.scheduledTime,
+        surface,
+      },
+    });
+
+    return NextResponse.json({ ok: true, ...pref }, { status: 200 });
+  }
+
+  if (action === "set_scheduled_time") {
+    const scheduledTimeRaw =
+      typeof record.scheduledTime === "string" ? record.scheduledTime.trim() : "";
+    if (!isValidLocalTime(scheduledTimeRaw)) {
+      return NextResponse.json({ error: "Ongeldig tijdstip." }, { status: 400 });
+    }
+
+    const existing = await getAccountPriorityPref(admin, account.id);
+    const pillarId =
+      existing?.pillarId ??
+      (enginePillarId && isPinablePillarId(enginePillarId) ? enginePillarId : null);
+    const source = existing?.source ?? "accept_engine";
+
+    if (!pillarId) {
+      return NextResponse.json({ error: "Geen focus beschikbaar." }, { status: 400 });
+    }
+
+    const pref = await updateAccountScheduledTime(
+      admin,
+      account.id,
+      account.organization_id,
+      pillarId,
+      source,
+      scheduledTimeRaw,
+    );
+
+    void emitEvent({
+      eventType: "dashboard.time_bucket_set",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        time_bucket: pref.timeBucket,
+        scheduled_time: scheduledTimeRaw,
         surface,
       },
     });
@@ -163,10 +206,21 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  let scheduledTimeRaw: string | null | undefined = undefined;
+  if (record.scheduledTime === null) {
+    scheduledTimeRaw = null;
+  } else if (typeof record.scheduledTime === "string") {
+    const trimmed = record.scheduledTime.trim();
+    if (isValidLocalTime(trimmed)) {
+      scheduledTimeRaw = trimmed;
+    }
+  }
+
   const pref = await upsertAccountPriorityPref(admin, account.id, account.organization_id, {
     pillarId: resolvedPillarId,
     source: sourceRaw,
     timeBucket: timeBucketRaw,
+    scheduledTime: scheduledTimeRaw,
   });
 
   void emitEvent({

@@ -17,6 +17,7 @@ export default function AgendaTeaser({ model, onOpenAgenda }: AgendaTeaserProps)
   const title = model.activeHabit?.title ?? model.priority.quickWin.title;
   const bucket = model.timeBucket ?? deriveDefaultTimeBucket();
   const bucketLabel = timeBucketLabel(bucket).toLowerCase();
+  const timeSegment = model.scheduledTime ? ` · ${model.scheduledTime}` : "";
 
   return (
     <KompasLooseCard>
@@ -44,17 +45,17 @@ export default function AgendaTeaser({ model, onOpenAgenda }: AgendaTeaserProps)
             className="text-[15px] font-medium leading-snug text-[#1c1917]"
             style={{ fontFamily: "var(--f-serif)" }}
           >
-            {bucketLabel} · {PILLAR[model.priority.id].label.toLowerCase()}
+            {bucketLabel}
+            {timeSegment} · {PILLAR[model.priority.id].label.toLowerCase()}
           </div>
           <p className="mt-1 line-clamp-2 text-[13px] leading-snug text-[#78716c] text-pretty">
             {title}
           </p>
         </div>
         <span
-          className="inline-flex shrink-0 items-center gap-1 pt-0.5 text-[13px] font-semibold"
-          style={{ color: "var(--sage)" }}
+          className="inline-flex shrink-0 items-center pt-0.5 text-[var(--sage)]"
+          aria-hidden
         >
-          Mijn dag
           <Icons.ArrowRight s={15} />
         </span>
       </button>

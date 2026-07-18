@@ -14,6 +14,7 @@ export type AccountPriorityPrefData = {
   pillarId: PillarId;
   source: PriorityPrefSource;
   timeBucket: TimeBucket | null;
+  scheduledTime: string | null;
   updatedAt: string;
 };
 
@@ -218,6 +219,7 @@ export type DashboardModel = {
   priority: Pillar;
   priorityIsUserChosen: boolean;
   timeBucket: TimeBucket | null;
+  scheduledTime: string | null;
   strongest: Pillar;
   vitality: number;
   vitalityDelta: number | null;

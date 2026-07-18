@@ -10,13 +10,12 @@ import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import {
   deriveDefaultTimeBucket,
-  type TimeBucket,
 } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackAgendaDaySelected, trackEvent } from "@/lib/ga4";
 import {
   postPrioritySelection,
-  postTimeBucket,
+  postScheduledTime,
   resetPriorityPref,
 } from "@/lib/priority-pref-client";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
@@ -110,6 +109,7 @@ export default function AgendaScreen({
         source,
         surface: "agenda",
         timeBucket: model.timeBucket,
+        scheduledTime: model.scheduledTime,
       });
       onPrefUpdated(pref);
       setFocusExpanded(false);
@@ -124,19 +124,22 @@ export default function AgendaScreen({
     }
   };
 
-  const handleTimeBucket = async (bucket: TimeBucket) => {
+  const handleScheduledTime = async (scheduledTime: string) => {
     setPrefBusy(true);
     try {
-      const pref = await postTimeBucket({
-        timeBucket: bucket,
+      const pref = await postScheduledTime({
+        scheduledTime,
         surface: "agenda_day_schedule",
       });
       onPrefUpdated(pref);
       trackEvent("dashboard_time_bucket_set", {
-        time_bucket: bucket,
+        scheduled_time: scheduledTime,
+        ...(pref.timeBucket ? { time_bucket: pref.timeBucket } : {}),
         surface: "agenda_day_schedule",
       });
-      clarityTag("dashboard_time_bucket", bucket);
+      if (pref.timeBucket) {
+        clarityTag("dashboard_time_bucket", pref.timeBucket);
+      }
     } finally {
       setPrefBusy(false);
     }
@@ -189,7 +192,7 @@ export default function AgendaScreen({
           slot={selectedSlot}
           prefBusy={prefBusy}
           onCompletionChange={refreshWeekState}
-          onTimeBucketChange={(bucket) => void handleTimeBucket(bucket)}
+          onScheduledTimeChange={(scheduledTime) => void handleScheduledTime(scheduledTime)}
         />
       </AgendaShellSection>
 

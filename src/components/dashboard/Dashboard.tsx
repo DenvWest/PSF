@@ -80,10 +80,9 @@ import { getDisplayStatus, getDisplayStatusTone } from "@/lib/score-display";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
-import { isReadoutDomain, isInterventionDomain } from "@/lib/domain-role";
+import { isReadoutDomain } from "@/lib/domain-role";
 import {
   postPrioritySelection,
-  resetPriorityPref,
 } from "@/lib/priority-pref-client";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -2585,21 +2584,15 @@ const KompasDomainRow = ({
   score,
   color,
   isPriority,
-  isUserFocus,
-  isEngineAdvice,
   isReadout,
   onClick,
-  onPin,
 }: {
   label: string;
   score: number;
   color: string;
   isPriority?: boolean;
-  isUserFocus?: boolean;
-  isEngineAdvice?: boolean;
   isReadout?: boolean;
   onClick: () => void;
-  onPin?: () => void;
 }) => {
   const status = getDisplayStatus(score);
   const tone = getDisplayStatusTone(status);
@@ -2607,7 +2600,7 @@ const KompasDomainRow = ({
   return (
     <div
       className={`w-full rounded-[18px] border bg-white p-3.5 shadow-sm transition ${
-        isUserFocus ? "border-[#5A8F6A]" : isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
+        isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
       }`}
     >
       <button
@@ -2625,15 +2618,6 @@ const KompasDomainRow = ({
             {label}
           </span>
           <div className="flex shrink-0 items-center gap-2">
-            {isUserFocus ? (
-              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--sage)]">
-                Jouw focus
-              </span>
-            ) : isEngineAdvice ? (
-              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
-                Advies
-              </span>
-            ) : null}
             {isReadout ? (
               <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
                 Rapport
@@ -2654,16 +2638,6 @@ const KompasDomainRow = ({
           />
         </div>
       </button>
-      {onPin ? (
-        <button
-          type="button"
-          onClick={onPin}
-          className="mt-2.5 inline-flex min-h-9 cursor-pointer items-center rounded-[8px] border border-[#e4e0da] bg-[#faf9f7] px-3 text-[12px] font-semibold text-[#1c1917]"
-          style={{ fontFamily: "var(--f-sans)" }}
-        >
-          Ik focus op {label.toLowerCase()}
-        </button>
-      ) : null}
     </div>
   );
 };
@@ -3269,6 +3243,7 @@ const KompasHome = ({
         source,
         surface: "kompas",
         timeBucket: currentModel?.timeBucket ?? null,
+        scheduledTime: currentModel?.scheduledTime ?? null,
       });
       onPrefUpdated(pref);
       trackEvent("dashboard_priority_selected", {
@@ -3277,16 +3252,6 @@ const KompasHome = ({
         surface: "kompas",
       });
       clarityTag("dashboard_priority", pillarId);
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
-  const handleResetPriority = async () => {
-    setPrefBusy(true);
-    try {
-      await resetPriorityPref();
-      onPrefUpdated(null);
     } finally {
       setPrefBusy(false);
     }
@@ -3470,45 +3435,6 @@ const KompasHome = ({
         </KompasLooseCard>
       ) : null}
       <KompasLooseCard>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
-              Onze analyse
-            </p>
-            <p
-              className="mt-1 text-[16px] font-medium leading-snug text-[#1c1917]"
-              style={{ fontFamily: "var(--f-serif)" }}
-            >
-              Begin bij {currentModel.enginePriority.label.toLowerCase()}
-            </p>
-            {currentModel.priorityIsUserChosen ? (
-              <p className="mt-1 text-[13px] leading-normal text-[#78716c] text-pretty">
-                Jij koos {currentModel.priority.label.toLowerCase()}.{" "}
-                <button
-                  type="button"
-                  disabled={prefBusy}
-                  onClick={() => void handleResetPriority()}
-                  className="cursor-pointer border-none bg-transparent p-0 font-medium text-[var(--sage)] underline decoration-[#d6d3d1] underline-offset-2 disabled:opacity-60"
-                >
-                  Terug naar advies
-                </button>
-              </p>
-            ) : null}
-          </div>
-          <button
-            type="button"
-            disabled={prefBusy}
-            onClick={() =>
-              void saveKompasPriority(currentModel.enginePriority.id, "accept_engine")
-            }
-            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-[10px] border-none bg-[var(--sage)] px-4 text-[13px] font-semibold text-[#0f1c10] disabled:opacity-60"
-            style={{ fontFamily: "var(--f-sans)" }}
-          >
-            Volg advies →
-          </button>
-        </div>
-      </KompasLooseCard>
-      <KompasLooseCard>
         <div className="flex items-center justify-between gap-2">
           <h2
             className="m-0 text-[18px] leading-tight text-[#1c1917]"
@@ -3521,9 +3447,6 @@ const KompasHome = ({
         <div className="mt-3 flex flex-col gap-2.5">
           {currentModel.ladder.map((pillar) => {
             const score = currentModel.scores[pillar.id] ?? 0;
-            const canPin = isInterventionDomain(pillar.id);
-            const isUserFocus =
-              currentModel.priorityIsUserChosen && pillar.id === currentModel.priority.id;
             return (
               <KompasDomainRow
                 key={pillar.id}
@@ -3531,18 +3454,8 @@ const KompasHome = ({
                 score={score}
                 color={pillar.color}
                 isPriority={pillar.id === currentModel.priority.id}
-                isUserFocus={isUserFocus}
-                isEngineAdvice={
-                  !currentModel.priorityIsUserChosen &&
-                  pillar.id === currentModel.enginePriority.id
-                }
                 isReadout={isReadoutDomain(pillar.id)}
                 onClick={() => openDomain(pillar.id)}
-                onPin={
-                  canPin && !isUserFocus
-                    ? () => void saveKompasPriority(pillar.id, "user_selected")
-                    : undefined
-                }
               />
             );
           })}
@@ -3820,6 +3733,7 @@ export default function Dashboard({
             data.planDomain,
             priorityPref?.pillarId ?? null,
             priorityPref?.timeBucket ?? null,
+            priorityPref?.scheduledTime ?? null,
           )
         : null,
     [empty, data, priorityPref],

@@ -22,6 +22,7 @@ export async function postPrioritySelection(input: {
   source: PriorityPrefSource;
   surface: string;
   timeBucket?: TimeBucket | null;
+  scheduledTime?: string | null;
 }): Promise<AccountPriorityPrefData> {
   const response = await fetch("/api/account/priority-pref", {
     method: "POST",
@@ -32,6 +33,7 @@ export async function postPrioritySelection(input: {
       source: input.source,
       surface: input.surface,
       timeBucket: input.timeBucket,
+      scheduledTime: input.scheduledTime,
     }),
   });
   if (!response.ok) {
@@ -42,6 +44,7 @@ export async function postPrioritySelection(input: {
     pillarId: payload.pillarId,
     source: payload.source,
     timeBucket: payload.timeBucket ?? null,
+    scheduledTime: payload.scheduledTime ?? null,
     updatedAt: payload.updatedAt,
   };
 }
@@ -68,6 +71,34 @@ export async function postTimeBucket(input: {
     pillarId: payload.pillarId,
     source: payload.source,
     timeBucket: payload.timeBucket ?? null,
+    scheduledTime: payload.scheduledTime ?? null,
+    updatedAt: payload.updatedAt,
+  };
+}
+
+export async function postScheduledTime(input: {
+  scheduledTime: string;
+  surface: string;
+}): Promise<AccountPriorityPrefData> {
+  const response = await fetch("/api/account/priority-pref", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      action: "set_scheduled_time",
+      scheduledTime: input.scheduledTime,
+      surface: input.surface,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error("Kon tijdstip niet opslaan.");
+  }
+  const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
+  return {
+    pillarId: payload.pillarId,
+    source: payload.source,
+    timeBucket: payload.timeBucket ?? null,
+    scheduledTime: payload.scheduledTime ?? null,
     updatedAt: payload.updatedAt,
   };
 }

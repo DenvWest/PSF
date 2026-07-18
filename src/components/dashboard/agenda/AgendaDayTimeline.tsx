@@ -14,7 +14,7 @@ type AgendaDayTimelineProps = {
   slot: WeekDaySlot;
   prefBusy: boolean;
   onCompletionChange?: () => void;
-  onTimeBucketChange: (bucket: TimeBucket) => void;
+  onScheduledTimeChange: (scheduledTime: string) => void;
 };
 
 type ZoneConfig = {
@@ -64,7 +64,7 @@ export default function AgendaDayTimeline({
   slot,
   prefBusy,
   onCompletionChange,
-  onTimeBucketChange,
+  onScheduledTimeChange,
 }: AgendaDayTimelineProps) {
   const activeBucket = resolveActiveBucket(model, slot);
 
@@ -121,7 +121,7 @@ export default function AgendaDayTimeline({
                           slot={slot}
                           prefBusy={prefBusy}
                           onCompletionChange={onCompletionChange}
-                          onTimeBucketChange={onTimeBucketChange}
+                          onScheduledTimeChange={onScheduledTimeChange}
                         />
                       ) : (
                         <FreeSpaceZone />

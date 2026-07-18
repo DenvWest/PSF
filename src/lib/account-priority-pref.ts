@@ -12,6 +12,7 @@ export type AccountPriorityPref = {
   pillarId: PillarId;
   source: PriorityPrefSource;
   timeBucket: TimeBucket | null;
+  scheduledTime: string | null;
   updatedAt: string;
 };
 
@@ -20,6 +21,12 @@ export const TIME_BUCKETS: readonly TimeBucket[] = [
   "middag",
   "avond",
 ] as const;
+
+const LOCAL_TIME_PATTERN = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+export function isValidLocalTime(value: string): boolean {
+  return LOCAL_TIME_PATTERN.test(value);
+}
 
 export function isTimeBucket(value: string): value is TimeBucket {
   return (TIME_BUCKETS as readonly string[]).includes(value);
@@ -41,6 +48,10 @@ export function deriveDefaultTimeBucket(now = new Date()): TimeBucket {
       hour12: false,
     }).format(now),
   );
+  return deriveTimeBucketFromHour(hour);
+}
+
+export function deriveTimeBucketFromHour(hour: number): TimeBucket {
   if (hour < 12) {
     return "ochtend";
   }
@@ -48,6 +59,21 @@ export function deriveDefaultTimeBucket(now = new Date()): TimeBucket {
     return "middag";
   }
   return "avond";
+}
+
+export function deriveTimeBucketFromLocalTime(time: string): TimeBucket {
+  const hour = Number(time.split(":")[0]);
+  return deriveTimeBucketFromHour(hour);
+}
+
+export function deriveDefaultScheduledTime(bucket: TimeBucket): string {
+  if (bucket === "ochtend") {
+    return "09:00";
+  }
+  if (bucket === "middag") {
+    return "14:00";
+  }
+  return "19:00";
 }
 
 export function timeBucketLabel(bucket: TimeBucket): string {
@@ -84,6 +110,7 @@ type PrefRow = {
   pillar_id: string;
   source: string;
   time_bucket: string | null;
+  scheduled_time: string | null;
   updated_at: string;
 };
 
@@ -93,10 +120,15 @@ function mapPrefRow(row: PrefRow): AccountPriorityPref | null {
   }
   const timeBucket =
     row.time_bucket && isTimeBucket(row.time_bucket) ? row.time_bucket : null;
+  const scheduledTime =
+    row.scheduled_time && isValidLocalTime(row.scheduled_time)
+      ? row.scheduled_time
+      : null;
   return {
     pillarId: row.pillar_id,
     source: row.source,
     timeBucket,
+    scheduledTime,
     updatedAt: row.updated_at,
   };
 }
@@ -107,7 +139,7 @@ export async function getAccountPriorityPref(
 ): Promise<AccountPriorityPref | null> {
   const { data, error } = await admin
     .from("account_priority_pref")
-    .select("pillar_id, source, time_bucket, updated_at")
+    .select("pillar_id, source, time_bucket, scheduled_time, updated_at")
     .eq("account_id", accountId)
     .maybeSingle<PrefRow>();
 
@@ -125,11 +157,22 @@ export async function upsertAccountPriorityPref(
     pillarId: PillarId;
     source: PriorityPrefSource;
     timeBucket?: TimeBucket | null;
+    scheduledTime?: string | null;
   },
 ): Promise<AccountPriorityPref> {
   const existing = await getAccountPriorityPref(admin, accountId);
-  const timeBucket =
+
+  const scheduledTime =
+    input.scheduledTime !== undefined
+      ? input.scheduledTime
+      : (existing?.scheduledTime ?? null);
+
+  let timeBucket =
     input.timeBucket !== undefined ? input.timeBucket : (existing?.timeBucket ?? null);
+
+  if (scheduledTime) {
+    timeBucket = deriveTimeBucketFromLocalTime(scheduledTime);
+  }
 
   const { data, error } = await admin
     .from("account_priority_pref")
@@ -140,11 +183,12 @@ export async function upsertAccountPriorityPref(
         pillar_id: input.pillarId,
         source: input.source,
         time_bucket: timeBucket,
+        scheduled_time: scheduledTime,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "account_id" },
     )
-    .select("pillar_id, source, time_bucket, updated_at")
+    .select("pillar_id, source, time_bucket, scheduled_time, updated_at")
     .single<PrefRow>();
 
   if (error || !data) {
@@ -170,6 +214,22 @@ export async function updateAccountTimeBucket(
     pillarId,
     source,
     timeBucket,
+    scheduledTime: deriveDefaultScheduledTime(timeBucket),
+  });
+}
+
+export async function updateAccountScheduledTime(
+  admin: SupabaseAdmin,
+  accountId: string,
+  organizationId: string,
+  pillarId: PillarId,
+  source: PriorityPrefSource,
+  scheduledTime: string,
+): Promise<AccountPriorityPref> {
+  return upsertAccountPriorityPref(admin, accountId, organizationId, {
+    pillarId,
+    source,
+    scheduledTime,
   });
 }
 

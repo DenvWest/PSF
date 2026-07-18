@@ -1,27 +1,29 @@
 "use client";
 
 import {
-  TIME_BUCKETS,
-  deriveDefaultTimeBucket,
+  deriveDefaultScheduledTime,
+  isValidLocalTime,
   type TimeBucket,
 } from "@/lib/account-priority-pref";
 
 type AgendaTimeBucketPickerProps = {
-  value: TimeBucket | null;
+  value: string | null;
+  defaultBucket: TimeBucket;
   busy?: boolean;
   disabled?: boolean;
   variant?: "default" | "compact";
-  onChange: (bucket: TimeBucket) => void;
+  onChange: (scheduledTime: string) => void;
 };
 
 export default function AgendaTimeBucketPicker({
   value,
+  defaultBucket,
   busy = false,
   disabled = false,
   variant = "default",
   onChange,
 }: AgendaTimeBucketPickerProps) {
-  const activeBucket = value ?? deriveDefaultTimeBucket();
+  const displayValue = value ?? deriveDefaultScheduledTime(defaultBucket);
   const isCompact = variant === "compact";
 
   return (
@@ -31,32 +33,22 @@ export default function AgendaTimeBucketPicker({
           Wanneer
         </p>
       ) : null}
-      <div
-        className={`grid grid-cols-3 gap-1 ${isCompact ? "rounded-xl bg-[#faf9f7] p-1" : "rounded-2xl border border-[#e4e0da] bg-[#faf9f7] p-1"}`}
-        role="group"
-        aria-label="Kies tijdvak"
-      >
-        {TIME_BUCKETS.map((bucket) => {
-          const selected = bucket === activeBucket;
-          return (
-            <button
-              key={bucket}
-              type="button"
-              disabled={busy || disabled}
-              aria-pressed={selected}
-              onClick={() => onChange(bucket)}
-              className="min-h-11 cursor-pointer rounded-[10px] border-none px-2 text-[13px] font-semibold capitalize transition-colors disabled:opacity-60"
-              style={{
-                background: selected ? "var(--sage)" : "transparent",
-                color: selected ? "#0f1c10" : "#78716c",
-                fontFamily: "var(--f-sans)",
-              }}
-            >
-              {bucket}
-            </button>
-          );
-        })}
-      </div>
+      <input
+        type="time"
+        value={displayValue}
+        disabled={busy || disabled}
+        aria-label="Kies tijdstip"
+        onChange={(event) => {
+          const next = event.target.value;
+          if (isValidLocalTime(next)) {
+            onChange(next);
+          }
+        }}
+        className={`min-h-11 w-full cursor-pointer rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-3 text-[15px] font-medium tabular-nums text-[#1c1917] disabled:opacity-60 ${
+          isCompact ? "rounded-xl" : "rounded-2xl"
+        }`}
+        style={{ fontFamily: "var(--f-sans)" }}
+      />
     </div>
   );
 }

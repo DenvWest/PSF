@@ -7,7 +7,6 @@ import AgendaTimeBucketPicker from "@/components/dashboard/agenda/AgendaTimeBuck
 import { PILLAR } from "@/data/dashboard";
 import {
   deriveDefaultTimeBucket,
-  type TimeBucket,
 } from "@/lib/account-priority-pref";
 import {
   getCachedDailyLog,
@@ -30,7 +29,7 @@ type AgendaTodayHeroProps = {
   slot: WeekDaySlot;
   prefBusy?: boolean;
   onCompletionChange?: () => void;
-  onTimeBucketChange?: (bucket: TimeBucket) => void;
+  onScheduledTimeChange?: (scheduledTime: string) => void;
 };
 
 function pickSupportingLine(
@@ -63,7 +62,7 @@ export default function AgendaTodayHero({
   slot,
   prefBusy = false,
   onCompletionChange,
-  onTimeBucketChange,
+  onScheduledTimeChange,
 }: AgendaTodayHeroProps) {
   const shownRef = useRef(false);
   const isToday = slot.isToday;
@@ -198,7 +197,7 @@ export default function AgendaTodayHero({
           />
           {pillar.label}
         </span>
-        {isToday && onTimeBucketChange ? (
+        {isToday && onScheduledTimeChange ? (
           <button
             type="button"
             disabled={prefBusy}
@@ -212,14 +211,15 @@ export default function AgendaTodayHero({
         ) : null}
       </div>
 
-      {isToday && moveExpanded && onTimeBucketChange ? (
+      {isToday && moveExpanded && onScheduledTimeChange ? (
         <div className="mb-3">
           <AgendaTimeBucketPicker
-            value={activeBucket}
+            value={model.scheduledTime}
+            defaultBucket={activeBucket}
             busy={prefBusy}
             variant="compact"
-            onChange={(bucket) => {
-              onTimeBucketChange(bucket);
+            onChange={(scheduledTime) => {
+              onScheduledTimeChange(scheduledTime);
               setMoveExpanded(false);
             }}
           />

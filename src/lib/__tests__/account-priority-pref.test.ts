@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  deriveDefaultScheduledTime,
   deriveDefaultTimeBucket,
   deriveSuggestedTimeBucket,
+  deriveTimeBucketFromLocalTime,
   isPinablePillarId,
   isTimeBucket,
+  isValidLocalTime,
   timeBucketAbbrev,
   timeBucketLabel,
 } from "@/lib/account-priority-pref";
@@ -22,6 +25,14 @@ describe("account-priority-pref helpers", () => {
     expect(isTimeBucket("nacht")).toBe(false);
   });
 
+  it("validates local time strings", () => {
+    expect(isValidLocalTime("09:30")).toBe(true);
+    expect(isValidLocalTime("23:59")).toBe(true);
+    expect(isValidLocalTime("24:00")).toBe(false);
+    expect(isValidLocalTime("9:30")).toBe(false);
+    expect(isValidLocalTime("09:60")).toBe(false);
+  });
+
   it("labels buckets in Dutch", () => {
     expect(timeBucketLabel("avond")).toBe("Vanavond");
   });
@@ -30,6 +41,18 @@ describe("account-priority-pref helpers", () => {
     expect(deriveDefaultTimeBucket(new Date("2026-07-18T08:00:00+02:00"))).toBe("ochtend");
     expect(deriveDefaultTimeBucket(new Date("2026-07-18T14:00:00+02:00"))).toBe("middag");
     expect(deriveDefaultTimeBucket(new Date("2026-07-18T20:00:00+02:00"))).toBe("avond");
+  });
+
+  it("derives bucket from local time", () => {
+    expect(deriveTimeBucketFromLocalTime("08:30")).toBe("ochtend");
+    expect(deriveTimeBucketFromLocalTime("14:00")).toBe("middag");
+    expect(deriveTimeBucketFromLocalTime("19:45")).toBe("avond");
+  });
+
+  it("derives default scheduled time from bucket", () => {
+    expect(deriveDefaultScheduledTime("ochtend")).toBe("09:00");
+    expect(deriveDefaultScheduledTime("middag")).toBe("14:00");
+    expect(deriveDefaultScheduledTime("avond")).toBe("19:00");
   });
 
   it("abbreviates buckets", () => {
@@ -72,12 +95,14 @@ describe("buildModel priority override", () => {
       null,
       "beweging",
       "avond",
+      "19:30",
     );
 
     expect(model.enginePriority.id).not.toBe("beweging");
     expect(model.priority.id).toBe("beweging");
     expect(model.priorityIsUserChosen).toBe(true);
     expect(model.timeBucket).toBe("avond");
+    expect(model.scheduledTime).toBe("19:30");
     expect(model.ladder[0]?.id).toBe(model.enginePriority.id);
   });
 });

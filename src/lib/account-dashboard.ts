@@ -550,6 +550,7 @@ export async function loadAccountDashboardData(
         pillarId: priorityPrefRow.pillarId,
         source: priorityPrefRow.source,
         timeBucket: priorityPrefRow.timeBucket,
+        scheduledTime: priorityPrefRow.scheduledTime,
         updatedAt: priorityPrefRow.updatedAt,
       }
     : null;
