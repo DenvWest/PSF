@@ -61,6 +61,14 @@ export function evaluatePlanCondition(
       const value = ctx.answers[condition.question];
       return typeof value === "number" && value <= condition.value;
     }
+    case "answerAtLeast": {
+      const value = ctx.answers[condition.question];
+      return typeof value === "number" && value >= condition.value;
+    }
+    case "answerEquals": {
+      const value = ctx.answers[condition.question];
+      return typeof value === "number" && value === condition.value;
+    }
     default: {
       const _exhaustive: never = condition;
       return _exhaustive;

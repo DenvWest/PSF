@@ -12,6 +12,13 @@ import { buildVandaagOnderbouwingHref } from "@/lib/vandaag-card-links";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 import type { PlanStep, PlanStepLink } from "@/types/lifestyle-plan";
 
+/**
+ * Agenda week-preview (precursor). Tweakable week (swap, tijdvak, agenda_preferences)
+ * blijft DEFER tot retentie-trigger: 2e-dag-retour op dashboard.daily_action_toggled
+ * < 30% in consented cohort, 2 opeenvolgende weken — zie fable-agenda-refine-verdict-2026-07.
+ * Pool voor toekomstige MVP: selectVisibleSteps(movementPlan) uit lifestyle-plans/movement.ts.
+ */
+
 const APP_TIMEZONE = "Europe/Amsterdam";
 
 const PILLAR_TO_PLAN_DOMAIN: Partial<Record<PillarId, MeasuredPillarId>> = {

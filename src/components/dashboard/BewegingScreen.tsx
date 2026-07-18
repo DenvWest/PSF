@@ -39,7 +39,7 @@ const MOVEMENT_MODALITIES: {
   {
     icon: "🚶",
     label: "Stevig wandelen",
-    href: null,
+    href: "/beweging-na-40",
     modality: "wandelen",
   },
   {
@@ -51,7 +51,7 @@ const MOVEMENT_MODALITIES: {
   {
     icon: "❤️",
     label: "Zone 2 cardio",
-    href: null,
+    href: "/onderbouwing#MOV_CARD",
     modality: "zone2",
   },
 ];

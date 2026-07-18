@@ -51,7 +51,9 @@ export type PlanCondition =
   | { type: "signal"; signal: keyof DeficiencySignals }
   | { type: "scoreBelow"; domain: MeasuredPillarId; value: number }
   | { type: "profileIs"; profile: ProfileLabel["name"] }
-  | { type: "answerAtMost"; question: QuestionId; value: number };
+  | { type: "answerAtMost"; question: QuestionId; value: number }
+  | { type: "answerAtLeast"; question: QuestionId; value: number }
+  | { type: "answerEquals"; question: QuestionId; value: number };
 
 /* -------------------------------------------------------------------------- */
 /*  Template (de content)                                                     */

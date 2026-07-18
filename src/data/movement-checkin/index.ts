@@ -50,19 +50,23 @@ export const MOVEMENT_STATEMENTS: Record<MovementDimensionKey, Record<MovementBa
 export const MOVEMENT_CHOICES: Record<MovementDimensionKey, string[]> = {
   kracht: [
     "Opstaan uit een stoel zonder je handen — een paar keer achter elkaar",
-    "Boodschappentassen of een krat bewust tillen, rug recht",
     "Kniebuigingen of opdrukken tegen het aanrecht",
-    "Vaker de trap nemen in plaats van de lift",
+    "Boodschappentassen of een krat bewust tillen, rug recht",
+    "Plan één krachtsessie met squat, push en pull — korter dan gewoon",
   ],
   conditie: [
-    "Een stevige wandeling waarbij praten nét nog lukt",
+    "Neem de trap in plaats van de lift — of loop 20 minuten stevig",
+    "Loop 30 minuten matig intensief — praten lukt, zingen niet",
+    "Tijdens een wandeling 3× 1 minuut stevig doorstappen, daarna rustig verder",
     "Korte ritjes op de fiets in plaats van de auto",
-    "Tijdens een wandeling een paar keer een minuut stevig doorstappen",
-    "Iets actiefs met de kinderen of een sport die je leuk vindt",
   ],
 };
 
 export const MOVEMENT_DEEPEN: Record<MovementDimensionKey, string> = {
-  kracht: "Wil je verder? Bouw rustig op: 2× per week een paar oefeningen, zwaar genoeg dat de laatste herhalingen pittig zijn. Jij bepaalt het tempo.",
-  conditie: "Wil je verder? Wissel korte stevige stukken af met rustige — dat tilt je conditie sneller, en het blijft behapbaar.",
+  kracht:
+    "Wil je verder? Bouw rustig op naar 2× per week full-body — squat, push, pull en hip hinge. " +
+    "Zwaar genoeg dat de laatste herhalingen pittig zijn, met 48–72 uur rust tussen krachtdagen.",
+  conditie:
+    "Wil je verder? Begin met stevig wandelen of traplopen, daarna 2× per week 30 min matig intensief (zone 2). " +
+    "Praten-nog-lukt is je test — geen hartslagmeter nodig.",
 };
