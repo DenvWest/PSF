@@ -14,6 +14,7 @@ import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { loadPlanProgress } from "@/lib/plan-progress";
 import { loadMovementRecoveryTrend } from "@/lib/movement-recovery-context";
+import { getAccountPriorityPref } from "@/lib/account-priority-pref";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import type {
@@ -44,6 +45,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   sessionId: null,
   planProgress: null,
   planDomain: null,
+  priorityPref: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -542,6 +544,16 @@ export async function loadAccountDashboardData(
         })
       : null;
 
+  const priorityPrefRow = await getAccountPriorityPref(admin, accountId);
+  const priorityPref = priorityPrefRow
+    ? {
+        pillarId: priorityPrefRow.pillarId,
+        source: priorityPrefRow.source,
+        timeBucket: priorityPrefRow.timeBucket,
+        updatedAt: priorityPrefRow.updatedAt,
+      }
+    : null;
+
   return {
     empty: false,
     current: {
@@ -563,5 +575,6 @@ export async function loadAccountDashboardData(
     sessionId: latestSnapshot.id,
     planProgress,
     planDomain,
+    priorityPref,
   };
 }

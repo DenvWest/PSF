@@ -2,6 +2,7 @@ import { PILLARS, TIE_ORDER } from "@/data/dashboard";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { getPriorityPillar } from "@/lib/priority-pillar";
+import type { TimeBucket } from "@/lib/account-priority-pref";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { hasMethodologyChange } from "@/lib/rules-version";
 import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
@@ -11,6 +12,7 @@ import type {
   CheckSnapshot,
   DashboardModel,
   Pillar,
+  PillarId,
 } from "@/types/dashboard";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { PlanProgress } from "@/types/lifestyle-plan";
@@ -40,10 +42,19 @@ export function buildModel(
   answers: Record<string, number> | null,
   planProgress: PlanProgress | null,
   planDomain: MeasuredPillarId | null,
+  chosenPriorityId: PillarId | null = null,
+  timeBucket: TimeBucket | null = null,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
-  const priority = getPriorityPillar(mapCheckScoresToDomainScores(scores), answers ?? {});
+  const domainScores = mapCheckScoresToDomainScores(scores);
+  const enginePriority = getPriorityPillar(domainScores, answers ?? {});
+  const priority =
+    chosenPriorityId != null
+      ? (PILLARS.find((pillar) => pillar.id === chosenPriorityId) ?? enginePriority)
+      : enginePriority;
+  const priorityIsUserChosen =
+    chosenPriorityId != null && chosenPriorityId !== enginePriority.id;
   const strongest = [...PILLARS]
     .filter((pillar) => !isReadoutDomain(pillar.id))
     .sort((a, b) => scores[b.id] - scores[a.id])
@@ -81,9 +92,12 @@ export function buildModel(
 
   return {
     scores,
-    domainScores: mapCheckScoresToDomainScores(scores),
+    domainScores,
     ladder,
+    enginePriority,
     priority,
+    priorityIsUserChosen,
+    timeBucket,
     strongest,
     vitality,
     vitalityDelta,

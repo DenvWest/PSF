@@ -32,6 +32,7 @@ import StressScreen from "@/components/dashboard/StressScreen";
 import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
 import AgendaScreen from "@/components/dashboard/agenda/AgendaScreen";
 import AgendaTeaser from "@/components/dashboard/agenda/AgendaTeaser";
+import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
@@ -79,7 +80,11 @@ import { getDisplayStatus, getDisplayStatusTone } from "@/lib/score-display";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
-import { isReadoutDomain } from "@/lib/domain-role";
+import { isReadoutDomain, isInterventionDomain } from "@/lib/domain-role";
+import {
+  postPrioritySelection,
+  resetPriorityPref,
+} from "@/lib/priority-pref-client";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
@@ -99,6 +104,7 @@ import {
   syncDashboardTabParam,
 } from "@/lib/dashboard-url";
 import type {
+  AccountPriorityPrefData,
   DashboardData,
   DashboardModel,
   DashboardSectionType,
@@ -132,10 +138,13 @@ type SharedSectionProps = {
   onRemeasure: () => void;
   onGoVandaag: () => void;
   onGoAgenda: () => void;
+  onGoVoortgang: () => void;
   voortgangScreen: VoortgangScreen;
   onVoortgangScreenChange: (screen: VoortgangScreen) => void;
   onOpenInzichten: () => void;
   initialKompasView?: PillarId;
+  prefUpdatedAt: string | null;
+  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -493,7 +502,9 @@ const Greeting = ({
       {empty
         ? "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
         : model
-          ? `${model.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`
+          ? model.priorityIsUserChosen
+            ? `${model.date} · jij focus op ${model.priority.label.toLowerCase()} (analyse: ${model.enginePriority.label.toLowerCase()}).`
+            : `${model.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`
           : ""}
     </div>
   </div>
@@ -2574,57 +2585,86 @@ const KompasDomainRow = ({
   score,
   color,
   isPriority,
+  isUserFocus,
+  isEngineAdvice,
   isReadout,
   onClick,
+  onPin,
 }: {
   label: string;
   score: number;
   color: string;
   isPriority?: boolean;
+  isUserFocus?: boolean;
+  isEngineAdvice?: boolean;
   isReadout?: boolean;
   onClick: () => void;
+  onPin?: () => void;
 }) => {
   const status = getDisplayStatus(score);
   const tone = getDisplayStatusTone(status);
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={`Open ${label}`}
-      className={`w-full cursor-pointer rounded-[18px] border bg-white p-3.5 text-left shadow-sm transition active:scale-[0.99] hover:border-[#5A8F6A] ${
-        isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
+    <div
+      className={`w-full rounded-[18px] border bg-white p-3.5 shadow-sm transition ${
+        isUserFocus ? "border-[#5A8F6A]" : isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
       }`}
-      style={{ fontFamily: "var(--f-sans)" }}
     >
-      <div className="flex items-center justify-between gap-2">
-        <span
-          className="text-base text-[#1c1917]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          {label}
-        </span>
-        <div className="flex shrink-0 items-center gap-2">
-          {isReadout ? (
-            <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
-              Rapport
-            </span>
-          ) : null}
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={`Open ${label}`}
+        className="w-full cursor-pointer border-none bg-transparent p-0 text-left"
+        style={{ fontFamily: "var(--f-sans)" }}
+      >
+        <div className="flex items-center justify-between gap-2">
           <span
-            className="shrink-0 text-[11px] font-bold uppercase tracking-[0.06em]"
-            style={{ color: STATUS_BADGE_COLOR[tone] }}
+            className="text-base text-[#1c1917]"
+            style={{ fontFamily: "var(--f-serif)" }}
           >
-            {status}
+            {label}
           </span>
+          <div className="flex shrink-0 items-center gap-2">
+            {isUserFocus ? (
+              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--sage)]">
+                Jouw focus
+              </span>
+            ) : isEngineAdvice ? (
+              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
+                Advies
+              </span>
+            ) : null}
+            {isReadout ? (
+              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
+                Rapport
+              </span>
+            ) : null}
+            <span
+              className="shrink-0 text-[11px] font-bold uppercase tracking-[0.06em]"
+              style={{ color: STATUS_BADGE_COLOR[tone] }}
+            >
+              {status}
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#ebe7e2]">
-        <div
-          className="h-full rounded-full transition-all"
-          style={{ width: `${Math.min(100, Math.max(0, score))}%`, background: color }}
-        />
-      </div>
-    </button>
+        <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#ebe7e2]">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{ width: `${Math.min(100, Math.max(0, score))}%`, background: color }}
+          />
+        </div>
+      </button>
+      {onPin ? (
+        <button
+          type="button"
+          onClick={onPin}
+          className="mt-2.5 inline-flex min-h-9 cursor-pointer items-center rounded-[8px] border border-[#e4e0da] bg-[#faf9f7] px-3 text-[12px] font-semibold text-[#1c1917]"
+          style={{ fontFamily: "var(--f-sans)" }}
+        >
+          Ik focus op {label.toLowerCase()}
+        </button>
+      ) : null}
+    </div>
   );
 };
 
@@ -3173,8 +3213,11 @@ const KompasHome = ({
   onRemeasure,
   initialKompasView,
   kompasResetSignal: _kompasResetSignal,
+  prefUpdatedAt,
+  onPrefUpdated,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
+  const [prefBusy, setPrefBusy] = useState(false);
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
     if (typeof window !== "undefined") {
       return parseKompasFromUrl(window.location.href);
@@ -3213,6 +3256,40 @@ const KompasHome = ({
     trackEvent("dashboard_hermeting_reminder_click", { surface: "kompas_home" });
     clarityTag("dashboard_hermeting", "kompas_cta");
     onRemeasure();
+  };
+
+  const saveKompasPriority = async (
+    pillarId: PillarId,
+    source: "user_selected" | "accept_engine",
+  ) => {
+    setPrefBusy(true);
+    try {
+      const pref = await postPrioritySelection({
+        pillarId,
+        source,
+        surface: "kompas",
+        timeBucket: currentModel?.timeBucket ?? null,
+      });
+      onPrefUpdated(pref);
+      trackEvent("dashboard_priority_selected", {
+        pillar_id: pillarId,
+        source,
+        surface: "kompas",
+      });
+      clarityTag("dashboard_priority", pillarId);
+    } finally {
+      setPrefBusy(false);
+    }
+  };
+
+  const handleResetPriority = async () => {
+    setPrefBusy(true);
+    try {
+      await resetPriorityPref();
+      onPrefUpdated(null);
+    } finally {
+      setPrefBusy(false);
+    }
   };
 
   if (!currentModel) {
@@ -3335,12 +3412,24 @@ const KompasHome = ({
   }
   if (overlayView === "trend") {
     return (
-      <KompasSoonScreen
-        onBack={closeView}
-        title="Trend — levenslijn urgentie"
-        body="Je levenslijn laat zien hoe je prioriteit en urgentie verschuiven over checks — zodat je ziet of het werkt."
-        showChartPlaceholder
-      />
+      <div className="-mt-2 flex flex-col gap-4">
+        <button
+          type="button"
+          onClick={closeView}
+          className="inline-flex min-h-11 cursor-pointer items-center gap-1 self-start border-none bg-transparent px-0 text-[13px] font-medium text-[#78716c]"
+          style={{ fontFamily: "var(--f-sans)" }}
+        >
+          <Icons.ChevronRight s={16} style={{ transform: "rotate(180deg)" }} /> Terug
+        </button>
+        <PriorityOverTimePanel
+          model={currentModel}
+          prefUpdatedAt={prefUpdatedAt}
+          busy={prefBusy}
+          onAcceptEngine={() =>
+            void saveKompasPriority(currentModel.enginePriority.id, "accept_engine")
+          }
+        />
+      </div>
     );
   }
   if (domainView) {
@@ -3381,6 +3470,45 @@ const KompasHome = ({
         </KompasLooseCard>
       ) : null}
       <KompasLooseCard>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+              Onze analyse
+            </p>
+            <p
+              className="mt-1 text-[16px] font-medium leading-snug text-[#1c1917]"
+              style={{ fontFamily: "var(--f-serif)" }}
+            >
+              Begin bij {currentModel.enginePriority.label.toLowerCase()}
+            </p>
+            {currentModel.priorityIsUserChosen ? (
+              <p className="mt-1 text-[13px] leading-normal text-[#78716c] text-pretty">
+                Jij koos {currentModel.priority.label.toLowerCase()}.{" "}
+                <button
+                  type="button"
+                  disabled={prefBusy}
+                  onClick={() => void handleResetPriority()}
+                  className="cursor-pointer border-none bg-transparent p-0 font-medium text-[var(--sage)] underline decoration-[#d6d3d1] underline-offset-2 disabled:opacity-60"
+                >
+                  Terug naar advies
+                </button>
+              </p>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            disabled={prefBusy}
+            onClick={() =>
+              void saveKompasPriority(currentModel.enginePriority.id, "accept_engine")
+            }
+            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-[10px] border-none bg-[var(--sage)] px-4 text-[13px] font-semibold text-[#0f1c10] disabled:opacity-60"
+            style={{ fontFamily: "var(--f-sans)" }}
+          >
+            Volg advies →
+          </button>
+        </div>
+      </KompasLooseCard>
+      <KompasLooseCard>
         <div className="flex items-center justify-between gap-2">
           <h2
             className="m-0 text-[18px] leading-tight text-[#1c1917]"
@@ -3393,6 +3521,9 @@ const KompasHome = ({
         <div className="mt-3 flex flex-col gap-2.5">
           {currentModel.ladder.map((pillar) => {
             const score = currentModel.scores[pillar.id] ?? 0;
+            const canPin = isInterventionDomain(pillar.id);
+            const isUserFocus =
+              currentModel.priorityIsUserChosen && pillar.id === currentModel.priority.id;
             return (
               <KompasDomainRow
                 key={pillar.id}
@@ -3400,8 +3531,18 @@ const KompasHome = ({
                 score={score}
                 color={pillar.color}
                 isPriority={pillar.id === currentModel.priority.id}
+                isUserFocus={isUserFocus}
+                isEngineAdvice={
+                  !currentModel.priorityIsUserChosen &&
+                  pillar.id === currentModel.enginePriority.id
+                }
                 isReadout={isReadoutDomain(pillar.id)}
                 onClick={() => openDomain(pillar.id)}
+                onPin={
+                  canPin && !isUserFocus
+                    ? () => void saveKompasPriority(pillar.id, "user_selected")
+                    : undefined
+                }
               />
             );
           })}
@@ -3448,7 +3589,13 @@ const SECTION_RENDERERS: Record<
       <AgendaTeaser model={props.model} onOpenAgenda={props.onGoAgenda} />
     ),
   agendaHome: (props) =>
-    props.empty || !props.model ? null : <AgendaScreen model={props.model} />,
+    props.empty || !props.model ? null : (
+      <AgendaScreen
+        model={props.model}
+        onPrefUpdated={props.onPrefUpdated}
+        onGoVoortgang={props.onGoVoortgang}
+      />
+    ),
   kompasHome: (props) =>
     props.empty ? null : <KompasHome key={`kompas-${props.kompasResetSignal}`} {...props} />,
   signals: (props) => (props.empty ? null : <SignalsSection {...props} />),
@@ -3653,6 +3800,13 @@ export default function Dashboard({
   const [voortgangScreen, setVoortgangScreen] = useState<VoortgangScreen>(
     initialVoortgangScreen ?? "hub",
   );
+  const [priorityPrefOverride, setPriorityPrefOverride] = useState<
+    AccountPriorityPrefData | null | undefined
+  >(undefined);
+
+  const priorityPref =
+    priorityPrefOverride !== undefined ? priorityPrefOverride : (data?.priorityPref ?? null);
+
   const model = useMemo(
     () =>
       !empty && data?.current
@@ -3664,9 +3818,11 @@ export default function Dashboard({
             data.answers,
             data.planProgress,
             data.planDomain,
+            priorityPref?.pillarId ?? null,
+            priorityPref?.timeBucket ?? null,
           )
         : null,
-    [empty, data],
+    [empty, data, priorityPref],
   );
 
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
@@ -3791,10 +3947,16 @@ export default function Dashboard({
     onRemeasure,
     onGoVandaag: () => selectTab("vandaag"),
     onGoAgenda: () => selectTab("agenda"),
+    onGoVoortgang: () => {
+      setVoortgangScreen("hub");
+      selectTab("voortgang");
+    },
     voortgangScreen,
     onVoortgangScreenChange: setVoortgangScreen,
     onOpenInzichten: () => setVoortgangScreen("inzichten"),
     initialKompasView,
+    prefUpdatedAt: priorityPref?.updatedAt ?? null,
+    onPrefUpdated: setPriorityPrefOverride,
   };
 
   const isVoortgangDetail = tab === "voortgang" && voortgangScreen !== "hub";

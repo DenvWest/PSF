@@ -64,6 +64,8 @@ export default function PrivacyPage() {
                             Als je vrijwillig inlogt, verwerken we je e-mailadres en een technische
                             accountkoppeling zodat je je voortgang en trends over meerdere checks heen
                             kunt bekijken. Inlogcodes zijn kort geldig en eenmalig te gebruiken.
+                            Optioneel kun je in het dashboard een interventiefocus en dagdeel (ochtend,
+                            middag of avond) opslaan — zonder dat we daarmee je analyse-scores wijzigen.
                         </p>
                     </div>
 

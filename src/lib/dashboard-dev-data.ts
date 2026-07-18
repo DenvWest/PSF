@@ -137,5 +137,6 @@ export function buildDevDashboardData(
     sessionId: "dev-session",
     planProgress: null,
     planDomain: "nutrition",
+    priorityPref: null,
   };
 }

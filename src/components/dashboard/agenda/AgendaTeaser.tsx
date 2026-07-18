@@ -2,6 +2,8 @@
 
 import * as Icons from "@/components/app/icons";
 import { KompasLooseCard } from "@/components/dashboard/agenda/KompasLooseCard";
+import { PILLAR } from "@/data/dashboard";
+import { deriveDefaultTimeBucket, timeBucketLabel } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import type { DashboardModel } from "@/types/dashboard";
@@ -13,6 +15,8 @@ type AgendaTeaserProps = {
 
 export default function AgendaTeaser({ model, onOpenAgenda }: AgendaTeaserProps) {
   const title = model.activeHabit?.title ?? model.priority.quickWin.title;
+  const bucket = model.timeBucket ?? deriveDefaultTimeBucket();
+  const bucketLabel = timeBucketLabel(bucket).toLowerCase();
 
   return (
     <KompasLooseCard>
@@ -21,6 +25,7 @@ export default function AgendaTeaser({ model, onOpenAgenda }: AgendaTeaserProps)
         onClick={() => {
           trackEvent("dashboard_agenda_teaser_click", {
             priority: model.priority.id,
+            user_chosen: model.priorityIsUserChosen,
           });
           clarityTag("dashboard_agenda", "kompas_teaser");
           onOpenAgenda();
@@ -39,7 +44,7 @@ export default function AgendaTeaser({ model, onOpenAgenda }: AgendaTeaserProps)
             className="text-[15px] font-medium leading-snug text-[#1c1917]"
             style={{ fontFamily: "var(--f-serif)" }}
           >
-            Jouw stap vandaag
+            {bucketLabel} · {PILLAR[model.priority.id].label.toLowerCase()}
           </div>
           <p className="mt-1 line-clamp-2 text-[13px] leading-snug text-[#78716c] text-pretty">
             {title}
@@ -49,7 +54,7 @@ export default function AgendaTeaser({ model, onOpenAgenda }: AgendaTeaserProps)
           className="inline-flex shrink-0 items-center gap-1 pt-0.5 text-[13px] font-semibold"
           style={{ color: "var(--sage)" }}
         >
-          Agenda
+          Mijn dag
           <Icons.ArrowRight s={15} />
         </span>
       </button>

@@ -48,6 +48,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   sessionId: null,
   planProgress: null,
   planDomain: null,
+  priorityPref: null,
 };
 
 const DASHBOARD_WITH_DATA: DashboardData = {
@@ -87,6 +88,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   sessionId: "session-1",
   planProgress: null,
   planDomain: "sleep",
+  priorityPref: null,
 };
 
 const DASHBOARD_WITH_ANSWERS: DashboardData = {

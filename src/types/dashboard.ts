@@ -2,7 +2,20 @@ import type { DeltaReport } from "@/types/delta-report";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
+import type {
+  PriorityPrefSource,
+  TimeBucket,
+} from "@/lib/account-priority-pref";
 import type { PlanProgress } from "@/types/lifestyle-plan";
+
+export type { TimeBucket, PriorityPrefSource };
+
+export type AccountPriorityPrefData = {
+  pillarId: PillarId;
+  source: PriorityPrefSource;
+  timeBucket: TimeBucket | null;
+  updatedAt: string;
+};
 
 export type PillarId =
   | "slaap"
@@ -172,6 +185,7 @@ export type DashboardData = {
   sessionId: string | null;
   planProgress: PlanProgress | null;
   planDomain: MeasuredPillarId | null;
+  priorityPref: AccountPriorityPrefData | null;
 };
 
 export type IdentityField = {
@@ -200,7 +214,10 @@ export type DashboardModel = {
   scores: CheckScores;
   domainScores: DomainScores;
   ladder: Pillar[];
+  enginePriority: Pillar;
   priority: Pillar;
+  priorityIsUserChosen: boolean;
+  timeBucket: TimeBucket | null;
   strongest: Pillar;
   vitality: number;
   vitalityDelta: number | null;

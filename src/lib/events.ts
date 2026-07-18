@@ -14,6 +14,8 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.cta_to_hub",
   "dashboard.aanrader_clicked",
   "dashboard.daily_action_toggled",
+  "dashboard.priority_selected",
+  "dashboard.time_bucket_set",
   "domain_tool.snapshot_viewed",
   "domain_tool.tier_preview_clicked",
   "intake.completed",

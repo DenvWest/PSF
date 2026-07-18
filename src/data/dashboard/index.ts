@@ -325,11 +325,11 @@ export const DASHBOARD_TABS: DashboardTab[] = [
   },
   {
     id: "agenda",
-    label: "Agenda",
+    label: "Mijn Dag",
     icon: "RouteMap",
-    title: "Agenda",
-    subtitle: "Je week en je stap vandaag — met onderbouwing.",
-    emptyHint: "Doe je eerste check — dan staat hier je weekoverzicht.",
+    title: "Mijn Dag",
+    subtitle: "Je dag, van kompas tot leefstijlmoment.",
+    emptyHint: "Doe je eerste check — dan staat hier je dagoverzicht.",
   },
   {
     id: "voortgang",
