@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import { PILLAR } from "@/data/dashboard";
@@ -25,7 +26,7 @@ const TAB_INACTIVE_CLASS =
   "text-stone-400 hover:bg-white/[0.06] hover:text-stone-200";
 
 const TAB_BASE_CLASS =
-  "relative flex min-w-0 flex-col items-center justify-center gap-1 overflow-hidden rounded-[11px] px-1.5 py-2 transition";
+  "relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-[11px] px-1.5 py-2 transition";
 
 type DomainTopNavProps = {
   activeDomain: PillarId;
@@ -68,7 +69,11 @@ export default function DomainTopNav({
   onBack,
   onSwitch,
 }: DomainTopNavProps) {
-  const activePillar = PILLAR[activeDomain];
+  const activeTabRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    activeTabRef.current?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [activeDomain]);
 
   return (
     <nav
@@ -89,12 +94,12 @@ export default function DomainTopNav({
         </button>
 
         <span
-          className="hidden w-px shrink-0 self-stretch bg-white/10 md:block"
+          className="w-px shrink-0 self-stretch bg-white/10"
           aria-hidden
         />
 
         <div
-          className="hidden min-w-0 flex-1 gap-0.5 md:flex"
+          className="flex min-w-0 flex-1 gap-0.5 overflow-x-auto scrollbar-hide"
           role="tablist"
           aria-label="Wissel domein"
         >
@@ -107,12 +112,13 @@ export default function DomainTopNav({
             return (
               <button
                 key={id}
+                ref={active ? activeTabRef : undefined}
                 type="button"
                 role="tab"
                 aria-selected={active}
                 disabled={active}
                 onClick={() => onSwitch(id)}
-                className={`${TAB_BASE_CLASS} min-w-0 flex-1 ${
+                className={`${TAB_BASE_CLASS} min-w-[4.75rem] flex-1 ${
                   active
                     ? "cursor-default bg-gradient-to-b from-[#fefdfb] to-[#f5f2ec] text-[#1c1917] shadow-[0_2px_10px_rgba(0,0,0,0.14)]"
                     : TAB_INACTIVE_CLASS
@@ -136,10 +142,6 @@ export default function DomainTopNav({
             );
           })}
         </div>
-
-        <span className="ml-auto self-center pr-2 text-[10.5px] font-semibold text-stone-500 md:hidden">
-          {activePillar.label}
-        </span>
       </div>
     </nav>
   );
