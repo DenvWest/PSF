@@ -22,6 +22,7 @@ import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import {
   getVitalityScoreCardCopy,
   VITALITY_INSIGHTS_UPSELL_BODY,
+  VITALITY_INSIGHTS_UPSELL_CTA,
   VITALITY_INSIGHTS_UPSELL_HEADING,
 } from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
@@ -217,12 +218,12 @@ function VoortgangSubHeader({
 
 function StatistiekenSoftUpsell({ onOpenWaitlist }: { onOpenWaitlist: () => void }) {
   return (
-    <div
+    <Card
+      pad={20}
+      glow="var(--terra, #C8956C)"
       style={{
-        padding: "18px 16px",
-        borderRadius: 14,
-        border: "1px solid rgba(200,149,108,0.22)",
-        background: "rgba(200,149,108,0.06)",
+        border: "1px solid rgba(200,149,108,0.28)",
+        background: "rgba(200,149,108,0.05)",
       }}
     >
       <div
@@ -241,7 +242,7 @@ function StatistiekenSoftUpsell({ onOpenWaitlist }: { onOpenWaitlist: () => void
           fontSize: 14,
           color: "var(--text-muted)",
           lineHeight: 1.55,
-          margin: "0 0 14px",
+          margin: "0 0 16px",
           textWrap: "pretty",
         }}
       >
@@ -255,7 +256,7 @@ function StatistiekenSoftUpsell({ onOpenWaitlist }: { onOpenWaitlist: () => void
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
-          marginTop: 16,
+          marginTop: 18,
           padding: 0,
           border: "none",
           background: "none",
@@ -270,7 +271,7 @@ function StatistiekenSoftUpsell({ onOpenWaitlist }: { onOpenWaitlist: () => void
         {PREMIUM_STATISTIEKEN_SOFT_UPSELL.cta}
         <Icons.ArrowRight s={16} />
       </button>
-    </div>
+    </Card>
   );
 }
 
@@ -484,12 +485,14 @@ function VitaalscoreInzichtenView({
   isMember,
   hasTrendsFeature,
   onBack,
+  onOpenWaitlist,
 }: {
   model: DashboardModel;
   firstName: string | null;
   isMember: boolean;
   hasTrendsFeature: boolean;
   onBack: () => void;
+  onOpenWaitlist: () => void;
 }) {
   const upsellShownRef = useRef(false);
   const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
@@ -599,12 +602,15 @@ function VitaalscoreInzichtenView({
                   fontSize: 14,
                   color: "var(--text-muted)",
                   lineHeight: 1.55,
-                  margin: 0,
+                  margin: "0 0 16px",
                   textWrap: "pretty",
                 }}
               >
                 {VITALITY_INSIGHTS_UPSELL_BODY}
               </p>
+              <Button variant="terra" full onClick={onOpenWaitlist}>
+                {VITALITY_INSIGHTS_UPSELL_CTA}
+              </Button>
             </div>
           </>
         ) : (
@@ -666,6 +672,18 @@ function StatistiekenView({
       <VoortgangSubHeader title="Statistieken" onBack={onBack} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: 13.5,
+            color: "var(--text-muted)",
+            lineHeight: 1.5,
+            textWrap: "pretty",
+          }}
+        >
+          Gebaseerd op je gratis test en ingevulde tijdlijn.
+        </p>
+
         <LeefstijllijnSection model={model} surface="voortgang" />
 
         {!trendsUnlocked ? (
@@ -951,10 +969,10 @@ export default function VoortgangHub({
     setScreen(destination);
   };
 
-  const openPremiumWaitlist = () => {
+  const openPremiumWaitlist = (surface: "statistieken" | "inzichten" = "statistieken") => {
     trackEvent("dashboard_statistieken_upsell", {
       state: "locked",
-      surface: "voortgang",
+      surface: surface === "inzichten" ? "inzichten" : "voortgang",
       cta: "soft_upsell",
     });
     clarityTag("dashboard_statistieken", "soft_upsell_click");
@@ -979,6 +997,7 @@ export default function VoortgangHub({
         isMember={isMember}
         hasTrendsFeature={hasTrendsFeature}
         onBack={goBack}
+        onOpenWaitlist={() => openPremiumWaitlist("inzichten")}
       />
     );
   }
@@ -997,7 +1016,7 @@ export default function VoortgangHub({
         unlockedStatistics={unlockedStatistics}
         onBack={goBack}
         onOpenLichaam={() => navigate("lichaamssamenstelling")}
-        onOpenWaitlist={openPremiumWaitlist}
+        onOpenWaitlist={() => openPremiumWaitlist("statistieken")}
       />
     );
   }
@@ -1014,6 +1033,42 @@ export default function VoortgangHub({
 
   return (
     <section aria-label="Voortgang navigatie">
+      <div style={{ marginBottom: 20 }}>
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--text-subtle)",
+            marginBottom: 6,
+          }}
+        >
+          Voortgang
+        </div>
+        <div
+          style={{
+            fontFamily: "var(--f-serif)",
+            fontSize: 22,
+            color: "var(--text)",
+            lineHeight: 1.25,
+          }}
+        >
+          Zo volg je je vooruitgang
+        </div>
+        <p
+          style={{
+            margin: "8px 0 0",
+            fontSize: 14,
+            color: "var(--text-muted)",
+            lineHeight: 1.55,
+            textWrap: "pretty",
+          }}
+        >
+          Op basis van je gratis test, ingevulde tijdlijn en hermetingen.
+        </p>
+      </div>
+
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <PremiumWaitlistCard surface="voortgang" />
         <HubCard
@@ -1025,7 +1080,11 @@ export default function VoortgangHub({
         <HubCard
           icon={<Icons.BarChart s={20} />}
           title="Statistieken"
-          subtitle="Jouw lijn en checkgeschiedenis — trends met Plus"
+          subtitle={
+            model.history.length > 0
+              ? `${model.history.length} check${model.history.length === 1 ? "" : "s"} · trends met Premium`
+              : "Jouw lijn en checkgeschiedenis — trends met Premium"
+          }
           onClick={() => openHub("statistieken")}
         />
       </div>

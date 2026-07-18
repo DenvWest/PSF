@@ -105,7 +105,7 @@ export default function PremiumWaitlistCard({
                 marginBottom: 10,
               }}
             >
-              <Icons.Lock s={14} /> Premium · begeleiding
+              <Icons.BarChart s={14} /> Premium · Statistieken
             </div>
             <div
               style={{
@@ -116,7 +116,7 @@ export default function PremiumWaitlistCard({
                 marginBottom: 8,
               }}
             >
-              Elke week kijkt er iemand met je mee — onafhankelijk, zonder merkverkoop.
+              Zie precies waar je vooruitgang boekt — niet alleen een score.
             </div>
             <p
               style={{
@@ -127,8 +127,8 @@ export default function PremiumWaitlistCard({
                 textWrap: "pretty",
               }}
             >
-              Gratis meet je waar je staat; premium is wekelijkse persoonlijke terugkoppeling op je
-              eigen cijfers.
+              Je gratis test en tijdlijn geven een eerste beeld. Premium vergelijkt je metingen
+              automatisch en laat trends per domein zien.
             </p>
             <p
               style={{
@@ -174,7 +174,7 @@ export default function PremiumWaitlistCard({
             disabled={state === "loading"}
             onClick={join}
           >
-            {state === "loading" ? "Bezig…" : "Zet me op de wachtlijst"}
+            {state === "loading" ? "Bezig…" : "Zet me op de wachtlijst voor Premium"}
           </Button>
 
           {state === "error" ? (
