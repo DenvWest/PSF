@@ -35,6 +35,7 @@ export const DOMAIN_EVENT_TYPES = [
   "plan.phase_expanded",
   "plan.daily_rhythm_clicked",
   "plan.week_category_selected",
+  "movement.session_logged",
   "wearable.interest_clicked",
   "plan.checkin_completed",
   "premium.waitlist_joined",

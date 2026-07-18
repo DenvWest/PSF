@@ -727,7 +727,9 @@ Tokens: encrypted ref in `lp_connections.token_ref` — nooit plaintext in logs 
 
 ### 8.2 Gebruikte signalen → planning
 
-| Signaal | Effect op planning |
+> **Bindende waarheid (analyse-first, 18 jul 2026 — Analyse-SSOT-verdict).** Een `WearableSignalSnapshot` landt eerst op de **analyse-laag** (trend/context-verrijking), niet op de checklist. De onderstaande "effect op planning" is dus een **afgeleide, feature-gated soft hint** (`computeRecoveryFit` → `showWhen`-hint of analyse-banner via `movement-recovery-bridge.ts`), nooit een alternate domeinscore en nooit sensor-raw in een `PlanStep`-body. Zie `docs/core/DOMAIN_MODEL.md` §5.1 + `src/types/wearable-signals.ts`.
+
+| Signaal | Effect op planning (afgeleide hint) |
 |---------|-------------------|
 | Slechte slaap (`sleepScore` laag) | Lichtere intensiteit voorstellen |
 | Hoge `trainingLoad` | Herstelwandeling i.p.v. kracht |

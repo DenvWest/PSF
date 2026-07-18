@@ -3,7 +3,7 @@
 > **Layer 1 — Core.** Verplicht register conform AVG art. 30. Intern document — niet publiceren.
 > Verwante docs: [`DPIA.md`](DPIA.md) (art. 35, risicobeoordeling), privacyverklaring (`src/app/privacy/page.tsx`), [`ENTITY_MODEL.md`](ENTITY_MODEL.md) (technische tabellen).
 
-**Laatst bijgewerkt:** 2026-07-16  
+**Laatst bijgewerkt:** 2026-07-18  
 **Volgende geplande controle:** 2026-08-01 (maandelijks)  
 **Eigenaar:** Dennis van Westbroek — verwerkingsverantwoordelijke  
 **Archief verwerkersovereenkomsten:** `Documenten/documenten/perfectsupplement/privacy/`
@@ -224,6 +224,20 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Doorgifte buiten EU** | Alleen indien Sentry-project buiten EU staat — standaard EU-project aanbevolen |
 | **Actief** | Prod-DSN geconfigureerd; scrubber + `sendDefaultPii: false`; alleen errors (geen Replay) |
 
+### 15. Bewegingssessie-log (zelfrapportage)
+
+| | |
+|---|---|
+| **Doel** | Zelfgerapporteerde bewegingssessies (modaliteit + minuten) vastleggen zodat de gebruiker gedragsvolume náást de scorelijn ziet en bij de 30-dagen-hermeting kan aflezen ("score bewoog X; je noteerde Y minuten over Z dagen") |
+| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig een sessie loggen |
+| **Soort gegevens** | Account-id, organization-id, logdatum, modaliteit (enum: krachttraining/wandelen/zone2/rustmoment), duur in minuten, bron (`self_report`), optionele vrije notitie |
+| **Bijzondere gegevens** | Ja — zelfgerapporteerd gezondheidsgerelateerd gedrag (inspanning), gekoppeld aan account met art. 9-intake |
+| **Ontvangers** | Supabase (`movement_session_log`, EU Frankfurt) — geen nieuwe verwerker |
+| **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming via account-storage-consent) + art. 6 lid 1 sub a |
+| **Bewaartermijn** | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering (cascade) of intrekking |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; account-scoped; vrije notitie nooit naar analytics of hermeting-artefact; product-event `movement.session_logged` draagt alleen categorische data (modaliteit + minuten-band), geen vrije tekst (valt onder verwerking §7) |
+| **Doorgifte buiten EU** | Nee |
+
 ---
 
 ## Verwerkersovereenkomsten (art. 28)
@@ -264,6 +278,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-07-18 | Verwerking 15 toegevoegd: bewegingssessie-log (zelfrapportage) — nieuwe tabel `movement_session_log`, account-scoped RLS deny-all, art. 9 (toestemming); product-event `movement.session_logged` categorisch (valt onder §7). DPIA §1.3/§1.5 meegewijzigd |
 | 2026-07-16 | Sentry DPA 5.1.0 geaccepteerd + prod-DSN actief (EU-regio; aggregated identifying data uit) |
 | 2026-07-16 | Sentry error monitoring toegevoegd (code + scrubber) |
 | 2026-07-16 | Cookie-consent pre-deploy checklist afgevink (prod) |

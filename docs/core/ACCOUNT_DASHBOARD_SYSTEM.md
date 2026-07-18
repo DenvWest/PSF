@@ -68,7 +68,7 @@ Regels: geen wearable/AI-bril in pre-traffic slice; geen scores in calendar/shar
 ## Open / backlog
 
 1. Identiteit-sectie echt vullen (geslacht/gewicht/lengte/werk → eiwitdoel/PAL; biometrie → voedingsadvies). Grootste item, vraagt eerst een scope-besluit (opslaan vs bereken-en-vergeet).
-2. Voeding in de trend via `intake_intake_log` (F3b-deel-2).
+2. ~~Voeding in de trend via `intake_intake_log` (F3b-deel-2)~~ — **gedaan:** `nutrition_score` uit `intake_intake_log` wordt gemerged in `series.voeding` vóór trend-bouw (`account-dashboard.ts:348-349`, push ±r.457). Bron-asymmetrie t.o.v. de andere interventies (die via `intake_domain_checkin` lopen) — geen productgat.
 3. Nurture-mail-consolidatie (geen aparte login/welkomstmail bóvenop de nurture-sequence).
 4. ~~Resultaatscherm declutteren~~ — **gedaan (jun 2026):** REVEAL = dashboard-trailer: top-3 ladder + 2 leefstijlstappen; volledige ladder en supplement alleen in dashboard na login; ingeklapte dashboard-preview onder CTA.
 5. Wearables / objectieve signalen (toekomst).

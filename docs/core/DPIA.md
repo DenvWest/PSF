@@ -33,6 +33,7 @@ Volwassen websitebezoekers (doelgroep mannen ±40+) die vrijwillig de Leefstijlc
 | Leeftijdsindicatie | `age_range` | Nee |
 | Contact/marketing | `marketing_email`, reminder-e-mail | Nee (wel gekoppeld aan art. 9) |
 | Voeding/check-in/gewicht | periodieke rapportage, eiwitrichtlijn | **Ja** |
+| Bewegingssessies (zelfrapportage) | modaliteit + minuten per dag (`movement_session_log`) | **Ja** — gezondheidsgerelateerd gedrag |
 | Accountkoppeling | `psf_account` (HMAC bearer-token) | Nee (identificator) |
 | Gedrag | `affiliate_clicks`, webanalyse | Nee |
 
@@ -53,6 +54,7 @@ Volledige lijst en archiefpaden: [`VERWERKINGSREGISTER.md`](VERWERKINGSREGISTER.
 | Gegeven | Termijn |
 |---|---|
 | Intake-sessies (incl. art. 9) | 24 maanden, automatisch verwijderd |
+| Bewegingssessie-log (zelfrapportage) | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering of intrekking |
 | Reminders | 12 maanden na verzending |
 | Nurture/marketing | 5 jaar na intrekking |
 | Feedback | 1 jaar |

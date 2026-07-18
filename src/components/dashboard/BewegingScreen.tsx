@@ -7,7 +7,9 @@ import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
+import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
 import { PILLAR } from "@/data/dashboard";
+import { isMovementLogEnabled } from "@/lib/feature-flags";
 import {
   buildMovementRecommendations,
   getMovementNutritionHint,
@@ -208,6 +210,179 @@ export default function BewegingScreen({
     clarityTag("dashboard_beweging_premium", "shown");
   }, []);
 
+  const logEnabled = isMovementLogEnabled();
+
+  const voedingSupplementSection = (
+    <section aria-label="Voeding en supplementen">
+      <KompasSectionHeader eyebrow="Leefstijl eerst" title="Voeding & supplementen" />
+      <Card pad={18} surface="light">
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: KOMPAS_LIGHT.subtle,
+                marginBottom: 8,
+              }}
+            >
+              Voeding optimaliseren
+            </div>
+            <p
+              style={{
+                fontSize: 14,
+                color: KOMPAS_LIGHT.muted,
+                lineHeight: 1.55,
+                margin: "0 0 12px",
+                textWrap: "pretty",
+              }}
+            >
+              {nutritionHint}
+            </p>
+            <Link
+              href="/intake/voeding?from=dashboard&kompas=beweging"
+              onClick={() => {
+                trackEvent("dashboard_beweging_voeding_click", { surface: "kompas_beweging" });
+                clarityTag("dashboard_beweging_voeding", "click");
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: "var(--sage)",
+                textDecoration: "none",
+              }}
+            >
+              Doe de voedingscheck <Icons.ChevronRight s={15} />
+            </Link>
+          </div>
+
+          <div
+            style={{
+              borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+              paddingTop: 14,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: KOMPAS_LIGHT.subtle,
+                marginBottom: 10,
+              }}
+            >
+              Supplementen — als je basis staat
+            </div>
+            {recommendations.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {recommendations.map((rec, index) => {
+                  const href = rec.comparisonHref ?? rec.guideHref;
+                  return (
+                    <Link
+                      key={rec.slug}
+                      href={href}
+                      onClick={() => {
+                        trackEvent("dashboard_beweging_supplement_click", {
+                          slug: rec.slug,
+                          target: href,
+                          surface: "kompas_beweging",
+                        });
+                        clarityTag("dashboard_beweging_supplement", rec.slug);
+                      }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "12px 0",
+                        textDecoration: "none",
+                        color: "inherit",
+                        borderTop: index ? `1px solid ${KOMPAS_LIGHT.innerBorder}` : "none",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 12,
+                          flexShrink: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 20,
+                          background: KOMPAS_LIGHT.innerBg,
+                          border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
+                        }}
+                        aria-hidden
+                      >
+                        {rec.icon}
+                      </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div
+                          style={{
+                            fontFamily: "var(--f-serif)",
+                            fontSize: 16,
+                            color: KOMPAS_LIGHT.text,
+                            lineHeight: 1.2,
+                          }}
+                        >
+                          {rec.name}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            color: KOMPAS_LIGHT.muted,
+                            lineHeight: 1.5,
+                            marginTop: 2,
+                            textWrap: "pretty",
+                          }}
+                        >
+                          {rec.wiifm}
+                        </div>
+                      </div>
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 3,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "var(--sage)",
+                          flexShrink: 0,
+                        }}
+                      >
+                        Vergelijk <Icons.ChevronRight s={15} />
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <p
+                style={{
+                  fontSize: 13.5,
+                  color: KOMPAS_LIGHT.muted,
+                  lineHeight: 1.5,
+                  margin: 0,
+                  textWrap: "pretty",
+                }}
+              >
+                {nutritionLogCompleted
+                  ? "Geen supplement-signalen — focus eerst op voeding en je plan."
+                  : "Doe eerst de voedingscheck voordat we supplementen tonen — eerst tafel, dan potje."}
+              </p>
+            )}
+          </div>
+        </div>
+      </Card>
+    </section>
+  );
+
   return (
     <KompasLightPanel>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -225,7 +400,7 @@ export default function BewegingScreen({
                   marginBottom: 6,
                 }}
               >
-                Kracht &amp; conditie
+                Bewegingsanalyse
               </div>
               <div
                 style={{
@@ -258,6 +433,8 @@ export default function BewegingScreen({
           compact
           focusPillarId="beweging"
         />
+
+        {logEnabled ? <MovementLogPanel /> : null}
 
         <Link
           href="/intake/beweging?from=dashboard&kompas=beweging"
@@ -311,175 +488,26 @@ export default function BewegingScreen({
           )}
         </Link>
 
-        <section aria-label="Voeding en supplementen">
-          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Voeding & supplementen" />
-          <Card pad={18} surface="light">
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: KOMPAS_LIGHT.subtle,
-                    marginBottom: 8,
-                  }}
-                >
-                  Voeding optimaliseren
-                </div>
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: KOMPAS_LIGHT.muted,
-                    lineHeight: 1.55,
-                    margin: "0 0 12px",
-                    textWrap: "pretty",
-                  }}
-                >
-                  {nutritionHint}
-                </p>
-                <Link
-                  href="/intake/voeding?from=dashboard&kompas=beweging"
-                  onClick={() => {
-                    trackEvent("dashboard_beweging_voeding_click", { surface: "kompas_beweging" });
-                    clarityTag("dashboard_beweging_voeding", "click");
-                  }}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    color: "var(--sage)",
-                    textDecoration: "none",
-                  }}
-                >
-                  Doe de voedingscheck <Icons.ChevronRight s={15} />
-                </Link>
-              </div>
+        {logEnabled ? (
+          <details style={{ borderTop: "1px solid #ebe7e2", paddingTop: 12 }}>
+            <summary
+              style={{
+                cursor: "pointer",
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: "#57534e",
+                listStyle: "none",
+              }}
+            >
+              Voeding &amp; supplementen
+            </summary>
+            <div style={{ marginTop: 12 }}>{voedingSupplementSection}</div>
+          </details>
+        ) : (
+          voedingSupplementSection
+        )}
 
-              <div
-                style={{
-                  borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                  paddingTop: 14,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: KOMPAS_LIGHT.subtle,
-                    marginBottom: 10,
-                  }}
-                >
-                  Supplementen — als je basis staat
-                </div>
-                {recommendations.length > 0 ? (
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    {recommendations.map((rec, index) => {
-                      const href = rec.comparisonHref ?? rec.guideHref;
-                      return (
-                        <Link
-                          key={rec.slug}
-                          href={href}
-                          onClick={() => {
-                            trackEvent("dashboard_beweging_supplement_click", {
-                              slug: rec.slug,
-                              target: href,
-                              surface: "kompas_beweging",
-                            });
-                            clarityTag("dashboard_beweging_supplement", rec.slug);
-                          }}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 12,
-                            padding: "12px 0",
-                            textDecoration: "none",
-                            color: "inherit",
-                            borderTop: index ? `1px solid ${KOMPAS_LIGHT.innerBorder}` : "none",
-                          }}
-                        >
-                          <span
-                            style={{
-                              width: 40,
-                              height: 40,
-                              borderRadius: 12,
-                              flexShrink: 0,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: 20,
-                              background: KOMPAS_LIGHT.innerBg,
-                              border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                            }}
-                            aria-hidden
-                          >
-                            {rec.icon}
-                          </span>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div
-                              style={{
-                                fontFamily: "var(--f-serif)",
-                                fontSize: 16,
-                                color: KOMPAS_LIGHT.text,
-                                lineHeight: 1.2,
-                              }}
-                            >
-                              {rec.name}
-                            </div>
-                            <div
-                              style={{
-                                fontSize: 13,
-                                color: KOMPAS_LIGHT.muted,
-                                lineHeight: 1.5,
-                                marginTop: 2,
-                                textWrap: "pretty",
-                              }}
-                            >
-                              {rec.wiifm}
-                            </div>
-                          </div>
-                          <span
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 3,
-                              fontSize: 12,
-                              fontWeight: 600,
-                              color: "var(--sage)",
-                              flexShrink: 0,
-                            }}
-                          >
-                            Vergelijk <Icons.ChevronRight s={15} />
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p
-                    style={{
-                      fontSize: 13.5,
-                      color: KOMPAS_LIGHT.muted,
-                      lineHeight: 1.5,
-                      margin: 0,
-                      textWrap: "pretty",
-                    }}
-                  >
-                    {nutritionLogCompleted
-                      ? "Geen supplement-signalen — focus eerst op voeding en je plan."
-                      : "Doe eerst de voedingscheck voordat we supplementen tonen — eerst tafel, dan potje."}
-                  </p>
-                )}
-              </div>
-            </div>
-          </Card>
-        </section>
-
+        {logEnabled ? null : (
         <section aria-label="Bewegingsvormen">
           <KompasSectionHeader eyebrow="Opbouw" title="Bewegingsvormen" action={<SoonPill />} />
           <Card pad={18} surface="light">
@@ -536,13 +564,14 @@ export default function BewegingScreen({
             </div>
           </Card>
         </section>
+        )}
 
         <KompasBegeleidingLink surface="kompas_beweging" />
 
         <FooterLink
           href="/intake/plan/movement?from=dashboard&kompas=beweging"
           icon={<Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Stappen afvinken — bewegingsplan"
+          label="Stappenplan"
           onClick={() => {
             trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging" });
           }}

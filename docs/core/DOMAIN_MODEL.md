@@ -159,7 +159,7 @@ Per interventiedomein geldt één hiërarchie in dashboard/Kompas — **zonder**
 | **Actie** | Wat doe ik eraan? | Leefstijlplan-checklist + dagelijkse habit/agenda | `LifestylePlanTemplate` + `plan_progress` / `daily_action_log` |
 
 - **Leefstijllijn** toont uitsluitend de **5 interventiedomeinen**; energie/herstel blijven readout (rapport + drivers), geen eigen plan-slot.
-- **Naming blijft:** "Bewegingsplan", `/intake/plan/movement`, `movementPlanTemplate` — geen rename naar "analyse".
+- **Naming (H1 — geaccordeerd 18 jul 2026):** UI-copy op de analyse-shell = **Bewegingsanalyse** / **Jouw lijn** / **Stappenplan** (actie-footer). Stabiel blijven: routes `/intake/plan/movement` + `/intake/beweging`, ident `movementPlanTemplate`, en template-title `"Bewegingsplan na 40"` (SSOT voor PDF/nurture). Het is een **copy-rename, geen API-rename**. De eerdere "naming blijft Bewegingsplan"-regel is hiermee vervallen.
 - **Wearables / AI-bril (horizon):** extra signaalbronnen op de analyse-laag (`WearableSignalSnapshot`), niet op de checklist. Zie `ACCOUNT_DASHBOARD_SYSTEM.md` §Signaalbronnen.
 
 ---
