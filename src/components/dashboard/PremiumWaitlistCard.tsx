@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "@/components/app/primitives";
 import * as Icons from "@/components/app/icons";
 import { PREMIUM_LAUNCH_EMAIL_CONSENT_TEXT } from "@/lib/consent-texts";
+import PremiumValuePropsList from "@/components/dashboard/PremiumValuePropsList";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 
@@ -38,6 +39,7 @@ export default function PremiumWaitlistCard({
     shownRef.current = true;
     trackEvent("premium_waitlist_shown", { surface });
     clarityTag("premium_waitlist", "shown");
+    clarityTag("premium_value_props", surface);
   }, [surface]);
 
   const join = async () => {
@@ -142,6 +144,8 @@ export default function PremiumWaitlistCard({
             eigen cijfers.
           </p>
         </div>
+
+        <PremiumValuePropsList />
 
         <fieldset
           style={{

@@ -6,6 +6,7 @@ import * as Icons from "@/components/app/icons";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
+import { AgendaFocusPanel, AgendaFocusPill } from "@/components/dashboard/agenda/AgendaMetaRow";
 import { clarityTag } from "@/lib/clarity";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
 import {
@@ -21,7 +22,7 @@ import {
 } from "@/lib/agenda-timeline";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
-import type { DashboardModel } from "@/types/dashboard";
+import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 const HOUR_HEIGHT_PX = 52;
 const TIMELINE_HEIGHT_PX = getTimelineTrackHeightPx(HOUR_HEIGHT_PX);
@@ -62,6 +63,9 @@ type AgendaDayTimelineProps = {
   onRestorePlanStep?: () => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
+  onSelectPillar: (pillarId: PillarId) => void;
+  onAcceptEngine: () => void;
+  onResetFocus: () => void;
 };
 
 function formatDayHeading(isoDate: string, isToday: boolean): string {
@@ -93,8 +97,12 @@ export default function AgendaDayTimeline({
   onRestorePlanStep,
   onHideAllPlanSteps,
   onShowAllPlanSteps,
+  onSelectPillar,
+  onAcceptEngine,
+  onResetFocus,
 }: AgendaDayTimelineProps) {
   const [addOpen, setAddOpen] = useState(false);
+  const [focusExpanded, setFocusExpanded] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const planStep = useMemo(
@@ -127,8 +135,22 @@ export default function AgendaDayTimeline({
     setDraftSlot(null);
   };
 
+  const closeFocus = () => {
+    setFocusExpanded(false);
+  };
+
   const closeDetail = () => {
     setSelectedBlockId(null);
+  };
+
+  const openHeaderFocus = () => {
+    if (focusExpanded) {
+      closeFocus();
+      return;
+    }
+    closeSheet();
+    setSelectedBlockId(null);
+    setFocusExpanded(true);
   };
 
   const openHeaderSheet = () => {
@@ -136,6 +158,7 @@ export default function AgendaDayTimeline({
       closeSheet();
       return;
     }
+    closeFocus();
     setSelectedBlockId(null);
     setDraftSlot(null);
     setAddOpen(true);
@@ -143,6 +166,7 @@ export default function AgendaDayTimeline({
 
   const openDetail = (blockId: string) => {
     closeSheet();
+    closeFocus();
     setSelectedBlockId(blockId);
   };
 
@@ -151,6 +175,7 @@ export default function AgendaDayTimeline({
       return;
     }
 
+    closeFocus();
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetY = event.clientY - rect.top;
     const nextDraft = positionToTimelineTime(offsetY, rect.height);
@@ -162,24 +187,47 @@ export default function AgendaDayTimeline({
 
   return (
     <section aria-label="Dagtijdlijn">
-      <div className="mb-4 flex items-end justify-between gap-3">
-        <h2
-          className="m-0 text-[20px] font-medium capitalize text-[#1c1917]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          {formatDayHeading(slot.date, slot.isToday)}
-        </h2>
-        <button
-          type="button"
-          disabled={blockBusy}
-          onClick={openHeaderSheet}
-          aria-expanded={addOpen}
-          className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#e4e0da] bg-white px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors disabled:opacity-60"
-          style={{ fontFamily: "var(--f-sans)" }}
-        >
-          {addOpen ? null : <Icons.Plus s={14} />}
-          {addOpen ? "Annuleer" : "Moment"}
-        </button>
+      <div className="mb-4">
+        <div className="flex items-end justify-between gap-3">
+          <h2
+            className="m-0 min-w-0 flex-1 text-[20px] font-medium capitalize text-[#1c1917]"
+            style={{ fontFamily: "var(--f-serif)" }}
+          >
+            {formatDayHeading(slot.date, slot.isToday)}
+          </h2>
+          <div className="flex shrink-0 items-center gap-2">
+            {slot.isToday ? (
+              <AgendaFocusPill
+                model={model}
+                busy={prefBusy}
+                expanded={focusExpanded}
+                onToggle={openHeaderFocus}
+              />
+            ) : null}
+            <button
+              type="button"
+              disabled={blockBusy}
+              onClick={openHeaderSheet}
+              aria-expanded={addOpen}
+              className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#e4e0da] bg-white px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors disabled:opacity-60"
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              {addOpen ? null : <Icons.Plus s={14} />}
+              {addOpen ? "Annuleer" : "Moment"}
+            </button>
+          </div>
+        </div>
+        {slot.isToday && focusExpanded ? (
+          <div className="mt-3">
+            <AgendaFocusPanel
+              model={model}
+              busy={prefBusy}
+              onSelectPillar={onSelectPillar}
+              onAcceptEngine={onAcceptEngine}
+              onReset={onResetFocus}
+            />
+          </div>
+        ) : null}
       </div>
 
       {planStep ? (

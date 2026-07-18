@@ -21,10 +21,17 @@ import {
 } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackAgendaDaySelected, trackEvent } from "@/lib/ga4";
-import { postDismissPlanStep, postRestorePlanStep, postScheduledTime, postSetPlanStepsHidden } from "@/lib/priority-pref-client";
+import {
+  postDismissPlanStep,
+  postPrioritySelection,
+  postRestorePlanStep,
+  postScheduledTime,
+  postSetPlanStepsHidden,
+  resetPriorityPref,
+} from "@/lib/priority-pref-client";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
-import type { AccountPriorityPrefData, DashboardModel } from "@/types/dashboard";
+import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
 type AgendaScreenProps = {
   model: DashboardModel;
@@ -285,6 +292,41 @@ export default function AgendaScreen({
     }
   };
 
+  const saveAgendaPriority = async (
+    pillarId: PillarId,
+    source: "user_selected" | "accept_engine",
+  ) => {
+    setPrefBusy(true);
+    try {
+      const pref = await postPrioritySelection({
+        pillarId,
+        source,
+        surface: "agenda",
+        timeBucket: model.timeBucket ?? null,
+        scheduledTime: model.scheduledTime ?? null,
+      });
+      onPrefUpdated(pref);
+      trackEvent("dashboard_priority_selected", {
+        pillar_id: pillarId,
+        source,
+        surface: "agenda",
+      });
+      clarityTag("dashboard_priority", pillarId);
+    } finally {
+      setPrefBusy(false);
+    }
+  };
+
+  const handleResetFocus = async () => {
+    setPrefBusy(true);
+    try {
+      await resetPriorityPref();
+      onPrefUpdated(null);
+    } finally {
+      setPrefBusy(false);
+    }
+  };
+
   const handleVoortgangLink = () => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
       surface: "agenda",
@@ -329,6 +371,13 @@ export default function AgendaScreen({
           onRestorePlanStep={handleRestorePlanStep}
           onHideAllPlanSteps={handleHideAllPlanSteps}
           onShowAllPlanSteps={handleShowAllPlanSteps}
+          onSelectPillar={(pillarId) =>
+            void saveAgendaPriority(pillarId, "user_selected")
+          }
+          onAcceptEngine={() =>
+            void saveAgendaPriority(model.enginePriority.id, "accept_engine")
+          }
+          onResetFocus={() => void handleResetFocus()}
         />
       </AgendaShellSection>
 

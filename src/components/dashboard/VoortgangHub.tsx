@@ -16,6 +16,7 @@ import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
+import PremiumValuePropsList from "@/components/dashboard/PremiumValuePropsList";
 import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
@@ -638,6 +639,7 @@ function StatistiekenView({
       surface: "voortgang",
     });
     clarityTag("dashboard_statistieken", "locked");
+    clarityTag("premium_value_props", "statistieken_locked");
   }, [trendsUnlocked]);
 
   const openLichaam = () => {
@@ -658,34 +660,29 @@ function StatistiekenView({
 
         {!trendsUnlocked ? (
           <>
-          <BlurredSignalsPreview />
-          <div style={{ textAlign: "center", padding: "0 8px" }}>
-            <div
-              style={{
-                fontFamily: "var(--f-serif)",
-                fontSize: 21,
-                color: "var(--text)",
-                lineHeight: 1.3,
-                marginBottom: 6,
-              }}
-            >
-              Statistieken van je voortgang?
+            <BlurredSignalsPreview />
+            <div style={{ padding: "0 4px" }}>
+              <div
+                style={{
+                  fontFamily: "var(--f-serif)",
+                  fontSize: 21,
+                  color: "var(--text)",
+                  lineHeight: 1.3,
+                  marginBottom: 12,
+                }}
+              >
+                Statistieken van je voortgang?
+              </div>
+              <PremiumValuePropsList />
             </div>
-            <p
-              style={{
-                fontSize: 14,
-                color: "var(--text-muted)",
-                lineHeight: 1.55,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              Begrijp jezelf beter.
-            </p>
-          </div>
           </>
         ) : (
-          unlockedStatistics
+          <>
+            {unlockedStatistics}
+            <div style={{ padding: "0 4px" }}>
+              <PremiumValuePropsList variant="comingSoonOnly" />
+            </div>
+          </>
         )}
       </div>
 

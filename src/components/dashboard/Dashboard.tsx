@@ -31,8 +31,6 @@ import SleepScreen from "@/components/dashboard/SleepScreen";
 import StressScreen from "@/components/dashboard/StressScreen";
 import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
 import AgendaScreen from "@/components/dashboard/agenda/AgendaScreen";
-import AgendaTeaser from "@/components/dashboard/agenda/AgendaTeaser";
-import AgendaFocusPicker from "@/components/dashboard/agenda/AgendaFocusPicker";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
@@ -84,7 +82,6 @@ import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
 import {
   postPrioritySelection,
-  resetPriorityPref,
 } from "@/lib/priority-pref-client";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -2512,75 +2509,6 @@ const STATUS_BADGE_COLOR: Record<
   "terra-deep": "#B45309",
 };
 
-type KompasView = PillarId | "activiteiten" | "trend";
-
-const KompasRowCard = ({
-  onClick,
-  ariaLabel,
-  leading,
-  title,
-  subtitle,
-  trailing = "chevron",
-}: {
-  onClick: () => void;
-  ariaLabel: string;
-  leading: ReactNode;
-  title: string;
-  subtitle?: string;
-  trailing?: "chevron" | "soon";
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    aria-label={ariaLabel}
-    className="flex min-h-[52px] w-full cursor-pointer items-center gap-3 rounded-[18px] border border-[#ebe7e2] bg-white px-3.5 py-3 text-left shadow-sm transition active:scale-[0.99] hover:border-[#5A8F6A]"
-    style={{ fontFamily: "var(--f-sans)" }}
-  >
-    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-[#faf9f7]">
-      {leading}
-    </div>
-    <div className="min-w-0 flex-1">
-      <div
-        className="text-base leading-tight text-[#1c1917]"
-        style={{ fontFamily: "var(--f-serif)" }}
-      >
-        {title}
-      </div>
-      {subtitle ? (
-        <div className="mt-0.5 text-[13px] leading-snug text-[#57534e]">{subtitle}</div>
-      ) : null}
-    </div>
-    {trailing === "soon" ? (
-      <SoonPill />
-    ) : (
-      <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
-    )}
-  </button>
-);
-
-const DomainBackBar = ({ onBack }: { onBack: () => void }) => (
-  <button
-    type="button"
-    onClick={onBack}
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 6,
-      padding: "8px 2px",
-      background: "none",
-      border: "none",
-      cursor: "pointer",
-      color: KOMPAS_LIGHT.muted,
-      fontFamily: "var(--f-sans)",
-      fontSize: 13.5,
-      fontWeight: 600,
-      alignSelf: "flex-start",
-    }}
-  >
-    <Icons.ChevronRight s={16} style={{ transform: "rotate(180deg)" }} /> Kompas
-  </button>
-);
-
 const KompasDomainRow = ({
   label,
   score,
@@ -2643,81 +2571,6 @@ const KompasDomainRow = ({
     </div>
   );
 };
-
-const KompasSoonScreen = ({
-  onBack,
-  title,
-  body,
-  teaser,
-  showChartPlaceholder = false,
-}: {
-  onBack: () => void;
-  title: string;
-  body: string;
-  teaser?: string | null;
-  showChartPlaceholder?: boolean;
-}) => (
-  <KompasLightPanel className="-mt-3 p-5">
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <DomainBackBar onBack={onBack} />
-      <Card pad={24} surface="light">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            textAlign: "center",
-            gap: 14,
-          }}
-        >
-          <div
-            style={{
-              fontFamily: "var(--f-serif)",
-              fontSize: 22,
-              color: KOMPAS_LIGHT.text,
-              lineHeight: 1.2,
-            }}
-          >
-            {title}
-          </div>
-          <p
-            style={{
-              fontSize: 14,
-              color: KOMPAS_LIGHT.muted,
-              lineHeight: 1.55,
-              margin: 0,
-              maxWidth: 330,
-              textWrap: "pretty",
-            }}
-          >
-            {body}
-          </p>
-          {teaser ? (
-            <p
-              style={{
-                fontSize: 13.5,
-                fontWeight: 600,
-                color: KOMPAS_LIGHT.text,
-                lineHeight: 1.5,
-                margin: 0,
-                textWrap: "pretty",
-              }}
-            >
-              Vandaag: {teaser}
-            </p>
-          ) : null}
-          {showChartPlaceholder ? (
-            <div
-              className="aspect-[16/9] w-full rounded-[16px] border border-[#ebe7e2] bg-[#faf9f7]"
-              aria-hidden
-            />
-          ) : null}
-          <SoonPill />
-        </div>
-      </Card>
-    </div>
-  </KompasLightPanel>
-);
 
 const DomainSoonScreen = ({
   model,
@@ -3189,19 +3042,16 @@ const KompasHome = ({
   onRemeasure,
   initialKompasView,
   kompasResetSignal: _kompasResetSignal,
-  prefUpdatedAt,
-  onPrefUpdated,
+  prefUpdatedAt: _prefUpdatedAt,
+  onPrefUpdated: _onPrefUpdated,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
-  const [prefBusy, setPrefBusy] = useState(false);
-  const [focusExpanded, setFocusExpanded] = useState(false);
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
     if (typeof window !== "undefined") {
       return parseKompasFromUrl(window.location.href);
     }
     return initialKompasView ?? null;
   });
-  const [overlayView, setOverlayView] = useState<Extract<KompasView, "activiteiten" | "trend"> | null>(null);
   const reminderShownRef = useRef(false);
   const showRemeasureReminder =
     Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
@@ -3215,7 +3065,6 @@ const KompasHome = ({
   useEffect(() => {
     const onPopState = () => {
       setDomainView(parseKompasFromUrl(window.location.href));
-      setOverlayView(null);
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -3235,31 +3084,6 @@ const KompasHome = ({
     onRemeasure();
   };
 
-  const saveKompasPriority = async (
-    pillarId: PillarId,
-    source: "user_selected" | "accept_engine",
-  ) => {
-    setPrefBusy(true);
-    try {
-      const pref = await postPrioritySelection({
-        pillarId,
-        source,
-        surface: "kompas",
-        timeBucket: currentModel?.timeBucket ?? null,
-        scheduledTime: currentModel?.scheduledTime ?? null,
-      });
-      onPrefUpdated(pref);
-      trackEvent("dashboard_priority_selected", {
-        pillar_id: pillarId,
-        source,
-        surface: "kompas",
-      });
-      clarityTag("dashboard_priority", pillarId);
-    } finally {
-      setPrefBusy(false);
-    }
-  };
-
   if (!currentModel) {
     return null;
   }
@@ -3272,15 +3096,10 @@ const KompasHome = ({
   const openDomain = (domain: PillarId) => {
     trackEvent("dashboard_kompas_domain_open", { domain });
     clarityTag("dashboard_kompas_domain", domain);
-    setOverlayView(null);
     setKompasDomain(domain);
   };
 
   const closeView = () => {
-    if (overlayView) {
-      setOverlayView(null);
-      return;
-    }
     setKompasDomain(null);
   };
 
@@ -3303,7 +3122,6 @@ const KompasHome = ({
       surface: "top_nav",
     });
     clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
-    setOverlayView(null);
     setKompasDomain(toDomain);
   };
 
@@ -3320,18 +3138,6 @@ const KompasHome = ({
     ) : (
       content
     );
-
-  const openActiviteiten = () => {
-    trackEvent("dashboard_kompas_activiteiten_open", { surface: "kompas_home" });
-    clarityTag("dashboard_kompas_view", "activiteiten");
-    setOverlayView("activiteiten");
-  };
-
-  const openTrend = () => {
-    trackEvent("dashboard_kompas_trend_open", { surface: "kompas_home" });
-    clarityTag("dashboard_kompas_view", "trend");
-    setOverlayView("trend");
-  };
 
   if (domainView === "beweging") {
     return withDomainTopNav(
@@ -3367,38 +3173,6 @@ const KompasHome = ({
   }
   if (domainView === "verbinding") {
     return withDomainTopNav(<VerbindingScreen model={currentModel} />);
-  }
-  if (overlayView === "activiteiten") {
-    return (
-      <KompasSoonScreen
-        onBack={closeView}
-        title="Activiteiten logboek"
-        body="Log dagelijks wat je deed — wandeling, stretching, alcoholvrije avond. Zo zie je of je leefstijl-stappen blijven hangen."
-        teaser={currentModel.activeHabit?.title ?? null}
-      />
-    );
-  }
-  if (overlayView === "trend") {
-    return (
-      <div className="-mt-2 flex flex-col gap-4">
-        <button
-          type="button"
-          onClick={closeView}
-          className="inline-flex min-h-11 cursor-pointer items-center gap-1 self-start border-none bg-transparent px-0 text-[13px] font-medium text-[#78716c]"
-          style={{ fontFamily: "var(--f-sans)" }}
-        >
-          <Icons.ChevronRight s={16} style={{ transform: "rotate(180deg)" }} /> Terug
-        </button>
-        <PriorityOverTimePanel
-          model={currentModel}
-          prefUpdatedAt={prefUpdatedAt}
-          busy={prefBusy}
-          onAcceptEngine={() =>
-            void saveKompasPriority(currentModel.enginePriority.id, "accept_engine")
-          }
-        />
-      </div>
-    );
   }
   if (domainView) {
     return withDomainTopNav(
@@ -3439,56 +3213,6 @@ const KompasHome = ({
       ) : null}
       <KompasLooseCard>
         <div className="flex items-center justify-between gap-2">
-          <div>
-            <p className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
-              Focus vandaag
-            </p>
-            <p
-              className="mt-1 text-[16px] font-medium text-[#1c1917]"
-              style={{ fontFamily: "var(--f-serif)" }}
-            >
-              {currentModel.priority.label}
-            </p>
-            {currentModel.priorityIsUserChosen ? (
-              <p className="mt-1 text-[12px] text-[#78716c]">
-                Jij koos · advies was {currentModel.enginePriority.label.toLowerCase()}
-              </p>
-            ) : (
-              <p className="mt-1 text-[12px] text-[#78716c]">
-                Op basis van je analyse
-              </p>
-            )}
-          </div>
-          <button
-            type="button"
-            disabled={prefBusy}
-            onClick={() => setFocusExpanded((open) => !open)}
-            aria-expanded={focusExpanded}
-            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-full border border-[#e4e0da] bg-white px-3 text-[12px] font-semibold text-[var(--sage)] disabled:opacity-60"
-            style={{ fontFamily: "var(--f-sans)" }}
-          >
-            {focusExpanded ? "Sluit" : "Wijzig"}
-          </button>
-        </div>
-        {focusExpanded ? (
-          <AgendaFocusPicker
-            model={currentModel}
-            busy={prefBusy}
-            onSelectPillar={(pillarId) => void saveKompasPriority(pillarId, "user_selected")}
-            onAcceptEngine={() =>
-              void saveKompasPriority(currentModel.enginePriority.id, "accept_engine")
-            }
-            onReset={() => {
-              setPrefBusy(true);
-              void resetPriorityPref()
-                .then(() => onPrefUpdated(null))
-                .finally(() => setPrefBusy(false));
-            }}
-          />
-        ) : null}
-      </KompasLooseCard>
-      <KompasLooseCard>
-        <div className="flex items-center justify-between gap-2">
           <h2
             className="m-0 text-[18px] leading-tight text-[#1c1917]"
             style={{ fontFamily: "var(--f-serif)" }}
@@ -3514,29 +3238,45 @@ const KompasHome = ({
           })}
         </div>
       </KompasLooseCard>
-
-      <KompasLooseCard>
-        <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#78716c]">
-          Log &amp; inzicht
-        </div>
-        <div className="flex flex-col gap-2.5">
-          <KompasRowCard
-            ariaLabel="Open activiteiten logboek"
-            onClick={openActiviteiten}
-            title="Activiteiten logboek"
-            subtitle="Wat deed je vandaag?"
-            leading={<Icons.Activity s={22} style={{ color: "var(--sage)" }} />}
-          />
-          <KompasRowCard
-            ariaLabel="Open trend levenslijn"
-            onClick={openTrend}
-            title="Trend — levenslijn urgentie"
-            subtitle="Hoe verschuift je prioriteit?"
-            leading={<Icons.TrendUp s={22} style={{ color: "var(--sage)" }} />}
-          />
-        </div>
-      </KompasLooseCard>
     </section>
+  );
+};
+
+const StatistiekenPriorityOverTime = ({
+  model,
+  prefUpdatedAt,
+  onPrefUpdated,
+}: Pick<SharedSectionProps, "model" | "prefUpdatedAt" | "onPrefUpdated">) => {
+  const [busy, setBusy] = useState(false);
+  const currentModel = model;
+
+  if (!currentModel) {
+    return null;
+  }
+
+  const acceptEngine = async () => {
+    setBusy(true);
+    try {
+      const pref = await postPrioritySelection({
+        pillarId: currentModel.enginePriority.id,
+        source: "accept_engine",
+        surface: "statistieken",
+        timeBucket: currentModel.timeBucket ?? null,
+        scheduledTime: currentModel.scheduledTime ?? null,
+      });
+      onPrefUpdated(pref);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <PriorityOverTimePanel
+      model={currentModel}
+      prefUpdatedAt={prefUpdatedAt}
+      busy={busy}
+      onAcceptEngine={() => void acceptEngine()}
+    />
   );
 };
 
@@ -3550,10 +3290,7 @@ const SECTION_RENDERERS: Record<
   vitalityScore: (props) => <VitalityScoreSection {...props} />,
   priority: (props) => (props.empty ? null : <PrioritySection {...props} />),
   plan: (props) => (props.empty ? null : <PlanSection {...props} />),
-  agendaTeaser: (props) =>
-    props.empty || !props.model ? null : (
-      <AgendaTeaser model={props.model} onOpenAgenda={props.onGoAgenda} />
-    ),
+  agendaTeaser: () => null,
   agendaHome: (props) =>
     props.empty || !props.model ? null : (
       <AgendaScreen
@@ -3585,6 +3322,11 @@ const SECTION_RENDERERS: Record<
         screen={props.voortgangScreen}
         unlockedStatistics={
           <>
+            <StatistiekenPriorityOverTime
+              model={props.model}
+              prefUpdatedAt={props.prefUpdatedAt}
+              onPrefUpdated={props.onPrefUpdated}
+            />
             <SignalsSection {...props} />
             <NutritionIntakeSection {...props} />
             <HistorySection {...props} />
