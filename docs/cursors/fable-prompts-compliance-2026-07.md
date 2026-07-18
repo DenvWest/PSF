@@ -1,84 +1,52 @@
 # Fable-prompts — compliance-status + vervolganalyse (juli 2026)
 
-Twee zelfstandige copy-paste prompts voor Claude Fable. Draai ze als **aparte sessies**:
-eerst sessie 1 (status), dan sessie 2 (diepgaande analyse cookie–privacy–art. 9).
+Eén resterende copy-paste prompt voor Claude Fable: het eindoordeel (prompt 2).
+Prompt 1 (status) is uitgevoerd op 4 juli en hoeft niet opnieuw.
 
 **Achtergrond:** De juni 2026 Claude-analyse beschreef scenario A launch-readiness als
-grotendeels papierwerk + één migratie. Sindsdien is het documentatie-blok grotendeels
-afgerond (4 juli 2026). Open: `premium_waitlist`-bug, Zoho DPA, intern rechten-runbook,
-login pre-check, contactformulier art. 9.
+grotendeels papierwerk + één migratie. Het documentatie-blok is 4 juli 2026 afgerond en
+de drie code-gaten zijn sindsdien gedicht: waitlist-migratie op prod (bevestigd 16 jul),
+login pre-check en contact-checkbox. Open is alleen nog papierwerk: Zoho DPA, intern
+rechten-runbook, privacytekst-sync (te checken), register-review augustus.
 
-**Verwacht eindoordeel cookie–privacy–art. 9:** ORANJE (technisch cookie-gating sterk;
-gaten bij login/contact + privacy-dekking sub-consents).
+**Verwacht eindoordeel cookie–privacy–art. 9:** GROEN met papierwerk-gaten (Zoho DPA +
+rechten-runbook); de technische keten — cookie-gating, consent-defaults, revoke — staat.
 
----
-
-## Prompt 1 — Status: wat is sinds juni gedaan?
-
-```text
-MODEL-CONTEXT: Claude Fable — compliance/status-sessie, geen code wijzigen.
-PROJECT: PerfectSupplement (perfectsupplement.nl) — Next.js 16, Supabase, art. 9-gezondheidsdata live.
-TAAL: Nederlands in output; citeer bestandspaden in Engels.
-
-## Achtergrond (juni 2026 — vorige analyse)
-
-Een eerdere Claude-sessie concludeerde:
-- Art. 9-data draait al live → AVG-verplichtingen gelden nu, niet pas bij "launch"
-- Scenario A (value-first, geen checkout) kan zodra MUST-lijst af is
-- MUST vóór launch: waitlist-migratie, DPA's archiveren, verwerkingsregister, datalek-one-pager, DPIA afronden, cookie-consent verifiëren, handmatige rechten-procedure
-- Top-3 risico's: art. 9 zonder DPA/register, tracking zonder cookie-opt-in, Premium herroeping (later)
-
-## Jouw taak
-
-Lees de genoemde bestanden in de repo en lever een **statusrapport**: per MUST-item uit de juni-lijst → DONE / PARTIAL / OPEN, met bewijs (bestand + datum).
-
-### Verplichte leeslijst
-
-| Onderwerp | Bestanden |
-|---|---|
-| Verwerkingsregister | docs/core/VERWERKINGSREGISTER.md |
-| DPIA | docs/core/DPIA.md |
-| Datalekprocedure | docs/legal/Datalekprocedure_PerfectSupplement_nl.md |
-| Privacy (publiek) | src/app/privacy/page.tsx, docs/legal/Privacyverklaring_PerfectSupplement_nl.md |
-| Consent / art. 9 | src/lib/consent-texts.ts, src/lib/intake-consent.ts, src/components/intake/IntakeConsent.tsx |
-| Cookie / analytics | src/app/layout.tsx, src/components/privacy/CookieConsentBanner.tsx, src/components/analytics/AnalyticsLoader.tsx, docs/cursors/cookie-consent-pre-deploy-checklist.md |
-| Revoke / rechten | src/components/privacy/PrivacyRevokeConsent.tsx, src/app/api/intake/consent/route.ts |
-| DPA-status | docs/core/VERWERKINGSREGISTER.md §Verwerkersovereenkomsten, docs/legal/Zoho_CRM_DPA_accepteren.md |
-| Live bug | supabase/migrations/20260628120000_premium_waitlist.sql, src/app/api/account/waitlist/route.ts |
-| Retentie-backlog (Fable) | docs/cursors/fable-prompts-retentie-backlog-2026-07.md |
-
-### Outputstructuur (verplicht)
-
-1. **Executive summary** (max 8 regels): wat is sinds juni afgerond, wat is het grootste resterende gat?
-2. **MUST-matrix** — tabel met kolommen: Item | Juni-status | Nu-status | Bewijs | Restwerk
-3. **Wat expliciet NIET is gedaan** — minimaal: premium_waitlist CHECK-bug, Zoho DPA, intern rechten-runbook
-4. **Documentatie vs. code** — waar divergeert de privacyverklaring/register van de implementatie?
-5. **Geen implementatie** — alleen rapport; geen commits, geen code-edits
-
-### Bekende feiten om te verifiëren (niet blind overnemen)
-
-- Verwerkingsregister + DPIA + datalekprocedure + PDF's: gemeld als afgerond 2026-07-04
-- DPIA v1.1 vastgesteld; geen [VUL IN]-placeholders meer in docs/core/DPIA.md
-- Cookiebanner: Consent Mode default-deny; GA4/Clarity pas na opt-in (geen GTM in repo)
-- Intake consent: checkboxes default false; server-side healthDataProcessing === true verplicht
-- premium_waitlist: DB CHECK op 3 features, API op 8 → coach-knoppen 500 in productie
-- LoginScreen: consent default true als !fromIntake (mogelijke pre-check gap)
-- contact-form.tsx: healthDataProcessing hardcoded true zonder checkbox
-```
+**Volgorde sessies (16 jul):** eerst de roadmap-evaluatie
+(`docs/cursors/fable-roadmap-evaluatie-vervolg-2026-07.md`), daarna dit eindoordeel als
+kleine losse sessie. Alleen als Zoho DPA of het rechten-runbook verkeer blokkeert mag
+deze papierwerk-sessie parallel.
 
 ---
 
-## Prompt 2 — Vervolganalyse: cookie–privacy–art. 9 + prioriteit
+## Prompt 1 — Status (uitgevoerd, niet opnieuw draaien)
 
-Plak de executive summary + MUST-matrix uit prompt 1 bovenaan vóór je deze draait.
+Uitgevoerd op 4 juli 2026; de MUST-matrix is gevalideerd tegen het Documenten-archief
+(zie Referentie onderaan + logboek in `docs/core/VERWERKINGSREGISTER.md`). De
+oorspronkelijke statusprompt is verwijderd omdat zijn "bekende feiten" verouderd waren
+(waitlist/login/contact zijn inmiddels gedicht). Niet opnieuw draaien.
+
+---
+
+## Prompt 2 — Eindoordeel: cookie–privacy–art. 9 + prioriteit
+
+Zelfstandig te draaien; de gevalideerde MUST-matrix staat onderaan dit document (Referentie).
 
 ```text
 MODEL-CONTEXT: Claude Fable — compliance-vervolganalyse, geen code wijzigen tenzij ik expliciet vraag.
 PROJECT: PerfectSupplement — art. 9-gezondheidsdata live sinds intake/dashboard.
 TAAL: Nederlands; concreet en onderbouwd met bestandspaden.
 
-## Context uit vorige sessie
-[PLAK HIER DE EXECUTIVE SUMMARY + MUST-MATRIX UIT PROMPT 1]
+## Context (status gevalideerd 4 jul, code herbevestigd 16 jul)
+
+De MUST-matrix is 4 juli gevalideerd. Sindsdien zijn de drie code-gaten gedicht —
+behandel ze als DONE, voer ze niet opnieuw als gap op (wel kort herbevestigen):
+- premium_waitlist 500-bug: migratie supabase/migrations/20260704120000_premium_waitlist_consolidation.sql (CHECK incl. premium-coaching + price_indication); prod bevestigd ✅ in docs/cursors/pre-traffic-gates-2026-07.md (16 jul)
+- Login pre-check: consent default uit — src/components/account/LoginScreen.tsx:232 (useState(false))
+- Contactformulier art. 9: echte checkbox, default uit — src/components/contact-form.tsx:46 (useState(false)); checkbox op regel 185
+
+Nog open (papierwerk): Zoho DPA, intern rechten-runbook, privacytekst-sync (checken),
+maandelijkse register-review augustus 2026.
 
 ## Hoofdvraag
 
@@ -131,15 +99,11 @@ Expliciet beantwoorden:
 
 Sorteer alles wat nog OPEN/PARTIAL is in drie buckets (MUST vóór scenario A / SHOULD 0-30d / CAN WAIT), met **geschatte effort** (uren) en **boete-/handhavingsrisico** (laag/middel/hoog).
 
-Minimaal deze items meenemen:
-1. premium_waitlist CHECK-fix (live 500-bug)
-2. Zoho CRM DPA accepteren + archiveren
-3. Intern rechten-runbook (inzage/export/verwijdering, Supabase-queries, 30-dagen-SLA)
-4. Login consent pre-check fix
-5. Contactformulier art. 9-checkbox
-6. Privacyverklaring bijwerken voor ontbrekende sub-consents
-7. Maandelijkse register-review loggen (aug 2026)
-8. Scenario B-papierwerk (Stripe, voorwaarden) — expliciet CAN WAIT tot Wave 7
+Alleen deze items meenemen (waitlist/login/contact zijn gedicht — zie Context):
+1. Zoho CRM DPA accepteren + archiveren
+2. Intern rechten-runbook (inzage/export/verwijdering, Supabase-queries, 30-dagen-SLA)
+3. Privacytekst-sync: dekt src/app/privacy/page.tsx alle sub-consents en de waitlist? (eerst checken, alleen bij bevestigde gap als restwerk opvoeren)
+4. Maandelijkse register-review loggen (aug 2026)
 
 ### E. Aanbevolen volgende actie (max 3)
 
@@ -153,7 +117,7 @@ Geef **één concrete eerste stap per type**:
 - Mermaid-diagram van de cookie→privacy→art.9-keten met gap-markering
 - Eindtabel: Schakel | Oordeel | Top-gap | Fix
 - Geen vage "overweeg"-taal — kies een aanbeveling met onderbouwing
-- Geen code-edits; wel Cursor-prompt-skelet voor de #1 codefix als die premium_waitlist of login pre-check is
+- Geen code-edits; alleen als de privacytekst-sync een bevestigde gap oplevert: prompt-skelet voor src/app/privacy/page.tsx klaarzetten
 
 ## Referentie-regels
 
@@ -164,9 +128,13 @@ Geef **één concrete eerste stap per type**:
 
 ---
 
-## Referentie — verwachte MUST-matrix (ter controle na Fable)
+## Referentie — MUST-matrix (gevalideerd 4 jul; historische stand)
 
-| Item | Juni | Verwacht nu | Opmerking |
+Let op: de ❌ bij premium_waitlist en de 🟡-gaps bij cookie-consent (login/contact) zijn
+ná 4 juli gedicht — zie het Context-blok in de prompt. Alleen Zoho DPA en het
+rechten-runbook staan nog open.
+
+| Item | Juni | Stand 4 jul | Opmerking |
 |---|---|---|---|
 | Art. 9 consent intake | ✅ | ✅ | Geen pre-check; server-validatie |
 | Informatieplicht | ✅ | ✅ | Privacy + PDF bijgewerkt 4 jul |
@@ -180,6 +148,7 @@ Geef **één concrete eerste stap per type**:
 
 ## Na uitvoering
 
-1. Valideer MUST-matrix tegen Documenten-archief (DPA's staan buiten git)
-2. Als ORANJE bevestigd: waitlist-migratie → login/contact fixes → privacytekst sync → Zoho DPA
-3. Waitlist-fix staat ook in docs/cursors/fable-prompts-retentie-backlog-2026-07.md (prompt 3)
+1. Zoho CRM DPA accepteren + archiveren als `dpa/Zoho_CRM_DPA_geaccepteerd_[datum].pdf` (Dennis, handmatig)
+2. Intern rechten-runbook schrijven (inzage/export/verwijdering, Supabase-queries, 30-dagen-SLA)
+3. Alleen bij bevestigde gap: privacytekst-sync in src/app/privacy/page.tsx
+4. Register-review augustus loggen in docs/core/VERWERKINGSREGISTER.md
