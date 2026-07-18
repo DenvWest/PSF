@@ -152,6 +152,10 @@ F1 Laag-contract Evidence (verplicht tekstdiagram) —
    - Evidence → Plan: teaser/focus alleen; geen PlanStep die scores herschrijft.
    - Evidence ↛ Agenda-score; Evidence ↛ parallelle domeinscore.
    - Relatie tot `daily_action_log`: gescheiden vs uitbreiden — kies.
+   - Leefstijllijn-resolutie (dag/week): de evidence-reeks heeft van dag één een datum-as,
+     de score-trend niet (ts weggegooid — account-dashboard.ts:467-469). Mag evidence de
+     week-view vullen vóórdat score-timestamps bestaan? Kies — zo ja: als aparte gedragsreeks
+     naast de score-lijn met eigen as-label; geen minuten→score, geen fake interpolatie.
 
 F2 UX-flow 0→hermeting (concreet, geen mockups) —
    Schets de happy path in stappen:
@@ -269,7 +273,8 @@ Code-spotchecks (minimaal; breid uit waar claim erom vraagt):
 
 1. **Executive summary** — max 12 regels + bindend verdict (KEEP/REFINE/KILL/DEFER)
 2. **Hypothese-oordelen** — G1–G6 elk: bevestigd / aangescherpt / verworpen + 2 regels bewijs
-3. **Evidence-contract** — tekstdiagram Analyse ↔ Evidence ↔ Plan ↔ Agenda
+3. **Evidence-contract** — tekstdiagram Analyse ↔ Evidence ↔ Plan ↔ Agenda +
+   resolutie-oordeel (evidence in de week-view vóór score-timestamps: ja/nee + hoe)
 4. **UX-flow 0→hermeting** — stappen + lege state + primaire log-surface
 5. **Datamodel-keuze** — één optie + velden + privacy/register-oordeel
 6. **Modaliteiten-besluit** — catalogus: loggable vs content-only; herstel-naming
