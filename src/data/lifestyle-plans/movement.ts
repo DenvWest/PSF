@@ -4,14 +4,13 @@ import type { LifestylePlanTemplate } from "@/types/lifestyle-plan";
 export const movementPlanTemplate: LifestylePlanTemplate = {
   domain: "movement",
   guideThema: "beweging",
-  version: "1.1",
+  version: "1.2",
   title: "Bewegingsplan na 40",
   recognition: {
     heading: "Dit herken je misschien",
     body:
-      "Je traint nog wel, maar herstel duurt langer. Cardio lukt, maar kracht schiet erbij in — of andersom. " +
-      "Je voelt dat spieren trager terugkomen — niet omdat bewegen niet meer werkt, maar omdat ritme en rust zwaarder meetellen.\n\n" +
-      "Herkenning is de eerste stap. Daarna kun je gericht iets veranderen — thuis, zonder sportschool-hype.",
+      "Herstel duurt langer, of kracht en conditie lopen uit elkaar — ritme en rust tellen zwaarder na 40. " +
+      "Eén lichte actie deze week is genoeg om te starten.",
   },
   mechanism: {
     heading: "Waarom beweging na 40 anders werkt",
@@ -206,7 +205,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
             href: "/intake/voeding",
             kind: "article",
           },
-          tags: ["voeding"],
+          tags: ["voeding", "nutrient-bridge"],
         },
         {
           id: "mov-creatine-vergelijk",
@@ -223,7 +222,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
             href: COMPARISON_PATHS.creatine,
             kind: "comparison",
           },
-          tags: ["supplement"],
+          tags: ["supplement", "nutrient-bridge"],
         },
       ],
     },

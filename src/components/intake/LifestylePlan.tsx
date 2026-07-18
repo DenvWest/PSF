@@ -7,7 +7,15 @@ import {
   isPhaseComplete,
   selectVisibleSteps,
 } from "@/lib/lifestyle-plan-eval";
+import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
+import { trackEvent } from "@/lib/ga4";
+import {
+  buildMovementNutrientBridge,
+  type NutrientBridgeItem,
+} from "@/lib/movement-nutrient-bridge";
+import { getMovementTrack } from "@/lib/movement-plan-track";
+import { getPlanCrossDomainChips } from "@/lib/plan-cross-domain-chips";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type {
@@ -64,6 +72,10 @@ function getActivePhaseIndex(
   return Math.max(template.phases.length - 1, 0);
 }
 
+function isBridgeStep(step: PlanStep): boolean {
+  return step.tags?.includes("nutrient-bridge") ?? false;
+}
+
 function getLinkRel(kind: PlanStepLink["kind"]): string {
   if (kind === "comparison") {
     return "nofollow sponsored";
@@ -74,15 +86,17 @@ function getLinkRel(kind: PlanStepLink["kind"]): string {
 function PlanStepLinkAnchor({
   link,
   onLinkClick,
+  className = "mt-2 inline-block text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage",
 }: {
   link: PlanStepLink;
   onLinkClick?: () => void;
+  className?: string;
 }) {
   const external = link.kind === "comparison";
   return (
     <Link
       href={link.href}
-      className="mt-2 inline-block text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+      className={className}
       rel={getLinkRel(link.kind)}
       target={external ? "_blank" : undefined}
       onClick={onLinkClick}
@@ -144,9 +158,14 @@ function PlanStepRow({
             {step.title}
           </p>
           {step.rationale ? (
-            <p className="mt-2 text-xs leading-relaxed text-intake-ink-subtle">
-              {step.rationale.body}
-            </p>
+            <details className="mt-2 group">
+              <summary className="cursor-pointer text-xs font-medium text-intake-ink-subtle underline decoration-intake-divider underline-offset-2 hover:text-intake-ink-muted">
+                Waarom?
+              </summary>
+              <p className="mt-2 text-xs leading-relaxed text-intake-ink-subtle">
+                {step.rationale.body}
+              </p>
+            </details>
           ) : null}
           {step.link ? (
             <PlanStepLinkAnchor
@@ -170,6 +189,110 @@ function PlanStepRow({
   );
 }
 
+function MovementTrackBanner({ label, summary }: { label: string; summary: string }) {
+  return (
+    <div className="mb-5 rounded-xl border border-intake-sage/25 bg-intake-sage/8 px-4 py-3">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-sage">
+        Jouw bewegingsspoor
+      </p>
+      <p className="mt-1 text-sm font-semibold text-intake-ink">{label}</p>
+      <p className="mt-1 text-xs leading-relaxed text-intake-ink-muted">{summary}</p>
+    </div>
+  );
+}
+
+function NutrientBridgeSection({
+  items,
+  onItemClick,
+}: {
+  items: NutrientBridgeItem[];
+  onItemClick: (item: NutrientBridgeItem) => void;
+}) {
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <section
+      aria-labelledby="nutrient-bridge-heading"
+      className="mt-4 rounded-2xl border border-intake-card-border bg-intake-bg px-4 py-4"
+    >
+      <h3
+        id="nutrient-bridge-heading"
+        className="text-sm font-semibold text-intake-ink"
+      >
+        Ondersteuning — wat dit spoor van je voeding vraagt
+      </h3>
+      <p className="mt-1 text-xs leading-relaxed text-intake-ink-subtle">
+        Eerst tafel, dan potje. Supplementen vullen aan waar leefstijl niet rond komt.
+      </p>
+      <ul className="mt-3 space-y-2">
+        {items.map((item) => {
+          const external = item.kind === "comparison";
+          return (
+            <li key={item.id}>
+              <Link
+                href={item.href}
+                rel={getLinkRel(item.kind)}
+                target={external ? "_blank" : undefined}
+                onClick={() => onItemClick(item)}
+                className={`flex flex-col gap-0.5 rounded-xl border px-3 py-2.5 transition-colors hover:border-intake-sage/40 ${
+                  item.emphasis
+                    ? "border-intake-sage/30 bg-intake-sage/5"
+                    : "border-intake-card-border bg-intake-bg-elevated/50"
+                }`}
+              >
+                <span className="text-sm font-medium text-intake-ink">{item.label}</span>
+                <span className="text-xs leading-relaxed text-intake-ink-subtle">
+                  {item.description}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+function CrossDomainChips({
+  domain,
+  onChipClick,
+}: {
+  domain: MeasuredPillarId;
+  onChipClick: (pillarId: string) => void;
+}) {
+  const chips = getPlanCrossDomainChips(domain);
+  if (chips.length === 0) {
+    return null;
+  }
+
+  return (
+    <section aria-labelledby="cross-domain-heading" className="mt-4">
+      <h3
+        id="cross-domain-heading"
+        className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-intake-ink-subtle"
+      >
+        Raakt ook andere domeinen
+      </h3>
+      <div className="flex flex-wrap gap-2">
+        {chips.map((chip) => (
+          <Link
+            key={chip.pillarId}
+            href={chip.href}
+            title={chip.hint}
+            onClick={() => onChipClick(chip.pillarId)}
+            className="inline-flex flex-col rounded-lg border border-intake-card-border bg-intake-bg px-3 py-2 text-left transition-colors hover:border-intake-sage/35 hover:bg-intake-sage/5"
+          >
+            <span className="text-xs font-semibold text-intake-ink">{chip.label}</span>
+            <span className="text-[10px] text-intake-ink-subtle">{chip.hint}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function LifestylePlan({
   template,
   scores,
@@ -181,6 +304,17 @@ export default function LifestylePlan({
   const ctx = useMemo(
     () => buildPlanIntakeContext(scores, answers, template.domain, secondaryTheme),
     [scores, answers, template.domain, secondaryTheme],
+  );
+
+  const movementTrack = useMemo(
+    () => (template.domain === "movement" ? getMovementTrack(ctx) : null),
+    [template.domain, ctx],
+  );
+
+  const nutrientBridgeItems = useMemo(
+    () =>
+      template.domain === "movement" ? buildMovementNutrientBridge(ctx) : [],
+    [template.domain, ctx],
   );
 
   const loadKey = sessionId ? `${sessionId}:${template.domain}` : null;
@@ -243,7 +377,10 @@ export default function LifestylePlan({
       domain: template.domain,
       template_version: template.version,
     });
-  }, [loading, template.domain, template.version]);
+    if (template.domain === "movement" && movementTrack) {
+      clarityTag("movement_track", movementTrack.label);
+    }
+  }, [loading, template.domain, template.version, movementTrack]);
 
   const persistStepState = useCallback(
     async (
@@ -342,12 +479,41 @@ export default function LifestylePlan({
   );
 
   const handleLinkClick = useCallback(
-    (stepId: string, link: PlanStepLink) => {
+    (stepId: string, link: PlanStepLink, surface: "step" | "nutrient_bridge" = "step") => {
       emitIntakeClientEvent("plan.step_link_clicked", {
         domain: template.domain,
         step_id: stepId,
         link_kind: link.kind,
+        surface,
       });
+    },
+    [template.domain],
+  );
+
+  const handleBridgeItemClick = useCallback(
+    (item: NutrientBridgeItem) => {
+      emitIntakeClientEvent("plan.step_link_clicked", {
+        domain: template.domain,
+        step_id: item.id,
+        link_kind: item.kind,
+        surface: "nutrient_bridge",
+      });
+      trackEvent("movement_nutrient_bridge", {
+        item_id: item.id,
+        link_kind: item.kind,
+      });
+      clarityTag("movement_nutrient_bridge", item.id);
+    },
+    [template.domain],
+  );
+
+  const handleCrossDomainClick = useCallback(
+    (pillarId: string) => {
+      trackEvent("plan_cross_domain_click", {
+        domain: template.domain,
+        target_pillar: pillarId,
+      });
+      clarityTag("plan_cross_domain", `${template.domain}_${pillarId}`);
     },
     [template.domain],
   );
@@ -370,46 +536,48 @@ export default function LifestylePlan({
         </div>
       </header>
 
-      <section className="mb-5 rounded-xl border border-intake-card-border bg-intake-bg-elevated/50 px-4 py-4">
+      {movementTrack ? (
+        <MovementTrackBanner
+          label={movementTrack.label}
+          summary={movementTrack.summary}
+        />
+      ) : null}
+
+      <section className="mb-4 rounded-xl border border-intake-card-border bg-intake-bg-elevated/50 px-4 py-3">
         {template.recognition.heading ? (
-          <h3 className="mb-2 text-sm font-semibold text-intake-ink">
+          <h3 className="mb-1.5 text-sm font-semibold text-intake-ink">
             {template.recognition.heading}
           </h3>
         ) : null}
-        {template.recognition.body.split("\n\n").map((paragraph, index) => (
-          <p
-            key={`recognition-${index}`}
-            className={`text-sm leading-relaxed text-intake-ink-muted ${
-              index > 0 ? "mt-3" : ""
-            }`}
-          >
-            {paragraph}
-          </p>
-        ))}
+        <p className="text-sm leading-relaxed text-intake-ink-muted">
+          {template.recognition.body.split("\n\n")[0]}
+        </p>
       </section>
 
-      <section className="mb-5 rounded-xl border border-intake-card-border bg-intake-bg px-4 py-4">
-        {template.mechanism.heading ? (
-          <h3 className="mb-2 text-sm font-semibold text-intake-ink">
-            {template.mechanism.heading}
-          </h3>
-        ) : null}
-        {template.mechanism.body.split("\n\n").map((paragraph, index) => (
-          <p
-            key={`mechanism-${index}`}
-            className={`text-sm leading-relaxed text-intake-ink-muted ${
-              index > 0 ? "mt-3" : ""
-            }`}
-          >
-            {paragraph}
-          </p>
-        ))}
-        {template.mechanism.source ? (
-          <p className="mt-3 text-xs leading-relaxed text-intake-ink-subtle">
-            {template.mechanism.source}
-          </p>
-        ) : null}
-      </section>
+      <details className="group mb-5 rounded-xl border border-intake-card-border bg-intake-bg px-4 py-3">
+        <summary className="cursor-pointer text-sm font-semibold text-intake-ink marker:content-none [&::-webkit-details-marker]:hidden">
+          <span className="underline decoration-intake-divider underline-offset-2 group-open:no-underline">
+            {template.mechanism.heading ?? "Waarom na 40?"}
+          </span>
+        </summary>
+        <div className="mt-3 border-t border-intake-divider pt-3">
+          {template.mechanism.body.split("\n\n").map((paragraph, index) => (
+            <p
+              key={`mechanism-${index}`}
+              className={`text-sm leading-relaxed text-intake-ink-muted ${
+                index > 0 ? "mt-3" : ""
+              }`}
+            >
+              {paragraph}
+            </p>
+          ))}
+          {template.mechanism.source ? (
+            <p className="mt-3 text-xs leading-relaxed text-intake-ink-subtle">
+              {template.mechanism.source}
+            </p>
+          ) : null}
+        </div>
+      </details>
 
       {loading ? (
         <p className="mb-4 text-sm text-intake-ink-subtle">Plan laden…</p>
@@ -421,27 +589,68 @@ export default function LifestylePlan({
         </p>
       ) : null}
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {template.phases.map((phase, phaseIndex) => {
-          const visibleSteps = selectVisibleSteps(phase, ctx);
+          const visibleSteps = selectVisibleSteps(phase, ctx).filter(
+            (step) => !isBridgeStep(step),
+          );
           const isActive = phaseIndex === activePhaseIndex;
           const isLocked = phaseIndex > activePhaseIndex;
           const isPast = phaseIndex < activePhaseIndex;
           const phaseComplete = isPhaseComplete(phase, ctx, displayProgress?.steps ?? {});
 
+          if (!isActive && (isPast || isLocked)) {
+            return (
+              <section
+                key={phase.id}
+                aria-labelledby={`phase-title-${phase.id}`}
+                className={`rounded-xl border px-4 py-3 ${
+                  isLocked
+                    ? "border-intake-divider bg-intake-bg/40 opacity-70"
+                    : "border-intake-divider bg-intake-bg/60"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
+                      {HORIZON_LABELS[phase.horizon]}
+                    </p>
+                    <h3
+                      id={`phase-title-${phase.id}`}
+                      className="mt-0.5 text-sm font-medium text-intake-ink-muted"
+                    >
+                      {phase.title}
+                    </h3>
+                  </div>
+                  {isLocked ? (
+                    <span className="shrink-0 text-xs text-intake-ink-subtle" aria-hidden>
+                      🔒
+                    </span>
+                  ) : null}
+                  {isPast && phaseComplete ? (
+                    <span className="shrink-0 rounded-full bg-intake-sage/15 px-2 py-0.5 text-xs font-semibold text-intake-sage">
+                      Klaar
+                    </span>
+                  ) : null}
+                </div>
+                {isLocked ? (
+                  <p className="mt-2 text-xs text-intake-ink-subtle">
+                    Rond eerst de vorige fase af.
+                  </p>
+                ) : null}
+              </section>
+            );
+          }
+
           return (
             <section
               key={phase.id}
               aria-labelledby={`phase-title-${phase.id}`}
-              className={`rounded-2xl border px-4 py-4 ${
-                isLocked
-                  ? "border-intake-divider bg-intake-bg/40 opacity-60"
-                  : "border-intake-card-border bg-intake-bg-elevated/40"
-              }`}
+              className="rounded-2xl border border-intake-card-border bg-intake-bg-elevated/40 px-4 py-4"
             >
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-ink-subtle">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-sage">
                     {HORIZON_LABELS[phase.horizon]}
                   </p>
                   <h3
@@ -451,19 +660,6 @@ export default function LifestylePlan({
                     {phase.title}
                   </h3>
                 </div>
-                {isLocked ? (
-                  <span
-                    className="shrink-0 text-xs font-medium text-intake-ink-subtle"
-                    aria-hidden
-                  >
-                    🔒
-                  </span>
-                ) : null}
-                {isPast && phaseComplete ? (
-                  <span className="shrink-0 rounded-full bg-intake-sage/15 px-2 py-0.5 text-xs font-semibold text-intake-sage">
-                    Klaar
-                  </span>
-                ) : null}
               </div>
 
               {phase.intro ? (
@@ -472,27 +668,35 @@ export default function LifestylePlan({
                 </p>
               ) : null}
 
-              {isLocked ? (
-                <p className="text-sm text-intake-ink-subtle">
-                  Rond eerst de vorige fase af om deze stappen te ontgrendelen.
-                </p>
-              ) : (
-                <ul className="space-y-3">
-                  {visibleSteps.map((step) => (
-                    <PlanStepRow
-                      key={step.id}
-                      step={step}
-                      phaseId={phase.id}
-                      state={getStepState(displayProgress, step.id)}
-                      disabled={!isActive || !sessionId}
-                      busy={busyStepId === step.id}
-                      onToggleDone={handleToggleDone}
-                      onSkip={handleSkip}
-                      onLinkClick={handleLinkClick}
-                    />
-                  ))}
-                </ul>
-              )}
+              <ul className="space-y-3">
+                {visibleSteps.map((step) => (
+                  <PlanStepRow
+                    key={step.id}
+                    step={step}
+                    phaseId={phase.id}
+                    state={getStepState(displayProgress, step.id)}
+                    disabled={!sessionId}
+                    busy={busyStepId === step.id}
+                    onToggleDone={handleToggleDone}
+                    onSkip={handleSkip}
+                    onLinkClick={(stepId, link) => handleLinkClick(stepId, link, "step")}
+                  />
+                ))}
+              </ul>
+
+              {template.domain === "movement" && isActive ? (
+                <NutrientBridgeSection
+                  items={nutrientBridgeItems}
+                  onItemClick={handleBridgeItemClick}
+                />
+              ) : null}
+
+              {isActive ? (
+                <CrossDomainChips
+                  domain={template.domain}
+                  onChipClick={handleCrossDomainClick}
+                />
+              ) : null}
             </section>
           );
         })}

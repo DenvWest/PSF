@@ -291,6 +291,44 @@ export default function BewegingScreen({
           ) : null}
         </Link>
 
+        <Link
+          href="/intake/plan/movement?from=dashboard&kompas=beweging"
+          onClick={() => {
+            trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging_spoor" });
+            clarityTag("dashboard_beweging_plan", "spoor");
+          }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            padding: "14px 16px",
+            borderRadius: 16,
+            border: `1px solid ${pillar.color}44`,
+            background: `${pillar.color}0a`,
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
+            <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
+              Jouw bewegingsspoor
+            </span>
+            <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
+          </div>
+          <p
+            style={{
+              fontSize: 13,
+              color: KOMPAS_LIGHT.muted,
+              lineHeight: 1.45,
+              margin: "0 0 0 30px",
+              textWrap: "pretty",
+            }}
+          >
+            Lichte weekacties plus voedingssteun — eiwit eerst, supplementen daarna.
+          </p>
+        </Link>
+
         <section aria-label="Voeding en supplementen">
           <KompasSectionHeader eyebrow="Leefstijl eerst" title="Voeding & supplementen" />
           <Card pad={18} surface="light">

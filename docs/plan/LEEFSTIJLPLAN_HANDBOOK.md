@@ -44,6 +44,25 @@ wearables en notificaties. **Beweegplan** is de eerste module (`movement`).
 Regel: voeg waarde toe op de laagst mogelijke laag. Een nieuwe tip is meestal L0
 of L1, geen nieuwe infrastructuur.
 
+### UX-patroon: thin movement + thick bridge (movement v1.2+)
+
+Bewegingsplan gebruikt een **licht spoor** (track-banner uit `MOV_STR`/`MOV_CARD`,
+1–2 weekacties, mechanism ingeklapt) plus een vaste **nutriëntbrug** onder de actieve
+fase (`buildMovementNutrientBridge` in `src/lib/movement-nutrient-bridge.ts`):
+
+1. Weekacties eerst (checkbox) — geen supplement-first viewport.
+2. Brug altijd met eiwit/macro → `/intake/voeding`; creatine/Mg conditioneel via
+   bestaande `showWhen`/signalen.
+3. Stappen met tag `nutrient-bridge` blijven in het template (PDF/n8n) maar worden
+   niet dubbel in de checklist gerenderd.
+4. Cross-domein chips via `getPlanCrossDomainChips` — leefstijl-wins uit andere
+   Kompas-domeinen (herstel, energie voor movement).
+5. Meet: `plan.step_link_clicked` met `surface: "nutrient_bridge"` + GA4
+   `movement_nutrient_bridge`.
+
+Shell-wijzigingen (collapsed rationale, alleen actieve fase open) gelden voor alle
+domein-plannen in `LifestylePlan.tsx`.
+
 ## 3. Bestandskaart (waar zit wat)
 
 | Verantwoordelijkheid | Bestand |
