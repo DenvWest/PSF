@@ -74,6 +74,11 @@ import { getDisplayStatus, getDisplayStatusTone } from "@/lib/score-display";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
+import {
+  buildVandaagFollowUp,
+  buildVandaagOnderbouwingHref,
+  getVandaagContextLine,
+} from "@/lib/vandaag-card-links";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -2481,6 +2486,10 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
   const loaded = !actionKey || cachedDailyLog !== null || fetchLoaded;
 
   const interventionHref = buildPriorityInterventionHref(model);
+  const contextLine = getVandaagContextLine(model.priority, habit);
+  const onderbouwingHref = buildVandaagOnderbouwingHref(domain);
+  const followUp = buildVandaagFollowUp(domain);
+  const showHabitDetail = Boolean(habit?.detail && habit.detail !== contextLine);
 
   useEffect(() => {
     if (shownRef.current) {
@@ -2569,78 +2578,140 @@ const VandaagCard = ({ model }: { model: DashboardModel }) => {
 
   return (
     <KompasLooseCard>
-      <div className="mb-3 inline-flex flex-wrap items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-[#78716c]">
-        <Icons.Target s={14} />
-        <span style={{ color: model.priority.color }}>{model.priority.label}</span>
-        <span>· op basis van je laatste check-in</span>
-      </div>
+      <h2
+        className="font-serif text-[19px] leading-snug text-[#1c1917]"
+        style={{ fontFamily: "var(--f-serif)" }}
+      >
+        Jouw stap vandaag
+      </h2>
 
       {habit ? (
-        <div className="flex items-start gap-3">
+        <div className="mt-4">
+          <p
+            className="text-[16px] font-semibold leading-snug text-[#1c1917] text-pretty"
+            style={{ fontFamily: "var(--f-serif)" }}
+          >
+            {habit.title}
+          </p>
+
+          {contextLine ? (
+            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
+              {contextLine}{" "}
+              <Link
+                href={onderbouwingHref}
+                onClick={() => {
+                  trackOnderbouwingLinkClick({ surface: "vandaag_card", domain });
+                  clarityTag("onderbouwing_link", "vandaag_card");
+                }}
+                className="font-medium text-[#78716c] underline decoration-[#d6d3d1] underline-offset-2"
+              >
+                Waarom?
+              </Link>
+            </p>
+          ) : null}
+
+          {showHabitDetail ? (
+            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
+              {habit.detail}
+            </p>
+          ) : null}
+
           <button
             type="button"
             aria-label={resolvedDone ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
             aria-pressed={resolvedDone}
             disabled={!loaded || busy}
             onClick={() => void toggleDaily()}
-            className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+            className="mt-4 flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors"
             style={{
-              border: resolvedDone ? "none" : "1.5px solid #e4e0da",
-              background: resolvedDone ? "var(--sage)" : "transparent",
-              color: resolvedDone ? "#0f1c10" : "#78716c",
+              borderColor: resolvedDone ? "var(--sage)" : "#e4e0da",
+              background: resolvedDone ? "rgba(90, 143, 106, 0.08)" : "#faf9f7",
               cursor: !loaded || busy ? "default" : "pointer",
+              fontFamily: "var(--f-sans)",
             }}
           >
-            {resolvedDone ? <Icons.Check s={14} /> : null}
-          </button>
-          <div className="min-w-0 flex-1">
-            <div className="text-[15px] font-semibold leading-snug text-[#1c1917] text-pretty">
-              {habit.title}
-            </div>
-            {habit.detail ? (
-              <p className="mt-1.5 text-[13.5px] leading-normal text-[#78716c] text-pretty">
-                {habit.detail}
-              </p>
-            ) : null}
-            <button
-              type="button"
-              disabled={!loaded || busy}
-              onClick={() => void toggleDaily()}
-              className="mt-2 inline-flex cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[13px] font-medium text-[#78716c]"
-              style={{ fontFamily: "var(--f-sans)" }}
+            <span
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+              style={{
+                border: resolvedDone ? "none" : "1.5px solid #e4e0da",
+                background: resolvedDone ? "var(--sage)" : "transparent",
+                color: resolvedDone ? "#0f1c10" : "#78716c",
+              }}
             >
-              Gedaan vandaag
-            </button>
-            {resolvedStreak >= 2 ? (
-              <p className="mt-1 text-[12px] text-[#78716c]">{resolvedStreak} dagen op rij</p>
-            ) : null}
-            {habit.planHref ? (
+              {resolvedDone ? <Icons.Check s={14} /> : null}
+            </span>
+            <span className="text-[14px] font-medium text-[#1c1917]">
+              {resolvedDone ? "Gedaan" : "Markeer als gedaan"}
+            </span>
+          </button>
+
+          {resolvedStreak >= 2 ? (
+            <p className="mt-2 text-[12px] text-[#78716c]">{resolvedStreak} dagen op rij</p>
+          ) : null}
+
+          {resolvedDone ? (
+            <div className="mt-4 border-t border-[#e4e0da] pt-4">
+              <p className="text-[13px] text-[#78716c]">
+                Morgen staat hier je volgende stap.
+              </p>
               <Link
-                href={habit.planHref}
-                className="mt-2.5 inline-flex items-center gap-1.5 text-[13px] no-underline"
+                href={followUp.href}
+                className="mt-2 inline-flex items-center gap-1.5 text-[13px] font-medium no-underline"
                 style={{ color: "var(--sage)" }}
               >
-                Volledig plan bekijken
-                <Icons.ArrowRight s={15} />
+                {followUp.label}
+                <Icons.ArrowRight s={14} />
               </Link>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
+
+          {habit.planHref ? (
+            <Link
+              href={habit.planHref}
+              className="mt-3 inline-flex items-center gap-1.5 text-[13px] no-underline"
+              style={{ color: "var(--sage)" }}
+            >
+              Volledig plan bekijken
+              <Icons.ArrowRight s={15} />
+            </Link>
+          ) : null}
         </div>
       ) : (
-        <div>
-          <div className="text-[15px] font-semibold leading-snug text-[#1c1917] text-pretty">
+        <div className="mt-4">
+          <p
+            className="text-[16px] font-semibold leading-snug text-[#1c1917] text-pretty"
+            style={{ fontFamily: "var(--f-serif)" }}
+          >
             {model.priority.quickWin.title}
-          </div>
-          <p className="mt-1.5 text-[13.5px] leading-normal text-[#78716c] text-pretty">
-            {model.priority.quickWin.detail}
           </p>
+
+          {contextLine ? (
+            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
+              {contextLine}{" "}
+              <Link
+                href={onderbouwingHref}
+                onClick={() => {
+                  trackOnderbouwingLinkClick({ surface: "vandaag_card", domain });
+                  clarityTag("onderbouwing_link", "vandaag_card");
+                }}
+                className="font-medium text-[#78716c] underline decoration-[#d6d3d1] underline-offset-2"
+              >
+                Waarom?
+              </Link>
+            </p>
+          ) : (
+            <p className="mt-2 text-[13.5px] leading-normal text-[#78716c] text-pretty">
+              {model.priority.quickWin.detail}
+            </p>
+          )}
+
           {interventionHref ? (
             <Link
               href={interventionHref}
               onClick={() =>
                 trackDashboardInterventionClick("hefboom", model, interventionHref)
               }
-              className="mt-2.5 inline-flex items-center gap-1.5 text-[13px] font-semibold no-underline"
+              className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold no-underline"
               style={{ color: "var(--sage)" }}
             >
               Start hier

@@ -55,9 +55,10 @@ export function trackPaginaType(type:
 }
 
 export function trackOnderbouwingLinkClick(params: {
-  surface: "dashboard_footer" | "login_help";
+  surface: "dashboard_footer" | "login_help" | "vandaag_card";
   tab?: string;
   screen?: string;
+  domain?: string;
 }) {
   trackEvent(GA4_EVENTS.ONDERBOUWING_LINK_CLICKED, params);
 }

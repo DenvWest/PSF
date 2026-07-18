@@ -15,6 +15,20 @@ De vooruit-gegenereerde 7-dagen schedule (architectuur **B**) blijft; het intera
 
 ---
 
+## 0b. Precursor (pre-trigger, jul 2026)
+
+**Vóór** de weekagenda-MVP: herontwerp van `VandaagCard` op Kompas tot één **1-slot prioriteit-check-in** — geen nieuwe tab, route of tabel.
+
+| Precursor (nu) | Weekagenda (DEFER) |
+|---|---|
+| Auto tier-1 lifestyle-stap uit prioriteit 1 | 7-dagen schedule + multi-domein-mix |
+| Evidence = link (“Waarom?” → `/onderbouwing`) | Swap binnen domein + tijdvak-bucket |
+| Completie = `daily_action_log` | + `agenda_preferences` + `agenda.slot_tweaked` |
+
+Copy: weg met “Vandaag · PRIORITEIT · Op basis van je laatste check-in” — één rustige check-in (actie + waarom + gedaan). Prioriteit blijft engine, geen UI-jargon. Meetpunten: hergebruik `dashboard_vandaag_*`, daily-log toggle, onderbouwing-click — geen nieuwe domain_events.
+
+---
+
 ## 1. Vier gelockte besluiten (18 jul 2026)
 
 | # | Besluit | Detail |
