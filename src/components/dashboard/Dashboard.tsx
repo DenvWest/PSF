@@ -19,7 +19,6 @@ import {
   Sparkline,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
-import BewegingScreen from "@/components/dashboard/BewegingScreen";
 import {
   DeepToolMeetModule,
   DeepToolSectionHeader,
@@ -27,10 +26,6 @@ import {
   DomainDeepTool,
 } from "@/components/dashboard/DomainDeepTool";
 import DomainTopNav from "@/components/dashboard/DomainTopNav";
-import SleepScreen from "@/components/dashboard/SleepScreen";
-import StressScreen from "@/components/dashboard/StressScreen";
-import VerbindingScreen from "@/components/dashboard/VerbindingScreen";
-import AgendaScreen from "@/components/dashboard/agenda/AgendaScreen";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
@@ -63,6 +58,52 @@ const VoortgangHub = dynamic(
   () => import("@/components/dashboard/VoortgangHub"),
   { ssr: false, loading: () => <VoortgangHubSkeleton /> },
 );
+
+const DomainScreenSkeleton = () => (
+  <div
+    className="animate-pulse"
+    style={{ display: "flex", flexDirection: "column", gap: 16 }}
+    aria-busy="true"
+  >
+    {[0, 1, 2].map((i) => (
+      <div
+        key={i}
+        style={{
+          height: i === 0 ? 132 : 96,
+          borderRadius: 24,
+          border: "1px solid var(--panel-border)",
+          background: "var(--panel)",
+        }}
+      />
+    ))}
+  </div>
+);
+
+const BewegingScreen = dynamic(
+  () => import("@/components/dashboard/BewegingScreen"),
+  { ssr: false, loading: () => <DomainScreenSkeleton /> },
+);
+
+const StressScreen = dynamic(
+  () => import("@/components/dashboard/StressScreen"),
+  { ssr: false, loading: () => <DomainScreenSkeleton /> },
+);
+
+const SleepScreen = dynamic(
+  () => import("@/components/dashboard/SleepScreen"),
+  { ssr: false, loading: () => <DomainScreenSkeleton /> },
+);
+
+const VerbindingScreen = dynamic(
+  () => import("@/components/dashboard/VerbindingScreen"),
+  { ssr: false, loading: () => <DomainScreenSkeleton /> },
+);
+
+const AgendaScreen = dynamic(
+  () => import("@/components/dashboard/agenda/AgendaScreen"),
+  { ssr: false, loading: () => <DomainScreenSkeleton /> },
+);
+
 import SupplementDisclosure from "@/components/supplements/SupplementDisclosure";
 import {
   DASHBOARD_TABS,
