@@ -116,7 +116,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "SLP_QUAL",
     category: "slaap",
     questionIndex: 1,
-    question: "Hoe vaak word je uitgerust en helder wakker?",
+    question: "Hoe vaak word je uitgerust wakker?",
     options: [
       { label: "Bijna elke ochtend", value: 4 },
       { label: "De meeste ochtenden", value: 3 },
@@ -128,7 +128,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "SLP_CONS",
     category: "slaap",
     questionIndex: 2,
-    question: "Lukt het je om op een vast tijdstip te gaan slapen en wakker te worden?",
+    question: "Houd je een vast slaap-waakritme aan?",
     options: [
       { label: "Ja, vrij consistent", value: 3 },
       { label: "Meestal wel, soms niet", value: 2 },
@@ -139,7 +139,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "SLP_ONSET",
     category: "slaap",
     questionIndex: 3,
-    question: "Hoe lang lig je gemiddeld wakker voordat je in slaap valt?",
+    question: "Hoe lang doe je erover om in te slapen?",
     options: [
       { label: "Meestal binnen 15 minuten", value: 4 },
       { label: "Ongeveer 15–30 minuten", value: 3 },
@@ -151,7 +151,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "SLP_WAKE",
     category: "slaap",
     questionIndex: 4,
-    question: "Word je 's nachts wakker en lukt doorslapen niet altijd?",
+    question: "Hoe vaak word je 's nachts wakker?",
     options: [
       { label: "Zelden of nooit", value: 4 },
       { label: "Soms, maar ik slaap meestal weer door", value: 3 },
@@ -163,7 +163,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "NRG_PATN",
     category: "energie",
     questionIndex: 1,
-    question: "Hoe zou je je energieniveau overdag omschrijven?",
+    question: "Hoe is je energie overdag?",
     options: [
       { label: "Stabiel de hele dag", value: 4 },
       { label: "Goed in de ochtend, dip in de middag", value: 3 },
@@ -175,10 +175,9 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "NRG_DEP",
     category: "energie",
     questionIndex: 2,
-    question:
-      "Heb je oppeppers nodig om de dag door te komen (extra koffie, energiedrank, zoetigheid)?",
+    question: "Heb je oppeppers nodig om de dag door te komen?",
     subtitle:
-      "Gewone koffie bij je ontbijt telt niet — het gaat om wat je nodig hebt om overeind te blijven.",
+      "Extra koffie, energiedrank of zoetigheid — gewone koffie bij ontbijt telt niet.",
     options: [
       { label: "Nee, zelden", value: 4 },
       { label: "Soms, op zware dagen", value: 3 },
@@ -202,8 +201,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "STR_RCV",
     category: "stress",
     questionIndex: 2,
-    question:
-      "Lukt het je om op een drukke dag tot rust te komen en herstelmomenten te pakken?",
+    question: "Kom je op drukke dagen tot rust?",
     options: [
       { label: "Ja — ik kan loslaten én neem bewust rust", value: 4 },
       { label: "Het kost tijd, maar ik vind wel herstelmomenten", value: 3 },
@@ -215,8 +213,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "CON_SOC",
     category: "verbinding",
     questionIndex: 1,
-    question:
-      "Heb je mensen om je heen bij wie je echt jezelf kunt zijn en op wie je kunt terugvallen?",
+    question: "Heb je mensen op wie je kunt terugvallen?",
     subtitle:
       "Denk aan partner, vrienden of familie waar je op drukke of mindere dagen op kunt bouwen.",
     options: [
@@ -242,7 +239,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     category: "voeding",
     questionIndex: 2,
     question:
-      "Hoe vaak bevat een maaltijd bij jou een flinke portie eiwit (vlees, vis, eieren, zuivel, peulvruchten)?",
+      "Hoe vaak eet je een flinke portie eiwit (vlees, vis, eieren, zuivel, peulvruchten)?",
     options: [
       { label: "(Vrijwel) elke maaltijd", value: 4 },
       { label: "1–2 maaltijden per dag", value: 3 },
@@ -254,7 +251,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "MOV_STR",
     category: "beweging",
     questionIndex: 1,
-    question: "Doe je kracht- of weerstandstraining (gewichten, banden, eigen lichaamsgewicht)?",
+    question: "Hoe vaak doe je kracht- of weerstandstraining?",
     options: [
       { label: "Ja, 2x per week of vaker", value: 4 },
       { label: "Ja, ongeveer 1x per week", value: 3 },
@@ -266,8 +263,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "MOV_CARD",
     category: "beweging",
     questionIndex: 2,
-    question:
-      "Hoe vaak beweeg je matig intensief — stevig doorwandelen, fietsen of sport waarbij praten nog lukt, maar zingen niet?",
+    question: "Hoe vaak beweeg je matig intensief (praten lukt, zingen niet)?",
     subtitle: "Dit tempo (zone 2) traint je conditie — de basis onder je energie en herstel.",
     options: [
       { label: "3x per week of meer", value: 4 },
@@ -303,7 +299,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
     id: "LIF_SUN",
     category: "leefstijl",
     questionIndex: 2,
-    question: "Hoeveel zon en buitenlicht krijg je gemiddeld?",
+    question: "Hoeveel buitenlicht krijg je gemiddeld?",
     subtitle:
       "Buitenlicht zet je biologische klok — belangrijk voor slaap en energie. In de zomer maakt je huid er ook vitamine D mee aan.",
     options: [

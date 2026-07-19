@@ -17,6 +17,7 @@ export const GA4_EVENTS = {
   NURTURE_DASHBOARD_CTA_CLICKED: 'nurture_dashboard_cta_clicked',
   COOKIE_MARKETING_GATE: 'cookie_marketing_gate',
   NUTRITION_EVIDENCE_EXPANDED: 'nutrition_evidence_expanded',
+  INTAKE_EVIDENCE_EXPANDED: 'intake_evidence_expanded',
   NUTRITION_BREADTH_SKIPPED: 'nutrition_breadth_skipped',
   NUTRITION_DIET_SKIPPED: 'nutrition_diet_skipped',
   NUTRITION_SLIDER_OPT_OUT: 'nutrition_slider_opt_out',

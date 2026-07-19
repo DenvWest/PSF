@@ -19,18 +19,18 @@ export interface ChatIntakeState {
 }
 
 const QUESTION_MAP: Record<string, { label: string; domain: string }> = {
-  SLP_QUAL: { label: "Hoe beoordeel je je slaapkwaliteit?", domain: "slaap" },
-  SLP_CONS: { label: "Hoe consistent is je slaapritme?", domain: "slaap" },
-  SLP_ONSET: { label: "Hoe lang duurt inslapen gemiddeld?", domain: "slaap" },
+  SLP_QUAL: { label: "Hoe vaak word je uitgerust wakker?", domain: "slaap" },
+  SLP_CONS: { label: "Houd je een vast slaap-waakritme aan?", domain: "slaap" },
+  SLP_ONSET: { label: "Hoe lang doe je erover om in te slapen?", domain: "slaap" },
   SLP_WAKE: { label: "Hoe vaak word je 's nachts wakker?", domain: "slaap" },
-  NRG_PATN: { label: "Hoe is je energiepatroon over de dag?", domain: "energie" },
+  NRG_PATN: { label: "Hoe is je energie overdag?", domain: "energie" },
   NRG_DEP: {
     label: "Heb je oppeppers nodig om de dag door te komen?",
     domain: "energie",
   },
   STR_FREQ: { label: "Hoe vaak ervaar je stress?", domain: "stress" },
   STR_RCV: {
-    label: "Lukt rust komen en herstelmomenten op drukke dagen?",
+    label: "Kom je op drukke dagen tot rust?",
     domain: "stress",
   },
   NUT_O3: { label: "Hoe vaak eet je vette vis of omega-3 rijke voeding?", domain: "voeding" },
@@ -42,7 +42,7 @@ const QUESTION_MAP: Record<string, { label: string; domain: string }> = {
   MOV_CARD: { label: "Hoe vaak beweeg je matig intensief (praten lukt, zingen niet)?", domain: "beweging" },
   RCV_PHYS: { label: "Hoe goed herstelt je lichaam na inspanning?", domain: "herstel" },
   LIF_ALC: { label: "Hoe vaak drink je 3+ glazen alcohol op één avond?", domain: "leefstijl" },
-  LIF_SUN: { label: "Hoeveel zon en buitenlicht krijg je?", domain: "leefstijl" },
+  LIF_SUN: { label: "Hoeveel buitenlicht krijg je gemiddeld?", domain: "leefstijl" },
 };
 
 const QUESTION_ORDER = [

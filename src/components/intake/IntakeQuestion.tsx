@@ -3,6 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import {
+  IntakeEvidencePanel,
+  IntakeEvidenceTrigger,
+  useIntakeEvidence,
+} from "@/components/evidence/IntakeEvidenceDisclosure";
+import {
   type Category,
   type IntakeQuestion as IntakeQuestionType,
 } from "@/data/intake-questions";
@@ -66,6 +71,7 @@ export default function IntakeQuestion({
   const isLastQuestion = currentIndex === total - 1;
   const hasSelection = selectedOption !== null;
   const questionNumber = String(currentIndex + 1).padStart(2, "0");
+  const evidence = useIntakeEvidence(question.id);
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
@@ -107,16 +113,28 @@ export default function IntakeQuestion({
             isFirstRender.current ? "" : "animate-[fadeIn_200ms_ease-out]"
           }`}
         >
-          <h2
-            className={`text-center font-serif text-2xl font-normal leading-snug text-intake-ink md:text-3xl ${question.subtitle ? "mb-4" : "mb-10"}`}
-          >
-            {question.question}
-          </h2>
-          {question.subtitle ? (
-            <p className="mb-10 text-center text-base font-normal leading-relaxed text-intake-ink-muted md:text-lg">
-              {question.subtitle}
-            </p>
-          ) : null}
+          <div className="mb-10">
+            <div className="relative mx-auto max-w-[34ch] px-8">
+              <IntakeEvidenceTrigger
+                open={evidence.open}
+                onToggle={evidence.toggle}
+              />
+              <h2 className="text-center font-serif text-2xl font-normal leading-snug text-intake-ink md:text-3xl">
+                {question.question}
+              </h2>
+            </div>
+            {question.subtitle ? (
+              <p className="mt-4 text-center text-base font-normal leading-relaxed text-intake-ink-muted md:text-lg">
+                {question.subtitle}
+              </p>
+            ) : null}
+            {evidence.open ? (
+              <IntakeEvidencePanel
+                evidence={evidence.evidence}
+                questionId={question.id}
+              />
+            ) : null}
+          </div>
 
           <div
             style={{ pointerEvents: locked ? "none" : "auto" }}

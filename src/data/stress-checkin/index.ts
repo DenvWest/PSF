@@ -31,7 +31,7 @@ export const STRESS_QUESTIONS: StressQuestion[] = [
   {
     field: "STR_RCV",
     dimension: "herstel",
-    question: "Lukt het je om op een drukke dag tot rust te komen en herstelmomenten te pakken?",
+    question: "Kom je op drukke dagen tot rust?",
     options: [
       { label: "Ja — ik kan loslaten én neem bewust rust", value: 4 },
       { label: "Het kost tijd, maar ik vind wel herstelmomenten", value: 3 },

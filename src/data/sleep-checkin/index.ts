@@ -19,7 +19,7 @@ export const SLEEP_QUESTIONS: SleepQuestion[] = [
     label: "Inslapen",
     max: 4,
     actionable: true,
-    question: "Hoe lang lig je gemiddeld wakker voordat je in slaap valt?",
+    question: "Hoe lang doe je erover om in te slapen?",
     options: [
       { label: "Meestal binnen 15 minuten", value: 4 },
       { label: "Ongeveer 15–30 minuten", value: 3 },
@@ -33,7 +33,7 @@ export const SLEEP_QUESTIONS: SleepQuestion[] = [
     label: "Doorslapen",
     max: 4,
     actionable: true,
-    question: "Word je 's nachts wakker en lukt doorslapen niet altijd?",
+    question: "Hoe vaak word je 's nachts wakker?",
     options: [
       { label: "Zelden of nooit", value: 4 },
       { label: "Soms, maar ik slaap meestal weer door", value: 3 },
@@ -47,7 +47,7 @@ export const SLEEP_QUESTIONS: SleepQuestion[] = [
     label: "Regelmaat",
     max: 3,
     actionable: true,
-    question: "Lukt het je om op een vast tijdstip te gaan slapen en wakker te worden?",
+    question: "Houd je een vast slaap-waakritme aan?",
     options: [
       { label: "Ja, vrij consistent", value: 3 },
       { label: "Meestal wel, soms niet", value: 2 },
