@@ -178,8 +178,12 @@ export default sentryDsn
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
       widenClientFileUpload: false,
-      disableLogger: true,
-      automaticVercelMonitors: false,
+      webpack: {
+        automaticVercelMonitors: false,
+        treeshake: {
+          removeDebugLogging: true,
+        },
+      },
       sourcemaps: {
         disable: true,
       },
