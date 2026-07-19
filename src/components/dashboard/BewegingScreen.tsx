@@ -464,7 +464,7 @@ export default function BewegingScreen({
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Icons.Activity s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
             <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
-              Doe de beweegcheck (1 min)
+              Doe de uitgebreide beweegcheck (3 min)
             </span>
             <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
           </div>

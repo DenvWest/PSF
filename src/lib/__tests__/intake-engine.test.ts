@@ -210,6 +210,40 @@ describe("calcDomainScores", () => {
     const modern = calcDomainScores(answers, "1.4.0");
     expect(modern.connection_score).toBe(0);
   });
+
+  it("uses V140 path when rulesVersion is 1.4.0", () => {
+    const answers = makeAnswers({ MOV_STR: 4, MOV_CARD: 4 });
+    expect(calcDomainScores(answers, "1.4.0").movement_score).toBe(100);
+  });
+
+  it("uses V150 depth path for MOV2 answers at rulesVersion 1.5.0", () => {
+    const depthAnswers = {
+      MOV2_STR: 5,
+      MOV2_CARD: 5,
+      MOV2_VIG: 5,
+      MOV2_SIT: 5,
+      MOV2_COND: 5,
+      MOV2_PAIN: 5,
+      MOV2_MOB: 5,
+      MOV2_FUNC: 5,
+      MOV2_CONSIST: 5,
+      MOV2_MOTIV: 5,
+    };
+    expect(calcDomainScores(depthAnswers, "1.5.0").movement_score).toBe(100);
+  });
+
+  it("falls back to MOV_STR/MOV_CARD under V150 when no MOV2 answers present", () => {
+    const answers = makeAnswers({ MOV_STR: 4, MOV_CARD: 4 });
+    const v140 = calcDomainScores(answers, "1.4.0");
+    const v150 = calcDomainScores(answers, "1.5.0");
+    expect(v150.movement_score).toBe(v140.movement_score);
+    expect(v150.sleep_score).toBe(v140.sleep_score);
+    expect(v150.energy_score).toBe(v140.energy_score);
+    expect(v150.stress_score).toBe(v140.stress_score);
+    expect(v150.nutrition_score).toBe(v140.nutrition_score);
+    expect(v150.recovery_score).toBe(v140.recovery_score);
+    expect(v150.connection_score).toBe(v140.connection_score);
+  });
 });
 
 // ─── getUrgency ───────────────────────────────────────────────────

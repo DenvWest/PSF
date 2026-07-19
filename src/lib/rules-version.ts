@@ -93,6 +93,23 @@ export function isConnectionDeltaComparable(
   );
 }
 
+/** Beweging-item-uitbreiding (1.5.0): movement_score niet vergelijkbaar over deze grens.
+ * Bewust NIET onderdeel van hasMethodologyChange — beweging-only wijziging, geen nieuw vitaliteitsfacet. */
+export const MOVEMENT_SCALE_COMPARABLE_FROM = "1.5.0" as const;
+
+export function isMovementScoreDeltaComparable(
+  baselineVersion: string,
+  currentVersion: string,
+): boolean {
+  if (baselineVersion === currentVersion) {
+    return true;
+  }
+  return (
+    !isRulesVersionBefore(baselineVersion, MOVEMENT_SCALE_COMPARABLE_FROM) &&
+    !isRulesVersionBefore(currentVersion, MOVEMENT_SCALE_COMPARABLE_FROM)
+  );
+}
+
 export function isItemScaleDeltaComparable(
   baselineVersion: string,
   currentVersion: string,

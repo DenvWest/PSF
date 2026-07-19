@@ -6,10 +6,47 @@ import {
   movementStartStatement,
 } from "@/lib/movement-delta";
 
+const depthReport = {
+  MOV2_STR: 5,
+  MOV2_CARD: 5,
+  MOV2_VIG: 5,
+  MOV2_SIT: 5,
+  MOV2_COND: 5,
+  MOV2_PAIN: 5,
+  MOV2_MOB: 5,
+  MOV2_FUNC: 5,
+  MOV2_CONSIST: 5,
+  MOV2_MOTIV: 5,
+  RCV_FEEL: 1,
+};
+
 describe("movementScoreFromReport", () => {
-  it("schaalt MOV_STR + MOV_CARD naar 0–100", () => {
-    expect(movementScoreFromReport({ MOV_STR: 4, MOV_CARD: 4 })).toBe(100);
-    expect(movementScoreFromReport({ MOV_STR: 1, MOV_CARD: 1 })).toBe(0);
+  it("schaalt 10 MOV2-velden naar 0–100 via depth-pad", () => {
+    expect(movementScoreFromReport(depthReport)).toBe(100);
+    expect(
+      movementScoreFromReport({
+        ...depthReport,
+        MOV2_STR: 1,
+        MOV2_CARD: 1,
+        MOV2_VIG: 1,
+        MOV2_SIT: 1,
+        MOV2_COND: 1,
+        MOV2_PAIN: 1,
+        MOV2_MOB: 1,
+        MOV2_FUNC: 1,
+        MOV2_CONSIST: 1,
+        MOV2_MOTIV: 1,
+      }),
+    ).toBe(0);
+  });
+
+  it("negeert RCV_FEEL voor movement_score", () => {
+    expect(
+      movementScoreFromReport({
+        ...depthReport,
+        RCV_FEEL: 5,
+      }),
+    ).toBe(100);
   });
 });
 

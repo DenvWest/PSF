@@ -9,8 +9,8 @@ import { getUsableClaims } from "@/data/approved-claims";
 const FORBIDDEN = ["tekort", "diagnose", "gezond", "ongezond", "verhoogd", "normaal"];
 
 describe("assessMovement — band + supplement", () => {
-  it("MOV_STR:1 + MOV_CARD:4 → kracht aandacht met choices + creatine; conditie sterk zonder choices", () => {
-    const results = assessMovement({ MOV_STR: 1, MOV_CARD: 4 });
+  it("MOV2_STR:1 + MOV2_CARD:5 → kracht aandacht met choices + creatine; conditie sterk zonder choices", () => {
+    const results = assessMovement({ MOV2_STR: 1, MOV2_CARD: 5 });
     const kracht = results.find((r) => r.dimension === "kracht");
     const conditie = results.find((r) => r.dimension === "conditie");
 
@@ -27,8 +27,8 @@ describe("assessMovement — band + supplement", () => {
     expect(conditie?.supplement).toBeNull();
   });
 
-  it("MOV_STR:4 + MOV_CARD:1 → kracht sterk zonder supplement; conditie aandacht met choices", () => {
-    const results = assessMovement({ MOV_STR: 4, MOV_CARD: 1 });
+  it("MOV2_STR:5 + MOV2_CARD:1 → kracht sterk zonder supplement; conditie aandacht met choices", () => {
+    const results = assessMovement({ MOV2_STR: 5, MOV2_CARD: 1 });
     const kracht = results.find((r) => r.dimension === "kracht");
     const conditie = results.find((r) => r.dimension === "conditie");
 
@@ -42,13 +42,25 @@ describe("assessMovement — band + supplement", () => {
     expect(conditie?.supplement).toBeNull();
   });
 
-  it("MOV_STR:3 → band redelijk met choices", () => {
-    const results = assessMovement({ MOV_STR: 3 });
+  it("MOV2_STR:3 → band redelijk met choices", () => {
+    const results = assessMovement({ MOV2_STR: 3 });
     const kracht = results.find((r) => r.dimension === "kracht");
 
     expect(kracht?.band).toBe("redelijk");
     expect(kracht?.choices.length).toBeGreaterThan(0);
     expect(kracht?.deepen).not.toBeNull();
+  });
+
+  it("klachten en motivatie hebben geen verdieping", () => {
+    const results = assessMovement({
+      MOV2_PAIN: 1,
+      MOV2_MOTIV: 1,
+    });
+    const klachten = results.find((r) => r.dimension === "klachten");
+    const motivatie = results.find((r) => r.dimension === "motivatie");
+
+    expect(klachten?.deepen).toBeNull();
+    expect(motivatie?.deepen).toBeNull();
   });
 });
 
@@ -68,8 +80,8 @@ describe("assessMovement — compliance", () => {
   });
 
   it("supplement zit nooit op conditie", () => {
-    for (const movCard of [1, 2, 3, 4]) {
-      const results = assessMovement({ MOV_CARD: movCard });
+    for (const movCard of [1, 2, 3, 4, 5]) {
+      const results = assessMovement({ MOV2_CARD: movCard });
       const conditie = results.find((r) => r.dimension === "conditie");
       expect(conditie?.supplement).toBeNull();
     }

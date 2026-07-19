@@ -8,6 +8,7 @@ import {
   hasMethodologyChange,
   isConnectionDeltaComparable,
   isItemScaleDeltaComparable,
+  isMovementScoreDeltaComparable,
   isRecoveryDeltaComparable,
 } from "@/lib/rules-version";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
@@ -102,6 +103,13 @@ export function sanitizePerDomainDelta(input: {
   );
   if (!connectionComparable) {
     delta.connection_score = 0;
+  }
+  const movementComparable = isMovementScoreDeltaComparable(
+    input.baselineRulesVersion,
+    input.currentRulesVersion,
+  );
+  if (!movementComparable) {
+    delta.movement_score = 0;
   }
   return delta;
 }

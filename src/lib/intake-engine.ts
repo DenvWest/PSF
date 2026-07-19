@@ -14,8 +14,11 @@ import { isRulesVersionBefore } from "@/lib/rules-version";
  * 1.4.0 — item-herskalering (waarde−1)/(max−1)×100, domein=gemiddelde; NUT_PROT onbekend=0;
  *           CON_SOC kwaliteit-first; NRG_DEP compensatie-construct; movement-label Overtrainer;
  *           urgentie-drempels <30/<50/<60 behouden (empirische herijking deferred tot N≥~100)
+ * 1.5.0 — beweging-domein-hercheck uitgebreid van 2 naar 10 deelvragen (nieuwe MOV2_*-velden,
+ *           uitsluitend movement-checkin-flow); calcDomainScoresV150 identiek aan V140 behalve
+ *           movement_score; overige 6 domeinen ongewijzigd
  */
-export const RULES_VERSION = "1.4.0" as const;
+export const RULES_VERSION = "1.5.0" as const;
 
 export interface DomainScores {
   sleep_score: number;
@@ -452,6 +455,60 @@ function calcDomainScoresV140(answers: Record<string, number>): DomainScores {
   };
 }
 
+const MOVEMENT_DEPTH_FIELDS = [
+  "MOV2_STR",
+  "MOV2_CARD",
+  "MOV2_VIG",
+  "MOV2_SIT",
+  "MOV2_COND",
+  "MOV2_PAIN",
+  "MOV2_MOB",
+  "MOV2_FUNC",
+  "MOV2_CONSIST",
+  "MOV2_MOTIV",
+] as const;
+
+function movementScoreV150(answers: Record<string, number>): number {
+  const hasDepthAnswers = MOVEMENT_DEPTH_FIELDS.some(
+    (field) => typeof answers[field] === "number",
+  );
+  if (hasDepthAnswers) {
+    return averageItemScores(
+      MOVEMENT_DEPTH_FIELDS.map((field) => scaleItemScore(getAnswer(answers, field), 5)),
+    );
+  }
+  return averageItemScores([
+    scaleItemScore(getAnswer(answers, "MOV_STR"), 4),
+    scaleItemScore(getAnswer(answers, "MOV_CARD"), 4),
+  ]);
+}
+
+function calcDomainScoresV150(answers: Record<string, number>): DomainScores {
+  return {
+    sleep_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "SLP_QUAL"), 4),
+      scaleItemScore(getAnswer(answers, "SLP_CONS"), 3),
+      scaleItemScore(getAnswer(answers, "SLP_ONSET"), 4),
+      scaleItemScore(getAnswer(answers, "SLP_WAKE"), 4),
+    ]),
+    energy_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "NRG_PATN"), 4),
+      scaleItemScore(getAnswer(answers, "NRG_DEP"), 4),
+    ]),
+    stress_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "STR_FREQ"), 4),
+      scaleItemScore(getStressRecoveryAnswer(answers), 4),
+    ]),
+    nutrition_score: averageItemScores([
+      scaleItemScore(getAnswer(answers, "NUT_O3"), 3),
+      nutritionProteinItemScore(getAnswer(answers, "NUT_PROT")),
+    ]),
+    movement_score: movementScoreV150(answers),
+    recovery_score: scaleItemScore(getAnswer(answers, "RCV_PHYS"), 3) ?? 0,
+    connection_score: scaleItemScore(getAnswer(answers, "CON_SOC"), 4) ?? 0,
+  };
+}
+
 function getSignals(
   answers: Record<string, number>,
   scores?: DomainScores,
@@ -626,7 +683,10 @@ export function calcDomainScores(
   if (isRulesVersionBefore(rulesVersion, "1.4.0")) {
     return calcDomainScoresLegacy(answers);
   }
-  return calcDomainScoresV140(answers);
+  if (isRulesVersionBefore(rulesVersion, "1.5.0")) {
+    return calcDomainScoresV140(answers);
+  }
+  return calcDomainScoresV150(answers);
 }
 
 export function getUrgency(scores: DomainScores): UrgencyResult {

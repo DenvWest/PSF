@@ -348,7 +348,7 @@ export async function loadAccountDashboardData(
   ] = await Promise.all([
     admin
       .from("intake_domain_checkin")
-      .select("session_id,domain_key,score,created_at,raw_inputs")
+      .select("session_id,domain_key,score,created_at,rules_version,raw_inputs")
       .in("session_id", sessionIds)
       .order("created_at", { ascending: true }),
     admin
@@ -438,6 +438,7 @@ export async function loadAccountDashboardData(
     domain_key: string;
     score: unknown;
     created_at: string;
+    rules_version: unknown;
     raw_inputs?: unknown;
   };
 
@@ -462,7 +463,7 @@ export async function loadAccountDashboardData(
       value: Math.round(raw),
       ts,
       source: "checkin",
-      rulesVersion: null,
+      rulesVersion: typeof row.rules_version === "string" ? row.rules_version : null,
     });
   }
 

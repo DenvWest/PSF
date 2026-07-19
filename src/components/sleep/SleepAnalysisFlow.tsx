@@ -52,7 +52,12 @@ const RECOGNITION_PATTERNS: RecognitionPattern[] = [
 type Step =
   | { kind: "recognition" }
   | { kind: "question"; index: number }
-  | { kind: "result"; conclusion: SleepConclusion; assessmentBands: { label: string; band: SleepBand }[] };
+  | {
+      kind: "result";
+      conclusion: SleepConclusion;
+      recognitionLabels: string[];
+      assessmentBands: { label: string; band: SleepBand }[];
+    };
 
 const BAND_LABELS: Record<SleepBand, string> = {
   aandacht: "Aandacht",
@@ -89,12 +94,12 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
       recognition_patterns: patternIds.join(","),
       has_reflection_note: hasReflectionNote,
     });
-    trackEvent("guide_sleep_recognition_completed", {
+    trackEvent("guide_sleep_analysis_started", {
       surface: "gids_slaap",
       patterns: patternIds.join(","),
       has_note: hasReflectionNote,
     });
-    clarityTag("guide_sleep_recognition", patternIds.length > 0 ? "selected" : "skipped");
+    clarityTag("guide_sleep_analysis", "started");
 
     setStep({ kind: "question", index: 0 });
   }
@@ -109,6 +114,9 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
 
     const assessment = assessSleep(next);
     const conclusion = buildSleepConclusion(assessment);
+    const recognitionLabels = [...selectedPatterns]
+      .map((id) => RECOGNITION_PATTERNS.find((pattern) => pattern.id === id)?.label)
+      .filter((label): label is string => Boolean(label));
     emitGuideSleepAnalysisEvent("guide.sleep_analysis.completed", {
       surface: "gids_slaap",
       focus_pillar: conclusion.focusDimension ?? "maintenance",
@@ -121,6 +129,7 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
     setStep({
       kind: "result",
       conclusion,
+      recognitionLabels,
       assessmentBands: assessment.statuses.map((status) => ({
         label: status.label,
         band: status.band,
@@ -207,7 +216,7 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
             onClick={handleRecognitionContinue}
             className="mt-8 block w-full min-h-[48px] rounded-xl bg-ps-green px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ps-green/90"
           >
-            Verder naar de 4 vragen →
+            Verder naar de {SLEEP_QUESTIONS.length} vragen →
           </button>
         </div>
       </div>
@@ -215,7 +224,7 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
   }
 
   if (step.kind === "result") {
-    const { conclusion, assessmentBands } = step;
+    const { conclusion, recognitionLabels, assessmentBands } = step;
     const ResultHeadingTag = embedded ? "h2" : "h1";
     const resultShellClass = embedded
       ? "relative flex flex-col items-center justify-center"
@@ -236,8 +245,32 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
             Op basis van je antwoorden
           </p>
 
+          {recognitionLabels.length > 0 ? (
+            <section
+              className="mb-6 rounded-xl border border-stone-200 bg-stone-50 px-5 py-4"
+              aria-labelledby="sleep-recognition-heading"
+            >
+              <h3
+                id="sleep-recognition-heading"
+                className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-400"
+              >
+                Je herkende
+              </h3>
+              <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-stone-600">
+                {recognitionLabels.map((label) => (
+                  <li key={label} className="flex gap-2">
+                    <span aria-hidden className="text-ps-green">
+                      •
+                    </span>
+                    <span>{label}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
           <section className="mb-8 rounded-2xl border border-ps-green/20 bg-ps-green/5 px-5 py-5">
-            <h2 className="font-serif text-xl font-normal text-stone-900">{conclusion.headline}</h2>
+            <h3 className="font-serif text-xl font-normal text-stone-900">{conclusion.headline}</h3>
             <p className="mt-3 text-sm leading-relaxed text-stone-600">{conclusion.statement}</p>
             {conclusion.secondaryHint ? (
               <p className="mt-3 text-sm leading-relaxed text-stone-600">
@@ -247,9 +280,9 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
           </section>
 
           <section className="mb-8" aria-labelledby="sleep-analysis-actions-heading">
-            <h2 id="sleep-analysis-actions-heading" className="mb-3 text-sm font-medium text-stone-900">
+            <h3 id="sleep-analysis-actions-heading" className="mb-3 text-sm font-medium text-stone-900">
               Jouw volgende 3 acties
-            </h2>
+            </h3>
             <ol className="flex list-decimal flex-col gap-3 pl-5">
               {conclusion.actions.map((action) => (
                 <li
@@ -260,21 +293,15 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
                 </li>
               ))}
             </ol>
-            <p className="mt-4 text-sm text-stone-600">
-              Wil je stappen afvinken?{" "}
-              <Link href="/intake/plan/sleep" className="font-semibold text-ps-green hover:underline">
-                Open je slaapplan →
-              </Link>
-            </p>
           </section>
 
           <section aria-labelledby="sleep-analysis-status-heading">
-            <h2
+            <h3
               id="sleep-analysis-status-heading"
               className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-400"
             >
               Hoe je nu slaapt
-            </h2>
+            </h3>
             <div className="flex flex-wrap gap-2">
               {assessmentBands.map((status) => (
                 <span
@@ -321,21 +348,24 @@ export default function SleepAnalysisFlow({ embedded = false }: { embedded?: boo
 
   return (
     <div className={questionShellClass}>
-      <div
-        className="fixed inset-x-0 top-0 z-50 h-[3px] bg-stone-200"
-        role="progressbar"
-        aria-valuenow={step.index + 1}
-        aria-valuemin={1}
-        aria-valuemax={SLEEP_QUESTIONS.length}
-        aria-label="Voortgang slaapanalyse"
-      >
-        <div
-          className="h-full bg-ps-green transition-[width] duration-300 ease-out"
-          style={{ width: `${progressPct}%` }}
-        />
-      </div>
-
       <div className={questionPadClass}>
+        <div
+          className={
+            embedded
+              ? "relative mb-6 h-[3px] w-full overflow-hidden rounded-full bg-stone-200"
+              : "fixed inset-x-0 top-0 z-50 h-[3px] bg-stone-200"
+          }
+          role="progressbar"
+          aria-valuenow={step.index + 1}
+          aria-valuemin={1}
+          aria-valuemax={SLEEP_QUESTIONS.length}
+          aria-label="Voortgang slaapanalyse"
+        >
+          <div
+            className="h-full bg-ps-green transition-[width] duration-300 ease-out"
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
         <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-stone-400">
           Vraag {step.index + 1} van {SLEEP_QUESTIONS.length}
         </p>

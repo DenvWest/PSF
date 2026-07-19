@@ -52,7 +52,17 @@ export type QuestionId =
   | "MOV_CARD"
   | "RCV_PHYS"
   | "LIF_ALC"
-  | "LIF_SUN";
+  | "LIF_SUN"
+  | "MOV2_STR"
+  | "MOV2_CARD"
+  | "MOV2_VIG"
+  | "MOV2_SIT"
+  | "MOV2_COND"
+  | "MOV2_PAIN"
+  | "MOV2_MOB"
+  | "MOV2_FUNC"
+  | "MOV2_CONSIST"
+  | "MOV2_MOTIV";
 
 export interface QuestionOption {
   label: string;

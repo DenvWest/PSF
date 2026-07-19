@@ -10,9 +10,17 @@ import { resolveGatedComparisonPath } from "@/lib/supplement-gate";
 import { getUsableClaims } from "@/data/approved-claims";
 
 export type MovementSelfReport = {
-  MOV_STR?: number;
-  MOV_CARD?: number;
+  MOV2_STR?: number;
+  MOV2_CARD?: number;
+  MOV2_VIG?: number;
+  MOV2_SIT?: number;
+  MOV2_COND?: number;
   RCV_FEEL?: number;
+  MOV2_PAIN?: number;
+  MOV2_MOB?: number;
+  MOV2_FUNC?: number;
+  MOV2_CONSIST?: number;
+  MOV2_MOTIV?: number;
 };
 export type MovementSupplement = { comparisonPath: string; claimText: string };
 

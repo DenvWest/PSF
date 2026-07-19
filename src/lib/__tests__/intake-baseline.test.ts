@@ -132,4 +132,18 @@ describe("buildRemeasureCompletedPayload", () => {
       expect(value).toBe(0);
     }
   });
+
+  it("sanitizePerDomainDelta zeros only movement_score across the 1.5.0 boundary", () => {
+    const delta = sanitizePerDomainDelta({
+      baseline: baselineScores,
+      current: currentScores,
+      baselineRulesVersion: "1.4.0",
+      currentRulesVersion: "1.5.0",
+    });
+    expect(delta.movement_score).toBe(0);
+    expect(delta.sleep_score).toBe(14);
+    expect(delta.energy_score).toBe(7);
+    expect(delta.recovery_score).toBe(8);
+    expect(delta.connection_score).toBe(8);
+  });
 });

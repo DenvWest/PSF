@@ -3,7 +3,7 @@
 > **Layer 1 — Core.** Verplicht register conform AVG art. 30. Intern document — niet publiceren.
 > Verwante docs: [`DPIA.md`](DPIA.md) (art. 35, risicobeoordeling), privacyverklaring (`src/app/privacy/page.tsx`), [`ENTITY_MODEL.md`](ENTITY_MODEL.md) (technische tabellen).
 
-**Laatst bijgewerkt:** 2026-07-18  
+**Laatst bijgewerkt:** 2026-07-19  
 **Volgende geplande controle:** 2026-08-01 (maandelijks)  
 **Eigenaar:** Dennis van Westbroek — verwerkingsverantwoordelijke  
 **Archief verwerkersovereenkomsten:** `Documenten/documenten/perfectsupplement/privacy/`
@@ -266,6 +266,20 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; geen scores in blokken of analytics-events; product-events `agenda.block_*` alleen categorisch |
 | **Doorgifte buiten EU** | Nee (externe agenda/wearable-koppelingen nog niet actief; kolommen gereserveerd) |
 
+### 18. Domein-hercheck (uitgebreide beweging-check-in)
+
+| | |
+|---|---|
+| **Doel** | Gebruiker kan tussen volledige hermetingen door een enkel domein opnieuw beantwoorden (nu: beweging, 10 deelvragen) zodat de domeinscore en leefstijllijn actueel blijven zonder een volledige Leefstijlcheck |
+| **Betrokkenen** | Gebruikers met een actieve intake-sessie die vrijwillig een domein-check opnieuw invullen |
+| **Soort gegevens** | Session-id, organization-id, domain_key (enum, nu: `movement_score`), raw_inputs (ruwe antwoordwaarden per veld), afgeleide domeinscore, rules_version |
+| **Bijzondere gegevens** | Ja — zelfgerapporteerd gezondheidsgerelateerd gedrag, gekoppeld aan sessie met art. 9-intake |
+| **Ontvangers** | Supabase (`intake_domain_checkin`, EU Frankfurt) — geen nieuwe verwerker |
+| **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming, zelfde consent-checkbox als bestaand) + art. 6 lid 1 sub a |
+| **Bewaartermijn** | Volgt intake-retentie (24 maanden); verwijderd bij sessie-verwijdering (cascade via `cleanup_intake_session_linked_data`) |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via sessie-geauthenticeerde API; product-events `measurement.checkin_completed`/`measurement.direction_detected` alleen categorisch (domain_key + richting, geen ruwe antwoorden) |
+| **Doorgifte buiten EU** | Nee |
+
 ---
 
 ## Verwerkersovereenkomsten (art. 28)
@@ -306,6 +320,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-07-19 | Verwerking 18 toegevoegd: domein-hercheck (`intake_domain_checkin`) — bestond al technisch sinds juni, kreeg alsnog een eigen paragraaf; beweging-domein uitgebreid van 2 naar 10 deelvragen |
 | 2026-07-18 | Verwerking 17 toegevoegd: agenda dagblokken (`agenda_blocks`) — persoonlijke routines met categorie/tijdvenster, RLS deny-all, art. 9 (toestemming); events `agenda.block_created` / `agenda.block_toggled` / `agenda.block_deleted` categorisch; privacy-pagina bijgewerkt |
 | 2026-07-18 | Verwerking 16 uitgebreid: `account_priority_pref.scheduled_time` (HH:MM) toegevoegd naast afgeleid time_bucket; privacy-pagina bijgewerkt |
 | 2026-07-18 | Verwerking 16 toegevoegd: dashboard focus-voorkeur (`account_priority_pref`) — pillar + tijdvak, RLS deny-all, art. 9 (toestemming); events `dashboard.priority_selected` / `dashboard.time_bucket_set` categorisch |

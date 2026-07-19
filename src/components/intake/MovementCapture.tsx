@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
-import { MOVEMENT_QUESTIONS, MOVEMENT_RECOVERY_QUESTION } from "@/data/movement-checkin";
+import { MOVEMENT_QUESTIONS } from "@/data/movement-checkin";
 import type {
   MovementDimensionResult,
   MovementSelfReport,
@@ -18,7 +18,6 @@ type MovementStart = {
 
 type Step =
   | { kind: "question"; index: number }
-  | { kind: "recovery" }
   | { kind: "consent" }
   | {
       kind: "result";
@@ -27,11 +26,20 @@ type Step =
     }
   | { kind: "error"; message: string };
 
-const TOTAL = MOVEMENT_QUESTIONS.length + 1;
+const TOTAL = MOVEMENT_QUESTIONS.length;
 
 const DIMENSION_LABELS: Record<MovementDimensionResult["dimension"], string> = {
   kracht: "Kracht",
-  conditie: "Conditie",
+  conditie: "Cardio",
+  intensiteit: "Intensieve inspanning",
+  zitten: "Zitten",
+  conditie_ervaren: "Ervaren conditie",
+  herstel: "Herstel",
+  klachten: "Klachten",
+  mobiliteit: "Mobiliteit",
+  belastbaarheid: "Belastbaarheid",
+  consistentie: "Consistentie",
+  motivatie: "Motivatie",
 };
 
 export default function MovementCapture() {
@@ -51,19 +59,12 @@ export default function MovementCapture() {
     if (index + 1 < MOVEMENT_QUESTIONS.length) {
       setStep({ kind: "question", index: index + 1 });
     } else {
-      setStep({ kind: "recovery" });
+      setStep({ kind: "consent" });
     }
-  }
-
-  function handleRecoveryFeel(value: number) {
-    setAnswers((prev) => ({ ...prev, RCV_FEEL: value }));
-    setStep({ kind: "consent" });
   }
 
   function handleBack() {
     if (step.kind === "consent") {
-      setStep({ kind: "recovery" });
-    } else if (step.kind === "recovery") {
       setStep({ kind: "question", index: MOVEMENT_QUESTIONS.length - 1 });
     } else if (step.kind === "question" && step.index > 0) {
       setStep({ kind: "question", index: step.index - 1 });
@@ -79,14 +80,7 @@ export default function MovementCapture() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          report: {
-            MOV_STR: answers.MOV_STR,
-            MOV_CARD: answers.MOV_CARD,
-            RCV_FEEL: answers.RCV_FEEL,
-          },
-          consent: true,
-        }),
+        body: JSON.stringify({ report: answers, consent: true }),
       });
 
       if (res.status === 401) {
@@ -279,57 +273,6 @@ export default function MovementCapture() {
           >
             Opnieuw proberen
           </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (step.kind === "recovery") {
-    const progressPct = (MOVEMENT_QUESTIONS.length / TOTAL) * 100;
-    return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
-        <div
-          className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
-          role="progressbar"
-          aria-valuenow={MOVEMENT_QUESTIONS.length}
-          aria-valuemin={1}
-          aria-valuemax={TOTAL}
-          aria-label="Voortgang beweegcheck"
-        >
-          <div
-            className="h-full bg-intake-terra transition-[width] duration-300 ease-out"
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
-
-        <div className="w-full max-w-lg px-6 py-12">
-          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
-            Herstel · Beweging
-          </p>
-          <h2 className="mb-10 text-center font-serif text-2xl font-normal leading-snug text-intake-ink md:text-3xl">
-            {MOVEMENT_RECOVERY_QUESTION.question}
-          </h2>
-          <div className="flex flex-col gap-3">
-            {MOVEMENT_RECOVERY_QUESTION.options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => handleRecoveryFeel(opt.value)}
-                className="block w-full min-h-[44px] rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-left text-base font-medium leading-snug text-intake-ink-muted transition-all duration-200 ease-out hover:border-intake-terra/40 hover:bg-intake-bg-elevated/90 hover:text-intake-ink"
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-          <div className="mt-10">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="border-none bg-transparent py-3 text-sm text-intake-ink-subtle transition-colors hover:text-intake-ink-muted"
-            >
-              ← Terug
-            </button>
-          </div>
         </div>
       </div>
     );

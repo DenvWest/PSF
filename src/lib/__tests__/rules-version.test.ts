@@ -4,6 +4,7 @@ import {
   hasMethodologyChange,
   isConnectionDeltaComparable,
   isItemScaleDeltaComparable,
+  isMovementScoreDeltaComparable,
   isRecoveryDeltaComparable,
   isVitalityDeltaComparable,
   parseRulesVersion,
@@ -40,6 +41,16 @@ describe("rules-version", () => {
   it("flags connection delta incomparable across 1.3.0 boundary", () => {
     expect(isConnectionDeltaComparable("1.2.0", "1.3.0")).toBe(false);
     expect(isConnectionDeltaComparable("1.3.0", "1.3.0")).toBe(true);
+  });
+
+  it("flags movement score delta incomparable across 1.5.0 boundary", () => {
+    expect(isMovementScoreDeltaComparable("1.4.0", "1.5.0")).toBe(false);
+    expect(isMovementScoreDeltaComparable("1.5.0", "1.5.0")).toBe(true);
+    expect(isMovementScoreDeltaComparable("1.4.0", "1.4.0")).toBe(true);
+  });
+
+  it("does not flag methodology change for movement-only 1.4.0→1.5.0 bump", () => {
+    expect(hasMethodologyChange("1.4.0", "1.5.0")).toBe(false);
   });
 
   it("flags item-scale delta incomparable across 1.4.0 boundary", () => {

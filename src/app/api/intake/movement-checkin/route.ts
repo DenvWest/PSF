@@ -11,6 +11,7 @@ import {
 } from "@/lib/intake-session-cookie";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { loadBaselineSnapshot } from "@/lib/intake-baseline";
+import { isMovementScoreDeltaComparable } from "@/lib/rules-version";
 import { domainCheckinConsentRow } from "@/lib/domain-checkin-consent";
 import { assessMovement } from "@/lib/movement-assessment";
 import {
@@ -21,10 +22,32 @@ import {
 import { emitEvent } from "@/lib/events";
 
 type MovementReport = {
-  MOV_STR: number;
-  MOV_CARD: number;
-  RCV_FEEL?: number;
+  MOV2_STR: number;
+  MOV2_CARD: number;
+  MOV2_VIG: number;
+  MOV2_SIT: number;
+  MOV2_COND: number;
+  RCV_FEEL: number;
+  MOV2_PAIN: number;
+  MOV2_MOB: number;
+  MOV2_FUNC: number;
+  MOV2_CONSIST: number;
+  MOV2_MOTIV: number;
 };
+
+const MOVEMENT_REPORT_FIELDS = [
+  "MOV2_STR",
+  "MOV2_CARD",
+  "MOV2_VIG",
+  "MOV2_SIT",
+  "MOV2_COND",
+  "RCV_FEEL",
+  "MOV2_PAIN",
+  "MOV2_MOB",
+  "MOV2_FUNC",
+  "MOV2_CONSIST",
+  "MOV2_MOTIV",
+] as const;
 
 function parseIntField(value: unknown, min: number, max: number): number | null {
   if (typeof value !== "number" || !Number.isInteger(value) || value < min || value > max) {
@@ -36,17 +59,13 @@ function parseIntField(value: unknown, min: number, max: number): number | null 
 function parseReport(raw: unknown): MovementReport | null {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
   const r = raw as Record<string, unknown>;
-  const MOV_STR = parseIntField(r.MOV_STR, 1, 4);
-  const MOV_CARD = parseIntField(r.MOV_CARD, 1, 4);
-  if (MOV_STR === null || MOV_CARD === null) return null;
-  const RCV_FEEL =
-    r.RCV_FEEL === undefined || r.RCV_FEEL === null
-      ? undefined
-      : parseIntField(r.RCV_FEEL, 1, 5) ?? undefined;
-  if (r.RCV_FEEL !== undefined && r.RCV_FEEL !== null && RCV_FEEL === undefined) {
-    return null;
+  const report: Partial<MovementReport> = {};
+  for (const field of MOVEMENT_REPORT_FIELDS) {
+    const value = parseIntField(r[field], 1, 5);
+    if (value === null) return null;
+    report[field] = value;
   }
-  return { MOV_STR, MOV_CARD, ...(RCV_FEEL !== undefined ? { RCV_FEEL } : {}) };
+  return report as MovementReport;
 }
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
@@ -139,27 +158,25 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { MOV_STR, MOV_CARD, RCV_FEEL } = report;
   const currentScore = movementScoreFromReport(report);
 
   const baseline = await loadBaselineSnapshot(sessionId);
-  const direction = baseline
-    ? movementDirection(baseline.domainScores.movement_score, currentScore)
-    : null;
+  const movementComparable = baseline
+    ? isMovementScoreDeltaComparable(baseline.rulesVersion, RULES_VERSION)
+    : false;
+  const direction =
+    baseline && movementComparable
+      ? movementDirection(baseline.domainScores.movement_score, currentScore)
+      : null;
   const start = direction
     ? { direction, statement: movementStartStatement(direction) }
     : null;
-
-  const rawInputs: Record<string, number> = { MOV_STR, MOV_CARD };
-  if (RCV_FEEL !== undefined) {
-    rawInputs.RCV_FEEL = RCV_FEEL;
-  }
 
   const { error: checkinError } = await admin.from("intake_domain_checkin").insert({
     session_id: sessionId,
     organization_id: organizationId,
     domain_key: "movement_score",
-    raw_inputs: rawInputs,
+    raw_inputs: report,
     score: { movement_score: currentScore },
     rules_version: RULES_VERSION,
   });
