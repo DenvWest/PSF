@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { assessSleep } from "@/lib/sleep-assessment";
+import { assessSleep, buildSleepConclusion } from "@/lib/sleep-assessment";
 import {
   SLEEP_STATEMENTS,
   SLEEP_CHOICES,
@@ -18,6 +18,49 @@ const FORBIDDEN = [
   "normaalwaarde",
   "melatonine",
 ];
+
+describe("buildSleepConclusion", () => {
+  it("regelmaat focus → headline + 3 acties uit SLEEP_CHOICES", () => {
+    const assessment = assessSleep({
+      SLP_ONSET: 4,
+      SLP_WAKE: 4,
+      SLP_CONS: 1,
+      SLP_QUAL: 4,
+    });
+    const conclusion = buildSleepConclusion(assessment);
+
+    expect(conclusion.headline).toContain("Regelmaat");
+    expect(conclusion.focusLabel).toBe("Regelmaat");
+    expect(conclusion.focusDimension).toBe("regelmaat");
+    expect(conclusion.actions).toEqual(SLEEP_CHOICES.regelmaat.slice(0, 3));
+  });
+
+  it("alles sterk → onderhoudsheadline + 3 acties", () => {
+    const assessment = assessSleep({
+      SLP_ONSET: 4,
+      SLP_WAKE: 4,
+      SLP_CONS: 3,
+      SLP_QUAL: 4,
+    });
+    const conclusion = buildSleepConclusion(assessment);
+
+    expect(conclusion.headline).toBe("Je basis staat goed — houd vast wat werkt");
+    expect(conclusion.focusLabel).toBeNull();
+    expect(conclusion.actions).toHaveLength(3);
+  });
+
+  it("winddown ≤2 → secundaire hint Avondafbouw", () => {
+    const assessment = assessSleep({
+      SLP_ONSET: 1,
+      SLP_WAKE: 4,
+      SLP_CONS: 3,
+      SLP_QUAL: 4,
+    });
+    const conclusion = buildSleepConclusion(assessment, { winddown: 1 });
+
+    expect(conclusion.secondaryHint).toBe("Ook Avondafbouw vraagt aandacht.");
+  });
+});
 
 describe("assessSleep — focus + supplement", () => {
   it("SLP_ONSET:1 + rest sterk → focus inslapen met magnesium + choices; statuses bevat alle 4", () => {

@@ -48,6 +48,7 @@ export function buildModel(
   scheduledTime: string | null = null,
   planStepDismissedDate: string | null = null,
   planStepsHidden = false,
+  sleepFocus: DashboardModel["sleepFocus"] = null,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -122,5 +123,6 @@ export function buildModel(
     activeHabit,
     planDomain,
     planProgress,
+    sleepFocus,
   };
 }

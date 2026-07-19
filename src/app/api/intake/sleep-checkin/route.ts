@@ -12,7 +12,7 @@ import {
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { loadBaselineSnapshot } from "@/lib/intake-baseline";
 import { domainCheckinConsentRow } from "@/lib/domain-checkin-consent";
-import { assessSleep } from "@/lib/sleep-assessment";
+import { assessSleep, buildSleepConclusion } from "@/lib/sleep-assessment";
 import {
   sleepScoreFromReport,
   sleepDirection,
@@ -110,6 +110,113 @@ function logSecurityEvent(
   details: Record<string, unknown> = {},
 ) {
   console.warn("[api/intake/sleep-checkin][security]", { event, ...details });
+}
+
+function parseChosenActions(raw: unknown): string[] | null {
+  if (!Array.isArray(raw)) {
+    return null;
+  }
+  const actions = raw.filter(
+    (item): item is string => typeof item === "string" && item.trim().length > 0,
+  );
+  if (actions.length === 0 || actions.length > 4) {
+    return null;
+  }
+  return actions;
+}
+
+export async function PATCH(request: NextRequest) {
+  const clientIp = getClientIp(request);
+  const rateLimit = await consumeRateLimitForIp(
+    "intake_session",
+    clientIp,
+    getRateLimitConfig("intake_session"),
+  );
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Te veel pogingen. Probeer het over een paar minuten opnieuw." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Ongeldige JSON" }, { status: 400 });
+  }
+
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Ongeldig verzoek" }, { status: 400 });
+  }
+
+  const bodyRecord = body as Record<string, unknown>;
+  const checkinId =
+    typeof bodyRecord.checkin_id === "string" ? bodyRecord.checkin_id.trim() : "";
+  const chosenActions = parseChosenActions(bodyRecord.chosen_actions);
+
+  if (!checkinId || chosenActions === null) {
+    return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
+  }
+
+  const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
+  const sessionId = verifySignedIntakeSessionCookie(rawCookie);
+
+  if (!sessionId) {
+    return NextResponse.json(
+      { error: "Doe eerst de Leefstijlcheck via /intake." },
+      { status: 401 },
+    );
+  }
+
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
+  }
+
+  const { data: row, error: fetchError } = await admin
+    .from("intake_domain_checkin")
+    .select("id,session_id,domain_key,raw_inputs")
+    .eq("id", checkinId)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error("[api/intake/sleep-checkin] patch fetch error:", fetchError);
+    return NextResponse.json({ error: "Kon check-in niet laden." }, { status: 500 });
+  }
+
+  if (!row || row.session_id !== sessionId || row.domain_key !== "sleep_score") {
+    return NextResponse.json({ error: "Check-in niet gevonden." }, { status: 404 });
+  }
+
+  const existingRaw =
+    row.raw_inputs && typeof row.raw_inputs === "object" && !Array.isArray(row.raw_inputs)
+      ? (row.raw_inputs as Record<string, unknown>)
+      : {};
+
+  const { error: updateError } = await admin
+    .from("intake_domain_checkin")
+    .update({
+      raw_inputs: {
+        ...existingRaw,
+        chosen_actions: chosenActions,
+      },
+    })
+    .eq("id", checkinId);
+
+  if (updateError) {
+    console.error("[api/intake/sleep-checkin] patch update error:", updateError);
+    return NextResponse.json({ error: "Kon acties niet opslaan." }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true }, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {
@@ -215,6 +322,11 @@ export async function POST(request: NextRequest) {
   } = report;
   const scored = { SLP_ONSET, SLP_WAKE, SLP_CONS, SLP_QUAL };
   const currentScore = sleepScoreFromReport(scored);
+  const assessment = assessSleep(scored);
+  const conclusion = buildSleepConclusion(assessment, {
+    winddown: winddown ?? undefined,
+    nightload: nightload ?? undefined,
+  });
 
   const baseline = await loadBaselineSnapshot(sessionId);
   const direction = baseline
@@ -227,7 +339,7 @@ export async function POST(request: NextRequest) {
       }
     : null;
 
-  const { error: checkinError } = await admin.from("intake_domain_checkin").insert({
+  const { data: insertedCheckin, error: checkinError } = await admin.from("intake_domain_checkin").insert({
     session_id: sessionId,
     organization_id: organizationId,
     domain_key: "sleep_score",
@@ -242,10 +354,15 @@ export async function POST(request: NextRequest) {
       nightload,
       morninglight,
       sleepconfidence,
+      focus_dimension: conclusion.focusDimension,
+      focus_label: conclusion.focusLabel,
+      conclusion_text: conclusion.headline,
+      conclusion_actions: conclusion.actions,
+      chosen_actions: [],
     },
     score: { sleep_score: currentScore },
     rules_version: RULES_VERSION,
-  });
+  }).select("id").single();
 
   if (checkinError) {
     console.error("[api/intake/sleep-checkin] checkin insert error:", checkinError);
@@ -293,7 +410,9 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(
     {
-      assessment: assessSleep(scored),
+      checkinId: insertedCheckin?.id ?? null,
+      assessment,
+      conclusion,
       start,
       regie: grip != null ? { grip, reflection: sleepRegieReflection(grip) } : null,
     },

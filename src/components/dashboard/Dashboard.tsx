@@ -3591,6 +3591,7 @@ export default function Dashboard({
             priorityPref?.scheduledTime ?? null,
             priorityPref?.planStepDismissedDate ?? null,
             priorityPref?.planStepsHidden ?? false,
+            data.sleepCheckinFocus,
           )
         : null,
     [empty, data, priorityPref],

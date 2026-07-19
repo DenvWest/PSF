@@ -6,32 +6,32 @@ export const slaapGuide: GuideOptInData = {
   seo: {
     title: "Gratis Slaapgids na 40 | PerfectSupplement",
     description:
-      "Download de gratis Slaapgids voor mannen 40+. Herkenning, 7-dagen protocol en supplementinformatie — zonder diagnoses.",
+      "Interactieve slaapgids voor mannen 40+. Herken patronen, meet Inslapen, Doorslapen, Regelmaat en Uitgerust wakker — met persoonlijke vervolgstappen.",
     canonical: "/gids/slaap",
   },
   heroLabel: "Gratis gids",
-  heroTitle: "Beter slapen begint met begrijpen wat er verandert",
+  heroTitle: "Beter slapen begint met begrijpen",
   heroSubtitle:
-    "Na je 40e slaapt je lichaam anders. Deze gids helpt je herkennen wat er speelt — en welke stappen je vanavond al kunt zetten.",
+    "Begin met zelf onderzoek: herken wat speelt, meet je vier slaappijlers en kies je eerste stappen — supplementen komen pas daarna.",
   recognition: {
     sectionLabel: "Herkenbaar?",
     title: "Dit hoor je jezelf misschien zeggen",
     quotes: [
-      "Ik slaap wel, maar word moe wakker.",
-      "Ik lig 's nachts te malen over werk.",
-      "Ik val makkelijk in slaap, maar word om 3 uur wakker.",
+      "Ik slaap wel, maar word niet uitgerust wakker.",
+      "Ik lig lang wakker voordat ik slaap.",
+      "Ik val in slaap, maar word om 3 uur wakker.",
       "In het weekend slaap ik uit, maar het helpt niet.",
     ],
   },
   optIn: {
     sectionLabel: "Gratis slaapgids",
-    title: "De complete gids voor betere slaap na 40",
+    title: "De praktische slaapgids voor mannen 40+",
     subtitle:
-      "Alles over slaaphygiëne, ritme en supplementen — in één overzichtelijke PDF.",
+      "Van herkenning naar actie: leefstijl eerst, supplementen als aanvulling — in één overzichtelijke PDF.",
     bulletPoints: [
-      "Een 7-dagen protocol dat je vanavond kunt starten",
-      "Welke supplementen wél en niet werken (met doseringen)",
-      "Veelgemaakte fouten die je slaap saboteren",
+      "Waarom slaap verandert — en hoe je Inslapen, Doorslapen, Regelmaat en Uitgerust wakker verbetert",
+      "Leefstijlhefbomen en een 7-dagen startplan",
+      "Checklist en actieplan om één of twee verbeterpunten te kiezen",
     ],
     ctaText: "Stuur mij de gids",
     successMessage: "Check je inbox — de Slaapgids is onderweg.",

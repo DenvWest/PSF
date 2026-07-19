@@ -12,6 +12,7 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.first_checkin_started",
   "dashboard.vitality_scored",
   "dashboard.cta_to_hub",
+  "dashboard.cta.clicked",
   "dashboard.aanrader_clicked",
   "dashboard.daily_action_toggled",
   "dashboard.priority_selected",
@@ -64,6 +65,8 @@ export const DOMAIN_EVENT_TYPES = [
   "measurement.direction_detected",
   "measurement.protein_target_computed",
   "measurement.protein_cta_clicked",
+  "guide.sleep_analysis.started",
+  "guide.sleep_analysis.completed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

@@ -17,6 +17,7 @@ import { loadMovementRecoveryTrend } from "@/lib/movement-recovery-context";
 import { getAccountPriorityPref } from "@/lib/account-priority-pref";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
+import { parseSleepCheckinFocus } from "@/lib/sleep-assessment";
 import type {
   CheckLogEntry,
   CheckScores,
@@ -26,6 +27,7 @@ import type {
   DashboardData,
   NutritionIntakeBand,
   PillarId,
+  SleepCheckinFocus,
   TrendSource,
 } from "@/types/dashboard";
 import type { SustainedAction } from "@/types/delta-report";
@@ -48,6 +50,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   planProgress: null,
   planDomain: null,
   priorityPref: null,
+  sleepCheckinFocus: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -345,7 +348,7 @@ export async function loadAccountDashboardData(
   ] = await Promise.all([
     admin
       .from("intake_domain_checkin")
-      .select("session_id,domain_key,score,created_at")
+      .select("session_id,domain_key,score,created_at,raw_inputs")
       .in("session_id", sessionIds)
       .order("created_at", { ascending: true }),
     admin
@@ -431,9 +434,11 @@ export async function loadAccountDashboardData(
   }
 
   type CheckinRow = {
+    session_id?: string;
     domain_key: string;
     score: unknown;
     created_at: string;
+    raw_inputs?: unknown;
   };
 
   for (const row of (checkinData ?? []) as CheckinRow[]) {
@@ -505,6 +510,30 @@ export async function loadAccountDashboardData(
   const currentDate = formatDashboardDate(new Date(latestTs).toISOString());
 
   const latestSnapshot = snapshots[snapshots.length - 1];
+
+  let sleepCheckinFocus: SleepCheckinFocus | null = null;
+  const sleepCheckins = ((checkinData ?? []) as CheckinRow[])
+    .filter(
+      (row) =>
+        row.domain_key === "sleep_score" &&
+        row.session_id === latestSnapshot.id &&
+        typeof row.created_at === "string",
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    );
+  const latestSleepCheckin = sleepCheckins[sleepCheckins.length - 1];
+  if (latestSleepCheckin) {
+    const parsed = parseSleepCheckinFocus(latestSleepCheckin.raw_inputs);
+    if (parsed) {
+      sleepCheckinFocus = {
+        ...parsed,
+        date: formatDashboardDate(latestSleepCheckin.created_at),
+      };
+    }
+  }
+
   const trendBaselines = Object.fromEntries(
     PILLAR_IDS.flatMap((pillar) => {
       const firstPoint = series[pillar][0];
@@ -624,5 +653,6 @@ export async function loadAccountDashboardData(
     planProgress,
     planDomain,
     priorityPref,
+    sleepCheckinFocus,
   };
 }

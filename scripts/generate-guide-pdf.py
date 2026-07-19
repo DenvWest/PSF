@@ -20,11 +20,12 @@ import importlib.util
 import ssl
 import sys
 import urllib.request
+from io import BytesIO
 from pathlib import Path
 from typing import Any, Callable
 
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
+from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
@@ -247,6 +248,26 @@ def build_styles(body_font: str, heading_font: str) -> dict[str, ParagraphStyle]
         textColor=COLORS["body"],
         alignment=TA_LEFT,
     )
+    toc_entry = ParagraphStyle(
+        "TOCEntry",
+        parent=ss["Normal"],
+        fontName=body_font,
+        fontSize=10,
+        leading=14,
+        textColor=COLORS["body"],
+        alignment=TA_LEFT,
+        spaceBefore=4,
+        spaceAfter=4,
+    )
+    toc_page = ParagraphStyle(
+        "TocPage",
+        parent=ss["Normal"],
+        fontName=body_font,
+        fontSize=10,
+        leading=14,
+        textColor=COLORS["primary"],
+        alignment=TA_RIGHT,
+    )
 
     ch_num = ParagraphStyle(
         "ChNum",
@@ -400,6 +421,8 @@ def build_styles(body_font: str, heading_font: str) -> dict[str, ParagraphStyle]
         "cover_url": cover_url,
         "toc_num": toc_num,
         "toc_title": toc_title,
+        "toc_entry": toc_entry,
+        "toc_page": toc_page,
         "ch_num": ch_num,
         "ch_title": ch_title,
         "body": body,
@@ -576,6 +599,137 @@ def chapter_heading(number: str, title: str, st: dict[str, ParagraphStyle]) -> T
     return tbl
 
 
+def toc_marker(number: str, title: str, st: dict[str, ParagraphStyle]) -> Paragraph:
+    """Invisible anchor so afterFlowable registers the correct page for TOC entries."""
+    marker_style = ParagraphStyle(
+        "TOCMarker",
+        parent=st["body"],
+        fontSize=0.01,
+        leading=0.01,
+        spaceBefore=0,
+        spaceAfter=0,
+        textColor=COLORS["body"],
+    )
+    marker = Paragraph(" ", marker_style)
+    marker._toc_info = (number, title)  # type: ignore[attr-defined]
+    return marker
+
+
+class PageMeasureDoc(SimpleDocTemplate):
+    """Collects chapter start pages during a measurement build."""
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.chapter_pages: list[tuple[str, str, int]] = []
+
+    def afterFlowable(self, flowable: Any) -> None:
+        toc_info = getattr(flowable, "_toc_info", None)
+        if not toc_info:
+            return
+        number, title = toc_info
+        self.chapter_pages.append((number, title, self.canv.getPageNumber()))
+
+
+def build_static_toc_rows(
+    chapters: list[dict[str, Any]],
+    page_map: dict[str, int],
+    st: dict[str, ParagraphStyle],
+) -> list:
+    """TOC rows with dot leaders and right-aligned page numbers."""
+    rows: list = []
+    page_col_w = 28
+    title_col_w = CONTENT_W - page_col_w - 8
+    for ch in chapters:
+        number = ch["number"]
+        title = ch["title"]
+        page = page_map.get(number, 0)
+        label = f"{number}  {xm(title)}"
+        row = Table(
+            [
+                [
+                    Paragraph(label, st["toc_entry"]),
+                    Paragraph(str(page), st["toc_page"]),
+                ]
+            ],
+            colWidths=[title_col_w, page_col_w],
+        )
+        row.setStyle(
+            TableStyle(
+                [
+                    ("LINEBELOW", (0, 0), (-1, -1), 0.5, COLORS["border"]),
+                    ("TOPPADDING", (0, 0), (-1, -1), 8),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ]
+            )
+        )
+        rows.append(row)
+    return rows
+
+
+def measure_toc_page_count(
+    guide: dict[str, Any],
+    st: dict[str, ParagraphStyle],
+    page_map: dict[str, int],
+    body_font: str,
+) -> int:
+    """How many pages the TOC section occupies (excl. title page)."""
+    buf = BytesIO()
+    doc = SimpleDocTemplate(
+        buf,
+        pagesize=A4,
+        leftMargin=LEFT_M,
+        rightMargin=RIGHT_M,
+        topMargin=TOP_M,
+        bottomMargin=BOTTOM_M,
+    )
+    _, on_later = make_canvas_hooks(guide["meta"], body_font)
+    story: list = [
+        PageBreak(),
+        Paragraph(xm("Inhoudsopgave"), st["ch_title"]),
+        Spacer(1, 10),
+        *build_static_toc_rows(guide["chapters"], page_map, st),
+        PageBreak(),
+    ]
+    doc.build(story, onLaterPages=on_later)
+    return doc.page
+
+
+def measure_chapter_pages(
+    guide: dict[str, Any],
+    st: dict[str, ParagraphStyle],
+    body_font: str,
+) -> dict[str, int]:
+    """Pass 1: build without TOC; return chapter number → start page."""
+    buf = BytesIO()
+    doc = PageMeasureDoc(
+        buf,
+        pagesize=A4,
+        leftMargin=LEFT_M,
+        rightMargin=RIGHT_M,
+        topMargin=TOP_M,
+        bottomMargin=BOTTOM_M,
+    )
+    on_first, on_later = make_canvas_hooks(guide["meta"], body_font)
+    story = build_story(guide, st, toc_page_map=None)
+    doc.build(story, onFirstPage=on_first, onLaterPages=on_later)
+    return {number: page for number, _title, page in doc.chapter_pages}
+
+
+def resolve_toc_page_map(
+    guide: dict[str, Any],
+    st: dict[str, ParagraphStyle],
+    body_font: str,
+) -> dict[str, int]:
+    """Two-pass offset: final chapter page = measured page + toc section pages."""
+    raw = measure_chapter_pages(guide, st, body_font)
+    provisional = {num: page + 1 for num, page in raw.items()}
+    toc_pages = measure_toc_page_count(guide, st, provisional, body_font)
+    return {num: page + toc_pages for num, page in raw.items()}
+
+
 def load_guide(thema: str) -> dict[str, Any]:
     path = SCRIPT_DIR / "guide-content" / f"{thema}.py"
     if not path.exists():
@@ -590,7 +744,11 @@ def load_guide(thema: str) -> dict[str, Any]:
     return module.GUIDE
 
 
-def build_story(guide: dict[str, Any], st: dict[str, ParagraphStyle]) -> list:
+def build_story(
+    guide: dict[str, Any],
+    st: dict[str, ParagraphStyle],
+    toc_page_map: dict[str, int] | None = None,
+) -> list:
     story: list = []
 
     tp = guide["title_page"]
@@ -617,35 +775,16 @@ def build_story(guide: dict[str, Any], st: dict[str, ParagraphStyle]) -> list:
 
     story.append(PageBreak())
 
-    story.append(Paragraph(xm("Inhoudsopgave"), st["ch_title"]))
-    story.append(Spacer(1, 10))
-    for ch in guide["chapters"]:
-        row = Table(
-            [
-                [
-                    Paragraph(ch["number"], st["toc_num"]),
-                    Paragraph(xm(ch["title"]), st["toc_title"]),
-                ]
-            ],
-            colWidths=[36, CONTENT_W - 36],
-        )
-        row.setStyle(
-            TableStyle(
-                [
-                    ("LINEBELOW", (0, 0), (-1, -1), 0.5, COLORS["border"]),
-                    ("TOPPADDING", (0, 0), (-1, -1), 8),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
-                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ]
-            )
-        )
-        story.append(row)
-
-    story.append(PageBreak())
+    if toc_page_map is not None:
+        story.append(Paragraph(xm("Inhoudsopgave"), st["ch_title"]))
+        story.append(Spacer(1, 10))
+        story.extend(build_static_toc_rows(guide["chapters"], toc_page_map, st))
+        story.append(PageBreak())
 
     for i, ch in enumerate(guide["chapters"]):
         if i > 0:
             story.append(PageBreak())
+        story.append(toc_marker(ch["number"], ch["title"], st))
         story.append(chapter_heading(ch["number"], ch["title"], st))
         story.extend(render_blocks(ch.get("blocks", []), st))
 
@@ -757,6 +896,8 @@ def main() -> int:
 
     on_first, on_later = make_canvas_hooks(meta, body_font)
 
+    toc_page_map = resolve_toc_page_map(guide, st, body_font)
+
     doc = SimpleDocTemplate(
         str(outfile),
         pagesize=A4,
@@ -768,7 +909,11 @@ def main() -> int:
         author="PerfectSupplement",
     )
 
-    doc.build(build_story(guide, st), onFirstPage=on_first, onLaterPages=on_later)
+    doc.build(
+        build_story(guide, st, toc_page_map=toc_page_map),
+        onFirstPage=on_first,
+        onLaterPages=on_later,
+    )
     print(f"OK → {outfile}")
     return 0
 

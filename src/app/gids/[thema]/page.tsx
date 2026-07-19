@@ -119,7 +119,17 @@ export default async function GidsOptInPage({ params }: Props) {
                 </li>
               ))}
             </ul>
-            <div className="mt-8">
+            {microCheck ? (
+              <div className="mt-8">
+                <Link
+                  href={microCheck.href}
+                  className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-ps-green px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ps-green/90"
+                >
+                  {microCheck.label}
+                </Link>
+              </div>
+            ) : null}
+            <div className={microCheck ? "mt-6" : "mt-8"}>
               <GuideOptInForm
                 themaSlug={themaSlug}
                 ctaText={data.optIn.ctaText}

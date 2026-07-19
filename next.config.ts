@@ -107,6 +107,16 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/gids/slaap/analyse",
+        destination: "/gids/slaap",
+        permanent: true,
+      },
+      {
+        source: "/gids/slaap/analyse/:path*",
+        destination: "/gids/slaap",
+        permanent: true,
+      },
+      {
         source: "/symptomen/stress",
         destination: "/gids/stress",
         permanent: true,

@@ -49,6 +49,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   planProgress: null,
   planDomain: null,
   priorityPref: null,
+  sleepCheckinFocus: null,
 };
 
 const DASHBOARD_WITH_DATA: DashboardData = {
@@ -89,6 +90,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   planProgress: null,
   planDomain: "sleep",
   priorityPref: null,
+  sleepCheckinFocus: null,
 };
 
 const DASHBOARD_WITH_ANSWERS: DashboardData = {

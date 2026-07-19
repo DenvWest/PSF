@@ -180,6 +180,15 @@ export type NutritionIntakeItem = {
   previousBand?: NutritionIntakeBand;
 };
 
+export type SleepCheckinFocus = {
+  focusLabel: string | null;
+  focusDimension: "inslapen" | "doorslapen" | "regelmaat" | null;
+  conclusionText: string;
+  actions: string[];
+  chosenActions: string[];
+  date: string;
+};
+
 export type DashboardData = {
   empty: boolean;
   current: (CheckSnapshot & { trend: CheckTrend; trendBaselines?: CheckTrendBaselines }) | null;
@@ -197,6 +206,7 @@ export type DashboardData = {
   planProgress: PlanProgress | null;
   planDomain: MeasuredPillarId | null;
   priorityPref: AccountPriorityPrefData | null;
+  sleepCheckinFocus: SleepCheckinFocus | null;
 };
 
 export type IdentityField = {
@@ -249,4 +259,5 @@ export type DashboardModel = {
   activeHabit: ActivePlanHabit | null;
   planDomain: MeasuredPillarId | null;
   planProgress: PlanProgress | null;
+  sleepFocus: SleepCheckinFocus | null;
 };

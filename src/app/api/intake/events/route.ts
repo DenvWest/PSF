@@ -13,6 +13,7 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "dashboard.first_checkin_started",
   "dashboard.vitality_scored",
   "dashboard.cta_to_hub",
+  "dashboard.cta.clicked",
   "dashboard.aanrader_clicked",
   "intake.started",
   "intake.phase_completed",

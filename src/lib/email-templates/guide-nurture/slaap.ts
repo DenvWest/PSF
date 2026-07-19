@@ -43,8 +43,8 @@ ${ctaButton(absoluteUrl("/downloads/slaapgids-perfectsupplement.pdf"), "Download
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Op onze slaappagina leggen we uit hoe je dit ritme opbouwt — stap voor stap.
 </p>
-${ctaButton(absoluteUrl("/slaap-verbeteren-na-40"), "Lees het complete slaapprotocol →")}
-<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 24px;">
+${ctaButton(absoluteUrl("/gids/slaap"), "Doorloop de interactieve Slaapgids →")}
+<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 12px;">
   <a href="${absoluteUrl("/intake/plan/sleep")}" style="color: #3C7A56; text-decoration: underline;">Wil je stappen afvinken? Open je slaapplan →</a>
 </p>`,
         unsubscribeUrl,
@@ -123,7 +123,10 @@ ${ctaButton(absoluteUrl("/slaap-verbeteren-na-40"), "Terug naar het complete sla
 <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 24px;">
   Na een maand is het zinvol om opnieuw te kijken: slaap, stress, energie en herstel hangen samen. De Leefstijlcheck geeft je een actueel beeld in 3 minuten.
 </p>
-${ctaButton(absoluteUrl("/intake"), "Doe de gratis Leefstijlcheck →")}`,
+${ctaButton(absoluteUrl("/gids/slaap"), "Meet je slaap opnieuw in de Slaapgids →")}
+<p style="font-size: 14px; color: #777; line-height: 1.6; margin-top: 12px;">
+  <a href="${absoluteUrl("/intake")}" style="color: #3C7A56; text-decoration: underline;">Of doe de volledige Leefstijlcheck →</a>
+</p>`,
         unsubscribeUrl,
         GUIDE_NAME,
       ),

@@ -258,6 +258,40 @@ export default function SleepScreen({
           <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
         </Link>
 
+        {model.sleepFocus ? (
+          <Card pad={18} surface="light" style={{ borderColor: `${pillar.color}44` }}>
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: pillar.color,
+                marginBottom: 8,
+              }}
+            >
+              Laatste slaapanalyse · {model.sleepFocus.date}
+            </p>
+            <div style={{ fontFamily: "var(--f-serif)", fontSize: 18, color: KOMPAS_LIGHT.text }}>
+              {model.sleepFocus.conclusionText}
+            </div>
+            {model.sleepFocus.focusLabel ? (
+              <p style={{ fontSize: 13.5, color: KOMPAS_LIGHT.muted, marginTop: 8, lineHeight: 1.5 }}>
+                Focus: <strong style={{ color: KOMPAS_LIGHT.text }}>{model.sleepFocus.focusLabel}</strong>
+              </p>
+            ) : null}
+            {model.sleepFocus.chosenActions.length > 0 ? (
+              <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 8, lineHeight: 1.5 }}>
+                Actieve stap: {model.sleepFocus.chosenActions[0]}
+              </p>
+            ) : model.sleepFocus.actions[0] ? (
+              <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 8, lineHeight: 1.5 }}>
+                Eerste actie: {model.sleepFocus.actions[0]}
+              </p>
+            ) : null}
+          </Card>
+        ) : null}
+
         <section aria-label="Leefstijl eerst">
           <KompasSectionHeader eyebrow="Leefstijl eerst" title="Ritme-hefbomen" />
           <Card pad={18} surface="light">
@@ -461,15 +495,6 @@ export default function SleepScreen({
           onClick={() => {
             trackEvent("dashboard_slaap_plan_click", { surface: "kompas_slaap" });
             clarityTag("dashboard_slaap_footer", "plan");
-          }}
-        />
-        <FooterLink
-          href="/gids/slaap"
-          icon={<Icons.Mail s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Gratis Slaapgids"
-          onClick={() => {
-            trackEvent("dashboard_slaap_gids_click", { surface: "kompas_slaap" });
-            clarityTag("dashboard_slaap_footer", "gids");
           }}
         />
         <FooterLink

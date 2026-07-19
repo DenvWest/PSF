@@ -11,9 +11,11 @@ import {
   SLEEP_REGIE_QUESTION,
   type SleepBand,
 } from "@/data/sleep-checkin";
-import type { SleepAssessment } from "@/lib/sleep-assessment";
+import type { SleepAssessment, SleepConclusion } from "@/lib/sleep-assessment";
 import type { SleepDirection } from "@/lib/sleep-delta";
 import { trackEvent } from "@/lib/ga4";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
+import SleepDashboardCta from "@/components/sleep/SleepDashboardCta";
 
 type SleepReport = {
   SLP_ONSET?: number;
@@ -44,6 +46,8 @@ type Step =
   | {
       kind: "result";
       assessment: SleepAssessment;
+      conclusion: SleepConclusion;
+      checkinId: string | null;
       start: SleepStart | null;
       regie: SleepRegie | null;
     }
@@ -76,6 +80,7 @@ export default function SleepCheckin() {
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [checkinId, setCheckinId] = useState<string | null>(null);
 
   useEffect(() => {
     clarityTag("sleep_flow", "started");
@@ -136,16 +141,21 @@ export default function SleepCheckin() {
       }
 
       const data = (await res.json()) as {
+        checkinId: string | null;
         assessment: SleepAssessment;
+        conclusion: SleepConclusion;
         start: SleepStart | null;
         regie: SleepRegie | null;
       };
 
       clarityTag("sleep_flow", "completed");
       trackEvent("sleep_checkin_completed", { surface: "intake_slaap" });
+      setCheckinId(data.checkinId);
       setStep({
         kind: "result",
         assessment: data.assessment,
+        conclusion: data.conclusion,
+        checkinId: data.checkinId,
         start: data.start,
         regie: data.regie,
       });
@@ -153,6 +163,26 @@ export default function SleepCheckin() {
       setStep({ kind: "error", message: "Opnieuw proberen" });
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function persistChosenActions(nextSelected: Set<string>) {
+    if (!checkinId || nextSelected.size === 0) {
+      return;
+    }
+    const chosenActions = [...nextSelected].map((key) => key.split(":").slice(1).join(":"));
+    try {
+      await fetch("/api/intake/sleep-checkin", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          checkin_id: checkinId,
+          chosen_actions: chosenActions,
+        }),
+      });
+    } catch {
+      /* non-blocking */
     }
   }
 
@@ -164,12 +194,13 @@ export default function SleepCheckin() {
       } else {
         next.add(key);
       }
+      void persistChosenActions(next);
       return next;
     });
   }
 
   if (step.kind === "result") {
-    const { assessment, start, regie } = step;
+    const { assessment, conclusion, start, regie } = step;
     const focus = assessment.focus;
     const contextHints: string[] = [];
     if ((answers.nightload ?? 4) <= 2) {
@@ -194,6 +225,61 @@ export default function SleepCheckin() {
           <p className="mb-8 text-center text-sm text-intake-ink-subtle">
             Op basis van hoe je nu slaapt
           </p>
+
+          <section
+            className="mb-8 rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-5"
+            aria-labelledby="sleep-conclusion-heading"
+          >
+            <h2
+              id="sleep-conclusion-heading"
+              className="font-serif text-xl font-normal text-intake-ink"
+            >
+              {conclusion.headline}
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-intake-ink-muted">
+              {conclusion.statement}
+            </p>
+            {conclusion.secondaryHint ? (
+              <p className="mt-3 text-sm leading-relaxed text-intake-ink-muted">
+                {conclusion.secondaryHint}
+              </p>
+            ) : null}
+          </section>
+
+          <section className="mb-8" aria-labelledby="sleep-actions-heading">
+            <h2
+              id="sleep-actions-heading"
+              className="mb-3 text-sm font-medium text-intake-ink"
+            >
+              Jouw volgende 3 acties
+            </h2>
+            <ol className="flex list-decimal flex-col gap-3 pl-5">
+              {conclusion.actions.map((action) => (
+                <li
+                  key={action}
+                  className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted marker:font-semibold marker:text-intake-terra"
+                >
+                  {action}
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 text-sm text-intake-ink-muted">
+              Wil je stappen afvinken?{" "}
+              <Link
+                href="/intake/plan/sleep"
+                onClick={() => {
+                  trackEvent("sleep_plan_link_click", { surface: "intake_slaap" });
+                  emitIntakeClientEvent("plan.action_clicked", {
+                    domain: "sleep",
+                    source: "sleep_checkin",
+                  });
+                }}
+                className="font-semibold text-intake-sage hover:underline"
+              >
+                Open je slaapplan →
+              </Link>
+            </p>
+          </section>
 
           {start && (
             <div className="mb-8 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
@@ -309,6 +395,12 @@ export default function SleepCheckin() {
               </ul>
             </div>
           )}
+
+          <SleepDashboardCta
+            focusLabel={conclusion.focusLabel}
+            focusDimension={conclusion.focusDimension}
+            source="sleep_checkin"
+          />
         </div>
       </div>
     );

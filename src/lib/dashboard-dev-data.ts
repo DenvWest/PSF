@@ -138,5 +138,6 @@ export function buildDevDashboardData(
     planProgress: null,
     planDomain: "nutrition",
     priorityPref: null,
+    sleepCheckinFocus: null,
   };
 }
