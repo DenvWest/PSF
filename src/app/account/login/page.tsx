@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import LoginScreen from "@/components/account/LoginScreen";
-import { parseAccountLoginFrom } from "@/lib/account-login-href";
+import {
+  parseAccountLoginFrom,
+  parseSleepAnalysisFocus,
+} from "@/lib/account-login-href";
 
 export const metadata: Metadata = {
   robots: {
@@ -10,12 +13,15 @@ export const metadata: Metadata = {
 };
 
 type AccountLoginPageProps = {
-  searchParams: Promise<{ from?: string; ref?: string }>;
+  searchParams: Promise<{ from?: string; ref?: string; focus?: string }>;
 };
 
 export default async function AccountLoginPage({ searchParams }: AccountLoginPageProps) {
-  const { from, ref } = await searchParams;
+  const { from, ref, focus } = await searchParams;
   const loginFrom = parseAccountLoginFrom(from);
+  const sleepFocus = parseSleepAnalysisFocus(focus);
 
-  return <LoginScreen loginFrom={loginFrom} nurtureRef={ref ?? null} />;
+  return (
+    <LoginScreen loginFrom={loginFrom} nurtureRef={ref ?? null} sleepFocus={sleepFocus} />
+  );
 }

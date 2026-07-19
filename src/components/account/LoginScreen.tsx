@@ -8,7 +8,7 @@ import { ArrowRight, Lock, Mail, Refresh, Shield } from "@/components/app/icons"
 import { Button, Checkbox, TextField } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
 import { GA4_EVENTS, trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
-import type { AccountLoginFrom } from "@/lib/account-login-href";
+import type { AccountLoginFrom, SleepAnalysisFocusKey } from "@/lib/account-login-href";
 import { NURTURE_DAY0_DASHBOARD_REF } from "@/lib/nurture-dashboard-url";
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { getLastSession } from "@/lib/intake-storage";
@@ -18,6 +18,12 @@ import {
 } from "@/lib/login-primary-action";
 
 const CONTACT_EMAIL_STORAGE_KEY = "ps_contact_email";
+
+const SLEEP_FOCUS_LABELS: Record<SleepAnalysisFocusKey, string> = {
+  inslapen: "Inslapen",
+  doorslapen: "Doorslapen",
+  regelmaat: "Regelmaat",
+};
 
 function isValidEmail(value: string) {
   return /\S+@\S+\.\S+/.test(value);
@@ -217,15 +223,18 @@ function CodeEntryView({ email, onResend, onChangeAddress }: CodeEntryViewProps)
 type LoginScreenProps = {
   loginFrom?: AccountLoginFrom | "default";
   nurtureRef?: string | null;
+  sleepFocus?: SleepAnalysisFocusKey | null;
 };
 
 export default function LoginScreen({
   loginFrom = "default",
   nurtureRef = null,
+  sleepFocus = null,
 }: LoginScreenProps) {
   const router = useRouter();
   const fromIntake = loginFrom === "intake";
   const fromVoortgang = loginFrom === "voortgang";
+  const fromSleepAnalysis = loginFrom === "sleep_analysis";
   const [email, setEmail] = useState(() =>
     fromIntake ? readStoredContactEmail() : "",
   );
@@ -488,16 +497,22 @@ export default function LoginScreen({
 
   const loginTitle = fromIntake
     ? "Bedankt voor het invullen van de Leefstijlcheck."
-    : fromVoortgang
-      ? "Log in of start je check"
-      : "Welkom terug.";
+    : fromSleepAnalysis
+      ? "Bewaar je slaapinzicht."
+      : fromVoortgang
+        ? "Log in of start je check"
+        : "Welkom terug.";
   const loginLead = fromIntake
     ? "Sla je resultaten op in je persoonlijke dashboard. We sturen een inlogcode naar je mail — geen wachtwoord nodig."
-    : isLoginAction
-      ? "Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord nodig."
-      : fromVoortgang
-        ? "Nog geen Leefstijlcheck gedaan? Start gratis (3 min). Heb je al een account? Vul je e-mail in om in te loggen."
-        : "Nog geen check gedaan? Start de Leefstijlcheck. Heb je al een account? Vul je e-mail in om in te loggen.";
+    : fromSleepAnalysis
+      ? sleepFocus
+        ? `Je begint met focus op ${SLEEP_FOCUS_LABELS[sleepFocus]}. Maak gratis je dashboard aan om je vier slaappijlers te volgen en je acties af te vinken — we sturen een inlogcode naar je mail, geen wachtwoord nodig.`
+        : "Maak gratis je dashboard aan om je vier slaappijlers te volgen en je acties af te vinken — we sturen een inlogcode naar je mail, geen wachtwoord nodig."
+      : isLoginAction
+        ? "Vul je e-mailadres in — je krijgt een 6-cijferige inlogcode in je mail. Geen wachtwoord nodig."
+        : fromVoortgang
+          ? "Nog geen Leefstijlcheck gedaan? Start gratis (3 min). Heb je al een account? Vul je e-mail in om in te loggen."
+          : "Nog geen check gedaan? Start de Leefstijlcheck. Heb je al een account? Vul je e-mail in om in te loggen.";
   const primaryButtonLabel = isLoginAction
     ? "Stuur inlogcode"
     : INTAKE_CTA.startCheck;

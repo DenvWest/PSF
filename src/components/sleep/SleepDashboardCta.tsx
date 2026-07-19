@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { buildSleepAnalysisLoginHref } from "@/lib/account-login-href";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -36,6 +37,11 @@ export default function SleepDashboardCta({
     }
   }
 
+  const resolvedHref =
+    source === "sleep_analysis"
+      ? buildSleepAnalysisLoginHref(focusDimension)
+      : loginHref;
+
   return (
     <section
       className="mt-8 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-5"
@@ -63,7 +69,7 @@ export default function SleepDashboardCta({
         Zo houd je zelf de regie — en breid je dashboard later uit met diepere, gekoppelde inzichten.
       </p>
       <Link
-        href={loginHref}
+        href={resolvedHref}
         onClick={handleClick}
         className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-[12px] bg-intake-terra px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-intake-terra/90"
       >
