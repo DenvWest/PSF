@@ -6,6 +6,7 @@ import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { emitGuideSleepAnalysisEvent } from "@/lib/guide-sleep-analysis-events";
+import { writeSleepFocusCookie } from "@/lib/sleep-focus";
 import type { SleepActionableKey } from "@/data/sleep-checkin";
 
 type SleepDashboardCtaProps = {
@@ -24,6 +25,9 @@ export default function SleepDashboardCta({
   eventMode = "intake",
 }: SleepDashboardCtaProps) {
   function handleClick() {
+    if (source === "sleep_analysis") {
+      writeSleepFocusCookie(focusDimension);
+    }
     const payload = {
       source,
       focus_pillar: focusDimension ?? "maintenance",

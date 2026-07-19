@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import EvidenceStars from "@/components/evidence/EvidenceStars";
 import type { QuestionId } from "@/data/intake-questions";
 import {
   LEEFSTIJLCHECK_EVIDENCE_BY_ID,
@@ -76,18 +77,16 @@ export function IntakeEvidencePanel({
   questionId,
   className = "mt-4 border-l-2 border-intake-terra/35 py-1 pl-4",
 }: IntakeEvidencePanelProps) {
-  const rationalePreview = evidence.scientificRationale.slice(0, 3);
-
   return (
     <div className={className}>
       <p className="text-sm leading-relaxed text-intake-ink-muted">
         {evidence.whyThisQuestion}
       </p>
-      <ul className="mt-3 space-y-1 text-sm leading-relaxed text-intake-ink-muted">
-        {rationalePreview.map((line) => (
-          <li key={line}>- {line}</li>
-        ))}
-      </ul>
+      <EvidenceStars
+        stars={evidence.strength.stars}
+        label={evidence.strength.label}
+        className="mt-3 text-xs font-medium text-intake-ink-muted"
+      />
       <Link
         href={`/onderbouwing#${questionId}`}
         className="mt-3 inline-block text-xs font-medium text-intake-terra underline decoration-intake-terra/35 underline-offset-[3px] hover:decoration-intake-terra"

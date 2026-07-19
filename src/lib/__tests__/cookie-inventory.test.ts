@@ -14,6 +14,7 @@ describe("cookie-inventory", () => {
       expect.arrayContaining([
         "psf_intake_sid",
         "psf_account",
+        "psf_sleep_focus",
         "psf_analytics_state",
         "_ga / _ga_*",
         "_clck",
@@ -23,7 +24,7 @@ describe("cookie-inventory", () => {
   });
 
   it("groeperen per categorie", () => {
-    expect(cookieCountByCategory("necessary")).toBe(4);
+    expect(cookieCountByCategory("necessary")).toBe(5);
     expect(cookieCountByCategory("statistics")).toBe(3);
     expect(cookiesByCategory("marketing")).toHaveLength(1);
   });

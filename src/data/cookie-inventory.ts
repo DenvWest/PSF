@@ -56,6 +56,13 @@ export const COOKIE_INVENTORY: CookieEntry[] = [
     category: "necessary",
   },
   {
+    name: "psf_sleep_focus",
+    provider: "PerfectSupplement",
+    purpose: "Onthoudt je gekozen slaapfocus na de gids-analyse (door login heen)",
+    expiry: "30 dagen",
+    category: "necessary",
+  },
+  {
     name: "psf_analytics_consent",
     provider: "PerfectSupplement",
     purpose: "Server-side verificatie van je analytische cookiekeuze (httpOnly)",

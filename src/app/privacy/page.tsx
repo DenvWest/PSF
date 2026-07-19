@@ -433,6 +433,11 @@ export default function PrivacyPage() {
                                 <td className="px-4 py-3">90 dagen</td>
                             </tr>
                             <tr className="border-t border-stone-200">
+                                <td className="px-4 py-3 font-mono text-stone-700">psf_sleep_focus</td>
+                                <td className="px-4 py-3">Functioneel (slaapfocus na gids-analyse)</td>
+                                <td className="px-4 py-3">30 dagen</td>
+                            </tr>
+                            <tr className="border-t border-stone-200">
                                 <td className="px-4 py-3 font-mono text-stone-700">psf_intake_sid</td>
                                 <td className="px-4 py-3">Functioneel (sessie / intake)</td>
                                 <td className="px-4 py-3">90 dagen</td>

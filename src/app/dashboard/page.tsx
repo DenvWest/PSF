@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
 import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
@@ -5,6 +6,7 @@ import { loadAccountDashboardData } from "@/lib/account-dashboard";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
+import { parseSleepFocus, SLEEP_FOCUS_COOKIE_NAME } from "@/lib/sleep-focus";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 export const metadata = {
@@ -112,12 +114,18 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     hasFeature(account.id, "trends"),
   ]);
 
+  const cookieStore = await cookies();
+  const sleepFocus = data.empty
+    ? parseSleepFocus(cookieStore.get(SLEEP_FOCUS_COOKIE_NAME)?.value)
+    : null;
+
   return (
     <div className="ps-dark">
       <Dashboard
         empty={data.empty}
         data={data}
         hasTrendsFeature={hasTrendsFeature}
+        sleepFocus={sleepFocus}
         {...dashboardProps}
       />
     </div>

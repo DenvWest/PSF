@@ -131,6 +131,7 @@ import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent, trackDashboardTabSelected, trackOnderbouwingLinkClick } from "@/lib/ga4";
+import { SLEEP_FOCUS_LABELS, type SleepFocusKey } from "@/lib/sleep-focus";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
@@ -163,6 +164,7 @@ type DashboardProps = {
   initialTab?: DashboardTabId;
   initialVoortgangScreen?: VoortgangScreen;
   initialKompasView?: PillarId;
+  sleepFocus?: SleepFocusKey | null;
 };
 
 type SharedSectionProps = {
@@ -185,6 +187,7 @@ type SharedSectionProps = {
   initialKompasView?: PillarId;
   prefUpdatedAt: string | null;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
+  sleepFocus: SleepFocusKey | null;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -522,9 +525,11 @@ const ActiveHabitCard = ({
 const Greeting = ({
   empty,
   model,
+  sleepFocus,
 }: {
   empty?: boolean;
   model: DashboardModel | null;
+  sleepFocus?: SleepFocusKey | null;
 }) => (
   <div style={{ marginBottom: 20 }}>
     <div
@@ -535,7 +540,11 @@ const Greeting = ({
         lineHeight: 1.1,
       }}
     >
-      {empty ? "Goed dat je er bent." : "Welkom terug."}
+      {empty
+        ? sleepFocus
+          ? "Je slaapinzicht staat klaar."
+          : "Goed dat je er bent."
+        : "Welkom terug."}
     </div>
     <div
       style={{
@@ -547,7 +556,9 @@ const Greeting = ({
       }}
     >
       {empty
-        ? "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
+        ? sleepFocus
+          ? `Je koos focus op ${SLEEP_FOCUS_LABELS[sleepFocus]}. Eén korte Leefstijlcheck (3 min) vult je dashboard — inclusief je slaap.`
+          : "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
         : model
           ? model.priorityIsUserChosen
             ? `${model.date} · jij focus op ${model.priority.label.toLowerCase()} (analyse: ${model.enginePriority.label.toLowerCase()}).`
@@ -564,6 +575,7 @@ const VitalityScoreSection = ({
   onCheck,
   voortgangScreen,
   onOpenInzichten,
+  sleepFocus,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const emittedKeyRef = useRef<string | null>(null);
@@ -610,6 +622,7 @@ const VitalityScoreSection = ({
           clarityTag("dashboard_vitaalscore_cta", "empty");
           trackEvent("dashboard_first_check_cta", {
             surface: "vitaalscore_card",
+            sleep_focus: sleepFocus ?? "none",
           });
           onCheck();
         }}
@@ -3558,6 +3571,7 @@ export default function Dashboard({
   initialTab,
   initialVoortgangScreen,
   initialKompasView,
+  sleepFocus = null,
 }: DashboardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -3748,6 +3762,7 @@ export default function Dashboard({
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
     onPrefUpdated: setPriorityPrefOverride,
+    sleepFocus,
   };
 
   const surfaceClass =
@@ -3768,7 +3783,7 @@ export default function Dashboard({
       >
         <DashHeader onLogout={onLogout} />
         {tab === "vandaag" ? (
-          <Greeting empty={empty} model={model} />
+          <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
         ) : tab !== "voortgang" ? (
           <DashTabHeader tab={tabMeta} />
         ) : null}
