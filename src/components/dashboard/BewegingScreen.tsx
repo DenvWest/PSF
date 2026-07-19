@@ -8,6 +8,7 @@ import { Card, DeltaBadge, Sparkline } from "@/components/app/primitives";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
 import { PILLAR } from "@/data/dashboard";
+import { MOVEMENT_LOG_MODALITIES } from "@/data/movement/log-modalities";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import {
   buildMovementRecommendations,
@@ -27,37 +28,13 @@ const KOMPAS_LIGHT = {
   innerBg: "#faf9f7",
 } as const;
 
-const MOVEMENT_MODALITIES: {
-  icon: string;
-  label: string;
-  href: string | null;
-  modality: string;
-}[] = [
-  {
-    icon: "💪",
-    label: "Krachttraining",
-    href: "/blog/krachttraining-na-40",
-    modality: "krachttraining",
-  },
-  {
-    icon: "🚶",
-    label: "Stevig wandelen",
-    href: "/beweging-na-40",
-    modality: "wandelen",
-  },
-  {
-    icon: "🛌",
-    label: "Rust & herstel",
-    href: "/herstel-verbeteren-na-40",
-    modality: "herstel",
-  },
-  {
-    icon: "❤️",
-    label: "Zone 2 cardio",
-    href: "/onderbouwing#MOV_CARD",
-    modality: "zone2",
-  },
-];
+/** Zelfde modality-slice als de live chip-scroll (log-modalities.ts) — geen losse lijst meer om te laten drijven. */
+const MOVEMENT_MODALITIES = MOVEMENT_LOG_MODALITIES.map((modality) => ({
+  icon: modality.icon,
+  label: modality.label,
+  href: modality.href,
+  modality: modality.id,
+}));
 
 const KompasLightPanel = ({ children }: { children: React.ReactNode }) => (
   <div className="-mt-3 overflow-hidden rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-5 shadow-[0_16px_48px_rgba(15,28,16,0.10)]">

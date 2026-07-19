@@ -181,6 +181,25 @@ export default function LeefstijllijnSection({
                     h={compact ? 34 : 40}
                     empty={!hasTrend}
                   />
+                  {row.pillarId === "beweging" && (movementSummary?.totalMinutes ?? 0) > 0 ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 6 }}>
+                      <Icons.Activity
+                        s={12}
+                        style={{ color: isLight ? "#78716c" : "var(--text-subtle)", flexShrink: 0 }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 11.5,
+                          color: isLight ? "#78716c" : "var(--text-subtle)",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {movementSummary?.totalMinutes} min ·{" "}
+                        {movementSummary?.sessionCount}{" "}
+                        {movementSummary?.sessionCount === 1 ? "sessie" : "sessies"} deze week
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
 
                 <div
