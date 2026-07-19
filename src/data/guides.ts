@@ -257,6 +257,55 @@ export const GUIDES: Guide[] = [
     ],
   },
   {
+    key: "beweging",
+    title: "Beweging",
+    accent: "oklch(0.69 0.095 50)",
+    tag: "Kracht & conditie",
+    focusCategories: ["energie-vitaliteit"],
+    comingSoon: true,
+    contentHref: "/beweging-na-40",
+    promise: "Sterk en soepel blijven — ook als je al 'best actief' bent.",
+    heroTitle: "Sterk blijven. Soepel bewegen. Zelfstandig ouder worden.",
+    heroSub:
+      "Een compacte gids over waarom kracht en conditie na 40 zwaarder tellen dan volume — en hoe je begint met minder dan je denkt. Geen sportschool-hype, wel houdbare stappen.",
+    benefits: [
+      "Waarom wandelen en fietsen je spieren te weinig prikkelen",
+      "Hoe krachttraining je spiermassa en botten op peil houdt",
+      "Twee tot drie korte sessies die in een drukke week passen",
+      "Thuis beginnen met lichaamsgewicht — zonder materiaal",
+      "Waarom herstel en rustdagen je vooruitgang bepalen",
+      "Wanneer creatine of eiwit pas zinvol worden",
+    ],
+    recognition: [
+      "Je bent actief, maar traint je spieren zelden echt",
+      "Traplopen of tillen voelt net wat zwaarder dan vroeger",
+      "Je herstelt langzamer na een zware dag of training",
+      "Je wilt gezond en zelfstandig ouder worden, zonder schema-druk",
+    ],
+    longform: [
+      "Wandelen, fietsen en lichamelijk werk zijn goud waard — maar ze geven je spieren zelden de prikkel die nodig is om kracht op peil te houden. En juist die kracht bepaalt de komende decennia hoe soepel je beweegt en hoe zelfstandig je blijft.",
+      "Deze gids gaat niet over de sportschool of over presteren. Hij laat zien waarom gerichte kracht en conditie na 40 het verschil maken — en hoe je begint met één kleine stap die je vol kunt houden in een druk leven.",
+    ],
+    pullquote: "Niet méér bewegen. Slimmer belasten.",
+    verdieping: [
+      {
+        label: "Pillar: Beweging na 40",
+        sub: "Kracht, ritme en herstel — nuchter uitgelegd.",
+        href: "/beweging-na-40",
+      },
+      {
+        label: "Jouw profiel",
+        sub: "Bewaar je gidsen en volg je voortgang.",
+        href: "/intake",
+      },
+      {
+        label: "Gratis Leefstijlcheck",
+        sub: "Meet je startpunt in 3 minuten.",
+        href: "/intake",
+      },
+    ],
+  },
+  {
     key: "testosteron",
     title: "Testosteron",
     accent: "oklch(0.71 0.095 82)",

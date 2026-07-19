@@ -410,3 +410,39 @@ De structuur (§1–9) is het skelet. Dit is de huid. Zonder deze regie leest de
 | Jouw lichaam is geen gemiddelde | Jij bent geen gemiddelde |
 | Morgen, om 07:00 | _(blijft — al beeldend)_ |
 | Wie je wordt | _(blijft — al beeldend)_ |
+
+---
+
+## 16. Interactieve gids-richting (v0.4) — de levenslijn-documentaire
+
+**Status: dit is nu de leidende vorm van de gids.** Behoudt de principes uit §2–3, §5, §11 en §14–15; de acht onderdelen hieronder vervangen de hoofdstukindeling van §4 waar ze afwijken. De orkest-metafoor (§15.3) is in de interactieve vorm _optioneel/gedempt_ — de levenslijn en de "toekomstige ik" dragen hier de emotie; de overige §15-regels (hoofdpersoon, tegenstander, orgaan→functie→leven, één openbaring, geen ontwerpwoorden) blijven gelden.
+
+**Kernverschuiving t.o.v. §1–4:**
+- **Vorm:** interactieve scrollytelling — "een documentaire over je eigen toekomst", geen leesgids.
+- **Plot:** gezond ouder worden via **kracht + conditie**. De scherpe wig: _"je denkt dat je genoeg beweegt (wandelen/fietsen/zwaar werk), maar dat geeft je spieren nauwelijks prikkel."_ Dat is tegelijk de tegenstander (§15.2), niet-veroordelend.
+- **Doelgroep:** verbreed naar **35–65, gender-neutraal** — **OPEN BESLUIT**, wijkt af van "mannen 40+" (zie onder).
+- **Flagship-visual:** de **Levenslijn** (leeftijd-slider **30→85**, scenario A vs B die sluipend uit elkaar lopen) vervangt de 24u-afspeellijst als centrale interactie. Bij 30–40 liggen de lijnen bijna op elkaar — dat maakt het latere uiteenlopen voelbaar.
+
+**De acht onderdelen (met koppeling naar de eerdere delen):**
+
+1. **Herkenning** — chips + empathische reframe _(≈ Proloog + Deel 1)_.
+2. **Levenslijn** — leeftijd-slider, 5 metrics, A vs B, "toekomstige ik" _(≈ Deel 2 + jaren-laag)_. **Flagship.**
+3. **Onder de motorkap** — wat krachttraining doet op microniveau _(≈ mechanisme Deel 1/3)_.
+4. **Wandelen ≠ genoeg** — de wig, niet-veroordelend _(nieuw; kern van deze richting)_.
+5. **Herkenbare momenten** — tap-tally, "beïnvloedbaar, geen falen" _(≈ herkenning Deel 2)_.
+6. **Positieve toekomst** — warm wordende sectie, levensgebeurtenissen, dankbaarheid-future-you _(≈ opwaartse Deel 7/Epiloog)_.
+7. **Dashboard-preview** — Future You Score, streak, weekdoelen, badges _(≈ platform Deel 6 + gamification)_.
+8. **Leefstijlcheck-CTA** — persoonlijke levenslijn + beweegscore + route; account voor dashboard _(≈ primaire conversie Deel 6)_.
+
+**Nieuwe devices:**
+- **"Toekomstige ik"** — één meegroeiende quote per leeftijdsfase (spijt vroeg → dankbaarheid laat). **Besluit: GEEN A/B-future-you naast elkaar** (te veel; maakt er een diagram van i.p.v. een stem).
+- **Persoonlijke-score-draad** — algemeen beeld in de gids → nauwkeurige beweegscore ná de check.
+- **Gamified dashboard** als reden om een account te maken (waarde, niet alleen noodzaak).
+
+**Guardrails (expliciet):** geen medische claims — alles "normale, leeftijdsgebonden veranderingen" + "beïnvloedbaar"; publieke levenslijn = algemeen beeld, géén persoonlijke voorspelling/score; disclaimer verplicht.
+
+**Artefacten (privé):**
+- Levenslijn-documentaire (v0.4, leidend): https://claude.ai/code/artifact/8bbd8424-89ff-4d02-a7f1-04cfe2a82662
+- Healthspan-afspeellijst (v0.3, bewaard ter vergelijking): https://claude.ai/code/artifact/f8baedd2-4266-4f94-8f4f-758bcd972bbd
+
+**Open besluit:** doelgroep 35–65 gender-neutraal vs "mannen 40+" (raakt CLAUDE.md-positionering).

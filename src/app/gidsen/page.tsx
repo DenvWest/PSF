@@ -10,9 +10,10 @@ import {
 import { canonicalMetadata } from "@/lib/seo/canonical";
 
 export const metadata: Metadata = {
-  title: "Gratis gidsen: slaap, stress, energie en herstel | PerfectSupplement",
+  title:
+    "Gratis gidsen: slaap, stress, energie, beweging en herstel | PerfectSupplement",
   description:
-    "Compacte, onderbouwde gidsen voor mannen 40+. Kies slaap, stress, energie, herstel of testosteron — gratis download via e-mail.",
+    "Compacte, onderbouwde gidsen voor mannen 40+. Kies slaap, stress, energie, beweging, herstel of testosteron — gratis via e-mail of webgids.",
   ...canonicalMetadata("/gidsen"),
 };
 
