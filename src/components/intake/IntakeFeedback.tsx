@@ -172,7 +172,7 @@ export default function IntakeFeedback({
     }
 
     return (
-      <div className="mx-auto w-full max-w-[600px]">
+      <div className="w-full">
         <details
           className="reveal-feedback-disclosure reveal-feedback-disclosure--light"
           onToggle={(event) => {

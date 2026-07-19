@@ -96,10 +96,6 @@ export default function IntakeResults({
           </section>
         ) : null}
 
-        <section aria-label="Feedback" className="reveal-results-act reveal-results-act--feedback">
-          <IntakeFeedback sessionId={sessionId} variant="reveal-light" />
-        </section>
-
         {rapportUrl ? (
           <div className="text-center">
             <Link
@@ -116,11 +112,14 @@ export default function IntakeResults({
           </div>
         ) : null}
 
-        {showMeasurementReminderOptIn && sessionId ? (
-          <section aria-label="30-dagen hermeting" className="reveal-results-act">
-            <MeasurementReminderOptIn sessionId={sessionId} />
-          </section>
-        ) : null}
+        <section aria-label="Nog even" className="reveal-results-act reveal-results-act--post-path">
+          <div className="reveal-results-post-path">
+            <IntakeFeedback sessionId={sessionId} variant="reveal-light" />
+            {showMeasurementReminderOptIn && sessionId ? (
+              <MeasurementReminderOptIn sessionId={sessionId} />
+            ) : null}
+          </div>
+        </section>
 
         <RevealFooterPanel
           sessionId={sessionId}

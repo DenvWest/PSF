@@ -19,3 +19,4 @@ tot vervanging. Wijzig alleen dit bestand + `src/lib/results-reveal-copy.ts`.
 | Dashboard wins | 3 bullets in `REVEAL_DASHBOARD_WINS` | `RevealDashboardTease` |
 | Primaire CTA | `Bewaar dit in je dashboard →` | `REVEAL_COPY.cta` |
 | Feedback | `Herken je jezelf in dit overzicht?` | `REVEAL_COPY.feedbackTitle` |
+| 30-dagen herinnering | `Over 30 dagen meet je opnieuw — wij herinneren je eraan.` | `REVEAL_COPY.reminderTitle` |

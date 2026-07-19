@@ -47,6 +47,13 @@ export const REVEAL_COPY = {
   feedbackEyebrow: "Jouw oordeel",
   feedbackTitle: "Herken je jezelf in dit overzicht?",
   feedbackSubtext: "Eén vraag — helpt ons de index scherper te maken.",
+  reminderTitle: "Over 30 dagen meet je opnieuw — wij herinneren je eraan.",
+  reminderBody: "Zo zie je of je leefstijl-stappen effect hebben.",
+  reminderCta: "Herinnering instellen",
+  reminderLoading: "Bezig...",
+  reminderSuccess:
+    "Herinnering ingesteld — over 30 dagen ontvang je een mail om opnieuw te meten.",
+  reminderEmailPlaceholder: "je@email.nl",
   footerPanelSummary: "Hoe komt dit overzicht tot stand?",
   footerMethodIntro:
     "Leefstijl eerst — van herkenning naar één concrete stap, daarna volg je je voortgang in je dashboard.",

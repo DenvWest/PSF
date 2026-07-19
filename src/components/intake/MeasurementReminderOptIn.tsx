@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { clarityTag } from "@/lib/clarity";
 import { MEASUREMENT_REMINDER_CONSENT_TEXT } from "@/lib/consent-texts";
 import { GA4_EVENTS, trackEvent } from "@/lib/ga4";
+import { REVEAL_COPY } from "@/lib/results-reveal-copy";
 
 type MeasurementReminderOptInProps = {
   sessionId: string;
@@ -80,9 +81,7 @@ export function MeasurementReminderOptIn({
   if (status === "success") {
     return (
       <div className="rounded-2xl border border-intake-sage/30 bg-intake-sage/10 px-5 py-5">
-        <p className="text-sm font-semibold text-[#1c1917]">
-          Herinnering ingesteld — over 30 dagen ontvang je een mail om opnieuw te meten.
-        </p>
+        <p className="text-sm font-semibold text-[#1c1917]">{REVEAL_COPY.reminderSuccess}</p>
       </div>
     );
   }
@@ -92,12 +91,8 @@ export function MeasurementReminderOptIn({
       className="rounded-2xl border border-[#e4e0da] bg-white px-5 py-5"
       aria-label="30-dagen hermeting opt-in"
     >
-      <h2 className="mb-2 text-sm font-semibold text-[#1c1917]">
-        Over 30 dagen meet je opnieuw — wij herinneren je eraan.
-      </h2>
-      <p className="mb-4 text-xs leading-relaxed text-[#57534e]">
-        Zo zie je of je leefstijl-stappen effect hebben.
-      </p>
+      <h2 className="mb-2 text-sm font-semibold text-[#1c1917]">{REVEAL_COPY.reminderTitle}</h2>
+      <p className="mb-4 text-xs leading-relaxed text-[#57534e]">{REVEAL_COPY.reminderBody}</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col gap-3">
@@ -108,7 +103,7 @@ export function MeasurementReminderOptIn({
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="je@email.nl"
+            placeholder={REVEAL_COPY.reminderEmailPlaceholder}
             className="w-full rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-4 py-3 text-sm text-[#1c1917] placeholder:text-[#a8a29e] focus:border-intake-terra focus:outline-none focus:ring-1 focus:ring-intake-terra"
           />
           <button
@@ -116,7 +111,7 @@ export function MeasurementReminderOptIn({
             disabled={status === "loading"}
             className="inline-flex min-h-[44px] w-full shrink-0 cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {status === "loading" ? "Bezig..." : "Herinnering instellen"}
+            {status === "loading" ? REVEAL_COPY.reminderLoading : REVEAL_COPY.reminderCta}
           </button>
         </div>
 
