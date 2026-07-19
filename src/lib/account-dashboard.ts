@@ -22,9 +22,11 @@ import type {
   CheckScores,
   CheckSnapshot,
   CheckTrend,
+  CheckTrendBaselines,
   DashboardData,
   NutritionIntakeBand,
   PillarId,
+  TrendSource,
 } from "@/types/dashboard";
 import type { SustainedAction } from "@/types/delta-report";
 import type { PlanStepProgress } from "@/types/lifestyle-plan";
@@ -401,7 +403,12 @@ export async function loadAccountDashboardData(
     }
   }
 
-  type Point = { value: number; ts: number };
+  type Point = {
+    value: number;
+    ts: number;
+    source: TrendSource;
+    rulesVersion: string | null;
+  };
   const series: Record<PillarId, Point[]> = {
     slaap: [],
     energie: [],
@@ -414,7 +421,12 @@ export async function loadAccountDashboardData(
 
   for (const snapshot of snapshots) {
     for (const pillar of PILLAR_IDS) {
-      series[pillar].push({ value: snapshot.scores[pillar], ts: snapshot.ts });
+      series[pillar].push({
+        value: snapshot.scores[pillar],
+        ts: snapshot.ts,
+        source: "intake",
+        rulesVersion: snapshot.rulesVersion,
+      });
     }
   }
 
@@ -441,7 +453,12 @@ export async function loadAccountDashboardData(
       continue;
     }
 
-    series[pillar].push({ value: Math.round(raw), ts });
+    series[pillar].push({
+      value: Math.round(raw),
+      ts,
+      source: "checkin",
+      rulesVersion: null,
+    });
   }
 
   type LogRow = { logged_at: unknown; nutrition_score: unknown };
@@ -456,7 +473,12 @@ export async function loadAccountDashboardData(
     if (!Number.isFinite(ts)) {
       continue;
     }
-    series.voeding.push({ value: Math.round(row.nutrition_score), ts });
+    series.voeding.push({
+      value: Math.round(row.nutrition_score),
+      ts,
+      source: "nutrition_log",
+      rulesVersion: null,
+    });
   }
 
   for (const pillar of PILLAR_IDS) {
@@ -481,6 +503,29 @@ export async function loadAccountDashboardData(
   const currentVitality = computeVitaliteit(resolveVitaliteitFacets(currentDomainScores));
   const latestTs = Math.max(...PILLAR_IDS.map((pillar) => series[pillar][series[pillar].length - 1].ts));
   const currentDate = formatDashboardDate(new Date(latestTs).toISOString());
+
+  const latestSnapshot = snapshots[snapshots.length - 1];
+  const trendBaselines = Object.fromEntries(
+    PILLAR_IDS.flatMap((pillar) => {
+      const firstPoint = series[pillar][0];
+      if (!firstPoint) {
+        return [];
+      }
+      return [
+        [
+          pillar,
+          {
+            value: firstPoint.value,
+            source: firstPoint.source,
+            rulesVersion: firstPoint.rulesVersion,
+            crossesRulesVersion:
+              firstPoint.rulesVersion != null &&
+              firstPoint.rulesVersion !== latestSnapshot.rulesVersion,
+          },
+        ],
+      ];
+    }),
+  ) as CheckTrendBaselines;
 
   const prevSnapshot =
     snapshots.length > 1 ? snapshots[snapshots.length - 2] : null;
@@ -507,7 +552,6 @@ export async function loadAccountDashboardData(
     Math.round((latestTs - firstSessionTs) / MS_PER_DAY),
   );
   const sustainedActions = buildSustainedActions(planProgressRows ?? []);
-  const latestSnapshot = snapshots[snapshots.length - 1];
   const latestAnswers = latestSnapshot.answers;
   const latestDomainScores = mapCheckScoresToDomainScores(currentScores);
   const planDomain =
@@ -564,6 +608,7 @@ export async function loadAccountDashboardData(
       vitality: currentVitality,
       date: currentDate,
       trend,
+      trendBaselines,
     },
     prev: prevSnapshot ? mapSessionSnapshotToPrev(prevSnapshot) : null,
     history,

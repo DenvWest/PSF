@@ -35,6 +35,7 @@ export function buildModel(
     vitality: number;
     date: string;
     trend: DashboardModel["trend"];
+    trendBaselines?: DashboardModel["trendBaselines"];
   },
   prev: CheckSnapshot | null,
   history: CheckLogEntry[],
@@ -111,6 +112,7 @@ export function buildModel(
     lifestyle,
     supplement,
     trend: current.trend,
+    trendBaselines: current.trendBaselines,
     prevScores: prev?.scores ?? null,
     history,
     retest,

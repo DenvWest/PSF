@@ -140,6 +140,14 @@ export type Signal = {
 
 export type CheckScores = Record<PillarId, number>;
 export type CheckTrend = Record<PillarId, number[]>;
+export type TrendSource = "intake" | "checkin" | "nutrition_log";
+export type TrendBaseline = {
+  value: number;
+  source: TrendSource;
+  rulesVersion: string | null;
+  crossesRulesVersion: boolean;
+};
+export type CheckTrendBaselines = Partial<Record<PillarId, TrendBaseline>>;
 export type CheckSnapshot = {
   scores: CheckScores;
   vitality: number;
@@ -174,7 +182,7 @@ export type NutritionIntakeItem = {
 
 export type DashboardData = {
   empty: boolean;
-  current: (CheckSnapshot & { trend: CheckTrend }) | null;
+  current: (CheckSnapshot & { trend: CheckTrend; trendBaselines?: CheckTrendBaselines }) | null;
   prev: CheckSnapshot | null;
   history: CheckLogEntry[];
   retest: boolean;
@@ -231,6 +239,7 @@ export type DashboardModel = {
   lifestyle: LifestyleItem[];
   supplement: PillarSupplement | null;
   trend: CheckTrend;
+  trendBaselines?: CheckTrendBaselines;
   prevScores: CheckScores | null;
   history: CheckLogEntry[];
   retest: boolean;

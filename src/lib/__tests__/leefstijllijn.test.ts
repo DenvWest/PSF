@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildDomainTrendRow, buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { buildModel } from "@/lib/dashboard-model";
-import type { CheckScores, CheckTrend } from "@/types/dashboard";
+import type { CheckScores, CheckTrend, CheckTrendBaselines } from "@/types/dashboard";
 
 const scores: CheckScores = {
   slaap: 55,
@@ -81,5 +81,78 @@ describe("buildLeefstijllijnRows", () => {
 
     expect(row.baselineScore).toBe(38);
     expect(row.delta).toBeNull();
+  });
+
+  it("gebruikt trendBaselines i.p.v. trend[0] bij >6 punten", () => {
+    const longTrend: CheckTrend = {
+      ...trend,
+      beweging: [21, 22, 23, 24, 25, 38],
+    };
+    const trendBaselines: CheckTrendBaselines = {
+      beweging: {
+        value: 20,
+        source: "intake",
+        rulesVersion: "1.4.0",
+        crossesRulesVersion: false,
+      },
+    };
+    const model = buildModel(
+      { scores, vitality: 46, date: "10 jul 2026", trend: longTrend, trendBaselines },
+      null,
+      [],
+      false,
+      null,
+      null,
+      null,
+    );
+    const row = buildDomainTrendRow(model, "beweging");
+
+    expect(row.baselineScore).toBe(20);
+    expect(row.delta).toBe(scores.beweging - 20);
+  });
+
+  it("onderdrukt delta over RULES_VERSION-grens", () => {
+    const longTrend: CheckTrend = {
+      ...trend,
+      beweging: [21, 22, 23, 24, 25, 38],
+    };
+    const trendBaselines: CheckTrendBaselines = {
+      beweging: {
+        value: 20,
+        source: "intake",
+        rulesVersion: "1.4.0",
+        crossesRulesVersion: true,
+      },
+    };
+    const model = buildModel(
+      { scores, vitality: 46, date: "10 jul 2026", trend: longTrend, trendBaselines },
+      null,
+      [],
+      false,
+      null,
+      null,
+      null,
+    );
+    const row = buildDomainTrendRow(model, "beweging");
+
+    expect(row.baselineScore).toBe(20);
+    expect(row.delta).toBeNull();
+    expect(row.baselineCrossesRulesVersion).toBe(true);
+  });
+
+  it("valt terug op trend[0] zonder trendBaselines", () => {
+    const model = buildModel(
+      { scores, vitality: 46, date: "10 jul 2026", trend },
+      null,
+      [],
+      false,
+      null,
+      null,
+      null,
+    );
+    const row = buildDomainTrendRow(model, "beweging");
+
+    expect(row.baselineScore).toBe(trend.beweging[0]);
+    expect(row.delta).toBe(scores.beweging - trend.beweging[0]);
   });
 });

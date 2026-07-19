@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { Card, DeltaBadge, Sparkline } from "@/components/app/primitives";
+import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
+import type { MovementWeekSummary } from "@/lib/movement-session-log";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 type LeefstijllijnSectionProps = {
@@ -22,6 +25,27 @@ export default function LeefstijllijnSection({
     (row) => !focusPillarId || row.pillarId === focusPillarId,
   );
   const isLight = surface === "domain";
+  const [movementSummary, setMovementSummary] = useState<MovementWeekSummary | null>(null);
+
+  useEffect(() => {
+    if (!isMovementLogEnabled()) {
+      return;
+    }
+    let active = true;
+    void fetch("/api/account/movement-log", { credentials: "same-origin" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (active && data) {
+          setMovementSummary(data as MovementWeekSummary);
+        }
+      })
+      .catch(() => {
+        /* niet-blokkerend */
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <section aria-label="Leefstijllijn">
@@ -119,16 +143,36 @@ export default function LeefstijllijnSection({
                       {row.label}
                     </span>
                     {hasTrend && row.baselineScore != null ? (
-                      <span
+                      <div
                         style={{
-                          fontSize: 11,
-                          color: isLight ? "#78716c" : "var(--text-subtle)",
-                          fontVariantNumeric: "tabular-nums",
-                          whiteSpace: "nowrap",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-end",
+                          gap: 2,
                         }}
                       >
-                        Begin {row.baselineScore}
-                      </span>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            color: isLight ? "#78716c" : "var(--text-subtle)",
+                            fontVariantNumeric: "tabular-nums",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Begin {row.baselineScore}
+                        </span>
+                        {row.baselineSourceLabel ? (
+                          <span
+                            style={{
+                              fontSize: 11,
+                              color: isLight ? "#78716c" : "var(--text-subtle)",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {row.baselineSourceLabel}
+                          </span>
+                        ) : null}
+                      </div>
                     ) : null}
                   </div>
                   <Sparkline
@@ -159,7 +203,19 @@ export default function LeefstijllijnSection({
                   >
                     {row.currentScore}
                   </span>
-                  <DeltaBadge delta={row.delta} empty={row.delta == null} />
+                  {row.baselineCrossesRulesVersion ? (
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: isLight ? "#78716c" : "var(--text-subtle)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      meetmethode bijgewerkt
+                    </span>
+                  ) : (
+                    <DeltaBadge delta={row.delta} empty={row.delta == null} />
+                  )}
                 </div>
               </div>
             </Card>
