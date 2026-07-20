@@ -15,7 +15,7 @@ const TRUST = [
   {
     n: "02",
     label: "Laagdrempelig",
-    body: "Je begint klein. Geen sportschool nodig, geen zwaar schema. Adviezen, geen diagnoses.",
+    body: "Je begint klein. Geen sportschool nodig, geen zwaar schema.",
   },
   {
     n: "03",
