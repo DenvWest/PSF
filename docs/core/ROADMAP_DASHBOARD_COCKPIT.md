@@ -14,6 +14,18 @@
 
 Docs 1 en 2 staan als bestand in de repo; docs 3 en 4 waren gespreksinhoud en zijn hier verankerd zodat de SSOT compleet is. Onderliggende, niet-heropende besluiten: [`fable-agenda-checkin-verdict`](../cursors/fable-agenda-checkin-verdict-2026-07.md), [`fable-bewegingsanalyse-leefstijllijn-verdict`](../cursors/fable-bewegingsanalyse-leefstijllijn-verdict-2026-07.md), [`fable-beweging-gedaan-log-verdict`](../cursors/fable-beweging-gedaan-log-verdict-2026-07.md).
 
+## ⚠️ Status-correctie (20 jul, later die dag — geverifieerd tegen `main`)
+
+De fasering hieronder is opgesteld op de 18-juli-verdict; de codebase is sindsdien doorgelopen. Geverifieerd in code:
+
+- **A2 (baseline/TrendPoint): ✅ AL GELAND** — commit `871e507`, 6 vitest-cases groen. De **onderdrukken**-keuze (§8.4) staat al in code (`leefstijllijn.ts`: `delta = null` bij `crossesRulesVersion`); `account-dashboard.ts` vult `trendBaselines` uit het eerste getimestampte punt. → **A2 is NIET meer de eerstvolgende brok.**
+- **RULES_VERSION = 1.5.0** (niet 1.4.0) — beweging-hercheck uitgebreid naar 10 deelvragen, commit `4fc53d4`.
+- **Ook geland sinds 18 jul:** kompas-opschoning + exacte agenda-tijd (`82ab023`), agenda priority-pref-fixes (`bc3ff1a`), interactieve **slaapgids** op `/gids/slaap` (`b92d89f`). De readout/"Rapport"-scheiding (doc 4 pr.3-leesbaarheid) bestaat al **deels** in `Dashboard.tsx` (`getReadoutPresentation`, `isReadoutDomain`, "Rapport"-label).
+- **A3 (day-model-unificatie): ❌ nog NIET** — geen `day-model.ts`/`buildDayModel`; de drievoudige dag-merge staat er nog. Blijft de open P0-refactor vóór multi-domein.
+- **A1 (gedaan-log):** gebouwd (`movement-session-log.ts` + route + events), nog achter `NEXT_PUBLIC_MOVEMENT_LOG_ENABLED`.
+
+**Gevolg:** de prioriteitslogica (P0 waarheid+instap → P1 lus → P2 klok → P3 freeze) blijft geldig; alleen de brok-status is verschoven. Dit document heeft een **re-grounding-pass** nodig tegen de actuele code vóór de volgende brok wordt gekozen.
+
 ---
 
 ## 1. Executive Summary
@@ -186,7 +198,7 @@ Docs 1 en 2 staan als bestand in de repo; docs 3 en 4 waren gespreksinhoud en zi
 
 ## 8. Masterprioriteiten voor morgen
 
-**1. Wat morgen als eerste gebeurt.** **A2 — TrendPoint + echte baseline.** De kleinste, hoogst-hefboom P0-brok; traffic-onafhankelijk; maakt élk cijfer erna eerlijk. De implementatieprompt is al uitgeschreven (doc 3, embedded): baseline verhuist naar de bron (`account-dashboard.ts`, waar timestamps + bron bestaan en `slice(-6)` nu de echte baseline weggooit), `leefstijllijn.ts` consumeert; `trendBaselines` optioneel met `trend[0]`-fallback → blast radius 5 bronbestanden + 1 test. Verificatie: `grep console.log` · `tsc --noEmit` · `vitest leefstijllijn` · `eslint --max-warnings 0`.
+**1. Wat morgen als eerste gebeurt.** _Achterhaald — zie Status-correctie: **A2 is inmiddels geland** (`871e507`). De eerstvolgende **open** brok is A3 (day-model) óf, nu beweeggids live is, het landings-/leesbaarheidspad (doc 4) — te kiezen na de re-grounding-pass._ Oorspronkelijke onderbouwing (bewaard als vastlegging van hoe/waarom A2 is gebouwd): **A2 — TrendPoint + echte baseline.** De kleinste, hoogst-hefboom P0-brok; traffic-onafhankelijk; maakt élk cijfer erna eerlijk. De implementatieprompt is al uitgeschreven (doc 3, embedded): baseline verhuist naar de bron (`account-dashboard.ts`, waar timestamps + bron bestaan en `slice(-6)` nu de echte baseline weggooit), `leefstijllijn.ts` consumeert; `trendBaselines` optioneel met `trend[0]`-fallback → blast radius 5 bronbestanden + 1 test. Verificatie: `grep console.log` · `tsc --noEmit` · `vitest leefstijllijn` · `eslint --max-warnings 0`.
 
 **2. Wat daarna volgt (P0→P1, in volgorde).**
 1. A3 — day-model-unificatie (blokkeert multi-domein).
