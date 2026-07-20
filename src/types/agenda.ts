@@ -24,7 +24,6 @@ export type AgendaCategoryId =
   | "verbinding"
   | "supplementen"
   | "water"
-  | "medicatie"
   | "werk"
   | "ontspanning"
   | "persoonlijke_routine";

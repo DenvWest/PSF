@@ -31,13 +31,6 @@ const ROUTINE_CATEGORIES: AgendaCategoryDef[] = [
     selectable: true,
   },
   {
-    id: "medicatie",
-    label: "Medicatie",
-    color: "#8B6E99",
-    icon: "Pill",
-    selectable: true,
-  },
-  {
     id: "werk",
     label: "Werk",
     color: "#78716c",
