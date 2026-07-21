@@ -118,10 +118,14 @@ import {
 import { NUTRITION_CURATED_CHOICES } from "@/data/dashboard/nutrition-curated";
 import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
 import { getDisplayStatus, getDisplayStatusTone } from "@/lib/score-display";
+import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
+import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
+import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
+import { isPlanStepHidden } from "@/lib/day-model";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
-import { isReadoutDomain } from "@/lib/domain-role";
+import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
 import {
   postPrioritySelection,
 } from "@/lib/priority-pref-client";
@@ -2661,9 +2665,11 @@ function formatDriverLabels(labels: string[]): string {
 const KompasReadoutRow = ({
   label,
   driverLabels,
+  cta,
 }: {
   label: string;
   driverLabels: string[];
+  cta?: { label: string; onClick: () => void };
 }) => (
   <div className="w-full rounded-[18px] border border-[#ebe7e2] bg-[#faf9f7] p-3.5">
     <div className="flex items-center justify-between gap-2">
@@ -2678,6 +2684,17 @@ const KompasReadoutRow = ({
       <p className="mt-1.5 text-[13px] leading-snug text-[#78716c] text-pretty">
         Volgt uit je {formatDriverLabels(driverLabels)}.
       </p>
+    ) : null}
+    {cta ? (
+      <button
+        type="button"
+        onClick={cta.onClick}
+        className="mt-2 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-semibold text-[var(--sage)]"
+        style={{ fontFamily: "var(--f-sans)" }}
+      >
+        {cta.label}
+        <Icons.ArrowRight s={13} />
+      </button>
     ) : null}
   </div>
 );
@@ -3150,6 +3167,7 @@ const KompasHome = ({
   model,
   data,
   onRemeasure,
+  onGoAgenda,
   initialKompasView,
   kompasResetSignal: _kompasResetSignal,
   prefUpdatedAt: _prefUpdatedAt,
@@ -3170,6 +3188,13 @@ const KompasHome = ({
       buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted ===
       true,
     [data?.nutritionIntake],
+  );
+  const todaySlot = useMemo(
+    () =>
+      currentModel
+        ? (buildWeekSchedulePreview(currentModel).find((slot) => slot.isToday) ?? null)
+        : null,
+    [currentModel],
   );
 
   useEffect(() => {
@@ -3243,6 +3268,13 @@ const KompasHome = ({
           onBack={handleDomainBack}
           onSwitch={handleDomainSwitch}
         />
+        {isInterventionDomain(domainView) ? (
+          <DomainTodayStrip
+            model={currentModel}
+            domain={domainView}
+            onGoAgenda={onGoAgenda}
+          />
+        ) : null}
         {content}
       </div>
     ) : (
@@ -3329,6 +3361,13 @@ const KompasHome = ({
           </div>
         </KompasLooseCard>
       ) : null}
+      {todaySlot && !isPlanStepHidden(currentModel, todaySlot) ? (
+        <AgendaTodayHero
+          model={currentModel}
+          slot={todaySlot}
+          actionSurface="kompas_home"
+        />
+      ) : null}
       <KompasLooseCard>
         <h2
           className="m-0 text-[18px] leading-tight text-[#1c1917]"
@@ -3377,14 +3416,23 @@ const KompasHome = ({
             <KompasGroupLabel label="Rapport · volgt uit je gedrag" />
             <div className="mt-2 flex flex-col gap-2.5">
               {rapportRows.map((pillar) => {
-                const driverLabels = isReadoutDomain(pillar.id)
-                  ? getReadoutPresentation(pillar.id).driverLabels
-                  : [];
+                const presentation = isReadoutDomain(pillar.id)
+                  ? getReadoutPresentation(pillar.id)
+                  : null;
+                const primaryCta = presentation?.primaryCta ?? null;
                 return (
                   <KompasReadoutRow
                     key={pillar.id}
                     label={pillar.label}
-                    driverLabels={driverLabels}
+                    driverLabels={presentation?.driverLabels ?? []}
+                    cta={
+                      primaryCta
+                        ? {
+                            label: `Werk aan je ${primaryCta.label.toLowerCase()}`,
+                            onClick: () => openDomain(primaryCta.pillarId),
+                          }
+                        : undefined
+                    }
                   />
                 );
               })}

@@ -30,7 +30,7 @@ type AgendaTodayHeroProps = {
   slot: WeekDaySlot;
   prefBusy?: boolean;
   variant?: "default" | "detail";
-  actionSurface?: "agenda_today" | "agenda_block_detail";
+  actionSurface?: "agenda_today" | "agenda_block_detail" | "kompas_home";
   onCompletionChange?: () => void;
   onScheduledTimeChange?: (scheduledTime: string) => void;
 };
@@ -284,18 +284,14 @@ export default function AgendaTodayHero({
         <Link
           href={onderbouwingHref}
           onClick={() => {
-            trackOnderbouwingLinkClick({
-              surface: actionSurface === "agenda_block_detail" ? "agenda_block_detail" : isToday ? "agenda_today" : "agenda_preview",
-              domain,
-            });
-            clarityTag(
-              "onderbouwing_link",
-              actionSurface === "agenda_block_detail"
-                ? "agenda_block_detail"
+            const onderbouwingSurface =
+              actionSurface === "agenda_block_detail" || actionSurface === "kompas_home"
+                ? actionSurface
                 : isToday
                   ? "agenda_today"
-                  : "agenda_preview",
-            );
+                  : "agenda_preview";
+            trackOnderbouwingLinkClick({ surface: onderbouwingSurface, domain });
+            clarityTag("onderbouwing_link", onderbouwingSurface);
           }}
           className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
           style={{ color: "#78716c" }}

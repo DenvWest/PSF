@@ -62,7 +62,8 @@ export function trackOnderbouwingLinkClick(params: {
     | "vandaag_card"
     | "agenda_today"
     | "agenda_preview"
-    | "agenda_block_detail";
+    | "agenda_block_detail"
+    | "kompas_home";
   tab?: string;
   screen?: string;
   domain?: string;
