@@ -20,6 +20,10 @@ export type MovementRecoveryHint = {
   source: "intake" | "checkin" | "wearable" | "combined";
   promoteRustdagStep: boolean;
   showMedicalNote: boolean;
+  /** Alleen actuele bron (check-in/wearable/gecombineerd) — geen intake-only. */
+  overrideToday: boolean;
+  /** Highlight Herstel in de keuze-UI (profiel/aanbeveling, geen dagclaim). */
+  recommendRestChoice: boolean;
 };
 
 const REST_DAY_STEP_ID = "mov-rustdag-na-inspanning";
@@ -68,6 +72,8 @@ export function buildMovementRecoveryHint(
           ? "checkin"
           : "intake";
 
+  const overrideToday = fromCheckin || fromWearable;
+
   const contextLabel =
     source === "checkin"
       ? "Op basis van je check-in"
@@ -77,6 +83,13 @@ export function buildMovementRecoveryHint(
           ? "Op basis van je signalen"
           : "Op basis van je Leefstijlcheck";
 
+  const intakeRecommendationHeadline = "Je Leefstijlcheck: herstel verdient aandacht";
+  const intakeRecommendationBody =
+    "Herstel hoort bij opbouwen — plan rust of licht bewegen vóór je volume verhoogt.";
+  const activeRestHeadline = `${contextLabel}: vandaag liever rust of licht bewegen`;
+  const activeRestBody =
+    "Herstel is waar je sterker wordt. Kies rust, een lichte wandeling of de rustdag-stap.";
+
   const showMedicalNote =
     (recoveryScore ?? 100) <= 30 &&
     (rcvPhys ?? 3) <= 1 &&
@@ -85,33 +98,45 @@ export function buildMovementRecoveryHint(
   if (showMedicalNote) {
     return {
       level: "medical",
-      headline: `${contextLabel}: vandaag rust of licht bewegen`,
+      headline: fromIntake && !overrideToday
+        ? "Je Leefstijlcheck: herstel verdient structurele aandacht"
+        : `${contextLabel}: vandaag rust of licht bewegen`,
       body:
         "Je herstel lijkt structureel onder druk. Plan een rustdag of lichte wandeling — en bespreek aanhoudende klachten met je huisarts.",
       source,
       promoteRustdagStep: true,
       showMedicalNote: true,
+      overrideToday,
+      recommendRestChoice: true,
     };
   }
 
   if (lowRecovery || feelLow || wearableLow) {
     return {
       level: "rest",
-      headline: `${contextLabel}: vandaag liever rust of licht bewegen`,
-      body: "Herstel is waar je sterker wordt. Kies rust, een lichte wandeling of de rustdag-stap — geen zware kracht vandaag.",
+      headline: overrideToday ? activeRestHeadline : intakeRecommendationHeadline,
+      body: overrideToday ? activeRestBody : intakeRecommendationBody,
       source,
       promoteRustdagStep: true,
       showMedicalNote: false,
+      overrideToday,
+      recommendRestChoice: true,
     };
   }
 
   return {
     level: "light",
-    headline: `${contextLabel}: houd het licht vandaag`,
-    body: "Je traint al redelijk veel — een kortere krachtsessie of extra rust tussen sessies helpt je ritme vol te houden.",
+    headline: overrideToday
+      ? `${contextLabel}: houd het licht vandaag`
+      : "Je Leefstijlcheck: houd het ritme, niet het volume",
+    body: overrideToday
+      ? "Je traint al redelijk veel — een kortere krachtsessie of extra rust tussen sessies helpt je ritme vol te houden."
+      : "Je traint al redelijk veel — consistentie en herstel tellen zwaarder dan extra volume.",
     source,
     promoteRustdagStep: highLoad,
     showMedicalNote: false,
+    overrideToday,
+    recommendRestChoice: highLoad,
   };
 }
 

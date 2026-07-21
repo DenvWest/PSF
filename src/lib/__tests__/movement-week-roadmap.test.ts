@@ -71,6 +71,8 @@ describe("buildMovementWeekRoadmap", () => {
         source: "checkin",
         promoteRustdagStep: true,
         showMedicalNote: false,
+        overrideToday: true,
+        recommendRestChoice: true,
       },
     );
 
@@ -91,6 +93,8 @@ describe("buildMovementSpoorDetail", () => {
         source: "checkin",
         promoteRustdagStep: true,
         showMedicalNote: false,
+        overrideToday: true,
+        recommendRestChoice: true,
       },
     );
 

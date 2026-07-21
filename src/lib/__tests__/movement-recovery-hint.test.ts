@@ -22,7 +22,11 @@ describe("buildMovementRecoveryHint", () => {
     });
     expect(hint?.level).toBe("rest");
     expect(hint?.promoteRustdagStep).toBe(true);
+    expect(hint?.source).toBe("intake");
+    expect(hint?.overrideToday).toBe(false);
+    expect(hint?.recommendRestChoice).toBe(true);
     expect(hint?.headline).toContain("Leefstijlcheck");
+    expect(hint?.headline).not.toContain("vandaag");
   });
 
   it("suggests rest from low check-in feel", () => {
@@ -35,6 +39,7 @@ describe("buildMovementRecoveryHint", () => {
     });
     expect(hint?.level).toBe("rest");
     expect(hint?.source).toBe("checkin");
+    expect(hint?.overrideToday).toBe(true);
   });
 
   it("shows medical note only with sustained low intake + very low feel", () => {
@@ -46,6 +51,7 @@ describe("buildMovementRecoveryHint", () => {
     });
     expect(hint?.level).toBe("medical");
     expect(hint?.showMedicalNote).toBe(true);
+    expect(hint?.overrideToday).toBe(true);
   });
 
   it("uses wearable recoveryFit when provided", () => {
@@ -57,5 +63,19 @@ describe("buildMovementRecoveryHint", () => {
     });
     expect(hint?.source).toBe("wearable");
     expect(hint?.level).toBe("rest");
+    expect(hint?.overrideToday).toBe(true);
+  });
+
+  it("does not set overrideToday for intake-only light load hints", () => {
+    const hint = buildMovementRecoveryHint({
+      movStr: 4,
+      movCard: 4,
+      rcvPhys: 3,
+      recoveryScore: 50,
+    });
+    expect(hint?.level).toBe("light");
+    expect(hint?.source).toBe("intake");
+    expect(hint?.overrideToday).toBe(false);
+    expect(hint?.recommendRestChoice).toBe(true);
   });
 });

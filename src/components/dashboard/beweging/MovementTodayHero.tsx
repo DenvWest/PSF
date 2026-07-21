@@ -1,43 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
-import { PREMIUM_BEGELEIDING_HREF } from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
 import { clarityTag } from "@/lib/clarity";
-import { setCachedDailyLog } from "@/lib/daily-log-client";
 import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import {
   buildMovementRecoveryHint,
   buildMovementRecoveryInput,
-  REST_DAY_STEP_ID,
 } from "@/lib/movement-recovery-hint";
-import { useDailyActionLog } from "@/lib/use-daily-action-log";
 import {
-  buildVandaagFollowUp,
-  firstSentence,
-  getVandaagContextLine,
-} from "@/lib/vandaag-card-links";
+  buildMedicalSafetyLine,
+  buildRecoveryRecommendationLine,
+  inferCompletedChoice,
+  modalityLabelForChoice,
+  resolveTodayChoiceOptions,
+  shouldRecommendRestChoice,
+  type TodayChoiceKind,
+  type TodayChoiceOption,
+} from "@/lib/movement-today-choices";
+import { useDailyActionLog } from "@/lib/use-daily-action-log";
+import { buildVandaagFollowUp, firstSentence } from "@/lib/vandaag-card-links";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { DashboardModel } from "@/types/dashboard";
-import type { PlanStep } from "@/types/lifestyle-plan";
 
 const SURFACE = "kompas_beweging";
 
-const ALL_MOVEMENT_STEPS = movementPlanTemplate.phases.flatMap((phase) => phase.steps);
+type StepAlternativeChoice = "herstel" | "licht" | "trainen";
 
-const MODALITY_TAGS = ["kracht", "conditie", "herstel"] as const;
-
-const MODALITY_LABEL: Record<(typeof MODALITY_TAGS)[number], string> = {
-  kracht: "Kracht",
-  conditie: "Conditie",
-  herstel: "Herstel",
-};
-
-type StepAlternativeChoice = "kies_anders" | "rust" | "hulp" | "geen_tijd";
+type TrainingGateView = "question" | "advice";
 
 type MovementTodayHeroProps = {
   model: DashboardModel;
@@ -47,39 +41,84 @@ type MovementTodayHeroProps = {
   makePriorityBusy: boolean;
 };
 
-function findMovementStep(stepId: string | null | undefined): PlanStep | undefined {
-  if (!stepId) {
-    return undefined;
-  }
-  return ALL_MOVEMENT_STEPS.find((step) => step.id === stepId);
+function stepRationale(stepId: string): string | null {
+  const step = movementPlanTemplate.phases
+    .flatMap((phase) => phase.steps)
+    .find((entry) => entry.id === stepId);
+  return step?.rationale?.body ?? null;
 }
 
-function modalityLabel(
-  stepId: string | null,
-  recoveryOverride: boolean,
-): string | null {
-  if (recoveryOverride) {
-    return "Herstel";
-  }
-  const step = findMovementStep(stepId);
-  if (!step?.tags) {
-    return null;
-  }
-  for (const tag of MODALITY_TAGS) {
-    if (step.tags.includes(tag)) {
-      return MODALITY_LABEL[tag];
-    }
-  }
-  return null;
-}
-
-function trackStepAlternative(choice: StepAlternativeChoice): void {
+function trackStepChoice(choice: StepAlternativeChoice): void {
   trackEvent("dashboard_vandaag_step_alternative", {
     choice,
     domain: "beweging",
     surface: SURFACE,
   });
   clarityTag("dashboard_kompas_beweging", `step_alternative_${choice}`);
+}
+
+function trackTrainingGate(answer: "yes" | "no" | "proceed_anyway"): void {
+  trackEvent("dashboard_vandaag_training_gate", {
+    answer,
+    domain: "beweging",
+    surface: SURFACE,
+  });
+  clarityTag("dashboard_kompas_beweging", `training_gate_${answer}`);
+}
+
+function choiceIcon(kind: TodayChoiceKind) {
+  if (kind === "herstel") {
+    return <Icons.Moon s={18} />;
+  }
+  if (kind === "licht") {
+    return <Icons.Footprints s={18} />;
+  }
+  return <Icons.Activity s={18} />;
+}
+
+function ChoiceCard({
+  option,
+  recommended,
+  onSelect,
+}: {
+  option: TodayChoiceOption;
+  recommended: boolean;
+  onSelect: (kind: TodayChoiceKind) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(option.kind)}
+      className={
+        recommended
+          ? "flex w-full cursor-pointer items-start gap-3 rounded-xl border border-[color:var(--ac)]/50 bg-[color:var(--ac)]/10 p-4 text-left transition-colors"
+          : "flex w-full cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-black/25 p-4 text-left transition-colors hover:border-white/20"
+      }
+    >
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 text-[color:var(--ac)]">
+        {choiceIcon(option.kind)}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="font-serif text-[16px] text-[#F1EFE8]">{option.label}</span>
+          {recommended ? (
+            <span className="rounded-full bg-[color:var(--ac)]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[color:var(--ac)]">
+              Aanbevolen
+            </span>
+          ) : null}
+        </span>
+        <span className="mt-1 block text-[13px] leading-snug text-[#CDD7D0] text-pretty">
+          {option.title}
+        </span>
+        <span className="mt-2 inline-flex items-center gap-1 text-[12px] text-[#9FB0A6]">
+          <Icons.Clock s={12} /> {option.durationLabel}
+        </span>
+      </span>
+      <span className="mt-2 shrink-0 text-[#7E8C82]">
+        <Icons.ChevronRight s={16} />
+      </span>
+    </button>
+  );
 }
 
 export default function MovementTodayHero({
@@ -90,101 +129,127 @@ export default function MovementTodayHero({
   makePriorityBusy,
 }: MovementTodayHeroProps) {
   const shownRef = useRef(false);
-  const [optionsOpen, setOptionsOpen] = useState(false);
-  const [restLogged, setRestLogged] = useState(false);
-  const [restBusy, setRestBusy] = useState(false);
+  const [selectedKind, setSelectedKind] = useState<TodayChoiceKind | null>(null);
+  const [trainingGateView, setTrainingGateView] = useState<TrainingGateView>("question");
+  const [trainingGateCleared, setTrainingGateCleared] = useState(false);
+  const [logHydrated, setLogHydrated] = useState(false);
 
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hidden = slot ? isPlanStepHidden(model, slot) : true;
   const active = isOwnStep && !hidden && slot != null;
-  const actionKey = active && slot ? resolveActionKey(model, slot) : null;
+  const trainingStepId = active && slot ? resolveActionKey(model, slot) : "";
 
   const recovery = buildMovementRecoveryHint(
     buildMovementRecoveryInput(model.domainScores, model.answers ?? {}),
   );
-  const recoveryOverride =
-    recovery != null && (recovery.level === "rest" || recovery.level === "medical");
+  const restRecommended = shouldRecommendRestChoice(recovery);
+  const recommendationLine = buildRecoveryRecommendationLine(recovery);
+  const medicalSafetyLine = buildMedicalSafetyLine(recovery);
 
-  const restDayStep = findMovementStep(REST_DAY_STEP_ID);
+  const choiceOptions = useMemo(
+    () => (trainingStepId ? resolveTodayChoiceOptions(trainingStepId) : []),
+    [trainingStepId],
+  );
+
+  const activeChoice = selectedKind
+    ? choiceOptions.find((option) => option.kind === selectedKind) ?? null
+    : null;
+
+  const showTrainingGate =
+    selectedKind === "trainen" && !trainingGateCleared && activeChoice != null;
+
+  const logActionKey =
+    activeChoice && (!showTrainingGate || trainingGateCleared) ? activeChoice.stepId : null;
 
   const { done, loaded, busy, toggle } = useDailyActionLog({
     domain: "beweging",
-    actionKey,
-    enabled: active,
+    actionKey: logActionKey,
+    enabled: active && logActionKey != null,
     surface: SURFACE,
     clarityScope: "kompas_beweging_hero",
   });
 
   useEffect(() => {
-    if (shownRef.current) {
+    if (!active || choiceOptions.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await fetch(
+          `/api/account/daily-log?domain=${encodeURIComponent("beweging")}`,
+          { credentials: "include" },
+        );
+        if (!response.ok || cancelled) {
+          return;
+        }
+        const state = (await response.json()) as { keys: string[] };
+        const completed = inferCompletedChoice(state.keys, choiceOptions);
+        if (completed) {
+          setSelectedKind(completed);
+          if (completed === "trainen") {
+            setTrainingGateCleared(true);
+          }
+        }
+      } finally {
+        if (!cancelled) {
+          setLogHydrated(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [active, choiceOptions]);
+
+  useEffect(() => {
+    if (shownRef.current || !active) {
       return;
     }
     shownRef.current = true;
     trackEvent("dashboard_vandaag_card_shown", {
       has_active_habit: Boolean(model.activeHabit),
       priority: model.priority.id,
-      recovery_override: recoveryOverride,
+      rest_recommended: restRecommended,
       surface: SURFACE,
       user_chosen: model.priorityIsUserChosen,
     });
     clarityTag("dashboard_kompas_beweging", "hero_shown");
   }, [
+    active,
     model.activeHabit,
     model.priority.id,
     model.priorityIsUserChosen,
-    recoveryOverride,
+    restRecommended,
   ]);
 
   const followUp = buildVandaagFollowUp("beweging");
-  const rawSupportingLine =
-    slot?.rationale ?? getVandaagContextLine(PILLAR.beweging, model.activeHabit);
 
-  const displayTitle = recoveryOverride
-    ? (restDayStep?.title ?? "Rustdag of lichte wandeling")
-    : slot?.title;
-
-  const displaySupportingLine = recoveryOverride
-    ? recovery?.showMedicalNote
-      ? recovery.body
-      : firstSentence(recovery?.body ?? "")
-    : rawSupportingLine
-      ? firstSentence(rawSupportingLine)
-      : null;
-
-  const eyebrowModality = modalityLabel(actionKey, recoveryOverride);
-  const eyebrow = eyebrowModality ? `Vandaag · ${eyebrowModality}` : "Vandaag";
-
-  const chooseRest = async () => {
-    if (restBusy || restLogged) {
+  const selectChoice = (kind: TodayChoiceKind) => {
+    trackStepChoice(kind);
+    setSelectedKind(kind);
+    if (kind === "trainen") {
+      setTrainingGateView("question");
+      setTrainingGateCleared(false);
       return;
     }
-    trackStepAlternative("rust");
-    setRestBusy(true);
-    try {
-      const response = await fetch("/api/account/daily-log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          domain: "beweging",
-          actionKey: REST_DAY_STEP_ID,
-          done: true,
-        }),
-      });
-      if (!response.ok) {
-        return;
-      }
-      const state = (await response.json()) as { keys: string[]; streak: number };
-      setCachedDailyLog("beweging", state);
-      setRestLogged(true);
-      setOptionsOpen(false);
-    } finally {
-      setRestBusy(false);
-    }
+    setTrainingGateCleared(true);
   };
 
-  // Doorverwijs-modus: beweging is vandaag niet je dagstap → geen tweede afvink,
-  // wel de "maak dit je prioriteit"-CTA (day-model blijft de ene dag-waarheid).
+  const resetChoice = () => {
+    trackEvent("dashboard_vandaag_step_alternative", {
+      choice: "wijzig_keuze",
+      domain: "beweging",
+      surface: SURFACE,
+    });
+    clarityTag("dashboard_kompas_beweging", "step_alternative_wijzig_keuze");
+    setSelectedKind(null);
+    setTrainingGateView("question");
+    setTrainingGateCleared(false);
+  };
+
   if (!active) {
     const otherLabel = slot ? PILLAR[slot.domain].label.toLowerCase() : null;
     return (
@@ -225,11 +290,205 @@ export default function MovementTodayHero({
     );
   }
 
+  const shellClass =
+    "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-5";
+
+  if (!logHydrated) {
+    return (
+      <section aria-label="Vandaag — beweging" className={shellClass}>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
+          Vandaag · kies wat past
+        </p>
+        <p className="mt-3 text-[14px] text-[#9FB0A6]">Even laden…</p>
+      </section>
+    );
+  }
+
+  if (showTrainingGate && activeChoice) {
+    return (
+      <section aria-label="Vandaag — beweging" className={shellClass}>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full opacity-30 blur-[80px]"
+          style={{ background: "var(--ac)" }}
+        />
+        <div className="relative">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
+            Vandaag · trainen
+          </p>
+          {trainingGateView === "question" ? (
+            <>
+              <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
+                Heb je gisteren zwaar getraind?
+              </h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+                Eén eerlijke check — daarna stellen we je training voor vandaag voor.
+              </p>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackTrainingGate("yes");
+                    setTrainingGateView("advice");
+                  }}
+                  className="min-h-11 cursor-pointer rounded-xl border border-white/15 bg-black/25 px-4 text-[14px] font-semibold text-[#E7EDE8]"
+                >
+                  Ja
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackTrainingGate("no");
+                    setTrainingGateCleared(true);
+                  }}
+                  className="min-h-11 cursor-pointer rounded-xl border-none bg-[color:var(--ac)] px-4 text-[14px] font-semibold text-[#0f1c10]"
+                >
+                  Nee
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
+                Herstel telt ook mee
+              </h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+                Na zware training is rust of licht bewegen vaak slimmer. Kies wat
+                vandaag klopt — of ga bewust door als je je fit voelt.
+              </p>
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => selectChoice("herstel")}
+                  className="min-h-11 cursor-pointer rounded-xl border border-[color:var(--ac)]/50 bg-[color:var(--ac)]/10 px-4 text-left text-[14px] font-semibold text-[#E7EDE8]"
+                >
+                  Kies herstel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => selectChoice("licht")}
+                  className="min-h-11 cursor-pointer rounded-xl border border-white/15 bg-black/25 px-4 text-left text-[14px] font-semibold text-[#E7EDE8]"
+                >
+                  Kies licht bewegen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackTrainingGate("proceed_anyway");
+                    setTrainingGateCleared(true);
+                  }}
+                  className="min-h-11 cursor-pointer rounded-xl border-none bg-[color:var(--ac)] px-4 text-[14px] font-semibold text-[#0f1c10]"
+                >
+                  Toch trainen
+                </button>
+              </div>
+            </>
+          )}
+          <button
+            type="button"
+            onClick={resetChoice}
+            className="mt-4 cursor-pointer border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
+          >
+            Wijzig keuze
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  if (activeChoice && trainingGateCleared) {
+    const supportingLine = firstSentence(
+      stepRationale(activeChoice.stepId) ?? slot?.rationale ?? "",
+    );
+    const modality = modalityLabelForChoice(activeChoice.kind, activeChoice.stepId);
+
+    return (
+      <section aria-label="Vandaag — beweging" className={shellClass}>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full opacity-30 blur-[80px]"
+          style={{ background: "var(--ac)" }}
+        />
+        <div className="relative">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
+            Vandaag · {modality.toLowerCase()}
+          </p>
+          <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
+            {activeChoice.title}
+          </h3>
+          {supportingLine ? (
+            <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+              {supportingLine}
+            </p>
+          ) : null}
+          <p className="mt-2 inline-flex items-center gap-1 text-[12px] text-[#9FB0A6]">
+            <Icons.Clock s={12} /> {activeChoice.durationLabel}
+          </p>
+
+          <button
+            type="button"
+            aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
+            aria-pressed={done}
+            disabled={!loaded || busy}
+            onClick={() => void toggle()}
+            className="mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
+            style={{
+              background: done ? "rgba(90,143,106,0.22)" : "var(--ac)",
+              color: done ? "#E7EDE8" : "#0f1c10",
+            }}
+          >
+            {done ? (
+              <>
+                <Icons.Check s={16} /> Gedaan
+              </>
+            ) : (
+              "Markeer als gedaan"
+            )}
+          </button>
+
+          {done ? (
+            <p className="mt-3 text-center text-[13px] text-[#9FB0A6]">
+              Morgen kies je opnieuw wat past.
+            </p>
+          ) : (
+            <button
+              type="button"
+              onClick={resetChoice}
+              className="mt-3 w-full cursor-pointer border-none bg-transparent p-0 text-center text-[13px] font-medium text-[#9FB0A6]"
+            >
+              Wijzig keuze
+            </button>
+          )}
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {slot ? (
+              <Link
+                href={slot.evidenceHref}
+                onClick={() => {
+                  trackOnderbouwingLinkClick({ surface: "kompas_home", domain: "beweging" });
+                  clarityTag("onderbouwing_link", "kompas_beweging");
+                }}
+                className="inline-flex items-center gap-1 text-[13px] font-medium text-[#9FB0A6] no-underline"
+              >
+                {activeChoice.whyLinkLabel} <Icons.ArrowRight s={13} />
+              </Link>
+            ) : null}
+            {done ? (
+              <Link
+                href={followUp.href}
+                className="inline-flex items-center gap-1 text-[13px] font-medium text-[color:var(--ac)] no-underline"
+              >
+                {followUp.label} <Icons.ArrowRight s={13} />
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section
-      aria-label="Vandaag — beweging"
-      className="relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-5"
-    >
+    <section aria-label="Vandaag — beweging" className={shellClass}>
       <div
         aria-hidden
         className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full opacity-30 blur-[80px]"
@@ -237,122 +496,45 @@ export default function MovementTodayHero({
       />
       <div className="relative">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
-          {eyebrow}
+          Vandaag · kies wat past
         </p>
         <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
-          {displayTitle}
+          Wat past vandaag bij je?
         </h3>
-        {displaySupportingLine ? (
+        {recommendationLine ? (
           <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-            {displaySupportingLine}
+            {recommendationLine}
+          </p>
+        ) : (
+          <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+            Kies één richting — daarna vink je precies die stap af.
+          </p>
+        )}
+
+        {medicalSafetyLine ? (
+          <p className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-[13px] leading-relaxed text-[#F1EFE8] text-pretty">
+            {medicalSafetyLine}
           </p>
         ) : null}
 
+        <div className="mt-4 flex flex-col gap-2.5">
+          {choiceOptions.map((option) => (
+            <ChoiceCard
+              key={option.kind}
+              option={option}
+              recommended={restRecommended && option.kind === "herstel"}
+              onSelect={selectChoice}
+            />
+          ))}
+        </div>
+
         <button
           type="button"
-          aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
-          aria-pressed={done}
-          disabled={!loaded || busy}
-          onClick={() => void toggle()}
-          className="mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
-          style={{
-            background: done ? "rgba(90,143,106,0.22)" : "var(--ac)",
-            color: done ? "#E7EDE8" : "#0f1c10",
-          }}
+          onClick={onGoAgenda}
+          className="mt-4 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
         >
-          {done ? (
-            <>
-              <Icons.Check s={16} /> Gedaan
-            </>
-          ) : (
-            "Markeer als gedaan"
-          )}
+          Open Mijn Dag <Icons.ArrowRight s={13} />
         </button>
-
-        {done ? (
-          <p className="mt-3 text-center text-[13px] text-[#9FB0A6]">
-            Morgen staat hier je volgende stap.
-          </p>
-        ) : restLogged ? (
-          <p className="mt-3 text-center text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-            Genoteerd als rustdag — morgen staat je volgende stap klaar.
-          </p>
-        ) : (
-          <>
-            <button
-              type="button"
-              onClick={() => {
-                setOptionsOpen((open) => {
-                  const next = !open;
-                  if (next) {
-                    trackStepAlternative("geen_tijd");
-                  }
-                  return next;
-                });
-              }}
-              aria-expanded={optionsOpen}
-              className="mt-3 w-full cursor-pointer border-none bg-transparent p-0 text-center text-[13px] font-medium text-[#9FB0A6]"
-            >
-              Past deze stap niet vandaag?
-            </button>
-
-            {optionsOpen ? (
-              <div className="mt-2 flex flex-col gap-1 rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    trackStepAlternative("kies_anders");
-                    onGoAgenda();
-                  }}
-                  className="cursor-pointer rounded-lg border-none bg-transparent px-2 py-2 text-left text-[13px] font-medium text-[#E7EDE8]"
-                >
-                  Kies iets anders
-                </button>
-                <p className="px-2 py-1 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-                  Geen tijd? Doe alleen de eerste set — dat telt volledig mee.
-                </p>
-                <button
-                  type="button"
-                  disabled={restBusy}
-                  onClick={() => void chooseRest()}
-                  className="cursor-pointer rounded-lg border-none bg-transparent px-2 py-2 text-left text-[13px] font-medium text-[#E7EDE8] disabled:opacity-60"
-                >
-                  Vandaag even niet — kies rust
-                </button>
-                <Link
-                  href={PREMIUM_BEGELEIDING_HREF}
-                  onClick={() => trackStepAlternative("hulp")}
-                  className="rounded-lg px-2 py-2 text-[13px] font-medium text-[#E7EDE8] no-underline"
-                >
-                  Meer hulp nodig?
-                </Link>
-              </div>
-            ) : null}
-          </>
-        )}
-
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-          {slot ? (
-            <Link
-              href={slot.evidenceHref}
-              onClick={() => {
-                trackOnderbouwingLinkClick({ surface: "kompas_home", domain: "beweging" });
-                clarityTag("onderbouwing_link", "kompas_beweging");
-              }}
-              className="inline-flex items-center gap-1 text-[13px] font-medium text-[#9FB0A6] no-underline"
-            >
-              Waarom? <Icons.ArrowRight s={13} />
-            </Link>
-          ) : null}
-          {done ? (
-            <Link
-              href={followUp.href}
-              className="inline-flex items-center gap-1 text-[13px] font-medium text-[color:var(--ac)] no-underline"
-            >
-              {followUp.label} <Icons.ArrowRight s={13} />
-            </Link>
-          ) : null}
-        </div>
       </div>
     </section>
   );
