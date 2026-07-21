@@ -24,7 +24,13 @@ De fasering hieronder is opgesteld op de 18-juli-verdict; de codebase is sindsdi
 - **A3 (day-model-unificatie): ✅ GELAND 21 jul** (`ff107a0`) — nieuwe leaf-module `src/lib/day-model.ts` unificeert dag-content + tijd-resolutie + afvink-sleutel; `agenda-week-preview.ts`/`agenda-timeline.ts`/`AgendaTodayHero.tsx`/`AgendaScreen.tsx` consumeren het. 11 pariteitstests (`day-model.test.ts`); bestaande agenda-tests ongewijzigd groen (bewijs: pure refactor). Twee completie-grootboeken (`agenda_blocks.status` / `daily_action_log`) bewust NIET gemergd (§2.4).
 - **A1 (gedaan-log):** gebouwd (`movement-session-log.ts` + route + events), nog achter `NEXT_PUBLIC_MOVEMENT_LOG_ENABLED`.
 
-**Gevolg:** de prioriteitslogica (P0 waarheid+instap → P1 lus → P2 klok → P3 freeze) blijft geldig; alleen de brok-status is verschoven. Dit document heeft een **re-grounding-pass** nodig tegen de actuele code vóór de volgende brok wordt gekozen.
+**Gevolg:** de prioriteitslogica (P0 waarheid+instap → P1 lus → P2 klok → P3 freeze) blijft geldig; alleen de brok-status is verschoven.
+
+**Re-grounding-pass (21 jul, read-only tegen `main`):**
+- **pr.1 vandaag-kaart begrijpelijk: ✅ AL GEDAAN** — `AgendaTodayHero` heeft kop + WIIFM-regel (`getVandaagContextLine`) + "Waarom?"-link + één vervolg ná Gedaan (`buildVandaagFollowUp`). Exact de pr.1-spec.
+- **pr.2 intake→account→Kompas: plumbing COMPLEET** — CTA → `/account/login?from=intake` → magic-link (`verify-code`) → `claim-sessions`-route zet `intake_sessions.account_id` → dashboard laadt daarop. De "lek" is dus géén kapotte pijp maar conversie/meting → hoort bij P2 (traffic), niet als P1-bouwbrok.
+- **pr.3 dashboard-leesbaarheid: DEELS gebouwd** — `getReadoutPresentation`/`isReadoutDomain`/"Rapport"-label bestaan; open = de volledige Prioriteit/Aandacht/Rapport-hiërarchie + "energie/herstel volgen uit je gedrag"-copy. Traffic-onafhankelijk, zichtbaar. **→ aanbevolen eerstvolgende buildbare brok.**
+- **A1 gedaan-log:** open = (a) `NEXT_PUBLIC_MOVEMENT_LOG_ENABLED=true` op de server (Dennis' env-actie) + (b) `SoonPill`-modaliteiten (slaap/stress/verbinding/DomainDeepTool) weg-of-werkend maken (product-call: welke pills zijn echte roadmap).
 
 ---
 
