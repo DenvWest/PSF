@@ -49,6 +49,8 @@ export function buildModel(
   planStepDismissedDate: string | null = null,
   planStepsHidden = false,
   sleepFocus: DashboardModel["sleepFocus"] = null,
+  movementRcvFeel: number | null = null,
+  movementRcvFeelAt: string | null = null,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -124,5 +126,7 @@ export function buildModel(
     planDomain,
     planProgress,
     sleepFocus,
+    movementRcvFeel,
+    movementRcvFeelAt,
   };
 }

@@ -19,57 +19,41 @@ import {
   movementDirection,
   movementStartStatement,
 } from "@/lib/movement-delta";
+import {
+  parseFullMovementReport,
+  parseMovementCheckinMode,
+  parsePulseMovementReport,
+  type MovementCheckinReport,
+} from "@/lib/movement-checkin-parse";
 import { emitEvent } from "@/lib/events";
-
-type MovementReport = {
-  MOV2_STR: number;
-  MOV2_CARD: number;
-  MOV2_VIG: number;
-  MOV2_SIT: number;
-  MOV2_COND: number;
-  RCV_FEEL: number;
-  MOV2_PAIN: number;
-  MOV2_MOB: number;
-  MOV2_FUNC: number;
-  MOV2_CONSIST: number;
-  MOV2_MOTIV: number;
-};
-
-const MOVEMENT_REPORT_FIELDS = [
-  "MOV2_STR",
-  "MOV2_CARD",
-  "MOV2_VIG",
-  "MOV2_SIT",
-  "MOV2_COND",
-  "RCV_FEEL",
-  "MOV2_PAIN",
-  "MOV2_MOB",
-  "MOV2_FUNC",
-  "MOV2_CONSIST",
-  "MOV2_MOTIV",
-] as const;
-
-function parseIntField(value: unknown, min: number, max: number): number | null {
-  if (typeof value !== "number" || !Number.isInteger(value) || value < min || value > max) {
-    return null;
-  }
-  return value;
-}
-
-function parseReport(raw: unknown): MovementReport | null {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
-  const r = raw as Record<string, unknown>;
-  const report: Partial<MovementReport> = {};
-  for (const field of MOVEMENT_REPORT_FIELDS) {
-    const value = parseIntField(r[field], 1, 5);
-    if (value === null) return null;
-    report[field] = value;
-  }
-  return report as MovementReport;
-}
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
   console.warn("[api/intake/movement-checkin][security]", { event, ...details });
+}
+
+async function resolvePreviousMovementScore(
+  admin: NonNullable<ReturnType<typeof createSupabaseAdmin>>,
+  sessionId: string,
+): Promise<number | null> {
+  const { data: previousCheckin } = await admin
+    .from("intake_domain_checkin")
+    .select("score")
+    .eq("session_id", sessionId)
+    .eq("domain_key", "movement_score")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const previousScoreObj = previousCheckin?.score;
+  if (previousScoreObj && typeof previousScoreObj === "object" && !Array.isArray(previousScoreObj)) {
+    const raw = (previousScoreObj as Record<string, unknown>).movement_score;
+    if (typeof raw === "number" && Number.isFinite(raw)) {
+      return Math.round(raw);
+    }
+  }
+
+  const baseline = await loadBaselineSnapshot(sessionId);
+  return baseline ? Math.round(baseline.domainScores.movement_score) : null;
 }
 
 export async function POST(request: NextRequest) {
@@ -108,8 +92,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Toestemming is vereist." }, { status: 400 });
   }
 
-  const report = parseReport(bodyRecord.report);
-  if (report === null) {
+  const mode = parseMovementCheckinMode(bodyRecord.mode);
+  const pulseReport =
+    mode === "pulse" ? parsePulseMovementReport(bodyRecord.report) : null;
+  const fullReport =
+    mode === "full" ? parseFullMovementReport(bodyRecord.report) : null;
+
+  if (mode === "pulse" && pulseReport === null) {
+    return NextResponse.json(
+      { error: "Ongeldig pulse-rapport — RCV_FEEL (1–5) is vereist." },
+      { status: 400 },
+    );
+  }
+
+  if (mode === "full" && fullReport === null) {
     return NextResponse.json(
       { error: "Ongeldig rapport-formaat." },
       { status: 400 },
@@ -158,14 +154,22 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const currentScore = movementScoreFromReport(report);
+  const reportForAssessment =
+    mode === "pulse" ? pulseReport! : (fullReport as MovementCheckinReport);
+  const currentScore =
+    mode === "pulse"
+      ? await resolvePreviousMovementScore(admin, sessionId)
+      : movementScoreFromReport(fullReport!);
 
   const baseline = await loadBaselineSnapshot(sessionId);
   const movementComparable = baseline
     ? isMovementScoreDeltaComparable(baseline.rulesVersion, RULES_VERSION)
     : false;
   const direction =
-    baseline && movementComparable
+    mode === "full" &&
+    baseline &&
+    movementComparable &&
+    currentScore != null
       ? movementDirection(baseline.domainScores.movement_score, currentScore)
       : null;
   const start = direction
@@ -176,8 +180,9 @@ export async function POST(request: NextRequest) {
     session_id: sessionId,
     organization_id: organizationId,
     domain_key: "movement_score",
-    raw_inputs: report,
-    score: { movement_score: currentScore },
+    raw_inputs: reportForAssessment,
+    score:
+      currentScore != null ? { movement_score: currentScore } : { movement_score: null },
     rules_version: RULES_VERSION,
   });
 
@@ -193,7 +198,11 @@ export async function POST(request: NextRequest) {
     await emitEvent({
       eventType: "measurement.checkin_completed",
       sessionId,
-      payload: { domain_key: "movement_score", rules_version: RULES_VERSION },
+      payload: {
+        domain_key: "movement_score",
+        rules_version: RULES_VERSION,
+        checkin_mode: mode,
+      },
       deliveredTo: [],
     });
   } catch (emitErr) {
@@ -214,7 +223,7 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json(
-    { assessment: assessMovement(report), start },
+    { assessment: assessMovement(reportForAssessment), start, mode },
     { status: 200 },
   );
 }

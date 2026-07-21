@@ -126,6 +126,8 @@ export function buildDevDashboardData(
       { date: "2026-07-14", value: 2 },
       { date: "2026-07-18", value: 4 },
     ],
+    movementRcvFeel: 3,
+    movementRcvFeelAt: "2026-07-18T10:00:00.000Z",
     remeasure:
       mode === "retest"
         ? { dueDate: "10 jul 2026", daysUntil: -8 }

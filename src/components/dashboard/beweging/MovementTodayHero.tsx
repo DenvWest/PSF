@@ -6,6 +6,7 @@ import * as Icons from "@/components/app/icons";
 import { PILLAR } from "@/data/dashboard";
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
 import { clarityTag } from "@/lib/clarity";
+import { invalidateDailyLogCache } from "@/lib/daily-log-client";
 import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import {
@@ -14,9 +15,11 @@ import {
 } from "@/lib/movement-recovery-hint";
 import {
   buildMedicalSafetyLine,
+  buildMovementCheckinCta,
   buildRecoveryRecommendationLine,
   inferCompletedChoice,
   modalityLabelForChoice,
+  resolveRcvFeelForRecoveryHint,
   resolveTodayChoiceOptions,
   shouldRecommendRestChoice,
   type TodayChoiceKind,
@@ -64,6 +67,14 @@ function trackTrainingGate(answer: "yes" | "no" | "proceed_anyway"): void {
     surface: SURFACE,
   });
   clarityTag("dashboard_kompas_beweging", `training_gate_${answer}`);
+}
+
+function trackCheckinClick(mode: "pulse"): void {
+  trackEvent("dashboard_beweging_checkin_click", {
+    mode,
+    surface: SURFACE,
+  });
+  clarityTag("dashboard_beweging_checkin", "click");
 }
 
 function choiceIcon(kind: TodayChoiceKind) {
@@ -130,6 +141,7 @@ export default function MovementTodayHero({
 }: MovementTodayHeroProps) {
   const shownRef = useRef(false);
   const [selectedKind, setSelectedKind] = useState<TodayChoiceKind | null>(null);
+  const [freshChoice, setFreshChoice] = useState(false);
   const [trainingGateView, setTrainingGateView] = useState<TrainingGateView>("question");
   const [trainingGateCleared, setTrainingGateCleared] = useState(false);
   const [logHydrated, setLogHydrated] = useState(false);
@@ -139,12 +151,25 @@ export default function MovementTodayHero({
   const active = isOwnStep && !hidden && slot != null;
   const trainingStepId = active && slot ? resolveActionKey(model, slot) : "";
 
+  const rcvFeelForHint = resolveRcvFeelForRecoveryHint(
+    model.movementRcvFeel,
+    model.movementRcvFeelAt,
+  );
+
   const recovery = buildMovementRecoveryHint(
-    buildMovementRecoveryInput(model.domainScores, model.answers ?? {}),
+    buildMovementRecoveryInput(
+      model.domainScores,
+      model.answers ?? {},
+      rcvFeelForHint,
+    ),
   );
   const restRecommended = shouldRecommendRestChoice(recovery);
   const recommendationLine = buildRecoveryRecommendationLine(recovery);
   const medicalSafetyLine = buildMedicalSafetyLine(recovery);
+  const checkinCta = buildMovementCheckinCta({
+    rcvFeelAt: model.movementRcvFeelAt,
+    restRecommended,
+  });
 
   const choiceOptions = useMemo(
     () => (trainingStepId ? resolveTodayChoiceOptions(trainingStepId) : []),
@@ -167,6 +192,8 @@ export default function MovementTodayHero({
     enabled: active && logActionKey != null,
     surface: SURFACE,
     clarityScope: "kompas_beweging_hero",
+    forceUnchecked: freshChoice,
+    onToggled: () => setFreshChoice(false),
   });
 
   useEffect(() => {
@@ -188,6 +215,7 @@ export default function MovementTodayHero({
         const completed = inferCompletedChoice(state.keys, choiceOptions);
         if (completed) {
           setSelectedKind(completed);
+          setFreshChoice(false);
           if (completed === "trainen") {
             setTrainingGateCleared(true);
           }
@@ -228,7 +256,9 @@ export default function MovementTodayHero({
   const followUp = buildVandaagFollowUp("beweging");
 
   const selectChoice = (kind: TodayChoiceKind) => {
+    invalidateDailyLogCache("beweging");
     trackStepChoice(kind);
+    setFreshChoice(true);
     setSelectedKind(kind);
     if (kind === "trainen") {
       setTrainingGateView("question");
@@ -239,6 +269,7 @@ export default function MovementTodayHero({
   };
 
   const resetChoice = () => {
+    invalidateDailyLogCache("beweging");
     trackEvent("dashboard_vandaag_step_alternative", {
       choice: "wijzig_keuze",
       domain: "beweging",
@@ -246,9 +277,35 @@ export default function MovementTodayHero({
     });
     clarityTag("dashboard_kompas_beweging", "step_alternative_wijzig_keuze");
     setSelectedKind(null);
+    setFreshChoice(false);
     setTrainingGateView("question");
     setTrainingGateCleared(false);
   };
+
+  const choiceFooter = (
+    <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:items-stretch">
+      {checkinCta ? (
+        <Link
+          href={checkinCta.href}
+          onClick={() => trackCheckinClick("pulse")}
+          className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-[color:var(--ac)]/50 bg-[color:var(--ac)]/10 px-4 text-[14px] font-semibold text-[#E7EDE8] no-underline transition-colors hover:border-[color:var(--ac)]/70"
+        >
+          {checkinCta.label}
+        </Link>
+      ) : null}
+      <button
+        type="button"
+        onClick={onGoAgenda}
+        className={
+          checkinCta
+            ? "inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-transparent px-4 text-[14px] font-semibold text-[#E7EDE8]"
+            : "inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-transparent px-4 text-[14px] font-semibold text-[#E7EDE8]"
+        }
+      >
+        Open Mijn Dag <Icons.ArrowRight s={15} />
+      </button>
+    </div>
+  );
 
   if (!active) {
     const otherLabel = slot ? PILLAR[slot.domain].label.toLowerCase() : null;
@@ -528,13 +585,7 @@ export default function MovementTodayHero({
           ))}
         </div>
 
-        <button
-          type="button"
-          onClick={onGoAgenda}
-          className="mt-4 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
-        >
-          Open Mijn Dag <Icons.ArrowRight s={13} />
-        </button>
+        {choiceFooter}
       </div>
     </section>
   );

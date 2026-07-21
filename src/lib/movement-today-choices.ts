@@ -102,6 +102,78 @@ export function inferCompletedChoice(
   return null;
 }
 
+export type ChoiceDoneSource = "hydrate" | "fresh_select" | "toggled";
+
+/** Fresh keuze in sessie toont altijd unchecked; hydrate volgt de daily log. */
+export function resolveChoiceDoneDisplay(
+  logKeys: readonly string[],
+  stepId: string,
+  source: ChoiceDoneSource,
+  toggledDone: boolean,
+): boolean {
+  if (source === "fresh_select") {
+    return false;
+  }
+  if (source === "toggled") {
+    return toggledDone;
+  }
+  return logKeys.includes(stepId);
+}
+
+const MS_PER_DAY = 86_400_000;
+
+export function isRcvFeelWithinDays(
+  rcvFeelAt: string | null | undefined,
+  maxDays = 7,
+): boolean {
+  if (!rcvFeelAt) {
+    return false;
+  }
+  const ts = new Date(rcvFeelAt).getTime();
+  if (!Number.isFinite(ts)) {
+    return false;
+  }
+  return Date.now() - ts <= maxDays * MS_PER_DAY;
+}
+
+export function resolveRcvFeelForRecoveryHint(
+  rcvFeel: number | null | undefined,
+  rcvFeelAt: string | null | undefined,
+  maxDays = 7,
+): number | undefined {
+  if (rcvFeel == null || !isRcvFeelWithinDays(rcvFeelAt, maxDays)) {
+    return undefined;
+  }
+  return rcvFeel;
+}
+
+export type MovementCheckinCta = {
+  label: string;
+  href: string;
+};
+
+export function buildMovementPulseCheckinHref(): string {
+  return "/intake/beweging?mode=pulse&from=dashboard&kompas=beweging";
+}
+
+export function buildMovementCheckinCta(input: {
+  rcvFeelAt: string | null | undefined;
+  restRecommended: boolean;
+}): MovementCheckinCta | null {
+  const { rcvFeelAt, restRecommended } = input;
+  const href = buildMovementPulseCheckinHref();
+
+  if (isRcvFeelWithinDays(rcvFeelAt, 7)) {
+    return null;
+  }
+
+  if (rcvFeelAt && !isRcvFeelWithinDays(rcvFeelAt, 7) && restRecommended) {
+    return { label: "Update je herstel", href };
+  }
+
+  return { label: "Check in voor vandaag", href };
+}
+
 export function findChoiceOption(
   options: readonly TodayChoiceOption[],
   kind: TodayChoiceKind,

@@ -1,13 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
   buildMedicalSafetyLine,
+  buildMovementCheckinCta,
   buildRecoveryRecommendationLine,
   inferCompletedChoice,
+  isRcvFeelWithinDays,
+  resolveChoiceDoneDisplay,
+  resolveRcvFeelForRecoveryHint,
   resolveTodayChoiceOptions,
   shouldOverrideTodayFromRecovery,
   shouldRecommendRestChoice,
 } from "@/lib/movement-today-choices";
 import { REST_DAY_STEP_ID } from "@/lib/movement-recovery-hint";
+import {
+  parseFullMovementReport,
+  parseMovementCheckinMode,
+  parsePulseMovementReport,
+} from "@/lib/movement-checkin-parse";
 
 describe("resolveTodayChoiceOptions", () => {
   it("maps herstel, licht and trainen to distinct step ids", () => {
@@ -86,5 +95,80 @@ describe("recovery recommendation helpers", () => {
       recommendRestChoice: true,
     };
     expect(shouldOverrideTodayFromRecovery(hint)).toBe(true);
+  });
+});
+
+describe("resolveChoiceDoneDisplay", () => {
+  it("shows unchecked on fresh select even when step id is in log", () => {
+    expect(
+      resolveChoiceDoneDisplay([REST_DAY_STEP_ID], REST_DAY_STEP_ID, "fresh_select", false),
+    ).toBe(false);
+  });
+
+  it("shows done on hydrate when key is in log", () => {
+    expect(
+      resolveChoiceDoneDisplay([REST_DAY_STEP_ID], REST_DAY_STEP_ID, "hydrate", false),
+    ).toBe(true);
+  });
+
+  it("follows toggle state after explicit mark done", () => {
+    expect(
+      resolveChoiceDoneDisplay([], REST_DAY_STEP_ID, "toggled", true),
+    ).toBe(true);
+  });
+});
+
+describe("rcvFeel freshness helpers", () => {
+  const recentAt = new Date(Date.now() - 2 * 86_400_000).toISOString();
+  const staleAt = new Date(Date.now() - 10 * 86_400_000).toISOString();
+
+  it("uses fresh rcvFeel for recovery hint only within 7 days", () => {
+    expect(resolveRcvFeelForRecoveryHint(2, recentAt)).toBe(2);
+    expect(resolveRcvFeelForRecoveryHint(2, staleAt)).toBeUndefined();
+  });
+
+  it("builds check-in CTA copy from freshness and recommendation", () => {
+    expect(buildMovementCheckinCta({ rcvFeelAt: recentAt, restRecommended: true })).toBeNull();
+    expect(buildMovementCheckinCta({ rcvFeelAt: null, restRecommended: false })?.label).toBe(
+      "Check in voor vandaag",
+    );
+    expect(
+      buildMovementCheckinCta({ rcvFeelAt: staleAt, restRecommended: true })?.label,
+    ).toBe("Update je herstel");
+  });
+
+  it("detects rcvFeel within days window", () => {
+    expect(isRcvFeelWithinDays(recentAt, 7)).toBe(true);
+    expect(isRcvFeelWithinDays(staleAt, 7)).toBe(false);
+  });
+});
+
+describe("movement checkin parse", () => {
+  it("parses pulse mode flag", () => {
+    expect(parseMovementCheckinMode("pulse")).toBe("pulse");
+    expect(parseMovementCheckinMode("full")).toBe("full");
+  });
+
+  it("accepts pulse report with RCV_FEEL only", () => {
+    expect(parsePulseMovementReport({ RCV_FEEL: 3 })).toEqual({ RCV_FEEL: 3 });
+    expect(parsePulseMovementReport({ RCV_FEEL: 0 })).toBeNull();
+  });
+
+  it("requires all fields for full report", () => {
+    const full = {
+      MOV2_STR: 3,
+      MOV2_CARD: 3,
+      MOV2_VIG: 3,
+      MOV2_SIT: 3,
+      MOV2_COND: 3,
+      RCV_FEEL: 3,
+      MOV2_PAIN: 3,
+      MOV2_MOB: 3,
+      MOV2_FUNC: 3,
+      MOV2_CONSIST: 3,
+      MOV2_MOTIV: 3,
+    };
+    expect(parseFullMovementReport(full)).toEqual(full);
+    expect(parseFullMovementReport({ RCV_FEEL: 3 })).toBeNull();
   });
 });

@@ -2,6 +2,7 @@ import { createSupabaseAdmin } from "@/lib/supabase-admin";
 
 export type MovementRecoveryContext = {
   rcvFeel: number | null;
+  rcvFeelAt: string | null;
 };
 
 export async function loadMovementRecoveryContext(
@@ -9,7 +10,7 @@ export async function loadMovementRecoveryContext(
 ): Promise<MovementRecoveryContext> {
   const admin = createSupabaseAdmin();
   if (!admin) {
-    return { rcvFeel: null };
+    return { rcvFeel: null, rcvFeelAt: null };
   }
 
   const { data } = await admin
@@ -23,15 +24,18 @@ export async function loadMovementRecoveryContext(
 
   const raw = data?.raw_inputs;
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-    return { rcvFeel: null };
+    return { rcvFeel: null, rcvFeelAt: null };
   }
 
   const rcvFeel = (raw as Record<string, unknown>).RCV_FEEL;
   if (typeof rcvFeel !== "number" || !Number.isInteger(rcvFeel) || rcvFeel < 1 || rcvFeel > 5) {
-    return { rcvFeel: null };
+    return { rcvFeel: null, rcvFeelAt: null };
   }
 
-  return { rcvFeel };
+  const rcvFeelAt =
+    typeof data?.created_at === "string" ? data.created_at : null;
+
+  return { rcvFeel, rcvFeelAt };
 }
 
 export type MovementRecoveryTrendPoint = {

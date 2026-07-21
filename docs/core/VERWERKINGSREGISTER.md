@@ -3,7 +3,7 @@
 > **Layer 1 — Core.** Verplicht register conform AVG art. 30. Intern document — niet publiceren.
 > Verwante docs: [`DPIA.md`](DPIA.md) (art. 35, risicobeoordeling), privacyverklaring (`src/app/privacy/page.tsx`), [`ENTITY_MODEL.md`](ENTITY_MODEL.md) (technische tabellen).
 
-**Laatst bijgewerkt:** 2026-07-19  
+**Laatst bijgewerkt:** 2026-07-21  
 **Volgende geplande controle:** 2026-08-01 (maandelijks)  
 **Eigenaar:** Dennis van Westbroek — verwerkingsverantwoordelijke  
 **Archief verwerkersovereenkomsten:** `Documenten/documenten/perfectsupplement/privacy/`
@@ -270,7 +270,7 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 
 | | |
 |---|---|
-| **Doel** | Gebruiker kan tussen volledige hermetingen door een enkel domein opnieuw beantwoorden (nu: beweging, 10 deelvragen) zodat de domeinscore en leefstijllijn actueel blijven zonder een volledige Leefstijlcheck |
+| **Doel** | Gebruiker kan tussen volledige hermetingen door een enkel domein opnieuw beantwoorden (nu: beweging, 10 deelvragen) zodat de domeinscore en leefstijllijn actueel blijven zonder een volledige Leefstijlcheck. Vanaf juli 2026 ook een korte **herstel-puls** (1 vraag `RCV_FEEL`) vanuit het beweging-dashboard — zelfde tabel en consent, hogere frequentie voor dagkeuze-aanbeveling; wijzigt de bewegingsscore niet |
 | **Betrokkenen** | Gebruikers met een actieve intake-sessie die vrijwillig een domein-check opnieuw invullen |
 | **Soort gegevens** | Session-id, organization-id, domain_key (enum, nu: `movement_score`), raw_inputs (ruwe antwoordwaarden per veld), afgeleide domeinscore, rules_version |
 | **Bijzondere gegevens** | Ja — zelfgerapporteerd gezondheidsgerelateerd gedrag, gekoppeld aan sessie met art. 9-intake |
@@ -320,6 +320,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-07-21 | Verwerking 18 aangevuld: dagelijkse herstel-puls (`RCV_FEEL` enkelveld) vanuit beweging-dashboard — zelfde `intake_domain_checkin`, consent en grondslag; geen nieuwe verwerker; score ongewijzigd bij pulse |
 | 2026-07-19 | Verwerking 18 toegevoegd: domein-hercheck (`intake_domain_checkin`) — bestond al technisch sinds juni, kreeg alsnog een eigen paragraaf; beweging-domein uitgebreid van 2 naar 10 deelvragen |
 | 2026-07-18 | Verwerking 17 toegevoegd: agenda dagblokken (`agenda_blocks`) — persoonlijke routines met categorie/tijdvenster, RLS deny-all, art. 9 (toestemming); events `agenda.block_created` / `agenda.block_toggled` / `agenda.block_deleted` categorisch; privacy-pagina bijgewerkt |
 | 2026-07-18 | Verwerking 16 uitgebreid: `account_priority_pref.scheduled_time` (HH:MM) toegevoegd naast afgeleid time_bucket; privacy-pagina bijgewerkt |

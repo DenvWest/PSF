@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
+import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import { MOVEMENT_QUESTIONS } from "@/data/movement-checkin";
 import type {
   MovementDimensionResult,
@@ -23,10 +25,12 @@ type Step =
       kind: "result";
       assessment: MovementDimensionResult[];
       start: MovementStart | null;
+      pulse?: boolean;
     }
   | { kind: "error"; message: string };
 
 const TOTAL = MOVEMENT_QUESTIONS.length;
+const PULSE_QUESTION_INDEX = MOVEMENT_QUESTIONS.findIndex((q) => q.field === "RCV_FEEL");
 
 const DIMENSION_LABELS: Record<MovementDimensionResult["dimension"], string> = {
   kracht: "Kracht",
@@ -43,19 +47,44 @@ const DIMENSION_LABELS: Record<MovementDimensionResult["dimension"], string> = {
 };
 
 export default function MovementCapture() {
-  const [step, setStep] = useState<Step>({ kind: "question", index: 0 });
+  const searchParams = useSearchParams();
+  const isPulseMode = searchParams.get("mode") === "pulse";
+  const fromDashboard = searchParams.get("from") === "dashboard";
+  const kompas = searchParams.get("kompas");
+  const validKompas = new Set([
+    "slaap",
+    "energie",
+    "stress",
+    "voeding",
+    "beweging",
+    "herstel",
+    "verbinding",
+  ]);
+  const originDomain =
+    kompas && validKompas.has(kompas) ? (kompas as "beweging") : null;
+  const dashboardReturnHref = buildDashboardVandaagHref(originDomain ?? "beweging");
+
+  const pulseStartIndex = PULSE_QUESTION_INDEX >= 0 ? PULSE_QUESTION_INDEX : 0;
+
+  const [step, setStep] = useState<Step>(() =>
+    isPulseMode ? { kind: "question", index: pulseStartIndex } : { kind: "question", index: 0 },
+  );
   const [answers, setAnswers] = useState<Partial<MovementSelfReport>>({});
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    clarityTag("movement_flow", "started");
-  }, []);
+    clarityTag("movement_flow", isPulseMode ? "pulse_started" : "started");
+  }, [isPulseMode]);
 
   function handleAnswer(field: keyof MovementSelfReport, value: number, index: number) {
     const next = { ...answers, [field]: value };
     setAnswers(next);
+    if (isPulseMode) {
+      setStep({ kind: "consent" });
+      return;
+    }
     if (index + 1 < MOVEMENT_QUESTIONS.length) {
       setStep({ kind: "question", index: index + 1 });
     } else {
@@ -65,8 +94,11 @@ export default function MovementCapture() {
 
   function handleBack() {
     if (step.kind === "consent") {
-      setStep({ kind: "question", index: MOVEMENT_QUESTIONS.length - 1 });
-    } else if (step.kind === "question" && step.index > 0) {
+      setStep({
+        kind: "question",
+        index: isPulseMode ? pulseStartIndex : MOVEMENT_QUESTIONS.length - 1,
+      });
+    } else if (step.kind === "question" && step.index > 0 && !isPulseMode) {
       setStep({ kind: "question", index: step.index - 1 });
     }
   }
@@ -80,7 +112,11 @@ export default function MovementCapture() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ report: answers, consent: true }),
+        body: JSON.stringify({
+          report: answers,
+          consent: true,
+          ...(isPulseMode ? { mode: "pulse" } : {}),
+        }),
       });
 
       if (res.status === 401) {
@@ -98,8 +134,13 @@ export default function MovementCapture() {
         start: MovementStart | null;
       };
 
-      clarityTag("movement_flow", "completed");
-      setStep({ kind: "result", assessment: data.assessment, start: data.start });
+      clarityTag("movement_flow", isPulseMode ? "pulse_completed" : "completed");
+      setStep({
+        kind: "result",
+        assessment: data.assessment,
+        start: data.start,
+        pulse: isPulseMode,
+      });
     } catch {
       setStep({ kind: "error", message: "Opnieuw proberen" });
     } finally {
@@ -120,7 +161,43 @@ export default function MovementCapture() {
   }
 
   if (step.kind === "result") {
-    const { assessment, start } = step;
+    const { assessment, start, pulse } = step;
+
+    if (pulse) {
+      const herstelResult = assessment.find((entry) => entry.dimension === "herstel");
+      return (
+        <div className="relative flex min-h-screen flex-col items-center justify-center">
+          <div className="w-full max-w-lg px-6 py-12 text-center">
+            <h1 className="mb-2 font-serif text-3xl font-normal text-intake-ink">
+              Check-in opgeslagen
+            </h1>
+            <p className="mb-6 text-sm text-intake-ink-subtle">
+              Je herstel-signaal helpt ons vandaag een betere keuze voor te stellen.
+            </p>
+            {herstelResult ? (
+              <div className="mb-8 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-left text-sm leading-relaxed text-intake-ink">
+                {herstelResult.statement}
+              </div>
+            ) : null}
+            {fromDashboard ? (
+              <Link
+                href={dashboardReturnHref}
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              >
+                Terug naar beweging →
+              </Link>
+            ) : (
+              <Link
+                href="/dashboard?tab=vandaag&kompas=beweging"
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              >
+                Open dashboard →
+              </Link>
+            )}
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -264,7 +341,11 @@ export default function MovementCapture() {
           <button
             type="button"
             onClick={() => {
-              setStep({ kind: "question", index: 0 });
+              setStep(
+                isPulseMode
+                  ? { kind: "question", index: pulseStartIndex }
+                  : { kind: "question", index: 0 },
+              );
               setAnswers({});
               setConsentChecked(false);
               setSelected(new Set());
@@ -279,22 +360,23 @@ export default function MovementCapture() {
   }
 
   if (step.kind === "consent") {
+    const progressMax = isPulseMode ? 1 : TOTAL;
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
         <div
           className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
           role="progressbar"
-          aria-valuenow={TOTAL}
+          aria-valuenow={progressMax}
           aria-valuemin={1}
-          aria-valuemax={TOTAL}
-          aria-label="Voortgang beweegcheck"
+          aria-valuemax={progressMax}
+          aria-label={isPulseMode ? "Voortgang herstel-check-in" : "Voortgang beweegcheck"}
         >
           <div className="h-full bg-intake-terra" style={{ width: "100%" }} />
         </div>
 
         <div className="w-full max-w-lg px-6 py-12">
           <h2 className="mb-6 text-center font-serif text-2xl font-normal text-intake-ink">
-            Jouw gegevens veilig opslaan
+            {isPulseMode ? "Herstel-check veilig opslaan" : "Jouw gegevens veilig opslaan"}
           </h2>
 
           <label className="flex cursor-pointer items-start gap-3 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4">
@@ -324,7 +406,7 @@ export default function MovementCapture() {
               disabled={!consentChecked || submitting}
               className="min-h-[44px] rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-all duration-200 hover:bg-intake-bg-elevated disabled:cursor-default disabled:opacity-30"
             >
-              {submitting ? "Bezig…" : "Bekijk resultaten →"}
+              {submitting ? "Bezig…" : isPulseMode ? "Opslaan →" : "Bekijk resultaten →"}
             </button>
           </div>
         </div>
@@ -333,18 +415,20 @@ export default function MovementCapture() {
   }
 
   const q = MOVEMENT_QUESTIONS[step.index];
-  const progressPct = ((step.index + 1) / TOTAL) * 100;
-  const questionNumber = String(step.index + 1).padStart(2, "0");
+  const progressTotal = isPulseMode ? 1 : TOTAL;
+  const progressCurrent = isPulseMode ? 1 : step.index + 1;
+  const progressPct = (progressCurrent / progressTotal) * 100;
+  const questionNumber = String(progressCurrent).padStart(2, "0");
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
       <div
         className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
         role="progressbar"
-        aria-valuenow={step.index + 1}
+        aria-valuenow={progressCurrent}
         aria-valuemin={1}
-        aria-valuemax={TOTAL}
-        aria-label="Voortgang beweegcheck"
+        aria-valuemax={progressTotal}
+        aria-label={isPulseMode ? "Voortgang herstel-check-in" : "Voortgang beweegcheck"}
       >
         <div
           className="h-full bg-intake-terra transition-[width] duration-300 ease-out"
@@ -357,12 +441,14 @@ export default function MovementCapture() {
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
             <span className="text-intake-terra">{questionNumber}</span>
             {" · "}
-            Beweging
+            {isPulseMode ? "Herstel-check" : "Beweging"}
           </p>
         </div>
 
         <p className="mb-8 text-center text-sm text-intake-ink-subtle">
-          Vraag {step.index + 1} van {TOTAL}
+          {isPulseMode
+            ? "Eén vraag — ~15 seconden"
+            : `Vraag ${step.index + 1} van ${TOTAL}`}
         </p>
 
         <div className="min-h-[400px] animate-[fadeIn_200ms_ease-out]">
@@ -390,8 +476,8 @@ export default function MovementCapture() {
             onClick={handleBack}
             className="border-none bg-transparent py-3 text-sm text-intake-ink-subtle transition-colors hover:text-intake-ink-muted disabled:cursor-default"
             style={{
-              cursor: step.index > 0 ? "pointer" : "default",
-              visibility: step.index > 0 ? "visible" : "hidden",
+              cursor: !isPulseMode && step.index > 0 ? "pointer" : "default",
+              visibility: !isPulseMode && step.index > 0 ? "visible" : "hidden",
             }}
           >
             ← Terug

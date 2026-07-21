@@ -364,7 +364,10 @@ export default function BewegingScreen({
             <Link
               href="/intake/beweging?from=dashboard&kompas=beweging"
               onClick={() => {
-                trackEvent("dashboard_beweging_checkin_click", { surface: "kompas_beweging" });
+                trackEvent("dashboard_beweging_checkin_click", {
+                  mode: "full",
+                  surface: "kompas_beweging",
+                });
                 clarityTag("dashboard_beweging_checkin", "click");
               }}
               style={{

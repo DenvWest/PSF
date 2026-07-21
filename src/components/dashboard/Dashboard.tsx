@@ -3779,6 +3779,8 @@ export default function Dashboard({
             priorityPref?.planStepDismissedDate ?? null,
             priorityPref?.planStepsHidden ?? false,
             data.sleepCheckinFocus,
+            data.movementRcvFeel,
+            data.movementRcvFeelAt,
           )
         : null,
     [empty, data, priorityPref],

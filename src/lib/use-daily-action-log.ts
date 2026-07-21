@@ -20,6 +20,8 @@ type UseDailyActionLogInput = {
   surface: string;
   /** Optionele Clarity-scope; krijgt "done"/"undone". */
   clarityScope?: string;
+  /** Verberg log-done tot expliciet afvinken (verse keuze in sessie). */
+  forceUnchecked?: boolean;
   onToggled?: () => void;
 };
 
@@ -34,16 +36,20 @@ export function useDailyActionLog({
   enabled,
   surface,
   clarityScope,
+  forceUnchecked = false,
   onToggled,
 }: UseDailyActionLogInput) {
-  const cached = enabled && actionKey ? getCachedDailyLog(domain) : null;
+  const cached = enabled && actionKey && !forceUnchecked ? getCachedDailyLog(domain) : null;
   const [done, setDone] = useState(false);
   const [streak, setStreak] = useState(0);
   const [busy, setBusy] = useState(false);
   const [fetchLoaded, setFetchLoaded] = useState(false);
 
-  const resolvedDone =
-    cached && actionKey ? cached.keys.includes(actionKey) : done;
+  const resolvedDone = forceUnchecked
+    ? false
+    : cached && actionKey
+      ? cached.keys.includes(actionKey)
+      : done;
   const resolvedStreak = cached?.streak ?? streak;
   const loaded = !enabled || !actionKey || cached !== null || fetchLoaded;
 

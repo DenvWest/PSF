@@ -41,6 +41,8 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   retest: false,
   nutritionIntake: null,
   movementRecoveryTrend: [],
+  movementRcvFeel: null,
+  movementRcvFeelAt: null,
   remeasure: null,
   deltaReport: null,
   profileLabel: null,
@@ -512,6 +514,36 @@ export async function loadAccountDashboardData(
 
   const latestSnapshot = snapshots[snapshots.length - 1];
 
+  let movementRcvFeel: number | null = null;
+  let movementRcvFeelAt: string | null = null;
+  const movementCheckins = ((checkinData ?? []) as CheckinRow[])
+    .filter(
+      (row) =>
+        row.domain_key === "movement_score" &&
+        row.session_id === latestSnapshot.id &&
+        typeof row.created_at === "string",
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    );
+  const latestMovementCheckin = movementCheckins[movementCheckins.length - 1];
+  if (latestMovementCheckin?.raw_inputs) {
+    const raw = latestMovementCheckin.raw_inputs;
+    if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+      const rcvFeel = (raw as Record<string, unknown>).RCV_FEEL;
+      if (
+        typeof rcvFeel === "number" &&
+        Number.isInteger(rcvFeel) &&
+        rcvFeel >= 1 &&
+        rcvFeel <= 5
+      ) {
+        movementRcvFeel = rcvFeel;
+        movementRcvFeelAt = latestMovementCheckin.created_at;
+      }
+    }
+  }
+
   let sleepCheckinFocus: SleepCheckinFocus | null = null;
   const sleepCheckins = ((checkinData ?? []) as CheckinRow[])
     .filter(
@@ -645,6 +677,8 @@ export async function loadAccountDashboardData(
     retest: snapshots.length >= 2,
     nutritionIntake,
     movementRecoveryTrend,
+    movementRcvFeel,
+    movementRcvFeelAt,
     remeasure,
     deltaReport,
     profileLabel: latestSnapshot.profileLabel,

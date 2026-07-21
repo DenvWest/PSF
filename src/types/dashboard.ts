@@ -197,6 +197,8 @@ export type DashboardData = {
   retest: boolean;
   nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
   movementRecoveryTrend: { date: string; value: number }[];
+  movementRcvFeel: number | null;
+  movementRcvFeelAt: string | null;
   remeasure: { dueDate: string; daysUntil: number } | null;
   deltaReport: DeltaReport | null;
   profileLabel: string | null;
@@ -260,4 +262,6 @@ export type DashboardModel = {
   planDomain: MeasuredPillarId | null;
   planProgress: PlanProgress | null;
   sleepFocus: SleepCheckinFocus | null;
+  movementRcvFeel: number | null;
+  movementRcvFeelAt: string | null;
 };
