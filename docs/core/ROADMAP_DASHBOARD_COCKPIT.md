@@ -21,7 +21,7 @@ De fasering hieronder is opgesteld op de 18-juli-verdict; de codebase is sindsdi
 - **A2 (baseline/TrendPoint): ✅ AL GELAND** — commit `871e507`, 6 vitest-cases groen. De **onderdrukken**-keuze (§8.4) staat al in code (`leefstijllijn.ts`: `delta = null` bij `crossesRulesVersion`); `account-dashboard.ts` vult `trendBaselines` uit het eerste getimestampte punt. → **A2 is NIET meer de eerstvolgende brok.**
 - **RULES_VERSION = 1.5.0** (niet 1.4.0) — beweging-hercheck uitgebreid naar 10 deelvragen, commit `4fc53d4`.
 - **Ook geland sinds 18 jul:** kompas-opschoning + exacte agenda-tijd (`82ab023`), agenda priority-pref-fixes (`bc3ff1a`), interactieve **slaapgids** op `/gids/slaap` (`b92d89f`). De readout/"Rapport"-scheiding (doc 4 pr.3-leesbaarheid) bestaat al **deels** in `Dashboard.tsx` (`getReadoutPresentation`, `isReadoutDomain`, "Rapport"-label).
-- **A3 (day-model-unificatie): ❌ nog NIET** — geen `day-model.ts`/`buildDayModel`; de drievoudige dag-merge staat er nog. Blijft de open P0-refactor vóór multi-domein.
+- **A3 (day-model-unificatie): ✅ GELAND 21 jul** (`ff107a0`) — nieuwe leaf-module `src/lib/day-model.ts` unificeert dag-content + tijd-resolutie + afvink-sleutel; `agenda-week-preview.ts`/`agenda-timeline.ts`/`AgendaTodayHero.tsx`/`AgendaScreen.tsx` consumeren het. 11 pariteitstests (`day-model.test.ts`); bestaande agenda-tests ongewijzigd groen (bewijs: pure refactor). Twee completie-grootboeken (`agenda_blocks.status` / `daily_action_log`) bewust NIET gemergd (§2.4).
 - **A1 (gedaan-log):** gebouwd (`movement-session-log.ts` + route + events), nog achter `NEXT_PUBLIC_MOVEMENT_LOG_ENABLED`.
 
 **Gevolg:** de prioriteitslogica (P0 waarheid+instap → P1 lus → P2 klok → P3 freeze) blijft geldig; alleen de brok-status is verschoven. Dit document heeft een **re-grounding-pass** nodig tegen de actuele code vóór de volgende brok wordt gekozen.
@@ -198,10 +198,10 @@ De fasering hieronder is opgesteld op de 18-juli-verdict; de codebase is sindsdi
 
 ## 8. Masterprioriteiten voor morgen
 
-**1. Wat morgen als eerste gebeurt.** _Achterhaald — zie Status-correctie: **A2 is inmiddels geland** (`871e507`). De eerstvolgende **open** brok is A3 (day-model) óf, nu beweeggids live is, het landings-/leesbaarheidspad (doc 4) — te kiezen na de re-grounding-pass._ Oorspronkelijke onderbouwing (bewaard als vastlegging van hoe/waarom A2 is gebouwd): **A2 — TrendPoint + echte baseline.** De kleinste, hoogst-hefboom P0-brok; traffic-onafhankelijk; maakt élk cijfer erna eerlijk. De implementatieprompt is al uitgeschreven (doc 3, embedded): baseline verhuist naar de bron (`account-dashboard.ts`, waar timestamps + bron bestaan en `slice(-6)` nu de echte baseline weggooit), `leefstijllijn.ts` consumeert; `trendBaselines` optioneel met `trend[0]`-fallback → blast radius 5 bronbestanden + 1 test. Verificatie: `grep console.log` · `tsc --noEmit` · `vitest leefstijllijn` · `eslint --max-warnings 0`.
+**1. Wat morgen als eerste gebeurt.** _Achterhaald — zie Status-correctie: **A2 én A3 zijn inmiddels geland** (`871e507`, `ff107a0`). De eerstvolgende **open** brokken zijn het intake→account→Kompas-landings-/leesbaarheidspad (doc 4 pr.1+2) en A1 (gedaan-log flag→live) — te kiezen na de re-grounding-pass._ Oorspronkelijke onderbouwing (bewaard als vastlegging van hoe/waarom A2 is gebouwd): **A2 — TrendPoint + echte baseline.** De kleinste, hoogst-hefboom P0-brok; traffic-onafhankelijk; maakt élk cijfer erna eerlijk. De implementatieprompt is al uitgeschreven (doc 3, embedded): baseline verhuist naar de bron (`account-dashboard.ts`, waar timestamps + bron bestaan en `slice(-6)` nu de echte baseline weggooit), `leefstijllijn.ts` consumeert; `trendBaselines` optioneel met `trend[0]`-fallback → blast radius 5 bronbestanden + 1 test. Verificatie: `grep console.log` · `tsc --noEmit` · `vitest leefstijllijn` · `eslint --max-warnings 0`.
 
 **2. Wat daarna volgt (P0→P1, in volgorde).**
-1. A3 — day-model-unificatie (blokkeert multi-domein).
+1. ~~A3 — day-model-unificatie (blokkeert multi-domein).~~ ✅ GELAND 21 jul (`ff107a0`).
 2. Intake→account→Kompas-lek dichten + vandaag-kaart begrijpelijk (doc 4 pr.1+2).
 3. C1 (lazy-load) + C2 (pending-states) interleaved.
 4. A1 — gedaan-log flag→live + SoonPills eruit (voltooit beweging-lus).
