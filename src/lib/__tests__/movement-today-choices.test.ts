@@ -3,10 +3,12 @@ import {
   buildMedicalSafetyLine,
   buildMovementCheckinCta,
   buildRecoveryRecommendationLine,
+  buildTodayChoiceRecommendationLine,
   inferCompletedChoice,
   isRcvFeelWithinDays,
   resolveChoiceDoneDisplay,
   resolveRcvFeelForRecoveryHint,
+  resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
   shouldOverrideTodayFromRecovery,
   shouldRecommendRestChoice,
@@ -140,6 +142,41 @@ describe("rcvFeel freshness helpers", () => {
   it("detects rcvFeel within days window", () => {
     expect(isRcvFeelWithinDays(recentAt, 7)).toBe(true);
     expect(isRcvFeelWithinDays(staleAt, 7)).toBe(false);
+  });
+});
+
+describe("resolveRecommendedTodayChoiceKind", () => {
+  const intakeRestHint = {
+    level: "rest" as const,
+    headline: "x",
+    body: "y",
+    source: "intake" as const,
+    promoteRustdagStep: true,
+    showMedicalNote: false,
+    overrideToday: false,
+    recommendRestChoice: true,
+  };
+
+  it("recommends trainen on fresh fris check-in", () => {
+    expect(resolveRecommendedTodayChoiceKind(5, intakeRestHint)).toBe("trainen");
+  });
+
+  it("recommends licht on redelijk check-in", () => {
+    expect(resolveRecommendedTodayChoiceKind(4, intakeRestHint)).toBe("licht");
+  });
+
+  it("recommends herstel on low fresh check-in", () => {
+    expect(resolveRecommendedTodayChoiceKind(2, null)).toBe("herstel");
+  });
+
+  it("falls back to intake rest hint without check-in", () => {
+    expect(resolveRecommendedTodayChoiceKind(undefined, intakeRestHint)).toBe("herstel");
+  });
+
+  it("builds train recommendation copy from check-in", () => {
+    expect(
+      buildTodayChoiceRecommendationLine("trainen", null, 5),
+    ).toContain("Trainen past vandaag");
   });
 });
 

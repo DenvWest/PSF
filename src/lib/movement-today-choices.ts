@@ -197,6 +197,54 @@ export function shouldRecommendRestChoice(hint: MovementRecoveryHint | null): bo
   );
 }
 
+/**
+ * Verse check-in (rcvFeel ≤7 dagen) wint op intake-profiel voor de Aanbevolen-badge.
+ * Zonder check-in valt terug op recovery-hint (intake/wearable).
+ */
+export function resolveRecommendedTodayChoiceKind(
+  rcvFeel: number | undefined,
+  recovery: MovementRecoveryHint | null,
+): TodayChoiceKind | null {
+  if (rcvFeel != null) {
+    if (rcvFeel <= 2) {
+      return "herstel";
+    }
+    if (rcvFeel === 5) {
+      return "trainen";
+    }
+    if (rcvFeel === 4) {
+      return "licht";
+    }
+    return null;
+  }
+
+  if (shouldRecommendRestChoice(recovery)) {
+    return "herstel";
+  }
+
+  return null;
+}
+
+export function buildTodayChoiceRecommendationLine(
+  recommendedKind: TodayChoiceKind | null,
+  recovery: MovementRecoveryHint | null,
+  rcvFeel: number | undefined,
+): string | null {
+  if (recommendedKind === "trainen" && rcvFeel != null && rcvFeel >= 4) {
+    return "Je check-in laat zien dat je klaar bent voor belasting. Trainen past vandaag.";
+  }
+
+  if (recommendedKind === "licht" && rcvFeel === 4) {
+    return "Je check-in wijst op een lichte sessie vandaag. Kies wat past.";
+  }
+
+  if (recommendedKind === "herstel" && rcvFeel != null && rcvFeel <= 2) {
+    return "Je recente check-in wijst op herstel. Kies wat vandaag klopt.";
+  }
+
+  return buildRecoveryRecommendationLine(recovery);
+}
+
 /** Alleen actuele bronnen (check-in, wearable, gecombineerd) — geen intake-only. */
 export function shouldOverrideTodayFromRecovery(hint: MovementRecoveryHint | null): boolean {
   if (!hint) {

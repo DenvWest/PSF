@@ -78,4 +78,24 @@ describe("buildMovementRecoveryHint", () => {
     expect(hint?.overrideToday).toBe(false);
     expect(hint?.recommendRestChoice).toBe(true);
   });
+
+  it("suppresses intake rest recommendation when fresh check-in feel is good", () => {
+    expect(
+      buildMovementRecoveryHint({
+        movStr: 4,
+        rcvPhys: 1,
+        recoveryScore: 35,
+        rcvFeel: 5,
+      }),
+    ).toBeNull();
+    expect(
+      buildMovementRecoveryHint({
+        movStr: 4,
+        movCard: 4,
+        rcvPhys: 3,
+        recoveryScore: 50,
+        rcvFeel: 4,
+      }),
+    ).toBeNull();
+  });
 });

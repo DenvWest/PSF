@@ -50,10 +50,17 @@ export function buildMovementRecoveryHint(
   const highLoad = isHighTrainingLoad(movStr, movCard);
   const lowRecovery = isLowPhysicalRecovery(rcvPhys, recoveryScore);
   const moderateRecovery = isModerateRecoveryStress(rcvPhys, recoveryScore);
-  const feelLow = typeof rcvFeel === "number" && rcvFeel <= 2;
-  const feelVeryLow = typeof rcvFeel === "number" && rcvFeel === 1;
+  const hasFreshCheckinFeel = typeof rcvFeel === "number";
+  const feelLow = hasFreshCheckinFeel && rcvFeel <= 2;
+  const feelGood = hasFreshCheckinFeel && rcvFeel >= 4;
+  const feelVeryLow = hasFreshCheckinFeel && rcvFeel === 1;
   const wearableLow =
     typeof recoveryFit === "number" && Number.isFinite(recoveryFit) && recoveryFit < 0.45;
+
+  // Verse check-in (≤7 dagen, via caller): fris/redelijk overschrijft intake-profiel voor vandaag
+  if (feelGood && !wearableLow) {
+    return null;
+  }
 
   const fromCheckin = feelLow;
   const fromIntake = lowRecovery || (highLoad && moderateRecovery);

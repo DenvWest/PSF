@@ -13,7 +13,7 @@ import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { loadPlanProgress } from "@/lib/plan-progress";
-import { loadMovementRecoveryTrend } from "@/lib/movement-recovery-context";
+import { loadMovementRecoveryTrend, pickLatestMovementRcvFeel } from "@/lib/movement-recovery-context";
 import { getAccountPriorityPref } from "@/lib/account-priority-pref";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
@@ -516,32 +516,13 @@ export async function loadAccountDashboardData(
 
   let movementRcvFeel: number | null = null;
   let movementRcvFeelAt: string | null = null;
-  const movementCheckins = ((checkinData ?? []) as CheckinRow[])
-    .filter(
-      (row) =>
-        row.domain_key === "movement_score" &&
-        row.session_id === latestSnapshot.id &&
-        typeof row.created_at === "string",
-    )
-    .sort(
-      (a, b) =>
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-    );
-  const latestMovementCheckin = movementCheckins[movementCheckins.length - 1];
-  if (latestMovementCheckin?.raw_inputs) {
-    const raw = latestMovementCheckin.raw_inputs;
-    if (raw && typeof raw === "object" && !Array.isArray(raw)) {
-      const rcvFeel = (raw as Record<string, unknown>).RCV_FEEL;
-      if (
-        typeof rcvFeel === "number" &&
-        Number.isInteger(rcvFeel) &&
-        rcvFeel >= 1 &&
-        rcvFeel <= 5
-      ) {
-        movementRcvFeel = rcvFeel;
-        movementRcvFeelAt = latestMovementCheckin.created_at;
-      }
-    }
+  const movementCheckinRows = ((checkinData ?? []) as CheckinRow[]).filter(
+    (row) => row.domain_key === "movement_score" && typeof row.created_at === "string",
+  );
+  const latestRcvFeel = pickLatestMovementRcvFeel(movementCheckinRows);
+  if (latestRcvFeel) {
+    movementRcvFeel = latestRcvFeel.rcvFeel;
+    movementRcvFeelAt = latestRcvFeel.rcvFeelAt;
   }
 
   let sleepCheckinFocus: SleepCheckinFocus | null = null;

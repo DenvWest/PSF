@@ -64,6 +64,10 @@ export default function MovementCapture() {
     kompas && validKompas.has(kompas) ? (kompas as "beweging") : null;
   const dashboardReturnHref = buildDashboardVandaagHref(originDomain ?? "beweging");
 
+  function returnToDashboard() {
+    window.location.assign(dashboardReturnHref);
+  }
+
   const pulseStartIndex = PULSE_QUESTION_INDEX >= 0 ? PULSE_QUESTION_INDEX : 0;
 
   const [step, setStep] = useState<Step>(() =>
@@ -180,19 +184,23 @@ export default function MovementCapture() {
               </div>
             ) : null}
             {fromDashboard ? (
-              <Link
-                href={dashboardReturnHref}
-                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              <button
+                type="button"
+                onClick={returnToDashboard}
+                className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
               >
                 Terug naar beweging →
-              </Link>
+              </button>
             ) : (
-              <Link
-                href="/dashboard?tab=vandaag&kompas=beweging"
-                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.assign("/dashboard?tab=vandaag&kompas=beweging");
+                }}
+                className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
               >
                 Open dashboard →
-              </Link>
+              </button>
             )}
           </div>
         </div>

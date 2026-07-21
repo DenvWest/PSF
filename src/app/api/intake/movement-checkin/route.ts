@@ -9,6 +9,7 @@ import {
   INTAKE_SESSION_COOKIE_NAME,
   verifySignedIntakeSessionCookie,
 } from "@/lib/intake-session-cookie";
+import { resolveActiveIntakeSessionId } from "@/lib/intake-session-resolve";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { loadBaselineSnapshot } from "@/lib/intake-baseline";
 import { isMovementScoreDeltaComparable } from "@/lib/rules-version";
@@ -113,7 +114,8 @@ export async function POST(request: NextRequest) {
   }
 
   const rawCookie = request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value;
-  const sessionId = verifySignedIntakeSessionCookie(rawCookie);
+  const cookieSessionId = verifySignedIntakeSessionCookie(rawCookie);
+  const sessionId = await resolveActiveIntakeSessionId(cookieSessionId);
 
   if (!sessionId) {
     return NextResponse.json(

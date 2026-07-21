@@ -5,6 +5,46 @@ export type MovementRecoveryContext = {
   rcvFeelAt: string | null;
 };
 
+export function parseRcvFeelFromRawInputs(raw: unknown): number | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return null;
+  }
+  const value = (raw as Record<string, unknown>).RCV_FEEL;
+  if (typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 5) {
+    return value;
+  }
+  if (typeof value === "string" && /^\d+$/.test(value)) {
+    const parsed = Number(value);
+    if (Number.isInteger(parsed) && parsed >= 1 && parsed <= 5) {
+      return parsed;
+    }
+  }
+  return null;
+}
+
+export type MovementCheckinRcvRow = {
+  raw_inputs?: unknown;
+  created_at: string;
+};
+
+export function pickLatestMovementRcvFeel(
+  rows: readonly MovementCheckinRcvRow[],
+): { rcvFeel: number; rcvFeelAt: string } | null {
+  const sorted = [...rows].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+  );
+
+  for (let index = sorted.length - 1; index >= 0; index -= 1) {
+    const row = sorted[index];
+    const rcvFeel = parseRcvFeelFromRawInputs(row.raw_inputs);
+    if (rcvFeel != null && typeof row.created_at === "string") {
+      return { rcvFeel, rcvFeelAt: row.created_at };
+    }
+  }
+
+  return null;
+}
+
 export async function loadMovementRecoveryContext(
   sessionId: string,
 ): Promise<MovementRecoveryContext> {
@@ -19,23 +59,20 @@ export async function loadMovementRecoveryContext(
     .eq("session_id", sessionId)
     .eq("domain_key", "movement_score")
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(20);
 
-  const raw = data?.raw_inputs;
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+  const picked = pickLatestMovementRcvFeel(
+    (data ?? []).flatMap((row) =>
+      typeof row.created_at === "string"
+        ? [{ created_at: row.created_at, raw_inputs: row.raw_inputs }]
+        : [],
+    ),
+  );
+  if (!picked) {
     return { rcvFeel: null, rcvFeelAt: null };
   }
 
-  const rcvFeel = (raw as Record<string, unknown>).RCV_FEEL;
-  if (typeof rcvFeel !== "number" || !Number.isInteger(rcvFeel) || rcvFeel < 1 || rcvFeel > 5) {
-    return { rcvFeel: null, rcvFeelAt: null };
-  }
-
-  const rcvFeelAt =
-    typeof data?.created_at === "string" ? data.created_at : null;
-
-  return { rcvFeel, rcvFeelAt };
+  return { rcvFeel: picked.rcvFeel, rcvFeelAt: picked.rcvFeelAt };
 }
 
 export type MovementRecoveryTrendPoint = {
@@ -65,8 +102,8 @@ export async function loadMovementRecoveryTrend(
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
       continue;
     }
-    const rcvFeel = (raw as Record<string, unknown>).RCV_FEEL;
-    if (typeof rcvFeel !== "number" || !Number.isInteger(rcvFeel) || rcvFeel < 1 || rcvFeel > 5) {
+    const rcvFeel = parseRcvFeelFromRawInputs(raw);
+    if (rcvFeel == null) {
       continue;
     }
     if (typeof row.created_at !== "string") {

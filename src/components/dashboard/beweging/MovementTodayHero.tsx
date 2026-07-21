@@ -16,10 +16,11 @@ import {
 import {
   buildMedicalSafetyLine,
   buildMovementCheckinCta,
-  buildRecoveryRecommendationLine,
+  buildTodayChoiceRecommendationLine,
   inferCompletedChoice,
   modalityLabelForChoice,
   resolveRcvFeelForRecoveryHint,
+  resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
   shouldRecommendRestChoice,
   type TodayChoiceKind,
@@ -164,7 +165,12 @@ export default function MovementTodayHero({
     ),
   );
   const restRecommended = shouldRecommendRestChoice(recovery);
-  const recommendationLine = buildRecoveryRecommendationLine(recovery);
+  const recommendedKind = resolveRecommendedTodayChoiceKind(rcvFeelForHint, recovery);
+  const recommendationLine = buildTodayChoiceRecommendationLine(
+    recommendedKind,
+    recovery,
+    rcvFeelForHint,
+  );
   const medicalSafetyLine = buildMedicalSafetyLine(recovery);
   const checkinCta = buildMovementCheckinCta({
     rcvFeelAt: model.movementRcvFeelAt,
@@ -241,6 +247,7 @@ export default function MovementTodayHero({
       has_active_habit: Boolean(model.activeHabit),
       priority: model.priority.id,
       rest_recommended: restRecommended,
+      recommended_choice: recommendedKind ?? "none",
       surface: SURFACE,
       user_chosen: model.priorityIsUserChosen,
     });
@@ -251,6 +258,7 @@ export default function MovementTodayHero({
     model.priority.id,
     model.priorityIsUserChosen,
     restRecommended,
+    recommendedKind,
   ]);
 
   const followUp = buildVandaagFollowUp("beweging");
@@ -579,7 +587,7 @@ export default function MovementTodayHero({
             <ChoiceCard
               key={option.kind}
               option={option}
-              recommended={restRecommended && option.kind === "herstel"}
+              recommended={recommendedKind === option.kind}
               onSelect={selectChoice}
             />
           ))}
