@@ -3171,7 +3171,7 @@ const KompasHome = ({
   initialKompasView,
   kompasResetSignal: _kompasResetSignal,
   prefUpdatedAt: _prefUpdatedAt,
-  onPrefUpdated: _onPrefUpdated,
+  onPrefUpdated,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
@@ -3181,6 +3181,7 @@ const KompasHome = ({
     return initialKompasView ?? null;
   });
   const reminderShownRef = useRef(false);
+  const [makePriorityBusy, setMakePriorityBusy] = useState(false);
   const showRemeasureReminder =
     Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
   const nutritionLogCompleted = useMemo(
@@ -3260,6 +3261,31 @@ const KompasHome = ({
     setKompasDomain(toDomain);
   };
 
+  const makeBewegingPriority = async () => {
+    if (makePriorityBusy) {
+      return;
+    }
+    setMakePriorityBusy(true);
+    try {
+      const pref = await postPrioritySelection({
+        pillarId: "beweging",
+        source: "user_selected",
+        surface: "kompas_beweging",
+        timeBucket: currentModel.timeBucket ?? null,
+        scheduledTime: currentModel.scheduledTime ?? null,
+      });
+      onPrefUpdated(pref);
+      trackEvent("dashboard_priority_selected", {
+        pillar_id: "beweging",
+        source: "user_selected",
+        surface: "kompas_beweging",
+      });
+      clarityTag("dashboard_priority", "beweging");
+    } finally {
+      setMakePriorityBusy(false);
+    }
+  };
+
   const withDomainTopNav = (content: ReactElement) =>
     domainView ? (
       <div className="-mt-0.5 flex flex-col gap-3.5">
@@ -3268,7 +3294,7 @@ const KompasHome = ({
           onBack={handleDomainBack}
           onSwitch={handleDomainSwitch}
         />
-        {isInterventionDomain(domainView) ? (
+        {isInterventionDomain(domainView) && domainView !== "beweging" ? (
           <DomainTodayStrip
             model={currentModel}
             domain={domainView}
@@ -3282,11 +3308,28 @@ const KompasHome = ({
     );
 
   if (domainView === "beweging") {
-    return withDomainTopNav(
-      <BewegingScreen
-        model={currentModel}
-        nutritionLogCompleted={nutritionLogCompleted}
-      />,
+    // Beweging = referentie-cockpit: breekt op desktop uit de smalle
+    // dashboard-kolom (max 600px) naar de volle contentbreedte. Mobiel
+    // ongewijzigd (util werkt alleen ≥lg). Eigen wrapper i.p.v.
+    // withDomainTopNav omdat de generieke DomainTodayStrip hier vervalt.
+    return (
+      <div className="ps-cockpit-breakout -mt-0.5 flex flex-col gap-3.5">
+        <DomainTopNav
+          activeDomain="beweging"
+          onBack={handleDomainBack}
+          onSwitch={handleDomainSwitch}
+        />
+        <BewegingScreen
+          model={currentModel}
+          slot={todaySlot}
+          nutritionLogCompleted={nutritionLogCompleted}
+          onGoAgenda={onGoAgenda}
+          onMakePriority={() => void makeBewegingPriority()}
+          makePriorityBusy={makePriorityBusy}
+          onRemeasure={onRemeasure}
+          remeasure={data?.remeasure ?? null}
+        />
+      </div>
     );
   }
   if (domainView === "stress") {

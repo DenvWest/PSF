@@ -124,6 +124,19 @@ h6 {
   font-family: var(--font-heading-stack);
 }
 
+/* ── Cockpit breakout ───────────────────────────────────────────
+   Laat een blok binnen de smalle dashboard-kolom (max 600px) op
+   desktop uitbreken naar de volle contentbreedte (max-w-7xl = 80rem),
+   gecentreerd en met veilige gutters. Blijft binnen 100vw, dus de
+   `overflow-x: hidden` op <html> clipt nooit; op mobiel geen effect. */
+@media (min-width: 1024px) {
+  .ps-cockpit-breakout {
+    width: min(80rem, 100vw - 3rem);
+    margin-left: calc((100% - min(80rem, 100vw - 3rem)) / 2);
+    margin-right: calc((100% - min(80rem, 100vw - 3rem)) / 2);
+  }
+}
+
 /* ── Display titles (same family as body; size via components) ─── */
 
 .ps-display {
