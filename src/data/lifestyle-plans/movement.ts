@@ -35,8 +35,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
       steps: [
         {
           id: "mov-thuis-basisoefening",
-          title:
-            "Kies één kracht-oefening thuis — kniebuigingen, opdrukken tegen het aanrecht, of opstaan uit een stoel zonder je handen.",
+          title: "Eén krachtoefening thuis: kniebuiging, opdrukken of opstaan uit een stoel",
           rationale: {
             body:
               "Eén echte krachtprikkel per week is beter dan een perfect schema dat je niet volhoudt. " +
@@ -52,12 +51,11 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-kracht-onderhoud-week",
-          title:
-            "Plan deze week één krachtsessie met squat, push en pull — korter dan gewoon, techniek scherp.",
+          title: "Eén krachtsessie: squat, push, pull",
           rationale: {
             body:
               "Je traint al kracht — winst zit nu vaak in consistentie en herstel, niet in meer volume. " +
-              "Eén bewuste sessie houdt het ritme scherp zonder je lichaam te overbelasten.",
+              "Eén bewuste sessie houdt het ritme scherp: korter dan gewoon, techniek scherp, zonder je lichaam te overbelasten.",
           },
           showWhen: { type: "answerAtLeast", question: "MOV_STR", value: 3 },
           link: {
@@ -69,7 +67,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-rustdag-na-inspanning",
-          title: "Plan na een zware dag een rustdag of lichte wandeling.",
+          title: "Rustdag of lichte wandeling",
           rationale: {
             body:
               "Herstel is waar je sterker wordt — niet tijdens de training. Een geplande rustdag voorkomt dat je te veel volume stapelt.",
@@ -78,7 +76,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-trap-of-wandeling",
-          title: "Neem vandaag de trap in plaats van de lift — of loop 20 minuten stevig.",
+          title: "Neem de trap of loop 20 min stevig",
           rationale: {
             body:
               "Conditie en kracht vullen elkaar aan. Een korte stevige wandeling of extra trap telt mee, ook zonder sportschool.",
@@ -93,11 +91,10 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-conditie-onderhoud-week",
-          title:
-            "Plan 2× deze week matig intensief bewegen — fietsen, wandelen of sport waarbij praten nog lukt.",
+          title: "2× matig intensief bewegen",
           rationale: {
             body:
-              "Je conditie staat al redelijk op peil. Twee bewuste sessies houden dat niveau vast zonder dat je meteen extra volume hoeft te stapelen.",
+              "Je conditie staat al redelijk op peil. Twee bewuste sessies — fietsen, wandelen of sport waarbij praten nog lukt — houden dat niveau vast zonder dat je meteen extra volume hoeft te stapelen.",
           },
           showWhen: { type: "answerAtLeast", question: "MOV_CARD", value: 3 },
           link: {
@@ -121,11 +118,10 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
       steps: [
         {
           id: "mov-full-body-2x",
-          title:
-            "Train 2× per week full-body: squat/goblet, push, pull en hip hinge — 2–3 sets × 8–12 reps.",
+          title: "2× per week full-body kracht",
           rationale: {
             body:
-              "Twee korte krachtsessies per week zijn voor veel mannen 40+ een haalbaar startpunt. " +
+              "Twee korte krachtsessies per week zijn voor veel mannen 40+ een haalbaar startpunt: squat/goblet, push, pull en hip hinge — 2–3 sets × 8–12 reps. " +
               "Techniek eerst, zwaarte daarna — rust 48–72 uur tussen krachtdagen.",
           },
           showWhen: { type: "answerAtMost", question: "MOV_STR", value: 2 },
@@ -138,8 +134,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-kracht-consistentie",
-          title:
-            "Houd 2× per week full-body vol — noteer of je binnen 48–72 uur hersteld voelt.",
+          title: "Houd 2× per week full-body vol",
           rationale: {
             body:
               "Je traint al structureel kracht. Consistentie en herstel zijn nu belangrijker dan extra dagen. " +
@@ -155,8 +150,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-conditie-zone2",
-          title:
-            "Loop of fiets 2× deze week 30 minuten matig intensief — praten lukt, zingen niet.",
+          title: "2× 30 min matig intensief (zone 2)",
           rationale: {
             body:
               "Zone 2 (matig intensief) bouwt conditie op zonder je herstel te slopen. " +
@@ -172,8 +166,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-conditie-interval-lite",
-          title:
-            "Voeg tijdens één wandeling 3× 1 minuut stevig doorstappen toe — daarna rustig verder.",
+          title: "3× 1 min stevig doorstappen tijdens je wandeling",
           rationale: {
             body:
               "Je conditie is redelijk — korte stevige stukken geven een extra prikkel zonder een heel intervalschema. " +
@@ -184,7 +177,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-training-log",
-          title: "Noteer 7 dagen: training, slaap en zwaarte na inspanning.",
+          title: "Log 7 dagen: training, slaap, zwaarte",
           rationale: {
             body:
               "Belasting en herstel loggen maakt patronen zichtbaar wanneer je te veel of te weinig doet — vóór je extra supplementen stapelt.",
@@ -193,7 +186,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-eiwit-koppeling",
-          title: "Check of je eiwit bij elke maaltijd zit — kracht zonder eiwit is half werk.",
+          title: "Eiwit bij elke maaltijd",
           rationale: {
             body:
               "Spierbehoud vraagt om eiwit én beweging. Als je voeding achterblijft, levert training minder op — eerst tafel, dan potje.",
@@ -208,8 +201,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-creatine-vergelijk",
-          title:
-            "Vergelijk creatine als aanvulling bij structurele krachttraining.",
+          title: "Vergelijk creatine als aanvulling",
           rationale: {
             body:
               "Je antwoorden tonen signalen rond kracht en herstel. Creatine wordt veel besproken bij krachttraining — " +
@@ -237,8 +229,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
       steps: [
         {
           id: "mov-volume-opbouwen",
-          title:
-            "Voeg een derde krachtdag toe óf verhoog volume op twee dagen — niet beide tegelijk.",
+          title: "Derde krachtdag óf meer volume — niet beide",
           rationale: {
             body:
               "Meer volume is niet automatisch beter. Eén variabele tegelijk aanpassen houdt herstel haalbaar — " +
@@ -249,8 +240,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-weekelijkse-check-in",
-          title:
-            "Evalueer elke zondag: hoeveel kracht- en conditiesessies deed je deze week?",
+          title: "Zondag: tel je kracht- en conditiesessies",
           rationale: {
             body:
               "Eén korte check per week houdt je ritme scherp. Geen dagboek nodig — tel alleen of je op koers bent.",
@@ -264,7 +254,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-her-intake",
-          title: "Doe na 8–12 weken opnieuw de intake om je voortgang te meten.",
+          title: "Herhaal na 8–12 weken de intake",
           rationale: {
             body:
               "Je lichaam verandert; je antwoorden ook. Een her-intake laat zien wat beter gaat en waar je focus naartoe verschuift.",
@@ -278,7 +268,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-gids-download",
-          title: "Ontvang het volledige beweging-stappenplan per e-mail.",
+          title: "Ontvang het volledige stappenplan per e-mail",
           rationale: {
             body:
               "Alles over kracht thuis, herstel en supplementen in één overzicht — handig om naast dit plan te bewaren.",

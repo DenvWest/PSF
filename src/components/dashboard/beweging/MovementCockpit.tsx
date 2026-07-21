@@ -73,7 +73,7 @@ export default function MovementCockpit({
         </div>
 
         {/* WAAR JE STAAT — echte beweegscore + narratieve Future You-regel */}
-        <div className="lg:col-start-1 lg:row-start-1 lg:row-span-4">
+        <div className="lg:col-start-1 lg:row-start-1">
           <CockpitTile
             eyebrow="Waar je staat"
             ariaLabel="Waar je staat"
@@ -137,8 +137,8 @@ export default function MovementCockpit({
           </CockpitTile>
         </div>
 
-        {/* JE TREND — echte leefstijllijn (mobiel ná score, desktop onder route) */}
-        <div className="lg:col-start-2 lg:row-start-3">
+        {/* JE TREND — echte leefstijllijn (mobiel ná score, desktop links onder score) */}
+        <div className="lg:col-start-1 lg:row-start-2">
           <CockpitTile
             eyebrow="Je trend"
             ariaLabel="Je trend"
@@ -176,7 +176,7 @@ export default function MovementCockpit({
         </div>
 
         {/* JE VOLGENDE MEETMOMENT — forward-pointer */}
-        <div className="lg:col-start-2 lg:row-start-4">
+        <div className="lg:col-start-2 lg:row-start-3">
           <CockpitTile eyebrow="Je volgende meetmoment" ariaLabel="Je volgende meetmoment">
             <p className="mt-2 font-serif text-[17px] leading-snug text-[#F1EFE8] text-pretty">
               {remeasure ? remeasureCopy(remeasure.daysUntil) : "Blijf even bouwen — het meetmoment komt vanzelf."}

@@ -3,23 +3,41 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
+import { PREMIUM_BEGELEIDING_HREF } from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
+import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
 import { clarityTag } from "@/lib/clarity";
+import { setCachedDailyLog } from "@/lib/daily-log-client";
 import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import {
   buildMovementRecoveryHint,
   buildMovementRecoveryInput,
+  REST_DAY_STEP_ID,
 } from "@/lib/movement-recovery-hint";
 import { useDailyActionLog } from "@/lib/use-daily-action-log";
 import {
   buildVandaagFollowUp,
+  firstSentence,
   getVandaagContextLine,
 } from "@/lib/vandaag-card-links";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { DashboardModel } from "@/types/dashboard";
+import type { PlanStep } from "@/types/lifestyle-plan";
 
 const SURFACE = "kompas_beweging";
+
+const ALL_MOVEMENT_STEPS = movementPlanTemplate.phases.flatMap((phase) => phase.steps);
+
+const MODALITY_TAGS = ["kracht", "conditie", "herstel"] as const;
+
+const MODALITY_LABEL: Record<(typeof MODALITY_TAGS)[number], string> = {
+  kracht: "Kracht",
+  conditie: "Conditie",
+  herstel: "Herstel",
+};
+
+type StepAlternativeChoice = "kies_anders" | "rust" | "hulp" | "geen_tijd";
 
 type MovementTodayHeroProps = {
   model: DashboardModel;
@@ -29,6 +47,41 @@ type MovementTodayHeroProps = {
   makePriorityBusy: boolean;
 };
 
+function findMovementStep(stepId: string | null | undefined): PlanStep | undefined {
+  if (!stepId) {
+    return undefined;
+  }
+  return ALL_MOVEMENT_STEPS.find((step) => step.id === stepId);
+}
+
+function modalityLabel(
+  stepId: string | null,
+  recoveryOverride: boolean,
+): string | null {
+  if (recoveryOverride) {
+    return "Herstel";
+  }
+  const step = findMovementStep(stepId);
+  if (!step?.tags) {
+    return null;
+  }
+  for (const tag of MODALITY_TAGS) {
+    if (step.tags.includes(tag)) {
+      return MODALITY_LABEL[tag];
+    }
+  }
+  return null;
+}
+
+function trackStepAlternative(choice: StepAlternativeChoice): void {
+  trackEvent("dashboard_vandaag_step_alternative", {
+    choice,
+    domain: "beweging",
+    surface: SURFACE,
+  });
+  clarityTag("dashboard_kompas_beweging", `step_alternative_${choice}`);
+}
+
 export default function MovementTodayHero({
   model,
   slot,
@@ -37,7 +90,9 @@ export default function MovementTodayHero({
   makePriorityBusy,
 }: MovementTodayHeroProps) {
   const shownRef = useRef(false);
-  const [noTimeOpen, setNoTimeOpen] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const [restLogged, setRestLogged] = useState(false);
+  const [restBusy, setRestBusy] = useState(false);
 
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hidden = slot ? isPlanStepHidden(model, slot) : true;
@@ -47,10 +102,10 @@ export default function MovementTodayHero({
   const recovery = buildMovementRecoveryHint(
     buildMovementRecoveryInput(model.domainScores, model.answers ?? {}),
   );
-  const recoveryNote =
-    recovery && (recovery.level === "rest" || recovery.level === "medical")
-      ? recovery.body
-      : null;
+  const recoveryOverride =
+    recovery != null && (recovery.level === "rest" || recovery.level === "medical");
+
+  const restDayStep = findMovementStep(REST_DAY_STEP_ID);
 
   const { done, loaded, busy, toggle } = useDailyActionLog({
     domain: "beweging",
@@ -68,15 +123,65 @@ export default function MovementTodayHero({
     trackEvent("dashboard_vandaag_card_shown", {
       has_active_habit: Boolean(model.activeHabit),
       priority: model.priority.id,
+      recovery_override: recoveryOverride,
       surface: SURFACE,
       user_chosen: model.priorityIsUserChosen,
     });
     clarityTag("dashboard_kompas_beweging", "hero_shown");
-  }, [model.activeHabit, model.priority.id, model.priorityIsUserChosen]);
+  }, [
+    model.activeHabit,
+    model.priority.id,
+    model.priorityIsUserChosen,
+    recoveryOverride,
+  ]);
 
   const followUp = buildVandaagFollowUp("beweging");
-  const supportingLine =
+  const rawSupportingLine =
     slot?.rationale ?? getVandaagContextLine(PILLAR.beweging, model.activeHabit);
+
+  const displayTitle = recoveryOverride
+    ? (restDayStep?.title ?? "Rustdag of lichte wandeling")
+    : slot?.title;
+
+  const displaySupportingLine = recoveryOverride
+    ? recovery?.showMedicalNote
+      ? recovery.body
+      : firstSentence(recovery?.body ?? "")
+    : rawSupportingLine
+      ? firstSentence(rawSupportingLine)
+      : null;
+
+  const eyebrowModality = modalityLabel(actionKey, recoveryOverride);
+  const eyebrow = eyebrowModality ? `Vandaag · ${eyebrowModality}` : "Vandaag";
+
+  const chooseRest = async () => {
+    if (restBusy || restLogged) {
+      return;
+    }
+    trackStepAlternative("rust");
+    setRestBusy(true);
+    try {
+      const response = await fetch("/api/account/daily-log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          domain: "beweging",
+          actionKey: REST_DAY_STEP_ID,
+          done: true,
+        }),
+      });
+      if (!response.ok) {
+        return;
+      }
+      const state = (await response.json()) as { keys: string[]; streak: number };
+      setCachedDailyLog("beweging", state);
+      setRestLogged(true);
+      setOptionsOpen(false);
+    } finally {
+      setRestBusy(false);
+    }
+  };
 
   // Doorverwijs-modus: beweging is vandaag niet je dagstap → geen tweede afvink,
   // wel de "maak dit je prioriteit"-CTA (day-model blijft de ene dag-waarheid).
@@ -132,20 +237,14 @@ export default function MovementTodayHero({
       />
       <div className="relative">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
-          Vandaag{slot?.title ? " · je stap" : ""}
+          {eyebrow}
         </p>
         <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
-          {slot?.title}
+          {displayTitle}
         </h3>
-        {supportingLine ? (
+        {displaySupportingLine ? (
           <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-            {supportingLine}
-          </p>
-        ) : null}
-
-        {recoveryNote ? (
-          <p className="mt-3 rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-[13px] leading-relaxed text-[#E7EDE8] text-pretty">
-            {recoveryNote}
+            {displaySupportingLine}
           </p>
         ) : null}
 
@@ -174,31 +273,63 @@ export default function MovementTodayHero({
           <p className="mt-3 text-center text-[13px] text-[#9FB0A6]">
             Morgen staat hier je volgende stap.
           </p>
+        ) : restLogged ? (
+          <p className="mt-3 text-center text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+            Genoteerd als rustdag — morgen staat je volgende stap klaar.
+          </p>
         ) : (
-          <button
-            type="button"
-            onClick={() => setNoTimeOpen((open) => !open)}
-            aria-expanded={noTimeOpen}
-            className="mt-3 w-full cursor-pointer border-none bg-transparent p-0 text-center text-[13px] font-medium text-[#9FB0A6]"
-          >
-            Geen tijd vandaag?
-          </button>
-        )}
-
-        {noTimeOpen && !done ? (
-          <p className="mt-2 rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-            Drukke dag? Doe alleen de eerste set — dat telt volledig mee. Of
-            verplaats ’m naar vanavond via{" "}
+          <>
             <button
               type="button"
-              onClick={onGoAgenda}
-              className="cursor-pointer border-none bg-transparent p-0 font-semibold text-[color:var(--ac)] underline underline-offset-2"
+              onClick={() => {
+                setOptionsOpen((open) => {
+                  const next = !open;
+                  if (next) {
+                    trackStepAlternative("geen_tijd");
+                  }
+                  return next;
+                });
+              }}
+              aria-expanded={optionsOpen}
+              className="mt-3 w-full cursor-pointer border-none bg-transparent p-0 text-center text-[13px] font-medium text-[#9FB0A6]"
             >
-              Mijn Dag
+              Past deze stap niet vandaag?
             </button>
-            .
-          </p>
-        ) : null}
+
+            {optionsOpen ? (
+              <div className="mt-2 flex flex-col gap-1 rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackStepAlternative("kies_anders");
+                    onGoAgenda();
+                  }}
+                  className="cursor-pointer rounded-lg border-none bg-transparent px-2 py-2 text-left text-[13px] font-medium text-[#E7EDE8]"
+                >
+                  Kies iets anders
+                </button>
+                <p className="px-2 py-1 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
+                  Geen tijd? Doe alleen de eerste set — dat telt volledig mee.
+                </p>
+                <button
+                  type="button"
+                  disabled={restBusy}
+                  onClick={() => void chooseRest()}
+                  className="cursor-pointer rounded-lg border-none bg-transparent px-2 py-2 text-left text-[13px] font-medium text-[#E7EDE8] disabled:opacity-60"
+                >
+                  Vandaag even niet — kies rust
+                </button>
+                <Link
+                  href={PREMIUM_BEGELEIDING_HREF}
+                  onClick={() => trackStepAlternative("hulp")}
+                  className="rounded-lg px-2 py-2 text-[13px] font-medium text-[#E7EDE8] no-underline"
+                >
+                  Meer hulp nodig?
+                </Link>
+              </div>
+            ) : null}
+          </>
+        )}
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
           {slot ? (
