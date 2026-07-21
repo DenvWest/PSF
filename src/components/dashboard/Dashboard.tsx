@@ -2644,6 +2644,44 @@ const KompasDomainRow = ({
   );
 };
 
+const KompasGroupLabel = ({ label }: { label: string }) => (
+  <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
+    {label}
+  </span>
+);
+
+function formatDriverLabels(labels: string[]): string {
+  const lower = labels.map((entry) => entry.toLowerCase());
+  if (lower.length <= 1) {
+    return lower.join("");
+  }
+  return `${lower.slice(0, -1).join(", ")} en ${lower[lower.length - 1]}`;
+}
+
+const KompasReadoutRow = ({
+  label,
+  driverLabels,
+}: {
+  label: string;
+  driverLabels: string[];
+}) => (
+  <div className="w-full rounded-[18px] border border-[#ebe7e2] bg-[#faf9f7] p-3.5">
+    <div className="flex items-center justify-between gap-2">
+      <span className="text-base text-[#57534e]" style={{ fontFamily: "var(--f-serif)" }}>
+        {label}
+      </span>
+      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
+        Rapport
+      </span>
+    </div>
+    {driverLabels.length > 0 ? (
+      <p className="mt-1.5 text-[13px] leading-snug text-[#78716c] text-pretty">
+        Volgt uit je {formatDriverLabels(driverLabels)}.
+      </p>
+    ) : null}
+  </div>
+);
+
 const DomainSoonScreen = ({
   model,
   domain,
@@ -3252,6 +3290,14 @@ const KompasHome = ({
     );
   }
 
+  const priorityRow = currentModel.ladder.find(
+    (pillar) => pillar.id === currentModel.priority.id,
+  );
+  const aandachtRows = currentModel.ladder.filter(
+    (pillar) => !isReadoutDomain(pillar.id) && pillar.id !== currentModel.priority.id,
+  );
+  const rapportRows = currentModel.ladder.filter((pillar) => isReadoutDomain(pillar.id));
+
   return (
     <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
       {showRemeasureReminder ? (
@@ -3284,31 +3330,67 @@ const KompasHome = ({
         </KompasLooseCard>
       ) : null}
       <KompasLooseCard>
-        <div className="flex items-center justify-between gap-2">
-          <h2
-            className="m-0 text-[18px] leading-tight text-[#1c1917]"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            Je domeinen
-          </h2>
-          <span className="shrink-0 text-xs text-[#78716c]">zwakste bovenaan</span>
-        </div>
-        <div className="mt-3 flex flex-col gap-2.5">
-          {currentModel.ladder.map((pillar) => {
-            const score = currentModel.scores[pillar.id] ?? 0;
-            return (
+        <h2
+          className="m-0 text-[18px] leading-tight text-[#1c1917]"
+          style={{ fontFamily: "var(--f-serif)" }}
+        >
+          Je domeinen
+        </h2>
+
+        {priorityRow ? (
+          <div className="mt-3">
+            <KompasGroupLabel label="Je prioriteit" />
+            <div className="mt-2 flex flex-col gap-2.5">
               <KompasDomainRow
-                key={pillar.id}
-                label={pillar.label}
-                score={score}
-                color={pillar.color}
-                isPriority={pillar.id === currentModel.priority.id}
-                isReadout={isReadoutDomain(pillar.id)}
-                onClick={() => openDomain(pillar.id)}
+                label={priorityRow.label}
+                score={currentModel.scores[priorityRow.id] ?? 0}
+                color={priorityRow.color}
+                isPriority
+                onClick={() => openDomain(priorityRow.id)}
               />
-            );
-          })}
-        </div>
+            </div>
+          </div>
+        ) : null}
+
+        {aandachtRows.length > 0 ? (
+          <div className="mt-4">
+            <div className="flex items-center justify-between gap-2">
+              <KompasGroupLabel label="Aandacht" />
+              <span className="shrink-0 text-[11px] text-[#a8a29e]">zwakste bovenaan</span>
+            </div>
+            <div className="mt-2 flex flex-col gap-2.5">
+              {aandachtRows.map((pillar) => (
+                <KompasDomainRow
+                  key={pillar.id}
+                  label={pillar.label}
+                  score={currentModel.scores[pillar.id] ?? 0}
+                  color={pillar.color}
+                  onClick={() => openDomain(pillar.id)}
+                />
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {rapportRows.length > 0 ? (
+          <div className="mt-4">
+            <KompasGroupLabel label="Rapport · volgt uit je gedrag" />
+            <div className="mt-2 flex flex-col gap-2.5">
+              {rapportRows.map((pillar) => {
+                const driverLabels = isReadoutDomain(pillar.id)
+                  ? getReadoutPresentation(pillar.id).driverLabels
+                  : [];
+                return (
+                  <KompasReadoutRow
+                    key={pillar.id}
+                    label={pillar.label}
+                    driverLabels={driverLabels}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
       </KompasLooseCard>
     </section>
   );
