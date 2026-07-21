@@ -12,6 +12,7 @@ import {
   getCachedDailyLog,
   setCachedDailyLog,
 } from "@/lib/daily-log-client";
+import { resolveActionKey } from "@/lib/day-model";
 import { clarityTag } from "@/lib/clarity";
 import {
   trackEvent,
@@ -64,7 +65,7 @@ export default function AgendaTodayHero({
   const habit = model.activeHabit;
   const domain = slot.domain;
   const pillar = PILLAR[domain];
-  const actionKey = habit?.stepId ?? slot.stepId;
+  const actionKey = resolveActionKey(model, slot);
   const cachedDailyLog = isToday && actionKey ? getCachedDailyLog(domain) : null;
 
   const [done, setDone] = useState(false);

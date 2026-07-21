@@ -19,6 +19,7 @@ import {
   deriveDefaultTimeBucket,
 } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
+import { isPlanStepHidden } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackEvent } from "@/lib/ga4";
 import {
   postDismissPlanStep,
@@ -70,25 +71,23 @@ export default function AgendaScreen({
   const todayTimeBucket = model.timeBucket ?? deriveDefaultTimeBucket();
   const weekStart = slots[0]?.date ?? todaySlot.date;
   const weekEnd = slots[slots.length - 1]?.date ?? todaySlot.date;
+  const planStepHidden = isPlanStepHidden(model, selectedSlot);
   const hiddenPlanStep = useMemo(() => {
-    const isDayDismissed = model.planStepDismissedDate === selectedSlot.date;
-    const isAllHidden = model.planStepsHidden;
-    if (!isDayDismissed && !isAllHidden) {
+    if (!planStepHidden) {
       return null;
     }
     return {
       title: model.activeHabit?.title ?? selectedSlot.title,
       domainLabel: model.priority.label,
       color: model.priority.color,
-      reason: isAllHidden ? ("all" as const) : ("day" as const),
+      reason: model.planStepsHidden ? ("all" as const) : ("day" as const),
     };
   }, [
+    planStepHidden,
     model.activeHabit?.title,
-    model.planStepDismissedDate,
     model.planStepsHidden,
     model.priority.color,
     model.priority.label,
-    selectedSlot.date,
     selectedSlot.title,
   ]);
 

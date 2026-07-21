@@ -1,10 +1,6 @@
-import {
-  deriveDefaultScheduledTime,
-  deriveDefaultTimeBucket,
-  deriveSuggestedTimeBucket,
-} from "@/lib/account-priority-pref";
 import { isAgendaCategoryId } from "@/data/agenda/categories";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
+import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import type {
   AgendaBlockRecord,
   AgendaCategoryId,
@@ -104,24 +100,6 @@ function domainToCategoryId(domain: PillarId): AgendaCategoryId {
   return isAgendaCategoryId(domain) ? domain : "persoonlijke_routine";
 }
 
-function resolveScheduledTime(model: DashboardModel, slot: WeekDaySlot): string {
-  if (slot.isToday && model.scheduledTime) {
-    return model.scheduledTime;
-  }
-  const bucket = slot.isToday
-    ? (model.timeBucket ?? deriveDefaultTimeBucket())
-    : deriveSuggestedTimeBucket(slot.domain);
-  return deriveDefaultScheduledTime(bucket);
-}
-
-function isPlanStepHidden(model: DashboardModel, slot: WeekDaySlot): boolean {
-  return (
-    model.planStepsHidden ||
-    (model.planStepDismissedDate != null &&
-      model.planStepDismissedDate === slot.date)
-  );
-}
-
 function buildAnalysisBlock(model: DashboardModel, slot: WeekDaySlot): TimelineBlock {
   const startTime = resolveScheduledTime(model, slot);
   const startMinutes = timeToMinutes(startTime);
@@ -137,6 +115,9 @@ function buildAnalysisBlock(model: DashboardModel, slot: WeekDaySlot): TimelineB
     title: slot.title,
     startTime,
     endTime: minutesToTime(endMinutes),
+    // Completie van de plan-stap leeft in daily_action_log (aparte route,
+    // client-side gelezen door AgendaTodayHero); hier is geen synchroon
+    // signaal beschikbaar en geen UI-pad leest dit veld voor analysis-blokken.
     done: false,
     source: "analysis",
     isEditable: slot.isToday,

@@ -1,16 +1,8 @@
-import { PILLAR } from "@/data/dashboard";
-import { getPlanTemplate } from "@/data/lifestyle-plans";
-import type { QuestionId } from "@/data/intake-questions";
+import { resolveDayContent } from "@/lib/day-model";
 import { isReadoutDomain } from "@/lib/domain-role";
-import {
-  buildPlanIntakeContext,
-  computeCurrentPhaseId,
-  selectVisibleSteps,
-} from "@/lib/lifestyle-plan-eval";
-import type { MeasuredPillarId } from "@/lib/primary-theme";
 import { buildVandaagOnderbouwingHref } from "@/lib/vandaag-card-links";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
-import type { PlanStep, PlanStepLink } from "@/types/lifestyle-plan";
+import type { PlanStepLink } from "@/types/lifestyle-plan";
 
 /**
  * Agenda week-preview (precursor). Tweakable week (swap, tijdvak, agenda_preferences)
@@ -20,13 +12,6 @@ import type { PlanStep, PlanStepLink } from "@/types/lifestyle-plan";
  */
 
 const APP_TIMEZONE = "Europe/Amsterdam";
-
-const PILLAR_TO_PLAN_DOMAIN: Partial<Record<PillarId, MeasuredPillarId>> = {
-  slaap: "sleep",
-  stress: "stress",
-  voeding: "nutrition",
-  beweging: "movement",
-};
 
 const DOMAIN_SLOT_PATTERN = [0, 0, 1, 2, 0, 1, 2] as const;
 const WEEKDAY_LABELS = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"] as const;
@@ -114,98 +99,6 @@ function domainForDayIndex(
   return topDomains[Math.min(ladderIndex, topDomains.length - 1)] ?? priorityId;
 }
 
-function resolvePlanStep(
-  pillarId: PillarId,
-  model: DashboardModel,
-  rotateIndex: number,
-): Pick<WeekDaySlot, "stepId" | "title" | "detail" | "rationale" | "planLink"> {
-  const pillar = PILLAR[pillarId];
-  const planDomain = PILLAR_TO_PLAN_DOMAIN[pillarId];
-  const template = planDomain ? getPlanTemplate(planDomain) : undefined;
-
-  if (!template || !planDomain || !model.answers) {
-    return {
-      stepId: `quickwin-${pillarId}`,
-      title: pillar.quickWin.title,
-      detail: pillar.quickWin.detail,
-      rationale: null,
-      planLink: null,
-    };
-  }
-
-  const normalizedAnswers = model.answers as Record<QuestionId, number>;
-  const ctx = buildPlanIntakeContext(
-    model.domainScores,
-    normalizedAnswers,
-    planDomain,
-  );
-  const phaseStepStates = Object.fromEntries(
-    Object.entries(model.planProgress?.steps ?? {}).map(([id, entry]) => [
-      id,
-      { state: entry.state },
-    ]),
-  );
-  const currentPhaseId =
-    model.planProgress?.currentPhaseId ??
-    computeCurrentPhaseId(template.phases, ctx, phaseStepStates);
-  const phase = template.phases.find((entry) => entry.id === currentPhaseId);
-
-  if (!phase) {
-    return {
-      stepId: `quickwin-${pillarId}`,
-      title: pillar.quickWin.title,
-      detail: pillar.quickWin.detail,
-      rationale: null,
-      planLink: null,
-    };
-  }
-
-  const visibleSteps = selectVisibleSteps(phase, ctx);
-  if (visibleSteps.length === 0) {
-    return {
-      stepId: `quickwin-${pillarId}`,
-      title: pillar.quickWin.title,
-      detail: pillar.quickWin.detail,
-      rationale: null,
-      planLink: null,
-    };
-  }
-
-  const step = visibleSteps[rotateIndex % visibleSteps.length] as PlanStep;
-  return {
-    stepId: step.id,
-    title: step.title,
-    detail: step.rationale?.body ?? null,
-    rationale: step.rationale?.body ?? null,
-    planLink: step.link ?? null,
-  };
-}
-
-function slotFromActiveHabit(
-  model: DashboardModel,
-  domain: PillarId,
-): Pick<WeekDaySlot, "stepId" | "title" | "detail" | "rationale" | "planLink"> {
-  const habit = model.activeHabit;
-  if (!habit) {
-    const pillar = PILLAR[domain];
-    return {
-      stepId: `quickwin-${domain}`,
-      title: pillar.quickWin.title,
-      detail: pillar.quickWin.detail,
-      rationale: null,
-      planLink: null,
-    };
-  }
-
-  return {
-    stepId: habit.stepId,
-    title: habit.title,
-    detail: habit.detail,
-    rationale: habit.detail,
-    planLink: null,
-  };
-}
-
 export function buildWeekSchedulePreview(
   model: DashboardModel,
   anchorDate?: string,
@@ -220,9 +113,7 @@ export function buildWeekSchedulePreview(
     const isToday = date === today;
     const dayOffset = dayIndex - (todayIndex >= 0 ? todayIndex : 0);
     const domain = domainForDayIndex(dayIndex, todayIndex, priorityId, topDomains);
-    const step = isToday
-      ? slotFromActiveHabit(model, domain)
-      : resolvePlanStep(domain, model, dayIndex);
+    const step = resolveDayContent(model, domain, isToday, dayIndex);
 
     return {
       date,
