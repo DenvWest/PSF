@@ -6,6 +6,7 @@ import { Sparkline } from "@/components/app/primitives";
 import MovementJourneyRail from "@/components/dashboard/beweging/MovementJourneyRail";
 import MovementStartChoice from "@/components/dashboard/beweging/MovementStartChoice";
 import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero";
+import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { PILLAR } from "@/data/dashboard";
@@ -236,6 +237,13 @@ export default function MovementCockpit({
               }
               onOpenPlan={onOpenPlan}
             />
+          </div>
+        ) : null}
+
+        {/* DEZE WEEK — ritme-readout uit daily_action_log */}
+        {!isPlanView ? (
+          <div className="lg:col-start-1 lg:row-start-3">
+            <MovementWeekRhythm />
           </div>
         ) : null}
 
