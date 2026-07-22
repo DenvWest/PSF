@@ -4202,7 +4202,11 @@ export default function Dashboard({
         >
           <div
             className={`mx-auto w-full ${
-              tab === "agenda" ? "max-w-[760px]" : "max-w-[720px]"
+              tab === "agenda"
+                ? "max-w-[760px]"
+                : viewedDomain === "beweging"
+                  ? "min-w-0 max-w-5xl"
+                  : "max-w-[720px]"
             }`}
           >
             {tabHeaderNode}

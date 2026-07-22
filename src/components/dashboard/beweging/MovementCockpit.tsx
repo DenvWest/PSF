@@ -97,7 +97,7 @@ export default function MovementCockpit({
           Score+Trend 2-up → Jouw route full-width → Deze week+Meetmoment 2-up. */}
       <div className="grid gap-3 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-4">
         {/* VANDAAG — verborgen op stappenplan-diepte (afvinken via tabbar) */}
-        <div className={`lg:col-span-2 lg:row-start-1 ${isPlanView ? "hidden" : ""}`}>
+        <div className={`lg:col-span-2 lg:col-start-1 lg:row-start-1 ${isPlanView ? "hidden" : ""}`}>
           {showStartChoice ? (
             <MovementStartChoice
               onSaved={(prefs) => {
@@ -207,7 +207,7 @@ export default function MovementCockpit({
         {/* JE TREND — echte leefstijllijn (mobiel ná score, desktop 2-up met score) */}
         <div
           className={
-            isPlanView ? "lg:col-span-2 lg:row-start-2" : "lg:col-start-2 lg:row-start-2"
+            isPlanView ? "lg:col-span-2 lg:col-start-1 lg:row-start-2" : "lg:col-start-2 lg:row-start-2"
           }
         >
           <CockpitTile
@@ -242,7 +242,7 @@ export default function MovementCockpit({
 
         {/* JOUW ROUTE — verborgen op stappenplan (fase-explorer staat in plan-body) */}
         {!isPlanView ? (
-          <div className="lg:col-span-2 lg:row-start-3">
+          <div className="lg:col-span-2 lg:col-start-1 lg:row-start-3">
             <MovementJourneyRail
               model={model}
               movementPrefs={movementPrefs}
@@ -264,7 +264,7 @@ export default function MovementCockpit({
         {/* JE VOLGENDE MEETMOMENT — forward-pointer */}
         <div
           className={
-            isPlanView ? "lg:col-span-2 lg:row-start-3" : "lg:col-start-2 lg:row-start-4"
+            isPlanView ? "lg:col-span-2 lg:col-start-1 lg:row-start-3" : "lg:col-start-2 lg:row-start-4"
           }
         >
           <CockpitTile eyebrow="Je volgende meetmoment" ariaLabel="Je volgende meetmoment">

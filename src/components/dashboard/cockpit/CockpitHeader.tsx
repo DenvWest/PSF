@@ -38,7 +38,7 @@ export default function CockpitHeader({
       {!domainNav ? (
         <nav
           aria-label="Broodkruimel"
-          className="hidden items-center gap-1.5 px-5 pt-2 text-[11px] text-[#7E8C82] sm:flex"
+          className="hidden items-center gap-1.5 px-4 pt-2.5 text-[11px] text-[#7E8C82] sm:flex sm:px-6"
         >
           <span className="text-[#9FB0A6]">Dashboard</span>
           <span aria-hidden className="opacity-50">
@@ -56,7 +56,7 @@ export default function CockpitHeader({
         </nav>
       ) : null}
 
-      <div className="flex items-center gap-3 px-4 pb-2 pt-2 sm:px-5 sm:pb-2.5">
+      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:px-6 sm:pb-3">
         <Link
           href="/"
           aria-label="Naar de website"
@@ -152,7 +152,7 @@ export default function CockpitHeader({
         </div>
       </div>
 
-      {domainNav ? <div className="px-4 pb-2">{domainNav}</div> : null}
+      {domainNav ? <div className="px-4 pb-3 sm:px-6">{domainNav}</div> : null}
     </header>
   );
 }
