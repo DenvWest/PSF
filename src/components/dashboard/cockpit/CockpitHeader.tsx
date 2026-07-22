@@ -35,24 +35,26 @@ export default function CockpitHeader({
 
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[rgba(12,19,21,0.86)] backdrop-blur-md">
-      <nav
-        aria-label="Broodkruimel"
-        className="hidden items-center gap-1.5 px-5 pt-2 text-[11px] text-[#7E8C82] sm:flex"
-      >
-        <span className="text-[#9FB0A6]">Dashboard</span>
-        <span aria-hidden className="opacity-50">
-          ›
-        </span>
-        <span className="text-[#9FB0A6]">Kompas</span>
-        {domainLabel ? (
-          <>
-            <span aria-hidden className="opacity-50">
-              ›
-            </span>
-            <span className="text-[#9FB0A6]">{domainLabel}</span>
-          </>
-        ) : null}
-      </nav>
+      {!domainNav ? (
+        <nav
+          aria-label="Broodkruimel"
+          className="hidden items-center gap-1.5 px-5 pt-2 text-[11px] text-[#7E8C82] sm:flex"
+        >
+          <span className="text-[#9FB0A6]">Dashboard</span>
+          <span aria-hidden className="opacity-50">
+            ›
+          </span>
+          <span className="text-[#9FB0A6]">Kompas</span>
+          {domainLabel ? (
+            <>
+              <span aria-hidden className="opacity-50">
+                ›
+              </span>
+              <span className="text-[#9FB0A6]">{domainLabel}</span>
+            </>
+          ) : null}
+        </nav>
+      ) : null}
 
       <div className="flex items-center gap-3 px-4 pb-2 pt-2 sm:px-5 sm:pb-2.5">
         <Link

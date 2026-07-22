@@ -26,7 +26,7 @@ import {
   DEEP_TOOL_LIGHT,
   DomainDeepTool,
 } from "@/components/dashboard/DomainDeepTool";
-import DomainTopNav from "@/components/dashboard/DomainTopNav";
+import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
 import KompasDepthStrip from "@/components/dashboard/KompasDepthStrip";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
@@ -204,6 +204,8 @@ type SharedSectionProps = {
   sleepFocus: SleepFocusKey | null;
   /** Meldt de live-geopende Kompas-domein aan de cockpit-shell (header/context volgen mee). */
   onDomainViewChange?: (domain: PillarId | null) => void;
+  /** Registreert back/switch-handlers voor sticky domainNav in cockpit-header. */
+  onDomainNavApi?: (api: DomainNavApi | null) => void;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -3186,6 +3188,7 @@ const KompasHome = ({
   prefUpdatedAt: _prefUpdatedAt,
   onPrefUpdated,
   onDomainViewChange,
+  onDomainNavApi,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
@@ -3222,6 +3225,11 @@ const KompasHome = ({
     onDomainViewChange?.(domainView);
   }, [domainView, onDomainViewChange]);
 
+  const domainNavHandlersRef = useRef({
+    onBack: () => {},
+    onSwitch: (_domain: PillarId) => {},
+  });
+
   useEffect(() => {
     const onPopState = () => {
       setDomainView(parseKompasFromUrl(window.location.href));
@@ -3245,24 +3253,73 @@ const KompasHome = ({
     onRemeasure();
   };
 
-  if (!currentModel) {
-    return null;
-  }
-
   const setKompasDomain = (domain: PillarId | null, view: KompasDeepView = "cockpit") => {
     setDomainView(domain);
     setDeepView(view);
     syncDashboardKompasDeepView(domain, view);
   };
 
+  const closeView = () => {
+    setKompasDomain(null, "cockpit");
+  };
+
+  const handleDomainBack = () => {
+    if (!domainView) {
+      return;
+    }
+    trackEvent("dashboard_kompas_domain_back_click", {
+      from_domain: domainView,
+      from_level: deepView === "stappenplan" ? "plan" : "cockpit",
+    });
+    clarityTag("dashboard_kompas_topnav", "back");
+    closeView();
+  };
+
+  const handleDomainSwitch = (toDomain: PillarId) => {
+    if (!domainView || toDomain === domainView) {
+      return;
+    }
+    trackEvent("dashboard_kompas_domain_switch_click", {
+      from_domain: domainView,
+      to_domain: toDomain,
+      surface: "top_nav",
+    });
+    clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
+    setKompasDomain(toDomain, "cockpit");
+  };
+
+  useEffect(() => {
+    domainNavHandlersRef.current = {
+      onBack: handleDomainBack,
+      onSwitch: handleDomainSwitch,
+    };
+  });
+
+  useEffect(() => {
+    if (!onDomainNavApi) {
+      return;
+    }
+    if (domainView && isCockpitShellEnabled()) {
+      onDomainNavApi({
+        onBack: () => domainNavHandlersRef.current.onBack(),
+        onSwitch: (domain) => domainNavHandlersRef.current.onSwitch(domain),
+      });
+    } else {
+      onDomainNavApi(null);
+    }
+    return () => {
+      onDomainNavApi(null);
+    };
+  }, [domainView, onDomainNavApi]);
+
+  if (!currentModel) {
+    return null;
+  }
+
   const openDomain = (domain: PillarId) => {
     trackEvent("dashboard_kompas_domain_open", { domain });
     clarityTag("dashboard_kompas_domain", domain);
     setKompasDomain(domain, "cockpit");
-  };
-
-  const closeView = () => {
-    setKompasDomain(null, "cockpit");
   };
 
   const openStappenplan = () => {
@@ -3297,31 +3354,6 @@ const KompasHome = ({
     closeView();
   };
 
-  const handleDomainBack = () => {
-    if (!domainView) {
-      return;
-    }
-    trackEvent("dashboard_kompas_domain_back_click", {
-      from_domain: domainView,
-      from_level: deepView === "stappenplan" ? "plan" : "cockpit",
-    });
-    clarityTag("dashboard_kompas_topnav", "back");
-    closeView();
-  };
-
-  const handleDomainSwitch = (toDomain: PillarId) => {
-    if (!domainView || toDomain === domainView) {
-      return;
-    }
-    trackEvent("dashboard_kompas_domain_switch_click", {
-      from_domain: domainView,
-      to_domain: toDomain,
-      surface: "top_nav",
-    });
-    clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
-    setKompasDomain(toDomain, "cockpit");
-  };
-
   const makeBewegingPriority = async () => {
     if (makePriorityBusy) {
       return;
@@ -3347,14 +3379,18 @@ const KompasHome = ({
     }
   };
 
+  const showDomainTopNavInContent = !isCockpitShellEnabled();
+
   const withDomainTopNav = (content: ReactElement) =>
     domainView ? (
       <div className="-mt-0.5 flex flex-col gap-3.5">
-        <DomainTopNav
-          activeDomain={domainView}
-          onBack={handleDomainBack}
-          onSwitch={handleDomainSwitch}
-        />
+        {showDomainTopNavInContent ? (
+          <DomainTopNav
+            activeDomain={domainView}
+            onBack={handleDomainBack}
+            onSwitch={handleDomainSwitch}
+          />
+        ) : null}
         {isInterventionDomain(domainView) && domainView !== "beweging" ? (
           <DomainTodayStrip
             model={currentModel}
@@ -3380,11 +3416,13 @@ const KompasHome = ({
     const breakoutClass = isCockpitShellEnabled() ? "" : "ps-cockpit-breakout ";
     return (
       <div className={`${breakoutClass}-mt-0.5 flex flex-col gap-3.5`}>
-        <DomainTopNav
-          activeDomain="beweging"
-          onBack={handleDomainBack}
-          onSwitch={handleDomainSwitch}
-        />
+        {showDomainTopNavInContent ? (
+          <DomainTopNav
+            activeDomain="beweging"
+            onBack={handleDomainBack}
+            onSwitch={handleDomainSwitch}
+          />
+        ) : null}
         {deepView === "stappenplan" ? (
           <KompasDepthStrip
             onKompas={handleBreadcrumbKompas}
@@ -3839,6 +3877,7 @@ export default function Dashboard({
   const [cockpitDomain, setCockpitDomain] = useState<PillarId | null>(
     initialKompasView ?? null,
   );
+  const [domainNavApi, setDomainNavApi] = useState<DomainNavApi | null>(null);
   const [priorityPrefOverride, setPriorityPrefOverride] = useState<
     AccountPriorityPrefData | null | undefined
   >(undefined);
@@ -4026,6 +4065,7 @@ export default function Dashboard({
     onPrefUpdated: setPriorityPrefOverride,
     sleepFocus,
     onDomainViewChange: setCockpitDomain,
+    onDomainNavApi: setDomainNavApi,
   };
 
   const surfaceClass =
@@ -4143,6 +4183,15 @@ export default function Dashboard({
           activeTab={tab}
           onSelectTab={selectTab}
           domain={viewedDomain}
+          domainNav={
+            viewedDomain && domainNavApi ? (
+              <DomainTopNav
+                activeDomain={viewedDomain}
+                onBack={domainNavApi.onBack}
+                onSwitch={domainNavApi.onSwitch}
+              />
+            ) : null
+          }
           onOpenSettings={() => router.push("/account")}
           onLogout={onLogout}
           firstName={data?.firstName ?? null}

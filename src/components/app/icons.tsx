@@ -199,6 +199,14 @@ export function ChevronRight(props: IconProps) {
   );
 }
 
+export function ChevronLeft(props: IconProps) {
+  return (
+    <I {...props}>
+      <path d="m15 18-6-6 6-6" />
+    </I>
+  );
+}
+
 export function Search(props: IconProps) {
   return (
     <I {...props}>
