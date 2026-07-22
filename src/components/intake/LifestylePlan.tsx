@@ -8,6 +8,7 @@ import {
   selectVisibleSteps,
 } from "@/lib/lifestyle-plan-eval";
 import { clarityTag } from "@/lib/clarity";
+import { getCachedDailyLog, setCachedDailyLog } from "@/lib/daily-log-client";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
 import {
@@ -300,6 +301,7 @@ function PlanPhaseSection({
   onLinkClick,
   onBridgeItemClick,
   onCrossDomainClick,
+  todayLoggedStepIds,
 }: {
   phase: PlanPhase;
   template: LifestylePlanTemplate;
@@ -322,7 +324,10 @@ function PlanPhaseSection({
   onLinkClick: (stepId: string, link: PlanStepLink, surface?: "step" | "nutrient_bridge") => void;
   onBridgeItemClick: (item: NutrientBridgeItem) => void;
   onCrossDomainClick: (pillarId: string) => void;
+  todayLoggedStepIds: ReadonlySet<string>;
 }) {
+  const resolveDisplayState = (stepId: string): PlanStepState =>
+    todayLoggedStepIds.has(stepId) ? "done" : getStepState(displayProgress, stepId);
   const readOnly = !isActive;
   const useWeekCategories =
     isMovementWeekPhase(phase.id, template.domain) && dailyRhythm !== null;
@@ -409,7 +414,7 @@ function PlanPhaseSection({
               nutrientBridgeItems={nutrientBridgeItems}
               recoveryHint={recoveryHint}
               readOnly={readOnly}
-              getStepState={(stepId) => getStepState(displayProgress, stepId)}
+              getStepState={resolveDisplayState}
               onBridgeItemClick={onBridgeItemClick}
               onLinkClick={(stepId, link) => onLinkClick(stepId, link, "step")}
               renderStepRow={(step, options) => (
@@ -417,9 +422,9 @@ function PlanPhaseSection({
                   key={step.id}
                   step={step}
                   phaseId={phase.id}
-                  state={getStepState(displayProgress, step.id)}
+                  state={resolveDisplayState(step.id)}
                   disabled={!sessionId || readOnly}
-                  readOnly={readOnly}
+                  readOnly={readOnly || todayLoggedStepIds.has(step.id)}
                   showRationale={options?.showRationale ?? false}
                   busy={busyStepId === step.id}
                   onToggleDone={onToggleDone}
@@ -435,9 +440,9 @@ function PlanPhaseSection({
                   key={step.id}
                   step={step}
                   phaseId={phase.id}
-                  state={getStepState(displayProgress, step.id)}
+                  state={resolveDisplayState(step.id)}
                   disabled={!sessionId || readOnly}
-                  readOnly={readOnly}
+                  readOnly={readOnly || todayLoggedStepIds.has(step.id)}
                   busy={busyStepId === step.id}
                   onToggleDone={onToggleDone}
                   onSkip={onSkip}
@@ -601,6 +606,14 @@ export default function LifestylePlan({
   const displayProgress = loadedKey === loadKey ? progress : null;
   const [busyStepId, setBusyStepId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const cachedDailyLog =
+    template.domain === "movement" ? getCachedDailyLog("beweging") : null;
+  const [fetchedLoggedStepIds, setFetchedLoggedStepIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const todayLoggedStepIds = cachedDailyLog
+    ? new Set(cachedDailyLog.keys)
+    : fetchedLoggedStepIds;
   const planViewedEmittedRef = useRef(false);
 
   const activePhaseIndex = useMemo(
@@ -707,6 +720,37 @@ export default function LifestylePlan({
       cancelled = true;
     };
   }, [loadKey, template.domain]);
+
+  useEffect(() => {
+    if (template.domain !== "movement") {
+      return;
+    }
+    if (getCachedDailyLog("beweging")) {
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await fetch(
+          `/api/account/daily-log?domain=${encodeURIComponent("beweging")}`,
+          { credentials: "include" },
+        );
+        if (!response.ok || cancelled) {
+          return;
+        }
+        const state = (await response.json()) as { keys: string[]; streak: number };
+        if (!cancelled) {
+          setCachedDailyLog("beweging", state);
+          setFetchedLoggedStepIds(new Set(state.keys));
+        }
+      } catch {
+        // Geen account-sessie (anonieme intake-user) is een normale, stille staat.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [template.domain]);
 
   useEffect(() => {
     if (loading || planViewedEmittedRef.current) {
@@ -861,7 +905,7 @@ export default function LifestylePlan({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
-              Jouw leefstijlplan
+              Jouw stappenplan
             </p>
             <h2 className="font-serif text-[22px] font-normal leading-tight text-intake-ink">
               {template.title}
@@ -923,6 +967,7 @@ export default function LifestylePlan({
               onLinkClick={handleLinkClick}
               onBridgeItemClick={handleBridgeItemClick}
               onCrossDomainClick={handleCrossDomainClick}
+              todayLoggedStepIds={todayLoggedStepIds}
             />
           );
         })}

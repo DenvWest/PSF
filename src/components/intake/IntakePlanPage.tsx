@@ -74,11 +74,11 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
 
   if (loading || !scores || !answers) {
     return (
-      <div className="mx-auto w-full max-w-[480px] px-6 pb-10 pt-3">
+      <div className="mx-auto w-full max-w-3xl px-6 pb-10 pt-3">
         <header className="mb-5 flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
-              Jouw leefstijlplan
+              Jouw stappenplan
             </p>
             <div className="h-7 w-48 animate-pulse rounded bg-white/5" aria-hidden />
           </div>
@@ -95,7 +95,7 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
   const secondaryTheme = getSecondaryTheme(scores, answers, primaryTheme);
 
   return (
-    <div className="mx-auto w-full max-w-[480px] px-6 pb-10 pt-3">
+    <div className="mx-auto w-full max-w-3xl px-6 pb-10 pt-3">
       <IntakeResultsReturnBanner />
       <LifestylePlan
         template={template}
