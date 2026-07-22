@@ -27,6 +27,7 @@ import {
   DomainDeepTool,
 } from "@/components/dashboard/DomainDeepTool";
 import DomainTopNav from "@/components/dashboard/DomainTopNav";
+import KompasDepthStrip from "@/components/dashboard/KompasDepthStrip";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
@@ -144,9 +145,12 @@ import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
 import {
+  parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardTabParam,
+  type KompasDeepView,
 } from "@/lib/dashboard-url";
 import type {
   AccountPriorityPrefData,
@@ -168,6 +172,7 @@ type DashboardProps = {
   initialTab?: DashboardTabId;
   initialVoortgangScreen?: VoortgangScreen;
   initialKompasView?: PillarId;
+  initialKompasDeepView?: KompasDeepView;
   sleepFocus?: SleepFocusKey | null;
 };
 
@@ -189,6 +194,7 @@ type SharedSectionProps = {
   onVoortgangScreenChange: (screen: VoortgangScreen) => void;
   onOpenInzichten: () => void;
   initialKompasView?: PillarId;
+  initialKompasDeepView?: KompasDeepView;
   prefUpdatedAt: string | null;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   sleepFocus: SleepFocusKey | null;
@@ -3169,6 +3175,7 @@ const KompasHome = ({
   onRemeasure,
   onGoAgenda,
   initialKompasView,
+  initialKompasDeepView,
   kompasResetSignal: _kompasResetSignal,
   prefUpdatedAt: _prefUpdatedAt,
   onPrefUpdated,
@@ -3179,6 +3186,12 @@ const KompasHome = ({
       return parseKompasFromUrl(window.location.href);
     }
     return initialKompasView ?? null;
+  });
+  const [deepView, setDeepView] = useState<KompasDeepView>(() => {
+    if (typeof window !== "undefined") {
+      return parseKompasDeepViewFromUrl(window.location.href);
+    }
+    return initialKompasDeepView ?? "cockpit";
   });
   const reminderShownRef = useRef(false);
   const [makePriorityBusy, setMakePriorityBusy] = useState(false);
@@ -3201,6 +3214,7 @@ const KompasHome = ({
   useEffect(() => {
     const onPopState = () => {
       setDomainView(parseKompasFromUrl(window.location.href));
+      setDeepView(parseKompasDeepViewFromUrl(window.location.href));
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -3224,26 +3238,62 @@ const KompasHome = ({
     return null;
   }
 
-  const setKompasDomain = (domain: PillarId | null) => {
+  const setKompasDomain = (domain: PillarId | null, view: KompasDeepView = "cockpit") => {
     setDomainView(domain);
-    syncDashboardKompasParam(domain);
+    setDeepView(view);
+    syncDashboardKompasDeepView(domain, view);
   };
 
   const openDomain = (domain: PillarId) => {
     trackEvent("dashboard_kompas_domain_open", { domain });
     clarityTag("dashboard_kompas_domain", domain);
-    setKompasDomain(domain);
+    setKompasDomain(domain, "cockpit");
   };
 
   const closeView = () => {
-    setKompasDomain(null);
+    setKompasDomain(null, "cockpit");
+  };
+
+  const openStappenplan = () => {
+    setDeepView("stappenplan");
+    syncDashboardKompasDeepView("beweging", "stappenplan");
+    trackEvent("dashboard_beweging_plan_click", {
+      surface: "kompas_beweging",
+      nav_mode: "dashboard_view",
+    });
+    clarityTag("dashboard_kompas_view", "stappenplan");
+  };
+
+  const closeStappenplan = () => {
+    setDeepView("cockpit");
+    syncDashboardKompasDeepView("beweging", "cockpit");
+    trackEvent("dashboard_kompas_domain_back_click", {
+      from_domain: "beweging",
+      from_level: "plan",
+    });
+    clarityTag("dashboard_kompas_topnav", "plan_to_cockpit");
+  };
+
+  const handleBreadcrumbKompas = () => {
+    if (!domainView) {
+      return;
+    }
+    trackEvent("dashboard_kompas_domain_back_click", {
+      from_domain: domainView,
+      from_level: "plan",
+    });
+    clarityTag("dashboard_kompas_topnav", "plan_to_kompas");
+    closeView();
   };
 
   const handleDomainBack = () => {
     if (!domainView) {
       return;
     }
-    trackEvent("dashboard_kompas_domain_back_click", { from_domain: domainView });
+    trackEvent("dashboard_kompas_domain_back_click", {
+      from_domain: domainView,
+      from_level: deepView === "stappenplan" ? "plan" : "cockpit",
+    });
     clarityTag("dashboard_kompas_topnav", "back");
     closeView();
   };
@@ -3258,7 +3308,7 @@ const KompasHome = ({
       surface: "top_nav",
     });
     clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
-    setKompasDomain(toDomain);
+    setKompasDomain(toDomain, "cockpit");
   };
 
   const makeBewegingPriority = async () => {
@@ -3319,15 +3369,26 @@ const KompasHome = ({
           onBack={handleDomainBack}
           onSwitch={handleDomainSwitch}
         />
+        {deepView === "stappenplan" ? (
+          <KompasDepthStrip
+            onKompas={handleBreadcrumbKompas}
+            onDomain={closeStappenplan}
+            domainLabel="Beweging"
+            depthLabel="Jouw stappenplan"
+          />
+        ) : null}
         <BewegingScreen
           model={currentModel}
           slot={todaySlot}
+          deepView={deepView}
+          sessionId={data?.sessionId ?? null}
           nutritionLogCompleted={nutritionLogCompleted}
           onGoAgenda={onGoAgenda}
           onMakePriority={() => void makeBewegingPriority()}
           makePriorityBusy={makePriorityBusy}
           onRemeasure={onRemeasure}
           remeasure={data?.remeasure ?? null}
+          onOpenPlan={openStappenplan}
         />
       </div>
     );
@@ -3744,6 +3805,7 @@ export default function Dashboard({
   initialTab,
   initialVoortgangScreen,
   initialKompasView,
+  initialKompasDeepView,
   sleepFocus = null,
 }: DashboardProps) {
   const router = useRouter();
@@ -3937,6 +3999,7 @@ export default function Dashboard({
     onVoortgangScreenChange: setVoortgangScreen,
     onOpenInzichten: () => setVoortgangScreen("inzichten"),
     initialKompasView,
+    initialKompasDeepView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
     onPrefUpdated: setPriorityPrefOverride,
     sleepFocus,

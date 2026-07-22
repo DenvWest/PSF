@@ -27,6 +27,8 @@ type MovementRouteLadderProps = {
   startPattern?: MovementStartPattern | null;
   onChangeStartPattern?: () => void;
   planProgressOverride?: PlanProgress | null;
+  hidePlanDoorway?: boolean;
+  onOpenPlan?: () => void;
 };
 
 function stepCircleClass(isNow: boolean, isPast: boolean): string {
@@ -49,6 +51,8 @@ export default function MovementRouteLadder({
   startPattern = null,
   onChangeStartPattern,
   planProgressOverride,
+  hidePlanDoorway = false,
+  onOpenPlan,
 }: MovementRouteLadderProps) {
   const phases = movementPlanTemplate.phases;
   const ctx = buildPlanIntakeContext(
@@ -179,15 +183,36 @@ export default function MovementRouteLadder({
       </ol>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-        <Link
-          href="/intake/plan/movement?from=dashboard&kompas=beweging"
-          onClick={() => {
-            trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging" });
-          }}
-          className="inline-flex items-center gap-1 text-[13px] font-semibold text-[color:var(--ac)] no-underline"
-        >
-          Bekijk je volledige stappenplan <Icons.ArrowRight s={14} />
-        </Link>
+        {!hidePlanDoorway ? (
+          onOpenPlan ? (
+            <button
+              type="button"
+              onClick={() => {
+                trackEvent("dashboard_beweging_plan_click", {
+                  surface: "kompas_beweging",
+                  nav_mode: "dashboard_view",
+                });
+                onOpenPlan();
+              }}
+              className="inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-semibold text-[color:var(--ac)]"
+            >
+              Bekijk je volledige stappenplan <Icons.ArrowRight s={14} />
+            </button>
+          ) : (
+            <Link
+              href="/intake/plan/movement?from=dashboard&kompas=beweging"
+              onClick={() => {
+                trackEvent("dashboard_beweging_plan_click", {
+                  surface: "kompas_beweging",
+                  nav_mode: "cross_route",
+                });
+              }}
+              className="inline-flex items-center gap-1 text-[13px] font-semibold text-[color:var(--ac)] no-underline"
+            >
+              Bekijk je volledige stappenplan <Icons.ArrowRight s={14} />
+            </Link>
+          )
+        ) : null}
         {onChangeStartPattern ? (
           <button
             type="button"

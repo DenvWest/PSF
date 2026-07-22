@@ -7,6 +7,7 @@ import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 import { parseSleepFocus, SLEEP_FOCUS_COOKIE_NAME } from "@/lib/sleep-focus";
+import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 export const metadata = {
@@ -22,6 +23,7 @@ type DashboardPageProps = {
     tab?: string;
     screen?: string;
     kompas?: string;
+    view?: string;
   }>;
 };
 
@@ -65,8 +67,18 @@ function parseInitialKompasView(kompas?: string): PillarId | undefined {
   return undefined;
 }
 
+function parseInitialKompasDeepView(
+  kompas?: string,
+  view?: string,
+): KompasDeepView | undefined {
+  if (kompas === "beweging" && view === "stappenplan") {
+    return "stappenplan";
+  }
+  return undefined;
+}
+
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  const { state, tab, screen, kompas } = await searchParams;
+  const { state, tab, screen, kompas, view } = await searchParams;
 
   const account = await getAccountFromCookie();
   if (!account) {
@@ -78,11 +90,13 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const initialTab = parseInitialTab(tab);
   const initialVoortgangScreen = parseInitialVoortgangScreen(screen);
   const initialKompasView = parseInitialKompasView(kompas);
+  const initialKompasDeepView = parseInitialKompasDeepView(kompas, view);
 
   const dashboardProps = {
     initialTab,
     initialVoortgangScreen,
     initialKompasView,
+    initialKompasDeepView,
   };
 
   if (state === "empty") {

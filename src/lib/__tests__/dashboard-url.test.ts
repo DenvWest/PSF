@@ -1,8 +1,12 @@
 /** @vitest-environment jsdom */
 import { describe, expect, it, vi } from "vitest";
 import {
+  buildDashboardBewegingStappenplanHref,
+  buildDashboardPlanHref,
   buildDashboardVandaagHref,
+  parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardTabParam,
 } from "@/lib/dashboard-url";
@@ -23,6 +27,25 @@ describe("parseKompasFromUrl", () => {
   });
 });
 
+describe("parseKompasDeepViewFromUrl", () => {
+  it("returns stappenplan for beweging + view param", () => {
+    expect(
+      parseKompasDeepViewFromUrl(
+        "http://localhost/dashboard?tab=vandaag&kompas=beweging&view=stappenplan",
+      ),
+    ).toBe("stappenplan");
+  });
+
+  it("returns cockpit when view missing or other domain", () => {
+    expect(parseKompasDeepViewFromUrl("http://localhost/dashboard?kompas=beweging")).toBe(
+      "cockpit",
+    );
+    expect(
+      parseKompasDeepViewFromUrl("http://localhost/dashboard?kompas=slaap&view=stappenplan"),
+    ).toBe("cockpit");
+  });
+});
+
 describe("buildDashboardVandaagHref", () => {
   it("builds vandaag tab without kompas", () => {
     expect(buildDashboardVandaagHref()).toBe("/dashboard?tab=vandaag");
@@ -31,6 +54,16 @@ describe("buildDashboardVandaagHref", () => {
 
   it("includes kompas when provided", () => {
     expect(buildDashboardVandaagHref("stress")).toBe("/dashboard?tab=vandaag&kompas=stress");
+  });
+});
+
+describe("buildDashboardPlanHref", () => {
+  it("routes movement plan to dashboard sub-view", () => {
+    expect(buildDashboardPlanHref("movement")).toBe(buildDashboardBewegingStappenplanHref());
+  });
+
+  it("keeps intake route for other plan domains", () => {
+    expect(buildDashboardPlanHref("stress")).toBe("/intake/plan/stress?from=dashboard");
   });
 });
 
@@ -50,6 +83,7 @@ describe("syncDashboardKompasParam", () => {
     let nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=vandaag");
     expect(nextUrl).toContain("kompas=stress");
+    expect(nextUrl).not.toContain("view=");
 
     Object.defineProperty(window, "location", {
       configurable: true,
@@ -76,6 +110,7 @@ describe("syncDashboardKompasParam", () => {
     nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=vandaag");
     expect(nextUrl).not.toContain("kompas=");
+    expect(nextUrl).not.toContain("view=");
 
     window.history.pushState = originalPush;
   });
@@ -100,6 +135,27 @@ describe("syncDashboardKompasParam", () => {
   });
 });
 
+describe("syncDashboardKompasDeepView", () => {
+  it("sets view=stappenplan for beweging deep view", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=vandaag&kompas=beweging"),
+    });
+
+    syncDashboardKompasDeepView("beweging", "stappenplan");
+    expect(pushState).toHaveBeenCalledOnce();
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("kompas=beweging");
+    expect(nextUrl).toContain("view=stappenplan");
+
+    window.history.pushState = originalPush;
+  });
+});
+
 describe("syncDashboardTabParam", () => {
   it("pushState on tab change and clears kompas for non-vandaag tabs", () => {
     const originalReplace = window.history.replaceState;
@@ -111,7 +167,7 @@ describe("syncDashboardTabParam", () => {
 
     Object.defineProperty(window, "location", {
       configurable: true,
-      value: new URL("http://localhost/dashboard?tab=vandaag&kompas=slaap"),
+      value: new URL("http://localhost/dashboard?tab=vandaag&kompas=slaap&view=stappenplan"),
     });
 
     syncDashboardTabParam("voortgang");
@@ -120,6 +176,7 @@ describe("syncDashboardTabParam", () => {
     const nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=voortgang");
     expect(nextUrl).not.toContain("kompas=");
+    expect(nextUrl).not.toContain("view=");
 
     Object.defineProperty(window, "location", {
       configurable: true,

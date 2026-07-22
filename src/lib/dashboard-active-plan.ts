@@ -7,6 +7,7 @@ import {
   selectVisibleSteps,
 } from "@/lib/lifestyle-plan-eval";
 import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
+import { buildDashboardPlanHref } from "@/lib/dashboard-url";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import type { DomainScores } from "@/lib/intake-engine";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
@@ -48,7 +49,7 @@ export function buildPriorityInterventionHref(
       model.answers,
     );
     if (planDomain && getPlanTemplate(planDomain)) {
-      return `/intake/plan/${planDomain}?from=dashboard`;
+      return buildDashboardPlanHref(planDomain);
     }
   }
 
@@ -171,7 +172,7 @@ export function buildActivePlanHabit(options: {
       title: kernel.nextBestHabit.replace(/^Focus nu:\s*/i, ""),
       detail: kernel.driverHabitLine,
       state: null,
-      planHref: `/intake/plan/${planDomain}?from=dashboard`,
+      planHref: buildDashboardPlanHref(planDomain),
     };
   }
 
@@ -192,6 +193,6 @@ export function buildActivePlanHabit(options: {
     title: activeStep.title,
     detail: activeStep.rationale?.body ?? null,
     state,
-    planHref: `/intake/plan/${planDomain}?from=dashboard`,
+    planHref: buildDashboardPlanHref(planDomain),
   };
 }

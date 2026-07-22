@@ -6,6 +6,7 @@ import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MovementCockpit from "@/components/dashboard/beweging/MovementCockpit";
+import MovementPlanDeepBody from "@/components/dashboard/beweging/MovementPlanDeepBody";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
 import { PILLAR } from "@/data/dashboard";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
@@ -15,6 +16,7 @@ import {
 } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
+import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type { DashboardModel } from "@/types/dashboard";
@@ -135,22 +137,29 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
 export default function BewegingScreen({
   model,
   slot,
+  deepView = "cockpit",
+  sessionId = null,
   nutritionLogCompleted = false,
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
   onRemeasure,
   remeasure,
+  onOpenPlan,
 }: {
   model: DashboardModel;
   slot: WeekDaySlot | null;
+  deepView?: KompasDeepView;
+  sessionId?: string | null;
   nutritionLogCompleted?: boolean;
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
   onRemeasure: () => void;
   remeasure: { dueDate: string; daysUntil: number } | null;
+  onOpenPlan?: () => void;
 }) {
+  const isPlanView = deepView === "stappenplan";
   const premiumShownRef = useRef(false);
   const session = sessionFromModel(model);
   const nutritionHint = getMovementNutritionHint(session);
@@ -347,16 +356,26 @@ export default function BewegingScreen({
       <MovementCockpit
         model={model}
         slot={slot}
+        deepView={deepView}
         onGoAgenda={onGoAgenda}
         onMakePriority={onMakePriority}
         makePriorityBusy={makePriorityBusy}
         onRemeasure={onRemeasure}
         remeasure={remeasure}
+        onOpenPlan={onOpenPlan}
       />
 
-      {/* Light-zone: op desktop gecentreerd + gecapt zodat het niet
-          uitrekt naast de brede cockpit; op mobiel volle breedte. */}
-      <div className="w-full lg:mx-auto lg:max-w-3xl">
+      {isPlanView ? (
+        <MovementPlanDeepBody
+          scores={model.domainScores}
+          answers={model.answers ?? {}}
+          sessionId={sessionId}
+          navMode="dashboard_view"
+        />
+      ) : (
+        /* Light-zone: op desktop gecentreerd + gecapt zodat het niet
+            uitrekt naast de brede cockpit; op mobiel volle breedte. */
+        <div className="w-full lg:mx-auto lg:max-w-3xl">
         <KompasLightPanel>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {logEnabled ? <MovementLogPanel /> : null}
@@ -443,7 +462,8 @@ export default function BewegingScreen({
             />
           </div>
         </KompasLightPanel>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

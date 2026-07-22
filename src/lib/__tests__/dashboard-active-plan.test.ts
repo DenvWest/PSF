@@ -145,6 +145,25 @@ describe("dashboard-active-plan", () => {
     expect(href).toBe("/intake/plan/stress?from=dashboard");
   });
 
+  it("builds dashboard sub-view href for movement plan intervention", () => {
+    const href = buildPriorityInterventionHref({
+      priority: { id: "beweging" } as never,
+      domainScores: {
+        sleep_score: 58,
+        energy_score: 54,
+        stress_score: 35,
+        nutrition_score: 47,
+        movement_score: 71,
+        recovery_score: 51,
+        connection_score: 51,
+      },
+      answers: DEV_ANSWERS,
+      activeHabit: null,
+    });
+
+    expect(href).toBe("/dashboard?tab=vandaag&kompas=beweging&view=stappenplan");
+  });
+
   it("prefers active habit plan href for intervention", () => {
     const href = buildPriorityInterventionHref({
       priority: { id: "voeding" } as never,

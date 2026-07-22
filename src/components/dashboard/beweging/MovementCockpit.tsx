@@ -11,6 +11,7 @@ import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { PILLAR } from "@/data/dashboard";
 import { isPlanStepHidden } from "@/lib/day-model";
 import { buildDomainTrendRow } from "@/lib/leefstijllijn";
+import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { DashboardModel } from "@/types/dashboard";
@@ -22,11 +23,13 @@ const RING_CIRC = 2 * Math.PI * RING_RADIUS;
 type MovementCockpitProps = {
   model: DashboardModel;
   slot: WeekDaySlot | null;
+  deepView?: KompasDeepView;
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
   onRemeasure: () => void;
   remeasure: { dueDate: string; daysUntil: number } | null;
+  onOpenPlan?: () => void;
 };
 
 function remeasureCopy(daysUntil: number): string {
@@ -45,12 +48,15 @@ function remeasureCopy(daysUntil: number): string {
 export default function MovementCockpit({
   model,
   slot,
+  deepView = "cockpit",
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
   onRemeasure,
   remeasure,
+  onOpenPlan,
 }: MovementCockpitProps) {
+  const isPlanView = deepView === "stappenplan";
   const accent = PILLAR.beweging.color;
   const score = Math.round(model.scores.beweging ?? 0);
   const dashOffset = RING_CIRC * (1 - Math.min(100, Math.max(0, score)) / 100);
@@ -82,8 +88,8 @@ export default function MovementCockpit({
           links en de route hoog zodat het first viewport-werk zonder scroll
           zichtbaar is. */}
       <div className="grid gap-3 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-4">
-        {/* VANDAAG — dominante tegel; zonder prefs eerst de start-keuze (één vandaag-UI) */}
-        <div className="lg:col-start-2 lg:row-start-1">
+        {/* VANDAAG — verborgen op stappenplan-diepte (afvinken via tabbar) */}
+        <div className={`lg:col-start-2 lg:row-start-1 ${isPlanView ? "hidden" : ""}`}>
           {showStartChoice ? (
             <MovementStartChoice
               onSaved={(prefs) => {
@@ -106,6 +112,17 @@ export default function MovementCockpit({
             />
           )}
         </div>
+
+        {isPlanView ? (
+          <div className="lg:col-start-2 lg:row-start-1">
+            <CockpitTile eyebrow="Jouw stappenplan">
+              <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+                Stel hier je spoor, doel en fases in. Afvinken blijft in VANDAAG — via
+                de tabbar onderaan.
+              </p>
+            </CockpitTile>
+          </div>
+        ) : null}
 
         {/* WAAR JE STAAT — echte beweegscore + narratieve Future You-regel */}
         <div className="lg:col-start-1 lg:row-start-1">
@@ -204,20 +221,22 @@ export default function MovementCockpit({
           </CockpitTile>
         </div>
 
-        {/* JOUW ROUTE — read-only ladder (mobiel) / horizontale stepper (lg).
-            Desktop hoog (row-start-2) zodat 'ie zonder scroll zichtbaar is. */}
-        <div className="lg:col-start-2 lg:row-start-2">
-          <MovementRouteLadder
-            model={model}
-            startPattern={movementPrefs.startPattern}
-            onChangeStartPattern={
-              activeOwnStep ? () => setChoiceOpen(true) : undefined
-            }
-          />
-        </div>
+        {/* JOUW ROUTE — verborgen op stappenplan (fase-explorer staat in plan-body) */}
+        {!isPlanView ? (
+          <div className="lg:col-start-2 lg:row-start-2">
+            <MovementRouteLadder
+              model={model}
+              startPattern={movementPrefs.startPattern}
+              onChangeStartPattern={
+                activeOwnStep ? () => setChoiceOpen(true) : undefined
+              }
+              onOpenPlan={onOpenPlan}
+            />
+          </div>
+        ) : null}
 
         {/* JE VOLGENDE MEETMOMENT — forward-pointer */}
-        <div className="lg:col-start-2 lg:row-start-3">
+        <div className={isPlanView ? "lg:col-start-2 lg:row-start-2" : "lg:col-start-2 lg:row-start-3"}>
           <CockpitTile eyebrow="Je volgende meetmoment" ariaLabel="Je volgende meetmoment">
             <p className="mt-2 font-serif text-[17px] leading-snug text-[#F1EFE8] text-pretty">
               {remeasure ? remeasureCopy(remeasure.daysUntil) : "Blijf even bouwen — het meetmoment komt vanzelf."}

@@ -23,6 +23,8 @@ import MovementWeekRoadmap from "@/components/intake/MovementWeekRoadmap";
 import type { PlanIntakeContext, PlanStep, PlanStepLink, PlanStepState } from "@/types/lifestyle-plan";
 import type { MovementRecoveryHint } from "@/lib/movement-recovery-hint";
 
+type PanelVariant = "intake" | "cockpit";
+
 type MovementWeekCategoryPanelProps = {
   phaseId: string;
   domain: string;
@@ -33,6 +35,7 @@ type MovementWeekCategoryPanelProps = {
   nutrientBridgeItems: NutrientBridgeItem[];
   readOnly: boolean;
   recoveryHint?: MovementRecoveryHint | null;
+  variant?: PanelVariant;
   getStepState: (stepId: string) => PlanStepState;
   renderStepRow: (
     step: PlanStep,
@@ -56,6 +59,7 @@ export default function MovementWeekCategoryPanel({
   nutrientBridgeItems,
   readOnly,
   recoveryHint = null,
+  variant = "intake",
   getStepState,
   renderStepRow,
   onBridgeItemClick,
@@ -110,6 +114,13 @@ export default function MovementWeekCategoryPanel({
     </ul>
   );
 
+  const sectionLabelClass =
+    variant === "cockpit"
+      ? "mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]"
+      : "mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-intake-ink-subtle";
+  const previewNoteClass =
+    variant === "cockpit" ? "text-xs text-[#9FB0A6]" : "text-xs text-intake-ink-subtle";
+
   if (readOnly) {
     const krachtSteps = filterStepsForCategory(visibleSteps, "kracht");
     const conditieSteps = filterStepsForCategory(visibleSteps, "conditie");
@@ -119,29 +130,24 @@ export default function MovementWeekCategoryPanel({
         <MovementWeekRoadmap
           roadmap={roadmap}
           readOnly
+          variant={variant}
           onSpoorSelect={() => undefined}
           onOndersteuningSelect={() => undefined}
         />
         {krachtSteps.length > 0 ? (
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-intake-ink-subtle">
-              Kracht
-            </p>
+            <p className={sectionLabelClass}>Kracht</p>
             {stepList(krachtSteps)}
           </div>
         ) : null}
         {conditieSteps.length > 0 ? (
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-intake-ink-subtle">
-              Conditie
-            </p>
+            <p className={sectionLabelClass}>Conditie</p>
             {stepList(conditieSteps)}
           </div>
         ) : null}
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-intake-ink-subtle">
-            Dagelijks ritme
-          </p>
+          <p className={sectionLabelClass}>Dagelijks ritme</p>
           <MovementDailyRhythmContent
             rhythm={dailyRhythm}
             domain={domain}
@@ -149,7 +155,7 @@ export default function MovementWeekCategoryPanel({
             embedded
           />
         </div>
-        <p className="text-xs text-intake-ink-subtle">
+        <p className={previewNoteClass}>
           Preview — afvinken kan zodra deze fase actief is.
         </p>
       </div>
@@ -164,6 +170,7 @@ export default function MovementWeekCategoryPanel({
         templateVersion={templateVersion}
         dailyRhythm={dailyRhythm}
         nutrientBridgeItems={nutrientBridgeItems}
+        variant={variant}
         onBack={closeSpoor}
         onBridgeItemClick={onBridgeItemClick}
         onEvidenceClick={onLinkClick}
@@ -181,6 +188,7 @@ export default function MovementWeekCategoryPanel({
   return (
     <MovementWeekRoadmap
       roadmap={roadmap}
+      variant={variant}
       onSpoorSelect={openSpoor}
       onOndersteuningSelect={() => openSpoor("kracht")}
       onTodaySelect={() => openSpoor(DEFAULT_WEEK_CATEGORY)}

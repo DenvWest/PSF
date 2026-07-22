@@ -1,8 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import MovementPlanConfigurator from "@/components/dashboard/beweging/MovementPlanConfigurator";
+import { useRouter } from "next/navigation";
 import LifestylePlan from "@/components/intake/LifestylePlan";
 import IntakeLayoutActions from "@/components/intake/IntakeLayoutActions";
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
@@ -24,10 +23,45 @@ const planHeaderActions = (
   </Suspense>
 );
 
+function DashboardPlanLoadingSkeleton() {
+  return (
+    <div className="ps-dark ps-cockpit-breakout mx-auto w-full max-w-5xl px-4 pb-12 pt-2 sm:px-6">
+      <header className="mb-4 flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
+            Jouw stappenplan · beweging
+          </p>
+          <div className="h-8 w-56 animate-pulse rounded bg-white/10" aria-hidden />
+        </div>
+      </header>
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <p className="text-sm text-[#9FB0A6]">Plan laden…</p>
+      </div>
+    </div>
+  );
+}
+
+function IntakePlanLoadingSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-3xl px-6 pb-10 pt-3">
+      <header className="mb-5 flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
+            Jouw stappenplan
+          </p>
+          <div className="h-7 w-48 animate-pulse rounded bg-white/5" aria-hidden />
+        </div>
+        <div className="shrink-0 pt-0.5">{planHeaderActions}</div>
+      </header>
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <p className="text-sm text-intake-ink-subtle">Plan laden…</p>
+      </div>
+    </div>
+  );
+}
+
 function IntakePlanPageContent({ domain }: IntakePlanPageProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const fromDashboard = searchParams.get("from") === "dashboard";
   const template = getPlanTemplate(domain);
   const [loading, setLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -75,32 +109,7 @@ function IntakePlanPageContent({ domain }: IntakePlanPageProps) {
   }
 
   if (loading || !scores || !answers) {
-    return (
-      <div className="mx-auto w-full max-w-3xl px-6 pb-10 pt-3">
-        <header className="mb-5 flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-intake-terra">
-              Jouw stappenplan
-            </p>
-            <div className="h-7 w-48 animate-pulse rounded bg-white/5" aria-hidden />
-          </div>
-          <div className="shrink-0 pt-0.5">{planHeaderActions}</div>
-        </header>
-        <div className="flex min-h-[40vh] items-center justify-center">
-          <p className="text-sm text-intake-ink-subtle">Plan laden…</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (domain === "movement" && fromDashboard) {
-    return (
-      <MovementPlanConfigurator
-        scores={scores}
-        answers={answers}
-        sessionId={sessionId}
-      />
-    );
+    return domain === "movement" ? <DashboardPlanLoadingSkeleton /> : <IntakePlanLoadingSkeleton />;
   }
 
   const secondaryTheme = getSecondaryTheme(
@@ -128,9 +137,11 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto w-full max-w-3xl px-6 pb-10 pt-3">
-          <p className="text-sm text-intake-ink-subtle">Plan laden…</p>
-        </div>
+        domain === "movement" ? (
+          <DashboardPlanLoadingSkeleton />
+        ) : (
+          <IntakePlanLoadingSkeleton />
+        )
       }
     >
       <IntakePlanPageContent domain={domain} />
