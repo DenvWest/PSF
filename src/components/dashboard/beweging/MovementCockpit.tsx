@@ -93,12 +93,11 @@ export default function MovementCockpit({
       ariaLabel="Beweeg-cockpit"
       embedded={embedded}
     >
-      {/* DOM-volgorde = mobiele stack (hero eerst). lg-plaatsing zet score
-          links en de route hoog zodat het first viewport-werk zonder scroll
-          zichtbaar is. */}
+      {/* DOM-volgorde = mobiele stack (hero eerst). lg: Hero full-width →
+          Score+Trend 2-up → Jouw route full-width → Deze week+Meetmoment 2-up. */}
       <div className="grid gap-3 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-4">
         {/* VANDAAG — verborgen op stappenplan-diepte (afvinken via tabbar) */}
-        <div className={`lg:col-start-2 lg:row-start-1 ${isPlanView ? "hidden" : ""}`}>
+        <div className={`lg:col-span-2 lg:row-start-1 ${isPlanView ? "hidden" : ""}`}>
           {showStartChoice ? (
             <MovementStartChoice
               onSaved={(prefs) => {
@@ -134,7 +133,11 @@ export default function MovementCockpit({
         ) : null}
 
         {/* WAAR JE STAAT — echte beweegscore + narratieve Future You-regel */}
-        <div className="lg:col-start-1 lg:row-start-1">
+        <div
+          className={
+            isPlanView ? "lg:col-start-1 lg:row-start-1" : "lg:col-start-1 lg:row-start-2"
+          }
+        >
           <CockpitTile
             eyebrow="Waar je staat"
             ariaLabel="Waar je staat"
@@ -201,8 +204,12 @@ export default function MovementCockpit({
           </CockpitTile>
         </div>
 
-        {/* JE TREND — echte leefstijllijn (mobiel ná score, desktop links onder score) */}
-        <div className="lg:col-start-1 lg:row-start-2">
+        {/* JE TREND — echte leefstijllijn (mobiel ná score, desktop 2-up met score) */}
+        <div
+          className={
+            isPlanView ? "lg:col-span-2 lg:row-start-2" : "lg:col-start-2 lg:row-start-2"
+          }
+        >
           <CockpitTile
             eyebrow="Je trend"
             ariaLabel="Je trend"
@@ -235,7 +242,7 @@ export default function MovementCockpit({
 
         {/* JOUW ROUTE — verborgen op stappenplan (fase-explorer staat in plan-body) */}
         {!isPlanView ? (
-          <div className="lg:col-start-2 lg:row-start-2">
+          <div className="lg:col-span-2 lg:row-start-3">
             <MovementJourneyRail
               model={model}
               movementPrefs={movementPrefs}
@@ -249,13 +256,17 @@ export default function MovementCockpit({
 
         {/* DEZE WEEK — ritme-readout uit daily_action_log */}
         {!isPlanView ? (
-          <div className="lg:col-start-1 lg:row-start-3">
+          <div className="lg:col-start-1 lg:row-start-4">
             <MovementWeekRhythm />
           </div>
         ) : null}
 
         {/* JE VOLGENDE MEETMOMENT — forward-pointer */}
-        <div className={isPlanView ? "lg:col-start-2 lg:row-start-2" : "lg:col-start-2 lg:row-start-3"}>
+        <div
+          className={
+            isPlanView ? "lg:col-span-2 lg:row-start-3" : "lg:col-start-2 lg:row-start-4"
+          }
+        >
           <CockpitTile eyebrow="Je volgende meetmoment" ariaLabel="Je volgende meetmoment">
             <p className="mt-2 font-serif text-[17px] leading-snug text-[#F1EFE8] text-pretty">
               {remeasure ? remeasureCopy(remeasure.daysUntil) : "Blijf even bouwen — het meetmoment komt vanzelf."}
