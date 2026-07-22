@@ -4036,8 +4036,7 @@ export default function Dashboard({
   const tabHeaderNode =
     tab === "vandaag" ? (
       <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
-    ) : tab !== "voortgang" &&
-        !(isCockpitShellEnabled() && tab === "agenda") ? (
+    ) : tab !== "voortgang" ? (
       <DashTabHeader tab={tabMeta} />
     ) : null;
 
