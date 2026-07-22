@@ -4,7 +4,6 @@ import Link from "next/link";
 import MovementPlanDeepBody from "@/components/dashboard/beweging/MovementPlanDeepBody";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
-import { PILLAR } from "@/data/dashboard";
 import type { DomainScores } from "@/lib/intake-engine";
 import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
 
@@ -22,7 +21,7 @@ export default function MovementPlanConfigurator({
   sessionId,
   navMode = "intake_route",
 }: MovementPlanConfiguratorProps) {
-  const accent = PILLAR.beweging.color;
+  const accent = "#5A8F6A";
 
   return (
     <div className="ps-dark ps-cockpit-breakout mx-auto w-full max-w-5xl px-4 pb-12 pt-2 sm:px-6">

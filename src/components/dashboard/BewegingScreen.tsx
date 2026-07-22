@@ -3,12 +3,11 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import { Card } from "@/components/app/primitives";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MovementCockpit from "@/components/dashboard/beweging/MovementCockpit";
 import MovementPlanDeepBody from "@/components/dashboard/beweging/MovementPlanDeepBody";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
-import { PILLAR } from "@/data/dashboard";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import {
   buildMovementRecommendations,
@@ -20,71 +19,6 @@ import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type { DashboardModel } from "@/types/dashboard";
-
-const KOMPAS_LIGHT = {
-  text: "#1c1917",
-  muted: "#57534e",
-  subtle: "#78716c",
-  innerBorder: "#ebe7e2",
-  innerBg: "#faf9f7",
-} as const;
-
-const KompasLightPanel = ({ children }: { children: React.ReactNode }) => (
-  <div className="-mt-3 overflow-hidden rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-5 shadow-[0_16px_48px_rgba(15,28,16,0.10)]">
-    {children}
-  </div>
-);
-
-const KompasSectionHeader = ({
-  eyebrow,
-  title,
-  action,
-}: {
-  eyebrow?: string;
-  title?: string;
-  action?: React.ReactNode;
-}) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      gap: 16,
-      marginBottom: 14,
-    }}
-  >
-    <div>
-      {eyebrow ? (
-        <div
-          style={{
-            marginBottom: 8,
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: KOMPAS_LIGHT.subtle,
-          }}
-        >
-          {eyebrow}
-        </div>
-      ) : null}
-      {title ? (
-        <div
-          style={{
-            fontFamily: "var(--f-serif)",
-            fontSize: 21,
-            color: KOMPAS_LIGHT.text,
-            letterSpacing: "0.01em",
-            lineHeight: 1.1,
-          }}
-        >
-          {title}
-        </div>
-      ) : null}
-    </div>
-    {action}
-  </div>
-);
 
 const FooterLink = ({
   href,
@@ -100,23 +34,11 @@ const FooterLink = ({
   <Link
     href={href}
     onClick={onClick}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 12,
-      padding: "16px 18px",
-      borderRadius: 16,
-      border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-      background: "#fff",
-      textDecoration: "none",
-      color: "inherit",
-    }}
+    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-[18px] py-4 no-underline text-inherit transition hover:border-white/20"
   >
     {icon}
-    <span style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-      {label}
-    </span>
-    <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
+    <span className="flex-1 font-serif text-[16px] text-[#F1EFE8]">{label}</span>
+    <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
   </Link>
 );
 
@@ -180,175 +102,81 @@ export default function BewegingScreen({
 
   const logEnabled = isMovementLogEnabled();
 
-  const voedingSupplementSection = (
-    <section aria-label="Voeding en supplementen">
-      <KompasSectionHeader eyebrow="Leefstijl eerst" title="Voeding & supplementen" />
-      <Card pad={18} surface="light">
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div>
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: KOMPAS_LIGHT.subtle,
-                marginBottom: 8,
-              }}
-            >
-              Voeding optimaliseren
-            </div>
-            <p
-              style={{
-                fontSize: 14,
-                color: KOMPAS_LIGHT.muted,
-                lineHeight: 1.55,
-                margin: "0 0 12px",
-                textWrap: "pretty",
-              }}
-            >
-              {nutritionHint}
-            </p>
-            <Link
-              href="/intake/voeding?from=dashboard&kompas=beweging"
-              onClick={() => {
-                trackEvent("dashboard_beweging_voeding_click", { surface: "kompas_beweging" });
-                clarityTag("dashboard_beweging_voeding", "click");
-              }}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-                fontSize: 13.5,
-                fontWeight: 600,
-                color: "var(--sage)",
-                textDecoration: "none",
-              }}
-            >
-              Doe de voedingscheck <Icons.ChevronRight s={15} />
-            </Link>
-          </div>
+  const voedingSupplementContent = (
+    <>
+      <div>
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
+          Voeding optimaliseren
+        </p>
+        <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+          {nutritionHint}
+        </p>
+        <Link
+          href="/intake/voeding?from=dashboard&kompas=beweging"
+          onClick={() => {
+            trackEvent("dashboard_beweging_voeding_click", { surface: "kompas_beweging" });
+            clarityTag("dashboard_beweging_voeding", "click");
+          }}
+          className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
+        >
+          Doe de voedingscheck <Icons.ChevronRight s={15} />
+        </Link>
+      </div>
 
-          <div
-            style={{
-              borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-              paddingTop: 14,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: KOMPAS_LIGHT.subtle,
-                marginBottom: 10,
-              }}
-            >
-              Supplementen — als je basis staat
-            </div>
-            {recommendations.length > 0 ? (
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {recommendations.map((rec, index) => {
-                  const href = rec.comparisonHref ?? rec.guideHref;
-                  return (
-                    <Link
-                      key={rec.slug}
-                      href={href}
-                      onClick={() => {
-                        trackEvent("dashboard_beweging_supplement_click", {
-                          slug: rec.slug,
-                          target: href,
-                          surface: "kompas_beweging",
-                        });
-                        clarityTag("dashboard_beweging_supplement", rec.slug);
-                      }}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                        padding: "12px 0",
-                        textDecoration: "none",
-                        color: "inherit",
-                        borderTop: index ? `1px solid ${KOMPAS_LIGHT.innerBorder}` : "none",
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 12,
-                          flexShrink: 0,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 20,
-                          background: KOMPAS_LIGHT.innerBg,
-                          border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                        }}
-                        aria-hidden
-                      >
-                        {rec.icon}
-                      </span>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div
-                          style={{
-                            fontFamily: "var(--f-serif)",
-                            fontSize: 16,
-                            color: KOMPAS_LIGHT.text,
-                            lineHeight: 1.2,
-                          }}
-                        >
-                          {rec.name}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: 13,
-                            color: KOMPAS_LIGHT.muted,
-                            lineHeight: 1.5,
-                            marginTop: 2,
-                            textWrap: "pretty",
-                          }}
-                        >
-                          {rec.wiifm}
-                        </div>
-                      </div>
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 3,
-                          fontSize: 12,
-                          fontWeight: 600,
-                          color: "var(--sage)",
-                          flexShrink: 0,
-                        }}
-                      >
-                        Vergelijk <Icons.ChevronRight s={15} />
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            ) : (
-              <p
-                style={{
-                  fontSize: 13.5,
-                  color: KOMPAS_LIGHT.muted,
-                  lineHeight: 1.5,
-                  margin: 0,
-                  textWrap: "pretty",
-                }}
-              >
-                {nutritionLogCompleted
-                  ? "Geen supplement-signalen — focus eerst op voeding en je plan."
-                  : "Doe eerst de voedingscheck voordat we supplementen tonen — eerst tafel, dan potje."}
-              </p>
-            )}
+      <div className="mt-4 border-t border-white/10 pt-4">
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
+          Supplementen — als je basis staat
+        </p>
+        {recommendations.length > 0 ? (
+          <div className="mt-3 flex flex-col">
+            {recommendations.map((rec, index) => {
+              const href = rec.comparisonHref ?? rec.guideHref;
+              return (
+                <Link
+                  key={rec.slug}
+                  href={href}
+                  onClick={() => {
+                    trackEvent("dashboard_beweging_supplement_click", {
+                      slug: rec.slug,
+                      target: href,
+                      surface: "kompas_beweging",
+                    });
+                    clarityTag("dashboard_beweging_supplement", rec.slug);
+                  }}
+                  className={`flex items-center gap-3 py-3 no-underline text-inherit ${
+                    index ? "border-t border-white/10" : ""
+                  }`}
+                >
+                  <span
+                    aria-hidden
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/25 text-[20px]"
+                  >
+                    {rec.icon}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-serif text-[16px] leading-tight text-[#F1EFE8]">
+                      {rec.name}
+                    </div>
+                    <div className="mt-0.5 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
+                      {rec.wiifm}
+                    </div>
+                  </div>
+                  <span className="inline-flex shrink-0 items-center gap-0.5 text-[12px] font-semibold text-[#5A8F6A]">
+                    Vergelijk <Icons.ChevronRight s={15} />
+                  </span>
+                </Link>
+              );
+            })}
           </div>
-        </div>
-      </Card>
-    </section>
+        ) : (
+          <p className="mt-3 text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+            {nutritionLogCompleted
+              ? "Geen supplement-signalen — focus eerst op voeding en je plan."
+              : "Doe eerst de voedingscheck voordat we supplementen tonen — eerst tafel, dan potje."}
+          </p>
+        )}
+      </div>
+    </>
   );
 
   return (
@@ -373,13 +201,10 @@ export default function BewegingScreen({
           navMode="dashboard_view"
         />
       ) : (
-        /* Light-zone: op desktop gecentreerd + gecapt zodat het niet
-            uitrekt naast de brede cockpit; op mobiel volle breedte. */
-        <div className="w-full lg:mx-auto lg:max-w-3xl">
-        <KompasLightPanel>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {logEnabled ? <MovementLogPanel /> : null}
+        <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
+          {logEnabled ? <MovementLogPanel /> : null}
 
+          <CockpitTile eyebrow="Check-in">
             <Link
               href="/intake/beweging?from=dashboard&kompas=beweging"
               onClick={() => {
@@ -389,79 +214,63 @@ export default function BewegingScreen({
                 });
                 clarityTag("dashboard_beweging_checkin", "click");
               }}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-                padding: "14px 16px",
-                borderRadius: 16,
-                border: `1px solid ${PILLAR.beweging.color}44`,
-                background: `${PILLAR.beweging.color}0a`,
-                textDecoration: "none",
-                color: "inherit",
-              }}
+              className="mt-2 flex flex-col gap-1.5 rounded-xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 no-underline text-inherit"
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <Icons.Activity s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
-                <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
+              <div className="flex items-center gap-3">
+                <Icons.Activity s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
+                <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">
                   Doe de uitgebreide beweegcheck (3 min)
                 </span>
-                <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
+                <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
               </div>
               {showActiveStep ? (
-                <p
-                  style={{
-                    fontSize: 13,
-                    color: KOMPAS_LIGHT.muted,
-                    lineHeight: 1.45,
-                    margin: "0 0 0 30px",
-                    textWrap: "pretty",
-                  }}
-                >
+                <p className="ml-[30px] text-[13px] leading-snug text-[#9FB0A6] text-pretty">
                   Actieve stap: {model.activeHabit?.title}
                 </p>
               ) : null}
             </Link>
+          </CockpitTile>
 
-            {logEnabled ? (
-              <details style={{ borderTop: "1px solid #ebe7e2", paddingTop: 12 }}>
-                <summary
-                  style={{
-                    cursor: "pointer",
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    color: "#57534e",
-                    listStyle: "none",
-                  }}
-                >
-                  Voeding &amp; supplementen
-                </summary>
-                <div style={{ marginTop: 12 }}>{voedingSupplementSection}</div>
-              </details>
-            ) : (
-              voedingSupplementSection
-            )}
+          {logEnabled ? (
+            <details className="rounded-2xl border border-white/10 bg-black/20">
+              <summary className="cursor-pointer list-none px-5 py-4 text-[13.5px] font-semibold text-[#CDD7D0] [&::-webkit-details-marker]:hidden">
+                Voeding &amp; supplementen
+              </summary>
+              <div className="border-t border-white/10 px-5 pb-5 pt-4">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
+                  Leefstijl eerst
+                </p>
+                <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">Voeding &amp; supplementen</p>
+                <div className="mt-4">{voedingSupplementContent}</div>
+              </div>
+            </details>
+          ) : (
+            <CockpitTile eyebrow="Leefstijl eerst" ariaLabel="Voeding en supplementen">
+              <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">Voeding &amp; supplementen</p>
+              <div className="mt-4">{voedingSupplementContent}</div>
+            </CockpitTile>
+          )}
 
+          <CockpitTile>
             <KompasBegeleidingLink surface="kompas_beweging" />
+          </CockpitTile>
 
-            <FooterLink
-              href="/gids/beweging"
-              icon={<Icons.Mail s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-              label="Gratis Bewegingsgids"
-              onClick={() => {
-                trackEvent("dashboard_beweging_gids_click", { surface: "kompas_beweging" });
-              }}
-            />
-            <FooterLink
-              href="/inzichten"
-              icon={<Icons.BookOpen s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-              label="Leefstijl & inzichten"
-              onClick={() => {
-                trackEvent("dashboard_beweging_leefstijl_click", { surface: "kompas_beweging" });
-              }}
-            />
-          </div>
-        </KompasLightPanel>
+          <FooterLink
+            href="/gids/beweging"
+            icon={<Icons.Mail s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+            label="Gratis Bewegingsgids"
+            onClick={() => {
+              trackEvent("dashboard_beweging_gids_click", { surface: "kompas_beweging" });
+            }}
+          />
+          <FooterLink
+            href="/inzichten"
+            icon={<Icons.BookOpen s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+            label="Leefstijl & inzichten"
+            onClick={() => {
+              trackEvent("dashboard_beweging_leefstijl_click", { surface: "kompas_beweging" });
+            }}
+          />
         </div>
       )}
     </div>

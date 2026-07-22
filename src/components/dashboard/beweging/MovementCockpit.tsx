@@ -9,7 +9,7 @@ import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero
 import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import { PILLAR } from "@/data/dashboard";
+import { isCockpitShellEnabled } from "@/lib/feature-flags";
 import { isPlanStepHidden } from "@/lib/day-model";
 import { formatLastMeasured } from "@/lib/betekenis-motor";
 import { buildDomainTrendRow } from "@/lib/leefstijllijn";
@@ -17,6 +17,9 @@ import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { DashboardModel } from "@/types/dashboard";
+
+/** Sage CTA in cockpit — PILLAR.beweging blijft terracotta voor nav-identiteit. */
+const COCKPIT_CTA = "#5A8F6A";
 
 const RING_SIZE = 128;
 const RING_RADIUS = 54;
@@ -59,7 +62,7 @@ export default function MovementCockpit({
   onOpenPlan,
 }: MovementCockpitProps) {
   const isPlanView = deepView === "stappenplan";
-  const accent = PILLAR.beweging.color;
+  const embedded = isCockpitShellEnabled();
   const score = Math.round(model.scores.beweging ?? 0);
   const dashOffset = RING_CIRC * (1 - Math.min(100, Math.max(0, score)) / 100);
 
@@ -85,7 +88,11 @@ export default function MovementCockpit({
     (choiceOpen || (movementPrefs.startPattern == null && !skippedSession));
 
   return (
-    <CockpitShell accent={accent} ariaLabel="Beweeg-cockpit">
+    <CockpitShell
+      accent={COCKPIT_CTA}
+      ariaLabel="Beweeg-cockpit"
+      embedded={embedded}
+    >
       {/* DOM-volgorde = mobiele stack (hero eerst). lg-plaatsing zet score
           links en de route hoog zodat het first viewport-werk zonder scroll
           zichtbaar is. */}

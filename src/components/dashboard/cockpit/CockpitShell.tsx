@@ -6,6 +6,8 @@ type CockpitShellProps = {
   children: ReactNode;
   ariaLabel?: string;
   className?: string;
+  /** Geen outer panel — page/CockpitFrame levert al de atmosfeer. */
+  embedded?: boolean;
 };
 
 /**
@@ -18,29 +20,38 @@ export default function CockpitShell({
   children,
   ariaLabel,
   className = "",
+  embedded = false,
 }: CockpitShellProps) {
   return (
     <section
       aria-label={ariaLabel}
-      className={`relative overflow-hidden rounded-[28px] border border-white/10 p-5 sm:p-6 ${className}`}
+      className={
+        embedded
+          ? `relative ${className}`
+          : `relative overflow-hidden rounded-[28px] border border-white/10 p-5 sm:p-6 ${className}`
+      }
       style={
-        {
-          "--ac": accent,
-          background: "linear-gradient(160deg, #131F1D, #0C1315)",
-        } as CSSProperties
+        embedded
+          ? ({ "--ac": accent } as CSSProperties)
+          : ({
+              "--ac": accent,
+              background: "linear-gradient(160deg, #131F1D, #0C1315)",
+            } as CSSProperties)
       }
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.12]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage: "radial-gradient(720px 420px at 65% 0%, #000, transparent 78%)",
-          WebkitMaskImage: "radial-gradient(720px 420px at 65% 0%, #000, transparent 78%)",
-        }}
-      />
+      {!embedded ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(720px 420px at 65% 0%, #000, transparent 78%)",
+            WebkitMaskImage: "radial-gradient(720px 420px at 65% 0%, #000, transparent 78%)",
+          }}
+        />
+      ) : null}
       <div className="relative">{children}</div>
     </section>
   );
