@@ -1,6 +1,7 @@
 import { PILLARS, TIE_ORDER } from "@/data/dashboard";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
+import { EMPTY_MOVEMENT_PREFS } from "@/lib/movement-prefs";
 import { getPriorityPillar } from "@/lib/priority-pillar";
 import type { TimeBucket } from "@/lib/account-priority-pref";
 import { RULES_VERSION } from "@/lib/intake-engine";
@@ -51,6 +52,7 @@ export function buildModel(
   sleepFocus: DashboardModel["sleepFocus"] = null,
   movementRcvFeel: number | null = null,
   movementRcvFeelAt: string | null = null,
+  movementPrefs: DashboardModel["movementPrefs"] = EMPTY_MOVEMENT_PREFS,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -128,5 +130,6 @@ export function buildModel(
     sleepFocus,
     movementRcvFeel,
     movementRcvFeelAt,
+    movementPrefs,
   };
 }

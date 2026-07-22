@@ -7,6 +7,7 @@ import {
   inferCompletedChoice,
   isRcvFeelWithinDays,
   resolveChoiceDoneDisplay,
+  resolveModerateStepId,
   resolveRcvFeelForRecoveryHint,
   resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
@@ -21,12 +22,60 @@ import {
 } from "@/lib/movement-checkin-parse";
 
 describe("resolveTodayChoiceOptions", () => {
-  it("maps herstel, licht and trainen to distinct step ids", () => {
+  it("maps herstel, matig and trainen to distinct step ids", () => {
     const options = resolveTodayChoiceOptions("mov-kracht-onderhoud-week");
-    expect(options.map((option) => option.kind)).toEqual(["herstel", "licht", "trainen"]);
+    expect(options.map((option) => option.kind)).toEqual(["herstel", "matig", "trainen"]);
     expect(options[0]?.stepId).toBe(REST_DAY_STEP_ID);
     expect(options[1]?.stepId).toBe("mov-trap-of-wandeling");
     expect(options[2]?.stepId).toBe("mov-kracht-onderhoud-week");
+  });
+
+  it("carries a stable tier description on every option", () => {
+    const options = resolveTodayChoiceOptions("mov-kracht-onderhoud-week");
+    expect(options.map((option) => option.tierDescription)).toEqual([
+      "Herstel, mobiliteit of rust",
+      "Conditie opbouwen zonder je te slopen",
+      "Volle belasting — kracht of conditie",
+    ]);
+  });
+
+  it("keeps zone labels out of the card title for a conditie starter", () => {
+    const options = resolveTodayChoiceOptions("mov-trap-of-wandeling", "conditie");
+    expect(options[1]?.title).not.toMatch(/zone/i);
+  });
+
+  it("carries a non-empty tier explanation on every option", () => {
+    const options = resolveTodayChoiceOptions("mov-kracht-onderhoud-week");
+    for (const option of options) {
+      expect(option.tierExplanation.length).toBeGreaterThan(80);
+    }
+    expect(options[2]?.tierExplanation).toMatch(/48 tot 72 uur/);
+  });
+});
+
+describe("resolveModerateStepId", () => {
+  it("returns the aerobic base step for a kracht training step", () => {
+    expect(resolveModerateStepId("mov-kracht-onderhoud-week", "kracht")).toBe(
+      "mov-trap-of-wandeling",
+    );
+  });
+
+  it("never collides with the training step", () => {
+    expect(resolveModerateStepId("mov-trap-of-wandeling", "conditie")).not.toBe(
+      "mov-trap-of-wandeling",
+    );
+  });
+
+  it("picks a conditioning moderate step for the conditie pattern", () => {
+    expect(resolveModerateStepId("mov-trap-of-wandeling", "conditie")).toBe(
+      "mov-conditie-onderhoud-week",
+    );
+  });
+
+  it("falls back to trap/wandeling when the conditie step is the training step", () => {
+    expect(resolveModerateStepId("mov-conditie-onderhoud-week", "conditie")).toBe(
+      "mov-trap-of-wandeling",
+    );
   });
 });
 
@@ -34,7 +83,7 @@ describe("inferCompletedChoice", () => {
   it("returns the matching choice kind from daily-log keys", () => {
     const options = resolveTodayChoiceOptions("mov-kracht-onderhoud-week");
     expect(inferCompletedChoice([REST_DAY_STEP_ID], options)).toBe("herstel");
-    expect(inferCompletedChoice(["mov-trap-of-wandeling"], options)).toBe("licht");
+    expect(inferCompletedChoice(["mov-trap-of-wandeling"], options)).toBe("matig");
     expect(inferCompletedChoice(["mov-kracht-onderhoud-week"], options)).toBe("trainen");
     expect(inferCompletedChoice([], options)).toBeNull();
   });
@@ -161,8 +210,8 @@ describe("resolveRecommendedTodayChoiceKind", () => {
     expect(resolveRecommendedTodayChoiceKind(5, intakeRestHint)).toBe("trainen");
   });
 
-  it("recommends licht on redelijk check-in", () => {
-    expect(resolveRecommendedTodayChoiceKind(4, intakeRestHint)).toBe("licht");
+  it("recommends matig on redelijk check-in", () => {
+    expect(resolveRecommendedTodayChoiceKind(4, intakeRestHint)).toBe("matig");
   });
 
   it("recommends herstel on low fresh check-in", () => {

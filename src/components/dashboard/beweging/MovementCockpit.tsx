@@ -1,13 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { Sparkline } from "@/components/app/primitives";
 import MovementRouteLadder from "@/components/dashboard/beweging/MovementRouteLadder";
+import MovementStartChoice from "@/components/dashboard/beweging/MovementStartChoice";
 import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { PILLAR } from "@/data/dashboard";
+import { isPlanStepHidden } from "@/lib/day-model";
 import { buildDomainTrendRow } from "@/lib/leefstijllijn";
+import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { DashboardModel } from "@/types/dashboard";
 
@@ -55,21 +59,52 @@ export default function MovementCockpit({
   const hasTrend = trendRow.trend.length >= 2;
   const remeasureDue = remeasure != null && remeasure.daysUntil <= 0;
 
+  // Prefs-override zodat de hero direct de nieuwe keuze gebruikt zonder
+  // model-herbouw; sessie-skip blokkeert de dagstap niet permanent.
+  const [prefsOverride, setPrefsOverride] = useState<MovementPrefs | null>(null);
+  const [choiceOpen, setChoiceOpen] = useState(false);
+  const [skippedSession, setSkippedSession] = useState(false);
+  const movementPrefs = prefsOverride ?? model.movementPrefs;
+
+  const activeOwnStep = Boolean(
+    slot &&
+      slot.isToday &&
+      slot.domain === "beweging" &&
+      !isPlanStepHidden(model, slot),
+  );
+  const showStartChoice =
+    activeOwnStep &&
+    (choiceOpen || (movementPrefs.startPattern == null && !skippedSession));
+
   return (
     <CockpitShell accent={accent} ariaLabel="Beweeg-cockpit">
       {/* DOM-volgorde = mobiele stack (hero eerst). lg-plaatsing zet score
           links en de route hoog zodat het first viewport-werk zonder scroll
           zichtbaar is. */}
       <div className="grid gap-3 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-4">
-        {/* VANDAAG — dominante tegel */}
+        {/* VANDAAG — dominante tegel; zonder prefs eerst de start-keuze (één vandaag-UI) */}
         <div className="lg:col-start-2 lg:row-start-1">
-          <MovementTodayHero
-            model={model}
-            slot={slot}
-            onGoAgenda={onGoAgenda}
-            onMakePriority={onMakePriority}
-            makePriorityBusy={makePriorityBusy}
-          />
+          {showStartChoice ? (
+            <MovementStartChoice
+              onSaved={(prefs) => {
+                setPrefsOverride(prefs);
+                setChoiceOpen(false);
+              }}
+              onSkip={() => {
+                setSkippedSession(true);
+                setChoiceOpen(false);
+              }}
+            />
+          ) : (
+            <MovementTodayHero
+              model={model}
+              slot={slot}
+              movementPrefs={movementPrefs}
+              onGoAgenda={onGoAgenda}
+              onMakePriority={onMakePriority}
+              makePriorityBusy={makePriorityBusy}
+            />
+          )}
         </div>
 
         {/* WAAR JE STAAT — echte beweegscore + narratieve Future You-regel */}
@@ -172,7 +207,13 @@ export default function MovementCockpit({
         {/* JOUW ROUTE — read-only ladder (mobiel) / horizontale stepper (lg).
             Desktop hoog (row-start-2) zodat 'ie zonder scroll zichtbaar is. */}
         <div className="lg:col-start-2 lg:row-start-2">
-          <MovementRouteLadder model={model} />
+          <MovementRouteLadder
+            model={model}
+            startPattern={movementPrefs.startPattern}
+            onChangeStartPattern={
+              activeOwnStep ? () => setChoiceOpen(true) : undefined
+            }
+          />
         </div>
 
         {/* JE VOLGENDE MEETMOMENT — forward-pointer */}

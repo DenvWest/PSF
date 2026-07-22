@@ -3,6 +3,7 @@ import {
   perfectSupplementMeasurementConfig,
 } from "@/data/measurement-config";
 import { buildDeltaReport } from "@/lib/delta-report";
+import { EMPTY_MOVEMENT_PREFS } from "@/lib/movement-prefs";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import type {
@@ -141,5 +142,6 @@ export function buildDevDashboardData(
     planDomain: "nutrition",
     priorityPref: null,
     sleepCheckinFocus: null,
+    movementPrefs: EMPTY_MOVEMENT_PREFS,
   };
 }

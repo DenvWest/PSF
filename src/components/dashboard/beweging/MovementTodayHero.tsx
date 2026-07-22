@@ -10,6 +10,11 @@ import { invalidateDailyLogCache } from "@/lib/daily-log-client";
 import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import {
+  buildAnchorWhySuffix,
+  resolvePatternTrainingStepId,
+  type MovementPrefs,
+} from "@/lib/movement-prefs";
+import {
   buildMovementRecoveryHint,
   buildMovementRecoveryInput,
 } from "@/lib/movement-recovery-hint";
@@ -33,13 +38,14 @@ import type { DashboardModel } from "@/types/dashboard";
 
 const SURFACE = "kompas_beweging";
 
-type StepAlternativeChoice = "herstel" | "licht" | "trainen";
+type StepAlternativeChoice = "herstel" | "matig" | "trainen";
 
 type TrainingGateView = "question" | "advice";
 
 type MovementTodayHeroProps = {
   model: DashboardModel;
   slot: WeekDaySlot | null;
+  movementPrefs: MovementPrefs;
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
@@ -82,7 +88,7 @@ function choiceIcon(kind: TodayChoiceKind) {
   if (kind === "herstel") {
     return <Icons.Moon s={18} />;
   }
-  if (kind === "licht") {
+  if (kind === "matig") {
     return <Icons.Footprints s={18} />;
   }
   return <Icons.Activity s={18} />;
@@ -97,45 +103,87 @@ function ChoiceCard({
   recommended: boolean;
   onSelect: (kind: TodayChoiceKind) => void;
 }) {
+  const [infoOpen, setInfoOpen] = useState(false);
+  const explanationId = `tier-explain-${option.kind}`;
+
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(option.kind)}
+    <div
       className={
         recommended
-          ? "flex w-full cursor-pointer items-start gap-3 rounded-xl border border-[color:var(--ac)]/50 bg-[color:var(--ac)]/10 p-4 text-left transition-colors"
-          : "flex w-full cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-black/25 p-4 text-left transition-colors hover:border-white/20"
+          ? "rounded-xl border border-[color:var(--ac)]/50 bg-[color:var(--ac)]/10 transition-colors"
+          : "rounded-xl border border-white/10 bg-black/25 transition-colors hover:border-white/20"
       }
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 text-[color:var(--ac)]">
-        {choiceIcon(option.kind)}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="flex flex-wrap items-center gap-2">
-          <span className="font-serif text-[16px] text-[#F1EFE8]">{option.label}</span>
-          {recommended ? (
-            <span className="rounded-full bg-[color:var(--ac)]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[color:var(--ac)]">
-              Aanbevolen
-            </span>
-          ) : null}
+      <button
+        type="button"
+        onClick={() => onSelect(option.kind)}
+        className="flex w-full cursor-pointer items-start gap-3 p-4 text-left"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 text-[color:var(--ac)]">
+          {choiceIcon(option.kind)}
         </span>
-        <span className="mt-1 block text-[13px] leading-snug text-[#CDD7D0] text-pretty">
-          {option.title}
+        <span className="min-w-0 flex-1">
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="font-serif text-[16px] text-[#F1EFE8]">{option.label}</span>
+            {recommended ? (
+              <span className="rounded-full bg-[color:var(--ac)]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[color:var(--ac)]">
+                Aanbevolen
+              </span>
+            ) : null}
+          </span>
+          <span className="mt-1 block text-[13px] leading-snug text-[#CDD7D0] text-pretty">
+            {option.tierDescription}
+          </span>
+          <span className="mt-1 block text-[13px] font-medium leading-snug text-[#E7EDE8] text-pretty">
+            {option.title}
+          </span>
+          <span className="mt-2 inline-flex items-center gap-1 text-[12px] text-[#9FB0A6]">
+            <Icons.Clock s={12} /> {option.durationLabel}
+          </span>
         </span>
-        <span className="mt-2 inline-flex items-center gap-1 text-[12px] text-[#9FB0A6]">
-          <Icons.Clock s={12} /> {option.durationLabel}
+        <span className="mt-2 shrink-0 text-[#7E8C82]">
+          <Icons.ChevronRight s={16} />
         </span>
-      </span>
-      <span className="mt-2 shrink-0 text-[#7E8C82]">
-        <Icons.ChevronRight s={16} />
-      </span>
-    </button>
+      </button>
+
+      <div className="border-t border-white/5 px-4">
+        <button
+          type="button"
+          onClick={() => setInfoOpen((open) => !open)}
+          aria-expanded={infoOpen}
+          aria-controls={explanationId}
+          className="flex w-full cursor-pointer items-center justify-between gap-2 border-none bg-transparent py-2.5 text-left text-[12px] font-medium text-[#9FB0A6]"
+        >
+          <span>Wat houdt {option.label.toLowerCase()} in?</span>
+          <span
+            className={
+              infoOpen
+                ? "rotate-180 text-[#7E8C82] transition-transform"
+                : "text-[#7E8C82] transition-transform"
+            }
+          >
+            <Icons.ChevronDown s={14} />
+          </span>
+        </button>
+        <p
+          id={explanationId}
+          className={
+            infoOpen
+              ? "block pb-3 text-[12.5px] leading-relaxed text-[#B9C6BC] text-pretty"
+              : "hidden pb-3 text-[12.5px] leading-relaxed text-[#B9C6BC] text-pretty"
+          }
+        >
+          {option.tierExplanation}
+        </p>
+      </div>
+    </div>
   );
 }
 
 export default function MovementTodayHero({
   model,
   slot,
+  movementPrefs,
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
@@ -146,11 +194,21 @@ export default function MovementTodayHero({
   const [trainingGateView, setTrainingGateView] = useState<TrainingGateView>("question");
   const [trainingGateCleared, setTrainingGateCleared] = useState(false);
   const [logHydrated, setLogHydrated] = useState(false);
+  const [noTimeActive, setNoTimeActive] = useState(false);
 
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hidden = slot ? isPlanStepHidden(model, slot) : true;
   const active = isOwnStep && !hidden && slot != null;
-  const trainingStepId = active && slot ? resolveActionKey(model, slot) : "";
+  const dayStepId = active && slot ? resolveActionKey(model, slot) : "";
+  // Trainen-slot volgt het startpatroon; fallback = day-model-stap (SSOT).
+  const trainingStepId = dayStepId
+    ? resolvePatternTrainingStepId(
+        model.domainScores,
+        model.answers ?? {},
+        movementPrefs.startPattern,
+        dayStepId,
+      )
+    : "";
 
   const rcvFeelForHint = resolveRcvFeelForRecoveryHint(
     model.movementRcvFeel,
@@ -178,8 +236,11 @@ export default function MovementTodayHero({
   });
 
   const choiceOptions = useMemo(
-    () => (trainingStepId ? resolveTodayChoiceOptions(trainingStepId) : []),
-    [trainingStepId],
+    () =>
+      trainingStepId
+        ? resolveTodayChoiceOptions(trainingStepId, movementPrefs.startPattern)
+        : [],
+    [trainingStepId, movementPrefs.startPattern],
   );
 
   const activeChoice = selectedKind
@@ -266,6 +327,7 @@ export default function MovementTodayHero({
   const selectChoice = (kind: TodayChoiceKind) => {
     invalidateDailyLogCache("beweging");
     trackStepChoice(kind);
+    setNoTimeActive(false);
     setFreshChoice(true);
     setSelectedKind(kind);
     if (kind === "trainen") {
@@ -286,8 +348,29 @@ export default function MovementTodayHero({
     clarityTag("dashboard_kompas_beweging", "step_alternative_wijzig_keuze");
     setSelectedKind(null);
     setFreshChoice(false);
+    setNoTimeActive(false);
     setTrainingGateView("question");
     setTrainingGateCleared(false);
+  };
+
+  /**
+   * Geen tijd? — wissel naar de lichtere keuze van vandaag (kort/rust):
+   * herstel wanneer de recovery-hint een rustdag promoot, anders van
+   * trainen → matig en van matig → herstel. Zelfde daily-log-keys.
+   */
+  const selectNoTime = (fromKind: TodayChoiceKind) => {
+    const lighterKind: TodayChoiceKind =
+      recovery?.promoteRustdagStep || fromKind === "matig" ? "herstel" : "matig";
+    trackEvent("dashboard_vandaag_step_alternative", {
+      choice: "geen_tijd",
+      from: fromKind,
+      to: lighterKind,
+      domain: "beweging",
+      surface: SURFACE,
+    });
+    clarityTag("dashboard_kompas_beweging", "step_alternative_geen_tijd");
+    selectChoice(lighterKind);
+    setNoTimeActive(true);
   };
 
   const choiceFooter = (
@@ -418,7 +501,7 @@ export default function MovementTodayHero({
                 Herstel telt ook mee
               </h3>
               <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-                Na zware training is rust of licht bewegen vaak slimmer. Kies wat
+                Na zware training is rust of matig bewegen vaak slimmer. Kies wat
                 vandaag klopt — of ga bewust door als je je fit voelt.
               </p>
               <div className="mt-4 flex flex-col gap-2">
@@ -431,10 +514,10 @@ export default function MovementTodayHero({
                 </button>
                 <button
                   type="button"
-                  onClick={() => selectChoice("licht")}
+                  onClick={() => selectChoice("matig")}
                   className="min-h-11 cursor-pointer rounded-xl border border-white/15 bg-black/25 px-4 text-left text-[14px] font-semibold text-[#E7EDE8]"
                 >
-                  Kies licht bewegen
+                  Kies matig bewegen
                 </button>
                 <button
                   type="button"
@@ -465,6 +548,8 @@ export default function MovementTodayHero({
     const supportingLine = firstSentence(
       stepRationale(activeChoice.stepId) ?? slot?.rationale ?? "",
     );
+    // Anker kleurt alleen de waarom-copy (§5a) — nooit een score.
+    const anchorSuffix = buildAnchorWhySuffix(movementPrefs.anchor);
     const modality = modalityLabelForChoice(activeChoice.kind, activeChoice.stepId);
 
     return (
@@ -481,9 +566,16 @@ export default function MovementTodayHero({
           <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
             {activeChoice.title}
           </h3>
-          {supportingLine ? (
+          {noTimeActive && !done ? (
+            <p className="mt-2 text-[13px] font-medium text-[color:var(--ac)]">
+              Drukke dag? Dit telt volledig mee.
+            </p>
+          ) : null}
+          {supportingLine || anchorSuffix ? (
             <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
               {supportingLine}
+              {supportingLine && anchorSuffix ? " " : ""}
+              {anchorSuffix}
             </p>
           ) : null}
           <p className="mt-2 inline-flex items-center gap-1 text-[12px] text-[#9FB0A6]">
@@ -516,13 +608,24 @@ export default function MovementTodayHero({
               Morgen kies je opnieuw wat past.
             </p>
           ) : (
-            <button
-              type="button"
-              onClick={resetChoice}
-              className="mt-3 w-full cursor-pointer border-none bg-transparent p-0 text-center text-[13px] font-medium text-[#9FB0A6]"
-            >
-              Wijzig keuze
-            </button>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+              <button
+                type="button"
+                onClick={resetChoice}
+                className="cursor-pointer border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
+              >
+                Wijzig keuze
+              </button>
+              {activeChoice.kind !== "herstel" && !noTimeActive ? (
+                <button
+                  type="button"
+                  onClick={() => selectNoTime(activeChoice.kind)}
+                  className="cursor-pointer border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
+                >
+                  Geen tijd vandaag?
+                </button>
+              ) : null}
+            </div>
           )}
 
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">

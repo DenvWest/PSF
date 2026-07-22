@@ -9,6 +9,10 @@ import {
   buildPlanIntakeContext,
   computeCurrentPhaseId,
 } from "@/lib/lifestyle-plan-eval";
+import {
+  startPatternLabel,
+  type MovementStartPattern,
+} from "@/lib/movement-prefs";
 import type { DashboardModel } from "@/types/dashboard";
 
 const HORIZON_LABEL: Record<string, string> = {
@@ -19,6 +23,8 @@ const HORIZON_LABEL: Record<string, string> = {
 
 type MovementRouteLadderProps = {
   model: DashboardModel;
+  startPattern?: MovementStartPattern | null;
+  onChangeStartPattern?: () => void;
 };
 
 function stepCircleClass(isNow: boolean, isPast: boolean): string {
@@ -36,7 +42,11 @@ function stepCircleClass(isNow: boolean, isPast: boolean): string {
  * Huidige fase licht op; geen afvink-oppervlak (roadmap: GÉÉN tweede dag-waarheid).
  * Mobiel = verticale ladder; lg = horizontale stepper.
  */
-export default function MovementRouteLadder({ model }: MovementRouteLadderProps) {
+export default function MovementRouteLadder({
+  model,
+  startPattern = null,
+  onChangeStartPattern,
+}: MovementRouteLadderProps) {
   const phases = movementPlanTemplate.phases;
   const ctx = buildPlanIntakeContext(
     model.domainScores,
@@ -163,15 +173,28 @@ export default function MovementRouteLadder({ model }: MovementRouteLadderProps)
         })}
       </ol>
 
-      <Link
-        href="/intake/plan/movement?from=dashboard&kompas=beweging"
-        onClick={() => {
-          trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging" });
-        }}
-        className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold text-[color:var(--ac)] no-underline"
-      >
-        Bekijk je volledige stappenplan <Icons.ArrowRight s={14} />
-      </Link>
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+        <Link
+          href="/intake/plan/movement?from=dashboard&kompas=beweging"
+          onClick={() => {
+            trackEvent("dashboard_beweging_plan_click", { surface: "kompas_beweging" });
+          }}
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-[color:var(--ac)] no-underline"
+        >
+          Bekijk je volledige stappenplan <Icons.ArrowRight s={14} />
+        </Link>
+        {onChangeStartPattern ? (
+          <button
+            type="button"
+            onClick={onChangeStartPattern}
+            className="inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
+          >
+            {startPattern
+              ? `Startpatroon: ${startPatternLabel(startPattern)} · wijzig`
+              : "Kies je startpatroon"}
+          </button>
+        ) : null}
+      </div>
     </section>
   );
 }

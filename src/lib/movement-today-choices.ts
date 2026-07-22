@@ -1,16 +1,28 @@
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
+import type { WeekCategory } from "@/lib/movement-week-categories";
 import {
   REST_DAY_STEP_ID,
   type MovementRecoveryHint,
 } from "@/lib/movement-recovery-hint";
 import type { PlanStep } from "@/types/lifestyle-plan";
 
-export type TodayChoiceKind = "herstel" | "licht" | "trainen";
+/**
+ * Drie belastings-tiers (niet modaliteiten): herstel < matig < trainen.
+ * Het tier-label is stabiel; het concrete voorbeeld (title) komt dynamisch uit
+ * de plan-stap. Zo passen toekomstige modaliteiten (yoga, pilates, 2e kracht)
+ * binnen hetzelfde kader zonder de UI te verbreden.
+ */
+export type TodayChoiceKind = "herstel" | "matig" | "trainen";
 
 export type TodayChoiceOption = {
   kind: TodayChoiceKind;
   stepId: string;
   label: string;
+  /** Generaliserende tier-regel — stabiel, los van het voorbeeld van vandaag. */
+  tierDescription: string;
+  /** Uitleg in simpele taal: mechanisme + hersteltijd + frequentie (hover/tap-reveal). */
+  tierExplanation: string;
+  /** Concreet voorbeeld van vandaag, uit de plan-stap. */
   title: string;
   durationLabel: string;
   whyLinkLabel: string;
@@ -18,24 +30,46 @@ export type TodayChoiceOption = {
 
 const ALL_STEPS = movementPlanTemplate.phases.flatMap((phase) => phase.steps);
 
-const LIGHT_FALLBACK_STEP_ID = "mov-trap-of-wandeling";
+const MODERATE_FALLBACK_STEP_ID = "mov-trap-of-wandeling";
+const MODERATE_CONDITIONING_STEP_ID = "mov-conditie-onderhoud-week";
 
 const CHOICE_META: Record<
   TodayChoiceKind,
-  Pick<TodayChoiceOption, "label" | "durationLabel" | "whyLinkLabel">
+  Pick<
+    TodayChoiceOption,
+    "label" | "tierDescription" | "tierExplanation" | "durationLabel" | "whyLinkLabel"
+  >
 > = {
   herstel: {
     label: "Herstel",
+    tierDescription: "Herstel, mobiliteit of rust",
+    tierExplanation:
+      "Herstel is voorwaarden scheppen, geen niets-doen. Rustig wandelen en je spieren losmaken " +
+      "brengt bloed en zuurstof naar je spieren en houdt gewrichten soepel — zonder nieuwe belasting. " +
+      "Na een zware training of een lange matige inspanning heeft spierweefsel meestal 24 tot 72 uur " +
+      "nodig om zich te herstellen. Eén à twee bewuste hersteldagen per week houden dat ritme vol.",
     durationLabel: "10–20 min",
     whyLinkLabel: "Waarom herstel aandacht krijgt?",
   },
-  licht: {
-    label: "Licht bewegen",
-    durationLabel: "20 min",
-    whyLinkLabel: "Waarom licht bewegen?",
+  matig: {
+    label: "Matig bewegen",
+    tierDescription: "Conditie opbouwen zonder je te slopen",
+    tierExplanation:
+      "Matig bewegen is inspanning waarbij praten nog net lukt — stevig wandelen, fietsen of licht " +
+      "krachtwerk. Het bouwt je conditie en doorbloeding op en belast hart en spieren zónder je herstel " +
+      "op te maken. Juist omdat de belasting laag genoeg blijft, kun je het vaak doen: het effect zit in " +
+      "regelmaat. Een veelgebruikte richtlijn is zo'n 150 minuten per week, verspreid over meerdere dagen.",
+    durationLabel: "20–45 min",
+    whyLinkLabel: "Waarom matig bewegen?",
   },
   trainen: {
     label: "Trainen",
+    tierDescription: "Volle belasting — kracht of conditie",
+    tierExplanation:
+      "Zware training is volle belasting: krachttraining of stevige conditie waarbij vlot praten niet " +
+      "meer lukt. Die prikkel beschadigt spiervezels licht; in de rust erna herstelt je lichaam ze sterker " +
+      "— dat remt spierverlies na je 40e het hardst. Omdat de belasting hoog is, hoort er herstel bij: " +
+      "2× per week met 48 tot 72 uur ertussen is voor de meeste mannen 40+ haalbaar en effectief.",
     durationLabel: "30–45 min",
     whyLinkLabel: "Waarom deze training?",
   },
@@ -49,26 +83,42 @@ function stepTitle(stepId: string, fallback: string): string {
   return findStep(stepId)?.title ?? fallback;
 }
 
-export function resolveLightStepId(trainingStepId: string): string {
-  const trainingStep = findStep(trainingStepId);
-  if (
-    trainingStep?.tags?.includes("conditie") &&
-    trainingStep.id !== LIGHT_FALLBACK_STEP_ID
-  ) {
-    return LIGHT_FALLBACK_STEP_ID;
-  }
-  return LIGHT_FALLBACK_STEP_ID;
+/**
+ * Kiest de matige (tier 2) stap uit de moderate-pool i.p.v. altijd trap/wandeling.
+ * Botst nooit met de trainen-stap; conditie-patroon leunt op een matige
+ * conditie-onderhoudstap, kracht-patroon op de aerobe basis (trap/wandeling).
+ */
+export function resolveModerateStepId(
+  trainingStepId: string,
+  startPattern: WeekCategory | null,
+): string {
+  const moderateSteps = ALL_STEPS.filter(
+    (step) => step.intensityTier === "moderate",
+  );
+  const pool = moderateSteps.filter((step) => step.id !== trainingStepId);
+  const usable = pool.length > 0 ? pool : moderateSteps;
+
+  const preferredId =
+    startPattern === "conditie"
+      ? MODERATE_CONDITIONING_STEP_ID
+      : MODERATE_FALLBACK_STEP_ID;
+
+  const preferred = usable.find((step) => step.id === preferredId);
+  return (preferred ?? usable[0])?.id ?? MODERATE_FALLBACK_STEP_ID;
 }
 
-export function resolveTodayChoiceOptions(trainingStepId: string): TodayChoiceOption[] {
-  const lightStepId = resolveLightStepId(trainingStepId);
+export function resolveTodayChoiceOptions(
+  trainingStepId: string,
+  startPattern: WeekCategory | null = null,
+): TodayChoiceOption[] {
+  const moderateStepId = resolveModerateStepId(trainingStepId, startPattern);
 
-  return (["herstel", "licht", "trainen"] as const).map((kind) => {
+  return (["herstel", "matig", "trainen"] as const).map((kind) => {
     const stepId =
       kind === "herstel"
         ? REST_DAY_STEP_ID
-        : kind === "licht"
-          ? lightStepId
+        : kind === "matig"
+          ? moderateStepId
           : trainingStepId;
     const meta = CHOICE_META[kind];
 
@@ -76,11 +126,13 @@ export function resolveTodayChoiceOptions(trainingStepId: string): TodayChoiceOp
       kind,
       stepId,
       label: meta.label,
+      tierDescription: meta.tierDescription,
+      tierExplanation: meta.tierExplanation,
       title: stepTitle(
         stepId,
         kind === "herstel"
           ? "Rustdag of lichte wandeling"
-          : kind === "licht"
+          : kind === "matig"
             ? "Neem de trap of loop 20 min stevig"
             : "Je training van vandaag",
       ),
@@ -213,7 +265,7 @@ export function resolveRecommendedTodayChoiceKind(
       return "trainen";
     }
     if (rcvFeel === 4) {
-      return "licht";
+      return "matig";
     }
     return null;
   }
@@ -234,8 +286,8 @@ export function buildTodayChoiceRecommendationLine(
     return "Je check-in laat zien dat je klaar bent voor belasting. Trainen past vandaag.";
   }
 
-  if (recommendedKind === "licht" && rcvFeel === 4) {
-    return "Je check-in wijst op een lichte sessie vandaag. Kies wat past.";
+  if (recommendedKind === "matig" && rcvFeel === 4) {
+    return "Je check-in wijst op een matige sessie vandaag. Kies wat past.";
   }
 
   if (recommendedKind === "herstel" && rcvFeel != null && rcvFeel <= 2) {

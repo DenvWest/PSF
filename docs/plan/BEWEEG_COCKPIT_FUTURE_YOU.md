@@ -1,6 +1,6 @@
 # Beweeg-cockpit — de Future You-ervaring op Kompas
 
-> **Status: ontwerp-doc, ter review (21 jul 2026). Geen code gewijzigd. Geen implementatie tot "bouw B-1a".**
+> **Status (21 jul 2026): B-1a is live** (cockpit-shell, hero met dag-keuze Herstel/Licht/Trainen, route-ladder, responsive grid); **B-1b in bouw** (startpatroon + anker via `movement-prefs`, "Geen tijd vandaag?"). Dit doc blijft de craft/copy-SSOT voor B-1b/c/d; de tegel-beschrijvingen §2 beschrijven de doelstaat, de live code kan al verder geëvolueerd zijn (dag-keuze-laag).
 > Doel: de beweeg-view op Kompas herontwerpen als een **cockpit die vooruit wijst** — elke tegel voelt als een investering in de man die je over tien tot twintig jaar wilt zijn, niet als een fitness-dashboard. Craft = [`MovementDashboardPreview`](../../src/components/content/MovementDashboardPreview.tsx) (tegels, ring, typografie), maar met de éérlijke keuze: **echte data + narratief**, nooit een verzonnen tweede score.
 > Geënt op [`ROADMAP_DASHBOARD_COCKPIT.md`](../core/ROADMAP_DASHBOARD_COCKPIT.md) (§5 IA, §6 moat, §8.4 Future You-narratief) en [`WRITING_VOICE.md`](../core/WRITING_VOICE.md). Alle bouwbrokken binnen bestaande poorten.
 

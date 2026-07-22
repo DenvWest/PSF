@@ -35,6 +35,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
       steps: [
         {
           id: "mov-thuis-basisoefening",
+          intensityTier: "high",
           title: "Eén krachtoefening thuis: kniebuiging, opdrukken of opstaan uit een stoel",
           rationale: {
             body:
@@ -51,6 +52,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-kracht-onderhoud-week",
+          intensityTier: "high",
           title: "Eén krachtsessie: squat, push, pull",
           rationale: {
             body:
@@ -67,6 +69,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-rustdag-na-inspanning",
+          intensityTier: "recovery",
           title: "Rustdag of lichte wandeling",
           rationale: {
             body:
@@ -76,6 +79,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-trap-of-wandeling",
+          intensityTier: "moderate",
           title: "Neem de trap of loop 20 min stevig",
           rationale: {
             body:
@@ -91,6 +95,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-conditie-onderhoud-week",
+          intensityTier: "moderate",
           title: "2× matig intensief bewegen",
           rationale: {
             body:
@@ -118,6 +123,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
       steps: [
         {
           id: "mov-full-body-2x",
+          intensityTier: "high",
           title: "2× per week full-body kracht",
           rationale: {
             body:
@@ -134,6 +140,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-kracht-consistentie",
+          intensityTier: "high",
           title: "Houd 2× per week full-body vol",
           rationale: {
             body:
@@ -150,6 +157,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-conditie-zone2",
+          intensityTier: "moderate",
           title: "2× 30 min matig intensief (zone 2)",
           rationale: {
             body:
@@ -166,6 +174,7 @@ export const movementPlanTemplate: LifestylePlanTemplate = {
         },
         {
           id: "mov-conditie-interval-lite",
+          intensityTier: "high",
           title: "3× 1 min stevig doorstappen tijdens je wandeling",
           rationale: {
             body:

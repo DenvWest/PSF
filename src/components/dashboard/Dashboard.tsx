@@ -3781,6 +3781,7 @@ export default function Dashboard({
             data.sleepCheckinFocus,
             data.movementRcvFeel,
             data.movementRcvFeelAt,
+            data.movementPrefs,
           )
         : null,
     [empty, data, priorityPref],

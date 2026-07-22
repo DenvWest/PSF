@@ -6,6 +6,7 @@ import type {
   PriorityPrefSource,
   TimeBucket,
 } from "@/lib/account-priority-pref";
+import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 
 export type { TimeBucket, PriorityPrefSource };
@@ -209,6 +210,7 @@ export type DashboardData = {
   planDomain: MeasuredPillarId | null;
   priorityPref: AccountPriorityPrefData | null;
   sleepCheckinFocus: SleepCheckinFocus | null;
+  movementPrefs: MovementPrefs;
 };
 
 export type IdentityField = {
@@ -264,4 +266,5 @@ export type DashboardModel = {
   sleepFocus: SleepCheckinFocus | null;
   movementRcvFeel: number | null;
   movementRcvFeelAt: string | null;
+  movementPrefs: MovementPrefs;
 };

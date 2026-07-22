@@ -80,6 +80,13 @@ export interface PlanStepLink {
 /** Tijdshorizon van een fase — sluit aan op quickWins (nu) vs longTerm (12 wk). */
 export type PlanPhaseHorizon = "deze-week" | "week-2-4" | "week-4-12";
 
+/**
+ * Belastingsniveau van een stap, los van de modaliteit-tags (kracht/conditie/…).
+ * Stuurt de drie Vandaag-tiers op het Beweging-scherm: recovery = herstel,
+ * moderate = matig bewegen, high = trainen. Modaliteiten wisselen; het tier blijft.
+ */
+export type PlanIntensityTier = "recovery" | "moderate" | "high";
+
 /** Eén concrete, afvinkbare gedragsstap. Principe: één stap = één gedrag. */
 export interface PlanStep {
   /** Stabiel, uniek binnen het template. Sleutel in `PlanProgress` + events. */
@@ -93,6 +100,8 @@ export interface PlanStep {
   showWhen?: PlanCondition;
   /** Vrije tags voor n8n-routing / coach-filtering. */
   tags?: readonly string[];
+  /** Belastingsniveau voor de Vandaag-tiers (los van modaliteit-tags). */
+  intensityTier?: PlanIntensityTier;
 }
 
 /** Eén fase: een handvol stappen binnen één tijdshorizon. */

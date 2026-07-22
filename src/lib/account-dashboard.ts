@@ -14,6 +14,11 @@ import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { loadPlanProgress } from "@/lib/plan-progress";
 import { loadMovementRecoveryTrend, pickLatestMovementRcvFeel } from "@/lib/movement-recovery-context";
+import {
+  EMPTY_MOVEMENT_PREFS,
+  parseMovementPrefs,
+  type MovementPrefs,
+} from "@/lib/movement-prefs";
 import { getAccountPriorityPref } from "@/lib/account-priority-pref";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
@@ -53,6 +58,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   planDomain: null,
   priorityPref: null,
   sleepCheckinFocus: null,
+  movementPrefs: EMPTY_MOVEMENT_PREFS,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -119,6 +125,7 @@ export type AccountSessionSnapshot = {
   profileLabel: string;
   firstName: string | null;
   answers: Record<string, number> | null;
+  movementPrefs: MovementPrefs;
   rulesVersion: string;
 };
 
@@ -332,6 +339,7 @@ export async function loadAccountDashboardData(
         profileLabel,
         answers,
         firstName,
+        movementPrefs: parseMovementPrefs(row.answers),
         rulesVersion: parseRulesVersion(row.rules_version),
       };
     })
@@ -668,6 +676,7 @@ export async function loadAccountDashboardData(
     sessionId: latestSnapshot.id,
     planProgress,
     planDomain,
+    movementPrefs: latestSnapshot.movementPrefs,
     priorityPref,
     sleepCheckinFocus,
   };
