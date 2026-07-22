@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import type { MovementSport, MovementWeeklyFrequency } from "@/data/movement/session-catalog";
 import { getAccountFromCookie } from "@/lib/account-server";
 import {
-  ANSWER_KEY_MOVEMENT_ANCHOR,
-  ANSWER_KEY_START_PATTERN,
   isMovementAnchor,
   isMovementStartPattern,
-  parseMovementPrefs,
+  type MovementAnchor,
+  type MovementStartPattern,
 } from "@/lib/movement-prefs";
+import {
+  isMovementSport,
+  isMovementWeeklyFrequency,
+  mergeMovementPlanProfilePatch,
+  parseMovementPlanProfile,
+} from "@/lib/movement-plan-profile";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
@@ -46,6 +52,38 @@ async function resolveLatestSessionId(
   return null;
 }
 
+export async function GET() {
+  const account = await getAccountFromCookie();
+  if (!account) {
+    return NextResponse.json({ error: "Niet ingelogd." }, { status: 401 });
+  }
+
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json(
+      { error: "Database is nog niet geconfigureerd op de server." },
+      { status: 503 },
+    );
+  }
+
+  const sessionId = await resolveLatestSessionId(admin, account.id);
+  if (!sessionId) {
+    return NextResponse.json({ error: "Geen sessie gevonden." }, { status: 404 });
+  }
+
+  const { data: sessionRow, error: readError } = await admin
+    .from("intake_sessions")
+    .select("answers")
+    .eq("id", sessionId)
+    .single();
+
+  if (readError || !sessionRow) {
+    return NextResponse.json({ error: "Kon sessie niet laden." }, { status: 500 });
+  }
+
+  return NextResponse.json(parseMovementPlanProfile(sessionRow.answers), { status: 200 });
+}
+
 export async function POST(request: NextRequest) {
   const rateLimit = await consumeRateLimitForIp(
     "intake_session",
@@ -81,14 +119,22 @@ export async function POST(request: NextRequest) {
   const record = body as Record<string, unknown>;
   const hasPattern = record.startPattern !== undefined;
   const hasAnchor = record.anchor !== undefined;
+  const hasSport = record.preferredSport !== undefined;
+  const hasFrequency = record.weeklyFrequency !== undefined;
 
-  if (!hasPattern && !hasAnchor) {
+  if (!hasPattern && !hasAnchor && !hasSport && !hasFrequency) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
   if (hasPattern && !isMovementStartPattern(record.startPattern)) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
-  if (hasAnchor && !isMovementAnchor(record.anchor)) {
+  if (hasAnchor && record.anchor !== null && !isMovementAnchor(record.anchor)) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (hasSport && !isMovementSport(record.preferredSport)) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (hasFrequency && !isMovementWeeklyFrequency(record.weeklyFrequency)) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
 
@@ -122,13 +168,23 @@ export async function POST(request: NextRequest) {
       ? (sessionRow.answers as Record<string, unknown>)
       : {};
 
-  const nextAnswers: Record<string, unknown> = { ...currentAnswers };
-  if (hasPattern) {
-    nextAnswers[ANSWER_KEY_START_PATTERN] = record.startPattern;
-  }
-  if (hasAnchor) {
-    nextAnswers[ANSWER_KEY_MOVEMENT_ANCHOR] = record.anchor;
-  }
+  const nextAnswers = mergeMovementPlanProfilePatch(currentAnswers, {
+    ...(hasPattern
+      ? { startPattern: record.startPattern as MovementStartPattern }
+      : {}),
+    ...(hasAnchor
+      ? {
+          anchor:
+            record.anchor === null
+              ? null
+              : (record.anchor as MovementAnchor),
+        }
+      : {}),
+    ...(hasSport ? { preferredSport: record.preferredSport as MovementSport } : {}),
+    ...(hasFrequency
+      ? { weeklyFrequency: record.weeklyFrequency as MovementWeeklyFrequency }
+      : {}),
+  });
 
   const { error: writeError } = await admin
     .from("intake_sessions")
@@ -143,7 +199,7 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json(
-    { ok: true, ...parseMovementPrefs(nextAnswers) },
+    { ok: true, ...parseMovementPlanProfile(nextAnswers) },
     { status: 200 },
   );
 }

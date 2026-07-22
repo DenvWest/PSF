@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import MovementPlanConfigurator from "@/components/dashboard/beweging/MovementPlanConfigurator";
 import LifestylePlan from "@/components/intake/LifestylePlan";
 import IntakeLayoutActions from "@/components/intake/IntakeLayoutActions";
 import { IntakeResultsReturnBanner } from "@/components/intake/IntakeResultsReturnBanner";
@@ -24,8 +24,10 @@ const planHeaderActions = (
   </Suspense>
 );
 
-export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
+function IntakePlanPageContent({ domain }: IntakePlanPageProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const fromDashboard = searchParams.get("from") === "dashboard";
   const template = getPlanTemplate(domain);
   const [loading, setLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -91,8 +93,21 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
     );
   }
 
-  const primaryTheme = getPrimaryTheme(scores, answers);
-  const secondaryTheme = getSecondaryTheme(scores, answers, primaryTheme);
+  if (domain === "movement" && fromDashboard) {
+    return (
+      <MovementPlanConfigurator
+        scores={scores}
+        answers={answers}
+        sessionId={sessionId}
+      />
+    );
+  }
+
+  const secondaryTheme = getSecondaryTheme(
+    scores,
+    answers,
+    getPrimaryTheme(scores, answers),
+  );
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 pb-10 pt-3">
@@ -106,5 +121,19 @@ export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
         headerActions={planHeaderActions}
       />
     </div>
+  );
+}
+
+export default function IntakePlanPage({ domain }: IntakePlanPageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto w-full max-w-3xl px-6 pb-10 pt-3">
+          <p className="text-sm text-intake-ink-subtle">Plan laden…</p>
+        </div>
+      }
+    >
+      <IntakePlanPageContent domain={domain} />
+    </Suspense>
   );
 }

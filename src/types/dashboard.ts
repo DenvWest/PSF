@@ -207,6 +207,7 @@ export type DashboardData = {
   answers: Record<string, number> | null;
   sessionId: string | null;
   planProgress: PlanProgress | null;
+  movementPlanProgress: PlanProgress | null;
   planDomain: MeasuredPillarId | null;
   priorityPref: AccountPriorityPrefData | null;
   sleepCheckinFocus: SleepCheckinFocus | null;
@@ -263,6 +264,7 @@ export type DashboardModel = {
   activeHabit: ActivePlanHabit | null;
   planDomain: MeasuredPillarId | null;
   planProgress: PlanProgress | null;
+  movementPlanProgress: PlanProgress | null;
   sleepFocus: SleepCheckinFocus | null;
   movementRcvFeel: number | null;
   movementRcvFeelAt: string | null;

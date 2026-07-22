@@ -3782,6 +3782,7 @@ export default function Dashboard({
             data.movementRcvFeel,
             data.movementRcvFeelAt,
             data.movementPrefs,
+            data.movementPlanProgress,
           )
         : null,
     [empty, data, priorityPref],

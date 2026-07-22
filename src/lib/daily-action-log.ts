@@ -74,6 +74,29 @@ export type DailyActionWeekState = {
   completedKeys: string[];
 };
 
+export async function getDailyActionWeekStepKeys(
+  admin: SupabaseAdmin,
+  accountId: string,
+  domain: string,
+): Promise<string[]> {
+  const today = todayInAppTimezone();
+  const dates = getCalendarWeekDates(today);
+  const startDate = dates[0] ?? today;
+  const endDate = dates[dates.length - 1] ?? today;
+
+  const { data } = await admin
+    .from("daily_action_log")
+    .select("action_key")
+    .eq("account_id", accountId)
+    .eq("domain", domain)
+    .gte("log_date", startDate)
+    .lte("log_date", endDate);
+
+  return Array.from(
+    new Set((data ?? []).map((row) => row.action_key as string).filter(Boolean)),
+  );
+}
+
 export async function getDailyActionWeekState(
   admin: SupabaseAdmin,
   accountId: string,

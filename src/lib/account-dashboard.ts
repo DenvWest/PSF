@@ -55,6 +55,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   answers: null,
   sessionId: null,
   planProgress: null,
+  movementPlanProgress: null,
   planDomain: null,
   priorityPref: null,
   sleepCheckinFocus: null,
@@ -626,6 +627,19 @@ export async function loadAccountDashboardData(
     }
   }
 
+  let movementPlanProgress = null;
+  if (latestSnapshot.id) {
+    try {
+      movementPlanProgress = await loadPlanProgress(
+        admin,
+        latestSnapshot.id,
+        "movement",
+      );
+    } catch {
+      movementPlanProgress = null;
+    }
+  }
+
   const deltaReport =
     snapshots.length >= 2
       ? buildDeltaReport({
@@ -675,6 +689,7 @@ export async function loadAccountDashboardData(
     answers: latestAnswers,
     sessionId: latestSnapshot.id,
     planProgress,
+    movementPlanProgress,
     planDomain,
     movementPrefs: latestSnapshot.movementPrefs,
     priorityPref,

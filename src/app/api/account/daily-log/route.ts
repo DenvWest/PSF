@@ -4,7 +4,12 @@ import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
-import { getDailyActionState, getDailyActionWeekState, toggleDailyAction } from "@/lib/daily-action-log";
+import {
+  getDailyActionState,
+  getDailyActionWeekState,
+  getDailyActionWeekStepKeys,
+  toggleDailyAction,
+} from "@/lib/daily-action-log";
 import { emitEvent } from "@/lib/events";
 
 const DOMAINS = [
@@ -43,12 +48,17 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const domain = (params.get("domain") ?? "").trim();
+
   if (range === "7") {
+    if (domain && isDomain(domain)) {
+      const keys = await getDailyActionWeekStepKeys(admin, account.id, domain);
+      return NextResponse.json({ keys }, { status: 200 });
+    }
     const weekState = await getDailyActionWeekState(admin, account.id);
     return NextResponse.json(weekState, { status: 200 });
   }
 
-  const domain = (params.get("domain") ?? "").trim();
   if (!isDomain(domain)) {
     return NextResponse.json({ error: "Ongeldig domein." }, { status: 400 });
   }

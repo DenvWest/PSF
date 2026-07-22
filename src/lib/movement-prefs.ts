@@ -2,6 +2,7 @@ import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
 import type { QuestionId } from "@/data/intake-questions";
 import {
   buildPlanIntakeContext,
+  computeCurrentPhaseId,
   selectVisibleSteps,
 } from "@/lib/lifestyle-plan-eval";
 import { REST_DAY_STEP_ID } from "@/lib/movement-recovery-hint";
@@ -124,24 +125,18 @@ export function startPatternLabel(pattern: MovementStartPattern): string {
 }
 
 /**
- * Trainen-stap volgt het startpatroon: eerste zichtbare week-fase-stap in de
- * gekozen categorie (rustdag uitgesloten — die is de Herstel-keuze). Geen
- * match of `dagelijks_ritme` → day-model-stap (fallback blijft de SSOT-stap).
+ * Trainen-stap volgt het startpatroon: eerste zichtbare stap in de gekozen
+ * categorie binnen de actieve fase (rustdag uitgesloten — Herstel-keuze).
+ * Geen match of `dagelijks_ritme` → day-model-stap (fallback = SSOT-stap).
  */
 export function resolvePatternTrainingStepId(
   domainScores: DomainScores,
   answers: Record<string, number>,
   pattern: MovementStartPattern | null,
   fallbackStepId: string,
+  phaseStepStates: Record<string, { state: string }> = {},
 ): string {
   if (!pattern || pattern === "dagelijks_ritme") {
-    return fallbackStepId;
-  }
-
-  const phase = movementPlanTemplate.phases.find(
-    (entry) => entry.id === MOVEMENT_WEEK_PHASE_ID,
-  );
-  if (!phase) {
     return fallbackStepId;
   }
 
@@ -150,6 +145,20 @@ export function resolvePatternTrainingStepId(
     answers as Record<QuestionId, number>,
     "movement",
   );
+  const currentPhaseId = computeCurrentPhaseId(
+    movementPlanTemplate.phases,
+    ctx,
+    phaseStepStates,
+  );
+  const phase =
+    movementPlanTemplate.phases.find((entry) => entry.id === currentPhaseId) ??
+    movementPlanTemplate.phases.find(
+      (entry) => entry.id === MOVEMENT_WEEK_PHASE_ID,
+    );
+  if (!phase) {
+    return fallbackStepId;
+  }
+
   const visible = selectVisibleSteps(phase, ctx);
   const match = filterStepsForCategory(visible, pattern).find(
     (step) => step.id !== REST_DAY_STEP_ID,

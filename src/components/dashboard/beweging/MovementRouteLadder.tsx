@@ -14,6 +14,7 @@ import {
   type MovementStartPattern,
 } from "@/lib/movement-prefs";
 import type { DashboardModel } from "@/types/dashboard";
+import type { PlanProgress } from "@/types/lifestyle-plan";
 
 const HORIZON_LABEL: Record<string, string> = {
   "deze-week": "deze week",
@@ -25,6 +26,7 @@ type MovementRouteLadderProps = {
   model: DashboardModel;
   startPattern?: MovementStartPattern | null;
   onChangeStartPattern?: () => void;
+  planProgressOverride?: PlanProgress | null;
 };
 
 function stepCircleClass(isNow: boolean, isPast: boolean): string {
@@ -46,6 +48,7 @@ export default function MovementRouteLadder({
   model,
   startPattern = null,
   onChangeStartPattern,
+  planProgressOverride,
 }: MovementRouteLadderProps) {
   const phases = movementPlanTemplate.phases;
   const ctx = buildPlanIntakeContext(
@@ -53,14 +56,16 @@ export default function MovementRouteLadder({
     (model.answers ?? {}) as Record<QuestionId, number>,
     "movement",
   );
+  const progress =
+    planProgressOverride ?? model.movementPlanProgress ?? model.planProgress;
   const phaseStepStates = Object.fromEntries(
-    Object.entries(model.planProgress?.steps ?? {}).map(([id, entry]) => [
+    Object.entries(progress?.steps ?? {}).map(([id, entry]) => [
       id,
       { state: entry.state },
     ]),
   );
   const currentPhaseId =
-    model.planProgress?.currentPhaseId ??
+    progress?.currentPhaseId ??
     computeCurrentPhaseId(phases, ctx, phaseStepStates);
   const currentIndex = phases.findIndex((phase) => phase.id === currentPhaseId);
   const lastIndex = phases.length - 1;

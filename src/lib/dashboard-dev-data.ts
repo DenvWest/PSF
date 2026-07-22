@@ -139,6 +139,7 @@ export function buildDevDashboardData(
     answers: devAnswersForCheck(mode === "retest" ? "check2" : "check1"),
     sessionId: "dev-session",
     planProgress: null,
+    movementPlanProgress: null,
     planDomain: "nutrition",
     priorityPref: null,
     sleepCheckinFocus: null,

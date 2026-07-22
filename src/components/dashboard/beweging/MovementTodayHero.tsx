@@ -207,6 +207,11 @@ export default function MovementTodayHero({
         model.answers ?? {},
         movementPrefs.startPattern,
         dayStepId,
+        Object.fromEntries(
+          Object.entries(model.movementPlanProgress?.steps ?? {}).map(
+            ([id, entry]) => [id, { state: entry.state }],
+          ),
+        ),
       )
     : "";
 

@@ -53,6 +53,7 @@ export function buildModel(
   movementRcvFeel: number | null = null,
   movementRcvFeelAt: string | null = null,
   movementPrefs: DashboardModel["movementPrefs"] = EMPTY_MOVEMENT_PREFS,
+  movementPlanProgress: PlanProgress | null = null,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -127,6 +128,7 @@ export function buildModel(
     activeHabit,
     planDomain,
     planProgress,
+    movementPlanProgress,
     sleepFocus,
     movementRcvFeel,
     movementRcvFeelAt,
