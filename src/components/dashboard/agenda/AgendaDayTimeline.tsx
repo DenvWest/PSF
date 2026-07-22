@@ -45,6 +45,7 @@ type AgendaDayTimelineProps = {
   routineBlocks: AgendaBlockRecord[];
   prefBusy: boolean;
   blockBusy?: boolean;
+  hidePlanStepStrip?: boolean;
   onCompletionChange?: () => void;
   onScheduledTimeChange: (scheduledTime: string) => void;
   onCreateBlock: (input: {
@@ -90,6 +91,7 @@ export default function AgendaDayTimeline({
   routineBlocks,
   prefBusy,
   blockBusy = false,
+  hidePlanStepStrip = false,
   onCompletionChange,
   onScheduledTimeChange,
   onCreateBlock,
@@ -231,7 +233,7 @@ export default function AgendaDayTimeline({
         ) : null}
       </div>
 
-      {planStep ? (
+      {planStep && !hidePlanStepStrip ? (
         <div className="mb-3">
           <AgendaPlanStepStrip
             block={planStep}

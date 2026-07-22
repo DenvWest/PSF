@@ -3373,8 +3373,13 @@ const KompasHome = ({
     // dashboard-kolom (max 600px) naar de volle contentbreedte. Mobiel
     // ongewijzigd (util werkt alleen ≥lg). Eigen wrapper i.p.v.
     // withDomainTopNav omdat de generieke DomainTodayStrip hier vervalt.
+    // De breakout-class rekent margins uit t.o.v. de smalle 600px-kolom van
+    // de legacy layout — binnen de cockpit-shell zit dit blok al in de
+    // juiste (fluid) grid-kolom, dus daar NIET toepassen (anders duwt de
+    // class het over de linker/rechter cockpit-zones heen).
+    const breakoutClass = isCockpitShellEnabled() ? "" : "ps-cockpit-breakout ";
     return (
-      <div className="ps-cockpit-breakout -mt-0.5 flex flex-col gap-3.5">
+      <div className={`${breakoutClass}-mt-0.5 flex flex-col gap-3.5`}>
         <DomainTopNav
           activeDomain="beweging"
           onBack={handleDomainBack}
@@ -4031,7 +4036,8 @@ export default function Dashboard({
   const tabHeaderNode =
     tab === "vandaag" ? (
       <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
-    ) : tab !== "voortgang" ? (
+    ) : tab !== "voortgang" &&
+        !(isCockpitShellEnabled() && tab === "agenda") ? (
       <DashTabHeader tab={tabMeta} />
     ) : null;
 
@@ -4115,6 +4121,8 @@ export default function Dashboard({
           )
         : undefined;
     const activeHabit = model?.activeHabit ?? null;
+    const centerHasMeetmomentTile =
+      tab === "vandaag" && viewedDomain === "beweging";
     const inspectorCards = buildInspectorCards({
       activeHabit: activeHabit
         ? {
@@ -4123,9 +4131,10 @@ export default function Dashboard({
             done: activeHabit.state === "done",
           }
         : null,
-      remeasure: data?.remeasure
-        ? { daysUntil: data.remeasure.daysUntil }
-        : null,
+      remeasure:
+        centerHasMeetmomentTile || !data?.remeasure
+          ? null
+          : { daysUntil: data.remeasure.daysUntil },
       anchorWhy: anchorOption?.whySuffix ?? null,
     });
 
@@ -4143,7 +4152,11 @@ export default function Dashboard({
           onCheckin={() => selectTab("vandaag")}
           inspectorCards={inspectorCards}
         >
-          <div className="mx-auto w-full max-w-[720px]">
+          <div
+            className={`mx-auto w-full ${
+              tab === "agenda" ? "max-w-[760px]" : "max-w-[720px]"
+            }`}
+          >
             {tabHeaderNode}
             {sectionsNode}
             {footerNode}

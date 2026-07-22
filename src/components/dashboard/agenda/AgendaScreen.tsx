@@ -4,8 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
+import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
+import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import {
   createAgendaBlock,
   deleteAgendaBlock,
@@ -20,6 +22,7 @@ import {
 } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { isPlanStepHidden } from "@/lib/day-model";
+import { isCockpitShellEnabled } from "@/lib/feature-flags";
 import { trackAgendaDaySelected, trackEvent } from "@/lib/ga4";
 import {
   postDismissPlanStep,
@@ -348,8 +351,36 @@ export default function AgendaScreen({
     onGoVoortgang();
   };
 
+  const cockpitMode = isCockpitShellEnabled();
+  const showCockpitHero =
+    cockpitMode &&
+    todaySlot.isToday &&
+    !isPlanStepHidden(model, todaySlot);
+
   return (
-    <AgendaShell accentColor={model.priority.color}>
+    <>
+      {showCockpitHero ? (
+        <div className="mb-4">
+          <CockpitShell
+            accent={model.priority.color}
+            ariaLabel="Mijn dag — uitvoeren"
+          >
+            <AgendaTodayHero
+              model={model}
+              slot={todaySlot}
+              prefBusy={prefBusy}
+              variant="cockpit"
+              actionSurface="agenda_today"
+              onCompletionChange={refreshWeekState}
+              onScheduledTimeChange={(scheduledTime) =>
+                void handleScheduledTime(scheduledTime)
+              }
+            />
+          </CockpitShell>
+        </div>
+      ) : null}
+
+      <AgendaShell accentColor={model.priority.color}>
       <AgendaShellSection className="!pt-3 pb-5">
         <AgendaDayTimeline
           model={model}
@@ -357,6 +388,7 @@ export default function AgendaScreen({
           routineBlocks={blocksLoaded ? routineBlocks : []}
           prefBusy={prefBusy}
           blockBusy={blockBusy}
+          hidePlanStepStrip={showCockpitHero && selectedSlot.isToday}
           onCompletionChange={refreshWeekState}
           onScheduledTimeChange={(scheduledTime) => void handleScheduledTime(scheduledTime)}
           onCreateBlock={handleCreateBlock}
@@ -418,5 +450,6 @@ export default function AgendaScreen({
         </div>
       </AgendaShellSection>
     </AgendaShell>
+    </>
   );
 }

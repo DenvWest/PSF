@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaTimeBucketPicker from "@/components/dashboard/agenda/AgendaTimeBucketPicker";
 import { PILLAR } from "@/data/dashboard";
@@ -29,7 +30,7 @@ type AgendaTodayHeroProps = {
   model: DashboardModel;
   slot: WeekDaySlot;
   prefBusy?: boolean;
-  variant?: "default" | "detail";
+  variant?: "default" | "detail" | "cockpit";
   actionSurface?: "agenda_today" | "agenda_block_detail" | "kompas_home";
   onCompletionChange?: () => void;
   onScheduledTimeChange?: (scheduledTime: string) => void;
@@ -172,8 +173,221 @@ export default function AgendaTodayHero({
     }
   };
 
+  const isCockpit = variant === "cockpit";
   const domainLabel =
-    variant === "detail" ? `${pillar.label} · stap uit je plan` : pillar.label;
+    variant === "detail"
+      ? `${pillar.label} · stap uit je plan`
+      : isCockpit
+        ? `vandaag · ${pillar.label.toLowerCase()}`
+        : pillar.label;
+
+  const scheduleControl =
+    isToday && onScheduledTimeChange ? (
+      <button
+        type="button"
+        disabled={prefBusy}
+        onClick={() => setMoveExpanded((open) => !open)}
+        aria-expanded={moveExpanded}
+        className={
+          isCockpit
+            ? "inline-flex min-h-11 shrink-0 cursor-pointer items-center border-none bg-transparent px-0 text-[12px] font-semibold text-[color:var(--ac)] disabled:opacity-60"
+            : "inline-flex min-h-11 shrink-0 cursor-pointer items-center border-none bg-transparent px-0 text-[12px] font-semibold text-[var(--sage)] disabled:opacity-60"
+        }
+        style={{ fontFamily: "var(--f-sans)" }}
+      >
+        {moveExpanded ? "Sluit" : "Verplaats"}
+      </button>
+    ) : null;
+
+  const doneButton = isToday ? (
+    <>
+      <button
+        type="button"
+        aria-label={
+          resolvedDone ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"
+        }
+        aria-pressed={resolvedDone}
+        disabled={!loaded || toggleBusy}
+        onClick={() => void toggleDaily()}
+        className={
+          isCockpit
+            ? "mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
+            : "mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-[12px] border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
+        }
+        style={
+          isCockpit
+            ? {
+                background: resolvedDone ? "rgba(90,143,106,0.22)" : "var(--ac)",
+                color: resolvedDone ? "#E7EDE8" : "#0f1c10",
+              }
+            : {
+                background: resolvedDone ? "rgba(90, 143, 106, 0.15)" : "var(--sage)",
+                color: "#0f1c10",
+                fontFamily: "var(--f-sans)",
+              }
+        }
+      >
+        {resolvedDone ? (
+          <>
+            <Icons.Check s={16} />
+            Gedaan
+          </>
+        ) : isCockpit ? (
+          "Markeer als gedaan ✓"
+        ) : (
+          "Markeer als gedaan"
+        )}
+      </button>
+
+      {resolvedStreak >= 2 ? (
+        <p
+          className={
+            isCockpit
+              ? "mt-2 text-center text-[12px] text-[#9FB0A6]"
+              : "mt-2 text-center text-[12px] text-[#78716c]"
+          }
+        >
+          {resolvedStreak} dagen op rij
+        </p>
+      ) : null}
+
+      {resolvedDone ? (
+        <p
+          className={
+            isCockpit
+              ? "mt-3 text-center text-[13px] text-[#9FB0A6]"
+              : "mt-3 text-center text-[13px] text-[#78716c]"
+          }
+        >
+          {isCockpit
+            ? "Morgen kies je opnieuw wat past."
+            : "Morgen staat hier je volgende stap."}
+        </p>
+      ) : null}
+    </>
+  ) : (
+    <p
+      className={
+        isCockpit
+          ? "mt-3 text-[13px] leading-normal text-[#9FB0A6] text-pretty"
+          : "mt-3 text-[13px] leading-normal text-[#78716c] text-pretty"
+      }
+    >
+      Je kunt deze stap afvinken zodra het zover is.
+    </p>
+  );
+
+  const footerLinks = (
+    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <Link
+        href={onderbouwingHref}
+        onClick={() => {
+          const onderbouwingSurface =
+            actionSurface === "agenda_block_detail" || actionSurface === "kompas_home"
+              ? actionSurface
+              : isToday
+                ? "agenda_today"
+                : "agenda_preview";
+          trackOnderbouwingLinkClick({ surface: onderbouwingSurface, domain });
+          clarityTag("onderbouwing_link", onderbouwingSurface);
+        }}
+        className={
+          isCockpit
+            ? "inline-flex items-center gap-1 text-[13px] font-medium text-[#9FB0A6] no-underline"
+            : "inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+        }
+        style={isCockpit ? undefined : { color: "#78716c" }}
+      >
+        Waarom?
+        <Icons.ArrowRight s={13} />
+      </Link>
+      {slot.planLink ? (
+        <Link
+          href={slot.planLink.href}
+          className={
+            isCockpit
+              ? "inline-flex items-center gap-1 text-[13px] font-medium text-[color:var(--ac)] no-underline"
+              : "inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+          }
+          style={isCockpit ? undefined : { color: "var(--sage)" }}
+        >
+          {slot.planLink.label}
+          <Icons.ArrowRight s={13} />
+        </Link>
+      ) : null}
+      {isToday && resolvedDone ? (
+        <Link
+          href={followUp.href}
+          className={
+            isCockpit
+              ? "inline-flex items-center gap-1 text-[13px] font-medium text-[color:var(--ac)] no-underline"
+              : "inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+          }
+          style={isCockpit ? undefined : { color: "var(--sage)" }}
+        >
+          {followUp.label}
+          <Icons.ArrowRight s={13} />
+        </Link>
+      ) : null}
+    </div>
+  );
+
+  if (isCockpit) {
+    return (
+      <article
+        aria-label="Mijn dag — uitvoeren"
+        className="relative"
+        style={{ "--ac": pillar.color } as CSSProperties}
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full opacity-30 blur-[80px]"
+          style={{ background: "var(--ac)" }}
+        />
+        <div className="relative">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
+                Mijn dag · uitvoeren
+              </p>
+              <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
+                {domainLabel}
+              </p>
+            </div>
+            {scheduleControl}
+          </div>
+
+          {isToday && moveExpanded && onScheduledTimeChange ? (
+            <div className="mb-3">
+              <AgendaTimeBucketPicker
+                value={model.scheduledTime}
+                defaultBucket={activeBucket}
+                busy={prefBusy}
+                variant="compact"
+                onChange={(scheduledTime) => {
+                  onScheduledTimeChange(scheduledTime);
+                  setMoveExpanded(false);
+                }}
+              />
+            </div>
+          ) : null}
+
+          <h3 className="m-0 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
+            {slot.title}
+          </h3>
+
+          {supportingLine ? (
+            <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+              {supportingLine}
+            </p>
+          ) : null}
+
+          {doneButton}
+          {footerLinks}
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article
@@ -193,18 +407,7 @@ export default function AgendaTodayHero({
           />
           {domainLabel}
         </span>
-        {isToday && onScheduledTimeChange ? (
-          <button
-            type="button"
-            disabled={prefBusy}
-            onClick={() => setMoveExpanded((open) => !open)}
-            aria-expanded={moveExpanded}
-            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center border-none bg-transparent px-0 text-[12px] font-semibold text-[var(--sage)] disabled:opacity-60"
-            style={{ fontFamily: "var(--f-sans)" }}
-          >
-            {moveExpanded ? "Sluit" : "Verplaats"}
-          </button>
-        ) : null}
+        {scheduleControl}
       </div>
 
       {isToday && moveExpanded && onScheduledTimeChange ? (
@@ -235,91 +438,8 @@ export default function AgendaTodayHero({
         </p>
       ) : null}
 
-      {isToday ? (
-        <>
-          <button
-            type="button"
-            aria-label={
-              resolvedDone ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"
-            }
-            aria-pressed={resolvedDone}
-            disabled={!loaded || toggleBusy}
-            onClick={() => void toggleDaily()}
-            className="mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-[12px] border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
-            style={{
-              background: resolvedDone ? "rgba(90, 143, 106, 0.15)" : "var(--sage)",
-              color: "#0f1c10",
-              fontFamily: "var(--f-sans)",
-            }}
-          >
-            {resolvedDone ? (
-              <>
-                <Icons.Check s={16} />
-                Gedaan
-              </>
-            ) : (
-              "Markeer als gedaan"
-            )}
-          </button>
-
-          {resolvedStreak >= 2 ? (
-            <p className="mt-2 text-center text-[12px] text-[#78716c]">
-              {resolvedStreak} dagen op rij
-            </p>
-          ) : null}
-
-          {resolvedDone ? (
-            <p className="mt-3 text-center text-[13px] text-[#78716c]">
-              Morgen staat hier je volgende stap.
-            </p>
-          ) : null}
-        </>
-      ) : (
-        <p className="mt-3 text-[13px] leading-normal text-[#78716c] text-pretty">
-          Je kunt deze stap afvinken zodra het zover is.
-        </p>
-      )}
-
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <Link
-          href={onderbouwingHref}
-          onClick={() => {
-            const onderbouwingSurface =
-              actionSurface === "agenda_block_detail" || actionSurface === "kompas_home"
-                ? actionSurface
-                : isToday
-                  ? "agenda_today"
-                  : "agenda_preview";
-            trackOnderbouwingLinkClick({ surface: onderbouwingSurface, domain });
-            clarityTag("onderbouwing_link", onderbouwingSurface);
-          }}
-          className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-          style={{ color: "#78716c" }}
-        >
-          Waarom?
-          <Icons.ArrowRight s={13} />
-        </Link>
-        {slot.planLink ? (
-          <Link
-            href={slot.planLink.href}
-            className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-            style={{ color: "var(--sage)" }}
-          >
-            {slot.planLink.label}
-            <Icons.ArrowRight s={13} />
-          </Link>
-        ) : null}
-        {isToday && resolvedDone ? (
-          <Link
-            href={followUp.href}
-            className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-            style={{ color: "var(--sage)" }}
-          >
-            {followUp.label}
-            <Icons.ArrowRight s={13} />
-          </Link>
-        ) : null}
-      </div>
+      {doneButton}
+      {footerLinks}
     </article>
   );
 }
