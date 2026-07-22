@@ -124,6 +124,10 @@ import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isPlanStepHidden } from "@/lib/day-model";
+import { isCockpitShellEnabled } from "@/lib/feature-flags";
+import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
+import { buildInspectorCards } from "@/lib/cockpit-inspector";
+import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
@@ -4010,6 +4014,120 @@ export default function Dashboard({
       ? "ps-dash-surface-kompas"
       : "";
 
+  const tabHeaderNode =
+    tab === "vandaag" ? (
+      <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
+    ) : tab !== "voortgang" ? (
+      <DashTabHeader tab={tabMeta} />
+    ) : null;
+
+  const sectionsNode = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {empty && tab !== "voortgang" ? (
+        <EmptyTabState tab={tabMeta} onCheck={onCheck} />
+      ) : sectionTypes.length === 0 ? null : (
+        sectionTypes.map((type) => (
+          <section key={type}>
+            {renderDashboardSection(type, sharedProps)}
+          </section>
+        ))
+      )}
+    </div>
+  );
+
+  const footerNode = (
+    <footer
+      style={{
+        marginTop: 28,
+        textAlign: "center",
+        fontSize: 11.5,
+        color: "var(--text-subtle)",
+        lineHeight: 1.6,
+      }}
+    >
+      <Link
+        href="/hoe-werkt-dashboard"
+        style={{
+          color: "var(--text-muted)",
+          textDecoration: "underline",
+          textUnderlineOffset: 2,
+        }}
+      >
+        Hoe werkt dit dashboard?
+      </Link>
+      <span aria-hidden> · </span>
+      <Link
+        href="/onderbouwing"
+        onClick={() => {
+          trackOnderbouwingLinkClick({
+            surface: "dashboard_footer",
+            tab,
+            screen: voortgangScreen,
+          });
+          clarityTag("onderbouwing_link", "dashboard_footer");
+        }}
+        style={{
+          color: "var(--text-muted)",
+          textDecoration: "underline",
+          textUnderlineOffset: 2,
+        }}
+      >
+        Onderbouwing
+      </Link>
+      <br />
+      PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
+      diagnoses.
+      <br />
+      Je scores zijn een reflectie van je eigen antwoorden — geen medische
+      meetwaarden.
+      <br />
+      Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
+    </footer>
+  );
+
+  if (isCockpitShellEnabled()) {
+    const anchorOption = MOVEMENT_ANCHOR_OPTIONS.find(
+      (option) => option.id === model?.movementPrefs.anchor,
+    );
+    const activeHabit = model?.activeHabit ?? null;
+    const inspectorCards = buildInspectorCards({
+      activeHabit: activeHabit
+        ? {
+            title: activeHabit.title,
+            detail: activeHabit.detail,
+            done: activeHabit.state === "done",
+          }
+        : null,
+      remeasure: data?.remeasure
+        ? { daysUntil: data.remeasure.daysUntil }
+        : null,
+      anchorWhy: anchorOption?.whySuffix ?? null,
+    });
+
+    return (
+      <div className={`min-h-dvh ${surfaceClass}`}>
+        <CockpitFrame
+          activeTab={tab}
+          onSelectTab={selectTab}
+          domain={initialKompasView ?? null}
+          onOpenSettings={() => router.push("/account")}
+          onLogout={onLogout}
+          firstName={data?.firstName ?? null}
+          anchorLabel={anchorOption?.label ?? null}
+          statusDone={model?.activeHabit?.state === "done"}
+          onCheckin={() => selectTab("vandaag")}
+          inspectorCards={inspectorCards}
+        >
+          <div className="mx-auto w-full max-w-[720px]">
+            {tabHeaderNode}
+            {sectionsNode}
+            {footerNode}
+          </div>
+        </CockpitFrame>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
       <main
@@ -4022,69 +4140,9 @@ export default function Dashboard({
         }}
       >
         <DashHeader onLogout={onLogout} />
-        {tab === "vandaag" ? (
-          <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
-        ) : tab !== "voortgang" ? (
-          <DashTabHeader tab={tabMeta} />
-        ) : null}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {empty && tab !== "voortgang" ? (
-            <EmptyTabState tab={tabMeta} onCheck={onCheck} />
-          ) : sectionTypes.length === 0 ? null : (
-            sectionTypes.map((type) => (
-              <section key={type}>
-                {renderDashboardSection(type, sharedProps)}
-              </section>
-            ))
-          )}
-        </div>
-        <footer
-          style={{
-            marginTop: 28,
-            textAlign: "center",
-            fontSize: 11.5,
-            color: "var(--text-subtle)",
-            lineHeight: 1.6,
-          }}
-        >
-          <Link
-            href="/hoe-werkt-dashboard"
-            style={{
-              color: "var(--text-muted)",
-              textDecoration: "underline",
-              textUnderlineOffset: 2,
-            }}
-          >
-            Hoe werkt dit dashboard?
-          </Link>
-          <span aria-hidden> · </span>
-          <Link
-            href="/onderbouwing"
-            onClick={() => {
-              trackOnderbouwingLinkClick({
-                surface: "dashboard_footer",
-                tab,
-                screen: voortgangScreen,
-              });
-              clarityTag("onderbouwing_link", "dashboard_footer");
-            }}
-            style={{
-              color: "var(--text-muted)",
-              textDecoration: "underline",
-              textUnderlineOffset: 2,
-            }}
-          >
-            Onderbouwing
-          </Link>
-          <br />
-          PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
-          diagnoses.
-          <br />
-          Je scores zijn een reflectie van je eigen antwoorden — geen medische
-          meetwaarden.
-          <br />
-          Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
-        </footer>
+        {tabHeaderNode}
+        {sectionsNode}
+        {footerNode}
       </main>
       <DashTabBar tab={tab} onSelect={selectTab} />
     </div>
