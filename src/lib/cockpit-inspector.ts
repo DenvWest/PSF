@@ -1,3 +1,5 @@
+import { buildMeaningSentence } from "@/lib/betekenis-motor";
+
 /**
  * Cockpit-contextpaneel (slice 2): regelgebaseerde selectie van welke kaarten
  * rechts verschijnen, uit data die al op het dashboard beschikbaar is. Pure
@@ -39,9 +41,10 @@ export function buildInspectorCards(input: InspectorInput): InspectorCard[] {
       accent: "sage",
       kicker: "Waarom deze stap",
       title: habit.title,
-      body:
-        habit.detail ??
-        "De kleinste stap van vandaag — klein genoeg om te doen, groot genoeg om te tellen.",
+      body: buildMeaningSentence({
+        metric: habit.detail ?? habit.title,
+        anchorWhy: input.anchorWhy ?? null,
+      }),
     });
   } else {
     cards.push({

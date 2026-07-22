@@ -202,6 +202,8 @@ type SharedSectionProps = {
   prefUpdatedAt: string | null;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   sleepFocus: SleepFocusKey | null;
+  /** Meldt de live-geopende Kompas-domein aan de cockpit-shell (header/context volgen mee). */
+  onDomainViewChange?: (domain: PillarId | null) => void;
 };
 
 const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
@@ -3183,6 +3185,7 @@ const KompasHome = ({
   kompasResetSignal: _kompasResetSignal,
   prefUpdatedAt: _prefUpdatedAt,
   onPrefUpdated,
+  onDomainViewChange,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
@@ -3214,6 +3217,10 @@ const KompasHome = ({
         : null,
     [currentModel],
   );
+
+  useEffect(() => {
+    onDomainViewChange?.(domainView);
+  }, [domainView, onDomainViewChange]);
 
   useEffect(() => {
     const onPopState = () => {
@@ -3821,6 +3828,12 @@ export default function Dashboard({
   const [voortgangScreen, setVoortgangScreen] = useState<VoortgangScreen>(
     initialVoortgangScreen ?? "hub",
   );
+  // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
+  // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
+  // vast te staan op de domein uit de URL bij het eerste laden.
+  const [cockpitDomain, setCockpitDomain] = useState<PillarId | null>(
+    initialKompasView ?? null,
+  );
   const [priorityPrefOverride, setPriorityPrefOverride] = useState<
     AccountPriorityPrefData | null | undefined
   >(undefined);
@@ -4007,6 +4020,7 @@ export default function Dashboard({
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
     onPrefUpdated: setPriorityPrefOverride,
     sleepFocus,
+    onDomainViewChange: setCockpitDomain,
   };
 
   const surfaceClass =
@@ -4086,9 +4100,20 @@ export default function Dashboard({
   );
 
   if (isCockpitShellEnabled()) {
-    const anchorOption = MOVEMENT_ANCHOR_OPTIONS.find(
-      (option) => option.id === model?.movementPrefs.anchor,
-    );
+    // Alleen op het Kompas-tabblad ("vandaag") stelt de gebruiker een domein
+    // open/dicht; op Mijn Dag/Voortgang/Hermeting is er geen domein-context.
+    // cockpitDomain wordt live gemeld door KompasHome (onDomainViewChange),
+    // dus dit volgt echte navigatie i.p.v. te bevriezen op de load-URL.
+    const viewedDomain = tab === "vandaag" ? cockpitDomain : null;
+    // Het anker-systeem bestaat vooralsnog alleen voor beweging (zie
+    // BLAUWDRUK_DOMEIN_STAPPENPLANNEN.md §7) — toon 'm dus alleen wanneer dat
+    // domein daadwerkelijk open staat, niet op elk ander tabblad/domein.
+    const anchorOption =
+      viewedDomain === "beweging"
+        ? MOVEMENT_ANCHOR_OPTIONS.find(
+            (option) => option.id === model?.movementPrefs.anchor,
+          )
+        : undefined;
     const activeHabit = model?.activeHabit ?? null;
     const inspectorCards = buildInspectorCards({
       activeHabit: activeHabit
@@ -4109,7 +4134,7 @@ export default function Dashboard({
         <CockpitFrame
           activeTab={tab}
           onSelectTab={selectTab}
-          domain={initialKompasView ?? null}
+          domain={viewedDomain}
           onOpenSettings={() => router.push("/account")}
           onLogout={onLogout}
           firstName={data?.firstName ?? null}

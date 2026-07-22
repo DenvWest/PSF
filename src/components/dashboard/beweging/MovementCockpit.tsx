@@ -10,6 +10,7 @@ import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { PILLAR } from "@/data/dashboard";
 import { isPlanStepHidden } from "@/lib/day-model";
+import { formatLastMeasured } from "@/lib/betekenis-motor";
 import { buildDomainTrendRow } from "@/lib/leefstijllijn";
 import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { MovementPrefs } from "@/lib/movement-prefs";
@@ -186,6 +187,9 @@ export default function MovementCockpit({
               straks nog gewoon zelf de trap op komt — dat is wat deze score
               langzaam opbouwt.
             </p>
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10.5px] text-[#7E8C82]">
+              {formatLastMeasured(model.date)} — verandert bij je hermeting
+            </span>
           </CockpitTile>
         </div>
 
