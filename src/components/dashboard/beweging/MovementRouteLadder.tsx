@@ -75,13 +75,12 @@ export default function MovementRouteLadder({
   const lastIndex = phases.length - 1;
 
   return (
-    <section aria-label="Jouw route" className="rounded-2xl border border-white/10 bg-black/20 p-5">
+    <section aria-label="Fase-opbouw" className="rounded-2xl border border-white/10 bg-black/20 p-5">
       <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-        Jouw route
+        Fase-opbouw
       </p>
       <p className="mt-1.5 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-        Je bouwt in fases, niet in één sprong. Dit is waar je nu staat en wat er
-        straks komt.
+        Zo bouw je op naar dit doel, in fases.
       </p>
 
       {/* Mobiel: verticale ladder */}

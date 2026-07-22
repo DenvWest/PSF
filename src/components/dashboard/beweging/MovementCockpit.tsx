@@ -3,7 +3,7 @@
 import { useState } from "react";
 import * as Icons from "@/components/app/icons";
 import { Sparkline } from "@/components/app/primitives";
-import MovementRouteLadder from "@/components/dashboard/beweging/MovementRouteLadder";
+import MovementJourneyRail from "@/components/dashboard/beweging/MovementJourneyRail";
 import MovementStartChoice from "@/components/dashboard/beweging/MovementStartChoice";
 import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
@@ -228,9 +228,9 @@ export default function MovementCockpit({
         {/* JOUW ROUTE — verborgen op stappenplan (fase-explorer staat in plan-body) */}
         {!isPlanView ? (
           <div className="lg:col-start-2 lg:row-start-2">
-            <MovementRouteLadder
+            <MovementJourneyRail
               model={model}
-              startPattern={movementPrefs.startPattern}
+              movementPrefs={movementPrefs}
               onChangeStartPattern={
                 activeOwnStep ? () => setChoiceOpen(true) : undefined
               }
