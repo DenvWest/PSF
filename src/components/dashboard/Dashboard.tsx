@@ -139,7 +139,19 @@ import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent, trackDashboardTabSelected, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import { SLEEP_FOCUS_LABELS, type SleepFocusKey } from "@/lib/sleep-focus";
-import { buildRecommendations } from "@/lib/build-recommendations";
+import {
+  buildMovementRecommendations,
+  buildRecommendations,
+} from "@/lib/build-recommendations";
+import {
+  BEWEGING_SUPPLEMENT_ANCHOR,
+  buildBewegingRailTools,
+  buildKompasRailDomains,
+  type ContextRailApi,
+  type ContextRailMode,
+  type ContextRailToolId,
+} from "@/lib/context-rail";
+import { useMediaQuery } from "@/lib/use-media-query";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
@@ -204,6 +216,8 @@ type SharedSectionProps = {
   onDomainViewChange?: (domain: PillarId | null) => void;
   /** Registreert back/switch-handlers voor sticky domainNav in cockpit-header. */
   onDomainNavApi?: (api: DomainNavApi | null) => void;
+  /** Levert domeinen/tools + handlers voor de contextuele linker rail. */
+  onContextRailApi?: (api: ContextRailApi) => void;
 };
 
 const CollapsibleSection = ({
@@ -3127,6 +3141,7 @@ const KompasHome = ({
   onPrefUpdated,
   onDomainViewChange,
   onDomainNavApi,
+  onContextRailApi,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
@@ -3157,6 +3172,39 @@ const KompasHome = ({
         ? (buildWeekSchedulePreview(currentModel).find((slot) => slot.isToday) ?? null)
         : null,
     [currentModel],
+  );
+
+  const railDomains = useMemo(
+    () => buildKompasRailDomains(currentModel?.scores ?? {}),
+    [currentModel],
+  );
+  const railHasMovementRecommendations = useMemo(() => {
+    if (!currentModel || domainView !== "beweging") {
+      return false;
+    }
+    const session: IntakeSessionPayload = {
+      sessionId: "",
+      symptoms: [],
+      answers: currentModel.answers ?? {},
+      scores: currentModel.domainScores,
+      urgency: "",
+      profile: "",
+      timestamp: 0,
+      ageRange: null,
+      firstName: null,
+    };
+    return (
+      buildMovementRecommendations(session, { nutritionLogCompleted }).length > 0
+    );
+  }, [currentModel, domainView, nutritionLogCompleted]);
+  const railTools = useMemo(
+    () =>
+      buildBewegingRailTools({
+        deepView,
+        nutritionLogCompleted,
+        hasRecommendations: railHasMovementRecommendations,
+      }),
+    [deepView, nutritionLogCompleted, railHasMovementRecommendations],
   );
 
   useEffect(() => {
@@ -3226,12 +3274,135 @@ const KompasHome = ({
     setKompasDomain(toDomain, "cockpit");
   };
 
+  const openDomain = (
+    domain: PillarId,
+    surface: "kompas_home" | "context_rail" = "kompas_home",
+  ) => {
+    trackEvent("dashboard_kompas_domain_open", { domain, surface });
+    clarityTag("dashboard_kompas_domain", domain);
+    setKompasDomain(domain, "cockpit");
+  };
+
+  const openStappenplan = (
+    surface: "kompas_beweging" | "context_rail" = "kompas_beweging",
+  ) => {
+    setDeepView("stappenplan");
+    syncDashboardKompasDeepView("beweging", "stappenplan");
+    trackEvent("dashboard_beweging_plan_click", {
+      surface,
+      nav_mode: "dashboard_view",
+    });
+    clarityTag("dashboard_kompas_view", "stappenplan");
+  };
+
+  const closeStappenplan = () => {
+    setDeepView("cockpit");
+    syncDashboardKompasDeepView("beweging", "cockpit");
+    trackEvent("dashboard_kompas_domain_back_click", {
+      from_domain: "beweging",
+      from_level: "plan",
+    });
+    clarityTag("dashboard_kompas_topnav", "plan_to_cockpit");
+  };
+
+  const scrollToBewegingSupplementen = () => {
+    const target = document.getElementById(BEWEGING_SUPPLEMENT_ANCHOR);
+    if (!target) {
+      return;
+    }
+    // In de log-variant zit de sectie in een dichtgeklapte <details>.
+    target.closest("details")?.setAttribute("open", "");
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleRailToolClick = (tool: ContextRailToolId) => {
+    if (tool === "vandaag") {
+      trackEvent("dashboard_context_rail_tool_click", {
+        tool: "vandaag",
+        domain: "beweging",
+      });
+      clarityTag("dashboard_context_rail", "beweging_vandaag");
+      if (deepView === "stappenplan") {
+        closeStappenplan();
+      }
+      return;
+    }
+
+    if (tool === "stappenplan") {
+      clarityTag("dashboard_context_rail", "beweging_stappenplan");
+      if (deepView !== "stappenplan") {
+        openStappenplan("context_rail");
+      }
+      return;
+    }
+
+    if (tool === "checkin") {
+      // Navigatie loopt via de Link in de rail; hier alleen de meting.
+      trackEvent("dashboard_beweging_checkin_click", {
+        mode: "full",
+        surface: "context_rail",
+      });
+      clarityTag("dashboard_beweging_checkin", "click");
+      return;
+    }
+
+    trackEvent("dashboard_beweging_supplement_click", {
+      surface: "context_rail",
+      target: "scroll",
+    });
+    clarityTag("dashboard_context_rail", "beweging_supplementen");
+    if (deepView === "stappenplan") {
+      setDeepView("cockpit");
+      syncDashboardKompasDeepView("beweging", "cockpit");
+      requestAnimationFrame(() =>
+        requestAnimationFrame(scrollToBewegingSupplementen),
+      );
+      return;
+    }
+    scrollToBewegingSupplementen();
+  };
+
+  const contextRailHandlersRef = useRef({
+    onOpenDomain: (_domain: PillarId) => {},
+    onBackToKompas: () => {},
+    onToolClick: (_tool: ContextRailToolId) => {},
+  });
+
   useEffect(() => {
     domainNavHandlersRef.current = {
       onBack: handleDomainBack,
       onSwitch: handleDomainSwitch,
     };
+    contextRailHandlersRef.current = {
+      onOpenDomain: (domain: PillarId) => openDomain(domain, "context_rail"),
+      onBackToKompas: handleDomainBack,
+      onToolClick: handleRailToolClick,
+    };
   });
+
+  const railMode: ContextRailMode = !domainView
+    ? "kompasHome"
+    : domainView === "beweging"
+      ? "domainTools"
+      : "profile";
+
+  useEffect(() => {
+    if (!onContextRailApi) {
+      return;
+    }
+    onContextRailApi({
+      mode: railMode,
+      deepView,
+      domains: railDomains,
+      tools: railTools,
+      onOpenDomain: (domain) => contextRailHandlersRef.current.onOpenDomain(domain),
+      onBackToKompas: () => contextRailHandlersRef.current.onBackToKompas(),
+      onToolClick: (tool) => contextRailHandlersRef.current.onToolClick(tool),
+    });
+    return () => {
+      onContextRailApi(null);
+    };
+  }, [onContextRailApi, railMode, deepView, railDomains, railTools]);
 
   useEffect(() => {
     if (!onDomainNavApi) {
@@ -3253,32 +3424,6 @@ const KompasHome = ({
   if (!currentModel) {
     return null;
   }
-
-  const openDomain = (domain: PillarId) => {
-    trackEvent("dashboard_kompas_domain_open", { domain });
-    clarityTag("dashboard_kompas_domain", domain);
-    setKompasDomain(domain, "cockpit");
-  };
-
-  const openStappenplan = () => {
-    setDeepView("stappenplan");
-    syncDashboardKompasDeepView("beweging", "stappenplan");
-    trackEvent("dashboard_beweging_plan_click", {
-      surface: "kompas_beweging",
-      nav_mode: "dashboard_view",
-    });
-    clarityTag("dashboard_kompas_view", "stappenplan");
-  };
-
-  const closeStappenplan = () => {
-    setDeepView("cockpit");
-    syncDashboardKompasDeepView("beweging", "cockpit");
-    trackEvent("dashboard_kompas_domain_back_click", {
-      from_domain: "beweging",
-      from_level: "plan",
-    });
-    clarityTag("dashboard_kompas_topnav", "plan_to_cockpit");
-  };
 
   const handleBreadcrumbKompas = () => {
     if (!domainView) {
@@ -3356,7 +3501,7 @@ const KompasHome = ({
           onGoAgenda={onGoAgenda}
           onMakePriority={() => void makeBewegingPriority()}
           makePriorityBusy={makePriorityBusy}
-          onOpenPlan={openStappenplan}
+          onOpenPlan={() => openStappenplan()}
         />
       </div>
     );
@@ -3767,6 +3912,8 @@ export default function Dashboard({
     initialKompasView ?? null,
   );
   const [domainNavApi, setDomainNavApi] = useState<DomainNavApi | null>(null);
+  const [contextRailApi, setContextRailApi] = useState<ContextRailApi>(null);
+  const isDesktopRail = useMediaQuery("(min-width: 768px)");
   const [priorityPrefOverride, setPriorityPrefOverride] = useState<
     AccountPriorityPrefData | null | undefined
   >(undefined);
@@ -3955,6 +4102,7 @@ export default function Dashboard({
     sleepFocus,
     onDomainViewChange: setCockpitDomain,
     onDomainNavApi: setDomainNavApi,
+    onContextRailApi: setContextRailApi,
   };
 
   const surfaceClass =
@@ -4077,13 +4225,32 @@ export default function Dashboard({
   const inspectorExtra =
     viewedDomain === "beweging" ? <MovementWeekRhythm /> : undefined;
 
+  // De linker rail volgt dezelfde context als de header: domeinlijst op de
+  // Kompas-home, domein-tools bij beweging, profiel als er geen Kompas-context
+  // is (ander tabblad, lege staat, of een domein zonder eigen tools).
+  const desiredRailMode: ContextRailMode =
+    empty || tab !== "vandaag"
+      ? "profile"
+      : !viewedDomain
+        ? "kompasHome"
+        : viewedDomain === "beweging"
+          ? "domainTools"
+          : "profile";
+  const contextRailMode: ContextRailMode =
+    contextRailApi && contextRailApi.mode === desiredRailMode
+      ? desiredRailMode
+      : "profile";
+  // Op desktop neemt de rail de domein-navigatie over; op mobiel blijft de
+  // DomainTopNav in de header de enige manier om van domein te wisselen.
+  const hideDomainTopNav = isDesktopRail && contextRailMode === "domainTools";
+
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
       <CockpitFrame
         activeTab={tab}
         onSelectTab={selectTab}
         domainNav={
-          viewedDomain && domainNavApi ? (
+          viewedDomain && domainNavApi && !hideDomainTopNav ? (
             <DomainTopNav
               activeDomain={viewedDomain}
               onBack={domainNavApi.onBack}
@@ -4097,6 +4264,14 @@ export default function Dashboard({
         anchorLabel={anchorOption?.label ?? null}
         statusDone={model?.activeHabit?.state === "done"}
         onCheckin={() => selectTab("vandaag")}
+        railMode={contextRailMode}
+        railDomains={contextRailApi?.domains}
+        railActiveDomain={viewedDomain}
+        railTools={contextRailApi?.tools}
+        railDomainLabel={viewedDomain ? PILLAR[viewedDomain].label : null}
+        onOpenDomain={contextRailApi?.onOpenDomain}
+        onToolClick={contextRailApi?.onToolClick}
+        onBackToKompas={contextRailApi?.onBackToKompas}
         inspectorCards={inspectorCards}
         remeasureAction={remeasureAction}
         inspectorExtra={inspectorExtra}

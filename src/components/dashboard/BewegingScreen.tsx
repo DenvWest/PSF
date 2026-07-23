@@ -14,6 +14,7 @@ import {
   getMovementNutritionHint,
 } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
+import { BEWEGING_SUPPLEMENT_ANCHOR } from "@/lib/context-rail";
 import { trackEvent } from "@/lib/ga4";
 import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
@@ -119,7 +120,10 @@ export default function BewegingScreen({
         </Link>
       </div>
 
-      <div className="mt-4 border-t border-white/10 pt-4">
+      <div
+        id={BEWEGING_SUPPLEMENT_ANCHOR}
+        className="mt-4 scroll-mt-24 border-t border-white/10 pt-4"
+      >
         <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
           Supplementen — als je basis staat
         </p>
@@ -198,7 +202,8 @@ export default function BewegingScreen({
         <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
           {logEnabled ? <MovementLogPanel /> : null}
 
-          <CockpitTile eyebrow="Check-in">
+          {/* Op md+ staat dezelfde beweegcheck als tool in de context-rail. */}
+          <CockpitTile eyebrow="Check-in" className="md:hidden">
             <Link
               href="/intake/beweging?from=dashboard&kompas=beweging"
               onClick={() => {

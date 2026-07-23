@@ -5,9 +5,15 @@ import type { ReactNode } from "react";
 import CockpitBottomNav from "@/components/dashboard/cockpit/CockpitBottomNav";
 import CockpitHeader from "@/components/dashboard/cockpit/CockpitHeader";
 import CockpitInspector from "@/components/dashboard/cockpit/CockpitInspector";
-import CockpitProfileRail from "@/components/dashboard/cockpit/CockpitProfileRail";
+import CockpitContextRail from "@/components/dashboard/cockpit/CockpitContextRail";
 import type { InspectorCard } from "@/lib/cockpit-inspector";
-import type { DashboardTabId } from "@/types/dashboard";
+import type {
+  ContextRailDomainItem,
+  ContextRailMode,
+  ContextRailTool,
+  ContextRailToolId,
+} from "@/lib/context-rail";
+import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 type CockpitFrameProps = {
   activeTab: DashboardTabId;
@@ -19,6 +25,14 @@ type CockpitFrameProps = {
   anchorLabel?: string | null;
   statusDone?: boolean;
   onCheckin?: () => void;
+  railMode: ContextRailMode;
+  railDomains?: ContextRailDomainItem[];
+  railActiveDomain?: PillarId | null;
+  railTools?: ContextRailTool[];
+  railDomainLabel?: string | null;
+  onOpenDomain?: (id: PillarId) => void;
+  onToolClick?: (id: ContextRailToolId) => void;
+  onBackToKompas?: () => void;
   inspectorCards: InspectorCard[];
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorExtra?: ReactNode;
@@ -41,6 +55,14 @@ export default function CockpitFrame({
   anchorLabel,
   statusDone = false,
   onCheckin,
+  railMode,
+  railDomains,
+  railActiveDomain = null,
+  railTools,
+  railDomainLabel,
+  onOpenDomain,
+  onToolClick,
+  onBackToKompas,
   inspectorCards,
   remeasureAction,
   inspectorExtra,
@@ -61,11 +83,19 @@ export default function CockpitFrame({
       />
 
       <div className="relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:grid-cols-[240px_minmax(0,1fr)] sm:pb-0 xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]">
-        <CockpitProfileRail
+        <CockpitContextRail
+          mode={railMode}
           firstName={firstName}
           anchorLabel={anchorLabel}
           statusDone={statusDone}
           onCheckin={onCheckin}
+          domains={railDomains}
+          activeDomain={railActiveDomain}
+          onOpenDomain={onOpenDomain}
+          tools={railTools}
+          onToolClick={onToolClick}
+          onBackToKompas={onBackToKompas}
+          domainLabel={railDomainLabel}
         />
 
         <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4">{children}</main>
