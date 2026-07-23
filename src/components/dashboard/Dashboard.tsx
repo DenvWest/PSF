@@ -4286,7 +4286,7 @@ export default function Dashboard({
         inspectorExtra={inspectorExtra}
       >
         <div
-          className={`mx-auto w-full ${
+          className={`w-full ${
             tab === "agenda"
               ? "max-w-[760px]"
               : viewedDomain === "beweging"
