@@ -109,7 +109,7 @@ export default function CockpitFrame({
         />
         <aside
           aria-label="Contextpaneel"
-          className={`fixed inset-x-0 bottom-0 z-40 max-h-[85vh] overflow-y-auto rounded-t-[20px] border-t border-white/10 bg-[#101a1b] p-4 transition-transform duration-300 sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-0 sm:h-full sm:w-[330px] sm:max-h-none sm:max-w-[86%] sm:rounded-none sm:border-t-0 sm:border-l xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:bg-black/[0.12] ${
+          className={`fixed inset-x-0 bottom-0 z-40 max-h-[85vh] overflow-y-auto rounded-t-[20px] border-t border-white/10 bg-[#101a1b] p-4 transition-transform duration-300 sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-0 sm:h-full sm:w-[330px] sm:max-h-none sm:max-w-[86%] sm:rounded-none sm:border-t-0 sm:border-l xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:bg-black/[0.12] xl:px-6 ${
             contextOpen
               ? "translate-y-0 sm:translate-x-0 sm:translate-y-0"
               : "translate-y-full sm:translate-x-full sm:translate-y-0"
