@@ -47,7 +47,7 @@ export default function CockpitFrame({
   const [contextOpen, setContextOpen] = useState(false);
 
   return (
-    <div className="mx-auto w-full max-w-[1600px] text-[#F1EFE8]">
+    <div className="mx-auto w-full max-w-[2200px] text-[#F1EFE8]">
       <CockpitHeader
         activeTab={activeTab}
         onSelectTab={onSelectTab}
