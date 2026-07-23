@@ -13,6 +13,11 @@ import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { loadPlanProgress } from "@/lib/plan-progress";
+import {
+  getDailyActionState,
+  getDailyActionWeekStepKeys,
+} from "@/lib/daily-action-log";
+import { deriveMovementRouteProgress } from "@/lib/movement-route-progress";
 import { loadMovementRecoveryTrend, pickLatestMovementRcvFeel } from "@/lib/movement-recovery-context";
 import {
   EMPTY_MOVEMENT_PREFS,
@@ -36,7 +41,7 @@ import type {
   TrendSource,
 } from "@/types/dashboard";
 import type { SustainedAction } from "@/types/delta-report";
-import type { PlanStepProgress } from "@/types/lifestyle-plan";
+import type { PlanProgress, PlanStepProgress } from "@/types/lifestyle-plan";
 
 const EMPTY_DASHBOARD_DATA: DashboardData = {
   empty: true,
@@ -627,16 +632,43 @@ export async function loadAccountDashboardData(
     }
   }
 
-  let movementPlanProgress = null;
+  // Lock 5 (§5.1): de fase op de route is afgeleid uit de daily-log (executie-SSOT),
+  // niet uit de opgeslagen plan_progress. Zo tonen de Overzicht-hero en de
+  // route-ladder dezelfde fase als het stappenplan, dat al uit de daily-log leest.
+  // De opgeslagen voortgang levert alleen nog de metadata-velden.
+  let movementPlanProgress: PlanProgress | null = null;
   if (latestSnapshot.id) {
+    let movementPlanBase: PlanProgress | null = null;
     try {
-      movementPlanProgress = await loadPlanProgress(
-        admin,
-        latestSnapshot.id,
-        "movement",
-      );
+      movementPlanBase = await loadPlanProgress(admin, latestSnapshot.id, "movement");
     } catch {
-      movementPlanProgress = null;
+      movementPlanBase = null;
+    }
+
+    if (latestAnswers != null) {
+      let movementLoggedStepIds: string[] = [];
+      try {
+        const [todayState, weekStepKeys] = await Promise.all([
+          getDailyActionState(admin, accountId, "beweging"),
+          getDailyActionWeekStepKeys(admin, accountId, "beweging"),
+        ]);
+        movementLoggedStepIds = [...new Set([...todayState.keys, ...weekStepKeys])];
+      } catch {
+        movementLoggedStepIds = [];
+      }
+
+      if (movementPlanBase != null || movementLoggedStepIds.length > 0) {
+        movementPlanProgress = deriveMovementRouteProgress({
+          domainScores: latestDomainScores,
+          answers: latestAnswers,
+          loggedStepIds: movementLoggedStepIds,
+          base: movementPlanBase,
+          sessionId: latestSnapshot.id,
+        });
+      }
+    } else {
+      // Zonder antwoorden kunnen we de fase niet afleiden; val terug op de opslag.
+      movementPlanProgress = movementPlanBase;
     }
   }
 
