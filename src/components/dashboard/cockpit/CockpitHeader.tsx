@@ -33,7 +33,10 @@ export default function CockpitHeader({
 }: CockpitHeaderProps) {
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[rgba(12,19,21,0.86)] backdrop-blur-md">
-      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-center sm:gap-3 sm:px-6 sm:pb-3">
+      {/* Kolom 1 = rail-breedte (240/260/280px) min de eigen px-6 (24px), zodat
+          de tabs in kolom 2 exact boven de main-inhoud beginnen i.p.v.
+          gecentreerd over de volle breedte. */}
+      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-center sm:gap-3 sm:px-6 sm:pb-3 md:grid-cols-[216px_minmax(0,1fr)_auto] min-[1440px]:grid-cols-[236px_minmax(0,1fr)_auto] min-[1680px]:grid-cols-[256px_minmax(0,1fr)_auto]">
         <button
           type="button"
           onClick={() => onSelectTab("vandaag")}
@@ -63,7 +66,7 @@ export default function CockpitHeader({
         </div>
 
         <div
-          className="hidden min-w-0 gap-0.5 overflow-x-auto scrollbar-hide sm:flex sm:justify-self-center"
+          className="hidden min-w-0 gap-0.5 overflow-x-auto scrollbar-hide sm:flex sm:justify-self-center md:justify-self-start"
           role="tablist"
           aria-label="Hoofdnavigatie"
         >
