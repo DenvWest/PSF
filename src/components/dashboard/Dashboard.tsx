@@ -123,6 +123,7 @@ import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isPlanStepHidden } from "@/lib/day-model";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
+import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
@@ -3355,8 +3356,6 @@ const KompasHome = ({
           onGoAgenda={onGoAgenda}
           onMakePriority={() => void makeBewegingPriority()}
           makePriorityBusy={makePriorityBusy}
-          onRemeasure={onRemeasure}
-          remeasure={data?.remeasure ?? null}
           onOpenPlan={openStappenplan}
         />
       </div>
@@ -3965,13 +3964,21 @@ export default function Dashboard({
 
   const tabHeaderNode =
     tab === "vandaag" ? (
-      <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
+      cockpitDomain === null ? (
+        <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
+      ) : null
     ) : tab !== "voortgang" ? (
       <DashTabHeader tab={tabMeta} />
     ) : null;
 
   const sectionsNode = (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: tab === "vandaag" && cockpitDomain === "beweging" ? 12 : 16,
+      }}
+    >
       {empty && tab !== "voortgang" ? (
         <EmptyTabState tab={tabMeta} onCheck={onCheck} />
       ) : sectionTypes.length === 0 ? null : (
@@ -4049,8 +4056,8 @@ export default function Dashboard({
         )
       : undefined;
   const activeHabit = model?.activeHabit ?? null;
-  const centerHasMeetmomentTile =
-    tab === "vandaag" && viewedDomain === "beweging";
+  // De "meet"-kaart is universeel (elk domein) en krijgt hieronder een echte
+  // actieknop via remeasureAction — geen domein-uitzondering meer nodig.
   const inspectorCards = buildInspectorCards({
     activeHabit: activeHabit
       ? {
@@ -4059,19 +4066,22 @@ export default function Dashboard({
           done: activeHabit.state === "done",
         }
       : null,
-    remeasure:
-      centerHasMeetmomentTile || !data?.remeasure
-        ? null
-        : { daysUntil: data.remeasure.daysUntil },
+    remeasure: data?.remeasure ? { daysUntil: data.remeasure.daysUntil } : null,
     anchorWhy: anchorOption?.whySuffix ?? null,
   });
+  const remeasureAction = data?.remeasure
+    ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
+    : undefined;
+  // Deze week is beweging-specifiek (leest daily_action_log voor dat domein)
+  // en leeft als compacte, inspector-stijl kaart naast de context-kaarten.
+  const inspectorExtra =
+    viewedDomain === "beweging" ? <MovementWeekRhythm /> : undefined;
 
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
       <CockpitFrame
         activeTab={tab}
         onSelectTab={selectTab}
-        domain={viewedDomain}
         domainNav={
           viewedDomain && domainNavApi ? (
             <DomainTopNav
@@ -4088,6 +4098,8 @@ export default function Dashboard({
         statusDone={model?.activeHabit?.state === "done"}
         onCheckin={() => selectTab("vandaag")}
         inspectorCards={inspectorCards}
+        remeasureAction={remeasureAction}
+        inspectorExtra={inspectorExtra}
       >
         <div
           className={`mx-auto w-full ${

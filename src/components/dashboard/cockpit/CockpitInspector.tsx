@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentType, CSSProperties } from "react";
+import type { ComponentType, CSSProperties, ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import type { InspectorCard } from "@/lib/cockpit-inspector";
 
@@ -8,6 +8,12 @@ type IconComp = ComponentType<{ s?: number; style?: CSSProperties }>;
 
 type CockpitInspectorProps = {
   cards: InspectorCard[];
+  /** Maakt de "meet"-kaart actionable (universeel, niet domein-gebonden). */
+  remeasureAction?: { due: boolean; onClick: () => void };
+  /** Domein-specifieke compacte widget (bv. week-ritme) — zelfde kaart-look
+   * als hierboven, zodat het écht als inspector-inhoud leest i.p.v. een los
+   * blok. Eén stuk, telt mee voor de rustige, beperkte totaalindruk. */
+  extra?: ReactNode;
 };
 
 const ACCENT: Record<
@@ -30,7 +36,11 @@ const ICON_BY_KIND: Record<InspectorCard["kind"], keyof typeof Icons> = {
   doel: "Spark",
 };
 
-export default function CockpitInspector({ cards }: CockpitInspectorProps) {
+export default function CockpitInspector({
+  cards,
+  remeasureAction,
+  extra,
+}: CockpitInspectorProps) {
   return (
     <div className="flex flex-col gap-3">
       <span className="text-[9.5px] font-bold uppercase tracking-[0.14em] text-[#7E8C82]">
@@ -40,6 +50,7 @@ export default function CockpitInspector({ cards }: CockpitInspectorProps) {
       {cards.map((card, index) => {
         const accent = ACCENT[card.accent];
         const Icon = Icons[ICON_BY_KIND[card.kind]] as IconComp;
+        const showRemeasureAction = card.kind === "meet" && remeasureAction;
         return (
           <div
             key={`${card.kind}-${index}`}
@@ -56,9 +67,32 @@ export default function CockpitInspector({ cards }: CockpitInspectorProps) {
             <p className="text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
               {card.body}
             </p>
+            {showRemeasureAction ? (
+              remeasureAction.due ? (
+                <button
+                  type="button"
+                  onClick={remeasureAction.onClick}
+                  className="mt-3 inline-flex min-h-9 cursor-pointer items-center gap-1.5 rounded-lg border-none bg-[#5A8F6A] px-3 text-[13px] font-semibold text-[#0f1c10]"
+                >
+                  Doe de hermeting <Icons.ArrowRight s={13} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={remeasureAction.onClick}
+                  className="mt-2 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[12.5px] font-semibold text-[#C8956C]"
+                >
+                  Zo werkt je hermeting <Icons.ArrowRight s={12} />
+                </button>
+              )
+            ) : null}
           </div>
         );
       })}
+
+      {extra ? (
+        <div className="flex flex-col gap-3 border-t border-white/10 pt-3">{extra}</div>
+      ) : null}
     </div>
   );
 }

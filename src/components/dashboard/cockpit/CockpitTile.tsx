@@ -23,7 +23,7 @@ export default function CockpitTile({
   return (
     <div
       aria-label={ariaLabel}
-      className={`rounded-2xl border border-white/10 bg-black/20 p-5 ${className}`}
+      className={`rounded-2xl border border-white/10 bg-black/20 p-4 ${className}`}
     >
       {eyebrow || aside ? (
         <div className="flex items-center justify-between gap-3">

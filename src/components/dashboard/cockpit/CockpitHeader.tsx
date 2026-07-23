@@ -4,15 +4,14 @@ import type { ComponentType, CSSProperties, ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import Wordmark from "@/components/app/Wordmark";
 import CockpitProfileMenu from "@/components/dashboard/cockpit/CockpitProfileMenu";
-import { DASHBOARD_TABS, PILLAR } from "@/data/dashboard";
-import type { DashboardTabId, PillarId } from "@/types/dashboard";
+import { DASHBOARD_TABS } from "@/data/dashboard";
+import type { DashboardTabId } from "@/types/dashboard";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
 
 type CockpitHeaderProps = {
   activeTab: DashboardTabId;
   onSelectTab: (tab: DashboardTabId) => void;
-  domain: PillarId | null;
   domainNav?: ReactNode;
   onOpenSettings: () => void;
   onLogout: () => void | Promise<void>;
@@ -26,39 +25,15 @@ const ICON_BTN =
 export default function CockpitHeader({
   activeTab,
   onSelectTab,
-  domain,
   domainNav,
   onOpenSettings,
   onLogout,
   onOpenContext,
   firstName,
 }: CockpitHeaderProps) {
-  const domainLabel = domain ? PILLAR[domain].label : null;
-
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[rgba(12,19,21,0.86)] backdrop-blur-md">
-      {!domainNav ? (
-        <nav
-          aria-label="Broodkruimel"
-          className="hidden items-center gap-1.5 px-4 pt-2.5 text-[11px] text-[#7E8C82] sm:flex sm:px-6"
-        >
-          <span className="text-[#9FB0A6]">Dashboard</span>
-          <span aria-hidden className="opacity-50">
-            ›
-          </span>
-          <span className="text-[#9FB0A6]">Kompas</span>
-          {domainLabel ? (
-            <>
-              <span aria-hidden className="opacity-50">
-                ›
-              </span>
-              <span className="text-[#9FB0A6]">{domainLabel}</span>
-            </>
-          ) : null}
-        </nav>
-      ) : null}
-
-      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:px-6 sm:pb-3">
+      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-center sm:gap-3 sm:px-6 sm:pb-3">
         <button
           type="button"
           onClick={() => onSelectTab("vandaag")}
@@ -88,7 +63,7 @@ export default function CockpitHeader({
         </div>
 
         <div
-          className="ml-1 hidden min-w-0 flex-1 gap-0.5 overflow-x-auto scrollbar-hide sm:flex"
+          className="hidden min-w-0 gap-0.5 overflow-x-auto scrollbar-hide sm:flex sm:justify-self-center"
           role="tablist"
           aria-label="Hoofdnavigatie"
         >
@@ -120,7 +95,7 @@ export default function CockpitHeader({
           })}
         </div>
 
-        <div className="ml-auto hidden items-center gap-2 sm:flex">
+        <div className="hidden items-center gap-2 sm:flex">
           {onOpenContext ? (
             <button
               type="button"

@@ -65,8 +65,6 @@ export default function BewegingScreen({
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
-  onRemeasure,
-  remeasure,
   onOpenPlan,
 }: {
   model: DashboardModel;
@@ -77,8 +75,6 @@ export default function BewegingScreen({
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
-  onRemeasure: () => void;
-  remeasure: { dueDate: string; daysUntil: number } | null;
   onOpenPlan?: () => void;
 }) {
   const isPlanView = deepView === "stappenplan";
@@ -180,7 +176,7 @@ export default function BewegingScreen({
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <MovementCockpit
         model={model}
         slot={slot}
@@ -188,8 +184,6 @@ export default function BewegingScreen({
         onGoAgenda={onGoAgenda}
         onMakePriority={onMakePriority}
         makePriorityBusy={makePriorityBusy}
-        onRemeasure={onRemeasure}
-        remeasure={remeasure}
         onOpenPlan={onOpenPlan}
       />
 

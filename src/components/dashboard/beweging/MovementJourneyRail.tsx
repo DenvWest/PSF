@@ -37,12 +37,12 @@ const WAYPOINT_ICONS: Record<
 
 function waypointCircleClass(state: JourneyWaypoint["state"]): string {
   if (state === "current") {
-    return "flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--ac)] text-[#0f1c10] shadow-[0_0_12px_rgba(90,143,106,0.35)]";
+    return "flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--ac)] text-[#0f1c10] shadow-[0_0_12px_rgba(90,143,106,0.35)] lg:h-7 lg:w-7";
   }
   if (state === "done") {
-    return "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--ac)]/50 text-[color:var(--ac)]";
+    return "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[color:var(--ac)]/50 text-[color:var(--ac)] lg:h-7 lg:w-7";
   }
-  return "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 text-[#7E8C82]";
+  return "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 text-[#7E8C82] lg:h-7 lg:w-7";
 }
 
 function waypointLabelClass(state: JourneyWaypoint["state"]): string {
@@ -202,12 +202,12 @@ export default function MovementJourneyRail({
   return (
     <section
       aria-label="Jouw route"
-      className="rounded-2xl border border-white/10 bg-black/20 p-5"
+      className="rounded-2xl border border-white/10 bg-black/20 p-4"
     >
       <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
         Jouw route
       </p>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
+      <p className="mt-1.5 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty lg:hidden">
         Je positie volgt uit je acties, planfase &amp; hermeting
       </p>
 
@@ -223,7 +223,7 @@ export default function MovementJourneyRail({
         ))}
       </ol>
 
-      <ol className="mt-5 hidden lg:flex lg:items-start">
+      <ol className="mt-3 hidden lg:flex lg:items-start">
         {waypoints.map((waypoint, index) => {
           const leftReached = currentIndex > -1 && index <= currentIndex;
           const rightReached = currentIndex > -1 && index < currentIndex;

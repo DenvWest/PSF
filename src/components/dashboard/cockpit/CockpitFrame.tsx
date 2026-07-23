@@ -7,12 +7,11 @@ import CockpitHeader from "@/components/dashboard/cockpit/CockpitHeader";
 import CockpitInspector from "@/components/dashboard/cockpit/CockpitInspector";
 import CockpitProfileRail from "@/components/dashboard/cockpit/CockpitProfileRail";
 import type { InspectorCard } from "@/lib/cockpit-inspector";
-import type { DashboardTabId, PillarId } from "@/types/dashboard";
+import type { DashboardTabId } from "@/types/dashboard";
 
 type CockpitFrameProps = {
   activeTab: DashboardTabId;
   onSelectTab: (tab: DashboardTabId) => void;
-  domain: PillarId | null;
   domainNav?: ReactNode;
   onOpenSettings: () => void;
   onLogout: () => void | Promise<void>;
@@ -21,6 +20,8 @@ type CockpitFrameProps = {
   statusDone?: boolean;
   onCheckin?: () => void;
   inspectorCards: InspectorCard[];
+  remeasureAction?: { due: boolean; onClick: () => void };
+  inspectorExtra?: ReactNode;
   children: ReactNode;
 };
 
@@ -33,7 +34,6 @@ type CockpitFrameProps = {
 export default function CockpitFrame({
   activeTab,
   onSelectTab,
-  domain,
   domainNav,
   onOpenSettings,
   onLogout,
@@ -42,6 +42,8 @@ export default function CockpitFrame({
   statusDone = false,
   onCheckin,
   inspectorCards,
+  remeasureAction,
+  inspectorExtra,
   children,
 }: CockpitFrameProps) {
   const [contextOpen, setContextOpen] = useState(false);
@@ -51,7 +53,6 @@ export default function CockpitFrame({
       <CockpitHeader
         activeTab={activeTab}
         onSelectTab={onSelectTab}
-        domain={domain}
         domainNav={domainNav}
         onOpenSettings={onOpenSettings}
         onLogout={onLogout}
@@ -59,7 +60,7 @@ export default function CockpitFrame({
         firstName={firstName}
       />
 
-      <div className="relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:grid-cols-[240px_minmax(0,1fr)] sm:pb-0 xl:grid-cols-[250px_minmax(0,1fr)_330px]">
+      <div className="relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:grid-cols-[240px_minmax(0,1fr)] sm:pb-0 xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]">
         <CockpitProfileRail
           firstName={firstName}
           anchorLabel={anchorLabel}
@@ -67,7 +68,7 @@ export default function CockpitFrame({
           onCheckin={onCheckin}
         />
 
-        <main className="min-w-0 p-4 sm:p-6">{children}</main>
+        <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4">{children}</main>
 
         <div
           onClick={() => setContextOpen(false)}
@@ -88,7 +89,11 @@ export default function CockpitFrame({
             aria-hidden
             className="mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-white/20 sm:hidden"
           />
-          <CockpitInspector cards={inspectorCards} />
+          <CockpitInspector
+            cards={inspectorCards}
+            remeasureAction={remeasureAction}
+            extra={inspectorExtra}
+          />
         </aside>
       </div>
 

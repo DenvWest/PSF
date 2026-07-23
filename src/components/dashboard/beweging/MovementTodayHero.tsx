@@ -103,80 +103,34 @@ function ChoiceCard({
   recommended: boolean;
   onSelect: (kind: TodayChoiceKind) => void;
 }) {
-  const [infoOpen, setInfoOpen] = useState(false);
-  const explanationId = `tier-explain-${option.kind}`;
-
   return (
-    <div
+    <button
+      type="button"
+      onClick={() => onSelect(option.kind)}
       className={
         recommended
-          ? "rounded-xl border border-[color:var(--ac)]/50 bg-[color:var(--ac)]/10 transition-colors"
-          : "rounded-xl border border-white/10 bg-black/25 transition-colors hover:border-white/20"
+          ? "flex w-full cursor-pointer items-center gap-3 rounded-xl border border-[color:var(--ac)]/50 bg-[color:var(--ac)]/10 p-3 text-left transition-colors"
+          : "flex w-full cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-black/25 p-3 text-left transition-colors hover:border-white/20"
       }
     >
-      <button
-        type="button"
-        onClick={() => onSelect(option.kind)}
-        className="flex w-full cursor-pointer items-start gap-3 p-4 text-left"
-      >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 text-[color:var(--ac)]">
-          {choiceIcon(option.kind)}
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5 text-[color:var(--ac)]">
+        {choiceIcon(option.kind)}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="font-serif text-[15px] text-[#F1EFE8]">{option.label}</span>
+          {recommended ? (
+            <span className="rounded-full bg-[color:var(--ac)]/20 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] text-[color:var(--ac)]">
+              Aanbevolen
+            </span>
+          ) : null}
         </span>
-        <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-2">
-            <span className="font-serif text-[16px] text-[#F1EFE8]">{option.label}</span>
-            {recommended ? (
-              <span className="rounded-full bg-[color:var(--ac)]/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[color:var(--ac)]">
-                Aanbevolen
-              </span>
-            ) : null}
-          </span>
-          <span className="mt-1 block text-[13px] leading-snug text-[#CDD7D0] text-pretty">
-            {option.tierDescription}
-          </span>
-          <span className="mt-1 block text-[13px] font-medium leading-snug text-[#E7EDE8] text-pretty">
-            {option.title}
-          </span>
-          <span className="mt-2 inline-flex items-center gap-1 text-[12px] text-[#9FB0A6]">
-            <Icons.Clock s={12} /> {option.durationLabel}
-          </span>
+        <span className="mt-0.5 block truncate text-[12.5px] leading-snug text-[#9FB0A6] text-pretty">
+          {option.title} · {option.durationLabel}
         </span>
-        <span className="mt-2 shrink-0 text-[#7E8C82]">
-          <Icons.ChevronRight s={16} />
-        </span>
-      </button>
-
-      <div className="border-t border-white/5 px-4">
-        <button
-          type="button"
-          onClick={() => setInfoOpen((open) => !open)}
-          aria-expanded={infoOpen}
-          aria-controls={explanationId}
-          className="flex w-full cursor-pointer items-center justify-between gap-2 border-none bg-transparent py-2.5 text-left text-[12px] font-medium text-[#9FB0A6]"
-        >
-          <span>Wat houdt {option.label.toLowerCase()} in?</span>
-          <span
-            className={
-              infoOpen
-                ? "rotate-180 text-[#7E8C82] transition-transform"
-                : "text-[#7E8C82] transition-transform"
-            }
-          >
-            <Icons.ChevronDown s={14} />
-          </span>
-        </button>
-        <p
-          id={explanationId}
-          className={
-            infoOpen
-              ? "block pb-3 text-[12.5px] leading-relaxed text-[#B9C6BC] text-pretty"
-              : "hidden pb-3 text-[12.5px] leading-relaxed text-[#B9C6BC] text-pretty"
-          }
-        >
-          {option.tierExplanation}
-        </p>
-      </div>
-    </div>
+      </span>
+      <Icons.ChevronRight s={16} style={{ color: "#7E8C82", flexShrink: 0 }} />
+    </button>
   );
 }
 
@@ -444,7 +398,7 @@ export default function MovementTodayHero({
   }
 
   const shellClass =
-    "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-5";
+    "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-4";
 
   if (!logHydrated) {
     return (
@@ -471,7 +425,7 @@ export default function MovementTodayHero({
           </p>
           {trainingGateView === "question" ? (
             <>
-              <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
+              <h3 className="mt-1.5 font-serif text-[20px] leading-snug text-[#F1EFE8] text-pretty">
                 Heb je gisteren zwaar getraind?
               </h3>
               <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
@@ -502,7 +456,7 @@ export default function MovementTodayHero({
             </>
           ) : (
             <>
-              <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
+              <h3 className="mt-1.5 font-serif text-[20px] leading-snug text-[#F1EFE8] text-pretty">
                 Herstel telt ook mee
               </h3>
               <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
@@ -568,7 +522,7 @@ export default function MovementTodayHero({
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
             Vandaag · {modality.toLowerCase()}
           </p>
-          <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
+          <h3 className="mt-1.5 font-serif text-[20px] leading-snug text-[#F1EFE8] text-pretty">
             {activeChoice.title}
           </h3>
           {noTimeActive && !done ? (
@@ -671,18 +625,9 @@ export default function MovementTodayHero({
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
           Vandaag · kies wat past
         </p>
-        <h3 className="mt-2 font-serif text-[22px] leading-snug text-[#F1EFE8] text-pretty">
-          Wat past vandaag bij je?
+        <h3 className="mt-1.5 font-serif text-[20px] leading-snug text-[#F1EFE8] text-pretty">
+          {recommendationLine ?? "Kies één richting voor vandaag."}
         </h3>
-        {recommendationLine ? (
-          <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-            {recommendationLine}
-          </p>
-        ) : (
-          <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-            Kies één richting — daarna vink je precies die stap af.
-          </p>
-        )}
 
         {medicalSafetyLine ? (
           <p className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-[13px] leading-relaxed text-[#F1EFE8] text-pretty">
@@ -690,7 +635,7 @@ export default function MovementTodayHero({
           </p>
         ) : null}
 
-        <div className="mt-4 flex flex-col gap-2.5">
+        <div className="mt-3 flex flex-col gap-2">
           {choiceOptions.map((option) => (
             <ChoiceCard
               key={option.kind}

@@ -53,7 +53,7 @@ export default function DomainTopNav({
       <span className="h-4 w-px shrink-0 bg-white/15" aria-hidden />
 
       <div
-        className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto scrollbar-hide"
+        className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto scrollbar-hide sm:justify-center"
         role="tablist"
         aria-label="Wissel domein"
       >

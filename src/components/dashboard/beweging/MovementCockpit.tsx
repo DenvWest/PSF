@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import * as Icons from "@/components/app/icons";
 import { Sparkline } from "@/components/app/primitives";
 import MovementJourneyRail from "@/components/dashboard/beweging/MovementJourneyRail";
 import MovementStartChoice from "@/components/dashboard/beweging/MovementStartChoice";
 import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero";
-import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { isPlanStepHidden } from "@/lib/day-model";
@@ -31,23 +29,8 @@ type MovementCockpitProps = {
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
-  onRemeasure: () => void;
-  remeasure: { dueDate: string; daysUntil: number } | null;
   onOpenPlan?: () => void;
 };
-
-function remeasureCopy(daysUntil: number): string {
-  if (daysUntil <= 0) {
-    return "Je hermeting staat klaar.";
-  }
-  if (daysUntil <= 7) {
-    return "Over een paar dagen zie je je lijn bewegen.";
-  }
-  if (daysUntil <= 10) {
-    return "Over ~1 week zie je je lijn bewegen.";
-  }
-  return `Over ~${Math.round(daysUntil / 7)} weken zie je je lijn bewegen.`;
-}
 
 export default function MovementCockpit({
   model,
@@ -56,8 +39,6 @@ export default function MovementCockpit({
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
-  onRemeasure,
-  remeasure,
   onOpenPlan,
 }: MovementCockpitProps) {
   const isPlanView = deepView === "stappenplan";
@@ -66,7 +47,6 @@ export default function MovementCockpit({
 
   const trendRow = buildDomainTrendRow(model, "beweging");
   const hasTrend = trendRow.trend.length >= 2;
-  const remeasureDue = remeasure != null && remeasure.daysUntil <= 0;
 
   // Prefs-override zodat de hero direct de nieuwe keuze gebruikt zonder
   // model-herbouw; sessie-skip blokkeert de dagstap niet permanent.
@@ -92,8 +72,9 @@ export default function MovementCockpit({
       embedded
     >
       {/* DOM-volgorde = mobiele stack (hero eerst). lg: Hero full-width →
-          Score+Trend 2-up → Jouw route full-width → Deze week+Meetmoment 2-up. */}
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-4">
+          Waar je staat (score+trend, één readout-rij) → Jouw route full-width.
+          Deze week + meetmoment leven in de inspector-zone (CockpitFrame). */}
+      <div className="grid gap-2.5 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-3">
         {/* VANDAAG — verborgen op stappenplan-diepte (afvinken via tabbar) */}
         <div className={`lg:col-span-2 lg:col-start-1 lg:row-start-1 ${isPlanView ? "hidden" : ""}`}>
           {showStartChoice ? (
@@ -130,111 +111,98 @@ export default function MovementCockpit({
           </div>
         ) : null}
 
-        {/* WAAR JE STAAT — echte beweegscore + narratieve Future You-regel */}
+        {/* WAAR JE STAAT — score + trend in één readout-rij, Future You-narratief */}
         <div
           className={
-            isPlanView ? "lg:col-start-1 lg:row-start-1" : "lg:col-start-1 lg:row-start-2"
+            isPlanView ? "lg:col-start-1 lg:row-start-1" : "lg:col-span-2 lg:col-start-1 lg:row-start-2"
           }
         >
-          <CockpitTile
-            eyebrow="Waar je staat"
-            ariaLabel="Waar je staat"
-            className="flex h-full flex-col items-center text-center"
-          >
-            <div className="relative my-2">
-              <svg
-                viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-                className="h-[124px] w-[124px]"
-                role="img"
-                aria-label={`Beweegscore: ${score} van de 100`}
-              >
-                <circle
-                  cx={RING_SIZE / 2}
-                  cy={RING_SIZE / 2}
-                  r={RING_RADIUS}
-                  fill="none"
-                  stroke="#22302E"
-                  strokeWidth="11"
-                />
-                <circle
-                  cx={RING_SIZE / 2}
-                  cy={RING_SIZE / 2}
-                  r={RING_RADIUS}
-                  fill="none"
-                  stroke="var(--ac)"
-                  strokeWidth="11"
-                  strokeLinecap="round"
-                  strokeDasharray={RING_CIRC}
-                  strokeDashoffset={dashOffset}
-                  transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
-                />
-                <text
-                  x={RING_SIZE / 2}
-                  y={RING_SIZE / 2 - 2}
-                  textAnchor="middle"
-                  fill="#F1EFE8"
-                  fontSize="34"
-                  className="font-serif"
+          <CockpitTile eyebrow="Waar je staat" ariaLabel="Waar je staat">
+            <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5 min-[1440px]:gap-6">
+              <div className="flex shrink-0 flex-col items-center text-center">
+                <svg
+                  viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
+                  className="h-[92px] w-[92px] min-[1440px]:h-[112px] min-[1440px]:w-[112px]"
+                  role="img"
+                  aria-label={`Beweegscore: ${score} van de 100`}
                 >
-                  {score}
-                </text>
-                <text
-                  x={RING_SIZE / 2}
-                  y={RING_SIZE / 2 + 18}
-                  textAnchor="middle"
-                  fill="#8B9A96"
-                  fontSize="9"
-                  letterSpacing="1"
-                >
-                  VAN DE 100
-                </text>
-              </svg>
-            </div>
-            <p className="font-serif text-[16px] text-[#F1EFE8]">Beweging</p>
-            <p className="mt-2 max-w-[34ch] text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-              Elke week die je vasthoudt telt mee voor de versie van jou die
-              straks nog gewoon zelf de trap op komt — dat is wat deze score
-              langzaam opbouwt.
-            </p>
-            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10.5px] text-[#7E8C82]">
-              {formatLastMeasured(model.date)} — verandert bij je hermeting
-            </span>
-          </CockpitTile>
-        </div>
-
-        {/* JE TREND — echte leefstijllijn (mobiel ná score, desktop 2-up met score) */}
-        <div
-          className={
-            isPlanView ? "lg:col-span-2 lg:col-start-1 lg:row-start-2" : "lg:col-start-2 lg:row-start-2"
-          }
-        >
-          <CockpitTile
-            eyebrow="Je trend"
-            ariaLabel="Je trend"
-            aside={
-              hasTrend && trendRow.baselineScore != null ? (
-                <span className="text-[12px] tabular-nums text-[#7E8C82]">
-                  Begin {trendRow.baselineScore} · nu {score}
+                  <circle
+                    cx={RING_SIZE / 2}
+                    cy={RING_SIZE / 2}
+                    r={RING_RADIUS}
+                    fill="none"
+                    stroke="#22302E"
+                    strokeWidth="11"
+                  />
+                  <circle
+                    cx={RING_SIZE / 2}
+                    cy={RING_SIZE / 2}
+                    r={RING_RADIUS}
+                    fill="none"
+                    stroke="var(--ac)"
+                    strokeWidth="11"
+                    strokeLinecap="round"
+                    strokeDasharray={RING_CIRC}
+                    strokeDashoffset={dashOffset}
+                    transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
+                  />
+                  <text
+                    x={RING_SIZE / 2}
+                    y={RING_SIZE / 2 - 2}
+                    textAnchor="middle"
+                    fill="#F1EFE8"
+                    fontSize="34"
+                    className="font-serif"
+                  >
+                    {score}
+                  </text>
+                  <text
+                    x={RING_SIZE / 2}
+                    y={RING_SIZE / 2 + 18}
+                    textAnchor="middle"
+                    fill="#8B9A96"
+                    fontSize="9"
+                    letterSpacing="1"
+                  >
+                    VAN DE 100
+                  </text>
+                </svg>
+                <p className="mt-1 font-serif text-[14px] text-[#F1EFE8]">Beweging</p>
+                <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10.5px] text-[#7E8C82]">
+                  {formatLastMeasured(model.date)} — verandert bij je hermeting
                 </span>
-              ) : null
-            }
-          >
-            {hasTrend ? (
-              <>
-                <div className="mt-3">
-                  <Sparkline data={trendRow.trend} color="var(--ac)" h={36} />
-                </div>
-                <p className="mt-3 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-                  Elke stip is een investering die je terugziet bij je volgende
-                  meetmoment — niet vandaag, wel over weken.
+              </div>
+
+              <div className="min-w-0 flex-1">
+                {hasTrend ? (
+                  <>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
+                        Je trend
+                      </span>
+                      {trendRow.baselineScore != null ? (
+                        <span className="text-[12px] tabular-nums text-[#7E8C82]">
+                          Begin {trendRow.baselineScore} · nu {score}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="mt-2">
+                      <Sparkline data={trendRow.trend} color="var(--ac)" h={36} />
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
+                    Nog te vroeg voor een lijn — na je eerste hermeting zie je
+                    ’m bewegen.
+                  </p>
+                )}
+                <p className="mt-3 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty lg:line-clamp-2">
+                  Elke week die je vasthoudt telt mee voor de versie van jou
+                  die straks nog gewoon zelf de trap op komt — dat is wat deze
+                  score langzaam opbouwt.
                 </p>
-              </>
-            ) : (
-              <p className="mt-3 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-                Nog te vroeg voor een lijn — na je eerste hermeting zie je ’m
-                bewegen.
-              </p>
-            )}
+              </div>
+            </div>
           </CockpitTile>
         </div>
 
@@ -251,47 +219,6 @@ export default function MovementCockpit({
             />
           </div>
         ) : null}
-
-        {/* DEZE WEEK — ritme-readout uit daily_action_log */}
-        {!isPlanView ? (
-          <div className="lg:col-start-1 lg:row-start-4">
-            <MovementWeekRhythm />
-          </div>
-        ) : null}
-
-        {/* JE VOLGENDE MEETMOMENT — forward-pointer */}
-        <div
-          className={
-            isPlanView ? "lg:col-span-2 lg:col-start-1 lg:row-start-3" : "lg:col-start-2 lg:row-start-4"
-          }
-        >
-          <CockpitTile eyebrow="Je volgende meetmoment" ariaLabel="Je volgende meetmoment">
-            <p className="mt-2 font-serif text-[17px] leading-snug text-[#F1EFE8] text-pretty">
-              {remeasure ? remeasureCopy(remeasure.daysUntil) : "Blijf even bouwen — het meetmoment komt vanzelf."}
-            </p>
-            <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-              Niet elke dag een cijfer — dat is bewust. De payoff komt bij je
-              hermeting, als je terugkijkt op wat er veranderde.
-            </p>
-            {remeasureDue ? (
-              <button
-                type="button"
-                onClick={onRemeasure}
-                className="mt-3 inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-xl border-none bg-[color:var(--ac)] px-4 text-[14px] font-semibold text-[#0f1c10]"
-              >
-                Doe de hermeting <Icons.ArrowRight s={14} />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={onRemeasure}
-                className="mt-3 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-semibold text-[color:var(--ac)]"
-              >
-                Zo werkt je hermeting <Icons.ArrowRight s={14} />
-              </button>
-            )}
-          </CockpitTile>
-        </div>
       </div>
     </CockpitShell>
   );
