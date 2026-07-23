@@ -270,19 +270,25 @@ export default function CockpitContextRail({
               </button>
             ) : null}
             <span className={ZONEFLAG}>{domainLabel ?? "Domein"}</span>
-            <nav
-              aria-label={`${domainLabel ?? "Domein"}-tools`}
-              className="flex flex-col gap-1"
-            >
-              {tools.map((tool) => (
-                <div key={tool.id}>
-                  {tool.id === "gids" ? (
-                    <div className="my-1.5 border-t border-white/10" aria-hidden />
-                  ) : null}
-                  {renderTool(tool)}
-                </div>
-              ))}
-            </nav>
+            {tools.length > 0 ? (
+              <nav
+                aria-label={`${domainLabel ?? "Domein"}-tools`}
+                className="flex flex-col gap-1"
+              >
+                {tools.map((tool) => (
+                  <div key={tool.id}>
+                    {tool.id === "gids" ? (
+                      <div className="my-1.5 border-t border-white/10" aria-hidden />
+                    ) : null}
+                    {renderTool(tool)}
+                  </div>
+                ))}
+              </nav>
+            ) : (
+              <p className="text-[12.5px] leading-relaxed text-[#7E8C82] text-pretty">
+                Ga terug naar Kompas om een ander domein te openen.
+              </p>
+            )}
             <ProfileFooter
               name={name}
               anchorLabel={anchorLabel}

@@ -3392,11 +3392,10 @@ const KompasHome = ({
     };
   });
 
-  const railMode: ContextRailMode = !domainView
-    ? "kompasHome"
-    : domainView === "beweging"
-      ? "domainTools"
-      : "profile";
+  // Elk open domein krijgt dezelfde rail-behandeling (Kompas-knop + eigen
+  // tools indien aanwezig); de domeinlijst zelf is alleen bereikbaar via de
+  // Kompas-knop terug naar "kompasHome", niet gestapeld in domainTools.
+  const railMode: ContextRailMode = !domainView ? "kompasHome" : "domainTools";
 
   useEffect(() => {
     if (!onContextRailApi) {
@@ -3406,7 +3405,7 @@ const KompasHome = ({
       mode: railMode,
       deepView,
       domains: railDomains,
-      tools: railTools,
+      tools: domainView === "beweging" ? railTools : [],
       onOpenDomain: (domain) => contextRailHandlersRef.current.onOpenDomain(domain),
       onBackToKompas: () => contextRailHandlersRef.current.onBackToKompas(),
       onToolClick: (tool) => contextRailHandlersRef.current.onToolClick(tool),
@@ -3414,7 +3413,7 @@ const KompasHome = ({
     return () => {
       onContextRailApi(null);
     };
-  }, [onContextRailApi, railMode, deepView, railDomains, railTools]);
+  }, [onContextRailApi, railMode, deepView, railDomains, railTools, domainView]);
 
   useEffect(() => {
     if (!onDomainNavApi) {
@@ -4238,16 +4237,14 @@ export default function Dashboard({
     viewedDomain === "beweging" ? <MovementWeekRhythm /> : undefined;
 
   // De linker rail volgt dezelfde context als de header: domeinlijst op de
-  // Kompas-home, domein-tools bij beweging, profiel als er geen Kompas-context
-  // is (ander tabblad, lege staat, of een domein zonder eigen tools).
+  // Kompas-home, Kompas-knop + evt. eigen tools bij een open domein, profiel
+  // als er geen Kompas-context is (ander tabblad of lege staat).
   const desiredRailMode: ContextRailMode =
     empty || tab !== "vandaag"
       ? "profile"
       : !viewedDomain
         ? "kompasHome"
-        : viewedDomain === "beweging"
-          ? "domainTools"
-          : "profile";
+        : "domainTools";
   const contextRailMode: ContextRailMode =
     contextRailApi && contextRailApi.mode === desiredRailMode
       ? desiredRailMode
