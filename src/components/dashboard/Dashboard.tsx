@@ -4290,7 +4290,7 @@ export default function Dashboard({
             tab === "agenda"
               ? "max-w-[760px]"
               : viewedDomain === "beweging"
-                ? "min-w-0 max-w-5xl"
+                ? "min-w-0"
                 : "max-w-[720px]"
           }`}
         >
