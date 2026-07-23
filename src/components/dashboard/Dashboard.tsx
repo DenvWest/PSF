@@ -8,7 +8,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PriorityLadder from "@/components/app/PriorityLadder";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import VitalityScoreCard from "@/components/app/VitalityScoreCard";
-import Wordmark from "@/components/app/Wordmark";
 import * as Icons from "@/components/app/icons";
 import {
   Button,
@@ -17,7 +16,6 @@ import {
   SectionHeader,
   SlotGrid,
   Sparkline,
-  Spinner,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import {
@@ -124,7 +122,6 @@ import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isPlanStepHidden } from "@/lib/day-model";
-import { isCockpitShellEnabled } from "@/lib/feature-flags";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
@@ -206,66 +203,6 @@ type SharedSectionProps = {
   onDomainViewChange?: (domain: PillarId | null) => void;
   /** Registreert back/switch-handlers voor sticky domainNav in cockpit-header. */
   onDomainNavApi?: (api: DomainNavApi | null) => void;
-};
-
-const DashHeader = ({ onLogout }: { onLogout: () => void | Promise<void> }) => {
-  const router = useRouter();
-  const [loggingOut, setLoggingOut] = useState(false);
-  const iconBtn = {
-    width: 38,
-    height: 38,
-    borderRadius: 11,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "rgba(255,255,255,0.04)",
-    border: "1px solid var(--panel-border)",
-    color: "var(--text-muted)",
-    cursor: loggingOut ? "wait" : "pointer",
-  } as const;
-
-  return (
-    <header
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 24,
-      }}
-    >
-      <Link
-        href="/"
-        aria-label="Naar de website"
-        style={{ textDecoration: "none" }}
-      >
-        <Wordmark />
-      </Link>
-      <div style={{ display: "flex", gap: 8 }}>
-        <button
-          type="button"
-          style={iconBtn}
-          title="Instellingen"
-          onClick={() => router.push("/account")}
-        >
-          <Icons.Settings s={18} />
-        </button>
-        <button
-          type="button"
-          style={iconBtn}
-          title="Uitloggen"
-          disabled={loggingOut}
-          aria-busy={loggingOut || undefined}
-          onClick={async () => {
-            if (loggingOut) return;
-            setLoggingOut(true);
-            await onLogout();
-          }}
-        >
-          {loggingOut ? <Spinner s={18} /> : <Icons.LogOut s={18} />}
-        </button>
-      </div>
-    </header>
-  );
 };
 
 const CollapsibleSection = ({
@@ -3299,7 +3236,7 @@ const KompasHome = ({
     if (!onDomainNavApi) {
       return;
     }
-    if (domainView && isCockpitShellEnabled()) {
+    if (domainView) {
       onDomainNavApi({
         onBack: () => domainNavHandlersRef.current.onBack(),
         onSwitch: (domain) => domainNavHandlersRef.current.onSwitch(domain),
@@ -3379,18 +3316,9 @@ const KompasHome = ({
     }
   };
 
-  const showDomainTopNavInContent = !isCockpitShellEnabled();
-
   const withDomainTopNav = (content: ReactElement) =>
     domainView ? (
       <div className="-mt-0.5 flex flex-col gap-3.5">
-        {showDomainTopNavInContent ? (
-          <DomainTopNav
-            activeDomain={domainView}
-            onBack={handleDomainBack}
-            onSwitch={handleDomainSwitch}
-          />
-        ) : null}
         {isInterventionDomain(domainView) && domainView !== "beweging" ? (
           <DomainTodayStrip
             model={currentModel}
@@ -3405,24 +3333,11 @@ const KompasHome = ({
     );
 
   if (domainView === "beweging") {
-    // Beweging = referentie-cockpit: breekt op desktop uit de smalle
-    // dashboard-kolom (max 600px) naar de volle contentbreedte. Mobiel
-    // ongewijzigd (util werkt alleen ≥lg). Eigen wrapper i.p.v.
-    // withDomainTopNav omdat de generieke DomainTodayStrip hier vervalt.
-    // De breakout-class rekent margins uit t.o.v. de smalle 600px-kolom van
-    // de legacy layout — binnen de cockpit-shell zit dit blok al in de
-    // juiste (fluid) grid-kolom, dus daar NIET toepassen (anders duwt de
-    // class het over de linker/rechter cockpit-zones heen).
-    const breakoutClass = isCockpitShellEnabled() ? "" : "ps-cockpit-breakout ";
+    // Beweging = referentie-cockpit met eigen wrapper i.p.v. withDomainTopNav,
+    // omdat de generieke DomainTodayStrip hier vervalt. De domein-nav zit in de
+    // cockpit-header (domainNav), niet in de content.
     return (
-      <div className={`${breakoutClass}-mt-0.5 flex flex-col gap-3.5`}>
-        {showDomainTopNavInContent ? (
-          <DomainTopNav
-            activeDomain="beweging"
-            onBack={handleDomainBack}
-            onSwitch={handleDomainSwitch}
-          />
-        ) : null}
+      <div className="-mt-0.5 flex flex-col gap-3.5">
         {deepView === "stappenplan" ? (
           <KompasDepthStrip
             onKompas={handleBreadcrumbKompas}
@@ -3826,64 +3741,6 @@ const EmptyTabState = ({
   );
 };
 
-const DashTabBar = ({
-  tab,
-  onSelect,
-}: {
-  tab: DashboardTabId;
-  onSelect: (id: DashboardTabId) => void;
-}) => (
-  <nav
-    aria-label="Dashboard-navigatie"
-    style={{
-      position: "fixed",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      zIndex: 20,
-      display: "flex",
-      justifyContent: "center",
-      background: "rgba(16,26,16,0.92)",
-      backdropFilter: "blur(12px)",
-      borderTop: "1px solid var(--panel-border)",
-      paddingBottom: "env(safe-area-inset-bottom, 0px)",
-    }}
-  >
-    <div style={{ display: "flex", width: "100%", maxWidth: 600 }}>
-      {DASHBOARD_TABS.map((t) => {
-        const Icon = Icons[t.icon];
-        const active = t.id === tab;
-        return (
-          <button
-            key={t.id}
-            type="button"
-            aria-current={active ? "page" : undefined}
-            onClick={() => onSelect(t.id)}
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 4,
-              padding: "9px 4px 11px",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: active ? "var(--sage)" : "var(--text-muted)",
-              fontFamily: "var(--f-sans)",
-            }}
-          >
-            <Icon s={20} />
-            <span style={{ fontSize: 11, fontWeight: active ? 600 : 500 }}>
-              {t.label}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  </nav>
-);
-
 export default function Dashboard({
   empty,
   data,
@@ -4177,97 +4034,75 @@ export default function Dashboard({
     </footer>
   );
 
-  if (isCockpitShellEnabled()) {
-    // Alleen op het Kompas-tabblad ("vandaag") stelt de gebruiker een domein
-    // open/dicht; op Mijn Dag/Voortgang/Hermeting is er geen domein-context.
-    // cockpitDomain wordt live gemeld door KompasHome (onDomainViewChange),
-    // dus dit volgt echte navigatie i.p.v. te bevriezen op de load-URL.
-    const viewedDomain = tab === "vandaag" ? cockpitDomain : null;
-    // Het anker-systeem bestaat vooralsnog alleen voor beweging (zie
-    // BLAUWDRUK_DOMEIN_STAPPENPLANNEN.md §7) — toon 'm dus alleen wanneer dat
-    // domein daadwerkelijk open staat, niet op elk ander tabblad/domein.
-    const anchorOption =
-      viewedDomain === "beweging"
-        ? MOVEMENT_ANCHOR_OPTIONS.find(
-            (option) => option.id === model?.movementPrefs.anchor,
-          )
-        : undefined;
-    const activeHabit = model?.activeHabit ?? null;
-    const centerHasMeetmomentTile =
-      tab === "vandaag" && viewedDomain === "beweging";
-    const inspectorCards = buildInspectorCards({
-      activeHabit: activeHabit
-        ? {
-            title: activeHabit.title,
-            detail: activeHabit.detail,
-            done: activeHabit.state === "done",
-          }
-        : null,
-      remeasure:
-        centerHasMeetmomentTile || !data?.remeasure
-          ? null
-          : { daysUntil: data.remeasure.daysUntil },
-      anchorWhy: anchorOption?.whySuffix ?? null,
-    });
-
-    return (
-      <div className={`min-h-dvh ${surfaceClass}`}>
-        <CockpitFrame
-          activeTab={tab}
-          onSelectTab={selectTab}
-          domain={viewedDomain}
-          domainNav={
-            viewedDomain && domainNavApi ? (
-              <DomainTopNav
-                activeDomain={viewedDomain}
-                onBack={domainNavApi.onBack}
-                onSwitch={domainNavApi.onSwitch}
-              />
-            ) : null
-          }
-          onOpenSettings={() => router.push("/account")}
-          onLogout={onLogout}
-          firstName={data?.firstName ?? null}
-          anchorLabel={anchorOption?.label ?? null}
-          statusDone={model?.activeHabit?.state === "done"}
-          onCheckin={() => selectTab("vandaag")}
-          inspectorCards={inspectorCards}
-        >
-          <div
-            className={`mx-auto w-full ${
-              tab === "agenda"
-                ? "max-w-[760px]"
-                : viewedDomain === "beweging"
-                  ? "min-w-0 max-w-5xl"
-                  : "max-w-[720px]"
-            }`}
-          >
-            {tabHeaderNode}
-            {sectionsNode}
-            {footerNode}
-          </div>
-        </CockpitFrame>
-      </div>
-    );
-  }
+  // Alleen op het Kompas-tabblad ("vandaag") stelt de gebruiker een domein
+  // open/dicht; op Mijn Dag/Voortgang/Hermeting is er geen domein-context.
+  // cockpitDomain wordt live gemeld door KompasHome (onDomainViewChange),
+  // dus dit volgt echte navigatie i.p.v. te bevriezen op de load-URL.
+  const viewedDomain = tab === "vandaag" ? cockpitDomain : null;
+  // Het anker-systeem bestaat vooralsnog alleen voor beweging (zie
+  // BLAUWDRUK_DOMEIN_STAPPENPLANNEN.md §7) — toon 'm dus alleen wanneer dat
+  // domein daadwerkelijk open staat, niet op elk ander tabblad/domein.
+  const anchorOption =
+    viewedDomain === "beweging"
+      ? MOVEMENT_ANCHOR_OPTIONS.find(
+          (option) => option.id === model?.movementPrefs.anchor,
+        )
+      : undefined;
+  const activeHabit = model?.activeHabit ?? null;
+  const centerHasMeetmomentTile =
+    tab === "vandaag" && viewedDomain === "beweging";
+  const inspectorCards = buildInspectorCards({
+    activeHabit: activeHabit
+      ? {
+          title: activeHabit.title,
+          detail: activeHabit.detail,
+          done: activeHabit.state === "done",
+        }
+      : null,
+    remeasure:
+      centerHasMeetmomentTile || !data?.remeasure
+        ? null
+        : { daysUntil: data.remeasure.daysUntil },
+    anchorWhy: anchorOption?.whySuffix ?? null,
+  });
 
   return (
     <div className={`min-h-dvh ${surfaceClass}`}>
-      <main
-        style={{
-          width: "100%",
-          maxWidth: 600,
-          margin: "0 auto",
-          padding:
-            "clamp(20px, 4vh, 36px) 18px calc(96px + env(safe-area-inset-bottom, 0px))",
-        }}
+      <CockpitFrame
+        activeTab={tab}
+        onSelectTab={selectTab}
+        domain={viewedDomain}
+        domainNav={
+          viewedDomain && domainNavApi ? (
+            <DomainTopNav
+              activeDomain={viewedDomain}
+              onBack={domainNavApi.onBack}
+              onSwitch={domainNavApi.onSwitch}
+            />
+          ) : null
+        }
+        onOpenSettings={() => router.push("/account")}
+        onLogout={onLogout}
+        firstName={data?.firstName ?? null}
+        anchorLabel={anchorOption?.label ?? null}
+        statusDone={model?.activeHabit?.state === "done"}
+        onCheckin={() => selectTab("vandaag")}
+        inspectorCards={inspectorCards}
       >
-        <DashHeader onLogout={onLogout} />
-        {tabHeaderNode}
-        {sectionsNode}
-        {footerNode}
-      </main>
-      <DashTabBar tab={tab} onSelect={selectTab} />
+        <div
+          className={`mx-auto w-full ${
+            tab === "agenda"
+              ? "max-w-[760px]"
+              : viewedDomain === "beweging"
+                ? "min-w-0 max-w-5xl"
+                : "max-w-[720px]"
+          }`}
+        >
+          {tabHeaderNode}
+          {sectionsNode}
+          {footerNode}
+        </div>
+      </CockpitFrame>
     </div>
   );
 }

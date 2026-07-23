@@ -25,7 +25,7 @@ const planHeaderActions = (
 
 function DashboardPlanLoadingSkeleton() {
   return (
-    <div className="ps-dark ps-cockpit-breakout mx-auto w-full max-w-5xl px-4 pb-12 pt-2 sm:px-6">
+    <div className="ps-dark mx-auto w-full max-w-5xl px-4 pb-12 pt-2 sm:px-6">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">

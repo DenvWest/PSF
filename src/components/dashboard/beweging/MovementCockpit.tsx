@@ -9,7 +9,6 @@ import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero
 import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import { isCockpitShellEnabled } from "@/lib/feature-flags";
 import { isPlanStepHidden } from "@/lib/day-model";
 import { formatLastMeasured } from "@/lib/betekenis-motor";
 import { buildDomainTrendRow } from "@/lib/leefstijllijn";
@@ -62,7 +61,6 @@ export default function MovementCockpit({
   onOpenPlan,
 }: MovementCockpitProps) {
   const isPlanView = deepView === "stappenplan";
-  const embedded = isCockpitShellEnabled();
   const score = Math.round(model.scores.beweging ?? 0);
   const dashOffset = RING_CIRC * (1 - Math.min(100, Math.max(0, score)) / 100);
 
@@ -91,7 +89,7 @@ export default function MovementCockpit({
     <CockpitShell
       accent={COCKPIT_CTA}
       ariaLabel="Beweeg-cockpit"
-      embedded={embedded}
+      embedded
     >
       {/* DOM-volgorde = mobiele stack (hero eerst). lg: Hero full-width →
           Score+Trend 2-up → Jouw route full-width → Deze week+Meetmoment 2-up. */}
