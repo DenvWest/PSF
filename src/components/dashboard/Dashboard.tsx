@@ -3490,6 +3490,18 @@ const KompasHome = ({
 
   return (
     <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
+      <div>
+        <div
+          className="text-[26px] leading-tight text-[color:var(--text)]"
+          style={{ fontFamily: "var(--f-serif)" }}
+        >
+          Welkom terug{data?.firstName ? `, ${data.firstName}` : ""}.
+        </div>
+        <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--text-muted)] text-pretty">
+          Elke stap die je vandaag zet, bouwt aan waar je naartoe werkt — je ziet
+          het niet meteen, wel over de weken.
+        </p>
+      </div>
       {showRemeasureReminder ? (
         <KompasLooseCard>
           <div className="flex flex-wrap items-center gap-3">
@@ -3598,6 +3610,27 @@ const KompasHome = ({
           </div>
         ) : null}
       </KompasLooseCard>
+
+      <button
+        type="button"
+        onClick={onGoAgenda}
+        className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] border border-white/10 bg-white/[0.04] p-4 text-left transition hover:border-white/20"
+      >
+        <span className="min-w-0">
+          <span
+            className="block text-[15px] text-[color:var(--text)]"
+            style={{ fontFamily: "var(--f-serif)" }}
+          >
+            Je week
+          </span>
+          <span className="mt-1 block text-[13px] leading-snug text-[color:var(--text-muted)] text-pretty">
+            Zie je planning en verplaats een stap naar een moment dat past.
+          </span>
+        </span>
+        <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-[var(--sage)]">
+          Bekijk je week <Icons.ArrowRight s={14} />
+        </span>
+      </button>
     </section>
   );
 };

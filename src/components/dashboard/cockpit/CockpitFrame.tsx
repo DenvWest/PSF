@@ -56,6 +56,7 @@ export default function CockpitFrame({
         onOpenSettings={onOpenSettings}
         onLogout={onLogout}
         onOpenContext={() => setContextOpen(true)}
+        firstName={firstName}
       />
 
       <div className="relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:grid-cols-[240px_minmax(0,1fr)] sm:pb-0 xl:grid-cols-[250px_minmax(0,1fr)_330px]">

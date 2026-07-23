@@ -1,9 +1,9 @@
 "use client";
 
 import type { ComponentType, CSSProperties, ReactNode } from "react";
-import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import Wordmark from "@/components/app/Wordmark";
+import CockpitProfileMenu from "@/components/dashboard/cockpit/CockpitProfileMenu";
 import { DASHBOARD_TABS, PILLAR } from "@/data/dashboard";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
@@ -17,6 +17,7 @@ type CockpitHeaderProps = {
   onOpenSettings: () => void;
   onLogout: () => void | Promise<void>;
   onOpenContext?: () => void;
+  firstName?: string | null;
 };
 
 const ICON_BTN =
@@ -30,6 +31,7 @@ export default function CockpitHeader({
   onOpenSettings,
   onLogout,
   onOpenContext,
+  firstName,
 }: CockpitHeaderProps) {
   const domainLabel = domain ? PILLAR[domain].label : null;
 
@@ -57,13 +59,14 @@ export default function CockpitHeader({
       ) : null}
 
       <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:px-6 sm:pb-3">
-        <Link
-          href="/"
-          aria-label="Naar de website"
-          className="shrink-0 no-underline [&_svg]:h-6 [&_svg]:w-auto sm:[&_svg]:h-auto"
+        <button
+          type="button"
+          onClick={() => onSelectTab("vandaag")}
+          aria-label="Naar je dashboard-home"
+          className="shrink-0 cursor-pointer border-none bg-transparent p-0 [&_svg]:h-6 [&_svg]:w-auto sm:[&_svg]:h-auto"
         >
           <Wordmark />
-        </Link>
+        </button>
 
         <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:hidden">
           {onOpenContext ? (
@@ -77,15 +80,11 @@ export default function CockpitHeader({
               <Icons.Target s={16} style={{ color: "#5A8F6A" }} />
             </button>
           ) : null}
-          <button
-            type="button"
-            onClick={onOpenSettings}
-            title="Instellingen"
-            aria-label="Instellingen"
-            className={ICON_BTN}
-          >
-            <Icons.Settings s={16} />
-          </button>
+          <CockpitProfileMenu
+            firstName={firstName}
+            onOpenSettings={onOpenSettings}
+            onLogout={onLogout}
+          />
         </div>
 
         <div
@@ -131,24 +130,11 @@ export default function CockpitHeader({
               <Icons.Target s={15} style={{ color: "#5A8F6A" }} /> Context
             </button>
           ) : null}
-          <button
-            type="button"
-            onClick={onOpenSettings}
-            title="Instellingen"
-            aria-label="Instellingen"
-            className={ICON_BTN}
-          >
-            <Icons.Settings s={17} />
-          </button>
-          <button
-            type="button"
-            onClick={() => void onLogout()}
-            title="Uitloggen"
-            aria-label="Uitloggen"
-            className={ICON_BTN}
-          >
-            <Icons.LogOut s={17} />
-          </button>
+          <CockpitProfileMenu
+            firstName={firstName}
+            onOpenSettings={onOpenSettings}
+            onLogout={onLogout}
+          />
         </div>
       </div>
 
