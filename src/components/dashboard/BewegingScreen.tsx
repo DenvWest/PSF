@@ -32,10 +32,11 @@ const FooterLink = ({
   label: string;
   onClick: () => void;
 }) => (
+  // Op md+ staan Bewegingsgids en Leefstijl & inzichten al als tools in de context-rail.
   <Link
     href={href}
     onClick={onClick}
-    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-[18px] py-4 no-underline text-inherit transition hover:border-white/20"
+    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-[18px] py-4 no-underline text-inherit transition hover:border-white/20 md:hidden"
   >
     {icon}
     <span className="flex-1 font-serif text-[16px] text-[#F1EFE8]">{label}</span>

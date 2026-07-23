@@ -19,7 +19,13 @@ export type ContextRailDomainItem = {
   score: number;
 };
 
-export type ContextRailToolId = "vandaag" | "stappenplan" | "checkin" | "supplementen";
+export type ContextRailToolId =
+  | "vandaag"
+  | "stappenplan"
+  | "checkin"
+  | "supplementen"
+  | "gids"
+  | "inzichten";
 
 export type ContextRailTool = {
   id: ContextRailToolId;
@@ -104,6 +110,18 @@ export function buildBewegingRailTools(input: {
       disabledHint: supplementsLocked
         ? "Doe eerst de voedingscheck — eerst tafel, dan potje."
         : undefined,
+    },
+    {
+      id: "gids",
+      label: "Bewegingsgids",
+      icon: "Mail",
+      href: "/gids/beweging",
+    },
+    {
+      id: "inzichten",
+      label: "Leefstijl & inzichten",
+      icon: "BookOpen",
+      href: "/inzichten",
     },
   ];
 }

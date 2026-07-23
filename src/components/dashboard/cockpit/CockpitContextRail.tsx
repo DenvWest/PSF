@@ -259,9 +259,13 @@ export default function CockpitContextRail({
               <button
                 type="button"
                 onClick={onBackToKompas}
-                className="flex items-center gap-0.5 self-start rounded-[8px] px-1 py-1 text-[13px] font-medium text-[#9FB0A6] transition hover:text-[#F1EFE8]"
+                className="group flex items-center gap-2 self-start rounded-full border border-[#5A8F6A]/35 bg-gradient-to-r from-[#5A8F6A]/20 to-[#5A8F6A]/[0.06] px-3.5 py-2 text-[13px] font-bold text-[#F1EFE8] shadow-[0_1px_0_rgba(255,255,255,0.05)] transition hover:border-[#5A8F6A]/60 hover:from-[#5A8F6A]/28"
               >
-                <Icons.ChevronLeft s={15} sw={2} style={{ color: "currentColor" }} />
+                <Icons.Compass
+                  s={16}
+                  sw={2}
+                  style={{ color: "#6FB07E" }}
+                />
                 <span>Kompas</span>
               </button>
             ) : null}
@@ -270,7 +274,14 @@ export default function CockpitContextRail({
               aria-label={`${domainLabel ?? "Domein"}-tools`}
               className="flex flex-col gap-1"
             >
-              {tools.map(renderTool)}
+              {tools.map((tool) => (
+                <div key={tool.id}>
+                  {tool.id === "gids" ? (
+                    <div className="my-1.5 border-t border-white/10" aria-hidden />
+                  ) : null}
+                  {renderTool(tool)}
+                </div>
+              ))}
             </nav>
             <ProfileFooter
               name={name}

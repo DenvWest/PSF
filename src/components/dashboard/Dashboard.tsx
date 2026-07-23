@@ -3346,6 +3346,18 @@ const KompasHome = ({
       return;
     }
 
+    if (tool === "gids") {
+      // Navigatie loopt via de Link in de rail; hier alleen de meting.
+      trackEvent("dashboard_beweging_gids_click", { surface: "context_rail" });
+      return;
+    }
+
+    if (tool === "inzichten") {
+      // Navigatie loopt via de Link in de rail; hier alleen de meting.
+      trackEvent("dashboard_beweging_leefstijl_click", { surface: "context_rail" });
+      return;
+    }
+
     trackEvent("dashboard_beweging_supplement_click", {
       surface: "context_rail",
       target: "scroll",

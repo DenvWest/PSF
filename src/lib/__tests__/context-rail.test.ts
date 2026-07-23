@@ -73,12 +73,19 @@ describe("buildBewegingRailTools", () => {
     expect(tools.find((tool) => tool.id === "stappenplan")?.active).toBe(true);
   });
 
-  it("houdt de beweegcheck een echte link en levert nooit meer dan vier tools", () => {
+  it("houdt de beweegcheck een echte link naar de intake", () => {
     const tools = buildBewegingRailTools(baseTools);
 
-    expect(tools).toHaveLength(4);
     expect(tools.find((tool) => tool.id === "checkin")?.href).toBe(
       "/intake/beweging?from=dashboard&kompas=beweging",
     );
+  });
+
+  it("bevat ook de gratis Bewegingsgids en Leefstijl & inzichten als echte links", () => {
+    const tools = buildBewegingRailTools(baseTools);
+
+    expect(tools).toHaveLength(6);
+    expect(tools.find((tool) => tool.id === "gids")?.href).toBe("/gids/beweging");
+    expect(tools.find((tool) => tool.id === "inzichten")?.href).toBe("/inzichten");
   });
 });
