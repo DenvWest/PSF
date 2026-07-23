@@ -294,6 +294,15 @@ export function Target(props: IconProps) {
   );
 }
 
+export function Bell(props: IconProps) {
+  return (
+    <I {...props}>
+      <path d="M12 3a5 5 0 0 0-5 5v2.5c0 .9-.4 1.7-1 2.3L5 14.5V16h14v-1.5l-1-1.7c-.6-.6-1-1.4-1-2.3V8a5 5 0 0 0-5-5z" />
+      <path d="M9.5 18a2.5 2.5 0 0 0 5 0" />
+    </I>
+  );
+}
+
 export function Leaf(props: IconProps) {
   return (
     <I {...props}>

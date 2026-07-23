@@ -239,7 +239,7 @@ export default function CockpitContextRail({
               ? `${domainLabel ?? "Domein"}-navigatie`
               : "Profiel"
         }
-        className="hidden flex-col gap-4 border-b border-white/10 p-4 md:flex md:border-b-0 md:border-r"
+        className="hidden flex-col gap-4 border-b border-white/10 p-4 md:flex md:border-b-0 md:border-r md:px-6"
       >
         {mode === "kompasHome" ? (
           <>

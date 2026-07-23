@@ -5,6 +5,7 @@ import * as Icons from "@/components/app/icons";
 import Wordmark from "@/components/app/Wordmark";
 import CockpitProfileMenu from "@/components/dashboard/cockpit/CockpitProfileMenu";
 import { DASHBOARD_TABS } from "@/data/dashboard";
+import type { CockpitContextPresentation } from "@/lib/cockpit-context-layout";
 import type { DashboardTabId } from "@/types/dashboard";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
@@ -16,11 +17,75 @@ type CockpitHeaderProps = {
   onOpenSettings: () => void;
   onLogout: () => void | Promise<void>;
   onOpenContext?: () => void;
+  contextCount?: number;
+  contextPresentation?: CockpitContextPresentation;
   firstName?: string | null;
 };
 
 const ICON_BTN =
   "flex h-9 w-9 items-center justify-center rounded-[10px] border border-white/10 bg-white/[0.04] text-[#9FB0A6] transition hover:text-[#F1EFE8]";
+
+function contextAriaLabel(count: number): string {
+  return count > 0 ? `Context bij vandaag (${count})` : "Context bij vandaag";
+}
+
+function ContextBadge({ count }: { count: number }) {
+  if (count <= 0) {
+    return null;
+  }
+  return (
+    <span className="absolute -right-1 -top-1 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#C8956C] px-1 text-[10px] font-bold leading-none text-[#0f1c10]">
+      {count > 9 ? "9+" : count}
+    </span>
+  );
+}
+
+function ContextBellButton({
+  count,
+  onClick,
+  variant,
+}: {
+  count: number;
+  onClick: () => void;
+  variant: "icon" | "labeled";
+}) {
+  const label = contextAriaLabel(count);
+
+  if (variant === "labeled") {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={label}
+        className="flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-[12.5px] font-semibold text-[#F1EFE8]"
+      >
+        <span className="relative flex h-4 w-4 items-center justify-center">
+          <Icons.Bell s={15} />
+          <ContextBadge count={count} />
+        </span>
+        Context
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={`${ICON_BTN} relative`}
+    >
+      <Icons.Bell s={16} />
+      <ContextBadge count={count} />
+    </button>
+  );
+}
+
+function resolveBellVariant(
+  presentation: CockpitContextPresentation,
+): "icon" | "labeled" {
+  return presentation === "sheet" ? "icon" : "labeled";
+}
 
 export default function CockpitHeader({
   activeTab,
@@ -29,8 +94,31 @@ export default function CockpitHeader({
   onOpenSettings,
   onLogout,
   onOpenContext,
+  contextCount = 0,
+  contextPresentation = "sidebar",
   firstName,
 }: CockpitHeaderProps) {
+  const mobileBellVariant = resolveBellVariant(contextPresentation);
+  const desktopBellVariant = resolveBellVariant(
+    contextPresentation === "sheet" ? "drawer" : contextPresentation,
+  );
+
+  const mobileContextBell = onOpenContext ? (
+    <ContextBellButton
+      count={contextCount}
+      onClick={onOpenContext}
+      variant={mobileBellVariant}
+    />
+  ) : null;
+
+  const desktopContextBell = onOpenContext ? (
+    <ContextBellButton
+      count={contextCount}
+      onClick={onOpenContext}
+      variant={desktopBellVariant}
+    />
+  ) : null;
+
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[rgba(12,19,21,0.86)] backdrop-blur-md">
       {/* Kolom 1 = rail-breedte (240/260/280px) min de eigen px-6 (24px), zodat
@@ -47,17 +135,7 @@ export default function CockpitHeader({
         </button>
 
         <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:hidden">
-          {onOpenContext ? (
-            <button
-              type="button"
-              onClick={onOpenContext}
-              aria-label="Context"
-              title="Context"
-              className={ICON_BTN}
-            >
-              <Icons.Target s={16} style={{ color: "#5A8F6A" }} />
-            </button>
-          ) : null}
+          {mobileContextBell}
           <CockpitProfileMenu
             firstName={firstName}
             onOpenSettings={onOpenSettings}
@@ -99,15 +177,7 @@ export default function CockpitHeader({
         </div>
 
         <div className="hidden items-center gap-2 sm:flex">
-          {onOpenContext ? (
-            <button
-              type="button"
-              onClick={onOpenContext}
-              className="flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-[12.5px] font-semibold text-[#F1EFE8] xl:hidden"
-            >
-              <Icons.Target s={15} style={{ color: "#5A8F6A" }} /> Context
-            </button>
-          ) : null}
+          {desktopContextBell}
           <CockpitProfileMenu
             firstName={firstName}
             onOpenSettings={onOpenSettings}

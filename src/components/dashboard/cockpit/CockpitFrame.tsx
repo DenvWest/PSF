@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import CockpitBottomNav from "@/components/dashboard/cockpit/CockpitBottomNav";
 import CockpitHeader from "@/components/dashboard/cockpit/CockpitHeader";
 import CockpitInspector from "@/components/dashboard/cockpit/CockpitInspector";
 import CockpitContextRail from "@/components/dashboard/cockpit/CockpitContextRail";
+import { clarityTag } from "@/lib/clarity";
 import type { InspectorCard } from "@/lib/cockpit-inspector";
+import { trackEvent } from "@/lib/ga4";
+import { useCockpitContextLayout } from "@/lib/use-cockpit-context-layout";
 import type {
   ContextRailDomainItem,
   ContextRailMode,
@@ -39,11 +42,13 @@ type CockpitFrameProps = {
   children: ReactNode;
 };
 
+const CONTEXT_HIGHLIGHT_MS = 1200;
+
 /**
  * Cockpit-frame (slice 1): twee-rijige header + drie-zone-layout rond de
  * bestaande domein-screen (children = de midden-zone, ongewijzigd). Rechts een
- * contextpaneel dat onder xl een drawer wordt. Alle domein-logica blijft in de
- * children; dit frame is puur chrome + presentatie.
+ * contextpaneel: sheet (< sm), drawer (tablet), sidebar (lg+ / iPad landscape).
+ * CSS lg:-fallback zorgt dat de sidebar op web direct zichtbaar is vóór hydration.
  */
 export default function CockpitFrame({
   activeTab,
@@ -69,6 +74,84 @@ export default function CockpitFrame({
   children,
 }: CockpitFrameProps) {
   const [contextOpen, setContextOpen] = useState(false);
+  const [contextHighlighted, setContextHighlighted] = useState(false);
+  const contextTitleId = useId();
+  const panelRef = useRef<HTMLElement>(null);
+  const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const contextCount = inspectorCards.length + (inspectorExtra ? 1 : 0);
+  const presentation = useCockpitContextLayout();
+  const isDrawerMode = presentation !== "sidebar";
+  const isSheet = presentation === "sheet";
+  const isDialogOpen = contextOpen && isDrawerMode;
+
+  const openContext = useCallback(() => {
+    setContextOpen(true);
+    trackEvent("dashboard_context_opened", {
+      card_count: contextCount,
+      presentation,
+    });
+    clarityTag("dashboard_context", `open_${presentation}`);
+  }, [contextCount, presentation]);
+
+  const closeContext = useCallback(() => {
+    setContextOpen(false);
+    trackEvent("dashboard_context_closed", {
+      card_count: contextCount,
+      presentation,
+    });
+    clarityTag("dashboard_context", "close");
+  }, [contextCount, presentation]);
+
+  const handleContextBellClick = useCallback(() => {
+    if (isDrawerMode) {
+      openContext();
+      return;
+    }
+
+    panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    setContextHighlighted(true);
+    trackEvent("dashboard_context_focused", { card_count: contextCount });
+    clarityTag("dashboard_context", "focus_sidebar");
+
+    if (highlightTimeoutRef.current) {
+      clearTimeout(highlightTimeoutRef.current);
+    }
+    highlightTimeoutRef.current = setTimeout(() => {
+      setContextHighlighted(false);
+      highlightTimeoutRef.current = null;
+    }, CONTEXT_HIGHLIGHT_MS);
+  }, [isDrawerMode, openContext, contextCount]);
+
+  useEffect(() => {
+    if (!isDialogOpen) {
+      return;
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeContext();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    panelRef.current?.focus();
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isDialogOpen, closeContext]);
+
+  useEffect(
+    () => () => {
+      if (highlightTimeoutRef.current) {
+        clearTimeout(highlightTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   return (
     <div className="mx-auto w-full max-w-[2200px] text-[#F1EFE8]">
@@ -78,11 +161,13 @@ export default function CockpitFrame({
         domainNav={domainNav}
         onOpenSettings={onOpenSettings}
         onLogout={onLogout}
-        onOpenContext={() => setContextOpen(true)}
+        onOpenContext={handleContextBellClick}
+        contextCount={contextCount}
+        contextPresentation={presentation}
         firstName={firstName}
       />
 
-      <div className="relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:grid-cols-[240px_minmax(0,1fr)] sm:pb-0 xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]">
+      <div className="relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:grid-cols-[240px_minmax(0,1fr)] sm:pb-0 lg:grid-cols-[240px_minmax(0,1fr)_300px] xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]">
         <CockpitContextRail
           mode={railMode}
           firstName={firstName}
@@ -100,29 +185,45 @@ export default function CockpitFrame({
 
         <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4">{children}</main>
 
-        <div
-          onClick={() => setContextOpen(false)}
-          aria-hidden
-          className={`fixed inset-0 z-30 bg-black/45 transition-opacity xl:hidden ${
-            contextOpen ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
-        />
-        <aside
-          aria-label="Contextpaneel"
-          className={`fixed inset-x-0 bottom-0 z-40 max-h-[85vh] overflow-y-auto rounded-t-[20px] border-t border-white/10 bg-[#101a1b] p-4 transition-transform duration-300 sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-0 sm:h-full sm:w-[330px] sm:max-h-none sm:max-w-[86%] sm:rounded-none sm:border-t-0 sm:border-l xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:bg-black/[0.12] xl:px-6 ${
-            contextOpen
-              ? "translate-y-0 sm:translate-x-0 sm:translate-y-0"
-              : "translate-y-full sm:translate-x-full sm:translate-y-0"
-          }`}
-        >
+        {isDrawerMode && isDialogOpen ? (
           <div
+            onClick={closeContext}
             aria-hidden
-            className="mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-white/20 sm:hidden"
+            className="fixed inset-0 z-30 bg-black/45 opacity-100 lg:hidden"
           />
+        ) : null}
+        <aside
+          ref={panelRef}
+          tabIndex={isDialogOpen ? -1 : undefined}
+          role={isDialogOpen ? "dialog" : undefined}
+          aria-modal={isDialogOpen ? true : undefined}
+          aria-labelledby={isDialogOpen ? contextTitleId : undefined}
+          aria-label={isDialogOpen ? undefined : "Contextpaneel"}
+          className={`min-w-0 outline-none transition-shadow duration-300 lg:static lg:z-auto lg:h-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:translate-y-0 lg:overflow-visible lg:border-l lg:border-white/10 lg:bg-black/[0.12] lg:px-6 lg:py-4 max-lg:fixed max-lg:z-40 max-lg:overflow-y-auto max-lg:bg-[#101a1b] max-lg:transition-transform max-lg:duration-300 ${
+            isSheet
+              ? "max-lg:inset-x-0 max-lg:bottom-0 max-lg:max-h-[min(85vh,720px)] max-lg:rounded-t-[20px] max-lg:border-t max-lg:border-white/10 max-lg:p-3 max-lg:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]"
+              : "max-lg:inset-y-0 max-lg:right-0 max-lg:h-dvh max-lg:w-[min(360px,86vw)] max-lg:border-l max-lg:border-white/10 max-lg:p-4"
+          } ${
+            isDialogOpen
+              ? "max-lg:translate-x-0 max-lg:translate-y-0"
+              : isSheet
+                ? "max-lg:translate-y-full"
+                : "max-lg:translate-x-full"
+          } ${contextHighlighted ? "ring-2 ring-[#5A8F6A]/50" : ""}`}
+        >
+          {isSheet && isDrawerMode ? (
+            <div
+              aria-hidden
+              className="mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-white/20 lg:hidden"
+            />
+          ) : null}
           <CockpitInspector
             cards={inspectorCards}
             remeasureAction={remeasureAction}
             extra={inspectorExtra}
+            titleId={contextTitleId}
+            onClose={isDrawerMode ? closeContext : undefined}
+            compact={isSheet}
           />
         </aside>
       </div>
