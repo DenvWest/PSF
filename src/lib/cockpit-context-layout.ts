@@ -16,3 +16,16 @@ export function resolveCockpitContextPresentation(
   }
   return "drawer";
 }
+
+/** Wat de context-knop in de header doet, gegeven presentatie + inklap-stand. */
+export type CockpitContextTriggerAction = "open" | "expand" | "focus";
+
+export function resolveCockpitContextTriggerAction(
+  presentation: CockpitContextPresentation,
+  collapsed: boolean,
+): CockpitContextTriggerAction {
+  if (presentation !== "sidebar") {
+    return "open";
+  }
+  return collapsed ? "expand" : "focus";
+}

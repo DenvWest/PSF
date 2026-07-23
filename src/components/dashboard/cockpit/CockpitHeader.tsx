@@ -57,13 +57,15 @@ function ContextBellButton({
         type="button"
         onClick={onClick}
         aria-label={label}
-        className="flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-[12.5px] font-semibold text-[#F1EFE8]"
+        title={label}
+        className="flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/[0.04] px-2 py-1.5 text-[12.5px] font-semibold text-[#F1EFE8] lg:px-2.5"
       >
         <span className="relative flex h-4 w-4 items-center justify-center">
           <Icons.Bell s={15} />
           <ContextBadge count={count} />
         </span>
-        Context
+        {/* Label pas vanaf lg: op tablet vecht de header met de tabs om ruimte. */}
+        <span className="hidden lg:inline">Context</span>
       </button>
     );
   }
@@ -124,7 +126,7 @@ export default function CockpitHeader({
       {/* Kolom 1 = rail-breedte (240/260/280px) min de eigen px-6 (24px), zodat
           de tabs in kolom 2 exact boven de main-inhoud beginnen i.p.v.
           gecentreerd over de volle breedte. */}
-      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-center sm:gap-3 sm:px-6 sm:pb-3 md:grid-cols-[216px_minmax(0,1fr)_auto] min-[1440px]:grid-cols-[236px_minmax(0,1fr)_auto] min-[1680px]:grid-cols-[256px_minmax(0,1fr)_auto]">
+      <div className="flex items-center gap-3 px-4 pb-2.5 pt-3 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-center sm:gap-2 sm:px-6 sm:pb-3 md:grid-cols-[184px_minmax(0,1fr)_auto] lg:grid-cols-[200px_minmax(0,1fr)_auto] lg:gap-3 xl:grid-cols-[216px_minmax(0,1fr)_auto] min-[1440px]:grid-cols-[236px_minmax(0,1fr)_auto] min-[1680px]:grid-cols-[256px_minmax(0,1fr)_auto]">
         <button
           type="button"
           onClick={() => onSelectTab("vandaag")}
@@ -158,9 +160,9 @@ export default function CockpitHeader({
                 role="tab"
                 aria-selected={active}
                 onClick={() => onSelectTab(tab.id)}
-                className={`relative flex shrink-0 items-center gap-2 rounded-[10px] px-3 py-2 text-[13.5px] font-medium transition ${
+                className={`relative flex shrink-0 items-center gap-1.5 rounded-[10px] px-2 py-2 text-[13px] font-medium transition lg:gap-2 lg:px-3 lg:text-[13.5px] ${
                   active
-                    ? "text-[#F1EFE8] after:absolute after:inset-x-3 after:bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#5A8F6A]"
+                    ? "text-[#F1EFE8] after:absolute after:inset-x-2 after:bottom-0.5 after:h-0.5 after:rounded-full after:bg-[#5A8F6A] lg:after:inset-x-3"
                     : "text-[#9FB0A6] hover:bg-white/[0.05] hover:text-[#F1EFE8]"
                 }`}
               >

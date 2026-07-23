@@ -58,13 +58,13 @@ export default function CockpitProfileMenu({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Profiel en instellingen"
-        className="flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/[0.04] py-1 pl-1 pr-1.5 text-[#9FB0A6] transition hover:text-[#F1EFE8] sm:pr-2"
+        className="flex items-center gap-1.5 rounded-[10px] border border-white/10 bg-white/[0.04] py-1 pl-1 pr-1.5 text-[#9FB0A6] transition hover:text-[#F1EFE8] lg:pr-2"
       >
         <span
           aria-hidden
           className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-[#C8956C] to-[#9c6a44]"
         />
-        <span className="hidden max-w-[12ch] truncate text-[13px] font-medium text-[#F1EFE8] sm:inline">
+        <span className="hidden max-w-[12ch] truncate text-[13px] font-medium text-[#F1EFE8] lg:inline">
           {name}
         </span>
         <Icons.ChevronDown s={14} />

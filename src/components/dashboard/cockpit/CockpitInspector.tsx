@@ -18,6 +18,8 @@ type CockpitInspectorProps = {
   titleId?: string;
   /** Sluitknop in drawer-modus; niet getoond in vaste sidebar. */
   onClose?: () => void;
+  /** Inklapknop in sidebar-modus; geeft de midden-zone de vrijgekomen ruimte. */
+  onCollapse?: () => void;
   /** Compactere typografie/spacing in bottom sheet (mobiel). */
   compact?: boolean;
 };
@@ -48,6 +50,7 @@ export default function CockpitInspector({
   extra,
   titleId,
   onClose,
+  onCollapse,
   compact = false,
 }: CockpitInspectorProps) {
   return (
@@ -67,6 +70,17 @@ export default function CockpitInspector({
             className="inline-flex min-h-9 shrink-0 cursor-pointer items-center rounded-lg border-none bg-transparent px-2 text-[18px] leading-none text-[#9FB0A6] transition hover:text-[#F1EFE8]"
           >
             ✕
+          </button>
+        ) : null}
+        {onCollapse ? (
+          <button
+            type="button"
+            onClick={onCollapse}
+            aria-label="Klap context in"
+            title="Klap context in"
+            className="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-[#9FB0A6] transition hover:border-white/20 hover:text-[#F1EFE8]"
+          >
+            <Icons.ChevronRight s={15} />
           </button>
         ) : null}
       </div>

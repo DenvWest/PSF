@@ -9,6 +9,7 @@ import CockpitContextRail from "@/components/dashboard/cockpit/CockpitContextRai
 import { clarityTag } from "@/lib/clarity";
 import type { InspectorCard } from "@/lib/cockpit-inspector";
 import { trackEvent } from "@/lib/ga4";
+import { resolveCockpitContextTriggerAction } from "@/lib/cockpit-context-layout";
 import { useCockpitContextLayout } from "@/lib/use-cockpit-context-layout";
 import type {
   ContextRailDomainItem,
@@ -44,10 +45,19 @@ type CockpitFrameProps = {
 
 const CONTEXT_HIGHLIGHT_MS = 1200;
 
+/** Rail + midden; de contextkolom komt er pas vanaf lg bij als hij openstaat. */
+const GRID_TWO_COLUMNS =
+  "md:grid-cols-[208px_minmax(0,1fr)] lg:grid-cols-[224px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)] min-[1440px]:grid-cols-[260px_minmax(0,1fr)] min-[1680px]:grid-cols-[280px_minmax(0,1fr)]";
+
+const GRID_THREE_COLUMNS =
+  "md:grid-cols-[208px_minmax(0,1fr)] lg:grid-cols-[224px_minmax(0,1fr)_288px] xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]";
+
 /**
  * Cockpit-frame (slice 1): twee-rijige header + drie-zone-layout rond de
  * bestaande domein-screen (children = de midden-zone, ongewijzigd). Rechts een
  * contextpaneel: sheet (< sm), drawer (tablet), sidebar (lg+ / iPad landscape).
+ * De sidebar is inklapbaar — dan valt de derde kolom weg en krijgt de
+ * midden-zone de ruimte; de context-knop in de header klapt hem weer uit.
  * CSS lg:-fallback zorgt dat de sidebar op web direct zichtbaar is vóór hydration.
  */
 export default function CockpitFrame({
@@ -74,6 +84,7 @@ export default function CockpitFrame({
   children,
 }: CockpitFrameProps) {
   const [contextOpen, setContextOpen] = useState(false);
+  const [contextCollapsed, setContextCollapsed] = useState(false);
   const [contextHighlighted, setContextHighlighted] = useState(false);
   const contextTitleId = useId();
   const panelRef = useRef<HTMLElement>(null);
@@ -102,16 +113,15 @@ export default function CockpitFrame({
     clarityTag("dashboard_context", "close");
   }, [contextCount, presentation]);
 
-  const handleContextBellClick = useCallback(() => {
-    if (isDrawerMode) {
-      openContext();
-      return;
-    }
+  const collapseContext = useCallback(() => {
+    setContextCollapsed(true);
+    trackEvent("dashboard_context_collapsed", { card_count: contextCount });
+    clarityTag("dashboard_context", "collapse_sidebar");
+  }, [contextCount]);
 
+  const highlightContext = useCallback(() => {
     panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     setContextHighlighted(true);
-    trackEvent("dashboard_context_focused", { card_count: contextCount });
-    clarityTag("dashboard_context", "focus_sidebar");
 
     if (highlightTimeoutRef.current) {
       clearTimeout(highlightTimeoutRef.current);
@@ -120,7 +130,36 @@ export default function CockpitFrame({
       setContextHighlighted(false);
       highlightTimeoutRef.current = null;
     }, CONTEXT_HIGHLIGHT_MS);
-  }, [isDrawerMode, openContext, contextCount]);
+  }, []);
+
+  const handleContextBellClick = useCallback(() => {
+    const action = resolveCockpitContextTriggerAction(
+      presentation,
+      contextCollapsed,
+    );
+
+    if (action === "open") {
+      openContext();
+      return;
+    }
+
+    if (action === "expand") {
+      setContextCollapsed(false);
+      trackEvent("dashboard_context_expanded", { card_count: contextCount });
+      clarityTag("dashboard_context", "expand_sidebar");
+    } else {
+      trackEvent("dashboard_context_focused", { card_count: contextCount });
+      clarityTag("dashboard_context", "focus_sidebar");
+    }
+
+    highlightContext();
+  }, [
+    presentation,
+    contextCollapsed,
+    openContext,
+    contextCount,
+    highlightContext,
+  ]);
 
   useEffect(() => {
     if (!isDialogOpen) {
@@ -167,7 +206,11 @@ export default function CockpitFrame({
         firstName={firstName}
       />
 
-      <div className="relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:grid-cols-[240px_minmax(0,1fr)] sm:pb-0 lg:grid-cols-[240px_minmax(0,1fr)_300px] xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]">
+      <div
+        className={`relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-0 ${
+          contextCollapsed ? GRID_TWO_COLUMNS : GRID_THREE_COLUMNS
+        }`}
+      >
         <CockpitContextRail
           mode={railMode}
           firstName={firstName}
@@ -183,7 +226,9 @@ export default function CockpitFrame({
           domainLabel={railDomainLabel}
         />
 
-        <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4">{children}</main>
+        <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4 min-[1440px]:px-6">
+          {children}
+        </main>
 
         {isDrawerMode && isDialogOpen ? (
           <div
@@ -199,7 +244,9 @@ export default function CockpitFrame({
           aria-modal={isDialogOpen ? true : undefined}
           aria-labelledby={isDialogOpen ? contextTitleId : undefined}
           aria-label={isDialogOpen ? undefined : "Contextpaneel"}
-          className={`min-w-0 outline-none transition-shadow duration-300 lg:static lg:z-auto lg:h-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:translate-y-0 lg:overflow-visible lg:border-l lg:border-white/10 lg:bg-black/[0.12] lg:px-6 lg:py-4 max-lg:fixed max-lg:z-40 max-lg:overflow-y-auto max-lg:bg-[#101a1b] max-lg:transition-transform max-lg:duration-300 ${
+          className={`min-w-0 outline-none transition-shadow duration-300 lg:static lg:z-auto lg:h-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:translate-y-0 lg:overflow-visible lg:border-l lg:border-white/10 lg:bg-black/[0.12] lg:px-4 lg:py-4 xl:px-6 max-lg:fixed max-lg:z-40 max-lg:overflow-y-auto max-lg:bg-[#101a1b] max-lg:transition-transform max-lg:duration-300 ${
+            contextCollapsed ? "lg:hidden" : ""
+          } ${
             isSheet
               ? "max-lg:inset-x-0 max-lg:bottom-0 max-lg:max-h-[min(85vh,720px)] max-lg:rounded-t-[20px] max-lg:border-t max-lg:border-white/10 max-lg:p-3 max-lg:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]"
               : "max-lg:inset-y-0 max-lg:right-0 max-lg:h-dvh max-lg:w-[min(360px,86vw)] max-lg:border-l max-lg:border-white/10 max-lg:p-4"
@@ -223,6 +270,7 @@ export default function CockpitFrame({
             extra={inspectorExtra}
             titleId={contextTitleId}
             onClose={isDrawerMode ? closeContext : undefined}
+            onCollapse={isDrawerMode ? undefined : collapseContext}
             compact={isSheet}
           />
         </aside>
