@@ -16,11 +16,13 @@ function formatDriverLabels(labels: string[]): string {
 type KompasReadoutSectionProps = {
   model: DashboardModel;
   onOpenDomain: (domain: PillarId) => void;
+  surface?: "kompas_home" | "voortgang";
 };
 
 export default function KompasReadoutSection({
   model,
   onOpenDomain,
+  surface: _surface = "kompas_home",
 }: KompasReadoutSectionProps) {
   const readoutRows = model.ladder.filter((pillar) => isReadoutDomain(pillar.id));
 

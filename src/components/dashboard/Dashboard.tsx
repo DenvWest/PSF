@@ -116,18 +116,15 @@ import {
 } from "@/data/dashboard";
 import { NUTRITION_CURATED_CHOICES } from "@/data/dashboard/nutrition-curated";
 import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
-import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
 import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
-import { isPlanStepHidden } from "@/lib/day-model";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
-import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import LeefstijlKompas from "@/components/dashboard/kompas/LeefstijlKompas";
-import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
-import KompasReadoutSection from "@/components/dashboard/kompas/KompasReadoutSection";
-import KompasWeekStrip from "@/components/dashboard/kompas/KompasWeekStrip";
+import KompasStatusCard from "@/components/dashboard/kompas/KompasStatusCard";
+import KompasVoortgangCard from "@/components/dashboard/kompas/KompasVoortgangCard";
+import VoortgangKompasPanels from "@/components/dashboard/kompas/VoortgangKompasPanels";
 import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
@@ -166,6 +163,7 @@ import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
 import {
   parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  supportsKompasDeepView,
   syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardTabParam,
@@ -2977,7 +2975,6 @@ const KompasHome = ({
     }
     return initialKompasDeepView ?? "cockpit";
   });
-  const reminderShownRef = useRef(false);
   const [makePriorityBusy, setMakePriorityBusy] = useState(false);
   const showRemeasureReminder =
     Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
@@ -3045,20 +3042,6 @@ const KompasHome = ({
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
-
-  useEffect(() => {
-    if (!showRemeasureReminder || reminderShownRef.current) {
-      return;
-    }
-    reminderShownRef.current = true;
-    trackEvent("dashboard_hermeting_reminder_shown", { surface: "kompas_home" });
-  }, [showRemeasureReminder]);
-
-  const handleRemeasureReminderClick = () => {
-    trackEvent("dashboard_hermeting_reminder_click", { surface: "kompas_home" });
-    clarityTag("dashboard_hermeting", "kompas_cta");
-    onRemeasure();
-  };
 
   const setKompasDomain = (domain: PillarId | null, view: KompasDeepView = "cockpit") => {
     setDomainView(domain);
@@ -3371,134 +3354,37 @@ const KompasHome = ({
     );
   }
 
-  const anchorWhy =
-    MOVEMENT_ANCHOR_OPTIONS.find(
-      (option) => option.id === currentModel.movementPrefs.anchor,
-    )?.whySuffix ?? null;
-
   return (
     <section aria-label="Kompas" className="-mt-2 flex flex-col gap-2.5">
       <CockpitShell accent="#5A8F6A" ariaLabel="Kompas home" embedded>
-        <div className="flex flex-col gap-2.5">
-          <div>
-            <h1
-              className="m-0 font-serif text-[26px] leading-tight text-[#F1EFE8] sm:text-[28px]"
-              style={{ fontFamily: "var(--f-serif)" }}
-            >
-              Welkom terug{data?.firstName ? `, ${data.firstName}` : ""}.
-            </h1>
-            <p className="mt-2 text-[14px] leading-relaxed text-[#9FB0A6] text-pretty">
-              {currentModel.priorityIsUserChosen
-                ? `${currentModel.date} · jij focus op ${currentModel.priority.label.toLowerCase()}.`
-                : `${currentModel.date} · je vertrekpunt nu is ${currentModel.priority.label.toLowerCase()}.`}
-            </p>
-            {anchorWhy ? (
-              <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-                {anchorWhy}
-              </p>
-            ) : (
-              <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-                Elke stap die je vandaag zet, bouwt aan waar je naartoe werkt — je ziet
-                het niet meteen, wel over de weken.
-              </p>
-            )}
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-6">
+          <div className="flex flex-col gap-5 lg:col-start-1 lg:row-start-1">
+            <KompasStatusCard model={currentModel} firstName={data?.firstName} />
+            <KompasVoortgangCard
+              model={currentModel}
+              remeasureDue={showRemeasureReminder}
+              onGoVoortgang={onGoVoortgang}
+              onRemeasure={onRemeasure}
+            />
           </div>
 
-          {showRemeasureReminder ? (
-            <CockpitTile eyebrow="Hermeting">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/25 text-[#9FB0A6]">
-                  <Icons.Refresh s={18} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div
-                    className="font-serif text-[15px] leading-snug text-[#F1EFE8]"
-                    style={{ fontFamily: "var(--f-serif)" }}
-                  >
-                    Tijd voor je hermeting
-                  </div>
-                  <p className="mt-1 text-[13px] leading-snug text-[#9FB0A6] text-pretty">
-                    Meet opnieuw of je leefstijl-stappen werken.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleRemeasureReminderClick}
-                  className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-xl border-none bg-[#5A8F6A] px-4 py-2.5 text-[13px] font-semibold text-[#0f1c10]"
-                  style={{ fontFamily: "var(--f-sans)" }}
-                >
-                  Doe je hermeting nu
-                  <Icons.ArrowRight s={15} />
-                </button>
-              </div>
-            </CockpitTile>
-          ) : null}
-
-          {todaySlot && !isPlanStepHidden(currentModel, todaySlot) ? (
-            <AgendaTodayHero
-              model={currentModel}
-              slot={todaySlot}
-              tone="dark"
-              actionSurface="kompas_home"
-            />
-          ) : null}
-
-          <LeefstijlKompas
-            model={currentModel}
-            onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
-          />
-
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            <KompasWeekStrip model={currentModel} onGoAgenda={onGoAgenda} />
-            <KompasReadoutSection
+          <div className="lg:col-start-2 lg:row-start-1">
+            <LeefstijlKompas
               model={currentModel}
               onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
+              onOpenPriority={(domain) => {
+                if (supportsKompasDeepView(domain)) {
+                  trackEvent("dashboard_beweging_plan_click", {
+                    surface: "kompas_home",
+                    nav_mode: "dashboard_view",
+                  });
+                  clarityTag("dashboard_kompas_view", "stappenplan");
+                  setKompasDomain(domain, "stappenplan");
+                } else {
+                  openDomain(domain, "leefstijlkompas");
+                }
+              }}
             />
-          </div>
-
-          <KompasOndersteuningTile model={currentModel} data={data} />
-
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            <button
-              type="button"
-              onClick={onGoVoortgang}
-              className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-left transition hover:border-white/20"
-            >
-              <span className="min-w-0">
-                <span
-                  className="block font-serif text-[15px] text-[#F1EFE8]"
-                  style={{ fontFamily: "var(--f-serif)" }}
-                >
-                  Voortgang
-                </span>
-                <span className="mt-1 block text-[13px] leading-snug text-[#9FB0A6] text-pretty">
-                  Trends, lijnen en payoff over de weken.
-                </span>
-              </span>
-              <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-[#5A8F6A]">
-                Bekijk <Icons.ArrowRight s={14} />
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={onGoAgenda}
-              className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-left transition hover:border-white/20 md:hidden"
-            >
-              <span className="min-w-0">
-                <span
-                  className="block font-serif text-[15px] text-[#F1EFE8]"
-                  style={{ fontFamily: "var(--f-serif)" }}
-                >
-                  Mijn Dag
-                </span>
-                <span className="mt-1 block text-[13px] leading-snug text-[#9FB0A6] text-pretty">
-                  Planning en verplaats een stap naar een moment dat past.
-                </span>
-              </span>
-              <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-[#5A8F6A]">
-                Open <Icons.ArrowRight s={14} />
-              </span>
-            </button>
           </div>
         </div>
       </CockpitShell>
@@ -3576,29 +3462,32 @@ const SECTION_RENDERERS: Record<
   recommendations: (props) =>
     props.empty ? null : <RecommendationsSection {...props} />,
   voortgangHub: (props) =>
-    props.empty ? null : (
-      <VoortgangHub
-        model={props.model}
-        data={props.data}
-        isMember={props.isMember}
-        hasTrendsFeature={props.hasTrendsFeature}
-        tab={props.tab}
-        screen={props.voortgangScreen}
-        freeStatistics={<HistorySection {...props} />}
-        unlockedStatistics={
-          <>
-            <StatistiekenPriorityOverTime
-              model={props.model}
-              prefUpdatedAt={props.prefUpdatedAt}
-              onPrefUpdated={props.onPrefUpdated}
-            />
-            <SignalsSection {...props} />
-            <NutritionIntakeSection {...props} />
-            <HistorySection {...props} />
-          </>
-        }
-        onScreenChange={props.onVoortgangScreenChange}
-      />
+    props.empty || !props.model ? null : (
+      <>
+        <VoortgangKompasPanels model={props.model} data={props.data} />
+        <VoortgangHub
+          model={props.model}
+          data={props.data}
+          isMember={props.isMember}
+          hasTrendsFeature={props.hasTrendsFeature}
+          tab={props.tab}
+          screen={props.voortgangScreen}
+          freeStatistics={<HistorySection {...props} />}
+          unlockedStatistics={
+            <>
+              <StatistiekenPriorityOverTime
+                model={props.model}
+                prefUpdatedAt={props.prefUpdatedAt}
+                onPrefUpdated={props.onPrefUpdated}
+              />
+              <SignalsSection {...props} />
+              <NutritionIntakeSection {...props} />
+              <HistorySection {...props} />
+            </>
+          }
+          onScreenChange={props.onVoortgangScreenChange}
+        />
+      </>
     ),
   future: () => <FutureSection />,
 };

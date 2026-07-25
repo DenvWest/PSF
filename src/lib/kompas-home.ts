@@ -5,9 +5,12 @@ import { resolvePlanStepContent } from "@/lib/day-model";
 import { buildDomainTrendRow } from "@/lib/leefstijllijn";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
+type KompasRailPillarId = "slaap" | "beweging" | "voeding" | "stress" | "verbinding";
+
 export type KompasDomainRow = {
   id: PillarId;
   label: string;
+  descriptor: string;
   color: string;
   score: number;
   delta: number | null;
@@ -15,6 +18,22 @@ export type KompasDomainRow = {
   nextStep: string;
   stepId: string;
   isPriority: boolean;
+};
+
+export const KOMPAS_PILLAR_DESCRIPTORS: Record<KompasRailPillarId, string> = {
+  slaap: "diepte & regelmaat",
+  beweging: "kracht & conditie",
+  voeding: "eiwit & regelmaat",
+  stress: "herstel & rust",
+  verbinding: "contact & steun",
+};
+
+export type KompasMilestoneKind = "hermeting" | "week" | "neutral";
+
+export type KompasMilestone = {
+  kind: KompasMilestoneKind;
+  line: string;
+  ctaLabel?: string;
 };
 
 function domainRotateIndices(model: DashboardModel): Map<PillarId, number> {
@@ -40,6 +59,7 @@ export function buildKompasDomainRows(model: DashboardModel): KompasDomainRow[] 
     return {
       id,
       label: pillar.label,
+      descriptor: KOMPAS_PILLAR_DESCRIPTORS[id as KompasRailPillarId],
       color: pillar.color,
       score: metrics.currentScore,
       delta: metrics.delta,
@@ -54,4 +74,52 @@ export function buildKompasDomainRows(model: DashboardModel): KompasDomainRow[] 
 export function prioritySegmentIndex(rows: KompasDomainRow[]): number {
   const index = rows.findIndex((row) => row.isPriority);
   return index >= 0 ? index : 0;
+}
+
+export function buildKompasMilestone(
+  model: DashboardModel,
+  completedWeekDays: number,
+  remeasureDue: boolean,
+): KompasMilestone {
+  if (remeasureDue) {
+    return {
+      kind: "hermeting",
+      line: "Tijd voor je hermeting — meet of je stappen werken.",
+      ctaLabel: "Doe je hermeting",
+    };
+  }
+
+  const remaining = 7 - completedWeekDays;
+  if (remaining > 0 && remaining <= 3) {
+    if (remaining === 1) {
+      return {
+        kind: "week",
+        line: "Nog één gewoonte en je week is compleet.",
+      };
+    }
+    return {
+      kind: "week",
+      line: `Nog ${remaining} dagen en je week is compleet.`,
+    };
+  }
+
+  const priorityRow = buildKompasDomainRows(model).find((row) => row.isPriority);
+  if (priorityRow?.delta != null && priorityRow.delta > 0) {
+    return {
+      kind: "neutral",
+      line: `Je ${priorityRow.label.toLowerCase()} verbeterde sinds vorige week.`,
+    };
+  }
+
+  if (model.vitalityDelta != null && model.vitalityDelta > 0) {
+    return {
+      kind: "neutral",
+      line: `Je bent ${model.vitalityDelta} punten dichter bij je doel.`,
+    };
+  }
+
+  return {
+    kind: "neutral",
+    line: "Elke stap telt — ook de kleine.",
+  };
 }

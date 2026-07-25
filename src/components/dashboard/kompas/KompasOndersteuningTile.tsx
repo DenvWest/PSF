@@ -12,11 +12,13 @@ import type { DashboardData, DashboardModel } from "@/types/dashboard";
 type KompasOndersteuningTileProps = {
   model: DashboardModel;
   data?: DashboardData;
+  surface?: "kompas_home" | "voortgang";
 };
 
 export default function KompasOndersteuningTile({
   model,
   data,
+  surface = "kompas_home",
 }: KompasOndersteuningTileProps) {
   const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
@@ -37,8 +39,8 @@ export default function KompasOndersteuningTile({
         <Link
           href="/intake/voeding?from=dashboard"
           onClick={() => {
-            trackEvent("dashboard_voedingscheck_cta_click", { surface: "kompas_home" });
-            clarityTag("dashboard_voedingscheck_cta", "kompas_home");
+            trackEvent("dashboard_voedingscheck_cta_click", { surface });
+            clarityTag("dashboard_voedingscheck_cta", surface);
           }}
           className="mt-3 inline-flex min-h-11 items-center text-[13px] font-semibold text-[#5A8F6A] no-underline"
         >
@@ -82,7 +84,7 @@ export default function KompasOndersteuningTile({
                 onClick={() => {
                   trackEvent("dashboard_kompas_supplement_gids_click", {
                     slug: rec.slug,
-                    surface: "kompas_home",
+                    surface,
                   });
                   clarityTag("dashboard_kompas_home", `supplement_${rec.slug}`);
                 }}

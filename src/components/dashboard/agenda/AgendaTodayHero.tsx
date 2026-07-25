@@ -33,6 +33,9 @@ type AgendaTodayHeroProps = {
   variant?: "default" | "detail";
   tone?: "light" | "dark";
   actionSurface?: "agenda_today" | "agenda_block_detail" | "kompas_home";
+  eyebrowOverride?: string;
+  doneLabel?: string;
+  hideSecondaryLinks?: boolean;
   onCompletionChange?: () => void;
   onScheduledTimeChange?: (scheduledTime: string) => void;
 };
@@ -60,6 +63,9 @@ export default function AgendaTodayHero({
   variant = "default",
   tone = "light",
   actionSurface = "agenda_today",
+  eyebrowOverride,
+  doneLabel = "Markeer als gedaan",
+  hideSecondaryLinks = false,
   onCompletionChange,
   onScheduledTimeChange,
 }: AgendaTodayHeroProps) {
@@ -237,8 +243,11 @@ export default function AgendaTodayHero({
   const linkMutedColor = isDark ? "#9FB0A6" : "#78716c";
   const linkAccentColor = isDark ? "#7FB28E" : "var(--sage)";
 
-  const eyebrowLabel =
-    isDark && isToday ? `Vandaag · ${pillar.label.toLowerCase()}` : domainLabel;
+  const eyebrowLabel = eyebrowOverride
+    ? eyebrowOverride
+    : isDark && isToday
+      ? `Vandaag · ${pillar.label.toLowerCase()}`
+      : domainLabel;
 
   return (
     <article className={shellClass} style={shellStyle}>
@@ -305,7 +314,7 @@ export default function AgendaTodayHero({
                   Gedaan
                 </>
               ) : (
-                "Markeer als gedaan"
+                doneLabel
               )}
             </button>
 
@@ -321,46 +330,48 @@ export default function AgendaTodayHero({
           <p className={bodyClass}>Je kunt deze stap afvinken zodra het zover is.</p>
         )}
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <Link
-            href={onderbouwingHref}
-            onClick={() => {
-              const onderbouwingSurface =
-                actionSurface === "agenda_block_detail" || actionSurface === "kompas_home"
-                  ? actionSurface
-                  : isToday
-                    ? "agenda_today"
-                    : "agenda_preview";
-              trackOnderbouwingLinkClick({ surface: onderbouwingSurface, domain });
-              clarityTag("onderbouwing_link", onderbouwingSurface);
-            }}
-            className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-            style={{ color: linkMutedColor }}
-          >
-            Waarom?
-            <Icons.ArrowRight s={13} />
-          </Link>
-          {slot.planLink ? (
+        {!hideSecondaryLinks ? (
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
             <Link
-              href={slot.planLink.href}
+              href={onderbouwingHref}
+              onClick={() => {
+                const onderbouwingSurface =
+                  actionSurface === "agenda_block_detail" || actionSurface === "kompas_home"
+                    ? actionSurface
+                    : isToday
+                      ? "agenda_today"
+                      : "agenda_preview";
+                trackOnderbouwingLinkClick({ surface: onderbouwingSurface, domain });
+                clarityTag("onderbouwing_link", onderbouwingSurface);
+              }}
               className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-              style={{ color: linkAccentColor }}
+              style={{ color: linkMutedColor }}
             >
-              {slot.planLink.label}
+              Waarom?
               <Icons.ArrowRight s={13} />
             </Link>
-          ) : null}
-          {isToday && resolvedDone ? (
-            <Link
-              href={followUp.href}
-              className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-              style={{ color: linkAccentColor }}
-            >
-              {followUp.label}
-              <Icons.ArrowRight s={13} />
-            </Link>
-          ) : null}
-        </div>
+            {slot.planLink ? (
+              <Link
+                href={slot.planLink.href}
+                className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+                style={{ color: linkAccentColor }}
+              >
+                {slot.planLink.label}
+                <Icons.ArrowRight s={13} />
+              </Link>
+            ) : null}
+            {isToday && resolvedDone ? (
+              <Link
+                href={followUp.href}
+                className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+                style={{ color: linkAccentColor }}
+              >
+                {followUp.label}
+                <Icons.ArrowRight s={13} />
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </article>
   );

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildKompasDomainRows,
+  buildKompasMilestone,
   prioritySegmentIndex,
 } from "@/lib/kompas-home";
 import { buildModel } from "@/lib/dashboard-model";
@@ -136,5 +137,70 @@ describe("prioritySegmentIndex", () => {
     );
 
     expect(prioritySegmentIndex(rows)).toBe(3);
+  });
+});
+
+describe("buildKompasMilestone", () => {
+  const baseModel = buildModel(
+    { scores, vitality: 46, date: "10 jul 2026", trend },
+    null,
+    [],
+    false,
+    answers,
+    null,
+    null,
+    "beweging",
+  );
+
+  it("prioritises hermeting when due", () => {
+    const milestone = buildKompasMilestone(baseModel, 3, true);
+    expect(milestone.kind).toBe("hermeting");
+    expect(milestone.ctaLabel).toBe("Doe je hermeting");
+  });
+
+  it("nudges when one day remains in the week", () => {
+    const milestone = buildKompasMilestone(baseModel, 6, false);
+    expect(milestone.kind).toBe("week");
+    expect(milestone.line).toContain("Nog één gewoonte");
+  });
+
+  it("uses priority improvement when trend shows progress", () => {
+    const model = buildModel(
+      { scores, vitality: 46, date: "10 jul 2026", trend },
+      null,
+      [],
+      false,
+      answers,
+      null,
+      null,
+      "beweging",
+    );
+    const milestone = buildKompasMilestone(model, 7, false);
+    expect(milestone.kind).toBe("neutral");
+    expect(milestone.line).toContain("beweging verbeterde");
+  });
+
+  it("falls back to neutral encouragement", () => {
+    const flatTrend: CheckTrend = {
+      slaap: [55],
+      energie: [60],
+      stress: [50],
+      voeding: [45],
+      beweging: [38],
+      herstel: [67],
+      verbinding: [50],
+    };
+    const model = buildModel(
+      { scores, vitality: 46, date: "10 jul 2026", trend: flatTrend },
+      null,
+      [],
+      false,
+      answers,
+      null,
+      null,
+      "stress",
+    );
+    const milestone = buildKompasMilestone(model, 7, false);
+    expect(milestone.line).toBe("Elke stap telt — ook de kleine.");
   });
 });
