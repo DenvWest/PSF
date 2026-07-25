@@ -2,12 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
-import { DeltaBadge, Sparkline } from "@/components/app/primitives";
+import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasVandaagPanel, {
   KompasLogboekSection,
 } from "@/components/dashboard/kompas/KompasVandaagPanel";
-import { PILLAR } from "@/data/dashboard";
 import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
 import { supportsKompasDeepView } from "@/lib/dashboard-url";
@@ -26,7 +25,7 @@ import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 const RING_SIZE = 240;
 const RING_CENTER = RING_SIZE / 2;
-const RING_STROKE = 7;
+const RING_STROKE = 9;
 const RING_RADII = [92, 76, 60, 44, 28];
 
 type WeekPayload = {
@@ -106,23 +105,6 @@ function buildDomainTags(model: DashboardModel): Map<PillarId, string> {
   return tags;
 }
 
-function DomainSparkline({ trend, color }: { trend: number[]; color: string }) {
-  if (trend.length < 2) {
-    return (
-      <span className="hidden h-[13px] w-9 shrink-0 items-center justify-center min-[381px]:flex">
-        <span className="h-px w-full border-t border-dashed border-white/20" aria-hidden />
-        <span className="sr-only">Nog geen lijn</span>
-      </span>
-    );
-  }
-
-  return (
-    <span className="hidden h-[13px] w-9 shrink-0 opacity-80 min-[381px]:block">
-      <Sparkline data={trend} w={36} h={13} color={color} />
-    </span>
-  );
-}
-
 function KompasRings({
   rows,
   vitality,
@@ -133,7 +115,7 @@ function KompasRings({
   const band = getVitalityBand(vitality);
 
   return (
-    <span className="relative block h-[136px] w-[136px] shrink-0 sm:h-[160px] sm:w-[160px] lg:h-[184px] lg:w-[184px]">
+    <span className="relative block h-[200px] w-[200px] shrink-0 lg:h-[176px] lg:w-[176px]">
       <span
         aria-hidden
         className="pointer-events-none absolute inset-[10%] rounded-full opacity-70 blur-lg"
@@ -187,21 +169,21 @@ function KompasRings({
 
         <text
           x={RING_CENTER}
-          y={RING_CENTER - 4}
+          y={RING_CENTER - 5}
           textAnchor="middle"
           fill="#F1EFE8"
-          fontSize="30"
+          fontSize="34"
           style={{ fontFamily: "var(--f-serif)" }}
         >
           {Math.round(vitality)}
         </text>
         <text
           x={RING_CENTER}
-          y={RING_CENTER + 12}
+          y={RING_CENTER + 13}
           textAnchor="middle"
           fill="#7E8C82"
-          fontSize="8.5"
-          letterSpacing="2.2"
+          fontSize="9"
+          letterSpacing="2.4"
         >
           LEEFSTIJL
         </text>
@@ -210,7 +192,26 @@ function KompasRings({
   );
 }
 
-function DomainLineRow({
+function RingTrendChip({ model }: { model: DashboardModel }) {
+  const band = getVitalityBand(model.vitality);
+  const label = formatTrendLabel(model.vitalityDelta, model.vitalityDeltaNote);
+
+  return (
+    <span
+      className="inline-flex items-center rounded-full border px-3 py-1 text-[11.5px] font-semibold"
+      style={{
+        color: band.color,
+        borderColor: `${band.color}55`,
+        background: `${band.color}1a`,
+        fontFamily: "var(--f-sans)",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+function DomainMeterBar({
   row,
   tag,
   isFocus,
@@ -221,39 +222,64 @@ function DomainLineRow({
   isFocus: boolean;
   onOpenDomain: (domain: PillarId) => void;
 }) {
+  const fillWidth = Math.min(100, Math.max(0, row.score));
+
   return (
     <button
       type="button"
       onClick={() => onOpenDomain(row.id)}
       aria-label={`Open ${row.label}`}
-      className={`flex min-h-[42px] w-full cursor-pointer items-center gap-2 rounded-lg border bg-transparent px-2 py-2 text-left transition hover:bg-white/[0.03] sm:px-2.5 ${
-        isFocus ? "border-[color:var(--ac)]/35 bg-[color:var(--ac)]/[0.06]" : "border-white/8"
+      className={`w-full cursor-pointer rounded-xl border px-3 py-2.5 text-left transition ${
+        isFocus
+          ? "border-[color:var(--ac)]/40 bg-[color:var(--ac)]/[0.08]"
+          : "border-white/8 bg-black/15 hover:border-white/14 hover:bg-white/[0.03]"
       }`}
       style={
-        isFocus
-          ? ({ "--ac": row.color, fontFamily: "var(--f-sans)" } as CSSProperties)
-          : { fontFamily: "var(--f-sans)" }
+        {
+          "--ac": row.color,
+          fontFamily: "var(--f-sans)",
+          ...(isFocus ? { boxShadow: `inset 3px 0 0 ${row.color}` } : {}),
+        } as CSSProperties
       }
     >
-      <span
-        aria-hidden
-        className="h-2 w-2 shrink-0 rounded-full"
-        style={{ background: row.color }}
-      />
-      <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
-        <span className="truncate font-serif text-[13px] text-[#F1EFE8] sm:text-[14px]">{row.label}</span>
-        <span className="shrink-0 font-serif text-[14px] tabular-nums text-[#F1EFE8] sm:text-[15px]">
-          {row.score}
+      <span className="flex items-center gap-2">
+        <span
+          aria-hidden
+          className="h-2 w-2 shrink-0 rounded-full"
+          style={{ background: row.color }}
+        />
+        <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
+          <span className="shrink-0 font-serif text-[15px] text-[#F1EFE8]">{row.label}</span>
+          <span className="hidden truncate text-[11.5px] text-[#7E8C82] sm:inline">
+            {row.descriptor}
+          </span>
         </span>
-        <DeltaBadge delta={row.delta} empty={row.delta == null} />
-        {tag ? (
-          <span className="shrink-0 rounded-md border border-white/10 bg-black/20 px-1 py-0.5 text-[8px] font-semibold uppercase tracking-[0.08em] text-[#7E8C82]">
+        {isFocus ? (
+          <span
+            className="shrink-0 rounded-md border px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.1em]"
+            style={{ color: row.color, borderColor: `${row.color}66` }}
+          >
+            Focus
+          </span>
+        ) : tag ? (
+          <span className="shrink-0 rounded-md border border-white/10 bg-black/20 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.08em] text-[#7E8C82]">
             {tag}
           </span>
         ) : null}
+        <span className="shrink-0 font-serif text-[17px] tabular-nums text-[#F1EFE8]">
+          {row.score}
+        </span>
+        <DeltaBadge delta={row.delta} empty={row.delta == null} />
       </span>
-      <DomainSparkline trend={row.trend} color={row.color} />
-      <Icons.ChevronRight s={13} style={{ color: "#7E8C82" }} />
+      <span className="mt-2 block h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
+        <span
+          className="block h-full rounded-full"
+          style={{
+            width: `${fillWidth}%`,
+            background: `linear-gradient(90deg, ${row.color}c4, ${row.color})`,
+          }}
+        />
+      </span>
     </button>
   );
 }
@@ -285,13 +311,7 @@ function LeefstijlHeader({
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-2">
-        <h2
-          className="m-0 font-serif text-[19px] leading-snug text-[#F1EFE8] text-pretty sm:text-[21px]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          Je leefstijl in vijf lijnen
-        </h2>
+      <div className="flex items-center gap-2.5">
         <button
           type="button"
           aria-label="Hoe werkt je leefstijlscore?"
@@ -308,6 +328,12 @@ function LeefstijlHeader({
             !
           </span>
         </button>
+        <h2
+          className="m-0 font-serif text-[18px] leading-snug text-[#F1EFE8] text-pretty sm:text-[20px]"
+          style={{ fontFamily: "var(--f-serif)" }}
+        >
+          Je leefstijl in vijf domeinen
+        </h2>
       </div>
 
       {open ? (
@@ -390,18 +416,20 @@ function FocusBar({
   );
 }
 
-function TrajectoryPanel({ model }: { model: DashboardModel }) {
-  const vitality = Math.round(model.vitality);
-  const delta = model.vitalityDelta;
-  const band = getVitalityBand(vitality);
-  const nextBand = getNextVitalityBand(vitality);
-  const target = nextBand ? nextBand.min : 100;
-  const baseline =
-    delta != null && model.vitalityDeltaNote == null
-      ? Math.min(100, Math.max(0, vitality - delta))
-      : null;
-
+function FocusVoortgangPanel({ model }: { model: DashboardModel }) {
   const priorityRow = buildKompasDomainRows(model).find((row) => row.isPriority);
+
+  if (!priorityRow) {
+    return null;
+  }
+
+  const score = Math.round(priorityRow.score);
+  const delta = priorityRow.delta;
+  const band = getVitalityBand(score);
+  const nextBand = getNextVitalityBand(score);
+  const target = nextBand ? nextBand.min : 100;
+  const baseline = delta != null ? Math.min(100, Math.max(0, score - delta)) : null;
+
   const explainer = getVitalityExplainer({
     vitality: model.vitality,
     vitalityDelta: model.vitalityDelta,
@@ -417,14 +445,14 @@ function TrajectoryPanel({ model }: { model: DashboardModel }) {
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-            Waar je nu staat
+            Focus: {priorityRow.label}
           </p>
           <p className="mt-1 flex items-baseline gap-2">
             <span
               className="font-serif text-[34px] leading-none tabular-nums text-[#F1EFE8]"
               style={{ fontFamily: "var(--f-serif)" }}
             >
-              {vitality}
+              {score}
             </span>
             <span
               className="rounded-full border px-2 py-0.5 text-[11px] font-semibold"
@@ -454,7 +482,7 @@ function TrajectoryPanel({ model }: { model: DashboardModel }) {
           <div
             className="absolute inset-y-0 left-0 rounded-full"
             style={{
-              width: `${vitality}%`,
+              width: `${score}%`,
               background: `linear-gradient(90deg, ${band.color}, #5FA872)`,
             }}
           />
@@ -481,7 +509,7 @@ function TrajectoryPanel({ model }: { model: DashboardModel }) {
         </div>
       </div>
 
-      {priorityRow && painLine ? (
+      {painLine ? (
         <div className="mt-3.5 flex items-start gap-2 border-t border-white/8 pt-3">
           <span
             aria-hidden
@@ -500,40 +528,29 @@ function TrajectoryPanel({ model }: { model: DashboardModel }) {
 function VoortgangSection({
   model,
   remeasureDue,
-  onGoVoortgang,
   onRemeasure,
 }: {
   model: DashboardModel;
   remeasureDue: boolean;
-  onGoVoortgang: () => void;
   onRemeasure?: () => void;
 }) {
   const reminderShownRef = useRef(false);
   const [weekState, setWeekState] = useState<WeekPayload | null>(null);
-  const [streak, setStreak] = useState(0);
   const slots = useMemo(() => buildWeekSchedulePreview(model), [model]);
-  const domain = model.priority.id;
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
-        const [weekResponse, streakResponse] = await Promise.all([
-          fetch("/api/account/daily-log?range=7", { credentials: "include" }),
-          fetch(`/api/account/daily-log?domain=${encodeURIComponent(domain)}`, {
-            credentials: "include",
-          }),
-        ]);
+        const response = await fetch("/api/account/daily-log?range=7", {
+          credentials: "include",
+        });
         if (cancelled) {
           return;
         }
-        if (weekResponse.ok) {
-          const payload = (await weekResponse.json()) as WeekPayload;
+        if (response.ok) {
+          const payload = (await response.json()) as WeekPayload;
           setWeekState(payload);
-        }
-        if (streakResponse.ok) {
-          const state = (await streakResponse.json()) as { streak: number };
-          setStreak(state.streak);
         }
       } catch {
         /* non-blocking read */
@@ -542,7 +559,7 @@ function VoortgangSection({
     return () => {
       cancelled = true;
     };
-  }, [domain, model.priority.id]);
+  }, [model]);
 
   useEffect(() => {
     if (!remeasureDue || reminderShownRef.current) {
@@ -563,12 +580,6 @@ function VoortgangSection({
 
   const milestone = buildKompasMilestone(model, completedCount, remeasureDue);
 
-  const handleVoortgangClick = () => {
-    trackEvent("dashboard_kompas_voortgang_link_click", { surface: "kompas_home" });
-    clarityTag("dashboard_kompas_home", "voortgang_link");
-    onGoVoortgang();
-  };
-
   const handleRemeasureClick = () => {
     trackEvent("dashboard_hermeting_reminder_click", { surface: "kompas_home" });
     clarityTag("dashboard_hermeting", "kompas_voortgang");
@@ -582,51 +593,7 @@ function VoortgangSection({
       </p>
 
       <div className="mt-3">
-        <TrajectoryPanel model={model} />
-      </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2.5">
-          <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-            Streak
-          </p>
-          <p
-            className="mt-1 m-0 font-serif text-[22px] leading-none tabular-nums text-[#F1EFE8]"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            {streak > 0 ? streak : "—"}
-          </p>
-          <p className="mt-0.5 text-[11px] text-[#9FB0A6]">
-            {streak === 1 ? "dag op rij" : "dagen op rij"}
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-2.5">
-          <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-            Deze week
-          </p>
-          <p className="mt-1 text-[12px] text-[#9FB0A6]">
-            {weekState ? `${completedCount} van 7 dagen` : "Je stappen"}
-          </p>
-          <div className="mt-1.5 flex flex-wrap items-center gap-1.5" aria-hidden>
-            {slots.map((slot) => {
-              const pillar = PILLAR[slot.domain];
-              const completed = isWeekSlotCompleted(slot, completedSet);
-              return (
-                <span
-                  key={slot.date}
-                  className="h-2.5 w-2.5 rounded-full transition-opacity"
-                  style={{
-                    background: pillar.color,
-                    opacity: completed ? 1 : 0.2,
-                    boxShadow: slot.isToday ? `0 0 0 1px ${pillar.color}88` : undefined,
-                  }}
-                  title={slot.isToday ? "Vandaag" : slot.dayLabel}
-                />
-              );
-            })}
-          </div>
-        </div>
+        <FocusVoortgangPanel model={model} />
       </div>
 
       <div className="mt-3 rounded-xl border border-white/8 bg-black/15 px-3.5 py-3">
@@ -645,16 +612,6 @@ function VoortgangSection({
           </button>
         ) : null}
       </div>
-
-      <button
-        type="button"
-        onClick={handleVoortgangClick}
-        className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-semibold text-[#5A8F6A]"
-        style={{ fontFamily: "var(--f-sans)" }}
-      >
-        Bekijk je voortgang
-        <Icons.ArrowRight s={14} />
-      </button>
     </div>
   );
 }
@@ -687,11 +644,14 @@ export default function KompasHomeCard({
         <section aria-label="Je leefstijl" className="order-1 min-w-0">
           <LeefstijlHeader model={model} firstName={firstName} />
 
-          <div className="mt-4 flex items-center gap-4 sm:gap-5 lg:gap-6">
-            <KompasRings rows={rows} vitality={model.vitality} />
-            <div className="flex min-w-0 flex-1 flex-col gap-1.5 sm:max-w-[320px] lg:max-w-[360px]">
+          <div className="mt-4 flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:gap-6">
+            <div className="flex shrink-0 flex-col items-center gap-3">
+              <KompasRings rows={rows} vitality={model.vitality} />
+              <RingTrendChip model={model} />
+            </div>
+            <div className="flex w-full min-w-0 flex-1 flex-col gap-2 lg:max-w-[400px]">
               {rows.map((row) => (
-                <DomainLineRow
+                <DomainMeterBar
                   key={row.id}
                   row={row}
                   tag={domainTags.get(row.id)}
@@ -728,7 +688,6 @@ export default function KompasHomeCard({
           <VoortgangSection
             model={model}
             remeasureDue={remeasureDue}
-            onGoVoortgang={onGoVoortgang}
             onRemeasure={onRemeasure}
           />
         </section>
