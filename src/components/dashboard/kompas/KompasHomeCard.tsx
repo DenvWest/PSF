@@ -133,7 +133,7 @@ function KompasRings({
   const band = getVitalityBand(vitality);
 
   return (
-    <span className="relative block h-[128px] w-[128px] shrink-0 sm:h-[140px] sm:w-[140px] lg:h-[152px] lg:w-[152px]">
+    <span className="relative block h-[136px] w-[136px] shrink-0 sm:h-[160px] sm:w-[160px] lg:h-[184px] lg:w-[184px]">
       <span
         aria-hidden
         className="pointer-events-none absolute inset-[10%] rounded-full opacity-70 blur-lg"
@@ -226,7 +226,7 @@ function DomainLineRow({
       type="button"
       onClick={() => onOpenDomain(row.id)}
       aria-label={`Open ${row.label}`}
-      className={`flex min-h-[36px] w-full cursor-pointer items-center gap-2 rounded-lg border bg-transparent px-2 py-1.5 text-left transition hover:bg-white/[0.03] ${
+      className={`flex min-h-[42px] w-full cursor-pointer items-center gap-2 rounded-lg border bg-transparent px-2 py-2 text-left transition hover:bg-white/[0.03] sm:px-2.5 ${
         isFocus ? "border-[color:var(--ac)]/35 bg-[color:var(--ac)]/[0.06]" : "border-white/8"
       }`}
       style={
@@ -241,8 +241,8 @@ function DomainLineRow({
         style={{ background: row.color }}
       />
       <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
-        <span className="truncate font-serif text-[13px] text-[#F1EFE8]">{row.label}</span>
-        <span className="shrink-0 font-serif text-[14px] tabular-nums text-[#F1EFE8]">
+        <span className="truncate font-serif text-[13px] text-[#F1EFE8] sm:text-[14px]">{row.label}</span>
+        <span className="shrink-0 font-serif text-[14px] tabular-nums text-[#F1EFE8] sm:text-[15px]">
           {row.score}
         </span>
         <DeltaBadge delta={row.delta} empty={row.delta == null} />
@@ -687,9 +687,9 @@ export default function KompasHomeCard({
         <section aria-label="Je leefstijl" className="order-1 min-w-0">
           <LeefstijlHeader model={model} firstName={firstName} />
 
-          <div className="mt-4 flex items-center gap-4 sm:gap-5">
+          <div className="mt-4 flex items-center gap-4 sm:gap-5 lg:gap-6">
             <KompasRings rows={rows} vitality={model.vitality} />
-            <div className="flex min-w-0 flex-1 flex-col gap-1 sm:max-w-[300px] lg:max-w-[340px]">
+            <div className="flex min-w-0 flex-1 flex-col gap-1.5 sm:max-w-[320px] lg:max-w-[360px]">
               {rows.map((row) => (
                 <DomainLineRow
                   key={row.id}
