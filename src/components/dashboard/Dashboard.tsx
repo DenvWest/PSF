@@ -127,6 +127,7 @@ import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhyt
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
+import { buildDomainTrendRow } from "@/lib/leefstijllijn";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
 import {
@@ -147,6 +148,7 @@ import {
   BEWEGING_SUPPLEMENT_ANCHOR,
   buildBewegingRailTools,
   buildKompasRailDomains,
+  KOMPAS_RAIL_PILLAR_IDS,
   type ContextRailApi,
   type ContextRailMode,
   type ContextRailToolId,
@@ -3129,6 +3131,146 @@ const VoedingScreen = ({
   );
 };
 
+/**
+ * Leefstijlring (Fase A) — domein-spine boven "Je domeinen": vijf concentrische
+ * ringen (vaste volgorde, geen sortering op zwakte) + een legenda-rij per domein
+ * met score, richting-delta (DeltaBadge, geen band/oordeel) en bron. Richting-
+ * modus, bewust zonder de Sterk/Voldoende/Aandacht/Prioriteit-band die "Je
+ * domeinen" eronder wél toont — die twee weergaven leven bewust naast elkaar
+ * (zie docs/plan/ANALYSE_LONGEVITY_HOME_DOMEINGEDREVEN.md §7.1).
+ * "Volgende stap" per domein is bewust nog niet meegenomen — vraagt nieuwe
+ * copy-generatie, apart van deze eerste, puur visuele slice.
+ */
+const LEEFSTIJLRING_RADII: Record<PillarId, number> = {
+  slaap: 56,
+  beweging: 46,
+  voeding: 36,
+  stress: 27,
+  verbinding: 19,
+  energie: 0,
+  herstel: 0,
+};
+const LEEFSTIJLRING_SIZE = 132;
+const LEEFSTIJLRING_STROKE = 7;
+
+const KompasLeefstijlRing = ({
+  model,
+  onOpenDomain,
+}: {
+  model: DashboardModel;
+  onOpenDomain: (id: PillarId) => void;
+}) => {
+  const rows = KOMPAS_RAIL_PILLAR_IDS.map((id) => ({
+    id,
+    pillar: PILLAR[id],
+    ...buildDomainTrendRow(model, id),
+  }));
+  const center = LEEFSTIJLRING_SIZE / 2;
+
+  return (
+    <div>
+      <h2
+        className="m-0 text-[18px] leading-tight text-[#1c1917]"
+        style={{ fontFamily: "var(--f-serif)" }}
+      >
+        Je leefstijl in vijf lijnen
+      </h2>
+      <div className="mt-3 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+        <svg
+          viewBox={`0 0 ${LEEFSTIJLRING_SIZE} ${LEEFSTIJLRING_SIZE}`}
+          width={LEEFSTIJLRING_SIZE}
+          height={LEEFSTIJLRING_SIZE}
+          className="shrink-0"
+          role="img"
+          aria-label={`Leefstijl: ${Math.round(model.vitality)} van de 100, samengesteld uit slaap, beweging, voeding, stress en verbinding`}
+        >
+          {rows.map((row) => {
+            const r = LEEFSTIJLRING_RADII[row.id];
+            const circumference = 2 * Math.PI * r;
+            const pct = Math.min(100, Math.max(0, row.currentScore));
+            const offset = circumference * (1 - pct / 100);
+            return (
+              <g key={row.id}>
+                <circle
+                  cx={center}
+                  cy={center}
+                  r={r}
+                  fill="none"
+                  stroke="#ebe7e2"
+                  strokeWidth={LEEFSTIJLRING_STROKE}
+                />
+                <circle
+                  cx={center}
+                  cy={center}
+                  r={r}
+                  fill="none"
+                  stroke={row.pillar.color}
+                  strokeWidth={LEEFSTIJLRING_STROKE}
+                  strokeLinecap="round"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={offset}
+                  transform={`rotate(-90 ${center} ${center})`}
+                />
+              </g>
+            );
+          })}
+          <text
+            x={center}
+            y={center - 2}
+            textAnchor="middle"
+            fill="#1c1917"
+            fontSize="26"
+            style={{ fontFamily: "var(--f-serif)" }}
+          >
+            {Math.round(model.vitality)}
+          </text>
+          <text
+            x={center}
+            y={center + 15}
+            textAnchor="middle"
+            fill="#a8a29e"
+            fontSize="8"
+            letterSpacing="1.5"
+          >
+            LEEFSTIJL
+          </text>
+        </svg>
+
+        <div className="flex w-full min-w-0 flex-col gap-1.5">
+          {rows.map((row) => (
+            <button
+              key={row.id}
+              type="button"
+              onClick={() => onOpenDomain(row.id)}
+              aria-label={`Open ${row.pillar.label}`}
+              className="flex min-h-11 w-full cursor-pointer items-center gap-2.5 rounded-[12px] border-none bg-transparent px-1.5 py-2 text-left transition hover:bg-[#faf9f7]"
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              <span
+                aria-hidden
+                className="h-2.5 w-2.5 shrink-0 rounded-full"
+                style={{ background: row.pillar.color }}
+              />
+              <span className="min-w-0 flex-1 truncate text-[13.5px] text-[#1c1917]">
+                {row.pillar.label}
+              </span>
+              <span className="shrink-0 text-[13px] tabular-nums text-[#57534e]">
+                {row.currentScore}
+              </span>
+              <span className="w-[36px] shrink-0 text-right">
+                <DeltaBadge delta={row.delta} empty={row.delta == null} />
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {model.vitalityDeltaNote ? (
+        <p className="mt-2 text-[11px] text-[#a8a29e]">{model.vitalityDeltaNote}</p>
+      ) : null}
+    </div>
+  );
+};
+
 const KompasHome = ({
   model,
   data,
@@ -3608,6 +3750,9 @@ const KompasHome = ({
           actionSurface="kompas_home"
         />
       ) : null}
+      <KompasLooseCard>
+        <KompasLeefstijlRing model={currentModel} onOpenDomain={openDomain} />
+      </KompasLooseCard>
       <KompasLooseCard>
         <h2
           className="m-0 text-[18px] leading-tight text-[#1c1917]"
