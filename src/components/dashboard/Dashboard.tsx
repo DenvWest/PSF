@@ -3827,54 +3827,40 @@ export default function Dashboard({
     </div>
   );
 
-  const footerNode = (
-    <footer
-      style={{
-        marginTop: 28,
-        textAlign: "center",
-        fontSize: 11.5,
-        color: "var(--text-subtle)",
-        lineHeight: 1.6,
-      }}
-    >
-      <Link
-        href="/hoe-werkt-dashboard"
-        style={{
-          color: "var(--text-muted)",
-          textDecoration: "underline",
-          textUnderlineOffset: 2,
-        }}
-      >
-        Hoe werkt dit dashboard?
-      </Link>
-      <span aria-hidden> · </span>
-      <Link
-        href="/onderbouwing"
-        onClick={() => {
-          trackOnderbouwingLinkClick({
-            surface: "dashboard_footer",
-            tab,
-            screen: voortgangScreen,
-          });
-          clarityTag("onderbouwing_link", "dashboard_footer");
-        }}
-        style={{
-          color: "var(--text-muted)",
-          textDecoration: "underline",
-          textUnderlineOffset: 2,
-        }}
-      >
-        Onderbouwing
-      </Link>
-      <br />
-      PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
-      diagnoses.
-      <br />
-      Je scores zijn een reflectie van je eigen antwoorden — geen medische
-      meetwaarden.
-      <br />
-      Je gegevens zijn van jou — exporteer of verwijder ze wanneer je wilt.
-    </footer>
+  // Verhuisd naar het Context-paneel (inspectorExtra) i.p.v. een footer onder
+  // de scrollende hoofdinhoud — zo draagt dit niet meer bij aan paginascroll.
+  const dashboardInfoCard = (
+    <div className="rounded-[14px] border border-white/10 bg-black/20 p-4">
+      <span className="mb-2 inline-flex items-center text-[10px] font-bold uppercase tracking-[0.1em] text-[#9FB0A6]">
+        Hoe dit werkt
+      </span>
+      <p className="text-[12.5px] leading-relaxed text-[#CDD7D0]">
+        <Link href="/hoe-werkt-dashboard" className="underline underline-offset-2">
+          Hoe werkt dit dashboard?
+        </Link>
+        <span aria-hidden> · </span>
+        <Link
+          href="/onderbouwing"
+          onClick={() => {
+            trackOnderbouwingLinkClick({
+              surface: "dashboard_footer",
+              tab,
+              screen: voortgangScreen,
+            });
+            clarityTag("onderbouwing_link", "dashboard_footer");
+          }}
+          className="underline underline-offset-2"
+        >
+          Onderbouwing
+        </Link>
+      </p>
+      <p className="mt-2 text-[11px] leading-relaxed text-[#7E8C82] text-pretty">
+        PerfectSupplement geeft adviezen op basis van leefstijl, geen medische
+        diagnoses. Je scores zijn een reflectie van je eigen antwoorden — geen
+        medische meetwaarden. Je gegevens zijn van jou — exporteer of
+        verwijder ze wanneer je wilt.
+      </p>
+    </div>
   );
 
   // Alleen op het Kompas-tabblad ("vandaag") stelt de gebruiker een domein
@@ -3910,8 +3896,12 @@ export default function Dashboard({
     : undefined;
   // Deze week is beweging-specifiek (leest daily_action_log voor dat domein)
   // en leeft als compacte, inspector-stijl kaart naast de context-kaarten.
-  const inspectorExtra =
-    viewedDomain === "beweging" ? <MovementWeekRhythm /> : undefined;
+  const inspectorExtra = (
+    <>
+      {viewedDomain === "beweging" ? <MovementWeekRhythm /> : null}
+      {dashboardInfoCard}
+    </>
+  );
 
   // De linker rail volgt dezelfde context als de header: domeinlijst op de
   // Kompas-home, Kompas-knop + evt. eigen tools bij een open domein, profiel
@@ -3973,7 +3963,6 @@ export default function Dashboard({
         >
           {tabHeaderNode}
           {sectionsNode}
-          {footerNode}
         </div>
       </CockpitFrame>
     </div>

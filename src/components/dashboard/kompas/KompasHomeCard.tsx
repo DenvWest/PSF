@@ -293,6 +293,7 @@ function LeefstijlHeader({
 }) {
   const [open, setOpen] = useState(false);
   const trackedRef = useRef(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const statusHeading = getStatusHeading(model.vitality, firstName);
   const trendLine = formatTrendLabel(model.vitalityDelta, model.vitalityDeltaNote);
@@ -309,12 +310,35 @@ function LeefstijlHeader({
     });
   };
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const onPointerDown = (event: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   return (
-    <div>
+    <div ref={rootRef} className="relative">
       <div className="flex items-center gap-2.5">
         <button
           type="button"
           aria-label="Hoe werkt je leefstijlscore?"
+          aria-haspopup="dialog"
           aria-expanded={open}
           onClick={handleToggle}
           className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full border transition-colors ${
@@ -337,7 +361,11 @@ function LeefstijlHeader({
       </div>
 
       {open ? (
-        <div className="mt-3 space-y-3 rounded-xl border border-white/8 bg-black/15 px-3.5 py-3">
+        <div
+          role="dialog"
+          aria-label="Hoe werkt je leefstijlscore?"
+          className="absolute left-0 top-[calc(100%+8px)] z-20 w-[min(340px,calc(100vw-2.5rem))] space-y-3 rounded-xl border border-white/10 bg-[#101a1b] px-3.5 py-3 shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+        >
           <div>
             <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
               Waar je nu staat
