@@ -116,18 +116,22 @@ import {
 } from "@/data/dashboard";
 import { NUTRITION_CURATED_CHOICES } from "@/data/dashboard/nutrition-curated";
 import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
-import { getDisplayStatus, getDisplayStatusTone } from "@/lib/score-display";
 import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
 import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isPlanStepHidden } from "@/lib/day-model";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
+import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import LeefstijlKompas from "@/components/dashboard/kompas/LeefstijlKompas";
+import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
+import KompasReadoutSection from "@/components/dashboard/kompas/KompasReadoutSection";
+import KompasWeekStrip from "@/components/dashboard/kompas/KompasWeekStrip";
 import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
-import { buildDomainTrendRow } from "@/lib/leefstijllijn";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
 import {
@@ -139,7 +143,7 @@ import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent, trackDashboardTabSelected, trackOnderbouwingLinkClick } from "@/lib/ga4";
-import { SLEEP_FOCUS_LABELS, type SleepFocusKey } from "@/lib/sleep-focus";
+import { type SleepFocusKey } from "@/lib/sleep-focus";
 import {
   buildMovementRecommendations,
   buildRecommendations,
@@ -148,7 +152,6 @@ import {
   BEWEGING_SUPPLEMENT_ANCHOR,
   buildBewegingRailTools,
   buildKompasRailDomains,
-  KOMPAS_RAIL_PILLAR_IDS,
   type ContextRailApi,
   type ContextRailMode,
   type ContextRailToolId,
@@ -493,52 +496,6 @@ const ActiveHabitCard = ({
     </div>
   );
 };
-
-const Greeting = ({
-  empty,
-  model,
-  sleepFocus,
-}: {
-  empty?: boolean;
-  model: DashboardModel | null;
-  sleepFocus?: SleepFocusKey | null;
-}) => (
-  <div style={{ marginBottom: 20 }}>
-    <div
-      style={{
-        fontFamily: "var(--f-serif)",
-        fontSize: 30,
-        color: "var(--text)",
-        lineHeight: 1.1,
-      }}
-    >
-      {empty
-        ? sleepFocus
-          ? "Je slaapinzicht staat klaar."
-          : "Goed dat je er bent."
-        : "Welkom terug."}
-    </div>
-    <div
-      style={{
-        fontSize: 14.5,
-        color: "var(--text-muted)",
-        marginTop: 8,
-        lineHeight: 1.5,
-        textWrap: "pretty",
-      }}
-    >
-      {empty
-        ? sleepFocus
-          ? `Je koos focus op ${SLEEP_FOCUS_LABELS[sleepFocus]}. Eén korte Leefstijlcheck (3 min) vult je dashboard — inclusief je slaap.`
-          : "Eén check en dit dashboard begint te onthouden hoe het met je gaat — en waar je begint."
-        : model
-          ? model.priorityIsUserChosen
-            ? `${model.date} · jij focus op ${model.priority.label.toLowerCase()} (analyse: ${model.enginePriority.label.toLowerCase()}).`
-            : `${model.date} · je vertrekpunt nu is ${model.priority.label.toLowerCase()}.`
-          : ""}
-    </div>
-  </div>
-);
 
 const VitalityScoreSection = ({
   empty,
@@ -2528,145 +2485,6 @@ const SoonPill = ({ label = "Binnenkort" }: { label?: string }) => (
   </span>
 );
 
-const KompasLooseCard = ({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) => (
-  <div
-    className={`rounded-[28px] border border-[#e4e0da] bg-white p-4 shadow-[0_8px_32px_rgba(15,28,16,0.06)] ${className}`}
-  >
-    {children}
-  </div>
-);
-
-
-const STATUS_BADGE_COLOR: Record<
-  ReturnType<typeof getDisplayStatusTone>,
-  string
-> = {
-  sage: "#5A8F6A",
-  neutral: "#78716c",
-  terra: "#C4873B",
-  "terra-deep": "#B45309",
-};
-
-const KompasDomainRow = ({
-  label,
-  score,
-  color,
-  isPriority,
-  isReadout,
-  onClick,
-}: {
-  label: string;
-  score: number;
-  color: string;
-  isPriority?: boolean;
-  isReadout?: boolean;
-  onClick: () => void;
-}) => {
-  const status = getDisplayStatus(score);
-  const tone = getDisplayStatusTone(status);
-
-  return (
-    <div
-      className={`w-full rounded-[18px] border bg-white p-3.5 shadow-sm transition ${
-        isPriority ? "border-[#5A8F6A]" : "border-[#ebe7e2]"
-      }`}
-    >
-      <button
-        type="button"
-        onClick={onClick}
-        aria-label={`Open ${label}`}
-        className="w-full cursor-pointer border-none bg-transparent p-0 text-left"
-        style={{ fontFamily: "var(--f-sans)" }}
-      >
-        <div className="flex items-center justify-between gap-2">
-          <span
-            className="text-base text-[#1c1917]"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            {label}
-          </span>
-          <div className="flex shrink-0 items-center gap-2">
-            {isReadout ? (
-              <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
-                Rapport
-              </span>
-            ) : null}
-            <span
-              className="shrink-0 text-[11px] font-bold uppercase tracking-[0.06em]"
-              style={{ color: STATUS_BADGE_COLOR[tone] }}
-            >
-              {status}
-            </span>
-          </div>
-        </div>
-        <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#ebe7e2]">
-          <div
-            className="h-full rounded-full transition-all"
-            style={{ width: `${Math.min(100, Math.max(0, score))}%`, background: color }}
-          />
-        </div>
-      </button>
-    </div>
-  );
-};
-
-const KompasGroupLabel = ({ label }: { label: string }) => (
-  <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
-    {label}
-  </span>
-);
-
-function formatDriverLabels(labels: string[]): string {
-  const lower = labels.map((entry) => entry.toLowerCase());
-  if (lower.length <= 1) {
-    return lower.join("");
-  }
-  return `${lower.slice(0, -1).join(", ")} en ${lower[lower.length - 1]}`;
-}
-
-const KompasReadoutRow = ({
-  label,
-  driverLabels,
-  cta,
-}: {
-  label: string;
-  driverLabels: string[];
-  cta?: { label: string; onClick: () => void };
-}) => (
-  <div className="w-full rounded-[18px] border border-[#ebe7e2] bg-[#faf9f7] p-3.5">
-    <div className="flex items-center justify-between gap-2">
-      <span className="text-base text-[#57534e]" style={{ fontFamily: "var(--f-serif)" }}>
-        {label}
-      </span>
-      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
-        Rapport
-      </span>
-    </div>
-    {driverLabels.length > 0 ? (
-      <p className="mt-1.5 text-[13px] leading-snug text-[#78716c] text-pretty">
-        Volgt uit je {formatDriverLabels(driverLabels)}.
-      </p>
-    ) : null}
-    {cta ? (
-      <button
-        type="button"
-        onClick={cta.onClick}
-        className="mt-2 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13px] font-semibold text-[var(--sage)]"
-        style={{ fontFamily: "var(--f-sans)" }}
-      >
-        {cta.label}
-        <Icons.ArrowRight s={13} />
-      </button>
-    ) : null}
-  </div>
-);
-
 const DomainSoonScreen = ({
   model,
   domain,
@@ -3131,151 +2949,12 @@ const VoedingScreen = ({
   );
 };
 
-/**
- * Leefstijlring (Fase A) — domein-spine boven "Je domeinen": vijf concentrische
- * ringen (vaste volgorde, geen sortering op zwakte) + een legenda-rij per domein
- * met score, richting-delta (DeltaBadge, geen band/oordeel) en bron. Richting-
- * modus, bewust zonder de Sterk/Voldoende/Aandacht/Prioriteit-band die "Je
- * domeinen" eronder wél toont — die twee weergaven leven bewust naast elkaar
- * (zie docs/plan/ANALYSE_LONGEVITY_HOME_DOMEINGEDREVEN.md §7.1).
- * "Volgende stap" per domein is bewust nog niet meegenomen — vraagt nieuwe
- * copy-generatie, apart van deze eerste, puur visuele slice.
- */
-const LEEFSTIJLRING_RADII: Record<PillarId, number> = {
-  slaap: 56,
-  beweging: 46,
-  voeding: 36,
-  stress: 27,
-  verbinding: 19,
-  energie: 0,
-  herstel: 0,
-};
-const LEEFSTIJLRING_SIZE = 132;
-const LEEFSTIJLRING_STROKE = 7;
-
-const KompasLeefstijlRing = ({
-  model,
-  onOpenDomain,
-}: {
-  model: DashboardModel;
-  onOpenDomain: (id: PillarId) => void;
-}) => {
-  const rows = KOMPAS_RAIL_PILLAR_IDS.map((id) => ({
-    id,
-    pillar: PILLAR[id],
-    ...buildDomainTrendRow(model, id),
-  }));
-  const center = LEEFSTIJLRING_SIZE / 2;
-
-  return (
-    <div>
-      <h2
-        className="m-0 text-[18px] leading-tight text-[#1c1917]"
-        style={{ fontFamily: "var(--f-serif)" }}
-      >
-        Je leefstijl in vijf lijnen
-      </h2>
-      <div className="mt-3 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-        <svg
-          viewBox={`0 0 ${LEEFSTIJLRING_SIZE} ${LEEFSTIJLRING_SIZE}`}
-          width={LEEFSTIJLRING_SIZE}
-          height={LEEFSTIJLRING_SIZE}
-          className="shrink-0"
-          role="img"
-          aria-label={`Leefstijl: ${Math.round(model.vitality)} van de 100, samengesteld uit slaap, beweging, voeding, stress en verbinding`}
-        >
-          {rows.map((row) => {
-            const r = LEEFSTIJLRING_RADII[row.id];
-            const circumference = 2 * Math.PI * r;
-            const pct = Math.min(100, Math.max(0, row.currentScore));
-            const offset = circumference * (1 - pct / 100);
-            return (
-              <g key={row.id}>
-                <circle
-                  cx={center}
-                  cy={center}
-                  r={r}
-                  fill="none"
-                  stroke="#ebe7e2"
-                  strokeWidth={LEEFSTIJLRING_STROKE}
-                />
-                <circle
-                  cx={center}
-                  cy={center}
-                  r={r}
-                  fill="none"
-                  stroke={row.pillar.color}
-                  strokeWidth={LEEFSTIJLRING_STROKE}
-                  strokeLinecap="round"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={offset}
-                  transform={`rotate(-90 ${center} ${center})`}
-                />
-              </g>
-            );
-          })}
-          <text
-            x={center}
-            y={center - 2}
-            textAnchor="middle"
-            fill="#1c1917"
-            fontSize="26"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            {Math.round(model.vitality)}
-          </text>
-          <text
-            x={center}
-            y={center + 15}
-            textAnchor="middle"
-            fill="#a8a29e"
-            fontSize="8"
-            letterSpacing="1.5"
-          >
-            LEEFSTIJL
-          </text>
-        </svg>
-
-        <div className="flex w-full min-w-0 flex-col gap-1.5">
-          {rows.map((row) => (
-            <button
-              key={row.id}
-              type="button"
-              onClick={() => onOpenDomain(row.id)}
-              aria-label={`Open ${row.pillar.label}`}
-              className="flex min-h-11 w-full cursor-pointer items-center gap-2.5 rounded-[12px] border-none bg-transparent px-1.5 py-2 text-left transition hover:bg-[#faf9f7]"
-              style={{ fontFamily: "var(--f-sans)" }}
-            >
-              <span
-                aria-hidden
-                className="h-2.5 w-2.5 shrink-0 rounded-full"
-                style={{ background: row.pillar.color }}
-              />
-              <span className="min-w-0 flex-1 truncate text-[13.5px] text-[#1c1917]">
-                {row.pillar.label}
-              </span>
-              <span className="shrink-0 text-[13px] tabular-nums text-[#57534e]">
-                {row.currentScore}
-              </span>
-              <span className="w-[36px] shrink-0 text-right">
-                <DeltaBadge delta={row.delta} empty={row.delta == null} />
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-      {model.vitalityDeltaNote ? (
-        <p className="mt-2 text-[11px] text-[#a8a29e]">{model.vitalityDeltaNote}</p>
-      ) : null}
-    </div>
-  );
-};
-
 const KompasHome = ({
   model,
   data,
   onRemeasure,
   onGoAgenda,
+  onGoVoortgang,
   initialKompasView,
   initialKompasDeepView,
   kompasResetSignal: _kompasResetSignal,
@@ -3418,7 +3097,7 @@ const KompasHome = ({
 
   const openDomain = (
     domain: PillarId,
-    surface: "kompas_home" | "context_rail" = "kompas_home",
+    surface: "kompas_home" | "context_rail" | "leefstijlkompas" = "kompas_home",
   ) => {
     trackEvent("dashboard_kompas_domain_open", { domain, surface });
     clarityTag("dashboard_kompas_domain", domain);
@@ -3692,160 +3371,137 @@ const KompasHome = ({
     );
   }
 
-  const priorityRow = currentModel.ladder.find(
-    (pillar) => pillar.id === currentModel.priority.id,
-  );
-  const aandachtRows = currentModel.ladder.filter(
-    (pillar) => !isReadoutDomain(pillar.id) && pillar.id !== currentModel.priority.id,
-  );
-  const rapportRows = currentModel.ladder.filter((pillar) => isReadoutDomain(pillar.id));
+  const anchorWhy =
+    MOVEMENT_ANCHOR_OPTIONS.find(
+      (option) => option.id === currentModel.movementPrefs.anchor,
+    )?.whySuffix ?? null;
 
   return (
-    <section aria-label="Kompas" className="kompas-loose-stack -mt-2 flex flex-col gap-4">
-      <div>
-        <div
-          className="text-[26px] leading-tight text-[color:var(--text)]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          Welkom terug{data?.firstName ? `, ${data.firstName}` : ""}.
-        </div>
-        <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--text-muted)] text-pretty">
-          Elke stap die je vandaag zet, bouwt aan waar je naartoe werkt — je ziet
-          het niet meteen, wel over de weken.
-        </p>
-      </div>
-      {showRemeasureReminder ? (
-        <KompasLooseCard>
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] border border-[#ebe7e2] bg-[#faf9f7] text-[#78716c]">
-              <Icons.Refresh s={18} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div
-                className="text-[15px] font-medium leading-snug text-[#1c1917]"
-                style={{ fontFamily: "var(--f-serif)" }}
-              >
-                Tijd voor je hermeting
-              </div>
-              <p className="mt-1 text-[13px] leading-snug text-[#78716c] text-pretty">
-                Meet opnieuw of je leefstijl-stappen werken.
+    <section aria-label="Kompas" className="-mt-2 flex flex-col gap-2.5">
+      <CockpitShell accent="#5A8F6A" ariaLabel="Kompas home" embedded>
+        <div className="flex flex-col gap-2.5">
+          <div>
+            <h1
+              className="m-0 font-serif text-[26px] leading-tight text-[#F1EFE8] sm:text-[28px]"
+              style={{ fontFamily: "var(--f-serif)" }}
+            >
+              Welkom terug{data?.firstName ? `, ${data.firstName}` : ""}.
+            </h1>
+            <p className="mt-2 text-[14px] leading-relaxed text-[#9FB0A6] text-pretty">
+              {currentModel.priorityIsUserChosen
+                ? `${currentModel.date} · jij focus op ${currentModel.priority.label.toLowerCase()}.`
+                : `${currentModel.date} · je vertrekpunt nu is ${currentModel.priority.label.toLowerCase()}.`}
+            </p>
+            {anchorWhy ? (
+              <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+                {anchorWhy}
               </p>
-            </div>
+            ) : (
+              <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+                Elke stap die je vandaag zet, bouwt aan waar je naartoe werkt — je ziet
+                het niet meteen, wel over de weken.
+              </p>
+            )}
+          </div>
+
+          {showRemeasureReminder ? (
+            <CockpitTile eyebrow="Hermeting">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/25 text-[#9FB0A6]">
+                  <Icons.Refresh s={18} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div
+                    className="font-serif text-[15px] leading-snug text-[#F1EFE8]"
+                    style={{ fontFamily: "var(--f-serif)" }}
+                  >
+                    Tijd voor je hermeting
+                  </div>
+                  <p className="mt-1 text-[13px] leading-snug text-[#9FB0A6] text-pretty">
+                    Meet opnieuw of je leefstijl-stappen werken.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemeasureReminderClick}
+                  className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-xl border-none bg-[#5A8F6A] px-4 py-2.5 text-[13px] font-semibold text-[#0f1c10]"
+                  style={{ fontFamily: "var(--f-sans)" }}
+                >
+                  Doe je hermeting nu
+                  <Icons.ArrowRight s={15} />
+                </button>
+              </div>
+            </CockpitTile>
+          ) : null}
+
+          {todaySlot && !isPlanStepHidden(currentModel, todaySlot) ? (
+            <AgendaTodayHero
+              model={currentModel}
+              slot={todaySlot}
+              tone="dark"
+              actionSurface="kompas_home"
+            />
+          ) : null}
+
+          <LeefstijlKompas
+            model={currentModel}
+            onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
+          />
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <KompasWeekStrip model={currentModel} onGoAgenda={onGoAgenda} />
+            <KompasReadoutSection
+              model={currentModel}
+              onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
+            />
+          </div>
+
+          <KompasOndersteuningTile model={currentModel} data={data} />
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <button
               type="button"
-              onClick={handleRemeasureReminderClick}
-              className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[10px] border-none bg-[var(--sage)] px-4 py-2.5 text-[13px] font-semibold text-[#0f1c10]"
-              style={{ fontFamily: "var(--f-sans)" }}
+              onClick={onGoVoortgang}
+              className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-left transition hover:border-white/20"
             >
-              Doe je hermeting nu
-              <Icons.ArrowRight s={15} />
+              <span className="min-w-0">
+                <span
+                  className="block font-serif text-[15px] text-[#F1EFE8]"
+                  style={{ fontFamily: "var(--f-serif)" }}
+                >
+                  Voortgang
+                </span>
+                <span className="mt-1 block text-[13px] leading-snug text-[#9FB0A6] text-pretty">
+                  Trends, lijnen en payoff over de weken.
+                </span>
+              </span>
+              <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-[#5A8F6A]">
+                Bekijk <Icons.ArrowRight s={14} />
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={onGoAgenda}
+              className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-left transition hover:border-white/20 md:hidden"
+            >
+              <span className="min-w-0">
+                <span
+                  className="block font-serif text-[15px] text-[#F1EFE8]"
+                  style={{ fontFamily: "var(--f-serif)" }}
+                >
+                  Mijn Dag
+                </span>
+                <span className="mt-1 block text-[13px] leading-snug text-[#9FB0A6] text-pretty">
+                  Planning en verplaats een stap naar een moment dat past.
+                </span>
+              </span>
+              <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-[#5A8F6A]">
+                Open <Icons.ArrowRight s={14} />
+              </span>
             </button>
           </div>
-        </KompasLooseCard>
-      ) : null}
-      {todaySlot && !isPlanStepHidden(currentModel, todaySlot) ? (
-        <AgendaTodayHero
-          model={currentModel}
-          slot={todaySlot}
-          actionSurface="kompas_home"
-        />
-      ) : null}
-      <KompasLooseCard>
-        <KompasLeefstijlRing model={currentModel} onOpenDomain={openDomain} />
-      </KompasLooseCard>
-      <KompasLooseCard>
-        <h2
-          className="m-0 text-[18px] leading-tight text-[#1c1917]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          Je domeinen
-        </h2>
-
-        {priorityRow ? (
-          <div className="mt-3">
-            <KompasGroupLabel label="Je prioriteit" />
-            <div className="mt-2 flex flex-col gap-2.5">
-              <KompasDomainRow
-                label={priorityRow.label}
-                score={currentModel.scores[priorityRow.id] ?? 0}
-                color={priorityRow.color}
-                isPriority
-                onClick={() => openDomain(priorityRow.id)}
-              />
-            </div>
-          </div>
-        ) : null}
-
-        {aandachtRows.length > 0 ? (
-          <div className="mt-4">
-            <div className="flex items-center justify-between gap-2">
-              <KompasGroupLabel label="Aandacht" />
-              <span className="shrink-0 text-[11px] text-[#a8a29e]">zwakste bovenaan</span>
-            </div>
-            <div className="mt-2 flex flex-col gap-2.5">
-              {aandachtRows.map((pillar) => (
-                <KompasDomainRow
-                  key={pillar.id}
-                  label={pillar.label}
-                  score={currentModel.scores[pillar.id] ?? 0}
-                  color={pillar.color}
-                  onClick={() => openDomain(pillar.id)}
-                />
-              ))}
-            </div>
-          </div>
-        ) : null}
-
-        {rapportRows.length > 0 ? (
-          <div className="mt-4">
-            <KompasGroupLabel label="Rapport · volgt uit je gedrag" />
-            <div className="mt-2 flex flex-col gap-2.5">
-              {rapportRows.map((pillar) => {
-                const presentation = isReadoutDomain(pillar.id)
-                  ? getReadoutPresentation(pillar.id)
-                  : null;
-                const primaryCta = presentation?.primaryCta ?? null;
-                return (
-                  <KompasReadoutRow
-                    key={pillar.id}
-                    label={pillar.label}
-                    driverLabels={presentation?.driverLabels ?? []}
-                    cta={
-                      primaryCta
-                        ? {
-                            label: `Werk aan je ${primaryCta.label.toLowerCase()}`,
-                            onClick: () => openDomain(primaryCta.pillarId),
-                          }
-                        : undefined
-                    }
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ) : null}
-      </KompasLooseCard>
-
-      <button
-        type="button"
-        onClick={onGoAgenda}
-        className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] border border-white/10 bg-white/[0.04] p-4 text-left transition hover:border-white/20"
-      >
-        <span className="min-w-0">
-          <span
-            className="block text-[15px] text-[color:var(--text)]"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            Je week
-          </span>
-          <span className="mt-1 block text-[13px] leading-snug text-[color:var(--text-muted)] text-pretty">
-            Zie je planning en verplaats een stap naar een moment dat past.
-          </span>
-        </span>
-        <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-[var(--sage)]">
-          Bekijk je week <Icons.ArrowRight s={14} />
-        </span>
-      </button>
+        </div>
+      </CockpitShell>
     </section>
   );
 };
@@ -4267,11 +3923,7 @@ export default function Dashboard({
       : "";
 
   const tabHeaderNode =
-    tab === "vandaag" ? (
-      cockpitDomain === null ? (
-        <Greeting empty={empty} model={model} sleepFocus={sleepFocus} />
-      ) : null
-    ) : tab !== "voortgang" ? (
+    tab === "vandaag" ? null : tab !== "voortgang" ? (
       <DashTabHeader tab={tabMeta} />
     ) : null;
 

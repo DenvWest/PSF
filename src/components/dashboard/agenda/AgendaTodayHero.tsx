@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaTimeBucketPicker from "@/components/dashboard/agenda/AgendaTimeBucketPicker";
@@ -30,6 +31,7 @@ type AgendaTodayHeroProps = {
   slot: WeekDaySlot;
   prefBusy?: boolean;
   variant?: "default" | "detail";
+  tone?: "light" | "dark";
   actionSurface?: "agenda_today" | "agenda_block_detail" | "kompas_home";
   onCompletionChange?: () => void;
   onScheduledTimeChange?: (scheduledTime: string) => void;
@@ -56,6 +58,7 @@ export default function AgendaTodayHero({
   slot,
   prefBusy = false,
   variant = "default",
+  tone = "light",
   actionSurface = "agenda_today",
   onCompletionChange,
   onScheduledTimeChange,
@@ -191,145 +194,174 @@ export default function AgendaTodayHero({
       </button>
     ) : null;
 
-  const doneButton = isToday ? (
-    <>
-      <button
-        type="button"
-        aria-label={
-          resolvedDone ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"
-        }
-        aria-pressed={resolvedDone}
-        disabled={!loaded || toggleBusy}
-        onClick={() => void toggleDaily()}
-        className="mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-[12px] border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
-        style={{
-          background: resolvedDone ? "rgba(90, 143, 106, 0.15)" : "var(--sage)",
-          color: "#0f1c10",
-          fontFamily: "var(--f-sans)",
-        }}
-      >
-        {resolvedDone ? (
-          <>
-            <Icons.Check s={16} />
-            Gedaan
-          </>
-        ) : (
-          "Markeer als gedaan"
-        )}
-      </button>
+  const isDark = tone === "dark";
+  const shellClass = isDark
+    ? "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-4 sm:p-5"
+    : variant === "detail"
+      ? "rounded-[16px] border border-[#ebe7e2] bg-white p-4"
+      : "rounded-[16px] border border-[#ebe7e2] bg-white p-4 shadow-[0_2px_12px_rgba(15,28,16,0.04)]";
+  const shellStyle = isDark
+    ? ({ "--ac": pillar.color } as CSSProperties)
+    : { borderLeftWidth: 2, borderLeftColor: pillar.color };
 
-      {resolvedStreak >= 2 ? (
-        <p className="mt-2 text-center text-[12px] text-[#78716c]">
-          {resolvedStreak} dagen op rij
-        </p>
-      ) : null}
+  const metaClass = isDark
+    ? "inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]"
+    : "inline-flex items-center gap-1.5 text-[12px] font-medium text-[#78716c]";
+  const titleClass = isDark
+    ? "m-0 font-serif text-[20px] font-medium leading-snug text-[#F1EFE8] text-pretty"
+    : "m-0 text-[18px] font-medium leading-snug text-[#1c1917] text-pretty";
+  const bodyClass = isDark
+    ? "mt-2 text-[14px] leading-relaxed text-[#9FB0A6] text-pretty"
+    : "mt-2 text-[14px] leading-normal text-[#78716c] text-pretty";
+  const doneButtonClass = isDark
+    ? "mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
+    : "mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-[12px] border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60";
+  const doneButtonStyle = isDark
+    ? {
+        background: resolvedDone ? "rgba(90, 143, 106, 0.15)" : pillar.color,
+        color: resolvedDone ? "#E7EDE8" : "#0f1c10",
+        fontFamily: "var(--f-sans)",
+        border: resolvedDone ? "1px solid rgba(255,255,255,0.15)" : "none",
+      }
+    : {
+        background: resolvedDone ? "rgba(90, 143, 106, 0.15)" : "var(--sage)",
+        color: "#0f1c10",
+        fontFamily: "var(--f-sans)",
+      };
+  const streakClass = isDark
+    ? "mt-2 text-center text-[12px] text-[#9FB0A6]"
+    : "mt-2 text-center text-[12px] text-[#78716c]";
+  const doneNoteClass = isDark
+    ? "mt-3 text-center text-[13px] text-[#9FB0A6]"
+    : "mt-3 text-center text-[13px] text-[#78716c]";
+  const linkMutedColor = isDark ? "#9FB0A6" : "#78716c";
+  const linkAccentColor = isDark ? "#7FB28E" : "var(--sage)";
 
-      {resolvedDone ? (
-        <p className="mt-3 text-center text-[13px] text-[#78716c]">
-          Morgen staat hier je volgende stap.
-        </p>
-      ) : null}
-    </>
-  ) : (
-    <p className="mt-3 text-[13px] leading-normal text-[#78716c] text-pretty">
-      Je kunt deze stap afvinken zodra het zover is.
-    </p>
-  );
-
-  const footerLinks = (
-    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-      <Link
-        href={onderbouwingHref}
-        onClick={() => {
-          const onderbouwingSurface =
-            actionSurface === "agenda_block_detail" || actionSurface === "kompas_home"
-              ? actionSurface
-              : isToday
-                ? "agenda_today"
-                : "agenda_preview";
-          trackOnderbouwingLinkClick({ surface: onderbouwingSurface, domain });
-          clarityTag("onderbouwing_link", onderbouwingSurface);
-        }}
-        className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-        style={{ color: "#78716c" }}
-      >
-        Waarom?
-        <Icons.ArrowRight s={13} />
-      </Link>
-      {slot.planLink ? (
-        <Link
-          href={slot.planLink.href}
-          className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-          style={{ color: "var(--sage)" }}
-        >
-          {slot.planLink.label}
-          <Icons.ArrowRight s={13} />
-        </Link>
-      ) : null}
-      {isToday && resolvedDone ? (
-        <Link
-          href={followUp.href}
-          className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
-          style={{ color: "var(--sage)" }}
-        >
-          {followUp.label}
-          <Icons.ArrowRight s={13} />
-        </Link>
-      ) : null}
-    </div>
-  );
+  const eyebrowLabel =
+    isDark && isToday ? `Vandaag · ${pillar.label.toLowerCase()}` : domainLabel;
 
   return (
-    <article
-      className={
-        variant === "detail"
-          ? "rounded-[16px] border border-[#ebe7e2] bg-white p-4"
-          : "rounded-[16px] border border-[#ebe7e2] bg-white p-4 shadow-[0_2px_12px_rgba(15,28,16,0.04)]"
-      }
-      style={{ borderLeftWidth: 2, borderLeftColor: pillar.color }}
-    >
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[#78716c]">
-          <span
-            className="h-2 w-2 shrink-0 rounded-full"
-            style={{ background: pillar.color }}
-            aria-hidden
-          />
-          {domainLabel}
-        </span>
-        {scheduleControl}
-      </div>
+    <article className={shellClass} style={shellStyle}>
+      {isDark ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full opacity-30 blur-[80px]"
+          style={{ background: "var(--ac)" }}
+        />
+      ) : null}
 
-      {isToday && moveExpanded && onScheduledTimeChange ? (
-        <div className="mb-3">
-          <AgendaTimeBucketPicker
-            value={model.scheduledTime}
-            defaultBucket={activeBucket}
-            busy={prefBusy}
-            variant="compact"
-            onChange={(scheduledTime) => {
-              onScheduledTimeChange(scheduledTime);
-              setMoveExpanded(false);
-            }}
-          />
+      <div className={isDark ? "relative" : undefined}>
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <span className={metaClass}>
+            {!isDark ? (
+              <span
+                className="h-2 w-2 shrink-0 rounded-full"
+                style={{ background: pillar.color }}
+                aria-hidden
+              />
+            ) : null}
+            {eyebrowLabel}
+          </span>
+          {scheduleControl}
         </div>
-      ) : null}
 
-      <h3
-        className="m-0 text-[18px] font-medium leading-snug text-[#1c1917] text-pretty"
-        style={{ fontFamily: "var(--f-serif)" }}
-      >
-        {slot.title}
-      </h3>
+        {isToday && moveExpanded && onScheduledTimeChange ? (
+          <div className="mb-3">
+            <AgendaTimeBucketPicker
+              value={model.scheduledTime}
+              defaultBucket={activeBucket}
+              busy={prefBusy}
+              variant="compact"
+              onChange={(scheduledTime) => {
+                onScheduledTimeChange(scheduledTime);
+                setMoveExpanded(false);
+              }}
+            />
+          </div>
+        ) : null}
 
-      {supportingLine ? (
-        <p className="mt-2 text-[14px] leading-normal text-[#78716c] text-pretty">
-          {supportingLine}
-        </p>
-      ) : null}
+        <h3 className={titleClass} style={{ fontFamily: "var(--f-serif)" }}>
+          {slot.title}
+        </h3>
 
-      {doneButton}
-      {footerLinks}
+        {supportingLine ? <p className={bodyClass}>{supportingLine}</p> : null}
+
+        {isToday ? (
+          <>
+            <button
+              type="button"
+              aria-label={
+                resolvedDone ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"
+              }
+              aria-pressed={resolvedDone}
+              disabled={!loaded || toggleBusy}
+              onClick={() => void toggleDaily()}
+              className={doneButtonClass}
+              style={doneButtonStyle}
+            >
+              {resolvedDone ? (
+                <>
+                  <Icons.Check s={16} />
+                  Gedaan
+                </>
+              ) : (
+                "Markeer als gedaan"
+              )}
+            </button>
+
+            {resolvedStreak >= 2 ? (
+              <p className={streakClass}>{resolvedStreak} dagen op rij</p>
+            ) : null}
+
+            {resolvedDone ? (
+              <p className={doneNoteClass}>Morgen staat hier je volgende stap.</p>
+            ) : null}
+          </>
+        ) : (
+          <p className={bodyClass}>Je kunt deze stap afvinken zodra het zover is.</p>
+        )}
+
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link
+            href={onderbouwingHref}
+            onClick={() => {
+              const onderbouwingSurface =
+                actionSurface === "agenda_block_detail" || actionSurface === "kompas_home"
+                  ? actionSurface
+                  : isToday
+                    ? "agenda_today"
+                    : "agenda_preview";
+              trackOnderbouwingLinkClick({ surface: onderbouwingSurface, domain });
+              clarityTag("onderbouwing_link", onderbouwingSurface);
+            }}
+            className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+            style={{ color: linkMutedColor }}
+          >
+            Waarom?
+            <Icons.ArrowRight s={13} />
+          </Link>
+          {slot.planLink ? (
+            <Link
+              href={slot.planLink.href}
+              className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+              style={{ color: linkAccentColor }}
+            >
+              {slot.planLink.label}
+              <Icons.ArrowRight s={13} />
+            </Link>
+          ) : null}
+          {isToday && resolvedDone ? (
+            <Link
+              href={followUp.href}
+              className="inline-flex items-center gap-1 text-[13px] font-medium no-underline"
+              style={{ color: linkAccentColor }}
+            >
+              {followUp.label}
+              <Icons.ArrowRight s={13} />
+            </Link>
+          ) : null}
+        </div>
+      </div>
     </article>
   );
 }
