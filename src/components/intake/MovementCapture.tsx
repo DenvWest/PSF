@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
 import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
@@ -382,7 +383,8 @@ export default function MovementCapture() {
           <div className="h-full bg-intake-terra" style={{ width: "100%" }} />
         </div>
 
-        <div className="w-full max-w-lg px-6 py-12">
+        <div className="relative w-full max-w-lg px-6 py-12">
+          <IntakeInBoxExit className="absolute right-6 top-0" />
           <h2 className="mb-6 text-center font-serif text-2xl font-normal text-intake-ink">
             {isPulseMode ? "Herstel-check veilig opslaan" : "Jouw gegevens veilig opslaan"}
           </h2>
@@ -444,7 +446,8 @@ export default function MovementCapture() {
         />
       </div>
 
-      <div className="w-full max-w-lg px-6 py-12">
+      <div className="relative w-full max-w-lg px-6 py-12">
+        <IntakeInBoxExit className="absolute right-6 top-0" />
         <div className="mb-2 flex items-center justify-center gap-2">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
             <span className="text-intake-terra">{questionNumber}</span>

@@ -7,8 +7,9 @@ export default function IntakeLayoutHeader() {
   const pathname = usePathname();
   const isPlanPage = pathname.startsWith("/intake/plan");
   const isMainIntake = pathname === "/intake";
+  const isBewegingCheckin = pathname === "/intake/beweging";
 
-  if (isPlanPage || isMainIntake) {
+  if (isPlanPage || isMainIntake || isBewegingCheckin) {
     return null;
   }
 
