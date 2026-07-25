@@ -28,6 +28,9 @@ export const KOMPAS_PILLAR_DESCRIPTORS: Record<KompasRailPillarId, string> = {
   verbinding: "contact & steun",
 };
 
+export const KOMPAS_LINES_EXPLAINER =
+  "Elke ring staat voor één domein: slaap, beweging, voeding, stress en verbinding. Hoe verder de ring gevuld is, hoe sterker dat domein scoort. In het midden zie je je leefstijlscore — het totaalbeeld van die vijf domeinen. Rechts per rij: score, trend en richting. Tik op een rij voor meer detail.";
+
 export type KompasMilestoneKind = "hermeting" | "week" | "neutral";
 
 export type KompasMilestone = {

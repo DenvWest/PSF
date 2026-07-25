@@ -71,6 +71,15 @@ export function getVitalityBand(score: number): VitalityBand {
   return band;
 }
 
+/**
+ * De eerstvolgende band boven de huidige score — de natuurlijke "doel"-drempel.
+ * `null` wanneer je al in de hoogste band (optimaal) zit; dan is het doel behoud.
+ */
+export function getNextVitalityBand(score: number): VitalityBand | null {
+  const clamped = Number.isFinite(score) ? Math.min(100, Math.max(0, score)) : 0;
+  return VITALITY_BANDS.find((candidate) => candidate.min > clamped) ?? null;
+}
+
 /** Korte, niet-diagnostische regel bij een band — optioneel met categorie-naam. */
 export function getVitalityBandMessage(score: number, label = "Je vitaliteit"): string {
   const band = getVitalityBand(score);

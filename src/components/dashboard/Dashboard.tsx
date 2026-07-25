@@ -121,9 +121,7 @@ import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
-import LeefstijlKompas from "@/components/dashboard/kompas/LeefstijlKompas";
-import KompasStatusCard from "@/components/dashboard/kompas/KompasStatusCard";
-import KompasVoortgangCard from "@/components/dashboard/kompas/KompasVoortgangCard";
+import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import VoortgangKompasPanels from "@/components/dashboard/kompas/VoortgangKompasPanels";
 import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
@@ -3357,36 +3355,26 @@ const KompasHome = ({
   return (
     <section aria-label="Kompas" className="-mt-2 flex flex-col gap-2.5">
       <CockpitShell accent="#5A8F6A" ariaLabel="Kompas home" embedded>
-        <div className="grid gap-2.5 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-3">
-          <div className="flex flex-col gap-2.5 lg:col-start-1 lg:row-start-1">
-            <KompasStatusCard model={currentModel} firstName={data?.firstName} />
-            <KompasVoortgangCard
-              model={currentModel}
-              remeasureDue={showRemeasureReminder}
-              onGoVoortgang={onGoVoortgang}
-              onRemeasure={onRemeasure}
-            />
-          </div>
-
-          <div className="lg:col-start-2 lg:row-start-1">
-            <LeefstijlKompas
-              model={currentModel}
-              onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
-              onOpenPriority={(domain) => {
-                if (supportsKompasDeepView(domain)) {
-                  trackEvent("dashboard_beweging_plan_click", {
-                    surface: "kompas_home",
-                    nav_mode: "dashboard_view",
-                  });
-                  clarityTag("dashboard_kompas_view", "stappenplan");
-                  setKompasDomain(domain, "stappenplan");
-                } else {
-                  openDomain(domain, "leefstijlkompas");
-                }
-              }}
-            />
-          </div>
-        </div>
+        <KompasHomeCard
+          model={currentModel}
+          firstName={data?.firstName}
+          remeasureDue={showRemeasureReminder}
+          onGoVoortgang={onGoVoortgang}
+          onRemeasure={onRemeasure}
+          onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
+          onOpenPriority={(domain) => {
+            if (supportsKompasDeepView(domain)) {
+              trackEvent("dashboard_beweging_plan_click", {
+                surface: "kompas_home",
+                nav_mode: "dashboard_view",
+              });
+              clarityTag("dashboard_kompas_view", "stappenplan");
+              setKompasDomain(domain, "stappenplan");
+            } else {
+              openDomain(domain, "leefstijlkompas");
+            }
+          }}
+        />
       </CockpitShell>
     </section>
   );
