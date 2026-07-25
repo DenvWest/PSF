@@ -3359,7 +3359,10 @@ const KompasHome = ({
           model={currentModel}
           firstName={data?.firstName}
           remeasureDue={showRemeasureReminder}
+          nutritionLogCompleted={nutritionLogCompleted}
+          hasNutritionIntake={data?.nutritionIntake != null}
           onGoVoortgang={onGoVoortgang}
+          onGoAgenda={onGoAgenda}
           onRemeasure={onRemeasure}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
           onOpenPriority={(domain) => {

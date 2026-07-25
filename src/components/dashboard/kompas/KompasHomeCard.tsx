@@ -4,6 +4,9 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import KompasVandaagPanel, {
+  KompasLogboekSection,
+} from "@/components/dashboard/kompas/KompasVandaagPanel";
 import { PILLAR } from "@/data/dashboard";
 import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
@@ -36,9 +39,12 @@ type KompasHomeCardProps = {
   model: DashboardModel;
   firstName?: string | null;
   remeasureDue?: boolean;
+  nutritionLogCompleted?: boolean;
+  hasNutritionIntake?: boolean;
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
   onGoVoortgang: () => void;
+  onGoAgenda: () => void;
   onRemeasure?: () => void;
 };
 
@@ -103,7 +109,7 @@ function buildDomainTags(model: DashboardModel): Map<PillarId, string> {
 function DomainSparkline({ trend, color }: { trend: number[]; color: string }) {
   if (trend.length < 2) {
     return (
-      <span className="flex h-[13px] w-9 shrink-0 items-center justify-center">
+      <span className="hidden h-[13px] w-9 shrink-0 items-center justify-center min-[381px]:flex">
         <span className="h-px w-full border-t border-dashed border-white/20" aria-hidden />
         <span className="sr-only">Nog geen lijn</span>
       </span>
@@ -111,7 +117,7 @@ function DomainSparkline({ trend, color }: { trend: number[]; color: string }) {
   }
 
   return (
-    <span className="block h-[13px] w-9 shrink-0 opacity-80">
+    <span className="hidden h-[13px] w-9 shrink-0 opacity-80 min-[381px]:block">
       <Sparkline data={trend} w={36} h={13} color={color} />
     </span>
   );
@@ -127,7 +133,7 @@ function KompasRings({
   const band = getVitalityBand(vitality);
 
   return (
-    <span className="relative block h-[116px] w-[116px] shrink-0 sm:h-[132px] sm:w-[132px]">
+    <span className="relative block h-[128px] w-[128px] shrink-0 sm:h-[140px] sm:w-[140px] lg:h-[152px] lg:w-[152px]">
       <span
         aria-hidden
         className="pointer-events-none absolute inset-[10%] rounded-full opacity-70 blur-lg"
@@ -657,9 +663,12 @@ export default function KompasHomeCard({
   model,
   firstName,
   remeasureDue = false,
+  nutritionLogCompleted = false,
+  hasNutritionIntake = false,
   onOpenDomain,
   onOpenPriority,
   onGoVoortgang,
+  onGoAgenda,
   onRemeasure,
 }: KompasHomeCardProps) {
   const rows = useMemo(() => buildKompasDomainRows(model), [model]);
@@ -674,13 +683,13 @@ export default function KompasHomeCard({
 
   return (
     <CockpitTile className="p-4 sm:p-5 lg:p-6">
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,400px)]">
-        <section aria-label="Je leefstijl" className="min-w-0">
+      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,400px)]">
+        <section aria-label="Je leefstijl" className="order-1 min-w-0">
           <LeefstijlHeader model={model} firstName={firstName} />
 
           <div className="mt-4 flex items-center gap-4 sm:gap-5">
             <KompasRings rows={rows} vitality={model.vitality} />
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <div className="flex min-w-0 flex-1 flex-col gap-1 sm:max-w-[300px] lg:max-w-[340px]">
               {rows.map((row) => (
                 <DomainLineRow
                   key={row.id}
@@ -697,8 +706,24 @@ export default function KompasHomeCard({
         </section>
 
         <section
+          aria-label="Vandaag"
+          className="order-2 min-w-0 border-t border-white/10 pt-5 lg:col-start-2 lg:row-span-2 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0"
+        >
+          <KompasVandaagPanel
+            model={model}
+            nutritionLogCompleted={nutritionLogCompleted}
+            hasNutritionIntake={hasNutritionIntake}
+            onOpenDomain={handleOpenDomain}
+            onGoAgenda={onGoAgenda}
+          />
+          <div className="mt-4 hidden lg:block">
+            <KompasLogboekSection model={model} onGoVoortgang={onGoVoortgang} />
+          </div>
+        </section>
+
+        <section
           aria-label="Voortgang"
-          className="min-w-0 border-t border-white/10 pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0"
+          className="order-3 min-w-0 border-t border-white/10 pt-5 lg:col-start-1 lg:row-start-2"
         >
           <VoortgangSection
             model={model}
@@ -706,6 +731,13 @@ export default function KompasHomeCard({
             onGoVoortgang={onGoVoortgang}
             onRemeasure={onRemeasure}
           />
+        </section>
+
+        <section
+          aria-label="Logboek"
+          className="order-4 min-w-0 border-t border-white/10 pt-5 lg:hidden"
+        >
+          <KompasLogboekSection model={model} onGoVoortgang={onGoVoortgang} />
         </section>
       </div>
     </CockpitTile>

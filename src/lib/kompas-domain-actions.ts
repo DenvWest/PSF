@@ -1,0 +1,123 @@
+import { PILLAR } from "@/data/dashboard";
+import { BEWEGING_SUPPLEMENT_ANCHOR, KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
+import type { DashboardModel, PillarId } from "@/types/dashboard";
+
+export type KompasDomainActionKind = "checkin" | "result" | "supplement" | "open";
+
+export type KompasDomainAction = {
+  domain: PillarId;
+  domainLabel: string;
+  color: string;
+  icon: string;
+  actionLabel: string;
+  actionKind: KompasDomainActionKind;
+  href?: string;
+  internalAction?: "open_domain" | "open_supplements";
+  disabled?: boolean;
+  disabledHint?: string;
+};
+
+type BuildKompasDomainActionsInput = {
+  model: DashboardModel;
+  nutritionLogCompleted: boolean;
+  hasNutritionIntake: boolean;
+};
+
+function checkinHref(domain: PillarId): string {
+  return `/intake/${domain === "voeding" ? "voeding" : domain}?from=dashboard&kompas=${domain}`;
+}
+
+function buildSingleDomainAction(
+  domain: PillarId,
+  input: BuildKompasDomainActionsInput,
+): KompasDomainAction {
+  const pillar = PILLAR[domain];
+  const base = {
+    domain,
+    domainLabel: pillar.label,
+    color: pillar.color,
+    icon: pillar.icon,
+  };
+
+  switch (domain) {
+    case "voeding":
+      if (input.nutritionLogCompleted) {
+        return {
+          ...base,
+          actionLabel: "Bekijk je resultaat",
+          actionKind: "result",
+          href: "/intake/voeding?resultaten=true&from=dashboard&kompas=voeding",
+        };
+      }
+      return {
+        ...base,
+        actionLabel: input.hasNutritionIntake ? "Voedingscheck bijwerken" : "Doe voedingscheck",
+        actionKind: "checkin",
+        href: checkinHref("voeding"),
+      };
+
+    case "slaap":
+      if (input.model.sleepFocus) {
+        return {
+          ...base,
+          actionLabel: "Bekijk je analyse",
+          actionKind: "result",
+          internalAction: "open_domain",
+        };
+      }
+      return {
+        ...base,
+        actionLabel: "Doe slaapcheck",
+        actionKind: "checkin",
+        href: checkinHref("slaap"),
+      };
+
+    case "beweging":
+      if (input.nutritionLogCompleted) {
+        return {
+          ...base,
+          actionLabel: "Supplementen",
+          actionKind: "supplement",
+          internalAction: "open_supplements",
+        };
+      }
+      return {
+        ...base,
+        actionLabel: "Doe beweegcheck",
+        actionKind: "checkin",
+        href: checkinHref("beweging"),
+      };
+
+    case "stress":
+      return {
+        ...base,
+        actionLabel: "Doe stresscheck",
+        actionKind: "checkin",
+        href: checkinHref("stress"),
+      };
+
+    case "verbinding":
+      return {
+        ...base,
+        actionLabel: "Open verbinding",
+        actionKind: "open",
+        internalAction: "open_domain",
+      };
+
+    default:
+      return {
+        ...base,
+        actionLabel: `Open ${pillar.label.toLowerCase()}`,
+        actionKind: "open",
+        internalAction: "open_domain",
+      };
+  }
+}
+
+export function buildKompasDomainActions(
+  input: BuildKompasDomainActionsInput,
+): KompasDomainAction[] {
+  return KOMPAS_RAIL_PILLAR_IDS.map((domain) => buildSingleDomainAction(domain, input));
+}
+
+export { BEWEGING_SUPPLEMENT_ANCHOR };
