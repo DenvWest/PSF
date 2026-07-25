@@ -39,6 +39,7 @@ import {
   buildMovementRecoveryInput,
 } from "@/lib/movement-recovery-hint";
 import {
+  MOVEMENT_ANCHOR_OPTIONS,
   MOVEMENT_START_PATTERN_OPTIONS,
   startPatternLabel,
 } from "@/lib/movement-prefs";
@@ -185,6 +186,17 @@ export default function MovementPlanDeepBody({
   );
 
   const sessionEntry = getMovementSessionCatalogEntry(recommendedVariant);
+
+  // Positie-header (S1): fase-positie + anker uit de afgeleide staat.
+  const totalPhases = movementPlanTemplate.phases.length;
+  const safePhaseIndex = activePhaseIndex >= 0 ? activePhaseIndex : 0;
+  const activePhase = movementPlanTemplate.phases[safePhaseIndex];
+  const phaseNumber = safePhaseIndex + 1;
+  const anchorLabel = effectiveProfile.anchor
+    ? MOVEMENT_ANCHOR_OPTIONS.find(
+        (option) => option.id === effectiveProfile.anchor,
+      )?.label ?? null
+    : null;
 
   const getStepState = useMemo(
     () => buildExecutionStepStateGetter(loggedStepIds),
@@ -335,14 +347,38 @@ export default function MovementPlanDeepBody({
   }, []);
 
   return (
-    <div className="w-full pb-8" style={{ ["--ac" as string]: accent }}>
-      <header className="mb-4">
-        <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
+    <div
+      className="@container mx-auto w-full max-w-[1040px] pb-8"
+      style={{ ["--ac" as string]: accent }}
+    >
+      <header className="mb-5 border-b border-white/10 pb-4">
+        <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
           Jouw stappenplan · beweging
         </p>
         <h2 className="font-serif text-[22px] font-normal leading-tight text-[#F1EFE8]">
-          {movementPlanTemplate.title}
+          {activePhase
+            ? `Fase ${phaseNumber} van ${totalPhases} — ${activePhase.title}`
+            : movementPlanTemplate.title}
         </h2>
+        {activePhase?.intro?.body ? (
+          <p className="mt-2 max-w-[68ch] text-[14px] leading-relaxed text-[#CDD7D0]">
+            {activePhase.intro.body}
+          </p>
+        ) : null}
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px]">
+          {anchorLabel ? (
+            <span className="italic text-[#9FB0A6]">“{anchorLabel}”</span>
+          ) : null}
+          <span className="text-[#7E8C82]">
+            Afvinken doe je in{" "}
+            <Link
+              href={buildDashboardVandaagHref("beweging")}
+              className="font-semibold text-[color:var(--ac)] underline decoration-[color:var(--ac)]/40 underline-offset-2"
+            >
+              Vandaag
+            </Link>
+          </span>
+        </div>
       </header>
 
       <div className="space-y-3">
@@ -478,18 +514,6 @@ export default function MovementPlanDeepBody({
           </CockpitTile>
         ) : null}
 
-        <div className="rounded-2xl border border-[color:var(--ac)]/30 bg-[color:var(--ac)]/10 px-4 py-3">
-          <p className="text-[13px] leading-relaxed text-[#E7EDE8]">
-            Afvinken doe je in{" "}
-            <Link
-              href={buildDashboardVandaagHref("beweging")}
-              className="font-semibold text-[color:var(--ac)] underline decoration-[color:var(--ac)]/40 underline-offset-2"
-            >
-              VANDAAG op je dashboard
-            </Link>
-            . Hier stel je je plan in en zie je je voortgang.
-          </p>
-        </div>
       </div>
 
       <section className="mt-6" aria-label="Planfases">
@@ -538,7 +562,7 @@ export default function MovementPlanDeepBody({
                   </p>
                   <h3 className="mt-1 font-serif text-[20px] text-[#F1EFE8]">{phase.title}</h3>
                   {phase.intro?.body ? (
-                    <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0]">
+                    <p className="mt-2 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]">
                       {phase.intro.body}
                     </p>
                   ) : null}
@@ -575,7 +599,7 @@ export default function MovementPlanDeepBody({
         {movementPlanTemplate.mechanism.body.split("\n\n").map((paragraph, index) => (
           <p
             key={`mechanism-${index}`}
-            className="mt-3 text-[13px] leading-relaxed text-[#CDD7D0]"
+            className="mt-3 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]"
           >
             {paragraph}
           </p>
@@ -590,7 +614,7 @@ export default function MovementPlanDeepBody({
         {movementPlanTemplate.medicalBoundary.body.split("\n\n").map((paragraph, index) => (
           <p
             key={`medical-${index}`}
-            className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0]"
+            className="mt-2 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]"
           >
             {paragraph}
           </p>

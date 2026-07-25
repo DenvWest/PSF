@@ -182,15 +182,19 @@ export default function BewegingScreen({
 
   return (
     <div className="flex flex-col gap-3">
-      <MovementCockpit
-        model={model}
-        slot={slot}
-        deepView={deepView}
-        onGoAgenda={onGoAgenda}
-        onMakePriority={onMakePriority}
-        makePriorityBusy={makePriorityBusy}
-        onOpenPlan={onOpenPlan}
-      />
+      {/* Op de stappenplan-diepte leeft de positie-header in MovementPlanDeepBody;
+          de score-ring + intro-tegel van de cockpit-laag zijn hier weg (S1). */}
+      {!isPlanView ? (
+        <MovementCockpit
+          model={model}
+          slot={slot}
+          deepView={deepView}
+          onGoAgenda={onGoAgenda}
+          onMakePriority={onMakePriority}
+          makePriorityBusy={makePriorityBusy}
+          onOpenPlan={onOpenPlan}
+        />
+      ) : null}
 
       {isPlanView ? (
         <MovementPlanDeepBody
