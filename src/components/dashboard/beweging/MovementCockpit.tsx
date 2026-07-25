@@ -48,6 +48,16 @@ export default function MovementCockpit({
   const trendRow = buildDomainTrendRow(model, "beweging");
   const hasTrend = trendRow.trend.length >= 2;
 
+  // Craft-ring (OV-S1): baseline-marker + delta t.o.v. je startpunt.
+  const baselineScore = trendRow.baselineScore;
+  const scoreDelta = baselineScore != null ? score - baselineScore : null;
+  const baselineAngle =
+    baselineScore != null
+      ? (Math.min(100, Math.max(0, baselineScore)) / 100) * 2 * Math.PI
+      : 0;
+  const baselineMarkerX = RING_SIZE / 2 + RING_RADIUS * Math.sin(baselineAngle);
+  const baselineMarkerY = RING_SIZE / 2 - RING_RADIUS * Math.cos(baselineAngle);
+
   // Prefs-override zodat de hero direct de nieuwe keuze gebruikt zonder
   // model-herbouw; sessie-skip blokkeert de dagstap niet permanent.
   const [prefsOverride, setPrefsOverride] = useState<MovementPrefs | null>(null);
@@ -120,54 +130,95 @@ export default function MovementCockpit({
           <CockpitTile eyebrow="Waar je staat" ariaLabel="Waar je staat">
             <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5 min-[1440px]:gap-6">
               <div className="flex shrink-0 flex-col items-center text-center">
-                <svg
-                  viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-                  className="h-[92px] w-[92px] min-[1440px]:h-[112px] min-[1440px]:w-[112px]"
-                  role="img"
-                  aria-label={`Beweegscore: ${score} van de 100`}
-                >
-                  <circle
-                    cx={RING_SIZE / 2}
-                    cy={RING_SIZE / 2}
-                    r={RING_RADIUS}
-                    fill="none"
-                    stroke="#22302E"
-                    strokeWidth="11"
+                <div className="relative">
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-1 rounded-full opacity-70 blur-lg"
+                    style={{
+                      background:
+                        "radial-gradient(closest-side, rgba(90,143,106,0.55), transparent 72%)",
+                    }}
                   />
-                  <circle
-                    cx={RING_SIZE / 2}
-                    cy={RING_SIZE / 2}
-                    r={RING_RADIUS}
-                    fill="none"
-                    stroke="var(--ac)"
-                    strokeWidth="11"
-                    strokeLinecap="round"
-                    strokeDasharray={RING_CIRC}
-                    strokeDashoffset={dashOffset}
-                    transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
-                  />
-                  <text
-                    x={RING_SIZE / 2}
-                    y={RING_SIZE / 2 - 2}
-                    textAnchor="middle"
-                    fill="#F1EFE8"
-                    fontSize="34"
-                    className="font-serif"
+                  <svg
+                    viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
+                    className="relative h-[92px] w-[92px] min-[1440px]:h-[112px] min-[1440px]:w-[112px]"
+                    role="img"
+                    aria-label={
+                      baselineScore != null
+                        ? `Beweegscore: ${score} van de 100, begonnen op ${baselineScore}`
+                        : `Beweegscore: ${score} van de 100`
+                    }
                   >
-                    {score}
-                  </text>
-                  <text
-                    x={RING_SIZE / 2}
-                    y={RING_SIZE / 2 + 18}
-                    textAnchor="middle"
-                    fill="#8B9A96"
-                    fontSize="9"
-                    letterSpacing="1"
-                  >
-                    VAN DE 100
-                  </text>
-                </svg>
+                    <defs>
+                      <linearGradient id="movementScoreRing" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stopColor="#5A8F6A" />
+                        <stop offset="1" stopColor="#8FD3A6" />
+                      </linearGradient>
+                    </defs>
+                    <circle
+                      cx={RING_SIZE / 2}
+                      cy={RING_SIZE / 2}
+                      r={RING_RADIUS}
+                      fill="none"
+                      stroke="#22302E"
+                      strokeWidth="11"
+                    />
+                    <circle
+                      cx={RING_SIZE / 2}
+                      cy={RING_SIZE / 2}
+                      r={RING_RADIUS}
+                      fill="none"
+                      stroke="url(#movementScoreRing)"
+                      strokeWidth="11"
+                      strokeLinecap="round"
+                      strokeDasharray={RING_CIRC}
+                      strokeDashoffset={dashOffset}
+                      transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
+                    />
+                    {baselineScore != null ? (
+                      <circle
+                        cx={baselineMarkerX}
+                        cy={baselineMarkerY}
+                        r="4"
+                        fill="#131F1D"
+                        stroke="#9FB0A6"
+                        strokeWidth="2"
+                      />
+                    ) : null}
+                    <text
+                      x={RING_SIZE / 2}
+                      y={RING_SIZE / 2 - 2}
+                      textAnchor="middle"
+                      fill="#F1EFE8"
+                      fontSize="34"
+                      className="font-serif"
+                    >
+                      {score}
+                    </text>
+                    <text
+                      x={RING_SIZE / 2}
+                      y={RING_SIZE / 2 + 18}
+                      textAnchor="middle"
+                      fill="#8B9A96"
+                      fontSize="9"
+                      letterSpacing="1"
+                    >
+                      VAN DE 100
+                    </text>
+                  </svg>
+                </div>
                 <p className="mt-1 font-serif text-[14px] text-[#F1EFE8]">Beweging</p>
+                {scoreDelta != null && scoreDelta !== 0 ? (
+                  <span
+                    className={`mt-1.5 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium ${
+                      scoreDelta > 0
+                        ? "border-[color:var(--ac)]/30 bg-[color:var(--ac)]/10 text-[#8FD3A6]"
+                        : "border-white/10 text-[#9FB0A6]"
+                    }`}
+                  >
+                    {scoreDelta > 0 ? `▲ +${scoreDelta}` : `▼ ${scoreDelta}`} sinds de start
+                  </span>
+                ) : null}
                 <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10.5px] text-[#7E8C82]">
                   {formatLastMeasured(model.date)} — verandert bij je hermeting
                 </span>
