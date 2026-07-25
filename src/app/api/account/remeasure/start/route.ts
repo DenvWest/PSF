@@ -14,7 +14,7 @@ function redirectToDashboard(query?: string): NextResponse {
 }
 
 function redirectToIntake(): NextResponse {
-  return NextResponse.redirect(new URL(`${getPublicSiteUrl()}/intake`));
+  return NextResponse.redirect(new URL(`${getPublicSiteUrl()}/intake?from=dashboard`));
 }
 
 function setRemeasureCookie(baselineSessionId: string): NextResponse {
@@ -23,7 +23,7 @@ function setRemeasureCookie(baselineSessionId: string): NextResponse {
     return redirectToIntake();
   }
 
-  const dest = new URL(`${getPublicSiteUrl()}/intake?hermeting=1`);
+  const dest = new URL(`${getPublicSiteUrl()}/intake?hermeting=1&from=dashboard`);
   const res = NextResponse.redirect(dest);
   res.cookies.set(INTAKE_REMEASURE_BASELINE_COOKIE_NAME, signed, {
     httpOnly: true,

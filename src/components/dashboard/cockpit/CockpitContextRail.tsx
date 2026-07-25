@@ -26,6 +26,7 @@ type CockpitContextRailProps = {
   onToolClick?: (id: ContextRailToolId) => void;
   onBackToKompas?: () => void;
   domainLabel?: string | null;
+  remeasureAction?: { due: boolean; onClick: () => void };
 };
 
 const ZONEFLAG =
@@ -102,6 +103,7 @@ export default function CockpitContextRail({
   onToolClick,
   onBackToKompas,
   domainLabel,
+  remeasureAction,
 }: CockpitContextRailProps) {
   const name = firstName?.trim() || "Je profiel";
 
@@ -247,6 +249,23 @@ export default function CockpitContextRail({
             <nav aria-label="Je domeinen" className="flex flex-col gap-1">
               {domains.map(renderDomain)}
             </nav>
+            {remeasureAction ? (
+              <button
+                type="button"
+                onClick={remeasureAction.onClick}
+                className={`flex items-center gap-2 rounded-[12px] border border-dashed px-2.5 py-2 text-left text-[12.5px] font-medium transition ${
+                  remeasureAction.due
+                    ? "border-[#5A8F6A]/45 text-[#F1EFE8] hover:border-[#5A8F6A]/70"
+                    : "border-white/12 text-[#9FB0A6] hover:border-white/25 hover:text-[#F1EFE8]"
+                }`}
+              >
+                <Icons.Refresh
+                  s={14}
+                  style={{ color: remeasureAction.due ? "#5A8F6A" : "#7E8C82" }}
+                />
+                <span>{remeasureAction.due ? "Doe je hermeting" : "Nieuwe check maken"}</span>
+              </button>
+            ) : null}
             <ProfileFooter
               name={name}
               anchorLabel={anchorLabel}

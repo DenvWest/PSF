@@ -224,6 +224,7 @@ export default function CockpitFrame({
           onToolClick={onToolClick}
           onBackToKompas={onBackToKompas}
           domainLabel={railDomainLabel}
+          remeasureAction={remeasureAction}
         />
 
         <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4 min-[1440px]:px-6">

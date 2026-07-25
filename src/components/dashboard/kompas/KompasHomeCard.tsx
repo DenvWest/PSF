@@ -16,7 +16,6 @@ import {
   buildKompasDomainRows,
   buildKompasMilestone,
   KOMPAS_LINES_EXPLAINER,
-  KOMPAS_PILLAR_DESCRIPTORS,
   type KompasDomainRow,
 } from "@/lib/kompas-home";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -391,60 +390,13 @@ function LeefstijlHeader({
   );
 }
 
-function FocusBar({
+function FocusVoortgangPanel({
   model,
   onOpenPriority,
 }: {
   model: DashboardModel;
   onOpenPriority: (domain: PillarId) => void;
 }) {
-  const priority = model.priority;
-  const descriptor =
-    KOMPAS_PILLAR_DESCRIPTORS[priority.id as keyof typeof KOMPAS_PILLAR_DESCRIPTORS] ?? null;
-  const hasStappenplan = supportsKompasDeepView(priority.id);
-  const linkLabel = hasStappenplan ? "Stappenplan" : `Open ${priority.label.toLowerCase()}`;
-
-  const handleClick = () => {
-    clarityTag("dashboard_kompas_home", `focus_${priority.id}`);
-    onOpenPriority(priority.id);
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="group mt-4 flex w-full cursor-pointer items-center gap-3 rounded-xl border border-[color:var(--ac)]/30 bg-[color:var(--ac)]/[0.08] px-3.5 py-3 text-left transition hover:border-[color:var(--ac)]/50 hover:bg-[color:var(--ac)]/[0.12]"
-      style={{ "--ac": priority.color, fontFamily: "var(--f-sans)" } as CSSProperties}
-    >
-      <span
-        aria-hidden
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[color:var(--ac)]/40 text-[color:var(--ac)]"
-        style={{ background: "rgba(255,255,255,0.04)" }}
-      >
-        <Icons.Target s={17} />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
-          Focus deze week
-        </span>
-        <span className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <span className="font-serif text-[16px] text-[#F1EFE8]" style={{ fontFamily: "var(--f-serif)" }}>
-            {priority.label}
-          </span>
-          {descriptor ? (
-            <span className="text-[12px] text-[#9FB0A6]">{descriptor}</span>
-          ) : null}
-        </span>
-      </span>
-      <span className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-semibold text-[color:var(--ac)]">
-        {linkLabel}
-        <Icons.ArrowRight s={14} />
-      </span>
-    </button>
-  );
-}
-
-function FocusVoortgangPanel({ model }: { model: DashboardModel }) {
   const priorityRow = buildKompasDomainRows(model).find((row) => row.isPriority);
 
   if (!priorityRow) {
@@ -457,6 +409,8 @@ function FocusVoortgangPanel({ model }: { model: DashboardModel }) {
   const nextBand = getNextVitalityBand(score);
   const target = nextBand ? nextBand.min : 100;
   const baseline = delta != null ? Math.min(100, Math.max(0, score - delta)) : null;
+  const hasStappenplan = supportsKompasDeepView(priorityRow.id);
+  const linkLabel = hasStappenplan ? "Stappenplan" : `Open ${priorityRow.label.toLowerCase()}`;
 
   const explainer = getVitalityExplainer({
     vitality: model.vitality,
@@ -468,8 +422,18 @@ function FocusVoortgangPanel({ model }: { model: DashboardModel }) {
   });
   const painLine = explainer[1] ?? null;
 
+  const handleClick = () => {
+    clarityTag("dashboard_kompas_home", `focus_${priorityRow.id}`);
+    onOpenPriority(priorityRow.id);
+  };
+
   return (
-    <div className="rounded-xl border border-white/8 bg-black/15 px-3.5 py-3.5">
+    <button
+      type="button"
+      onClick={handleClick}
+      className="w-full cursor-pointer rounded-xl border border-white/8 bg-black/15 px-3.5 py-3.5 text-left transition hover:border-white/14 hover:bg-white/[0.03]"
+      style={{ fontFamily: "var(--f-sans)" }}
+    >
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
@@ -549,7 +513,15 @@ function FocusVoortgangPanel({ model }: { model: DashboardModel }) {
           </p>
         </div>
       ) : null}
-    </div>
+
+      <span
+        className="mt-3.5 flex items-center gap-1.5 border-t border-white/8 pt-3 text-[13px] font-semibold"
+        style={{ color: priorityRow.color }}
+      >
+        {linkLabel}
+        <Icons.ArrowRight s={14} />
+      </span>
+    </button>
   );
 }
 
@@ -557,10 +529,12 @@ function VoortgangSection({
   model,
   remeasureDue,
   onRemeasure,
+  onOpenPriority,
 }: {
   model: DashboardModel;
   remeasureDue: boolean;
   onRemeasure?: () => void;
+  onOpenPriority: (domain: PillarId) => void;
 }) {
   const reminderShownRef = useRef(false);
   const [weekState, setWeekState] = useState<WeekPayload | null>(null);
@@ -621,7 +595,7 @@ function VoortgangSection({
       </p>
 
       <div className="mt-3">
-        <FocusVoortgangPanel model={model} />
+        <FocusVoortgangPanel model={model} onOpenPriority={onOpenPriority} />
       </div>
 
       <div className="mt-3 rounded-xl border border-white/8 bg-black/15 px-3.5 py-3">
@@ -689,8 +663,6 @@ export default function KompasHomeCard({
               ))}
             </div>
           </div>
-
-          <FocusBar model={model} onOpenPriority={handleOpenPriority} />
         </section>
 
         <section
@@ -717,6 +689,7 @@ export default function KompasHomeCard({
             model={model}
             remeasureDue={remeasureDue}
             onRemeasure={onRemeasure}
+            onOpenPriority={handleOpenPriority}
           />
         </section>
 
