@@ -3357,8 +3357,8 @@ const KompasHome = ({
   return (
     <section aria-label="Kompas" className="-mt-2 flex flex-col gap-2.5">
       <CockpitShell accent="#5A8F6A" ariaLabel="Kompas home" embedded>
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-6">
-          <div className="flex flex-col gap-5 lg:col-start-1 lg:row-start-1">
+        <div className="grid gap-2.5 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-3">
+          <div className="flex flex-col gap-2.5 lg:col-start-1 lg:row-start-1">
             <KompasStatusCard model={currentModel} firstName={data?.firstName} />
             <KompasVoortgangCard
               model={currentModel}
@@ -3975,7 +3975,7 @@ export default function Dashboard({
           className={`w-full ${
             tab === "agenda"
               ? "max-w-[760px]"
-              : viewedDomain === "beweging"
+              : viewedDomain === "beweging" || (tab === "vandaag" && !viewedDomain)
                 ? "min-w-0"
                 : "max-w-[720px]"
           }`}

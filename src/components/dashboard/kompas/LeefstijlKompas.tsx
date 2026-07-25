@@ -66,12 +66,20 @@ function KompasRings({
   const deltaLine = formatVitalityDelta(vitalityDelta);
 
   return (
-    <svg
-      viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-      className="mx-auto h-[180px] w-[180px] shrink-0 min-[1440px]:h-[220px] min-[1440px]:w-[220px]"
-      role="img"
-      aria-label={`Leefstijl: ${Math.round(vitality)} van de 100, samengesteld uit slaap, beweging, voeding, stress en verbinding`}
-    >
+    <span className="relative mx-auto block h-[180px] w-[180px] shrink-0 min-[1440px]:h-[220px] min-[1440px]:w-[220px]">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-[14%] rounded-full opacity-70 blur-xl"
+        style={{
+          background: "radial-gradient(closest-side, rgba(90,143,106,0.45), transparent 72%)",
+        }}
+      />
+      <svg
+        viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
+        className="relative h-full w-full"
+        role="img"
+        aria-label={`Leefstijl: ${Math.round(vitality)} van de 100, samengesteld uit slaap, beweging, voeding, stress en verbinding`}
+      >
       {rows.map((row, index) => {
         const radius = RING_RADII[index] ?? RING_RADII[RING_RADII.length - 1]!;
         const { circumference, progress } = ringMetrics(row.score, radius);
@@ -141,7 +149,8 @@ function KompasRings({
           {deltaLine}
         </text>
       ) : null}
-    </svg>
+      </svg>
+    </span>
   );
 }
 
@@ -268,13 +277,16 @@ export default function LeefstijlKompas({
         Vijf domeinen, één beeld — score en richting in één oogopslag.
       </p>
 
-      <div className="mt-4 flex flex-1 flex-col items-center gap-4 xl:flex-row xl:items-start">
+      {/* Altijd gestapeld: het linker grid-kolom neemt zijn volle 320px, dus de
+          rijenlijst hiernaast krijgt bij elke lg+ breedte te weinig ruimte om
+          náást de ring te passen zonder de domeinlabels af te kappen. */}
+      <div className="mt-4 flex flex-1 flex-col items-center gap-4">
         <KompasRings
           rows={rows}
           vitality={model.vitality}
           vitalityDelta={model.vitalityDelta}
         />
-        <div className="flex w-full min-w-0 flex-col gap-1.5">
+        <div className="flex min-w-0 w-full flex-1 flex-col gap-1.5">
           {rows.map((row) => (
             <DomainLineRow key={row.id} row={row} onOpenDomain={handleOpenDomain} />
           ))}
