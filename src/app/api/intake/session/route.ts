@@ -37,9 +37,14 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getDefaultOrganizationId } from "@/lib/organization";
 import { emitEvent } from "@/lib/events";
 import { scheduleMainNurtureIfInactive } from "@/lib/nurture";
+import {
+  carryOverMovementPlanProfile,
+  hasMovementPlanProfileValues,
+} from "@/lib/movement-plan-profile";
 import { getPrimaryTheme, type MeasuredPillarId } from "@/lib/primary-theme";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { getClientIp, verifyTurnstileToken } from "@/lib/turnstile-verify";
+import type { StoredIntakeAnswers } from "@/types/intake-answers";
 import type { IntakeSessionInsert } from "@/types/intake-session-insert";
 
 const TURNSTILE_ACTION = "intake_submit";
@@ -76,6 +81,75 @@ function normalizeSingleLine(value: unknown): string {
     return "";
   }
   return value.replace(/\s+/g, " ").trim();
+}
+
+type CarryOverSeedRow = {
+  id: string;
+  account_id: string | null;
+  answers: unknown;
+};
+
+/**
+ * Het plan-profiel (anker, startpatroon, sport, weekfrequentie) leeft in de
+ * answers-jsonb van een sessie, niet in een eigen tabel. Een nieuwe check —
+ * en dus elke hermeting — schrijft alleen verse antwoorden, waardoor het
+ * profiel stil verdween.
+ *
+ * Zoekorde: de laatste sessies van hetzelfde account (dekt de tweede
+ * hermeting, want de baseline-cookie wijst naar de állereerste check), dan de
+ * rij achter de intake-cookie, dan de baseline zelf. Fail-open: mislukt de
+ * lookup, dan gaat de intake door zonder overdracht.
+ */
+async function loadPlanProfileCarryOverAnswers(
+  admin: NonNullable<ReturnType<typeof createSupabaseAdmin>>,
+  seedIds: string[],
+): Promise<unknown> {
+  const ids = [...new Set(seedIds.filter((id) => id.trim().length > 0))];
+  if (ids.length === 0) {
+    return null;
+  }
+
+  const { data: seeds, error: seedError } = await admin
+    .from("intake_sessions")
+    .select("id,account_id,answers")
+    .in("id", ids);
+
+  if (seedError || !seeds) {
+    if (seedError) {
+      console.error("[api/intake/session] carry-over seed lookup:", seedError);
+    }
+    return null;
+  }
+
+  const ordered = ids
+    .map((id) => (seeds as CarryOverSeedRow[]).find((row) => row.id === id))
+    .filter((row): row is CarryOverSeedRow => row !== undefined);
+  const accountId = ordered.find((row) => row.account_id)?.account_id ?? null;
+  const candidates: unknown[] = [];
+
+  if (accountId) {
+    const { data: accountRows, error: accountError } = await admin
+      .from("intake_sessions")
+      .select("answers")
+      .eq("account_id", accountId)
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (accountError) {
+      console.error(
+        "[api/intake/session] carry-over account lookup:",
+        accountError,
+      );
+    } else if (accountRows) {
+      candidates.push(
+        ...(accountRows as { answers: unknown }[]).map((row) => row.answers),
+      );
+    }
+  }
+
+  candidates.push(...ordered.map((row) => row.answers));
+
+  return candidates.find((answers) => hasMovementPlanProfileValues(answers)) ?? null;
 }
 
 export async function GET(request: NextRequest) {
@@ -328,10 +402,21 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  const previousSessionId = verifySignedIntakeSessionCookie(
+    request.cookies.get(INTAKE_SESSION_COOKIE_NAME)?.value,
+  );
+  const carryOverSource = await loadPlanProfileCarryOverAnswers(admin, [
+    ...(previousSessionId ? [previousSessionId] : []),
+    ...(remeasureBaselineId ? [remeasureBaselineId] : []),
+  ]);
+  const storedAnswers: StoredIntakeAnswers = carryOverSource
+    ? carryOverMovementPlanProfile(carryOverSource, answers)
+    : answers;
+
   const insert: IntakeSessionInsert = {
     organization_id: organizationId,
     symptom_profile: symptoms,
-    answers,
+    answers: storedAnswers,
     domain_scores: scores,
     urgency_level: urgency,
     profile_label: profile,

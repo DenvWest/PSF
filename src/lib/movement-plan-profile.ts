@@ -1,4 +1,6 @@
 import {
+  ANSWER_KEY_MOVEMENT_ANCHOR,
+  ANSWER_KEY_START_PATTERN,
   isMovementAnchor,
   isMovementStartPattern,
   parseMovementPrefs,
@@ -10,6 +12,7 @@ import type {
   MovementSport,
   MovementWeeklyFrequency,
 } from "@/data/movement/session-catalog";
+import type { StoredIntakeAnswers } from "@/types/intake-answers";
 
 export const ANSWER_KEY_PREFERRED_SPORT = "preferredSport";
 export const ANSWER_KEY_WEEKLY_FREQUENCY = "weeklyAvailability";
@@ -59,6 +62,48 @@ export function parseMovementPlanProfile(raw: unknown): MovementPlanProfile {
     preferredSport: isMovementSport(sport) ? sport : null,
     weeklyFrequency: isMovementWeeklyFrequency(frequency) ? frequency : null,
   };
+}
+
+/** Bevat deze answers-jsonb überhaupt een gezet plan-profiel? */
+export function hasMovementPlanProfileValues(raw: unknown): boolean {
+  const profile = parseMovementPlanProfile(raw);
+  return (
+    profile.startPattern !== null ||
+    profile.anchor !== null ||
+    profile.preferredSport !== null ||
+    profile.weeklyFrequency !== null
+  );
+}
+
+/**
+ * Het plan-profiel leeft in de answers-jsonb van een sessie, niet in een eigen
+ * tabel. Een hermeting maakt een nieuwe sessie met alleen verse antwoorden —
+ * zonder deze overdracht is het anker (en daarmee de "waarom"-copy) na elke
+ * cyclus weg. Alleen ontbrekende keys worden gevuld: wat de nieuwe check zelf
+ * meestuurt wint altijd.
+ */
+export function carryOverMovementPlanProfile(
+  previousAnswers: unknown,
+  nextAnswers: StoredIntakeAnswers,
+): StoredIntakeAnswers {
+  const previous = parseMovementPlanProfile(previousAnswers);
+  const next = parseMovementPlanProfile(nextAnswers);
+  const carried: StoredIntakeAnswers = { ...nextAnswers };
+
+  if (next.startPattern === null && previous.startPattern !== null) {
+    carried[ANSWER_KEY_START_PATTERN] = previous.startPattern;
+  }
+  if (next.anchor === null && previous.anchor !== null) {
+    carried[ANSWER_KEY_MOVEMENT_ANCHOR] = previous.anchor;
+  }
+  if (next.preferredSport === null && previous.preferredSport !== null) {
+    carried[ANSWER_KEY_PREFERRED_SPORT] = previous.preferredSport;
+  }
+  if (next.weeklyFrequency === null && previous.weeklyFrequency !== null) {
+    carried[ANSWER_KEY_WEEKLY_FREQUENCY] = previous.weeklyFrequency;
+  }
+
+  return carried;
 }
 
 export function defaultSportForPattern(
