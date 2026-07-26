@@ -7,6 +7,7 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 
 const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
+  "dashboard.domain_check_cta_clicked",
   "domain_tool.snapshot_viewed",
   "domain_tool.tier_preview_clicked",
   "focus.viewed",

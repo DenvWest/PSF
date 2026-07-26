@@ -67,6 +67,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   priorityPref: null,
   sleepCheckinFocus: null,
   hasStressCheckin: false,
+  domainCheckDaysAgo: {},
   movementPrefs: EMPTY_MOVEMENT_PREFS,
 };
 
@@ -573,6 +574,41 @@ export async function loadAccountDashboardData(
       row.domain_key === "stress_score" && row.session_id === latestSnapshot.id,
   );
 
+  // Ritme-aftellen op de leefstijlbalken: hoe lang geleden ververste de
+  // gebruiker dit domein met een eigen check? Slaap/stress/beweging staan in
+  // intake_domain_checkin, voeding in de intake-log. Verbinding heeft geen
+  // eigen check en meet mee in de hermeting.
+  const lastCheckTsByPillar = new Map<PillarId, number>();
+  const noteCheckTs = (pillar: PillarId, raw: unknown) => {
+    if (typeof raw !== "string") {
+      return;
+    }
+    const ts = new Date(raw).getTime();
+    if (!Number.isFinite(ts)) {
+      return;
+    }
+    const known = lastCheckTsByPillar.get(pillar);
+    if (known == null || ts > known) {
+      lastCheckTsByPillar.set(pillar, ts);
+    }
+  };
+
+  for (const row of (checkinData ?? []) as CheckinRow[]) {
+    const pillar = CHECKIN_DOMAIN_TO_PILLAR[row.domain_key];
+    if (pillar) {
+      noteCheckTs(pillar, row.created_at);
+    }
+  }
+  for (const row of (logRows ?? []) as { logged_at?: unknown }[]) {
+    noteCheckTs("voeding", row.logged_at);
+  }
+
+  const now = Date.now();
+  const domainCheckDaysAgo: DashboardData["domainCheckDaysAgo"] = {};
+  for (const [pillar, ts] of lastCheckTsByPillar) {
+    domainCheckDaysAgo[pillar] = Math.max(0, Math.floor((now - ts) / MS_PER_DAY));
+  }
+
   const trendBaselines = Object.fromEntries(
     PILLAR_IDS.flatMap((pillar) => {
       const firstPoint = series[pillar][0];
@@ -759,5 +795,6 @@ export async function loadAccountDashboardData(
     priorityPref,
     sleepCheckinFocus,
     hasStressCheckin,
+    domainCheckDaysAgo,
   };
 }

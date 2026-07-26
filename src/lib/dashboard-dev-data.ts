@@ -160,6 +160,12 @@ export function buildDevDashboardData(
     priorityPref: null,
     sleepCheckinFocus: null,
     hasStressCheckin: false,
+    // Dev-staten: één verlopen check (slaap), één die aftelt (stress), één vers
+    // (voeding) en één die nog nooit gedaan is (beweging).
+    domainCheckDaysAgo:
+      mode === "retest"
+        ? { slaap: 21, stress: 5, voeding: 0 }
+        : { slaap: 3, stress: 9 },
     movementPrefs: EMPTY_MOVEMENT_PREFS,
   };
 }

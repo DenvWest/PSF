@@ -16,6 +16,7 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.aanrader_clicked",
   "dashboard.daily_action_toggled",
   "dashboard.priority_selected",
+  "dashboard.domain_check_cta_clicked",
   "dashboard.time_bucket_set",
   "agenda.block_created",
   "agenda.block_toggled",

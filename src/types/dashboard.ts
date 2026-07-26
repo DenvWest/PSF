@@ -219,6 +219,8 @@ export type DashboardData = {
   priorityPref: AccountPriorityPrefData | null;
   sleepCheckinFocus: SleepCheckinFocus | null;
   hasStressCheckin: boolean;
+  /** Dagen sinds de laatste eigen domeincheck; ontbreekt = nog nooit gedaan. */
+  domainCheckDaysAgo: Partial<Record<PillarId, number>>;
   movementPrefs: MovementPrefs;
 };
 

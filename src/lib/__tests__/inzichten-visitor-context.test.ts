@@ -55,6 +55,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   priorityPref: null,
   sleepCheckinFocus: null,
   hasStressCheckin: false,
+  domainCheckDaysAgo: {},
   movementPrefs: { startPattern: null, anchor: null },
 };
 
@@ -102,6 +103,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   priorityPref: null,
   sleepCheckinFocus: null,
   hasStressCheckin: false,
+  domainCheckDaysAgo: {},
   movementPrefs: { startPattern: null, anchor: null },
 };
 
