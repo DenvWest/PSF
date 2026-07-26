@@ -7,6 +7,7 @@ import {
   loadBaselineSnapshot,
   sanitizePerDomainDelta,
 } from "@/lib/intake-baseline";
+import { getDailyActionActiveDaysInRange } from "@/lib/daily-action-log";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { hasMethodologyChange } from "@/lib/rules-version";
@@ -80,6 +81,35 @@ async function loadRemeasureSession(
   return { scores, rulesVersion };
 }
 
+async function loadActiveDaysForBaseline(baselineSessionId: string): Promise<number | null> {
+  const admin = createSupabaseAdmin();
+  if (!admin) {
+    return null;
+  }
+
+  const { data: session } = await admin
+    .from("intake_sessions")
+    .select("account_id, created_at")
+    .eq("id", baselineSessionId)
+    .maybeSingle();
+
+  if (!session?.account_id || typeof session.created_at !== "string") {
+    return null;
+  }
+
+  const startDate = new Date(session.created_at).toISOString().slice(0, 10);
+  const due = new Date(session.created_at);
+  due.setUTCDate(due.getUTCDate() + 30);
+  const endDate = due.toISOString().slice(0, 10);
+
+  return getDailyActionActiveDaysInRange(
+    admin,
+    session.account_id as string,
+    startDate,
+    endDate,
+  );
+}
+
 export default async function RapportPage({
   params,
   searchParams,
@@ -101,9 +131,10 @@ export default async function RapportPage({
     notFound();
   }
 
-  const [remeasureSession, baselineSnapshot] = await Promise.all([
+  const [remeasureSession, baselineSnapshot, activeDaysInCycle] = await Promise.all([
     loadRemeasureSession(remeasureSessionId),
     loadBaselineSnapshot(baselineSessionId),
+    loadActiveDaysForBaseline(baselineSessionId),
   ]);
 
   if (!remeasureSession || !baselineSnapshot) {
@@ -224,6 +255,25 @@ export default async function RapportPage({
               ))}
             </div>
           </section>
+
+          {activeDaysInCycle != null && activeDaysInCycle > 0 ? (
+            <section
+              aria-label="Wat je deed"
+              className="bg-white rounded-2xl border border-slate-200 p-6 mb-8"
+            >
+              <h2 className="text-lg font-semibold text-slate-900 mb-3">
+                Wat je deed
+              </h2>
+              <p className="text-sm text-slate-600 leading-relaxed m-0">
+                In deze periode was je{" "}
+                <span className="font-semibold text-slate-900">
+                  {activeDaysInCycle} dagen actief
+                </span>{" "}
+                in Mijn Dag — elke afgevinkte stap is meegenomen in dit
+                30-dagen beeld.
+              </p>
+            </section>
+          ) : null}
 
           <aside className="bg-emerald-50 rounded-2xl border border-emerald-100 p-6 mb-8">
             <p className="text-sm text-emerald-800 leading-relaxed">

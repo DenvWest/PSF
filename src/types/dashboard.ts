@@ -201,6 +201,13 @@ export type DashboardData = {
   movementRcvFeel: number | null;
   movementRcvFeelAt: string | null;
   remeasure: { dueDate: string; daysUntil: number } | null;
+  cycleEvidence: {
+    activeDays: number;
+    cycleDay: number;
+    daysUntilRemeasure: number;
+    cycleStartDate: string;
+    cycleEndDate: string;
+  } | null;
   deltaReport: DeltaReport | null;
   profileLabel: string | null;
   firstName: string | null;
@@ -211,6 +218,7 @@ export type DashboardData = {
   planDomain: MeasuredPillarId | null;
   priorityPref: AccountPriorityPrefData | null;
   sleepCheckinFocus: SleepCheckinFocus | null;
+  hasStressCheckin: boolean;
   movementPrefs: MovementPrefs;
 };
 

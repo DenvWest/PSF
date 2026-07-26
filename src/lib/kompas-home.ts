@@ -31,12 +31,18 @@ export const KOMPAS_PILLAR_DESCRIPTORS: Record<KompasRailPillarId, string> = {
 export const KOMPAS_LINES_EXPLAINER =
   "Elke ring staat voor één domein: slaap, beweging, voeding, stress en verbinding. Hoe verder de ring gevuld is, hoe sterker dat domein scoort. In het midden zie je je leefstijlscore — het totaalbeeld van die vijf domeinen. Rechts per rij: score, trend en richting. Tik op een rij voor meer detail.";
 
-export type KompasMilestoneKind = "hermeting" | "week" | "neutral";
+export type KompasMilestoneKind = "hermeting" | "week" | "cycle" | "neutral";
 
 export type KompasMilestone = {
   kind: KompasMilestoneKind;
   line: string;
   ctaLabel?: string;
+};
+
+export type KompasCycleContext = {
+  cycleDay: number;
+  daysUntilRemeasure: number;
+  activeDaysInCycle: number;
 };
 
 function domainRotateIndices(model: DashboardModel): Map<PillarId, number> {
@@ -83,6 +89,7 @@ export function buildKompasMilestone(
   model: DashboardModel,
   completedWeekDays: number,
   remeasureDue: boolean,
+  cycleContext?: KompasCycleContext | null,
 ): KompasMilestone {
   if (remeasureDue) {
     return {
@@ -90,6 +97,25 @@ export function buildKompasMilestone(
       line: "Tijd voor je hermeting — meet of je stappen werken.",
       ctaLabel: "Doe je hermeting",
     };
+  }
+
+  if (cycleContext && cycleContext.daysUntilRemeasure > 0) {
+    const { cycleDay, daysUntilRemeasure, activeDaysInCycle } = cycleContext;
+    if (daysUntilRemeasure <= 7) {
+      return {
+        kind: "cycle",
+        line:
+          daysUntilRemeasure === 1
+            ? `Dag ${cycleDay} van 30 — morgen is je hermeting (${activeDaysInCycle} dagen actief).`
+            : `Nog ${daysUntilRemeasure} dagen tot je hermeting — ${activeDaysInCycle} dagen actief.`,
+      };
+    }
+    if (cycleDay <= 30) {
+      return {
+        kind: "cycle",
+        line: `Dag ${cycleDay} van 30 — ${activeDaysInCycle} dagen actief.`,
+      };
+    }
   }
 
   const remaining = 7 - completedWeekDays;

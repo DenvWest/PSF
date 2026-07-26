@@ -79,6 +79,7 @@ export function trackAgendaDaySelected(params: {
   day_offset: number;
   is_today: boolean;
   domain: string;
+  surface?: string;
 }) {
-  trackEvent("agenda_day_selected", params);
+  trackEvent("dashboard_agenda_day_selected", params);
 }

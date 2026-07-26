@@ -1,5 +1,25 @@
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+export function isValidAgendaDate(value: string): boolean {
+  if (!ISO_DATE_RE.test(value)) {
+    return false;
+  }
+  const parsed = new Date(`${value}T12:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+export function parseDagFromUrl(url: string | URL): string | null {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  const dag = parsed.searchParams.get("dag");
+  if (dag && isValidAgendaDate(dag)) {
+    return dag;
+  }
+  return null;
+}
+
 const KOMPAS_DOMAIN_IDS = new Set<PillarId>([
   "slaap",
   "energie",
@@ -39,10 +59,24 @@ export function parseKompasDeepViewFromUrl(url: string | URL): KompasDeepView {
   return "cockpit";
 }
 
-export function buildDashboardVandaagHref(kompas?: PillarId | null): string {
+export function buildDashboardVandaagHref(
+  kompas?: PillarId | null,
+  dag?: string | null,
+): string {
   const params = new URLSearchParams({ tab: "vandaag" });
   if (kompas) {
     params.set("kompas", kompas);
+  }
+  if (dag && isValidAgendaDate(dag)) {
+    params.set("dag", dag);
+  }
+  return `/dashboard?${params.toString()}`;
+}
+
+export function buildDashboardAgendaHref(dag?: string | null): string {
+  const params = new URLSearchParams({ tab: "agenda" });
+  if (dag && isValidAgendaDate(dag)) {
+    params.set("dag", dag);
   }
   return `/dashboard?${params.toString()}`;
 }
@@ -67,6 +101,7 @@ function syncDashboardUrlParams(
   }
 
   const url = new URL(window.location.href);
+  const dag = url.searchParams.get("dag");
   url.searchParams.set("tab", "vandaag");
   if (domain) {
     url.searchParams.set("kompas", domain);
@@ -78,6 +113,10 @@ function syncDashboardUrlParams(
     url.searchParams.set("view", "stappenplan");
   } else {
     url.searchParams.delete("view");
+  }
+
+  if (dag && isValidAgendaDate(dag)) {
+    url.searchParams.set("dag", dag);
   }
 
   const nextHref = url.toString();
@@ -110,18 +149,70 @@ export function syncDashboardKompasDeepView(
   syncDashboardUrlParams(domain, view);
 }
 
-export function syncDashboardTabParam(tab: DashboardTabId): void {
+export type SyncDashboardTabOptions = {
+  dag?: string | null;
+};
+
+export function syncDashboardDagParam(dag: string | null): void {
   if (typeof window === "undefined") {
     return;
   }
   const url = new URL(window.location.href);
-  if (url.searchParams.get("tab") === tab) {
+  const tab = url.searchParams.get("tab");
+  if (tab !== "vandaag" && tab !== "agenda") {
     return;
   }
+  if (dag && isValidAgendaDate(dag)) {
+    url.searchParams.set("dag", dag);
+  } else {
+    url.searchParams.delete("dag");
+  }
+  const nextHref = url.toString();
+  if (nextHref === window.location.href) {
+    return;
+  }
+  window.history.pushState(null, "", nextHref);
+}
+
+export function syncDashboardTabParam(
+  tab: DashboardTabId,
+  options?: SyncDashboardTabOptions,
+): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const url = new URL(window.location.href);
+  const currentTab = url.searchParams.get("tab");
+  const nextDag =
+    tab === "agenda" || tab === "vandaag"
+      ? options?.dag && isValidAgendaDate(options.dag)
+        ? options.dag
+        : url.searchParams.get("dag")
+      : null;
+
+  if (currentTab === tab) {
+    if (tab === "agenda" || tab === "vandaag") {
+      if (nextDag && isValidAgendaDate(nextDag)) {
+        if (url.searchParams.get("dag") !== nextDag) {
+          url.searchParams.set("dag", nextDag);
+          window.history.pushState(null, "", url.toString());
+        }
+      }
+    }
+    return;
+  }
+
   url.searchParams.set("tab", tab);
   if (tab !== "vandaag") {
     url.searchParams.delete("kompas");
     url.searchParams.delete("view");
+  }
+  if (tab === "agenda" || tab === "vandaag") {
+    if (nextDag && isValidAgendaDate(nextDag)) {
+      url.searchParams.set("dag", nextDag);
+    }
+  } else {
+    url.searchParams.delete("dag");
   }
   window.history.pushState(null, "", url.toString());
 }

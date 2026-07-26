@@ -11,6 +11,8 @@ type AgendaWeekStripProps = {
   selectedDate: string;
   completedKeys: ReadonlySet<string>;
   todayTimeBucket?: TimeBucket | null;
+  variant?: "light" | "dark";
+  compact?: boolean;
   onSelect: (slot: WeekDaySlot) => void;
 };
 
@@ -26,9 +28,12 @@ export default function AgendaWeekStrip({
   selectedDate,
   completedKeys,
   todayTimeBucket = null,
+  variant = "light",
+  compact = false,
   onSelect,
 }: AgendaWeekStripProps) {
   const today = todayInAgendaTimezone();
+  const isDark = variant === "dark";
 
   return (
     <div className="grid grid-cols-7 gap-1.5" role="tablist" aria-label="Weekoverzicht">
@@ -42,6 +47,34 @@ export default function AgendaWeekStrip({
         const bucketHint =
           isToday && todayTimeBucket ? todayTimeBucket.charAt(0).toUpperCase() : null;
 
+        const borderColor = selected
+          ? isDark
+            ? "#5A8F6A"
+            : "var(--sage)"
+          : isToday
+            ? pillar.color
+            : isPast
+              ? isDark
+                ? "rgba(255,255,255,0.08)"
+                : "#ebe7e2"
+              : isDark
+                ? "rgba(255,255,255,0.08)"
+                : "#f0ece7";
+
+        const background = selected
+          ? isDark
+            ? "rgba(90, 143, 106, 0.14)"
+            : "rgba(90, 143, 106, 0.1)"
+          : isToday
+            ? `${pillar.color}10`
+            : isPast
+              ? isDark
+                ? "rgba(0,0,0,0.15)"
+                : "#faf9f7"
+              : isDark
+                ? "rgba(0,0,0,0.15)"
+                : "white";
+
         return (
           <button
             key={slot.date}
@@ -50,25 +83,15 @@ export default function AgendaWeekStrip({
             aria-selected={selected}
             aria-label={`${slot.dayLabel}, ${pillar.label}${completed ? ", gedaan" : ""}${isToday ? ", vandaag" : ""}${bucketHint ? `, ${todayTimeBucket}` : ""}`}
             onClick={() => onSelect(slot)}
-            className="group flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 py-2.5 transition-all duration-200 ease-out"
+            className={`group flex flex-col items-center justify-center gap-1.5 rounded-2xl border px-1 py-2.5 transition-all duration-200 ease-out ${
+              compact ? "min-h-[58px] rounded-xl py-2" : "min-h-[76px]"
+            }`}
             style={{
-              borderColor: selected
-                ? "var(--sage)"
-                : isToday
-                  ? pillar.color
-                  : isPast
-                    ? "#ebe7e2"
-                    : "#f0ece7",
-              background: selected
-                ? "rgba(90, 143, 106, 0.1)"
-                : isToday
-                  ? `${pillar.color}10`
-                  : isPast
-                    ? "#faf9f7"
-                    : "white",
+              borderColor,
+              background,
               boxShadow: isToday
                 ? `inset 0 0 0 1px ${pillar.color}33`
-                : selected
+                : selected && !isDark
                   ? "0 4px 14px rgba(90, 143, 106, 0.12)"
                   : "none",
               cursor: "pointer",
@@ -79,7 +102,15 @@ export default function AgendaWeekStrip({
             <span
               className="text-[10px] font-semibold uppercase tracking-[0.08em]"
               style={{
-                color: isToday ? pillar.color : selected ? "#1c1917" : "#78716c",
+                color: isToday
+                  ? pillar.color
+                  : selected
+                    ? isDark
+                      ? "#F1EFE8"
+                      : "#1c1917"
+                    : isDark
+                      ? "#9FB0A6"
+                      : "#78716c",
               }}
             >
               {isToday ? "Nu" : slot.dayLabel}
@@ -96,10 +127,10 @@ export default function AgendaWeekStrip({
 
             <span className="flex h-4 w-4 items-center justify-center">
               {completed ? (
-                <Icons.Check s={12} style={{ color: "var(--sage)" }} />
+                <Icons.Check s={12} style={{ color: isDark ? "#5FA872" : "var(--sage)" }} />
               ) : bucketHint ? (
                 <span
-                  className="text-[9px] font-bold leading-none text-[#78716c]"
+                  className={`text-[9px] font-bold leading-none ${isDark ? "text-[#9FB0A6]" : "text-[#78716c]"}`}
                   aria-hidden
                 >
                   {bucketHint}
@@ -107,7 +138,15 @@ export default function AgendaWeekStrip({
               ) : (
                 <span
                   className="h-1 w-1 rounded-full"
-                  style={{ background: isPast ? "#d6d3d1" : "#e4e0da" }}
+                  style={{
+                    background: isPast
+                      ? isDark
+                        ? "rgba(255,255,255,0.2)"
+                        : "#d6d3d1"
+                      : isDark
+                        ? "rgba(255,255,255,0.14)"
+                        : "#e4e0da",
+                  }}
                   aria-hidden
                 />
               )}

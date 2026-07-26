@@ -11,7 +11,7 @@ type AgendaTimeBucketPickerProps = {
   defaultBucket: TimeBucket;
   busy?: boolean;
   disabled?: boolean;
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "compact-dark";
   onChange: (scheduledTime: string) => void;
 };
 
@@ -24,7 +24,8 @@ export default function AgendaTimeBucketPicker({
   onChange,
 }: AgendaTimeBucketPickerProps) {
   const displayValue = value ?? deriveDefaultScheduledTime(defaultBucket);
-  const isCompact = variant === "compact";
+  const isCompact = variant === "compact" || variant === "compact-dark";
+  const isDark = variant === "compact-dark";
 
   return (
     <div>
@@ -44,8 +45,12 @@ export default function AgendaTimeBucketPicker({
             onChange(next);
           }
         }}
-        className={`min-h-11 w-full cursor-pointer rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-3 text-[15px] font-medium tabular-nums text-[#1c1917] disabled:opacity-60 ${
-          isCompact ? "rounded-xl" : "rounded-2xl"
+        className={`min-h-11 w-full cursor-pointer rounded-[10px] border px-3 text-[15px] font-medium tabular-nums disabled:opacity-60 ${
+          isCompact ? "rounded-xl text-[14px]" : "rounded-2xl"
+        } ${
+          isDark
+            ? "border-white/10 bg-black/20 text-[#F1EFE8]"
+            : "border-[#e4e0da] bg-[#faf9f7] text-[#1c1917]"
         }`}
         style={{ fontFamily: "var(--f-sans)" }}
       />

@@ -14,7 +14,8 @@ import {
   restoreAgendaBlock,
   updateAgendaBlock,
 } from "@/lib/agenda-blocks-client";
-import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
+import { buildWeekSchedulePreview, todayInAgendaTimezone } from "@/lib/agenda-week-preview";
+import { syncDashboardDagParam } from "@/lib/dashboard-url";
 import {
   deriveDefaultTimeBucket,
 } from "@/lib/account-priority-pref";
@@ -35,6 +36,8 @@ import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/
 
 type AgendaScreenProps = {
   model: DashboardModel;
+  selectedDate: string;
+  onSelectedDateChange: (date: string) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoVoortgang: () => void;
 };
@@ -46,13 +49,17 @@ type WeekFetchState = {
 
 export default function AgendaScreen({
   model,
+  selectedDate,
+  onSelectedDateChange,
   onPrefUpdated,
   onGoVoortgang,
 }: AgendaScreenProps) {
   const shownRef = useRef(false);
   const slots = useMemo(() => buildWeekSchedulePreview(model), [model]);
   const todaySlot = slots.find((slot) => slot.isToday) ?? slots[0];
-  const [selectedDate, setSelectedDate] = useState(todaySlot.date);
+  const resolvedSelectedDate = slots.some((slot) => slot.date === selectedDate)
+    ? selectedDate
+    : (todaySlot?.date ?? todayInAgendaTimezone());
   const [weekState, setWeekState] = useState<WeekFetchState>({
     completedKeys: new Set(),
     loaded: false,
@@ -67,7 +74,8 @@ export default function AgendaScreen({
     blockBusy: boolean;
   } | null>(null);
 
-  const selectedSlot = slots.find((slot) => slot.date === selectedDate) ?? todaySlot;
+  const selectedSlot =
+    slots.find((slot) => slot.date === resolvedSelectedDate) ?? todaySlot;
   const todayTimeBucket = model.timeBucket ?? deriveDefaultTimeBucket();
   const weekStart = slots[0]?.date ?? todaySlot.date;
   const weekEnd = slots[slots.length - 1]?.date ?? todaySlot.date;
@@ -167,11 +175,13 @@ export default function AgendaScreen({
   }, [weekEnd, weekStart]);
 
   const handleSelect = (slot: WeekDaySlot) => {
-    setSelectedDate(slot.date);
+    onSelectedDateChange(slot.date);
+    syncDashboardDagParam(slot.date);
     trackAgendaDaySelected({
       day_offset: slot.dayOffset,
       is_today: slot.isToday,
       domain: slot.domain,
+      surface: "agenda",
     });
     clarityTag("dashboard_agenda", slot.isToday ? "day_today" : "day_preview");
   };
@@ -381,7 +391,7 @@ export default function AgendaScreen({
           weekStrip={
             <AgendaWeekStrip
               slots={slots}
-              selectedDate={selectedDate}
+              selectedDate={resolvedSelectedDate}
               completedKeys={weekState.completedKeys}
               todayTimeBucket={todayTimeBucket}
               onSelect={handleSelect}

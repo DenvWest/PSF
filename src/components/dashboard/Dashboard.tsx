@@ -158,10 +158,14 @@ import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
+import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
+  isValidAgendaDate,
+  parseDagFromUrl,
   parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
   supportsKompasDeepView,
+  syncDashboardDagParam,
   syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardTabParam,
@@ -203,7 +207,9 @@ type SharedSectionProps = {
   onDashboardCheckin: (route: string, pillarId: PillarId) => void;
   onRemeasure: () => void;
   onGoVandaag: () => void;
-  onGoAgenda: () => void;
+  onGoAgenda: (date?: string) => void;
+  agendaDate: string;
+  onAgendaDateChange: (date: string) => void;
   onGoVoortgang: () => void;
   voortgangScreen: VoortgangScreen;
   onVoortgangScreenChange: (screen: VoortgangScreen) => void;
@@ -1707,6 +1713,41 @@ const RetestSection = ({
           </Card>
         )}
 
+        {data?.cycleEvidence && data.cycleEvidence.activeDays > 0 ? (
+          <Card pad={20}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--terra)",
+                marginBottom: 12,
+              }}
+            >
+              <Icons.RouteMap s={14} /> Wat je deed
+            </div>
+            <p
+              style={{
+                fontSize: 14,
+                color: "var(--text-muted)",
+                lineHeight: 1.55,
+                margin: 0,
+                textWrap: "pretty",
+              }}
+            >
+              In {method.daysBetween} dagen was je{" "}
+              <span style={{ color: "var(--text)", fontWeight: 600 }}>
+                {data.cycleEvidence.activeDays} dagen actief
+              </span>{" "}
+              in Mijn Dag — elke afgevinkte stap telt mee in je hermeting-beeld.
+            </p>
+          </Card>
+        ) : null}
+
         <Card
           pad={20}
           glow="#5A8F6A"
@@ -2951,11 +2992,13 @@ const KompasHome = ({
   onRemeasure,
   onGoAgenda,
   onGoVoortgang,
+  agendaDate: _agendaDate,
+  onAgendaDateChange: _onAgendaDateChange,
+  onPrefUpdated,
   initialKompasView,
   initialKompasDeepView,
   kompasResetSignal: _kompasResetSignal,
   prefUpdatedAt: _prefUpdatedAt,
-  onPrefUpdated,
   onDomainViewChange,
   onDomainNavApi,
   onContextRailApi,
@@ -2976,6 +3019,13 @@ const KompasHome = ({
   const [makePriorityBusy, setMakePriorityBusy] = useState(false);
   const showRemeasureReminder =
     Boolean(data?.remeasure) && (data?.remeasure?.daysUntil ?? 1) <= 0;
+  const cycleContext = data?.cycleEvidence
+    ? {
+        cycleDay: data.cycleEvidence.cycleDay,
+        daysUntilRemeasure: data.cycleEvidence.daysUntilRemeasure,
+        activeDaysInCycle: data.cycleEvidence.activeDays,
+      }
+    : null;
   const nutritionLogCompleted = useMemo(
     () =>
       buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted ===
@@ -3358,11 +3408,14 @@ const KompasHome = ({
         <KompasHomeCard
           model={currentModel}
           firstName={data?.firstName}
+          profileLabel={data?.profileLabel}
           remeasureDue={showRemeasureReminder}
+          cycleContext={cycleContext}
           nutritionLogCompleted={nutritionLogCompleted}
           hasNutritionIntake={data?.nutritionIntake != null}
+          hasStressCheckin={data?.hasStressCheckin ?? false}
           onGoVoortgang={onGoVoortgang}
-          onGoAgenda={onGoAgenda}
+          onGoAgenda={(date) => onGoAgenda(date)}
           onRemeasure={onRemeasure}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
           onOpenPriority={(domain) => {
@@ -3436,6 +3489,8 @@ const SECTION_RENDERERS: Record<
     props.empty || !props.model ? null : (
       <AgendaScreen
         model={props.model}
+        selectedDate={props.agendaDate}
+        onSelectedDateChange={props.onAgendaDateChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoVoortgang={props.onGoVoortgang}
       />
@@ -3609,6 +3664,17 @@ export default function Dashboard({
   const [priorityPrefOverride, setPriorityPrefOverride] = useState<
     AccountPriorityPrefData | null | undefined
   >(undefined);
+  const [agendaDateOverride, setAgendaDateOverride] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return parseDagFromUrl(window.location.href);
+    }
+    return null;
+  });
+  const dagParam = searchParams.get("dag");
+  const agendaDate =
+    dagParam && isValidAgendaDate(dagParam)
+      ? dagParam
+      : (agendaDateOverride ?? todayInAgendaTimezone());
 
   const priorityPref =
     priorityPrefOverride !== undefined ? priorityPrefOverride : (data?.priorityPref ?? null);
@@ -3654,9 +3720,19 @@ export default function Dashboard({
     syncDashboardKompasParam(null);
   };
 
-  const syncTabToUrl = (nextTab: DashboardTabId) => {
-    syncDashboardTabParam(nextTab);
+  const syncTabToUrl = (nextTab: DashboardTabId, dag?: string) => {
+    syncDashboardTabParam(nextTab, {
+      dag: dag ?? agendaDate,
+    });
   };
+
+  const handleAgendaDateChange = useCallback((date: string) => {
+    if (!isValidAgendaDate(date)) {
+      return;
+    }
+    setAgendaDateOverride(date);
+    syncDashboardDagParam(date);
+  }, []);
 
   const tabRef = useRef(tab);
   useEffect(() => {
@@ -3664,16 +3740,17 @@ export default function Dashboard({
   });
 
   const syncTabFromLocation = useCallback(() => {
-    const tabParam = new URL(window.location.href).searchParams.get("tab");
-    if (!tabParam || !VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
-      return;
+    const url = new URL(window.location.href);
+    const tabParam = url.searchParams.get("tab");
+    if (tabParam && VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
+      const parsedTab = tabParam as DashboardTabId;
+      if (parsedTab !== tabRef.current) {
+        setVoortgangScreen("hub");
+        setTab(parsedTab);
+      }
     }
-    const parsedTab = tabParam as DashboardTabId;
-    if (parsedTab === tabRef.current) {
-      return;
-    }
-    setVoortgangScreen("hub");
-    setTab(parsedTab);
+    const dag = parseDagFromUrl(url);
+    setAgendaDateOverride(dag);
   }, [VALID_TAB_IDS]);
 
   useEffect(() => {
@@ -3722,6 +3799,7 @@ export default function Dashboard({
     }
     if (nextTab === "vandaag") {
       resetKompasToHome();
+      syncDashboardTabParam("vandaag", { dag: agendaDate });
       setKompasResetSignal((prev) => prev + 1);
       if (tab === "vandaag") {
         trackEvent("dashboard_kompas_tab_reset", { source: "tabbar" });
@@ -3746,7 +3824,11 @@ export default function Dashboard({
 
   const onCheck = () => {
     if (empty) {
-      router.push("/intake");
+      emitIntakeClientEvent("dashboard.first_checkin_started", {
+        source: "dashboard",
+        route: "/intake",
+      });
+      router.push("/intake?from=dashboard");
       return;
     }
     selectTab("vandaag");
@@ -3779,7 +3861,21 @@ export default function Dashboard({
     onDashboardCheckin,
     onRemeasure,
     onGoVandaag: () => selectTab("vandaag"),
-    onGoAgenda: () => selectTab("agenda"),
+    onGoAgenda: (date?: string) => {
+      const dag = date && isValidAgendaDate(date) ? date : agendaDate;
+      if (dag !== agendaDate) {
+        handleAgendaDateChange(dag);
+      }
+      syncDashboardTabParam("agenda", { dag });
+      if (tab !== "agenda") {
+        trackDashboardTabSelected("agenda");
+        clarityTag("dashboard_tab", "agenda");
+      }
+      setVoortgangScreen("hub");
+      setTab("agenda");
+    },
+    agendaDate,
+    onAgendaDateChange: handleAgendaDateChange,
     onGoVoortgang: () => {
       setVoortgangScreen("hub");
       selectTab("voortgang");

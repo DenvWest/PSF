@@ -43,6 +43,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   movementRcvFeel: null,
   movementRcvFeelAt: null,
   remeasure: null,
+  cycleEvidence: null,
   deltaReport: null,
   profileLabel: null,
   firstName: null,
@@ -53,6 +54,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   planDomain: null,
   priorityPref: null,
   sleepCheckinFocus: null,
+  hasStressCheckin: false,
   movementPrefs: { startPattern: null, anchor: null },
 };
 
@@ -88,6 +90,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   movementRcvFeel: null,
   movementRcvFeelAt: null,
   remeasure: null,
+  cycleEvidence: null,
   deltaReport: null,
   profileLabel: "Onrustige Slaper",
   firstName: "Dennis",
@@ -98,6 +101,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   planDomain: "sleep",
   priorityPref: null,
   sleepCheckinFocus: null,
+  hasStressCheckin: false,
   movementPrefs: { startPattern: null, anchor: null },
 };
 

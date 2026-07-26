@@ -14,6 +14,7 @@ import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { loadPlanProgress } from "@/lib/plan-progress";
 import {
+  getDailyActionCycleEvidence,
   getDailyActionState,
   getDailyActionWeekStepKeys,
 } from "@/lib/daily-action-log";
@@ -54,6 +55,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   movementRcvFeel: null,
   movementRcvFeelAt: null,
   remeasure: null,
+  cycleEvidence: null,
   deltaReport: null,
   profileLabel: null,
   firstName: null,
@@ -64,6 +66,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   planDomain: null,
   priorityPref: null,
   sleepCheckinFocus: null,
+  hasStressCheckin: false,
   movementPrefs: EMPTY_MOVEMENT_PREFS,
 };
 
@@ -562,6 +565,14 @@ export async function loadAccountDashboardData(
     }
   }
 
+  // Geen narratieve "focus" voor stress (zoals sleep) — DEFER (roadmap P3,
+  // stress-als-module). Alleen het model-flag: heeft de gebruiker sinds de
+  // laatste check al een aparte stress-check gedaan?
+  const hasStressCheckin = ((checkinData ?? []) as CheckinRow[]).some(
+    (row) =>
+      row.domain_key === "stress_score" && row.session_id === latestSnapshot.id,
+  );
+
   const trendBaselines = Object.fromEntries(
     PILLAR_IDS.flatMap((pillar) => {
       const firstPoint = series[pillar][0];
@@ -598,6 +609,26 @@ export async function loadAccountDashboardData(
   const due = new Date(firstSessionTs);
   due.setUTCDate(due.getUTCDate() + 30);
   const daysUntil = Math.ceil((due.getTime() - Date.now()) / 86_400_000);
+  const cycleStartDate = new Date(firstSessionTs).toISOString().slice(0, 10);
+  const cycleEndDate = due.toISOString().slice(0, 10);
+  let cycleEvidence: DashboardData["cycleEvidence"] = null;
+  try {
+    const evidence = await getDailyActionCycleEvidence(
+      admin,
+      accountId,
+      cycleStartDate,
+      cycleEndDate,
+    );
+    if (evidence) {
+      cycleEvidence = {
+        ...evidence,
+        cycleStartDate,
+        cycleEndDate,
+      };
+    }
+  } catch {
+    cycleEvidence = null;
+  }
   const remeasure = {
     dueDate: formatDashboardDate(due.toISOString()),
     daysUntil,
@@ -715,6 +746,7 @@ export async function loadAccountDashboardData(
     movementRcvFeel,
     movementRcvFeelAt,
     remeasure,
+    cycleEvidence,
     deltaReport,
     profileLabel: latestSnapshot.profileLabel,
     firstName: latestSnapshot.firstName,
@@ -726,5 +758,6 @@ export async function loadAccountDashboardData(
     movementPrefs: latestSnapshot.movementPrefs,
     priorityPref,
     sleepCheckinFocus,
+    hasStressCheckin,
   };
 }

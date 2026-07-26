@@ -6,6 +6,7 @@ import { getRateLimitConfig } from "@/lib/rate-limit-config";
 import { getClientIp } from "@/lib/turnstile-verify";
 import {
   getDailyActionState,
+  getDailyActionRangeState,
   getDailyActionWeekState,
   getDailyActionWeekStepKeys,
   toggleDailyAction,
@@ -57,6 +58,18 @@ export async function GET(request: NextRequest) {
     }
     const weekState = await getDailyActionWeekState(admin, account.id);
     return NextResponse.json(weekState, { status: 200 });
+  }
+
+  const cycleStart = params.get("cycleStart");
+  const cycleEnd = params.get("cycleEnd");
+  if (range === "30" && cycleStart && cycleEnd) {
+    const rangeState = await getDailyActionRangeState(
+      admin,
+      account.id,
+      cycleStart,
+      cycleEnd,
+    );
+    return NextResponse.json(rangeState, { status: 200 });
   }
 
   if (!isDomain(domain)) {

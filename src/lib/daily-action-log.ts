@@ -122,6 +122,86 @@ export async function getDailyActionWeekState(
   return { today, dates, completedKeys };
 }
 
+export type DailyActionCycleEvidence = {
+  activeDays: number;
+  cycleDay: number;
+  daysUntilRemeasure: number;
+};
+
+export async function getDailyActionCycleEvidence(
+  admin: SupabaseAdmin,
+  accountId: string,
+  startDate: string,
+  endDate: string,
+): Promise<DailyActionCycleEvidence | null> {
+  if (!isValidAgendaDateRange(startDate, endDate)) {
+    return null;
+  }
+
+  const { data } = await admin
+    .from("daily_action_log")
+    .select("log_date")
+    .eq("account_id", accountId)
+    .gte("log_date", startDate)
+    .lte("log_date", endDate);
+
+  const activeDays = new Set(
+    (data ?? [])
+      .map((row) => row.log_date as string)
+      .filter((value) => typeof value === "string" && value.length > 0),
+  ).size;
+
+  const startMs = new Date(`${startDate}T12:00:00.000Z`).getTime();
+  const endMs = new Date(`${endDate}T12:00:00.000Z`).getTime();
+  const today = todayInAppTimezone();
+  const todayMs = new Date(`${today}T12:00:00.000Z`).getTime();
+  const cycleDay = Math.min(
+    30,
+    Math.max(1, Math.round((Math.min(todayMs, endMs) - startMs) / (24 * 60 * 60 * 1000)) + 1),
+  );
+  const daysUntilRemeasure = Math.max(
+    0,
+    Math.ceil((endMs - todayMs) / (24 * 60 * 60 * 1000)),
+  );
+
+  return { activeDays, cycleDay, daysUntilRemeasure };
+}
+
+function isValidAgendaDateRange(startDate: string, endDate: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(startDate) && /^\d{4}-\d{2}-\d{2}$/.test(endDate);
+}
+
+export async function getDailyActionActiveDaysInRange(
+  admin: SupabaseAdmin,
+  accountId: string,
+  startDate: string,
+  endDate: string,
+): Promise<number> {
+  const evidence = await getDailyActionCycleEvidence(admin, accountId, startDate, endDate);
+  return evidence?.activeDays ?? 0;
+}
+
+export type DailyActionRangeState = {
+  startDate: string;
+  endDate: string;
+  activeDays: number;
+};
+
+export async function getDailyActionRangeState(
+  admin: SupabaseAdmin,
+  accountId: string,
+  startDate: string,
+  endDate: string,
+): Promise<DailyActionRangeState> {
+  const activeDays = await getDailyActionActiveDaysInRange(
+    admin,
+    accountId,
+    startDate,
+    endDate,
+  );
+  return { startDate, endDate, activeDays };
+}
+
 function computeStreak(distinctDatesDesc: string[], today: string): number {
   if (distinctDatesDesc.length === 0) {
     return 0;

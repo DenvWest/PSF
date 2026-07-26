@@ -158,6 +158,27 @@ describe("buildKompasMilestone", () => {
     expect(milestone.ctaLabel).toBe("Doe je hermeting");
   });
 
+  it("shows 30-day cycle progress before hermeting due", () => {
+    const milestone = buildKompasMilestone(baseModel, 7, false, {
+      cycleDay: 12,
+      daysUntilRemeasure: 18,
+      activeDaysInCycle: 8,
+    });
+    expect(milestone.kind).toBe("cycle");
+    expect(milestone.line).toContain("Dag 12 van 30");
+    expect(milestone.line).toContain("8 dagen actief");
+  });
+
+  it("nudges hermeting countdown in final week", () => {
+    const milestone = buildKompasMilestone(baseModel, 7, false, {
+      cycleDay: 27,
+      daysUntilRemeasure: 3,
+      activeDaysInCycle: 14,
+    });
+    expect(milestone.kind).toBe("cycle");
+    expect(milestone.line).toContain("Nog 3 dagen tot je hermeting");
+  });
+
   it("nudges when one day remains in the week", () => {
     const milestone = buildKompasMilestone(baseModel, 6, false);
     expect(milestone.kind).toBe("week");

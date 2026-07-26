@@ -3,8 +3,9 @@
 import type { ComponentType } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
+import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
 import { PILLAR } from "@/data/dashboard";
-import { deriveDefaultTimeBucket, timeBucketLabel } from "@/lib/account-priority-pref";
+import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
 import {
   BEWEGING_SUPPLEMENT_ANCHOR,
@@ -16,11 +17,12 @@ import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 type KompasVandaagPanelProps = {
   model: DashboardModel;
+  profileLabel?: string | null;
   nutritionLogCompleted: boolean;
   hasNutritionIntake: boolean;
+  hasStressCheckin: boolean;
   onOpenDomain: (domain: PillarId) => void;
-  onGoAgenda: () => void;
-  onGoVoortgang: () => void;
+  onGoAgenda: (date: string) => void;
 };
 
 function resolveIcon(name: string, size = 16) {
@@ -117,58 +119,6 @@ function DomainActionRow({
   );
 }
 
-function MijnDagTeaser({
-  model,
-  onGoAgenda,
-}: {
-  model: DashboardModel;
-  onGoAgenda: () => void;
-}) {
-  const title = model.activeHabit?.title ?? model.priority.quickWin.title;
-  const bucket = model.timeBucket ?? deriveDefaultTimeBucket();
-  const bucketLabel = timeBucketLabel(bucket).toLowerCase();
-  const timeSegment = model.scheduledTime ? ` · ${model.scheduledTime}` : "";
-
-  return (
-    <div className="rounded-xl border border-white/8 bg-black/15 px-3 py-3">
-      <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-        Mijn dag
-      </p>
-      <button
-        type="button"
-        onClick={() => {
-          trackEvent("dashboard_agenda_teaser_click", {
-            surface: "kompas_home",
-            priority: model.priority.id,
-            user_chosen: model.priorityIsUserChosen,
-          });
-          clarityTag("dashboard_kompas_home", "agenda_teaser");
-          onGoAgenda();
-        }}
-        className="mt-2.5 flex w-full cursor-pointer items-start gap-2.5 border-none bg-transparent p-0 text-left"
-        style={{ fontFamily: "var(--f-sans)" }}
-      >
-        <span
-          aria-hidden
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-[#9FB0A6]"
-        >
-          <Icons.RouteMap s={16} />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-[12px] font-medium leading-snug text-[#CDD7D0]">
-            {bucketLabel}
-            {timeSegment} · {PILLAR[model.priority.id].label.toLowerCase()}
-          </span>
-          <span className="mt-0.5 line-clamp-2 text-[12.5px] leading-snug text-[#9FB0A6] text-pretty">
-            {title}
-          </span>
-        </span>
-        <Icons.ArrowRight s={14} style={{ color: "#5A8F6A", flexShrink: 0, marginTop: 2 }} />
-      </button>
-    </div>
-  );
-}
-
 export function KompasLogboekSection({
   model,
   onGoVoortgang,
@@ -244,31 +194,68 @@ export function KompasLogboekSection({
 
 export default function KompasVandaagPanel({
   model,
+  profileLabel = null,
   nutritionLogCompleted,
   hasNutritionIntake,
+  hasStressCheckin,
   onOpenDomain,
   onGoAgenda,
-}: Omit<KompasVandaagPanelProps, "onGoVoortgang">) {
+}: KompasVandaagPanelProps) {
+  const todaySlot = buildWeekSchedulePreview(model).find((slot) => slot.isToday) ?? null;
   const actions = buildKompasDomainActions({
     model,
     nutritionLogCompleted,
     hasNutritionIntake,
+    hasStressCheckin,
   });
+  const priorityAction =
+    actions.find((action) => action.domain === model.priority.id) ?? actions[0] ?? null;
+  const hasMoreDomains = actions.length > 1;
+
+  const scrollToDomains = () => {
+    trackEvent("dashboard_kompas_all_domains_click", { surface: "kompas_home" });
+    clarityTag("dashboard_kompas_home", "all_domains");
+    document.querySelector('[aria-label="Je leefstijl"]')?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-          Vandaag
-        </p>
-        <div className="mt-3 flex flex-col gap-1.5">
-          {actions.map((action) => (
-            <DomainActionRow key={action.domain} action={action} onOpenDomain={onOpenDomain} />
-          ))}
+      {priorityAction ? (
+        <div>
+          <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
+            Vandaag
+          </p>
+          <div className="mt-3 flex flex-col gap-1.5">
+            <DomainActionRow action={priorityAction} onOpenDomain={onOpenDomain} />
+            {hasMoreDomains ? (
+              <button
+                type="button"
+                onClick={scrollToDomains}
+                className="inline-flex min-h-8 cursor-pointer items-center gap-1 border-none bg-transparent px-0.5 text-[12px] font-semibold text-[#5A8F6A]"
+                style={{ fontFamily: "var(--f-sans)" }}
+              >
+                Alle domeinen
+                <Icons.ArrowRight s={12} />
+              </button>
+            ) : null}
+          </div>
         </div>
-      </div>
+      ) : null}
 
-      <MijnDagTeaser model={model} onGoAgenda={onGoAgenda} />
+      {todaySlot ? (
+        <DomainTodayStrip
+          model={model}
+          domain={todaySlot.domain}
+          readOnly
+          tone="dark"
+          profileLabel={profileLabel}
+          surface="kompas_home"
+          onGoAgenda={() => onGoAgenda(todaySlot.date)}
+        />
+      ) : null}
     </div>
   );
 }

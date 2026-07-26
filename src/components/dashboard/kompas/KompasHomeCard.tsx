@@ -16,6 +16,7 @@ import {
   buildKompasDomainRows,
   buildKompasMilestone,
   KOMPAS_LINES_EXPLAINER,
+  type KompasCycleContext,
   type KompasDomainRow,
 } from "@/lib/kompas-home";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -36,13 +37,16 @@ type WeekPayload = {
 type KompasHomeCardProps = {
   model: DashboardModel;
   firstName?: string | null;
+  profileLabel?: string | null;
   remeasureDue?: boolean;
+  cycleContext?: KompasCycleContext | null;
   nutritionLogCompleted?: boolean;
   hasNutritionIntake?: boolean;
+  hasStressCheckin?: boolean;
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
   onGoVoortgang: () => void;
-  onGoAgenda: () => void;
+  onGoAgenda: (date: string) => void;
   onRemeasure?: () => void;
 };
 
@@ -528,11 +532,13 @@ function FocusVoortgangPanel({
 function VoortgangSection({
   model,
   remeasureDue,
+  cycleContext,
   onRemeasure,
   onOpenPriority,
 }: {
   model: DashboardModel;
   remeasureDue: boolean;
+  cycleContext?: KompasCycleContext | null;
   onRemeasure?: () => void;
   onOpenPriority: (domain: PillarId) => void;
 }) {
@@ -580,7 +586,7 @@ function VoortgangSection({
     isWeekSlotCompleted(slot, completedSet),
   ).length;
 
-  const milestone = buildKompasMilestone(model, completedCount, remeasureDue);
+  const milestone = buildKompasMilestone(model, completedCount, remeasureDue, cycleContext);
 
   const handleRemeasureClick = () => {
     trackEvent("dashboard_hermeting_reminder_click", { surface: "kompas_home" });
@@ -621,9 +627,12 @@ function VoortgangSection({
 export default function KompasHomeCard({
   model,
   firstName,
+  profileLabel = null,
   remeasureDue = false,
+  cycleContext = null,
   nutritionLogCompleted = false,
   hasNutritionIntake = false,
+  hasStressCheckin = false,
   onOpenDomain,
   onOpenPriority,
   onGoVoortgang,
@@ -671,8 +680,10 @@ export default function KompasHomeCard({
         >
           <KompasVandaagPanel
             model={model}
+            profileLabel={profileLabel}
             nutritionLogCompleted={nutritionLogCompleted}
             hasNutritionIntake={hasNutritionIntake}
+            hasStressCheckin={hasStressCheckin}
             onOpenDomain={handleOpenDomain}
             onGoAgenda={onGoAgenda}
           />
@@ -688,6 +699,7 @@ export default function KompasHomeCard({
           <VoortgangSection
             model={model}
             remeasureDue={remeasureDue}
+            cycleContext={cycleContext}
             onRemeasure={onRemeasure}
             onOpenPriority={handleOpenPriority}
           />

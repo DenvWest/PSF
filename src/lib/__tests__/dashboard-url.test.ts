@@ -1,15 +1,69 @@
 /** @vitest-environment jsdom */
 import { describe, expect, it, vi } from "vitest";
 import {
+  buildDashboardAgendaHref,
   buildDashboardBewegingStappenplanHref,
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
+  isValidAgendaDate,
+  parseDagFromUrl,
   parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  syncDashboardDagParam,
   syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardTabParam,
 } from "@/lib/dashboard-url";
+
+describe("parseDagFromUrl", () => {
+  it("parses valid dag param", () => {
+    expect(parseDagFromUrl("http://localhost/dashboard?tab=agenda&dag=2026-07-26")).toBe(
+      "2026-07-26",
+    );
+  });
+
+  it("returns null for invalid dag", () => {
+    expect(parseDagFromUrl("http://localhost/dashboard?dag=invalid")).toBeNull();
+  });
+});
+
+describe("isValidAgendaDate", () => {
+  it("accepts ISO dates", () => {
+    expect(isValidAgendaDate("2026-07-26")).toBe(true);
+  });
+
+  it("rejects invalid dates", () => {
+    expect(isValidAgendaDate("2026-13-01")).toBe(false);
+  });
+});
+
+describe("buildDashboardAgendaHref", () => {
+  it("includes dag when provided", () => {
+    expect(buildDashboardAgendaHref("2026-07-26")).toBe(
+      "/dashboard?tab=agenda&dag=2026-07-26",
+    );
+  });
+});
+
+describe("syncDashboardDagParam", () => {
+  it("sets dag on agenda tab", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=agenda"),
+    });
+
+    syncDashboardDagParam("2026-07-30");
+    expect(pushState).toHaveBeenCalledOnce();
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("dag=2026-07-30");
+
+    window.history.pushState = originalPush;
+  });
+});
 
 describe("parseKompasFromUrl", () => {
   it("parses valid kompas param", () => {

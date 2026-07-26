@@ -133,6 +133,22 @@ export function buildDevDashboardData(
       mode === "retest"
         ? { dueDate: "10 jul 2026", daysUntil: -8 }
         : { dueDate: "10 jul 2026", daysUntil: 22 },
+    cycleEvidence:
+      mode === "retest"
+        ? {
+            activeDays: 18,
+            cycleDay: 30,
+            daysUntilRemeasure: 0,
+            cycleStartDate: "2026-06-10",
+            cycleEndDate: "2026-07-10",
+          }
+        : {
+            activeDays: 8,
+            cycleDay: 8,
+            daysUntilRemeasure: 22,
+            cycleStartDate: "2026-06-10",
+            cycleEndDate: "2026-07-10",
+          },
     deltaReport,
     profileLabel: "Lage Batterij",
     firstName: "Dennis",
@@ -143,6 +159,7 @@ export function buildDevDashboardData(
     planDomain: "nutrition",
     priorityPref: null,
     sleepCheckinFocus: null,
+    hasStressCheckin: false,
     movementPrefs: EMPTY_MOVEMENT_PREFS,
   };
 }
