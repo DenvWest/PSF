@@ -345,7 +345,7 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     icon: "Calendar",
     title: "Hermeting",
     subtitle: "Meet of het werkt.",
-    emptyHint: "Over 30 dagen meet je opnieuw of je leefstijl-stappen werken.",
+    emptyHint: "Doe eerst je check — daarna meten we na 30 dagen opnieuw of je leefstijl-stappen werken.",
   },
 ];
 

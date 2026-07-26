@@ -21,6 +21,7 @@ type BuildKompasDomainActionsInput = {
   model: DashboardModel;
   nutritionLogCompleted: boolean;
   hasNutritionIntake: boolean;
+  hasStressCheckin: boolean;
 };
 
 function checkinHref(domain: PillarId): string {
@@ -89,6 +90,14 @@ function buildSingleDomainAction(
       };
 
     case "stress":
+      if (input.hasStressCheckin) {
+        return {
+          ...base,
+          actionLabel: "Bekijk je stress-analyse",
+          actionKind: "result",
+          internalAction: "open_domain",
+        };
+      }
       return {
         ...base,
         actionLabel: "Doe stresscheck",
@@ -97,10 +106,12 @@ function buildSingleDomainAction(
       };
 
     case "verbinding":
+      // Geen aparte verbinding-check (DEFER, roadmap §3) — de score komt uit
+      // de eerste Leefstijlcheck, dus dit is altijd een post-first-check-label.
       return {
         ...base,
-        actionLabel: "Open verbinding",
-        actionKind: "open",
+        actionLabel: "Bekijk je verbinding",
+        actionKind: "result",
         internalAction: "open_domain",
       };
 

@@ -263,7 +263,7 @@ export default function CockpitContextRail({
                   s={14}
                   style={{ color: remeasureAction.due ? "#5A8F6A" : "#7E8C82" }}
                 />
-                <span>{remeasureAction.due ? "Doe je hermeting" : "Nieuwe check maken"}</span>
+                <span>{remeasureAction.due ? "Doe je hermeting" : "Alvast je hermeting doen"}</span>
               </button>
             ) : null}
             <ProfileFooter

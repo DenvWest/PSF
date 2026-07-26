@@ -189,6 +189,12 @@ export default function CockpitHeader({
       </div>
 
       {domainNav ? <div className="px-4 pb-3 sm:px-6">{domainNav}</div> : null}
+
+      {/* Compliance-regel: altijd zichtbaar (sticky header), geen Context-tap
+          nodig — ook niet op mobiel. Volledige toelichting blijft in Context. */}
+      <p className="border-t border-white/5 px-4 py-1.5 text-[10px] leading-snug text-[#7E8C82] text-pretty sm:px-6">
+        Adviezen op basis van leefstijl — geen medische diagnoses.
+      </p>
     </header>
   );
 }

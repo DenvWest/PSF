@@ -45,6 +45,7 @@ describe("buildKompasDomainActions", () => {
       model: baseModel(),
       nutritionLogCompleted: false,
       hasNutritionIntake: false,
+      hasStressCheckin: false,
     });
     const voeding = actions.find((action) => action.domain === "voeding");
     expect(voeding?.actionKind).toBe("checkin");
@@ -56,6 +57,7 @@ describe("buildKompasDomainActions", () => {
       model: baseModel(),
       nutritionLogCompleted: true,
       hasNutritionIntake: true,
+      hasStressCheckin: false,
     });
     const voeding = actions.find((action) => action.domain === "voeding");
     expect(voeding?.actionKind).toBe("result");
@@ -76,6 +78,7 @@ describe("buildKompasDomainActions", () => {
       }),
       nutritionLogCompleted: false,
       hasNutritionIntake: false,
+      hasStressCheckin: false,
     });
     const slaap = actions.find((action) => action.domain === "slaap");
     expect(slaap?.actionKind).toBe("result");
@@ -87,9 +90,47 @@ describe("buildKompasDomainActions", () => {
       model: baseModel(),
       nutritionLogCompleted: true,
       hasNutritionIntake: true,
+      hasStressCheckin: false,
     });
     const beweging = actions.find((action) => action.domain === "beweging");
     expect(beweging?.actionKind).toBe("supplement");
     expect(beweging?.internalAction).toBe("open_supplements");
+  });
+
+  it("offers stresscheck when no stress checkin exists yet", () => {
+    const actions = buildKompasDomainActions({
+      model: baseModel(),
+      nutritionLogCompleted: false,
+      hasNutritionIntake: false,
+      hasStressCheckin: false,
+    });
+    const stress = actions.find((action) => action.domain === "stress");
+    expect(stress?.actionKind).toBe("checkin");
+    expect(stress?.actionLabel).toBe("Doe stresscheck");
+  });
+
+  it("offers stress-analyse when a stress checkin already exists", () => {
+    const actions = buildKompasDomainActions({
+      model: baseModel(),
+      nutritionLogCompleted: false,
+      hasNutritionIntake: false,
+      hasStressCheckin: true,
+    });
+    const stress = actions.find((action) => action.domain === "stress");
+    expect(stress?.actionKind).toBe("result");
+    expect(stress?.internalAction).toBe("open_domain");
+  });
+
+  it("offers a post-first-check verbinding label (no separate checkin flow)", () => {
+    const actions = buildKompasDomainActions({
+      model: baseModel(),
+      nutritionLogCompleted: false,
+      hasNutritionIntake: false,
+      hasStressCheckin: false,
+    });
+    const verbinding = actions.find((action) => action.domain === "verbinding");
+    expect(verbinding?.actionKind).toBe("result");
+    expect(verbinding?.actionLabel).toBe("Bekijk je verbinding");
+    expect(verbinding?.internalAction).toBe("open_domain");
   });
 });
