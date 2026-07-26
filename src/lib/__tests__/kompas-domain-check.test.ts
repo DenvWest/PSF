@@ -89,21 +89,21 @@ describe("buildDomainCheckStates", () => {
     expect(states.get("stress")!.highlighted).toBe(false);
   });
 
-  it("licht anders het grootste meetgat uit — nooit gemeten wint", () => {
+  it("licht niets uit als de focuscheck nog aftelt, ook niet bij een groter meetgat elders", () => {
     const states = build({ slaap: 2, stress: 40 }, "slaap");
-    expect(states.get("slaap")!.highlighted).toBe(false);
-    expect(states.get("beweging")!.highlighted).toBe(true);
+    expect([...states.values()].some((state) => state.highlighted)).toBe(false);
+    expect(states.get("beweging")!.actionable).toBe(true);
+    expect(states.get("stress")!.actionable).toBe(true);
   });
 
-  it("licht bij alleen verlopen checks de oudste uit", () => {
+  it("licht nooit een ander domein uit dan de focus", () => {
     const states = build(
       { slaap: 2, beweging: 16, voeding: 40, stress: 20 },
       "slaap",
     );
-    expect(states.get("voeding")!.highlighted).toBe(true);
     expect(
       [...states.values()].filter((state) => state.highlighted),
-    ).toHaveLength(1);
+    ).toHaveLength(0);
   });
 
   it("licht niets uit als alles nog aftelt", () => {

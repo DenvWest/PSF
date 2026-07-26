@@ -32,7 +32,7 @@ import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/
 const RING_SIZE = 240;
 const RING_CENTER = RING_SIZE / 2;
 const RING_STROKE = 9;
-const RING_RADII = [92, 76, 60, 44, 28];
+const RING_RADII = [104, 87, 70, 53, 36];
 
 type WeekPayload = {
   today: string;
@@ -127,7 +127,7 @@ function KompasRings({
   const band = getVitalityBand(vitality);
 
   return (
-    <span className="relative block h-[200px] w-[200px] shrink-0 lg:h-[176px] lg:w-[176px]">
+    <span className="relative block h-[208px] w-[208px] shrink-0 @[560px]/leefstijl:h-[236px] @[560px]/leefstijl:w-[236px] @[820px]/leefstijl:h-[280px] @[820px]/leefstijl:w-[280px]">
       <span
         aria-hidden
         className="pointer-events-none absolute inset-[10%] rounded-full opacity-70 blur-lg"
@@ -358,6 +358,72 @@ function DomainCheckStrip({
   );
 }
 
+/**
+ * Compacte variant van de check-strip: één kolom rechts in de balk in plaats van
+ * een eigen rij. Alleen de uitgelichte check houdt de volledige strip, zodat er
+ * per scherm precies één check-CTA staat.
+ */
+function DomainCheckChip({
+  check,
+  color,
+  domainLabel,
+  onCheckClick,
+}: {
+  check: DomainCheckState;
+  color: string;
+  domainLabel: string;
+  onCheckClick: (check: DomainCheckState) => void;
+}) {
+  const ready = check.actionable;
+  const countdown =
+    check.status === "counting" && check.daysUntil != null ? `${check.daysUntil}d` : null;
+
+  const body = (
+    <>
+      <CheckCountdownRing
+        progress={check.progress}
+        color={color}
+        ready={ready}
+        done={check.status === "fresh"}
+      />
+      {ready ? (
+        <span className="text-[11.5px] font-semibold" style={{ color }}>
+          Check
+        </span>
+      ) : countdown ? (
+        <span className="text-[11.5px] tabular-nums text-[#7E8C82]">{countdown}</span>
+      ) : null}
+    </>
+  );
+
+  const sharedClass = "flex shrink-0 items-center gap-1.5 self-stretch border-l px-2.5";
+
+  if (!ready || !check.href) {
+    return (
+      <span
+        title={check.label}
+        className={`${sharedClass} border-white/8`}
+        style={{ fontFamily: "var(--f-sans)" }}
+      >
+        {body}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={check.href}
+      title={check.label}
+      aria-label={`${check.ctaLabel} — ${domainLabel}`}
+      onClick={() => onCheckClick(check)}
+      className={`${sharedClass} cursor-pointer border-white/8 no-underline transition hover:bg-white/[0.05]`}
+      style={{ fontFamily: "var(--f-sans)", color: "inherit" }}
+    >
+      {body}
+    </Link>
+  );
+}
+
 function DomainMeterBar({
   row,
   tag,
@@ -378,6 +444,8 @@ function DomainMeterBar({
     row.delta != null && row.delta !== 0
       ? Math.min(100, Math.max(0, row.score - row.delta))
       : null;
+  const openLabel =
+    check && !check.actionable ? `Open ${row.label} — ${check.label}` : `Open ${row.label}`;
 
   return (
     <div
@@ -394,61 +462,72 @@ function DomainMeterBar({
         } as CSSProperties
       }
     >
-      <button
-        type="button"
-        onClick={() => onOpenDomain(row.id)}
-        aria-label={`Open ${row.label}`}
-        className="w-full cursor-pointer bg-transparent px-3 py-2.5 text-left transition hover:bg-white/[0.03]"
-      >
-        <span className="flex items-center gap-2">
-          <span
-            aria-hidden
-            className="h-2 w-2 shrink-0 rounded-full"
-            style={{ background: row.color }}
-          />
-          <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
-            <span className="shrink-0 font-serif text-[15px] text-[#F1EFE8]">{row.label}</span>
-            <span className="hidden truncate text-[11.5px] text-[#7E8C82] sm:inline">
-              {row.descriptor}
-            </span>
-          </span>
-          {isFocus ? (
-            <span
-              className="shrink-0 rounded-md border px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.1em]"
-              style={{ color: row.color, borderColor: `${row.color}66` }}
-            >
-              Focus
-            </span>
-          ) : tag ? (
-            <span className="shrink-0 rounded-md border border-white/10 bg-black/20 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.08em] text-[#7E8C82]">
-              {tag}
-            </span>
-          ) : null}
-          <span className="shrink-0 font-serif text-[17px] tabular-nums text-[#F1EFE8]">
-            {row.score}
-          </span>
-          <DeltaBadge delta={row.delta} empty={row.delta == null} />
-        </span>
-        <span className="relative mt-2 block h-1.5 w-full rounded-full bg-white/[0.08]">
-          <span
-            className="absolute inset-y-0 left-0 block rounded-full"
-            style={{
-              width: `${fillWidth}%`,
-              background: `linear-gradient(90deg, ${row.color}c4, ${row.color})`,
-            }}
-          />
-          {baseline != null ? (
+      <div className="flex items-stretch">
+        <button
+          type="button"
+          onClick={() => onOpenDomain(row.id)}
+          aria-label={openLabel}
+          className="min-w-0 flex-1 cursor-pointer bg-transparent px-3 py-2.5 text-left transition hover:bg-white/[0.03]"
+        >
+          <span className="flex items-center gap-2">
             <span
               aria-hidden
-              title="Waar je begon"
-              className="absolute top-1/2 h-2.5 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/45"
-              style={{ left: `${baseline}%` }}
+              className="h-2 w-2 shrink-0 rounded-full"
+              style={{ background: row.color }}
             />
-          ) : null}
-        </span>
-      </button>
+            <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
+              <span className="shrink-0 font-serif text-[15px] text-[#F1EFE8]">{row.label}</span>
+              <span className="hidden truncate text-[11.5px] text-[#7E8C82] @[740px]/leefstijl:inline">
+                {row.descriptor}
+              </span>
+            </span>
+            {isFocus ? (
+              <span
+                className="shrink-0 rounded-md border px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.1em]"
+                style={{ color: row.color, borderColor: `${row.color}66` }}
+              >
+                Focus
+              </span>
+            ) : tag ? (
+              <span className="shrink-0 rounded-md border border-white/10 bg-black/20 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.08em] text-[#7E8C82]">
+                {tag}
+              </span>
+            ) : null}
+            <span className="shrink-0 font-serif text-[17px] tabular-nums text-[#F1EFE8]">
+              {row.score}
+            </span>
+            <DeltaBadge delta={row.delta} empty={row.delta == null} />
+          </span>
+          <span className="relative mt-2 block h-1.5 w-full rounded-full bg-white/[0.08]">
+            <span
+              className="absolute inset-y-0 left-0 block rounded-full"
+              style={{
+                width: `${fillWidth}%`,
+                background: `linear-gradient(90deg, ${row.color}c4, ${row.color})`,
+              }}
+            />
+            {baseline != null ? (
+              <span
+                aria-hidden
+                title="Waar je begon"
+                className="absolute top-1/2 h-2.5 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/45"
+                style={{ left: `${baseline}%` }}
+              />
+            ) : null}
+          </span>
+        </button>
 
-      {check ? (
+        {check && !check.highlighted ? (
+          <DomainCheckChip
+            check={check}
+            color={row.color}
+            domainLabel={row.label}
+            onCheckClick={onCheckClick}
+          />
+        ) : null}
+      </div>
+
+      {check?.highlighted ? (
         <DomainCheckStrip
           check={check}
           color={row.color}
@@ -735,69 +814,89 @@ export default function KompasHomeCard({
 
   return (
     <CockpitTile className="p-4 sm:p-5 lg:p-6">
-      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,400px)]">
-        <section aria-label="Je leefstijl" className="order-1 min-w-0">
-          <LeefstijlHeader model={model} firstName={firstName} />
+      {/*
+        Container queries in plaats van viewport-breakpoints: deze tegel staat in
+        de midden-zone van de cockpit, die smaller of breder wordt zodra de
+        contextkolom open- of dichtklapt. Een `lg:`-splitsing weet daar niets van
+        en perste ring + balken samen in een kolom van ~320px.
+      */}
+      <div className="@container/tile">
+        <div className="flex flex-col gap-5 @[720px]/tile:grid @[720px]/tile:grid-cols-[minmax(0,1fr)_minmax(0,320px)] @[720px]/tile:gap-x-6 @[720px]/tile:gap-y-0 @[1200px]/tile:grid-cols-[minmax(0,1fr)_minmax(0,380px)]">
+          {/*
+            Twee tegel-standen. Tot @920px staat Je leefstijl over de volle
+            breedte met Vandaag en Voortgang eronder; daarboven blijft er naast
+            de ring en de balken genoeg over voor een echte kolom, en loopt
+            Vandaag over de hele rechterhoogte mee.
+          */}
+          <section
+            aria-label="Je leefstijl"
+            className="@container/leefstijl order-1 min-w-0 @[720px]/tile:col-span-2 @[720px]/tile:col-start-1 @[720px]/tile:row-start-1 @[920px]/tile:col-span-1"
+          >
+            <div className="grid max-w-[1000px] grid-cols-1 gap-4 @[560px]/leefstijl:grid-cols-[minmax(0,260px)_minmax(0,1fr)] @[560px]/leefstijl:gap-x-6 @[820px]/leefstijl:grid-cols-[minmax(0,300px)_minmax(0,1fr)] @[820px]/leefstijl:gap-x-8">
+              <div className="min-w-0 @[560px]/leefstijl:col-start-1 @[560px]/leefstijl:row-start-1">
+                <LeefstijlHeader model={model} firstName={firstName} />
+              </div>
 
-          <div className="mt-4 flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:gap-6">
-            <div className="flex shrink-0 flex-col items-center gap-3">
-              <KompasRings rows={rows} vitality={model.vitality} />
-              <RingTrendChip model={model} />
-            </div>
-            <div className="flex w-full min-w-0 flex-1 flex-col gap-2 lg:max-w-[400px]">
-              {rows.map((row) => (
-                <DomainMeterBar
-                  key={row.id}
-                  row={row}
-                  tag={domainTags.get(row.id)}
-                  isFocus={row.isPriority}
-                  check={checkStates.get(row.id)}
-                  onOpenDomain={handleOpenDomain}
-                  onCheckClick={handleCheckClick}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
+              <div className="flex flex-col items-center gap-3 @[560px]/leefstijl:col-start-1 @[560px]/leefstijl:row-start-2 @[560px]/leefstijl:items-start @[560px]/leefstijl:self-start">
+                <KompasRings rows={rows} vitality={model.vitality} />
+                <RingTrendChip model={model} />
+              </div>
 
-        <section
-          aria-label="Vandaag"
-          className="order-2 min-w-0 border-t border-white/10 pt-5 lg:col-start-2 lg:row-span-2 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0"
-        >
-          <KompasVandaagPanel
-            model={model}
-            profileLabel={profileLabel}
-            nutritionLogCompleted={nutritionLogCompleted}
-            hasNutritionIntake={hasNutritionIntake}
-            hasStressCheckin={hasStressCheckin}
-            onOpenDomain={handleOpenDomain}
-            onGoAgenda={onGoAgenda}
-          />
-          <div className="mt-4 hidden lg:block">
+              <div className="flex min-w-0 flex-col gap-2 @[560px]/leefstijl:col-start-2 @[560px]/leefstijl:row-span-2 @[560px]/leefstijl:row-start-1 @[560px]/leefstijl:self-start">
+                {rows.map((row) => (
+                  <DomainMeterBar
+                    key={row.id}
+                    row={row}
+                    tag={domainTags.get(row.id)}
+                    isFocus={row.isPriority}
+                    check={checkStates.get(row.id)}
+                    onOpenDomain={handleOpenDomain}
+                    onCheckClick={handleCheckClick}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section
+            aria-label="Vandaag"
+            className="order-2 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:col-start-2 @[720px]/tile:row-start-2 @[720px]/tile:mt-5 @[720px]/tile:border-l @[720px]/tile:pl-6 @[920px]/tile:row-span-2 @[920px]/tile:row-start-1 @[920px]/tile:mt-0 @[920px]/tile:border-t-0 @[920px]/tile:pt-0"
+          >
+            <KompasVandaagPanel
+              model={model}
+              profileLabel={profileLabel}
+              nutritionLogCompleted={nutritionLogCompleted}
+              hasNutritionIntake={hasNutritionIntake}
+              hasStressCheckin={hasStressCheckin}
+              onOpenDomain={handleOpenDomain}
+              onGoAgenda={onGoAgenda}
+            />
+            <div className="mt-4 hidden @[720px]/tile:block">
+              <KompasLogboekSection model={model} onGoVoortgang={onGoVoortgang} />
+            </div>
+          </section>
+
+          <section
+            aria-label="Voortgang"
+            className="order-3 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:col-start-1 @[720px]/tile:row-start-2 @[720px]/tile:mt-5"
+          >
+            <VoortgangSection
+              model={model}
+              remeasureDue={remeasureDue}
+              cycleContext={cycleContext}
+              onRemeasure={onRemeasure}
+              onOpenPriority={handleOpenPriority}
+              onPrefUpdated={onPrefUpdated}
+            />
+          </section>
+
+          <section
+            aria-label="Logboek"
+            className="order-4 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:hidden"
+          >
             <KompasLogboekSection model={model} onGoVoortgang={onGoVoortgang} />
-          </div>
-        </section>
-
-        <section
-          aria-label="Voortgang"
-          className="order-3 min-w-0 border-t border-white/10 pt-5 lg:col-start-1 lg:row-start-2"
-        >
-          <VoortgangSection
-            model={model}
-            remeasureDue={remeasureDue}
-            cycleContext={cycleContext}
-            onRemeasure={onRemeasure}
-            onOpenPriority={handleOpenPriority}
-            onPrefUpdated={onPrefUpdated}
-          />
-        </section>
-
-        <section
-          aria-label="Logboek"
-          className="order-4 min-w-0 border-t border-white/10 pt-5 lg:hidden"
-        >
-          <KompasLogboekSection model={model} onGoVoortgang={onGoVoortgang} />
-        </section>
+          </section>
+        </div>
       </div>
     </CockpitTile>
   );

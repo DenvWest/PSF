@@ -173,31 +173,17 @@ function buildCheckState(domain: PillarId, daysSince: number | undefined): Domai
 }
 
 /**
- * Eén check tegelijk uitlichten: het prioriteitsdomein wint, anders het domein
- * met het grootste meetgat (nog nooit gemeten telt als het grootste gat).
+ * Alleen het focusdomein wordt uitgelicht, en alleen als die check te doen is.
+ * Een ander domein uitlichten laat de nadruk botsen met de focusbalk: je leest
+ * "Focus: beweging" en krijgt er een uitgelichte slaapcheck naast. Verlopen
+ * checks buiten de focus blijven bereikbaar via hun eigen compacte chip.
  */
 function pickHighlight(
   states: DomainCheckState[],
-  timings: DomainCheckTimings,
   priorityId: PillarId,
 ): PillarId | null {
-  const actionable = states.filter((state) => state.actionable);
-  if (actionable.length === 0) {
-    return null;
-  }
-
-  const priorityState = actionable.find((state) => state.domain === priorityId);
-  if (priorityState) {
-    return priorityState.domain;
-  }
-
-  const gapOf = (domain: PillarId) => timings[domain] ?? Number.POSITIVE_INFINITY;
-  const orderOf = (domain: PillarId) => KOMPAS_RAIL_PILLAR_IDS.indexOf(domain);
-
-  return [...actionable].sort(
-    (a, b) =>
-      gapOf(b.domain) - gapOf(a.domain) || orderOf(a.domain) - orderOf(b.domain),
-  )[0]!.domain;
+  const priorityState = states.find((state) => state.domain === priorityId);
+  return priorityState?.actionable ? priorityState.domain : null;
 }
 
 export function buildDomainCheckStates({
@@ -211,7 +197,7 @@ export function buildDomainCheckStates({
       : buildRemeasureState(domain, remeasureDaysUntil),
   );
 
-  const highlight = pickHighlight(states, timings, priorityId);
+  const highlight = pickHighlight(states, priorityId);
 
   return new Map(
     states.map((state) => [

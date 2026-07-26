@@ -67,7 +67,7 @@ export default function FocusVoortgangPanel({
 
   return (
     <div
-      className="w-full rounded-xl border border-white/8 bg-black/15 px-3.5 py-3.5 text-left"
+      className="@container/focus w-full rounded-xl border border-white/8 bg-black/15 px-3.5 py-3.5 text-left"
       style={{ fontFamily: "var(--f-sans)" }}
     >
       {focusControl ? (
@@ -94,10 +94,17 @@ export default function FocusVoortgangPanel({
         </>
       ) : null}
 
+      {/*
+        Rolt horizontaal uit zodra het paneel breed genoeg is: stand · route ·
+        duiding naast elkaar in plaats van vier blokken onder elkaar. Scheelt op
+        het Kompas ruim honderd pixels hoogte zonder dat er iets wegvalt.
+      */}
       <div
-        className={`flex items-end justify-between gap-3${focusControl ? " mt-3.5" : ""}`}
+        className={`grid gap-3.5 @[520px]/focus:grid-cols-[minmax(0,auto)_minmax(0,1fr)_minmax(0,1.1fr)] @[520px]/focus:gap-x-5${
+          focusControl ? " mt-3.5" : ""
+        }`}
       >
-        <div>
+        <div className="flex items-end justify-between gap-3 @[520px]/focus:flex-col @[520px]/focus:items-start @[520px]/focus:justify-center @[520px]/focus:gap-1.5">
           <p className="m-0 flex items-baseline gap-2">
             <span
               className="font-serif text-[34px] leading-none tabular-nums text-[#F1EFE8]"
@@ -116,72 +123,76 @@ export default function FocusVoortgangPanel({
               {band.label}
             </span>
           </p>
+          {delta != null && delta !== 0 ? (
+            <span
+              className="mb-0.5 inline-flex items-center gap-1 text-[13px] font-semibold tabular-nums @[520px]/focus:mb-0"
+              style={{ color: delta > 0 ? "#5FA872" : "#C8956C" }}
+            >
+              {delta > 0 ? <Icons.TrendUp s={14} /> : <Icons.ArrowDown s={14} />}
+              {delta > 0 ? `+${delta}` : delta}
+            </span>
+          ) : null}
         </div>
-        {delta != null && delta !== 0 ? (
-          <span
-            className="mb-0.5 inline-flex items-center gap-1 text-[13px] font-semibold tabular-nums"
-            style={{ color: delta > 0 ? "#5FA872" : "#C8956C" }}
-          >
-            {delta > 0 ? <Icons.TrendUp s={14} /> : <Icons.ArrowDown s={14} />}
-            {delta > 0 ? `+${delta}` : delta}
-          </span>
-        ) : null}
-      </div>
 
-      <div className="mt-3.5">
-        <div className="relative h-2 rounded-full bg-white/[0.08]">
-          <div
-            className="absolute inset-y-0 left-0 rounded-full"
-            style={{
-              width: `${score}%`,
-              background: `linear-gradient(90deg, ${band.color}, #5FA872)`,
-            }}
-          />
-          {baseline != null ? (
+        <div className="flex flex-col justify-center @[520px]/focus:border-l @[520px]/focus:border-white/8 @[520px]/focus:pl-5">
+          <div className="relative h-2 rounded-full bg-white/[0.08]">
+            <div
+              className="absolute inset-y-0 left-0 rounded-full"
+              style={{
+                width: `${score}%`,
+                background: `linear-gradient(90deg, ${band.color}, #5FA872)`,
+              }}
+            />
+            {baseline != null ? (
+              <span
+                aria-hidden
+                className="absolute top-1/2 h-3 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40"
+                style={{ left: `${baseline}%` }}
+                title="Waar je begon"
+              />
+            ) : null}
             <span
               aria-hidden
-              className="absolute top-1/2 h-3 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40"
-              style={{ left: `${baseline}%` }}
-              title="Waar je begon"
+              className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#5FA872] bg-[#0f1c10]"
+              style={{ left: `${target}%` }}
+              title="Doel"
             />
-          ) : null}
-          <span
-            aria-hidden
-            className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#5FA872] bg-[#0f1c10]"
-            style={{ left: `${target}%` }}
-            title="Doel"
-          />
+          </div>
+          <div className="mt-2 flex items-center justify-between text-[11px] text-[#9FB0A6]">
+            <span>{baseline != null ? `Start ${baseline}` : "Je startpunt"}</span>
+            <span className="font-medium text-[#CDD7D0]">
+              {nextBand ? `Doel ${target} · ${nextBand.label}` : "Behoud je niveau"}
+            </span>
+          </div>
         </div>
-        <div className="mt-2 flex items-center justify-between text-[11px] text-[#9FB0A6]">
-          <span>{baseline != null ? `Start ${baseline}` : "Je startpunt"}</span>
-          <span className="font-medium text-[#CDD7D0]">
-            {nextBand ? `Doel ${target} · ${nextBand.label}` : "Behoud je niveau"}
-          </span>
+
+        <div className="flex flex-col justify-center border-t border-white/8 pt-3 @[520px]/focus:border-l @[520px]/focus:border-t-0 @[520px]/focus:pl-5 @[520px]/focus:pt-0">
+          {painLine ? (
+            <div className="flex items-start gap-2">
+              <span
+                aria-hidden
+                className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{ background: priorityRow.color }}
+              />
+              <p className="m-0 text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
+                {painLine}
+              </p>
+            </div>
+          ) : null}
+
+          <button
+            type="button"
+            onClick={handleOpen}
+            className={`flex w-full cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-left text-[13px] font-semibold transition hover:opacity-90${
+              painLine ? " mt-2.5" : ""
+            }`}
+            style={{ color: priorityRow.color, fontFamily: "var(--f-sans)" }}
+          >
+            {linkLabel}
+            <Icons.ArrowRight s={14} />
+          </button>
         </div>
       </div>
-
-      {painLine ? (
-        <div className="mt-3.5 flex items-start gap-2 border-t border-white/8 pt-3">
-          <span
-            aria-hidden
-            className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
-            style={{ background: priorityRow.color }}
-          />
-          <p className="m-0 text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
-            {painLine}
-          </p>
-        </div>
-      ) : null}
-
-      <button
-        type="button"
-        onClick={handleOpen}
-        className="mt-3.5 flex w-full cursor-pointer items-center gap-1.5 border-t border-white/8 bg-transparent pt-3 text-left text-[13px] font-semibold transition hover:opacity-90"
-        style={{ color: priorityRow.color, fontFamily: "var(--f-sans)" }}
-      >
-        {linkLabel}
-        <Icons.ArrowRight s={14} />
-      </button>
     </div>
   );
 }

@@ -53,6 +53,9 @@ export default function FocusPickerCore({
   className = "",
 }: FocusPickerCoreProps) {
   const interventionPillars = PILLARS.filter((pillar) => isInterventionDomain(pillar.id));
+  // "Volg advies" en "Terug naar advies" landen allebei op het engine-domein.
+  // Toon er dus hooguit één, en nooit de knop die niets verandert.
+  const followsAdvice = model.priority.id === model.enginePriority.id;
   const dividerClass =
     variant === "agenda" ? "border-[#ebe7e2]" : "border-white/10";
   const labelClass =
@@ -98,16 +101,18 @@ export default function FocusPickerCore({
           );
         })}
       </div>
-      <button
-        type="button"
-        disabled={busy}
-        onClick={onAcceptEngine}
-        className="mt-2 inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-[#5A8F6A] px-4 text-[13px] font-semibold text-[#0f1c10] disabled:opacity-60"
-        style={{ fontFamily: "var(--f-sans)" }}
-      >
-        Volg advies → {PILLAR[model.enginePriority.id].label.toLowerCase()}
-      </button>
-      {model.priorityIsUserChosen ? (
+      {followsAdvice ? null : (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={onAcceptEngine}
+          className="mt-2 inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-[#5A8F6A] px-4 text-[13px] font-semibold text-[#0f1c10] disabled:opacity-60"
+          style={{ fontFamily: "var(--f-sans)" }}
+        >
+          Volg advies → {PILLAR[model.enginePriority.id].label.toLowerCase()}
+        </button>
+      )}
+      {followsAdvice && model.priorityIsUserChosen ? (
         <button
           type="button"
           disabled={busy}
