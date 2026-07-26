@@ -129,9 +129,7 @@ import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
-import {
-  postPrioritySelection,
-} from "@/lib/priority-pref-client";
+import { saveDashboardPrioritySelection } from "@/lib/dashboard-priority-selection";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
@@ -3306,20 +3304,14 @@ const KompasHome = ({
     }
     setMakePriorityBusy(true);
     try {
-      const pref = await postPrioritySelection({
+      await saveDashboardPrioritySelection({
         pillarId: "beweging",
         source: "user_selected",
         surface: "kompas_beweging",
         timeBucket: currentModel.timeBucket ?? null,
         scheduledTime: currentModel.scheduledTime ?? null,
+        onPrefUpdated,
       });
-      onPrefUpdated(pref);
-      trackEvent("dashboard_priority_selected", {
-        pillar_id: "beweging",
-        source: "user_selected",
-        surface: "kompas_beweging",
-      });
-      clarityTag("dashboard_priority", "beweging");
     } finally {
       setMakePriorityBusy(false);
     }
@@ -3414,6 +3406,8 @@ const KompasHome = ({
           nutritionLogCompleted={nutritionLogCompleted}
           hasNutritionIntake={data?.nutritionIntake != null}
           hasStressCheckin={data?.hasStressCheckin ?? false}
+          domainCheckDaysAgo={data?.domainCheckDaysAgo}
+          remeasureDaysUntil={data?.remeasure?.daysUntil ?? null}
           onGoVoortgang={onGoVoortgang}
           onGoAgenda={(date) => onGoAgenda(date)}
           onRemeasure={onRemeasure}
@@ -3430,6 +3424,7 @@ const KompasHome = ({
               openDomain(domain, "leefstijlkompas");
             }
           }}
+          onPrefUpdated={onPrefUpdated}
         />
       </CockpitShell>
     </section>
@@ -3451,14 +3446,14 @@ const StatistiekenPriorityOverTime = ({
   const acceptEngine = async () => {
     setBusy(true);
     try {
-      const pref = await postPrioritySelection({
+      await saveDashboardPrioritySelection({
         pillarId: currentModel.enginePriority.id,
         source: "accept_engine",
         surface: "statistieken",
         timeBucket: currentModel.timeBucket ?? null,
         scheduledTime: currentModel.scheduledTime ?? null,
+        onPrefUpdated,
       });
-      onPrefUpdated(pref);
     } finally {
       setBusy(false);
     }
@@ -3510,7 +3505,11 @@ const SECTION_RENDERERS: Record<
   voortgangHub: (props) =>
     props.empty || !props.model ? null : (
       <>
-        <VoortgangKompasPanels model={props.model} data={props.data} />
+        <VoortgangKompasPanels
+          model={props.model}
+          data={props.data}
+          onPrefUpdated={props.onPrefUpdated}
+        />
         <VoortgangHub
           model={props.model}
           data={props.data}

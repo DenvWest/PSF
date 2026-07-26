@@ -1,17 +1,24 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
 import KompasVandaagPanel, {
   KompasLogboekSection,
 } from "@/components/dashboard/kompas/KompasVandaagPanel";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
-import { supportsKompasDeepView } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import { isUsableFirstName } from "@/lib/intake-greetings";
+import {
+  buildDomainCheckStates,
+  type DomainCheckState,
+  type DomainCheckTimings,
+} from "@/lib/kompas-domain-check";
 import {
   buildKompasDomainRows,
   buildKompasMilestone,
@@ -19,9 +26,8 @@ import {
   type KompasCycleContext,
   type KompasDomainRow,
 } from "@/lib/kompas-home";
-import { getVitalityExplainer } from "@/lib/vitality-explainer";
-import { getNextVitalityBand, getVitalityBand } from "@/lib/vitality-gauge";
-import type { DashboardModel, PillarId } from "@/types/dashboard";
+import { getVitalityBand } from "@/lib/vitality-gauge";
+import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
 const RING_SIZE = 240;
 const RING_CENTER = RING_SIZE / 2;
@@ -43,11 +49,14 @@ type KompasHomeCardProps = {
   nutritionLogCompleted?: boolean;
   hasNutritionIntake?: boolean;
   hasStressCheckin?: boolean;
+  domainCheckDaysAgo?: DomainCheckTimings;
+  remeasureDaysUntil?: number | null;
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
   onGoVoortgang: () => void;
   onGoAgenda: (date: string) => void;
   onRemeasure?: () => void;
+  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 };
 
 function ringMetrics(score: number, radius: number) {
@@ -214,28 +223,168 @@ function RingTrendChip({ model }: { model: DashboardModel }) {
   );
 }
 
+function CheckCountdownRing({
+  progress,
+  color,
+  ready,
+  done = false,
+}: {
+  progress: number;
+  color: string;
+  ready: boolean;
+  done?: boolean;
+}) {
+  const radius = 6.25;
+  const circumference = 2 * Math.PI * radius;
+  const filled = Math.min(1, Math.max(0, progress)) * circumference;
+
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden className="shrink-0">
+      <circle
+        cx="8"
+        cy="8"
+        r={radius}
+        fill="none"
+        stroke={ready || done ? color : "#FFFFFF"}
+        strokeOpacity={ready || done ? 0.35 : 0.14}
+        strokeWidth="1.5"
+      />
+      {done ? (
+        <path
+          d="M5 8.2 L7.2 10.4 L11.2 5.9"
+          fill="none"
+          stroke={color}
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : ready ? (
+        <circle cx="8" cy="8" r="3.25" fill={color} />
+      ) : (
+        <circle
+          cx="8"
+          cy="8"
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeOpacity={0.85}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeDasharray={`${filled} ${circumference}`}
+          transform="rotate(-90 8 8)"
+        />
+      )}
+    </svg>
+  );
+}
+
+function DomainCheckStrip({
+  check,
+  color,
+  domainLabel,
+  onCheckClick,
+}: {
+  check: DomainCheckState;
+  color: string;
+  domainLabel: string;
+  onCheckClick: (check: DomainCheckState) => void;
+}) {
+  const ready = check.actionable;
+  const body = (
+    <>
+      <CheckCountdownRing
+        progress={check.progress}
+        color={color}
+        ready={ready}
+        done={check.status === "fresh"}
+      />
+      <span
+        className={`min-w-0 flex-1 truncate text-[11.5px] ${
+          ready ? "text-[#CDD7D0]" : "text-[#7E8C82]"
+        }`}
+      >
+        {check.label}
+      </span>
+      {check.ctaLabel ? (
+        check.highlighted ? (
+          <span
+            className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1 text-[11.5px] font-semibold text-[#0f1c10]"
+            style={{ background: color }}
+          >
+            {check.ctaLabel}
+            <Icons.ArrowRight s={12} />
+          </span>
+        ) : (
+          <span
+            className="inline-flex shrink-0 items-center gap-1 text-[11.5px] font-semibold"
+            style={{ color }}
+          >
+            Doe de check
+            <Icons.ArrowRight s={12} />
+          </span>
+        )
+      ) : null}
+    </>
+  );
+
+  const sharedClass =
+    "flex min-h-[36px] w-full items-center gap-2 border-t px-3 py-1.5 text-left";
+
+  if (!ready || !check.href) {
+    return (
+      <div
+        className={`${sharedClass} border-white/8`}
+        style={{ fontFamily: "var(--f-sans)" }}
+      >
+        {body}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={check.href}
+      aria-label={`${check.ctaLabel} — ${domainLabel}`}
+      onClick={() => onCheckClick(check)}
+      className={`${sharedClass} cursor-pointer border-white/8 no-underline transition hover:bg-white/[0.05]`}
+      style={{
+        fontFamily: "var(--f-sans)",
+        color: "inherit",
+        ...(check.highlighted ? { background: `${color}14` } : {}),
+      }}
+    >
+      {body}
+    </Link>
+  );
+}
+
 function DomainMeterBar({
   row,
   tag,
   isFocus,
+  check,
   onOpenDomain,
+  onCheckClick,
 }: {
   row: KompasDomainRow;
   tag?: string;
   isFocus: boolean;
+  check?: DomainCheckState;
   onOpenDomain: (domain: PillarId) => void;
+  onCheckClick: (check: DomainCheckState) => void;
 }) {
   const fillWidth = Math.min(100, Math.max(0, row.score));
+  const baseline =
+    row.delta != null && row.delta !== 0
+      ? Math.min(100, Math.max(0, row.score - row.delta))
+      : null;
 
   return (
-    <button
-      type="button"
-      onClick={() => onOpenDomain(row.id)}
-      aria-label={`Open ${row.label}`}
-      className={`w-full cursor-pointer rounded-xl border px-3 py-2.5 text-left transition ${
+    <div
+      className={`overflow-hidden rounded-xl border transition ${
         isFocus
           ? "border-[color:var(--ac)]/40 bg-[color:var(--ac)]/[0.08]"
-          : "border-white/8 bg-black/15 hover:border-white/14 hover:bg-white/[0.03]"
+          : "border-white/8 bg-black/15 hover:border-white/14"
       }`}
       style={
         {
@@ -245,45 +394,69 @@ function DomainMeterBar({
         } as CSSProperties
       }
     >
-      <span className="flex items-center gap-2">
-        <span
-          aria-hidden
-          className="h-2 w-2 shrink-0 rounded-full"
-          style={{ background: row.color }}
-        />
-        <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
-          <span className="shrink-0 font-serif text-[15px] text-[#F1EFE8]">{row.label}</span>
-          <span className="hidden truncate text-[11.5px] text-[#7E8C82] sm:inline">
-            {row.descriptor}
-          </span>
-        </span>
-        {isFocus ? (
+      <button
+        type="button"
+        onClick={() => onOpenDomain(row.id)}
+        aria-label={`Open ${row.label}`}
+        className="w-full cursor-pointer bg-transparent px-3 py-2.5 text-left transition hover:bg-white/[0.03]"
+      >
+        <span className="flex items-center gap-2">
           <span
-            className="shrink-0 rounded-md border px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.1em]"
-            style={{ color: row.color, borderColor: `${row.color}66` }}
-          >
-            Focus
+            aria-hidden
+            className="h-2 w-2 shrink-0 rounded-full"
+            style={{ background: row.color }}
+          />
+          <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
+            <span className="shrink-0 font-serif text-[15px] text-[#F1EFE8]">{row.label}</span>
+            <span className="hidden truncate text-[11.5px] text-[#7E8C82] sm:inline">
+              {row.descriptor}
+            </span>
           </span>
-        ) : tag ? (
-          <span className="shrink-0 rounded-md border border-white/10 bg-black/20 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.08em] text-[#7E8C82]">
-            {tag}
+          {isFocus ? (
+            <span
+              className="shrink-0 rounded-md border px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.1em]"
+              style={{ color: row.color, borderColor: `${row.color}66` }}
+            >
+              Focus
+            </span>
+          ) : tag ? (
+            <span className="shrink-0 rounded-md border border-white/10 bg-black/20 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-[0.08em] text-[#7E8C82]">
+              {tag}
+            </span>
+          ) : null}
+          <span className="shrink-0 font-serif text-[17px] tabular-nums text-[#F1EFE8]">
+            {row.score}
           </span>
-        ) : null}
-        <span className="shrink-0 font-serif text-[17px] tabular-nums text-[#F1EFE8]">
-          {row.score}
+          <DeltaBadge delta={row.delta} empty={row.delta == null} />
         </span>
-        <DeltaBadge delta={row.delta} empty={row.delta == null} />
-      </span>
-      <span className="mt-2 block h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
-        <span
-          className="block h-full rounded-full"
-          style={{
-            width: `${fillWidth}%`,
-            background: `linear-gradient(90deg, ${row.color}c4, ${row.color})`,
-          }}
+        <span className="relative mt-2 block h-1.5 w-full rounded-full bg-white/[0.08]">
+          <span
+            className="absolute inset-y-0 left-0 block rounded-full"
+            style={{
+              width: `${fillWidth}%`,
+              background: `linear-gradient(90deg, ${row.color}c4, ${row.color})`,
+            }}
+          />
+          {baseline != null ? (
+            <span
+              aria-hidden
+              title="Waar je begon"
+              className="absolute top-1/2 h-2.5 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/45"
+              style={{ left: `${baseline}%` }}
+            />
+          ) : null}
+        </span>
+      </button>
+
+      {check ? (
+        <DomainCheckStrip
+          check={check}
+          color={row.color}
+          domainLabel={row.label}
+          onCheckClick={onCheckClick}
         />
-      </span>
-    </button>
+      ) : null}
+    </div>
   );
 }
 
@@ -394,153 +567,20 @@ function LeefstijlHeader({
   );
 }
 
-function FocusVoortgangPanel({
-  model,
-  onOpenPriority,
-}: {
-  model: DashboardModel;
-  onOpenPriority: (domain: PillarId) => void;
-}) {
-  const priorityRow = buildKompasDomainRows(model).find((row) => row.isPriority);
-
-  if (!priorityRow) {
-    return null;
-  }
-
-  const score = Math.round(priorityRow.score);
-  const delta = priorityRow.delta;
-  const band = getVitalityBand(score);
-  const nextBand = getNextVitalityBand(score);
-  const target = nextBand ? nextBand.min : 100;
-  const baseline = delta != null ? Math.min(100, Math.max(0, score - delta)) : null;
-  const hasStappenplan = supportsKompasDeepView(priorityRow.id);
-  const linkLabel = hasStappenplan ? "Stappenplan" : `Open ${priorityRow.label.toLowerCase()}`;
-
-  const explainer = getVitalityExplainer({
-    vitality: model.vitality,
-    vitalityDelta: model.vitalityDelta,
-    priorityId: model.priority.id,
-    priorityScore: model.scores[model.priority.id] ?? 0,
-    answers: model.answers,
-    domainScores: model.domainScores,
-  });
-  const painLine = explainer[1] ?? null;
-
-  const handleClick = () => {
-    clarityTag("dashboard_kompas_home", `focus_${priorityRow.id}`);
-    onOpenPriority(priorityRow.id);
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="w-full cursor-pointer rounded-xl border border-white/8 bg-black/15 px-3.5 py-3.5 text-left transition hover:border-white/14 hover:bg-white/[0.03]"
-      style={{ fontFamily: "var(--f-sans)" }}
-    >
-      <div className="flex items-end justify-between gap-3">
-        <div>
-          <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
-            Focus: {priorityRow.label}
-          </p>
-          <p className="mt-1 flex items-baseline gap-2">
-            <span
-              className="font-serif text-[34px] leading-none tabular-nums text-[#F1EFE8]"
-              style={{ fontFamily: "var(--f-serif)" }}
-            >
-              {score}
-            </span>
-            <span
-              className="rounded-full border px-2 py-0.5 text-[11px] font-semibold"
-              style={{
-                color: band.color,
-                borderColor: `${band.color}55`,
-                background: `${band.color}1a`,
-              }}
-            >
-              {band.label}
-            </span>
-          </p>
-        </div>
-        {delta != null && delta !== 0 ? (
-          <span
-            className="mb-0.5 inline-flex items-center gap-1 text-[13px] font-semibold tabular-nums"
-            style={{ color: delta > 0 ? "#5FA872" : "#C8956C" }}
-          >
-            {delta > 0 ? <Icons.TrendUp s={14} /> : <Icons.ArrowDown s={14} />}
-            {delta > 0 ? `+${delta}` : delta}
-          </span>
-        ) : null}
-      </div>
-
-      <div className="mt-3.5">
-        <div className="relative h-2 rounded-full bg-white/[0.08]">
-          <div
-            className="absolute inset-y-0 left-0 rounded-full"
-            style={{
-              width: `${score}%`,
-              background: `linear-gradient(90deg, ${band.color}, #5FA872)`,
-            }}
-          />
-          {baseline != null ? (
-            <span
-              aria-hidden
-              className="absolute top-1/2 h-3 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40"
-              style={{ left: `${baseline}%` }}
-              title="Waar je begon"
-            />
-          ) : null}
-          <span
-            aria-hidden
-            className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#5FA872] bg-[#0f1c10]"
-            style={{ left: `${target}%` }}
-            title="Doel"
-          />
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[11px] text-[#9FB0A6]">
-          <span>{baseline != null ? `Start ${baseline}` : "Je startpunt"}</span>
-          <span className="font-medium text-[#CDD7D0]">
-            {nextBand ? `Doel ${target} · ${nextBand.label}` : "Behoud je niveau"}
-          </span>
-        </div>
-      </div>
-
-      {painLine ? (
-        <div className="mt-3.5 flex items-start gap-2 border-t border-white/8 pt-3">
-          <span
-            aria-hidden
-            className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
-            style={{ background: priorityRow.color }}
-          />
-          <p className="m-0 text-[12px] leading-relaxed text-[#9FB0A6] text-pretty">
-            {painLine}
-          </p>
-        </div>
-      ) : null}
-
-      <span
-        className="mt-3.5 flex items-center gap-1.5 border-t border-white/8 pt-3 text-[13px] font-semibold"
-        style={{ color: priorityRow.color }}
-      >
-        {linkLabel}
-        <Icons.ArrowRight s={14} />
-      </span>
-    </button>
-  );
-}
-
 function VoortgangSection({
   model,
   remeasureDue,
   cycleContext,
   onRemeasure,
   onOpenPriority,
+  onPrefUpdated,
 }: {
   model: DashboardModel;
   remeasureDue: boolean;
   cycleContext?: KompasCycleContext | null;
   onRemeasure?: () => void;
   onOpenPriority: (domain: PillarId) => void;
+  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
 }) {
   const reminderShownRef = useRef(false);
   const [weekState, setWeekState] = useState<WeekPayload | null>(null);
@@ -596,13 +636,12 @@ function VoortgangSection({
 
   return (
     <div>
-      <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-        Voortgang
-      </p>
-
-      <div className="mt-3">
-        <FocusVoortgangPanel model={model} onOpenPriority={onOpenPriority} />
-      </div>
+      <KompasVoortgangFocusBlock
+        model={model}
+        onPrefUpdated={onPrefUpdated}
+        onOpenPriority={onOpenPriority}
+        surface="kompas_voortgang"
+      />
 
       <div className="mt-3 rounded-xl border border-white/8 bg-black/15 px-3.5 py-3">
         <p className="m-0 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
@@ -633,18 +672,63 @@ export default function KompasHomeCard({
   nutritionLogCompleted = false,
   hasNutritionIntake = false,
   hasStressCheckin = false,
+  domainCheckDaysAgo,
+  remeasureDaysUntil = null,
   onOpenDomain,
   onOpenPriority,
   onGoVoortgang,
   onGoAgenda,
   onRemeasure,
+  onPrefUpdated,
 }: KompasHomeCardProps) {
   const rows = useMemo(() => buildKompasDomainRows(model), [model]);
   const domainTags = useMemo(() => buildDomainTags(model), [model]);
+  const checkStates = useMemo(
+    () =>
+      buildDomainCheckStates({
+        timings: domainCheckDaysAgo ?? {},
+        priorityId: model.priority.id,
+        remeasureDaysUntil,
+      }),
+    [domainCheckDaysAgo, model.priority.id, remeasureDaysUntil],
+  );
+  const highlightedCheck = useMemo(
+    () => [...checkStates.values()].find((state) => state.highlighted) ?? null,
+    [checkStates],
+  );
+  const checkShownRef = useRef<PillarId | null>(null);
+
+  useEffect(() => {
+    if (!highlightedCheck || checkShownRef.current === highlightedCheck.domain) {
+      return;
+    }
+    checkShownRef.current = highlightedCheck.domain;
+    trackEvent("dashboard_kompas_domain_check_shown", {
+      surface: "kompas_home",
+      domain: highlightedCheck.domain,
+      check_status: highlightedCheck.status,
+    });
+  }, [highlightedCheck]);
 
   const handleOpenDomain = (domain: PillarId) => {
     clarityTag("dashboard_kompas_home", `ring_row_${domain}`);
     onOpenDomain(domain);
+  };
+
+  const handleCheckClick = (check: DomainCheckState) => {
+    trackEvent("dashboard_kompas_domain_check_click", {
+      surface: "kompas_home",
+      domain: check.domain,
+      check_status: check.status,
+      highlighted: check.highlighted,
+    });
+    clarityTag("dashboard_kompas_home", `check_${check.domain}_${check.status}`);
+    emitAccountClientEvent("dashboard.domain_check_cta_clicked", {
+      surface: "kompas_home",
+      domain: check.domain,
+      status: check.status,
+      highlighted: check.highlighted,
+    });
   };
 
   const handleOpenPriority = onOpenPriority ?? onOpenDomain;
@@ -667,7 +751,9 @@ export default function KompasHomeCard({
                   row={row}
                   tag={domainTags.get(row.id)}
                   isFocus={row.isPriority}
+                  check={checkStates.get(row.id)}
                   onOpenDomain={handleOpenDomain}
+                  onCheckClick={handleCheckClick}
                 />
               ))}
             </div>
@@ -702,6 +788,7 @@ export default function KompasHomeCard({
             cycleContext={cycleContext}
             onRemeasure={onRemeasure}
             onOpenPriority={handleOpenPriority}
+            onPrefUpdated={onPrefUpdated}
           />
         </section>
 

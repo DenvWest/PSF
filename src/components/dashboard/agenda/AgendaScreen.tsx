@@ -23,12 +23,14 @@ import { clarityTag } from "@/lib/clarity";
 import { isPlanStepHidden } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackEvent } from "@/lib/ga4";
 import {
+  resetDashboardPriorityFocus,
+  saveDashboardPrioritySelection,
+} from "@/lib/dashboard-priority-selection";
+import {
   postDismissPlanStep,
-  postPrioritySelection,
   postRestorePlanStep,
   postScheduledTime,
   postSetPlanStepsHidden,
-  resetPriorityPref,
 } from "@/lib/priority-pref-client";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
@@ -310,20 +312,14 @@ export default function AgendaScreen({
   ) => {
     setPrefBusy(true);
     try {
-      const pref = await postPrioritySelection({
+      await saveDashboardPrioritySelection({
         pillarId,
         source,
         surface: "agenda",
         timeBucket: model.timeBucket ?? null,
         scheduledTime: model.scheduledTime ?? null,
+        onPrefUpdated,
       });
-      onPrefUpdated(pref);
-      trackEvent("dashboard_priority_selected", {
-        pillar_id: pillarId,
-        source,
-        surface: "agenda",
-      });
-      clarityTag("dashboard_priority", pillarId);
     } finally {
       setPrefBusy(false);
     }
@@ -332,8 +328,7 @@ export default function AgendaScreen({
   const handleResetFocus = async () => {
     setPrefBusy(true);
     try {
-      await resetPriorityPref();
-      onPrefUpdated(null);
+      await resetDashboardPriorityFocus(onPrefUpdated);
     } finally {
       setPrefBusy(false);
     }
