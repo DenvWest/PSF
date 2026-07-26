@@ -95,24 +95,16 @@ export default function CockpitFrame({
   const isSheet = presentation === "sheet";
   const isDialogOpen = contextOpen && isDrawerMode;
 
-  // Rail-knop en inspector-"meet"-kaart delen dezelfde actie maar zijn twee
-  // aparte oppervlakken — track ze los zodat we weten welk oppervlak converteert.
+  // De domeinrail is een switcher, geen actiebalk: de hermeting-actie leeft nog
+  // in de inspector-"meet"-kaart. Surface blijft in het event zodat de reeks
+  // vergelijkbaar blijft met eerdere weken.
   const trackRemeasureClick = useCallback(
-    (surface: "context_rail" | "inspector_meet", due: boolean) => {
+    (surface: "inspector_meet", due: boolean) => {
       trackEvent("dashboard_hermeting_reminder_click", { surface, due });
       clarityTag("dashboard_hermeting_reminder_click", surface);
     },
     [],
   );
-  const railRemeasureAction = remeasureAction
-    ? {
-        due: remeasureAction.due,
-        onClick: () => {
-          trackRemeasureClick("context_rail", remeasureAction.due);
-          remeasureAction.onClick();
-        },
-      }
-    : undefined;
   const inspectorRemeasureAction = remeasureAction
     ? {
         due: remeasureAction.due,
@@ -252,7 +244,6 @@ export default function CockpitFrame({
           onToolClick={onToolClick}
           onBackToKompas={onBackToKompas}
           domainLabel={railDomainLabel}
-          remeasureAction={railRemeasureAction}
         />
 
         <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4 min-[1440px]:px-6">
