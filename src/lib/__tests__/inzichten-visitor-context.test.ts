@@ -57,6 +57,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   hasStressCheckin: false,
   domainCheckDaysAgo: {},
   movementPrefs: { startPattern: null, anchor: null },
+  supplementVerdicts: [],
 };
 
 const DASHBOARD_WITH_DATA: DashboardData = {
@@ -105,6 +106,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   hasStressCheckin: false,
   domainCheckDaysAgo: {},
   movementPrefs: { startPattern: null, anchor: null },
+  supplementVerdicts: [],
 };
 
 const DASHBOARD_WITH_ANSWERS: DashboardData = {

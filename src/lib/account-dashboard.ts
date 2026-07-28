@@ -69,6 +69,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   hasStressCheckin: false,
   domainCheckDaysAgo: {},
   movementPrefs: EMPTY_MOVEMENT_PREFS,
+  supplementVerdicts: [],
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -417,6 +418,7 @@ export async function loadAccountDashboardData(
         label:
           nutrientReferences[entry.nutrient]?.label ?? String(entry.nutrient),
         band: entry.band,
+        nutrient: entry.nutrient,
         ...(changedBandByNutrient?.has(entry.nutrient)
           ? { previousBand: changedBandByNutrient.get(entry.nutrient)! }
           : {}),
@@ -796,5 +798,6 @@ export async function loadAccountDashboardData(
     sleepCheckinFocus,
     hasStressCheckin,
     domainCheckDaysAgo,
+    supplementVerdicts: [],
   };
 }

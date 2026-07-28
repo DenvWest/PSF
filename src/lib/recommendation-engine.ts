@@ -424,6 +424,40 @@ export function getPillarRecommendation(
   );
 }
 
+/**
+ * Alle regels die voor dit ingrediënt vuren, los van selectie of ranking.
+ *
+ * Route- én hubregels tellen mee: een hubregel (bijv. protein_gap_signal) is
+ * evengoed een reden dat iemand dit nodig heeft. vitamin_d_fallback telt niet
+ * mee — dat is een vulregel voor de hub, geen behoefte-signaal.
+ */
+export function collectVerdictTriggers(
+  entry: SupplementCatalogEntry,
+  input: RecommendationInput,
+): RecommendationTriggerReason[] {
+  const triggered = [...collectAllEntryTriggers(entry, input)];
+
+  for (const rule of entry.hubRules ?? []) {
+    if (rule === "vitamin_d_fallback") {
+      continue;
+    }
+    const trigger = hubRuleMatches(rule, input, new Set());
+    if (trigger) {
+      triggered.push(trigger);
+    }
+  }
+
+  const seen = new Set<string>();
+  return triggered.filter((reason) => {
+    const key = JSON.stringify(reason);
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
 export function getCatalogEntry(id: string): SupplementCatalogEntry | undefined {
   return getCatalogEntryById(id);
 }

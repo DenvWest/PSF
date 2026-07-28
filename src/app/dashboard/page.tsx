@@ -7,6 +7,7 @@ import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 import { parseSleepFocus, SLEEP_FOCUS_COOKIE_NAME } from "@/lib/sleep-focus";
+import { syncSupplementVerdicts } from "@/lib/supplement-verdict-producer";
 import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
@@ -133,11 +134,13 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     ? parseSleepFocus(cookieStore.get(SLEEP_FOCUS_COOKIE_NAME)?.value)
     : null;
 
+  const supplementVerdicts = await syncSupplementVerdicts(account.id, data);
+
   return (
     <div className="ps-dark">
       <Dashboard
         empty={data.empty}
-        data={data}
+        data={{ ...data, supplementVerdicts }}
         hasTrendsFeature={hasTrendsFeature}
         sleepFocus={sleepFocus}
         {...dashboardProps}

@@ -7,7 +7,9 @@ import type {
   TimeBucket,
 } from "@/lib/account-priority-pref";
 import type { MovementPrefs } from "@/lib/movement-prefs";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { PlanProgress } from "@/types/lifestyle-plan";
+import type { StoredSupplementVerdict } from "@/types/verdict";
 
 export type { TimeBucket, PriorityPrefSource };
 
@@ -177,6 +179,7 @@ export type NutritionIntakeBand = "below" | "around" | "meets";
 export type NutritionIntakeItem = {
   label: string;
   band: NutritionIntakeBand;
+  nutrient: NutrientId;
   /** Alleen gezet als er een vorige log is én de band veranderde. */
   previousBand?: NutritionIntakeBand;
 };
@@ -222,6 +225,8 @@ export type DashboardData = {
   /** Dagen sinds de laatste eigen domeincheck; ontbreekt = nog nooit gedaan. */
   domainCheckDaysAgo: Partial<Record<PillarId, number>>;
   movementPrefs: MovementPrefs;
+  /** Geldige supplementoordelen — ook de ingrediënten die op "nee" uitkomen. */
+  supplementVerdicts: StoredSupplementVerdict[];
 };
 
 export type IdentityField = {

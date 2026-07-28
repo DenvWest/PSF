@@ -12,6 +12,7 @@ import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
+import SupplementVerdictPanel from "@/components/dashboard/SupplementVerdictPanel";
 import PremiumValuePropsList from "@/components/dashboard/PremiumValuePropsList";
 import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import VitalityGauge from "@/components/app/VitalityGauge";
@@ -315,6 +316,9 @@ function FavorietenView({
   return (
     <section aria-label="Favorieten" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Favorieten" onBack={onBack} />
+
+      <SupplementVerdictPanel verdicts={data?.supplementVerdicts ?? []} />
+
       <div
         style={{
           fontFamily: "var(--f-serif)",

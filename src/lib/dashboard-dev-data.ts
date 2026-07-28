@@ -167,5 +167,6 @@ export function buildDevDashboardData(
         ? { slaap: 21, stress: 5, voeding: 0 }
         : { slaap: 3, stress: 9 },
     movementPrefs: EMPTY_MOVEMENT_PREFS,
+    supplementVerdicts: [],
   };
 }
