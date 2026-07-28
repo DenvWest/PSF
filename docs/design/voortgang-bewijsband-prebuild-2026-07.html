@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voortgang — Bewijsband prebuild (juli 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   TOKENS — 1:1 met .ps-dash in src/app/globals.css
+   ══════════════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#1a2e1a;
+  --panel:rgba(255,255,255,0.05);
+  --panel-border:rgba(255,255,255,0.12);
+  --text:rgba(255,255,255,0.95);
+  --text-muted:rgba(255,255,255,0.60);
+  --text-subtle:rgba(255,255,255,0.40);
+  --divider:rgba(255,255,255,0.08);
+  --divider-strong:rgba(255,255,255,0.16);
+  --sage:#5A8F6A;
+  --terra:#C8956C;
+  --f-serif:"DM Serif Display", Georgia, "Times New Roman", serif;
+  --f-sans:"DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* prebuild-only helpers — afgeleid van de craft-lat /beweging-na-40 */
+  --eyebrow:#9FB0A6;      /* eyebrow-kleur uit CockpitTile */
+  --body:#CDD7D0;         /* leescopy op donker */
+  --plane:#132414;        /* hero-vlak, denser dan --bg */
+  --sage-ink:#33583F;     /* sage met genoeg contrast op de lichte beat */
+  --beat-bg:#EFEDE6;      /* het enige lichte vlak in de scroll */
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
+body{
+  font-family:var(--f-sans);
+  color:var(--text);
+  background:radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%) var(--bg);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+h1,h2,h3{margin:0;font-weight:400;font-family:var(--f-serif)}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:6px}
+
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:0 16px}
+.eyebrow{
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--eyebrow);
+}
+.tile{
+  border-radius:16px;border:1px solid rgba(255,255,255,0.10);
+  background:rgba(0,0,0,0.20);padding:16px;
+}
+
+/* ── Review-chrome: state-schakelaar ─────────────────────────────────── */
+.chrome{
+  position:sticky;top:0;z-index:40;
+  background:rgba(12,22,12,0.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--divider-strong);
+}
+.chrome-inner{padding:10px 16px 12px;max-width:640px;margin:0 auto}
+.chrome h2{font-family:var(--f-sans);font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.14em;color:var(--text-subtle);margin-bottom:8px}
+.states{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.states button{
+  min-height:44px;padding:6px 4px;border-radius:10px;cursor:pointer;
+  border:1px solid var(--panel-border);background:var(--panel);
+  color:var(--text-muted);font-size:12px;font-weight:500;letter-spacing:.01em;
+}
+.states button[aria-pressed="true"]{
+  background:rgba(90,143,106,0.20);border-color:var(--sage);color:var(--text);
+}
+.autolog{
+  margin-top:8px;font-size:10.5px;color:var(--text-subtle);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+
+/* ── 1. HERO + FLAGSHIP ──────────────────────────────────────────────── */
+.hero{position:relative;overflow:hidden;background:var(--plane);
+  border-bottom:1px solid var(--divider-strong);padding:28px 0 26px}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.14;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.5) 1px, transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%, #000 0%, transparent 62%);
+  mask-image:radial-gradient(120% 80% at 50% 0%, #000 0%, transparent 62%);
+}
+.hero::after{
+  content:"";position:absolute;width:400px;height:400px;right:-150px;top:-190px;
+  border-radius:999px;background:var(--sage);filter:blur(120px);opacity:.18;pointer-events:none;
+}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{
+  margin-top:12px;font-size:clamp(27px,7.4vw,34px);line-height:1.1;
+  letter-spacing:-.005em;text-wrap:balance;
+}
+.bewijsregel{
+  margin-top:12px;font-size:15.5px;line-height:1.55;color:var(--body);
+  max-width:42ch;text-wrap:pretty;
+}
+.ctarow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:46px;padding:0 20px;border-radius:999px;cursor:pointer;
+  font-size:14.5px;font-weight:600;border:1px solid transparent;
+}
+.btn-primary{background:var(--sage);color:#0E1C10;border-color:var(--sage)}
+.btn-ghost{background:transparent;border-color:var(--panel-border);color:var(--text)}
+.btn-link{
+  background:none;border:none;padding:0 4px;min-height:44px;cursor:pointer;
+  font-size:14px;color:var(--eyebrow);text-decoration:underline;
+  text-underline-offset:3px;text-decoration-color:rgba(159,176,166,.45);
+}
+.reassure{margin-top:12px;font-size:12.5px;color:var(--text-subtle);text-wrap:pretty}
+
+/* ── Flagship: de Bewijsband ─────────────────────────────────────────── */
+.band{margin-top:26px}
+.band-head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;margin-bottom:10px}
+.band-title{font-family:var(--f-serif);font-size:18px;line-height:1.3}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0 0;font-size:11.5px;color:var(--text-subtle)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;flex:0 0 auto}
+.lg-tick{width:3px;height:12px;border-radius:2px;background:var(--sage)}
+.lg-dia{width:8px;height:8px;background:var(--eyebrow);transform:rotate(45deg)}
+.lg-run{width:16px;height:0;border-top:1px dashed rgba(255,255,255,.30)}
+.band-svg{display:block;width:100%;height:auto;overflow:visible}
+.scrub{
+  width:100%;margin:4px 0 0;appearance:none;-webkit-appearance:none;
+  background:transparent;cursor:pointer;height:44px;
+}
+.scrub:disabled{opacity:.3;cursor:default}
+.scrub::-webkit-slider-runnable-track{height:2px;border-radius:999px;background:rgba(255,255,255,.14)}
+.scrub::-webkit-slider-thumb{
+  -webkit-appearance:none;margin-top:-11px;width:24px;height:24px;border-radius:999px;
+  background:var(--sage);border:3px solid var(--plane);
+}
+.scrub::-moz-range-track{height:2px;border-radius:999px;background:rgba(255,255,255,.14)}
+.scrub::-moz-range-thumb{
+  width:24px;height:24px;border-radius:999px;border:3px solid var(--plane);
+  background:var(--sage);
+}
+.cap{min-height:76px;margin-top:2px}
+.cap-a{font-size:15px;font-weight:600;color:var(--text)}
+.cap-b{margin-top:3px;font-size:14px;color:var(--body);text-wrap:pretty}
+.cap-c{
+  margin-top:8px;font-family:var(--f-serif);font-style:italic;
+  font-size:15.5px;line-height:1.4;color:#A9C6B2;text-wrap:pretty;
+}
+.band-foot{
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--divider);
+  font-size:12.5px;color:var(--text-muted);text-wrap:pretty;
+}
+.band-note{margin-top:6px;font-size:11px;color:var(--text-subtle);text-wrap:pretty}
+
+/* ── 2. DOMEINEN ─────────────────────────────────────────────────────── */
+.sec{padding:28px 0}
+.sec-h{font-family:var(--f-serif);font-size:18px;line-height:1.3;margin-top:8px}
+.coverage{margin-top:8px;font-size:13px;color:var(--text-muted);line-height:1.5;text-wrap:pretty}
+.domlist{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+.domrow{
+  width:100%;min-height:52px;padding:7px 0;border:none;background:none;
+  cursor:pointer;text-align:left;display:block;
+}
+.domgrid{display:grid;grid-template-columns:minmax(0,1fr) 72px minmax(0,auto);
+  align-items:center;gap:10px}
+.domname{display:flex;align-items:center;gap:8px;min-width:0}
+.dot{width:8px;height:8px;border-radius:999px;flex:0 0 auto}
+.domlabel{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.domright{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex:0 0 auto}
+.bandlabel{font-size:12px;color:var(--text-muted);white-space:nowrap}
+.delta{font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.delta.up{color:#9FD4AE;background:rgba(95,168,114,.16)}
+.delta.down{color:#E7A3A3;background:rgba(194,75,75,.16)}
+.delta.flat{color:var(--text-subtle);background:rgba(255,255,255,.05)}
+.dommeta{margin:4px 0 0;padding-left:16px;font-size:11px;color:var(--text-subtle);line-height:1.4}
+.readout-sep{border-top:1px solid var(--divider);padding-top:10px;margin-top:6px}
+.readout-sep p{font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-subtle)}
+
+/* ── 3. CONTRAST-BEAT (het enige lichte vlak) ────────────────────────── */
+.beat{
+  background:var(--beat-bg);color:#16281A;padding:34px 0 32px;
+  border-top:1px solid rgba(0,0,0,.10);border-bottom:1px solid rgba(0,0,0,.10);
+}
+.beat .eyebrow{color:var(--sage-ink)}
+.beat h2{margin-top:12px;font-size:clamp(23px,6.2vw,30px);line-height:1.14;
+  color:#16281A;text-wrap:balance}
+.beat .lede{margin-top:12px;font-size:15px;line-height:1.55;
+  color:rgba(22,40,26,.70);max-width:44ch;text-wrap:pretty}
+.route{margin-top:24px}
+.route-track{position:relative;height:2px;background:rgba(22,40,26,.14);
+  border-radius:999px;margin:0 6px}
+.route-fill{position:absolute;left:0;top:0;height:2px;border-radius:999px;background:var(--sage-ink)}
+.route-dash{position:absolute;top:0;height:0;border-top:2px dashed rgba(22,40,26,.28)}
+.route-pin{position:absolute;top:50%;width:11px;height:11px;border-radius:999px;
+  transform:translate(-50%,-50%);background:var(--beat-bg);border:2px solid var(--sage-ink)}
+.route-pin.now{background:var(--sage-ink);width:14px;height:14px}
+.route-pin.next{border-style:dashed;border-color:rgba(22,40,26,.42)}
+.route-labels{position:relative;height:74px;margin-top:16px}
+.route-labels > div{position:absolute;top:0;min-width:0;white-space:nowrap}
+.route-labels .rl-k{font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(22,40,26,.50)}
+.route-labels .rl-v{font-family:var(--f-serif);font-size:22px;line-height:1.2;color:#16281A;margin-top:3px}
+.route-labels .rl-b{font-size:11.5px;color:rgba(22,40,26,.62);margin-top:1px}
+.route-labels .start{left:0;text-align:left}
+.route-labels .mid{text-align:center;transform:translateX(-50%)}
+.route-labels .end{right:0;text-align:right}
+.quote{
+  margin-top:26px;padding:18px;border-radius:16px;
+  background:rgba(22,40,26,.05);border:1px solid rgba(22,40,26,.10);
+}
+.quote figcaption{font-size:10.5px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.16em;color:var(--sage-ink)}
+.quote blockquote{margin:10px 0 0;font-family:var(--f-serif);font-style:italic;
+  font-size:clamp(17px,4.6vw,21px);line-height:1.34;color:#16281A;text-wrap:pretty}
+.quote .by{margin-top:10px;font-size:13px;color:rgba(22,40,26,.58)}
+.beat-link{
+  margin-top:20px;background:none;border:none;padding:0;min-height:44px;cursor:pointer;
+  font-size:14.5px;font-weight:600;color:var(--sage-ink);text-decoration:underline;
+  text-underline-offset:3px;display:inline-flex;align-items:center;gap:6px;
+}
+.beat-note{margin-top:14px;font-size:11.5px;line-height:1.5;
+  color:rgba(22,40,26,.52);max-width:60ch;text-wrap:pretty}
+
+/* ── 4. MEETREEKS ────────────────────────────────────────────────────── */
+.logrow{display:flex;align-items:center;gap:10px;min-height:48px;
+  padding:8px 0;border-top:1px solid var(--divider)}
+.logrow:first-child{border-top:none}
+.logdate{font-size:14px;flex:1 1 auto;min-width:0}
+.logval{font-size:13px;color:var(--text-muted);white-space:nowrap}
+.logempty{margin-top:12px;font-size:13px;color:var(--text-muted);text-wrap:pretty}
+
+/* ── 5. VERDER KIJKEN ────────────────────────────────────────────────── */
+.routerow{
+  width:100%;min-height:56px;display:flex;align-items:center;gap:12px;
+  padding:12px 0;border:none;background:none;cursor:pointer;text-align:left;
+  border-top:1px solid var(--divider);
+}
+.routerow:first-child{border-top:none}
+.routetxt{flex:1 1 auto;min-width:0}
+.routetxt b{display:block;font-size:14.5px;font-weight:500;color:var(--text)}
+.routetxt span{display:block;font-size:12.5px;color:var(--text-subtle);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chev{flex:0 0 auto;color:var(--text-subtle);font-size:18px;line-height:1}
+.soonpill{
+  flex:0 0 auto;font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:999px;
+  color:var(--terra);background:rgba(200,149,108,.12);border:1px solid rgba(200,149,108,.34);
+  white-space:nowrap;
+}
+.soongroup{margin-top:20px;padding-top:14px;border-top:1px solid var(--divider-strong)}
+.soongroup > p{font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-subtle);margin-bottom:4px}
+
+/* ── 6. PREMIUM (afsluiting) ─────────────────────────────────────────── */
+.premium{
+  margin:0 0 40px;border-radius:18px;padding:22px;
+  border:1px solid rgba(200,149,108,.32);
+  background:linear-gradient(160deg, rgba(200,149,108,.10), rgba(0,0,0,.22));
+}
+.premium .eyebrow{color:var(--terra)}
+.premium h2{margin-top:10px;font-size:22px;line-height:1.2}
+.premium p{margin-top:10px;font-size:14px;color:var(--body);text-wrap:pretty}
+.btn-terra{background:var(--terra);color:#1E1408;border-color:var(--terra);margin-top:16px}
+
+/* ── Toast ───────────────────────────────────────────────────────────── */
+.toast{
+  position:fixed;left:12px;right:12px;bottom:12px;z-index:60;
+  padding:12px 14px;border-radius:12px;
+  background:rgba(10,20,10,.96);border:1px solid var(--sage);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
+  color:#CFE3D5;line-height:1.45;word-break:break-word;
+  opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.toast.on{opacity:1;transform:translateY(0)}
+.toast b{color:var(--sage);font-weight:600}
+
+.hidden{display:none !important}
+
+/* ── Desktop ─────────────────────────────────────────────────────────── */
+@media (min-width:1024px){
+  .wrap{max-width:1080px;padding:0 32px}
+  .chrome-inner{max-width:1080px;padding:12px 32px 14px}
+  .states{grid-template-columns:repeat(5,1fr)}
+  .hero{padding:56px 0 48px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+    gap:56px;align-items:start}
+  .hero h1{font-size:clamp(34px,3.6vw,50px);line-height:1.04;margin-top:14px}
+  .bewijsregel{font-size:18px;max-width:38ch}
+  .band{margin-top:0;padding:22px;border-radius:20px;
+    border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.22)}
+  .sec{padding:44px 0}
+  .sec-h{font-size:22px}
+  .beat{padding:60px 0 56px}
+  .beat-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+    gap:56px;align-items:start}
+  .quote{margin-top:0}
+  .domlist{display:grid;grid-template-columns:1fr 1fr;gap:2px 40px}
+  .readout-sep{grid-column:1 / -1}
+  .toast{left:auto;right:24px;bottom:24px;max-width:520px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ REVIEW-CHROME (hoort niet bij het ontwerp) ═════════════════════ -->
+<div class="chrome">
+  <div class="chrome-inner">
+    <h2>Prebuild — bewijs-state</h2>
+    <div class="states" id="states" role="group" aria-label="Bewijs-state kiezen"></div>
+    <p class="autolog" id="autolog"></p>
+  </div>
+</div>
+
+<main>
+  <!-- ══ 1. HERO + FLAGSHIP ═══════════════════════════════════════════ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow" id="hero-eyebrow"></p>
+          <h1 id="hero-title"></h1>
+          <p class="bewijsregel" id="hero-line"></p>
+          <div class="ctarow" id="hero-ctas"></div>
+          <p class="reassure" id="hero-reassure"></p>
+        </div>
+
+        <!-- ── FLAGSHIP: de Bewijsband ── -->
+        <div class="band" id="band">
+          <div class="band-head">
+            <h2 class="band-title">Je cyclus</h2>
+          </div>
+          <div id="band-svg-holder"></div>
+          <input class="scrub" id="scrub" type="range" min="1" max="30" step="1"
+                 aria-label="Dag in je cyclus" />
+          <div class="cap" id="cap" aria-live="polite">
+            <p class="cap-a" id="cap-a"></p>
+            <p class="cap-b" id="cap-b"></p>
+            <p class="cap-c hidden" id="cap-c"></p>
+          </div>
+          <p class="band-foot" id="band-foot"></p>
+          <p class="band-note" id="band-note"></p>
+          <div class="legend" id="legend"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 2. DOMEINEN ══════════════════════════════════════════════════ -->
+  <section class="sec" id="sec-domeinen" aria-labelledby="dom-title">
+    <div class="wrap">
+      <div class="tile">
+        <p class="eyebrow">Je metingen</p>
+        <h2 class="sec-h" id="dom-title">Wat je van jezelf weet</h2>
+        <p class="coverage" id="dom-coverage"></p>
+        <ul class="domlist" id="dom-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 3. CONTRAST-BEAT ═════════════════════════════════════════════ -->
+  <section class="beat" id="sec-beat" aria-labelledby="beat-title">
+    <div class="wrap">
+      <div class="beat-grid">
+        <div>
+          <p class="eyebrow">Waar dit heen loopt</p>
+          <h2 id="beat-title"></h2>
+          <p class="lede" id="beat-lede"></p>
+
+          <div class="route" id="route">
+            <div class="route-track">
+              <span class="route-fill" id="route-fill"></span>
+              <span class="route-dash" id="route-dash"></span>
+              <span class="route-pin" id="pin-start"></span>
+              <span class="route-pin now" id="pin-now"></span>
+              <span class="route-pin next" id="pin-next"></span>
+            </div>
+            <div class="route-labels">
+              <div class="start" id="rl-start">
+                <p class="rl-k">Bij je start</p>
+                <p class="rl-v" id="rl-start-v"></p>
+                <p class="rl-b" id="rl-start-b"></p>
+              </div>
+              <div class="mid" id="rl-now">
+                <p class="rl-k">Nu</p>
+                <p class="rl-v" id="rl-now-v"></p>
+                <p class="rl-b" id="rl-now-b"></p>
+              </div>
+              <div class="end" id="rl-next">
+                <p class="rl-k" id="rl-next-k">Volgende band</p>
+                <p class="rl-v" id="rl-next-v"></p>
+                <p class="rl-b" id="rl-next-b"></p>
+              </div>
+            </div>
+          </div>
+
+          <button class="beat-link" id="beat-cta" type="button"></button>
+        </div>
+
+        <figure class="quote">
+          <figcaption>een berichtje van je toekomstige ik</figcaption>
+          <blockquote id="beat-quote"></blockquote>
+          <p class="by" id="beat-by"></p>
+        </figure>
+      </div>
+      <p class="beat-note">
+        Banden zijn leesniveaus, geen doelen en geen oordeel. Waar jouw lijn loopt,
+        hangt af van waar je nu staat.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══ 4. MEETREEKS ═════════════════════════════════════════════════ -->
+  <section class="sec" id="sec-meetreeks" aria-labelledby="log-title">
+    <div class="wrap">
+      <p class="eyebrow">Je meetreeks</p>
+      <h2 class="sec-h" id="log-title">Wat je tot nu toe hebt vastgelegd</h2>
+      <div id="log-list" style="margin-top:14px"></div>
+      <p class="logempty" id="log-empty"></p>
+    </div>
+  </section>
+
+  <!-- ══ 5. VERDER KIJKEN ═════════════════════════════════════════════ -->
+  <section class="sec" id="sec-verder" aria-labelledby="verder-title">
+    <div class="wrap">
+      <p class="eyebrow">Verder kijken</p>
+      <h2 class="sec-h" id="verder-title">Waar je dit verder uitzoekt</h2>
+      <div id="route-list" style="margin-top:14px"></div>
+
+      <div class="soongroup">
+        <p>Binnenkort</p>
+        <button class="routerow" type="button" data-soon="lichaamssamenstelling">
+          <span class="routetxt">
+            <b>Lichaamssamenstelling</b>
+            <span>Vet, spier en vocht als aparte meetlat</span>
+          </span>
+          <span class="soonpill">Binnenkort in te vullen</span>
+        </button>
+        <button class="routerow" type="button" data-soon="wearable">
+          <span class="routetxt">
+            <b>Je wearable koppelen</b>
+            <span>Slaap en herstel automatisch mee laten lopen</span>
+          </span>
+          <span class="soonpill">Binnenkort</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 6. AFSLUITING ════════════════════════════════════════════════ -->
+  <section class="sec" id="sec-premium" style="padding-top:8px">
+    <div class="wrap">
+      <div class="premium">
+        <p class="eyebrow">Premium</p>
+        <h2>Straks: je cyclus naast je vorige cyclus</h2>
+        <p>
+          De verdieping is in aanbouw. Zet je naam op de lijst, dan hoor je het
+          als het klaar is — geen verkooppraat, één mail.
+        </p>
+        <button class="btn btn-terra" id="waitlist" type="button">Zet me op de lijst</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* ══════════════════════════════════════════════════════════════════════
+   MOCK-DATA — veldnamen 1:1 met src/types/dashboard.ts
+   Plausibel account: man 45, dag 12 van zijn eerste cyclus, één intake +
+   twee losse domeinchecks. Géén showcase-account.
+   ══════════════════════════════════════════════════════════════════════ */
+const MOCK = {
+  /* ── DashboardData ── */
+  empty: false,
+  remeasure: { dueDate: "2026-08-14", daysUntil: 18 },
+  cycleEvidence: {
+    activeDays: 8,
+    cycleDay: 12,
+    daysUntilRemeasure: 18,
+    cycleStartDate: "2026-07-16",   // ONBENUT in de huidige UI — hier: de as van de flagship
+    cycleEndDate:   "2026-08-14",   // ONBENUT in de huidige UI — hier: het eindpunt
+    // VEREIST NIEUW (Golf 1) — loader-only afgeleide uit daily_action_log,
+    // geen schemawijziging. Zonder dit veld toont Golf 0 alleen de teller.
+    activeDayNumbers: [1, 2, 4, 5, 8, 9, 11, 12],
+  },
+  domainCheckDaysAgo: { slaap: 4, voeding: 9 },   // rest = nog nooit apart gemeten
+  deltaReport: null,        // ELDERS EIGENAAR — Hermeting-tab, niet stelen
+  supplementVerdicts: [],   // ELDERS EIGENAAR — Favorieten / Statistieken
+
+  /* ── DashboardModel ── */
+  model: {
+    date: "16 jul 2026",
+    priority: { id: "slaap", label: "Slaap" },
+    vitality: 51,           // leeft op ?screen=inzichten, niet op de hub
+    scores:  { slaap:47, energie:46, stress:52, voeding:55, beweging:44, herstel:49, verbinding:61 },
+    trend:   { slaap:[38,47], energie:[46], stress:[52], voeding:[58,55],
+               beweging:[44], herstel:[49], verbinding:[61] },
+    history: [ { seq:1, date:"16 jul 2026", priority:"slaap", vitality:51 } ],
+  },
+};
+
+/* Overlays per bewijs-state — alleen de velden die verschillen. */
+const STATE_OVERLAYS = {
+  beantwoord: {},
+  opbouwend: {
+    cycleEvidence: { activeDays: 7, activeDayNumbers: [2,3,5,6,9,11,12] },
+    domainCheckDaysAgo: { voeding: 9 },
+    model: { trend: { slaap: [47] } },            // één punt → geen focusDelta
+  },
+  dun: {
+    cycleEvidence: { activeDays: 2, activeDayNumbers: [3,10] },
+    domainCheckDaysAgo: {},
+    model: { trend: { slaap: [47] } },
+  },
+  wachtend: {
+    cycleEvidence: null,                          // niets gelogd in deze cyclus
+    domainCheckDaysAgo: {},
+    model: { trend: { slaap: [47] } },
+  },
+  nul: { empty: true },
+};
+
+const STATE_LABELS = {
+  beantwoord: "beantwoord",
+  opbouwend:  "opbouwend",
+  dun:        "dun",
+  wachtend:   "wachtend",
+  nul:        "nul-staat",
+};
+
+/* PILLARS + kleuren — src/data/dashboard/index.ts */
+const PILLARS = [
+  { id:"slaap",      label:"Slaap",      color:"#5B6EAE", role:"intervention" },
+  { id:"stress",     label:"Stress",     color:"#8B6E99", role:"intervention" },
+  { id:"voeding",    label:"Voeding",    color:"#5A8F6A", role:"intervention" },
+  { id:"beweging",   label:"Beweging",   color:"#C26E4B", role:"intervention" },
+  { id:"verbinding", label:"Verbinding", color:"#7A8A6B", role:"intervention" },
+  { id:"energie",    label:"Energie",    color:"#C4873B", role:"readout" },
+  { id:"herstel",    label:"Herstel",    color:"#4A8A99", role:"readout" },
+];
+const PILLAR_BY_ID = Object.fromEntries(PILLARS.map(p => [p.id, p]));
+
+/* src/lib/score-bands.ts — korte domeinlabels */
+function scoreBandShort(v){ return v < 40 ? "Laag" : v < 65 ? "Gemiddeld" : "Sterk"; }
+function nextBandFloor(v){ return v < 40 ? 40 : v < 65 ? 65 : null; }
+function nextBandLabel(v){ return v < 40 ? "Gemiddeld" : v < 65 ? "Sterk" : null; }
+
+/* src/lib/vitality-gauge.ts — vijf vitaliteitsbanden */
+const VITALITY_BANDS = [
+  { id:"uit_balans", label:"Uit balans", min:0,  color:"#C24B4B" },
+  { id:"op_gang",    label:"Op gang",    min:35, color:"#D4824A" },
+  { id:"goed",       label:"Goed",       min:55, color:"#C4A035" },
+  { id:"sterk",      label:"Sterk",      min:70, color:"#5FA872" },
+  { id:"optimaal",   label:"Optimaal",   min:85, color:"#3D8B5A" },
+];
+function vitalityBand(v){
+  let band = VITALITY_BANDS[0];
+  for (const c of VITALITY_BANDS) if (v >= c.min) band = c;
+  return band;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   src/lib/voortgang-bewijs-copy.ts — letterlijk geport, copy-regels intact
+   ══════════════════════════════════════════════════════════════════════ */
+function buildVoortgangBewijsRegel(input){
+  const { activeDays, cycleDay, daysUntilRemeasure, focusLabel, focusDelta } = input;
+
+  if (focusDelta != null && focusDelta !== 0 && activeDays != null && cycleDay != null) {
+    const direction = focusDelta > 0 ? "hoger" : "lager";
+    return {
+      state: "beantwoord",
+      line: "Je was " + activeDays + " van de " + cycleDay + " dagen actief. " +
+            focusLabel + " staat " + Math.abs(focusDelta) + " punten " + direction +
+            " dan bij je start.",
+      ctaLabel: null,
+    };
+  }
+  if (activeDays == null || cycleDay == null) {
+    const line = daysUntilRemeasure != null
+      ? "Je hermeting staat over " + daysUntilRemeasure + " dagen. Dan zie je of er beweging in je " +
+        focusLabel.toLowerCase() + " zit."
+      : "Zodra je tweede meting binnen is, lees je hier of er beweging in zit.";
+    return { state: "wachtend", line, ctaLabel: null };
+  }
+  const threshold = Math.max(2, Math.ceil(cycleDay / 3));
+  if (activeDays >= threshold) {
+    const suffix = daysUntilRemeasure != null && daysUntilRemeasure <= 0
+      ? "meet je nu, met je hermeting."
+      : "meet je over " + (daysUntilRemeasure ?? 0) + " dagen.";
+    return {
+      state: "opbouwend",
+      line: "Je was " + activeDays + " van de " + cycleDay + " dagen actief. Of dat je " +
+            focusLabel.toLowerCase() + " raakt, " + suffix,
+      ctaLabel: null,
+    };
+  }
+  return {
+    state: "dun",
+    line: "Je was " + activeDays + " van de " + cycleDay +
+          " dagen actief. Te weinig om iets te zien — dat is informatie, geen oordeel.",
+    ctaLabel: "Pak één moment terug",
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HELPERS
+   ══════════════════════════════════════════════════════════════════════ */
+const CYCLE_LENGTH = 30;
+const MONTHS = ["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+
+function deepMerge(base, patch){
+  if (patch === null) return null;
+  if (typeof patch !== "object" || Array.isArray(patch)) return patch;
+  const out = Array.isArray(base) ? base.slice() : Object.assign({}, base);
+  for (const k of Object.keys(patch)) {
+    const pv = patch[k];
+    out[k] = (pv && typeof pv === "object" && !Array.isArray(pv) && base && typeof base[k] === "object" && base[k] !== null)
+      ? deepMerge(base[k], pv)
+      : (pv === null ? null : (typeof pv === "object" ? deepMerge(Array.isArray(pv) ? [] : {}, pv) : pv));
+  }
+  return out;
+}
+function resolveState(key){
+  const patch = STATE_OVERLAYS[key];
+  const s = deepMerge(MOCK, patch);
+  if (patch && Object.prototype.hasOwnProperty.call(patch, "cycleEvidence") && patch.cycleEvidence === null) {
+    s.cycleEvidence = null;
+  }
+  if (patch && Object.prototype.hasOwnProperty.call(patch, "domainCheckDaysAgo")) {
+    s.domainCheckDaysAgo = patch.domainCheckDaysAgo;
+  }
+  if (patch && patch.model && patch.model.trend) {
+    s.model.trend = Object.assign({}, MOCK.model.trend, patch.model.trend);
+  }
+  return s;
+}
+function deltaOf(s, pillarId){
+  const t = s.model.trend[pillarId] || [];
+  return t.length >= 2 ? t[t.length - 1] - t[0] : null;
+}
+function parseISO(iso){ const [y,m,d] = iso.split("-").map(Number); return new Date(y, m-1, d); }
+function fmtShort(date){ return date.getDate() + " " + MONTHS[date.getMonth()]; }
+function dayToDate(s, day){
+  const start = parseISO((s.cycleEvidence && s.cycleEvidence.cycleStartDate) || MOCK.cycleEvidence.cycleStartDate);
+  const d = new Date(start.getTime());
+  d.setDate(d.getDate() + (day - 1));
+  return d;
+}
+function measurementsOf(s){
+  if (s.empty) return [];
+  const out = [{ day: 1, pillarId: null, label: "Je leefstijlcheck" }];
+  if (!s.cycleEvidence) return out;
+  for (const p of PILLARS) {
+    const ago = s.domainCheckDaysAgo ? s.domainCheckDaysAgo[p.id] : null;
+    if (ago == null) continue;
+    const day = s.cycleEvidence.cycleDay - ago;
+    if (day >= 1 && day <= CYCLE_LENGTH) out.push({ day, pillarId: p.id, label: p.label });
+  }
+  return out.sort((a,b) => a.day - b.day);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MEETPUNTEN — toast toont welk event zou vuren
+   ══════════════════════════════════════════════════════════════════════ */
+const toastEl = document.getElementById("toast");
+let toastTimer = null;
+function fire(kind, name, params){
+  const payload = params ? " " + JSON.stringify(params) : "";
+  toastEl.innerHTML = "<b>" + kind + "</b> &nbsp;" + name + payload;
+  toastEl.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("on"), 3400);
+}
+function autolog(text){ document.getElementById("autolog").textContent = text; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   FLAGSHIP — de Bewijsband (SVG)
+   ══════════════════════════════════════════════════════════════════════ */
+/* JS-spiegel van de tokens: var() in SVG-presentatieattributen is niet in elke
+   browser betrouwbaar, dus de flagship tekent met de letterlijke waarden. */
+const T = { sage:"#5A8F6A", plane:"#132414", sageInk:"#A9C6B2" };
+
+const VB = { w:340, h:112, l:16, r:324, axis:58, lane:36 };
+function xOf(day){ return VB.l + (VB.r - VB.l) * ((day - 1) / (CYCLE_LENGTH - 1)); }
+
+function renderBandSvg(s, headDay){
+  const zero  = s.empty;
+  const cyc   = zero ? null : s.cycleEvidence;
+  const today = cyc ? cyc.cycleDay : null;
+  const xToday = today ? xOf(today) : null;
+  const measurements = zero ? [] : measurementsOf(s);
+  const lastMeasureDay = measurements.length ? measurements[measurements.length-1].day : null;
+
+  const startDate = zero ? null : fmtShort(dayToDate(s, 1));
+  const endDate   = zero ? null : fmtShort(parseISO(s.remeasure.dueDate));
+
+  let g = "";
+
+  /* glow rond het eindpunt — de hermeting is de bestemming */
+  g += '<circle cx="'+VB.r+'" cy="'+VB.axis+'" r="15" fill="'+T.sage+'" opacity="'+(zero?0.04:0.10)+'"/>';
+
+  /* as: verleden solide, toekomst als hairline-runway (géén lege dagvakjes) */
+  if (xToday) {
+    g += '<line x1="'+VB.l+'" y1="'+VB.axis+'" x2="'+xToday+'" y2="'+VB.axis+'" stroke="rgba(255,255,255,0.30)" stroke-width="1.5" stroke-linecap="round"/>';
+    g += '<line x1="'+xToday+'" y1="'+VB.axis+'" x2="'+VB.r+'" y2="'+VB.axis+'" stroke="rgba(255,255,255,0.16)" stroke-width="1" stroke-dasharray="1 5" stroke-linecap="round"/>';
+  } else {
+    g += '<line x1="'+VB.l+'" y1="'+VB.axis+'" x2="'+VB.r+'" y2="'+VB.axis+'" stroke="rgba(255,255,255,0.16)" stroke-width="1" stroke-dasharray="1 5" stroke-linecap="round"/>';
+  }
+
+  /* adherence-lane: één merk per dag waarop iets is gepakt */
+  if (cyc && cyc.activeDayNumbers) {
+    const active = new Set(cyc.activeDayNumbers);
+    for (let d = 1; d <= today; d++) {
+      const x = xOf(d);
+      if (active.has(d)) {
+        g += '<rect x="'+(x-1.25)+'" y="62" width="2.5" height="15" rx="1.25" fill="'+T.sage+'"/>';
+      } else {
+        g += '<rect x="'+(x-0.5)+'" y="67" width="1" height="5" rx="0.5" fill="rgba(255,255,255,0.16)"/>';
+      }
+    }
+  }
+
+  /* meting-lane: gedateerde ruiten boven de as */
+  for (const m of measurements) {
+    const x = xOf(m.day);
+    const color = m.pillarId ? PILLAR_BY_ID[m.pillarId].color : "#E7EDE8";
+    g += '<line x1="'+x+'" y1="'+(VB.lane+6)+'" x2="'+x+'" y2="'+(VB.axis-4)+'" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>';
+    if (m.day === lastMeasureDay) {
+      g += '<circle cx="'+x+'" cy="'+VB.lane+'" r="9" fill="none" stroke="rgba(255,255,255,0.26)" stroke-width="1"/>';
+    }
+    g += '<rect x="'+(x-4.2)+'" y="'+(VB.lane-4.2)+'" width="8.4" height="8.4" fill="'+color+'" stroke="'+T.plane+'" stroke-width="1.5" transform="rotate(45 '+x+' '+VB.lane+')"/>';
+  }
+
+  /* startknoop */
+  g += '<circle cx="'+VB.l+'" cy="'+VB.axis+'" r="4" fill="'+T.sage+'" opacity="'+(zero?0.30:0.60)+'"/>';
+  g += '<text x="'+VB.l+'" y="94" font-size="9" font-weight="600" letter-spacing="0.10em" fill="rgba(255,255,255,0.40)">START</text>';
+  if (startDate) g += '<text x="'+VB.l+'" y="106" font-size="10.5" fill="rgba(255,255,255,0.60)">'+startDate+'</text>';
+
+  /* eindknoop — de hermeting verdwijnt nooit */
+  g += '<circle cx="'+VB.r+'" cy="'+VB.axis+'" r="5.5" fill="none" stroke="'+T.sage+'" stroke-width="1.5" opacity="'+(zero?0.35:1)+'"/>';
+  g += '<text x="'+VB.r+'" y="94" text-anchor="end" font-size="9" font-weight="600" letter-spacing="0.10em" fill="rgba(255,255,255,0.40)">HERMETING</text>';
+  if (endDate) g += '<text x="'+VB.r+'" y="106" text-anchor="end" font-size="10.5" fill="'+T.sageInk+'">'+endDate+'</text>';
+
+  /* vandaag-marker */
+  if (xToday) {
+    g += '<line x1="'+xToday+'" y1="'+(VB.axis-10)+'" x2="'+xToday+'" y2="82" stroke="'+T.sage+'" stroke-width="1" opacity="0.5"/>';
+    g += '<circle cx="'+xToday+'" cy="'+VB.axis+'" r="4" fill="'+T.sage+'" stroke="'+T.plane+'" stroke-width="2"/>';
+  }
+
+  /* leeskop — beweegt met de slider */
+  if (headDay != null && !zero) {
+    const xh = xOf(headDay);
+    g += '<path d="M'+(xh-5)+' 16 L'+(xh+5)+' 16 L'+xh+' 24 Z" fill="rgba(255,255,255,0.80)"/>';
+    g += '<line x1="'+xh+'" y1="24" x2="'+xh+'" y2="84" stroke="rgba(255,255,255,0.42)" stroke-width="1"/>';
+  }
+
+  const aria = zero
+    ? "Lege cyclusband. Je bewijs begint zodra je eerste check binnen is."
+    : "Tijdband van je cyclus van " + startDate + " tot je hermeting op " + endDate +
+      (cyc ? ". Dag " + cyc.cycleDay + " van nu. " + cyc.activeDays + " dagen waarop je iets pakte. " : ". ") +
+      measurements.length + " meetmomenten.";
+
+  return '<svg class="band-svg" viewBox="0 0 '+VB.w+' '+VB.h+'" role="img" aria-label="'+aria+'">'+g+'</svg>';
+}
+
+function captionFor(s, day){
+  if (s.empty) {
+    return { a:"Nog geen cyclus", b:"Zodra je eerste check binnen is, begint deze band te lopen." };
+  }
+  const cyc = s.cycleEvidence;
+  if (!cyc) {
+    return {
+      a:"Nog niets gelogd",
+      b:"Je hermeting staat op " + fmtShort(parseISO(s.remeasure.dueDate)) + ".",
+      c:"Wat je vanaf vandaag neerzet, lees je op die dag terug.",
+    };
+  }
+  const date = fmtShort(dayToDate(s, day));
+  const meting = measurementsOf(s).find(m => m.day === day);
+  const active = (cyc.activeDayNumbers || []).indexOf(day) !== -1;
+
+  if (day < cyc.cycleDay) {
+    if (meting) return { a:"Dag "+day+" · "+date, b: meting.pillarId ? "Je mat je "+meting.label.toLowerCase()+"." : "Je leefstijlcheck." };
+    return { a:"Dag "+day+" · "+date, b: active ? "Je pakte je moment." : "Geen log op deze dag." };
+  }
+  if (day === cyc.cycleDay) {
+    return { a:"Dag "+day+" · vandaag", b: cyc.activeDays + " dagen waarop je iets pakte." };
+  }
+  if (day === CYCLE_LENGTH) {
+    return {
+      a:"Dag "+day+" · "+fmtShort(parseISO(s.remeasure.dueDate)),
+      b:"Je hermeting.",
+      c:"Hier lees je terug of er beweging in je "+s.model.priority.label.toLowerCase()+" zit.",
+    };
+  }
+  return {
+    a:"Dag "+day+" · "+date,
+    b:"Nog te gaan.",
+    c:"Wat je tussen nu en dan neerzet, lees je op "+fmtShort(parseISO(s.remeasure.dueDate))+" terug.",
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   HERO-COPY per state
+   ══════════════════════════════════════════════════════════════════════ */
+function heroCopy(s, regel){
+  if (s.empty) {
+    return {
+      eyebrow: "Bewijs",
+      title: "Hier komt je bewijs te staan.",
+      line: "Doe je eerste check — daarna verzamelt zich hier je bewijs.",
+      reassure: "Zes minuten. Je hoeft niets te weten van supplementen.",
+      ctas: [{ label:"Doe de Leefstijlcheck", kind:"primary", dest:"intake" }],
+    };
+  }
+  const focus = s.model.priority.label;
+  const eyebrow = s.cycleEvidence ? "Bewijs · dag " + s.cycleEvidence.cycleDay : "Bewijs";
+  const titles = {
+    beantwoord: "Er zit beweging in.",
+    opbouwend:  "Er stapelt zich iets op. Lezen doe je straks.",
+    dun:        "Er ligt nog te weinig om iets te lezen.",
+    wachtend:   "Je bewijs begint bij je eerste dag.",
+  };
+  const reassure = {
+    beantwoord: "Eén beweging in één domein. Je hermeting maakt er een reeks van.",
+    opbouwend:  "Losse dagen zeggen weinig. Een reeks zegt iets.",
+    dun:        "Twaalf dagen is kort. Er is nog ruimte genoeg tot je hermeting.",
+    wachtend:   "Eén moment per dag is genoeg om iets te kunnen aflezen.",
+  };
+  const ctas = [];
+  const soon = s.remeasure.daysUntil <= 14;
+  if (soon) {
+    ctas.push({ label:"Naar je hermeting", kind:"primary", dest:"hermeting" });
+    ctas.push({ label:"Wat staat er voor vandaag", kind:"ghost", dest:"agenda" });
+  } else {
+    ctas.push({
+      label: regel.ctaLabel || "Wat staat er voor vandaag",
+      kind:"primary", dest:"agenda",
+    });
+    ctas.push({ label:"Bekijk je " + focus.toLowerCase(), kind:"link", dest:"domein_"+s.model.priority.id });
+  }
+  return {
+    eyebrow, title: titles[regel.state], line: regel.line,
+    reassure: reassure[regel.state], ctas,
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RENDER
+   ══════════════════════════════════════════════════════════════════════ */
+let CURRENT = "beantwoord";
+let HEAD_DAY = null;
+
+function sparkline(values, color){
+  const w = 72, h = 24, pad = 3;
+  if (!values || values.length === 0) return '<svg width="'+w+'" height="'+h+'"></svg>';
+  if (values.length === 1) {
+    return '<svg width="'+w+'" height="'+h+'" aria-hidden="true">' +
+      '<line x1="'+pad+'" y1="'+(h/2)+'" x2="'+(w-pad)+'" y2="'+(h/2)+'" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>' +
+      '<circle cx="'+(w-pad-1)+'" cy="'+(h/2)+'" r="2.6" fill="'+color+'"/></svg>';
+  }
+  const min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+  const span = Math.max(12, max - min);
+  const mid = (min + max) / 2;
+  const lo = mid - span/2;
+  const pts = values.map((v,i) => {
+    const x = pad + (w - pad*2) * (i / (values.length - 1));
+    const y = h - pad - (h - pad*2) * ((v - lo) / span);
+    return x.toFixed(1) + "," + Math.max(pad, Math.min(h-pad, y)).toFixed(1);
+  }).join(" ");
+  const last = pts.split(" ").pop().split(",");
+  return '<svg width="'+w+'" height="'+h+'" aria-hidden="true">' +
+    '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.4" fill="'+color+'"/></svg>';
+}
+
+function deltaChip(d){
+  if (d == null) return '<span class="delta flat">—</span>';
+  if (d > 0) return '<span class="delta up">+'+d+'</span>';
+  if (d < 0) return '<span class="delta down">'+d+'</span>';
+  return '<span class="delta flat">0</span>';
+}
+
+function coverageLine(s){
+  const measured = PILLARS.filter(p => s.domainCheckDaysAgo && s.domainCheckDaysAgo[p.id] != null);
+  const n = measured.length;
+  if (n === 7) return "Je hebt 7 van de 7 domeinen apart gemeten.";
+  const missing = PILLARS.filter(p => !s.domainCheckDaysAgo || s.domainCheckDaysAgo[p.id] == null)
+    .map(p => p.label.toLowerCase());
+  const shown = missing.slice(0,3);
+  const rest = missing.length - shown.length;
+  if (missing.length === 0) return "Je hebt " + n + " van de 7 domeinen apart gemeten.";
+  const names = shown.join(", ");
+  const head = names.charAt(0).toUpperCase() + names.slice(1);
+  const suffix = rest > 0 ? head + " en meer nog niet." : head + " nog niet.";
+  return "Je hebt " + n + " van de 7 domeinen apart gemeten. " + suffix;
+}
+
+function renderDomains(s){
+  const list = document.getElementById("dom-list");
+  document.getElementById("dom-coverage").textContent = coverageLine(s);
+  const row = (p) => {
+    const trend = s.model.trend[p.id] || [];
+    const score = s.model.scores[p.id];
+    const ago = s.domainCheckDaysAgo ? s.domainCheckDaysAgo[p.id] : null;
+    const meta = ago != null
+      ? trend.length + " meting" + (trend.length === 1 ? "" : "en") + " · " + (ago === 0 ? "vandaag" : ago + " dagen geleden")
+      : trend.length + " meting" + (trend.length === 1 ? "" : "en") + " · nog niet apart gemeten";
+    return '<li><button class="domrow" type="button" data-domain="'+p.id+'">' +
+      '<span class="domgrid">' +
+        '<span class="domname"><span class="dot" style="background:'+p.color+'"></span>' +
+        '<span class="domlabel">'+p.label+'</span></span>' +
+        '<span style="width:72px;flex:0 0 auto">'+sparkline(trend, p.color)+'</span>' +
+        '<span class="domright"><span class="bandlabel">'+scoreBandShort(score)+'</span>'+deltaChip(deltaOf(s, p.id))+'</span>' +
+      '</span>' +
+      '<span class="dommeta">'+meta+'</span></button></li>';
+  };
+  list.innerHTML =
+    PILLARS.filter(p => p.role === "intervention").map(row).join("") +
+    '<li class="readout-sep" aria-hidden="true"><p>Volgt uit de rest</p></li>' +
+    PILLARS.filter(p => p.role === "readout").map(row).join("");
+
+  list.querySelectorAll("[data-domain]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      fire("GA4", "dashboard_voortgang_domein_click", { domain: btn.dataset.domain });
+    });
+  });
+}
+
+function renderBeat(s){
+  const p = s.model.priority;
+  const trend = s.model.trend[p.id] || [];
+  const start = trend[0];
+  const now = s.model.scores[p.id];
+  const floor = nextBandFloor(now);
+  const nextLbl = nextBandLabel(now);
+
+  /* De schaal loopt van je startwaarde tot de volgende bandgrens — geen 0-100%
+     balk, geen doel dat je "haalt". Bij één meting vervalt de startstop. */
+  const hasStart = (trend.length >= 2) && start != null && floor != null &&
+                   ((now - start) / (floor - start)) >= 0.18;
+  const A = 10, B = 90;
+  const pinStart = document.getElementById("pin-start");
+  const lblStart = document.getElementById("rl-start");
+  const pNow = hasStart ? A + (B - A) * ((now - start) / (floor - start)) : A;
+  const pNext = B;
+
+  pinStart.style.display = hasStart ? "" : "none";
+  lblStart.style.display = hasStart ? "" : "none";
+  if (hasStart) {
+    pinStart.style.left = A + "%";
+    document.getElementById("rl-start-v").textContent = start;
+    document.getElementById("rl-start-b").textContent = scoreBandShort(start);
+  }
+  document.getElementById("pin-now").style.left = pNow + "%";
+  document.getElementById("rl-now").style.left = hasStart ? pNow + "%" : A + "%";
+  document.getElementById("rl-now").style.transform = hasStart ? "translateX(-50%)" : "none";
+  document.getElementById("rl-now-v").textContent = now;
+  document.getElementById("rl-now-b").textContent = scoreBandShort(now);
+
+  const pinNext = document.getElementById("pin-next");
+  pinNext.style.display = floor != null ? "" : "none";
+  pinNext.style.left = pNext + "%";
+  document.getElementById("rl-next-k").textContent = floor != null ? "Volgende band" : "Nu al";
+  document.getElementById("rl-next-v").textContent = floor != null ? "vanaf " + floor : scoreBandShort(now);
+  document.getElementById("rl-next-b").textContent = nextLbl || "hoogste leesniveau";
+
+  const fill = document.getElementById("route-fill");
+  fill.style.left = A + "%";
+  fill.style.width = Math.max(0, pNow - A) + "%";
+  const dash = document.getElementById("route-dash");
+  dash.style.left = pNow + "%";
+  dash.style.width = Math.max(0, pNext - pNow) + "%";
+
+  document.getElementById("beat-title").textContent = hasStart
+    ? "Van waar je begon, naar waar dit heen kan."
+    : "Waar je nu staat, en wat het volgende niveau vraagt.";
+  document.getElementById("beat-lede").textContent = hasStart
+    ? p.label + " is je focus in deze cyclus. Dit is de schaal waarop je dat afleest — " +
+      "geen doel dat je moet halen, wel het volgende leesniveau."
+    : p.label + " is je focus in deze cyclus. Je hebt hier één meting — " +
+      "je hermeting maakt hier een lijn van.";
+
+  document.getElementById("beat-quote").textContent =
+    "Ik weet nog dat ik dacht: twaalf dagen, wat stelt dat voor. Wat ik toen neerzette, kon ik later teruglezen.";
+  document.getElementById("beat-by").textContent = "— jij, aan het eind van deze cyclus";
+
+  const cta = document.getElementById("beat-cta");
+  cta.textContent = "Je vitaliteit in één beeld →";
+  cta.onclick = () => fire("GA4", "dashboard_voortgang_hub_click", { destination:"inzichten", surface:"richting_beat" });
+}
+
+function renderLog(s){
+  const holder = document.getElementById("log-list");
+  const empty = document.getElementById("log-empty");
+  const hist = s.model.history || [];
+  holder.innerHTML = hist.map(h => {
+    const p = PILLAR_BY_ID[h.priority];
+    const band = vitalityBand(h.vitality);
+    return '<div class="logrow">' +
+      '<span class="dot" style="background:'+p.color+'"></span>' +
+      '<span class="logdate">'+h.date+'</span>' +
+      '<span class="logval">'+h.vitality+' · '+band.label+'</span></div>';
+  }).join("");
+  empty.textContent = hist.length < 2
+    ? "Eén meting. Je hermeting maakt er twee — dan wordt dit een reeks."
+    : "";
+}
+
+function renderRoutes(){
+  const rows = [
+    { dest:"statistieken", title:"Statistieken", sub:"Wat je metingen zeggen over supplementen" },
+    { dest:"favorieten",   title:"Favorieten",   sub:"Je eigen keuzes en onze aanraders" },
+    { dest:"inzichten",    title:"Jouw inzichten", sub:"Je vitaliteit in één beeld" },
+  ];
+  const holder = document.getElementById("route-list");
+  holder.innerHTML = rows.map(r =>
+    '<button class="routerow" type="button" data-dest="'+r.dest+'">' +
+      '<span class="routetxt"><b>'+r.title+'</b><span>'+r.sub+'</span></span>' +
+      '<span class="chev" aria-hidden="true">›</span></button>'
+  ).join("");
+  holder.querySelectorAll("[data-dest]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      fire("GA4", "dashboard_voortgang_hub_click", { destination: btn.dataset.dest, surface:"verder_kijken" });
+    });
+  });
+}
+
+function renderCaption(s, day){
+  const c = captionFor(s, day);
+  document.getElementById("cap-a").textContent = c.a;
+  document.getElementById("cap-b").textContent = c.b;
+  const cc = document.getElementById("cap-c");
+  if (c.c) { cc.textContent = c.c; cc.classList.remove("hidden"); }
+  else { cc.textContent = ""; cc.classList.add("hidden"); }
+}
+
+function render(key){
+  CURRENT = key;
+  const s = resolveState(key);
+
+  /* state-buttons */
+  document.querySelectorAll("#states button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.state === key));
+  });
+
+  const cyc = s.cycleEvidence;
+  const regel = s.empty
+    ? { state:"nul", line:"", ctaLabel:null }
+    : buildVoortgangBewijsRegel({
+        activeDays: cyc ? cyc.activeDays : null,
+        cycleDay: cyc ? cyc.cycleDay : null,
+        daysUntilRemeasure: s.remeasure ? s.remeasure.daysUntil : null,
+        focusLabel: s.model.priority.label,
+        focusDelta: deltaOf(s, s.model.priority.id),
+      });
+
+  /* HERO */
+  const hero = heroCopy(s, regel);
+  document.getElementById("hero-eyebrow").textContent = hero.eyebrow;
+  document.getElementById("hero-title").textContent = hero.title;
+  document.getElementById("hero-line").textContent = hero.line;
+  document.getElementById("hero-reassure").textContent = hero.reassure;
+  const ctaHolder = document.getElementById("hero-ctas");
+  ctaHolder.innerHTML = hero.ctas.map(c =>
+    '<button type="button" class="' +
+    (c.kind === "primary" ? "btn btn-primary" : c.kind === "ghost" ? "btn btn-ghost" : "btn-link") +
+    '" data-cta="'+c.dest+'">'+c.label+'</button>'
+  ).join("");
+  ctaHolder.querySelectorAll("[data-cta]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const dest = btn.dataset.cta;
+      if (dest.indexOf("domein_") === 0) {
+        fire("GA4", "dashboard_voortgang_domein_click", { domain: dest.slice(7) });
+      } else if (dest === "intake") {
+        fire("GA4", "dashboard_voortgang_hub_click", { destination:"intake", surface:"bewijs_hero" });
+      } else {
+        fire("GA4", "dashboard_voortgang_hub_click", { destination: dest, surface:"bewijs_hero" });
+      }
+    });
+  });
+
+  /* FLAGSHIP */
+  const scrub = document.getElementById("scrub");
+  HEAD_DAY = (cyc && !s.empty) ? cyc.cycleDay : null;
+  scrub.disabled = !cyc || s.empty;
+  scrub.value = HEAD_DAY || 1;
+  scrub.setAttribute("aria-valuetext", HEAD_DAY ? "dag " + HEAD_DAY + " van je cyclus" : "geen cyclus");
+  document.getElementById("band-svg-holder").innerHTML = renderBandSvg(s, HEAD_DAY);
+  renderCaption(s, HEAD_DAY || 1);
+
+  const foot = document.getElementById("band-foot");
+  const note = document.getElementById("band-note");
+  const legend = document.getElementById("legend");
+  if (s.empty) {
+    foot.textContent = "Je hermeting krijgt een datum zodra je check binnen is.";
+    note.textContent = "";
+    legend.innerHTML = "";
+  } else {
+    const ms = measurementsOf(s);
+    const last = ms[ms.length-1];
+    const lastAgo = cyc && last ? (cyc.cycleDay - last.day) : null;
+    foot.textContent =
+      "Nog " + s.remeasure.daysUntil + " dagen tot je hermeting op " + fmtShort(parseISO(s.remeasure.dueDate)) + "." +
+      (last && lastAgo != null
+        ? " Laatste meting: " + (last.pillarId ? last.label.toLowerCase() : "je leefstijlcheck") +
+          ", " + (lastAgo === 0 ? "vandaag" : lastAgo + " dagen geleden") + "."
+        : "");
+    note.textContent = cyc
+      ? "Merken en metingen staan op aparte rijen — ze worden nooit één cijfer."
+      : "Nog geen dagen gelogd in deze cyclus.";
+    legend.innerHTML =
+      '<span><i class="lg-tick"></i> Dag waarop je iets pakte</span>' +
+      '<span><i class="lg-dia"></i> Meetmoment</span>' +
+      '<span><i class="lg-run"></i> Nog te gaan</span>';
+  }
+
+  /* SECTIES aan/uit per state */
+  const showFull = !s.empty;
+  document.getElementById("sec-domeinen").classList.toggle("hidden", !showFull);
+  document.getElementById("sec-beat").classList.toggle("hidden", !showFull);
+  document.getElementById("sec-meetreeks").classList.toggle("hidden", !showFull);
+  document.getElementById("sec-verder").classList.toggle("hidden", s.empty);
+  document.getElementById("sec-premium").classList.toggle("hidden", s.empty);
+
+  if (showFull) { renderDomains(s); renderBeat(s); renderLog(s); }
+
+  /* meetpunt dat vanzelf vuurt bij render */
+  if (s.empty) {
+    autolog('auto → GA4 dashboard_voortgang_bewijs_state {"state":"nul","cycle_day":null,"active_days":null}');
+  } else {
+    autolog('auto → GA4 dashboard_voortgang_bewijs_state ' + JSON.stringify({
+      state: regel.state,
+      cycle_day: cyc ? cyc.cycleDay : null,
+      active_days: cyc ? cyc.activeDays : null,
+    }));
+  }
+}
+
+/* ── Bediening ───────────────────────────────────────────────────────── */
+const statesHolder = document.getElementById("states");
+statesHolder.innerHTML = Object.keys(STATE_LABELS).map(k =>
+  '<button type="button" data-state="'+k+'" aria-pressed="false">'+STATE_LABELS[k]+'</button>'
+).join("");
+statesHolder.querySelectorAll("[data-state]").forEach(b => {
+  b.addEventListener("click", () => {
+    history.replaceState(null, "", "#" + b.dataset.state);
+    render(b.dataset.state);
+  });
+});
+/* Review-gemak: #dun, #wachtend, #nul, ... opent die state direct. */
+function stateFromHash(){
+  const k = (location.hash || "").replace("#", "");
+  return STATE_OVERLAYS[k] ? k : "beantwoord";
+}
+window.addEventListener("hashchange", () => render(stateFromHash()));
+
+const scrubEl = document.getElementById("scrub");
+let scrubFired = false;
+scrubEl.addEventListener("input", () => {
+  const s = resolveState(CURRENT);
+  if (!s.cycleEvidence) return;
+  const day = Number(scrubEl.value);
+  HEAD_DAY = day;
+  scrubEl.setAttribute("aria-valuetext", "dag " + day + " van je cyclus");
+  document.getElementById("band-svg-holder").innerHTML = renderBandSvg(s, day);
+  renderCaption(s, day);
+  if (!scrubFired) {
+    scrubFired = true;
+    const zone = day < s.cycleEvidence.cycleDay ? "verleden" : day === s.cycleEvidence.cycleDay ? "vandaag" : "toekomst";
+    fire("GA4 (nieuw)", "dashboard_voortgang_band_scrub", { zone });
+    setTimeout(() => { scrubFired = false; }, 1200);
+  }
+});
+
+document.querySelectorAll("[data-soon]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const which = btn.dataset.soon;
+    if (which === "wearable") {
+      fire("durable (bestaat al)", "wearable.interest_clicked", { surface:"voortgang_hub" });
+    } else {
+      fire("GA4", "dashboard_voortgang_hub_click", { destination:"lichaamssamenstelling", surface:"binnenkort" });
+    }
+  });
+});
+
+document.getElementById("waitlist").addEventListener("click", () => {
+  fire("durable (bestaat al)", "premium.waitlist_joined", { surface:"voortgang_hub" });
+});
+
+renderRoutes();
+render(stateFromHash());
+</script>
+</body>
+</html>

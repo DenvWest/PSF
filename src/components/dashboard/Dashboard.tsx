@@ -211,6 +211,7 @@ type SharedSectionProps = {
   agendaDate: string;
   onAgendaDateChange: (date: string) => void;
   onGoVoortgang: () => void;
+  onGoHermeting: () => void;
   voortgangScreen: VoortgangScreen;
   onVoortgangScreenChange: (screen: VoortgangScreen) => void;
   onOpenInzichten: () => void;
@@ -3534,6 +3535,7 @@ const SECTION_RENDERERS: Record<
         onScreenChange={props.onVoortgangScreenChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoAgenda={() => props.onGoAgenda()}
+        onGoHermeting={() => props.onGoHermeting()}
       />
     ),
   future: () => <FutureSection />,
@@ -3878,6 +3880,7 @@ export default function Dashboard({
     onDashboardCheckin,
     onRemeasure,
     onGoVandaag: () => selectTab("vandaag"),
+    onGoHermeting: () => selectTab("hermeting"),
     onGoAgenda: (date?: string) => {
       const dag = date && isValidAgendaDate(date) ? date : agendaDate;
       if (dag !== agendaDate) {

@@ -518,6 +518,18 @@ html.floating-cta-active footer {
   gap: 1rem;
 }
 
+.ps-dash-beat {
+  --bg: #EFEDE6;
+  --text: #16281A;
+  --text-muted: rgba(22, 40, 26, 0.70);
+  --text-subtle: rgba(22, 40, 26, 0.52);
+  --divider: rgba(22, 40, 26, 0.10);
+  --divider-strong: rgba(22, 40, 26, 0.18);
+  --sage-ink: #33583F;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
 /* ── Vitaalscore gauge animaties ─────────────────────────────── */
 
 @keyframes vitaalscore-pulse {
