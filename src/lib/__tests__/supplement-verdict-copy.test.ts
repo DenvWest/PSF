@@ -48,6 +48,18 @@ describe("toVerdictCardCopy", () => {
     expect(card.tone).toBe("nee");
   });
 
+  it("splitst eerst_leefstijl visueel op reasonKey", () => {
+    expect(
+      toVerdictCardCopy(row("magnesium", "eerst_leefstijl", "nutrition_log_incomplete")).label,
+    ).toBe("Nog niet te zeggen");
+    expect(
+      toVerdictCardCopy(row("ashwagandha", "eerst_leefstijl", "claim_on_hold")).label,
+    ).toBe("Eerst leefstijl");
+    expect(
+      toVerdictCardCopy(row("zink", "eerst_leefstijl", "comparison_unavailable")).label,
+    ).toBe("Geen vergelijking");
+  });
+
   it("valt terug op neutrale tekst bij een onbekende reden", () => {
     expect(toVerdictCardCopy(row("zink", "niet_nodig", "iets_nieuws")).reason).toBe(
       "Beoordeeld op je laatste check.",

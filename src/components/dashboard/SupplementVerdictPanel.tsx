@@ -3,6 +3,7 @@
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { Card } from "@/components/app/primitives";
+import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
@@ -20,47 +21,57 @@ const TONE_COLOR: Record<VerdictTone, string> = {
   nee: "var(--text-subtle)",
 };
 
+export type VerdictPanelSurface = "voortgang" | "favorieten" | "statistieken";
+
 type SupplementVerdictPanelProps = {
   verdicts: StoredSupplementVerdict[];
+  variant?: "summary" | "full";
+  surface?: VerdictPanelSurface;
+  onViewAll?: () => void;
+  hideHeader?: boolean;
 };
 
 export default function SupplementVerdictPanel({
   verdicts,
+  variant = "full",
+  surface = "voortgang",
+  onViewAll,
+  hideHeader = false,
 }: SupplementVerdictPanelProps) {
-  const cards = buildVerdictCards(verdicts);
+  const allCards = buildVerdictCards(verdicts);
   const summary = buildVerdictSummary(verdicts);
+  const cards =
+    variant === "summary" ? allCards.slice(0, 3) : allCards;
 
   if (cards.length === 0) {
     return null;
   }
 
+  const isSummary = variant === "summary";
+
   return (
-    <section aria-label="Ons oordeel per supplement" style={{ marginBottom: 24 }}>
-      <div
-        style={{
-          fontFamily: "var(--f-serif)",
-          fontSize: 22,
-          color: "var(--text)",
-          lineHeight: 1.25,
-          marginBottom: 8,
-          textAlign: "center",
-        }}
-      >
-        Ons oordeel
-      </div>
-      {summary ? (
-        <p
-          style={{
-            fontSize: 14,
-            color: "var(--text-muted)",
-            lineHeight: 1.55,
-            margin: "0 0 20px",
-            textAlign: "center",
-            textWrap: "pretty",
-          }}
-        >
-          {summary}
-        </p>
+    <section
+      aria-label={isSummary ? "Ons oordeel — samenvatting" : "Alle oordelen"}
+      style={{ marginBottom: 24 }}
+    >
+      {!hideHeader ? (
+        isSummary ? (
+          <VoortgangSectionHeader
+            eyebrow="Stap 2 van 3 · Ons oordeel"
+            title={
+              summary
+                ? summary.replace(/^We beoordeelden \d+ supplementen\. /, "")
+                : undefined
+            }
+            body={
+              summary?.startsWith("We beoordeelden")
+                ? summary.split(". ").slice(0, 2).join(". ") + "."
+                : summary ?? undefined
+            }
+          />
+        ) : (
+          <VoortgangSectionHeader eyebrow="Alle oordelen" body={summary ?? undefined} />
+        )
       ) : null}
 
       <Card pad={8}>
@@ -136,12 +147,13 @@ export default function SupplementVerdictPanel({
                       trackEvent("dashboard_verdict_click", {
                         ingredient: card.ingredientKey,
                         verdict: card.verdict,
+                        surface,
                       });
                       clarityTag("dashboard_verdict", card.ingredientKey);
                       emitIntakeClientEvent("dashboard.verdict_clicked", {
                         ingredient_key: card.ingredientKey,
                         verdict: card.verdict,
-                        surface: "voortgang",
+                        surface,
                       });
                     }}
                     style={{
@@ -163,6 +175,29 @@ export default function SupplementVerdictPanel({
           ))}
         </ul>
       </Card>
+
+      {isSummary && onViewAll ? (
+        <button
+          type="button"
+          onClick={onViewAll}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            marginTop: 12,
+            padding: 0,
+            border: "none",
+            background: "none",
+            fontSize: 14,
+            fontWeight: 600,
+            color: "var(--sage)",
+            cursor: "pointer",
+          }}
+        >
+          Alle {allCards.length} oordelen + vergelijking →
+          <Icons.ChevronRight s={16} />
+        </button>
+      ) : null}
 
       <p
         style={{

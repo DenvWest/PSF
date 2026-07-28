@@ -16,6 +16,7 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "dashboard.cta.clicked",
   "dashboard.aanrader_clicked",
   "dashboard.verdict_clicked",
+  "dashboard.advies_gate_passed",
   "intake.started",
   "intake.phase_completed",
   "intake.theme_revealed",

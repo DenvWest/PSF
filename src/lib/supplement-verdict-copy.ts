@@ -4,12 +4,40 @@ import type { StoredSupplementVerdict, VerdictValue } from "@/types/verdict";
 
 export type VerdictTone = "ja" | "nee" | "wacht";
 
+export type VerdictPresentationKind = "default" | "gate" | "hold" | "gap";
+
 const VERDICT_LABEL: Record<VerdictValue, string> = {
   kopen: "Aanvullen",
   niet_nodig: "Niet nodig",
   eerst_leefstijl: "Eerst leefstijl",
   nooit: "Raden we niet aan",
 };
+
+const REASON_LABEL: Partial<Record<string, string>> = {
+  nutrition_log_incomplete: "Nog niet te zeggen",
+  claim_on_hold: "Eerst leefstijl",
+  comparison_unavailable: "Geen vergelijking",
+};
+
+function presentationKindFor(reasonKey: string): VerdictPresentationKind {
+  if (reasonKey === "nutrition_log_incomplete") {
+    return "gate";
+  }
+  if (reasonKey === "claim_on_hold") {
+    return "hold";
+  }
+  if (reasonKey === "comparison_unavailable") {
+    return "gap";
+  }
+  return "default";
+}
+
+function labelForVerdict(verdict: VerdictValue, reasonKey: string): string {
+  if (verdict === "eerst_leefstijl" && REASON_LABEL[reasonKey]) {
+    return REASON_LABEL[reasonKey]!;
+  }
+  return VERDICT_LABEL[verdict];
+}
 
 const VERDICT_TONE: Record<VerdictValue, VerdictTone> = {
   kopen: "ja",
@@ -40,8 +68,10 @@ export type VerdictCardCopy = {
   ingredientKey: string;
   name: string;
   verdict: VerdictValue;
+  reasonKey: string;
   label: string;
   tone: VerdictTone;
+  presentationKind: VerdictPresentationKind;
   reason: string;
   comparisonPath: string | null;
 };
@@ -68,8 +98,10 @@ export function toVerdictCardCopy(row: StoredSupplementVerdict): VerdictCardCopy
     ingredientKey: row.ingredientKey,
     name: ingredientName(row.ingredientKey),
     verdict: row.verdict,
-    label: VERDICT_LABEL[row.verdict],
+    reasonKey: row.reasonKey,
+    label: labelForVerdict(row.verdict, row.reasonKey),
     tone: VERDICT_TONE[row.verdict],
+    presentationKind: presentationKindFor(row.reasonKey),
     reason: REASON_TEXT[row.reasonKey] ?? FALLBACK_REASON,
     comparisonPath: comparisonPathFor(row.ingredientKey, row.verdict),
   };

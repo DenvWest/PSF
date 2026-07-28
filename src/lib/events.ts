@@ -62,6 +62,7 @@ export const DOMAIN_EVENT_TYPES = [
   "remeasure.completed",
   "verdict.changed",
   "dashboard.verdict_clicked",
+  "dashboard.advies_gate_passed",
   "affiliate.click",
   "profile.recognition",
   "measurement.gap_detected",

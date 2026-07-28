@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import MovementPlanRoadmap from "@/components/dashboard/beweging/MovementPlanRoadmap";
 import MovementStartChoice from "@/components/dashboard/beweging/MovementStartChoice";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import MovementWeekCategoryPanel from "@/components/intake/MovementWeekCategoryPanel";
@@ -34,12 +34,12 @@ import {
   resolveEffectivePlanProfile,
   type MovementPlanProfile,
 } from "@/lib/movement-plan-profile";
+import { buildMovementPlanRoadmapView } from "@/lib/movement-plan-roadmap";
 import {
   buildMovementRecoveryHint,
   buildMovementRecoveryInput,
 } from "@/lib/movement-recovery-hint";
 import {
-  MOVEMENT_ANCHOR_OPTIONS,
   MOVEMENT_START_PATTERN_OPTIONS,
   startPatternLabel,
 } from "@/lib/movement-prefs";
@@ -57,12 +57,6 @@ export type MovementPlanDeepBodyProps = {
   sessionId: string | null;
   navMode?: "dashboard_view" | "intake_route";
 };
-
-const HORIZON_LABELS = {
-  "deze-week": "Deze week",
-  "week-2-4": "Week 2–4",
-  "week-4-12": "Week 4–12",
-} as const;
 
 function PlanStepReadOnlyRow({
   step,
@@ -140,19 +134,15 @@ export default function MovementPlanDeepBody({
     [ctx, phaseStepStates],
   );
 
-  const activePhaseIndex = useMemo(
-    () => movementPlanTemplate.phases.findIndex((phase) => phase.id === currentPhaseId),
-    [currentPhaseId],
-  );
-
-  const [expandedPhaseIds, setExpandedPhaseIds] = useState<Set<string>>(() => new Set());
+  // S2: één paneel tegelijk. De actieve fase staat open zolang de gebruiker zelf
+  // niets koos; schuift de afgeleide fase door (daily-log-hydratie), dan volgt het
+  // paneel die beweging — de gebruiker zet zijn positie nooit zelf (lock 5).
+  const [openPhaseId, setOpenPhaseId] = useState("");
   const [trackedActivePhaseId, setTrackedActivePhaseId] = useState("");
 
   if (currentPhaseId !== trackedActivePhaseId) {
     setTrackedActivePhaseId(currentPhaseId);
-    if (currentPhaseId && !expandedPhaseIds.has(currentPhaseId)) {
-      setExpandedPhaseIds((prev) => new Set([...prev, currentPhaseId]));
-    }
+    setOpenPhaseId(currentPhaseId);
   }
 
   const recoveryHint = useMemo(
@@ -187,20 +177,22 @@ export default function MovementPlanDeepBody({
 
   const sessionEntry = getMovementSessionCatalogEntry(recommendedVariant);
 
-  // Positie-header (S1): fase-positie + anker uit de afgeleide staat.
-  const totalPhases = movementPlanTemplate.phases.length;
-  const safePhaseIndex = activePhaseIndex >= 0 ? activePhaseIndex : 0;
-  const activePhase = movementPlanTemplate.phases[safePhaseIndex];
-  const phaseNumber = safePhaseIndex + 1;
-  const anchorLabel = effectiveProfile.anchor
-    ? MOVEMENT_ANCHOR_OPTIONS.find(
-        (option) => option.id === effectiveProfile.anchor,
-      )?.label ?? null
-    : null;
-
   const getStepState = useMemo(
     () => buildExecutionStepStateGetter(loggedStepIds),
     [loggedStepIds],
+  );
+
+  // Positie-header + fase-as (S1/S2): positie afgeleid uit de daily-log,
+  // personalisatie uit het bestaande profiel — geen nieuw veld, geen nieuw scherm.
+  const roadmapView = useMemo(
+    () =>
+      buildMovementPlanRoadmapView({
+        ctx,
+        currentPhaseId,
+        profile: effectiveProfile,
+        getStepState,
+      }),
+    [ctx, currentPhaseId, effectiveProfile, getStepState],
   );
 
   useEffect(() => {
@@ -346,286 +338,253 @@ export default function MovementPlanDeepBody({
     });
   }, []);
 
+  const handleOpenPhase = useCallback(
+    (phaseId: string) => {
+      if (phaseId === openPhaseId) {
+        return;
+      }
+      setOpenPhaseId(phaseId);
+      emitIntakeClientEvent("plan.phase_opened", {
+        domain: "movement",
+        phase_id: phaseId,
+        is_active: phaseId === currentPhaseId,
+        template_version: movementPlanTemplate.version,
+      });
+      clarityTag(
+        "plan_phase_opened",
+        phaseId === currentPhaseId ? "active" : "other_phase",
+      );
+    },
+    [currentPhaseId, openPhaseId],
+  );
+
+  const renderPhaseBody = useCallback(
+    (phaseId: string) => {
+      const phase = movementPlanTemplate.phases.find(
+        (entry) => entry.id === phaseId,
+      );
+      if (!phase) {
+        return null;
+      }
+      return (
+        <MovementWeekCategoryPanel
+          phaseId={phase.id}
+          domain="movement"
+          templateVersion={movementPlanTemplate.version}
+          ctx={ctx}
+          visibleSteps={selectVisibleSteps(phase, ctx)}
+          dailyRhythm={dailyRhythm}
+          nutrientBridgeItems={nutrientBridgeItems}
+          readOnly={phase.id !== currentPhaseId}
+          recoveryHint={recoveryHint}
+          variant="cockpit"
+          getStepState={getStepState}
+          renderStepRow={renderStepRow}
+          onBridgeItemClick={handleBridgeItemClick}
+          onLinkClick={handleLinkClick}
+        />
+      );
+    },
+    [
+      ctx,
+      currentPhaseId,
+      dailyRhythm,
+      getStepState,
+      handleBridgeItemClick,
+      handleLinkClick,
+      nutrientBridgeItems,
+      recoveryHint,
+      renderStepRow,
+    ],
+  );
+
   return (
-    <div
-      className="@container mx-auto w-full max-w-[1040px] pb-8"
-      style={{ ["--ac" as string]: accent }}
-    >
-      <header className="mb-5 border-b border-white/10 pb-4">
-        <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-          Jouw stappenplan · beweging
-        </p>
-        <h2 className="font-serif text-[22px] font-normal leading-tight text-[#F1EFE8]">
-          {activePhase
-            ? `Fase ${phaseNumber} van ${totalPhases} — ${activePhase.title}`
-            : movementPlanTemplate.title}
-        </h2>
-        {activePhase?.intro?.body ? (
-          <p className="mt-2 max-w-[68ch] text-[14px] leading-relaxed text-[#CDD7D0]">
-            {activePhase.intro.body}
-          </p>
-        ) : null}
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px]">
-          {anchorLabel ? (
-            <span className="italic text-[#9FB0A6]">“{anchorLabel}”</span>
-          ) : null}
-          <span className="text-[#7E8C82]">
-            Afvinken doe je in{" "}
-            <Link
-              href={buildDashboardVandaagHref("beweging")}
-              className="font-semibold text-[color:var(--ac)] underline decoration-[color:var(--ac)]/40 underline-offset-2"
-            >
-              Vandaag
-            </Link>
-          </span>
-        </div>
-      </header>
-
-      <div className="space-y-3">
-        {profileEditing ? (
-          <MovementStartChoice
-            onSaved={(prefs) => {
-              setProfile(
-                resolveEffectivePlanProfile({ ...profile, ...prefs }, answers.MOV_STR),
-              );
-              setProfileEditing(false);
-            }}
-            onSkip={() => setProfileEditing(false)}
-          />
-        ) : (
-          <CockpitTile eyebrow="Jouw planprofiel">
-            <div className="mt-2 space-y-3">
-              <p className="text-[14px] leading-relaxed text-[#CDD7D0]">
-                {effectiveProfile.startPattern
-                  ? `Spoor: ${startPatternLabel(effectiveProfile.startPattern)}`
-                  : "Kies je startspoor om je plan te personaliseren."}
-                {sessionEntry
-                  ? ` · Aanbevolen: ${sessionEntry.label}, ${sessionEntry.frequency}`
-                  : null}
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                {MOVEMENT_START_PATTERN_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    disabled={prefsBusy}
-                    onClick={() => void saveProfilePatch({ startPattern: option.id })}
-                    className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-60 ${
-                      effectiveProfile.startPattern === option.id
-                        ? "border-[color:var(--ac)]/60 bg-[color:var(--ac)]/15 text-[#F1EFE8]"
-                        : "border-white/15 text-[#CDD7D0] hover:border-white/25"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-
-              {effectiveProfile.startPattern &&
-              effectiveProfile.startPattern !== "dagelijks_ritme" ? (
-                <div>
-                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
-                    Trainingsvorm
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {MOVEMENT_SPORT_OPTIONS.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        disabled={prefsBusy}
-                        onClick={() => void saveProfilePatch({ preferredSport: option.id })}
-                        className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-60 ${
-                          effectiveProfile.preferredSport === option.id
-                            ? "border-[color:var(--ac)]/60 bg-[color:var(--ac)]/15 text-[#F1EFE8]"
-                            : "border-white/15 text-[#CDD7D0] hover:border-white/25"
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
-              {effectiveProfile.startPattern &&
-              effectiveProfile.startPattern !== "dagelijks_ritme" ? (
-                <div>
-                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
-                    Frequentie
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {MOVEMENT_FREQUENCY_OPTIONS.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        disabled={prefsBusy}
-                        onClick={() => void saveProfilePatch({ weeklyFrequency: option.id })}
-                        className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-60 ${
-                          effectiveProfile.weeklyFrequency === option.id
-                            ? "border-[color:var(--ac)]/60 bg-[color:var(--ac)]/15 text-[#F1EFE8]"
-                            : "border-white/15 text-[#CDD7D0] hover:border-white/25"
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
-              <button
-                type="button"
-                onClick={() => setProfileEditing(true)}
-                className="cursor-pointer border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
-              >
-                Wijzig startspoor of doel →
-              </button>
-            </div>
-          </CockpitTile>
-        )}
-
-        {sessionEntry ? (
-          <CockpitTile eyebrow="Aanbevolen programma">
-            <h3 className="mt-1 font-serif text-[18px] text-[#F1EFE8]">{sessionEntry.label}</h3>
-            <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0]">{sessionEntry.goal}</p>
-            <dl className="mt-3 grid gap-2 text-[12px] text-[#9FB0A6] sm:grid-cols-3">
-              <div>
-                <dt className="uppercase tracking-[0.08em]">Duur</dt>
-                <dd className="mt-0.5 text-[#E7EDE8]">{sessionEntry.durationMin}</dd>
-              </div>
-              <div>
-                <dt className="uppercase tracking-[0.08em]">Frequentie</dt>
-                <dd className="mt-0.5 text-[#E7EDE8]">{sessionEntry.frequency}</dd>
-              </div>
-              <div>
-                <dt className="uppercase tracking-[0.08em]">Intensiteit</dt>
-                <dd className="mt-0.5 text-[#E7EDE8]">{sessionEntry.intensity}</dd>
-              </div>
-            </dl>
-            <p className="mt-3 text-[13px] leading-relaxed text-[#CDD7D0]">
-              {sessionEntry.structure}
-            </p>
-            {sessionEntry.detailStatus === "coming_soon" ? (
-              <p className="mt-2 text-[12px] text-[#9FB0A6]">
-                Gedetailleerde sessie-opbouw volgt — je weekdoel staat al klaar.
-              </p>
-            ) : null}
-          </CockpitTile>
-        ) : null}
-
-      </div>
-
-      <section className="mt-6" aria-label="Planfases">
-        <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
-          {movementPlanTemplate.phases.map((phase, index) => {
-            const isActive = index === activePhaseIndex;
-            const isLocked = index > activePhaseIndex;
-            return (
-              <button
-                key={phase.id}
-                type="button"
-                onClick={() => setExpandedPhaseIds((prev) => new Set([...prev, phase.id]))}
-                className={`shrink-0 cursor-pointer rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition-colors ${
-                  isActive
-                    ? "border-[color:var(--ac)]/50 bg-[color:var(--ac)]/15 text-[#F1EFE8]"
-                    : isLocked
-                      ? "border-white/10 text-[#7E8C82]"
-                      : "border-white/15 text-[#CDD7D0]"
-                }`}
-              >
-                {HORIZON_LABELS[phase.horizon]}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="space-y-3">
-          {movementPlanTemplate.phases.map((phase, phaseIndex) => {
-            if (!expandedPhaseIds.has(phase.id)) {
-              return null;
-            }
-            const visibleSteps = selectVisibleSteps(phase, ctx);
-            const isActive = phaseIndex === activePhaseIndex;
-            const isLocked = phaseIndex > activePhaseIndex;
-
-            return (
-              <article
-                key={phase.id}
-                id={`phase-section-${phase.id}`}
-                className="rounded-2xl border border-white/10 bg-[#131F1D]/90 p-5"
-              >
-                <header className="mb-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
-                    {HORIZON_LABELS[phase.horizon]}
-                    {isActive ? " · nu actief" : isLocked ? " · preview" : " · afgerond"}
-                  </p>
-                  <h3 className="mt-1 font-serif text-[20px] text-[#F1EFE8]">{phase.title}</h3>
-                  {phase.intro?.body ? (
-                    <p className="mt-2 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]">
-                      {phase.intro.body}
+    <div className="@container w-full pb-8" style={{ ["--ac" as string]: accent }}>
+      <div className="mx-auto w-full max-w-[1040px] @[1080px]:max-w-[1340px]">
+        <MovementPlanRoadmap
+          view={roadmapView}
+          openPhaseId={openPhaseId}
+          onOpenPhase={handleOpenPhase}
+          vandaagHref={buildDashboardVandaagHref("beweging")}
+          renderPhaseBody={renderPhaseBody}
+          footer={
+            <div className="space-y-3 pt-3">
+              <aside className="rounded-2xl border border-white/10 bg-[#131F1D]/80 px-5 py-4">
+                <h3 className="font-serif text-[18px] text-[#F1EFE8]">
+                  {movementPlanTemplate.mechanism.heading}
+                </h3>
+                {movementPlanTemplate.mechanism.body
+                  .split("\n\n")
+                  .map((paragraph, index) => (
+                    <p
+                      key={`mechanism-${index}`}
+                      className="mt-3 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]"
+                    >
+                      {paragraph}
                     </p>
-                  ) : null}
-                </header>
+                  ))}
+                <p className="mt-3 text-[12px] text-[#9FB0A6]">
+                  {movementPlanTemplate.mechanism.source}
+                </p>
+              </aside>
 
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <MovementWeekCategoryPanel
-                    phaseId={phase.id}
-                    domain="movement"
-                    templateVersion={movementPlanTemplate.version}
-                    ctx={ctx}
-                    visibleSteps={visibleSteps}
-                    dailyRhythm={dailyRhythm}
-                    nutrientBridgeItems={nutrientBridgeItems}
-                    readOnly={!isActive}
-                    recoveryHint={recoveryHint}
-                    variant="cockpit"
-                    getStepState={getStepState}
-                    renderStepRow={renderStepRow}
-                    onBridgeItemClick={handleBridgeItemClick}
-                    onLinkClick={handleLinkClick}
-                  />
+              <aside className="rounded-2xl border border-white/10 bg-black/20 px-5 py-4">
+                <h3 className="text-sm font-semibold text-[#F1EFE8]">
+                  {movementPlanTemplate.medicalBoundary.heading}
+                </h3>
+                {movementPlanTemplate.medicalBoundary.body
+                  .split("\n\n")
+                  .map((paragraph, index) => (
+                    <p
+                      key={`medical-${index}`}
+                      className="mt-2 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+              </aside>
+
+              {loading ? (
+                <p className="text-sm text-[#9FB0A6]" aria-live="polite">
+                  Voortgang laden…
+                </p>
+              ) : null}
+            </div>
+          }
+        >
+          {profileEditing ? (
+            <MovementStartChoice
+              onSaved={(prefs) => {
+                setProfile(
+                  resolveEffectivePlanProfile({ ...profile, ...prefs }, answers.MOV_STR),
+                );
+                setProfileEditing(false);
+              }}
+              onSkip={() => setProfileEditing(false)}
+            />
+          ) : (
+            <CockpitTile eyebrow="Jouw planprofiel">
+              <div className="mt-2 space-y-3">
+                {/* Het spoor staat al in de positie-header; hier alleen wat eruit volgt. */}
+                <p className="text-[14px] leading-relaxed text-[#CDD7D0]">
+                  {effectiveProfile.startPattern
+                    ? sessionEntry
+                      ? `Aanbevolen: ${sessionEntry.label}, ${sessionEntry.frequency}`
+                      : `Spoor: ${startPatternLabel(effectiveProfile.startPattern)}`
+                    : "Kies je startspoor om je plan te personaliseren."}
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  {MOVEMENT_START_PATTERN_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      disabled={prefsBusy}
+                      onClick={() => void saveProfilePatch({ startPattern: option.id })}
+                      className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-60 ${
+                        effectiveProfile.startPattern === option.id
+                          ? "border-[color:var(--ac)]/60 bg-[color:var(--ac)]/15 text-[#F1EFE8]"
+                          : "border-white/15 text-[#CDD7D0] hover:border-white/25"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
                 </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
 
-      <aside className="mt-6 rounded-2xl border border-white/10 bg-[#131F1D]/80 px-5 py-4">
-        <h3 className="font-serif text-[18px] text-[#F1EFE8]">
-          {movementPlanTemplate.mechanism.heading}
-        </h3>
-        {movementPlanTemplate.mechanism.body.split("\n\n").map((paragraph, index) => (
-          <p
-            key={`mechanism-${index}`}
-            className="mt-3 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]"
-          >
-            {paragraph}
-          </p>
-        ))}
-        <p className="mt-3 text-[12px] text-[#9FB0A6]">{movementPlanTemplate.mechanism.source}</p>
-      </aside>
+                {effectiveProfile.startPattern &&
+                effectiveProfile.startPattern !== "dagelijks_ritme" ? (
+                  <div>
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
+                      Trainingsvorm
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {MOVEMENT_SPORT_OPTIONS.map((option) => (
+                        <button
+                          key={option.id}
+                          type="button"
+                          disabled={prefsBusy}
+                          onClick={() => void saveProfilePatch({ preferredSport: option.id })}
+                          className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-60 ${
+                            effectiveProfile.preferredSport === option.id
+                              ? "border-[color:var(--ac)]/60 bg-[color:var(--ac)]/15 text-[#F1EFE8]"
+                              : "border-white/15 text-[#CDD7D0] hover:border-white/25"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
 
-      <aside className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-5 py-4">
-        <h3 className="text-sm font-semibold text-[#F1EFE8]">
-          {movementPlanTemplate.medicalBoundary.heading}
-        </h3>
-        {movementPlanTemplate.medicalBoundary.body.split("\n\n").map((paragraph, index) => (
-          <p
-            key={`medical-${index}`}
-            className="mt-2 max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]"
-          >
-            {paragraph}
-          </p>
-        ))}
-      </aside>
+                {effectiveProfile.startPattern &&
+                effectiveProfile.startPattern !== "dagelijks_ritme" ? (
+                  <div>
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
+                      Frequentie
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {MOVEMENT_FREQUENCY_OPTIONS.map((option) => (
+                        <button
+                          key={option.id}
+                          type="button"
+                          disabled={prefsBusy}
+                          onClick={() => void saveProfilePatch({ weeklyFrequency: option.id })}
+                          className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:opacity-60 ${
+                            effectiveProfile.weeklyFrequency === option.id
+                              ? "border-[color:var(--ac)]/60 bg-[color:var(--ac)]/15 text-[#F1EFE8]"
+                              : "border-white/15 text-[#CDD7D0] hover:border-white/25"
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
 
-      {loading ? (
-        <p className="mt-4 text-sm text-[#9FB0A6]" aria-live="polite">
-          Voortgang laden…
-        </p>
-      ) : null}
+                <button
+                  type="button"
+                  onClick={() => setProfileEditing(true)}
+                  className="cursor-pointer border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
+                >
+                  Wijzig startspoor of doel →
+                </button>
+              </div>
+            </CockpitTile>
+          )}
+
+          {sessionEntry ? (
+            <CockpitTile eyebrow="Aanbevolen programma">
+              <h3 className="mt-1 font-serif text-[18px] text-[#F1EFE8]">{sessionEntry.label}</h3>
+              <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0]">{sessionEntry.goal}</p>
+              <dl className="mt-3 grid gap-2 text-[12px] text-[#9FB0A6] sm:grid-cols-3">
+                <div>
+                  <dt className="uppercase tracking-[0.08em]">Duur</dt>
+                  <dd className="mt-0.5 text-[#E7EDE8]">{sessionEntry.durationMin}</dd>
+                </div>
+                <div>
+                  <dt className="uppercase tracking-[0.08em]">Frequentie</dt>
+                  <dd className="mt-0.5 text-[#E7EDE8]">{sessionEntry.frequency}</dd>
+                </div>
+                <div>
+                  <dt className="uppercase tracking-[0.08em]">Intensiteit</dt>
+                  <dd className="mt-0.5 text-[#E7EDE8]">{sessionEntry.intensity}</dd>
+                </div>
+              </dl>
+              <p className="mt-3 text-[13px] leading-relaxed text-[#CDD7D0]">
+                {sessionEntry.structure}
+              </p>
+              {sessionEntry.detailStatus === "coming_soon" ? (
+                <p className="mt-2 text-[12px] text-[#9FB0A6]">
+                  Gedetailleerde sessie-opbouw volgt — je weekdoel staat al klaar.
+                </p>
+              ) : null}
+            </CockpitTile>
+          ) : null}
+        </MovementPlanRoadmap>
+      </div>
     </div>
   );
 }

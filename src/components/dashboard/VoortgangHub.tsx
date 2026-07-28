@@ -13,11 +13,14 @@ import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
 import SupplementVerdictPanel from "@/components/dashboard/SupplementVerdictPanel";
+import VoortgangReisStrip from "@/components/dashboard/voortgang/VoortgangReisStrip";
+import StatistiekenAdviesSection from "@/components/dashboard/voortgang/StatistiekenAdviesSection";
+import FavorietenAanraderSection from "@/components/dashboard/voortgang/FavorietenAanraderSection";
+import FavorietenKeuzeSection from "@/components/dashboard/voortgang/FavorietenKeuzeSection";
 import PremiumValuePropsList from "@/components/dashboard/PremiumValuePropsList";
 import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
-import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import {
@@ -286,10 +289,12 @@ function FavorietenView({
   model,
   data,
   onBack,
+  onOpenStatistieken,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   onBack: () => void;
+  onOpenStatistieken: () => void;
 }) {
   const session: IntakeSessionPayload = {
     sessionId: data?.sessionId ?? "",
@@ -305,127 +310,46 @@ function FavorietenView({
 
   const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
   const recommendations = buildRecommendations(session, eligibility);
+  const topRecommendation = recommendations[0] ?? null;
+  const verdicts = data?.supplementVerdicts ?? [];
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
-  const topHref = withVoortgangReturn(
-    recommendations[0]?.comparisonHref ??
-      recommendations[0]?.guideHref ??
-      "/supplementen",
-  );
   const supplementenHref = withVoortgangReturn("/supplementen");
+
+  const handleWijzigFocus = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <section aria-label="Favorieten" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Favorieten" onBack={onBack} />
 
-      <SupplementVerdictPanel verdicts={data?.supplementVerdicts ?? []} />
+      <FavorietenKeuzeSection
+        model={model}
+        data={data}
+        onWijzigFocus={handleWijzigFocus}
+      />
 
-      <div
-        style={{
-          fontFamily: "var(--f-serif)",
-          fontSize: 22,
-          color: "var(--text)",
-          lineHeight: 1.25,
-          marginBottom: 8,
-          textAlign: "center",
-        }}
-      >
-        Je supplement-aanbevelingen
-      </div>
-      <p
-        style={{
-          fontSize: 14,
-          color: "var(--text-muted)",
-          lineHeight: 1.55,
-          margin: "0 0 20px",
-          textAlign: "center",
-          textWrap: "pretty",
-        }}
-      >
-        Op basis van je scores — objectieve oriëntatie, geen verkoop.
-      </p>
+      <FavorietenAanraderSection
+        recommendation={topRecommendation}
+        onOpenStatistieken={onOpenStatistieken}
+      />
 
-      {recommendations.length > 0 ? (
-        <Card pad={8} style={{ marginBottom: 20 }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {recommendations.map((rec, index) => {
-              const href = withVoortgangReturn(rec.comparisonHref ?? rec.guideHref);
-              return (
-                <Link
-                  key={rec.slug}
-                  href={href}
-                  onClick={() => {
-                    trackEvent("dashboard_aanrader_click", {
-                      slug: rec.slug,
-                      target: href,
-                    });
-                    clarityTag("dashboard_aanrader", rec.slug);
-                    emitIntakeClientEvent("dashboard.aanrader_clicked", {
-                      slug: rec.slug,
-                      target: href,
-                      surface: "voortgang",
-                    });
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "14px 10px",
-                    textDecoration: "none",
-                    color: "inherit",
-                    borderTop: index ? "1px solid var(--divider)" : "none",
-                  }}
-                >
-                  <span style={{ fontSize: 22, flexShrink: 0 }} aria-hidden>
-                    {rec.icon}
-                  </span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontFamily: "var(--f-serif)",
-                        fontSize: 16,
-                        color: "var(--text)",
-                        lineHeight: 1.25,
-                      }}
-                    >
-                      {rec.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 13,
-                        color: "var(--text-muted)",
-                        lineHeight: 1.5,
-                        marginTop: 2,
-                        textWrap: "pretty",
-                      }}
-                    >
-                      {rec.wiifm}
-                    </div>
-                  </div>
-                  <Icons.ChevronRight
-                    s={18}
-                    style={{ color: "var(--text-subtle)", flexShrink: 0 }}
-                  />
-                </Link>
-              );
-            })}
-          </div>
-        </Card>
-      ) : null}
+      <SupplementVerdictPanel
+        verdicts={verdicts}
+        variant="full"
+        surface="favorieten"
+      />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {recommendations.length > 0 ? (
-          <Link href={topHref} style={{ textDecoration: "none" }}>
-            <Button variant="primary" full>
-              Bekijk top-aanrader
-            </Button>
-          </Link>
-        ) : (
+        {!topRecommendation && verdicts.length === 0 ? (
           <Link
             href={nutritionLogCompleted ? supplementenHref : "/intake/voeding?from=dashboard"}
             style={{ textDecoration: "none" }}
             onClick={() => {
               if (!nutritionLogCompleted) {
-                trackEvent("dashboard_voedingscheck_cta_click", { surface: "voortgang_favorieten" });
+                trackEvent("dashboard_voedingscheck_cta_click", {
+                  surface: "voortgang_favorieten",
+                });
                 clarityTag("dashboard_voedingscheck_cta", "voortgang_favorieten");
                 return;
               }
@@ -438,7 +362,7 @@ function FavorietenView({
                 : "Start voedingscheck (1 min)"}
             </Button>
           </Link>
-        )}
+        ) : null}
         <Link
           href={supplementenHref}
           onClick={handleSupplementenHubClick}
@@ -635,6 +559,7 @@ function VitaalscoreInzichtenView({
 
 function StatistiekenView({
   model,
+  data,
   isMember,
   hasTrendsFeature,
   freeStatistics,
@@ -642,8 +567,10 @@ function StatistiekenView({
   onBack,
   onOpenLichaam,
   onOpenWaitlist,
+  onOpenFavorieten,
 }: {
   model: DashboardModel;
+  data?: DashboardData;
   isMember: boolean;
   hasTrendsFeature: boolean;
   freeStatistics: ReactNode;
@@ -651,6 +578,7 @@ function StatistiekenView({
   onBack: () => void;
   onOpenLichaam: () => void;
   onOpenWaitlist: () => void;
+  onOpenFavorieten: () => void;
 }) {
   const upsellShownRef = useRef(false);
   const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
@@ -682,17 +610,27 @@ function StatistiekenView({
       <VoortgangSubHeader title="Statistieken" onBack={onBack} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <p
+        {data ? (
+          <StatistiekenAdviesSection
+            model={model}
+            data={data}
+            onOpenFavorieten={onOpenFavorieten}
+          />
+        ) : null}
+
+        <div
           style={{
-            margin: 0,
-            fontSize: 13.5,
-            color: "var(--text-muted)",
-            lineHeight: 1.5,
-            textWrap: "pretty",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--text-subtle)",
+            textAlign: "center",
+            padding: "4px 0",
           }}
         >
-          Gebaseerd op je gratis test en ingevulde tijdlijn.
-        </p>
+          Einde gratis advies
+        </div>
 
         <LeefstijllijnSection model={model} surface="voortgang" />
 
@@ -973,7 +911,7 @@ export default function VoortgangHub({
     }
   };
 
-  const openHub = (destination: "favorieten" | "statistieken") => {
+  const openHub = (destination: "favorieten" | "statistieken" | "inzichten") => {
     trackEvent("dashboard_voortgang_hub_click", { destination });
     clarityTag("dashboard_voortgang", destination);
     setScreen(destination);
@@ -1013,13 +951,21 @@ export default function VoortgangHub({
   }
 
   if (screen === "favorieten") {
-    return <FavorietenView model={model} data={data} onBack={goBack} />;
+    return (
+      <FavorietenView
+        model={model}
+        data={data}
+        onBack={goBack}
+        onOpenStatistieken={() => navigate("statistieken")}
+      />
+    );
   }
 
   if (screen === "statistieken") {
     return (
       <StatistiekenView
         model={model}
+        data={data}
         isMember={isMember}
         hasTrendsFeature={hasTrendsFeature}
         freeStatistics={freeStatistics}
@@ -1027,6 +973,7 @@ export default function VoortgangHub({
         onBack={goBack}
         onOpenLichaam={() => navigate("lichaamssamenstelling")}
         onOpenWaitlist={() => openPremiumWaitlist("statistieken")}
+        onOpenFavorieten={() => navigate("favorieten")}
       />
     );
   }
@@ -1079,24 +1026,28 @@ export default function VoortgangHub({
         </p>
       </div>
 
+      <VoortgangReisStrip model={model} data={data} />
+
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <PremiumWaitlistCard surface="voortgang" />
-        <HubCard
-          icon={<Icons.Heart s={20} />}
-          title="Favorieten"
-          subtitle="Supplementen die bij je scores passen"
-          onClick={() => openHub("favorieten")}
-        />
         <HubCard
           icon={<Icons.BarChart s={20} />}
           title="Statistieken"
-          subtitle={
-            model.history.length > 0
-              ? `${model.history.length} check${model.history.length === 1 ? "" : "s"} · trends met Premium`
-              : "Jouw lijn en checkgeschiedenis — trends met Premium"
-          }
+          subtitle="Wat je check laat zien — en wat dat betekent voor supplementen"
           onClick={() => openHub("statistieken")}
         />
+        <HubCard
+          icon={<Icons.Heart s={20} />}
+          title="Favorieten"
+          subtitle="Jouw keuze, met onze mening ernaast"
+          onClick={() => openHub("favorieten")}
+        />
+        <HubCard
+          icon={<Icons.Spark s={20} />}
+          title="Jouw inzichten"
+          subtitle="Je vitaalscore en wat eronder zit"
+          onClick={() => openHub("inzichten")}
+        />
+        <PremiumWaitlistCard surface="voortgang" />
       </div>
     </section>
   );

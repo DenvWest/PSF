@@ -2,23 +2,34 @@
 
 import Link from "next/link";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import { buildRecommendations } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
+import { buildVerdictCards, buildVerdictSummary } from "@/lib/supplement-verdict-copy";
+import type { VerdictTone } from "@/lib/supplement-verdict-copy";
+import { withVoortgangReturn } from "@/lib/voortgang-return-link";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
 type KompasOndersteuningTileProps = {
   model: DashboardModel;
   data?: DashboardData;
   surface?: "kompas_home" | "voortgang";
+  /** "Bekijk alle" CTA — alleen zinvol als het paneel niet al op het Voortgang-scherm staat. */
+  onGoVoortgang?: () => void;
+};
+
+const TONE_COLOR: Record<VerdictTone, string> = {
+  ja: "#7CB68C",
+  wacht: "#D6A15C",
+  nee: "#9FB0A6",
 };
 
 export default function KompasOndersteuningTile({
-  model,
+  model: _model,
   data,
   surface = "kompas_home",
+  onGoVoortgang,
 }: KompasOndersteuningTileProps) {
   const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
@@ -33,8 +44,8 @@ export default function KompasOndersteuningTile({
           Supplementen
         </h2>
         <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-          Leefstijl eerst. Na je voedingscheck zie je hier welke supplementen
-          passen bij je beeld — informatief, geen verkoop.
+          Leefstijl eerst. Na je voedingscheck zeggen we per supplement of het
+          iets toevoegt — of juist niet.
         </p>
         <Link
           href="/intake/voeding?from=dashboard"
@@ -50,18 +61,9 @@ export default function KompasOndersteuningTile({
     );
   }
 
-  const session: IntakeSessionPayload = {
-    sessionId: data?.sessionId ?? "",
-    symptoms: [],
-    answers: model.answers ?? {},
-    scores: model.domainScores,
-    urgency: "",
-    profile: data?.profileLabel ?? "",
-    timestamp: 0,
-    ageRange: null,
-    firstName: null,
-  };
-  const recommendations = buildRecommendations(session, eligibility).slice(0, 2);
+  const verdicts = data?.supplementVerdicts ?? [];
+  const cards = buildVerdictCards(verdicts).slice(0, 3);
+  const summary = buildVerdictSummary(verdicts);
 
   return (
     <CockpitTile eyebrow="Ondersteuning">
@@ -69,47 +71,89 @@ export default function KompasOndersteuningTile({
         className="m-0 font-serif text-[18px] leading-snug text-[#F1EFE8]"
         style={{ fontFamily: "var(--f-serif)" }}
       >
-        Supplementen
+        Ons oordeel
       </h2>
       <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-        Op basis van je scores — stepped care na leefstijl, objectieve oriëntatie.
+        {summary ?? "Op basis van je scores — objectieve oriëntatie, geen verkoop."}
       </p>
 
-      {recommendations.length > 0 ? (
-        <ul className="mt-3 flex list-none flex-col gap-2 p-0">
-          {recommendations.map((rec) => (
-            <li key={rec.slug}>
-              <Link
-                href={rec.guideHref}
-                onClick={() => {
-                  trackEvent("dashboard_kompas_supplement_gids_click", {
-                    slug: rec.slug,
-                    surface,
-                  });
-                  clarityTag("dashboard_kompas_home", `supplement_${rec.slug}`);
-                }}
-                className="flex items-start gap-2 rounded-xl border border-white/8 bg-black/15 px-3 py-2.5 no-underline transition hover:border-white/15"
-              >
-                <span className="text-lg" aria-hidden>
-                  {rec.icon}
-                </span>
-                <span className="min-w-0">
-                  <span className="block font-serif text-[14px] text-[#F1EFE8]">
-                    {rec.name}
-                  </span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-[#9FB0A6] text-pretty">
-                    {rec.wiifm}
+      {cards.length > 0 ? (
+        <ul className="mt-3 flex list-none flex-col gap-1.5 p-0">
+          {cards.map((card) => {
+            const content = (
+              <>
+                <span
+                  aria-hidden
+                  className="mt-[7px] h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                  style={{ background: TONE_COLOR[card.tone] }}
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-baseline gap-1.5">
+                    <span className="font-serif text-[14px] text-[#F1EFE8]">
+                      {card.name}
+                    </span>
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-[0.06em]"
+                      style={{ color: TONE_COLOR[card.tone] }}
+                    >
+                      {card.label}
+                    </span>
                   </span>
                 </span>
-              </Link>
-            </li>
-          ))}
+              </>
+            );
+
+            if (!card.comparisonPath) {
+              return (
+                <li
+                  key={card.ingredientKey}
+                  className="flex items-start gap-2 rounded-xl px-3 py-2"
+                >
+                  {content}
+                </li>
+              );
+            }
+
+            return (
+              <li key={card.ingredientKey}>
+                <Link
+                  href={withVoortgangReturn(card.comparisonPath)}
+                  onClick={() => {
+                    trackEvent("dashboard_verdict_click", {
+                      ingredient: card.ingredientKey,
+                      verdict: card.verdict,
+                      surface,
+                    });
+                    clarityTag("dashboard_verdict", card.ingredientKey);
+                    emitIntakeClientEvent("dashboard.verdict_clicked", {
+                      ingredient_key: card.ingredientKey,
+                      verdict: card.verdict,
+                      surface,
+                    });
+                  }}
+                  className="flex items-start gap-2 rounded-xl border border-white/8 bg-black/15 px-3 py-2 no-underline transition hover:border-white/15"
+                >
+                  {content}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
-      ) : (
-        <p className="mt-3 text-[13px] text-[#9FB0A6] text-pretty">
-          Geen supplement-signalen op basis van je check — focus op je leefstijlstappen.
-        </p>
-      )}
+      ) : null}
+
+      {onGoVoortgang ? (
+        <button
+          type="button"
+          onClick={() => {
+            trackEvent("dashboard_kompas_verdict_all_click", { surface });
+            clarityTag("dashboard_kompas_home", "verdict_all");
+            onGoVoortgang();
+          }}
+          className="mt-3 inline-flex min-h-11 items-center text-[13px] font-semibold text-[#5A8F6A]"
+        >
+          Bekijk alle {verdicts.length || ""} →
+        </button>
+      ) : null}
     </CockpitTile>
   );
 }

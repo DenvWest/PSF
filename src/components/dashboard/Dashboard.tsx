@@ -122,6 +122,7 @@ import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
+import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
 import VoortgangKompasPanels from "@/components/dashboard/kompas/VoortgangKompasPanels";
 import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
@@ -3427,6 +3428,12 @@ const KompasHome = ({
           onPrefUpdated={onPrefUpdated}
         />
       </CockpitShell>
+      <KompasOndersteuningTile
+        model={currentModel}
+        data={data}
+        surface="kompas_home"
+        onGoVoortgang={onGoVoortgang}
+      />
     </section>
   );
 };

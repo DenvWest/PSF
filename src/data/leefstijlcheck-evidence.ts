@@ -1,4 +1,5 @@
 import type { QuestionId } from "@/data/intake-questions";
+import type { InterventionPillarId } from "@/lib/domain-role";
 
 export type EvidenceStrength = 3 | 4 | 5;
 
@@ -752,6 +753,18 @@ export const LEEFSTIJLCHECK_EVIDENCE_BY_ID: Record<QuestionId, QuestionEvidence>
     },
     {} as Record<QuestionId, QuestionEvidence>,
   );
+
+/** Expliciete koppeling interventiedomein → intake-vragen (geen prefix-afleiding). */
+export const EVIDENCE_QUESTIONS_BY_DOMAIN: Record<
+  InterventionPillarId,
+  QuestionId[]
+> = {
+  slaap: ["SLP_QUAL", "SLP_CONS", "SLP_ONSET", "SLP_WAKE"],
+  stress: ["STR_FREQ", "STR_RCV"],
+  voeding: ["NUT_O3", "NUT_PROT"],
+  beweging: ["MOV_STR", "MOV_CARD"],
+  verbinding: ["CON_SOC"],
+};
 
 /** Plan-onderbouwing: sedentair gedrag doorbreken (geen intake-vraag). */
 export type SupplementalPlanEvidence = {
