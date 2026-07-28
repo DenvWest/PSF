@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import { Button, Card } from "@/components/app/primitives";
+import { Button } from "@/components/app/primitives";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -37,7 +38,7 @@ export default function FavorietenAanraderSection({
     <section aria-label="Onze aanrader" style={{ marginBottom: 24 }}>
       <VoortgangSectionHeader eyebrow="Onze aanrader" title="Wat wij zouden kiezen" />
 
-      <Card pad={16}>
+      <CockpitTile>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
           <span style={{ fontSize: 24, flexShrink: 0 }} aria-hidden>
             {recommendation.icon}
@@ -116,7 +117,7 @@ export default function FavorietenAanraderSection({
           <Icons.Spark s={14} style={{ color: "var(--text-subtle)", flexShrink: 0 }} />
           Waarom dit? → Statistieken
         </button>
-      </Card>
+      </CockpitTile>
     </section>
   );
 }

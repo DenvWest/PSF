@@ -1,7 +1,7 @@
 "use client";
 
 import * as Icons from "@/components/app/icons";
-import { Card } from "@/components/app/primitives";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { PILLAR } from "@/data/dashboard";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
@@ -27,7 +27,7 @@ export default function FavorietenKeuzeSection({
       <VoortgangSectionHeader eyebrow="Jouw keuze" title="Waar jij nu aan werkt" />
 
       {userChosen ? (
-        <Card pad={16}>
+        <CockpitTile>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ fontSize: 24, flexShrink: 0 }} aria-hidden>
               {pillarEmoji(focusPillar.id)}
@@ -78,9 +78,9 @@ export default function FavorietenKeuzeSection({
               </button>
             ) : null}
           </div>
-        </Card>
+        </CockpitTile>
       ) : (
-        <Card pad={16}>
+        <CockpitTile>
           <p
             style={{
               margin: 0,
@@ -96,7 +96,7 @@ export default function FavorietenKeuzeSection({
             </strong>{" "}
             voor.
           </p>
-        </Card>
+        </CockpitTile>
       )}
     </section>
   );

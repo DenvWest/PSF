@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/components/app/primitives";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
 type VoortgangReisStripProps = {
@@ -35,7 +35,7 @@ export default function VoortgangReisStrip({ model, data }: VoortgangReisStripPr
       : `Dag ${cycle.cycleDay} bezig`;
 
   return (
-    <Card pad={16} style={{ marginBottom: 14 }}>
+    <CockpitTile className="mb-3.5">
       <div
         style={{
           display: "grid",
@@ -75,7 +75,7 @@ export default function VoortgangReisStrip({ model, data }: VoortgangReisStripPr
       >
         {metaLine}
       </p>
-    </Card>
+    </CockpitTile>
   );
 }
 

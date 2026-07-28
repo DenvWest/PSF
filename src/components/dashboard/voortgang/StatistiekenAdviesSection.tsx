@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import { Button, Card } from "@/components/app/primitives";
+import { Button } from "@/components/app/primitives";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import SupplementVerdictPanel from "@/components/dashboard/SupplementVerdictPanel";
 import EvidenceLadderCard from "@/components/dashboard/voortgang/EvidenceLadderCard";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
@@ -88,7 +89,7 @@ function WaarStaJeCard({
   model: ReturnType<typeof buildStatistiekenAdviesModel>;
 }) {
   return (
-    <Card pad={18}>
+    <CockpitTile>
       <VoortgangSectionHeader
         eyebrow={`Op basis van je check van ${adviesModel.checkDateLabel}`}
         title={adviesModel.snapshotHeadline}
@@ -179,7 +180,7 @@ function WaarStaJeCard({
           </span>
         </p>
       ))}
-    </Card>
+    </CockpitTile>
   );
 }
 
@@ -189,7 +190,7 @@ function EerstJeBordCard({
   adviesModel: ReturnType<typeof buildStatistiekenAdviesModel>;
 }) {
   return (
-    <Card pad={18}>
+    <CockpitTile>
       <VoortgangSectionHeader
         eyebrow="Stap 1 van 3 · Uit voeding"
         title={
@@ -295,7 +296,7 @@ function EerstJeBordCard({
           })}
         </ul>
       ) : null}
-    </Card>
+    </CockpitTile>
   );
 }
 
@@ -310,7 +311,7 @@ function OnsOordeelCard({
 }) {
   if (adviesModel.adviesState === "nutrition_missing") {
     return (
-      <Card pad={18}>
+      <CockpitTile>
         <VoortgangSectionHeader
           eyebrow="Stap 2 van 3 · Nog niet te zeggen"
           title={buildAdviesBlokHeadline(adviesModel)}
@@ -353,18 +354,16 @@ function OnsOordeelCard({
           Wij verkopen zelf niets. Deze stap leidt vaak tot &quot;niet nodig&quot; — en
           dat is ook een antwoord.
         </p>
-      </Card>
+      </CockpitTile>
     );
   }
 
   return (
-    <div>
-      <Card pad={18} style={{ marginBottom: 0 }}>
-        <VoortgangSectionHeader
-          eyebrow="Stap 2 van 3 · Ons oordeel"
-          title={buildAdviesBlokHeadline(adviesModel)}
-        />
-      </Card>
+    <CockpitTile>
+      <VoortgangSectionHeader
+        eyebrow="Stap 2 van 3 · Ons oordeel"
+        title={buildAdviesBlokHeadline(adviesModel)}
+      />
       <SupplementVerdictPanel
         verdicts={verdicts}
         variant="summary"
@@ -372,6 +371,6 @@ function OnsOordeelCard({
         onViewAll={onOpenFavorieten}
         hideHeader
       />
-    </div>
+    </CockpitTile>
   );
 }

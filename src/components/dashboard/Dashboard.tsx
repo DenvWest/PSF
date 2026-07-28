@@ -3512,11 +3512,13 @@ const SECTION_RENDERERS: Record<
   voortgangHub: (props) =>
     props.empty || !props.model ? null : (
       <>
-        <VoortgangKompasPanels
-          model={props.model}
-          data={props.data}
-          onPrefUpdated={props.onPrefUpdated}
-        />
+        {props.voortgangScreen === "hub" ? (
+          <VoortgangKompasPanels
+            model={props.model}
+            data={props.data}
+            onPrefUpdated={props.onPrefUpdated}
+          />
+        ) : null}
         <VoortgangHub
           model={props.model}
           data={props.data}

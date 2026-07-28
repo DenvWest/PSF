@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import * as Icons from "@/components/app/icons";
-import { Card } from "@/components/app/primitives";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import EvidenceStars from "@/components/evidence/EvidenceStars";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { clarityTag } from "@/lib/clarity";
@@ -23,7 +23,7 @@ export default function EvidenceLadderCard({ domains }: EvidenceLadderCardProps)
   }
 
   return (
-    <Card pad={18}>
+    <CockpitTile>
       <VoortgangSectionHeader
         eyebrow="Wat de wetenschap hierover zegt"
         title="Waarom we hiernaar vroegen"
@@ -191,6 +191,6 @@ export default function EvidenceLadderCard({ domains }: EvidenceLadderCardProps)
           );
         })}
       </div>
-    </Card>
+    </CockpitTile>
   );
 }
