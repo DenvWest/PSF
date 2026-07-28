@@ -30,7 +30,7 @@ import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTim
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
-import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
+import type { VoortgangScreen } from "@/types/dashboard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { resolveTrendsAccess } from "@/lib/entitlement-access";
 
@@ -162,11 +162,13 @@ import {
   parseDagFromUrl,
   parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  parseVoortgangScreenFromUrl,
   supportsKompasDeepView,
   syncDashboardDagParam,
   syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardTabParam,
+  syncDashboardVoortgangScreenParam,
   type KompasDeepView,
 } from "@/lib/dashboard-url";
 import type {
@@ -3738,14 +3740,23 @@ export default function Dashboard({
     tabRef.current = tab;
   });
 
+  const handleVoortgangScreenChange = useCallback((screen: VoortgangScreen) => {
+    setVoortgangScreen(screen);
+    syncDashboardVoortgangScreenParam(screen);
+  }, []);
+
   const syncTabFromLocation = useCallback(() => {
     const url = new URL(window.location.href);
     const tabParam = url.searchParams.get("tab");
     if (tabParam && VALID_TAB_IDS.has(tabParam as DashboardTabId)) {
       const parsedTab = tabParam as DashboardTabId;
       if (parsedTab !== tabRef.current) {
-        setVoortgangScreen("hub");
         setTab(parsedTab);
+      }
+      if (parsedTab === "voortgang") {
+        setVoortgangScreen(parseVoortgangScreenFromUrl(url));
+      } else {
+        setVoortgangScreen("hub");
       }
     }
     const dag = parseDagFromUrl(url);
@@ -3768,11 +3779,15 @@ export default function Dashboard({
       return;
     }
     const parsedTab = tabParam as DashboardTabId;
-    if (parsedTab === tabRef.current) {
-      return;
+    if (parsedTab !== tabRef.current) {
+      setTab(parsedTab);
+      if (parsedTab !== "voortgang") {
+        setVoortgangScreen("hub");
+      }
     }
-    setVoortgangScreen("hub");
-    setTab(parsedTab);
+    if (parsedTab === "voortgang") {
+      setVoortgangScreen(parseVoortgangScreenFromUrl(window.location.href));
+    }
   }, [searchParams, VALID_TAB_IDS]);
 
   useEffect(() => {
@@ -3809,6 +3824,7 @@ export default function Dashboard({
     }
     if (nextTab === "voortgang" && tab === "voortgang" && voortgangScreen !== "hub") {
       setVoortgangScreen("hub");
+      syncDashboardVoortgangScreenParam("hub");
       trackEvent("dashboard_voortgang_tab_reset", {
         source: "tabbar",
         from_screen: voortgangScreen,
@@ -3816,6 +3832,8 @@ export default function Dashboard({
       clarityTag("dashboard_voortgang", "hub_reset");
     }
     if (nextTab !== "voortgang") {
+      setVoortgangScreen("hub");
+    } else if (nextTab !== tab) {
       setVoortgangScreen("hub");
     }
     setTab(nextTab);
@@ -3880,8 +3898,8 @@ export default function Dashboard({
       selectTab("voortgang");
     },
     voortgangScreen,
-    onVoortgangScreenChange: setVoortgangScreen,
-    onOpenInzichten: () => setVoortgangScreen("inzichten"),
+    onVoortgangScreenChange: handleVoortgangScreenChange,
+    onOpenInzichten: () => handleVoortgangScreenChange("inzichten"),
     initialKompasView,
     initialKompasDeepView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
@@ -3910,7 +3928,7 @@ export default function Dashboard({
         gap: tab === "vandaag" && cockpitDomain === "beweging" ? 12 : 16,
       }}
     >
-      {empty && tab !== "voortgang" ? (
+      {empty ? (
         <EmptyTabState tab={tabMeta} onCheck={onCheck} />
       ) : sectionTypes.length === 0 ? null : (
         sectionTypes.map((type) => (

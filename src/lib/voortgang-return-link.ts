@@ -1,3 +1,5 @@
+import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
+
 const VOORTGANG_RETURN_PARAM = "from";
 const VOORTGANG_RETURN_VALUE = "voortgang";
 
@@ -24,5 +26,4 @@ export function hasVoortgangReturnParam(
   return value === VOORTGANG_RETURN_VALUE;
 }
 
-export const VOORTGANG_FAVORIETEN_HREF =
-  "/dashboard?tab=voortgang&screen=favorieten";
+export const VOORTGANG_FAVORIETEN_HREF = buildDashboardVoortgangHref("favorieten");

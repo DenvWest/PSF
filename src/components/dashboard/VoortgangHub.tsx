@@ -49,14 +49,10 @@ import type {
   DashboardModel,
   DashboardTabId,
   PillarId,
+  VoortgangScreen,
 } from "@/types/dashboard";
 
-export type VoortgangScreen =
-  | "hub"
-  | "inzichten"
-  | "favorieten"
-  | "statistieken"
-  | "lichaamssamenstelling";
+export type { VoortgangScreen };
 
 type VoortgangHubProps = {
   model: DashboardModel | null;

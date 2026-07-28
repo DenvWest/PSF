@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
-import type { VoortgangScreen } from "@/components/dashboard/VoortgangHub";
+import { parseVoortgangScreenFromUrl } from "@/lib/dashboard-url";
 import { loadAccountDashboardData } from "@/lib/account-dashboard";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
@@ -29,13 +29,6 @@ type DashboardPageProps = {
 };
 
 const VALID_TABS = new Set<DashboardTabId>(["vandaag", "agenda", "voortgang", "hermeting"]);
-const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
-  "hub",
-  "inzichten",
-  "favorieten",
-  "statistieken",
-  "lichaamssamenstelling",
-]);
 
 function parseInitialTab(tab?: string): DashboardTabId | undefined {
   if (tab && VALID_TABS.has(tab as DashboardTabId)) {
@@ -44,11 +37,14 @@ function parseInitialTab(tab?: string): DashboardTabId | undefined {
   return undefined;
 }
 
-function parseInitialVoortgangScreen(screen?: string): VoortgangScreen | undefined {
-  if (screen && VALID_VOORTGANG_SCREENS.has(screen as VoortgangScreen)) {
-    return screen as VoortgangScreen;
+function parseInitialVoortgangScreen(screen?: string) {
+  if (!screen) {
+    return undefined;
   }
-  return undefined;
+  const parsed = parseVoortgangScreenFromUrl(
+    `http://localhost/dashboard?tab=voortgang&screen=${encodeURIComponent(screen)}`,
+  );
+  return parsed === "hub" ? undefined : parsed;
 }
 
 const VALID_KOMPAS_VIEWS = new Set<PillarId>([

@@ -94,6 +94,13 @@ export type DashboardIconName =
 
 export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
 
+export type VoortgangScreen =
+  | "hub"
+  | "inzichten"
+  | "favorieten"
+  | "statistieken"
+  | "lichaamssamenstelling";
+
 export type DashboardTab = {
   id: DashboardTabId;
   label: string;

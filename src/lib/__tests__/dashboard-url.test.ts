@@ -5,15 +5,89 @@ import {
   buildDashboardBewegingStappenplanHref,
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
+  buildDashboardVoortgangHref,
   isValidAgendaDate,
   parseDagFromUrl,
   parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  parseVoortgangScreenFromUrl,
   syncDashboardDagParam,
   syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardTabParam,
+  syncDashboardVoortgangScreenParam,
 } from "@/lib/dashboard-url";
+
+describe("parseVoortgangScreenFromUrl", () => {
+  it("returns hub when screen missing or invalid", () => {
+    expect(parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang")).toBe(
+      "hub",
+    );
+    expect(
+      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=invalid"),
+    ).toBe("hub");
+  });
+
+  it("parses valid subview screens", () => {
+    expect(
+      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
+    ).toBe("favorieten");
+    expect(
+      parseVoortgangScreenFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=statistieken",
+      ),
+    ).toBe("statistieken");
+    expect(
+      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=inzichten"),
+    ).toBe("inzichten");
+  });
+});
+
+describe("buildDashboardVoortgangHref", () => {
+  it("builds hub without screen param", () => {
+    expect(buildDashboardVoortgangHref()).toBe("/dashboard?tab=voortgang");
+    expect(buildDashboardVoortgangHref("hub")).toBe("/dashboard?tab=voortgang");
+  });
+
+  it("includes screen for subviews", () => {
+    expect(buildDashboardVoortgangHref("favorieten")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten",
+    );
+  });
+});
+
+describe("syncDashboardVoortgangScreenParam", () => {
+  it("sets and clears screen on voortgang tab", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=voortgang"),
+    });
+
+    syncDashboardVoortgangScreenParam("favorieten");
+    expect(pushState).toHaveBeenCalledOnce();
+    let nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("tab=voortgang");
+    expect(nextUrl).toContain("screen=favorieten");
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(nextUrl),
+    });
+    pushState.mockClear();
+
+    syncDashboardVoortgangScreenParam("hub");
+    expect(pushState).toHaveBeenCalledOnce();
+    nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("tab=voortgang");
+    expect(nextUrl).not.toContain("screen=");
+
+    window.history.pushState = originalPush;
+  });
+});
 
 describe("parseDagFromUrl", () => {
   it("parses valid dag param", () => {
@@ -211,7 +285,7 @@ describe("syncDashboardKompasDeepView", () => {
 });
 
 describe("syncDashboardTabParam", () => {
-  it("pushState on tab change and clears kompas for non-vandaag tabs", () => {
+  it("pushState on tab change and clears kompas and screen for non-vandaag tabs", () => {
     const originalReplace = window.history.replaceState;
     const originalPush = window.history.pushState;
     const replaceState = vi.fn();
@@ -221,7 +295,9 @@ describe("syncDashboardTabParam", () => {
 
     Object.defineProperty(window, "location", {
       configurable: true,
-      value: new URL("http://localhost/dashboard?tab=vandaag&kompas=slaap&view=stappenplan"),
+      value: new URL(
+        "http://localhost/dashboard?tab=vandaag&kompas=slaap&view=stappenplan",
+      ),
     });
 
     syncDashboardTabParam("voortgang");
@@ -231,6 +307,7 @@ describe("syncDashboardTabParam", () => {
     expect(nextUrl).toContain("tab=voortgang");
     expect(nextUrl).not.toContain("kompas=");
     expect(nextUrl).not.toContain("view=");
+    expect(nextUrl).not.toContain("screen=");
 
     Object.defineProperty(window, "location", {
       configurable: true,
@@ -241,6 +318,25 @@ describe("syncDashboardTabParam", () => {
     expect(pushState).not.toHaveBeenCalled();
 
     window.history.replaceState = originalReplace;
+    window.history.pushState = originalPush;
+  });
+
+  it("clears screen when leaving voortgang", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
+    });
+
+    syncDashboardTabParam("hermeting");
+    expect(pushState).toHaveBeenCalledOnce();
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("tab=hermeting");
+    expect(nextUrl).not.toContain("screen=");
+
     window.history.pushState = originalPush;
   });
 });

@@ -1,4 +1,12 @@
-import type { DashboardTabId, PillarId } from "@/types/dashboard";
+import type { DashboardTabId, PillarId, VoortgangScreen } from "@/types/dashboard";
+
+const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
+  "hub",
+  "inzichten",
+  "favorieten",
+  "statistieken",
+  "lichaamssamenstelling",
+]);
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -71,6 +79,52 @@ export function buildDashboardVandaagHref(
     params.set("dag", dag);
   }
   return `/dashboard?${params.toString()}`;
+}
+
+export function parseVoortgangScreenFromUrl(url: string | URL): VoortgangScreen {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  const screen = parsed.searchParams.get("screen");
+  if (
+    screen &&
+    screen !== "hub" &&
+    VALID_VOORTGANG_SCREENS.has(screen as VoortgangScreen)
+  ) {
+    return screen as VoortgangScreen;
+  }
+  return "hub";
+}
+
+export function buildDashboardVoortgangHref(screen?: VoortgangScreen | null): string {
+  const params = new URLSearchParams({ tab: "voortgang" });
+  if (screen && screen !== "hub") {
+    params.set("screen", screen);
+  }
+  return `/dashboard?${params.toString()}`;
+}
+
+export function syncDashboardVoortgangScreenParam(screen: VoortgangScreen): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("tab", "voortgang");
+  url.searchParams.delete("kompas");
+  url.searchParams.delete("view");
+  url.searchParams.delete("dag");
+
+  if (screen === "hub") {
+    url.searchParams.delete("screen");
+  } else {
+    url.searchParams.set("screen", screen);
+  }
+
+  const nextHref = url.toString();
+  if (nextHref === window.location.href) {
+    return;
+  }
+  window.history.pushState(null, "", nextHref);
 }
 
 export function buildDashboardAgendaHref(dag?: string | null): string {
@@ -206,6 +260,11 @@ export function syncDashboardTabParam(
   if (tab !== "vandaag") {
     url.searchParams.delete("kompas");
     url.searchParams.delete("view");
+  }
+  if (tab !== "voortgang") {
+    url.searchParams.delete("screen");
+  } else {
+    url.searchParams.delete("screen");
   }
   if (tab === "agenda" || tab === "vandaag") {
     if (nextDag && isValidAgendaDate(nextDag)) {
