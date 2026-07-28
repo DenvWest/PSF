@@ -4060,7 +4060,9 @@ export default function Dashboard({
           className={`w-full ${
             tab === "agenda"
               ? "max-w-[760px]"
-              : viewedDomain === "beweging" || (tab === "vandaag" && !viewedDomain)
+              : viewedDomain === "beweging" ||
+                  (tab === "vandaag" && !viewedDomain) ||
+                  tab === "voortgang"
                 ? "min-w-0"
                 : "max-w-[720px]"
           }`}
