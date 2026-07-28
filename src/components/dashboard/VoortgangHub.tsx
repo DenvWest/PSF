@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, Sparkline } from "@/components/app/primitives";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { IDENTITY_FIELDS } from "@/data/dashboard";
 import { PREMIUM_STATISTIEKEN_SOFT_UPSELL } from "@/data/dashboard/premium-value-props";
 import { buildRecommendations } from "@/lib/build-recommendations";
@@ -60,12 +61,6 @@ function handleSupplementenHubClick() {
 
 const MOCK_TREND = [42, 48, 45, 52, 49, 55];
 
-const VOORTGANG_LIGHT = {
-  text: "#1c1917",
-  muted: "#57534e",
-  subtle: "#78716c",
-} as const;
-
 const premiumBadgeStyle = {
   display: "inline-flex",
   alignItems: "center",
@@ -107,21 +102,14 @@ function HubCard({
         textAlign: "left",
       }}
     >
-      <Card pad={16} surface="light">
+      <CockpitTile>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: premium ? "#fdf6ef" : "#e8f5ee",
-              border: `1px solid ${premium ? "rgba(200,149,108,0.25)" : "rgba(90,143,106,0.2)"}`,
-              color: premium ? "var(--terra, #C8956C)" : "var(--sage)",
-              flexShrink: 0,
-            }}
+            className={
+              premium
+                ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[var(--terra,#C8956C)]"
+                : "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[var(--sage)]"
+            }
           >
             {icon}
           </div>
@@ -138,7 +126,7 @@ function HubCard({
                 style={{
                   fontFamily: "var(--f-serif)",
                   fontSize: 18,
-                  color: VOORTGANG_LIGHT.text,
+                  color: "var(--text)",
                   lineHeight: 1.2,
                 }}
               >
@@ -153,7 +141,7 @@ function HubCard({
             <div
               style={{
                 fontSize: 13,
-                color: VOORTGANG_LIGHT.muted,
+                color: "var(--text-muted)",
                 marginTop: 3,
                 lineHeight: 1.45,
                 textWrap: "pretty",
@@ -164,10 +152,10 @@ function HubCard({
           </div>
           <Icons.ChevronRight
             s={18}
-            style={{ color: VOORTGANG_LIGHT.subtle, flexShrink: 0 }}
+            style={{ color: "var(--text-subtle)", flexShrink: 0 }}
           />
         </div>
-      </Card>
+      </CockpitTile>
     </button>
   );
 }
@@ -396,7 +384,7 @@ function BlurredInsightTips({ tips }: { tips: string[] }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {tips.map((tip) => (
-        <Card key={tip} pad={16}>
+        <CockpitTile key={tip}>
           <div
             style={{
               fontSize: 14,
@@ -407,7 +395,7 @@ function BlurredInsightTips({ tips }: { tips: string[] }) {
           >
             {tip}
           </div>
-        </Card>
+        </CockpitTile>
       ))}
     </div>
   );
@@ -702,7 +690,7 @@ function ChartCard({
   );
 
   return (
-    <Card pad={18} style={{ marginBottom: 12 }}>
+    <CockpitTile className="mb-3">
       <div
         style={{
           fontFamily: "var(--f-serif)",
@@ -728,7 +716,7 @@ function ChartCard({
       ) : (
         chart
       )}
-    </Card>
+    </CockpitTile>
   );
 }
 
@@ -760,7 +748,7 @@ function LichaamssamenstellingView({
       <VoortgangSubHeader title="Lichaamssamenstelling" onBack={onBack} />
 
       <div style={{ paddingBottom: locked ? 24 : 0 }}>
-        <Card pad={20} style={{ marginBottom: 16 }}>
+        <CockpitTile className="mb-4">
           <div
             style={{
               fontFamily: "var(--f-serif)",
@@ -837,7 +825,7 @@ function LichaamssamenstellingView({
           >
             Houd lichaamsgegevens bij
           </div>
-        </Card>
+        </CockpitTile>
 
         {locked ? (
           <>
