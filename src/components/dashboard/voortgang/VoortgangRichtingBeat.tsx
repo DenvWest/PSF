@@ -70,7 +70,7 @@ export default function VoortgangRichtingBeat({
         <div className="lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-14">
           <div>
             <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--sage-ink)]">
-              Waar dit heen loopt
+              Waar dit heen loopt · {priorityRow.label}
             </p>
             <h2
               id="richting-beat-title"
@@ -153,7 +153,7 @@ export default function VoortgangRichtingBeat({
                 </div>
                 <div className="absolute right-0 top-0 min-w-0 text-right">
                   <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgba(22,40,26,0.50)]">
-                    {nextBand ? "Volgende band" : "Nu al"}
+                    {nextBand ? "Volgend niveau" : "Nu al"}
                   </p>
                   <p
                     className="mt-0.5 font-serif text-[22px] leading-[1.2] text-[var(--text)]"
@@ -162,7 +162,7 @@ export default function VoortgangRichtingBeat({
                     {nextBand ? `vanaf ${target}` : band.label}
                   </p>
                   <p className="mt-px text-[11.5px] text-[rgba(22,40,26,0.62)]">
-                    {nextBand ? nextBand.label : "hoogste leesniveau"}
+                    {nextBand ? nextBand.label : "hoogste niveau"}
                   </p>
                 </div>
               </div>
@@ -171,7 +171,7 @@ export default function VoortgangRichtingBeat({
             <button
               type="button"
               onClick={handleOpenInzichten}
-              className="mt-5 inline-flex min-h-11 cursor-pointer items-center gap-1.5 border-none bg-transparent p-0 text-[14.5px] font-semibold text-[var(--sage-ink)] underline underline-offset-[3px]"
+              className="mt-5 inline-flex min-h-[46px] w-full cursor-pointer items-center justify-center rounded-full bg-[var(--sage-ink)] px-5 text-[14.5px] font-semibold text-white transition hover:opacity-90 sm:w-auto"
             >
               Je vitaliteit in één beeld →
             </button>
@@ -195,8 +195,8 @@ export default function VoortgangRichtingBeat({
         </div>
 
         <p className="mt-3.5 max-w-[60ch] text-[11.5px] leading-normal text-[var(--text-subtle)] text-pretty lg:mt-3.5">
-          Banden zijn leesniveaus, geen doelen en geen oordeel. Waar jouw lijn
-          loopt, hangt af van waar je nu staat.
+          Deze niveaus zijn om af te lezen — geen doelen en geen oordeel. Waar
+          jouw lijn loopt, hangt af van waar je nu staat.
         </p>
       </div>
     </section>

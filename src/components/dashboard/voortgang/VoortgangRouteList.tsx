@@ -31,6 +31,9 @@ const ROUTE_ROWS = [
   },
 ];
 
+const ROUTE_ROW_CLASS =
+  "group flex min-h-14 w-full cursor-pointer items-center gap-3 rounded-xl border-none bg-transparent px-2 py-3 text-left transition-colors hover:bg-white/[0.05] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sage)]";
+
 export default function VoortgangRouteList({
   onOpenStatistieken,
   onOpenFavorieten,
@@ -89,9 +92,7 @@ export default function VoortgangRouteList({
             key={row.destination}
             type="button"
             onClick={() => handleRouteClick(row.destination)}
-            className={`flex min-h-14 w-full cursor-pointer items-center gap-3 border-none bg-transparent py-3 text-left${
-              index > 0 ? " border-t border-[var(--divider)]" : ""
-            }`}
+            className={`${ROUTE_ROW_CLASS}${index > 0 ? " border-t border-[var(--divider)]" : ""}`}
           >
             <span className="min-w-0 flex-1">
               <span className="block text-[14.5px] font-medium text-[var(--text)]">
@@ -101,10 +102,9 @@ export default function VoortgangRouteList({
                 {row.subtitle}
               </span>
             </span>
-            <Icons.ChevronRight
-              s={18}
-              style={{ color: "var(--text-subtle)", flexShrink: 0 }}
-            />
+            <span className="shrink-0 text-[var(--text-subtle)] transition-colors group-hover:text-[var(--text-muted)]">
+              <Icons.ChevronRight s={18} />
+            </span>
           </button>
         ))}
       </div>
@@ -116,8 +116,8 @@ export default function VoortgangRouteList({
         <button
           type="button"
           onClick={handleLichaam}
-          className="flex min-h-14 w-full cursor-pointer items-center gap-3 border-t border-[var(--divider)] bg-transparent py-3 text-left"
-        >
+          className={`${ROUTE_ROW_CLASS} border-t border-[var(--divider)]`}
+          >
           <span className="min-w-0 flex-1">
             <span className="block text-[14.5px] font-medium text-[var(--text)]">
               Lichaamssamenstelling
@@ -133,8 +133,8 @@ export default function VoortgangRouteList({
         <button
           type="button"
           onClick={handleWearable}
-          className="flex min-h-14 w-full cursor-pointer items-center gap-3 border-t border-[var(--divider)] bg-transparent py-3 text-left"
-        >
+          className={`${ROUTE_ROW_CLASS} border-t border-[var(--divider)]`}
+          >
           <span className="min-w-0 flex-1">
             <span className="block text-[14.5px] font-medium text-[var(--text)]">
               Je wearable koppelen

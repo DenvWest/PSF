@@ -1,9 +1,7 @@
 "use client";
 
-import MetingenCard from "@/components/dashboard/MetingenCard";
 import VoortgangDomeinRing from "@/components/dashboard/voortgang/VoortgangDomeinRing";
 import VoortgangHero from "@/components/dashboard/voortgang/VoortgangHero";
-import VoortgangLogboekSection from "@/components/dashboard/voortgang/VoortgangLogboekSection";
 import VoortgangRichtingBeat from "@/components/dashboard/voortgang/VoortgangRichtingBeat";
 import VoortgangRouteList from "@/components/dashboard/voortgang/VoortgangRouteList";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
@@ -51,19 +49,6 @@ export default function VoortgangHubScroll({
       <VoortgangRichtingBeat model={model} onOpenInzichten={onOpenInzichten} />
 
       <div className="mb-5 mt-2">
-        <h2
-          className="mb-3 font-serif text-[18px] leading-[1.3] text-[var(--text)]"
-          style={{ fontFamily: "var(--f-serif)" }}
-        >
-          Je meetreeks
-        </h2>
-        <div className="flex flex-col gap-2.5">
-          <MetingenCard scores={model.scores} history={model.history} />
-          <VoortgangLogboekSection model={model} />
-        </div>
-      </div>
-
-      <div className="mb-5">
         <VoortgangRouteList
           onOpenStatistieken={onOpenStatistieken}
           onOpenFavorieten={onOpenFavorieten}
