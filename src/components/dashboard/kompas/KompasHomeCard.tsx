@@ -6,9 +6,7 @@ import * as Icons from "@/components/app/icons";
 import { DeltaBadge } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
-import KompasVandaagPanel, {
-  KompasLogboekSection,
-} from "@/components/dashboard/kompas/KompasVandaagPanel";
+import KompasVandaagPanel from "@/components/dashboard/kompas/KompasVandaagPanel";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { buildWeekSchedulePreview, isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
@@ -53,7 +51,6 @@ type KompasHomeCardProps = {
   remeasureDaysUntil?: number | null;
   onOpenDomain: (domain: PillarId) => void;
   onOpenPriority?: (domain: PillarId) => void;
-  onGoVoortgang: () => void;
   onGoAgenda: (date: string) => void;
   onRemeasure?: () => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
@@ -755,7 +752,6 @@ export default function KompasHomeCard({
   remeasureDaysUntil = null,
   onOpenDomain,
   onOpenPriority,
-  onGoVoortgang,
   onGoAgenda,
   onRemeasure,
   onPrefUpdated,
@@ -871,9 +867,6 @@ export default function KompasHomeCard({
               onOpenDomain={handleOpenDomain}
               onGoAgenda={onGoAgenda}
             />
-            <div className="mt-4 hidden @[720px]/tile:block">
-              <KompasLogboekSection model={model} onGoVoortgang={onGoVoortgang} />
-            </div>
           </section>
 
           <section
@@ -888,13 +881,6 @@ export default function KompasHomeCard({
               onOpenPriority={handleOpenPriority}
               onPrefUpdated={onPrefUpdated}
             />
-          </section>
-
-          <section
-            aria-label="Logboek"
-            className="order-4 min-w-0 border-t border-white/10 pt-5 @[720px]/tile:hidden"
-          >
-            <KompasLogboekSection model={model} onGoVoortgang={onGoVoortgang} />
           </section>
         </div>
       </div>

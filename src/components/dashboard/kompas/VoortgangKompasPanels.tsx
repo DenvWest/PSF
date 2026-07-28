@@ -1,8 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
-import KompasReadoutSection from "@/components/dashboard/kompas/KompasReadoutSection";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
 import {
   buildDashboardBewegingStappenplanHref,
@@ -19,7 +17,6 @@ type VoortgangKompasPanelsProps = {
 
 export default function VoortgangKompasPanels({
   model,
-  data,
   onPrefUpdated,
 }: VoortgangKompasPanelsProps) {
   const router = useRouter();
@@ -41,8 +38,6 @@ export default function VoortgangKompasPanels({
         surface="kompas_voortgang_tab"
         showHeader={false}
       />
-      <KompasReadoutSection model={model} onOpenDomain={openDomain} surface="voortgang" />
-      <KompasOndersteuningTile model={model} data={data} surface="voortgang" />
     </div>
   );
 }

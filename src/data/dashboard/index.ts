@@ -336,8 +336,8 @@ export const DASHBOARD_TABS: DashboardTab[] = [
     label: "Voortgang",
     icon: "BarChart",
     title: "Voortgang",
-    subtitle: "Je vitaalscore, je ritme en je levenslijn.",
-    emptyHint: "Hier volg je je scores en trends — zodra je eerste check binnen is.",
+    subtitle: "Wat zich opstapelt sinds je check.",
+    emptyHint: "Doe je eerste check — daarna verzamelt zich hier je bewijs.",
   },
   {
     id: "hermeting",
@@ -352,6 +352,6 @@ export const DASHBOARD_TABS: DashboardTab[] = [
 export const TAB_SECTIONS: Record<DashboardTabId, DashboardSectionType[]> = {
   vandaag: ["kompasHome"],
   agenda: ["agendaHome"],
-  voortgang: ["vitalityScore", "voortgangHub"],
+  voortgang: ["voortgangHub"],
   hermeting: ["retest", "future"],
 };

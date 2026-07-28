@@ -123,7 +123,6 @@ import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
-import VoortgangKompasPanels from "@/components/dashboard/kompas/VoortgangKompasPanels";
 import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
@@ -3409,7 +3408,6 @@ const KompasHome = ({
           hasStressCheckin={data?.hasStressCheckin ?? false}
           domainCheckDaysAgo={data?.domainCheckDaysAgo}
           remeasureDaysUntil={data?.remeasure?.daysUntil ?? null}
-          onGoVoortgang={onGoVoortgang}
           onGoAgenda={(date) => onGoAgenda(date)}
           onRemeasure={onRemeasure}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
@@ -3511,37 +3509,30 @@ const SECTION_RENDERERS: Record<
     props.empty ? null : <RecommendationsSection {...props} />,
   voortgangHub: (props) =>
     props.empty || !props.model ? null : (
-      <>
-        {props.voortgangScreen === "hub" ? (
-          <VoortgangKompasPanels
-            model={props.model}
-            data={props.data}
-            onPrefUpdated={props.onPrefUpdated}
-          />
-        ) : null}
-        <VoortgangHub
-          model={props.model}
-          data={props.data}
-          isMember={props.isMember}
-          hasTrendsFeature={props.hasTrendsFeature}
-          tab={props.tab}
-          screen={props.voortgangScreen}
-          freeStatistics={<HistorySection {...props} />}
-          unlockedStatistics={
-            <>
-              <StatistiekenPriorityOverTime
-                model={props.model}
-                prefUpdatedAt={props.prefUpdatedAt}
-                onPrefUpdated={props.onPrefUpdated}
-              />
-              <SignalsSection {...props} />
-              <NutritionIntakeSection {...props} />
-              <HistorySection {...props} />
-            </>
-          }
-          onScreenChange={props.onVoortgangScreenChange}
-        />
-      </>
+      <VoortgangHub
+        model={props.model}
+        data={props.data}
+        isMember={props.isMember}
+        hasTrendsFeature={props.hasTrendsFeature}
+        tab={props.tab}
+        screen={props.voortgangScreen}
+        freeStatistics={<HistorySection {...props} />}
+        unlockedStatistics={
+          <>
+            <StatistiekenPriorityOverTime
+              model={props.model}
+              prefUpdatedAt={props.prefUpdatedAt}
+              onPrefUpdated={props.onPrefUpdated}
+            />
+            <SignalsSection {...props} />
+            <NutritionIntakeSection {...props} />
+            <HistorySection {...props} />
+          </>
+        }
+        onScreenChange={props.onVoortgangScreenChange}
+        onPrefUpdated={props.onPrefUpdated}
+        onGoAgenda={() => props.onGoAgenda()}
+      />
     ),
   future: () => <FutureSection />,
 };

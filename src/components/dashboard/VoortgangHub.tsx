@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { Button, Card, Sparkline } from "@/components/app/primitives";
@@ -15,6 +16,10 @@ import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
 import SupplementVerdictPanel from "@/components/dashboard/SupplementVerdictPanel";
 import VoortgangReisStrip from "@/components/dashboard/voortgang/VoortgangReisStrip";
+import VoortgangBewijsRegel from "@/components/dashboard/voortgang/VoortgangBewijsRegel";
+import VoortgangDomeinRing from "@/components/dashboard/voortgang/VoortgangDomeinRing";
+import VoortgangLogboekSection from "@/components/dashboard/voortgang/VoortgangLogboekSection";
+import VoortgangKompasPanels from "@/components/dashboard/kompas/VoortgangKompasPanels";
 import StatistiekenAdviesSection from "@/components/dashboard/voortgang/StatistiekenAdviesSection";
 import FavorietenAanraderSection from "@/components/dashboard/voortgang/FavorietenAanraderSection";
 import FavorietenKeuzeSection from "@/components/dashboard/voortgang/FavorietenKeuzeSection";
@@ -32,8 +37,19 @@ import {
 } from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
+import {
+  buildDashboardBewegingStappenplanHref,
+  buildDashboardVandaagHref,
+  supportsKompasDeepView,
+} from "@/lib/dashboard-url";
 import { resolveTrendsAccess } from "@/lib/entitlement-access";
-import type { DashboardData, DashboardModel, DashboardTabId } from "@/types/dashboard";
+import type {
+  AccountPriorityPrefData,
+  DashboardData,
+  DashboardModel,
+  DashboardTabId,
+  PillarId,
+} from "@/types/dashboard";
 
 export type VoortgangScreen =
   | "hub"
@@ -52,6 +68,8 @@ type VoortgangHubProps = {
   freeStatistics: ReactNode;
   unlockedStatistics: ReactNode;
   onScreenChange: (screen: VoortgangScreen) => void;
+  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
+  onGoAgenda: () => void;
 };
 
 function handleSupplementenHubClick() {
@@ -869,7 +887,10 @@ export default function VoortgangHub({
   freeStatistics,
   unlockedStatistics,
   onScreenChange,
+  onPrefUpdated,
+  onGoAgenda,
 }: VoortgangHubProps) {
+  const router = useRouter();
   const setScreen = (next: VoortgangScreen) => {
     onScreenChange(next);
   };
@@ -978,64 +999,79 @@ export default function VoortgangHub({
 
   return (
     <section aria-label="Voortgang navigatie">
-      <div style={{ marginBottom: 20 }}>
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--text-subtle)",
-            marginBottom: 6,
-          }}
-        >
-          Voortgang
-        </div>
-        <div
-          style={{
-            fontFamily: "var(--f-serif)",
-            fontSize: 22,
-            color: "var(--text)",
-            lineHeight: 1.25,
-          }}
-        >
-          Zo volg je je vooruitgang
-        </div>
-        <p
-          style={{
-            margin: "8px 0 0",
-            fontSize: 14,
-            color: "var(--text-muted)",
-            lineHeight: 1.55,
-            textWrap: "pretty",
-          }}
-        >
-          Op basis van je gratis test, ingevulde tijdlijn en hermetingen.
-        </p>
-      </div>
+      <VoortgangBewijsRegel model={model} data={data} onGoAgenda={onGoAgenda} />
 
       <VoortgangReisStrip model={model} data={data} />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <HubCard
-          icon={<Icons.BarChart s={20} />}
-          title="Statistieken"
-          subtitle="Wat je check laat zien — en wat dat betekent voor supplementen"
-          onClick={() => openHub("statistieken")}
-        />
-        <HubCard
-          icon={<Icons.Heart s={20} />}
-          title="Favorieten"
-          subtitle="Jouw keuze, met onze mening ernaast"
-          onClick={() => openHub("favorieten")}
-        />
-        <HubCard
-          icon={<Icons.Spark s={20} />}
-          title="Jouw inzichten"
-          subtitle="Je vitaalscore en wat eronder zit"
-          onClick={() => openHub("inzichten")}
-        />
-        <PremiumWaitlistCard surface="voortgang" />
+      <VoortgangDomeinRing
+        model={model}
+        data={data}
+        onOpenDomain={(domain: PillarId) => {
+          if (supportsKompasDeepView(domain)) {
+            router.push(buildDashboardBewegingStappenplanHref());
+            return;
+          }
+          router.push(buildDashboardVandaagHref(domain));
+        }}
+      />
+
+      <VoortgangKompasPanels
+        model={model}
+        data={data}
+        onPrefUpdated={onPrefUpdated}
+      />
+
+      <div style={{ marginBottom: 20, marginTop: 8 }}>
+        <div
+          style={{
+            fontFamily: "var(--f-serif)",
+            fontSize: 18,
+            color: "var(--text)",
+            lineHeight: 1.3,
+            marginBottom: 12,
+          }}
+        >
+          Je meetreeks
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <MetingenCard scores={model.scores} history={model.history} />
+          <VoortgangLogboekSection model={model} />
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <div
+          style={{
+            fontFamily: "var(--f-serif)",
+            fontSize: 18,
+            color: "var(--text)",
+            lineHeight: 1.3,
+            marginBottom: 12,
+          }}
+        >
+          Verder kijken
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <HubCard
+            icon={<Icons.BarChart s={20} />}
+            title="Statistieken"
+            subtitle="Wat je check laat zien — en wat dat betekent voor supplementen"
+            onClick={() => openHub("statistieken")}
+          />
+          <HubCard
+            icon={<Icons.Heart s={20} />}
+            title="Favorieten"
+            subtitle="Jouw keuze, met onze mening ernaast"
+            onClick={() => openHub("favorieten")}
+          />
+          <HubCard
+            icon={<Icons.Spark s={20} />}
+            title="Jouw inzichten"
+            subtitle="Je vitaalscore en wat eronder zit"
+            onClick={() => openHub("inzichten")}
+          />
+          <PremiumWaitlistCard surface="voortgang" />
+        </div>
       </div>
     </section>
   );

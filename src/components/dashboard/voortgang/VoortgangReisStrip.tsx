@@ -1,6 +1,5 @@
 "use client";
 
-import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
 type VoortgangReisStripProps = {
@@ -28,21 +27,15 @@ export default function VoortgangReisStrip({ model, data }: VoortgangReisStripPr
   }
 
   const checkLabel = formatShortDate(model.date);
-  const checkCount = model.history.length;
-  const metaLine =
-    checkCount > 0
-      ? `${checkCount} check${checkCount === 1 ? "" : "s"} gedaan · dag ${cycle.cycleDay} bezig`
-      : `Dag ${cycle.cycleDay} bezig`;
 
   return (
-    <CockpitTile className="mb-3.5">
+    <div className="mb-3.5">
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr auto 1fr auto 1fr",
           alignItems: "center",
           gap: 8,
-          marginBottom: 12,
         }}
       >
         <ReisNode
@@ -63,19 +56,7 @@ export default function VoortgangReisStrip({ model, data }: VoortgangReisStripPr
           active={remeasure.daysUntil <= 14}
         />
       </div>
-      <p
-        style={{
-          margin: 0,
-          fontSize: 13,
-          color: "var(--text-muted)",
-          lineHeight: 1.5,
-          textAlign: "center",
-          textWrap: "pretty",
-        }}
-      >
-        {metaLine}
-      </p>
-    </CockpitTile>
+    </div>
   );
 }
 
