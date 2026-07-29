@@ -13,6 +13,8 @@ import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { loadPlanProgress } from "@/lib/plan-progress";
+import { computeProteinTarget } from "@/lib/protein-target";
+import { deriveTrainingLoadFromAnswers } from "@/lib/training-load";
 import {
   getDailyActionCycleEvidence,
   getDailyActionState,
@@ -70,6 +72,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   domainCheckDaysAgo: {},
   movementPrefs: EMPTY_MOVEMENT_PREFS,
   supplementVerdicts: [],
+  proteinTarget: null,
 };
 
 const DOMAIN_SCORE_KEYS: DomainScoreKey[] = [
@@ -124,6 +127,7 @@ type SessionRow = {
   first_name: string | null;
   answers: unknown;
   rules_version: string | null;
+  weight_kg: number | null;
 };
 
 export type AccountSessionSnapshot = {
@@ -138,6 +142,7 @@ export type AccountSessionSnapshot = {
   answers: Record<string, number> | null;
   movementPrefs: MovementPrefs;
   rulesVersion: string;
+  weightKg: number | null;
 };
 
 export function mapSessionSnapshotToPrev(
@@ -302,7 +307,7 @@ export async function loadAccountDashboardData(
 
   const { data, error } = await admin
     .from("intake_sessions")
-    .select("id,domain_scores,created_at,profile_label,first_name,answers,rules_version")
+    .select("id,domain_scores,created_at,profile_label,first_name,answers,rules_version,weight_kg")
     .eq("account_id", accountId)
     .order("created_at", { ascending: true });
 
@@ -352,6 +357,10 @@ export async function loadAccountDashboardData(
         firstName,
         movementPrefs: parseMovementPrefs(row.answers),
         rulesVersion: parseRulesVersion(row.rules_version),
+        weightKg:
+          typeof row.weight_kg === "number" && Number.isFinite(row.weight_kg)
+            ? row.weight_kg
+            : null,
       };
     })
     .filter((row): row is AccountSessionSnapshot => row !== null);
@@ -754,6 +763,20 @@ export async function loadAccountDashboardData(
         })
       : null;
 
+  // Eiwit-personalisatie: alleen eiwit (compliance-troef, zie
+  // src/lib/nutrient-personalization.ts) — nooit het ruwe gewicht doorgeven
+  // aan de client, alleen de afgeleide gramsLow/gramsHigh-range.
+  const proteinTargetFull =
+    latestSnapshot.weightKg != null
+      ? computeProteinTarget({
+          weightKg: latestSnapshot.weightKg,
+          trainingLoad: deriveTrainingLoadFromAnswers(latestSnapshot.answers ?? {}),
+        })
+      : null;
+  const proteinTarget = proteinTargetFull
+    ? { gramsLow: proteinTargetFull.gramsLow, gramsHigh: proteinTargetFull.gramsHigh }
+    : null;
+
   const priorityPrefRow = await getAccountPriorityPref(admin, accountId);
   const priorityPref = priorityPrefRow
     ? {
@@ -799,5 +822,6 @@ export async function loadAccountDashboardData(
     hasStressCheckin,
     domainCheckDaysAgo,
     supplementVerdicts: [],
+    proteinTarget,
   };
 }

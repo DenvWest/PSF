@@ -10,6 +10,7 @@ import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
+import type { ProteinTargetRange } from "@/lib/protein-target";
 
 export type { TimeBucket, PriorityPrefSource };
 
@@ -236,6 +237,14 @@ export type DashboardData = {
   movementPrefs: MovementPrefs;
   /** Geldige supplementoordelen — ook de ingrediënten die op "nee" uitkomen. */
   supplementVerdicts: StoredSupplementVerdict[];
+  /**
+   * Gepersonaliseerde eiwit-dagrange (g/kg × gewicht), server-side berekend.
+   * Nooit het ruwe gewicht — alleen de afgeleide range bereikt de client.
+   * Null zonder ProteinTargetCard-invoer deze cyclus (compute-op-de-server,
+   * geen personalisatie voor magnesium/zink/vitD/omega-3 — zie
+   * src/lib/nutrient-personalization.ts).
+   */
+  proteinTarget: ProteinTargetRange | null;
 };
 
 export type IdentityField = {

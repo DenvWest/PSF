@@ -11,6 +11,7 @@ import {
 } from "@/lib/intake-session-cookie";
 import { bodyMetricsConsentRow } from "@/lib/body-metrics-consent";
 import { computeProteinTarget } from "@/lib/protein-target";
+import { deriveTrainingLoadFromAnswers } from "@/lib/training-load";
 import { emitEvent } from "@/lib/events";
 import { nutritionSupplementGate } from "@/lib/nutrition-advice";
 import { loadIntakeSessionPayloadBySessionId } from "@/lib/intake-session-server";
@@ -32,15 +33,6 @@ function parseTrainingLoad(value: unknown): number | undefined {
     return undefined;
   }
   return value;
-}
-
-function deriveTrainingLoadFromAnswers(
-  answers: Record<string, number>,
-): number | undefined {
-  const movStr = Number.isFinite(answers.MOV_STR) ? answers.MOV_STR : 0;
-  const movCard = Number.isFinite(answers.MOV_CARD) ? answers.MOV_CARD : 0;
-  const load = Math.max(movStr, movCard);
-  return load >= 1 ? Math.min(4, load) : undefined;
 }
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
@@ -141,6 +133,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Gewicht op de sessie zetten — zelfde consent, hergebruikt zodra Favorieten/
+  // Statistieken advies je eiwit-target tonen. Volgt de bestaande unlink-bij-
+  // intrekking van intake_sessions (account/revoke); geen aparte cleanup nodig.
+  const { error: weightUpdateError } = await admin
+    .from("intake_sessions")
+    .update({ weight_kg: Math.round(weightKg) })
+    .eq("id", sessionId);
+  if (weightUpdateError) {
+    console.error("[api/intake/protein-target] weight update error:", weightUpdateError);
+  }
+
   // Gegate vervolgstap (voeding eerst, supplement tweede) — zelfde EFSA-poort als buildNutritionAdvice.
   const gate = nutritionSupplementGate("protein");
   const supplement = gate.allowed
@@ -163,6 +166,5 @@ export async function POST(request: NextRequest) {
     console.error("[api/intake/protein-target] computed emit error:", emitErr);
   }
 
-  // Bereken-en-vergeet: het gewicht wordt NIET opgeslagen, alleen verwerkt.
   return NextResponse.json({ target, supplement }, { status: 200 });
 }

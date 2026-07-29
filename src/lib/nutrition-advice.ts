@@ -23,19 +23,26 @@ import {
   type NutritionAdviceContext,
   type NutritionPreference,
 } from "@/lib/nutrition-advice-personalization";
+import type { ProteinTargetRange } from "@/lib/protein-target";
 
 export interface BuildNutritionAdviceOptions {
   adviceDate?: Date;
   preference?: NutritionPreference;
   allergies?: string[];
+  /** Alleen voor eiwit — zie nutrient-personalization.ts ("compliance-troef"). */
+  proteinTarget?: ProteinTargetRange | null;
 }
 
 export function getNutrientLifestyleAction(
   nutrient: NutrientId,
   adviceDate = new Date(),
+  proteinTarget?: ProteinTargetRange | null,
 ): string {
   if (nutrient === "vitamin_d") {
     return buildLifestyleAction("vitamin_d", { season: seasonFromDate(adviceDate) });
+  }
+  if (nutrient === "protein" && proteinTarget) {
+    return buildLifestyleAction("protein", { proteinTarget });
   }
   return nutrientReferences[nutrient].lifestyleAction;
 }
@@ -102,16 +109,18 @@ export function buildNutritionAdvice(
   options: BuildNutritionAdviceOptions = {},
 ): NutritionAdviceItem[] {
   const adviceDate = options.adviceDate ?? new Date();
+  const proteinTarget = options.proteinTarget ?? null;
   const ctx: NutritionAdviceContext = {
     preference: options.preference ?? "none",
     allergies: options.allergies ?? [],
+    proteinTarget,
   };
   const items: NutritionAdviceItem[] = [];
 
   for (const estimate of estimates) {
     if (estimate.band !== "below") continue;
 
-    const baseText = getNutrientLifestyleAction(estimate.nutrient, adviceDate);
+    const baseText = getNutrientLifestyleAction(estimate.nutrient, adviceDate, proteinTarget);
 
     items.push({
       kind: "lifestyle",

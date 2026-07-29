@@ -263,7 +263,7 @@ export function buildStatistiekenAdviesModel(
     .sort((left, right) => right.daysAgo - left.daysAgo);
 
   const nutritionLadder = nutritionLogCompleted
-    ? buildNutritionAdvice(toIntakeEstimates(data))
+    ? buildNutritionAdvice(toIntakeEstimates(data), { proteinTarget: data.proteinTarget })
     : [];
 
   return {

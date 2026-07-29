@@ -86,6 +86,28 @@ describe("personalizeLifestyleText — protein", () => {
   });
 });
 
+describe("personalizeLifestyleText — protein + proteinTarget", () => {
+  it("eieren-allergie + proteinTarget: gepersonaliseerde range in de ei-vrije variant", () => {
+    const text = personalizeLifestyleText(
+      "protein",
+      buildLifestyleAction("protein"),
+      { preference: "none", allergies: ["eieren"], proteinTarget: { gramsLow: 100, gramsHigh: 120 } },
+    );
+    expect(text).toContain("100–120 g eiwit per dag");
+    expect(text.toLowerCase()).not.toContain("eieren");
+  });
+
+  it("vegan + proteinTarget: gepersonaliseerde range in de plantaardige variant", () => {
+    const text = personalizeLifestyleText(
+      "protein",
+      buildLifestyleAction("protein"),
+      { preference: "vegan", allergies: [], proteinTarget: { gramsLow: 100, gramsHigh: 120 } },
+    );
+    expect(text).toContain("100–120 g eiwit per dag");
+    expect(text).toContain("tofu");
+  });
+});
+
 describe("buildNutritionAdvice — personalisatie", () => {
   it("vegan omega3 gap: supplement-gate ongewijzigd", () => {
     const estimate: IntakeEstimate[] = [

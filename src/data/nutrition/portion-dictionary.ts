@@ -7,6 +7,7 @@
 
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { VitaminDSeason } from "@/lib/nutrition-season";
+import type { ProteinTargetRange } from "@/lib/protein-target";
 
 export type PortionGroup =
   | "vegetables"
@@ -86,14 +87,37 @@ export const PORTION_GRAMS = {
 
 export interface LifestyleActionContext {
   season?: VitaminDSeason;
+  /**
+   * Alleen voor eiwit. Micronutriënten (magnesium/zink/vitamine D/omega-3)
+   * personaliseren NIET op gewicht — vaste, bronbare RI (zie
+   * src/lib/nutrient-personalization.ts, "compliance-troef").
+   */
+  proteinTarget?: ProteinTargetRange | null;
+}
+
+/**
+ * Openingszin voor de eiwit-hoeveelheid: generiek zonder target (per eetmoment),
+ * anders de gepersonaliseerde dagrange uit computeProteinTarget (g/kg × gewicht).
+ */
+export function proteinQuantityPhrase(target?: ProteinTargetRange | null): string {
+  if (target) {
+    return `Op basis van je gewicht en trainingsbelasting mik je op zo'n ${target.gramsLow}–${target.gramsHigh} g eiwit per dag, verdeeld over 3–4 momenten`;
+  }
+  return "Mik op 20–30 g eiwit per eetmoment";
+}
+
+function buildProteinDefaultText(target?: ProteinTargetRange | null): string {
+  const suffix = target
+    ? ""
+    : " Verdeeld over 3–4 momenten pakt je lichaam eiwit beter op.";
+  const article = target ? " een" : "";
+  return `${proteinQuantityPhrase(target)}: 2 eieren + kwark bij ontbijt, 100 g kip of 135 g linzen bij${article} warme maaltijd.${suffix}`;
 }
 
 const LIFESTYLE_ACTIONS: Record<
-  Exclude<NutrientId, "vitamin_d">,
+  Exclude<NutrientId, "vitamin_d" | "protein">,
   string
 > = {
-  protein:
-    "Mik op 20–30 g eiwit per eetmoment: 2 eieren + kwark bij ontbijt, 100 g kip of 135 g linzen bij warme maaltijd. Verdeeld over 3–4 momenten pakt je lichaam eiwit beter op.",
   omega3:
     "Eet 1–2× per week een portie vette vis (100–150 g zalm, makreel of haring). Geen vis? 1 el lijnzaad of walnoten leveren plantaardige omega-3 (minder efficiënt).",
   magnesium:
@@ -117,12 +141,23 @@ export function buildLifestyleAction(
     const season = ctx.season ?? "summer";
     return VITAMIN_D_ACTIONS[season];
   }
+  if (nutrient === "protein") {
+    return buildProteinDefaultText(ctx.proteinTarget);
+  }
   return LIFESTYLE_ACTIONS[nutrient];
 }
+
+/** Voorbeeld-target voor de compliance-sweep — geen echte gebruikersdata. */
+const SAMPLE_PROTEIN_TARGET: ProteinTargetRange = {
+  gramsLow: 95,
+  gramsHigh: 110,
+};
 
 /** Alle lifestyle-teksten — handig voor compliance-tests. */
 export function allLifestyleActionTexts(season: VitaminDSeason = "summer"): string[] {
   return [
+    buildProteinDefaultText(),
+    buildProteinDefaultText(SAMPLE_PROTEIN_TARGET),
     ...Object.values(LIFESTYLE_ACTIONS),
     VITAMIN_D_ACTIONS[season],
     VITAMIN_D_ACTIONS[season === "summer" ? "winter" : "summer"],

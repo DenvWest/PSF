@@ -58,6 +58,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   domainCheckDaysAgo: {},
   movementPrefs: { startPattern: null, anchor: null },
   supplementVerdicts: [],
+  proteinTarget: null,
 };
 
 const DASHBOARD_WITH_DATA: DashboardData = {
@@ -107,6 +108,7 @@ const DASHBOARD_WITH_DATA: DashboardData = {
   domainCheckDaysAgo: {},
   movementPrefs: { startPattern: null, anchor: null },
   supplementVerdicts: [],
+  proteinTarget: null,
 };
 
 const DASHBOARD_WITH_ANSWERS: DashboardData = {

@@ -168,5 +168,6 @@ export function buildDevDashboardData(
         : { slaap: 3, stress: 9 },
     movementPrefs: EMPTY_MOVEMENT_PREFS,
     supplementVerdicts: [],
+    proteinTarget: { gramsLow: 95, gramsHigh: 110 },
   };
 }

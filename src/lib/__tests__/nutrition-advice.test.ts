@@ -200,12 +200,65 @@ describe("buildNutritionAdvice — ordering bij meerdere gaps", () => {
   });
 });
 
+// ─── H. Eiwit-personalisatie (proteinTarget) — micro's blijven vaste RI ──────
+
+describe("buildNutritionAdvice — proteinTarget personalisatie", () => {
+  it("zonder proteinTarget: generieke eiwit-copy, ongewijzigd", () => {
+    const result = buildNutritionAdvice([gapEstimate("protein")]);
+    const lifestyle = result.find((item) => item.kind === "lifestyle");
+    expect(lifestyle?.text).toContain("20–30 g eiwit per eetmoment");
+  });
+
+  it("met proteinTarget: gepersonaliseerde dagrange, geen generieke '20–30 g' meer", () => {
+    const result = buildNutritionAdvice([gapEstimate("protein")], {
+      proteinTarget: { gramsLow: 100, gramsHigh: 120 },
+    });
+    const lifestyle = result.find((item) => item.kind === "lifestyle");
+    expect(lifestyle?.text).toContain("100–120 g eiwit per dag");
+    expect(lifestyle?.text).not.toContain("20–30 g eiwit per eetmoment");
+  });
+
+  it("proteinTarget raakt alleen eiwit — omega3/magnesium/zink blijven vaste RI-copy", () => {
+    const withTarget = buildNutritionAdvice(
+      [gapEstimate("omega3"), gapEstimate("magnesium"), gapEstimate("zinc")],
+      { proteinTarget: { gramsLow: 100, gramsHigh: 120 } },
+    );
+    const withoutTarget = buildNutritionAdvice([
+      gapEstimate("omega3"),
+      gapEstimate("magnesium"),
+      gapEstimate("zinc"),
+    ]);
+    const texts = (items: typeof withTarget) =>
+      items.filter((item) => item.kind === "lifestyle").map((item) => item.text);
+    expect(texts(withTarget)).toEqual(texts(withoutTarget));
+  });
+
+  it("proteinTarget + vegan: personaliseert de plantaardige eiwit-variant", () => {
+    const result = buildNutritionAdvice([gapEstimate("protein")], {
+      preference: "vegan",
+      proteinTarget: { gramsLow: 100, gramsHigh: 120 },
+    });
+    const lifestyle = result.find((item) => item.kind === "lifestyle");
+    expect(lifestyle?.text).toContain("100–120 g eiwit per dag");
+    expect(lifestyle?.text).toContain("tofu");
+  });
+});
+
 // ─── G. Portie-woordenboek + seizoensvitamine D ─────────────────────────────
 
 describe("portion-dictionary — lifestyleAction copy", () => {
   it("bevat gram-equivalenten voor eiwit", () => {
     expect(buildLifestyleAction("protein")).toContain("20–30 g");
     expect(buildLifestyleAction("protein")).toContain("100 g kip");
+  });
+
+  it("proteinTarget-context geeft de gepersonaliseerde range, food-voorbeelden blijven staan", () => {
+    const text = buildLifestyleAction("protein", {
+      proteinTarget: { gramsLow: 100, gramsHigh: 120 },
+    });
+    expect(text).toContain("100–120 g eiwit per dag");
+    expect(text).toContain("100 g kip");
+    expect(text).not.toContain("20–30 g");
   });
 
   it("bevat gram-equivalenten voor omega-3", () => {

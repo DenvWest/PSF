@@ -30,6 +30,13 @@ export interface ProteinTarget {
   gramsHigh: number;
 }
 
+/**
+ * Wat de advies-copy nodig heeft — nooit perKg, nooit gewicht.
+ * DashboardData draagt alleen deze range naar de client, niet de volle
+ * ProteinTarget (die intern g/kg-factoren bevat, hier niet relevant).
+ */
+export type ProteinTargetRange = Pick<ProteinTarget, "gramsLow" | "gramsHigh">;
+
 /** g/kg-range per trainingsbelasting (PROT-AGE/ESPEN/PKN, zie bestandscomment). */
 function factorRange(trainingLoad: number | undefined): {
   low: number;

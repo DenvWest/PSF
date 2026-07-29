@@ -1,21 +1,34 @@
 import type { NutrientId } from "@/data/nutrition/intake-reference";
-import { PORTION_GRAMS } from "@/data/nutrition/portion-dictionary";
+import { PORTION_GRAMS, proteinQuantityPhrase } from "@/data/nutrition/portion-dictionary";
+import type { ProteinTargetRange } from "@/lib/protein-target";
 
 export type NutritionPreference = "none" | "pescatarian" | "vegetarian" | "vegan";
 
 export type NutritionAdviceContext = {
   preference: NutritionPreference;
   allergies: string[];
+  /** Alleen voor eiwit — zie LifestyleActionContext in portion-dictionary.ts. */
+  proteinTarget?: ProteinTargetRange | null;
 };
 
 const PLANT_OMEGA3 =
   "Kies plantaardige omega-3: algenolie (DHA) of 1 el lijnzaad/walnoten (ALA — minder efficiënt dan vis).";
 
-const PLANT_PROTEIN =
-  `Mik op 20–30 g eiwit per eetmoment: tofu/tempeh + peulvruchten bij ontbijt, ${PORTION_GRAMS.legumes} g linzen of kikkererwten bij warme maaltijd. Verdeeld over 3–4 momenten pakt je lichaam eiwit beter op.`;
+function buildPlantProteinText(target?: ProteinTargetRange | null): string {
+  const suffix = target
+    ? ""
+    : " Verdeeld over 3–4 momenten pakt je lichaam eiwit beter op.";
+  const article = target ? " een" : "";
+  return `${proteinQuantityPhrase(target)}: tofu/tempeh + peulvruchten bij ontbijt, ${PORTION_GRAMS.legumes} g linzen of kikkererwten bij${article} warme maaltijd.${suffix}`;
+}
 
-const PROTEIN_NO_EGG =
-  `Mik op 20–30 g eiwit per eetmoment: kwark of yoghurt bij ontbijt, 100 g kip of ${PORTION_GRAMS.legumes} g linzen bij warme maaltijd. Verdeeld over 3–4 momenten pakt je lichaam eiwit beter op.`;
+function buildProteinNoEggText(target?: ProteinTargetRange | null): string {
+  const suffix = target
+    ? ""
+    : " Verdeeld over 3–4 momenten pakt je lichaam eiwit beter op.";
+  const article = target ? " een" : "";
+  return `${proteinQuantityPhrase(target)}: kwark of yoghurt bij ontbijt, 100 g kip of ${PORTION_GRAMS.legumes} g linzen bij${article} warme maaltijd.${suffix}`;
+}
 
 const PLANT_ZINC =
   `Eet dagelijks een zinkbron uit peulvruchten, volkoren granen of pompoenpitten (${PORTION_GRAMS.legumes} g bonen ≈ 2–3 mg). Fytaat in plantaardige bronnen kan opname vertragen — spreiding over de dag helpt. Vuistregel mannen: ~9–11 mg/dag.`;
@@ -55,10 +68,10 @@ export function personalizeLifestyleText(
 
     case "protein":
       if (ctx.preference === "vegan") {
-        return PLANT_PROTEIN;
+        return buildPlantProteinText(ctx.proteinTarget);
       }
       if (hasAllergy(ctx.allergies, "eieren")) {
-        return PROTEIN_NO_EGG;
+        return buildProteinNoEggText(ctx.proteinTarget);
       }
       return baseText;
 
@@ -82,17 +95,24 @@ export function personalizeLifestyleText(
   }
 }
 
+/** Voorbeeld-target voor de compliance-sweep — geen echte gebruikersdata. */
+const SAMPLE_PROTEIN_TARGET: ProteinTargetRange = {
+  gramsLow: 95,
+  gramsHigh: 110,
+};
+
 /** Alle gepersonaliseerde varianten — compliance-tests. */
 export function allPersonalizedLifestyleTexts(): string[] {
   const nutrients: NutrientId[] = ["protein", "omega3", "magnesium", "zinc"];
-  const contexts: NutritionAdviceContext[] = [
-    { preference: "vegan", allergies: [] },
-    { preference: "vegetarian", allergies: [] },
-    { preference: "none", allergies: ["vis"] },
-    { preference: "none", allergies: ["noten"] },
-    { preference: "none", allergies: ["melk"] },
-    { preference: "none", allergies: ["eieren"] },
-  ];
+  const proteinTargets: Array<ProteinTargetRange | null> = [null, SAMPLE_PROTEIN_TARGET];
+  const contexts: NutritionAdviceContext[] = proteinTargets.flatMap((proteinTarget) => [
+    { preference: "vegan", allergies: [], proteinTarget },
+    { preference: "vegetarian", allergies: [], proteinTarget },
+    { preference: "none", allergies: ["vis"], proteinTarget },
+    { preference: "none", allergies: ["noten"], proteinTarget },
+    { preference: "none", allergies: ["melk"], proteinTarget },
+    { preference: "none", allergies: ["eieren"], proteinTarget },
+  ]);
   const texts: string[] = [];
   for (const nutrient of nutrients) {
     for (const ctx of contexts) {

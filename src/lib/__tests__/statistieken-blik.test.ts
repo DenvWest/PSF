@@ -91,6 +91,7 @@ function baseData(overrides: Partial<DashboardData> = {}): DashboardData {
     domainCheckDaysAgo: {},
     movementPrefs: EMPTY_MOVEMENT_PREFS,
     supplementVerdicts: [],
+    proteinTarget: null,
     ...overrides,
   };
 }
