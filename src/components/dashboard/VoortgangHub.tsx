@@ -14,7 +14,8 @@ import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import SupplementVerdictPanel from "@/components/dashboard/SupplementVerdictPanel";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
-import StatistiekenAdviesSection from "@/components/dashboard/voortgang/StatistiekenAdviesSection";
+import StatistiekenBlikNav from "@/components/dashboard/voortgang/StatistiekenBlikNav";
+import StatistiekenBlikPanels from "@/components/dashboard/voortgang/StatistiekenBlikPanels";
 import FavorietenAanraderSection from "@/components/dashboard/voortgang/FavorietenAanraderSection";
 import FavorietenKeuzeSection from "@/components/dashboard/voortgang/FavorietenKeuzeSection";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
@@ -36,6 +37,7 @@ import type {
   DashboardModel,
   DashboardTabId,
   PillarId,
+  StatistiekenBlik,
   VoortgangScreen,
 } from "@/types/dashboard";
 
@@ -46,8 +48,11 @@ type VoortgangHubProps = {
   data?: DashboardData;
   tab: DashboardTabId;
   screen: VoortgangScreen;
-  statisticsContent: ReactNode;
-  onScreenChange: (screen: VoortgangScreen) => void;
+  statistiekenBlik: StatistiekenBlik;
+  statistiekenAdviesExtra: ReactNode;
+  statistiekenOverTijdExtra: ReactNode;
+  onScreenChange: (screen: VoortgangScreen, options?: { blik?: StatistiekenBlik }) => void;
+  onStatistiekenBlikChange: (blik: StatistiekenBlik) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoAgenda: () => void;
   onGoHermeting: () => void;
@@ -415,17 +420,23 @@ function VitaalscoreInzichtenView({
 function StatistiekenView({
   model,
   data,
-  statisticsContent,
+  blik,
+  statistiekenAdviesExtra,
+  statistiekenOverTijdExtra,
   onBack,
   onOpenLichaam,
   onOpenFavorieten,
+  onBlikChange,
 }: {
   model: DashboardModel;
   data?: DashboardData;
-  statisticsContent: ReactNode;
+  blik: StatistiekenBlik;
+  statistiekenAdviesExtra: ReactNode;
+  statistiekenOverTijdExtra: ReactNode;
   onBack: () => void;
   onOpenLichaam: () => void;
   onOpenFavorieten: () => void;
+  onBlikChange: (blik: StatistiekenBlik) => void;
 }) {
   const openLichaam = () => {
     trackEvent("dashboard_voortgang_hub_click", {
@@ -436,32 +447,45 @@ function StatistiekenView({
     onOpenLichaam();
   };
 
+  const handleBlikSwitch = (next: StatistiekenBlik) => {
+    if (next === blik) {
+      return;
+    }
+    trackEvent("dashboard_statistieken_blik_switch", { from: blik, to: next });
+    clarityTag("dashboard_statistieken_switch", `${blik}_to_${next}`);
+    onBlikChange(next);
+  };
+
+  const lichaamCard = (
+    <HubCard
+      icon={<Icons.User s={20} />}
+      title="Lichaamssamenstelling"
+      subtitle="Vet, spier en vocht als aparte meetlat"
+      badge="Binnenkort"
+      onClick={openLichaam}
+    />
+  );
+
   return (
     <section aria-label="Statistieken" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Statistieken" onBack={onBack} />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <StatistiekenBlikNav activeBlik={blik} onSwitch={handleBlikSwitch} />
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 8 }}>
         {data ? (
-          <StatistiekenAdviesSection
+          <StatistiekenBlikPanels
+            blik={blik}
             model={model}
             data={data}
             onOpenFavorieten={onOpenFavorieten}
+            onBlikChange={handleBlikSwitch}
+            adviesExtra={statistiekenAdviesExtra}
+            overTijdExtra={statistiekenOverTijdExtra}
+            standFooter={lichaamCard}
+            overTijdFooter={<PremiumWaitlistCard surface="statistieken" />}
           />
         ) : null}
-
-        {statisticsContent}
-
-        <PremiumWaitlistCard surface="statistieken" />
-      </div>
-
-      <div style={{ marginTop: 16 }}>
-        <HubCard
-          icon={<Icons.User s={20} />}
-          title="Lichaamssamenstelling"
-          subtitle="Vet, spier en vocht als aparte meetlat"
-          badge="Binnenkort"
-          onClick={openLichaam}
-        />
       </div>
     </section>
   );
@@ -560,15 +584,18 @@ export default function VoortgangHub({
   data,
   tab,
   screen,
-  statisticsContent,
+  statistiekenBlik,
+  statistiekenAdviesExtra,
+  statistiekenOverTijdExtra,
   onScreenChange,
+  onStatistiekenBlikChange,
   onPrefUpdated: _onPrefUpdated,
   onGoAgenda,
   onGoHermeting,
 }: VoortgangHubProps) {
   const router = useRouter();
-  const setScreen = (next: VoortgangScreen) => {
-    onScreenChange(next);
+  const setScreen = (next: VoortgangScreen, options?: { blik?: StatistiekenBlik }) => {
+    onScreenChange(next, options);
   };
 
   useEffect(() => {
@@ -577,8 +604,8 @@ export default function VoortgangHub({
     }
   }, [tab, onScreenChange]);
 
-  const navigate = (next: VoortgangScreen) => {
-    setScreen(next);
+  const navigate = (next: VoortgangScreen, options?: { blik?: StatistiekenBlik }) => {
+    setScreen(next, options);
   };
 
   const goBack = () => {
@@ -596,14 +623,17 @@ export default function VoortgangHub({
     }
   };
 
-  const openHub = (destination: "favorieten" | "statistieken" | "inzichten") => {
+  const openHub = (
+    destination: "favorieten" | "statistieken" | "inzichten",
+    options?: { blik?: StatistiekenBlik },
+  ) => {
     trackEvent("dashboard_voortgang_hub_click", { destination });
     clarityTag("dashboard_voortgang", destination);
-    setScreen(destination);
+    setScreen(destination, options);
   };
 
   const openBegeleiding = () => {
-    setScreen("statistieken");
+    setScreen("statistieken", { blik: "tijd" });
     requestAnimationFrame(() => {
       document.getElementById("premium-begeleiding")?.scrollIntoView({
         behavior: "smooth",
@@ -632,7 +662,7 @@ export default function VoortgangHub({
         model={model}
         data={data}
         onBack={goBack}
-        onOpenStatistieken={() => navigate("statistieken")}
+        onOpenStatistieken={() => navigate("statistieken", { blik: "advies" })}
       />
     );
   }
@@ -642,10 +672,13 @@ export default function VoortgangHub({
       <StatistiekenView
         model={model}
         data={data}
-        statisticsContent={statisticsContent}
+        blik={statistiekenBlik}
+        statistiekenAdviesExtra={statistiekenAdviesExtra}
+        statistiekenOverTijdExtra={statistiekenOverTijdExtra}
         onBack={goBack}
         onOpenLichaam={() => navigate("lichaamssamenstelling")}
         onOpenFavorieten={() => navigate("favorieten")}
+        onBlikChange={onStatistiekenBlikChange}
       />
     );
   }
@@ -668,7 +701,7 @@ export default function VoortgangHub({
           }
           router.push(buildDashboardVandaagHref(domain));
         }}
-        onOpenStatistieken={() => openHub("statistieken")}
+        onOpenStatistieken={() => openHub("statistieken", { blik: "advies" })}
         onOpenFavorieten={() => openHub("favorieten")}
         onOpenInzichten={() => openHub("inzichten")}
         onOpenLichaamssamenstelling={() => navigate("lichaamssamenstelling")}

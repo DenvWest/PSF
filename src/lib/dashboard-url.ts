@@ -1,4 +1,10 @@
-import type { DashboardTabId, PillarId, VoortgangScreen } from "@/types/dashboard";
+import { isStatistiekenBlik } from "@/lib/statistieken-blik";
+import type {
+  DashboardTabId,
+  PillarId,
+  StatistiekenBlik,
+  VoortgangScreen,
+} from "@/types/dashboard";
 
 const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
@@ -95,15 +101,35 @@ export function parseVoortgangScreenFromUrl(url: string | URL): VoortgangScreen 
   return "hub";
 }
 
-export function buildDashboardVoortgangHref(screen?: VoortgangScreen | null): string {
+export function parseStatistiekenBlikFromUrl(url: string | URL): StatistiekenBlik | null {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  const blik = parsed.searchParams.get("blik");
+  return isStatistiekenBlik(blik) ? blik : null;
+}
+
+export function buildDashboardVoortgangHref(
+  screen?: VoortgangScreen | null,
+  blik?: StatistiekenBlik | null,
+): string {
   const params = new URLSearchParams({ tab: "voortgang" });
   if (screen && screen !== "hub") {
     params.set("screen", screen);
   }
+  if (screen === "statistieken" && blik) {
+    params.set("blik", blik);
+  }
   return `/dashboard?${params.toString()}`;
 }
 
-export function syncDashboardVoortgangScreenParam(screen: VoortgangScreen): void {
+export type SyncDashboardVoortgangOptions = {
+  blik?: StatistiekenBlik | null;
+};
+
+export function syncDashboardVoortgangScreenParam(
+  screen: VoortgangScreen,
+  options?: SyncDashboardVoortgangOptions,
+): void {
   if (typeof window === "undefined") {
     return;
   }
@@ -116,10 +142,37 @@ export function syncDashboardVoortgangScreenParam(screen: VoortgangScreen): void
 
   if (screen === "hub") {
     url.searchParams.delete("screen");
+    url.searchParams.delete("blik");
   } else {
     url.searchParams.set("screen", screen);
+    if (screen === "statistieken" && options?.blik) {
+      url.searchParams.set("blik", options.blik);
+    } else {
+      url.searchParams.delete("blik");
+    }
   }
 
+  const nextHref = url.toString();
+  if (nextHref === window.location.href) {
+    return;
+  }
+  window.history.pushState(null, "", nextHref);
+}
+
+export function syncDashboardStatistiekenBlikParam(blik: StatistiekenBlik): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("tab") !== "voortgang") {
+    return;
+  }
+  if (parseVoortgangScreenFromUrl(url) !== "statistieken") {
+    return;
+  }
+
+  url.searchParams.set("blik", blik);
   const nextHref = url.toString();
   if (nextHref === window.location.href) {
     return;
@@ -263,8 +316,10 @@ export function syncDashboardTabParam(
   }
   if (tab !== "voortgang") {
     url.searchParams.delete("screen");
+    url.searchParams.delete("blik");
   } else {
     url.searchParams.delete("screen");
+    url.searchParams.delete("blik");
   }
   if (tab === "agenda" || tab === "vandaag") {
     if (nextDag && isValidAgendaDate(nextDag)) {

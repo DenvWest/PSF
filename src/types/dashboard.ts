@@ -101,6 +101,8 @@ export type VoortgangScreen =
   | "statistieken"
   | "lichaamssamenstelling";
 
+export type StatistiekenBlik = "stand" | "advies" | "tijd";
+
 export type DashboardTab = {
   id: DashboardTabId;
   label: string;

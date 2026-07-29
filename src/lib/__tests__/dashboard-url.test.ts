@@ -10,10 +10,12 @@ import {
   parseDagFromUrl,
   parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  parseStatistiekenBlikFromUrl,
   parseVoortgangScreenFromUrl,
   syncDashboardDagParam,
   syncDashboardKompasDeepView,
   syncDashboardKompasParam,
+  syncDashboardStatistiekenBlikParam,
   syncDashboardTabParam,
   syncDashboardVoortgangScreenParam,
 } from "@/lib/dashboard-url";
@@ -53,6 +55,49 @@ describe("buildDashboardVoortgangHref", () => {
     expect(buildDashboardVoortgangHref("favorieten")).toBe(
       "/dashboard?tab=voortgang&screen=favorieten",
     );
+    expect(buildDashboardVoortgangHref("statistieken", "advies")).toBe(
+      "/dashboard?tab=voortgang&screen=statistieken&blik=advies",
+    );
+  });
+});
+
+describe("parseStatistiekenBlikFromUrl", () => {
+  it("parses valid blik on statistieken screen", () => {
+    expect(
+      parseStatistiekenBlikFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=tijd",
+      ),
+    ).toBe("tijd");
+  });
+
+  it("returns null for invalid blik", () => {
+    expect(
+      parseStatistiekenBlikFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=invalid",
+      ),
+    ).toBeNull();
+  });
+});
+
+describe("syncDashboardStatistiekenBlikParam", () => {
+  it("sets blik when on statistieken screen", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL(
+        "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=stand",
+      ),
+    });
+
+    syncDashboardStatistiekenBlikParam("advies");
+    expect(pushState).toHaveBeenCalledOnce();
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("blik=advies");
+
+    window.history.pushState = originalPush;
   });
 });
 

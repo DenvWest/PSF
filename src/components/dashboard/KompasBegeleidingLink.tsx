@@ -5,8 +5,10 @@ import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 
+import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
+
 export const PREMIUM_BEGELEIDING_HREF =
-  "/dashboard?tab=voortgang#premium-begeleiding";
+  `${buildDashboardVoortgangHref("statistieken", "tijd")}#premium-begeleiding`;
 
 type KompasBegeleidingLinkProps = {
   surface: string;

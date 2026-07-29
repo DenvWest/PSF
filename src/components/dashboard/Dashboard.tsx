@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactElement, ReactNode } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -30,7 +30,6 @@ import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTim
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import MovementRecoveryTrendsCard from "@/components/dashboard/MovementRecoveryTrendsCard";
-import type { VoortgangScreen } from "@/types/dashboard";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { resolveTrendsAccess } from "@/lib/entitlement-access";
 
@@ -162,15 +161,19 @@ import {
   parseDagFromUrl,
   parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
+  parseStatistiekenBlikFromUrl,
   parseVoortgangScreenFromUrl,
   supportsKompasDeepView,
   syncDashboardDagParam,
   syncDashboardKompasDeepView,
   syncDashboardKompasParam,
+  syncDashboardStatistiekenBlikParam,
   syncDashboardTabParam,
   syncDashboardVoortgangScreenParam,
   type KompasDeepView,
+  type SyncDashboardVoortgangOptions,
 } from "@/lib/dashboard-url";
+import { isStatistiekenBlik, resolveDefaultStatistiekenBlik } from "@/lib/statistieken-blik";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -181,6 +184,8 @@ import type {
   NutritionIntakeBand,
   PillarId,
   Signal,
+  StatistiekenBlik,
+  VoortgangScreen,
 } from "@/types/dashboard";
 
 type DashboardProps = {
@@ -190,6 +195,7 @@ type DashboardProps = {
   hasTrendsFeature?: boolean;
   initialTab?: DashboardTabId;
   initialVoortgangScreen?: VoortgangScreen;
+  initialStatistiekenBlik?: StatistiekenBlik;
   initialKompasView?: PillarId;
   initialKompasDeepView?: KompasDeepView;
   sleepFocus?: SleepFocusKey | null;
@@ -213,7 +219,12 @@ type SharedSectionProps = {
   onGoVoortgang: () => void;
   onGoHermeting: () => void;
   voortgangScreen: VoortgangScreen;
-  onVoortgangScreenChange: (screen: VoortgangScreen) => void;
+  statistiekenBlik: StatistiekenBlik;
+  onVoortgangScreenChange: (
+    screen: VoortgangScreen,
+    options?: SyncDashboardVoortgangOptions,
+  ) => void;
+  onStatistiekenBlikChange: (blik: StatistiekenBlik) => void;
   onOpenInzichten: () => void;
   initialKompasView?: PillarId;
   initialKompasDeepView?: KompasDeepView;
@@ -3505,18 +3516,22 @@ const SECTION_RENDERERS: Record<
         data={props.data}
         tab={props.tab}
         screen={props.voortgangScreen}
-        statisticsContent={
+        statistiekenBlik={props.statistiekenBlik}
+        statistiekenAdviesExtra={
+          props.empty ? null : <NutritionIntakeSection {...props} />
+        }
+        statistiekenOverTijdExtra={
           <>
             <StatistiekenPriorityOverTime
               model={props.model}
               prefUpdatedAt={props.prefUpdatedAt}
               onPrefUpdated={props.onPrefUpdated}
             />
-            <NutritionIntakeSection {...props} />
             <HistorySection {...props} />
           </>
         }
         onScreenChange={props.onVoortgangScreenChange}
+        onStatistiekenBlikChange={props.onStatistiekenBlikChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoAgenda={() => props.onGoAgenda()}
         onGoHermeting={() => props.onGoHermeting()}
@@ -3626,6 +3641,7 @@ export default function Dashboard({
   hasTrendsFeature = false,
   initialTab,
   initialVoortgangScreen,
+  initialStatistiekenBlik,
   initialKompasView,
   initialKompasDeepView,
   sleepFocus = null,
@@ -3638,6 +3654,9 @@ export default function Dashboard({
   const [kompasResetSignal, setKompasResetSignal] = useState(0);
   const [voortgangScreen, setVoortgangScreen] = useState<VoortgangScreen>(
     initialVoortgangScreen ?? "hub",
+  );
+  const [statistiekenBlik, setStatistiekenBlik] = useState<StatistiekenBlik>(
+    initialStatistiekenBlik ?? "stand",
   );
   // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
   // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
@@ -3692,6 +3711,26 @@ export default function Dashboard({
     [empty, data, priorityPref],
   );
 
+  const activeStatistiekenBlik = useMemo((): StatistiekenBlik => {
+    if (voortgangScreen !== "statistieken") {
+      return statistiekenBlik;
+    }
+    const paramBlik = searchParams.get("blik");
+    if (paramBlik && isStatistiekenBlik(paramBlik)) {
+      return paramBlik;
+    }
+    if (typeof window !== "undefined") {
+      const urlBlik = parseStatistiekenBlikFromUrl(window.location.href);
+      if (urlBlik) {
+        return urlBlik;
+      }
+    }
+    if (model && data && !empty) {
+      return resolveDefaultStatistiekenBlik(model, data);
+    }
+    return statistiekenBlik;
+  }, [voortgangScreen, searchParams, model, data, empty, statistiekenBlik]);
+
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
   const sectionTypes = empty
@@ -3726,9 +3765,27 @@ export default function Dashboard({
     tabRef.current = tab;
   });
 
-  const handleVoortgangScreenChange = useCallback((screen: VoortgangScreen) => {
-    setVoortgangScreen(screen);
-    syncDashboardVoortgangScreenParam(screen);
+  const handleVoortgangScreenChange = useCallback(
+    (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => {
+      setVoortgangScreen(screen);
+      if (screen === "statistieken") {
+        const nextBlik =
+          options?.blik ??
+          (model && data && !empty
+            ? resolveDefaultStatistiekenBlik(model, data)
+            : statistiekenBlik);
+        setStatistiekenBlik(nextBlik);
+        syncDashboardVoortgangScreenParam(screen, { blik: nextBlik });
+        return;
+      }
+      syncDashboardVoortgangScreenParam(screen);
+    },
+    [data, empty, model, statistiekenBlik],
+  );
+
+  const handleStatistiekenBlikChange = useCallback((blik: StatistiekenBlik) => {
+    setStatistiekenBlik(blik);
+    syncDashboardStatistiekenBlikParam(blik);
   }, []);
 
   const syncTabFromLocation = useCallback(() => {
@@ -3740,7 +3797,14 @@ export default function Dashboard({
         setTab(parsedTab);
       }
       if (parsedTab === "voortgang") {
-        setVoortgangScreen(parseVoortgangScreenFromUrl(url));
+        const parsedScreen = parseVoortgangScreenFromUrl(url);
+        setVoortgangScreen(parsedScreen);
+        if (parsedScreen === "statistieken") {
+          const urlBlik = parseStatistiekenBlikFromUrl(url);
+          if (urlBlik) {
+            setStatistiekenBlik(urlBlik);
+          }
+        }
       } else {
         setVoortgangScreen("hub");
       }
@@ -3765,19 +3829,35 @@ export default function Dashboard({
       return;
     }
     const parsedTab = tabParam as DashboardTabId;
-    if (parsedTab !== tabRef.current) {
-      setTab(parsedTab);
-      if (parsedTab !== "voortgang") {
-        setVoortgangScreen("hub");
+    startTransition(() => {
+      if (parsedTab !== tabRef.current) {
+        setTab(parsedTab);
+        if (parsedTab !== "voortgang") {
+          setVoortgangScreen("hub");
+        }
       }
-    }
-    if (parsedTab === "voortgang") {
-      setVoortgangScreen(parseVoortgangScreenFromUrl(window.location.href));
-    }
+      if (parsedTab === "voortgang") {
+        setVoortgangScreen(parseVoortgangScreenFromUrl(window.location.href));
+      }
+    });
   }, [searchParams, VALID_TAB_IDS]);
 
   useEffect(() => {
-    if (tab !== "voortgang" || voortgangScreen !== "hub") {
+    if (voortgangScreen !== "statistieken") {
+      return;
+    }
+    const urlBlik = parseStatistiekenBlikFromUrl(window.location.href);
+    if (urlBlik) {
+      return;
+    }
+    syncDashboardStatistiekenBlikParam(activeStatistiekenBlik);
+  }, [voortgangScreen, activeStatistiekenBlik]);
+
+  useEffect(() => {
+    if (tab !== "voortgang" || voortgangScreen !== "statistieken") {
+      return;
+    }
+    if (activeStatistiekenBlik !== "tijd") {
       return;
     }
     if (typeof window === "undefined" || window.location.hash !== "#premium-begeleiding") {
@@ -3790,7 +3870,7 @@ export default function Dashboard({
       });
     });
     return () => cancelAnimationFrame(frameId);
-  }, [tab, voortgangScreen]);
+  }, [tab, voortgangScreen, activeStatistiekenBlik]);
 
   const selectTab = (nextTab: DashboardTabId) => {
     if (nextTab !== tab) {
@@ -3885,7 +3965,9 @@ export default function Dashboard({
       selectTab("voortgang");
     },
     voortgangScreen,
+    statistiekenBlik: activeStatistiekenBlik,
     onVoortgangScreenChange: handleVoortgangScreenChange,
+    onStatistiekenBlikChange: handleStatistiekenBlikChange,
     onOpenInzichten: () => handleVoortgangScreenChange("inzichten"),
     initialKompasView,
     initialKompasDeepView,

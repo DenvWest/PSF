@@ -1,15 +1,15 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
-import { parseVoortgangScreenFromUrl } from "@/lib/dashboard-url";
+import { isStatistiekenBlik } from "@/lib/statistieken-blik";
 import { loadAccountDashboardData } from "@/lib/account-dashboard";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 import { parseSleepFocus, SLEEP_FOCUS_COOKIE_NAME } from "@/lib/sleep-focus";
 import { syncSupplementVerdicts } from "@/lib/supplement-verdict-producer";
-import type { KompasDeepView } from "@/lib/dashboard-url";
-import type { DashboardTabId, PillarId } from "@/types/dashboard";
+import { parseVoortgangScreenFromUrl, type KompasDeepView } from "@/lib/dashboard-url";
+import type { DashboardTabId, PillarId, StatistiekenBlik } from "@/types/dashboard";
 
 export const metadata = {
   robots: {
@@ -23,6 +23,7 @@ type DashboardPageProps = {
     state?: string;
     tab?: string;
     screen?: string;
+    blik?: string;
     kompas?: string;
     view?: string;
   }>;
@@ -35,6 +36,16 @@ function parseInitialTab(tab?: string): DashboardTabId | undefined {
     return tab as DashboardTabId;
   }
   return undefined;
+}
+
+function parseInitialStatistiekenBlik(
+  screen?: string,
+  blik?: string,
+): StatistiekenBlik | undefined {
+  if (screen !== "statistieken" || !blik || !isStatistiekenBlik(blik)) {
+    return undefined;
+  }
+  return blik;
 }
 
 function parseInitialVoortgangScreen(screen?: string) {
@@ -75,7 +86,7 @@ function parseInitialKompasDeepView(
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  const { state, tab, screen, kompas, view } = await searchParams;
+  const { state, tab, screen, blik, kompas, view } = await searchParams;
 
   const account = await getAccountFromCookie();
   if (!account) {
@@ -86,12 +97,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   }
   const initialTab = parseInitialTab(tab);
   const initialVoortgangScreen = parseInitialVoortgangScreen(screen);
+  const initialStatistiekenBlik = parseInitialStatistiekenBlik(screen, blik);
   const initialKompasView = parseInitialKompasView(kompas);
   const initialKompasDeepView = parseInitialKompasDeepView(kompas, view);
 
   const dashboardProps = {
     initialTab,
     initialVoortgangScreen,
+    initialStatistiekenBlik,
     initialKompasView,
     initialKompasDeepView,
   };

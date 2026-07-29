@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { Button } from "@/components/app/primitives";
@@ -17,32 +17,56 @@ import {
   buildAdviesBlokHeadline,
   buildStatistiekenAdviesModel,
 } from "@/lib/statistieken-advies-model";
+import { STATISTIEKEN_BLIK_HEADERS } from "@/lib/statistieken-blik";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
-import type { DashboardData, DashboardModel } from "@/types/dashboard";
+import type { DashboardData, DashboardModel, StatistiekenBlik } from "@/types/dashboard";
+import { StatistiekenBlikCrossLinks } from "@/components/dashboard/voortgang/StatistiekenBlikNav";
 
-type StatistiekenAdviesSectionProps = {
+type StatistiekenBlikPanelsProps = {
+  blik: StatistiekenBlik;
   model: DashboardModel;
   data: DashboardData;
   onOpenFavorieten: () => void;
+  onBlikChange: (blik: StatistiekenBlik) => void;
+  overTijdExtra?: ReactNode;
+  adviesExtra?: ReactNode;
+  standFooter?: ReactNode;
+  overTijdFooter?: ReactNode;
 };
 
-export default function StatistiekenAdviesSection({
+export default function StatistiekenBlikPanels({
+  blik,
   model,
   data,
   onOpenFavorieten,
-}: StatistiekenAdviesSectionProps) {
+  onBlikChange,
+  overTijdExtra,
+  adviesExtra,
+  standFooter,
+  overTijdFooter,
+}: StatistiekenBlikPanelsProps) {
   const adviesModel = useMemo(
     () => buildStatistiekenAdviesModel(model, data),
     [model, data],
   );
-  const shownRef = useRef(false);
+  const adviesShownRef = useRef(false);
   const gatePassedRef = useRef(false);
+  const blikImpressionRef = useRef<StatistiekenBlik | null>(null);
 
   useEffect(() => {
-    if (shownRef.current) {
+    if (blikImpressionRef.current === blik) {
       return;
     }
-    shownRef.current = true;
+    blikImpressionRef.current = blik;
+    trackEvent("dashboard_statistieken_blik", { blik });
+    clarityTag("dashboard_statistieken", blik);
+  }, [blik]);
+
+  useEffect(() => {
+    if (blik !== "advies" || adviesShownRef.current) {
+      return;
+    }
+    adviesShownRef.current = true;
     trackEvent("dashboard_advies_blok_getoond", {
       state: adviesModel.adviesState,
       verdict_count: adviesModel.verdictTotal,
@@ -60,32 +84,64 @@ export default function StatistiekenAdviesSection({
         verdict_count: adviesModel.verdictTotal,
       });
     }
-  }, [adviesModel]);
+  }, [blik, adviesModel]);
+
+  const header = STATISTIEKEN_BLIK_HEADERS[blik];
 
   return (
     <div
+      role="tabpanel"
+      aria-label={header.title}
       style={{ display: "flex", flexDirection: "column", gap: 16 }}
-      aria-label="Gratis advies"
     >
-      <WaarStaJeCard model={adviesModel} />
-      <LeefstijllijnSection model={model} surface="voortgang" />
-      <EvidenceLadderCard domains={adviesModel.evidenceDomains} />
-
-      <div style={{ borderTop: "1px solid var(--divider-strong)", paddingTop: 16 }}>
-        <VoortgangSectionHeader
-          eyebrow="Wat we ervan vinden"
-          title="Eerst je bord. Daarna pas een potje."
-          body="Op basis van je laatste check — en van wat je hierboven ziet bewegen."
-        />
-      </div>
-
-      <EerstJeBordCard adviesModel={adviesModel} />
-      <OnsOordeelCard
-        adviesModel={adviesModel}
-        verdicts={data.supplementVerdicts ?? []}
-        onOpenFavorieten={onOpenFavorieten}
+      <VoortgangSectionHeader
+        eyebrow={header.eyebrow}
+        title={header.title}
+        body={header.body}
       />
-      <WelkPotjeCard adviesModel={adviesModel} onOpenFavorieten={onOpenFavorieten} />
+
+      {blik === "stand" ? (
+        <>
+          <WaarStaJeCard model={adviesModel} />
+          <LeefstijllijnSection
+            model={model}
+            surface="voortgang"
+            compact
+            focusPillarId={model.priority.id}
+          />
+          <StatistiekenBlikCrossLinks onSwitch={onBlikChange} />
+          {standFooter}
+        </>
+      ) : null}
+
+      {blik === "advies" ? (
+        <>
+          <EvidenceLadderCard domains={adviesModel.evidenceDomains} />
+          <div style={{ borderTop: "1px solid var(--divider-strong)", paddingTop: 16 }}>
+            <VoortgangSectionHeader
+              eyebrow="Wat we ervan vinden"
+              title="Eerst je bord. Daarna pas een potje."
+              body="Op basis van je laatste check — en van wat je hierboven ziet bewegen."
+            />
+          </div>
+          <EerstJeBordCard adviesModel={adviesModel} />
+          {adviesExtra}
+          <OnsOordeelCard
+            adviesModel={adviesModel}
+            verdicts={data.supplementVerdicts ?? []}
+            onOpenFavorieten={onOpenFavorieten}
+          />
+          <WelkPotjeCard adviesModel={adviesModel} onOpenFavorieten={onOpenFavorieten} />
+        </>
+      ) : null}
+
+      {blik === "tijd" ? (
+        <>
+          <LeefstijllijnSection model={model} surface="voortgang" />
+          {overTijdExtra}
+          {overTijdFooter}
+        </>
+      ) : null}
     </div>
   );
 }
