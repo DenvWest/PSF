@@ -16,6 +16,7 @@ type VoortgangHubScrollProps = {
   onOpenFavorieten: () => void;
   onOpenInzichten: () => void;
   onOpenLichaamssamenstelling: () => void;
+  onOpenBegeleiding: () => void;
 };
 
 export default function VoortgangHubScroll({
@@ -28,6 +29,7 @@ export default function VoortgangHubScroll({
   onOpenFavorieten,
   onOpenInzichten,
   onOpenLichaamssamenstelling,
+  onOpenBegeleiding,
 }: VoortgangHubScrollProps) {
   return (
     <>
@@ -54,6 +56,7 @@ export default function VoortgangHubScroll({
           onOpenFavorieten={onOpenFavorieten}
           onOpenInzichten={onOpenInzichten}
           onOpenLichaamssamenstelling={onOpenLichaamssamenstelling}
+          onOpenBegeleiding={onOpenBegeleiding}
         />
       </div>
     </>

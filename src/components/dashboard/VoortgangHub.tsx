@@ -408,8 +408,6 @@ function VitaalscoreInzichtenView({
         <RecommendedInsights pillarId={model.priority.id} />
 
         <MetingenCard scores={model.scores} history={model.history} />
-
-        <PremiumWaitlistCard surface="inzichten" />
       </div>
     </section>
   );
@@ -607,6 +605,16 @@ export default function VoortgangHub({
     setScreen(destination);
   };
 
+  const openBegeleiding = () => {
+    setScreen("statistieken");
+    requestAnimationFrame(() => {
+      document.getElementById("premium-begeleiding")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
+
   if (!model) {
     return null;
   }
@@ -667,6 +675,7 @@ export default function VoortgangHub({
         onOpenFavorieten={() => openHub("favorieten")}
         onOpenInzichten={() => openHub("inzichten")}
         onOpenLichaamssamenstelling={() => navigate("lichaamssamenstelling")}
+        onOpenBegeleiding={openBegeleiding}
       />
     </section>
   );

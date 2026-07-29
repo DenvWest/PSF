@@ -1,7 +1,6 @@
 "use client";
 
 import * as Icons from "@/components/app/icons";
-import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
 import { clarityTag } from "@/lib/clarity";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { trackEvent } from "@/lib/ga4";
@@ -11,6 +10,7 @@ type VoortgangRouteListProps = {
   onOpenFavorieten: () => void;
   onOpenInzichten: () => void;
   onOpenLichaamssamenstelling: () => void;
+  onOpenBegeleiding: () => void;
 };
 
 const ROUTE_ROWS = [
@@ -39,6 +39,7 @@ export default function VoortgangRouteList({
   onOpenFavorieten,
   onOpenInzichten,
   onOpenLichaamssamenstelling,
+  onOpenBegeleiding,
 }: VoortgangRouteListProps) {
   const callbacks = {
     statistieken: onOpenStatistieken,
@@ -71,6 +72,15 @@ export default function VoortgangRouteList({
     });
     trackEvent("wearable_interest", { surface: "voortgang_hub" });
     clarityTag("wearable_interest", "voortgang_hub");
+  };
+
+  const handleBegeleiding = () => {
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "statistieken",
+      surface: "begeleiding_regel",
+    });
+    clarityTag("dashboard_voortgang", "begeleiding_regel");
+    onOpenBegeleiding();
   };
 
   return (
@@ -147,10 +157,23 @@ export default function VoortgangRouteList({
             Binnenkort
           </span>
         </button>
-      </div>
-
-      <div className="mt-5">
-        <PremiumWaitlistCard surface="voortgang" />
+        <button
+          type="button"
+          onClick={handleBegeleiding}
+          className={`${ROUTE_ROW_CLASS} border-t border-[var(--divider)]`}
+          >
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14.5px] font-medium text-[var(--text)]">
+              Begeleiding naast je leefstijl
+            </span>
+            <span className="block truncate text-[12.5px] text-[var(--text-subtle)]">
+              Wekelijks iemand die met je meekijkt
+            </span>
+          </span>
+          <span className="shrink-0 rounded-full border border-[rgba(200,149,108,0.4)] bg-[rgba(200,149,108,0.12)] px-2.5 py-1 text-[10.5px] font-semibold whitespace-nowrap text-[var(--terra,#C8956C)]">
+            In ontwikkeling
+          </span>
+        </button>
       </div>
     </section>
   );
