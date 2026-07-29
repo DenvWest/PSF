@@ -1,13 +1,32 @@
 "use client";
 
+import { useEffect, useState, type MouseEvent } from "react";
 import { PILLAR, PILLARS } from "@/data/dashboard";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import DomeinDoelZetten, {
+  type DomeinDoelZettenExistingGoal,
+} from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
+import {
+  getSituationLabel,
+  isDomainGoalDomain,
+  type DomainGoalDomain,
+  type SituationId,
+} from "@/lib/domain-goal";
 import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
+import type { MovementAnchor } from "@/lib/movement-prefs";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
+
+type DomainGoalSummary = {
+  situationId: SituationId;
+  ownWords: string | null;
+  latestScore: number | null;
+};
+
+type DomainGoalMap = Partial<Record<DomainGoalDomain, DomainGoalSummary>>;
 
 type VoortgangDomeinRingProps = {
   model: DashboardModel;
@@ -50,12 +69,17 @@ function DomainRow({
   pillarId,
   model,
   domainCheckDaysAgo,
+  goal,
   onOpenDomain,
+  onOpenGoal,
 }: {
   pillarId: PillarId;
   model: DashboardModel;
   domainCheckDaysAgo: DashboardData["domainCheckDaysAgo"] | undefined;
+  /** undefined = doelen nog niet geladen (render niets), null = geladen zonder actief doel. */
+  goal?: DomainGoalSummary | null;
   onOpenDomain: (domain: PillarId) => void;
+  onOpenGoal?: (domain: DomainGoalDomain) => void;
 }) {
   const pillar = PILLAR[pillarId];
   const trend = model.trend[pillarId];
@@ -71,6 +95,20 @@ function DomainRow({
     clarityTag("dashboard_voortgang", `domeinring_${pillarId}`);
     trackEvent("dashboard_voortgang_domein_click", { domain: pillarId });
     onOpenDomain(pillarId);
+  };
+
+  const goalDomain = isDomainGoalDomain(pillarId) ? pillarId : null;
+
+  const handleOpenGoal = (event: MouseEvent) => {
+    event.stopPropagation();
+    if (!goalDomain || !onOpenGoal) {
+      return;
+    }
+    trackEvent("dashboard_voortgang_doel_click", {
+      domain: goalDomain,
+      entry: goal ? "rescore" : "set",
+    });
+    onOpenGoal(goalDomain);
   };
 
   return (
@@ -158,6 +196,43 @@ function DomainRow({
           {metaLine}
         </p>
       </button>
+      {goalDomain && onOpenGoal && goal !== undefined ? (
+        <button
+          type="button"
+          onClick={handleOpenGoal}
+          className="mt-1.5 flex w-full cursor-pointer items-center justify-between gap-2 border-none bg-transparent p-0 pl-4 text-left"
+          style={{ fontFamily: "var(--f-sans)" }}
+        >
+          <span
+            style={{
+              minWidth: 0,
+              flex: 1,
+              fontSize: 11.5,
+              color: goal ? "var(--text-muted)" : "var(--sage)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {goal
+              ? `${goal.ownWords || getSituationLabel(goalDomain, goal.situationId)}${
+                  goal.latestScore != null ? ` · nu ${goal.latestScore}` : ""
+                }`
+              : "Zet je eigen doel"}
+          </span>
+          <span
+            style={{
+              flexShrink: 0,
+              fontSize: 11,
+              fontWeight: 600,
+              color: "var(--sage)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {goal ? "Bijwerken" : "Zetten"} →
+          </span>
+        </button>
+      ) : null}
     </li>
   );
 }
@@ -171,6 +246,72 @@ export default function VoortgangDomeinRing({
   const coverageLine = buildCoverageLine(domainCheckDaysAgo);
   const interventionPillars = PILLARS.filter((pillar) => isInterventionDomain(pillar.id));
   const readoutPillars = PILLARS.filter((pillar) => isReadoutDomain(pillar.id));
+
+  const [goals, setGoals] = useState<DomainGoalMap | null>(null);
+  const [anchor, setAnchor] = useState<MovementAnchor | null>(null);
+  const [openGoalDomain, setOpenGoalDomain] = useState<DomainGoalDomain | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await fetch("/api/account/domain-goal", {
+          credentials: "include",
+        });
+        if (!response.ok || cancelled) {
+          return;
+        }
+        const json = (await response.json()) as {
+          goals: {
+            domain: DomainGoalDomain;
+            situationId: SituationId;
+            ownWords: string | null;
+            scores: { score: number }[];
+          }[];
+        };
+        const map: DomainGoalMap = {};
+        for (const entry of json.goals) {
+          map[entry.domain] = {
+            situationId: entry.situationId,
+            ownWords: entry.ownWords,
+            latestScore: entry.scores[entry.scores.length - 1]?.score ?? null,
+          };
+        }
+        setGoals(map);
+      } catch {
+        // stil falen: de doel-affordance is opt-in, geen kritiek pad
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await fetch("/api/account/movement-prefs", {
+          credentials: "include",
+        });
+        if (!response.ok || cancelled) {
+          return;
+        }
+        const json = (await response.json()) as { anchor: MovementAnchor | null };
+        setAnchor(json.anchor ?? null);
+      } catch {
+        // stil falen: anker is alleen ordening, geen blokkade
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const openGoal = openGoalDomain ? (goals?.[openGoalDomain] ?? null) : null;
+  const openGoalExisting: DomeinDoelZettenExistingGoal | null = openGoal
+    ? { situationId: openGoal.situationId, ownWords: openGoal.ownWords }
+    : null;
 
   return (
     <CockpitTile eyebrow="Je metingen" className="mb-3.5">
@@ -215,7 +356,15 @@ export default function VoortgangDomeinRing({
             pillarId={pillar.id}
             model={model}
             domainCheckDaysAgo={domainCheckDaysAgo}
+            goal={
+              isDomainGoalDomain(pillar.id)
+                ? goals
+                  ? (goals[pillar.id] ?? null)
+                  : undefined
+                : undefined
+            }
             onOpenDomain={onOpenDomain}
+            onOpenGoal={setOpenGoalDomain}
           />
         ))}
         <li
@@ -249,6 +398,27 @@ export default function VoortgangDomeinRing({
           />
         ))}
       </ul>
+      {openGoalDomain ? (
+        <DomeinDoelZetten
+          key={openGoalDomain}
+          open
+          domain={openGoalDomain}
+          domainLabel={PILLAR[openGoalDomain].label}
+          anchor={anchor}
+          existingGoal={openGoalExisting}
+          onClose={() => setOpenGoalDomain(null)}
+          onSaved={(result) => {
+            setGoals((current) => ({
+              ...current,
+              [openGoalDomain]: {
+                situationId: result.situationId,
+                ownWords: result.ownWords,
+                latestScore: result.score,
+              },
+            }));
+          }}
+        />
+      ) : null}
     </CockpitTile>
   );
 }

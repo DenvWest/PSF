@@ -72,6 +72,8 @@ export const DOMAIN_EVENT_TYPES = [
   "measurement.protein_cta_clicked",
   "guide.sleep_analysis.started",
   "guide.sleep_analysis.completed",
+  "goal.benchmark_set",
+  "goal.benchmark_rescored",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];
