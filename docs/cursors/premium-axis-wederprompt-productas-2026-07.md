@@ -1,6 +1,6 @@
 # Premium-as · Wederprompt · Productvoorstel · Meetkader
 
-> **29 juli 2026.** Voorstel ter bespreking — geen definitief besluit. Gebaseerd op Claude Opus-analyse ([`claude-opus-voortgang-statistieken-premium-grens-advies-2026-07.md`](claude-opus-voortgang-statistieken-premium-grens-advies-2026-07.md)) en jouw vraag of premium aanbevelingen naast begeleiding zou moeten staan.
+> **29 juli 2026.** Voorstel ter bespreking — geen definitief besluit. Gebaseerd op Claude Opus-analyse (`[claude-opus-voortgang-statistieken-premium-grens-advies-2026-07.md](claude-opus-voortgang-statistieken-premium-grens-advies-2026-07.md)`) en jouw vraag of premium aanbevelingen naast begeleiding zou moeten staan.
 > Doel: een **vragende wederprompt** en een **productvoorstel** dat je kunt accepteren, aanpassen of afwijzen.
 
 ---
@@ -122,11 +122,13 @@ Claude stelt voor om premium niet als één blok te zien, maar als **groeipad**.
 
 ### 2.1 Voorgestelde lagen
 
-| Laag | Wat Claude bedoelt | Voorbeeld | As-built vandaag |
-|---|---|---|---|
-| **Gratis — zelf lezen** | Alles wat iemand uit eigen data kan afleiden | Scores, trends, delta, evidence-ladder, basis oordeel | Grotendeels gebouwd |
-| **Premium — sterke aanbeveling** *(Phase 2?)* | Geprioriteerde actie over domeinen, met trade-offs en "waarom nu" | "Voeding +4, slaap −3 → eerst avondritme vóór magnesium" | Nog niet gebouwd |
-| **Premium — begeleiding** *(wachtlijst nu)* | Wekelijks meekijken, ritme, accountability | Review + hermeting-coaching | Backend/consent wijzen hierheen |
+
+| Laag                                          | Wat Claude bedoelt                                                | Voorbeeld                                                | As-built vandaag                |
+| --------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------- |
+| **Gratis — zelf lezen**                       | Alles wat iemand uit eigen data kan afleiden                      | Scores, trends, delta, evidence-ladder, basis oordeel    | Grotendeels gebouwd             |
+| **Premium — sterke aanbeveling** *(Phase 2?)* | Geprioriteerde actie over domeinen, met trade-offs en "waarom nu" | "Voeding +4, slaap −3 → eerst avondritme vóór magnesium" | Nog niet gebouwd                |
+| **Premium — begeleiding** *(wachtlijst nu)*   | Wekelijks meekijken, ritme, accountability                        | Review + hermeting-coaching                              | Backend/consent wijzen hierheen |
+
 
 ### 2.2 Open vragen — gratis vs premium
 
@@ -167,10 +169,12 @@ Zijn redenering in drie punten:
 
 **Concreet voorbeeld (leefstijldomein) — ter illustratie:**
 
-| Gratis (Claude's voorstel) | Premium aanbeveling (Phase 2?) | Begeleiding (wachtlijst) |
-|---|---|---|
-| "Voeding 52, trend +6" | "Houd focus nog 2 weken vóór je naar slaap verschuift" | "We kijken vrijdag mee of hermeting zin heeft" |
-| Evidence 2★ op slaapvraag | "Supplement Z pas na stabiel avondritme (hermeet 14d)" | Coach stuurt bij na week 1 |
+
+| Gratis (Claude's voorstel) | Premium aanbeveling (Phase 2?)                         | Begeleiding (wachtlijst)                       |
+| -------------------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| "Voeding 52, trend +6"     | "Houd focus nog 2 weken vóór je naar slaap verschuift" | "We kijken vrijdag mee of hermeting zin heeft" |
+| Evidence 2★ op slaapvraag  | "Supplement Z pas na stabiel avondritme (hermeet 14d)" | Coach stuurt bij na week 1                     |
+
 
 **Vraag aan jou:** Wil je Phase 2 (aanbevelings-engine) al in copy/meetplan meenemen, of eerst alleen begeleiding valideren?
 
@@ -182,6 +186,8 @@ flowchart LR
   phase2 -->|"later bouwen?"| reco[PremiumReco]
   phase3 -->|"later opschalen?"| coach[Coaching]
 ```
+
+
 
 ### 2.4 Waar Claude expliciet níet premium van zou maken
 
@@ -204,12 +210,14 @@ Als locks verdwijnen, meten `dashboard_statistieken_upsell` en `dashboard_inzich
 
 ### 3.2 Voorstel: verwijderen (als locks weg zijn)
 
-| Event | Waar | Claude's motivatie |
-|---|---|---|
-| `dashboard_statistieken_upsell` | VoortgangHub.tsx | Meet vergrendelde staat |
-| `dashboard_inzichten_upsell` | VitaalscoreInzichtenView | Idem |
-| Clarity `locked`-tags | VoortgangHub.tsx | Idem |
-| Dode `StatisticsSection`-gate | Dashboard.tsx | Rendert niet via TAB_SECTIONS |
+
+| Event                           | Waar                     | Claude's motivatie            |
+| ------------------------------- | ------------------------ | ----------------------------- |
+| `dashboard_statistieken_upsell` | VoortgangHub.tsx         | Meet vergrendelde staat       |
+| `dashboard_inzichten_upsell`    | VitaalscoreInzichtenView | Idem                          |
+| Clarity `locked`-tags           | VoortgangHub.tsx         | Idem                          |
+| Dode `StatisticsSection`-gate   | Dashboard.tsx            | Rendert niet via TAB_SECTIONS |
+
 
 **Vraag:** Wil je lock-events tijdelijk behouden voor before/after-vergelijking, of direct opruimen?
 
@@ -217,12 +225,14 @@ Als locks verdwijnen, meten `dashboard_statistieken_upsell` en `dashboard_inzich
 
 Geen nieuw event-type. Alleen `offer` (en later optioneel `offer_variant`) op bestaande keten:
 
-| Event | Params-voorstel |
-|---|---|
-| `premium_waitlist_shown` | `surface`, `offer: "begeleiding"` |
-| `premium_waitlist_join` | `feature`, `surface`, `launch_email_opt_in`, `offer: "begeleiding"` |
-| `premium.waitlist_joined` | server-side,zelfde + `price_band` |
-| `premium.price_indicated` | server-side, na prijsvraag |
+
+| Event                     | Params-voorstel                                                     |
+| ------------------------- | ------------------------------------------------------------------- |
+| `premium_waitlist_shown`  | `surface`, `offer: "begeleiding"`                                   |
+| `premium_waitlist_join`   | `feature`, `surface`, `launch_email_opt_in`, `offer: "begeleiding"` |
+| `premium.waitlist_joined` | server-side,zelfde + `price_band`                                   |
+| `premium.price_indicated` | server-side, na prijsvraag                                          |
+
 
 **Vraag:** Moet `offer` ook `"begeleiding_plus_aanbevelingen"` kunnen worden voor A/B, of pas later?
 
@@ -232,7 +242,7 @@ Claude's flow-voorstel (API ondersteunt dit al):
 
 1. POST 1 — join + optionele launch-mail consent
 2. Succes-staat — prijsbanden-vraag (nul frictie vóór join)
-3. POST 2 — upsert `priceIndication` met **`launchEmailOptIn: false`** (geen dubbele consent)
+3. POST 2 — upsert `priceIndication` met `**launchEmailOptIn: false`** (geen dubbele consent)
 
 **Vraag:** Prijs vóór of na join — blijf je bij "na join"?
 
@@ -246,10 +256,12 @@ Claude stelt een experiment voor **als** je twijfelt tussen alleen begeleiding v
 
 ### 4.1 Hypothese
 
-| Variant | Copy-richting | Verwachting Claude |
-|---|---|---|
-| **A** | Alleen begeleiding | Simpeler; wint bij eerste bezoek |
-| **B** | Aanbeveling + begeleiding | Hogere join bij ≥2 checks (trenddata) |
+
+| Variant | Copy-richting             | Verwachting Claude                    |
+| ------- | ------------------------- | ------------------------------------- |
+| **A**   | Alleen begeleiding        | Simpeler; wint bij eerste bezoek      |
+| **B**   | Aanbeveling + begeleiding | Hogere join bij ≥2 checks (trenddata) |
+
 
 ### 4.2 Setup-voorstel
 
@@ -286,16 +298,12 @@ Claude stelt een experiment voor **als** je twijfelt tussen alleen begeleiding v
 
 **Aanbeveling: twee lagen, niet verspreiden over het hele dashboard.**
 
-1. **`VoortgangHub.tsx`** — enige plek voor scherm-logica (Statistieken / Inzichten / Lichaam). Alle `trendsUnlocked`-takken, blur, slotjes, soft-upsell en teleport horen hier weg. Geen extract naar nieuwe files in P0 — het bestand kent de screens al; splitsen is K2+ refactor.
-
-2. **`Dashboard.tsx` (renderer `voortgangHub`, ~3513–3539)** — compositie-laag. Vandaag:
-   - `freeStatistics` = alleen `HistorySection`
-   - `unlockedStatistics` = PriorityOverTime + Signals + Nutrition + History (duplicaat)
-
+1. `**VoortgangHub.tsx`** — enige plek voor scherm-logica (Statistieken / Inzichten / Lichaam). Alle `trendsUnlocked`-takken, blur, slotjes, soft-upsell en teleport horen hier weg. Geen extract naar nieuwe files in P0 — het bestand kent de screens al; splitsen is K2+ refactor.
+2. `**Dashboard.tsx` (renderer `voortgangHub`, ~3513–3539)** — compositie-laag. Vandaag:
+  - `freeStatistics` = alleen `HistorySection`
+  - `unlockedStatistics` = PriorityOverTime + Signals + Nutrition + History (duplicaat)
    **K1-wijziging:** één doorlopende lijst kinderen doorgeven (bijv. prop `statisticsContent` i.p.v. free/unlocked split), zonder `resolveTrendsAccess` in de parent. VoortgangHub rendert altijd de volledige analyse-stack.
-
-3. **`PremiumWaitlistCard.tsx` + copy-bestanden** — begeleiding-propositie en `offer`-param. Geen gate-logica in deze component.
-
+3. `**PremiumWaitlistCard.tsx` + copy-bestanden** — begeleiding-propositie en `offer`-param. Geen gate-logica in deze component.
 4. **Bewust níet in K1:** `StatisticsSection` (dode route), `resolveTrendsAccess` verwijderen, hub-kaart verplaatsen (→ K3), prijs na join (→ K4), grid IA (→ K2).
 
 ```text
@@ -308,14 +316,16 @@ PremiumWaitlistCard    →  copy begeleiding + offer-param (inline op Statistiek
 
 ### 5.2 P0-aanvullingen t.o.v. basis-K1
 
-| # | Aanvulling | Waarom |
-|---|---|---|
-| 8 | `VitaalscoreInzichtenView`: altijd tips + `RecommendedInsights`; upsell → begeleiding (geen blur) | C.7 — eigen uitleg niet terugverkopen |
-| 9 | `HubCard` Lichaamssamenstelling op Statistieken: `premium`-badge weg → "Binnenkort" | C.5 — één belofte per scherm |
-| 10 | `LichaamssamenstellingView`: locked-tak weg; geen slotjes op `IDENTITY_FIELDS` | Eerlijke lege staat i.p.v. misleidende slotjes |
-| 11 | `Dashboard.tsx`: merge free/unlocked statistics | Voorkomt dubbele HistorySection na gate-removal |
-| 12 | `vitality-score-copy.ts`: upsell-strings naar begeleiding | Inzichten-copy aligned met consent |
-| 13 | **Vitaliteit vs leefstijlring:** verificatie + minimal copy (zie 5.2.1) | Na unlock voelt Inzichten anders dan hub — doublure voorkomen of benoemen |
+
+| #   | Aanvulling                                                                                        | Waarom                                                                    |
+| --- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 8   | `VitaalscoreInzichtenView`: altijd tips + `RecommendedInsights`; upsell → begeleiding (geen blur) | C.7 — eigen uitleg niet terugverkopen                                     |
+| 9   | `HubCard` Lichaamssamenstelling op Statistieken: `premium`-badge weg → "Binnenkort"               | C.5 — één belofte per scherm                                              |
+| 10  | `LichaamssamenstellingView`: locked-tak weg; geen slotjes op `IDENTITY_FIELDS`                    | Eerlijke lege staat i.p.v. misleidende slotjes                            |
+| 11  | `Dashboard.tsx`: merge free/unlocked statistics                                                   | Voorkomt dubbele HistorySection na gate-removal                           |
+| 12  | `vitality-score-copy.ts`: upsell-strings naar begeleiding                                         | Inzichten-copy aligned met consent                                        |
+| 13  | **Vitaliteit vs leefstijlring:** verificatie + minimal copy (zie 5.2.1)                           | Na unlock voelt Inzichten anders dan hub — doublure voorkomen of benoemen |
+
 
 **Niet in K1:** hub-kaart verplaatsen (K3), prijsbanden (K4), value-props herschrijven (K5 — alleen minimum copy in K1), VitalityGauge vervangen door ring-visual (→ K2 IA).
 
@@ -323,12 +333,14 @@ PremiumWaitlistCard    →  copy begeleiding + offer-param (inline op Statistiek
 
 Drie oppervlakken, één databron (`DashboardModel` / `computeVitaliteit`):
 
-| Surface | Component | Wat het toont | Domeinen |
-|---|---|---|---|
-| **Voortgang hub** | `VoortgangDomeinRing` | Lijst + sparkline + band per domein | 7 (interventie + readout) |
-| **Voortgang hub** | `VoortgangRichtingBeat` | Prioriteitsdomein op as (start → nu → target) | 1 focus |
-| **Kompas tab** | `LeefstijlKompas` / `KompasRings` | Concentrische ringen + leefstijlscore midden | 5 interventie |
-| **Jouw inzichten** | `VitalityGauge` + copy | Één score hero + habit-kernel | Aggregaat |
+
+| Surface            | Component                         | Wat het toont                                 | Domeinen                  |
+| ------------------ | --------------------------------- | --------------------------------------------- | ------------------------- |
+| **Voortgang hub**  | `VoortgangDomeinRing`             | Lijst + sparkline + band per domein           | 7 (interventie + readout) |
+| **Voortgang hub**  | `VoortgangRichtingBeat`           | Prioriteitsdomein op as (start → nu → target) | 1 focus                   |
+| **Kompas tab**     | `LeefstijlKompas` / `KompasRings` | Concentrische ringen + leefstijlscore midden  | 5 interventie             |
+| **Jouw inzichten** | `VitalityGauge` + copy            | Één score hero + habit-kernel                 | Aggregaat                 |
+
 
 **Hypothese na K1-unlock:** hub levert al "beweging per domein"; Inzichten levert "totaalbeeld + interpretatie". Dat kan complementair zijn — maar de routerij belooft nog "vitaliteit in één beeld" terwijl de hub dat deels al dekt via DomeinRing.
 
@@ -406,30 +418,60 @@ Niet committen. Stop voor review.
 
 ## 6. Verdere slices K2–K7 (voorstel, niet gecommit)
 
-| Slice | Prioriteit | Claude's idee | Vraag aan jou |
-|---|---|---|---|
-| **K2** | P1 | 1 kolom Statistieken; Leefstijllijn omhoog; Stap 3 of telling weg; **Inzichten IA** (gauge vs ring) | Grid schrappen ja/nee? Inzichten slanker? |
-| **K3** | P1 | Wachtlijstkaart hub → Statistieken; hub = stille regel | Waar hoort conversie? |
-| **K4** | P1 | Prijs na join (POST 2) | Akkoord met flow? |
-| **K5** | P1 | premium-value-props → begeleiding | Welke props blijven? |
-| **K6** | P2 | Dode StatisticsSection + resolveTrendsAccess opruimen | Nu of later? |
-| **K7** | P2 | isMember/DARK_LAUNCH documenteren | Docs-only OK? |
+
+| Slice  | Prioriteit | Claude's idee                                                                                       | Vraag aan jou                             |
+| ------ | ---------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **K2** | P1         | 1 kolom Statistieken; Leefstijllijn omhoog; Stap 3 of telling weg; **Inzichten IA** (gauge vs ring) | Grid schrappen ja/nee? Inzichten slanker? |
+| **K3** | P1         | Wachtlijstkaart hub → Statistieken; hub = stille regel                                              | Waar hoort conversie?                     |
+| **K4** | P1         | Prijs na join (POST 2)                                                                              | Akkoord met flow?                         |
+| **K5** | P1         | premium-value-props → begeleiding                                                                   | Welke props blijven?                      |
+| **K6** | P2         | Dode StatisticsSection + resolveTrendsAccess opruimen                                               | Nu of later?                              |
+| **K7** | P2         | isMember/DARK_LAUNCH documenteren                                                                   | Docs-only OK?                             |
+| **K8** | P1         | Inzichten-IA: gauge vs ring + CTA-herroutering RichtingBeat → Statistieken (gratis)                 | Akkoord (29 jul) — zie hieronder          |
+
+
+### 6.1 K8 · Inzichten-IA + CTA-herroutering (toegevoegd 29 juli 2026, **uitgevoerd** 29 juli 2026)
+
+K2 liet dit bewust liggen ("Inzichten-IA (gauge vs ring) bewust niet aangeraakt in deze slice"). Scope:
+
+- `VoortgangRichtingBeat` CTA gaat naar **Statistieken** i.p.v. Inzichten. Prop `onOpenInzichten` → `onOpenStatistieken`; geen wijziging nodig in `VoortgangHub.tsx` (regel 671/673 hadden beide callbacks al klaarstaan) — alleen `VoortgangHubScroll.tsx` (regel 51: welk prop naar `VoortgangRichtingBeat` gaat) en `VoortgangRichtingBeat.tsx` zelf (prop, handler, knoptekst) zijn aangepast.
+- CTA-copy herschreven van *"Je vitaliteit in één beeld →"* naar **"Bekijk je cijfers over tijd →"** — de oude tekst was een belofte die bij de Inzichten-bestemming hoorde (één aggregaatgetal), niet bij Statistieken (`StatistiekenPriorityOverTime`/`PriorityOverTimePanel` + voeding + historie — per-domein trend, geen aggregaat). Meesturen van de oude tekst naar de nieuwe bestemming was zelf een kleine misleiding — dezelfde categorie fout die K1 net had opgeruimd.
+- Tracking: bestaand `dashboard_voortgang_hub_click` met `destination: "statistieken"`, `surface: "richting_beat"`; `clarityTag` tweede argument mee aangepast naar `"statistieken"`. Geen nieuw event-type.
+- **Blijft gratis.** Statistieken premium maken zou K1 terugdraaien; hermeting staat expliciet in de niet-gaten-lijst (§2.4) en "sterke aanbeveling" is Phase 2, niet dezelfde bundel.
+- `npx tsc --noEmit` groen; geen andere call sites van `VoortgangRichtingBeat` (geen tests, geen tweede parent).
+
+**Niet in K8:** de doelbalk zelf. Die wordt geen herverfde vitaliteitsband maar een kwalitatief doel per domein — eigen traject met eigen datamodel, zie [`../plan/PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md`](../plan/PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md). K8 gaat vóór dat traject, zodat het doelblok niet op een routering wordt gebouwd die daarna verschuift. **Ook niet in K8:** de `data`-prop naar `VoortgangRichtingBeat` doorgeven — dat is slice C van het ijkpunt-traject (`data.cycleEvidence` heeft daar pas een gebruiker). Een ongebruikte prop nu toevoegen is bouwen voor een latere slice, niet voor deze.
+
+#### Doublure-oordeel (uitgevoerd, geverifieerd tegen de as-built code)
+
+De oorspronkelijke driedeling uit §5.2.1 (`VitalityGauge` vs `VoortgangDomeinRing` vs `KompasRings`) klopt niet met de code: **`VoortgangDomeinRing` toont geen aggregaat.** Het rendert `model.scores[pillarId]` per domein (lijst + sparkline) — dat is een per-domein-readout, geen doublure-kandidaat. En **`LeefstijlKompas.tsx`** (waar de wederprompt in §5.3 naar verwijst als "referentie leefstijlring") is **dode code** — nergens geïmporteerd behalve door zichzelf; laatst aangeraakt vóór de huidige Kompas-implementatie. De live `KompasRings` zit in **`KompasHomeCard.tsx:117`**, gerenderd op de Vandaag/home-tegel, en gebruikt óók `model.vitality` (regel 837: `<KompasRings rows={rows} vitality={model.vitality} />`).
+
+De echte doublure is dus **tweeledig, niet drieledig**: `KompasHomeCard`/`KompasRings` (Vandaag) en `VitaalscoreInzichtenView`/`VitalityGauge` (Inzichten) tonen letterlijk hetzelfde getal (`model.vitality`), in andere chrome.
+
+**Verdict: `KompasHomeCard`/`KompasRings` blijft de aggregaat-hero.** Het is de eerste tegel na inloggen én rijker dan `VitalityGauge` alleen — het codeert de vitaliteitsband ín de samenstelling van vijf domeinringen, niet als los getal. `VitalityGauge` op Inzichten is daarmee de partij die moet verantwoorden waarom hij hetzelfde getal een tweede keer als hero toont.
+
+**Geen ring-refactor in K8** (zelfde regel als K1 al hanteerde voor deze vraag). Backlog naar **K2**, waar "Inzichten slanker?" al als openstaande vraag staat (§6-tabel): concreet voorstel — `VitalityGauge` in `VitaalscoreInzichtenView` verkleinen/decentraliseren zodat Inzichten leidt met de uitleg (`InsightTips` + `RecommendedInsights`) in plaats van met een tweede hero-getal, of een korte referentiezin toevoegen ("hetzelfde cijfer als op je startscherm, hier uitgelegd") zodat het geen verrassing is dat het getal terugkomt. Producteigenaar beslist welke van de twee bij K2.
+
+**Wat al klopte vóór dit oordeel:** de routerij-subtitle in `VoortgangRouteList` ("Jouw inzichten" → *"Je totaalscore en wat je prioriteit drijft"*) was al bijgewerkt tijdens K1 — geen actie meer nodig, de eerdere aanname in deze paragraaf dat hij nog "vitaliteit in één beeld" beloofde was gebaseerd op de oude prompttekst, niet op de huidige code.
+
 
 ---
 
 ## 7. Beslispunten — samenvatting voor jou
 
-| Vraag | Claude's voorstel | Jouw besluit |
-|---|---|---|
-| Nieuwe as: zelf lezen vs meekijken? | Ja — juli-tijdas vervallen | ☐ akkoord ☐ aanpassen ☐ afwijzen |
-| Leefstijllijn gratis houden? | Ja — niet terugvorderen | ☐ |
-| Wachtlijst = begeleiding (copy + backend)? | Ja — UI naar backend | ☐ |
-| Phase 2: premium aanbevelingen? | Ja — na eerlijke grens | ☐ nu ☐ later ☐ nee |
-| Lock-events opruimen? | Ja — na K1 | ☐ |
-| Prijsvraag na join? | Ja — POST 2 zonder dubbele consent | ☐ |
-| A/B begeleiding vs aanbeveling+copy? | Optioneel — na K1 | ☐ |
-| Eerst implementeren? | K1 (P0) | ☑ akkoord |
-| Bouwplaats K1? | VoortgangHub + Dashboard compositie | ☑ sectie 5.1 |
+
+| Vraag                                      | Claude's voorstel                   | Jouw besluit                     |
+| ------------------------------------------ | ----------------------------------- | -------------------------------- |
+| Nieuwe as: zelf lezen vs meekijken?        | Ja — juli-tijdas vervallen          | ☐ akkoord ☐ aanpassen ☐ afwijzen |
+| Leefstijllijn gratis houden?               | Ja — niet terugvorderen             | ☐                                |
+| Wachtlijst = begeleiding (copy + backend)? | Ja — UI naar backend                | ☐                                |
+| Phase 2: premium aanbevelingen?            | Ja — na eerlijke grens              | ☐ nu ☐ later ☐ nee               |
+| Lock-events opruimen?                      | Ja — na K1                          | ☐                                |
+| Prijsvraag na join?                        | Ja — POST 2 zonder dubbele consent  | ☐                                |
+| A/B begeleiding vs aanbeveling+copy?       | Optioneel — na K1                   | ☐                                |
+| Eerst implementeren?                       | K1 (P0)                             | ☑ akkoord                        |
+| Bouwplaats K1?                             | VoortgangHub + Dashboard compositie | ☑ sectie 5.1                     |
+
 
 ---
 
@@ -439,5 +481,23 @@ Niet committen. Stop voor review.
 2. **Optioneel:** sectie 1 P0-aanvulling terug naar Claude ter bevestiging bouwplaats.
 3. **Slice K1 uitvoeren** via prompt sectie 5.3.
 4. **Daarna K2–K7** — IA, hub-verplaatsing, prijs, props, opruimen.
+
+### 8.1 Vastgelegde volgorde (29 juli 2026)
+
+| # | Blok | Waarom hier | Status |
+|---|---|---|---|
+| 1 | **K1** — P0 eerlijke premium-grens | Fundament: zolang Statistieken gegate is, kun je er geen CTA heen sturen | Akkoord, prompt in §5.3 |
+| 2 | **K8** — Inzichten-IA + CTA-herroutering | Klein, en het legt de props-signatuur van `VoortgangRichtingBeat` vast waar het doelblok bovenop komt | Akkoord, §6.1 |
+| 3 | **Eigen ijkpunt** — kwalitatief doel per focusdomein | Vervangt de inhoud van `VoortgangRichtingBeat`; eigen tabellen, raakt de route niet | 4 bouwslices, zie [`../plan/PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md`](../plan/PLAN_EIGEN_IJKPUNT_DOEL_PER_DOMEIN.md) §10.1 |
+| 4 | **K2–K7** — IA, hub, prijs, props, opruimen, docs | Alles wat niet in het pad van het doelblok ligt | Voorstel, §6 |
+
+**Volgorde-afhankelijkheden die echt bindend zijn** (de rest is voorkeur):
+
+- K1 → K8: de CTA mag pas naar Statistieken zodra Statistieken ongated is. Andersom stuur je verkeer naar een slotje.
+- K8 → ijkpunt: beide schrijven in `VoortgangRichtingBeat`. Andersom herschrijf je het blok en verander je er direct daarna de props van.
+- K2 blijft ná het ijkpunt: K2 bevat "VitalityGauge → ring-visual", en dat oordeel hangt af van wat er ná het doelblok nog aan band-visuals overblijft.
+- **Niet tegelijk:** het ijkpunt-traject en de dosis-greep (`PLAN_DOELGREEP_DOSIS_NA_CHECK.md`, stap 8). Beide claimen hetzelfde blok; twee doelbegrippen in één tegel is precies de verwarring die lock 5 daar moet voorkomen.
+
+**Wat de volgorde níet raakt:** de pre-traffic-regel uit `docs/core/CURRENT_SPRINT.md`. K1, K8 en het ijkpunt zijn alle drie gratis en Stripe-loos; slice D van het ijkpunt raakt de check-in-flows maar herverdeelt geen vraagset (dat is S4) en gate't geen plan (dat is S6).
 
 **Meetpunt (voorstel):** `premium_waitlist_shown` → `premium_waitlist_join` → `premium.price_indicated` met `offer:"begeleiding"` — effect aflezen per surface zodra locks en copy aligned zijn.

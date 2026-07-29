@@ -48,7 +48,10 @@ export default function VoortgangHubScroll({
         />
       </div>
 
-      <VoortgangRichtingBeat model={model} onOpenInzichten={onOpenInzichten} />
+      <VoortgangRichtingBeat
+        model={model}
+        onOpenStatistieken={onOpenStatistieken}
+      />
 
       <div className="mb-5 mt-2">
         <VoortgangRouteList

@@ -8,7 +8,7 @@ import type { DashboardModel } from "@/types/dashboard";
 
 type VoortgangRichtingBeatProps = {
   model: DashboardModel;
-  onOpenInzichten: () => void;
+  onOpenStatistieken: () => void;
 };
 
 function pct(v: number): number {
@@ -17,7 +17,7 @@ function pct(v: number): number {
 
 export default function VoortgangRichtingBeat({
   model,
-  onOpenInzichten,
+  onOpenStatistieken,
 }: VoortgangRichtingBeatProps) {
   const rows = buildKompasDomainRows(model);
   const priorityRow = rows.find((row) => row.isPriority);
@@ -47,13 +47,13 @@ export default function VoortgangRichtingBeat({
     ? `${priorityRow.label} is je focus in deze cyclus. Dit is de schaal waarop je dat afleest — geen doel dat je moet halen, wel het volgende leesniveau.`
     : `${priorityRow.label} is je focus in deze cyclus. Je hebt hier één meting — je hermeting maakt hier een lijn van.`;
 
-  const handleOpenInzichten = () => {
+  const handleOpenStatistieken = () => {
     trackEvent("dashboard_voortgang_hub_click", {
-      destination: "inzichten",
+      destination: "statistieken",
       surface: "richting_beat",
     });
-    clarityTag("dashboard_voortgang", "inzichten");
-    onOpenInzichten();
+    clarityTag("dashboard_voortgang", "statistieken");
+    onOpenStatistieken();
   };
 
   const fillLeft = hasStart && pStart != null ? pStart : 10;
@@ -170,10 +170,10 @@ export default function VoortgangRichtingBeat({
 
             <button
               type="button"
-              onClick={handleOpenInzichten}
+              onClick={handleOpenStatistieken}
               className="mt-5 inline-flex min-h-[46px] w-full cursor-pointer items-center justify-center rounded-full bg-[var(--sage-ink)] px-5 text-[14.5px] font-semibold text-white transition hover:opacity-90 sm:w-auto"
             >
-              Je vitaliteit in één beeld →
+              Bekijk je cijfers over tijd →
             </button>
           </div>
 
