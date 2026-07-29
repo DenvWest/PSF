@@ -1,0 +1,1310 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voortgang — conversiekaart prebuild (juli 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --shell:#1a2e1a;
+  --hero:#132414;
+  --sage:#5A8F6A;
+  --sage-bright:#6FB07E;
+  --terra:#C8956C;
+  --ghost:#B7A7D0;
+  --text:#F1EFE8;
+  --muted:#9FB0A6;
+  --subtle:#7E8C82;
+  --line:rgba(255,255,255,.10);
+  --line-soft:rgba(255,255,255,.06);
+  --tile:rgba(255,255,255,.04);
+  --beat-bg:#EFEDE6;
+  --beat-ink:#16281A;
+  --beat-muted:rgba(22,40,26,.70);
+  --beat-subtle:rgba(22,40,26,.52);
+  --sage-ink:#33583F;
+  --f-sans:"DM Sans",system-ui,sans-serif;
+  --f-serif:"DM Serif Display",Georgia,serif;
+  --pad:12px;
+  --stickyh:52px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:clip}
+body{
+  font-family:var(--f-sans);color:var(--text);background-color:var(--shell);
+  background-image:
+    radial-gradient(ellipse 130% 70% at 50% -8%, rgba(127,178,142,.42) 0%, rgba(33,56,31,.75) 38%, transparent 68%),
+    radial-gradient(120% 80% at 50% -5%, #21381f 0%, transparent 55%);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3{margin:0;font-weight:400;font-family:var(--f-serif);letter-spacing:-.005em}
+p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none !important}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+
+/* ══ prebuild-chrome (niet in het product) ═════════════════ */
+.pb-bar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 12px;
+  background:#0b160b;border-bottom:1px solid var(--line);font-size:11.5px;color:var(--subtle);
+}
+.pb-bar strong{color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:9.5px}
+.pb-states{display:flex;gap:4px;flex-wrap:wrap}
+.pb-states button{
+  min-height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);font-size:11.5px;font-weight:600;
+}
+.pb-states button[aria-pressed="true"]{border-color:rgba(90,143,106,.55);background:rgba(90,143,106,.18);color:var(--text)}
+.pb-ev{
+  flex:1 1 240px;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;
+  color:var(--sage-bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* ══ sticky top ════════════════════════════════════════════ */
+.stickytop{position:sticky;top:0;z-index:40}
+.top{background:rgba(11,22,11,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:12px;padding:10px var(--pad);min-width:0}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-serif);font-size:16px;white-space:nowrap}
+.brand .dot{width:9px;height:9px;border-radius:999px;background:var(--sage-bright)}
+.tabs{display:none;gap:2px;margin-left:8px}
+.tabs button{
+  min-height:38px;padding:0 12px;border-radius:10px;border:1px solid transparent;background:transparent;
+  color:var(--muted);font-size:13.5px;font-weight:500;white-space:nowrap;
+}
+.tabs button[aria-current="page"]{border-color:rgba(90,143,106,.45);background:rgba(90,143,106,.12);color:var(--text)}
+.avatar{width:30px;height:30px;border-radius:999px;background:linear-gradient(135deg,#C8956C,#9c6a44);flex:none}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+@media(min-width:900px){.tabs{display:flex}}
+
+/* ── mobiele disclosure-nav ── */
+.mnav{position:relative;background:rgba(11,22,11,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+@media(min-width:900px){.mnav{display:none}}
+.mnav-trigger{
+  display:flex;align-items:center;gap:8px;width:100%;min-height:46px;padding:0 var(--pad);
+  border:none;background:transparent;text-align:left;min-width:0;
+}
+.mnav-trigger .k{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle);flex:none}
+.mnav-trigger .v{font-size:14px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mnav-trigger .chev{margin-left:auto;flex:none;color:var(--muted);transition:transform .18s}
+.mnav-trigger[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.mnav-sheet{
+  position:absolute;left:0;right:0;top:100%;z-index:45;max-height:calc(100dvh - 170px);overflow-y:auto;
+  background:#101d10;border-bottom:1px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.45);
+  padding:12px var(--pad) 16px;
+}
+.mnav-backdrop{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.5)}
+@media(min-width:900px){.mnav-backdrop{display:none}}
+
+/* ══ frame + rail ══════════════════════════════════════════ */
+.frame{display:grid;grid-template-columns:minmax(0,1fr);align-items:start}
+@media(min-width:900px){.frame{grid-template-columns:236px minmax(0,1fr)}}
+@media(min-width:1280px){.frame{grid-template-columns:260px minmax(0,1fr)}}
+.rail{display:none}
+@media(min-width:900px){
+  .rail{
+    display:flex;flex-direction:column;gap:14px;min-width:0;padding:16px 14px 20px;
+    border-right:1px solid var(--line);position:sticky;top:var(--stickyh);align-self:start;
+    max-height:calc(100dvh - var(--stickyh));overflow-y:auto;
+  }
+}
+.zoneflag{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.navlist{display:flex;flex-direction:column;gap:2px;margin-top:8px}
+.navitem{
+  display:flex;align-items:center;gap:9px;width:100%;min-height:44px;padding:7px 9px;
+  border-radius:12px;border:1px solid transparent;background:transparent;color:var(--muted);
+  text-align:left;font-size:13.5px;font-weight:500;transition:.15s;min-width:0;
+}
+.navitem:hover{border-color:var(--line);background:rgba(255,255,255,.05);color:var(--text)}
+.navitem[aria-current="page"]{border-color:rgba(90,143,106,.45);background:rgba(90,143,106,.12);color:var(--text)}
+.navitem .ico{flex:none;width:15px;height:15px;display:grid;place-items:center;opacity:.9}
+.navitem .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{
+  flex:none;font-size:10px;font-weight:600;white-space:nowrap;color:var(--terra);
+  border:1px solid rgba(200,149,108,.40);background:rgba(200,149,108,.12);border-radius:999px;padding:2px 7px;
+}
+.badge.gh{color:var(--ghost);border-color:rgba(183,167,208,.42);background:rgba(183,167,208,.12)}
+.railnote{margin-top:8px;font-size:11px;line-height:1.45;color:var(--subtle);text-wrap:pretty}
+.railfoot{margin-top:auto;display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:14px}
+.railfoot .nm{font-family:var(--f-serif);font-size:15px;line-height:1.2}
+.railfoot .sub{font-size:11.5px;color:var(--muted)}
+.mnav-sheet .navitem{min-height:52px;border-color:var(--line-soft);background:rgba(255,255,255,.03);margin-bottom:6px}
+.mnav-sheet .navitem .lbl{white-space:normal;overflow:visible}
+.mnav-sheet .navitem .sub{display:block;font-size:11.5px;font-weight:400;color:var(--subtle);margin-top:2px}
+
+/* ══ main ══════════════════════════════════════════════════ */
+main{min-width:0;padding:var(--pad) var(--pad) 96px}
+@media(min-width:900px){main{padding:16px 16px 40px}}
+@media(min-width:1440px){main{padding:20px 24px 48px}}
+.tile{border:1px solid var(--line);background:var(--tile);border-radius:18px;padding:16px;min-width:0}
+@media(min-width:640px){.tile{padding:20px}}
+
+/* ══ HERO: signaal | routekaart + actie ════════════════════ */
+.hero{
+  position:relative;overflow:hidden;background:var(--hero);border-radius:0 0 24px 24px;
+  margin:calc(var(--pad) * -1) calc(var(--pad) * -1) 14px;
+}
+@media(min-width:900px){.hero{margin:-16px -16px 16px}}
+@media(min-width:1440px){.hero{margin:-20px -24px 18px}}
+.hero::before{
+  content:"";position:absolute;inset:0;opacity:.13;pointer-events:none;
+  background-image:linear-gradient(to right,rgba(255,255,255,.5) 1px,transparent 1px),
+                   linear-gradient(to bottom,rgba(255,255,255,.5) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000 0%,transparent 62%);
+  mask-image:radial-gradient(120% 80% at 50% 0%,#000 0%,transparent 62%);
+}
+.hero::after{
+  content:"";position:absolute;right:-150px;top:-190px;width:400px;height:400px;border-radius:999px;
+  background:var(--sage);opacity:.18;filter:blur(120px);pointer-events:none;
+}
+.hero-in{position:relative;z-index:1;padding:22px var(--pad) 22px;display:grid;gap:22px;min-width:0}
+@media(min-width:900px){.hero-in{padding:30px 16px 32px}}
+@media(min-width:1080px){
+  .hero-in{grid-template-columns:minmax(0,.92fr) minmax(0,1fr);gap:38px;align-items:center;padding:40px 16px 42px}
+}
+@media(min-width:1440px){.hero-in{padding:46px 24px 48px;gap:48px}}
+
+.signal{min-width:0}
+.signal h1{margin-top:12px;font-size:clamp(27px,7.4vw,34px);line-height:1.08;text-wrap:balance}
+@media(min-width:1080px){.signal h1{font-size:clamp(34px,3.6vw,48px);line-height:1.03}}
+.signal .lede{margin-top:13px;max-width:40ch;font-size:15.5px;line-height:1.55;color:#CDD7D0;text-wrap:pretty}
+@media(min-width:1080px){.signal .lede{font-size:17.5px;max-width:34ch}}
+
+/* ── instrument: routekaart ── */
+.instrument{min-width:0;display:flex;flex-direction:column;gap:14px}
+.rk{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);border-radius:18px;padding:14px;min-width:0}
+@media(min-width:640px){.rk{padding:16px}}
+.rk-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;margin-bottom:9px}
+.focuschip{
+  margin-left:auto;display:inline-flex;align-items:center;gap:6px;flex:none;
+  font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);
+  border-radius:999px;padding:3px 9px;
+}
+.focuschip i{width:7px;height:7px;border-radius:999px;flex:none}
+
+/* liniaal = één slider-doel, hitgebied 44px */
+.lin-wrap{padding:9px 0;touch-action:none;cursor:ew-resize}
+.lin{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:2px;align-items:end;height:26px;outline:none;border-radius:4px}
+.lin:focus-visible{box-shadow:0 0 0 2px rgba(111,176,126,.6)}
+.tick{border-radius:2px;background:rgba(255,255,255,.07);height:11px;transition:height .12s,background .12s}
+.tick.past{background:rgba(255,255,255,.17);height:16px}
+.tick.on{background:var(--sage-bright);height:26px}
+.tick.now{outline:1px solid rgba(255,255,255,.5);outline-offset:1px}
+.tick.end{background:transparent;border:1px dashed rgba(255,255,255,.38);height:26px}
+.tick.cur{background:#fff;height:26px;outline:none}
+.tick.end.cur{background:transparent;border-color:#fff}
+.lin-cap{
+  min-height:34px;font-size:12px;line-height:1.4;color:var(--muted);text-wrap:pretty;
+  border-top:1px solid var(--line-soft);padding-top:8px;
+}
+.lin-cap b{color:var(--text);font-weight:600}
+
+/* ── 5 stages ── */
+.stages{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;margin-top:12px}
+.stages::before{
+  content:"";position:absolute;top:13px;left:10%;right:10%;height:1px;
+  background:linear-gradient(to right,rgba(255,255,255,.22) 0 72%,rgba(183,167,208,.32) 72% 100%);
+}
+.stage{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;
+  min-height:52px;padding:0 1px;border:none;background:transparent;border-radius:10px;
+}
+.stage:hover .node{border-color:rgba(255,255,255,.45)}
+.node{
+  width:26px;height:26px;border-radius:999px;flex:none;display:grid;place-items:center;
+  font-size:11px;font-weight:700;background:var(--hero);border:1.5px solid rgba(255,255,255,.22);
+  color:var(--subtle);transition:.15s;
+}
+.stage.done .node{background:rgba(90,143,106,.22);border-color:rgba(90,143,106,.5);color:#B9D8C2}
+.stage.active .node{background:var(--sage-bright);border-color:var(--sage-bright);color:#0E1C10;box-shadow:0 0 0 4px rgba(111,176,126,.18)}
+.stage.gh .node{border-style:dashed;border-color:rgba(183,167,208,.5);color:var(--ghost)}
+.stage .lb{font-size:10.5px;line-height:1.2;color:var(--subtle);text-align:center;overflow-wrap:anywhere}
+.stage.done .lb,.stage.active .lb{color:var(--text)}
+.stage.active .lb{font-weight:600}
+.stage.gh .lb{color:var(--ghost)}
+.stage-desc{
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft);
+  font-size:12.5px;line-height:1.45;color:var(--muted);text-wrap:pretty;min-height:36px;
+}
+.gh-tag{
+  display:inline-block;margin-right:6px;font-size:9.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ghost);border:1px solid rgba(183,167,208,.42);
+  border-radius:999px;padding:1px 6px;vertical-align:1px;
+}
+
+/* ── actie ── */
+.act{min-width:0}
+.stepcard{
+  display:flex;align-items:flex-start;gap:11px;width:100%;min-width:0;text-align:left;
+  border:1px solid rgba(111,176,126,.28);background:rgba(90,143,106,.10);border-radius:16px;padding:13px;
+}
+.stepcard:hover{border-color:rgba(111,176,126,.5)}
+.stepcard .pin{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(90,143,106,.2)}
+.stepcard .ttl{display:block;font-size:14.5px;font-weight:600;line-height:1.3;margin-top:2px}
+.stepcard .sub{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);line-height:1.45;text-wrap:pretty}
+.cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:13px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 20px;
+  border-radius:999px;border:1px solid var(--sage);background:var(--sage);color:#0E1C10;
+  font-size:14.5px;font-weight:600;text-decoration:none;
+}
+.btn.link{
+  min-height:44px;padding:0 4px;border:none;background:none;color:var(--muted);font-weight:500;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(159,176,166,.45);
+}
+
+/* ══ meetlat ═══════════════════════════════════════════════ */
+.meetlat h2{margin-top:8px;font-size:clamp(19px,4.6vw,23px);line-height:1.24;text-wrap:balance}
+.meetlat .mode{margin-top:8px;font-size:14px;color:var(--muted);line-height:1.5;max-width:52ch;text-wrap:pretty}
+.meetlat .ijk{margin-top:5px;font-size:13px;color:var(--subtle);line-height:1.5;max-width:52ch}
+.goalcta{
+  margin-top:12px;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;
+  border:1px solid rgba(90,143,106,.5);background:rgba(90,143,106,.12);color:var(--sage-bright);
+  font-size:13.5px;font-weight:600;
+}
+.scale{margin-top:18px;padding-top:16px;border-top:1px solid var(--line-soft)}
+.scale-track{position:relative;height:3px;border-radius:999px;background:rgba(255,255,255,.10);margin:22px 8px 0}
+.scale-fill{position:absolute;top:0;height:3px;border-radius:999px;background:var(--sage)}
+.scale-dash{position:absolute;top:1px;height:0;border-top:2px dashed rgba(255,255,255,.28)}
+.pt{position:absolute;top:50%;transform:translate(-50%,-50%);border-radius:999px}
+.pt.start{width:11px;height:11px;border:2px solid var(--sage);background:var(--hero)}
+.pt.now{width:14px;height:14px;background:var(--sage-bright);box-shadow:0 0 0 4px rgba(111,176,126,.16)}
+.pt.next{width:11px;height:11px;border:2px dashed rgba(255,255,255,.45);background:transparent}
+.scale-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.scale-legend > div{min-width:0}
+.scale-legend .k{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);min-width:0}
+.scale-legend .k i{width:8px;height:8px;border-radius:999px;flex:none}
+.scale-legend .v{display:block;margin-top:3px;font-family:var(--f-serif);font-size:21px;line-height:1.15}
+.scale-legend .b{display:block;margin-top:1px;font-size:11.5px;color:var(--muted);overflow-wrap:anywhere}
+@media(max-width:439px){
+  .scale-legend{grid-template-columns:1fr;gap:0}
+  .scale-legend > div{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-top:1px solid var(--line-soft)}
+  .scale-legend > div:first-child{border-top:none}
+  .scale-legend .k{flex:1 1 auto}
+  .scale-legend .v{margin:0;flex:none;font-size:18px}
+  .scale-legend .b{margin:0;flex:none;max-width:42%;text-align:right}
+}
+.rows{margin-top:18px;padding-top:12px;border-top:1px solid var(--line-soft);display:flex;flex-direction:column;gap:2px}
+.row{display:block;width:100%;padding:9px 6px;border:none;background:transparent;border-radius:12px;text-align:left;min-width:0}
+.row:hover{background:rgba(255,255,255,.045)}
+.row.is-focus{box-shadow:inset 2px 0 0 var(--sage)}
+.row.is-sel{background:rgba(255,255,255,.07)}
+.row-top{display:flex;align-items:center;gap:9px;min-width:0}
+.row-top .cdot{width:8px;height:8px;border-radius:999px;flex:none}
+.row-top .nm{font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-top .spk{margin-left:auto;flex:none;display:flex}
+.row-top .dlt{flex:none;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;padding:2px 6px;border-radius:999px}
+.dlt.up{color:#8FCFA0;background:rgba(111,176,126,.14)}
+.dlt.down{color:#E0A98C;background:rgba(200,149,108,.14)}
+.dlt.flat{color:var(--subtle);background:rgba(255,255,255,.05)}
+.row-bot{display:flex;align-items:center;gap:8px;margin-top:4px;padding-left:17px;min-width:0}
+.row-bot .meta{font-size:11.5px;color:var(--subtle);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{
+  margin-left:auto;flex:none;display:inline-flex;align-items:center;min-height:26px;padding:0 9px;
+  border-radius:999px;border:1px solid var(--line);background:transparent;font-size:11.5px;font-weight:600;color:var(--muted);
+}
+.chip.set{border-color:rgba(90,143,106,.45);color:var(--sage-bright);background:rgba(90,143,106,.10)}
+.readout{margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:12.5px;line-height:1.5;color:var(--subtle);text-wrap:pretty}
+.tilefoot{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.linkbtn{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;border:none;background:none;color:var(--sage-bright);font-size:13.5px;font-weight:600}
+
+/* ══ koppelstrip ═══════════════════════════════════════════ */
+.koppel{
+  margin:14px calc(var(--pad) * -1);padding:18px var(--pad);background:var(--beat-bg);color:var(--beat-ink);
+  border-top:1px solid rgba(0,0,0,.10);border-bottom:1px solid rgba(0,0,0,.10);
+}
+@media(min-width:900px){.koppel{margin:16px -16px;padding:22px 16px}}
+@media(min-width:1440px){.koppel{margin:18px -24px;padding:24px}}
+.koppel .eyebrow{color:var(--beat-subtle)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:10px;min-width:0}
+.step{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.step .k{font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--beat-subtle)}
+.step .v{font-size:13.5px;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.arrow{color:rgba(22,40,26,.30);flex:none}
+.koppel .say{margin-top:10px;font-size:13px;line-height:1.5;color:var(--beat-muted);max-width:62ch;text-wrap:pretty}
+.koppel .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn-ink{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--sage-ink);border:1px solid var(--sage-ink);color:#fff;font-size:13.5px;font-weight:600}
+.btn-ink.sec{background:transparent;color:var(--sage-ink);border-color:rgba(51,88,63,.35)}
+
+/* ══ subschermen ═══════════════════════════════════════════ */
+.subhead{display:flex;align-items:center;gap:12px;margin-bottom:18px;min-width:0}
+.backbtn{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted)}
+.subhead .t{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;min-width:0;overflow-wrap:anywhere}
+.bliknav{
+  display:flex;gap:6px;overflow-x:auto;padding:8px 0;margin-bottom:8px;scrollbar-width:thin;
+  position:sticky;top:var(--stickyh);z-index:10;background:var(--shell);
+}
+.bliknav button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap}
+.bliknav button[aria-pressed="true"]{border-color:rgba(90,143,106,.5);background:rgba(90,143,106,.14);color:var(--text)}
+.tablewrap{overflow-x:auto;margin-top:14px;border-radius:12px;border:1px solid var(--line-soft)}
+table{border-collapse:collapse;width:100%;min-width:420px;font-size:13px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);font-weight:600}
+tr:last-child td{border-bottom:none}
+.stack{display:flex;flex-direction:column;gap:12px}
+.emptybox{border:1px dashed var(--line);border-radius:16px;padding:18px;background:rgba(255,255,255,.02)}
+.emptybox h3{font-size:19px;margin-top:10px}
+.emptybox p{margin-top:8px;font-size:13.5px;color:var(--muted);line-height:1.55;text-wrap:pretty;max-width:56ch}
+.ghostpanel{border-color:rgba(183,167,208,.42);background:rgba(183,167,208,.05)}
+.kv{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line-soft);min-width:0}
+.kv:first-child{border-top:none}
+.kv .k{flex:1;min-width:0;font-size:14px}
+.kv .v{flex:none;font-size:14px;color:var(--subtle);font-variant-numeric:tabular-nums}
+
+/* ══ bottom nav ════════════════════════════════════════════ */
+.bottomnav{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);
+  background:rgba(11,22,11,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.bottomnav button{min-height:56px;border:none;background:none;color:var(--subtle);font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 2px}
+.bottomnav button[aria-current="page"]{color:var(--text)}
+.bottomnav .bar{width:18px;height:2px;border-radius:2px;background:transparent}
+.bottomnav button[aria-current="page"] .bar{background:var(--sage-bright)}
+@media(min-width:900px){.bottomnav{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ═══ prebuild-chrome ═══ -->
+<div class="pb-bar">
+  <strong>Prebuild</strong>
+  <div class="pb-states" role="group" aria-label="Bewijsstate">
+    <button type="button" data-state="wachtend" aria-pressed="false">wachtend</button>
+    <button type="button" data-state="dun" aria-pressed="false">dun</button>
+    <button type="button" data-state="opbouwend" aria-pressed="true">opbouwend</button>
+    <button type="button" data-state="beantwoord" aria-pressed="false">beantwoord</button>
+  </div>
+  <span class="pb-ev" id="pb-ev" aria-live="polite">meetpunt verschijnt hier</span>
+</div>
+
+<div class="stickytop">
+  <header class="top">
+    <div class="top-in">
+      <span class="brand"><span class="dot" aria-hidden="true"></span>PerfectSupplement</span>
+      <nav class="tabs" aria-label="Dashboard">
+        <button type="button" data-tab="kompas">Kompas</button>
+        <button type="button" data-tab="agenda">Mijn Dag</button>
+        <button type="button" data-tab="overzicht" aria-current="page">Voortgang</button>
+        <button type="button" data-tab="hermeting">Hermeting</button>
+      </nav>
+      <div class="top-right"><span class="avatar" aria-hidden="true"></span></div>
+    </div>
+  </header>
+
+  <div class="mnav">
+    <button type="button" class="mnav-trigger" id="mnav-trigger" aria-expanded="false" aria-controls="mnav-sheet">
+      <span class="k">Bekijken</span>
+      <span class="v" id="mnav-label">Overzicht</span>
+      <span class="chev" aria-hidden="true">▾</span>
+    </button>
+    <div class="mnav-sheet" id="mnav-sheet" hidden>
+      <span class="zoneflag">Bekijken</span>
+      <div class="navlist" id="m-kijken"></div>
+      <span class="zoneflag" style="display:block;margin-top:16px">Nog in aanbouw</span>
+      <div class="navlist" id="m-aanbouw"></div>
+      <p class="railnote">Deze bestaan nog niet. Je klik telt als stem — we beloven geen datum.</p>
+    </div>
+  </div>
+</div>
+<div class="mnav-backdrop" id="mnav-backdrop" hidden></div>
+
+<div class="frame">
+
+  <aside class="rail" aria-label="Voortgang-navigatie">
+    <div>
+      <span class="zoneflag">Bekijken</span>
+      <nav class="navlist" id="r-kijken" aria-label="Bekijken"></nav>
+    </div>
+    <div>
+      <span class="zoneflag">Nog in aanbouw</span>
+      <nav class="navlist" id="r-aanbouw" aria-label="Nog in aanbouw"></nav>
+      <p class="railnote">Deze bestaan nog niet. Je klik telt als stem — we beloven geen datum.</p>
+    </div>
+    <div class="railfoot">
+      <span class="avatar" aria-hidden="true"></span>
+      <div style="min-width:0">
+        <div class="nm">Dennis</div>
+        <div class="sub" data-bind="anchor"></div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- ═══ OVERZICHT ═══ -->
+    <div data-panel="overzicht">
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-in">
+
+          <!-- 1 · SIGNAAL -->
+          <div class="signal">
+            <p class="eyebrow" style="color:#9FB0A6" data-bind="hero-eyebrow"></p>
+            <h1 id="hero-title" data-bind="hero-h1"></h1>
+            <p class="lede" data-bind="hero-lede"></p>
+          </div>
+
+          <!-- 2 · ROUTEKAART  +  3 · ACTIE -->
+          <div class="instrument">
+            <div class="rk">
+              <div class="rk-head">
+                <span class="eyebrow">Je route deze cyclus</span>
+                <span class="focuschip"><i data-bind-style="focus-color"></i><span data-bind="focus-label"></span></span>
+              </div>
+
+              <div class="lin-wrap">
+                <div class="lin" id="lin" role="slider" tabindex="0" aria-label="Cyclusdagen"
+                     aria-valuemin="1" aria-valuemax="30" aria-valuenow="1" aria-valuetext=""></div>
+              </div>
+              <p class="lin-cap" id="lin-cap"></p>
+
+              <div class="stages" id="stages"></div>
+              <p class="stage-desc" id="stage-desc"></p>
+            </div>
+
+            <div class="act">
+              <button type="button" class="stepcard" data-goto="agenda" data-ev="hub_click:agenda:hero_stap">
+                <span class="pin" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6FB07E" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </span>
+                <span style="min-width:0">
+                  <span class="eyebrow" data-bind="step-eyebrow"></span>
+                  <span class="ttl" data-bind="step-title"></span>
+                  <span class="sub" data-bind="step-sub"></span>
+                </span>
+              </button>
+              <div class="cta-row">
+                <button type="button" class="btn" id="hero-cta1" data-bind="hero-cta1"></button>
+                <button type="button" class="btn link" id="hero-cta2" data-bind="hero-cta2"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEETLAT -->
+      <section class="tile meetlat" aria-labelledby="meetlat-title">
+        <p class="eyebrow">Je meetlat</p>
+        <h2 id="meetlat-title" data-bind="ml-h2"></h2>
+        <p class="mode" data-bind="ml-mode"></p>
+        <p class="ijk" data-bind="ml-ijk"></p>
+        <button type="button" class="goalcta" data-bind="ml-goalcta" data-ev="doel_click"></button>
+
+        <div class="scale">
+          <p class="eyebrow" id="sc-eyebrow"></p>
+          <div class="scale-track">
+            <span class="scale-fill" id="sc-fill"></span>
+            <span class="scale-dash" id="sc-dash"></span>
+            <span class="pt start" id="sc-start"></span>
+            <span class="pt now" id="sc-now"></span>
+            <span class="pt next" id="sc-next"></span>
+          </div>
+          <div class="scale-legend" id="sc-legend"></div>
+        </div>
+
+        <div class="rows" id="ml-rows"></div>
+        <p class="readout">Energie en herstel volgen uit deze vijf; je leest ze terug bij Statistieken. Het cijfer per domein komt uit je eigen antwoorden — het is geen medische meetwaarde.</p>
+
+        <div class="tilefoot">
+          <button type="button" class="linkbtn" data-goto="statistieken" data-blikto="tijd" data-ev="hub_click:statistieken:meetlat">Bekijk je cijfers over tijd →</button>
+        </div>
+      </section>
+
+      <!-- KOPPELSTRIP -->
+      <section class="koppel" aria-labelledby="koppel-title">
+        <p class="eyebrow">Doen en aflezen</p>
+        <h2 id="koppel-title" class="sr">Waar je in de cyclus staat</h2>
+        <div class="flow">
+          <span class="step"><span class="k">Mijn Dag</span><span class="v" data-bind="kp-doen"></span></span>
+          <span class="arrow" aria-hidden="true">→</span>
+          <span class="step"><span class="k">Voortgang</span><span class="v" data-bind="kp-hier"></span></span>
+          <span class="arrow" aria-hidden="true">→</span>
+          <span class="step"><span class="k">Hermeting</span><span class="v" data-bind="kp-meet"></span></span>
+        </div>
+        <p class="say" data-bind="kp-say"></p>
+        <div class="acts">
+          <button type="button" class="btn-ink" data-goto="agenda" data-bind="kp-cta1" data-ev="hub_click:agenda:koppelstrip"></button>
+          <button type="button" class="btn-ink sec" data-goto="statistieken" data-blikto="tijd" data-ev="hub_click:statistieken:koppelstrip">Zie je lijn over tijd</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ═══ STATISTIEKEN ═══ -->
+    <div data-panel="statistieken" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:statistieken">←</button>
+        <span class="t">Statistieken</span>
+      </div>
+      <div class="bliknav" role="group" aria-label="Blik">
+        <button type="button" data-blik="stand" aria-pressed="true">Stand</button>
+        <button type="button" data-blik="advies" aria-pressed="false">Advies</button>
+        <button type="button" data-blik="tijd" aria-pressed="false">Over tijd</button>
+      </div>
+
+      <div data-blikpanel="stand" class="stack">
+        <div class="tile">
+          <p class="eyebrow">Stand van zaken</p>
+          <h2 style="margin-top:8px;font-size:22px">Waar sta je?</h2>
+          <p class="mode" data-bind="st-coverage"></p>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Domein</th><th>Score</th><th>Band</th><th>Verschil</th><th>Gemeten</th></tr></thead>
+              <tbody id="st-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div data-blikpanel="advies" class="stack" hidden>
+        <div class="tile">
+          <p class="eyebrow">Stap voor stap</p>
+          <h2 style="margin-top:8px;font-size:22px">Wat betekent dat?</h2>
+          <p class="mode">Eerst je bord, dan ons oordeel, dan welk potje past. Dit is de enige plek in Voortgang waar een supplement genoemd mag worden — de hub-scroll blijft vrij van aanbod.</p>
+          <div class="tilefoot"><button type="button" class="linkbtn" data-goto="favorieten" data-ev="hub_click:favorieten:advies">Naar je favorieten →</button></div>
+        </div>
+      </div>
+
+      <div data-blikpanel="tijd" class="stack" hidden>
+        <div class="tile">
+          <p class="eyebrow">Beweging</p>
+          <h2 style="margin-top:8px;font-size:22px">Beweegt het?</h2>
+          <p class="mode">Hier landt de bewijsband uit de oude hero: de volledige cyclus met meetpunten en zones om doorheen te scrubben. Exploratie hoort hier — in de hero staat alleen de leesbare liniaal.</p>
+          <div class="tile" style="margin-top:14px;background:rgba(255,255,255,.02)">
+            <p class="eyebrow">Bewijsband — verplaatst uit de hero</p>
+            <div class="lin" id="lin2" style="margin-top:14px" role="img" aria-label="Bewijsband"></div>
+            <p class="lin-cap" style="margin-top:10px" data-bind="lin-static"></p>
+          </div>
+        </div>
+        <div class="tile" id="premium-begeleiding">
+          <span class="badge">Wachtlijst</span>
+          <h2 style="margin-top:10px;font-size:21px">Begeleiding naast je leefstijl</h2>
+          <p class="mode">Wekelijks iemand die met je meekijkt. Dit bestaat nog niet als product; je kunt je op de wachtlijst zetten en aangeven wat je het waard vindt. Je scores, trends, leefstijllijn, advies en historie blijven hoe dan ook gratis.</p>
+          <div class="tilefoot"><button type="button" class="btn" style="min-height:44px" data-ev="premium.waitlist_joined:statistieken">Zet me op de wachtlijst</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ INZICHTEN ═══ -->
+    <div data-panel="inzichten" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:inzichten">←</button>
+        <span class="t">Jouw inzichten</span>
+      </div>
+      <div class="tile">
+        <p class="eyebrow">Je totaalscore</p>
+        <p style="font-family:var(--f-serif);font-size:54px;line-height:1;margin-top:10px" data-bind="iz-vitality"></p>
+        <p class="mode" data-bind="iz-body"></p>
+      </div>
+      <div class="tile" style="margin-top:12px">
+        <p class="eyebrow">Wat je prioriteit drijft</p>
+        <p class="mode" data-bind="iz-drive"></p>
+      </div>
+    </div>
+
+    <!-- ═══ FAVORIETEN ═══ -->
+    <div data-panel="favorieten" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:favorieten">←</button>
+        <span class="t">Favorieten</span>
+      </div>
+      <div class="tile">
+        <p class="eyebrow">Je eigen keuze</p>
+        <h2 style="margin-top:8px;font-size:21px" data-bind="fv-focus"></h2>
+        <p class="mode">Je koos zelf welk domein voorop staat. Dat mag afwijken van wat de engine aanwijst — hier zie je allebei.</p>
+      </div>
+      <div class="tile" style="margin-top:12px">
+        <p class="eyebrow">Onze aanrader</p>
+        <p class="mode" data-bind="fv-rec"></p>
+        <p style="margin-top:12px;font-size:11.5px;color:var(--subtle);line-height:1.5;text-wrap:pretty">Algemene oriëntatie op basis van je antwoorden — geen persoonlijk medisch advies. Wij verkopen zelf niets.</p>
+      </div>
+    </div>
+
+    <!-- ═══ LICHAAMSSAMENSTELLING ═══ -->
+    <div data-panel="lichaam" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:lichaam">←</button>
+        <span class="t">Lichaamssamenstelling</span>
+      </div>
+      <div class="emptybox">
+        <span class="badge">Vooruitblik</span>
+        <h3>Hier komt je lichaamssamenstelling.</h3>
+        <p>Vet, spier en vocht als aparte meetlat, naast je leefstijl. We bouwen dit nog — er staat nu niets van jou in en er is geen datum.</p>
+      </div>
+      <div class="tile" style="margin-top:12px">
+        <p class="eyebrow">Wat we van je weten</p>
+        <div style="margin-top:12px">
+          <div class="kv"><span class="k">Lengte</span><span class="v">nog niet ingevuld</span></div>
+          <div class="kv"><span class="k">Gewicht</span><span class="v">nog niet ingevuld</span></div>
+          <div class="kv"><span class="k">Leeftijd</span><span class="v">45–54</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ WEARABLE ═══ -->
+    <div data-panel="wearable" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:wearable">←</button>
+        <span class="t">Wearable koppelen</span>
+      </div>
+      <div class="emptybox">
+        <span class="badge">Animo peilen</span>
+        <h3>Slaap en herstel automatisch mee laten lopen.</h3>
+        <p>Er is nog geen koppeling. Deze pagina telt je interesse — meer niet. Zodra genoeg mensen dit willen, bouwen we het en hoor je het per e-mail.</p>
+        <p id="wr-ack" style="color:var(--sage-bright)" hidden>Genoteerd. Je stem is geteld — er is verder nu niets te doen.</p>
+        <button type="button" class="btn" style="margin-top:14px;min-height:44px" id="wr-btn">Ik wil dit</button>
+      </div>
+    </div>
+
+    <!-- ═══ BEGELEIDING ═══ -->
+    <div data-panel="begeleiding" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:begeleiding">←</button>
+        <span class="t">Begeleiding</span>
+      </div>
+      <div class="tile">
+        <span class="badge">Wachtlijst</span>
+        <h2 style="margin-top:10px;font-size:21px">Iemand die wekelijks met je meekijkt.</h2>
+        <p class="mode">Dit is het enige dat ooit geld gaat kosten. Alles wat meten en aflezen is — je scores, je trends, je leefstijllijn, je advies en je historie — blijft gratis. Er is nog geen product en nog geen prijs; je kunt je aanmelden en aangeven wat je het waard vindt.</p>
+        <div class="tilefoot"><button type="button" class="btn" style="min-height:44px" data-ev="premium.waitlist_joined:begeleiding">Zet me op de wachtlijst</button></div>
+      </div>
+    </div>
+
+    <!-- ═══ GHOST: WAT JE GEBRUIKT (stage 5) ═══ -->
+    <div data-panel="gebruik" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:gebruik">←</button>
+        <span class="t">Wat je gebruikt</span>
+      </div>
+      <div class="emptybox ghostpanel">
+        <span class="badge gh">Ghost — stage 5, niet gebouwd</span>
+        <h3>Wat je slikt, naast wat je meet.</h3>
+        <p>Bedoeld als <em>zelf ingevoerde</em> lijst: wat gebruik je, sinds wanneer, hoeveel. Daarmee kan Mijn Dag straks zeggen "dit is over ongeveer negen dagen op" en kan Voortgang het verschil tonen tussen innemen en effect.</p>
+        <p>Wat het <strong>niet</strong> is: geen koppeling met een winkel, geen bestelgegevens, geen abonnement, geen koop-CTA in de bewijs-scroll. Die stap is een nieuw verwerkingsdoel en vraagt eerst een register-uitbreiding, een privacy-tekst en aparte toestemming.</p>
+      </div>
+    </div>
+
+    <!-- ═══ STUBS: de rest van de lus ═══ -->
+    <div data-panel="agenda" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:agenda">←</button>
+        <span class="t">Mijn Dag</span>
+      </div>
+      <div class="tile">
+        <p class="eyebrow">Vandaag</p>
+        <h2 style="margin-top:8px;font-size:21px" data-bind="step-title2"></h2>
+        <p class="mode">Hier vink je af. Wat je hier doet, telt op Voortgang mee als context — niet als score.</p>
+        <div class="tilefoot">
+          <button type="button" class="btn" style="min-height:44px" data-ev="agenda.block_toggled:agenda">Markeer als gedaan</button>
+          <button type="button" class="linkbtn" data-goto="overzicht" data-ev="agenda_voortgang_link_click:agenda">Zie wat dit optelt →</button>
+        </div>
+      </div>
+    </div>
+
+    <div data-panel="hermeting" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:hermeting">←</button>
+        <span class="t">Hermeting</span>
+      </div>
+      <div class="tile">
+        <p class="eyebrow">Meet of het werkt</p>
+        <h2 style="margin-top:8px;font-size:21px" data-bind="hm-title"></h2>
+        <p class="mode">De hermeting sluit je cyclus: dezelfde vragen, zodat het verschil met je start leesbaar wordt. Daarna begint de liniaal opnieuw.</p>
+        <div class="tilefoot"><button type="button" class="linkbtn" data-goto="overzicht" data-ev="hub_click:overzicht:hermeting">Terug naar je voortgang →</button></div>
+      </div>
+    </div>
+
+    <div data-panel="kompas" hidden>
+      <div class="subhead">
+        <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:kompas">←</button>
+        <span class="t">Kompas</span>
+      </div>
+      <div class="tile">
+        <p class="eyebrow">Je domeinen</p>
+        <h2 style="margin-top:8px;font-size:21px">Waar je kunt verdiepen.</h2>
+        <p class="mode">Stub in deze prebuild — Kompas is niet in scope. Hij staat er zodat de lus Kompas → Mijn Dag → Voortgang → Hermeting klikbaar is.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="bottomnav" aria-label="Dashboard">
+  <button type="button" data-tab="kompas"><span class="bar" aria-hidden="true"></span>Kompas</button>
+  <button type="button" data-tab="agenda"><span class="bar" aria-hidden="true"></span>Mijn Dag</button>
+  <button type="button" data-tab="overzicht" aria-current="page"><span class="bar" aria-hidden="true"></span>Voortgang</button>
+  <button type="button" data-tab="hermeting"><span class="bar" aria-hidden="true"></span>Hermeting</button>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+
+  var CYCLE_LEN = 30;
+
+  var PILLAR = {
+    slaap:{label:"Slaap",color:"#5B6EAE"},
+    beweging:{label:"Beweging",color:"#C26E4B"},
+    voeding:{label:"Voeding",color:"#5A8F6A"},
+    stress:{label:"Stress",color:"#8B6E99"},
+    verbinding:{label:"Verbinding",color:"#7A8A6B"}
+  };
+
+  var NAV = {
+    kijken:[
+      {id:"overzicht",    label:"Overzicht",      sub:"Je signaal, je route, je volgende stap"},
+      {id:"statistieken", label:"Statistieken",   sub:"Je cijfers per blik: stand, advies, over tijd"},
+      {id:"inzichten",    label:"Jouw inzichten", sub:"Je totaalscore en wat je prioriteit drijft"},
+      {id:"favorieten",   label:"Favorieten",     sub:"Je eigen keuzes en onze aanraders"}
+    ],
+    aanbouw:[
+      {id:"lichaam",     label:"Lichaamssamenstelling", sub:"Vet, spier en vocht als aparte meetlat", badge:"Vooruitblik"},
+      {id:"wearable",    label:"Wearable koppelen",     sub:"Slaap en herstel automatisch mee laten lopen", badge:"Animo peilen"},
+      {id:"begeleiding", label:"Begeleiding",           sub:"Wekelijks iemand die met je meekijkt", badge:"Wachtlijst"},
+      {id:"gebruik",     label:"Wat je gebruikt",       sub:"Je eigen lijst van wat je slikt", badge:"Ghost", ghost:true}
+    ]
+  };
+
+  /* stage 5 = de ghost uit sectie H: zichtbare eindstap, geen koop-CTA */
+  var STAGES = [
+    {id:"test",       label:"Test",       to:"hermeting",
+     desc:"Je leefstijlcheck zet je nulpunt. Elke cyclus van 30 dagen begint en eindigt hier."},
+    {id:"check",      label:"Check",      to:"agenda",
+     desc:"De momenten die je op Mijn Dag zet. Elke dag met een moment vult één streepje op de liniaal."},
+    {id:"advies",     label:"Advies",     to:"statistieken", blik:"advies",
+     desc:"Wat je metingen zeggen: eerst je bord, dan ons oordeel, dan pas welk potje past."},
+    {id:"favorieten", label:"Favorieten", to:"favorieten",
+     desc:"Jouw keuzes naast onze aanraders. De enige plek in Voortgang waar aanbod mag staan."},
+    {id:"beste",      label:"Beste",      to:"gebruik", ghost:true,
+     desc:"<span class='gh-tag'>Ghost</span>Later: herbestellen en trouw blijven, gekoppeld aan je profiel. Nog niet gebouwd, geen datum, nu geen koop-CTA."}
+  ];
+
+  var NEXT_LEVEL = {
+    slaap:{v:70,b:"Sterk"}, beweging:{v:50,b:"Gemiddeld"}, voeding:{v:70,b:"Sterk"},
+    stress:{v:70,b:"Sterk"}, verbinding:{v:70,b:"Sterk"}
+  };
+
+  var STATES = {
+    wachtend:{
+      cycleDay:1, activeDays:0, daysUntil:30, focus:"beweging", vitality:44, stage:1,
+      hero:{
+        eyebrow:"CYCLUS · DAG 1 VAN 30",
+        h1:"Je cyclus begint bij je eerste dag.",
+        lede:"Je hermeting staat over 30 dagen. Tot dan verzamel je de dagen waarop je iets voor je beweging deed.",
+        cta1:"Zet je eerste moment", cta1To:"agenda",
+        cta2:"Bekijk je beweging", cta2To:"kompas"
+      },
+      step:{eyebrow:"Je eerste stap", title:"Tien minuten wandelen na het eten",
+            sub:"Staat klaar op Mijn Dag. Je hoeft er niets extra's voor te meten."},
+      goal:null,
+      rows:[
+        {id:"beweging",   score:44, delta:null, days:0,    goal:null, start:null},
+        {id:"slaap",      score:52, delta:null, days:null, goal:null, start:null},
+        {id:"voeding",    score:49, delta:null, days:null, goal:null, start:null},
+        {id:"stress",     score:58, delta:null, days:null, goal:null, start:null},
+        {id:"verbinding", score:61, delta:null, days:null, goal:null, start:null}
+      ],
+      coverage:"Je hebt 1 van de 7 domeinen apart gemeten. Slaap, voeding, stress en meer nog niet.",
+      koppel:{doen:"nog geen momenten", hier:"dag 1 van 30", meet:"over 30 dagen", cta1:"Zet je eerste moment",
+        say:"Vanaf je eerste moment op Mijn Dag begint deze strip te lopen. Er wordt niets opgeteld tot één cijfer — gedrag en beleving blijven twee losse lijnen."},
+      inzicht:{body:"Je hebt één check gedaan. Dit getal is een startpunt, geen oordeel — het wordt pas interessant naast je tweede meting.",
+               drive:"Beweging kwam als eerste naar boven uit je antwoorden over energie overdag en herstel na inspanning."},
+      fv:{focus:"Beweging — aangewezen door je check",
+          rec:"Nog geen aanrader. Die komt pas als er iets te dichten valt: eerst je voedingscheck, dan pas een potje."},
+      anchor:"voor: nog niet gekozen"
+    },
+
+    dun:{
+      cycleDay:12, activeDays:2, daysUntil:18, focus:"slaap", vitality:51, stage:1,
+      hero:{
+        eyebrow:"CYCLUS · DAG 12 VAN 30",
+        h1:"Er ligt te weinig om iets te lezen.",
+        lede:"Je was 2 van de 12 dagen actief. Te weinig om iets te zien — dat is informatie, geen oordeel.",
+        cta1:"Pak één moment terug", cta1To:"agenda",
+        cta2:"Werk je ijkpunt bij", cta2To:"overzicht"
+      },
+      step:{eyebrow:"Maak 'm kleiner", title:"Een half uur voor bed het scherm weg",
+            sub:"Je stap stond op een uur. Je kunt 'm op Mijn Dag korter zetten."},
+      goal:{words:"Doorslapen zonder om 3 uur wakker te liggen", mode:"Hier werk je nog aan deze cyclus.", baseline:4, latest:4},
+      rows:[
+        {id:"slaap",      score:58, delta:0,    days:12,   goal:4, start:58},
+        {id:"beweging",   score:47, delta:null, days:26,   goal:null, start:null},
+        {id:"voeding",    score:55, delta:null, days:null, goal:null, start:null},
+        {id:"stress",     score:52, delta:null, days:26,   goal:null, start:null},
+        {id:"verbinding", score:64, delta:null, days:null, goal:null, start:null}
+      ],
+      coverage:"Je hebt 3 van de 7 domeinen apart gemeten. Voeding, verbinding en meer nog niet.",
+      koppel:{doen:"2 momenten gezet", hier:"dag 12 van 30", meet:"over 18 dagen", cta1:"Pak één moment terug",
+        say:"Twee dagen is te weinig om iets aan af te lezen. Dat zegt niets over jou en alles over de hoeveelheid data."},
+      inzicht:{body:"Je zit in de middenband. Slaap trekt je totaal het hardst omlaag; er is deze cyclus nog te weinig gebeurd om verschil te zien.",
+               drive:"Vier van je vijf laagste antwoorden gaan over doorslapen en over de avond. Daarom staat slaap voorop en niet stress."},
+      fv:{focus:"Slaap — door jou gekozen",
+          rec:"Magnesium wordt vaak genoemd bij doorslapen. Of het bij jou past hangt af van je voeding: doe eerst de voedingscheck."},
+      anchor:"voor: traplopen zonder pauze"
+    },
+
+    opbouwend:{
+      cycleDay:18, activeDays:12, daysUntil:12, focus:"slaap", vitality:54, stage:1,
+      hero:{
+        eyebrow:"CYCLUS · DAG 18 VAN 30",
+        h1:"Je bouwt een reeks op.",
+        lede:"Je was 12 van de 18 dagen actief. Of dat je slaap raakt, meet je over 12 dagen.",
+        cta1:"Ga door op Mijn Dag", cta1To:"agenda",
+        cta2:"Bekijk je slaap", cta2To:"kompas"
+      },
+      step:{eyebrow:"Je stap van vandaag", title:"Eén uur voor bed het scherm weg",
+            sub:"Je staat er 12 van de 18 dagen. Op Mijn Dag zie je wanneer het vandaag past."},
+      goal:{words:"Doorslapen zonder om 3 uur wakker te liggen", mode:"Hier werk je nog aan deze cyclus.", baseline:4, latest:5},
+      rows:[
+        {id:"slaap",      score:58, delta:0,    days:18,   goal:5, start:58},
+        {id:"beweging",   score:48, delta:1,    days:12,   goal:5, start:47},
+        {id:"voeding",    score:55, delta:null, days:26,   goal:null, start:null},
+        {id:"stress",     score:52, delta:-2,   days:12,   goal:null, start:54},
+        {id:"verbinding", score:64, delta:null, days:null, goal:null, start:null}
+      ],
+      coverage:"Je hebt 4 van de 7 domeinen apart gemeten. Verbinding, energie en herstel nog niet.",
+      koppel:{doen:"12 momenten gezet", hier:"dag 18 van 30", meet:"over 12 dagen", cta1:"Naar vandaag",
+        say:"Wat je op Mijn Dag afvinkt telt hier mee als context — niet als score. Je beleving en je gedrag blijven twee losse lijnen."},
+      inzicht:{body:"Je zit in de middenband. Slaap trekt je totaal het hardst omlaag en is het domein waar deze cyclus het meeste gebeurt.",
+               drive:"Vier van je vijf laagste antwoorden gaan over doorslapen en over de avond. Daarom staat slaap voorop en niet stress."},
+      fv:{focus:"Slaap — door jou gekozen",
+          rec:"Magnesium wordt vaak genoemd bij doorslapen. Of het bij jou past hangt af van je voeding: doe eerst de voedingscheck."},
+      anchor:"voor: traplopen zonder pauze"
+    },
+
+    beantwoord:{
+      cycleDay:26, activeDays:19, daysUntil:4, focus:"slaap", vitality:57, stage:2,
+      hero:{
+        eyebrow:"CYCLUS · DAG 26 VAN 30",
+        h1:"Er zit beweging in je slaap.",
+        lede:"Je was 19 van de 26 dagen actief. Slaap staat 3 punten hoger dan bij je start.",
+        cta1:"Ga door op Mijn Dag", cta1To:"agenda",
+        cta2:"Bekijk je cijfers over tijd", cta2To:"statistieken", cta2Blik:"tijd"
+      },
+      step:{eyebrow:"Je stap van vandaag", title:"Eén uur voor bed het scherm weg",
+            sub:"Nog vier dagen tot je hermeting. Vasthouden maakt het verschil leesbaar."},
+      goal:{words:"Doorslapen zonder om 3 uur wakker te liggen", mode:"Hier werk je nog aan deze cyclus.", baseline:4, latest:6},
+      rows:[
+        {id:"slaap",      score:61, delta:3,    days:4,    goal:6, start:58},
+        {id:"beweging",   score:48, delta:1,    days:12,   goal:5, start:47},
+        {id:"voeding",    score:55, delta:0,    days:26,   goal:null, start:55},
+        {id:"stress",     score:52, delta:-2,   days:12,   goal:null, start:54},
+        {id:"verbinding", score:64, delta:null, days:null, goal:null, start:null}
+      ],
+      coverage:"Je hebt 4 van de 7 domeinen apart gemeten. Verbinding, energie en herstel nog niet.",
+      koppel:{doen:"19 momenten gezet", hier:"dag 26 van 30", meet:"over 4 dagen", cta1:"Naar vandaag",
+        say:"Wat je op Mijn Dag afvinkt telt hier mee als context — niet als score. Je beleving en je gedrag blijven twee losse lijnen."},
+      inzicht:{body:"Je zit in de middenband en beweegt omhoog. Slaap is het domein dat je totaal het duidelijkst meetrekt.",
+               drive:"Vier van je vijf laagste antwoorden gingen over doorslapen en over de avond. Daar is deze cyclus het meeste veranderd."},
+      fv:{focus:"Slaap — door jou gekozen",
+          rec:"Magnesium wordt vaak genoemd bij doorslapen. Je voedingscheck laat weinig gat zien — een potje voegt hier waarschijnlijk weinig toe."},
+      anchor:"voor: traplopen zonder pauze"
+    }
+  };
+
+  var current = "opbouwend";
+  var selectedRow = null;
+  var cursorDay = null;
+
+  function $(s,r){ return (r||document).querySelector(s); }
+  function $$(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+  function set(n,t){ $$('[data-bind="'+n+'"]').forEach(function(e){ e.textContent = t; }); }
+  function S(){ return STATES[current]; }
+
+  /* ── meetpuntlog: documenteert wat de implementatie moet vuren ── */
+  function ev(name, params){
+    var el = $("#pb-ev");
+    if (el) el.textContent = "▸ " + name + " " + JSON.stringify(params || {});
+    if (window.console) console.log("[meetpunt]", name, params || {});
+  }
+  function evFromAttr(raw){
+    var p = raw.split(":");
+    if (p[0] === "hub_click") ev("dashboard_voortgang_hub_click", {destination:p[1], surface:p[2]});
+    else if (p[0] === "terug") ev("dashboard_voortgang_terug", {from:p[1]});
+    else if (p[0] === "doel_click") ev("dashboard_voortgang_doel_click", {domain:S().focus, entry:S().goal ? "rescore" : "set"});
+    else if (p[0] === "agenda_voortgang_link_click") ev("dashboard_agenda_voortgang_link_click", {surface:p[1]});
+    else ev(p[0], {surface:p[1]});
+  }
+
+  /* ── nav ── */
+  function navButton(item, sheet){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "navitem";
+    b.setAttribute("data-goto", item.id);
+    b.setAttribute("data-ev", "hub_click:" + item.id + ":" + (sheet ? "mobiel_sheet" : "rail"));
+    var ico = document.createElement("span");
+    ico.className = "ico"; ico.setAttribute("aria-hidden","true");
+    ico.innerHTML = item.ghost
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/></svg>'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg>';
+    var lbl = document.createElement("span");
+    lbl.className = "lbl"; lbl.textContent = item.label;
+    if (sheet){
+      var s = document.createElement("span"); s.className = "sub"; s.textContent = item.sub; lbl.appendChild(s);
+    } else { b.title = item.sub; }
+    b.appendChild(ico); b.appendChild(lbl);
+    if (item.badge){
+      var bd = document.createElement("span");
+      bd.className = "badge" + (item.ghost ? " gh" : "");
+      bd.textContent = item.badge; b.appendChild(bd);
+    }
+    return b;
+  }
+  function buildNav(){
+    [["r-kijken",NAV.kijken,false],["r-aanbouw",NAV.aanbouw,false],
+     ["m-kijken",NAV.kijken,true],["m-aanbouw",NAV.aanbouw,true]].forEach(function(c){
+      var h = document.getElementById(c[0]); if (!h) return;
+      h.innerHTML = ""; c[1].forEach(function(i){ h.appendChild(navButton(i, c[2])); });
+    });
+  }
+
+  /* ── liniaal ── */
+  function tickClass(i, s, withCursor){
+    var c = "tick";
+    if (i <= s.cycleDay) c += (i <= s.activeDays ? " on" : " past");
+    if (i === s.cycleDay) c += " now";
+    if (i === CYCLE_LEN) c += " end";
+    if (withCursor && i === cursorDay) c += " cur";
+    return c;
+  }
+  function renderLin(id, s, interactive){
+    var host = document.getElementById(id); if (!host) return;
+    host.innerHTML = "";
+    for (var i = 1; i <= CYCLE_LEN; i++){
+      var t = document.createElement("span");
+      t.className = tickClass(i, s, interactive);
+      host.appendChild(t);
+    }
+  }
+  function dayCaption(i, s){
+    if (i === CYCLE_LEN) return "<b>dag 30</b> · je hermeting sluit de cyclus";
+    if (i > s.cycleDay)  return "<b>dag " + i + "</b> · komt nog";
+    if (i <= s.activeDays) return "<b>dag " + i + "</b> · moment gezet op Mijn Dag";
+    return "<b>dag " + i + "</b> · geen moment gezet";
+  }
+  function defaultCaption(s){
+    if (!s.activeDays) return "Nog geen dag met een moment. Sleep over de liniaal om de cyclus te lezen.";
+    return "<b>" + s.activeDays + " van de " + s.cycleDay + "</b> verstreken dagen met een moment. Sleep over de liniaal om per dag te lezen.";
+  }
+  function paintCursor(){
+    var s = S(), host = $("#lin"); if (!host) return;
+    var kids = host.children;
+    for (var i = 0; i < kids.length; i++) kids[i].className = tickClass(i + 1, s, true);
+    var cap = $("#lin-cap");
+    cap.innerHTML = cursorDay ? dayCaption(cursorDay, s) : defaultCaption(s);
+    host.setAttribute("aria-valuenow", String(cursorDay || s.cycleDay));
+    host.setAttribute("aria-valuetext", (cap.textContent || "").replace(/\s+/g, " "));
+  }
+  function dayFromEvent(e){
+    var r = $("#lin").getBoundingClientRect();
+    var x = (e.clientX - r.left) / Math.max(1, r.width);
+    return Math.min(CYCLE_LEN, Math.max(1, Math.ceil(x * CYCLE_LEN)));
+  }
+  function wireLin(){
+    var wrap = $(".lin-wrap"), host = $("#lin");
+    wrap.addEventListener("pointermove", function(e){ cursorDay = dayFromEvent(e); paintCursor(); });
+    wrap.addEventListener("pointerdown", function(e){
+      cursorDay = dayFromEvent(e); paintCursor();
+      var s = S();
+      ev("dashboard_voortgang_band_scrub", {
+        zone: cursorDay <= s.activeDays ? "actief" : cursorDay <= s.cycleDay ? "leeg" : "toekomst",
+        day: cursorDay
+      });
+    });
+    wrap.addEventListener("pointerleave", function(){ cursorDay = null; paintCursor(); });
+    host.addEventListener("keydown", function(e){
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      cursorDay = Math.min(CYCLE_LEN, Math.max(1, (cursorDay || S().cycleDay) + d));
+      paintCursor();
+    });
+    host.addEventListener("blur", function(){ cursorDay = null; paintCursor(); });
+  }
+
+  /* ── stages ── */
+  function renderStages(){
+    var s = S(), host = $("#stages");
+    host.innerHTML = "";
+    STAGES.forEach(function(st, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "stage" + (i < s.stage ? " done" : "") + (i === s.stage ? " active" : "") + (st.ghost ? " gh" : "");
+      b.setAttribute("data-stage", String(i));
+      if (i === s.stage) b.setAttribute("aria-current", "step");
+      b.innerHTML = '<span class="node" aria-hidden="true">' + (i + 1) + '</span><span class="lb">' + st.label + '</span>';
+      host.appendChild(b);
+    });
+    $("#stage-desc").innerHTML = STAGES[s.stage].desc;
+  }
+
+  /* ── meetlat ── */
+  function pctOf(v){ return 7 + 86 * (v / 100); }
+  function bandOf(v){ return v < 45 ? "Laag" : v < 70 ? "Gemiddeld" : "Sterk"; }
+
+  function renderScale(){
+    var s = S();
+    var id = selectedRow || s.focus;
+    var row = s.rows.filter(function(r){ return r.id === id; })[0] || s.rows[0];
+    var nx = NEXT_LEVEL[row.id];
+    var hasStart = row.start != null && Math.abs(row.score - row.start) >= 1;
+    var pNow = pctOf(row.score), pNext = pctOf(nx.v), pStart = hasStart ? pctOf(row.start) : pNow;
+
+    $("#sc-eyebrow").textContent = PILLAR[row.id].label + " · de schaal waarop je dit afleest";
+    var f = $("#sc-fill"), d = $("#sc-dash");
+    f.style.left = Math.min(pStart, pNow) + "%";
+    f.style.width = Math.abs(pNow - pStart) + "%";
+    d.style.left = pNow + "%";
+    d.style.width = Math.max(0, pNext - pNow) + "%";
+    var ds = $("#sc-start");
+    ds.hidden = !hasStart;
+    if (hasStart){ ds.style.left = pStart + "%"; ds.title = "Bij je start: " + row.start; }
+    $("#sc-now").style.left = pNow + "%";
+    $("#sc-now").title = "Nu: " + row.score;
+    $("#sc-next").style.left = pNext + "%";
+    $("#sc-next").title = "Volgend leesniveau: vanaf " + nx.v;
+
+    var cells = [];
+    if (hasStart) cells.push({k:"Bij je start", v:row.start, b:bandOf(row.start), c:"var(--sage)"});
+    cells.push({k:"Nu", v:row.score, b:bandOf(row.score), c:"var(--sage-bright)"});
+    cells.push({k:"Volgend niveau", v:"vanaf " + nx.v, b:nx.b, c:"rgba(255,255,255,.45)"});
+    var lg = $("#sc-legend"); lg.innerHTML = "";
+    cells.forEach(function(c){
+      var el = document.createElement("div");
+      el.innerHTML = '<span class="k"><i style="background:' + c.c + '"></i>' + c.k + '</span>'
+        + '<span class="v">' + c.v + '</span><span class="b">' + c.b + '</span>';
+      lg.appendChild(el);
+    });
+  }
+
+  function sparkline(color, seed){
+    var pts = [];
+    for (var i = 0; i < 5; i++){
+      var y = 15 - ((Math.sin(seed + i * 1.1) + 1) / 2) * 11;
+      pts.push((i * 13) + "," + y.toFixed(1));
+    }
+    return '<svg width="56" height="18" viewBox="0 0 52 18" aria-hidden="true"><polyline points="'
+      + pts.join(" ") + '" fill="none" stroke="' + color
+      + '" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/></svg>';
+  }
+
+  function renderRows(){
+    var s = S(), host = $("#ml-rows");
+    host.innerHTML = "";
+    s.rows.forEach(function(r, i){
+      var p = PILLAR[r.id];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "row" + (r.id === s.focus ? " is-focus" : "") + ((selectedRow || s.focus) === r.id ? " is-sel" : "");
+      b.setAttribute("data-row", r.id);
+      var dc = r.delta == null ? "flat" : r.delta > 0 ? "up" : r.delta < 0 ? "down" : "flat";
+      var dt = r.delta == null ? "—" : (r.delta > 0 ? "+" : "") + r.delta;
+      var meta = r.days == null ? "nog niet apart gemeten"
+        : (r.days === 0 ? "vandaag gemeten" : r.days + " d geleden gemeten");
+      var chip = r.goal != null
+        ? '<span class="chip set" title="Je ijkpunt in dit domein">◇ ' + r.goal + '/10</span>'
+        : '<span class="chip" title="Zet je eigen ijkpunt in dit domein">◇ zetten</span>';
+      b.innerHTML = '<span class="row-top"><span class="cdot" style="background:' + p.color + '"></span>'
+        + '<span class="nm">' + p.label + '</span><span class="spk">' + sparkline(p.color, i * 1.7) + '</span>'
+        + '<span class="dlt ' + dc + '">' + dt + '</span></span>'
+        + '<span class="row-bot"><span class="meta">' + bandOf(r.score) + ' · ' + meta + '</span>' + chip + '</span>';
+      host.appendChild(b);
+    });
+  }
+
+  function renderStatTable(){
+    var tb = $("#st-table"); tb.innerHTML = "";
+    S().rows.forEach(function(r){
+      var p = PILLAR[r.id], tr = document.createElement("tr");
+      tr.innerHTML = '<td><span style="display:inline-block;width:8px;height:8px;border-radius:999px;background:'
+        + p.color + ';margin-right:8px"></span>' + p.label + '</td>'
+        + '<td style="font-variant-numeric:tabular-nums">' + r.score + '</td>'
+        + '<td style="color:var(--muted)">' + bandOf(r.score) + '</td>'
+        + '<td style="color:var(--muted)">' + (r.delta == null ? "—" : (r.delta > 0 ? "+" : "") + r.delta) + '</td>'
+        + '<td style="color:var(--subtle)">' + (r.days == null ? "nog niet" : r.days + " d geleden") + '</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  /* ── render ── */
+  function render(){
+    var s = S(), fp = PILLAR[s.focus];
+    selectedRow = null; cursorDay = null;
+
+    set("hero-eyebrow", s.hero.eyebrow);
+    set("hero-h1", s.hero.h1);
+    set("hero-lede", s.hero.lede);
+    set("hero-cta1", s.hero.cta1);
+    set("hero-cta2", s.hero.cta2);
+
+    var c1 = $("#hero-cta1"), c2 = $("#hero-cta2");
+    c1.setAttribute("data-goto", s.hero.cta1To);
+    c1.setAttribute("data-ev", "hub_click:" + s.hero.cta1To + ":hero_primair");
+    c2.setAttribute("data-goto", s.hero.cta2To);
+    c2.setAttribute("data-ev", "hub_click:" + s.hero.cta2To + ":hero_secundair");
+    if (s.hero.cta2Blik) c2.setAttribute("data-blikto", s.hero.cta2Blik);
+    else c2.removeAttribute("data-blikto");
+
+    $$('[data-bind-style="focus-color"]').forEach(function(e){ e.style.background = fp.color; });
+    set("focus-label", fp.label);
+
+    renderLin("lin", s, true);
+    renderLin("lin2", s, false);
+    paintCursor();
+    set("lin-static", s.activeDays + " van de " + s.cycleDay + " verstreken dagen met een moment.");
+    renderStages();
+
+    set("step-eyebrow", s.step.eyebrow);
+    set("step-title", s.step.title);
+    set("step-title2", s.step.title);
+    set("step-sub", s.step.sub);
+
+    var gc = $('[data-bind="ml-goalcta"]');
+    if (s.goal){
+      set("ml-h2", s.goal.words);
+      set("ml-mode", s.goal.mode);
+      set("ml-ijk", s.goal.latest === s.goal.baseline
+        ? "Dit staat nog op " + s.goal.latest + ", net als bij je start."
+        : "Bij je start stond dit op " + s.goal.baseline + ", nu op " + s.goal.latest + ".");
+      gc.textContent = "Werk je ijkpunt bij →";
+    } else {
+      set("ml-h2", "Je hebt nog geen eigen ijkpunt voor " + fp.label.toLowerCase() + ".");
+      set("ml-mode", "Een ijkpunt is één zin in je eigen woorden plus een cijfer van 0 tot 10. Geen doel dat je moet halen — een lijn met jezelf.");
+      set("ml-ijk", "");
+      gc.textContent = "Zet je ijkpunt →";
+    }
+
+    renderScale(); renderRows(); renderStatTable();
+
+    set("kp-doen", s.koppel.doen); set("kp-hier", s.koppel.hier);
+    set("kp-meet", s.koppel.meet); set("kp-say", s.koppel.say); set("kp-cta1", s.koppel.cta1);
+    set("st-coverage", s.coverage);
+    set("iz-vitality", String(s.vitality));
+    set("iz-body", s.inzicht.body); set("iz-drive", s.inzicht.drive);
+    set("fv-focus", s.fv.focus); set("fv-rec", s.fv.rec);
+    set("anchor", s.anchor);
+    set("hm-title", "Je hermeting staat over " + s.daysUntil + " dagen.");
+
+    ev("dashboard_voortgang_bewijs_state", {state: current, cycle_day: s.cycleDay, active_days: s.activeDays});
+  }
+
+  /* ── navigatie ── */
+  var LABELS = {};
+  NAV.kijken.concat(NAV.aanbouw).forEach(function(i){ LABELS[i.id] = i.label; });
+  LABELS.agenda = "Mijn Dag"; LABELS.hermeting = "Hermeting"; LABELS.kompas = "Kompas";
+
+  function setBlik(k){
+    $$("[data-blik]").forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-blik") === k)); });
+    $$("[data-blikpanel]").forEach(function(p){ p.hidden = p.getAttribute("data-blikpanel") !== k; });
+  }
+
+  function openSheet(){
+    $("#mnav-sheet").hidden = false;
+    $("#mnav-backdrop").hidden = false;
+    $("#mnav-trigger").setAttribute("aria-expanded", "true");
+  }
+  function closeSheet(){
+    $("#mnav-sheet").hidden = true;
+    $("#mnav-backdrop").hidden = true;
+    $("#mnav-trigger").setAttribute("aria-expanded", "false");
+  }
+
+  function showPanel(id, blik){
+    $$("[data-panel]").forEach(function(p){ p.hidden = p.getAttribute("data-panel") !== id; });
+    $$(".navitem").forEach(function(b){
+      if (b.getAttribute("data-goto") === id) b.setAttribute("aria-current", "page");
+      else b.removeAttribute("aria-current");
+    });
+    var tabFor = (id === "agenda" || id === "hermeting" || id === "kompas") ? id : "overzicht";
+    $$("[data-tab]").forEach(function(b){
+      if (b.getAttribute("data-tab") === tabFor) b.setAttribute("aria-current", "page");
+      else b.removeAttribute("aria-current");
+    });
+    $("#mnav-label").textContent = LABELS[id] || "Overzicht";
+    if (blik) setBlik(blik);
+    closeSheet();
+    window.scrollTo({ top: 0 });
+  }
+
+  document.addEventListener("click", function(e){
+    var t;
+
+    if (e.target.closest("#mnav-trigger")){
+      if ($("#mnav-trigger").getAttribute("aria-expanded") === "true") closeSheet(); else openSheet();
+      return;
+    }
+    if (e.target.closest("#mnav-backdrop")){ closeSheet(); return; }
+
+    t = e.target.closest("[data-stage]");
+    if (t){
+      var st = STAGES[Number(t.getAttribute("data-stage"))];
+      ev("dashboard_voortgang_hub_click", { destination: st.to, surface: "hero_routekaart_" + st.id });
+      showPanel(st.to, st.blik);
+      return;
+    }
+
+    t = e.target.closest("[data-row]");
+    if (t){
+      selectedRow = t.getAttribute("data-row");
+      ev("dashboard_voortgang_domein_click", { domain: selectedRow });
+      renderScale(); renderRows();
+      return;
+    }
+
+    if (e.target.closest("#wr-btn")){
+      ev("wearable.interest_clicked", { surface: "voortgang_rail", feature: "wearable_connect" });
+      $("#wr-ack").hidden = false;
+      var b = $("#wr-btn");
+      b.disabled = true; b.style.opacity = ".55"; b.textContent = "Geteld";
+      return;
+    }
+
+    t = e.target.closest("[data-goto]");
+    if (t){
+      if (t.hasAttribute("data-ev")) evFromAttr(t.getAttribute("data-ev"));
+      showPanel(t.getAttribute("data-goto"), t.getAttribute("data-blikto"));
+      return;
+    }
+
+    t = e.target.closest("[data-tab]");
+    if (t){ showPanel(t.getAttribute("data-tab")); return; }
+
+    t = e.target.closest("[data-state]");
+    if (t){
+      current = t.getAttribute("data-state");
+      $$("[data-state]").forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-state") === current)); });
+      render();
+      return;
+    }
+
+    t = e.target.closest("[data-blik]");
+    if (t){
+      var k = t.getAttribute("data-blik");
+      ev("dashboard_statistieken_blik_switch", { to: k });
+      setBlik(k);
+      return;
+    }
+
+    t = e.target.closest("[data-ev]");
+    if (t){ evFromAttr(t.getAttribute("data-ev")); }
+  });
+
+  function syncStickyHeight(){
+    var h = $(".stickytop").getBoundingClientRect().height;
+    document.documentElement.style.setProperty("--stickyh", Math.round(h) + "px");
+  }
+  window.addEventListener("resize", syncStickyHeight);
+
+  buildNav();
+  wireLin();
+  render();
+  showPanel("overzicht");
+  syncStickyHeight();
+})();
+</script>
+</body>
+</html>
