@@ -91,6 +91,7 @@ export default function LeefstijllijnSection({
         {rows.map((row) => {
           const Icon = Icons[row.icon];
           const hasTrend = row.trend.length >= 2;
+          const isWeak = row.currentScore < 50;
 
           return (
             <Card
@@ -222,6 +223,17 @@ export default function LeefstijllijnSection({
                   >
                     {row.currentScore}
                   </span>
+                  {isWeak ? (
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: "var(--terra, #C8956C)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      zwak
+                    </span>
+                  ) : null}
                   {row.baselineCrossesRulesVersion ? (
                     <span
                       style={{

@@ -18,7 +18,6 @@ import StatistiekenAdviesSection from "@/components/dashboard/voortgang/Statisti
 import FavorietenAanraderSection from "@/components/dashboard/voortgang/FavorietenAanraderSection";
 import FavorietenKeuzeSection from "@/components/dashboard/voortgang/FavorietenKeuzeSection";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
-import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
@@ -449,8 +448,6 @@ function StatistiekenView({
             onOpenFavorieten={onOpenFavorieten}
           />
         ) : null}
-
-        <LeefstijllijnSection model={model} surface="voortgang" />
 
         {statisticsContent}
 

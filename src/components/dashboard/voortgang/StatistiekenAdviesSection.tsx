@@ -5,6 +5,7 @@ import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import { Button } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import SupplementVerdictPanel from "@/components/dashboard/SupplementVerdictPanel";
 import EvidenceLadderCard from "@/components/dashboard/voortgang/EvidenceLadderCard";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
@@ -63,22 +64,28 @@ export default function StatistiekenAdviesSection({
 
   return (
     <div
-      className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5"
+      style={{ display: "flex", flexDirection: "column", gap: 16 }}
       aria-label="Gratis advies"
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <WaarStaJeCard model={adviesModel} />
-        <EvidenceLadderCard domains={adviesModel.evidenceDomains} />
-      </div>
+      <WaarStaJeCard model={adviesModel} />
+      <LeefstijllijnSection model={model} surface="voortgang" />
+      <EvidenceLadderCard domains={adviesModel.evidenceDomains} />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <EerstJeBordCard adviesModel={adviesModel} />
-        <OnsOordeelCard
-          adviesModel={adviesModel}
-          verdicts={data.supplementVerdicts ?? []}
-          onOpenFavorieten={onOpenFavorieten}
+      <div style={{ borderTop: "1px solid var(--divider-strong)", paddingTop: 16 }}>
+        <VoortgangSectionHeader
+          eyebrow="Wat we ervan vinden"
+          title="Eerst je bord. Daarna pas een potje."
+          body="Op basis van je laatste check — en van wat je hierboven ziet bewegen."
         />
       </div>
+
+      <EerstJeBordCard adviesModel={adviesModel} />
+      <OnsOordeelCard
+        adviesModel={adviesModel}
+        verdicts={data.supplementVerdicts ?? []}
+        onOpenFavorieten={onOpenFavorieten}
+      />
+      <WelkPotjeCard adviesModel={adviesModel} onOpenFavorieten={onOpenFavorieten} />
     </div>
   );
 }
@@ -95,69 +102,6 @@ function WaarStaJeCard({
         title={adviesModel.snapshotHeadline}
         body={adviesModel.snapshotBody}
       />
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {adviesModel.domainRows.map((row) => (
-          <div
-            key={row.pillarId}
-            style={{ display: "flex", alignItems: "center", gap: 10 }}
-          >
-            <span
-              style={{
-                width: 72,
-                fontSize: 13,
-                color: "var(--text)",
-                flexShrink: 0,
-              }}
-            >
-              {row.label}
-            </span>
-            <div
-              style={{
-                flex: 1,
-                height: 8,
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.06)",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: `${Math.max(0, Math.min(100, row.score))}%`,
-                  height: "100%",
-                  borderRadius: 999,
-                  background: row.isWeak ? "var(--terra, #C8956C)" : "var(--sage)",
-                }}
-              />
-            </div>
-            <span
-              style={{
-                width: 28,
-                fontSize: 13,
-                fontVariantNumeric: "tabular-nums",
-                color: "var(--text-muted)",
-                textAlign: "right",
-                flexShrink: 0,
-              }}
-            >
-              {row.score}
-            </span>
-            {row.isWeak ? (
-              <span
-                style={{
-                  fontSize: 11,
-                  color: "var(--terra, #C8956C)",
-                  flexShrink: 0,
-                }}
-              >
-                zwak
-              </span>
-            ) : (
-              <span style={{ width: 32, flexShrink: 0 }} aria-hidden />
-            )}
-          </div>
-        ))}
-      </div>
 
       {adviesModel.freshnessNudges.map((nudge) => (
         <p
@@ -371,6 +315,56 @@ function OnsOordeelCard({
         onViewAll={onOpenFavorieten}
         hideHeader
       />
+    </CockpitTile>
+  );
+}
+
+function WelkPotjeCard({
+  adviesModel,
+  onOpenFavorieten,
+}: {
+  adviesModel: ReturnType<typeof buildStatistiekenAdviesModel>;
+  onOpenFavorieten: () => void;
+}) {
+  if (adviesModel.adviesState === "nutrition_missing") {
+    return null;
+  }
+
+  const handleClick = () => {
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "favorieten",
+      surface: "statistieken_stap3",
+    });
+    clarityTag("dashboard_voortgang", "statistieken_stap3");
+    onOpenFavorieten();
+  };
+
+  return (
+    <CockpitTile>
+      <VoortgangSectionHeader
+        eyebrow="Stap 3 van 3 · Welk potje"
+        title="Je keuzes en onze aanraders"
+        body="Wat je zelf al koos, en wat wij zouden pakken — op één plek."
+      />
+      <button
+        type="button"
+        onClick={handleClick}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          padding: 0,
+          border: "none",
+          background: "none",
+          fontSize: 14,
+          fontWeight: 600,
+          color: "var(--sage)",
+          cursor: "pointer",
+        }}
+      >
+        Naar Favorieten
+        <Icons.ChevronRight s={16} />
+      </button>
     </CockpitTile>
   );
 }
