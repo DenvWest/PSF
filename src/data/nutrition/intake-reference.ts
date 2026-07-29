@@ -66,8 +66,15 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     referenceLabel: "eiwit bij elke maaltijd",
     comparisonPath: "/beste/eiwitpoeder",
     thresholds: {
-      belowMax: 2, // TODO review: < 2 eiwitrijke maaltijden/dag → "below"
-      meetsMin: 3, // TODO review: ≥ 3 eiwitrijke maaltijden/dag → "meets"
+      // VOORSTEL (niet bevestigd) — vertrouwen: HOOG. Dit is een spreidings-
+      // drempel (eetmomenten/dag), geen dosis-drempel — andere as dan de
+      // g/kg-berekening in protein-target.ts. Sluit aan bij dezelfde bron die
+      // daar al staat: PROT-AGE Study Group (2013) beveelt 3-4 eiwitrijke
+      // eetmomenten/dag aan voor optimale eiwitsynthese bij 40+. belowMax=2/
+      // meetsMin=3 volgt die verdeling. Check tegen de PROT-AGE-brontekst zelf
+      // (nu alleen indirect via protein-target.ts geciteerd).
+      belowMax: 2,
+      meetsMin: 3,
     },
     lifestyleAction: buildLifestyleAction("protein"),
     claimKey: "eiwitpoeder",
@@ -78,8 +85,15 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     referenceLabel: "2× vette vis per week",
     comparisonPath: "/beste/omega-3-supplement",
     thresholds: {
-      belowMax: 1, // TODO review: < 1× vette vis/week → "below"
-      meetsMin: 2, // TODO review: ≥ 2× vette vis/week → "meets"
+      // VOORSTEL (niet bevestigd) — vertrouwen: REDELIJK. Gezondheidsraad
+      // Richtlijnen goede voeding (2015) noemt 1×/week (bij voorkeur vette)
+      // vis als basis; internationale hart-richtlijnen (bv. AHA) noemen 2×/
+      // week vette vis voor cardiovasculair voordeel. De huidige grens kiest
+      // de ruimere kant (meetsMin=2) — dat is een interpretatiekeuze, geen
+      // exacte Gezondheidsraad-cijfer. Controleer of 1×/week al als "around"
+      // of als "meets" moet gelden.
+      belowMax: 1,
+      meetsMin: 2,
     },
     lifestyleAction: buildLifestyleAction("omega3"),
     claimKey: "omega3",
@@ -90,8 +104,18 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     referenceLabel: "dagelijks bladgroenten, noten of peulvruchten",
     comparisonPath: "/beste/magnesium",
     thresholds: {
-      belowMax: 2, // TODO review: < 2 porties groente/fruit per dag → "below"
-      meetsMin: 4, // TODO review: ≥ 4 porties groente/fruit per dag → "meets"
+      // VOORSTEL (niet bevestigd) — vertrouwen: LAAG, meeste aandacht nodig.
+      // "Porties groente/fruit" is een PROXY, geen directe magnesium-maat:
+      // Schijf van Vijf's 250 g groente + 2 stuks fruit is een algemene
+      // voedingsbasis, niet gekalibreerd op de magnesium-RI (~350 mg/dag
+      // mannen, Gezondheidsraad — matcht wel de vuistregel in de lifestyle-
+      // copy). Fruit is bovendien over het algemeen een zwakke magnesium-
+      // bron; de sterkere bronnen (noten, volkoren, peulvruchten, blad-
+      // groenten) zitten niet 1-op-1 in "groente/fruit". Overweeg de
+      // onderliggende zelfrapportage-vraag te herzien naar magnesium-
+      // specifieke bronnen i.p.v. alleen de grenswaarden te vervangen.
+      belowMax: 2,
+      meetsMin: 4,
     },
     lifestyleAction: buildLifestyleAction("magnesium"),
     claimKey: "magnesium",
@@ -102,8 +126,17 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     referenceLabel: "dagelijks buiten (huid aan zonlicht)",
     comparisonPath: "/beste/vitamine-d",
     thresholds: {
-      belowMax: 1, // TODO review: < 1× buiten/week → "below"
-      meetsMin: 3, // TODO review: ≥ 3× buiten/week → "meets"
+      // VOORSTEL (niet bevestigd) — vertrouwen: LAAG, zwakste van de vijf.
+      // Gezondheidsraad-advies over vitamine D (Evaluatie voedingsnormen
+      // vitamine D, 2012) is primair gericht op suppletie voor risicogroepen
+      // (65+, gesluierd, donkere huid, weinig buiten), niet op een gevalideerde
+      // "keer buiten per week"-frequentie. Aanmaak hangt sterk af van duur,
+      // tijdstip, seizoen en huidoppervlak — een frequentie-telling zonder
+      // duur/seizoen is een zwakke proxy. De copy zelf splitst al zomer/winter
+      // (portion-dictionary.ts); overweeg de drempel op dezelfde as te zetten
+      // i.p.v. alleen "×/week".
+      belowMax: 1,
+      meetsMin: 3,
     },
     lifestyleAction: buildLifestyleAction("vitamin_d", { season: "summer" }),
     claimKey: "vitamineD",
@@ -114,8 +147,14 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     referenceLabel: "dagelijks vlees, vis of peulvruchten",
     comparisonPath: "/beste/zink",
     thresholds: {
-      belowMax: 1, // TODO review: < 1 portie vlees/vis/peulvruchten per dag → "below"
-      meetsMin: 2, // TODO review: ≥ 2 porties per dag → "meets"
+      // VOORSTEL (niet bevestigd) — vertrouwen: MATIG. Gezondheidsraad/EFSA
+      // RI voor zink bij volwassen mannen ligt rond 9-11 mg/dag (matcht de
+      // vuistregel in de lifestyle-copy). Dat een dagelijkse zink-bron-portie
+      // "below" en twee "meets" is, is een plausibele maar niet scherp
+      // gebronde vertaalslag van mg naar portiefrequentie — vergelijkbaar in
+      // zwakte met omega-3, met de mg-vuistregel er expliciet naast als vangnet.
+      belowMax: 1,
+      meetsMin: 2,
     },
     lifestyleAction: buildLifestyleAction("zinc"),
     claimKey: "zink",
