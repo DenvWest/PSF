@@ -1,37 +1,23 @@
 "use client";
 
-import { useEffect, useState, type MouseEvent } from "react";
+import { type MouseEvent } from "react";
 import { PILLAR, PILLARS } from "@/data/dashboard";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import DomeinDoelZetten, {
-  type DomeinDoelZettenExistingGoal,
-} from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import { clarityTag } from "@/lib/clarity";
-import {
-  getSituationLabel,
-  isDomainGoalDomain,
-  type DomainGoalDomain,
-  type SituationId,
-} from "@/lib/domain-goal";
+import { getSituationLabel, isDomainGoalDomain, type DomainGoalDomain } from "@/lib/domain-goal";
+import type { DomainGoalMap } from "@/lib/domain-goal-client";
 import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
-import type { MovementAnchor } from "@/lib/movement-prefs";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
-
-type DomainGoalSummary = {
-  situationId: SituationId;
-  ownWords: string | null;
-  latestScore: number | null;
-};
-
-type DomainGoalMap = Partial<Record<DomainGoalDomain, DomainGoalSummary>>;
 
 type VoortgangDomeinRingProps = {
   model: DashboardModel;
   data?: DashboardData;
+  goals: DomainGoalMap | null;
   onOpenDomain: (domain: PillarId) => void;
+  onOpenGoal: (domain: DomainGoalDomain) => void;
 };
 
 function buildCoverageLine(
@@ -77,9 +63,9 @@ function DomainRow({
   model: DashboardModel;
   domainCheckDaysAgo: DashboardData["domainCheckDaysAgo"] | undefined;
   /** undefined = doelen nog niet geladen (render niets), null = geladen zonder actief doel. */
-  goal?: DomainGoalSummary | null;
+  goal?: DomainGoalMap[DomainGoalDomain] | null;
   onOpenDomain: (domain: PillarId) => void;
-  onOpenGoal?: (domain: DomainGoalDomain) => void;
+  onOpenGoal: (domain: DomainGoalDomain) => void;
 }) {
   const pillar = PILLAR[pillarId];
   const trend = model.trend[pillarId];
@@ -98,10 +84,11 @@ function DomainRow({
   };
 
   const goalDomain = isDomainGoalDomain(pillarId) ? pillarId : null;
+  const goalLatestScore = goal ? (goal.scores[goal.scores.length - 1]?.score ?? null) : null;
 
   const handleOpenGoal = (event: MouseEvent) => {
     event.stopPropagation();
-    if (!goalDomain || !onOpenGoal) {
+    if (!goalDomain) {
       return;
     }
     trackEvent("dashboard_voortgang_doel_click", {
@@ -196,7 +183,7 @@ function DomainRow({
           {metaLine}
         </p>
       </button>
-      {goalDomain && onOpenGoal && goal !== undefined ? (
+      {goalDomain && goal !== undefined ? (
         <button
           type="button"
           onClick={handleOpenGoal}
@@ -216,7 +203,7 @@ function DomainRow({
           >
             {goal
               ? `${goal.ownWords || getSituationLabel(goalDomain, goal.situationId)}${
-                  goal.latestScore != null ? ` · nu ${goal.latestScore}` : ""
+                  goalLatestScore != null ? ` · nu ${goalLatestScore}` : ""
                 }`
               : "Zet je eigen doel"}
           </span>
@@ -240,78 +227,14 @@ function DomainRow({
 export default function VoortgangDomeinRing({
   model,
   data,
+  goals,
   onOpenDomain,
+  onOpenGoal,
 }: VoortgangDomeinRingProps) {
   const domainCheckDaysAgo = data?.domainCheckDaysAgo;
   const coverageLine = buildCoverageLine(domainCheckDaysAgo);
   const interventionPillars = PILLARS.filter((pillar) => isInterventionDomain(pillar.id));
   const readoutPillars = PILLARS.filter((pillar) => isReadoutDomain(pillar.id));
-
-  const [goals, setGoals] = useState<DomainGoalMap | null>(null);
-  const [anchor, setAnchor] = useState<MovementAnchor | null>(null);
-  const [openGoalDomain, setOpenGoalDomain] = useState<DomainGoalDomain | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        const response = await fetch("/api/account/domain-goal", {
-          credentials: "include",
-        });
-        if (!response.ok || cancelled) {
-          return;
-        }
-        const json = (await response.json()) as {
-          goals: {
-            domain: DomainGoalDomain;
-            situationId: SituationId;
-            ownWords: string | null;
-            scores: { score: number }[];
-          }[];
-        };
-        const map: DomainGoalMap = {};
-        for (const entry of json.goals) {
-          map[entry.domain] = {
-            situationId: entry.situationId,
-            ownWords: entry.ownWords,
-            latestScore: entry.scores[entry.scores.length - 1]?.score ?? null,
-          };
-        }
-        setGoals(map);
-      } catch {
-        // stil falen: de doel-affordance is opt-in, geen kritiek pad
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        const response = await fetch("/api/account/movement-prefs", {
-          credentials: "include",
-        });
-        if (!response.ok || cancelled) {
-          return;
-        }
-        const json = (await response.json()) as { anchor: MovementAnchor | null };
-        setAnchor(json.anchor ?? null);
-      } catch {
-        // stil falen: anker is alleen ordening, geen blokkade
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const openGoal = openGoalDomain ? (goals?.[openGoalDomain] ?? null) : null;
-  const openGoalExisting: DomeinDoelZettenExistingGoal | null = openGoal
-    ? { situationId: openGoal.situationId, ownWords: openGoal.ownWords }
-    : null;
 
   return (
     <CockpitTile eyebrow="Je metingen" className="mb-3.5">
@@ -364,7 +287,7 @@ export default function VoortgangDomeinRing({
                 : undefined
             }
             onOpenDomain={onOpenDomain}
-            onOpenGoal={setOpenGoalDomain}
+            onOpenGoal={onOpenGoal}
           />
         ))}
         <li
@@ -395,30 +318,10 @@ export default function VoortgangDomeinRing({
             model={model}
             domainCheckDaysAgo={domainCheckDaysAgo}
             onOpenDomain={onOpenDomain}
+            onOpenGoal={onOpenGoal}
           />
         ))}
       </ul>
-      {openGoalDomain ? (
-        <DomeinDoelZetten
-          key={openGoalDomain}
-          open
-          domain={openGoalDomain}
-          domainLabel={PILLAR[openGoalDomain].label}
-          anchor={anchor}
-          existingGoal={openGoalExisting}
-          onClose={() => setOpenGoalDomain(null)}
-          onSaved={(result) => {
-            setGoals((current) => ({
-              ...current,
-              [openGoalDomain]: {
-                situationId: result.situationId,
-                ownWords: result.ownWords,
-                latestScore: result.score,
-              },
-            }));
-          }}
-        />
-      ) : null}
     </CockpitTile>
   );
 }
