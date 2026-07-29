@@ -34,6 +34,8 @@ type DomeinDoelZettenProps = {
   domainLabel: string;
   anchor: MovementAnchor | null;
   existingGoal: DomeinDoelZettenExistingGoal | null;
+  /** §8.1-meetplan-lock: "domeinrij" (slice B) of "check" (slice D) — filtert de divergentie-analyse. */
+  entryPoint?: "check" | "domeinrij";
   onClose: () => void;
   onSaved: (result: {
     situationId: SituationId;
@@ -53,6 +55,7 @@ export default function DomeinDoelZetten({
   domainLabel,
   anchor,
   existingGoal,
+  entryPoint = "domeinrij",
   onClose,
   onSaved,
 }: DomeinDoelZettenProps) {
@@ -146,13 +149,13 @@ export default function DomeinDoelZetten({
             situationId,
             ownWords: ownWords.trim() || null,
             initialScore: score,
-            entryPoint: "domeinrij",
+            entryPoint,
           }
         : {
             action: "rescore",
             domain,
             score,
-            entryPoint: "domeinrij",
+            entryPoint,
           };
 
       const response = await fetch("/api/account/domain-goal", {

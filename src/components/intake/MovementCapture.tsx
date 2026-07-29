@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
@@ -297,6 +298,8 @@ export default function MovementCapture() {
               </section>
             ))}
           </div>
+
+          <DomeinIjkpuntCheckPrompt domain="beweging" domainLabel="Beweging" />
 
           <div className="mt-10 space-y-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-5 text-center">
             <p className="text-sm leading-relaxed text-intake-ink-muted">

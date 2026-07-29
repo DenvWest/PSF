@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import NutritionIntakeHero from "@/components/intake/NutritionIntakeHero";
 import ProteinTargetCard from "@/components/intake/ProteinTargetCard";
 import {
@@ -318,6 +319,8 @@ export default function NutritionResultView({
             </ul>
           </details>
         ) : null}
+
+        <DomeinIjkpuntCheckPrompt domain="voeding" domainLabel="Voeding" />
 
         <div className="mt-8 space-y-4 text-center">
           {fromDashboard ? (

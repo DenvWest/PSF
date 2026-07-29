@@ -16,6 +16,7 @@ import type { SleepDirection } from "@/lib/sleep-delta";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import SleepDashboardCta from "@/components/sleep/SleepDashboardCta";
+import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 
 type SleepReport = {
   SLP_ONSET?: number;
@@ -395,6 +396,8 @@ export default function SleepCheckin() {
               </ul>
             </div>
           )}
+
+          <DomeinIjkpuntCheckPrompt domain="slaap" domainLabel="Slaap" />
 
           <SleepDashboardCta
             focusLabel={conclusion.focusLabel}

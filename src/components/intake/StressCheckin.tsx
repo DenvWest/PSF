@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
 import {
@@ -253,6 +254,8 @@ export default function StressCheckin() {
               STR_CHARGE: answers.STR_CHARGE as number | undefined,
             } satisfies Partial<Record<StressDeepField, number>>)}
           </div>
+
+          <DomeinIjkpuntCheckPrompt domain="stress" domainLabel="Stress" />
         </div>
       </div>
     );
