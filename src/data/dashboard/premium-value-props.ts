@@ -8,47 +8,48 @@ export type PremiumValueProp = {
   comingSoon?: boolean;
 };
 
-/** Gedeelde copy: wat premium Statistieken oplevert. */
+/**
+ * Gedeelde copy: wat premium begeleiding oplevert.
+ * Alle vier staan bewust op comingSoon — de dienst bestaat nog niet.
+ * Je scores, je lijn en ons oordeel blijven gratis; die horen hier niet in.
+ */
 export const PREMIUM_STATISTIEKEN_VALUE_PROPS: PremiumValueProp[] = [
   {
-    id: "trends-per-domein",
-    icon: "trend",
-    title: "Trends per domein",
-    body: "Zie hoe slaap, stress, voeding, beweging en verbinding bewegen tussen je checks.",
-  },
-  {
-    id: "vergelijk-metingen",
-    icon: "compare",
-    title: "Vergelijk je metingen",
-    body: "Je eerste check naast je laatste hermeting — in één overzicht wat er is verschoven.",
-  },
-  {
-    id: "sterke-zwakke-punten",
-    icon: "target",
-    title: "Sterke en zwakke punten",
-    body: "Direct zichtbaar welk domein vooruitgaat en welk domein aandacht vraagt.",
-  },
-  {
-    id: "activiteiten-logboek",
+    id: "wekelijkse-meekijk",
     icon: "calendar",
-    title: "Activiteiten logboek",
-    body: "Zie welke leefstijl-stappen in je check en hermeting ontbraken.",
+    title: "Wekelijks iemand die meekijkt",
+    body: "Niet één keer per hermeting, maar elke week even langs je lijn — en een bericht als er iets opvalt.",
+    comingSoon: true,
+  },
+  {
+    id: "hermeting-samen",
+    icon: "compare",
+    title: "Je hermeting samen doorlopen",
+    body: "Na 30 dagen kijk je niet alleen naar het verschil, maar hoor je ook waar het vandaan komt.",
+    comingSoon: true,
+  },
+  {
+    id: "vragen-tussendoor",
+    icon: "target",
+    title: "Vragen tussendoor",
+    body: "Loopt het vast, of twijfel je over een keuze naast je leefstijl? Je hoeft niet te wachten op je volgende check.",
+    comingSoon: true,
+  },
+  {
+    id: "bijsturen-in-je-plan",
+    icon: "target",
+    title: "Bijsturen in je plan",
+    body: "Je plan verandert mee met wat er werkt — niet pas als je er zelf iets van vindt.",
     comingSoon: true,
   },
 ];
 
-export const PREMIUM_HUB_VALUE_PROP_IDS = ["trends-per-domein", "vergelijk-metingen"] as const;
+export const PREMIUM_HUB_VALUE_PROP_IDS = ["wekelijkse-meekijk", "hermeting-samen"] as const;
 
 export const PREMIUM_SOFT_UPSELL_PROP_IDS = [
-  "vergelijk-metingen",
-  "sterke-zwakke-punten",
+  "hermeting-samen",
+  "vragen-tussendoor",
 ] as const;
-
-export const PREMIUM_STATISTIEKEN_SOFT_UPSELL = {
-  heading: "Eén meting is een foto. Meerdere is een film.",
-  body: "Jouw lijn laat al zien waar je nu staat. Premium vergelijkt je metingen automatisch en laat zien waar je vooruitgang boekt.",
-  cta: "Zet me op de wachtlijst voor Premium",
-} as const;
 
 export function getPremiumValuePropsByIds(
   ids: readonly string[],

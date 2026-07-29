@@ -5,10 +5,9 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import { Button, Card, Sparkline } from "@/components/app/primitives";
+import { Button } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { IDENTITY_FIELDS } from "@/data/dashboard";
-import { PREMIUM_STATISTIEKEN_SOFT_UPSELL } from "@/data/dashboard/premium-value-props";
 import { buildRecommendations } from "@/lib/build-recommendations";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
@@ -18,18 +17,13 @@ import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScr
 import StatistiekenAdviesSection from "@/components/dashboard/voortgang/StatistiekenAdviesSection";
 import FavorietenAanraderSection from "@/components/dashboard/voortgang/FavorietenAanraderSection";
 import FavorietenKeuzeSection from "@/components/dashboard/voortgang/FavorietenKeuzeSection";
-import PremiumValuePropsList from "@/components/dashboard/PremiumValuePropsList";
+import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
 import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
-import {
-  getVitalityScoreCardCopy,
-  VITALITY_INSIGHTS_UPSELL_BODY,
-  VITALITY_INSIGHTS_UPSELL_CTA,
-  VITALITY_INSIGHTS_UPSELL_HEADING,
-} from "@/lib/vitality-score-copy";
+import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
 import {
@@ -37,7 +31,6 @@ import {
   buildDashboardVandaagHref,
   supportsKompasDeepView,
 } from "@/lib/dashboard-url";
-import { resolveTrendsAccess } from "@/lib/entitlement-access";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -52,12 +45,9 @@ export type { VoortgangScreen };
 type VoortgangHubProps = {
   model: DashboardModel | null;
   data?: DashboardData;
-  isMember: boolean;
-  hasTrendsFeature?: boolean;
   tab: DashboardTabId;
   screen: VoortgangScreen;
-  freeStatistics: ReactNode;
-  unlockedStatistics: ReactNode;
+  statisticsContent: ReactNode;
   onScreenChange: (screen: VoortgangScreen) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoAgenda: () => void;
@@ -69,9 +59,7 @@ function handleSupplementenHubClick() {
   clarityTag("dashboard_voortgang", "supplementen");
 }
 
-const MOCK_TREND = [42, 48, 45, 52, 49, 55];
-
-const premiumBadgeStyle = {
+const badgeStyle = {
   display: "inline-flex",
   alignItems: "center",
   gap: 5,
@@ -90,13 +78,13 @@ function HubCard({
   icon,
   title,
   subtitle,
-  premium,
+  badge,
   onClick,
 }: {
   icon: ReactNode;
   title: string;
   subtitle: string;
-  premium?: boolean;
+  badge?: string;
   onClick: () => void;
 }) {
   return (
@@ -114,13 +102,7 @@ function HubCard({
     >
       <CockpitTile>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div
-            className={
-              premium
-                ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[var(--terra,#C8956C)]"
-                : "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[var(--sage)]"
-            }
-          >
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[var(--sage)]">
             {icon}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -142,11 +124,7 @@ function HubCard({
               >
                 {title}
               </div>
-              {premium ? (
-                <span style={premiumBadgeStyle}>
-                  <Icons.Lock s={10} /> Premium
-                </span>
-              ) : null}
+              {badge ? <span style={badgeStyle}>{badge}</span> : null}
             </div>
             <div
               style={{
@@ -221,65 +199,6 @@ function VoortgangSubHeader({
         {title}
       </div>
     </div>
-  );
-}
-
-function StatistiekenSoftUpsell({ onOpenWaitlist }: { onOpenWaitlist: () => void }) {
-  return (
-    <Card
-      pad={20}
-      glow="var(--terra, #C8956C)"
-      style={{
-        border: "1px solid rgba(200,149,108,0.28)",
-        background: "rgba(200,149,108,0.05)",
-      }}
-    >
-      <div
-        style={{
-          fontFamily: "var(--f-serif)",
-          fontSize: 19,
-          color: "var(--text)",
-          lineHeight: 1.3,
-          marginBottom: 8,
-        }}
-      >
-        {PREMIUM_STATISTIEKEN_SOFT_UPSELL.heading}
-      </div>
-      <p
-        style={{
-          fontSize: 14,
-          color: "var(--text-muted)",
-          lineHeight: 1.55,
-          margin: "0 0 16px",
-          textWrap: "pretty",
-        }}
-      >
-        {PREMIUM_STATISTIEKEN_SOFT_UPSELL.body}
-      </p>
-      <PremiumValuePropsList variant="softUpsell" />
-      <button
-        type="button"
-        onClick={onOpenWaitlist}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          marginTop: 18,
-          padding: 0,
-          border: "none",
-          background: "none",
-          fontSize: 14,
-          fontWeight: 600,
-          color: "var(--terra, #C8956C)",
-          cursor: "pointer",
-          textDecoration: "underline",
-          textUnderlineOffset: 3,
-        }}
-      >
-        {PREMIUM_STATISTIEKEN_SOFT_UPSELL.cta}
-        <Icons.ArrowRight s={16} />
-      </button>
-    </Card>
   );
 }
 
@@ -390,7 +309,7 @@ function FavorietenView({
   );
 }
 
-function BlurredInsightTips({ tips }: { tips: string[] }) {
+function InsightTips({ tips }: { tips: string[] }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {tips.map((tip) => (
@@ -414,20 +333,12 @@ function BlurredInsightTips({ tips }: { tips: string[] }) {
 function VitaalscoreInzichtenView({
   model,
   firstName,
-  isMember,
-  hasTrendsFeature,
   onBack,
-  onOpenWaitlist,
 }: {
   model: DashboardModel;
   firstName: string | null;
-  isMember: boolean;
-  hasTrendsFeature: boolean;
   onBack: () => void;
-  onOpenWaitlist: () => void;
 }) {
-  const upsellShownRef = useRef(false);
-  const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
   const cardCopy = getVitalityScoreCardCopy({
     firstName,
     vitality: model.vitality,
@@ -448,18 +359,6 @@ function VitaalscoreInzichtenView({
   const heading = cardCopy.heading;
   const body = cardCopy.body;
   const tipLines = [explainer[1], explainer[2]].filter(Boolean);
-
-  useEffect(() => {
-    if (trendsUnlocked || upsellShownRef.current) {
-      return;
-    }
-    upsellShownRef.current = true;
-    trackEvent("dashboard_inzichten_upsell", {
-      state: "locked",
-      surface: "voortgang",
-    });
-    clarityTag("dashboard_voortgang", "inzichten_locked");
-  }, [trendsUnlocked]);
 
   return (
     <section aria-label="Jouw inzichten" style={{ paddingTop: 16 }}>
@@ -504,52 +403,13 @@ function VitaalscoreInzichtenView({
           </p>
         </div>
 
-        {!trendsUnlocked ? (
-          <>
-            <div
-              style={{
-                filter: "blur(5px)",
-                pointerEvents: "none",
-                userSelect: "none",
-              }}
-              aria-hidden
-            >
-              <BlurredInsightTips tips={tipLines} />
-            </div>
+        <InsightTips tips={tipLines} />
 
-            <div style={{ textAlign: "center", padding: "8px 8px 0" }}>
-              <div
-                style={{
-                  fontFamily: "var(--f-serif)",
-                  fontSize: 21,
-                  color: "var(--text)",
-                  lineHeight: 1.3,
-                  marginBottom: 6,
-                }}
-              >
-                {VITALITY_INSIGHTS_UPSELL_HEADING}
-              </div>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "var(--text-muted)",
-                  lineHeight: 1.55,
-                  margin: "0 0 16px",
-                  textWrap: "pretty",
-                }}
-              >
-                {VITALITY_INSIGHTS_UPSELL_BODY}
-              </p>
-              <Button variant="terra" full onClick={onOpenWaitlist}>
-                {VITALITY_INSIGHTS_UPSELL_CTA}
-              </Button>
-            </div>
-          </>
-        ) : (
-          <RecommendedInsights pillarId={model.priority.id} />
-        )}
+        <RecommendedInsights pillarId={model.priority.id} />
 
         <MetingenCard scores={model.scores} history={model.history} />
+
+        <PremiumWaitlistCard surface="inzichten" />
       </div>
     </section>
   );
@@ -558,42 +418,18 @@ function VitaalscoreInzichtenView({
 function StatistiekenView({
   model,
   data,
-  isMember,
-  hasTrendsFeature,
-  freeStatistics,
-  unlockedStatistics,
+  statisticsContent,
   onBack,
   onOpenLichaam,
-  onOpenWaitlist,
   onOpenFavorieten,
 }: {
   model: DashboardModel;
   data?: DashboardData;
-  isMember: boolean;
-  hasTrendsFeature: boolean;
-  freeStatistics: ReactNode;
-  unlockedStatistics: ReactNode;
+  statisticsContent: ReactNode;
   onBack: () => void;
   onOpenLichaam: () => void;
-  onOpenWaitlist: () => void;
   onOpenFavorieten: () => void;
 }) {
-  const upsellShownRef = useRef(false);
-  const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
-
-  useEffect(() => {
-    if (trendsUnlocked || upsellShownRef.current) {
-      return;
-    }
-    upsellShownRef.current = true;
-    trackEvent("dashboard_statistieken_upsell", {
-      state: "locked",
-      surface: "voortgang",
-    });
-    clarityTag("dashboard_statistieken", "locked");
-    clarityTag("premium_value_props", "statistieken_locked");
-  }, [trendsUnlocked]);
-
   const openLichaam = () => {
     trackEvent("dashboard_voortgang_hub_click", {
       destination: "lichaamssamenstelling",
@@ -616,43 +452,19 @@ function StatistiekenView({
           />
         ) : null}
 
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--text-subtle)",
-            textAlign: "center",
-            padding: "4px 0",
-          }}
-        >
-          Einde gratis advies
-        </div>
-
         <LeefstijllijnSection model={model} surface="voortgang" />
 
-        {!trendsUnlocked ? (
-          <>
-            {freeStatistics}
-            <StatistiekenSoftUpsell onOpenWaitlist={onOpenWaitlist} />
-          </>
-        ) : (
-          <>
-            {unlockedStatistics}
-            <div style={{ padding: "0 4px" }}>
-              <PremiumValuePropsList variant="comingSoonOnly" />
-            </div>
-          </>
-        )}
+        {statisticsContent}
+
+        <PremiumWaitlistCard surface="statistieken" />
       </div>
 
       <div style={{ marginTop: 16 }}>
         <HubCard
           icon={<Icons.User s={20} />}
           title="Lichaamssamenstelling"
-          subtitle="Gewicht, lengte en persoonlijk doel"
-          premium
+          subtitle="Vet, spier en vocht als aparte meetlat"
+          badge="Binnenkort"
           onClick={openLichaam}
         />
       </div>
@@ -660,87 +472,8 @@ function StatistiekenView({
   );
 }
 
-function ChartCard({
-  title,
-  unit,
-  blurred,
-}: {
-  title: string;
-  unit: string;
-  blurred: boolean;
-}) {
-  const chart = (
-    <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: 11,
-          color: "var(--text-subtle)",
-          marginBottom: 6,
-        }}
-      >
-        <span>— {unit}</span>
-        <span>— {unit}</span>
-      </div>
-      <Sparkline data={MOCK_TREND} color="var(--sage)" h={80} />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: 11,
-          color: "var(--text-subtle)",
-          marginTop: 8,
-        }}
-      >
-        <span>—</span>
-        <span>—</span>
-      </div>
-    </>
-  );
-
-  return (
-    <CockpitTile className="mb-3">
-      <div
-        style={{
-          fontFamily: "var(--f-serif)",
-          fontSize: 17,
-          color: "var(--text)",
-          textAlign: "center",
-          marginBottom: 14,
-        }}
-      >
-        {title}
-      </div>
-      {blurred ? (
-        <div
-          style={{
-            filter: "blur(5px)",
-            pointerEvents: "none",
-            userSelect: "none",
-          }}
-          aria-hidden
-        >
-          {chart}
-        </div>
-      ) : (
-        chart
-      )}
-    </CockpitTile>
-  );
-}
-
-function LichaamssamenstellingView({
-  isMember,
-  hasTrendsFeature,
-  onBack,
-}: {
-  isMember: boolean;
-  hasTrendsFeature: boolean;
-  onBack: () => void;
-}) {
+function LichaamssamenstellingView({ onBack }: { onBack: () => void }) {
   const shownRef = useRef(false);
-  const trendsUnlocked = resolveTrendsAccess(hasTrendsFeature, isMember);
 
   useEffect(() => {
     if (shownRef.current) {
@@ -748,17 +481,42 @@ function LichaamssamenstellingView({
     }
     shownRef.current = true;
     trackEvent("dashboard_lichaamssamenstelling_getoond", { surface: "voortgang" });
-    clarityTag("dashboard_lichaamssamenstelling", "premium_scaffold");
+    clarityTag("dashboard_lichaamssamenstelling", "binnenkort");
   }, []);
-
-  const locked = !trendsUnlocked;
 
   return (
     <section aria-label="Lichaamssamenstelling" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Lichaamssamenstelling" onBack={onBack} />
 
-      <div style={{ paddingBottom: locked ? 24 : 0 }}>
+      <div style={{ paddingBottom: 24 }}>
         <CockpitTile className="mb-4">
+          <span style={badgeStyle}>Binnenkort</span>
+          <div
+            style={{
+              fontFamily: "var(--f-serif)",
+              fontSize: 20,
+              color: "var(--text)",
+              lineHeight: 1.25,
+              margin: "12px 0 8px",
+            }}
+          >
+            Hier komt je lichaamssamenstelling.
+          </div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 14,
+              color: "var(--text-muted)",
+              lineHeight: 1.55,
+              textWrap: "pretty",
+            }}
+          >
+            Vet, spier en vocht als aparte meetlat, naast je leefstijl. We bouwen dit nog — er
+            staat nu niets van jou in.
+          </p>
+        </CockpitTile>
+
+        <CockpitTile>
           <div
             style={{
               fontFamily: "var(--f-serif)",
@@ -767,103 +525,36 @@ function LichaamssamenstellingView({
               marginBottom: 14,
             }}
           >
-            Overzicht
+            Wat we van je weten
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {IDENTITY_FIELDS.map((field, index) => {
-              const showLock = locked && index > 0;
-              return (
-                <div
-                  key={field.id}
+            {IDENTITY_FIELDS.map((field, index) => (
+              <div
+                key={field.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "11px 0",
+                  borderTop: index ? "1px solid var(--divider)" : "none",
+                }}
+              >
+                <span style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>
+                  {field.label}
+                </span>
+                <span
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "11px 0",
-                    borderTop: index ? "1px solid var(--divider)" : "none",
+                    fontSize: 14,
+                    color: "var(--text-subtle)",
+                    fontVariantNumeric: "tabular-nums",
                   }}
                 >
-                  <span
-                    style={{
-                      flex: 1,
-                      fontSize: 14,
-                      color: "var(--text)",
-                    }}
-                  >
-                    {field.label}
-                  </span>
-                  {showLock ? (
-                    <span
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid var(--panel-border)",
-                        color: "var(--text-subtle)",
-                      }}
-                    >
-                      <Icons.Lock s={13} />
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        fontSize: 14,
-                        color: "var(--text-subtle)",
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {field.value ?? "—"}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          <div
-            style={{
-              marginTop: 14,
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: locked ? "var(--text-subtle)" : "var(--sage)",
-            }}
-          >
-            Houd lichaamsgegevens bij
+                  {field.value ?? "nog niet ingevuld"}
+                </span>
+              </div>
+            ))}
           </div>
         </CockpitTile>
-
-        {locked ? (
-          <>
-            <ChartCard title="Gewicht" unit="kg" blurred />
-            <ChartCard title="Lengte" unit="cm" blurred />
-          </>
-        ) : (
-          <>
-            <ChartCard title="Gewicht" unit="kg" blurred={false} />
-            <ChartCard title="Lengte" unit="cm" blurred={false} />
-            <div
-              style={{
-                marginTop: 8,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                fontSize: 12,
-                fontWeight: 600,
-                color: "var(--terra, #C8956C)",
-                border: "1px solid rgba(200,149,108,0.4)",
-                borderRadius: 999,
-                padding: "5px 12px",
-              }}
-            >
-              <Icons.Spark s={13} /> Binnenkort in te vullen
-            </div>
-          </>
-        )}
       </div>
     </section>
   );
@@ -872,12 +563,9 @@ function LichaamssamenstellingView({
 export default function VoortgangHub({
   model,
   data,
-  isMember,
-  hasTrendsFeature = false,
   tab,
   screen,
-  freeStatistics,
-  unlockedStatistics,
+  statisticsContent,
   onScreenChange,
   onPrefUpdated: _onPrefUpdated,
   onGoAgenda,
@@ -919,22 +607,6 @@ export default function VoortgangHub({
     setScreen(destination);
   };
 
-  const openPremiumWaitlist = (surface: "statistieken" | "inzichten" = "statistieken") => {
-    trackEvent("dashboard_statistieken_upsell", {
-      state: "locked",
-      surface: surface === "inzichten" ? "inzichten" : "voortgang",
-      cta: "soft_upsell",
-    });
-    clarityTag("dashboard_statistieken", "soft_upsell_click");
-    setScreen("hub");
-    requestAnimationFrame(() => {
-      document.getElementById("premium-begeleiding")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
-
   if (!model) {
     return null;
   }
@@ -944,10 +616,7 @@ export default function VoortgangHub({
       <VitaalscoreInzichtenView
         model={model}
         firstName={data?.firstName ?? null}
-        isMember={isMember}
-        hasTrendsFeature={hasTrendsFeature}
         onBack={goBack}
-        onOpenWaitlist={() => openPremiumWaitlist("inzichten")}
       />
     );
   }
@@ -968,26 +637,16 @@ export default function VoortgangHub({
       <StatistiekenView
         model={model}
         data={data}
-        isMember={isMember}
-        hasTrendsFeature={hasTrendsFeature}
-        freeStatistics={freeStatistics}
-        unlockedStatistics={unlockedStatistics}
+        statisticsContent={statisticsContent}
         onBack={goBack}
         onOpenLichaam={() => navigate("lichaamssamenstelling")}
-        onOpenWaitlist={() => openPremiumWaitlist("statistieken")}
         onOpenFavorieten={() => navigate("favorieten")}
       />
     );
   }
 
   if (screen === "lichaamssamenstelling") {
-    return (
-      <LichaamssamenstellingView
-        isMember={isMember}
-        hasTrendsFeature={hasTrendsFeature}
-        onBack={goBack}
-      />
-    );
+    return <LichaamssamenstellingView onBack={goBack} />;
   }
 
   return (

@@ -27,7 +27,7 @@ const ROUTE_ROWS = [
   {
     destination: "inzichten" as const,
     title: "Jouw inzichten",
-    subtitle: "Je vitaliteit in één beeld",
+    subtitle: "Je totaalscore en wat je prioriteit drijft",
   },
 ];
 

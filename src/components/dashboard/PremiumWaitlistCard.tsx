@@ -26,7 +26,7 @@ export default function PremiumWaitlistCard({
       return;
     }
     shownRef.current = true;
-    trackEvent("premium_waitlist_shown", { surface });
+    trackEvent("premium_waitlist_shown", { surface, offer: "begeleiding" });
     clarityTag("premium_waitlist", "shown");
     clarityTag("premium_value_props", surface);
   }, [surface]);
@@ -55,6 +55,7 @@ export default function PremiumWaitlistCard({
       trackEvent("premium_waitlist_join", {
         feature: "premium-coaching",
         surface,
+        offer: "begeleiding",
         launch_email_opt_in: launchEmailOptIn,
       });
       clarityTag("premium_waitlist", "premium-coaching");
@@ -80,7 +81,7 @@ export default function PremiumWaitlistCard({
               fontWeight: 600,
             }}
           >
-            Je staat op de wachtlijst — we laten het weten zodra het er is.
+            Je staat op de lijst. We laten het weten zodra het er is — en niet vaker dan dat.
           </div>
         </Card>
       </div>
@@ -105,7 +106,7 @@ export default function PremiumWaitlistCard({
                 marginBottom: 10,
               }}
             >
-              <Icons.BarChart s={14} /> Premium · Statistieken
+              <Icons.Heart s={14} /> Premium · Begeleiding
             </div>
             <div
               style={{
@@ -116,7 +117,7 @@ export default function PremiumWaitlistCard({
                 marginBottom: 8,
               }}
             >
-              Zie precies waar je vooruitgang boekt — niet alleen een score.
+              Je lijn lezen kun je zelf. Er wekelijks iemand naast hebben niet.
             </div>
             <p
               style={{
@@ -127,8 +128,9 @@ export default function PremiumWaitlistCard({
                 textWrap: "pretty",
               }}
             >
-              Je gratis test en tijdlijn geven een eerste beeld. Premium vergelijkt je metingen
-              automatisch en laat trends per domein zien.
+              Je scores, je lijn en ons oordeel blijven gratis. Waar we aan werken is het stuk
+              daarna: iemand die elke week met je meekijkt, ziet waar het stokt, en je hermeting
+              met je doorneemt. Dat bestaat nog niet. Wil je erbij zijn als het er is?
             </p>
             <p
               style={{
@@ -139,7 +141,8 @@ export default function PremiumWaitlistCard({
                 textWrap: "pretty",
               }}
             >
-              Rond de prijs van een abonnement — we laten het weten bij launch.
+              We weten nog niet wat het gaat kosten. Wat we wel weten: je zit nergens aan vast en
+              we vragen nu niets.
             </p>
           </div>
 
@@ -170,11 +173,10 @@ export default function PremiumWaitlistCard({
             variant="terra"
             full
             size="lg"
-            icon={<Icons.Lock s={18} />}
             disabled={state === "loading"}
             onClick={join}
           >
-            {state === "loading" ? "Bezig…" : "Zet me op de wachtlijst voor Premium"}
+            {state === "loading" ? "Bezig…" : "Zet me op de wachtlijst voor begeleiding"}
           </Button>
 
           {state === "error" ? (

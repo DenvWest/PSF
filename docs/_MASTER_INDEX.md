@@ -103,6 +103,7 @@ Onafhankelijk supplementen-vergelijkingsplatform voor mannen 40+. Monetisatie vi
 | Design/styling | `core/DESIGN_TOKENS.md` |
 | Architectuur-strategie analyse (Claude prompt) | `cursors/architecture-strategy-analysis-prompt.md` |
 | Plan-fase / premium tier / n8n-triage analyse (Claude prompt) | `cursors/claude-analyse-plan-fase-n8n-tier-prompt.md` |
+| Voortgang · gratis/premium-grens + upgrade-clarity (Opus prompt) | `cursors/claude-opus-voortgang-statistieken-premium-grens-prompt.md` (bouwt op `cursors/claude-opus-voortgang-statistieken-advies-2026-07.md`) |
 | Evidence-chat / n8n (fase 8) | `core/EVIDENCE_CHAT.md` |
 | Kompas planner / Beweegplan | `plan/ARCHITECTUUR_LIFESTYLE_PLANNER.md` + `plan/LEEFSTIJLPLAN_HANDBOOK.md` |
 

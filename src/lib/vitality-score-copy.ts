@@ -90,13 +90,6 @@ export const VITALITY_SCORE_CTA = "Doe de check";
 
 export const VITALITY_INSIGHTS_CTA = "Bekijk je inzichten";
 
-export const VITALITY_INSIGHTS_UPSELL_HEADING = "Meer dan één moment zien?";
-
-export const VITALITY_INSIGHTS_UPSELL_BODY =
-  "Premium vergelijkt je vitaalscore over tijd en laat zien wat er is verschoven.";
-
-export const VITALITY_INSIGHTS_UPSELL_CTA = "Zet me op de wachtlijst voor Premium";
-
 export const METINGEN_EYEBROW = "Metingen";
 
 export const METINGEN_DOMAINS_LABEL = "Domeinen op peil";

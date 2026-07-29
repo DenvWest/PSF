@@ -2172,21 +2172,9 @@ const FutureSection = () => {
   );
 };
 
+// Dode sectie: staat in DASHBOARD_SECTIONS maar in geen enkele TAB_SECTIONS-lijst.
+// Meting is verwijderd in K1; de sectie zelf wordt in K6 opgeruimd.
 const StatisticsSection = (props: SharedSectionProps) => {
-  const upsellShownRef = useRef(false);
-
-  useEffect(() => {
-    if (props.isMember || upsellShownRef.current) {
-      return;
-    }
-    upsellShownRef.current = true;
-    trackEvent("dashboard_statistieken_upsell", {
-      state: "locked",
-      surface: "voortgang",
-    });
-    clarityTag("dashboard_statistieken", "locked");
-  }, [props.isMember]);
-
   if (!props.isMember) {
     return (
       <section aria-label="Statistieken">
@@ -3515,19 +3503,15 @@ const SECTION_RENDERERS: Record<
       <VoortgangHub
         model={props.model}
         data={props.data}
-        isMember={props.isMember}
-        hasTrendsFeature={props.hasTrendsFeature}
         tab={props.tab}
         screen={props.voortgangScreen}
-        freeStatistics={<HistorySection {...props} />}
-        unlockedStatistics={
+        statisticsContent={
           <>
             <StatistiekenPriorityOverTime
               model={props.model}
               prefUpdatedAt={props.prefUpdatedAt}
               onPrefUpdated={props.onPrefUpdated}
             />
-            <SignalsSection {...props} />
             <NutritionIntakeSection {...props} />
             <HistorySection {...props} />
           </>
