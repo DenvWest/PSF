@@ -8,6 +8,7 @@ type ClientEmitType = Extract<
   | "focus.viewed"
   | "wearable.interest_clicked"
   | "movement.location_selected"
+  | "movement.target_set"
   | "movement.sport_selected"
   | "movement.gap_shown"
   | "dashboard.beweging_programma_open"

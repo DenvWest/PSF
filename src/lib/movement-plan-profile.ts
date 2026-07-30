@@ -13,6 +13,17 @@ import type {
   MovementTrainingLocation,
   MovementWeeklyFrequency,
 } from "@/data/movement/session-catalog";
+import {
+  ANSWER_KEY_TARGET_DAYS,
+  ANSWER_KEY_TARGET_MINUTES,
+  ANSWER_KEY_TARGET_STRENGTH,
+  isMovementTargetDays,
+  isMovementTargetMinutes,
+  isMovementTargetStrength,
+  type MovementTargetDays,
+  type MovementTargetMinutes,
+  type MovementTargetStrength,
+} from "@/data/movement/targets";
 import type { StoredIntakeAnswers } from "@/types/intake-answers";
 
 export const ANSWER_KEY_PREFERRED_SPORT = "preferredSport";
@@ -62,6 +73,10 @@ export type MovementPlanProfile = MovementPrefs & {
   weeklyFrequency: MovementWeeklyFrequency | null;
   trainingLocation: MovementTrainingLocation | null;
   sports: string[];
+  /** Zelf gezet doel — stuurt de programma-dosis. Zie `movement-target.ts`. */
+  targetMinutes: MovementTargetMinutes | null;
+  targetDays: MovementTargetDays | null;
+  targetStrength: MovementTargetStrength | null;
 };
 
 export const EMPTY_MOVEMENT_PLAN_PROFILE: MovementPlanProfile = {
@@ -71,6 +86,9 @@ export const EMPTY_MOVEMENT_PLAN_PROFILE: MovementPlanProfile = {
   weeklyFrequency: null,
   trainingLocation: null,
   sports: [],
+  targetMinutes: null,
+  targetDays: null,
+  targetStrength: null,
 };
 
 function parseSportsArray(raw: unknown): string[] {
@@ -118,12 +136,19 @@ export function parseMovementPlanProfile(raw: unknown): MovementPlanProfile {
   trainingLocation = migrated.trainingLocation;
   sports = migrated.sports;
 
+  const targetMinutes = record[ANSWER_KEY_TARGET_MINUTES];
+  const targetDays = record[ANSWER_KEY_TARGET_DAYS];
+  const targetStrength = record[ANSWER_KEY_TARGET_STRENGTH];
+
   return {
     ...base,
     preferredSport,
     weeklyFrequency: isMovementWeeklyFrequency(frequency) ? frequency : null,
     trainingLocation,
     sports,
+    targetMinutes: isMovementTargetMinutes(targetMinutes) ? targetMinutes : null,
+    targetDays: isMovementTargetDays(targetDays) ? targetDays : null,
+    targetStrength: isMovementTargetStrength(targetStrength) ? targetStrength : null,
   };
 }
 
@@ -136,7 +161,10 @@ export function hasMovementPlanProfileValues(raw: unknown): boolean {
     profile.preferredSport !== null ||
     profile.weeklyFrequency !== null ||
     profile.trainingLocation !== null ||
-    profile.sports.length > 0
+    profile.sports.length > 0 ||
+    profile.targetMinutes !== null ||
+    profile.targetDays !== null ||
+    profile.targetStrength !== null
   );
 }
 
@@ -172,6 +200,15 @@ export function carryOverMovementPlanProfile(
   }
   if (next.weeklyFrequency === null && previous.weeklyFrequency !== null) {
     carried[ANSWER_KEY_WEEKLY_FREQUENCY] = previous.weeklyFrequency;
+  }
+  if (next.targetMinutes === null && previous.targetMinutes !== null) {
+    carried[ANSWER_KEY_TARGET_MINUTES] = previous.targetMinutes;
+  }
+  if (next.targetDays === null && previous.targetDays !== null) {
+    carried[ANSWER_KEY_TARGET_DAYS] = previous.targetDays;
+  }
+  if (next.targetStrength === null && previous.targetStrength !== null) {
+    carried[ANSWER_KEY_TARGET_STRENGTH] = previous.targetStrength;
   }
 
   return carried;
@@ -222,6 +259,9 @@ export type MovementPlanProfilePatch = {
   weeklyFrequency?: MovementWeeklyFrequency;
   trainingLocation?: MovementTrainingLocation;
   sports?: string[];
+  targetMinutes?: MovementTargetMinutes;
+  targetDays?: MovementTargetDays;
+  targetStrength?: MovementTargetStrength;
 };
 
 export function mergeMovementPlanProfilePatch(
@@ -260,6 +300,21 @@ export function mergeMovementPlanProfilePatch(
     isMovementWeeklyFrequency(patch.weeklyFrequency)
   ) {
     record[ANSWER_KEY_WEEKLY_FREQUENCY] = patch.weeklyFrequency;
+  }
+  if (
+    patch.targetMinutes !== undefined &&
+    isMovementTargetMinutes(patch.targetMinutes)
+  ) {
+    record[ANSWER_KEY_TARGET_MINUTES] = patch.targetMinutes;
+  }
+  if (patch.targetDays !== undefined && isMovementTargetDays(patch.targetDays)) {
+    record[ANSWER_KEY_TARGET_DAYS] = patch.targetDays;
+  }
+  if (
+    patch.targetStrength !== undefined &&
+    isMovementTargetStrength(patch.targetStrength)
+  ) {
+    record[ANSWER_KEY_TARGET_STRENGTH] = patch.targetStrength;
   }
 
   return record;

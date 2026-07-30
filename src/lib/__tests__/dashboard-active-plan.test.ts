@@ -145,7 +145,7 @@ describe("dashboard-active-plan", () => {
     expect(href).toBe("/intake/plan/stress?from=dashboard");
   });
 
-  it("builds dashboard sub-view href for movement plan intervention", () => {
+  it("builds dashboard vandaag href for movement plan intervention", () => {
     const href = buildPriorityInterventionHref({
       priority: { id: "beweging" } as never,
       domainScores: {
@@ -161,7 +161,7 @@ describe("dashboard-active-plan", () => {
       activeHabit: null,
     });
 
-    expect(href).toBe("/dashboard?tab=vandaag&kompas=beweging&view=stappenplan");
+    expect(href).toBe("/dashboard?tab=vandaag&kompas=beweging");
   });
 
   it("prefers active habit plan href for intervention", () => {

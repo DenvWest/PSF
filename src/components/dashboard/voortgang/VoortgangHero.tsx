@@ -3,11 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { clarityTag } from "@/lib/clarity";
-import {
-  buildDashboardBewegingStappenplanHref,
-  buildDashboardVandaagHref,
-  supportsKompasDeepView,
-} from "@/lib/dashboard-url";
+import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import {
   buildVoortgangBewijsRegel,
@@ -97,10 +93,6 @@ export default function VoortgangHero({
     const domain = model.priority.id;
     trackEvent("dashboard_voortgang_domein_click", { domain });
     clarityTag("dashboard_voortgang", `domeinring_${domain}`);
-    if (supportsKompasDeepView(domain)) {
-      router.push(buildDashboardBewegingStappenplanHref());
-      return;
-    }
     router.push(buildDashboardVandaagHref(domain));
   };
 

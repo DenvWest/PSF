@@ -8,6 +8,13 @@
 > afvinken, tellen of vooruitblikken is, hoort niet in een scherm dat "waar sta ik" moet
 > beantwoorden. En: een ghost die je niet kunt bouwen is geen richting, maar ruis.
 
+> **Voorkeur (30 jul 2026).** Dennis is over v1 — de conversiekaart (hero, stage-model,
+> rail-inventaris) — tevredener dan over de niveau-herbouw van Statistieken in v2. Vervolgwerk
+> op Voortgang begint dus bij het v1-compositiemodel als referentiepunt; v2's kruimelpad/
+> accordeon-richting voor Statistieken is niet automatisch de volgende stap. Beweging heeft nu
+> voorrang — dit is een parkeerpunt voor wanneer Voortgang weer oppakt, geen beslissing over de
+> inhoud van v2 zelf.
+
 ---
 
 ## 1 · Trede 4 "In je omgeving"

@@ -2,18 +2,15 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   buildDashboardAgendaHref,
-  buildDashboardBewegingStappenplanHref,
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
   isValidAgendaDate,
   parseDagFromUrl,
-  parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
   parseVoortgangScreenFromUrl,
   syncDashboardDagParam,
-  syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardStatistiekenBlikParam,
   syncDashboardTabParam,
@@ -200,33 +197,6 @@ describe("parseKompasFromUrl", () => {
   });
 });
 
-describe("parseKompasDeepViewFromUrl", () => {
-  it("returns stappenplan for beweging + view param", () => {
-    expect(
-      parseKompasDeepViewFromUrl(
-        "http://localhost/dashboard?tab=vandaag&kompas=beweging&view=stappenplan",
-      ),
-    ).toBe("stappenplan");
-  });
-
-  it("returns programma for beweging + programma view", () => {
-    expect(
-      parseKompasDeepViewFromUrl(
-        "http://localhost/dashboard?tab=vandaag&kompas=beweging&view=programma",
-      ),
-    ).toBe("programma");
-  });
-
-  it("returns cockpit when view missing or other domain", () => {
-    expect(parseKompasDeepViewFromUrl("http://localhost/dashboard?kompas=beweging")).toBe(
-      "cockpit",
-    );
-    expect(
-      parseKompasDeepViewFromUrl("http://localhost/dashboard?kompas=slaap&view=stappenplan"),
-    ).toBe("cockpit");
-  });
-});
-
 describe("buildDashboardVandaagHref", () => {
   it("builds vandaag tab without kompas", () => {
     expect(buildDashboardVandaagHref()).toBe("/dashboard?tab=vandaag");
@@ -239,8 +209,8 @@ describe("buildDashboardVandaagHref", () => {
 });
 
 describe("buildDashboardPlanHref", () => {
-  it("routes movement plan to dashboard sub-view", () => {
-    expect(buildDashboardPlanHref("movement")).toBe(buildDashboardBewegingStappenplanHref());
+  it("routes movement plan to the dashboard vandaag view", () => {
+    expect(buildDashboardPlanHref("movement")).toBe(buildDashboardVandaagHref("beweging"));
   });
 
   it("keeps intake route for other plan domains", () => {
@@ -311,27 +281,6 @@ describe("syncDashboardKompasParam", () => {
     const nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=vandaag");
     expect(nextUrl).not.toContain("kompas=");
-
-    window.history.pushState = originalPush;
-  });
-});
-
-describe("syncDashboardKompasDeepView", () => {
-  it("sets view=stappenplan for beweging deep view", () => {
-    const originalPush = window.history.pushState;
-    const pushState = vi.fn();
-    window.history.pushState = pushState as typeof window.history.pushState;
-
-    Object.defineProperty(window, "location", {
-      configurable: true,
-      value: new URL("http://localhost/dashboard?tab=vandaag&kompas=beweging"),
-    });
-
-    syncDashboardKompasDeepView("beweging", "stappenplan");
-    expect(pushState).toHaveBeenCalledOnce();
-    const nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).toContain("kompas=beweging");
-    expect(nextUrl).toContain("view=stappenplan");
 
     window.history.pushState = originalPush;
   });

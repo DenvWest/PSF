@@ -26,11 +26,7 @@ import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
-import {
-  buildDashboardBewegingStappenplanHref,
-  buildDashboardVandaagHref,
-  supportsKompasDeepView,
-} from "@/lib/dashboard-url";
+import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -695,10 +691,6 @@ export default function VoortgangHub({
         onGoAgenda={onGoAgenda}
         onGoHermeting={onGoHermeting}
         onOpenDomain={(domain: PillarId) => {
-          if (supportsKompasDeepView(domain)) {
-            router.push(buildDashboardBewegingStappenplanHref());
-            return;
-          }
           router.push(buildDashboardVandaagHref(domain));
         }}
         onOpenStatistieken={() => openHub("statistieken", { blik: "advies" })}

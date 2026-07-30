@@ -1,0 +1,759 @@
+<title>Mijn Dag — log-prototype</title>
+<!--
+  MIJN DAG — het log-oppervlak.
+
+  Uitgangspunt: de gebruiker voert zelf in. Niets op dit scherm is berekend uit
+  een aanname. Elk getal dat je ziet, heeft iemand ingetypt of aangetikt.
+
+  Drie dingen die dit prototype bewijst:
+  1. De knoppen zijn aanpasbaar EN de aanpassing wordt vastgelegd — je ziet
+     per gelogd moment wat het advies was en wat jij ervan maakte.
+  2. Alles landt in één dagstreep. Beweging, voeding en supplementen tellen
+     op in hetzelfde totaal, live.
+  3. Het doel is van de gebruiker. Vrije tekst, zelf ingevuld, altijd zichtbaar
+     boven de dag.
+
+  Tokens overgenomen uit voortgang-statistieken-prebuild-v2.html.
+  Bewust single-theme donker — conform "App-tokens (het product — bewust
+  altijd donker)" uit beweging-cockpit-prototype-2026-07.html.
+
+  Geen localStorage: state leeft in-memory, net als in de app.
+-->
+<style>
+:root{
+  --shell:#1a2e1a;
+  --sage:#5A8F6A;
+  --sage-bright:#6FB07E;
+  --terra:#C8956C;
+  --terra-bright:#DCA97D;
+  --text:#F1EFE8;
+  --muted:#9FB0A6;
+  --subtle:#7E8C82;
+  --line:rgba(255,255,255,.10);
+  --line-soft:rgba(255,255,255,.06);
+  --tile:rgba(255,255,255,.04);
+  --sink:rgba(0,0,0,.22);
+  --f-sans:"DM Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --f-serif:"DM Serif Display",Georgia,serif;
+  --f-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100%}
+body{
+  font-family:var(--f-sans);color:var(--text);background-color:var(--shell);
+  background-image:radial-gradient(ellipse 130% 70% at 50% -8%, rgba(127,178,142,.30) 0%, rgba(33,56,31,.72) 38%, transparent 68%);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;
+  font-size:15px;line-height:1.5;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3{margin:0;font-weight:400;font-family:var(--f-serif);letter-spacing:-.005em}
+p{margin:0}
+[hidden]{display:none !important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--sage-bright);outline-offset:2px;border-radius:6px}
+
+.wrap{max-width:720px;margin:0 auto;padding:var(--s6) var(--s4) var(--s7)}
+@media (max-width:640px){ .wrap{padding:var(--s5) var(--s3) var(--s6)} }
+
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.lede{font-size:14px;line-height:1.55;color:var(--muted);max-width:60ch;text-wrap:pretty}
+
+/* ═══ Masthead ═══ */
+.mast{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s3);justify-content:space-between}
+.mast h1{font-size:clamp(24px,6vw,31px);line-height:1.15}
+.mast .date{font-size:12px;color:var(--subtle);letter-spacing:.04em}
+
+/* ═══ Doel — vrije tekst, van de gebruiker ═══ */
+.goal{
+  margin-top:var(--s5);border:1px solid var(--line);border-left:3px solid var(--sage);
+  background:var(--tile);border-radius:14px;padding:var(--s4);
+}
+.goal-in{
+  display:block;width:100%;margin-top:var(--s2);background:transparent;
+  border:none;border-bottom:1px dashed rgba(255,255,255,.22);
+  font-family:var(--f-serif);font-size:clamp(17px,4.2vw,20px);line-height:1.3;
+  color:var(--text);padding:var(--s1) 0 var(--s2);
+}
+.goal-in::placeholder{color:var(--subtle);font-style:italic}
+.goal-in:focus{outline:none;border-bottom-color:var(--sage-bright)}
+.goal-meta{margin-top:var(--s3);display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);align-items:center}
+.goal-link{font-size:12px;color:var(--muted)}
+.goal-link b{color:var(--sage-bright);font-weight:600}
+
+/* ═══ Dagstreep — het live totaal ═══ */
+.strip{
+  margin-top:var(--s4);border:1px solid var(--line);background:var(--sink);
+  border-radius:14px;padding:var(--s4);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3);
+}
+@media (max-width:520px){ .strip{grid-template-columns:1fr;gap:var(--s4)} }
+.tot{min-width:0}
+.tot .k{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.tot .v{
+  margin-top:var(--s1);font-family:var(--f-serif);font-size:26px;line-height:1.1;
+  font-variant-numeric:tabular-nums;
+}
+.tot .v small{font-family:var(--f-sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0}
+.tot .s{margin-top:var(--s1);font-size:11.5px;color:var(--subtle);line-height:1.35}
+.tot.mv .v{color:var(--sage-bright)}
+.tot.sup .v{color:var(--terra-bright)}
+
+/* ═══ Domeinblok ═══ */
+.block{
+  margin-top:var(--s4);border:1px solid var(--line);background:var(--tile);
+  border-radius:18px;padding:var(--s4);
+}
+.block > header{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:baseline;justify-content:space-between}
+.block h2{margin-top:var(--s1);font-size:clamp(19px,4.6vw,22px);line-height:1.22;text-wrap:balance}
+.advice{
+  margin-top:var(--s3);border-left:2px solid var(--sage);padding-left:var(--s3);
+  font-size:13px;line-height:1.5;color:var(--muted);max-width:58ch;
+}
+.advice b{color:var(--text);font-weight:600}
+.advice .src{display:block;margin-top:var(--s1);font-size:11px;color:var(--subtle)}
+
+/* ═══ Dials — aanpasbaar, met herkomst ═══ */
+.dials{margin-top:var(--s4);display:flex;flex-direction:column;gap:var(--s4)}
+.dial{min-width:0}
+.dial .dl{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:baseline;justify-content:space-between}
+.dial .dq{font-size:13px;font-weight:600;color:var(--text)}
+.origin{
+  font-family:var(--f-mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:999px;padding:2px var(--s2);color:var(--subtle);
+}
+.origin.user{border-color:rgba(111,176,126,.5);background:rgba(90,143,106,.14);color:var(--sage-bright)}
+
+.chips{margin-top:var(--s2);display:flex;flex-wrap:wrap;gap:var(--s2)}
+.chip{
+  border:1px solid var(--line);background:transparent;border-radius:999px;
+  padding:var(--s2) var(--s3);font-size:13px;font-weight:500;color:var(--muted);
+  transition:border-color .12s,background .12s,color .12s;
+}
+.chip:hover{border-color:rgba(255,255,255,.26);color:var(--text)}
+.chip[aria-pressed="true"]{
+  border-color:rgba(111,176,126,.6);background:rgba(90,143,106,.16);color:var(--text);
+}
+.chip.terra[aria-pressed="true"]{
+  border-color:rgba(220,169,125,.6);background:rgba(200,149,108,.16);
+}
+
+/* stepper voor minuten */
+.step{margin-top:var(--s2);display:flex;align-items:center;gap:var(--s3)}
+.step button{
+  width:40px;height:40px;flex:none;border:1px solid var(--line);background:transparent;
+  border-radius:11px;font-size:19px;line-height:1;color:var(--muted);
+}
+.step button:hover{border-color:rgba(255,255,255,.26);color:var(--text)}
+.step .val{
+  font-family:var(--f-serif);font-size:29px;line-height:1;min-width:96px;
+  font-variant-numeric:tabular-nums;
+}
+.step .val small{font-family:var(--f-sans);font-size:13px;color:var(--muted)}
+.step .adv{font-size:11.5px;color:var(--subtle);line-height:1.35}
+
+/* ═══ Primaire actie ═══ */
+.btn{
+  border:1px solid transparent;background:var(--sage);color:#0F1C10;border-radius:12px;
+  padding:var(--s3) var(--s5);font-size:14px;font-weight:600;
+}
+.btn:hover{background:var(--sage-bright)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--muted)}
+.btn.ghost:hover{border-color:rgba(255,255,255,.26);color:var(--text)}
+.acts{margin-top:var(--s4);display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+
+/* ═══ Gelogde regels ═══ */
+.logged{margin-top:var(--s4);border-top:1px solid var(--line-soft);padding-top:var(--s3)}
+.logged .lh{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
+.lrow{
+  display:flex;gap:var(--s3);align-items:flex-start;
+  padding:var(--s3) 0;border-bottom:1px solid var(--line-soft);
+}
+.lrow:last-child{border-bottom:none}
+.lrow .tick{
+  flex:none;width:18px;height:18px;margin-top:2px;border-radius:999px;
+  background:rgba(90,143,106,.22);color:var(--sage-bright);
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.lrow.t .tick{background:rgba(200,149,108,.22);color:var(--terra-bright)}
+.lrow .ld{flex:1;min-width:0}
+.lrow .ln{font-size:14px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.lrow .ls{margin-top:var(--s1);font-size:11.5px;color:var(--subtle);line-height:1.4}
+.lrow .ls .delta{color:var(--sage-bright);font-weight:600}
+.lrow .lt{flex:none;font-family:var(--f-mono);font-size:11px;color:var(--subtle)}
+.lrow .undo{
+  flex:none;border:none;background:transparent;padding:0;
+  font-size:11.5px;font-weight:600;color:var(--muted);text-decoration:underline;
+  text-underline-offset:2px;
+}
+.lrow .undo:hover{color:var(--text)}
+.empty{margin-top:var(--s3);font-size:13px;color:var(--subtle);font-style:italic}
+
+/* ═══ Supplementenrij ═══ */
+.supl{margin-top:var(--s4);display:flex;flex-direction:column}
+.sup-row{
+  display:flex;gap:var(--s3);align-items:center;
+  padding:var(--s3) 0;border-bottom:1px solid var(--line-soft);
+}
+.sup-row:last-child{border-bottom:none}
+.sup-row .sd{flex:1;min-width:0}
+.sup-row .sn{font-size:14px;font-weight:600;line-height:1.3}
+.sup-row .ss{margin-top:var(--s1);font-size:11.5px;color:var(--subtle);line-height:1.4}
+.sup-row .ss a{color:var(--terra-bright)}
+
+/* ═══ Wat dit optelt ═══ */
+.sums{margin-top:var(--s4);border:1px solid var(--line);background:var(--sink);border-radius:18px;padding:var(--s4)}
+.week{margin-top:var(--s4);display:flex;gap:var(--s2)}
+.day{flex:1;min-width:0;text-align:center}
+.day .dn{font-size:10px;color:var(--subtle);letter-spacing:.06em;text-transform:uppercase}
+.day .db{
+  margin-top:var(--s1);height:44px;border-radius:8px;background:rgba(255,255,255,.055);
+  display:flex;align-items:flex-end;overflow:hidden;
+}
+.day .df{width:100%;background:var(--sage);border-radius:8px 8px 0 0;transition:height .28s ease}
+.day.today .db{box-shadow:inset 0 0 0 1px rgba(111,176,126,.55)}
+.day .dm{margin-top:var(--s1);font-family:var(--f-mono);font-size:10px;color:var(--subtle)}
+.rowline{
+  display:flex;gap:var(--s3);align-items:baseline;justify-content:space-between;
+  padding:var(--s3) 0;border-bottom:1px solid var(--line-soft);
+}
+.rowline:last-child{border-bottom:none}
+.rowline .rk{font-size:13px;color:var(--muted)}
+.rowline .rv{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+
+.note{
+  margin-top:var(--s5);border:1px dashed var(--line);border-radius:14px;
+  padding:var(--s4);font-size:12.5px;line-height:1.55;color:var(--subtle);
+}
+.note b{color:var(--muted);font-weight:600}
+.note ul{margin:var(--s2) 0 0;padding-left:var(--s4)}
+.note li{margin-top:var(--s1)}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+}
+</style>
+
+<div class="wrap">
+
+  <div class="mast">
+    <h1>Mijn Dag</h1>
+    <span class="date mono">woensdag 30 juli</span>
+  </div>
+  <p class="lede" style="margin-top:var(--s3)">
+    Alles op dit scherm heb jij ingevoerd. Er wordt niets geschat en niets
+    omgerekend — wat je invult is wat er staat.
+  </p>
+
+  <!-- ═══ DOEL — vrije tekst, van de gebruiker ═══ -->
+  <section class="goal" aria-labelledby="goal-h">
+    <p class="eyebrow" id="goal-h">Mijn doel — jij schrijft het</p>
+    <input class="goal-in" id="goal" type="text" autocomplete="off"
+      value="In oktober de Grebbeberg oplopen zonder te stoppen"
+      placeholder="Wat wil je kunnen? Schrijf het in je eigen woorden…"
+      aria-label="Mijn doel">
+    <div class="goal-meta">
+      <span class="goal-link">Jij koppelde dit aan <b>conditie</b> en <b>beenkracht</b></span>
+      <span class="origin user">jouw doel</span>
+    </div>
+  </section>
+
+  <!-- ═══ DAGSTREEP — live totaal over drie domeinen ═══ -->
+  <section class="strip" aria-label="Totaal vandaag" aria-live="polite">
+    <div class="tot mv">
+      <p class="k">Bewogen</p>
+      <p class="v" id="t-min">0 <small>min</small></p>
+      <p class="s" id="t-min-s">nog niets gelogd</p>
+    </div>
+    <div class="tot">
+      <p class="k">Binnengekregen</p>
+      <p class="v" id="t-food">0 <small>van 4</small></p>
+      <p class="s" id="t-food-s">eiwitmomenten</p>
+    </div>
+    <div class="tot sup">
+      <p class="k">Supplementen</p>
+      <p class="v" id="t-sup">0 <small>van 2</small></p>
+      <p class="s" id="t-sup-s">volgens jouw lijst</p>
+    </div>
+  </section>
+
+  <!-- ═══ BEWEGING ═══ -->
+  <section class="block" aria-labelledby="mv-h">
+    <header>
+      <p class="eyebrow">Beweging</p>
+      <span class="origin" id="mv-origin">advies gevolgd</span>
+    </header>
+    <h2 id="mv-h">Wat heb je gedaan?</h2>
+
+    <div class="advice">
+      Uit je beweegcheck: <b>Zone 2</b>, <b>30 min</b>, <b>2× per week</b>.
+      Je conditiescore blijft achter op je kracht.
+      <span class="src">Beweegcheck van 14 juli · score 55</span>
+    </div>
+
+    <div class="dials">
+      <div class="dial">
+        <div class="dl">
+          <span class="dq">Wat deed je?</span>
+          <span class="origin" id="o-mode">advies</span>
+        </div>
+        <div class="chips" role="group" aria-label="Soort beweging">
+          <button type="button" class="chip" data-mode="Zone 2" aria-pressed="true">Zone 2</button>
+          <button type="button" class="chip" data-mode="Wandelen" aria-pressed="false">Wandelen</button>
+          <button type="button" class="chip" data-mode="Kracht thuis" aria-pressed="false">Kracht thuis</button>
+          <button type="button" class="chip" data-mode="Fietsen" aria-pressed="false">Fietsen</button>
+          <button type="button" class="chip" data-mode="Tuinieren" aria-pressed="false">Tuinieren</button>
+        </div>
+      </div>
+
+      <div class="dial">
+        <div class="dl">
+          <span class="dq">Hoeveel minuten?</span>
+          <span class="origin" id="o-min">advies</span>
+        </div>
+        <div class="step">
+          <button type="button" id="min-down" aria-label="Vijf minuten minder">−</button>
+          <span class="val mono" id="min-val" aria-live="polite" role="status">30 <small>min</small></span>
+          <button type="button" id="min-up" aria-label="Vijf minuten meer">+</button>
+          <span class="adv" id="min-adv">advies staat op 30</span>
+        </div>
+      </div>
+
+      <div class="dial">
+        <div class="dl">
+          <span class="dq">Hoe voelde het?</span>
+          <span class="origin user">jouw invoer</span>
+        </div>
+        <div class="chips" role="group" aria-label="Hoe het voelde">
+          <button type="button" class="chip" data-feel="licht" aria-pressed="false">Licht</button>
+          <button type="button" class="chip" data-feel="matig" aria-pressed="true">Matig</button>
+          <button type="button" class="chip" data-feel="zwaar" aria-pressed="false">Zwaar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="acts">
+      <button type="button" class="btn" id="log-mv">Log dit moment</button>
+      <button type="button" class="btn ghost" id="reset-mv">Terug naar advies</button>
+    </div>
+
+    <div class="logged">
+      <p class="lh">Gelogd vandaag</p>
+      <div id="mv-list"></div>
+      <p class="empty" id="mv-empty">Nog niets. Wat je hier logt, telt boven mee.</p>
+    </div>
+  </section>
+
+  <!-- ═══ VOEDING ═══ -->
+  <section class="block" aria-labelledby="fd-h">
+    <header>
+      <p class="eyebrow">Voeding</p>
+      <span class="origin">jouw invoer</span>
+    </header>
+    <h2 id="fd-h">Wat kreeg je binnen?</h2>
+
+    <div class="advice">
+      Uit je voedingscheck: <b>eiwit bij elke maaltijd</b> en <b>2× vis per week</b>.
+      Je gaf aan dat ontbijt meestal zonder eiwit gaat.
+      <span class="src">Voedingscheck van 14 juli · signaal: eiwit</span>
+    </div>
+
+    <div class="dials">
+      <div class="dial">
+        <div class="dl">
+          <span class="dq">Tik aan wat je at</span>
+          <span class="origin">telling, geen grammen</span>
+        </div>
+        <div class="chips" role="group" aria-label="Wat je at">
+          <button type="button" class="chip" data-food="Eiwit bij ontbijt" aria-pressed="false">Eiwit bij ontbijt</button>
+          <button type="button" class="chip" data-food="Eiwit bij lunch" aria-pressed="false">Eiwit bij lunch</button>
+          <button type="button" class="chip" data-food="Eiwit bij avondeten" aria-pressed="false">Eiwit bij avondeten</button>
+          <button type="button" class="chip" data-food="Eiwit na training" aria-pressed="false">Eiwit na training</button>
+          <button type="button" class="chip" data-food="Vette vis" aria-pressed="false">Vette vis</button>
+          <button type="button" class="chip" data-food="Groente 2 porties" aria-pressed="false">Groente 2 porties</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="logged">
+      <p class="lh">Vandaag aangetikt</p>
+      <div id="fd-list"></div>
+      <p class="empty" id="fd-empty">Nog niets aangetikt.</p>
+    </div>
+  </section>
+
+  <!-- ═══ SUPPLEMENTEN ═══ -->
+  <section class="block" aria-labelledby="sp-h">
+    <header>
+      <p class="eyebrow">Supplementen</p>
+      <span class="origin">jouw lijst</span>
+    </header>
+    <h2 id="sp-h">Wat heb je genomen?</h2>
+
+    <div class="advice" style="border-left-color:var(--terra)">
+      Uit jouw eigen beoordeelde lijst — je koos deze zelf na de vergelijking.
+      <span class="src">Status per dag is een telling van je gedrag, geen gemeten inname.</span>
+    </div>
+
+    <div class="supl" id="sp-list"></div>
+  </section>
+
+  <!-- ═══ WAT DIT OPTELT ═══ -->
+  <section class="sums" aria-labelledby="sum-h">
+    <p class="eyebrow">Wat dit optelt</p>
+    <h2 id="sum-h" style="margin-top:var(--s1);font-size:clamp(19px,4.6vw,22px)">Deze week</h2>
+
+    <div class="week" id="week" aria-label="Bewogen minuten per dag deze week"></div>
+
+    <div style="margin-top:var(--s5)">
+      <div class="rowline">
+        <span class="rk">Bewogen deze week</span>
+        <span class="rv mono" id="w-min">94 min · 3 momenten</span>
+      </div>
+      <div class="rowline">
+        <span class="rk">Eiwitmomenten deze week</span>
+        <span class="rv mono" id="w-food">9 van 21</span>
+      </div>
+      <div class="rowline">
+        <span class="rk">Supplementen genomen</span>
+        <span class="rv mono" id="w-sup">11 van 14</span>
+      </div>
+      <div class="rowline">
+        <span class="rk">Jouw doel</span>
+        <span class="rv" style="font-weight:500;color:var(--sage-bright)" id="w-goal">conditie — Zone 2 dekt dit</span>
+      </div>
+    </div>
+
+    <p class="lede" style="margin-top:var(--s4)" id="w-line">
+      Je zette je minuten deze week twee keer hoger dan het advies. Bij de
+      hermeting zie je wat dat met je conditiescore deed.
+    </p>
+  </section>
+
+  <div class="note">
+    <b>Wat dit prototype bewijst</b>
+    <ul>
+      <li>Elke knop is aanpasbaar én de aanpassing wordt vastgelegd: bij elk gelogd moment staat wat het advies was en wat jij ervan maakte.</li>
+      <li>Drie domeinen, één dagstreep. Beweging, voeding en supplementen tellen op in hetzelfde totaal.</li>
+      <li>Het doel is vrije tekst van de gebruiker en staat boven de dag, niet in een instelling.</li>
+    </ul>
+    <b style="display:block;margin-top:var(--s3)">Wat er nog niet is</b>
+    <ul>
+      <li><code>daily_action_log</code> heeft nu geen payload-kolom — minuten, hoe-het-voelde en modaliteit kunnen nog nergens heen.</li>
+      <li>Het doel als vrije tekst vraagt een besluit over moderatie en AVG art. 9 voordat het live kan.</li>
+      <li>De supplement-status is hier per dag; koppeling aan een echte lijst uit de vergelijking bestaat nog niet.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ADVICE_MIN = 30;
+  var ADVICE_MODE = "Zone 2";
+
+  var state = {
+    mode: ADVICE_MODE,
+    minutes: ADVICE_MIN,
+    feel: "matig",
+    moves: [],
+    foods: [],
+    sups: [
+      { id:"mag", name:"Magnesium", dose:"300 mg", note:"gekozen na jouw vergelijking", taken:false },
+      { id:"om3", name:"Omega-3",  dose:"1000 mg EPA/DHA", note:"gekozen na jouw vergelijking", taken:false }
+    ],
+    // vaste historie ma–di, woensdag is vandaag en komt uit de log
+    history: [
+      { d:"ma", min:32 },
+      { d:"di", min:0  },
+      { d:"wo", min:0, today:true },
+      { d:"do", min:0 },
+      { d:"vr", min:0 },
+      { d:"za", min:0 },
+      { d:"zo", min:0 }
+    ],
+    baseWeekMin: 62,   // ma 32 + eerdere 30 uit vorige log
+    baseWeekMoves: 2,
+    baseWeekFood: 9,
+    baseWeekSup: 11
+  };
+
+  function $(id){ return document.getElementById(id); }
+
+  function clockNow(){
+    // Vast tijdstip per log-moment zodat het prototype voorspelbaar blijft
+    var n = state.moves.length;
+    var h = 10 + n * 2;
+    return (h < 10 ? "0" + h : h) + ":" + (n % 2 === 0 ? "20" : "45");
+  }
+
+  function pressGroup(selector, attr, value){
+    var nodes = document.querySelectorAll(selector);
+    for (var i = 0; i < nodes.length; i++){
+      var el = nodes[i];
+      el.setAttribute("aria-pressed", el.getAttribute(attr) === value ? "true" : "false");
+    }
+  }
+
+  function renderDials(){
+    $("min-val").innerHTML = state.minutes + ' <small>min</small>';
+
+    var minChanged = state.minutes !== ADVICE_MIN;
+    var modeChanged = state.mode !== ADVICE_MODE;
+
+    $("o-min").textContent = minChanged ? "jouw keuze" : "advies";
+    $("o-min").className = "origin" + (minChanged ? " user" : "");
+    $("o-mode").textContent = modeChanged ? "jouw keuze" : "advies";
+    $("o-mode").className = "origin" + (modeChanged ? " user" : "");
+
+    if (minChanged){
+      var d = state.minutes - ADVICE_MIN;
+      $("min-adv").textContent = (d > 0 ? "+" + d : d) + " t.o.v. advies van " + ADVICE_MIN;
+    } else {
+      $("min-adv").textContent = "advies staat op " + ADVICE_MIN;
+    }
+
+    var changed = minChanged || modeChanged;
+    $("mv-origin").textContent = changed ? "aangepast door jou" : "advies gevolgd";
+    $("mv-origin").className = "origin" + (changed ? " user" : "");
+  }
+
+  function renderMoves(){
+    var host = $("mv-list");
+    host.innerHTML = "";
+    $("mv-empty").hidden = state.moves.length > 0;
+
+    state.moves.forEach(function(m, idx){
+      var row = document.createElement("div");
+      row.className = "lrow";
+
+      var sub = m.feel;
+      if (m.minutes !== m.adviceMin){
+        var d = m.minutes - m.adviceMin;
+        sub += ' · <span class="delta">advies ' + m.adviceMin + ', jij ' + m.minutes + '</span>';
+      } else {
+        sub += " · volgens advies";
+      }
+      if (m.mode !== ADVICE_MODE){
+        sub += ' · <span class="delta">eigen keuze modaliteit</span>';
+      }
+
+      row.innerHTML =
+        '<span class="tick" aria-hidden="true">✓</span>' +
+        '<span class="ld">' +
+          '<span class="ln">' + m.mode + ' · ' + m.minutes + ' min</span>' +
+          '<span class="ls">' + sub + '</span>' +
+        '</span>' +
+        '<span class="lt">' + m.at + '</span>';
+
+      var undo = document.createElement("button");
+      undo.type = "button";
+      undo.className = "undo";
+      undo.textContent = "Verwijder";
+      undo.setAttribute("aria-label", "Verwijder " + m.mode + " " + m.minutes + " minuten");
+      undo.addEventListener("click", function(){
+        state.moves.splice(idx, 1);
+        renderAll();
+      });
+      row.appendChild(undo);
+
+      host.appendChild(row);
+    });
+  }
+
+  function renderFoods(){
+    var host = $("fd-list");
+    host.innerHTML = "";
+    $("fd-empty").hidden = state.foods.length > 0;
+
+    state.foods.forEach(function(f){
+      var row = document.createElement("div");
+      row.className = "lrow";
+      row.innerHTML =
+        '<span class="tick" aria-hidden="true">✓</span>' +
+        '<span class="ld"><span class="ln">' + f + '</span>' +
+        '<span class="ls">telling, geen grammen</span></span>';
+      host.appendChild(row);
+    });
+  }
+
+  function renderSups(){
+    var host = $("sp-list");
+    host.innerHTML = "";
+
+    state.sups.forEach(function(s){
+      var row = document.createElement("div");
+      row.className = "sup-row";
+      row.innerHTML =
+        '<span class="sd"><span class="sn">' + s.name + ' · ' + s.dose + '</span>' +
+        '<span class="ss">' + s.note + '</span></span>';
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "chip terra";
+      btn.textContent = s.taken ? "Genomen" : "Nog niet";
+      btn.setAttribute("aria-pressed", s.taken ? "true" : "false");
+      btn.setAttribute("aria-label", s.name + (s.taken ? " genomen" : " nog niet genomen"));
+      btn.addEventListener("click", function(){
+        s.taken = !s.taken;
+        renderAll();
+      });
+      row.appendChild(btn);
+
+      host.appendChild(row);
+    });
+  }
+
+  function todayMinutes(){
+    return state.moves.reduce(function(sum, m){ return sum + m.minutes; }, 0);
+  }
+
+  function renderStrip(){
+    var min = todayMinutes();
+    $("t-min").innerHTML = min + ' <small>min</small>';
+    $("t-min-s").textContent = state.moves.length === 0
+      ? "nog niets gelogd"
+      : state.moves.length + (state.moves.length === 1 ? " moment" : " momenten") + " vandaag";
+
+    var eiwit = state.foods.filter(function(f){ return f.indexOf("Eiwit") === 0; }).length;
+    $("t-food").innerHTML = eiwit + ' <small>van 4</small>';
+    $("t-food-s").textContent = eiwit === 0
+      ? "eiwitmomenten"
+      : "eiwitmomenten · " + (state.foods.length - eiwit) + " overig";
+
+    var taken = state.sups.filter(function(s){ return s.taken; }).length;
+    $("t-sup").innerHTML = taken + ' <small>van ' + state.sups.length + '</small>';
+    $("t-sup-s").textContent = taken === state.sups.length
+      ? "je lijst is rond"
+      : "volgens jouw lijst";
+  }
+
+  function renderWeek(){
+    var min = todayMinutes();
+    state.history.forEach(function(h){ if (h.today) h.min = min; });
+
+    var peak = Math.max(45, Math.max.apply(null, state.history.map(function(h){ return h.min; })));
+    var host = $("week");
+    host.innerHTML = "";
+
+    state.history.forEach(function(h){
+      var cell = document.createElement("div");
+      cell.className = "day" + (h.today ? " today" : "");
+      var pct = h.min === 0 ? 0 : Math.max(8, Math.round((h.min / peak) * 100));
+      cell.innerHTML =
+        '<span class="dn">' + h.d + '</span>' +
+        '<span class="db"><span class="df" style="height:' + pct + '%"></span></span>' +
+        '<span class="dm">' + (h.min === 0 ? "—" : h.min) + '</span>';
+      host.appendChild(cell);
+    });
+
+    var wMin = state.baseWeekMin + min;
+    var wMoves = state.baseWeekMoves + state.moves.length;
+    $("w-min").textContent = wMin + " min · " + wMoves + (wMoves === 1 ? " moment" : " momenten");
+
+    var eiwit = state.foods.filter(function(f){ return f.indexOf("Eiwit") === 0; }).length;
+    $("w-food").textContent = (state.baseWeekFood + eiwit) + " van 21";
+
+    var taken = state.sups.filter(function(s){ return s.taken; }).length;
+    $("w-sup").textContent = (state.baseWeekSup + taken) + " van 14";
+
+    // De regel onderaan reageert op wat er werkelijk gelogd is
+    var over = state.moves.filter(function(m){ return m.minutes > m.adviceMin; }).length;
+    var kracht = state.moves.filter(function(m){ return m.mode === "Kracht thuis"; }).length;
+    var line;
+    if (state.moves.length === 0){
+      line = "Nog niets gelogd vandaag. Zodra je iets logt, verschuift deze week mee.";
+    } else if (over > 0){
+      line = "Je zette je minuten vandaag " + over + (over === 1 ? " keer" : " keer") +
+             " hoger dan het advies. Bij de hermeting zie je wat dat met je conditiescore deed.";
+    } else if (kracht > 0){
+      line = "Je logde kracht terwijl je advies op conditie staat. Beide tellen — " +
+             "je conditieprikkel staat deze week nog open.";
+    } else {
+      line = "Je volgde het advies. Bij de hermeting zie je wat deze weken met je conditiescore deden.";
+    }
+    $("w-line").textContent = line;
+
+    var goalTxt = ($("goal").value || "").trim();
+    $("w-goal").textContent = goalTxt === ""
+      ? "nog geen doel ingevuld"
+      : "conditie — " + (kracht > 0 ? "kracht helpt, Zone 2 dekt de basis" : "Zone 2 dekt dit");
+  }
+
+  function renderAll(){
+    renderDials();
+    renderMoves();
+    renderFoods();
+    renderSups();
+    renderStrip();
+    renderWeek();
+  }
+
+  // ── Beweging: modaliteit ──
+  document.querySelectorAll("[data-mode]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      state.mode = btn.getAttribute("data-mode");
+      pressGroup("[data-mode]", "data-mode", state.mode);
+      renderDials();
+    });
+  });
+
+  // ── Beweging: hoe het voelde ──
+  document.querySelectorAll("[data-feel]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      state.feel = btn.getAttribute("data-feel");
+      pressGroup("[data-feel]", "data-feel", state.feel);
+    });
+  });
+
+  // ── Beweging: minuten ──
+  $("min-up").addEventListener("click", function(){
+    state.minutes = Math.min(180, state.minutes + 5);
+    renderDials();
+  });
+  $("min-down").addEventListener("click", function(){
+    state.minutes = Math.max(5, state.minutes - 5);
+    renderDials();
+  });
+
+  $("reset-mv").addEventListener("click", function(){
+    state.minutes = ADVICE_MIN;
+    state.mode = ADVICE_MODE;
+    pressGroup("[data-mode]", "data-mode", state.mode);
+    renderDials();
+  });
+
+  $("log-mv").addEventListener("click", function(){
+    state.moves.push({
+      mode: state.mode,
+      minutes: state.minutes,
+      feel: state.feel,
+      adviceMin: ADVICE_MIN,
+      at: clockNow()
+    });
+    renderAll();
+  });
+
+  // ── Voeding ──
+  document.querySelectorAll("[data-food]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var val = btn.getAttribute("data-food");
+      var i = state.foods.indexOf(val);
+      if (i === -1){ state.foods.push(val); } else { state.foods.splice(i, 1); }
+      btn.setAttribute("aria-pressed", i === -1 ? "true" : "false");
+      renderStrip();
+      renderFoods();
+      renderWeek();
+    });
+  });
+
+  // ── Doel ──
+  $("goal").addEventListener("input", renderWeek);
+
+  renderAll();
+})();
+</script>

@@ -15,6 +15,14 @@ import {
   parseMovementPlanProfile,
 } from "@/lib/movement-plan-profile";
 import type { MovementTrainingLocation } from "@/data/movement/session-catalog";
+import {
+  isMovementTargetDays,
+  isMovementTargetMinutes,
+  isMovementTargetStrength,
+  type MovementTargetDays,
+  type MovementTargetMinutes,
+  type MovementTargetStrength,
+} from "@/data/movement/targets";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
@@ -125,8 +133,30 @@ export async function POST(request: NextRequest) {
   const hasFrequency = record.weeklyFrequency !== undefined;
   const hasLocation = record.trainingLocation !== undefined;
   const hasSports = record.sports !== undefined;
+  const hasTargetMinutes = record.targetMinutes !== undefined;
+  const hasTargetDays = record.targetDays !== undefined;
+  const hasTargetStrength = record.targetStrength !== undefined;
 
-  if (!hasPattern && !hasAnchor && !hasSport && !hasFrequency && !hasLocation && !hasSports) {
+  if (
+    !hasPattern &&
+    !hasAnchor &&
+    !hasSport &&
+    !hasFrequency &&
+    !hasLocation &&
+    !hasSports &&
+    !hasTargetMinutes &&
+    !hasTargetDays &&
+    !hasTargetStrength
+  ) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (hasTargetMinutes && !isMovementTargetMinutes(record.targetMinutes)) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (hasTargetDays && !isMovementTargetDays(record.targetDays)) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (hasTargetStrength && !isMovementTargetStrength(record.targetStrength)) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
   if (hasPattern && !isMovementStartPattern(record.startPattern)) {
@@ -212,6 +242,13 @@ export async function POST(request: NextRequest) {
       : {}),
     ...(hasSports && Array.isArray(record.sports)
       ? { sports: record.sports.slice(0, 3) as string[] }
+      : {}),
+    ...(hasTargetMinutes
+      ? { targetMinutes: record.targetMinutes as MovementTargetMinutes }
+      : {}),
+    ...(hasTargetDays ? { targetDays: record.targetDays as MovementTargetDays } : {}),
+    ...(hasTargetStrength
+      ? { targetStrength: record.targetStrength as MovementTargetStrength }
       : {}),
   });
 

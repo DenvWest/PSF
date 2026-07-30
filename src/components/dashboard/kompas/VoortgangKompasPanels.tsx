@@ -2,11 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import KompasVoortgangFocusBlock from "@/components/dashboard/kompas/KompasVoortgangFocusBlock";
-import {
-  buildDashboardBewegingStappenplanHref,
-  buildDashboardVandaagHref,
-  supportsKompasDeepView,
-} from "@/lib/dashboard-url";
+import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import type { AccountPriorityPrefData, DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
 type VoortgangKompasPanelsProps = {
@@ -22,10 +18,6 @@ export default function VoortgangKompasPanels({
   const router = useRouter();
 
   const openDomain = (domain: PillarId) => {
-    if (supportsKompasDeepView(domain)) {
-      router.push(buildDashboardBewegingStappenplanHref());
-      return;
-    }
     router.push(buildDashboardVandaagHref(domain));
   };
 

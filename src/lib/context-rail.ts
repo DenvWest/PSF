@@ -1,5 +1,4 @@
 import { PILLAR } from "@/data/dashboard";
-import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { PillarId } from "@/types/dashboard";
 
 /**
@@ -20,14 +19,7 @@ export type ContextRailDomainItem = {
   score: number;
 };
 
-export type ContextRailToolId =
-  | "vandaag"
-  | "stappenplan"
-  | "programma"
-  | "checkin"
-  | "supplementen"
-  | "gids"
-  | "inzichten";
+export type ContextRailToolId = "checkin" | "supplementen" | "gids" | "inzichten";
 
 export type ContextRailTool = {
   id: ContextRailToolId;
@@ -41,7 +33,6 @@ export type ContextRailTool = {
 
 export type ContextRailApi = {
   mode: ContextRailMode;
-  deepView: KompasDeepView;
   domains: ContextRailDomainItem[];
   tools: ContextRailTool[];
   onOpenDomain: (id: PillarId) => void;
@@ -75,7 +66,6 @@ export function buildKompasRailDomains(
 }
 
 export function buildBewegingRailTools(input: {
-  deepView: KompasDeepView;
   nutritionLogCompleted: boolean;
   /**
    * Nu niet gedragsbepalend: zonder aanbevelingen blijft de knop bruikbaar,
@@ -86,24 +76,6 @@ export function buildBewegingRailTools(input: {
   const supplementsLocked = !input.nutritionLogCompleted;
 
   return [
-    {
-      id: "vandaag",
-      label: "Overzicht",
-      icon: "Home",
-      active: input.deepView === "cockpit",
-    },
-    {
-      id: "stappenplan",
-      label: "Stappenplan",
-      icon: "RouteMap",
-      active: input.deepView === "stappenplan",
-    },
-    {
-      id: "programma",
-      label: "Programma",
-      icon: "Activity",
-      active: input.deepView === "programma",
-    },
     {
       id: "checkin",
       label: "Beweegcheck",

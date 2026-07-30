@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import IntakePlanPage from "@/components/intake/IntakePlanPage";
 import { getAccountFromCookie } from "@/lib/account-server";
-import { buildDashboardBewegingStappenplanHref } from "@/lib/dashboard-url";
+import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import {
   getPlanTemplate,
   isPlanTemplateDomain,
@@ -44,7 +44,7 @@ export default async function IntakePlanDomainPage({ params }: Props) {
   if (domain === "movement") {
     const account = await getAccountFromCookie();
     if (account) {
-      redirect(buildDashboardBewegingStappenplanHref());
+      redirect(buildDashboardVandaagHref("beweging"));
     }
   }
 

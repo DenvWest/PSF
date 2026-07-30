@@ -6,7 +6,6 @@ import {
 } from "@/lib/context-rail";
 
 const baseTools = {
-  deepView: "cockpit" as const,
   nutritionLogCompleted: true,
   hasRecommendations: true,
 };
@@ -59,29 +58,6 @@ describe("buildBewegingRailTools", () => {
     expect(supplementen?.disabledHint).toBeUndefined();
   });
 
-  it("markeert Overzicht als actief in de cockpit-weergave", () => {
-    const tools = buildBewegingRailTools({ ...baseTools, deepView: "cockpit" });
-
-    expect(tools.find((tool) => tool.id === "vandaag")?.label).toBe("Overzicht");
-    expect(tools.find((tool) => tool.id === "vandaag")?.active).toBe(true);
-    expect(tools.find((tool) => tool.id === "stappenplan")?.active).toBe(false);
-    expect(tools.find((tool) => tool.id === "programma")?.active).toBe(false);
-  });
-
-  it("markeert Stappenplan als actief in de plan-weergave", () => {
-    const tools = buildBewegingRailTools({ ...baseTools, deepView: "stappenplan" });
-
-    expect(tools.find((tool) => tool.id === "vandaag")?.active).toBe(false);
-    expect(tools.find((tool) => tool.id === "stappenplan")?.active).toBe(true);
-    expect(tools.find((tool) => tool.id === "programma")?.active).toBe(false);
-  });
-
-  it("markeert Programma als actief in de programma-weergave", () => {
-    const tools = buildBewegingRailTools({ ...baseTools, deepView: "programma" });
-
-    expect(tools.find((tool) => tool.id === "programma")?.active).toBe(true);
-  });
-
   it("houdt de beweegcheck een echte link naar de intake", () => {
     const tools = buildBewegingRailTools(baseTools);
 
@@ -93,7 +69,7 @@ describe("buildBewegingRailTools", () => {
   it("bevat ook de gratis Bewegingsgids en Leefstijl & inzichten als echte links", () => {
     const tools = buildBewegingRailTools(baseTools);
 
-    expect(tools).toHaveLength(7);
+    expect(tools).toHaveLength(4);
     expect(tools.find((tool) => tool.id === "gids")?.href).toBe("/gids/beweging");
     expect(tools.find((tool) => tool.id === "inzichten")?.href).toBe("/inzichten");
   });

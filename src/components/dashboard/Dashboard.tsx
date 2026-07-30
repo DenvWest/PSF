@@ -25,7 +25,6 @@ import {
   DomainDeepTool,
 } from "@/components/dashboard/DomainDeepTool";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
-import KompasDepthStrip from "@/components/dashboard/KompasDepthStrip";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MetingenCard from "@/components/dashboard/MetingenCard";
@@ -122,7 +121,6 @@ import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
-import MovementWeekRhythm from "@/components/dashboard/beweging/MovementWeekRhythm";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
@@ -159,18 +157,14 @@ import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
   isValidAgendaDate,
   parseDagFromUrl,
-  parseKompasDeepViewFromUrl,
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
   parseVoortgangScreenFromUrl,
-  supportsKompasDeepView,
   syncDashboardDagParam,
-  syncDashboardKompasDeepView,
   syncDashboardKompasParam,
   syncDashboardStatistiekenBlikParam,
   syncDashboardTabParam,
   syncDashboardVoortgangScreenParam,
-  type KompasDeepView,
   type SyncDashboardVoortgangOptions,
 } from "@/lib/dashboard-url";
 import { isStatistiekenBlik, resolveDefaultStatistiekenBlik } from "@/lib/statistieken-blik";
@@ -197,7 +191,6 @@ type DashboardProps = {
   initialVoortgangScreen?: VoortgangScreen;
   initialStatistiekenBlik?: StatistiekenBlik;
   initialKompasView?: PillarId;
-  initialKompasDeepView?: KompasDeepView;
   sleepFocus?: SleepFocusKey | null;
 };
 
@@ -227,7 +220,6 @@ type SharedSectionProps = {
   onStatistiekenBlikChange: (blik: StatistiekenBlik) => void;
   onOpenInzichten: () => void;
   initialKompasView?: PillarId;
-  initialKompasDeepView?: KompasDeepView;
   prefUpdatedAt: string | null;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   sleepFocus: SleepFocusKey | null;
@@ -2996,7 +2988,6 @@ const KompasHome = ({
   onAgendaDateChange: _onAgendaDateChange,
   onPrefUpdated,
   initialKompasView,
-  initialKompasDeepView,
   kompasResetSignal: _kompasResetSignal,
   prefUpdatedAt: _prefUpdatedAt,
   onDomainViewChange,
@@ -3009,12 +3000,6 @@ const KompasHome = ({
       return parseKompasFromUrl(window.location.href);
     }
     return initialKompasView ?? null;
-  });
-  const [deepView, setDeepView] = useState<KompasDeepView>(() => {
-    if (typeof window !== "undefined") {
-      return parseKompasDeepViewFromUrl(window.location.href);
-    }
-    return initialKompasDeepView ?? "cockpit";
   });
   const [makePriorityBusy, setMakePriorityBusy] = useState(false);
   const showRemeasureReminder =
@@ -3066,11 +3051,10 @@ const KompasHome = ({
   const railTools = useMemo(
     () =>
       buildBewegingRailTools({
-        deepView,
         nutritionLogCompleted,
         hasRecommendations: railHasMovementRecommendations,
       }),
-    [deepView, nutritionLogCompleted, railHasMovementRecommendations],
+    [nutritionLogCompleted, railHasMovementRecommendations],
   );
 
   useEffect(() => {
@@ -3085,20 +3069,18 @@ const KompasHome = ({
   useEffect(() => {
     const onPopState = () => {
       setDomainView(parseKompasFromUrl(window.location.href));
-      setDeepView(parseKompasDeepViewFromUrl(window.location.href));
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
-  const setKompasDomain = (domain: PillarId | null, view: KompasDeepView = "cockpit") => {
+  const setKompasDomain = (domain: PillarId | null) => {
     setDomainView(domain);
-    setDeepView(view);
-    syncDashboardKompasDeepView(domain, view);
+    syncDashboardKompasParam(domain);
   };
 
   const closeView = () => {
-    setKompasDomain(null, "cockpit");
+    setKompasDomain(null);
   };
 
   const handleDomainBack = () => {
@@ -3107,12 +3089,7 @@ const KompasHome = ({
     }
     trackEvent("dashboard_kompas_domain_back_click", {
       from_domain: domainView,
-      from_level:
-        deepView === "stappenplan"
-          ? "plan"
-          : deepView === "programma"
-            ? "programma"
-            : "cockpit",
+      from_level: "cockpit",
     });
     clarityTag("dashboard_kompas_topnav", "back");
     closeView();
@@ -3128,7 +3105,7 @@ const KompasHome = ({
       surface: "top_nav",
     });
     clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
-    setKompasDomain(toDomain, "cockpit");
+    setKompasDomain(toDomain);
   };
 
   const openDomain = (
@@ -3137,43 +3114,7 @@ const KompasHome = ({
   ) => {
     trackEvent("dashboard_kompas_domain_open", { domain, surface });
     clarityTag("dashboard_kompas_domain", domain);
-    setKompasDomain(domain, "cockpit");
-  };
-
-  const openStappenplan = (
-    surface: "kompas_beweging" | "context_rail" = "kompas_beweging",
-  ) => {
-    setDeepView("stappenplan");
-    syncDashboardKompasDeepView("beweging", "stappenplan");
-    trackEvent("dashboard_beweging_plan_click", {
-      surface,
-      nav_mode: "dashboard_view",
-    });
-    clarityTag("dashboard_kompas_view", "stappenplan");
-  };
-
-  const openProgramma = (
-    from: "kompas_beweging" | "context_rail" | "stappenplan_card" = "kompas_beweging",
-  ) => {
-    setDeepView("programma");
-    syncDashboardKompasDeepView("beweging", "programma");
-    trackEvent("dashboard_beweging_programma_open", { from });
-    emitAccountClientEvent("dashboard.beweging_programma_open", { from });
-    clarityTag("dashboard_kompas_view", "programma");
-  };
-
-  const closeDeepView = () => {
-    setDeepView("cockpit");
-    syncDashboardKompasDeepView("beweging", "cockpit");
-    trackEvent("dashboard_kompas_domain_back_click", {
-      from_domain: "beweging",
-      from_level: deepView === "programma" ? "programma" : "plan",
-    });
-    clarityTag("dashboard_kompas_topnav", "plan_to_cockpit");
-  };
-
-  const closeStappenplan = () => {
-    closeDeepView();
+    setKompasDomain(domain);
   };
 
   const scrollToBewegingSupplementen = () => {
@@ -3187,34 +3128,6 @@ const KompasHome = ({
   };
 
   const handleRailToolClick = (tool: ContextRailToolId) => {
-    if (tool === "vandaag") {
-      trackEvent("dashboard_context_rail_tool_click", {
-        tool: "vandaag",
-        domain: "beweging",
-      });
-      clarityTag("dashboard_context_rail", "beweging_vandaag");
-      if (deepView !== "cockpit") {
-        closeDeepView();
-      }
-      return;
-    }
-
-    if (tool === "stappenplan") {
-      clarityTag("dashboard_context_rail", "beweging_stappenplan");
-      if (deepView !== "stappenplan") {
-        openStappenplan("context_rail");
-      }
-      return;
-    }
-
-    if (tool === "programma") {
-      clarityTag("dashboard_context_rail", "beweging_programma");
-      if (deepView !== "programma") {
-        openProgramma("context_rail");
-      }
-      return;
-    }
-
     if (tool === "checkin") {
       // Navigatie loopt via de Link in de rail; hier alleen de meting.
       trackEvent("dashboard_beweging_checkin_click", {
@@ -3242,14 +3155,6 @@ const KompasHome = ({
       target: "scroll",
     });
     clarityTag("dashboard_context_rail", "beweging_supplementen");
-    if (deepView === "stappenplan" || deepView === "programma") {
-      setDeepView("cockpit");
-      syncDashboardKompasDeepView("beweging", "cockpit");
-      requestAnimationFrame(() =>
-        requestAnimationFrame(scrollToBewegingSupplementen),
-      );
-      return;
-    }
     scrollToBewegingSupplementen();
   };
 
@@ -3282,7 +3187,6 @@ const KompasHome = ({
     }
     onContextRailApi({
       mode: railMode,
-      deepView,
       domains: railDomains,
       tools: domainView === "beweging" ? railTools : [],
       onOpenDomain: (domain) => contextRailHandlersRef.current.onOpenDomain(domain),
@@ -3292,7 +3196,7 @@ const KompasHome = ({
     return () => {
       onContextRailApi(null);
     };
-  }, [onContextRailApi, railMode, deepView, railDomains, railTools, domainView]);
+  }, [onContextRailApi, railMode, railDomains, railTools, domainView]);
 
   useEffect(() => {
     if (!onDomainNavApi) {
@@ -3314,18 +3218,6 @@ const KompasHome = ({
   if (!currentModel) {
     return null;
   }
-
-  const handleBreadcrumbKompas = () => {
-    if (!domainView) {
-      return;
-    }
-    trackEvent("dashboard_kompas_domain_back_click", {
-      from_domain: domainView,
-      from_level: "plan",
-    });
-    clarityTag("dashboard_kompas_topnav", "plan_to_kompas");
-    closeView();
-  };
 
   const makeBewegingPriority = async () => {
     if (makePriorityBusy) {
@@ -3362,54 +3254,16 @@ const KompasHome = ({
       content
     );
 
-  const selectBewegingDeepView = (view: KompasDeepView) => {
-    if (view === "cockpit") {
-      closeDeepView();
-      return;
-    }
-    if (view === "stappenplan") {
-      openStappenplan();
-      return;
-    }
-    openProgramma();
-  };
-
   if (domainView === "beweging") {
-    // Beweging = referentie-cockpit met eigen wrapper i.p.v. withDomainTopNav,
-    // omdat de generieke DomainTodayStrip hier vervalt. De domein-nav zit in de
-    // cockpit-header (domainNav), niet in de content.
-    return (
-      <div className="-mt-0.5 flex flex-col gap-3.5">
-        {deepView === "stappenplan" ? (
-          <KompasDepthStrip
-            onKompas={handleBreadcrumbKompas}
-            onDomain={closeStappenplan}
-            domainLabel="Beweging"
-            depthLabel="Jouw stappenplan"
-          />
-        ) : null}
-        {deepView === "programma" ? (
-          <KompasDepthStrip
-            onKompas={handleBreadcrumbKompas}
-            onDomain={closeDeepView}
-            domainLabel="Beweging"
-            depthLabel="Programma"
-          />
-        ) : null}
-        <BewegingScreen
-          model={currentModel}
-          slot={todaySlot}
-          deepView={deepView}
-          sessionId={data?.sessionId ?? null}
-          nutritionLogCompleted={nutritionLogCompleted}
-          onGoAgenda={onGoAgenda}
-          onMakePriority={() => void makeBewegingPriority()}
-          makePriorityBusy={makePriorityBusy}
-          onOpenPlan={() => openStappenplan()}
-          onOpenProgramma={() => openProgramma("stappenplan_card")}
-          onSelectDeepView={selectBewegingDeepView}
-        />
-      </div>
+    return withDomainTopNav(
+      <BewegingScreen
+        model={currentModel}
+        slot={todaySlot}
+        nutritionLogCompleted={nutritionLogCompleted}
+        onGoAgenda={onGoAgenda}
+        onMakePriority={() => void makeBewegingPriority()}
+        makePriorityBusy={makePriorityBusy}
+      />,
     );
   }
   if (domainView === "stress") {
@@ -3462,18 +3316,7 @@ const KompasHome = ({
           onGoAgenda={(date) => onGoAgenda(date)}
           onRemeasure={onRemeasure}
           onOpenDomain={(domain) => openDomain(domain, "leefstijlkompas")}
-          onOpenPriority={(domain) => {
-            if (supportsKompasDeepView(domain)) {
-              trackEvent("dashboard_beweging_plan_click", {
-                surface: "kompas_home",
-                nav_mode: "dashboard_view",
-              });
-              clarityTag("dashboard_kompas_view", "stappenplan");
-              setKompasDomain(domain, "stappenplan");
-            } else {
-              openDomain(domain, "leefstijlkompas");
-            }
-          }}
+          onOpenPriority={(domain) => openDomain(domain, "leefstijlkompas")}
           onPrefUpdated={onPrefUpdated}
         />
       </CockpitShell>
@@ -3692,7 +3535,6 @@ export default function Dashboard({
   initialVoortgangScreen,
   initialStatistiekenBlik,
   initialKompasView,
-  initialKompasDeepView,
   sleepFocus = null,
 }: DashboardProps) {
   const router = useRouter();
@@ -4019,7 +3861,6 @@ export default function Dashboard({
     onStatistiekenBlikChange: handleStatistiekenBlikChange,
     onOpenInzichten: () => handleVoortgangScreenChange("inzichten"),
     initialKompasView,
-    initialKompasDeepView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
     onPrefUpdated: setPriorityPrefOverride,
     sleepFocus,
@@ -4125,14 +3966,7 @@ export default function Dashboard({
   const remeasureAction = data?.remeasure
     ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
     : undefined;
-  // Deze week is beweging-specifiek (leest daily_action_log voor dat domein)
-  // en leeft als compacte, inspector-stijl kaart naast de context-kaarten.
-  const inspectorExtra = (
-    <>
-      {viewedDomain === "beweging" ? <MovementWeekRhythm /> : null}
-      {dashboardInfoCard}
-    </>
-  );
+  const inspectorExtra = <>{dashboardInfoCard}</>;
 
   // De linker rail volgt dezelfde context als de header: domeinlijst op de
   // Kompas-home, Kompas-knop + evt. eigen tools bij een open domein, profiel

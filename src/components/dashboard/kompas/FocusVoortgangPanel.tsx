@@ -4,7 +4,6 @@ import * as Icons from "@/components/app/icons";
 import FocusPickerCore from "@/components/dashboard/focus/FocusPickerCore";
 import FocusPill from "@/components/dashboard/focus/FocusPill";
 import { clarityTag } from "@/lib/clarity";
-import { supportsKompasDeepView } from "@/lib/dashboard-url";
 import { buildKompasDomainRows } from "@/lib/kompas-home";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getNextVitalityBand, getVitalityBand } from "@/lib/vitality-gauge";
@@ -44,8 +43,7 @@ export default function FocusVoortgangPanel({
   const nextBand = getNextVitalityBand(score);
   const target = nextBand ? nextBand.min : 100;
   const baseline = delta != null ? Math.min(100, Math.max(0, score - delta)) : null;
-  const hasStappenplan = supportsKompasDeepView(priorityRow.id);
-  const linkLabel = hasStappenplan ? "Stappenplan" : `Open ${priorityRow.label.toLowerCase()}`;
+  const linkLabel = `Open ${priorityRow.label.toLowerCase()}`;
 
   const explainer = getVitalityExplainer({
     vitality: model.vitality,

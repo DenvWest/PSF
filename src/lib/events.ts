@@ -47,6 +47,7 @@ export const DOMAIN_EVENT_TYPES = [
   "plan.daily_rhythm_clicked",
   "plan.week_category_selected",
   "movement.session_logged",
+  "movement.target_set",
   "movement.location_selected",
   "movement.sport_selected",
   "movement.gap_shown",

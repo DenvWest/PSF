@@ -8,6 +8,10 @@
 > staat per item in [`voortgang-plan-later.md`](voortgang-plan-later.md); daar staat ook de
 > 375px- en sticky-meting van v2 (89px van de 96px). Deze prebuild blijft ongewijzigd als
 > referentie staan.
+>
+> **Voorkeur (30 jul 2026).** Dennis is over déze prebuild — de conversiekaart — tevredener dan
+> over de niveau-herbouw van Statistieken in v2. Zie de toelichting bovenaan
+> [`voortgang-plan-later.md`](voortgang-plan-later.md).
 
 > Bij [`voortgang-conversiekaart-prebuild-2026-07.html`](voortgang-conversiekaart-prebuild-2026-07.html) (geland `a7bc778`). Statisch geverifieerd op 375px en ≥1280px + 4 kleine fixes (zie onderaan). Geen React aangeraakt.
 >

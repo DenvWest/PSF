@@ -50,6 +50,7 @@ type MovementTodayHeroProps = {
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
+  onStateChange?: (state: { done: boolean }) => void;
 };
 
 function stepRationale(stepId: string): string | null {
@@ -142,6 +143,7 @@ export default function MovementTodayHero({
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
+  onStateChange,
 }: MovementTodayHeroProps) {
   const shownRef = useRef(false);
   const [selectedKind, setSelectedKind] = useState<TodayChoiceKind | null>(null);
@@ -151,6 +153,10 @@ export default function MovementTodayHero({
   const [logHydrated, setLogHydrated] = useState(false);
   const [noTimeActive, setNoTimeActive] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
+  // Wijzig keuze opent bewust de volledige 3-kaarten-lijst; zonder deze vlag
+  // zou het opnieuw-op-null-zetten van selectedKind meteen de auto-keuze
+  // hieronder opnieuw laten triggeren.
+  const [pickerRequested, setPickerRequested] = useState(false);
 
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hidden = slot ? isPlanStepHidden(model, slot) : true;
@@ -225,6 +231,12 @@ export default function MovementTodayHero({
   });
 
   useEffect(() => {
+    if (loaded) {
+      onStateChange?.({ done });
+    }
+  }, [loaded, done, onStateChange]);
+
+  useEffect(() => {
     if (!active || choiceOptions.length === 0) {
       return;
     }
@@ -259,6 +271,23 @@ export default function MovementTodayHero({
       cancelled = true;
     };
   }, [active, choiceOptions]);
+
+  // Het voorstel staat al vast vóórdat de gebruiker iets kiest: geen 3-kaarten
+  // keuzescherm als startpunt, maar direct de aanbevolen (of anders: geplande
+  // "trainen") tier. "Wijzig keuze" blijft de expliciete weg naar de volledige
+  // lijst — zie pickerRequested. Aangepast tijdens render (niet in een effect)
+  // zodat er geen extra, cascaderende re-render ontstaat — zelfde patroon als
+  // de trackedValue-vergelijking in MovementPlanAdjustSheet.
+  if (logHydrated && selectedKind == null && !pickerRequested && choiceOptions.length > 0) {
+    const kind = recommendedKind ?? "trainen";
+    setSelectedKind(kind);
+    if (kind === "trainen") {
+      setTrainingGateView("question");
+      setTrainingGateCleared(false);
+    } else {
+      setTrainingGateCleared(true);
+    }
+  }
 
   useEffect(() => {
     if (shownRef.current || !active) {
@@ -312,6 +341,7 @@ export default function MovementTodayHero({
   const selectChoice = (kind: TodayChoiceKind) => {
     invalidateDailyLogCache("beweging");
     trackStepChoice(kind);
+    setPickerRequested(false);
     setNoTimeActive(false);
     setWhyOpen(false);
     setFreshChoice(true);
@@ -333,6 +363,7 @@ export default function MovementTodayHero({
     });
     clarityTag("dashboard_kompas_beweging", "step_alternative_wijzig_keuze");
     setSelectedKind(null);
+    setPickerRequested(true);
     setFreshChoice(false);
     setNoTimeActive(false);
     setWhyOpen(false);
@@ -428,11 +459,14 @@ export default function MovementTodayHero({
   const shellClass =
     "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-4";
 
-  if (!logHydrated) {
+  // De tweede voorwaarde vangt het ene render-frame tussen hydratatie en de
+  // auto-keuze-effect hierboven op, zodat de 3-kaarten-lijst nooit even
+  // opflikkert vóór het voorstel verschijnt.
+  if (!logHydrated || (selectedKind == null && !pickerRequested)) {
     return (
       <section aria-label="Vandaag — beweging" className={shellClass}>
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
-          Vandaag · kies wat past
+          Vandaag
         </p>
         <p className="mt-3 text-[14px] text-[#9FB0A6]">Even laden…</p>
       </section>
@@ -574,33 +608,45 @@ export default function MovementTodayHero({
             <Icons.Clock s={12} /> {activeChoice.durationLabel}
           </p>
 
-          <button
-            type="button"
-            aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
-            aria-pressed={done}
-            disabled={!loaded || busy}
-            onClick={() => void toggle()}
-            className="mt-4 flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
-            style={{
-              background: done ? "rgba(90,143,106,0.22)" : "var(--ac)",
-              color: done ? "#E7EDE8" : "#0f1c10",
-            }}
-          >
-            {done ? (
-              <>
-                <Icons.Check s={16} /> Gedaan
-              </>
-            ) : (
-              "Markeer als gedaan"
-            )}
-          </button>
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
+              aria-pressed={done}
+              disabled={!loaded || busy}
+              onClick={() => void toggle()}
+              className="flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
+              style={{
+                background: done ? "rgba(90,143,106,0.22)" : "var(--ac)",
+                color: done ? "#E7EDE8" : "#0f1c10",
+              }}
+            >
+              {done ? (
+                <>
+                  <Icons.Check s={16} /> Gedaan
+                </>
+              ) : (
+                "Gedaan"
+              )}
+            </button>
+            {!done && activeChoice.kind !== "herstel" && !noTimeActive ? (
+              <button
+                type="button"
+                onClick={() => selectNoTime(activeChoice.kind)}
+                className="flex min-h-12 flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl border border-white/15 bg-transparent px-4 text-[14px] font-semibold text-[#E7EDE8]"
+              >
+                Ik doe de korte
+                <span className="text-[11px] font-normal text-[#9FB0A6]">telt volledig mee</span>
+              </button>
+            ) : null}
+          </div>
 
           {done ? (
             <p className="mt-3 text-center text-[13px] text-[#9FB0A6]">
               Morgen kies je opnieuw wat past.
             </p>
           ) : (
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            <div className="mt-3 flex items-center justify-center">
               <button
                 type="button"
                 onClick={resetChoice}
@@ -608,15 +654,6 @@ export default function MovementTodayHero({
               >
                 Wijzig keuze
               </button>
-              {activeChoice.kind !== "herstel" && !noTimeActive ? (
-                <button
-                  type="button"
-                  onClick={() => selectNoTime(activeChoice.kind)}
-                  className="cursor-pointer border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6]"
-                >
-                  Geen tijd vandaag?
-                </button>
-              ) : null}
             </div>
           )}
 

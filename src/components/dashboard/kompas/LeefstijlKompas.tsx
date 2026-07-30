@@ -5,7 +5,6 @@ import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { clarityTag } from "@/lib/clarity";
-import { supportsKompasDeepView } from "@/lib/dashboard-url";
 import {
   buildKompasDomainRows,
   type KompasDomainRow,
@@ -208,10 +207,7 @@ function FocusStrip({
   onOpenPriority: (domain: PillarId) => void;
 }) {
   const priority = model.priority;
-  const hasStappenplan = supportsKompasDeepView(priority.id);
-  const linkLabel = hasStappenplan
-    ? "Stappenplan"
-    : `Open ${priority.label.toLowerCase()}`;
+  const linkLabel = `Open ${priority.label.toLowerCase()}`;
 
   const handleClick = () => {
     clarityTag("dashboard_kompas_home", `focus_${priority.id}`);

@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MovementCockpit from "@/components/dashboard/beweging/MovementCockpit";
-import MovementPlanDeepBody from "@/components/dashboard/beweging/MovementPlanDeepBody";
-import MovementProgramView from "@/components/dashboard/beweging/MovementProgramView";
-import BewegingViewNav from "@/components/dashboard/beweging/BewegingViewNav";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import {
   buildMovementRecommendations,
@@ -18,17 +15,6 @@ import {
 import { clarityTag } from "@/lib/clarity";
 import { BEWEGING_SUPPLEMENT_ANCHOR } from "@/lib/context-rail";
 import { trackEvent } from "@/lib/ga4";
-import { buildDomainTrendRow } from "@/lib/leefstijllijn";
-import { movementDirection, movementStartStatement } from "@/lib/movement-delta";
-import {
-  parseMovementPlanProfile,
-  resolveEffectivePlanProfile,
-} from "@/lib/movement-plan-profile";
-import {
-  getMovementSessionCatalogEntry,
-  resolveRecommendedSessionVariant,
-} from "@/data/movement/session-catalog";
-import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type { DashboardModel } from "@/types/dashboard";
@@ -72,32 +58,20 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
 export default function BewegingScreen({
   model,
   slot,
-  deepView = "cockpit",
-  sessionId = null,
   nutritionLogCompleted = false,
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
-  onOpenPlan,
-  onOpenProgramma,
-  onSelectDeepView,
 }: {
   model: DashboardModel;
   slot: WeekDaySlot | null;
-  deepView?: KompasDeepView;
-  sessionId?: string | null;
   nutritionLogCompleted?: boolean;
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
-  onOpenPlan?: () => void;
-  onOpenProgramma?: () => void;
-  onSelectDeepView?: (view: KompasDeepView) => void;
 }) {
-  const isPlanView = deepView === "stappenplan";
-  const isProgrammaView = deepView === "programma";
-  const isOverzichtView = !isPlanView && !isProgrammaView;
   const premiumShownRef = useRef(false);
+  const [done, setDone] = useState(false);
   const session = sessionFromModel(model);
   const nutritionHint = getMovementNutritionHint(session);
   const recommendations = buildMovementRecommendations(session, {
@@ -105,30 +79,6 @@ export default function BewegingScreen({
   });
   const showActiveStep =
     model.activeHabit?.domain === "movement" && model.activeHabit.title;
-
-  const trendRow = useMemo(() => buildDomainTrendRow(model, "beweging"), [model]);
-  const remeasureLine = useMemo(() => {
-    const baseline = trendRow.baselineScore;
-    if (baseline == null) {
-      return null;
-    }
-    return movementStartStatement(movementDirection(baseline, trendRow.currentScore));
-  }, [trendRow]);
-
-  const effectiveProfile = useMemo(
-    () => resolveEffectivePlanProfile(parseMovementPlanProfile(model.answers ?? {}), model.answers?.MOV_STR),
-    [model.answers],
-  );
-
-  const programEntry = useMemo(() => {
-    const variant = resolveRecommendedSessionVariant({
-      startPattern: effectiveProfile.startPattern,
-      movStr: model.answers?.MOV_STR,
-      trainingLocation: effectiveProfile.trainingLocation,
-      preferredSport: effectiveProfile.preferredSport,
-    });
-    return getMovementSessionCatalogEntry(variant) ?? null;
-  }, [effectiveProfile, model.answers?.MOV_STR]);
 
   useEffect(() => {
     if (premiumShownRef.current) {
@@ -138,12 +88,6 @@ export default function BewegingScreen({
     trackEvent("dashboard_beweging_premium_upsell", { surface: "kompas_beweging" });
     clarityTag("dashboard_beweging_premium", "shown");
   }, []);
-
-  useEffect(() => {
-    if (isProgrammaView) {
-      clarityTag("dashboard_kompas_view", "programma");
-    }
-  }, [isProgrammaView]);
 
   const logEnabled = isMovementLogEnabled();
 
@@ -229,114 +173,107 @@ export default function BewegingScreen({
 
   return (
     <div className="flex flex-col gap-3 pb-16 md:pb-0">
-      {isOverzichtView ? (
-        <MovementCockpit
-          model={model}
-          slot={slot}
-          deepView={deepView}
-          onGoAgenda={onGoAgenda}
-          onMakePriority={onMakePriority}
-          makePriorityBusy={makePriorityBusy}
-          onOpenPlan={onOpenPlan}
-          onOpenProgramma={onOpenProgramma}
-        />
-      ) : null}
+      <MovementCockpit
+        model={model}
+        slot={slot}
+        onGoAgenda={onGoAgenda}
+        onMakePriority={onMakePriority}
+        makePriorityBusy={makePriorityBusy}
+        onDoneChange={setDone}
+      />
 
-      {isPlanView ? (
-        <MovementPlanDeepBody
-          scores={model.domainScores}
-          answers={model.answers ?? {}}
-          sessionId={sessionId}
-          navMode="dashboard_view"
-          routeProgress={model.movementPlanProgress}
-          remeasureLine={remeasureLine}
-          onOpenProgramma={onOpenProgramma}
-        />
-      ) : null}
+      <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
+        {logEnabled ? <MovementLogPanel /> : null}
 
-      {isProgrammaView && programEntry ? (
-        <MovementProgramView
-          entry={programEntry}
-          trainingLocation={effectiveProfile.trainingLocation}
-        />
-      ) : null}
+        <details className="rounded-2xl border border-white/10 bg-black/20">
+          <summary className="cursor-pointer list-none px-5 py-4 text-[13.5px] font-semibold text-[#CDD7D0] [&::-webkit-details-marker]:hidden">
+            Waarom bewegen na 40 anders werkt
+          </summary>
+          <div className="space-y-3 border-t border-white/10 px-5 pb-5 pt-4">
+            {movementPlanTemplate.mechanism.body.split("\n\n").map((paragraph, index) => (
+              <p
+                key={`mechanism-${index}`}
+                className="max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]"
+              >
+                {paragraph}
+              </p>
+            ))}
+            <p className="text-[12px] text-[#9FB0A6]">{movementPlanTemplate.mechanism.source}</p>
+          </div>
+        </details>
 
-      {isOverzichtView ? (
-        <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
-          {logEnabled ? <MovementLogPanel /> : null}
-
-          <CockpitTile eyebrow="Check-in" className="md:hidden">
-            <Link
-              href="/intake/beweging?from=dashboard&kompas=beweging"
-              onClick={() => {
-                trackEvent("dashboard_beweging_checkin_click", {
-                  mode: "full",
-                  surface: "kompas_beweging",
-                });
-                clarityTag("dashboard_beweging_checkin", "click");
-              }}
-              className="mt-2 flex flex-col gap-1.5 rounded-xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 no-underline text-inherit"
-            >
-              <div className="flex items-center gap-3">
-                <Icons.Activity s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-                <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">
-                  Doe de uitgebreide beweegcheck (3 min)
-                </span>
-                <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
-              </div>
-              {showActiveStep ? (
-                <p className="ml-[30px] text-[13px] leading-snug text-[#9FB0A6] text-pretty">
-                  Actieve stap: {model.activeHabit?.title}
-                </p>
-              ) : null}
-            </Link>
-          </CockpitTile>
-
-          {logEnabled ? (
-            <details className="rounded-2xl border border-white/10 bg-black/20">
-              <summary className="cursor-pointer list-none px-5 py-4 text-[13.5px] font-semibold text-[#CDD7D0] [&::-webkit-details-marker]:hidden">
-                Voeding &amp; supplementen
-              </summary>
-              <div className="border-t border-white/10 px-5 pb-5 pt-4">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-                  Leefstijl eerst
-                </p>
-                <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">Voeding &amp; supplementen</p>
-                <div className="mt-4">{voedingSupplementContent}</div>
-              </div>
-            </details>
-          ) : (
-            <CockpitTile eyebrow="Leefstijl eerst" ariaLabel="Voeding en supplementen">
-              <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">Voeding &amp; supplementen</p>
-              <div className="mt-4">{voedingSupplementContent}</div>
+        {done ? (
+          <>
+            <CockpitTile eyebrow="Check-in" className="md:hidden">
+              <Link
+                href="/intake/beweging?from=dashboard&kompas=beweging"
+                onClick={() => {
+                  trackEvent("dashboard_beweging_checkin_click", {
+                    mode: "full",
+                    surface: "kompas_beweging",
+                  });
+                  clarityTag("dashboard_beweging_checkin", "click");
+                }}
+                className="mt-2 flex flex-col gap-1.5 rounded-xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 no-underline text-inherit"
+              >
+                <div className="flex items-center gap-3">
+                  <Icons.Activity s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
+                  <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">
+                    Doe de uitgebreide beweegcheck (3 min)
+                  </span>
+                  <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
+                </div>
+                {showActiveStep ? (
+                  <p className="ml-[30px] text-[13px] leading-snug text-[#9FB0A6] text-pretty">
+                    Actieve stap: {model.activeHabit?.title}
+                  </p>
+                ) : null}
+              </Link>
             </CockpitTile>
-          )}
 
-          <CockpitTile>
-            <KompasBegeleidingLink surface="kompas_beweging" />
-          </CockpitTile>
+            {logEnabled ? (
+              <details className="rounded-2xl border border-white/10 bg-black/20">
+                <summary className="cursor-pointer list-none px-5 py-4 text-[13.5px] font-semibold text-[#CDD7D0] [&::-webkit-details-marker]:hidden">
+                  Voeding &amp; supplementen
+                </summary>
+                <div className="border-t border-white/10 px-5 pb-5 pt-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
+                    Leefstijl eerst
+                  </p>
+                  <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">
+                    Voeding &amp; supplementen
+                  </p>
+                  <div className="mt-4">{voedingSupplementContent}</div>
+                </div>
+              </details>
+            ) : (
+              <CockpitTile eyebrow="Leefstijl eerst" ariaLabel="Voeding en supplementen">
+                <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">
+                  Voeding &amp; supplementen
+                </p>
+                <div className="mt-4">{voedingSupplementContent}</div>
+              </CockpitTile>
+            )}
 
-          <FooterLink
-            href="/gids/beweging"
-            icon={<Icons.Mail s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
-            label="Gratis Bewegingsgids"
-            onClick={() => {
-              trackEvent("dashboard_beweging_gids_click", { surface: "kompas_beweging" });
-            }}
-          />
-          <FooterLink
-            href="/inzichten"
-            icon={<Icons.BookOpen s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
-            label="Leefstijl & inzichten"
-            onClick={() => {
-              trackEvent("dashboard_beweging_leefstijl_click", { surface: "kompas_beweging" });
-            }}
-          />
-        </div>
-      ) : null}
-      {onSelectDeepView ? (
-        <BewegingViewNav deepView={deepView} onSelectView={onSelectDeepView} />
-      ) : null}
+            <FooterLink
+              href="/gids/beweging"
+              icon={<Icons.Mail s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+              label="Gratis Bewegingsgids"
+              onClick={() => {
+                trackEvent("dashboard_beweging_gids_click", { surface: "kompas_beweging" });
+              }}
+            />
+            <FooterLink
+              href="/inzichten"
+              icon={<Icons.BookOpen s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+              label="Leefstijl & inzichten"
+              onClick={() => {
+                trackEvent("dashboard_beweging_leefstijl_click", { surface: "kompas_beweging" });
+              }}
+            />
+          </>
+        ) : null}
+      </div>
     </div>
   );
 }

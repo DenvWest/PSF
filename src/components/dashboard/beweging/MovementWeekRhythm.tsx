@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import {
+  buildWeekFocusSentence,
   buildWeekRhythm,
-  type WeekRhythmChip,
 } from "@/lib/movement-week-rhythm";
+import type { WeekCategory } from "@/lib/movement-week-categories";
 
 type WeekLogApiState = { keys: string[] };
 
@@ -23,38 +24,11 @@ function WeekRhythmSkeleton() {
   );
 }
 
-function WeekRhythmContent({ chips }: { chips: WeekRhythmChip[] }) {
-  if (chips.length === 0) {
-    return (
-      <p className="text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-        Nog niets deze week — je eerste moment telt al mee.
-      </p>
-    );
-  }
-
-  if (chips.length === 1 && chips[0].tag === "herstel") {
-    return (
-      <p className="text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-        Vooral herstel deze week — dat is óók bouwen.
-      </p>
-    );
-  }
-
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      {chips.map((chip) => (
-        <span
-          key={chip.tag}
-          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10.5px] text-[#F1EFE8]"
-        >
-          {chip.label} {chip.count}×
-        </span>
-      ))}
-    </div>
-  );
-}
-
-export default function MovementWeekRhythm() {
+export default function MovementWeekRhythm({
+  startPattern = null,
+}: {
+  startPattern?: WeekCategory | null;
+}) {
   const [keys, setKeys] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -92,11 +66,12 @@ export default function MovementWeekRhythm() {
   }
 
   const chips = buildWeekRhythm(keys);
+  const sentence = buildWeekFocusSentence(chips, startPattern);
 
   return (
     <div className={CARD_CLASS} aria-label="Deze week">
       <span className={KICKER_CLASS}>Deze week</span>
-      <WeekRhythmContent chips={chips} />
+      <p className="text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">{sentence}</p>
     </div>
   );
 }

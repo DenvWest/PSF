@@ -44,14 +44,6 @@ const KOMPAS_DOMAIN_IDS = new Set<PillarId>([
   "verbinding",
 ]);
 
-export type KompasDeepView = "cockpit" | "stappenplan" | "programma";
-
-const KOMPAS_DEEP_VIEW_PILLARS = new Set<PillarId>(["beweging"]);
-
-export function supportsKompasDeepView(domain: PillarId): boolean {
-  return KOMPAS_DEEP_VIEW_PILLARS.has(domain);
-}
-
 export function parseKompasFromUrl(url: string | URL): PillarId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
@@ -60,20 +52,6 @@ export function parseKompasFromUrl(url: string | URL): PillarId | null {
     return kompas as PillarId;
   }
   return null;
-}
-
-export function parseKompasDeepViewFromUrl(url: string | URL): KompasDeepView {
-  const parsed =
-    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  const kompas = parseKompasFromUrl(parsed);
-  const view = parsed.searchParams.get("view");
-  if (kompas === "beweging" && view === "stappenplan") {
-    return "stappenplan";
-  }
-  if (kompas === "beweging" && view === "programma") {
-    return "programma";
-  }
-  return "cockpit";
 }
 
 export function buildDashboardVandaagHref(
@@ -191,25 +169,14 @@ export function buildDashboardAgendaHref(dag?: string | null): string {
   return `/dashboard?${params.toString()}`;
 }
 
-export function buildDashboardBewegingStappenplanHref(): string {
-  return "/dashboard?tab=vandaag&kompas=beweging&view=stappenplan";
-}
-
-export function buildDashboardBewegingProgrammaHref(): string {
-  return "/dashboard?tab=vandaag&kompas=beweging&view=programma";
-}
-
 export function buildDashboardPlanHref(planDomain: string): string {
   if (planDomain === "movement") {
-    return buildDashboardBewegingStappenplanHref();
+    return buildDashboardVandaagHref("beweging");
   }
   return `/intake/plan/${planDomain}?from=dashboard`;
 }
 
-function syncDashboardUrlParams(
-  domain: PillarId | null,
-  deepView: KompasDeepView = "cockpit",
-): void {
+function syncDashboardUrlParams(domain: PillarId | null): void {
   if (typeof window === "undefined") {
     return;
   }
@@ -222,12 +189,7 @@ function syncDashboardUrlParams(
   } else {
     url.searchParams.delete("kompas");
   }
-
-  if (domain && supportsKompasDeepView(domain) && deepView !== "cockpit") {
-    url.searchParams.set("view", deepView);
-  } else {
-    url.searchParams.delete("view");
-  }
+  url.searchParams.delete("view");
 
   if (dag && isValidAgendaDate(dag)) {
     url.searchParams.set("dag", dag);
@@ -247,20 +209,12 @@ export function syncDashboardKompasParam(domain: PillarId | null): void {
   const current = new URL(window.location.href);
   const currentTab = current.searchParams.get("tab");
   const currentKompas = parseKompasFromUrl(current);
-  const currentDeepView = parseKompasDeepViewFromUrl(current);
 
-  if (currentTab === "vandaag" && currentKompas === domain && currentDeepView === "cockpit") {
+  if (currentTab === "vandaag" && currentKompas === domain) {
     return;
   }
 
-  syncDashboardUrlParams(domain, "cockpit");
-}
-
-export function syncDashboardKompasDeepView(
-  domain: PillarId | null,
-  view: KompasDeepView,
-): void {
-  syncDashboardUrlParams(domain, view);
+  syncDashboardUrlParams(domain);
 }
 
 export type SyncDashboardTabOptions = {

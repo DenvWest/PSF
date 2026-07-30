@@ -48,6 +48,9 @@ describe("carryOverMovementPlanProfile", () => {
       weeklyFrequency: "2x",
       trainingLocation: "sportschool",
       sports: [],
+      targetMinutes: null,
+      targetDays: null,
+      targetStrength: null,
     });
   });
 
@@ -91,6 +94,9 @@ describe("carryOverMovementPlanProfile", () => {
       weeklyFrequency: null,
       trainingLocation: null,
       sports: [],
+      targetMinutes: null,
+      targetDays: null,
+      targetStrength: null,
     });
   });
 
