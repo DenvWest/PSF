@@ -16,11 +16,17 @@ export type PortionGroup =
   | "leanMeat"
   | "legumes"
   | "nuts"
+  | "wholegrain"
   | "dairy"
-  | "egg";
+  | "egg"
+  | "other";
 
 export interface PortionDefinition {
-  gramsPerPortion: number | { min: number; max: number };
+  /**
+   * Gram-equivalent van één portie. `null` bij groepen zonder vaste portiemaat
+   * ("other"): daar noemt de bron zijn eigen portie (zie food-sources.ts).
+   */
+  gramsPerPortion: number | { min: number; max: number } | null;
   labelNl: string;
   /** Bronvermelding — TODO verify vóór live. */
   sourceNote: string;
@@ -57,6 +63,16 @@ export const PORTION_DEFINITIONS: Record<PortionGroup, PortionDefinition> = {
     labelNl: "1 handvol noten (ongezouten)",
     sourceNote: "Voedingscentrum Schijf van Vijf — ~25 g/dag",
   },
+  /**
+   * Volkoren ontbrak — dezelfde blinde vlek die de magnesium-comment in
+   * intake-reference.ts benoemt: een sterke magnesiumbron die nergens in het
+   * portie-model paste.
+   */
+  wholegrain: {
+    gramsPerPortion: 70,
+    labelNl: "2 sneden volkorenbrood",
+    sourceNote: "Voedingscentrum — indicatief ~35 g per snee",
+  },
   dairy: {
     gramsPerPortion: 150,
     labelNl: "1 portie zuivel",
@@ -66,6 +82,16 @@ export const PORTION_DEFINITIONS: Record<PortionGroup, PortionDefinition> = {
     gramsPerPortion: 6,
     labelNl: "1 ei",
     sourceNote: "NEVO — indicatief ~6–7 g eiwit per ei",
+  },
+  /**
+   * Restgroep voor bronnen zonder portiemaat in dit woordenboek (tofu,
+   * chocolade, verrijkte margarine, zonlicht). Bewust géén gram-equivalent:
+   * een verzonnen portie zou hier een schijnnauwkeurigheid toevoegen.
+   */
+  other: {
+    gramsPerPortion: null,
+    labelNl: "portie zoals bij de bron vermeld",
+    sourceNote: "Geen vaste portiemaat — de bron noemt zijn eigen portie",
   },
 };
 

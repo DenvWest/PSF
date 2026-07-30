@@ -1,4 +1,5 @@
 import type { QuestionId } from "@/data/intake-questions";
+import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type {
   DeficiencySignals,
   DomainScores,
@@ -102,7 +103,36 @@ export interface PlanStep {
   tags?: readonly string[];
   /** Belastingsniveau voor de Vandaag-tiers (los van modaliteit-tags). */
   intensityTier?: PlanIntensityTier;
+  /**
+   * Herkomst van het materiaal achter deze stap. Afwezig is gelijk aan
+   * `{ kind: "self" }` — lees hem daarom altijd via `resolveStepSourcing()`
+   * (src/lib/step-sourcing.ts) in plaats van het veld direct.
+   *
+   * Vandaag rendert hier niets van: geen component leest dit veld. Het bestaat
+   * zodat een stap later naar iets bestelbaars kan verwijzen zonder dat
+   * `daily_action_log` een kolom hoeft te krijgen — de herkomst hoort bij de
+   * stap-DEFINITIE, niet bij elke dagregel.
+   */
+  sourcing?: StepSourcing;
 }
+
+/**
+ * Waar het materiaal voor deze stap vandaan komt. Vandaag altijd "self".
+ *
+ * - `self` — je doet het zelf; er hoort niets bij te bestellen.
+ * - `food` — een voedingsbron uit `FOOD_SOURCES` (src/data/nutrition/food-sources.ts).
+ * - `product` — een bestelbaar artikel bij een partner. Bestaat als vorm; er is
+ *   vandaag geen `productKey` gevuld en `isOrderable()` geeft altijd false.
+ */
+export type StepSourcing =
+  | { kind: "self" }
+  | { kind: "food"; nutrient: NutrientId; sourceKey: string }
+  | {
+      kind: "product";
+      nutrient: NutrientId;
+      form: "food" | "supplement";
+      productKey: string;
+    };
 
 /** Eén fase: een handvol stappen binnen één tijdshorizon. */
 export interface PlanPhase {
