@@ -222,7 +222,8 @@ main{min-width:0;padding:var(--pad) var(--pad) 96px}
 .stage.done .node{background:rgba(90,143,106,.22);border-color:rgba(90,143,106,.5);color:#B9D8C2}
 .stage.active .node{background:var(--sage-bright);border-color:var(--sage-bright);color:#0E1C10;box-shadow:0 0 0 4px rgba(111,176,126,.18)}
 .stage.gh .node{border-style:dashed;border-color:rgba(183,167,208,.5);color:var(--ghost)}
-.stage .lb{font-size:10.5px;line-height:1.2;color:var(--subtle);text-align:center;overflow-wrap:anywhere}
+.stage .lb{font-size:10.5px;line-height:1.2;color:var(--subtle);text-align:center;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
+@media(max-width:399px){.stage .lb{font-size:9.5px;letter-spacing:-.01em}}
 .stage.done .lb,.stage.active .lb{color:var(--text)}
 .stage.active .lb{font-weight:600}
 .stage.gh .lb{color:var(--ghost)}
@@ -312,6 +313,235 @@ main{min-width:0;padding:var(--pad) var(--pad) 96px}
 .tilefoot{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .linkbtn{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;border:none;background:none;color:var(--sage-bright);font-size:13.5px;font-weight:600}
 
+/* ══ voedingsbasis (Statistieken → Advies) ═════════════════ */
+.nut{padding:14px 0;border-top:1px solid var(--line-soft)}
+.nut:first-child{border-top:none;padding-top:4px}
+.nut-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
+.nut-nm{font-family:var(--f-serif);font-size:17px;line-height:1.2;min-width:0}
+.nut-band{
+  margin-left:auto;flex:none;font-size:9.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;border-radius:999px;padding:3px 8px;white-space:nowrap;
+}
+.nut-band.below{color:var(--terra);border:1px solid rgba(200,149,108,.42);background:rgba(200,149,108,.12)}
+.nut-band.around{color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.04)}
+.nut-band.meets{color:var(--sage-bright);border:1px solid rgba(90,143,106,.45);background:rgba(90,143,106,.12)}
+.nut-ref{margin-top:4px;font-size:12.5px;color:var(--subtle);line-height:1.45;text-wrap:pretty}
+.nut-act{margin-top:11px;padding:11px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line-soft)}
+.nut-act .k{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.nut-act .v{display:block;margin-top:3px;font-size:13.5px;font-weight:600;line-height:1.35;text-wrap:pretty}
+.dstrip{display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap}
+.dstrip .dots{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;flex:1 1 150px;min-width:120px}
+.dstrip .dots i{height:14px;border-radius:3px;background:rgba(255,255,255,.08)}
+.dstrip .dots i.on{background:var(--sage)}
+.dstrip .cnt{flex:none;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.nut-none{margin-top:9px;font-size:12.5px;color:var(--subtle);line-height:1.45;text-wrap:pretty}
+.nut-conf{display:flex;align-items:flex-start;gap:9px;margin-top:10px;min-width:0}
+.confdots{flex:none;display:flex;gap:3px;margin-top:4px}
+.confdots i{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.14)}
+.confdots i.on{background:var(--muted)}
+.nut-conf .why{font-size:11.5px;color:var(--subtle);line-height:1.45;text-wrap:pretty;min-width:0}
+.nut-supp{
+  margin-top:11px;display:flex;align-items:flex-start;gap:9px;padding:11px;border-radius:12px;
+  border:1px dashed rgba(90,143,106,.38);background:rgba(90,143,106,.06);width:100%;text-align:left;
+}
+.nut-supp .k{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sage-bright)}
+.nut-supp .v{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+/* ══ meetbron-ladder (Stand) ═══════════════════════════════ */
+.nhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
+.nhead .t{font-family:var(--f-serif);font-size:21px;line-height:1.2;min-width:0}
+.nrefline{
+  margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 14px;padding:10px 0;
+  border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);
+}
+.nrefline > div{min-width:0}
+.nrefline .k{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.nrefline .v{display:block;margin-top:2px;font-size:13px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+.bronlist{margin-top:4px}
+.bron{display:flex;align-items:flex-start;gap:11px;padding:12px 0;border-top:1px solid var(--line-soft);min-width:0}
+.bron:first-child{border-top:none}
+.bron .mk{
+  flex:none;width:23px;height:23px;border-radius:999px;display:grid;place-items:center;margin-top:1px;
+  font-size:10px;font-weight:700;border:1.5px solid rgba(255,255,255,.20);color:var(--subtle);
+}
+.bron.now .mk{background:var(--sage-bright);border-color:var(--sage-bright);color:#0E1C10}
+.bron.gh .mk{border-style:dashed;border-color:rgba(183,167,208,.5);color:var(--ghost)}
+.bron.nope .mk{border-color:rgba(200,149,108,.42);color:var(--terra)}
+.bron .bd{min-width:0;flex:1}
+.bron .bt{display:block;font-size:13.5px;font-weight:600;line-height:1.35;text-wrap:pretty}
+.bron .bs{display:block;margin-top:4px;font-size:11.5px;color:var(--subtle);line-height:1.5;text-wrap:pretty}
+.bron .bst{
+  flex:none;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border-radius:999px;padding:2px 7px;white-space:nowrap;margin-top:3px;
+}
+.bst.nu{color:var(--sage-bright);border:1px solid rgba(90,143,106,.45);background:rgba(90,143,106,.12)}
+.bst.gh{color:var(--ghost);border:1px solid rgba(183,167,208,.42);background:rgba(183,167,208,.10)}
+.bst.no{color:var(--terra);border:1px solid rgba(200,149,108,.42);background:rgba(200,149,108,.10)}
+
+/* ══ leefstijl-ladder (Advies) ═════════════════════════════ */
+.ladder{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.rung{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:16px;padding:14px;min-width:0}
+.rung.open{border-color:rgba(111,176,126,.34);background:rgba(90,143,106,.09)}
+.rung.wacht{border-color:rgba(200,149,108,.28);background:rgba(200,149,108,.05)}
+.rung.ghost{border-style:dashed;border-color:rgba(183,167,208,.40);background:rgba(183,167,208,.05)}
+.rung-head{display:flex;align-items:center;gap:10px;min-width:0}
+.rung-n{
+  flex:none;width:26px;height:26px;border-radius:999px;display:grid;place-items:center;
+  font-size:11px;font-weight:700;border:1.5px solid rgba(255,255,255,.20);color:var(--subtle);
+}
+.rung.open .rung-n{background:var(--sage-bright);border-color:var(--sage-bright);color:#0E1C10}
+.rung.wacht .rung-n{border-color:rgba(200,149,108,.5);color:var(--terra)}
+.rung.ghost .rung-n{border-style:dashed;border-color:rgba(183,167,208,.5);color:var(--ghost)}
+.rung-t{font-family:var(--f-serif);font-size:17px;line-height:1.2;min-width:0;overflow-wrap:anywhere}
+.rung-st{
+  margin-left:auto;flex:none;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  border-radius:999px;padding:3px 8px;white-space:nowrap;
+}
+.rung-st.nu{color:var(--sage-bright);border:1px solid rgba(90,143,106,.5);background:rgba(90,143,106,.14)}
+.rung-st.wacht{color:var(--terra);border:1px solid rgba(200,149,108,.42);background:rgba(200,149,108,.12)}
+.rung-st.dicht{color:var(--subtle);border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.rung-st.gh{color:var(--ghost);border:1px solid rgba(183,167,208,.42);background:rgba(183,167,208,.10)}
+.rung-why{margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+.rung-body{margin-top:12px}
+
+/* ══ voedingsbronnen ═══════════════════════════════════════ */
+.foods{margin-top:10px;display:flex;flex-direction:column;gap:2px}
+.food{
+  display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:9px 8px;
+  border:1px solid transparent;border-radius:12px;background:transparent;text-align:left;min-width:0;
+}
+.food:hover{background:rgba(255,255,255,.045)}
+.food.on{border-color:rgba(90,143,106,.45);background:rgba(90,143,106,.10)}
+.food .fd{flex:1;min-width:0}
+.food .fl{display:block;font-size:13.5px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.food .fp{display:block;margin-top:2px;font-size:11.5px;color:var(--subtle);overflow-wrap:anywhere}
+.food .fbar{display:block;margin-top:7px;height:3px;border-radius:999px;background:rgba(255,255,255,.14);max-width:200px}
+.food .fbar i{display:block;height:3px;border-radius:999px;background:var(--sage)}
+.food .fr{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:64px}
+.food .fv{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--sage-bright);white-space:nowrap}
+.food .fv.ala{color:var(--muted);font-size:11.5px}
+.food .fk{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--subtle);white-space:nowrap}
+.seizoen{margin-left:6px;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sage-bright);border:1px solid rgba(90,143,106,.4);border-radius:999px;padding:1px 6px;white-space:nowrap}
+.foodnote{display:block;margin-top:4px;font-size:11px;color:var(--subtle);line-height:1.45;text-wrap:pretty}
+.foodfoot{margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft);font-size:11.5px;color:var(--subtle);line-height:1.5;text-wrap:pretty}
+/* Spanning in de meting zelf — hoort boven de lijst, niet in een voetnoot. */
+.caveat{
+  margin-top:8px;padding:9px 11px;border-radius:10px;font-size:11.5px;line-height:1.5;
+  color:#E0B79C;border:1px solid rgba(200,149,108,.30);background:rgba(200,149,108,.08);text-wrap:pretty;
+}
+.morebtn{margin-top:6px;min-height:44px;padding:0 4px;border:none;background:none;color:var(--muted);font-size:12.5px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.pick{
+  margin-top:12px;padding:12px;border-radius:12px;border:1px solid rgba(111,176,126,.30);
+  background:rgba(90,143,106,.10);
+}
+.pick .k{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sage-bright)}
+.pick .v{display:block;margin-top:3px;font-size:13.5px;font-weight:600;line-height:1.35;text-wrap:pretty}
+.pick .split{display:grid;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
+@media(min-width:560px){.pick .split{grid-template-columns:1fr 1fr;gap:14px}}
+.pick .split > div{min-width:0}
+.pick .split .kk{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
+.pick .split .vv{display:block;margin-top:3px;font-size:12px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+
+/* ══ nutriëntlijn over tijd ════════════════════════════════ */
+.lane{margin-top:14px}
+.lane-wk{display:grid;gap:6px;align-items:end;height:70px}
+.lane-wk > span{display:flex;align-items:flex-end;height:100%;min-width:0}
+.lane-wk > span > i{display:block;width:100%;border-radius:4px 4px 0 0;background:var(--sage);opacity:.85;min-height:2px}
+.lane-wk > span.dim > i{background:rgba(255,255,255,.12)}
+.lane-lb{display:grid;gap:6px;margin-top:6px}
+.lane-lb > span{font-size:10.5px;color:var(--subtle);text-align:center;min-width:0;overflow-wrap:anywhere}
+.lane-lb > span b{display:block;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.lane-note{margin-top:10px;font-size:11.5px;color:var(--subtle);line-height:1.5;text-wrap:pretty}
+.checkline{position:relative;display:flex;margin-top:14px}
+/* De lijn stopt bij het laatste echte checkpunt; het ghost-segment is paars —
+   zodat een bloedwaarde niet stilzwijgend op dezelfde tijdlijn lijkt te staan.
+   --ghostat wordt in JS gezet omdat het aantal checkpunten per state verschilt. */
+.checkline::before{
+  content:"";position:absolute;top:11px;left:12%;right:12%;height:1px;
+  background:linear-gradient(to right,
+    rgba(255,255,255,.16) 0 var(--ghostat,100%),
+    rgba(183,167,208,.28) var(--ghostat,100%) 100%);
+}
+.chk{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.chk .cm{
+  width:23px;height:23px;border-radius:999px;display:grid;place-items:center;flex:none;
+  font-size:9.5px;font-weight:700;background:var(--shell);border:1.5px solid rgba(255,255,255,.22);color:var(--subtle);
+}
+.chk.done .cm{background:rgba(90,143,106,.22);border-color:rgba(90,143,106,.5);color:#B9D8C2}
+.chk.next .cm{border-style:dashed;border-color:rgba(255,255,255,.45);color:var(--muted)}
+.chk.gh .cm{border-style:dashed;border-color:rgba(183,167,208,.5);color:var(--ghost)}
+.chk .cv{font-size:11.5px;font-weight:600;line-height:1.2}
+.chk.gh .cv{color:var(--ghost)}
+.chk .cl{font-size:10px;color:var(--subtle);line-height:1.25;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto}
+
+/* ══ ladderstrip in de koppelstrip ═════════════════════════ */
+.trap{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;min-width:0}
+.trapstep{
+  display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border-radius:999px;
+  border:1px solid rgba(22,40,26,.16);background:rgba(255,255,255,.5);color:var(--beat-ink);
+  font-size:12px;font-weight:600;white-space:nowrap;
+}
+.trapstep .n{
+  flex:none;width:17px;height:17px;border-radius:999px;display:grid;place-items:center;
+  font-size:9.5px;font-weight:700;border:1px solid rgba(22,40,26,.28);color:var(--beat-subtle);
+}
+.trapstep.nu{border-color:rgba(51,88,63,.45);background:rgba(51,88,63,.12)}
+.trapstep.nu .n{background:var(--sage-ink);border-color:var(--sage-ink);color:#fff}
+.trapstep.gh{border-style:dashed;border-color:rgba(103,80,140,.42);color:rgba(22,40,26,.60)}
+.trapstep .s{font-weight:400;color:var(--beat-subtle);font-size:11.5px}
+.trap .arrow{color:rgba(22,40,26,.26)}
+
+/* ══ Mijn Dag — momenten met een nutriënt ══════════════════ */
+.mom{display:flex;align-items:flex-start;gap:11px;padding:12px 0;border-top:1px solid var(--line-soft);min-width:0}
+.mom:first-child{border-top:none}
+.mom .box{
+  flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;margin-top:1px;
+  border:1.5px solid rgba(255,255,255,.22);font-size:12px;color:var(--sage-bright);
+}
+.mom.done .box{background:rgba(90,143,106,.2);border-color:rgba(90,143,106,.5)}
+.mom .md{min-width:0;flex:1}
+.mom .mt{display:block;font-size:14px;font-weight:600;line-height:1.35;text-wrap:pretty}
+.mom .ms{display:block;margin-top:3px;font-size:11.5px;color:var(--subtle);line-height:1.45;text-wrap:pretty}
+.nutlink{
+  display:inline;padding:0;border:none;background:none;font:inherit;font-size:11.5px;
+  color:var(--sage-bright);font-weight:600;text-decoration:underline;text-underline-offset:2px;
+}
+
+/* ══ oordeel (Favorieten) ══════════════════════════════════ */
+.vd{padding:15px 0;border-top:1px solid var(--line-soft)}
+.vd:first-child{border-top:none}
+.vd-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
+.vd-nm{font-family:var(--f-serif);font-size:17px;line-height:1.2;min-width:0}
+.vd-tag{
+  margin-left:auto;flex:none;font-size:9.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;border-radius:999px;padding:3px 8px;white-space:nowrap;
+}
+.vd-tag.ja{color:var(--sage-bright);border:1px solid rgba(90,143,106,.5);background:rgba(90,143,106,.14)}
+.vd-tag.nee{color:var(--subtle);border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.vd-tag.wacht{color:var(--terra);border:1px solid rgba(200,149,108,.42);background:rgba(200,149,108,.12)}
+.vd-why{margin-top:6px;font-size:13px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+.vd-trace{
+  display:flex;align-items:flex-start;gap:7px;margin-top:9px;padding-left:10px;
+  border-left:2px solid var(--line);font-size:11.5px;color:var(--subtle);line-height:1.45;text-wrap:pretty;
+}
+.vd-cta{margin-top:11px}
+.summary{
+  padding:14px;border-radius:14px;background:rgba(90,143,106,.08);
+  border:1px solid rgba(90,143,106,.22);margin-bottom:4px;
+}
+.summary .big{font-family:var(--f-serif);font-size:20px;line-height:1.25;text-wrap:balance}
+.summary p{margin-top:6px;font-size:12.5px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+
+/* Inline tekstlink binnen een lopende zin. Geen 44px-doel: WCAG 2.5.8 zondert
+   doelen "in a sentence or block of text" uit — een blokknop zou de regel breken. */
+.inlink{
+  display:inline;padding:0;border:none;background:none;font:inherit;color:var(--sage-bright);
+  font-weight:600;text-decoration:underline;text-underline-offset:2px;
+}
+.unknown{margin-top:16px;padding:14px;border-radius:14px;border:1px dashed var(--line);background:rgba(255,255,255,.02)}
+.unknown h3{font-size:16px;margin-bottom:6px}
+.unknown p{font-size:12.5px;color:var(--muted);line-height:1.5;text-wrap:pretty}
+.unknown ul{margin:10px 0 0;padding-left:18px;font-size:12.5px;color:var(--subtle);line-height:1.65}
+
 /* ══ koppelstrip ═══════════════════════════════════════════ */
 .koppel{
   margin:14px calc(var(--pad) * -1);padding:18px var(--pad);background:var(--beat-bg);color:var(--beat-ink);
@@ -332,13 +562,36 @@ main{min-width:0;padding:var(--pad) var(--pad) 96px}
 
 /* ══ subschermen ═══════════════════════════════════════════ */
 .subhead{display:flex;align-items:center;gap:12px;margin-bottom:18px;min-width:0}
-.backbtn{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted)}
+.backbtn{width:44px;height:44px;flex:none;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted)}
 .subhead .t{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;min-width:0;overflow-wrap:anywhere}
-.bliknav{
-  display:flex;gap:6px;overflow-x:auto;padding:8px 0;margin-bottom:8px;scrollbar-width:thin;
-  position:sticky;top:var(--stickyh);z-index:10;background:var(--shell);
+/* Spoor + blik horen bij elkaar: het spoor is de stof, de blik is de vraag die
+   je erover stelt. Ze zijn siblings en geen wrapper — een sticky kind kan niet
+   buiten zijn ouder blijven staan, en een korte wrapper zou de blik meesleuren.
+   Op mobiel pint alleen de blik: 204px vastgezet op een 667px-scherm was te
+   veel, en wélke stof je volgt staat sowieso in elke paneelkop. */
+.spoor{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:2px 0 0;background:var(--shell);scrollbar-width:thin}
+@media(min-width:900px){
+  .spoor{position:sticky;top:var(--stickyh);z-index:13}
 }
-.bliknav button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap}
+.spoor > .lb{flex:none;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.npill{
+  flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 11px;
+  border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);
+  font-size:12.5px;font-weight:600;white-space:nowrap;
+}
+.npill i{width:7px;height:7px;border-radius:999px;flex:none;background:rgba(255,255,255,.22)}
+.npill i.below{background:var(--terra)}
+.npill i.around{background:var(--muted)}
+.npill i.meets{background:var(--sage-bright)}
+.npill[aria-pressed="true"]{border-color:rgba(90,143,106,.5);background:rgba(90,143,106,.14);color:var(--text)}
+.npill:disabled{opacity:.45}
+.spoorhint{margin:2px 0 10px;font-size:11.5px;line-height:1.45;color:var(--subtle);text-wrap:pretty}
+.bliknav{
+  display:flex;gap:6px;overflow-x:auto;padding:6px 0 8px;scrollbar-width:thin;
+  position:sticky;top:var(--stickyh);z-index:12;background:var(--shell);
+}
+@media(min-width:900px){.bliknav{top:calc(var(--stickyh) + var(--spoorh,46px))}}
+.bliknav button{flex:none;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap}
 .bliknav button[aria-pressed="true"]{border-color:rgba(90,143,106,.5);background:rgba(90,143,106,.14);color:var(--text)}
 .tablewrap{overflow-x:auto;margin-top:14px;border-radius:12px;border:1px solid var(--line-soft)}
 table{border-collapse:collapse;width:100%;min-width:420px;font-size:13px}
@@ -378,6 +631,7 @@ tr:last-child td{border-bottom:none}
     <button type="button" data-state="dun" aria-pressed="false">dun</button>
     <button type="button" data-state="opbouwend" aria-pressed="true">opbouwend</button>
     <button type="button" data-state="beantwoord" aria-pressed="false">beantwoord</button>
+    <button type="button" data-state="voedingsgat" aria-pressed="false">voedingsgat</button>
   </div>
   <span class="pb-ev" id="pb-ev" aria-live="polite">meetpunt verschijnt hier</span>
 </div>
@@ -508,6 +762,7 @@ tr:last-child td{border-bottom:none}
         </div>
 
         <div class="rows" id="ml-rows"></div>
+        <p class="readout" id="ml-nutriline" hidden></p>
         <p class="readout">Energie en herstel volgen uit deze vijf; je leest ze terug bij Statistieken. Het cijfer per domein komt uit je eigen antwoorden — het is geen medische meetwaarde.</p>
 
         <div class="tilefoot">
@@ -527,6 +782,11 @@ tr:last-child td{border-bottom:none}
           <span class="step"><span class="k">Hermeting</span><span class="v" data-bind="kp-meet"></span></span>
         </div>
         <p class="say" data-bind="kp-say"></p>
+
+        <p class="eyebrow" style="margin-top:16px">In welke orde — leefstijl eerst</p>
+        <div class="trap" id="trap"></div>
+        <p class="say" id="trap-say" style="margin-top:8px"></p>
+
         <div class="acts">
           <button type="button" class="btn-ink" data-goto="agenda" data-bind="kp-cta1" data-ev="hub_click:agenda:koppelstrip"></button>
           <button type="button" class="btn-ink sec" data-goto="statistieken" data-blikto="tijd" data-ev="hub_click:statistieken:koppelstrip">Zie je lijn over tijd</button>
@@ -540,13 +800,39 @@ tr:last-child td{border-bottom:none}
         <button type="button" class="backbtn" data-goto="overzicht" aria-label="Terug" data-ev="terug:statistieken">←</button>
         <span class="t">Statistieken</span>
       </div>
+      <!-- Het spoor kiest de stof, de blik de vraag erover. Siblings, zie CSS. -->
+      <div class="spoor" id="spoor">
+        <span class="lb">Spoor</span>
+        <button type="button" class="npill" data-spoor="" aria-pressed="true">Alle vijf</button>
+      </div>
       <div class="bliknav" role="group" aria-label="Blik">
         <button type="button" data-blik="stand" aria-pressed="true">Stand</button>
         <button type="button" data-blik="advies" aria-pressed="false">Advies</button>
         <button type="button" data-blik="tijd" aria-pressed="false">Over tijd</button>
       </div>
+      <p class="spoorhint" id="spoor-hint"></p>
 
       <div data-blikpanel="stand" class="stack">
+        <!-- Stand van één stof: wat het is, waar het uit komt, wat het zeker zou maken -->
+        <div class="tile" id="stand-nut" hidden>
+          <p class="eyebrow">Stand van één stof</p>
+          <div class="nhead" style="margin-top:8px">
+            <span class="t" id="sn-name"></span>
+            <span class="nut-band" id="sn-band"></span>
+          </div>
+          <div class="nrefline">
+            <div><span class="k">Vuistregel</span><span class="v" id="sn-ref"></span></div>
+            <div><span class="k">Ter oriëntatie</span><span class="v" id="sn-ri"></span></div>
+            <div><span class="k">Uit</span><span class="v" id="sn-src"></span></div>
+          </div>
+          <p class="eyebrow" style="margin-top:16px">Wat deze stand harder zou maken</p>
+          <div class="bronlist" id="sn-bron"></div>
+          <div class="tilefoot">
+            <button type="button" class="linkbtn" id="sn-toadvies" data-blikto="advies" data-blikstay>Wat je ervoor kunt eten →</button>
+            <button type="button" class="linkbtn" id="sn-totijd" data-blikto="tijd" data-blikstay>Beweegt het? →</button>
+          </div>
+        </div>
+
         <div class="tile">
           <p class="eyebrow">Stand van zaken</p>
           <h2 style="margin-top:8px;font-size:22px">Waar sta je?</h2>
@@ -562,14 +848,56 @@ tr:last-child td{border-bottom:none}
 
       <div data-blikpanel="advies" class="stack" hidden>
         <div class="tile">
-          <p class="eyebrow">Stap voor stap</p>
-          <h2 style="margin-top:8px;font-size:22px">Wat betekent dat?</h2>
-          <p class="mode">Eerst je bord, dan ons oordeel, dan welk potje past. Dit is de enige plek in Voortgang waar een supplement genoemd mag worden — de hub-scroll blijft vrij van aanbod.</p>
-          <div class="tilefoot"><button type="button" class="linkbtn" data-goto="favorieten" data-ev="hub_click:favorieten:advies">Naar je favorieten →</button></div>
+          <p class="eyebrow">Leefstijl eerst, supplement erbij</p>
+          <h2 style="margin-top:8px;font-size:22px" id="nut-h2"></h2>
+          <p class="mode" id="nut-lede"></p>
+
+          <div id="nut-pending" hidden>
+            <div class="tilefoot">
+              <button type="button" class="btn" style="min-height:44px" data-ev="voedingscheck_cta:advies">Vul je voeding in (1 min)</button>
+            </div>
+          </div>
+
+          <!-- Vier treden, altijd in deze orde. Een trede opent alleen als de
+               vorige is gedaan; waarom hij dichtzit staat er letterlijk bij. -->
+          <div class="ladder" id="ladder"></div>
+        </div>
+
+        <div class="tile">
+          <div class="unknown" style="margin-top:0">
+            <span class="eyebrow">Wat we niet van je weten</span>
+            <h3 style="margin-top:6px">Dit is een schatting, geen meting.</h3>
+            <p>Deze banden komen uit zeven vragen over een gewone week — niet uit een voedingsdagboek en niet uit bloed. Twee van de vijf staan op lage zekerheid omdat de vraag een indirecte maat is.</p>
+            <ul id="nut-missing"></ul>
+          </div>
         </div>
       </div>
 
       <div data-blikpanel="tijd" class="stack" hidden>
+        <!-- Twee klokken naast elkaar: gedrag loopt door, stand springt bij een check -->
+        <div class="tile" id="tijd-nut" hidden>
+          <p class="eyebrow">Eén stof over tijd</p>
+          <h2 style="margin-top:8px;font-size:22px" id="tn-h2"></h2>
+          <p class="mode" id="tn-lede"></p>
+
+          <div class="lane">
+            <p class="eyebrow">Je gedrag — dagen per week, uit Mijn Dag</p>
+            <div class="lane-wk" id="tn-wk"></div>
+            <div class="lane-lb" id="tn-lb"></div>
+            <p class="lane-note" id="tn-wknote"></p>
+          </div>
+
+          <div class="lane">
+            <p class="eyebrow">Je stand — springt alleen bij een check</p>
+            <div class="checkline" id="tn-checks"></div>
+            <p class="lane-note" id="tn-cknote"></p>
+          </div>
+
+          <div class="tilefoot">
+            <button type="button" class="linkbtn" data-blikto="advies" data-blikstay>Terug naar wat je ervoor eet →</button>
+          </div>
+        </div>
+
         <div class="tile">
           <p class="eyebrow">Beweging</p>
           <h2 style="margin-top:8px;font-size:22px">Beweegt het?</h2>
@@ -616,11 +944,17 @@ tr:last-child td{border-bottom:none}
         <p class="eyebrow">Je eigen keuze</p>
         <h2 style="margin-top:8px;font-size:21px" data-bind="fv-focus"></h2>
         <p class="mode">Je koos zelf welk domein voorop staat. Dat mag afwijken van wat de engine aanwijst — hier zie je allebei.</p>
+        <p class="ijk" data-bind="fv-rec"></p>
       </div>
+
       <div class="tile" style="margin-top:12px">
-        <p class="eyebrow">Onze aanrader</p>
-        <p class="mode" data-bind="fv-rec"></p>
-        <p style="margin-top:12px;font-size:11.5px;color:var(--subtle);line-height:1.5;text-wrap:pretty">Algemene oriëntatie op basis van je antwoorden — geen persoonlijk medisch advies. Wij verkopen zelf niets.</p>
+        <p class="eyebrow">Ons oordeel</p>
+        <div class="summary" style="margin-top:10px">
+          <p class="big" id="fv-summary"></p>
+          <p id="fv-summary-sub"></p>
+        </div>
+        <div id="fv-verdicts" style="margin-top:8px"></div>
+        <p style="margin-top:14px;font-size:11.5px;color:var(--subtle);line-height:1.5;text-wrap:pretty">Algemene oriëntatie op basis van je antwoorden — geen persoonlijk medisch advies. Wij verkopen zelf niets, en we verdienen niets aan een &quot;niet nodig&quot;.</p>
       </div>
     </div>
 
@@ -703,6 +1037,15 @@ tr:last-child td{border-bottom:none}
           <button type="button" class="linkbtn" data-goto="overzicht" data-ev="agenda_voortgang_link_click:agenda">Zie wat dit optelt →</button>
         </div>
       </div>
+
+      <!-- De koppeling van de andere kant: elk moment met een stof erachter
+           linkt terug naar de gap waar het uit komt. -->
+      <div class="tile" style="margin-top:12px">
+        <p class="eyebrow">Je momenten met een stof erachter</p>
+        <h2 style="margin-top:8px;font-size:21px">Waar dit vandaan komt</h2>
+        <p class="mode">Niet elk moment hoort bij een stof. Deze wel: ze zijn gekoppeld aan een stof uit je voedingscheck. Het blijft een telling van je gedrag, geen gemeten inname.</p>
+        <div id="ag-moments" style="margin-top:14px"></div>
+      </div>
     </div>
 
     <div data-panel="hermeting" hidden>
@@ -783,6 +1126,183 @@ tr:last-child td{border-bottom:none}
      desc:"<span class='gh-tag'>Ghost</span>Later: herbestellen en trouw blijven, gekoppeld aan je profiel. Nog niet gebouwd, geen datum, nu geen koop-CTA."}
   ];
 
+  /* Spiegelt src/data/nutrition/intake-reference.ts — labels, referenceLabels en
+     de zekerheidsgraad die daar nu nog als code-comment per nutriënt staat
+     (protein HOOG, omega3 REDELIJK, zink MATIG, magnesium/vitamine D LAAG).
+     conf 1-4; `why` = de reden dat de schatting zo zeker/onzeker is.
+     `action` koppelt aan een Mijn Dag-moment; null = nog geen actie gekoppeld. */
+  /* `foods` = orde van grootte per portie (NEVO-achtig). Deze getallen tellen
+     NOOIT op tot een dagtotaal: de band komt uit frequentievragen, niet uit
+     grammen. Ze staan er om te kunnen kiezen — pompoenzaad doet vier keer een
+     banaan — niet om inname te berekenen.
+     `bloed` = of een bloedwaarde deze stand écht harder maakt. Dat verschilt
+     per stof en is de reden dat "later bloedonderzoek" geen algemeen antwoord is. */
+  var NUTRIENTS = [
+    {id:"protein", label:"Eiwit", ref:"eiwit bij elke maaltijd", band:"meets", conf:4,
+     unit:"g eiwit", ri:"25–30 g per eetmoment, 3–4× per dag",
+     why:"PROT-AGE (2013): 3–4 eiwitrijke eetmomenten per dag bij 40+. Je gewicht maakt hier een echte g/dag-range van.",
+     supp:null,
+     bloed:{ok:false, why:"Er bestaat geen bloedmarker voor je eiwitinname. Wat je hier ziet is de enige route: wat er op je bord ligt."},
+     foods:[
+       {label:"Kipfilet", portion:"100 g", v:23, kind:"dierlijk", act:"Kip bij het avondeten"},
+       {label:"Magere kwark", portion:"200 g", v:20, kind:"dierlijk", act:"Kwark als tussendoor"},
+       {label:"Skyr", portion:"150 g", v:17, kind:"dierlijk", act:"Skyr als tussendoor"},
+       {label:"Eieren", portion:"2 stuks", v:13, kind:"dierlijk", act:"Twee eieren bij het ontbijt"},
+       {label:"Linzen", portion:"150 g gekookt", v:13, kind:"peulvrucht", act:"Linzen in de warme maaltijd"},
+       {label:"Tofu", portion:"100 g", v:12, kind:"anders", act:"Tofu in de warme maaltijd"}
+     ]},
+
+    {id:"magnesium", label:"Magnesium", ref:"dagelijks bladgroenten, noten of peulvruchten", band:"below", conf:2,
+     unit:"mg", ri:"350 mg/dag (man 31–70)",
+     why:"Je band komt uit een vraag over porties groente en fruit — een proxy, geen magnesium-maat. De sterke bronnen (noten, volkoren, peulvruchten, bladgroenten) zitten daar niet één-op-één in. De code-notitie zegt dat de vráág herzien moet worden, niet alleen de grens.",
+     caveat:"Let op de spanning hierin: je band komt uit een groente-en-fruit-telling, maar fruit levert per portie het minst van deze lijst. Meer fruit eten beweegt je band dus eerder dan je magnesium.",
+     supp:"Magnesium draagt bij tot vermindering van vermoeidheid en moeheid.",
+     bloed:{ok:"beperkt", why:"Serum-magnesium is een slechte maat voor je voorraad: je lichaam houdt de bloedwaarde constant ten koste van bot en spier. Je kunt dus een normale uitslag hebben en toch krap zitten. Een bloedprik maakt déze stand niet harder — beter bijhouden wat je eet doet dat wel."},
+     foods:[
+       {label:"Pompoenzaden", portion:"25 g (handvol)", v:130, kind:"noten-zaden", act:"Pompoenzaden door je yoghurt"},
+       {label:"Spinazie, gekookt", portion:"150 g", v:130, kind:"groente", maand:[4,10], act:"Spinazie bij het avondeten"},
+       {label:"Snijbiet, gekookt", portion:"150 g", v:110, kind:"groente", maand:[6,10], act:"Snijbiet bij het avondeten"},
+       {label:"Zwarte bonen", portion:"150 g gekookt", v:105, kind:"peulvrucht", act:"Bonen in de warme maaltijd"},
+       {label:"Amandelen", portion:"25 g", v:65, kind:"noten-zaden", act:"Een handvol noten bij de lunch"},
+       {label:"Volkorenbrood", portion:"2 sneden", v:55, kind:"volkoren", act:"Volkoren in plaats van wit"},
+       {label:"Pure chocolade 70%", portion:"20 g", v:45, kind:"anders"},
+       {label:"Banaan", portion:"1 stuk (120 g)", v:33, kind:"fruit", act:"Een banaan in de middag"},
+       {label:"Avocado", portion:"½ stuk (100 g)", v:29, kind:"fruit", act:"Avocado op je brood"},
+       {label:"Gedroogde vijgen", portion:"40 g (4 stuks)", v:27, kind:"fruit", act:"Gedroogde vijgen bij de thee"}
+     ]},
+
+    {id:"omega3", label:"Omega-3", ref:"2× vette vis per week", band:"below", conf:3,
+     unit:"mg EPA+DHA", ri:"200 mg/dag — Gezondheidsraad, ≈ 1× vette vis per week",
+     why:"Gezondheidsraad noemt 1×/week, hart-richtlijnen 2×/week. Deze grens kiest de ruimere kant — een interpretatiekeuze.",
+     supp:"EPA en DHA dragen bij tot de normale werking van het hart.",
+     bloed:{ok:"beperkt", why:"De omega-3-index (aandeel EPA+DHA in je rode bloedcellen) is een goede maat, maar geen standaardbepaling bij een Nederlands huisartsenlab. Je zou hem los moeten kopen — en hij verandert pas na weken."},
+     foods:[
+       {label:"Makreel", portion:"125 g", v:3000, kind:"vis", act:"Vette vis bij het avondeten"},
+       {label:"Zalm", portion:"125 g", v:2000, kind:"vis", act:"Vette vis bij het avondeten"},
+       {label:"Haring", portion:"100 g", v:1900, kind:"vis", act:"Haring als lunch"},
+       {label:"Sardines uit blik", portion:"100 g", v:1400, kind:"vis", act:"Sardines op je brood"},
+       {label:"Gerookte forel", portion:"100 g", v:1000, kind:"vis"},
+       {label:"Walnoten", portion:"25 g", v:0, alt:"ALA", kind:"noten-zaden",
+        note:"Plantaardig omega-3 (ALA). Je lichaam zet daar maar een paar procent van om naar EPA/DHA — het vervangt vis niet.", act:"Walnoten bij de lunch"},
+       {label:"Lijnzaad, gemalen", portion:"15 g", v:0, alt:"ALA", kind:"noten-zaden",
+        note:"Ook ALA. Alleen gemalen — heel lijnzaad gaat er onbenut door."}
+     ]},
+
+    {id:"vitamin_d", label:"Vitamine D", ref:"dagelijks buiten (huid aan zonlicht)", band:"around", conf:1,
+     unit:"µg", ri:"10 µg/dag",
+     why:"Keer-per-week zonder duur en seizoen is een zwakke maat voor aanmaak. In NL (52°N) staat de aanmaak okt–mrt vrijwel stil.",
+     caveat:"Van deze lijst is zonlicht de enige route die echt telt. De rest schuift nauwelijks — dit is de stof waar voeding het gat niet dicht krijgt.",
+     supp:null,
+     bloed:{ok:true, why:"Hier is een bloedwaarde wél de betere meting: 25(OH)D is de standaardbepaling en zegt echt iets over je voorraad. Dit is de enige van de vijf waar \"later bloedonderzoek\" een concrete verbetering is."},
+     foods:[
+       {label:"Haring", portion:"100 g", v:25, kind:"vis"},
+       {label:"Zalm", portion:"125 g", v:12, kind:"vis", act:"Vette vis bij het avondeten"},
+       {label:"Eieren", portion:"2 stuks", v:2.4, kind:"dierlijk"},
+       {label:"Halvarine of margarine", portion:"30 g", v:2.3, kind:"anders", note:"In Nederland wettelijk verrijkt met vitamine D."},
+       {label:"Zonlicht op je huid", portion:"15–30 min, apr–sep", v:null, kind:"anders",
+        note:"De hoofdroute, en de reden dat voeding dit gat niet dicht. Okt–mrt staat de aanmaak in NL vrijwel stil.", act:"Kwartier buiten in de middag"}
+     ]},
+
+    {id:"zinc", label:"Zink", ref:"dagelijks vlees, vis of peulvruchten", band:"meets", conf:2,
+     unit:"mg", ri:"9–11 mg/dag",
+     why:"RI ligt rond 9–11 mg/dag; de vertaling van mg naar portiefrequentie is plausibel maar niet scherp gebronde.",
+     supp:null,
+     bloed:{ok:false, why:"Plasma-zink is een onbetrouwbare maat: het daalt bij elke ontsteking en na een maaltijd, los van je voorraad. Een uitslag zou hier meer ruis dan informatie toevoegen."},
+     foods:[
+       {label:"Rundvlees", portion:"100 g", v:4.5, kind:"dierlijk", act:"Rundvlees in de warme maaltijd"},
+       {label:"Kikkererwten", portion:"150 g gekookt", v:1.9, kind:"peulvrucht", act:"Kikkererwten in de warme maaltijd"},
+       {label:"Pompoenzaden", portion:"25 g", v:1.8, kind:"noten-zaden", act:"Pompoenzaden door je yoghurt"},
+       {label:"Garnalen", portion:"100 g", v:1.5, kind:"vis"},
+       {label:"Volkorenbrood", portion:"2 sneden", v:1.4, kind:"volkoren",
+        note:"Fytaat in volkoren remt de opname — de mg zijn er, je haalt er minder uit."},
+       {label:"Belegen kaas", portion:"30 g (1 snee)", v:1.2, kind:"dierlijk"}
+     ]}
+  ];
+
+  /* KOPPELING actie ↔ nutriënt — afgeleid, niet opgeslagen.
+     daily_action_log heeft al (domain, action_key); het nutriënt is een
+     eigenschap van de actie-DEFINITIE, niet van elke dagregel. Een registry
+     zoals deze hoort naast portion-dictionary.ts te leven. Geen migratie.
+     Zelf gekozen voedingsbronnen krijgen de sleutel `voeding:<nutrient>:<slug>`,
+     zodat het nutriënt uit de sleutel zelf af te leiden blijft. */
+  var ACTION_NUTRIENT = {
+    "noten":       "magnesium",
+    "vette-vis":   "omega3",
+    "peulvruchten":"magnesium",
+    "kwark-skyr":  "protein"
+  };
+
+  var ACTIONS = [
+    {key:"noten",           label:"Een handvol noten bij de lunch",   domain:"voeding"},
+    {key:"vette-vis",       label:"Vette vis bij het avondeten",      domain:"voeding"},
+    {key:"peulvruchten",    label:"Linzen of bonen in de maaltijd",   domain:"voeding"},
+    {key:"kwark-skyr",      label:"Kwark of skyr als tussendoor",     domain:"voeding"},
+    {key:"schermloos-uur",  label:"Eén uur voor bed het scherm weg",  domain:"slaap"},
+    {key:"wandeling",       label:"Tien minuten wandelen na het eten",domain:"beweging"}
+  ];
+
+  /* In-sessie gekozen bronnen. Staat hier los omdat het in productie een insert
+     in daily_action_log is, niet een wijziging aan de nutriëntdefinitie. */
+  var picked = [];
+
+  function nutrientOf(key){
+    if (key.indexOf("voeding:") === 0) return key.split(":")[1];
+    return ACTION_NUTRIENT[key] || null;
+  }
+  function slug(s){
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+  function activeActions(){
+    var keys = S().nutrition.active || [];
+    var out = ACTIONS.filter(function(a){ return keys.indexOf(a.key) >= 0; });
+    return out.concat(picked);
+  }
+  function actionFor(nutrientId){
+    return activeActions().filter(function(a){ return nutrientOf(a.key) === nutrientId; })[0] || null;
+  }
+  function nutById(id){
+    return NUTRIENTS.filter(function(x){ return x.id === id; })[0] || null;
+  }
+  function verdictFor(nutrientId){
+    return VERDICTS.filter(function(v){ return v.nutrient === nutrientId; })[0] || null;
+  }
+
+  /* Spiegelt src/types/verdict.ts + supplement-verdict-copy.ts:
+     VerdictValue kopen|niet_nodig|eerst_leefstijl|nooit, tone ja|nee|wacht. */
+  var VERDICT_TAG = {
+    kopen:{label:"Aanvullen", tone:"ja"},
+    niet_nodig:{label:"Niet nodig", tone:"nee"},
+    eerst_leefstijl:{label:"Eerst leefstijl", tone:"wacht"},
+    nooit:{label:"Raden we niet aan", tone:"nee"}
+  };
+
+  var VERDICTS = [
+    {key:"magnesium", label:"Magnesium", verdict:"kopen", nutrient:"magnesium",
+     why:"Je check laat een reden zien om dit aan te vullen naast je leefstijl.",
+     path:"/beste/magnesium"},
+    {key:"omega3", label:"Omega-3", verdict:"eerst_leefstijl", nutrient:"omega3",
+     why:"Er loopt hier nog geen actie op Mijn Dag. Twee keer vette vis per week is de goedkoopste route — een potje pas als dat niet lukt.",
+     path:null},
+    {key:"eiwitpoeder", label:"Eiwitpoeder", verdict:"niet_nodig", nutrient:"protein",
+     why:"Je check laat geen reden zien om dit te nemen. Dat scheelt je geld.",
+     path:null},
+    {key:"zink", label:"Zink", verdict:"niet_nodig", nutrient:"zinc",
+     why:"Je check laat geen reden zien om dit te nemen. Dat scheelt je geld.",
+     path:null},
+    {key:"vitamineD", label:"Vitamine D", verdict:"eerst_leefstijl", nutrient:"vitamin_d",
+     why:"Je zit rond de vuistregel, maar de schatting is zwak: frequentie zonder duur en seizoen zegt weinig. In de winter is dit een andere vraag dan nu.",
+     path:null}
+  ];
+
+  var MISSING = [
+    "je lengte — zonder dat geen energiebehoefte, alleen een eiwit-range uit je gewicht",
+    "wat je werkelijk at — dit zijn frequenties. De grammen bij de bronnen zijn wat één portie levert, niet wat jij binnenkreeg",
+    "bloedwaarden — de enige manier om een echte status vast te stellen",
+    "medicijngebruik — dat laten we bewust buiten deze schatting"
+  ];
+
+  var BAND_LABEL = {below:"onder de vuistregel", around:"rond de vuistregel", meets:"haalt de vuistregel"};
+
   var NEXT_LEVEL = {
     slaap:{v:70,b:"Sterk"}, beweging:{v:50,b:"Gemiddeld"}, voeding:{v:70,b:"Sterk"},
     stress:{v:70,b:"Sterk"}, verbinding:{v:70,b:"Sterk"}
@@ -815,7 +1335,8 @@ tr:last-child td{border-bottom:none}
                drive:"Beweging kwam als eerste naar boven uit je antwoorden over energie overdag en herstel na inspanning."},
       fv:{focus:"Beweging — aangewezen door je check",
           rec:"Nog geen aanrader. Die komt pas als er iets te dichten valt: eerst je voedingscheck, dan pas een potje."},
-      anchor:"voor: nog niet gekozen"
+      anchor:"voor: nog niet gekozen",
+      nutrition:{done:false, actionDays:0, active:[], weeks:[0,0,0,0], checks:[]}
     },
 
     dun:{
@@ -844,7 +1365,13 @@ tr:last-child td{border-bottom:none}
                drive:"Vier van je vijf laagste antwoorden gaan over doorslapen en over de avond. Daarom staat slaap voorop en niet stress."},
       fv:{focus:"Slaap — door jou gekozen",
           rec:"Magnesium wordt vaak genoemd bij doorslapen. Of het bij jou past hangt af van je voeding: doe eerst de voedingscheck."},
-      anchor:"voor: traplopen zonder pauze"
+      anchor:"voor: traplopen zonder pauze",
+      nutrition:{done:true, actionDays:2, active:["noten","schermloos-uur"], weeks:[0,0,1,1],
+        checks:[
+          {label:"1e check", sub:"dag 1", kind:"done"},
+          {label:"Hermeting", sub:"dag 30", kind:"next"},
+          {label:"Bloedwaarde", sub:"bestaat hier niet", kind:"gh"}
+        ]}
     },
 
     opbouwend:{
@@ -873,7 +1400,13 @@ tr:last-child td{border-bottom:none}
                drive:"Vier van je vijf laagste antwoorden gaan over doorslapen en over de avond. Daarom staat slaap voorop en niet stress."},
       fv:{focus:"Slaap — door jou gekozen",
           rec:"Magnesium wordt vaak genoemd bij doorslapen. Of het bij jou past hangt af van je voeding: doe eerst de voedingscheck."},
-      anchor:"voor: traplopen zonder pauze"
+      anchor:"voor: traplopen zonder pauze",
+      nutrition:{done:true, actionDays:9, active:["noten","schermloos-uur"], weeks:[2,3,5,4],
+        checks:[
+          {label:"1e check", sub:"dag 1", kind:"done"},
+          {label:"Hermeting", sub:"dag 30", kind:"next"},
+          {label:"Bloedwaarde", sub:"bestaat hier niet", kind:"gh"}
+        ]}
     },
 
     beantwoord:{
@@ -902,13 +1435,63 @@ tr:last-child td{border-bottom:none}
                drive:"Vier van je vijf laagste antwoorden gingen over doorslapen en over de avond. Daar is deze cyclus het meeste veranderd."},
       fv:{focus:"Slaap — door jou gekozen",
           rec:"Magnesium wordt vaak genoemd bij doorslapen. Je voedingscheck laat weinig gat zien — een potje voegt hier waarschijnlijk weinig toe."},
-      anchor:"voor: traplopen zonder pauze"
+      anchor:"voor: traplopen zonder pauze",
+      /* Twee checks met dezelfde band: de sterkste les die Over tijd te geven
+         heeft. Gedrag is er, de stand staat stil — en dat is verklaarbaar. */
+      nutrition:{done:true, actionDays:12, active:["noten","schermloos-uur"], weeks:[3,4,6,6],
+        checks:[
+          {label:"1e check", sub:"dag 1", kind:"done"},
+          {label:"2e check", sub:"dag 20", kind:"done"},
+          {label:"Hermeting", sub:"dag 30", kind:"next"},
+          {label:"Bloedwaarde", sub:"bestaat hier niet", kind:"gh"}
+        ]}
+    },
+
+    /* Voeding als focusdomein — laat de hele keten zien:
+       gap in de check → actie op Mijn Dag → dagenstrip → gegate supplement. */
+    voedingsgat:{
+      cycleDay:16, activeDays:9, daysUntil:14, focus:"voeding", vitality:52, stage:2,
+      hero:{
+        eyebrow:"CYCLUS · DAG 16 VAN 30",
+        h1:"Je basis heeft twee open plekken.",
+        lede:"Je was 9 van de 16 dagen actief. Je voedingscheck laat twee stoffen onder de vuistregel zien.",
+        cta1:"Ga door op Mijn Dag", cta1To:"agenda",
+        cta2:"Lees wat dat betekent", cta2To:"statistieken", cta2Blik:"advies"
+      },
+      step:{eyebrow:"Je stap van vandaag", title:"Een handvol noten bij de lunch",
+            sub:"Staat 9 van de laatste 14 dagen aan. Dit is je magnesium-actie op Mijn Dag."},
+      goal:{words:"De middagdip doorkomen zonder te grazen", mode:"Hier werk je nog aan deze cyclus.", baseline:4, latest:5},
+      rows:[
+        {id:"voeding",    score:49, delta:1,    days:16,   goal:5, start:48},
+        {id:"slaap",      score:58, delta:0,    days:16,   goal:null, start:58},
+        {id:"beweging",   score:48, delta:1,    days:12,   goal:null, start:47},
+        {id:"stress",     score:52, delta:null, days:26,   goal:null, start:null},
+        {id:"verbinding", score:64, delta:null, days:null, goal:null, start:null}
+      ],
+      coverage:"Je hebt 4 van de 7 domeinen apart gemeten. Verbinding, energie en herstel nog niet.",
+      koppel:{doen:"9 momenten gezet", hier:"dag 16 van 30", meet:"over 14 dagen", cta1:"Naar vandaag",
+        say:"Je noten-moment op Mijn Dag is de actie achter je magnesium-gap. Hoe vaak dat aanstaat lees je hier terug — het blijft gedrag, geen gemeten inname."},
+      inzicht:{body:"Je zit in de middenband. Voeding is het domein waar deze cyclus het meeste gebeurt en waar je basis nog twee gaten laat zien.",
+               drive:"Je antwoorden over de middag en over avondeten trekken voeding naar voren — niet je slaap."},
+      fv:{focus:"Voeding — door jou gekozen",
+          rec:"Twee gaps uit je check: magnesium en omega-3. Bij magnesium loopt er al een actie; bij omega-3 nog niet."},
+      anchor:"voor: de middag doorkomen zonder dip",
+      nutrition:{done:true, actionDays:9, active:["noten"], weeks:[1,3,5,4],
+        checks:[
+          {label:"1e check", sub:"dag 1", kind:"done"},
+          {label:"Hermeting", sub:"dag 30", kind:"next"},
+          {label:"Bloedwaarde", sub:"bestaat hier niet", kind:"gh"}
+        ]}
     }
   };
 
   var current = "opbouwend";
   var selectedRow = null;
   var cursorDay = null;
+  /* Het spoor: één stof die Stand, Advies en Over tijd tegelijk richt.
+     null = alle vijf. Overleeft een blik-switch — dat is de hele winst. */
+  var nutFocus = null;
+  var foodsOpen = false;
 
   function $(s,r){ return (r||document).querySelector(s); }
   function $$(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
@@ -924,6 +1507,8 @@ tr:last-child td{border-bottom:none}
   function evFromAttr(raw){
     var p = raw.split(":");
     if (p[0] === "hub_click") ev("dashboard_voortgang_hub_click", {destination:p[1], surface:p[2]});
+    else if (p[0] === "voedingscheck_cta") ev("dashboard_voedingscheck_cta_click", {surface:p[1]});
+    else if (p[0] === "vergelijking_click") ev("dashboard_ladder_step_click", {step:"supplement", nutrient:p[1]});
     else if (p[0] === "terug") ev("dashboard_voortgang_terug", {from:p[1]});
     else if (p[0] === "doel_click") ev("dashboard_voortgang_doel_click", {domain:S().focus, entry:S().goal ? "rescore" : "set"});
     else if (p[0] === "agenda_voortgang_link_click") ev("dashboard_agenda_voortgang_link_click", {surface:p[1]});
@@ -1116,6 +1701,469 @@ tr:last-child td{border-bottom:none}
     });
   }
 
+  /* ── voedingsbasis ── */
+  /* Spreidt `count` gevulde dagen deterministisch over `total` — de strip toont
+     een patroon, nooit welke kalenderdag. Dat is bewust: de dag zelf zegt niets. */
+  function dayPattern(count, total){
+    var set = {}, k;
+    for (k = 0; k < count && k < total; k++) set[Math.floor(k * total / count)] = true;
+    var out = [];
+    for (k = 0; k < total; k++) out.push(!!set[k]);
+    return out;
+  }
+
+  var BAND_SHORT = {below:"onder", around:"rond", meets:"haalt"};
+  var MONTH = new Date().getMonth() + 1;
+
+  function fmtNum(v){ return String(v).replace(".", ","); }
+  function shortUnit(u){ return u.split(" ")[0]; }
+  function inSeason(f){ return !!(f.maand && MONTH >= f.maand[0] && MONTH <= f.maand[1]); }
+  function pickedIndex(key){
+    for (var i = 0; i < picked.length; i++) if (picked[i].key === key) return i;
+    return -1;
+  }
+  function actionsFor(id){
+    return activeActions().filter(function(a){ return nutrientOf(a.key) === id; });
+  }
+  /* Een net gekozen bron staat vanaf vandaag aan — 0 van 14, niet de teller van
+     de bestaande actie. Anders zou een klik gedrag suggereren dat er niet was. */
+  function daysOf(a){ return a.fresh ? 0 : S().nutrition.actionDays; }
+
+  function actionBlock(a){
+    var days = daysOf(a), pat = dayPattern(days, 14), dots = "";
+    pat.forEach(function(on){ dots += '<i' + (on ? ' class="on"' : '') + '></i>'; });
+    return '<div class="nut-act"><span class="k">Je actie op Mijn Dag</span>'
+      + '<span class="v">' + a.label + '</span>'
+      + '<div class="dstrip"><span class="dots" role="img" aria-label="'
+      + days + ' van de laatste 14 dagen aan">' + dots + '</span>'
+      + '<span class="cnt">' + (a.fresh ? "vanaf vandaag" : days + " van 14 dagen") + '</span></div></div>';
+  }
+
+  function confBlock(x){
+    var dots = "";
+    for (var i = 1; i <= 4; i++) dots += '<i' + (i <= x.conf ? ' class="on"' : '') + '></i>';
+    return '<div class="nut-conf"><span class="confdots" role="img" aria-label="zekerheid '
+      + x.conf + ' van 4">' + dots + '</span><span class="why">' + x.why + '</span></div>';
+  }
+
+  /* ── spoor: de stof die alle drie de blikken richt ── */
+  function renderSpoor(){
+    var n = S().nutrition, host = $("#spoor");
+    host.innerHTML = '<span class="lb">Spoor</span>';
+
+    function pill(id, label, band){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "npill";
+      b.setAttribute("data-spoor", id || "");
+      b.setAttribute("aria-pressed", String(nutFocus === (id || null)));
+      if (!n.done && id) b.disabled = true;
+      b.innerHTML = (band ? '<i class="' + band + '"></i>' : "") + label;
+      return b;
+    }
+    host.appendChild(pill(null, "Alle vijf", null));
+    NUTRIENTS.forEach(function(x){ host.appendChild(pill(x.id, x.label, x.band)); });
+
+    var hint = $("#spoor-hint");
+    if (!n.done){
+      hint.textContent = "Het spoor werkt zodra je voedingscheck er is — zonder die check is er geen stof om te volgen.";
+    } else if (!nutFocus){
+      hint.textContent = "Kies een stof; hij blijft staan als je van blik wisselt. Stand zegt waar hij uit komt, Advies wat je ervoor kunt eten, Over tijd of het beweegt.";
+    } else {
+      var x = nutById(nutFocus), acts = actionsFor(nutFocus);
+      hint.textContent = x.label + " · " + BAND_LABEL[x.band] + " · uit je vragenlijst · "
+        + (acts.length ? acts.length + " actie" + (acts.length > 1 ? "s" : "") + " op Mijn Dag"
+                       : "nog geen actie op Mijn Dag");
+    }
+  }
+
+  /* ── Stand: waar deze stand uit komt en wat hem harder maakt ── */
+  function renderStandNut(){
+    var s = S(), n = s.nutrition, host = $("#stand-nut");
+    if (!nutFocus || !n.done){ host.hidden = true; return; }
+    host.hidden = false;
+
+    var x = nutById(nutFocus);
+    $("#sn-name").textContent = x.label;
+    var bd = $("#sn-band"); bd.className = "nut-band " + x.band; bd.textContent = BAND_LABEL[x.band];
+    $("#sn-ref").textContent = x.ref;
+    $("#sn-ri").textContent = x.ri;
+    $("#sn-src").textContent = "je vragenlijst, " + (s.cycleDay - 1) + " dagen terug";
+
+    var b = x.bloed;
+    var bronnen = [
+      {mk:"1", cls:"now", st:"nu", stcls:"nu", t:"Je vragenlijst — dit is wat je nu ziet",
+       s:"Eén vraag over een gewone week. Zekerheid " + x.conf + " van 4: " + x.why},
+      {mk:"2", cls:"gh", st:"niet gebouwd", stcls:"gh", t:"Een paar dagen echt bijhouden",
+       s:"Porties in plaats van frequenties. Dit is de goedkoopste stap omhoog en werkt voor alle vijf de stoffen — maar het vraagt werk van jou.",
+       ev:"log"},
+      b.ok === true
+        ? {mk:"3", cls:"gh", st:"wél beter", stcls:"gh", t:"Bloedwaarde — hier de echte upgrade", s:b.why, ev:"bloed", cta:"Ik heb een recente uitslag"}
+        : b.ok === "beperkt"
+          ? {mk:"3", cls:"gh", st:"beperkt", stcls:"gh", t:"Bloedwaarde — beperkt bruikbaar", s:b.why, ev:"bloed"}
+          : {mk:"✕", cls:"nope", st:"geen route", stcls:"no", t:"Bloedwaarde — geen betere meting", s:b.why}
+    ];
+
+    var host2 = $("#sn-bron"); host2.innerHTML = "";
+    bronnen.forEach(function(r){
+      var el = document.createElement("div");
+      el.className = "bron " + r.cls;
+      el.innerHTML = '<span class="mk" aria-hidden="true">' + r.mk + '</span>'
+        + '<span class="bd"><span class="bt">' + r.t + '</span><span class="bs">' + r.s + '</span>'
+        + (r.cta ? '<button type="button" class="morebtn" data-bron="' + r.ev + '">' + r.cta + '</button>' : "")
+        + '</span><span class="bst ' + r.stcls + '">' + r.st + '</span>';
+      host2.appendChild(el);
+    });
+
+    $("#sn-toadvies").setAttribute("data-nutfocus", x.id);
+    $("#sn-totijd").setAttribute("data-nutfocus", x.id);
+  }
+
+  /* ── Advies: voedingsbronnen per stof ── */
+  function foodsHtml(x){
+    var max = 0;
+    x.foods.forEach(function(f){ if (f.v != null && f.v > max) max = f.v; });
+    var list = foodsOpen ? x.foods : x.foods.slice(0, 6);
+    var rest = x.foods.length - list.length;
+
+    var html = '<p class="eyebrow">Wat één portie ongeveer levert</p>'
+      + (x.caveat ? '<p class="caveat">' + x.caveat + '</p>' : "")
+      + '<div class="foods">';
+    list.forEach(function(f, i){
+      var idx = x.foods.indexOf(f);
+      var w = (f.v == null || !max) ? 0 : Math.max(3, Math.round(100 * f.v / max));
+      var val = f.v == null ? "—" : f.alt ? f.alt : "~" + fmtNum(f.v) + " " + shortUnit(x.unit);
+      var key = f.act ? "voeding:" + x.id + ":" + slug(f.label) : null;
+      var on = key && pickedIndex(key) >= 0;
+      html += '<button type="button" class="food' + (on ? " on" : "") + '" data-food="' + x.id + '|' + idx + '">'
+        + '<span class="fd"><span class="fl">' + f.label
+        + (inSeason(f) ? '<span class="seizoen">nu in seizoen</span>' : "")
+        + (on ? '<span class="seizoen">staat op Mijn Dag</span>' : "") + '</span>'
+        + '<span class="fp">' + f.portion + '</span>'
+        + '<span class="fbar"><i style="width:' + w + '%"></i></span>'
+        + (f.note ? '<span class="foodnote">' + f.note + '</span>' : "")
+        + '</span>'
+        + '<span class="fr"><span class="fv' + (f.alt ? " ala" : "") + '">' + val + '</span>'
+        + '<span class="fk">' + f.kind + '</span></span></button>';
+    });
+    html += "</div>";
+    if (rest > 0) html += '<button type="button" class="morebtn" data-more="1">Toon ' + rest + ' bron' + (rest > 1 ? "nen" : "") + ' meer</button>';
+    else if (foodsOpen && x.foods.length > 6) html += '<button type="button" class="morebtn" data-more="1">Toon minder</button>';
+
+    /* De factor is berekend, niet beweerd — dan blijft de regel waar bij elke
+       stof en bij elke lijst die later verandert. */
+    var lo = 0;
+    x.foods.forEach(function(f){ if (f.v) lo = lo ? Math.min(lo, f.v) : f.v; });
+    var factor = (lo && max) ? Math.round(max / lo) : 0;
+    html += '<p class="foodfoot">Orde van grootte per portie, uit voedingswaardetabellen. Deze getallen tellen hier <b>niet</b> op tot een dagtotaal: je band komt uit frequentievragen, niet uit grammen. Ze staan er om te kunnen kiezen'
+      + (factor > 1 ? " — de sterkste bron in deze lijst doet ongeveer " + factor + "× de zwakste." : ".") + '</p>';
+    return html;
+  }
+
+  function pickHtml(x){
+    return '<div class="pick"><span class="k">Wat een keuze doet</span>'
+      + '<span class="v">Tik een bron aan en die komt als moment op Mijn Dag te staan.</span>'
+      + '<div class="split"><div><span class="kk">Wat dit verandert</span>'
+      + '<span class="vv">Er komt een moment bij, en de dagenstrip hierboven begint te vullen. Dat is een telling van je eigen gedrag.</span></div>'
+      + '<div><span class="kk">Wat dit niet verandert</span>'
+      + '<span class="vv">Je band blijft staan tot je volgende check. Eén portie is geen nieuwe stand — daar is trede 2 voor.</span></div>'
+      + '</div></div>';
+  }
+
+  function nutRowsHtml(){
+    var html = "";
+    NUTRIENTS.forEach(function(x){
+      var acts = actionsFor(x.id);
+      html += '<div class="nut"><div class="nut-head"><span class="nut-nm">' + x.label + '</span>'
+        + '<span class="nut-band ' + x.band + '">' + BAND_LABEL[x.band] + '</span></div>'
+        + '<p class="nut-ref">' + x.ref + '</p>';
+      if (x.band === "below"){
+        if (acts.length) acts.forEach(function(a){ html += actionBlock(a); });
+        else html += '<p class="nut-none">Hier hangt nog geen moment op Mijn Dag aan. Zonder actie blijft deze schatting staan waar hij staat.</p>';
+      }
+      html += confBlock(x)
+        + '<button type="button" class="morebtn" data-nutfocus="' + x.id + '" data-spoor="' + x.id + '">'
+        + 'Volg ' + x.label.toLowerCase() + ' door alle drie de blikken →</button></div>';
+    });
+    return html;
+  }
+
+  function renderLadder(){
+    var s = S(), n = s.nutrition, host = $("#ladder");
+    var gaps = NUTRIENTS.filter(function(x){ return x.band === "below"; });
+
+    $("#nut-pending").hidden = n.done;
+    host.hidden = !n.done;
+
+    if (!n.done){
+      $("#nut-h2").textContent = "We weten nog niet wat er van tafel komt.";
+      $("#nut-lede").textContent = "Zonder je voedingscheck kunnen we niet zeggen of een supplement iets toevoegt. Dat is één minuut invullen.";
+      $("#nut-missing").innerHTML = "";
+      /* Leegmaken, niet alleen verbergen — anders blijven de treden van de
+         vorige state met hun oude dagenteller in de DOM staan. */
+      host.innerHTML = "";
+      return;
+    }
+
+    var x = nutFocus ? nutById(nutFocus) : null;
+    $("#nut-h2").textContent = x
+      ? x.label + ": " + BAND_LABEL[x.band]
+      : (gaps.length === 0 ? "Je voeding dekt de vijf die we volgen." : "Twee van de vijf blijven onder de vuistregel.");
+    $("#nut-lede").textContent = x
+      ? "Vier treden, altijd in deze orde. Een supplement is nooit trede 1 — hij is een aanvulling op wat er al staat."
+      : "Vier treden, altijd in deze orde. Kies een stof in het spoor om de bronnen en het oordeel per stof te zien.";
+
+    /* Trede 1 — uit voeding */
+    var r1 = {n:"1", t:"Uit voeding", st:"nu", stcls:"nu", cls:"open"};
+    if (x){
+      var acts = actionsFor(x.id);
+      r1.why = x.band === "below"
+        ? x.label + " staat onder de vuistregel. Dit is de eerste en goedkoopste plek om er iets aan te doen — en de enige die je vandaag al kunt zetten."
+        : x.label + " " + BAND_LABEL[x.band] + ". Hier valt niets te dichten; de bronnen staan er voor als je wilt bijsturen.";
+      r1.body = (acts.length ? acts.map(actionBlock).join("")
+                             : '<p class="nut-none">Hier hangt nog geen moment op Mijn Dag aan. Zonder actie blijft deze schatting staan waar hij staat.</p>')
+        + foodsHtml(x) + pickHtml(x) + confBlock(x);
+    } else {
+      r1.why = "Alle vijf de stoffen die we volgen, met de actie die er nu aan hangt.";
+      r1.body = nutRowsHtml();
+    }
+
+    /* Trede 2 — meet opnieuw. De brug naar Over tijd. */
+    var r2 = {n:"2", t:"Meet opnieuw", st:"over " + s.daysUntil + " dagen", stcls:"wacht", cls:"wacht"};
+    r2.why = "Je band verandert niet doordat je vandaag iets eet — hij verandert bij je volgende check. Tot dan is de dagenstrip het enige dat beweegt, en dat is gedrag, geen inname. "
+      + "Deze trede is geen slot voor trede 3: hij is hoe je merkt of trede 1 gewerkt heeft."
+      + (x && x.bloed.ok === true ? " Voor " + x.label.toLowerCase() + " zou een bloedwaarde hier het sterkste punt zetten; zie Stand." : "");
+    r2.body = '<div class="tilefoot" style="margin-top:0">'
+      + '<button type="button" class="linkbtn" data-blikto="tijd" data-blikstay'
+      + (x ? ' data-nutfocus="' + x.id + '"' : "") + '>Bekijk de twee klokken naast elkaar →</button>'
+      + '<button type="button" class="linkbtn" data-goto="hermeting" data-ev="hub_click:hermeting:advies_trede2">Naar je hermeting →</button></div>';
+
+    /* Trede 3 — supplement. Het enige aanbod in Voortgang staat hier. */
+    var r3 = {n:"3", t:"Supplement erbij"};
+    var v = x ? verdictFor(x.id) : null;
+    if (v && v.verdict === "kopen"){
+      r3.st = "open"; r3.stcls = "nu"; r3.cls = "open";
+      r3.why = v.why + (x.supp ? " De claim die mag: “" + x.supp + "” — EFSA-goedgekeurde tekst, geen eigen belofte." : "");
+      r3.body = '<div class="tilefoot" style="margin-top:0">'
+        + '<button type="button" class="linkbtn" data-goto="favorieten" data-ev="hub_click:favorieten:advies_' + x.id + '">Zie ons oordeel →</button>'
+        + '<button type="button" class="linkbtn" data-ev="vergelijking_click:' + x.id + '">Vergelijk ' + x.label.toLowerCase() + ' →</button></div>';
+    } else if (v){
+      r3.st = "dicht"; r3.stcls = "dicht"; r3.cls = "";
+      r3.why = v.why;
+      r3.body = '<div class="tilefoot" style="margin-top:0"><button type="button" class="linkbtn" data-goto="favorieten" data-ev="hub_click:favorieten:advies_' + x.id + '">Zie ons oordeel →</button></div>';
+    } else {
+      var buy = VERDICTS.filter(function(q){ return q.verdict === "kopen"; }).length;
+      r3.st = buy ? buy + " open" : "dicht"; r3.stcls = buy ? "nu" : "dicht"; r3.cls = buy ? "open" : "";
+      r3.why = "Van de " + VERDICTS.length + " die we bekeken voegt er " + (buy === 0 ? "geen enkele" : buy) + " iets toe. Dit is de enige plek in Voortgang waar aanbod mag staan — de hub-scroll blijft er vrij van.";
+      r3.body = '<div class="tilefoot" style="margin-top:0"><button type="button" class="linkbtn" data-goto="favorieten" data-ev="hub_click:favorieten:advies">Naar je favorieten →</button></div>';
+    }
+
+    /* Trede 4 — waar je het haalt. Ghost: vraagt je locatie. */
+    var r4 = {n:"4", t:"Waar je het haalt", st:"ghost", stcls:"gh", cls:"ghost"};
+    r4.why = "<span class='gh-tag'>Ghost</span>Later: biologische en lokale bronnen bij jou in de buurt — eerst voor je voeding, daarna eventueel voor een potje. "
+      + "Dat vraagt je locatie: een nieuw verwerkingsdoel met eigen toestemming, een register-uitbreiding en een privacytekst. Er zijn nog geen partners, geen prijzen en geen voorraad.";
+    r4.body = '<button type="button" class="morebtn" data-omgeving="1">Ik zou dit willen — tel mijn stem</button>'
+      + '<p class="lane-note" id="omg-ack" hidden style="color:var(--sage-bright)">Geteld. Er is verder nu niets te doen — en er is geen datum.</p>';
+
+    host.innerHTML = "";
+    [r1, r2, r3, r4].forEach(function(r){
+      var el = document.createElement("div");
+      el.className = "rung " + (r.cls || "");
+      el.innerHTML = '<div class="rung-head"><span class="rung-n" aria-hidden="true">' + r.n + '</span>'
+        + '<span class="rung-t">' + r.t + '</span><span class="rung-st ' + r.stcls + '">' + r.st + '</span></div>'
+        + '<p class="rung-why">' + r.why + '</p>'
+        + (r.body ? '<div class="rung-body">' + r.body + '</div>' : "");
+      host.appendChild(el);
+    });
+
+    var ul = $("#nut-missing"); ul.innerHTML = "";
+    MISSING.forEach(function(m){
+      var li = document.createElement("li"); li.textContent = m; ul.appendChild(li);
+    });
+  }
+
+  /* ── Over tijd: twee klokken naast elkaar ── */
+  function renderTijdNut(){
+    var s = S(), n = s.nutrition, host = $("#tijd-nut");
+    if (!nutFocus || !n.done){ host.hidden = true; return; }
+    host.hidden = false;
+
+    var x = nutById(nutFocus), acts = actionsFor(nutFocus), hasAct = acts.length > 0;
+    $("#tn-h2").textContent = x.label + " over tijd";
+    $("#tn-lede").textContent = "Twee klokken. Je gedrag loopt van dag tot dag door; je stand verspringt alleen op een checkmoment. Ze horen bij elkaar, maar ze lopen niet in hetzelfde tempo.";
+
+    var wk = hasAct ? n.weeks : n.weeks.map(function(){ return 0; });
+    var cols = "repeat(" + wk.length + ",minmax(0,1fr))";
+    var bars = $("#tn-wk"), labs = $("#tn-lb");
+    bars.style.gridTemplateColumns = cols;
+    labs.style.gridTemplateColumns = cols;
+    bars.innerHTML = ""; labs.innerHTML = "";
+    var names = ["3 wk terug", "2 wk terug", "vorige week", "deze week"];
+    wk.forEach(function(v, i){
+      var sp = document.createElement("span");
+      if (!v) sp.className = "dim";
+      sp.innerHTML = '<i style="height:' + Math.round(100 * Math.max(v, 0.3) / 7) + '%"></i>';
+      bars.appendChild(sp);
+      var lb = document.createElement("span");
+      lb.innerHTML = "<b>" + v + "/7</b>" + (names[i] || ("wk " + (i + 1)));
+      labs.appendChild(lb);
+    });
+    $("#tn-wknote").textContent = hasAct
+      ? "Je actie “" + acts[0].label + "” per week. Het gaat niet om zeven — het gaat om of het patroon blijft staan."
+      : "Hier hangt nog geen moment op Mijn Dag aan. Zonder actie is er over tijd niets te volgen; kies bij Advies een bron.";
+
+    var ck = $("#tn-checks"); ck.innerHTML = "";
+    var done = n.checks.filter(function(c){ return c.kind === "done"; });
+    /* Grens tussen het laatste echte punt en de ghost, omgerekend naar de
+       gradient-ruimte van ::before (die loopt van 12% tot 88% van de breedte). */
+    var gi = n.checks.length ? n.checks.map(function(c){ return c.kind; }).indexOf("gh") : -1;
+    ck.style.setProperty("--ghostat", gi < 0 ? "100%"
+      : (((gi / n.checks.length) * 100 - 12) / 0.76).toFixed(1) + "%");
+    n.checks.forEach(function(c, i){
+      var el = document.createElement("div");
+      el.className = "chk " + c.kind;
+      var val = c.kind === "done" ? BAND_SHORT[x.band] : c.kind === "next" ? "?" : "—";
+      el.innerHTML = '<span class="cm" aria-hidden="true">' + (c.kind === "done" ? (i + 1) : c.kind === "gh" ? "◌" : "→") + '</span>'
+        + '<span class="cv">' + val + '</span><span class="cl">' + c.label + '<br>' + c.sub + '</span>';
+      ck.appendChild(el);
+    });
+
+    var note;
+    if (done.length <= 1){
+      note = "Je hebt één punt. Eén punt is geen lijn — daarom staat hier nog geen richting. Je tweede punt komt bij je hermeting over " + s.daysUntil + " dagen.";
+    } else {
+      note = done.length + " checks, dezelfde band. Je gedrag stond " + n.actionDays
+        + " van de laatste 14 dagen aan en de stand bewoog niet. Dat is een echte uitkomst, geen fout: de vraag achter deze band meet hoe vaak je zo'n bron eet in een gewone week, en twee weken verandert dat gemiddelde maar beperkt.";
+    }
+    if (x.bloed.ok === true) note += " Voor " + x.label.toLowerCase() + " zou een bloedwaarde hier een hard punt zetten — dat bestaat nog niet in dit product.";
+    $("#tn-cknote").textContent = note;
+  }
+
+  /* ── de trap in de koppelstrip: leefstijl eerst, in één regel ── */
+  function renderTrap(){
+    var s = S(), n = s.nutrition, host = $("#trap");
+    var buy = VERDICTS.filter(function(q){ return q.verdict === "kopen"; }).length;
+    var steps = [
+      {n:"1", t:"Uit voeding",     s:n.done ? "nu" : "check nodig", cls:n.done ? "nu" : ""},
+      {n:"2", t:"Meet opnieuw",    s:"over " + s.daysUntil + " d",  cls:""},
+      {n:"3", t:"Supplement erbij",s:n.done ? (buy ? buy + " open" : "dicht") : "dicht", cls:""},
+      {n:"4", t:"In je omgeving",  s:"ghost", cls:"gh"}
+    ];
+    host.innerHTML = "";
+    steps.forEach(function(st, i){
+      if (i) host.insertAdjacentHTML("beforeend", '<span class="arrow" aria-hidden="true">→</span>');
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "trapstep " + st.cls;
+      b.setAttribute("data-goto", "statistieken");
+      b.setAttribute("data-blikto", "advies");
+      b.setAttribute("data-ev", "hub_click:statistieken:trap_" + st.n);
+      b.innerHTML = '<span class="n" aria-hidden="true">' + st.n + '</span>' + st.t
+        + '<span class="s">· ' + st.s + '</span>';
+      host.appendChild(b);
+    });
+    $("#trap-say").textContent = n.done
+      ? "Trede 1 kun je vandaag zetten. Trede 3 staat voor " + (buy || "geen") + " stof" + (buy === 1 ? "" : "fen")
+        + " open, omdat voeding het gat daar niet dicht krijgt; bij de rest is ons antwoord dat voeding het eerst moet doen."
+      : "Zolang je voedingscheck er niet is, weten we niet wat er van tafel komt — en staat de hele trap dicht. Niet omdat we het niet weten willen, maar omdat we het dan niet kunnen weten.";
+  }
+
+  /* ── Mijn Dag: de koppeling van de andere kant ── */
+  function renderMoments(){
+    var s = S(), n = s.nutrition, host = $("#ag-moments");
+    var acts = activeActions().filter(function(a){ return nutrientOf(a.key); });
+    host.innerHTML = "";
+    if (!acts.length){
+      host.innerHTML = '<p class="nut-none" style="margin-top:0">Nog geen moment met een stof erachter. Bij Statistieken → Advies kies je per stof een bron; die komt hier te staan.</p>';
+      return;
+    }
+    acts.forEach(function(a){
+      var id = nutrientOf(a.key), x = nutById(id), days = daysOf(a);
+      if (!x) return;
+      var el = document.createElement("div");
+      el.className = "mom" + (days > 0 ? " done" : "");
+      el.innerHTML = '<span class="box" aria-hidden="true">' + (days > 0 ? "✓" : "") + '</span>'
+        + '<span class="md"><span class="mt">' + a.label + '</span>'
+        + '<span class="ms">' + x.label.toLowerCase() + " · "
+        + (a.fresh ? "vanaf vandaag" : days + " van de laatste 14 dagen aan")
+        + (x.band === "below" ? " · uit je " + x.label.toLowerCase() + "-gap" : " · geen gap, wel bijgehouden") + '<br>'
+        + '<button type="button" class="nutlink" data-nutfocus="' + id + '" data-goto="statistieken" data-blikto="advies" '
+        + 'data-ev="hub_click:statistieken:agenda_moment">waarom dit er staat →</button></span></span>';
+      host.appendChild(el);
+    });
+  }
+
+  /* Eén regel in de hero-meetlat, alleen als voeding het focusdomein is.
+     Geen aantallen-scorebord en nooit een supplement in de hub-scroll. */
+  function renderNutriLine(){
+    var s = S(), el = $("#ml-nutriline");
+    if (s.focus !== "voeding" || !s.nutrition.done){ el.hidden = true; return; }
+    var gaps = NUTRIENTS.filter(function(x){ return x.band === "below"; });
+    if (!gaps.length){ el.hidden = true; return; }
+    var names = gaps.map(function(x){ return x.label.toLowerCase(); });
+    el.hidden = false;
+    el.innerHTML = "Je voedingscheck laat " + names.join(" en ")
+      + " onder de vuistregel zien. Wat dat betekent — en of een supplement iets toevoegt — staat bij "
+      + '<button type="button" class="inlink" data-nutfocus="' + gaps[0].id + '" '
+      + 'data-goto="statistieken" data-blikto="advies" data-ev="hub_click:statistieken:meetlat_voeding">Statistieken → Advies</button>.';
+  }
+
+  /* ── oordeel (Favorieten) ── */
+  function renderVerdicts(){
+    var s = S(), n = s.nutrition, host = $("#fv-verdicts");
+
+    /* Spiegelt resolveAdviesState(): zonder voedingscheck is geen enkel
+       oordeel te geven — alles valt terug op de gate, niet op "niet nodig". */
+    var rows = n.done ? VERDICTS : VERDICTS.map(function(v){
+      return {key:v.key, label:v.label, verdict:"eerst_leefstijl", nutrient:v.nutrient,
+              why:"Vul eerst je voeding in — zonder dat kunnen we niet zeggen of dit iets toevoegt.",
+              path:null};
+    });
+
+    var buy = rows.filter(function(v){ return v.verdict === "kopen"; }).length;
+    $("#fv-summary").textContent = n.done
+      ? (buy === 0
+          ? "Van de " + rows.length + " die we bekeken voegt er nu geen enkele iets toe."
+          : "Van de " + rows.length + " die we bekeken voegt er " + buy + " iets toe.")
+      : "Nog niets te zeggen over " + rows.length + " supplementen.";
+    var sub = $("#fv-summary-sub");
+    sub.hidden = n.done;
+    if (!n.done) sub.textContent = "We beoordelen pas nadat je voeding bekend is. Eerst weten wat er van tafel komt.";
+
+    host.innerHTML = "";
+    rows.forEach(function(v){
+      var tag = VERDICT_TAG[v.verdict];
+      var el = document.createElement("div");
+      el.className = "vd";
+
+      var html = '<div class="vd-head"><span class="vd-nm">' + v.label + '</span>'
+        + '<span class="vd-tag ' + tag.tone + '">' + tag.label + '</span></div>'
+        + '<p class="vd-why">' + v.why + '</p>';
+
+      /* Het spoor terug: uit welke gap dit komt en of er een actie loopt.
+         Dit is de koppeling met Mijn Dag — gedrag, nooit een gemeten inname. */
+      if (n.done){
+        var nut = nutById(v.nutrient);
+        if (nut && nut.band === "below"){
+          var acts = actionsFor(nut.id);
+          var trace = acts.length
+            ? "Uit je " + nut.label.toLowerCase() + "-gap · je actie “" + acts[0].label
+              + "” staat " + (acts[0].fresh ? "vanaf vandaag aan" : daysOf(acts[0]) + " van de laatste 14 dagen aan") + "."
+            : "Uit je " + nut.label.toLowerCase() + "-gap · hier hangt nog geen actie op Mijn Dag aan.";
+          html += '<p class="vd-trace"><span aria-hidden="true">↳</span><span>' + trace + '</span></p>';
+        }
+      }
+
+      /* Alleen "kopen" krijgt een uitgang. De rest is een eindpunt. */
+      if (v.verdict === "kopen" && v.path){
+        html += '<div class="vd-cta"><button type="button" class="linkbtn" '
+          + 'data-ev="vergelijking_click:' + v.key + '">Vergelijk ' + v.label.toLowerCase() + ' →</button></div>';
+      }
+
+      el.innerHTML = html;
+      host.appendChild(el);
+    });
+  }
+
   function renderStatTable(){
     var tb = $("#st-table"); tb.innerHTML = "";
     S().rows.forEach(function(r){
@@ -1130,10 +2178,21 @@ tr:last-child td{border-bottom:none}
     });
   }
 
+  /* Alles wat aan het spoor hangt in één keer. Losse aanroepen zouden de drie
+     blikken uit elkaar laten lopen — precies wat het spoor moet voorkomen. */
+  function renderStat(){
+    renderSpoor(); renderStandNut(); renderLadder(); renderTijdNut();
+  }
+
   /* ── render ── */
   function render(){
     var s = S(), fp = PILLAR[s.focus];
     selectedRow = null; cursorDay = null;
+    picked = []; foodsOpen = false;
+    /* Staat de cyclus op voeding, dan is de eerste gap het spoor dat je wilt —
+       anders begin je bij alle vijf. */
+    var firstGap = NUTRIENTS.filter(function(x){ return x.band === "below"; })[0];
+    nutFocus = (s.focus === "voeding" && s.nutrition.done && firstGap) ? firstGap.id : null;
 
     set("hero-eyebrow", s.hero.eyebrow);
     set("hero-h1", s.hero.h1);
@@ -1179,6 +2238,8 @@ tr:last-child td{border-bottom:none}
     }
 
     renderScale(); renderRows(); renderStatTable();
+    renderStat(); renderNutriLine(); renderVerdicts();
+    renderTrap(); renderMoments();
 
     set("kp-doen", s.koppel.doen); set("kp-hier", s.koppel.hier);
     set("kp-meet", s.koppel.meet); set("kp-say", s.koppel.say); set("kp-cta1", s.koppel.cta1);
@@ -1200,6 +2261,10 @@ tr:last-child td{border-bottom:none}
   function setBlik(k){
     $$("[data-blik]").forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-blik") === k)); });
     $$("[data-blikpanel]").forEach(function(p){ p.hidden = p.getAttribute("data-blikpanel") !== k; });
+  }
+  function currentBlik(){
+    var b = $$("[data-blik]").filter(function(x){ return x.getAttribute("aria-pressed") === "true"; })[0];
+    return b ? b.getAttribute("data-blik") : "stand";
   }
 
   function openSheet(){
@@ -1226,6 +2291,8 @@ tr:last-child td{border-bottom:none}
     });
     $("#mnav-label").textContent = LABELS[id] || "Overzicht";
     if (blik) setBlik(blik);
+    if (id === "statistieken"){ renderStat(); syncStickyHeight(); }
+    if (id === "agenda") renderMoments();
     closeSheet();
     window.scrollTo({ top: 0 });
   }
@@ -1252,6 +2319,78 @@ tr:last-child td{border-bottom:none}
       selectedRow = t.getAttribute("data-row");
       ev("dashboard_voortgang_domein_click", { domain: selectedRow });
       renderScale(); renderRows();
+      return;
+    }
+
+    /* Een voedingsbron aantikken maakt er een moment van op Mijn Dag. Dat is
+       een insert in daily_action_log — nooit een wijziging aan je band. */
+    t = e.target.closest("[data-food]");
+    if (t){
+      var fp2 = t.getAttribute("data-food").split("|");
+      var fx = nutById(fp2[0]), f = fx.foods[Number(fp2[1])];
+      if (!f.act){
+        ev("dashboard_voeding_bron_click", { nutrient: fx.id, bron: slug(f.label), koppelbaar: false });
+        return;
+      }
+      var fkey = "voeding:" + fx.id + ":" + slug(f.label), pi = pickedIndex(fkey);
+      if (pi >= 0){
+        picked.splice(pi, 1);
+        ev("dashboard_voeding_actie_verwijderd", { nutrient: fx.id, action_key: fkey, surface: "advies" });
+      } else {
+        picked.push({ key: fkey, label: f.act, domain: "voeding", fresh: true });
+        ev("dashboard_voeding_actie_toegevoegd", { nutrient: fx.id, bron: slug(f.label), action_key: fkey, surface: "advies" });
+      }
+      renderStat(); renderMoments(); renderVerdicts();
+      return;
+    }
+
+    t = e.target.closest("[data-more]");
+    if (t){
+      foodsOpen = !foodsOpen;
+      ev("dashboard_voeding_bronnen_uitklap", { nutrient: nutFocus, open: foodsOpen });
+      renderLadder();
+      return;
+    }
+
+    t = e.target.closest("[data-bron]");
+    if (t){
+      ev("dashboard_meetbron_interest_clicked", { nutrient: nutFocus, bron: t.getAttribute("data-bron") });
+      t.textContent = "Geteld — je stem is genoteerd";
+      t.disabled = true; t.style.opacity = ".6";
+      return;
+    }
+
+    t = e.target.closest("[data-omgeving]");
+    if (t){
+      ev("dashboard_omgeving_interest_clicked", { nutrient: nutFocus || "alle", surface: "advies_trede4" });
+      $("#omg-ack").hidden = false;
+      t.disabled = true; t.style.opacity = ".6";
+      return;
+    }
+
+    /* Zet het spoor vóór de navigatie: showPanel() hertekent de drie blikken. */
+    t = e.target.closest("[data-nutfocus]");
+    if (t){
+      nutFocus = t.getAttribute("data-nutfocus") || null;
+      foodsOpen = false;
+    }
+
+    t = e.target.closest("[data-spoor]");
+    if (t && !t.disabled){
+      nutFocus = t.getAttribute("data-spoor") || null;
+      foodsOpen = false;
+      ev("dashboard_statistieken_spoor_select", { nutrient: nutFocus || "alle", blik: currentBlik() });
+      renderStat();
+      return;
+    }
+
+    /* Van blik wisselen zonder het spoor te verliezen. */
+    t = e.target.closest("[data-blikstay]");
+    if (t){
+      var bk = t.getAttribute("data-blikto");
+      ev("dashboard_statistieken_blik_switch", { to: bk, nutrient: nutFocus || "alle" });
+      setBlik(bk); renderStat();
+      window.scrollTo({ top: 0 });
       return;
     }
 
@@ -1284,8 +2423,8 @@ tr:last-child td{border-bottom:none}
     t = e.target.closest("[data-blik]");
     if (t){
       var k = t.getAttribute("data-blik");
-      ev("dashboard_statistieken_blik_switch", { to: k });
-      setBlik(k);
+      ev("dashboard_statistieken_blik_switch", { to: k, nutrient: nutFocus || "alle" });
+      setBlik(k); renderStat();
       return;
     }
 
@@ -1296,8 +2435,17 @@ tr:last-child td{border-bottom:none}
   function syncStickyHeight(){
     var h = $(".stickytop").getBoundingClientRect().height;
     document.documentElement.style.setProperty("--stickyh", Math.round(h) + "px");
+    /* De blik staat op desktop ónder het spoor; die hoogte hangt aan de pil-
+       grootte en dus aan het font. Meten in plaats van hardcoden. */
+    var sp = $("#spoor");
+    if (sp && sp.offsetParent !== null){
+      document.documentElement.style.setProperty("--spoorh", Math.round(sp.getBoundingClientRect().height) + "px");
+    }
   }
   window.addEventListener("resize", syncStickyHeight);
+  /* DM Sans laadt async (font-display:swap); een swap ná de eerste meting
+     kan .stickytop een paar px laten verspringen zonder resize-event. */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncStickyHeight);
 
   buildNav();
   wireLin();
