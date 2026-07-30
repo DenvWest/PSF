@@ -3,7 +3,7 @@ import { MOVEMENT_FREQUENCY_OPTIONS } from "@/data/movement/session-catalog";
 import { selectVisibleSteps } from "@/lib/lifestyle-plan-eval";
 import { getMovementTrack } from "@/lib/movement-plan-track";
 import type { MovementPlanProfile } from "@/lib/movement-plan-profile";
-import { buildAnchorWhySuffix, startPatternLabel } from "@/lib/movement-prefs";
+import { buildAnchorWhySuffix, MOVEMENT_ANCHOR_OPTIONS, startPatternLabel } from "@/lib/movement-prefs";
 import { filterStepsForCategory } from "@/lib/movement-week-categories";
 import type {
   PlanIntakeContext,
@@ -50,6 +50,10 @@ export type MovementPlanRoadmapView = {
   progressLine: string | null;
   /** Waar je nu het meest wint, uit de bestaande MOV_STR/MOV_CARD-band. */
   focusLine: string | null;
+  /** Copy-only na hermeting — geen automatische planwijziging (S5b). */
+  remeasureLine: string | null;
+  /** Anker-citaat in de positie-header. */
+  anchorQuote: string | null;
 };
 
 const HORIZON_LABELS: Record<string, string> = {
@@ -128,6 +132,8 @@ export function buildMovementPlanRoadmapView(input: {
   currentPhaseId: string;
   profile: MovementPlanProfile;
   getStepState: (stepId: string) => PlanStepState;
+  /** S5b: copy-only hermeting-haak in de positie-header. */
+  remeasureLine?: string | null;
 }): MovementPlanRoadmapView {
   const templatePhases = movementPlanTemplate.phases;
   const rawIndex = templatePhases.findIndex(
@@ -157,6 +163,9 @@ export function buildMovementPlanRoadmapView(input: {
 
   const activePhase = phases[activeIndex];
   const track = getMovementTrack(input.ctx);
+  const anchorOption = input.profile.anchor
+    ? MOVEMENT_ANCHOR_OPTIONS.find((option) => option.id === input.profile.anchor)
+    : null;
 
   return {
     phases,
@@ -166,5 +175,7 @@ export function buildMovementPlanRoadmapView(input: {
     routeLine: buildRouteLine(input.profile),
     progressLine: buildProgressLine(activePhase),
     focusLine: `Uit je beweegcheck — ${track.label}. ${track.summary}`,
+    remeasureLine: input.remeasureLine ?? null,
+    anchorQuote: anchorOption?.label ?? null,
   };
 }

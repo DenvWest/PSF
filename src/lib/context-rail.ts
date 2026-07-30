@@ -23,6 +23,7 @@ export type ContextRailDomainItem = {
 export type ContextRailToolId =
   | "vandaag"
   | "stappenplan"
+  | "programma"
   | "checkin"
   | "supplementen"
   | "gids"
@@ -87,7 +88,7 @@ export function buildBewegingRailTools(input: {
   return [
     {
       id: "vandaag",
-      label: "Vandaag",
+      label: "Overzicht",
       icon: "Home",
       active: input.deepView === "cockpit",
     },
@@ -96,6 +97,12 @@ export function buildBewegingRailTools(input: {
       label: "Stappenplan",
       icon: "RouteMap",
       active: input.deepView === "stappenplan",
+    },
+    {
+      id: "programma",
+      label: "Programma",
+      icon: "Activity",
+      active: input.deepView === "programma",
     },
     {
       id: "checkin",

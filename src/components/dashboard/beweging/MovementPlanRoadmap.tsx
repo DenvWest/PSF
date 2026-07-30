@@ -16,8 +16,10 @@ export type MovementPlanRoadmapProps = {
   onOpenPhase: (phaseId: string) => void;
   vandaagHref: string;
   renderPhaseBody: (phaseId: string) => ReactNode;
-  /** Programma-kaart en planprofiel — blijven eigenaar van hun eigen slice. */
-  children?: ReactNode;
+  /** Programma-kaart + sport-lens vóór het fase-paneel. */
+  beforePhase?: ReactNode;
+  /** Plan-sheet ná het fase-paneel. */
+  afterPhase?: ReactNode;
   /** Mechanisme + medische grens, onder het paneel. */
   footer?: ReactNode;
 };
@@ -60,7 +62,8 @@ export default function MovementPlanRoadmap({
   onOpenPhase,
   vandaagHref,
   renderPhaseBody,
-  children,
+  beforePhase,
+  afterPhase,
   footer,
 }: MovementPlanRoadmapProps) {
   const openPhase =
@@ -82,9 +85,14 @@ export default function MovementPlanRoadmap({
             {view.routeLine}
           </p>
         ) : null}
+        {view.remeasureLine ? (
+          <p className="mt-2 max-w-[68ch] border-l-2 border-[color:var(--ac)]/50 pl-3 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+            {view.remeasureLine}
+          </p>
+        ) : null}
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px]">
-          {view.progressLine ? (
-            <span className="text-[#9FB0A6]">{view.progressLine}</span>
+          {view.anchorQuote ? (
+            <span className="italic text-[#9FB0A6]">“{view.anchorQuote}”</span>
           ) : null}
           <span className="text-[#7E8C82]">
             Afvinken doe je in{" "}
@@ -92,7 +100,7 @@ export default function MovementPlanRoadmap({
               href={vandaagHref}
               className="font-semibold text-[color:var(--ac)] underline decoration-[color:var(--ac)]/40 underline-offset-2"
             >
-              Vandaag
+              Overzicht
             </Link>
           </span>
         </div>
@@ -104,7 +112,7 @@ export default function MovementPlanRoadmap({
           className="min-w-0 @[1080px]:sticky @[1080px]:top-4 @[1080px]:self-start"
         >
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
-            Jouw route in fases
+            Jouw route
           </p>
           <ol className="grid grid-cols-3 gap-2 @[1080px]:grid-cols-1 @[1080px]:gap-1.5">
             {view.phases.map((phase, index) => {
@@ -162,7 +170,7 @@ export default function MovementPlanRoadmap({
         </nav>
 
         <div className="min-w-0 space-y-3">
-          {children}
+          {beforePhase}
 
           {openPhase ? (
             <article
@@ -171,9 +179,16 @@ export default function MovementPlanRoadmap({
               className="rounded-2xl border border-white/10 bg-[#131F1D]/90 p-5"
             >
               <header className="mb-4">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
-                  {openPhase.horizonLabel} · {PANEL_STATE_WORD[openPhase.state]}
-                </p>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
+                    {openPhase.horizonLabel} · {PANEL_STATE_WORD[openPhase.state]}
+                  </p>
+                  {openPhase.state === "active" ? (
+                    <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.09em] text-[#7E8C82]">
+                      staat komt uit Overzicht
+                    </span>
+                  ) : null}
+                </div>
                 <h3
                   id={`phase-panel-title-${openPhase.id}`}
                   className="mt-1 font-serif text-[20px] text-[#F1EFE8] text-pretty"
@@ -202,6 +217,8 @@ export default function MovementPlanRoadmap({
               </div>
             </article>
           ) : null}
+
+          {afterPhase}
 
           {footer}
         </div>

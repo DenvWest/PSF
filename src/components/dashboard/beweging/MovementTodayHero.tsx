@@ -11,6 +11,7 @@ import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import {
   buildAnchorWhySuffix,
+  MOVEMENT_ANCHOR_OPTIONS,
   resolvePatternTrainingStepId,
   type MovementPrefs,
 } from "@/lib/movement-prefs";
@@ -149,6 +150,7 @@ export default function MovementTodayHero({
   const [trainingGateCleared, setTrainingGateCleared] = useState(false);
   const [logHydrated, setLogHydrated] = useState(false);
   const [noTimeActive, setNoTimeActive] = useState(false);
+  const [whyOpen, setWhyOpen] = useState(false);
 
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hidden = slot ? isPlanStepHidden(model, slot) : true;
@@ -281,12 +283,37 @@ export default function MovementTodayHero({
     recommendedKind,
   ]);
 
+  const anchorOption = movementPrefs.anchor
+    ? MOVEMENT_ANCHOR_OPTIONS.find((option) => option.id === movementPrefs.anchor)
+    : null;
+
+  const aheadLine = useMemo(() => {
+    const phaseId = model.movementPlanProgress?.currentPhaseId;
+    const phases = movementPlanTemplate.phases;
+    const index = phases.findIndex((phase) => phase.id === phaseId);
+    if (index < 0) {
+      return "Nog één moment deze week, dan schuift je plan door naar de volgende fase.";
+    }
+    if (index >= phases.length - 1) {
+      return "Laatste fase. Je hermeting laat zien wat het ritme heeft gedaan.";
+    }
+    const next = phases[index + 1];
+    const nextLabel =
+      next.horizon === "deze-week"
+        ? "deze week"
+        : next.horizon === "week-2-4"
+          ? "week 2–4"
+          : "week 4–12";
+    return `Nog één krachtmoment deze week, dan komt ${nextLabel} in beeld.`;
+  }, [model.movementPlanProgress?.currentPhaseId]);
+
   const followUp = buildVandaagFollowUp("beweging");
 
   const selectChoice = (kind: TodayChoiceKind) => {
     invalidateDailyLogCache("beweging");
     trackStepChoice(kind);
     setNoTimeActive(false);
+    setWhyOpen(false);
     setFreshChoice(true);
     setSelectedKind(kind);
     if (kind === "trainen") {
@@ -308,6 +335,7 @@ export default function MovementTodayHero({
     setSelectedKind(null);
     setFreshChoice(false);
     setNoTimeActive(false);
+    setWhyOpen(false);
     setTrainingGateView("question");
     setTrainingGateCleared(false);
   };
@@ -525,6 +553,11 @@ export default function MovementTodayHero({
           <h3 className="mt-1.5 font-serif text-[20px] leading-snug text-[#F1EFE8] text-pretty">
             {activeChoice.title}
           </h3>
+          {anchorOption?.label ? (
+            <p className="mt-2 text-[12.5px] text-[#79B98C]">
+              ↳ Past bij: {anchorOption.label}
+            </p>
+          ) : null}
           {noTimeActive && !done ? (
             <p className="mt-2 text-[13px] font-medium text-[color:var(--ac)]">
               Drukke dag? Dit telt volledig mee.
@@ -587,6 +620,32 @@ export default function MovementTodayHero({
             </div>
           )}
 
+          <div className="mt-4 border-t border-white/10 pt-3">
+            <button
+              type="button"
+              onClick={() => setWhyOpen((open) => !open)}
+              aria-expanded={whyOpen}
+              className="cursor-pointer border-none bg-transparent p-0 text-[13px] font-medium text-[#9FB0A6] underline decoration-white/20 underline-offset-3"
+            >
+              {activeChoice.whyLinkLabel}
+              {whyOpen ? " ▴" : " ▾"}
+            </button>
+            {whyOpen ? (
+              <p className="mt-2 max-w-[64ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+                {stepRationale(activeChoice.stepId) ?? slot?.rationale ?? anchorSuffix}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="mt-3 flex items-baseline gap-2 rounded-xl border border-dashed border-white/15 px-3.5 py-3">
+            <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.11em] text-[#7E8C82]">
+              Straks
+            </span>
+            <p className="m-0 text-[13.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+              {aheadLine}
+            </p>
+          </div>
+
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
             {slot ? (
               <Link
@@ -597,7 +656,7 @@ export default function MovementTodayHero({
                 }}
                 className="inline-flex items-center gap-1 text-[13px] font-medium text-[#9FB0A6] no-underline"
               >
-                {activeChoice.whyLinkLabel} <Icons.ArrowRight s={13} />
+                Lees waarom → <Icons.ArrowRight s={13} />
               </Link>
             ) : null}
             {done ? (
@@ -633,6 +692,17 @@ export default function MovementTodayHero({
           <p className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-[13px] leading-relaxed text-[#F1EFE8] text-pretty">
             {medicalSafetyLine}
           </p>
+        ) : null}
+
+        {restRecommended && recovery?.headline ? (
+          <div className="mt-3 flex gap-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5">
+            <span aria-hidden className="text-[#79B98C]">
+              ↺
+            </span>
+            <p className="m-0 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+              {recovery.headline}
+            </p>
+          </div>
         ) : null}
 
         <div className="mt-3 flex flex-col gap-2">

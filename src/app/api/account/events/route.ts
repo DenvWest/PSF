@@ -12,6 +12,10 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "domain_tool.tier_preview_clicked",
   "focus.viewed",
   "wearable.interest_clicked",
+  "movement.location_selected",
+  "movement.sport_selected",
+  "movement.gap_shown",
+  "dashboard.beweging_programma_open",
 ]);
 
 function normalizePayload(raw: unknown): Record<string, unknown> {

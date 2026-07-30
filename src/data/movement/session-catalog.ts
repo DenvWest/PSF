@@ -10,6 +10,12 @@ export type MovementSessionVariantId =
   | "conditie-zone2"
   | "dagelijks-ritme";
 
+export type MovementSessionExercise = {
+  name: string;
+  reps: string;
+  cue: string;
+};
+
 export type MovementSessionCatalogEntry = {
   id: MovementSessionVariantId;
   label: string;
@@ -20,7 +26,10 @@ export type MovementSessionCatalogEntry = {
   /** Globale opbouw — geen volledige oefeningendatabase. */
   structure: string;
   detailStatus: "ready" | "coming_soon";
+  exercises?: readonly MovementSessionExercise[];
 };
+
+export type MovementTrainingLocation = "thuis" | "sportschool";
 
 export const MOVEMENT_SESSION_CATALOG: readonly MovementSessionCatalogEntry[] = [
   {
@@ -32,6 +41,12 @@ export const MOVEMENT_SESSION_CATALOG: readonly MovementSessionCatalogEntry[] = 
     intensity: "Matig — techniek eerst",
     structure: "Squat/goblet, push, pull, hip hinge — 2–3 sets × 8–12",
     detailStatus: "ready",
+    exercises: [
+      { name: "Goblet squat", reps: "3 × 8–12", cue: "Elke rep rustig, knieën volgen de tenen" },
+      { name: "Opdrukken (of aanrecht)", reps: "3 × 8–12", cue: "Lichaam recht — geen doorzakken" },
+      { name: "Roeien met band", reps: "3 × 10–12", cue: "Schouderbladen naar elkaar" },
+      { name: "Hip hinge / RDL", reps: "3 × 8–10", cue: "Heupen naar achter, rug recht" },
+    ],
   },
   {
     id: "kracht-sportschool",
@@ -41,7 +56,13 @@ export const MOVEMENT_SESSION_CATALOG: readonly MovementSessionCatalogEntry[] = 
     frequency: "2× per week",
     intensity: "Matig — rust 48–72 u tussen sessies",
     structure: "Full-body: compound-oefeningen, 2–3 sets × 8–12",
-    detailStatus: "coming_soon",
+    detailStatus: "ready",
+    exercises: [
+      { name: "Beenpers / squat", reps: "3 × 8–12", cue: "Volle range, geen stuiteren onderin" },
+      { name: "Borstpers", reps: "3 × 8–12", cue: "Schouderbladen ingezet" },
+      { name: "Lat pulldown / roeien", reps: "3 × 10–12", cue: "Trek met je elleboog, niet je hand" },
+      { name: "Romaanse deadlift", reps: "3 × 8–10", cue: "Stang dicht langs het lichaam" },
+    ],
   },
   {
     id: "conditie-wandelen",
@@ -81,11 +102,13 @@ export function getMovementSessionCatalogEntry(
   return MOVEMENT_SESSION_CATALOG.find((entry) => entry.id === id);
 }
 
-/** Map startspoor + profiel naar aanbevolen catalogus-variant. */
+/** Map startspoor + locatie naar aanbevolen catalogus-variant. Sport stuurt copy, niet programma. */
 export function resolveRecommendedSessionVariant(input: {
   startPattern: "kracht" | "conditie" | "dagelijks_ritme" | null;
   movStr: number | undefined;
-  preferredSport: MovementSport | null;
+  trainingLocation: MovementTrainingLocation | null;
+  /** @deprecated alleen migratie — gebruik trainingLocation */
+  preferredSport?: MovementSport | null;
 }): MovementSessionVariantId {
   if (input.startPattern === "dagelijks_ritme") {
     return "dagelijks-ritme";
@@ -93,7 +116,10 @@ export function resolveRecommendedSessionVariant(input: {
   if (input.startPattern === "conditie") {
     return input.movStr != null && input.movStr >= 3 ? "conditie-zone2" : "conditie-wandelen";
   }
-  if (input.preferredSport === "sportschool") {
+  const location =
+    input.trainingLocation ??
+    (input.preferredSport === "sportschool" ? "sportschool" : "thuis");
+  if (location === "sportschool") {
     return "kracht-sportschool";
   }
   return "kracht-thuis";

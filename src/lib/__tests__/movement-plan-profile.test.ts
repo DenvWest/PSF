@@ -46,6 +46,8 @@ describe("carryOverMovementPlanProfile", () => {
       anchor: "zelfstandigheid",
       preferredSport: "sportschool",
       weeklyFrequency: "2x",
+      trainingLocation: "sportschool",
+      sports: [],
     });
   });
 
@@ -87,6 +89,8 @@ describe("carryOverMovementPlanProfile", () => {
       anchor: null,
       preferredSport: null,
       weeklyFrequency: null,
+      trainingLocation: null,
+      sports: [],
     });
   });
 

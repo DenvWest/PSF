@@ -44,6 +44,8 @@ const VIEW: MovementPlanRoadmapView = {
       spoorNote: null,
     },
   ],
+  remeasureLine: null,
+  anchorQuote: null,
 };
 
 function Harness() {
@@ -55,9 +57,8 @@ function Harness() {
       onOpenPhase={setOpenPhaseId}
       vandaagHref="/dashboard?tab=vandaag"
       renderPhaseBody={(phaseId) => <p>body-{phaseId}</p>}
-    >
-      <p>programma-kaart</p>
-    </MovementPlanRoadmap>
+      beforePhase={<p>programma-kaart</p>}
+    />
   );
 }
 
@@ -68,7 +69,6 @@ describe("MovementPlanRoadmap (S2)", () => {
       screen.getByText(/Fase 2 van 3 — Week 2–4: structureel krachttrainen/),
     ).toBeTruthy();
     expect(screen.getByText(VIEW.routeLine as string)).toBeTruthy();
-    expect(screen.getByText(VIEW.progressLine as string)).toBeTruthy();
   });
 
   it("opent één paneel tegelijk — selecteren vervangt", () => {

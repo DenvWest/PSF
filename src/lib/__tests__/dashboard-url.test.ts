@@ -209,6 +209,14 @@ describe("parseKompasDeepViewFromUrl", () => {
     ).toBe("stappenplan");
   });
 
+  it("returns programma for beweging + programma view", () => {
+    expect(
+      parseKompasDeepViewFromUrl(
+        "http://localhost/dashboard?tab=vandaag&kompas=beweging&view=programma",
+      ),
+    ).toBe("programma");
+  });
+
   it("returns cockpit when view missing or other domain", () => {
     expect(parseKompasDeepViewFromUrl("http://localhost/dashboard?kompas=beweging")).toBe(
       "cockpit",

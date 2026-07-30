@@ -30,6 +30,7 @@ type MovementCockpitProps = {
   onMakePriority: () => void;
   makePriorityBusy: boolean;
   onOpenPlan?: () => void;
+  onOpenProgramma?: () => void;
 };
 
 export default function MovementCockpit({
@@ -40,8 +41,11 @@ export default function MovementCockpit({
   onMakePriority,
   makePriorityBusy,
   onOpenPlan,
+  onOpenProgramma: _onOpenProgramma,
 }: MovementCockpitProps) {
   const isPlanView = deepView === "stappenplan";
+  const isProgrammaView = deepView === "programma";
+  const hideOverzichtBlocks = isPlanView || isProgrammaView;
   const score = Math.round(model.scores.beweging ?? 0);
   const dashOffset = RING_CIRC * (1 - Math.min(100, Math.max(0, score)) / 100);
 
@@ -81,12 +85,10 @@ export default function MovementCockpit({
       ariaLabel="Beweeg-cockpit"
       embedded
     >
-      {/* DOM-volgorde = mobiele stack (hero eerst). lg: Hero full-width →
-          Waar je staat (score+trend, één readout-rij) → Jouw route full-width.
-          Deze week + meetmoment leven in de inspector-zone (CockpitFrame). */}
+      <div className="@container mx-auto w-full max-w-[1040px] @[1080px]:max-w-[1340px]">
       <div className="grid gap-2.5 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-3">
-        {/* VANDAAG — verborgen op stappenplan-diepte (afvinken via tabbar) */}
-        <div className={`lg:col-span-2 lg:col-start-1 lg:row-start-1 ${isPlanView ? "hidden" : ""}`}>
+        {/* OVERZICHT hero — verborgen op stappenplan/programma-diepte */}
+        <div className={`lg:col-span-2 lg:col-start-1 lg:row-start-1 ${hideOverzichtBlocks ? "hidden" : ""}`}>
           {showStartChoice ? (
             <MovementStartChoice
               onSaved={(prefs) => {
@@ -110,24 +112,24 @@ export default function MovementCockpit({
           )}
         </div>
 
-        {isPlanView ? (
-          <div className="lg:col-start-2 lg:row-start-1">
-            <CockpitTile eyebrow="Jouw stappenplan">
-              <p className="mt-2 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-                Stel hier je spoor, doel en fases in. Afvinken blijft in VANDAAG — via
-                de tabbar onderaan.
-              </p>
-            </CockpitTile>
-          </div>
-        ) : null}
 
-        {/* WAAR JE STAAT — score + trend in één readout-rij, Future You-narratief */}
+        {/* WAAR JE STAAT — score + trend; leeft alleen op Overzicht */}
         <div
           className={
-            isPlanView ? "lg:col-start-1 lg:row-start-1" : "lg:col-span-2 lg:col-start-1 lg:row-start-2"
+            hideOverzichtBlocks
+              ? "hidden"
+              : "lg:col-span-2 lg:col-start-1 lg:row-start-2"
           }
         >
-          <CockpitTile eyebrow="Waar je staat" ariaLabel="Waar je staat">
+          <CockpitTile
+            eyebrow="Waar je staat"
+            aside={
+              <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.09em] text-[#7E8C82]">
+                leeft alleen hier
+              </span>
+            }
+            ariaLabel="Waar je staat"
+          >
             <div className="mt-1 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5 min-[1440px]:gap-6">
               <div className="flex shrink-0 flex-col items-center text-center">
                 <div className="relative">
@@ -219,6 +221,15 @@ export default function MovementCockpit({
                     {scoreDelta > 0 ? `▲ +${scoreDelta}` : `▼ ${scoreDelta}`} sinds de start
                   </span>
                 ) : null}
+                {baselineScore != null ? (
+                  <span className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10px] text-[#7E8C82]">
+                    <span
+                      aria-hidden
+                      className="inline-block h-2 w-2 rounded-full border-2 border-[#9FB0A6]"
+                    />
+                    waar je begon: {baselineScore}
+                  </span>
+                ) : null}
                 <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10.5px] text-[#7E8C82]">
                   {formatLastMeasured(model.date)} — verandert bij je hermeting
                 </span>
@@ -240,6 +251,14 @@ export default function MovementCockpit({
                     <div className="mt-2">
                       <Sparkline data={trendRow.trend} color="var(--ac)" h={36} />
                     </div>
+                    {trendRow.baselineSourceLabel ? (
+                      <p className="mt-2 font-mono text-[11px] leading-relaxed text-[#7E8C82]">
+                        {trendRow.baselineSourceLabel}
+                      </p>
+                    ) : null}
+                    <p className="mt-2 max-w-[68ch] text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                      Ter context: de beweegrichtlijn is 150–300 min matig bewegen per week.
+                    </p>
                   </>
                 ) : (
                   <p className="text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
@@ -247,7 +266,7 @@ export default function MovementCockpit({
                     ’m bewegen.
                   </p>
                 )}
-                <p className="mt-3 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty lg:line-clamp-2">
+                <p className="mt-3 max-w-[68ch] text-[13px] leading-relaxed text-[#9FB0A6] text-pretty lg:line-clamp-2">
                   Elke week die je vasthoudt telt mee voor de versie van jou
                   die straks nog gewoon zelf de trap op komt — dat is wat deze
                   score langzaam opbouwt.
@@ -258,18 +277,18 @@ export default function MovementCockpit({
         </div>
 
         {/* JOUW ROUTE — verborgen op stappenplan (fase-explorer staat in plan-body) */}
-        {!isPlanView ? (
+        {!hideOverzichtBlocks ? (
           <div className="lg:col-span-2 lg:col-start-1 lg:row-start-3">
             <MovementJourneyRail
               model={model}
+              slot={slot}
               movementPrefs={movementPrefs}
-              onChangeStartPattern={
-                activeOwnStep ? () => setChoiceOpen(true) : undefined
-              }
+              remeasureDays={null}
               onOpenPlan={onOpenPlan}
             />
           </div>
         ) : null}
+      </div>
       </div>
     </CockpitShell>
   );

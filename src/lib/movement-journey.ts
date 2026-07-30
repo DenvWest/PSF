@@ -1,24 +1,18 @@
 /**
- * Waypoint-rail voor beweeg-cockpit: pure state/copy uit dashboard-data.
- * Vervolg: domein-agnostisch maken (slaap/stress/voeding) — zie BLAUWDRUK_DOMEIN_STAPPENPLANNEN.
- * Waypoint-detail kan later naar CockpitInspector (InspectorCardKind "doel") i.p.v. lokale uitklap.
- * "doel" en "future" krijgen aparte content zodra domein-specifieke Future-You-copy is goedgekeurd.
+ * Waypoint-rail voor beweeg-cockpit: 5 waypoints (waarom verviel als duplicaat).
+ * Positie is display-only — lock 5: niemand schrijft "hoe ver ben ik".
  */
 
-export type JourneyWaypointId =
-  | "begin"
-  | "waarom"
-  | "doel"
-  | "vandaag"
-  | "groei"
-  | "future";
+export type JourneyWaypointId = "begin" | "doel" | "vandaag" | "pijn" | "future";
 
-export type JourneyWaypointState = "done" | "current" | "todo" | "locked";
+export type JourneyWaypointState = "done" | "current" | "todo" | "locked" | "pain";
 
 export type JourneyWaypoint = {
   id: JourneyWaypointId;
   label: string;
   state: JourneyWaypointState;
+  /** Bron-label zoals in het prototype (baseline, anker, …). */
+  sourceLabel: string;
   title: string;
   body: string;
 };
@@ -29,81 +23,80 @@ export type JourneyInput = {
   hasTrend: boolean;
   anchorLabel: string | null;
   anchorWhy: string | null;
+  capabilityStatement: string | null;
   activeHabitTitle: string | null;
   activeHabitDetail: string | null;
+  goalProgress: string | null;
 };
 
 export function buildJourneyWaypoints(input: JourneyInput): JourneyWaypoint[] {
   const {
     baselineScore,
-    currentScore,
+    currentScore: _currentScore,
     hasTrend,
     anchorLabel,
     anchorWhy,
+    capabilityStatement,
     activeHabitTitle,
     activeHabitDetail,
+    goalProgress,
   } = input;
 
   const beginDone = baselineScore != null;
   const anchorDone = anchorLabel != null;
-  const futureDone = anchorWhy != null;
 
   return [
     {
       id: "begin",
       label: "Hier begon je",
       state: beginDone ? "done" : "locked",
+      sourceLabel: "baseline",
       title: beginDone ? "Hier begon je" : "Nog geen 0-punt",
       body: beginDone
         ? `Je beweegscore was ${baselineScore} toen je begon.`
         : "Je eerste hermeting wordt je startpunt.",
     },
     {
-      id: "waarom",
-      label: "Waarom",
-      state: anchorDone ? "done" : "todo",
-      title: anchorDone ? anchorLabel : "Kies je waarom",
-      body: anchorDone
-        ? (anchorWhy ?? "")
-        : "Nog niet gekozen — dit stuurt elke stap die je ziet.",
-    },
-    {
       id: "doel",
-      label: "Mijn doel",
+      label: "Jouw doel",
       state: anchorDone ? "done" : "todo",
+      sourceLabel: "anker",
       title: anchorDone ? anchorLabel : "Nog geen doel gekozen",
       body: anchorDone
-        ? (anchorWhy ?? "")
-        : "Kies eerst je waarom — dat bepaalt je doel.",
+        ? (anchorWhy ?? "Dit is waar je plan naartoe werkt.")
+        : "Kies je waarom — dat bepaalt je doel.",
     },
     {
       id: "vandaag",
       label: "Vandaag",
       state: "current",
+      sourceLabel: "daily-log + fase",
       title: activeHabitTitle ?? "Je stap van vandaag",
       body:
         activeHabitDetail ??
-        "Kies je dagkeuze in de hero — hier lees je straks waarom die past bij jouw doel.",
+        "Kies je dagkeuze in Overzicht — hier lees je waarom die past bij jouw doel.",
     },
     {
-      id: "groei",
-      label: "Mijn groei",
-      state: hasTrend ? "done" : "todo",
-      title: hasTrend
-        ? `Begin ${baselineScore} · nu ${currentScore}`
-        : "Nog te vroeg voor een lijn",
-      body: hasTrend
-        ? "Elke stip is een investering die je terugziet bij je volgende meetmoment."
-        : "Na je eerste hermeting zie je 'm bewegen.",
+      id: "pijn",
+      label: "Nog niet",
+      state: "pain",
+      sourceLabel: "anker + check-in",
+      title: "Nog niet",
+      body:
+        capabilityStatement ??
+        "Wat je wilt maar nog niet lukt — herkenning, geen diagnose.",
     },
     {
       id: "future",
       label: "Future You",
-      state: futureDone ? "done" : "locked",
+      state: hasTrend || goalProgress ? "done" : "locked",
+      sourceLabel: "trend + doel",
       title: "Future You",
-      body: futureDone
-        ? (anchorWhy ?? "")
-        : "Kies eerst je waarom — dat bepaalt wie je wordt.",
+      body:
+        goalProgress ??
+        (anchorWhy
+          ? anchorWhy
+          : "Kies eerst je waarom — dat bepaalt wie je wordt."),
     },
   ];
 }

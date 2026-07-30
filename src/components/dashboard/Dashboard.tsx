@@ -3107,7 +3107,12 @@ const KompasHome = ({
     }
     trackEvent("dashboard_kompas_domain_back_click", {
       from_domain: domainView,
-      from_level: deepView === "stappenplan" ? "plan" : "cockpit",
+      from_level:
+        deepView === "stappenplan"
+          ? "plan"
+          : deepView === "programma"
+            ? "programma"
+            : "cockpit",
     });
     clarityTag("dashboard_kompas_topnav", "back");
     closeView();
@@ -3147,14 +3152,28 @@ const KompasHome = ({
     clarityTag("dashboard_kompas_view", "stappenplan");
   };
 
-  const closeStappenplan = () => {
+  const openProgramma = (
+    from: "kompas_beweging" | "context_rail" | "stappenplan_card" = "kompas_beweging",
+  ) => {
+    setDeepView("programma");
+    syncDashboardKompasDeepView("beweging", "programma");
+    trackEvent("dashboard_beweging_programma_open", { from });
+    emitAccountClientEvent("dashboard.beweging_programma_open", { from });
+    clarityTag("dashboard_kompas_view", "programma");
+  };
+
+  const closeDeepView = () => {
     setDeepView("cockpit");
     syncDashboardKompasDeepView("beweging", "cockpit");
     trackEvent("dashboard_kompas_domain_back_click", {
       from_domain: "beweging",
-      from_level: "plan",
+      from_level: deepView === "programma" ? "programma" : "plan",
     });
     clarityTag("dashboard_kompas_topnav", "plan_to_cockpit");
+  };
+
+  const closeStappenplan = () => {
+    closeDeepView();
   };
 
   const scrollToBewegingSupplementen = () => {
@@ -3174,8 +3193,8 @@ const KompasHome = ({
         domain: "beweging",
       });
       clarityTag("dashboard_context_rail", "beweging_vandaag");
-      if (deepView === "stappenplan") {
-        closeStappenplan();
+      if (deepView !== "cockpit") {
+        closeDeepView();
       }
       return;
     }
@@ -3184,6 +3203,14 @@ const KompasHome = ({
       clarityTag("dashboard_context_rail", "beweging_stappenplan");
       if (deepView !== "stappenplan") {
         openStappenplan("context_rail");
+      }
+      return;
+    }
+
+    if (tool === "programma") {
+      clarityTag("dashboard_context_rail", "beweging_programma");
+      if (deepView !== "programma") {
+        openProgramma("context_rail");
       }
       return;
     }
@@ -3215,7 +3242,7 @@ const KompasHome = ({
       target: "scroll",
     });
     clarityTag("dashboard_context_rail", "beweging_supplementen");
-    if (deepView === "stappenplan") {
+    if (deepView === "stappenplan" || deepView === "programma") {
       setDeepView("cockpit");
       syncDashboardKompasDeepView("beweging", "cockpit");
       requestAnimationFrame(() =>
@@ -3335,6 +3362,18 @@ const KompasHome = ({
       content
     );
 
+  const selectBewegingDeepView = (view: KompasDeepView) => {
+    if (view === "cockpit") {
+      closeDeepView();
+      return;
+    }
+    if (view === "stappenplan") {
+      openStappenplan();
+      return;
+    }
+    openProgramma();
+  };
+
   if (domainView === "beweging") {
     // Beweging = referentie-cockpit met eigen wrapper i.p.v. withDomainTopNav,
     // omdat de generieke DomainTodayStrip hier vervalt. De domein-nav zit in de
@@ -3349,6 +3388,14 @@ const KompasHome = ({
             depthLabel="Jouw stappenplan"
           />
         ) : null}
+        {deepView === "programma" ? (
+          <KompasDepthStrip
+            onKompas={handleBreadcrumbKompas}
+            onDomain={closeDeepView}
+            domainLabel="Beweging"
+            depthLabel="Programma"
+          />
+        ) : null}
         <BewegingScreen
           model={currentModel}
           slot={todaySlot}
@@ -3359,6 +3406,8 @@ const KompasHome = ({
           onMakePriority={() => void makeBewegingPriority()}
           makePriorityBusy={makePriorityBusy}
           onOpenPlan={() => openStappenplan()}
+          onOpenProgramma={() => openProgramma("stappenplan_card")}
+          onSelectDeepView={selectBewegingDeepView}
         />
       </div>
     );

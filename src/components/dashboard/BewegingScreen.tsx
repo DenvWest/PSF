@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import MovementCockpit from "@/components/dashboard/beweging/MovementCockpit";
 import MovementPlanDeepBody from "@/components/dashboard/beweging/MovementPlanDeepBody";
+import MovementProgramView from "@/components/dashboard/beweging/MovementProgramView";
+import BewegingViewNav from "@/components/dashboard/beweging/BewegingViewNav";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
@@ -16,6 +18,16 @@ import {
 import { clarityTag } from "@/lib/clarity";
 import { BEWEGING_SUPPLEMENT_ANCHOR } from "@/lib/context-rail";
 import { trackEvent } from "@/lib/ga4";
+import { buildDomainTrendRow } from "@/lib/leefstijllijn";
+import { movementDirection, movementStartStatement } from "@/lib/movement-delta";
+import {
+  parseMovementPlanProfile,
+  resolveEffectivePlanProfile,
+} from "@/lib/movement-plan-profile";
+import {
+  getMovementSessionCatalogEntry,
+  resolveRecommendedSessionVariant,
+} from "@/data/movement/session-catalog";
 import type { KompasDeepView } from "@/lib/dashboard-url";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
@@ -32,7 +44,6 @@ const FooterLink = ({
   label: string;
   onClick: () => void;
 }) => (
-  // Op md+ staan Bewegingsgids en Leefstijl & inzichten al als tools in de context-rail.
   <Link
     href={href}
     onClick={onClick}
@@ -68,6 +79,8 @@ export default function BewegingScreen({
   onMakePriority,
   makePriorityBusy,
   onOpenPlan,
+  onOpenProgramma,
+  onSelectDeepView,
 }: {
   model: DashboardModel;
   slot: WeekDaySlot | null;
@@ -78,8 +91,12 @@ export default function BewegingScreen({
   onMakePriority: () => void;
   makePriorityBusy: boolean;
   onOpenPlan?: () => void;
+  onOpenProgramma?: () => void;
+  onSelectDeepView?: (view: KompasDeepView) => void;
 }) {
   const isPlanView = deepView === "stappenplan";
+  const isProgrammaView = deepView === "programma";
+  const isOverzichtView = !isPlanView && !isProgrammaView;
   const premiumShownRef = useRef(false);
   const session = sessionFromModel(model);
   const nutritionHint = getMovementNutritionHint(session);
@@ -89,6 +106,30 @@ export default function BewegingScreen({
   const showActiveStep =
     model.activeHabit?.domain === "movement" && model.activeHabit.title;
 
+  const trendRow = useMemo(() => buildDomainTrendRow(model, "beweging"), [model]);
+  const remeasureLine = useMemo(() => {
+    const baseline = trendRow.baselineScore;
+    if (baseline == null) {
+      return null;
+    }
+    return movementStartStatement(movementDirection(baseline, trendRow.currentScore));
+  }, [trendRow]);
+
+  const effectiveProfile = useMemo(
+    () => resolveEffectivePlanProfile(parseMovementPlanProfile(model.answers ?? {}), model.answers?.MOV_STR),
+    [model.answers],
+  );
+
+  const programEntry = useMemo(() => {
+    const variant = resolveRecommendedSessionVariant({
+      startPattern: effectiveProfile.startPattern,
+      movStr: model.answers?.MOV_STR,
+      trainingLocation: effectiveProfile.trainingLocation,
+      preferredSport: effectiveProfile.preferredSport,
+    });
+    return getMovementSessionCatalogEntry(variant) ?? null;
+  }, [effectiveProfile, model.answers?.MOV_STR]);
+
   useEffect(() => {
     if (premiumShownRef.current) {
       return;
@@ -97,6 +138,12 @@ export default function BewegingScreen({
     trackEvent("dashboard_beweging_premium_upsell", { surface: "kompas_beweging" });
     clarityTag("dashboard_beweging_premium", "shown");
   }, []);
+
+  useEffect(() => {
+    if (isProgrammaView) {
+      clarityTag("dashboard_kompas_view", "programma");
+    }
+  }, [isProgrammaView]);
 
   const logEnabled = isMovementLogEnabled();
 
@@ -181,10 +228,8 @@ export default function BewegingScreen({
   );
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Op de stappenplan-diepte leeft de positie-header in MovementPlanDeepBody;
-          de score-ring + intro-tegel van de cockpit-laag zijn hier weg (S1). */}
-      {!isPlanView ? (
+    <div className="flex flex-col gap-3 pb-16 md:pb-0">
+      {isOverzichtView ? (
         <MovementCockpit
           model={model}
           slot={slot}
@@ -193,6 +238,7 @@ export default function BewegingScreen({
           onMakePriority={onMakePriority}
           makePriorityBusy={makePriorityBusy}
           onOpenPlan={onOpenPlan}
+          onOpenProgramma={onOpenProgramma}
         />
       ) : null}
 
@@ -202,12 +248,23 @@ export default function BewegingScreen({
           answers={model.answers ?? {}}
           sessionId={sessionId}
           navMode="dashboard_view"
+          routeProgress={model.movementPlanProgress}
+          remeasureLine={remeasureLine}
+          onOpenProgramma={onOpenProgramma}
         />
-      ) : (
+      ) : null}
+
+      {isProgrammaView && programEntry ? (
+        <MovementProgramView
+          entry={programEntry}
+          trainingLocation={effectiveProfile.trainingLocation}
+        />
+      ) : null}
+
+      {isOverzichtView ? (
         <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
           {logEnabled ? <MovementLogPanel /> : null}
 
-          {/* Op md+ staat dezelfde beweegcheck als tool in de context-rail. */}
           <CockpitTile eyebrow="Check-in" className="md:hidden">
             <Link
               href="/intake/beweging?from=dashboard&kompas=beweging"
@@ -276,7 +333,10 @@ export default function BewegingScreen({
             }}
           />
         </div>
-      )}
+      ) : null}
+      {onSelectDeepView ? (
+        <BewegingViewNav deepView={deepView} onSelectView={onSelectDeepView} />
+      ) : null}
     </div>
   );
 }

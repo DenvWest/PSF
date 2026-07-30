@@ -82,6 +82,9 @@ function parseInitialKompasDeepView(
   if (kompas === "beweging" && view === "stappenplan") {
     return "stappenplan";
   }
+  if (kompas === "beweging" && view === "programma") {
+    return "programma";
+  }
   return undefined;
 }
 

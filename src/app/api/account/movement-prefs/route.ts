@@ -9,10 +9,12 @@ import {
 } from "@/lib/movement-prefs";
 import {
   isMovementSport,
+  isMovementTrainingLocation,
   isMovementWeeklyFrequency,
   mergeMovementPlanProfilePatch,
   parseMovementPlanProfile,
 } from "@/lib/movement-plan-profile";
+import type { MovementTrainingLocation } from "@/data/movement/session-catalog";
 import { ANON_PROFILE_LABEL } from "@/lib/recovery-token";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
 import { getRateLimitConfig } from "@/lib/rate-limit-config";
@@ -121,8 +123,10 @@ export async function POST(request: NextRequest) {
   const hasAnchor = record.anchor !== undefined;
   const hasSport = record.preferredSport !== undefined;
   const hasFrequency = record.weeklyFrequency !== undefined;
+  const hasLocation = record.trainingLocation !== undefined;
+  const hasSports = record.sports !== undefined;
 
-  if (!hasPattern && !hasAnchor && !hasSport && !hasFrequency) {
+  if (!hasPattern && !hasAnchor && !hasSport && !hasFrequency && !hasLocation && !hasSports) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
   if (hasPattern && !isMovementStartPattern(record.startPattern)) {
@@ -135,6 +139,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
   if (hasFrequency && !isMovementWeeklyFrequency(record.weeklyFrequency)) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (
+    hasLocation &&
+    record.trainingLocation !== null &&
+    !isMovementTrainingLocation(record.trainingLocation)
+  ) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (
+    hasSports &&
+    (!Array.isArray(record.sports) ||
+      record.sports.some((item) => typeof item !== "string"))
+  ) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
 
@@ -183,6 +201,17 @@ export async function POST(request: NextRequest) {
     ...(hasSport ? { preferredSport: record.preferredSport as MovementSport } : {}),
     ...(hasFrequency
       ? { weeklyFrequency: record.weeklyFrequency as MovementWeeklyFrequency }
+      : {}),
+    ...(hasLocation
+      ? {
+          trainingLocation:
+            record.trainingLocation === null
+              ? undefined
+              : (record.trainingLocation as MovementTrainingLocation),
+        }
+      : {}),
+    ...(hasSports && Array.isArray(record.sports)
+      ? { sports: record.sports.slice(0, 3) as string[] }
       : {}),
   });
 

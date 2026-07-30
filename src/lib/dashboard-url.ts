@@ -44,7 +44,7 @@ const KOMPAS_DOMAIN_IDS = new Set<PillarId>([
   "verbinding",
 ]);
 
-export type KompasDeepView = "cockpit" | "stappenplan";
+export type KompasDeepView = "cockpit" | "stappenplan" | "programma";
 
 const KOMPAS_DEEP_VIEW_PILLARS = new Set<PillarId>(["beweging"]);
 
@@ -69,6 +69,9 @@ export function parseKompasDeepViewFromUrl(url: string | URL): KompasDeepView {
   const view = parsed.searchParams.get("view");
   if (kompas === "beweging" && view === "stappenplan") {
     return "stappenplan";
+  }
+  if (kompas === "beweging" && view === "programma") {
+    return "programma";
   }
   return "cockpit";
 }
@@ -192,6 +195,10 @@ export function buildDashboardBewegingStappenplanHref(): string {
   return "/dashboard?tab=vandaag&kompas=beweging&view=stappenplan";
 }
 
+export function buildDashboardBewegingProgrammaHref(): string {
+  return "/dashboard?tab=vandaag&kompas=beweging&view=programma";
+}
+
 export function buildDashboardPlanHref(planDomain: string): string {
   if (planDomain === "movement") {
     return buildDashboardBewegingStappenplanHref();
@@ -216,8 +223,8 @@ function syncDashboardUrlParams(
     url.searchParams.delete("kompas");
   }
 
-  if (domain && supportsKompasDeepView(domain) && deepView === "stappenplan") {
-    url.searchParams.set("view", "stappenplan");
+  if (domain && supportsKompasDeepView(domain) && deepView !== "cockpit") {
+    url.searchParams.set("view", deepView);
   } else {
     url.searchParams.delete("view");
   }

@@ -10,12 +10,26 @@ import {
 } from "@/lib/movement-prefs";
 import type {
   MovementSport,
+  MovementTrainingLocation,
   MovementWeeklyFrequency,
 } from "@/data/movement/session-catalog";
 import type { StoredIntakeAnswers } from "@/types/intake-answers";
 
 export const ANSWER_KEY_PREFERRED_SPORT = "preferredSport";
 export const ANSWER_KEY_WEEKLY_FREQUENCY = "weeklyAvailability";
+export const ANSWER_KEY_TRAINING_LOCATION = "trainingLocation";
+export const ANSWER_KEY_SPORTS = "sports";
+
+const LOCATION_IDS = new Set<string>(["thuis", "sportschool"]);
+const LEGACY_SPORT_TO_LOCATION: Record<string, MovementTrainingLocation> = {
+  thuis: "thuis",
+  sportschool: "sportschool",
+};
+const LEGACY_SPORT_TO_LENS: Record<string, string> = {
+  wandelen: "hardlopen",
+  fietsen: "wielrennen",
+  zwemmen: "zwemmen",
+};
 
 const SPORT_IDS = new Set<string>([
   "thuis",
@@ -37,9 +51,17 @@ export function isMovementWeeklyFrequency(
   return typeof value === "string" && FREQUENCY_IDS.has(value);
 }
 
+export function isMovementTrainingLocation(
+  value: unknown,
+): value is MovementTrainingLocation {
+  return typeof value === "string" && LOCATION_IDS.has(value);
+}
+
 export type MovementPlanProfile = MovementPrefs & {
   preferredSport: MovementSport | null;
   weeklyFrequency: MovementWeeklyFrequency | null;
+  trainingLocation: MovementTrainingLocation | null;
+  sports: string[];
 };
 
 export const EMPTY_MOVEMENT_PLAN_PROFILE: MovementPlanProfile = {
@@ -47,7 +69,37 @@ export const EMPTY_MOVEMENT_PLAN_PROFILE: MovementPlanProfile = {
   anchor: null,
   preferredSport: null,
   weeklyFrequency: null,
+  trainingLocation: null,
+  sports: [],
 };
+
+function parseSportsArray(raw: unknown): string[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  return raw.filter((item): item is string => typeof item === "string").slice(0, 3);
+}
+
+function migrateLegacyPreferredSport(
+  sport: MovementSport | null,
+  existingLocation: MovementTrainingLocation | null,
+  existingSports: string[],
+): { trainingLocation: MovementTrainingLocation | null; sports: string[] } {
+  if (!sport) {
+    return { trainingLocation: existingLocation, sports: existingSports };
+  }
+  const mappedLocation = LEGACY_SPORT_TO_LOCATION[sport];
+  const mappedSport = LEGACY_SPORT_TO_LENS[sport];
+  return {
+    trainingLocation: existingLocation ?? mappedLocation ?? null,
+    sports:
+      existingSports.length > 0
+        ? existingSports
+        : mappedSport
+          ? [mappedSport]
+          : [],
+  };
+}
 
 export function parseMovementPlanProfile(raw: unknown): MovementPlanProfile {
   const base = parseMovementPrefs(raw);
@@ -57,10 +109,21 @@ export function parseMovementPlanProfile(raw: unknown): MovementPlanProfile {
   const record = raw as Record<string, unknown>;
   const sport = record[ANSWER_KEY_PREFERRED_SPORT];
   const frequency = record[ANSWER_KEY_WEEKLY_FREQUENCY];
+  const locationRaw = record[ANSWER_KEY_TRAINING_LOCATION];
+  const sportsRaw = record[ANSWER_KEY_SPORTS];
+  const preferredSport = isMovementSport(sport) ? sport : null;
+  let trainingLocation = isMovementTrainingLocation(locationRaw) ? locationRaw : null;
+  let sports = parseSportsArray(sportsRaw);
+  const migrated = migrateLegacyPreferredSport(preferredSport, trainingLocation, sports);
+  trainingLocation = migrated.trainingLocation;
+  sports = migrated.sports;
+
   return {
     ...base,
-    preferredSport: isMovementSport(sport) ? sport : null,
+    preferredSport,
     weeklyFrequency: isMovementWeeklyFrequency(frequency) ? frequency : null,
+    trainingLocation,
+    sports,
   };
 }
 
@@ -71,7 +134,9 @@ export function hasMovementPlanProfileValues(raw: unknown): boolean {
     profile.startPattern !== null ||
     profile.anchor !== null ||
     profile.preferredSport !== null ||
-    profile.weeklyFrequency !== null
+    profile.weeklyFrequency !== null ||
+    profile.trainingLocation !== null ||
+    profile.sports.length > 0
   );
 }
 
@@ -98,6 +163,12 @@ export function carryOverMovementPlanProfile(
   }
   if (next.preferredSport === null && previous.preferredSport !== null) {
     carried[ANSWER_KEY_PREFERRED_SPORT] = previous.preferredSport;
+  }
+  if (next.trainingLocation === null && previous.trainingLocation !== null) {
+    carried[ANSWER_KEY_TRAINING_LOCATION] = previous.trainingLocation;
+  }
+  if (next.sports.length === 0 && previous.sports.length > 0) {
+    carried[ANSWER_KEY_SPORTS] = previous.sports;
   }
   if (next.weeklyFrequency === null && previous.weeklyFrequency !== null) {
     carried[ANSWER_KEY_WEEKLY_FREQUENCY] = previous.weeklyFrequency;
@@ -138,8 +209,6 @@ export function resolveEffectivePlanProfile(
   const startPattern = profile.startPattern;
   return {
     ...profile,
-    preferredSport:
-      profile.preferredSport ?? defaultSportForPattern(startPattern),
     weeklyFrequency:
       profile.weeklyFrequency ??
       defaultFrequencyForPattern(startPattern, movStr),
@@ -151,6 +220,8 @@ export type MovementPlanProfilePatch = {
   anchor?: MovementAnchor | null;
   preferredSport?: MovementSport;
   weeklyFrequency?: MovementWeeklyFrequency;
+  trainingLocation?: MovementTrainingLocation;
+  sports?: string[];
 };
 
 export function mergeMovementPlanProfilePatch(
@@ -174,6 +245,15 @@ export function mergeMovementPlanProfilePatch(
   }
   if (patch.preferredSport !== undefined && isMovementSport(patch.preferredSport)) {
     record[ANSWER_KEY_PREFERRED_SPORT] = patch.preferredSport;
+  }
+  if (
+    patch.trainingLocation !== undefined &&
+    isMovementTrainingLocation(patch.trainingLocation)
+  ) {
+    record[ANSWER_KEY_TRAINING_LOCATION] = patch.trainingLocation;
+  }
+  if (patch.sports !== undefined) {
+    record[ANSWER_KEY_SPORTS] = patch.sports.slice(0, 3);
   }
   if (
     patch.weeklyFrequency !== undefined &&
