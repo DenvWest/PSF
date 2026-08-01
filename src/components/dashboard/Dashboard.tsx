@@ -147,6 +147,7 @@ import {
   type ContextRailToolId,
 } from "@/lib/context-rail";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { useTodayActionDone } from "@/lib/use-today-action-done";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { buildRecommendationInput } from "@/lib/recommendation-input";
@@ -3608,6 +3609,8 @@ export default function Dashboard({
     [empty, data, priorityPref],
   );
 
+  const todayActionDone = useTodayActionDone(model);
+
   const activeStatistiekenBlik = useMemo((): StatistiekenBlik => {
     if (voortgangScreen !== "statistieken") {
       return statistiekenBlik;
@@ -3963,7 +3966,7 @@ export default function Dashboard({
       ? {
           title: activeHabit.title,
           detail: activeHabit.detail,
-          done: activeHabit.state === "done",
+          done: todayActionDone,
         }
       : null,
     remeasure: data?.remeasure ? { daysUntil: data.remeasure.daysUntil } : null,
@@ -4009,7 +4012,7 @@ export default function Dashboard({
         onLogout={onLogout}
         firstName={data?.firstName ?? null}
         anchorLabel={anchorOption?.label ?? null}
-        statusDone={model?.activeHabit?.state === "done"}
+        statusDone={todayActionDone}
         onCheckin={() => selectTab("vandaag")}
         railMode={contextRailMode}
         railDomains={contextRailApi?.domains}

@@ -13,6 +13,10 @@ import {
 } from "@/lib/lifestyle-plan-eval";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
+import {
+  inferCompletedChoice,
+  resolveMovementTodayChoiceOptions,
+} from "@/lib/movement-today-choices";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 import type { PlanStep, PlanStepLink } from "@/types/lifestyle-plan";
 
@@ -183,6 +187,51 @@ export function resolveActionKey(
   slot: WeekDaySlot,
 ): string {
   return model.activeHabit?.stepId ?? slot.stepId;
+}
+
+/**
+ * De sleutel waarmee daily_action_log voor dit slot gelezen wordt — incl.
+ * beweging-tier (herstel/matig/trainen), gelijk aan AgendaTodayHero.
+ */
+export function resolveEffectiveActionKey(
+  model: DashboardModel,
+  slot: WeekDaySlot,
+  logKeys: readonly string[] = [],
+): string {
+  const actionKey = resolveActionKey(model, slot);
+  if (slot.domain !== "beweging") {
+    return actionKey;
+  }
+
+  const options = resolveMovementTodayChoiceOptions(model, slot);
+  if (options.length === 0) {
+    return actionKey;
+  }
+
+  const choiceKind =
+    model.movementDayChoice ?? inferCompletedChoice(logKeys, options);
+  const choice = choiceKind
+    ? (options.find((option) => option.kind === choiceKind) ?? null)
+    : null;
+  return choice?.stepId ?? actionKey;
+}
+
+/** Of de dagstap van vandaag in daily_action_log staat (SSOT voor rail/inspector). */
+export function isTodayActionDone(
+  model: DashboardModel,
+  slot: WeekDaySlot | null,
+  keys: readonly string[],
+): boolean {
+  if (!slot?.isToday || isPlanStepHidden(model, slot)) {
+    return false;
+  }
+
+  const effectiveKey = resolveEffectiveActionKey(model, slot, keys);
+  if (!effectiveKey) {
+    return false;
+  }
+
+  return keys.includes(effectiveKey);
 }
 
 export function buildDaySlot(model: DashboardModel, slot: WeekDaySlot): DaySlot {

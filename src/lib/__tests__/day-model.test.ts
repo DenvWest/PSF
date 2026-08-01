@@ -11,9 +11,13 @@ import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import {
   buildDaySlot,
   isPlanStepHidden,
+  isTodayActionDone,
   resolveActionKey,
+  resolveEffectiveActionKey,
   resolveScheduledTime,
 } from "@/lib/day-model";
+import { REST_DAY_STEP_ID } from "@/lib/movement-recovery-hint";
+import { resolveMovementTodayChoiceOptions } from "@/lib/movement-today-choices";
 import { buildModel } from "@/lib/dashboard-model";
 import type { CheckScores, CheckTrend, PillarId } from "@/types/dashboard";
 
@@ -195,6 +199,94 @@ describe("day-model pariteit: categorie-mapping", () => {
     );
     expect(buildPlanStepBlock(model, slotForDomain("herstel"))?.categoryId).toBe(
       "persoonlijke_routine",
+    );
+  });
+});
+
+describe("isTodayActionDone", () => {
+  function movementTodaySlot(overrides: Partial<WeekDaySlot> = {}): WeekDaySlot {
+    return {
+      date: "2026-08-01",
+      dayLabel: "Vandaag",
+      isToday: true,
+      dayOffset: 0,
+      domain: "beweging",
+      stepId: "mov-kracht-onderhoud-week",
+      title: "Kracht onderhoud",
+      detail: null,
+      rationale: null,
+      evidenceHref: "/onderbouwing",
+      planLink: null,
+      ...overrides,
+    };
+  }
+
+  it("volgt daily_action_log voor een niet-beweging slot", () => {
+    const model = { ...buildFixtureModel(FIXTURE_SCORES), activeHabit: null };
+    const slot: WeekDaySlot = {
+      ...slotForDomain("slaap"),
+      isToday: true,
+      stepId: "slp-step",
+    };
+
+    expect(isTodayActionDone(model, slot, [])).toBe(false);
+    expect(isTodayActionDone(model, slot, ["slp-step"])).toBe(true);
+    expect(isTodayActionDone(model, slot, ["other-step"])).toBe(false);
+  });
+
+  it("herkent beweging-tier via inferCompletedChoice wanneer geen movementDayChoice", () => {
+    const model = {
+      ...buildFixtureModel(FIXTURE_SCORES),
+      activeHabit: null,
+      movementPrefs: { startPattern: null, anchor: null },
+      movementDayChoice: null,
+    };
+    const slot = movementTodaySlot();
+    const options = resolveMovementTodayChoiceOptions(model, slot);
+
+    expect(options.length).toBeGreaterThan(0);
+    expect(isTodayActionDone(model, slot, [REST_DAY_STEP_ID])).toBe(true);
+    expect(isTodayActionDone(model, slot, ["mov-trap-of-wandeling"])).toBe(true);
+    expect(isTodayActionDone(model, slot, [slot.stepId])).toBe(true);
+  });
+
+  it("volgt movementDayChoice boven inferCompletedChoice", () => {
+    const model = {
+      ...buildFixtureModel(FIXTURE_SCORES),
+      activeHabit: null,
+      movementPrefs: { startPattern: null, anchor: null },
+      movementDayChoice: "matig" as const,
+    };
+    const slot = movementTodaySlot();
+
+    expect(
+      isTodayActionDone(model, slot, ["mov-trap-of-wandeling"]),
+    ).toBe(true);
+    expect(isTodayActionDone(model, slot, [REST_DAY_STEP_ID])).toBe(false);
+  });
+
+  it("is false voor verborgen planstappen en ontbrekend slot", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slot = movementTodaySlot();
+    const hiddenModel = { ...model, planStepsHidden: true };
+
+    expect(isTodayActionDone(hiddenModel, slot, [slot.stepId])).toBe(false);
+    expect(isTodayActionDone(model, null, [slot.stepId])).toBe(false);
+  });
+
+  it("resolveEffectiveActionKey matcht AgendaTodayHero-tierlogica", () => {
+    const model = {
+      ...buildFixtureModel(FIXTURE_SCORES),
+      activeHabit: null,
+      movementPrefs: { startPattern: null, anchor: null },
+      movementDayChoice: null,
+    };
+    const slot = movementTodaySlot();
+    const keys = [REST_DAY_STEP_ID];
+
+    expect(resolveEffectiveActionKey(model, slot, keys)).toBe(REST_DAY_STEP_ID);
+    expect(resolveEffectiveActionKey(model, slot, [])).toBe(
+      resolveActionKey(model, slot),
     );
   });
 });
