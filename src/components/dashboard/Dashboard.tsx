@@ -18,12 +18,14 @@ import {
   Sparkline,
 } from "@/components/app/primitives";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
-import {
-  DeepToolMeetModule,
-  DeepToolSectionHeader,
-  DEEP_TOOL_LIGHT,
-  DomainDeepTool,
-} from "@/components/dashboard/DomainDeepTool";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import DomainCheckinLink from "@/components/dashboard/domain/DomainCheckinLink";
+import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
+import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
+import DomainMeetModule from "@/components/dashboard/domain/DomainMeetModule";
+import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
+import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
+import DomainSupplementList from "@/components/dashboard/domain/DomainSupplementList";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
@@ -2445,57 +2447,6 @@ const KompasLightPanel = ({
   </div>
 );
 
-const KompasSectionHeader = ({
-  eyebrow,
-  title,
-  action,
-}: {
-  eyebrow?: string;
-  title?: string;
-  action?: ReactNode;
-}) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      gap: 16,
-      marginBottom: 14,
-    }}
-  >
-    <div>
-      {eyebrow ? (
-        <div
-          style={{
-            marginBottom: 8,
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: KOMPAS_LIGHT.subtle,
-          }}
-        >
-          {eyebrow}
-        </div>
-      ) : null}
-      {title ? (
-        <div
-          style={{
-            fontFamily: "var(--f-serif)",
-            fontSize: 21,
-            color: KOMPAS_LIGHT.text,
-            letterSpacing: "0.01em",
-            lineHeight: 1.1,
-          }}
-        >
-          {title}
-        </div>
-      ) : null}
-    </div>
-    {action}
-  </div>
-);
-
 const SoonPill = ({ label = "Binnenkort" }: { label?: string }) => (
   <span
     style={{
@@ -2545,8 +2496,8 @@ const DomainSoonScreen = ({
 };
 
 const SNAPSHOT_BAND_COLOR: Record<NutritionIntakeBand, string> = {
-  below: "#B45309",
-  around: "#57534e",
+  below: "#D99A4E",
+  around: "#CDD7D0",
   meets: "#5A8F6A",
 };
 
@@ -2629,354 +2580,248 @@ const VoedingScreen = ({
   };
 
   return (
-    <DomainDeepTool
-      domain="voeding"
-      pillar={pillar}
-      score={model.scores.voeding ?? 0}
-      eyebrow="Mediterraan"
-      tagline="Stapsgewijs voeding optimaliseren."
-      checkinDate={nutritionIntake?.date ?? model.date ?? null}
-      hasDomainCheckin={nutritionIntake !== null}
-      checkin={{
-        href: "/intake/voeding?from=dashboard&kompas=voeding",
-        label: "Doe voedingscheck",
-        description: "Snelle nulmeting van je basis",
-        iconKey: "Leaf",
-        onClick: () => trackCheckinClick("header"),
-      }}
-      secondaryCheckin={
-        nutritionLogCompleted
-          ? {
-              href: "/intake/voeding?resultaten=true&from=dashboard",
-              label: "Bekijk je resultaat",
-              description: "Je laatste inname-inschatting",
-              iconKey: "BarChart",
-              onClick: trackResultReopen,
-            }
-          : null
-      }
-    >
-        <section aria-label="Inname-snapshot">
-          <DeepToolSectionHeader
-            eyebrow="Laatste check-in"
-            title="Wat je binnenkrijgt"
-            action={
-              nutritionIntake ? (
-                <span style={{ fontSize: 12, color: DEEP_TOOL_LIGHT.subtle }}>
-                  {nutritionIntake.date}
-                </span>
-              ) : undefined
-            }
-          />
-          <Card pad={18} surface="light">
-            {nutritionIntake ? (
-              <>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {nutritionIntake.items.map((item, index) => (
-                    <div
-                      key={`${item.label}-${index}`}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 10,
-                        padding: "10px 2px",
-                        borderTop: index
-                          ? `1px solid ${KOMPAS_LIGHT.innerBorder}`
-                          : "none",
-                      }}
-                    >
-                      <span style={{ fontSize: 14, color: KOMPAS_LIGHT.text }}>
-                        {item.label}
-                      </span>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        {item.previousBand ? (
-                          <span style={{ fontSize: 11, color: KOMPAS_LIGHT.subtle }}>
-                            was: {NUTRITION_BAND[item.previousBand].label.toLowerCase()}
-                          </span>
-                        ) : null}
-                        <span
-                          style={{
-                            border: `1px solid ${SNAPSHOT_BAND_COLOR[item.band]}44`,
-                            background: `${SNAPSHOT_BAND_COLOR[item.band]}14`,
-                            color: SNAPSHOT_BAND_COLOR[item.band],
-                            borderRadius: 999,
-                            padding: "2px 8px",
-                            fontSize: 11,
-                            fontWeight: 600,
-                          }}
-                        >
-                          {NUTRITION_BAND[item.band].label}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p
-                  style={{
-                    marginTop: 12,
-                    marginBottom: 0,
-                    fontSize: 12,
-                    color: KOMPAS_LIGHT.subtle,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  Grove inschatting op basis van hoe vaak je eet — een vuistregel,
-                  geen meting, status of diagnose.
-                </p>
-              </>
-            ) : intakeLines.length > 0 ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {intakeLines.map((line) => (
-                  <p
-                    key={line}
-                    style={{
-                      fontSize: 14,
-                      color: KOMPAS_LIGHT.muted,
-                      lineHeight: 1.55,
-                      margin: 0,
-                      textWrap: "pretty",
-                    }}
+    <DomainCockpitShell accent={pillar.color} ariaLabel="Voeding-cockpit">
+      <DomainHeaderCard
+        pillar={pillar}
+        score={model.scores.voeding ?? 0}
+        eyebrow="Mediterraan"
+        tagline="Stapsgewijs voeding optimaliseren."
+        checkinDate={nutritionIntake?.date ?? model.date ?? null}
+      />
+
+      <DomainCheckinLink
+        href="/intake/voeding?from=dashboard&kompas=voeding"
+        icon={<Icons.Leaf s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+        label="Doe voedingscheck"
+        onClick={() => trackCheckinClick("header")}
+      />
+      {nutritionLogCompleted ? (
+        <DomainCheckinLink
+          href="/intake/voeding?resultaten=true&from=dashboard"
+          icon={<Icons.BarChart s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+          label="Bekijk je resultaat"
+          onClick={trackResultReopen}
+        />
+      ) : null}
+
+      <section aria-label="Inname-snapshot">
+        <DomainSectionHeader
+          eyebrow="Laatste check-in"
+          title="Wat je binnenkrijgt"
+          action={
+            nutritionIntake ? (
+              <span className="text-[12px] text-[#9FB0A6]">{nutritionIntake.date}</span>
+            ) : undefined
+          }
+        />
+        <CockpitTile>
+          {nutritionIntake ? (
+            <>
+              <div className="flex flex-col">
+                {nutritionIntake.items.map((item, index) => (
+                  <div
+                    key={`${item.label}-${index}`}
+                    className={`flex items-center justify-between gap-2.5 px-0.5 py-2.5 ${
+                      index ? "border-t border-white/10" : ""
+                    }`}
                   >
-                    {line}
-                  </p>
+                    <span className="text-[14px] text-[#F1EFE8]">{item.label}</span>
+                    <div className="flex items-center gap-2">
+                      {item.previousBand ? (
+                        <span className="text-[11px] text-[#9FB0A6]">
+                          was: {NUTRITION_BAND[item.previousBand].label.toLowerCase()}
+                        </span>
+                      ) : null}
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                        style={{
+                          border: `1px solid ${SNAPSHOT_BAND_COLOR[item.band]}44`,
+                          background: `${SNAPSHOT_BAND_COLOR[item.band]}14`,
+                          color: SNAPSHOT_BAND_COLOR[item.band],
+                        }}
+                      >
+                        {NUTRITION_BAND[item.band].label}
+                      </span>
+                    </div>
+                  </div>
                 ))}
-                <p
-                  style={{
-                    fontSize: 12.5,
-                    color: KOMPAS_LIGHT.subtle,
-                    lineHeight: 1.5,
-                    margin: 0,
-                  }}
-                >
-                  Uit je intake — doe de voedingscheck voor je volledige
-                  inname-beeld.
-                </p>
               </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: KOMPAS_LIGHT.muted,
-                    lineHeight: 1.5,
-                    margin: 0,
-                  }}
-                >
-                  Nog geen check-in — doe de voedingscheck om je inname-snapshot
-                  te zien.
+              <p className="mt-3 mb-0 text-[12px] leading-relaxed text-[#9FB0A6]">
+                Grove inschatting op basis van hoe vaak je eet — een vuistregel, geen meting,
+                status of diagnose.
+              </p>
+            </>
+          ) : intakeLines.length > 0 ? (
+            <div className="flex flex-col gap-2.5">
+              {intakeLines.map((line) => (
+                <p key={line} className="m-0 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+                  {line}
                 </p>
-                <Link
-                  href="/intake/voeding?from=dashboard&kompas=voeding"
-                  onClick={() => trackCheckinClick("snapshot_empty")}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 4,
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    color: "var(--sage)",
-                    textDecoration: "none",
-                  }}
-                >
-                  Doe de voedingscheck (1 min) <Icons.ChevronRight s={15} />
-                </Link>
-              </div>
-            )}
-          </Card>
-        </section>
-
-        <button
-          type="button"
-          onClick={() => {
-            trackEvent("dashboard_voeding_search_click", { surface: "kompas_voeding", state: "coming_soon" });
-            clarityTag("dashboard_voeding_search", "click");
-          }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            padding: "14px 16px",
-            borderRadius: 16,
-            border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-            background: "#fff",
-            width: "100%",
-            cursor: "pointer",
-          }}
-        >
-          <Icons.Search s={18} style={{ color: KOMPAS_LIGHT.subtle }} />
-          <span style={{ flex: 1, fontSize: 14.5, color: KOMPAS_LIGHT.subtle, textAlign: "left" }}>
-            Zoek product of supplement
-          </span>
-          <SoonPill />
-        </button>
-
-        <section aria-label="Leefstijl eerst">
-          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Voedingsbasis" />
-          <Card pad={18} surface="light">
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: KOMPAS_LIGHT.innerBg }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: KOMPAS_LIGHT.text, marginBottom: 4 }}>
-                  Eiwitanker per maaltijd
-                </div>
-                <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
-                  Start met 1 eiwitbron per maaltijd zodat je verzadiging en herstel stabieler worden.
-                </p>
-              </div>
-              <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: KOMPAS_LIGHT.innerBg }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: KOMPAS_LIGHT.text, marginBottom: 4 }}>
-                  Vezelritme over de dag
-                </div>
-                <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
-                  Bouw per eetmoment groente, peulvruchten of volkoren op. Dit dempt pieken en houdt energie rustiger.
-                </p>
-              </div>
-              <div style={{ padding: "12px 14px", borderRadius: 14, border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, background: KOMPAS_LIGHT.innerBg }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: KOMPAS_LIGHT.text, marginBottom: 4 }}>
-                  Vast maaltijdvenster
-                </div>
-                <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
-                  Eet op voorspelbare tijden. Zo stuur je rust in eetdrang en maak je je basis meetbaar.
-                </p>
-              </div>
+              ))}
+              <p className="m-0 text-[12.5px] leading-relaxed text-[#9FB0A6]">
+                Uit je intake — doe de voedingscheck voor je volledige inname-beeld.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="m-0 text-[14px] leading-relaxed text-[#CDD7D0]">
+                Nog geen check-in — doe de voedingscheck om je inname-snapshot te zien.
+              </p>
               <Link
-                href="/inzichten"
-                onClick={() => {
-                  trackEvent("dashboard_voeding_leefstijl_click", { surface: "kompas_voeding" });
-                  clarityTag("dashboard_voeding_leefstijl", "click");
-                }}
-                style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13.5, fontWeight: 600, color: "var(--sage)", textDecoration: "none", marginTop: 2 }}
+                href="/intake/voeding?from=dashboard&kompas=voeding"
+                onClick={() => trackCheckinClick("snapshot_empty")}
+                className="inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
               >
-                Lees leefstijl &amp; inzichten <Icons.ChevronRight s={15} />
+                Doe de voedingscheck (1 min) <Icons.ChevronRight s={15} />
               </Link>
             </div>
-          </Card>
-        </section>
-
-        <section aria-label="Slimme keuzes">
-          <KompasSectionHeader eyebrow="PS-beoordeling" title="Slimme keuzes" />
-          <Card pad={18} surface="light">
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {NUTRITION_CURATED_CHOICES.map((choice) => (
-                <div
-                  key={choice.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 12,
-                    padding: "12px 14px",
-                    borderRadius: 14,
-                    border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                    background: KOMPAS_LIGHT.innerBg,
-                  }}
-                >
-                  <span style={{ fontSize: 22, flexShrink: 0 }} aria-hidden>
-                    {choice.icon}
-                  </span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
-                        {choice.name}
-                      </span>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--sage)" }}>
-                        {choice.verdict}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 12, color: KOMPAS_LIGHT.subtle, marginTop: 2 }}>
-                      Beoordeeld op: {choice.dimension.toLowerCase()}
-                    </div>
-                    <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: "4px 0 0", textWrap: "pretty" }}>
-                      {choice.note}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
-              <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
-              <span style={{ fontSize: 12.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5 }}>
-                Onafhankelijk beoordeeld op productgroep-niveau — geen merken, geen verkoop.
-              </span>
-            </div>
-          </Card>
-        </section>
-
-        <section aria-label="Aanbevolen supplementen">
-          <KompasSectionHeader eyebrow="Daarna gericht" title="Supplementen voor jou" />
-          {recommendations.length > 0 ? (
-            <Card pad={8} surface="light">
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {recommendations.map((rec, index) => {
-                  const href = rec.comparisonHref ?? rec.guideHref;
-                  return (
-                    <Link
-                      key={rec.slug}
-                      href={href}
-                      onClick={() => {
-                        trackEvent("dashboard_voeding_supplement_click", { slug: rec.slug, target: href });
-                        clarityTag("dashboard_voeding_supplement", rec.slug);
-                      }}
-                      style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 10px", textDecoration: "none", color: "inherit", borderTop: index ? `1px solid ${KOMPAS_LIGHT.innerBorder}` : "none" }}
-                    >
-                      <span style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, background: KOMPAS_LIGHT.innerBg, border: `1px solid ${KOMPAS_LIGHT.innerBorder}` }} aria-hidden>
-                        {rec.icon}
-                      </span>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>{rec.name}</div>
-                        <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, marginTop: 2, textWrap: "pretty" }}>{rec.wiifm}</div>
-                      </div>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12, fontWeight: 600, color: "var(--sage)", flexShrink: 0 }}>
-                        Vergelijk <Icons.ChevronRight s={15} />
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </Card>
-          ) : (
-            <Card pad={20} surface="light">
-              <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0 }}>
-                {nutritionLogCompleted
-                  ? "Geen supplement-signalen op basis van je check — focus op je leefstijlstappen."
-                  : "Doe eerst de voedingscheck. Supplementen tonen we pas daarna — eerst je bord, dan gericht vergelijken."}
-              </p>
-              {!nutritionLogCompleted ? (
-                <Link
-                  href="/intake/voeding?from=dashboard&kompas=voeding"
-                  onClick={() => trackCheckinClick("supplement_gate")}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginTop: 14,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "var(--sage)",
-                    textDecoration: "none",
-                  }}
-                >
-                  Doe de voedingscheck (1 min) <Icons.ChevronRight s={15} />
-                </Link>
-              ) : null}
-            </Card>
           )}
-        </section>
+        </CockpitTile>
+      </section>
 
-        <DeepToolMeetModule
-          domain="voeding"
-          title="Meten: kcal, macro's & je eiwitdoel"
-          description="Log wat je eet en zie je inname-inschatting tegen persoonlijke streefwaarden — op basis van wat jij invult, geen meting."
-          bullets={[
-            "Dagelijkse inname-inschatting van calorieën en macro's",
-            "Persoonlijk eiwitdoel — streefwaarde op basis van je gewicht en doel",
-            "Weektrend: zie of je basis richting je vuistregels beweegt",
-          ]}
-          note="Je lengte en gewicht deel je pas als je start — eerder vragen we er niet om."
-          teaser="Jouw eiwitdoel: ●● g — wordt berekend zodra je start"
-        />
+      <button
+        type="button"
+        onClick={() => {
+          trackEvent("dashboard_voeding_search_click", {
+            surface: "kompas_voeding",
+            state: "coming_soon",
+          });
+          clarityTag("dashboard_voeding_search", "click");
+        }}
+        className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-left"
+      >
+        <Icons.Search s={18} style={{ color: "#9FB0A6" }} />
+        <span className="flex-1 text-[14.5px] text-[#9FB0A6]">Zoek product of supplement</span>
+        <DomainSoonPill />
+      </button>
 
-        <KompasBegeleidingLink surface="kompas_voeding" />
-    </DomainDeepTool>
+      <section aria-label="Leefstijl eerst">
+        <DomainSectionHeader eyebrow="Leefstijl eerst" title="Voedingsbasis" />
+        <CockpitTile>
+          <div className="flex flex-col gap-2.5">
+            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
+              <div className="mb-1 text-[13.5px] font-semibold text-[#F1EFE8]">
+                Eiwitanker per maaltijd
+              </div>
+              <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
+                Start met 1 eiwitbron per maaltijd zodat je verzadiging en herstel stabieler
+                worden.
+              </p>
+            </div>
+            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
+              <div className="mb-1 text-[13.5px] font-semibold text-[#F1EFE8]">
+                Vezelritme over de dag
+              </div>
+              <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
+                Bouw per eetmoment groente, peulvruchten of volkoren op. Dit dempt pieken en houdt
+                energie rustiger.
+              </p>
+            </div>
+            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
+              <div className="mb-1 text-[13.5px] font-semibold text-[#F1EFE8]">
+                Vast maaltijdvenster
+              </div>
+              <p className="m-0 text-[13px] leading-relaxed text-[#9FB0A6]">
+                Eet op voorspelbare tijden. Zo stuur je rust in eetdrang en maak je je basis
+                meetbaar.
+              </p>
+            </div>
+            <Link
+              href="/inzichten"
+              onClick={() => {
+                trackEvent("dashboard_voeding_leefstijl_click", { surface: "kompas_voeding" });
+                clarityTag("dashboard_voeding_leefstijl", "click");
+              }}
+              className="mt-0.5 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
+            >
+              Lees leefstijl &amp; inzichten <Icons.ChevronRight s={15} />
+            </Link>
+          </div>
+        </CockpitTile>
+      </section>
+
+      <section aria-label="Slimme keuzes">
+        <DomainSectionHeader eyebrow="PS-beoordeling" title="Slimme keuzes" />
+        <CockpitTile>
+          <div className="flex flex-col gap-2.5">
+            {NUTRITION_CURATED_CHOICES.map((choice) => (
+              <div
+                key={choice.id}
+                className="flex items-start gap-3 rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3"
+              >
+                <span className="text-[22px]" aria-hidden>
+                  {choice.icon}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <span className="text-[14.5px] font-semibold text-[#F1EFE8]">
+                      {choice.name}
+                    </span>
+                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#5A8F6A]">
+                      {choice.verdict}
+                    </span>
+                  </div>
+                  <div className="mt-0.5 text-[12px] text-[#9FB0A6]">
+                    Beoordeeld op: {choice.dimension.toLowerCase()}
+                  </div>
+                  <p className="mt-1 mb-0 text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+                    {choice.note}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3.5 flex items-center gap-2">
+            <Icons.Shield s={13} style={{ color: "#5A8F6A" }} />
+            <span className="text-[12.5px] leading-relaxed text-[#9FB0A6]">
+              Onafhankelijk beoordeeld op productgroep-niveau — geen merken, geen verkoop.
+            </span>
+          </div>
+        </CockpitTile>
+      </section>
+
+      <section aria-label="Aanbevolen supplementen">
+        <DomainSectionHeader eyebrow="Daarna gericht" title="Supplementen voor jou" />
+        <CockpitTile>
+          <DomainSupplementList
+            recommendations={recommendations}
+            emptyText={
+              nutritionLogCompleted
+                ? "Geen supplement-signalen op basis van je check — focus op je leefstijlstappen."
+                : "Doe eerst de voedingscheck. Supplementen tonen we pas daarna — eerst je bord, dan gericht vergelijken."
+            }
+            onItemClick={(rec, href) => {
+              trackEvent("dashboard_voeding_supplement_click", { slug: rec.slug, target: href });
+              clarityTag("dashboard_voeding_supplement", rec.slug);
+            }}
+          />
+          {recommendations.length === 0 && !nutritionLogCompleted ? (
+            <Link
+              href="/intake/voeding?from=dashboard&kompas=voeding"
+              onClick={() => trackCheckinClick("supplement_gate")}
+              className="mt-3.5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#5A8F6A] no-underline"
+            >
+              Doe de voedingscheck (1 min) <Icons.ChevronRight s={15} />
+            </Link>
+          ) : null}
+        </CockpitTile>
+      </section>
+
+      <DomainMeetModule
+        domain="voeding"
+        title="Meten: kcal, macro's & je eiwitdoel"
+        description="Log wat je eet en zie je inname-inschatting tegen persoonlijke streefwaarden — op basis van wat jij invult, geen meting."
+        bullets={[
+          "Dagelijkse inname-inschatting van calorieën en macro's",
+          "Persoonlijk eiwitdoel — streefwaarde op basis van je gewicht en doel",
+          "Weektrend: zie of je basis richting je vuistregels beweegt",
+        ]}
+        note="Je lengte en gewicht deel je pas als je start — eerder vragen we er niet om."
+        teaser="Jouw eiwitdoel: ●● g — wordt berekend zodra je start"
+      />
+
+      <KompasBegeleidingLink surface="kompas_voeding" />
+    </DomainCockpitShell>
   );
 };
 
@@ -3097,14 +2942,17 @@ const KompasHome = ({
     closeView();
   };
 
-  const handleDomainSwitch = (toDomain: PillarId) => {
+  const handleDomainSwitch = (
+    toDomain: PillarId,
+    surface: "top_nav" | "context_rail" = "top_nav",
+  ) => {
     if (!domainView || toDomain === domainView) {
       return;
     }
     trackEvent("dashboard_kompas_domain_switch_click", {
       from_domain: domainView,
       to_domain: toDomain,
-      surface: "top_nav",
+      surface,
     });
     clarityTag("dashboard_kompas_domain_switch", `${domainView}_${toDomain}`);
     setKompasDomain(toDomain);
@@ -3172,15 +3020,20 @@ const KompasHome = ({
       onSwitch: handleDomainSwitch,
     };
     contextRailHandlersRef.current = {
-      onOpenDomain: (domain: PillarId) => openDomain(domain, "context_rail"),
+      onOpenDomain: (domain: PillarId) => {
+        if (domainView && domain !== domainView) {
+          handleDomainSwitch(domain, "context_rail");
+          return;
+        }
+        openDomain(domain, "context_rail");
+      },
       onBackToKompas: handleDomainBack,
       onToolClick: handleRailToolClick,
     };
   });
 
-  // Elk open domein krijgt dezelfde rail-behandeling (Kompas-knop + eigen
-  // tools indien aanwezig); de domeinlijst zelf is alleen bereikbaar via de
-  // Kompas-knop terug naar "kompasHome", niet gestapeld in domainTools.
+  // Elk open domein krijgt dezelfde rail-behandeling: Kompas-knop, domeinlijst
+  // om te switchen, plus eigen tools indien aanwezig (beweging).
   const railMode: ContextRailMode = !domainView ? "kompasHome" : "domainTools";
 
   useEffect(() => {

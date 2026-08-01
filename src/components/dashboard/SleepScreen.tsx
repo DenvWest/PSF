@@ -1,11 +1,17 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import * as Icons from "@/components/app/icons";
-import { Card } from "@/components/app/primitives";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import DomainCheckinLink from "@/components/dashboard/domain/DomainCheckinLink";
+import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
+import DomainFooterLink from "@/components/dashboard/domain/DomainFooterLink";
+import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
+import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
+import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
+import DomainSupplementList from "@/components/dashboard/domain/DomainSupplementList";
+import DomainToolsGrid, { type DomainTool } from "@/components/dashboard/domain/DomainToolsGrid";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
 import {
@@ -17,20 +23,7 @@ import { trackEvent } from "@/lib/ga4";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type { DashboardModel } from "@/types/dashboard";
 
-const KOMPAS_LIGHT = {
-  text: "#1c1917",
-  muted: "#57534e",
-  subtle: "#78716c",
-  innerBorder: "#ebe7e2",
-  innerBg: "#faf9f7",
-} as const;
-
-const SLEEP_TOOLS: {
-  icon: string;
-  label: string;
-  href: string | null;
-  slug: string;
-}[] = [
+const SLEEP_TOOLS: DomainTool[] = [
   {
     icon: "🌅",
     label: "Ochtendlicht",
@@ -46,117 +39,6 @@ const SLEEP_TOOLS: {
   { icon: "🌙", label: "Avondafbouw", href: null, slug: "avondafbouw" },
   { icon: "⏰", label: "Vaste wektijd", href: null, slug: "vaste_wektijd" },
 ];
-
-const KompasLightPanel = ({ children }: { children: ReactNode }) => (
-  <div className="-mt-3 overflow-hidden rounded-[28px] border border-[#e4e0da] bg-gradient-to-b from-[#fefdfb] to-white p-5 shadow-[0_16px_48px_rgba(15,28,16,0.10)]">
-    {children}
-  </div>
-);
-
-const KompasSectionHeader = ({
-  eyebrow,
-  title,
-  action,
-}: {
-  eyebrow?: string;
-  title?: string;
-  action?: ReactNode;
-}) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      gap: 16,
-      marginBottom: 14,
-    }}
-  >
-    <div>
-      {eyebrow ? (
-        <div
-          style={{
-            marginBottom: 8,
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: KOMPAS_LIGHT.subtle,
-          }}
-        >
-          {eyebrow}
-        </div>
-      ) : null}
-      {title ? (
-        <div
-          style={{
-            fontFamily: "var(--f-serif)",
-            fontSize: 21,
-            color: KOMPAS_LIGHT.text,
-            letterSpacing: "0.01em",
-            lineHeight: 1.1,
-          }}
-        >
-          {title}
-        </div>
-      ) : null}
-    </div>
-    {action}
-  </div>
-);
-
-const SoonPill = ({ label = "Binnenkort" }: { label?: string }) => (
-  <span
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 5,
-      fontSize: 11,
-      fontWeight: 700,
-      letterSpacing: "0.04em",
-      color: "var(--terra, #C8956C)",
-      border: "1px solid rgba(200,149,108,0.4)",
-      borderRadius: 999,
-      padding: "4px 11px",
-      whiteSpace: "nowrap",
-    }}
-  >
-    <Icons.Spark s={12} /> {label}
-  </span>
-);
-
-const FooterLink = ({
-  href,
-  icon,
-  label,
-  onClick,
-}: {
-  href: string;
-  icon: ReactNode;
-  label: string;
-  onClick: () => void;
-}) => (
-  <Link
-    href={href}
-    onClick={onClick}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 12,
-      padding: "16px 18px",
-      borderRadius: 16,
-      border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-      background: "#fff",
-      textDecoration: "none",
-      color: "inherit",
-    }}
-  >
-    {icon}
-    <span style={{ flex: 1, fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-      {label}
-    </span>
-    <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
-  </Link>
-);
 
 function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   return {
@@ -195,318 +77,192 @@ export default function SleepScreen({
   }, []);
 
   return (
-    <KompasLightPanel>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <Card pad={20} surface="light" glow={pillar.color} style={{ borderColor: `${pillar.color}55` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <KompasDomainGauge value={model.scores.slaap ?? 0} label="Slaap" />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: pillar.color,
-                  marginBottom: 6,
-                }}
-              >
-                Ritme &amp; herstel
+    <DomainCockpitShell accent={pillar.color} ariaLabel="Slaap-cockpit">
+      <DomainHeaderCard
+        pillar={pillar}
+        score={model.scores.slaap ?? 0}
+        eyebrow="Ritme & herstel"
+        tagline="Stapsgewijs beter slapen met vaste routines."
+      />
+
+      <DomainCheckinLink
+        href="/intake/slaap?from=dashboard&kompas=slaap"
+        icon={<Icons.Moon s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+        label="Doe de slaap-check (1 min)"
+        onClick={() => {
+          trackEvent("dashboard_slaap_checkin_click", { surface: "kompas_slaap" });
+          clarityTag("dashboard_slaap_checkin", "click");
+        }}
+      />
+
+      {model.sleepFocus ? (
+        <CockpitTile>
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#5B6EAE]">
+            Laatste slaapanalyse · {model.sleepFocus.date}
+          </p>
+          <div className="font-serif text-[18px] text-[#F1EFE8]">
+            {model.sleepFocus.conclusionText}
+          </div>
+          {model.sleepFocus.focusLabel ? (
+            <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
+              Focus: <strong className="text-[#F1EFE8]">{model.sleepFocus.focusLabel}</strong>
+            </p>
+          ) : null}
+          {model.sleepFocus.chosenActions.length > 0 ? (
+            <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6]">
+              Actieve stap: {model.sleepFocus.chosenActions[0]}
+            </p>
+          ) : model.sleepFocus.actions[0] ? (
+            <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6]">
+              Eerste actie: {model.sleepFocus.actions[0]}
+            </p>
+          ) : null}
+        </CockpitTile>
+      ) : null}
+
+      <section aria-label="Leefstijl eerst">
+        <DomainSectionHeader eyebrow="Leefstijl eerst" title="Ritme-hefbomen" />
+        <CockpitTile>
+          <div className="flex flex-col gap-3">
+            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
+              <div className="font-serif text-[16px] text-[#F1EFE8]">Vaste wektijd</div>
+              <div className="mt-1 text-[13px] text-[#9FB0A6]">
+                Kies 1 wektijd en houd die ook in het weekend aan.
               </div>
-              <div
-                style={{ fontFamily: "var(--f-serif)", fontSize: 25, color: KOMPAS_LIGHT.text, lineHeight: 1.1 }}
-              >
-                Slaap
+            </div>
+            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
+              <div className="font-serif text-[16px] text-[#F1EFE8]">Ochtendlicht</div>
+              <div className="mt-1 text-[13px] text-[#9FB0A6]">
+                Binnen 60 minuten na opstaan 10 minuten buitenlicht.
               </div>
-              <p
-                style={{
-                  fontSize: 13.5,
-                  color: KOMPAS_LIGHT.muted,
-                  lineHeight: 1.5,
-                  margin: "6px 0 0",
-                  textWrap: "pretty",
+              <Link
+                href="/blog/slaapritme-herstellen"
+                onClick={() => {
+                  trackEvent("dashboard_slaap_leefstijl_click", {
+                    tool: "ochtendlicht",
+                    surface: "kompas_slaap",
+                  });
+                  clarityTag("dashboard_slaap_leefstijl", "ochtendlicht");
                 }}
+                className="mt-2 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#5A8F6A] no-underline"
               >
-                Stapsgewijs beter slapen met vaste routines.
-              </p>
+                Ritme verbeteren <Icons.ChevronRight s={14} />
+              </Link>
+            </div>
+            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
+              <div className="font-serif text-[16px] text-[#F1EFE8]">Avondafbouw</div>
+              <div className="mt-1 text-[13px] text-[#9FB0A6]">
+                Laatste 45 minuten: schermlicht dimmen, rustiger tempo, vaste volgorde.
+              </div>
+            </div>
+            <div className="rounded-[14px] border border-white/10 bg-black/20 px-3.5 py-3">
+              <div className="font-serif text-[16px] text-[#F1EFE8]">Cafeine-cutoff</div>
+              <div className="mt-1 text-[13px] text-[#9FB0A6]">
+                Stop met cafeine na de lunch, zodat je slaapdruk niet wordt geremd.
+              </div>
+              <Link
+                href="/blog/alcohol-slaap-energie-na-40"
+                onClick={() => {
+                  trackEvent("dashboard_slaap_leefstijl_click", {
+                    tool: "cafeine_cutoff",
+                    surface: "kompas_slaap",
+                  });
+                  clarityTag("dashboard_slaap_leefstijl", "cafeine_cutoff");
+                }}
+                className="mt-2 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#5A8F6A] no-underline"
+              >
+                Avondprikkels beperken <Icons.ChevronRight s={14} />
+              </Link>
             </div>
           </div>
-        </Card>
+        </CockpitTile>
+      </section>
 
-        <Link
-          href="/intake/slaap?from=dashboard&kompas=slaap"
-          onClick={() => {
-            trackEvent("dashboard_slaap_checkin_click", { surface: "kompas_slaap" });
-            clarityTag("dashboard_slaap_checkin", "click");
-          }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            padding: "14px 16px",
-            borderRadius: 16,
-            border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-            background: "#fff",
-            textDecoration: "none",
-            color: "inherit",
-          }}
-        >
-          <Icons.Moon s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />
-          <span style={{ flex: 1, fontSize: 14.5, fontWeight: 600, color: KOMPAS_LIGHT.text }}>
-            Doe de slaap-check (1 min)
-          </span>
-          <Icons.ChevronRight s={18} style={{ color: KOMPAS_LIGHT.subtle, flexShrink: 0 }} />
-        </Link>
-
-        {model.sleepFocus ? (
-          <Card pad={18} surface="light" style={{ borderColor: `${pillar.color}44` }}>
-            <p
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: pillar.color,
-                marginBottom: 8,
-              }}
-            >
-              Laatste slaapanalyse · {model.sleepFocus.date}
-            </p>
-            <div style={{ fontFamily: "var(--f-serif)", fontSize: 18, color: KOMPAS_LIGHT.text }}>
-              {model.sleepFocus.conclusionText}
-            </div>
-            {model.sleepFocus.focusLabel ? (
-              <p style={{ fontSize: 13.5, color: KOMPAS_LIGHT.muted, marginTop: 8, lineHeight: 1.5 }}>
-                Focus: <strong style={{ color: KOMPAS_LIGHT.text }}>{model.sleepFocus.focusLabel}</strong>
+      <section aria-label="Voeding en supplementen">
+        <DomainSectionHeader eyebrow="Ondersteunend" title="Voeding & supplementen" />
+        <CockpitTile>
+          <div className="flex flex-col gap-3.5">
+            <div>
+              <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
+                Eerst je basis
               </p>
-            ) : null}
-            {model.sleepFocus.chosenActions.length > 0 ? (
-              <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 8, lineHeight: 1.5 }}>
-                Actieve stap: {model.sleepFocus.chosenActions[0]}
+              <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
+                {nutritionHint}
               </p>
-            ) : model.sleepFocus.actions[0] ? (
-              <p style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 8, lineHeight: 1.5 }}>
-                Eerste actie: {model.sleepFocus.actions[0]}
+              <Link
+                href="/intake/voeding?from=dashboard&kompas=slaap"
+                onClick={() => {
+                  trackEvent("dashboard_slaap_voeding_click", { surface: "kompas_slaap" });
+                  clarityTag("dashboard_slaap_voeding", "click");
+                }}
+                className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
+              >
+                Doe de voedingscheck <Icons.ChevronRight s={15} />
+              </Link>
+            </div>
+
+            <div className="border-t border-white/10 pt-3.5">
+              <p className="mb-2.5 text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
+                Supplementen — pas na je basis
               </p>
-            ) : null}
-          </Card>
-        ) : null}
-
-        <section aria-label="Leefstijl eerst">
-          <KompasSectionHeader eyebrow="Leefstijl eerst" title="Ritme-hefbomen" />
-          <Card pad={18} surface="light">
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
-                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Vaste wektijd
-                </div>
-                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  Kies 1 wektijd en houd die ook in het weekend aan.
-                </div>
-              </div>
-              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
-                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Ochtendlicht
-                </div>
-                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  Binnen 60 minuten na opstaan 10 minuten buitenlicht.
-                </div>
-                <Link
-                  href="/blog/slaapritme-herstellen"
-                  onClick={() => {
-                    trackEvent("dashboard_slaap_leefstijl_click", { tool: "ochtendlicht", surface: "kompas_slaap" });
-                    clarityTag("dashboard_slaap_leefstijl", "ochtendlicht");
-                  }}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 3, marginTop: 8, textDecoration: "none", fontSize: 12.5, color: "var(--sage)", fontWeight: 600 }}
-                >
-                  Ritme verbeteren <Icons.ChevronRight s={14} />
-                </Link>
-              </div>
-              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
-                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Avondafbouw
-                </div>
-                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  Laatste 45 minuten: schermlicht dimmen, rustiger tempo, vaste volgorde.
-                </div>
-              </div>
-              <div style={{ border: `1px solid ${KOMPAS_LIGHT.innerBorder}`, borderRadius: 14, padding: "12px 14px", background: KOMPAS_LIGHT.innerBg }}>
-                <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text }}>
-                  Cafeine-cutoff
-                </div>
-                <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, marginTop: 4 }}>
-                  Stop met cafeine na de lunch, zodat je slaapdruk niet wordt geremd.
-                </div>
-                <Link
-                  href="/blog/alcohol-slaap-energie-na-40"
-                  onClick={() => {
-                    trackEvent("dashboard_slaap_leefstijl_click", { tool: "cafeine_cutoff", surface: "kompas_slaap" });
-                    clarityTag("dashboard_slaap_leefstijl", "cafeine_cutoff");
-                  }}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 3, marginTop: 8, textDecoration: "none", fontSize: 12.5, color: "var(--sage)", fontWeight: 600 }}
-                >
-                  Avondprikkels beperken <Icons.ChevronRight s={14} />
-                </Link>
-              </div>
+              <DomainSupplementList
+                recommendations={recommendations}
+                emptyText="Eerst ritme, licht en vaste tijden. Supplementen zijn een aanvulling, geen startpunt."
+                onItemClick={(rec, href) => {
+                  trackEvent("dashboard_slaap_supplement_click", {
+                    slug: rec.slug,
+                    target: href,
+                    surface: "kompas_slaap",
+                  });
+                  clarityTag("dashboard_slaap_supplement", rec.slug);
+                }}
+              />
             </div>
-          </Card>
-        </section>
+          </div>
+        </CockpitTile>
+      </section>
 
-        <section aria-label="Voeding en supplementen">
-          <KompasSectionHeader eyebrow="Ondersteunend" title="Voeding & supplementen" />
-          <Card pad={18} surface="light">
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle, marginBottom: 8 }}>
-                  Eerst je basis
-                </div>
-                <p style={{ fontSize: 14, color: KOMPAS_LIGHT.muted, lineHeight: 1.55, margin: "0 0 12px", textWrap: "pretty" }}>
-                  {nutritionHint}
-                </p>
-                <Link
-                  href="/intake/voeding?from=dashboard&kompas=slaap"
-                  onClick={() => {
-                    trackEvent("dashboard_slaap_voeding_click", { surface: "kompas_slaap" });
-                    clarityTag("dashboard_slaap_voeding", "click");
-                  }}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13.5, fontWeight: 600, color: "var(--sage)", textDecoration: "none" }}
-                >
-                  Doe de voedingscheck <Icons.ChevronRight s={15} />
-                </Link>
-              </div>
-
-              <div style={{ borderTop: `1px solid ${KOMPAS_LIGHT.innerBorder}`, paddingTop: 14 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: KOMPAS_LIGHT.subtle, marginBottom: 10 }}>
-                  Supplementen — pas na je basis
-                </div>
-                {recommendations.length > 0 ? (
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    {recommendations.map((rec, index) => {
-                      const href = rec.comparisonHref ?? rec.guideHref;
-                      return (
-                        <Link
-                          key={rec.slug}
-                          href={href}
-                          onClick={() => {
-                            trackEvent("dashboard_slaap_supplement_click", {
-                              slug: rec.slug,
-                              target: href,
-                              surface: "kompas_slaap",
-                            });
-                            clarityTag("dashboard_slaap_supplement", rec.slug);
-                          }}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 12,
-                            padding: "12px 0",
-                            textDecoration: "none",
-                            color: "inherit",
-                            borderTop: index ? `1px solid ${KOMPAS_LIGHT.innerBorder}` : "none",
-                          }}
-                        >
-                          <span style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, background: KOMPAS_LIGHT.innerBg, border: `1px solid ${KOMPAS_LIGHT.innerBorder}` }} aria-hidden>
-                            {rec.icon}
-                          </span>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontFamily: "var(--f-serif)", fontSize: 16, color: KOMPAS_LIGHT.text, lineHeight: 1.2 }}>
-                              {rec.name}
-                            </div>
-                            <div style={{ fontSize: 13, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, marginTop: 2, textWrap: "pretty" }}>
-                              {rec.wiifm}
-                            </div>
-                          </div>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12, fontWeight: 600, color: "var(--sage)", flexShrink: 0 }}>
-                            Vergelijk <Icons.ChevronRight s={15} />
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p style={{ fontSize: 13.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5, margin: 0, textWrap: "pretty" }}>
-                    Eerst ritme, licht en vaste tijden. Supplementen zijn een aanvulling, geen startpunt.
-                  </p>
-                )}
-              </div>
-            </div>
-          </Card>
-        </section>
-
-        <section aria-label="Slaaproutine tools">
-          <KompasSectionHeader eyebrow="Slaaproutine tools" title="Voor drukke avonden" action={<SoonPill />} />
-          <Card pad={18} surface="light">
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
-              {SLEEP_TOOLS.map((tool) => {
-                const inner = (
-                  <>
-                    <span style={{ fontSize: 22 }} aria-hidden>{tool.icon}</span>
-                    <span style={{ fontSize: 14.5, color: KOMPAS_LIGHT.text }}>{tool.label}</span>
-                  </>
-                );
-                const boxStyle = {
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "12px 14px",
-                  borderRadius: 14,
-                  border: `1px solid ${KOMPAS_LIGHT.innerBorder}`,
-                  background: KOMPAS_LIGHT.innerBg,
-                  textDecoration: "none" as const,
-                  color: "inherit" as const,
-                };
-                if (tool.href) {
-                  return (
-                    <Link
-                      key={tool.slug}
-                      href={tool.href}
-                      onClick={() => {
-                        trackEvent("dashboard_slaap_tool_click", { tool: tool.slug, target: tool.href ?? "" });
-                        clarityTag("dashboard_slaap_tool", tool.slug);
-                      }}
-                      style={boxStyle}
-                    >
-                      {inner}
-                    </Link>
-                  );
-                }
-                return (
-                  <div key={tool.slug} style={boxStyle}>
-                    {inner}
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
-              <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
-              <span style={{ fontSize: 12.5, color: KOMPAS_LIGHT.muted, lineHeight: 1.5 }}>
-                Binnenkort: routines die je direct aan je dagritme kunt koppelen.
-              </span>
-            </div>
-          </Card>
-        </section>
-
-        <KompasBegeleidingLink surface="kompas_slaap" />
-
-        <FooterLink
-          href="/intake/plan/sleep?from=dashboard&kompas=slaap"
-          icon={<Icons.Target s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Je slaapplan"
-          onClick={() => {
-            trackEvent("dashboard_slaap_plan_click", { surface: "kompas_slaap" });
-            clarityTag("dashboard_slaap_footer", "plan");
-          }}
+      <section aria-label="Slaaproutine tools">
+        <DomainSectionHeader
+          eyebrow="Slaaproutine tools"
+          title="Voor drukke avonden"
+          action={<DomainSoonPill />}
         />
-        <FooterLink
-          href="/inzichten"
-          icon={<Icons.BookOpen s={18} style={{ color: "var(--sage)", flexShrink: 0 }} />}
-          label="Leefstijl & inzichten"
-          onClick={() => {
-            trackEvent("dashboard_slaap_leefstijl_footer_click", { surface: "kompas_slaap" });
-            clarityTag("dashboard_slaap_footer", "inzichten");
-          }}
-        />
-      </div>
-    </KompasLightPanel>
+        <CockpitTile>
+          <DomainToolsGrid
+            tools={SLEEP_TOOLS}
+            note="Binnenkort: routines die je direct aan je dagritme kunt koppelen."
+            onToolClick={(tool) => {
+              trackEvent("dashboard_slaap_tool_click", {
+                tool: tool.slug,
+                target: tool.href ?? "",
+              });
+              clarityTag("dashboard_slaap_tool", tool.slug);
+            }}
+          />
+        </CockpitTile>
+      </section>
+
+      <KompasBegeleidingLink surface="kompas_slaap" />
+
+      <DomainFooterLink
+        href="/intake/plan/sleep?from=dashboard&kompas=slaap"
+        icon={<Icons.Target s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+        label="Je slaapplan"
+        onClick={() => {
+          trackEvent("dashboard_slaap_plan_click", { surface: "kompas_slaap" });
+          clarityTag("dashboard_slaap_footer", "plan");
+        }}
+      />
+      <DomainFooterLink
+        href="/inzichten"
+        icon={<Icons.BookOpen s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+        label="Leefstijl & inzichten"
+        onClick={() => {
+          trackEvent("dashboard_slaap_leefstijl_footer_click", { surface: "kompas_slaap" });
+          clarityTag("dashboard_slaap_footer", "inzichten");
+        }}
+      />
+    </DomainCockpitShell>
   );
 }
