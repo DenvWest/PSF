@@ -786,6 +786,8 @@ export async function loadAccountDashboardData(
         scheduledTime: priorityPrefRow.scheduledTime,
         planStepDismissedDate: priorityPrefRow.planStepDismissedDate,
         planStepsHidden: priorityPrefRow.planStepsHidden,
+        movementDayChoice: priorityPrefRow.movementDayChoice,
+        movementDayChoiceDate: priorityPrefRow.movementDayChoiceDate,
         updatedAt: priorityPrefRow.updatedAt,
       }
     : null;

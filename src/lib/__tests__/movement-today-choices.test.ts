@@ -4,13 +4,16 @@ import {
   buildMovementCheckinCta,
   buildRecoveryRecommendationLine,
   buildTodayChoiceRecommendationLine,
+  findChoiceOption,
   inferCompletedChoice,
   isRcvFeelWithinDays,
   resolveChoiceDoneDisplay,
   resolveModerateStepId,
+  resolveMovementTodayChoiceOptions,
   resolveRcvFeelForRecoveryHint,
   resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
+  resolveTrainingStepId,
   shouldOverrideTodayFromRecovery,
   shouldRecommendRestChoice,
 } from "@/lib/movement-today-choices";
@@ -20,6 +23,36 @@ import {
   parseMovementCheckinMode,
   parsePulseMovementReport,
 } from "@/lib/movement-checkin-parse";
+import type { WeekDaySlot } from "@/lib/agenda-week-preview";
+import type { DashboardModel } from "@/types/dashboard";
+
+function baseModel(overrides: Partial<DashboardModel> = {}): DashboardModel {
+  return {
+    domainScores: {},
+    answers: {},
+    activeHabit: null,
+    movementPrefs: { startPattern: null, anchor: null },
+    movementPlanProgress: null,
+    ...overrides,
+  } as DashboardModel;
+}
+
+function baseSlot(overrides: Partial<WeekDaySlot> = {}): WeekDaySlot {
+  return {
+    date: "2026-08-01",
+    dayLabel: "Vandaag",
+    isToday: true,
+    dayOffset: 0,
+    domain: "beweging",
+    stepId: "mov-kracht-onderhoud-week",
+    title: "Kracht onderhoud",
+    detail: null,
+    rationale: null,
+    evidenceHref: "/onderbouwing",
+    planLink: null,
+    ...overrides,
+  };
+}
 
 describe("resolveTodayChoiceOptions", () => {
   it("maps herstel, matig and trainen to distinct step ids", () => {
@@ -53,6 +86,48 @@ describe("resolveTodayChoiceOptions", () => {
   });
 });
 
+describe("resolveTrainingStepId", () => {
+  it("houdt een echte trainingsstap ongewijzigd", () => {
+    expect(resolveTrainingStepId("mov-kracht-onderhoud-week", null)).toBe(
+      "mov-kracht-onderhoud-week",
+    );
+  });
+
+  it("vervangt de rustdag door een trainingsstap — trainen mag nooit rust zijn", () => {
+    expect(resolveTrainingStepId(REST_DAY_STEP_ID, null)).not.toBe(REST_DAY_STEP_ID);
+  });
+
+  it("vervangt ook een matige stap: trainen is volle belasting", () => {
+    expect(resolveTrainingStepId("mov-trap-of-wandeling", null)).toBe(
+      "mov-kracht-onderhoud-week",
+    );
+  });
+
+  it("kiest een conditie-trainingsstap bij het conditie-patroon", () => {
+    expect(resolveTrainingStepId(REST_DAY_STEP_ID, "conditie")).toBe(
+      "mov-conditie-interval-lite",
+    );
+  });
+});
+
+describe("trainen en herstel zijn nooit dezelfde stap", () => {
+  it("scheidt de tiers ook als de dagstap de rustdag is (dagelijks ritme)", () => {
+    const options = resolveTodayChoiceOptions(REST_DAY_STEP_ID, "dagelijks_ritme");
+    const herstel = findChoiceOption(options, "herstel");
+    const trainen = findChoiceOption(options, "trainen");
+
+    expect(herstel.stepId).toBe(REST_DAY_STEP_ID);
+    expect(trainen.stepId).not.toBe(REST_DAY_STEP_ID);
+    expect(trainen.title).not.toBe(herstel.title);
+  });
+
+  it("houdt alle drie de tiers onderling verschillend", () => {
+    const options = resolveTodayChoiceOptions(REST_DAY_STEP_ID, "dagelijks_ritme");
+    const stepIds = options.map((option) => option.stepId);
+    expect(new Set(stepIds).size).toBe(3);
+  });
+});
+
 describe("resolveModerateStepId", () => {
   it("returns the aerobic base step for a kracht training step", () => {
     expect(resolveModerateStepId("mov-kracht-onderhoud-week", "kracht")).toBe(
@@ -76,6 +151,25 @@ describe("resolveModerateStepId", () => {
     expect(resolveModerateStepId("mov-conditie-onderhoud-week", "conditie")).toBe(
       "mov-trap-of-wandeling",
     );
+  });
+});
+
+describe("resolveMovementTodayChoiceOptions", () => {
+  it("levert dezelfde 3 tiers als de Beweging-hero voor de dagstap van vandaag", () => {
+    const options = resolveMovementTodayChoiceOptions(baseModel(), baseSlot());
+    expect(options.map((option) => option.kind)).toEqual(["herstel", "matig", "trainen"]);
+    expect(options[0]?.stepId).toBe(REST_DAY_STEP_ID);
+    expect(options[2]?.stepId).toBe("mov-kracht-onderhoud-week");
+  });
+
+  it("herkent welke tier vandaag al is afgevinkt — zodat Mijn Dag hetzelfde ziet als Beweging", () => {
+    const options = resolveMovementTodayChoiceOptions(baseModel(), baseSlot());
+    expect(inferCompletedChoice([REST_DAY_STEP_ID], options)).toBe("herstel");
+  });
+
+  it("geeft geen opties zonder dagstap", () => {
+    const options = resolveMovementTodayChoiceOptions(baseModel(), baseSlot({ stepId: "" }));
+    expect(options).toEqual([]);
   });
 });
 

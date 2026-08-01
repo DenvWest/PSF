@@ -3,7 +3,7 @@ import { isReadoutDomain } from "@/lib/domain-role";
 import { buildActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { EMPTY_MOVEMENT_PREFS } from "@/lib/movement-prefs";
 import { getPriorityPillar } from "@/lib/priority-pillar";
-import type { TimeBucket } from "@/lib/account-priority-pref";
+import type { MovementDayChoice, TimeBucket } from "@/lib/account-priority-pref";
 import { RULES_VERSION } from "@/lib/intake-engine";
 import { hasMethodologyChange } from "@/lib/rules-version";
 import { mapCheckScoresToDomainScores } from "@/lib/reveal-model";
@@ -54,6 +54,8 @@ export function buildModel(
   movementRcvFeelAt: string | null = null,
   movementPrefs: DashboardModel["movementPrefs"] = EMPTY_MOVEMENT_PREFS,
   movementPlanProgress: PlanProgress | null = null,
+  /** Al voor vandaag geresolved — componenten krijgen geen datumlogica. */
+  movementDayChoice: MovementDayChoice | null = null,
 ): DashboardModel {
   const { scores } = current;
   const ladder = derivePriority(scores);
@@ -111,6 +113,7 @@ export function buildModel(
     scheduledTime,
     planStepDismissedDate,
     planStepsHidden,
+    movementDayChoice,
     strongest,
     vitality,
     vitalityDelta,

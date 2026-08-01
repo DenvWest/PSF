@@ -4,14 +4,40 @@ import {
   deriveDefaultTimeBucket,
   deriveSuggestedTimeBucket,
   deriveTimeBucketFromLocalTime,
+  isMovementDayChoice,
   isPinablePillarId,
   isTimeBucket,
   isValidLocalTime,
+  resolveMovementDayChoiceForToday,
   timeBucketAbbrev,
   timeBucketLabel,
 } from "@/lib/account-priority-pref";
 import { buildModel } from "@/lib/dashboard-model";
 import type { CheckScores, CheckTrend } from "@/types/dashboard";
+
+describe("movement dagkeuze", () => {
+  it("accepteert alleen de drie belastings-tiers", () => {
+    expect(isMovementDayChoice("herstel")).toBe(true);
+    expect(isMovementDayChoice("matig")).toBe(true);
+    expect(isMovementDayChoice("trainen")).toBe(true);
+    expect(isMovementDayChoice("rust")).toBe(false);
+    expect(isMovementDayChoice(null)).toBe(false);
+  });
+
+  it("houdt de keuze alleen geldig op de dag zelf", () => {
+    expect(resolveMovementDayChoiceForToday("herstel", "2026-08-01", "2026-08-01")).toBe(
+      "herstel",
+    );
+    expect(
+      resolveMovementDayChoiceForToday("herstel", "2026-07-31", "2026-08-01"),
+    ).toBeNull();
+  });
+
+  it("levert niets zonder keuze of zonder datum", () => {
+    expect(resolveMovementDayChoiceForToday(null, "2026-08-01", "2026-08-01")).toBeNull();
+    expect(resolveMovementDayChoiceForToday("trainen", null, "2026-08-01")).toBeNull();
+  });
+});
 
 describe("account-priority-pref helpers", () => {
   it("accepts intervention pillars only", () => {

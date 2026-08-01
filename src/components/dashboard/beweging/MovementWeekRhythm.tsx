@@ -26,8 +26,11 @@ function WeekRhythmSkeleton() {
 
 export default function MovementWeekRhythm({
   startPattern = null,
+  refreshKey = 0,
 }: {
   startPattern?: WeekCategory | null;
+  /** Ophogen laat de week opnieuw ophalen — bv. direct na "Gedaan" in de hero. */
+  refreshKey?: number;
 }) {
   const [keys, setKeys] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -59,7 +62,7 @@ export default function MovementWeekRhythm({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [refreshKey]);
 
   if (!loaded) {
     return <WeekRhythmSkeleton />;

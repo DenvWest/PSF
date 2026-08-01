@@ -5,11 +5,13 @@ import {
   dismissPlanStepForDate,
   getAccountPriorityPref,
   isIsoDate,
+  isMovementDayChoice,
   isPinablePillarId,
   isPriorityPrefSource,
   isTimeBucket,
   isValidLocalTime,
   restorePlanStep,
+  setMovementDayChoice,
   setPlanStepsHidden,
   upsertAccountPriorityPref,
   updateAccountScheduledTime,
@@ -146,6 +148,32 @@ export async function POST(request: NextRequest) {
         scope: "day",
       },
     });
+
+    return NextResponse.json({ ok: true, ...pref }, { status: 200 });
+  }
+
+  if (action === "set_movement_day_choice") {
+    const dateRaw = typeof record.date === "string" ? record.date.trim() : "";
+    if (!isIsoDate(dateRaw)) {
+      return NextResponse.json({ error: "Ongeldige datum." }, { status: 400 });
+    }
+    // null = keuze wissen ("Wijzig keuze"); anders moet het een geldige tier zijn.
+    const choiceRaw = record.choice ?? null;
+    if (choiceRaw !== null && !isMovementDayChoice(choiceRaw)) {
+      return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+    }
+
+    const fallback = await resolveFallbackPref();
+    if (!fallback) {
+      return NextResponse.json({ error: "Geen focus beschikbaar." }, { status: 400 });
+    }
+
+    const pref = await setMovementDayChoice(
+      admin,
+      account.id,
+      account.organization_id,
+      { choice: choiceRaw, date: dateRaw, fallback },
+    );
 
     return NextResponse.json({ ok: true, ...pref }, { status: 200 });
   }

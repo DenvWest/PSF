@@ -50,6 +50,7 @@ function baseModel(): DashboardModel {
     scheduledTime: null,
     planStepDismissedDate: null,
     planStepsHidden: false,
+    movementDayChoice: null,
     strongest: { id: "stress", label: "Stress" } as DashboardModel["strongest"],
     vitality: 62,
     vitalityDelta: null,

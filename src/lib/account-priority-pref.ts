@@ -15,8 +15,39 @@ export type AccountPriorityPref = {
   scheduledTime: string | null;
   planStepDismissedDate: string | null;
   planStepsHidden: boolean;
+  /** Gekozen belastings-tier voor movementDayChoiceDate; null = nog niet gekozen. */
+  movementDayChoice: MovementDayChoice | null;
+  movementDayChoiceDate: string | null;
   updatedAt: string;
 };
+
+/** Drie belastings-tiers van de dagstap beweging — spiegelt TodayChoiceKind. */
+export type MovementDayChoice = "herstel" | "matig" | "trainen";
+
+const MOVEMENT_DAY_CHOICES: readonly MovementDayChoice[] = [
+  "herstel",
+  "matig",
+  "trainen",
+] as const;
+
+export function isMovementDayChoice(value: unknown): value is MovementDayChoice {
+  return (
+    typeof value === "string" &&
+    (MOVEMENT_DAY_CHOICES as readonly string[]).includes(value)
+  );
+}
+
+/** De keuze telt alleen op de dag dat hij gezet is — daarna kies je opnieuw. */
+export function resolveMovementDayChoiceForToday(
+  choice: MovementDayChoice | null,
+  choiceDate: string | null,
+  today: string,
+): MovementDayChoice | null {
+  if (!choice || !choiceDate || choiceDate !== today) {
+    return null;
+  }
+  return choice;
+}
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -136,6 +167,8 @@ type PrefRowBase = {
   updated_at: string;
   plan_step_dismissed_date?: string | null;
   plan_steps_hidden?: boolean | null;
+  movement_day_choice?: string | null;
+  movement_day_choice_date?: string | null;
 };
 
 type PrefRow = PrefRowBase & {
@@ -148,12 +181,14 @@ type PrefColumnFlags = {
   scheduledTime: boolean;
   planStepDismissedDate: boolean;
   planStepsHidden: boolean;
+  movementDayChoice: boolean;
 };
 
 const FULL_PREF_COLUMNS: PrefColumnFlags = {
   scheduledTime: true,
   planStepDismissedDate: true,
   planStepsHidden: true,
+  movementDayChoice: true,
 };
 
 function isMissingPrefColumn(
@@ -176,6 +211,13 @@ function isMissingPlanStepsHiddenColumn(error: { message?: string } | null): boo
   return isMissingPrefColumn(error, "plan_steps_hidden");
 }
 
+function isMissingMovementDayChoiceColumn(error: { message?: string } | null): boolean {
+  return (
+    isMissingPrefColumn(error, "movement_day_choice") ||
+    isMissingPrefColumn(error, "movement_day_choice_date")
+  );
+}
+
 function buildPrefSelect(flags: PrefColumnFlags): string {
   const columns = ["pillar_id", "source", "time_bucket"];
   if (flags.scheduledTime) {
@@ -186,6 +228,9 @@ function buildPrefSelect(flags: PrefColumnFlags): string {
   }
   if (flags.planStepsHidden) {
     columns.push("plan_steps_hidden");
+  }
+  if (flags.movementDayChoice) {
+    columns.push("movement_day_choice", "movement_day_choice_date");
   }
   columns.push("updated_at");
   return columns.join(", ");
@@ -203,6 +248,9 @@ function stripMissingPrefColumn(
   }
   if (isMissingPlanStepsHiddenColumn(error)) {
     return { ...flags, planStepsHidden: false };
+  }
+  if (isMissingMovementDayChoiceColumn(error)) {
+    return { ...flags, movementDayChoice: false };
   }
   return null;
 }
@@ -224,6 +272,10 @@ function mapPrefRow(row: PrefRow): AccountPriorityPref | null {
     scheduledTime,
     planStepDismissedDate: row.plan_step_dismissed_date ?? null,
     planStepsHidden: row.plan_steps_hidden ?? false,
+    movementDayChoice: isMovementDayChoice(row.movement_day_choice)
+      ? row.movement_day_choice
+      : null,
+    movementDayChoiceDate: row.movement_day_choice_date ?? null,
     updatedAt: row.updated_at,
   };
 }
@@ -278,6 +330,8 @@ export async function upsertAccountPriorityPref(
     scheduledTime?: string | null;
     planStepDismissedDate?: string | null;
     planStepsHidden?: boolean;
+    movementDayChoice?: MovementDayChoice | null;
+    movementDayChoiceDate?: string | null;
   },
 ): Promise<AccountPriorityPref> {
   const existing = await getAccountPriorityPref(admin, accountId);
@@ -299,6 +353,16 @@ export async function upsertAccountPriorityPref(
     input.planStepsHidden !== undefined
       ? input.planStepsHidden
       : (existing?.planStepsHidden ?? false);
+
+  const movementDayChoice =
+    input.movementDayChoice !== undefined
+      ? input.movementDayChoice
+      : (existing?.movementDayChoice ?? null);
+
+  const movementDayChoiceDate =
+    input.movementDayChoiceDate !== undefined
+      ? input.movementDayChoiceDate
+      : (existing?.movementDayChoiceDate ?? null);
 
   if (scheduledTime) {
     timeBucket = deriveTimeBucketFromLocalTime(scheduledTime);
@@ -325,6 +389,10 @@ export async function upsertAccountPriorityPref(
     }
     if (flags.planStepsHidden) {
       upsertPayload.plan_steps_hidden = planStepsHidden;
+    }
+    if (flags.movementDayChoice) {
+      upsertPayload.movement_day_choice = movementDayChoice;
+      upsertPayload.movement_day_choice_date = movementDayChoiceDate;
     }
 
     const result = await admin
@@ -436,6 +504,34 @@ export async function restorePlanStep(
     pillarId: fallback.pillarId,
     source: fallback.source,
     planStepDismissedDate: null,
+  });
+}
+
+/**
+ * Legt de dagkeuze vast (of wist hem bij choice=null). Behoudt de bestaande
+ * focus-voorkeur: dit is een dag-feit, geen wijziging van je prioriteit.
+ */
+export async function setMovementDayChoice(
+  admin: SupabaseAdmin,
+  accountId: string,
+  organizationId: string,
+  input: {
+    choice: MovementDayChoice | null;
+    date: string;
+    fallback: { pillarId: PillarId; source: PriorityPrefSource };
+  },
+): Promise<AccountPriorityPref> {
+  if (!isIsoDate(input.date)) {
+    throw new Error("Ongeldige datum.");
+  }
+  const existing = await getAccountPriorityPref(admin, accountId);
+  return upsertAccountPriorityPref(admin, accountId, organizationId, {
+    pillarId: existing?.pillarId ?? input.fallback.pillarId,
+    source: existing?.source ?? input.fallback.source,
+    timeBucket: existing?.timeBucket ?? null,
+    scheduledTime: existing?.scheduledTime ?? null,
+    movementDayChoice: input.choice,
+    movementDayChoiceDate: input.choice ? input.date : null,
   });
 }
 

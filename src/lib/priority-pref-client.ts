@@ -1,5 +1,6 @@
 import type {
   AccountPriorityPrefData,
+  MovementDayChoice,
   PillarId,
   TimeBucket,
 } from "@/types/dashboard";
@@ -65,6 +66,8 @@ function mapPriorityPrefResponse(
     scheduledTime: payload.scheduledTime ?? null,
     planStepDismissedDate: payload.planStepDismissedDate ?? null,
     planStepsHidden: payload.planStepsHidden ?? false,
+    movementDayChoice: payload.movementDayChoice ?? null,
+    movementDayChoiceDate: payload.movementDayChoiceDate ?? null,
     updatedAt: payload.updatedAt,
   };
 }
@@ -85,6 +88,30 @@ export async function postDismissPlanStep(input: {
   });
   if (!response.ok) {
     throw new Error(await readApiError(response, "Kon plan-stap niet verbergen."));
+  }
+  const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
+  return mapPriorityPrefResponse(payload);
+}
+
+/** choice=null wist de dagkeuze ("Wijzig keuze"). */
+export async function postMovementDayChoice(input: {
+  choice: MovementDayChoice | null;
+  date: string;
+  surface: string;
+}): Promise<AccountPriorityPrefData> {
+  const response = await fetch("/api/account/priority-pref", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      action: "set_movement_day_choice",
+      choice: input.choice,
+      date: input.date,
+      surface: input.surface,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(await readApiError(response, "Kon je keuze niet opslaan."));
   }
   const payload = (await response.json()) as AccountPriorityPrefData & { ok?: boolean };
   return mapPriorityPrefResponse(payload);

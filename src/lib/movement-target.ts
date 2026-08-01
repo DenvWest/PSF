@@ -238,6 +238,11 @@ export function resolveMovementProgramDose(
   };
 }
 
+/** Feitelijke ankerregel voor het programma — nooit een ratio of percentage af tegen het log. */
+export function buildProgramDoseLine(dose: MovementProgramDose): string {
+  return `doel ${dose.sessionsPerWeek}× ${dose.minutesPerSession} min`;
+}
+
 /** Eén regel die het doel tegen de richtlijn zet, zonder te normeren. */
 export function buildGuidelineLine(target: MovementTarget): string | null {
   if (target.minutes === null) {

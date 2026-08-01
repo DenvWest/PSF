@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaTimeBucketPicker from "@/components/dashboard/agenda/AgendaTimeBucketPicker";
 import { PILLAR } from "@/data/dashboard";
@@ -14,6 +14,10 @@ import {
   setCachedDailyLog,
 } from "@/lib/daily-log-client";
 import { resolveActionKey } from "@/lib/day-model";
+import {
+  inferCompletedChoice,
+  resolveMovementTodayChoiceOptions,
+} from "@/lib/movement-today-choices";
 import { clarityTag } from "@/lib/clarity";
 import {
   trackEvent,
@@ -75,6 +79,13 @@ export default function AgendaTodayHero({
   const domain = slot.domain;
   const pillar = PILLAR[domain];
   const actionKey = resolveActionKey(model, slot);
+  // Beweging kent 3 tiers (herstel/matig/trainen) die alle drie een geldige
+  // dagstap zijn; zonder dit zou Mijn Dag altijd de default tonen, ook als
+  // vandaag een andere tier al is afgevinkt op de Beweging-surface zelf.
+  const movementChoiceOptions = useMemo(
+    () => (domain === "beweging" ? resolveMovementTodayChoiceOptions(model, slot) : []),
+    [domain, model, slot],
+  );
   const cachedDailyLog = isToday && actionKey ? getCachedDailyLog(domain) : null;
 
   const [done, setDone] = useState(false);
@@ -82,8 +93,26 @@ export default function AgendaTodayHero({
   const [toggleBusy, setToggleBusy] = useState(false);
   const [fetchLoaded, setFetchLoaded] = useState(false);
   const [moveExpanded, setMoveExpanded] = useState(false);
+
+  // De vastgelegde dagkeuze wint; de daily log is de terugval voor wie al
+  // afvinkte zonder expliciet te kiezen (het voorstel accepteren telt ook).
+  const cachedChoiceKind =
+    movementChoiceOptions.length > 0
+      ? (model.movementDayChoice ??
+        (cachedDailyLog
+          ? inferCompletedChoice(cachedDailyLog.keys, movementChoiceOptions)
+          : null))
+      : null;
+  const cachedChoice = cachedChoiceKind
+    ? (movementChoiceOptions.find((option) => option.kind === cachedChoiceKind) ?? null)
+    : null;
+  const effectiveActionKey = cachedChoice?.stepId ?? actionKey;
+  const effectiveTitle = cachedChoice?.title ?? slot.title;
+
   const resolvedDone =
-    cachedDailyLog && actionKey ? cachedDailyLog.keys.includes(actionKey) : done;
+    cachedDailyLog && effectiveActionKey
+      ? cachedDailyLog.keys.includes(effectiveActionKey)
+      : done;
   const resolvedStreak = cachedDailyLog?.streak ?? streak;
   const loaded = !isToday || !actionKey || cachedDailyLog !== null || fetchLoaded;
 
@@ -130,7 +159,15 @@ export default function AgendaTodayHero({
           return;
         }
         setCachedDailyLog(domain, state);
-        setDone(state.keys.includes(actionKey));
+        const completedKind =
+          movementChoiceOptions.length > 0
+            ? (model.movementDayChoice ??
+              inferCompletedChoice(state.keys, movementChoiceOptions))
+            : null;
+        const matchedOption = completedKind
+          ? movementChoiceOptions.find((option) => option.kind === completedKind)
+          : null;
+        setDone(state.keys.includes(matchedOption?.stepId ?? actionKey));
         setStreak(state.streak);
       } finally {
         if (!cancelled) {
@@ -142,7 +179,7 @@ export default function AgendaTodayHero({
     return () => {
       cancelled = true;
     };
-  }, [domain, actionKey, isToday]);
+  }, [domain, actionKey, isToday, movementChoiceOptions, model.movementDayChoice]);
 
   const toggleDaily = async () => {
     if (!isToday || !actionKey || toggleBusy) {
@@ -156,7 +193,7 @@ export default function AgendaTodayHero({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ domain, actionKey, done: nextDone }),
+        body: JSON.stringify({ domain, actionKey: effectiveActionKey, done: nextDone }),
       });
 
       if (!response.ok) {
@@ -165,7 +202,7 @@ export default function AgendaTodayHero({
 
       const state = (await response.json()) as { keys: string[]; streak: number };
       setCachedDailyLog(domain, state);
-      setDone(state.keys.includes(actionKey));
+      setDone(state.keys.includes(effectiveActionKey));
       setStreak(state.streak);
 
       trackEvent("dashboard_vandaag_action_toggled", {
@@ -290,7 +327,7 @@ export default function AgendaTodayHero({
         ) : null}
 
         <h3 className={titleClass} style={{ fontFamily: "var(--f-serif)" }}>
-          {slot.title}
+          {effectiveTitle}
         </h3>
 
         {supportingLine ? <p className={bodyClass}>{supportingLine}</p> : null}

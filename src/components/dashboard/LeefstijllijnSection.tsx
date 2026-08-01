@@ -5,7 +5,14 @@ import * as Icons from "@/components/app/icons";
 import { Card, DeltaBadge, Sparkline } from "@/components/app/primitives";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
+import {
+  buildProgramDoseLine,
+  deriveMovementCurrent,
+  resolveEffectiveMovementTarget,
+  resolveMovementProgramDose,
+} from "@/lib/movement-target";
 import type { MovementWeekSummary } from "@/lib/movement-session-log";
+import { useMovementPlanProfile } from "@/lib/use-movement-plan-profile";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 type LeefstijllijnSectionProps = {
@@ -14,6 +21,35 @@ type LeefstijllijnSectionProps = {
   compact?: boolean;
   focusPillarId?: PillarId;
 };
+
+/**
+ * Zet het programma (de dosis uit "Jouw programma" op Beweging) feitelijk
+ * naast het gedaan-log — geen ratio, dat zou een tweede score worden.
+ * Eigen component zodat de profiel-fetch alleen loopt als de beweging-rij
+ * met een gevuld log daadwerkelijk gerenderd wordt.
+ */
+function MovementDoseLine({ model, isLight }: { model: DashboardModel; isLight: boolean }) {
+  const { profile } = useMovementPlanProfile(model.answers?.MOV_STR);
+  const current = deriveMovementCurrent(model.answers ?? {});
+  const target = resolveEffectiveMovementTarget(
+    {
+      minutes: profile.targetMinutes,
+      days: profile.targetDays,
+      strength: profile.targetStrength,
+    },
+    current,
+  );
+  const dose = resolveMovementProgramDose(target);
+  if (!dose) {
+    return null;
+  }
+  return (
+    <span style={{ color: isLight ? "#78716c" : "var(--text-subtle)" }}>
+      {" "}
+      · {buildProgramDoseLine(dose)}
+    </span>
+  );
+}
 
 export default function LeefstijllijnSection({
   model,
@@ -198,6 +234,7 @@ export default function LeefstijllijnSection({
                         {movementSummary?.totalMinutes} min ·{" "}
                         {movementSummary?.sessionCount}{" "}
                         {movementSummary?.sessionCount === 1 ? "sessie" : "sessies"} deze week
+                        <MovementDoseLine model={model} isLight={isLight} />
                       </span>
                     </div>
                   ) : null}

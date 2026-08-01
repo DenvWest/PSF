@@ -153,6 +153,7 @@ import { buildRecommendationInput } from "@/lib/recommendation-input";
 import { buildSupplementDisclosure } from "@/lib/reveal-supplement";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
+import { resolveMovementDayChoiceForToday } from "@/lib/account-priority-pref";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
   isValidAgendaDate,
@@ -3597,6 +3598,11 @@ export default function Dashboard({
             data.movementRcvFeelAt,
             data.movementPrefs,
             data.movementPlanProgress,
+            resolveMovementDayChoiceForToday(
+              priorityPref?.movementDayChoice ?? null,
+              priorityPref?.movementDayChoiceDate ?? null,
+              todayInAgendaTimezone(),
+            ),
           )
         : null,
     [empty, data, priorityPref],

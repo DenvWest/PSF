@@ -6,6 +6,7 @@ import {
 } from "@/data/movement/targets";
 import {
   buildMovementTargetGap,
+  buildProgramDoseLine,
   deriveMovementCurrent,
   parseMovementTarget,
   resolveEffectiveMovementTarget,
@@ -170,6 +171,14 @@ describe("resolveMovementProgramDose", () => {
   it("levert niets zonder minuten of dagen", () => {
     expect(resolveMovementProgramDose({ minutes: null, days: 3, strength: 1 })).toBeNull();
     expect(resolveMovementProgramDose({ minutes: 150, days: null, strength: 1 })).toBeNull();
+  });
+});
+
+describe("buildProgramDoseLine", () => {
+  it("meldt de dosis feitelijk, zonder ratio tegen het gedaan-log", () => {
+    const dose = resolveMovementProgramDose({ minutes: 150, days: 3, strength: 2 });
+    expect(dose).not.toBeNull();
+    expect(buildProgramDoseLine(dose!)).toBe("doel 3× 50 min");
   });
 });
 

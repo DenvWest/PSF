@@ -3,6 +3,7 @@ import type { DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import type {
+  MovementDayChoice,
   PriorityPrefSource,
   TimeBucket,
 } from "@/lib/account-priority-pref";
@@ -12,7 +13,7 @@ import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
 import type { ProteinTargetRange } from "@/lib/protein-target";
 
-export type { TimeBucket, PriorityPrefSource };
+export type { TimeBucket, PriorityPrefSource, MovementDayChoice };
 
 export type AccountPriorityPrefData = {
   pillarId: PillarId;
@@ -21,6 +22,8 @@ export type AccountPriorityPrefData = {
   scheduledTime: string | null;
   planStepDismissedDate: string | null;
   planStepsHidden: boolean;
+  movementDayChoice: MovementDayChoice | null;
+  movementDayChoiceDate: string | null;
   updatedAt: string;
 };
 
@@ -280,6 +283,12 @@ export type DashboardModel = {
   scheduledTime: string | null;
   planStepDismissedDate: string | null;
   planStepsHidden: boolean;
+  /**
+   * Gekozen belastings-tier voor vandaag (herstel/matig/trainen), al geresolved
+   * tegen de datum. Null = nog niet gekozen vandaag. Eén bron voor Beweging én
+   * Mijn Dag — nooit afleiden uit welk vinkje aanstaat.
+   */
+  movementDayChoice: MovementDayChoice | null;
   strongest: Pillar;
   vitality: number;
   vitalityDelta: number | null;

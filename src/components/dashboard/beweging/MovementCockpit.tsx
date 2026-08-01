@@ -46,6 +46,7 @@ export default function MovementCockpit({
   const [choiceOpen, setChoiceOpen] = useState(false);
   const [skippedSession, setSkippedSession] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [weekRefreshKey, setWeekRefreshKey] = useState(0);
   const movementPrefs = prefsOverride ?? model.movementPrefs;
 
   const movStr = model.answers?.MOV_STR;
@@ -97,6 +98,7 @@ export default function MovementCockpit({
             onMakePriority={onMakePriority}
             makePriorityBusy={makePriorityBusy}
             onStateChange={(state) => onDoneChange?.(state.done)}
+            onLogToggled={() => setWeekRefreshKey((key) => key + 1)}
           />
 
           {sessionEntry ? (
@@ -117,7 +119,10 @@ export default function MovementCockpit({
           ) : null}
 
           {movementPrefs.startPattern != null ? (
-            <MovementWeekRhythm startPattern={movementPrefs.startPattern} />
+            <MovementWeekRhythm
+              startPattern={movementPrefs.startPattern}
+              refreshKey={weekRefreshKey}
+            />
           ) : null}
 
           {showProgramSetup ? (

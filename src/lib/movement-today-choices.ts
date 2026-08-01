@@ -1,9 +1,13 @@
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
+import { resolveActionKey } from "@/lib/day-model";
+import { resolvePatternTrainingStepId } from "@/lib/movement-prefs";
 import type { WeekCategory } from "@/lib/movement-week-categories";
 import {
   REST_DAY_STEP_ID,
   type MovementRecoveryHint,
 } from "@/lib/movement-recovery-hint";
+import type { WeekDaySlot } from "@/lib/agenda-week-preview";
+import type { DashboardModel } from "@/types/dashboard";
 import type { PlanStep } from "@/types/lifestyle-plan";
 
 /**
@@ -32,6 +36,9 @@ const ALL_STEPS = movementPlanTemplate.phases.flatMap((phase) => phase.steps);
 
 const MODERATE_FALLBACK_STEP_ID = "mov-trap-of-wandeling";
 const MODERATE_CONDITIONING_STEP_ID = "mov-conditie-onderhoud-week";
+
+const TRAINING_FALLBACK_STEP_ID = "mov-kracht-onderhoud-week";
+const TRAINING_CONDITIONING_STEP_ID = "mov-conditie-interval-lite";
 
 const CHOICE_META: Record<
   TodayChoiceKind,
@@ -107,10 +114,36 @@ export function resolveModerateStepId(
   return (preferred ?? usable[0])?.id ?? MODERATE_FALLBACK_STEP_ID;
 }
 
+/**
+ * Garandeert dat de trainen-tier écht een trainingsstap is. De dagstap kan de
+ * rustdag zijn (recovery-hint promoot rust, of het startpatroon is
+ * `dagelijks_ritme` en de fallback wijst naar rust) — dan zou "Trainen" dezelfde
+ * stap tonen als "Herstel", en krijg je na "nee, niet zwaar getraind" alsnog een
+ * rustdag aangeboden. Alleen `intensityTier: "high"` telt als trainen.
+ */
+export function resolveTrainingStepId(
+  dayStepId: string,
+  startPattern: WeekCategory | null,
+): string {
+  if (findStep(dayStepId)?.intensityTier === "high") {
+    return dayStepId;
+  }
+
+  const highSteps = ALL_STEPS.filter((step) => step.intensityTier === "high");
+  const preferredId =
+    startPattern === "conditie"
+      ? TRAINING_CONDITIONING_STEP_ID
+      : TRAINING_FALLBACK_STEP_ID;
+
+  const preferred = highSteps.find((step) => step.id === preferredId);
+  return (preferred ?? highSteps[0])?.id ?? dayStepId;
+}
+
 export function resolveTodayChoiceOptions(
-  trainingStepId: string,
+  dayStepId: string,
   startPattern: WeekCategory | null = null,
 ): TodayChoiceOption[] {
+  const trainingStepId = resolveTrainingStepId(dayStepId, startPattern);
   const moderateStepId = resolveModerateStepId(trainingStepId, startPattern);
 
   return (["herstel", "matig", "trainen"] as const).map((kind) => {
@@ -140,6 +173,38 @@ export function resolveTodayChoiceOptions(
       whyLinkLabel: meta.whyLinkLabel,
     };
   });
+}
+
+/**
+ * Zelfde afleiding als de Beweging-hero (dagStepId → trainingStepId → opties),
+ * maar op basis van het geladen model — zodat Mijn Dag dezelfde 3 opties kent
+ * en dus kan herkennen welke tier vandaag al is afgevinkt, i.p.v. altijd de
+ * default dagstap te tonen.
+ */
+export function resolveMovementTodayChoiceOptions(
+  model: DashboardModel,
+  slot: WeekDaySlot,
+): TodayChoiceOption[] {
+  const dayStepId = resolveActionKey(model, slot);
+  if (!dayStepId) {
+    return [];
+  }
+  const trainingStepId = resolvePatternTrainingStepId(
+    model.domainScores,
+    model.answers ?? {},
+    model.movementPrefs.startPattern,
+    dayStepId,
+    Object.fromEntries(
+      Object.entries(model.movementPlanProgress?.steps ?? {}).map(([id, entry]) => [
+        id,
+        { state: entry.state },
+      ]),
+    ),
+  );
+  if (!trainingStepId) {
+    return [];
+  }
+  return resolveTodayChoiceOptions(trainingStepId, model.movementPrefs.startPattern);
 }
 
 export function inferCompletedChoice(

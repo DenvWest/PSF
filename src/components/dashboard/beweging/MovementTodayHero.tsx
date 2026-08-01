@@ -23,7 +23,6 @@ import {
   buildMedicalSafetyLine,
   buildMovementCheckinCta,
   buildTodayChoiceRecommendationLine,
-  inferCompletedChoice,
   modalityLabelForChoice,
   resolveRcvFeelForRecoveryHint,
   resolveRecommendedTodayChoiceKind,
@@ -32,8 +31,10 @@ import {
   type TodayChoiceKind,
   type TodayChoiceOption,
 } from "@/lib/movement-today-choices";
+import { postMovementDayChoice } from "@/lib/priority-pref-client";
 import { useDailyActionLog } from "@/lib/use-daily-action-log";
 import { buildVandaagFollowUp, firstSentence } from "@/lib/vandaag-card-links";
+import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { DashboardModel } from "@/types/dashboard";
 
@@ -51,6 +52,8 @@ type MovementTodayHeroProps = {
   onMakePriority: () => void;
   makePriorityBusy: boolean;
   onStateChange?: (state: { done: boolean }) => void;
+  /** Vuurt na een geslaagde toggle, zodat "Deze week" ernaast kan verversen. */
+  onLogToggled?: () => void;
 };
 
 function stepRationale(stepId: string): string | null {
@@ -144,13 +147,20 @@ export default function MovementTodayHero({
   onMakePriority,
   makePriorityBusy,
   onStateChange,
+  onLogToggled,
 }: MovementTodayHeroProps) {
   const shownRef = useRef(false);
-  const [selectedKind, setSelectedKind] = useState<TodayChoiceKind | null>(null);
+  // De dagkeuze komt uit het model (server-side al tegen vandaag geresolved).
+  // Eén bron voor Beweging én Mijn Dag — nooit afleiden uit welk vinkje aanstaat.
+  const [selectedKind, setSelectedKind] = useState<TodayChoiceKind | null>(
+    model.movementDayChoice,
+  );
   const [freshChoice, setFreshChoice] = useState(false);
   const [trainingGateView, setTrainingGateView] = useState<TrainingGateView>("question");
-  const [trainingGateCleared, setTrainingGateCleared] = useState(false);
-  const [logHydrated, setLogHydrated] = useState(false);
+  // Een vastgelegde keuze betekent dat de poort vandaag al gepasseerd is.
+  const [trainingGateCleared, setTrainingGateCleared] = useState(
+    model.movementDayChoice != null,
+  );
   const [noTimeActive, setNoTimeActive] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
   // Wijzig keuze opent bewust de volledige 3-kaarten-lijst; zonder deze vlag
@@ -227,7 +237,10 @@ export default function MovementTodayHero({
     surface: SURFACE,
     clarityScope: "kompas_beweging_hero",
     forceUnchecked: freshChoice,
-    onToggled: () => setFreshChoice(false),
+    onToggled: () => {
+      setFreshChoice(false);
+      onLogToggled?.();
+    },
   });
 
   useEffect(() => {
@@ -236,49 +249,16 @@ export default function MovementTodayHero({
     }
   }, [loaded, done, onStateChange]);
 
-  useEffect(() => {
-    if (!active || choiceOptions.length === 0) {
-      return;
-    }
-
-    let cancelled = false;
-    void (async () => {
-      try {
-        const response = await fetch(
-          `/api/account/daily-log?domain=${encodeURIComponent("beweging")}`,
-          { credentials: "include" },
-        );
-        if (!response.ok || cancelled) {
-          return;
-        }
-        const state = (await response.json()) as { keys: string[] };
-        const completed = inferCompletedChoice(state.keys, choiceOptions);
-        if (completed) {
-          setSelectedKind(completed);
-          setFreshChoice(false);
-          if (completed === "trainen") {
-            setTrainingGateCleared(true);
-          }
-        }
-      } finally {
-        if (!cancelled) {
-          setLogHydrated(true);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [active, choiceOptions]);
-
   // Het voorstel staat al vast vóórdat de gebruiker iets kiest: geen 3-kaarten
   // keuzescherm als startpunt, maar direct de aanbevolen (of anders: geplande
   // "trainen") tier. "Wijzig keuze" blijft de expliciete weg naar de volledige
   // lijst — zie pickerRequested. Aangepast tijdens render (niet in een effect)
   // zodat er geen extra, cascaderende re-render ontstaat — zelfde patroon als
   // de trackedValue-vergelijking in MovementPlanAdjustSheet.
-  if (logHydrated && selectedKind == null && !pickerRequested && choiceOptions.length > 0) {
+  //
+  // Dit is een VOORSTEL, geen keuze: het wordt niet opgeslagen. Alleen een
+  // expliciete pick (of het passeren van de trainingspoort) legt de dag vast.
+  if (selectedKind == null && !pickerRequested && choiceOptions.length > 0) {
     const kind = recommendedKind ?? "trainen";
     setSelectedKind(kind);
     if (kind === "trainen") {
@@ -338,6 +318,17 @@ export default function MovementTodayHero({
 
   const followUp = buildVandaagFollowUp("beweging");
 
+  /** Legt de dagkeuze vast; niet-blokkerend, de UI wacht er niet op. */
+  const persistChoice = (choice: TodayChoiceKind | null) => {
+    void postMovementDayChoice({
+      choice,
+      date: todayInAgendaTimezone(),
+      surface: SURFACE,
+    }).catch(() => {
+      /* niet-blokkerend — de keuze blijft in deze sessie geldig */
+    });
+  };
+
   const selectChoice = (kind: TodayChoiceKind) => {
     invalidateDailyLogCache("beweging");
     trackStepChoice(kind);
@@ -347,11 +338,19 @@ export default function MovementTodayHero({
     setFreshChoice(true);
     setSelectedKind(kind);
     if (kind === "trainen") {
+      // Trainen legt zich pas vast ná de poort — anders zou afhaken bij de
+      // vraag alsnog als "trainen gekozen" blijven staan.
       setTrainingGateView("question");
       setTrainingGateCleared(false);
       return;
     }
     setTrainingGateCleared(true);
+    persistChoice(kind);
+  };
+
+  const clearTrainingGate = () => {
+    setTrainingGateCleared(true);
+    persistChoice("trainen");
   };
 
   const resetChoice = () => {
@@ -369,6 +368,7 @@ export default function MovementTodayHero({
     setWhyOpen(false);
     setTrainingGateView("question");
     setTrainingGateCleared(false);
+    persistChoice(null);
   };
 
   /**
@@ -459,10 +459,9 @@ export default function MovementTodayHero({
   const shellClass =
     "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-4";
 
-  // De tweede voorwaarde vangt het ene render-frame tussen hydratatie en de
-  // auto-keuze-effect hierboven op, zodat de 3-kaarten-lijst nooit even
-  // opflikkert vóór het voorstel verschijnt.
-  if (!logHydrated || (selectedKind == null && !pickerRequested)) {
+  // Vangt het ene render-frame op waarin de auto-keuze hierboven nog niet is
+  // toegepast, zodat de 3-kaarten-lijst nooit opflikkert vóór het voorstel.
+  if (selectedKind == null && !pickerRequested) {
     return (
       <section aria-label="Vandaag — beweging" className={shellClass}>
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
@@ -508,7 +507,7 @@ export default function MovementTodayHero({
                   type="button"
                   onClick={() => {
                     trackTrainingGate("no");
-                    setTrainingGateCleared(true);
+                    clearTrainingGate();
                   }}
                   className="min-h-11 cursor-pointer rounded-xl border-none bg-[color:var(--ac)] px-4 text-[14px] font-semibold text-[#0f1c10]"
                 >
@@ -544,7 +543,7 @@ export default function MovementTodayHero({
                   type="button"
                   onClick={() => {
                     trackTrainingGate("proceed_anyway");
-                    setTrainingGateCleared(true);
+                    clearTrainingGate();
                   }}
                   className="min-h-11 cursor-pointer rounded-xl border-none bg-[color:var(--ac)] px-4 text-[14px] font-semibold text-[#0f1c10]"
                 >
