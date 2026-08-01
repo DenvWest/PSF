@@ -85,7 +85,7 @@ describe("buildKompasDomainActions", () => {
     expect(slaap?.internalAction).toBe("open_domain");
   });
 
-  it("offers supplementen for beweging when nutrition log is complete", () => {
+  it("offers programma for beweging when nutrition log is complete", () => {
     const actions = buildKompasDomainActions({
       model: baseModel(),
       nutritionLogCompleted: true,
@@ -93,8 +93,9 @@ describe("buildKompasDomainActions", () => {
       hasStressCheckin: false,
     });
     const beweging = actions.find((action) => action.domain === "beweging");
-    expect(beweging?.actionKind).toBe("supplement");
-    expect(beweging?.internalAction).toBe("open_supplements");
+    expect(beweging?.actionKind).toBe("open");
+    expect(beweging?.actionLabel).toBe("Programma");
+    expect(beweging?.internalAction).toBe("open_domain");
   });
 
   it("offers stresscheck when no stress checkin exists yet", () => {

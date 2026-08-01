@@ -1,8 +1,8 @@
 import { PILLAR } from "@/data/dashboard";
-import { BEWEGING_SUPPLEMENT_ANCHOR, KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
+import { KOMPAS_RAIL_PILLAR_IDS } from "@/lib/context-rail";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
-export type KompasDomainActionKind = "checkin" | "result" | "supplement" | "open";
+export type KompasDomainActionKind = "checkin" | "result" | "open";
 
 export type KompasDomainAction = {
   domain: PillarId;
@@ -12,7 +12,7 @@ export type KompasDomainAction = {
   actionLabel: string;
   actionKind: KompasDomainActionKind;
   href?: string;
-  internalAction?: "open_domain" | "open_supplements";
+  internalAction?: "open_domain";
   disabled?: boolean;
   disabledHint?: string;
 };
@@ -77,9 +77,9 @@ function buildSingleDomainAction(
       if (input.nutritionLogCompleted) {
         return {
           ...base,
-          actionLabel: "Supplementen",
-          actionKind: "supplement",
-          internalAction: "open_supplements",
+          actionLabel: "Programma",
+          actionKind: "open",
+          internalAction: "open_domain",
         };
       }
       return {
@@ -131,4 +131,3 @@ export function buildKompasDomainActions(
   return KOMPAS_RAIL_PILLAR_IDS.map((domain) => buildSingleDomainAction(domain, input));
 }
 
-export { BEWEGING_SUPPLEMENT_ANCHOR };

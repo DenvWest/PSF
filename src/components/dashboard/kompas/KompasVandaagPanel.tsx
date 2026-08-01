@@ -7,7 +7,6 @@ import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { clarityTag } from "@/lib/clarity";
 import {
-  BEWEGING_SUPPLEMENT_ANCHOR,
   buildKompasDomainActions,
   type KompasDomainAction,
 } from "@/lib/kompas-domain-actions";
@@ -47,15 +46,6 @@ function DomainActionRow({
 
   const handleInternalClick = () => {
     trackClick();
-    if (action.internalAction === "open_supplements") {
-      onOpenDomain("beweging");
-      if (typeof window !== "undefined") {
-        window.requestAnimationFrame(() => {
-          document.getElementById(BEWEGING_SUPPLEMENT_ANCHOR)?.scrollIntoView({ behavior: "smooth" });
-        });
-      }
-      return;
-    }
     onOpenDomain(action.domain);
   };
 
