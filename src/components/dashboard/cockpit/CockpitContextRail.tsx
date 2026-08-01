@@ -84,10 +84,10 @@ function ProfileFooter({
 }
 
 /**
- * Contextuele linker rail: dezelfde kolom toont profiel, je domeinen of de
- * tools van het open domein — afhankelijk van waar je staat. Alleen desktop;
- * onder md blijft de compacte profielstrip staan en navigeer je via de
- * DomainTopNav in de header.
+ * Contextuele linker rail: dezelfde kolom toont profiel, je domeinen of
+ * Kompas + domeinen + tools van het open domein — afhankelijk van waar je
+ * staat. Alleen desktop; onder md blijft de compacte profielstrip staan en
+ * navigeer je via de DomainTopNav in de header.
  */
 export default function CockpitContextRail({
   mode,
@@ -269,26 +269,28 @@ export default function CockpitContextRail({
                 <span>Kompas</span>
               </button>
             ) : null}
-            <span className={ZONEFLAG}>{domainLabel ?? "Domein"}</span>
+            <span className={ZONEFLAG}>Je domeinen</span>
+            <nav aria-label="Je domeinen" className="flex flex-col gap-1">
+              {domains.map(renderDomain)}
+            </nav>
             {tools.length > 0 ? (
-              <nav
-                aria-label={`${domainLabel ?? "Domein"}-tools`}
-                className="flex flex-col gap-1"
-              >
-                {tools.map((tool) => (
-                  <div key={tool.id}>
-                    {tool.id === "gids" ? (
-                      <div className="my-1.5 border-t border-white/10" aria-hidden />
-                    ) : null}
-                    {renderTool(tool)}
-                  </div>
-                ))}
-              </nav>
-            ) : (
-              <p className="text-[12.5px] leading-relaxed text-[#7E8C82] text-pretty">
-                Ga terug naar Kompas om een ander domein te openen.
-              </p>
-            )}
+              <>
+                <span className={ZONEFLAG}>{domainLabel ?? "Domein"}</span>
+                <nav
+                  aria-label={`${domainLabel ?? "Domein"}-tools`}
+                  className="flex flex-col gap-1"
+                >
+                  {tools.map((tool) => (
+                    <div key={tool.id}>
+                      {tool.id === "gids" ? (
+                        <div className="my-1.5 border-t border-white/10" aria-hidden />
+                      ) : null}
+                      {renderTool(tool)}
+                    </div>
+                  ))}
+                </nav>
+              </>
+            ) : null}
             <ProfileFooter
               name={name}
               anchorLabel={anchorLabel}

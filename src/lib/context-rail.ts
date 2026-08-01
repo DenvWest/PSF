@@ -4,9 +4,9 @@ import type { PillarId } from "@/types/dashboard";
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
  * De rail heeft drie modi — profiel (geen Kompas-context), Kompas-home
- * (domeinlijst) en domein-tools (elk open domein: Kompas-knop + eigen tools
- * indien aanwezig — nu alleen beweging heeft die). Alle navigatie-logica
- * blijft in KompasHome; hier zit alleen de vorm.
+ * (domeinlijst) en domein-tools (open domein: Kompas-knop + domeinlijst +
+ * eigen tools indien aanwezig — nu alleen beweging heeft die). Alle
+ * navigatie-logica blijft in KompasHome; hier zit alleen de vorm.
  */
 
 export type ContextRailMode = "profile" | "kompasHome" | "domainTools";
