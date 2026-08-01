@@ -116,7 +116,6 @@ import {
 } from "@/data/dashboard";
 import { NUTRITION_CURATED_CHOICES } from "@/data/dashboard/nutrition-curated";
 import { perfectSupplementMeasurementConfig } from "@/data/measurement-config";
-import DomainTodayStrip from "@/components/dashboard/DomainTodayStrip";
 import { buildWeekSchedulePreview } from "@/lib/agenda-week-preview";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
@@ -127,7 +126,7 @@ import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
-import { isInterventionDomain, isReadoutDomain } from "@/lib/domain-role";
+import { isReadoutDomain } from "@/lib/domain-role";
 import { saveDashboardPrioritySelection } from "@/lib/dashboard-priority-selection";
 import { buildHabitScoreKernel } from "@/lib/vitality-habit-kernel";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
@@ -2424,6 +2423,16 @@ const IdentitySection = () => {
   );
 };
 
+/** Domeinen op de donkere cockpit-shell (@container-breedteladder) — de rest
+ * (energie/herstel: DomainSoonScreen) blijft op de smallere vaste breedte. */
+const COCKPIT_WIDTH_DOMAINS = new Set<PillarId>([
+  "beweging",
+  "stress",
+  "slaap",
+  "voeding",
+  "verbinding",
+]);
+
 const KOMPAS_LIGHT = {
   text: "#1c1917",
   muted: "#57534e",
@@ -3093,21 +3102,7 @@ const KompasHome = ({
     }
   };
 
-  const withDomainTopNav = (content: ReactElement) =>
-    domainView ? (
-      <div className="-mt-0.5 flex flex-col gap-3.5">
-        {isInterventionDomain(domainView) && domainView !== "beweging" ? (
-          <DomainTodayStrip
-            model={currentModel}
-            domain={domainView}
-            onGoAgenda={onGoAgenda}
-          />
-        ) : null}
-        {content}
-      </div>
-    ) : (
-      content
-    );
+  const withDomainTopNav = (content: ReactElement) => content;
 
   if (domainView === "beweging") {
     return withDomainTopNav(
@@ -3883,7 +3878,7 @@ export default function Dashboard({
           className={`w-full ${
             tab === "agenda"
               ? "max-w-[760px]"
-              : viewedDomain === "beweging" ||
+              : (viewedDomain != null && COCKPIT_WIDTH_DOMAINS.has(viewedDomain)) ||
                   (tab === "vandaag" && !viewedDomain) ||
                   tab === "voortgang"
                 ? "min-w-0"
