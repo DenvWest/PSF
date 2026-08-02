@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildAnchorWhySuffix,
   EMPTY_MOVEMENT_PREFS,
+  getMovementAnchorOption,
   parseMovementPrefs,
   resolvePatternTrainingStepId,
   startPatternLabel,
@@ -41,7 +42,22 @@ describe("parseMovementPrefs", () => {
 describe("buildAnchorWhySuffix", () => {
   it("levert de §5a-suffix per anker en null zonder anker", () => {
     expect(buildAnchorWhySuffix("meedoen")).toContain("mee te doen");
+    expect(buildAnchorWhySuffix("energie")).toContain("aan het eind van de dag");
+    expect(buildAnchorWhySuffix("energie")).not.toContain("'s avonds");
     expect(buildAnchorWhySuffix(null)).toBeNull();
+  });
+});
+
+describe("getMovementAnchorOption", () => {
+  it("resolveert een bekend anker naar label en suffix", () => {
+    const option = getMovementAnchorOption("kracht");
+    expect(option?.label).toContain("sterk");
+    expect(option?.whySuffix).toContain("capabel");
+  });
+
+  it("levert null bij ontbrekend of ongeldig anker", () => {
+    expect(getMovementAnchorOption(null)).toBeNull();
+    expect(getMovementAnchorOption(undefined)).toBeNull();
   });
 });
 

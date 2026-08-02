@@ -39,6 +39,7 @@ type CockpitFrameProps = {
   onBackToKompas?: () => void;
   inspectorCards: InspectorCard[];
   remeasureAction?: { due: boolean; onClick: () => void };
+  inspectorDoelFooter?: ReactNode;
   inspectorExtra?: ReactNode;
   children: ReactNode;
 };
@@ -80,6 +81,7 @@ export default function CockpitFrame({
   onBackToKompas,
   inspectorCards,
   remeasureAction,
+  inspectorDoelFooter,
   inspectorExtra,
   children,
 }: CockpitFrameProps) {
@@ -287,6 +289,7 @@ export default function CockpitFrame({
           <CockpitInspector
             cards={inspectorCards}
             remeasureAction={inspectorRemeasureAction}
+            doelFooter={inspectorDoelFooter}
             extra={inspectorExtra}
             titleId={contextTitleId}
             onClose={isDrawerMode ? closeContext : undefined}

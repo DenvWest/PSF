@@ -237,7 +237,7 @@ Eén enum-vraag, geen vrije tekst (geen PII, geen moderatie). Kleurt de "Waarom 
 |---|---|---|---|
 | 1 | *"Zelf blijven doen wat ik wil — niemand nodig hebben"* | `zelfstandigheid` | *"…want jij wilt zelf blijven doen wat je wilt, zonder iemand nodig te hebben."* |
 | 2 | *"Fit genoeg voor de mensen om me heen"* | `meedoen` | *"…want jij wilt fit genoeg blijven om mee te doen — niet toe te kijken."* |
-| 3 | *"Aan het eind van de dag nog energie over"* | `energie` | *"…want jij wilt 's avonds nog energie overhouden, niet op wilskracht draaien."* |
+| 3 | *"Aan het eind van de dag nog energie over"* | `energie` | *"…want jij wilt aan het eind van de dag nog energie overhouden, niet op wilskracht draaien."* |
 | 4 | *"Me sterk en capabel blijven voelen"* | `kracht` | *"…want jij wilt je sterk en capabel blijven voelen."* |
 
 **Default = mannen 40+** (de doelgroep): het "over tien jaar"-frame en de trap-/zelfstandigheid-beelden zijn hierop geijkt; optie 1 is het diepste anker.

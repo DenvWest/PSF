@@ -10,6 +10,8 @@ type CockpitInspectorProps = {
   cards: InspectorCard[];
   /** Maakt de "meet"-kaart actionable (universeel, niet domein-gebonden). */
   remeasureAction?: { due: boolean; onClick: () => void };
+  /** Actie onder de Future You-kaart (bv. stille anker-herkeuze). */
+  doelFooter?: ReactNode;
   /** Domein-specifieke compacte widget (bv. week-ritme) — zelfde kaart-look
    * als hierboven, zodat het écht als inspector-inhoud leest i.p.v. een los
    * blok. Eén stuk, telt mee voor de rustige, beperkte totaalindruk. */
@@ -47,6 +49,7 @@ const ICON_BY_KIND: Record<InspectorCard["kind"], keyof typeof Icons> = {
 export default function CockpitInspector({
   cards,
   remeasureAction,
+  doelFooter,
   extra,
   titleId,
   onClose,
@@ -89,6 +92,7 @@ export default function CockpitInspector({
         const accent = ACCENT[card.accent];
         const Icon = Icons[ICON_BY_KIND[card.kind]] as IconComp;
         const showRemeasureAction = card.kind === "meet" && remeasureAction;
+        const showDoelFooter = card.kind === "doel" && doelFooter;
         return (
           <div
             key={`${card.kind}-${index}`}
@@ -109,6 +113,7 @@ export default function CockpitInspector({
             >
               {card.body}
             </p>
+            {showDoelFooter ? doelFooter : null}
             {showRemeasureAction ? (
               remeasureAction.due ? (
                 <button

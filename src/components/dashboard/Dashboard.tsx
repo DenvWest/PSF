@@ -123,8 +123,13 @@ import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
 import NutritionRelogNudge from "@/components/dashboard/NutritionRelogNudge";
+import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
-import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
+import {
+  EMPTY_MOVEMENT_PREFS,
+  getMovementAnchorOption,
+  type MovementPrefs,
+} from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
 import { buildPriorityInterventionHref } from "@/lib/dashboard-active-plan";
 import { isReadoutDomain } from "@/lib/domain-role";
@@ -3154,10 +3159,7 @@ const KompasHome = ({
   }
   if (domainView === "stress") {
     return withDomainTopNav(
-      <StressScreen
-        model={currentModel}
-        nutritionLogCompleted={nutritionLogCompleted}
-      />,
+      <StressScreen model={currentModel} />,
     );
   }
   if (domainView === "slaap") {
@@ -3449,6 +3451,9 @@ export default function Dashboard({
   const [priorityPrefOverride, setPriorityPrefOverride] = useState<
     AccountPriorityPrefData | null | undefined
   >(undefined);
+  const [movementPrefsOverride, setMovementPrefsOverride] = useState<MovementPrefs | null>(
+    null,
+  );
   const [agendaDateOverride, setAgendaDateOverride] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
       return parseDagFromUrl(window.location.href);
@@ -3463,6 +3468,9 @@ export default function Dashboard({
 
   const priorityPref =
     priorityPrefOverride !== undefined ? priorityPrefOverride : (data?.priorityPref ?? null);
+
+  const effectiveMovementPrefs =
+    movementPrefsOverride ?? data?.movementPrefs ?? EMPTY_MOVEMENT_PREFS;
 
   const model = useMemo(
     () =>
@@ -3483,7 +3491,7 @@ export default function Dashboard({
             data.sleepCheckinFocus,
             data.movementRcvFeel,
             data.movementRcvFeelAt,
-            data.movementPrefs,
+            effectiveMovementPrefs,
             data.movementPlanProgress,
             resolveMovementDayChoiceForToday(
               priorityPref?.movementDayChoice ?? null,
@@ -3492,7 +3500,7 @@ export default function Dashboard({
             ),
           )
         : null,
-    [empty, data, priorityPref],
+    [empty, data, priorityPref, effectiveMovementPrefs],
   );
 
   const todayActionDone = useTodayActionDone(model);
@@ -3842,9 +3850,7 @@ export default function Dashboard({
   // domein daadwerkelijk open staat, niet op elk ander tabblad/domein.
   const anchorOption =
     viewedDomain === "beweging"
-      ? MOVEMENT_ANCHOR_OPTIONS.find(
-          (option) => option.id === model?.movementPrefs.anchor,
-        )
+      ? getMovementAnchorOption(effectiveMovementPrefs.anchor)
       : undefined;
   const activeHabit = model?.activeHabit ?? null;
   // De "meet"-kaart is universeel (elk domein) en krijgt hieronder een echte
@@ -3864,6 +3870,13 @@ export default function Dashboard({
     ? { due: data.remeasure.daysUntil <= 0, onClick: onRemeasure }
     : undefined;
   const inspectorExtra = <>{dashboardInfoCard}</>;
+  const inspectorDoelFooter =
+    viewedDomain === "beweging" && effectiveMovementPrefs.anchor ? (
+      <MovementAnchorRechoose
+        currentAnchor={effectiveMovementPrefs.anchor}
+        onSaved={setMovementPrefsOverride}
+      />
+    ) : null;
 
   // De linker rail volgt dezelfde context als de header: domeinlijst op de
   // Kompas-home, Kompas-knop + evt. eigen tools bij een open domein, profiel
@@ -3912,6 +3925,7 @@ export default function Dashboard({
         onBackToKompas={contextRailApi?.onBackToKompas}
         inspectorCards={inspectorCards}
         remeasureAction={remeasureAction}
+        inspectorDoelFooter={inspectorDoelFooter}
         inspectorExtra={inspectorExtra}
       >
         <div

@@ -70,7 +70,7 @@ export const MOVEMENT_ANCHOR_OPTIONS: readonly {
     id: "energie",
     label: "Aan het eind van de dag nog energie over",
     whySuffix:
-      "Want jij wilt 's avonds nog energie overhouden, niet op wilskracht draaien.",
+      "Want jij wilt aan het eind van de dag nog energie overhouden, niet op wilskracht draaien.",
   },
   {
     id: "kracht",
@@ -107,14 +107,17 @@ export function parseMovementPrefs(raw: unknown): MovementPrefs {
   };
 }
 
-export function buildAnchorWhySuffix(anchor: MovementAnchor | null): string | null {
+export function getMovementAnchorOption(
+  anchor: MovementAnchor | null | undefined,
+): (typeof MOVEMENT_ANCHOR_OPTIONS)[number] | null {
   if (!anchor) {
     return null;
   }
-  return (
-    MOVEMENT_ANCHOR_OPTIONS.find((option) => option.id === anchor)?.whySuffix ??
-    null
-  );
+  return MOVEMENT_ANCHOR_OPTIONS.find((option) => option.id === anchor) ?? null;
+}
+
+export function buildAnchorWhySuffix(anchor: MovementAnchor | null): string | null {
+  return getMovementAnchorOption(anchor)?.whySuffix ?? null;
 }
 
 export function startPatternLabel(pattern: MovementStartPattern): string {
