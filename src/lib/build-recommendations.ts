@@ -1,3 +1,4 @@
+import { DOMAIN_PRODUCT_STANCE } from "@/data/domain-product-stance";
 import { catalogBySlug } from "@/data/supplement-hub/catalog";
 import { getCatalogEntryByHubSlug } from "@/data/supplement-catalog";
 import { RULES_VERSION, getDeficiencySignals, getProfileLabel } from "@/lib/intake-engine";
@@ -110,13 +111,11 @@ export function buildRecommendations(
   return out;
 }
 
-const MOVEMENT_SUPPLEMENT_SLUGS = new Set(["creatine", "eiwitpoeder"]);
-const STRESS_SUPPLEMENT_SLUGS = new Set(["magnesium"]);
-const SLEEP_SUPPLEMENT_SLUGS = new Set(["magnesium"]);
+const MOVEMENT_SUPPLEMENT_SLUGS = DOMAIN_PRODUCT_STANCE.movement.slugs;
+const SLEEP_SUPPLEMENT_SLUGS = DOMAIN_PRODUCT_STANCE.sleep.slugs;
 
 export const RECOMMENDATION_DOMAIN_SLUG_SETS = {
   movement: MOVEMENT_SUPPLEMENT_SLUGS,
-  stress: STRESS_SUPPLEMENT_SLUGS,
   sleep: SLEEP_SUPPLEMENT_SLUGS,
 } as const;
 
@@ -154,13 +153,13 @@ export function getStressNutritionHint(session: IntakeSessionPayload): string {
   return "Je basis staat redelijk; houd regelmaat en volwaardige voeding vast voor beter stressherstel.";
 }
 
-export function buildStressRecommendations(
-  session: IntakeSessionPayload,
-  options?: SupplementEligibilityOptions,
-): RecommendedSupplement[] {
-  return buildRecommendations(session, options).filter((rec) =>
-    STRESS_SUPPLEMENT_SLUGS.has(rec.slug),
-  );
+/**
+ * Stress staat op `lifestyle_first` — geen supplementvoorstel, wel een oordeel
+ * met reden (zie DOMAIN_PRODUCT_STANCE). De lege lijst is hier de uitkomst van
+ * dat oordeel, niet het ontbreken ervan.
+ */
+export function buildStressRecommendations(): RecommendedSupplement[] {
+  return [];
 }
 
 export function getSleepNutritionHint(session: IntakeSessionPayload): string {

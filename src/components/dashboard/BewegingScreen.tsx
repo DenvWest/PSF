@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import MovementCockpit, {
@@ -99,6 +99,16 @@ export default function BewegingScreen({
     done: false,
     isStrengthSession: false,
   });
+  // Bewaakt tegen een render-lus: zonder deze gelijkheidscheck geeft elke
+  // aanroep een nieuw object-object door, en verliest React de setState-
+  // bailout die het bij een ongewijzigde primitive wél had (zie MovementCockpit).
+  const handleDoneChange = useCallback((next: MovementDoneState) => {
+    setDoneState((prev) =>
+      prev.done === next.done && prev.isStrengthSession === next.isStrengthSession
+        ? prev
+        : next,
+    );
+  }, []);
   const session = sessionFromModel(model);
   const nutritionHint = getMovementNutritionHint(session);
 
@@ -156,7 +166,7 @@ export default function BewegingScreen({
         onGoAgenda={onGoAgenda}
         onMakePriority={onMakePriority}
         makePriorityBusy={makePriorityBusy}
-        onDoneChange={setDoneState}
+        onDoneChange={handleDoneChange}
       />
 
       {showAdvice ? (

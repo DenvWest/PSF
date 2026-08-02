@@ -19,6 +19,21 @@ export type NutrientId =
   | "vitamin_d"
   | "zinc";
 
+/** 1 = laag, 4 = hoog. Promotie van de vertrouwens-annotatie bij `thresholds` naar een getypeerd veld. */
+export type NutrientConfidence = 1 | 2 | 3 | 4;
+
+/**
+ * Of een bloedbepaling deze schatting harder maakt — dat verschilt per stof.
+ * "later bloedonderzoek" is dus geen algemeen antwoord; alleen vitamine D wint er echt mee.
+ */
+export type BloodMarkerValue = "improves" | "limited" | "none";
+
+export interface NutrientBloodMarker {
+  value: BloodMarkerValue;
+  /** Waarom een prik hier wel/niet iets toevoegt. Gebruikersgerichte formulering. */
+  why: string;
+}
+
 export interface NutrientThresholds {
   /**
    * Signaalwaarde < belowMax → band "below".
@@ -57,6 +72,14 @@ export interface NutrientReference {
    * Neem nooit aan — verifieer tegen de werkelijke approvedClaims-keys.
    */
   claimKey: IngredientClaimKey;
+  /**
+   * Hoe zeker deze schatting is. Waarde volgt de vertrouwens-annotatie in de
+   * `thresholds`-comment hieronder — die comment blijft de onderbouwing.
+   */
+  confidence: NutrientConfidence;
+  /** Waarom die zekerheid, in één zin voor de gebruiker. Geen statusclaim. */
+  confidenceWhy: string;
+  bloodMarker: NutrientBloodMarker;
 }
 
 export const nutrientReferences: Record<NutrientId, NutrientReference> = {
@@ -78,6 +101,13 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     },
     lifestyleAction: buildLifestyleAction("protein"),
     claimKey: "eiwitpoeder",
+    confidence: 4,
+    confidenceWhy:
+      "De vraag telt eetmomenten, en die verdeling over de dag is van deze vijf het best onderbouwd.",
+    bloodMarker: {
+      value: "none",
+      why: "Er bestaat geen bloedmarker voor hoeveel eiwit je binnenkrijgt.",
+    },
   },
   omega3: {
     id: "omega3",
@@ -97,6 +127,13 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     },
     lifestyleAction: buildLifestyleAction("omega3"),
     claimKey: "omega3",
+    confidence: 3,
+    confidenceWhy:
+      "Vette vis per week is een bruikbare maat; waar de grens tussen 1× en 2× ligt, is een interpretatiekeuze.",
+    bloodMarker: {
+      value: "limited",
+      why: "De omega-3-index is een goede maat, maar geen standaardbepaling bij een Nederlands huisartsenlab.",
+    },
   },
   magnesium: {
     id: "magnesium",
@@ -119,6 +156,13 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     },
     lifestyleAction: buildLifestyleAction("magnesium"),
     claimKey: "magnesium",
+    confidence: 1,
+    confidenceWhy:
+      "Je band komt uit een groente-en-fruit-telling, terwijl noten, volkoren en peulvruchten de sterkere bronnen zijn.",
+    bloodMarker: {
+      value: "limited",
+      why: "Serum-magnesium wordt constant gehouden ten koste van bot en spier; een normale uitslag bij een krappe voorraad is gewoon.",
+    },
   },
   vitamin_d: {
     id: "vitamin_d",
@@ -140,6 +184,13 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     },
     lifestyleAction: buildLifestyleAction("vitamin_d", { season: "summer" }),
     claimKey: "vitamineD",
+    confidence: 1,
+    confidenceWhy:
+      "Aanmaak hangt af van duur, tijdstip en seizoen — hoe vaak je buiten komt zegt daar weinig over.",
+    bloodMarker: {
+      value: "improves",
+      why: "25(OH)D is de standaardbepaling en zegt echt iets over je voorraad — de enige van de vijf waar een prik concreet iets toevoegt.",
+    },
   },
   zinc: {
     id: "zinc",
@@ -158,6 +209,13 @@ export const nutrientReferences: Record<NutrientId, NutrientReference> = {
     },
     lifestyleAction: buildLifestyleAction("zinc"),
     claimKey: "zink",
+    confidence: 2,
+    confidenceWhy:
+      "De mg-vuistregel is bekend; de vertaling daarvan naar porties per week is plausibel maar niet scherp gebrond.",
+    bloodMarker: {
+      value: "none",
+      why: "Plasma-zink daalt bij elke ontsteking en na een maaltijd, los van je voorraad.",
+    },
   },
 };
 

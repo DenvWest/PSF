@@ -2,12 +2,14 @@ import { describe, expect, it } from "vitest";
 import {
   buildMovementRecommendations,
   buildSleepRecommendations,
+  buildStressRecommendations,
   buildRecommendations,
   getMovementNutritionHint,
   getSleepNutritionHint,
   RECOMMENDATION_DOMAIN_SLUG_SETS,
 } from "@/lib/build-recommendations";
 import { approvedClaims, type IngredientClaimKey } from "@/data/approved-claims";
+import { DOMAIN_PRODUCT_STANCE } from "@/data/domain-product-stance";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 
 function makeSession(
@@ -186,6 +188,37 @@ describe("RECOMMENDATION_DOMAIN_SLUG_SETS compliance", () => {
         expect(approvedClaims[claimKey!].status).not.toBe("forbidden");
       }
     }
+  });
+});
+
+describe("stress staat op leefstijl-eerst", () => {
+  it("draagt een oordeel met reden, geen kandidatenlijst", () => {
+    const stance = DOMAIN_PRODUCT_STANCE.stress;
+    expect(stance.kind).toBe("lifestyle_first");
+    expect(stance.reason.length).toBeGreaterThan(0);
+  });
+
+  it("stelt geen supplement voor, ook niet bij een lage stressscore met voedingscheck", () => {
+    const session = makeSession(
+      { SLP_QUAL: 4, SLP_WAKE: 4, STR_FREQ: 1, STR_RCV: 1 },
+      { stress_score: 20, sleep_score: 80 },
+    );
+    expect(buildStressRecommendations()).toEqual([]);
+    // De sessie zelf zou magnesium wél in de hub opleveren — het oordeel, niet
+    // de afwezigheid van een trigger, houdt het bij stress weg.
+    expect(
+      buildRecommendations(session, LOGGED_IN).some((rec) => rec.slug === "magnesium"),
+    ).toBe(true);
+  });
+
+  it("laat magnesium wel staan waar zijn signaal woont: slaap", () => {
+    const session = makeSession(
+      { SLP_QUAL: 1, SLP_WAKE: 1, STR_RCV: 1 },
+      { sleep_score: 30, stress_score: 35 },
+    );
+    expect(
+      buildSleepRecommendations(session, LOGGED_IN).some((rec) => rec.slug === "magnesium"),
+    ).toBe(true);
   });
 });
 

@@ -10,14 +10,11 @@ import DomainFooterLink from "@/components/dashboard/domain/DomainFooterLink";
 import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
 import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
 import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
-import DomainSupplementList from "@/components/dashboard/domain/DomainSupplementList";
 import DomainToolsGrid, { type DomainTool } from "@/components/dashboard/domain/DomainToolsGrid";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
-import {
-  buildStressRecommendations,
-  getStressNutritionHint,
-} from "@/lib/build-recommendations";
+import { STRESS_LIFESTYLE_FIRST_REASON } from "@/data/domain-product-stance";
+import { getStressNutritionHint } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
@@ -54,20 +51,11 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   };
 }
 
-export default function StressScreen({
-  model,
-  nutritionLogCompleted = false,
-}: {
-  model: DashboardModel;
-  nutritionLogCompleted?: boolean;
-}) {
+export default function StressScreen({ model }: { model: DashboardModel }) {
   const premiumShownRef = useRef(false);
   const pillar = PILLAR.stress;
   const session = sessionFromModel(model);
   const nutritionHint = getStressNutritionHint(session);
-  const recommendations = buildStressRecommendations(session, {
-    nutritionLogCompleted,
-  });
 
   useEffect(() => {
     if (premiumShownRef.current) return;
@@ -174,20 +162,11 @@ export default function StressScreen({
 
             <div className="border-t border-white/10 pt-3.5">
               <p className="mb-2.5 text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
-                Supplementen — als je ritme staat
+                Supplementen — ons oordeel
               </p>
-              <DomainSupplementList
-                recommendations={recommendations}
-                emptyText="Eerst ritme en herstelmomenten. Supplementen voeg je pas toe als basisstappen staan."
-                onItemClick={(rec, href) => {
-                  trackEvent("dashboard_stress_supplement_click", {
-                    slug: rec.slug,
-                    target: href,
-                    surface: "kompas_stress",
-                  });
-                  clarityTag("dashboard_stress_supplement", rec.slug);
-                }}
-              />
+              <p className="text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                {STRESS_LIFESTYLE_FIRST_REASON}
+              </p>
             </div>
           </div>
         </CockpitTile>

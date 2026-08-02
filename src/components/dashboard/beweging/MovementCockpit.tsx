@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import MovementProgramSheet from "@/components/dashboard/beweging/MovementProgramSheet";
 import MovementStartChoice from "@/components/dashboard/beweging/MovementStartChoice";
 import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero";
@@ -115,6 +115,16 @@ export default function MovementCockpit({
       })
     : null;
 
+  // Stabiele referentie: zonder useCallback krijgt de hero hieronder elke
+  // render een nieuwe functie, en die staat in haar eigen effect-deps — dat
+  // zou het effect (en dus deze callback) op elke render laten vuren.
+  const handleHeroStateChange = useCallback(
+    (state: { done: boolean }) => {
+      onDoneChange?.({ done: state.done, isStrengthSession });
+    },
+    [onDoneChange, isStrengthSession],
+  );
+
   return (
     <CockpitShell accent={COCKPIT_CTA} ariaLabel="Beweeg-cockpit" embedded>
       <div className="@container mx-auto w-full max-w-[1040px] @[1080px]:max-w-[1340px]">
@@ -127,9 +137,7 @@ export default function MovementCockpit({
             onGoAgenda={onGoAgenda}
             onMakePriority={onMakePriority}
             makePriorityBusy={makePriorityBusy}
-            onStateChange={(state) =>
-              onDoneChange?.({ done: state.done, isStrengthSession })
-            }
+            onStateChange={handleHeroStateChange}
             onLogToggled={() => setWeekRefreshKey((key) => key + 1)}
           />
 

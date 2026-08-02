@@ -666,7 +666,7 @@ export default function MovementTodayHero({
       />
       <div className="relative">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
-          Vandaag · kies wat past
+          Vandaag · maak een keuze
         </p>
         <h3 className="mt-1.5 font-serif text-[20px] leading-snug text-[#F1EFE8] text-pretty">
           {recommendationLine ?? "Kies één richting voor vandaag."}
