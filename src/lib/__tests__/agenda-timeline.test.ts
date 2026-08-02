@@ -5,22 +5,28 @@ import {
   buildDayTimeline,
   buildPlanStepBlock,
   DEFAULT_BLOCK_DURATION_MINUTES,
+  getBlockRoleLabel,
+  getBlockTimelineHeightPx,
   getBlockTimelineStyle,
   getHourMarkerTopPx,
   getNowLinePercent,
   getTimelineHalfHourMarks,
   getTimelineTrackHeightPx,
+  isCompactTimelineBlock,
   minutesToTime,
   positionToTimelineTime,
+  resolveBlockRole,
   resolvePlanStepPlacement,
   snapTimelineMinutes,
+  TIMELINE_COMPACT_BLOCK_HEIGHT_PX,
   TIMELINE_END_MINUTES,
+  TIMELINE_MIN_BLOCK_HEIGHT_PX,
   TIMELINE_START_MINUTES,
   TIMELINE_TOTAL_MINUTES,
   timeToMinutes,
 } from "@/lib/agenda-timeline";
 import { buildModel } from "@/lib/dashboard-model";
-import type { AgendaBlockRecord } from "@/types/agenda";
+import type { AgendaBlockRecord, TimelineBlock } from "@/types/agenda";
 import type { CheckScores, CheckTrend } from "@/types/dashboard";
 
 function buildFixtureModel(scores: CheckScores) {
@@ -226,6 +232,84 @@ describe("resolvePlanStepPlacement", () => {
         todaySlot,
       ),
     ).toBe("hidden");
+  });
+});
+
+describe("basis versus aanvulling", () => {
+  const routineBlock: TimelineBlock = {
+    id: "block-1",
+    kind: "routine",
+    categoryId: "water",
+    title: "Water drinken",
+    startTime: "08:00",
+    endTime: "08:15",
+    done: false,
+    source: "routine",
+    isEditable: true,
+  };
+
+  it("labelt de plan-stap als basis met zijn domeinnaam", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    const planStep = buildPlanStepBlock(model, todaySlot);
+    expect(planStep).not.toBeNull();
+    if (!planStep) {
+      return;
+    }
+
+    expect(resolveBlockRole(planStep)).toBe("basis");
+    expect(getBlockRoleLabel(planStep).endsWith(" · basis")).toBe(true);
+  });
+
+  it("labelt een eigen moment als aanvulling met zijn categorienaam", () => {
+    expect(resolveBlockRole(routineBlock)).toBe("aanvulling");
+    expect(getBlockRoleLabel(routineBlock)).toBe("Water drinken · aanvulling");
+  });
+
+  it("geeft een geïmporteerde afspraak geen rol-achtervoegsel", () => {
+    const externalBlock: TimelineBlock = {
+      ...routineBlock,
+      id: "external:2026-08-02:1",
+      kind: "external",
+      categoryId: "werk",
+      title: "Overleg",
+      source: "external:google_calendar",
+      isEditable: false,
+    };
+
+    expect(resolveBlockRole(externalBlock)).toBeNull();
+    expect(getBlockRoleLabel(externalBlock)).toBe("Werk");
+  });
+});
+
+describe("leesbare chip-hoogte", () => {
+  const HOUR_HEIGHT_PX = 58;
+
+  it("tilt een kwartierblok naar de leesbare bodem", () => {
+    const height = getBlockTimelineHeightPx("09:00", "09:15", HOUR_HEIGHT_PX);
+    expect(height).toBe(TIMELINE_MIN_BLOCK_HEIGHT_PX);
+  });
+
+  it("laat de tijdregel weg zolang eyebrow en titel de ruimte nodig hebben", () => {
+    expect(isCompactTimelineBlock("09:00", "09:15", HOUR_HEIGHT_PX)).toBe(true);
+    expect(isCompactTimelineBlock("09:00", "09:45", HOUR_HEIGHT_PX)).toBe(true);
+  });
+
+  it("toont de tijdregel weer zodra het blok een uur beslaat", () => {
+    const height = getBlockTimelineHeightPx("09:00", "10:00", HOUR_HEIGHT_PX);
+    expect(height).toBeGreaterThanOrEqual(TIMELINE_COMPACT_BLOCK_HEIGHT_PX);
+    expect(isCompactTimelineBlock("09:00", "10:00", HOUR_HEIGHT_PX)).toBe(false);
+  });
+
+  it("laat een lang blok zijn eigen hoogte houden", () => {
+    const height = getBlockTimelineHeightPx("09:00", "11:00", HOUR_HEIGHT_PX);
+    expect(height).toBeCloseTo(2 * HOUR_HEIGHT_PX, 5);
   });
 });
 

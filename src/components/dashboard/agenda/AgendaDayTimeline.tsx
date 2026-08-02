@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { MouseEvent, ReactNode } from "react";
+import * as Icons from "@/components/app/icons";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
@@ -19,9 +20,12 @@ import {
   getTimelineHalfHourMarks,
   getTimelineHourLabels,
   getTimelineTrackHeightPx,
+  isCompactTimelineBlock,
   positionToTimelineTime,
   resolvePlanStepPlacement,
+  TIMELINE_MIN_BLOCK_HEIGHT_PX,
 } from "@/lib/agenda-timeline";
+import { trackEvent } from "@/lib/ga4";
 import type { AgendaDayContext } from "@/lib/agenda-day-context";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
@@ -33,6 +37,15 @@ type DraftSlot = {
   startTime: string;
   endTime: string;
 };
+
+/** Voorzet voor "Meer hulp hierbij": aanvulling naast de basis van dit domein. */
+type HelpPreset = {
+  categoryId: AgendaCategoryId;
+  domain: PillarId;
+};
+
+const HELP_SHEET_NOTE =
+  "Alleen opties die naast je basis passen. Je basis blijft staan.";
 
 type HiddenPlanStep = {
   title: string;
@@ -110,6 +123,7 @@ export default function AgendaDayTimeline({
   const [addOpen, setAddOpen] = useState(false);
   const [focusExpanded, setFocusExpanded] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
+  const [helpPreset, setHelpPreset] = useState<HelpPreset | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
 
   const slot = context.kind === "engine" ? context.slot : null;
@@ -158,6 +172,7 @@ export default function AgendaDayTimeline({
   const closeSheet = () => {
     setAddOpen(false);
     setDraftSlot(null);
+    setHelpPreset(null);
   };
 
   const closeFocus = () => {
@@ -182,8 +197,26 @@ export default function AgendaDayTimeline({
     closeFocus();
     setSelectedBlockId(null);
     setDraftSlot(null);
+    setHelpPreset(null);
     setAddOpen(true);
   }, []);
+
+  const openHelpSheet = (preset: HelpPreset) => {
+    closeFocus();
+    setSelectedBlockId(null);
+    setDraftSlot(null);
+    setHelpPreset(preset);
+    setAddOpen(true);
+  };
+
+  const handleQuietCtaClick = () => {
+    trackEvent("dashboard_agenda_quiet_cta_click", {
+      surface: "agenda",
+      view: "dag",
+    });
+    clarityTag("dashboard_agenda", "quiet_cta");
+    openHeaderSheet();
+  };
 
   useEffect(() => {
     onRegisterFooterActions?.({ openAddSheet: openHeaderSheet, blockBusy });
@@ -205,10 +238,27 @@ export default function AgendaDayTimeline({
     const offsetY = event.clientY - rect.top;
     const nextDraft = positionToTimelineTime(offsetY, rect.height);
     setSelectedBlockId(null);
+    setHelpPreset(null);
     setDraftSlot(nextDraft);
     setAddOpen(true);
     clarityTag("agenda_block", "tap_create");
   };
+
+  // De tray blijft staan zolang er geen tijd gezet is (fullbleed-regel 7); de
+  // sectiekop maakt van "hangt erboven" een eigen belofte in plaats van een
+  // restpost.
+  const trayVisible = Boolean(planStep && planStepPlacement === "tray");
+  const freeHeading = isToday ? "Vandaag nog vrij" : "Nog vrij op deze dag";
+  const quietHeading = trayVisible
+    ? isToday
+      ? "Nog geen moment in je dag gezet"
+      : "Nog geen moment op deze dag gezet"
+    : isToday
+      ? "Je dag is nog leeg"
+      : "Nog niets op deze dag";
+  const quietBody = trayVisible
+    ? "Je stap hierboven wacht nog op een tijd. Zet er een moment bij, of plan iets anders."
+    : "Zet één moment vast, dan weet je waar de rest omheen past.";
 
   return (
     <section aria-label="Dagtijdlijn" className="min-w-0">
@@ -245,13 +295,19 @@ export default function AgendaDayTimeline({
         </div>
       ) : null}
 
-      {planStep && planStepPlacement === "tray" ? (
-        <div className="mb-3">
+      {planStep && trayVisible ? (
+        <section className="mb-3" aria-label={freeHeading}>
+          <h3 className="m-0 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
+            {freeHeading}
+          </h3>
           <AgendaPlanStepStrip
             block={planStep}
             onOpenDetail={() => openDetail(planStep.id)}
           />
-        </div>
+          <p className="mt-2 text-[12px] leading-normal text-[#7E8C82]">
+            Blijft hier staan tot je er een moment bij kiest — hij verdwijnt niet.
+          </p>
+        </section>
       ) : null}
 
       {weekStrip ? <div className="mb-4">{weekStrip}</div> : null}
@@ -325,8 +381,42 @@ export default function AgendaDayTimeline({
             </div>
           ) : null}
 
+          {gridBlocks.length === 0 ? (
+            <div className="pointer-events-none absolute inset-x-3 top-[12%] z-[15] flex flex-col items-start gap-2 rounded-xl border border-white/10 bg-black/30 p-3.5">
+              <p
+                className="m-0 text-[14px] font-medium leading-snug text-[#F1EFE8] text-pretty"
+                style={{ fontFamily: "var(--f-serif)" }}
+              >
+                {quietHeading}
+              </p>
+              <p className="m-0 text-[12.5px] leading-normal text-[#9FB0A6] text-pretty">
+                {quietBody}
+              </p>
+              <button
+                type="button"
+                disabled={blockBusy}
+                onClick={handleQuietCtaClick}
+                aria-haspopup="dialog"
+                className={`pointer-events-auto inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold transition-colors disabled:opacity-60 ${
+                  trayVisible
+                    ? "border border-white/15 bg-white/[0.04] text-[var(--sage)] hover:border-white/30"
+                    : "border border-[var(--sage)] bg-[var(--sage)] text-[#0f1c10]"
+                }`}
+                style={{ fontFamily: "var(--f-sans)" }}
+              >
+                <Icons.Plus s={14} />
+                Plan een moment
+              </button>
+            </div>
+          ) : null}
+
           {gridBlocks.map((block, index) => {
             const style = getBlockTimelineStyle(block.startTime, block.endTime);
+            const compact = isCompactTimelineBlock(
+              block.startTime,
+              block.endTime,
+              HOUR_HEIGHT_PX,
+            );
             return (
               <div
                 key={block.id}
@@ -334,10 +424,15 @@ export default function AgendaDayTimeline({
                 style={{
                   top: `${style.topPercent}%`,
                   height: `${style.heightPercent}%`,
+                  minHeight: TIMELINE_MIN_BLOCK_HEIGHT_PX,
                   zIndex: 10 + index,
                 }}
               >
-                <AgendaBlockCard block={block} onOpenDetail={() => openDetail(block.id)} />
+                <AgendaBlockCard
+                  block={block}
+                  compact={compact}
+                  onOpenDetail={() => openDetail(block.id)}
+                />
               </div>
             );
           })}
@@ -347,16 +442,21 @@ export default function AgendaDayTimeline({
       {addOpen ? (
         <AgendaAddBlockSheet
           key={
-            draftSlot
-              ? `tap-${date}-${draftSlot.startTime}-${draftSlot.endTime}`
-              : `header-${date}`
+            helpPreset
+              ? `help-${date}-${helpPreset.categoryId}`
+              : draftSlot
+                ? `tap-${date}-${draftSlot.startTime}-${draftSlot.endTime}`
+                : `header-${date}`
           }
           open={addOpen}
           date={date}
           busy={blockBusy}
           initialStartTime={draftSlot?.startTime}
           initialEndTime={draftSlot?.endTime}
+          initialCategoryId={helpPreset?.categoryId}
+          helperNote={helpPreset ? HELP_SHEET_NOTE : null}
           createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
+          createOrigin={helpPreset ? "meer_hulp" : undefined}
           archivedBlocks={archivedForDay}
           hiddenPlanStep={hiddenPlanStep}
           onRestore={onRestoreBlock}
@@ -400,6 +500,7 @@ export default function AgendaDayTimeline({
               }
             : undefined
         }
+        onOpenHelpSheet={openHelpSheet}
       />
     </section>
   );

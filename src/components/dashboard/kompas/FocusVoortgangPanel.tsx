@@ -85,7 +85,6 @@ export default function FocusVoortgangPanel({
               onSelectPillar={focusControl.onSelectPillar}
               onAcceptEngine={focusControl.onAcceptEngine}
               onReset={focusControl.onReset}
-              variant="kompas"
               className="mt-3 border-t border-white/8 pt-3"
             />
           ) : null}

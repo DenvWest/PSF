@@ -12,5 +12,5 @@ type AgendaFocusPickerProps = {
 };
 
 export default function AgendaFocusPicker(props: AgendaFocusPickerProps) {
-  return <FocusPickerCore {...props} variant="agenda" />;
+  return <FocusPickerCore {...props} />;
 }

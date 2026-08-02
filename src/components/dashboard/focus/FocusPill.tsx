@@ -16,7 +16,7 @@ type FocusPillProps = {
 };
 
 const headerVariantClasses: Record<FocusSurfaceVariant, string> = {
-  agenda: "max-w-[9.5rem] shrink-0 border-[#e4e0da] bg-white text-[var(--sage)]",
+  agenda: "max-w-[9.5rem] shrink-0 border-white/12 bg-white/[0.04] text-[#7FB28E]",
   kompas: "max-w-[9.5rem] shrink-0 border-white/12 bg-black/20 text-[#5A8F6A]",
 };
 

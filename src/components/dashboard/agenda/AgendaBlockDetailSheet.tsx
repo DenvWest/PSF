@@ -7,12 +7,12 @@ import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
 import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
 import { getAgendaCategory } from "@/data/agenda/categories";
 import { normalizeLocalTime } from "@/lib/account-priority-pref";
-import { minutesToTime, timeToMinutes } from "@/lib/agenda-timeline";
+import { getBlockRoleLabel, minutesToTime, timeToMinutes } from "@/lib/agenda-timeline";
 import { clarityTag } from "@/lib/clarity";
 import { trackAgendaBlockUpdated, trackEvent } from "@/lib/ga4";
 import { isValidAgendaDate } from "@/lib/dashboard-url";
-import type { TimelineBlock } from "@/types/agenda";
-import type { DashboardModel } from "@/types/dashboard";
+import type { AgendaCategoryId, TimelineBlock } from "@/types/agenda";
+import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 type RetimeInput = {
   date?: string;
@@ -34,6 +34,7 @@ type AgendaBlockDetailSheetProps = {
   onRetime?: (blockId: string, input: RetimeInput) => void;
   onDismissPlanStep?: (date: string) => void;
   onHideAllPlanSteps?: () => void;
+  onOpenHelpSheet?: (input: { categoryId: AgendaCategoryId; domain: PillarId }) => void;
 };
 
 const DURATION_CHOICES = [15, 30, 45, 60] as const;
@@ -68,6 +69,7 @@ export default function AgendaBlockDetailSheet({
   onRetime,
   onDismissPlanStep,
   onHideAllPlanSteps,
+  onOpenHelpSheet,
 }: AgendaBlockDetailSheetProps) {
   const titleId = useId();
   const [retimeOpen, setRetimeOpen] = useState(false);
@@ -152,10 +154,33 @@ export default function AgendaBlockDetailSheet({
             prefBusy={prefBusy}
             variant="detail"
             tone="dark"
+            eyebrowOverride={getBlockRoleLabel(block)}
             actionSurface="agenda_block_detail"
             onCompletionChange={onCompletionChange}
             onScheduledTimeChange={onScheduledTimeChange}
           />
+
+          {block.slot && onOpenHelpSheet ? (
+            <button
+              type="button"
+              disabled={busy || prefBusy}
+              onClick={() => {
+                const domain = block.slot!.domain;
+                trackEvent("dashboard_agenda_meer_hulp_open", {
+                  surface: "agenda",
+                  domain,
+                });
+                clarityTag("dashboard_agenda", "meer_hulp");
+                onOpenHelpSheet({ categoryId: block.categoryId, domain });
+              }}
+              className="mt-3 inline-flex min-h-11 cursor-pointer items-center gap-1 border-none bg-transparent px-0 text-[13px] font-semibold text-[var(--sage)] disabled:opacity-60"
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              Meer hulp hierbij
+              <Icons.ChevronRight s={13} />
+            </button>
+          ) : null}
+
           {block.slot && onDismissPlanStep ? (
             <>
               <button
@@ -207,7 +232,9 @@ export default function AgendaBlockDetailSheet({
         >
           <div className="mb-3 flex items-center gap-1.5">
             <CategoryIcon iconName={category.icon} color={category.color} />
-            <span className="text-[12px] font-medium text-[#9FB0A6]">{category.label}</span>
+            <span className="text-[12px] font-medium text-[#9FB0A6]">
+              {getBlockRoleLabel(block)}
+            </span>
           </div>
 
           <h3

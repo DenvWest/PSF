@@ -1,4 +1,5 @@
-import { isAgendaCategoryId } from "@/data/agenda/categories";
+import { getAgendaCategory, isAgendaCategoryId } from "@/data/agenda/categories";
+import { PILLAR } from "@/data/dashboard";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import type {
@@ -17,6 +18,16 @@ export const TIMELINE_TOTAL_MINUTES = TIMELINE_END_MINUTES - TIMELINE_START_MINU
 export const ANALYSIS_BLOCK_DURATION_MINUTES = 45;
 export const DEFAULT_BLOCK_DURATION_MINUTES = 30;
 export const TIMELINE_SNAP_MINUTES = 15;
+
+/**
+ * De percentage-hoogte van een blok blijft de eerlijke claim op de tijd; alleen
+ * de gerenderde chip krijgt een bodem in pixels, zodat een kwartierblok zijn
+ * herkomst-label plus één titelregel kwijt kan in plaats van beide dood te
+ * knippen.
+ */
+export const TIMELINE_MIN_BLOCK_HEIGHT_PX = 50;
+/** Daaronder valt de tijdregel weg: herkomst en titel gaan voor. */
+export const TIMELINE_COMPACT_BLOCK_HEIGHT_PX = 58;
 
 const HOUR_LABELS = Array.from(
   { length: TIMELINE_END_HOUR - TIMELINE_START_HOUR + 1 },
@@ -108,6 +119,55 @@ export function getBlockTimelineStyle(startTime: string, endTime: string): {
     topPercent,
     heightPercent: Math.max(heightPercent, 4),
   };
+}
+
+export function getBlockTimelineHeightPx(
+  startTime: string,
+  endTime: string,
+  hourHeightPx: number,
+): number {
+  const { heightPercent } = getBlockTimelineStyle(startTime, endTime);
+  const rawHeight = (heightPercent / 100) * getTimelineTrackHeightPx(hourHeightPx);
+  return Math.max(rawHeight, TIMELINE_MIN_BLOCK_HEIGHT_PX);
+}
+
+export function isCompactTimelineBlock(
+  startTime: string,
+  endTime: string,
+  hourHeightPx: number,
+): boolean {
+  return (
+    getBlockTimelineHeightPx(startTime, endTime, hourHeightPx) <
+    TIMELINE_COMPACT_BLOCK_HEIGHT_PX
+  );
+}
+
+export type TimelineBlockRole = "basis" | "aanvulling" | null;
+
+/**
+ * Basis versus aanvulling is een herkomst-label, geen voortgangslabel: de
+ * plan-stap is je basis omdat het plan hem aandraagt, een eigen moment is
+ * aanvulling omdat jij hem ernaast zette. Een geïmporteerde afspraak is geen
+ * van beide. Het label zegt niets over gedaan-zijn — dat blijft
+ * `daily_action_log` (verdict KILL 8).
+ */
+export function resolveBlockRole(block: TimelineBlock): TimelineBlockRole {
+  if (block.kind === "analysis") {
+    return "basis";
+  }
+  if (block.kind === "routine") {
+    return "aanvulling";
+  }
+  return null;
+}
+
+export function getBlockRoleLabel(block: TimelineBlock): string {
+  const baseLabel =
+    block.kind === "analysis" && block.domain
+      ? PILLAR[block.domain].label
+      : getAgendaCategory(block.categoryId).label;
+  const role = resolveBlockRole(block);
+  return role ? `${baseLabel} · ${role}` : baseLabel;
 }
 
 function domainToCategoryId(domain: PillarId): AgendaCategoryId {

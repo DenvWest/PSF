@@ -2,6 +2,7 @@
 
 import * as Icons from "@/components/app/icons";
 import { PILLAR } from "@/data/dashboard";
+import { getBlockRoleLabel } from "@/lib/agenda-timeline";
 import { clarityTag } from "@/lib/clarity";
 import type { TimelineBlock } from "@/types/agenda";
 
@@ -39,7 +40,7 @@ export default function AgendaPlanStepStrip({
       />
       <div className="min-w-0 flex-1">
         <p className="m-0 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#9FB0A6]">
-          Uit je plan
+          {getBlockRoleLabel(block)}
         </p>
         <p
           className="m-0 truncate text-[14px] font-medium leading-snug text-[#F1EFE8]"

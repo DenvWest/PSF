@@ -4,10 +4,13 @@ import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import { getAgendaCategory } from "@/data/agenda/categories";
 import { PILLAR } from "@/data/dashboard";
+import { getBlockRoleLabel, resolveBlockRole } from "@/lib/agenda-timeline";
 import type { TimelineBlock } from "@/types/agenda";
 
 type AgendaTimelineChipProps = {
   block: TimelineBlock;
+  /** Korte blokken: de tijdregel valt weg, herkomst en titel blijven. */
+  compact?: boolean;
   onOpenDetail: () => void;
 };
 
@@ -24,22 +27,27 @@ function CategoryIcon({
 
 export default function AgendaTimelineChip({
   block,
+  compact = false,
   onOpenDetail,
 }: AgendaTimelineChipProps) {
   const isAnalysis = block.kind === "analysis";
   const category = getAgendaCategory(block.categoryId);
+  const isBasis = resolveBlockRole(block) === "basis";
   const accentColor = isAnalysis && block.domain ? PILLAR[block.domain].color : category.color;
-  const eyebrow = isAnalysis ? "Uit je plan" : category.label;
+  const eyebrow = getBlockRoleLabel(block);
 
   return (
     <button
       type="button"
       onClick={onOpenDetail}
       aria-label={`Open ${block.title}`}
-      className={`flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1d3120] p-2 text-left transition-colors hover:border-white/20 ${
-        block.done ? "opacity-70" : ""
-      }`}
-      style={{ borderLeftWidth: 3, borderLeftColor: accentColor }}
+      className={`flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl border bg-[#1d3120] text-left transition-colors hover:border-white/20 ${
+        compact ? "px-2 py-1.5" : "p-2"
+      } ${isBasis ? "border-white/15" : "border-white/10"} ${block.done ? "opacity-70" : ""}`}
+      style={{
+        borderLeftWidth: isBasis ? 3 : 2,
+        borderLeftColor: isBasis ? accentColor : `${accentColor}99`,
+      }}
     >
       <div className="flex min-h-0 flex-1 items-start justify-between gap-1">
         <div className="min-w-0 flex-1">
@@ -58,16 +66,18 @@ export default function AgendaTimelineChip({
             </span>
           </div>
           <p
-            className={`m-0 line-clamp-2 text-[13px] font-medium leading-snug text-[#F1EFE8] ${
-              block.done ? "line-through decoration-white/30" : ""
-            }`}
+            className={`m-0 text-[13px] font-medium leading-snug text-[#F1EFE8] ${
+              compact ? "line-clamp-1" : "line-clamp-2"
+            } ${block.done ? "line-through decoration-white/30" : ""}`}
             style={{ fontFamily: "var(--f-serif)" }}
           >
             {block.title}
           </p>
-          <p className="mt-0.5 truncate text-[10.5px] tabular-nums text-[#9FB0A6]">
-            {block.startTime} – {block.endTime}
-          </p>
+          {!compact ? (
+            <p className="mt-0.5 truncate text-[10.5px] tabular-nums text-[#9FB0A6]">
+              {block.startTime} – {block.endTime}
+            </p>
+          ) : null}
         </div>
         {block.done ? (
           <span

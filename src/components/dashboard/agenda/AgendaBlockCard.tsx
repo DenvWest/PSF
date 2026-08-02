@@ -5,9 +5,16 @@ import type { TimelineBlock } from "@/types/agenda";
 
 type AgendaBlockCardProps = {
   block: TimelineBlock;
+  compact?: boolean;
   onOpenDetail: () => void;
 };
 
-export default function AgendaBlockCard({ block, onOpenDetail }: AgendaBlockCardProps) {
-  return <AgendaTimelineChip block={block} onOpenDetail={onOpenDetail} />;
+export default function AgendaBlockCard({
+  block,
+  compact,
+  onOpenDetail,
+}: AgendaBlockCardProps) {
+  return (
+    <AgendaTimelineChip block={block} compact={compact} onOpenDetail={onOpenDetail} />
+  );
 }
