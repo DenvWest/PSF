@@ -15,8 +15,6 @@ export type UseMovementPlanProfileResult = {
   profile: MovementPlanProfile;
   loading: boolean;
   prefsBusy: boolean;
-  /** Flipt zodra de trainingslocatie handmatig is gezet — kleurt alleen de "ongewijzigd door je sport"-tag. */
-  progHot: boolean;
   saveProfilePatch: (patch: MovementPlanProfilePatch) => Promise<void>;
   toggleSport: (sportId: string) => void;
   /** Voor waarden die elders al server-side zijn opgeslagen (bv. MovementStartChoice) — geen dubbele POST. */
@@ -30,7 +28,6 @@ export function useMovementPlanProfile(movStr: number | undefined): UseMovementP
   );
   const [loading, setLoading] = useState(true);
   const [prefsBusy, setPrefsBusy] = useState(false);
-  const [progHot, setProgHot] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,7 +68,6 @@ export function useMovementPlanProfile(movStr: number | undefined): UseMovementP
         const next = (await response.json()) as MovementPlanProfile & { ok: boolean };
         setProfile(resolveEffectivePlanProfile(next, movStr));
         if ("trainingLocation" in patch) {
-          setProgHot(true);
           trackEvent("movement_location_selected", {
             location: String(patch.trainingLocation),
             surface: "plan_sheet",
@@ -132,5 +128,5 @@ export function useMovementPlanProfile(movStr: number | undefined): UseMovementP
     [movStr],
   );
 
-  return { profile, loading, prefsBusy, progHot, saveProfilePatch, toggleSport, applyKnownPatch };
+  return { profile, loading, prefsBusy, saveProfilePatch, toggleSport, applyKnownPatch };
 }

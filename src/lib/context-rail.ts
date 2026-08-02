@@ -19,7 +19,7 @@ export type ContextRailDomainItem = {
   score: number;
 };
 
-export type ContextRailToolId = "checkin" | "supplementen" | "gids" | "inzichten";
+export type ContextRailToolId = "checkin" | "gids";
 
 export type ContextRailTool = {
   id: ContextRailToolId;
@@ -48,8 +48,6 @@ export const KOMPAS_RAIL_PILLAR_IDS: PillarId[] = [
   "verbinding",
 ];
 
-export const BEWEGING_SUPPLEMENT_ANCHOR = "beweging-supplementen";
-
 export function buildKompasRailDomains(
   scores: Record<string, number>,
 ): ContextRailDomainItem[] {
@@ -65,16 +63,12 @@ export function buildKompasRailDomains(
   });
 }
 
-export function buildBewegingRailTools(input: {
-  nutritionLogCompleted: boolean;
-  /**
-   * Nu niet gedragsbepalend: zonder aanbevelingen blijft de knop bruikbaar,
-   * want de sectie zelf legt dan uit waarom er geen signalen zijn.
-   */
-  hasRecommendations: boolean;
-}): ContextRailTool[] {
-  const supplementsLocked = !input.nutritionLogCompleted;
-
+/**
+ * Supplementen en "Leefstijl & inzichten" zijn hier weg (verdict-S5): het
+ * oordeel woont voortaan op Statistieken › Advies, en /inzichten staat al in
+ * de top-nav — een tweede ingang op de doe-surface is ruis.
+ */
+export function buildBewegingRailTools(): ContextRailTool[] {
   return [
     {
       id: "checkin",
@@ -83,25 +77,10 @@ export function buildBewegingRailTools(input: {
       href: "/intake/beweging?from=dashboard&kompas=beweging",
     },
     {
-      id: "supplementen",
-      label: "Supplementen",
-      icon: "Pill",
-      disabled: supplementsLocked,
-      disabledHint: supplementsLocked
-        ? "Doe eerst de voedingscheck — eerst tafel, dan potje."
-        : undefined,
-    },
-    {
       id: "gids",
       label: "Bewegingsgids",
       icon: "Mail",
       href: "/gids/beweging",
-    },
-    {
-      id: "inzichten",
-      label: "Leefstijl & inzichten",
-      icon: "BookOpen",
-      href: "/inzichten",
     },
   ];
 }

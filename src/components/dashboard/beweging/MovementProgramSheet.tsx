@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import Link from "next/link";
 import { SPORT_CATALOG } from "@/data/movement/sport-catalog";
-import type {
-  MovementSessionCatalogEntry,
-  MovementTrainingLocation,
+import {
+  getMovementSessionCatalogEntry,
+  type MovementSessionCatalogEntry,
+  type MovementTrainingLocation,
 } from "@/data/movement/session-catalog";
 import {
   MOVEMENT_TARGET_DAYS_MAX,
@@ -20,8 +20,8 @@ import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import {
-  buildGuidelineLine,
   buildMovementTargetGap,
+  buildProgramDoseLine,
   resolveEffectiveMovementTarget,
   resolveMovementProgramDose,
   type MovementCurrent,
@@ -36,9 +36,7 @@ export type MovementProgramSheetProps = {
   entry: MovementSessionCatalogEntry;
   profile: MovementPlanProfile;
   current: MovementCurrent;
-  checkinHref: string;
   busy: boolean;
-  progHot: boolean;
   onSave: (patch: MovementPlanProfilePatch) => void;
   onToggleSport: (sportId: string) => void;
 };
@@ -56,6 +54,15 @@ function InfoChip({ label, value }: { label: string; value: string }) {
       </span>
       <strong className="font-semibold text-[#F1EFE8]">{value}</strong>
     </span>
+  );
+}
+
+/** Herkomst van een instelbare waarde — wat van jou is en wat van ons, altijd zichtbaar (verdict §D.5/E.1). */
+function HerkomstLabel({ isOwn }: { isOwn: boolean }) {
+  return (
+    <p className="mt-1 text-[10.5px] font-medium uppercase tracking-[0.07em] text-[#7E8C82]">
+      {isOwn ? "jouw keuze" : "advies"}
+    </p>
   );
 }
 
@@ -206,9 +213,7 @@ export default function MovementProgramSheet({
   entry,
   profile,
   current,
-  checkinHref,
   busy,
-  progHot,
   onSave,
   onToggleSport,
 }: MovementProgramSheetProps) {
@@ -250,7 +255,6 @@ export default function MovementProgramSheet({
     return null;
   }
 
-  const exercises = entry.exercises ?? [];
   const rawTarget = {
     minutes: profile.targetMinutes,
     days: profile.targetDays,
@@ -263,8 +267,16 @@ export default function MovementProgramSheet({
   );
   const dose = resolveMovementProgramDose(effectiveTarget);
   const gap = buildMovementTargetGap(effectiveTarget, current);
-  const guideline = buildGuidelineLine(effectiveTarget);
   const lens = buildMovementSportLens(profile.sports);
+  // §E.4: een variant zonder oefeningen bestaat niet in de keuzelijst — resolveert
+  // hij hier toch (bv. via oude prefs), dan valt het systeem eerlijk terug op de
+  // thuisvariant in plaats van een leeg blok te tonen.
+  const fallbackEntry =
+    entry.detailStatus === "coming_soon"
+      ? getMovementSessionCatalogEntry("kracht-thuis")
+      : undefined;
+  const displayEntry = fallbackEntry ?? entry;
+  const displayExercises = displayEntry.exercises ?? [];
 
   return (
     <div className="fixed inset-0 z-[100]" role="presentation">
@@ -310,35 +322,33 @@ export default function MovementProgramSheet({
               <InfoChip label="Duur" value={entry.durationMin} />
               <InfoChip label="Frequentie" value={entry.frequency} />
               <InfoChip label="Intensiteit" value={entry.intensity} />
-              <span
-                className={`rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.09em] ${
-                  progHot
-                    ? "border-[#79B98C]/50 bg-[#5A8F6A]/12 text-[#79B98C]"
-                    : "border-white/10 text-[#9FB0A6]"
-                }`}
-              >
-                {progHot ? "programma bijgewerkt" : "ongewijzigd door je sport"}
-              </span>
             </div>
           </div>
+
+          {dose ? (
+            <div className="rounded-xl border border-[color:var(--ac)]/30 bg-[color:var(--ac)]/[0.06] px-4 py-3.5">
+              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7E8C82]">
+                Op je vandaag-kaart
+              </p>
+              <p className="text-[13.5px] leading-relaxed text-[#F1EFE8]">
+                {entry.label} · {buildProgramDoseLine(dose)}
+              </p>
+            </div>
+          ) : null}
 
           <div>
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
               Wat je doet
             </p>
             {entry.detailStatus === "coming_soon" ? (
-              <div className="rounded-xl border border-dashed border-white/15 bg-black/10 px-4 py-3.5">
-                <p className="text-[13px] leading-relaxed text-[#CDD7D0]">
-                  De oefeningen per stap volgen nog voor dit programma — geen lijst tonen we
-                  liever niet dan een verzonnen.
-                </p>
-                <p className="mt-2 max-w-[68ch] text-[12px] leading-relaxed text-[#9FB0A6]">
-                  Voor nu geldt de algemene opbouw: {entry.structure}
-                </p>
-              </div>
-            ) : exercises.length > 0 ? (
+              <p className="mb-3 max-w-[68ch] text-[12.5px] leading-relaxed text-[#9FB0A6]">
+                De {entry.label.toLowerCase()}-oefeningen staan er nog niet in. Je krijgt de
+                thuisvariant — dezelfde prikkel, ander materiaal.
+              </p>
+            ) : null}
+            {displayExercises.length > 0 ? (
               <ol className="space-y-2.5">
-                {exercises.map((exercise) => (
+                {displayExercises.map((exercise) => (
                   <li
                     key={exercise.name}
                     className="rounded-xl border border-white/10 bg-black/20 px-4 py-3"
@@ -357,7 +367,7 @@ export default function MovementProgramSheet({
               </ol>
             ) : (
               <p className="max-w-[68ch] text-[13px] leading-relaxed text-[#CDD7D0]">
-                {entry.structure}
+                {displayEntry.structure}
               </p>
             )}
           </div>
@@ -391,13 +401,7 @@ export default function MovementProgramSheet({
               <p className="mb-3 max-w-[68ch] text-[12.5px] leading-relaxed text-[#9FB0A6]">
                 {current.source === "basischeck"
                   ? "Je basischeck kent je frequentie, niet je minuten."
-                  : "Nog geen beweegcheck gedaan."}{" "}
-                <Link
-                  href={checkinHref}
-                  className="font-semibold text-[color:var(--ac)] underline decoration-[color:var(--ac)]/40 underline-offset-2"
-                >
-                  Doe de beweegcheck →
-                </Link>
+                  : "Nog geen beweegcheck gedaan."}
               </p>
             )}
 
@@ -420,6 +424,7 @@ export default function MovementProgramSheet({
                   disabled={busy}
                   onCommit={(value) => onSave({ targetMinutes: value })}
                 />
+                <HerkomstLabel isOwn={profile.targetMinutes !== null} />
               </div>
               <div>
                 <p className="mb-1.5 text-[11px] font-medium text-[#9FB0A6]">Op hoeveel dagen</p>
@@ -432,6 +437,7 @@ export default function MovementProgramSheet({
                   disabled={busy}
                   onCommit={(value) => onSave({ targetDays: value })}
                 />
+                <HerkomstLabel isOwn={profile.targetDays !== null} />
               </div>
               <div>
                 <p className="mb-1.5 text-[11px] font-medium text-[#9FB0A6]">
@@ -443,6 +449,7 @@ export default function MovementProgramSheet({
                   disabled={busy}
                   onSelect={(id) => onSave({ targetStrength: id })}
                 />
+                <HerkomstLabel isOwn={profile.targetStrength !== null} />
               </div>
             </div>
 
@@ -463,12 +470,6 @@ export default function MovementProgramSheet({
                   </p>
                 ) : null}
               </div>
-            ) : null}
-
-            {guideline ? (
-              <p className="mt-2 max-w-[68ch] text-[11px] leading-relaxed text-[#7E8C82]">
-                {guideline}
-              </p>
             ) : null}
           </div>
 
@@ -519,7 +520,7 @@ export default function MovementProgramSheet({
                   })}
                 </div>
                 <p className="mt-2 max-w-[68ch] text-[11px] leading-relaxed text-[#7E8C82]">
-                  Dit telt mee in je weekbalans op Beweging. Maximaal drie sporten.
+                  {lens.note} Maximaal drie sporten.
                 </p>
               </div>
             ) : null}
@@ -538,7 +539,7 @@ export default function MovementProgramSheet({
               <div className="mt-3 space-y-4 rounded-xl border border-white/10 bg-black/20 px-4 py-4">
                 <div>
                   <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
-                    Je spoor
+                    Wat voor beweegvorm
                   </p>
                   <ChipRow
                     options={MOVEMENT_START_PATTERN_OPTIONS}

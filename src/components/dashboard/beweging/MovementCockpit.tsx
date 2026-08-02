@@ -10,17 +10,27 @@ import {
   getMovementSessionCatalogEntry,
   resolveRecommendedSessionVariant,
 } from "@/data/movement/session-catalog";
-import { DOMAIN_CHECKIN } from "@/lib/domain-checkin";
 import { isPlanStepHidden } from "@/lib/day-model";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
 import type { MovementPrefs } from "@/lib/movement-prefs";
-import { deriveMovementCurrent } from "@/lib/movement-target";
+import {
+  buildProgramDoseLine,
+  deriveMovementCurrent,
+  resolveEffectiveMovementTarget,
+  resolveMovementProgramDose,
+} from "@/lib/movement-target";
 import { useMovementPlanProfile } from "@/lib/use-movement-plan-profile";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { DashboardModel } from "@/types/dashboard";
 
 /** Sage CTA in cockpit — PILLAR.beweging blijft terracotta voor nav-identiteit. */
 const COCKPIT_CTA = "#5A8F6A";
+
+export type MovementDoneState = {
+  done: boolean;
+  /** Voor de nutrient-bridge op de klaar-staat-footer — alleen na een krachtsessie. */
+  isStrengthSession: boolean;
+};
 
 type MovementCockpitProps = {
   model: DashboardModel;
@@ -29,7 +39,7 @@ type MovementCockpitProps = {
   onMakePriority: () => void;
   makePriorityBusy: boolean;
   /** Voor de klaar-staat-gate op de footer van BewegingScreen. */
-  onDoneChange?: (done: boolean) => void;
+  onDoneChange?: (state: MovementDoneState) => void;
 };
 
 export default function MovementCockpit({
@@ -50,7 +60,7 @@ export default function MovementCockpit({
   const movementPrefs = prefsOverride ?? model.movementPrefs;
 
   const movStr = model.answers?.MOV_STR;
-  const { profile, prefsBusy, progHot, saveProfilePatch, toggleSport, applyKnownPatch } =
+  const { profile, prefsBusy, saveProfilePatch, toggleSport, applyKnownPatch } =
     useMovementPlanProfile(movStr);
 
   const movementCurrent = useMemo(
@@ -69,6 +79,25 @@ export default function MovementCockpit({
     [profile.startPattern, profile.trainingLocation, profile.preferredSport, movStr],
   );
   const sessionEntry = getMovementSessionCatalogEntry(recommendedVariant);
+  const isStrengthSession = sessionEntry?.id.startsWith("kracht") ?? false;
+
+  // Jouw opgeslagen dosis — niet de catalogusfrequentie (§B rij 1: dit is de
+  // data-naad die de lus programma↔vandaag dood liet voelen).
+  const effectiveTarget = resolveEffectiveMovementTarget(
+    {
+      minutes: profile.targetMinutes,
+      days: profile.targetDays,
+      strength: profile.targetStrength,
+    },
+    movementCurrent,
+  );
+  const dose = resolveMovementProgramDose(effectiveTarget);
+  const programSummary = sessionEntry
+    ? {
+        label: `Je programma · ${sessionEntry.label}${dose ? ` · ${buildProgramDoseLine(dose)}` : `, ${sessionEntry.frequency}`}`,
+        onOpen: () => setSheetOpen(true),
+      }
+    : null;
 
   const activeOwnStep = Boolean(
     slot &&
@@ -94,25 +123,15 @@ export default function MovementCockpit({
             model={model}
             slot={slot}
             movementPrefs={movementPrefs}
+            programSummary={programSummary}
             onGoAgenda={onGoAgenda}
             onMakePriority={onMakePriority}
             makePriorityBusy={makePriorityBusy}
-            onStateChange={(state) => onDoneChange?.(state.done)}
+            onStateChange={(state) =>
+              onDoneChange?.({ done: state.done, isStrengthSession })
+            }
             onLogToggled={() => setWeekRefreshKey((key) => key + 1)}
           />
-
-          {sessionEntry ? (
-            <button
-              type="button"
-              onClick={() => setSheetOpen(true)}
-              className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-left"
-            >
-              <span className="text-[13px] text-[#CDD7D0]">
-                Je programma · {sessionEntry.label}, {sessionEntry.frequency}
-              </span>
-              <span className="text-[#7E8C82]">›</span>
-            </button>
-          ) : null}
 
           {positionLine ? (
             <p className="px-1 text-[12.5px] leading-relaxed text-[#9FB0A6]">{positionLine}</p>
@@ -165,9 +184,7 @@ export default function MovementCockpit({
           entry={sessionEntry}
           profile={profile}
           current={movementCurrent}
-          checkinHref={DOMAIN_CHECKIN.movement.href}
           busy={prefsBusy}
-          progHot={progHot}
           onSave={(patch) => void saveProfilePatch(patch)}
           onToggleSport={toggleSport}
         />

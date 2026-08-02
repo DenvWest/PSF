@@ -48,6 +48,8 @@ type MovementTodayHeroProps = {
   model: DashboardModel;
   slot: WeekDaySlot | null;
   movementPrefs: MovementPrefs;
+  /** Programmaregel — in de voet van de VANDAAG-kaart, zelfde kaart (S2-compositie). */
+  programSummary?: { label: string; onOpen: () => void } | null;
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
@@ -143,6 +145,7 @@ export default function MovementTodayHero({
   model,
   slot,
   movementPrefs,
+  programSummary,
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
@@ -163,10 +166,6 @@ export default function MovementTodayHero({
   );
   const [noTimeActive, setNoTimeActive] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
-  // Wijzig keuze opent bewust de volledige 3-kaarten-lijst; zonder deze vlag
-  // zou het opnieuw-op-null-zetten van selectedKind meteen de auto-keuze
-  // hieronder opnieuw laten triggeren.
-  const [pickerRequested, setPickerRequested] = useState(false);
 
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hidden = slot ? isPlanStepHidden(model, slot) : true;
@@ -249,26 +248,6 @@ export default function MovementTodayHero({
     }
   }, [loaded, done, onStateChange]);
 
-  // Het voorstel staat al vast vóórdat de gebruiker iets kiest: geen 3-kaarten
-  // keuzescherm als startpunt, maar direct de aanbevolen (of anders: geplande
-  // "trainen") tier. "Wijzig keuze" blijft de expliciete weg naar de volledige
-  // lijst — zie pickerRequested. Aangepast tijdens render (niet in een effect)
-  // zodat er geen extra, cascaderende re-render ontstaat — zelfde patroon als
-  // de trackedValue-vergelijking in MovementPlanAdjustSheet.
-  //
-  // Dit is een VOORSTEL, geen keuze: het wordt niet opgeslagen. Alleen een
-  // expliciete pick (of het passeren van de trainingspoort) legt de dag vast.
-  if (selectedKind == null && !pickerRequested && choiceOptions.length > 0) {
-    const kind = recommendedKind ?? "trainen";
-    setSelectedKind(kind);
-    if (kind === "trainen") {
-      setTrainingGateView("question");
-      setTrainingGateCleared(false);
-    } else {
-      setTrainingGateCleared(true);
-    }
-  }
-
   useEffect(() => {
     if (shownRef.current || !active) {
       return;
@@ -296,26 +275,6 @@ export default function MovementTodayHero({
     ? MOVEMENT_ANCHOR_OPTIONS.find((option) => option.id === movementPrefs.anchor)
     : null;
 
-  const aheadLine = useMemo(() => {
-    const phaseId = model.movementPlanProgress?.currentPhaseId;
-    const phases = movementPlanTemplate.phases;
-    const index = phases.findIndex((phase) => phase.id === phaseId);
-    if (index < 0) {
-      return "Nog één moment deze week, dan schuift je plan door naar de volgende fase.";
-    }
-    if (index >= phases.length - 1) {
-      return "Laatste fase. Je hermeting laat zien wat het ritme heeft gedaan.";
-    }
-    const next = phases[index + 1];
-    const nextLabel =
-      next.horizon === "deze-week"
-        ? "deze week"
-        : next.horizon === "week-2-4"
-          ? "week 2–4"
-          : "week 4–12";
-    return `Nog één krachtmoment deze week, dan komt ${nextLabel} in beeld.`;
-  }, [model.movementPlanProgress?.currentPhaseId]);
-
   const followUp = buildVandaagFollowUp("beweging");
 
   /** Legt de dagkeuze vast; niet-blokkerend, de UI wacht er niet op. */
@@ -332,7 +291,6 @@ export default function MovementTodayHero({
   const selectChoice = (kind: TodayChoiceKind) => {
     invalidateDailyLogCache("beweging");
     trackStepChoice(kind);
-    setPickerRequested(false);
     setNoTimeActive(false);
     setWhyOpen(false);
     setFreshChoice(true);
@@ -362,7 +320,6 @@ export default function MovementTodayHero({
     });
     clarityTag("dashboard_kompas_beweging", "step_alternative_wijzig_keuze");
     setSelectedKind(null);
-    setPickerRequested(true);
     setFreshChoice(false);
     setNoTimeActive(false);
     setWhyOpen(false);
@@ -458,19 +415,6 @@ export default function MovementTodayHero({
 
   const shellClass =
     "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-4";
-
-  // Vangt het ene render-frame op waarin de auto-keuze hierboven nog niet is
-  // toegepast, zodat de 3-kaarten-lijst nooit opflikkert vóór het voorstel.
-  if (selectedKind == null && !pickerRequested) {
-    return (
-      <section aria-label="Vandaag — beweging" className={shellClass}>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--ac)]">
-          Vandaag
-        </p>
-        <p className="mt-3 text-[14px] text-[#9FB0A6]">Even laden…</p>
-      </section>
-    );
-  }
 
   if (showTrainingGate && activeChoice) {
     return (
@@ -656,6 +600,17 @@ export default function MovementTodayHero({
             </div>
           )}
 
+          {programSummary ? (
+            <button
+              type="button"
+              onClick={programSummary.onOpen}
+              className="mt-4 flex w-full cursor-pointer items-center justify-between border-t border-white/10 pt-3 text-left"
+            >
+              <span className="text-[13px] text-[#CDD7D0]">{programSummary.label}</span>
+              <span className="text-[#7E8C82]">›</span>
+            </button>
+          ) : null}
+
           <div className="mt-4 border-t border-white/10 pt-3">
             <button
               type="button"
@@ -667,43 +622,36 @@ export default function MovementTodayHero({
               {whyOpen ? " ▴" : " ▾"}
             </button>
             {whyOpen ? (
-              <p className="mt-2 max-w-[64ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
-                {stepRationale(activeChoice.stepId) ?? slot?.rationale ?? anchorSuffix}
-              </p>
+              <>
+                <p className="mt-2 max-w-[64ch] text-[13px] leading-relaxed text-[#CDD7D0] text-pretty">
+                  {stepRationale(activeChoice.stepId) ?? slot?.rationale ?? anchorSuffix}
+                </p>
+                {slot ? (
+                  <Link
+                    href={slot.evidenceHref}
+                    onClick={() => {
+                      trackOnderbouwingLinkClick({ surface: "kompas_home", domain: "beweging" });
+                      clarityTag("onderbouwing_link", "kompas_beweging");
+                    }}
+                    className="mt-2 inline-flex items-center gap-1 text-[13px] font-medium text-[#9FB0A6] no-underline"
+                  >
+                    Lees de onderbouwing → <Icons.ArrowRight s={13} />
+                  </Link>
+                ) : null}
+              </>
             ) : null}
           </div>
 
-          <div className="mt-3 flex items-baseline gap-2 rounded-xl border border-dashed border-white/15 px-3.5 py-3">
-            <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.11em] text-[#7E8C82]">
-              Straks
-            </span>
-            <p className="m-0 text-[13.5px] leading-relaxed text-[#CDD7D0] text-pretty">
-              {aheadLine}
-            </p>
-          </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-            {slot ? (
-              <Link
-                href={slot.evidenceHref}
-                onClick={() => {
-                  trackOnderbouwingLinkClick({ surface: "kompas_home", domain: "beweging" });
-                  clarityTag("onderbouwing_link", "kompas_beweging");
-                }}
-                className="inline-flex items-center gap-1 text-[13px] font-medium text-[#9FB0A6] no-underline"
-              >
-                Lees waarom → <Icons.ArrowRight s={13} />
-              </Link>
-            ) : null}
-            {done ? (
+          {done ? (
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
               <Link
                 href={followUp.href}
                 className="inline-flex items-center gap-1 text-[13px] font-medium text-[color:var(--ac)] no-underline"
               >
                 {followUp.label} <Icons.ArrowRight s={13} />
               </Link>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
         </div>
       </section>
     );

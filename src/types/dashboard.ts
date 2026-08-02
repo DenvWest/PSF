@@ -103,7 +103,8 @@ export type VoortgangScreen =
   | "inzichten"
   | "favorieten"
   | "statistieken"
-  | "lichaamssamenstelling";
+  | "lichaamssamenstelling"
+  | "domein";
 
 export type StatistiekenBlik = "stand" | "advies" | "tijd";
 

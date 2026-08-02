@@ -85,6 +85,7 @@ export default function VoortgangHubScroll({
         data={data}
         onGoAgenda={onGoAgenda}
         onGoHermeting={onGoHermeting}
+        onOpenDomain={onOpenDomain}
       />
 
       <div className="mt-3.5">

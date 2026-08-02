@@ -12,6 +12,7 @@ const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "favorieten",
   "statistieken",
   "lichaamssamenstelling",
+  "domein",
 ]);
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -44,12 +45,27 @@ const KOMPAS_DOMAIN_IDS = new Set<PillarId>([
   "verbinding",
 ]);
 
+export function isPillarId(value: unknown): value is PillarId {
+  return typeof value === "string" && KOMPAS_DOMAIN_IDS.has(value as PillarId);
+}
+
 export function parseKompasFromUrl(url: string | URL): PillarId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
   const kompas = parsed.searchParams.get("kompas");
   if (kompas && KOMPAS_DOMAIN_IDS.has(kompas as PillarId)) {
     return kompas as PillarId;
+  }
+  return null;
+}
+
+/** Voortgang › domein-scherm (S4): zelfde geldige domein-set als de Kompas-param. */
+export function parseVoortgangDomeinFromUrl(url: string | URL): PillarId | null {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  const domein = parsed.searchParams.get("domein");
+  if (domein && KOMPAS_DOMAIN_IDS.has(domein as PillarId)) {
+    return domein as PillarId;
   }
   return null;
 }
@@ -92,6 +108,7 @@ export function parseStatistiekenBlikFromUrl(url: string | URL): StatistiekenBli
 export function buildDashboardVoortgangHref(
   screen?: VoortgangScreen | null,
   blik?: StatistiekenBlik | null,
+  domein?: PillarId | null,
 ): string {
   const params = new URLSearchParams({ tab: "voortgang" });
   if (screen && screen !== "hub") {
@@ -100,11 +117,15 @@ export function buildDashboardVoortgangHref(
   if (screen === "statistieken" && blik) {
     params.set("blik", blik);
   }
+  if (screen === "domein" && domein) {
+    params.set("domein", domein);
+  }
   return `/dashboard?${params.toString()}`;
 }
 
 export type SyncDashboardVoortgangOptions = {
   blik?: StatistiekenBlik | null;
+  domein?: PillarId | null;
 };
 
 export function syncDashboardVoortgangScreenParam(
@@ -124,12 +145,18 @@ export function syncDashboardVoortgangScreenParam(
   if (screen === "hub") {
     url.searchParams.delete("screen");
     url.searchParams.delete("blik");
+    url.searchParams.delete("domein");
   } else {
     url.searchParams.set("screen", screen);
     if (screen === "statistieken" && options?.blik) {
       url.searchParams.set("blik", options.blik);
     } else {
       url.searchParams.delete("blik");
+    }
+    if (screen === "domein" && options?.domein) {
+      url.searchParams.set("domein", options.domein);
+    } else {
+      url.searchParams.delete("domein");
     }
   }
 
@@ -278,9 +305,11 @@ export function syncDashboardTabParam(
   if (tab !== "voortgang") {
     url.searchParams.delete("screen");
     url.searchParams.delete("blik");
+    url.searchParams.delete("domein");
   } else {
     url.searchParams.delete("screen");
     url.searchParams.delete("blik");
+    url.searchParams.delete("domein");
   }
   if (tab === "agenda" || tab === "vandaag") {
     if (nextDag && isValidAgendaDate(nextDag)) {

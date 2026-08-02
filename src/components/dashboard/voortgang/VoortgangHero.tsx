@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { clarityTag } from "@/lib/clarity";
-import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import {
   buildVoortgangBewijsRegel,
   type VoortgangBewijsState,
 } from "@/lib/voortgang-bewijs-copy";
-import type { DashboardData, DashboardModel } from "@/types/dashboard";
+import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 import VoortgangBewijsband from "@/components/dashboard/voortgang/VoortgangBewijsband";
 
 type VoortgangHeroProps = {
@@ -17,6 +15,7 @@ type VoortgangHeroProps = {
   data?: DashboardData;
   onGoAgenda: () => void;
   onGoHermeting: () => void;
+  onOpenDomain: (domain: PillarId) => void;
 };
 
 const H1_BY_STATE: Record<VoortgangBewijsState, string> = {
@@ -38,8 +37,8 @@ export default function VoortgangHero({
   data,
   onGoAgenda,
   onGoHermeting,
+  onOpenDomain,
 }: VoortgangHeroProps) {
-  const router = useRouter();
   const trackedStateRef = useRef<string | null>(null);
 
   const activeDays = data?.cycleEvidence?.activeDays ?? null;
@@ -93,7 +92,7 @@ export default function VoortgangHero({
     const domain = model.priority.id;
     trackEvent("dashboard_voortgang_domein_click", { domain });
     clarityTag("dashboard_voortgang", `domeinring_${domain}`);
-    router.push(buildDashboardVandaagHref(domain));
+    onOpenDomain(domain);
   };
 
   const eyebrow = cycleDay != null ? `BEWIJS · DAG ${cycleDay}` : "BEWIJS";

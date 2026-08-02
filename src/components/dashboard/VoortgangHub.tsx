@@ -14,6 +14,7 @@ import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import SupplementVerdictPanel from "@/components/dashboard/SupplementVerdictPanel";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
+import VoortgangDomeinScreen from "@/components/dashboard/voortgang/VoortgangDomeinScreen";
 import StatistiekenBlikNav from "@/components/dashboard/voortgang/StatistiekenBlikNav";
 import StatistiekenBlikPanels from "@/components/dashboard/voortgang/StatistiekenBlikPanels";
 import FavorietenAanraderSection from "@/components/dashboard/voortgang/FavorietenAanraderSection";
@@ -26,7 +27,7 @@ import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
-import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
+import { buildDashboardVandaagHref, type SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -45,9 +46,10 @@ type VoortgangHubProps = {
   tab: DashboardTabId;
   screen: VoortgangScreen;
   statistiekenBlik: StatistiekenBlik;
+  voortgangDomein: PillarId | null;
   statistiekenAdviesExtra: ReactNode;
   statistiekenOverTijdExtra: ReactNode;
-  onScreenChange: (screen: VoortgangScreen, options?: { blik?: StatistiekenBlik }) => void;
+  onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
   onStatistiekenBlikChange: (blik: StatistiekenBlik) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoAgenda: () => void;
@@ -581,6 +583,7 @@ export default function VoortgangHub({
   tab,
   screen,
   statistiekenBlik,
+  voortgangDomein,
   statistiekenAdviesExtra,
   statistiekenOverTijdExtra,
   onScreenChange,
@@ -590,7 +593,7 @@ export default function VoortgangHub({
   onGoHermeting,
 }: VoortgangHubProps) {
   const router = useRouter();
-  const setScreen = (next: VoortgangScreen, options?: { blik?: StatistiekenBlik }) => {
+  const setScreen = (next: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => {
     onScreenChange(next, options);
   };
 
@@ -600,7 +603,7 @@ export default function VoortgangHub({
     }
   }, [tab, onScreenChange]);
 
-  const navigate = (next: VoortgangScreen, options?: { blik?: StatistiekenBlik }) => {
+  const navigate = (next: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => {
     setScreen(next, options);
   };
 
@@ -613,7 +616,8 @@ export default function VoortgangHub({
     if (
       screen === "favorieten" ||
       screen === "statistieken" ||
-      screen === "inzichten"
+      screen === "inzichten" ||
+      screen === "domein"
     ) {
       setScreen("hub");
     }
@@ -683,6 +687,19 @@ export default function VoortgangHub({
     return <LichaamssamenstellingView onBack={goBack} />;
   }
 
+  if (screen === "domein" && voortgangDomein) {
+    return (
+      <VoortgangDomeinScreen
+        model={model}
+        data={data}
+        domain={voortgangDomein}
+        onBack={goBack}
+        onGoVandaag={() => router.push(buildDashboardVandaagHref(voortgangDomein))}
+        onOpenAdvies={() => navigate("statistieken", { blik: "advies" })}
+      />
+    );
+  }
+
   return (
     <section aria-label="Voortgang navigatie">
       <VoortgangHubScroll
@@ -691,7 +708,7 @@ export default function VoortgangHub({
         onGoAgenda={onGoAgenda}
         onGoHermeting={onGoHermeting}
         onOpenDomain={(domain: PillarId) => {
-          router.push(buildDashboardVandaagHref(domain));
+          navigate("domein", { domein: domain });
         }}
         onOpenStatistieken={() => openHub("statistieken", { blik: "advies" })}
         onOpenFavorieten={() => openHub("favorieten")}

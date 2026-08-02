@@ -1,23 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import MovementCockpit from "@/components/dashboard/beweging/MovementCockpit";
+import MovementCockpit, {
+  type MovementDoneState,
+} from "@/components/dashboard/beweging/MovementCockpit";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
-import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
-import { isMovementLogEnabled } from "@/lib/feature-flags";
+import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import {
-  buildMovementRecommendations,
-  getMovementNutritionHint,
-} from "@/lib/build-recommendations";
+  adviceMayOutrankDayStep,
+  resolveDayStepState,
+  type DayStepFacts,
+} from "@/lib/domain-ready-state";
+import { isMovementLogEnabled } from "@/lib/feature-flags";
+import { getMovementNutritionHint } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
-import { BEWEGING_SUPPLEMENT_ANCHOR } from "@/lib/context-rail";
 import { trackEvent } from "@/lib/ga4";
+import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
+import { buildMovementAheadLine } from "@/lib/movement-plan-roadmap";
+import { deriveMovementCurrent } from "@/lib/movement-target";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
-import type { DashboardModel } from "@/types/dashboard";
+import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
 const FooterLink = ({
   href,
@@ -55,121 +61,92 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   };
 }
 
+/** De ene analyse-readout die als kaart bovenkomt in de klaar-staat, en als
+ * stille regel eronder blijft in de open-staat — nooit allebei (§C.3). */
+function buildVoortgangSnapshotLine(row: {
+  currentScore: number;
+  baselineScore: number | null;
+} | null): string | null {
+  if (!row) {
+    return null;
+  }
+  if (row.baselineScore != null && row.baselineScore !== row.currentScore) {
+    return `Beweging staat op ${row.currentScore}, begonnen op ${row.baselineScore}.`;
+  }
+  return `Beweging staat op ${row.currentScore}.`;
+}
+
 export default function BewegingScreen({
   model,
+  data,
   slot,
   nutritionLogCompleted = false,
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
+  onGoVoortgangDomein,
 }: {
   model: DashboardModel;
+  data?: DashboardData;
   slot: WeekDaySlot | null;
   nutritionLogCompleted?: boolean;
   onGoAgenda: () => void;
   onMakePriority: () => void;
   makePriorityBusy: boolean;
+  onGoVoortgangDomein: () => void;
 }) {
-  const premiumShownRef = useRef(false);
-  const [done, setDone] = useState(false);
+  const [doneState, setDoneState] = useState<MovementDoneState>({
+    done: false,
+    isStrengthSession: false,
+  });
   const session = sessionFromModel(model);
   const nutritionHint = getMovementNutritionHint(session);
-  const recommendations = buildMovementRecommendations(session, {
-    nutritionLogCompleted,
-  });
-  const showActiveStep =
-    model.activeHabit?.domain === "movement" && model.activeHabit.title;
-
-  useEffect(() => {
-    if (premiumShownRef.current) {
-      return;
-    }
-    premiumShownRef.current = true;
-    trackEvent("dashboard_beweging_premium_upsell", { surface: "kompas_beweging" });
-    clarityTag("dashboard_beweging_premium", "shown");
-  }, []);
 
   const logEnabled = isMovementLogEnabled();
+  const aheadLine = buildMovementAheadLine(model.movementPlanProgress?.currentPhaseId);
 
-  const voedingSupplementContent = (
-    <>
-      <div>
-        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
-          Voeding optimaliseren
-        </p>
-        <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-          {nutritionHint}
-        </p>
-        <Link
-          href="/intake/voeding?from=dashboard&kompas=beweging"
-          onClick={() => {
-            trackEvent("dashboard_beweging_voeding_click", { surface: "kompas_beweging" });
-            clarityTag("dashboard_beweging_voeding", "click");
-          }}
-          className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
-        >
-          Doe de voedingscheck <Icons.ChevronRight s={15} />
-        </Link>
-      </div>
+  // Klaar-staat-gate (C.4, gedeeld met alle domeinen): zolang er een open
+  // dagstap staat is de doe-laag de enige primary; is de stap klaar, een
+  // rustdag, of heeft een ander domein prioriteit, dan mag analyse/advies
+  // prominenter worden.
+  const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
+  const hiddenStep = slot ? isPlanStepHidden(model, slot) : true;
+  const activeStep = isOwnStep && !hiddenStep && slot != null;
+  const plannedActionKey = activeStep && slot ? resolveActionKey(model, slot) : null;
+  const dayStepFacts: DayStepFacts = {
+    plannedActionKey,
+    completedActionKeys:
+      doneState.done && plannedActionKey ? [plannedActionKey] : [],
+    isPriorityDomain: model.priority.id === "beweging",
+  };
+  const dayStepState = resolveDayStepState(dayStepFacts);
+  const showAdvice = adviceMayOutrankDayStep(dayStepFacts);
 
-      <div
-        id={BEWEGING_SUPPLEMENT_ANCHOR}
-        className="mt-4 scroll-mt-24 border-t border-white/10 pt-4"
-      >
-        <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
-          Supplementen — als je basis staat
-        </p>
-        {recommendations.length > 0 ? (
-          <div className="mt-3 flex flex-col">
-            {recommendations.map((rec, index) => {
-              const href = rec.comparisonHref ?? rec.guideHref;
-              return (
-                <Link
-                  key={rec.slug}
-                  href={href}
-                  onClick={() => {
-                    trackEvent("dashboard_beweging_supplement_click", {
-                      slug: rec.slug,
-                      target: href,
-                      surface: "kompas_beweging",
-                    });
-                    clarityTag("dashboard_beweging_supplement", rec.slug);
-                  }}
-                  className={`flex items-center gap-3 py-3 no-underline text-inherit ${
-                    index ? "border-t border-white/10" : ""
-                  }`}
-                >
-                  <span
-                    aria-hidden
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/25 text-[20px]"
-                  >
-                    {rec.icon}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="font-serif text-[16px] leading-tight text-[#F1EFE8]">
-                      {rec.name}
-                    </div>
-                    <div className="mt-0.5 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
-                      {rec.wiifm}
-                    </div>
-                  </div>
-                  <span className="inline-flex shrink-0 items-center gap-0.5 text-[12px] font-semibold text-[#5A8F6A]">
-                    Vergelijk <Icons.ChevronRight s={15} />
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="mt-3 text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-            {nutritionLogCompleted
-              ? "Geen supplement-signalen — focus eerst op voeding en je plan."
-              : "Doe eerst de voedingscheck voordat we supplementen tonen — eerst tafel, dan potje."}
-          </p>
-        )}
-      </div>
-    </>
-  );
+  const leefstijllijnRow =
+    buildLeefstijllijnRows(model).find((row) => row.pillarId === "beweging") ?? null;
+  const snapshotLine = buildVoortgangSnapshotLine(leefstijllijnRow);
+  const daysUntilRemeasure = data?.remeasure?.daysUntil ?? null;
+
+  const goToVoortgang = (state: "open" | "klaar") => {
+    trackEvent("dashboard_beweging_voortgang_click", {
+      surface: "kompas_beweging",
+      state,
+    });
+    clarityTag("dashboard_beweging_brug", state);
+    onGoVoortgangDomein();
+  };
+
+  // §E.3-uitzondering: geen permanente CTA-tegel op de doe-surface, alleen een
+  // regel als het voorstel nog op de intake draait (geen beweegcheck gedaan).
+  const movementCurrent = deriveMovementCurrent(model.answers ?? {});
+  const showBeweegcheckNudge = showAdvice && movementCurrent.source !== "beweegcheck";
+
+  const nutritionBridgeHref = nutritionLogCompleted
+    ? "/supplementen/eiwitpoeder"
+    : "/intake/voeding?from=dashboard&kompas=beweging";
+  const nutritionBridgeLabel = nutritionLogCompleted
+    ? "Bekijk wat dat praktisch betekent"
+    : "Doe de voedingscheck";
 
   return (
     <div className="flex flex-col gap-3 pb-16 md:pb-0">
@@ -179,11 +156,48 @@ export default function BewegingScreen({
         onGoAgenda={onGoAgenda}
         onMakePriority={onMakePriority}
         makePriorityBusy={makePriorityBusy}
-        onDoneChange={setDone}
+        onDoneChange={setDoneState}
       />
+
+      {showAdvice ? (
+        <div className="rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.06] px-5 py-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
+            Je voortgang
+          </p>
+          {dayStepState === "other_domain_priority" ? (
+            <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
+              Een ander domein heeft vandaag prioriteit.
+            </p>
+          ) : null}
+          {snapshotLine ? (
+            <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
+              {snapshotLine}
+              {daysUntilRemeasure != null
+                ? ` Hermeting over ${daysUntilRemeasure} dagen.`
+                : ""}
+            </p>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => goToVoortgang("klaar")}
+            className="mt-3 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13.5px] font-semibold text-[#5A8F6A]"
+          >
+            Bekijk je beweging <Icons.ChevronRight s={15} />
+          </button>
+        </div>
+      ) : null}
 
       <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
         {logEnabled ? <MovementLogPanel /> : null}
+
+        <div className="flex items-baseline gap-2 rounded-xl border border-dashed border-white/15 px-3.5 py-3">
+          <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.11em] text-[#7E8C82]">
+            Straks
+          </span>
+          <p className="m-0 text-[13.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+            {aheadLine}
+          </p>
+        </div>
 
         <details className="rounded-2xl border border-white/10 bg-black/20">
           <summary className="cursor-pointer list-none px-5 py-4 text-[13.5px] font-semibold text-[#CDD7D0] [&::-webkit-details-marker]:hidden">
@@ -202,76 +216,64 @@ export default function BewegingScreen({
           </div>
         </details>
 
-        {done ? (
-          <>
-            <CockpitTile eyebrow="Check-in" className="md:hidden">
-              <Link
-                href="/intake/beweging?from=dashboard&kompas=beweging"
-                onClick={() => {
-                  trackEvent("dashboard_beweging_checkin_click", {
-                    mode: "full",
-                    surface: "kompas_beweging",
-                  });
-                  clarityTag("dashboard_beweging_checkin", "click");
-                }}
-                className="mt-2 flex flex-col gap-1.5 rounded-xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 no-underline text-inherit"
-              >
-                <div className="flex items-center gap-3">
-                  <Icons.Activity s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-                  <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">
-                    Doe de uitgebreide beweegcheck (3 min)
-                  </span>
-                  <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
-                </div>
-                {showActiveStep ? (
-                  <p className="ml-[30px] text-[13px] leading-snug text-[#9FB0A6] text-pretty">
-                    Actieve stap: {model.activeHabit?.title}
-                  </p>
-                ) : null}
-              </Link>
-            </CockpitTile>
-
-            {logEnabled ? (
-              <details className="rounded-2xl border border-white/10 bg-black/20">
-                <summary className="cursor-pointer list-none px-5 py-4 text-[13.5px] font-semibold text-[#CDD7D0] [&::-webkit-details-marker]:hidden">
-                  Voeding &amp; supplementen
-                </summary>
-                <div className="border-t border-white/10 px-5 pb-5 pt-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
-                    Leefstijl eerst
-                  </p>
-                  <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">
-                    Voeding &amp; supplementen
-                  </p>
-                  <div className="mt-4">{voedingSupplementContent}</div>
-                </div>
-              </details>
-            ) : (
-              <CockpitTile eyebrow="Leefstijl eerst" ariaLabel="Voeding en supplementen">
-                <p className="mt-2 font-serif text-[19px] text-[#F1EFE8]">
-                  Voeding &amp; supplementen
-                </p>
-                <div className="mt-4">{voedingSupplementContent}</div>
-              </CockpitTile>
-            )}
-
-            <FooterLink
-              href="/gids/beweging"
-              icon={<Icons.Mail s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
-              label="Gratis Bewegingsgids"
+        {showAdvice && doneState.isStrengthSession ? (
+          <p className="text-[13.5px] leading-relaxed text-[#CDD7D0] text-pretty">
+            {nutritionHint}{" "}
+            <Link
+              href={nutritionBridgeHref}
               onClick={() => {
-                trackEvent("dashboard_beweging_gids_click", { surface: "kompas_beweging" });
+                trackEvent("dashboard_beweging_voeding_click", {
+                  surface: "kompas_beweging",
+                  trigger: "kracht_gelogd",
+                });
+                clarityTag("dashboard_beweging_voeding", "click");
               }}
-            />
-            <FooterLink
-              href="/inzichten"
-              icon={<Icons.BookOpen s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
-              label="Leefstijl & inzichten"
+              className="font-semibold text-[#5A8F6A] no-underline"
+            >
+              {nutritionBridgeLabel} <Icons.ChevronRight s={13} />
+            </Link>
+          </p>
+        ) : null}
+
+        {showBeweegcheckNudge ? (
+          <p className="text-[13px] leading-relaxed text-[#9FB0A6] md:hidden">
+            Je voorstel draait nog op je intake.{" "}
+            <Link
+              href="/intake/beweging?from=dashboard&kompas=beweging"
               onClick={() => {
-                trackEvent("dashboard_beweging_leefstijl_click", { surface: "kompas_beweging" });
+                trackEvent("dashboard_beweging_checkin_click", {
+                  mode: "full",
+                  surface: "kompas_beweging",
+                });
+                clarityTag("dashboard_beweging_checkin", "click");
               }}
-            />
-          </>
+              className="font-semibold text-[#5A8F6A] no-underline"
+            >
+              Een korte beweegcheck maakt het scherper
+            </Link>
+            .
+          </p>
+        ) : null}
+
+        {showAdvice ? (
+          <FooterLink
+            href="/gids/beweging"
+            icon={<Icons.Mail s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />}
+            label="Gratis Bewegingsgids"
+            onClick={() => {
+              trackEvent("dashboard_beweging_gids_click", { surface: "kompas_beweging" });
+            }}
+          />
+        ) : null}
+
+        {!showAdvice ? (
+          <button
+            type="button"
+            onClick={() => goToVoortgang("open")}
+            className="cursor-pointer border-none bg-transparent p-0 text-left text-[12.5px] font-medium text-[#7E8C82]"
+          >
+            Je voortgang · beweging ›
+          </button>
         ) : null}
       </div>
     </div>

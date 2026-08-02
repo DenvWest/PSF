@@ -12,6 +12,9 @@ export type MovementSportLensResult = {
   coverage: Record<MovementFormId, "dekt" | "deels" | "niet">;
 };
 
+/** Wat je hier kiest telt écht mee — nooit een disclaimer dat het niets doet (BESLUIT_BEWEGING §C.3). */
+const BALANCE_NOTE = "Dit telt mee in je weekbalans op Beweging.";
+
 export function buildMovementSportLens(sportIds: readonly string[]): MovementSportLensResult {
   const coverage = mergeSportCoverage(sportIds);
   const missingForms = MOVEMENT_FORMS.filter(
@@ -22,7 +25,7 @@ export function buildMovementSportLens(sportIds: readonly string[]): MovementSpo
     return {
       headline:
         "Kies één of meer sporten — dan lees je wat je al afdekt en wat je plan aanvult.",
-      note: "Sport stuurt alleen de uitleg. Je programma blijft kracht, duurbasis of ritme.",
+      note: BALANCE_NOTE,
       missingForms: MOVEMENT_FORMS.map((form) => form.id),
       coverage,
     };
@@ -36,7 +39,7 @@ export function buildMovementSportLens(sportIds: readonly string[]): MovementSpo
     const entry = entries[0];
     return {
       headline: `${entry.label} ${entry.recommendation}.`,
-      note: "Sport stuurt alleen de uitleg. Je programma blijft ongewijzigd.",
+      note: BALANCE_NOTE,
       missingForms,
       coverage,
     };
@@ -62,8 +65,8 @@ export function buildMovementSportLens(sportIds: readonly string[]): MovementSpo
     headline,
     note:
       gapSentences.length > 0
-        ? `Wat er niet in zit: ${gapSentences.join("; ")}.`
-        : "Sport stuurt alleen de uitleg. Je programma blijft ongewijzigd.",
+        ? `Wat er niet in zit: ${gapSentences.join("; ")}. ${BALANCE_NOTE}`
+        : BALANCE_NOTE,
     missingForms,
     coverage,
   };

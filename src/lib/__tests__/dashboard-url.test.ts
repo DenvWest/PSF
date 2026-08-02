@@ -5,6 +5,7 @@ import {
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
+  isPillarId,
   isValidAgendaDate,
   parseDagFromUrl,
   parseKompasFromUrl,
@@ -194,6 +195,18 @@ describe("parseKompasFromUrl", () => {
 
   it("returns null when kompas missing", () => {
     expect(parseKompasFromUrl("http://localhost/dashboard?tab=vandaag")).toBeNull();
+  });
+});
+
+describe("isPillarId — kompas URL sync", () => {
+  it("accepts valid kompas values used by KompasHome searchParams sync", () => {
+    expect(isPillarId("beweging")).toBe(true);
+    expect(isPillarId("slaap")).toBe(true);
+  });
+
+  it("rejects invalid kompas params", () => {
+    expect(isPillarId("invalid")).toBe(false);
+    expect(isPillarId(null)).toBe(false);
   });
 });
 

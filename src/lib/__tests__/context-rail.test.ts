@@ -5,11 +5,6 @@ import {
   KOMPAS_RAIL_PILLAR_IDS,
 } from "@/lib/context-rail";
 
-const baseTools = {
-  nutritionLogCompleted: true,
-  hasRecommendations: true,
-};
-
 describe("buildKompasRailDomains", () => {
   it("geeft vijf domeinen in vaste volgorde", () => {
     const domains = buildKompasRailDomains({});
@@ -36,41 +31,19 @@ describe("buildKompasRailDomains", () => {
 });
 
 describe("buildBewegingRailTools", () => {
-  it("zet supplementen op slot zolang de voedingscheck niet gedaan is", () => {
-    const tools = buildBewegingRailTools({
-      ...baseTools,
-      nutritionLogCompleted: false,
-    });
-    const supplementen = tools.find((tool) => tool.id === "supplementen");
-
-    expect(supplementen?.disabled).toBe(true);
-    expect(supplementen?.disabledHint).toContain("voedingscheck");
-  });
-
-  it("opent supplementen zodra de voedingscheck gedaan is, ook zonder signalen", () => {
-    const tools = buildBewegingRailTools({
-      ...baseTools,
-      hasRecommendations: false,
-    });
-    const supplementen = tools.find((tool) => tool.id === "supplementen");
-
-    expect(supplementen?.disabled).toBe(false);
-    expect(supplementen?.disabledHint).toBeUndefined();
-  });
-
   it("houdt de beweegcheck een echte link naar de intake", () => {
-    const tools = buildBewegingRailTools(baseTools);
+    const tools = buildBewegingRailTools();
 
     expect(tools.find((tool) => tool.id === "checkin")?.href).toBe(
       "/intake/beweging?from=dashboard&kompas=beweging",
     );
   });
 
-  it("bevat ook de gratis Bewegingsgids en Leefstijl & inzichten als echte links", () => {
-    const tools = buildBewegingRailTools(baseTools);
+  it("bevat alleen checkin en gids — supplementen en inzichten zijn verhuisd (S5)", () => {
+    const tools = buildBewegingRailTools();
 
-    expect(tools).toHaveLength(4);
+    expect(tools).toHaveLength(2);
+    expect(tools.map((tool) => tool.id)).toEqual(["checkin", "gids"]);
     expect(tools.find((tool) => tool.id === "gids")?.href).toBe("/gids/beweging");
-    expect(tools.find((tool) => tool.id === "inzichten")?.href).toBe("/inzichten");
   });
 });

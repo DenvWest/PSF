@@ -141,12 +141,8 @@ import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent, trackDashboardTabSelected, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import { type SleepFocusKey } from "@/lib/sleep-focus";
+import { buildRecommendations } from "@/lib/build-recommendations";
 import {
-  buildMovementRecommendations,
-  buildRecommendations,
-} from "@/lib/build-recommendations";
-import {
-  BEWEGING_SUPPLEMENT_ANCHOR,
   buildBewegingRailTools,
   buildKompasRailDomains,
   type ContextRailApi,
@@ -164,10 +160,12 @@ import { NUTRITION_BAND } from "@/lib/nutrition-band-labels";
 import { resolveMovementDayChoiceForToday } from "@/lib/account-priority-pref";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
+  isPillarId,
   isValidAgendaDate,
   parseDagFromUrl,
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
+  parseVoortgangDomeinFromUrl,
   parseVoortgangScreenFromUrl,
   buildDashboardAgendaHref,
   syncDashboardDagParam,
@@ -229,6 +227,9 @@ type SharedSectionProps = {
   ) => void;
   onStatistiekenBlikChange: (blik: StatistiekenBlik) => void;
   onOpenInzichten: () => void;
+  voortgangDomein: PillarId | null;
+  /** Navigeert naar Voortgang › <domein> — het leesscherm, geen doe-surface (S4). */
+  onGoVoortgangDomein: (domain: PillarId) => void;
   initialKompasView?: PillarId;
   prefUpdatedAt: string | null;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
@@ -2881,6 +2882,7 @@ const KompasHome = ({
   onRemeasure,
   onGoAgenda,
   onGoVoortgang,
+  onGoVoortgangDomein,
   agendaDate: _agendaDate,
   onAgendaDateChange: _onAgendaDateChange,
   onPrefUpdated,
@@ -2892,6 +2894,7 @@ const KompasHome = ({
   onContextRailApi,
 }: SharedSectionProps) => {
   const currentModel = model as DashboardModel | null;
+  const searchParams = useSearchParams();
   const [domainView, setDomainView] = useState<PillarId | null>(() => {
     if (typeof window !== "undefined") {
       return parseKompasFromUrl(window.location.href);
@@ -2926,37 +2929,21 @@ const KompasHome = ({
     () => buildKompasRailDomains(currentModel?.scores ?? {}),
     [currentModel],
   );
-  const railHasMovementRecommendations = useMemo(() => {
-    if (!currentModel || domainView !== "beweging") {
-      return false;
-    }
-    const session: IntakeSessionPayload = {
-      sessionId: "",
-      symptoms: [],
-      answers: currentModel.answers ?? {},
-      scores: currentModel.domainScores,
-      urgency: "",
-      profile: "",
-      timestamp: 0,
-      ageRange: null,
-      firstName: null,
-    };
-    return (
-      buildMovementRecommendations(session, { nutritionLogCompleted }).length > 0
-    );
-  }, [currentModel, domainView, nutritionLogCompleted]);
-  const railTools = useMemo(
-    () =>
-      buildBewegingRailTools({
-        nutritionLogCompleted,
-        hasRecommendations: railHasMovementRecommendations,
-      }),
-    [nutritionLogCompleted, railHasMovementRecommendations],
-  );
+  const railTools = useMemo(() => buildBewegingRailTools(), []);
 
   useEffect(() => {
     onDomainViewChange?.(domainView);
   }, [domainView, onDomainViewChange]);
+
+  // router.push(buildDashboardVandaagHref) en andere client-navigaties updaten
+  // searchParams zonder popstate — domainView moet meelopen met ?kompas=.
+  useEffect(() => {
+    const param = searchParams.get("kompas");
+    const next = isPillarId(param) ? param : null;
+    startTransition(() => {
+      setDomainView((current) => (current === next ? current : next));
+    });
+  }, [searchParams]);
 
   const domainNavHandlersRef = useRef({
     onBack: () => {},
@@ -3017,16 +3004,6 @@ const KompasHome = ({
     setKompasDomain(domain);
   };
 
-  const scrollToBewegingSupplementen = () => {
-    const target = document.getElementById(BEWEGING_SUPPLEMENT_ANCHOR);
-    if (!target) {
-      return;
-    }
-    // In de log-variant zit de sectie in een dichtgeklapte <details>.
-    target.closest("details")?.setAttribute("open", "");
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   const handleRailToolClick = (tool: ContextRailToolId) => {
     if (tool === "checkin") {
       // Navigatie loopt via de Link in de rail; hier alleen de meting.
@@ -3038,24 +3015,8 @@ const KompasHome = ({
       return;
     }
 
-    if (tool === "gids") {
-      // Navigatie loopt via de Link in de rail; hier alleen de meting.
-      trackEvent("dashboard_beweging_gids_click", { surface: "context_rail" });
-      return;
-    }
-
-    if (tool === "inzichten") {
-      // Navigatie loopt via de Link in de rail; hier alleen de meting.
-      trackEvent("dashboard_beweging_leefstijl_click", { surface: "context_rail" });
-      return;
-    }
-
-    trackEvent("dashboard_beweging_supplement_click", {
-      surface: "context_rail",
-      target: "scroll",
-    });
-    clarityTag("dashboard_context_rail", "beweging_supplementen");
-    scrollToBewegingSupplementen();
+    // Navigatie loopt via de Link in de rail; hier alleen de meting.
+    trackEvent("dashboard_beweging_gids_click", { surface: "context_rail" });
   };
 
   const contextRailHandlersRef = useRef({
@@ -3149,11 +3110,13 @@ const KompasHome = ({
     return withDomainTopNav(
       <BewegingScreen
         model={currentModel}
+        data={data}
         slot={todaySlot}
         nutritionLogCompleted={nutritionLogCompleted}
         onGoAgenda={onGoAgenda}
         onMakePriority={() => void makeBewegingPriority()}
         makePriorityBusy={makePriorityBusy}
+        onGoVoortgangDomein={() => onGoVoortgangDomein("beweging")}
       />,
     );
   }
@@ -3299,6 +3262,7 @@ const SECTION_RENDERERS: Record<
         tab={props.tab}
         screen={props.voortgangScreen}
         statistiekenBlik={props.statistiekenBlik}
+        voortgangDomein={props.voortgangDomein}
         statistiekenAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
         }
@@ -3439,6 +3403,7 @@ export default function Dashboard({
   const [statistiekenBlik, setStatistiekenBlik] = useState<StatistiekenBlik>(
     initialStatistiekenBlik ?? "stand",
   );
+  const [voortgangDomein, setVoortgangDomein] = useState<PillarId | null>(null);
   // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
   // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
   // vast te staan op de domein uit de URL bij het eerste laden.
@@ -3525,6 +3490,23 @@ export default function Dashboard({
     return statistiekenBlik;
   }, [voortgangScreen, searchParams, model, data, empty, statistiekenBlik]);
 
+  const activeVoortgangDomein = useMemo((): PillarId | null => {
+    if (voortgangScreen !== "domein") {
+      return voortgangDomein;
+    }
+    const paramDomein = searchParams.get("domein");
+    if (isPillarId(paramDomein)) {
+      return paramDomein;
+    }
+    if (typeof window !== "undefined") {
+      const urlDomein = parseVoortgangDomeinFromUrl(window.location.href);
+      if (urlDomein) {
+        return urlDomein;
+      }
+    }
+    return voortgangDomein;
+  }, [voortgangScreen, searchParams, voortgangDomein]);
+
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
   const sectionTypes = empty
@@ -3572,9 +3554,15 @@ export default function Dashboard({
         syncDashboardVoortgangScreenParam(screen, { blik: nextBlik });
         return;
       }
+      if (screen === "domein") {
+        const nextDomein = options?.domein ?? voortgangDomein;
+        setVoortgangDomein(nextDomein ?? null);
+        syncDashboardVoortgangScreenParam(screen, { domein: nextDomein });
+        return;
+      }
       syncDashboardVoortgangScreenParam(screen);
     },
-    [data, empty, model, statistiekenBlik],
+    [data, empty, model, statistiekenBlik, voortgangDomein],
   );
 
   const handleStatistiekenBlikChange = useCallback((blik: StatistiekenBlik) => {
@@ -3597,6 +3585,12 @@ export default function Dashboard({
           const urlBlik = parseStatistiekenBlikFromUrl(url);
           if (urlBlik) {
             setStatistiekenBlik(urlBlik);
+          }
+        }
+        if (parsedScreen === "domein") {
+          const urlDomein = parseVoortgangDomeinFromUrl(url);
+          if (urlDomein) {
+            setVoortgangDomein(urlDomein);
           }
         }
       } else {
@@ -3699,6 +3693,19 @@ export default function Dashboard({
     setTab(nextTab);
   };
 
+  // Losstaand van selectTab: die reset voortgangScreen altijd naar "hub" bij
+  // elke tab-wissel, en zou de domein-keuze hieronder meteen overschrijven.
+  const goToVoortgangDomein = (domain: PillarId) => {
+    if (tab !== "voortgang") {
+      trackDashboardTabSelected("voortgang");
+      clarityTag("dashboard_tab", "voortgang");
+    }
+    setVoortgangScreen("domein");
+    setVoortgangDomein(domain);
+    syncDashboardVoortgangScreenParam("domein", { domein: domain });
+    setTab("voortgang");
+  };
+
   const onCheck = () => {
     if (empty) {
       emitIntakeClientEvent("dashboard.first_checkin_started", {
@@ -3765,6 +3772,8 @@ export default function Dashboard({
     onVoortgangScreenChange: handleVoortgangScreenChange,
     onStatistiekenBlikChange: handleStatistiekenBlikChange,
     onOpenInzichten: () => handleVoortgangScreenChange("inzichten"),
+    voortgangDomein: activeVoortgangDomein,
+    onGoVoortgangDomein: goToVoortgangDomein,
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
     onPrefUpdated: setPriorityPrefOverride,

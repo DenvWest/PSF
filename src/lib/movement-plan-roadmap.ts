@@ -1,41 +1,51 @@
+import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
+import {
+  buildDomainPositionLine,
+  DEFAULT_BUILD_PHASE,
+  type DomainBuildPhase,
+} from "@/lib/domain-position-line";
+
 /**
- * Vaste mapping van fase-id naar kwalitatief bouwfase-label — vervangt het
- * ordinale "Fase X van Y" (verbod: geen "1 van 3" meer in user-facing copy).
- * "terugkomen" is met de huidige 3 fase-ids niet bereikbaar; dat komt pas met
- * F3's fase-aware resolver.
+ * Vaste mapping van fase-id naar de gedeelde bouwfase — vervangt het ordinale
+ * "Fase X van Y". "returning" is met de huidige 3 fase-ids niet bereikbaar;
+ * dat komt pas met F3's fase-aware resolver.
  */
-const PHASE_POSITION_LABELS: Record<string, string> = {
-  "mov-phase-deze-week": "basis leggen",
-  "mov-phase-week-2-4": "opbouwen",
-  "mov-phase-week-4-12": "onderhouden",
+const PHASE_BUILD_PHASES: Record<string, DomainBuildPhase> = {
+  "mov-phase-deze-week": "building_base",
+  "mov-phase-week-2-4": "progressing",
+  "mov-phase-week-4-12": "maintaining",
 };
-
-const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
-
-function formatSinceDate(iso: string): string | null {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-  return new Intl.DateTimeFormat("nl-NL", {
-    day: "numeric",
-    month: "long",
-    timeZone: "Europe/Amsterdam",
-  }).format(date);
-}
 
 /** De positieregel op de doe-surface: "Je bouwt {label} · week {n} · sinds {datum}". */
 export function buildMovementPositionLine(input: {
   currentPhaseId: string;
   startedAt: string;
 }): string {
-  const label = PHASE_POSITION_LABELS[input.currentPhaseId] ?? "basis leggen";
-  const startedDate = new Date(input.startedAt);
-  const weekNumber = Number.isNaN(startedDate.getTime())
-    ? 1
-    : Math.max(1, Math.floor((Date.now() - startedDate.getTime()) / MS_PER_WEEK) + 1);
-  const sinceLabel = formatSinceDate(input.startedAt);
-  return sinceLabel
-    ? `Je bouwt ${label} · week ${weekNumber} · sinds ${sinceLabel}`
-    : `Je bouwt ${label} · week ${weekNumber}`;
+  return buildDomainPositionLine({
+    phase: PHASE_BUILD_PHASES[input.currentPhaseId] ?? DEFAULT_BUILD_PHASE,
+    startedAt: input.startedAt,
+  }).text;
+}
+
+/**
+ * De "Straks"-vooruitblik — verplaatst uit de VANDAAG-kaart naar onder de vouw
+ * (S2, compositie-verdict §D.1: vooruitblik is nooit de eerste blik).
+ */
+export function buildMovementAheadLine(currentPhaseId: string | undefined): string {
+  const phases = movementPlanTemplate.phases;
+  const index = phases.findIndex((phase) => phase.id === currentPhaseId);
+  if (index < 0) {
+    return "Nog één moment deze week, dan schuift je plan door naar de volgende fase.";
+  }
+  if (index >= phases.length - 1) {
+    return "Laatste fase. Je hermeting laat zien wat het ritme heeft gedaan.";
+  }
+  const next = phases[index + 1];
+  const nextLabel =
+    next.horizon === "deze-week"
+      ? "deze week"
+      : next.horizon === "week-2-4"
+        ? "week 2–4"
+        : "week 4–12";
+  return `Nog één krachtmoment deze week, dan komt ${nextLabel} in beeld.`;
 }
