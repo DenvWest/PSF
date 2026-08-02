@@ -122,6 +122,9 @@ export function buildDevDashboardData(
     history,
     retest: mode === "retest",
     nutritionIntake: null,
+    nutritionLastLoggedAt: null,
+    nutritionRelogDue: false,
+    daysSinceNutritionLog: null,
     movementRecoveryTrend: [
       { date: "2026-07-10", value: 3 },
       { date: "2026-07-14", value: 2 },

@@ -82,6 +82,15 @@ ORDER BY s.profile_label, f.rating;
 - Account-events route + entitlements SSOT (`src/lib/db/entitlements.ts`)
 - Premium waitlist consolidatie prod (migratie `20260704120000`)
 
+## Actief aug 2026 (retentie-romp vóór Voortgang-rebuild)
+
+- **Voortgang v1-composities** (conversiekaart-prebuild) blijven **geparkeerd** — referentie in
+  `docs/design/voortgang-conversiekaart-prebuild-2026-07.html`; oppakken ná retentie-signalen /
+  beweging-prioriteit. Zie `docs/design/voortgang-plan-later.md`.
+- Retentie-romp: Mijn Dag habit/streak (Agenda + KompasVandaagPanel), voeding re-log nudge
+  (14d, in-app + e-mail), hermeting via `/api/account/remeasure/start` (baseline-cookie).
+- Premium v1 = alleen begeleiding (wekelijkse coach-review); meten blijft gratis via check.
+
 ## Actief juli 2026 (niet bouwen vóór verkeer)
 
 - Week-0 funnel aflezen (PostHog/`domain_events` + GA4; **alleen consented cohort**)

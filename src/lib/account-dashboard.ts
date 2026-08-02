@@ -8,6 +8,10 @@ import {
 import { nutrientReferences } from "@/data/nutrition/intake-reference";
 import { buildDeltaReport } from "@/lib/delta-report";
 import { compareNutritionEstimates } from "@/lib/nutrition-delta";
+import {
+  daysSinceIsoDate,
+  isNutritionRelogDue,
+} from "@/lib/nutrition-relog-eligibility";
 import type { DomainScoreKey, DomainScores } from "@/lib/intake-engine";
 import type { MeasuredPillarId } from "@/lib/primary-theme";
 import type { IntakeEstimate } from "@/lib/nutrition-intake-estimate";
@@ -53,6 +57,9 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   history: [],
   retest: false,
   nutritionIntake: null,
+  nutritionLastLoggedAt: null,
+  nutritionRelogDue: false,
+  daysSinceNutritionLog: null,
   movementRecoveryTrend: [],
   movementRcvFeel: null,
   movementRcvFeelAt: null,
@@ -437,6 +444,13 @@ export async function loadAccountDashboardData(
     }
   }
 
+  const nutritionLastLoggedAt =
+    latestLog && typeof latestLog.logged_at === "string" ? latestLog.logged_at : null;
+  const daysSinceNutritionLog = nutritionLastLoggedAt
+    ? daysSinceIsoDate(nutritionLastLoggedAt)
+    : null;
+  const nutritionRelogDue = isNutritionRelogDue(nutritionLastLoggedAt);
+
   type Point = {
     value: number;
     ts: number;
@@ -805,6 +819,9 @@ export async function loadAccountDashboardData(
     history,
     retest: snapshots.length >= 2,
     nutritionIntake,
+    nutritionLastLoggedAt,
+    nutritionRelogDue,
+    daysSinceNutritionLog,
     movementRecoveryTrend,
     movementRcvFeel,
     movementRcvFeelAt,

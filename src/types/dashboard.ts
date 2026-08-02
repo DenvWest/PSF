@@ -213,6 +213,12 @@ export type DashboardData = {
   history: CheckLogEntry[];
   retest: boolean;
   nutritionIntake: { date: string; items: NutritionIntakeItem[] } | null;
+  /** ISO-timestamp van de laatste voedingslog; null zonder log. */
+  nutritionLastLoggedAt: string | null;
+  /** True wanneer de laatste log ≥14 dagen geleden is — in-app her-log-nudge. */
+  nutritionRelogDue: boolean;
+  /** Dagen sinds nutritionLastLoggedAt; null zonder log. */
+  daysSinceNutritionLog: number | null;
   movementRecoveryTrend: { date: string; value: number }[];
   movementRcvFeel: number | null;
   movementRcvFeelAt: string | null;

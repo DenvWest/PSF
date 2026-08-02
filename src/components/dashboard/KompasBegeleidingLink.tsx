@@ -50,8 +50,8 @@ export default function KompasBegeleidingLink({
             textWrap: "pretty",
           }}
         >
-          Gratis: na 30 dagen je hermeting onder het tabblad Hermeting. Premium:
-          wekelijks iemand die met je meekijkt — wachtlijst op Voortgang.
+          Gratis: je check, je lijn en je hermeting. Premium: wekelijks iemand die met je
+          meekijkt — wachtlijst op Voortgang.
         </p>
       ) : null}
     </div>

@@ -117,7 +117,7 @@ export default function PremiumWaitlistCard({
                 marginBottom: 8,
               }}
             >
-              Je lijn lezen kun je zelf. Er wekelijks iemand naast hebben niet.
+              Gratis meet je waar je staat. Premium kijkt er elke week iemand met je mee.
             </div>
             <p
               style={{
@@ -128,9 +128,9 @@ export default function PremiumWaitlistCard({
                 textWrap: "pretty",
               }}
             >
-              Je scores, je lijn en ons oordeel blijven gratis. Waar we aan werken is het stuk
-              daarna: iemand die elke week met je meekijkt, ziet waar het stokt, en je hermeting
-              met je doorneemt. Dat bestaat nog niet. Wil je erbij zijn als het er is?
+              Je scores, trends en hermeting blijven gratis. Waar we aan werken is de
+              wekelijkse coach-review: wat zag ik in jouw week, waar stokt het, en hoe lezen
+              we je delta bij de hermeting? Dat bestaat nog niet — wil je erbij zijn als het er is?
             </p>
             <p
               style={{

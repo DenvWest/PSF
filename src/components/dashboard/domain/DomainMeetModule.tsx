@@ -1,9 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import { PREMIUM_BEGELEIDING_HREF } from "@/components/dashboard/KompasBegeleidingLink";
 import { clarityTag } from "@/lib/clarity";
 import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { trackEvent } from "@/lib/ga4";
@@ -19,8 +17,8 @@ type DomainMeetModuleProps = {
 };
 
 /**
- * Laag 1 — Meten (T1). Soft-paywall: zichtbaar maar op slot; de preview-klik is
- * het intent-meetpunt. Copy blijft binnen inname-inschatting — geen statusclaims.
+ * Laag 1 — Verdieping (T1, binnenkort). Geen paywall: de gratis voedingscheck
+ * blijft de meetlaag; dit blok toont wat later optioneel verdiept.
  */
 export default function DomainMeetModule({
   domain,
@@ -50,8 +48,8 @@ export default function DomainMeetModule({
       className="rounded-2xl border border-[#C8956C]/35 bg-black/20 p-4"
     >
       <div className="flex flex-col gap-3">
-        <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#C8956C]">
-          <Icons.Lock s={14} /> Premium · meten
+        <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#9FB0A6]">
+          <Icons.Spark s={14} /> Binnenkort · verdieping
         </div>
         <div className="font-serif text-[21px] leading-[1.2] text-[#F1EFE8]">{title}</div>
         <p className="text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">{description}</p>
@@ -74,18 +72,10 @@ export default function DomainMeetModule({
                 {note}
               </p>
             ) : null}
-            <Link
-              href={PREMIUM_BEGELEIDING_HREF}
-              onClick={() => {
-                trackEvent("dashboard_kompas_begeleiding_link_click", {
-                  surface: `meetmodule_${domain}`,
-                });
-                clarityTag("dashboard_kompas_begeleiding", `meetmodule_${domain}`);
-              }}
-              className="self-start text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
-            >
-              Zet me op de wachtlijst →
-            </Link>
+            <p className="text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+              Je voedingscheck en weekpatroon blijven gratis. Premium gaat over wekelijkse
+              begeleiding — niet over meten.
+            </p>
           </div>
         ) : null}
 
@@ -94,7 +84,7 @@ export default function DomainMeetModule({
           onClick={togglePreview}
           className="inline-flex cursor-pointer items-center gap-1 self-start border-none bg-transparent p-0 text-[13.5px] font-semibold text-[#5A8F6A]"
         >
-          {previewOpen ? "Verberg voorbeeld" : "Bekijk wat je straks meet"}
+          {previewOpen ? "Verberg voorbeeld" : "Bekijk wat later verdiept"}
           <Icons.ChevronRight
             s={15}
             style={{
@@ -104,8 +94,8 @@ export default function DomainMeetModule({
           />
         </button>
 
-        <span className="inline-flex w-fit items-center gap-1.5 whitespace-nowrap rounded-full border border-[#C8956C]/40 px-[11px] py-1 text-[11px] font-bold tracking-[0.04em] text-[#C8956C]">
-          <Icons.Spark s={12} /> Binnenkort in premium
+        <span className="inline-flex w-fit items-center gap-1.5 whitespace-nowrap rounded-full border border-white/15 px-[11px] py-1 text-[11px] font-bold tracking-[0.04em] text-[#9FB0A6]">
+          Gratis meten blijft via je check
         </span>
       </div>
     </div>

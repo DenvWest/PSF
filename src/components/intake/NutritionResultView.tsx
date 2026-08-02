@@ -10,6 +10,7 @@ import {
   type NutrientId,
 } from "@/data/nutrition/intake-reference";
 import { clarityTag } from "@/lib/clarity";
+import { buildDashboardAgendaHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import type { NutritionAdviceItem } from "@/lib/nutrition-advice";
 import type { LifestyleExtra } from "@/lib/nutrition-lifestyle-extras";
@@ -129,7 +130,17 @@ export default function NutritionResultView({
       origin_domain: originDomain ?? "none",
     });
   }
+
+  function handleAgendaClick() {
+    trackEvent("nutrition_result_agenda_cta_click", {
+      from: fromDashboard ? "dashboard" : "direct",
+      has_focus_gap: gaps.length > 0,
+    });
+    clarityTag("nutrition_result", "agenda_cta");
+  }
+
   const dashboardHref = fromDashboard ? "/dashboard?tab=vandaag" : "/dashboard";
+  const agendaHref = buildDashboardAgendaHref();
 
   const evidenceFrom = fromDashboard ? "dashboard" : "direct";
   const focusGapEvidence = focusNutrient ? evidenceForGap(focusNutrient) : null;
@@ -181,6 +192,12 @@ export default function NutritionResultView({
             <p className="text-sm leading-relaxed text-[#1c1917]">
               {lifestyleTextFor(focusNutrient)}
             </p>
+            {fromDashboard ? (
+              <p className="mt-3 text-[12.5px] leading-relaxed text-[#78716c] text-pretty">
+                Dit is je weekpatroon-stap — geen dagelijkse tekort-meting. Zet hem op Mijn Dag
+                en bouw 14 dagen aan voordat je opnieuw logt.
+              </p>
+            ) : null}
 
             {focusGapEvidence ? (
               <NutritionEvidenceDisclosure
@@ -324,13 +341,22 @@ export default function NutritionResultView({
 
         <div className="mt-8 space-y-4 text-center">
           {fromDashboard ? (
-            <Link
-              href={dashboardHref}
-              onClick={handleDashboardReturn}
-              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-[#C8956C] px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
-            >
-              Terug naar dashboard →
-            </Link>
+            <>
+              <Link
+                href={agendaHref}
+                onClick={handleAgendaClick}
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-[#5A8F6A] px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              >
+                Zet op Mijn Dag →
+              </Link>
+              <Link
+                href={dashboardHref}
+                onClick={handleDashboardReturn}
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] border border-[#e4e0da] bg-[#faf9f7] px-6 py-3.5 text-sm font-semibold text-[#1c1917] no-underline transition-colors hover:bg-[#f5f3ef]"
+              >
+                Terug naar dashboard
+              </Link>
+            </>
           ) : (
             <Link
               href="/"

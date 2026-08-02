@@ -122,6 +122,7 @@ import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
+import NutritionRelogNudge from "@/components/dashboard/NutritionRelogNudge";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
 import { MOVEMENT_ANCHOR_OPTIONS } from "@/lib/movement-prefs";
 import { buildModel, derivePriority } from "@/lib/dashboard-model";
@@ -163,6 +164,7 @@ import {
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
   parseVoortgangScreenFromUrl,
+  buildDashboardAgendaHref,
   syncDashboardDagParam,
   syncDashboardKompasParam,
   syncDashboardStatistiekenBlikParam,
@@ -2544,9 +2546,13 @@ function buildNutritionIntakeLines(
 const VoedingScreen = ({
   model,
   nutritionIntake,
+  nutritionRelogDue = false,
+  daysSinceNutritionLog = null,
 }: {
   model: DashboardModel;
   nutritionIntake: DashboardData["nutritionIntake"];
+  nutritionRelogDue?: boolean;
+  daysSinceNutritionLog?: number | null;
 }) => {
   const eligibility = useMemo(
     () => buildRecommendationsEligibility(nutritionIntake),
@@ -2613,6 +2619,36 @@ const VoedingScreen = ({
         />
       ) : null}
 
+      {nutritionRelogDue && daysSinceNutritionLog != null ? (
+        <NutritionRelogNudge
+          surface="kompas_voeding"
+          daysSinceLog={daysSinceNutritionLog}
+          tone="dark"
+        />
+      ) : null}
+
+      {nutritionLogCompleted ? (
+        <Link
+          href={buildDashboardAgendaHref()}
+          onClick={() => {
+            trackEvent("dashboard_voeding_agenda_cta_click", { surface: "kompas_voeding" });
+            clarityTag("dashboard_voeding", "agenda_cta");
+          }}
+          className="flex w-full items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-left no-underline"
+        >
+          <Icons.Calendar s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
+          <span className="flex-1">
+            <span className="block text-[14.5px] font-medium text-[#F1EFE8]">
+              Zet je weekpatroon op Mijn Dag
+            </span>
+            <span className="mt-0.5 block text-[12.5px] leading-snug text-[#9FB0A6]">
+              Eén stap per dag — geen dagboek. Voortgang meet het patroon over 14 dagen.
+            </span>
+          </span>
+          <Icons.ChevronRight s={16} style={{ color: "#7E8C82", flexShrink: 0 }} />
+        </Link>
+      ) : null}
+
       <section aria-label="Inname-snapshot">
         <DomainSectionHeader
           eyebrow="Laatste check-in"
@@ -2656,8 +2692,8 @@ const VoedingScreen = ({
                 ))}
               </div>
               <p className="mt-3 mb-0 text-[12px] leading-relaxed text-[#9FB0A6]">
-                Grove inschatting op basis van hoe vaak je eet — een vuistregel, geen meting,
-                status of diagnose.
+                Weekpatroon op basis van hoe vaak je eet — een vuistregel, geen dagelijkse
+                meting, status of diagnose.
               </p>
             </>
           ) : intakeLines.length > 0 ? (
@@ -2818,15 +2854,15 @@ const VoedingScreen = ({
 
       <DomainMeetModule
         domain="voeding"
-        title="Meten: kcal, macro's & je eiwitdoel"
-        description="Log wat je eet en zie je inname-inschatting tegen persoonlijke streefwaarden — op basis van wat jij invult, geen meting."
+        title="Later: kcal, macro's & je eiwitdoel"
+        description="Optionele verdieping bovenop je gratis check — persoonlijke streefwaarden en weektrend als je dat wilt."
         bullets={[
-          "Dagelijkse inname-inschatting van calorieën en macro's",
+          "Inname-inschatting van calorieën en macro's naast je check",
           "Persoonlijk eiwitdoel — streefwaarde op basis van je gewicht en doel",
           "Weektrend: zie of je basis richting je vuistregels beweegt",
         ]}
         note="Je lengte en gewicht deel je pas als je start — eerder vragen we er niet om."
-        teaser="Jouw eiwitdoel: ●● g — wordt berekend zodra je start"
+        teaser="Jouw eiwitdoel: ●● g — wordt berekend zodra verdieping live is"
       />
 
       <KompasBegeleidingLink surface="kompas_voeding" />
@@ -3137,6 +3173,8 @@ const KompasHome = ({
       <VoedingScreen
         model={currentModel}
         nutritionIntake={data?.nutritionIntake ?? null}
+        nutritionRelogDue={data?.nutritionRelogDue ?? false}
+        daysSinceNutritionLog={data?.daysSinceNutritionLog ?? null}
       />,
     );
   }
@@ -3677,6 +3715,8 @@ export default function Dashboard({
     router.push(`${route}?from=dashboard&kompas=${pillarId}`);
   };
   const onRemeasure = () => {
+    trackEvent("dashboard_hermeting_start_click", { surface: "dashboard" });
+    clarityTag("dashboard_hermeting", "start");
     window.location.assign("/api/account/remeasure/start");
   };
 
