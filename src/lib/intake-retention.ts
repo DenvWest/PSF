@@ -1,4 +1,5 @@
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
+import { startCronRun, completeCronRun } from "@/lib/cron-runs";
 
 const SESSION_RETENTION_MONTHS = 24;
 const NURTURE_RETENTION_MONTHS = 12;
@@ -16,76 +17,6 @@ function monthsAgoIso(months: number): string {
   const date = new Date();
   date.setMonth(date.getMonth() - months);
   return date.toISOString();
-}
-
-async function insertCronRunStart(cronName: string): Promise<string | null> {
-  try {
-    const admin = createSupabaseAdmin();
-    if (!admin) {
-      return null;
-    }
-
-    const { data, error } = await admin
-      .from("cron_runs")
-      .insert({ cron_name: cronName, status: "running" })
-      .select("id")
-      .single();
-
-    if (error) {
-      console.error("[cron-runs] insert start failed:", error);
-      return null;
-    }
-
-    return typeof data?.id === "string" ? data.id : null;
-  } catch (err) {
-    console.error("[cron-runs] insert start unexpected:", err);
-    return null;
-  }
-}
-
-async function completeCronRun(
-  runId: string | null,
-  payload:
-    | { status: "success"; result: RetentionRunResult }
-    | { status: "error"; errorMessage: string },
-): Promise<void> {
-  if (!runId) {
-    return;
-  }
-
-  try {
-    const admin = createSupabaseAdmin();
-    if (!admin) {
-      return;
-    }
-
-    const now = new Date().toISOString();
-    const update =
-      payload.status === "success"
-        ? {
-            status: "success" as const,
-            completed_at: now,
-            result: payload.result,
-            error_message: null,
-          }
-        : {
-            status: "error" as const,
-            completed_at: now,
-            result: null,
-            error_message: payload.errorMessage,
-          };
-
-    const { error } = await admin
-      .from("cron_runs")
-      .update(update)
-      .eq("id", runId);
-
-    if (error) {
-      console.error("[cron-runs] complete failed:", error);
-    }
-  } catch (err) {
-    console.error("[cron-runs] complete unexpected:", err);
-  }
 }
 
 export async function runIntakeRetention(): Promise<RetentionRunResult> {
@@ -142,7 +73,7 @@ export async function runIntakeRetention(): Promise<RetentionRunResult> {
 
 /** Retention-cleanup met dead-man's switch in `cron_runs`. */
 export async function runRetentionCronJob(): Promise<RetentionRunResult> {
-  const runId = await insertCronRunStart(RETENTION_CRON_NAME);
+  const runId = await startCronRun(RETENTION_CRON_NAME);
 
   try {
     const result = await runIntakeRetention();

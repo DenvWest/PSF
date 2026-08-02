@@ -8,6 +8,13 @@ if [[ -n $(git status -s) ]]; then
     exit 1
 fi
 
+echo "🗄️  Checking remote Supabase schema (npm run check:db-schema)..."
+if ! npm run check:db-schema; then
+    echo "⚠️  Schema-check faalt — ontbrekende kolom/tabel/view op productie (zie MISSING hierboven)."
+    echo "   Draai de bijbehorende migratie in de Supabase Dashboard SQL Editor en probeer opnieuw."
+    exit 1
+fi
+
 echo "📤 Pushing to GitHub (pre-push hook draait tsc + vitest)..."
 git push origin main
 

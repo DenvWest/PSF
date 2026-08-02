@@ -30,6 +30,7 @@ fail_count=0
 warn_count=0
 
 CRITICAL_MIGRATIONS=(
+  "20260610120000_nurture_claim.sql"
   "20260610140000_intake_intake_log.sql"
   "20260627120000_intake_intake_log_nutrition_score.sql"
   "20260710120000_intake_sessions_recommendations_referral.sql"

@@ -97,6 +97,25 @@ from (
     'view',
     'v_checkin_activity'
   union all
+  -- nurture_emails claim-mechaniek (bron: supabase/migrations/20260610120000_nurture_claim.sql)
+  -- was maandenlang stil MISSING op productie (PGRST 42703) — nurture-cron faalde elke run.
+  select
+    case when exists (
+      select 1 from information_schema.columns
+      where table_schema = 'public' and table_name = 'nurture_emails' and column_name = 'claimed_at'
+    ) then 'OK' else 'MISSING' end,
+    'column',
+    'nurture_emails.claimed_at'
+  union all
+  -- cron_runs dead-man's-switch (bron: db/migrations/006_cron_runs.sql)
+  select
+    case when exists (
+      select 1 from information_schema.tables
+      where table_schema = 'public' and table_name = 'cron_runs' and table_type = 'BASE TABLE'
+    ) then 'OK' else 'MISSING' end,
+    'table',
+    'cron_runs'
+  union all
   -- premium_waitlist consolidatie (9 feature keys incl. premium-coaching)
   select
     case when exists (

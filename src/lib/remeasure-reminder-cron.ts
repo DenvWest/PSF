@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import { nurtureCtaButton, nurtureEmailWrap } from "@/lib/emails/shared";
 import { emitEvent } from "@/lib/events";
@@ -222,6 +223,10 @@ export async function runPendingRemeasureReminders(): Promise<{
 
       if (sendError) {
         console.error("[remeasure-reminder-cron] Resend error:", sendError);
+        Sentry.captureException(sendError, {
+          tags: { cron: "remeasure_reminder", step: "send" },
+          extra: { accountId: candidate.accountId },
+        });
         skipped += 1;
         continue;
       }
@@ -232,6 +237,10 @@ export async function runPendingRemeasureReminders(): Promise<{
 
       if (insertError) {
         console.error("[remeasure-reminder-cron] Supabase insert error:", insertError);
+        Sentry.captureException(insertError, {
+          tags: { cron: "remeasure_reminder", step: "mark_sent" },
+          extra: { accountId: candidate.accountId },
+        });
         skipped += 1;
         continue;
       }
@@ -251,6 +260,10 @@ export async function runPendingRemeasureReminders(): Promise<{
         candidate.accountId,
         err,
       );
+      Sentry.captureException(err, {
+        tags: { cron: "remeasure_reminder", step: "send" },
+        extra: { accountId: candidate.accountId },
+      });
       skipped += 1;
     }
   }

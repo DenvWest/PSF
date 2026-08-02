@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import { guideSourceForThema } from "@/data/gids";
 import { getGuideNurtureEmailContent } from "@/lib/email-templates/guide-nurture";
@@ -28,6 +29,7 @@ export async function hasActiveGuideSequence(
 
   if (error) {
     console.error("[guide-nurture] active check:", error);
+    Sentry.captureException(error, { tags: { cron: "guide_nurture", step: "active_check" } });
     return false;
   }
 
@@ -50,6 +52,7 @@ export async function cancelPendingGuideSequences(email: string): Promise<number
 
   if (error) {
     console.error("[guide-nurture] cancel pending:", error);
+    Sentry.captureException(error, { tags: { cron: "guide_nurture", step: "cancel_pending" } });
     return 0;
   }
 
@@ -136,6 +139,7 @@ export async function scheduleGuideNurtureSequence(input: {
     const { error } = await supabase.from("nurture_emails").insert([day0Row]);
     if (error) {
       console.error("[guide-nurture] insert failed:", error);
+      Sentry.captureException(error, { tags: { cron: "guide_nurture", step: "insert_one_off" } });
       throw error;
     }
     return 1;
@@ -162,6 +166,7 @@ export async function scheduleGuideNurtureSequence(input: {
 
   if (error) {
     console.error("[guide-nurture] insert failed:", error);
+    Sentry.captureException(error, { tags: { cron: "guide_nurture", step: "insert_sequence" } });
     throw error;
   }
 

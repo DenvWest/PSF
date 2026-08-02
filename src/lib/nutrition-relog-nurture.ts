@@ -3,6 +3,7 @@
  * Volume-gated operationeel pad — geen nieuwe capture-mechaniek.
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import { emitEvent } from "@/lib/events";
 import { hasActiveIntakeMarketingEmailConsent } from "@/lib/intake-marketing-consent-server";
@@ -72,6 +73,9 @@ export async function runNutritionRelogInvites(): Promise<{
 
   if (logsError) {
     console.error("[nutrition-relog] fetch logs:", logsError);
+    Sentry.captureException(logsError, {
+      tags: { cron: "nurture", step: "nutrition_relog_fetch" },
+    });
     throw logsError;
   }
 
@@ -175,6 +179,10 @@ export async function runNutritionRelogInvites(): Promise<{
 
     if (sendError) {
       console.error("[nutrition-relog] send failed:", sendError);
+      Sentry.captureException(sendError, {
+        tags: { cron: "nurture", step: "nutrition_relog_send" },
+        extra: { sessionId },
+      });
       errors += 1;
       await supabase.from("nurture_emails").insert({
         source: REL0G_SOURCE,

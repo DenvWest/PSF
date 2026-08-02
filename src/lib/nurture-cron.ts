@@ -1,7 +1,10 @@
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import { emailHasActiveAccount } from "@/lib/account-server";
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
 import { emitEvent } from "@/lib/events";
+import { startCronRun, completeCronRun } from "@/lib/cron-runs";
+import { runNutritionRelogInvites } from "@/lib/nutrition-relog-nurture";
 import {
   getPlanInterventionBucketsForSession,
   loadNurturePlanGate,
@@ -99,6 +102,7 @@ export async function runPendingNurtureEmails(): Promise<{
 
   if (error) {
     console.error("[nurture-cron] fetch nurture_emails:", error);
+    Sentry.captureException(error, { tags: { cron: "nurture", step: "fetch" } });
     throw error;
   }
 
@@ -141,6 +145,10 @@ export async function runPendingNurtureEmails(): Promise<{
 
     if (claimErr) {
       console.error("[nurture-cron] claim failed:", mail.id, claimErr);
+      Sentry.captureException(claimErr, {
+        tags: { cron: "nurture", step: "claim" },
+        extra: { nurtureEmailId: mail.id },
+      });
       errors += 1;
       continue;
     }
@@ -342,6 +350,10 @@ export async function runPendingNurtureEmails(): Promise<{
 
       if (updateError) {
         console.error("[nurture-cron] Supabase update (sent):", updateError);
+        Sentry.captureException(updateError, {
+          tags: { cron: "nurture", step: "mark_sent" },
+          extra: { nurtureEmailId: mail.id },
+        });
         errors += 1;
         continue;
       }
@@ -382,6 +394,10 @@ export async function runPendingNurtureEmails(): Promise<{
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       console.error("[nurture-cron] mail failed:", mail.id, msg);
+      Sentry.captureException(err, {
+        tags: { cron: "nurture", step: "send" },
+        extra: { nurtureEmailId: mail.id },
+      });
       const { error: failUpdate } = await supabase
         .from("nurture_emails")
         .update({
@@ -397,4 +413,45 @@ export async function runPendingNurtureEmails(): Promise<{
   }
 
   return { sent, errors };
+}
+
+const NURTURE_CRON_NAME = "nurture";
+
+/** Nurture-verzending + nutrition-relog met dead-man's switch in `cron_runs`. */
+export async function runNurtureCronJob(): Promise<{
+  sent: number;
+  errors: number;
+  nutritionRelogSent: number;
+  nutritionRelogErrors: number;
+}> {
+  const runId = await startCronRun(NURTURE_CRON_NAME);
+
+  try {
+    const nurture = await runPendingNurtureEmails();
+    const relog = await runNutritionRelogInvites();
+    const result = {
+      sent: nurture.sent + relog.sent,
+      errors: nurture.errors + relog.errors,
+      nutritionRelogSent: relog.sent,
+      nutritionRelogErrors: relog.errors,
+    };
+
+    const totalErrors = nurture.errors + relog.errors;
+    if (totalErrors > 0) {
+      await completeCronRun(runId, {
+        status: "error",
+        errorMessage: `${totalErrors} fout(en) tijdens verzenden (nurture=${nurture.errors}, relog=${relog.errors})`,
+        result,
+      });
+    } else {
+      await completeCronRun(runId, { status: "success", result });
+    }
+
+    return result;
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error ? err.message : "Onbekende nurture-cron-fout";
+    await completeCronRun(runId, { status: "error", errorMessage });
+    throw err;
+  }
 }

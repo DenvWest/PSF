@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import { emailHasActiveAccount } from "@/lib/account-server";
 import { INTAKE_CTA } from "@/lib/intake-product-copy";
@@ -151,6 +152,10 @@ export async function runPendingIntakeReminders(): Promise<{
     .eq("sent", false);
 
   if (fetchError) {
+    console.error("[intake-reminder-cron] fetch reminders:", fetchError);
+    Sentry.captureException(fetchError, {
+      tags: { cron: "intake_reminder", step: "fetch" },
+    });
     throw fetchError;
   }
 
@@ -175,6 +180,10 @@ export async function runPendingIntakeReminders(): Promise<{
       .in("id", sessionIds);
 
     if (sessionError) {
+      console.error("[intake-reminder-cron] fetch sessions:", sessionError);
+      Sentry.captureException(sessionError, {
+        tags: { cron: "intake_reminder", step: "fetch_sessions" },
+      });
       throw sessionError;
     }
 
@@ -280,6 +289,10 @@ export async function runPendingIntakeReminders(): Promise<{
 
       if (sendError) {
         console.error("[intake-reminder-cron] Resend error:", sendError);
+        Sentry.captureException(sendError, {
+          tags: { cron: "intake_reminder", step: "send" },
+          extra: { reminderId: row.id },
+        });
         errors += 1;
         continue;
       }
@@ -291,6 +304,10 @@ export async function runPendingIntakeReminders(): Promise<{
 
       if (updateError) {
         console.error("[intake-reminder-cron] Supabase update error:", updateError);
+        Sentry.captureException(updateError, {
+          tags: { cron: "intake_reminder", step: "mark_sent" },
+          extra: { reminderId: row.id },
+        });
         errors += 1;
         continue;
       }
@@ -308,6 +325,10 @@ export async function runPendingIntakeReminders(): Promise<{
       });
     } catch (err) {
       console.error("[intake-reminder-cron] mail failed:", row.id, err);
+      Sentry.captureException(err, {
+        tags: { cron: "intake_reminder", step: "send" },
+        extra: { reminderId: row.id },
+      });
       errors += 1;
     }
   }
