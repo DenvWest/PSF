@@ -83,6 +83,7 @@ export async function PATCH(
 
   const patch: {
     title?: string;
+    date?: string;
     startTime?: string;
     endTime?: string;
     status?: AgendaBlockStatus;
@@ -90,6 +91,9 @@ export async function PATCH(
 
   if (typeof record.title === "string") {
     patch.title = record.title.trim();
+  }
+  if (typeof record.date === "string") {
+    patch.date = record.date.trim();
   }
   if (typeof record.startTime === "string") {
     patch.startTime = record.startTime.trim();
@@ -124,6 +128,25 @@ export async function PATCH(
           category_id: block.categoryId,
           source: block.source,
           done: block.status === "done",
+        },
+      });
+    }
+
+    const retimed =
+      patch.date !== undefined ||
+      patch.startTime !== undefined ||
+      patch.endTime !== undefined ||
+      patch.title !== undefined;
+    if (retimed) {
+      void emitEvent({
+        eventType: "agenda.block_updated",
+        email: account.email ?? undefined,
+        organizationId: account.organization_id,
+        payload: {
+          category_id: block.categoryId,
+          source: block.source,
+          moved_date: patch.date !== undefined,
+          retimed: patch.startTime !== undefined || patch.endTime !== undefined,
         },
       });
     }

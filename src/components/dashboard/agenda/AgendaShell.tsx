@@ -1,19 +1,24 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type AgendaShellProps = {
   accentColor: string;
   children: ReactNode;
 };
 
+/**
+ * Full-bleed surface: Mijn Dag is een pagina in de dark cockpit-wereld, geen
+ * lichte kaart-in-kaart. De accentkleur reist mee als CSS-var zodat losse
+ * onderdelen hem kunnen lenen zonder prop-drilling.
+ */
 export default function AgendaShell({ accentColor, children }: AgendaShellProps) {
   return (
-    <article
+    <section
       aria-label="Mijn dag"
-      className="-mt-2 overflow-hidden rounded-[28px] border border-[#e4e0da] bg-white shadow-[0_8px_32px_rgba(15,28,16,0.06)]"
-      style={{ borderTopWidth: 2, borderTopColor: accentColor }}
+      className="min-w-0"
+      style={{ "--agenda-accent": accentColor } as CSSProperties}
     >
       {children}
-    </article>
+    </section>
   );
 }
 
@@ -25,7 +30,7 @@ export function AgendaShellSection({
   className?: string;
 }) {
   return (
-    <div className={`border-t border-[#ebe7e2] px-5 py-4 first:border-t-0 ${className}`}>
+    <div className={`border-t border-white/10 py-4 first:border-t-0 ${className}`}>
       {children}
     </div>
   );

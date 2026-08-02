@@ -8,9 +8,11 @@ import {
   getBlockTimelineStyle,
   getHourMarkerTopPx,
   getNowLinePercent,
+  getTimelineHalfHourMarks,
   getTimelineTrackHeightPx,
   minutesToTime,
   positionToTimelineTime,
+  resolvePlanStepPlacement,
   snapTimelineMinutes,
   TIMELINE_END_MINUTES,
   TIMELINE_START_MINUTES,
@@ -163,6 +165,85 @@ describe("buildPlanStepBlock", () => {
       planStepsHidden: true,
     };
     expect(buildPlanStepBlock(hiddenModel, todaySlot)).toBeNull();
+  });
+});
+
+describe("resolvePlanStepPlacement", () => {
+  it("houdt de stap in de tray zonder expliciet gezette tijd", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    expect(resolvePlanStepPlacement({ ...model, scheduledTime: null }, todaySlot)).toBe(
+      "tray",
+    );
+  });
+
+  it("zet de stap in het raster zodra de gebruiker een tijd koos", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    expect(resolvePlanStepPlacement({ ...model, scheduledTime: "18:00" }, todaySlot)).toBe(
+      "grid",
+    );
+  });
+
+  it("houdt voorbeelddagen in de tray, ook met een gezette tijd", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const previewSlot = slots.find((slot) => !slot.isToday);
+    expect(previewSlot).toBeDefined();
+    if (!previewSlot) {
+      return;
+    }
+
+    expect(resolvePlanStepPlacement({ ...model, scheduledTime: "18:00" }, previewSlot)).toBe(
+      "tray",
+    );
+  });
+
+  it("verbergt de stap als hij is weggeklikt", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    expect(
+      resolvePlanStepPlacement(
+        { ...model, scheduledTime: "18:00", planStepsHidden: true },
+        todaySlot,
+      ),
+    ).toBe("hidden");
+  });
+});
+
+describe("halfuurraster", () => {
+  it("levert een halfuurlijn per uursegment, zonder het eindpunt", () => {
+    const marks = getTimelineHalfHourMarks();
+    expect(marks[0]).toBe(7.5);
+    expect(marks[marks.length - 1]).toBe(21.5);
+    expect(marks).toHaveLength(15);
+  });
+
+  it("plaatst de halfuurlijn precies tussen twee uurlijnen", () => {
+    const hourHeight = 58;
+    const nine = getHourMarkerTopPx(9, hourHeight);
+    const halfPastNine = getHourMarkerTopPx(9.5, hourHeight);
+    const ten = getHourMarkerTopPx(10, hourHeight);
+    expect(halfPastNine - nine).toBeCloseTo(hourHeight / 2, 5);
+    expect(ten - halfPastNine).toBeCloseTo(hourHeight / 2, 5);
   });
 });
 

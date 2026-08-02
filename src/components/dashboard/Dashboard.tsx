@@ -162,17 +162,20 @@ import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import {
   isPillarId,
   isValidAgendaDate,
+  parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
   parseVoortgangDomeinFromUrl,
   parseVoortgangScreenFromUrl,
   buildDashboardAgendaHref,
+  syncDashboardAgendaViewParam,
   syncDashboardDagParam,
   syncDashboardKompasParam,
   syncDashboardStatistiekenBlikParam,
   syncDashboardTabParam,
   syncDashboardVoortgangScreenParam,
+  type AgendaViewId,
   type SyncDashboardVoortgangOptions,
 } from "@/lib/dashboard-url";
 import { isStatistiekenBlik, resolveDefaultStatistiekenBlik } from "@/lib/statistieken-blik";
@@ -199,6 +202,7 @@ type DashboardProps = {
   initialVoortgangScreen?: VoortgangScreen;
   initialStatistiekenBlik?: StatistiekenBlik;
   initialKompasView?: PillarId;
+  initialAgendaView?: AgendaViewId;
   sleepFocus?: SleepFocusKey | null;
 };
 
@@ -216,7 +220,9 @@ type SharedSectionProps = {
   onGoVandaag: () => void;
   onGoAgenda: (date?: string) => void;
   agendaDate: string;
+  agendaView: AgendaViewId;
   onAgendaDateChange: (date: string) => void;
+  onAgendaViewChange: (view: AgendaViewId) => void;
   onGoVoortgang: () => void;
   onGoHermeting: () => void;
   voortgangScreen: VoortgangScreen;
@@ -3237,7 +3243,9 @@ const SECTION_RENDERERS: Record<
       <AgendaScreen
         model={props.model}
         selectedDate={props.agendaDate}
+        view={props.agendaView}
         onSelectedDateChange={props.onAgendaDateChange}
+        onViewChange={props.onAgendaViewChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoVoortgang={props.onGoVoortgang}
       />
@@ -3389,6 +3397,7 @@ export default function Dashboard({
   initialVoortgangScreen,
   initialStatistiekenBlik,
   initialKompasView,
+  initialAgendaView,
   sleepFocus = null,
 }: DashboardProps) {
   const router = useRouter();
@@ -3430,6 +3439,12 @@ export default function Dashboard({
     dagParam && isValidAgendaDate(dagParam)
       ? dagParam
       : (agendaDateOverride ?? todayInAgendaTimezone());
+  const [agendaView, setAgendaView] = useState<AgendaViewId>(() => {
+    if (typeof window !== "undefined") {
+      return parseAgendaViewFromUrl(window.location.href);
+    }
+    return initialAgendaView ?? "dag";
+  });
 
   const priorityPref =
     priorityPrefOverride !== undefined ? priorityPrefOverride : (data?.priorityPref ?? null);
@@ -3536,6 +3551,11 @@ export default function Dashboard({
     syncDashboardDagParam(date);
   }, []);
 
+  const handleAgendaViewChange = useCallback((view: AgendaViewId) => {
+    setAgendaView(view);
+    syncDashboardAgendaViewParam(view);
+  }, []);
+
   const tabRef = useRef(tab);
   useEffect(() => {
     tabRef.current = tab;
@@ -3599,6 +3619,7 @@ export default function Dashboard({
     }
     const dag = parseDagFromUrl(url);
     setAgendaDateOverride(dag);
+    setAgendaView(parseAgendaViewFromUrl(url));
   }, [VALID_TAB_IDS]);
 
   useEffect(() => {
@@ -3762,7 +3783,9 @@ export default function Dashboard({
       setTab("agenda");
     },
     agendaDate,
+    agendaView,
     onAgendaDateChange: handleAgendaDateChange,
+    onAgendaViewChange: handleAgendaViewChange,
     onGoVoortgang: () => {
       setVoortgangScreen("hub");
       selectTab("voortgang");
@@ -3940,7 +3963,7 @@ export default function Dashboard({
         <div
           className={`w-full ${
             tab === "agenda"
-              ? "max-w-[760px]"
+              ? "min-w-0"
               : (viewedDomain != null && COCKPIT_WIDTH_DOMAINS.has(viewedDomain)) ||
                   (tab === "vandaag" && !viewedDomain) ||
                   tab === "voortgang"

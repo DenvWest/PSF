@@ -16,15 +16,17 @@ import {
   getBlockTimelineStyle,
   getHourMarkerTopPx,
   getNowLinePercent,
+  getTimelineHalfHourMarks,
   getTimelineHourLabels,
   getTimelineTrackHeightPx,
   positionToTimelineTime,
+  resolvePlanStepPlacement,
 } from "@/lib/agenda-timeline";
-import type { WeekDaySlot } from "@/lib/agenda-week-preview";
+import type { AgendaDayContext } from "@/lib/agenda-day-context";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
-const HOUR_HEIGHT_PX = 52;
+const HOUR_HEIGHT_PX = 58;
 const TIMELINE_HEIGHT_PX = getTimelineTrackHeightPx(HOUR_HEIGHT_PX);
 
 type DraftSlot = {
@@ -39,13 +41,18 @@ type HiddenPlanStep = {
   reason: "day" | "all";
 };
 
+export type RetimeBlockInput = {
+  date?: string;
+  startTime: string;
+  endTime: string;
+};
+
 type AgendaDayTimelineProps = {
   model: DashboardModel;
-  slot: WeekDaySlot;
+  context: AgendaDayContext;
   routineBlocks: AgendaBlockRecord[];
   prefBusy: boolean;
   blockBusy?: boolean;
-  hidePlanStepStrip?: boolean;
   onCompletionChange?: () => void;
   onScheduledTimeChange: (scheduledTime: string) => void;
   onCreateBlock: (input: {
@@ -57,6 +64,7 @@ type AgendaDayTimelineProps = {
   }) => Promise<void>;
   onToggleBlockDone: (blockId: string, done: boolean) => Promise<void>;
   onDeleteBlock: (blockId: string) => Promise<void>;
+  onRetimeBlock?: (blockId: string, input: RetimeBlockInput) => Promise<void>;
   archivedBlocks?: AgendaBlockRecord[];
   onRestoreBlock?: (blockId: string) => Promise<void>;
   hiddenPlanStep?: HiddenPlanStep | null;
@@ -74,29 +82,18 @@ type AgendaDayTimelineProps = {
   }) => void;
 };
 
-function formatDayHeading(isoDate: string, isToday: boolean): string {
-  const formatted = new Intl.DateTimeFormat("nl-NL", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    timeZone: "Europe/Amsterdam",
-  }).format(new Date(`${isoDate}T12:00:00.000Z`));
-
-  return isToday ? `Vandaag · ${formatted}` : formatted;
-}
-
 export default function AgendaDayTimeline({
   model,
-  slot,
+  context,
   routineBlocks,
   prefBusy,
   blockBusy = false,
-  hidePlanStepStrip = false,
   onCompletionChange,
   onScheduledTimeChange,
   onCreateBlock,
   onToggleBlockDone,
   onDeleteBlock,
+  onRetimeBlock,
   archivedBlocks = [],
   onRestoreBlock,
   hiddenPlanStep = null,
@@ -114,29 +111,48 @@ export default function AgendaDayTimeline({
   const [focusExpanded, setFocusExpanded] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+
+  const slot = context.kind === "engine" ? context.slot : null;
+  const date = context.date;
+  const isToday = slot?.isToday ?? false;
+
+  const planStepPlacement = slot ? resolvePlanStepPlacement(model, slot) : "hidden";
   const planStep = useMemo(
-    () => buildPlanStepBlock(model, slot),
+    () => (slot ? buildPlanStepBlock(model, slot) : null),
     [model, slot],
   );
-  const blocks = useMemo(
-    () => buildDayTimeline(model, slot, routineBlocks),
-    [model, slot, routineBlocks],
+  const dayBlocks = useMemo(
+    () => buildDayTimeline(model, { date }, routineBlocks),
+    [model, date, routineBlocks],
   );
+  // Eén object, één plek: staat de plan-stap in het raster, dan verdwijnt de
+  // tray-strip — en andersom (verdict §A2c).
+  const gridBlocks = useMemo(() => {
+    if (planStepPlacement !== "grid" || !planStep) {
+      return dayBlocks;
+    }
+    return [...dayBlocks, planStep].sort((left, right) =>
+      left.startTime.localeCompare(right.startTime),
+    );
+  }, [dayBlocks, planStep, planStepPlacement]);
+
   const selectedBlock = useMemo(() => {
     if (planStep?.id === selectedBlockId) {
       return planStep;
     }
-    return blocks.find((block) => block.id === selectedBlockId) ?? null;
-  }, [blocks, planStep, selectedBlockId]);
-  const nowLinePercent = slot.isToday ? getNowLinePercent() : null;
+    return gridBlocks.find((block) => block.id === selectedBlockId) ?? null;
+  }, [gridBlocks, planStep, selectedBlockId]);
+
+  const nowLinePercent = isToday ? getNowLinePercent() : null;
   const hourLabels = getTimelineHourLabels();
+  const halfHourMarks = getTimelineHalfHourMarks();
   const ghostStyle = draftSlot
     ? getBlockTimelineStyle(draftSlot.startTime, draftSlot.endTime)
     : null;
 
   const archivedForDay = useMemo(
-    () => archivedBlocks.filter((block) => block.date === slot.date),
-    [archivedBlocks, slot.date],
+    () => archivedBlocks.filter((block) => block.date === date),
+    [archivedBlocks, date],
   );
 
   const closeSheet = () => {
@@ -195,45 +211,41 @@ export default function AgendaDayTimeline({
   };
 
   return (
-    <section aria-label="Dagtijdlijn">
-      <div className="mb-3">
-        <div className="flex items-end justify-between gap-3">
-          <h2
-            className="m-0 min-w-0 flex-1 text-[20px] font-medium capitalize text-[#1c1917]"
-            style={{ fontFamily: "var(--f-serif)" }}
-          >
-            {formatDayHeading(slot.date, slot.isToday)}
-          </h2>
-          <div className="flex shrink-0 items-center">
-            {slot.isToday ? (
+    <section aria-label="Dagtijdlijn" className="min-w-0">
+      {slot ? (
+        <div className="mb-3 flex items-start justify-between gap-3">
+          <AgendaProvenanceStrip model={model} slot={slot} className="min-w-0 flex-1" />
+          {isToday ? (
+            <div className="flex shrink-0 items-center">
               <AgendaFocusPill
                 model={model}
                 busy={prefBusy}
                 expanded={focusExpanded}
                 onToggle={openHeaderFocus}
               />
-            ) : null}
-          </div>
+            </div>
+          ) : null}
         </div>
-        <AgendaProvenanceStrip
-          model={model}
-          slot={slot}
-          className="mt-2 pb-0.5"
-        />
-        {slot.isToday && focusExpanded ? (
-          <div className="mt-3">
-            <AgendaFocusPanel
-              model={model}
-              busy={prefBusy}
-              onSelectPillar={onSelectPillar}
-              onAcceptEngine={onAcceptEngine}
-              onReset={onResetFocus}
-            />
-          </div>
-        ) : null}
-      </div>
+      ) : (
+        <p className="mb-3 text-[12.5px] leading-normal text-[#9FB0A6]">
+          Deze dag valt buiten je adviesweek. Je eigen momenten staan er wel — je
+          dagstap volgt weer in de week van vandaag.
+        </p>
+      )}
 
-      {planStep && !hidePlanStepStrip ? (
+      {slot && isToday && focusExpanded ? (
+        <div className="mb-3">
+          <AgendaFocusPanel
+            model={model}
+            busy={prefBusy}
+            onSelectPillar={onSelectPillar}
+            onAcceptEngine={onAcceptEngine}
+            onReset={onResetFocus}
+          />
+        </div>
+      ) : null}
+
+      {planStep && planStepPlacement === "tray" ? (
         <div className="mb-3">
           <AgendaPlanStepStrip
             block={planStep}
@@ -244,16 +256,16 @@ export default function AgendaDayTimeline({
 
       {weekStrip ? <div className="mb-4">{weekStrip}</div> : null}
 
-      <div className="flex gap-3">
+      <div className="flex gap-2 sm:gap-3">
         <div
-          className="relative w-11 shrink-0"
+          className="relative w-10 shrink-0 sm:w-11"
           style={{ height: TIMELINE_HEIGHT_PX }}
           aria-hidden
         >
           {hourLabels.map((hour) => (
             <span
               key={hour}
-              className="absolute right-0 -translate-y-1/2 text-[11px] font-medium tabular-nums text-[#a8a29e]"
+              className="absolute right-0 -translate-y-1/2 text-[10.5px] font-medium tabular-nums text-[#7E8C82]"
               style={{ top: getHourMarkerTopPx(hour, HOUR_HEIGHT_PX) }}
             >
               {formatTimelineHour(hour)}
@@ -262,7 +274,7 @@ export default function AgendaDayTimeline({
         </div>
 
         <div
-          className="relative min-w-0 flex-1 rounded-[18px] border border-[#ebe7e2] bg-[#fcfbfa]"
+          className="relative min-w-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-black/20"
           style={{ height: TIMELINE_HEIGHT_PX }}
         >
           <button
@@ -270,21 +282,30 @@ export default function AgendaDayTimeline({
             disabled={blockBusy}
             aria-label="Voeg leefstijlmoment toe op dit tijdstip"
             onClick={handleRailClick}
-            className="absolute inset-0 z-0 cursor-pointer border-none bg-transparent transition-colors hover:bg-[#f5f3f0] disabled:cursor-not-allowed disabled:opacity-60"
+            className="absolute inset-0 z-0 cursor-pointer border-none bg-transparent transition-colors hover:bg-white/[0.03] disabled:cursor-not-allowed disabled:opacity-60"
           />
 
           {hourLabels.map((hour) => (
             <div
               key={`grid-${hour}`}
-              className="pointer-events-none absolute inset-x-0 border-t border-[#f0ece7]"
+              className="pointer-events-none absolute inset-x-0 border-t border-white/10"
               style={{ top: getHourMarkerTopPx(hour, HOUR_HEIGHT_PX) }}
+              aria-hidden
+            />
+          ))}
+
+          {halfHourMarks.map((mark) => (
+            <div
+              key={`half-${mark}`}
+              className="pointer-events-none absolute inset-x-0 border-t border-dashed border-white/[0.055]"
+              style={{ top: getHourMarkerTopPx(mark, HOUR_HEIGHT_PX) }}
               aria-hidden
             />
           ))}
 
           {ghostStyle && addOpen && draftSlot ? (
             <div
-              className="pointer-events-none absolute inset-x-2 z-[5] rounded-[14px] border border-dashed border-[var(--sage)] bg-[rgba(90,143,106,0.08)]"
+              className="pointer-events-none absolute inset-x-2 z-[5] rounded-xl border border-dashed border-[var(--sage)] bg-[rgba(90,143,106,0.14)]"
               style={{
                 top: `${ghostStyle.topPercent}%`,
                 height: `${ghostStyle.heightPercent}%`,
@@ -300,16 +321,16 @@ export default function AgendaDayTimeline({
               aria-hidden
             >
               <span className="h-2 w-2 rounded-full bg-[var(--sage)]" />
-              <span className="h-px flex-1 bg-[var(--sage)]" />
+              <span className="h-px flex-1 bg-[var(--sage)]/70" />
             </div>
           ) : null}
 
-          {blocks.map((block, index) => {
+          {gridBlocks.map((block, index) => {
             const style = getBlockTimelineStyle(block.startTime, block.endTime);
             return (
               <div
                 key={block.id}
-                className="absolute inset-x-2 z-10 overflow-hidden"
+                className="absolute inset-x-1.5 z-10 overflow-hidden sm:inset-x-2"
                 style={{
                   top: `${style.topPercent}%`,
                   height: `${style.heightPercent}%`,
@@ -323,30 +344,34 @@ export default function AgendaDayTimeline({
         </div>
       </div>
 
-      <AgendaAddBlockSheet
-        key={
-          draftSlot
-            ? `tap-${slot.date}-${draftSlot.startTime}-${draftSlot.endTime}`
-            : `header-${slot.date}`
-        }
-        open={addOpen}
-        date={slot.date}
-        busy={blockBusy}
-        initialStartTime={draftSlot?.startTime}
-        initialEndTime={draftSlot?.endTime}
-        createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
-        archivedBlocks={archivedForDay}
-        hiddenPlanStep={hiddenPlanStep}
-        onRestore={onRestoreBlock}
-        onRestorePlanStep={onRestorePlanStep}
-        onShowAllPlanSteps={onShowAllPlanSteps}
-        onClose={closeSheet}
-        onSubmit={onCreateBlock}
-      />
+      {addOpen ? (
+        <AgendaAddBlockSheet
+          key={
+            draftSlot
+              ? `tap-${date}-${draftSlot.startTime}-${draftSlot.endTime}`
+              : `header-${date}`
+          }
+          open={addOpen}
+          date={date}
+          busy={blockBusy}
+          initialStartTime={draftSlot?.startTime}
+          initialEndTime={draftSlot?.endTime}
+          createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
+          archivedBlocks={archivedForDay}
+          hiddenPlanStep={hiddenPlanStep}
+          onRestore={onRestoreBlock}
+          onRestorePlanStep={onRestorePlanStep}
+          onShowAllPlanSteps={onShowAllPlanSteps}
+          onClose={closeSheet}
+          onSubmit={onCreateBlock}
+        />
+      ) : null}
 
       <AgendaBlockDetailSheet
+        key={`${date}-${selectedBlockId ?? "none"}`}
         block={selectedBlock}
         model={model}
+        date={date}
         prefBusy={prefBusy}
         busy={blockBusy}
         onClose={closeDetail}
@@ -354,10 +379,17 @@ export default function AgendaDayTimeline({
         onScheduledTimeChange={onScheduledTimeChange}
         onToggleDone={(blockId, done) => void onToggleBlockDone(blockId, done)}
         onDelete={(blockId) => void onDeleteBlock(blockId)}
+        onRetime={
+          onRetimeBlock
+            ? (blockId, input) => {
+                void onRetimeBlock(blockId, input);
+              }
+            : undefined
+        }
         onDismissPlanStep={
           onDismissPlanStep
-            ? (date) => {
-                void onDismissPlanStep(date);
+            ? (dismissDate) => {
+                void onDismissPlanStep(dismissDate);
               }
             : undefined
         }

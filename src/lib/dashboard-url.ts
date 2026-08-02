@@ -17,6 +17,29 @@ const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+/** Mijn Dag kent drie blikken; `dag` is de default als `view` ontbreekt of ongeldig is. */
+export type AgendaViewId = "dag" | "week" | "maand";
+
+const VALID_AGENDA_VIEWS = new Set<AgendaViewId>(["dag", "week", "maand"]);
+
+export function isAgendaViewId(value: unknown): value is AgendaViewId {
+  return typeof value === "string" && VALID_AGENDA_VIEWS.has(value as AgendaViewId);
+}
+
+/**
+ * `view` is alleen betekenisvol op tab=agenda. Op andere tabs is het een legacy
+ * param (bijv. view=stappenplan op vandaag) die hier bewust genegeerd wordt.
+ */
+export function parseAgendaViewFromUrl(url: string | URL): AgendaViewId {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  if (parsed.searchParams.get("tab") !== "agenda") {
+    return "dag";
+  }
+  const view = parsed.searchParams.get("view");
+  return isAgendaViewId(view) ? view : "dag";
+}
+
 export function isValidAgendaDate(value: string): boolean {
   if (!ISO_DATE_RE.test(value)) {
     return false;
@@ -188,12 +211,34 @@ export function syncDashboardStatistiekenBlikParam(blik: StatistiekenBlik): void
   window.history.pushState(null, "", nextHref);
 }
 
-export function buildDashboardAgendaHref(dag?: string | null): string {
+export function buildDashboardAgendaHref(
+  dag?: string | null,
+  view?: AgendaViewId | null,
+): string {
   const params = new URLSearchParams({ tab: "agenda" });
   if (dag && isValidAgendaDate(dag)) {
     params.set("dag", dag);
   }
+  if (isAgendaViewId(view)) {
+    params.set("view", view);
+  }
   return `/dashboard?${params.toString()}`;
+}
+
+export function syncDashboardAgendaViewParam(view: AgendaViewId): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const url = new URL(window.location.href);
+  if (url.searchParams.get("tab") !== "agenda") {
+    return;
+  }
+  url.searchParams.set("view", view);
+  const nextHref = url.toString();
+  if (nextHref === window.location.href) {
+    return;
+  }
+  window.history.pushState(null, "", nextHref);
 }
 
 export function buildDashboardPlanHref(planDomain: string): string {
@@ -246,6 +291,7 @@ export function syncDashboardKompasParam(domain: PillarId | null): void {
 
 export type SyncDashboardTabOptions = {
   dag?: string | null;
+  view?: AgendaViewId | null;
 };
 
 export function syncDashboardDagParam(dag: string | null): void {
@@ -286,20 +332,40 @@ export function syncDashboardTabParam(
       : null;
 
   if (currentTab === tab) {
+    let changed = false;
     if (tab === "agenda" || tab === "vandaag") {
-      if (nextDag && isValidAgendaDate(nextDag)) {
-        if (url.searchParams.get("dag") !== nextDag) {
-          url.searchParams.set("dag", nextDag);
-          window.history.pushState(null, "", url.toString());
-        }
+      if (nextDag && isValidAgendaDate(nextDag) && url.searchParams.get("dag") !== nextDag) {
+        url.searchParams.set("dag", nextDag);
+        changed = true;
       }
+    }
+    if (
+      tab === "agenda" &&
+      isAgendaViewId(options?.view) &&
+      url.searchParams.get("view") !== options.view
+    ) {
+      url.searchParams.set("view", options.view);
+      changed = true;
+    }
+    if (changed) {
+      window.history.pushState(null, "", url.toString());
     }
     return;
   }
 
+  const carriedAgendaView = parseAgendaViewFromUrl(url);
   url.searchParams.set("tab", tab);
   if (tab !== "vandaag") {
     url.searchParams.delete("kompas");
+  }
+  if (tab === "agenda") {
+    const nextView = isAgendaViewId(options?.view) ? options.view : carriedAgendaView;
+    if (nextView === "dag") {
+      url.searchParams.delete("view");
+    } else {
+      url.searchParams.set("view", nextView);
+    }
+  } else {
     url.searchParams.delete("view");
   }
   if (tab !== "voortgang") {

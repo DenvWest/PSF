@@ -148,6 +148,9 @@ export function validateUpdateBlockInput(
       return "Ongeldige titel.";
     }
   }
+  if (input.date !== undefined && !isIsoDate(input.date)) {
+    return "Ongeldige datum.";
+  }
   if (input.status !== undefined && !isAgendaBlockStatus(input.status)) {
     return "Ongeldige status.";
   }
@@ -275,6 +278,9 @@ export async function updateBlock(
   };
   if (input.title !== undefined) {
     patch.title = input.title.trim();
+  }
+  if (input.date !== undefined) {
+    patch.date = input.date;
   }
   if (input.startTime !== undefined) {
     patch.start_time = input.startTime;

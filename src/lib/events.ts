@@ -20,6 +20,7 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.time_bucket_set",
   "agenda.block_created",
   "agenda.block_toggled",
+  "agenda.block_updated",
   "agenda.block_deleted",
   "agenda.block_restored",
   "agenda.plan_step_dismissed",

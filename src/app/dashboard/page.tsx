@@ -8,7 +8,11 @@ import { hasFeature } from "@/lib/db/entitlements";
 import { buildDevDashboardData } from "@/lib/dashboard-dev-data";
 import { parseSleepFocus, SLEEP_FOCUS_COOKIE_NAME } from "@/lib/sleep-focus";
 import { syncSupplementVerdicts } from "@/lib/supplement-verdict-producer";
-import { parseVoortgangScreenFromUrl } from "@/lib/dashboard-url";
+import {
+  isAgendaViewId,
+  parseVoortgangScreenFromUrl,
+  type AgendaViewId,
+} from "@/lib/dashboard-url";
 import type { DashboardTabId, PillarId, StatistiekenBlik } from "@/types/dashboard";
 
 export const metadata = {
@@ -25,6 +29,7 @@ type DashboardPageProps = {
     screen?: string;
     blik?: string;
     kompas?: string;
+    view?: string;
   }>;
 };
 
@@ -74,8 +79,15 @@ function parseInitialKompasView(kompas?: string): PillarId | undefined {
   return undefined;
 }
 
+function parseInitialAgendaView(tab?: string, view?: string): AgendaViewId | undefined {
+  if (tab !== "agenda" || !isAgendaViewId(view)) {
+    return undefined;
+  }
+  return view;
+}
+
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  const { state, tab, screen, blik, kompas } = await searchParams;
+  const { state, tab, screen, blik, kompas, view } = await searchParams;
 
   const account = await getAccountFromCookie();
   if (!account) {
@@ -88,12 +100,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const initialVoortgangScreen = parseInitialVoortgangScreen(screen);
   const initialStatistiekenBlik = parseInitialStatistiekenBlik(screen, blik);
   const initialKompasView = parseInitialKompasView(kompas);
+  const initialAgendaView = parseInitialAgendaView(tab, view);
 
   const dashboardProps = {
     initialTab,
     initialVoortgangScreen,
     initialStatistiekenBlik,
     initialKompasView,
+    initialAgendaView,
   };
 
   if (state === "empty") {

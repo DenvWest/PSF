@@ -29,15 +29,15 @@ export default function AgendaTimelineChip({
   const isAnalysis = block.kind === "analysis";
   const category = getAgendaCategory(block.categoryId);
   const accentColor = isAnalysis && block.domain ? PILLAR[block.domain].color : category.color;
-  const eyebrow = isAnalysis ? "Stap uit je plan" : category.label;
+  const eyebrow = isAnalysis ? "Uit je plan" : category.label;
 
   return (
     <button
       type="button"
       onClick={onOpenDetail}
       aria-label={`Open ${block.title}`}
-      className={`flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-[12px] border border-[#ebe7e2] bg-white p-2 text-left shadow-[0_2px_8px_rgba(15,28,16,0.04)] transition-opacity hover:opacity-95 ${
-        block.done ? "opacity-75" : ""
+      className={`flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1d3120] p-2 text-left transition-colors hover:border-white/20 ${
+        block.done ? "opacity-70" : ""
       }`}
       style={{ borderLeftWidth: 3, borderLeftColor: accentColor }}
     >
@@ -53,26 +53,28 @@ export default function AgendaTimelineChip({
                 aria-hidden
               />
             )}
-            <span className="truncate text-[10px] font-semibold uppercase tracking-[0.05em] text-[#78716c]">
+            <span className="truncate text-[9.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
               {eyebrow}
             </span>
           </div>
           <p
-            className="m-0 line-clamp-2 text-[13px] font-medium leading-snug text-[#1c1917]"
+            className={`m-0 line-clamp-2 text-[13px] font-medium leading-snug text-[#F1EFE8] ${
+              block.done ? "line-through decoration-white/30" : ""
+            }`}
             style={{ fontFamily: "var(--f-serif)" }}
           >
             {block.title}
           </p>
-          <p className="mt-0.5 truncate text-[11px] tabular-nums text-[#78716c]">
+          <p className="mt-0.5 truncate text-[10.5px] tabular-nums text-[#9FB0A6]">
             {block.startTime} – {block.endTime}
           </p>
         </div>
         {block.done ? (
           <span
-            className="inline-flex shrink-0 items-center justify-center rounded-full bg-[rgba(90,143,106,0.15)] p-1"
+            className="inline-flex shrink-0 items-center justify-center rounded-full bg-[rgba(90,143,106,0.22)] p-1"
             aria-hidden
           >
-            <Icons.Check s={12} style={{ color: "var(--sage)" }} />
+            <Icons.Check s={12} style={{ color: "#7FB28E" }} />
           </span>
         ) : null}
       </div>

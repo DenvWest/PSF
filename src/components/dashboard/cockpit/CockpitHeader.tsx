@@ -122,7 +122,10 @@ export default function CockpitHeader({
   ) : null;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-[rgba(12,19,21,0.86)] backdrop-blur-md">
+    <header
+      data-cockpit-header
+      className="sticky top-0 z-20 border-b border-white/10 bg-[rgba(12,19,21,0.86)] backdrop-blur-md"
+    >
       {/* Kolom 1 = rail-breedte (240/260/280px) min de eigen px-6 (24px), zodat
           de tabs in kolom 2 exact boven de main-inhoud beginnen i.p.v.
           gecentreerd over de volle breedte. */}

@@ -5,12 +5,15 @@ import {
   buildDashboardPlanHref,
   buildDashboardVandaagHref,
   buildDashboardVoortgangHref,
+  isAgendaViewId,
   isPillarId,
   isValidAgendaDate,
+  parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
   parseVoortgangScreenFromUrl,
+  syncDashboardAgendaViewParam,
   syncDashboardDagParam,
   syncDashboardKompasParam,
   syncDashboardStatistiekenBlikParam,
@@ -159,6 +162,127 @@ describe("buildDashboardAgendaHref", () => {
     expect(buildDashboardAgendaHref("2026-07-26")).toBe(
       "/dashboard?tab=agenda&dag=2026-07-26",
     );
+  });
+
+  it("includes view when provided", () => {
+    expect(buildDashboardAgendaHref("2026-07-26", "week")).toBe(
+      "/dashboard?tab=agenda&dag=2026-07-26&view=week",
+    );
+    expect(buildDashboardAgendaHref(null, "maand")).toBe(
+      "/dashboard?tab=agenda&view=maand",
+    );
+  });
+});
+
+describe("parseAgendaViewFromUrl", () => {
+  it("parses the three agenda views", () => {
+    expect(parseAgendaViewFromUrl("http://localhost/dashboard?tab=agenda&view=week")).toBe(
+      "week",
+    );
+    expect(parseAgendaViewFromUrl("http://localhost/dashboard?tab=agenda&view=maand")).toBe(
+      "maand",
+    );
+    expect(parseAgendaViewFromUrl("http://localhost/dashboard?tab=agenda&view=dag")).toBe(
+      "dag",
+    );
+  });
+
+  it("falls back to dag when missing or invalid", () => {
+    expect(parseAgendaViewFromUrl("http://localhost/dashboard?tab=agenda")).toBe("dag");
+    expect(parseAgendaViewFromUrl("http://localhost/dashboard?tab=agenda&view=jaar")).toBe(
+      "dag",
+    );
+  });
+
+  it("ignores the legacy view param on other tabs", () => {
+    expect(
+      parseAgendaViewFromUrl("http://localhost/dashboard?tab=vandaag&view=stappenplan"),
+    ).toBe("dag");
+    expect(parseAgendaViewFromUrl("http://localhost/dashboard?tab=vandaag&view=week")).toBe(
+      "dag",
+    );
+  });
+
+  it("accepts only the three view ids", () => {
+    expect(isAgendaViewId("dag")).toBe(true);
+    expect(isAgendaViewId("week")).toBe(true);
+    expect(isAgendaViewId("maand")).toBe(true);
+    expect(isAgendaViewId("jaar")).toBe(false);
+    expect(isAgendaViewId(undefined)).toBe(false);
+  });
+});
+
+describe("syncDashboardAgendaViewParam", () => {
+  it("sets view on the agenda tab", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=agenda&dag=2026-08-19"),
+    });
+
+    syncDashboardAgendaViewParam("maand");
+    expect(pushState).toHaveBeenCalledOnce();
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("view=maand");
+    expect(nextUrl).toContain("dag=2026-08-19");
+
+    window.history.pushState = originalPush;
+  });
+
+  it("does nothing outside the agenda tab", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=vandaag"),
+    });
+
+    syncDashboardAgendaViewParam("week");
+    expect(pushState).not.toHaveBeenCalled();
+
+    window.history.pushState = originalPush;
+  });
+});
+
+describe("syncDashboardTabParam — agenda view", () => {
+  it("keeps the current view when switching to agenda", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=vandaag&dag=2026-08-19"),
+    });
+
+    syncDashboardTabParam("agenda", { dag: "2026-08-19", view: "week" });
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).toContain("tab=agenda");
+    expect(nextUrl).toContain("view=week");
+
+    window.history.pushState = originalPush;
+  });
+
+  it("drops the view param when leaving the agenda tab", () => {
+    const originalPush = window.history.pushState;
+    const pushState = vi.fn();
+    window.history.pushState = pushState as typeof window.history.pushState;
+
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: new URL("http://localhost/dashboard?tab=agenda&view=maand"),
+    });
+
+    syncDashboardTabParam("hermeting");
+    const nextUrl = pushState.mock.calls[0]?.[2] as string;
+    expect(nextUrl).not.toContain("view=");
+
+    window.history.pushState = originalPush;
   });
 });
 

@@ -23,14 +23,28 @@ const HOUR_LABELS = Array.from(
   (_, index) => TIMELINE_START_HOUR + index,
 );
 
+const HALF_HOUR_MARKS = Array.from(
+  { length: TIMELINE_SEGMENT_COUNT },
+  (_, index) => TIMELINE_START_HOUR + index + 0.5,
+);
+
 export function getTimelineHourLabels(): number[] {
   return HOUR_LABELS;
+}
+
+/**
+ * Halfuurlijnen (7.5 … 21.5) — alleen raster, nooit een label: het uur draagt
+ * de tijd, het halfuur draagt de precisie.
+ */
+export function getTimelineHalfHourMarks(): number[] {
+  return HALF_HOUR_MARKS;
 }
 
 export function getTimelineTrackHeightPx(hourHeightPx: number): number {
   return TIMELINE_SEGMENT_COUNT * hourHeightPx;
 }
 
+/** Accepteert ook halve uren (bijv. 7.5) voor de halfuurlijnen. */
 export function getHourMarkerTopPx(hour: number, hourHeightPx: number): number {
   const trackHeight = getTimelineTrackHeightPx(hourHeightPx);
   const hourIndex = hour - TIMELINE_START_HOUR;
@@ -136,6 +150,24 @@ export function buildPlanStepBlock(
   return buildAnalysisBlock(model, slot);
 }
 
+export type PlanStepPlacement = "hidden" | "tray" | "grid";
+
+/**
+ * Tray of raster (verdict §A2c). Een blok in het uurraster is een claim op een
+ * tijdstip; die claim mag alleen bestaan als de gebruiker zelf een tijd zette
+ * (`scheduled_time`). Een bucket of een afgeleide default blijft in de tray —
+ * anders geeft de app elke dag een afspraak die niemand maakte.
+ */
+export function resolvePlanStepPlacement(
+  model: DashboardModel,
+  slot: WeekDaySlot,
+): PlanStepPlacement {
+  if (isPlanStepHidden(model, slot)) {
+    return "hidden";
+  }
+  return slot.isToday && model.scheduledTime ? "grid" : "tray";
+}
+
 function mapRoutineBlock(block: AgendaBlockRecord): TimelineBlock {
   const kind = block.source.startsWith("external:") ? "external" : "routine";
   return {
@@ -151,17 +183,21 @@ function mapRoutineBlock(block: AgendaBlockRecord): TimelineBlock {
   };
 }
 
+/**
+ * `day` is bewust alleen een datum-drager: dagen buiten de engine-week hebben
+ * geen WeekDaySlot maar wel gewone momenten.
+ */
 export function buildDayTimeline(
   _model: DashboardModel,
-  slot: WeekDaySlot,
+  day: Pick<WeekDaySlot, "date">,
   routineBlocks: AgendaBlockRecord[],
   externalBlocks: TimelineBlock[] = [],
 ): TimelineBlock[] {
   const dayRoutineBlocks = routineBlocks
-    .filter((block) => block.date === slot.date)
+    .filter((block) => block.date === day.date)
     .map(mapRoutineBlock);
   const dayExternalBlocks = externalBlocks.filter((block) =>
-    block.id.startsWith(`external:${slot.date}:`),
+    block.id.startsWith(`external:${day.date}:`),
   );
 
   const timelineBlocks = [...dayRoutineBlocks, ...dayExternalBlocks];

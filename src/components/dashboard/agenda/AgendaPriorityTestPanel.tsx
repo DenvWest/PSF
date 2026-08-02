@@ -46,11 +46,11 @@ export default function AgendaPriorityTestPanel({
   };
 
   return (
-    <section className="mx-5 mb-4 rounded-[14px] border border-dashed border-[#d6d3d1] bg-[#faf9f7] p-4">
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+    <section className="mb-4 mt-4 rounded-[14px] border border-dashed border-white/20 bg-black/20 p-4">
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
         Test-screening agenda-sync
       </p>
-      <dl className="m-0 grid gap-1 text-[12px] text-[#57534e]">
+      <dl className="m-0 grid gap-1 text-[12px] text-[#CDD7D0]">
         <div className="flex justify-between gap-3">
           <dt>Engine</dt>
           <dd className="m-0">{model.enginePriority.label}</dd>
@@ -82,7 +82,7 @@ export default function AgendaPriorityTestPanel({
             key={pillar.id}
             type="button"
             onClick={() => void setFocus(pillar.id)}
-            className="inline-flex min-h-9 cursor-pointer items-center rounded-full border border-[#e4e0da] bg-white px-3 text-[12px] font-medium text-[#1c1917]"
+            className="inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[12px] font-medium text-[#F1EFE8]"
             style={{ fontFamily: "var(--f-sans)" }}
           >
             Focus → {pillar.label}

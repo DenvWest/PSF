@@ -317,7 +317,7 @@ export default function AgendaTodayHero({
               value={model.scheduledTime}
               defaultBucket={activeBucket}
               busy={prefBusy}
-              variant="compact"
+              variant={isDark ? "compact-dark" : "compact"}
               onChange={(scheduledTime) => {
                 onScheduledTimeChange(scheduledTime);
                 setMoveExpanded(false);

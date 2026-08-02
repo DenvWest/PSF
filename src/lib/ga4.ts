@@ -75,6 +75,21 @@ export function trackDashboardTabSelected(tab: string) {
   trackEvent("dashboard_tab_selected", { tab });
 }
 
+export function trackAgendaViewSet(params: {
+  view: "dag" | "week" | "maand";
+  surface?: string;
+}) {
+  trackEvent("dashboard_agenda_view_set", params);
+}
+
+export function trackAgendaBlockUpdated(params: {
+  category_id: string;
+  surface: string;
+  moved_date: boolean;
+}) {
+  trackEvent("agenda_block_updated", params);
+}
+
 export function trackAgendaDaySelected(params: {
   day_offset: number;
   is_today: boolean;

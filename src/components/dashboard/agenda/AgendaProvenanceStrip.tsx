@@ -24,7 +24,7 @@ function FlowStep({
 }) {
   return (
     <span className={`inline-flex min-w-0 items-center gap-1.5 ${muted ? "opacity-70" : ""}`}>
-      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
+      <span className="text-[9.5px] font-semibold uppercase tracking-[0.1em] text-[#7E8C82]">
         {label}
       </span>
       <span
@@ -32,7 +32,7 @@ function FlowStep({
         style={{ background: color }}
         aria-hidden
       />
-      <span className="truncate text-[12px] font-medium text-[#1c1917]">{domainLabel}</span>
+      <span className="truncate text-[12px] font-medium text-[#CDD7D0]">{domainLabel}</span>
     </span>
   );
 }
@@ -53,7 +53,7 @@ export default function AgendaProvenanceStrip({
           domainLabel={model.enginePriority.label}
           color={model.enginePriority.color}
         />
-        <span className="text-[#d6d3d1]" aria-hidden>
+        <span className="text-white/20" aria-hidden>
           →
         </span>
         <FlowStep
@@ -61,7 +61,7 @@ export default function AgendaProvenanceStrip({
           domainLabel={model.priority.label}
           color={model.priority.color}
         />
-        <span className="text-[#d6d3d1]" aria-hidden>
+        <span className="text-white/20" aria-hidden>
           →
         </span>
         <FlowStep label="Agenda" domainLabel={agendaLabel} color={model.priority.color} />

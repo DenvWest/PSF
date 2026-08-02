@@ -77,6 +77,8 @@ export type CreateAgendaBlockInput = {
 
 export type UpdateAgendaBlockInput = {
   title?: string;
+  /** Verplaatsen naar een andere dag; alleen eigen (routine) momenten. */
+  date?: string;
   startTime?: string;
   endTime?: string;
   status?: AgendaBlockStatus;
