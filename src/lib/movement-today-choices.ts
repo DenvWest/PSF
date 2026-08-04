@@ -291,31 +291,6 @@ export function buildMovementCheckinCta(input: {
   return { label: "Check in voor vandaag", href };
 }
 
-/**
- * Het voorstel van vandaag, in volgorde van hardheid: wat al is afgevinkt →
- * de aanbeveling uit je herstel-signalen → de tier die je dagstap zelf is →
- * matig. Bewust géén vaste default: op de meeste dagen is er geen aanbeveling,
- * en dan is de dagstap uit het plan het eerlijkste voorstel — dezelfde stap die
- * Mijn Dag toont. Dit legt niets vast; vastleggen gebeurt pas bij een handeling.
- */
-export function resolveProposedChoiceKind(input: {
-  options: readonly TodayChoiceOption[];
-  loggedKind: TodayChoiceKind | null;
-  recommendedKind: TodayChoiceKind | null;
-  dayStepId: string;
-}): TodayChoiceKind {
-  if (input.loggedKind) {
-    return input.loggedKind;
-  }
-  if (input.recommendedKind) {
-    return input.recommendedKind;
-  }
-  const dayStepKind = input.options.find(
-    (option) => option.stepId === input.dayStepId,
-  )?.kind;
-  return dayStepKind ?? "matig";
-}
-
 export function findChoiceOption(
   options: readonly TodayChoiceOption[],
   kind: TodayChoiceKind,

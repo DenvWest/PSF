@@ -162,9 +162,6 @@ export async function POST(request: NextRequest) {
     if (choiceRaw !== null && !isMovementDayChoice(choiceRaw)) {
       return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
     }
-    // True = de gebruiker nam het voorstel over zonder de tier-lijst te openen.
-    const acceptedDefault = choiceRaw !== null && record.acceptedDefault === true;
-
     const fallback = await resolveFallbackPref();
     if (!fallback) {
       return NextResponse.json({ error: "Geen focus beschikbaar." }, { status: 400 });
@@ -185,7 +182,6 @@ export async function POST(request: NextRequest) {
         choice: choiceRaw,
         date: dateRaw,
         surface,
-        accepted_default: acceptedDefault,
       },
     });
 
