@@ -162,6 +162,8 @@ export async function POST(request: NextRequest) {
     if (choiceRaw !== null && !isMovementDayChoice(choiceRaw)) {
       return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
     }
+    // True = de gebruiker nam het voorstel over zonder de tier-lijst te openen.
+    const acceptedDefault = choiceRaw !== null && record.acceptedDefault === true;
 
     const fallback = await resolveFallbackPref();
     if (!fallback) {
@@ -174,6 +176,18 @@ export async function POST(request: NextRequest) {
       account.organization_id,
       { choice: choiceRaw, date: dateRaw, fallback },
     );
+
+    void emitEvent({
+      eventType: "dashboard.movement_day_choice_set",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        choice: choiceRaw,
+        date: dateRaw,
+        surface,
+        accepted_default: acceptedDefault,
+      },
+    });
 
     return NextResponse.json({ ok: true, ...pref }, { status: 200 });
   }

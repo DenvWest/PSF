@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import * as Icons from "@/components/app/icons";
 import { PILLAR } from "@/data/dashboard";
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
 import { clarityTag } from "@/lib/clarity";
-import { invalidateDailyLogCache } from "@/lib/daily-log-client";
+import {
+  getCachedDailyLog,
+  invalidateDailyLogCache,
+  subscribeDailyLogCache,
+} from "@/lib/daily-log-client";
 import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import { trackEvent, trackOnderbouwingLinkClick } from "@/lib/ga4";
 import {
@@ -23,7 +27,9 @@ import {
   buildMedicalSafetyLine,
   buildMovementCheckinCta,
   buildTodayChoiceRecommendationLine,
+  inferCompletedChoice,
   modalityLabelForChoice,
+  resolveProposedChoiceKind,
   resolveRcvFeelForRecoveryHint,
   resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
@@ -36,7 +42,7 @@ import { useDailyActionLog } from "@/lib/use-daily-action-log";
 import { buildVandaagFollowUp, firstSentence } from "@/lib/vandaag-card-links";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
-import type { DashboardModel } from "@/types/dashboard";
+import type { AccountPriorityPrefData, DashboardModel } from "@/types/dashboard";
 
 const SURFACE = "kompas_beweging";
 
@@ -56,6 +62,9 @@ type MovementTodayHeroProps = {
   onStateChange?: (state: { done: boolean }) => void;
   /** Vuurt na een geslaagde toggle, zodat "Deze week" ernaast kan verversen. */
   onLogToggled?: () => void;
+  /** Patcht het dashboard-model met de opgeslagen pref, zodat Mijn Dag dezelfde
+   * zwaarte toont zonder herladen. */
+  onPrefUpdated?: (pref: AccountPriorityPrefData | null) => void;
 };
 
 function stepRationale(stepId: string): string | null {
@@ -151,21 +160,32 @@ export default function MovementTodayHero({
   makePriorityBusy,
   onStateChange,
   onLogToggled,
+  onPrefUpdated,
 }: MovementTodayHeroProps) {
   const shownRef = useRef(false);
   // De dagkeuze komt uit het model (server-side al tegen vandaag geresolved).
   // Eén bron voor Beweging én Mijn Dag — nooit afleiden uit welk vinkje aanstaat.
-  const [selectedKind, setSelectedKind] = useState<TodayChoiceKind | null>(
+  // null = de gebruiker koos vandaag nog niet zelf; dan geldt het voorstel.
+  const [userChoice, setUserChoice] = useState<TodayChoiceKind | null>(
     model.movementDayChoice,
   );
+  const [choiceListOpen, setChoiceListOpen] = useState(false);
+  // Wie de lijst opende, kiest zelf — dat scheidt "voorstel geaccepteerd" van
+  // "eigen keuze" in het durable event.
+  const [listOpened, setListOpened] = useState(false);
   const [freshChoice, setFreshChoice] = useState(false);
+  const [gateOpen, setGateOpen] = useState(false);
   const [trainingGateView, setTrainingGateView] = useState<TrainingGateView>("question");
   // Een vastgelegde keuze betekent dat de poort vandaag al gepasseerd is.
   const [trainingGateCleared, setTrainingGateCleared] = useState(
     model.movementDayChoice != null,
   );
+  // "Gedaan" op een voorgesteld trainen wacht op de poort; daarna vinkt hij af.
+  // Bewust een ref: dit stuurt geen render, het effect hangt aan de logsleutel.
+  const pendingDoneRef = useRef(false);
   const [noTimeActive, setNoTimeActive] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
+  const persistedKindRef = useRef<TodayChoiceKind | null>(model.movementDayChoice);
 
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hidden = slot ? isPlanStepHidden(model, slot) : true;
@@ -211,23 +231,48 @@ export default function MovementTodayHero({
     restRecommended,
   });
 
-  const choiceOptions = useMemo(
-    () =>
-      trainingStepId
-        ? resolveTodayChoiceOptions(trainingStepId, movementPrefs.startPattern)
-        : [],
-    [trainingStepId, movementPrefs.startPattern],
+  // Geen useMemo: de opties gaan als argument een resolver in, en dan kan de
+  // React-compiler de handmatige memoisatie niet bewaren — hij memoiseert dit
+  // zelf. De afleiding is een pure filter over de plan-stappen.
+  const choiceOptions = trainingStepId
+    ? resolveTodayChoiceOptions(trainingStepId, movementPrefs.startPattern)
+    : [];
+
+  // De log van vandaag, live meelezend: wie al afvinkte (ook vanaf Mijn Dag)
+  // krijgt díe tier voorgeschoteld, anders spreekt dit scherm zichzelf tegen.
+  useSyncExternalStore(
+    subscribeDailyLogCache,
+    () => (getCachedDailyLog("beweging")?.keys ?? []).join("\0"),
+    () => "",
   );
+  const loggedKeys = getCachedDailyLog("beweging")?.keys ?? [];
+  const loggedKind =
+    choiceOptions.length > 0 ? inferCompletedChoice(loggedKeys, choiceOptions) : null;
 
-  const activeChoice = selectedKind
-    ? choiceOptions.find((option) => option.kind === selectedKind) ?? null
-    : null;
+  // Het voorstel legt niets vast; vastleggen gebeurt pas bij Gedaan of keuze.
+  const proposedKind = resolveProposedChoiceKind({
+    options: choiceOptions,
+    loggedKind,
+    recommendedKind,
+    dayStepId,
+  });
+  const effectiveKind = userChoice ?? proposedKind;
+  const isProposal = userChoice == null;
 
-  const showTrainingGate =
-    selectedKind === "trainen" && !trainingGateCleared && activeChoice != null;
+  const activeChoice =
+    choiceOptions.find((option) => option.kind === effectiveKind) ?? null;
+
+  // De trainingspoort blijft verplicht vóór er een trainen-sleutel wordt
+  // geschreven; is die er al, dan is er niets meer te sturen en leest dit
+  // scherm alleen nog af.
+  const trainingGateRequired =
+    activeChoice != null &&
+    effectiveKind === "trainen" &&
+    !trainingGateCleared &&
+    loggedKind !== "trainen";
 
   const logActionKey =
-    activeChoice && (!showTrainingGate || trainingGateCleared) ? activeChoice.stepId : null;
+    activeChoice && !trainingGateRequired ? activeChoice.stepId : null;
 
   const { done, loaded, busy, toggle } = useDailyActionLog({
     domain: "beweging",
@@ -247,6 +292,25 @@ export default function MovementTodayHero({
       onStateChange?.({ done });
     }
   }, [loaded, done, onStateChange]);
+
+  // De toggle sluit over de sleutel van déze render; via een ref blijft hij
+  // buiten de deps van het effect hieronder zonder stale te worden.
+  const toggleRef = useRef(toggle);
+  useEffect(() => {
+    toggleRef.current = toggle;
+  });
+
+  // "Gedaan" op een voorgesteld trainen wacht op de poort: pas als die door is
+  // bestaat de trainen-sleutel, en dan pas mag hij naar daily_action_log.
+  useEffect(() => {
+    if (!pendingDoneRef.current || !logActionKey || !loaded || busy) {
+      return;
+    }
+    pendingDoneRef.current = false;
+    if (!done) {
+      void toggleRef.current();
+    }
+  }, [logActionKey, loaded, busy, done]);
 
   useEffect(() => {
     if (shownRef.current || !active) {
@@ -277,15 +341,35 @@ export default function MovementTodayHero({
 
   const followUp = buildVandaagFollowUp("beweging");
 
-  /** Legt de dagkeuze vast; niet-blokkerend, de UI wacht er niet op. */
+  /**
+   * Legt de dagkeuze vast; niet-blokkerend, de UI wacht er niet op. De respons
+   * patcht het model in memory, zodat Mijn Dag dezelfde zwaarte toont zonder
+   * herladen — geen refetch van het hele dashboard.
+   */
   const persistChoice = (choice: TodayChoiceKind | null) => {
+    persistedKindRef.current = choice;
     void postMovementDayChoice({
       choice,
       date: todayInAgendaTimezone(),
       surface: SURFACE,
-    }).catch(() => {
-      /* niet-blokkerend — de keuze blijft in deze sessie geldig */
-    });
+      // Het voorstel overnemen is iets anders dan zelf een tier kiezen; alleen
+      // wie de lijst opende, koos zelf.
+      acceptedDefault: choice != null && !listOpened,
+    })
+      .then((pref) => {
+        onPrefUpdated?.(pref);
+      })
+      .catch(() => {
+        /* niet-blokkerend — de keuze blijft in deze sessie geldig */
+      });
+  };
+
+  /** Legt vast wat er nú geldt — één event per vastgelegde tier, niet per tik. */
+  const persistIfChanged = (kind: TodayChoiceKind) => {
+    if (persistedKindRef.current === kind) {
+      return;
+    }
+    persistChoice(kind);
   };
 
   const selectChoice = (kind: TodayChoiceKind) => {
@@ -294,21 +378,39 @@ export default function MovementTodayHero({
     setNoTimeActive(false);
     setWhyOpen(false);
     setFreshChoice(true);
-    setSelectedKind(kind);
+    pendingDoneRef.current = false;
+    setUserChoice(kind);
+    setChoiceListOpen(false);
     if (kind === "trainen") {
       // Trainen legt zich pas vast ná de poort — anders zou afhaken bij de
       // vraag alsnog als "trainen gekozen" blijven staan.
       setTrainingGateView("question");
       setTrainingGateCleared(false);
+      setGateOpen(true);
       return;
     }
     setTrainingGateCleared(true);
-    persistChoice(kind);
+    setGateOpen(false);
+    persistIfChanged(kind);
   };
 
   const clearTrainingGate = () => {
     setTrainingGateCleared(true);
-    persistChoice("trainen");
+    setGateOpen(false);
+    setUserChoice("trainen");
+    persistIfChanged("trainen");
+  };
+
+  /** "Gedaan": voorstel overnemen mag, maar nooit vóór de trainingspoort. */
+  const handleDone = () => {
+    if (trainingGateRequired) {
+      setTrainingGateView("question");
+      setGateOpen(true);
+      pendingDoneRef.current = true;
+      return;
+    }
+    persistIfChanged(effectiveKind);
+    void toggle();
   };
 
   const resetChoice = () => {
@@ -319,12 +421,16 @@ export default function MovementTodayHero({
       surface: SURFACE,
     });
     clarityTag("dashboard_kompas_beweging", "step_alternative_wijzig_keuze");
-    setSelectedKind(null);
+    setUserChoice(null);
+    setChoiceListOpen(true);
+    setListOpened(true);
     setFreshChoice(false);
+    pendingDoneRef.current = false;
     setNoTimeActive(false);
     setWhyOpen(false);
     setTrainingGateView("question");
     setTrainingGateCleared(false);
+    setGateOpen(false);
     persistChoice(null);
   };
 
@@ -416,7 +522,7 @@ export default function MovementTodayHero({
   const shellClass =
     "relative overflow-hidden rounded-2xl border border-[color:var(--ac)]/45 bg-black/25 p-4";
 
-  if (showTrainingGate && activeChoice) {
+  if (gateOpen && activeChoice) {
     return (
       <section aria-label="Vandaag — beweging" className={shellClass}>
         <div
@@ -508,7 +614,7 @@ export default function MovementTodayHero({
     );
   }
 
-  if (activeChoice && trainingGateCleared) {
+  if (activeChoice && !choiceListOpen) {
     const supportingLine = firstSentence(
       stepRationale(activeChoice.stepId) ?? slot?.rationale ?? "",
     );
@@ -540,6 +646,16 @@ export default function MovementTodayHero({
               Drukke dag? Dit telt volledig mee.
             </p>
           ) : null}
+          {medicalSafetyLine ? (
+            <p className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-[13px] leading-relaxed text-[#F1EFE8] text-pretty">
+              {medicalSafetyLine}
+            </p>
+          ) : null}
+          {isProposal && !done && recommendationLine && recommendedKind === effectiveKind ? (
+            <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
+              {recommendationLine}
+            </p>
+          ) : null}
           {supportingLine || anchorSuffix ? (
             <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
               {supportingLine}
@@ -557,7 +673,7 @@ export default function MovementTodayHero({
               aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
               aria-pressed={done}
               disabled={!loaded || busy}
-              onClick={() => void toggle()}
+              onClick={handleDone}
               className="flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
               style={{
                 background: done ? "rgba(90,143,106,0.22)" : "var(--ac)",
@@ -585,8 +701,9 @@ export default function MovementTodayHero({
           </div>
 
           {done ? (
-            <p className="mt-3 text-center text-[13px] text-[#9FB0A6]">
-              Morgen kies je opnieuw wat past.
+            <p className="mt-3 text-center text-[13px] leading-relaxed text-[#9FB0A6] text-pretty">
+              Genoteerd. Dit telt mee in je hertest — er is geen reeks die je kwijt kunt
+              raken.
             </p>
           ) : (
             <div className="mt-3 flex items-center justify-center">
@@ -652,6 +769,11 @@ export default function MovementTodayHero({
               </Link>
             </div>
           ) : null}
+
+          {/* Onderaan, niet in het eerste beeld: de check-in voedt het voorstel
+              van morgen — hem alleen achter "Wijzig keuze" zetten zou de
+              aanbeveling langzaam laten verschralen. */}
+          {!done ? choiceFooter : null}
         </div>
       </section>
     );

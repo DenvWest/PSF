@@ -18,6 +18,7 @@ export const DOMAIN_EVENT_TYPES = [
   "dashboard.priority_selected",
   "dashboard.domain_check_cta_clicked",
   "dashboard.time_bucket_set",
+  "dashboard.movement_day_choice_set",
   "agenda.block_created",
   "agenda.block_toggled",
   "agenda.block_updated",

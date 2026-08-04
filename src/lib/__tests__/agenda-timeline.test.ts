@@ -443,4 +443,67 @@ describe("buildWeekColumnBlocks", () => {
     expect(blocks).toHaveLength(1);
     expect(blocks[0]?.kind).toBe("routine");
   });
+
+  it("draagt de gedaan-staat van de dagstap door naar het weekblok", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    const modelWithTime = { ...model, scheduledTime: "10:00" };
+    const blocks = buildWeekColumnBlocks(
+      modelWithTime,
+      todaySlot.date,
+      todaySlot,
+      [],
+      true,
+    );
+    const planStep = blocks.find((block) => block.kind === "analysis");
+    expect(planStep?.done).toBe(true);
+  });
+});
+
+describe("gedaan-staat van de plan-stap", () => {
+  it("is standaard niet gedaan", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    expect(buildPlanStepBlock(model, todaySlot)?.done).toBe(false);
+  });
+
+  it("neemt de doorgegeven gedaan-staat over", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    expect(buildPlanStepBlock(model, todaySlot, true)?.done).toBe(true);
+  });
+
+  it("laat de tray/raster-regel ongemoeid: gedaan verandert de plaatsing niet", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    const withoutTime = { ...model, scheduledTime: null };
+    expect(resolvePlanStepPlacement(withoutTime, todaySlot)).toBe("tray");
+    expect(buildWeekColumnBlocks(withoutTime, todaySlot.date, todaySlot, [], true)).toEqual(
+      [],
+    );
+  });
 });

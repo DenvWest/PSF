@@ -21,7 +21,7 @@ import {
 } from "@/lib/movement-target";
 import { useMovementPlanProfile } from "@/lib/use-movement-plan-profile";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
-import type { DashboardModel } from "@/types/dashboard";
+import type { AccountPriorityPrefData, DashboardModel } from "@/types/dashboard";
 
 /** Sage CTA in cockpit — PILLAR.beweging blijft terracotta voor nav-identiteit. */
 const COCKPIT_CTA = "#5A8F6A";
@@ -40,6 +40,9 @@ type MovementCockpitProps = {
   makePriorityBusy: boolean;
   /** Voor de klaar-staat-gate op de footer van BewegingScreen. */
   onDoneChange?: (state: MovementDoneState) => void;
+  /** Doorgeef-naad naar het dashboard-model: de dagkeuze moet zonder herladen
+   * op Mijn Dag aankomen. */
+  onPrefUpdated?: (pref: AccountPriorityPrefData | null) => void;
 };
 
 export default function MovementCockpit({
@@ -49,6 +52,7 @@ export default function MovementCockpit({
   onMakePriority,
   makePriorityBusy,
   onDoneChange,
+  onPrefUpdated,
 }: MovementCockpitProps) {
   // Prefs-override zodat de hero direct de nieuwe keuze gebruikt zonder
   // model-herbouw; sessie-skip blokkeert de dagstap niet permanent.
@@ -139,6 +143,7 @@ export default function MovementCockpit({
             makePriorityBusy={makePriorityBusy}
             onStateChange={handleHeroStateChange}
             onLogToggled={() => setWeekRefreshKey((key) => key + 1)}
+            onPrefUpdated={onPrefUpdated}
           />
 
           {positionLine ? (

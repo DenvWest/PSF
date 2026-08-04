@@ -10,6 +10,7 @@ import {
   resolveChoiceDoneDisplay,
   resolveModerateStepId,
   resolveMovementTodayChoiceOptions,
+  resolveProposedChoiceKind,
   resolveRcvFeelForRecoveryHint,
   resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
@@ -170,6 +171,62 @@ describe("resolveMovementTodayChoiceOptions", () => {
   it("geeft geen opties zonder dagstap", () => {
     const options = resolveMovementTodayChoiceOptions(baseModel(), baseSlot({ stepId: "" }));
     expect(options).toEqual([]);
+  });
+});
+
+describe("resolveProposedChoiceKind", () => {
+  const options = resolveTodayChoiceOptions("mov-kracht-onderhoud-week");
+
+  it("laat een al afgevinkte tier voorgaan op de aanbeveling", () => {
+    expect(
+      resolveProposedChoiceKind({
+        options,
+        loggedKind: "herstel",
+        recommendedKind: "trainen",
+        dayStepId: "mov-kracht-onderhoud-week",
+      }),
+    ).toBe("herstel");
+  });
+
+  it("volgt de aanbeveling als er nog niets is afgevinkt", () => {
+    expect(
+      resolveProposedChoiceKind({
+        options,
+        loggedKind: null,
+        recommendedKind: "herstel",
+        dayStepId: "mov-kracht-onderhoud-week",
+      }),
+    ).toBe("herstel");
+  });
+
+  it("stelt zonder aanbeveling de dagstap zelf voor — dezelfde stap als Mijn Dag", () => {
+    expect(
+      resolveProposedChoiceKind({
+        options,
+        loggedKind: null,
+        recommendedKind: null,
+        dayStepId: "mov-kracht-onderhoud-week",
+      }),
+    ).toBe("trainen");
+    expect(
+      resolveProposedChoiceKind({
+        options,
+        loggedKind: null,
+        recommendedKind: null,
+        dayStepId: REST_DAY_STEP_ID,
+      }),
+    ).toBe("herstel");
+  });
+
+  it("valt terug op matig als de dagstap geen tier is", () => {
+    expect(
+      resolveProposedChoiceKind({
+        options,
+        loggedKind: null,
+        recommendedKind: null,
+        dayStepId: "mov-onbekende-stap",
+      }),
+    ).toBe("matig");
   });
 });
 

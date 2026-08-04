@@ -93,11 +93,15 @@ export async function postDismissPlanStep(input: {
   return mapPriorityPrefResponse(payload);
 }
 
-/** choice=null wist de dagkeuze ("Wijzig keuze"). */
+/**
+ * choice=null wist de dagkeuze ("Wijzig keuze"). `acceptedDefault` scheidt het
+ * accepteren van het voorstel van een eigen keuze uit de tier-lijst.
+ */
 export async function postMovementDayChoice(input: {
   choice: MovementDayChoice | null;
   date: string;
   surface: string;
+  acceptedDefault: boolean;
 }): Promise<AccountPriorityPrefData> {
   const response = await fetch("/api/account/priority-pref", {
     method: "POST",
@@ -108,6 +112,7 @@ export async function postMovementDayChoice(input: {
       choice: input.choice,
       date: input.date,
       surface: input.surface,
+      acceptedDefault: input.acceptedDefault,
     }),
   });
   if (!response.ok) {

@@ -19,6 +19,7 @@ import {
   TIMELINE_MIN_BLOCK_HEIGHT_PX,
 } from "@/lib/agenda-timeline";
 import { clarityTag } from "@/lib/clarity";
+import { isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
 import type { DashboardModel } from "@/types/dashboard";
@@ -36,6 +37,8 @@ type AgendaWeekTimeGridProps = {
   model: DashboardModel;
   days: AgendaWeekDayEntry[];
   slots: WeekDaySlot[];
+  /** Afgevinkte dag-domein-sleutels uit daily_action_log; de enige gedaan-bron. */
+  completedKeys: ReadonlySet<string>;
   selectedDate: string;
   todayDate: string;
   selectedBlockId: string | null;
@@ -49,6 +52,7 @@ export default function AgendaWeekTimeGrid({
   model,
   days,
   slots,
+  completedKeys,
   selectedDate,
   todayDate,
   selectedBlockId,
@@ -67,11 +71,17 @@ export default function AgendaWeekTimeGrid({
       const slot = slots.find((entry) => entry.date === day.date) ?? null;
       map.set(
         day.date,
-        buildWeekColumnBlocks(model, day.date, slot, day.blocks),
+        buildWeekColumnBlocks(
+          model,
+          day.date,
+          slot,
+          day.blocks,
+          slot ? isWeekSlotCompleted(slot, completedKeys) : false,
+        ),
       );
     }
     return map;
-  }, [days, model, slots]);
+  }, [completedKeys, days, model, slots]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

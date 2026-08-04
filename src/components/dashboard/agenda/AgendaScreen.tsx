@@ -571,7 +571,13 @@ export default function AgendaScreen({
   if (selectedBlockId) {
     for (const day of weekEntries) {
       const slot = slots.find((entry) => entry.date === day.date) ?? null;
-      const blocks = buildWeekColumnBlocks(model, day.date, slot, day.blocks);
+      const blocks = buildWeekColumnBlocks(
+        model,
+        day.date,
+        slot,
+        day.blocks,
+        slot ? isWeekSlotCompleted(slot, weekState.completedKeys) : false,
+      );
       const found = blocks.find((block) => block.id === selectedBlockId);
       if (found) {
         selectedWeekBlock = { block: found, date: day.date };
@@ -664,6 +670,7 @@ export default function AgendaScreen({
               model={model}
               days={weekEntries}
               slots={slots}
+              completedKeys={weekState.completedKeys}
               selectedDate={selectedDate}
               todayDate={today}
               selectedBlockId={selectedBlockId}

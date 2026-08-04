@@ -126,13 +126,14 @@ export function buildWeekColumnBlocks(
   date: string,
   slot: WeekDaySlot | null,
   routineBlocks: AgendaBlockRecord[],
+  planStepDone = false,
 ): TimelineBlock[] {
   const dayBlocks = buildDayTimeline(model, { date }, routineBlocks);
   if (!slot) {
     return dayBlocks;
   }
   const placement = resolvePlanStepPlacement(model, slot);
-  const planStep = buildPlanStepBlock(model, slot);
+  const planStep = buildPlanStepBlock(model, slot, planStepDone);
   if (placement !== "grid" || !planStep) {
     return dayBlocks;
   }
@@ -210,7 +211,11 @@ function domainToCategoryId(domain: PillarId): AgendaCategoryId {
   return isAgendaCategoryId(domain) ? domain : "persoonlijke_routine";
 }
 
-function buildAnalysisBlock(model: DashboardModel, slot: WeekDaySlot): TimelineBlock {
+function buildAnalysisBlock(
+  model: DashboardModel,
+  slot: WeekDaySlot,
+  done: boolean,
+): TimelineBlock {
   const startTime = resolveScheduledTime(model, slot);
   const startMinutes = timeToMinutes(startTime);
   const endMinutes = Math.min(
@@ -225,10 +230,11 @@ function buildAnalysisBlock(model: DashboardModel, slot: WeekDaySlot): TimelineB
     title: slot.title,
     startTime,
     endTime: minutesToTime(endMinutes),
-    // Completie van de plan-stap leeft in daily_action_log (aparte route,
-    // client-side gelezen door AgendaTodayHero); hier is geen synchroon
-    // signaal beschikbaar en geen UI-pad leest dit veld voor analysis-blokken.
-    done: false,
+    // Completie van de plan-stap leeft in daily_action_log en nergens anders:
+    // de aanroeper geeft de al geresolveerde staat door (isTodayActionDone voor
+    // vandaag, isWeekSlotCompleted in de weekkolommen). Dit veld is dus een
+    // readout, geen tweede grootboek — het blok slaat niets op.
+    done,
     source: "analysis",
     isEditable: slot.isToday,
     slot,
@@ -239,11 +245,12 @@ function buildAnalysisBlock(model: DashboardModel, slot: WeekDaySlot): TimelineB
 export function buildPlanStepBlock(
   model: DashboardModel,
   slot: WeekDaySlot,
+  done = false,
 ): TimelineBlock | null {
   if (isPlanStepHidden(model, slot)) {
     return null;
   }
-  return buildAnalysisBlock(model, slot);
+  return buildAnalysisBlock(model, slot, done);
 }
 
 export type PlanStepPlacement = "hidden" | "tray" | "grid";

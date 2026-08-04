@@ -11,19 +11,21 @@ import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
 import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import {
   adviceMayOutrankDayStep,
-  resolveDayStepState,
   type DayStepFacts,
 } from "@/lib/domain-ready-state";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { getMovementNutritionHint } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { buildMovementAheadLine } from "@/lib/movement-plan-roadmap";
 import { deriveMovementCurrent } from "@/lib/movement-target";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
-import type { DashboardData, DashboardModel } from "@/types/dashboard";
+import type {
+  AccountPriorityPrefData,
+  DashboardData,
+  DashboardModel,
+} from "@/types/dashboard";
 
 const FooterLink = ({
   href,
@@ -61,32 +63,18 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   };
 }
 
-/** De ene analyse-readout die als kaart bovenkomt in de klaar-staat, en als
- * stille regel eronder blijft in de open-staat — nooit allebei (§C.3). */
-function buildVoortgangSnapshotLine(row: {
-  currentScore: number;
-  baselineScore: number | null;
-} | null): string | null {
-  if (!row) {
-    return null;
-  }
-  if (row.baselineScore != null && row.baselineScore !== row.currentScore) {
-    return `Beweging staat op ${row.currentScore}, begonnen op ${row.baselineScore}.`;
-  }
-  return `Beweging staat op ${row.currentScore}.`;
-}
-
 export default function BewegingScreen({
   model,
-  data,
   slot,
   nutritionLogCompleted = false,
   onGoAgenda,
   onMakePriority,
   makePriorityBusy,
   onGoVoortgangDomein,
+  onPrefUpdated,
 }: {
   model: DashboardModel;
+  /** Reserved for callers; klaar-staat toont geen Voortgang-kaart meer (brug → Mijn Dag / F1a). */
   data?: DashboardData;
   slot: WeekDaySlot | null;
   nutritionLogCompleted?: boolean;
@@ -94,6 +82,7 @@ export default function BewegingScreen({
   onMakePriority: () => void;
   makePriorityBusy: boolean;
   onGoVoortgangDomein: () => void;
+  onPrefUpdated?: (pref: AccountPriorityPrefData | null) => void;
 }) {
   const [doneState, setDoneState] = useState<MovementDoneState>({
     done: false,
@@ -118,7 +107,8 @@ export default function BewegingScreen({
   // Klaar-staat-gate (C.4, gedeeld met alle domeinen): zolang er een open
   // dagstap staat is de doe-laag de enige primary; is de stap klaar, een
   // rustdag, of heeft een ander domein prioriteit, dan mag analyse/advies
-  // prominenter worden.
+  // prominenter worden. De Voortgang-kaart zat hier vroeger; die hoort op
+  // Mijn Dag (#d / F1a), niet als tweede hero onder Gedaan.
   const isOwnStep = Boolean(slot && slot.isToday && slot.domain === "beweging");
   const hiddenStep = slot ? isPlanStepHidden(model, slot) : true;
   const activeStep = isOwnStep && !hiddenStep && slot != null;
@@ -129,20 +119,14 @@ export default function BewegingScreen({
       doneState.done && plannedActionKey ? [plannedActionKey] : [],
     isPriorityDomain: model.priority.id === "beweging",
   };
-  const dayStepState = resolveDayStepState(dayStepFacts);
   const showAdvice = adviceMayOutrankDayStep(dayStepFacts);
 
-  const leefstijllijnRow =
-    buildLeefstijllijnRows(model).find((row) => row.pillarId === "beweging") ?? null;
-  const snapshotLine = buildVoortgangSnapshotLine(leefstijllijnRow);
-  const daysUntilRemeasure = data?.remeasure?.daysUntil ?? null;
-
-  const goToVoortgang = (state: "open" | "klaar") => {
+  const goToVoortgang = () => {
     trackEvent("dashboard_beweging_voortgang_click", {
       surface: "kompas_beweging",
-      state,
+      state: "open",
     });
-    clarityTag("dashboard_beweging_brug", state);
+    clarityTag("dashboard_beweging_brug", "open");
     onGoVoortgangDomein();
   };
 
@@ -167,35 +151,8 @@ export default function BewegingScreen({
         onMakePriority={onMakePriority}
         makePriorityBusy={makePriorityBusy}
         onDoneChange={handleDoneChange}
+        onPrefUpdated={onPrefUpdated}
       />
-
-      {showAdvice ? (
-        <div className="rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.06] px-5 py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
-            Je voortgang
-          </p>
-          {dayStepState === "other_domain_priority" ? (
-            <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
-              Een ander domein heeft vandaag prioriteit.
-            </p>
-          ) : null}
-          {snapshotLine ? (
-            <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
-              {snapshotLine}
-              {daysUntilRemeasure != null
-                ? ` Hermeting over ${daysUntilRemeasure} dagen.`
-                : ""}
-            </p>
-          ) : null}
-          <button
-            type="button"
-            onClick={() => goToVoortgang("klaar")}
-            className="mt-3 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13.5px] font-semibold text-[#5A8F6A]"
-          >
-            Bekijk je beweging <Icons.ChevronRight s={15} />
-          </button>
-        </div>
-      ) : null}
 
       <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
         {logEnabled ? <MovementLogPanel /> : null}
@@ -279,7 +236,7 @@ export default function BewegingScreen({
         {!showAdvice ? (
           <button
             type="button"
-            onClick={() => goToVoortgang("open")}
+            onClick={goToVoortgang}
             className="cursor-pointer border-none bg-transparent p-0 text-left text-[12.5px] font-medium text-[#7E8C82]"
           >
             Je voortgang · beweging ›

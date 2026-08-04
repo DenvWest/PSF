@@ -26,6 +26,7 @@ import {
   TIMELINE_MIN_BLOCK_HEIGHT_PX,
 } from "@/lib/agenda-timeline";
 import { trackEvent } from "@/lib/ga4";
+import { useTodayActionDone } from "@/lib/use-today-action-done";
 import type { AgendaDayContext } from "@/lib/agenda-day-context";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
@@ -131,9 +132,15 @@ export default function AgendaDayTimeline({
   const isToday = slot?.isToday ?? false;
 
   const planStepPlacement = slot ? resolvePlanStepPlacement(model, slot) : "hidden";
+  // Gedaan-staat komt uit daily_action_log (dezelfde bron als elke Gedaan-knop),
+  // nooit uit het blok zelf — anders is de chip in het raster een vierde readout.
+  const todayActionDone = useTodayActionDone(model);
   const planStep = useMemo(
-    () => (slot ? buildPlanStepBlock(model, slot) : null),
-    [model, slot],
+    () =>
+      slot
+        ? buildPlanStepBlock(model, slot, slot.isToday ? todayActionDone : false)
+        : null,
+    [model, slot, todayActionDone],
   );
   const dayBlocks = useMemo(
     () => buildDayTimeline(model, { date }, routineBlocks),
