@@ -45,11 +45,13 @@ export default function AgendaWeekOverview({
             <button
               type="button"
               onClick={() => onSelectDate(day.date)}
-              aria-label={`Open ${day.dayLabel} ${day.dayNumber}`}
+              aria-label={`Open ${day.dayLabel} ${day.dayNumber}${day.isToday ? ", vandaag" : ""}`}
               className={`flex min-h-[88px] w-full cursor-pointer flex-col gap-2 rounded-2xl border p-3 text-left transition-colors md:min-h-[168px] ${
                 selected
                   ? "border-[rgba(90,143,106,0.55)] bg-[rgba(90,143,106,0.12)]"
-                  : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]"
+                  : day.isToday
+                    ? "border-white/20 bg-white/[0.05] hover:bg-white/[0.08]"
+                    : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]"
               }`}
               style={{ fontFamily: "var(--f-sans)" }}
             >

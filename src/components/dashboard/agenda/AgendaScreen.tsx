@@ -28,7 +28,7 @@ import {
 } from "@/lib/agenda-blocks-client";
 import { resolveAgendaDayContext } from "@/lib/agenda-day-context";
 import { buildWeekColumnBlocks } from "@/lib/agenda-timeline";
-import { getMonthRange } from "@/lib/agenda-month";
+import { getMonthRange, isSameAgendaMonth } from "@/lib/agenda-month";
 import {
   buildWeekSchedulePreview,
   getCalendarWeekDates,
@@ -324,7 +324,7 @@ export default function AgendaScreen({
   );
 
   const selectDate = useCallback(
-    (date: string, surface: "week_strip" | "week_view" | "month") => {
+    (date: string, surface: "week_strip" | "week_view" | "month" | "go_today") => {
       const nextWeekStart = getCalendarWeekDates(date)[0];
       if (nextWeekStart !== stripWeekDates[0]) {
         setSelectedBlockId(null);
@@ -342,6 +342,17 @@ export default function AgendaScreen({
       clarityTag("dashboard_agenda", date === today ? "day_today" : "day_preview");
     },
     [onSelectedDateChange, slots, stripWeekDates, today],
+  );
+
+  const handleGoToday = useCallback(
+    (surface: "agenda_header" | "agenda_month_sheet" | "agenda_week_sidebar") => {
+      setMonthOverride(null);
+      setSelectedBlockId(null);
+      selectDate(today, "go_today");
+      trackEvent("dashboard_agenda_go_today", { view, surface });
+      clarityTag("dashboard_agenda", "go_today");
+    },
+    [selectDate, today, view],
   );
 
   const handleViewChange = useCallback(
@@ -567,6 +578,11 @@ export default function AgendaScreen({
         ? formatRangeHeading(stripWeekDates[0], stripWeekDates[6])
         : formatMonthHeading(monthAnchor);
 
+  const showGoToday =
+    selectedDate !== today ||
+    (view === "week" && !stripWeekDates.includes(today)) ||
+    (view === "maand" && !isSameAgendaMonth(monthAnchor, today));
+
   let selectedWeekBlock: { block: TimelineBlock; date: string } | null = null;
   if (selectedBlockId) {
     for (const day of weekEntries) {
@@ -599,18 +615,32 @@ export default function AgendaScreen({
           >
             {heading}
           </h2>
-          {view === "dag" ? (
-            <button
-              type="button"
-              onClick={() => setMonthSheetOpen(true)}
-              aria-haspopup="dialog"
-              className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-3 text-[12.5px] font-medium text-[#CDD7D0] transition-colors hover:border-white/25 hover:text-[#F1EFE8]"
-              style={{ fontFamily: "var(--f-sans)" }}
-            >
-              <Icons.Calendar s={13} />
-              Maand
-              <Icons.ChevronRight s={13} />
-            </button>
+          {showGoToday || view === "dag" ? (
+            <div className="flex shrink-0 items-center gap-2">
+              {showGoToday ? (
+                <button
+                  type="button"
+                  onClick={() => handleGoToday("agenda_header")}
+                  className="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[12.5px] font-medium text-[var(--sage)] transition-colors hover:border-white/25 hover:text-[#F1EFE8]"
+                  style={{ fontFamily: "var(--f-sans)" }}
+                >
+                  Vandaag
+                </button>
+              ) : null}
+              {view === "dag" ? (
+                <button
+                  type="button"
+                  onClick={() => setMonthSheetOpen(true)}
+                  aria-haspopup="dialog"
+                  className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-3 text-[12.5px] font-medium text-[#CDD7D0] transition-colors hover:border-white/25 hover:text-[#F1EFE8]"
+                  style={{ fontFamily: "var(--f-sans)" }}
+                >
+                  <Icons.Calendar s={13} />
+                  Maand
+                  <Icons.ChevronRight s={13} />
+                </button>
+              ) : null}
+            </div>
           ) : null}
         </div>
         <AgendaViewSwitcher value={view} onChange={handleViewChange} />
@@ -689,7 +719,7 @@ export default function AgendaScreen({
               selectedBlockDate={selectedWeekBlock?.date ?? null}
               onMonthAnchorChange={setMonthOverride}
               onSelectDate={selectWeekDate}
-              onGoToday={() => selectWeekDate(today)}
+              onGoToday={() => handleGoToday("agenda_week_sidebar")}
               onClearSelection={() => setSelectedBlockId(null)}
               onOpenInDay={() => {
                 if (selectedWeekBlock) {
@@ -775,6 +805,11 @@ export default function AgendaScreen({
             onAnchorChange={setMonthOverride}
             onSelectDate={(date) => {
               selectDate(date, "month");
+              setMonthSheetOpen(false);
+            }}
+            showTodayButton
+            onGoToday={() => {
+              handleGoToday("agenda_month_sheet");
               setMonthSheetOpen(false);
             }}
           />
