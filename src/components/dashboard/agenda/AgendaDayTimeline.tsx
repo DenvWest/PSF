@@ -46,7 +46,7 @@ type HelpPreset = {
 };
 
 const HELP_SHEET_NOTE =
-  "Alleen opties die naast je basis passen. Je basis blijft staan.";
+  "Zet een extra moment op je dag — geen keuzelijst. Je basis-stap blijft staan; een volledige hulpkeuze komt later.";
 
 type HiddenPlanStep = {
   title: string;

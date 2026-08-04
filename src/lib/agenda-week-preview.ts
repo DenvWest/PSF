@@ -121,7 +121,7 @@ export function buildWeekSchedulePreview(
       isToday,
       dayOffset,
       domain,
-      evidenceHref: buildVandaagOnderbouwingHref(domain),
+      evidenceHref: buildVandaagOnderbouwingHref(domain, model.answers),
       ...step,
     };
   });

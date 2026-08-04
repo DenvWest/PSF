@@ -48,7 +48,9 @@ export default function AgendaPlanStepStrip({
         >
           {block.title}
         </p>
-        <p className="m-0 mt-0.5 text-[11.5px] text-[#9FB0A6]">Nog geen moment gekozen</p>
+        <p className="m-0 mt-0.5 text-[11.5px] text-[#9FB0A6]">
+          Nog geen moment gekozen · tik voor tijd
+        </p>
       </div>
       <span
         className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--sage)]"

@@ -36,9 +36,34 @@ export function getVandaagContextLine(
   return leverLine || pillar.quickWin.detail;
 }
 
-export function buildVandaagOnderbouwingHref(pillarId: PillarId): string {
+export function buildMovementOnderbouwingHref(
+  answers: Record<string, number> | null | undefined,
+): string {
+  const base = "/onderbouwing?from=dashboard";
+  if (!answers) {
+    return `${base}#MOV_SED`;
+  }
+
+  const movStr = answers.MOV_STR;
+  const movCard = answers.MOV_CARD;
+  if (typeof movStr === "number" && movStr <= 2) {
+    return `${base}#MOV_STR`;
+  }
+  if (typeof movCard === "number" && movCard <= 2) {
+    return `${base}#MOV_CARD`;
+  }
+  return `${base}#MOV_SED`;
+}
+
+export function buildVandaagOnderbouwingHref(
+  pillarId: PillarId,
+  answers?: Record<string, number> | null,
+): string {
   if (pillarId === "voeding") {
     return "/onderbouwing/voeding?from=dashboard";
+  }
+  if (pillarId === "beweging") {
+    return buildMovementOnderbouwingHref(answers);
   }
   return "/onderbouwing?from=dashboard";
 }

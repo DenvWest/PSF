@@ -323,6 +323,9 @@ export default function AgendaTodayHero({
                 setMoveExpanded(false);
               }}
             />
+            <p className={`mt-2 text-[12px] leading-normal ${isDark ? "text-[#9FB0A6]" : "text-[#78716c]"}`}>
+              Je zet alleen een tijd voor vandaag. Duur en lengte in je dag volgen in een volgende update.
+            </p>
           </div>
         ) : null}
 

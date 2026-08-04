@@ -6,6 +6,7 @@ import {
   deriveDefaultTimeBucket,
   deriveSuggestedTimeBucket,
 } from "@/lib/account-priority-pref";
+import type { ActivePlanHabit } from "@/lib/dashboard-active-plan";
 import {
   buildPlanIntakeContext,
   computeCurrentPhaseId,
@@ -115,6 +116,27 @@ export function resolvePlanStepContent(
   };
 }
 
+function resolvePlanLinkForActiveHabit(habit: ActivePlanHabit): PlanStepLink | null {
+  if (habit.source !== "plan" || !habit.domain) {
+    return null;
+  }
+
+  const template = getPlanTemplate(habit.domain);
+  if (!template) {
+    return null;
+  }
+
+  for (const phase of template.phases) {
+    for (const step of phase.steps) {
+      if (step.id === habit.stepId && step.link) {
+        return step.link;
+      }
+    }
+  }
+
+  return null;
+}
+
 export function resolveActiveHabitContent(
   model: DashboardModel,
   domain: PillarId,
@@ -136,7 +158,7 @@ export function resolveActiveHabitContent(
     title: habit.title,
     detail: habit.detail,
     rationale: habit.detail,
-    planLink: null,
+    planLink: resolvePlanLinkForActiveHabit(habit),
   };
 }
 

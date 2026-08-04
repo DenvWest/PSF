@@ -43,6 +43,18 @@ describe("buildVandaagOnderbouwingHref", () => {
       "/onderbouwing?from=dashboard",
     );
   });
+
+  it("routes beweging to a movement anchor from intake answers", () => {
+    expect(buildVandaagOnderbouwingHref("beweging", { MOV_STR: 1, MOV_CARD: 4 })).toBe(
+      "/onderbouwing?from=dashboard#MOV_STR",
+    );
+    expect(buildVandaagOnderbouwingHref("beweging", { MOV_STR: 4, MOV_CARD: 2 })).toBe(
+      "/onderbouwing?from=dashboard#MOV_CARD",
+    );
+    expect(buildVandaagOnderbouwingHref("beweging", { MOV_STR: 4, MOV_CARD: 4 })).toBe(
+      "/onderbouwing?from=dashboard#MOV_SED",
+    );
+  });
 });
 
 describe("buildVandaagFollowUp", () => {

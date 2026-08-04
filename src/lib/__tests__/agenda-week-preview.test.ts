@@ -68,6 +68,23 @@ describe("buildWeekSchedulePreview", () => {
     expect(todaySlot?.title).toBe(model.activeHabit?.title);
   });
 
+  it("routes beweging onderbouwing to a movement anchor from intake answers", () => {
+    const model = buildFixtureModel({
+      slaap: 60,
+      energie: 70,
+      stress: 70,
+      voeding: 70,
+      beweging: 30,
+      herstel: 70,
+      verbinding: 70,
+    });
+
+    const bewegingSlot = buildWeekSchedulePreview(model).find(
+      (slot) => slot.domain === "beweging" && slot.isToday,
+    );
+    expect(bewegingSlot?.evidenceHref).toBe("/onderbouwing?from=dashboard#MOV_CARD");
+  });
+
   it("falls back to quickWin for domains without a plan template", () => {
     const model = buildFixtureModel({
       slaap: 60,
