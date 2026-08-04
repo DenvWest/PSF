@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  COCKPIT_CONTEXT_SIDEBAR_MQ,
+  COCKPIT_CONTEXT_SIDEBAR_WIDE_MQ,
   resolveCockpitContextPresentation,
+  resolveCockpitContextSidebarMq,
   resolveCockpitContextTriggerAction,
 } from "@/lib/cockpit-context-layout";
 
@@ -16,6 +19,20 @@ describe("resolveCockpitContextPresentation", () => {
 
   it("geeft drawer op tablet-breedte", () => {
     expect(resolveCockpitContextPresentation(false, false)).toBe("drawer");
+  });
+});
+
+describe("resolveCockpitContextSidebarMq", () => {
+  it("gebruikt lg-breakpoint standaard", () => {
+    expect(resolveCockpitContextSidebarMq(false)).toBe(
+      COCKPIT_CONTEXT_SIDEBAR_MQ,
+    );
+  });
+
+  it("gebruikt xl-breakpoint op Mijn Dag", () => {
+    expect(resolveCockpitContextSidebarMq(true)).toBe(
+      COCKPIT_CONTEXT_SIDEBAR_WIDE_MQ,
+    );
   });
 });
 

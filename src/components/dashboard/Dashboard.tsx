@@ -3961,6 +3961,7 @@ export default function Dashboard({
         inspectorDoelFooter={inspectorDoelFooter}
         inspectorExtra={inspectorExtra}
         hideRail={tab === "agenda"}
+        contextOverlayUntilXl={tab === "agenda"}
       >
         <div
           className={`w-full ${
