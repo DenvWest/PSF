@@ -3123,6 +3123,7 @@ const KompasHome = ({
         onMakePriority={() => void makeBewegingPriority()}
         makePriorityBusy={makePriorityBusy}
         onGoVoortgangDomein={() => onGoVoortgangDomein("beweging")}
+        onPrefUpdated={onPrefUpdated}
       />,
     );
   }
@@ -3959,6 +3960,7 @@ export default function Dashboard({
         remeasureAction={remeasureAction}
         inspectorDoelFooter={inspectorDoelFooter}
         inspectorExtra={inspectorExtra}
+        hideRail={tab === "agenda"}
       >
         <div
           className={`w-full ${

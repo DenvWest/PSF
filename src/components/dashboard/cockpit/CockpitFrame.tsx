@@ -41,6 +41,8 @@ type CockpitFrameProps = {
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorDoelFooter?: ReactNode;
   inspectorExtra?: ReactNode;
+  /** Verberg de linker rail (bijv. Mijn Dag: profiel zit al in de header). */
+  hideRail?: boolean;
   children: ReactNode;
 };
 
@@ -52,6 +54,13 @@ const GRID_TWO_COLUMNS =
 
 const GRID_THREE_COLUMNS =
   "md:grid-cols-[208px_minmax(0,1fr)] lg:grid-cols-[224px_minmax(0,1fr)_288px] xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]";
+
+/** Midden + context, zonder linker rail (Mijn Dag). */
+const GRID_TWO_COLUMNS_NO_RAIL =
+  "lg:grid-cols-[minmax(0,1fr)_288px] xl:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_340px] min-[1680px]:grid-cols-[minmax(0,1fr)_360px]";
+
+/** Alleen midden, zonder linker rail en met context ingeklapt (base grid-cols-1). */
+const GRID_ONE_COLUMN_NO_RAIL = "";
 
 /**
  * Cockpit-frame (slice 1): twee-rijige header + drie-zone-layout rond de
@@ -83,6 +92,7 @@ export default function CockpitFrame({
   remeasureAction,
   inspectorDoelFooter,
   inspectorExtra,
+  hideRail = false,
   children,
 }: CockpitFrameProps) {
   const [contextOpen, setContextOpen] = useState(false);
@@ -230,23 +240,31 @@ export default function CockpitFrame({
 
       <div
         className={`relative grid grid-cols-1 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-0 ${
-          contextCollapsed ? GRID_TWO_COLUMNS : GRID_THREE_COLUMNS
+          hideRail
+            ? contextCollapsed
+              ? GRID_ONE_COLUMN_NO_RAIL
+              : GRID_TWO_COLUMNS_NO_RAIL
+            : contextCollapsed
+              ? GRID_TWO_COLUMNS
+              : GRID_THREE_COLUMNS
         }`}
       >
-        <CockpitContextRail
-          mode={railMode}
-          firstName={firstName}
-          anchorLabel={anchorLabel}
-          statusDone={statusDone}
-          onCheckin={onCheckin}
-          domains={railDomains}
-          activeDomain={railActiveDomain}
-          onOpenDomain={onOpenDomain}
-          tools={railTools}
-          onToolClick={onToolClick}
-          onBackToKompas={onBackToKompas}
-          domainLabel={railDomainLabel}
-        />
+        {hideRail ? null : (
+          <CockpitContextRail
+            mode={railMode}
+            firstName={firstName}
+            anchorLabel={anchorLabel}
+            statusDone={statusDone}
+            onCheckin={onCheckin}
+            domains={railDomains}
+            activeDomain={railActiveDomain}
+            onOpenDomain={onOpenDomain}
+            tools={railTools}
+            onToolClick={onToolClick}
+            onBackToKompas={onBackToKompas}
+            domainLabel={railDomainLabel}
+          />
+        )}
 
         <main className="min-w-0 px-3 py-3 sm:px-4 sm:py-4 min-[1440px]:px-6">
           {children}
