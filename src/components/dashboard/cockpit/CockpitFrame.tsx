@@ -62,6 +62,18 @@ const GRID_TWO_COLUMNS_NO_RAIL =
 /** Alleen midden, zonder linker rail en met context ingeklapt (base grid-cols-1). */
 const GRID_ONE_COLUMN_NO_RAIL = "";
 
+const CONTEXT_ASIDE_SIDEBAR_CLASSES =
+  "xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:border-l xl:border-white/10 xl:bg-black/[0.12] xl:px-4 xl:py-4 min-[1440px]:px-6";
+
+const CONTEXT_ASIDE_OVERLAY_CLASSES =
+  "max-xl:fixed max-xl:z-40 max-xl:overflow-y-auto max-xl:bg-[#101a1b] max-xl:transition-transform max-xl:duration-300";
+
+const CONTEXT_ASIDE_SHEET_OVERLAY_CLASSES =
+  "max-xl:inset-x-0 max-xl:bottom-0 max-xl:max-h-[min(85vh,720px)] max-xl:rounded-t-[20px] max-xl:border-t max-xl:border-white/10 max-xl:p-3 max-xl:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]";
+
+const CONTEXT_ASIDE_DRAWER_OVERLAY_CLASSES =
+  "max-xl:inset-y-0 max-xl:right-0 max-xl:h-dvh max-xl:w-[min(360px,86vw)] max-xl:border-l max-xl:border-white/10 max-xl:p-4";
+
 /**
  * Cockpit-frame (slice 1): twee-rijige header + drie-zone-layout rond de
  * bestaande domein-screen (children = de midden-zone, ongewijzigd). Rechts een
@@ -285,12 +297,12 @@ export default function CockpitFrame({
           aria-modal={isDialogOpen ? true : undefined}
           aria-labelledby={isDialogOpen ? contextTitleId : undefined}
           aria-label={isDialogOpen ? undefined : "Contextpaneel"}
-          className={`min-w-0 outline-none transition-shadow duration-300 xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:border-l xl:border-white/10 xl:bg-black/[0.12] xl:px-4 xl:py-4 min-[1440px]:px-6 max-xl:fixed max-xl:z-40 max-xl:overflow-y-auto max-xl:bg-[#101a1b] max-xl:transition-transform max-xl:duration-300 ${
+          className={`min-w-0 outline-none transition-shadow duration-300 ${CONTEXT_ASIDE_SIDEBAR_CLASSES} ${CONTEXT_ASIDE_OVERLAY_CLASSES} ${
             contextCollapsed ? "xl:hidden" : ""
           } ${
             isSheet
-              ? "max-xl:inset-x-0 max-xl:bottom-0 max-xl:max-h-[min(85vh,720px)] max-xl:rounded-t-[20px] max-xl:border-t max-xl:border-white/10 max-xl:p-3 max-xl:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]"
-              : "max-xl:inset-y-0 max-xl:right-0 max-xl:h-dvh max-xl:w-[min(360px,86vw)] max-xl:border-l max-xl:border-white/10 max-xl:p-4"
+              ? CONTEXT_ASIDE_SHEET_OVERLAY_CLASSES
+              : CONTEXT_ASIDE_DRAWER_OVERLAY_CLASSES
           } ${
             isDialogOpen
               ? "max-xl:translate-x-0 max-xl:translate-y-0"
