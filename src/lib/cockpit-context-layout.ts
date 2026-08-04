@@ -1,14 +1,6 @@
-/** Onder lg: bottom sheet (mobiel) of zij-drawer (tablet). Vanaf lg: vaste sidebar (iPad landscape + desktop). */
-export const COCKPIT_CONTEXT_SIDEBAR_MQ = "(min-width: 1024px)";
-/** Mijn Dag: drawer tot xl zodat week-raster + agenda-sidebar ruimte houden op iPad. */
-export const COCKPIT_CONTEXT_SIDEBAR_WIDE_MQ = "(min-width: 1280px)";
+/** Onder xl: bottom sheet (mobiel) of zij-drawer (tablet/iPad landscape). Vanaf xl: vaste sidebar. */
+export const COCKPIT_CONTEXT_SIDEBAR_MQ = "(min-width: 1280px)";
 export const COCKPIT_CONTEXT_SHEET_MQ = "(max-width: 639px)";
-
-export function resolveCockpitContextSidebarMq(overlayUntilXl: boolean): string {
-  return overlayUntilXl
-    ? COCKPIT_CONTEXT_SIDEBAR_WIDE_MQ
-    : COCKPIT_CONTEXT_SIDEBAR_MQ;
-}
 
 export type CockpitContextPresentation = "sheet" | "drawer" | "sidebar";
 

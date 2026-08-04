@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   COCKPIT_CONTEXT_SIDEBAR_MQ,
-  COCKPIT_CONTEXT_SIDEBAR_WIDE_MQ,
   resolveCockpitContextPresentation,
-  resolveCockpitContextSidebarMq,
   resolveCockpitContextTriggerAction,
 } from "@/lib/cockpit-context-layout";
 
@@ -22,17 +20,9 @@ describe("resolveCockpitContextPresentation", () => {
   });
 });
 
-describe("resolveCockpitContextSidebarMq", () => {
-  it("gebruikt lg-breakpoint standaard", () => {
-    expect(resolveCockpitContextSidebarMq(false)).toBe(
-      COCKPIT_CONTEXT_SIDEBAR_MQ,
-    );
-  });
-
-  it("gebruikt xl-breakpoint op Mijn Dag", () => {
-    expect(resolveCockpitContextSidebarMq(true)).toBe(
-      COCKPIT_CONTEXT_SIDEBAR_WIDE_MQ,
-    );
+describe("COCKPIT_CONTEXT_SIDEBAR_MQ", () => {
+  it("schakelt sidebar pas vanaf xl", () => {
+    expect(COCKPIT_CONTEXT_SIDEBAR_MQ).toBe("(min-width: 1280px)");
   });
 });
 

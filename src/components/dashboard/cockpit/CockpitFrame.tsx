@@ -43,22 +43,20 @@ type CockpitFrameProps = {
   inspectorExtra?: ReactNode;
   /** Verberg de linker rail (bijv. Mijn Dag: profiel zit al in de header). */
   hideRail?: boolean;
-  /** Mijn Dag: Context als drawer tot xl; vaste sidebar pas vanaf 1280px. */
-  contextOverlayUntilXl?: boolean;
   children: ReactNode;
 };
 
 const CONTEXT_HIGHLIGHT_MS = 1200;
 
-/** Rail + midden; de contextkolom komt er pas vanaf lg bij als hij openstaat. */
+/** Rail + midden; contextkolom pas vanaf xl (daaronder drawer over canvas). */
 const GRID_TWO_COLUMNS =
   "md:grid-cols-[208px_minmax(0,1fr)] lg:grid-cols-[224px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)] min-[1440px]:grid-cols-[260px_minmax(0,1fr)] min-[1680px]:grid-cols-[280px_minmax(0,1fr)]";
 
 const GRID_THREE_COLUMNS =
-  "md:grid-cols-[208px_minmax(0,1fr)] lg:grid-cols-[224px_minmax(0,1fr)_288px] xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]";
+  "md:grid-cols-[208px_minmax(0,1fr)] lg:grid-cols-[224px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_320px] min-[1440px]:grid-cols-[260px_minmax(0,1fr)_340px] min-[1680px]:grid-cols-[280px_minmax(0,1fr)_360px]";
 
-/** Midden + context zonder linker rail; sidebar pas vanaf xl (Mijn Dag / iPad landscape). */
-const GRID_TWO_COLUMNS_NO_RAIL_XL =
+/** Midden + context zonder linker rail; sidebar pas vanaf xl. */
+const GRID_TWO_COLUMNS_NO_RAIL =
   "xl:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_340px] min-[1680px]:grid-cols-[minmax(0,1fr)_360px]";
 
 /** Alleen midden, zonder linker rail en met context ingeklapt (base grid-cols-1). */
@@ -67,10 +65,10 @@ const GRID_ONE_COLUMN_NO_RAIL = "";
 /**
  * Cockpit-frame (slice 1): twee-rijige header + drie-zone-layout rond de
  * bestaande domein-screen (children = de midden-zone, ongewijzigd). Rechts een
- * contextpaneel: sheet (< sm), drawer (tablet), sidebar (lg+ / iPad landscape).
+ * contextpaneel: sheet (< sm), drawer (tablet/iPad), sidebar (xl+).
  * De sidebar is inklapbaar — dan valt de derde kolom weg en krijgt de
  * midden-zone de ruimte; de context-knop in de header klapt hem weer uit.
- * CSS lg:-fallback zorgt dat de sidebar op web direct zichtbaar is vóór hydration.
+ * CSS xl:-fallback zorgt dat de sidebar op web direct zichtbaar is vóór hydration.
  */
 export default function CockpitFrame({
   activeTab,
@@ -95,7 +93,6 @@ export default function CockpitFrame({
   inspectorDoelFooter,
   inspectorExtra,
   hideRail = false,
-  contextOverlayUntilXl = false,
   children,
 }: CockpitFrameProps) {
   const [contextOpen, setContextOpen] = useState(false);
@@ -105,38 +102,11 @@ export default function CockpitFrame({
   const panelRef = useRef<HTMLElement>(null);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contextCount = inspectorCards.length + (inspectorExtra ? 1 : 0);
-  const presentation = useCockpitContextLayout({ overlayUntilXl: contextOverlayUntilXl });
+  const presentation = useCockpitContextLayout();
   const isDrawerMode = presentation !== "sidebar";
   const isSheet = presentation === "sheet";
   const isDialogOpen = contextOpen && isDrawerMode;
-  const contextGridWhenOpen = hideRail ? GRID_TWO_COLUMNS_NO_RAIL_XL : GRID_THREE_COLUMNS;
-  const contextAsideSidebarClasses = contextOverlayUntilXl
-    ? "xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:border-l xl:border-white/10 xl:bg-black/[0.12] xl:px-4 xl:py-4 min-[1440px]:px-6"
-    : "lg:static lg:z-auto lg:h-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:translate-y-0 lg:overflow-visible lg:border-l lg:border-white/10 lg:bg-black/[0.12] lg:px-4 lg:py-4 xl:px-6";
-  const contextAsideOverlayClasses = contextOverlayUntilXl
-    ? "max-xl:fixed max-xl:z-40 max-xl:overflow-y-auto max-xl:bg-[#101a1b] max-xl:transition-transform max-xl:duration-300"
-    : "max-lg:fixed max-lg:z-40 max-lg:overflow-y-auto max-lg:bg-[#101a1b] max-lg:transition-transform max-lg:duration-300";
-  const contextAsideCollapsedClass = contextOverlayUntilXl
-    ? "xl:hidden"
-    : "lg:hidden";
-  const contextAsideOverlayHiddenClass = contextOverlayUntilXl
-    ? "max-xl:hidden"
-    : "max-lg:hidden";
-  const contextSheetOverlayClasses = contextOverlayUntilXl
-    ? "max-xl:inset-x-0 max-xl:bottom-0 max-xl:max-h-[min(85vh,720px)] max-xl:rounded-t-[20px] max-xl:border-t max-xl:border-white/10 max-xl:p-3 max-xl:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]"
-    : "max-lg:inset-x-0 max-lg:bottom-0 max-lg:max-h-[min(85vh,720px)] max-lg:rounded-t-[20px] max-lg:border-t max-lg:border-white/10 max-lg:p-3 max-lg:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]";
-  const contextDrawerOverlayClasses = contextOverlayUntilXl
-    ? "max-xl:inset-y-0 max-xl:right-0 max-xl:h-dvh max-xl:w-[min(360px,86vw)] max-xl:border-l max-xl:border-white/10 max-xl:p-4"
-    : "max-lg:inset-y-0 max-lg:right-0 max-lg:h-dvh max-lg:w-[min(360px,86vw)] max-lg:border-l max-lg:border-white/10 max-lg:p-4";
-  const contextAsideOpenTranslateClasses = contextOverlayUntilXl
-    ? "max-xl:translate-x-0 max-xl:translate-y-0"
-    : "max-lg:translate-x-0 max-lg:translate-y-0";
-  const contextAsideClosedSheetTranslateClasses = contextOverlayUntilXl
-    ? "max-xl:translate-y-full"
-    : "max-lg:translate-y-full";
-  const contextAsideClosedDrawerTranslateClasses = contextOverlayUntilXl
-    ? "max-xl:translate-x-full"
-    : "max-lg:translate-x-full";
+  const contextGridWhenOpen = hideRail ? GRID_TWO_COLUMNS_NO_RAIL : GRID_THREE_COLUMNS;
 
   // De domeinrail is een switcher, geen actiebalk: de hermeting-actie leeft nog
   // in de inspector-"meet"-kaart. Surface blijft in het event zodat de reeks
@@ -305,7 +275,7 @@ export default function CockpitFrame({
           <div
             onClick={closeContext}
             aria-hidden
-            className={`fixed inset-0 z-30 bg-black/45 opacity-100 ${contextAsideOverlayHiddenClass}`}
+            className="fixed inset-0 z-30 bg-black/45 opacity-100 max-xl:hidden"
           />
         ) : null}
         <aside
@@ -315,22 +285,24 @@ export default function CockpitFrame({
           aria-modal={isDialogOpen ? true : undefined}
           aria-labelledby={isDialogOpen ? contextTitleId : undefined}
           aria-label={isDialogOpen ? undefined : "Contextpaneel"}
-          className={`min-w-0 outline-none transition-shadow duration-300 ${contextAsideSidebarClasses} ${contextAsideOverlayClasses} ${
-            contextCollapsed ? contextAsideCollapsedClass : ""
+          className={`min-w-0 outline-none transition-shadow duration-300 xl:static xl:z-auto xl:h-auto xl:w-auto xl:max-w-none xl:translate-x-0 xl:translate-y-0 xl:overflow-visible xl:border-l xl:border-white/10 xl:bg-black/[0.12] xl:px-4 xl:py-4 min-[1440px]:px-6 max-xl:fixed max-xl:z-40 max-xl:overflow-y-auto max-xl:bg-[#101a1b] max-xl:transition-transform max-xl:duration-300 ${
+            contextCollapsed ? "xl:hidden" : ""
           } ${
-            isSheet ? contextSheetOverlayClasses : contextDrawerOverlayClasses
+            isSheet
+              ? "max-xl:inset-x-0 max-xl:bottom-0 max-xl:max-h-[min(85vh,720px)] max-xl:rounded-t-[20px] max-xl:border-t max-xl:border-white/10 max-xl:p-3 max-xl:pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]"
+              : "max-xl:inset-y-0 max-xl:right-0 max-xl:h-dvh max-xl:w-[min(360px,86vw)] max-xl:border-l max-xl:border-white/10 max-xl:p-4"
           } ${
             isDialogOpen
-              ? contextAsideOpenTranslateClasses
+              ? "max-xl:translate-x-0 max-xl:translate-y-0"
               : isSheet
-                ? contextAsideClosedSheetTranslateClasses
-                : contextAsideClosedDrawerTranslateClasses
+                ? "max-xl:translate-y-full"
+                : "max-xl:translate-x-full"
           } ${contextHighlighted ? "ring-2 ring-[#5A8F6A]/50" : ""}`}
         >
           {isSheet && isDrawerMode ? (
             <div
               aria-hidden
-              className={`mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-white/20 ${contextAsideOverlayHiddenClass}`}
+              className="mx-auto mb-3 h-1 w-10 shrink-0 rounded-full bg-white/20 max-xl:hidden"
             />
           ) : null}
           <CockpitInspector
