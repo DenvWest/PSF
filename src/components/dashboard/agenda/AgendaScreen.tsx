@@ -2,12 +2,17 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
+import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
+import AgendaContextSidebar from "@/components/dashboard/agenda/AgendaContextSidebar";
 import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
 import AgendaMonthGrid from "@/components/dashboard/agenda/AgendaMonthGrid";
 import AgendaShell, { AgendaShellSection } from "@/components/dashboard/agenda/AgendaShell";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
 import AgendaViewSwitcher from "@/components/dashboard/agenda/AgendaViewSwitcher";
 import AgendaWeekOverview from "@/components/dashboard/agenda/AgendaWeekOverview";
+import AgendaWeekTimeGrid, {
+  type WeekGridEmptySlot,
+} from "@/components/dashboard/agenda/AgendaWeekTimeGrid";
 import AgendaWeekStrip from "@/components/dashboard/agenda/AgendaWeekStrip";
 import AgendaPriorityTestPanel from "@/components/dashboard/agenda/AgendaPriorityTestPanel";
 import type { AgendaStripDay } from "@/components/dashboard/agenda/AgendaWeekStrip";
@@ -22,6 +27,7 @@ import {
   updateAgendaBlock,
 } from "@/lib/agenda-blocks-client";
 import { resolveAgendaDayContext } from "@/lib/agenda-day-context";
+import { buildWeekColumnBlocks } from "@/lib/agenda-timeline";
 import { getMonthRange } from "@/lib/agenda-month";
 import {
   buildWeekSchedulePreview,
@@ -46,7 +52,7 @@ import {
   postScheduledTime,
   postSetPlanStepsHidden,
 } from "@/lib/priority-pref-client";
-import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
+import type { AgendaBlockRecord, AgendaCategoryId, TimelineBlock } from "@/types/agenda";
 import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
 
 type AgendaScreenProps = {
@@ -128,6 +134,9 @@ export default function AgendaScreen({
   const [monthOverride, setMonthOverride] = useState<string | null>(null);
   const monthAnchor = monthOverride ?? selectedDate;
   const [monthSheetOpen, setMonthSheetOpen] = useState(false);
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const [weekAddOpen, setWeekAddOpen] = useState(false);
+  const [weekDraftSlot, setWeekDraftSlot] = useState<WeekGridEmptySlot | null>(null);
   const footerActionsRef = useRef<{
     openAddSheet: () => void;
     blockBusy: boolean;
@@ -144,14 +153,14 @@ export default function AgendaScreen({
   // maand = de hele maand inclusief de rand-dagen die het raster toont.
   const fetchRange = useMemo(() => {
     const week = { startDate: stripWeekDates[0], endDate: stripWeekDates[6] };
-    if (view !== "maand" && !monthSheetOpen) {
-      return week;
+    if (view === "maand" || monthSheetOpen || view === "week") {
+      const month = getMonthRange(monthAnchor);
+      return {
+        startDate: month.startDate < week.startDate ? month.startDate : week.startDate,
+        endDate: month.endDate > week.endDate ? month.endDate : week.endDate,
+      };
     }
-    const month = getMonthRange(monthAnchor);
-    return {
-      startDate: month.startDate < week.startDate ? month.startDate : week.startDate,
-      endDate: month.endDate > week.endDate ? month.endDate : week.endDate,
-    };
+    return week;
   }, [monthAnchor, monthSheetOpen, stripWeekDates, view]);
 
   const planStepHidden = selectedSlot ? isPlanStepHidden(model, selectedSlot) : false;
@@ -316,6 +325,10 @@ export default function AgendaScreen({
 
   const selectDate = useCallback(
     (date: string, surface: "week_strip" | "week_view" | "month") => {
+      const nextWeekStart = getCalendarWeekDates(date)[0];
+      if (nextWeekStart !== stripWeekDates[0]) {
+        setSelectedBlockId(null);
+      }
       setMonthOverride(null);
       onSelectedDateChange(date);
       syncDashboardDagParam(date);
@@ -328,11 +341,12 @@ export default function AgendaScreen({
       });
       clarityTag("dashboard_agenda", date === today ? "day_today" : "day_preview");
     },
-    [onSelectedDateChange, slots, today],
+    [onSelectedDateChange, slots, stripWeekDates, today],
   );
 
   const handleViewChange = useCallback(
     (nextView: AgendaViewId) => {
+      setSelectedBlockId(null);
       onViewChange(nextView);
       syncDashboardAgendaViewParam(nextView);
       trackAgendaViewSet({ view: nextView, surface: "agenda" });
@@ -512,12 +526,38 @@ export default function AgendaScreen({
     footerActionsRef.current?.openAddSheet();
   };
 
-  const handleVoortgangLink = () => {
+  const handleVoortgangLink = (surface: "agenda" | "agenda_week_sidebar" = "agenda") => {
     trackEvent("dashboard_agenda_voortgang_link_click", {
-      surface: "agenda",
+      surface,
     });
     clarityTag("dashboard_agenda", "voortgang_link");
     onGoVoortgang();
+  };
+
+  const handleWeekEmptySlot = (slot: WeekGridEmptySlot) => {
+    setWeekDraftSlot(slot);
+    setWeekAddOpen(true);
+    selectDate(slot.date, "week_view");
+  };
+
+  const closeWeekAddSheet = () => {
+    setWeekAddOpen(false);
+    setWeekDraftSlot(null);
+  };
+
+  const handleWeekCreateBlock = async (input: {
+    date: string;
+    categoryId: AgendaCategoryId;
+    title: string;
+    startTime: string;
+    endTime: string;
+  }) => {
+    await handleCreateBlock(input);
+    closeWeekAddSheet();
+  };
+
+  const selectWeekDate = (date: string) => {
+    selectDate(date, "week_view");
   };
 
   const heading =
@@ -526,6 +566,19 @@ export default function AgendaScreen({
       : view === "week"
         ? formatRangeHeading(stripWeekDates[0], stripWeekDates[6])
         : formatMonthHeading(monthAnchor);
+
+  let selectedWeekBlock: { block: TimelineBlock; date: string } | null = null;
+  if (selectedBlockId) {
+    for (const day of weekEntries) {
+      const slot = slots.find((entry) => entry.date === day.date) ?? null;
+      const blocks = buildWeekColumnBlocks(model, day.date, slot, day.blocks);
+      const found = blocks.find((block) => block.id === selectedBlockId);
+      if (found) {
+        selectedWeekBlock = { block: found, date: day.date };
+        break;
+      }
+    }
+  }
 
   return (
     <AgendaShell accentColor={model.priority.color}>
@@ -595,14 +648,65 @@ export default function AgendaScreen({
       ) : null}
 
       {view === "week" ? (
-        <AgendaWeekOverview
-          days={weekEntries}
-          selectedDate={selectedDate}
-          onSelectDate={(date) => {
-            selectDate(date, "week_view");
-            handleViewChange("dag");
-          }}
-        />
+        <>
+          <div className="lg:hidden">
+            <AgendaWeekOverview
+              days={weekEntries}
+              selectedDate={selectedDate}
+              onSelectDate={(date) => {
+                selectDate(date, "week_view");
+                handleViewChange("dag");
+              }}
+            />
+          </div>
+          <div className="hidden min-w-0 lg:flex lg:items-start lg:gap-4">
+            <AgendaWeekTimeGrid
+              model={model}
+              days={weekEntries}
+              slots={slots}
+              selectedDate={selectedDate}
+              todayDate={today}
+              selectedBlockId={selectedBlockId}
+              blockBusy={blockBusy}
+              onSelectDate={selectWeekDate}
+              onSelectBlock={setSelectedBlockId}
+              onEmptySlot={handleWeekEmptySlot}
+            />
+            <AgendaContextSidebar
+              weekEntries={weekEntries}
+              monthAnchor={monthAnchor}
+              selectedDate={selectedDate}
+              todayDate={today}
+              densityByDate={densityByDate}
+              selectedBlock={selectedWeekBlock?.block ?? null}
+              selectedBlockDate={selectedWeekBlock?.date ?? null}
+              onMonthAnchorChange={setMonthOverride}
+              onSelectDate={selectWeekDate}
+              onGoToday={() => selectWeekDate(today)}
+              onClearSelection={() => setSelectedBlockId(null)}
+              onOpenInDay={() => {
+                if (selectedWeekBlock) {
+                  selectDate(selectedWeekBlock.date, "week_view");
+                }
+                handleViewChange("dag");
+              }}
+              onGoVoortgang={() => handleVoortgangLink("agenda_week_sidebar")}
+            />
+          </div>
+          {weekAddOpen && weekDraftSlot ? (
+            <AgendaAddBlockSheet
+              key={`week-${weekDraftSlot.date}-${weekDraftSlot.startTime}`}
+              open={weekAddOpen}
+              date={weekDraftSlot.date}
+              busy={blockBusy}
+              initialStartTime={weekDraftSlot.startTime}
+              initialEndTime={weekDraftSlot.endTime}
+              createSurface="agenda_week_grid_tap"
+              onClose={closeWeekAddSheet}
+              onSubmit={handleWeekCreateBlock}
+            />
+          ) : null}
+        </>
       ) : null}
 
       {view === "maand" ? (
@@ -637,7 +741,7 @@ export default function AgendaScreen({
             </button>
             <button
               type="button"
-              onClick={handleVoortgangLink}
+              onClick={() => handleVoortgangLink("agenda")}
               className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors hover:border-white/25"
               style={{ fontFamily: "var(--f-sans)" }}
             >

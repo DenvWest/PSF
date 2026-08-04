@@ -29,7 +29,7 @@ type AgendaAddBlockSheetProps = {
   initialCategoryId?: AgendaCategoryId;
   /** Korte kadering boven het formulier, bijv. bij "Meer hulp hierbij". */
   helperNote?: string | null;
-  createSurface?: "agenda_add_sheet" | "agenda_timeline_tap";
+  createSurface?: "agenda_add_sheet" | "agenda_timeline_tap" | "agenda_week_grid_tap";
   createOrigin?: "meer_hulp";
   onClose: () => void;
   onRestore?: (blockId: string) => Promise<void>;

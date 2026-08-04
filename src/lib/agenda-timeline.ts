@@ -18,6 +18,8 @@ export const TIMELINE_TOTAL_MINUTES = TIMELINE_END_MINUTES - TIMELINE_START_MINU
 export const ANALYSIS_BLOCK_DURATION_MINUTES = 45;
 export const DEFAULT_BLOCK_DURATION_MINUTES = 30;
 export const TIMELINE_SNAP_MINUTES = 15;
+/** Week-kolomgrid: lege slots snappen op halve uren (Dag-timeline blijft 15 min). */
+export const WEEK_GRID_SNAP_MINUTES = 30;
 
 /**
  * De percentage-hoogte van een blok blijft de eerlijke claim op de tijd; alleen
@@ -88,6 +90,7 @@ export function positionToTimelineTime(
   offsetY: number,
   trackHeightPx: number,
   durationMinutes = DEFAULT_BLOCK_DURATION_MINUTES,
+  snapStep = TIMELINE_SNAP_MINUTES,
 ): { startTime: string; endTime: string } {
   if (trackHeightPx <= 0) {
     return { startTime: "12:00", endTime: "12:30" };
@@ -95,7 +98,7 @@ export function positionToTimelineTime(
 
   const ratio = Math.min(Math.max(offsetY / trackHeightPx, 0), 1);
   const rawMinutes = TIMELINE_START_MINUTES + ratio * TIMELINE_TOTAL_MINUTES;
-  const snappedStart = clampTimelineMinutes(snapTimelineMinutes(rawMinutes));
+  const snappedStart = clampTimelineMinutes(snapTimelineMinutes(rawMinutes, snapStep));
   const endMinutes = clampTimelineMinutes(snappedStart + durationMinutes);
   const startMinutes = Math.max(TIMELINE_START_MINUTES, endMinutes - durationMinutes);
 
@@ -103,6 +106,39 @@ export function positionToTimelineTime(
     startTime: minutesToTime(startMinutes),
     endTime: minutesToTime(endMinutes),
   };
+}
+
+export function positionToWeekGridTime(
+  offsetY: number,
+  trackHeightPx: number,
+  durationMinutes = DEFAULT_BLOCK_DURATION_MINUTES,
+): { startTime: string; endTime: string } {
+  return positionToTimelineTime(
+    offsetY,
+    trackHeightPx,
+    durationMinutes,
+    WEEK_GRID_SNAP_MINUTES,
+  );
+}
+
+export function buildWeekColumnBlocks(
+  model: DashboardModel,
+  date: string,
+  slot: WeekDaySlot | null,
+  routineBlocks: AgendaBlockRecord[],
+): TimelineBlock[] {
+  const dayBlocks = buildDayTimeline(model, { date }, routineBlocks);
+  if (!slot) {
+    return dayBlocks;
+  }
+  const placement = resolvePlanStepPlacement(model, slot);
+  const planStep = buildPlanStepBlock(model, slot);
+  if (placement !== "grid" || !planStep) {
+    return dayBlocks;
+  }
+  return [...dayBlocks, planStep].sort(
+    (left, right) => timeToMinutes(left.startTime) - timeToMinutes(right.startTime),
+  );
 }
 
 export function getBlockTimelineStyle(startTime: string, endTime: string): {

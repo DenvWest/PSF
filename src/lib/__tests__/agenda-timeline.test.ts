@@ -4,6 +4,7 @@ import {
   ANALYSIS_BLOCK_DURATION_MINUTES,
   buildDayTimeline,
   buildPlanStepBlock,
+  buildWeekColumnBlocks,
   DEFAULT_BLOCK_DURATION_MINUTES,
   getBlockRoleLabel,
   getBlockTimelineHeightPx,
@@ -15,6 +16,7 @@ import {
   isCompactTimelineBlock,
   minutesToTime,
   positionToTimelineTime,
+  positionToWeekGridTime,
   resolveBlockRole,
   resolvePlanStepPlacement,
   snapTimelineMinutes,
@@ -24,6 +26,7 @@ import {
   TIMELINE_START_MINUTES,
   TIMELINE_TOTAL_MINUTES,
   timeToMinutes,
+  WEEK_GRID_SNAP_MINUTES,
 } from "@/lib/agenda-timeline";
 import { buildModel } from "@/lib/dashboard-model";
 import type { AgendaBlockRecord, TimelineBlock } from "@/types/agenda";
@@ -378,5 +381,66 @@ describe("tap-to-create helpers", () => {
   it("clamps bottom of track within 22:00", () => {
     const result = positionToTimelineTime(TRACK_HEIGHT_PX, TRACK_HEIGHT_PX);
     expect(timeToMinutes(result.endTime)).toBeLessThanOrEqual(TIMELINE_END_MINUTES);
+  });
+});
+
+describe("positionToWeekGridTime", () => {
+  const HOUR_HEIGHT_PX = 44;
+  const TRACK_HEIGHT_PX = getTimelineTrackHeightPx(HOUR_HEIGHT_PX);
+
+  it("snaps to 30-minute steps", () => {
+    const nearHalf = positionToWeekGridTime(
+      getHourMarkerTopPx(9.25, HOUR_HEIGHT_PX),
+      TRACK_HEIGHT_PX,
+    );
+    expect(nearHalf.startTime).toBe("09:30");
+    expect(WEEK_GRID_SNAP_MINUTES).toBe(30);
+  });
+
+  it("maps 14:00 grid line to 14:00 start time", () => {
+    const offsetY = getHourMarkerTopPx(14, HOUR_HEIGHT_PX);
+    const result = positionToWeekGridTime(offsetY, TRACK_HEIGHT_PX);
+    expect(result.startTime).toBe("14:00");
+    expect(result.endTime).toBe("14:30");
+  });
+});
+
+describe("buildWeekColumnBlocks", () => {
+  it("includes plan step on grid when scheduled for today", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const slots = buildWeekSchedulePreview(model);
+    const todaySlot = slots.find((slot) => slot.isToday);
+    expect(todaySlot).toBeDefined();
+    if (!todaySlot) {
+      return;
+    }
+
+    const modelWithTime = {
+      ...model,
+      scheduledTime: "10:00",
+    };
+    const blocks = buildWeekColumnBlocks(modelWithTime, todaySlot.date, todaySlot, []);
+    expect(blocks.some((block) => block.kind === "analysis")).toBe(true);
+  });
+
+  it("returns only routine blocks when no plan slot", () => {
+    const model = buildFixtureModel(FIXTURE_SCORES);
+    const routineBlocks: AgendaBlockRecord[] = [
+      {
+        id: "block-week",
+        date: "2026-07-15",
+        categoryId: "water",
+        title: "Water",
+        startTime: "08:00",
+        endTime: "08:30",
+        source: "routine",
+        status: "open",
+        externalProvider: null,
+        externalRef: null,
+      },
+    ];
+    const blocks = buildWeekColumnBlocks(model, "2026-07-15", null, routineBlocks);
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.kind).toBe("routine");
   });
 });
