@@ -12,8 +12,12 @@
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------- |
 | Dit document                                     | **Nieuwe lock** — keuze = basis + partners/producten/diensten → Favorieten + Mijn Dag → meten |
 | `BESLUIT_BEWEGING_PRODUCT_EN_IA.md`              | Deels **pivot**: geen intensiteit-picker als kern; hergebruik surface-namen waar nuttig       |
+| `BESLUIT_FIT_PREFS.md`                           | Dual readout: Bond vast; fit = lens/filter — geen samengevoegd cijfer                         |
 | `voortgang-conversiekaart-prebuild-2026-07.html` | Kwaliteitslat voor HTML-prebuilds + Favorieten/Beste-denkwijze                                |
 | `DESIGN_TOKENS.md` / `.ps-dark`                  | Visuele tokens                                                                                |
+
+> **Timing (aug 2026):** v3-prebuild bestaat al. **Geen nieuwe visie-prompt** over fit-prefs vóór
+> pre-E / E. Bij B-revisie of B-implementatie: `BESLUIT_FIT_PREFS.md` als lock meenemen.
 
 
 ## Gebruiksinstructie
@@ -47,14 +51,20 @@ Na de Leefstijlcheck (vragenlijst) gebeurt per domein dit:
    Twee lenzen om aanbod te tonen:
    - Postcode → lokaal (diensten/partners bij jou)
    - Best voor leeftijd + Leefstijlcheck → ranking op profiel
+   Ranking op profiel = FIT-LENS (sorteer/filter). Consumentenbond-oordeel per kaart
+   blijft vast (gecheckt/sterk/zwak/niet). NOOIT fit×bond tot één cijfer mengen.
+   Fit-dimensies (locatie / begeleiding / prijs / reviews): zie
+   docs/design/BESLUIT_FIT_PREFS.md — max 4, discrete ankers, niet in dag-0-intake.
 3) Gekozen optie → direct Favorieten + (optioneel) Mijn Dag / moment.
 4) DAARNA METEN: eigen review, later wearables, 14-dagen hertest, 30-dagen hertest.
+   Tijdens: max één evaluatievraag per mail — geen mini-enquête.
 
 Niet alles slopen: herordenen. Basis soft-sporen (kracht/conditie/dagelijks ritme)
 blijven als basislaag. Commercieel komt UIT dezelfde “maak een keuze”.
 
 Positionering: Consumentenbond — oordeel/kwaliteit eerst; affiliate/partner volgt
-het oordeel. Geen shop-schap, geen diagnose-taal, geen medische claims.
+het oordeel. Fit past het aanbod aan JOU; herschrijft het oordeel niet.
+Geen shop-schap, geen diagnose-taal, geen medische claims.
 
 ## Taak
 Bouw één self-contained HTML-bestand: “Beweging — keuze Consumentenbond prebuild”.
