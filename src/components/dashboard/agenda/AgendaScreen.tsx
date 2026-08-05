@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as Icons from "@/components/app/icons";
+import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaContextSidebar from "@/components/dashboard/agenda/AgendaContextSidebar";
 import AgendaDayTimeline from "@/components/dashboard/agenda/AgendaDayTimeline";
@@ -54,6 +55,8 @@ import {
 } from "@/lib/priority-pref-client";
 import type { AgendaBlockRecord, AgendaCategoryId, TimelineBlock } from "@/types/agenda";
 import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
+
+type ScheduledTimeSurface = "agenda_day_schedule" | "agenda_timeline_drag";
 
 type AgendaScreenProps = {
   model: DashboardModel;
@@ -367,18 +370,21 @@ export default function AgendaScreen({
     [onViewChange],
   );
 
-  const handleScheduledTime = async (scheduledTime: string) => {
+  const handleScheduledTime = async (
+    scheduledTime: string,
+    surface: ScheduledTimeSurface = "agenda_day_schedule",
+  ) => {
     setPrefBusy(true);
     try {
       const pref = await postScheduledTime({
         scheduledTime,
-        surface: "agenda_day_schedule",
+        surface,
       });
       onPrefUpdated(pref);
       trackEvent("dashboard_time_bucket_set", {
         scheduled_time: scheduledTime,
         ...(pref.timeBucket ? { time_bucket: pref.timeBucket } : {}),
-        surface: "agenda_day_schedule",
+        surface,
       });
       if (pref.timeBucket) {
         clarityTag("dashboard_time_bucket", pref.timeBucket);
@@ -650,7 +656,9 @@ export default function AgendaScreen({
           prefBusy={prefBusy}
           blockBusy={blockBusy}
           onCompletionChange={refreshWeekState}
-          onScheduledTimeChange={(scheduledTime) => void handleScheduledTime(scheduledTime)}
+          onScheduledTimeChange={(scheduledTime, surface) =>
+            void handleScheduledTime(scheduledTime, surface)
+          }
           onCreateBlock={handleCreateBlock}
           onToggleBlockDone={handleToggleBlockDone}
           onPurgeBlock={handlePurgeBlock}
@@ -699,9 +707,14 @@ export default function AgendaScreen({
               todayDate={today}
               selectedBlockId={selectedBlockId}
               blockBusy={blockBusy}
+              prefBusy={prefBusy}
               onSelectDate={selectWeekDate}
               onSelectBlock={setSelectedBlockId}
               onEmptySlot={handleWeekEmptySlot}
+              onRetimeBlock={handleRetimeBlock}
+              onScheduledTimeChange={(scheduledTime) =>
+                void handleScheduledTime(scheduledTime, "agenda_timeline_drag")
+              }
             />
             <AgendaContextSidebar
               weekEntries={weekEntries}
@@ -737,6 +750,42 @@ export default function AgendaScreen({
               onSubmit={handleWeekCreateBlock}
             />
           ) : null}
+          <AgendaBlockDetailSheet
+            key={`week-${selectedWeekBlock?.date ?? "none"}-${selectedWeekBlock?.block.id ?? "none"}`}
+            block={selectedWeekBlock?.block ?? null}
+            model={model}
+            date={selectedWeekBlock?.date ?? selectedDate}
+            prefBusy={prefBusy}
+            busy={blockBusy}
+            onClose={() => setSelectedBlockId(null)}
+            onCompletionChange={refreshWeekState}
+            onScheduledTimeChange={(scheduledTime) =>
+              void handleScheduledTime(scheduledTime, "agenda_day_schedule")
+            }
+            onToggleDone={(blockId, done) => void handleToggleBlockDone(blockId, done)}
+            onPurge={(blockId) => handlePurgeBlock(blockId)}
+            onRetime={
+              selectedWeekBlock
+                ? (blockId, input) => {
+                    void handleRetimeBlock(blockId, input);
+                  }
+                : undefined
+            }
+            onDismissPlanStep={
+              selectedWeekBlock?.block.kind === "analysis"
+                ? (dismissDate) => {
+                    void handleDismissPlanStep(dismissDate);
+                  }
+                : undefined
+            }
+            onHideAllPlanSteps={
+              selectedWeekBlock?.block.kind === "analysis"
+                ? () => {
+                    void handleHideAllPlanSteps();
+                  }
+                : undefined
+            }
+          />
         </>
       ) : null}
 
