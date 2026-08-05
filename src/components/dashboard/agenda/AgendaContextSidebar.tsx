@@ -6,7 +6,7 @@ import type { AgendaWeekDayEntry } from "@/components/dashboard/agenda/AgendaWee
 import { getAgendaCategory } from "@/data/agenda/categories";
 import { PILLAR } from "@/data/dashboard";
 import { getBlockRoleLabel } from "@/lib/agenda-timeline";
-import type { TimelineBlock } from "@/types/agenda";
+import type { AgendaMonthDayItem, TimelineBlock } from "@/types/agenda";
 
 type AgendaContextSidebarProps = {
   weekEntries: AgendaWeekDayEntry[];
@@ -14,6 +14,7 @@ type AgendaContextSidebarProps = {
   selectedDate: string;
   todayDate: string;
   densityByDate: ReadonlyMap<string, number>;
+  itemsByDate: ReadonlyMap<string, readonly AgendaMonthDayItem[]>;
   selectedBlock: TimelineBlock | null;
   selectedBlockDate: string | null;
   onMonthAnchorChange: (date: string) => void;
@@ -69,6 +70,7 @@ export default function AgendaContextSidebar({
   selectedDate,
   todayDate,
   densityByDate,
+  itemsByDate,
   selectedBlock,
   selectedBlockDate,
   onMonthAnchorChange,
@@ -147,6 +149,7 @@ export default function AgendaContextSidebar({
               selectedDate={selectedDate}
               todayDate={todayDate}
               densityByDate={densityByDate}
+              itemsByDate={itemsByDate}
               onAnchorChange={onMonthAnchorChange}
               onSelectDate={onSelectDate}
               onGoToday={onGoToday}

@@ -11,7 +11,7 @@ import type { TimelineBlock } from "@/types/agenda";
 
 type AgendaTimelineChipProps = {
   block: TimelineBlock;
-  /** Korte blokken: de tijdregel valt weg, herkomst en titel blijven. */
+  /** Korte blokken: alleen starttijd i.p.v. volledig bereik; herkomst en titel blijven. */
   compact?: boolean;
   onOpenDetail: () => void;
   dragHandleProps?: AgendaTimelineDragHandleProps;
@@ -92,11 +92,15 @@ export default function AgendaTimelineChip({
             >
               {block.title}
             </p>
-            {!compact ? (
+            {compact ? (
+              <p className="mt-0.5 truncate text-[10px] tabular-nums text-[#9FB0A6]">
+                {block.startTime.slice(0, 5)}
+              </p>
+            ) : (
               <p className="mt-0.5 truncate text-[10.5px] tabular-nums text-[#9FB0A6]">
                 {block.startTime} – {block.endTime}
               </p>
-            ) : null}
+            )}
           </div>
           {block.done ? (
             <span

@@ -27,7 +27,7 @@ import {
 } from "@/lib/agenda-blocks-client";
 import { resolveAgendaDayContext } from "@/lib/agenda-day-context";
 import { resolvePlanStepDuration } from "@/lib/agenda-plan-duration";
-import { buildWeekColumnBlocks } from "@/lib/agenda-timeline";
+import { buildWeekColumnBlocks, resolvePlanStepPlacement } from "@/lib/agenda-timeline";
 import { getCachedDailyLog } from "@/lib/daily-log-client";
 import { getMonthRange, isSameAgendaMonth } from "@/lib/agenda-month";
 import {
@@ -40,7 +40,7 @@ import { syncDashboardAgendaViewParam, syncDashboardDagParam } from "@/lib/dashb
 import type { AgendaViewId } from "@/lib/dashboard-url";
 import { deriveDefaultTimeBucket } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
-import { isPlanStepHidden } from "@/lib/day-model";
+import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import { trackAgendaDaySelected, trackAgendaViewSet, trackEvent } from "@/lib/ga4";
 import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
 import {
@@ -280,6 +280,47 @@ export default function AgendaScreen({
     }
     return map;
   }, [blocksByDate]);
+
+  const itemsByDate = useMemo(() => {
+    const map = new Map<string, { startTime: string; title: string }[]>();
+
+    const addItem = (date: string, item: { startTime: string; title: string }) => {
+      const list = map.get(date);
+      if (list) {
+        list.push(item);
+      } else {
+        map.set(date, [item]);
+      }
+    };
+
+    for (const [date, blocks] of blocksByDate) {
+      for (const block of blocks) {
+        addItem(date, {
+          startTime: block.startTime.slice(0, 5),
+          title: block.title,
+        });
+      }
+    }
+
+    for (const slot of slots) {
+      if (isPlanStepHidden(model, slot)) {
+        continue;
+      }
+      if (resolvePlanStepPlacement(model, slot) !== "grid") {
+        continue;
+      }
+      addItem(slot.date, {
+        startTime: resolveScheduledTime(model, slot).slice(0, 5),
+        title: slot.title,
+      });
+    }
+
+    for (const list of map.values()) {
+      list.sort((left, right) => left.startTime.localeCompare(right.startTime));
+    }
+
+    return map;
+  }, [blocksByDate, model, slots]);
 
   const stripDays = useMemo<AgendaStripDay[]>(
     () =>
@@ -722,6 +763,7 @@ export default function AgendaScreen({
               selectedDate={selectedDate}
               todayDate={today}
               densityByDate={densityByDate}
+              itemsByDate={itemsByDate}
               selectedBlock={selectedWeekBlock?.block ?? null}
               selectedBlockDate={selectedWeekBlock?.date ?? null}
               onMonthAnchorChange={setMonthOverride}
@@ -795,6 +837,7 @@ export default function AgendaScreen({
           selectedDate={selectedDate}
           todayDate={today}
           densityByDate={densityByDate}
+          itemsByDate={itemsByDate}
           onAnchorChange={setMonthOverride}
           onSelectDate={(date) => {
             selectDate(date, "month");
@@ -845,6 +888,7 @@ export default function AgendaScreen({
             selectedDate={selectedDate}
             todayDate={today}
             densityByDate={densityByDate}
+            itemsByDate={itemsByDate}
             onAnchorChange={setMonthOverride}
             onSelectDate={(date) => {
               selectDate(date, "month");

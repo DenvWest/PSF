@@ -8,7 +8,9 @@ import {
   DEFAULT_BLOCK_DURATION_MINUTES,
   getBlockRoleLabel,
   getBlockTimelineHeightPx,
+  getBlockTimelineSpanPx,
   getBlockTimelineStyle,
+  getBlockTimelineTopPx,
   getHourMarkerTopPx,
   getNowLinePercent,
   getTimelineHalfHourMarks,
@@ -27,6 +29,7 @@ import {
   TIMELINE_TOTAL_MINUTES,
   timeToMinutes,
   WEEK_GRID_SNAP_MINUTES,
+  WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX,
 } from "@/lib/agenda-timeline";
 import { buildModel } from "@/lib/dashboard-model";
 import type { AgendaBlockRecord, TimelineBlock } from "@/types/agenda";
@@ -350,12 +353,38 @@ describe("leesbare chip-hoogte", () => {
   });
 });
 
+describe("pixel-positionering op raster", () => {
+  const WEEK_HOUR_HEIGHT_PX = 44;
+
+  it("plaatst blok-top op dezelfde px als het halfuurraster", () => {
+    for (const time of ["09:30", "14:30", "17:00"]) {
+      const topPx = getBlockTimelineTopPx(time, WEEK_HOUR_HEIGHT_PX);
+      const hour = timeToMinutes(time) / 60;
+      expect(topPx).toBe(getHourMarkerTopPx(hour, WEEK_HOUR_HEIGHT_PX));
+    }
+  });
+
+  it("geeft week-blokspan minimaal WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX", () => {
+    const rawSpan =
+      getHourMarkerTopPx(10, WEEK_HOUR_HEIGHT_PX) -
+      getHourMarkerTopPx(9.5, WEEK_HOUR_HEIGHT_PX);
+    const span = getBlockTimelineSpanPx(
+      "09:30",
+      "10:00",
+      WEEK_HOUR_HEIGHT_PX,
+      WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX,
+    );
+    expect(rawSpan).toBeLessThan(WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX);
+    expect(span).toBe(WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX);
+  });
+});
+
 describe("halfuurraster", () => {
   it("levert een halfuurlijn per uursegment, zonder het eindpunt", () => {
     const marks = getTimelineHalfHourMarks();
-    expect(marks[0]).toBe(7.5);
-    expect(marks[marks.length - 1]).toBe(21.5);
-    expect(marks).toHaveLength(15);
+    expect(marks[0]).toBe(6.5);
+    expect(marks[marks.length - 1]).toBe(23.5);
+    expect(marks).toHaveLength(18);
   });
 
   it("plaatst de halfuurlijn precies tussen twee uurlijnen", () => {
@@ -376,7 +405,7 @@ describe("timeline layout helpers", () => {
   });
 
   it("returns null now line outside visible hours", () => {
-    const beforeTimeline = new Date("2026-07-18T04:00:00.000Z");
+    const beforeTimeline = new Date("2026-07-18T02:00:00.000Z");
     expect(getNowLinePercent(beforeTimeline)).toBeNull();
   });
 });
@@ -390,11 +419,11 @@ describe("tap-to-create helpers", () => {
     expect(snapTimelineMinutes(timeToMinutes("14:08"))).toBe(timeToMinutes("14:15"));
   });
 
-  it("maps top of track to 07:00", () => {
+  it("maps top of track to 06:00", () => {
     const result = positionToTimelineTime(0, TRACK_HEIGHT_PX);
-    expect(result.startTime).toBe("07:00");
+    expect(result.startTime).toBe("06:00");
     expect(result.endTime).toBe(
-      minutesToTime(timeToMinutes("07:00") + DEFAULT_BLOCK_DURATION_MINUTES),
+      minutesToTime(timeToMinutes("06:00") + DEFAULT_BLOCK_DURATION_MINUTES),
     );
   });
 
@@ -412,7 +441,7 @@ describe("tap-to-create helpers", () => {
     expect(Math.abs(startMinutes - snapTimelineMinutes(midMinutes))).toBeLessThanOrEqual(15);
   });
 
-  it("clamps bottom of track within 22:00", () => {
+  it("clamps bottom of track within 24:00", () => {
     const result = positionToTimelineTime(TRACK_HEIGHT_PX, TRACK_HEIGHT_PX);
     expect(timeToMinutes(result.endTime)).toBeLessThanOrEqual(TIMELINE_END_MINUTES);
   });
@@ -422,13 +451,13 @@ describe("positionToWeekGridTime", () => {
   const HOUR_HEIGHT_PX = 44;
   const TRACK_HEIGHT_PX = getTimelineTrackHeightPx(HOUR_HEIGHT_PX);
 
-  it("snaps to 30-minute steps", () => {
-    const nearHalf = positionToWeekGridTime(
+  it("snaps to 15-minute steps (same as day timeline)", () => {
+    const nearQuarter = positionToWeekGridTime(
       getHourMarkerTopPx(9.25, HOUR_HEIGHT_PX),
       TRACK_HEIGHT_PX,
     );
-    expect(nearHalf.startTime).toBe("09:30");
-    expect(WEEK_GRID_SNAP_MINUTES).toBe(30);
+    expect(nearQuarter.startTime).toBe("09:15");
+    expect(WEEK_GRID_SNAP_MINUTES).toBe(15);
   });
 
   it("maps 14:00 grid line to 14:00 start time", () => {

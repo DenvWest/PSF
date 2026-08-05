@@ -12,10 +12,10 @@ import {
 } from "@/lib/agenda-time-picker";
 
 describe("buildQuarterHourSlots", () => {
-  it("starts at 07:00 and ends at 22:00 in 15-minute steps", () => {
+  it("starts at 06:00 and ends at 24:00 in 15-minute steps", () => {
     const slots = buildQuarterHourSlots();
-    expect(slots[0]).toBe("07:00");
-    expect(slots.at(-1)).toBe("22:00");
+    expect(slots[0]).toBe("06:00");
+    expect(slots.at(-1)).toBe("24:00");
     expect(slots).toContain("12:30");
     expect(slots).toContain("18:00");
   });
@@ -25,8 +25,8 @@ describe("adjustPickerTime", () => {
   it("snaps and clamps within the timeline day", () => {
     expect(adjustPickerTime("12:00", 15)).toBe("12:15");
     expect(adjustPickerTime("12:07", 15)).toBe("12:15");
-    expect(adjustPickerTime("07:00", -15)).toBe("07:00");
-    expect(adjustPickerTime("22:00", 15)).toBe("22:00");
+    expect(adjustPickerTime("06:00", -15)).toBe("06:00");
+    expect(adjustPickerTime("24:00", 15)).toBe("24:00");
   });
 });
 
@@ -36,7 +36,7 @@ describe("endTimeFromStartAndDuration", () => {
   });
 
   it("clamps at timeline end", () => {
-    expect(endTimeFromStartAndDuration("21:30", 60)).toBe("22:00");
+    expect(endTimeFromStartAndDuration("23:30", 60)).toBe("24:00");
   });
 });
 

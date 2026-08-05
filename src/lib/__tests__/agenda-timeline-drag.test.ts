@@ -13,9 +13,9 @@ describe("resolveRetimeFromDrag", () => {
   });
 
   it("clamps end time within the timeline window", () => {
-    const result = resolveRetimeFromDrag("10:00", "10:30", "21:45");
-    expect(result.endTime).toBe("22:00");
-    expect(result.startTime).toBe("21:45");
+    const result = resolveRetimeFromDrag("10:00", "10:30", "23:45");
+    expect(result.endTime).toBe("24:00");
+    expect(result.startTime).toBe("23:45");
   });
 
   it("uses at least 15 minutes duration for short blocks", () => {

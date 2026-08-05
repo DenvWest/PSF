@@ -11,7 +11,7 @@ export type TimelineDragTimeSlot = {
   endTime: string;
 };
 
-/** Behoud blokduur bij verslepen; clamp binnen 07:00–22:00. */
+/** Behoud blokduur bij verslepen; clamp binnen 06:00–24:00. */
 export function resolveRetimeFromDrag(
   currentStart: string,
   currentEnd: string,

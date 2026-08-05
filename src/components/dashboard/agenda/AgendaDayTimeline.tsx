@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { MouseEvent, ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
+import AgendaTimelineHourAxis from "@/components/dashboard/agenda/AgendaTimelineHourAxis";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
@@ -14,8 +15,9 @@ import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanc
 import {
   buildDayTimeline,
   buildPlanStepBlock,
-  formatTimelineHour,
+  getBlockTimelineSpanPx,
   getBlockTimelineStyle,
+  getBlockTimelineTopPx,
   getHourMarkerTopPx,
   getNowLinePercent,
   getTimelineHalfHourMarks,
@@ -422,26 +424,20 @@ export default function AgendaDayTimeline({
       {weekStrip ? <div className="mb-4">{weekStrip}</div> : null}
 
       <div className="flex gap-2 sm:gap-3">
-        <div
-          className="relative w-10 shrink-0 sm:w-11"
-          style={{ height: TIMELINE_HEIGHT_PX }}
-          aria-hidden
-        >
-          {hourLabels.map((hour) => (
-            <span
-              key={hour}
-              className="absolute right-0 -translate-y-1/2 text-[10.5px] font-medium tabular-nums text-[#7E8C82]"
-              style={{ top: getHourMarkerTopPx(hour, HOUR_HEIGHT_PX) }}
-            >
-              {formatTimelineHour(hour)}
-            </span>
-          ))}
-        </div>
+        <AgendaTimelineHourAxis
+          hourLabels={hourLabels}
+          hourHeightPx={HOUR_HEIGHT_PX}
+          trackHeightPx={TIMELINE_HEIGHT_PX}
+        />
 
         <div
           ref={setRailElement}
           className="relative min-w-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-black/20"
-          style={{ height: TIMELINE_HEIGHT_PX }}
+          style={{
+            height: TIMELINE_HEIGHT_PX,
+            minHeight: TIMELINE_HEIGHT_PX,
+            maxHeight: TIMELINE_HEIGHT_PX,
+          }}
         >
           <button
             type="button"
@@ -532,20 +528,26 @@ export default function AgendaDayTimeline({
           ) : null}
 
           {gridBlocks.map((block, index) => {
-            const style = getBlockTimelineStyle(block.startTime, block.endTime);
+            const topPx = getBlockTimelineTopPx(block.startTime, HOUR_HEIGHT_PX);
+            const heightPx = getBlockTimelineSpanPx(
+              block.startTime,
+              block.endTime,
+              HOUR_HEIGHT_PX,
+              TIMELINE_MIN_BLOCK_HEIGHT_PX,
+            );
             const compact = isCompactTimelineBlock(
               block.startTime,
               block.endTime,
               HOUR_HEIGHT_PX,
+              TIMELINE_MIN_BLOCK_HEIGHT_PX,
             );
             return (
               <div
                 key={block.id}
                 className="absolute inset-x-1.5 z-10 overflow-hidden sm:inset-x-2"
                 style={{
-                  top: `${style.topPercent}%`,
-                  height: `${style.heightPercent}%`,
-                  minHeight: TIMELINE_MIN_BLOCK_HEIGHT_PX,
+                  top: topPx,
+                  height: heightPx,
                   zIndex: 10 + index,
                 }}
               >

@@ -10,8 +10,8 @@ import type {
 } from "@/types/agenda";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
-export const TIMELINE_START_HOUR = 7;
-export const TIMELINE_END_HOUR = 22;
+export const TIMELINE_START_HOUR = 6;
+export const TIMELINE_END_HOUR = 24;
 export const TIMELINE_SEGMENT_COUNT = TIMELINE_END_HOUR - TIMELINE_START_HOUR;
 export const TIMELINE_START_MINUTES = TIMELINE_START_HOUR * 60;
 export const TIMELINE_END_MINUTES = TIMELINE_END_HOUR * 60;
@@ -19,8 +19,10 @@ export const TIMELINE_TOTAL_MINUTES = TIMELINE_END_MINUTES - TIMELINE_START_MINU
 export const ANALYSIS_BLOCK_DURATION_MINUTES = 45;
 export const DEFAULT_BLOCK_DURATION_MINUTES = 30;
 export const TIMELINE_SNAP_MINUTES = 15;
-/** Week-kolomgrid: lege slots snappen op halve uren (Dag-timeline blijft 15 min). */
-export const WEEK_GRID_SNAP_MINUTES = 30;
+/** Week-kolomgrid gebruikt dezelfde snap als dag, zodat tijden consistent blijven. */
+export const WEEK_GRID_SNAP_MINUTES = TIMELINE_SNAP_MINUTES;
+/** Week-kolommen zijn smaller; lagere bodem voorkomt dat halfuurblokken over de volgende uurlijn lekken. */
+export const WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX = 30;
 
 /**
  * De percentage-hoogte van een blok blijft de eerlijke claim op de tijd; alleen
@@ -47,7 +49,7 @@ export function getTimelineHourLabels(): number[] {
 }
 
 /**
- * Halfuurlijnen (7.5 … 21.5) — alleen raster, nooit een label: het uur draagt
+ * Halfuurlijnen (6.5 … 23.5) — alleen raster, nooit een label: het uur draagt
  * de tijd, het halfuur draagt de precisie.
  */
 export function getTimelineHalfHourMarks(): number[] {
@@ -159,23 +161,54 @@ export function getBlockTimelineStyle(startTime: string, endTime: string): {
   };
 }
 
+export function minutesToTimelineHour(totalMinutes: number): number {
+  return totalMinutes / 60;
+}
+
+/** Zelfde formule als uur- en halfuurrasterlijnen — blokken blijven op het raster. */
+export function getBlockTimelineTopPx(
+  startTime: string,
+  hourHeightPx: number,
+): number {
+  return getHourMarkerTopPx(
+    minutesToTimelineHour(timeToMinutes(startTime)),
+    hourHeightPx,
+  );
+}
+
+export function getBlockTimelineSpanPx(
+  startTime: string,
+  endTime: string,
+  hourHeightPx: number,
+  minBlockHeightPx = TIMELINE_MIN_BLOCK_HEIGHT_PX,
+): number {
+  const startTop = getBlockTimelineTopPx(startTime, hourHeightPx);
+  const endTop = getBlockTimelineTopPx(endTime, hourHeightPx);
+  return Math.max(endTop - startTop, minBlockHeightPx);
+}
+
 export function getBlockTimelineHeightPx(
   startTime: string,
   endTime: string,
   hourHeightPx: number,
+  minBlockHeightPx = TIMELINE_MIN_BLOCK_HEIGHT_PX,
 ): number {
-  const { heightPercent } = getBlockTimelineStyle(startTime, endTime);
-  const rawHeight = (heightPercent / 100) * getTimelineTrackHeightPx(hourHeightPx);
-  return Math.max(rawHeight, TIMELINE_MIN_BLOCK_HEIGHT_PX);
+  return getBlockTimelineSpanPx(
+    startTime,
+    endTime,
+    hourHeightPx,
+    minBlockHeightPx,
+  );
 }
 
 export function isCompactTimelineBlock(
   startTime: string,
   endTime: string,
   hourHeightPx: number,
+  minBlockHeightPx = TIMELINE_MIN_BLOCK_HEIGHT_PX,
 ): boolean {
   return (
-    getBlockTimelineHeightPx(startTime, endTime, hourHeightPx) <
+    getBlockTimelineHeightPx(startTime, endTime, hourHeightPx, minBlockHeightPx) <
     TIMELINE_COMPACT_BLOCK_HEIGHT_PX
   );
 }
