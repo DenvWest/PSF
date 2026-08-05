@@ -3754,6 +3754,8 @@ export default function Dashboard({
   const onRemeasure = () => {
     trackEvent("dashboard_hermeting_start_click", { surface: "dashboard" });
     clarityTag("dashboard_hermeting", "start");
+    // API-route met server-side redirect, geen paginacomponent — router.push() kan hier niet op navigeren.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.assign("/api/account/remeasure/start");
   };
 

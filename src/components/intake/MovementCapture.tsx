@@ -67,6 +67,8 @@ export default function MovementCapture() {
   const dashboardReturnHref = buildDashboardVandaagHref(originDomain ?? "beweging");
 
   function returnToDashboard() {
+    // Volledige page-load na de check-in-mutatie, zodat het dashboard geen
+    // verouderde RSC-cache toont — een soft navigate zou de net geschreven staat kunnen missen.
     window.location.assign(dashboardReturnHref);
   }
 
@@ -197,6 +199,8 @@ export default function MovementCapture() {
               <button
                 type="button"
                 onClick={() => {
+                  // Zelfde reden als returnToDashboard(): volledige page-load na de mutatie.
+                  // eslint-disable-next-line @next/next/no-location-assign-relative-destination
                   window.location.assign("/dashboard?tab=vandaag&kompas=beweging");
                 }}
                 className="inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-[10px] border-none bg-intake-terra px-6 py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
