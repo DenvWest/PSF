@@ -88,19 +88,15 @@ function PeriodStepper({
   onPeriodPrev,
   onPeriodNext,
   onOpenCalendar,
-  compact = false,
 }: {
   periodLabel: string;
   onPeriodPrev: () => void;
   onPeriodNext: () => void;
   onOpenCalendar: () => void;
-  compact?: boolean;
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-0.5 rounded-xl border border-white/10 bg-black/20 p-0.5 sm:gap-1 sm:p-1 ${
-        compact ? "shrink-0" : "flex-1"
-      }`}
+      className="flex min-w-0 flex-1 items-center gap-0.5 rounded-xl border border-white/10 bg-black/20 p-0.5 sm:gap-1 sm:p-1"
       role="group"
       aria-label="Periode"
     >
@@ -121,9 +117,7 @@ function PeriodStepper({
         }}
         aria-haspopup="dialog"
         aria-label="Kies een dag"
-        className={`m-0 min-w-0 cursor-pointer truncate rounded-lg border-none bg-transparent px-1 py-1 text-center text-[12.5px] font-medium capitalize text-[#F1EFE8] transition-colors hover:bg-white/[0.06] sm:px-2 sm:text-[13px] ${
-          compact ? "min-w-[6.5rem] max-w-[10rem]" : "flex-1"
-        }`}
+        className="m-0 min-w-0 flex-1 cursor-pointer truncate rounded-lg border-none bg-transparent px-1 py-1 text-center text-[12.5px] font-medium capitalize text-[#F1EFE8] transition-colors hover:bg-white/[0.06] sm:px-2 sm:text-[13px]"
         style={{ fontFamily: "var(--f-serif)" }}
       >
         <span aria-live="polite">{periodLabel}</span>
@@ -233,32 +227,6 @@ function AgendaOverflowMenu({ actions }: { actions: AgendaToolbarActions }) {
   );
 }
 
-function ClassicToolbarRow({
-  view,
-  onViewChange,
-  periodLabel,
-  onPeriodPrev,
-  onPeriodNext,
-  showGoToday,
-  onGoToday,
-  onOpenCalendar,
-  actions,
-}: Omit<AgendaToolbarProps, "stickyTop">) {
-  return (
-    <>
-      <TodayButton visible={showGoToday} onGoToday={onGoToday} />
-      <PeriodStepper
-        periodLabel={periodLabel}
-        onPeriodPrev={onPeriodPrev}
-        onPeriodNext={onPeriodNext}
-        onOpenCalendar={onOpenCalendar}
-      />
-      <AgendaViewSwitcher value={view} onChange={onViewChange} embedded />
-      {actions ? <AgendaOverflowMenu actions={actions} /> : null}
-    </>
-  );
-}
-
 export default function AgendaToolbar({
   view,
   onViewChange,
@@ -271,54 +239,22 @@ export default function AgendaToolbar({
   stickyTop,
   actions,
 }: AgendaToolbarProps) {
-  const rowProps = {
-    view,
-    onViewChange,
-    periodLabel,
-    onPeriodPrev,
-    onPeriodNext,
-    showGoToday,
-    onGoToday,
-    onOpenCalendar,
-    actions,
-  };
-
   return (
     <header
       className="sticky z-10 -mx-3 mb-4 border-b border-white/10 bg-[rgba(26,46,26,0.94)] px-3 py-2 backdrop-blur-md sm:-mx-4 sm:px-4 min-[1440px]:-mx-6 min-[1440px]:px-6"
       style={{ top: stickyTop }}
     >
-      {view === "dag" ? (
-        <>
-          <div
-            data-toolbar-layout="dag-desktop"
-            className="hidden min-w-0 items-center justify-between gap-3 sm:flex"
-          >
-            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-              <AgendaViewSwitcher value={view} onChange={onViewChange} embedded />
-              <TodayButton visible={showGoToday} onGoToday={onGoToday} />
-              <PeriodStepper
-                periodLabel={periodLabel}
-                onPeriodPrev={onPeriodPrev}
-                onPeriodNext={onPeriodNext}
-                onOpenCalendar={onOpenCalendar}
-                compact
-              />
-            </div>
-            {actions ? <AgendaOverflowMenu actions={actions} /> : null}
-          </div>
-          <div
-            data-toolbar-layout="dag-mobile"
-            className="flex min-w-0 items-center gap-2 sm:hidden sm:gap-3"
-          >
-            <ClassicToolbarRow {...rowProps} />
-          </div>
-        </>
-      ) : (
-        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-          <ClassicToolbarRow {...rowProps} />
-        </div>
-      )}
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+        <TodayButton visible={showGoToday} onGoToday={onGoToday} />
+        <PeriodStepper
+          periodLabel={periodLabel}
+          onPeriodPrev={onPeriodPrev}
+          onPeriodNext={onPeriodNext}
+          onOpenCalendar={onOpenCalendar}
+        />
+        <AgendaViewSwitcher value={view} onChange={onViewChange} embedded />
+        {actions ? <AgendaOverflowMenu actions={actions} /> : null}
+      </div>
     </header>
   );
 }
