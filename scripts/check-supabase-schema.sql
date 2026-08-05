@@ -116,6 +116,23 @@ from (
     'table',
     'cron_runs'
   union all
+  -- agenda_blocks (Mijn Dag momenten)
+  select
+    case when exists (
+      select 1 from information_schema.tables
+      where table_schema = 'public' and table_name = 'agenda_blocks' and table_type = 'BASE TABLE'
+    ) then 'OK' else 'MISSING' end,
+    'table',
+    'agenda_blocks'
+  union all
+  select
+    case when exists (
+      select 1 from information_schema.columns
+      where table_schema = 'public' and table_name = 'agenda_blocks' and column_name = 'deleted_at'
+    ) then 'OK' else 'MISSING' end,
+    'column',
+    'agenda_blocks.deleted_at'
+  union all
   -- premium_waitlist consolidatie (9 feature keys incl. premium-coaching)
   select
     case when exists (
