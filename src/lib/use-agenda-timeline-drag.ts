@@ -24,7 +24,7 @@ type ActiveDrag = {
 };
 
 export type AgendaTimelineDragHandleProps = {
-  onPointerDown: (event: ReactPointerEvent<HTMLButtonElement>) => void;
+  onPointerDown: (event: ReactPointerEvent<HTMLElement>) => void;
   style: { touchAction: "none" };
 };
 
@@ -33,6 +33,8 @@ type BindDragHandleInput = {
   getTrackRect: () => DOMRect | null;
   onCommit: (slot: TimelineDragTimeSlot) => void;
   onActivate?: () => void;
+  /** Bij pointer-up zonder sleep-drempel (tik). */
+  onTap?: () => void;
 };
 
 type UseAgendaTimelineDragOptions = {
@@ -85,8 +87,9 @@ export function useAgendaTimelineDrag({
       getTrackRect,
       onCommit,
       onActivate,
+      onTap,
     }: BindDragHandleInput): AgendaTimelineDragHandleProps => {
-      const onPointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+      const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
         if (disabled || event.button !== 0) {
           return;
         }
@@ -135,6 +138,7 @@ export function useAgendaTimelineDrag({
           const current = activeDragRef.current;
           if (!current?.activated) {
             clearDrag();
+            onTap?.();
             return;
           }
 

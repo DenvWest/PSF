@@ -87,7 +87,7 @@ export default function AgendaWeekTimeColumn({
   );
 
   const bindBlockDrag = useCallback(
-    (block: TimelineBlock) => {
+    (block: TimelineBlock, onTap?: () => void) => {
       if (!block.isEditable) {
         return undefined;
       }
@@ -98,6 +98,7 @@ export default function AgendaWeekTimeColumn({
       return timelineDrag.bindDragHandle({
         durationMinutes,
         getTrackRect,
+        onTap,
         onActivate: onActivateDrag,
         onCommit: (slot) => {
           if (block.kind === "analysis") {
@@ -230,7 +231,14 @@ export default function AgendaWeekTimeColumn({
             <AgendaBlockCard
               block={block}
               compact={compact}
-              dragHandleProps={bindBlockDrag(block)}
+              dragHandleProps={bindBlockDrag(block, () => {
+                onSelectBlock(block.id);
+                trackEvent("dashboard_agenda_week_block_select", {
+                  surface: "agenda_week_grid",
+                  block_kind: block.kind,
+                });
+                clarityTag("dashboard_agenda", "week_block_select");
+              })}
               onOpenDetail={() => {
                 onSelectBlock(block.id);
                 trackEvent("dashboard_agenda_week_block_select", {

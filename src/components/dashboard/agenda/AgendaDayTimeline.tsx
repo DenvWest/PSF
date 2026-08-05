@@ -203,6 +203,26 @@ export default function AgendaDayTimeline({
     disabled: blockBusy || prefBusy,
   });
 
+  const closeSheet = () => {
+    setAddOpen(false);
+    setDraftSlot(null);
+    setHelpPreset(null);
+  };
+
+  const closeFocus = () => {
+    setFocusExpanded(false);
+  };
+
+  const closeDetail = () => {
+    setSelectedBlockId(null);
+  };
+
+  const openDetail = (blockId: string) => {
+    closeSheet();
+    closeFocus();
+    setSelectedBlockId(blockId);
+  };
+
   const getRailRect = useCallback(
     () => railElement?.getBoundingClientRect() ?? null,
     [railElement],
@@ -217,7 +237,7 @@ export default function AgendaDayTimeline({
   );
 
   const bindBlockDrag = useCallback(
-    (block: (typeof gridBlocks)[number]) => {
+    (block: (typeof gridBlocks)[number], onTap?: () => void) => {
       if (!block.isEditable) {
         return undefined;
       }
@@ -228,6 +248,7 @@ export default function AgendaDayTimeline({
       return timelineDrag.bindDragHandle({
         durationMinutes,
         getTrackRect: getRailRect,
+        onTap,
         onCommit: (slot) => {
           if (block.kind === "analysis") {
             if (!hasPlanStepDragChanged(block.startTime, slot.startTime)) {
@@ -268,6 +289,7 @@ export default function AgendaDayTimeline({
             timeToMinutes(planStep.endTime) - timeToMinutes(planStep.startTime),
           ),
           getTrackRect: getRailRect,
+          onTap: () => openDetail(planStep.id),
           onCommit: (slot) => {
             commitPlanStepDrag(slot.startTime);
             clarityTag("agenda_plan_step", "tray_drag_to_grid");
@@ -279,20 +301,6 @@ export default function AgendaDayTimeline({
     timelineDrag.ghost && timelineDrag.isDragging
       ? getBlockTimelineStyle(timelineDrag.ghost.startTime, timelineDrag.ghost.endTime)
       : null;
-
-  const closeSheet = () => {
-    setAddOpen(false);
-    setDraftSlot(null);
-    setHelpPreset(null);
-  };
-
-  const closeFocus = () => {
-    setFocusExpanded(false);
-  };
-
-  const closeDetail = () => {
-    setSelectedBlockId(null);
-  };
 
   const openHeaderFocus = () => {
     if (focusExpanded) {
@@ -332,12 +340,6 @@ export default function AgendaDayTimeline({
   useEffect(() => {
     onRegisterFooterActions?.({ openAddSheet: openHeaderSheet, blockBusy });
   }, [blockBusy, onRegisterFooterActions, openHeaderSheet]);
-
-  const openDetail = (blockId: string) => {
-    closeSheet();
-    closeFocus();
-    setSelectedBlockId(blockId);
-  };
 
   const handleRailClick = (event: MouseEvent<HTMLButtonElement>) => {
     if (blockBusy || timelineDrag.isDragging) {
@@ -554,7 +556,7 @@ export default function AgendaDayTimeline({
                 <AgendaBlockCard
                   block={block}
                   compact={compact}
-                  dragHandleProps={bindBlockDrag(block)}
+                  dragHandleProps={bindBlockDrag(block, () => openDetail(block.id))}
                   onOpenDetail={() => openDetail(block.id)}
                 />
               </div>
