@@ -8,6 +8,7 @@ type AgendaSheetFrameProps = {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  footer?: ReactNode;
 };
 
 /**
@@ -19,6 +20,7 @@ export default function AgendaSheetFrame({
   title,
   onClose,
   children,
+  footer,
 }: AgendaSheetFrameProps) {
   const panelRef = useRef<HTMLElement>(null);
 
@@ -75,9 +77,15 @@ export default function AgendaSheetFrame({
           </button>
         </div>
 
-        <div className="overflow-y-auto px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:px-6">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-6">
           {children}
         </div>
+
+        {footer ? (
+          <div className="shrink-0 border-t border-white/10 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:px-6">
+            {footer}
+          </div>
+        ) : null}
       </aside>
     </div>
   );

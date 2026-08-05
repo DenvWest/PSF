@@ -20,10 +20,8 @@ import type { AgendaWeekDayEntry } from "@/components/dashboard/agenda/AgendaWee
 import type { RetimeBlockInput } from "@/components/dashboard/agenda/AgendaDayTimeline";
 import {
   createAgendaBlock,
-  deleteAgendaBlock,
   fetchAgendaBlocks,
-  fetchArchivedAgendaBlocks,
-  restoreAgendaBlock,
+  purgeAgendaBlock,
   updateAgendaBlock,
 } from "@/lib/agenda-blocks-client";
 import { resolveAgendaDayContext } from "@/lib/agenda-day-context";
@@ -128,7 +126,6 @@ export default function AgendaScreen({
     loaded: false,
   });
   const [routineBlocks, setRoutineBlocks] = useState<AgendaBlockRecord[]>([]);
-  const [archivedBlocks, setArchivedBlocks] = useState<AgendaBlockRecord[]>([]);
   const [blocksLoaded, setBlocksLoaded] = useState(false);
   const [prefBusy, setPrefBusy] = useState(false);
   const [blockBusy, setBlockBusy] = useState(false);
@@ -220,12 +217,8 @@ export default function AgendaScreen({
 
   const refreshRoutineBlocks = useCallback(async () => {
     try {
-      const [blocks, archived] = await Promise.all([
-        fetchAgendaBlocks(fetchRange.startDate, fetchRange.endDate),
-        fetchArchivedAgendaBlocks(fetchRange.startDate, fetchRange.endDate),
-      ]);
+      const blocks = await fetchAgendaBlocks(fetchRange.startDate, fetchRange.endDate);
       setRoutineBlocks(blocks);
-      setArchivedBlocks(archived);
       setBlocksLoaded(true);
     } catch {
       setBlocksLoaded(true);
@@ -240,13 +233,9 @@ export default function AgendaScreen({
     let cancelled = false;
     void (async () => {
       try {
-        const [blocks, archived] = await Promise.all([
-          fetchAgendaBlocks(fetchRange.startDate, fetchRange.endDate),
-          fetchArchivedAgendaBlocks(fetchRange.startDate, fetchRange.endDate),
-        ]);
+        const blocks = await fetchAgendaBlocks(fetchRange.startDate, fetchRange.endDate);
         if (!cancelled) {
           setRoutineBlocks(blocks);
-          setArchivedBlocks(archived);
           setBlocksLoaded(true);
         }
       } catch {
@@ -439,21 +428,16 @@ export default function AgendaScreen({
     }
   };
 
-  const handleDeleteBlock = async (blockId: string) => {
+  const handlePurgeBlock = async (blockId: string) => {
     setBlockBusy(true);
     try {
-      await deleteAgendaBlock(blockId);
+      await purgeAgendaBlock(blockId);
       await refreshRoutineBlocks();
-    } finally {
-      setBlockBusy(false);
-    }
-  };
-
-  const handleRestoreBlock = async (blockId: string) => {
-    setBlockBusy(true);
-    try {
-      await restoreAgendaBlock(blockId);
-      await refreshRoutineBlocks();
+      setSelectedBlockId(null);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Kon moment niet verwijderen.";
+      throw new Error(message);
     } finally {
       setBlockBusy(false);
     }
@@ -669,10 +653,8 @@ export default function AgendaScreen({
           onScheduledTimeChange={(scheduledTime) => void handleScheduledTime(scheduledTime)}
           onCreateBlock={handleCreateBlock}
           onToggleBlockDone={handleToggleBlockDone}
-          onDeleteBlock={handleDeleteBlock}
+          onPurgeBlock={handlePurgeBlock}
           onRetimeBlock={handleRetimeBlock}
-          archivedBlocks={blocksLoaded ? archivedBlocks : []}
-          onRestoreBlock={handleRestoreBlock}
           hiddenPlanStep={hiddenPlanStep}
           onDismissPlanStep={handleDismissPlanStep}
           onRestorePlanStep={handleRestorePlanStep}

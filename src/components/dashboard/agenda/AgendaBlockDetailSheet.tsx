@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
-import AgendaTimePicker from "@/components/dashboard/agenda/AgendaTimePicker";
+import AgendaScheduleFields from "@/components/dashboard/agenda/AgendaScheduleFields";
 import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
 import { getAgendaCategory } from "@/data/agenda/categories";
-import { AGENDA_DURATION_CHOICES } from "@/lib/agenda-time-picker";
 import { normalizeLocalTime } from "@/lib/account-priority-pref";
 import { getBlockRoleLabel, minutesToTime, timeToMinutes } from "@/lib/agenda-timeline";
 import { clarityTag } from "@/lib/clarity";
@@ -32,14 +31,12 @@ type AgendaBlockDetailSheetProps = {
   onCompletionChange?: () => void;
   onScheduledTimeChange?: (scheduledTime: string) => void;
   onToggleDone?: (blockId: string, done: boolean) => void;
-  onDelete?: (blockId: string) => void;
+  onPurge?: (blockId: string) => Promise<void>;
   onRetime?: (blockId: string, input: RetimeInput) => void;
   onDismissPlanStep?: (date: string) => void;
   onHideAllPlanSteps?: () => void;
   onOpenHelpSheet?: (input: { categoryId: AgendaCategoryId; domain: PillarId }) => void;
 };
-
-const DURATION_CHOICES = AGENDA_DURATION_CHOICES;
 
 const LABEL_CLASS =
   "mb-2 block text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]";
@@ -67,7 +64,7 @@ export default function AgendaBlockDetailSheet({
   onCompletionChange,
   onScheduledTimeChange,
   onToggleDone,
-  onDelete,
+  onPurge,
   onRetime,
   onDismissPlanStep,
   onHideAllPlanSteps,
@@ -82,6 +79,8 @@ export default function AgendaBlockDetailSheet({
     block ? Math.max(15, timeToMinutes(block.endTime) - timeToMinutes(block.startTime)) : 30,
   );
   const [retimeError, setRetimeError] = useState<string | null>(null);
+  const [purgeError, setPurgeError] = useState<string | null>(null);
+  const [purgeBusy, setPurgeBusy] = useState(false);
 
   const blockId = block?.id ?? null;
 
@@ -94,11 +93,6 @@ export default function AgendaBlockDetailSheet({
       clarityTag("agenda_block", "detail_close");
     };
   }, [blockId]);
-
-  const retimeEnd = useMemo(
-    () => minutesToTime(timeToMinutes(retimeStart) + retimeDuration),
-    [retimeStart, retimeDuration],
-  );
 
   if (!block) {
     return null;
@@ -142,11 +136,79 @@ export default function AgendaBlockDetailSheet({
     onClose();
   };
 
+  const handlePurge = async () => {
+    if (!onPurge) {
+      return;
+    }
+    if (
+      !window.confirm(
+        "Definitief verwijderen? Dit moment verdwijnt permanent.",
+      )
+    ) {
+      return;
+    }
+    setPurgeError(null);
+    setPurgeBusy(true);
+    try {
+      await onPurge(block.id);
+      trackEvent("agenda_block_deleted", {
+        category_id: block.categoryId,
+        surface: "agenda_block_detail",
+        permanent: true,
+      });
+      clarityTag("agenda_block", "purged");
+      onClose();
+    } catch (error) {
+      setPurgeError(
+        error instanceof Error ? error.message : "Kon moment niet verwijderen.",
+      );
+    } finally {
+      setPurgeBusy(false);
+    }
+  };
+
+  const actionBusy = busy || purgeBusy;
+
+  const routineFooter =
+    !isAnalysis && block.isEditable ? (
+      <button
+        type="button"
+        disabled={actionBusy}
+        onClick={() => {
+          const nextDone = !block.done;
+          onToggleDone?.(block.id, nextDone);
+          trackEvent("agenda_block_toggled", {
+            category_id: block.categoryId,
+            done: nextDone,
+            surface: "agenda_block_detail",
+          });
+          clarityTag("agenda_block", nextDone ? "done" : "undone");
+        }}
+        className="flex min-h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border-none px-3 text-[15px] font-semibold disabled:opacity-60"
+        style={{
+          background: block.done ? "rgba(90, 143, 106, 0.18)" : "var(--sage)",
+          color: block.done ? "#E7EDE8" : "#0f1c10",
+          border: block.done ? "1px solid rgba(255,255,255,0.15)" : "none",
+          fontFamily: "var(--f-sans)",
+        }}
+      >
+        {block.done ? (
+          <>
+            <Icons.Check s={16} />
+            Gedaan
+          </>
+        ) : (
+          "Markeer als gedaan"
+        )}
+      </button>
+    ) : null;
+
   return (
     <AgendaSheetFrame
       titleId={titleId}
       title={isAnalysis ? "Stap uit je plan" : block.title}
       onClose={onClose}
+      footer={routineFooter}
     >
       {isAnalysis ? (
         <>
@@ -252,72 +314,45 @@ export default function AgendaBlockDetailSheet({
 
           {block.isEditable ? (
             <>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    const nextDone = !block.done;
-                    onToggleDone?.(block.id, nextDone);
-                    trackEvent("agenda_block_toggled", {
-                      category_id: block.categoryId,
-                      done: nextDone,
-                      surface: "agenda_block_detail",
-                    });
-                    clarityTag("agenda_block", nextDone ? "done" : "undone");
-                  }}
-                  className="inline-flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl border-none px-3 text-[15px] font-semibold disabled:opacity-60"
-                  style={{
-                    background: block.done ? "rgba(90, 143, 106, 0.18)" : "var(--sage)",
-                    color: block.done ? "#E7EDE8" : "#0f1c10",
-                    border: block.done ? "1px solid rgba(255,255,255,0.15)" : "none",
-                    fontFamily: "var(--f-sans)",
-                  }}
-                >
-                  {block.done ? (
-                    <>
-                      <Icons.Check s={16} />
-                      Gedaan
-                    </>
-                  ) : (
-                    "Markeer als gedaan"
-                  )}
-                </button>
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => {
-                    onDelete?.(block.id);
-                    trackEvent("agenda_block_deleted", {
-                      category_id: block.categoryId,
-                      surface: "agenda_block_detail",
-                    });
-                    clarityTag("agenda_block", "archived");
-                    onClose();
-                  }}
-                  className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 text-[14px] font-medium text-[#CDD7D0] disabled:opacity-60"
-                  style={{ fontFamily: "var(--f-sans)" }}
-                >
-                  Verberg
-                </button>
-              </div>
+              {purgeError ? (
+                <p className="mt-3 text-[13px] text-[#E2BC96]">{purgeError}</p>
+              ) : null}
 
-              {onRetime ? (
-                <div className="mt-4 border-t border-white/10 pt-4">
+              <div className="mt-4 flex gap-2">
+                {onRetime ? (
                   <button
                     type="button"
-                    disabled={busy}
+                    disabled={actionBusy}
                     aria-expanded={retimeOpen}
                     onClick={() => setRetimeOpen((open) => !open)}
-                    className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 border-none bg-transparent px-0 text-[13px] font-semibold text-[var(--sage)] disabled:opacity-60"
+                    className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.04] px-3 text-[13px] font-semibold text-[var(--sage)] transition-colors hover:border-white/25 disabled:opacity-60"
                     style={{ fontFamily: "var(--f-sans)" }}
                   >
                     {retimeOpen ? "Sluit verplaatsen" : "Verplaatsen"}
-                    <Icons.ChevronRight s={13} />
+                    <Icons.ChevronRight
+                      s={13}
+                      style={{
+                        transform: retimeOpen ? "rotate(90deg)" : undefined,
+                        transition: "transform 150ms ease",
+                      }}
+                    />
                   </button>
+                ) : null}
+                {onPurge ? (
+                  <button
+                    type="button"
+                    disabled={actionBusy}
+                    onClick={() => void handlePurge()}
+                    className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-xl border border-[rgba(226,188,150,0.35)] bg-white/[0.03] px-3 text-[13px] font-semibold text-[#E2BC96] transition-colors hover:border-[rgba(226,188,150,0.55)] disabled:opacity-60"
+                    style={{ fontFamily: "var(--f-sans)" }}
+                  >
+                    Verwijderen
+                  </button>
+                ) : null}
+              </div>
 
-                  {retimeOpen ? (
-                    <div className="mt-3">
+              {onRetime && retimeOpen ? (
+                <div className="mt-3 border-t border-white/10 pt-4">
                       <label className="mb-3 block">
                         <span className={LABEL_CLASS}>Dag</span>
                         <input
@@ -330,43 +365,16 @@ export default function AgendaBlockDetailSheet({
                         />
                       </label>
 
-                      <div className="mb-3">
-                        <AgendaTimePicker
-                          value={retimeStart}
-                          busy={busy}
-                          variant="compact-dark"
-                          showBucketShortcuts
-                          onChange={setRetimeStart}
-                        />
-                      </div>
-
-                      <p className={LABEL_CLASS}>Duur</p>
-                      <div className="mb-3 flex flex-wrap gap-2">
-                        {DURATION_CHOICES.map((minutes) => {
-                          const selected = minutes === retimeDuration;
-                          return (
-                            <button
-                              key={minutes}
-                              type="button"
-                              disabled={busy}
-                              aria-pressed={selected}
-                              onClick={() => setRetimeDuration(minutes)}
-                              className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-3 text-[12.5px] font-medium tabular-nums transition-colors disabled:opacity-60 ${
-                                selected
-                                  ? "border-[rgba(90,143,106,0.55)] bg-[rgba(90,143,106,0.2)] text-[#F1EFE8]"
-                                  : "border-white/10 bg-white/[0.03] text-[#9FB0A6] hover:border-white/25"
-                              }`}
-                              style={{ fontFamily: "var(--f-sans)" }}
-                            >
-                              {minutes} min
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      <p className="mb-3 text-[12.5px] tabular-nums text-[#9FB0A6]">
-                        Nieuw: {retimeStart} – {retimeEnd}
-                      </p>
+                      <AgendaScheduleFields
+                        startTime={retimeStart}
+                        onStartTimeChange={setRetimeStart}
+                        durationMinutes={retimeDuration}
+                        onDurationChange={setRetimeDuration}
+                        showDuration
+                        busy={busy}
+                        variant="compact-dark"
+                        preferPlacement="top"
+                      />
 
                       {retimeError ? (
                         <p className="mb-3 text-[13px] text-[#E2BC96]">{retimeError}</p>
@@ -385,14 +393,8 @@ export default function AgendaBlockDetailSheet({
                       >
                         Verplaats moment
                       </button>
-                    </div>
-                  ) : null}
                 </div>
               ) : null}
-
-              <p className="mt-2 text-[12px] leading-normal text-[#9FB0A6]">
-                Verborgen momenten kun je terugzetten via Moment.
-              </p>
             </>
           ) : null}
         </article>

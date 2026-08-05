@@ -78,10 +78,8 @@ type AgendaDayTimelineProps = {
     endTime: string;
   }) => Promise<void>;
   onToggleBlockDone: (blockId: string, done: boolean) => Promise<void>;
-  onDeleteBlock: (blockId: string) => Promise<void>;
+  onPurgeBlock: (blockId: string) => Promise<void>;
   onRetimeBlock?: (blockId: string, input: RetimeBlockInput) => Promise<void>;
-  archivedBlocks?: AgendaBlockRecord[];
-  onRestoreBlock?: (blockId: string) => Promise<void>;
   hiddenPlanStep?: HiddenPlanStep | null;
   onDismissPlanStep?: (date: string) => Promise<void>;
   onRestorePlanStep?: () => Promise<void>;
@@ -107,10 +105,8 @@ export default function AgendaDayTimeline({
   onScheduledTimeChange,
   onCreateBlock,
   onToggleBlockDone,
-  onDeleteBlock,
+  onPurgeBlock,
   onRetimeBlock,
-  archivedBlocks = [],
-  onRestoreBlock,
   hiddenPlanStep = null,
   onDismissPlanStep,
   onRestorePlanStep,
@@ -187,11 +183,6 @@ export default function AgendaDayTimeline({
   const ghostStyle = draftSlot
     ? getBlockTimelineStyle(draftSlot.startTime, draftSlot.endTime)
     : null;
-
-  const archivedForDay = useMemo(
-    () => archivedBlocks.filter((block) => block.date === date),
-    [archivedBlocks, date],
-  );
 
   const closeSheet = () => {
     setAddOpen(false);
@@ -481,9 +472,7 @@ export default function AgendaDayTimeline({
           helperNote={helpPreset ? HELP_SHEET_NOTE : null}
           createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
           createOrigin={helpPreset ? "meer_hulp" : undefined}
-          archivedBlocks={archivedForDay}
           hiddenPlanStep={hiddenPlanStep}
-          onRestore={onRestoreBlock}
           onRestorePlanStep={onRestorePlanStep}
           onShowAllPlanSteps={onShowAllPlanSteps}
           onClose={closeSheet}
@@ -502,7 +491,7 @@ export default function AgendaDayTimeline({
         onCompletionChange={onCompletionChange}
         onScheduledTimeChange={onScheduledTimeChange}
         onToggleDone={(blockId, done) => void onToggleBlockDone(blockId, done)}
-        onDelete={(blockId) => void onDeleteBlock(blockId)}
+        onPurge={(blockId) => onPurgeBlock(blockId)}
         onRetime={
           onRetimeBlock
             ? (blockId, input) => {
