@@ -327,6 +327,21 @@ export async function deleteBlock(
   return !error && (data?.length ?? 0) > 0;
 }
 
+export async function purgeBlock(
+  admin: SupabaseAdmin,
+  accountId: string,
+  blockId: string,
+): Promise<boolean> {
+  const { data, error } = await admin
+    .from("agenda_blocks")
+    .delete()
+    .eq("account_id", accountId)
+    .eq("id", blockId)
+    .select("id");
+
+  return !error && (data?.length ?? 0) > 0;
+}
+
 export async function restoreBlock(
   admin: SupabaseAdmin,
   accountId: string,

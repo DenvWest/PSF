@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAccountFromCookie } from "@/lib/account-server";
-import { deleteBlock, restoreBlock, updateBlock } from "@/lib/agenda-blocks";
+import { deleteBlock, purgeBlock, restoreBlock, updateBlock } from "@/lib/agenda-blocks";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { emitEvent } from "@/lib/events";
 import { consumeRateLimitForIp } from "@/lib/rate-limit";
@@ -187,6 +187,27 @@ export async function DELETE(
       { error: "Database is nog niet geconfigureerd op de server." },
       { status: 503 },
     );
+  }
+
+  const permanent = request.nextUrl.searchParams.get("permanent") === "1";
+
+  if (permanent) {
+    const purged = await purgeBlock(admin, account.id, id);
+    if (!purged) {
+      return NextResponse.json({ error: "Blok niet gevonden." }, { status: 404 });
+    }
+
+    void emitEvent({
+      eventType: "agenda.block_deleted",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        block_id: id,
+        permanent: true,
+      },
+    });
+
+    return NextResponse.json({ ok: true }, { status: 200 });
   }
 
   const deleted = await deleteBlock(admin, account.id, id);

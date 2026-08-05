@@ -75,6 +75,19 @@ export async function updateAgendaBlock(
   return payload.block;
 }
 
+export async function purgeAgendaBlock(blockId: string): Promise<void> {
+  const response = await fetch(
+    `/api/account/agenda-blocks/${encodeURIComponent(blockId)}?permanent=1`,
+    {
+      method: "DELETE",
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    throw new Error(await readApiError(response, "Kon moment niet verwijderen."));
+  }
+}
+
 export async function deleteAgendaBlock(blockId: string): Promise<void> {
   const response = await fetch(`/api/account/agenda-blocks/${encodeURIComponent(blockId)}`, {
     method: "DELETE",
