@@ -15,7 +15,8 @@
 | E-open (voorselectie + `accepted_default`) | Deploy 2, ná F0-meetvenster |
 | Streak "{n} dagen op rij" vs klaar-copy | Besluit vóór/met Deploy 2 |
 | Prebuild `#d` Mijn Dag-herbouw | Ná E-open → F1a → B |
-| F1a planbaarheid (duur, bloklengte, raster) | Ná E-open of vroege pivot |
+| F1a planbaarheid (duur, bloklengte, raster) | **Deploy 2 klaar** — lokaal, wacht op deploy |
+| Chip-tijdkiezer Mijn Dag | Meegenomen in Deploy 2 |
 | B keuzeladder + rijke Meer hulp | A8 open — geen catalogus in src |
 | Review 1–5 | Register/art. 9 |
 
@@ -28,3 +29,10 @@
 
 - Onderbouwing beweging op Mijn Dag → `#MOV_STR` / `#MOV_CARD` / `#MOV_SED` i.p.v. generieke vitaliteit-pagina
 - Copy Verplaatsen + Meer hulp: verwachting expliciet
+
+## Deploy 2 klaar (5 aug 2026, lokaal)
+
+- F1a: duur op tray/week, tier-bloklengte, done-readout in raster
+- Chip-tijdkiezer (`AgendaTimePicker`) — geen native `type=time` meer op Mijn Dag
+- **Actie:** commit picker-wijzigingen + `bash deploy.sh` → PostHog annotatie Deploy 2
+- **Meetpunt:** `dashboard.time_bucket_set`

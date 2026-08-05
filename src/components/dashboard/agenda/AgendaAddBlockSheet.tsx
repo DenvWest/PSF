@@ -4,7 +4,14 @@ import { useEffect, useId, useState } from "react";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
+import AgendaTimePicker from "@/components/dashboard/agenda/AgendaTimePicker";
 import { SELECTABLE_AGENDA_CATEGORIES } from "@/data/agenda/categories";
+import {
+  AGENDA_DURATION_CHOICES,
+  durationMinutesFromRange,
+  endTimeFromStartAndDuration,
+  type AgendaDurationMinutes,
+} from "@/lib/agenda-time-picker";
 import { normalizeLocalTime } from "@/lib/account-priority-pref";
 import { getAgendaCategory } from "@/data/agenda/categories";
 import { clarityTag } from "@/lib/clarity";
@@ -73,8 +80,15 @@ export default function AgendaAddBlockSheet({
   );
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState(initialStartTime ?? "12:00");
-  const [endTime, setEndTime] = useState(initialEndTime ?? "12:30");
+  const [durationMinutes, setDurationMinutes] = useState<AgendaDurationMinutes>(() => {
+    if (initialStartTime && initialEndTime) {
+      return durationMinutesFromRange(initialStartTime, initialEndTime);
+    }
+    return 30;
+  });
   const [error, setError] = useState<string | null>(null);
+
+  const endTime = endTimeFromStartAndDuration(startTime, durationMinutes);
 
   useEffect(() => {
     if (!open) {
@@ -263,30 +277,42 @@ export default function AgendaAddBlockSheet({
         />
       </label>
 
-      <div className="mb-4 grid grid-cols-2 gap-3">
-        <label>
-          <span className={LABEL_CLASS}>Start</span>
-          <input
-            type="time"
-            value={startTime}
-            disabled={busy}
-            onChange={(event) => setStartTime(event.target.value)}
-            className={`${FIELD_CLASS} tabular-nums`}
-            style={{ fontFamily: "var(--f-sans)" }}
-          />
-        </label>
-        <label>
-          <span className={LABEL_CLASS}>Eind</span>
-          <input
-            type="time"
-            value={endTime}
-            disabled={busy}
-            onChange={(event) => setEndTime(event.target.value)}
-            className={`${FIELD_CLASS} tabular-nums`}
-            style={{ fontFamily: "var(--f-sans)" }}
-          />
-        </label>
+      <div className="mb-4">
+        <AgendaTimePicker
+          value={startTime}
+          busy={busy}
+          variant="compact-dark"
+          onChange={setStartTime}
+        />
       </div>
+
+      <p className={LABEL_CLASS}>Duur</p>
+      <div className="mb-3 flex flex-wrap gap-2">
+        {AGENDA_DURATION_CHOICES.map((minutes) => {
+          const selected = minutes === durationMinutes;
+          return (
+            <button
+              key={minutes}
+              type="button"
+              disabled={busy}
+              aria-pressed={selected}
+              onClick={() => setDurationMinutes(minutes)}
+              className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-3 text-[12.5px] font-medium tabular-nums transition-colors disabled:opacity-60 ${
+                selected
+                  ? "border-[rgba(90,143,106,0.55)] bg-[rgba(90,143,106,0.2)] text-[#F1EFE8]"
+                  : "border-white/10 bg-white/[0.03] text-[#9FB0A6] hover:border-white/25"
+              }`}
+              style={{ fontFamily: "var(--f-sans)" }}
+            >
+              {minutes} min
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mb-4 text-[12.5px] tabular-nums text-[#9FB0A6]">
+        {startTime} – {endTime}
+      </p>
 
       {error ? <p className="mb-3 text-[13px] text-[#E2BC96]">{error}</p> : null}
 

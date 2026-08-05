@@ -4,8 +4,10 @@ import { useEffect, useId, useMemo, useState } from "react";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
+import AgendaTimePicker from "@/components/dashboard/agenda/AgendaTimePicker";
 import AgendaTodayHero from "@/components/dashboard/agenda/AgendaTodayHero";
 import { getAgendaCategory } from "@/data/agenda/categories";
+import { AGENDA_DURATION_CHOICES } from "@/lib/agenda-time-picker";
 import { normalizeLocalTime } from "@/lib/account-priority-pref";
 import { getBlockRoleLabel, minutesToTime, timeToMinutes } from "@/lib/agenda-timeline";
 import { clarityTag } from "@/lib/clarity";
@@ -37,7 +39,7 @@ type AgendaBlockDetailSheetProps = {
   onOpenHelpSheet?: (input: { categoryId: AgendaCategoryId; domain: PillarId }) => void;
 };
 
-const DURATION_CHOICES = [15, 30, 45, 60] as const;
+const DURATION_CHOICES = AGENDA_DURATION_CHOICES;
 
 const LABEL_CLASS =
   "mb-2 block text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]";
@@ -328,18 +330,15 @@ export default function AgendaBlockDetailSheet({
                         />
                       </label>
 
-                      <label className="mb-3 block">
-                        <span className={LABEL_CLASS}>Start</span>
-                        <input
-                          type="time"
+                      <div className="mb-3">
+                        <AgendaTimePicker
                           value={retimeStart}
-                          disabled={busy}
-                          step={300}
-                          onChange={(event) => setRetimeStart(event.target.value)}
-                          className={FIELD_CLASS}
-                          style={{ fontFamily: "var(--f-sans)" }}
+                          busy={busy}
+                          variant="compact-dark"
+                          showBucketShortcuts
+                          onChange={setRetimeStart}
                         />
-                      </label>
+                      </div>
 
                       <p className={LABEL_CLASS}>Duur</p>
                       <div className="mb-3 flex flex-wrap gap-2">

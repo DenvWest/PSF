@@ -126,6 +126,40 @@ describe("buildPlanStepBlock", () => {
       timeToMinutes(planStep.startTime) + ANALYSIS_BLOCK_DURATION_MINUTES,
     );
     expect(planStep.endTime).toBe(expectedEnd);
+    expect(planStep.durationLabel).toBe("45 min");
+  });
+
+  it("derives end time from beweging tier upper bound", () => {
+    const model = {
+      ...buildFixtureModel(FIXTURE_SCORES),
+      activeHabit: null,
+      movementPrefs: { startPattern: null, anchor: null },
+      movementDayChoice: "herstel" as const,
+    };
+    const slot = {
+      date: "2026-08-01",
+      dayLabel: "Vandaag",
+      isToday: true,
+      dayOffset: 0,
+      domain: "beweging" as const,
+      stepId: "mov-kracht-onderhoud-week",
+      title: "Rustdag of lichte wandeling",
+      detail: null,
+      rationale: null,
+      evidenceHref: "/onderbouwing",
+      planLink: null,
+    };
+
+    const planStep = buildPlanStepBlock(model, slot);
+    expect(planStep).not.toBeNull();
+    if (!planStep) {
+      return;
+    }
+
+    expect(planStep.durationLabel).toBe("10–20 min");
+    expect(planStep.endTime).toBe(
+      minutesToTime(timeToMinutes(planStep.startTime) + 20),
+    );
   });
 
   it("returns null when plan step is dismissed for today", () => {
