@@ -15,6 +15,8 @@ import {
   getTimelineHourLabels,
   getTimelineTrackHeightPx,
   positionToWeekGridTime,
+  resolveWeekGridHourHeightPx,
+  WEEK_GRID_SHORT_VIEWPORT_QUERY,
   WEEK_GRID_SNAP_MINUTES,
 } from "@/lib/agenda-timeline";
 import { clarityTag } from "@/lib/clarity";
@@ -22,10 +24,8 @@ import { isWeekSlotCompleted } from "@/lib/agenda-week-preview";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import { trackEvent } from "@/lib/ga4";
 import { useAgendaTimelineDrag } from "@/lib/use-agenda-timeline-drag";
+import { useMediaQuery } from "@/lib/use-media-query";
 import type { DashboardModel } from "@/types/dashboard";
-
-const HOUR_HEIGHT_PX = 44;
-const TIMELINE_HEIGHT_PX = getTimelineTrackHeightPx(HOUR_HEIGHT_PX);
 
 export type WeekGridEmptySlot = {
   date: string;
@@ -120,6 +120,9 @@ export default function AgendaWeekTimeGrid({
   const halfHourMarks = getTimelineHalfHourMarks();
   const nowLinePercent = getNowLinePercent();
   const [dragColumnDate, setDragColumnDate] = useState<string | null>(null);
+  const isShortViewport = useMediaQuery(WEEK_GRID_SHORT_VIEWPORT_QUERY);
+  const hourHeightPx = resolveWeekGridHourHeightPx(isShortViewport);
+  const timelineHeightPx = getTimelineTrackHeightPx(hourHeightPx);
 
   const timelineDrag = useAgendaTimelineDrag({
     disabled: blockBusy || prefBusy,
@@ -212,8 +215,8 @@ export default function AgendaWeekTimeGrid({
           <AgendaTimelineHourAxis
             compact
             hourLabels={hourLabels}
-            hourHeightPx={HOUR_HEIGHT_PX}
-            trackHeightPx={TIMELINE_HEIGHT_PX}
+            hourHeightPx={hourHeightPx}
+            trackHeightPx={timelineHeightPx}
           />
 
           <div className="grid min-w-0 flex-1 grid-cols-7 gap-px">
@@ -224,7 +227,8 @@ export default function AgendaWeekTimeGrid({
                 columnBlocks={blocksByDate.get(day.date) ?? []}
                 hourLabels={hourLabels}
                 halfHourMarks={halfHourMarks}
-                timelineHeightPx={TIMELINE_HEIGHT_PX}
+                hourHeightPx={hourHeightPx}
+                timelineHeightPx={timelineHeightPx}
                 selected={day.date === selectedDate}
                 isToday={day.date === todayDate}
                 nowLinePercent={nowLinePercent}

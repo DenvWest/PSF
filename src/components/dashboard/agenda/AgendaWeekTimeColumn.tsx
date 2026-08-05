@@ -24,8 +24,6 @@ import { trackAgendaBlockUpdated, trackEvent } from "@/lib/ga4";
 import type { useAgendaTimelineDrag } from "@/lib/use-agenda-timeline-drag";
 import type { TimelineBlock } from "@/types/agenda";
 
-const HOUR_HEIGHT_PX = 44;
-
 type TimelineDrag = ReturnType<typeof useAgendaTimelineDrag>;
 
 type AgendaWeekTimeColumnProps = {
@@ -33,6 +31,7 @@ type AgendaWeekTimeColumnProps = {
   columnBlocks: TimelineBlock[];
   hourLabels: number[];
   halfHourMarks: number[];
+  hourHeightPx: number;
   timelineHeightPx: number;
   selected: boolean;
   isToday: boolean;
@@ -55,6 +54,7 @@ export default function AgendaWeekTimeColumn({
   columnBlocks,
   hourLabels,
   halfHourMarks,
+  hourHeightPx,
   timelineHeightPx,
   selected,
   isToday,
@@ -119,13 +119,19 @@ export default function AgendaWeekTimeColumn({
           if (!hasRoutineDragChanged(block.startTime, block.endTime, retime)) {
             return;
           }
-          void onRetimeBlock(block.id, retime);
-          trackAgendaBlockUpdated({
-            category_id: block.categoryId,
-            surface: "agenda_timeline_drag",
-            moved_date: false,
-          });
-          clarityTag("agenda_block", "timeline_drag");
+          onRetimeBlock(block.id, retime)
+            .then(() => {
+              trackAgendaBlockUpdated({
+                category_id: block.categoryId,
+                surface: "agenda_timeline_drag",
+                moved_date: false,
+              });
+              clarityTag("agenda_block", "timeline_drag");
+            })
+            .catch(() => {
+              // Fout is al zichtbaar via de gedeelde agenda-foutbanner
+              // (AgendaScreen.reportAgendaError); hier alleen tracking overslaan.
+            });
         },
       });
     },
@@ -162,7 +168,7 @@ export default function AgendaWeekTimeColumn({
         <div
           key={`grid-${day.date}-${hour}`}
           className="pointer-events-none absolute inset-x-0 border-t border-white/10"
-          style={{ top: getHourMarkerTopPx(hour, HOUR_HEIGHT_PX) }}
+          style={{ top: getHourMarkerTopPx(hour, hourHeightPx) }}
           aria-hidden
         />
       ))}
@@ -171,7 +177,7 @@ export default function AgendaWeekTimeColumn({
         <div
           key={`half-${day.date}-${mark}`}
           className="pointer-events-none absolute inset-x-0 border-t border-dashed border-white/[0.055]"
-          style={{ top: getHourMarkerTopPx(mark, HOUR_HEIGHT_PX) }}
+          style={{ top: getHourMarkerTopPx(mark, hourHeightPx) }}
           aria-hidden
         />
       ))}
@@ -199,17 +205,17 @@ export default function AgendaWeekTimeColumn({
       ) : null}
 
       {columnBlocks.map((block, index) => {
-        const topPx = getBlockTimelineTopPx(block.startTime, HOUR_HEIGHT_PX);
+        const topPx = getBlockTimelineTopPx(block.startTime, hourHeightPx);
         const heightPx = getBlockTimelineSpanPx(
           block.startTime,
           block.endTime,
-          HOUR_HEIGHT_PX,
+          hourHeightPx,
           WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX,
         );
         const compact = isCompactTimelineBlock(
           block.startTime,
           block.endTime,
-          HOUR_HEIGHT_PX,
+          hourHeightPx,
           WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX,
         );
         const blockSelected = selectedBlockId === block.id;

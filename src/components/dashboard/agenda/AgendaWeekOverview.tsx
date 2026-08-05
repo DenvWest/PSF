@@ -26,8 +26,11 @@ type AgendaWeekOverviewProps = {
 const MAX_CHIPS = 4;
 
 /**
- * Weekblik: zeven dagen naast elkaar met chips uit agenda_blocks. Bewust geen
- * zeven uurrasters — een week is om te scannen, niet om in te plannen.
+ * Weekblik: zeven dagen gestapeld met chips uit agenda_blocks. Bewust geen
+ * zeven uurrasters — een week is om te scannen, niet om in te plannen. Ook
+ * bewust altijd 1 kolom: dit component is alleen zichtbaar onder de lg-grens
+ * (1024px, zie AgendaScreen) — een 7-koloms-raster had daarbinnen (md=768px)
+ * nooit meer dan ~110px per kolom, te smal voor een leesbare planstap-chip.
  */
 export default function AgendaWeekOverview({
   days,
@@ -35,7 +38,7 @@ export default function AgendaWeekOverview({
   onSelectDate,
 }: AgendaWeekOverviewProps) {
   return (
-    <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 md:grid-cols-7 md:gap-1.5">
+    <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0">
       {days.map((day) => {
         const selected = day.date === selectedDate;
         const pillar = day.domain ? PILLAR[day.domain] : null;

@@ -402,3 +402,13 @@ export function BookOpen(props: IconProps) {
     </I>
   );
 }
+
+export function MoreHorizontal(props: IconProps) {
+  return (
+    <I {...props}>
+      <circle cx="5" cy="12" r="1.25" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.25" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1.25" fill="currentColor" stroke="none" />
+    </I>
+  );
+}
