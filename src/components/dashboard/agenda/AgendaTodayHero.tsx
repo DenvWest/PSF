@@ -13,6 +13,7 @@ import {
   getCachedDailyLog,
   setCachedDailyLog,
 } from "@/lib/daily-log-client";
+import { resolvePlanStepDuration } from "@/lib/agenda-plan-duration";
 import { resolveActionKey } from "@/lib/day-model";
 import {
   inferCompletedChoice,
@@ -108,6 +109,14 @@ export default function AgendaTodayHero({
     : null;
   const effectiveActionKey = cachedChoice?.stepId ?? actionKey;
   const effectiveTitle = cachedChoice?.title ?? slot.title;
+  const planDuration =
+    domain === "beweging"
+      ? resolvePlanStepDuration(model, slot, cachedDailyLog?.keys ?? [])
+      : null;
+  const displayTitle =
+    domain === "beweging" && planDuration?.durationLabel
+      ? `${effectiveTitle} · ${planDuration.durationLabel}`
+      : effectiveTitle;
 
   const resolvedDone =
     cachedDailyLog && effectiveActionKey
@@ -324,13 +333,13 @@ export default function AgendaTodayHero({
               }}
             />
             <p className={`mt-2 text-[12px] leading-normal ${isDark ? "text-[#9FB0A6]" : "text-[#78716c]"}`}>
-              Je zet alleen een tijd voor vandaag. Duur en lengte in je dag volgen in een volgende update.
+              Je zet een starttijd; de duur volgt uit je gekozen belasting.
             </p>
           </div>
         ) : null}
 
         <h3 className={titleClass} style={{ fontFamily: "var(--f-serif)" }}>
-          {effectiveTitle}
+          {displayTitle}
         </h3>
 
         {supportingLine ? <p className={bodyClass}>{supportingLine}</p> : null}

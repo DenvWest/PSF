@@ -27,7 +27,9 @@ import {
   updateAgendaBlock,
 } from "@/lib/agenda-blocks-client";
 import { resolveAgendaDayContext } from "@/lib/agenda-day-context";
+import { resolvePlanStepDuration } from "@/lib/agenda-plan-duration";
 import { buildWeekColumnBlocks } from "@/lib/agenda-timeline";
+import { getCachedDailyLog } from "@/lib/daily-log-client";
 import { getMonthRange, isSameAgendaMonth } from "@/lib/agenda-month";
 import {
   buildWeekSchedulePreview,
@@ -310,6 +312,13 @@ export default function AgendaScreen({
       stripWeekDates.map((date, index) => {
         const slot = slots.find((entry) => entry.date === date) ?? null;
         const hidden = slot ? isPlanStepHidden(model, slot) : true;
+        const logKeys =
+          slot?.isToday && slot.domain
+            ? (getCachedDailyLog(slot.domain)?.keys ?? [])
+            : [];
+        const planStepDuration = slot && !hidden
+          ? resolvePlanStepDuration(model, slot, logKeys)
+          : null;
         return {
           date,
           dayLabel: WEEKDAY_LABELS[index],
@@ -317,6 +326,9 @@ export default function AgendaScreen({
           isToday: date === today,
           domain: slot?.domain ?? null,
           planStepTitle: slot && !hidden ? slot.title : null,
+          planStepDurationLabel: planStepDuration?.durationLabel ?? null,
+          planStepScheduledTime:
+            slot?.isToday && model.scheduledTime ? model.scheduledTime : null,
           blocks: blocksByDate.get(date) ?? [],
         };
       }),

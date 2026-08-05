@@ -65,6 +65,7 @@ export type TimelineBlock = {
   isEditable: boolean;
   slot?: WeekDaySlot;
   domain?: PillarId;
+  durationLabel?: string;
 };
 
 export type CreateAgendaBlockInput = {

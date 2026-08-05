@@ -1,6 +1,7 @@
 import { getAgendaCategory, isAgendaCategoryId } from "@/data/agenda/categories";
 import { PILLAR } from "@/data/dashboard";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
+import { resolvePlanStepDuration } from "@/lib/agenda-plan-duration";
 import { isPlanStepHidden, resolveScheduledTime } from "@/lib/day-model";
 import type {
   AgendaBlockRecord,
@@ -215,11 +216,17 @@ function buildAnalysisBlock(
   model: DashboardModel,
   slot: WeekDaySlot,
   done: boolean,
+  logKeys?: readonly string[],
 ): TimelineBlock {
   const startTime = resolveScheduledTime(model, slot);
   const startMinutes = timeToMinutes(startTime);
+  const { durationMinutes, durationLabel } = resolvePlanStepDuration(
+    model,
+    slot,
+    logKeys,
+  );
   const endMinutes = Math.min(
-    startMinutes + ANALYSIS_BLOCK_DURATION_MINUTES,
+    startMinutes + durationMinutes,
     TIMELINE_END_MINUTES,
   );
 
@@ -230,6 +237,7 @@ function buildAnalysisBlock(
     title: slot.title,
     startTime,
     endTime: minutesToTime(endMinutes),
+    durationLabel,
     // Completie van de plan-stap leeft in daily_action_log en nergens anders:
     // de aanroeper geeft de al geresolveerde staat door (isTodayActionDone voor
     // vandaag, isWeekSlotCompleted in de weekkolommen). Dit veld is dus een
@@ -246,11 +254,12 @@ export function buildPlanStepBlock(
   model: DashboardModel,
   slot: WeekDaySlot,
   done = false,
+  logKeys?: readonly string[],
 ): TimelineBlock | null {
   if (isPlanStepHidden(model, slot)) {
     return null;
   }
-  return buildAnalysisBlock(model, slot, done);
+  return buildAnalysisBlock(model, slot, done, logKeys);
 }
 
 export type PlanStepPlacement = "hidden" | "tray" | "grid";

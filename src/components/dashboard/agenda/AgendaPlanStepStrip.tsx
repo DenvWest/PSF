@@ -46,10 +46,12 @@ export default function AgendaPlanStepStrip({
           className="m-0 truncate text-[14px] font-medium leading-snug text-[#F1EFE8]"
           style={{ fontFamily: "var(--f-serif)" }}
         >
-          {block.title}
+          {block.durationLabel ? `${block.title} · ${block.durationLabel}` : block.title}
         </p>
         <p className="m-0 mt-0.5 text-[11.5px] text-[#9FB0A6]">
-          Nog geen moment gekozen · tik voor tijd
+          {block.durationLabel
+            ? `Nog geen moment gekozen · ${block.durationLabel}`
+            : "Nog geen moment gekozen · tik voor tijd"}
         </p>
       </div>
       <span

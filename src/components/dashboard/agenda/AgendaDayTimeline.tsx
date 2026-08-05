@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import type { MouseEvent, ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
@@ -8,6 +8,7 @@ import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
 import { AgendaFocusPanel, AgendaFocusPill } from "@/components/dashboard/agenda/AgendaMetaRow";
 import { clarityTag } from "@/lib/clarity";
+import { getCachedDailyLog, subscribeDailyLogCache } from "@/lib/daily-log-client";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
 import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanceStrip";
 import {
@@ -134,14 +135,30 @@ export default function AgendaDayTimeline({
   const planStepPlacement = slot ? resolvePlanStepPlacement(model, slot) : "hidden";
   // Gedaan-staat komt uit daily_action_log (dezelfde bron als elke Gedaan-knop),
   // nooit uit het blok zelf — anders is de chip in het raster een vierde readout.
-  const todayActionDone = useTodayActionDone(model);
-  const planStep = useMemo(
+  const planStepDomain =
+    slot?.isToday && slot.domain ? slot.domain : null;
+  useSyncExternalStore(
+    subscribeDailyLogCache,
     () =>
-      slot
-        ? buildPlanStepBlock(model, slot, slot.isToday ? todayActionDone : false)
-        : null,
-    [model, slot, todayActionDone],
+      planStepDomain
+        ? (getCachedDailyLog(planStepDomain)?.keys.join("\0") ?? "")
+        : "",
+    () => "",
   );
+  const todayActionDone = useTodayActionDone(model);
+  const planStep = useMemo(() => {
+    const logKeys = planStepDomain
+      ? (getCachedDailyLog(planStepDomain)?.keys ?? [])
+      : [];
+    return slot
+      ? buildPlanStepBlock(
+          model,
+          slot,
+          slot.isToday ? todayActionDone : false,
+          logKeys,
+        )
+      : null;
+  }, [model, planStepDomain, slot, todayActionDone]);
   const dayBlocks = useMemo(
     () => buildDayTimeline(model, { date }, routineBlocks),
     [model, date, routineBlocks],

@@ -12,6 +12,8 @@ export type AgendaWeekDayEntry = {
   isToday: boolean;
   domain: PillarId | null;
   planStepTitle: string | null;
+  planStepDurationLabel: string | null;
+  planStepScheduledTime: string | null;
   blocks: AgendaBlockRecord[];
 };
 
@@ -82,6 +84,11 @@ export default function AgendaWeekOverview({
                     <span className="block text-[9.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
                       Uit je plan
                     </span>
+                    {day.planStepScheduledTime && day.planStepDurationLabel ? (
+                      <span className="block text-[10.5px] tabular-nums text-[#9FB0A6]">
+                        {day.planStepScheduledTime.slice(0, 5)} · {day.planStepDurationLabel}
+                      </span>
+                    ) : null}
                     <span className="line-clamp-2 text-[12px] leading-snug text-[#CDD7D0]">
                       {day.planStepTitle}
                     </span>
