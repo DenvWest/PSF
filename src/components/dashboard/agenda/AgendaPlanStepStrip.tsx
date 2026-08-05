@@ -37,26 +37,42 @@ export default function AgendaPlanStepStrip({
           {getBlockRoleLabel(block)}
         </p>
         <p
-          className="m-0 truncate text-[14px] font-medium leading-snug text-[#F1EFE8]"
+          className={`m-0 truncate text-[14px] font-medium leading-snug ${
+            block.done ? "text-[#9FB0A6] line-through decoration-white/30" : "text-[#F1EFE8]"
+          }`}
           style={{ fontFamily: "var(--f-serif)" }}
         >
           {block.durationLabel ? `${block.title} · ${block.durationLabel}` : block.title}
         </p>
         <p className="m-0 mt-0.5 text-[11.5px] text-[#9FB0A6]">
-          {dragHandleProps
-            ? "Sleep naar je dag of tik voor tijd"
-            : block.durationLabel
-              ? `Nog geen moment gekozen · ${block.durationLabel}`
-              : "Nog geen moment gekozen · tik voor tijd"}
+          {block.done
+            ? "Gedaan vandaag"
+            : dragHandleProps
+              ? "Sleep naar je dag of tik voor tijd"
+              : block.durationLabel
+                ? `Nog geen moment gekozen · ${block.durationLabel}`
+                : "Nog geen moment gekozen · tik voor tijd"}
         </p>
       </div>
-      <span
-        className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--sage)]"
-        aria-hidden
-      >
-        Kies een moment
-        <Icons.ChevronRight s={13} />
-      </span>
+      {/* Readout, geen tweede grootboek: de tray toont wat daily_action_log al
+          zegt en schrijft zelf niets (verdict-KILL "tweede completion-bron"). */}
+      {block.done ? (
+        <span
+          className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--sage)]"
+          aria-hidden
+        >
+          <Icons.Check s={13} />
+          Gedaan
+        </span>
+      ) : (
+        <span
+          className="inline-flex shrink-0 items-center gap-1 text-[12px] font-semibold text-[var(--sage)]"
+          aria-hidden
+        >
+          Kies een moment
+          <Icons.ChevronRight s={13} />
+        </span>
+      )}
     </>
   );
 

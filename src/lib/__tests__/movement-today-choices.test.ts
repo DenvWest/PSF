@@ -10,6 +10,7 @@ import {
   resolveChoiceDoneDisplay,
   resolveModerateStepId,
   resolveMovementTodayChoiceOptions,
+  resolvePlanChoiceKind,
   resolveRcvFeelForRecoveryHint,
   resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
@@ -320,6 +321,25 @@ describe("resolveRecommendedTodayChoiceKind", () => {
     expect(
       buildTodayChoiceRecommendationLine("trainen", null, 5),
     ).toContain("Trainen past vandaag");
+  });
+});
+
+describe("resolvePlanChoiceKind", () => {
+  it("maps the rest day step to herstel", () => {
+    expect(resolvePlanChoiceKind(REST_DAY_STEP_ID)).toBe("herstel");
+  });
+
+  it("maps a high-intensity step to trainen", () => {
+    expect(resolvePlanChoiceKind("mov-kracht-onderhoud-week")).toBe("trainen");
+  });
+
+  it("maps a moderate step to matig", () => {
+    expect(resolvePlanChoiceKind("mov-trap-of-wandeling")).toBe("matig");
+  });
+
+  it("falls back to matig for an unknown step", () => {
+    expect(resolvePlanChoiceKind("")).toBe("matig");
+    expect(resolvePlanChoiceKind("mov-bestaat-niet")).toBe("matig");
   });
 });
 

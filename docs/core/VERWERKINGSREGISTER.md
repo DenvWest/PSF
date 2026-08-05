@@ -249,7 +249,7 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Ontvangers** | Supabase (`account_priority_pref`, EU Frankfurt) — geen nieuwe verwerker |
 | **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming via account-storage-consent) + art. 6 lid 1 sub a |
 | **Bewaartermijn** | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering (cascade) |
-| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; geen scores/labels in pref of analytics-events; product-events `dashboard.priority_selected` / `dashboard.time_bucket_set` / `dashboard.movement_day_choice_set` / `agenda.plan_step_*` alleen categorisch (enum + datum + surface) |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; geen scores/labels in pref of analytics-events; product-events `dashboard.priority_selected` / `dashboard.time_bucket_set` / `dashboard.movement_day_choice_set` / `agenda.plan_step_*` alleen categorisch (enum + datum + surface + boolean `accepted_default`: nam de gebruiker de voorgeselecteerde dagkeuze over) |
 | **Doorgifte buiten EU** | Nee |
 
 ### 17. Agenda dagblokken (persoonlijke routines)

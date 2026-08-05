@@ -204,6 +204,11 @@ export async function POST(request: NextRequest) {
       { choice: choiceRaw, date: dateRaw, fallback },
     );
 
+    // Onderscheidt "de voorselectie overgenomen" van "zelf een andere tier
+    // gekozen". Zonder dat verschil is niet af te lezen of de voorselectie werkt
+    // of alleen de klik verplaatst. Wissen (choice = null) is nooit een accept.
+    const acceptedDefault = choiceRaw !== null && record.acceptedDefault === true;
+
     void emitEvent({
       eventType: "dashboard.movement_day_choice_set",
       email: account.email ?? undefined,
@@ -212,6 +217,7 @@ export async function POST(request: NextRequest) {
         choice: choiceRaw,
         date: dateRaw,
         surface,
+        accepted_default: acceptedDefault,
       },
     });
 

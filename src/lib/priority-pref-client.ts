@@ -100,6 +100,8 @@ export async function postMovementDayChoice(input: {
   choice: MovementDayChoice | null;
   date: string;
   surface: string;
+  /** True als dit de voorgeselecteerde tier is die de gebruiker overnam. */
+  acceptedDefault?: boolean;
 }): Promise<AccountPriorityPrefData> {
   const response = await fetch("/api/account/priority-pref", {
     method: "POST",
@@ -110,6 +112,7 @@ export async function postMovementDayChoice(input: {
       choice: input.choice,
       date: input.date,
       surface: input.surface,
+      acceptedDefault: input.acceptedDefault ?? false,
     }),
   });
   if (!response.ok) {

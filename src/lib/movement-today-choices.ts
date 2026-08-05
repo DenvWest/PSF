@@ -342,6 +342,27 @@ export function resolveRecommendedTodayChoiceKind(
   return null;
 }
 
+/**
+ * De tier die het programma zélf vandaag voorstelt, afgeleid uit de dagstap.
+ * Dit is de voorselectie wanneer er geen check-in-advies ligt: het scherm toont
+ * dan wat er in het plan staat, in plaats van een tier te verzinnen. Een
+ * onbekende stap valt terug op matig — het middenniveau claimt geen belasting
+ * die we niet kunnen onderbouwen.
+ */
+export function resolvePlanChoiceKind(dayStepId: string): TodayChoiceKind {
+  if (dayStepId === REST_DAY_STEP_ID) {
+    return "herstel";
+  }
+  const tier = findStep(dayStepId)?.intensityTier;
+  if (tier === "recovery") {
+    return "herstel";
+  }
+  if (tier === "high") {
+    return "trainen";
+  }
+  return "matig";
+}
+
 export function buildTodayChoiceRecommendationLine(
   recommendedKind: TodayChoiceKind | null,
   recovery: MovementRecoveryHint | null,

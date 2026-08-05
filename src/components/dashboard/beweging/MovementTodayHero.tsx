@@ -24,6 +24,7 @@ import {
   buildMovementCheckinCta,
   buildTodayChoiceRecommendationLine,
   modalityLabelForChoice,
+  resolvePlanChoiceKind,
   resolveRcvFeelForRecoveryHint,
   resolveRecommendedTodayChoiceKind,
   resolveTodayChoiceOptions,
@@ -170,6 +171,9 @@ export default function MovementTodayHero({
   );
   const [noTimeActive, setNoTimeActive] = useState(false);
   const [whyOpen, setWhyOpen] = useState(false);
+  // De drie tiers staan achter "Wijzig keuze". Alleen wie er zelf om vraagt
+  // krijgt de lijst; het eerste beeld toont één stap.
+  const [listOpen, setListOpen] = useState(false);
   // Wat er vandaag daadwerkelijk is vastgelegd. Alleen zo weet "Wijzig keuze"
   // of er iets te wissen valt — een wis-event op een dag zonder keuze zou het
   // cijfer vervuilen waarop deze slice wordt afgelezen.
@@ -213,6 +217,13 @@ export default function MovementTodayHero({
     recovery,
     rcvFeelForHint,
   );
+  /**
+   * Voorselectie: wat het scherm toont zolang er vandaag niets is vastgelegd.
+   * Een verse check-in wint; anders volgt het scherm de dagstap uit het
+   * programma. Dit legt niets vast — pas Gedaan of "Ik doe de korte" schrijft
+   * (Q3), zodat "gezien" en "gekozen" meetbaar verschillend blijven.
+   */
+  const preselectedKind = recommendedKind ?? resolvePlanChoiceKind(dayStepId);
   const medicalSafetyLine = buildMedicalSafetyLine(recovery);
   const checkinCta = buildMovementCheckinCta({
     rcvFeelAt: model.movementRcvFeelAt,
@@ -227,9 +238,12 @@ export default function MovementTodayHero({
     [trainingStepId, movementPrefs.startPattern],
   );
 
-  const activeChoice = selectedKind
-    ? choiceOptions.find((option) => option.kind === selectedKind) ?? null
+  const shownKind = selectedKind ?? (listOpen ? null : preselectedKind);
+
+  const activeChoice = shownKind
+    ? choiceOptions.find((option) => option.kind === shownKind) ?? null
     : null;
+  const isPreselected = selectedKind == null && activeChoice != null;
 
   const showTrainingGate =
     selectedKind === "trainen" && !trainingGateCleared && activeChoice != null;
@@ -290,12 +304,13 @@ export default function MovementTodayHero({
    * patcht het model in memory, zodat Mijn Dag dezelfde zwaarte toont zonder
    * herladen — geen refetch van het hele dashboard.
    */
-  const persistChoice = (choice: TodayChoiceKind | null) => {
+  const persistChoice = (choice: TodayChoiceKind | null, acceptedDefault = false) => {
     persistedKindRef.current = choice;
     void postMovementDayChoice({
       choice,
       date: todayInAgendaTimezone(),
       surface: SURFACE,
+      acceptedDefault,
     })
       .then((pref) => {
         onPrefUpdated?.(pref);
@@ -305,11 +320,26 @@ export default function MovementTodayHero({
       });
   };
 
-  const selectChoice = (kind: TodayChoiceKind) => {
+  /**
+   * Legt de voorselectie vast op het moment dat de gebruiker ermee handelt.
+   * De trainingspoort blijft aan de expliciete route hangen: wie het voorstel
+   * van zijn eigen programma volgt, wordt niet eerst iets gevraagd.
+   */
+  const acceptPreselection = () => {
+    if (!isPreselected || !activeChoice) {
+      return;
+    }
+    setSelectedKind(activeChoice.kind);
+    setTrainingGateCleared(true);
+    persistChoice(activeChoice.kind, true);
+  };
+
+  const selectChoice = (kind: TodayChoiceKind, acceptedDefault = false) => {
     invalidateDailyLogCache("beweging");
     trackStepChoice(kind);
     setNoTimeActive(false);
     setWhyOpen(false);
+    setListOpen(false);
     setFreshChoice(true);
     setSelectedKind(kind);
     if (kind === "trainen") {
@@ -320,7 +350,7 @@ export default function MovementTodayHero({
       return;
     }
     setTrainingGateCleared(true);
-    persistChoice(kind);
+    persistChoice(kind, acceptedDefault);
   };
 
   const clearTrainingGate = () => {
@@ -337,6 +367,7 @@ export default function MovementTodayHero({
     });
     clarityTag("dashboard_kompas_beweging", "step_alternative_wijzig_keuze");
     setSelectedKind(null);
+    setListOpen(true);
     setFreshChoice(false);
     setNoTimeActive(false);
     setWhyOpen(false);
@@ -365,7 +396,9 @@ export default function MovementTodayHero({
       surface: SURFACE,
     });
     clarityTag("dashboard_kompas_beweging", "step_alternative_geen_tijd");
-    selectChoice(lighterKind);
+    // "De korte" op het voorstel telt als het overnemen van de voorselectie —
+    // de gebruiker koos geen andere richting, alleen een lichtere dosis.
+    selectChoice(lighterKind, isPreselected);
     setNoTimeActive(true);
   };
 
@@ -529,7 +562,7 @@ export default function MovementTodayHero({
     );
   }
 
-  if (activeChoice && trainingGateCleared) {
+  if (activeChoice && (trainingGateCleared || isPreselected)) {
     const supportingLine = firstSentence(
       stepRationale(activeChoice.stepId) ?? slot?.rationale ?? "",
     );
@@ -556,6 +589,11 @@ export default function MovementTodayHero({
               ↳ Past bij: {anchorOption.label}
             </p>
           ) : null}
+          {medicalSafetyLine ? (
+            <p className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-[13px] leading-relaxed text-[#F1EFE8] text-pretty">
+              {medicalSafetyLine}
+            </p>
+          ) : null}
           {noTimeActive && !done ? (
             <p className="mt-2 text-[13px] font-medium text-[color:var(--ac)]">
               Drukke dag? Dit telt volledig mee.
@@ -578,7 +616,10 @@ export default function MovementTodayHero({
               aria-label={done ? "Actie afgevinkt voor vandaag" : "Markeer als gedaan vandaag"}
               aria-pressed={done}
               disabled={!loaded || busy}
-              onClick={() => void toggle()}
+              onClick={() => {
+                acceptPreselection();
+                void toggle();
+              }}
               className="flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-none px-4 text-[15px] font-semibold transition-opacity disabled:opacity-60"
               style={{
                 background: done ? "rgba(90,143,106,0.22)" : "var(--ac)",
@@ -607,7 +648,7 @@ export default function MovementTodayHero({
 
           {done ? (
             <p className="mt-3 text-center text-[13px] text-[#9FB0A6]">
-              Morgen kies je opnieuw wat past.
+              Genoteerd. Dit telt mee in je Voortgang.
             </p>
           ) : (
             <div className="mt-3 flex items-center justify-center">
@@ -620,6 +661,21 @@ export default function MovementTodayHero({
               </button>
             </div>
           )}
+
+          {/* De check-in bepaalt de voorselectie van morgen. Stond alleen onder
+              de tier-lijst; die is nu weg uit het eerste beeld, dus hij hoort
+              hier — anders verdwijnt de enige ingang naar dat signaal. */}
+          {isPreselected && !done && checkinCta ? (
+            <div className="mt-3 flex items-center justify-center">
+              <Link
+                href={checkinCta.href}
+                onClick={() => trackCheckinClick("pulse")}
+                className="text-[13px] font-medium text-[color:var(--ac)] no-underline"
+              >
+                {checkinCta.label}
+              </Link>
+            </div>
+          ) : null}
 
           {programSummary ? (
             <button
