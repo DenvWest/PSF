@@ -117,7 +117,22 @@ export async function POST(request: NextRequest) {
       : null;
 
   if (action === "reset") {
+    const existing = await getAccountPriorityPref(admin, account.id);
     await deleteAccountPriorityPref(admin, account.id);
+
+    void emitEvent({
+      eventType: "dashboard.priority_selected",
+      email: account.email ?? undefined,
+      organizationId: account.organization_id,
+      payload: {
+        pillar_id: null,
+        previous_pillar_id: existing?.pillarId ?? null,
+        engine_pillar_id: enginePillarId,
+        source: "reset",
+        surface,
+      },
+    });
+
     return NextResponse.json({ ok: true, pillarId: null }, { status: 200 });
   }
 

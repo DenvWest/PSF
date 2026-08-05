@@ -157,4 +157,27 @@ describe("AgendaBlockDetailSheet — foutpad bij mislukte mutaties (B2/B4)", () 
     expect(screen.getByText("Dit moment loopt over middernacht heen.")).toBeTruthy();
     expect(onRetime).not.toHaveBeenCalled();
   });
+
+  it("stale foutmelding verdwijnt zodra de gebruiker de tijd corrigeert", () => {
+    const onRetime = vi.fn().mockResolvedValue(undefined);
+    const lateBlock: TimelineBlock = { ...ROUTINE_BLOCK, startTime: "23:00", endTime: "24:00" };
+
+    render(
+      <AgendaBlockDetailSheet
+        block={lateBlock}
+        model={buildFixtureModel()}
+        date="2026-08-05"
+        onClose={vi.fn()}
+        onRetime={onRetime}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Verplaatsen/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Verplaats moment" }));
+    expect(screen.getByText("Dit moment loopt over middernacht heen.")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Ochtend" }));
+
+    expect(screen.queryByText("Dit moment loopt over middernacht heen.")).toBeNull();
+  });
 });

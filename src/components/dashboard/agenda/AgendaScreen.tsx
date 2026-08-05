@@ -614,7 +614,7 @@ export default function AgendaScreen({
   const handleResetFocus = async () => {
     setPrefBusy(true);
     try {
-      await resetDashboardPriorityFocus(onPrefUpdated);
+      await resetDashboardPriorityFocus({ surface: "agenda", onPrefUpdated });
     } finally {
       setPrefBusy(false);
     }

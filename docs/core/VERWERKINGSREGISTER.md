@@ -238,18 +238,18 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; account-scoped; vrije notitie nooit naar analytics of hermeting-artefact; product-event `movement.session_logged` draagt alleen categorische data (modaliteit + minuten-band), geen vrije tekst (valt onder verwerking §7) |
 | **Doorgifte buiten EU** | Nee |
 
-### 16. Dashboard focus-voorkeur (prioriteit + tijdvak)
+### 16. Dashboard focus-voorkeur (prioriteit, dagritme en weergave)
 
 | | |
 |---|---|
-| **Doel** | Door de gebruiker gekozen interventiefocus en tijdstip (uur/minuut, lokaal) vastleggen voor Agenda/Kompas — zonder de analyse-scores te wijzigen |
-| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig focus of tijdstip instellen |
-| **Soort gegevens** | Account-id, organization-id, pillar_id (enum), source (`user_selected` \| `accept_engine`), optioneel time_bucket (enum, afgeleid), optioneel scheduled_time (HH:MM), updated_at |
+| **Doel** | Door de gebruiker gekozen interventiefocus, tijdstip (uur/minuut, lokaal), weergavevoorkeur voor dagstappen en dagintentie voor beweging vastleggen voor Agenda/Kompas/Instellingen — zonder de analyse-scores te wijzigen |
+| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig focus, tijdstip, dagstap-weergave of dagkeuze instellen |
+| **Soort gegevens** | Account-id, organization-id, pillar_id (enum), source (`user_selected` \| `accept_engine`), optioneel time_bucket (enum, afgeleid), optioneel scheduled_time (HH:MM), plan_steps_hidden (boolean — dagstappen verbergen, accountbreed), plan_step_dismissed_date (datum — dagstap van één dag weggeklikt), movement_day_choice (enum `herstel` \| `matig` \| `trainen`) + movement_day_choice_date (datum, vervalt om middernacht), updated_at |
 | **Bijzondere gegevens** | Ja — gezondheidsgerelateerde focuskeuze, gekoppeld aan account met art. 9-intake |
 | **Ontvangers** | Supabase (`account_priority_pref`, EU Frankfurt) — geen nieuwe verwerker |
 | **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming via account-storage-consent) + art. 6 lid 1 sub a |
 | **Bewaartermijn** | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering (cascade) |
-| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; geen scores/labels in pref of analytics-events |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; geen scores/labels in pref of analytics-events; product-events `dashboard.priority_selected` / `dashboard.time_bucket_set` / `dashboard.movement_day_choice_set` / `agenda.plan_step_*` alleen categorisch (enum + datum + surface) |
 | **Doorgifte buiten EU** | Nee |
 
 ### 17. Agenda dagblokken (persoonlijke routines)
@@ -320,6 +320,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-08-05 | Verwerking 16 uitgebreid en hernoemd (focus-voorkeur → *prioriteit, dagritme en weergave*): `plan_steps_hidden`, `plan_step_dismissed_date`, `movement_day_choice` + `movement_day_choice_date` toegevoegd aan de gegevensomschrijving; geen nieuwe tabel, geen nieuwe verwerker, geen nieuwe grondslag. Privacy-pagina bijgewerkt (§Account en dashboard) |
 | 2026-07-21 | Verwerking 18 aangevuld: dagelijkse herstel-puls (`RCV_FEEL` enkelveld) vanuit beweging-dashboard — zelfde `intake_domain_checkin`, consent en grondslag; geen nieuwe verwerker; score ongewijzigd bij pulse |
 | 2026-07-19 | Verwerking 18 toegevoegd: domein-hercheck (`intake_domain_checkin`) — bestond al technisch sinds juni, kreeg alsnog een eigen paragraaf; beweging-domein uitgebreid van 2 naar 10 deelvragen |
 | 2026-07-18 | Verwerking 17 toegevoegd: agenda dagblokken (`agenda_blocks`) — persoonlijke routines met categorie/tijdvenster, RLS deny-all, art. 9 (toestemming); events `agenda.block_created` / `agenda.block_toggled` / `agenda.block_deleted` categorisch; privacy-pagina bijgewerkt |

@@ -99,6 +99,19 @@ export default function AgendaBlockDetailSheet({
     };
   }, [blockId]);
 
+  const setRetimeDateAndClearError = (next: string) => {
+    setRetimeDate(next);
+    setRetimeError(null);
+  };
+  const setRetimeStartAndClearError = (next: string) => {
+    setRetimeStart(next);
+    setRetimeError(null);
+  };
+  const setRetimeDurationAndClearError = (next: number) => {
+    setRetimeDuration(next);
+    setRetimeError(null);
+  };
+
   if (!block) {
     return null;
   }
@@ -426,7 +439,7 @@ export default function AgendaBlockDetailSheet({
                           type="date"
                           value={retimeDate}
                           disabled={busy}
-                          onChange={(event) => setRetimeDate(event.target.value)}
+                          onChange={(event) => setRetimeDateAndClearError(event.target.value)}
                           className={FIELD_CLASS}
                           style={{ fontFamily: "var(--f-sans)" }}
                         />
@@ -434,9 +447,9 @@ export default function AgendaBlockDetailSheet({
 
                       <AgendaScheduleFields
                         startTime={retimeStart}
-                        onStartTimeChange={setRetimeStart}
+                        onStartTimeChange={setRetimeStartAndClearError}
                         durationMinutes={retimeDuration}
-                        onDurationChange={setRetimeDuration}
+                        onDurationChange={setRetimeDurationAndClearError}
                         showDuration
                         busy={busy}
                         variant="compact-dark"
@@ -444,7 +457,7 @@ export default function AgendaBlockDetailSheet({
                       />
 
                       {retimeError ? (
-                        <p className="mb-3 text-[13px] text-[#E2BC96]">{retimeError}</p>
+                        <p role="alert" className="mb-3 text-[13px] text-[#E2BC96]">{retimeError}</p>
                       ) : null}
 
                       <button

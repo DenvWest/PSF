@@ -85,12 +85,12 @@ export function useFocusPickerControl({
   const resetFocus = useCallback(async () => {
     setBusy(true);
     try {
-      await resetDashboardPriorityFocus(onPrefUpdated);
+      await resetDashboardPriorityFocus({ surface, onPrefUpdated });
       closeFocus();
     } finally {
       setBusy(false);
     }
-  }, [closeFocus, onPrefUpdated]);
+  }, [closeFocus, onPrefUpdated, surface]);
 
   return {
     focusExpanded,

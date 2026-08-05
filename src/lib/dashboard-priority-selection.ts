@@ -39,9 +39,15 @@ export async function saveDashboardPrioritySelection(input: {
   return pref;
 }
 
-export async function resetDashboardPriorityFocus(
-  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void,
-): Promise<void> {
-  await resetPriorityPref();
-  onPrefUpdated(null);
+export async function resetDashboardPriorityFocus(input: {
+  surface: PrioritySelectionSurface;
+  onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
+}): Promise<void> {
+  await resetPriorityPref({ surface: input.surface });
+  input.onPrefUpdated(null);
+  trackEvent("dashboard_priority_selected", {
+    source: "reset",
+    surface: input.surface,
+  });
+  clarityTag("dashboard_priority", "reset");
 }

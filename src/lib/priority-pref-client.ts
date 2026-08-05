@@ -207,12 +207,12 @@ export async function postScheduledTime(input: {
   return mapPriorityPrefResponse(payload);
 }
 
-export async function resetPriorityPref(): Promise<void> {
+export async function resetPriorityPref(input: { surface: string }): Promise<void> {
   const response = await fetch("/api/account/priority-pref", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ action: "reset" }),
+    body: JSON.stringify({ action: "reset", surface: input.surface }),
   });
   if (!response.ok) {
     throw new Error(await readApiError(response, "Kon focus niet resetten."));

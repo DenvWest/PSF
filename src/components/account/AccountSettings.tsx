@@ -267,7 +267,7 @@ export default function AccountSettings({ email }: AccountSettingsProps) {
     setSettingsBusy(true);
     setSettingsError(null);
     try {
-      await resetPriorityPref();
+      await resetPriorityPref({ surface: SETTINGS_SURFACE });
       const response = await fetchPriorityPref();
       setSettings({ status: "ready", ...toSettingsPref(response) });
       trackEvent("account_setting_changed", {
