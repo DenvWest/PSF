@@ -6,7 +6,9 @@ import type {
 } from "@/types/dashboard";
 import type { PriorityPrefSource } from "@/lib/account-priority-pref";
 
-export type PriorityPrefResponse = AccountPriorityPrefData | { pillarId: null };
+export type PriorityPrefResponse =
+  | (AccountPriorityPrefData & { enginePriorityId: PillarId | null })
+  | { pillarId: null; enginePriorityId: PillarId | null };
 
 async function readApiError(response: Response, fallback: string): Promise<string> {
   try {

@@ -34,6 +34,18 @@ function rateLimitedResponse(retryAfterSeconds: number) {
   );
 }
 
+/** Zelfde afleiding als de reveal-koppagina en de nurture-funnel: één priority-bron. */
+async function resolveEnginePillarId(accountId: string) {
+  const dashboardData = await loadAccountDashboardData(accountId);
+  if (!dashboardData.current || dashboardData.answers == null) {
+    return null;
+  }
+  return getPriorityPillar(
+    mapCheckScoresToDomainScores(dashboardData.current.scores),
+    dashboardData.answers,
+  ).id;
+}
+
 export async function GET() {
   const account = await getAccountFromCookie();
   if (!account) {
@@ -48,8 +60,11 @@ export async function GET() {
     );
   }
 
-  const pref = await getAccountPriorityPref(admin, account.id);
-  return NextResponse.json(pref ?? { pillarId: null }, { status: 200 });
+  const [pref, enginePriorityId] = await Promise.all([
+    getAccountPriorityPref(admin, account.id),
+    resolveEnginePillarId(account.id),
+  ]);
+  return NextResponse.json({ ...(pref ?? { pillarId: null }), enginePriorityId }, { status: 200 });
 }
 
 export async function POST(request: NextRequest) {

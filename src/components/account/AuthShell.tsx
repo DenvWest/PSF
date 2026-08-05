@@ -7,6 +7,8 @@ import Wordmark from "@/components/app/Wordmark";
 type AuthShellProps = {
   children: ReactNode;
   exitHref?: string;
+  /** Login/verify blijven een smal formulier (408px); een rijkere pagina (zoals instellingen) mag breder. */
+  maxWidth?: number | string;
 };
 
 function AuthFooter() {
@@ -54,7 +56,7 @@ export function TrustLine({ icon, children }: TrustLineProps) {
   );
 }
 
-export function AuthShell({ children, exitHref = "/" }: AuthShellProps) {
+export function AuthShell({ children, exitHref = "/", maxWidth = 408 }: AuthShellProps) {
   return (
     <main
       style={{
@@ -85,7 +87,7 @@ export function AuthShell({ children, exitHref = "/" }: AuthShellProps) {
           position: "relative",
           zIndex: 1,
           width: "100%",
-          maxWidth: 408,
+          maxWidth,
           flex: 1,
           display: "flex",
           flexDirection: "column",
