@@ -24,6 +24,21 @@ export const WEEK_GRID_SNAP_MINUTES = TIMELINE_SNAP_MINUTES;
 /** Week-kolommen zijn smaller; lagere bodem voorkomt dat halfuurblokken over de volgende uurlijn lekken. */
 export const WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX = 30;
 
+export const WEEK_GRID_DEFAULT_HOUR_HEIGHT_PX = 44;
+/**
+ * Op een kort viewport (iPad-breedte in landscape, ~768-834px hoog) past het
+ * volle 06-24-raster niet op de standaardhoogte, en de pagina-scroll die
+ * daarvoor nodig is, is onzichtbaar totdat je toevallig scrolt — de week oogt
+ * dan afgekapt. Een lagere uurhoogte laat de hele dag wél in één oogopslag
+ * zien; WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX blijft de bodem voor korte blokken.
+ */
+export const WEEK_GRID_COMPACT_HOUR_HEIGHT_PX = 28;
+export const WEEK_GRID_SHORT_VIEWPORT_QUERY = "(max-height: 860px)";
+
+export function resolveWeekGridHourHeightPx(isShortViewport: boolean): number {
+  return isShortViewport ? WEEK_GRID_COMPACT_HOUR_HEIGHT_PX : WEEK_GRID_DEFAULT_HOUR_HEIGHT_PX;
+}
+
 /**
  * De percentage-hoogte van een blok blijft de eerlijke claim op de tijd; alleen
  * de gerenderde chip krijgt een bodem in pixels, zodat een kwartierblok zijn
@@ -82,6 +97,14 @@ export function clampTimelineMinutes(minutes: number): number {
   return Math.min(Math.max(minutes, TIMELINE_START_MINUTES), TIMELINE_END_MINUTES);
 }
 
+/** Laatste geldige stap vóór 24:00 — normalizeLocalTime wijst uren >23 af, dus
+ * niets dat naar de server gaat mag ooit op TIMELINE_END_MINUTES (1440) uitkomen. */
+export const TIMELINE_MAX_WRITABLE_MINUTES = TIMELINE_END_MINUTES - TIMELINE_SNAP_MINUTES;
+
+export function clampWritableMinutes(minutes: number): number {
+  return Math.min(Math.max(minutes, TIMELINE_START_MINUTES), TIMELINE_MAX_WRITABLE_MINUTES);
+}
+
 export function snapTimelineMinutes(
   minutes: number,
   step = TIMELINE_SNAP_MINUTES,
@@ -102,7 +125,7 @@ export function positionToTimelineTime(
   const ratio = Math.min(Math.max(offsetY / trackHeightPx, 0), 1);
   const rawMinutes = TIMELINE_START_MINUTES + ratio * TIMELINE_TOTAL_MINUTES;
   const snappedStart = clampTimelineMinutes(snapTimelineMinutes(rawMinutes, snapStep));
-  const endMinutes = clampTimelineMinutes(snappedStart + durationMinutes);
+  const endMinutes = clampWritableMinutes(snappedStart + durationMinutes);
   const startMinutes = Math.max(TIMELINE_START_MINUTES, endMinutes - durationMinutes);
 
   return {

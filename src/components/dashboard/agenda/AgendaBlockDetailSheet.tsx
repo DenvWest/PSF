@@ -30,11 +30,11 @@ type AgendaBlockDetailSheetProps = {
   onClose: () => void;
   onCompletionChange?: () => void;
   onScheduledTimeChange?: (scheduledTime: string) => void;
-  onToggleDone?: (blockId: string, done: boolean) => void;
+  onToggleDone?: (blockId: string, done: boolean) => Promise<void>;
   onPurge?: (blockId: string) => Promise<void>;
-  onRetime?: (blockId: string, input: RetimeInput) => void;
-  onDismissPlanStep?: (date: string) => void;
-  onHideAllPlanSteps?: () => void;
+  onRetime?: (blockId: string, input: RetimeInput) => Promise<void>;
+  onDismissPlanStep?: (date: string) => Promise<void>;
+  onHideAllPlanSteps?: () => Promise<void>;
   onOpenHelpSheet?: (input: { categoryId: AgendaCategoryId; domain: PillarId }) => void;
 };
 
@@ -79,8 +79,13 @@ export default function AgendaBlockDetailSheet({
     block ? Math.max(15, timeToMinutes(block.endTime) - timeToMinutes(block.startTime)) : 30,
   );
   const [retimeError, setRetimeError] = useState<string | null>(null);
+  const [retimeBusy, setRetimeBusy] = useState(false);
   const [purgeError, setPurgeError] = useState<string | null>(null);
   const [purgeBusy, setPurgeBusy] = useState(false);
+  const [toggleError, setToggleError] = useState<string | null>(null);
+  const [toggleBusy, setToggleBusy] = useState(false);
+  const [stepActionError, setStepActionError] = useState<string | null>(null);
+  const [stepActionBusy, setStepActionBusy] = useState(false);
 
   const blockId = block?.id ?? null;
 
@@ -101,7 +106,7 @@ export default function AgendaBlockDetailSheet({
   const isAnalysis = block.kind === "analysis" && block.slot;
   const category = getAgendaCategory(block.categoryId);
 
-  const handleRetimeSubmit = () => {
+  const handleRetimeSubmit = async () => {
     if (!onRetime) {
       return;
     }
@@ -115,25 +120,36 @@ export default function AgendaBlockDetailSheet({
       return;
     }
     const endMinutes = timeToMinutes(normalizedStart) + retimeDuration;
-    if (endMinutes > 24 * 60) {
+    // >= i.p.v. >: exact 24*60 levert minutesToTime "24:00" op, en dat is
+    // geen geldige lokale tijd (normalizeLocalTime wijst uren >23 af).
+    if (endMinutes >= 24 * 60) {
       setRetimeError("Dit moment loopt over middernacht heen.");
       return;
     }
 
     setRetimeError(null);
+    setRetimeBusy(true);
     const movedDate = retimeDate !== date;
-    onRetime(block.id, {
-      ...(movedDate ? { date: retimeDate } : {}),
-      startTime: normalizedStart,
-      endTime: minutesToTime(endMinutes),
-    });
-    trackAgendaBlockUpdated({
-      category_id: block.categoryId,
-      surface: "agenda_block_detail",
-      moved_date: movedDate,
-    });
-    clarityTag("agenda_block", "updated");
-    onClose();
+    try {
+      await onRetime(block.id, {
+        ...(movedDate ? { date: retimeDate } : {}),
+        startTime: normalizedStart,
+        endTime: minutesToTime(endMinutes),
+      });
+      trackAgendaBlockUpdated({
+        category_id: block.categoryId,
+        surface: "agenda_block_detail",
+        moved_date: movedDate,
+      });
+      clarityTag("agenda_block", "updated");
+      onClose();
+    } catch (error) {
+      setRetimeError(
+        error instanceof Error ? error.message : "Kon moment niet verplaatsen.",
+      );
+    } finally {
+      setRetimeBusy(false);
+    }
   };
 
   const handlePurge = async () => {
@@ -167,40 +183,60 @@ export default function AgendaBlockDetailSheet({
     }
   };
 
-  const actionBusy = busy || purgeBusy;
+  const actionBusy = busy || purgeBusy || retimeBusy || toggleBusy;
+
+  const handleToggleDone = async () => {
+    if (!onToggleDone) {
+      return;
+    }
+    const nextDone = !block.done;
+    setToggleError(null);
+    setToggleBusy(true);
+    try {
+      await onToggleDone(block.id, nextDone);
+      trackEvent("agenda_block_toggled", {
+        category_id: block.categoryId,
+        done: nextDone,
+        surface: "agenda_block_detail",
+      });
+      clarityTag("agenda_block", nextDone ? "done" : "undone");
+    } catch (error) {
+      setToggleError(
+        error instanceof Error ? error.message : "Kon moment niet afvinken.",
+      );
+    } finally {
+      setToggleBusy(false);
+    }
+  };
 
   const routineFooter =
     !isAnalysis && block.isEditable ? (
-      <button
-        type="button"
-        disabled={actionBusy}
-        onClick={() => {
-          const nextDone = !block.done;
-          onToggleDone?.(block.id, nextDone);
-          trackEvent("agenda_block_toggled", {
-            category_id: block.categoryId,
-            done: nextDone,
-            surface: "agenda_block_detail",
-          });
-          clarityTag("agenda_block", nextDone ? "done" : "undone");
-        }}
-        className="flex min-h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border-none px-3 text-[15px] font-semibold disabled:opacity-60"
-        style={{
-          background: block.done ? "rgba(90, 143, 106, 0.18)" : "var(--sage)",
-          color: block.done ? "#E7EDE8" : "#0f1c10",
-          border: block.done ? "1px solid rgba(255,255,255,0.15)" : "none",
-          fontFamily: "var(--f-sans)",
-        }}
-      >
-        {block.done ? (
-          <>
-            <Icons.Check s={16} />
-            Gedaan
-          </>
-        ) : (
-          "Markeer als gedaan"
-        )}
-      </button>
+      <div>
+        {toggleError ? (
+          <p className="mb-2 text-[13px] text-[#E2BC96]">{toggleError}</p>
+        ) : null}
+        <button
+          type="button"
+          disabled={actionBusy}
+          onClick={() => void handleToggleDone()}
+          className="flex min-h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border-none px-3 text-[15px] font-semibold disabled:opacity-60"
+          style={{
+            background: block.done ? "rgba(90, 143, 106, 0.18)" : "var(--sage)",
+            color: block.done ? "#E7EDE8" : "#0f1c10",
+            border: block.done ? "1px solid rgba(255,255,255,0.15)" : "none",
+            fontFamily: "var(--f-sans)",
+          }}
+        >
+          {block.done ? (
+            <>
+              <Icons.Check s={16} />
+              Gedaan
+            </>
+          ) : (
+            "Markeer als gedaan"
+          )}
+        </button>
+      </div>
     ) : null;
 
   return (
@@ -247,17 +283,34 @@ export default function AgendaBlockDetailSheet({
 
           {block.slot && onDismissPlanStep ? (
             <>
+              {stepActionError ? (
+                <p className="mt-3 text-[13px] text-[#E2BC96]">{stepActionError}</p>
+              ) : null}
               <button
                 type="button"
-                disabled={busy || prefBusy}
+                disabled={busy || prefBusy || stepActionBusy}
                 onClick={() => {
-                  onDismissPlanStep(block.slot!.date);
-                  trackEvent("agenda_plan_step_dismissed", {
-                    surface: "agenda_block_detail",
-                    scope: "day",
-                  });
-                  clarityTag("agenda_plan_step", "hidden_day");
-                  onClose();
+                  void (async () => {
+                    setStepActionError(null);
+                    setStepActionBusy(true);
+                    try {
+                      await onDismissPlanStep(block.slot!.date);
+                      trackEvent("agenda_plan_step_dismissed", {
+                        surface: "agenda_block_detail",
+                        scope: "day",
+                      });
+                      clarityTag("agenda_plan_step", "hidden_day");
+                      onClose();
+                    } catch (error) {
+                      setStepActionError(
+                        error instanceof Error
+                          ? error.message
+                          : "Kon plan-stap niet verbergen.",
+                      );
+                    } finally {
+                      setStepActionBusy(false);
+                    }
+                  })();
                 }}
                 className="mt-4 inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 text-[14px] font-medium text-[#CDD7D0] disabled:opacity-60"
                 style={{ fontFamily: "var(--f-sans)" }}
@@ -267,15 +320,29 @@ export default function AgendaBlockDetailSheet({
               {onHideAllPlanSteps ? (
                 <button
                   type="button"
-                  disabled={busy || prefBusy}
+                  disabled={busy || prefBusy || stepActionBusy}
                   onClick={() => {
-                    onHideAllPlanSteps();
-                    trackEvent("agenda_plan_step_dismissed", {
-                      surface: "agenda_block_detail",
-                      scope: "all",
-                    });
-                    clarityTag("agenda_plan_step", "hidden_all");
-                    onClose();
+                    void (async () => {
+                      setStepActionError(null);
+                      setStepActionBusy(true);
+                      try {
+                        await onHideAllPlanSteps();
+                        trackEvent("agenda_plan_step_dismissed", {
+                          surface: "agenda_block_detail",
+                          scope: "all",
+                        });
+                        clarityTag("agenda_plan_step", "hidden_all");
+                        onClose();
+                      } catch (error) {
+                        setStepActionError(
+                          error instanceof Error
+                            ? error.message
+                            : "Kon plan-stappen niet verbergen.",
+                        );
+                      } finally {
+                        setStepActionBusy(false);
+                      }
+                    })();
                   }}
                   className="mt-2 inline-flex min-h-11 w-full cursor-pointer items-center justify-center border-none bg-transparent px-4 text-[13px] font-medium text-[#9FB0A6] underline decoration-white/25 underline-offset-2 disabled:opacity-60"
                   style={{ fontFamily: "var(--f-sans)" }}
@@ -382,8 +449,8 @@ export default function AgendaBlockDetailSheet({
 
                       <button
                         type="button"
-                        disabled={busy}
-                        onClick={handleRetimeSubmit}
+                        disabled={busy || retimeBusy}
+                        onClick={() => void handleRetimeSubmit()}
                         className="flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl border-none text-[15px] font-semibold disabled:opacity-60"
                         style={{
                           background: "var(--sage)",

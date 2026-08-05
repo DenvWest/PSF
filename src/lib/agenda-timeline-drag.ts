@@ -1,7 +1,8 @@
 import {
-  clampTimelineMinutes,
+  clampWritableMinutes,
   minutesToTime,
   timeToMinutes,
+  TIMELINE_START_MINUTES,
 } from "@/lib/agenda-timeline";
 
 export const TIMELINE_DRAG_ACTIVATION_PX = 8;
@@ -11,19 +12,18 @@ export type TimelineDragTimeSlot = {
   endTime: string;
 };
 
-/** Behoud blokduur bij verslepen; clamp binnen 06:00–24:00. */
+/** Behoud blokduur bij verslepen; klem binnen 06:00–23:45 (24:00 is geen
+ * geldige lokale tijd) door bij een overschrijding het startpunt terug te
+ * schuiven i.p.v. de duur te laten krimpen. */
 export function resolveRetimeFromDrag(
   currentStart: string,
   currentEnd: string,
   nextStart: string,
 ): TimelineDragTimeSlot {
   const duration = Math.max(15, timeToMinutes(currentEnd) - timeToMinutes(currentStart));
-  const snappedStart = timeToMinutes(nextStart);
-  const endMinutes = clampTimelineMinutes(snappedStart + duration);
-  const startMinutes = Math.max(
-    clampTimelineMinutes(snappedStart),
-    endMinutes - duration,
-  );
+  const desiredStart = timeToMinutes(nextStart);
+  const endMinutes = clampWritableMinutes(desiredStart + duration);
+  const startMinutes = Math.max(TIMELINE_START_MINUTES, endMinutes - duration);
   return {
     startTime: minutesToTime(startMinutes),
     endTime: minutesToTime(endMinutes),

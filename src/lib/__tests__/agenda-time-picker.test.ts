@@ -12,21 +12,22 @@ import {
 } from "@/lib/agenda-time-picker";
 
 describe("buildQuarterHourSlots", () => {
-  it("starts at 06:00 and ends at 24:00 in 15-minute steps", () => {
+  it("starts at 06:00 and ends at 23:45 — 24:00 is not a valid local time", () => {
     const slots = buildQuarterHourSlots();
     expect(slots[0]).toBe("06:00");
-    expect(slots.at(-1)).toBe("24:00");
+    expect(slots.at(-1)).toBe("23:45");
+    expect(slots).not.toContain("24:00");
     expect(slots).toContain("12:30");
     expect(slots).toContain("18:00");
   });
 });
 
 describe("adjustPickerTime", () => {
-  it("snaps and clamps within the timeline day", () => {
+  it("snaps and clamps within the writable timeline day", () => {
     expect(adjustPickerTime("12:00", 15)).toBe("12:15");
     expect(adjustPickerTime("12:07", 15)).toBe("12:15");
     expect(adjustPickerTime("06:00", -15)).toBe("06:00");
-    expect(adjustPickerTime("24:00", 15)).toBe("24:00");
+    expect(adjustPickerTime("23:45", 15)).toBe("23:45");
   });
 });
 
@@ -35,8 +36,8 @@ describe("endTimeFromStartAndDuration", () => {
     expect(endTimeFromStartAndDuration("18:00", 45)).toBe("18:45");
   });
 
-  it("clamps at timeline end", () => {
-    expect(endTimeFromStartAndDuration("23:30", 60)).toBe("24:00");
+  it("clamps at 23:45 — never returns 24:00", () => {
+    expect(endTimeFromStartAndDuration("23:30", 60)).toBe("23:45");
   });
 });
 

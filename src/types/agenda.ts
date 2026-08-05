@@ -85,8 +85,9 @@ export type UpdateAgendaBlockInput = {
   status?: AgendaBlockStatus;
 };
 
-/** Eén regel in de maand-hoverpreview (tijd + titel). */
+/** Eén regel in de maandweergave (tijd + titel + kleur). */
 export type AgendaMonthDayItem = {
   startTime: string;
   title: string;
+  color: string;
 };

@@ -7,11 +7,9 @@ import AgendaTimelineHourAxis from "@/components/dashboard/agenda/AgendaTimeline
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
-import { AgendaFocusPanel, AgendaFocusPill } from "@/components/dashboard/agenda/AgendaMetaRow";
 import { clarityTag } from "@/lib/clarity";
 import { getCachedDailyLog, subscribeDailyLogCache } from "@/lib/daily-log-client";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
-import AgendaProvenanceStrip from "@/components/dashboard/agenda/AgendaProvenanceStrip";
 import {
   buildDayTimeline,
   buildPlanStepBlock,
@@ -97,9 +95,7 @@ type AgendaDayTimelineProps = {
   onRestorePlanStep?: () => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
-  onSelectPillar: (pillarId: PillarId) => void;
-  onAcceptEngine: () => void;
-  onResetFocus: () => void;
+  onCloseFocus: () => void;
   weekStrip?: ReactNode;
   onRegisterFooterActions?: (actions: {
     openAddSheet: () => void;
@@ -124,14 +120,11 @@ export default function AgendaDayTimeline({
   onRestorePlanStep,
   onHideAllPlanSteps,
   onShowAllPlanSteps,
-  onSelectPillar,
-  onAcceptEngine,
-  onResetFocus,
+  onCloseFocus,
   weekStrip,
   onRegisterFooterActions,
 }: AgendaDayTimelineProps) {
   const [addOpen, setAddOpen] = useState(false);
-  const [focusExpanded, setFocusExpanded] = useState(false);
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const [helpPreset, setHelpPreset] = useState<HelpPreset | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
@@ -209,9 +202,7 @@ export default function AgendaDayTimeline({
     setHelpPreset(null);
   };
 
-  const closeFocus = () => {
-    setFocusExpanded(false);
-  };
+  const closeFocus = onCloseFocus;
 
   const closeDetail = () => {
     setSelectedBlockId(null);
@@ -268,13 +259,19 @@ export default function AgendaDayTimeline({
           if (!hasRoutineDragChanged(block.startTime, block.endTime, retime)) {
             return;
           }
-          void onRetimeBlock(block.id, retime);
-          trackAgendaBlockUpdated({
-            category_id: block.categoryId,
-            surface: "agenda_timeline_drag",
-            moved_date: false,
-          });
-          clarityTag("agenda_block", "timeline_drag");
+          onRetimeBlock(block.id, retime)
+            .then(() => {
+              trackAgendaBlockUpdated({
+                category_id: block.categoryId,
+                surface: "agenda_timeline_drag",
+                moved_date: false,
+              });
+              clarityTag("agenda_block", "timeline_drag");
+            })
+            .catch(() => {
+              // Fout is al zichtbaar via de gedeelde agenda-foutbanner
+              // (AgendaScreen.reportAgendaError); hier alleen tracking overslaan.
+            });
         },
       });
     },
@@ -302,23 +299,13 @@ export default function AgendaDayTimeline({
       ? getBlockTimelineStyle(timelineDrag.ghost.startTime, timelineDrag.ghost.endTime)
       : null;
 
-  const openHeaderFocus = () => {
-    if (focusExpanded) {
-      closeFocus();
-      return;
-    }
-    closeSheet();
-    setSelectedBlockId(null);
-    setFocusExpanded(true);
-  };
-
   const openHeaderSheet = useCallback(() => {
     closeFocus();
     setSelectedBlockId(null);
     setDraftSlot(null);
     setHelpPreset(null);
     setAddOpen(true);
-  }, []);
+  }, [closeFocus]);
 
   const openHelpSheet = (preset: HelpPreset) => {
     closeFocus();
@@ -374,39 +361,6 @@ export default function AgendaDayTimeline({
 
   return (
     <section aria-label="Dagtijdlijn" className="min-w-0">
-      {slot ? (
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <AgendaProvenanceStrip model={model} slot={slot} className="min-w-0 flex-1" />
-          {isToday ? (
-            <div className="flex shrink-0 items-center">
-              <AgendaFocusPill
-                model={model}
-                busy={prefBusy}
-                expanded={focusExpanded}
-                onToggle={openHeaderFocus}
-              />
-            </div>
-          ) : null}
-        </div>
-      ) : (
-        <p className="mb-3 text-[12.5px] leading-normal text-[#9FB0A6]">
-          Deze dag valt buiten je adviesweek. Je eigen momenten staan er wel — je
-          dagstap volgt weer in de week van vandaag.
-        </p>
-      )}
-
-      {slot && isToday && focusExpanded ? (
-        <div className="mb-3">
-          <AgendaFocusPanel
-            model={model}
-            busy={prefBusy}
-            onSelectPillar={onSelectPillar}
-            onAcceptEngine={onAcceptEngine}
-            onReset={onResetFocus}
-          />
-        </div>
-      ) : null}
-
       {planStep && trayVisible ? (
         <section className="mb-3" aria-label={freeHeading}>
           <h3 className="m-0 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[#9FB0A6]">
@@ -601,29 +555,11 @@ export default function AgendaDayTimeline({
         onClose={closeDetail}
         onCompletionChange={onCompletionChange}
         onScheduledTimeChange={onScheduledTimeChange}
-        onToggleDone={(blockId, done) => void onToggleBlockDone(blockId, done)}
+        onToggleDone={onToggleBlockDone}
         onPurge={(blockId) => onPurgeBlock(blockId)}
-        onRetime={
-          onRetimeBlock
-            ? (blockId, input) => {
-                void onRetimeBlock(blockId, input);
-              }
-            : undefined
-        }
-        onDismissPlanStep={
-          onDismissPlanStep
-            ? (dismissDate) => {
-                void onDismissPlanStep(dismissDate);
-              }
-            : undefined
-        }
-        onHideAllPlanSteps={
-          onHideAllPlanSteps
-            ? () => {
-                void onHideAllPlanSteps();
-              }
-            : undefined
-        }
+        onRetime={onRetimeBlock}
+        onDismissPlanStep={onDismissPlanStep}
+        onHideAllPlanSteps={onHideAllPlanSteps}
         onOpenHelpSheet={openHelpSheet}
       />
     </section>

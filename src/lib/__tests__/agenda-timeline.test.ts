@@ -21,6 +21,7 @@ import {
   positionToWeekGridTime,
   resolveBlockRole,
   resolvePlanStepPlacement,
+  resolveWeekGridHourHeightPx,
   snapTimelineMinutes,
   TIMELINE_COMPACT_BLOCK_HEIGHT_PX,
   TIMELINE_END_MINUTES,
@@ -28,6 +29,8 @@ import {
   TIMELINE_START_MINUTES,
   TIMELINE_TOTAL_MINUTES,
   timeToMinutes,
+  WEEK_GRID_COMPACT_HOUR_HEIGHT_PX,
+  WEEK_GRID_DEFAULT_HOUR_HEIGHT_PX,
   WEEK_GRID_SNAP_MINUTES,
   WEEK_TIMELINE_MIN_BLOCK_HEIGHT_PX,
 } from "@/lib/agenda-timeline";
@@ -444,6 +447,42 @@ describe("tap-to-create helpers", () => {
   it("clamps bottom of track within 24:00", () => {
     const result = positionToTimelineTime(TRACK_HEIGHT_PX, TRACK_HEIGHT_PX);
     expect(timeToMinutes(result.endTime)).toBeLessThanOrEqual(TIMELINE_END_MINUTES);
+  });
+
+  it("never returns 24:00 for any offset or duration — regression voor B1", () => {
+    // isValidLocalTime wijst uren >23 af; endTime "24:00" zou dus altijd
+    // stranden op de server. Veeg de hele rail af, incl. de onderrand.
+    for (let offsetY = 0; offsetY <= TRACK_HEIGHT_PX; offsetY += TRACK_HEIGHT_PX / 40) {
+      for (const durationMinutes of [15, 30, 45, 60, 90, 120]) {
+        const result = positionToTimelineTime(offsetY, TRACK_HEIGHT_PX, durationMinutes);
+        expect(result.startTime).not.toBe("24:00");
+        expect(result.endTime).not.toBe("24:00");
+        expect(timeToMinutes(result.endTime)).toBeLessThan(TIMELINE_END_MINUTES);
+      }
+    }
+  });
+});
+
+describe("resolveWeekGridHourHeightPx", () => {
+  it("gebruikt de standaardhoogte op een normaal viewport", () => {
+    expect(resolveWeekGridHourHeightPx(false)).toBe(WEEK_GRID_DEFAULT_HOUR_HEIGHT_PX);
+  });
+
+  it("gebruikt de compacte hoogte op een kort viewport (iPad landscape)", () => {
+    expect(resolveWeekGridHourHeightPx(true)).toBe(WEEK_GRID_COMPACT_HOUR_HEIGHT_PX);
+  });
+
+  it("de compacte hoogte laat het volle 06-24-raster passen op iPad-landscape-hoogte — regressie bug 1", () => {
+    // 18 uur × compacte hoogte moet ruim onder de kortste iPad-landscape
+    // viewport (768px) blijven, ook na aftrek van header + toolbar-chrome.
+    const fullGridHeightPx = getTimelineTrackHeightPx(
+      resolveWeekGridHourHeightPx(true),
+    );
+    const shortestIpadLandscapeHeightPx = 768;
+    const estimatedChromeAbovePx = 180;
+    expect(fullGridHeightPx).toBeLessThanOrEqual(
+      shortestIpadLandscapeHeightPx - estimatedChromeAbovePx,
+    );
   });
 });
 

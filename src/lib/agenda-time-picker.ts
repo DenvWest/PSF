@@ -3,10 +3,10 @@ import {
   type TimeBucket,
 } from "@/lib/account-priority-pref";
 import {
-  clampTimelineMinutes,
+  clampWritableMinutes,
   minutesToTime,
   snapTimelineMinutes,
-  TIMELINE_END_HOUR,
+  TIMELINE_MAX_WRITABLE_MINUTES,
   TIMELINE_SNAP_MINUTES,
   TIMELINE_START_HOUR,
   timeToMinutes,
@@ -32,11 +32,10 @@ export const BUCKET_SHORTCUTS: ReadonlyArray<{
 
 export function buildQuarterHourSlots(): string[] {
   const startMinutes = TIMELINE_START_HOUR * 60;
-  const endMinutes = TIMELINE_END_HOUR * 60;
   const slots: string[] = [];
   for (
     let minutes = startMinutes;
-    minutes <= endMinutes;
+    minutes <= TIMELINE_MAX_WRITABLE_MINUTES;
     minutes += TIMELINE_SNAP_MINUTES
   ) {
     slots.push(minutesToTime(minutes));
@@ -53,7 +52,7 @@ export function resolvePickerDisplayTime(
 
 export function adjustPickerTime(time: string, deltaMinutes: number): string {
   const snapped = snapTimelineMinutes(timeToMinutes(time) + deltaMinutes);
-  const clamped = clampTimelineMinutes(snapped);
+  const clamped = clampWritableMinutes(snapped);
   return minutesToTime(clamped);
 }
 
@@ -62,8 +61,8 @@ export function endTimeFromStartAndDuration(
   durationMinutes: number,
 ): string {
   const start = timeToMinutes(startTime);
-  const end = clampTimelineMinutes(start + durationMinutes);
-  return minutesToTime(Math.max(end, start + 15));
+  const end = clampWritableMinutes(start + durationMinutes);
+  return minutesToTime(Math.max(end, start));
 }
 
 export function durationMinutesFromRange(
