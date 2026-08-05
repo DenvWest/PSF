@@ -14,6 +14,10 @@ import {
 
 export const AGENDA_DURATION_CHOICES = [15, 30, 45, 60] as const;
 
+export const MIN_DURATION_MINUTES = 15;
+export const MAX_DURATION_MINUTES = 120;
+export const DURATION_STEP_MINUTES = 15;
+
 export type AgendaDurationMinutes = (typeof AGENDA_DURATION_CHOICES)[number];
 
 export const BUCKET_SHORTCUTS: ReadonlyArray<{
@@ -75,4 +79,29 @@ export function durationMinutesFromRange(
     Math.abs(choice - diff) < Math.abs(best - diff) ? choice : best,
   );
   return nearest;
+}
+
+export function adjustDurationMinutes(
+  durationMinutes: number,
+  deltaMinutes: number,
+): number {
+  const next = durationMinutes + deltaMinutes;
+  const snapped =
+    Math.round(next / DURATION_STEP_MINUTES) * DURATION_STEP_MINUTES;
+  return Math.min(
+    MAX_DURATION_MINUTES,
+    Math.max(MIN_DURATION_MINUTES, snapped),
+  );
+}
+
+export function resolveNowPickerTime(now: Date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("nl-NL", {
+    timeZone: "Europe/Amsterdam",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(now);
+  const hour = parts.find((part) => part.type === "hour")?.value ?? "12";
+  const minute = parts.find((part) => part.type === "minute")?.value ?? "00";
+  return adjustPickerTime(`${hour}:${minute}`, 0);
 }
