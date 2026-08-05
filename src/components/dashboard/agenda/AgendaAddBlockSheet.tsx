@@ -4,19 +4,16 @@ import { useEffect, useId, useState } from "react";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaSheetFrame from "@/components/dashboard/agenda/AgendaSheetFrame";
-import AgendaTimePicker from "@/components/dashboard/agenda/AgendaTimePicker";
+import AgendaScheduleFields from "@/components/dashboard/agenda/AgendaScheduleFields";
 import { SELECTABLE_AGENDA_CATEGORIES } from "@/data/agenda/categories";
 import {
-  AGENDA_DURATION_CHOICES,
   durationMinutesFromRange,
   endTimeFromStartAndDuration,
-  type AgendaDurationMinutes,
 } from "@/lib/agenda-time-picker";
 import { normalizeLocalTime } from "@/lib/account-priority-pref";
-import { getAgendaCategory } from "@/data/agenda/categories";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
+import type { AgendaCategoryId } from "@/types/agenda";
 
 type HiddenPlanStep = {
   title: string;
@@ -29,7 +26,6 @@ type AgendaAddBlockSheetProps = {
   open: boolean;
   date: string;
   busy?: boolean;
-  archivedBlocks?: AgendaBlockRecord[];
   hiddenPlanStep?: HiddenPlanStep | null;
   initialStartTime?: string;
   initialEndTime?: string;
@@ -39,7 +35,6 @@ type AgendaAddBlockSheetProps = {
   createSurface?: "agenda_add_sheet" | "agenda_timeline_tap" | "agenda_week_grid_tap";
   createOrigin?: "meer_hulp";
   onClose: () => void;
-  onRestore?: (blockId: string) => Promise<void>;
   onRestorePlanStep?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
   onSubmit: (input: {
@@ -60,7 +55,6 @@ export default function AgendaAddBlockSheet({
   open,
   date,
   busy = false,
-  archivedBlocks = [],
   hiddenPlanStep = null,
   initialStartTime,
   initialEndTime,
@@ -69,7 +63,6 @@ export default function AgendaAddBlockSheet({
   createSurface = "agenda_add_sheet",
   createOrigin,
   onClose,
-  onRestore,
   onRestorePlanStep,
   onShowAllPlanSteps,
   onSubmit,
@@ -80,7 +73,7 @@ export default function AgendaAddBlockSheet({
   );
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState(initialStartTime ?? "12:00");
-  const [durationMinutes, setDurationMinutes] = useState<AgendaDurationMinutes>(() => {
+  const [durationMinutes, setDurationMinutes] = useState<number>(() => {
     if (initialStartTime && initialEndTime) {
       return durationMinutesFromRange(initialStartTime, initialEndTime);
     }
@@ -278,41 +271,16 @@ export default function AgendaAddBlockSheet({
       </label>
 
       <div className="mb-4">
-        <AgendaTimePicker
-          value={startTime}
+        <AgendaScheduleFields
+          startTime={startTime}
+          onStartTimeChange={setStartTime}
+          durationMinutes={durationMinutes}
+          onDurationChange={setDurationMinutes}
+          showDuration
           busy={busy}
           variant="compact-dark"
-          onChange={setStartTime}
         />
       </div>
-
-      <p className={LABEL_CLASS}>Duur</p>
-      <div className="mb-3 flex flex-wrap gap-2">
-        {AGENDA_DURATION_CHOICES.map((minutes) => {
-          const selected = minutes === durationMinutes;
-          return (
-            <button
-              key={minutes}
-              type="button"
-              disabled={busy}
-              aria-pressed={selected}
-              onClick={() => setDurationMinutes(minutes)}
-              className={`inline-flex min-h-11 cursor-pointer items-center rounded-full border px-3 text-[12.5px] font-medium tabular-nums transition-colors disabled:opacity-60 ${
-                selected
-                  ? "border-[rgba(90,143,106,0.55)] bg-[rgba(90,143,106,0.2)] text-[#F1EFE8]"
-                  : "border-white/10 bg-white/[0.03] text-[#9FB0A6] hover:border-white/25"
-              }`}
-              style={{ fontFamily: "var(--f-sans)" }}
-            >
-              {minutes} min
-            </button>
-          );
-        })}
-      </div>
-
-      <p className="mb-4 text-[12.5px] tabular-nums text-[#9FB0A6]">
-        {startTime} – {endTime}
-      </p>
 
       {error ? <p className="mb-3 text-[13px] text-[#E2BC96]">{error}</p> : null}
 
@@ -330,70 +298,6 @@ export default function AgendaAddBlockSheet({
         <Icons.Plus s={16} />
         Toevoegen
       </button>
-
-      {archivedBlocks.length > 0 ? (
-        <div className="mt-5 border-t border-white/10 pt-4">
-          <p className="mb-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">
-            Verborgen momenten
-          </p>
-          <p className="mb-3 text-[12px] leading-normal text-[#9FB0A6]">
-            Je kunt een eerder verborgen moment hier terugzetten op je agenda.
-          </p>
-          <ul className="m-0 flex list-none flex-col gap-2 p-0">
-            {archivedBlocks.map((block) => {
-              const category = getAgendaCategory(block.categoryId);
-              return (
-                <li
-                  key={block.id}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
-                  style={{ borderLeftWidth: 3, borderLeftColor: category.color }}
-                >
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className="m-0 truncate text-[14px] font-medium text-[#F1EFE8]"
-                      style={{ fontFamily: "var(--f-serif)" }}
-                    >
-                      {block.title}
-                    </p>
-                    <p className="mt-0.5 text-[12px] tabular-nums text-[#9FB0A6]">
-                      {block.startTime} – {block.endTime}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={busy || !onRestore}
-                    onClick={() => {
-                      if (!onRestore) {
-                        return;
-                      }
-                      void (async () => {
-                        try {
-                          await onRestore(block.id);
-                          trackEvent("agenda_block_restored", {
-                            category_id: block.categoryId,
-                            surface: "agenda_add_sheet",
-                          });
-                          clarityTag("agenda_block", "restored");
-                        } catch (restoreError) {
-                          setError(
-                            restoreError instanceof Error
-                              ? restoreError.message
-                              : "Kon moment niet terugzetten.",
-                          );
-                        }
-                      })();
-                    }}
-                    className="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-full border border-white/10 bg-white/[0.04] px-3 text-[12px] font-semibold text-[var(--sage)] disabled:opacity-60"
-                    style={{ fontFamily: "var(--f-sans)" }}
-                  >
-                    Terugzetten
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ) : null}
     </AgendaSheetFrame>
   );
 }

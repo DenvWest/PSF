@@ -13,7 +13,14 @@ import {
   getCachedDailyLog,
   setCachedDailyLog,
 } from "@/lib/daily-log-client";
-import { resolvePlanStepDuration } from "@/lib/agenda-plan-duration";
+import {
+  DEFAULT_PLAN_STEP_DURATION_MINUTES,
+  resolvePlanStepDuration,
+} from "@/lib/agenda-plan-duration";
+import {
+  endTimeFromStartAndDuration,
+  resolvePickerDisplayTime,
+} from "@/lib/agenda-time-picker";
 import { resolveActionKey } from "@/lib/day-model";
 import {
   inferCompletedChoice,
@@ -130,6 +137,12 @@ export default function AgendaTodayHero({
   const onderbouwingHref = slot.evidenceHref;
   const followUp = buildVandaagFollowUp(domain);
   const activeBucket = model.timeBucket ?? deriveDefaultTimeBucket();
+  const planEndTime = useMemo(() => {
+    const start = resolvePickerDisplayTime(model.scheduledTime, activeBucket);
+    const durationMinutes =
+      planDuration?.durationMinutes ?? DEFAULT_PLAN_STEP_DURATION_MINUTES;
+    return endTimeFromStartAndDuration(start, durationMinutes);
+  }, [activeBucket, model.scheduledTime, planDuration?.durationMinutes]);
 
   useEffect(() => {
     if (!isToday || shownRef.current) {
@@ -325,6 +338,7 @@ export default function AgendaTodayHero({
             <AgendaTimeBucketPicker
               value={model.scheduledTime}
               defaultBucket={activeBucket}
+              endTime={planEndTime}
               busy={prefBusy}
               variant={isDark ? "compact-dark" : "compact"}
               onChange={(scheduledTime) => {
