@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import type { MouseEvent, ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import AgendaTimelineHourAxis from "@/components/dashboard/agenda/AgendaTimelineHourAxis";
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
@@ -34,6 +34,7 @@ import {
 } from "@/lib/agenda-timeline-drag";
 import { trackAgendaBlockUpdated, trackEvent } from "@/lib/ga4";
 import { useAgendaTimelineDrag } from "@/lib/use-agenda-timeline-drag";
+import { useStickyHeaderOffset } from "@/lib/use-sticky-header-offset";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
 import type { AgendaDayContext } from "@/lib/agenda-day-context";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
@@ -129,6 +130,14 @@ export default function AgendaDayTimeline({
   const [helpPreset, setHelpPreset] = useState<HelpPreset | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [railElement, setRailElement] = useState<HTMLDivElement | null>(null);
+
+  // Mobiel: de uur-as+rail scrollen intern binnen wat er na de sticky chrome
+  // overblijft, i.p.v. de hele pagina — gemeten, niet hardcoded, zoals de
+  // header-hoogte elders al gebeurt (die groeit ook mee).
+  const headerHeightPx = useStickyHeaderOffset("[data-cockpit-header]");
+  const toolbarHeightPx = useStickyHeaderOffset("[data-agenda-toolbar]");
+  const bottomNavHeightPx = useStickyHeaderOffset("[data-cockpit-bottom-nav]");
+  const railMaxHeight = `calc(100dvh - ${headerHeightPx + toolbarHeightPx}px - ${bottomNavHeightPx}px)`;
 
   const slot = context.kind === "engine" ? context.slot : null;
   const date = context.date;
@@ -379,7 +388,10 @@ export default function AgendaDayTimeline({
 
       {weekStrip ? <div className="mb-4">{weekStrip}</div> : null}
 
-      <div className="flex gap-2 sm:gap-3">
+      <div
+        className="flex max-h-[var(--agenda-rail-max-h)] gap-2 overflow-y-auto sm:max-h-none sm:gap-3 sm:overflow-visible"
+        style={{ "--agenda-rail-max-h": railMaxHeight } as CSSProperties}
+      >
         <AgendaTimelineHourAxis
           hourLabels={hourLabels}
           hourHeightPx={HOUR_HEIGHT_PX}
@@ -392,7 +404,6 @@ export default function AgendaDayTimeline({
           style={{
             height: TIMELINE_HEIGHT_PX,
             minHeight: TIMELINE_HEIGHT_PX,
-            maxHeight: TIMELINE_HEIGHT_PX,
           }}
         >
           <button

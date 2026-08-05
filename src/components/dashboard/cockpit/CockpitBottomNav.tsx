@@ -18,6 +18,7 @@ export default function CockpitBottomNav({
 }: CockpitBottomNavProps) {
   return (
     <nav
+      data-cockpit-bottom-nav
       aria-label="Hoofdnavigatie"
       className="fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[rgba(12,19,21,0.92)] pb-[env(safe-area-inset-bottom,0px)] backdrop-blur-md sm:hidden"
     >

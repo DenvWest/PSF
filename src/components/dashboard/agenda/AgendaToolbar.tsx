@@ -241,6 +241,7 @@ export default function AgendaToolbar({
 }: AgendaToolbarProps) {
   return (
     <header
+      data-agenda-toolbar
       className="sticky z-10 -mx-3 mb-4 border-b border-white/10 bg-[rgba(26,46,26,0.94)] px-3 py-2 backdrop-blur-md sm:-mx-4 sm:px-4 min-[1440px]:-mx-6 min-[1440px]:px-6"
       style={{ top: stickyTop }}
     >

@@ -5,6 +5,21 @@
 > teruggedraaid in `34d11dc`). Plak 3 t/m 7 open — geen `AgendaViewProvider`, geen
 > `agenda_plan_overrides`-migratie, `categoryId` nog niet in de PATCH-allowlist,
 > geen `agenda_mutation`-rate-limit-bucket, `AgendaTeaser.tsx` nog dood.
+>
+> **Correctie 5 aug 2026 (avond), live gemeten op 16.3.0:** sectie B1's rekensom (163px
+> toolbar, 309px/46,3% chrome) is **stale** — die beschrijft de 3-rijige toolbar van vóór
+> `fb97901`. Live op 375×667 (`getBoundingClientRect()` na scroll, sticky-toestand):
+> header 88px + toolbar **59px** (niet 163px) = 147px boven, bottom-nav 63px onder →
+> **210px chrome (31,5%)**, tijdlijnvenster **457px** (was 358px). Dat is beter dan B4's
+> eigen streefdoel voor optie ① (79px toolbar, 442px). Op 390×844 (zonder
+> `safe-area-inset-bottom` in deze meetopstelling): 147px + 63px = 210px (24,9%), 634px
+> venster — met een echte inset erbij landt dat rond 28,9%/600px.
+> **C5 is ook al gerealiseerd:** "Meer acties" bevat alleen Focus + Plan, geen losse
+> Kalender-item meer; het datumlabel ("Kies een dag") is de enige tik-ingang naast de
+> week-strip — twee ingangen, zoals aanbevolen, niet drie.
+> **Nog steeds open, ongewijzigd:** de tijdlijn-rail staat nog vast op 1044px
+> (`HOUR_HEIGHT_PX=58 × 18u`, [AgendaDayTimeline.tsx:384-389](../../src/components/dashboard/agenda/AgendaDayTimeline.tsx#L384-L389)) — in het 457px-venster
+> zie je ~6,4 van de 18 uur. Optie ④ (eigen scrollcontainer) uit B2/B4 is niet gebouwd.
 
 ---
 
