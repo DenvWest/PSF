@@ -24,9 +24,16 @@ import {
   isCompactTimelineBlock,
   positionToTimelineTime,
   resolvePlanStepPlacement,
+  timeToMinutes,
   TIMELINE_MIN_BLOCK_HEIGHT_PX,
 } from "@/lib/agenda-timeline";
-import { trackEvent } from "@/lib/ga4";
+import {
+  hasPlanStepDragChanged,
+  hasRoutineDragChanged,
+  resolveRetimeFromDrag,
+} from "@/lib/agenda-timeline-drag";
+import { trackAgendaBlockUpdated, trackEvent } from "@/lib/ga4";
+import { useAgendaTimelineDrag } from "@/lib/use-agenda-timeline-drag";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
 import type { AgendaDayContext } from "@/lib/agenda-day-context";
 import type { AgendaBlockRecord, AgendaCategoryId } from "@/types/agenda";
@@ -69,7 +76,10 @@ type AgendaDayTimelineProps = {
   prefBusy: boolean;
   blockBusy?: boolean;
   onCompletionChange?: () => void;
-  onScheduledTimeChange: (scheduledTime: string) => void;
+  onScheduledTimeChange: (
+    scheduledTime: string,
+    surface?: "agenda_day_schedule" | "agenda_timeline_drag",
+  ) => void;
   onCreateBlock: (input: {
     date: string;
     categoryId: AgendaCategoryId;
@@ -123,6 +133,7 @@ export default function AgendaDayTimeline({
   const [draftSlot, setDraftSlot] = useState<DraftSlot | null>(null);
   const [helpPreset, setHelpPreset] = useState<HelpPreset | null>(null);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const [railElement, setRailElement] = useState<HTMLDivElement | null>(null);
 
   const slot = context.kind === "engine" ? context.slot : null;
   const date = context.date;
@@ -177,12 +188,95 @@ export default function AgendaDayTimeline({
     return gridBlocks.find((block) => block.id === selectedBlockId) ?? null;
   }, [gridBlocks, planStep, selectedBlockId]);
 
+  const trayVisible = Boolean(planStep && planStepPlacement === "tray");
+
   const nowLinePercent = isToday ? getNowLinePercent() : null;
   const hourLabels = getTimelineHourLabels();
   const halfHourMarks = getTimelineHalfHourMarks();
   const ghostStyle = draftSlot
     ? getBlockTimelineStyle(draftSlot.startTime, draftSlot.endTime)
     : null;
+
+  const timelineDrag = useAgendaTimelineDrag({
+    disabled: blockBusy || prefBusy,
+  });
+
+  const getRailRect = useCallback(
+    () => railElement?.getBoundingClientRect() ?? null,
+    [railElement],
+  );
+
+  const commitPlanStepDrag = useCallback(
+    (startTime: string) => {
+      onScheduledTimeChange(startTime, "agenda_timeline_drag");
+      clarityTag("agenda_block", "timeline_drag");
+    },
+    [onScheduledTimeChange],
+  );
+
+  const bindBlockDrag = useCallback(
+    (block: (typeof gridBlocks)[number]) => {
+      if (!block.isEditable) {
+        return undefined;
+      }
+      const durationMinutes = Math.max(
+        15,
+        timeToMinutes(block.endTime) - timeToMinutes(block.startTime),
+      );
+      return timelineDrag.bindDragHandle({
+        durationMinutes,
+        getTrackRect: getRailRect,
+        onCommit: (slot) => {
+          if (block.kind === "analysis") {
+            if (!hasPlanStepDragChanged(block.startTime, slot.startTime)) {
+              return;
+            }
+            commitPlanStepDrag(slot.startTime);
+            return;
+          }
+          if (!onRetimeBlock) {
+            return;
+          }
+          const retime = resolveRetimeFromDrag(
+            block.startTime,
+            block.endTime,
+            slot.startTime,
+          );
+          if (!hasRoutineDragChanged(block.startTime, block.endTime, retime)) {
+            return;
+          }
+          void onRetimeBlock(block.id, retime);
+          trackAgendaBlockUpdated({
+            category_id: block.categoryId,
+            surface: "agenda_timeline_drag",
+            moved_date: false,
+          });
+          clarityTag("agenda_block", "timeline_drag");
+        },
+      });
+    },
+    [commitPlanStepDrag, getRailRect, onRetimeBlock, timelineDrag],
+  );
+
+  const planStepDragHandle =
+    trayVisible && isToday && planStep
+      ? timelineDrag.bindDragHandle({
+          durationMinutes: Math.max(
+            15,
+            timeToMinutes(planStep.endTime) - timeToMinutes(planStep.startTime),
+          ),
+          getTrackRect: getRailRect,
+          onCommit: (slot) => {
+            commitPlanStepDrag(slot.startTime);
+            clarityTag("agenda_plan_step", "tray_drag_to_grid");
+          },
+        })
+      : undefined;
+
+  const dragGhostStyle =
+    timelineDrag.ghost && timelineDrag.isDragging
+      ? getBlockTimelineStyle(timelineDrag.ghost.startTime, timelineDrag.ghost.endTime)
+      : null;
 
   const closeSheet = () => {
     setAddOpen(false);
@@ -244,7 +338,7 @@ export default function AgendaDayTimeline({
   };
 
   const handleRailClick = (event: MouseEvent<HTMLButtonElement>) => {
-    if (blockBusy) {
+    if (blockBusy || timelineDrag.isDragging) {
       return;
     }
 
@@ -262,7 +356,6 @@ export default function AgendaDayTimeline({
   // De tray blijft staan zolang er geen tijd gezet is (fullbleed-regel 7); de
   // sectiekop maakt van "hangt erboven" een eigen belofte in plaats van een
   // restpost.
-  const trayVisible = Boolean(planStep && planStepPlacement === "tray");
   const freeHeading = isToday ? "Vandaag nog vrij" : "Nog vrij op deze dag";
   const quietHeading = trayVisible
     ? isToday
@@ -317,10 +410,11 @@ export default function AgendaDayTimeline({
           </h3>
           <AgendaPlanStepStrip
             block={planStep}
+            dragHandleProps={planStepDragHandle}
             onOpenDetail={() => openDetail(planStep.id)}
           />
           <p className="mt-2 text-[12px] leading-normal text-[#7E8C82]">
-            Blijft hier staan tot je er een moment bij kiest — hij verdwijnt niet.
+            Sleep naar je dag of tik om een moment te kiezen — hij verdwijnt niet vanzelf.
           </p>
         </section>
       ) : null}
@@ -345,12 +439,13 @@ export default function AgendaDayTimeline({
         </div>
 
         <div
+          ref={setRailElement}
           className="relative min-w-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-black/20"
           style={{ height: TIMELINE_HEIGHT_PX }}
         >
           <button
             type="button"
-            disabled={blockBusy}
+            disabled={blockBusy || timelineDrag.isDragging}
             aria-label="Voeg leefstijlmoment toe op dit tijdstip"
             onClick={handleRailClick}
             className="absolute inset-0 z-0 cursor-pointer border-none bg-transparent transition-colors hover:bg-white/[0.03] disabled:cursor-not-allowed disabled:opacity-60"
@@ -380,6 +475,17 @@ export default function AgendaDayTimeline({
               style={{
                 top: `${ghostStyle.topPercent}%`,
                 height: `${ghostStyle.heightPercent}%`,
+              }}
+              aria-hidden
+            />
+          ) : null}
+
+          {dragGhostStyle ? (
+            <div
+              className="pointer-events-none absolute inset-x-2 z-[6] rounded-xl border border-dashed border-[var(--sage)] bg-[rgba(90,143,106,0.22)]"
+              style={{
+                top: `${dragGhostStyle.topPercent}%`,
+                height: `${dragGhostStyle.heightPercent}%`,
               }}
               aria-hidden
             />
@@ -446,6 +552,7 @@ export default function AgendaDayTimeline({
                 <AgendaBlockCard
                   block={block}
                   compact={compact}
+                  dragHandleProps={bindBlockDrag(block)}
                   onOpenDetail={() => openDetail(block.id)}
                 />
               </div>
