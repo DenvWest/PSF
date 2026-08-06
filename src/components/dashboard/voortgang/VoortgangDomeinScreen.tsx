@@ -5,7 +5,9 @@ import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
+import BewegingAdviesTreden from "@/components/dashboard/voortgang/BewegingAdviesTreden";
 import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
+import { buildBewegingAdviesTreden } from "@/lib/beweging-advies-treden";
 import { clarityTag } from "@/lib/clarity";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isReadoutDomain } from "@/lib/domain-role";
@@ -53,14 +55,18 @@ export default function VoortgangDomeinScreen({
   onBack,
   onGoVandaag,
   onOpenAdvies,
+  onOpenFavorieten,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   domain: PillarId;
   onBack: () => void;
   onGoVandaag: () => void;
+  /** Voeding-advies (statistieken › advies) — de bestaande ladder, niet gedupliceerd. */
   onOpenAdvies: () => void;
+  onOpenFavorieten: () => void;
 }) {
+  const [adviesOpen, setAdviesOpen] = useState(false);
   const pillar = PILLAR[domain];
   const readout = isReadoutDomain(domain) ? getReadoutPresentation(domain) : null;
   const leefstijllijnRow = buildLeefstijllijnRows(model).find((row) => row.pillarId === domain) ?? null;
@@ -99,12 +105,19 @@ export default function VoortgangDomeinScreen({
     clarityTag("dashboard_beweging_checkin", "click");
   };
 
+  // De deur opent de treden in-place; `target` scheidt die intentie van de
+  // uitgaande klik naar een vergelijkingspagina (zelfde event, andere waarde).
   const handleAdvies = () => {
+    const next = !adviesOpen;
+    setAdviesOpen(next);
+    if (!next) {
+      return;
+    }
     trackEvent("dashboard_beweging_supplement_click", {
       surface: "advies_voortgang",
-      target: "statistieken_advies",
+      target: "beweging_treden",
     });
-    onOpenAdvies();
+    clarityTag("dashboard_beweging_advies", "treden_geopend");
   };
 
   const handleGoVandaag = () => {
@@ -226,16 +239,42 @@ export default function VoortgangDomeinScreen({
         ) : null}
 
         {showAdviesDeur ? (
-          <button
-            type="button"
-            onClick={handleAdvies}
-            className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3.5 text-left"
-          >
-            <span className="text-[13.5px] font-semibold text-[#5A8F6A]">
-              Wat een supplement hier wél en niet doet
-            </span>
-            <Icons.ChevronRight s={16} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={handleAdvies}
+              aria-expanded={adviesOpen}
+              aria-controls="beweging-advies-treden"
+              className="flex cursor-pointer items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3.5 text-left"
+            >
+              <span className="text-[13.5px] font-semibold text-[#5A8F6A]">
+                Wat een supplement hier wél en niet doet
+              </span>
+              <Icons.ChevronRight
+                s={16}
+                style={{
+                  color: "#5A8F6A",
+                  flexShrink: 0,
+                  transform: adviesOpen ? "rotate(90deg)" : "rotate(0deg)",
+                  transition: "transform 0.15s ease",
+                }}
+              />
+            </button>
+            {adviesOpen ? (
+              <div id="beweging-advies-treden">
+                <BewegingAdviesTreden
+                  treden={buildBewegingAdviesTreden(
+                    model,
+                    data,
+                    leefstijllijnRow?.baselineScore ?? null,
+                  )}
+                  onGoVandaag={handleGoVandaag}
+                  onOpenVoedingAdvies={onOpenAdvies}
+                  onOpenFavorieten={onOpenFavorieten}
+                />
+              </div>
+            ) : null}
+          </>
         ) : null}
 
         <button

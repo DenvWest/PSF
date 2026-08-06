@@ -696,6 +696,7 @@ export default function VoortgangHub({
         onBack={goBack}
         onGoVandaag={() => router.push(buildDashboardVandaagHref(voortgangDomein))}
         onOpenAdvies={() => navigate("statistieken", { blik: "advies" })}
+        onOpenFavorieten={() => navigate("favorieten")}
       />
     );
   }
