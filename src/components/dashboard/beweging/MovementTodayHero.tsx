@@ -69,9 +69,10 @@ function stepRationale(stepId: string): string | null {
   return step?.rationale?.body ?? null;
 }
 
-function trackStepChoice(choice: StepAlternativeChoice): void {
+function trackStepChoice(choice: StepAlternativeChoice, acceptedDefault = false): void {
   trackEvent("dashboard_vandaag_step_alternative", {
     choice,
+    accepted_default: acceptedDefault,
     domain: "beweging",
     surface: SURFACE,
   });
@@ -280,6 +281,12 @@ export default function MovementTodayHero({
       priority: model.priority.id,
       rest_recommended: restRecommended,
       recommended_choice: recommendedKind ?? "none",
+      // Wat het scherm daadwerkelijk toont als voorselectie, en of dat uit een
+      // verse check-in komt of uit de programmastap — zonder dit veld is
+      // recommended_choice "none" bij de meeste dagen en is niet af te lezen
+      // wat de gebruiker zag toen hij Gedaan of Wijzig keuze indrukte.
+      preselected_choice: preselectedKind,
+      preselect_source: recommendedKind != null ? "checkin" : "plan",
       surface: SURFACE,
       user_chosen: model.priorityIsUserChosen,
     });
@@ -289,6 +296,7 @@ export default function MovementTodayHero({
     model.activeHabit,
     model.priority.id,
     model.priorityIsUserChosen,
+    preselectedKind,
     restRecommended,
     recommendedKind,
   ]);
@@ -329,6 +337,10 @@ export default function MovementTodayHero({
     if (!isPreselected || !activeChoice) {
       return;
     }
+    // acceptPreselection() gaat niet via selectChoice() — die zou de
+    // trainingspoort weer aanzetten (§comment hierboven). Daardoor moet de
+    // tracking hier apart, anders is deze route client-side onzichtbaar.
+    trackStepChoice(activeChoice.kind, true);
     setSelectedKind(activeChoice.kind);
     setTrainingGateCleared(true);
     persistChoice(activeChoice.kind, true);
@@ -336,7 +348,7 @@ export default function MovementTodayHero({
 
   const selectChoice = (kind: TodayChoiceKind, acceptedDefault = false) => {
     invalidateDailyLogCache("beweging");
-    trackStepChoice(kind);
+    trackStepChoice(kind, acceptedDefault);
     setNoTimeActive(false);
     setWhyOpen(false);
     setListOpen(false);
