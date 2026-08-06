@@ -7,7 +7,9 @@ import AgendaTimelineHourAxis from "@/components/dashboard/agenda/AgendaTimeline
 import AgendaAddBlockSheet from "@/components/dashboard/agenda/AgendaAddBlockSheet";
 import AgendaBlockCard from "@/components/dashboard/agenda/AgendaBlockCard";
 import AgendaBlockDetailSheet from "@/components/dashboard/agenda/AgendaBlockDetailSheet";
+import MeerHulpBridgeSheet from "@/components/dashboard/agenda/MeerHulpBridgeSheet";
 import { clarityTag } from "@/lib/clarity";
+import { buildBewegingHelpBridge } from "@/lib/beweging-help-bridge";
 import { getCachedDailyLog, subscribeDailyLogCache } from "@/lib/daily-log-client";
 import AgendaPlanStepStrip from "@/components/dashboard/agenda/AgendaPlanStepStrip";
 import {
@@ -48,14 +50,10 @@ type DraftSlot = {
   endTime: string;
 };
 
-/** Voorzet voor "Meer hulp hierbij": aanvulling naast de basis van dit domein. */
+/** "Meer hulp hierbij" opent de dunne brug (Pad A, slice 3) — geen catalogus. */
 type HelpPreset = {
-  categoryId: AgendaCategoryId;
   domain: PillarId;
 };
-
-const HELP_SHEET_NOTE =
-  "Zet een extra moment op je dag — geen keuzelijst. Je basis-stap blijft staan; een volledige hulpkeuze komt later.";
 
 type HiddenPlanStep = {
   title: string;
@@ -76,6 +74,9 @@ type AgendaDayTimelineProps = {
   routineBlocks: AgendaBlockRecord[];
   prefBusy: boolean;
   blockBusy?: boolean;
+  /** Poort 2 van de bestaande advies-deur (§G.1 BESLUIT) — voedt de brug-statusstrip. */
+  nutritionLogCompleted: boolean;
+  onGoVoortgangDomein: (domain: PillarId) => void;
   onCompletionChange?: () => void;
   onScheduledTimeChange: (
     scheduledTime: string,
@@ -110,6 +111,8 @@ export default function AgendaDayTimeline({
   routineBlocks,
   prefBusy,
   blockBusy = false,
+  nutritionLogCompleted,
+  onGoVoortgangDomein,
   onCompletionChange,
   onScheduledTimeChange,
   onCreateBlock,
@@ -530,24 +533,32 @@ export default function AgendaDayTimeline({
         </div>
       </div>
 
-      {addOpen ? (
+      {addOpen && helpPreset ? (
+        <MeerHulpBridgeSheet
+          key={`help-${date}-${helpPreset.domain}`}
+          open={addOpen}
+          bridge={buildBewegingHelpBridge(model, slot, nutritionLogCompleted)}
+          onClose={closeSheet}
+          onOpenVoortgang={() => {
+            closeSheet();
+            onGoVoortgangDomein(helpPreset.domain);
+          }}
+        />
+      ) : null}
+
+      {addOpen && !helpPreset ? (
         <AgendaAddBlockSheet
           key={
-            helpPreset
-              ? `help-${date}-${helpPreset.categoryId}`
-              : draftSlot
-                ? `tap-${date}-${draftSlot.startTime}-${draftSlot.endTime}`
-                : `header-${date}`
+            draftSlot
+              ? `tap-${date}-${draftSlot.startTime}-${draftSlot.endTime}`
+              : `header-${date}`
           }
           open={addOpen}
           date={date}
           busy={blockBusy}
           initialStartTime={draftSlot?.startTime}
           initialEndTime={draftSlot?.endTime}
-          initialCategoryId={helpPreset?.categoryId}
-          helperNote={helpPreset ? HELP_SHEET_NOTE : null}
           createSurface={draftSlot ? "agenda_timeline_tap" : "agenda_add_sheet"}
-          createOrigin={helpPreset ? "meer_hulp" : undefined}
           hiddenPlanStep={hiddenPlanStep}
           onRestorePlanStep={onRestorePlanStep}
           onShowAllPlanSteps={onShowAllPlanSteps}

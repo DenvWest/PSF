@@ -3243,12 +3243,14 @@ const SECTION_RENDERERS: Record<
     props.empty || !props.model ? null : (
       <AgendaScreen
         model={props.model}
+        data={props.data}
         selectedDate={props.agendaDate}
         view={props.agendaView}
         onSelectedDateChange={props.onAgendaDateChange}
         onViewChange={props.onAgendaViewChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoVoortgang={props.onGoVoortgang}
+        onGoVoortgangDomein={props.onGoVoortgangDomein}
       />
     ),
   kompasHome: (props) =>

@@ -58,18 +58,26 @@ import {
   postSetPlanStepsHidden,
 } from "@/lib/priority-pref-client";
 import type { AgendaBlockRecord, AgendaCategoryId, AgendaMonthDayItem, TimelineBlock } from "@/types/agenda";
-import type { AccountPriorityPrefData, DashboardModel, PillarId } from "@/types/dashboard";
+import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
+import type {
+  AccountPriorityPrefData,
+  DashboardData,
+  DashboardModel,
+  PillarId,
+} from "@/types/dashboard";
 
 type ScheduledTimeSurface = "agenda_day_schedule" | "agenda_timeline_drag";
 
 type AgendaScreenProps = {
   model: DashboardModel;
+  data?: DashboardData;
   selectedDate: string;
   view: AgendaViewId;
   onSelectedDateChange: (date: string) => void;
   onViewChange: (view: AgendaViewId) => void;
   onPrefUpdated: (pref: AccountPriorityPrefData | null) => void;
   onGoVoortgang: () => void;
+  onGoVoortgangDomein: (domain: PillarId) => void;
 };
 
 type WeekFetchState = {
@@ -113,15 +121,21 @@ function formatMonthPeriodLabel(isoDate: string): string {
 
 export default function AgendaScreen({
   model,
+  data,
   selectedDate,
   view,
   onSelectedDateChange,
   onViewChange,
   onPrefUpdated,
   onGoVoortgang,
+  onGoVoortgangDomein,
 }: AgendaScreenProps) {
   const shownRef = useRef(false);
   const today = todayInAgendaTimezone();
+  // Poort 2 van de bestaande advies-deur (§G.1 BESLUIT) — zelfde bron als
+  // VoortgangDomeinScreen, voedt nu ook de brug-statusstrip op Mijn Dag.
+  const nutritionLogCompleted =
+    buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
   const slots = useMemo(() => buildWeekSchedulePreview(model), [model]);
   const dayContext = useMemo(
     () => resolveAgendaDayContext(model, selectedDate, slots),
@@ -814,6 +828,8 @@ export default function AgendaScreen({
           routineBlocks={visibleBlocks}
           prefBusy={prefBusy}
           blockBusy={blockBusy}
+          nutritionLogCompleted={nutritionLogCompleted}
+          onGoVoortgangDomein={onGoVoortgangDomein}
           onCompletionChange={refreshWeekState}
           onScheduledTimeChange={(scheduledTime, surface) =>
             void handleScheduledTime(scheduledTime, surface)

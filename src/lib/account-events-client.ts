@@ -12,6 +12,7 @@ type ClientEmitType = Extract<
   | "movement.sport_selected"
   | "movement.gap_shown"
   | "dashboard.beweging_programma_open"
+  | "choice.shelf_opened"
 >;
 
 export function emitAccountClientEvent(

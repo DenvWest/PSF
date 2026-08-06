@@ -54,6 +54,7 @@ export const DOMAIN_EVENT_TYPES = [
   "movement.sport_selected",
   "movement.gap_shown",
   "dashboard.beweging_programma_open",
+  "choice.shelf_opened",
   "wearable.interest_clicked",
   "plan.checkin_completed",
   "premium.waitlist_joined",

@@ -58,7 +58,7 @@ function movementCandidateKeys(): ReadonlySet<string> {
   return MOVEMENT_STANCE.kind === "candidates" ? MOVEMENT_STANCE.slugs : new Set();
 }
 
-function programLabelFor(startPattern: MovementStartPattern | null): string | null {
+export function programLabelFor(startPattern: MovementStartPattern | null): string | null {
   if (!startPattern) {
     return null;
   }

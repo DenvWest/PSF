@@ -12,7 +12,7 @@ import { getBlockRoleLabel, minutesToTime, timeToMinutes } from "@/lib/agenda-ti
 import { clarityTag } from "@/lib/clarity";
 import { trackAgendaBlockUpdated, trackEvent } from "@/lib/ga4";
 import { isValidAgendaDate } from "@/lib/dashboard-url";
-import type { AgendaCategoryId, TimelineBlock } from "@/types/agenda";
+import type { TimelineBlock } from "@/types/agenda";
 import type { DashboardModel, PillarId } from "@/types/dashboard";
 
 type RetimeInput = {
@@ -35,7 +35,7 @@ type AgendaBlockDetailSheetProps = {
   onRetime?: (blockId: string, input: RetimeInput) => Promise<void>;
   onDismissPlanStep?: (date: string) => Promise<void>;
   onHideAllPlanSteps?: () => Promise<void>;
-  onOpenHelpSheet?: (input: { categoryId: AgendaCategoryId; domain: PillarId }) => void;
+  onOpenHelpSheet?: (input: { domain: PillarId }) => void;
 };
 
 const LABEL_CLASS =
@@ -284,7 +284,7 @@ export default function AgendaBlockDetailSheet({
                   domain,
                 });
                 clarityTag("dashboard_agenda", "meer_hulp");
-                onOpenHelpSheet({ categoryId: block.categoryId, domain });
+                onOpenHelpSheet({ domain });
               }}
               className="mt-3 inline-flex min-h-11 cursor-pointer items-center gap-1 border-none bg-transparent px-0 text-[13px] font-semibold text-[var(--sage)] disabled:opacity-60"
               style={{ fontFamily: "var(--f-sans)" }}

@@ -17,6 +17,7 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "movement.sport_selected",
   "movement.gap_shown",
   "dashboard.beweging_programma_open",
+  "choice.shelf_opened",
 ]);
 
 function normalizePayload(raw: unknown): Record<string, unknown> {
