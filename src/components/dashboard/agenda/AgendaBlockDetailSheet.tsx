@@ -273,7 +273,10 @@ export default function AgendaBlockDetailSheet({
             onScheduledTimeChange={onScheduledTimeChange}
           />
 
-          {block.slot && onOpenHelpSheet ? (
+          {/* Tijdelijk beweging-only: de brug (Pad A, slice 3) leest movementPlanTemplate
+              en movementPrefs — andere domeinen hebben nog geen equivalente content.
+              Verbreedt zodra een domein zijn eigen brug-data draagt (§10). */}
+          {block.slot && onOpenHelpSheet && block.slot.domain === "beweging" ? (
             <button
               type="button"
               disabled={busy || prefBusy}
