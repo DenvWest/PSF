@@ -1,6 +1,6 @@
 # Results Reveal — layout-spec
 
-> **Companion bij** [`docs/cursors/claude-design-results-reveal-prompt.md`](../cursors/claude-design-results-reveal-prompt.md).
+> **Companion bij** `[docs/cursors/claude-design-results-reveal-prompt.md](../cursors/claude-design-results-reveal-prompt.md)`.
 > Harde visuele constraint voor Claude Design en latere implementatie. Geen productie-CSS — delta t.o.v. bestaande tokens in `src/app/globals.css`.
 
 ---
@@ -12,7 +12,8 @@
 - Doel: dashboard-trailer — zelfde wereld als `/dashboard`
 
 **Code-referenties:**
-- Tokens: `src/app/globals.css` (`.ps-dark`, `--intake-*`)
+
+- Tokens: `src/app/globals.css` (`.ps-dark`, `--intake-`*)
 - Dashboard: `src/components/dashboard/Dashboard.tsx` (`VitalityRing`, `PrioritySection`, `PlanSection`)
 - Primitives: `src/components/app/primitives.tsx` (`Card`, `Button`)
 - Pijlerkleuren: `src/data/dashboard/index.ts`
@@ -21,7 +22,7 @@
 
 ## 1. CSS-tokens (`.ps-reveal`)
 
-Erft van `.ps-dark` / `--intake-*`. Alleen REVEAL-specifieke toevoegingen:
+Erft van `.ps-dark` / `--intake-`*. Alleen REVEAL-specifieke toevoegingen:
 
 ```css
 .ps-reveal {
@@ -96,19 +97,21 @@ Desktop richting B: gecentreerde kaart `max-width: 720px`.
 
 ## 2. Typografie (mobiel 375px)
 
-| Element | Font | Grootte | Gewicht | Kleur |
-|---------|------|---------|---------|-------|
-| H1 (warme kop) | DM Serif Display | 28–30px | 400 | `--text` |
-| Profiellabel | DM Serif Display | 20–22px | 400 | `--text` |
-| Section eyebrow | DM Sans | 11px uppercase | 600 | `--sage` of pijlerkleur |
-| Section title | DM Serif Display | 18–21px | 400 | `--text` |
-| Body | DM Sans | 16px min | 400 | `--text-muted` |
-| Quick-win titel | DM Sans | 15px | 600 | `--text` |
-| Disclaimer hero | DM Sans | 13px | 400 | `--text-subtle` |
-| CTA knop | DM Sans | 15–15.5px | 600 | `--reveal-cta-text` op sage |
-| CTA subtekst | DM Sans | 14px | 400 | `--text-muted` |
-| Trust strip | DM Sans | 12px | 400 | `--reveal-trust-text` |
-| Data-rechten knop | DM Sans | 13px | 500 | `--text-muted` |
+
+| Element           | Font             | Grootte        | Gewicht | Kleur                       |
+| ----------------- | ---------------- | -------------- | ------- | --------------------------- |
+| H1 (warme kop)    | DM Serif Display | 28–30px        | 400     | `--text`                    |
+| Profiellabel      | DM Serif Display | 20–22px        | 400     | `--text`                    |
+| Section eyebrow   | DM Sans          | 11px uppercase | 600     | `--sage` of pijlerkleur     |
+| Section title     | DM Serif Display | 18–21px        | 400     | `--text`                    |
+| Body              | DM Sans          | 16px min       | 400     | `--text-muted`              |
+| Quick-win titel   | DM Sans          | 15px           | 600     | `--text`                    |
+| Disclaimer hero   | DM Sans          | 13px           | 400     | `--text-subtle`             |
+| CTA knop          | DM Sans          | 15–15.5px      | 600     | `--reveal-cta-text` op sage |
+| CTA subtekst      | DM Sans          | 14px           | 400     | `--text-muted`              |
+| Trust strip       | DM Sans          | 12px           | 400     | `--reveal-trust-text`       |
+| Data-rechten knop | DM Sans          | 13px           | 500     | `--text-muted`              |
+
 
 Letter-spacing eyebrows: `0.12em–0.14em`. Geen tekst onder 12px behalve trust strip.
 
@@ -245,6 +248,7 @@ Ingeklapte drawer **"Jouw gegevens & privacy"** (default gesloten). Geen full-wi
 ```
 
 **Regels:**
+
 - Trust zone altijd **onder** primaire CTA
 - Revoke/delete: ghost only — geen sage/terra fill
 - Knoppen verticaal gestapeld, gap 10px, min-height 44px
@@ -255,14 +259,16 @@ Intake-disclaimer copy (niet inkorten): `src/lib/disclaimer-text.ts` → `DISCLA
 
 ## 5. Richting A vs B
 
-| | Richting A — `fullscreen-dark` | Richting B — `embedded-card` |
-|--|------------------------------|------------------------------|
-| Shell | `ResultsRevealShell` + `ps-dark` full-bleed | Lichte host `#f8f7f4` + donkere kaart |
-| PSF.com | **Default** (`shellVariant` niet gezet) | Niet op B2C — alleen embed/B2B |
-| Sluiten | `IntakeExit` in layout (één knop) | Zelfde of host-sluiting |
-| Mobiel max-width | 480px (`IntakeClient`) | 480px (kaart) |
-| Desktop max-width | 600px (`lg:` — gelijk aan dashboard) | 600px (`lg:`) |
-| Implementatie | `src/components/intake/ResultsRevealShell.tsx` | `variant="embedded-card"` prop |
+
+|                   | Richting A — `fullscreen-dark`                 | Richting B — `embedded-card`          |
+| ----------------- | ---------------------------------------------- | ------------------------------------- |
+| Shell             | `ResultsRevealShell` + `ps-dark` full-bleed    | Lichte host `#f8f7f4` + donkere kaart |
+| PSF.com           | **Default** (`shellVariant` niet gezet)        | Niet op B2C — alleen embed/B2B        |
+| Sluiten           | `IntakeExit` in layout (één knop)              | Zelfde of host-sluiting               |
+| Mobiel max-width  | 480px (`IntakeClient`)                         | 480px (kaart)                         |
+| Desktop max-width | 600px (`lg:` — gelijk aan dashboard)           | 600px (`lg:`)                         |
+| Implementatie     | `src/components/intake/ResultsRevealShell.tsx` | `variant="embedded-card"` prop        |
+
 
 Desktop (`lg+`): hero ring + profiel naast elkaar; CTA max `max-w-md` gecentreerd. Breedte wordt gezet door `IntakeClient` op results-fase, niet alleen door de shell.
 
@@ -283,16 +289,18 @@ Desktop (`lg+`): hero ring + profiel naast elkaar; CTA max `max-w-md` gecentreer
 
 ## 7. Placeholder-data (locked)
 
-| Veld | Waarde |
-|------|--------|
-| Profiel | Lage Batterij |
-| Vitaliteit | 53 |
-| Prioriteit | Voeding |
-| Quick-win titel | Eiwitrijk ontbijt |
-| Quick-win detail | 30 g eiwit vóór 10 uur houdt je energie stabiel. |
-| Pad-titel | In drie stappen naar jouw overzicht |
-| Dashboard-teaser | Alle 6 pijlers en je trend zie je in je dashboard. |
-| Supplement op REVEAL | Geen — dashboard PLAN-sectie |
+
+| Veld                 | Waarde                                             |
+| -------------------- | -------------------------------------------------- |
+| Profiel              | Lage Batterij                                      |
+| Vitaliteit           | 53                                                 |
+| Prioriteit           | Voeding                                            |
+| Quick-win titel      | Eiwitrijk ontbijt                                  |
+| Quick-win detail     | 30 g eiwit vóór 10 uur houdt je energie stabiel.   |
+| Pad-titel            | In drie stappen naar jouw overzicht                |
+| Dashboard-teaser     | Alle 6 pijlers en je trend zie je in je dashboard. |
+| Supplement op REVEAL | Geen — dashboard PLAN-sectie                       |
+
 
 ---
 

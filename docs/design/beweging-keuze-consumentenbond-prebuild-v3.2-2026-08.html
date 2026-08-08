@@ -3,8 +3,38 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Beweging — keuze Consumentenbond prebuild v3 (augustus 2026)</title>
+<title>Beweging — prebuild v3.2 (augustus 2026)</title>
 <!--
+  v3.2 — WAT DIT LOCKT T.O.V. v3.1 (v3.1 blijft staan, gericht vervangen)
+  1. Eerste keer verkoopt niet "Gedaan" maar één moment. A1 heeft geen afvink-knop meer:
+     je hebt nog niets gedaan. Primair = het voorgestelde moment vastzetten, secundair = nu meteen.
+  2. Het voorstel is vooringevuld, niet leeg. Er staat een dag en een tijd klaar; "ander moment"
+     is één tik. Zo blijft BESLUIT §A.4 verbod 1 staan: geen picker die het antwoord blokkeert.
+  3. Waarom-blok in gewone taal, drie regels, elk onder de vijftien woorden. Geen "beweegscore",
+     geen "spierbehoud", geen "conditie" boven de vouw.
+  4. De brug heet "Voeg iets toe aan je basis" en toont laag 1–3, niet zes. Laag 2 is read-only
+     ("dit is je basis"). Tik op een laag → sheet met maximaal drie acties, elk met één knop.
+  5. De keten Check → Advies → Favorieten → Beste is uit de brug. Die hoort op Voortgang, één regel.
+  6. Wat je toevoegt is zichtbaar op Beweging én op Mijn Dag, met één gedeelde staat. Eén eenheid,
+     één bron, twee uitlezingen — geen tweede vinklijst.
+  7. Geen readout die telt wat je niet deed: "4 dagen bewogen", nooit "4 van 7" (BESLUIT verbod 4).
+  8. Voortgang klapt dicht: meetpad en eigen begeleiding staan er nog, maar gevouwen. Per laag één
+     metaregel (prioriteit · bron · moeite); de onderbouwing zit achter "Bekijk waarom".
+  9. Reviewer-chrome (statebars, sub-staat-schakelaars, ontwerpnotities) staat uit in gebruikersmodus.
+
+  v3.1 — WAT DIT LOCKT T.O.V. v3 (v3 blijft integraal staan, alleen uitgebreid)
+  1. De leefstijl-piramide is één component in drie varianten: mini (brug) · rail (aside) · full (C).
+  2. Laag 1 staat onderaan en heeft de HOOGSTE prioriteit. Nergens een ordinaal ("trede 4 van 6").
+  3. De piramide sorteert het TYPE interventie, nooit partner-rang. Bond-oordeel blijft op de kaart.
+  4. Laag 6 (supplementen/wearables) is altijd gated: stepped care, na de hertest — nooit ervoor.
+  5. De in-flow deur blijft de dunne brug; die draagt nu het kompas + één volgende stap, geen schap.
+  6. Gesloten lagen zijn niet klikbaar in brug en rail, maar op C wél leesbaar — daar hoort "waarom
+     nu niet" thuis. Afwijking van de prompt, bewust: het oordeel achterhouden is geen Bond-gedrag.
+  7. Het open paneel staat ONDER de piramide, niet tussen de treden — anders breekt het silhouet
+     en leest het kompas als lijstje.
+  8. Mijn Dag krijgt een week-readout en een als-mock gelabelde herinnering. "Markeer als gedaan"
+     blijft de enige completion-knop; geen push-belofte, geen app-download.
+
   ONTWERPNOTITIE v3 — wat dit lockt t.o.v. v2
 
   VERDICT (deel 1, kort)
@@ -75,6 +105,14 @@
   --r-card:12px;
   --r-btn:10px;
   --ease:cubic-bezier(.2,.7,.3,1);
+
+  /* v3.1 · leefstijl-piramide */
+  --pyr-active:var(--move);
+  --pyr-locked:rgba(255,255,255,.08);
+  --pyr-evidence:rgba(90,143,106,.12);
+  --pyr-evidence-line:rgba(90,143,106,.35);
+  --pyr-priority-high:rgba(194,110,75,.2);
+  --pyr-priority-low:rgba(159,176,166,.15);
 }
 
 *{box-sizing:border-box}
@@ -568,7 +606,172 @@ ul{margin:0;padding:0;list-style:none}
   font-size:11.5px;color:var(--mut);line-height:1.5;max-width:56ch;
 }
 
+
+/* ---------- leefstijl-piramide (v3.1) ----------
+   Eén component, drie varianten: mini (brug) · rail (aside) · full (scherm C).
+   De vorm is echt: elke laag is een trapezium dat naar boven smaller wordt.
+   Het open paneel staat ONDER de piramide, niet tussen de treden in — anders
+   breekt het silhouet en leest de piramide als lijstje in plaats van kompas. */
+.pyramid{display:block}
+.pyr-north{
+  font-size:12.5px;color:var(--soft);line-height:1.5;max-width:46ch;
+  border-left:2px solid var(--move);padding-left:12px;margin-bottom:16px;
+}
+.pyr-shape{display:flex;flex-direction:column-reverse;align-items:center;gap:3px}
+.pyr-apex{
+  width:58%;height:13px;flex:0 0 auto;
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+  background:var(--pyr-locked);
+}
+.rung{
+  position:relative;display:block;width:var(--w);min-height:50px;
+  padding:9px calc(var(--k) + 14px);text-align:left;color:var(--soft);
+  transition:color .2s var(--ease);
+}
+.rung-fill{
+  position:absolute;inset:0;z-index:0;
+  clip-path:polygon(var(--k) 0,calc(100% - var(--k)) 0,100% 100%,0 100%);
+  background:var(--line-soft);
+}
+.rung-fill::after{content:"";position:absolute;inset:1.5px;clip-path:inherit;background:#1e301c}
+.rung-body{position:relative;z-index:1;display:block;min-width:0}
+.rung-label{
+  display:block;font-family:var(--serif);font-size:var(--fs);line-height:1.16;color:var(--soft);
+  text-wrap:balance;
+}
+.rung-state{
+  display:block;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--mut);
+  margin-top:4px;font-variant-numeric:tabular-nums;
+}
+
+.rung[data-state="done"] .rung-fill{background:rgba(90,143,106,.42)}
+.rung[data-state="done"] .rung-fill::after{background:#1d3320}
+.rung[data-state="done"] .rung-label{color:var(--ink)}
+.rung[data-state="done"] .rung-state{color:var(--sage-lt)}
+
+.rung[data-state="now"] .rung-fill{background:var(--pyr-active);filter:drop-shadow(0 0 12px rgba(194,110,75,.15))}
+.rung[data-state="now"] .rung-fill::after{background:#2b2c1d}
+.rung[data-state="now"] .rung-label{color:var(--ink)}
+.rung[data-state="now"] .rung-state{color:var(--move-lt)}
+
+.rung[data-state="next"] .rung-fill{background:var(--line)}
+.rung[data-state="next"] .rung-fill::after{background:#1e2f1c}
+
+.rung[data-state="locked"]{color:var(--mut)}
+.rung[data-state="locked"] .rung-fill{
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.24) 0 4px,rgba(255,255,255,0) 4px 9px);
+}
+.rung[data-state="locked"] .rung-fill::after{background:#1b2b1a}
+.rung[data-state="locked"] .rung-label{color:var(--mut)}
+
+.rung[aria-expanded="true"] .rung-fill{background:var(--pyr-active)}
+.rung[aria-expanded="true"] .rung-label{color:var(--ink)}
+.rung:hover:not([disabled]) .rung-label{color:var(--ink)}
+.rung[disabled]{cursor:default}
+
+.pyr-panel{
+  margin-top:12px;border:1px solid var(--line-soft);border-top:2px solid var(--pyr-active);
+  border-radius:0 0 var(--r-card) var(--r-card);background:rgba(0,0,0,.2);padding:14px;
+}
+.pyr-panel[hidden]{display:none}
+.pyr-panel h4{font-family:var(--serif);font-size:19px;line-height:1.15;color:var(--ink)}
+.pyr-panel .sublabel{font-size:12px;color:var(--mut);margin-top:5px}
+.pyr-grid{display:grid;gap:9px;margin-top:13px}
+.pyr-chip{
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+  padding:9px 11px;border-radius:9px;border:1px solid var(--line-soft);
+  background:rgba(255,255,255,.03);font-size:12.5px;color:var(--soft);line-height:1.45;
+}
+.pyr-chip dt{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut);flex:0 0 auto}
+.pyr-chip dd{margin:0}
+.pyr-chip.prio-hi{background:var(--pyr-priority-high);border-color:rgba(194,110,75,.34)}
+.pyr-chip.prio-lo{background:var(--pyr-priority-low);border-color:var(--line-soft)}
+.pyr-chip.ev{background:var(--pyr-evidence);border-color:var(--pyr-evidence-line)}
+.pyr-when{display:grid;gap:0;margin-top:12px}
+.pyr-when li{
+  display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;
+  padding:9px 0;border-top:1px solid var(--line-soft);font-size:13px;color:var(--soft);line-height:1.5;
+}
+.pyr-when li:first-child{border-top:0;padding-top:0}
+.pyr-when b{flex:0 0 auto;min-width:88px;color:var(--ink);font-weight:500}
+.pyr-when span{flex:1 1 190px;min-width:0}
+.pyr-src{margin-top:12px}
+.pyr-src p{
+  font-size:11.5px;color:var(--mut);line-height:1.5;margin-top:9px;
+  border-left:1px solid var(--line);padding-left:11px;max-width:58ch;
+}
+.pyr-prev{margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft);display:grid;gap:8px}
+.pyr-prev-label{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut)}
+.pyr-item{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;
+  border:1px solid var(--line-soft);border-radius:10px;background:rgba(255,255,255,.025);padding:10px 12px;
+}
+.pyr-item .grow{flex:1 1 180px;min-width:0}
+.pyr-item strong{display:block;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.35}
+.pyr-item .kind{font-size:11.5px;color:var(--mut);margin-top:3px;display:block}
+.pyr-item.anchor{border-color:rgba(90,143,106,.34);background:rgba(90,143,106,.08)}
+.pyr-item.ghost{border-style:dashed;opacity:.72}
+.pyr-item .chips{margin-top:2px}
+.pyr-note{font-size:12.5px;color:var(--mut);line-height:1.5;max-width:52ch}
+.pyr-cap{font-size:12px;color:var(--mut);margin-top:9px;line-height:1.45}
+
+/* v3.2: de horizontale mini-piramide is vervallen — de brug toont drie echte
+   treden. Zes staafjes naast elkaar lazen als een balkje-diagram, niet als
+   een piramide, en niemand kon erop tikken. */
+
+/* rail — compact, altijd zichtbaar op desktop */
+.pyramid--rail .rung{min-height:42px;padding:7px calc(var(--k) + 12px)}
+.pyramid--rail .rung-label{font-size:calc(var(--fs) * .82)}
+.pyramid--rail .rung-state{font-size:9.5px;margin-top:3px}
+.pyramid--rail .pyr-panel{padding:12px}
+.pyramid--rail .pyr-panel h4{font-size:16px}
+.pyramid--rail .pyr-when,.pyramid--rail .pyr-prev,.pyramid--rail .pyr-src{display:none}
+
+/* full — scherm C */
+.pyramid--full .rung{min-height:56px}
+
+/* ---------- week-readout op Mijn Dag ---------- */
+.weekstrip{display:grid;gap:0}
+.weekstrip .wk-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:11px 0;border-top:1px solid var(--line-soft)}
+.weekstrip .wk-row:first-child{border-top:0;padding-top:0}
+.wk-name{flex:1 1 140px;min-width:0;font-size:13.5px;color:var(--soft)}
+.wk-name b{color:var(--ink);font-weight:500}
+.wk-bar{flex:0 0 68px;height:5px;border-radius:3px;background:rgba(255,255,255,.09);overflow:hidden}
+.wk-bar i{display:block;height:100%;border-radius:3px;background:var(--move)}
+.wk-bar.full i{background:var(--sage)}
+.wk-count{flex:0 0 auto;font-size:12.5px;color:var(--mut);font-variant-numeric:tabular-nums}
+.wk-shut{font-size:12.5px;color:var(--mut);padding:11px 0 0;border-top:1px solid var(--line-soft);line-height:1.5}
+
+/* ---------- mock-alert (prototype, geen productbelofte) ---------- */
+.mockalert{
+  border:1px solid rgba(200,149,108,.3);border-radius:var(--r-panel);
+  background:linear-gradient(180deg,rgba(200,149,108,.08),rgba(200,149,108,.02));padding:15px;
+}
+.mockalert[hidden]{display:none}
+.mockalert .tagline{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);
+}
+.mockalert .tagline em{
+  font-style:normal;border:1px dashed var(--line);border-radius:999px;padding:2px 8px;color:var(--mut);
+}
+.mockalert h4{font-size:15px;font-weight:600;margin-top:11px;color:var(--ink)}
+.mockalert p{font-size:13px;color:var(--soft);margin-top:6px;line-height:1.55;max-width:52ch}
+.mockalert .foot{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;
+  margin-top:13px;padding-top:11px;border-top:1px solid var(--line-soft);
+  font-size:12px;color:var(--mut);
+}
+
+/* ---------- andere domeinen (placeholder) ---------- */
+.domgrid{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px}
+.domsil{flex:1 1 92px;min-width:92px;text-align:center}
+.domsil .sil{display:flex;flex-direction:column-reverse;align-items:center;gap:2px}
+.domsil .sil i{display:block;height:7px;background:rgba(255,255,255,.055);border-radius:1px}
+.domsil span{display:block;font-size:11.5px;color:var(--mut);margin-top:8px}
+
 @media (min-width:600px){
+  .pyramid--full .pyr-grid{grid-template-columns:minmax(0,.85fr) minmax(0,2.2fr) minmax(0,.85fr)}
   .stage{padding:26px 24px 88px}
   .chrome-in{padding:12px 24px}
   .switch{margin:0;padding:0 0 2px}
@@ -585,6 +788,117 @@ ul{margin:0;padding:0;list-style:none}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .btn:active{transform:none}
 }
+
+/* ═══════════ v3.2 ═══════════ */
+
+/* Gebruikersmodus: alles wat alleen voor een reviewer bestaat, gaat uit. Wat
+   Peter ziet moet het scherm zijn, niet het scherm plus de verantwoording. */
+body[data-mode="user"] .statebar,
+body[data-mode="user"] .protoline,
+body[data-mode="user"] .note,
+body[data-mode="user"] .revonly{display:none}
+/* De profielkaart beschrijft het mock-profiel, niet het product. Op 375px
+   stond hij vóór het voorstel — precies de plek waar hij de eerste blik kost,
+   met precies de woorden die we uit de lead haalden ("beweegscore",
+   "spierbehoud"). Reviewers zien hem, Peter niet. */
+body[data-mode="user"] .ctx{display:none}
+.modeline{
+  display:inline-flex;flex-wrap:nowrap;align-items:center;gap:6px;flex:0 0 auto;
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--mut);
+}
+.modeline button{
+  font:inherit;letter-spacing:.09em;padding:4px 10px;border-radius:99px;
+  border:1px solid var(--line);background:none;color:var(--mut);cursor:pointer;
+}
+.modeline button[aria-pressed="true"]{color:var(--ink);border-color:var(--sage)}
+
+/* A1 · het waarom in gewone taal — drie regels, elk onder de vijftien woorden */
+.why{display:grid;gap:0;margin-top:16px}
+.why li{
+  display:flex;gap:11px;align-items:baseline;
+  padding:9px 0;border-top:1px solid var(--line-soft);
+  font-size:14px;color:var(--soft);line-height:1.5;
+}
+.why li:first-child{border-top:0;padding-top:2px}
+.why li::before{
+  content:"";flex:0 0 auto;width:6px;height:6px;border-radius:99px;
+  background:var(--move);transform:translateY(-2px);
+}
+
+/* Het vooringevulde moment: één primaire knop, het voorstel eronder als tekst */
+.firstplan{margin-top:17px}
+.firstplan .btn-primary{width:100%;justify-content:center}
+.firstplan .prefill{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;
+  margin-top:11px;font-size:13px;color:var(--soft);
+}
+.firstplan .prefill b{color:var(--ink);font-weight:500}
+.firstplan .alt{margin-top:15px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.firstplan .alt .meta{margin:0}
+
+/* Brug-sheet: laag 1–3, één open, maximaal drie acties */
+.bridge-pyr{display:grid;gap:6px;margin-top:16px}
+.bridge-pyr .rung{margin:0 auto}
+.bridge-pyr .rung.flat{cursor:default;display:flex;align-items:center;gap:10px}
+.bridge-pyr .rung.flat .rung-body{flex:1 1 auto;min-width:0}
+.bridge-pyr .rung.flat .rung-fill{background:rgba(90,143,106,.42)}
+.bridge-pyr .rung.flat .rung-fill::after{background:#1d3320}
+.bridge-lock{
+  position:relative;z-index:1;flex:0 0 auto;
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--sage-lt);
+}
+.bridge-lock svg{width:13px;height:13px}
+.sheet{
+  margin-top:14px;border:1px solid var(--line-soft);border-top:2px solid var(--pyr-active);
+  border-radius:0 0 var(--r-card) var(--r-card);background:rgba(0,0,0,.2);padding:15px;
+}
+.sheet h4{font-family:var(--serif);font-size:19px;line-height:1.15;color:var(--ink)}
+.sheet .metaline{
+  font-size:11.5px;color:var(--mut);margin-top:6px;letter-spacing:.02em;line-height:1.5;
+}
+.sheet-acts{display:grid;gap:9px;margin-top:14px}
+.sheet-act{
+  display:flex;flex-wrap:wrap;align-items:center;gap:9px 12px;
+  border:1px solid var(--line-soft);border-radius:11px;
+  background:rgba(255,255,255,.028);padding:12px;
+}
+.sheet-act .grow{flex:1 1 170px;min-width:0}
+.sheet-act strong{display:block;font-size:14px;font-weight:600;color:var(--ink);line-height:1.35}
+.sheet-act .kind{display:block;font-size:11.5px;color:var(--mut);margin-top:3px}
+.sheet-act .btn{flex:0 0 auto}
+.sheet-act.on{border-color:rgba(90,143,106,.4);background:rgba(90,143,106,.09)}
+.sheet-why{margin-top:14px}
+.sheet-why p{
+  font-size:12px;color:var(--mut);line-height:1.55;margin-top:9px;
+  border-left:1px solid var(--line);padding-left:11px;max-width:58ch;
+}
+
+/* "Vandaag ook" op Beweging — dezelfde staat als Mijn Dag, geen tweede lijst */
+.also{display:grid;gap:9px;margin-top:13px}
+.also-row{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;
+  border:1px solid var(--line-soft);border-radius:11px;
+  background:rgba(255,255,255,.028);padding:11px 12px;
+}
+.also-row .grow{flex:1 1 160px;min-width:0}
+.also-row strong{display:block;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.35}
+.also-row .when{display:block;font-size:11.5px;color:var(--mut);margin-top:3px}
+.also-row.done{border-color:rgba(90,143,106,.34);background:rgba(90,143,106,.08)}
+.also-cap{font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.5}
+
+/* Voortgang: alles wat niet het kompas is, staat gevouwen */
+.fold{border:1px solid var(--line-soft);background:var(--panel-2);border-radius:var(--r-panel);padding:16px}
+.fold > summary{
+  cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;
+  font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut);
+}
+.fold > summary::-webkit-details-marker{display:none}
+.fold > summary::after{content:"tonen";color:var(--sage-lt);letter-spacing:.09em}
+.fold[open] > summary::after{content:"verbergen"}
+.fold > summary:hover{color:var(--soft)}
+.fold[open] > summary{margin-bottom:16px;padding-bottom:13px;border-bottom:1px solid var(--line-soft)}
+.fold .own{border:0;background:none;padding:0;margin:0}
 </style>
 </head>
 <body>
@@ -604,8 +918,11 @@ ul{margin:0;padding:0;list-style:none}
 <header class="chrome">
   <div class="chrome-in">
     <div class="chrome-top">
-      <span class="chrome-label">Prebuild v3 · Beweging keuzemodel</span>
-      <span class="chrome-label tnum">aug 2026</span>
+      <span class="chrome-label">Prebuild v3.2 · Beweging</span>
+      <span class="modeline" title="Gebruikersmodus verbergt statusbalken, sub-staat-schakelaars, profielkaart en ontwerpnotities.">
+        <button data-mode="user" aria-pressed="true">gebruiker</button>
+        <button data-mode="review" aria-pressed="false">reviewer</button>
+      </span>
     </div>
     <div class="switch" role="tablist" aria-label="Schermen">
       <button role="tab" id="tab-a" aria-controls="s-a" aria-selected="true" data-screen="a"><span>A</span> Eerste keer</button>
@@ -614,6 +931,49 @@ ul{margin:0;padding:0;list-style:none}
       <button role="tab" id="tab-c" aria-controls="s-c" aria-selected="false" data-screen="c"><span>C</span> Gekozen</button>
       <button role="tab" id="tab-d" aria-controls="s-d" aria-selected="false" data-screen="d"><span>D</span> Mijn Dag</button>
     </div>
+    <div class="protoline" style="border-top-color:var(--line-soft);padding-top:10px;margin-top:2px">
+      <span>Huidige laag</span>
+      <button data-layer="1" aria-pressed="false">1</button>
+      <button data-layer="2" aria-pressed="true">2</button>
+      <button data-layer="3" aria-pressed="false">3</button>
+      <button data-layer="4" aria-pressed="false">4</button>
+      <button data-layer="5" aria-pressed="false">5</button>
+      <button data-layer="6" aria-pressed="false">6</button>
+      <span style="margin-left:6px">Brug</span>
+      <button data-bridge="1" aria-pressed="false">open</button>
+      <button data-bridge="0" aria-pressed="true">dicht</button>
+      <span style="margin-left:6px">Alert mock</span>
+      <button data-alert="1" aria-pressed="true">aan</button>
+      <button data-alert="0" aria-pressed="false">uit</button>
+    </div>
+    <details class="note">
+      <summary>Wat v3.2 verandert — eerste keer plant, brug voegt toe</summary>
+      <ol>
+        <li><b>A1 heeft geen "Gedaan" meer.</b> Wie voor het eerst binnenkomt heeft niets gedaan; een afvink-knop op dat moment leest als een verwijt. De primaire actie is het voorgestelde moment vastzetten. "Ik doe hem nu" staat ernaast en brengt je in de dagstaat, waar afvinken hoort.</li>
+        <li><b>Het moment is vooringevuld.</b> Er staat een dag en een tijd klaar uit je check; wijzigen is één tik. Zo blijft het besluit "je kiest niet, je bevestigt" overeind en komt er geen picker tussen jou en het antwoord (BESLUIT §A.4 verbod 1).</li>
+        <li><b>Het waarom staat in gewone taal.</b> Drie regels, elk onder de vijftien woorden, zonder "beweegscore", "spierbehoud" of "conditie". De vaktermen staan nog in je programma, niet in je eerste beeld.</li>
+        <li><b>Jouw start heeft een eigen doel.</b> Naast de vier vaste ankers kun je in je eigen woorden zeggen waarvoor je dit doet. Het kleurt je waarom en verandert je advies niet.</li>
+        <li><b>De brug heet "Voeg iets toe aan je basis"</b> en toont laag 1–3, niet zes. Laag 2 is read-only met het label "dit is je basis". Tik op een laag → sheet met maximaal drie acties, elk met één knop naar je dag.</li>
+        <li><b>De keten is uit de brug.</b> Check → Advies → Favorieten → Beste hoort op Voortgang, in één regel. Vier concepten in één paneel was er drie te veel.</li>
+        <li><b>Wat je toevoegt staat op twee plekken met één staat.</b> Beweging toont het als "vandaag ook", Mijn Dag als rij in je dag; afvinken op de een zet de ander mee. Eén eenheid, één bron.</li>
+        <li><b>Geen noemers meer.</b> "Vier dagen bewogen", niet "4 van 7". Een readout die telt wat je niet deed, is verboden (BESLUIT verbod 4) — v3.1 deed dat nog op Mijn Dag en in de mock-alert.</li>
+        <li><b>Voortgang klapt dicht.</b> Meetpad en eigen begeleiding staan er nog, op dezelfde plek, maar gevouwen. Per laag één metaregel; de onderbouwing zit achter "Bekijk waarom".</li>
+      </ol>
+      <p style="margin-top:10px">Onderbouwing: <b>claude-opus-beweging-v3.2-wederprompt.md</b> — spar-notities 8 augustus, met drie afwijkingen (plan-CTA vooringevuld, laag 3 leesbaar in de brug, noemers weg) die daar zijn onderbouwd.</p>
+    </details>
+    <details class="note">
+      <summary>Wat v3.1 toevoegt — de leefstijl-piramide als kompas</summary>
+      <ol>
+        <li><b>De piramide is één component, drie varianten:</b> mini in de brug, rail op desktop, volledig op Voortgang. Zes lagen, van dagelijks bewegen (1) tot supplementen en wearables (6).</li>
+        <li><b>Prioriteit staat onderaan, niet bovenaan.</b> Laag 1 is de hoogste prioriteit. De piramide sorteert het <em>type</em> interventie — het is geen ranglijst en geen etage die omhoog duwt.</li>
+        <li><b>Elke laag draagt zijn eigen onderbouwing:</b> prioriteit, moeite, één evidence-zin, wanneer wel en wanneer niet, plus de richtlijn waar het vandaan komt.</li>
+        <li><b>Geen ordinaal.</b> Nergens "trede 4 van 6" of "fase 1 van 3". Wel: waar je basis staat, en wat pas zinnig is als die basis er ligt.</li>
+        <li><b>Gesloten lagen blijven leesbaar op Voortgang.</b> Laag 5 en 6 zijn niet planbaar en niet klikbaar in de brug en de rail — op C mag je wél lezen waaróm ze nu niet aan de orde zijn. Dat is precies het Bond-werk.</li>
+        <li><b>Mijn Dag krijgt een week-readout, geen tweede vinklijst.</b> "Markeer als gedaan" blijft de enige completion-knop; de laagbalken zijn uitlezing.</li>
+        <li><b>De alert-kaart is expliciet mock</b> en belooft geen push en geen app-download — hooguit perfectsupplement.nl op je telefoon.</li>
+      </ol>
+      <p style="margin-top:10px">Noordster: een goede basisconditie, krachttraining en dagelijks bewegen winnen vrijwel altijd van een perfect geoptimaliseerd schema dat iemand niet volhoudt.</p>
+    </details>
     <details class="note">
       <summary>Patch 6 augustus 2026 — Pad A · vier sub-staten · duur-lock</summary>
       <ol>
@@ -655,13 +1015,10 @@ ul{margin:0;padding:0;list-style:none}
       <span class="ctx-item">Doel: spierbehoud en energie</span>
       <span class="ctx-item tnum">Leefstijlcheck: 2 augustus</span>
     </div>
-    <nav class="ladder" aria-label="Zo werkt Beweging">
-      <h3>Zo werkt het hier</h3>
-      <ol>
-        <li>Je basisadvies staat er meteen — gebruiken mag vandaag nog.</li>
-        <li>Je kiest wat ernaast past: begeleiding, iets bij jou in de buurt, of niets.</li>
-        <li>We meten of het werkt: jouw oordeel, hertest na 14 en na 30 dagen.</li>
-      </ol>
+    <nav class="ladder" aria-label="Leefstijl-kompas beweging">
+      <h3>Leefstijl-kompas · beweging</h3>
+      <div id="rail-pyramid"></div>
+      <p class="pyr-cap">Dit is waar je opties horen — niet wat je vandaag moet.</p>
     </nav>
   </aside>
 
@@ -669,32 +1026,53 @@ ul{margin:0;padding:0;list-style:none}
 
     <!-- ================= A · NET NA DE CHECK ================= -->
     <section class="screen" id="s-a" role="tabpanel" aria-labelledby="tab-a">
-      <p class="statebar first rise" style="--i:0"><b>Eerste keer — vier sub-staten op één surface.</b> <b>A1</b> voorstel, plan onbevestigd · <b>A2</b> programma instellen · <b>A3</b> bevestigd, geen moment · <b>A4</b> moment gezet. Vanaf de eerste afvink opent Beweging in de terugkeer-staat (E). A is geen scherm en geen route, maar een toestand van dezelfde surface.</p>
+      <p class="statebar first rise" style="--i:0"><b>Eerste keer — drie sub-staten op één surface.</b> <b>A1</b> voorstel, moment nog niet vastgezet · <b>A2</b> programma instellen · <b>A3</b> moment vastgezet. v3.2 haalt "Gedaan" hier weg: wie voor het eerst binnenkomt hééft niets gedaan. De eerste afvink hoort in de dagstaat (E), en daar brengt "Ik doe hem nu" je naartoe.</p>
 
       <header class="rise" style="--i:0">
-        <p class="ctx-name" style="margin-bottom:9px">Welkom, Peter — fijn dat je verder gaat.</p>
-        <p class="eyebrow" data-bind="a-source">Beweging · op basis van je Leefstijlcheck van 2 augustus</p>
-        <h1 class="display">Twee keer kracht thuis,<br />15 tot 20 minuten</h1>
-        <p class="lead" data-bind="a-lead">Matige beweegscore, doel spierbehoud — daarom kracht, niet conditie.</p>
+        <p class="ctx-name" style="margin-bottom:9px">Welkom, Peter.</p>
+        <p class="eyebrow" data-bind="a-source">Uit je check van 2 augustus</p>
+        <h1 class="display">Dit stellen we voor:<br />2 keer kracht thuis</h1>
+        <p class="lead" data-bind="a-lead">Kwartiertje per keer. Thuis, zonder sportschool.</p>
       </header>
 
       <div class="panel rise" style="--i:1">
-        <ul class="specs">
-          <li><b>Vorm</b> <span class="grow">Vijf basisoefeningen: duwen, trekken, benen, romp, heup</span></li>
-          <li><b>Plek</b> <span class="grow">Thuis, zonder apparaten — één set weerstandsbanden volstaat</span></li>
-          <li><b>Vandaag</b> <span class="grow" data-bind="a-today-dur">15–20 min</span></li>
+        <p class="plan-label">Waarom dit bij jou past</p>
+        <!-- Drie regels, elk onder de vijftien woorden, geen vakterm. De
+             score-taal ("matige beweegscore", "spierbehoud") staat nog in je
+             programma en in Voortgang — niet in het eerste beeld. -->
+        <ul class="why" id="a-why">
+          <li>Je beweegt genoeg. Kracht is wat mist.</li>
+          <li>Na je 40e gaat spier hard achteruit.</li>
+          <li>Je wilde het zelf doen. Dat kan hiermee.</li>
         </ul>
+        <p class="meta" id="a-own-line" hidden style="margin-top:12px"></p>
 
-        <div class="today-acts" style="margin-top:15px">
-          <button class="btn btn-primary" id="a-done"><svg aria-hidden="true"><use href="#i-check"/></svg>Gedaan</button>
-          <button class="btn btn-soft" id="a-short">Ik doe de korte</button>
+        <div class="firstplan" id="a-firstplan">
+          <button class="btn btn-primary" id="a-plan-set">
+            <svg aria-hidden="true"><use href="#i-cal"/></svg>Zet mijn eerste keer klaar
+          </button>
+          <p class="prefill" id="a-prefill">
+            <span id="a-prefill-text"><span>Voorstel:</span> <b id="a-prefill-when">maandag 3 augustus · 18:00</b></span>
+            <button class="linkish q" id="a-moment" aria-expanded="false" aria-controls="a-plan">ander moment</button>
+          </p>
+          <div class="plan" id="a-plan"></div>
+          <div class="confirm" id="a-confirm" aria-live="polite"></div>
+
+          <div class="alt">
+            <button class="btn btn-ghost" id="a-now">Ik doe hem nu</button>
+            <span class="meta">Afvinken doe je dan op je dagbeeld.</span>
+          </div>
+          <div class="confirm" id="a-now-confirm" aria-live="polite"></div>
         </div>
-        <p class="today-note" id="a-done-note">Dit is al je instelling, geen los voorbeeld — je hoeft niets aan te passen om te beginnen.</p>
-        <div class="confirm" id="a-done-confirm" aria-live="polite"></div>
 
         <p class="prog"><button class="linkish" id="a-prog" aria-expanded="false" aria-controls="a-dose">Je programma · <span data-bind="a-prog-label">nog niet ingesteld</span></button></p>
         <div class="plan" id="a-dose">
-          <div class="plan-row">
+          <ul class="specs">
+            <li><b>Vorm</b> <span class="grow">Vijf oefeningen: duwen, trekken, benen, romp, heup</span></li>
+            <li><b>Plek</b> <span class="grow">Thuis. Eén set weerstandsbanden is genoeg</span></li>
+            <li><b>Per keer</b> <span class="grow" data-bind="a-today-dur">15–20 min</span></li>
+          </ul>
+          <div class="plan-row" style="margin-top:13px">
             <span class="plan-label">Hoe lang wil je per keer?</span>
             <div class="chips" id="a-dur" role="group" aria-label="Doel per sessie">
               <button class="chip" aria-pressed="true" data-dur="15–20 min">kort · 15–20 min</button>
@@ -710,7 +1088,7 @@ ul{margin:0;padding:0;list-style:none}
       <!-- A1 → A2 -->
       <div class="door rise" id="a-setup" style="--i:2">
         <h3>Klopt dit voor jou?</h3>
-        <p>We stelden dit voor op je beweegscore. Zeg wat je wil en het voorstel past zich aan — het kost een halve minuut en overslaan mag.</p>
+        <p>Wil je liever iets anders? Zeg het, dan past het voorstel zich aan. Het kost een halve minuut. Overslaan mag.</p>
         <button class="btn btn-ghost" id="a-setup-open">Stel je programma in (30 sec) <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
       </div>
 
@@ -723,34 +1101,27 @@ ul{margin:0;padding:0;list-style:none}
         <p class="meta" style="margin-top:15px"><button class="linkish q" id="a-wizard-skip">Liever direct beginnen? Sla over</button></p>
       </div>
 
-      <!-- A3 / A4 -->
+      <!-- A3 -->
       <div class="panel rise" id="a-dagpanel" hidden style="--i:3">
         <p class="eyebrow">In je dag</p>
-        <p class="today-note" id="a-dag-line" style="margin-top:9px;max-width:54ch">Deze stap staat nog niet in je dag. Koppelen mag, maar hoeft niet — afvinken kan hier altijd.</p>
+        <p class="today-note" id="a-dag-line" style="margin-top:9px;max-width:54ch">Je eerste keer staat klaar. Verplaatsen kan altijd, op Mijn Dag.</p>
         <div class="cta-row" style="margin-top:13px">
-          <button class="btn btn-primary" id="a-dag">
-            <svg aria-hidden="true"><use href="#i-cal"/></svg>Zet op Mijn Dag
-          </button>
-          <button class="linkish" id="a-moment" aria-expanded="false" aria-controls="a-plan">Koppel je momenten (optioneel)</button>
+          <button class="btn btn-ghost" data-goto="d"><svg aria-hidden="true"><use href="#i-cal"/></svg>Bekijk je dag</button>
         </div>
-
-        <div class="plan" id="a-plan"></div>
-        <div class="confirm" id="a-confirm" aria-live="polite"></div>
       </div>
 
       <div class="panel-quiet rise" style="--i:4">
-        <p class="today-note" style="margin-top:0">Wil je iets naast je basis zetten?</p>
-        <button class="btn btn-ghost" id="a-help" style="margin-top:13px">Zet er iets naast <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <p class="today-note" style="margin-top:0">Wil je iets kleins toevoegen naast je basis?</p>
+        <button class="btn btn-ghost" id="a-help" style="margin-top:13px">Voeg iets toe aan je basis <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         <div class="plan" id="a-bridge"></div>
-        <p class="meta" style="margin-top:13px"><button class="linkish q" data-goto="c">Liever met iemand die meekijkt? Onze eigen begeleiding <svg aria-hidden="true"><use href="#i-arrow"/></svg></button></p>
+        <p class="meta" style="margin-top:13px"><button class="linkish q" data-goto="c">Liever iemand die meekijkt? Onze eigen begeleiding <svg aria-hidden="true"><use href="#i-arrow"/></svg></button></p>
       </div>
 
       <p class="protoline">
         <span>Sub-staat</span>
         <button data-sub="1" aria-pressed="true">A1 voorstel</button>
         <button data-sub="2" aria-pressed="false">A2 instellen</button>
-        <button data-sub="3" aria-pressed="false">A3 bevestigd</button>
-        <button data-sub="4" aria-pressed="false">A4 moment gezet</button>
+        <button data-sub="3" aria-pressed="false">A3 moment vastgezet</button>
       </p>
       <p class="protoline">
         <span>Check-bron</span>
@@ -779,6 +1150,15 @@ ul{margin:0;padding:0;list-style:none}
         <div class="plan" id="e-plan"></div>
       </div>
 
+      <!-- Vandaag ook: wat er náást je basis in je dag staat. Dit is dezelfde
+           staat als de rij op Mijn Dag — afvinken hier zet hem daar mee. Eén
+           eenheid, één bron, twee uitlezingen; geen tweede vinklijst. -->
+      <div class="panel rise" id="e-also-panel" hidden style="--i:1">
+        <p class="plan-label">Vandaag ook</p>
+        <div class="also" id="e-also"></div>
+        <p class="also-cap">Dit staat ook op Mijn Dag. Vink het hier af of daar — het is hetzelfde.</p>
+      </div>
+
       <div class="panel rise" id="e-klaar" hidden style="--i:1">
         <p class="done-head"><svg aria-hidden="true"><use href="#i-check"/></svg><span id="e-done-line">Gedaan · donderdag 6 augustus · 25–40 min</span></p>
         <p class="today-note">Genoteerd onder Gedaan. Dat is het bewijs onder je hertest — geen reeks die je kwijt kunt raken.</p>
@@ -804,8 +1184,8 @@ ul{margin:0;padding:0;list-style:none}
       <p class="meta rise" style="--i:2">Verder vandaag staan er nog twee dingen klaar — voeding en slaap. <button class="linkish" data-goto="d">Open Mijn Dag <svg aria-hidden="true"><use href="#i-arrow"/></svg></button></p>
 
       <div class="panel-quiet rise" style="--i:3">
-        <p class="today-note" style="margin-top:0;max-width:54ch">Je basis is het pad. Wil je zien wat er eventueel naast kan — en waar je nu staat in het traject?</p>
-        <button class="btn btn-ghost" id="e-help" style="margin-top:13px">Zet er iets naast <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <p class="today-note" style="margin-top:0;max-width:54ch">Je basis blijft staan. Wil je er iets kleins bij?</p>
+        <button class="btn btn-ghost" id="e-help" style="margin-top:13px">Voeg iets toe aan je basis <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         <div class="plan" id="e-bridge"></div>
       </div>
 
@@ -1155,7 +1535,14 @@ ul{margin:0;padding:0;list-style:none}
         <p class="lead" id="c-lead">Alles hieronder is gratis, ook zonder iets extra's te kiezen. Wil je iets ernaast? Dat kies je in <b>Maak een keuze</b>.</p>
       </header>
 
-      <div class="panel rise" style="--i:1">
+      <div class="panel-quiet rise" style="--i:1">
+        <p class="eyebrow">Beweging · je kompas</p>
+        <p class="pyr-north">Een goede basisconditie, krachttraining en dagelijks bewegen winnen vrijwel altijd van een perfect geoptimaliseerd schema dat je niet volhoudt.</p>
+        <div id="c-pyramid"></div>
+        <p class="pyr-cap" style="margin-top:16px">Zes lagen, van onder naar boven. Laag 1 heeft de hoogste prioriteit — niet de laatste. Tik een laag aan voor de onderbouwing, wanneer die wel geldt en wanneer niet.</p>
+      </div>
+
+      <div class="panel rise" style="--i:2">
         <div class="chosen">
           <div class="chosen-row">
             <div class="grow">
@@ -1185,9 +1572,11 @@ ul{margin:0;padding:0;list-style:none}
         </div>
       </div>
 
-      <div class="bridge rise" style="--i:2">
+      <!-- De keten staat hier, in één regel — en nergens anders meer. In de
+           brug was hij het vierde concept in één paneel. -->
+      <div class="bridge rise" style="--i:3">
         <div class="grow">
-          <p>Dit pad volgt mee in Voortgang.</p>
+          <p>Wat je afvinkt telt mee voor laag 1 en 2.</p>
           <div class="chain">
             <span class="done">Check</span><i>→</i>
             <span class="done">Advies</span><i>→</i>
@@ -1198,8 +1587,8 @@ ul{margin:0;padding:0;list-style:none}
         <button class="linkish">Open Voortgang <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
       </div>
 
-      <div class="panel-quiet rise" style="--i:3">
-        <p class="eyebrow" style="margin-bottom:16px">Hoe we meten of dit werkt</p>
+      <details class="fold rise" style="--i:4">
+        <summary>Hoe we meten of dit werkt</summary>
         <div class="track">
           <div class="step now">
             <div class="step-top">
@@ -1235,9 +1624,13 @@ ul{margin:0;padding:0;list-style:none}
           </div>
         </div>
         <p class="meta" style="margin-top:18px;border-top:1px solid var(--line-soft);padding-top:14px">Een wearable koppelen kan later. Nu meten we met je eigen oordeel en de hertest — dat is genoeg om te zien of dit voor jou werkt.</p>
-      </div>
+      </details>
 
-      <aside class="own rise" style="--i:4">
+      <!-- Blijft waar het besluit hem zet: op C, ná het meetpad. Gevouwen,
+           want een permanent uitgeklapt aanbod onder de vouw is een schap. -->
+      <details class="fold rise" style="--i:5">
+        <summary>Van PerfectSupplement · begeleiding die met je meekijkt</summary>
+        <aside class="own">
         <span class="own-badge">Van PerfectSupplement</span>
         <h3>Sterk na 40 — begeleiding die met je meekijkt</h3>
         <p>Bij de check gaf je aan dat je twee keer eerder gestopt bent. Niet omdat het plan niet klopte, maar omdat er niemand keek op de week dat het even niet liep.</p>
@@ -1248,9 +1641,16 @@ ul{margin:0;padding:0;list-style:none}
         <button class="btn btn-ghost" id="own-wait">Zet me op de wachtlijst</button>
         <div class="confirm" id="own-confirm" aria-live="polite"></div>
         <p class="micro">Dit is onze eigen begeleiding, geen partner. We verdienen er rechtstreeks aan — daarom staat hij hier apart en niet tussen de opties die we beoordelen. Daar zou hij een belanghebbende zijn.</p>
-      </aside>
+        </aside>
+      </details>
 
-      <div class="cta-row rise" style="--i:5">
+      <details class="panel-quiet note rise" style="--i:4">
+        <summary style="font-size:13.5px;color:var(--soft)">Hetzelfde kompas voor andere domeinen</summary>
+        <div class="domgrid" id="domgrid"></div>
+        <p class="pyr-cap" style="margin-top:14px">Beweging eerst — schema volgt per domein. Deze silhouetten staan er als vorm, niet als inhoud: er zit nog geen oordeel en geen score onder.</p>
+      </details>
+
+      <div class="cta-row rise" style="--i:6">
         <button class="btn btn-primary" data-goto="d">Bekijk je week op Mijn Dag <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         <button class="linkish" data-goto="b">Nog een optie kiezen</button>
       </div>
@@ -1263,7 +1663,25 @@ ul{margin:0;padding:0;list-style:none}
         <h2 class="h-sec">Zo staat je keuze in je dag</h2>
       </header>
 
-      <div class="panel rise" style="--i:1">
+      <div class="panel-quiet rise" style="--i:1">
+        <p class="eyebrow">Leefstijl-ladder · deze week</p>
+        <div class="weekstrip" id="weekstrip"></div>
+        <p class="wk-shut" id="wk-shut">Laag 3 is nog niet open — die begint pas als je basis vier weken staat.</p>
+      </div>
+
+      <aside class="mockalert rise" id="mockalert" style="--i:1">
+        <p class="tagline"><em>mock in deze prebuild</em><span>Herinnering · donderdag 18:00</span></p>
+        <h4>Kracht thuis staat op je dag</h4>
+        <p id="alert-body">Je hield laag 1–2 deze week 5 van de 7 dagen vol.</p>
+        <p class="foot">
+          <span>Via e-mail</span>
+          <button class="linkish q" id="alert-settings">Instellingen</button>
+          <span>perfectsupplement.nl werkt op je telefoon — zet hem bij je bladwijzers.</span>
+        </p>
+        <div class="confirm" id="alert-confirm" aria-live="polite"></div>
+      </aside>
+
+      <div class="panel rise" style="--i:2">
         <div class="day" id="day">
           <div class="day-row" data-time="07:10">
             <span class="day-time tnum">07:10</span>
@@ -1298,10 +1716,8 @@ ul{margin:0;padding:0;list-style:none}
               <div class="day-acts">
                 <button class="btn btn-primary" data-bind="basis-done">Markeer als gedaan</button>
                 <button class="btn btn-ghost" id="d-basis-move">Verplaatsen</button>
-                <button class="linkish q" id="d-help">Zet er iets naast</button>
               </div>
               <div class="plan" id="d-basis-plan"></div>
-              <div class="plan" id="d-bridge"></div>
               <div class="confirm" id="d-confirm" aria-live="polite"></div>
             </div>
           </div>
@@ -1317,16 +1733,26 @@ ul{margin:0;padding:0;list-style:none}
         </div>
       </div>
 
-      <div class="bridge rise" style="--i:2">
-        <div class="grow">
-          <p>Wat je hier afvinkt, telt mee in Voortgang: Check → Advies → Favorieten → Beste.</p>
-        </div>
-        <button class="linkish" data-goto="c">Bekijk je meetpad <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <p class="meta rise" style="--i:3">Een afspraak bij een partner telt apart: afvinken betekent daar <b>afspraak gehad</b>, niet getraind.</p>
+
+      <!-- De brug staat onder de dag, niet ín de basis-rij. Inline tussen twee
+           knoppen las hij als een derde actie op die ene sessie. -->
+      <div class="panel-quiet rise" style="--i:4">
+        <p class="today-note" style="margin-top:0">Wil je er iets kleins bij zetten?</p>
+        <button class="btn btn-ghost" id="d-help" style="margin-top:13px">Voeg iets toe aan je basis <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <div class="plan" id="d-bridge"></div>
+        <p class="meta" style="margin-top:13px"><button class="linkish" data-goto="c">Bekijk je meetpad <svg aria-hidden="true"><use href="#i-arrow"/></svg></button></p>
       </div>
 
-      <p class="meta rise" style="--i:3">Twee blokken, twee betekenissen: je basis vink je af als sessie, een afspraak bij een partner als afspraak. Zonder gekoppeld moment staat een blok onderaan je dag, onder "vandaag nog vrij" — het verdwijnt niet.</p>
-
-      <p class="meta rise" style="--i:4">De duur op je dag komt uit de zwaarte die je op Beweging koos, niet uit je doel — daarom verandert hij hier niet als je je doel bijstelt. Verplaatsen zet een starttijd en verder niets: er is nergens een veld voor een duur of een eindtijd, en een verplaatst blok houdt zijn afvinkstatus.</p>
+      <details class="note revonly rise" style="--i:5">
+        <summary>Regels achter deze dag — voor reviewers</summary>
+        <ol>
+          <li>Twee blokken, twee betekenissen: je basis vink je af als sessie, een afspraak bij een partner als afspraak. Zonder gekoppeld moment staat een blok onderaan je dag, onder "vandaag nog vrij" — het verdwijnt niet.</li>
+          <li>De duur op je dag komt uit de zwaarte die je op Beweging koos, niet uit je doel — daarom verandert hij hier niet als je je doel bijstelt.</li>
+          <li>Verplaatsen zet een starttijd en verder niets: er is nergens een veld voor een duur of een eindtijd, en een verplaatst blok houdt zijn afvinkstatus.</li>
+          <li>Wat je via de brug toevoegt, krijgt hier een eigen rij en op Beweging een regel onder "vandaag ook". Dezelfde staat, twee uitlezingen.</li>
+        </ol>
+      </details>
     </section>
 
   </main>
@@ -1490,6 +1916,7 @@ ul{margin:0;padding:0;list-style:none}
     document.getElementById("row-basis").setAttribute("data-time", basis.time);
     document.getElementById("row-extra").setAttribute("data-time", extra.time);
     sortDay();
+    refreshPyramids();
   }
 
   function sortDay() {
@@ -1499,6 +1926,326 @@ ul{margin:0;padding:0;list-style:none}
       return a.getAttribute("data-time").localeCompare(b.getAttribute("data-time"));
     });
     rows.forEach(function (r) { day.appendChild(r); });
+  }
+
+
+  /* ================= leefstijl-piramide (v3.1) =================
+     De piramide is het kompas van de leefstijl-ladder: ze laat zien waar een
+     interventie hoort qua prioriteit, onderbouwing en moeite. Ze is GEEN
+     ranglijst om te winnen en GEEN schap dat omhoog duwt.
+
+     LOCK: laag 1 staat onderaan en heeft de hoogste prioriteit. Nergens een
+     ordinaal ("trede 4 van 6", "fase 1 van 3") — wel: waar je basis staat en
+     wat pas zinnig is als die er ligt. De piramide sorteert het type
+     interventie; het Bond-oordeel blijft op de kaart, niet op de laag.       */
+
+  var currentLayer = 2;
+
+  /* Geometrie: onderlaag 100% breed, elke laag 7% smaller. De horizontale
+     inzet k is per laag herrekend zodat de schuine zijden één doorlopende
+     lijn vormen — anders knikt het silhouet bij elke overgang. De taper is
+     bewust mild: bij een steilere piramide past het label van laag 6 niet
+     meer binnen zijn eigen trapezium op 375px.                             */
+  var LAYER_GEO = [
+    { w: "100%", k: "3.50%", fs: "17px" }, { w: "93%", k: "3.76%", fs: "16.5px" },
+    { w: "86%", k: "4.07%", fs: "16px" },  { w: "79%", k: "4.43%", fs: "15.5px" },
+    { w: "72%", k: "4.86%", fs: "15px" },  { w: "65%", k: "5.38%", fs: "14.5px" }
+  ];
+
+  var PREVIEW = {
+    ritme:       { t: "Elk werkuur twee minuten staan", k: "Basis · dagelijks ritme", v: "ja", vl: "Aanrader" },
+    wandelen:    { t: "Stevig wandelen, 3× 30 minuten", k: "Basis · conditie", v: "ja", vl: "Aanrader" },
+    "pt-intake": { t: "PT-intake bij Kracht &amp; Co", k: "Partner · lokaal · eenmalig", v: "ja", vl: "Aanrader" },
+    krachtgroep: { t: "Krachtgroep 45+ bij De Vliert", k: "Partner · lokaal · wekelijks", v: "mits", vl: "Alleen als…" },
+    magnesium:   { t: "Magnesiumcitraat", k: "Product · staat klaar tot je hertest", v: "niet", vl: "Nu niet" },
+    creatine:    { t: "Creatine monohydraat", k: "Product · nog niet beoordeeld", v: "niet", vl: "Nog geen oordeel", ghost: true }
+  };
+
+  var LAYERS = [
+    {
+      n: 1, label: "Dagelijks bewegen", sub: "Zitten onderbreken · wandelen · fietsen",
+      prio: "Hoog", prioCls: "prio-hi", moeite: "Laag",
+      ev: "Minder lang zitten en meer bewegen door je dag heen leveren voor de meeste mensen meer gezondheidswinst op dan een extra trainingssessie per week.",
+      wel: "Sedentair werk, stijfheid, lage dagscore.",
+      niet: "Als vervanging van kracht (laag 2).",
+      srcShort: "Beweegrichtlijnen 2017",
+      src: "Gezondheidsraad, Beweegrichtlijnen 2017: voorkom veel stilzitten. WHO 2020 heeft sedentair gedrag als apart hoofdstuk.",
+      prev: ["ritme", "wandelen"],
+      next: "Twee keer kracht per week erbij — laag 2, de grootste stap die je nu kunt zetten."
+    },
+    {
+      n: 2, label: "Kracht + basisconditie", sub: "Spierbehoud · matig intensief bewegen",
+      prio: "Hoog", prioCls: "prio-hi", moeite: "Medium",
+      ev: "Twee keer per week kracht plus regelmatig matig intensief bewegen is de standaard voor volwassenen — sterker dan alleen cardio.",
+      wel: "Spierbehoud na je 40e, matige score, basisplan.",
+      niet: "Als laag 1 ontbreekt én je al overbelast bent.",
+      srcShort: "WHO 2020",
+      src: "WHO 2020: 150–300 minuten matig intensief per week plus twee keer per week spierversterkend werk. De Nederlandse Beweegrichtlijnen zeggen hetzelfde.",
+      prev: ["basis", "wandelen"],
+      next: "Versterk laag 1 — elk werkuur twee minuten staan — vóór je aan laag 4 begint."
+    },
+    {
+      n: 3, label: "Progressief opbouwen", sub: "Geleidelijk meer volume of intensiteit",
+      prio: "Medium", prioCls: "", moeite: "Medium",
+      ev: "Kracht en conditie bouw je op via geleidelijke toename van volume of intensiteit — niet via één perfect schema vanaf week 1.",
+      wel: "Je basis staat vier weken of langer.",
+      niet: "Als laag 2 nog niet volhoudbaar is.",
+      srcShort: "ACSM position stand",
+      src: "ACSM position stand over progressie in weerstandstraining: de opbouw doet het werk, niet de startzwaarte.",
+      prev: ["dose"],
+      next: "Houd je twee krachtdagen vier weken vol vóór je volume toevoegt — dat is laag 3."
+    },
+    {
+      n: 4, label: "Specifiek sporten", sub: "Hardlopen · zwemmen · teamsport",
+      prio: "Medium-laag", prioCls: "", moeite: "Hoog",
+      ev: "Doelgericht trainen voor één sport loont pas als de basis van laag 1 en 2 er ligt.",
+      wel: "Laag 1 en 2 staan, en je hebt een duidelijk doel.",
+      niet: "Als vervanging van kracht zonder plan.",
+      srcShort: "geen aparte richtlijn",
+      src: "Geen aparte richtlijn: sportspecifiek trainen valt onder dezelfde volume-adviezen als laag 2, met meer belasting op één patroon.",
+      prev: ["pt-intake", "krachtgroep"],
+      more: "Baantjeszwemmen en een proefweek bij een keten horen ook hier — beide staan in Maak een keuze.",
+      next: "Kies één doel om naartoe te trainen; je basis blijft twee keer kracht — dat is laag 4."
+    },
+    {
+      n: 5, label: "Geavanceerde training", sub: "Periodisering · zone 2 · intervallen",
+      prio: "Laag", prioCls: "prio-lo", moeite: "Hoog",
+      ev: "Periodisering, zone 2 versus intervallen en herstelplanning leveren marginale winst bovenop een solide basis.",
+      wel: "Laag 3 staat minstens acht weken stabiel.",
+      niet: "Als motivatietruc vóór de basis er is.",
+      srcShort: "reviews periodisering",
+      src: "Reviews over periodisering laten een klein extra effect zien bovenop consistent trainen — het verschil met niets doen is vele malen groter.",
+      prev: ["concept"],
+      concept: "Hier staat bewust geen kaart. We beoordelen pas wat we ook kunnen meten, en periodisering meet je niet op één afvink.",
+      next: "Zone 2 en intervalwerk pas als laag 3 acht weken staat — dat is laag 5."
+    },
+    {
+      n: 6, label: "Supplementen · wearables", sub: "Optimalisatie ná leefstijl",
+      prio: "Laagst", prioCls: "prio-lo", moeite: "Laag–medium",
+      ev: "Creatine, cafeïne en wearables zijn optimalisatie ná leefstijl — geen vervanging van laag 1 en 2.",
+      wel: "Stepped care: na je hertest, of bij een eiwit-gap.",
+      niet: "Vóór laag 2 staat.",
+      srcShort: "EFSA-claims",
+      src: "De EFSA-goedgekeurde claims voor creatine en cafeïne gelden bovenop training, niet in plaats daarvan.",
+      prev: ["magnesium", "creatine"],
+      next: "Eerst je hertest op 16 augustus, daarna pas aanvullen — dat is laag 6."
+    }
+  ];
+
+  function layerState(n) {
+    if (n < currentLayer) return "done";
+    if (n === currentLayer) return "now";
+    if (n <= currentLayer + 2) return "next";
+    return "locked";
+  }
+  var STATE_WORD = {
+    done: "staat", now: "hier sta je", next: "binnen bereik", locked: "nog niet open"
+  };
+
+  function reachedLabel() {
+    if (currentLayer <= 1) return "laag 1";
+    return "laag 1–" + currentLayer;
+  }
+
+  function aboveLine() {
+    var above = currentLayer + 2;
+    if (currentLayer >= 6) return "Hoger gaat het niet — je winst zit nog steeds in laag 1 en 2.";
+    if (above >= 6) return "Laag 6 is pas zinnig als die blijft staan.";
+    return "Laag " + above + " en hoger is pas zinnig als die blijft staan.";
+  }
+
+  function previewHtml(key) {
+    if (key === "basis") {
+      return '<div class="pyr-item anchor"><span class="grow">' +
+        "<strong>" + basis.title + "</strong>" +
+        '<span class="kind">Je basis · primair pad — hier oordelen we niet over, dit is het pad</span>' +
+        "</span></div>";
+    }
+    if (key === "dose") {
+      return '<div class="pyr-item"><span class="grow">' +
+        "<strong>Je doel per keer</strong>" +
+        '<span class="kind">Staat op Beweging, in je programma — hier alleen uitlezing</span>' +
+        '</span><span class="chips">' +
+        ["15–20 min", "25–40 min", "45–60 min"].map(function (d) {
+          return '<span class="chip" aria-pressed="' + (basis.dose === d ? "true" : "false") + '">' + d + "</span>";
+        }).join("") + "</span></div>";
+    }
+    if (key === "concept") return "";
+    var p = PREVIEW[key];
+    if (!p) return "";
+    return '<div class="pyr-item' + (p.ghost ? " ghost" : "") + '"><span class="grow">' +
+      "<strong>" + p.t + "</strong>" + '<span class="kind">' + p.k + "</span></span>" +
+      '<span class="vchip v-' + p.v + '">' + p.vl + "</span></div>";
+  }
+
+  /* v3.2: één metaregel per laag — prioriteit · bron · moeite. De evidence-zin
+     zelf verhuisde naar "Bekijk waarom", samen met de richtlijn. In v3.1 stond
+     een zin van veertig woorden als chip in het eerste beeld van elke laag;
+     dat las als studiemateriaal, niet als kompas.                            */
+  function metaLine(L) {
+    return '<p class="metaline">Prioriteit: <b>' + L.prio.toLowerCase() + "</b> · Onderbouwing: <b>" +
+      L.srcShort + "</b> · Moeite: <b>" + L.moeite.toLowerCase() + "</b></p>";
+  }
+
+  function panelHtml(L, variant) {
+    var st = layerState(L.n);
+    var html = "<h4>" + L.label + "</h4>" +
+      '<p class="sublabel">Laag ' + L.n + " · " + L.sub + " · " + STATE_WORD[st] + "</p>" +
+      metaLine(L);
+
+    if (variant === "rail") return html;
+
+    html += '<ul class="pyr-when">' +
+      "<li><b>Wanneer wel</b><span>" + L.wel + "</span></li>" +
+      "<li><b>Wanneer niet</b><span>" + L.niet + "</span></li>" +
+      "</ul>" +
+      '<div class="pyr-src"><button class="linkish q" data-src-toggle="' + L.n +
+        '" aria-expanded="false">Bekijk waarom ' + svg("i-arrow") + "</button>" +
+        '<p hidden>' + L.ev + " " + L.src + "</p></div>";
+
+    if (st === "locked") {
+      html += '<p class="pyr-note" style="margin-top:13px">Deze laag staat nog niet open: eerst ' +
+        reachedLabel() + " volhouden. Lezen mag altijd — plannen nog niet.</p>";
+    }
+
+    var prev = (L.prev || []).map(previewHtml).join("");
+    if (L.concept) {
+      html += '<div class="pyr-prev"><span class="pyr-prev-label">Waarom hier geen kaart staat</span>' +
+        '<p class="pyr-note">' + L.concept + "</p></div>";
+    } else if (prev) {
+      html += '<div class="pyr-prev"><span class="pyr-prev-label">Wat hier hoort</span>' + prev +
+        (L.more ? '<p class="pyr-note">' + L.more + "</p>" : "") + "</div>";
+    }
+    return html;
+  }
+
+  var PYR = [];
+
+  function mountPyramid(host, variant, opts) {
+    opts = opts || {};
+    var open = typeof opts.open === "number" ? opts.open : null;
+    var shape = document.createElement("div");
+    var panel = document.createElement("div");
+    shape.className = "pyr-shape";
+    panel.className = "pyr-panel";
+    host.className = "pyramid pyramid--" + variant;
+    host.innerHTML = "";
+    host.appendChild(shape);
+    host.appendChild(panel);
+
+    function draw() {
+      // Op C is een gesloten laag wél leesbaar: dáár doen we het Bond-werk
+      // ("waarom nu niet"). In de brug en de rail is hij dicht — daar zou
+      // lezen over laag 6 een uitnodiging worden.
+      var readLocked = variant === "full";
+      shape.innerHTML = LAYERS.map(function (L) {
+        var st = layerState(L.n);
+        var g = LAYER_GEO[L.n - 1];
+        var dis = (st === "locked" && !readLocked) ? " disabled" : "";
+        return '<button class="rung" type="button" data-layer-btn="' + L.n + '" data-state="' + st +
+          '" aria-expanded="' + (open === L.n ? "true" : "false") + '"' + dis +
+          ' style="--w:' + g.w + ";--k:" + g.k + ";--fs:" + g.fs + '">' +
+          '<span class="rung-fill" aria-hidden="true"></span>' +
+          '<span class="rung-body"><span class="rung-label">' + L.label + "</span>" +
+          '<span class="rung-state">Laag ' + L.n + " · " + STATE_WORD[st] + "</span></span></button>";
+      }).join("") + '<span class="pyr-apex" aria-hidden="true"></span>';
+
+      if (open) {
+        panel.hidden = false;
+        panel.innerHTML = panelHtml(LAYERS[open - 1], variant);
+      } else {
+        panel.hidden = true;
+        panel.innerHTML = "";
+      }
+    }
+
+    shape.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-layer-btn]");
+      if (!b || b.disabled) return;
+      var n = Number(b.getAttribute("data-layer-btn"));
+      open = open === n ? null : n;
+      draw();
+    });
+
+    panel.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-src-toggle]");
+      if (!b) return;
+      var p = b.parentNode.querySelector("p");
+      p.hidden = !p.hidden;
+      b.setAttribute("aria-expanded", p.hidden ? "false" : "true");
+      b.innerHTML = (p.hidden ? "Bekijk waarom " : "Verberg waarom ") + svg("i-arrow");
+    });
+
+    var api = {
+      refresh: function () {
+        if (open && layerState(open) === "locked" && variant !== "full") open = null;
+        if (opts.followCurrent) open = currentLayer;
+        draw();
+      }
+    };
+    PYR.push(api);
+    draw();
+    return api;
+  }
+
+  /* De horizontale mini-piramide (zes staafjes) is in v3.2 vervallen: de brug
+     toont nu drie echte treden, want daar gaat het paneel over. De volledige
+     piramide op Voortgang en de rail dragen het kompas van zes lagen.      */
+
+  function refreshPyramids() {
+    PYR.forEach(function (p) { p.refresh(); });
+    renderWeek();
+  }
+
+  function setLayer(n) {
+    currentLayer = n;
+    document.querySelectorAll("[data-layer]").forEach(function (b) {
+      b.setAttribute("aria-pressed", Number(b.getAttribute("data-layer")) === n ? "true" : "false");
+    });
+    refreshPyramids();
+    refreshBridges();
+  }
+
+  /* ================= week-readout op Mijn Dag =================
+     Uitlezing, geen tweede vinklijst: "Markeer als gedaan" blijft de enige
+     completion-knop op deze surface (verdict §C2). Alleen laag 1 en 2 —
+     zes balken passen niet op 375px en zouden de dag laten lijken op een
+     scorebord.                                                             */
+  function renderWeek() {
+    var host = document.getElementById("weekstrip");
+    if (!host) return;
+    /* v3.2: geen noemers meer. "4 van 7" en een halfvolle balk tellen wat je
+       niet deed — precies wat BESLUIT verbod 4 verbiedt. Wat je wél deed is
+       het bewijs; de balk blijft alleen waar hij vol is.                    */
+    var rows = [
+      { name: "Kracht", note: "je basis", value: "allebei je krachtdagen", full: true },
+      { name: "Dagelijks bewegen", note: "staan en lopen", value: "4 dagen bewogen", full: false }
+    ];
+    host.innerHTML = rows.map(function (r) {
+      return '<div class="wk-row"><span class="wk-name"><b>' + r.name + "</b> · " + r.note + "</span>" +
+        (r.full ? '<span class="wk-bar full"><i style="width:100%"></i></span>' : "") +
+        '<span class="wk-count">' + r.value + "</span></div>";
+    }).join("");
+    var shut = document.getElementById("wk-shut");
+    if (shut) {
+      shut.textContent = currentLayer >= 3
+        ? "Laag 3 is open: je bouwt op vanaf je huidige volume."
+        : "Laag 3 is nog niet open — die begint pas als je basis vier weken staat.";
+    }
+    var body = document.getElementById("alert-body");
+    if (body) body.textContent = "Je deed deze week allebei je krachtdagen.";
+  }
+
+  /* ================= andere domeinen · placeholder ================= */
+  function renderDomains() {
+    var host = document.getElementById("domgrid");
+    if (!host) return;
+    var W = [100, 88, 76, 64, 52, 40];
+    host.innerHTML = ["Slaap", "Voeding", "Stress", "Herstel", "Verbinding"].map(function (d) {
+      return '<div class="domsil"><span class="sil" aria-hidden="true">' +
+        W.map(function (w) { return '<i style="width:' + w + '%"></i>'; }).join("") +
+        "</span><span>" + d + "</span></div>";
+    }).join("");
   }
 
   /* ================= planner-component ================= */
@@ -1655,68 +2402,254 @@ ul{margin:0;padding:0;list-style:none}
      Pad A: de in-flow deur naar "iets ernaast" is deze statusstrip, geen
      schap. Eén renderer, drie hosts (A, E, D) — precies zoals de live
      MeerHulpBridgeSheet één component is met meerdere aanroepers.        */
-  // Elk label draagt zijn eigen status — geen aparte uitlegzin nodig.
-  // "Advies" noemt zijn poort met naam (voedingscheck) zodat de tekst over
-  // beweging blijft gaan (kracht-supplementen), niet over het voeding-domein.
-  var BRIDGE_POINTS = [
-    { label: "Check", cls: "done" },
-    { label: "Advies", sub: "wacht op voedingscheck", cls: "" },
-    { label: "Favorieten", sub: "je basis loopt", cls: "now" },
-    { label: "Beste", sub: "16 aug", cls: "" }
-  ];
+  /* v3.2 · de brug voegt toe, hij navigeert niet.
+     Weg: de keten (die staat nu alleen op C, één regel) en de zes lagen. Wat
+     Peter hier moet kunnen is één ding — iets kleins bij zijn basis zetten —
+     en daarvoor bestaan alleen laag 1 tot en met 3. Laag 2 is zijn basis en
+     dus read-only; laag 3 is leesbaar maar niet planbaar. Laag 4–6 hoort in
+     dit paneel niet thuis: dat zou van een deur een schap maken.            */
+  var ADD_ACTIONS = {
+    1: [
+      { id: "ritme", title: "Elk werkuur twee minuten staan", kind: "Elke werkdag · kost geen extra tijd", time: "09:00", done: "Gedaan" },
+      { id: "blokje", title: "Na het eten een blokje om", kind: "Tien minuten · elke avond", time: "19:15", done: "Gedaan" },
+      { id: "wandelen", title: "Stevig wandelen, half uur", kind: "Drie keer per week", time: "12:30", done: "Gewandeld" }
+    ],
+    2: [],
+    3: []
+  };
 
-  function bridgeHtml() {
-    // Geen "je basis"-samenvatting hier — die staat al zichtbaar boven dit
-    // paneel op dezelfde surface (VANDAAG-kaart). Dit paneel voegt alleen toe
-    // wat er nog niet stond: waar het traject naartoe gaat.
+  var bridgeLayer = null;
+
+  function bridgeRungs() {
+    // Laag 1 onderaan blijft de regel, dus we tekenen van 3 naar 1.
+    return [3, 2, 1].map(function (n) {
+      var L = LAYERS[n - 1];
+      var st = layerState(n);
+      var g = LAYER_GEO[n - 1];
+      var style = "--w:" + g.w + ";--k:" + g.k + ";--fs:" + g.fs;
+      if (n === 2) {
+        // Read-only: je basis is geen keuze in dit paneel.
+        return '<div class="rung flat" data-state="' + st + '" style="' + style + '">' +
+          '<span class="rung-fill" aria-hidden="true"></span>' +
+          '<span class="rung-body"><span class="rung-label">' + L.label + "</span>" +
+          '<span class="rung-state">Dit is je basis · staat al in je dag</span></span>' +
+          '<span class="bridge-lock">' + svg("i-check") + "basis</span></div>";
+      }
+      return '<button class="rung" type="button" data-bridge-layer="' + n + '" data-state="' + st +
+        '" aria-expanded="' + (bridgeLayer === n ? "true" : "false") + '" style="' + style + '">' +
+        '<span class="rung-fill" aria-hidden="true"></span>' +
+        '<span class="rung-body"><span class="rung-label">' + L.label + "</span>" +
+        '<span class="rung-state">' + (n === 1 ? "Hier valt iets toe te voegen" : "Nog niet nodig") +
+        "</span></span></button>";
+    }).join("");
+  }
+
+  function sheetHtml(n) {
+    var L = LAYERS[n - 1];
+    var acts = ADD_ACTIONS[n] || [];
+    var html = '<div class="sheet"><h4>' + L.label + "</h4>" + metaLine(L);
+
+    if (n === 3) {
+      html += '<p class="pyr-note" style="margin-top:13px">Nog niet nodig. Houd eerst je twee krachtdagen vier weken vol. ' +
+        "Lezen mag altijd. Plannen nog niet.</p>";
+    } else if (acts.length) {
+      html += '<div class="sheet-acts">' + acts.map(function (a) {
+        var on = hasItem(a.id);
+        return '<div class="sheet-act' + (on ? " on" : "") + '"><span class="grow">' +
+          "<strong>" + a.title + "</strong><span class=\"kind\">" + a.kind + "</span></span>" +
+          (on
+            ? '<span class="tag">' + svg("i-check") + "Staat op je dag</span>"
+            : '<button class="btn btn-soft" data-add="' + a.id + '">Zet op Mijn Dag</button>') +
+          "</div>";
+      }).join("") + "</div>";
+    }
+
+    html += '<div class="sheet-why"><button class="linkish q" data-why-toggle="' + n +
+      '" aria-expanded="false">Bekijk waarom ' + svg("i-arrow") + "</button>" +
+      "<p hidden>" + L.ev + " " + L.src + "</p></div></div>";
+    return html;
+  }
+
+  function bridgeHtml(tone) {
+    var lead = tone === "e"
+      ? "Je basis blijft staan. Dit is extra, en klein."
+      : "Je basis blijft staan. Dit is extra.";
+
     return '<div class="panel">' +
-      '<h3 style="font-family:var(--serif);font-size:19px;color:var(--ink)">Zet er iets naast</h3>' +
-      '<p class="today-note" style="margin-top:9px;max-width:54ch">Je basis blijft je basis — dit komt er hooguit naast. Wat past, kies je in Voortgang.</p>' +
-
-      '<div class="chain" style="margin-top:15px">' +
-        BRIDGE_POINTS.map(function (p, i) {
-          return '<span class="' + p.cls + '">' + p.label +
-            (p.sub ? " <i>· " + p.sub + "</i>" : "") + "</span>" +
-            (i < BRIDGE_POINTS.length - 1 ? "<i>→</i>" : "");
-        }).join("") +
-      "</div>" +
-
-      '<div class="cta-row" style="margin-top:16px">' +
-        '<button class="btn btn-primary" data-goto="c">Open Voortgang ' + svg("i-arrow") + "</button>" +
-        '<span class="meta">In de prebuild: scherm C.</span>' +
-      "</div>" +
+      '<h3 style="font-family:var(--serif);font-size:19px;color:var(--ink)">Voeg iets toe aan je basis</h3>' +
+      '<p class="today-note" style="margin-top:9px;max-width:48ch">' + lead + "</p>" +
+      '<div class="bridge-pyr">' + bridgeRungs() + "</div>" +
+      '<p class="pyr-cap">Tik op een laag om te zien wat daar hoort.</p>' +
+      (bridgeLayer ? sheetHtml(bridgeLayer) : "") +
+      '<p class="meta" style="margin-top:16px"><button class="linkish q" data-goto="c">Waar dit heen loopt, zie je in Voortgang ' +
+        svg("i-arrow") + "</button></p>" +
     "</div>";
   }
 
-  function bindBridge(hostId, btnId, openLabel, closeLabel) {
+  var BRIDGES = [];
+
+  function bindBridge(hostId, btnId, openLabel, closeLabel, tone) {
     var host = document.getElementById(hostId);
     var btn = document.getElementById(btnId);
     if (!host || !btn) return;
-    btn.addEventListener("click", function () {
-      if (host.getAttribute("data-open") !== "1") {
-        host.innerHTML = bridgeHtml();
-        host.querySelectorAll("[data-goto]").forEach(function (g) {
-          g.addEventListener("click", function () {
-            show(g.getAttribute("data-goto"));
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          });
-        });
+
+    function paint() { host.innerHTML = bridgeHtml(tone); }
+
+    host.addEventListener("click", function (e) {
+      var g = e.target.closest("[data-goto]");
+      if (g) {
+        show(g.getAttribute("data-goto"));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
       }
-      var open = toggle(host, btn);
+      var r = e.target.closest("[data-bridge-layer]");
+      if (r) {
+        var n = Number(r.getAttribute("data-bridge-layer"));
+        bridgeLayer = bridgeLayer === n ? null : n;
+        refreshBridges();
+        return;
+      }
+      var a = e.target.closest("[data-add]");
+      if (a) { addItem(a.getAttribute("data-add")); return; }
+      var w = e.target.closest("[data-why-toggle]");
+      if (w) {
+        var p = w.parentNode.querySelector("p");
+        p.hidden = !p.hidden;
+        w.setAttribute("aria-expanded", p.hidden ? "false" : "true");
+        w.innerHTML = (p.hidden ? "Bekijk waarom " : "Verberg waarom ") + svg("i-arrow");
+      }
+    });
+
+    function setOpen(open) {
+      if (open) paint();
+      host.setAttribute("data-open", open ? "1" : "0");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
       btn.innerHTML = open ? closeLabel : openLabel;
+    }
+
+    btn.addEventListener("click", function () {
+      setOpen(host.getAttribute("data-open") !== "1");
+    });
+
+    BRIDGES.push({
+      setOpen: setOpen,
+      paint: paint,
+      isOpen: function () { return host.getAttribute("data-open") === "1"; }
     });
   }
 
-  /* ================= scherm A · vier sub-staten ================= */
+  function refreshBridges() {
+    BRIDGES.forEach(function (b) { if (b.isOpen()) b.paint(); });
+  }
+
+  /* ================= toegevoegde dag-items · één staat =================
+     Wat je in de brug toevoegt, verschijnt op twee plekken: als rij in je dag
+     (D) en als regel onder "vandaag ook" op Beweging (E). Dat is geen tweede
+     vinklijst — het is dezelfde eenheid met dezelfde staat, twee keer
+     uitgelezen. Afvinken op de een zet de ander mee.                        */
+  var dayItems = [];
+
+  function hasItem(id) {
+    return dayItems.some(function (i) { return i.id === id; });
+  }
+
+  function addItem(id) {
+    if (hasItem(id)) return;
+    var src = null;
+    Object.keys(ADD_ACTIONS).forEach(function (k) {
+      ADD_ACTIONS[k].forEach(function (a) { if (a.id === id) src = a; });
+    });
+    if (!src) return;
+    dayItems.push({ id: src.id, title: src.title, kind: src.kind, time: src.time, done: src.done, checked: false });
+    renderAdded();
+    refreshBridges();
+  }
+
+  function toggleItem(id) {
+    dayItems.forEach(function (i) { if (i.id === id) i.checked = !i.checked; });
+    renderAdded();
+  }
+
+  // De aanvulling uit B (PT-intake) staat al als vaste rij op Mijn Dag. Op E
+  // lezen we hem mee zodra iemand hem écht koos — niet vanaf load, anders
+  // toont het dagbeeld een keuze die nooit gemaakt is.
+  function extraRowState() {
+    if (!extraChosen) return null;
+    var b = document.querySelector('[data-bind="extra-done"]');
+    return {
+      id: "__extra", title: OPTS[extraId].title,
+      when: extraCoupled ? extra.time : "nog geen vast moment",
+      checked: !!(b && b.disabled), label: OPTS[extraId].done
+    };
+  }
+
+  function renderAdded() {
+    var day = document.getElementById("day");
+    if (day) {
+      day.querySelectorAll("[data-added]").forEach(function (el) { el.remove(); });
+      dayItems.forEach(function (i) {
+        var row = document.createElement("div");
+        row.className = "day-row mv";
+        row.setAttribute("data-added", i.id);
+        row.setAttribute("data-time", i.time);
+        row.innerHTML =
+          '<span class="day-time tnum">' + i.time + "</span>" +
+          '<div class="day-body"><span class="day-dom"><i></i>Beweging · toegevoegd</span>' +
+          "<h4>" + i.title + "</h4>" +
+          '<p class="sub">' + i.kind + "</p>" +
+          '<div class="day-acts"><button class="btn ' + (i.checked ? "btn-soft" : "btn-primary") +
+            '" data-toggle-item="' + i.id + '"' + (i.checked ? " disabled" : "") + ">" +
+            (i.checked ? svg("i-check") + i.done : "Markeer als gedaan") + "</button></div></div>";
+        day.appendChild(row);
+      });
+      sortDay();
+    }
+
+    var host = document.getElementById("e-also");
+    var panel = document.getElementById("e-also-panel");
+    if (!host || !panel) return;
+    var rows = [];
+    var ex = extraRowState();
+    if (ex) rows.push(ex);
+    dayItems.forEach(function (i) {
+      rows.push({ id: i.id, title: i.title, when: i.time, checked: i.checked, label: i.done });
+    });
+    panel.hidden = rows.length === 0;
+    host.innerHTML = rows.map(function (r) {
+      return '<div class="also-row' + (r.checked ? " done" : "") + '"><span class="grow">' +
+        "<strong>" + r.title + '</strong><span class="when">' + r.when + "</span></span>" +
+        (r.checked
+          ? '<span class="tag">' + svg("i-check") + r.label + "</span>"
+          : '<button class="btn btn-soft" data-also="' + r.id + '">' + r.label + "</button>") +
+        "</div>";
+    }).join("");
+  }
+
+  /* ================= scherm A · drie sub-staten =================
+     v3.2: A1 heeft geen afvink-knop meer. Wie hier voor het eerst staat, heeft
+     niets gedaan — "Gedaan" aanbieden is dan geen actie maar een aanname. De
+     primaire actie is het voorgestelde moment vastzetten. Dat moment is
+     vooringevuld uit de check, dus er staat geen picker tussen het openen en
+     het antwoord (BESLUIT §A.4 verbod 1); "ander moment" is één tik. Wie nu
+     meteen wil, gaat via "Ik doe hem nu" naar de dagstaat — daar hoort de
+     afvink thuis, en daar staat hij ook.                                    */
   var aPlanHost = document.getElementById("a-plan");
   var aConfirm = document.getElementById("a-confirm");
-  var aDagBtn = document.getElementById("a-dag");
   var aMomentBtn = document.getElementById("a-moment");
+  var aPlanSetBtn = document.getElementById("a-plan-set");
+  var aNowBtn = document.getElementById("a-now");
+  var aNowConfirm = document.getElementById("a-now-confirm");
   var aDoseHost = document.getElementById("a-dose");
   var aProgBtn = document.getElementById("a-prog");
-  var aDoneConfirm = document.getElementById("a-done-confirm");
   var aOnDag = false;
   var aSub = 1;
+  var ownGoal = "";
+
+  function firstMomentText() {
+    var d = DAYS.filter(function (x) { return basis.days.indexOf(x) >= 0; })[0];
+    if (!d) return "nog geen dag gekozen";
+    return DAY_FULL[d] + " · " + basis.time;
+  }
 
   // "recommended" is hier een demo van dynamische voorselectie uit de check
   // (matig + doel spierbehoud → kracht) — vandaag is MovementStartChoice een
@@ -1738,65 +2671,75 @@ ul{margin:0;padding:0;list-style:none}
   ];
 
   function renderA() {
-    document.getElementById("a-setup").hidden = aSub !== 1;
+    // "Klopt dit voor jou?" blijft ook staan als het moment vastligt: je plan
+    // bijstellen mag altijd, plannen sluit dat niet af.
+    document.getElementById("a-setup").hidden = aSub === 2;
     document.getElementById("a-wizard").hidden = aSub !== 2;
-    document.getElementById("a-dagpanel").hidden = aSub < 3;
+    document.getElementById("a-dagpanel").hidden = !aOnDag;
     document.querySelectorAll("[data-sub]").forEach(function (b) {
       b.setAttribute("aria-pressed", Number(b.getAttribute("data-sub")) === aSub ? "true" : "false");
     });
 
-    aDagBtn.hidden = aOnDag;
-    aMomentBtn.hidden = aOnDag && fmtDays(basis.days).length > 0;
-    document.getElementById("a-dag-line").textContent = aOnDag
-      ? "Je stap staat in je dag. Verplaatsen doe je op Mijn Dag — daar zie je je hele dag."
-      : "Deze stap staat nog niet in je dag. Koppelen mag, maar hoeft niet — afvinken kan hier altijd.";
+    document.getElementById("a-prefill-when").textContent = firstMomentText();
+    document.getElementById("a-prefill-text").hidden = aOnDag;
+
+    var ownLine = document.getElementById("a-own-line");
+    ownLine.hidden = !ownGoal;
+    if (ownGoal) ownLine.innerHTML = "Jouw reden: <b>" + ownGoal + "</b>";
+
+    if (aOnDag) {
+      aPlanSetBtn.className = "btn btn-soft";
+      aPlanSetBtn.innerHTML = svg("i-check") + "Staat klaar";
+      aPlanSetBtn.disabled = true;
+    } else {
+      aPlanSetBtn.className = "btn btn-primary";
+      aPlanSetBtn.innerHTML = svg("i-cal") + "Zet mijn eerste keer klaar";
+      aPlanSetBtn.disabled = false;
+    }
 
     if (!aOnDag) { aConfirm.innerHTML = ""; return; }
-    var d = fmtDays(basis.days);
-    var when = d ? "elke " + d + " · " + basis.time : "nog geen moment";
-    var tail = d ? "" : " <em>· je kiest later een dag en tijd</em>";
     aConfirm.innerHTML =
-      '<p class="line-ok">' + svg("i-check") + "Staat op Mijn Dag · " + when + " · " + basis.dayDur + tail + "</p>" +
-      '<p class="line-next">Over 14 dagen kijken we of dit voor jou werkt — <b>zondag 16 augustus</b>.</p>';
+      '<p class="line-ok">' + svg("i-check") + "Staat klaar · " + firstMomentText() + " · " + basis.dayDur + "</p>" +
+      '<p class="line-next">Verplaatsen kan altijd. Over 14 dagen kijken we of dit werkt — <b>zondag 16 augustus</b>.</p>';
   }
 
   function setASub(n) {
     aSub = n;
-    aDoneConfirm.innerHTML = "";
-    if (n <= 2) { aOnDag = false; }
-    if (n === 4) {
-      aOnDag = true;
-      if (basis.days.length === 0) { basis.days = ["ma", "do"]; }
-    }
-    if (n === 3) { aOnDag = false; }
+    aNowConfirm.innerHTML = "";
+    aOnDag = n === 3;
+    if (n === 3 && basis.days.length === 0) { basis.days = ["ma", "do"]; }
     render();
     renderA();
   }
 
   var aPlanner = planner(aPlanHost, {
     need: basis.need, duration: false, state: basis,
-    onChange: function () { aOnDag = true; render(); renderA(); }
+    onChange: function () { aOnDag = true; aSub = 3; render(); renderA(); }
   });
 
-  aDagBtn.addEventListener("click", function () {
-    aOnDag = true;
-    setASub(4);
-  });
+  aPlanSetBtn.addEventListener("click", function () { setASub(3); });
+
   aMomentBtn.addEventListener("click", function () {
     var open = toggle(aPlanHost, aMomentBtn);
-    aMomentBtn.textContent = open ? "Momenten verbergen" : "Koppel je momenten (optioneel)";
-    if (open) { aOnDag = true; renderA(); }
+    aMomentBtn.textContent = open ? "moment verbergen" : "ander moment";
   });
 
-  /* Gedaan / Ik doe de korte — beschikbaar in élke sub-staat: er is geen
-     instelling nodig om te kunnen beginnen (verbod 1, BESLUIT §A.4). */
-  function aDone(label) {
-    aDoneConfirm.innerHTML =
-      '<p class="line-ok">' + svg("i-check") + "Genoteerd · maandag 3 augustus · " + label + "</p>" +
-      '<p class="line-next">Vanaf nu opent Beweging in de terugkeer-staat — <b>scherm E</b>.</p>';
-  }
-  document.getElementById("a-done").addEventListener("click", function () { aDone(basis.dayDur); });
-  document.getElementById("a-short").addEventListener("click", function () { aDone("10 min, de korte"); });
+  /* "Ik doe hem nu" — de ontsnapping voor wie niet wil plannen. Hij vraagt
+     geen instelling en zet niets vast; hij brengt je naar de dagstaat, waar
+     de enige afvink-knop van deze surface staat. */
+  aNowBtn.addEventListener("click", function () {
+    aNowConfirm.innerHTML =
+      '<p class="line-ok">' + svg("i-check") + "Goed — hij staat klaar voor vandaag.</p>" +
+      '<p class="line-next">Afvinken doe je op je dagbeeld. <button class="linkish" data-goto="e">Open je dagbeeld ' +
+      svg("i-arrow") + "</button></p>";
+    var g = aNowConfirm.querySelector("[data-goto]");
+    if (g) {
+      g.addEventListener("click", function () {
+        show("e");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+  });
 
   /* De dosis-dial woont in de programma-disclosure, niet in de spec-lijst:
      hij zet je doel, niet de duur van vandaag. */
@@ -1834,13 +2777,24 @@ ul{margin:0;padding:0;list-style:none}
     }
     document.getElementById("a-wizard-eyebrow").textContent = "Jouw start · waarvoor doe je dit";
     document.getElementById("a-wizard-title").textContent =
-      "Als bewegen over tien jaar één ding voor je geregeld heeft — wat moet dat zijn?";
+      "Waar wil je over tien jaar nog toe in staat zijn?";
     document.getElementById("a-wizard-lead").textContent =
-      "Dit kleurt alleen je waarom — je scores blijven gewoon je scores.";
+      "Dit is alleen voor jou. Het verandert je advies niet.";
+    // v3.2: naast de vier vaste ankers een eigen doel in eigen woorden. Vier
+    // opties zijn een keuzelijst, geen eigenaarschap — en juist het eigen doel
+    // is wat iemand terughaalt op de week dat het niet loopt.
     aWizardBody.innerHTML = '<div class="chips" style="flex-direction:column;align-items:stretch">' +
       ANCHORS.map(function (a) {
         return '<button class="chip" data-anchor="1" style="text-align:left">' + a + "</button>";
-      }).join("") + "</div>";
+      }).join("") +
+      '<button class="chip" data-own="1" style="text-align:left">Iets anders — ik typ het zelf</button>' +
+      "</div>" +
+      '<div class="plan" id="a-own"><div class="plan-row"><span class="plan-label">Zeg het in je eigen woorden</span>' +
+      '<input id="a-own-input" type="text" maxlength="80" placeholder="Bijvoorbeeld: met mijn kleinkinderen kunnen voetballen" ' +
+      'style="width:100%;max-width:42ch;font:inherit;font-size:14px;color:var(--ink);background:rgba(0,0,0,.24);' +
+      'border:1px solid var(--line);border-radius:10px;padding:11px 12px" /></div>' +
+      '<div class="cta-row" style="margin-top:12px"><button class="btn btn-soft" id="a-own-save">Klaar</button></div>' +
+      '<p class="meta" style="margin-top:10px">We bewaren dit bij je profiel. Het staat nergens in je scores.</p></div>';
   }
 
   aWizardBody.addEventListener("click", function (e) {
@@ -1852,7 +2806,22 @@ ul{margin:0;padding:0;list-style:none}
       render();
       return;
     }
-    if (e.target.closest("[data-anchor]")) { setASub(3); }
+    if (e.target.closest("[data-own]")) {
+      toggle(document.getElementById("a-own"), null);
+      var inp = document.getElementById("a-own-input");
+      if (inp) inp.focus();
+      return;
+    }
+    if (e.target.closest("#a-own-save")) {
+      var val = (document.getElementById("a-own-input").value || "").trim();
+      ownGoal = val;
+      setASub(1);
+      return;
+    }
+    if (e.target.closest("[data-anchor]")) {
+      ownGoal = e.target.closest("[data-anchor]").textContent.trim();
+      setASub(1);
+    }
   });
 
   document.getElementById("a-setup-open").addEventListener("click", function () {
@@ -1860,7 +2829,7 @@ ul{margin:0;padding:0;list-style:none}
     renderWizard();
     setASub(2);
   });
-  document.getElementById("a-wizard-skip").addEventListener("click", function () { setASub(3); });
+  document.getElementById("a-wizard-skip").addEventListener("click", function () { setASub(1); });
 
   document.querySelectorAll("[data-sub]").forEach(function (b) {
     b.addEventListener("click", function () { setASub(Number(b.getAttribute("data-sub"))); });
@@ -1871,11 +2840,11 @@ ul{margin:0;padding:0;list-style:none}
      landen die antwoorden in een tabel die de dagstap niet leest. */
   var A_SOURCE = {
     basis: {
-      eyebrow: "Beweging · op basis van je Leefstijlcheck van 2 augustus",
+      eyebrow: "Uit je Leefstijlcheck van 2 augustus",
       lead: "Matige beweegscore, doel spierbehoud — daarom kracht, niet conditie."
     },
     diep: {
-      eyebrow: "Beweging · op basis van je beweegcheck van 2 augustus",
+      eyebrow: "Uit je beweegcheck van 2 augustus",
       lead: "Weinig kracht, matige conditie — dit voorstel bouwt eerst kracht op."
     }
   };
@@ -1891,8 +2860,8 @@ ul{margin:0;padding:0;list-style:none}
     });
   });
 
-  var BRIDGE_OPEN_LABEL = "Zet er iets naast " + svg("i-arrow");
-  bindBridge("a-bridge", "a-help", BRIDGE_OPEN_LABEL, "Verbergen");
+  var BRIDGE_OPEN_LABEL = "Voeg iets toe aan je basis " + svg("i-arrow");
+  bindBridge("a-bridge", "a-help", BRIDGE_OPEN_LABEL, "Verbergen", "a");
 
   /* ================= scherm B · filters ================= */
   var lens = "profiel";
@@ -2146,7 +3115,7 @@ ul{margin:0;padding:0;list-style:none}
     dExtraBtn.textContent = open ? "Klaar" : (extraCoupled ? "Verplaatsen" : "Moment kiezen");
   });
 
-  bindBridge("d-bridge", "d-help", "Zet er iets naast", "Verbergen");
+  bindBridge("d-bridge", "d-help", BRIDGE_OPEN_LABEL, "Verbergen", "d");
 
   document.querySelectorAll('[data-bind="basis-done"], [data-bind="extra-done"]').forEach(function (b) {
     b.addEventListener("click", function () {
@@ -2157,7 +3126,28 @@ ul{margin:0;padding:0;list-style:none}
       b.className = "btn btn-soft";
       b.innerHTML = svg("i-check") + stamp;
       b.disabled = true;
+      renderAdded();
     });
+  });
+
+  /* Afvinken van een toegevoegd item: de knop op Mijn Dag en de knop onder
+     "vandaag ook" schrijven naar dezelfde staat. Twee uitlezingen, één bron —
+     dat is iets anders dan een tweede vinklijst. */
+  document.getElementById("day").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-toggle-item]");
+    if (b && !b.disabled) toggleItem(b.getAttribute("data-toggle-item"));
+  });
+
+  document.getElementById("e-also").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-also]");
+    if (!b) return;
+    var id = b.getAttribute("data-also");
+    if (id === "__extra") {
+      var d = document.querySelector('[data-bind="extra-done"]');
+      if (d && !d.disabled) d.click();
+      return;
+    }
+    toggleItem(id);
   });
 
   /* ================= scherm E · elke dag daarna ================= */
@@ -2210,7 +3200,7 @@ ul{margin:0;padding:0;list-style:none}
     eReviewConfirm.innerHTML = '<p class="line-next">Overgeslagen. De vraag komt terug na je volgende sessie.</p>';
   });
 
-  bindBridge("e-bridge", "e-help", BRIDGE_OPEN_LABEL, "Verbergen");
+  bindBridge("e-bridge", "e-help", BRIDGE_OPEN_LABEL, "Verbergen", "e");
 
   /* ================= eigen begeleiding · wachtlijst ================= */
   var ownBtn = document.getElementById("own-wait");
@@ -2222,9 +3212,67 @@ ul{margin:0;padding:0;list-style:none}
       '<p class="line-next">We mailen je zodra begeleiding opengaat. Tot die tijd verandert er niets aan wat je hierboven gratis leest.</p>';
   });
 
+  /* ================= v3.1 · kompas monteren ================= */
+  mountPyramid(document.getElementById("c-pyramid"), "full", { open: currentLayer, followCurrent: true });
+  var railHost = document.getElementById("rail-pyramid");
+  if (railHost) mountPyramid(railHost, "rail", {});
+  renderDomains();
+  renderWeek();
+
+  document.querySelectorAll("[data-layer]").forEach(function (b) {
+    b.addEventListener("click", function () { setLayer(Number(b.getAttribute("data-layer"))); });
+  });
+
+  document.querySelectorAll("[data-bridge]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var on = b.getAttribute("data-bridge") === "1";
+      document.querySelectorAll("[data-bridge]").forEach(function (o) {
+        o.setAttribute("aria-pressed", o === b ? "true" : "false");
+      });
+      BRIDGES.forEach(function (x) { x.setOpen(on); });
+    });
+  });
+
+  var alertBox = document.getElementById("mockalert");
+  document.querySelectorAll("[data-alert]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var on = b.getAttribute("data-alert") === "1";
+      document.querySelectorAll("[data-alert]").forEach(function (o) {
+        o.setAttribute("aria-pressed", o === b ? "true" : "false");
+      });
+      if (alertBox) alertBox.hidden = !on;
+    });
+  });
+
+  var alertSettings = document.getElementById("alert-settings");
+  if (alertSettings) {
+    alertSettings.addEventListener("click", function () {
+      document.getElementById("alert-confirm").innerHTML =
+        '<p class="line-next">Niet gebouwd in deze prebuild. Instellingen bepalen hier alleen <b>of</b> en <b>wanneer</b> we mailen — nooit wat je moet doen.</p>';
+    });
+  }
+
+  /* ================= weergave · gebruiker of reviewer =================
+     Alles wat dit bestand aan zichzelf uitlegt — statusbalken, sub-staat-
+     schakelaars, ontwerpnotities — hoort niet in het beeld dat we toetsen.
+     Standaard staat de gebruikersmodus aan; de verantwoording is één tik weg. */
+  document.querySelectorAll("[data-mode]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var mode = b.getAttribute("data-mode");
+      document.querySelectorAll("[data-mode]").forEach(function (o) {
+        o.setAttribute("aria-pressed", o === b ? "true" : "false");
+      });
+      document.body.setAttribute("data-mode", mode);
+    });
+  });
+
   /* ================= start ================= */
+  document.body.setAttribute("data-mode", "user");
   applyFilters();
   render();
+  renderA();
+  renderAdded();
+  setLayer(currentLayer);
   var hash = (location.hash || "").replace("#", "");
   if (["a", "e", "b", "c", "d"].indexOf(hash) >= 0) show(hash);
 })();

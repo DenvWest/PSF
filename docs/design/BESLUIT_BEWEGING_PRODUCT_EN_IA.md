@@ -2,7 +2,7 @@
 
 > **Status: productbesluit + informatiestructuur. Geen code, geen implementatieslices.**
 > Opgesteld 30 juli 2026. Geverifieerd tegen `main`: `src/components/dashboard/BewegingScreen.tsx`,
-> `src/components/dashboard/beweging/*` (13 componenten, 3.143 regels), `src/lib/movement-*.ts` (23 modules),
+> `src/components/dashboard/beweging/`* (13 componenten, 3.143 regels), `src/lib/movement-*.ts` (23 modules),
 > `src/lib/events.ts` (`DOMAIN_EVENT_TYPES`).
 > **Aanvulling op** `docs/plan/BLAUWDRUK_ADAPTIEF_BEWEEGSYSTEEM.md` — die beschrijft *waarom de lus niet voelbaar is*.
 > Dit document beslist *welke surfaces er overblijven en wat er per surface primair is*.
@@ -29,11 +29,13 @@ blok, het is de *reden* onder de actie. Analyse wordt de rechtvaardiging van het
 
 ### A.2 Lagenkaart
 
-| Laag | Vraag | Primaire surface | Mag secondary voorkomen op | Mag nooit |
-|---|---|---|---|---|
-| **L1 Bewustwording / tiny habit** | Wat is nu de makkelijkste winst, en is dat genoeg? | **Beweging** (de enige doe-surface) | Mijn Dag (cross-domein) · e-mail-alert | Voortgang |
-| **L2 Analyse / positie / voortgang** | Waar sta ik, wat betekent dat, beweegt het? | **Voortgang › Beweging** | Eén regel op Beweging, als reden onder de actie | Als tweede score naast de check-score |
-| **L3 Advies / vergelijk / product** | Wat past bij mij, wat is prijs-kwaliteit? | **Advies** (bereikbaar vanuit Voortgang) | Eén regel op Beweging **alleen** in de klaar-staat | In de eerste viewport van Beweging, in welke staat dan ook |
+
+| Laag                                 | Vraag                                              | Primaire surface                         | Mag secondary voorkomen op                         | Mag nooit                                                  |
+| ------------------------------------ | -------------------------------------------------- | ---------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------- |
+| **L1 Bewustwording / tiny habit**    | Wat is nu de makkelijkste winst, en is dat genoeg? | **Beweging** (de enige doe-surface)      | Mijn Dag (cross-domein) · e-mail-alert             | Voortgang                                                  |
+| **L2 Analyse / positie / voortgang** | Waar sta ik, wat betekent dat, beweegt het?        | **Voortgang › Beweging**                 | Eén regel op Beweging, als reden onder de actie    | Als tweede score naast de check-score                      |
+| **L3 Advies / vergelijk / product**  | Wat past bij mij, wat is prijs-kwaliteit?          | **Advies** (bereikbaar vanuit Voortgang) | Eén regel op Beweging **alleen** in de klaar-staat | In de eerste viewport van Beweging, in welke staat dan ook |
+
 
 **De regel die de drie lagen uit elkaar houdt** — en dit is het structurele antwoord op de commercie-vraag:
 
@@ -45,22 +47,24 @@ blok, het is de *reden* onder de actie. Analyse wordt de rechtvaardiging van het
 
 ### A.3 Verdict-tabel
 
-| # | Item | Verdict | Onderbouwing in één zin |
-|---|---|---|---|
-| 1 | Surface **Overzicht** (naam + rol) | **PIVOT** | Wordt de énige Beweging-surface en verliest zijn naam: als er één surface is, heet die gewoon *Beweging*. |
-| 2 | Surface **Stappenplan** | **KILL** | Een leesbestemming die eindigt in *"Afvinken doe je in Overzicht"* is per definitie een omweg naar de plek waar je al was. |
-| 3 | Surface **Programma** | **PIVOT** | Geen bestemming meer maar één sheet *Jouw programma*, bereikbaar vanuit precies één plek — de oefeningen zijn detail bij het voorstel, geen eigen scherm. |
-| 4 | **MovementJourneyRail** / "Jouw route" | **KILL** | Een navigatiemetafoor over een plan met één actieve stap; hij verkoopt een reis die de gebruiker in één regel afgelezen wil hebben. |
-| 5 | **MovementSportLens** als eigen blok | **KILL als blok, PIVOT als input** | Interactie die zichzelf aankondigt als effectloos is de duurste UI die er is; de sportkeuze verhuist naar één regel in *Jouw programma* en gaat de weekbalans écht voeden. |
-| 6 | Score-ring **"Waar je staat"** op Overzicht | **PIVOT** | De ring is het beste analyse-object dat je hebt en staat op het verkeerde scherm; hij verhuist heel naar Voortgang en laat één regel achter. |
-| 7 | **Tier-picker** Herstel/Matig/Trainen | **PIVOT** | Van keuze-vóór-antwoord naar bijstelling-ná-voorstel: een man met matige motivatie moet geen formulier invullen om te weten wat hij kan doen. |
-| 8 | **"Open Mijn Dag"** als secondary CTA | **PIVOT** | Blijft bestaan maar verdwijnt uit de eerste viewport — vanaf Beweging is Mijn Dag een zijstap, geen vervolg. |
-| 9 | **Uitgebreide beweegcheck-CTA** op Overzicht | **PIVOT** | Meten is geen doen; de CTA verhuist naar Voortgang en komt op Beweging alleen terug als het advies aantoonbaar op oude data draait. |
-| 10 | **Voeding/supps-footer** op Overzicht | **PIVOT** | De voedingsregel blijft als leefstijl-eerst-brug, de supplementenlijst verdwijnt van de doe-surface — permanent gestapeld advies is geen advies maar een schap. |
-| 11 | **Mobiele 3-tabs** Overzicht/Stappenplan/Programma | **KILL** | Eén surface heeft geen tabs nodig, en het opheffen ervan lost meteen de desktop/mobiel-asymmetrie op. |
-| 12 | Ordinaal **"Fase 1 van 3"** | **KILL** | "1 van 3" communiceert *onderaan een ladder die iemand anders bepaalde*; vervangen door een kwalitatieve positieregel. |
-| 13 | **Tiny-habit alert (F1)** | **GO, met splitsing** | De in-app "alert" is geen alert maar de hero zelf (ships in F1a); een echt bericht kan zonder push alleen e-mail zijn en gaat als F1b achter een eigen opt-in. |
-| 14 | **Commercieel advies** gekoppeld aan beweging | **PIVOT op de oude lock** | Koop-CTA's blijven uit de doe-surface, maar krijgen wél een plek: één vergelijk-deur, achter de analyse, gated op de klaar-staat. |
+
+| #   | Item                                               | Verdict                            | Onderbouwing in één zin                                                                                                                                                    |
+| --- | -------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Surface **Overzicht** (naam + rol)                 | **PIVOT**                          | Wordt de énige Beweging-surface en verliest zijn naam: als er één surface is, heet die gewoon *Beweging*.                                                                  |
+| 2   | Surface **Stappenplan**                            | **KILL**                           | Een leesbestemming die eindigt in *"Afvinken doe je in Overzicht"* is per definitie een omweg naar de plek waar je al was.                                                 |
+| 3   | Surface **Programma**                              | **PIVOT**                          | Geen bestemming meer maar één sheet *Jouw programma*, bereikbaar vanuit precies één plek — de oefeningen zijn detail bij het voorstel, geen eigen scherm.                  |
+| 4   | **MovementJourneyRail** / "Jouw route"             | **KILL**                           | Een navigatiemetafoor over een plan met één actieve stap; hij verkoopt een reis die de gebruiker in één regel afgelezen wil hebben.                                        |
+| 5   | **MovementSportLens** als eigen blok               | **KILL als blok, PIVOT als input** | Interactie die zichzelf aankondigt als effectloos is de duurste UI die er is; de sportkeuze verhuist naar één regel in *Jouw programma* en gaat de weekbalans écht voeden. |
+| 6   | Score-ring **"Waar je staat"** op Overzicht        | **PIVOT**                          | De ring is het beste analyse-object dat je hebt en staat op het verkeerde scherm; hij verhuist heel naar Voortgang en laat één regel achter.                               |
+| 7   | **Tier-picker** Herstel/Matig/Trainen              | **PIVOT**                          | Van keuze-vóór-antwoord naar bijstelling-ná-voorstel: een man met matige motivatie moet geen formulier invullen om te weten wat hij kan doen.                              |
+| 8   | **"Open Mijn Dag"** als secondary CTA              | **PIVOT**                          | Blijft bestaan maar verdwijnt uit de eerste viewport — vanaf Beweging is Mijn Dag een zijstap, geen vervolg.                                                               |
+| 9   | **Uitgebreide beweegcheck-CTA** op Overzicht       | **PIVOT**                          | Meten is geen doen; de CTA verhuist naar Voortgang en komt op Beweging alleen terug als het advies aantoonbaar op oude data draait.                                        |
+| 10  | **Voeding/supps-footer** op Overzicht              | **PIVOT**                          | De voedingsregel blijft als leefstijl-eerst-brug, de supplementenlijst verdwijnt van de doe-surface — permanent gestapeld advies is geen advies maar een schap.            |
+| 11  | **Mobiele 3-tabs** Overzicht/Stappenplan/Programma | **KILL**                           | Eén surface heeft geen tabs nodig, en het opheffen ervan lost meteen de desktop/mobiel-asymmetrie op.                                                                      |
+| 12  | Ordinaal **"Fase 1 van 3"**                        | **KILL**                           | "1 van 3" communiceert *onderaan een ladder die iemand anders bepaalde*; vervangen door een kwalitatieve positieregel.                                                     |
+| 13  | **Tiny-habit alert (F1)**                          | **GO, met splitsing**              | De in-app "alert" is geen alert maar de hero zelf (ships in F1a); een echt bericht kan zonder push alleen e-mail zijn en gaat als F1b achter een eigen opt-in.             |
+| 14  | **Commercieel advies** gekoppeld aan beweging      | **PIVOT op de oude lock**          | Koop-CTA's blijven uit de doe-surface, maar krijgen wél een plek: één vergelijk-deur, achter de analyse, gated op de klaar-staat.                                          |
+
 
 ### A.4 Wat dit product WÉL en NIET is
 
@@ -76,17 +80,17 @@ En het weet wanneer het moet zwijgen: geen open taak betekent geen aandacht vrag
 **NIET — vijf concrete ontwerpverboden.**
 
 1. **Geen scherm dat een keuze eist vóór het een antwoord geeft.** Elke picker, tier-selectie of configuratie die
-   tussen het openen en het voorstel staat, is verboden. Het voorstel komt eerst; besturing staat eronder.
+  tussen het openen en het voorstel staat, is verboden. Het voorstel komt eerst; besturing staat eronder.
 2. **Geen tweede plek waar je iets afvinkt, telt of aftikt.** Eén afvinkbare eenheid per dag, één bron
-   (`daily_action_log`). Geen dagenteller, geen 14-dots-strip, geen checkbox in Voortgang, geen tweede vinklijst
+  (`daily_action_log`). Geen dagenteller, geen 14-dots-strip, geen checkbox in Voortgang, geen tweede vinklijst
    in *Jouw programma*.
 3. **Geen permanent gestapeld advies.** Elk blok onder de vouw dat er altijd staat ongeacht wat de gebruiker deed
-   — supplementenlijst, gidsen-links, begeleiding — is een schap, geen advies. Advies verschijnt op een trigger of
+  — supplementenlijst, gidsen-links, begeleiding — is een schap, geen advies. Advies verschijnt op een trigger of
    verschijnt niet.
 4. **Geen readout die telt wat je niet deed.** Geen "2 van 7 dagen", geen lege balken naast gevulde, geen
-   rood/leeg als default-toestand. Een gat mag genoemd worden — maximaal één, als kans, nooit als saldo.
+  rood/leeg als default-toestand. Een gat mag genoemd worden — maximaal één, als kans, nooit als saldo.
 5. **Geen navigatie-item dat op zichzelf niets doet.** Geen tab die alleen naar een leesscherm leidt, geen
-   `coming_soon`-variant in een keuzelijst, geen badge die belooft dat er iets klaarstaat. Bestaat het niet, dan
+  `coming_soon`-variant in een keuzelijst, geen badge die belooft dat er iets klaarstaat. Bestaat het niet, dan
    staat het niet in de navigatie.
 
 ---
@@ -95,18 +99,20 @@ En het weet wanneer het moet zwijgen: geen open taak betekent geen aandacht vrag
 
 Gesorteerd op impact. Elk probleem met de plek in de code waar het zit.
 
-| # | Probleem | Gebruikersimpact | Root cause | Raakt |
-|---|---|---|---|---|
-| 1 | Drie surfaces beantwoorden dezelfde vraag met andere woorden | De gebruiker moet een glossarium leren (route/stappenplan/programma/plan/overzicht) voordat hij één stap kan zetten | Elke nieuwe behoefte kreeg een eigen bestemming in plaats van een plek in de bestaande hiërarchie | `BewegingViewNav`, `MovementCockpit`, `MovementPlanDeepBody`, `MovementProgramView` |
-| 2 | Overzicht stapelt 8 blokken onder elkaar | Niets is primair, dus alles wordt gescand en niets gelezen; de afvink-CTA concurreert met zes andere aanknopingspunten | `BewegingScreen` voegt de footer toe aan een cockpit die al drie blokken heeft — twee componenten die niet van elkaars budget weten | `BewegingScreen.tsx:264-335` |
-| 3 | De tier-picker staat vóór het antwoord | Wie moe is en matig gemotiveerd, moet eerst een beslissing nemen om te ontdekken wat hij had kunnen doen | `showStartChoice` blokkeert de hero zolang `startPattern == null` | `MovementCockpit.tsx:78-102` |
-| 4 | CTA-versnippering over drie surfaces | Afvinken hier, oefeningen daar, dosis in een sheet — er is geen enkel pad dat begint bij "wat doe ik" en eindigt bij "gedaan" | De besturing is verplaatst naar waar ruimte was, niet naar waar de waarde staat | `MovementProgramCard` ↔ `MovementPlanAdjustSheet` |
-| 5 | De UI verkondigt haar eigen onmacht | *"verandert nooit je programma"* leest als: wat ik invoer doet niets — schijn-autonomie is erger dan geen keuze | Interne eerlijkheid over een niet-gekoppelde lens werd user-facing copy | `MovementSportLens.tsx:62,132`, `MovementPlanAdjustSheet.tsx:155` |
-| 6 | "Fase 1 van 3" als kop | Leest als *onderaan een ladder van iemand anders*; de ervaren 50-jarige krijgt hetzelfde label als de absolute beginner | `positionLabel` is ordinaal afgeleid uit de score, niet uit trainingsachtergrond | `MovementPlanRoadmap.tsx:80` |
-| 7 | De score-ring domineert de doe-surface | Een getal van 0–100 met baseline-marker, delta-badge, sparkline en richtlijn-context — vier analyse-objecten boven de vouw op een scherm dat om actie vraagt | "Waar je staat" is als tile in de cockpit gezet in plaats van in Voortgang | `MovementCockpit.tsx:116-277` |
-| 8 | Voeding/supps + gidsen + begeleiding permanent in de footer | Vier commerciële en educatieve uitgangen die er altijd staan, ongeacht wat de gebruiker deed of nodig heeft | Geen conditie op rendering; het blok is compositie, geen advies | `BewegingScreen.tsx:295-334` |
-| 9 | Desktop mist de mobiele navigatie | Op desktop is *Programma* alleen via een doorway bereikbaar; `onOpenProgramma` wordt op Overzicht niet eens gebruikt | De 3-tabs zijn als mobiele pleister gebouwd, niet als navigatiemodel | `MovementCockpit.tsx:44`, `BewegingViewNav` |
-| 10 | `kracht-sportschool` = `coming_soon` | Een keuze die tot een leeg scherm leidt beschadigt het vertrouwen in alle andere keuzes | De catalogus toont varianten die geen inhoud hebben | `MovementProgramView` |
+
+| #   | Probleem                                                     | Gebruikersimpact                                                                                                                                             | Root cause                                                                                                                          | Raakt                                                                               |
+| --- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 1   | Drie surfaces beantwoorden dezelfde vraag met andere woorden | De gebruiker moet een glossarium leren (route/stappenplan/programma/plan/overzicht) voordat hij één stap kan zetten                                          | Elke nieuwe behoefte kreeg een eigen bestemming in plaats van een plek in de bestaande hiërarchie                                   | `BewegingViewNav`, `MovementCockpit`, `MovementPlanDeepBody`, `MovementProgramView` |
+| 2   | Overzicht stapelt 8 blokken onder elkaar                     | Niets is primair, dus alles wordt gescand en niets gelezen; de afvink-CTA concurreert met zes andere aanknopingspunten                                       | `BewegingScreen` voegt de footer toe aan een cockpit die al drie blokken heeft — twee componenten die niet van elkaars budget weten | `BewegingScreen.tsx:264-335`                                                        |
+| 3   | De tier-picker staat vóór het antwoord                       | Wie moe is en matig gemotiveerd, moet eerst een beslissing nemen om te ontdekken wat hij had kunnen doen                                                     | `showStartChoice` blokkeert de hero zolang `startPattern == null`                                                                   | `MovementCockpit.tsx:78-102`                                                        |
+| 4   | CTA-versnippering over drie surfaces                         | Afvinken hier, oefeningen daar, dosis in een sheet — er is geen enkel pad dat begint bij "wat doe ik" en eindigt bij "gedaan"                                | De besturing is verplaatst naar waar ruimte was, niet naar waar de waarde staat                                                     | `MovementProgramCard` ↔ `MovementPlanAdjustSheet`                                   |
+| 5   | De UI verkondigt haar eigen onmacht                          | *"verandert nooit je programma"* leest als: wat ik invoer doet niets — schijn-autonomie is erger dan geen keuze                                              | Interne eerlijkheid over een niet-gekoppelde lens werd user-facing copy                                                             | `MovementSportLens.tsx:62,132`, `MovementPlanAdjustSheet.tsx:155`                   |
+| 6   | "Fase 1 van 3" als kop                                       | Leest als *onderaan een ladder van iemand anders*; de ervaren 50-jarige krijgt hetzelfde label als de absolute beginner                                      | `positionLabel` is ordinaal afgeleid uit de score, niet uit trainingsachtergrond                                                    | `MovementPlanRoadmap.tsx:80`                                                        |
+| 7   | De score-ring domineert de doe-surface                       | Een getal van 0–100 met baseline-marker, delta-badge, sparkline en richtlijn-context — vier analyse-objecten boven de vouw op een scherm dat om actie vraagt | "Waar je staat" is als tile in de cockpit gezet in plaats van in Voortgang                                                          | `MovementCockpit.tsx:116-277`                                                       |
+| 8   | Voeding/supps + gidsen + begeleiding permanent in de footer  | Vier commerciële en educatieve uitgangen die er altijd staan, ongeacht wat de gebruiker deed of nodig heeft                                                  | Geen conditie op rendering; het blok is compositie, geen advies                                                                     | `BewegingScreen.tsx:295-334`                                                        |
+| 9   | Desktop mist de mobiele navigatie                            | Op desktop is *Programma* alleen via een doorway bereikbaar; `onOpenProgramma` wordt op Overzicht niet eens gebruikt                                         | De 3-tabs zijn als mobiele pleister gebouwd, niet als navigatiemodel                                                                | `MovementCockpit.tsx:44`, `BewegingViewNav`                                         |
+| 10  | `kracht-sportschool` = `coming_soon`                         | Een keuze die tot een leeg scherm leidt beschadigt het vertrouwen in alle andere keuzes                                                                      | De catalogus toont varianten die geen inhoud hebben                                                                                 | `MovementProgramView`                                                               |
+
 
 ---
 
@@ -116,35 +122,41 @@ Gesorteerd op impact. Elk probleem met de plek in de code waar het zit.
 
 #### Surface 1 — **Beweging** *(de doe-surface, default en enige entry)*
 
-| | |
-|---|---|
-| **Primaire vraag** | Wat telt vandaag, en waarom juist dit voor mij? |
-| **Primary CTA** | **Gedaan** — direct naast **Ik doe de korte** (beide vinken af, beide tellen volledig mee) |
-| **SSOT-laag** | **agenda** (wanneer/wat staat er vandaag) + **evidence** (wat deed ik) |
-| **Laag** | L1 primair. L2 als één regel. L3 alleen in de klaar-staat. |
+
+|                       |                                                                                                                                                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Primaire vraag**    | Wat telt vandaag, en waarom juist dit voor mij?                                                                                                                                                                              |
+| **Primary CTA**       | **Gedaan** — direct naast **Ik doe de korte** (beide vinken af, beide tellen volledig mee)                                                                                                                                   |
+| **SSOT-laag**         | **agenda** (wanneer/wat staat er vandaag) + **evidence** (wat deed ik)                                                                                                                                                       |
+| **Laag**              | L1 primair. L2 als één regel. L3 alleen in de klaar-staat.                                                                                                                                                                   |
 | **Mag NIET bevatten** | score-ring · sparkline · baseline-marker · richtlijn-context · fase-as · route-rail · supplementenlijst · tweede vinklijst · oefeningencatalogus · een keuze die het voorstel blokkeert · een blok dat telt wat je niet deed |
+
 
 #### Surface 2 — **Jouw programma** *(sheet, geen bestemming)*
 
-| | |
-|---|---|
-| **Primaire vraag** | Wat is mijn programma precies, en wat kan ik eraan verzetten? |
-| **Primary CTA** | **Bewaren** (na een wijziging) — er is geen andere primaire actie |
-| **SSOT-laag** | **plan** (wat kan ik) |
-| **Laag** | L1 secundair — dit is de besturing van de dagstap, geen tweede doe-oppervlak |
-| **Bereikbaar via** | precies één plek: de regel *"Je programma · Zone 2, 2× per week"* onder de VANDAAG-kaart |
+
+|                       |                                                                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Primaire vraag**    | Wat is mijn programma precies, en wat kan ik eraan verzetten?                                                                                          |
+| **Primary CTA**       | **Bewaren** (na een wijziging) — er is geen andere primaire actie                                                                                      |
+| **SSOT-laag**         | **plan** (wat kan ik)                                                                                                                                  |
+| **Laag**              | L1 secundair — dit is de besturing van de dagstap, geen tweede doe-oppervlak                                                                           |
+| **Bereikbaar via**    | precies één plek: de regel *"Je programma · Zone 2, 2× per week"* onder de VANDAAG-kaart                                                               |
 | **Mag NIET bevatten** | afvinkbare items · een dagenteller · een catalogus om doorheen te bladeren · varianten zonder oefeningen · de zin "afvinken doe je elders" · een score |
+
 
 #### Surface 3 — **Voortgang › Beweging** *(bestaat al, wordt niet herbouwd)*
 
-| | |
-|---|---|
-| **Primaire vraag** | Waar sta ik, beweegt het, en wat betekent dat? |
-| **Primary CTA** | **Hermeten** wanneer die openstaat; anders geen — dit is een leesscherm |
-| **SSOT-laag** | **analyse** (waar sta ik) |
-| **Laag** | L2 primair. Draagt als enige de deur naar L3. |
-| **Krijgt erbij** | de hele score-ring met baseline en delta · de sparkline · de richtlijn-context · de uitgebreide beweegcheck-CTA · de bouwfase-geschiedenis |
-| **Mag NIET bevatten** | afvinken · todo's · dagenteller · vooruitblik op wat je nog moet |
+
+|                       |                                                                                                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Primaire vraag**    | Waar sta ik, beweegt het, en wat betekent dat?                                                                                             |
+| **Primary CTA**       | **Hermeten** wanneer die openstaat; anders geen — dit is een leesscherm                                                                    |
+| **SSOT-laag**         | **analyse** (waar sta ik)                                                                                                                  |
+| **Laag**              | L2 primair. Draagt als enige de deur naar L3.                                                                                              |
+| **Krijgt erbij**      | de hele score-ring met baseline en delta · de sparkline · de richtlijn-context · de uitgebreide beweegcheck-CTA · de bouwfase-geschiedenis |
+| **Mag NIET bevatten** | afvinken · todo's · dagenteller · vooruitblik op wat je nog moet                                                                           |
+
 
 **Waarom geen vierde.** Elke vierde surface moet een vraag beantwoorden die deze drie niet dekken. Die vraag is
 er niet. *Stappenplan* beantwoordde "wat komt er nog" — dat is L2 en zit in Voortgang. *Programma* beantwoordde
@@ -152,14 +164,16 @@ er niet. *Stappenplan* beantwoordde "wat komt er nog" — dat is L2 en zit in Vo
 
 ### C.2 Naamgeving — zes canonieke termen
 
-| Term | Betekent precies | Vervangt |
-|---|---|---|
-| **Beweging** | de pijler én de surface — er is er maar één, dus hij heeft geen bijnaam nodig | Overzicht (als label), beweeg-cockpit, kompas beweging |
-| **Vandaag** | de dagstap; de enige eenheid die je kunt afvinken | dagstap, actieve stap, dagelijkse actie, tier |
-| **Jouw programma** | wat je doet, hoe vaak, hoe lang, met welke oefeningen | stappenplan, plan, programma, route, sessie-variant, catalogus |
-| **Gedaan** | het uitvoeringslogboek — minuten en vormen, als bewijs | session-log, gedaan-log, evidence, wat je deed |
-| **Voortgang** | het meetscherm: score, lijn, hermeting | waar je staat, je lijn, statistieken, betekenis |
-| **Mijn Dag** | de dag-overstijgende actielijst over alle pijlers | (blijft) |
+
+| Term               | Betekent precies                                                              | Vervangt                                                       |
+| ------------------ | ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Beweging**       | de pijler én de surface — er is er maar één, dus hij heeft geen bijnaam nodig | Overzicht (als label), beweeg-cockpit, kompas beweging         |
+| **Vandaag**        | de dagstap; de enige eenheid die je kunt afvinken                             | dagstap, actieve stap, dagelijkse actie, tier                  |
+| **Jouw programma** | wat je doet, hoe vaak, hoe lang, met welke oefeningen                         | stappenplan, plan, programma, route, sessie-variant, catalogus |
+| **Gedaan**         | het uitvoeringslogboek — minuten en vormen, als bewijs                        | session-log, gedaan-log, evidence, wat je deed                 |
+| **Voortgang**      | het meetscherm: score, lijn, hermeting                                        | waar je staat, je lijn, statistieken, betekenis                |
+| **Mijn Dag**       | de dag-overstijgende actielijst over alle pijlers                             | (blijft)                                                       |
+
 
 **Verboden in UI-copy** — zonder uitzondering, ook niet in aria-labels of eyebrows:
 
@@ -176,31 +190,33 @@ kracht/conditie/dagelijks ritme is gewoon een eigenschap van je programma.
 
 ### C.3 Kill-list met bestemming
 
-| Wat | Waar het nu staat | Bestemming |
-|---|---|---|
-| Score-ring 128px + baseline-marker + delta-badge | Overzicht, blok 2 | **Voortgang** — ongewijzigd overzetten, dit is een goed object op het verkeerde scherm |
-| Sparkline + "Begin 55 · nu 58" + `baselineSourceLabel` | Overzicht, blok 2 | **Voortgang** |
-| "Ter context: de beweegrichtlijn is 150–300 min" | Overzicht, blok 2 | **Voortgang** — normreferentie hoort bij de meting, niet bij de stap |
-| "verandert bij je hermeting" + `formatLastMeasured` | Overzicht, blok 2 | **Voortgang** |
-| MovementJourneyRail (het hele component) | Overzicht, blok 3 | **Verwijderen** — de positieregel neemt de enige boodschap over |
-| Fase-as + open fase-paneel | Stappenplan | **Voortgang** — als bouwfase-geschiedenis, één regel per fase |
-| MovementProgramCard (3 chips zonder affordance) | Stappenplan | **Jouw programma** — samengevoegd met de adjust-sheet tot één blok met knoppen |
-| MovementPlanAdjustSheet | Stappenplan | **Jouw programma** — idem; de merge is de kern-ingreep |
-| MovementSportLens als blok + dekkingsbalken | Stappenplan | **Jouw programma** als één regel *"Wat je verder doet"*; de dekking voedt de weekbalans op Beweging |
-| De vier onmacht-strings | Stappenplan / sport-lens | **Verwijderen** |
-| "Afvinken doe je in Overzicht" (herhaald) | Stappenplan | **Verwijderen** — er is geen elders meer |
-| mechanism-blok (3 alinea's, iedereen dezelfde) | Stappenplan | **Beweging**, onder de vouw, achter één disclosure — en op termijn variant-gekozen |
-| medical aside | Stappenplan | **Beweging**, onder de vouw bij dezelfde disclosure |
-| MovementProgramView als route | `?view=programma` | **Jouw programma** (sheet) |
-| `coming_soon`-varianten | Programma | **Verwijderen uit de keuzelijst** — zie §E.4 |
-| Uitgebreide beweegcheck-CTA (`md:hidden`) | Overzicht-footer | **Voortgang** als vaste CTA; op Beweging alleen conditioneel (§E.3) |
-| Supplementen-lijst + "Vergelijk"-links | Overzicht-footer | **Advies** (§G) |
-| Voedingscheck-hint | Overzicht-footer | **Beweging**, maar getriggerd: alleen na een gelogde krachtsessie, als één regel |
-| `KompasBegeleidingLink` | Overzicht-footer | **Parkeren** — een wachtlijst mag terug zodra er een product ís (zelfde regel als `voortgang-plan-later.md` §8) |
-| FooterLink "Gratis Bewegingsgids" | Overzicht-footer | **Beweging**, klaar-staat only |
-| FooterLink "Leefstijl & inzichten" | Overzicht-footer | **Beweging**, klaar-staat only |
-| BewegingViewNav (3 tabs) | mobiel, sticky | **Verwijderen** |
-| MovementDoorway | Overzicht | **Verwijderen** — rendert al `null` zonder `onClick`; er is geen doorway meer nodig |
+
+| Wat                                                    | Waar het nu staat        | Bestemming                                                                                                      |
+| ------------------------------------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Score-ring 128px + baseline-marker + delta-badge       | Overzicht, blok 2        | **Voortgang** — ongewijzigd overzetten, dit is een goed object op het verkeerde scherm                          |
+| Sparkline + "Begin 55 · nu 58" + `baselineSourceLabel` | Overzicht, blok 2        | **Voortgang**                                                                                                   |
+| "Ter context: de beweegrichtlijn is 150–300 min"       | Overzicht, blok 2        | **Voortgang** — normreferentie hoort bij de meting, niet bij de stap                                            |
+| "verandert bij je hermeting" + `formatLastMeasured`    | Overzicht, blok 2        | **Voortgang**                                                                                                   |
+| MovementJourneyRail (het hele component)               | Overzicht, blok 3        | **Verwijderen** — de positieregel neemt de enige boodschap over                                                 |
+| Fase-as + open fase-paneel                             | Stappenplan              | **Voortgang** — als bouwfase-geschiedenis, één regel per fase                                                   |
+| MovementProgramCard (3 chips zonder affordance)        | Stappenplan              | **Jouw programma** — samengevoegd met de adjust-sheet tot één blok met knoppen                                  |
+| MovementPlanAdjustSheet                                | Stappenplan              | **Jouw programma** — idem; de merge is de kern-ingreep                                                          |
+| MovementSportLens als blok + dekkingsbalken            | Stappenplan              | **Jouw programma** als één regel *"Wat je verder doet"*; de dekking voedt de weekbalans op Beweging             |
+| De vier onmacht-strings                                | Stappenplan / sport-lens | **Verwijderen**                                                                                                 |
+| "Afvinken doe je in Overzicht" (herhaald)              | Stappenplan              | **Verwijderen** — er is geen elders meer                                                                        |
+| mechanism-blok (3 alinea's, iedereen dezelfde)         | Stappenplan              | **Beweging**, onder de vouw, achter één disclosure — en op termijn variant-gekozen                              |
+| medical aside                                          | Stappenplan              | **Beweging**, onder de vouw bij dezelfde disclosure                                                             |
+| MovementProgramView als route                          | `?view=programma`        | **Jouw programma** (sheet)                                                                                      |
+| `coming_soon`-varianten                                | Programma                | **Verwijderen uit de keuzelijst** — zie §E.4                                                                    |
+| Uitgebreide beweegcheck-CTA (`md:hidden`)              | Overzicht-footer         | **Voortgang** als vaste CTA; op Beweging alleen conditioneel (§E.3)                                             |
+| Supplementen-lijst + "Vergelijk"-links                 | Overzicht-footer         | **Advies** (§G)                                                                                                 |
+| Voedingscheck-hint                                     | Overzicht-footer         | **Beweging**, maar getriggerd: alleen na een gelogde krachtsessie, als één regel                                |
+| `KompasBegeleidingLink`                                | Overzicht-footer         | **Parkeren** — een wachtlijst mag terug zodra er een product ís (zelfde regel als `voortgang-plan-later.md` §8) |
+| FooterLink "Gratis Bewegingsgids"                      | Overzicht-footer         | **Beweging**, klaar-staat only                                                                                  |
+| FooterLink "Leefstijl & inzichten"                     | Overzicht-footer         | **Beweging**, klaar-staat only                                                                                  |
+| BewegingViewNav (3 tabs)                               | mobiel, sticky           | **Verwijderen**                                                                                                 |
+| MovementDoorway                                        | Overzicht                | **Verwijderen** — rendert al `null` zonder `onClick`; er is geen doorway meer nodig                             |
+
 
 **Wat er expliciet blijft staan en niet aangeraakt wordt:** `MovementTodayHero` als enige afvink-oppervlak,
 de training-gate, de exertie-microvraag, de recovery-hint, `MovementWeekRhythm` (wordt de weekbalans),
@@ -471,16 +487,18 @@ Drie elementen, alle drie feitelijk: *wat je bouwt* (kwalitatief, geen rangnumme
 
 **Wat er van de doe-surface af moet, naar Voortgang** — dit is de complete lijst:
 
-| Readout | Waarom het daar hoort |
-|---|---|
-| Score-ring 0–100 + baseline-marker | Een getal dat alleen bij de hermeting beweegt, hoort bij het scherm dat metingen toont |
-| Delta-badge "▲ +3 sinds de start" | Idem — dit is de kernvraag van Voortgang, niet van vandaag |
-| Sparkline + "Begin 55 · nu 58" | Trend is per definitie L2 |
-| `baselineSourceLabel` | Herkomstverantwoording bij een meting |
-| "Ter context: 150–300 min per week" | Normreferentie hoort bij de meting; op de doe-surface is het een maatlat naast een stap van 15 minuten |
-| `formatLastMeasured` + "verandert bij je hermeting" | Meta-informatie over de meting |
-| Fase-as met alle fases | Positie-geschiedenis |
-| Uitgebreide beweegcheck-CTA | Meten is geen doen |
+
+| Readout                                             | Waarom het daar hoort                                                                                  |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Score-ring 0–100 + baseline-marker                  | Een getal dat alleen bij de hermeting beweegt, hoort bij het scherm dat metingen toont                 |
+| Delta-badge "▲ +3 sinds de start"                   | Idem — dit is de kernvraag van Voortgang, niet van vandaag                                             |
+| Sparkline + "Begin 55 · nu 58"                      | Trend is per definitie L2                                                                              |
+| `baselineSourceLabel`                               | Herkomstverantwoording bij een meting                                                                  |
+| "Ter context: 150–300 min per week"                 | Normreferentie hoort bij de meting; op de doe-surface is het een maatlat naast een stap van 15 minuten |
+| `formatLastMeasured` + "verandert bij je hermeting" | Meta-informatie over de meting                                                                         |
+| Fase-as met alle fases                              | Positie-geschiedenis                                                                                   |
+| Uitgebreide beweegcheck-CTA                         | Meten is geen doen                                                                                     |
+
 
 **De ene uitzondering.** De beweegcheck-CTA mag terugkomen op Beweging, maar alleen conditioneel: is er geen
 beweegcheck of is die ouder dan de laatste hermeting, dan staat er onder de vouw één regel — *"Je voorstel
@@ -522,32 +540,34 @@ variant van diezelfde stap is altijd zichtbaar, telt volledig mee, en is nooit e
 Web push en SMS zijn gelockt uit F1. Dan blijven er twee kanalen over, en die doen niet hetzelfde:
 
 - **In-app** bereikt de gebruiker alleen als hij al opent. Dat is geen alert — dat is de hero. Die is
-  ontworpen in §D en heeft geen extra kanaal nodig.
+ontworpen in §D en heeft geen extra kanaal nodig.
 - **E-mail** is het enige kanaal dat iemand bereikt die vandaag *niet* uit zichzelf opent. Dat is de hele
-  functie van een nudge.
+functie van een nudge.
 
 **Besluit: F1 = e-mail. De in-app "alert" bestaat niet als apart object.** En de fasering is niet vrijblijvend —
 zie §K.4: de e-mail gaat pas aan nadat de surface-consolidatie een meetvenster heeft gehad, anders stuur je
 verkeer naar een scherm waarvan je niet weet of het werkt, en kun je achteraf niet zien wat wat deed.
 
-| | |
-|---|---|
-| **Trigger** | Er staat vandaag een beweeg-dagstap open (`slot.isToday && slot.domain === "beweging" && !isPlanStepHidden`) **én** die is nog niet afgevinkt **én** de gebruiker heeft een actieve opt-in voor dagherinneringen. |
-| **Kanaal** | E-mail via Resend. Eén kanaal. Geen in-app tegenhanger, geen push, geen SMS. |
-| **Timing-bron** | De bestaande `time_bucket` (`dashboard.time_bucket_set` staat al in `DOMAIN_EVENT_TYPES`). Ochtend → 07:30, middag → 12:30, avond → 18:00. Geen bucket gezet → **niet sturen**. Een gok op het tijdstip is een gok op irritatie. |
-| **Suppressie** | Stap al afgevinkt · vandaag al een beweeg-bericht gestuurd · rustdag actief · een andere pijler is als prioriteit gezet · geen verse dagstap · afgemeld. **Maximaal 1 beweeg-bericht per dag, en de suppressie wordt gecontroleerd op het verzendmoment, niet bij het plannen.** |
-| **Landingspunt** | `/dashboard?tab=vandaag&kompas=beweging` — de VANDAAG-kaart. Geen deeplink naar de sheet, geen Voortgang, geen vergelijkingspagina. De mail brengt je naar de knop, nergens anders heen. |
+
+|                  |                                                                                                                                                                                                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trigger**      | Er staat vandaag een beweeg-dagstap open (`slot.isToday && slot.domain === "beweging" && !isPlanStepHidden`) **én** die is nog niet afgevinkt **én** de gebruiker heeft een actieve opt-in voor dagherinneringen.                                                                |
+| **Kanaal**       | E-mail via Resend. Eén kanaal. Geen in-app tegenhanger, geen push, geen SMS.                                                                                                                                                                                                     |
+| **Timing-bron**  | De bestaande `time_bucket` (`dashboard.time_bucket_set` staat al in `DOMAIN_EVENT_TYPES`). Ochtend → 07:30, middag → 12:30, avond → 18:00. Geen bucket gezet → **niet sturen**. Een gok op het tijdstip is een gok op irritatie.                                                 |
+| **Suppressie**   | Stap al afgevinkt · vandaag al een beweeg-bericht gestuurd · rustdag actief · een andere pijler is als prioriteit gezet · geen verse dagstap · afgemeld. **Maximaal 1 beweeg-bericht per dag, en de suppressie wordt gecontroleerd op het verzendmoment, niet bij het plannen.** |
+| **Landingspunt** | `/dashboard?tab=vandaag&kompas=beweging` — de VANDAAG-kaart. Geen deeplink naar de sheet, geen Voortgang, geen vergelijkingspagina. De mail brengt je naar de knop, nergens anders heen.                                                                                         |
+
 
 ### F.3 Copy-regels
 
 1. **Onderwerp en preheader zijn domeinvrij én scorevrij.** Geen "beweging", "training", "wandelen",
-   "herstel", "score", geen getal dat een gezondheidstoestand kan verraden. Van buitenaf gelezen — op een
+  "herstel", "score", geen getal dat een gezondheidstoestand kan verraden. Van buitenaf gelezen — op een
    vergrendeld scherm, over iemands schouder — mag er geen bijzondere persoonsgegeven uit af te leiden zijn
    (AVG art. 9).
 2. **De body mag de pijler wél noemen**, want de opt-in was domeinspecifiek en de mail is geopend. De body mag
-   nooit de score noemen — dat is de bestaande lock "geen scores in reminders".
+  nooit de score noemen — dat is de bestaande lock "geen scores in reminders".
 3. **Geen gebiedende wijs.** Niet *"pak je krachtsessie op"* maar *"hij staat klaar"*. Het verschil tussen een
-   coach en een baas zit in de werkwoordsvorm.
+  coach en een baas zit in de werkwoordsvorm.
 4. **Nooit tweemaal.** Genegeerd = geaccepteerd. Geen herinnering aan de herinnering.
 5. **Afmelden in één tik**, in elke mail, los van de nurture-sequence.
 
@@ -611,20 +631,23 @@ tijd kijkt — niet het moment waarop hij op het punt staat 15 minuten te gaan w
 enige taak die telt.
 
 **De twee condities (poorten).**
+
 1. **Basis staat.** De voedingscheck is gedaan én er is minstens één gemeten signaal dat een tekort suggereert.
-   Zonder die twee toont Advies geen producten maar de reden waarom niet — precies zoals de bestaande copy nu al
+  Zonder die twee toont Advies geen producten maar de reden waarom niet — precies zoals de bestaande copy nu al
    doet (*"eerst tafel, dan potje"*).
 2. **De doe-taak is klaar.** De deur naar Advies is nooit prominenter dan de open stap van vandaag (§A.2).
 
 ### G.2 De vorm van de CTA
 
-| Wel | Niet |
-|---|---|
-| **"Vergelijk op prijs en kwaliteit →"** naar de bestaande vergelijkingspagina | Een koopknop |
-| Eén regel wat het middel wél en niet doet, vóór de link | Een productkaart met foto en prijs in het dashboard |
-| `rel="nofollow sponsored"` op de vergelijkingspagina, waar de affiliate-links al staan | Een affiliate-link direct vanuit het dashboard |
-| Maximaal **twee** signalen tegelijk | Een lijst van vijf |
-| Een expliciete "waarom je dit misschien niet nodig hebt"-regel | Een aanbeveling zonder tegenargument |
+
+| Wel                                                                                    | Niet                                                |
+| -------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **"Vergelijk op prijs en kwaliteit →"** naar de bestaande vergelijkingspagina          | Een koopknop                                        |
+| Eén regel wat het middel wél en niet doet, vóór de link                                | Een productkaart met foto en prijs in het dashboard |
+| `rel="nofollow sponsored"` op de vergelijkingspagina, waar de affiliate-links al staan | Een affiliate-link direct vanuit het dashboard      |
+| Maximaal **twee** signalen tegelijk                                                    | Een lijst van vijf                                  |
+| Een expliciete "waarom je dit misschien niet nodig hebt"-regel                         | Een aanbeveling zonder tegenargument                |
+
 
 **Op Beweging blijft precies één commercieel-aangrenzende regel over, en die is educatief, niet commercieel:**
 de nutrient-bridge ná een gelogde krachtsessie — *"Kracht zonder eiwit levert minder op. Bekijk wat dat
@@ -648,27 +671,30 @@ toevallig een schone naad heeft. Meer moet er nu niet gebeuren.
 ## H. Meetplan
 
 **Uitgangspunt: hergebruik vóór nieuw.** `ROADMAP_DASHBOARD_COCKPIT.md §3` zet *"Nieuwe event-types — KILL"*
-voor fase P0–P2. Ik respecteer die lock voor de **durable `DOMAIN_EVENT_TYPES`**: er komt er precies één bij, en
+voor fase P0–P2. Ik respecteer die lock voor de **durable `DOMAIN_EVENT_TYPES*`*: er komt er precies één bij, en
 alleen omdat er een nieuw kanaal ontstaat waarvan de levering anders onmeetbaar is. Alle overige metingen zijn
 GA4/Clarity, waar de lock niet op ziet, en hergebruiken bestaande event-namen met een andere payload-waarde.
 
-| # | CTA / alert | Event | Payload (geen PII) | Hergebruik of nieuw |
-|---|---|---|---|---|
-| 1 | Primary **Gedaan** | `dashboard_vandaag_action_toggled` | `{ surface: "kompas_beweging", state }` | **Hergebruik** — dit is de regressiewacht; hij mag na de consolidatie niet dalen |
-| 2 | **Ik doe de korte** | `dashboard_vandaag_step_alternative` | `{ choice: "kort", surface: "kompas_beweging" }` | **Hergebruik** — het event bestaat al met een `choice`-parameter (`MovementTodayHero.tsx:63`); alleen een nieuwe waarde |
-| 3 | Regel **"Je programma · …"** → sheet opent | `dashboard_beweging_programma_open` | `{ surface: "kompas_beweging", variant }` | **Hergebruik** — bestaat al als durable event `dashboard.beweging_programma_open` |
-| 4 | Een knop in de sheet verzet | `movement_week_category` | `{ dial, from, to }` | **Hergebruik** — bestaat al in `MovementStartChoice.tsx:81`; uitbreiden naar de andere knoppen i.p.v. een nieuw event per knop |
-| 5 | **"Een andere vorm proberen"** | `movement_week_category` | `{ dial: "variant", from, to }` | **Hergebruik** |
-| 6 | Doorway **"Je voortgang"** | `dashboard_beweging_voortgang_click` | `{ surface: "kompas_beweging", state: "klaar" \| "open" }` | **Hergebruik** van het bestaande GA4-patroon `dashboard_beweging_*_click`; de `state`-waarde is wat de klaar-staat-regel toetsbaar maakt |
-| 7 | **Advies → vergelijk** | `dashboard_beweging_supplement_click` | `{ slug, target, surface: "advies_voortgang" }` | **Hergebruik** — alleen de `surface`-waarde verandert; GA4-annotatie op de verhuisdatum |
-| 8 | Nutrient-bridge-regel (na krachtsessie) | `dashboard_beweging_voeding_click` | `{ surface: "kompas_beweging", trigger: "kracht_gelogd" }` | **Hergebruik** — `trigger` scheidt de getriggerde regel van de oude permanente footer |
-| 9 | Beweegcheck-prompt (conditioneel) | `dashboard_beweging_checkin_click` | `{ mode: "full", surface }` | **Hergebruik** |
-| 10 | **E-mail verzonden** | `movement.nudge_sent` | `{ time_bucket, suppressed_reason \| null }` | 🆕 **Nieuw durable event** |
-| 11 | **E-mail geklikt** | `dashboard_vandaag_card_shown` | `{ surface: "kompas_beweging", ref: "nudge" }` | **Hergebruik** — het bestaande shown-event (`MovementTodayHero.tsx:268`) met een `ref`-parameter uit de landings-URL |
+
+| #   | CTA / alert                                | Event                                 | Payload (geen PII)                                         | Hergebruik of nieuw                                                                                                                      |
+| --- | ------------------------------------------ | ------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Primary **Gedaan**                         | `dashboard_vandaag_action_toggled`    | `{ surface: "kompas_beweging", state }`                    | **Hergebruik** — dit is de regressiewacht; hij mag na de consolidatie niet dalen                                                         |
+| 2   | **Ik doe de korte**                        | `dashboard_vandaag_step_alternative`  | `{ choice: "kort", surface: "kompas_beweging" }`           | **Hergebruik** — het event bestaat al met een `choice`-parameter (`MovementTodayHero.tsx:63`); alleen een nieuwe waarde                  |
+| 3   | Regel **"Je programma · …"** → sheet opent | `dashboard_beweging_programma_open`   | `{ surface: "kompas_beweging", variant }`                  | **Hergebruik** — bestaat al als durable event `dashboard.beweging_programma_open`                                                        |
+| 4   | Een knop in de sheet verzet                | `movement_week_category`              | `{ dial, from, to }`                                       | **Hergebruik** — bestaat al in `MovementStartChoice.tsx:81`; uitbreiden naar de andere knoppen i.p.v. een nieuw event per knop           |
+| 5   | **"Een andere vorm proberen"**             | `movement_week_category`              | `{ dial: "variant", from, to }`                            | **Hergebruik**                                                                                                                           |
+| 6   | Doorway **"Je voortgang"**                 | `dashboard_beweging_voortgang_click`  | `{ surface: "kompas_beweging", state: "klaar" | "open" }`  | **Hergebruik** van het bestaande GA4-patroon `dashboard_beweging_*_click`; de `state`-waarde is wat de klaar-staat-regel toetsbaar maakt |
+| 7   | **Advies → vergelijk**                     | `dashboard_beweging_supplement_click` | `{ slug, target, surface: "advies_voortgang" }`            | **Hergebruik** — alleen de `surface`-waarde verandert; GA4-annotatie op de verhuisdatum                                                  |
+| 8   | Nutrient-bridge-regel (na krachtsessie)    | `dashboard_beweging_voeding_click`    | `{ surface: "kompas_beweging", trigger: "kracht_gelogd" }` | **Hergebruik** — `trigger` scheidt de getriggerde regel van de oude permanente footer                                                    |
+| 9   | Beweegcheck-prompt (conditioneel)          | `dashboard_beweging_checkin_click`    | `{ mode: "full", surface }`                                | **Hergebruik**                                                                                                                           |
+| 10  | **E-mail verzonden**                       | `movement.nudge_sent`                 | `{ time_bucket, suppressed_reason | null }`                | 🆕 **Nieuw durable event**                                                                                                               |
+| 11  | **E-mail geklikt**                         | `dashboard_vandaag_card_shown`        | `{ surface: "kompas_beweging", ref: "nudge" }`             | **Hergebruik** — het bestaande shown-event (`MovementTodayHero.tsx:268`) met een `ref`-parameter uit de landings-URL                     |
+
 
 **De ene nieuwe durable event — registratie op drie plekken:**
 
 `movement.nudge_sent` moet worden geregistreerd in:
+
 1. `src/lib/events.ts` — toevoegen aan `DOMAIN_EVENT_TYPES`
 2. `src/lib/intake-events-client.ts` — client-zijde type
 3. `src/app/api/intake/events/route.ts` — allowlist
@@ -684,12 +710,14 @@ maak de uitzondering, hij is er precies één.**
 
 Dit is de eis waar het meetplan op staat of valt (§K.4). Drie effecten, drie vensters, **drie deploys**:
 
-| Effect | Leidend event | Venster | Wat er in dat venster níét mag veranderen |
-|---|---|---|---|
-| **Tiny-habit** | `dashboard_vandaag_action_toggled` + ratio `dashboard_vandaag_step_alternative{choice:"kort"}` | F1a — surface-consolidatie | de alert (staat uit), de advies-deur (bestaat niet) |
-| **Analyse-engagement** | `dashboard_beweging_voortgang_click` gesplitst op `state` | F1a, tweede helft | — |
-| **Advies-CTR** | `dashboard_beweging_supplement_click{surface:"advies_voortgang"}` | F2 — na de advies-deur | de surfaces (bevroren), de alert-frequentie |
-| **Alert-effect** | `movement.nudge_sent` → `dashboard_vandaag_card_shown{ref:"nudge"}` → `dashboard_vandaag_action_toggled` | F1b, eigen venster | de surfaces (bevroren) |
+
+| Effect                 | Leidend event                                                                                            | Venster                    | Wat er in dat venster níét mag veranderen           |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------- | --------------------------------------------------- |
+| **Tiny-habit**         | `dashboard_vandaag_action_toggled` + ratio `dashboard_vandaag_step_alternative{choice:"kort"}`           | F1a — surface-consolidatie | de alert (staat uit), de advies-deur (bestaat niet) |
+| **Analyse-engagement** | `dashboard_beweging_voortgang_click` gesplitst op `state`                                                | F1a, tweede helft          | —                                                   |
+| **Advies-CTR**         | `dashboard_beweging_supplement_click{surface:"advies_voortgang"}`                                        | F2 — na de advies-deur     | de surfaces (bevroren), de alert-frequentie         |
+| **Alert-effect**       | `movement.nudge_sent` → `dashboard_vandaag_card_shown{ref:"nudge"}` → `dashboard_vandaag_action_toggled` | F1b, eigen venster         | de surfaces (bevroren)                              |
+
 
 **Zonder deze scheiding is elk effect een blended cijfer.** Als de surface-consolidatie, de omgedraaide
 tier-picker en de e-mail in één deploy gaan, kun je nooit vaststellen welke van de drie de hero-conversie
@@ -712,6 +740,7 @@ je kunt aantikken, en daarachter staan je oefeningen en je knoppen bij elkaar. D
 beweegcheck zijn verhuisd naar Voortgang.
 
 **Acceptatiecriteria.**
+
 - Op 375px staan er maximaal drie contentblokken boven de vouw, in alle drie de toestanden (a)(b)(c).
 - Er is geen scherm, sheet of blok waarop een tweede keer afgevinkt kan worden.
 - De vier onmacht-strings zijn verdwenen; er staat nergens meer dat een keuze niets verandert.
@@ -752,42 +781,35 @@ mechanisme-blok toont één variant, gekozen op condities die al bestaan.
 ### I.4 Open vragen — met mijn aanbevolen antwoord
 
 1. **Gaat de fase-aware dagstap-resolver mee in F3, of eerder?**
-   *Mijn advies: F3, zoals hier gepland.* Het is de enige echte engine-wijziging in dit hele document en hij is
+  *Mijn advies: F3, zoals hier gepland.* Het is de enige echte engine-wijziging in dit hele document en hij is
    pas zichtbaar bij gebruikers die weken loggen — die heb je nu nog niet. Eerder bouwen is werk zonder publiek.
-
 2. **Mag `movement.nudge_sent` als nieuw durable event, ondanks de KILL in de roadmap?**
-   *Mijn advies: ja, en alleen deze.* Zonder verzendlog kun je de suppressie en de frequentiegrens niet
+  *Mijn advies: ja, en alleen deze.* Zonder verzendlog kun je de suppressie en de frequentiegrens niet
    aantonen — dat is een verantwoordingsvereiste, geen productmeting.
-
 3. **Blijft "Open Mijn Dag" bestaan, nu Beweging zelf de afvink-plek is?**
-   *Mijn advies: ja, maar als stille regel onder de vouw.* Iemand die op Beweging binnenkomt via de mail wil
+  *Mijn advies: ja, maar als stille regel onder de vouw.* Iemand die op Beweging binnenkomt via de mail wil
    soms toch zijn hele dag zien. Boven de vouw concurreert hij met de primary; eronder kost hij niets.
-
 4. **Verdwijnt `KompasBegeleidingLink` helemaal of alleen van Beweging?**
-   *Mijn advies: parkeren tot er een product is.* Zelfde regel als `voortgang-plan-later.md` §8 — een wachtlijst
+  *Mijn advies: parkeren tot er een product is.* Zelfde regel als `voortgang-plan-later.md` §8 — een wachtlijst
    mag terug zodra er iets ís om op te wachten. Nu is het een knop die stemmen telt die nergens heen gaan.
-
 5. **Wordt Advies een eigen route, of een sectie op Voortgang?**
-   *Mijn advies: een sectie op Voortgang in F2, een eigen route pas als er meer dan één domein advies levert.*
+  *Mijn advies: een sectie op Voortgang in F2, een eigen route pas als er meer dan één domein advies levert.*
    Een lege route is duurder dan een sectie die meegroeit — en de naad blijft schoon voor de B2B-horizon.
-
 6. **Mag de e-mail-opt-in in de bestaande nurture-flow, of moet hij apart?**
-   *Mijn advies: apart.* Een dagelijkse gedragsnudge is een ander doel dan een nurture-sequence; ze samenvoegen
+  *Mijn advies: apart.* Een dagelijkse gedragsnudge is een ander doel dan een nurture-sequence; ze samenvoegen
    maakt afmelden onduidelijk en de grondslag rommelig. Twee vinkjes, twee afmeldpaden.
-
 7. **Blijft de exertie-microvraag na het afvinken staan?**
-   *Mijn advies: ja, ongewijzigd.* Hij is één tik, overslaanbaar, en levert het enige verse herstelsignaal dat
+  *Mijn advies: ja, ongewijzigd.* Hij is één tik, overslaanbaar, en levert het enige verse herstelsignaal dat
    de waarom-regel van morgen mag dragen. Zonder hem moet het systeem vaker zwijgen over herstel.
-
 8. **Is er iets in de eerste viewport dat ik niet gezien heb, omdat de screenshots ontbraken?**
-   *Mijn advies: toets dit vóór de lock.* Meet de daadwerkelijke blokhoogtes op 375px in de drie toestanden. Als
+  *Mijn advies: toets dit vóór de lock.* Meet de daadwerkelijke blokhoogtes op 375px in de drie toestanden. Als
    de VANDAAG-kaart alleen al meer dan ~340px is, moet "Deze week" ook in toestand (b) onder de vouw.
 
 ### I.5 Horizonregel B2B — vijf regels
 
 Er komt nu geen multi-tenant, geen coach-portal, geen organisatie-UI en geen rolmodel — niet in de code en niet
 in het ontwerp. Wat we wél vermijden te verankeren in de B2C-UI: advieslogica die alleen bestaat als onderdeel
-van de doe-surface, productdata die vastzit aan `movement-*`-modules, en copy die één merk veronderstelt in de
+van de doe-surface, productdata die vastzit aan `movement-`*-modules, en copy die één merk veronderstelt in de
 adviesregels. De enige structurele investering die de horizon dient is de scheiding zelf — analyse en advies
 lezen uit de analyse-output en schrijven niets terug naar de executie-engine. Zolang die naad schoon blijft, is
 de advieslaag later te lichten zonder de doe-surface aan te raken. Meer voorbereiden is speculatief werk.
@@ -801,83 +823,87 @@ de advieslaag later te lichten zonder de doe-surface aan te raken. Meer voorbere
 ### K.1 Gedragswetenschapper
 
 - **Kritiek 1.** De weekbalans met vier balken waarvan er twee leeg zijn is een *gap display*: hij toont
-  primair wat je niet deed. Voor iemand met lage self-efficacy is dat een tekortsignaal op de eerste
-  viewport — precies de schuld-mechaniek die het product zegt te vermijden.
+primair wat je niet deed. Voor iemand met lage self-efficacy is dat een tekortsignaal op de eerste
+viewport — precies de schuld-mechaniek die het product zegt te vermijden.
 - **Kritiek 2.** "De tiny habit is de bestaande dagstap" klopt architectonisch maar niet gedragsmatig. Een
-  dagstap van 30 minuten Zone 2 is geen tiny habit. Als de kleinste variant een link ónder de knop is, is de
-  makkelijkste winst niet de makkelijkste keuze — hij is de tweede keuze.
+dagstap van 30 minuten Zone 2 is geen tiny habit. Als de kleinste variant een link ónder de knop is, is de
+makkelijkste winst niet de makkelijkste keuze — hij is de tweede keuze.
 - **Verbetering, verwerkt.** *(a)* "Deze week" toont geen saldo en geen lege balken meer: één zin over wat
-  gedekt is, plus maximaal één open vorm als kans (§D.3). *(b)* **"Ik doe de korte" is een knop naast de
-  primary geworden**, met "telt volledig mee" eronder (§D.2–D.4, §F.1). Dat laatste is de belangrijkste
-  wijziging in dit document.
+gedekt is, plus maximaal één open vorm als kans (§D.3). *(b)* **"Ik doe de korte" is een knop naast de
+primary geworden**, met "telt volledig mee" eronder (§D.2–D.4, §F.1). Dat laatste is de belangrijkste
+wijziging in dit document.
 
 ### K.2 45-jarige man, drukke week, matige motivatie, op zijn telefoon
 
 - **Kritiek 1.** "Je bouwt basis · week 3" als eerste regel is de minst dringende informatie op het scherm.
-  Om 21:40 op de bank wil ik weten of ik nog iets moet, niet in welke bouwfase ik zit.
+Om 21:40 op de bank wil ik weten of ik nog iets moet, niet in welke bouwfase ik zit.
 - **Kritiek 2.** Als ik het gisteren niet gedaan heb, wil ik niet dat het scherm dat weet. Elke teller die
-  begint bij nul leest als een aanklacht en kost me de zin om nog te openen.
+begint bij nul leest als een aanklacht en kost me de zin om nog te openen.
 - **Verbetering, verwerkt.** De **positieregel staat nu ónder de VANDAAG-kaart** in plaats van erboven (§D.1) —
-  nog steeds binnen 5 seconden, maar als bevestiging achteraf in plaats van als drempel vooraf. En de
-  klaar-staat vraagt niets meer: geen primary CTA, alleen de overslaanbare exertie-vraag (§D.4).
+nog steeds binnen 5 seconden, maar als bevestiging achteraf in plaats van als drempel vooraf. En de
+klaar-staat vraagt niets meer: geen primary CTA, alleen de overslaanbare exertie-vraag (§D.4).
 
 ### K.3 Privacy officer
 
 - **Kritiek 1.** "Domeinvrij onderwerp" is niet genoeg als de afzender PerfectSupplement is en de mail
-  dagelijks komt. De combinatie afzender + frequentie + landingspagina maakt afleidbaar dat het om gezondheid
-  gaat. En "max 1 per dag" is een frequentieregel, geen grondslag.
+dagelijks komt. De combinatie afzender + frequentie + landingspagina maakt afleidbaar dat het om gezondheid
+gaat. En "max 1 per dag" is een frequentieregel, geen grondslag.
 - **Kritiek 2.** Waar staat de grondslag, hoe trek je die met één tik in, en hoe lang bewaar je het verzendlog?
-  Een nudge-systeem zonder bewaartermijn is een dataminimalisatie-probleem dat vanzelf groeit.
+Een nudge-systeem zonder bewaartermijn is een dataminimalisatie-probleem dat vanzelf groeit.
 - **Verbetering, verwerkt.** *(a)* De opt-in wordt **apart van de nurture-sequence** met een eigen afmeldpad
-  (§I.4 vraag 6), zodat de grondslag specifiek en intrekbaar is. *(b)* Suppressie wordt **op het verzendmoment**
-  gecontroleerd, niet bij het plannen (§F.2) — anders verstuur je een herinnering voor iets dat al gedaan is.
-  *(c)* Het verzendlog krijgt een expliciete bewaartermijn als open punt bij implementatie; `movement.nudge_sent`
-  bevat geen inhoud, alleen `time_bucket` en `suppressed_reason`.
+(§I.4 vraag 6), zodat de grondslag specifiek en intrekbaar is. *(b)* Suppressie wordt **op het verzendmoment**
+gecontroleerd, niet bij het plannen (§F.2) — anders verstuur je een herinnering voor iets dat al gedaan is.
+*(c)* Het verzendlog krijgt een expliciete bewaartermijn als open punt bij implementatie; `movement.nudge_sent`
+bevat geen inhoud, alleen `time_bucket` en `suppressed_reason`.
 - **Nog open, bewust.** Of dagelijkse frequentie vanuit privacy-oogpunt wenselijk is bij een gezondheidsproduct
-  is een beleidskeuze, geen ontwerpkeuze. Ik houd max 1/dag aan omdat dat de opdracht is; wekelijks zou
-  verdedigbaarder zijn.
+is een beleidskeuze, geen ontwerpkeuze. Ik houd max 1/dag aan omdat dat de opdracht is; wekelijks zou
+verdedigbaarder zijn.
 
 ### K.4 Product-eigenaar PerfectSupplement
 
 - **Kritiek 1.** Als de surface-consolidatie, de omgedraaide tier-picker en de alert in één deploy gaan, is de
-  hero-conversie een blended cijfer en kun je nooit zien welke van de drie hem bewoog. Dat maakt het hele
-  meetplan waardeloos op precies het punt waar het moet werken.
+hero-conversie een blended cijfer en kun je nooit zien welke van de drie hem bewoog. Dat maakt het hele
+meetplan waardeloos op precies het punt waar het moet werken.
 - **Kritiek 2.** De advies-CTR meten op een surface die nog niet bestaat is een lege belofte. En
-  `dashboard_beweging_supplement_click` verdwijnt uit de footer — dat breekt de historische lijn zonder dat
-  iemand later weet waarom het cijfer op een datum inzakt.
+`dashboard_beweging_supplement_click` verdwijnt uit de footer — dat breekt de historische lijn zonder dat
+iemand later weet waarom het cijfer op een datum inzakt.
 - **Verbetering, verwerkt.** *(a)* **Drie deploys, drie vensters** — F1a surface, F1b alert, F2 advies — met per
-  venster expliciet wat er níét mag veranderen (§H.1). *(b)* De alert is verplaatst naar **F1b, ná** een
-  meetvenster op de geconsolideerde surface (§F.2). *(c)* Een **GA4-annotatie** op de datum waarop de
-  supplement-link van `kompas_beweging` naar `advies_voortgang` verhuist (§G.4, §H rij 7).
+venster expliciet wat er níét mag veranderen (§H.1). *(b)* De alert is verplaatst naar **F1b, ná** een
+meetvenster op de geconsolideerde surface (§F.2). *(c)* Een **GA4-annotatie** op de datum waarop de
+supplement-link van `kompas_beweging` naar `advies_voortgang` verhuist (§G.4, §H rij 7).
 
 ---
 
 ## SELF-SCORECARD
 
-| Criterium | Score | Toelichting |
-|---|---|---|
-| **Helderheid 5-seconden** | **9/10** | Drie blokken, één primary, analyse als reden onder de actie — dat is zo strak als het kan zonder de screenshots waarmee ik de blokhoogtes had kunnen toetsen. |
-| **Tiny-habit realisme** | **8/10** | "Ik doe de korte" als volwaardige tweede knop is de juiste ingreep; het risico blijft dat de kleinste variant per sessietype nog niet klein genoeg gedefinieerd is in de catalogus. |
-| **Analyse zonder ruis** | **9/10** | Precies één readout op de doe-surface, acht objecten met naam en toenaam verhuisd naar Voortgang, en een expliciete uitzonderingsregel voor de beweegcheck. |
-| **Commercie-discipline** | **9/10** | De klaar-staat-regel maakt stepped care een renderconditie in plaats van een belofte; de enige regel die op Beweging blijft linkt naar een gids, niet naar een schap. |
-| **Dev-realisme binnen bestaande engine** | **8/10** | F1 is verwijderen, verplaatsen en hernoemen — geen engine-werk. F3 bevat één echte engine-wijziging (fase-aware resolver) die als zodanig gemarkeerd en uitgesteld is. |
+
+| Criterium                                | Score    | Toelichting                                                                                                                                                                         |
+| ---------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Helderheid 5-seconden**                | **9/10** | Drie blokken, één primary, analyse als reden onder de actie — dat is zo strak als het kan zonder de screenshots waarmee ik de blokhoogtes had kunnen toetsen.                       |
+| **Tiny-habit realisme**                  | **8/10** | "Ik doe de korte" als volwaardige tweede knop is de juiste ingreep; het risico blijft dat de kleinste variant per sessietype nog niet klein genoeg gedefinieerd is in de catalogus. |
+| **Analyse zonder ruis**                  | **9/10** | Precies één readout op de doe-surface, acht objecten met naam en toenaam verhuisd naar Voortgang, en een expliciete uitzonderingsregel voor de beweegcheck.                         |
+| **Commercie-discipline**                 | **9/10** | De klaar-staat-regel maakt stepped care een renderconditie in plaats van een belofte; de enige regel die op Beweging blijft linkt naar een gids, niet naar een schap.               |
+| **Dev-realisme binnen bestaande engine** | **8/10** | F1 is verwijderen, verplaatsen en hernoemen — geen engine-werk. F3 bevat één echte engine-wijziging (fase-aware resolver) die als zodanig gemarkeerd en uitgesteld is.              |
+
 
 ---
 
 ## ANTI-PATTERNS die dit ontwerp vermijdt
 
-| Anti-pattern | Hoe dit ontwerp het uitsluit |
-|---|---|
-| **Drie surfaces die hetzelfde zeggen** | Eén doe-surface, één sheet, één meetscherm. Stappenplan gekild, Programma gedegradeerd tot detail, tabbalk weg. |
-| **Tweede vinklijst** | Eén afvinkbare eenheid (`VANDAAG`), één bron (`daily_action_log`). *Jouw programma* en *Gedaan* hebben geen enkel aanvinkbaar element. |
-| **First-viewport winkel** | Nul commerciële elementen boven de vouw in elke toestand; advies bestaat alleen achter twee poorten waarvan er één "de taak is klaar" is. |
-| **Fase-ladder als oordeel** | "1 van 3" gekild; het woord "fase" verboden in copy; vervangen door *wat je bouwt · hoe lang · sinds wanneer*. |
-| **Alert met gezondheidscontext** | Onderwerp en preheader domeinvrij en scorevrij; het afgekeurde voorbeeld staat er expliciet bij met drie benoemde overtredingen. |
-| **Nieuwe habit-engine naast de dagstap** | Expliciet bevestigd: de tiny habit *is* de dagstap. De wens om iets kleiners te doen wordt opgelost met een knop, niet met een systeem. |
-| **Interactie die zichzelf effectloos verklaart** | De vier onmacht-strings staan op de kill-list; de sport-lens gaat de weekbalans écht voeden of hij bestaat niet. |
-| **Navigatie die belooft wat er niet is** | Geen `coming_soon` in keuzelijsten, geen badges, geen wachtlijstknoppen zonder product. |
-| **Gap display als default** | Geen saldo's, geen "x van y", geen lege balken naast gevulde; maximaal één open vorm, geformuleerd als kans. |
-| **Blended attributie** | Drie effecten, drie deploys, drie vensters, met per venster wat er bevroren blijft. |
+
+| Anti-pattern                                     | Hoe dit ontwerp het uitsluit                                                                                                              |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Drie surfaces die hetzelfde zeggen**           | Eén doe-surface, één sheet, één meetscherm. Stappenplan gekild, Programma gedegradeerd tot detail, tabbalk weg.                           |
+| **Tweede vinklijst**                             | Eén afvinkbare eenheid (`VANDAAG`), één bron (`daily_action_log`). *Jouw programma* en *Gedaan* hebben geen enkel aanvinkbaar element.    |
+| **First-viewport winkel**                        | Nul commerciële elementen boven de vouw in elke toestand; advies bestaat alleen achter twee poorten waarvan er één "de taak is klaar" is. |
+| **Fase-ladder als oordeel**                      | "1 van 3" gekild; het woord "fase" verboden in copy; vervangen door *wat je bouwt · hoe lang · sinds wanneer*.                            |
+| **Alert met gezondheidscontext**                 | Onderwerp en preheader domeinvrij en scorevrij; het afgekeurde voorbeeld staat er expliciet bij met drie benoemde overtredingen.          |
+| **Nieuwe habit-engine naast de dagstap**         | Expliciet bevestigd: de tiny habit *is* de dagstap. De wens om iets kleiners te doen wordt opgelost met een knop, niet met een systeem.   |
+| **Interactie die zichzelf effectloos verklaart** | De vier onmacht-strings staan op de kill-list; de sport-lens gaat de weekbalans écht voeden of hij bestaat niet.                          |
+| **Navigatie die belooft wat er niet is**         | Geen `coming_soon` in keuzelijsten, geen badges, geen wachtlijstknoppen zonder product.                                                   |
+| **Gap display als default**                      | Geen saldo's, geen "x van y", geen lege balken naast gevulde; maximaal één open vorm, geformuleerd als kans.                              |
+| **Blended attributie**                           | Drie effecten, drie deploys, drie vensters, met per venster wat er bevroren blijft.                                                       |
+
 
 ---
 
