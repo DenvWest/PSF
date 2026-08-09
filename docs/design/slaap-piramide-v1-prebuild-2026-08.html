@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slaap v1 — prioriteitenladder (VQ · VR · VL)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --shell:#0B140C;
+  --sage:#5A8F6A;
+  --sage-lt:#9CC5A9;
+  --terra:#C8956C;
+  --terra-deep:#B07F52;
+  --warn:#C26E4B;
+  --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --r-panel:16px;
+  --r-card:14px;
+  --r-btn:10px;
+}
+/* Surface-paletten. De readout-markup is identiek (L7); alleen deze
+   variabelen verschillen, precies zoals in de repo: intake #1A2E1A,
+   dashboard #132414. */
+.surf-intake{
+  --bg:#1A2E1A;
+  --panel:rgba(255,255,255,.05);
+  --line:rgba(255,255,255,.12);
+  --line-soft:rgba(255,255,255,.06);
+  --ink:rgba(255,255,255,.95);
+  --soft:rgba(255,255,255,.75);
+  --mut:rgba(255,255,255,.6);
+  --subtle:rgba(255,255,255,.4);
+}
+.surf-dash{
+  --bg:#132414;
+  --panel:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.11);
+  --line-soft:rgba(255,255,255,.06);
+  --ink:#F1EFE8;
+  --soft:#CDD7D0;
+  --mut:#9FB0A6;
+  --subtle:#7E8C82;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--shell);color:#F1EFE8;font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+
+/* ── prebuild-chrome ─────────────────────────────────────────────── */
+.chrome{position:sticky;top:0;z-index:20;background:rgba(11,20,12,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.11);padding:14px 16px 12px}
+.chrome-inner{max-width:1080px;margin:0 auto}
+.chrome h1{font-family:var(--serif);font-weight:400;font-size:19px;margin:0 0 2px;letter-spacing:.2px}
+.chrome p.sub{margin:0 0 12px;font-size:12.5px;color:#9FB0A6;max-width:88ch}
+.switchrow{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.switch{display:flex;flex-direction:column;gap:6px}
+.switch-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7E8C82}
+.switch-btns{display:flex;flex-wrap:wrap;gap:6px}
+.sw{font-family:var(--sans);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.12);color:#9FB0A6;transition:all .16s ease}
+.sw:hover{border-color:rgba(255,255,255,.26);color:#CDD7D0}
+.sw[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:#0F1C10}
+.statenote{margin:12px 0 0;font-size:12px;color:#9FB0A6;max-width:92ch;border-left:2px solid var(--sage);padding-left:10px;line-height:1.6}
+
+/* ── telefoon ────────────────────────────────────────────────────── */
+.stage{padding:26px 16px 80px;display:flex;justify-content:center}
+.phone-note{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#7E8C82;text-align:center;padding:0 0 9px}
+.phone{width:375px;max-width:100%;background:var(--bg);border:1px solid rgba(255,255,255,.12);border-radius:26px;overflow:hidden;box-shadow:0 26px 70px rgba(0,0,0,.55);color:var(--ink)}
+
+/* ── tekstprimitieven ────────────────────────────────────────────── */
+.eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 9px}
+.pagetitle{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.2;margin:0 0 6px;text-align:center}
+.pagesub{margin:0 0 20px;font-size:12.5px;color:var(--mut);text-align:center}
+.blockgap{height:18px}
+.progressbar{height:3px;background:rgba(255,255,255,.08)}
+.progressbar span{display:block;height:100%;background:var(--terra)}
+
+/* ── HET GEDEELDE BLOK — byte-identiek in VR en VL (L7) ──────────── */
+.checkin-readout{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:18px 16px 16px}
+.checkin-readout .ro-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin:0 0 9px}
+.checkin-readout .ro-feit{font-family:var(--serif);font-weight:400;font-size:20px;line-height:1.3;margin:0 0 10px;color:var(--ink)}
+.checkin-readout .ro-answer{display:inline-flex;align-items:baseline;gap:7px;border:1px solid var(--line);border-radius:999px;padding:5px 11px;margin:0 0 12px;font-size:11.5px;color:var(--soft)}
+.checkin-readout .ro-answer b{font-weight:600;color:var(--ink)}
+.checkin-readout .ro-answer .dot{color:var(--subtle)}
+.checkin-readout .ro-statement{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--soft)}
+.ro-delta{border-radius:var(--r-card);border:1px solid var(--line-soft);background:rgba(0,0,0,.18);padding:12px 13px;margin:0 0 13px;border-left:2px solid var(--mut)}
+.ro-delta[data-dir="up"]{border-left-color:var(--sage)}
+.ro-delta[data-dir="down"]{border-left-color:var(--warn)}
+.ro-delta[data-dir="same"]{border-left-color:var(--mut)}
+.ro-delta[data-dir="new"]{border-left-color:var(--terra)}
+.ro-delta .lab{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle);margin:0 0 6px}
+.ro-delta .line{margin:0;font-size:13px;line-height:1.6;color:var(--ink)}
+.ro-delta .also{margin:8px 0 0;font-size:12px;line-height:1.55;color:var(--mut)}
+.ro-delta .start{margin:9px 0 0;padding-top:8px;border-top:1px dashed var(--line-soft);font-size:11.5px;line-height:1.5;color:var(--subtle)}
+.ro-implicatie{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--ink)}
+.ro-next{border-top:1px solid var(--line-soft);padding-top:13px}
+.ro-hint{margin:10px 0 0;font-size:11.5px;line-height:1.55;color:var(--subtle)}
+
+/* ── knoppen / links ─────────────────────────────────────────────── */
+a.btn-terra,button.btn-terra{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;border:none;border-radius:var(--r-btn);background:var(--terra);color:#231409;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;transition:opacity .16s ease}
+a.btn-terra:hover{opacity:.9}
+a.btn-ghost{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:var(--r-btn);background:transparent;border:1px solid var(--line);color:var(--soft);font-size:13.5px;font-weight:600;text-decoration:none}
+a.link-quiet{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--sage-lt);text-decoration:none}
+a.link-quiet:hover{text-decoration:underline}
+
+/* ── VQ ──────────────────────────────────────────────────────────── */
+.vq{padding:22px 18px 30px}
+.vq .qnum{text-align:center;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 4px}
+.vq .qnum b{color:var(--terra);font-weight:700}
+.vq h1{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.28;text-align:center;margin:22px 0 8px}
+.vq .bench{margin:0 auto 20px;max-width:30ch;text-align:center;font-size:11.5px;line-height:1.5;color:var(--subtle)}
+.opts{display:flex;flex-direction:column;gap:10px;margin:0 0 18px}
+.opt{width:100%;min-height:46px;border-radius:var(--r-card);border:1px solid var(--line);background:var(--panel);padding:13px 15px;text-align:left;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--mut);cursor:pointer;transition:all .16s ease}
+.opt:hover{border-color:rgba(200,149,108,.45);color:var(--ink)}
+.opt[aria-pressed="true"]{border-color:rgba(200,149,108,.6);background:rgba(200,149,108,.12);color:var(--ink)}
+.helpwrap{border-top:1px solid var(--line-soft);padding-top:14px}
+.helpbtn{background:none;border:none;padding:0;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--sage-lt);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.helpbody{margin-top:11px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);padding:13px 14px}
+.helpbody h3{margin:0 0 7px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.helpbody p{margin:0 0 9px;font-size:12.5px;line-height:1.62;color:var(--mut)}
+.helpbody .anchor{margin:0;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--sage-lt)}
+
+/* ── VR ──────────────────────────────────────────────────────────── */
+.vr{padding:22px 18px 30px}
+.factlist{display:flex;flex-direction:column;gap:8px}
+.fact{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);padding:11px 13px}
+.fact .mark{flex:0 0 auto;width:7px;height:7px;border-radius:999px;margin-top:6px;background:var(--mut)}
+.fact[data-status="below"] .mark{background:var(--warn)}
+.fact[data-status="near"] .mark{background:var(--terra)}
+.fact[data-status="meets"] .mark{background:var(--sage)}
+.fact .body{min-width:0;flex:1}
+.fact .lab{margin:0;font-size:12.5px;font-weight:600;color:var(--ink)}
+.fact .ans{margin:2px 0 0;font-size:12.5px;line-height:1.5;color:var(--mut)}
+.fact .bench{margin:4px 0 0;font-size:11px;color:var(--subtle)}
+.fact .tagline{margin:5px 0 0;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
+.facttoggle{margin-top:10px;background:none;border:none;padding:0;font-family:var(--sans);font-size:11.5px;font-weight:600;color:var(--mut);cursor:pointer}
+.facttoggle:hover{color:var(--soft)}
+.profile{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:15px 14px}
+.profile .prow{padding:11px 0;border-top:1px solid var(--line-soft)}
+.profile .prow:first-of-type{border-top:none;padding-top:2px}
+.profile .plabel{margin:0 0 5px;font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle)}
+.profile .ptitle{margin:0;font-size:13.5px;font-weight:600;line-height:1.45;color:var(--ink)}
+.profile .pline{margin:5px 0 0;font-size:12.5px;line-height:1.58;color:var(--mut)}
+.profile ul{margin:0;padding-left:16px}
+.profile li{font-size:12.5px;line-height:1.58;color:var(--mut);margin-bottom:4px}
+.exp{border:1px dashed var(--line);border-radius:var(--r-card);padding:14px}
+.exp .elab{margin:0 0 6px;font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--sage-lt)}
+.exp .etitle{margin:0;font-size:14px;font-weight:600;line-height:1.45;color:var(--ink)}
+.exp .emeta{margin:7px 0 0;font-size:12.5px;line-height:1.58;color:var(--mut)}
+.footnote{margin:20px 0 0;padding-top:14px;border-top:1px solid var(--line-soft);font-size:11px;line-height:1.6;color:var(--subtle)}
+.footnote a{color:var(--sage-lt)}
+
+/* ── VL ──────────────────────────────────────────────────────────── */
+.vltop{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line-soft);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.vltabs{display:flex;gap:13px;font-size:10.5px;font-weight:600;color:var(--subtle);letter-spacing:.02em;text-transform:none;margin-left:auto}
+.vltabs span[data-active]{color:var(--ink);border-bottom:2px solid var(--terra);padding-bottom:3px}
+.vl{padding:16px 14px 34px}
+.backrow{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.backbtn{width:36px;height:36px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--mut);font-size:15px}
+.backrow h1{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin:0}
+.tile{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:15px 14px;margin-bottom:14px}
+.tile .t-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 11px}
+.standrow{display:flex;align-items:center;gap:14px}
+.gauge{position:relative;width:70px;height:70px;flex:0 0 auto}
+.gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.gauge .num{font-size:18px;font-weight:700;color:var(--ink)}
+.gauge .cap{font-size:8.5px;color:var(--subtle);margin-top:3px}
+.standtxt{min-width:0;flex:1}
+.standtxt .band{margin:0;font-size:13.5px;font-weight:500;color:var(--ink)}
+.standtxt .src{margin:6px 0 0;font-size:11.5px;color:var(--mut)}
+.standtxt .meta{margin:3px 0 0;font-size:11px;color:var(--subtle)}
+.ssot-flag{margin:0 0 10px;font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--sage)}
+
+/* piramide-chrome + rail */
+.pyrahead{border:1px solid rgba(90,143,106,.3);background:rgba(90,143,106,.09);border-radius:var(--r-card);padding:13px 14px;margin-bottom:14px}
+.pyrahead p.h{margin:0 0 6px;font-size:13px;font-weight:700;color:var(--ink)}
+.pyrahead p.b{margin:0;font-size:12.5px;line-height:1.58;color:var(--soft)}
+.rail{display:flex;flex-direction:column-reverse;gap:7px}
+.layer{border:1px solid var(--line);border-radius:var(--r-card);background:rgba(0,0,0,.16);overflow:hidden;align-self:center}
+.layer[data-open="true"]{border-color:rgba(200,149,108,.42)}
+.layerbtn{display:flex;align-items:flex-start;gap:10px;width:100%;background:none;border:none;padding:12px 13px;text-align:left;font-family:var(--sans);cursor:pointer;color:inherit}
+.layerbtn .idx{flex:0 0 auto;font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--subtle);padding-top:3px;min-width:44px}
+.layerbtn .txt{min-width:0;flex:1}
+.layerbtn .nm{display:block;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.3}
+.layerbtn .sub{display:block;margin-top:3px;font-size:11.5px;line-height:1.45;color:var(--mut)}
+.layerbtn .chev{flex:0 0 auto;color:var(--subtle);font-size:14px;padding-top:2px}
+.pill{display:inline-block;margin-top:6px;border-radius:999px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:.06em;border:1px solid var(--line);color:var(--mut)}
+.pill[data-p="winst"]{border-color:rgba(200,149,108,.55);color:var(--terra);background:rgba(200,149,108,.1)}
+.pill[data-p="ok"]{border-color:rgba(90,143,106,.45);color:var(--sage-lt)}
+.pill[data-p="watch"]{border-color:rgba(194,110,75,.45);color:var(--warn)}
+.pill[data-p="wacht"]{border-color:var(--line);color:var(--subtle)}
+.layerbody{padding:0 13px 14px;border-top:1px solid var(--line-soft)}
+.layerbody .kern{margin:12px 0 10px;font-size:12.5px;line-height:1.6;color:var(--soft)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:4px 9px;font-size:11px;color:var(--mut);background:rgba(255,255,255,.02)}
+.doingtitle{margin:0 0 7px;font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle)}
+.doing{margin:0 0 12px;padding-left:16px}
+.doing li{font-size:12.5px;line-height:1.58;color:var(--mut);margin-bottom:5px}
+.note{margin:0;font-size:11.5px;line-height:1.55;color:var(--subtle);border-left:2px solid var(--line);padding-left:9px}
+
+/* crossover 4↔5 */
+.crossover{border:1px solid rgba(194,110,75,.4);background:rgba(194,110,75,.09);border-radius:var(--r-card);padding:12px 13px;margin:7px 0;display:flex;gap:10px;align-items:flex-start}
+.crossover .arrows{flex:0 0 auto;font-size:15px;color:var(--warn);line-height:1.2}
+.crossover p{margin:0;font-size:12px;line-height:1.58;color:var(--soft)}
+.crossover b{color:var(--ink);font-weight:600}
+
+/* mocks */
+.mock{border:1px solid var(--line-soft);border-radius:var(--r-card);background:rgba(255,255,255,.03);padding:12px 12px 13px;margin-bottom:12px}
+.mock .mh{margin:0 0 9px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.selchips{display:flex;flex-wrap:wrap;gap:6px}
+.selchip{border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-family:var(--sans);font-size:11.5px;color:var(--mut);background:transparent;cursor:pointer;min-height:32px}
+.selchip[aria-pressed="true"]{border-color:rgba(200,149,108,.6);background:rgba(200,149,108,.14);color:var(--ink)}
+.mockout{margin:11px 0 0;font-size:12px;line-height:1.6;color:var(--sage-lt);min-height:1.6em}
+.daystrip{display:flex;gap:5px;margin:10px 0 0}
+.day{flex:1;border:1px solid var(--line);border-radius:8px;padding:7px 0;text-align:center;font-size:10px;font-weight:600;color:var(--subtle);background:transparent;cursor:pointer;font-family:var(--sans)}
+.day[aria-pressed="true"]{border-color:rgba(90,143,106,.6);background:rgba(90,143,106,.16);color:var(--ink)}
+.timerow{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.scan{width:100%;border-collapse:collapse}
+.scan td{padding:7px 0;border-top:1px solid var(--line-soft);vertical-align:middle}
+.scan tr:first-child td{border-top:none}
+.scan .rl{font-size:12px;color:var(--soft)}
+.scanbtns{display:flex;gap:5px;justify-content:flex-end}
+.scanbtn{border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-family:var(--sans);font-size:10.5px;font-weight:600;color:var(--mut);background:transparent;cursor:pointer;white-space:nowrap}
+.scanbtn[aria-pressed="true"][data-v="ok"]{border-color:rgba(90,143,106,.6);color:var(--sage-lt);background:rgba(90,143,106,.12)}
+.scanbtn[aria-pressed="true"][data-v="bad"]{border-color:rgba(194,110,75,.6);color:var(--warn);background:rgba(194,110,75,.12)}
+.checklist{display:flex;flex-direction:column;gap:2px}
+.clitem{display:flex;gap:9px;align-items:flex-start;background:none;border:none;padding:8px 0;text-align:left;font-family:var(--sans);cursor:pointer;border-top:1px solid var(--line-soft)}
+.clitem:first-child{border-top:none}
+.clbox{flex:0 0 auto;width:16px;height:16px;border-radius:5px;border:1px solid var(--line);margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent}
+.clitem[aria-pressed="true"] .clbox{border-color:var(--terra);background:rgba(200,149,108,.2);color:var(--terra)}
+.cltxt{font-size:12px;line-height:1.5;color:var(--mut)}
+.clitem[aria-pressed="true"] .cltxt{color:var(--soft)}
+
+/* laag 6 gate */
+.gate{border-radius:var(--r-card);padding:12px 13px;margin-top:4px;border:1px solid var(--line)}
+.gate[data-open="true"]{border-color:rgba(200,149,108,.45);background:rgba(200,149,108,.07)}
+.gate[data-open="false"]{background:rgba(0,0,0,.2)}
+.gate .glab{margin:0 0 6px;font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.gate p.gb{margin:0;font-size:12.5px;line-height:1.6;color:var(--soft)}
+.gate a.gl{display:inline-flex;margin-top:11px;font-size:12.5px;font-weight:700;color:var(--terra);text-decoration:none}
+.gate a.gl:hover{text-decoration:underline}
+.matrix{width:100%;border-collapse:collapse;margin-top:10px}
+.matrix th{text-align:left;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);padding:0 8px 7px 0;border-bottom:1px solid var(--line-soft)}
+.matrix td{font-size:11.5px;line-height:1.45;color:var(--mut);padding:7px 8px 7px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.matrix td:first-child{color:var(--soft)}
+.disc{margin:9px 0 0;font-size:10.5px;line-height:1.55;color:var(--subtle)}
+.tail{margin-top:16px}
+.axis{margin-top:14px;border:1px solid var(--line-soft);border-radius:var(--r-card);padding:12px 13px}
+.axis pre{margin:8px 0 0;font-size:9.5px;line-height:1.5;color:var(--mut);overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.axis p{margin:0;font-size:11.5px;color:var(--subtle);line-height:1.55}
+@media (max-width:420px){
+  .phone{border-radius:0;border-left:none;border-right:none}
+  .stage{padding:18px 0 60px}
+}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="chrome-inner">
+    <h1>Slaap v1 — prioriteitenladder</h1>
+    <p class="sub">Drie surfaces, één conclusie-blok. VQ = vraag met uitleg. VR = check-in resultaat (analyse + doorverwijzing, geen actielijst). VL = Voortgang &rsaquo; Slaap met de zes lagen. Het blok met de terra-eyebrow is in VR en VL dezelfde render; alleen de chrome eromheen verschilt.</p>
+    <div class="switchrow">
+      <div class="switch">
+        <span class="switch-label">Surface</span>
+        <div class="switch-btns" id="frameSwitch">
+          <button class="sw" type="button" data-frame="VQ" aria-pressed="false">VQ &middot; Vraag</button>
+          <button class="sw" type="button" data-frame="VR" aria-pressed="true">VR &middot; Check-in resultaat</button>
+          <button class="sw" type="button" data-frame="VL" aria-pressed="false">VL &middot; Voortgang &rsaquo; Slaap</button>
+        </div>
+      </div>
+      <div class="switch">
+        <span class="switch-label">Staat</span>
+        <div class="switch-btns" id="stateSwitch">
+          <button class="sw" type="button" data-state="F1" aria-pressed="true">F1 eerste check</button>
+          <button class="sw" type="button" data-state="F2" aria-pressed="false">F2 vooruit</button>
+          <button class="sw" type="button" data-state="F3" aria-pressed="false">F3 terug</button>
+          <button class="sw" type="button" data-state="F4" aria-pressed="false">F4 ritme open</button>
+          <button class="sw" type="button" data-state="F5" aria-pressed="false">F5 signalen</button>
+          <button class="sw" type="button" data-state="F6" aria-pressed="false">F6 basis staat</button>
+        </div>
+      </div>
+    </div>
+    <p class="statenote" id="stateNote"></p>
+  </div>
+</div>
+
+<div class="stage">
+  <div>
+    <p class="phone-note" id="phoneNote">375 px</p>
+    <div class="phone surf-intake" id="phone"></div>
+  </div>
+</div>
+
+<script>
+/* ═════════════════════════════════════════════════════════════════
+   CANON — zes lagen. Eén bron voor VL-rail, VR-profiel en fact-rows.
+   ═════════════════════════════════════════════════════════════════ */
+var LAYERS = [
+  {
+    id:1, name:'Slaapgelegenheid', idx:'Laag 1', width:100,
+    sub:'Tijd, prioriteit, hoeveel je jezelf gunt',
+    kern:'Geef je jezelf daadwerkelijk genoeg tijd en gelegenheid om te slapen? Niet: hoeveel uur hoor ik te slapen. Wel: hoeveel heb ik nodig, en krijg ik die kans structureel.',
+    chips:['Voldoende tijd in bed','Slaap niet inleveren voor werk of scherm','Realistische bedtijd','Hersteltijd na een korte nacht'],
+    doing:[
+      'Kies je opsta-tijd eerst, reken daarna terug naar je bedtijd.',
+      'Kijk waar je avond weglekt voordat je aan je slaapkamer begint.',
+      'Plan na een korte nacht bewust een normale nacht, geen inhaalweekend.'
+    ],
+    mock:'tijdchips'
+  },
+  {
+    id:2, name:'Ritme & slaapgewoonten', idx:'Laag 2', width:92,
+    sub:'Vaste tijden, avondroutine, afbouwtijd',
+    kern:'Consistentie werkt beter dan precisie. Een redelijk vaste opsta-tijd is voor je klok een sterker anker dan een exacte bedtijd — "22:30 dus ik moet nu slapen" werkt averechts.',
+    chips:['Redelijk vaste opsta-tijd','Redelijk vaste bedtijd','Herkenbare avondroutine','Genoeg afbouwtijd'],
+    doing:[
+      'Zet je opsta-tijd vast en houd hem ook in het weekend binnen een uur.',
+      'Bouw een korte, herkenbare volgorde voor het slapengaan — zelfde handelingen, zelfde volgorde.',
+      'Reserveer twintig tot dertig minuten waarin de dag echt is afgelopen.'
+    ],
+    mock:'opstaweek'
+  },
+  {
+    id:3, name:'Gedrag & timing', idx:'Laag 3', width:84,
+    sub:'Daglicht, cafeïne, alcohol, beweging, avond',
+    kern:'Veel licht overdag, minder stimulerend licht richting de nacht. Niet: angst voor elk scherm. Cafeïne kan tot ongeveer acht uur nawerken, en gevoeligheid verschilt sterk per persoon.',
+    chips:['Daglicht in het eerste uur','Cafeïne-timing','Alcohol','Beweging overdag'],
+    doing:[
+      'Ga binnen een uur na opstaan even naar buiten — bewolkt buiten is nog altijd meer licht dan binnen.',
+      'Verschuif je laatste cafeïne twee uur naar voren en kijk wat er gebeurt; dit is een test, geen regel.',
+      'Plan twee tot drie avonden per week zonder alcohol en let op je nachtelijk wakker worden.'
+    ],
+    mockNote:'Alcohol laat je vaak sneller inslapen, maar de tweede helft van de nacht wordt lichter en onrustiger. Sneller inslapen is dus niet hetzelfde als beter slapen.'
+  },
+  {
+    id:4, name:'Slaapomgeving', idx:'Laag 4', width:74,
+    sub:'Licht, geluid, temperatuur, bed, prikkels',
+    kern:'Verwijder de dingen die jouw slaap verstoren. Dat is iets anders dan alles optimaliseren: een goed matras compenseert geen structureel slaaptekort, en volledig verduisteren lost langdurige slapeloosheid niet op.',
+    chips:['Donker','Stil','Koel genoeg','Telefoon buiten bereik'],
+    doing:[
+      'Doe de scan hieronder en pak eerst je grootste verstoring aan, niet alle zes tegelijk.',
+      'Leg je telefoon buiten handbereik als je hem \'s nachts pakt.',
+      'Zet notificaties uit in plaats van het scherm te dimmen.'
+    ],
+    mock:'omgevingscan'
+  },
+  {
+    id:5, name:'Gerichte interventies', idx:'Laag 5', width:74,
+    sub:'Aanhoudende klachten, professionele hulp',
+    kern:'Deze laag gaat niet over beter slapen, maar over aanhoudende klachten. Het doel verschuift van optimaliseren naar onderzoeken. Voor langdurige slapeloosheid bestaat een behandeling met sterke onderbouwing: cognitieve gedragstherapie bij insomnia (CGT-i). Die krijg je niet hier — dat bespreek je met je huisarts of een slaaptherapeut.',
+    chips:['Aanhoudende klachten','Slaperigheid overdag','Snurken of ademstops','Onrustige benen'],
+    doing:[
+      'Loop de signalen hieronder langs — dit is geen vragenlijst met een uitslag.',
+      'Houd twee weken kort bij wanneer de klachten er wel en niet zijn.',
+      'Neem die twee weken mee naar je huisarts; het scheelt een consult raden.'
+    ],
+    mock:'signalen'
+  },
+  {
+    id:6, name:'Meten, gadgets & aanvullen', idx:'Laag 6', width:58,
+    sub:'Trackers, supplementen, experimenten',
+    kern:'Deze laag is niet waardevoller dan de rest — hij is experimenteler. Een tracker is nuttig om trends te zien en gedrag bewust te maken. Losse nachtwaarden zijn geen uitslag en geen reden tot zorg.',
+    chips:['Trends, geen losse nachten','Meten, dan begrijpen, dan doen','Selectief aanvullen'],
+    doing:[
+      'Gebruik een meting om een verandering te toetsen, niet om een cijfer te halen.',
+      'Verander één ding tegelijk, anders weet je achteraf niet wat het deed.',
+      'Beoordeel je nacht aan hoe je dag verloopt, niet aan een grafiek.'
+    ],
+    mock:'matrix'
+  }
+];
+var LAYER_BY_ID = {};
+LAYERS.forEach(function(l){ LAYER_BY_ID[l.id] = l; });
+
+var MATRIX = [
+  ['Slaapduur',            'Sterk',        'Zeer hoog',    'Iedereen'],
+  ['Regelmaat',            'Sterk',        'Hoog',         'Iedereen'],
+  ['Daglicht en beweging', 'Sterk',        'Hoog',         'Iedereen'],
+  ['Slaapomgeving',        'Sterk',        'Wisselend',    'Bij een concrete verstoring'],
+  ['CGT-i',                'Sterk',        'Zeer hoog',    'Bij langdurige slapeloosheid'],
+  ['Draagbare meter',      'Matig',        'Wisselend',    'Om trends te volgen'],
+  ['Supplement',           'Matig tot laag','Afhankelijk', 'Selectief, na de lagen eronder'],
+  ['Experimentele methodes','Laag',        'Onbekend',     'Als experiment']
+];
+
+var SIGNALEN = [
+  'Ik doe er langdurig lang over om in slaap te vallen',
+  'Ik word \'s nachts vaak wakker en lig dan wakker',
+  'Ik word structureel te vroeg wakker en val niet meer in slaap',
+  'Ik ben uitgeput terwijl ik wel genoeg tijd in bed doorbreng',
+  'Ik val overdag ongewild in slaap',
+  'Mijn partner hoort mij luid snurken of even stoppen met ademen',
+  'Ik heb \'s avonds onrustige of kriebelende benen',
+  'Deze klachten komen al maanden terug'
+];
+
+var TIJDCHIPS = ['Werk','Reistijd','Telefoon','Series of gamen','Kinderen','Sociale afspraken','Piekeren','Te laat naar bed'];
+
+var SCANROWS = ['Licht','Geluid','Temperatuur','Bedcomfort','Telefoon en notificaties','Partner of huisgenoten'];
+
+/* ═════════════════════════════════════════════════════════════════
+   STATES F1–F6 — vorm volgt SleepCheckinSnapshot (spec §D).
+   Alle copy is als definitief bedoeld.
+   ═════════════════════════════════════════════════════════════════ */
+var STATES = {
+
+F1: {
+  note:'F1 — eerste slaapcheck, duur 5 tot 6 uur. Geen vorige meting, dus de delta-regel benoemt het nulpunt in plaats van een verandering te suggereren. Winst = laag 1: zolang de gelegenheid ontbreekt, is finetunen zinloos. Laag 6 dicht met fundament-reden. Persona I1.',
+  measured:'vandaag',
+  vq:{
+    field:'duur', num:'05', total:10,
+    question:'Hoeveel uur slaap je doorgaans per nacht?',
+    bench:'Voor gezonde volwassenen geldt regelmatig minstens 7 uur als gangbare ondergrens. Individuele behoefte verschilt.',
+    options:['Minder dan 5 uur','5 tot 6 uur','6 tot 7 uur','7 tot 8 uur','Meer dan 8 uur'],
+    selected:1,
+    helpTitle:'Waarom vragen we dit?',
+    helpBody:'Dit is de enige vraag met een externe maatstaf ernaast. We gebruiken je antwoord niet als norm, maar om te bepalen of er überhaupt genoeg gelegenheid is om te herstellen. Blijft die onder de zes uur, dan levert sleutelen aan je avond of je slaapkamer weinig op.',
+    helpAnchor:'Hoort bij laag 1 · Slaapgelegenheid'
+  },
+  readout:{
+    eyebrow:'Wat je slaapcheck zegt',
+    feit:'Je grootste slaapwinst ligt nu bij de tijd die je jezelf geeft.',
+    answerDim:'Slaapduur', answerLabel:'5 tot 6 uur',
+    statement:'Je slaapt doorgaans 5 tot 6 uur. Voor gezonde volwassenen geldt regelmatig minstens 7 uur als gangbare ondergrens — hoeveel jij precies nodig hebt verschilt, maar hieronder is er weinig over om te finetunen.',
+    delta:{dir:'new', lab:'Je nulpunt',
+      line:'Dit is je eerste slaapcheck. Slaapduur staat op "5 tot 6 uur" — daar meet je vanaf nu tegenaf.',
+      also:null, start:null},
+    implicatie:'Zolang de gelegenheid onder de zes uur blijft, verandert een donkerder slaapkamer of een ander avondritueel daar weinig aan. Eerst tijd, dan de rest.',
+    nextLabel:'Bekijk je slaapbeeld',
+    nextHint:'Daar zie je welke laag nu het meeste oplevert — en wat kan wachten.'
+  },
+  facts:[
+    {lab:'Slaapduur', ans:'5 tot 6 uur', bench:'Populatierichtlijn: 7+ uur', status:'below', layer:1, prio:'winst'},
+    {lab:'Regelmaat', ans:'Meestal wel, soms niet', bench:null, status:'near', layer:2, prio:'watch'},
+    {lab:'Avondafbouw', ans:'Af en toe', bench:null, status:'below', layer:3, prio:'watch'},
+    {lab:'Ochtendlicht', ans:'Soms', bench:null, status:'below', layer:3, prio:'watch'},
+    {lab:'Inslapen', ans:'Ongeveer 15 tot 30 minuten', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Doorslapen', ans:'Soms, maar ik slaap meestal weer door', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Uitgerust wakker', ans:'Wisselend, verschilt per dag', bench:null, status:'below', layer:5, prio:null},
+    {lab:'Piekeren voor bed', ans:'Soms', bench:null, status:'near', layer:3, prio:null},
+    {lab:'Grip op je slaap', ans:'Meestal niet', bench:null, status:'below', layer:null, prio:null}
+  ],
+  profile:{
+    winst:{lab:'Laag 1 · Slaapgelegenheid', title:'De tijd die je jezelf geeft', line:'Je slaapt doorgaans 5 tot 6 uur. Dat is de laag waar nu het meeste te winnen valt.'},
+    ok:['Doorslapen — je wordt soms wakker, maar slaapt meestal weer door','Inslapen — meestal binnen een half uur'],
+    skip:{title:'Meten, gadgets en aanvullen', line:'Een draagbare meter of een potje verandert niets aan te weinig tijd in bed. Dat komt later, als er iets te finetunen valt.'}
+  },
+  exp:{layer:'Laag 1', title:'Verschuif je bedtijd 45 minuten naar voren.', meta:'Eén verandering, veertien dagen. Meet: hoe je wakker wordt, je energie rond drie uur \'s middags, en of je overdag wegdommelt. Niet twintig dingen tegelijk.'},
+  layerState:{1:'winst', 2:'watch', 3:'watch', 4:'wacht', 5:'wacht', 6:'wacht'},
+  clinical:false,
+  gate:{open:false, reason:'fundament',
+    body:'Nog niet. Je slaapt doorgaans 5 tot 6 uur — eerst gelegenheid, dan een potje. Een middel dat inslapen iets versnelt, geeft je geen extra uur in bed. Als je slaapduur en ritme staan, zetten we deze vergelijking open.'},
+  stand:{score:38, cap:'Basis', band:'Onder gemiddeld', meta:'Laatst gemeten vandaag — dit verandert bij je volgende slaapcheck.'}
+},
+
+F2: {
+  note:'F2 — hercheck met verbetering op laag 1 en 2. De winst schuift daardoor omhoog naar laag 3: dat is geen promotie, het is de eerstvolgende open laag. Fundament staat en er is een concreet aanknopingspunt, dus de laag 6-deur staat label-only open.',
+  measured:'vandaag',
+  vq:{
+    field:'morninglight', num:'09', total:10,
+    question:'Hoe vaak zie je binnen een uur na opstaan daglicht buiten?',
+    bench:null,
+    options:['Bijna elke dag','Meerdere dagen per week','Soms','Bijna nooit'],
+    selected:2,
+    helpTitle:'Waarom vragen we dit?',
+    helpBody:'Licht in de ochtend is het sterkste signaal waarmee je je interne klok zet, en daarmee indirect je inslaaptijd \'s avonds. Bewolkt buiten levert nog altijd veel meer licht dan een verlichte woonkamer. We vragen ernaar omdat het gratis is en snel meetbaar.',
+    helpAnchor:'Hoort bij laag 3 · Gedrag & timing'
+  },
+  readout:{
+    eyebrow:'Wat je slaapcheck zegt',
+    feit:'Je basis staat beter — de winst verschuift naar je ochtend.',
+    answerDim:'Ochtendlicht', answerLabel:'Soms',
+    statement:'Je slaapduur en je ritme staan er nu redelijk voor. Wat achterblijft is daglicht in het eerste uur na opstaan — dat is wat je klok het scherpst zet.',
+    delta:{dir:'up', lab:'Sinds je vorige meting',
+      line:'Slaapduur ging van "6 tot 7 uur" naar "7 tot 8 uur".',
+      also:'Regelmaat ging van "Meestal wel, soms niet" naar "Ja, vrij consistent". Avondafbouw bleef gelijk.',
+      start:'Sinds je start slaap je merkbaar beter — de goede kant op.'},
+    implicatie:'Met de tijd en het ritme op orde is ochtendlicht nu het goedkoopste ding dat nog verschil maakt.',
+    nextLabel:'Bekijk je slaapbeeld',
+    nextHint:'Daar zie je welke laag nu het meeste oplevert — en wat kan wachten.'
+  },
+  facts:[
+    {lab:'Ochtendlicht', ans:'Soms', bench:null, status:'below', layer:3, prio:'winst'},
+    {lab:'Slaapduur', ans:'7 tot 8 uur', bench:'Populatierichtlijn: 7+ uur', status:'meets', layer:1, prio:'ok'},
+    {lab:'Regelmaat', ans:'Ja, vrij consistent', bench:null, status:'meets', layer:2, prio:'ok'},
+    {lab:'Avondafbouw', ans:'Regelmatig', bench:null, status:'near', layer:3, prio:'watch'},
+    {lab:'Inslapen', ans:'Ongeveer 15 tot 30 minuten', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Doorslapen', ans:'Zelden of nooit', bench:null, status:'meets', layer:5, prio:null},
+    {lab:'Uitgerust wakker', ans:'Redelijk, maar niet optimaal', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Piekeren voor bed', ans:'Soms', bench:null, status:'near', layer:3, prio:null},
+    {lab:'Grip op je slaap', ans:'Meestal wel', bench:null, status:'meets', layer:null, prio:null}
+  ],
+  profile:{
+    winst:{lab:'Laag 3 · Gedrag & timing', title:'Daglicht in je eerste uur', line:'Je ziet nu soms daglicht binnen een uur na opstaan. Dat is het losse eind boven een basis die staat.'},
+    ok:['Slaapduur — doorgaans 7 tot 8 uur','Regelmaat — je tijden liggen vrij vast'],
+    skip:null
+  },
+  exp:{layer:'Laag 3', title:'Ga binnen een uur na opstaan tien minuten naar buiten.', meta:'Eén verandering, veertien dagen. Meet: hoe lang je \'s avonds over inslapen doet en hoe helder je eerste uur is. Bewolkt telt gewoon mee.'},
+  layerState:{1:'ok', 2:'ok', 3:'winst', 4:'wacht', 5:'wacht', 6:'watch'},
+  clinical:false,
+  gate:{open:true, reason:'open',
+    body:'Je slaapduur en ritme staan, en er is een concreet aanknopingspunt op je avond. Een vergelijking is nu een redelijke volgende vraag — geen advies om iets te gaan slikken. Wat je hierboven verandert, doet meer.'},
+  stand:{score:64, cap:'Op orde', band:'Bovengemiddeld', meta:'Laatst gemeten vandaag — dit verandert bij je volgende slaapcheck.'}
+},
+
+F3: {
+  note:'F3 — hercheck met verslechtering. De regel benoemt de verandering feitelijk, zonder schuldtoon en zonder alarm. Het experiment wordt kleiner in plaats van groter: bij terugval is de klassieke fout een zwaarder plan.',
+  measured:'vandaag',
+  vq:{
+    field:'nightload', num:'08', total:10,
+    question:'Hoe vaak neem je stress of piekergedachten mee naar bed?',
+    bench:null,
+    options:['Zelden','Soms','Regelmatig','Bijna elke avond'],
+    selected:3,
+    helpTitle:'Waarom vragen we dit?',
+    helpBody:'Wakker liggen met een draaiend hoofd is iets anders dan niet kunnen inslapen door je omgeving of je ritme. Het antwoord bepaalt of we je bij je avondafbouw uitkomen of bij de laag daaronder — je ritme. We stellen hier geen diagnose mee.',
+    helpAnchor:'Hoort bij laag 3 · Gedrag & timing'
+  },
+  readout:{
+    eyebrow:'Wat je slaapcheck zegt',
+    feit:'Je grootste slaapwinst ligt nu weer bij je ritme.',
+    answerDim:'Regelmaat', answerLabel:'Meestal wel, soms niet',
+    statement:'Je tijden liggen minder vast dan bij je vorige check, je slaapt korter, en je neemt vaker piekergedachten mee naar bed. Dat is een druk-patroon, geen nieuw slaapprobleem.',
+    delta:{dir:'down', lab:'Sinds je vorige meting',
+      line:'Regelmaat ging van "Ja, vrij consistent" terug naar "Meestal wel, soms niet".',
+      also:'Slaapduur ging van "7 tot 8 uur" naar "6 tot 7 uur". Piekeren voor bed ging van "Soms" naar "Bijna elke avond".',
+      start:'Sinds je start: de laatste tijd sliep je wat onrustiger. Dat hoort bij een proces.'},
+    implicatie:'Wat eerder werkte is niet kapot — het staat even onder druk. Eén anker terugzetten weegt nu zwaarder dan iets nieuws opbouwen.',
+    nextLabel:'Bekijk je slaapbeeld',
+    nextHint:'Daar zie je welke laag nu het meeste oplevert — en wat kan wachten.'
+  },
+  facts:[
+    {lab:'Regelmaat', ans:'Meestal wel, soms niet', bench:null, status:'near', layer:2, prio:'winst'},
+    {lab:'Slaapduur', ans:'6 tot 7 uur', bench:'Populatierichtlijn: 7+ uur', status:'near', layer:1, prio:'watch'},
+    {lab:'Piekeren voor bed', ans:'Bijna elke avond', bench:null, status:'below', layer:3, prio:'watch'},
+    {lab:'Avondafbouw', ans:'Af en toe', bench:null, status:'below', layer:3, prio:'watch'},
+    {lab:'Ochtendlicht', ans:'Meerdere dagen per week', bench:null, status:'near', layer:3, prio:null},
+    {lab:'Inslapen', ans:'Regelmatig langer dan 30 minuten', bench:null, status:'below', layer:5, prio:null},
+    {lab:'Doorslapen', ans:'Soms, maar ik slaap meestal weer door', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Uitgerust wakker', ans:'Wisselend, verschilt per dag', bench:null, status:'below', layer:5, prio:null},
+    {lab:'Grip op je slaap', ans:'Soms wel, soms niet', bench:null, status:'near', layer:null, prio:null}
+  ],
+  profile:{
+    winst:{lab:'Laag 2 · Ritme & slaapgewoonten', title:'Eén vast ankerpunt terug', line:'Je opsta- en bedtijden schoven uit elkaar. Dat is het eerste wat je terugzet, en het kost niets.'},
+    ok:['Doorslapen — je slaapt meestal weer door','Ochtendlicht — meerdere dagen per week'],
+    skip:{title:'Je slaapkamer en alles daarboven', line:'Aan je omgeving is niets veranderd sinds je vorige check. Het probleem zit nu in je weken, niet in je kamer.'}
+  },
+  exp:{layer:'Laag 2', title:'Zet je opsta-tijd vast, alleen op werkdagen.', meta:'Bewust kleiner dan je vorige stap. Veertien dagen, vijf dagen per week. Meet: of je inslaaptijd terugloopt en of je \'s ochtends minder moet doorstarten.'},
+  layerState:{1:'watch', 2:'winst', 3:'watch', 4:'wacht', 5:'wacht', 6:'wacht'},
+  clinical:false,
+  gate:{open:false, reason:'fundament',
+    body:'Nog niet. Je ritme en je slaapduur zijn allebei teruggelopen — dat is de laag die nu telt. Iets erbij nemen terwijl het fundament wegzakt, verplaatst het probleem alleen.'},
+  stand:{score:47, cap:'Wisselend', band:'Gemiddeld', meta:'Laatst gemeten vandaag — dit verandert bij je volgende slaapcheck.'}
+},
+
+F4: {
+  note:'F4 — genoeg tijd in bed, maar het ritme is onregelmatig. Laag 3 staat óók open (avondafbouw, ochtendlicht) en wordt expliciet op "nog niet nu" gezet: die werken pas mee als er een anker is om ze aan te hangen. Dit is de staat waarin de ladder daadwerkelijk iets wegneemt in plaats van toevoegt.',
+  measured:'vandaag',
+  vq:{
+    field:'SLP_CONS', num:'03', total:10,
+    question:'Houd je een vast slaap-waakritme aan?',
+    bench:null,
+    options:['Ja, vrij consistent','Meestal wel, soms niet','Nee, mijn ritme is onregelmatig'],
+    selected:2,
+    helpTitle:'Waarom vragen we dit?',
+    helpBody:'Een redelijk vaste opsta-tijd is voor je interne klok een sterker anker dan een exacte bedtijd. We vragen niet naar perfectie: een half uur speling is normaal, grote verschuivingen tussen dagen verstoren je ritme wel. Dit antwoord bepaalt of we bij je ritme beginnen of bij je avond.',
+    helpAnchor:'Hoort bij laag 2 · Ritme & slaapgewoonten'
+  },
+  readout:{
+    eyebrow:'Wat je slaapcheck zegt',
+    feit:'Je grootste slaapwinst ligt bij je ritme, niet bij je avond.',
+    answerDim:'Regelmaat', answerLabel:'Nee, mijn ritme is onregelmatig',
+    statement:'Je geeft jezelf genoeg tijd — doorgaans 7 tot 8 uur — maar je op- en bedtijden verschillen sterk per dag. Je interne klok krijgt daardoor geen vast aanknopingspunt.',
+    delta:{dir:'same', lab:'Sinds je vorige meting',
+      line:'Regelmaat staat op hetzelfde punt als bij je vorige slaapcheck: "Nee, mijn ritme is onregelmatig".',
+      also:'Slaapduur en avondafbouw bleven ook gelijk.',
+      start:'Sinds je start: ongeveer gelijk aan je startmeting — je houdt je lijn vast.'},
+    implicatie:'Avondafbouw en ochtendlicht staan bij jou ook open, maar die werken pas mee als er een vast tijdstip is om ze aan te hangen. Daarom staan ze nu op wachten.',
+    nextLabel:'Bekijk je slaapbeeld',
+    nextHint:'Daar zie je welke laag nu het meeste oplevert — en wat kan wachten.'
+  },
+  facts:[
+    {lab:'Regelmaat', ans:'Nee, mijn ritme is onregelmatig', bench:null, status:'below', layer:2, prio:'winst'},
+    {lab:'Slaapduur', ans:'7 tot 8 uur', bench:'Populatierichtlijn: 7+ uur', status:'meets', layer:1, prio:'ok'},
+    {lab:'Avondafbouw', ans:'Bijna nooit', bench:null, status:'below', layer:3, prio:'watch'},
+    {lab:'Ochtendlicht', ans:'Bijna nooit', bench:null, status:'below', layer:3, prio:'watch'},
+    {lab:'Inslapen', ans:'Ongeveer 15 tot 30 minuten', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Doorslapen', ans:'Soms, maar ik slaap meestal weer door', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Uitgerust wakker', ans:'Wisselend, verschilt per dag', bench:null, status:'below', layer:5, prio:null},
+    {lab:'Piekeren voor bed', ans:'Regelmatig', bench:null, status:'below', layer:3, prio:null},
+    {lab:'Grip op je slaap', ans:'Meestal niet', bench:null, status:'below', layer:null, prio:null}
+  ],
+  profile:{
+    winst:{lab:'Laag 2 · Ritme & slaapgewoonten', title:'Een vaste opsta-tijd', line:'Je tijden verschillen sterk per dag. Eén vast tijdstip is het goedkoopste anker dat er is.'},
+    ok:['Slaapduur — doorgaans 7 tot 8 uur','Doorslapen — je slaapt meestal weer door'],
+    skip:{title:'Avondafbouw en ochtendlicht — nog niet nu', line:'Allebei staan ze bij jou open, maar ze hangen aan een tijdstip dat er nog niet is. Zodra je opsta-tijd staat, worden ze vanzelf de volgende stap.'}
+  },
+  exp:{layer:'Laag 2', title:'Kies één opsta-tijd en houd hem veertien dagen binnen een uur — ook in het weekend.', meta:'Eén verandering, veertien dagen. Meet: hoe lang je over inslapen doet, en of je zondagavond nog wakker ligt.'},
+  layerState:{1:'ok', 2:'winst', 3:'wacht', 4:'wacht', 5:'wacht', 6:'wacht'},
+  clinical:false,
+  gate:{open:false, reason:'fundament',
+    body:'Nog niet. Je ritme is onregelmatig, en dat is precies de laag waar een middel niets aan verandert. Eerst gelegenheid en ritme, dan pas de vraag of aanvullen zin heeft.'},
+  stand:{score:52, cap:'Wisselend', band:'Gemiddeld', meta:'Laatst gemeten vandaag — dit verandert bij je volgende slaapcheck.'}
+},
+
+F5: {
+  note:'F5 — genoeg gelegenheid, vast ritme, en tóch aanhoudende klachten. Dat is het patroon waarbij optimaliseren stopt en onderzoeken begint. Geen diagnose, geen therapie in het product: uitleg plus doorverwijzing. Laag 6 is hier juist dicht — bij dit patroon is een middel de verkeerde afslag. Persona I3.',
+  measured:'vandaag',
+  vq:{
+    field:'SLP_ONSET', num:'01', total:10,
+    question:'Hoe lang doe je erover om in te slapen?',
+    bench:null,
+    options:['Meestal binnen 15 minuten','Ongeveer 15 tot 30 minuten','Regelmatig langer dan 30 minuten','Vaak langer dan een uur of heel moeilijk'],
+    selected:3,
+    helpTitle:'Waarom vragen we dit?',
+    helpBody:'Inslaaptijd zegt op zichzelf weinig. In combinatie met je slaapduur zegt het veel: lang wakker liggen terwijl je genoeg tijd in bed doorbrengt, is een ander verhaal dan lang wakker liggen na een korte, drukke dag. Dit antwoord bepaalt of we bij je gedrag uitkomen of bij aanhoudende klachten.',
+    helpAnchor:'Hoort bij laag 3 of laag 5 — dat hangt af van je slaapduur'
+  },
+  readout:{
+    eyebrow:'Wat je slaapcheck zegt',
+    feit:'Je geeft jezelf genoeg tijd, en toch komt de slaap niet.',
+    answerDim:'Inslapen', answerLabel:'Vaak langer dan een uur of heel moeilijk',
+    statement:'Je hebt doorgaans 7 tot 8 uur gelegenheid, je tijden liggen vast, en toch duurt inslapen vaak langer dan een uur en word je meerdere keren per nacht wakker. Dat patroon vraagt iets anders dan finetunen.',
+    delta:{dir:'new', lab:'Je nulpunt',
+      line:'Dit is je eerste slaapcheck. Inslapen staat op "Vaak langer dan een uur of heel moeilijk" — daar meet je vanaf nu tegenaf.',
+      also:null, start:null},
+    implicatie:'Als de gelegenheid en het ritme staan en de klachten blijven, is verder kijken zinvoller dan je omgeving verder aanpassen. Dit is geen diagnose — het is een reden om er iemand bij te halen.',
+    nextLabel:'Bekijk je slaapbeeld',
+    nextHint:'Daar staan de signalen op een rij, en wat je ermee kunt doen.'
+  },
+  facts:[
+    {lab:'Inslapen', ans:'Vaak langer dan een uur of heel moeilijk', bench:null, status:'below', layer:5, prio:'winst'},
+    {lab:'Doorslapen', ans:'Vaak meerdere keren per nacht', bench:null, status:'below', layer:5, prio:'watch'},
+    {lab:'Uitgerust wakker', ans:'Moe, alsof ik niet geslapen heb', bench:null, status:'below', layer:5, prio:'watch'},
+    {lab:'Slaapduur', ans:'7 tot 8 uur', bench:'Populatierichtlijn: 7+ uur', status:'meets', layer:1, prio:'ok'},
+    {lab:'Regelmaat', ans:'Ja, vrij consistent', bench:null, status:'meets', layer:2, prio:'ok'},
+    {lab:'Avondafbouw', ans:'Regelmatig', bench:null, status:'near', layer:3, prio:null},
+    {lab:'Ochtendlicht', ans:'Meerdere dagen per week', bench:null, status:'near', layer:3, prio:null},
+    {lab:'Piekeren voor bed', ans:'Regelmatig', bench:null, status:'below', layer:3, prio:null},
+    {lab:'Grip op je slaap', ans:'Nee, het overkomt me', bench:null, status:'below', layer:null, prio:null}
+  ],
+  profile:{
+    winst:{lab:'Laag 5 · Gerichte interventies', title:'Dit verder laten uitzoeken', line:'De lagen eronder staan bij jou. Als de klachten dan blijven, is de volgende stap iemand die met je meekijkt — niet nog een aanpassing.'},
+    ok:['Slaapduur — doorgaans 7 tot 8 uur','Regelmaat — je tijden liggen vrij vast'],
+    skip:{title:'Je slaapkamer, meters en supplementen', line:'Een beter matras of een middel dat inslapen iets versnelt, verandert niets aan dit patroon. Dat is geen strengheid, dat is de volgorde.'}
+  },
+  exp:{layer:'Laag 5', title:'Houd twee weken kort bij wanneer de klachten er wel en niet zijn.', meta:'Geen dagboekplicht: één regel per ochtend is genoeg. Neem die twee weken mee naar je huisarts — dat scheelt een consult raden.'},
+  layerState:{1:'ok', 2:'ok', 3:'watch', 4:'wacht', 5:'winst', 6:'wacht'},
+  clinical:true,
+  gate:{open:false, reason:'klinisch',
+    body:'Bij dit patroon zetten we de vergelijking niet open. Een middel dat inslapen iets versnelt, verandert niets aan wat hier speelt — en het stelt uit wat wél helpt. Eerst laten uitzoeken wat eronder zit.'},
+  stand:{score:34, cap:'Klachten', band:'Onder gemiddeld', meta:'Laatst gemeten vandaag — dit verandert bij je volgende slaapcheck.'}
+},
+
+F6: {
+  note:'F6 — de lagen 1 tot en met 3 staan grotendeels, één concreet aanknopingspunt blijft over op de avond. Geen klinische signalen. Dit is het enige profiel waarin de laag 6-deur open hoort: relevant probleem én fundament dat staat. Label-only, geen prijs, geen foto, geen merk.',
+  measured:'vandaag',
+  vq:{
+    field:'winddown', num:'07', total:10,
+    question:'Hoe vaak bouw je je avond bewust af in het laatste uur voor bed?',
+    bench:null,
+    options:['Bijna elke avond','Regelmatig','Af en toe','Bijna nooit'],
+    selected:2,
+    helpTitle:'Waarom vragen we dit?',
+    helpBody:'Je zenuwstelsel schakelt niet op commando. Een herkenbare afbouw van twintig tot dertig minuten is voor de meeste mensen genoeg — het gaat om de volgorde, niet om de inhoud. We vragen dit pas als je ritme en slaapduur staan, want zonder die twee doet het weinig.',
+    helpAnchor:'Hoort bij laag 3 · Gedrag & timing'
+  },
+  readout:{
+    eyebrow:'Wat je slaapcheck zegt',
+    feit:'Je basis staat. Wat overblijft is je avond.',
+    answerDim:'Avondafbouw', answerLabel:'Af en toe',
+    statement:'Tijd, ritme en ochtendlicht staan er goed voor. Je laatste uur voor bed schakelt nog laat terug, en je neemt regelmatig piekergedachten mee naar bed.',
+    delta:{dir:'same', lab:'Sinds je vorige meting',
+      line:'Avondafbouw staat op hetzelfde punt als bij je vorige slaapcheck: "Af en toe".',
+      also:'Slaapduur, regelmaat en ochtendlicht bleven gelijk.',
+      start:'Sinds je start: ongeveer gelijk aan je startmeting — je houdt je lijn vast.'},
+    implicatie:'Dit is het punt waarop finetunen zin krijgt: de lagen eronder staan, dus wat je nu aan je avond verandert, is ook echt wat je meet.',
+    nextLabel:'Bekijk je slaapbeeld',
+    nextHint:'Daar zie je welke laag nu het meeste oplevert — en wat kan wachten.'
+  },
+  facts:[
+    {lab:'Avondafbouw', ans:'Af en toe', bench:null, status:'below', layer:3, prio:'winst'},
+    {lab:'Piekeren voor bed', ans:'Regelmatig', bench:null, status:'below', layer:3, prio:'watch'},
+    {lab:'Slaapduur', ans:'7 tot 8 uur', bench:'Populatierichtlijn: 7+ uur', status:'meets', layer:1, prio:'ok'},
+    {lab:'Regelmaat', ans:'Ja, vrij consistent', bench:null, status:'meets', layer:2, prio:'ok'},
+    {lab:'Ochtendlicht', ans:'Bijna elke dag', bench:null, status:'meets', layer:3, prio:null},
+    {lab:'Inslapen', ans:'Ongeveer 15 tot 30 minuten', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Doorslapen', ans:'Soms, maar ik slaap meestal weer door', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Uitgerust wakker', ans:'Redelijk, maar niet optimaal', bench:null, status:'near', layer:5, prio:null},
+    {lab:'Grip op je slaap', ans:'Meestal wel', bench:null, status:'meets', layer:null, prio:null}
+  ],
+  profile:{
+    winst:{lab:'Laag 3 · Gedrag & timing', title:'Je laatste uur voor bed', line:'Je bouwt af en toe bewust af. Met de lagen eronder op orde is dit wat er nog te winnen valt.'},
+    ok:['Slaapduur — doorgaans 7 tot 8 uur','Regelmaat — je tijden liggen vrij vast'],
+    skip:null
+  },
+  exp:{layer:'Laag 3', title:'Zet twintig minuten voor bed een vaste volgorde neer — elke avond dezelfde.', meta:'Eén verandering, veertien dagen. Meet: hoe lang je over inslapen doet en hoe vaak je hoofd nog draait als je ligt. De inhoud maakt minder uit dan de herhaling.'},
+  layerState:{1:'ok', 2:'ok', 3:'winst', 4:'watch', 5:'wacht', 6:'watch'},
+  clinical:false,
+  gate:{open:true, reason:'open',
+    body:'Je basis staat en er is een concreet aanknopingspunt. Een vergelijking is nu een redelijke volgende vraag — geen advies om iets te gaan slikken. Wat je aan je avond verandert, doet vrijwel zeker meer.'},
+  stand:{score:71, cap:'Op orde', band:'Bovengemiddeld', meta:'Laatst gemeten vandaag — dit verandert bij je volgende slaapcheck.'}
+}
+
+};
+
+/* ═════════════════════════════════════════════════════════════════
+   HET GEDEELDE BLOK — één functie, twee aanroepers (L7).
+   `variant` raakt uitsluitend het gewicht van de vervolg-affordance.
+   De tekst is op beide surfaces exact dezelfde string.
+   ═════════════════════════════════════════════════════════════════ */
+function renderReadout(s, variant){
+  var r = s.readout, out = '';
+  out += '<article class="checkin-readout" aria-labelledby="ro-feit">';
+  out += '<p class="ro-eyebrow">' + r.eyebrow + '</p>';
+  out += '<h2 class="ro-feit" id="ro-feit">' + r.feit + '</h2>';
+  if (r.answerLabel){
+    out += '<p class="ro-answer"><b>' + r.answerDim + '</b>'
+        +  '<span class="dot" aria-hidden="true">&middot;</span>'
+        +  '<span>' + r.answerLabel + '</span></p>';
+  }
+  out += '<p class="ro-statement">' + r.statement + '</p>';
+  out += '<div class="ro-delta" data-dir="' + r.delta.dir + '">';
+  out += '<p class="lab">' + r.delta.lab + '</p>';
+  out += '<p class="line">' + r.delta.line + '</p>';
+  if (r.delta.also){ out += '<p class="also">' + r.delta.also + '</p>'; }
+  if (r.delta.start){ out += '<p class="start">' + r.delta.start + '</p>'; }
+  out += '</div>';
+  out += '<p class="ro-implicatie">' + r.implicatie + '</p>';
+  out += '<div class="ro-next">';
+  if (variant === 'checkin'){
+    out += '<a class="btn-terra" href="#">' + r.nextLabel + ' &rarr;</a>';
+  } else {
+    out += '<a class="link-quiet" href="#">Je lagen hieronder &rsaquo;</a>';
+  }
+  out += '<p class="ro-hint">' + r.nextHint + '</p>';
+  out += '</div></article>';
+  return out;
+}
+
+/* ── VQ ──────────────────────────────────────────────────────────── */
+function renderVQ(s){
+  var q = s.vq, out = '';
+  out += '<div class="progressbar"><span style="width:' + Math.round(parseInt(q.num,10)/q.total*100) + '%"></span></div>';
+  out += '<div class="vq">';
+  out += '<p class="qnum"><b>' + q.num + '</b> &middot; Slaap</p>';
+  out += '<h1>' + q.question + '</h1>';
+  if (q.bench){ out += '<p class="bench">' + q.bench + '</p>'; } else { out += '<div style="height:14px"></div>'; }
+  out += '<div class="opts">';
+  q.options.forEach(function(o, i){
+    out += '<button class="opt" type="button" aria-pressed="' + (i === q.selected) + '">' + o + '</button>';
+  });
+  out += '</div>';
+  out += '<div class="helpwrap">';
+  out += '<button class="helpbtn" type="button" id="helpBtn" aria-expanded="false" aria-controls="helpBody">Waarom vragen we dit? <span aria-hidden="true">&darr;</span></button>';
+  out += '<div class="helpbody" id="helpBody" hidden>';
+  out += '<h3>' + q.helpTitle + '</h3>';
+  out += '<p>' + q.helpBody + '</p>';
+  out += '<p class="anchor">' + q.helpAnchor + '</p>';
+  out += '</div></div>';
+  out += '</div>';
+  return out;
+}
+
+/* ── VR ──────────────────────────────────────────────────────────── */
+var PRIO_LABEL = {winst:'Grootste winst', watch:'Houd in de gaten', ok:'Op orde'};
+
+function renderFacts(s){
+  var out = '<section aria-labelledby="facts-h">';
+  out += '<h2 class="eyebrow" id="facts-h">Wat je hebt ingevuld</h2>';
+  out += '<div class="factlist" id="factList">';
+  s.facts.forEach(function(f, i){
+    out += '<div class="fact" data-status="' + f.status + '"' + (i > 3 ? ' data-extra="true" hidden' : '') + '>';
+    out += '<span class="mark" aria-hidden="true"></span><div class="body">';
+    out += '<p class="lab">' + f.lab + '</p>';
+    out += '<p class="ans">' + f.ans + '</p>';
+    if (f.bench){ out += '<p class="bench">' + f.bench + '</p>'; }
+    if (f.prio){ out += '<p class="tagline">' + PRIO_LABEL[f.prio] + '</p>'; }
+    out += '</div></div>';
+  });
+  out += '</div>';
+  out += '<button class="facttoggle" type="button" id="factToggle" aria-expanded="false" aria-controls="factList">Toon alle antwoorden &darr;</button>';
+  out += '</section>';
+  return out;
+}
+
+function renderProfile(s){
+  var p = s.profile, out = '';
+  out += '<section class="profile" aria-labelledby="prof-h">';
+  out += '<h2 class="eyebrow" id="prof-h">Waar het bij jou nu om draait</h2>';
+  out += '<div class="prow"><p class="plabel">Grootste winst</p>';
+  out += '<p class="ptitle">' + p.winst.lab + ' &middot; ' + p.winst.title + '</p>';
+  out += '<p class="pline">' + p.winst.line + '</p></div>';
+  out += '<div class="prow"><p class="plabel">Goed op orde</p><ul>';
+  p.ok.forEach(function(o){ out += '<li>' + o + '</li>'; });
+  out += '</ul></div>';
+  if (p.skip){
+    out += '<div class="prow"><p class="plabel">Nog niet nu</p>';
+    out += '<p class="ptitle">' + p.skip.title + '</p>';
+    out += '<p class="pline">' + p.skip.line + '</p></div>';
+  }
+  out += '</section>';
+  return out;
+}
+
+function renderExperiment(s){
+  return '<section class="exp" aria-labelledby="exp-h">'
+       + '<p class="elab" id="exp-h">Je eerste experiment &middot; ' + s.exp.layer + '</p>'
+       + '<p class="etitle">' + s.exp.title + '</p>'
+       + '<p class="emeta">' + s.exp.meta + '</p></section>';
+}
+
+function renderVR(s){
+  var out = '';
+  out += '<div class="progressbar"><span style="width:100%"></span></div>';
+  out += '<div class="vr">';
+  out += '<h1 class="pagetitle">Jouw slaapcheck</h1>';
+  out += '<p class="pagesub">Wat je antwoorden laten zien &middot; gemeten ' + s.measured + '</p>';
+  out += renderReadout(s, 'checkin');
+  out += '<div class="blockgap"></div>';
+  out += renderFacts(s);
+  out += '<div class="blockgap"></div>';
+  out += renderProfile(s);
+  out += '<div class="blockgap"></div>';
+  out += renderExperiment(s);
+  out += '<p class="footnote">Voor gezonde volwassenen geldt regelmatig minstens 7 uur slaap als gangbare ondergrens; individuele behoefte verschilt (NHLBI). Dit is een zelfrapportage, geen diagnose. <a href="#">Zo komen we aan deze indeling</a>.</p>';
+  out += '</div>';
+  return out;
+}
+
+/* ── VL ──────────────────────────────────────────────────────────── */
+function renderMock(kind){
+  if (kind === 'tijdchips'){
+    var out = '<div class="mock"><p class="mh">Waar verdwijnt jouw slaaptijd?</p><div class="selchips" data-mock="tijd">';
+    TIJDCHIPS.forEach(function(c){
+      out += '<button class="selchip" type="button" aria-pressed="false">' + c + '</button>';
+    });
+    out += '</div><p class="mockout" data-out="tijd"></p></div>';
+    return out;
+  }
+  if (kind === 'opstaweek'){
+    var TIMES = ['06:00','06:30','07:00','07:30'];
+    var o = '<div class="mock"><p class="mh">Zeven dagen, één opsta-tijd</p>';
+    o += '<div class="timerow" data-mock="tijdkeuze">';
+    TIMES.forEach(function(t){ o += '<button class="selchip" type="button" aria-pressed="false">' + t + '</button>'; });
+    o += '</div><div class="daystrip" data-mock="dagen">';
+    ['ma','di','wo','do','vr','za','zo'].forEach(function(d){
+      o += '<button class="day" type="button" aria-pressed="false">' + d + '</button>';
+    });
+    o += '</div><p class="mockout" data-out="week"></p></div>';
+    return o;
+  }
+  if (kind === 'omgevingscan'){
+    var s = '<div class="mock"><p class="mh">Slaapomgeving-scan</p><table class="scan" data-mock="scan"><tbody>';
+    SCANROWS.forEach(function(r){
+      s += '<tr><td class="rl">' + r + '</td><td><div class="scanbtns">'
+        +  '<button class="scanbtn" type="button" data-v="ok" aria-pressed="false">Geen probleem</button>'
+        +  '<button class="scanbtn" type="button" data-v="bad" aria-pressed="false">Mogelijke verstoring</button>'
+        +  '</div></td></tr>';
+    });
+    s += '</tbody></table><p class="mockout" data-out="scan"></p></div>';
+    return s;
+  }
+  if (kind === 'signalen'){
+    var g = '<div class="mock"><p class="mh">Signalen om verder te kijken</p><div class="checklist" data-mock="signalen">';
+    SIGNALEN.forEach(function(t){
+      g += '<button class="clitem" type="button" aria-pressed="false">'
+        +  '<span class="clbox" aria-hidden="true">&#10003;</span><span class="cltxt">' + t + '</span></button>';
+    });
+    g += '</div><p class="mockout" data-out="signalen">Aankruisen geeft geen uitslag. Het is bedoeld om je eigen beeld scherper te krijgen.</p></div>';
+    return g;
+  }
+  if (kind === 'matrix'){
+    var m = '<div class="mock"><p class="mh">Wat werkt, en hoe zeker weten we dat?</p>';
+    m += '<table class="matrix"><thead><tr><th>Wat</th><th>Bewijs</th><th>Waarde</th><th>Wanneer</th></tr></thead><tbody>';
+    MATRIX.forEach(function(r){
+      m += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>';
+    });
+    m += '</tbody></table>';
+    m += '<p class="disc">Deze tabel gaat over gemiddelden uit onderzoek, niet over jou persoonlijk. Supplementen mogen alleen claims voeren die in Europa zijn goedgekeurd.</p></div>';
+    return m;
+  }
+  return '';
+}
+
+function renderLayer(L, s){
+  var prio = s.layerState[L.id];
+  var open = (prio === 'winst');
+  var out = '';
+  out += '<div class="layer" data-open="' + open + '" data-layer="' + L.id + '" style="width:' + L.width + '%">';
+  out += '<button class="layerbtn" type="button" aria-expanded="' + open + '">';
+  out += '<span class="idx">' + L.idx + '</span>';
+  out += '<span class="txt"><span class="nm">' + L.name + '</span>'
+      +  '<span class="sub">' + L.sub + '</span>'
+      +  '<span class="pill" data-p="' + prio + '">' + (
+           prio === 'winst' ? 'Grootste winst' :
+           prio === 'ok'    ? 'Op orde' :
+           prio === 'watch' ? 'Houd in de gaten' : 'Nog niet nu'
+         ) + '</span></span>';
+  out += '<span class="chev" aria-hidden="true">' + (open ? '&minus;' : '+') + '</span>';
+  out += '</button>';
+  out += '<div class="layerbody"' + (open ? '' : ' hidden') + '>';
+  out += '<p class="kern">' + L.kern + '</p>';
+  out += '<div class="chips">';
+  L.chips.slice(0,4).forEach(function(c){ out += '<span class="chip">' + c + '</span>'; });
+  out += '</div>';
+  if (L.id !== 6){
+    out += '<p class="doingtitle">Wat kun je hier doen?</p><ul class="doing">';
+    L.doing.slice(0,3).forEach(function(d){ out += '<li>' + d + '</li>'; });
+    out += '</ul>';
+  }
+  if (L.mockNote){ out += '<p class="note">' + L.mockNote + '</p>'; }
+  if (L.mock){ out += renderMock(L.mock); }
+  if (L.id === 5){
+    out += '<p class="note">Je krijgt hier geen behandeling en geen uitslag. Wat je hier ziet is uitleg plus, als het aanhoudt, het advies om je huisarts of een slaaptherapeut te spreken.</p>';
+  }
+  if (L.id === 6){
+    out += '<div class="gate" data-open="' + s.gate.open + '">';
+    out += '<p class="glab">' + (s.gate.open ? 'Deze deur staat voor jou open' : 'Deze deur staat nog dicht') + '</p>';
+    out += '<p class="gb">' + s.gate.body + '</p>';
+    if (s.gate.open){
+      out += '<a class="gl" href="#">Vergelijk op prijs en kwaliteit &rarr;</a>';
+    }
+    out += '</div>';
+  }
+  out += '</div></div>';
+  return out;
+}
+
+function renderVL(s){
+  var pct = Math.max(0, Math.min(100, s.stand.score));
+  var circ = 2 * Math.PI * 29;
+  var dash = (pct / 100) * circ;
+
+  var out = '';
+  out += '<div class="vltop"><span>PerfectSupplement</span>'
+      +  '<span class="vltabs"><span>Vandaag</span><span>Agenda</span>'
+      +  '<span data-active>Voortgang</span><span>Hermeting</span></span></div>';
+  out += '<div class="vl">';
+  out += '<div class="backrow"><span class="backbtn" aria-hidden="true">&larr;</span><h1>Slaap</h1></div>';
+
+  out += '<div class="tile"><p class="t-eyebrow">Je stand</p><div class="standrow">';
+  out += '<div class="gauge"><svg width="70" height="70" viewBox="0 0 70 70" aria-hidden="true">'
+      +  '<circle cx="35" cy="35" r="29" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="6"/>'
+      +  '<circle cx="35" cy="35" r="29" fill="none" stroke="var(--sage)" stroke-width="6" stroke-linecap="round"'
+      +  ' stroke-dasharray="' + dash.toFixed(1) + ' ' + circ.toFixed(1) + '" transform="rotate(-90 35 35)"/>'
+      +  '</svg><span class="val"><span class="num">' + s.stand.score + '</span>'
+      +  '<span class="cap">' + s.stand.cap + '</span></span></div>';
+  out += '<div class="standtxt"><p class="band">' + s.stand.band + '</p>'
+      +  '<p class="src">op basis van je slaapcheck</p>'
+      +  '<p class="meta">' + s.stand.meta + '</p></div>';
+  out += '</div></div>';
+
+  out += '<p class="ssot-flag">Zelfde blok als op je check-in resultaat</p>';
+  out += renderReadout(s, 'voortgang');
+  out += '<div class="blockgap"></div>';
+
+  out += '<div class="pyrahead"><p class="h">Prioriteitenladder — niet omhoog klimmen</p>'
+      +  '<p class="b">Geen ranglijst en geen niveaus. Breder betekent: draagt meer. Begin waar de winst het grootst is; de rest mag wachten.</p></div>';
+
+  out += '<div class="rail">';
+  LAYERS.forEach(function(L){
+    out += renderLayer(L, s);
+    if (L.id === 4){
+      out += '<div class="crossover"><span class="arrows" aria-hidden="true">&#8646;</span>'
+          +  '<p><b>Laag 4 en laag 5 staan naast elkaar, niet boven elkaar.</b> '
+          +  'Bij echte slaapklachten kan een gerichte behandeling belangrijker zijn dan een beter matras. '
+          +  'Welke van de twee voorgaat, hangt af van wat je merkt — niet van de volgorde in dit overzicht.</p></div>';
+    }
+  });
+  out += '</div>';
+
+  out += '<div class="tile tail"><p class="t-eyebrow">Zelf inschatten</p>'
+      +  '<p style="margin:0 0 10px;font-size:12.5px;line-height:1.6;color:var(--soft)">Waar denk je dat je nu zit? Je eigen inschatting telt mee naast je antwoorden.</p>'
+      +  '<div class="selchips" data-mock="zelf">';
+  LAYERS.slice(0,5).forEach(function(L){
+    out += '<button class="selchip" type="button" aria-pressed="false">' + L.idx + '</button>';
+  });
+  out += '</div><p class="mockout" data-out="zelf"></p>'
+      +  '<p class="note" style="margin-top:10px">Laag 6 kun je niet zelf kiezen. Die opent op basis van je antwoorden, niet op basis van interesse.</p></div>';
+
+  out += '<div class="axis"><p>Achtergrond bij de indeling: elke laag heeft twee kanten — hoe fundamenteel iets is, en hoe sterk het bewijs ervoor is. Deze twee assen sturen de volgorde; ze staan bewust niet als scores in het product.</p>'
+      +  '<pre>bewijs sterk\n   ^\n   |  slaapduur      CGT-i\n   |  regelmaat      (bij aanhoudende klachten)\n   |  daglicht       omgeving\n   |\n   |                          meter\n   |                    supplement\n   |                          experiment\n   +---------------------------------> minder fundamenteel\n bewijs onzeker</pre></div>';
+
+  out += '<p class="footnote">Voor gezonde volwassenen geldt regelmatig minstens 7 uur slaap als gangbare ondergrens; individuele behoefte verschilt (NHLBI). Zelfrapportage, geen diagnose.</p>';
+  out += '</div>';
+  return out;
+}
+
+/* ── besturing ───────────────────────────────────────────────────── */
+var current = {frame:'VR', state:'F1'};
+
+function bindMocks(root){
+  /* laag 1 — slaaptijd-chips */
+  var tijd = root.querySelector('[data-mock="tijd"]');
+  if (tijd){
+    tijd.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      var picked = [].filter.call(tijd.querySelectorAll('button'), function(x){
+        return x.getAttribute('aria-pressed') === 'true';
+      }).map(function(x){ return x.textContent.toLowerCase(); });
+      var out = root.querySelector('[data-out="tijd"]');
+      if (picked.length === 0){ out.textContent = ''; return; }
+      out.textContent = picked.length === 1
+        ? 'Je slaaptijd lekt weg via ' + picked[0] + '. Dat is een tijdvraag, geen slaapvraag — daar is een agenda het gereedschap.'
+        : 'Je noemt ' + picked.length + ' bronnen, waaronder ' + picked[0] + '. Kies er één om deze twee weken terug te winnen; alle vier tegelijk houdt niemand vol.';
+    });
+  }
+  /* laag 2 — opsta-experiment */
+  var keuze = root.querySelector('[data-mock="tijdkeuze"]');
+  var dagen = root.querySelector('[data-mock="dagen"]');
+  if (keuze && dagen){
+    var refresh = function(){
+      var t = keuze.querySelector('button[aria-pressed="true"]');
+      var d = dagen.querySelectorAll('button[aria-pressed="true"]').length;
+      var out = root.querySelector('[data-out="week"]');
+      if (!t){ out.textContent = ''; return; }
+      out.textContent = d === 0
+        ? 'Je koos ' + t.textContent + '. Vink de dagen aan waarop je dat vasthoudt — het weekend telt gewoon mee.'
+        : d < 7
+          ? t.textContent + ' op ' + d + ' van de 7 dagen. Evalueer na een week op slaapduur, energie, slaperigheid, stemming en concentratie.'
+          : t.textContent + ', zeven dagen. Dat is het experiment. Verander deze twee weken verder niets, anders weet je achteraf niet wat het deed.';
+    };
+    keuze.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      [].forEach.call(keuze.querySelectorAll('button'), function(x){
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      refresh();
+    });
+    dagen.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      refresh();
+    });
+  }
+  /* laag 4 — omgeving-scan */
+  var scan = root.querySelector('[data-mock="scan"]');
+  if (scan){
+    scan.addEventListener('click', function(e){
+      var b = e.target.closest('.scanbtn'); if (!b) return;
+      var row = b.closest('tr');
+      [].forEach.call(row.querySelectorAll('.scanbtn'), function(x){
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      var rows = [].slice.call(scan.querySelectorAll('tr'));
+      var answered = rows.filter(function(r){ return r.querySelector('.scanbtn[aria-pressed="true"]'); });
+      var bad = rows.filter(function(r){
+        var sel = r.querySelector('.scanbtn[aria-pressed="true"]');
+        return sel && sel.getAttribute('data-v') === 'bad';
+      });
+      var out = root.querySelector('[data-out="scan"]');
+      if (answered.length < rows.length){
+        out.textContent = answered.length + ' van de ' + rows.length + ' ingevuld.';
+        return;
+      }
+      out.textContent = bad.length === 0
+        ? 'Geen verstoringen aangegeven. Dan valt hier weinig te halen — deze laag mag je overslaan.'
+        : 'Pak eerst je grootste verstoring aan: ' + bad[0].querySelector('.rl').textContent.toLowerCase()
+          + (bad.length > 1 ? '. De andere ' + (bad.length - 1) + ' komen daarna.' : '.');
+    });
+  }
+  /* laag 5 — signalen */
+  var sig = root.querySelector('[data-mock="signalen"]');
+  if (sig){
+    sig.addEventListener('click', function(e){
+      var b = e.target.closest('.clitem'); if (!b) return;
+      b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      var n = sig.querySelectorAll('.clitem[aria-pressed="true"]').length;
+      var out = root.querySelector('[data-out="signalen"]');
+      out.textContent = n === 0
+        ? 'Aankruisen geeft geen uitslag. Het is bedoeld om je eigen beeld scherper te krijgen.'
+        : n <= 2
+          ? 'Je herkent er ' + n + '. Houd het in de gaten. Blijft het maanden terugkomen, bespreek het dan met je huisarts.'
+          : 'Je herkent er ' + n + '. Dat is geen diagnose, wel een goede reden om je klachten met je huisarts of een slaaptherapeut te bespreken.';
+    });
+  }
+  /* zelf-inschatting */
+  var zelf = root.querySelector('[data-mock="zelf"]');
+  if (zelf){
+    zelf.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      [].forEach.call(zelf.querySelectorAll('button'), function(x){
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      root.querySelector('[data-out="zelf"]').textContent =
+        'Je schat jezelf op ' + b.textContent.toLowerCase() + '. Wijkt dat af van je antwoorden, dan is dat geen fout — het is een goede vraag voor je volgende slaapcheck.';
+    });
+  }
+}
+
+function paint(){
+  var s = STATES[current.state];
+  var phone = document.getElementById('phone');
+  phone.className = 'phone ' + (current.frame === 'VL' ? 'surf-dash' : 'surf-intake');
+  phone.innerHTML = current.frame === 'VQ' ? renderVQ(s)
+                  : current.frame === 'VR' ? renderVR(s)
+                  : renderVL(s);
+
+  document.getElementById('stateNote').textContent = s.note;
+  document.getElementById('phoneNote').textContent =
+    current.frame === 'VQ' ? '375 px · intake · /intake/slaap — vraag ' + s.vq.num :
+    current.frame === 'VR' ? '375 px · intake · /intake/slaap — resultaat' :
+                             '375 px · dashboard · Voortgang › Slaap';
+
+  var help = document.getElementById('helpBtn');
+  if (help){
+    help.addEventListener('click', function(){
+      var body = document.getElementById('helpBody');
+      var open = help.getAttribute('aria-expanded') === 'true';
+      help.setAttribute('aria-expanded', String(!open));
+      body.hidden = open;
+      help.innerHTML = open ? 'Waarom vragen we dit? <span aria-hidden="true">&darr;</span>'
+                            : 'Sluiten <span aria-hidden="true">&uarr;</span>';
+    });
+  }
+
+  var ft = document.getElementById('factToggle');
+  if (ft){
+    ft.addEventListener('click', function(){
+      var open = ft.getAttribute('aria-expanded') === 'true';
+      [].forEach.call(document.querySelectorAll('.fact[data-extra]'), function(el){ el.hidden = open; });
+      ft.setAttribute('aria-expanded', String(!open));
+      ft.innerHTML = open ? 'Toon alle antwoorden &darr;' : 'Toon minder &uarr;';
+    });
+  }
+
+  [].forEach.call(phone.querySelectorAll('.layerbtn'), function(btn){
+    btn.addEventListener('click', function(){
+      var wrap = btn.closest('.layer');
+      var body = wrap.querySelector('.layerbody');
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      wrap.setAttribute('data-open', String(!open));
+      body.hidden = open;
+      btn.querySelector('.chev').innerHTML = open ? '+' : '&minus;';
+    });
+  });
+
+  [].forEach.call(phone.querySelectorAll('.opts'), function(wrap){
+    wrap.addEventListener('click', function(e){
+      var b = e.target.closest('.opt'); if (!b) return;
+      [].forEach.call(wrap.querySelectorAll('.opt'), function(x){
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+    });
+  });
+
+  bindMocks(phone);
+}
+
+document.getElementById('frameSwitch').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-frame]'); if (!btn) return;
+  current.frame = btn.getAttribute('data-frame');
+  [].forEach.call(this.querySelectorAll('button'), function(b){
+    b.setAttribute('aria-pressed', String(b === btn));
+  });
+  paint();
+});
+
+document.getElementById('stateSwitch').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-state]'); if (!btn) return;
+  current.state = btn.getAttribute('data-state');
+  [].forEach.call(this.querySelectorAll('button'), function(b){
+    b.setAttribute('aria-pressed', String(b === btn));
+  });
+  paint();
+});
+
+paint();
+</script>
+</body>
+</html>
