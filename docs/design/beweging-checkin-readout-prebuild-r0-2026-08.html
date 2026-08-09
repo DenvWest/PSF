@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R0-brug — beweeg-check-in readout (frame 1) + Voortgang (frame 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --shell:#0E1A0F;
+  --bg:#132414;
+  --panel:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.11);
+  --line-soft:rgba(255,255,255,.06);
+  --sage:#5A8F6A;
+  --sage-lt:#9CC5A9;
+  --terra:#C8956C;
+  --move:#C26E4B;
+  --ink:#F1EFE8;
+  --soft:#CDD7D0;
+  --mut:#9FB0A6;
+  --subtle:#7E8C82;
+  --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --r-panel:16px;
+  --r-card:14px;
+  --r-btn:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--shell);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+
+/* ── prebuild-chrome ────────────────────────────────────────────── */
+.chrome{position:sticky;top:0;z-index:20;background:rgba(14,26,15,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px 12px}
+.chrome-inner{max-width:1060px;margin:0 auto}
+.chrome h1{font-family:var(--serif);font-weight:400;font-size:19px;margin:0 0 2px;letter-spacing:.2px}
+.chrome p.sub{margin:0 0 12px;font-size:12.5px;color:var(--mut)}
+.switchrow{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.switch{display:flex;flex-direction:column;gap:6px}
+.switch-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.switch-btns{display:flex;flex-wrap:wrap;gap:6px}
+.sw{font-family:var(--sans);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--mut);transition:all .16s ease}
+.sw:hover{border-color:rgba(255,255,255,.24);color:var(--soft)}
+.sw[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:#0F1C10}
+.statenote{margin:12px 0 0;font-size:12px;color:var(--mut);max-width:78ch;border-left:2px solid var(--sage);padding-left:10px}
+
+/* ── phone ─────────────────────────────────────────────────────── */
+.stage{padding:26px 16px 70px;display:flex;justify-content:center}
+.phone{width:375px;max-width:100%;background:var(--bg);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.phone-note{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--subtle);text-align:center;padding:0 0 9px}
+
+/* ── tekstprimitieven ──────────────────────────────────────────── */
+.eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 8px}
+.pagetitle{font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.2;margin:0 0 6px;text-align:center}
+.pagesub{margin:0 0 22px;font-size:12.5px;color:var(--mut);text-align:center}
+
+/* ── DE GEDEELDE READOUT — identiek in beide frames ────────────── */
+.checkin-readout{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:18px 16px 16px}
+.checkin-readout .ro-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin:0 0 9px}
+.checkin-readout .ro-feit{font-family:var(--serif);font-weight:400;font-size:20px;line-height:1.3;margin:0 0 10px;color:var(--ink)}
+.checkin-readout .ro-answer{display:inline-flex;align-items:baseline;gap:7px;border:1px solid var(--line);border-radius:999px;padding:5px 11px;margin:0 0 12px;font-size:11.5px;color:var(--soft)}
+.checkin-readout .ro-answer b{font-weight:600;color:var(--ink)}
+.checkin-readout .ro-answer .dot{color:var(--subtle)}
+.checkin-readout .ro-statement{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--soft)}
+.ro-delta{border-radius:var(--r-card);border:1px solid var(--line-soft);background:rgba(0,0,0,.18);padding:12px 13px;margin:0 0 13px;border-left:2px solid var(--mut)}
+.ro-delta[data-dir="up"]{border-left-color:var(--sage)}
+.ro-delta[data-dir="down"]{border-left-color:var(--move)}
+.ro-delta[data-dir="same"]{border-left-color:var(--mut)}
+.ro-delta[data-dir="new"]{border-left-color:var(--terra)}
+.ro-delta .lab{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle);margin:0 0 6px}
+.ro-delta .line{margin:0;font-size:13px;line-height:1.6;color:var(--ink)}
+.ro-delta .also{margin:8px 0 0;font-size:12px;line-height:1.55;color:var(--mut)}
+.ro-delta .start{margin:9px 0 0;padding-top:8px;border-top:1px dashed var(--line-soft);font-size:11.5px;line-height:1.5;color:var(--subtle)}
+.ro-implicatie{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--ink)}
+.ro-routing{border-top:1px solid var(--line-soft);padding-top:13px}
+.ro-program{margin:0 0 10px;font-size:12px;color:var(--mut);display:flex;gap:7px;align-items:baseline}
+.ro-program b{color:var(--soft);font-weight:600}
+.ro-hint{margin:10px 0 0;font-size:11.5px;line-height:1.55;color:var(--subtle)}
+
+/* routing-affordance: zelfde copy, ander gewicht per surface */
+a.btn-terra{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:var(--r-btn);background:var(--terra);color:#231409;font-size:14px;font-weight:700;text-decoration:none;transition:opacity .16s ease}
+a.btn-terra:hover{opacity:.9}
+a.btn-ghost{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:var(--r-btn);background:transparent;border:1px solid var(--line);color:var(--soft);font-size:13.5px;font-weight:600;text-decoration:none}
+a.btn-ghost:hover{border-color:rgba(255,255,255,.24);color:var(--ink)}
+a.link-quiet{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--sage-lt);text-decoration:none}
+a.link-quiet:hover{text-decoration:underline}
+
+/* ── frame 1 chrome ────────────────────────────────────────────── */
+.f1{padding:22px 18px 30px}
+.progressbar{height:3px;background:rgba(255,255,255,.08)}
+.progressbar span{display:block;height:100%;width:100%;background:var(--terra)}
+.blockgap{height:20px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;overflow:hidden}
+.chips[data-clamped="true"]{max-height:66px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:11px;color:var(--mut);background:rgba(255,255,255,.02)}
+.chip b{font-weight:600;color:var(--soft)}
+.chip i{font-style:normal;color:var(--subtle)}
+.chip[data-band="aandacht"]{border-color:rgba(194,110,75,.42)}
+.chip[data-band="aandacht"] i{color:var(--move)}
+.chip[data-band="sterk"]{border-color:rgba(90,143,106,.38)}
+.chip[data-band="sterk"] i{color:var(--sage-lt)}
+.chiptoggle{margin-top:9px;background:none;border:none;padding:0;cursor:pointer;font-family:var(--sans);font-size:11.5px;font-weight:600;color:var(--mut)}
+.chiptoggle:hover{color:var(--soft)}
+.moderator{margin-top:14px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);padding:13px 14px}
+.moderator ul{margin:0;padding-left:16px}
+.moderator li{font-size:12.5px;line-height:1.58;color:var(--mut);margin-bottom:6px}
+.moderator li:last-child{margin-bottom:0}
+.ijkpunt{margin-top:20px;border:1px dashed var(--line);border-radius:var(--r-card);padding:13px 14px}
+.ijkpunt p{margin:0;font-size:12.5px;color:var(--soft);line-height:1.55}
+.ijkpunt a{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--sage-lt);text-decoration:none}
+.f1foot{margin-top:22px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);padding:16px 15px;text-align:center}
+.f1foot p{margin:0 0 12px;font-size:12.5px;line-height:1.6;color:var(--mut)}
+.f1foot .fine{margin:11px 0 0;font-size:11px;line-height:1.55;color:var(--subtle)}
+.f1foot .fine a{color:var(--sage-lt);text-decoration:underline}
+
+/* ── frame 2 chrome ────────────────────────────────────────────── */
+.f2topbar{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line-soft);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.f2tabs{display:flex;gap:13px;font-size:10.5px;font-weight:600;color:var(--subtle);letter-spacing:.02em;text-transform:none}
+.f2tabs span[data-active]{color:var(--ink);border-bottom:2px solid var(--terra);padding-bottom:3px}
+.f2{padding:16px 14px 30px}
+.backrow{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.backbtn{width:36px;height:36px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--mut);font-size:15px}
+.backrow .title{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin:0}
+.tile{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:15px 14px;margin-bottom:13px}
+.tile .t-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 11px}
+.standrow{display:flex;align-items:center;gap:14px}
+.gauge{position:relative;width:74px;height:74px;flex:0 0 auto}
+.gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.gauge .num{font-size:19px;font-weight:700;color:var(--ink)}
+.gauge .cap{font-size:8.5px;color:var(--subtle);margin-top:3px}
+.standtxt{min-width:0;flex:1}
+.standtxt .band{margin:0;font-size:13.5px;color:var(--ink);font-weight:500}
+.standtxt .src{margin:7px 0 0;font-size:11.5px;color:var(--mut)}
+.standtxt .meta{margin:3px 0 0;font-size:11px;color:var(--subtle)}
+.positionline{margin:0 0 13px;padding:0 2px;font-size:12px;color:var(--mut)}
+.f2row{display:flex;align-items:center;gap:11px;border-radius:var(--r-panel);padding:13px 14px;margin-bottom:11px;text-decoration:none;width:100%;font-family:var(--sans);text-align:left}
+.f2row.primary{border:1px solid rgba(90,143,106,.32);background:rgba(90,143,106,.10)}
+.f2row.quiet{border:1px solid var(--line);background:rgba(0,0,0,.18);cursor:pointer}
+.f2row .lbl{flex:1;font-size:13.5px;font-weight:600;color:var(--ink)}
+.f2row.quiet .lbl{color:var(--sage-lt);font-size:13px}
+.f2row .chev{color:var(--mut);font-size:15px}
+.f2back{margin-top:6px;background:none;border:none;padding:0;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--mut);cursor:pointer}
+.ssot-flag{margin:0 0 10px;font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--sage)}
+@media (max-width:420px){
+  .phone{border-radius:0;border-left:none;border-right:none}
+  .stage{padding:18px 0 50px}
+}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="chrome-inner">
+    <h1>R0-brug — beweeg-check-in readout</h1>
+    <p class="sub">Eén conclusie-blok, twee surfaces. Frame 1 = check-in resultaat (intake). Frame 2 = Voortgang &rsaquo; Beweging. Het blok met de terra-eyebrow is in beide frames dezelfde render; alleen de chrome eromheen verschilt.</p>
+    <div class="switchrow">
+      <div class="switch">
+        <span class="switch-label">Surface</span>
+        <div class="switch-btns" id="frameSwitch">
+          <button class="sw" type="button" data-frame="1" aria-pressed="true">Frame 1 &middot; Check-in resultaat</button>
+          <button class="sw" type="button" data-frame="2" aria-pressed="false">Frame 2 &middot; Voortgang &rsaquo; Beweging</button>
+        </div>
+      </div>
+      <div class="switch">
+        <span class="switch-label">Staat</span>
+        <div class="switch-btns" id="stateSwitch">
+          <button class="sw" type="button" data-state="F1" aria-pressed="true">F1 eerste check</button>
+          <button class="sw" type="button" data-state="F2" aria-pressed="false">F2 delta omlaag</button>
+          <button class="sw" type="button" data-state="F3" aria-pressed="false">F3 delta omhoog</button>
+          <button class="sw" type="button" data-state="F4" aria-pressed="false">F4 alles sterk</button>
+          <button class="sw" type="button" data-state="F5" aria-pressed="false">F5 vastgelopen</button>
+        </div>
+      </div>
+    </div>
+    <p class="statenote" id="stateNote"></p>
+  </div>
+</div>
+
+<div class="stage">
+  <div>
+    <p class="phone-note" id="phoneNote">375 px</p>
+    <div class="phone" id="phone"></div>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   SNAPSHOT-DATA — vorm volgt het contract MovementCheckinSnapshot (§D).
+   Alle copy is als definitief bedoeld, geen placeholder.
+   ───────────────────────────────────────────────────────────────── */
+
+var CHIPS_BASE = [
+  {k:'kracht',           l:'Kracht'},
+  {k:'conditie',         l:'Cardio'},
+  {k:'intensiteit',      l:'Intensieve inspanning'},
+  {k:'zitten',           l:'Zitten'},
+  {k:'conditie_ervaren', l:'Ervaren conditie'},
+  {k:'herstel',          l:'Herstel'},
+  {k:'klachten',         l:'Klachten'},
+  {k:'mobiliteit',       l:'Mobiliteit'},
+  {k:'belastbaarheid',   l:'Belastbaarheid'},
+  {k:'consistentie',     l:'Consistentie'},
+  {k:'motivatie',        l:'Motivatie'}
+];
+
+var BAND_LABEL = {aandacht:'Aandacht', redelijk:'Redelijk', sterk:'Sterk'};
+
+function chips(map){
+  return CHIPS_BASE.map(function(c){
+    return {dimension:c.k, label:c.l, band:map[c.k] || 'redelijk'};
+  });
+}
+
+var STATES = {
+
+  /* ── F1 · eerste volledige beweegcheck, geen vorige raw_inputs ── */
+  F1: {
+    note:'F1 — eerste beweegcheck. Er is geen vorige meting, dus de delta-regel benoemt het nulpunt in plaats van een verandering te suggereren. Geen programma-regel: er is nog niets ingesteld.',
+    measured:'vandaag',
+    eyebrow:'Wat je beweegcheck zegt',
+    feit:'Je grootste beweegwinst ligt nu bij kracht.',
+    answerDim:'Kracht',
+    answerLabel:'Minder dan 1x per week',
+    statement:'Krachttraining schiet er nu bij in — en juist daar valt na 40 het meest te winnen.',
+    delta:{
+      dir:'new',
+      lab:'Je nulpunt',
+      line:'Dit is je eerste beweegcheck. Kracht staat op "Minder dan 1x per week" — daar meet je vanaf nu tegenaf.',
+      also:null,
+      start:null
+    },
+    implicatie:'Zolang kracht onder één keer per week blijft, houdt dat je beweegscore het hardst omlaag — meer wandelen vult dit deel niet op.',
+    program:null,
+    routingLabel:'Naar je beweegplan',
+    routingHint:'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.',
+    chips:chips({kracht:'aandacht', conditie:'redelijk', intensiteit:'aandacht', zitten:'redelijk',
+      conditie_ervaren:'redelijk', herstel:'redelijk', klachten:'sterk', mobiliteit:'aandacht',
+      belastbaarheid:'redelijk', consistentie:'redelijk', motivatie:'redelijk'}),
+    moderator:[],
+    score:40, ring:'Op gang', scoreLabel:'Gemiddeld',
+    position:'Je bouwt basis · week 1 · sinds 9 augustus',
+    adviesDeur:false
+  },
+
+  /* ── F2 · hercheck, focus-dimensie zakt een band ── */
+  F2: {
+    note:'F2 — hercheck met een focus-delta omlaag. De regel benoemt de verandering feitelijk, zonder schuldtoon en zonder alarm. De implicatie houdt dezelfde vorm: waar zit winst, niet wat moet je doen.',
+    measured:'vandaag',
+    eyebrow:'Wat je beweegcheck zegt',
+    feit:'Je grootste beweegwinst ligt nu bij cardio.',
+    answerDim:'Cardio',
+    answerLabel:'30-89 minuten',
+    statement:'Onder de 90 minuten matig intensief per week — de beweegrichtlijn ligt op 150 tot 300, en daar zit voor jou nog winst.',
+    delta:{
+      dir:'down',
+      lab:'Sinds je vorige meting',
+      line:'Cardio ging van "90-149 minuten" naar "30-89 minuten" — een band lager.',
+      also:'Kracht bleef gelijk, zitten ging een band omhoog.',
+      start:'Sinds je start: ongeveer gelijk aan je startmeting — je houdt je lijn vast.'
+    },
+    implicatie:'Cardio ligt nu het verst onder de richtlijn; daar levert hetzelfde kwartier meer op dan bij de andere delen.',
+    program:{freq:'2× per week', loc:'thuis'},
+    routingLabel:'Naar je beweegplan',
+    routingHint:'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.',
+    chips:chips({kracht:'redelijk', conditie:'aandacht', intensiteit:'aandacht', zitten:'redelijk',
+      conditie_ervaren:'redelijk', herstel:'aandacht', klachten:'redelijk', mobiliteit:'redelijk',
+      belastbaarheid:'redelijk', consistentie:'redelijk', motivatie:'redelijk'}),
+    moderator:['Je voelt je vandaag niet hersteld. Een rustige dag of een korte wandeling past nu beter dan een zware sessie.'],
+    score:44, ring:'Op gang', scoreLabel:'Gemiddeld',
+    position:'Je bouwt basis · week 5 · sinds 9 juli',
+    adviesDeur:false
+  },
+
+  /* ── F3 · hercheck, focus-dimensie stijgt een band ── */
+  F3: {
+    note:'F3 — hercheck met een focus-delta omhoog. Kracht klimt van "Nooit" naar "1x per week" en blijft toch de zwakste stuurbare dimensie: vooruitgang en focus kunnen samenvallen. De advies-deur staat hier open in frame 2 (beweegcheck aanwezig én voedingscheck gedaan).',
+    measured:'vandaag',
+    eyebrow:'Wat je beweegcheck zegt',
+    feit:'Je grootste beweegwinst ligt nog steeds bij kracht — en hij komt op gang.',
+    answerDim:'Kracht',
+    answerLabel:'1x per week',
+    statement:'Je doet al iets aan kracht. Er is ruimte om er net wat consistenter in te worden.',
+    delta:{
+      dir:'up',
+      lab:'Sinds je vorige meting',
+      line:'Kracht ging van "Nooit" naar "1x per week" — een band omhoog.',
+      also:'Mobiliteit ging een band omhoog, cardio bleef gelijk.',
+      start:'Sinds je start: je beweegt merkbaar meer — de goede kant op.'
+    },
+    implicatie:'Van één naar twee keer per week is de stap die na 40 het meeste spierweefsel behoudt; daar zit je winst nu.',
+    program:{freq:'2× per week', loc:'thuis'},
+    routingLabel:'Naar je beweegplan',
+    routingHint:'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.',
+    chips:chips({kracht:'redelijk', conditie:'redelijk', intensiteit:'redelijk', zitten:'redelijk',
+      conditie_ervaren:'sterk', herstel:'sterk', klachten:'sterk', mobiliteit:'redelijk',
+      belastbaarheid:'sterk', consistentie:'redelijk', motivatie:'sterk'}),
+    moderator:[],
+    score:58, ring:'Sterker', scoreLabel:'Bovengemiddeld',
+    position:'Je bouwt op · week 9 · sinds 9 juni',
+    adviesDeur:true
+  },
+
+  /* ── F4 · alles sterk, geen focus-dimensie ── */
+  F4: {
+    note:'F4 — geen stuurbare dimensie onder "sterk". Er is geen focus, dus ook geen winst-zin die er een verzint. Het feit is onderhoud; de delta blijft de tweede regel; de implicatie gaat over vasthouden, niet over opschalen.',
+    measured:'vandaag',
+    eyebrow:'Wat je beweegcheck zegt',
+    feit:'Je basis staat — op alle delen die we meten.',
+    answerDim:null,
+    answerLabel:null,
+    statement:'Op de dimensies die we meten staat je beweging er goed voor.',
+    delta:{
+      dir:'same',
+      lab:'Sinds je vorige meting',
+      line:'Alle stuurbare delen staan op hetzelfde punt als bij je vorige beweegcheck.',
+      also:null,
+      start:'Sinds je start: je beweegt merkbaar meer — de goede kant op.'
+    },
+    implicatie:'Vasthouden is hier de winst: dit niveau valt sneller terug in een drukke week dan het is opgebouwd.',
+    program:{freq:'3× per week', loc:'sportschool'},
+    routingLabel:'Naar je beweegplan',
+    routingHint:'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.',
+    chips:chips({kracht:'sterk', conditie:'sterk', intensiteit:'sterk', zitten:'sterk',
+      conditie_ervaren:'sterk', herstel:'sterk', klachten:'sterk', mobiliteit:'sterk',
+      belastbaarheid:'sterk', consistentie:'sterk', motivatie:'sterk'}),
+    moderator:[],
+    score:78, ring:'Sterk', scoreLabel:'Sterk',
+    position:'Je houdt onderhoud · week 21 · sinds 15 maart',
+    adviesDeur:true
+  },
+
+  /* ── F5 · consistentie + motivatie laag → override ── */
+  F5: {
+    note:'F5 — consistentie én motivatie ≤ 2. De override kiest consistentie, ook al scoort kracht lager: volume toevoegen aan iemand die niet komt opdagen is de klassieke fout. De implicatie verkleint het doel in plaats van het te vergroten.',
+    measured:'vandaag',
+    eyebrow:'Wat je beweegcheck zegt',
+    feit:'Je grootste beweegwinst ligt nu bij consistentie, niet bij meer trainen.',
+    answerDim:'Consistentie',
+    answerLabel:'Geen',
+    statement:'Minder dan de helft van de weken gehaald — één goede week is minder waardevol dan een haalbaar, herhaalbaar ritme.',
+    delta:{
+      dir:'down',
+      lab:'Sinds je vorige meting',
+      line:'Consistentie ging van "1 week" naar "Geen" — een band lager.',
+      also:'Motivatie ging een band omlaag, kracht bleef gelijk.',
+      start:'Sinds je start: bewegen kwam er de laatste tijd wat bij in. Dat hoort bij een proces.'
+    },
+    implicatie:'Zolang de weken niet gehaald worden, verandert een zwaarder programma niets — de winst zit in een kleinere week die je wél haalt.',
+    program:{freq:'1× per week', loc:'thuis'},
+    routingLabel:'Naar je beweegplan',
+    routingHint:'Daar maak je je week kleiner: hoe vaak, en waar. Wat je vandaag doet, staat er al klaar.',
+    chips:chips({kracht:'aandacht', conditie:'aandacht', intensiteit:'aandacht', zitten:'aandacht',
+      conditie_ervaren:'aandacht', herstel:'aandacht', klachten:'redelijk', mobiliteit:'redelijk',
+      belastbaarheid:'redelijk', consistentie:'aandacht', motivatie:'aandacht'}),
+    moderator:['Je voelt je vandaag niet hersteld. Een rustige dag of een korte wandeling past nu beter dan een zware sessie.'],
+    score:31, ring:'Laag', scoreLabel:'Onder gemiddeld',
+    position:'Je komt terug · week 2 · sinds 27 juli',
+    adviesDeur:false
+  }
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   HET GEDEELDE BLOK — één functie, twee aanroepers.
+   `variant` raakt uitsluitend het gewicht van de routing-affordance
+   (terra-knop op de check-in, stille link op Voortgang). De tekst is
+   op beide surfaces exact dezelfde string.
+   ───────────────────────────────────────────────────────────────── */
+function renderReadout(s, variant){
+  var out = '';
+  out += '<article class="checkin-readout" aria-labelledby="ro-feit">';
+  out += '<p class="ro-eyebrow">' + s.eyebrow + '</p>';
+  out += '<h2 class="ro-feit" id="ro-feit">' + s.feit + '</h2>';
+
+  if (s.answerLabel){
+    out += '<p class="ro-answer"><b>' + s.answerDim + '</b>'
+        +  '<span class="dot" aria-hidden="true">&middot;</span>'
+        +  '<span>' + s.answerLabel + '</span></p>';
+  }
+
+  out += '<p class="ro-statement">' + s.statement + '</p>';
+
+  out += '<div class="ro-delta" data-dir="' + s.delta.dir + '">';
+  out += '<p class="lab">' + s.delta.lab + '</p>';
+  out += '<p class="line">' + s.delta.line + '</p>';
+  if (s.delta.also){ out += '<p class="also">' + s.delta.also + '</p>'; }
+  if (s.delta.start){ out += '<p class="start">' + s.delta.start + '</p>'; }
+  out += '</div>';
+
+  out += '<p class="ro-implicatie">' + s.implicatie + '</p>';
+
+  out += '<div class="ro-routing">';
+  if (s.program){
+    out += '<p class="ro-program"><span>Je programma</span>'
+        +  '<b>' + s.program.freq + ' &middot; ' + s.program.loc + '</b></p>';
+  }
+  if (variant === 'checkin'){
+    out += '<a class="btn-terra" href="#">' + s.routingLabel + ' &rarr;</a>';
+  } else {
+    out += '<a class="link-quiet" href="#">' + s.routingLabel + ' &rsaquo;</a>';
+  }
+  out += '<p class="ro-hint">' + s.routingHint + '</p>';
+  out += '</div>';
+
+  out += '</article>';
+  return out;
+}
+
+function renderChips(s){
+  var out = '<section aria-labelledby="chips-h">';
+  out += '<h2 class="eyebrow" id="chips-h">Hoe je nu beweegt</h2>';
+  out += '<div>';
+  out += '<div class="chips" id="chipList" data-clamped="true">';
+  s.chips.forEach(function(c){
+    out += '<span class="chip" data-band="' + c.band + '">'
+        +  '<b>' + c.label + '</b><i>' + BAND_LABEL[c.band] + '</i></span>';
+  });
+  out += '</div>';
+  out += '<button class="chiptoggle" type="button" id="chipToggle" aria-expanded="false" aria-controls="chipList">Toon alle elf &darr;</button>';
+  out += '</div></section>';
+  return out;
+}
+
+function renderModerator(s){
+  if (!s.moderator.length) return '';
+  var out = '<div class="moderator"><p class="eyebrow">Herstel &amp; klachten</p><ul>';
+  s.moderator.forEach(function(h){ out += '<li>' + h + '</li>'; });
+  out += '</ul></div>';
+  return out;
+}
+
+/* ── FRAME 1 — check-in resultaat ───────────────────────────────── */
+function renderFrame1(s){
+  var out = '';
+  out += '<div class="progressbar"><span></span></div>';
+  out += '<div class="f1">';
+  out += '<h1 class="pagetitle">Jouw beweegcheck</h1>';
+  out += '<p class="pagesub">Wat je antwoorden laten zien &middot; gemeten ' + s.measured + '</p>';
+  out += renderReadout(s, 'checkin');
+  out += '<div class="blockgap"></div>';
+  out += renderChips(s);
+  out += renderModerator(s);
+  out += '<div class="ijkpunt"><p>Je eigen ijkpunt: <b>vanaf de grond opstaan zonder me op te trekken</b> &middot; nu 7.</p>'
+      +  '<a href="#">IJkpunt bijwerken &rsaquo;</a></div>';
+  out += '<div class="f1foot">';
+  out += '<p>Wil je week voor week begeleid worden? Ontvang de beweeggids per e-mail.</p>';
+  out += '<a class="btn-ghost" href="#">Ontvang de beweeggids &rarr;</a>';
+  out += '<p class="fine">Of <a href="#">doe de volledige Leefstijlcheck</a> voor jouw volgorde over alle pijlers.</p>';
+  out += '</div>';
+  out += '</div>';
+  return out;
+}
+
+/* ── FRAME 2 — Voortgang › Beweging ─────────────────────────────── */
+function renderFrame2(s){
+  var pct = Math.max(0, Math.min(100, s.score));
+  var circ = 2 * Math.PI * 31;
+  var dash = (pct / 100) * circ;
+
+  var out = '';
+  out += '<div class="f2topbar"><span>PerfectSupplement</span>'
+      +  '<span class="f2tabs" style="margin-left:auto">'
+      +  '<span>Vandaag</span><span>Mijn Dag</span><span data-active>Voortgang</span><span>Hermeting</span>'
+      +  '</span></div>';
+  out += '<div class="f2">';
+  out += '<div class="backrow"><span class="backbtn" aria-hidden="true">&larr;</span>'
+      +  '<h1 class="title">Beweging</h1></div>';
+
+  out += '<div class="tile"><p class="t-eyebrow">Je stand</p><div class="standrow">';
+  out += '<div class="gauge"><svg width="74" height="74" viewBox="0 0 74 74" aria-hidden="true">'
+      +  '<circle cx="37" cy="37" r="31" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="6"/>'
+      +  '<circle cx="37" cy="37" r="31" fill="none" stroke="var(--move)" stroke-width="6" stroke-linecap="round"'
+      +  ' stroke-dasharray="' + dash.toFixed(1) + ' ' + circ.toFixed(1) + '" transform="rotate(-90 37 37)"/>'
+      +  '</svg><span class="val"><span class="num">' + s.score + '</span><span class="cap">' + s.ring + '</span></span></div>';
+  out += '<div class="standtxt"><p class="band">' + s.scoreLabel + '</p>'
+      +  '<svg width="132" height="26" viewBox="0 0 132 26" aria-hidden="true" style="margin-top:8px">'
+      +  '<polyline fill="none" stroke="var(--move)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"'
+      +  ' points="2,19 24,20 46,18 68,17 90,12 112,14 130,9"/></svg>'
+      +  '<p class="src">op basis van je beweegcheck</p>'
+      +  '<p class="meta">Laatst gemeten ' + s.measured + ' — dit verandert bij je hermeting.</p></div>';
+  out += '</div></div>';
+
+  out += '<p class="positionline">' + s.position + '</p>';
+
+  out += '<p class="ssot-flag">Zelfde blok als op je check-in resultaat</p>';
+  out += renderReadout(s, 'voortgang');
+  out += '<div class="blockgap"></div>';
+
+  out += '<a class="f2row primary" href="#"><span class="lbl">Doe de uitgebreide beweegcheck (3 min)</span>'
+      +  '<span class="chev" aria-hidden="true">&rsaquo;</span></a>';
+
+  if (s.adviesDeur){
+    out += '<button class="f2row quiet" type="button">'
+        +  '<span class="lbl">Wat een supplement hier wél en niet doet</span>'
+        +  '<span class="chev" aria-hidden="true">&rsaquo;</span></button>';
+  }
+
+  out += '<button class="f2back" type="button">Terug naar je stap van vandaag &rsaquo;</button>';
+  out += '</div>';
+  return out;
+}
+
+/* ── besturing ─────────────────────────────────────────────────── */
+var current = {frame:'1', state:'F1'};
+
+function paint(){
+  var s = STATES[current.state];
+  var phone = document.getElementById('phone');
+  phone.innerHTML = current.frame === '1' ? renderFrame1(s) : renderFrame2(s);
+  document.getElementById('stateNote').textContent = s.note;
+  document.getElementById('phoneNote').textContent =
+    current.frame === '1' ? '375 px · intake · /intake/beweging' : '375 px · dashboard · Voortgang › Beweging';
+
+  var toggle = document.getElementById('chipToggle');
+  if (toggle){
+    toggle.addEventListener('click', function(){
+      var list = document.getElementById('chipList');
+      var clamped = list.getAttribute('data-clamped') === 'true';
+      list.setAttribute('data-clamped', clamped ? 'false' : 'true');
+      toggle.setAttribute('aria-expanded', clamped ? 'true' : 'false');
+      toggle.innerHTML = clamped ? 'Toon minder &uarr;' : 'Toon alle elf &darr;';
+    });
+  }
+}
+
+document.getElementById('frameSwitch').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-frame]');
+  if (!btn) return;
+  current.frame = btn.getAttribute('data-frame');
+  Array.prototype.forEach.call(this.querySelectorAll('button'), function(b){
+    b.setAttribute('aria-pressed', String(b === btn));
+  });
+  paint();
+});
+
+document.getElementById('stateSwitch').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-state]');
+  if (!btn) return;
+  current.state = btn.getAttribute('data-state');
+  Array.prototype.forEach.call(this.querySelectorAll('button'), function(b){
+    b.setAttribute('aria-pressed', String(b === btn));
+  });
+  paint();
+});
+
+paint();
+</script>
+</body>
+</html>
