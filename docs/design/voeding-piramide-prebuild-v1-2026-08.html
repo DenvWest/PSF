@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voeding v1 — eetbasis-prebuild (VQ vraag · VR resultaat · VL Voortgang)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --shell:#0E1A0F;
+  --bg:#132414;
+  --panel:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.11);
+  --line-soft:rgba(255,255,255,.06);
+  --sage:#5A8F6A;
+  --sage-lt:#9CC5A9;
+  --terra:#C8956C;
+  --move:#C26E4B;
+  --ink:#F1EFE8;
+  --soft:#CDD7D0;
+  --mut:#9FB0A6;
+  --subtle:#7E8C82;
+  --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --r-panel:16px;
+  --r-card:14px;
+  --r-btn:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--shell);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+
+/* ── prebuild-chrome ────────────────────────────────────────────── */
+.chrome{position:sticky;top:0;z-index:20;background:rgba(14,26,15,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px 12px}
+.chrome-inner{max-width:1060px;margin:0 auto}
+.chrome h1{font-family:var(--serif);font-weight:400;font-size:19px;margin:0 0 2px;letter-spacing:.2px}
+.chrome p.sub{margin:0 0 12px;font-size:12.5px;color:var(--mut)}
+.switchrow{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.switch{display:flex;flex-direction:column;gap:6px}
+.switch-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.switch-btns{display:flex;flex-wrap:wrap;gap:6px}
+.sw{font-family:var(--sans);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--mut);transition:all .16s ease}
+.sw:hover{border-color:rgba(255,255,255,.24);color:var(--soft)}
+.sw[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:#0F1C10}
+.statenote{margin:12px 0 0;font-size:12px;color:var(--mut);max-width:80ch;border-left:2px solid var(--sage);padding-left:10px}
+
+/* ── phone ─────────────────────────────────────────────────────── */
+.stage{padding:26px 16px 70px;display:flex;justify-content:center}
+.phonewrap{display:flex;flex-direction:column;align-items:center}
+.phone{width:375px;max-width:100%;background:var(--bg);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.phone-note{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--subtle);text-align:center;padding:0 0 9px}
+.screen{padding:20px 16px 30px}
+
+/* ── generiek ──────────────────────────────────────────────────── */
+.eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 8px}
+h2.pagetitle{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.25;margin:0 0 6px;color:var(--ink)}
+.pagesub{margin:0 0 20px;font-size:12.5px;color:var(--mut)}
+.divider{height:1px;background:var(--line-soft);margin:20px 0}
+
+/* ── het gedeelde readout-blok (identiek op VR en VL) ──────────── */
+.checkin-readout{border:1px solid var(--line);border-radius:var(--r-panel);background:var(--panel);padding:18px 16px 16px}
+.checkin-readout .ro-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin:0 0 9px}
+.checkin-readout .ro-feit{font-family:var(--serif);font-weight:400;font-size:20px;line-height:1.3;margin:0 0 10px;color:var(--ink)}
+.checkin-readout .ro-answer{display:inline-flex;align-items:baseline;gap:7px;border:1px solid var(--line);border-radius:999px;padding:5px 11px;margin:0 0 12px;font-size:11.5px;color:var(--soft)}
+.checkin-readout .ro-answer b{font-weight:600;color:var(--ink)}
+.checkin-readout .ro-answer .dot{color:var(--subtle)}
+.checkin-readout .ro-statement{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--soft)}
+.ro-delta{border-radius:var(--r-card);border:1px solid var(--line-soft);background:rgba(0,0,0,.18);padding:12px 13px;margin:0 0 13px;border-left:2px solid var(--mut)}
+.ro-delta[data-dir="up"]{border-left-color:var(--sage)}
+.ro-delta[data-dir="down"]{border-left-color:var(--move)}
+.ro-delta[data-dir="same"]{border-left-color:var(--mut)}
+.ro-delta[data-dir="new"]{border-left-color:var(--terra)}
+.ro-delta .lab{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle);margin:0 0 6px}
+.ro-delta .line{margin:0;font-size:13px;line-height:1.6;color:var(--ink)}
+.ro-delta .also{margin:8px 0 0;font-size:12px;line-height:1.55;color:var(--mut)}
+.ro-implicatie{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--ink)}
+.ro-foot{border-top:1px solid var(--line-soft);padding-top:13px}
+.ro-hint{margin:10px 0 0;font-size:11.5px;line-height:1.55;color:var(--subtle)}
+
+/* ── knoppen en links ──────────────────────────────────────────── */
+a.btn-terra{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:var(--r-btn);background:var(--terra);color:#231409;font-size:14px;font-weight:700;text-decoration:none;transition:opacity .16s ease}
+a.btn-terra:hover{opacity:.9}
+a.btn-ghost{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:var(--r-btn);background:transparent;border:1px solid var(--line);color:var(--soft);font-size:13.5px;font-weight:600;text-decoration:none}
+a.btn-ghost:hover{border-color:rgba(255,255,255,.24);color:var(--ink)}
+a.link-quiet{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--sage-lt);text-decoration:none;min-height:44px}
+a.link-quiet:hover{text-decoration:underline}
+a.link-foot{font-size:11.5px;color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.14)}
+a.link-foot:hover{color:var(--soft)}
+
+/* ── VQ: vraag ─────────────────────────────────────────────────── */
+.progressbar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin:0 0 18px}
+.progressbar span{display:block;height:100%;background:var(--terra)}
+.qmeta{text-align:center;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 6px}
+.qmeta b{color:var(--terra);font-weight:700}
+.qcount{text-align:center;font-size:12px;color:var(--subtle);margin:0 0 22px}
+h3.qprompt{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1.3;text-align:center;margin:0 0 10px;color:var(--ink)}
+.qhelper{text-align:center;font-size:12.5px;line-height:1.55;color:var(--mut);margin:0 0 26px}
+.slider{border:1px solid var(--line);border-radius:var(--r-card);background:rgba(0,0,0,.16);padding:16px 14px 13px;margin:0 0 8px}
+.slider .cur{text-align:center;font-size:15px;font-weight:600;color:var(--ink);margin:0 0 14px}
+.track{position:relative;height:4px;border-radius:3px;background:rgba(255,255,255,.12);margin:0 0 14px}
+.track .fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--sage)}
+.track .knob{position:absolute;top:50%;width:22px;height:22px;border-radius:50%;background:var(--ink);border:3px solid var(--sage);transform:translate(-50%,-50%)}
+.stops{display:flex;justify-content:space-between;gap:4px}
+.stops span{font-size:10.5px;color:var(--subtle);text-align:center;flex:1}
+.stops span[data-on="true"]{color:var(--soft);font-weight:600}
+details.qhelp{border:1px solid var(--line);border-radius:var(--r-card);background:rgba(255,255,255,.02);margin:10px 0 0}
+details.qhelp>summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:13px;font-weight:600;color:var(--sage-lt)}
+details.qhelp>summary::-webkit-details-marker{display:none}
+details.qhelp>summary .chev{font-size:11px;color:var(--subtle);transition:transform .16s ease}
+details.qhelp[open]>summary .chev{transform:rotate(90deg)}
+.qhelp-body{border-top:1px solid var(--line-soft);padding:12px 14px 14px}
+.qhelp-body p{margin:0 0 9px;font-size:12.5px;line-height:1.6;color:var(--soft)}
+.qhelp-anchor{margin:0;font-size:11.5px;line-height:1.5;color:var(--mut);border-left:2px solid var(--terra);padding-left:9px}
+.qnav{display:flex;align-items:center;justify-content:space-between;margin:24px 0 0}
+.qnav .back{background:none;border:none;font-family:var(--sans);font-size:13px;color:var(--subtle);cursor:pointer;min-height:44px;padding:0 4px}
+.qnav .next{font-family:var(--sans);font-size:13.5px;font-weight:700;color:#231409;background:var(--terra);border:none;border-radius:var(--r-btn);min-height:44px;padding:0 20px;cursor:pointer}
+
+/* ── VR: feitelijke clusterrijen ───────────────────────────────── */
+.sectionhead{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 11px}
+.factrow{border:1px solid var(--line-soft);border-left:2px solid var(--mut);border-radius:var(--r-card);background:rgba(255,255,255,.022);padding:12px 13px;margin:0 0 8px}
+.factrow[data-status="below"]{border-left-color:var(--move)}
+.factrow[data-status="near"]{border-left-color:var(--terra)}
+.factrow[data-status="meets"]{border-left-color:var(--sage)}
+.factrow[data-status="na"]{border-left-color:var(--subtle);border-left-style:dashed}
+.factrow .fr-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;margin:0 0 5px}
+.factrow .fr-label{font-size:13px;font-weight:600;color:var(--ink)}
+.factrow .fr-sep{font-size:12px;color:var(--subtle)}
+.factrow .fr-answer{font-size:13px;color:var(--soft)}
+.factrow .fr-bench{margin:0 0 5px;font-size:11.5px;line-height:1.5;color:var(--mut)}
+.factrow .fr-bench b{font-weight:600;color:var(--soft)}
+.factrow .fr-why{margin:0;font-size:11.5px;line-height:1.5;color:var(--subtle);font-style:italic}
+.factrow .fr-resume{display:inline-block;margin:8px 0 0;font-size:12px;font-weight:600;color:var(--sage-lt);text-decoration:none;min-height:44px;line-height:44px}
+button.showall{width:100%;background:transparent;border:1px dashed var(--line);border-radius:var(--r-btn);color:var(--sage-lt);font-family:var(--sans);font-size:12.5px;font-weight:600;min-height:44px;cursor:pointer;margin:2px 0 0}
+button.showall:hover{border-color:rgba(255,255,255,.24)}
+.beneath{margin:12px 0 0;font-size:12px;line-height:1.55;color:var(--mut)}
+.outside{margin:20px 0 0;border:1px dashed var(--line);border-radius:var(--r-card);padding:12px 13px}
+.outside .oh{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle);margin:0 0 7px}
+.outside p{margin:0;font-size:12.5px;line-height:1.55;color:var(--soft)}
+.outside p.sub{margin:5px 0 0;font-size:11.5px;color:var(--mut)}
+.ijkpunt{margin:20px 0 0;border:1px solid var(--line-soft);border-radius:var(--r-card);background:rgba(0,0,0,.14);padding:13px}
+.ijkpunt p{margin:0 0 9px;font-size:12.5px;line-height:1.55;color:var(--soft)}
+.footlinks{margin:22px 0 0;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+
+/* ── VL: eetbasis-rail ─────────────────────────────────────────── */
+.backlink{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);text-decoration:none;min-height:44px}
+.rail{margin:0}
+.layer{position:relative;border:1px solid var(--line-soft);border-radius:var(--r-card);background:rgba(255,255,255,.022);padding:13px 13px 12px;margin:0 0 9px}
+.layer[data-state="nu"]{border-color:rgba(200,149,108,.4);background:rgba(200,149,108,.07)}
+.layer[data-state="staat"]{border-color:rgba(90,143,106,.35)}
+.layer[data-state="dicht"]{border-style:dashed}
+.layer[data-state="ghost"]{border-style:dashed;opacity:.72}
+.layer .lh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 6px}
+.layer .lname{font-size:13.5px;font-weight:600;color:var(--ink)}
+.layer .lstate{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--subtle);white-space:nowrap}
+.layer[data-state="nu"] .lstate{color:var(--terra)}
+.layer[data-state="staat"] .lstate{color:var(--sage-lt)}
+.layer .lnote{margin:0;font-size:12px;line-height:1.55;color:var(--mut)}
+.actions{margin:11px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.actions li{border:1px solid var(--line-soft);border-radius:var(--r-btn);background:rgba(0,0,0,.16);padding:10px 11px}
+.actions p{margin:0 0 8px;font-size:12.5px;line-height:1.5;color:var(--soft)}
+.actions button{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--soft);background:transparent;border:1px solid var(--line);border-radius:999px;min-height:44px;padding:0 14px;cursor:pointer}
+.actions button:hover{border-color:rgba(255,255,255,.26);color:var(--ink)}
+.gate{margin:11px 0 0;border-top:1px solid var(--line-soft);padding-top:10px}
+.gate p{margin:0;font-size:12px;line-height:1.55;color:var(--mut)}
+.gatelinks{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.gatelinks li{display:flex;flex-direction:column;gap:2px}
+.gatelinks .why{font-size:11.5px;color:var(--subtle)}
+.selfcal{margin:16px 0 0;border:1px solid var(--line-soft);border-radius:var(--r-card);padding:12px 13px}
+.selfcal p.q{margin:0 0 9px;font-size:12.5px;font-weight:600;color:var(--soft)}
+.selfcal .opts{display:flex;flex-wrap:wrap;gap:6px}
+.selfcal .opts button{font-family:var(--sans);font-size:11.5px;font-weight:600;color:var(--mut);background:transparent;border:1px solid var(--line);border-radius:999px;min-height:44px;padding:0 12px;cursor:pointer}
+.selfcal .opts button[aria-pressed="true"]{background:rgba(90,143,106,.18);border-color:var(--sage);color:var(--ink)}
+.selfcal p.reconcile{margin:10px 0 0;font-size:11.5px;line-height:1.55;color:var(--subtle)}
+.bridge{margin:16px 0 0;font-size:12px;line-height:1.55;color:var(--mut)}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="chrome-inner">
+    <h1>Voeding v1 — eetbasis, feitelijke readout en gated vergelijk-deur</h1>
+    <p class="sub">Prebuild bij <em>BESLUIT_VOEDING_PIRAMIDE_V1_2026-08.md</em> &middot; drie frames, zes toestanden &middot; het readout-blok is identiek op VR en VL</p>
+    <div class="switchrow">
+      <div class="switch">
+        <span class="switch-label" id="lbl-frame">Frame</span>
+        <div class="switch-btns" id="frameSwitch" role="group" aria-labelledby="lbl-frame">
+          <button type="button" class="sw" data-frame="VQ" aria-pressed="false">VQ &middot; vraag</button>
+          <button type="button" class="sw" data-frame="VR" aria-pressed="true">VR &middot; resultaat</button>
+          <button type="button" class="sw" data-frame="VL" aria-pressed="false">VL &middot; Voortgang</button>
+        </div>
+      </div>
+      <div class="switch">
+        <span class="switch-label" id="lbl-state">Toestand</span>
+        <div class="switch-btns" id="stateSwitch" role="group" aria-labelledby="lbl-state">
+          <button type="button" class="sw" data-state="F1" aria-pressed="true">F1</button>
+          <button type="button" class="sw" data-state="F2" aria-pressed="false">F2</button>
+          <button type="button" class="sw" data-state="F3" aria-pressed="false">F3</button>
+          <button type="button" class="sw" data-state="F4" aria-pressed="false">F4</button>
+          <button type="button" class="sw" data-state="F5" aria-pressed="false">F5</button>
+          <button type="button" class="sw" data-state="F6" aria-pressed="false">F6</button>
+        </div>
+      </div>
+    </div>
+    <p class="statenote" id="stateNote"></p>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="phonewrap">
+    <p class="phone-note" id="phoneNote">375 px</p>
+    <div class="phone"><div class="screen" id="screen"></div></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ── tekst-helpers ─────────────────────────────────────────────── */
+function esc(v){
+  return String(v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function el(tag, attrs, html){
+  var a = '';
+  for (var k in attrs){ if (attrs[k] !== null && attrs[k] !== undefined) a += ' ' + k + '="' + esc(attrs[k]) + '"'; }
+  return '<' + tag + a + '>' + (html || '') + '</' + tag + '>';
+}
+
+/* ── de vraag (VQ) — één slider, per toestand een andere positie ─ */
+var VRAAG = {
+  meta: '04 &middot; Voeding',
+  count: 'Vraag 4 van 13',
+  progress: 31,
+  prompt: 'Hoeveel porties planten eet je op een gewone dag?',
+  helper: 'bijv. bladgroenten, broccoli, peulvruchten, noten',
+  stops: ['Nooit', '1&times; per dag', '2&times; per dag', '3&times; per dag', '4&times; of meer'],
+  helpTitle: 'Waarom vragen we dit?',
+  helpBody: [
+    'Planten leveren vezels, kalium, magnesium en foliumzuur in één keer — daarom vragen we naar porties in plaats van naar losse stoffen.',
+    'Op je resultaat zie je dit terug als je plantbasis, samen met je fruit-antwoord.'
+  ],
+  helpAnchor: 'Populatierichtlijn: ≥400 g groente en fruit per dag &middot; WHO 2020'
+};
+
+/* ── zes toestanden ────────────────────────────────────────────── */
+var STATES = {
+
+  F1: {
+    note: 'F1 — eerste voedingscheck, geen vorige meting. VQ staat op "1× per dag". VR toont het nulpunt-delta (N1) en vier clusterrijen, waarvan twee onder de richtlijn. VL zet de eetbasis op "nu" en houdt alles daarboven dicht, inclusief de vergelijk-deur.',
+    sliderIndex: 1,
+    readout: {
+      headline: 'Je eetbasis staat er half — en je eiwit hangt aan één maaltijd.',
+      pillLabel: 'Eiwitritme',
+      pillAnswer: '1× per dag',
+      statement: 'Eiwit werkt niet als dagtotaal maar als ritme. Één eiwitrijk moment per dag betekent dat je lichaam de rest van de dag niets te verwerken krijgt, en boven de veertig is dat het verschil tussen spier behouden en spier verliezen.',
+      delta: { dir: 'new', label: 'Dit is je nulpunt', line: 'Vanaf hier meten we verandering, niet perfectie.', also: null },
+      implication: 'Je grootste winst zit niet in meer eten, maar in eerder beginnen: een eiwitrijk ontbijt verandert je hele dagritme zonder dat er iets bij hoeft.',
+      hint: 'Daar zie je wat er nog onder je eetbasis ligt.'
+    },
+    facts: [
+      { label: 'Eiwitritme', answer: '1× per dag', bench: 'Vuistregel: 3 eiwitrijke eetmomenten per dag', src: 'PROT-AGE 2013', why: 'Verdeling over de dag doet boven de veertig meer dan het totaal.', status: 'below' },
+      { label: 'Wat je mindert', answer: '5–6× per week', bench: 'Populatierichtlijn: vrije suikers onder 10% van je energie', src: 'WHO 2015', why: 'Frequentie voorspelt hier meer dan hoeveelheid per keer.', status: 'below' },
+      { label: 'Plantbasis', answer: '2 porties per dag &middot; fruit 3–4× per week &middot; bessen 1× per week', bench: 'Populatierichtlijn: ≥400 g groente en fruit per dag', src: 'WHO 2020', why: 'Vezels, kalium en magnesium komen hier in één keer vandaan.', status: 'near' },
+      { label: 'Vezelbasis', answer: '50% van je brood en granen is volkoren', bench: 'Populatierichtlijn: 25 g vezels per dag', src: 'Gezondheidsraad 2015', why: 'De grootste vezelknop in een Nederlands eetpatroon.', status: 'near' }
+    ],
+    hidden: [
+      { label: 'Eiwitbronnen', answer: '1 portie vlees of peulvruchten per dag &middot; 2 porties zuivel &middot; noten 1× per week', bench: null, src: null, why: 'Hier is geen norm — dit is jouw eigen ijkpunt.', status: 'na' },
+      { label: 'Visbron', answer: 'nooit', bench: 'Populatierichtlijn: 1× per week vis, bij voorkeur vet', src: 'Gezondheidsraad 2015', why: 'De enige gewone voedingsbron van EPA en DHA.', status: 'below' },
+      { label: 'Passende energie, ritme en omgeving', answer: 'hier vroegen we nog niets naar', bench: null, src: null, why: 'Deze check meet je eten, nog niet je eetmomenten.', status: 'na' }
+    ],
+    railFocus: 1,
+    gateOpen: false,
+    gateReason: 'Eerst je tafel, dan het potje. Je eetbasis heeft nog twee antwoorden onder de populatierichtlijn staan — dat lost je bord op, niet een potje. Daarom houden we deze dicht.',
+    selfcalPressed: 1,
+    reconcile: 'Wij plaatsen je nu bij je eetbasis, omdat je eiwitritme en je drankkeuze allebei onder hun richtlijn liggen. Jouw inschatting verandert je acties niet — hij helpt ons zien waar we ernaast zitten.'
+  },
+
+  F2: {
+    note: 'F2 — hercheck met vooruitgang op het focus-cluster. Delta N3, met een alsoLine die uitsluitend letterlijke antwoordlabels tegenover elkaar zet. VL houdt de eetbasis op "nu" omdat één cluster nog onder de richtlijn ligt.',
+    sliderIndex: 3,
+    readout: {
+      headline: 'Je plantbasis is vooruitgegaan — nu telt wat eromheen staat.',
+      pillLabel: 'Plantbasis',
+      pillAnswer: '3 porties per dag',
+      statement: 'Meer planten is de breedste enkele verandering die er is: vezels, kalium, foliumzuur en verzadiging bewegen tegelijk mee. Je zit nu tussen je vorige antwoord en de populatierichtlijn in.',
+      delta: {
+        dir: 'up',
+        label: 'Sinds je vorige check',
+        line: 'Plantbasis: van "1× per dag" naar "3× per dag". Een stap vooruit sinds vorige keer.',
+        also: 'Vezelbasis: "25%" → "75%"'
+      },
+      implication: 'Wat je nu opbouwt houdt alleen stand als de rest niet tegenwerkt — en bij jou is dat je drankkeuze, niet je bord.',
+      hint: 'Daar staat wat je kunt minderen zonder iets in te leveren.'
+    },
+    facts: [
+      { label: 'Plantbasis', answer: '3 porties per dag &middot; fruit 1× per dag &middot; bessen 2× per week', bench: 'Populatierichtlijn: ≥400 g groente en fruit per dag', src: 'WHO 2020', why: 'Vezels, kalium en magnesium komen hier in één keer vandaan.', status: 'near' },
+      { label: 'Vezelbasis', answer: '75% van je brood en granen is volkoren', bench: 'Populatierichtlijn: 25 g vezels per dag', src: 'Gezondheidsraad 2015', why: 'De grootste vezelknop in een Nederlands eetpatroon.', status: 'meets' },
+      { label: 'Wat je mindert', answer: '3–4× per week', bench: 'Populatierichtlijn: vrije suikers onder 10% van je energie', src: 'WHO 2015', why: 'Frequentie voorspelt hier meer dan hoeveelheid per keer.', status: 'near' },
+      { label: 'Eiwitritme', answer: '2× per dag', bench: 'Vuistregel: 3 eiwitrijke eetmomenten per dag', src: 'PROT-AGE 2013', why: 'Verdeling over de dag doet boven de veertig meer dan het totaal.', status: 'near' }
+    ],
+    hidden: [
+      { label: 'Eiwitbronnen', answer: '2 porties vlees of peulvruchten per dag &middot; 2 porties zuivel &middot; noten 3× per week', bench: null, src: null, why: 'Hier is geen norm — dit is jouw eigen ijkpunt.', status: 'na' },
+      { label: 'Visbron', answer: '1× per week vette vis', bench: 'Populatierichtlijn: 1× per week vis, bij voorkeur vet', src: 'Gezondheidsraad 2015', why: 'De enige gewone voedingsbron van EPA en DHA.', status: 'meets' },
+      { label: 'Passende energie, ritme en omgeving', answer: 'hier vroegen we nog niets naar', bench: null, src: null, why: 'Deze check meet je eten, nog niet je eetmomenten.', status: 'na' }
+    ],
+    railFocus: 1,
+    gateOpen: false,
+    gateReason: 'Eerst je tafel, dan het potje. Er staat op dit moment geen enkel antwoord onder een richtlijn — dan is er niets aan te vullen en houden we deze dicht.',
+    selfcalPressed: 1,
+    reconcile: 'Wij plaatsen je ook bij je eetbasis, omdat je plantbasis en je eiwitritme nog tussen je vorige antwoord en de richtlijn in liggen. Jouw inschatting verandert je acties niet — hij helpt ons zien waar we ernaast zitten.'
+  },
+
+  F3: {
+    note: 'F3 — hercheck met achteruitgang. Delta N4: feit eerst, dan één niet-verwijtende zin die naar verkleinen wijst, nooit naar meer doen. De actielijst op VL krimpt naar één actie. Er staat geen tweede stap, geen verwijzing naar hoe goed het vorige keer ging, en geen supplement.',
+    sliderIndex: 1,
+    readout: {
+      headline: 'Je plantbasis is teruggelopen — dit is het moment om de stap kleiner te maken.',
+      pillLabel: 'Plantbasis',
+      pillAnswer: '1 portie per dag',
+      statement: 'Een patroon dat terugvalt is bijna nooit een motivatieprobleem. Meestal was de stap te groot voor de week die je had.',
+      delta: {
+        dir: 'down',
+        label: 'Sinds je vorige check',
+        line: 'Plantbasis: je gaf vorige keer "3× per dag", nu "1× per dag". Dat is minder dan vorige keer — en precies het moment om de stap kleiner te maken, niet groter.',
+        also: 'Wat je mindert: "3–4× per week" → "5–6× per week"'
+      },
+      implication: 'Één portie erbij bij één vaste maaltijd is genoeg. Meer plannen dan dat is wat vorige maand niet hield.',
+      hint: 'Daar staat één stap — niet drie.'
+    },
+    facts: [
+      { label: 'Plantbasis', answer: '1 portie per dag &middot; fruit 1× per week &middot; bessen nooit', bench: 'Populatierichtlijn: ≥400 g groente en fruit per dag', src: 'WHO 2020', why: 'Vezels, kalium en magnesium komen hier in één keer vandaan.', status: 'below' },
+      { label: 'Wat je mindert', answer: '5–6× per week', bench: 'Populatierichtlijn: vrije suikers onder 10% van je energie', src: 'WHO 2015', why: 'Frequentie voorspelt hier meer dan hoeveelheid per keer.', status: 'below' },
+      { label: 'Vezelbasis', answer: '50% van je brood en granen is volkoren', bench: 'Populatierichtlijn: 25 g vezels per dag', src: 'Gezondheidsraad 2015', why: 'De grootste vezelknop in een Nederlands eetpatroon.', status: 'near' },
+      { label: 'Eiwitritme', answer: '2× per dag', bench: 'Vuistregel: 3 eiwitrijke eetmomenten per dag', src: 'PROT-AGE 2013', why: 'Verdeling over de dag doet boven de veertig meer dan het totaal.', status: 'near' }
+    ],
+    hidden: [
+      { label: 'Eiwitbronnen', answer: '1 portie vlees of peulvruchten per dag &middot; 1 portie zuivel &middot; noten 1× per week', bench: null, src: null, why: 'Hier is geen norm — dit is jouw eigen ijkpunt.', status: 'na' },
+      { label: 'Visbron', answer: '1× per week vette vis', bench: 'Populatierichtlijn: 1× per week vis, bij voorkeur vet', src: 'Gezondheidsraad 2015', why: 'De enige gewone voedingsbron van EPA en DHA.', status: 'meets' },
+      { label: 'Passende energie, ritme en omgeving', answer: 'hier vroegen we nog niets naar', bench: null, src: null, why: 'Deze check meet je eten, nog niet je eetmomenten.', status: 'na' }
+    ],
+    railFocus: 1,
+    railSingleAction: true,
+    gateOpen: false,
+    gateReason: 'Eerst je tafel, dan het potje. Je eetbasis is deze check teruggelopen — iets aanvullen lost dat niet op, en doen alsof van wel is precies wat we hier niet doen.',
+    selfcalPressed: 0,
+    reconcile: 'Wij plaatsen je bij je eetbasis, omdat je plantbasis en je drankkeuze allebei onder hun richtlijn liggen. Jouw inschatting verandert je acties niet — hij helpt ons zien waar we ernaast zitten.'
+  },
+
+  F4: {
+    note: 'F4 — eetbasis en voedingskwaliteit staan, verhoudingen zijn nu aan de beurt. Delta N5 op een ongewijzigd antwoord. Op VL verschuift "nu" van de eetbasis naar de verhoudingen; de vergelijk-deur blijft dicht omdat er geen signaal is.',
+    sliderIndex: 4,
+    readout: {
+      headline: 'Je eetbasis staat. Vanaf hier is volhouden het werk.',
+      pillLabel: 'Plantbasis',
+      pillAnswer: '4 porties per dag',
+      statement: 'Je antwoorden liggen op of rond elke richtlijn die we durven noemen. Dat is zeldzamer dan het klinkt, en het betekent iets ongemakkelijks: er is hier geen makkelijke winst meer te halen.',
+      delta: {
+        dir: 'same',
+        label: 'Sinds je vorige check',
+        line: 'Plantbasis: hetzelfde antwoord als vorige keer ("4 porties per dag"). Stabiel is geen stilstand als de rest bewoog.',
+        also: null
+      },
+      implication: 'Wat er nu telt is niet een volgende verbetering, maar of dit patroon over drie maanden nog staat als je week tegenzit.',
+      hint: 'Daar zie je wat er pas telt als de basis staat.'
+    },
+    facts: [
+      { label: 'Plantbasis', answer: '4 porties per dag &middot; fruit 1× per dag &middot; bessen 3–4× per week', bench: 'Populatierichtlijn: ≥400 g groente en fruit per dag', src: 'WHO 2020', why: 'Vezels, kalium en magnesium komen hier in één keer vandaan.', status: 'meets' },
+      { label: 'Vezelbasis', answer: '100% van je brood en granen is volkoren', bench: 'Populatierichtlijn: 25 g vezels per dag', src: 'Gezondheidsraad 2015', why: 'De grootste vezelknop in een Nederlands eetpatroon.', status: 'meets' },
+      { label: 'Eiwitritme', answer: '3× per dag', bench: 'Vuistregel: 3 eiwitrijke eetmomenten per dag', src: 'PROT-AGE 2013', why: 'Verdeling over de dag doet boven de veertig meer dan het totaal.', status: 'meets' },
+      { label: 'Visbron', answer: '2× per week vette vis', bench: 'Populatierichtlijn: 1× per week vis, bij voorkeur vet', src: 'Gezondheidsraad 2015', why: 'De enige gewone voedingsbron van EPA en DHA.', status: 'meets' }
+    ],
+    hidden: [
+      { label: 'Wat je mindert', answer: '1× per week', bench: 'Populatierichtlijn: vrije suikers onder 10% van je energie', src: 'WHO 2015', why: 'Frequentie voorspelt hier meer dan hoeveelheid per keer.', status: 'meets' },
+      { label: 'Eiwitbronnen', answer: '2 porties vlees of peulvruchten per dag &middot; 2 porties zuivel &middot; noten 5× per week', bench: null, src: null, why: 'Hier is geen norm — dit is jouw eigen ijkpunt.', status: 'na' },
+      { label: 'Passende energie, ritme en omgeving', answer: 'hier vroegen we nog niets naar', bench: null, src: null, why: 'Deze check meet je eten, nog niet je eetmomenten.', status: 'na' }
+    ],
+    railFocus: 3,
+    gateOpen: false,
+    gateReason: 'Eerst je tafel, dan het potje. Je check laat nu geen enkel signaal zien dat er iets aan te vullen valt — dan houden we deze dicht.',
+    selfcalPressed: 2,
+    reconcile: 'Wij plaatsen je bij je verhoudingen, omdat je eetbasis en je voedingskwaliteit allebei op hun richtlijn liggen. Jouw inschatting verandert je acties niet — hij helpt ons zien waar we ernaast zitten.'
+  },
+
+  F5: {
+    note: 'F5 — de poort staat open. Drie voorwaarden tegelijk: check gedaan, één gemeten signaal, én geen enkel antwoord meer onder de richtlijn in de eetbasis. Die derde is bewust toegevoegd; zonder die voorwaarde zou F1 de deur ook openen. Let op wat er op VR níet verandert — daar staat geen supplement, geen prijs en geen productkaart.',
+    sliderIndex: 2,
+    readout: {
+      headline: 'Je eetbasis staat — op één punt na, en dat punt zit niet op je bord.',
+      pillLabel: 'Visbron',
+      pillAnswer: 'nooit',
+      statement: 'Vette vis is de enige gewone voedingsbron van EPA en DHA. Je gaf aan geen vis te eten en de rest van je eetbasis is in orde — dat is precies de situatie waarin je bord het niet meer oplost.',
+      delta: {
+        dir: 'same',
+        label: 'Sinds je vorige check',
+        line: 'Visbron: hetzelfde antwoord als vorige keer ("nooit"). Stabiel is geen stilstand als de rest bewoog.',
+        also: 'Plantbasis: "3 porties per dag" → "4 porties per dag"'
+      },
+      implication: 'Twee metingen op rij hetzelfde antwoord op een punt dat je bewust niet verandert — daar wordt de vraag "wat kan ik anders eten" een andere vraag.',
+      hint: 'Daar staat wat er open is gegaan, en waarom.'
+    },
+    facts: [
+      { label: 'Visbron', answer: 'nooit', bench: 'Populatierichtlijn: 1× per week vis, bij voorkeur vet', src: 'Gezondheidsraad 2015', why: 'De enige gewone voedingsbron van EPA en DHA.', status: 'below' },
+      { label: 'Plantbasis', answer: '4 porties per dag &middot; fruit 1× per dag &middot; bessen 3–4× per week', bench: 'Populatierichtlijn: ≥400 g groente en fruit per dag', src: 'WHO 2020', why: 'Vezels, kalium en magnesium komen hier in één keer vandaan.', status: 'meets' },
+      { label: 'Vezelbasis', answer: '75% van je brood en granen is volkoren', bench: 'Populatierichtlijn: 25 g vezels per dag', src: 'Gezondheidsraad 2015', why: 'De grootste vezelknop in een Nederlands eetpatroon.', status: 'meets' },
+      { label: 'Eiwitritme', answer: '3× per dag', bench: 'Vuistregel: 3 eiwitrijke eetmomenten per dag', src: 'PROT-AGE 2013', why: 'Verdeling over de dag doet boven de veertig meer dan het totaal.', status: 'meets' }
+    ],
+    hidden: [
+      { label: 'Wat je mindert', answer: '2× per week', bench: 'Populatierichtlijn: vrije suikers onder 10% van je energie', src: 'WHO 2015', why: 'Frequentie voorspelt hier meer dan hoeveelheid per keer.', status: 'meets' },
+      { label: 'Eiwitbronnen', answer: '2 porties vlees of peulvruchten per dag &middot; 2 porties zuivel &middot; noten 4× per week', bench: null, src: null, why: 'Hier is geen norm — dit is jouw eigen ijkpunt.', status: 'na' },
+      { label: 'Passende energie, ritme en omgeving', answer: 'hier vroegen we nog niets naar', bench: null, src: null, why: 'Deze check meet je eten, nog niet je eetmomenten.', status: 'na' }
+    ],
+    railFocus: 3,
+    gateOpen: true,
+    gateReason: 'Je eetbasis staat, en er blijft één punt over dat je bord niet dekt. Dat is de enige situatie waarin we deze openen — met twee opties, zonder aanbeveling.',
+    gateItems: [
+      { name: 'Omega-3', why: 'geen vis in je patroon, twee metingen op rij' },
+      { name: 'Vitamine D', why: 'weinig buiten, en het is winter' }
+    ],
+    selfcalPressed: 2,
+    reconcile: 'Wij plaatsen je bij je verhoudingen, omdat je eetbasis op elk gemeten punt op zijn richtlijn ligt. Jouw inschatting verandert je acties niet — hij helpt ons zien waar we ernaast zitten.'
+  },
+
+  F6: {
+    note: 'F6 — de poort is dicht omdat de voedingscheck ontbreekt. Dit is de enige toestand waarin VR nog niet bestaat: er is niets gemeten. VL toont dan de rail met de eetbasis in wachtstand en één regel over het beweegadvies dat op deze check wacht (§G.1).',
+    sliderIndex: 1,
+    noResult: true,
+    readout: null,
+    facts: [],
+    hidden: [],
+    railFocus: 0,
+    gateOpen: false,
+    gateReason: 'Eerst je tafel, dan het potje. Zonder je voedingscheck weten we niet óf er iets aan te vullen valt — en dan verkopen we je een oplossing voor een probleem dat je misschien niet hebt.',
+    selfcalPressed: -1,
+    reconcile: 'Wij plaatsen je nog nergens: zonder check hebben we geen enkel antwoord van je. Je eigen inschatting bewaren we wel, zodat we straks kunnen zien of we ernaast zaten.'
+  }
+};
+
+/* ── de zes lagen ──────────────────────────────────────────────── */
+var LAYERS = [
+  { key: 1, name: 'Je eetbasis',            note: 'Passende energie, een regelmatig patroon, een volwaardige basis met planten en eiwit, en water als standaard.' },
+  { key: 2, name: 'Voedingskwaliteit',      note: 'Meer groente, peulvruchten, volkoren, noten en vis. Minder suikerhoudende dranken, zout en sterk bewerkte producten.' },
+  { key: 3, name: 'Verhoudingen',           note: 'Eiwit per maaltijd, vezels, de kwaliteit van je vetten en koolhydraten. Telt pas als je eetbasis en kwaliteit staan.' },
+  { key: 4, name: 'Op jouw situatie',       note: 'Je gewicht, leeftijd, activiteit, voorkeuren en intoleranties bepalen welke stappen realistisch zijn. Geen diagnose — bij twijfel verwijzen we door.' },
+  { key: 5, name: 'Meten & timing',         note: 'Calorieën tellen, macro’s bijhouden, eten binnen een tijdvenster — dat zijn gereedschappen, geen fundament. Ze doen pas iets als je eetbasis en je verhoudingen staan. We openen dit niet eerder.' },
+  { key: 6, name: 'Aanvullen & vergelijken', note: null }
+];
+
+var LAYER_ACTIONS = {
+  1: [
+    { text: 'Zet één portie groente bij je avondeten.', cta: 'Zet op Mijn Dag' },
+    { text: 'Ruil je brood naar volkoren bij je volgende boodschappen.', cta: 'Zet op Mijn Dag' },
+    { text: 'Kies water als standaard bij het avondeten.', cta: 'Zet op Mijn Dag' }
+  ],
+  2: [
+    { text: 'Vervang één zoet drankmoment per dag door water of thee.', cta: 'Zet op Mijn Dag' },
+    { text: 'Leg één keer per week vis op je boodschappenlijst.', cta: 'Zet op Mijn Dag' },
+    { text: 'Neem een handvol ongezouten noten als vaste tussendoor.', cta: 'Zet op Mijn Dag' }
+  ],
+  3: [
+    { text: 'Verplaats één eiwitrijk moment naar je ontbijt.', cta: 'Zet op Mijn Dag' },
+    { text: 'Voeg peulvruchten toe aan één warme maaltijd per week.', cta: 'Zet op Mijn Dag' },
+    { text: 'Reken je eiwitdoel uit voor jouw gewicht.', cta: 'Meer uitleg' }
+  ]
+};
+
+/* ── renderers ─────────────────────────────────────────────────── */
+
+function renderReadout(ro, variant){
+  var h = '';
+  h += el('p', { class: 'ro-eyebrow' }, 'Wat je voedingscheck zegt');
+  // Op VR is de conclusie de h1 van het scherm; op VL is dat de paginatitel.
+  h += el(variant === 'checkin' ? 'h1' : 'h2', { class: 'ro-feit', id: 'ro-head' }, ro.headline);
+  h += el('p', { class: 'ro-answer' },
+        el('b', {}, ro.pillLabel) + el('span', { class: 'dot', 'aria-hidden': 'true' }, '&middot;') + el('span', {}, ro.pillAnswer));
+  h += el('p', { class: 'ro-statement' }, ro.statement);
+
+  if (ro.delta){
+    var d = el('p', { class: 'lab' }, ro.delta.label) + el('p', { class: 'line' }, ro.delta.line);
+    if (ro.delta.also) d += el('p', { class: 'also' }, ro.delta.also);
+    h += el('div', { class: 'ro-delta', 'data-dir': ro.delta.dir }, d);
+  }
+
+  h += el('p', { class: 'ro-implicatie' }, ro.implication);
+
+  var foot;
+  if (variant === 'checkin'){
+    foot = el('a', { class: 'btn-terra', href: '#' }, 'Bekijk je voedingsbeeld &rarr;')
+         + el('p', { class: 'ro-hint' }, ro.hint);
+  } else {
+    foot = el('a', { class: 'link-quiet', href: '#' }, 'Doe je voedingscheck opnieuw &rarr;')
+         + el('p', { class: 'ro-hint' }, 'Je beeld is van je laatste check — niet van vandaag.');
+  }
+  h += el('div', { class: 'ro-foot' }, foot);
+
+  return el('article', { class: 'checkin-readout', 'aria-labelledby': 'ro-head' }, h);
+}
+
+function renderFactRow(f){
+  var top = el('span', { class: 'fr-label' }, f.label)
+          + el('span', { class: 'fr-answer' },
+              el('span', { class: 'fr-sep', 'aria-hidden': 'true' }, '&mdash; ') + f.answer);
+  var h = el('div', { class: 'fr-top' }, top);
+  if (f.bench){
+    h += el('p', { class: 'fr-bench' }, el('b', {}, f.bench) + ' &middot; ' + f.src);
+  }
+  h += el('p', { class: 'fr-why' }, f.why);
+  return el('div', { class: 'factrow', 'data-status': f.status }, h);
+}
+
+function renderVQ(state){
+  var idx = state.sliderIndex;
+  var pct = (idx / (VRAAG.stops.length - 1)) * 100;
+
+  var h = '';
+  h += el('div', { class: 'progressbar', role: 'progressbar', 'aria-valuenow': '4', 'aria-valuemin': '1', 'aria-valuemax': '13', 'aria-label': 'Voortgang voedingscheck' },
+        el('span', { style: 'width:' + VRAAG.progress + '%' }, ''));
+  h += el('p', { class: 'qmeta' }, VRAAG.meta);
+  h += el('p', { class: 'qcount' }, VRAAG.count);
+  h += el('h1', { class: 'qprompt' }, VRAAG.prompt);
+  h += el('p', { class: 'qhelper' }, VRAAG.helper);
+
+  var stops = '';
+  for (var i = 0; i < VRAAG.stops.length; i++){
+    stops += el('span', { 'data-on': String(i === idx) }, VRAAG.stops[i]);
+  }
+  var slider = el('p', { class: 'cur' }, VRAAG.stops[idx])
+    + el('div', { class: 'track' },
+        el('span', { class: 'fill', style: 'width:' + pct + '%' }, '')
+        + el('span', { class: 'knob', style: 'left:' + pct + '%' }, ''))
+    + el('div', { class: 'stops' }, stops);
+  h += el('div', { class: 'slider', role: 'group', 'aria-label': 'Antwoord op deze vraag' }, slider);
+
+  var body = '';
+  for (var b = 0; b < VRAAG.helpBody.length; b++){ body += el('p', {}, VRAAG.helpBody[b]); }
+  body += el('p', { class: 'qhelp-anchor' }, VRAAG.helpAnchor);
+
+  h += el('details', { class: 'qhelp', id: 'qhelpClosed' },
+        el('summary', { 'aria-expanded': 'false' }, el('span', { class: 'chev', 'aria-hidden': 'true' }, '&#9656;') + VRAAG.helpTitle)
+        + el('div', { class: 'qhelp-body' }, body));
+
+  h += el('p', { class: 'beneath' }, 'Hieronder staat dezelfde disclosure open, zodat de review beide toestanden naast elkaar leest.');
+
+  h += el('details', { class: 'qhelp', id: 'qhelpOpen', open: 'open' },
+        el('summary', { 'aria-expanded': 'true' }, el('span', { class: 'chev', 'aria-hidden': 'true' }, '&#9656;') + VRAAG.helpTitle)
+        + el('div', { class: 'qhelp-body' }, body));
+
+  h += el('div', { class: 'qnav' },
+        el('button', { type: 'button', class: 'back' }, '&larr; Terug')
+        + el('button', { type: 'button', class: 'next' }, 'Volgende &rarr;'));
+
+  return h;
+}
+
+function renderVR(state){
+  if (state.noResult){
+    return el('p', { class: 'eyebrow' }, 'Geen resultaat in deze toestand')
+      + el('h1', { class: 'pagetitle' }, 'F6 heeft nog geen voedingscheck.')
+      + el('p', { class: 'pagesub' }, 'Er is niets gemeten, dus er is niets te lezen. Wissel naar frame VL om te zien wat er dan wél staat — de rail in wachtstand, en de dichte deur met de reden erbij.');
+  }
+
+  var h = renderReadout(state.readout, 'checkin');
+
+  h += el('div', { class: 'divider' }, '');
+  h += el('p', { class: 'sectionhead' }, 'Wat we hebben gemeten');
+
+  var rows = '';
+  for (var i = 0; i < state.facts.length; i++){ rows += renderFactRow(state.facts[i]); }
+  h += el('div', { id: 'factList' }, rows);
+
+  var hiddenRows = '';
+  for (var j = 0; j < state.hidden.length; j++){ hiddenRows += renderFactRow(state.hidden[j]); }
+  h += el('div', { id: 'factHidden', hidden: 'hidden' }, hiddenRows);
+
+  h += el('button', { type: 'button', class: 'showall', id: 'showAll', 'aria-expanded': 'false', 'aria-controls': 'factHidden' },
+        'Toon alles (' + state.hidden.length + ')');
+
+  h += el('p', { class: 'beneath' }, 'Onder je beeld liggen nog je verhoudingen, jouw situatie en wat je zou kunnen meten.');
+
+  h += el('div', { class: 'outside' },
+        el('p', { class: 'oh' }, 'Buiten je bord')
+        + el('p', {}, 'Daglicht — 3&times; per week ten minste een kwartier buiten.')
+        + el('p', { class: 'sub' }, 'Dit is geen eetvraag. Je vitamine D komt in Nederland vooral van je huid, niet van je bord.'));
+
+  h += el('div', { class: 'ijkpunt' },
+        el('p', {}, 'Wil je hier over veertien dagen op terugkijken? Zet je ijkpunt voor voeding.')
+        + el('a', { class: 'btn-ghost', href: '#' }, 'Zet je ijkpunt'));
+
+  h += el('div', { class: 'footlinks' },
+        el('a', { class: 'link-foot', href: '#' }, 'Wetenschappelijke onderbouwing van de voedingscheck')
+        + el('a', { class: 'link-foot', href: '#' }, 'Terug naar je dashboard'));
+
+  return h;
+}
+
+function renderVL(state){
+  var h = '';
+  h += el('a', { class: 'backlink', href: '#' }, '&larr; Voortgang');
+  h += el('h1', { class: 'pagetitle' }, 'Je voedingsbeeld');
+  h += el('p', { class: 'pagesub' }, state.noResult
+        ? 'Je hebt de voedingscheck nog niet gedaan.'
+        : 'Van je laatste check &middot; 7 augustus');
+
+  if (state.noResult){
+    h += el('a', { class: 'btn-terra', href: '#' }, 'Doe de voedingscheck &rarr;');
+    h += el('div', { class: 'divider' }, '');
+  } else {
+    h += renderReadout(state.readout, 'voortgang');
+    h += el('div', { class: 'divider' }, '');
+  }
+
+  h += el('p', { class: 'sectionhead' }, 'Je eetbasis, van onder naar boven');
+
+  var rail = '';
+  for (var i = 0; i < LAYERS.length; i++){
+    var layer = LAYERS[i];
+    var st, stateLabel, note;
+
+    if (layer.key === 6){
+      st = state.gateOpen ? 'nu' : 'dicht';
+      stateLabel = state.gateOpen ? 'open' : 'dicht';
+      note = null;
+    } else if (layer.key === 5){
+      st = 'ghost';
+      stateLabel = 'nog niet';
+      note = layer.note;
+    } else if (layer.key === 4){
+      st = 'info';
+      stateLabel = 'ter info';
+      note = layer.note;
+    } else if (state.railFocus === 0){
+      st = 'dicht';
+      stateLabel = 'wacht op je check';
+      note = layer.note;
+    } else if (layer.key < state.railFocus){
+      st = 'staat';
+      stateLabel = 'staat';
+      note = layer.note;
+    } else if (layer.key === state.railFocus){
+      st = 'nu';
+      stateLabel = 'hier ligt je winst';
+      note = layer.note;
+    } else {
+      st = 'wacht';
+      stateLabel = 'straks';
+      note = layer.note;
+    }
+
+    var inner = el('div', { class: 'lh' },
+      el('span', { class: 'lname' }, layer.name) + el('span', { class: 'lstate' }, stateLabel));
+    if (note) inner += el('p', { class: 'lnote' }, note);
+
+    if (st === 'nu' && layer.key <= 3){
+      var acts = LAYER_ACTIONS[layer.key] || [];
+      if (state.railSingleAction) acts = acts.slice(0, 1);
+      var lis = '';
+      for (var a = 0; a < acts.length; a++){
+        lis += el('li', {}, el('p', {}, acts[a].text) + el('button', { type: 'button' }, acts[a].cta));
+      }
+      if (lis){
+        inner += el('p', { class: 'sectionhead', style: 'margin:13px 0 0' }, 'Wat kun je hier doen?');
+        inner += el('ul', { class: 'actions' }, lis);
+      }
+    }
+
+    if (st === 'info'){
+      inner += el('p', { class: 'lnote', style: 'margin-top:9px' }, el('a', { class: 'link-quiet', href: '#' }, 'Pas je gegevens aan &rarr;'));
+    }
+
+    if (layer.key === 6){
+      var gate = el('p', {}, state.gateReason);
+      if (state.gateOpen && state.gateItems){
+        var gl = '';
+        for (var g = 0; g < state.gateItems.length; g++){
+          gl += el('li', {},
+            el('a', { class: 'link-quiet', href: '#' }, 'Vergelijk ' + state.gateItems[g].name + ' op prijs en kwaliteit &rarr;')
+            + el('span', { class: 'why' }, state.gateItems[g].why));
+        }
+        gate += el('ul', { class: 'gatelinks' }, gl);
+      }
+      inner += el('div', { class: 'gate' }, gate);
+    }
+
+    rail += el('section', { class: 'layer', 'data-state': st, 'aria-label': layer.name }, inner);
+  }
+  h += el('div', { class: 'rail' }, rail);
+
+  // Zelf-calibratie t/m de verhoudingen: hoger heeft geen engine-signaal, dus
+  // een zelfclaim daar is niet te toetsen en ontgrendelt niets.
+  var selfNames = ['Je eetbasis', 'Voedingskwaliteit', 'Verhoudingen'];
+  var opts = '';
+  for (var o = 0; o < selfNames.length; o++){
+    opts += el('button', { type: 'button', 'aria-pressed': String(o === state.selfcalPressed) }, selfNames[o]);
+  }
+  h += el('div', { class: 'selfcal' },
+    el('p', { class: 'q' }, 'Waar denk jij dat je nu staat?')
+    + el('div', { class: 'opts', role: 'group', 'aria-label': 'Waar denk jij dat je nu staat' }, opts)
+    + el('p', { class: 'reconcile' }, state.reconcile));
+
+  // L11: precies één regel, en alleen zolang het beweegadvies op deze check wacht.
+  if (state.noResult){
+    h += el('p', { class: 'bridge' },
+      'Je beweegadvies wacht nog op deze check. ' + el('a', { class: 'link-foot', href: '#' }, 'Naar je beweegbeeld'));
+  }
+
+  h += el('div', { class: 'footlinks' },
+    el('a', { class: 'link-foot', href: '#' }, 'Wetenschappelijke onderbouwing van de voedingscheck'));
+
+  return h;
+}
+
+/* ── schakelaars ───────────────────────────────────────────────── */
+var current = { frame: 'VR', state: 'F1' };
+
+var PHONE_NOTE = {
+  VQ: '375 px · intake · /intake/voeding',
+  VR: '375 px · intake · resultaat voedingscheck',
+  VL: '375 px · dashboard · Voortgang › Voeding'
+};
+
+function paint(){
+  var s = STATES[current.state];
+  var screen = document.getElementById('screen');
+
+  if (current.frame === 'VQ')      screen.innerHTML = renderVQ(s);
+  else if (current.frame === 'VR') screen.innerHTML = renderVR(s);
+  else                             screen.innerHTML = renderVL(s);
+
+  document.getElementById('stateNote').textContent = s.note;
+  document.getElementById('phoneNote').textContent = PHONE_NOTE[current.frame];
+
+  var toggle = document.getElementById('showAll');
+  if (toggle){
+    toggle.addEventListener('click', function(){
+      var list = document.getElementById('factHidden');
+      var open = toggle.getAttribute('aria-expanded') === 'true';
+      if (open){ list.setAttribute('hidden', 'hidden'); } else { list.removeAttribute('hidden'); }
+      toggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+      toggle.innerHTML = open ? 'Toon alles (' + s.hidden.length + ')' : 'Toon minder';
+    });
+  }
+
+  Array.prototype.forEach.call(screen.querySelectorAll('details.qhelp'), function(d){
+    d.addEventListener('toggle', function(){
+      var sum = d.querySelector('summary');
+      if (sum) sum.setAttribute('aria-expanded', d.open ? 'true' : 'false');
+    });
+  });
+}
+
+document.getElementById('frameSwitch').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-frame]');
+  if (!btn) return;
+  current.frame = btn.getAttribute('data-frame');
+  Array.prototype.forEach.call(this.querySelectorAll('button'), function(b){
+    b.setAttribute('aria-pressed', String(b === btn));
+  });
+  paint();
+});
+
+document.getElementById('stateSwitch').addEventListener('click', function(e){
+  var btn = e.target.closest('button[data-state]');
+  if (!btn) return;
+  current.state = btn.getAttribute('data-state');
+  Array.prototype.forEach.call(this.querySelectorAll('button'), function(b){
+    b.setAttribute('aria-pressed', String(b === btn));
+  });
+  paint();
+});
+
+paint();
+</script>
+</body>
+</html>
