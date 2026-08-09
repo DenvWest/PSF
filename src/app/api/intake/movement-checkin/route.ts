@@ -14,7 +14,11 @@ import { RULES_VERSION } from "@/lib/intake-engine";
 import { loadBaselineSnapshot } from "@/lib/intake-baseline";
 import { isMovementScoreDeltaComparable } from "@/lib/rules-version";
 import { domainCheckinConsentRow } from "@/lib/domain-checkin-consent";
-import { assessMovement } from "@/lib/movement-assessment";
+import {
+  assessMovement,
+  buildMovementCheckinSnapshot,
+  buildMovementConclusion,
+} from "@/lib/movement-assessment";
 import {
   movementScoreFromReport,
   movementDirection,
@@ -24,13 +28,36 @@ import {
   parseFullMovementReport,
   parseMovementCheckinMode,
   parsePulseMovementReport,
+  parseStoredMovementCheckin,
   type MovementCheckinReport,
+  type StoredMovementCheckin,
 } from "@/lib/movement-checkin-parse";
 import { mergeMovementCheckinIntoAnswers } from "@/lib/movement-target";
 import { emitEvent } from "@/lib/events";
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
   console.warn("[api/intake/movement-checkin][security]", { event, ...details });
+}
+
+/**
+ * De laatste eerdere beweegcheck van deze sessie. Moet gelezen worden vóór de
+ * insert van de huidige rij — anders leest de delta zijn eigen meting als
+ * "vorige keer".
+ */
+async function resolvePreviousMovementCheckin(
+  admin: NonNullable<ReturnType<typeof createSupabaseAdmin>>,
+  sessionId: string,
+): Promise<StoredMovementCheckin | null> {
+  const { data } = await admin
+    .from("intake_domain_checkin")
+    .select("raw_inputs")
+    .eq("session_id", sessionId)
+    .eq("domain_key", "movement_score")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  return data ? parseStoredMovementCheckin(data.raw_inputs) : null;
 }
 
 async function resolvePreviousMovementScore(
@@ -159,6 +186,21 @@ export async function POST(request: NextRequest) {
 
   const reportForAssessment =
     mode === "pulse" ? pulseReport! : (fullReport as MovementCheckinReport);
+  const assessment = assessMovement(reportForAssessment);
+  const conclusion =
+    mode === "full" ? buildMovementConclusion(reportForAssessment, assessment) : null;
+
+  const previousCheckin =
+    mode === "full" ? await resolvePreviousMovementCheckin(admin, sessionId) : null;
+  const snapshot = conclusion
+    ? buildMovementCheckinSnapshot({
+        report: reportForAssessment,
+        results: assessment,
+        conclusion,
+        previousReport: previousCheckin?.report ?? null,
+        previousFocusLabel: previousCheckin?.focusLabel ?? null,
+      })
+    : null;
   const currentScore =
     mode === "pulse"
       ? await resolvePreviousMovementScore(admin, sessionId)
@@ -183,7 +225,29 @@ export async function POST(request: NextRequest) {
     session_id: sessionId,
     organization_id: organizationId,
     domain_key: "movement_score",
-    raw_inputs: reportForAssessment,
+    // `chosen_actions` blijft weg tot er een keuze-flow op de doe-surface is —
+    // een veld dat altijd leeg blijft leest later als "niemand kiest iets".
+    // De delta_*/answer_label/implication_line-velden zijn het bevroren
+    // readout-blok — Voortgang leest ze terug i.p.v. te herberekenen (SSOT).
+    raw_inputs:
+      conclusion && snapshot
+        ? {
+            ...reportForAssessment,
+            focus_dimension: conclusion.focusDimension,
+            focus_label: conclusion.focusLabel,
+            conclusion_text: conclusion.headline,
+            conclusion_actions: conclusion.actions,
+            focus_statement: snapshot.focusStatement,
+            answer_label: snapshot.answerLabel,
+            implication_line: snapshot.implicationLine,
+            delta_label: snapshot.focusDelta?.label ?? null,
+            delta_line: snapshot.focusDelta?.line ?? null,
+            delta_also_line: snapshot.focusDelta?.alsoLine ?? null,
+            delta_win_line: snapshot.focusDelta?.winLine ?? null,
+            delta_follow_line: snapshot.focusDelta?.followLine ?? null,
+            start_statement: start?.statement ?? null,
+          }
+        : reportForAssessment,
     score:
       currentScore != null ? { movement_score: currentScore } : { movement_score: null },
     rules_version: RULES_VERSION,
@@ -259,7 +323,16 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json(
-    { assessment: assessMovement(reportForAssessment), start, mode },
+    conclusion
+      ? {
+          assessment,
+          conclusion,
+          snapshot,
+          isRecheck: previousCheckin !== null,
+          start,
+          mode,
+        }
+      : { assessment, start, mode },
     { status: 200 },
   );
 }

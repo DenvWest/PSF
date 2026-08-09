@@ -6,14 +6,21 @@ import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import BewegingAdviesTreden from "@/components/dashboard/voortgang/BewegingAdviesTreden";
+import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
 import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
 import { buildBewegingAdviesTreden } from "@/lib/beweging-advies-treden";
 import { clarityTag } from "@/lib/clarity";
+import { buildMovementRoutingHref } from "@/lib/dashboard-url";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
+import { resolveMovementRoutingHint } from "@/lib/movement-assessment";
+import {
+  buildMovementProgramPreview,
+  parseMovementPlanProfile,
+} from "@/lib/movement-plan-profile";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
 import { deriveMovementCurrent } from "@/lib/movement-target";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
@@ -95,10 +102,27 @@ export default function VoortgangDomeinScreen({
   const showAdviesDeur =
     isMovement && movementCurrent?.source === "beweegcheck" && nutritionLogCompleted;
 
+  const movementReadout = isMovement ? (data?.movementCheckinSnapshot ?? null) : null;
+  // Programma-preview is altijd live uit het profiel, nooit uit het bevroren
+  // readout-blok — anders loopt de regel uit de pas zodra iemand zijn
+  // programma wijzigt zonder een nieuwe beweegcheck te doen (§H3).
+  const movementPlanProfile = isMovement ? parseMovementPlanProfile(model.answers ?? {}) : null;
+  const movementProgramPreview = movementPlanProfile
+    ? buildMovementProgramPreview(
+        movementPlanProfile.weeklyFrequency,
+        movementPlanProfile.trainingLocation,
+        movementPlanProfile.trainingGuidance,
+      )
+    : null;
+
   useEffect(() => {
-    trackEvent("domain_tool.snapshot_viewed", { domain, surface: "voortgang_domein" });
+    trackEvent("domain_tool.snapshot_viewed", {
+      domain,
+      surface: "voortgang_domein",
+      has_conclusion: movementReadout !== null,
+    });
     clarityTag("dashboard_voortgang_domein", domain);
-  }, [domain]);
+  }, [domain, movementReadout]);
 
   const handleCheckin = () => {
     trackEvent("dashboard_beweging_checkin_click", { mode: "full", surface: "voortgang_beweging" });
@@ -210,6 +234,26 @@ export default function VoortgangDomeinScreen({
 
         {positionLine ? (
           <p className="px-1 text-[12.5px] leading-relaxed text-[#9FB0A6]">{positionLine}</p>
+        ) : null}
+
+        {movementReadout ? (
+          <MovementCheckinReadout
+            headline={movementReadout.headline}
+            focusLabel={movementReadout.focusLabel}
+            answerLabel={movementReadout.answerLabel}
+            statement={movementReadout.focusStatement}
+            delta={movementReadout.delta}
+            implicationLine={movementReadout.implicationLine}
+            programPreview={movementProgramPreview}
+            routingHref={buildMovementRoutingHref(movementReadout.focusDimension)}
+            routingHint={resolveMovementRoutingHint(movementReadout.focusDimension)}
+            startLine={
+              movementReadout.startStatement
+                ? `Sinds je start: ${movementReadout.startStatement}`
+                : null
+            }
+            variant="voortgang"
+          />
         ) : null}
 
         {isMovement && movementLogEnabled ? (

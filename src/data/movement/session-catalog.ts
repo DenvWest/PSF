@@ -31,6 +31,9 @@ export type MovementSessionCatalogEntry = {
 
 export type MovementTrainingLocation = "thuis" | "sportschool";
 
+/** Met wie je traint — los van waar (§M3): stuurt of het programma-voorstel instelbaar blijft. */
+export type MovementTrainingGuidance = "zelf" | "groep" | "coach" | "onbekend";
+
 export const MOVEMENT_SESSION_CATALOG: readonly MovementSessionCatalogEntry[] = [
   {
     id: "kracht-thuis",

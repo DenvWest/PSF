@@ -9,12 +9,16 @@ import {
 } from "@/lib/movement-prefs";
 import {
   isMovementSport,
+  isMovementTrainingGuidance,
   isMovementTrainingLocation,
   isMovementWeeklyFrequency,
   mergeMovementPlanProfilePatch,
   parseMovementPlanProfile,
 } from "@/lib/movement-plan-profile";
-import type { MovementTrainingLocation } from "@/data/movement/session-catalog";
+import type {
+  MovementTrainingGuidance,
+  MovementTrainingLocation,
+} from "@/data/movement/session-catalog";
 import {
   isMovementTargetDays,
   isMovementTargetMinutes,
@@ -132,6 +136,7 @@ export async function POST(request: NextRequest) {
   const hasSport = record.preferredSport !== undefined;
   const hasFrequency = record.weeklyFrequency !== undefined;
   const hasLocation = record.trainingLocation !== undefined;
+  const hasGuidance = record.trainingGuidance !== undefined;
   const hasSports = record.sports !== undefined;
   const hasTargetMinutes = record.targetMinutes !== undefined;
   const hasTargetDays = record.targetDays !== undefined;
@@ -143,6 +148,7 @@ export async function POST(request: NextRequest) {
     !hasSport &&
     !hasFrequency &&
     !hasLocation &&
+    !hasGuidance &&
     !hasSports &&
     !hasTargetMinutes &&
     !hasTargetDays &&
@@ -175,6 +181,13 @@ export async function POST(request: NextRequest) {
     hasLocation &&
     record.trainingLocation !== null &&
     !isMovementTrainingLocation(record.trainingLocation)
+  ) {
+    return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
+  }
+  if (
+    hasGuidance &&
+    record.trainingGuidance !== null &&
+    !isMovementTrainingGuidance(record.trainingGuidance)
   ) {
     return NextResponse.json({ error: "Ongeldige payload." }, { status: 400 });
   }
@@ -238,6 +251,14 @@ export async function POST(request: NextRequest) {
             record.trainingLocation === null
               ? undefined
               : (record.trainingLocation as MovementTrainingLocation),
+        }
+      : {}),
+    ...(hasGuidance
+      ? {
+          trainingGuidance:
+            record.trainingGuidance === null
+              ? undefined
+              : (record.trainingGuidance as MovementTrainingGuidance),
         }
       : {}),
     ...(hasSports && Array.isArray(record.sports)

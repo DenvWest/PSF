@@ -8,6 +8,7 @@ import type {
   TimeBucket,
 } from "@/lib/account-priority-pref";
 import type { MovementPrefs } from "@/lib/movement-prefs";
+import type { StoredMovementCheckinSnapshot } from "@/lib/movement-checkin-parse";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
@@ -207,6 +208,8 @@ export type SleepCheckinFocus = {
   date: string;
 };
 
+export type MovementCheckinReadoutData = StoredMovementCheckinSnapshot & { date: string };
+
 export type DashboardData = {
   empty: boolean;
   current: (CheckSnapshot & { trend: CheckTrend; trendBaselines?: CheckTrendBaselines }) | null;
@@ -241,6 +244,7 @@ export type DashboardData = {
   planDomain: MeasuredPillarId | null;
   priorityPref: AccountPriorityPrefData | null;
   sleepCheckinFocus: SleepCheckinFocus | null;
+  movementCheckinSnapshot: MovementCheckinReadoutData | null;
   hasStressCheckin: boolean;
   /** Dagen sinds de laatste eigen domeincheck; ontbreekt = nog nooit gedaan. */
   domainCheckDaysAgo: Partial<Record<PillarId, number>>;

@@ -1,3 +1,4 @@
+import { MOVEMENT_FOCUS_ORDER, type MovementFocusKey } from "@/data/movement-checkin";
 import { isStatistiekenBlik } from "@/lib/statistieken-blik";
 import type {
   DashboardTabId,
@@ -105,6 +106,45 @@ export function buildDashboardVandaagHref(
     params.set("dag", dag);
   }
   return `/dashboard?${params.toString()}`;
+}
+
+export function isMovementFocusKey(value: unknown): value is MovementFocusKey {
+  return (
+    typeof value === "string" &&
+    (MOVEMENT_FOCUS_ORDER as readonly string[]).includes(value)
+  );
+}
+
+/**
+ * Deeplink van het readout-blok naar de programma-sheet (R0c). `focus` is
+ * leesbaar, niet sturend — hij preselecteert niets in de sheet en wijzigt geen
+ * hero-copy (F1a-freeze, BESLUIT_BEWEGING L10); hij bestaat zodat een latere
+ * slice kan meten welke focus tot welke configuratie leidt.
+ */
+export function buildMovementRoutingHref(focus: string | null): string {
+  const params = new URLSearchParams({ tab: "vandaag", kompas: "beweging", open: "programma" });
+  if (isMovementFocusKey(focus)) {
+    params.set("focus", focus);
+  }
+  return `/dashboard?${params.toString()}`;
+}
+
+/**
+ * Verwijdert `open`/`focus` nadat de sheet ze heeft gelezen — anders heropent
+ * een refresh of terug-navigatie de sheet steeds opnieuw. `replaceState`, geen
+ * `pushState`: dit is het opruimen van een eenmalige deeplink, geen navigatiestap.
+ */
+export function stripMovementRoutingParams(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has("open") && !url.searchParams.has("focus")) {
+    return;
+  }
+  url.searchParams.delete("open");
+  url.searchParams.delete("focus");
+  window.history.replaceState(null, "", url.toString());
 }
 
 export function parseVoortgangScreenFromUrl(url: string | URL): VoortgangScreen {

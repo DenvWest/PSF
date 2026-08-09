@@ -35,6 +35,7 @@ import { getAccountPriorityPref } from "@/lib/account-priority-pref";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import { parseSleepCheckinFocus } from "@/lib/sleep-assessment";
+import { parseStoredMovementCheckinSnapshot } from "@/lib/movement-checkin-parse";
 import type {
   CheckLogEntry,
   CheckScores,
@@ -75,6 +76,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   planDomain: null,
   priorityPref: null,
   sleepCheckinFocus: null,
+  movementCheckinSnapshot: null,
   hasStressCheckin: false,
   domainCheckDaysAgo: {},
   movementPrefs: EMPTY_MOVEMENT_PREFS,
@@ -591,6 +593,29 @@ export async function loadAccountDashboardData(
     }
   }
 
+  let movementCheckinSnapshot: DashboardData["movementCheckinSnapshot"] = null;
+  const movementFullCheckins = ((checkinData ?? []) as CheckinRow[])
+    .filter(
+      (row) =>
+        row.domain_key === "movement_score" &&
+        row.session_id === latestSnapshot.id &&
+        typeof row.created_at === "string",
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    );
+  const latestMovementCheckin = movementFullCheckins[movementFullCheckins.length - 1];
+  if (latestMovementCheckin) {
+    const parsed = parseStoredMovementCheckinSnapshot(latestMovementCheckin.raw_inputs);
+    if (parsed) {
+      movementCheckinSnapshot = {
+        ...parsed,
+        date: formatDashboardDate(latestMovementCheckin.created_at),
+      };
+    }
+  }
+
   // Geen narratieve "focus" voor stress (zoals sleep) — DEFER (roadmap P3,
   // stress-als-module). Alleen het model-flag: heeft de gebruiker sinds de
   // laatste check al een aparte stress-check gedaan?
@@ -838,6 +863,7 @@ export async function loadAccountDashboardData(
     movementPrefs: latestSnapshot.movementPrefs,
     priorityPref,
     sleepCheckinFocus,
+    movementCheckinSnapshot,
     hasStressCheckin,
     domainCheckDaysAgo,
     supplementVerdicts: [],

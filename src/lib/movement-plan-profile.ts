@@ -10,6 +10,7 @@ import {
 } from "@/lib/movement-prefs";
 import type {
   MovementSport,
+  MovementTrainingGuidance,
   MovementTrainingLocation,
   MovementWeeklyFrequency,
 } from "@/data/movement/session-catalog";
@@ -29,9 +30,11 @@ import type { StoredIntakeAnswers } from "@/types/intake-answers";
 export const ANSWER_KEY_PREFERRED_SPORT = "preferredSport";
 export const ANSWER_KEY_WEEKLY_FREQUENCY = "weeklyAvailability";
 export const ANSWER_KEY_TRAINING_LOCATION = "trainingLocation";
+export const ANSWER_KEY_TRAINING_GUIDANCE = "trainingGuidance";
 export const ANSWER_KEY_SPORTS = "sports";
 
 const LOCATION_IDS = new Set<string>(["thuis", "sportschool"]);
+const GUIDANCE_IDS = new Set<string>(["zelf", "groep", "coach", "onbekend"]);
 const LEGACY_SPORT_TO_LOCATION: Record<string, MovementTrainingLocation> = {
   thuis: "thuis",
   sportschool: "sportschool",
@@ -68,10 +71,18 @@ export function isMovementTrainingLocation(
   return typeof value === "string" && LOCATION_IDS.has(value);
 }
 
+export function isMovementTrainingGuidance(
+  value: unknown,
+): value is MovementTrainingGuidance {
+  return typeof value === "string" && GUIDANCE_IDS.has(value);
+}
+
 export type MovementPlanProfile = MovementPrefs & {
   preferredSport: MovementSport | null;
   weeklyFrequency: MovementWeeklyFrequency | null;
   trainingLocation: MovementTrainingLocation | null;
+  /** Met wie — los van waar. `onbekend` is een expliciet antwoord, geen ontbrekende waarde. */
+  trainingGuidance: MovementTrainingGuidance | null;
   sports: string[];
   /** Zelf gezet doel — stuurt de programma-dosis. Zie `movement-target.ts`. */
   targetMinutes: MovementTargetMinutes | null;
@@ -85,6 +96,7 @@ export const EMPTY_MOVEMENT_PLAN_PROFILE: MovementPlanProfile = {
   preferredSport: null,
   weeklyFrequency: null,
   trainingLocation: null,
+  trainingGuidance: null,
   sports: [],
   targetMinutes: null,
   targetDays: null,
@@ -128,6 +140,7 @@ export function parseMovementPlanProfile(raw: unknown): MovementPlanProfile {
   const sport = record[ANSWER_KEY_PREFERRED_SPORT];
   const frequency = record[ANSWER_KEY_WEEKLY_FREQUENCY];
   const locationRaw = record[ANSWER_KEY_TRAINING_LOCATION];
+  const guidanceRaw = record[ANSWER_KEY_TRAINING_GUIDANCE];
   const sportsRaw = record[ANSWER_KEY_SPORTS];
   const preferredSport = isMovementSport(sport) ? sport : null;
   let trainingLocation = isMovementTrainingLocation(locationRaw) ? locationRaw : null;
@@ -145,6 +158,7 @@ export function parseMovementPlanProfile(raw: unknown): MovementPlanProfile {
     preferredSport,
     weeklyFrequency: isMovementWeeklyFrequency(frequency) ? frequency : null,
     trainingLocation,
+    trainingGuidance: isMovementTrainingGuidance(guidanceRaw) ? guidanceRaw : null,
     sports,
     targetMinutes: isMovementTargetMinutes(targetMinutes) ? targetMinutes : null,
     targetDays: isMovementTargetDays(targetDays) ? targetDays : null,
@@ -161,6 +175,7 @@ export function hasMovementPlanProfileValues(raw: unknown): boolean {
     profile.preferredSport !== null ||
     profile.weeklyFrequency !== null ||
     profile.trainingLocation !== null ||
+    profile.trainingGuidance !== null ||
     profile.sports.length > 0 ||
     profile.targetMinutes !== null ||
     profile.targetDays !== null ||
@@ -194,6 +209,9 @@ export function carryOverMovementPlanProfile(
   }
   if (next.trainingLocation === null && previous.trainingLocation !== null) {
     carried[ANSWER_KEY_TRAINING_LOCATION] = previous.trainingLocation;
+  }
+  if (next.trainingGuidance === null && previous.trainingGuidance !== null) {
+    carried[ANSWER_KEY_TRAINING_GUIDANCE] = previous.trainingGuidance;
   }
   if (next.sports.length === 0 && previous.sports.length > 0) {
     carried[ANSWER_KEY_SPORTS] = previous.sports;
@@ -239,6 +257,43 @@ export function defaultFrequencyForPattern(
   return movStr != null && movStr >= 3 ? "2x" : "1x";
 }
 
+const WEEKLY_FREQUENCY_LABEL: Record<MovementWeeklyFrequency, string> = {
+  "1x": "1× per week",
+  "2x": "2× per week",
+  "3x": "3× per week",
+};
+
+const TRAINING_LOCATION_LABEL: Record<MovementTrainingLocation, string> = {
+  thuis: "thuis",
+  sportschool: "sportschool",
+};
+
+/** `onbekend` heeft bewust geen label — die waarde valt weg uit de preview (zie hieronder). */
+const TRAINING_GUIDANCE_LABEL: Partial<Record<MovementTrainingGuidance, string>> = {
+  zelf: "zelf",
+  groep: "groep",
+  coach: "coach",
+};
+
+/**
+ * "{frequency} · {locationLabel} · {guidanceLabel}" voor de readout (M2/M3).
+ * Alleen de RAUWE, onopgeloste profielwaarden — nooit `resolveEffectivePlanProfile`'s
+ * pattern-default. Frequentie en locatie blijven verplicht: ontbreekt één van
+ * beide, dan valt de hele regel weg. Guidance is optioneel bovenop die twee —
+ * `onbekend` toont geen segment (het is een echt antwoord voor de sheet, geen
+ * feit om in een samenvattingsregel te herhalen).
+ */
+export function buildMovementProgramPreview(
+  weeklyFrequency: MovementWeeklyFrequency | null,
+  trainingLocation: MovementTrainingLocation | null,
+  trainingGuidance?: MovementTrainingGuidance | null,
+): string | null {
+  if (!weeklyFrequency || !trainingLocation) return null;
+  const base = `${WEEKLY_FREQUENCY_LABEL[weeklyFrequency]} · ${TRAINING_LOCATION_LABEL[trainingLocation]}`;
+  const guidanceLabel = trainingGuidance ? TRAINING_GUIDANCE_LABEL[trainingGuidance] : undefined;
+  return guidanceLabel ? `${base} · ${guidanceLabel}` : base;
+}
+
 export function resolveEffectivePlanProfile(
   profile: MovementPlanProfile,
   movStr: number | undefined,
@@ -258,6 +313,7 @@ export type MovementPlanProfilePatch = {
   preferredSport?: MovementSport;
   weeklyFrequency?: MovementWeeklyFrequency;
   trainingLocation?: MovementTrainingLocation;
+  trainingGuidance?: MovementTrainingGuidance;
   sports?: string[];
   targetMinutes?: MovementTargetMinutes;
   targetDays?: MovementTargetDays;
@@ -291,6 +347,12 @@ export function mergeMovementPlanProfilePatch(
     isMovementTrainingLocation(patch.trainingLocation)
   ) {
     record[ANSWER_KEY_TRAINING_LOCATION] = patch.trainingLocation;
+  }
+  if (
+    patch.trainingGuidance !== undefined &&
+    isMovementTrainingGuidance(patch.trainingGuidance)
+  ) {
+    record[ANSWER_KEY_TRAINING_GUIDANCE] = patch.trainingGuidance;
   }
   if (patch.sports !== undefined) {
     record[ANSWER_KEY_SPORTS] = patch.sports.slice(0, 3);

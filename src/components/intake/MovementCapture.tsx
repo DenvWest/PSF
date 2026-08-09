@@ -1,15 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import IntakeInBoxExit from "@/components/intake/IntakeInBoxExit";
+import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
+import MovementFactReadout from "@/components/intake/MovementFactReadout";
+import MovementFollowupStrip from "@/components/intake/MovementFollowupStrip";
 import { clarityTag } from "@/lib/clarity";
 import { DOMAIN_CHECKIN_CONSENT_TEXT } from "@/lib/consent-texts";
-import { buildDashboardVandaagHref } from "@/lib/dashboard-url";
-import { MOVEMENT_QUESTIONS } from "@/data/movement-checkin";
+import {
+  buildDashboardVandaagHref,
+  buildDashboardVoortgangHref,
+  buildMovementRoutingHref,
+} from "@/lib/dashboard-url";
+import { trackEvent } from "@/lib/ga4";
+import {
+  MOVEMENT_QUESTIONS,
+  MOVEMENT_HELP_NO_NORM,
+  MOVEMENT_HELP_TRIGGER,
+} from "@/data/movement-checkin";
+import { resolveMovementRoutingHint } from "@/lib/movement-assessment";
 import type {
+  MovementCheckinSnapshot,
+  MovementConclusion,
   MovementDimensionResult,
   MovementSelfReport,
 } from "@/lib/movement-assessment";
@@ -25,28 +39,22 @@ type Step =
   | { kind: "consent" }
   | {
       kind: "result";
+      pulse: true;
       assessment: MovementDimensionResult[];
       start: MovementStart | null;
-      pulse?: boolean;
+    }
+  | {
+      kind: "result";
+      pulse: false;
+      assessment: MovementDimensionResult[];
+      conclusion: MovementConclusion;
+      snapshot: MovementCheckinSnapshot;
+      start: MovementStart | null;
     }
   | { kind: "error"; message: string };
 
 const TOTAL = MOVEMENT_QUESTIONS.length;
 const PULSE_QUESTION_INDEX = MOVEMENT_QUESTIONS.findIndex((q) => q.field === "RCV_FEEL");
-
-const DIMENSION_LABELS: Record<MovementDimensionResult["dimension"], string> = {
-  kracht: "Kracht",
-  conditie: "Cardio",
-  intensiteit: "Intensieve inspanning",
-  zitten: "Zitten",
-  conditie_ervaren: "Ervaren conditie",
-  herstel: "Herstel",
-  klachten: "Klachten",
-  mobiliteit: "Mobiliteit",
-  belastbaarheid: "Belastbaarheid",
-  consistentie: "Consistentie",
-  motivatie: "Motivatie",
-};
 
 export default function MovementCapture() {
   const searchParams = useSearchParams();
@@ -80,11 +88,18 @@ export default function MovementCapture() {
   const [answers, setAnswers] = useState<Partial<MovementSelfReport>>({});
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [helpOpen, setHelpOpen] = useState(false);
+  const helpOpenedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     clarityTag("movement_flow", isPulseMode ? "pulse_started" : "started");
   }, [isPulseMode]);
+
+  useEffect(() => {
+    if (step.kind === "question") {
+      setHelpOpen(false);
+    }
+  }, [step]);
 
   function handleAnswer(field: keyof MovementSelfReport, value: number, index: number) {
     const next = { ...answers, [field]: value };
@@ -139,15 +154,45 @@ export default function MovementCapture() {
 
       const data = (await res.json()) as {
         assessment: MovementDimensionResult[];
+        conclusion?: MovementConclusion;
+        snapshot?: MovementCheckinSnapshot;
+        isRecheck?: boolean;
         start: MovementStart | null;
       };
 
       clarityTag("movement_flow", isPulseMode ? "pulse_completed" : "completed");
+
+      if (isPulseMode) {
+        setStep({
+          kind: "result",
+          pulse: true,
+          assessment: data.assessment,
+          start: data.start,
+        });
+        return;
+      }
+
+      const conclusion = data.conclusion;
+      const snapshot = data.snapshot;
+      if (!conclusion || !snapshot) {
+        setStep({ kind: "error", message: "Opnieuw proberen" });
+        return;
+      }
+
+      trackEvent("movement_checkin_completed", {
+        surface: "intake_beweging",
+        focus_dimension: conclusion.focusDimension ?? "geen",
+        has_dimension_delta: snapshot.focusDelta !== null,
+        is_recheck: data.isRecheck === true,
+        strip_variant: snapshot.stripVariant,
+      });
       setStep({
         kind: "result",
+        pulse: false,
         assessment: data.assessment,
+        conclusion,
+        snapshot,
         start: data.start,
-        pulse: isPulseMode,
       });
     } catch {
       setStep({ kind: "error", message: "Opnieuw proberen" });
@@ -156,23 +201,9 @@ export default function MovementCapture() {
     }
   }
 
-  function toggleChoice(key: string) {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-  }
-
   if (step.kind === "result") {
-    const { assessment, start, pulse } = step;
-
-    if (pulse) {
-      const herstelResult = assessment.find((entry) => entry.dimension === "herstel");
+    if (step.pulse) {
+      const herstelResult = step.assessment.find((entry) => entry.dimension === "herstel");
       return (
         <div className="relative flex min-h-screen flex-col items-center justify-center">
           <div className="w-full max-w-lg px-6 py-12 text-center">
@@ -213,118 +244,71 @@ export default function MovementCapture() {
       );
     }
 
+    const { snapshot, start } = step;
+    const startLine = start ? `Sinds je start: ${start.statement}` : null;
+    const programHref = buildMovementRoutingHref(snapshot.focusDimension);
+    const voortgangHref = buildDashboardVoortgangHref("domein", null, "beweging");
+
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
         <div className="w-full max-w-lg px-6 py-12">
           <h1 className="mb-2 text-center font-serif text-3xl font-normal text-intake-ink">
-            Jouw beweeg-overzicht
+            Jouw beweegcheck
           </h1>
           <p className="mb-8 text-center text-sm text-intake-ink-subtle">
-            Op basis van wat je nu doet
+            Wat je antwoorden laten zien · gemeten vandaag
           </p>
 
-          {start && (
-            <div className="mb-8 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-intake-sage">
-                Sinds je start
+          <MovementCheckinReadout
+            headline={snapshot.headline}
+            focusLabel={snapshot.focusLabel}
+            answerLabel={snapshot.answerLabel}
+            statement={snapshot.focusStatement}
+            delta={snapshot.focusDelta}
+            implicationLine={snapshot.implicationLine}
+            programPreview={null}
+            routingHref={programHref}
+            routingHint={resolveMovementRoutingHint(snapshot.focusDimension)}
+            startLine={startLine}
+            variant="checkin"
+          />
+
+          <MovementFactReadout
+            rows={snapshot.factRows}
+            focusDimension={snapshot.focusDimension}
+            surface="intake_beweging"
+          />
+
+          {snapshot.moderatorHints.length > 0 ? (
+            <div className="mt-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
+                Herstel &amp; klachten
               </p>
-              {start.statement}
+              <ul className="list-disc space-y-2 pl-5">
+                {snapshot.moderatorHints.map((hint) => (
+                  <li key={hint}>{hint}</li>
+                ))}
+              </ul>
             </div>
-          )}
+          ) : null}
 
-          <div className="flex flex-col gap-8">
-            {assessment.map((result) => (
-              <section
-                key={result.dimension}
-                aria-labelledby={`movement-${result.dimension}-heading`}
-              >
-                <h2
-                  id={`movement-${result.dimension}-heading`}
-                  className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
-                >
-                  {DIMENSION_LABELS[result.dimension]}
-                </h2>
+          <MovementFollowupStrip
+            variant={snapshot.stripVariant}
+            programHref={programHref}
+            voortgangHref={voortgangHref}
+            mijnDagHref={fromDashboard ? dashboardReturnHref : null}
+          />
 
-                <div className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink">
-                  {result.statement}
-                </div>
-
-                {result.choices.length > 0 && (
-                  <div className="mt-4">
-                    <p className="mb-3 text-xs font-medium text-intake-ink-subtle">
-                      Kies zelf je eerste stap — geen verkeerd antwoord, één is genoeg
-                    </p>
-                    <ul className="flex flex-col gap-3">
-                      {result.choices.map((choice) => {
-                        const key = `${result.dimension}:${choice}`;
-                        const isSelected = selected.has(key);
-                        return (
-                          <li key={key}>
-                            <button
-                              type="button"
-                              onClick={() => toggleChoice(key)}
-                              className={`block w-full min-h-[44px] rounded-[14px] border px-5 py-4 text-left text-sm leading-relaxed transition-all duration-200 ${
-                                isSelected
-                                  ? "border-intake-sage/50 bg-intake-sage/15 text-intake-ink"
-                                  : "border-intake-card-border bg-intake-bg-elevated text-intake-ink-muted hover:border-intake-sage/30 hover:bg-intake-sage/5"
-                              }`}
-                            >
-                              {choice}
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                )}
-
-                {result.deepen && (
-                  <div className="mt-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated/60 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
-                    {result.deepen}
-                  </div>
-                )}
-
-                {result.supplement && (
-                  <div className="mt-4">
-                    <Link
-                      href={result.supplement.comparisonPath}
-                      className="block rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-4 text-sm leading-relaxed text-intake-ink transition-colors hover:bg-intake-terra/10"
-                    >
-                      <span className="block font-medium text-intake-terra">
-                        Past creatine bij je kracht-keuze? Vergelijk →
-                      </span>
-                      <span className="mt-1 block text-intake-ink-muted">
-                        {result.supplement.claimText}
-                      </span>
-                    </Link>
-                  </div>
-                )}
-              </section>
-            ))}
-          </div>
-
-          <DomeinIjkpuntCheckPrompt domain="beweging" domainLabel="Beweging" />
-
-          <div className="mt-10 space-y-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-5 text-center">
+          <div className="mt-10 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-5 text-center">
             <p className="text-sm leading-relaxed text-intake-ink-muted">
-              Wil je week voor week begeleid worden? Ontvang het beweging-stappenplan per e-mail.
+              Wil je week voor week begeleid worden? Ontvang de beweeggids per e-mail.
             </p>
             <Link
               href="/gids/beweging"
-              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] bg-intake-terra px-6 py-3.5 text-sm font-bold text-white no-underline transition-opacity hover:opacity-90"
+              className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] border border-intake-card-border bg-transparent px-6 py-3.5 text-sm font-semibold text-intake-ink no-underline transition-colors hover:bg-intake-bg-elevated"
             >
-              Ontvang je beweging-stappenplan →
+              Ontvang de beweeggids →
             </Link>
-            <p className="text-xs leading-relaxed text-intake-ink-subtle">
-              Of{" "}
-              <Link
-                href="/intake"
-                className="font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
-              >
-                doe de volledige Leefstijlcheck
-              </Link>{" "}
-              voor jouw volgorde over alle pijlers.
-            </p>
           </div>
         </div>
       </div>
@@ -364,7 +348,6 @@ export default function MovementCapture() {
               );
               setAnswers({});
               setConsentChecked(false);
-              setSelected(new Set());
             }}
             className="rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-colors hover:bg-intake-bg-elevated"
           >
@@ -485,6 +468,38 @@ export default function MovementCapture() {
                 {opt.label}
               </button>
             ))}
+          </div>
+
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={() => {
+                const next = !helpOpen;
+                setHelpOpen(next);
+                if (next && !helpOpenedRef.current.has(q.field)) {
+                  helpOpenedRef.current.add(q.field);
+                  trackEvent("movement_checkin_question_help_opened", { field: q.field });
+                }
+              }}
+              aria-expanded={helpOpen}
+              aria-controls={`movement-help-${q.field}`}
+              className="min-h-[44px] border-none bg-transparent px-0 text-sm font-medium text-intake-sage underline decoration-intake-sage/35 underline-offset-[3px] hover:decoration-intake-sage"
+            >
+              {MOVEMENT_HELP_TRIGGER}
+            </button>
+            {helpOpen ? (
+              <div
+                id={`movement-help-${q.field}`}
+                role="region"
+                className="mt-3 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted"
+              >
+                <p className="mb-2 font-semibold text-intake-ink">{q.help.title}</p>
+                <p>{q.help.body}</p>
+                <p className="mt-2 text-xs text-intake-ink-subtle">
+                  {q.help.anchor ?? MOVEMENT_HELP_NO_NORM}
+                </p>
+              </div>
+            ) : null}
           </div>
         </div>
 

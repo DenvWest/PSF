@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import MovementProgramSheet from "@/components/dashboard/beweging/MovementProgramSheet";
 import MovementStartChoice from "@/components/dashboard/beweging/MovementStartChoice";
 import MovementTodayHero from "@/components/dashboard/beweging/MovementTodayHero";
@@ -11,6 +12,7 @@ import {
   resolveRecommendedSessionVariant,
 } from "@/data/movement/session-catalog";
 import { isPlanStepHidden } from "@/lib/day-model";
+import { stripMovementRoutingParams } from "@/lib/dashboard-url";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
 import type { MovementPrefs } from "@/lib/movement-prefs";
 import {
@@ -59,9 +61,23 @@ export default function MovementCockpit({
   const [prefsOverride, setPrefsOverride] = useState<MovementPrefs | null>(null);
   const [choiceOpen, setChoiceOpen] = useState(false);
   const [skippedSession, setSkippedSession] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const searchParams = useSearchParams();
+  // R0c-deeplink vanaf het readout-blok: `open=programma` opent de sheet direct
+  // bij aankomst. `focus` is bewust leesbaar-niet-sturend — hij preselecteert
+  // hier niets (F1a-freeze, BESLUIT_BEWEGING L10).
+  const [sheetOpen, setSheetOpen] = useState(() => searchParams.get("open") === "programma");
   const [weekRefreshKey, setWeekRefreshKey] = useState(0);
   const movementPrefs = prefsOverride ?? model.movementPrefs;
+
+  useEffect(() => {
+    if (searchParams.get("open") !== "programma" && !searchParams.has("focus")) {
+      return;
+    }
+    stripMovementRoutingParams();
+    // Alleen bij mount consumeren — searchParams zelf niet in de deps, anders
+    // vuurt dit elke keer opnieuw zodra de strip de URL (en dus de hook) update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const movStr = model.answers?.MOV_STR;
   const { profile, prefsBusy, saveProfilePatch, toggleSport, applyKnownPatch } =

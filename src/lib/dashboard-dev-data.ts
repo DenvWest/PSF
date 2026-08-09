@@ -162,6 +162,7 @@ export function buildDevDashboardData(
     planDomain: "nutrition",
     priorityPref: null,
     sleepCheckinFocus: null,
+    movementCheckinSnapshot: null,
     hasStressCheckin: false,
     // Dev-staten: één verlopen check (slaap), één die aftelt (stress), één vers
     // (voeding) en één die nog nooit gedaan is (beweging).

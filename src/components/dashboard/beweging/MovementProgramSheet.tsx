@@ -5,6 +5,7 @@ import { SPORT_CATALOG } from "@/data/movement/sport-catalog";
 import {
   getMovementSessionCatalogEntry,
   type MovementSessionCatalogEntry,
+  type MovementTrainingGuidance,
   type MovementTrainingLocation,
 } from "@/data/movement/session-catalog";
 import {
@@ -44,6 +45,13 @@ export type MovementProgramSheetProps = {
 const LOCATION_OPTIONS: { id: MovementTrainingLocation; label: string }[] = [
   { id: "thuis", label: "Thuis" },
   { id: "sportschool", label: "Sportschool" },
+];
+
+const GUIDANCE_OPTIONS: { id: MovementTrainingGuidance; label: string }[] = [
+  { id: "zelf", label: "Ik doe het zelf" },
+  { id: "groep", label: "In een groep of les" },
+  { id: "coach", label: "Met een coach of trainer" },
+  { id: "onbekend", label: "Weet ik nog niet" },
 ];
 
 function InfoChip({ label, value }: { label: string; value: string }) {
@@ -278,6 +286,20 @@ export default function MovementProgramSheet({
   const displayEntry = fallbackEntry ?? entry;
   const displayExercises = displayEntry.exercises ?? [];
 
+  // §M3: groep laat frequentie/duur aan het lesritme over; coach maakt het
+  // hele voorstel read-only — beide raken nooit de eigen krachtsessies-keuze
+  // van een groepstrainer, alleen coach doet dat (hij is dan overal leidend).
+  const guidance = profile.trainingGuidance;
+  const doseFieldsLocked = guidance === "groep" || guidance === "coach";
+  const strengthFieldLocked = guidance === "coach";
+  const variantAndSportsLocked = guidance === "coach";
+  const guidanceNote =
+    guidance === "coach"
+      ? "Je coach bepaalt dit — hier pas je niets aan."
+      : guidance === "groep"
+        ? "Dit volgt het ritme van je les — hier stel je alleen je krachtsessies apart in."
+        : null;
+
   return (
     <div className="fixed inset-0 z-[100]" role="presentation">
       <button
@@ -412,6 +434,12 @@ export default function MovementProgramSheet({
               hieronder je eigen doel.
             </p>
 
+            {guidanceNote ? (
+              <p className="mb-3 max-w-[68ch] text-[12px] leading-relaxed text-[#9FB0A6]">
+                {guidanceNote}
+              </p>
+            ) : null}
+
             <div className="space-y-4">
               <div>
                 <p className="mb-1.5 text-[11px] font-medium text-[#9FB0A6]">Minuten per week</p>
@@ -421,7 +449,7 @@ export default function MovementProgramSheet({
                   value={profile.targetMinutes}
                   min={MOVEMENT_TARGET_MINUTES_MIN}
                   max={MOVEMENT_TARGET_MINUTES_MAX}
-                  disabled={busy}
+                  disabled={busy || doseFieldsLocked}
                   onCommit={(value) => onSave({ targetMinutes: value })}
                 />
                 <HerkomstLabel isOwn={profile.targetMinutes !== null} />
@@ -434,7 +462,7 @@ export default function MovementProgramSheet({
                   value={profile.targetDays}
                   min={MOVEMENT_TARGET_DAYS_MIN}
                   max={MOVEMENT_TARGET_DAYS_MAX}
-                  disabled={busy}
+                  disabled={busy || doseFieldsLocked}
                   onCommit={(value) => onSave({ targetDays: value })}
                 />
                 <HerkomstLabel isOwn={profile.targetDays !== null} />
@@ -446,7 +474,7 @@ export default function MovementProgramSheet({
                 <ChipRow
                   options={MOVEMENT_TARGET_STRENGTH_OPTIONS}
                   value={profile.targetStrength}
-                  disabled={busy}
+                  disabled={busy || strengthFieldLocked}
                   onSelect={(id) => onSave({ targetStrength: id })}
                 />
                 <HerkomstLabel isOwn={profile.targetStrength !== null} />
@@ -505,7 +533,7 @@ export default function MovementProgramSheet({
                       <button
                         key={sport.id}
                         type="button"
-                        disabled={busy || atMax}
+                        disabled={busy || atMax || variantAndSportsLocked}
                         onClick={() => onToggleSport(sport.id)}
                         className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
                           selected
@@ -544,7 +572,7 @@ export default function MovementProgramSheet({
                   <ChipRow
                     options={MOVEMENT_START_PATTERN_OPTIONS}
                     value={profile.startPattern}
-                    disabled={busy}
+                    disabled={busy || variantAndSportsLocked}
                     onSelect={(id) => onSave({ startPattern: id })}
                   />
                 </div>
@@ -556,11 +584,22 @@ export default function MovementProgramSheet({
                     <ChipRow
                       options={LOCATION_OPTIONS}
                       value={profile.trainingLocation}
-                      disabled={busy}
+                      disabled={busy || variantAndSportsLocked}
                       onSelect={(id) => onSave({ trainingLocation: id })}
                     />
                   </div>
                 ) : null}
+                <div>
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#9FB0A6]">
+                    Met wie
+                  </p>
+                  <ChipRow
+                    options={GUIDANCE_OPTIONS}
+                    value={profile.trainingGuidance}
+                    disabled={busy}
+                    onSelect={(id) => onSave({ trainingGuidance: id })}
+                  />
+                </div>
               </div>
             ) : null}
           </div>
