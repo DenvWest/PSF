@@ -26,6 +26,7 @@ import {
   parsePulseMovementReport,
   type MovementCheckinReport,
 } from "@/lib/movement-checkin-parse";
+import { mergeMovementCheckinIntoAnswers } from "@/lib/movement-target";
 import { emitEvent } from "@/lib/events";
 
 function logSecurityEvent(event: string, details: Record<string, unknown> = {}) {
@@ -194,6 +195,39 @@ export async function POST(request: NextRequest) {
       { error: "Kon rapportage niet opslaan." },
       { status: 500 },
     );
+  }
+
+  // De check-in landt in `intake_domain_checkin`, maar het huidige beeld wordt
+  // gelezen uit `intake_sessions.answers`. Zonder deze sync blijft
+  // `deriveMovementCurrent()` op "basischeck" staan na een volledige check.
+  // Verrijking, geen voorwaarde: een fout hier logt en laat de response staan.
+  if (mode === "full" && fullReport) {
+    const { data: sessionRow, error: sessionReadError } = await admin
+      .from("intake_sessions")
+      .select("answers")
+      .eq("id", sessionId)
+      .single();
+
+    if (sessionReadError || !sessionRow) {
+      console.error(
+        "[api/intake/movement-checkin] answers read error:",
+        sessionReadError,
+      );
+    } else {
+      const { error: answersError } = await admin
+        .from("intake_sessions")
+        .update({
+          answers: mergeMovementCheckinIntoAnswers(sessionRow.answers, fullReport),
+        })
+        .eq("id", sessionId);
+
+      if (answersError) {
+        console.error(
+          "[api/intake/movement-checkin] answers merge error:",
+          answersError,
+        );
+      }
+    }
   }
 
   try {
