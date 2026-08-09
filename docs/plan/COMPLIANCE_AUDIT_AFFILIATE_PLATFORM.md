@@ -148,7 +148,7 @@ Referentie: OWASP ASVS 4.0 niveau 1–2 (passend bij risicoprofiel).
 | **API (tick/jobs)** | Secret-header met constant-time-vergelijking; optioneel IP-allowlist (VPS → eigen endpoint); 401 zonder detail. |
 | **Uploads** | Allowlist op MIME **én magic bytes** (extensie-check alleen is omzeilbaar); limiet 25 MB; **SVG niet ongesanitizeerd accepteren** (XSS-vector — plan §13 staat svg toe: sanitizen met SVGO/DOMPurify of alleen als `<img>` serveren vanaf apart storage-domein met `Content-Disposition: attachment` en CSP `sandbox`); zip alleen opslaan, nooit server-side uitpakken (zip-bomb/path traversal). |
 | **Bestandsopslag** | Private buckets; signed URLs ≤ 10 min; geen publieke listing; pad-namen zonder PII. |
-| **Back-ups** | Supabase PITR (EU); encrypted at rest; **kwartaal-restore-test** (een niet-geteste back-up bestaat niet); rotatie 30 dgn (bepaalt wanneer wissing effectief is — beleid, stap 4). |
+| **Back-ups** | ⚠️ Gecorrigeerd 9 aug 2026: was hier gedocumenteerd als "Supabase PITR, rotatie 30 dgn" — bij verificatie bleek het project op het **Free plan** te staan, dat geen beheerde back-ups heeft. Fix: upgrade naar **Pro** (dagelijkse back-ups, 7 dgn retentie; PITR is een losse, niet-inbegrepen add-on). Encrypted at rest (Supabase-default, ongeacht plan). **Kwartaal-restore-test** (een niet-geteste back-up bestaat niet) — draaiboek + logboek: `docs/legal/Backup_Restoretest_PerfectSupplement_nl.md`. Retentie voor wissingseffect (stap 4): 7 dgn zodra Pro actief is, niet 30. |
 | **Logging** | Stap 7; nooit secrets/tokens/mail-bodies in serverlogs. |
 | **Database** | TLS-only verbindingen; least-privilege (app-rol geen DDL); RLS aan; `timeline_events` UPDATE/DELETE revoked (plan ✓) — scrub via aparte `security definer`-functie met eigen audit-event. |
 | **Encryptie** | At rest: Supabase default. In transit: TLS 1.2+. Applicatielaag: credentials AES-256-GCM (plan ✓); key in env; **key-rotatieprocedure documenteren** (herversleutel-script). |
@@ -278,7 +278,7 @@ Betrokkenen: contactpersonen (direct), eenmanszaak-eigenaren, consumenten (pseud
 | ☐ V | Verwerkersovereenkomsten | Supabase (EU-regio kiezen), Anthropic (F4), Resend (F3), Hetzner (hosting); doorgifte-check (DPF/SCC) per VS-partij |
 | ☐ V | Datalekprocedure (art. 33/34) | Runbook: detectie → vastlegging → 72 u-afweging AP-melding → betrokkenen-afweging; intern register óók voor niet-gemelde lekken |
 | ☐ V | Bewaarbeleid + uitvoering | Stap 12 + retention-job (code!) |
-| ☐ A | Back-upbeleid | 30 dgn rotatie, EU, kwartaal-restore-test |
+| ☐ A | Back-upbeleid | 30 dgn rotatie, EU, kwartaal-restore-test — draaiboek + logboek klaar (`docs/legal/Backup_Restoretest_PerfectSupplement_nl.md`), eerste uitvoering nog open |
 | ☐ A | Loggingbeleid | Stap 7 |
 | ☐ A | Incidentprocedure (breder dan datalek) | Zelfde runbook, sectie security-incident (key-rotatie, sessie-invalidatie) |
 | ☐ A | AI-gebruiksbeleid (art. 4 AI Act) | 1 pagina: toegestane use-cases, verboden input, bevestigingsplicht |

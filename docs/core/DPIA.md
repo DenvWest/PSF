@@ -5,17 +5,20 @@
 
 > **Versie 1.1 — vastgesteld 4 juli 2026.** Vervangt PDF-snapshot v1.0 (12 april 2026).
 > **Onderhoud:** jaarlijks of bij wezenlijke risicowijziging. Maandelijkse drift-check via `docs/cursors/monthly-privacy-register-review.md`.
+> **Wijziging 9 augustus 2026:** §0/§6 herformuleerd — DPIA-grond en FG-toets gebruikten bijna dezelfde maatstaf ("grote schaal" resp. "beperkte verwerking") voor twee verschillende conclusies. Geen wijziging in de onderliggende verwerking; de FG-onderbouwing in §6 is nu explicieter maar wacht nog op bevestiging door een jurist (zie `docs/plan/ADVIES_BEVEILIGING_AUTH_HOSTING_2026-08.md` §A.10/§H).
 
 ---
 
 ## 0. Waarom deze DPIA verplicht is
 
-De verwerking voldoet aan meerdere criteria die een DPIA verplicht maken (AVG art. 35 lid 3 + AP-lijst):
-- **Bijzondere persoonsgegevens** (gezondheidsgegevens, AVG art. 9) worden op grote schaal verwerkt.
+De verwerking voldoet aan meerdere criteria uit de AP-lijst die een DPIA verplicht maken (AVG art. 35 lid 3):
+- **Bijzondere persoonsgegevens** (gezondheidsgegevens, AVG art. 9) worden verwerkt — de DPIA-trigger van art. 35 lid 3 sub b geldt voor verwerking van bijzondere categorieën op grote schaal, ongeacht of dit een kernactiviteit van de organisatie is.
 - **Systematische, geautomatiseerde beoordeling** (scoring-engine → domeinscores, profiellabel, urgentieniveau).
 - **Profilering** als basis voor gepersonaliseerde content en e-mail.
 
-Conclusie: DPIA is verplicht en hierbij uitgevoerd.
+Elk van deze drie criteria is op zichzelf al voldoende voor een DPIA-plicht. Conclusie: DPIA is verplicht en hierbij uitgevoerd.
+
+> ⚖️ **Afbakening t.o.v. §6 (FG-toets):** deze DPIA-grond (art. 35 lid 3 sub b) beoordeelt de verwerking op zich. De FG-plicht (art. 37 lid 1 sub c) is een aparte toets: die vereist dat grootschalige verwerking van bijzondere categorieën een **kernactiviteit** van de organisatie is. Dat "grote schaal" hier als DPIA-grond wordt genoemd, betekent dus niet automatisch dat de FG-toets in §6 hetzelfde uitpakt — zie daar voor de aparte onderbouwing. (Nog niet door een jurist bevestigd — zie `docs/plan/ADVIES_BEVEILIGING_AUTH_HOSTING_2026-08.md` §H.)
 
 ## 1. Systematische beschrijving van de verwerking
 
@@ -116,7 +119,7 @@ Met bovenstaande maatregelen is het restrisico **laag**. Het hoogste resterende 
 ## 6. Checklist vaststelling
 
 - [x] Verwerkingsverantwoordelijke: Dennis van Westbroek, KVK 74667653, info@perfectsupplement.nl
-- [x] FG: niet aangesteld — niet verplicht bij huidige schaal en risicoprofiel (eenmanszaak, beperkte verwerking)
+- [x] FG: niet aangesteld — ⚖️ afweging, nog niet door een jurist bevestigd (zie `docs/plan/ADVIES_BEVEILIGING_AUTH_HOSTING_2026-08.md` §H). Onderbouwing losstaand van de DPIA-grond in §0: art. 37 lid 1 sub c vereist dat grootschalige verwerking van bijzondere categorieën een **kernactiviteit** is; bij het huidige, geringe checkvolume (eenmanszaak, geen structurele grootschalige monitoring van betrokkenen buiten het product zelf) is dat naar verwachting niet aannemelijk — maar dit steunt op het daadwerkelijke sessievolume, dat nog niet expliciet is geverifieerd. **Herbeoordelen** bij tienduizenden checks per jaar, of bij het eerste B2B-contract met werknemersgezondheidsdata
 - [x] Verwerkersovereenkomsten (art. 28): Supabase, Hetzner, Cloudflare, Resend, Google Analytics, Microsoft Clarity — geaccepteerd en gearchiveerd (Zoho: checklist `docs/legal/Zoho_CRM_DPA_accepteren.md`)
 - [x] Toestemmingsvakjes standaard uit (geen pre-check) — bevestigd in code
 - [x] Procedure datalekmelding (art. 33/34) — §4.1
