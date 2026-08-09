@@ -3,7 +3,7 @@
 > **Layer 1 — Core.** Verplicht register conform AVG art. 30. Intern document — niet publiceren.
 > Verwante docs: [`DPIA.md`](DPIA.md) (art. 35, risicobeoordeling), privacyverklaring (`src/app/privacy/page.tsx`), [`ENTITY_MODEL.md`](ENTITY_MODEL.md) (technische tabellen).
 
-**Laatst bijgewerkt:** 2026-07-21  
+**Laatst bijgewerkt:** 2026-08-09  
 **Volgende geplande controle:** 2026-08-01 (maandelijks)  
 **Eigenaar:** Dennis van Westbroek — verwerkingsverantwoordelijke  
 **Archief verwerkersovereenkomsten:** `Documenten/documenten/perfectsupplement/privacy/`
@@ -270,14 +270,14 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 
 | | |
 |---|---|
-| **Doel** | Gebruiker kan tussen volledige hermetingen door een enkel domein opnieuw beantwoorden (nu: beweging, 10 deelvragen) zodat de domeinscore en leefstijllijn actueel blijven zonder een volledige Leefstijlcheck. Vanaf juli 2026 ook een korte **herstel-puls** (1 vraag `RCV_FEEL`) vanuit het beweging-dashboard — zelfde tabel en consent, hogere frequentie voor dagkeuze-aanbeveling; wijzigt de bewegingsscore niet |
+| **Doel** | Gebruiker kan tussen volledige hermetingen door een enkel domein opnieuw beantwoorden (nu: beweging, 10 deelvragen) zodat de domeinscore en leefstijllijn actueel blijven zonder een volledige Leefstijlcheck. Vanaf juli 2026 ook een korte **herstel-puls** (1 vraag `RCV_FEEL`) vanuit het beweging-dashboard — zelfde tabel en consent, hogere frequentie voor dagkeuze-aanbeveling; wijzigt de bewegingsscore niet. **Vooraf geregistreerd, nog niet actief:** een **ervaringsvraag** (1 losse waarde 1–5, "merk je er iets van", geen vrije tekst) bij een gekozen beweging-interventie vanuit het toekomstige keuze-schap — zelfde tabel en consent, maximaal 1× per week, uitsluitend in de klaar-staat van de dagkeuze, stopt bij de hermeting op dag 14; wijzigt de bewegingsscore niet. Deze paragraaf is bewust vooruit bijgewerkt: de bijbehorende code mag pas schrijven zodra deze wijziging gemerged is (zie wijzigingslog en `PROEF_BEWEGING_SCHAP_INHOUD_2026-08.md`) |
 | **Betrokkenen** | Gebruikers met een actieve intake-sessie die vrijwillig een domein-check opnieuw invullen |
 | **Soort gegevens** | Session-id, organization-id, domain_key (enum, nu: `movement_score`), raw_inputs (ruwe antwoordwaarden per veld), afgeleide domeinscore, rules_version |
 | **Bijzondere gegevens** | Ja — zelfgerapporteerd gezondheidsgerelateerd gedrag, gekoppeld aan sessie met art. 9-intake |
 | **Ontvangers** | Supabase (`intake_domain_checkin`, EU Frankfurt) — geen nieuwe verwerker |
 | **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming, zelfde consent-checkbox als bestaand) + art. 6 lid 1 sub a |
 | **Bewaartermijn** | Volgt intake-retentie (24 maanden); verwijderd bij sessie-verwijdering (cascade via `cleanup_intake_session_linked_data`) |
-| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via sessie-geauthenticeerde API; product-events `measurement.checkin_completed`/`measurement.direction_detected` alleen categorisch (domain_key + richting, geen ruwe antwoorden) |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via sessie-geauthenticeerde API; product-events `measurement.checkin_completed`/`measurement.direction_detected` alleen categorisch (domain_key + richting, geen ruwe antwoorden). Ervaringsvraag (zodra actief): geen vrije tekst, frequentiegrens (max 1×/week, alleen klaar-staat, stopt bij hermeting dag 14) serverside afgedwongen, niet clientside |
 | **Doorgifte buiten EU** | Nee |
 
 ---
@@ -320,6 +320,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-08-09 | Verwerking 18 uitgebreid (vooraf, ter voorbereiding — nog niet live): ervaringsvraag (1–5, "merk je er iets van") bij een gekozen beweging-interventie toegevoegd aan de gegevensomschrijving — zelfde `intake_domain_checkin`, consent en grondslag als bestaand; geen nieuwe tabel, geen nieuwe verwerker; max 1×/week, alleen klaar-staat, stopt bij hermeting dag 14, geen vrije tekst, score ongewijzigd. Blokkeert de eerste opslag totdat deze wijziging gemerged is (zie `PROEF_BEWEGING_SCHAP_INHOUD_2026-08.md` en `docs/cursors/claude-opus-kompas-domein-keuzehart-wederprompt.md`) |
 | 2026-08-05 | Verwerking 16 uitgebreid en hernoemd (focus-voorkeur → *prioriteit, dagritme en weergave*): `plan_steps_hidden`, `plan_step_dismissed_date`, `movement_day_choice` + `movement_day_choice_date` toegevoegd aan de gegevensomschrijving; geen nieuwe tabel, geen nieuwe verwerker, geen nieuwe grondslag. Privacy-pagina bijgewerkt (§Account en dashboard) |
 | 2026-07-21 | Verwerking 18 aangevuld: dagelijkse herstel-puls (`RCV_FEEL` enkelveld) vanuit beweging-dashboard — zelfde `intake_domain_checkin`, consent en grondslag; geen nieuwe verwerker; score ongewijzigd bij pulse |
 | 2026-07-19 | Verwerking 18 toegevoegd: domein-hercheck (`intake_domain_checkin`) — bestond al technisch sinds juni, kreeg alsnog een eigen paragraaf; beweging-domein uitgebreid van 2 naar 10 deelvragen |
