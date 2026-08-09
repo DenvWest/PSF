@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R0-verfijning — vraag-uitleg, feitelijke meting, vervolg-strip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --shell:#0E1A0F;
+  --bg:#132414;
+  --panel:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.11);
+  --line-soft:rgba(255,255,255,.06);
+  --sage:#5A8F6A;
+  --sage-lt:#9CC5A9;
+  --terra:#C8956C;
+  --move:#C26E4B;
+  --ink:#F1EFE8;
+  --soft:#CDD7D0;
+  --mut:#9FB0A6;
+  --subtle:#7E8C82;
+  --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --r-panel:16px;
+  --r-card:14px;
+  --r-btn:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--shell);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+
+/* ── prebuild-chrome ────────────────────────────────────────────── */
+.chrome{position:sticky;top:0;z-index:20;background:rgba(14,26,15,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px 12px}
+.chrome-inner{max-width:1060px;margin:0 auto}
+.chrome h1{font-family:var(--serif);font-weight:400;font-size:19px;margin:0 0 2px;letter-spacing:.2px}
+.chrome p.sub{margin:0 0 12px;font-size:12.5px;color:var(--mut)}
+.switchrow{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.switch{display:flex;flex-direction:column;gap:6px}
+.switch-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.switch-btns{display:flex;flex-wrap:wrap;gap:6px}
+.sw{font-family:var(--sans);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--mut);transition:all .16s ease}
+.sw:hover{border-color:rgba(255,255,255,.24);color:var(--soft)}
+.sw[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:#0F1C10}
+.statenote{margin:12px 0 0;font-size:12px;color:var(--mut);max-width:82ch;border-left:2px solid var(--sage);padding-left:10px}
+
+/* ── phone ─────────────────────────────────────────────────────── */
+.stage{padding:26px 16px 70px;display:flex;justify-content:center}
+.phone{width:375px;max-width:100%;background:var(--bg);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.phone-note{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--subtle);text-align:center;padding:0 0 9px}
+.foldmark{position:relative;height:0}
+.foldmark span{position:absolute;left:0;right:0;top:0;border-top:1px dashed rgba(200,149,108,.5);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--terra);padding-top:3px;text-align:right;padding-right:4px}
+
+/* ── tekstprimitieven ──────────────────────────────────────────── */
+.pagetitle{font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.2;margin:0 0 6px;text-align:center}
+.pagesub{margin:0 0 22px;font-size:12.5px;color:var(--mut);text-align:center}
+.sechead{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle);margin:0 0 4px}
+
+/* ── DE GEDEELDE READOUT — vorm ongewijzigd t.o.v. R0 ──────────── */
+.checkin-readout{border:1px solid rgba(200,149,108,.30);border-radius:var(--r-panel);background:var(--panel);padding:18px 16px 16px}
+.checkin-readout .ro-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin:0 0 9px}
+.checkin-readout .ro-feit{font-family:var(--serif);font-weight:400;font-size:20px;line-height:1.3;margin:0 0 10px;color:var(--ink)}
+.checkin-readout .ro-answer{display:inline-flex;align-items:baseline;gap:7px;border:1px solid var(--line);border-radius:999px;padding:5px 11px;margin:0 0 12px;font-size:11.5px;color:var(--soft)}
+.checkin-readout .ro-answer b{font-weight:600;color:var(--ink)}
+.checkin-readout .ro-answer .dot{color:var(--subtle)}
+.checkin-readout .ro-statement{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--soft)}
+.ro-delta{border-radius:var(--r-card);border:1px solid var(--line-soft);background:rgba(0,0,0,.18);padding:12px 13px;margin:0 0 13px;border-left:2px solid var(--mut)}
+.ro-delta[data-dir="up"]{border-left-color:var(--sage)}
+.ro-delta[data-dir="down"]{border-left-color:var(--move)}
+.ro-delta[data-dir="same"]{border-left-color:var(--mut)}
+.ro-delta[data-dir="new"]{border-left-color:var(--terra)}
+.ro-delta .lab{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle);margin:0 0 6px}
+.ro-delta .win{margin:0 0 8px;font-size:13px;line-height:1.6;color:var(--sage-lt);font-weight:600}
+.ro-delta .line{margin:0;font-size:13px;line-height:1.6;color:var(--ink)}
+.ro-delta .follow{margin:7px 0 0;font-size:13px;line-height:1.6;color:var(--soft)}
+.ro-delta .also{margin:8px 0 0;font-size:12px;line-height:1.55;color:var(--mut)}
+.ro-delta .start{margin:9px 0 0;padding-top:8px;border-top:1px dashed var(--line-soft);font-size:11.5px;line-height:1.5;color:var(--subtle)}
+.ro-implicatie{margin:0 0 14px;font-size:13.5px;line-height:1.62;color:var(--ink)}
+.ro-routing{border-top:1px solid var(--line-soft);padding-top:13px}
+.ro-hint{margin:10px 0 0;font-size:11.5px;line-height:1.55;color:var(--subtle)}
+a.btn-terra{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:var(--r-btn);background:var(--terra);color:#231409;font-size:14px;font-weight:700;text-decoration:none;transition:opacity .16s ease}
+a.btn-terra:hover{opacity:.9}
+a.btn-ghost{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:var(--r-btn);background:transparent;border:1px solid var(--line);color:var(--soft);font-size:13.5px;font-weight:600;text-decoration:none}
+a.btn-ghost:hover{border-color:rgba(255,255,255,.24);color:var(--ink)}
+
+/* ── scherm-chrome ─────────────────────────────────────────────── */
+.screen{padding:22px 18px 30px}
+.progressbar{height:3px;background:rgba(255,255,255,.08)}
+.progressbar span{display:block;height:100%;background:var(--terra)}
+.blockgap{height:20px}
+
+/* ── frame Q — vraag + uitleg ──────────────────────────────────── */
+.qkicker{margin:0 0 6px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--subtle)}
+.qkicker .num{color:var(--terra)}
+.qcount{margin:0 0 26px;text-align:center;font-size:12.5px;color:var(--subtle)}
+.qtitle{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.32;margin:0 0 26px;text-align:center;color:var(--ink)}
+.opts{display:flex;flex-direction:column;gap:11px}
+.opt{width:100%;min-height:48px;border-radius:var(--r-card);border:1px solid var(--line);background:var(--panel);padding:13px 16px;text-align:left;font-family:var(--sans);font-size:15px;font-weight:500;line-height:1.3;color:var(--soft);cursor:pointer;transition:all .16s ease}
+.opt:hover{border-color:rgba(200,149,108,.45);color:var(--ink)}
+.disc{margin-top:18px;border-top:1px solid var(--line-soft);padding-top:6px}
+.disctrigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;background:none;border:none;padding:0 2px;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--mut);cursor:pointer;text-align:left}
+.disctrigger:hover{color:var(--soft)}
+.disctrigger .sign{font-size:16px;font-weight:400;color:var(--subtle);line-height:1}
+.disctrigger[aria-expanded="true"]{color:var(--sage-lt)}
+.discpanel{border-left:2px solid var(--sage);padding:2px 0 2px 12px;margin:4px 0 6px}
+.discpanel .dtitle{margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--sage-lt)}
+.discpanel .dbody{margin:0;font-size:12.5px;line-height:1.62;color:var(--soft)}
+.discpanel .danchor{margin:9px 0 0;font-size:11.5px;line-height:1.5;color:var(--subtle)}
+.qback{margin-top:24px;background:none;border:none;padding:12px 0;font-family:var(--sans);font-size:13px;color:var(--subtle);cursor:pointer}
+
+/* ── meetblok ──────────────────────────────────────────────────── */
+.factblock{margin-top:20px}
+.factblock h2{margin:0 0 3px;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--soft)}
+.factintro{margin:0 0 12px;font-size:11.5px;line-height:1.5;color:var(--subtle)}
+.factrow{border-top:1px solid var(--line-soft);padding:12px 0 11px}
+.factrow:last-of-type{border-bottom:1px solid var(--line-soft)}
+.facttop{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.factname{margin:0;font-size:12.5px;font-weight:700;color:var(--ink)}
+.factanswer{margin:3px 0 0;font-size:13.5px;line-height:1.4;color:var(--ink);font-weight:500}
+.facttag{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 9px;border:1px solid var(--line);color:var(--mut)}
+.facttag[data-status="below"]{border-color:rgba(194,110,75,.5);color:var(--move)}
+.facttag[data-status="near"]{border-color:rgba(200,149,108,.45);color:var(--terra)}
+.facttag[data-status="meets"]{border-color:rgba(90,143,106,.5);color:var(--sage-lt)}
+.facttag[data-status="own"]{border-color:var(--line);color:var(--subtle)}
+.factbench{margin:7px 0 0;font-size:11.5px;line-height:1.5;color:var(--mut)}
+.factbench .src{color:var(--subtle)}
+.factwhy{margin:5px 0 0;font-size:12px;line-height:1.55;color:var(--soft)}
+.factnote{margin:6px 0 0;font-size:11px;line-height:1.5;color:var(--subtle);font-style:normal}
+.factmore{margin-top:11px;min-height:44px;width:100%;background:none;border:none;padding:0;text-align:left;font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--sage-lt);cursor:pointer}
+.factmore:hover{color:var(--ink)}
+
+/* ── moderator ─────────────────────────────────────────────────── */
+.moderator{margin-top:18px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);padding:13px 14px}
+.moderator p.mh{margin:0 0 8px;font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--subtle)}
+.moderator ul{margin:0;padding-left:16px}
+.moderator li{font-size:12.5px;line-height:1.58;color:var(--mut);margin-bottom:6px}
+.moderator li:last-child{margin-bottom:0}
+
+/* ── vervolg-strip ─────────────────────────────────────────────── */
+.strip{margin-top:20px;border:1px solid var(--line);border-radius:var(--r-panel);background:rgba(0,0,0,.18);padding:15px 15px 6px}
+.strip h2{margin:0 0 9px;font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sage-lt)}
+.strip .sline{margin:0 0 6px;font-size:13px;line-height:1.6;color:var(--soft)}
+.strip .sline:last-of-type{margin-bottom:13px}
+.striplink{display:block;text-decoration:none;border-top:1px solid var(--line-soft);padding:11px 0 10px}
+.striplink .lrow{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:24px}
+.striplink .llabel{font-size:13.5px;font-weight:600;color:var(--sage-lt)}
+.striplink .chev{color:var(--subtle);font-size:15px}
+.striplink .lhint{margin:3px 0 0;font-size:11.5px;line-height:1.5;color:var(--subtle)}
+.striplink:hover .llabel{color:var(--ink)}
+
+/* ── footer ────────────────────────────────────────────────────── */
+.foot{margin-top:22px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);padding:16px 15px;text-align:center}
+.foot p{margin:0 0 12px;font-size:12.5px;line-height:1.6;color:var(--mut)}
+
+/* ── frame V ───────────────────────────────────────────────────── */
+.vcap{margin:22px 0 0;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle)}
+.vcap:first-child{margin-top:0}
+.vwhen{margin:3px 0 0;font-size:11.5px;line-height:1.5;color:var(--mut)}
+
+@media (max-width:420px){
+  .phone{border-radius:0;border-left:none;border-right:none}
+  .stage{padding:18px 0 50px}
+}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <div class="chrome-inner">
+    <h1>R0-verfijning — vraag-uitleg, feitelijke meting, vervolg-strip</h1>
+    <p class="sub">Drie frames. Q = een vraag tijdens de beweegcheck met de opt-in uitleg. R = het resultaat: readout ongewijzigd van vorm, daaronder het nieuwe meetblok en de vervolg-strip. V = de drie strip-varianten naast elkaar. Geen chips, geen actielijst, geen laagnummers.</p>
+    <div class="switchrow">
+      <div class="switch">
+        <span class="switch-label">Frame</span>
+        <div class="switch-btns" id="frameSwitch">
+          <button class="sw" type="button" data-frame="Q" aria-pressed="false">Q &middot; Vraag</button>
+          <button class="sw" type="button" data-frame="R" aria-pressed="true">R &middot; Resultaat</button>
+          <button class="sw" type="button" data-frame="V" aria-pressed="false">V &middot; Vervolg-strip</button>
+        </div>
+      </div>
+      <div class="switch">
+        <span class="switch-label">Staat</span>
+        <div class="switch-btns" id="stateSwitch">
+          <button class="sw" type="button" data-state="F1" aria-pressed="true">F1 eerste check</button>
+          <button class="sw" type="button" data-state="F2" aria-pressed="false">F2 achteruit</button>
+          <button class="sw" type="button" data-state="F3" aria-pressed="false">F3 norm gehaald</button>
+          <button class="sw" type="button" data-state="F4" aria-pressed="false">F4 alles sterk</button>
+          <button class="sw" type="button" data-state="F5" aria-pressed="false">F5 kleine stap</button>
+          <button class="sw" type="button" data-state="F6" aria-pressed="false">F6 vastgelopen</button>
+        </div>
+      </div>
+    </div>
+    <p class="statenote" id="stateNote"></p>
+  </div>
+</div>
+
+<div class="stage">
+  <div>
+    <p class="phone-note" id="phoneNote">375 px</p>
+    <div class="phone" id="phone"></div>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   Alle copy is eindcopy, geen placeholder.
+   Statuslabels: below/near/meets/own — zie sectie D van de spec.
+   ───────────────────────────────────────────────────────────────── */
+
+var TAG = {
+  below: 'Onder de richtlijn',
+  near:  'Bijna op de richtlijn',
+  meets: 'Haalt de richtlijn',
+  own:   'Jouw ijkpunt'
+};
+
+var BENCH_AEROOB = 'Richtlijn: 150–300 minuten matig per week, of 75–150 minuten intensief';
+var SRC_AEROOB   = 'WHO 2020 · Beweegrichtlijnen 2017';
+var NOTE_AEROOB  = 'In de richtlijn telt één minuut intensief als twee minuten matig — daarom staan ze hier samen.';
+var BENCH_KRACHT = 'Richtlijn: 2× per week krachttraining';
+var SRC_KRACHT   = 'WHO 2020';
+var BENCH_ZIT    = 'Richtlijn: voorkom veel stilzitten — geen getalsnorm';
+var SRC_ZIT      = 'WHO 2020';
+var NOTE_ZIT     = 'De grens van ongeveer 8 uur per dag komt uit cohortonderzoek naar zitgedrag, niet uit een richtlijn.';
+
+var FACT_INTRO = 'Waar een richtlijn bestaat, staat hij erbij. De rest meet je tegen jezelf.';
+
+var ROUTE = {
+  programma: { label: 'Naar je beweegplan', hint: 'Daar staat wat je deze week doet.' },
+  voortgang: { label: 'Bekijk je volledige beeld', hint: 'Al je metingen bij elkaar, met wat erna komt.' },
+  mijndag:   { label: 'Terug naar Mijn Dag', hint: 'Je meting is opgeslagen; je dag staat er nog.' }
+};
+
+var STRIP = {
+  S1: {
+    kop: 'Wat er hierna gebeurt',
+    lines: [
+      'We beginnen met een week die je haalt — kleiner dan je zelf zou plannen.',
+      'Blijft die staan, dan bouwen we hem uit. Verdieping komt pas als het ritme er is.'
+    ],
+    routes: ['programma', 'voortgang'],
+    when: 'Eerste check, of de focus valt in de laagste antwoordgroep.'
+  },
+  S2: {
+    kop: 'Wat we nu doen',
+    lines: [
+      'Een mindere maand is informatie, geen oordeel.',
+      'Je plan gaat daarom kleiner, niet zwaarder — één moment dat je zeker haalt.'
+    ],
+    routes: ['programma'],
+    when: 'De focus ging terug, of de check liep vast op weken plus motivatie. Bewust één deur: geen link naar een vollediger beeld van diezelfde terugval.'
+  },
+  S3: {
+    kop: 'Wat er hierna gebeurt',
+    lines: [
+      'Je hoeft nu niets nieuws te doen. Dit vasthouden is het werk.',
+      'We houden je metingen bij en zeggen het als er iets verschuift.'
+    ],
+    routes: ['voortgang', 'programma'],
+    when: 'Alles redelijk of sterk. Geen nieuwe taak, geen aanbod.'
+  }
+};
+
+var MORE_DEFAULT = [
+  { name: 'Ervaren conditie', answer: 'Redelijk',        status: 'own', why: 'Je gevoel over je conditie stuurt wat je durft.' },
+  { name: 'Mobiliteit',       answer: 'Gemiddeld',       status: 'own', why: 'Soepelheid bepaalt hoeveel je van de rest kunt doen.' },
+  { name: 'Belastbaarheid',   answer: 'Meestal',         status: 'own', why: 'Traplopen voorspelt dagelijks functioneren beter dan één sportgetal.' },
+  { name: 'Motivatie',        answer: 'Gemotiveerd',     status: 'own', why: 'Bepaalt de grootte van de stap, niet je resultaat.' }
+];
+
+var S = {
+
+/* ── F1 · eerste check, focus kracht ───────────────────────────── */
+F1: {
+  q: {
+    num: '01', of: 11, index: 1,
+    question: 'Hoe vaak doe je doelgerichte kracht- of weerstandstraining?',
+    options: ['3x per week of vaker', '2x per week', '1x per week', 'Minder dan 1x per week', 'Nooit'],
+    help: {
+      title: 'Wat kracht hier betekent',
+      body: 'Spiermassa loopt na je veertigste terug zodra de prikkel wegvalt. Hoe váák je traint zegt daar meer over dan hoe zwaar. Op je resultaat zie je je eigen antwoord naast de richtlijn.',
+      anchor: 'WHO 2020: 2× per week spierversterkend'
+    }
+  },
+  ro: {
+    headline: 'Op basis van jouw antwoorden ligt jouw grootste beweegwinst bij kracht.',
+    focus: 'Kracht',
+    answer: 'Minder dan 1x per week',
+    statement: 'Krachttraining schiet er nu bij in — en juist daar valt na 40 het meest te winnen.',
+    delta: {
+      dir: 'new',
+      lab: 'Je nulpunt',
+      line: 'Dit is je eerste beweegcheck. Kracht staat op "Minder dan 1x per week". De richtlijn is twee keer per week — daar meet je vanaf nu tegenaf.'
+    },
+    implication: 'Zolang kracht onder één keer per week blijft, is dit het deel dat het meeste laat liggen — meer wandelen vult het niet op.',
+    hint: 'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.'
+  },
+  facts: [
+    { name: 'Kracht', answer: 'Minder dan 1x per week', bench: BENCH_KRACHT, src: SRC_KRACHT, status: 'below',
+      why: 'Richtlijn is 2× per week; jij zit daar nu onder. Eén vast moment brengt dit binnen bereik.' },
+    { name: 'Cardio en intensief samen', answer: '90-149 minuten matig · 30-74 minuten intensief', bench: BENCH_AEROOB, src: SRC_AEROOB, status: 'meets',
+      why: 'Intensieve minuten tellen dubbel; samen vormen ze je aerobe basis.', note: NOTE_AEROOB },
+    { name: 'Zitten', answer: '6-8 uur per dag', bench: BENCH_ZIT, src: SRC_ZIT, status: 'own',
+      why: 'Lang zitten weegt apart mee, los van je training.', note: NOTE_ZIT },
+    { name: 'Consistentie', answer: '2 weken van de afgelopen maand', status: 'own',
+      why: 'Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie.' }
+  ],
+  more: MORE_DEFAULT,
+  moderator: null,
+  strip: 'S1',
+  mijndag: false,
+  note: {
+    Q: 'Vraag 1 van 11 met de uitleg dicht. Klik op "Waarom vragen we dit?" — de trigger staat ónder de knoppen, zodat openen de antwoordkolom niet onder je duim verschuift.',
+    R: 'Eerste check zonder vorige meting: template T1b, dus met de richtlijn erin. Geen alsoLine, geen winLine, geen regel over een vorige keer. Strip S1 legt uit wat het platform hierna doet, zonder laagnummers.',
+    V: 'S1 hoort bij deze staat: eerste check of laagste antwoordgroep.'
+  }
+},
+
+/* ── F2 · achteruitgang consistentie (screenshot-case) ─────────── */
+F2: {
+  q: {
+    num: '10', of: 11, index: 10,
+    question: 'Hoeveel weken heb je de afgelopen maand je beweegdoel gehaald?',
+    options: ['4 weken', '3 weken', '2 weken', '1 week', 'Geen'],
+    help: {
+      title: 'Wat consistentie hier betekent',
+      body: 'Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie. We vragen weken, niet uren, omdat volhouden hier de variabele is. Op je resultaat bepaalt dit of we je week verkleinen of uitbreiden.',
+      anchor: null
+    }
+  },
+  ro: {
+    headline: 'Op basis van jouw antwoorden ligt jouw grootste beweegwinst bij consistentie.',
+    focus: 'Consistentie',
+    answer: '1 week',
+    statement: 'Minder dan de helft van de weken gehaald — één goede week is minder waardevol dan een haalbaar, herhaalbaar ritme.',
+    delta: {
+      dir: 'down',
+      lab: 'Sinds je vorige meting',
+      line: 'Consistentie: je koos vorige keer "2 weken", nu "1 week". Dat is minder dan vorige keer.',
+      follow: 'Dat is het moment om je week kleiner te maken, niet zwaarder — één moment dat je zeker haalt telt hier het zwaarst.',
+      also: 'Ook veranderd — Cardio: "150-299 minuten" → "90-149 minuten".',
+      start: 'Sinds je start: je beweegbeeld ligt iets onder je startmeting.'
+    },
+    implication: 'Zolang de weken niet gehaald worden, verandert een zwaarder programma niets — de winst zit in een kleinere week die je wél haalt.',
+    hint: 'Daar maak je je week kleiner: hoe vaak, en waar. Wat je vandaag doet, staat er al klaar.'
+  },
+  facts: [
+    { name: 'Consistentie', answer: '1 week van de afgelopen maand', status: 'own',
+      why: 'Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie.' },
+    { name: 'Cardio en intensief samen', answer: '90-149 minuten matig · 30-74 minuten intensief', bench: BENCH_AEROOB, src: SRC_AEROOB, status: 'meets',
+      why: 'Intensieve minuten tellen dubbel; samen vormen ze je aerobe basis.', note: NOTE_AEROOB },
+    { name: 'Kracht', answer: '1x per week', bench: BENCH_KRACHT, src: SRC_KRACHT, status: 'near',
+      why: 'Eén extra vast moment per week brengt de richtlijn binnen bereik.' },
+    { name: 'Zitten', answer: '6-8 uur per dag', bench: BENCH_ZIT, src: SRC_ZIT, status: 'own',
+      why: 'Lang zitten weegt apart mee, los van je training.', note: NOTE_ZIT }
+  ],
+  more: [
+    { name: 'Ervaren conditie', answer: 'Redelijk',  status: 'own', why: 'Je gevoel over je conditie stuurt wat je durft.' },
+    { name: 'Mobiliteit',       answer: 'Gemiddeld', status: 'own', why: 'Soepelheid bepaalt hoeveel je van de rest kunt doen.' },
+    { name: 'Belastbaarheid',   answer: 'Meestal',   status: 'own', why: 'Traplopen voorspelt dagelijks functioneren beter dan één sportgetal.' },
+    { name: 'Motivatie',        answer: 'Twijfelend', status: 'own', why: 'Bepaalt de grootte van de stap, niet je resultaat.' }
+  ],
+  moderator: null,
+  strip: 'S2',
+  mijndag: true,
+  note: {
+    Q: 'De vraag achter de screenshot-case. helpAnchor is null: er is geen norm voor volhouden, dus staat er expliciet dat dit je eigen ijkpunt is.',
+    R: 'Template T3 met de verkleinzin eronder, plus een alsoLine met letterlijke antwoordlabels. "Sinds je start" is nu een voetnoot ín het delta-blok (L8) in plaats van een eigen kaart. Strip S2 toont één deur: geen link naar een vollediger beeld van diezelfde terugval.',
+    V: 'S2 hoort bij deze staat: richting omlaag.'
+  }
+},
+
+/* ── F3 · kracht haalt de norm, focus verschuift ───────────────── */
+F3: {
+  q: {
+    num: '02', of: 11, index: 2,
+    question: 'Hoeveel minuten beweeg je gemiddeld per week matig intensief — stevig doorwandelen, fietsen of sport waarbij praten nog lukt, maar zingen niet?',
+    options: ['300 minuten of meer', '150-299 minuten', '90-149 minuten', '30-89 minuten', 'Minder dan 30 minuten'],
+    help: {
+      title: 'Wat cardio hier betekent',
+      body: 'Dit tempo — zone 2 — traint je conditie: de basis onder je energie en herstel. We vragen minuten per week omdat de richtlijn daarin is uitgedrukt. Op je resultaat zie je jouw minuten naast die richtlijn.',
+      anchor: 'Beweegrichtlijnen: 150–300 minuten matig per week'
+    }
+  },
+  ro: {
+    headline: 'Op basis van jouw antwoorden ligt jouw grootste beweegwinst bij zitten.',
+    focus: 'Zitten',
+    answer: '6-8 uur',
+    statement: 'Je zit een gemiddelde werkdag. Elk uur even onderbreken maakt hier al verschil.',
+    delta: {
+      dir: 'up',
+      lab: 'Sinds je vorige meting',
+      win: 'Je grootste stap: Kracht van "1x per week" naar "2x per week" — daarmee zit je op de richtlijn van twee keer per week.',
+      line: 'Zitten staat op hetzelfde antwoord als vorige keer — "6-8 uur".'
+    },
+    implication: 'Je zit een gemiddelde werkdag; de winst zit hier in het onderbreken, niet in minder uren.',
+    hint: 'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.'
+  },
+  facts: [
+    { name: 'Kracht', answer: '2x per week', bench: BENCH_KRACHT, src: SRC_KRACHT, status: 'meets',
+      why: 'Spierbehoud na 40 hangt aan frequentie, niet aan zwaarte.' },
+    { name: 'Cardio en intensief samen', answer: '90-149 minuten matig · 30-74 minuten intensief', bench: BENCH_AEROOB, src: SRC_AEROOB, status: 'meets',
+      why: 'Intensieve minuten tellen dubbel; samen vormen ze je aerobe basis.', note: NOTE_AEROOB },
+    { name: 'Zitten', answer: '6-8 uur per dag', bench: BENCH_ZIT, src: SRC_ZIT, status: 'own',
+      why: 'Lang zitten weegt apart mee, los van je training.', note: NOTE_ZIT },
+    { name: 'Consistentie', answer: '3 weken van de afgelopen maand', status: 'own',
+      why: 'Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie.' }
+  ],
+  more: MORE_DEFAULT,
+  moderator: null,
+  strip: 'S3',
+  mijndag: false,
+  note: {
+    Q: 'De cardio-vraag. De bestaande zone 2-subtitle stond in de data maar werd nergens gerenderd; hij is hier helpBody geworden.',
+    R: 'De val die de huidige engine niet ziet: kracht haalt de norm en is dáárom geen focus meer, dus zijn grootste winst zou in de grijze bijzin belanden. De winLine trekt hem naar boven, en kracht staat niet ook nog in een alsoLine.',
+    V: 'S3 hoort bij deze staat: het beeld is op orde, dus vasthouden zonder nieuwe taak.'
+  }
+},
+
+/* ── F4 · alles sterk, geen focus ──────────────────────────────── */
+F4: {
+  q: {
+    num: '04', of: 11, index: 4,
+    question: 'Hoeveel uur zit je gemiddeld per dag?',
+    options: ['Minder dan 4 uur', '4-6 uur', '6-8 uur', '8-10 uur', 'Meer dan 10 uur'],
+    help: {
+      title: 'Wat zitten hier betekent',
+      body: 'Lang zitten weegt mee los van wat je verder traint. Een getalsnorm is er niet: de richtlijn zegt alleen "voorkom veel stilzitten". Op je resultaat zie je je eigen uren terug, met wat het onderzoek erover zegt.',
+      anchor: 'Richtlijn: voorkom veel stilzitten — geen getalsnorm'
+    }
+  },
+  ro: {
+    headline: 'Je basis staat — houd vast wat werkt',
+    focus: null,
+    answer: null,
+    statement: 'Op alles wat we meten staat je beweging er goed voor.',
+    delta: {
+      dir: 'up',
+      lab: 'Sinds je vorige meting',
+      line: 'Kracht was vorige keer je grootste winst. Dat deel staat nu op "3x per week of vaker" en er springt niets meer uit.'
+    },
+    implication: 'Vasthouden is hier de winst: dit valt in een drukke week sneller terug dan het is opgebouwd.',
+    hint: 'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.'
+  },
+  facts: [
+    { name: 'Kracht', answer: '3x per week of vaker', bench: BENCH_KRACHT, src: SRC_KRACHT, status: 'meets',
+      why: 'Spierbehoud na 40 hangt aan frequentie, niet aan zwaarte.' },
+    { name: 'Cardio en intensief samen', answer: '300 minuten of meer matig · 75-149 minuten intensief', bench: BENCH_AEROOB, src: SRC_AEROOB, status: 'meets',
+      why: 'Intensieve minuten tellen dubbel; samen vormen ze je aerobe basis.', note: NOTE_AEROOB },
+    { name: 'Zitten', answer: '4-6 uur per dag', bench: BENCH_ZIT, src: SRC_ZIT, status: 'own',
+      why: 'Lang zitten weegt apart mee, los van je training.', note: NOTE_ZIT },
+    { name: 'Consistentie', answer: '4 weken van de afgelopen maand', status: 'own',
+      why: 'Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie.' }
+  ],
+  more: [
+    { name: 'Ervaren conditie', answer: 'Uitstekend',      status: 'own', why: 'Je gevoel over je conditie stuurt wat je durft.' },
+    { name: 'Mobiliteit',       answer: 'Redelijk soepel', status: 'own', why: 'Soepelheid bepaalt hoeveel je van de rest kunt doen.' },
+    { name: 'Belastbaarheid',   answer: 'Ja, gemakkelijk', status: 'own', why: 'Traplopen voorspelt dagelijks functioneren beter dan één sportgetal.' },
+    { name: 'Motivatie',        answer: 'Gemotiveerd',     status: 'own', why: 'Bepaalt de grootte van de stap, niet je resultaat.' }
+  ],
+  moderator: null,
+  strip: 'S3',
+  mijndag: false,
+  note: {
+    Q: 'De zitten-vraag: de enige waar de richtlijn kwalitatief is. De uitleg zegt dat met zoveel woorden, in plaats van een norm te suggereren die niet bestaat.',
+    R: 'Geen focus, dus geen antwoord-pil en geen winst-implicatie. Template T7 benoemt het deel dat op orde kwam. De onderhoudsregel is herschreven zodat er niets meer in staat wat stijgt of daalt.',
+    V: 'S3 hoort bij deze staat.'
+  }
+},
+
+/* ── F5 · kleine stap vooruit + moe vandaag ────────────────────── */
+F5: {
+  q: {
+    num: '06', of: 11, index: 6,
+    question: 'Hoe hersteld voel je je vandaag?',
+    options: ['Fris — klaar voor belasting', 'Redelijk — lichte sessie lukt', 'Matig — liever rustig aan', 'Moe — liever licht of rust', 'Uitgeput — liever rust'],
+    help: {
+      title: 'Wat herstel hier betekent',
+      body: 'Deze vraag gaat over vandaag, niet over je maand. Hij bepaalt of we vandaag een lichtere of zwaardere sessie voorstellen. Op je resultaat staat hij apart, los van je beweegbeeld.',
+      anchor: null
+    }
+  },
+  ro: {
+    headline: 'Op basis van jouw antwoorden ligt jouw grootste beweegwinst bij kracht.',
+    focus: 'Kracht',
+    answer: 'Minder dan 1x per week',
+    statement: 'Krachttraining schiet er nu bij in — en juist daar valt na 40 het meest te winnen.',
+    delta: {
+      dir: 'up',
+      lab: 'Sinds je vorige meting',
+      line: 'Kracht: van "Nooit" naar "Minder dan 1x per week". Een stap vooruit, en de richtlijn van twee keer per week is nog niet in beeld — dat hoeft nu ook niet.'
+    },
+    implication: 'Zolang kracht onder één keer per week blijft, is dit het deel dat het meeste laat liggen — meer wandelen vult het niet op.',
+    hint: 'Daar stel je in waar je beweegt en hoe vaak. Wat je vandaag doet, staat er al klaar.'
+  },
+  facts: [
+    { name: 'Kracht', answer: 'Minder dan 1x per week', bench: BENCH_KRACHT, src: SRC_KRACHT, status: 'below',
+      why: 'Richtlijn is 2× per week; jij zit daar nu onder. Eén vast moment brengt dit binnen bereik.' },
+    { name: 'Cardio en intensief samen', answer: '150-299 minuten matig · minder dan 30 minuten intensief', bench: BENCH_AEROOB, src: SRC_AEROOB, status: 'meets',
+      why: 'Intensieve minuten tellen dubbel; samen vormen ze je aerobe basis.', note: NOTE_AEROOB },
+    { name: 'Zitten', answer: '6-8 uur per dag', bench: BENCH_ZIT, src: SRC_ZIT, status: 'own',
+      why: 'Lang zitten weegt apart mee, los van je training.', note: NOTE_ZIT },
+    { name: 'Ervaren conditie', answer: 'Matig', status: 'own',
+      why: 'Je gevoel over je conditie stuurt wat je durft op te bouwen.' }
+  ],
+  more: [
+    { name: 'Mobiliteit',     answer: 'Gemiddeld',  status: 'own', why: 'Soepelheid bepaalt hoeveel je van de rest kunt doen.' },
+    { name: 'Belastbaarheid', answer: 'Soms',       status: 'own', why: 'Traplopen voorspelt dagelijks functioneren beter dan één sportgetal.' },
+    { name: 'Consistentie',   answer: '2 weken van de afgelopen maand', status: 'own', why: 'Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie.' },
+    { name: 'Motivatie',      answer: 'Gemotiveerd', status: 'own', why: 'Bepaalt de grootte van de stap, niet je resultaat.' }
+  ],
+  moderator: ['Je voelt je vandaag niet hersteld. Een rustige dag of een korte wandeling past nu beter dan een zware sessie.'],
+  strip: 'S1',
+  mijndag: false,
+  note: {
+    Q: 'De herstelvraag. Deze vraag is ook de hele pulse-modus — die blijft buiten scope: geen feitenrijen, geen strip, geen uitleg-disclosure in die flow.',
+    R: 'Een stap vooruit binnen dezelfde antwoordgroep: template T4, en dus géén verkleinzin — die hangt aan richting omlaag. Het moderator-blok staat vóór de vervolg-strip: wie vandaag moe is moet dat lezen vóór hij ergens op klikt.',
+    V: 'S1 hoort bij deze staat: de focus valt in de laagste antwoordgroep.'
+  }
+},
+
+/* ── F6 · stalled-override ─────────────────────────────────────── */
+F6: {
+  q: {
+    num: '11', of: 11, index: 11,
+    question: 'Hoe gemotiveerd ben je om komende week te bewegen?',
+    options: ['Heel gemotiveerd', 'Gemotiveerd', 'Twijfelend', 'Weinig motivatie', 'Geen motivatie'],
+    help: {
+      title: 'Wat motivatie hier betekent',
+      body: 'Motivatie bepaalt de grootte van de stap die we voorstellen, niet of je iets fout doet. Een eerlijk laag antwoord levert een kleiner en haalbaarder plan op. Op je resultaat staat hij nooit als oordeel.',
+      anchor: null
+    }
+  },
+  ro: {
+    headline: 'Op basis van jouw antwoorden ligt jouw grootste beweegwinst bij consistentie.',
+    focus: 'Consistentie',
+    answer: 'Geen',
+    statement: 'Minder dan de helft van de weken gehaald — één goede week is minder waardevol dan een haalbaar, herhaalbaar ritme.',
+    delta: {
+      dir: 'down',
+      lab: 'Sinds je vorige meting',
+      line: 'Consistentie: van "1 week" naar "Geen". Een stap terug ten opzichte van jezelf.',
+      follow: 'Dat is het moment om je week kleiner te maken, niet zwaarder — één moment dat je zeker haalt telt hier het zwaarst.',
+      also: 'Ook veranderd — Zitten: "6-8 uur" → "8-10 uur".'
+    },
+    implication: 'Zolang de weken niet gehaald worden, verandert een zwaarder programma niets — de winst zit in een kleinere week die je wél haalt.',
+    hint: 'Daar maak je je week kleiner: hoe vaak, en waar. Wat je vandaag doet, staat er al klaar.'
+  },
+  facts: [
+    { name: 'Consistentie', answer: 'Geen week van de afgelopen maand', status: 'own',
+      why: 'Herhaling voorspelt resultaat sterker dan de zwaarte van één sessie.' },
+    { name: 'Kracht', answer: 'Nooit', bench: BENCH_KRACHT, src: SRC_KRACHT, status: 'below',
+      why: 'Richtlijn is 2× per week; jij zit daar nu onder. Eén vast moment brengt dit binnen bereik.' },
+    { name: 'Cardio en intensief samen', answer: '30-89 minuten matig · niet intensief', bench: BENCH_AEROOB, src: SRC_AEROOB, status: 'below',
+      why: 'Onder de richtlijn — hier levert hetzelfde kwartier meer op dan bij de andere delen.', note: NOTE_AEROOB },
+    { name: 'Zitten', answer: '8-10 uur per dag', bench: BENCH_ZIT, src: SRC_ZIT, status: 'own',
+      why: 'Lang zitten weegt apart mee, los van je training.', note: NOTE_ZIT }
+  ],
+  more: [
+    { name: 'Ervaren conditie', answer: 'Matig',     status: 'own', why: 'Je gevoel over je conditie stuurt wat je durft.' },
+    { name: 'Mobiliteit',       answer: 'Gemiddeld', status: 'own', why: 'Soepelheid bepaalt hoeveel je van de rest kunt doen.' },
+    { name: 'Belastbaarheid',   answer: 'Soms',      status: 'own', why: 'Traplopen voorspelt dagelijks functioneren beter dan één sportgetal.' },
+    { name: 'Motivatie',        answer: 'Weinig motivatie', status: 'own', why: 'Bepaalt de grootte van de stap, niet je resultaat.' }
+  ],
+  moderator: null,
+  strip: 'S2',
+  mijndag: true,
+  note: {
+    Q: 'De motivatievraag. De uitleg zegt expliciet dat een laag antwoord een kleiner plan oplevert — anders geeft hij het antwoord dat hij denkt dat wij willen horen.',
+    R: 'Weken én motivatie laag: de focus wordt consistentie, ook al staat kracht lager. De daling blijft binnen dezelfde antwoordgroep — in de huidige engine dus de zachtste template. Daarom hangt de verkleinzin aan de richting, niet aan het template. Twee below-rijen zichtbaar; dat is het maximum.',
+    V: 'S2 hoort bij deze staat: vastgelopen op weken plus motivatie.'
+  }
+}
+
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   Render
+   ───────────────────────────────────────────────────────────────── */
+
+var frame = 'R';
+var state = 'F1';
+var factsOpen = false;
+var helpOpen = false;
+
+var phone = document.getElementById('phone');
+var stateNote = document.getElementById('stateNote');
+var phoneNote = document.getElementById('phoneNote');
+
+function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderQ(d){
+  var q = d.q;
+  var pct = Math.round((q.index / q.of) * 100);
+  var opts = q.options.map(function(o){
+    return '<button class="opt" type="button">' + esc(o) + '</button>';
+  }).join('');
+  var anchor = q.help.anchor
+    ? '<p class="danchor">' + esc(q.help.anchor) + '</p>'
+    : '<p class="danchor">Geen norm — dit is jouw eigen ijkpunt.</p>';
+
+  return '' +
+  '<div class="progressbar" role="progressbar" aria-valuenow="' + q.index + '" aria-valuemin="1" aria-valuemax="' + q.of + '" aria-label="Voortgang beweegcheck"><span style="width:' + pct + '%"></span></div>' +
+  '<div class="screen">' +
+    '<p class="qkicker"><span class="num">' + q.num + '</span> &middot; Beweging</p>' +
+    '<p class="qcount">Vraag ' + q.index + ' van ' + q.of + '</p>' +
+    '<h2 class="qtitle">' + esc(q.question) + '</h2>' +
+    '<div class="opts">' + opts + '</div>' +
+    '<div class="disc">' +
+      '<button class="disctrigger" type="button" data-disc aria-expanded="' + (helpOpen ? 'true' : 'false') + '" aria-controls="helpPanel">' +
+        'Waarom vragen we dit?<span class="sign" aria-hidden="true">' + (helpOpen ? '&minus;' : '+') + '</span>' +
+      '</button>' +
+      '<div class="discpanel" id="helpPanel" role="region" aria-label="Uitleg bij deze vraag"' + (helpOpen ? '' : ' hidden') + '>' +
+        '<p class="dtitle">' + esc(q.help.title) + '</p>' +
+        '<p class="dbody">' + esc(q.help.body) + '</p>' +
+        anchor +
+      '</div>' +
+    '</div>' +
+    '<button class="qback" type="button">&larr; Terug</button>' +
+  '</div>';
+}
+
+function factRow(f){
+  return '' +
+  '<div class="factrow">' +
+    '<div class="facttop">' +
+      '<p class="factname">' + esc(f.name) + '</p>' +
+      '<span class="facttag" data-status="' + f.status + '">' + TAG[f.status] + '</span>' +
+    '</div>' +
+    '<p class="factanswer">' + esc(f.answer) + '</p>' +
+    (f.bench ? '<p class="factbench">' + esc(f.bench) + ' <span class="src">&middot; ' + esc(f.src) + '</span></p>' : '') +
+    '<p class="factwhy">' + esc(f.why) + '</p>' +
+    (f.note ? '<p class="factnote">' + esc(f.note) + '</p>' : '') +
+  '</div>';
+}
+
+function renderStrip(key, mijndag){
+  var s = STRIP[key];
+  var routes = s.routes.slice();
+  if (mijndag) routes.push('mijndag');
+
+  var links = routes.map(function(r){
+    var route = ROUTE[r];
+    return '' +
+    '<a class="striplink" href="#">' +
+      '<span class="lrow"><span class="llabel">' + esc(route.label) + '</span><span class="chev" aria-hidden="true">&rsaquo;</span></span>' +
+      '<span class="lhint">' + esc(route.hint) + '</span>' +
+    '</a>';
+  }).join('');
+
+  return '' +
+  '<section class="strip" aria-labelledby="strip-' + key + '">' +
+    '<h2 id="strip-' + key + '">' + esc(s.kop) + '</h2>' +
+    s.lines.map(function(l){ return '<p class="sline">' + esc(l) + '</p>'; }).join('') +
+    links +
+  '</section>';
+}
+
+function renderR(d){
+  var ro = d.ro;
+  var dl = ro.delta;
+
+  var deltaBlock = '' +
+  '<div class="ro-delta" data-dir="' + dl.dir + '">' +
+    '<p class="lab">' + esc(dl.lab) + '</p>' +
+    (dl.win ? '<p class="win">' + esc(dl.win) + '</p>' : '') +
+    '<p class="line">' + esc(dl.line) + '</p>' +
+    (dl.follow ? '<p class="follow">' + esc(dl.follow) + '</p>' : '') +
+    (dl.also ? '<p class="also">' + esc(dl.also) + '</p>' : '') +
+    (dl.start ? '<p class="start">' + esc(dl.start) + '</p>' : '') +
+  '</div>';
+
+  var readout = '' +
+  '<article class="checkin-readout" aria-labelledby="ro-head">' +
+    '<p class="ro-eyebrow">Wat je beweegcheck zegt</p>' +
+    '<h2 class="ro-feit" id="ro-head">' + esc(ro.headline) + '</h2>' +
+    (ro.focus ? '<p class="ro-answer"><b>' + esc(ro.focus) + '</b><span class="dot" aria-hidden="true">&middot;</span><span>' + esc(ro.answer) + '</span></p>' : '') +
+    '<p class="ro-statement">' + esc(ro.statement) + '</p>' +
+    deltaBlock +
+    '<p class="ro-implicatie">' + esc(ro.implication) + '</p>' +
+    '<div class="ro-routing">' +
+      '<a class="btn-terra" href="#">Naar je beweegplan &rarr;</a>' +
+      '<p class="ro-hint">' + esc(ro.hint) + '</p>' +
+    '</div>' +
+  '</article>';
+
+  var rows = d.facts.map(factRow).join('');
+  var extra = factsOpen ? d.more.map(factRow).join('') : '';
+
+  var factBlock = '' +
+  '<section class="factblock" aria-labelledby="fact-head">' +
+    '<h2 id="fact-head">Wat je antwoordde, en waar dat staat</h2>' +
+    '<p class="factintro">' + FACT_INTRO + '</p>' +
+    rows +
+    '<div id="fact-extra"' + (factsOpen ? '' : ' hidden') + '>' + extra + '</div>' +
+    '<button class="factmore" type="button" data-facts aria-expanded="' + (factsOpen ? 'true' : 'false') + '" aria-controls="fact-extra">' +
+      (factsOpen ? 'Toon minder' : 'Toon alle metingen') +
+    '</button>' +
+  '</section>';
+
+  var moderator = d.moderator
+    ? '<section class="moderator" aria-label="Herstel en klachten"><p class="mh">Herstel &amp; klachten</p><ul>' +
+        d.moderator.map(function(m){ return '<li>' + esc(m) + '</li>'; }).join('') +
+      '</ul></section>'
+    : '';
+
+  return '' +
+  '<div class="screen">' +
+    '<h1 class="pagetitle">Jouw beweegcheck</h1>' +
+    '<p class="pagesub">Wat je antwoorden laten zien &middot; gemeten vandaag</p>' +
+    readout +
+    '<div class="foldmark"><span>vouw ~640 px</span></div>' +
+    factBlock +
+    moderator +
+    renderStrip(d.strip, d.mijndag) +
+    '<div class="foot">' +
+      '<p>Wil je week voor week begeleid worden? Ontvang de beweeggids per e-mail.</p>' +
+      '<a class="btn-ghost" href="#">Ontvang de beweeggids &rarr;</a>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderV(d){
+  var order = ['S1', 'S2', 'S3'];
+  var blocks = order.map(function(key){
+    return '' +
+      '<p class="vcap">' + key + (key === d.strip ? ' &middot; actief in ' + state : '') + '</p>' +
+      '<p class="vwhen">' + esc(STRIP[key].when) + '</p>' +
+      renderStrip(key, key === 'S2');
+  }).join('');
+
+  return '<div class="screen">' +
+    '<h1 class="pagetitle">Vervolg-strip</h1>' +
+    '<p class="pagesub">Drie varianten &middot; maximaal drie uitgangen, nooit een knop</p>' +
+    blocks +
+  '</div>';
+}
+
+function render(){
+  var d = S[state];
+  phone.innerHTML = frame === 'Q' ? renderQ(d) : (frame === 'R' ? renderR(d) : renderV(d));
+  stateNote.textContent = d.note[frame];
+  phoneNote.textContent = frame === 'Q' ? '375 px · beweegcheck' : (frame === 'R' ? '375 px · resultaat' : '375 px · alleen de strip');
+
+  var disc = phone.querySelector('[data-disc]');
+  if (disc) {
+    disc.addEventListener('click', function(){
+      helpOpen = !helpOpen;
+      render();
+    });
+  }
+
+  var more = phone.querySelector('[data-facts]');
+  if (more) {
+    more.addEventListener('click', function(){
+      factsOpen = !factsOpen;
+      render();
+    });
+  }
+}
+
+function bindSwitch(id, attr, apply){
+  var host = document.getElementById(id);
+  host.addEventListener('click', function(ev){
+    var btn = ev.target.closest('button[' + attr + ']');
+    if (!btn) return;
+    var buttons = host.querySelectorAll('button[' + attr + ']');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].setAttribute('aria-pressed', buttons[i] === btn ? 'true' : 'false');
+    }
+    apply(btn.getAttribute(attr));
+    render();
+  });
+}
+
+bindSwitch('frameSwitch', 'data-frame', function(v){ frame = v; });
+bindSwitch('stateSwitch', 'data-state', function(v){ state = v; });
+
+render();
+</script>
+
+</body>
+</html>
