@@ -29,11 +29,7 @@ type AgendaAddBlockSheetProps = {
   hiddenPlanStep?: HiddenPlanStep | null;
   initialStartTime?: string;
   initialEndTime?: string;
-  initialCategoryId?: AgendaCategoryId;
-  /** Korte kadering boven het formulier, bijv. bij "Meer hulp hierbij". */
-  helperNote?: string | null;
   createSurface?: "agenda_add_sheet" | "agenda_timeline_tap" | "agenda_week_grid_tap";
-  createOrigin?: "meer_hulp";
   onClose: () => void;
   onRestorePlanStep?: () => Promise<void>;
   onShowAllPlanSteps?: () => Promise<void>;
@@ -58,19 +54,14 @@ export default function AgendaAddBlockSheet({
   hiddenPlanStep = null,
   initialStartTime,
   initialEndTime,
-  initialCategoryId,
-  helperNote = null,
   createSurface = "agenda_add_sheet",
-  createOrigin,
   onClose,
   onRestorePlanStep,
   onShowAllPlanSteps,
   onSubmit,
 }: AgendaAddBlockSheetProps) {
   const titleId = useId();
-  const [categoryId, setCategoryId] = useState<AgendaCategoryId>(
-    initialCategoryId ?? "persoonlijke_routine",
-  );
+  const [categoryId, setCategoryId] = useState<AgendaCategoryId>("persoonlijke_routine");
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState(initialStartTime ?? "12:00");
   const [durationMinutes, setDurationMinutes] = useState<number>(() => {
@@ -126,9 +117,8 @@ export default function AgendaAddBlockSheet({
       trackEvent("agenda_block_created", {
         category_id: categoryId,
         surface: createSurface,
-        ...(createOrigin ? { origin: createOrigin } : {}),
       });
-      clarityTag("agenda_block", createOrigin ? "created_meer_hulp" : "created");
+      clarityTag("agenda_block", "created");
       onClose();
     } catch (submitError) {
       setError(
@@ -144,17 +134,7 @@ export default function AgendaAddBlockSheet({
   }
 
   return (
-    <AgendaSheetFrame
-      titleId={titleId}
-      title={createOrigin === "meer_hulp" ? "Zet er iets naast" : "Nieuw leefstijlmoment"}
-      onClose={onClose}
-    >
-      {helperNote ? (
-        <p className="mb-5 text-[13px] leading-normal text-[#CDD7D0] text-pretty">
-          {helperNote}
-        </p>
-      ) : null}
-
+    <AgendaSheetFrame titleId={titleId} title="Nieuw leefstijlmoment" onClose={onClose}>
       {hiddenPlanStep ? (
         <div className="mb-5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
           <p className="mb-1 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[#9FB0A6]">

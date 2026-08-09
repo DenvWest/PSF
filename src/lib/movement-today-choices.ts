@@ -90,6 +90,11 @@ function stepTitle(stepId: string, fallback: string): string {
   return findStep(stepId)?.title ?? fallback;
 }
 
+/** Titel van een plan-stap zonder fallback — voor readouts die "geen titel" mogen tonen. */
+export function findMovementStepTitle(stepId: string): string | null {
+  return findStep(stepId)?.title ?? null;
+}
+
 /**
  * Kiest de matige (tier 2) stap uit de moderate-pool i.p.v. altijd trap/wandeling.
  * Botst nooit met de trainen-stap; conditie-patroon leunt op een matige

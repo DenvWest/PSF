@@ -101,6 +101,43 @@ function optionLabel(field: string, value: number | undefined): string | null {
 }
 
 /**
+ * De vier velden waaruit het huidige beeld wordt gelezen. Gedeelde bron voor
+ * lezer (`deriveMovementCurrent`) en schrijver
+ * (`mergeMovementCheckinIntoAnswers`): wie hier een veld bij zet, moet het aan
+ * beide kanten meenemen.
+ */
+export const MOVEMENT_CURRENT_ANSWER_KEYS = [
+  "MOV2_CARD",
+  "MOV2_VIG",
+  "MOV2_SIT",
+  "MOV2_STR",
+] as const;
+
+export type MovementCurrentAnswers = Record<
+  (typeof MOVEMENT_CURRENT_ANSWER_KEYS)[number],
+  number
+>;
+
+/**
+ * Zet de vier velden uit een volledige beweegcheck in de answers-jsonb, zodat
+ * `deriveMovementCurrent()` ze na een herlaadbeurt terugvindt. Overschrijft
+ * alleen die vier keys — al het andere in de jsonb blijft staan.
+ */
+export function mergeMovementCheckinIntoAnswers(
+  current: unknown,
+  report: MovementCurrentAnswers,
+): Record<string, unknown> {
+  const record =
+    current && typeof current === "object" && !Array.isArray(current)
+      ? { ...(current as Record<string, unknown>) }
+      : {};
+  for (const key of MOVEMENT_CURRENT_ANSWER_KEYS) {
+    record[key] = report[key];
+  }
+  return record;
+}
+
+/**
  * Leest het huidige beeld uit de antwoorden. Prefereert de diepe beweegcheck
  * (`MOV2_*`, kent minuten) boven de basis-intake (`MOV_*`, kent alleen
  * frequentie).
