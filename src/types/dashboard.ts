@@ -9,6 +9,7 @@ import type {
 } from "@/lib/account-priority-pref";
 import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { StoredMovementCheckinSnapshot } from "@/lib/movement-checkin-parse";
+import type { MovementFactRow } from "@/lib/movement-assessment";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
@@ -208,7 +209,11 @@ export type SleepCheckinFocus = {
   date: string;
 };
 
-export type MovementCheckinReadoutData = StoredMovementCheckinSnapshot & { date: string };
+export type MovementCheckinReadoutData = StoredMovementCheckinSnapshot & {
+  date: string;
+  /** Herberekend uit de opgeslagen antwoorden, niet zelf bevroren — zie R0g. */
+  factRows: MovementFactRow[];
+};
 
 export type DashboardData = {
   empty: boolean;

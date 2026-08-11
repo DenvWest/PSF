@@ -6,7 +6,9 @@ import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import BewegingAdviesTreden from "@/components/dashboard/voortgang/BewegingAdviesTreden";
+import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
+import MovementFactReadout from "@/components/intake/MovementFactReadout";
 import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
 import { buildBewegingAdviesTreden } from "@/lib/beweging-advies-treden";
 import { clarityTag } from "@/lib/clarity";
@@ -254,6 +256,18 @@ export default function VoortgangDomeinScreen({
             }
             variant="voortgang"
           />
+        ) : null}
+
+        {movementReadout ? (
+          <MovementFactReadout
+            rows={movementReadout.factRows}
+            focusDimension={movementReadout.focusDimension}
+            surface="voortgang_beweging"
+          />
+        ) : null}
+
+        {isMovement ? (
+          <DomeinIjkpuntCheckPrompt domain="beweging" domainLabel="Beweging" />
         ) : null}
 
         {isMovement && movementLogEnabled ? (

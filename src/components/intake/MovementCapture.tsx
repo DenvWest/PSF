@@ -95,12 +95,6 @@ export default function MovementCapture() {
     clarityTag("movement_flow", isPulseMode ? "pulse_started" : "started");
   }, [isPulseMode]);
 
-  useEffect(() => {
-    if (step.kind === "question") {
-      setHelpOpen(false);
-    }
-  }, [step]);
-
   function handleAnswer(field: keyof MovementSelfReport, value: number, index: number) {
     const next = { ...answers, [field]: value };
     setAnswers(next);
@@ -108,6 +102,7 @@ export default function MovementCapture() {
       setStep({ kind: "consent" });
       return;
     }
+    setHelpOpen(false);
     if (index + 1 < MOVEMENT_QUESTIONS.length) {
       setStep({ kind: "question", index: index + 1 });
     } else {
@@ -117,11 +112,13 @@ export default function MovementCapture() {
 
   function handleBack() {
     if (step.kind === "consent") {
+      setHelpOpen(false);
       setStep({
         kind: "question",
         index: isPulseMode ? pulseStartIndex : MOVEMENT_QUESTIONS.length - 1,
       });
     } else if (step.kind === "question" && step.index > 0 && !isPulseMode) {
+      setHelpOpen(false);
       setStep({ kind: "question", index: step.index - 1 });
     }
   }

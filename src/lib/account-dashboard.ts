@@ -35,7 +35,12 @@ import { getAccountPriorityPref } from "@/lib/account-priority-pref";
 import { createSupabaseAdmin } from "@/lib/supabase-admin";
 import { computeVitaliteit, resolveVitaliteitFacets } from "@/lib/vitaliteit";
 import { parseSleepCheckinFocus } from "@/lib/sleep-assessment";
-import { parseStoredMovementCheckinSnapshot } from "@/lib/movement-checkin-parse";
+import {
+  parseStoredMovementCheckin,
+  parseStoredMovementCheckinSnapshot,
+} from "@/lib/movement-checkin-parse";
+import { buildMovementFactRows } from "@/lib/movement-assessment";
+import { isMovementFocusKey } from "@/lib/dashboard-url";
 import type {
   CheckLogEntry,
   CheckScores,
@@ -609,8 +614,16 @@ export async function loadAccountDashboardData(
   if (latestMovementCheckin) {
     const parsed = parseStoredMovementCheckinSnapshot(latestMovementCheckin.raw_inputs);
     if (parsed) {
+      // De feitenrijen zijn geen apart opgeslagen veld (R0g) — ze worden
+      // herberekend uit dezelfde ruwe antwoorden die al in `raw_inputs` staan,
+      // zodat een copy-fix in de engine ook oude rijen op Voortgang bereikt.
+      const storedReport = parseStoredMovementCheckin(latestMovementCheckin.raw_inputs);
+      const focusDimension = isMovementFocusKey(parsed.focusDimension)
+        ? parsed.focusDimension
+        : null;
       movementCheckinSnapshot = {
         ...parsed,
+        factRows: storedReport ? buildMovementFactRows(storedReport.report, focusDimension) : [],
         date: formatDashboardDate(latestMovementCheckin.created_at),
       };
     }

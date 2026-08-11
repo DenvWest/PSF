@@ -246,6 +246,7 @@ export async function POST(request: NextRequest) {
             delta_win_line: snapshot.focusDelta?.winLine ?? null,
             delta_follow_line: snapshot.focusDelta?.followLine ?? null,
             start_statement: start?.statement ?? null,
+            strip_variant: snapshot.stripVariant,
           }
         : reportForAssessment,
     score:

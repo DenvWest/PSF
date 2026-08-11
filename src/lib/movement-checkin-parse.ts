@@ -95,6 +95,8 @@ export type StoredMovementCheckinDelta = {
   followLine: string | null;
 };
 
+const VALID_STRIP_VARIANTS = new Set(["S1", "S2", "S3"]);
+
 export type StoredMovementCheckinSnapshot = {
   headline: string;
   focusDimension: string | null;
@@ -105,6 +107,8 @@ export type StoredMovementCheckinSnapshot = {
   delta: StoredMovementCheckinDelta | null;
   /** Ruwe startmeting-tekst — UI formatteert als "Sinds je start: …". */
   startStatement: string | null;
+  /** Bevroren op het moment van de check — een oude rij houdt zijn eigen toon vast. */
+  stripVariant: "S1" | "S2" | "S3" | null;
 };
 
 /**
@@ -170,6 +174,10 @@ export function parseStoredMovementCheckinSnapshot(
     startStatement:
       typeof record.start_statement === "string" && record.start_statement.trim()
         ? record.start_statement.trim()
+        : null,
+    stripVariant:
+      typeof record.strip_variant === "string" && VALID_STRIP_VARIANTS.has(record.strip_variant)
+        ? (record.strip_variant as "S1" | "S2" | "S3")
         : null,
   };
 }
