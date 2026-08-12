@@ -7,7 +7,6 @@ import {
   getSliderCopy,
   getVisiblePreferenceOptions,
   isPreferenceDisabled,
-  shouldSkipBreadthSlider,
   shouldSkipSlider,
   syncDietContext,
 } from "@/lib/nutrition-diet-skip";
@@ -55,9 +54,10 @@ describe("shouldSkipSlider — dairy", () => {
   });
 });
 
-describe("shouldSkipBreadthSlider — tarwe", () => {
+describe("shouldSkipSlider — wholegrain tarwe", () => {
   it("tarwe-allergie → skip wholegrain", () => {
-    expect(shouldSkipBreadthSlider("wholegrain", { preference: "none", allergies: ["tarwe"] })).toBe(true);
+    expect(shouldSkipSlider("wholegrain", { preference: "none", allergies: ["tarwe"] })).toBe(true);
+    expect(getSkipReason("wholegrain", { preference: "none", allergies: ["tarwe"] })).toBe("allergy");
   });
 });
 
@@ -156,6 +156,8 @@ function NUTRITION_CORE_AFTER_DIET_ID(index: number): string {
     "meatLegumes",
     "dairy",
     "daylight",
+    "wholegrain",
+    "sugaryDrinks",
   ];
   return ids[index] ?? "";
 }

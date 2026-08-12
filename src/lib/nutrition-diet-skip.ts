@@ -1,9 +1,7 @@
 import {
-  NUTRITION_BREADTH_SLIDER_IDS,
   NUTRITION_CORE_SLIDER_IDS_AFTER_DIET,
   NUTRITION_META_QUESTIONS,
   nutritionSliderQuestion,
-  type NutritionBreadthSliderId,
   type NutritionCoreSliderAfterDietId,
 } from "@/data/nutrition/lifescore-questions";
 
@@ -113,26 +111,10 @@ export function getSkipReason(
     }
   }
 
-  return null;
-}
-
-export function shouldSkipBreadthSlider(
-  sliderId: NutritionBreadthSliderId,
-  ctx: DietContext,
-): boolean {
-  if (sliderId === "wholegrain" && hasGlutenAllergy(ctx.allergies)) {
-    return true;
-  }
-  return false;
-}
-
-export function getBreadthSkipReason(
-  sliderId: NutritionBreadthSliderId,
-  ctx: DietContext,
-): DietSkipReason | null {
-  if (shouldSkipBreadthSlider(sliderId, ctx)) {
+  if (sliderId === "wholegrain" && hasGlutenAllergy(allergies)) {
     return "allergy";
   }
+
   return null;
 }
 
@@ -144,10 +126,6 @@ export function getSkippedSliderLabels(ctx: DietContext): string[] {
     if (shouldSkipSlider(id, ctx) && SKIP_LABELS[id]) {
       labels.push(SKIP_LABELS[id]);
     }
-  }
-
-  if (shouldSkipBreadthSlider("wholegrain", ctx) && SKIP_LABELS.wholegrain) {
-    labels.push(SKIP_LABELS.wholegrain);
   }
 
   return [...new Set(labels)];
@@ -243,12 +221,6 @@ export function syncDietContext(
     }
   }
 
-  if (shouldSkipBreadthSlider("wholegrain", ctx)) {
-    nextSliders.wholegrain = 0;
-  } else if (previousCtx && shouldSkipBreadthSlider("wholegrain", previousCtx)) {
-    resetSliderToDefault("wholegrain", nextSliders);
-  }
-
   return { sliders: nextSliders, optOutChecked: nextOptOut };
 }
 
@@ -308,38 +280,6 @@ export function resolveAfterDietStep(
   return first >= 0 ? first : currentIndex;
 }
 
-export function nextBreadthIndex(
-  fromIndex: number,
-  ctx: DietContext,
-  direction: "forward" | "backward" = "forward",
-): number {
-  if (direction === "forward") {
-    for (let i = fromIndex + 1; i < NUTRITION_BREADTH_SLIDER_IDS.length; i++) {
-      const id = NUTRITION_BREADTH_SLIDER_IDS[i];
-      if (!shouldSkipBreadthSlider(id, ctx)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  for (let i = fromIndex - 1; i >= 0; i--) {
-    const id = NUTRITION_BREADTH_SLIDER_IDS[i];
-    if (!shouldSkipBreadthSlider(id, ctx)) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-export function firstBreadthIndex(ctx: DietContext): number {
-  return nextBreadthIndex(-1, ctx, "forward");
-}
-
-export function lastBreadthIndex(ctx: DietContext): number {
-  return nextBreadthIndex(NUTRITION_BREADTH_SLIDER_IDS.length, ctx, "backward");
-}
-
 /** Alle slider-ids die nu skipped zijn (voor GA4 dedupe). */
 export function getCurrentlySkippedIds(ctx: DietContext): string[] {
   const ids: string[] = [];
@@ -347,9 +287,6 @@ export function getCurrentlySkippedIds(ctx: DietContext): string[] {
     if (shouldSkipSlider(id, ctx)) {
       ids.push(id);
     }
-  }
-  if (shouldSkipBreadthSlider("wholegrain", ctx)) {
-    ids.push("wholegrain");
   }
   return ids;
 }

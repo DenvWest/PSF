@@ -11,8 +11,6 @@ import {
 } from "@/lib/referral-attribution";
 import { NUTRITION_LOG_CONSENT_TEXT } from "@/lib/consent-texts";
 import {
-  NUTRITION_BREADTH_SLIDER_IDS,
-  NUTRITION_BREADTH_STEP_COUNT,
   NUTRITION_CORE_SLIDER_IDS_AFTER_DIET,
   NUTRITION_CORE_SLIDER_IDS_BEFORE_DIET,
   NUTRITION_META_QUESTIONS,
@@ -24,9 +22,7 @@ import {
 } from "@/data/nutrition/lifescore-questions";
 import {
   firstAfterDietIndex,
-  firstBreadthIndex,
   getCurrentlySkippedIds,
-  getBreadthSkipReason,
   getSkipReason,
   getSkippedSliderLabels,
   getSliderCopy,
@@ -34,9 +30,7 @@ import {
   hasFishOrSeafoodAllergy,
   isPreferenceDisabled,
   lastAfterDietIndex,
-  lastBreadthIndex,
   nextAfterDietIndex,
-  nextBreadthIndex,
   syncDietContext,
   type DietContext,
 } from "@/lib/nutrition-diet-skip";
@@ -51,8 +45,6 @@ type Step =
   | { kind: "coreBeforeDiet"; index: number }
   | { kind: "meta"; index: number }
   | { kind: "coreAfterDiet"; index: number }
-  | { kind: "breadthIntro" }
-  | { kind: "breadth"; index: number }
   | { kind: "consent" }
   | {
       kind: "result";
@@ -66,17 +58,13 @@ type Step =
     }
   | { kind: "error"; message: string };
 
-type QuestionStep = Exclude<
-  Step,
-  { kind: "result" | "error" | "consent" | "breadthIntro" }
->;
+type QuestionStep = Exclude<Step, { kind: "result" | "error" | "consent" }>;
 
 function isQuestionStep(step: Step): step is QuestionStep {
   return (
     step.kind === "coreBeforeDiet" ||
     step.kind === "meta" ||
-    step.kind === "coreAfterDiet" ||
-    step.kind === "breadth"
+    step.kind === "coreAfterDiet"
   );
 }
 
@@ -113,7 +101,6 @@ function sliderDefaults(): Record<string, number> {
   for (const id of [
     ...NUTRITION_CORE_SLIDER_IDS_BEFORE_DIET,
     ...NUTRITION_CORE_SLIDER_IDS_AFTER_DIET,
-    ...NUTRITION_BREADTH_SLIDER_IDS,
   ]) {
     const question = nutritionSliderQuestion(id);
     if (question) {
@@ -150,12 +137,7 @@ function questionForStep(step: QuestionStep): NutritionQuestion {
   if (step.kind === "meta") {
     return NUTRITION_META_QUESTIONS[step.index];
   }
-  const id = NUTRITION_BREADTH_SLIDER_IDS[step.index];
-  const slider = nutritionSliderQuestion(id);
-  if (!slider) {
-    throw new Error(`Missing breadth slider: ${id}`);
-  }
-  return slider;
+  throw new Error(`Unexpected question step: ${JSON.stringify(step)}`);
 }
 
 function requiredStepsCompleted(step: Step, ctx: DietContext): number {
@@ -174,9 +156,6 @@ function requiredStepsCompleted(step: Step, ctx: DietContext): number {
       }
       return count;
     }
-    case "breadthIntro":
-    case "breadth":
-      return NUTRITION_REQUIRED_STEP_COUNT;
     case "consent":
       return CONSENT_PROGRESS_DENOM;
     default:
@@ -189,9 +168,6 @@ function progressForStep(step: Step, ctx: DietContext): number {
 }
 
 function requiredStepNumber(step: Step, ctx: DietContext): number | null {
-  if (step.kind === "breadth" || step.kind === "breadthIntro") {
-    return null;
-  }
   const completed = requiredStepsCompleted(step, ctx);
   if (step.kind === "consent") {
     return NUTRITION_REQUIRED_STEP_COUNT;
@@ -202,8 +178,6 @@ function requiredStepNumber(step: Step, ctx: DietContext): number | null {
 function canGoBack(step: Step): boolean {
   if (
     step.kind === "consent" ||
-    step.kind === "breadthIntro" ||
-    step.kind === "breadth" ||
     step.kind === "meta" ||
     step.kind === "coreAfterDiet"
   ) {
@@ -244,7 +218,6 @@ export default function NutritionCapture() {
   const [allergies, setAllergies] = useState<string[]>([]);
   const [preference, setPreference] = useState<string | null>(null);
   const [optOutChecked, setOptOutChecked] = useState<Record<string, boolean>>({});
-  const [breadthSkipped, setBreadthSkipped] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [fromYoutube] = useState(() => {
@@ -259,7 +232,7 @@ export default function NutritionCapture() {
 
   const ctx = dietContext(preference, allergies);
   const flowStep =
-    step.kind === "coreAfterDiet" || step.kind === "breadth"
+    step.kind === "coreAfterDiet"
       ? (redirectIfCurrentStepSkipped(ctx, step) ?? step)
       : step;
 
@@ -269,10 +242,7 @@ export default function NutritionCapture() {
         continue;
       }
       trackedSkipsRef.current.add(id);
-      const reason =
-        id === "wholegrain"
-          ? getBreadthSkipReason("wholegrain", nextCtx)
-          : getSkipReason(id as (typeof NUTRITION_CORE_SLIDER_IDS_AFTER_DIET)[number], nextCtx);
+      const reason = getSkipReason(id as (typeof NUTRITION_CORE_SLIDER_IDS_AFTER_DIET)[number], nextCtx);
       if (reason) {
         trackEvent(GA4_EVENTS.NUTRITION_DIET_SKIPPED, {
           question_id: id,
@@ -306,16 +276,6 @@ export default function NutritionCapture() {
         const first = firstAfterDietIndex(nextCtx);
         if (first >= 0) {
           return { kind: "coreAfterDiet", index: first };
-        }
-        return { kind: "breadthIntro" };
-      }
-    }
-    if (currentStep.kind === "breadth") {
-      const id = NUTRITION_BREADTH_SLIDER_IDS[currentStep.index];
-      if (id && getBreadthSkipReason(id, nextCtx)) {
-        const next = nextBreadthIndex(currentStep.index, nextCtx, "forward");
-        if (next >= 0) {
-          return { kind: "breadth", index: next };
         }
         return { kind: "consent" };
       }
@@ -415,18 +375,17 @@ export default function NutritionCapture() {
     setAllergies([]);
     setPreference(null);
     setOptOutChecked({});
-    setBreadthSkipped(false);
     setConsentChecked(false);
     trackedSkipsRef.current = new Set();
   }
 
-  function goToAfterDietOrBreadth(nextCtx: DietContext) {
+  function goToAfterDietOrConsent(nextCtx: DietContext) {
     const first = firstAfterDietIndex(nextCtx);
     if (first >= 0) {
       setStep({ kind: "coreAfterDiet", index: first });
       return;
     }
-    setStep({ kind: "breadthIntro" });
+    setStep({ kind: "consent" });
   }
 
   function handlePreferenceSelect(value: string) {
@@ -436,7 +395,7 @@ export default function NutritionCapture() {
     const nextCtx = dietContext(value, allergies);
     setPreference(value);
     runDietSync(nextCtx, sliders, optOutChecked, ctx);
-    goToAfterDietOrBreadth(nextCtx);
+    goToAfterDietOrConsent(nextCtx);
   }
 
   function goNextFromCoreBeforeDiet(index: number) {
@@ -461,69 +420,17 @@ export default function NutritionCapture() {
       setStep({ kind: "coreAfterDiet", index: next });
       return;
     }
-    setStep({ kind: "breadthIntro" });
-  }
-
-  function goNextFromBreadth(index: number) {
-    const next = nextBreadthIndex(index, ctx, "forward");
-    if (next >= 0) {
-      setStep({ kind: "breadth", index: next });
-      return;
-    }
-    setBreadthSkipped(false);
-    setStep({ kind: "consent" });
-  }
-
-  function handleSkipBreadth() {
-    trackEvent(GA4_EVENTS.NUTRITION_BREADTH_SKIPPED, {
-      skipped: true,
-      from: trackFrom(fromDashboard, fromYoutube),
-    });
-    clarityTag("nutrition_breadth", "skipped");
-    setBreadthSkipped(true);
-    setStep({ kind: "consent" });
-  }
-
-  function handleContinueBreadth() {
-    setBreadthSkipped(false);
-    const first = firstBreadthIndex(ctx);
-    if (first >= 0) {
-      setStep({ kind: "breadth", index: first });
-      return;
-    }
     setStep({ kind: "consent" });
   }
 
   function handleBack() {
     if (flowStep.kind === "consent") {
-      if (breadthSkipped) {
-        setStep({ kind: "breadthIntro" });
-        return;
-      }
-      const last = lastBreadthIndex(ctx);
-      if (last >= 0) {
-        setStep({ kind: "breadth", index: last });
-        return;
-      }
-      setStep({ kind: "breadthIntro" });
-      return;
-    }
-    if (flowStep.kind === "breadthIntro") {
       const last = lastAfterDietIndex(ctx);
       if (last >= 0) {
         setStep({ kind: "coreAfterDiet", index: last });
         return;
       }
       setStep({ kind: "meta", index: 1 });
-      return;
-    }
-    if (flowStep.kind === "breadth") {
-      const prev = nextBreadthIndex(flowStep.index, ctx, "backward");
-      if (prev >= 0) {
-        setStep({ kind: "breadth", index: prev });
-        return;
-      }
-      setStep({ kind: "breadthIntro" });
       return;
     }
     if (flowStep.kind === "coreAfterDiet") {
@@ -607,12 +514,12 @@ export default function NutritionCapture() {
         nutrition_score: data.score,
         band: data.band?.id ?? "unknown",
         from,
-        breadth_skipped: breadthSkipped,
+        breadth_skipped: false,
       });
       trackEvent("nutrition_log_completed", {
         nutrition_score: data.score,
         from,
-        breadth_skipped: breadthSkipped,
+        breadth_skipped: false,
       });
       setStep({
         kind: "result",
@@ -788,72 +695,12 @@ export default function NutritionCapture() {
     );
   }
 
-  if (step.kind === "breadthIntro") {
-    return (
-      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
-        <div
-          className="fixed inset-x-0 top-0 z-50 h-[3px] bg-intake-divider"
-          role="progressbar"
-          aria-valuenow={NUTRITION_REQUIRED_STEP_COUNT}
-          aria-valuemin={1}
-          aria-valuemax={CONSENT_PROGRESS_DENOM}
-          aria-label="Voortgang voedingscheck"
-        >
-          <div
-            className="h-full bg-intake-terra transition-[width] duration-300 ease-out"
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
-
-        <div className="w-full max-w-lg px-6 py-12">
-          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
-            Optioneel
-          </p>
-          <h2 className="mb-4 text-center font-serif text-2xl font-normal leading-snug text-intake-ink md:text-3xl">
-            Nog {NUTRITION_BREADTH_STEP_COUNT} vragen voor een verfijnde score
-          </h2>
-          <p className="mb-10 text-center text-sm leading-relaxed text-intake-ink-subtle">
-            Fruit, volkoren en suiker tellen mee in je totaalscore — overslaan mag.
-          </p>
-
-          <div className="flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={handleContinueBreadth}
-              className="min-h-[44px] rounded-[12px] bg-intake-sage px-6 py-3 text-sm font-semibold text-[#0f1c10] transition-all duration-200 hover:opacity-90"
-            >
-              Verder ({NUTRITION_BREADTH_STEP_COUNT} vragen) →
-            </button>
-            <button
-              type="button"
-              onClick={handleSkipBreadth}
-              className="min-h-[44px] rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-colors hover:bg-intake-bg-elevated"
-            >
-              Overslaan → naar resultaat
-            </button>
-          </div>
-
-          <div className="mt-10 flex items-center justify-start">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="border-none bg-transparent py-3 text-sm text-intake-ink-subtle transition-colors hover:text-intake-ink-muted"
-            >
-              ← Terug
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (!isQuestionStep(flowStep)) {
     return null;
   }
 
   const question = questionForStep(flowStep);
   const stepNumber = requiredStepNumber(flowStep, ctx);
-  const isOptionalBreadth = flowStep.kind === "breadth";
   const questionNumber = stepNumber ? String(stepNumber).padStart(2, "0") : null;
   const showYoutubeBanner =
     fromYoutube && flowStep.kind === "coreBeforeDiet" && flowStep.index === 0;
@@ -914,11 +761,9 @@ export default function NutritionCapture() {
         </div>
 
         <p className="mb-8 text-center text-sm text-intake-ink-subtle">
-          {isOptionalBreadth
-            ? `Optioneel — ${flowStep.index + 1} van ${NUTRITION_BREADTH_STEP_COUNT}`
-            : stepNumber
-              ? `Vraag ${stepNumber} van ${NUTRITION_REQUIRED_STEP_COUNT}`
-              : null}
+          {stepNumber
+            ? `Vraag ${stepNumber} van ${NUTRITION_REQUIRED_STEP_COUNT}`
+            : null}
         </p>
 
         <div className="min-h-[400px] animate-[fadeIn_200ms_ease-out]">
@@ -959,8 +804,6 @@ export default function NutritionCapture() {
                   goNextFromMeta(flowStep.index);
                 } else if (flowStep.kind === "coreAfterDiet") {
                   goNextFromCoreAfterDiet(flowStep.index);
-                } else if (flowStep.kind === "breadth") {
-                  goNextFromBreadth(flowStep.index);
                 }
               }}
               className="min-h-[44px] rounded-[12px] bg-intake-sage px-6 py-3 text-sm font-semibold text-[#0f1c10] transition-all duration-200 hover:opacity-90"
