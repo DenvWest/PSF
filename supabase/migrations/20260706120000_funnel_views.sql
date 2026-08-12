@@ -8,6 +8,10 @@
 -- Deploy: handmatig in Supabase Dashboard SQL Editor.
 -- NOOIT supabase db push — remote migratie-historie is leeg.
 -- Geen CREATE ROLE / GRANT in dit bestand (Dennis draait n8n_readonly apart).
+--
+-- Draai na een drop + create van een view altijd ook
+-- 20260812120000_funnel_views_revoke_anon.sql — anders zijn deze views via de
+-- publieke anon-key leesbaar (views hebben geen RLS).
 
 create or replace view public.v_funnel_week as
 select
