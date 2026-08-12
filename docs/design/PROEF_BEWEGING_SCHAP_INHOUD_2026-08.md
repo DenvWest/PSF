@@ -1,5 +1,19 @@
 # Inhoudsproef — kan het beweging-schap eerlijk gevuld worden?
 
+> **STATUS: GEPARKEERD — 12 augustus 2026.** Deze proef is niet uitgevoerd. Dat is
+> geen gefaalde proef (§8 geeft dan vijf vervolgroutes) maar afwezigheid van data,
+> en bouwen zonder die uitkomst is precies wat §1 wilde voorkomen.
+>
+> **Heropen-trigger (meetbaar, geen voornemen):** de proef wordt uitgevoerd zodra
+> `choice.shelf_opened{from_state:"beweging_surface"}` over het volle venster van
+> 14 dagen na deploy 2 ≥ 25% van het agenda-volume haalt. Blijft hij daaronder,
+> dan is de vraag beantwoord zonder proef: er is geen vraag naar een schap, en
+> §8's regel "dan wordt de keuze-ladder een dunne, expliciet begrensde deur"
+> geldt — die deur staat er dan al.
+>
+> **Tot die trigger:** slice 11 en 12 zijn niet-bouwbaar, en v3.5-lock 5, 6, 9 en 10
+> blijven prebuild-only. Er wordt niets "vast klein" gebouwd.
+
 > **Status: proef, geen implementatie.** Geen code, geen schema, geen surface-werk zolang deze proef loopt.
 > Opgesteld 6 augustus 2026, na het Claude-verdict A–H, het wederwoord A′–H′, en een revisieronde op correcties 1–5 plus het auteur-toetser-risico.
 > **Wat dit beslist:** of de keuze-ladder (`#b`) als hart van het kompas-domein kan bestaan. Zo niet, dan is die vraag beantwoord zonder dat er iets gebouwd is.
