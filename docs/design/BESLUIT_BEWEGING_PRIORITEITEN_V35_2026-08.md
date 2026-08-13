@@ -101,11 +101,15 @@ De ladder sorteert het **type** interventie op prioriteit × onderbouwing × moe
 | Prioriteit | Onderbouwing | Wat er hoort |
 |---|---|---|
 | 1 Dagelijks bewegen | Beweegrichtlijnen 2017 | gratis, geen kaart nodig |
-| 2 Kracht + basisconditie | WHO 2020 | je basis — hier oordelen we niet over |
-| 3 Progressief opbouwen | ACSM position stand | je programma, geen product |
-| 4 Specifiek sporten | geen aparte richtlijn | lokale partners, mét oordeel |
+| 2 Kracht + basisconditie | WHO 2020 | je basis. Lokale begeleiding mag hier staan, mét oordeel en **zonder commissie** |
+| 3 Progressief opbouwen | ACSM position stand | je programma. Begeleiding op opbouw mag hier staan, mét oordeel en **zonder commissie** |
+| 4 Specifiek sporten | geen aparte richtlijn | lokale partners, mét oordeel — **en de enige laag waar commissie mag lopen** |
 | 5 Geavanceerde training | reviews periodisering | ghost-kaarten, geen prijs, geen link |
 | 6 Supplementen · wearables | EFSA-claims | **gegate**: voedingscheck én hertest |
+
+> **Amendement 13 augustus 2026.** De rijen 2, 3 en 4 zijn herschreven. De oorspronkelijke formuleringen waren *"je basis — hier oordelen we niet over"* (2), *"je programma, geen product"* (3) en *"lokale partners, mét oordeel"* (4). Aanleiding: aanbieders staan voortaan bij de prioriteit waar hun inhoud thuishoort, en de commissiegrens loopt niet langs de kaart maar langs de prioriteit. Grond en uitwerking: [`BESLUIT_BEWEGING_AANBIEDERS_P2_P4_V1_2026-08.md`](./BESLUIT_BEWEGING_AANBIEDERS_P2_P4_V1_2026-08.md).
+>
+> In dezelfde ronde is de **cafeïne-claim uit `PRIORITIES[6]` verwijderd**: er bestaat geen toegestane EU-gezondheidsclaim voor cafeïne (Parlementaire blokkade juli 2016), en `approved-claims.ts` kende hem terecht niet. Zie `BESLUIT_BEWEGING_KOPPELNAAD_V1` §E2.
 
 Prioriteit 6 is nooit een CTA op A, E of D. Op C is hij label-only achter een dichte deur, met de reden in gewone taal. Een supplement dicht een gat dat je eten laat vallen — zonder te weten waar dat gat zit, is aanvullen gokken.
 
