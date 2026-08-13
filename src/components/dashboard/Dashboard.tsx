@@ -3136,7 +3136,9 @@ const KompasHome = ({
     return withDomainTopNav(
       <SleepScreen
         model={currentModel}
+        sleepSnapshot={data?.sleepCheckinSnapshot ?? null}
         nutritionLogCompleted={nutritionLogCompleted}
+        onGoVoortgangDomein={() => onGoVoortgangDomein("slaap")}
       />,
     );
   }

@@ -7,21 +7,25 @@ import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import DomainCheckinLink from "@/components/dashboard/domain/DomainCheckinLink";
 import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell";
 import DomainFooterLink from "@/components/dashboard/domain/DomainFooterLink";
-import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
+import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
 import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
-import DomainSupplementList from "@/components/dashboard/domain/DomainSupplementList";
 import DomainToolsGrid, { type DomainTool } from "@/components/dashboard/domain/DomainToolsGrid";
+import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
 import {
-  buildSleepRecommendations,
-  getSleepNutritionHint,
-} from "@/lib/build-recommendations";
+  SLEEP_LAYER_STATE_LABEL,
+  SLEEP_PRIORITY_LAYERS,
+  type SleepPriorityId,
+} from "@/data/sleep/lifestyle-priorities";
+import { getSleepNutritionHint } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
+import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
-import type { DashboardModel } from "@/types/dashboard";
+import { sleepLayerWhyWait } from "@/lib/sleep-ladder";
+import type { DashboardModel, SleepCheckinReadoutData } from "@/types/dashboard";
 
 const SLEEP_TOOLS: DomainTool[] = [
   {
@@ -56,18 +60,21 @@ function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
 
 export default function SleepScreen({
   model,
+  sleepSnapshot = null,
   nutritionLogCompleted = false,
+  onGoVoortgangDomein,
 }: {
   model: DashboardModel;
+  sleepSnapshot?: SleepCheckinReadoutData | null;
   nutritionLogCompleted?: boolean;
+  onGoVoortgangDomein?: () => void;
 }) {
   const premiumShownRef = useRef(false);
   const pillar = PILLAR.slaap;
   const session = sessionFromModel(model);
   const nutritionHint = getSleepNutritionHint(session);
-  const recommendations = buildSleepRecommendations(session, {
-    nutritionLogCompleted,
-  });
+  const snapshot = sleepSnapshot;
+  const voortgangHref = buildDashboardVoortgangHref("domein", null, "slaap");
 
   useEffect(() => {
     if (premiumShownRef.current) return;
@@ -95,7 +102,31 @@ export default function SleepScreen({
         }}
       />
 
-      {model.sleepFocus ? (
+      {snapshot ? (
+        <CockpitTile eyebrow="Laatste slaapanalyse">
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#7E8C82]">
+            {snapshot.date}
+          </p>
+          <p className="mt-2 font-serif text-[18px] leading-snug text-[#F1EFE8]">{snapshot.headline}</p>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">{snapshot.kompasStatus}</p>
+          {snapshot.primaryAction ? (
+            <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6]">
+              Eerste actie: {snapshot.primaryAction}
+            </p>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("dashboard_slaap_voortgang_click", { surface: "kompas_slaap" });
+              clarityTag("sleep_flow", "kompas_voortgang");
+              onGoVoortgangDomein?.();
+            }}
+            className="mt-3 cursor-pointer border-none bg-transparent p-0 text-left text-[13px] font-semibold text-[#9CC5A9]"
+          >
+            Bekijk volledige voortgang ›
+          </button>
+        </CockpitTile>
+      ) : model.sleepFocus ? (
         <CockpitTile>
           <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#5B6EAE]">
             Laatste slaapanalyse · {model.sleepFocus.date}
@@ -108,16 +139,35 @@ export default function SleepScreen({
               Focus: <strong className="text-[#F1EFE8]">{model.sleepFocus.focusLabel}</strong>
             </p>
           ) : null}
-          {model.sleepFocus.chosenActions.length > 0 ? (
-            <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6]">
-              Actieve stap: {model.sleepFocus.chosenActions[0]}
-            </p>
-          ) : model.sleepFocus.actions[0] ? (
-            <p className="mt-2 text-[13px] leading-relaxed text-[#9FB0A6]">
-              Eerste actie: {model.sleepFocus.actions[0]}
-            </p>
-          ) : null}
         </CockpitTile>
+      ) : null}
+
+      {snapshot ? (
+        <section aria-label="Prioriteiten">
+          <DomainSectionHeader eyebrow="Prioriteiten" title="Waar je winst zit" />
+          <CockpitTile>
+            <DomainLifestyleLadder
+              layers={SLEEP_PRIORITY_LAYERS}
+              layerStates={snapshot.layerStates}
+              focusLayer={snapshot.focusLayer}
+              stateLabels={SLEEP_LAYER_STATE_LABEL}
+              variant="mini"
+              whyWait={(layerId) => sleepLayerWhyWait(layerId as SleepPriorityId, snapshot.focusLayer)}
+              domain="slaap"
+              surface="kompas_slaap"
+            />
+            <Link
+              href={voortgangHref}
+              onClick={() => {
+                trackEvent("dashboard_slaap_voortgang_click", { surface: "kompas_slaap" });
+                clarityTag("sleep_ladder_focus", String(snapshot.focusLayer));
+              }}
+              className="mt-3 inline-flex min-h-[44px] items-center text-[13px] font-semibold text-[#9CC5A9] no-underline hover:underline"
+            >
+              Volledige ladder op Voortgang ›
+            </Link>
+          </CockpitTile>
+        </section>
       ) : null}
 
       <section aria-label="Leefstijl eerst">
@@ -178,47 +228,25 @@ export default function SleepScreen({
         </CockpitTile>
       </section>
 
-      <section aria-label="Voeding en supplementen">
-        <DomainSectionHeader eyebrow="Ondersteunend" title="Voeding & supplementen" />
+      <section aria-label="Voeding">
+        <DomainSectionHeader eyebrow="Ondersteunend" title="Voeding" />
         <CockpitTile>
-          <div className="flex flex-col gap-3.5">
-            <div>
-              <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
-                Eerst je basis
-              </p>
-              <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-                {nutritionHint}
-              </p>
-              <Link
-                href="/intake/voeding?from=dashboard&kompas=slaap"
-                onClick={() => {
-                  trackEvent("dashboard_slaap_voeding_click", { surface: "kompas_slaap" });
-                  clarityTag("dashboard_slaap_voeding", "click");
-                }}
-                className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
-              >
-                Doe de voedingscheck <Icons.ChevronRight s={15} />
-              </Link>
-            </div>
-
-            <div className="border-t border-white/10 pt-3.5">
-              <p className="mb-2.5 text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
-                Supplementen — pas na je basis
-              </p>
-              <DomainSupplementList
-                recommendations={recommendations}
-                emptyText="Eerst ritme, licht en vaste tijden. Supplementen zijn een aanvulling, geen startpunt."
-                onItemClick={(rec, href) => {
-                  trackEvent("dashboard_slaap_supplement_click", {
-                    slug: rec.slug,
-                    target: href,
-                    surface: "kompas_slaap",
-                  });
-                  clarityTag("dashboard_slaap_supplement", rec.slug);
-                }}
-              />
-            </div>
-          </div>
+          <p className="text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">{nutritionHint}</p>
+          <Link
+            href="/intake/voeding?from=dashboard&kompas=slaap"
+            onClick={() => {
+              trackEvent("dashboard_slaap_voeding_click", { surface: "kompas_slaap" });
+              clarityTag("dashboard_slaap_voeding", "click");
+            }}
+            className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
+          >
+            Doe de voedingscheck <Icons.ChevronRight s={15} />
+          </Link>
+          {nutritionLogCompleted ? (
+            <p className="mt-3 text-[12.5px] leading-relaxed text-[#7E8C82]">
+              Supplementen zijn een aanvulling op ritme en licht — geen startpunt op dit scherm.
+            </p>
+          ) : null}
         </CockpitTile>
       </section>
 

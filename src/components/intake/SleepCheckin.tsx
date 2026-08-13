@@ -16,7 +16,12 @@ import type { SleepDirection } from "@/lib/sleep-delta";
 import { trackEvent } from "@/lib/ga4";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import SleepDashboardCta from "@/components/sleep/SleepDashboardCta";
+import SleepCheckinReadout from "@/components/intake/SleepCheckinReadout";
+import SleepFactReadout from "@/components/intake/SleepFactReadout";
+import SleepFollowupStrip from "@/components/intake/SleepFollowupStrip";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
+import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
+import type { SleepCheckinSnapshot } from "@/lib/sleep-checkin-readout";
 
 type SleepReport = {
   SLP_ONSET?: number;
@@ -48,6 +53,7 @@ type Step =
       kind: "result";
       assessment: SleepAssessment;
       conclusion: SleepConclusion;
+      snapshot: SleepCheckinSnapshot;
       checkinId: string | null;
       start: SleepStart | null;
       regie: SleepRegie | null;
@@ -145,6 +151,7 @@ export default function SleepCheckin() {
         checkinId: string | null;
         assessment: SleepAssessment;
         conclusion: SleepConclusion;
+        snapshot: SleepCheckinSnapshot;
         start: SleepStart | null;
         regie: SleepRegie | null;
       };
@@ -156,6 +163,7 @@ export default function SleepCheckin() {
         kind: "result",
         assessment: data.assessment,
         conclusion: data.conclusion,
+        snapshot: data.snapshot,
         checkinId: data.checkinId,
         start: data.start,
         regie: data.regie,
@@ -201,21 +209,17 @@ export default function SleepCheckin() {
   }
 
   if (step.kind === "result") {
-    const { assessment, conclusion, start, regie } = step;
-    const focus = assessment.focus;
-    const contextHints: string[] = [];
-    if ((answers.nightload ?? 4) <= 2) {
-      contextHints.push("Je hoofd blijft 's avonds nog actief. Een korte afronding vóór bed helpt je zenuwstelsel zakken.");
-    }
-    if ((answers.morninglight ?? 4) <= 2) {
-      contextHints.push("Je ritme mist ochtendankers. Daglicht in de ochtend maakt inslapen later op de dag makkelijker.");
-    }
-    if ((answers.winddown ?? 4) <= 2) {
-      contextHints.push("Je avond schakelt laat terug. Een vaste afbouwvolgorde van 20-30 minuten maakt verschil.");
-    }
-    if ((answers.sleepconfidence ?? 4) <= 2) {
-      contextHints.push("Twijfel is logisch. Focus op 1 kleine stap voor 3 avonden achter elkaar in plaats van alles tegelijk.");
-    }
+    const { conclusion, snapshot, start, regie } = step;
+    const fromDashboard =
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("from") === "dashboard";
+    const voortgangHref = fromDashboard
+      ? buildDashboardVoortgangHref("domein", null, "slaap")
+      : "/account/login?from=intake";
+    const kompasHref = fromDashboard
+      ? "/dashboard?kompas=slaap"
+      : "/account/login?from=intake";
+    const mijnDagHref = fromDashboard ? "/dashboard?tab=agenda" : null;
 
     return (
       <div className="relative flex min-h-screen flex-col items-center justify-center">
@@ -227,183 +231,80 @@ export default function SleepCheckin() {
             Op basis van hoe je nu slaapt
           </p>
 
-          <section
-            className="mb-8 rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-5"
-            aria-labelledby="sleep-conclusion-heading"
-          >
-            <h2
-              id="sleep-conclusion-heading"
-              className="font-serif text-xl font-normal text-intake-ink"
-            >
-              {conclusion.headline}
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-intake-ink-muted">
-              {conclusion.statement}
-            </p>
-            {conclusion.secondaryHint ? (
-              <p className="mt-3 text-sm leading-relaxed text-intake-ink-muted">
-                {conclusion.secondaryHint}
-              </p>
-            ) : null}
-          </section>
+          <SleepCheckinReadout
+            headline={snapshot.headline}
+            focusLabel={snapshot.focusLabel}
+            answerLabel={snapshot.answerLabel}
+            statement={snapshot.focusStatement}
+            delta={snapshot.delta}
+            implicationLine={snapshot.implicationLine}
+            voortgangHref={voortgangHref}
+            startLine={
+              start?.statement ? `Sinds je start: ${start.statement}` : null
+            }
+            variant="checkin"
+          />
 
-          <section className="mb-8" aria-labelledby="sleep-actions-heading">
-            <h2
-              id="sleep-actions-heading"
-              className="mb-3 text-sm font-medium text-intake-ink"
-            >
-              Jouw volgende 3 acties
-            </h2>
-            <ol className="flex list-decimal flex-col gap-3 pl-5">
-              {conclusion.actions.map((action) => (
-                <li
-                  key={action}
-                  className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted marker:font-semibold marker:text-intake-terra"
-                >
-                  {action}
-                </li>
-              ))}
-            </ol>
-            <p className="mt-4 text-sm text-intake-ink-muted">
-              Wil je stappen afvinken?{" "}
-              <Link
-                href="/intake/plan/sleep"
-                onClick={() => {
-                  trackEvent("sleep_plan_link_click", { surface: "intake_slaap" });
-                  emitIntakeClientEvent("plan.action_clicked", {
-                    domain: "sleep",
-                    source: "sleep_checkin",
-                  });
-                }}
-                className="font-semibold text-intake-sage hover:underline"
-              >
-                Open je slaapplan →
-              </Link>
-            </p>
-          </section>
+          <SleepFactReadout rows={snapshot.factRows} surface="intake_slaap" />
 
-          {start && (
-            <div className="mb-8 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-intake-sage">
-                Sinds je start
-              </p>
-              {start.statement}
-            </div>
-          )}
-
-          {focus ? (
-            <section className="mb-8" aria-labelledby="sleep-focus-heading">
+          {conclusion.actions.length > 0 ? (
+            <section className="mb-8 mt-6" aria-labelledby="sleep-actions-heading">
               <h2
-                id="sleep-focus-heading"
+                id="sleep-actions-heading"
                 className="mb-3 text-sm font-medium text-intake-ink"
               >
-                Je grootste winst zit nu in {focus.label.toLowerCase()}
+                Jouw volgende 3 acties
               </h2>
-
-              <div className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink">
-                {focus.statement}
-              </div>
-
-              <div className="mt-4">
-                <p className="mb-3 text-xs font-medium text-intake-ink-subtle">
-                  Kies zelf je eerste stap — geen verkeerd antwoord, één is genoeg
-                </p>
-                <ul className="flex flex-col gap-3">
-                  {focus.choices.map((choice) => {
-                    const key = `${focus.dimension}:${choice}`;
-                    const isSelected = selected.has(key);
-                    return (
-                      <li key={key}>
-                        <button
-                          type="button"
-                          onClick={() => toggleChoice(key)}
-                          className={`block w-full min-h-[44px] rounded-[14px] border px-5 py-4 text-left text-sm leading-relaxed transition-all duration-200 ${
-                            isSelected
-                              ? "border-intake-sage/50 bg-intake-sage/15 text-intake-ink"
-                              : "border-intake-card-border bg-intake-bg-elevated text-intake-ink-muted hover:border-intake-sage/30 hover:bg-intake-sage/5"
-                          }`}
-                        >
-                          {choice}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-
-              <div className="mt-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated/60 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
-                {focus.deepen}
-              </div>
-
-              {focus.supplement && (
-                <div className="mt-4">
-                  <Link
-                    href={focus.supplement.comparisonPath}
-                    className="block rounded-[14px] border border-intake-terra/30 bg-intake-terra/5 px-5 py-4 text-sm leading-relaxed text-intake-ink transition-colors hover:bg-intake-terra/10"
+              <ol className="flex list-decimal flex-col gap-3 pl-5">
+                {conclusion.actions.map((action) => (
+                  <li
+                    key={action}
+                    className="rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted marker:font-semibold marker:text-intake-terra"
                   >
-                    <span className="block font-medium text-intake-terra">
-                      Past magnesium glycinaat bij je avondroutine? Vergelijk →
-                    </span>
-                    <span className="mt-1 block text-intake-ink-muted">
-                      {focus.supplement.claimText}
-                    </span>
-                  </Link>
-                </div>
-              )}
-            </section>
-          ) : (
-            <p className="mb-8 text-center text-sm leading-relaxed text-intake-ink-muted">
-              Je slaap staat er goed voor — houd vast wat voor jou werkt.
-            </p>
-          )}
-
-          <section aria-labelledby="sleep-status-heading">
-            <h2
-              id="sleep-status-heading"
-              className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle"
-            >
-              Hoe je nu slaapt
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {assessment.statuses.map((status) => (
-                <span
-                  key={status.dimension}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-intake-card-border bg-intake-bg-elevated px-3 py-1.5 text-xs text-intake-ink-muted"
+                    {action}
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-4 text-sm text-intake-ink-muted">
+                Wil je stappen afvinken?{" "}
+                <Link
+                  href="/intake/plan/sleep"
+                  onClick={() => {
+                    trackEvent("sleep_plan_link_click", { surface: "intake_slaap" });
+                    emitIntakeClientEvent("plan.action_clicked", {
+                      domain: "sleep",
+                      source: "sleep_checkin",
+                    });
+                  }}
+                  className="font-semibold text-intake-sage hover:underline"
                 >
-                  <span className="font-medium text-intake-ink">{status.label}</span>
-                  <span aria-hidden="true">·</span>
-                  <span>{BAND_LABELS[status.band]}</span>
-                </span>
-              ))}
-            </div>
-          </section>
+                  Open je slaapplan →
+                </Link>
+              </p>
+            </section>
+          ) : null}
 
-          {regie && (
-            <div className="mt-8 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
+          <SleepFollowupStrip
+            voortgangHref={voortgangHref}
+            kompasHref={kompasHref}
+            mijnDagHref={mijnDagHref}
+          />
+
+          {regie ? (
+            <div className="mt-6 rounded-[14px] border border-intake-sage/30 bg-intake-sage/10 px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
               {regie.reflection}
             </div>
-          )}
-
-          {contextHints.length > 0 && (
-            <div className="mt-4 rounded-[14px] border border-intake-card-border bg-intake-bg-elevated px-5 py-4 text-sm leading-relaxed text-intake-ink-muted">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-intake-ink-subtle">
-                Ritme &amp; herstel
-              </p>
-              <ul className="list-disc space-y-2 pl-5">
-                {contextHints.slice(0, 2).map((hint) => (
-                  <li key={hint}>{hint}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          ) : null}
 
           <DomeinIjkpuntCheckPrompt domain="slaap" domainLabel="Slaap" />
 
-          <SleepDashboardCta
-            focusLabel={conclusion.focusLabel}
-            focusDimension={conclusion.focusDimension}
-            source="sleep_checkin"
-          />
+          {!fromDashboard ? (
+            <SleepDashboardCta
+              focusLabel={conclusion.focusLabel}
+              focusDimension={conclusion.focusDimension}
+              source="sleep_checkin"
+            />
+          ) : null}
         </div>
       </div>
     );

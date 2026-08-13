@@ -19,6 +19,8 @@ import {
   sleepStartStatement,
 } from "@/lib/sleep-delta";
 import { sleepRegieReflection, SLEEP_DUUR_VALUES } from "@/data/sleep-checkin";
+import { buildSleepCheckinSnapshot, parseSleepCheckReport } from "@/lib/sleep-checkin-readout";
+import type { SleepCheckReport } from "@/lib/sleep-ladder";
 import { emitEvent } from "@/lib/events";
 
 type SleepReport = {
@@ -110,6 +112,25 @@ function logSecurityEvent(
   details: Record<string, unknown> = {},
 ) {
   console.warn("[api/intake/sleep-checkin][security]", { event, ...details });
+}
+
+async function resolvePreviousSleepCheckin(
+  admin: NonNullable<ReturnType<typeof createSupabaseAdmin>>,
+  sessionId: string,
+): Promise<SleepCheckReport | null> {
+  const { data } = await admin
+    .from("intake_domain_checkin")
+    .select("raw_inputs")
+    .eq("session_id", sessionId)
+    .eq("domain_key", "sleep_score")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!data?.raw_inputs) {
+    return null;
+  }
+  return parseSleepCheckReport(data.raw_inputs as Record<string, unknown>);
 }
 
 function parseChosenActions(raw: unknown): string[] | null {
@@ -328,6 +349,26 @@ export async function POST(request: NextRequest) {
     nightload: nightload ?? undefined,
   });
 
+  const fullReport: SleepCheckReport = {
+    SLP_ONSET,
+    SLP_WAKE,
+    SLP_CONS,
+    SLP_QUAL,
+    duur: duur ?? undefined,
+    winddown: winddown ?? undefined,
+    nightload: nightload ?? undefined,
+    morninglight: morninglight ?? undefined,
+  };
+
+  const previousReport = await resolvePreviousSleepCheckin(admin, sessionId);
+  const snapshot = buildSleepCheckinSnapshot({
+    report: fullReport,
+    assessment,
+    conclusion,
+    previousReport,
+    startStatement: null,
+  });
+
   const baseline = await loadBaselineSnapshot(sessionId);
   const direction = baseline
     ? sleepDirection(baseline.domainScores.sleep_score, currentScore)
@@ -358,6 +399,15 @@ export async function POST(request: NextRequest) {
       focus_label: conclusion.focusLabel,
       conclusion_text: conclusion.headline,
       conclusion_actions: conclusion.actions,
+      focus_statement: snapshot.focusStatement,
+      answer_label: snapshot.answerLabel,
+      implication_line: snapshot.implicationLine,
+      focus_layer: snapshot.focusLayer,
+      layer_states: snapshot.layerStates,
+      kompas_status: snapshot.kompasStatus,
+      primary_action: snapshot.primaryAction,
+      delta: snapshot.delta,
+      start_statement: start?.statement ?? null,
       chosen_actions: [],
     },
     score: { sleep_score: currentScore },
@@ -408,11 +458,16 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  if (snapshot.delta && start?.statement) {
+    snapshot.delta.startLine = start.statement;
+  }
+
   return NextResponse.json(
     {
       checkinId: insertedCheckin?.id ?? null,
       assessment,
       conclusion,
+      snapshot,
       start,
       regie: grip != null ? { grip, reflection: sleepRegieReflection(grip) } : null,
     },

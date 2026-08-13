@@ -40,6 +40,11 @@ import {
   parseStoredMovementCheckinSnapshot,
 } from "@/lib/movement-checkin-parse";
 import { buildMovementFactRows } from "@/lib/movement-assessment";
+import {
+  parseStoredSleepCheckinSnapshot,
+  parseStoredSleepCheckinForFacts,
+} from "@/lib/sleep-checkin-parse";
+import { buildSleepFactRows } from "@/lib/sleep-checkin-readout";
 import { isMovementFocusKey } from "@/lib/dashboard-url";
 import type {
   CheckLogEntry,
@@ -81,6 +86,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   planDomain: null,
   priorityPref: null,
   sleepCheckinFocus: null,
+  sleepCheckinSnapshot: null,
   movementCheckinSnapshot: null,
   hasStressCheckin: false,
   domainCheckDaysAgo: {},
@@ -576,6 +582,7 @@ export async function loadAccountDashboardData(
   }
 
   let sleepCheckinFocus: SleepCheckinFocus | null = null;
+  let sleepCheckinSnapshot: DashboardData["sleepCheckinSnapshot"] = null;
   const sleepCheckins = ((checkinData ?? []) as CheckinRow[])
     .filter(
       (row) =>
@@ -593,6 +600,17 @@ export async function loadAccountDashboardData(
     if (parsed) {
       sleepCheckinFocus = {
         ...parsed,
+        date: formatDashboardDate(latestSleepCheckin.created_at),
+      };
+    }
+    const snapshotParsed = parseStoredSleepCheckinSnapshot(latestSleepCheckin.raw_inputs);
+    if (snapshotParsed) {
+      const storedReport = parseStoredSleepCheckinForFacts(latestSleepCheckin.raw_inputs);
+      sleepCheckinSnapshot = {
+        ...snapshotParsed,
+        factRows: storedReport
+          ? buildSleepFactRows(storedReport, snapshotParsed.focusDimension)
+          : [],
         date: formatDashboardDate(latestSleepCheckin.created_at),
       };
     }
@@ -876,6 +894,7 @@ export async function loadAccountDashboardData(
     movementPrefs: latestSnapshot.movementPrefs,
     priorityPref,
     sleepCheckinFocus,
+    sleepCheckinSnapshot,
     movementCheckinSnapshot,
     hasStressCheckin,
     domainCheckDaysAgo,

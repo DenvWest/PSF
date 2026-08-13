@@ -6,10 +6,18 @@ import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import BewegingAdviesTreden from "@/components/dashboard/voortgang/BewegingAdviesTreden";
+import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
 import MovementFactReadout from "@/components/intake/MovementFactReadout";
+import SleepCheckinReadout from "@/components/intake/SleepCheckinReadout";
+import SleepFactReadout from "@/components/intake/SleepFactReadout";
 import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
+import {
+  SLEEP_LAYER_STATE_LABEL,
+  SLEEP_PRIORITY_LAYERS,
+  type SleepPriorityId,
+} from "@/data/sleep/lifestyle-priorities";
 import { buildBewegingAdviesTreden } from "@/lib/beweging-advies-treden";
 import { clarityTag } from "@/lib/clarity";
 import { buildMovementRoutingHref } from "@/lib/dashboard-url";
@@ -19,6 +27,7 @@ import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { resolveMovementRoutingHint } from "@/lib/movement-assessment";
+import { sleepLayerWhyWait } from "@/lib/sleep-ladder";
 import {
   buildMovementProgramPreview,
   parseMovementPlanProfile,
@@ -83,6 +92,7 @@ export default function VoortgangDomeinScreen({
   const daysAgo = data?.domainCheckDaysAgo?.[domain];
 
   const isMovement = domain === "beweging";
+  const isSleep = domain === "slaap";
   const movementLogEnabled = isMovement && isMovementLogEnabled();
   const weekTotals = useMovementWeekTotals(movementLogEnabled);
 
@@ -105,6 +115,8 @@ export default function VoortgangDomeinScreen({
     isMovement && movementCurrent?.source === "beweegcheck" && nutritionLogCompleted;
 
   const movementReadout = isMovement ? (data?.movementCheckinSnapshot ?? null) : null;
+  const sleepReadout = isSleep ? (data?.sleepCheckinSnapshot ?? null) : null;
+  const domainReadout = movementReadout ?? sleepReadout;
   // Programma-preview is altijd live uit het profiel, nooit uit het bevroren
   // readout-blok — anders loopt de regel uit de pas zodra iemand zijn
   // programma wijzigt zonder een nieuwe beweegcheck te doen (§H3).
@@ -121,10 +133,10 @@ export default function VoortgangDomeinScreen({
     trackEvent("domain_tool.snapshot_viewed", {
       domain,
       surface: "voortgang_domein",
-      has_conclusion: movementReadout !== null,
+      has_conclusion: domainReadout !== null,
     });
     clarityTag("dashboard_voortgang_domein", domain);
-  }, [domain, movementReadout]);
+  }, [domain, domainReadout]);
 
   const handleCheckin = () => {
     trackEvent("dashboard_beweging_checkin_click", { mode: "full", surface: "voortgang_beweging" });
@@ -266,6 +278,47 @@ export default function VoortgangDomeinScreen({
           />
         ) : null}
 
+        {sleepReadout ? (
+          <SleepCheckinReadout
+            headline={sleepReadout.headline}
+            focusLabel={sleepReadout.focusLabel}
+            answerLabel={sleepReadout.answerLabel}
+            statement={sleepReadout.focusStatement}
+            delta={sleepReadout.delta}
+            implicationLine={sleepReadout.implicationLine}
+            voortgangHref="/intake/plan/sleep?from=dashboard&voortgang=slaap"
+            startLine={
+              sleepReadout.delta?.startLine
+                ? `Sinds je start: ${sleepReadout.delta.startLine}`
+                : null
+            }
+            variant="voortgang"
+          />
+        ) : null}
+
+        {sleepReadout ? (
+          <SleepFactReadout rows={sleepReadout.factRows} surface="voortgang_slaap" />
+        ) : null}
+
+        {sleepReadout ? (
+          <CockpitTile eyebrow="Prioriteiten">
+            <DomainLifestyleLadder
+              layers={SLEEP_PRIORITY_LAYERS}
+              layerStates={sleepReadout.layerStates}
+              focusLayer={sleepReadout.focusLayer}
+              stateLabels={SLEEP_LAYER_STATE_LABEL}
+              variant="full"
+              whyWait={(layerId) => sleepLayerWhyWait(layerId as SleepPriorityId, sleepReadout.focusLayer)}
+              domain="slaap"
+              surface="voortgang_slaap"
+            />
+          </CockpitTile>
+        ) : null}
+
+        {isSleep ? (
+          <DomeinIjkpuntCheckPrompt domain="slaap" domainLabel="Slaap" />
+        ) : null}
+
         {isMovement ? (
           <DomeinIjkpuntCheckPrompt domain="beweging" domainLabel="Beweging" />
         ) : null}
@@ -290,7 +343,9 @@ export default function VoortgangDomeinScreen({
             <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">
               {isMovement
                 ? "Doe de uitgebreide beweegcheck (3 min)"
-                : `Doe de ${pillar.label.toLowerCase()}-check opnieuw`}
+                : isSleep
+                  ? "Doe de slaap-check opnieuw (1 min)"
+                  : `Doe de ${pillar.label.toLowerCase()}-check opnieuw`}
             </span>
             <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
           </a>

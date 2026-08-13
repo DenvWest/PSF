@@ -109,6 +109,7 @@ function baseData(overrides: Partial<DashboardData> = {}): DashboardData {
     planDomain: null,
     priorityPref: null,
     sleepCheckinFocus: null,
+    sleepCheckinSnapshot: null,
     movementCheckinSnapshot: null,
     hasStressCheckin: false,
     domainCheckDaysAgo: {},

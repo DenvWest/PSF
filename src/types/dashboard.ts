@@ -10,6 +10,8 @@ import type {
 import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { StoredMovementCheckinSnapshot } from "@/lib/movement-checkin-parse";
 import type { MovementFactRow } from "@/lib/movement-assessment";
+import type { StoredSleepCheckinSnapshot } from "@/lib/sleep-checkin-parse";
+import type { SleepFactRow } from "@/lib/sleep-checkin-readout";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
 import type { PlanProgress } from "@/types/lifestyle-plan";
 import type { StoredSupplementVerdict } from "@/types/verdict";
@@ -215,6 +217,11 @@ export type MovementCheckinReadoutData = StoredMovementCheckinSnapshot & {
   factRows: MovementFactRow[];
 };
 
+export type SleepCheckinReadoutData = StoredSleepCheckinSnapshot & {
+  date: string;
+  factRows: SleepFactRow[];
+};
+
 export type DashboardData = {
   empty: boolean;
   current: (CheckSnapshot & { trend: CheckTrend; trendBaselines?: CheckTrendBaselines }) | null;
@@ -249,6 +256,7 @@ export type DashboardData = {
   planDomain: MeasuredPillarId | null;
   priorityPref: AccountPriorityPrefData | null;
   sleepCheckinFocus: SleepCheckinFocus | null;
+  sleepCheckinSnapshot: SleepCheckinReadoutData | null;
   movementCheckinSnapshot: MovementCheckinReadoutData | null;
   hasStressCheckin: boolean;
   /** Dagen sinds de laatste eigen domeincheck; ontbreekt = nog nooit gedaan. */
