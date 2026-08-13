@@ -48,6 +48,21 @@ export const DOMAIN_CHECKIN_CONSENT_TEXT: Record<DomainCheckinConsentType, strin
     "Ik geef toestemming om mijn periodieke domein-checkin te verwerken voor een persoonlijk leefstijloverzicht en vervolgstappen. Dit is geen medisch advies en geen diagnose; ik kan mijn toestemming altijd intrekken.",
 };
 
+export type ConnectionProfileConsentType = "connection_profile_storage";
+
+/**
+ * Los intrekbaar zonder de leefstijlcheck te raken. Zie
+ * docs/design/BESLUIT_CONNECTION_PROFILE_V1_2026-08.md §7 — het profiel staat
+ * bewust naast de gezondheidsgegevens en niet erin.
+ */
+export const CONNECTION_PROFILE_CONSENT_TEXT: Record<
+  ConnectionProfileConsentType,
+  string
+> = {
+  connection_profile_storage:
+    "Ik geef toestemming om de voorkeuren die ik zelf invul — onderwerpen, activiteiten, beschikbaarheid en mijn postcodegebied — te bewaren om mijn omgeving persoonlijker te maken. Deze gegevens staan los van mijn leefstijlcheck, zijn niet zichtbaar voor anderen, en ik kan mijn toestemming altijd intrekken.",
+};
+
 export type BodyMetricsConsentType = "body_metrics";
 
 export const BODY_METRICS_CONSENT_TEXT: Record<BodyMetricsConsentType, string> = {
