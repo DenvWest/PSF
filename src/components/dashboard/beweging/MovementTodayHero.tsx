@@ -33,6 +33,7 @@ import {
   type TodayChoiceOption,
 } from "@/lib/movement-today-choices";
 import { postMovementDayChoice } from "@/lib/priority-pref-client";
+import type { MovementCurrentSource } from "@/lib/movement-target";
 import { useDailyActionLog } from "@/lib/use-daily-action-log";
 import { buildVandaagFollowUp, firstSentence } from "@/lib/vandaag-card-links";
 import { todayInAgendaTimezone } from "@/lib/agenda-week-preview";
@@ -49,6 +50,10 @@ type MovementTodayHeroProps = {
   model: DashboardModel;
   slot: WeekDaySlot | null;
   movementPrefs: MovementPrefs;
+  /** Bron van `deriveMovementCurrent()` — bepaalt of preselect_source "beweegcheck"
+   * mag zijn (A2). Beweegcheck weegt zwaarder dan een verse pulse-checkin: wie de
+   * volledige check heeft gedaan, telt als "beweegcheck" ongeacht rcvFeel-versheid. */
+  movementCurrentSource: MovementCurrentSource;
   /** Programmaregel — in de voet van de VANDAAG-kaart, zelfde kaart (S2-compositie). */
   programSummary?: { label: string; onOpen: () => void } | null;
   onGoAgenda: () => void;
@@ -150,6 +155,7 @@ export default function MovementTodayHero({
   model,
   slot,
   movementPrefs,
+  movementCurrentSource,
   programSummary,
   onGoAgenda,
   onMakePriority,
@@ -286,7 +292,12 @@ export default function MovementTodayHero({
       // recommended_choice "none" bij de meeste dagen en is niet af te lezen
       // wat de gebruiker zag toen hij Gedaan of Wijzig keuze indrukte.
       preselected_choice: preselectedKind,
-      preselect_source: recommendedKind != null ? "checkin" : "plan",
+      preselect_source:
+        movementCurrentSource === "beweegcheck"
+          ? "beweegcheck"
+          : recommendedKind != null
+            ? "checkin"
+            : "plan",
       surface: SURFACE,
       user_chosen: model.priorityIsUserChosen,
     });
@@ -299,6 +310,7 @@ export default function MovementTodayHero({
     preselectedKind,
     restRecommended,
     recommendedKind,
+    movementCurrentSource,
   ]);
 
   const anchorOption = movementPrefs.anchor

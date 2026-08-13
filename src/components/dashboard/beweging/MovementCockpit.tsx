@@ -153,6 +153,7 @@ export default function MovementCockpit({
             model={model}
             slot={slot}
             movementPrefs={movementPrefs}
+            movementCurrentSource={movementCurrent.source}
             programSummary={programSummary}
             onGoAgenda={onGoAgenda}
             onMakePriority={onMakePriority}
