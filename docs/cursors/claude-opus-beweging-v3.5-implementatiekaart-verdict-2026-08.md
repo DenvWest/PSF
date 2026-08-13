@@ -420,7 +420,7 @@ is de bedoeling.**
 | **9** | **Prebuild afwerken zonder slice-tags = dubbel werk** | **Hoog** | v3.5 draagt vandaag 15 locks zonder één deploy-kolom. Zonder de C.3-comment-patch bouwt de volgende sessie lock 4/5 in slice 9 en sloopt de meetbare brug. **De comment-patch is het goedkoopste item in dit document** |
 | **10** | **Dode dimensies als patroon** | Middel | `weeklyFrequency` (prop zonder schrijver), `preselect_source` (waarde die niet kan voorkomen), `favorieten:"now"` (status zonder opslag) — drie instanties in één keten. Regel: **geen veld, prop of payload-waarde zonder aantoonbare schrijver in dezelfde PR** |
 | **11** | **`VoortgangDomeinScreen.tsx` wordt een beweging-bestand** | Middel | R2b in een eigen component + `src/lib/movement-ladder.ts`; het scherm krijgt één regel erbij, geen tak |
-| **12** | **Dose-range-drift** | Laag | Code 20-400 (`targets.ts:21-22`), prebuild 10-90 stap 5 (r.1645). Beslis in R1b: verruiming documenteren óf terugbrengen. Niet stil laten staan |
+| **12** | **Dose-range-drift** | Laag | **Besloten (13-08):** geen drift — `targets.ts:21-22` (20-400) is het weektotaal, de prebuild-range (10-90 stap 5, r.1659) is een nog te bouwen per-sessie dosisveld ("Minuten per keer"). Twee velden, conform lock 11 (dose ≠ dayDur). R1b bouwt eigen constanten (`MOVEMENT_DOSE_MINUTES_MIN=10`, `MAX=90`, `STEP=5`) voor het dosisveld; `MOVEMENT_TARGET_MINUTES_MIN/MAX` blijft ongewijzigd voor het weektotaal. Niet hergebruiken tussen de twee |
 
 ---
 
@@ -750,7 +750,7 @@ krijgt een expliciete ontwerpschuld-post (§I.2).
 | **4** | **Accordeer sectie B + C als SSOT** — met name: `BewegingProgrammaPaneel` is KILL, en lock 4/5 gaan niet in slice 9 | **S** (besluit) | Dit is de enige beslissing in dit document die niet uit code of eerdere besluiten volgt. Zonder akkoord bouwt de volgende sessie lock 4 in slice 9 |
 | **5** | **Kies scenario A of B voor de inhoudsproef** (§H). Mijn advies: **B — parkeren met meetbare heropen-trigger** | **S** (besluit) | M.4 verbiedt stille doorschuiving; B maakt de trigger een cijfer in plaats van een voornemen |
 | **6** | **Leg twee eenregelbesluiten vast in `BESLUIT_BEWEGING_PRODUCT_EN_IA.md`**: (a) toon bevriest, feit herberekent; (b) profiel = wat je *wil*, `movementCurrent` = wat je *doet*, snapshot = wat je *antwoordde* | **S** | Risico 4 en 5; beide zijn vandaag impliciet in de code en nergens expliciet |
-| **7** | **Beslis de dose-range-drift** (code 20-400 vs prebuild 10-90 stap 5) vóór R1b | **S** (besluit) | Anders staat er in R1b een control waarvan niemand weet welke grens de juiste is |
+| **7** | ~~Beslis de dose-range-drift~~ — **besloten 13-08**: geen drift, twee velden (weektotaal vs. dosis per keer); R1b bouwt eigen `MOVEMENT_DOSE_MINUTES_*`-constanten voor het dosisveld, zie risico 12 | — | Afgerond |
 
 ---
 
