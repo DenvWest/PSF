@@ -1,30 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/account/AuthShell";
 import { Button, Card } from "@/components/app/primitives";
-import AccountDayRibbon from "@/components/account/AccountDayRibbon";
-import AccountFocusPicker from "@/components/account/AccountFocusPicker";
-import AgendaTimePicker from "@/components/dashboard/agenda/AgendaTimePicker";
-import { PILLAR } from "@/data/dashboard";
-import {
-  MOVEMENT_TARGET_DAYS_PRESETS,
-  MOVEMENT_TARGET_STRENGTH_OPTIONS,
-} from "@/data/movement/targets";
-import { deriveDefaultTimeBucket } from "@/lib/account-priority-pref";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import {
   fetchPriorityPref,
-  postPrioritySelection,
-  postScheduledTime,
   postSetPlanStepsHidden,
-  resetPriorityPref,
   type PriorityPrefResponse,
 } from "@/lib/priority-pref-client";
-import { useMovementPlanProfile } from "@/lib/use-movement-plan-profile";
 import type { AccountPriorityPrefData, PillarId } from "@/types/dashboard";
 
 type AccountSettingsProps = {
@@ -71,15 +57,6 @@ function mergeMutatedPref(current: SettingsPref, next: AccountPriorityPrefData):
     planStepsHidden: next.planStepsHidden,
   };
 }
-
-const SECTION_HEADING_STYLE = {
-  margin: "0 0 2px",
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase" as const,
-  letterSpacing: "0.08em",
-  color: "var(--text-subtle)",
-};
 
 const FIELD_LABEL_STYLE = {
   margin: "0 0 10px",
@@ -137,26 +114,6 @@ function ToggleSwitch({
   );
 }
 
-function targetChipStyle(selected: boolean, disabled: boolean): CSSProperties {
-  return {
-    display: "inline-flex",
-    minHeight: 38,
-    minWidth: 40,
-    cursor: disabled ? "not-allowed" : "pointer",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 999,
-    border: `1px solid ${selected ? "var(--sage)" : "var(--panel-border, rgba(22,40,26,0.16))"}`,
-    background: selected ? "rgba(90,143,106,0.14)" : "transparent",
-    padding: "0 14px",
-    fontSize: 13,
-    fontWeight: 500,
-    fontVariantNumeric: "tabular-nums",
-    color: "var(--text)",
-    opacity: disabled ? 0.6 : 1,
-  };
-}
-
 async function readErrorMessage(response: Response, fallback: string): Promise<string> {
   try {
     const data: unknown = await response.json();
@@ -182,8 +139,6 @@ export default function AccountSettings({ email }: AccountSettingsProps) {
   const [settings, setSettings] = useState<SettingsState>({ status: "loading" });
   const [settingsBusy, setSettingsBusy] = useState(false);
   const [settingsError, setSettingsError] = useState<string | null>(null);
-  const { profile: movementProfile, prefsBusy: movementBusy, saveProfilePatch: saveMovementPatch } =
-    useMovementPlanProfile(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -234,62 +189,6 @@ export default function AccountSettings({ email }: AccountSettingsProps) {
       setSettingsBusy(false);
     }
   };
-
-  const handleSelectFocus = (pillarId: PillarId) =>
-    runSettingsMutation(
-      "focus",
-      pillarId,
-      () => postPrioritySelection({ pillarId, source: "user_selected", surface: SETTINGS_SURFACE }),
-      "Kon focus niet opslaan.",
-    );
-
-  const handleAcceptEngineFocus = () => {
-    if (settings.status !== "ready" || !settings.enginePriorityId) {
-      return;
-    }
-    return runSettingsMutation(
-      "focus",
-      settings.enginePriorityId,
-      () =>
-        postPrioritySelection({
-          pillarId: settings.enginePriorityId as PillarId,
-          source: "accept_engine",
-          surface: SETTINGS_SURFACE,
-        }),
-      "Kon focus niet opslaan.",
-    );
-  };
-
-  const handleResetFocus = async () => {
-    if (settings.status !== "ready" || settingsBusy) {
-      return;
-    }
-    setSettingsBusy(true);
-    setSettingsError(null);
-    try {
-      await resetPriorityPref({ surface: SETTINGS_SURFACE });
-      const response = await fetchPriorityPref();
-      setSettings({ status: "ready", ...toSettingsPref(response) });
-      trackEvent("account_setting_changed", {
-        setting: "focus",
-        value: "reset",
-        surface: SETTINGS_SURFACE,
-      });
-      clarityTag("account_settings", "focus_reset");
-    } catch (error) {
-      setSettingsError(error instanceof Error ? error.message : "Kon focus niet resetten.");
-    } finally {
-      setSettingsBusy(false);
-    }
-  };
-
-  const handleScheduledTimeChange = (time: string) =>
-    runSettingsMutation(
-      "scheduled_time",
-      time,
-      () => postScheduledTime({ scheduledTime: time, surface: SETTINGS_SURFACE }),
-      "Kon tijdstip niet opslaan.",
-    );
 
   const handlePlanStepsHiddenChange = (hidden: boolean) =>
     runSettingsMutation(
@@ -441,9 +340,6 @@ export default function AccountSettings({ email }: AccountSettingsProps) {
     }
   };
 
-  const focusPillarId =
-    settings.status === "ready" ? (settings.pillarId ?? settings.enginePriorityId) : null;
-
   return (
     <AuthShell exitHref="/dashboard" maxWidth="min(94vw, 640px)">
       <header style={{ display: "grid", gap: 6 }}>
@@ -451,105 +347,28 @@ export default function AccountSettings({ email }: AccountSettingsProps) {
         <p style={{ margin: 0, color: "var(--text-muted)", fontSize: 14.5, lineHeight: 1.5 }}>{email}</p>
       </header>
 
-      {settings.status === "ready" ? (
-        <AccountDayRibbon
-          scheduledTime={settings.scheduledTime}
-          domainLabel={focusPillarId ? PILLAR[focusPillarId].label : "je focus"}
-          domainColor={focusPillarId ? PILLAR[focusPillarId].color : "#5A8F6A"}
-        />
-      ) : null}
-
       {settings.status === "ready" && (
         <Card pad={20}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+            }}
+          >
             <div>
-              <p style={SECTION_HEADING_STYLE}>Je dag</p>
-              <p style={FIELD_LABEL_STYLE}>Focus van je plan</p>
-              <AccountFocusPicker
-                pillarId={settings.pillarId}
-                enginePillarId={settings.enginePriorityId}
-                busy={settingsBusy}
-                onSelect={handleSelectFocus}
-                onAcceptEngine={handleAcceptEngineFocus}
-                onReset={handleResetFocus}
-              />
+              <p style={{ ...FIELD_LABEL_STYLE, margin: 0 }}>Dagstappen tonen</p>
+              <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-muted)", lineHeight: 1.5 }}>
+                Uit betekent: alleen je eigen momenten in de agenda. Je plan blijft bestaan.
+              </p>
             </div>
-
-            <div>
-              <p style={FIELD_LABEL_STYLE}>Vaste tijd voor je dagstap</p>
-              <AgendaTimePicker
-                value={settings.scheduledTime}
-                defaultBucket={deriveDefaultTimeBucket()}
-                busy={settingsBusy}
-                variant="compact-dark"
-                onChange={handleScheduledTimeChange}
-              />
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-              }}
-            >
-              <div>
-                <p style={{ ...FIELD_LABEL_STYLE, margin: 0 }}>Dagstappen tonen</p>
-                <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--text-muted)", lineHeight: 1.5 }}>
-                  Uit betekent: alleen je eigen momenten in de agenda. Je plan blijft bestaan.
-                </p>
-              </div>
-              <ToggleSwitch
-                checked={!settings.planStepsHidden}
-                disabled={settingsBusy}
-                label="Dagstappen tonen"
-                onChange={(next) => handlePlanStepsHiddenChange(!next)}
-              />
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {settings.status === "ready" && (
-        <Card pad={20}>
-          <p style={SECTION_HEADING_STYLE}>Je week</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 6 }}>
-            <div>
-              <p style={FIELD_LABEL_STYLE}>Dagen per week bewegen</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {MOVEMENT_TARGET_DAYS_PRESETS.map((days) => (
-                  <button
-                    key={days}
-                    type="button"
-                    disabled={movementBusy}
-                    aria-pressed={movementProfile.targetDays === days}
-                    onClick={() => void saveMovementPatch({ targetDays: days })}
-                    style={targetChipStyle(movementProfile.targetDays === days, movementBusy)}
-                  >
-                    {days}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p style={FIELD_LABEL_STYLE}>Krachtsessies per week</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {MOVEMENT_TARGET_STRENGTH_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    disabled={movementBusy}
-                    aria-pressed={movementProfile.targetStrength === option.id}
-                    onClick={() => void saveMovementPatch({ targetStrength: option.id })}
-                    style={targetChipStyle(movementProfile.targetStrength === option.id, movementBusy)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <ToggleSwitch
+              checked={!settings.planStepsHidden}
+              disabled={settingsBusy}
+              label="Dagstappen tonen"
+              onChange={(next) => handlePlanStepsHiddenChange(!next)}
+            />
           </div>
         </Card>
       )}

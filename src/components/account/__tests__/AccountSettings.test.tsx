@@ -16,27 +16,6 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-vi.mock("@/lib/use-movement-plan-profile", () => ({
-  useMovementPlanProfile: () => ({
-    profile: {
-      startPattern: null,
-      anchor: null,
-      preferredSport: null,
-      weeklyFrequency: null,
-      trainingLocation: null,
-      sports: [],
-      targetMinutes: 150,
-      targetDays: 3,
-      targetStrength: 2,
-    },
-    loading: false,
-    prefsBusy: false,
-    saveProfilePatch: vi.fn(async () => {}),
-    toggleSport: vi.fn(),
-    applyKnownPatch: vi.fn(),
-  }),
-}));
-
 const BASE_PREF = {
   pillarId: "beweging",
   source: "user_selected",
@@ -103,24 +82,25 @@ describe("AccountSettings — dashboard-instellingen", () => {
     vi.unstubAllGlobals();
   });
 
-  it("laadt focus, vaste tijd en dagstappen-toggle uit de bestaande priority-pref API", async () => {
+  it("laadt de dagstappen-toggle uit de bestaande priority-pref API", async () => {
     mockGlobalFetch();
     render(<AccountSettings email="dennis@example.com" />);
 
     await waitFor(() => {
-      expect(screen.getByText("advies")).toBeTruthy();
+      expect(screen.getByRole("switch", { name: "Dagstappen tonen" })).toHaveProperty(
+        "ariaChecked",
+        "true",
+      );
     });
-    expect(screen.getByRole("switch", { name: "Dagstappen tonen" })).toHaveProperty(
-      "ariaChecked",
-      "true",
-    );
   });
 
-  it("dagstappen uitzetten laat de gekozen focus onaangetast (regressie: mutatie zonder pillarId in de body)", async () => {
+  it("dagstappen uitzetten stuurt geen pillarId mee (regressie: mutatie mag focus niet aanraken)", async () => {
     mockGlobalFetch();
     render(<AccountSettings email="dennis@example.com" />);
 
-    await waitFor(() => expect(screen.getByText("advies")).toBeTruthy());
+    await waitFor(() =>
+      expect(screen.getByRole("switch", { name: "Dagstappen tonen" })).toBeTruthy(),
+    );
 
     fireEvent.click(screen.getByRole("switch", { name: "Dagstappen tonen" }));
 
@@ -130,15 +110,30 @@ describe("AccountSettings — dashboard-instellingen", () => {
         expect.objectContaining({ setting: "plan_steps_visible", value: "uit" }),
       );
     });
-    // Beweging blijft de geselecteerde focus-rij (niet teruggevallen op iets anders).
-    expect(screen.getByRole("button", { name: /^Beweging/ })).toBeTruthy();
+
+    // Deze pagina bevat geen focuskiezer meer (die zit al in Voortgang/Kompas) —
+    // de toggle-mutatie mag dus ook geen pillarId in de request body sturen.
+    const toggleCall = (fetch as unknown as { mock: { calls: unknown[][] } }).mock.calls.find(
+      ([, init]) => {
+        const options = init as RequestInit | undefined;
+        if (!options?.body) return false;
+        const body = JSON.parse(options.body as string);
+        return body.action === "hide_all_plan_steps";
+      },
+    );
+    expect(toggleCall).toBeTruthy();
+    const [, toggleInit] = toggleCall as [unknown, RequestInit];
+    const toggleBody = JSON.parse(toggleInit.body as string);
+    expect(toggleBody.pillarId).toBeUndefined();
   });
 
   it("toont de foutmelding in de pagina zelf als een mutatie faalt, en meet geen succes", async () => {
     mockGlobalFetch({ failToggle: true });
     render(<AccountSettings email="dennis@example.com" />);
 
-    await waitFor(() => expect(screen.getByText("advies")).toBeTruthy());
+    await waitFor(() =>
+      expect(screen.getByRole("switch", { name: "Dagstappen tonen" })).toBeTruthy(),
+    );
 
     fireEvent.click(screen.getByRole("switch", { name: "Dagstappen tonen" }));
 
