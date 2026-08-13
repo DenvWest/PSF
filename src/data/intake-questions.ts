@@ -218,7 +218,7 @@ export const QUESTIONS: readonly IntakeQuestion[] = [
       "Denk aan partner, vrienden of familie waar je op drukke of mindere dagen op kunt bouwen.",
     options: [
       { label: "Ja, en dat voelt ruim voldoende", value: 4 },
-      { label: "Ja, een paar — en dat is genoeg voor mij", value: 4 },
+      { label: "Ja, een paar — en dat is genoeg voor mij", value: 3 },
       { label: "Er zijn mensen, maar ik mis soms echt contact", value: 2 },
       { label: "Ik heb weinig mensen om op terug te vallen", value: 1 },
     ],

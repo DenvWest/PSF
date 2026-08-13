@@ -438,17 +438,26 @@ Wat route a **niet** mag doen: de ladder tonen alsof er gemeten is. Bij `CON_SOC
 
 
 
-**L1 · Wanneer repareren we de `CON_SOC`-schaal (§A2)?**
-De score kan alleen 0/33/100 zijn omdat waarde 3 ontbreekt. Repareren betekent: *"Ja, een paar — en dat is genoeg voor mij"* van `4` naar `3`. Dat verandert `connection_score` **en** de vitaalscore voor bestaande sessies → `rules_version 1.5.0` + `CONNECTION_DELTA_COMPARABLE_FROM` naar 1.5.0 + een vitaliteitsbreuk. **Advies: niet nu.** Verbinding v1 landt zonder score-wijziging (§D1). Bundel de reparatie met de al openstaande "Overtrainer"-P2 in één bewuste bump, en documenteer de breuk vooraf. Dit besluit heeft geen invloed op W1–W10.
+**L1 · ✅ BESLIST 13 augustus 2026 — repareer nu, vóór de W1-bouw, gebundeld met "Overtrainer".**
+Dennis' vraag: waarom wachten als er (mogelijk) geen actieve gebruikers zijn? Het aantal is niet geverifieerd — verbinding draait sinds 1 juli in productie (`121db26`, rules_version 1.3.0) en de site is live sinds april, dus vermoedelijk bestaat er wél sessiedata. **Dat aantal is echter niet de doorslaggevende factor.** De doorslaggevende factor: Verbinding v1 (dit hele document, W0–W10) staat nog nergens in `src/` — er is dus geen bestaande feature die een breaking bump zou verstoren, alleen historische sessiedata. Een `rules_version`-bump is precies het bestaande mechanisme hiervoor en is dit kwartaal al drie keer bewust ingezet (1.3.0 → 1.4.0 → 1.5.0, laatste 19 juli). Wachten betekent Verbinding v1 bouwen óp de kapotte schaal en er ná oplevering nog een bump overheen moeten zetten — dat is duurder dan nu, niet goedkoper.
 
-**L2 · Vangnetregel — altijd zichtbaar of helemaal niet?**
-§C4 stelt niet-conditioneel voor. Het alternatief is geen regel (kortste flow, maar dan antwoordt het systeem op "ik heb weinig mensen" met alleen een agenda-tip). Conditioneel is uitgesloten. Advies: **altijd zichtbaar**, één regel, geen kader, geen icoon.
+**Besluit:** reparatie + de al openstaande "Overtrainer"-P2 (semantisch scheef label bij lage beweging) samen in **`RULES_VERSION 1.6.0`**, vóór W1 start:
+1. `CON_SOC`-optie *"Ja, een paar — en dat is genoeg voor mij"* van `value: 4` naar `value: 3` ([intake-questions.ts:221](../../src/data/intake-questions.ts#L221))
+2. `CONNECTION_DELTA_COMPARABLE_FROM` → `"1.6.0"` ([rules-version.ts](../../src/lib/rules-version.ts))
+3. Nieuw label voor `NAMED_DOMAIN_LABELS.movement` (nu `"Overtrainer"`, [intake-engine.ts:300](../../src/lib/intake-engine.ts#L300)) — verschijnt bij te wéínig beweging, niet te veel. Naamkeuze aan Dennis.
 
-**L3 · Ordinalen in de ladder — `P1` of alleen de naam?**
-`DomainLifestyleLadder` rendert nu `P{layer.id}` ([regel 205](../../src/components/dashboard/domain/DomainLifestyleLadder.tsx#L205)) voor slaap en stress. De voeding-canon verbiedt ordinalen in gerenderde tekst en gebruikt een glyph. Dat is een inconsistentie die met verbinding groeit naar drie domeinen tegen één. Advies: **P-prefix laten staan bij verbinding** (consistent met slaap/stress, één component, geen fork) en de harmonisatie apart beslissen wanneer voeding V1f landt — niet twee ladder-varianten naast elkaar bouwen.
+Aanvullend, bij de doorvoer: eerst tellen via Supabase Dashboard SQL Editor (`select rules_version, count(*) from intake_sessions where domain_scores ? 'connection_score' group by rules_version`) om de breuk te documenteren, niet om het besluit ervan te laten afhangen.
 
-**L4 · Doelgroepcijfer: StatLine ophalen of weglaten?**
-§B2 heeft geen cijfer voor mannen 40–65; vzinfo publiceert die uitsplitsing niet. Ophalen uit StatLine `85766NED` kost een half uur en levert een sterk herkennings-anker voor W9. Tot dat gebeurd is: **alleen landelijke cijfers met bron**, geen doelgroepgetal.
+**Zijstap — vitaliteitsscore-als-geheel, geen aparte actie.** Dennis vroeg of de totale vitaliteitsscore net als de leefstijlmeter een "dit is speculatie"-signaal moet krijgen voor domeinen zonder gevalideerd instrument. **Advies: totaalscore ongewijzigd laten** — dat raakt alle vijf domeinen, ondermijnt de Consumentenbond-zekerheid op het enige herkenbare getal, en het probleem wordt vanzelf kleiner na deze reparatie (4 punten i.p.v. een gat) en verdwijnt verder zodra Verbinding v1 acht items heeft. **Wat wél hergebruikt wordt, in W4/W5:** het bestaande `own`-patroon uit beweging (`MOVEMENT_FACT_STATUS_LABELS`, neutrale badge "Jouw ijkpunt", [MovementFactReadout.tsx:14](../../src/components/intake/MovementFactReadout.tsx#L14)) toepassen op `connection_score` in de domeinuitsplitsing op Voortgang — niet op de totaalscore.
+
+**L2 · ✅ BESLIST — altijd zichtbaar.**
+Akkoord met het advies: één regel, geen kader, geen icoon, niet-conditioneel. Geen verdere actie.
+
+**L3 · ✅ BESLIST — P-prefix blijft.**
+Akkoord met het advies: P-prefix laten staan bij verbinding (consistent met slaap/stress), harmonisatie naar de voeding-glyph apart beslissen wanneer V1f landt.
+
+**L4 · ✅ BESLIST — StatLine ophalen.**
+Akkoord: `85766NED` ophalen voor het doelgroepcijfer 40–65 vóór W9.
 
 ---
 

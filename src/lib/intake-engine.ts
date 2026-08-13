@@ -17,8 +17,19 @@ import { isRulesVersionBefore } from "@/lib/rules-version";
  * 1.5.0 — beweging-domein-hercheck uitgebreid van 2 naar 10 deelvragen (nieuwe MOV2_*-velden,
  *           uitsluitend movement-checkin-flow); calcDomainScoresV150 identiek aan V140 behalve
  *           movement_score; overige 6 domeinen ongewijzigd
+ * 1.6.0 — CON_SOC-schaalreparatie: optie "Ja, een paar — en dat is genoeg voor mij" van
+ *           value 4 naar 3, zodat connection_score 0/33/67/100 kan zijn i.p.v. alleen 0/33/100
+ *           (waarde 3 ontbrak); calcDomainScoresV150-formule ongewijzigd, alleen het brondata-
+ *           punt is anders; nieuwe CONNECTION_SCALE_COMPARABLE_FROM (1.6.0) naast de bestaande
+ *           CONNECTION_DELTA_COMPARABLE_FROM (1.3.0, ongewijzigd — die gaat over bestáán van
+ *           het domein, niet over deze schaalreparatie); geen hasMethodologyChange-impact,
+ *           zelfde soort domain-only wijziging als de 1.5.0 beweging-uitbreiding.
+ *           Los daarvan (geen scoreformule-impact, geen version-gate nodig): getProfileLabel
+ *           gaf "Overtrainer" bij movement_score<35 — precies omgekeerd, dat is te wéínig
+ *           bewegen. Branch verwijderd; movement-fallback-loop krijgt een score-grens (>60 =
+ *           geen relabel) zodat hij niet per ongeluk een prima ander domein aanwijst.
  */
-export const RULES_VERSION = "1.5.0" as const;
+export const RULES_VERSION = "1.6.0" as const;
 
 export interface DomainScores {
   sleep_score: number;
@@ -293,6 +304,10 @@ const DOMAIN_KEY_TO_ID: Record<DomainScoreKey, DomainId> = {
 
 type NamedProfileDomain = Exclude<DomainId, "nutrition" | "recovery" | "connection">;
 
+/** movement→"Overtrainer" is via getProfileLabel() zelf onbereikbaar sinds 1.6.0 (de
+ * movement-fallback-loop hieronder start ná movement zelf); key blijft staan omdat
+ * NamedProfileDomain hem vereist. "Overtrainer" als persona/pagina bestaat nog en wordt
+ * elders correct bepaald door het echte patroon (movementLoad>=3 && rcvPhys<=1). */
 const NAMED_DOMAIN_LABELS: Record<NamedProfileDomain, ProfileLabel["name"]> = {
   sleep: "Onrustige Slaper",
   energy: "Lage Batterij",
@@ -730,14 +745,6 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
     };
   }
 
-  if (scores.movement_score < 35) {
-    return {
-      name: "Overtrainer",
-      domain: "movement",
-      score: scores.movement_score,
-    };
-  }
-
   if (scores.energy_score < 40) {
     const driver = pickLowestEnergyDriverDomain(scores);
     return {
@@ -801,6 +808,12 @@ export function getProfileLabel(scores: DomainScores): ProfileLabel {
         continue;
       }
       if (entry.domain === "energy" && scores.energy_score >= 40) {
+        continue;
+      }
+      // Alleen relabelen naar een ánder domein als dat zelf ook echt zwak is —
+      // anders wijst deze fallback een prima score (bv. slaap op 70) aan omdat
+      // hij toevallig naast beweging staat.
+      if (entry.score > 60) {
         continue;
       }
       return {

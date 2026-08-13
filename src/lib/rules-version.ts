@@ -51,7 +51,7 @@ export const VITALITY_DELTA_COMPARABLE_FROM = "1.3.0" as const;
 /** Item-herskalering (1.4.0): domeinscores niet vergelijkbaar over deze grens. */
 export const ITEM_SCALE_COMPARABLE_FROM = "1.4.0" as const;
 
-/** Verbinding-delta alleen vergelijkbaar vanaf 1.3.0 (CON_SOC). */
+/** Verbinding-delta alleen vergelijkbaar vanaf 1.3.0 (CON_SOC bestaat pas vanaf hier). */
 export const CONNECTION_DELTA_COMPARABLE_FROM = "1.3.0" as const;
 
 export function isRecoveryDeltaComparable(
@@ -91,6 +91,30 @@ export function isConnectionDeltaComparable(
     !isRulesVersionBefore(baselineVersion, CONNECTION_DELTA_COMPARABLE_FROM) &&
     !isRulesVersionBefore(currentVersion, CONNECTION_DELTA_COMPARABLE_FROM)
   );
+}
+
+/** CON_SOC-schaalreparatie (1.6.0): optie "Ja, een paar" van waarde 4 naar 3.
+ * Verbinding-only remapping binnen een bestaand domein — zelfde soort wijziging als
+ * MOVEMENT_SCALE_COMPARABLE_FROM, bewust NIET onderdeel van hasMethodologyChange
+ * (geen globale herschaling zoals 1.4.0, geen nieuw vitaliteitsfacet). */
+export const CONNECTION_SCALE_COMPARABLE_FROM = "1.6.0" as const;
+
+export function isConnectionScaleDeltaComparable(
+  baselineVersion: string,
+  currentVersion: string,
+): boolean {
+  if (baselineVersion === currentVersion) {
+    return true;
+  }
+  const baselineOld = isRulesVersionBefore(
+    baselineVersion,
+    CONNECTION_SCALE_COMPARABLE_FROM,
+  );
+  const currentOld = isRulesVersionBefore(
+    currentVersion,
+    CONNECTION_SCALE_COMPARABLE_FROM,
+  );
+  return baselineOld === currentOld;
 }
 
 /** Beweging-item-uitbreiding (1.5.0): movement_score niet vergelijkbaar over deze grens.

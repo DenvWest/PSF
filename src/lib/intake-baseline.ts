@@ -7,6 +7,7 @@ import {
 import {
   hasMethodologyChange,
   isConnectionDeltaComparable,
+  isConnectionScaleDeltaComparable,
   isItemScaleDeltaComparable,
   isMovementScoreDeltaComparable,
   isRecoveryDeltaComparable,
@@ -97,10 +98,15 @@ export function sanitizePerDomainDelta(input: {
   if (!recoveryComparable) {
     delta.recovery_score = 0;
   }
-  const connectionComparable = isConnectionDeltaComparable(
-    input.baselineRulesVersion,
-    input.currentRulesVersion,
-  );
+  const connectionComparable =
+    isConnectionDeltaComparable(
+      input.baselineRulesVersion,
+      input.currentRulesVersion,
+    ) &&
+    isConnectionScaleDeltaComparable(
+      input.baselineRulesVersion,
+      input.currentRulesVersion,
+    );
   if (!connectionComparable) {
     delta.connection_score = 0;
   }

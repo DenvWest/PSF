@@ -92,6 +92,7 @@ describe("calcDomainScores", () => {
   it("calculates connection_score from CON_SOC item scale (0/33/67/100)", () => {
     expect(calcDomainScores(makeAnswers({ CON_SOC: 1 })).connection_score).toBe(0);
     expect(calcDomainScores(makeAnswers({ CON_SOC: 2 })).connection_score).toBe(33);
+    expect(calcDomainScores(makeAnswers({ CON_SOC: 3 })).connection_score).toBe(67);
     expect(calcDomainScores(makeAnswers({ CON_SOC: 4 })).connection_score).toBe(100);
   });
 
@@ -334,17 +335,33 @@ describe("getProfileLabel", () => {
     expect(isInterventionProfileDomain(result.domain)).toBe(true);
   });
 
-  it("returns 'Overtrainer' when movement < 35", () => {
+  it("returns 'In Balans' when movement is the only weak domain (never 'Overtrainer' for low movement)", () => {
     const scores = makeScores({ movement_score: 30 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Overtrainer");
+    expect(result.name).toBe("In Balans");
+    expect(result.domain).toBe("movement");
+    expect(result.score).toBe(30);
+  });
+
+  it("relabels to another weak domain when movement is primary but that domain is also weak", () => {
+    const scores = makeScores({ movement_score: 30, sleep_score: 50 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("Onrustige Slaper");
+    expect(result.domain).toBe("sleep");
+    expect(result.score).toBe(50);
+  });
+
+  it("does not relabel to a healthy domain just because it sits next to weak movement", () => {
+    const scores = makeScores({ movement_score: 30, sleep_score: 65 });
+    const result = getProfileLabel(scores);
+    expect(result.name).toBe("In Balans");
     expect(result.domain).toBe("movement");
   });
 
-  it("prefers movement when movement < 35 even if energy is also low", () => {
+  it("picks 'Lage Batterij' when energy is low, even if movement is also low", () => {
     const scores = makeScores({ energy_score: 25, movement_score: 30 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Overtrainer");
+    expect(result.name).toBe("Lage Batterij");
     expect(result.domain).toBe("movement");
   });
 
@@ -373,10 +390,10 @@ describe("getProfileLabel", () => {
     }
   });
 
-  it("picks movement domain when movement is lower than energy driver", () => {
+  it("picks movement as the 'Lage Batterij' driver when it is lower than other candidates", () => {
     const scores = makeScores({ energy_score: 35, movement_score: 20 });
     const result = getProfileLabel(scores);
-    expect(result.name).toBe("Overtrainer");
+    expect(result.name).toBe("Lage Batterij");
     expect(result.domain).toBe("movement");
   });
 
