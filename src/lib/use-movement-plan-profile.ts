@@ -81,7 +81,13 @@ export function useMovementPlanProfile(movStr: number | undefined): UseMovementP
         // `trainingGuidance` hergebruikt de dial-generalisatie i.p.v. een eigen
         // event-type te registreren (CLAUDE.md meet-standaarden: hergebruik vóór nieuw).
         const targetKey = (
-          ["targetMinutes", "targetDays", "targetStrength", "trainingGuidance"] as const
+          [
+            "weeklyFrequency",
+            "targetMinutes",
+            "targetDays",
+            "targetStrength",
+            "trainingGuidance",
+          ] as const
         ).find((key) => key in patch);
         if (targetKey) {
           trackEvent("movement_target_set", {

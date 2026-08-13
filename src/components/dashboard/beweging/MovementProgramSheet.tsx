@@ -7,6 +7,7 @@ import {
   type MovementSessionCatalogEntry,
   type MovementTrainingGuidance,
   type MovementTrainingLocation,
+  type MovementWeeklyFrequency,
 } from "@/data/movement/session-catalog";
 import {
   MOVEMENT_TARGET_DAYS_MAX,
@@ -41,6 +42,12 @@ export type MovementProgramSheetProps = {
   onSave: (patch: MovementPlanProfilePatch) => void;
   onToggleSport: (sportId: string) => void;
 };
+
+const WEEKLY_FREQUENCY_OPTIONS: { id: MovementWeeklyFrequency; label: string }[] = [
+  { id: "1x", label: "1×" },
+  { id: "2x", label: "2×" },
+  { id: "3x", label: "3×" },
+];
 
 const LOCATION_OPTIONS: { id: MovementTrainingLocation; label: string }[] = [
   { id: "thuis", label: "Thuis" },
@@ -441,6 +448,16 @@ export default function MovementProgramSheet({
             ) : null}
 
             <div className="space-y-4">
+              <div>
+                <p className="mb-1.5 text-[11px] font-medium text-[#9FB0A6]">Hoe vaak per week</p>
+                <ChipRow
+                  options={WEEKLY_FREQUENCY_OPTIONS}
+                  value={profile.weeklyFrequency}
+                  disabled={busy || doseFieldsLocked}
+                  onSelect={(id) => onSave({ weeklyFrequency: id })}
+                />
+                <HerkomstLabel isOwn={profile.weeklyFrequency !== null} />
+              </div>
               <div>
                 <p className="mb-1.5 text-[11px] font-medium text-[#9FB0A6]">Minuten per week</p>
                 <PresetRow
