@@ -6,6 +6,8 @@
 > **Versie 1.1 — vastgesteld 4 juli 2026.** Vervangt PDF-snapshot v1.0 (12 april 2026).
 > **Onderhoud:** jaarlijks of bij wezenlijke risicowijziging. Maandelijkse drift-check via `docs/cursors/monthly-privacy-register-review.md`.
 > **Wijziging 9 augustus 2026:** §0/§6 herformuleerd — DPIA-grond en FG-toets gebruikten bijna dezelfde maatstaf ("grote schaal" resp. "beperkte verwerking") voor twee verschillende conclusies. Geen wijziging in de onderliggende verwerking; de FG-onderbouwing in §6 is nu explicieter maar wacht nog op bevestiging door een jurist (zie `docs/plan/ADVIES_BEVEILIGING_AUTH_HOSTING_2026-08.md` §A.10/§H).
+> **Wijziging 15 augustus 2026:** incident INC-2026-08-15-01 toegevoegd aan §5 (RLS-configuratiefout, zelfde dag gedicht, geen AP-melding). §6 FG-checklistpunt aangevuld met een eerste concreet datapunt over het sessievolume.
+> **Wijziging 15 augustus 2026 (2):** §1.3 aangevuld met twee ontbrekende categorieën — de verbinding-checkin (`CON_SOC`, in productie sinds `rules_version` 1.3.0, juli 2026, tot nu toe zonder eigen rij) en het Connection Profile (`cprofile_*`, sinds 13 augustus 2026, uitdrukkelijk géén art. 9-gegeven). §1.5 kreeg de bijbehorende bewaartermijn, §3 kreeg risico R8. Bron: `docs/design/BESLUIT_VERBINDING_PIRAMIDE_V1_2026-08.md` §C3 en `docs/design/BESLUIT_CONNECTION_PROFILE_V1_2026-08.md` §7.
 
 ---
 
@@ -37,6 +39,8 @@ Volwassen websitebezoekers (doelgroep mannen ±40+) die vrijwillig de Leefstijlc
 | Contact/marketing | `marketing_email`, reminder-e-mail | Nee (wel gekoppeld aan art. 9) |
 | Voeding/check-in/gewicht | periodieke rapportage, eiwitrichtlijn | **Ja** |
 | Bewegingssessies (zelfrapportage) | modaliteit + minuten per dag (`movement_session_log`) | **Ja** — gezondheidsgerelateerd gedrag |
+| Verbinding-checkin (`CON_SOC`, bestaand sinds `rules_version` 1.3.0) | contactritme en ervaren steun: antwoord in `answers`, afgeleide `connection_score` in `domain_scores`. De periodieke herhaling landt in `intake_domain_checkin` (`domain_key = "connection_score"`) zodra die check-in live gaat — zelfde tabel en pad als slaap/stress/voeding | **Ja** — gezondheidsgegevens |
+| Connection Profile (`cprofile_*`, vanaf 13 augustus 2026) | zelf aangetikte onderwerpen, activiteiten, contactvorm, beschikbaarheid, postcodegebied (PC2), leeftijdsband, optionele notitie ≤140 tekens | **Nee** — gewone persoonsgegevens (art. 6 lid 1 sub a), bewust **geen** gezondheidsgegevens — zie [`BESLUIT_CONNECTION_PROFILE_V1_2026-08.md`](../design/BESLUIT_CONNECTION_PROFILE_V1_2026-08.md) §7 firewall |
 | Accountkoppeling | `psf_account` (HMAC bearer-token) | Nee (identificator) |
 | Gedrag | `affiliate_clicks`, webanalyse | Nee |
 
@@ -58,6 +62,8 @@ Volledige lijst en archiefpaden: [`VERWERKINGSREGISTER.md`](VERWERKINGSREGISTER.
 |---|---|
 | Intake-sessies (incl. art. 9) | 24 maanden, automatisch verwijderd |
 | Bewegingssessie-log (zelfrapportage) | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering of intrekking |
+| Verbinding-checkin (`intake_domain_checkin`) | Volgt intake-retentie (24 maanden); `cleanup_intake_session_linked_data()` verwijdert de rijen mee |
+| Connection Profile (`cprofile_*`) | Volgt de account-levensduur; `on delete cascade` op `accounts` verwijdert profiel én tags |
 | Reminders | 12 maanden na verzending |
 | Nurture/marketing | 5 jaar na intrekking |
 | Feedback | 1 jaar |
@@ -66,6 +72,8 @@ Volledige lijst en archiefpaden: [`VERWERKINGSREGISTER.md`](VERWERKINGSREGISTER.
 | Consent-records | 5 jaar na intrekking |
 
 Bij intrekking van toestemming worden gezondheidsgegevens **geanonimiseerd of verwijderd** (consent-tekst + privacyverklaring + `revoke_intake_session_consent`).
+
+> **Open punt (Connection Profile):** `connection_profile_storage` is een losse toestemming die zonder de leefstijlcheck ingetrokken moet kunnen worden. Vandaag verdwijnt het profiel alleen bij accountverwijdering (cascade). De losse intrekking die het profiel wist, hoort bij de opslag-route (slice 2) en is nog niet gebouwd — zolang die er niet is, mag de flow ook niet live.
 
 ### 1.6 Internationale doorgifte
 Doorgifte buiten de EER alleen met DPF of door de EC goedgekeurde SCC's (privacyverklaring §doorgifte). Van toepassing op Resend, Google Analytics en Microsoft Clarity.
@@ -89,6 +97,9 @@ Doorgifte buiten de EER alleen met DPF of door de EC goedgekeurde SCC's (privacy
 | R5 | Toestemming niet vrij/specifiek/geïnformeerd | Laag | Hoog | Granulaire opt-in per doel, geen pre-check, intrekbaar, art. 9-melding in UI |
 | R6 | Re-identificatie van "geanonimiseerde" data | Laag | Middel | Revoke-flow anonimiseert sessie-antwoorden; consent-records behouden alleen hash + tekst |
 | R7 | Profilering benadeelt betrokkene | Laag | Middel | Geen geautomatiseerde besluiten met rechtsgevolg (art. 22); output is informatief/vrijblijvend |
+| R8 | **Vragen over sociaal contact raken schaamte en worden als beoordeling gelezen** | Middel | Middel | Geen toestandslabels, geen klinische afkap, zelf-kalibratievraag (`CON_FIT`) die "weinig contact als eigen keuze" expliciet valide maakt, één neutrale doorverwijsregel zonder trigger-copy, geen e-mailnurture op een laag verbinding-antwoord |
+
+R8 is overgenomen uit [`BESLUIT_VERBINDING_PIRAMIDE_V1_2026-08.md`](../design/BESLUIT_VERBINDING_PIRAMIDE_V1_2026-08.md) §C3; de maatregelen zelf staan daar in §C2, §C4, §C5 en §C7 en zijn samengevat in `COMPLIANCE.md` §Verbinding. De doorverwijsregel is **niet-conditioneel**: een regel die alleen bij een laag antwoord verschijnt, is zelf een beoordeling — dezelfde logica als `urgency_level` niet user-facing maken (R4).
 
 ## 4. Maatregelen (samenvatting)
 
@@ -112,6 +123,8 @@ Praktische one-pager (PDF): [`docs/legal/Datalekprocedure_PerfectSupplement_nl.m
 
 Met bovenstaande maatregelen is het restrisico **laag**. Het hoogste resterende aandachtspunt is **R4 (functie-creep richting medische interpretatie)** — beheerst via compliance-tests en disclaimers. Voorafgaande raadpleging van de AP (art. 36) is **niet** nodig.
 
+**Incident 15 augustus 2026 (INC-2026-08-15-01):** always-true anon-RLS-policies op `intake_sessions`/`intake_reminders`/`affiliate_clicks`, plus drie voor `anon` uitvoerbare SECURITY DEFINER-RPC's — ontstaan doordat de anon-key kortstondig (±11 apr – 30 mei 2026) in de client-bundle stond (`AffiliateLink.tsx` → `track.ts` → inmiddels verwijderd `src/lib/supabase.ts`) en de onderliggende RLS-configuratie daarna niet was gedicht. Zelfde dag gecontaineerd: RPC-grants ingetrokken, anon-policies gedropt, de legacy JWT-signing key waarmee de destijds gelekte anon-key was ondertekend ingetrokken. Beoordeling door de verwerkingsverantwoordelijke (art. 33): **geen AP-melding** — in het blootstellingsvenster had precies 1 betrokkene de intake ingevuld (bekend, e-mailadres geverifieerd door de verwerkingsverantwoordelijke), geen aanwijzing van daadwerkelijke ongeoorloofde toegang. Volledig dossier inclusief risicobeoordeling: `Documenten/.../privacy/incidenten/INC-2026-08-15-01.md` (buiten git, art. 33 lid 5-verplichte documentatie).
+
 **Open administratief punt:** Zoho CRM DPA — acceptatie en archivering via [`docs/legal/Zoho_CRM_DPA_accepteren.md`](../legal/Zoho_CRM_DPA_accepteren.md).
 
 **Volgende herziening gepland:** juli 2027 (jaarlijks) of eerder bij wezenlijke wijziging in verwerking.
@@ -119,7 +132,7 @@ Met bovenstaande maatregelen is het restrisico **laag**. Het hoogste resterende 
 ## 6. Checklist vaststelling
 
 - [x] Verwerkingsverantwoordelijke: Dennis van Westbroek, KVK 74667653, info@perfectsupplement.nl
-- [x] FG: niet aangesteld — ⚖️ afweging, nog niet door een jurist bevestigd (zie `docs/plan/ADVIES_BEVEILIGING_AUTH_HOSTING_2026-08.md` §H). Onderbouwing losstaand van de DPIA-grond in §0: art. 37 lid 1 sub c vereist dat grootschalige verwerking van bijzondere categorieën een **kernactiviteit** is; bij het huidige, geringe checkvolume (eenmanszaak, geen structurele grootschalige monitoring van betrokkenen buiten het product zelf) is dat naar verwachting niet aannemelijk — maar dit steunt op het daadwerkelijke sessievolume, dat nog niet expliciet is geverifieerd. **Herbeoordelen** bij tienduizenden checks per jaar, of bij het eerste B2B-contract met werknemersgezondheidsdata
+- [x] FG: niet aangesteld — ⚖️ afweging, nog niet door een jurist bevestigd (zie `docs/plan/ADVIES_BEVEILIGING_AUTH_HOSTING_2026-08.md` §H). Onderbouwing losstaand van de DPIA-grond in §0: art. 37 lid 1 sub c vereist dat grootschalige verwerking van bijzondere categorieën een **kernactiviteit** is; bij het huidige, geringe checkvolume (eenmanszaak, geen structurele grootschalige monitoring van betrokkenen buiten het product zelf) is dat naar verwachting niet aannemelijk. Eerste concrete datapunt (15 augustus 2026, via incident INC-2026-08-15-01, zie §5): in een venster van ~7 weken (11 apr – 30 mei 2026) had precies 1 betrokkene de intake ingevuld — consistent met 0-minimaal traffic in de opstartfase, nog geen systematische meting over een langere periode. **Herbeoordelen** bij tienduizenden checks per jaar, of bij het eerste B2B-contract met werknemersgezondheidsdata
 - [x] Verwerkersovereenkomsten (art. 28): Supabase, Hetzner, Cloudflare, Resend, Google Analytics, Microsoft Clarity — geaccepteerd en gearchiveerd (Zoho: checklist `docs/legal/Zoho_CRM_DPA_accepteren.md`)
 - [x] Toestemmingsvakjes standaard uit (geen pre-check) — bevestigd in code
 - [x] Procedure datalekmelding (art. 33/34) — §4.1
