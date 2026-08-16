@@ -183,3 +183,21 @@ export async function saveConnectionProfile(
 
   return { ...profile, completedAt: profile.completedAt ?? now };
 }
+
+/**
+ * Wist het volledige profiel. Nodig omdat `connection_profile_storage` los
+ * intrekbaar moet zijn zonder de leefstijlcheck te raken — intrekken zonder
+ * wissen zou een toestemming zijn die niets terugdraait. Tags verdwijnen mee via
+ * de cascade op profile_id.
+ */
+export async function deleteConnectionProfile(accountId: string): Promise<boolean> {
+  const supabase = createSupabaseAdmin();
+  if (!supabase) return false;
+
+  const { error } = await supabase
+    .from("cprofile_profile")
+    .delete()
+    .eq("account_id", accountId);
+
+  return !error;
+}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   isProfileUsable,
+  resolveConnectionStyle,
   resolveProfileHighlights,
 } from "@/lib/connection-profile/highlights";
 import {
@@ -18,17 +19,30 @@ describe("resolveProfileHighlights", () => {
       profile({ interests: ["buiten_natuur", "klussen_techniek", "koken_voeding"] }),
     );
 
-    expect(result.topics).toEqual(["Buiten & natuur", "Klussen & techniek", "Koken & eten"]);
+    expect(result.topics.map((chip) => chip.label)).toEqual([
+      "Buiten & natuur",
+      "Klussen & techniek",
+      "Koken & eten",
+    ]);
   });
 
-  it("toont hooguit drie onderwerpen", () => {
+  it("kort de onderwerpen niet af — het scherm bepaalt hoeveel het toont", () => {
     const result = resolveProfileHighlights(
       profile({
         interests: ["buiten_natuur", "klussen_techniek", "koken_voeding", "muziek", "reizen"],
       }),
     );
 
-    expect(result.topics).toHaveLength(3);
+    expect(result.topics).toHaveLength(5);
+  });
+
+  it("geeft brengen en ontdekken apart terug", () => {
+    const result = resolveProfileHighlights(
+      profile({ brengen: ["klussen_techniek"], ontdekken: ["koken_voeding"] }),
+    );
+
+    expect(result.brengen.map((chip) => chip.id)).toEqual(["klussen_techniek"]);
+    expect(result.ontdekken.map((chip) => chip.id)).toEqual(["koken_voeding"]);
   });
 
   it("kiest de vlakken die bij de gekozen verbindingsvorm horen", () => {
@@ -68,6 +82,36 @@ describe("resolveProfileHighlights", () => {
     expect(result.firstStep?.title).toBe("Vast moment in je week");
   });
 
+  it("zet het gekozen tijdvak in de eerste stap — een dag maakt er een afspraak van", () => {
+    const result = resolveProfileHighlights(
+      profile({ doet: ["fietsen"], beschikbaarheid: ["zaterdag"] }),
+    );
+
+    expect(result.firstStep?.body).toContain("zaterdag");
+  });
+
+  it("laat de eerste stap zonder tijdvak heel", () => {
+    const result = resolveProfileHighlights(profile({ doet: ["fietsen"] }));
+
+    expect(result.firstStep?.body).not.toContain("Zet het op");
+  });
+
+  it("leidt contentpijlers af uit ontdekken vóór interesses", () => {
+    const result = resolveProfileHighlights(
+      profile({ interests: ["gezondheid_leefstijl"], ontdekken: ["koken_voeding"] }),
+    );
+
+    expect(result.contentPillars).toEqual(["voeding", "herstel"]);
+  });
+
+  it("levert geen contentpijlers bij onderwerpen zonder bibliotheek", () => {
+    const result = resolveProfileHighlights(
+      profile({ interests: ["fotografie", "geschiedenis", "muziek"] }),
+    );
+
+    expect(result.contentPillars).toEqual([]);
+  });
+
   /**
    * De harde eis uit §6: de opbrengst mag nergens van andere gebruikers
    * afhangen. Een profiel dat pas iets oplevert bij genoeg anderen is een leeg
@@ -85,14 +129,21 @@ describe("resolveProfileHighlights", () => {
 
   it("belooft nergens iets over later, matching of community", () => {
     const result = resolveProfileHighlights(
-      profile({ interests: ["muziek"], vorm: ["samen_doen"], doet: ["koken"] }),
+      profile({
+        interests: ["muziek"],
+        vorm: ["samen_doen"],
+        doet: ["koken"],
+        beschikbaarheid: ["zondag"],
+      }),
     );
 
     const rendered = [
-      ...result.topics,
+      ...result.topics.map((chip) => chip.label),
       ...result.ways.flatMap((way) => [way.name, way.subtitle]),
       result.firstStep?.title ?? "",
       result.firstStep?.body ?? "",
+      result.style.formLabel ?? "",
+      result.style.timeLabel ?? "",
     ]
       .join(" ")
       .toLowerCase();
@@ -100,6 +151,47 @@ describe("resolveProfileHighlights", () => {
     for (const forbidden of ["binnenkort", "later", "matching", "community"]) {
       expect(rendered).not.toContain(forbidden);
     }
+  });
+});
+
+describe("resolveConnectionStyle", () => {
+  it("noemt het weekend eerst wanneer iemand meerdere blokken aanvinkt", () => {
+    const style = resolveConnectionStyle(
+      profile({ beschikbaarheid: ["doordeweeks_overdag", "zondag"] }),
+    );
+
+    expect(style.timeLabel).toBe("zondag");
+  });
+
+  it("kiest 'samen iets doen' boven een groepsvorm", () => {
+    const style = resolveConnectionStyle(profile({ vorm: ["grotere_groep", "samen_doen"] }));
+
+    expect(style.formLabel).toBe("samen iets doen");
+  });
+
+  it("laat 'maakt me niet uit' de vorm niet sturen", () => {
+    const style = resolveConnectionStyle(profile({ vorm: ["maakt_niet_uit"] }));
+
+    expect(style.formLabel).toBeNull();
+  });
+
+  it("neemt geen bereik aan wanneer iemand lokaal én online koos", () => {
+    const style = resolveConnectionStyle(profile({ vorm: ["lokaal_ontmoeten", "online"] }));
+
+    expect(style.reach).toBeNull();
+  });
+
+  it("geeft het bereik terug bij een eenduidige keuze", () => {
+    expect(resolveConnectionStyle(profile({ vorm: ["online"] })).reach).toBe("online");
+    expect(resolveConnectionStyle(profile({ vorm: ["lokaal_ontmoeten"] })).reach).toBe(
+      "lokaal",
+    );
+  });
+
+  it("gebruikt 'niets vasts' nooit als anker", () => {
+    const style = resolveConnectionStyle(profile({ doet: ["niets_vasts"] }));
+
+    expect(style.anchorLabel).toBeNull();
   });
 });
 

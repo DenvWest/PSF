@@ -18,6 +18,8 @@ const CLIENT_EMIT_TYPES = new Set<DomainEventType>([
   "movement.gap_shown",
   "dashboard.beweging_programma_open",
   "choice.shelf_opened",
+  "cprofile.step_completed",
+  "cprofile.highlight_clicked",
 ]);
 
 function normalizePayload(raw: unknown): Record<string, unknown> {

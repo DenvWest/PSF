@@ -13,6 +13,8 @@ type ClientEmitType = Extract<
   | "movement.gap_shown"
   | "dashboard.beweging_programma_open"
   | "choice.shelf_opened"
+  | "cprofile.step_completed"
+  | "cprofile.highlight_clicked"
 >;
 
 export function emitAccountClientEvent(
