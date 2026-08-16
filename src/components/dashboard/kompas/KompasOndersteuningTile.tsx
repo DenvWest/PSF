@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
-import { buildVerdictCards, buildVerdictSummary } from "@/lib/supplement-verdict-copy";
-import type { VerdictTone } from "@/lib/supplement-verdict-copy";
-import { withVoortgangReturn } from "@/lib/voortgang-return-link";
+import { buildVerdictSummary } from "@/lib/supplement-verdict-copy";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
 type KompasOndersteuningTileProps = {
@@ -17,12 +15,6 @@ type KompasOndersteuningTileProps = {
   surface?: "kompas_home" | "voortgang";
   /** "Bekijk alle" CTA — alleen zinvol als het paneel niet al op het Voortgang-scherm staat. */
   onGoVoortgang?: () => void;
-};
-
-const TONE_COLOR: Record<VerdictTone, string> = {
-  ja: "#7CB68C",
-  wacht: "#D6A15C",
-  nee: "#9FB0A6",
 };
 
 export default function KompasOndersteuningTile({
@@ -62,9 +54,11 @@ export default function KompasOndersteuningTile({
   }
 
   const verdicts = data?.supplementVerdicts ?? [];
-  const cards = buildVerdictCards(verdicts).slice(0, 3);
   const summary = buildVerdictSummary(verdicts);
 
+  // Label-only: geen productnaam, geen oordeel-label, geen vergelijkingslink
+  // op de dagelijkse surface (lock L2). De kaarten met naam + oordeel +
+  // vergelijk-link staan op Voortgang, niet hier — deze tegel is de deur.
   return (
     <CockpitTile eyebrow="Ondersteuning">
       <h2
@@ -77,70 +71,6 @@ export default function KompasOndersteuningTile({
         {summary ?? "Op basis van je scores — objectieve oriëntatie, geen verkoop."}
       </p>
 
-      {cards.length > 0 ? (
-        <ul className="mt-3 flex list-none flex-col gap-1.5 p-0">
-          {cards.map((card) => {
-            const content = (
-              <>
-                <span
-                  aria-hidden
-                  className="mt-[7px] h-1.5 w-1.5 flex-shrink-0 rounded-full"
-                  style={{ background: TONE_COLOR[card.tone] }}
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-baseline gap-1.5">
-                    <span className="font-serif text-[14px] text-[#F1EFE8]">
-                      {card.name}
-                    </span>
-                    <span
-                      className="text-[10px] font-semibold uppercase tracking-[0.06em]"
-                      style={{ color: TONE_COLOR[card.tone] }}
-                    >
-                      {card.label}
-                    </span>
-                  </span>
-                </span>
-              </>
-            );
-
-            if (!card.comparisonPath) {
-              return (
-                <li
-                  key={card.ingredientKey}
-                  className="flex items-start gap-2 rounded-xl px-3 py-2"
-                >
-                  {content}
-                </li>
-              );
-            }
-
-            return (
-              <li key={card.ingredientKey}>
-                <Link
-                  href={withVoortgangReturn(card.comparisonPath)}
-                  onClick={() => {
-                    trackEvent("dashboard_verdict_click", {
-                      ingredient: card.ingredientKey,
-                      verdict: card.verdict,
-                      surface,
-                    });
-                    clarityTag("dashboard_verdict", card.ingredientKey);
-                    emitIntakeClientEvent("dashboard.verdict_clicked", {
-                      ingredient_key: card.ingredientKey,
-                      verdict: card.verdict,
-                      surface,
-                    });
-                  }}
-                  className="flex items-start gap-2 rounded-xl border border-white/8 bg-black/15 px-3 py-2 no-underline transition hover:border-white/15"
-                >
-                  {content}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
-
       {onGoVoortgang ? (
         <button
           type="button"
@@ -149,9 +79,9 @@ export default function KompasOndersteuningTile({
             clarityTag("dashboard_kompas_home", "verdict_all");
             onGoVoortgang();
           }}
-          className="mt-3 inline-flex min-h-11 items-center text-[13px] font-semibold text-[#5A8F6A]"
+          className="mt-3 inline-flex min-h-11 items-center gap-1 text-[13px] font-semibold text-[#5A8F6A]"
         >
-          Bekijk alle {verdicts.length || ""} →
+          Bekijk je oordeel op Voortgang <Icons.ChevronRight s={15} />
         </button>
       ) : null}
     </CockpitTile>

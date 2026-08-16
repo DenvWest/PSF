@@ -30,6 +30,13 @@ export const DOMAIN_PRODUCT_STANCE = {
     kind: "lifestyle_first",
     reason: STRESS_LIFESTYLE_FIRST_REASON,
   },
+  // Alle vijf nutriënten die de voedingscheck schat — de plek waar inname
+  // daadwerkelijk gemeten wordt, dus het bredere kandidatenveld dan sleep of
+  // movement (die maar één signaal per stof hebben).
+  nutrition: {
+    kind: "candidates",
+    slugs: new Set(["magnesium", "omega3", "vitamineD", "zink", "eiwitpoeder"]),
+  },
 } as const satisfies Record<string, DomainProductStance>;
 
 export type ProductStanceDomain = keyof typeof DOMAIN_PRODUCT_STANCE;

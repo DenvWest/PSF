@@ -13,9 +13,9 @@ import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
 import DomainToolsGrid, { type DomainTool } from "@/components/dashboard/domain/DomainToolsGrid";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
-import { STRESS_LIFESTYLE_FIRST_REASON } from "@/data/domain-product-stance";
 import { getStressNutritionHint } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
+import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type { DashboardModel } from "@/types/dashboard";
@@ -137,39 +137,44 @@ export default function StressScreen({ model }: { model: DashboardModel }) {
         </CockpitTile>
       </section>
 
-      <section aria-label="Voeding en supplementen">
-        <DomainSectionHeader eyebrow="Ondersteunend" title="Voeding & supplementen" />
+      <section aria-label="Voeding">
+        <DomainSectionHeader eyebrow="Ondersteunend" title="Voeding" />
         <CockpitTile>
-          <div className="flex flex-col gap-3.5">
-            <div>
-              <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
-                Eerst je basis
-              </p>
-              <p className="mt-2 text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">
-                {nutritionHint}
-              </p>
-              <Link
-                href="/intake/voeding?from=dashboard&kompas=stress"
-                onClick={() => {
-                  trackEvent("dashboard_stress_voeding_click", { surface: "kompas_stress" });
-                  clarityTag("dashboard_stress_voeding", "click");
-                }}
-                className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
-              >
-                Doe de voedingscheck <Icons.ChevronRight s={15} />
-              </Link>
-            </div>
-
-            <div className="border-t border-white/10 pt-3.5">
-              <p className="mb-2.5 text-[12px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
-                Supplementen — ons oordeel
-              </p>
-              <p className="text-[13.5px] leading-relaxed text-[#9FB0A6] text-pretty">
-                {STRESS_LIFESTYLE_FIRST_REASON}
-              </p>
-            </div>
-          </div>
+          <p className="text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">{nutritionHint}</p>
+          <Link
+            href="/intake/voeding?from=dashboard&kompas=stress"
+            onClick={() => {
+              trackEvent("dashboard_stress_voeding_click", { surface: "kompas_stress" });
+              clarityTag("dashboard_stress_voeding", "click");
+            }}
+            className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[#5A8F6A] no-underline"
+          >
+            Doe de voedingscheck <Icons.ChevronRight s={15} />
+          </Link>
         </CockpitTile>
+      </section>
+
+      <section aria-label="Aanvullen">
+        <DomainSectionHeader eyebrow="Daarna gericht" title="Wat kun je hiernaast zetten?" />
+        <Link
+          href={buildDashboardVoortgangHref("domein", null, "stress")}
+          onClick={() => {
+            trackEvent("dashboard_stress_deur_click", { surface: "kompas_stress" });
+            clarityTag("dashboard_stress_deur", "click");
+          }}
+          className="flex items-center gap-3 rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 no-underline text-inherit"
+        >
+          <Icons.ArrowRight s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
+          <span className="flex-1">
+            <span className="block text-[14.5px] font-semibold text-[#F1EFE8]">
+              Bekijk je oordeel op Voortgang
+            </span>
+            <span className="mt-0.5 block text-[12.5px] leading-snug text-[#9FB0A6]">
+              Eerst je basis, dan pas — als daar iets voor staat — een aanvulling.
+            </span>
+          </span>
+          <Icons.ChevronRight s={16} style={{ color: "#9FB0A6", flexShrink: 0 }} />
+        </Link>
       </section>
 
       <section aria-label="Reset tools">

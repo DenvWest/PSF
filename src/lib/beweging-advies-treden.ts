@@ -1,9 +1,10 @@
-import { getUsableClaims } from "@/data/approved-claims";
+import { getUsableClaims, type IngredientClaimKey } from "@/data/approved-claims";
 import { getDomainProductStance } from "@/data/domain-product-stance";
 import { getDeficiencySignals } from "@/lib/intake-engine";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
 import type { MovementStartPattern } from "@/lib/movement-prefs";
 import { WEEK_CATEGORY_OPTIONS } from "@/lib/movement-week-categories";
+import { buildAfleiding, type AfleidingView } from "@/lib/supplement-afleiding";
 import { toVerdictCardCopy, type VerdictTone } from "@/lib/supplement-verdict-copy";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
@@ -32,6 +33,8 @@ export type TredeSupplementItem = {
    */
   claimText: string | null;
   comparisonPath: string | null;
+  /** Hoe we hier komen — signaal, zekerheid, bloedwaarde, claim. Null bij oudere rijen zonder snapshot. */
+  afleiding: AfleidingView | null;
 };
 
 export type BewegingAdviesTreden = {
@@ -123,6 +126,7 @@ export function buildBewegingAdviesTreden(
         reason: card.reason,
         claimText: open && claims.length > 0 ? claims[0].text : null,
         comparisonPath: card.comparisonPath,
+        afleiding: buildAfleiding(row.ingredientKey as IngredientClaimKey, row),
       };
     })
     .sort((left, right) => Number(right.open) - Number(left.open));

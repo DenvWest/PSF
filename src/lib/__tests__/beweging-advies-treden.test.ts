@@ -7,6 +7,7 @@ function verdictRow(
   ingredientKey: string,
   verdict: VerdictValue,
   reasonKey: string,
+  basedOn: StoredSupplementVerdict["basedOn"] = null,
 ): StoredSupplementVerdict {
   return {
     id: `id-${ingredientKey}`,
@@ -17,7 +18,7 @@ function verdictRow(
     nextReviewAt: null,
     createdAt: "2026-08-01T00:00:00.000Z",
     supersededAt: null,
-    basedOn: null,
+    basedOn,
   };
 }
 
@@ -128,6 +129,55 @@ describe("buildBewegingAdviesTreden — claimtekst-guard", () => {
 
     expect(treden.trede3.items[0].claimText).toBeNull();
     expect(treden.trede3.items[0].comparisonPath).toBeNull();
+  });
+});
+
+describe("buildBewegingAdviesTreden — afleiding", () => {
+  it("geeft null zonder bewaarde snapshot", () => {
+    const treden = buildBewegingAdviesTreden(
+      model(),
+      data({ supplementVerdicts: [verdictRow("creatine", "kopen", "trigger_matched")] }),
+      null,
+    );
+    expect(treden.trede3.items[0].afleiding).toBeNull();
+  });
+
+  it("vult de afleiding uit de bewaarde snapshot", () => {
+    const treden = buildBewegingAdviesTreden(
+      model(),
+      data({
+        supplementVerdicts: [
+          verdictRow("creatine", "kopen", "trigger_matched", {
+            scores: {
+              sleep_score: 50,
+              energy_score: 50,
+              stress_score: 50,
+              nutrition_score: 50,
+              movement_score: 50,
+              recovery_score: 40,
+              connection_score: 50,
+            },
+            signals: {
+              omega3_deficiency: false,
+              magnesium_signal: false,
+              cortisol_risk: false,
+              creatine_signal: true,
+              melatonine_signal: false,
+              protein_gap_signal: false,
+              low_recovery_no_load: false,
+              sleep_issue_no_stress: false,
+              energy_dip_unexplained: false,
+            },
+            profileLabel: "In Balans",
+            triggeredBy: [{ type: "hub_legacy", rule: "creatine_custom_matcher" }],
+            nutritionLogCompleted: true,
+          }),
+        ],
+      }),
+      null,
+    );
+
+    expect(treden.trede3.items[0].afleiding?.signaalLine).toContain("beweegcheck");
   });
 });
 

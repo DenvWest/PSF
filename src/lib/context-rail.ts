@@ -1,15 +1,16 @@
 import { PILLAR } from "@/data/dashboard";
-import type { PillarId } from "@/types/dashboard";
+import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
- * De rail heeft drie modi — profiel (geen Kompas-context), Kompas-home
- * (domeinlijst) en domein-tools (open domein: Kompas-knop + domeinlijst +
- * eigen tools indien aanwezig — nu alleen beweging heeft die). Alle
- * navigatie-logica blijft in KompasHome; hier zit alleen de vorm.
+ * De rail heeft vier modi — profiel (geen Kompas-context), Kompas-home
+ * (domeinlijst), domein-tools (open domein: Kompas-knop + domeinlijst +
+ * eigen tools indien aanwezig — nu alleen beweging heeft die) en voortgang
+ * (Bekijken-navigatie op Voortgang). Alle navigatie-logica blijft in de
+ * caller (KompasHome resp. Dashboard.tsx); hier zit alleen de vorm.
  */
 
-export type ContextRailMode = "profile" | "kompasHome" | "domainTools";
+export type ContextRailMode = "profile" | "kompasHome" | "domainTools" | "voortgang";
 
 export type ContextRailDomainItem = {
   id: PillarId;
@@ -84,3 +85,22 @@ export function buildBewegingRailTools(): ContextRailTool[] {
     },
   ];
 }
+
+export type ContextRailVoortgangItem = {
+  id: Extract<VoortgangScreen, "hub" | "statistieken" | "inzichten" | "favorieten">;
+  label: string;
+  icon: string;
+};
+
+/**
+ * Statisch — geen per-gebruiker data nodig, dus geen builder-functie zoals
+ * bij de Kompas-domeinen. De vier items dekken exact wat vandaag al
+ * bereikbaar is via `VoortgangHub`'s screen-state; de rail is een nieuwe,
+ * persistente ingang op bestaande navigatie, geen nieuwe routing.
+ */
+export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
+  { id: "hub", label: "Overzicht", icon: "Home" },
+  { id: "statistieken", label: "Statistieken", icon: "BarChart" },
+  { id: "inzichten", label: "Jouw inzichten", icon: "Spark" },
+  { id: "favorieten", label: "Favorieten", icon: "Heart" },
+];

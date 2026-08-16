@@ -17,6 +17,7 @@ import {
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { getMovementNutritionHint } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
+import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
 import { buildMovementAheadLine } from "@/lib/movement-plan-roadmap";
@@ -157,11 +158,14 @@ export default function BewegingScreen({
   const movementCurrent = deriveMovementCurrent(model.answers ?? {});
   const showBeweegcheckNudge = showAdvice && movementCurrent.source !== "beweegcheck";
 
+  // De deur: label-only, nooit een productnaam. Staat je voeding bekend, dan
+  // wijst hij naar het oordeel op Voortgang — niet rechtstreeks naar een
+  // supplement (was: /supplementen/eiwitpoeder, een lock-L2-schending).
   const nutritionBridgeHref = nutritionLogCompleted
-    ? "/supplementen/eiwitpoeder"
+    ? buildDashboardVoortgangHref("domein", null, "beweging")
     : "/intake/voeding?from=dashboard&kompas=beweging";
   const nutritionBridgeLabel = nutritionLogCompleted
-    ? "Bekijk wat dat praktisch betekent"
+    ? "Bekijk je oordeel op Voortgang"
     : "Doe de voedingscheck";
 
   return (

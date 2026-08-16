@@ -25,7 +25,6 @@ import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
 import DomainMeetModule from "@/components/dashboard/domain/DomainMeetModule";
 import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
 import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
-import DomainSupplementList from "@/components/dashboard/domain/DomainSupplementList";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
@@ -122,6 +121,7 @@ import CockpitFrame from "@/components/dashboard/cockpit/CockpitFrame";
 import CockpitShell from "@/components/dashboard/cockpit/CockpitShell";
 import KompasHomeCard from "@/components/dashboard/kompas/KompasHomeCard";
 import KompasOndersteuningTile from "@/components/dashboard/kompas/KompasOndersteuningTile";
+import VoorJouTile from "@/components/dashboard/kompas/VoorJouTile";
 import NutritionRelogNudge from "@/components/dashboard/NutritionRelogNudge";
 import MovementAnchorRechoose from "@/components/dashboard/beweging/MovementAnchorRechoose";
 import { buildInspectorCards } from "@/lib/cockpit-inspector";
@@ -169,6 +169,7 @@ import {
   parseVoortgangDomeinFromUrl,
   parseVoortgangScreenFromUrl,
   buildDashboardAgendaHref,
+  buildDashboardVoortgangHref,
   syncDashboardAgendaViewParam,
   syncDashboardDagParam,
   syncDashboardKompasParam,
@@ -2570,20 +2571,6 @@ const VoedingScreen = ({
     () => buildRecommendationsEligibility(nutritionIntake),
     [nutritionIntake],
   );
-  const recommendations = useMemo(() => {
-    const session: IntakeSessionPayload = {
-      sessionId: "",
-      symptoms: [],
-      answers: model.answers ?? {},
-      scores: model.domainScores,
-      urgency: "",
-      profile: "",
-      timestamp: 0,
-      ageRange: null,
-      firstName: null,
-    };
-    return buildRecommendations(session, eligibility);
-  }, [model.answers, model.domainScores, eligibility]);
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
   const pillar = PILLAR.voeding;
   const intakeLines = useMemo(
@@ -2837,31 +2824,27 @@ const VoedingScreen = ({
         </CockpitTile>
       </section>
 
-      <section aria-label="Aanbevolen supplementen">
-        <DomainSectionHeader eyebrow="Daarna gericht" title="Supplementen voor jou" />
-        <CockpitTile>
-          <DomainSupplementList
-            recommendations={recommendations}
-            emptyText={
-              nutritionLogCompleted
-                ? "Geen supplement-signalen op basis van je check — focus op je leefstijlstappen."
-                : "Doe eerst de voedingscheck. Supplementen tonen we pas daarna — eerst je bord, dan gericht vergelijken."
-            }
-            onItemClick={(rec, href) => {
-              trackEvent("dashboard_voeding_supplement_click", { slug: rec.slug, target: href });
-              clarityTag("dashboard_voeding_supplement", rec.slug);
-            }}
-          />
-          {recommendations.length === 0 && !nutritionLogCompleted ? (
-            <Link
-              href="/intake/voeding?from=dashboard&kompas=voeding"
-              onClick={() => trackCheckinClick("supplement_gate")}
-              className="mt-3.5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#5A8F6A] no-underline"
-            >
-              Doe de voedingscheck (1 min) <Icons.ChevronRight s={15} />
-            </Link>
-          ) : null}
-        </CockpitTile>
+      <section aria-label="Aanvullen">
+        <DomainSectionHeader eyebrow="Daarna gericht" title="Wat kun je hiernaast zetten?" />
+        <Link
+          href={buildDashboardVoortgangHref("domein", null, "voeding")}
+          onClick={() => {
+            trackEvent("dashboard_voeding_deur_click", { surface: "kompas_voeding" });
+            clarityTag("dashboard_voeding_deur", "click");
+          }}
+          className="flex items-center gap-3 rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/10 px-4 py-3.5 no-underline text-inherit"
+        >
+          <Icons.ArrowRight s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
+          <span className="flex-1">
+            <span className="block text-[14.5px] font-semibold text-[#F1EFE8]">
+              Bekijk je oordeel op Voortgang
+            </span>
+            <span className="mt-0.5 block text-[12.5px] leading-snug text-[#9FB0A6]">
+              Eerst je bord, dan pas — als er een gemeten gat is — een aanvulling.
+            </span>
+          </span>
+          <Icons.ChevronRight s={16} style={{ color: "#9FB0A6", flexShrink: 0 }} />
+        </Link>
       </section>
 
       <DomainMeetModule
@@ -3188,6 +3171,7 @@ const KompasHome = ({
         surface="kompas_home"
         onGoVoortgang={onGoVoortgang}
       />
+      <VoorJouTile />
     </section>
   );
 };
@@ -3595,6 +3579,25 @@ export default function Dashboard({
     syncDashboardStatistiekenBlikParam(blik);
   }, []);
 
+  // De linker rail op Voortgang is een nieuwe, persistente ingang op
+  // bestaande navigatie (handleVoortgangScreenChange) — geen nieuwe routing,
+  // alleen een nieuwe surface-waarde op het bestaande hub-click-event (zie
+  // voortgang-prebuild-notitie-2026-07.md: "verder_kijken" → "rail").
+  const handleRailVoortgangOpen = useCallback(
+    (screen: VoortgangScreen) => {
+      trackEvent("dashboard_voortgang_hub_click", { destination: screen, surface: "rail" });
+      clarityTag("dashboard_voortgang", screen);
+      handleVoortgangScreenChange(screen);
+    },
+    [handleVoortgangScreenChange],
+  );
+
+  const handleRailVoortgangAanbouw = useCallback(() => {
+    trackEvent("dashboard_voortgang_hub_click", { destination: "hub", surface: "rail_aanbouw" });
+    clarityTag("dashboard_voortgang", "rail_aanbouw");
+    handleVoortgangScreenChange("hub");
+  }, [handleVoortgangScreenChange]);
+
   const syncTabFromLocation = useCallback(() => {
     const url = new URL(window.location.href);
     const tabParam = url.searchParams.get("tab");
@@ -3918,18 +3921,24 @@ export default function Dashboard({
     ) : null;
 
   // De linker rail volgt dezelfde context als de header: domeinlijst op de
-  // Kompas-home, Kompas-knop + evt. eigen tools bij een open domein, profiel
-  // als er geen Kompas-context is (ander tabblad of lege staat).
-  const desiredRailMode: ContextRailMode =
-    empty || tab !== "vandaag"
-      ? "profile"
-      : !viewedDomain
-        ? "kompasHome"
-        : "domainTools";
+  // Kompas-home, Kompas-knop + evt. eigen tools bij een open domein, de
+  // Bekijken-navigatie op Voortgang, profiel als er geen van die contexten is
+  // (ander tabblad of lege staat).
+  const desiredRailMode: ContextRailMode = empty
+    ? "profile"
+    : tab === "voortgang"
+      ? "voortgang"
+      : tab !== "vandaag"
+        ? "profile"
+        : !viewedDomain
+          ? "kompasHome"
+          : "domainTools";
   const contextRailMode: ContextRailMode =
-    contextRailApi && contextRailApi.mode === desiredRailMode
-      ? desiredRailMode
-      : "profile";
+    desiredRailMode === "voortgang"
+      ? "voortgang"
+      : contextRailApi && contextRailApi.mode === desiredRailMode
+        ? desiredRailMode
+        : "profile";
   // Op desktop neemt de rail de domein-navigatie over; op mobiel blijft de
   // DomainTopNav in de header de enige manier om van domein te wisselen.
   const hideDomainTopNav = isDesktopRail && contextRailMode === "domainTools";
@@ -3962,6 +3971,9 @@ export default function Dashboard({
         onOpenDomain={contextRailApi?.onOpenDomain}
         onToolClick={contextRailApi?.onToolClick}
         onBackToKompas={contextRailApi?.onBackToKompas}
+        railVoortgangActiveScreen={voortgangScreen}
+        onOpenVoortgangScreen={handleRailVoortgangOpen}
+        onOpenVoortgangAanbouw={handleRailVoortgangAanbouw}
         inspectorCards={inspectorCards}
         remeasureAction={remeasureAction}
         inspectorDoelFooter={inspectorDoelFooter}

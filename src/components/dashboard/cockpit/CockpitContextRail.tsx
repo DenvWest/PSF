@@ -3,13 +3,15 @@
 import Link from "next/link";
 import type { ComponentType, CSSProperties } from "react";
 import * as Icons from "@/components/app/icons";
-import type {
-  ContextRailDomainItem,
-  ContextRailMode,
-  ContextRailTool,
-  ContextRailToolId,
+import {
+  VOORTGANG_RAIL_ITEMS,
+  type ContextRailDomainItem,
+  type ContextRailMode,
+  type ContextRailTool,
+  type ContextRailToolId,
+  type ContextRailVoortgangItem,
 } from "@/lib/context-rail";
-import type { PillarId } from "@/types/dashboard";
+import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
 
@@ -26,6 +28,9 @@ type CockpitContextRailProps = {
   onToolClick?: (id: ContextRailToolId) => void;
   onBackToKompas?: () => void;
   domainLabel?: string | null;
+  voortgangActiveScreen?: VoortgangScreen | null;
+  onOpenVoortgangScreen?: (screen: VoortgangScreen) => void;
+  onOpenVoortgangAanbouw?: () => void;
 };
 
 const ZONEFLAG =
@@ -102,6 +107,9 @@ export default function CockpitContextRail({
   onToolClick,
   onBackToKompas,
   domainLabel,
+  voortgangActiveScreen = null,
+  onOpenVoortgangScreen,
+  onOpenVoortgangAanbouw,
 }: CockpitContextRailProps) {
   const name = firstName?.trim() || "Je profiel";
 
@@ -199,6 +207,32 @@ export default function CockpitContextRail({
     );
   };
 
+  const renderVoortgangItem = (item: ContextRailVoortgangItem) => {
+    const Icon = iconOf(item.icon);
+    const active = item.id === voortgangActiveScreen;
+
+    return (
+      <button
+        key={item.id}
+        type="button"
+        aria-current={active ? "page" : undefined}
+        onClick={() => onOpenVoortgangScreen?.(item.id)}
+        className={`${RAIL_ITEM} ${
+          active
+            ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
+            : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
+        }`}
+      >
+        <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+          {Icon ? (
+            <Icon s={16} style={{ color: active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }} />
+          ) : null}
+        </span>
+        <span className="min-w-0 flex-1 truncate">{item.label}</span>
+      </button>
+    );
+  };
+
   return (
     <>
       <aside
@@ -237,7 +271,9 @@ export default function CockpitContextRail({
             ? "Je domeinen"
             : mode === "domainTools"
               ? `${domainLabel ?? "Domein"}-navigatie`
-              : "Profiel"
+              : mode === "voortgang"
+                ? "Voortgang-navigatie"
+                : "Profiel"
         }
         className="hidden flex-col gap-4 border-b border-white/10 p-4 md:flex md:border-b-0 md:border-r md:px-6"
       >
@@ -291,6 +327,25 @@ export default function CockpitContextRail({
                 </nav>
               </>
             ) : null}
+            <ProfileFooter
+              name={name}
+              anchorLabel={anchorLabel}
+              statusDone={statusDone}
+            />
+          </>
+        ) : mode === "voortgang" ? (
+          <>
+            <span className={ZONEFLAG}>Bekijken</span>
+            <nav aria-label="Bekijken" className="flex flex-col gap-1">
+              {VOORTGANG_RAIL_ITEMS.map(renderVoortgangItem)}
+            </nav>
+            <button
+              type="button"
+              onClick={() => onOpenVoortgangAanbouw?.()}
+              className="self-start text-[11px] leading-relaxed text-[#7E8C82] transition hover:text-[#9FB0A6]"
+            >
+              Wat er nog niet is →
+            </button>
             <ProfileFooter
               name={name}
               anchorLabel={anchorLabel}

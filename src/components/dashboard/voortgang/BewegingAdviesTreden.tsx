@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { clarityTag } from "@/lib/clarity";
+import { emitIntakeClientEvent } from "@/lib/intake-events-client";
 import { trackEvent } from "@/lib/ga4";
 import type {
   BewegingAdviesTreden as TredenModel,
@@ -56,10 +58,14 @@ function Rung({
 
 function SupplementRow({
   item,
+  isAfleidingOpen,
+  onToggleAfleiding,
   onCompare,
   onOpenFavorieten,
 }: {
   item: TredeSupplementItem;
+  isAfleidingOpen: boolean;
+  onToggleAfleiding: (item: TredeSupplementItem) => void;
   onCompare: (item: TredeSupplementItem) => void;
   onOpenFavorieten: () => void;
 }) {
@@ -85,6 +91,52 @@ function SupplementRow({
           het met je doet.
         </p>
       ) : null}
+
+      {item.afleiding ? (
+        <>
+          <button
+            type="button"
+            onClick={() => onToggleAfleiding(item)}
+            aria-expanded={isAfleidingOpen}
+            className="mt-2 cursor-pointer border-none bg-transparent p-0 text-[12.5px] font-semibold text-[#9FB0A6]"
+          >
+            {isAfleidingOpen ? "Verberg hoe we hier komen" : "Hoe we hier komen"}
+          </button>
+          {isAfleidingOpen ? (
+            <dl className="mt-2 flex flex-col gap-1.5 rounded-[10px] bg-black/20 px-3 py-2.5">
+              <div>
+                <dt className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
+                  Signaal
+                </dt>
+                <dd className="m-0 mt-0.5 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                  {item.afleiding.signaalLine}
+                </dd>
+              </div>
+              {item.afleiding.zekerheidLine ? (
+                <div>
+                  <dt className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
+                    Zekerheid
+                  </dt>
+                  <dd className="m-0 mt-0.5 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                    {item.afleiding.zekerheidLine}
+                  </dd>
+                </div>
+              ) : null}
+              {item.afleiding.bloedLine ? (
+                <div>
+                  <dt className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#7E8C82]">
+                    Bloedwaarde
+                  </dt>
+                  <dd className="m-0 mt-0.5 text-[12.5px] leading-relaxed text-[#9FB0A6] text-pretty">
+                    {item.afleiding.bloedLine}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          ) : null}
+        </>
+      ) : null}
+
       <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5">
         {item.open && item.comparisonPath ? (
           <Link
@@ -119,21 +171,47 @@ export default function BewegingAdviesTreden({
   onOpenFavorieten: () => void;
 }) {
   const { trede1, trede2, trede3 } = treden;
+  const [openAfleidingKey, setOpenAfleidingKey] = useState<string | null>(null);
 
   const handleCompare = (item: TredeSupplementItem) => {
-    trackEvent("dashboard_beweging_supplement_click", {
+    // `tone` (ja/wacht/nee), niet de ruwe VerdictValue — TredeSupplementItem
+    // draagt die niet. Vergelijkbaar met, maar niet identiek aan, het
+    // `verdict`-veld dat SupplementVerdictPanel voor dezelfde eventnaam stuurt.
+    trackEvent("dashboard_schap_vergelijking_click", {
+      ingredient: item.ingredientKey,
+      tone: item.tone,
       surface: "advies_voortgang",
-      target: "vergelijking",
-      slug: item.ingredientKey,
     });
-    clarityTag("dashboard_beweging_advies", "vergelijking");
+    clarityTag("dashboard_schap_vergelijking", item.ingredientKey);
+    emitIntakeClientEvent("dashboard.schap_vergelijking_click", {
+      ingredient_key: item.ingredientKey,
+      tone: item.tone,
+      surface: "advies_voortgang",
+    });
+  };
+
+  const handleToggleAfleiding = (item: TredeSupplementItem) => {
+    const next = openAfleidingKey === item.ingredientKey ? null : item.ingredientKey;
+    setOpenAfleidingKey(next);
+    if (next) {
+      trackEvent("dashboard_afleiding_open", {
+        ingredient: item.ingredientKey,
+        verdict: item.tone,
+        surface: "advies_voortgang",
+      });
+      clarityTag("dashboard_afleiding", item.ingredientKey);
+      emitIntakeClientEvent("dashboard.afleiding_opened", {
+        ingredient_key: item.ingredientKey,
+        surface: "advies_voortgang",
+      });
+    }
   };
 
   const handleVoedingAdvies = () => {
-    trackEvent("dashboard_beweging_supplement_click", {
-      surface: "advies_voortgang",
-      target: "voeding_advies",
-    });
+    // Eigen naam: dit is geen vergelijk-klik en geen deur-toggle, maar een
+    // doorklik naar het voedingsadvies vanaf het eiwitgat in trede 1.
+    trackEvent("dashboard_beweging_voeding_advies_click", { surface: "advies_voortgang" });
+    clarityTag("dashboard_beweging_voeding_advies", "click");
     onOpenVoedingAdvies();
   };
 
@@ -216,6 +294,8 @@ export default function BewegingAdviesTreden({
                 <SupplementRow
                   key={item.ingredientKey}
                   item={item}
+                  isAfleidingOpen={openAfleidingKey === item.ingredientKey}
+                  onToggleAfleiding={handleToggleAfleiding}
                   onCompare={handleCompare}
                   onOpenFavorieten={onOpenFavorieten}
                 />

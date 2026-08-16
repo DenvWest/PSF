@@ -114,3 +114,74 @@ export function getNutritionLayerById(id: NutritionLayerId): NutritionLayer | un
 export function getNutritionClusterById(id: NutritionClusterId): NutritionCluster | undefined {
   return NUTRITION_CLUSTERS.find((cluster) => cluster.id === id);
 }
+
+/**
+ * Zelfselectie-vorm van dezelfde zes lagen (§PrioriteitenLadder) — geen
+ * winst/ok/watch/wacht-status, want die vereist per-cluster meting en C1/C2
+ * meten we nog niet (zie NUTRITION_CLUSTERS hierboven). Tekst woordelijk uit
+ * voeding-piramide-prebuild-v1.5-2026-08.html (RAIL_ROWS + LAYER_ACTIONS) —
+ * dat bestand is het ontwerpcontract, dit is de overname ervan.
+ */
+export type NutritionPriorityLayer = {
+  id: 1 | 2 | 3 | 4 | 5 | 6;
+  name: string;
+  summary: string;
+  actions: readonly string[];
+};
+
+export const NUTRITION_PRIORITY_LAYERS: readonly NutritionPriorityLayer[] = [
+  {
+    id: 1,
+    name: "Je eetbasis",
+    summary:
+      "Passende energie, een regelmatig patroon, een volwaardige basis met planten en eiwit, en water als standaard.",
+    actions: [
+      "Zet één portie groente bij je avondeten.",
+      "Ruil je brood naar volkoren bij je volgende boodschappen.",
+      "Kies water als standaard bij het avondeten.",
+    ],
+  },
+  {
+    id: 2,
+    name: "Voedingskwaliteit",
+    summary:
+      "Meer groente, peulvruchten, volkoren, noten en vis. Minder suikerhoudende dranken, zout en sterk bewerkte producten.",
+    actions: [
+      "Vervang één zoet drankmoment per dag door water of thee.",
+      "Leg één keer per week vis op je boodschappenlijst.",
+      "Neem een handvol ongezouten noten als vaste tussendoor.",
+    ],
+  },
+  {
+    id: 3,
+    name: "Verhoudingen",
+    summary:
+      "Eiwit per maaltijd, vezels, de kwaliteit van je vetten en koolhydraten. Telt pas als je eetbasis en kwaliteit staan.",
+    actions: [
+      "Verplaats één eiwitrijk moment naar je ontbijt.",
+      "Voeg peulvruchten toe aan één warme maaltijd per week.",
+      "Reken je eiwitdoel uit voor jouw gewicht.",
+    ],
+  },
+  {
+    id: 4,
+    name: "Op jouw situatie",
+    summary:
+      "Je gewicht, leeftijd, activiteit, voorkeuren en intoleranties bepalen welke stappen realistisch zijn. Geen diagnose — bij twijfel verwijzen we door.",
+    actions: [],
+  },
+  {
+    id: 5,
+    name: "Meten & timing",
+    summary:
+      "Calorieën tellen, macro’s bijhouden, eten binnen een tijdvenster — dat zijn gereedschappen, geen fundament. Ze doen pas iets als je eetbasis en je verhoudingen staan. We openen dit niet eerder.",
+    actions: [],
+  },
+  {
+    id: 6,
+    name: "Aanvullen & vergelijken",
+    summary:
+      "Wat je bord niet dekt kan een aanvulling worden — maar alleen als je check dat laat zien.",
+    actions: [],
+  },
+] as const;

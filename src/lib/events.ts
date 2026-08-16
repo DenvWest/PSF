@@ -69,8 +69,10 @@ export const DOMAIN_EVENT_TYPES = [
   "remeasure.invited",
   "remeasure.completed",
   "verdict.changed",
-  "dashboard.verdict_clicked",
+  "dashboard.schap_vergelijking_click",
+  "dashboard.schap_getoond",
   "dashboard.advies_gate_passed",
+  "dashboard.afleiding_opened",
   "affiliate.click",
   "profile.recognition",
   "measurement.gap_detected",
@@ -82,6 +84,12 @@ export const DOMAIN_EVENT_TYPES = [
   "guide.sleep_analysis.completed",
   "goal.benchmark_set",
   "goal.benchmark_rescored",
+  // Connection Profile — zelf opgegeven voorkeuren, GEEN gezondheidsdata.
+  // De ratio cprofile.completed / cprofile.step_completed{step:1} is de meting
+  // die toetst of stap 2 te confronterend is (BESLUIT §12).
+  "cprofile.step_completed",
+  "cprofile.completed",
+  "cprofile.highlight_clicked",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

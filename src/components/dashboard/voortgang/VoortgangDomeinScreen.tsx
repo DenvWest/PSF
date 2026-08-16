@@ -7,6 +7,8 @@ import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
 import BewegingAdviesTreden from "@/components/dashboard/voortgang/BewegingAdviesTreden";
 import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
+import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
+import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
 import MovementFactReadout from "@/components/intake/MovementFactReadout";
@@ -18,6 +20,13 @@ import {
   SLEEP_PRIORITY_LAYERS,
   type SleepPriorityId,
 } from "@/data/sleep/lifestyle-priorities";
+import { STRESS_PRIORITY_LAYERS } from "@/data/stress/lifestyle-priorities";
+import {
+  CONNECTION_PRIORITY_LAYERS,
+  CONNECTION_SAFETY_NET_LINE,
+} from "@/data/connection/lifestyle-priorities";
+import { NUTRITION_PRIORITY_LAYERS } from "@/data/nutrition/lifestyle-pyramid";
+import { MOVEMENT_PRIORITY_LAYERS } from "@/data/movement/lifestyle-priorities";
 import { buildBewegingAdviesTreden } from "@/lib/beweging-advies-treden";
 import { clarityTag } from "@/lib/clarity";
 import { buildMovementRoutingHref } from "@/lib/dashboard-url";
@@ -93,6 +102,9 @@ export default function VoortgangDomeinScreen({
 
   const isMovement = domain === "beweging";
   const isSleep = domain === "slaap";
+  const isStress = domain === "stress";
+  const isConnection = domain === "verbinding";
+  const isNutrition = domain === "voeding";
   const movementLogEnabled = isMovement && isMovementLogEnabled();
   const weekTotals = useMovementWeekTotals(movementLogEnabled);
 
@@ -143,19 +155,17 @@ export default function VoortgangDomeinScreen({
     clarityTag("dashboard_beweging_checkin", "click");
   };
 
-  // De deur opent de treden in-place; `target` scheidt die intentie van de
-  // uitgaande klik naar een vergelijkingspagina (zelfde event, andere waarde).
+  // Zelfde eventnaam als de deur op slaap/stress/voeding (DomainSupplementStance)
+  // — beweging opent zijn schap inline i.p.v. in een los component, maar het
+  // is dezelfde interactie en hoort dezelfde naam te dragen.
   const handleAdvies = () => {
     const next = !adviesOpen;
     setAdviesOpen(next);
     if (!next) {
       return;
     }
-    trackEvent("dashboard_beweging_supplement_click", {
-      surface: "advies_voortgang",
-      target: "beweging_treden",
-    });
-    clarityTag("dashboard_beweging_advies", "treden_geopend");
+    trackEvent("dashboard_supplement_deur_open", { domain: "beweging", surface: "advies_voortgang" });
+    clarityTag("dashboard_supplement_deur", "beweging");
   };
 
   const handleGoVandaag = () => {
@@ -315,6 +325,62 @@ export default function VoortgangDomeinScreen({
           </CockpitTile>
         ) : null}
 
+        {sleepReadout ? (
+          <DomainSupplementStance
+            domain="sleep"
+            verdicts={data?.supplementVerdicts ?? []}
+            nutritionLogCompleted={nutritionLogCompleted}
+            surface="voortgang_slaap"
+          />
+        ) : null}
+
+        {isStress ? (
+          <PrioriteitenLadder
+            layers={STRESS_PRIORITY_LAYERS}
+            intro="Zes vlakken die spanning en herstel raken, van goedkoop naar duur. Wat bovenaan staat kost het minst en draagt het meest. Tik aan wat bij jou vastloopt."
+            domain="stress"
+            surface="voortgang_stress"
+          />
+        ) : null}
+
+        {isStress ? (
+          <DomainSupplementStance
+            domain="stress"
+            verdicts={data?.supplementVerdicts ?? []}
+            nutritionLogCompleted={nutritionLogCompleted}
+            surface="voortgang_stress"
+          />
+        ) : null}
+
+        {isConnection ? (
+          <PrioriteitenLadder
+            layers={CONNECTION_PRIORITY_LAYERS}
+            intro="Zes vlakken waarop contact verbetert, van goedkoop naar duur. Wat bovenaan staat kost het minst en draagt het meest. Tik aan wat bij jou vastloopt."
+            safetyNetLine={CONNECTION_SAFETY_NET_LINE}
+            domain="verbinding"
+            surface="voortgang_verbinding"
+          />
+        ) : null}
+
+        {isNutrition ? (
+          <PrioriteitenLadder
+            layers={NUTRITION_PRIORITY_LAYERS}
+            intro="Zes lagen, van je eetbasis tot aanvullen. Wat bovenaan staat draagt het meest; wat eronder staat telt pas mee als de lagen erboven staan."
+            eyebrow="Van onder naar boven"
+            domain="voeding"
+            surface="voortgang_voeding"
+          />
+        ) : null}
+
+        {isNutrition ? (
+          <DomainSupplementStance
+            domain="nutrition"
+            verdicts={data?.supplementVerdicts ?? []}
+            nutritionLogCompleted={nutritionLogCompleted}
+            surface="voortgang_voeding"
+          />
+        ) : null}
+
         {isSleep ? (
           <DomeinIjkpuntCheckPrompt domain="slaap" domainLabel="Slaap" />
         ) : null}
@@ -349,6 +415,16 @@ export default function VoortgangDomeinScreen({
             </span>
             <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
           </a>
+        ) : null}
+
+        {isMovement ? (
+          <PrioriteitenLadder
+            layers={MOVEMENT_PRIORITY_LAYERS}
+            intro="Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan."
+            eyebrow="Fundament naar finetunen"
+            domain="beweging"
+            surface="voortgang_beweging"
+          />
         ) : null}
 
         {showAdviesDeur ? (

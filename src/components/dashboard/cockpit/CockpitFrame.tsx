@@ -17,7 +17,7 @@ import type {
   ContextRailTool,
   ContextRailToolId,
 } from "@/lib/context-rail";
-import type { DashboardTabId, PillarId } from "@/types/dashboard";
+import type { DashboardTabId, PillarId, VoortgangScreen } from "@/types/dashboard";
 
 type CockpitFrameProps = {
   activeTab: DashboardTabId;
@@ -37,6 +37,9 @@ type CockpitFrameProps = {
   onOpenDomain?: (id: PillarId) => void;
   onToolClick?: (id: ContextRailToolId) => void;
   onBackToKompas?: () => void;
+  railVoortgangActiveScreen?: VoortgangScreen | null;
+  onOpenVoortgangScreen?: (screen: VoortgangScreen) => void;
+  onOpenVoortgangAanbouw?: () => void;
   inspectorCards: InspectorCard[];
   remeasureAction?: { due: boolean; onClick: () => void };
   inspectorDoelFooter?: ReactNode;
@@ -100,6 +103,9 @@ export default function CockpitFrame({
   onOpenDomain,
   onToolClick,
   onBackToKompas,
+  railVoortgangActiveScreen = null,
+  onOpenVoortgangScreen,
+  onOpenVoortgangAanbouw,
   inspectorCards,
   remeasureAction,
   inspectorDoelFooter,
@@ -276,6 +282,9 @@ export default function CockpitFrame({
             onToolClick={onToolClick}
             onBackToKompas={onBackToKompas}
             domainLabel={railDomainLabel}
+            voortgangActiveScreen={railVoortgangActiveScreen}
+            onOpenVoortgangScreen={onOpenVoortgangScreen}
+            onOpenVoortgangAanbouw={onOpenVoortgangAanbouw}
           />
         )}
 

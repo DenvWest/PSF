@@ -8,7 +8,6 @@ import * as Icons from "@/components/app/icons";
 import { Button } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { IDENTITY_FIELDS } from "@/data/dashboard";
-import { buildRecommendations } from "@/lib/build-recommendations";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
@@ -17,7 +16,6 @@ import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScr
 import VoortgangDomeinScreen from "@/components/dashboard/voortgang/VoortgangDomeinScreen";
 import StatistiekenBlikNav from "@/components/dashboard/voortgang/StatistiekenBlikNav";
 import StatistiekenBlikPanels from "@/components/dashboard/voortgang/StatistiekenBlikPanels";
-import FavorietenAanraderSection from "@/components/dashboard/voortgang/FavorietenAanraderSection";
 import FavorietenKeuzeSection from "@/components/dashboard/voortgang/FavorietenKeuzeSection";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
 import VitalityGauge from "@/components/app/VitalityGauge";
@@ -25,7 +23,6 @@ import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { getVitalityExplainer } from "@/lib/vitality-explainer";
 import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
-import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
 import { buildDashboardVandaagHref, type SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
@@ -208,28 +205,12 @@ function FavorietenView({
   model,
   data,
   onBack,
-  onOpenStatistieken,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   onBack: () => void;
-  onOpenStatistieken: () => void;
 }) {
-  const session: IntakeSessionPayload = {
-    sessionId: data?.sessionId ?? "",
-    symptoms: [],
-    answers: model.answers ?? {},
-    scores: model.domainScores,
-    urgency: "",
-    profile: data?.profileLabel ?? "",
-    timestamp: 0,
-    ageRange: null,
-    firstName: null,
-  };
-
   const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
-  const recommendations = buildRecommendations(session, eligibility);
-  const topRecommendation = recommendations[0] ?? null;
   const verdicts = data?.supplementVerdicts ?? [];
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
   const supplementenHref = withVoortgangReturn("/supplementen");
@@ -248,11 +229,6 @@ function FavorietenView({
         onWijzigFocus={handleWijzigFocus}
       />
 
-      <FavorietenAanraderSection
-        recommendation={topRecommendation}
-        onOpenStatistieken={onOpenStatistieken}
-      />
-
       <SupplementVerdictPanel
         verdicts={verdicts}
         variant="full"
@@ -260,7 +236,7 @@ function FavorietenView({
       />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {!topRecommendation && verdicts.length === 0 ? (
+        {verdicts.length === 0 ? (
           <Link
             href={nutritionLogCompleted ? supplementenHref : "/intake/voeding?from=dashboard"}
             style={{ textDecoration: "none" }}
@@ -658,12 +634,7 @@ export default function VoortgangHub({
 
   if (screen === "favorieten") {
     return (
-      <FavorietenView
-        model={model}
-        data={data}
-        onBack={goBack}
-        onOpenStatistieken={() => navigate("statistieken", { blik: "advies" })}
-      />
+      <FavorietenView model={model} data={data} onBack={goBack} />
     );
   }
 
