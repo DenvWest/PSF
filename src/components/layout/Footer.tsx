@@ -35,7 +35,6 @@ const footerColumns = [
         title: "Account",
         links: [
             { href: "/account/login", label: "Inloggen" },
-            { href: "/dashboard", label: "Mijn dashboard" },
         ],
     },
 ] as const;

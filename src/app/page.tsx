@@ -4,6 +4,7 @@ import { canonicalMetadata } from "@/lib/seo/canonical";
 import { absoluteUrl } from "@/lib/public-site-url";
 import HomeTrustSection from "@/components/homepage/HomeTrustSection";
 import LifestyleCheckSection from "@/components/homepage/LifestyleCheckSection";
+import HomeComparisonsSection from "@/components/homepage/HomeComparisonsSection";
 import HomeGuidesPromoSection from "@/components/homepage/HomeGuidesPromoSection";
 import FloatingLeefstijlcheckCta from "@/components/ui/FloatingLeefstijlcheckCta";
 import "./homepage.css";
@@ -56,6 +57,7 @@ export default function HomePage() {
         <Hero />
         <HomeTrustSection />
         <LifestyleCheckSection />
+        <HomeComparisonsSection />
         <HomeGuidesPromoSection />
         <FloatingLeefstijlcheckCta />
       </div>

@@ -36,16 +36,16 @@ export default function InzichtenContextStrip({
             ·
           </span>
           <Link
-            href="/dashboard"
+            href="/supplementen"
             onClick={() =>
               trackEvent("inzichten_context_strip_click", {
-                destination: "dashboard",
+                destination: "supplementen",
                 pillar: priorityPillarId,
               })
             }
             className="font-semibold text-[#5A8F6A] underline decoration-[#5A8F6A]/35 underline-offset-[3px] transition hover:decoration-[#5A8F6A]"
           >
-            Dashboard →
+            Vergelijk supplementen →
           </Link>
         </Container>
       </div>
@@ -63,7 +63,7 @@ export default function InzichtenContextStrip({
             {" — "}begin hier
           </p>
           <p className="mt-2 text-sm leading-relaxed text-stone-600">
-            Op basis van je laatste check-in. Meer detail in je dashboard.
+            Op basis van je laatste check-in.
           </p>
           <div className="mt-4">
             <Link
