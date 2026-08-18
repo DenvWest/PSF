@@ -6,25 +6,25 @@ import { PILLAR } from "@/data/dashboard";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
-type FavorietenKeuzeSectionProps = {
+type KompasFocusSectionProps = {
   model: DashboardModel;
   data?: DashboardData;
   onWijzigFocus?: () => void;
 };
 
-export default function FavorietenKeuzeSection({
+export default function KompasFocusSection({
   model,
   data,
   onWijzigFocus,
-}: FavorietenKeuzeSectionProps) {
+}: KompasFocusSectionProps) {
   const userChosen =
     model.priorityIsUserChosen || data?.priorityPref?.source === "user_selected";
   const focusPillar = model.priority;
   const suggestedPillar = model.enginePriority;
 
   return (
-    <section aria-label="Jouw keuze" style={{ marginBottom: 24 }}>
-      <VoortgangSectionHeader eyebrow="Jouw keuze" title="Waar jij nu aan werkt" />
+    <section aria-label="Kompas-focus" style={{ marginBottom: 20 }}>
+      <VoortgangSectionHeader eyebrow="Kompas-focus" title="Waar jij nu aan werkt" />
 
       {userChosen ? (
         <CockpitTile>

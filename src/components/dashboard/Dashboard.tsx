@@ -24,7 +24,6 @@ import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell
 import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
 import DomainMeetModule from "@/components/dashboard/domain/DomainMeetModule";
 import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
-import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
 import DomainTopNav, { type DomainNavApi } from "@/components/dashboard/DomainTopNav";
 import PriorityOverTimePanel from "@/components/dashboard/agenda/PriorityOverTimePanel";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
@@ -167,6 +166,7 @@ import {
   parseDagFromUrl,
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
+  parseFavorietenDomeinFromUrl,
   parseVoortgangDomeinFromUrl,
   parseVoortgangScreenFromUrl,
   buildDashboardAgendaHref,
@@ -236,6 +236,7 @@ type SharedSectionProps = {
   onStatistiekenBlikChange: (blik: StatistiekenBlik) => void;
   onOpenInzichten: () => void;
   voortgangDomein: PillarId | null;
+  favorietenDomein: PillarId | null;
   /** Navigeert naar Voortgang › <domein> — het leesscherm, geen doe-surface (S4). */
   onGoVoortgangDomein: (domain: PillarId) => void;
   initialKompasView?: PillarId;
@@ -1048,7 +1049,7 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
                 padding: "2px 8px",
               }}
             >
-              binnenkort
+              Nog niet gekoppeld
             </span>
           )}
         </div>
@@ -1296,17 +1297,7 @@ const SignalsSection = ({ model, onDashboardCheckin }: SharedSectionProps) => {
           </SlotGrid>
         </div>
       )}
-      <div
-        style={{
-          fontSize: 12,
-          color: "var(--text-subtle)",
-          marginTop: 12,
-          lineHeight: 1.5,
-        }}
-      >
-        Wearable-signalen worden binnenkort toegevoegd ter bevestiging van je
-        trends.
-      </div>
+
     </section>
   );
 };
@@ -2130,7 +2121,7 @@ const FutureSection = () => {
       type="button"
       onClick={handleWearableInterest}
       className="w-full text-left"
-      aria-label="Interesse in wearable-koppeling — binnenkort beschikbaar"
+      aria-label="Interesse in wearable-koppeling — nog niet beschikbaar"
     >
     <div
       style={{
@@ -2186,7 +2177,7 @@ const FutureSection = () => {
           whiteSpace: "nowrap",
         }}
       >
-        Binnenkort
+        Later
       </span>
     </div>
     </button>
@@ -2232,7 +2223,7 @@ const StatisticsSection = (props: SharedSectionProps) => {
             >
               Volg je HRV, rustpols en slaapduur, je voedingsinname en je
               volledige checkgeschiedenis — gebundeld op één plek, over tijd.
-              Binnenkort beschikbaar met lidmaatschap.
+              Beschikbaar met lidmaatschap zodra de meetlaag live is.
             </p>
             <span
               style={{
@@ -2248,7 +2239,7 @@ const StatisticsSection = (props: SharedSectionProps) => {
                 padding: "5px 12px",
               }}
             >
-              <Icons.Spark s={13} /> Binnenkort
+              <Icons.Spark s={13} /> Met lidmaatschap
             </span>
           </div>
         </Card>
@@ -2432,7 +2423,7 @@ const IdentitySection = () => {
           })}
         </div>
         <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: "var(--terra, #C8956C)", border: "1px solid rgba(200,149,108,0.4)", borderRadius: 999, padding: "5px 12px" }}>
-          <Icons.Spark s={13} /> Binnenkort in te vullen
+          <Icons.Spark s={13} /> Later in te vullen
         </div>
       </Card>
     </section>
@@ -2472,7 +2463,7 @@ const KompasLightPanel = ({
   </div>
 );
 
-const SoonPill = ({ label = "Binnenkort" }: { label?: string }) => (
+const SoonPill = ({ label = "Later" }: { label?: string }) => (
   <span
     style={{
       display: "inline-flex",
@@ -2723,22 +2714,6 @@ const VoedingScreen = ({
           )}
         </CockpitTile>
       </section>
-
-      <button
-        type="button"
-        onClick={() => {
-          trackEvent("dashboard_voeding_search_click", {
-            surface: "kompas_voeding",
-            state: "coming_soon",
-          });
-          clarityTag("dashboard_voeding_search", "click");
-        }}
-        className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3.5 text-left"
-      >
-        <Icons.Search s={18} style={{ color: "#9FB0A6" }} />
-        <span className="flex-1 text-[14.5px] text-[#9FB0A6]">Zoek product of supplement</span>
-        <DomainSoonPill />
-      </button>
 
       <section aria-label="Leefstijl eerst">
         <DomainSectionHeader eyebrow="Leefstijl eerst" title="Voedingsbasis" />
@@ -3261,6 +3236,7 @@ const SECTION_RENDERERS: Record<
         screen={props.voortgangScreen}
         statistiekenBlik={props.statistiekenBlik}
         voortgangDomein={props.voortgangDomein}
+        favorietenDomein={props.favorietenDomein}
         statistiekenAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
         }
@@ -3403,6 +3379,7 @@ export default function Dashboard({
     initialStatistiekenBlik ?? "stand",
   );
   const [voortgangDomein, setVoortgangDomein] = useState<PillarId | null>(null);
+  const [favorietenDomein, setFavorietenDomein] = useState<PillarId | null>(null);
   // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
   // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
   // vast te staan op de domein uit de URL bij het eerste laden.
@@ -3512,6 +3489,23 @@ export default function Dashboard({
     return voortgangDomein;
   }, [voortgangScreen, searchParams, voortgangDomein]);
 
+  const activeFavorietenDomein = useMemo((): PillarId | null => {
+    if (voortgangScreen !== "favorieten") {
+      return favorietenDomein;
+    }
+    const paramFav = searchParams.get("fav");
+    if (isPillarId(paramFav)) {
+      return paramFav;
+    }
+    if (typeof window !== "undefined") {
+      const urlFav = parseFavorietenDomeinFromUrl(window.location.href);
+      if (urlFav) {
+        return urlFav;
+      }
+    }
+    return favorietenDomein;
+  }, [voortgangScreen, searchParams, favorietenDomein]);
+
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
   const sectionTypes = empty
@@ -3570,9 +3564,15 @@ export default function Dashboard({
         syncDashboardVoortgangScreenParam(screen, { domein: nextDomein });
         return;
       }
+      if (screen === "favorieten") {
+        const nextFav = options?.fav ?? favorietenDomein;
+        setFavorietenDomein(nextFav ?? null);
+        syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
+        return;
+      }
       syncDashboardVoortgangScreenParam(screen);
     },
-    [data, empty, model, statistiekenBlik, voortgangDomein],
+    [data, empty, model, statistiekenBlik, voortgangDomein, favorietenDomein],
   );
 
   const handleStatistiekenBlikChange = useCallback((blik: StatistiekenBlik) => {
@@ -3621,6 +3621,10 @@ export default function Dashboard({
           if (urlDomein) {
             setVoortgangDomein(urlDomein);
           }
+        }
+        if (parsedScreen === "favorieten") {
+          const urlFav = parseFavorietenDomeinFromUrl(url);
+          setFavorietenDomein(urlFav);
         }
       } else {
         setVoortgangScreen("hub");
@@ -3807,6 +3811,7 @@ export default function Dashboard({
     onStatistiekenBlikChange: handleStatistiekenBlikChange,
     onOpenInzichten: () => handleVoortgangScreenChange("inzichten"),
     voortgangDomein: activeVoortgangDomein,
+    favorietenDomein: activeFavorietenDomein,
     onGoVoortgangDomein: goToVoortgangDomein,
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,

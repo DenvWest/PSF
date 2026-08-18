@@ -12,6 +12,7 @@ import {
   parseDagFromUrl,
   parseKompasFromUrl,
   parseStatistiekenBlikFromUrl,
+  parseFavorietenDomeinFromUrl,
   parseVoortgangScreenFromUrl,
   syncDashboardAgendaViewParam,
   syncDashboardDagParam,
@@ -59,6 +60,30 @@ describe("buildDashboardVoortgangHref", () => {
     expect(buildDashboardVoortgangHref("statistieken", "advies")).toBe(
       "/dashboard?tab=voortgang&screen=statistieken&blik=advies",
     );
+  });
+
+  it("includes fav for favorieten deep link", () => {
+    expect(buildDashboardVoortgangHref("favorieten", null, null, "beweging")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+    );
+  });
+});
+
+describe("parseFavorietenDomeinFromUrl", () => {
+  it("parses fav on favorieten screen", () => {
+    expect(
+      parseFavorietenDomeinFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+      ),
+    ).toBe("beweging");
+  });
+
+  it("returns null for invalid fav", () => {
+    expect(
+      parseFavorietenDomeinFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=invalid",
+      ),
+    ).toBeNull();
   });
 });
 

@@ -9,8 +9,6 @@ import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell
 import DomainFooterLink from "@/components/dashboard/domain/DomainFooterLink";
 import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
-import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
-import DomainToolsGrid, { type DomainTool } from "@/components/dashboard/domain/DomainToolsGrid";
 import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
@@ -26,23 +24,6 @@ import { trackEvent } from "@/lib/ga4";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import { sleepLayerWhyWait } from "@/lib/sleep-ladder";
 import type { DashboardModel, SleepCheckinReadoutData } from "@/types/dashboard";
-
-const SLEEP_TOOLS: DomainTool[] = [
-  {
-    icon: "🌅",
-    label: "Ochtendlicht",
-    href: "/blog/slaapritme-herstellen",
-    slug: "ochtendlicht",
-  },
-  {
-    icon: "☕",
-    label: "Cafeine-cutoff",
-    href: "/blog/alcohol-slaap-energie-na-40",
-    slug: "cafeine_cutoff",
-  },
-  { icon: "🌙", label: "Avondafbouw", href: null, slug: "avondafbouw" },
-  { icon: "⏰", label: "Vaste wektijd", href: null, slug: "vaste_wektijd" },
-];
 
 function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   return {
@@ -247,27 +228,6 @@ export default function SleepScreen({
               Supplementen zijn een aanvulling op ritme en licht — geen startpunt op dit scherm.
             </p>
           ) : null}
-        </CockpitTile>
-      </section>
-
-      <section aria-label="Slaaproutine tools">
-        <DomainSectionHeader
-          eyebrow="Slaaproutine tools"
-          title="Voor drukke avonden"
-          action={<DomainSoonPill />}
-        />
-        <CockpitTile>
-          <DomainToolsGrid
-            tools={SLEEP_TOOLS}
-            note="Binnenkort: routines die je direct aan je dagritme kunt koppelen."
-            onToolClick={(tool) => {
-              trackEvent("dashboard_slaap_tool_click", {
-                tool: tool.slug,
-                target: tool.href ?? "",
-              });
-              clarityTag("dashboard_slaap_tool", tool.slug);
-            }}
-          />
         </CockpitTile>
       </section>
 

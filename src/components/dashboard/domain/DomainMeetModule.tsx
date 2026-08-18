@@ -17,7 +17,7 @@ type DomainMeetModuleProps = {
 };
 
 /**
- * Laag 1 — Verdieping (T1, binnenkort). Geen paywall: de gratis voedingscheck
+ * Laag 1 — Verdieping (T1, later). Geen paywall: de gratis voedingscheck
  * blijft de meetlaag; dit blok toont wat later optioneel verdiept.
  */
 export default function DomainMeetModule({
@@ -49,7 +49,7 @@ export default function DomainMeetModule({
     >
       <div className="flex flex-col gap-3">
         <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#9FB0A6]">
-          <Icons.Spark s={14} /> Binnenkort · verdieping
+          <Icons.Spark s={14} /> Later · verdieping
         </div>
         <div className="font-serif text-[21px] leading-[1.2] text-[#F1EFE8]">{title}</div>
         <p className="text-[14px] leading-relaxed text-[#CDD7D0] text-pretty">{description}</p>

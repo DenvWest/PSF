@@ -134,7 +134,7 @@ export default function PremiumValuePropsList({
                     padding: "3px 8px",
                   }}
                 >
-                  Binnenkort
+                  Later
                 </span>
               ) : null}
             </div>

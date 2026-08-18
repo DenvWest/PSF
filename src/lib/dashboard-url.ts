@@ -94,6 +94,17 @@ export function parseVoortgangDomeinFromUrl(url: string | URL): PillarId | null 
   return null;
 }
 
+/** Favorieten deep link — scoped view per domein (P4, v3.6 scherm F). */
+export function parseFavorietenDomeinFromUrl(url: string | URL): PillarId | null {
+  const parsed =
+    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
+  const fav = parsed.searchParams.get("fav");
+  if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
+    return fav as PillarId;
+  }
+  return null;
+}
+
 export function buildDashboardVandaagHref(
   kompas?: PillarId | null,
   dag?: string | null,
@@ -172,6 +183,7 @@ export function buildDashboardVoortgangHref(
   screen?: VoortgangScreen | null,
   blik?: StatistiekenBlik | null,
   domein?: PillarId | null,
+  fav?: PillarId | null,
 ): string {
   const params = new URLSearchParams({ tab: "voortgang" });
   if (screen && screen !== "hub") {
@@ -183,12 +195,16 @@ export function buildDashboardVoortgangHref(
   if (screen === "domein" && domein) {
     params.set("domein", domein);
   }
+  if (screen === "favorieten" && fav) {
+    params.set("fav", fav);
+  }
   return `/dashboard?${params.toString()}`;
 }
 
 export type SyncDashboardVoortgangOptions = {
   blik?: StatistiekenBlik | null;
   domein?: PillarId | null;
+  fav?: PillarId | null;
 };
 
 export function syncDashboardVoortgangScreenParam(
@@ -209,6 +225,7 @@ export function syncDashboardVoortgangScreenParam(
     url.searchParams.delete("screen");
     url.searchParams.delete("blik");
     url.searchParams.delete("domein");
+    url.searchParams.delete("fav");
   } else {
     url.searchParams.set("screen", screen);
     if (screen === "statistieken" && options?.blik) {
@@ -220,6 +237,11 @@ export function syncDashboardVoortgangScreenParam(
       url.searchParams.set("domein", options.domein);
     } else {
       url.searchParams.delete("domein");
+    }
+    if (screen === "favorieten" && options?.fav) {
+      url.searchParams.set("fav", options.fav);
+    } else {
+      url.searchParams.delete("fav");
     }
   }
 
@@ -416,6 +438,7 @@ export function syncDashboardTabParam(
     url.searchParams.delete("screen");
     url.searchParams.delete("blik");
     url.searchParams.delete("domein");
+    url.searchParams.delete("fav");
   }
   if (tab === "agenda" || tab === "vandaag") {
     if (nextDag && isValidAgendaDate(nextDag)) {

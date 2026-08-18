@@ -5,9 +5,9 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
-import { Button } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import { IDENTITY_FIELDS } from "@/data/dashboard";
+import { buildRecommendations } from "@/lib/build-recommendations";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
@@ -16,7 +16,10 @@ import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScr
 import VoortgangDomeinScreen from "@/components/dashboard/voortgang/VoortgangDomeinScreen";
 import StatistiekenBlikNav from "@/components/dashboard/voortgang/StatistiekenBlikNav";
 import StatistiekenBlikPanels from "@/components/dashboard/voortgang/StatistiekenBlikPanels";
-import FavorietenKeuzeSection from "@/components/dashboard/voortgang/FavorietenKeuzeSection";
+import FavorietenBewegingSection from "@/components/dashboard/voortgang/FavorietenBewegingSection";
+import KompasFocusSection from "@/components/dashboard/voortgang/KompasFocusSection";
+import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
+import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import PremiumWaitlistCard from "@/components/dashboard/PremiumWaitlistCard";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import { clarityTag } from "@/lib/clarity";
@@ -44,6 +47,7 @@ type VoortgangHubProps = {
   screen: VoortgangScreen;
   statistiekenBlik: StatistiekenBlik;
   voortgangDomein: PillarId | null;
+  favorietenDomein: PillarId | null;
   statistiekenAdviesExtra: ReactNode;
   statistiekenOverTijdExtra: ReactNode;
   onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
@@ -56,95 +60,6 @@ type VoortgangHubProps = {
 function handleSupplementenHubClick() {
   trackEvent("dashboard_voortgang_supplementen_click", { surface: "voortgang" });
   clarityTag("dashboard_voortgang", "supplementen");
-}
-
-const badgeStyle = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 5,
-  fontSize: 10,
-  fontWeight: 600,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase" as const,
-  color: "var(--terra, #C8956C)",
-  border: "1px solid rgba(200,149,108,0.4)",
-  borderRadius: 999,
-  padding: "3px 8px",
-  flexShrink: 0,
-};
-
-function HubCard({
-  icon,
-  title,
-  subtitle,
-  badge,
-  onClick,
-}: {
-  icon: ReactNode;
-  title: string;
-  subtitle: string;
-  badge?: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        width: "100%",
-        padding: 0,
-        border: "none",
-        background: "none",
-        cursor: "pointer",
-        textAlign: "left",
-      }}
-    >
-      <CockpitTile>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[var(--sage)]">
-            {icon}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                flexWrap: "wrap",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "var(--f-serif)",
-                  fontSize: 18,
-                  color: "var(--text)",
-                  lineHeight: 1.2,
-                }}
-              >
-                {title}
-              </div>
-              {badge ? <span style={badgeStyle}>{badge}</span> : null}
-            </div>
-            <div
-              style={{
-                fontSize: 13,
-                color: "var(--text-muted)",
-                marginTop: 3,
-                lineHeight: 1.45,
-                textWrap: "pretty",
-              }}
-            >
-              {subtitle}
-            </div>
-          </div>
-          <Icons.ChevronRight
-            s={18}
-            style={{ color: "var(--text-subtle)", flexShrink: 0 }}
-          />
-        </div>
-      </CockpitTile>
-    </button>
-  );
 }
 
 function VoortgangSubHeader({
@@ -204,68 +119,227 @@ function VoortgangSubHeader({
 function FavorietenView({
   model,
   data,
+  favorietenDomein,
   onBack,
 }: {
   model: DashboardModel;
   data?: DashboardData;
+  favorietenDomein: PillarId | null;
   onBack: () => void;
 }) {
   const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
   const verdicts = data?.supplementVerdicts ?? [];
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
   const supplementenHref = withVoortgangReturn("/supplementen");
+  const scopedBeweging = favorietenDomein === "beweging";
 
-  const handleWijzigFocus = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const session: IntakeSessionPayload = {
+    sessionId: data?.sessionId ?? "",
+    symptoms: [],
+    answers: model.answers ?? {},
+    scores: model.domainScores,
+    urgency: "",
+    profile: data?.profileLabel ?? "",
+    timestamp: 0,
+    ageRange: null,
+    firstName: null,
   };
+  const recommendations = buildRecommendations(session, eligibility);
+
+  if (scopedBeweging) {
+    return (
+      <section aria-label="Favorieten · Beweging" style={{ paddingTop: 16 }}>
+        <VoortgangSubHeader title="Favorieten · Beweging" onBack={onBack} />
+        <FavorietenBewegingSection model={model} data={data} />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            fontSize: 11.5,
+            color: "var(--text-muted)",
+            marginTop: 20,
+          }}
+        >
+          <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
+          <span>
+            Algemene oriëntatie op basis van je antwoorden — geen persoonlijk medisch advies.
+            Wij verkopen zelf niets.
+          </span>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section aria-label="Favorieten" style={{ paddingTop: 16 }}>
       <VoortgangSubHeader title="Favorieten" onBack={onBack} />
 
-      <FavorietenKeuzeSection
-        model={model}
-        data={data}
-        onWijzigFocus={handleWijzigFocus}
-      />
+      <details open className="mb-6 rounded-2xl border border-white/10 bg-black/15">
+        <summary className="cursor-pointer list-none px-5 py-4 font-serif text-[18px] text-[var(--text)] [&::-webkit-details-marker]:hidden">
+          Supplementen
+        </summary>
+        <div className="flex flex-col gap-6 px-5 pb-5">
+          <section aria-label="Aanbevolen supplementen">
+            <VoortgangSectionHeader eyebrow="Aanbevolen" title="Uit je checks" />
+            <p
+              style={{
+                margin: "0 0 12px",
+                fontSize: 12.5,
+                color: "var(--text-subtle)",
+                lineHeight: 1.55,
+                textWrap: "pretty",
+              }}
+            >
+              Afgeleid uit je check — hier verdienen we niets aan.
+            </p>
+            {!nutritionLogCompleted ? (
+              <CockpitTile>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 14,
+                    color: "var(--text-muted)",
+                    lineHeight: 1.55,
+                    textWrap: "pretty",
+                  }}
+                >
+                  Supplementadvies tonen we pas na je voedingscheck — leefstijl eerst, in die
+                  volgorde.
+                </p>
+                <Link
+                  href="/intake/voeding?from=dashboard"
+                  onClick={() => {
+                    trackEvent("dashboard_voedingscheck_cta_click", {
+                      surface: "voortgang_favorieten",
+                    });
+                    clarityTag("dashboard_voedingscheck_cta", "voortgang_favorieten");
+                  }}
+                  className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[var(--sage)] no-underline"
+                >
+                  Start voedingscheck (1 min) <Icons.ChevronRight s={15} />
+                </Link>
+              </CockpitTile>
+            ) : recommendations.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {recommendations.slice(0, 4).map((rec) => {
+                  const href = rec.comparisonHref ?? rec.guideHref;
+                  return (
+                    <Link
+                      key={rec.slug}
+                      href={href}
+                      onClick={() => {
+                        trackEvent("dashboard_aanrader_click", {
+                          slug: rec.slug,
+                          target: href,
+                        });
+                        clarityTag("dashboard_aanrader", rec.slug);
+                      }}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <CockpitTile>
+                        <div
+                          style={{
+                            fontFamily: "var(--f-serif)",
+                            fontSize: 17,
+                            color: "var(--text)",
+                            lineHeight: 1.25,
+                            marginBottom: 4,
+                          }}
+                        >
+                          {rec.name}
+                        </div>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: 13.5,
+                            color: "var(--text-muted)",
+                            lineHeight: 1.5,
+                            textWrap: "pretty",
+                          }}
+                        >
+                          {rec.reason}
+                        </p>
+                      </CockpitTile>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <CockpitTile>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 14,
+                    color: "var(--text-muted)",
+                    lineHeight: 1.55,
+                    textWrap: "pretty",
+                  }}
+                >
+                  Op basis van je checks is er nu geen supplement dat we extra benadrukken.
+                </p>
+              </CockpitTile>
+            )}
+          </section>
 
-      <SupplementVerdictPanel
-        verdicts={verdicts}
-        variant="full"
-        surface="favorieten"
-      />
+          <section aria-label="Mijn keuze supplementen">
+            <VoortgangSectionHeader eyebrow="Mijn keuze" title="Uit het schap" />
+            {verdicts.length > 0 ? (
+              <SupplementVerdictPanel
+                verdicts={verdicts}
+                variant="full"
+                surface="favorieten"
+                hideHeader
+              />
+            ) : (
+              <CockpitTile>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 14,
+                    color: "var(--text-muted)",
+                    lineHeight: 1.55,
+                    textWrap: "pretty",
+                  }}
+                >
+                  Je hebt nog niets uit het schap gekozen.
+                </p>
+                <Link
+                  href={supplementenHref}
+                  onClick={handleSupplementenHubClick}
+                  className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[var(--sage)] no-underline"
+                >
+                  Naar supplementen <Icons.ChevronRight s={15} />
+                </Link>
+              </CockpitTile>
+            )}
+          </section>
+        </div>
+      </details>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {verdicts.length === 0 ? (
-          <Link
-            href={nutritionLogCompleted ? supplementenHref : "/intake/voeding?from=dashboard"}
-            style={{ textDecoration: "none" }}
-            onClick={() => {
-              if (!nutritionLogCompleted) {
-                trackEvent("dashboard_voedingscheck_cta_click", {
-                  surface: "voortgang_favorieten",
-                });
-                clarityTag("dashboard_voedingscheck_cta", "voortgang_favorieten");
-                return;
-              }
-              handleSupplementenHubClick();
-            }}
-          >
-            <Button variant="primary" full>
-              {nutritionLogCompleted
-                ? "Ontdek supplementen"
-                : "Start voedingscheck (1 min)"}
-            </Button>
-          </Link>
-        ) : null}
-        <Link
-          href={supplementenHref}
-          onClick={handleSupplementenHubClick}
-          className="inline-flex w-full items-center justify-center rounded-xl border border-[var(--sage)] bg-[rgba(90,143,106,0.12)] px-5 py-[13px] text-[14.5px] font-semibold text-[var(--sage)] no-underline transition hover:bg-[rgba(90,143,106,0.2)]"
-        >
-          Alle supplementen bekijken
-        </Link>
-      </div>
+      <details className="mb-6 rounded-2xl border border-white/10 bg-black/15">
+        <summary className="cursor-pointer list-none px-5 py-4 font-serif text-[18px] text-[var(--text)] [&::-webkit-details-marker]:hidden">
+          Leefstijlkeuzes
+        </summary>
+        <div className="px-5 pb-5">
+          <details className="rounded-xl border border-white/[0.06] bg-black/10">
+            <summary className="cursor-pointer list-none px-4 py-3.5 text-[14.5px] font-semibold text-[var(--text)] [&::-webkit-details-marker]:hidden">
+              Beweging
+            </summary>
+            <div className="px-4 pb-4">
+              <FavorietenBewegingSection model={model} data={data} />
+            </div>
+          </details>
+        </div>
+      </details>
+
+      <Link
+        href={supplementenHref}
+        onClick={handleSupplementenHubClick}
+        className="inline-flex w-full items-center justify-center rounded-xl border border-[var(--sage)] bg-[rgba(90,143,106,0.12)] px-5 py-[13px] text-[14.5px] font-semibold text-[var(--sage)] no-underline transition hover:bg-[rgba(90,143,106,0.2)]"
+      >
+        Alle supplementen bekijken
+      </Link>
 
       <div
         style={{
@@ -279,8 +353,8 @@ function FavorietenView({
       >
         <Icons.Shield s={13} style={{ color: "var(--sage)" }} />
         <span>
-          Algemene oriëntatie op basis van je antwoorden — geen persoonlijk
-          medisch advies. Wij verkopen zelf niets.
+          Algemene oriëntatie op basis van je antwoorden — geen persoonlijk medisch advies. Wij
+          verkopen zelf niets.
         </span>
       </div>
     </section>
@@ -398,7 +472,6 @@ function StatistiekenView({
   statistiekenAdviesExtra,
   statistiekenOverTijdExtra,
   onBack,
-  onOpenLichaam,
   onOpenFavorieten,
   onBlikChange,
 }: {
@@ -408,19 +481,9 @@ function StatistiekenView({
   statistiekenAdviesExtra: ReactNode;
   statistiekenOverTijdExtra: ReactNode;
   onBack: () => void;
-  onOpenLichaam: () => void;
   onOpenFavorieten: () => void;
   onBlikChange: (blik: StatistiekenBlik) => void;
 }) {
-  const openLichaam = () => {
-    trackEvent("dashboard_voortgang_hub_click", {
-      destination: "lichaamssamenstelling",
-      surface: "statistieken",
-    });
-    clarityTag("dashboard_voortgang", "lichaamssamenstelling");
-    onOpenLichaam();
-  };
-
   const handleBlikSwitch = (next: StatistiekenBlik) => {
     if (next === blik) {
       return;
@@ -429,16 +492,6 @@ function StatistiekenView({
     clarityTag("dashboard_statistieken_switch", `${blik}_to_${next}`);
     onBlikChange(next);
   };
-
-  const lichaamCard = (
-    <HubCard
-      icon={<Icons.User s={20} />}
-      title="Lichaamssamenstelling"
-      subtitle="Vet, spier en vocht als aparte meetlat"
-      badge="Binnenkort"
-      onClick={openLichaam}
-    />
-  );
 
   return (
     <section aria-label="Statistieken" style={{ paddingTop: 16 }}>
@@ -456,7 +509,6 @@ function StatistiekenView({
             onBlikChange={handleBlikSwitch}
             adviesExtra={statistiekenAdviesExtra}
             overTijdExtra={statistiekenOverTijdExtra}
-            standFooter={lichaamCard}
             overTijdFooter={<PremiumWaitlistCard surface="statistieken" />}
           />
         ) : null}
@@ -474,7 +526,7 @@ function LichaamssamenstellingView({ onBack }: { onBack: () => void }) {
     }
     shownRef.current = true;
     trackEvent("dashboard_lichaamssamenstelling_getoond", { surface: "voortgang" });
-    clarityTag("dashboard_lichaamssamenstelling", "binnenkort");
+    clarityTag("dashboard_lichaamssamenstelling", "closed_door");
   }, []);
 
   return (
@@ -483,17 +535,16 @@ function LichaamssamenstellingView({ onBack }: { onBack: () => void }) {
 
       <div style={{ paddingBottom: 24 }}>
         <CockpitTile className="mb-4">
-          <span style={badgeStyle}>Binnenkort</span>
           <div
             style={{
               fontFamily: "var(--f-serif)",
               fontSize: 20,
               color: "var(--text)",
               lineHeight: 1.25,
-              margin: "12px 0 8px",
+              margin: "0 0 8px",
             }}
           >
-            Hier komt je lichaamssamenstelling.
+            Deze deur staat nog dicht
           </div>
           <p
             style={{
@@ -504,8 +555,18 @@ function LichaamssamenstellingView({ onBack }: { onBack: () => void }) {
               textWrap: "pretty",
             }}
           >
-            Vet, spier en vocht als aparte meetlat, naast je leefstijl. We bouwen dit nog — er
-            staat nu niets van jou in.
+            Lichaamssamenstelling — vet, spier en vocht als aparte meetlat — opent pas als je
+            leefstijl-basis staat en je hertest binnen is. Er staat nu niets van jou in.
+          </p>
+          <p
+            style={{
+              margin: "12px 0 0",
+              fontSize: 11,
+              color: "var(--text-subtle)",
+              lineHeight: 1.6,
+            }}
+          >
+            Geen kaarten, geen teaser. Een dichte deur die toch iets laat zien is geen dichte deur.
           </p>
         </CockpitTile>
 
@@ -560,6 +621,7 @@ export default function VoortgangHub({
   screen,
   statistiekenBlik,
   voortgangDomein,
+  favorietenDomein,
   statistiekenAdviesExtra,
   statistiekenOverTijdExtra,
   onScreenChange,
@@ -601,21 +663,11 @@ export default function VoortgangHub({
 
   const openHub = (
     destination: "favorieten" | "statistieken" | "inzichten",
-    options?: { blik?: StatistiekenBlik },
+    options?: SyncDashboardVoortgangOptions,
   ) => {
     trackEvent("dashboard_voortgang_hub_click", { destination });
     clarityTag("dashboard_voortgang", destination);
     setScreen(destination, options);
-  };
-
-  const openBegeleiding = () => {
-    setScreen("statistieken", { blik: "tijd" });
-    requestAnimationFrame(() => {
-      document.getElementById("premium-begeleiding")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
   };
 
   if (!model) {
@@ -634,7 +686,12 @@ export default function VoortgangHub({
 
   if (screen === "favorieten") {
     return (
-      <FavorietenView model={model} data={data} onBack={goBack} />
+      <FavorietenView
+        model={model}
+        data={data}
+        favorietenDomein={favorietenDomein}
+        onBack={goBack}
+      />
     );
   }
 
@@ -647,7 +704,6 @@ export default function VoortgangHub({
         statistiekenAdviesExtra={statistiekenAdviesExtra}
         statistiekenOverTijdExtra={statistiekenOverTijdExtra}
         onBack={goBack}
-        onOpenLichaam={() => navigate("lichaamssamenstelling")}
         onOpenFavorieten={() => navigate("favorieten")}
         onBlikChange={onStatistiekenBlikChange}
       />
@@ -666,8 +722,11 @@ export default function VoortgangHub({
         domain={voortgangDomein}
         onBack={goBack}
         onGoVandaag={() => router.push(buildDashboardVandaagHref(voortgangDomein))}
-        onOpenAdvies={() => navigate("statistieken", { blik: "advies" })}
-        onOpenFavorieten={() => navigate("favorieten")}
+        onOpenFavorieten={
+          voortgangDomein === "beweging"
+            ? () => navigate("favorieten", { fav: "beweging" })
+            : undefined
+        }
       />
     );
   }
@@ -685,8 +744,6 @@ export default function VoortgangHub({
         onOpenStatistieken={() => openHub("statistieken", { blik: "advies" })}
         onOpenFavorieten={() => openHub("favorieten")}
         onOpenInzichten={() => openHub("inzichten")}
-        onOpenLichaamssamenstelling={() => navigate("lichaamssamenstelling")}
-        onOpenBegeleiding={openBegeleiding}
       />
     </section>
   );

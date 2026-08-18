@@ -42,7 +42,7 @@ export default function VerbindingScreen({ model }: { model: DashboardModel }) {
           trackEvent("dashboard_verbinding_checkin_click", { surface: "kompas_verbinding" });
           clarityTag("dashboard_verbinding_checkin", "click");
         }}
-        caption="Aparte verbinding-check volgt binnenkort; je start nu via de leefstijlcheck."
+        caption="Je start via de leefstijlcheck; een aparte verbinding-check komt later."
       />
 
       <section aria-label="Waar loopt het bij jou vast">

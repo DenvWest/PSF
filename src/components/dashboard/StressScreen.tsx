@@ -9,8 +9,6 @@ import DomainCockpitShell from "@/components/dashboard/domain/DomainCockpitShell
 import DomainFooterLink from "@/components/dashboard/domain/DomainFooterLink";
 import DomainHeaderCard from "@/components/dashboard/domain/DomainHeaderCard";
 import DomainSectionHeader from "@/components/dashboard/domain/DomainSectionHeader";
-import DomainSoonPill from "@/components/dashboard/domain/DomainSoonPill";
-import DomainToolsGrid, { type DomainTool } from "@/components/dashboard/domain/DomainToolsGrid";
 import KompasBegeleidingLink from "@/components/dashboard/KompasBegeleidingLink";
 import { PILLAR } from "@/data/dashboard";
 import { getStressNutritionHint } from "@/lib/build-recommendations";
@@ -19,23 +17,6 @@ import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type { DashboardModel } from "@/types/dashboard";
-
-const RESET_TOOLS: DomainTool[] = [
-  {
-    icon: "🫁",
-    label: "Ademhaling",
-    href: "/blog/ademhaling-tegen-stress",
-    slug: "ademhaling",
-  },
-  {
-    icon: "🧭",
-    label: "Overgangsritueel",
-    href: "/blog/stress-werk-grenzen-stellen",
-    slug: "overgangsritueel",
-  },
-  { icon: "👀", label: "Ogen ontspannen", href: null, slug: "ogen" },
-  { icon: "🌿", label: "Schermvrije reset", href: null, slug: "schermvrij" },
-];
 
 function sessionFromModel(model: DashboardModel): IntakeSessionPayload {
   return {
@@ -175,26 +156,6 @@ export default function StressScreen({ model }: { model: DashboardModel }) {
           </span>
           <Icons.ChevronRight s={16} style={{ color: "#9FB0A6", flexShrink: 0 }} />
         </Link>
-      </section>
-
-      <section aria-label="Reset tools">
-        <DomainSectionHeader
-          eyebrow="Reset tools"
-          title="Voor drukke dagen"
-          action={<DomainSoonPill />}
-        />
-        <CockpitTile>
-          <DomainToolsGrid
-            tools={RESET_TOOLS}
-            note="Binnenkort: stressroutines die je aan je dag kunt koppelen, zonder extra app-gedoe."
-            onToolClick={(tool) => {
-              trackEvent("dashboard_stress_ritueel_click", {
-                tool: tool.slug,
-                target: tool.href ?? "",
-              });
-            }}
-          />
-        </CockpitTile>
       </section>
 
       <KompasBegeleidingLink surface="kompas_stress" />

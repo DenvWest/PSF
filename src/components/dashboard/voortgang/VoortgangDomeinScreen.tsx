@@ -85,12 +85,14 @@ export default function VoortgangDomeinScreen({
   domain,
   onBack,
   onGoVandaag,
+  onOpenFavorieten,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   domain: PillarId;
   onBack: () => void;
   onGoVandaag: () => void;
+  onOpenFavorieten?: () => void;
 }) {
   const pillar = PILLAR[domain];
   const readout = isReadoutDomain(domain) ? getReadoutPresentation(domain) : null;
@@ -445,6 +447,25 @@ export default function VoortgangDomeinScreen({
             nutritionLogCompleted={nutritionLogCompleted}
             surface="voortgang_beweging"
           />
+        ) : null}
+
+        {isMovement && onOpenFavorieten ? (
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("dashboard_voortgang_hub_click", {
+                destination: "favorieten",
+                surface: "voortgang_domein",
+              });
+              clarityTag("dashboard_voortgang", "favorieten_beweging");
+              onOpenFavorieten();
+            }}
+            className="flex w-full cursor-pointer items-center gap-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-3.5 text-left"
+          >
+            <Icons.Heart s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
+            <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">Favorieten</span>
+            <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
+          </button>
         ) : null}
 
         <button

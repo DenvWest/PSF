@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import VoortgangDomeinRing from "@/components/dashboard/voortgang/VoortgangDomeinRing";
+import KompasFocusSection from "@/components/dashboard/voortgang/KompasFocusSection";
 import DomeinDoelZetten, {
   type DomeinDoelZettenExistingGoal,
 } from "@/components/dashboard/voortgang/DomeinDoelZetten";
@@ -27,8 +28,6 @@ type VoortgangHubScrollProps = {
   onOpenStatistieken: () => void;
   onOpenFavorieten: () => void;
   onOpenInzichten: () => void;
-  onOpenLichaamssamenstelling: () => void;
-  onOpenBegeleiding: () => void;
 };
 
 export default function VoortgangHubScroll({
@@ -40,8 +39,6 @@ export default function VoortgangHubScroll({
   onOpenStatistieken,
   onOpenFavorieten,
   onOpenInzichten,
-  onOpenLichaamssamenstelling,
-  onOpenBegeleiding,
 }: VoortgangHubScrollProps) {
   const [goals, setGoals] = useState<DomainGoalMap | null>(null);
   const [anchor, setAnchor] = useState<MovementAnchor | null>(null);
@@ -88,6 +85,8 @@ export default function VoortgangHubScroll({
         onOpenDomain={onOpenDomain}
       />
 
+      <KompasFocusSection model={model} data={data} />
+
       <div className="mt-3.5">
         <VoortgangDomeinRing
           model={model}
@@ -110,8 +109,6 @@ export default function VoortgangHubScroll({
           onOpenStatistieken={onOpenStatistieken}
           onOpenFavorieten={onOpenFavorieten}
           onOpenInzichten={onOpenInzichten}
-          onOpenLichaamssamenstelling={onOpenLichaamssamenstelling}
-          onOpenBegeleiding={onOpenBegeleiding}
         />
       </div>
 
