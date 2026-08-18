@@ -3,11 +3,18 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
+import { DeltaBadge, Sparkline } from "@/components/app/primitives";
+import KompasDomainGauge from "@/components/app/KompasDomainGauge";
+import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import MovementCockpit, {
   type MovementDoneState,
 } from "@/components/dashboard/beweging/MovementCockpit";
+import MovementFreeActionsTile from "@/components/dashboard/beweging/MovementFreeActionsTile";
 import MovementLogPanel from "@/components/dashboard/MovementLogPanel";
+import DomainAttentionBar from "@/components/dashboard/kompas/DomainAttentionBar";
+import { PILLAR } from "@/data/dashboard";
 import { movementPlanTemplate } from "@/data/lifestyle-plans/movement";
+import { MOVEMENT_PRIORITY_LAYERS } from "@/data/movement/lifestyle-priorities";
 import { isPlanStepHidden, resolveActionKey } from "@/lib/day-model";
 import {
   adviceMayOutrankDayStep,
@@ -17,11 +24,14 @@ import {
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { getMovementNutritionHint } from "@/lib/build-recommendations";
 import { clarityTag } from "@/lib/clarity";
+import { emitAccountClientEvent } from "@/lib/account-events-client";
 import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
+import { MOVEMENT_LAYER_STATE_LABEL } from "@/lib/movement-ladder";
 import { buildMovementAheadLine } from "@/lib/movement-plan-roadmap";
 import { deriveMovementCurrent } from "@/lib/movement-target";
+import { getScoreBandShortLabel } from "@/lib/score-bands";
 import type { WeekDaySlot } from "@/lib/agenda-week-preview";
 import type { IntakeSessionPayload } from "@/lib/intake-session-payload";
 import type {
@@ -143,6 +153,19 @@ export default function BewegingScreen({
     buildLeefstijllijnRows(model).find((row) => row.pillarId === "beweging") ?? null;
   const snapshotLine = buildVoortgangSnapshotLine(leefstijllijnRow);
   const daysUntilRemeasure = data?.remeasure?.daysUntil ?? null;
+  const score = model.scores.beweging ?? 0;
+  const daysAgo = data?.domainCheckDaysAgo?.beweging;
+
+  // De aandachtsbalk en de drie gratis acties komen uit dezelfde bron als de
+  // ladder op Voortgang (P1, movement-ladder.ts): de winst-prioriteit is
+  // afgeleid uit de check, niet een eigen tweede regel. Zonder check is er
+  // niets af te leiden — dan blijven kdome en de handeling over, geen
+  // aandachtsbalk en geen acties-tegel (§C1, BESLUIT_BEWEGING_V36).
+  const movementReadout = data?.movementCheckinSnapshot ?? null;
+  const focusPriorityId = movementReadout?.ladder.focus ?? null;
+  const focusLayer = focusPriorityId
+    ? (MOVEMENT_PRIORITY_LAYERS.find((layer) => layer.id === focusPriorityId) ?? null)
+    : null;
 
   const goToVoortgang = (state: "open" | "klaar") => {
     trackEvent("dashboard_beweging_voortgang_click", {
@@ -168,8 +191,63 @@ export default function BewegingScreen({
     ? "Bekijk je oordeel op Voortgang"
     : "Doe de voedingscheck";
 
+  // "Maak een keuze" (N1): één label, één bestemming, geen tweede vorm.
+  // Er bestaat nog geen schap-surface in src/ — Favorieten is de dichtstbije
+  // bestaande plek waar aanbevolen en gekozen dingen samenkomen (zelfde
+  // rol die hij al speelt in beweging-help-bridge.ts). Geen nieuwe surface
+  // verzonnen, wel de bestemming eerlijk benoemd als voorlopig (§M).
+  const handleMaakEenKeuze = () => {
+    emitAccountClientEvent("choice.shelf_opened", {
+      domain: "beweging",
+      from_state: "vandaag",
+      surface: "kompas_beweging",
+    });
+    clarityTag("dashboard_beweging_brug", "maak_een_keuze");
+  };
+
   return (
     <div className="flex flex-col gap-3 pb-16 md:pb-0">
+      {/* kdome — score-ring + aandachtsbalk (v3.6 renderK r.1475). Geen CTA
+          hierin: dit is een compact feitenblok, geen tweede primary naast
+          de dagstap (§C.4, houdt de klaar-staat-gate intact). */}
+      <CockpitTile ariaLabel="Beweging — je stand">
+        <div className="flex items-center gap-4">
+          <KompasDomainGauge value={score} label={PILLAR.beweging.label} />
+          <div className="min-w-0 flex-1">
+            <p className="text-[14px] leading-relaxed text-[#F1EFE8]">
+              {getScoreBandShortLabel(score)}
+              {leefstijllijnRow?.delta != null ? (
+                <span className="ml-2 inline-flex align-middle">
+                  <DeltaBadge delta={leefstijllijnRow.delta} />
+                </span>
+              ) : null}
+            </p>
+            {leefstijllijnRow ? (
+              <div className="mt-2">
+                <Sparkline data={leefstijllijnRow.trend} color={PILLAR.beweging.color} w={96} h={28} />
+              </div>
+            ) : null}
+            <p className="mt-2 text-[12px] text-[#7E8C82]">
+              {daysAgo != null
+                ? `Laatst gemeten ${daysAgo === 0 ? "vandaag" : `${daysAgo} dagen geleden`}.`
+                : "Nog niet apart gemeten."}
+            </p>
+            {dayStepState === "other_domain_priority" ? (
+              <p className="mt-2 text-[12.5px] leading-relaxed text-[#CDD7D0]">
+                Een ander domein heeft vandaag prioriteit.
+              </p>
+            ) : null}
+          </div>
+        </div>
+        {movementReadout ? (
+          <DomainAttentionBar
+            layers={MOVEMENT_PRIORITY_LAYERS}
+            states={movementReadout.ladder.states}
+            stateLabels={MOVEMENT_LAYER_STATE_LABEL}
+          />
+        ) : null}
+      </CockpitTile>
+
       <MovementCockpit
         model={model}
         slot={slot}
@@ -180,33 +258,60 @@ export default function BewegingScreen({
         onPrefUpdated={onPrefUpdated}
       />
 
+      {/* Drie gratis dingen op de winst-prioriteit — alleen ná de klaar-staat-
+          gate (§C.4): zolang de dagstap open staat is die de enige primary,
+          niet deze aanvullende suggesties. */}
+      {showAdvice && focusLayer ? (
+        <MovementFreeActionsTile
+          priorityId={focusLayer.id}
+          priorityName={focusLayer.name}
+          actions={focusLayer.actions}
+        />
+      ) : null}
+
+      {/* CTA-stapel (v3.6 renderK r.1497): primair naar Voortgang, met de
+          hermeting-regel als footnote. Alleen ná de klaar-staat-gate. */}
       {showAdvice ? (
-        <div className="rounded-2xl border border-[#5A8F6A]/30 bg-[#5A8F6A]/[0.06] px-5 py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7E8C82]">
-            Je voortgang
-          </p>
-          {dayStepState === "other_domain_priority" ? (
-            <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
-              Een ander domein heeft vandaag prioriteit.
-            </p>
-          ) : null}
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => goToVoortgang("klaar")}
+            className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-2xl border-none bg-[#5A8F6A] px-4 py-3.5 text-[14px] font-semibold text-[#0E1810]"
+          >
+            Open je beweegbeeld <Icons.ChevronRight s={15} />
+          </button>
           {snapshotLine ? (
-            <p className="mt-2 text-[13.5px] leading-relaxed text-[#CDD7D0]">
+            <p className="text-center text-[12px] leading-relaxed text-[#7E8C82]">
               {snapshotLine}
               {daysUntilRemeasure != null
                 ? ` Hermeting over ${daysUntilRemeasure} dagen.`
                 : ""}
             </p>
           ) : null}
-          <button
-            type="button"
-            onClick={() => goToVoortgang("klaar")}
-            className="mt-3 inline-flex cursor-pointer items-center gap-1 border-none bg-transparent p-0 text-[13.5px] font-semibold text-[#5A8F6A]"
-          >
-            Bekijk je beweging <Icons.ChevronRight s={15} />
-          </button>
         </div>
       ) : null}
+
+      {/* De deur (N1, lock 1): label-only, altijd aanwezig, nooit een
+          productnaam, prijs of oordeel. Bestemming: Favorieten — er is nog
+          geen schap-surface in src/, zie het commentaar bij
+          handleMaakEenKeuze hierboven. */}
+      <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3.5">
+        <p className="text-[12.5px] leading-relaxed text-[#9FB0A6]">
+          Je basis blijft staan. Wat er verder de moeite waard is — gratis of niet, met ons
+          oordeel erbij — staat in Favorieten.
+        </p>
+        <Link
+          href={buildDashboardVoortgangHref("favorieten")}
+          onClick={handleMaakEenKeuze}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-[13px] font-semibold text-[#F1EFE8] no-underline"
+        >
+          Maak een keuze <Icons.ChevronRight s={13} />
+        </Link>
+        <p className="mt-2.5 text-[11px] leading-relaxed text-[#7E8C82]">
+          Eén knop, één bestemming. Geen productnaam, geen prijs, geen oordeel — die horen op de
+          plek waar we ze kunnen onderbouwen.
+        </p>
+      </div>
 
       <div className="flex w-full flex-col gap-3 lg:mx-auto lg:max-w-3xl">
         {logEnabled ? <MovementLogPanel /> : null}

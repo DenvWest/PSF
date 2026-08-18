@@ -331,3 +331,42 @@ Verder: geen winst-laag als alles sterk is · een open laag bóven de winst-laag
 **Omvang:** 135 gewijzigde regels + 306 nieuwe, waarvan 142 test. Code-deel ~299 regels — binnen de plakgrens.
 
 **Meetpunt:** `beweging_ladder_layer_open` — bestond al (`PrioriteitenLadder` en `DomainLifestyleLadder` zenden allebei `${domain}_ladder_layer_open`), dus geen nieuw event en geen registratie op drie plekken nodig. Hier lees je af of mensen de winst-prioriteit nu daadwerkelijk openklappen; deed de ladder eerder niets, dan is dit de eerste keer dat dat cijfer iets betekent.
+
+---
+
+## L · Plak P2 — uitgevoerd, 18 augustus
+
+**Vandaag › Beweging naar de v3.6-vorm.** kdome + aandachtsbalk + drie gratis acties + één deur, gebouwd bovenop wat P1 opleverde.
+
+### L1 · Wat er nieuw is
+
+| bestand | wat |
+|---|---|
+| `src/components/dashboard/kompas/DomainAttentionBar.tsx` **(nieuw, 87 r.)** | Generieke aandachtsbalk — top-3 uit `states`, kleur én statuswoord in tekst, zelfde `ATTN_RANK`-sortering als v3.6 `attentionOrder()` |
+| `src/components/dashboard/beweging/MovementFreeActionsTile.tsx` **(nieuw, 86 r.)** | Drie gratis dingen op de winst-prioriteit, uit `MOVEMENT_PRIORITY_LAYERS[focus].actions` — dezelfde bron als P1's ladder |
+| `src/components/dashboard/BewegingScreen.tsx` | kdome-tegel (ring + band + delta + sparkline + "laatst gemeten" + aandachtsbalk) vóór `MovementCockpit`; de acties-tegel erna; CTA-stapel + deur-tegel; de oude "Je voortgang"-advies­box vervalt — hij was voor honderd procent overlap met de nieuwe kdome + CTA |
+| `DomainAttentionBar.test.tsx` · `MovementFreeActionsTile.test.tsx` **(nieuw, 101 r.)** | Isolatie-tests: sortering, drie-lagen-cap, N4 (geen merk/prijs/oordeel), lege staat op P5/P6 |
+
+`MovementTodayHero.tsx` — **niet aangeraakt**, in afwijking van de bestandenlijst in §J. Bij nadere lezing is dat component al precies "de handeling van vandaag": vier eigen staten (training-poort, keuzekaarten, rustdag, klaar-staat), diep verweven met `day-model`/`agenda`. v3.6 vraagt geen nieuwe vorm voor de handeling — die bestond al. Het risico van erin snijden woog niet op tegen wat het zou opleveren.
+
+### L2 · Twee keuzes die ik niet stil heb gemaakt
+
+**Het schap bestaat niet in `src/`.** Geen van de zes plakken in §J bouwt scherm B — dat is een gat in mijn eigen plan, niet iets wat ik nu stilletjes heb rechtgezet. De deur ("Maak een keuze") wijst daarom naar **Favorieten** (`/dashboard?tab=voortgang&screen=favorieten`), de enige bestaande surface waar aanbevolen en gekozen dingen al samenkomen — dezelfde rol die "Favorieten" al speelt in `beweging-help-bridge.ts` (`status: "now"`, tegenover `"toekomstig"` voor "Beste"). Geen derde vorm verzonnen; wel een bestemming gekozen die nog niet de bestemming is die N1 uiteindelijk bedoelt. **Zodra scherm B bestaat, moet deze `href` mee.**
+
+**"Drie gratis acties" schrijft niet naar `daily_action_log`.** Die hook deelt zijn streak-teller met `DomainTodayStrip` en `AgendaTodayHero` — een van deze micro-suggesties afvinken zou dezelfde streak optellen als een volledige krachtsessie, en geen enkel document zegt dat dat de bedoeling is. De staat is nu sessie-lokaal (`useState`), met een GA4-event (`beweging_gratis_actie_gepland`) voor het meetpunt. Persistentie — en de streak-vraag die daarbij hoort — is een open beslissing, geen stille keuze.
+
+### L3 · Wat ik bewust niet verwijderd heb
+
+BewegingScreen droeg negen secties; v3.6 vraagt er vijf. Zes zijn nieuw samengesteld (kdome, aandachtsbalk, handeling, acties, CTA, deur — geteld als vijf omdat aandachtsbalk in de kdome-tegel leeft, zoals in de prebuild). Vijf bestaande blokken blijven ongewijzigd staan: de "Straks"-regel, de uitklap "Waarom bewegen na 40 anders werkt", `MovementLogPanel` (flag-gated), de voedings-hint na een krachtsessie, de beweegcheck-nudge, en de gids-link. Geen daarvan is aanbod in de zin van lock 1 — het zijn educatieve en contextuele elementen — maar ze duwen de sectie-telling boven de vijf uit het model.
+
+Ze verwijderen was geen onderdeel van "Vandaag naar de v3.6-vorm"; het is een aparte, inhoudelijke beslissing (wat er met live content gebeurt) die niet bij "reorganiseer de surface" hoort. **Dit is het eerste dat ik zou aanpakken als je "≤5 secties" letterlijk wilt — met per blok een voorstel: laten staan, verhuizen naar de gids, of onder een "meer"-uitklap.**
+
+### L4 · Verificatie
+
+`grep console.log src/` → 0 · `npx tsc --noEmit` → schoon · `npx eslint --max-warnings 0` → dezelfde 5 baseline-waarschuwingen als op `HEAD`, geen nieuwe · `npx vitest run` → 214 bestanden, 1926 tests, alles groen (7 nieuw, waaronder de N4-toets op de acties-tegel).
+
+**Geen browser-render van de levende `/dashboard`-route.** Die vereist een echt account-cookie (`getAccountFromCookie()` redirect't zonder sessie naar `/account/login`, vóór elke `state=`-branch) en ik heb geen testaccount — een account aanmaken is een actie die ik niet zonder overleg neem. In plaats daarvan: `GET /dashboard?state=scored&tab=kompas&kompas=beweging` geeft `200` zonder Next.js-compilefout (bevestigt dat de module-graaf, incl. de twee nieuwe bestanden, klopt), en de twee nieuwe componenten zijn in isolatie in jsdom gerenderd en getoetst. `MovementCockpit`/`MovementTodayHero` — ongewijzigd, dus niet apart geverifieerd — leunen op `useSearchParams()` en meerdere fetch-hooks zonder bestaande test-scaffolding in dit project; die opzetten was buiten de scope van deze plak.
+
+**Omvang:** 122 gewijzigd in `BewegingScreen.tsx` + 173 nieuw (twee componenten) = 295 regels productiecode, plus 101 regels tests. Binnen de plakgrens.
+
+**Meetpunt:** `choice.shelf_opened` met `{domain:'beweging', from_state:'vandaag', surface:'kompas_beweging'}` op de deur — bestond al, hergebruikt. `beweging_gratis_actie_gepland` (nieuw, GA4) op de acties-tegel — hier lees je af of de suggesties worden opgepakt vóórdat de vraag "moet dit persistent worden" beantwoord hoeft te zijn.
