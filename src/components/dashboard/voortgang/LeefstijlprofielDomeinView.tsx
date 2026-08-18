@@ -5,50 +5,37 @@ import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
-import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
-import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
-import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
+import PrioriteitenLadder, {
+  type PrioriteitLayer,
+} from "@/components/dashboard/voortgang/PrioriteitenLadder";
 import DomeinIjkpuntCheckPrompt from "@/components/intake/DomeinIjkpuntCheckPrompt";
 import MovementCheckinReadout from "@/components/intake/MovementCheckinReadout";
 import MovementFactReadout from "@/components/intake/MovementFactReadout";
 import SleepCheckinReadout from "@/components/intake/SleepCheckinReadout";
 import SleepFactReadout from "@/components/intake/SleepFactReadout";
 import { PILLAR, PILLAR_CHECKIN_ROUTES } from "@/data/dashboard";
-import {
-  SLEEP_LAYER_STATE_LABEL,
-  SLEEP_PRIORITY_LAYERS,
-  type SleepPriorityId,
-} from "@/data/sleep/lifestyle-priorities";
+import { SLEEP_PRIORITY_LAYERS } from "@/data/sleep/lifestyle-priorities";
 import { STRESS_PRIORITY_LAYERS } from "@/data/stress/lifestyle-priorities";
 import {
   CONNECTION_PRIORITY_LAYERS,
   CONNECTION_SAFETY_NET_LINE,
 } from "@/data/connection/lifestyle-priorities";
 import { NUTRITION_PRIORITY_LAYERS } from "@/data/nutrition/lifestyle-pyramid";
-import {
-  MOVEMENT_PRIORITY_LAYERS,
-  type MovementPriorityId,
-} from "@/data/movement/lifestyle-priorities";
+import { MOVEMENT_PRIORITY_LAYERS } from "@/data/movement/lifestyle-priorities";
 import { clarityTag } from "@/lib/clarity";
 import { buildMovementRoutingHref } from "@/lib/dashboard-url";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
-import {
-  MOVEMENT_LAYER_STATE_LABEL,
-  movementLayerWhyWait,
-} from "@/lib/movement-ladder";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { resolveMovementRoutingHint } from "@/lib/movement-assessment";
-import { sleepLayerWhyWait } from "@/lib/sleep-ladder";
 import {
   buildMovementProgramPreview,
   parseMovementPlanProfile,
 } from "@/lib/movement-plan-profile";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
-import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
 
 type MovementWeekTotals = { totalMinutes: number; sessionCount: number };
@@ -79,32 +66,84 @@ function useMovementWeekTotals(enabled: boolean): MovementWeekTotals | null {
   return totals;
 }
 
-export default function VoortgangDomeinScreen({
+function domainLadderProps(domain: PillarId): {
+  layers: readonly PrioriteitLayer[];
+  intro: string;
+  eyebrow?: string;
+  safetyNetLine?: string;
+  surface: string;
+} | null {
+  if (domain === "stress") {
+    return {
+      layers: STRESS_PRIORITY_LAYERS,
+      intro:
+        "Zes vlakken die spanning en herstel raken, van goedkoop naar duur. Wat bovenaan staat kost het minst en draagt het meest. Tik aan wat bij jou vastloopt.",
+      surface: "leefstijlprofiel_stress",
+    };
+  }
+  if (domain === "verbinding") {
+    return {
+      layers: CONNECTION_PRIORITY_LAYERS,
+      intro:
+        "Zes vlakken waarop contact verbetert, van goedkoop naar duur. Wat bovenaan staat kost het minst en draagt het meest. Tik aan wat bij jou vastloopt.",
+      safetyNetLine: CONNECTION_SAFETY_NET_LINE,
+      surface: "leefstijlprofiel_verbinding",
+    };
+  }
+  if (domain === "voeding") {
+    return {
+      layers: NUTRITION_PRIORITY_LAYERS,
+      intro:
+        "Zes lagen, van je eetbasis tot aanvullen. Wat bovenaan staat draagt het meest; wat eronder staat telt pas mee als de lagen erboven staan.",
+      eyebrow: "Van onder naar boven",
+      surface: "leefstijlprofiel_voeding",
+    };
+  }
+  if (domain === "beweging") {
+    return {
+      layers: MOVEMENT_PRIORITY_LAYERS,
+      intro:
+        "Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan. Tik aan wat bij jou vastloopt.",
+      eyebrow: "Fundament naar finetunen",
+      surface: "leefstijlprofiel_beweging",
+    };
+  }
+  if (domain === "slaap") {
+    return {
+      layers: SLEEP_PRIORITY_LAYERS,
+      intro:
+        "Zes lagen van je slaapbasis tot finetunen. Wat bovenaan staat draagt het meest; wat eronder staat telt pas mee als de lagen erboven staan. Tik aan wat bij jou vastloopt.",
+      eyebrow: "Van basis naar finetunen",
+      surface: "leefstijlprofiel_slaap",
+    };
+  }
+  return null;
+}
+
+export default function LeefstijlprofielDomeinView({
   model,
   data,
   domain,
   onBack,
   onGoVandaag,
-  onOpenLeefstijlprofiel,
+  onOpenFavorieten,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   domain: PillarId;
   onBack: () => void;
   onGoVandaag: () => void;
-  onOpenLeefstijlprofiel?: () => void;
+  onOpenFavorieten?: () => void;
 }) {
   const pillar = PILLAR[domain];
   const readout = isReadoutDomain(domain) ? getReadoutPresentation(domain) : null;
-  const leefstijllijnRow = buildLeefstijllijnRows(model).find((row) => row.pillarId === domain) ?? null;
+  const leefstijllijnRow =
+    buildLeefstijllijnRows(model).find((row) => row.pillarId === domain) ?? null;
   const score = model.scores[domain] ?? 0;
   const daysAgo = data?.domainCheckDaysAgo?.[domain];
 
   const isMovement = domain === "beweging";
   const isSleep = domain === "slaap";
-  const isStress = domain === "stress";
-  const isConnection = domain === "verbinding";
-  const isNutrition = domain === "voeding";
   const movementLogEnabled = isMovement && isMovementLogEnabled();
   const weekTotals = useMovementWeekTotals(movementLogEnabled);
 
@@ -117,16 +156,9 @@ export default function VoortgangDomeinScreen({
       : null;
 
   const checkinRoute = PILLAR_CHECKIN_ROUTES[domain];
-
-  const nutritionLogCompleted =
-    buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
-
   const movementReadout = isMovement ? (data?.movementCheckinSnapshot ?? null) : null;
   const sleepReadout = isSleep ? (data?.sleepCheckinSnapshot ?? null) : null;
   const domainReadout = movementReadout ?? sleepReadout;
-  // Programma-preview is altijd live uit het profiel, nooit uit het bevroren
-  // readout-blok — anders loopt de regel uit de pas zodra iemand zijn
-  // programma wijzigt zonder een nieuwe beweegcheck te doen (§H3).
   const movementPlanProfile = isMovement ? parseMovementPlanProfile(model.answers ?? {}) : null;
   const movementProgramPreview = movementPlanProfile
     ? buildMovementProgramPreview(
@@ -136,27 +168,35 @@ export default function VoortgangDomeinScreen({
       )
     : null;
 
+  const ladderProps = domainLadderProps(domain);
+
   useEffect(() => {
     trackEvent("domain_tool.snapshot_viewed", {
       domain,
-      surface: "voortgang_domein",
+      surface: "leefstijlprofiel_domein",
       has_conclusion: domainReadout !== null,
     });
-    clarityTag("dashboard_voortgang_domein", domain);
+    clarityTag("dashboard_leefstijlprofiel_domein", domain);
   }, [domain, domainReadout]);
 
   const handleCheckin = () => {
-    trackEvent("dashboard_beweging_checkin_click", { mode: "full", surface: "voortgang_beweging" });
+    trackEvent("dashboard_beweging_checkin_click", {
+      mode: "full",
+      surface: "leefstijlprofiel_beweging",
+    });
     clarityTag("dashboard_beweging_checkin", "click");
   };
 
   const handleGoVandaag = () => {
-    trackEvent("dashboard_voortgang_hub_click", { destination: "vandaag", surface: "voortgang_domein" });
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "vandaag",
+      surface: "leefstijlprofiel_domein",
+    });
     onGoVandaag();
   };
 
   return (
-    <section aria-label={`Voortgang — ${pillar.label}`} style={{ paddingTop: 16 }}>
+    <section aria-label={`Leefstijlprofiel — ${pillar.label}`} style={{ paddingTop: 16 }}>
       <div
         style={{
           display: "flex",
@@ -194,7 +234,7 @@ export default function VoortgangDomeinScreen({
             color: "var(--text)",
           }}
         >
-          {pillar.label}
+          Leefstijlprofiel · {pillar.label}
         </div>
       </div>
 
@@ -298,88 +338,8 @@ export default function VoortgangDomeinScreen({
           <SleepFactReadout rows={sleepReadout.factRows} surface="voortgang_slaap" />
         ) : null}
 
-        {sleepReadout ? (
-          <CockpitTile eyebrow="Prioriteiten">
-            <DomainLifestyleLadder
-              layers={SLEEP_PRIORITY_LAYERS}
-              layerStates={sleepReadout.layerStates}
-              focusLayer={sleepReadout.focusLayer}
-              stateLabels={SLEEP_LAYER_STATE_LABEL}
-              variant="full"
-              whyWait={(layerId) => sleepLayerWhyWait(layerId as SleepPriorityId, sleepReadout.focusLayer)}
-              domain="slaap"
-              surface="voortgang_slaap"
-            />
-          </CockpitTile>
-        ) : null}
-
-        {sleepReadout ? (
-          <DomainSupplementStance
-            domain="sleep"
-            verdicts={data?.supplementVerdicts ?? []}
-            nutritionLogCompleted={nutritionLogCompleted}
-            surface="voortgang_slaap"
-            poortOnly
-            onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
-          />
-        ) : null}
-
-        {isStress ? (
-          <PrioriteitenLadder
-            layers={STRESS_PRIORITY_LAYERS}
-            intro="Zes vlakken die spanning en herstel raken, van goedkoop naar duur. Wat bovenaan staat kost het minst en draagt het meest. Tik aan wat bij jou vastloopt."
-            domain="stress"
-            surface="voortgang_stress"
-          />
-        ) : null}
-
-        {isStress ? (
-          <DomainSupplementStance
-            domain="stress"
-            verdicts={data?.supplementVerdicts ?? []}
-            nutritionLogCompleted={nutritionLogCompleted}
-            surface="voortgang_stress"
-          />
-        ) : null}
-
-        {isConnection ? (
-          <PrioriteitenLadder
-            layers={CONNECTION_PRIORITY_LAYERS}
-            intro="Zes vlakken waarop contact verbetert, van goedkoop naar duur. Wat bovenaan staat kost het minst en draagt het meest. Tik aan wat bij jou vastloopt."
-            safetyNetLine={CONNECTION_SAFETY_NET_LINE}
-            domain="verbinding"
-            surface="voortgang_verbinding"
-          />
-        ) : null}
-
-        {isNutrition ? (
-          <PrioriteitenLadder
-            layers={NUTRITION_PRIORITY_LAYERS}
-            intro="Zes lagen, van je eetbasis tot aanvullen. Wat bovenaan staat draagt het meest; wat eronder staat telt pas mee als de lagen erboven staan."
-            eyebrow="Van onder naar boven"
-            domain="voeding"
-            surface="voortgang_voeding"
-          />
-        ) : null}
-
-        {isNutrition ? (
-          <DomainSupplementStance
-            domain="nutrition"
-            verdicts={data?.supplementVerdicts ?? []}
-            nutritionLogCompleted={nutritionLogCompleted}
-            surface="voortgang_voeding"
-            poortOnly
-            onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
-          />
-        ) : null}
-
-        {isSleep ? (
-          <DomeinIjkpuntCheckPrompt domain="slaap" domainLabel="Slaap" />
-        ) : null}
-
-        {isMovement ? (
-          <DomeinIjkpuntCheckPrompt domain="beweging" domainLabel="Beweging" />
-        ) : null}
+        {isSleep ? <DomeinIjkpuntCheckPrompt domain="slaap" domainLabel="Slaap" /> : null}
+        {isMovement ? <DomeinIjkpuntCheckPrompt domain="beweging" domainLabel="Beweging" /> : null}
 
         {isMovement && movementLogEnabled ? (
           <CockpitTile eyebrow="Wat je deed">
@@ -389,6 +349,17 @@ export default function VoortgangDomeinScreen({
                 : "Nog geen momenten deze week."}
             </p>
           </CockpitTile>
+        ) : null}
+
+        {ladderProps ? (
+          <PrioriteitenLadder
+            layers={ladderProps.layers}
+            intro={ladderProps.intro}
+            eyebrow={ladderProps.eyebrow}
+            safetyNetLine={ladderProps.safetyNetLine}
+            domain={domain}
+            surface={ladderProps.surface}
+          />
         ) : null}
 
         {checkinRoute ? (
@@ -409,67 +380,21 @@ export default function VoortgangDomeinScreen({
           </a>
         ) : null}
 
-        {/* Mét beweegcheck draagt de ladder een staat, afgeleid uit dezelfde
-            focusdimensie als de readout hierboven (lock 4). Zonder check is er
-            niets af te leiden en blijft de zelfselectie-vorm staan — een lege
-            ladder met vier verzonnen badges zou erger zijn dan geen badges. */}
-        {isMovement && movementReadout ? (
-          <CockpitTile eyebrow="Fundament naar finetunen">
-            <p className="mb-3.5 mt-2.5 max-w-[58ch] text-[13px] leading-relaxed text-[#CDD7D0]">
-              Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het
-              meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan.
-            </p>
-            <DomainLifestyleLadder
-              layers={MOVEMENT_PRIORITY_LAYERS}
-              layerStates={movementReadout.ladder.states}
-              focusLayer={movementReadout.ladder.focus ?? 0}
-              stateLabels={MOVEMENT_LAYER_STATE_LABEL}
-              variant="full"
-              whyWait={(layerId) =>
-                movementLayerWhyWait(layerId as MovementPriorityId, movementReadout.ladder.focus)
-              }
-              domain="beweging"
-              surface="voortgang_beweging"
-            />
-          </CockpitTile>
-        ) : null}
-
-        {isMovement && !movementReadout ? (
-          <PrioriteitenLadder
-            layers={MOVEMENT_PRIORITY_LAYERS}
-            intro="Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan. Doe je beweegcheck om te zien waar jouw winst nu zit."
-            eyebrow="Fundament naar finetunen"
-            domain="beweging"
-            surface="voortgang_beweging"
-          />
-        ) : null}
-
-        {isMovement && movementReadout ? (
-          <DomainSupplementStance
-            domain="movement"
-            verdicts={data?.supplementVerdicts ?? []}
-            nutritionLogCompleted={nutritionLogCompleted}
-            surface="voortgang_beweging"
-            poortOnly
-            onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
-          />
-        ) : null}
-
-        {onOpenLeefstijlprofiel ? (
+        {onOpenFavorieten ? (
           <button
             type="button"
             onClick={() => {
               trackEvent("dashboard_voortgang_hub_click", {
-                destination: "leefstijlprofiel",
-                surface: "voortgang_domein",
+                destination: "favorieten",
+                surface: "leefstijlprofiel_domein",
               });
-              clarityTag("dashboard_voortgang", "leefstijlprofiel");
-              onOpenLeefstijlprofiel();
+              clarityTag("dashboard_voortgang", "favorieten");
+              onOpenFavorieten();
             }}
             className="flex w-full cursor-pointer items-center gap-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-3.5 text-left"
           >
             <Icons.Heart s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-            <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">Leefstijlprofiel</span>
+            <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">Favorieten</span>
             <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
           </button>
         ) : null}

@@ -10,8 +10,9 @@ import {
   type ContextRailTool,
   type ContextRailToolId,
   type ContextRailVoortgangItem,
+  type VoortgangRailItemId,
 } from "@/lib/context-rail";
-import type { PillarId, VoortgangScreen } from "@/types/dashboard";
+import type { PillarId } from "@/types/dashboard";
 
 type IconComp = ComponentType<{ s?: number; sw?: number; style?: CSSProperties }>;
 
@@ -28,8 +29,12 @@ type CockpitContextRailProps = {
   onToolClick?: (id: ContextRailToolId) => void;
   onBackToKompas?: () => void;
   domainLabel?: string | null;
-  voortgangActiveScreen?: VoortgangScreen | null;
-  onOpenVoortgangScreen?: (screen: VoortgangScreen) => void;
+  voortgangActiveItem?: VoortgangRailItemId | null;
+  voortgangLeefstijlprofielDomein?: PillarId | null;
+  voortgangDomains?: ContextRailDomainItem[];
+  favorietenCount?: number;
+  onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
+  onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
   onOpenVoortgangAanbouw?: () => void;
 };
 
@@ -38,6 +43,9 @@ const ZONEFLAG =
 
 const RAIL_ITEM =
   "flex w-full items-center gap-2.5 rounded-[12px] border px-2.5 py-2 text-left text-[13.5px] font-medium transition";
+
+const RAIL_SUB_ITEM =
+  "flex w-full items-center gap-2 rounded-[10px] border px-2 py-1.5 text-left text-[12.5px] font-medium transition";
 
 function iconOf(name: string): IconComp | null {
   return (Icons[name as keyof typeof Icons] as IconComp | undefined) ?? null;
@@ -107,8 +115,12 @@ export default function CockpitContextRail({
   onToolClick,
   onBackToKompas,
   domainLabel,
-  voortgangActiveScreen = null,
-  onOpenVoortgangScreen,
+  voortgangActiveItem = null,
+  voortgangLeefstijlprofielDomein = null,
+  voortgangDomains = [],
+  favorietenCount = 0,
+  onOpenVoortgangItem,
+  onOpenLeefstijlprofielDomein,
   onOpenVoortgangAanbouw,
 }: CockpitContextRailProps) {
   const name = firstName?.trim() || "Je profiel";
@@ -207,28 +219,106 @@ export default function CockpitContextRail({
     );
   };
 
+  const renderVoortgangDomain = (domain: ContextRailDomainItem) => {
+    const Icon = iconOf(domain.icon);
+    const active =
+      voortgangActiveItem === "leefstijlprofiel" &&
+      voortgangLeefstijlprofielDomein === domain.id;
+
+    return (
+      <button
+        key={domain.id}
+        type="button"
+        aria-current={active ? "page" : undefined}
+        onClick={() => onOpenLeefstijlprofielDomein?.(domain.id)}
+        className={`${RAIL_SUB_ITEM} ${
+          active
+            ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
+            : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
+        }`}
+      >
+        <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center">
+          {Icon ? <Icon s={14} style={{ color: domain.color }} /> : null}
+        </span>
+        <span className="min-w-0 flex-1 truncate">{domain.label}</span>
+        <span className="shrink-0 text-[11px] font-semibold tabular-nums text-[#7E8C82]">
+          {domain.score}
+        </span>
+      </button>
+    );
+  };
+
   const renderVoortgangItem = (item: ContextRailVoortgangItem) => {
     const Icon = iconOf(item.icon);
-    const active = item.id === voortgangActiveScreen;
+    const active =
+      item.id === voortgangActiveItem &&
+      (item.id !== "leefstijlprofiel" || voortgangLeefstijlprofielDomein == null);
+
+    if (item.id === "leefstijlprofiel") {
+      return (
+        <div key={item.id} className="flex flex-col gap-0.5">
+          <button
+            type="button"
+            aria-current={active ? "page" : undefined}
+            onClick={() => onOpenVoortgangItem?.("leefstijlprofiel")}
+            className={`${RAIL_ITEM} ${
+              active
+                ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
+                : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
+            }`}
+          >
+            <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+              {Icon ? (
+                <Icon
+                  s={16}
+                  style={{ color: active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }}
+                />
+              ) : null}
+            </span>
+            <span className="min-w-0 flex-1 truncate">{item.label}</span>
+          </button>
+          {voortgangDomains.length > 0 ? (
+            <div className="ml-2 flex flex-col gap-0.5 border-l border-white/10 pl-2">
+              {voortgangDomains.map(renderVoortgangDomain)}
+            </div>
+          ) : null}
+        </div>
+      );
+    }
+
+    const favorietenActive = item.id === "favorieten" && voortgangActiveItem === "favorieten";
 
     return (
       <button
         key={item.id}
         type="button"
-        aria-current={active ? "page" : undefined}
-        onClick={() => onOpenVoortgangScreen?.(item.id)}
+        aria-current={favorietenActive || (item.id !== "favorieten" && active) ? "page" : undefined}
+        onClick={() => onOpenVoortgangItem?.(item.id)}
         className={`${RAIL_ITEM} ${
-          active
+          favorietenActive || (item.id !== "favorieten" && active)
             ? "border-[#5A8F6A]/45 bg-[#5A8F6A]/12 text-[#F1EFE8]"
             : "border-transparent text-[#9FB0A6] hover:border-white/10 hover:bg-white/[0.05] hover:text-[#F1EFE8]"
         }`}
       >
         <span className="flex h-4 w-4 shrink-0 items-center justify-center">
           {Icon ? (
-            <Icon s={16} style={{ color: active ? "#5A8F6A" : "rgba(159,176,166,0.85)" }} />
+            <Icon
+              s={16}
+              style={{
+                color:
+                  favorietenActive || (item.id !== "favorieten" && active)
+                    ? "#5A8F6A"
+                    : "rgba(159,176,166,0.85)",
+              }}
+            />
           ) : null}
         </span>
         <span className="min-w-0 flex-1 truncate">{item.label}</span>
+        {item.id === "favorieten" && favorietenCount > 0 ? (
+          <span className="shrink-0 text-[12px] font-semibold tabular-nums text-[#7E8C82]">
+            {favorietenCount}
+          </span>
+        ) : null}
       </button>
     );
   };

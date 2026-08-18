@@ -148,7 +148,9 @@ import {
   type ContextRailApi,
   type ContextRailMode,
   type ContextRailToolId,
+  type VoortgangRailItemId,
 } from "@/lib/context-rail";
+import { VoortgangFavoritesProvider, useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { useTodayActionDone } from "@/lib/use-today-action-done";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
@@ -166,7 +168,6 @@ import {
   parseDagFromUrl,
   parseKompasFromUrl,
   parseLeefstijlprofielDomeinFromUrl,
-  parseVoortgangDomeinFromUrl,
   parseVoortgangScreenFromUrl,
   canonicalizeVoortgangScreenParam,
   getLegacyVoortgangScreenAlias,
@@ -230,8 +231,8 @@ type SharedSectionProps = {
     options?: SyncDashboardVoortgangOptions,
   ) => void;
   onOpenInzichten: () => void;
-  voortgangDomein: PillarId | null;
   leefstijlprofielDomein: PillarId | null;
+  favorietenDomein: PillarId | null;
   /** Navigeert naar Voortgang › <domein> — het leesscherm, geen doe-surface (S4). */
   onGoVoortgangDomein: (domain: PillarId) => void;
   initialKompasView?: PillarId;
@@ -609,7 +610,7 @@ const VitalityScoreSection = ({
         showRhythm={false}
         onInsightsClick={() => {
           trackEvent("dashboard_inzichten_cta_click", { surface: "voortgang" });
-          clarityTag("dashboard_voortgang", "inzichten_cta");
+          clarityTag("dashboard_voortgang", "leefstijlprofiel_cta");
           onOpenInzichten();
         }}
       />
@@ -3229,8 +3230,8 @@ const SECTION_RENDERERS: Record<
         data={props.data}
         tab={props.tab}
         screen={props.voortgangScreen}
-        voortgangDomein={props.voortgangDomein}
         leefstijlprofielDomein={props.leefstijlprofielDomein}
+        favorietenDomein={props.favorietenDomein}
         leefstijlprofielAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
         }
@@ -3347,7 +3348,15 @@ const EmptyTabState = ({
   );
 };
 
-export default function Dashboard({
+export default function Dashboard(props: DashboardProps) {
+  return (
+    <VoortgangFavoritesProvider>
+      <DashboardContent {...props} />
+    </VoortgangFavoritesProvider>
+  );
+}
+
+function DashboardContent({
   empty,
   data,
   isMember = false,
@@ -3358,6 +3367,7 @@ export default function Dashboard({
   initialAgendaView,
   sleepFocus = null,
 }: DashboardProps) {
+  const { items: favorietenItems } = useVoortgangFavorites();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [tab, setTab] = useState<DashboardTabId>(
@@ -3367,7 +3377,6 @@ export default function Dashboard({
   const [voortgangScreen, setVoortgangScreen] = useState<VoortgangScreen>(
     initialVoortgangScreen ?? "hub",
   );
-  const [voortgangDomein, setVoortgangDomein] = useState<PillarId | null>(null);
   const [leefstijlprofielDomein, setLeefstijlprofielDomein] = useState<PillarId | null>(null);
   // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
   // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
@@ -3441,26 +3450,13 @@ export default function Dashboard({
 
   const todayActionDone = useTodayActionDone(model);
 
-  const activeVoortgangDomein = useMemo((): PillarId | null => {
-    if (voortgangScreen !== "domein") {
-      return voortgangDomein;
-    }
-    const paramDomein = searchParams.get("domein");
-    if (isPillarId(paramDomein)) {
-      return paramDomein;
-    }
-    if (typeof window !== "undefined") {
-      const urlDomein = parseVoortgangDomeinFromUrl(window.location.href);
-      if (urlDomein) {
-        return urlDomein;
-      }
-    }
-    return voortgangDomein;
-  }, [voortgangScreen, searchParams, voortgangDomein]);
-
-  const activeLeefstijlprofielDomein = useMemo((): PillarId | null => {
-    if (voortgangScreen !== "leefstijlprofiel") {
-      return leefstijlprofielDomein;
+  const activeVoortgangFavDomein = useMemo((): PillarId | null => {
+    if (
+      voortgangScreen !== "leefstijlprofiel" &&
+      voortgangScreen !== "favorieten" &&
+      voortgangScreen !== "domein"
+    ) {
+      return null;
     }
     const paramFav = searchParams.get("fav");
     if (isPillarId(paramFav)) {
@@ -3474,6 +3470,14 @@ export default function Dashboard({
     }
     return leefstijlprofielDomein;
   }, [voortgangScreen, searchParams, leefstijlprofielDomein]);
+
+  const activeLeefstijlprofielDomein =
+    voortgangScreen === "leefstijlprofiel" || voortgangScreen === "domein"
+      ? activeVoortgangFavDomein
+      : null;
+
+  const activeFavorietenDomein =
+    voortgangScreen === "favorieten" ? activeVoortgangFavDomein : null;
 
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
@@ -3516,33 +3520,56 @@ export default function Dashboard({
 
   const handleVoortgangScreenChange = useCallback(
     (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => {
-      setVoortgangScreen(screen);
-      if (screen === "domein") {
-        const nextDomein = options?.domein ?? voortgangDomein;
-        setVoortgangDomein(nextDomein ?? null);
-        syncDashboardVoortgangScreenParam(screen, { domein: nextDomein });
+      if (screen === "inzichten") {
+        setVoortgangScreen("leefstijlprofiel");
+        setLeefstijlprofielDomein(null);
+        syncDashboardVoortgangScreenParam("leefstijlprofiel");
         return;
       }
-      if (screen === "leefstijlprofiel") {
-        const nextFav = options?.fav ?? leefstijlprofielDomein;
-        setLeefstijlprofielDomein(nextFav ?? null);
+      if (screen === "domein") {
+        const nextDomein = options?.domein ?? options?.fav ?? null;
+        setVoortgangScreen("leefstijlprofiel");
+        setLeefstijlprofielDomein(nextDomein);
+        syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: nextDomein });
+        return;
+      }
+      setVoortgangScreen(screen);
+      if (screen === "leefstijlprofiel" || screen === "favorieten") {
+        const nextFav =
+          options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
+        setLeefstijlprofielDomein(nextFav);
         syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
         return;
       }
       syncDashboardVoortgangScreenParam(screen);
     },
-    [leefstijlprofielDomein, voortgangDomein],
+    [leefstijlprofielDomein],
   );
 
-  // De linker rail op Voortgang is een nieuwe, persistente ingang op
-  // bestaande navigatie (handleVoortgangScreenChange) — geen nieuwe routing,
-  // alleen een nieuwe surface-waarde op het bestaande hub-click-event (zie
-  // voortgang-prebuild-notitie-2026-07.md: "verder_kijken" → "rail").
   const handleRailVoortgangOpen = useCallback(
-    (screen: VoortgangScreen) => {
-      trackEvent("dashboard_voortgang_hub_click", { destination: screen, surface: "rail" });
-      clarityTag("dashboard_voortgang", screen);
-      handleVoortgangScreenChange(screen);
+    (item: VoortgangRailItemId) => {
+      trackEvent("dashboard_voortgang_hub_click", { destination: item, surface: "rail" });
+      clarityTag("dashboard_voortgang", item);
+      if (item === "hub") {
+        handleVoortgangScreenChange("hub");
+      } else if (item === "leefstijlprofiel") {
+        handleVoortgangScreenChange("leefstijlprofiel", { fav: null });
+      } else if (item === "favorieten") {
+        handleVoortgangScreenChange("favorieten", { fav: null });
+      }
+    },
+    [handleVoortgangScreenChange],
+  );
+
+  const handleRailLeefstijlprofielDomeinOpen = useCallback(
+    (domain: PillarId) => {
+      trackEvent("dashboard_voortgang_hub_click", {
+        destination: "leefstijlprofiel",
+        domain,
+        surface: "rail",
+      });
+      clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
+      handleVoortgangScreenChange("leefstijlprofiel", { fav: domain });
     },
     [handleVoortgangScreenChange],
   );
@@ -3574,13 +3601,11 @@ export default function Dashboard({
         }
         const parsedScreen = parseVoortgangScreenFromUrl(url);
         setVoortgangScreen(parsedScreen);
-        if (parsedScreen === "domein") {
-          const urlDomein = parseVoortgangDomeinFromUrl(url);
-          if (urlDomein) {
-            setVoortgangDomein(urlDomein);
-          }
-        }
-        if (parsedScreen === "leefstijlprofiel") {
+        if (
+          parsedScreen === "leefstijlprofiel" ||
+          parsedScreen === "favorieten" ||
+          parsedScreen === "domein"
+        ) {
           const urlFav = parseLeefstijlprofielDomeinFromUrl(url);
           setLeefstijlprofielDomein(urlFav);
         }
@@ -3662,9 +3687,9 @@ export default function Dashboard({
       trackDashboardTabSelected("voortgang");
       clarityTag("dashboard_tab", "voortgang");
     }
-    setVoortgangScreen("domein");
-    setVoortgangDomein(domain);
-    syncDashboardVoortgangScreenParam("domein", { domein: domain });
+    setVoortgangScreen("leefstijlprofiel");
+    setLeefstijlprofielDomein(domain);
+    syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: domain });
     setTab("voortgang");
   };
 
@@ -3735,9 +3760,9 @@ export default function Dashboard({
     },
     voortgangScreen,
     onVoortgangScreenChange: handleVoortgangScreenChange,
-    onOpenInzichten: () => handleVoortgangScreenChange("inzichten"),
-    voortgangDomein: activeVoortgangDomein,
+    onOpenInzichten: () => handleVoortgangScreenChange("leefstijlprofiel", { fav: null }),
     leefstijlprofielDomein: activeLeefstijlprofielDomein,
+    favorietenDomein: activeFavorietenDomein,
     onGoVoortgangDomein: goToVoortgangDomein,
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,
@@ -3865,6 +3890,11 @@ export default function Dashboard({
         : !viewedDomain
           ? "kompasHome"
           : "domainTools";
+  const voortgangRailDomains = useMemo(
+    () => buildKompasRailDomains(model?.scores ?? {}),
+    [model?.scores],
+  );
+
   const contextRailMode: ContextRailMode =
     desiredRailMode === "voortgang"
       ? "voortgang"
@@ -3903,8 +3933,12 @@ export default function Dashboard({
         onOpenDomain={contextRailApi?.onOpenDomain}
         onToolClick={contextRailApi?.onToolClick}
         onBackToKompas={contextRailApi?.onBackToKompas}
-        railVoortgangActiveScreen={resolveVoortgangRailActiveItem(voortgangScreen)}
-        onOpenVoortgangScreen={handleRailVoortgangOpen}
+        railVoortgangActiveItem={resolveVoortgangRailActiveItem(voortgangScreen)}
+        railVoortgangLeefstijlprofielDomein={activeLeefstijlprofielDomein}
+        railVoortgangDomains={voortgangRailDomains}
+        railFavorietenCount={favorietenItems.length}
+        onOpenVoortgangItem={handleRailVoortgangOpen}
+        onOpenLeefstijlprofielDomein={handleRailLeefstijlprofielDomeinOpen}
         onOpenVoortgangAanbouw={handleRailVoortgangAanbouw}
         inspectorCards={inspectorCards}
         remeasureAction={remeasureAction}

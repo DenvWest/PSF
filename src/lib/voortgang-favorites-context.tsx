@@ -40,11 +40,11 @@ export function VoortgangFavoritesProvider({ children }: { children: ReactNode }
       if (current.some((row) => row.id === item.id)) {
         return current;
       }
-      trackEvent("dashboard_favorieten_footer_save", {
+      trackEvent("dashboard_favorieten_save", {
         item_id: item.id,
         kind: item.kind,
       });
-      clarityTag("dashboard_favorieten_footer", item.id);
+      clarityTag("dashboard_favorieten", item.id);
       return [...current, item];
     });
   }, []);

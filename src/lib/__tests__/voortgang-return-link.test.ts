@@ -35,8 +35,8 @@ describe("hasVoortgangReturnParam", () => {
 });
 
 describe("VOORTGANG_FAVORIETEN_HREF", () => {
-  it("points to leefstijlprofiel screen on voortgang tab", () => {
+  it("points to favorieten screen on voortgang tab", () => {
     expect(VOORTGANG_FAVORIETEN_HREF).toContain("tab=voortgang");
-    expect(VOORTGANG_FAVORIETEN_HREF).toContain("screen=leefstijlprofiel");
+    expect(VOORTGANG_FAVORIETEN_HREF).toContain("screen=favorieten");
   });
 });

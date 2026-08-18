@@ -33,7 +33,7 @@ type DomainSupplementStanceProps = {
   openByDefault?: boolean;
   /** Op domein-schermen: alleen poortstand tonen, geen uitklapbaar panel. */
   poortOnly?: boolean;
-  onOpenLeefstijlprofiel?: () => void;
+  onOpenFavorieten?: () => void;
 };
 
 /** Eén reden per render — de teller die laat zien hoe vaak de deur dicht
@@ -47,7 +47,7 @@ export default function DomainSupplementStance({
   surface,
   openByDefault = false,
   poortOnly = false,
-  onOpenLeefstijlprofiel,
+  onOpenFavorieten,
 }: DomainSupplementStanceProps) {
   const [open, setOpen] = useState(openByDefault);
   const stance = getDomainProductStance(domain);
@@ -131,19 +131,19 @@ export default function DomainSupplementStance({
         >
           {!nutritionLogCompleted
             ? "Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets toevoegt."
-            : "Het oordeel en het schap staan in je leefstijlprofiel — hier leggen we alleen uit waarom de volgorde zo is."}
+            : "Het oordeel en het schap staan in Favorieten — hier leggen we alleen uit waarom de volgorde zo is."}
         </p>
-        {onOpenLeefstijlprofiel ? (
+        {onOpenFavorieten ? (
           <button
             type="button"
             onClick={() => {
               trackEvent("dashboard_keuzes_poort_click", { domain, surface });
               clarityTag("dashboard_keuzes_poort", domain);
-              onOpenLeefstijlprofiel();
+              onOpenFavorieten();
             }}
             className="mt-3 cursor-pointer border-none bg-transparent p-0 text-[13px] font-semibold text-[var(--sage)]"
           >
-            Naar je leefstijlprofiel →
+            Naar Favorieten →
           </button>
         ) : null}
       </div>

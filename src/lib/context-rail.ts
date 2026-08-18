@@ -1,7 +1,7 @@
 import { PILLAR } from "@/data/dashboard";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
-type VoortgangRailItemId = "hub" | "inzichten" | "leefstijlprofiel";
+export type VoortgangRailItemId = "hub" | "leefstijlprofiel" | "favorieten";
 
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
@@ -91,24 +91,20 @@ export type ContextRailVoortgangItem = {
 
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Overzicht", icon: "Home" },
-  { id: "inzichten", label: "Jouw inzichten", icon: "Spark" },
-  { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "Heart" },
+  { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "User" },
+  { id: "favorieten", label: "Favorieten", icon: "Heart" },
 ];
 
-/**
- * Drill-down schermen (`domein`) lichten Overzicht op — geen apart rail-item.
- */
-export function resolveVoortgangRailActiveItem(
-  screen: VoortgangScreen,
-): VoortgangRailItemId {
-  if (screen === "domein") {
-    return "hub";
+export function resolveVoortgangRailActiveItem(screen: VoortgangScreen): VoortgangRailItemId {
+  if (screen === "favorieten") {
+    return "favorieten";
   }
-  if (screen === "leefstijlprofiel") {
+  if (
+    screen === "leefstijlprofiel" ||
+    screen === "inzichten" ||
+    screen === "domein"
+  ) {
     return "leefstijlprofiel";
-  }
-  if (screen === "inzichten") {
-    return "inzichten";
   }
   return "hub";
 }

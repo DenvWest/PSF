@@ -4,6 +4,7 @@ import {
   buildKompasRailDomains,
   resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
+  VOORTGANG_RAIL_ITEMS,
 } from "@/lib/context-rail";
 
 describe("buildKompasRailDomains", () => {
@@ -49,14 +50,29 @@ describe("buildBewegingRailTools", () => {
   });
 });
 
+describe("VOORTGANG_RAIL_ITEMS", () => {
+  it("toont Overzicht, Leefstijlprofiel (User) en Favorieten (Heart)", () => {
+    expect(VOORTGANG_RAIL_ITEMS.map((item) => item.id)).toEqual([
+      "hub",
+      "leefstijlprofiel",
+      "favorieten",
+    ]);
+    expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "leefstijlprofiel")?.icon).toBe(
+      "User",
+    );
+    expect(VOORTGANG_RAIL_ITEMS.find((item) => item.id === "favorieten")?.icon).toBe("Heart");
+  });
+});
+
 describe("resolveVoortgangRailActiveItem", () => {
-  it("laat de drie rail-items ongemoeid", () => {
+  it("laat hub en favorieten ongemoeid", () => {
     expect(resolveVoortgangRailActiveItem("hub")).toBe("hub");
-    expect(resolveVoortgangRailActiveItem("inzichten")).toBe("inzichten");
-    expect(resolveVoortgangRailActiveItem("leefstijlprofiel")).toBe("leefstijlprofiel");
+    expect(resolveVoortgangRailActiveItem("favorieten")).toBe("favorieten");
   });
 
-  it("licht 'Overzicht' op voor een domein-detailscherm (Voortgang › Beweging)", () => {
-    expect(resolveVoortgangRailActiveItem("domein")).toBe("hub");
+  it("licht Leefstijlprofiel op voor inzichten, domein en leefstijlprofiel", () => {
+    expect(resolveVoortgangRailActiveItem("leefstijlprofiel")).toBe("leefstijlprofiel");
+    expect(resolveVoortgangRailActiveItem("inzichten")).toBe("leefstijlprofiel");
+    expect(resolveVoortgangRailActiveItem("domein")).toBe("leefstijlprofiel");
   });
 });

@@ -7,10 +7,10 @@ import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import MetingenCard from "@/components/dashboard/MetingenCard";
 import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
-import VoortgangDomeinScreen from "@/components/dashboard/voortgang/VoortgangDomeinScreen";
-import LeefstijlprofielView from "@/components/dashboard/voortgang/LeefstijlprofielView";
-import VoortgangFavorietenFooter from "@/components/dashboard/voortgang/VoortgangFavorietenFooter";
-import { VoortgangFavoritesProvider } from "@/lib/voortgang-favorites-context";
+import LeefstijlprofielDomeinView from "@/components/dashboard/voortgang/LeefstijlprofielDomeinView";
+import FavorietenView from "@/components/dashboard/voortgang/FavorietenView";
+import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobileNav";
+import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
 import VitalityGauge from "@/components/app/VitalityGauge";
 import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
@@ -34,8 +34,8 @@ type VoortgangHubProps = {
   data?: DashboardData;
   tab: DashboardTabId;
   screen: VoortgangScreen;
-  voortgangDomein: PillarId | null;
   leefstijlprofielDomein: PillarId | null;
+  favorietenDomein: PillarId | null;
   leefstijlprofielAdviesExtra: ReactNode;
   overTijdExtra: ReactNode;
   onScreenChange: (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => void;
@@ -116,7 +116,7 @@ function InsightTips({ tips }: { tips: string[] }) {
   );
 }
 
-function VitaalscoreInzichtenView({
+function LeefstijlprofielInzichtenView({
   model,
   firstName,
   onBack,
@@ -145,8 +145,8 @@ function VitaalscoreInzichtenView({
   const tipLines = [explainer[1], explainer[2]].filter(Boolean);
 
   return (
-    <section aria-label="Jouw inzichten" style={{ paddingTop: 16 }}>
-      <VoortgangSubHeader title="Jouw inzichten" onBack={onBack} />
+    <section aria-label="Leefstijlprofiel" style={{ paddingTop: 16 }}>
+      <VoortgangSubHeader title="Leefstijlprofiel" onBack={onBack} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div className="vitaalscore-card__gauge-zone" style={{ marginInline: -8 }}>
@@ -197,21 +197,21 @@ function VitaalscoreInzichtenView({
   );
 }
 
-export default function VoortgangHub({
+function VoortgangHubInner({
   model,
   data,
   tab,
   screen,
-  voortgangDomein,
   leefstijlprofielDomein,
+  favorietenDomein,
   leefstijlprofielAdviesExtra,
   overTijdExtra,
   onScreenChange,
-  onPrefUpdated: _onPrefUpdated,
   onGoAgenda,
   onGoHermeting,
-}: VoortgangHubProps) {
+}: Omit<VoortgangHubProps, "onPrefUpdated">) {
   const router = useRouter();
+  const { items: favorietenItems } = useVoortgangFavorites();
 
   useEffect(() => {
     if (tab !== "voortgang") {
@@ -225,63 +225,93 @@ export default function VoortgangHub({
 
   const goBack = () => {
     trackEvent("dashboard_voortgang_terug", { from: screen });
-    if (screen === "leefstijlprofiel" || screen === "inzichten" || screen === "domein") {
+    if (
+      screen === "leefstijlprofiel" ||
+      screen === "favorieten" ||
+      screen === "inzichten" ||
+      screen === "domein"
+    ) {
       navigate("hub");
     }
   };
 
-  const openLeefstijlprofiel = (fav?: PillarId) => {
+  const openLeefstijlprofielRoot = () => {
     trackEvent("dashboard_voortgang_hub_click", { destination: "leefstijlprofiel" });
     clarityTag("dashboard_voortgang", "leefstijlprofiel");
-    navigate("leefstijlprofiel", fav ? { fav } : undefined);
+    navigate("leefstijlprofiel", { fav: null });
   };
 
-  if (!model) {
-    return null;
-  }
+  const openLeefstijlprofielDomein = (domain: PillarId) => {
+    trackEvent("dashboard_voortgang_hub_click", {
+      destination: "leefstijlprofiel",
+      domain,
+    });
+    clarityTag("dashboard_voortgang", `leefstijlprofiel_${domain}`);
+    navigate("leefstijlprofiel", { fav: domain });
+  };
+
+  const openFavorieten = (domain?: PillarId) => {
+    trackEvent("dashboard_voortgang_hub_click", { destination: "favorieten" });
+    clarityTag("dashboard_voortgang", "favorieten");
+    navigate("favorieten", domain ? { fav: domain } : { fav: null });
+  };
+
+  const mobileActiveDomein =
+    screen === "favorieten" ? favorietenDomein : leefstijlprofielDomein;
 
   let content: ReactNode;
 
-  if (screen === "inzichten") {
+  if (screen === "leefstijlprofiel" && leefstijlprofielDomein) {
     content = (
-      <VitaalscoreInzichtenView
-        model={model}
+      <LeefstijlprofielDomeinView
+        model={model!}
+        data={data}
+        domain={leefstijlprofielDomein}
+        onBack={goBack}
+        onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
+        onOpenFavorieten={() => openFavorieten(leefstijlprofielDomein)}
+      />
+    );
+  } else if (screen === "leefstijlprofiel" || screen === "inzichten") {
+    content = (
+      <LeefstijlprofielInzichtenView
+        model={model!}
         firstName={data?.firstName ?? null}
         onBack={goBack}
       />
     );
-  } else if (screen === "leefstijlprofiel") {
+  } else if (screen === "favorieten") {
     content = (
-      <LeefstijlprofielView
-        model={model}
+      <FavorietenView
+        model={model!}
         data={data}
-        scopedDomein={leefstijlprofielDomein}
+        scopedDomein={favorietenDomein}
         adviesExtra={leefstijlprofielAdviesExtra}
         onBack={goBack}
       />
     );
-  } else if (screen === "domein" && voortgangDomein) {
+  } else if (screen === "domein" && leefstijlprofielDomein) {
     content = (
-      <VoortgangDomeinScreen
-        model={model}
+      <LeefstijlprofielDomeinView
+        model={model!}
         data={data}
-        domain={voortgangDomein}
+        domain={leefstijlprofielDomein}
         onBack={goBack}
-        onGoVandaag={() => router.push(buildDashboardVandaagHref(voortgangDomein))}
-        onOpenLeefstijlprofiel={() => openLeefstijlprofiel(voortgangDomein)}
+        onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
+        onOpenFavorieten={() => openFavorieten(leefstijlprofielDomein)}
       />
     );
   } else {
     content = (
       <section aria-label="Voortgang navigatie">
         <VoortgangHubScroll
-          model={model}
+          model={model!}
           data={data}
           overTijdExtra={overTijdExtra}
           onGoAgenda={onGoAgenda}
           onGoHermeting={onGoHermeting}
           onOpenDomain={(domain: PillarId) => {
-            navigate("domein", { domein: domain });
+            openLeefstijlprofielDomein(domain);
           }}
           onScrollToOverTijd={() => {
             document.getElementById("voortgang-over-tijd")?.scrollIntoView({
@@ -295,15 +325,35 @@ export default function VoortgangHub({
   }
 
   return (
-    <VoortgangFavoritesProvider>
-      <div className="flex min-h-full flex-col">
-        <div className="flex-1">{content}</div>
-        <VoortgangFavorietenFooter
-          onOpenLeefstijlprofiel={(domain) => {
-            openLeefstijlprofiel(domain as PillarId | undefined);
-          }}
+    <div className="flex min-h-full flex-col">
+      {screen !== "hub" ? (
+        <VoortgangMobileNav
+          screen={screen}
+          activeDomein={mobileActiveDomein}
+          favorietenCount={favorietenItems.length}
+          onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
+          onOpenFavorieten={() => openFavorieten()}
+          onOpenDomein={openLeefstijlprofielDomein}
         />
-      </div>
-    </VoortgangFavoritesProvider>
+      ) : (
+        <VoortgangMobileNav
+          screen={screen}
+          activeDomein={null}
+          favorietenCount={favorietenItems.length}
+          onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
+          onOpenFavorieten={() => openFavorieten()}
+          onOpenDomein={openLeefstijlprofielDomein}
+        />
+      )}
+      <div className="flex-1">{content}</div>
+    </div>
   );
+}
+
+export default function VoortgangHub(props: VoortgangHubProps) {
+  if (!props.model) {
+    return null;
+  }
+
+  return <VoortgangHubInner {...props} />;
 }

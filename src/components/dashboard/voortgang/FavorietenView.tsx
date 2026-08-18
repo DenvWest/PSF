@@ -7,6 +7,10 @@ import { PILLAR } from "@/data/dashboard";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
+import {
+  useVoortgangFavorites,
+  type VoortgangFavoriteItem,
+} from "@/lib/voortgang-favorites-context";
 import type {
   DashboardData,
   DashboardModel,
@@ -17,13 +21,23 @@ import FavorietenBewegingSection from "@/components/dashboard/voortgang/Favoriet
 import LeefstijlprofielSupplementSection from "@/components/dashboard/voortgang/LeefstijlprofielSupplementSection";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 
-type LeefstijlprofielViewProps = {
+type FavorietenViewProps = {
   model: DashboardModel;
   data?: DashboardData;
   scopedDomein: PillarId | null;
   adviesExtra?: ReactNode;
   onBack: () => void;
 };
+
+function kindLabel(kind: VoortgangFavoriteItem["kind"]): string {
+  if (kind === "activiteit") {
+    return "Activiteit";
+  }
+  if (kind === "dienst") {
+    return "Dienst";
+  }
+  return "Supplement";
+}
 
 function ProfileToggle({
   view,
@@ -36,8 +50,8 @@ function ProfileToggle({
     if (next === view) {
       return;
     }
-    trackEvent("dashboard_leefstijlprofiel_toggle", { view: next });
-    clarityTag("dashboard_leefstijlprofiel", next);
+    trackEvent("dashboard_favorieten_toggle", { view: next });
+    clarityTag("dashboard_favorieten", next);
     onChange(next);
   };
 
@@ -45,7 +59,7 @@ function ProfileToggle({
     <div
       className="sticky bottom-0 z-10 -mx-1 border-t border-[var(--divider-strong)] bg-[var(--bg)]/95 px-1 py-3 backdrop-blur-sm"
       role="tablist"
-      aria-label="Profielweergave"
+      aria-label="Favorietenweergave"
     >
       <div className="flex gap-2">
         {(
@@ -74,22 +88,61 @@ function ProfileToggle({
   );
 }
 
-export default function LeefstijlprofielView({
+function SavedFavoritesList() {
+  const { items, remove } = useVoortgangFavorites();
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <section aria-label="Opgeslagen favorieten">
+      <VoortgangSectionHeader eyebrow="Opgeslagen" title="Wat je bewaarde" />
+      <ul className="m-0 list-none overflow-hidden rounded-xl border border-[var(--divider)]">
+        {items.map((item) => (
+          <li key={item.id} className="border-t border-[var(--divider)] first:border-t-0">
+            <div className="flex items-center gap-2 px-3 py-2.5">
+              <Icons.Heart s={16} style={{ color: "var(--sage)", flexShrink: 0 }} />
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-[13.5px] font-medium text-[var(--text)]">
+                  {item.title}
+                </span>
+                <span className="block text-[11px] text-[var(--text-subtle)]">
+                  {kindLabel(item.kind)}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => remove(item.id)}
+                aria-label={`Verwijder ${item.title} uit favorieten`}
+                className="shrink-0 cursor-pointer rounded-lg border border-[var(--divider)] bg-transparent p-1.5 text-[var(--text-subtle)]"
+              >
+                <Icons.Plus s={14} style={{ transform: "rotate(45deg)" }} />
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export default function FavorietenView({
   model,
   data,
   scopedDomein,
   adviesExtra,
   onBack,
-}: LeefstijlprofielViewProps) {
+}: FavorietenViewProps) {
   const [view, setView] = useState<LeefstijlprofielView>("aanbevolen");
   const supplementenHref = withVoortgangReturn("/supplementen");
   const scopedBeweging = scopedDomein === "beweging";
   const title = scopedDomein
-    ? `Leefstijlprofiel · ${PILLAR[scopedDomein].label}`
-    : "Leefstijlprofiel";
+    ? `Favorieten · ${PILLAR[scopedDomein].label}`
+    : "Favorieten";
 
   const handleSupplementenHubClick = () => {
-    trackEvent("dashboard_voortgang_supplementen_click", { surface: "leefstijlprofiel" });
+    trackEvent("dashboard_voortgang_supplementen_click", { surface: "favorieten" });
     clarityTag("dashboard_voortgang", "supplementen");
   };
 
@@ -137,7 +190,7 @@ export default function LeefstijlprofielView({
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-        <section aria-label="Leefstijlkeuze">
+        <section aria-label="Aanbevolen">
           <VoortgangSectionHeader eyebrow="Leefstijlkeuze" title="Wat past bij je check" />
           {scopedBeweging || scopedDomein == null ? (
             <FavorietenBewegingSection model={model} data={data} view={view} />
@@ -156,6 +209,8 @@ export default function LeefstijlprofielView({
             </p>
           )}
         </section>
+
+        {view === "mijn_keuze" ? <SavedFavoritesList /> : null}
 
         {data ? (
           <LeefstijlprofielSupplementSection

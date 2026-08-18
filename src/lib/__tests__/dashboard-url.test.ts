@@ -39,14 +39,19 @@ describe("parseVoortgangScreenFromUrl", () => {
       ),
     ).toBe("leefstijlprofiel");
     expect(
+      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
+    ).toBe("favorieten");
+    expect(
       parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=inzichten"),
-    ).toBe("inzichten");
+    ).toBe("leefstijlprofiel");
+    expect(
+      parseVoortgangScreenFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=domein&domein=beweging",
+      ),
+    ).toBe("leefstijlprofiel");
   });
 
-  it("redirects legacy favorieten and statistieken screens", () => {
-    expect(
-      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
-    ).toBe("leefstijlprofiel");
+  it("redirects legacy statistieken screens", () => {
     expect(
       parseVoortgangScreenFromUrl(
         "http://localhost/dashboard?tab=voortgang&screen=statistieken",
@@ -60,12 +65,19 @@ describe("parseVoortgangScreenFromUrl", () => {
   });
 
   it("canonicalizeVoortgangScreenParam rewrites legacy screen params in-place", () => {
-    const favorietenUrl = new URL(
-      "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+    const inzichtenUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=inzichten",
     );
-    expect(canonicalizeVoortgangScreenParam(favorietenUrl)).toBe("leefstijlprofiel");
-    expect(favorietenUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
-    expect(favorietenUrl.searchParams.get("fav")).toBe("beweging");
+    expect(canonicalizeVoortgangScreenParam(inzichtenUrl)).toBe("leefstijlprofiel");
+    expect(inzichtenUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+
+    const domeinUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=domein&domein=beweging",
+    );
+    expect(canonicalizeVoortgangScreenParam(domeinUrl)).toBe("leefstijlprofiel");
+    expect(domeinUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+    expect(domeinUrl.searchParams.get("fav")).toBe("beweging");
+    expect(domeinUrl.searchParams.has("domein")).toBe(false);
 
     const statistiekenUrl = new URL(
       "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=advies",
@@ -91,9 +103,12 @@ describe("buildDashboardVoortgangHref", () => {
     );
   });
 
-  it("includes fav for leefstijlprofiel deep link", () => {
+  it("includes fav for leefstijlprofiel and favorieten deep links", () => {
     expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging")).toBe(
       "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
+    );
+    expect(buildDashboardVoortgangHref("favorieten", null, null, "beweging")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
     );
   });
 });
@@ -113,6 +128,14 @@ describe("parseLeefstijlprofielDomeinFromUrl", () => {
         "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=invalid",
       ),
     ).toBeNull();
+  });
+
+  it("parses fav from legacy domein param", () => {
+    expect(
+      parseLeefstijlprofielDomeinFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=domein&domein=beweging",
+      ),
+    ).toBe("beweging");
   });
 });
 

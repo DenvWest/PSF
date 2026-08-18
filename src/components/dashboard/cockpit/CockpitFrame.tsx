@@ -16,8 +16,9 @@ import type {
   ContextRailMode,
   ContextRailTool,
   ContextRailToolId,
+  VoortgangRailItemId,
 } from "@/lib/context-rail";
-import type { DashboardTabId, PillarId, VoortgangScreen } from "@/types/dashboard";
+import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 type CockpitFrameProps = {
   activeTab: DashboardTabId;
@@ -37,8 +38,12 @@ type CockpitFrameProps = {
   onOpenDomain?: (id: PillarId) => void;
   onToolClick?: (id: ContextRailToolId) => void;
   onBackToKompas?: () => void;
-  railVoortgangActiveScreen?: VoortgangScreen | null;
-  onOpenVoortgangScreen?: (screen: VoortgangScreen) => void;
+  railVoortgangActiveItem?: VoortgangRailItemId | null;
+  railVoortgangLeefstijlprofielDomein?: PillarId | null;
+  railVoortgangDomains?: ContextRailDomainItem[];
+  railFavorietenCount?: number;
+  onOpenVoortgangItem?: (item: VoortgangRailItemId) => void;
+  onOpenLeefstijlprofielDomein?: (id: PillarId) => void;
   onOpenVoortgangAanbouw?: () => void;
   inspectorCards: InspectorCard[];
   remeasureAction?: { due: boolean; onClick: () => void };
@@ -103,8 +108,12 @@ export default function CockpitFrame({
   onOpenDomain,
   onToolClick,
   onBackToKompas,
-  railVoortgangActiveScreen = null,
-  onOpenVoortgangScreen,
+  railVoortgangActiveItem = null,
+  railVoortgangLeefstijlprofielDomein = null,
+  railVoortgangDomains,
+  railFavorietenCount = 0,
+  onOpenVoortgangItem,
+  onOpenLeefstijlprofielDomein,
   onOpenVoortgangAanbouw,
   inspectorCards,
   remeasureAction,
@@ -282,8 +291,12 @@ export default function CockpitFrame({
             onToolClick={onToolClick}
             onBackToKompas={onBackToKompas}
             domainLabel={railDomainLabel}
-            voortgangActiveScreen={railVoortgangActiveScreen}
-            onOpenVoortgangScreen={onOpenVoortgangScreen}
+            voortgangActiveItem={railVoortgangActiveItem}
+            voortgangLeefstijlprofielDomein={railVoortgangLeefstijlprofielDomein}
+            voortgangDomains={railVoortgangDomains}
+            favorietenCount={railFavorietenCount}
+            onOpenVoortgangItem={onOpenVoortgangItem}
+            onOpenLeefstijlprofielDomein={onOpenLeefstijlprofielDomein}
             onOpenVoortgangAanbouw={onOpenVoortgangAanbouw}
           />
         )}

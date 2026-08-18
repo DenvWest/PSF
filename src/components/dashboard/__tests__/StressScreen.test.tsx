@@ -42,6 +42,7 @@ describe("StressScreen — geen oordeel op de dagelijkse surface", () => {
     const deur = screen.getByText("Bekijk je oordeel op Voortgang");
     const href = deur.closest("a")?.getAttribute("href") ?? "";
     expect(href).toContain("tab=voortgang");
-    expect(href).toContain("domein=stress");
+    expect(href).toContain("screen=leefstijlprofiel");
+    expect(href).toContain("fav=stress");
   });
 });

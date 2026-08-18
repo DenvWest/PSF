@@ -28,5 +28,4 @@ export function hasVoortgangReturnParam(
 
 export const VOORTGANG_LEEFSTIJLPROFIEL_HREF = buildDashboardVoortgangHref("leefstijlprofiel");
 
-/** @deprecated Gebruik VOORTGANG_LEEFSTIJLPROFIEL_HREF */
-export const VOORTGANG_FAVORIETEN_HREF = VOORTGANG_LEEFSTIJLPROFIEL_HREF;
+export const VOORTGANG_FAVORIETEN_HREF = buildDashboardVoortgangHref("favorieten");

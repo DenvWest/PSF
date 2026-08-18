@@ -104,7 +104,14 @@ export type DashboardIconName =
 
 export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
 
-export type VoortgangScreen = "hub" | "inzichten" | "leefstijlprofiel" | "domein";
+export type VoortgangScreen =
+  | "hub"
+  | "leefstijlprofiel"
+  | "favorieten"
+  /** @deprecated Legacy — redirect naar leefstijlprofiel */
+  | "inzichten"
+  /** @deprecated Legacy — redirect naar leefstijlprofiel&fav= */
+  | "domein";
 
 export type LeefstijlprofielView = "aanbevolen" | "mijn_keuze";
 

@@ -5,13 +5,15 @@ const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
   "inzichten",
   "leefstijlprofiel",
+  "favorieten",
   "domein",
 ]);
 
 const LEGACY_VOORTGANG_SCREEN_ALIASES: Record<string, VoortgangScreen> = {
-  favorieten: "leefstijlprofiel",
   statistieken: "hub",
   lichaamssamenstelling: "hub",
+  inzichten: "leefstijlprofiel",
+  domein: "leefstijlprofiel",
 };
 
 export type LegacyVoortgangScreen = keyof typeof LEGACY_VOORTGANG_SCREEN_ALIASES;
@@ -25,7 +27,8 @@ export function getLegacyVoortgangScreenAlias(raw: string | null): LegacyVoortga
 
 /** Vervangt legacy `screen`-waarden in-place; retourneert de canonieke screen of null. */
 export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | null {
-  const legacy = getLegacyVoortgangScreenAlias(url.searchParams.get("screen"));
+  const rawScreen = url.searchParams.get("screen");
+  const legacy = getLegacyVoortgangScreenAlias(rawScreen);
   if (!legacy) {
     return null;
   }
@@ -33,8 +36,20 @@ export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | nu
   url.searchParams.delete("blik");
   if (canonical === "hub") {
     url.searchParams.delete("screen");
+    url.searchParams.delete("domein");
+    url.searchParams.delete("fav");
   } else {
     url.searchParams.set("screen", canonical);
+    if (legacy === "domein") {
+      const domein = url.searchParams.get("domein");
+      url.searchParams.delete("domein");
+      if (domein && KOMPAS_DOMAIN_IDS.has(domein as PillarId)) {
+        url.searchParams.set("fav", domein);
+      }
+    }
+    if (legacy === "inzichten") {
+      url.searchParams.delete("fav");
+    }
   }
   return canonical;
 }
@@ -117,13 +132,20 @@ export function parseVoortgangDomeinFromUrl(url: string | URL): PillarId | null 
   return null;
 }
 
-/** Leefstijlprofiel deep link — scoped view per domein. */
+/** Leefstijlprofiel / Favorieten deep link — scoped view per domein. */
 export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
   const fav = parsed.searchParams.get("fav");
   if (fav && KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
     return fav as PillarId;
+  }
+  const screen = parsed.searchParams.get("screen");
+  if (screen === "domein") {
+    const domein = parsed.searchParams.get("domein");
+    if (domein && KOMPAS_DOMAIN_IDS.has(domein as PillarId)) {
+      return domein as PillarId;
+    }
   }
   return null;
 }
@@ -212,14 +234,25 @@ export function buildDashboardVoortgangHref(
   fav?: PillarId | null,
 ): string {
   const params = new URLSearchParams({ tab: "voortgang" });
-  if (screen && screen !== "hub") {
-    params.set("screen", screen);
+  let resolvedScreen = screen && screen !== "hub" ? screen : null;
+  let resolvedFav = fav ?? null;
+
+  if (resolvedScreen === "domein") {
+    resolvedScreen = "leefstijlprofiel";
+    resolvedFav = resolvedFav ?? domein ?? null;
   }
-  if (screen === "domein" && domein) {
-    params.set("domein", domein);
+  if (resolvedScreen === "inzichten") {
+    resolvedScreen = "leefstijlprofiel";
   }
-  if (screen === "leefstijlprofiel" && fav) {
-    params.set("fav", fav);
+
+  if (resolvedScreen) {
+    params.set("screen", resolvedScreen);
+  }
+  if (
+    (resolvedScreen === "leefstijlprofiel" || resolvedScreen === "favorieten") &&
+    resolvedFav
+  ) {
+    params.set("fav", resolvedFav);
   }
   return `/dashboard?${params.toString()}`;
 }
@@ -250,12 +283,11 @@ export function syncDashboardVoortgangScreenParam(
     url.searchParams.delete("fav");
   } else {
     url.searchParams.set("screen", screen);
-    if (screen === "domein" && options?.domein) {
-      url.searchParams.set("domein", options.domein);
-    } else {
-      url.searchParams.delete("domein");
-    }
-    if (screen === "leefstijlprofiel" && options?.fav) {
+    url.searchParams.delete("domein");
+    if (
+      (screen === "leefstijlprofiel" || screen === "favorieten") &&
+      options?.fav
+    ) {
       url.searchParams.set("fav", options.fav);
     } else {
       url.searchParams.delete("fav");
