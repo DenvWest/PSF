@@ -50,20 +50,13 @@ describe("buildBewegingRailTools", () => {
 });
 
 describe("resolveVoortgangRailActiveItem", () => {
-  it("laat de vier rail-items ongemoeid", () => {
+  it("laat de drie rail-items ongemoeid", () => {
     expect(resolveVoortgangRailActiveItem("hub")).toBe("hub");
-    expect(resolveVoortgangRailActiveItem("statistieken")).toBe("statistieken");
     expect(resolveVoortgangRailActiveItem("inzichten")).toBe("inzichten");
-    expect(resolveVoortgangRailActiveItem("favorieten")).toBe("favorieten");
+    expect(resolveVoortgangRailActiveItem("leefstijlprofiel")).toBe("leefstijlprofiel");
   });
 
   it("licht 'Overzicht' op voor een domein-detailscherm (Voortgang › Beweging)", () => {
-    // Spiegelt VoortgangHub.tsx's eigen goBack(): "domein" gaat terug naar "hub".
     expect(resolveVoortgangRailActiveItem("domein")).toBe("hub");
-  });
-
-  it("licht 'Statistieken' op voor lichaamssamenstelling", () => {
-    // Spiegelt goBack(): "lichaamssamenstelling" gaat terug naar "statistieken".
-    expect(resolveVoortgangRailActiveItem("lichaamssamenstelling")).toBe("statistieken");
   });
 });

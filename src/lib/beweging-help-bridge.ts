@@ -6,7 +6,7 @@ import type { DashboardModel } from "@/types/dashboard";
 
 /**
  * De dunne #b-ingang (Pad A, slice 3): geen catalogus, alleen een statusstrip
- * die leest wat al bestaat. "Favorieten" staat vast op `now` — er is nog geen
+ * die leest wat al bestaat. "Leefstijlprofiel" staat vast op `now` — er is nog geen
  * opslag (slice 4) — en "Beste" vast op `toekomstig`: er is geen signaal dat
  * iemand daar al is aangekomen.
  */
@@ -45,7 +45,7 @@ export function buildBewegingHelpBridge(
         label: "Advies",
         status: nutritionLogCompleted ? "done" : "wacht",
       },
-      { id: "favorieten", label: "Favorieten", status: "now" },
+      { id: "favorieten", label: "Leefstijlprofiel", status: "now" },
       { id: "beste", label: "Beste", status: "toekomstig" },
     ],
   };

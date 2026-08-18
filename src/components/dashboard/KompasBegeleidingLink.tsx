@@ -8,7 +8,7 @@ import { trackEvent } from "@/lib/ga4";
 import { buildDashboardVoortgangHref } from "@/lib/dashboard-url";
 
 export const PREMIUM_BEGELEIDING_HREF =
-  `${buildDashboardVoortgangHref("statistieken", "tijd")}#premium-begeleiding`;
+  `${buildDashboardVoortgangHref("hub")}#voortgang-over-tijd`;
 
 type KompasBegeleidingLinkProps = {
   surface: string;

@@ -302,7 +302,7 @@ export default function BewegingScreen({
           oordeel erbij — staat in Favorieten.
         </p>
         <Link
-          href={buildDashboardVoortgangHref("favorieten", null, null, "beweging")}
+          href={buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging")}
           onClick={handleMaakEenKeuze}
           className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-[13px] font-semibold text-[#F1EFE8] no-underline"
         >

@@ -1,7 +1,7 @@
 import { PILLAR } from "@/data/dashboard";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
-type VoortgangRailItemId = "hub" | "statistieken" | "inzichten" | "favorieten";
+type VoortgangRailItemId = "hub" | "inzichten" | "leefstijlprofiel";
 
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
@@ -66,11 +66,6 @@ export function buildKompasRailDomains(
   });
 }
 
-/**
- * Supplementen en "Leefstijl & inzichten" zijn hier weg (verdict-S5): het
- * oordeel woont voortaan op Statistieken › Advies, en /inzichten staat al in
- * de top-nav — een tweede ingang op de doe-surface is ruis.
- */
 export function buildBewegingRailTools(): ContextRailTool[] {
   return [
     {
@@ -94,28 +89,14 @@ export type ContextRailVoortgangItem = {
   icon: string;
 };
 
-/**
- * Statisch — geen per-gebruiker data nodig, dus geen builder-functie zoals
- * bij de Kompas-domeinen. De vier items dekken exact wat vandaag al
- * bereikbaar is via `VoortgangHub`'s screen-state; de rail is een nieuwe,
- * persistente ingang op bestaande navigatie, geen nieuwe routing.
- */
 export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "hub", label: "Overzicht", icon: "Home" },
-  { id: "statistieken", label: "Statistieken", icon: "BarChart" },
   { id: "inzichten", label: "Jouw inzichten", icon: "Spark" },
-  { id: "favorieten", label: "Favorieten", icon: "Heart" },
+  { id: "leefstijlprofiel", label: "Leefstijlprofiel", icon: "Heart" },
 ];
 
 /**
- * Twee Voortgang-schermen staan niet in `VOORTGANG_RAIL_ITEMS` en lichtten
- * daardoor niets op in de rail: `domein` (bijv. Voortgang › Beweging) en
- * `lichaamssamenstelling`. Beide zijn een drill-down, geen zusje van de vier
- * rail-items — hun `goBack()` in VoortgangHub.tsx bevestigt dat al: `domein`
- * gaat terug naar `hub`, `lichaamssamenstelling` naar `statistieken`. Deze
- * functie spiegelt diezelfde hiërarchie naar de rail, zodat de gebruiker op
- * Voortgang › Beweging ziet dat hij ergens ónder "Overzicht" zit, in plaats
- * van een rail waar niets brandt.
+ * Drill-down schermen (`domein`) lichten Overzicht op — geen apart rail-item.
  */
 export function resolveVoortgangRailActiveItem(
   screen: VoortgangScreen,
@@ -123,8 +104,11 @@ export function resolveVoortgangRailActiveItem(
   if (screen === "domein") {
     return "hub";
   }
-  if (screen === "lichaamssamenstelling") {
-    return "statistieken";
+  if (screen === "leefstijlprofiel") {
+    return "leefstijlprofiel";
   }
-  return screen;
+  if (screen === "inzichten") {
+    return "inzichten";
+  }
+  return "hub";
 }

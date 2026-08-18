@@ -34,12 +34,14 @@ const TONE_BORDER: Record<VerdictTone, string> = {
 export type VerdictPanelSurface =
   | "voortgang"
   | "favorieten"
+  | "leefstijlprofiel"
   | "statistieken"
   | "voortgang_slaap"
   | "voortgang_stress"
   | "voortgang_voeding"
   | "voortgang_beweging"
-  | "favorieten_beweging";
+  | "favorieten_beweging"
+  | "leefstijlprofiel_beweging";
 
 type SupplementVerdictPanelProps = {
   verdicts: StoredSupplementVerdict[];

@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Dashboard from "@/components/dashboard/Dashboard";
-import { isStatistiekenBlik } from "@/lib/statistieken-blik";
 import { loadAccountDashboardData } from "@/lib/account-dashboard";
 import { getAccountFromCookie } from "@/lib/account-server";
 import { hasFeature } from "@/lib/db/entitlements";
@@ -13,7 +12,7 @@ import {
   parseVoortgangScreenFromUrl,
   type AgendaViewId,
 } from "@/lib/dashboard-url";
-import type { DashboardTabId, PillarId, StatistiekenBlik } from "@/types/dashboard";
+import type { DashboardTabId, PillarId } from "@/types/dashboard";
 
 export const metadata = {
   robots: {
@@ -40,16 +39,6 @@ function parseInitialTab(tab?: string): DashboardTabId | undefined {
     return tab as DashboardTabId;
   }
   return undefined;
-}
-
-function parseInitialStatistiekenBlik(
-  screen?: string,
-  blik?: string,
-): StatistiekenBlik | undefined {
-  if (screen !== "statistieken" || !blik || !isStatistiekenBlik(blik)) {
-    return undefined;
-  }
-  return blik;
 }
 
 function parseInitialVoortgangScreen(screen?: string) {
@@ -87,7 +76,7 @@ function parseInitialAgendaView(tab?: string, view?: string): AgendaViewId | und
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  const { state, tab, screen, blik, kompas, view } = await searchParams;
+  const { state, tab, screen, kompas, view } = await searchParams;
 
   const account = await getAccountFromCookie();
   if (!account) {
@@ -98,14 +87,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   }
   const initialTab = parseInitialTab(tab);
   const initialVoortgangScreen = parseInitialVoortgangScreen(screen);
-  const initialStatistiekenBlik = parseInitialStatistiekenBlik(screen, blik);
   const initialKompasView = parseInitialKompasView(kompas);
   const initialAgendaView = parseInitialAgendaView(tab, view);
 
   const dashboardProps = {
     initialTab,
     initialVoortgangScreen,
-    initialStatistiekenBlik,
     initialKompasView,
     initialAgendaView,
   };

@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import VoortgangDomeinRing from "@/components/dashboard/voortgang/VoortgangDomeinRing";
-import KompasFocusSection from "@/components/dashboard/voortgang/KompasFocusSection";
 import DomeinDoelZetten, {
   type DomeinDoelZettenExistingGoal,
 } from "@/components/dashboard/voortgang/DomeinDoelZetten";
 import VoortgangHero from "@/components/dashboard/voortgang/VoortgangHero";
 import VoortgangRichtingBeat from "@/components/dashboard/voortgang/VoortgangRichtingBeat";
-import VoortgangRouteList from "@/components/dashboard/voortgang/VoortgangRouteList";
+import VoortgangOverTijdSection from "@/components/dashboard/voortgang/VoortgangOverTijdSection";
+import LeefstijllijnSection from "@/components/dashboard/LeefstijllijnSection";
 import { PILLAR } from "@/data/dashboard";
 import { deriveGoalMode, type DomainGoalDomain } from "@/lib/domain-goal";
 import {
@@ -18,27 +19,26 @@ import {
 } from "@/lib/domain-goal-client";
 import type { MovementAnchor } from "@/lib/movement-prefs";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
+import type { ReactNode } from "react";
 
 type VoortgangHubScrollProps = {
   model: DashboardModel;
   data?: DashboardData;
+  overTijdExtra?: ReactNode;
   onGoAgenda: () => void;
   onGoHermeting: () => void;
   onOpenDomain: (domain: PillarId) => void;
-  onOpenStatistieken: () => void;
-  onOpenFavorieten: () => void;
-  onOpenInzichten: () => void;
+  onScrollToOverTijd: () => void;
 };
 
 export default function VoortgangHubScroll({
   model,
   data,
+  overTijdExtra,
   onGoAgenda,
   onGoHermeting,
   onOpenDomain,
-  onOpenStatistieken,
-  onOpenFavorieten,
-  onOpenInzichten,
+  onScrollToOverTijd,
 }: VoortgangHubScrollProps) {
   const [goals, setGoals] = useState<DomainGoalMap | null>(null);
   const [anchor, setAnchor] = useState<MovementAnchor | null>(null);
@@ -85,7 +85,19 @@ export default function VoortgangHubScroll({
         onOpenDomain={onOpenDomain}
       />
 
-      <KompasFocusSection model={model} data={data} />
+      <p className="mt-2 text-[13px] text-[var(--text-muted)]">
+        Je werkt aan{" "}
+        <Link
+          href={`/dashboard?tab=vandaag&kompas=${model.priority.id}`}
+          className="font-semibold text-[var(--sage)] no-underline"
+        >
+          {model.priority.label.toLowerCase()}
+        </Link>
+        .{" "}
+        <Link href="/dashboard?tab=vandaag" className="text-[var(--text-subtle)] no-underline">
+          Naar Vandaag →
+        </Link>
+      </p>
 
       <div className="mt-3.5">
         <VoortgangDomeinRing
@@ -97,20 +109,23 @@ export default function VoortgangHubScroll({
         />
       </div>
 
+      <div className="mt-4">
+        <LeefstijllijnSection
+          model={model}
+          surface="voortgang"
+          compact
+          focusPillarId={model.priority.id}
+        />
+      </div>
+
       <VoortgangRichtingBeat
         model={model}
         data={data}
         goals={goals}
-        onOpenStatistieken={onOpenStatistieken}
+        onScrollToOverTijd={onScrollToOverTijd}
       />
 
-      <div className="mb-5 mt-2">
-        <VoortgangRouteList
-          onOpenStatistieken={onOpenStatistieken}
-          onOpenFavorieten={onOpenFavorieten}
-          onOpenInzichten={onOpenInzichten}
-        />
-      </div>
+      <VoortgangOverTijdSection model={model}>{overTijdExtra}</VoortgangOverTijdSection>
 
       {openGoalDomain ? (
         <DomeinDoelZetten

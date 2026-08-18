@@ -104,14 +104,11 @@ export type DashboardIconName =
 
 export type DashboardTabId = "vandaag" | "agenda" | "voortgang" | "hermeting";
 
-export type VoortgangScreen =
-  | "hub"
-  | "inzichten"
-  | "favorieten"
-  | "statistieken"
-  | "lichaamssamenstelling"
-  | "domein";
+export type VoortgangScreen = "hub" | "inzichten" | "leefstijlprofiel" | "domein";
 
+export type LeefstijlprofielView = "aanbevolen" | "mijn_keuze";
+
+/** @deprecated Statistieken-screen is verwijderd; alleen nog voor legacy tests. */
 export type StatistiekenBlik = "stand" | "advies" | "tijd";
 
 export type DashboardTab = {

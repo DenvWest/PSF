@@ -18,7 +18,7 @@ type VoortgangRichtingBeatProps = {
   model: DashboardModel;
   data?: DashboardData;
   goals: DomainGoalMap | null;
-  onOpenStatistieken: () => void;
+  onScrollToOverTijd: () => void;
 };
 
 function pct(v: number): number {
@@ -58,7 +58,7 @@ export default function VoortgangRichtingBeat({
   model,
   data,
   goals,
-  onOpenStatistieken,
+  onScrollToOverTijd,
 }: VoortgangRichtingBeatProps) {
   const rows = buildKompasDomainRows(model);
   const priorityRow = rows.find((row) => row.isPriority);
@@ -67,13 +67,13 @@ export default function VoortgangRichtingBeat({
     return null;
   }
 
-  const handleOpenStatistieken = () => {
+  const handleScrollToOverTijd = () => {
     trackEvent("dashboard_voortgang_hub_click", {
-      destination: "statistieken",
+      destination: "over_tijd",
       surface: "richting_beat",
     });
-    clarityTag("dashboard_voortgang", "statistieken");
-    onOpenStatistieken();
+    clarityTag("dashboard_voortgang", "over_tijd");
+    onScrollToOverTijd();
   };
 
   const priorityGoal = resolvePriorityGoal(priorityRow.id, goals);
@@ -118,10 +118,10 @@ export default function VoortgangRichtingBeat({
 
           <button
             type="button"
-            onClick={handleOpenStatistieken}
+            onClick={handleScrollToOverTijd}
             className="mt-5 inline-flex min-h-[46px] w-full cursor-pointer items-center justify-center rounded-full bg-[var(--sage-ink)] px-5 text-[14.5px] font-semibold text-white transition hover:opacity-90 sm:w-auto"
           >
-            Bekijk je cijfers over tijd →
+            Bekijk je lijn over tijd →
           </button>
 
           <p className="mt-3.5 max-w-[60ch] text-[11.5px] leading-normal text-[var(--text-subtle)] text-pretty">
@@ -265,7 +265,7 @@ export default function VoortgangRichtingBeat({
 
         <button
           type="button"
-          onClick={handleOpenStatistieken}
+          onClick={handleScrollToOverTijd}
           className="mt-5 inline-flex min-h-[46px] w-full cursor-pointer items-center justify-center rounded-full bg-[var(--sage-ink)] px-5 text-[14.5px] font-semibold text-white transition hover:opacity-90 sm:w-auto"
         >
           Bekijk je cijfers over tijd →

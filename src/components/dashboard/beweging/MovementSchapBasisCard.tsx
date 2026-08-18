@@ -8,22 +8,35 @@ import { trackEvent } from "@/lib/ga4";
 
 type MovementSchapBasisCardProps = {
   card: SchapBasisCard;
+  saved?: boolean;
+  onSave?: () => void;
 };
 
 /**
  * Eén kaart uit het schap — vorm uit v3.6 `cardHtml()` r.1891: badge,
  * titel, waarom-tekst, kwaliteitsregel, rol, "Bewaar in Favorieten" +
- * "Bekijk ons oordeel". Sessie-lokale bewaar-staat, zelfde reden als
- * MovementFreeActionsTile (P2): geen schap-brede persistentie-beslissing
- * hier stilzwijgend nemen.
+ * "Bekijk ons oordeel". Bewaar-staat komt uit VoortgangFavoritesProvider
+ * wanneer de kaart binnen Leefstijlprofiel rendert.
  */
-export default function MovementSchapBasisCard({ card }: MovementSchapBasisCardProps) {
-  const [saved, setSaved] = useState(false);
+export default function MovementSchapBasisCard({
+  card,
+  saved: savedProp,
+  onSave,
+}: MovementSchapBasisCardProps) {
+  const [savedLocal, setSavedLocal] = useState(false);
+  const saved = savedProp ?? savedLocal;
   const [verdictOpen, setVerdictOpen] = useState(false);
 
   function handleSave() {
-    setSaved(true);
-    trackEvent("beweging_schap_kaart_bewaard", { kaart: card.id, surface: "favorieten_beweging" });
+    if (onSave) {
+      onSave();
+    } else {
+      setSavedLocal(true);
+    }
+    trackEvent("beweging_schap_kaart_bewaard", {
+      kaart: card.id,
+      surface: "leefstijlprofiel_beweging",
+    });
   }
 
   function handleToggleVerdict() {
@@ -32,7 +45,7 @@ export default function MovementSchapBasisCard({ card }: MovementSchapBasisCardP
     if (next) {
       trackEvent("beweging_schap_oordeel_open", {
         kaart: card.id,
-        surface: "favorieten_beweging",
+        surface: "leefstijlprofiel_beweging",
       });
     }
   }

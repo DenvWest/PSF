@@ -12,7 +12,7 @@ export type PrioritySelectionSurface =
   | "kompas_voortgang"
   | "kompas_voortgang_tab"
   | "kompas_beweging"
-  | "statistieken";
+  | "voortgang_hub";
 
 export async function saveDashboardPrioritySelection(input: {
   pillarId: PillarId;

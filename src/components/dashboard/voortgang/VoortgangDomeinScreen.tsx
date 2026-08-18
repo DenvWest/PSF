@@ -85,14 +85,14 @@ export default function VoortgangDomeinScreen({
   domain,
   onBack,
   onGoVandaag,
-  onOpenFavorieten,
+  onOpenLeefstijlprofiel,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   domain: PillarId;
   onBack: () => void;
   onGoVandaag: () => void;
-  onOpenFavorieten?: () => void;
+  onOpenLeefstijlprofiel?: () => void;
 }) {
   const pillar = PILLAR[domain];
   const readout = isReadoutDomain(domain) ? getReadoutPresentation(domain) : null;
@@ -319,6 +319,8 @@ export default function VoortgangDomeinScreen({
             verdicts={data?.supplementVerdicts ?? []}
             nutritionLogCompleted={nutritionLogCompleted}
             surface="voortgang_slaap"
+            poortOnly
+            onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
           />
         ) : null}
 
@@ -366,6 +368,8 @@ export default function VoortgangDomeinScreen({
             verdicts={data?.supplementVerdicts ?? []}
             nutritionLogCompleted={nutritionLogCompleted}
             surface="voortgang_voeding"
+            poortOnly
+            onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
           />
         ) : null}
 
@@ -446,24 +450,26 @@ export default function VoortgangDomeinScreen({
             verdicts={data?.supplementVerdicts ?? []}
             nutritionLogCompleted={nutritionLogCompleted}
             surface="voortgang_beweging"
+            poortOnly
+            onOpenLeefstijlprofiel={onOpenLeefstijlprofiel}
           />
         ) : null}
 
-        {isMovement && onOpenFavorieten ? (
+        {onOpenLeefstijlprofiel ? (
           <button
             type="button"
             onClick={() => {
               trackEvent("dashboard_voortgang_hub_click", {
-                destination: "favorieten",
+                destination: "leefstijlprofiel",
                 surface: "voortgang_domein",
               });
-              clarityTag("dashboard_voortgang", "favorieten_beweging");
-              onOpenFavorieten();
+              clarityTag("dashboard_voortgang", "leefstijlprofiel");
+              onOpenLeefstijlprofiel();
             }}
             className="flex w-full cursor-pointer items-center gap-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-3.5 text-left"
           >
             <Icons.Heart s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-            <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">Favorieten</span>
+            <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">Leefstijlprofiel</span>
             <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
           </button>
         ) : null}

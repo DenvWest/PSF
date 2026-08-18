@@ -26,4 +26,7 @@ export function hasVoortgangReturnParam(
   return value === VOORTGANG_RETURN_VALUE;
 }
 
-export const VOORTGANG_FAVORIETEN_HREF = buildDashboardVoortgangHref("favorieten");
+export const VOORTGANG_LEEFSTIJLPROFIEL_HREF = buildDashboardVoortgangHref("leefstijlprofiel");
+
+/** @deprecated Gebruik VOORTGANG_LEEFSTIJLPROFIEL_HREF */
+export const VOORTGANG_FAVORIETEN_HREF = VOORTGANG_LEEFSTIJLPROFIEL_HREF;

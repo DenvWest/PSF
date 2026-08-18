@@ -11,13 +11,13 @@ import {
   parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
-  parseStatistiekenBlikFromUrl,
-  parseFavorietenDomeinFromUrl,
+  parseLeefstijlprofielDomeinFromUrl,
   parseVoortgangScreenFromUrl,
+  canonicalizeVoortgangScreenParam,
+  getLegacyVoortgangScreenAlias,
   syncDashboardAgendaViewParam,
   syncDashboardDagParam,
   syncDashboardKompasParam,
-  syncDashboardStatistiekenBlikParam,
   syncDashboardTabParam,
   syncDashboardVoortgangScreenParam,
 } from "@/lib/dashboard-url";
@@ -34,16 +34,48 @@ describe("parseVoortgangScreenFromUrl", () => {
 
   it("parses valid subview screens", () => {
     expect(
+      parseVoortgangScreenFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel",
+      ),
+    ).toBe("leefstijlprofiel");
+    expect(
+      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=inzichten"),
+    ).toBe("inzichten");
+  });
+
+  it("redirects legacy favorieten and statistieken screens", () => {
+    expect(
       parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
-    ).toBe("favorieten");
+    ).toBe("leefstijlprofiel");
     expect(
       parseVoortgangScreenFromUrl(
         "http://localhost/dashboard?tab=voortgang&screen=statistieken",
       ),
-    ).toBe("statistieken");
+    ).toBe("hub");
     expect(
-      parseVoortgangScreenFromUrl("http://localhost/dashboard?tab=voortgang&screen=inzichten"),
-    ).toBe("inzichten");
+      parseVoortgangScreenFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=lichaamssamenstelling",
+      ),
+    ).toBe("hub");
+  });
+
+  it("canonicalizeVoortgangScreenParam rewrites legacy screen params in-place", () => {
+    const favorietenUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+    );
+    expect(canonicalizeVoortgangScreenParam(favorietenUrl)).toBe("leefstijlprofiel");
+    expect(favorietenUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+    expect(favorietenUrl.searchParams.get("fav")).toBe("beweging");
+
+    const statistiekenUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=advies",
+    );
+    expect(canonicalizeVoortgangScreenParam(statistiekenUrl)).toBe("hub");
+    expect(statistiekenUrl.searchParams.has("screen")).toBe(false);
+    expect(statistiekenUrl.searchParams.has("blik")).toBe(false);
+
+    expect(getLegacyVoortgangScreenAlias("hub")).toBeNull();
+    expect(canonicalizeVoortgangScreenParam(new URL("http://localhost/dashboard?tab=voortgang"))).toBeNull();
   });
 });
 
@@ -54,76 +86,33 @@ describe("buildDashboardVoortgangHref", () => {
   });
 
   it("includes screen for subviews", () => {
-    expect(buildDashboardVoortgangHref("favorieten")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten",
-    );
-    expect(buildDashboardVoortgangHref("statistieken", "advies")).toBe(
-      "/dashboard?tab=voortgang&screen=statistieken&blik=advies",
+    expect(buildDashboardVoortgangHref("leefstijlprofiel")).toBe(
+      "/dashboard?tab=voortgang&screen=leefstijlprofiel",
     );
   });
 
-  it("includes fav for favorieten deep link", () => {
-    expect(buildDashboardVoortgangHref("favorieten", null, null, "beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+  it("includes fav for leefstijlprofiel deep link", () => {
+    expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging")).toBe(
+      "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
     );
   });
 });
 
-describe("parseFavorietenDomeinFromUrl", () => {
-  it("parses fav on favorieten screen", () => {
+describe("parseLeefstijlprofielDomeinFromUrl", () => {
+  it("parses fav on leefstijlprofiel screen", () => {
     expect(
-      parseFavorietenDomeinFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+      parseLeefstijlprofielDomeinFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
       ),
     ).toBe("beweging");
   });
 
   it("returns null for invalid fav", () => {
     expect(
-      parseFavorietenDomeinFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=invalid",
+      parseLeefstijlprofielDomeinFromUrl(
+        "http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=invalid",
       ),
     ).toBeNull();
-  });
-});
-
-describe("parseStatistiekenBlikFromUrl", () => {
-  it("parses valid blik on statistieken screen", () => {
-    expect(
-      parseStatistiekenBlikFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=tijd",
-      ),
-    ).toBe("tijd");
-  });
-
-  it("returns null for invalid blik", () => {
-    expect(
-      parseStatistiekenBlikFromUrl(
-        "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=invalid",
-      ),
-    ).toBeNull();
-  });
-});
-
-describe("syncDashboardStatistiekenBlikParam", () => {
-  it("sets blik when on statistieken screen", () => {
-    const originalPush = window.history.pushState;
-    const pushState = vi.fn();
-    window.history.pushState = pushState as typeof window.history.pushState;
-
-    Object.defineProperty(window, "location", {
-      configurable: true,
-      value: new URL(
-        "http://localhost/dashboard?tab=voortgang&screen=statistieken&blik=stand",
-      ),
-    });
-
-    syncDashboardStatistiekenBlikParam("advies");
-    expect(pushState).toHaveBeenCalledOnce();
-    const nextUrl = pushState.mock.calls[0]?.[2] as string;
-    expect(nextUrl).toContain("blik=advies");
-
-    window.history.pushState = originalPush;
   });
 });
 
@@ -138,11 +127,11 @@ describe("syncDashboardVoortgangScreenParam", () => {
       value: new URL("http://localhost/dashboard?tab=voortgang"),
     });
 
-    syncDashboardVoortgangScreenParam("favorieten");
+    syncDashboardVoortgangScreenParam("leefstijlprofiel");
     expect(pushState).toHaveBeenCalledOnce();
     let nextUrl = pushState.mock.calls[0]?.[2] as string;
     expect(nextUrl).toContain("tab=voortgang");
-    expect(nextUrl).toContain("screen=favorieten");
+    expect(nextUrl).toContain("screen=leefstijlprofiel");
 
     Object.defineProperty(window, "location", {
       configurable: true,
@@ -492,7 +481,7 @@ describe("syncDashboardTabParam", () => {
 
     Object.defineProperty(window, "location", {
       configurable: true,
-      value: new URL("http://localhost/dashboard?tab=voortgang&screen=favorieten"),
+      value: new URL("http://localhost/dashboard?tab=voortgang&screen=leefstijlprofiel"),
     });
 
     syncDashboardTabParam("hermeting");

@@ -165,22 +165,21 @@ import {
   parseAgendaViewFromUrl,
   parseDagFromUrl,
   parseKompasFromUrl,
-  parseStatistiekenBlikFromUrl,
-  parseFavorietenDomeinFromUrl,
+  parseLeefstijlprofielDomeinFromUrl,
   parseVoortgangDomeinFromUrl,
   parseVoortgangScreenFromUrl,
+  canonicalizeVoortgangScreenParam,
+  getLegacyVoortgangScreenAlias,
   buildDashboardAgendaHref,
   buildDashboardVoortgangHref,
   syncDashboardAgendaViewParam,
   syncDashboardDagParam,
   syncDashboardKompasParam,
-  syncDashboardStatistiekenBlikParam,
   syncDashboardTabParam,
   syncDashboardVoortgangScreenParam,
   type AgendaViewId,
   type SyncDashboardVoortgangOptions,
 } from "@/lib/dashboard-url";
-import { isStatistiekenBlik, resolveDefaultStatistiekenBlik } from "@/lib/statistieken-blik";
 import type {
   AccountPriorityPrefData,
   DashboardData,
@@ -191,7 +190,6 @@ import type {
   NutritionIntakeBand,
   PillarId,
   Signal,
-  StatistiekenBlik,
   VoortgangScreen,
 } from "@/types/dashboard";
 
@@ -202,7 +200,6 @@ type DashboardProps = {
   hasTrendsFeature?: boolean;
   initialTab?: DashboardTabId;
   initialVoortgangScreen?: VoortgangScreen;
-  initialStatistiekenBlik?: StatistiekenBlik;
   initialKompasView?: PillarId;
   initialAgendaView?: AgendaViewId;
   sleepFocus?: SleepFocusKey | null;
@@ -228,15 +225,13 @@ type SharedSectionProps = {
   onGoVoortgang: () => void;
   onGoHermeting: () => void;
   voortgangScreen: VoortgangScreen;
-  statistiekenBlik: StatistiekenBlik;
   onVoortgangScreenChange: (
     screen: VoortgangScreen,
     options?: SyncDashboardVoortgangOptions,
   ) => void;
-  onStatistiekenBlikChange: (blik: StatistiekenBlik) => void;
   onOpenInzichten: () => void;
   voortgangDomein: PillarId | null;
-  favorietenDomein: PillarId | null;
+  leefstijlprofielDomein: PillarId | null;
   /** Navigeert naar Voortgang › <domein> — het leesscherm, geen doe-surface (S4). */
   onGoVoortgangDomein: (domain: PillarId) => void;
   initialKompasView?: PillarId;
@@ -3170,7 +3165,7 @@ const StatistiekenPriorityOverTime = ({
       await saveDashboardPrioritySelection({
         pillarId: currentModel.enginePriority.id,
         source: "accept_engine",
-        surface: "statistieken",
+        surface: "voortgang_hub",
         timeBucket: currentModel.timeBucket ?? null,
         scheduledTime: currentModel.scheduledTime ?? null,
         onPrefUpdated,
@@ -3234,13 +3229,12 @@ const SECTION_RENDERERS: Record<
         data={props.data}
         tab={props.tab}
         screen={props.voortgangScreen}
-        statistiekenBlik={props.statistiekenBlik}
         voortgangDomein={props.voortgangDomein}
-        favorietenDomein={props.favorietenDomein}
-        statistiekenAdviesExtra={
+        leefstijlprofielDomein={props.leefstijlprofielDomein}
+        leefstijlprofielAdviesExtra={
           props.empty ? null : <NutritionIntakeSection {...props} />
         }
-        statistiekenOverTijdExtra={
+        overTijdExtra={
           <>
             <StatistiekenPriorityOverTime
               model={props.model}
@@ -3251,7 +3245,6 @@ const SECTION_RENDERERS: Record<
           </>
         }
         onScreenChange={props.onVoortgangScreenChange}
-        onStatistiekenBlikChange={props.onStatistiekenBlikChange}
         onPrefUpdated={props.onPrefUpdated}
         onGoAgenda={() => props.onGoAgenda()}
         onGoHermeting={() => props.onGoHermeting()}
@@ -3361,7 +3354,6 @@ export default function Dashboard({
   hasTrendsFeature = false,
   initialTab,
   initialVoortgangScreen,
-  initialStatistiekenBlik,
   initialKompasView,
   initialAgendaView,
   sleepFocus = null,
@@ -3375,11 +3367,8 @@ export default function Dashboard({
   const [voortgangScreen, setVoortgangScreen] = useState<VoortgangScreen>(
     initialVoortgangScreen ?? "hub",
   );
-  const [statistiekenBlik, setStatistiekenBlik] = useState<StatistiekenBlik>(
-    initialStatistiekenBlik ?? "stand",
-  );
   const [voortgangDomein, setVoortgangDomein] = useState<PillarId | null>(null);
-  const [favorietenDomein, setFavorietenDomein] = useState<PillarId | null>(null);
+  const [leefstijlprofielDomein, setLeefstijlprofielDomein] = useState<PillarId | null>(null);
   // Live-geopende Kompas-domein, gemeld door KompasHome — zodat de
   // cockpit-shell (header/breadcrumb/context) meebeweegt met navigatie i.p.v.
   // vast te staan op de domein uit de URL bij het eerste laden.
@@ -3452,26 +3441,6 @@ export default function Dashboard({
 
   const todayActionDone = useTodayActionDone(model);
 
-  const activeStatistiekenBlik = useMemo((): StatistiekenBlik => {
-    if (voortgangScreen !== "statistieken") {
-      return statistiekenBlik;
-    }
-    const paramBlik = searchParams.get("blik");
-    if (paramBlik && isStatistiekenBlik(paramBlik)) {
-      return paramBlik;
-    }
-    if (typeof window !== "undefined") {
-      const urlBlik = parseStatistiekenBlikFromUrl(window.location.href);
-      if (urlBlik) {
-        return urlBlik;
-      }
-    }
-    if (model && data && !empty) {
-      return resolveDefaultStatistiekenBlik(model, data);
-    }
-    return statistiekenBlik;
-  }, [voortgangScreen, searchParams, model, data, empty, statistiekenBlik]);
-
   const activeVoortgangDomein = useMemo((): PillarId | null => {
     if (voortgangScreen !== "domein") {
       return voortgangDomein;
@@ -3489,22 +3458,22 @@ export default function Dashboard({
     return voortgangDomein;
   }, [voortgangScreen, searchParams, voortgangDomein]);
 
-  const activeFavorietenDomein = useMemo((): PillarId | null => {
-    if (voortgangScreen !== "favorieten") {
-      return favorietenDomein;
+  const activeLeefstijlprofielDomein = useMemo((): PillarId | null => {
+    if (voortgangScreen !== "leefstijlprofiel") {
+      return leefstijlprofielDomein;
     }
     const paramFav = searchParams.get("fav");
     if (isPillarId(paramFav)) {
       return paramFav;
     }
     if (typeof window !== "undefined") {
-      const urlFav = parseFavorietenDomeinFromUrl(window.location.href);
+      const urlFav = parseLeefstijlprofielDomeinFromUrl(window.location.href);
       if (urlFav) {
         return urlFav;
       }
     }
-    return favorietenDomein;
-  }, [voortgangScreen, searchParams, favorietenDomein]);
+    return leefstijlprofielDomein;
+  }, [voortgangScreen, searchParams, leefstijlprofielDomein]);
 
   const tabMeta = DASHBOARD_TABS.find((t) => t.id === tab) ?? DASHBOARD_TABS[0];
   const allowedTypes = TAB_SECTIONS[tab];
@@ -3548,37 +3517,22 @@ export default function Dashboard({
   const handleVoortgangScreenChange = useCallback(
     (screen: VoortgangScreen, options?: SyncDashboardVoortgangOptions) => {
       setVoortgangScreen(screen);
-      if (screen === "statistieken") {
-        const nextBlik =
-          options?.blik ??
-          (model && data && !empty
-            ? resolveDefaultStatistiekenBlik(model, data)
-            : statistiekenBlik);
-        setStatistiekenBlik(nextBlik);
-        syncDashboardVoortgangScreenParam(screen, { blik: nextBlik });
-        return;
-      }
       if (screen === "domein") {
         const nextDomein = options?.domein ?? voortgangDomein;
         setVoortgangDomein(nextDomein ?? null);
         syncDashboardVoortgangScreenParam(screen, { domein: nextDomein });
         return;
       }
-      if (screen === "favorieten") {
-        const nextFav = options?.fav ?? favorietenDomein;
-        setFavorietenDomein(nextFav ?? null);
+      if (screen === "leefstijlprofiel") {
+        const nextFav = options?.fav ?? leefstijlprofielDomein;
+        setLeefstijlprofielDomein(nextFav ?? null);
         syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
         return;
       }
       syncDashboardVoortgangScreenParam(screen);
     },
-    [data, empty, model, statistiekenBlik, voortgangDomein, favorietenDomein],
+    [leefstijlprofielDomein, voortgangDomein],
   );
-
-  const handleStatistiekenBlikChange = useCallback((blik: StatistiekenBlik) => {
-    setStatistiekenBlik(blik);
-    syncDashboardStatistiekenBlikParam(blik);
-  }, []);
 
   // De linker rail op Voortgang is een nieuwe, persistente ingang op
   // bestaande navigatie (handleVoortgangScreenChange) — geen nieuwe routing,
@@ -3608,23 +3562,27 @@ export default function Dashboard({
         setTab(parsedTab);
       }
       if (parsedTab === "voortgang") {
+        const legacyAlias = getLegacyVoortgangScreenAlias(url.searchParams.get("screen"));
+        if (legacyAlias) {
+          const canonical = canonicalizeVoortgangScreenParam(url);
+          trackEvent("dashboard_voortgang_legacy_redirect", {
+            from: legacyAlias,
+            to: canonical ?? "hub",
+          });
+          clarityTag("dashboard_voortgang_legacy", legacyAlias);
+          window.history.replaceState(null, "", url.toString());
+        }
         const parsedScreen = parseVoortgangScreenFromUrl(url);
         setVoortgangScreen(parsedScreen);
-        if (parsedScreen === "statistieken") {
-          const urlBlik = parseStatistiekenBlikFromUrl(url);
-          if (urlBlik) {
-            setStatistiekenBlik(urlBlik);
-          }
-        }
         if (parsedScreen === "domein") {
           const urlDomein = parseVoortgangDomeinFromUrl(url);
           if (urlDomein) {
             setVoortgangDomein(urlDomein);
           }
         }
-        if (parsedScreen === "favorieten") {
-          const urlFav = parseFavorietenDomeinFromUrl(url);
-          setFavorietenDomein(urlFav);
+        if (parsedScreen === "leefstijlprofiel") {
+          const urlFav = parseLeefstijlprofielDomeinFromUrl(url);
+          setLeefstijlprofielDomein(urlFav);
         }
       } else {
         setVoortgangScreen("hub");
@@ -3663,36 +3621,6 @@ export default function Dashboard({
       }
     });
   }, [searchParams, VALID_TAB_IDS]);
-
-  useEffect(() => {
-    if (voortgangScreen !== "statistieken") {
-      return;
-    }
-    const urlBlik = parseStatistiekenBlikFromUrl(window.location.href);
-    if (urlBlik) {
-      return;
-    }
-    syncDashboardStatistiekenBlikParam(activeStatistiekenBlik);
-  }, [voortgangScreen, activeStatistiekenBlik]);
-
-  useEffect(() => {
-    if (tab !== "voortgang" || voortgangScreen !== "statistieken") {
-      return;
-    }
-    if (activeStatistiekenBlik !== "tijd") {
-      return;
-    }
-    if (typeof window === "undefined" || window.location.hash !== "#premium-begeleiding") {
-      return;
-    }
-    const frameId = requestAnimationFrame(() => {
-      document.getElementById("premium-begeleiding")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-    return () => cancelAnimationFrame(frameId);
-  }, [tab, voortgangScreen, activeStatistiekenBlik]);
 
   const selectTab = (nextTab: DashboardTabId) => {
     if (nextTab !== tab) {
@@ -3806,12 +3734,10 @@ export default function Dashboard({
       selectTab("voortgang");
     },
     voortgangScreen,
-    statistiekenBlik: activeStatistiekenBlik,
     onVoortgangScreenChange: handleVoortgangScreenChange,
-    onStatistiekenBlikChange: handleStatistiekenBlikChange,
     onOpenInzichten: () => handleVoortgangScreenChange("inzichten"),
     voortgangDomein: activeVoortgangDomein,
-    favorietenDomein: activeFavorietenDomein,
+    leefstijlprofielDomein: activeLeefstijlprofielDomein,
     onGoVoortgangDomein: goToVoortgangDomein,
     initialKompasView,
     prefUpdatedAt: priorityPref?.updatedAt ?? null,

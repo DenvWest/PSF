@@ -1,20 +1,43 @@
 import { MOVEMENT_FOCUS_ORDER, type MovementFocusKey } from "@/data/movement-checkin";
-import { isStatistiekenBlik } from "@/lib/statistieken-blik";
-import type {
-  DashboardTabId,
-  PillarId,
-  StatistiekenBlik,
-  VoortgangScreen,
-} from "@/types/dashboard";
+import type { DashboardTabId, PillarId, VoortgangScreen } from "@/types/dashboard";
 
 const VALID_VOORTGANG_SCREENS = new Set<VoortgangScreen>([
   "hub",
   "inzichten",
-  "favorieten",
-  "statistieken",
-  "lichaamssamenstelling",
+  "leefstijlprofiel",
   "domein",
 ]);
+
+const LEGACY_VOORTGANG_SCREEN_ALIASES: Record<string, VoortgangScreen> = {
+  favorieten: "leefstijlprofiel",
+  statistieken: "hub",
+  lichaamssamenstelling: "hub",
+};
+
+export type LegacyVoortgangScreen = keyof typeof LEGACY_VOORTGANG_SCREEN_ALIASES;
+
+export function getLegacyVoortgangScreenAlias(raw: string | null): LegacyVoortgangScreen | null {
+  if (!raw || !(raw in LEGACY_VOORTGANG_SCREEN_ALIASES)) {
+    return null;
+  }
+  return raw as LegacyVoortgangScreen;
+}
+
+/** Vervangt legacy `screen`-waarden in-place; retourneert de canonieke screen of null. */
+export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | null {
+  const legacy = getLegacyVoortgangScreenAlias(url.searchParams.get("screen"));
+  if (!legacy) {
+    return null;
+  }
+  const canonical = LEGACY_VOORTGANG_SCREEN_ALIASES[legacy];
+  url.searchParams.delete("blik");
+  if (canonical === "hub") {
+    url.searchParams.delete("screen");
+  } else {
+    url.searchParams.set("screen", canonical);
+  }
+  return canonical;
+}
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -94,8 +117,8 @@ export function parseVoortgangDomeinFromUrl(url: string | URL): PillarId | null 
   return null;
 }
 
-/** Favorieten deep link — scoped view per domein (P4, v3.6 scherm F). */
-export function parseFavorietenDomeinFromUrl(url: string | URL): PillarId | null {
+/** Leefstijlprofiel deep link — scoped view per domein. */
+export function parseLeefstijlprofielDomeinFromUrl(url: string | URL): PillarId | null {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
   const fav = parsed.searchParams.get("fav");
@@ -104,6 +127,9 @@ export function parseFavorietenDomeinFromUrl(url: string | URL): PillarId | null
   }
   return null;
 }
+
+/** @deprecated Gebruik parseLeefstijlprofielDomeinFromUrl */
+export const parseFavorietenDomeinFromUrl = parseLeefstijlprofielDomeinFromUrl;
 
 export function buildDashboardVandaagHref(
   kompas?: PillarId | null,
@@ -158,30 +184,30 @@ export function stripMovementRoutingParams(): void {
   window.history.replaceState(null, "", url.toString());
 }
 
-export function parseVoortgangScreenFromUrl(url: string | URL): VoortgangScreen {
-  const parsed =
-    typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  const screen = parsed.searchParams.get("screen");
-  if (
-    screen &&
-    screen !== "hub" &&
-    VALID_VOORTGANG_SCREENS.has(screen as VoortgangScreen)
-  ) {
-    return screen as VoortgangScreen;
+function normalizeVoortgangScreen(raw: string | null): VoortgangScreen {
+  if (!raw || raw === "hub") {
+    return "hub";
+  }
+  const alias = LEGACY_VOORTGANG_SCREEN_ALIASES[raw];
+  if (alias) {
+    return alias;
+  }
+  if (VALID_VOORTGANG_SCREENS.has(raw as VoortgangScreen)) {
+    return raw as VoortgangScreen;
   }
   return "hub";
 }
 
-export function parseStatistiekenBlikFromUrl(url: string | URL): StatistiekenBlik | null {
+export function parseVoortgangScreenFromUrl(url: string | URL): VoortgangScreen {
   const parsed =
     typeof url === "string" ? new URL(url, "http://localhost") : new URL(url.toString());
-  const blik = parsed.searchParams.get("blik");
-  return isStatistiekenBlik(blik) ? blik : null;
+  const screen = parsed.searchParams.get("screen");
+  return normalizeVoortgangScreen(screen);
 }
 
 export function buildDashboardVoortgangHref(
   screen?: VoortgangScreen | null,
-  blik?: StatistiekenBlik | null,
+  _blik?: null,
   domein?: PillarId | null,
   fav?: PillarId | null,
 ): string {
@@ -189,20 +215,16 @@ export function buildDashboardVoortgangHref(
   if (screen && screen !== "hub") {
     params.set("screen", screen);
   }
-  if (screen === "statistieken" && blik) {
-    params.set("blik", blik);
-  }
   if (screen === "domein" && domein) {
     params.set("domein", domein);
   }
-  if (screen === "favorieten" && fav) {
+  if (screen === "leefstijlprofiel" && fav) {
     params.set("fav", fav);
   }
   return `/dashboard?${params.toString()}`;
 }
 
 export type SyncDashboardVoortgangOptions = {
-  blik?: StatistiekenBlik | null;
   domein?: PillarId | null;
   fav?: PillarId | null;
 };
@@ -220,52 +242,26 @@ export function syncDashboardVoortgangScreenParam(
   url.searchParams.delete("kompas");
   url.searchParams.delete("view");
   url.searchParams.delete("dag");
+  url.searchParams.delete("blik");
 
   if (screen === "hub") {
     url.searchParams.delete("screen");
-    url.searchParams.delete("blik");
     url.searchParams.delete("domein");
     url.searchParams.delete("fav");
   } else {
     url.searchParams.set("screen", screen);
-    if (screen === "statistieken" && options?.blik) {
-      url.searchParams.set("blik", options.blik);
-    } else {
-      url.searchParams.delete("blik");
-    }
     if (screen === "domein" && options?.domein) {
       url.searchParams.set("domein", options.domein);
     } else {
       url.searchParams.delete("domein");
     }
-    if (screen === "favorieten" && options?.fav) {
+    if (screen === "leefstijlprofiel" && options?.fav) {
       url.searchParams.set("fav", options.fav);
     } else {
       url.searchParams.delete("fav");
     }
   }
 
-  const nextHref = url.toString();
-  if (nextHref === window.location.href) {
-    return;
-  }
-  window.history.pushState(null, "", nextHref);
-}
-
-export function syncDashboardStatistiekenBlikParam(blik: StatistiekenBlik): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const url = new URL(window.location.href);
-  if (url.searchParams.get("tab") !== "voortgang") {
-    return;
-  }
-  if (parseVoortgangScreenFromUrl(url) !== "statistieken") {
-    return;
-  }
-
-  url.searchParams.set("blik", blik);
   const nextHref = url.toString();
   if (nextHref === window.location.href) {
     return;
@@ -434,6 +430,7 @@ export function syncDashboardTabParam(
     url.searchParams.delete("screen");
     url.searchParams.delete("blik");
     url.searchParams.delete("domein");
+    url.searchParams.delete("fav");
   } else {
     url.searchParams.delete("screen");
     url.searchParams.delete("blik");

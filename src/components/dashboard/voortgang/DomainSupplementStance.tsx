@@ -27,10 +27,13 @@ type DomainSupplementStanceProps = {
   verdicts: StoredSupplementVerdict[];
   nutritionLogCompleted: boolean;
   surface: VerdictPanelSurface;
-  /** Voor het schap (Favorieten · domein): daar ís deze sectie al het
+  /** Voor het schap (Leefstijlprofiel · domein): daar ís deze sectie al het
    * aanbod, dus geen toggle-teaser nodig. Standaard false — ongewijzigd
    * gedrag op slaap/stress/voeding. */
   openByDefault?: boolean;
+  /** Op domein-schermen: alleen poortstand tonen, geen uitklapbaar panel. */
+  poortOnly?: boolean;
+  onOpenLeefstijlprofiel?: () => void;
 };
 
 /** Eén reden per render — de teller die laat zien hoe vaak de deur dicht
@@ -43,6 +46,8 @@ export default function DomainSupplementStance({
   nutritionLogCompleted,
   surface,
   openByDefault = false,
+  poortOnly = false,
+  onOpenLeefstijlprofiel,
 }: DomainSupplementStanceProps) {
   const [open, setOpen] = useState(openByDefault);
   const stance = getDomainProductStance(domain);
@@ -99,6 +104,50 @@ export default function DomainSupplementStance({
 
   if (domainVerdicts.length === 0) {
     return null;
+  }
+
+  if (poortOnly) {
+    return (
+      <div
+        className="rounded-2xl px-3.5 py-3.5"
+        style={{ border: "1px solid var(--divider)", background: "rgba(0,0,0,0.22)" }}
+      >
+        <p
+          className="flex items-center gap-1.5"
+          style={{
+            fontSize: 9.5,
+            fontWeight: 700,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--text-subtle)",
+          }}
+        >
+          <Icons.Lock s={13} />
+          {!nutritionLogCompleted ? "De deur is dicht" : "Supplementen in je profiel"}
+        </p>
+        <p
+          className="text-pretty"
+          style={{ marginTop: 8, fontSize: 12.5, lineHeight: 1.6, color: "var(--text-muted)" }}
+        >
+          {!nutritionLogCompleted
+            ? "Vul eerst je voeding in — zonder dat kunnen we niet zeggen of aanvullen iets toevoegt."
+            : "Het oordeel en het schap staan in je leefstijlprofiel — hier leggen we alleen uit waarom de volgorde zo is."}
+        </p>
+        {onOpenLeefstijlprofiel ? (
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("dashboard_keuzes_poort_click", { domain, surface });
+              clarityTag("dashboard_keuzes_poort", domain);
+              onOpenLeefstijlprofiel();
+            }}
+            className="mt-3 cursor-pointer border-none bg-transparent p-0 text-[13px] font-semibold text-[var(--sage)]"
+          >
+            Naar je leefstijlprofiel →
+          </button>
+        ) : null}
+      </div>
+    );
   }
 
   if (!nutritionLogCompleted) {
