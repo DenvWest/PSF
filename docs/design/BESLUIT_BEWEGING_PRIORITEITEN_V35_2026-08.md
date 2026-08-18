@@ -42,6 +42,13 @@ bridgeFirst() = !extraChosen && !hasVisitedShelf
 
 Eén predikaat voor label én bestemming, zodat ze niet uit elkaar kunnen lopen. Geen derde label, geen paneel dat opengaat, geen sheet-tussenstap.
 
+> **Amendement 18 augustus 2026 — dit blok is INGETROKKEN.** De deur heet sinds v3.6 altijd
+> **"Maak een keuze"** en gaat altijd naar scherm B. De tweede bestemming bestond omdat je op
+> Mijn Dag zag wát je gekozen had; onder N4 staat dat nu op Vandaag zelf, als rij. `bridgeFirst()`
+> leeft door en stuurt uitsluitend de lead-regel. Lock 2 blijft gelden en wordt strakker: label en
+> bestemming zijn constanten en kúnnen niet uit elkaar lopen. Grond en uitwerking:
+> [`BESLUIT_BEWEGING_V36_2026-08.md`](./BESLUIT_BEWEGING_V36_2026-08.md) §B1.
+
 ---
 
 ## C · Visueel — de PriorityLadder
@@ -163,6 +170,12 @@ Geverifieerd over alle 25 combinaties van vijf schermen × vijf reviewer-staten 
 ---
 
 ## K · Acceptatiematrix
+
+> **Amendement 18 augustus 2026.** De kolommen **Label** en **Bestemming** hieronder zijn vervallen:
+> beide zijn sinds v3.6 constant (zie §B). De matrix is vervangen door die in
+> [`BESLUIT_BEWEGING_V36_2026-08.md`](./BESLUIT_BEWEGING_V36_2026-08.md) §D, die de standen
+> onderscheidt op de Mijn keuze-rij en de vulling van Favorieten. De vijf reviewer-staten zelf
+> zijn ongewijzigd; er is er één bijgekomen (`geen_check`) om de lege staten inspecteerbaar te maken.
 
 | Reviewer-staat | Label | Bestemming | Extra op D/E | Gekozen-blok op C |
 |---|---|---|---|---|
