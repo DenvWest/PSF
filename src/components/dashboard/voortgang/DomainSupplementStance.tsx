@@ -27,6 +27,10 @@ type DomainSupplementStanceProps = {
   verdicts: StoredSupplementVerdict[];
   nutritionLogCompleted: boolean;
   surface: VerdictPanelSurface;
+  /** Voor het schap (Favorieten · domein): daar ís deze sectie al het
+   * aanbod, dus geen toggle-teaser nodig. Standaard false — ongewijzigd
+   * gedrag op slaap/stress/voeding. */
+  openByDefault?: boolean;
 };
 
 /** Eén reden per render — de teller die laat zien hoe vaak de deur dicht
@@ -38,8 +42,9 @@ export default function DomainSupplementStance({
   verdicts,
   nutritionLogCompleted,
   surface,
+  openByDefault = false,
 }: DomainSupplementStanceProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(openByDefault);
   const stance = getDomainProductStance(domain);
   const domainVerdicts =
     stance.kind === "candidates"

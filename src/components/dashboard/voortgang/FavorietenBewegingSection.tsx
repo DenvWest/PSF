@@ -3,8 +3,11 @@
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
+import MovementSchapBasisCard from "@/components/dashboard/beweging/MovementSchapBasisCard";
 import VoortgangClosedDoor from "@/components/dashboard/voortgang/VoortgangClosedDoor";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
+import { SCHAP_BASIS_CARDS } from "@/data/movement/schap-basis-cards";
 import {
   MOVEMENT_PRIORITY_LAYERS,
   type MovementPriorityId,
@@ -14,7 +17,6 @@ import {
   buildMovementProgramPreview,
   parseMovementPlanProfile,
 } from "@/lib/movement-plan-profile";
-import { withVoortgangReturn } from "@/lib/voortgang-return-link";
 import type { DashboardData, DashboardModel } from "@/types/dashboard";
 
 type FavorietenBewegingSectionProps = {
@@ -38,7 +40,6 @@ export default function FavorietenBewegingSection({
 
   const eligibility = buildRecommendationsEligibility(data?.nutritionIntake);
   const nutritionLogCompleted = eligibility.nutritionLogCompleted === true;
-  const supplementenHref = withVoortgangReturn("/supplementen");
 
   const focusLayer = movementReadout?.ladder.focus ?? null;
   const recommendedLayers = resolveRecommendedLayers(focusLayer);
@@ -171,28 +172,52 @@ export default function FavorietenBewegingSection({
         )}
       </section>
 
-      <section aria-label="Mijn keuze beweging">
-        <VoortgangSectionHeader eyebrow="Mijn keuze" title="Wat jij koos" />
-        <CockpitTile>
-          <p
-            style={{
-              margin: 0,
-              fontSize: 14,
-              color: "var(--text-muted)",
-              lineHeight: 1.55,
-              textWrap: "pretty",
-            }}
-          >
-            Je hebt nog niets uit het schap gekozen voor beweging. PT, groep of activiteit kies je
-            straks op één plek — met ons oordeel erbij.
-          </p>
-          <Link
-            href={supplementenHref}
-            className="mt-3 inline-flex items-center gap-1 text-[13.5px] font-semibold text-[var(--sage)] no-underline"
-          >
-            Naar supplementen <Icons.ChevronRight s={15} />
-          </Link>
-        </CockpitTile>
+      {/* Maak een keuze (N1) — het schap zelf. Er is nog geen aparte
+          scherm-B-surface in src/, dus dit is de plek waar de deur op
+          Vandaag en Mijn Dag naartoe wijst en waar kiezen ook echt kan.
+          Alleen de gratis, geen-aanbieder-kaarten + je echte
+          supplement-oordeel — de aanbieders-laag (PT, groepslessen,
+          sportscholen) wacht op het partnerbesluit
+          (BESLUIT_BEWEGING_AANBIEDERS_P2_P4_V1 §L). */}
+      <section aria-label="Maak een keuze — beweging">
+        <VoortgangSectionHeader eyebrow="Maak een keuze" title="Wat kun je hiernaast zetten" />
+        <p
+          style={{
+            margin: "0 0 12px",
+            fontSize: 12.5,
+            color: "var(--text-subtle)",
+            lineHeight: 1.55,
+            textWrap: "pretty",
+          }}
+        >
+          Aan sommige opties hieronder verdienen we iets, aan andere niets — dat verandert niets
+          aan wat we ervan vinden.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {SCHAP_BASIS_CARDS.map((card) => (
+            <MovementSchapBasisCard key={card.id} card={card} />
+          ))}
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <DomainSupplementStance
+            domain="movement"
+            verdicts={data?.supplementVerdicts ?? []}
+            nutritionLogCompleted={nutritionLogCompleted}
+            surface="favorieten_beweging"
+            openByDefault
+          />
+        </div>
+        <p
+          style={{
+            margin: "12px 0 0",
+            fontSize: 11,
+            color: "var(--text-subtle)",
+            lineHeight: 1.6,
+          }}
+        >
+          Lokale begeleiding en sportscholen komen hier zodra de partnerkeuzes vastliggen. Nog
+          geen kaarten, geen teaser — een dichte deur die toch iets laat zien is geen dichte deur.
+        </p>
       </section>
 
       <section aria-label="Aanvullen beweging">

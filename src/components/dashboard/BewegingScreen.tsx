@@ -192,10 +192,10 @@ export default function BewegingScreen({
     : "Doe de voedingscheck";
 
   // "Maak een keuze" (N1): één label, één bestemming, geen tweede vorm.
-  // Er bestaat nog geen schap-surface in src/ — Favorieten is de dichtstbije
-  // bestaande plek waar aanbevolen en gekozen dingen samenkomen (zelfde
-  // rol die hij al speelt in beweging-help-bridge.ts). Geen nieuwe surface
-  // verzonnen, wel de bestemming eerlijk benoemd als voorlopig (§M).
+  // Favorieten · Beweging draagt sinds P4 zowel Aanbevolen/Mijn keuze als
+  // het schap zelf (FavorietenBewegingSection) — er is geen aparte scherm-B-
+  // route, dus deze surface doet dubbele dienst. De aanbieders-laag (PT,
+  // groepslessen) ontbreekt daar nog bewust, zie schap-basis-cards.ts.
   const handleMaakEenKeuze = () => {
     emitAccountClientEvent("choice.shelf_opened", {
       domain: "beweging",
@@ -292,8 +292,9 @@ export default function BewegingScreen({
       ) : null}
 
       {/* De deur (N1, lock 1): label-only, altijd aanwezig, nooit een
-          productnaam, prijs of oordeel. Bestemming: Favorieten — er is nog
-          geen schap-surface in src/, zie het commentaar bij
+          productnaam, prijs of oordeel. Bestemming: Favorieten · Beweging —
+          daar staat sinds P4 ook het schap zelf (FavorietenBewegingSection
+          "Maak een keuze"), niet alleen de recap. Zie het commentaar bij
           handleMaakEenKeuze hierboven. */}
       <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3.5">
         <p className="text-[12.5px] leading-relaxed text-[#9FB0A6]">

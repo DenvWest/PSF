@@ -38,7 +38,8 @@ export type VerdictPanelSurface =
   | "voortgang_slaap"
   | "voortgang_stress"
   | "voortgang_voeding"
-  | "voortgang_beweging";
+  | "voortgang_beweging"
+  | "favorieten_beweging";
 
 type SupplementVerdictPanelProps = {
   verdicts: StoredSupplementVerdict[];
