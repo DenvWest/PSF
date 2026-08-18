@@ -3,20 +3,14 @@
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
-import MetingenCard from "@/components/dashboard/MetingenCard";
-import RecommendedInsights from "@/components/dashboard/RecommendedInsights";
 import VoortgangHubScroll from "@/components/dashboard/voortgang/VoortgangHubScroll";
 import LeefstijlprofielDomeinView from "@/components/dashboard/voortgang/LeefstijlprofielDomeinView";
+import LeefstijlprofielKeuzeHub from "@/components/dashboard/voortgang/LeefstijlprofielKeuzeHub";
 import FavorietenView from "@/components/dashboard/voortgang/FavorietenView";
 import VoortgangMobileNav from "@/components/dashboard/voortgang/VoortgangMobileNav";
 import { useVoortgangFavorites } from "@/lib/voortgang-favorites-context";
-import VitalityGauge from "@/components/app/VitalityGauge";
-import * as Icons from "@/components/app/icons";
 import { clarityTag } from "@/lib/clarity";
 import { trackEvent } from "@/lib/ga4";
-import { getVitalityExplainer } from "@/lib/vitality-explainer";
-import { getVitalityScoreCardCopy } from "@/lib/vitality-score-copy";
 import { buildDashboardVandaagHref, type SyncDashboardVoortgangOptions } from "@/lib/dashboard-url";
 import type {
   AccountPriorityPrefData,
@@ -44,172 +38,18 @@ type VoortgangHubProps = {
   onGoHermeting: () => void;
 };
 
-function VoortgangSubHeader({
-  title,
-  onBack,
-}: {
-  title: string;
-  onBack: () => void;
-}) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        marginBottom: 24,
-      }}
-    >
-      <button
-        type="button"
-        onClick={onBack}
-        aria-label="Terug"
-        style={{
-          width: 38,
-          height: 38,
-          borderRadius: 11,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid var(--panel-border)",
-          color: "var(--text-muted)",
-          cursor: "pointer",
-          flexShrink: 0,
-        }}
-      >
-        <Icons.ArrowRight s={18} style={{ transform: "rotate(180deg)" }} />
-      </button>
-      <div
-        style={{
-          fontSize: 12,
-          fontWeight: 600,
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
-          color: "var(--text)",
-        }}
-      >
-        {title}
-      </div>
-    </div>
-  );
-}
-
-function InsightTips({ tips }: { tips: string[] }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      {tips.map((tip) => (
-        <CockpitTile key={tip}>
-          <div
-            style={{
-              fontSize: 14,
-              color: "var(--text)",
-              lineHeight: 1.55,
-              textWrap: "pretty",
-            }}
-          >
-            {tip}
-          </div>
-        </CockpitTile>
-      ))}
-    </div>
-  );
-}
-
-function LeefstijlprofielInzichtenView({
-  model,
-  firstName,
-  onBack,
-}: {
-  model: DashboardModel;
-  firstName: string | null;
-  onBack: () => void;
-}) {
-  const cardCopy = getVitalityScoreCardCopy({
-    firstName,
-    vitality: model.vitality,
-    priorityId: model.priority.id,
-    priorityScore: model.scores[model.priority.id],
-    answers: model.answers,
-    domainScores: model.domainScores,
-  });
-  const explainer = getVitalityExplainer({
-    vitality: model.vitality,
-    vitalityDelta: model.vitalityDelta,
-    vitalityDeltaComparable: model.vitalityDeltaNote == null,
-    priorityId: model.priority.id,
-    priorityScore: model.scores[model.priority.id],
-    answers: model.answers,
-    domainScores: model.domainScores,
-  });
-  const tipLines = [explainer[1], explainer[2]].filter(Boolean);
-
-  return (
-    <section aria-label="Leefstijlprofiel" style={{ paddingTop: 16 }}>
-      <VoortgangSubHeader title="Leefstijlprofiel" onBack={onBack} />
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        <div className="vitaalscore-card__gauge-zone" style={{ marginInline: -8 }}>
-          <VitalityGauge
-            value={model.vitality}
-            size={300}
-            stroke={18}
-            variant="hero"
-            theme="light"
-            tone="light"
-            showBandLabel={false}
-          />
-        </div>
-
-        <div style={{ textAlign: "center", padding: "0 8px" }}>
-          <h2
-            style={{
-              margin: 0,
-              fontFamily: "var(--f-serif)",
-              fontSize: 24,
-              fontWeight: 400,
-              color: "var(--text)",
-              lineHeight: 1.2,
-            }}
-          >
-            {cardCopy.heading}
-          </h2>
-          <p
-            style={{
-              margin: "12px 0 0",
-              fontSize: 15,
-              color: "var(--text-muted)",
-              lineHeight: 1.55,
-              textWrap: "pretty",
-            }}
-          >
-            {cardCopy.body}
-          </p>
-        </div>
-
-        <InsightTips tips={tipLines} />
-
-        <RecommendedInsights pillarId={model.priority.id} />
-
-        <MetingenCard scores={model.scores} history={model.history} />
-      </div>
-    </section>
-  );
-}
-
 function VoortgangHubInner({
   model,
   data,
   tab,
   screen,
   leefstijlprofielDomein,
-  favorietenDomein,
   leefstijlprofielAdviesExtra,
   overTijdExtra,
   onScreenChange,
   onGoAgenda,
   onGoHermeting,
-}: Omit<VoortgangHubProps, "onPrefUpdated">) {
+}: Omit<VoortgangHubProps, "onPrefUpdated" | "favorietenDomein">) {
   const router = useRouter();
   const { items: favorietenItems } = useVoortgangFavorites();
 
@@ -250,14 +90,13 @@ function VoortgangHubInner({
     navigate("leefstijlprofiel", { fav: domain });
   };
 
-  const openFavorieten = (domain?: PillarId) => {
+  const openFavorieten = () => {
     trackEvent("dashboard_voortgang_hub_click", { destination: "favorieten" });
     clarityTag("dashboard_voortgang", "favorieten");
-    navigate("favorieten", domain ? { fav: domain } : { fav: null });
+    navigate("favorieten", { fav: null });
   };
 
-  const mobileActiveDomein =
-    screen === "favorieten" ? favorietenDomein : leefstijlprofielDomein;
+  const mobileActiveDomein = screen === "leefstijlprofiel" ? leefstijlprofielDomein : null;
 
   let content: ReactNode;
 
@@ -267,38 +106,30 @@ function VoortgangHubInner({
         model={model!}
         data={data}
         domain={leefstijlprofielDomein}
+        adviesExtra={leefstijlprofielAdviesExtra}
         onBack={goBack}
         onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
-        onOpenFavorieten={() => openFavorieten(leefstijlprofielDomein)}
       />
     );
   } else if (screen === "leefstijlprofiel" || screen === "inzichten") {
     content = (
-      <LeefstijlprofielInzichtenView
+      <LeefstijlprofielKeuzeHub
         model={model!}
-        firstName={data?.firstName ?? null}
         onBack={goBack}
+        onOpenDomain={openLeefstijlprofielDomein}
       />
     );
   } else if (screen === "favorieten") {
-    content = (
-      <FavorietenView
-        model={model!}
-        data={data}
-        scopedDomein={favorietenDomein}
-        adviesExtra={leefstijlprofielAdviesExtra}
-        onBack={goBack}
-      />
-    );
+    content = <FavorietenView onBack={goBack} />;
   } else if (screen === "domein" && leefstijlprofielDomein) {
     content = (
       <LeefstijlprofielDomeinView
         model={model!}
         data={data}
         domain={leefstijlprofielDomein}
+        adviesExtra={leefstijlprofielAdviesExtra}
         onBack={goBack}
         onGoVandaag={() => router.push(buildDashboardVandaagHref(leefstijlprofielDomein))}
-        onOpenFavorieten={() => openFavorieten(leefstijlprofielDomein)}
       />
     );
   } else {
@@ -332,7 +163,7 @@ function VoortgangHubInner({
           activeDomein={mobileActiveDomein}
           favorietenCount={favorietenItems.length}
           onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
-          onOpenFavorieten={() => openFavorieten()}
+          onOpenFavorieten={openFavorieten}
           onOpenDomein={openLeefstijlprofielDomein}
         />
       ) : (
@@ -341,7 +172,7 @@ function VoortgangHubInner({
           activeDomein={null}
           favorietenCount={favorietenItems.length}
           onOpenLeefstijlprofiel={openLeefstijlprofielRoot}
-          onOpenFavorieten={() => openFavorieten()}
+          onOpenFavorieten={openFavorieten}
           onOpenDomein={openLeefstijlprofielDomein}
         />
       )}

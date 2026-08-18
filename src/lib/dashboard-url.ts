@@ -25,8 +25,21 @@ export function getLegacyVoortgangScreenAlias(raw: string | null): LegacyVoortga
   return raw as LegacyVoortgangScreen;
 }
 
+/** Vervangt legacy `screen=favorieten&fav=*` door leefstijlprofiel-domein deep link. */
+export function canonicalizeFavorietenSchapParam(url: URL): boolean {
+  const screen = url.searchParams.get("screen");
+  const fav = url.searchParams.get("fav");
+  if (screen !== "favorieten" || !fav || !KOMPAS_DOMAIN_IDS.has(fav as PillarId)) {
+    return false;
+  }
+  url.searchParams.set("screen", "leefstijlprofiel");
+  return true;
+}
+
 /** Vervangt legacy `screen`-waarden in-place; retourneert de canonieke screen of null. */
 export function canonicalizeVoortgangScreenParam(url: URL): VoortgangScreen | null {
+  canonicalizeFavorietenSchapParam(url);
+
   const rawScreen = url.searchParams.get("screen");
   const legacy = getLegacyVoortgangScreenAlias(rawScreen);
   if (!legacy) {

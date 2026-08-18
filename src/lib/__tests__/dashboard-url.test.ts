@@ -88,6 +88,13 @@ describe("parseVoortgangScreenFromUrl", () => {
 
     expect(getLegacyVoortgangScreenAlias("hub")).toBeNull();
     expect(canonicalizeVoortgangScreenParam(new URL("http://localhost/dashboard?tab=voortgang"))).toBeNull();
+
+    const favorietenSchapUrl = new URL(
+      "http://localhost/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+    );
+    canonicalizeVoortgangScreenParam(favorietenSchapUrl);
+    expect(favorietenSchapUrl.searchParams.get("screen")).toBe("leefstijlprofiel");
+    expect(favorietenSchapUrl.searchParams.get("fav")).toBe("beweging");
   });
 });
 
@@ -103,12 +110,15 @@ describe("buildDashboardVoortgangHref", () => {
     );
   });
 
-  it("includes fav for leefstijlprofiel and favorieten deep links", () => {
+  it("includes fav for leefstijlprofiel deep links", () => {
     expect(buildDashboardVoortgangHref("leefstijlprofiel", null, null, "beweging")).toBe(
       "/dashboard?tab=voortgang&screen=leefstijlprofiel&fav=beweging",
     );
-    expect(buildDashboardVoortgangHref("favorieten", null, null, "beweging")).toBe(
-      "/dashboard?tab=voortgang&screen=favorieten&fav=beweging",
+  });
+
+  it("favorieten screen has no fav param (saved list only)", () => {
+    expect(buildDashboardVoortgangHref("favorieten")).toBe(
+      "/dashboard?tab=voortgang&screen=favorieten",
     );
   });
 });

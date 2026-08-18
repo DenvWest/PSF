@@ -3,7 +3,7 @@
 > **Layer 1 — Core.** Verplicht register conform AVG art. 30. Intern document — niet publiceren.
 > Verwante docs: [`DPIA.md`](DPIA.md) (art. 35, risicobeoordeling), privacyverklaring (`src/app/privacy/page.tsx`), [`ENTITY_MODEL.md`](ENTITY_MODEL.md) (technische tabellen).
 
-**Laatst bijgewerkt:** 2026-08-09  
+**Laatst bijgewerkt:** 2026-08-18  
 **Volgende geplande controle:** 2026-08-01 (maandelijks)  
 **Eigenaar:** Dennis van Westbroek — verwerkingsverantwoordelijke  
 **Archief verwerkersovereenkomsten:** `Documenten/documenten/perfectsupplement/privacy/`
@@ -280,6 +280,20 @@ Onderstaande tabellen volgen het KVK-voorbeeld. Elke rij is een afzonderlijke ve
 | **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via sessie-geauthenticeerde API; product-events `measurement.checkin_completed`/`measurement.direction_detected` alleen categorisch (domain_key + richting, geen ruwe antwoorden). Ervaringsvraag (zodra actief): geen vrije tekst, frequentiegrens (max 1×/week, alleen klaar-staat, stopt bij hermeting dag 14) serverside afgedwongen, niet clientside |
 | **Doorgifte buiten EU** | Nee |
 
+### 19. Opgeslagen favorieten (leefstijlkeuze)
+
+| | |
+|---|---|
+| **Doel** | Door de gebruiker bewaarde aanbevelingen en keuzes uit leefstijlprofiel (activiteit, supplement, dienst) persistent tonen op het Favorieten-scherm |
+| **Betrokkenen** | Ingelogde dashboard-gebruikers die vrijwillig een item bewaren |
+| **Soort gegevens** | Account-id, item_id (referentie), titel (weergavenaam), kind (enum: activiteit/supplement/dienst), optioneel domain (enum), optioneel source (aanbevolen/mijn_keuze) |
+| **Bijzondere gegevens** | Ja — gezondheidsgerelateerde leefstijlkeuze, gekoppeld aan account met art. 9-intake |
+| **Ontvangers** | Supabase (`account_favorites`, EU Frankfurt) — geen nieuwe verwerker |
+| **Grondslag** | Art. 9 lid 2 sub a (expliciete toestemming via account-storage-consent) + art. 6 lid 1 sub a |
+| **Bewaartermijn** | Volgt account-/intake-retentie (24 maanden); verwijderd bij account-verwijdering (cascade) |
+| **Beveiligingsmaatregelen** | RLS deny-all — uitsluitend service-role via account-geauthenticeerde API; GA4 `dashboard_favorieten_save` alleen categorisch (item_id, kind, domain, source — geen titel als PII in analytics) |
+| **Doorgifte buiten EU** | Nee |
+
 ---
 
 ## Verwerkersovereenkomsten (art. 28)
@@ -320,6 +334,7 @@ Mechanisme: bij SaaS-verwerkers volstaat **acceptatie van de verwerkersvoorwaard
 
 | Datum | Wijziging |
 |---|---|
+| 2026-08-18 | Verwerking 19 toegevoegd: opgeslagen favorieten (`account_favorites`) — leefstijlkeuze-items bewaard door gebruiker, RLS deny-all, art. 9 (account-storage-consent); GA4 `dashboard_favorieten_save` categorisch |
 | 2026-08-09 | Verwerking 18 uitgebreid (vooraf, ter voorbereiding — nog niet live): ervaringsvraag (1–5, "merk je er iets van") bij een gekozen beweging-interventie toegevoegd aan de gegevensomschrijving — zelfde `intake_domain_checkin`, consent en grondslag als bestaand; geen nieuwe tabel, geen nieuwe verwerker; max 1×/week, alleen klaar-staat, stopt bij hermeting dag 14, geen vrije tekst, score ongewijzigd. Blokkeert de eerste opslag totdat deze wijziging gemerged is (zie `PROEF_BEWEGING_SCHAP_INHOUD_2026-08.md` en `docs/cursors/claude-opus-kompas-domein-keuzehart-wederprompt.md`) |
 | 2026-08-05 | Verwerking 16 uitgebreid en hernoemd (focus-voorkeur → *prioriteit, dagritme en weergave*): `plan_steps_hidden`, `plan_step_dismissed_date`, `movement_day_choice` + `movement_day_choice_date` toegevoegd aan de gegevensomschrijving; geen nieuwe tabel, geen nieuwe verwerker, geen nieuwe grondslag. Privacy-pagina bijgewerkt (§Account en dashboard) |
 | 2026-07-21 | Verwerking 18 aangevuld: dagelijkse herstel-puls (`RCV_FEEL` enkelveld) vanuit beweging-dashboard — zelfde `intake_domain_checkin`, consent en grondslag; geen nieuwe verwerker; score ongewijzigd bij pulse |

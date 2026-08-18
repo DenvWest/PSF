@@ -46,7 +46,7 @@ describe("buildBewegingHelpBridge — statusstrip", () => {
 
   it("labelt Favorieten expliciet op now", () => {
     const bridge = buildBewegingHelpBridge(model(), slot(), true);
-    expect(bridge.points.find((point) => point.id === "favorieten")?.label).toBe("Favorieten");
+    expect(bridge.points.find((point) => point.id === "favorieten")?.label).toBe("Opgeslagen");
     expect(bridge.points.find((point) => point.id === "favorieten")?.status).toBe("now");
     expect(bridge.points.find((point) => point.id === "beste")?.status).toBe("toekomstig");
   });

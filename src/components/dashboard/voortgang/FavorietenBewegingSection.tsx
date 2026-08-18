@@ -18,18 +18,21 @@ import {
   buildMovementProgramPreview,
   parseMovementPlanProfile,
 } from "@/lib/movement-plan-profile";
-import type { DashboardData, DashboardModel, LeefstijlprofielView } from "@/types/dashboard";
+import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
+import type { DashboardData, DashboardModel, LeefstijlprofielView, PillarId } from "@/types/dashboard";
 
 type FavorietenBewegingSectionProps = {
   model: DashboardModel;
   data?: DashboardData;
   view?: LeefstijlprofielView;
+  domain?: PillarId;
 };
 
 export default function FavorietenBewegingSection({
   model,
   data,
   view = "aanbevolen",
+  domain = "beweging",
 }: FavorietenBewegingSectionProps) {
   const { isSaved, save } = useVoortgangFavorites();
   const movementReadout = data?.movementCheckinSnapshot ?? null;
@@ -75,7 +78,8 @@ export default function FavorietenBewegingSection({
                     id: card.id,
                     title: card.title,
                     kind: "activiteit",
-                    domain: "beweging",
+                    domain,
+                    source: "mijn_keuze",
                   })
                 }
               />
@@ -115,88 +119,118 @@ export default function FavorietenBewegingSection({
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {programPreview ? (
               <CockpitTile>
-                <div
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "var(--text-subtle)",
-                    marginBottom: 6,
-                  }}
-                >
-                  Jouw programma
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--f-serif)",
-                    fontSize: 17,
-                    color: "var(--text)",
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {programPreview}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        color: "var(--text-subtle)",
+                        marginBottom: 6,
+                      }}
+                    >
+                      Jouw programma
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "var(--f-serif)",
+                        fontSize: 17,
+                        color: "var(--text)",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {programPreview}
+                    </div>
+                  </div>
+                  <FavoriteSaveButton
+                    compact
+                    surface="leefstijlprofiel_beweging"
+                    item={{
+                      id: `programma-${movementPlanProfile?.weeklyFrequency ?? "default"}`,
+                      title: programPreview,
+                      kind: "activiteit",
+                      domain,
+                      source: "aanbevolen",
+                    }}
+                  />
                 </div>
               </CockpitTile>
             ) : null}
 
             {recommendedLayers.map((layer) => (
               <CockpitTile key={layer.id}>
-                <div
-                  style={{
-                    fontFamily: "var(--f-serif)",
-                    fontSize: 17,
-                    color: "var(--text)",
-                    lineHeight: 1.25,
-                    marginBottom: 4,
-                  }}
-                >
-                  {layer.name}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12.5,
-                    color: "var(--text-muted)",
-                    marginBottom: layer.actions.length ? 10 : 0,
-                    lineHeight: 1.45,
-                    textWrap: "pretty",
-                  }}
-                >
-                  {layer.summary}
-                </div>
-                {layer.actions.length > 0 ? (
-                  <ul
-                    style={{
-                      margin: 0,
-                      padding: 0,
-                      listStyle: "none",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 8,
-                    }}
-                  >
-                    {layer.actions.map((action) => (
-                      <li
-                        key={action}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div
+                      style={{
+                        fontFamily: "var(--f-serif)",
+                        fontSize: 17,
+                        color: "var(--text)",
+                        lineHeight: 1.25,
+                        marginBottom: 4,
+                      }}
+                    >
+                      {layer.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12.5,
+                        color: "var(--text-muted)",
+                        marginBottom: layer.actions.length ? 10 : 0,
+                        lineHeight: 1.45,
+                        textWrap: "pretty",
+                      }}
+                    >
+                      {layer.summary}
+                    </div>
+                    {layer.actions.length > 0 ? (
+                      <ul
                         style={{
+                          margin: 0,
+                          padding: 0,
+                          listStyle: "none",
                           display: "flex",
-                          alignItems: "flex-start",
+                          flexDirection: "column",
                           gap: 8,
-                          fontSize: 13.5,
-                          color: "var(--text-muted)",
-                          lineHeight: 1.5,
-                          textWrap: "pretty",
                         }}
                       >
-                        <Icons.Check
-                          s={14}
-                          style={{ color: "var(--sage)", flexShrink: 0, marginTop: 3 }}
-                        />
-                        {action}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
+                        {layer.actions.map((action) => (
+                          <li
+                            key={action}
+                            style={{
+                              display: "flex",
+                              alignItems: "flex-start",
+                              gap: 8,
+                              fontSize: 13.5,
+                              color: "var(--text-muted)",
+                              lineHeight: 1.5,
+                              textWrap: "pretty",
+                            }}
+                          >
+                            <Icons.Check
+                              s={14}
+                              style={{ color: "var(--sage)", flexShrink: 0, marginTop: 3 }}
+                            />
+                            <span className="min-w-0 flex-1">{action}</span>
+                            <FavoriteSaveButton
+                              compact
+                              surface="leefstijlprofiel_beweging"
+                              item={{
+                                id: `actie-${layer.id}-${action.slice(0, 48)}`,
+                                title: action,
+                                kind: "activiteit",
+                                domain,
+                                source: "aanbevolen",
+                              }}
+                            />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </div>
               </CockpitTile>
             ))}
           </div>

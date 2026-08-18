@@ -32,6 +32,13 @@ Twee secties, geen twee staten van dezelfde kaart. Een aanbeveling wordt nooit s
 > **Mag** op Vandaag en Mijn Dag: stofnaam of activiteit + tijdstip + afvinkactie — *"Magnesium · voor het slapen"*, *"Krachttraining thuis · 19:00"*.
 > **Mag niet**, in geen enkele staat: merk, prijs, oordeelslabel ("Aanrader"), claimtekst, vergelijkingslink, affiliate-link.
 
+**N5 · Leefstijlkeuze op Leefstijlprofiel, Favorieten = opgeslagen.** (18 aug 2026, implementatie)
+
+- **Leefstijlprofiel** draagt per domein: onderbouwing (ladder/readout) + leefstijlkeuze (toggle Aanbevolen/Mijn keuze) + supplementen/producten/diensten.
+- **Leefstijlprofiel root** toont de leefstijlkeuze-hub (geen vitaliteits-hero meer).
+- **Favorieten** (nav-item) = alleen door de klant opgeslagen items (heart), account-gebonden in `account_favorites`.
+- Legacy `screen=favorieten&fav={domein}` redirect naar `screen=leefstijlprofiel&fav={domein}`.
+
 ---
 
 ## B · Wat v3.6 intrekt, en waarom

@@ -18,13 +18,15 @@ import {
 } from "@/lib/statistieken-advies-model";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import { withVoortgangReturn } from "@/lib/voortgang-return-link";
-import type { DashboardData, DashboardModel, LeefstijlprofielView } from "@/types/dashboard";
+import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
+import type { DashboardData, DashboardModel, LeefstijlprofielView, PillarId } from "@/types/dashboard";
 
 type LeefstijlprofielSupplementSectionProps = {
   model: DashboardModel;
   data: DashboardData;
   view: LeefstijlprofielView;
   adviesExtra?: ReactNode;
+  domain?: PillarId;
 };
 
 export default function LeefstijlprofielSupplementSection({
@@ -32,6 +34,7 @@ export default function LeefstijlprofielSupplementSection({
   data,
   view,
   adviesExtra,
+  domain,
 }: LeefstijlprofielSupplementSectionProps) {
   const adviesModel = useMemo(
     () => buildStatistiekenAdviesModel(model, data),
@@ -64,6 +67,8 @@ export default function LeefstijlprofielSupplementSection({
             variant="full"
             surface="leefstijlprofiel"
             hideHeader
+            showFavoriteSave
+            favoriteSource="mijn_keuze"
           />
         ) : (
           <CockpitTile>
@@ -95,6 +100,7 @@ export default function LeefstijlprofielSupplementSection({
         <AanbevolenCard
           nutritionLogCompleted={nutritionLogCompleted}
           recommendations={recommendations}
+          domain={domain}
         />
       </div>
     </section>
@@ -269,9 +275,11 @@ function OnsOordeelCard({
 function AanbevolenCard({
   nutritionLogCompleted,
   recommendations,
+  domain,
 }: {
   nutritionLogCompleted: boolean;
   recommendations: ReturnType<typeof buildRecommendations>;
+  domain?: PillarId;
 }) {
   if (!nutritionLogCompleted) {
     return null;
@@ -303,43 +311,57 @@ function AanbevolenCard({
         {recommendations.slice(0, 4).map((rec) => {
           const href = rec.comparisonHref ?? rec.guideHref;
           return (
-            <Link
-              key={rec.slug}
-              href={href}
-              onClick={() => {
-                trackEvent("dashboard_aanrader_click", {
-                  slug: rec.slug,
-                  target: href,
-                });
-                clarityTag("dashboard_aanrader", rec.slug);
-              }}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <CockpitTile>
-                <div
-                  style={{
-                    fontFamily: "var(--f-serif)",
-                    fontSize: 17,
-                    color: "var(--text)",
-                    lineHeight: 1.25,
-                    marginBottom: 4,
+            <div key={rec.slug} style={{ position: "relative" }}>
+              <Link
+                href={href}
+                onClick={() => {
+                  trackEvent("dashboard_aanrader_click", {
+                    slug: rec.slug,
+                    target: href,
+                  });
+                  clarityTag("dashboard_aanrader", rec.slug);
+                }}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <CockpitTile>
+                  <div
+                    style={{
+                      fontFamily: "var(--f-serif)",
+                      fontSize: 17,
+                      color: "var(--text)",
+                      lineHeight: 1.25,
+                      marginBottom: 4,
+                    }}
+                  >
+                    {rec.name}
+                  </div>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 13.5,
+                      color: "var(--text-muted)",
+                      lineHeight: 1.5,
+                      textWrap: "pretty",
+                    }}
+                  >
+                    {rec.reason}
+                  </p>
+                </CockpitTile>
+              </Link>
+              <div style={{ position: "absolute", top: 12, right: 12 }}>
+                <FavoriteSaveButton
+                  compact
+                  surface="leefstijlprofiel"
+                  item={{
+                    id: rec.slug,
+                    title: rec.name,
+                    kind: "supplement",
+                    domain,
+                    source: "aanbevolen",
                   }}
-                >
-                  {rec.name}
-                </div>
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 13.5,
-                    color: "var(--text-muted)",
-                    lineHeight: 1.5,
-                    textWrap: "pretty",
-                  }}
-                >
-                  {rec.reason}
-                </p>
-              </CockpitTile>
-            </Link>
+                />
+              </div>
+            </div>
           );
         })}
       </div>

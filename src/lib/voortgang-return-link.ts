@@ -28,4 +28,5 @@ export function hasVoortgangReturnParam(
 
 export const VOORTGANG_LEEFSTIJLPROFIEL_HREF = buildDashboardVoortgangHref("leefstijlprofiel");
 
+/** Opgeslagen favorieten — schap-deep-links gebruiken VOORTGANG_LEEFSTIJLPROFIEL_HREF + fav. */
 export const VOORTGANG_FAVORIETEN_HREF = buildDashboardVoortgangHref("favorieten");

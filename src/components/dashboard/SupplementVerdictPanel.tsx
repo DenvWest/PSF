@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import * as Icons from "@/components/app/icons";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
+import FavoriteSaveButton from "@/components/dashboard/voortgang/FavoriteSaveButton";
 import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
 import { clarityTag } from "@/lib/clarity";
 import { emitIntakeClientEvent } from "@/lib/intake-events-client";
@@ -49,6 +50,8 @@ type SupplementVerdictPanelProps = {
   surface?: VerdictPanelSurface;
   onViewAll?: () => void;
   hideHeader?: boolean;
+  showFavoriteSave?: boolean;
+  favoriteSource?: "aanbevolen" | "mijn_keuze";
 };
 
 export default function SupplementVerdictPanel({
@@ -57,6 +60,8 @@ export default function SupplementVerdictPanel({
   surface = "voortgang",
   onViewAll,
   hideHeader = false,
+  showFavoriteSave = false,
+  favoriteSource = "mijn_keuze",
 }: SupplementVerdictPanelProps) {
   const [openIngredient, setOpenIngredient] = useState<string | null>(null);
   const allCards = buildVerdictCards(verdicts);
@@ -153,6 +158,18 @@ export default function SupplementVerdictPanel({
               >
                 Product
               </span>
+              {showFavoriteSave ? (
+                <FavoriteSaveButton
+                  compact
+                  surface={surface}
+                  item={{
+                    id: card.ingredientKey,
+                    title: card.name,
+                    kind: "supplement",
+                    source: favoriteSource,
+                  }}
+                />
+              ) : null}
               <span
                 style={{
                   marginLeft: "auto",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
@@ -36,7 +36,11 @@ import {
 } from "@/lib/movement-plan-profile";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
-import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
+import FavorietenBewegingSection from "@/components/dashboard/voortgang/FavorietenBewegingSection";
+import LeefstijlprofielSupplementSection from "@/components/dashboard/voortgang/LeefstijlprofielSupplementSection";
+import { LeefstijlprofielViewToggle } from "@/components/dashboard/voortgang/LeefstijlprofielViewToggle";
+import VoortgangSectionHeader from "@/components/dashboard/voortgang/VoortgangSectionHeader";
+import type { DashboardData, DashboardModel, LeefstijlprofielView, PillarId } from "@/types/dashboard";
 
 type MovementWeekTotals = { totalMinutes: number; sessionCount: number };
 
@@ -124,17 +128,18 @@ export default function LeefstijlprofielDomeinView({
   model,
   data,
   domain,
+  adviesExtra,
   onBack,
   onGoVandaag,
-  onOpenFavorieten,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   domain: PillarId;
+  adviesExtra?: ReactNode;
   onBack: () => void;
   onGoVandaag: () => void;
-  onOpenFavorieten?: () => void;
 }) {
+  const [view, setView] = useState<LeefstijlprofielView>("aanbevolen");
   const pillar = PILLAR[domain];
   const readout = isReadoutDomain(domain) ? getReadoutPresentation(domain) : null;
   const leefstijllijnRow =
@@ -380,24 +385,29 @@ export default function LeefstijlprofielDomeinView({
           </a>
         ) : null}
 
-        {onOpenFavorieten ? (
-          <button
-            type="button"
-            onClick={() => {
-              trackEvent("dashboard_voortgang_hub_click", {
-                destination: "favorieten",
-                surface: "leefstijlprofiel_domein",
-              });
-              clarityTag("dashboard_voortgang", "favorieten");
-              onOpenFavorieten();
-            }}
-            className="flex w-full cursor-pointer items-center gap-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-3.5 text-left"
-          >
-            <Icons.Heart s={18} style={{ color: "#5A8F6A", flexShrink: 0 }} />
-            <span className="flex-1 text-[14.5px] font-semibold text-[#F1EFE8]">Favorieten</span>
-            <Icons.ChevronRight s={18} style={{ color: "#9FB0A6", flexShrink: 0 }} />
-          </button>
-        ) : null}
+        <section aria-label="Leefstijlkeuze" style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+          <VoortgangSectionHeader eyebrow="Leefstijlkeuze" title="Wat past bij je check" />
+          {domain === "beweging" ? (
+            <FavorietenBewegingSection model={model} data={data} view={view} domain={domain} />
+          ) : (
+            <p className="m-0 text-[14px] leading-relaxed text-[#9FB0A6] text-pretty">
+              Leefstijlkeuzes voor {pillar.label.toLowerCase()} volgen in een volgende update —
+              beweging is nu de blauwdruk.
+            </p>
+          )}
+
+          {data ? (
+            <LeefstijlprofielSupplementSection
+              model={model}
+              data={data}
+              view={view}
+              adviesExtra={adviesExtra}
+              domain={domain}
+            />
+          ) : null}
+        </section>
+
+        <LeefstijlprofielViewToggle view={view} onChange={setView} />
 
         <button
           type="button"

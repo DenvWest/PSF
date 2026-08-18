@@ -3533,10 +3533,20 @@ function DashboardContent({
         syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: nextDomein });
         return;
       }
+      if (screen === "favorieten" && options?.fav) {
+        setVoortgangScreen("leefstijlprofiel");
+        setLeefstijlprofielDomein(options.fav);
+        syncDashboardVoortgangScreenParam("leefstijlprofiel", { fav: options.fav });
+        return;
+      }
       setVoortgangScreen(screen);
       if (screen === "leefstijlprofiel" || screen === "favorieten") {
         const nextFav =
-          options && "fav" in options ? (options.fav ?? null) : leefstijlprofielDomein;
+          screen === "favorieten"
+            ? null
+            : options && "fav" in options
+              ? (options.fav ?? null)
+              : leefstijlprofielDomein;
         setLeefstijlprofielDomein(nextFav);
         syncDashboardVoortgangScreenParam(screen, { fav: nextFav });
         return;
@@ -3590,13 +3600,16 @@ function DashboardContent({
       }
       if (parsedTab === "voortgang") {
         const legacyAlias = getLegacyVoortgangScreenAlias(url.searchParams.get("screen"));
-        if (legacyAlias) {
-          const canonical = canonicalizeVoortgangScreenParam(url);
-          trackEvent("dashboard_voortgang_legacy_redirect", {
-            from: legacyAlias,
-            to: canonical ?? "hub",
-          });
-          clarityTag("dashboard_voortgang_legacy", legacyAlias);
+        const urlBefore = url.toString();
+        const canonical = canonicalizeVoortgangScreenParam(url);
+        if (legacyAlias || url.toString() !== urlBefore) {
+          if (legacyAlias) {
+            trackEvent("dashboard_voortgang_legacy_redirect", {
+              from: legacyAlias,
+              to: canonical ?? "hub",
+            });
+            clarityTag("dashboard_voortgang_legacy", legacyAlias);
+          }
           window.history.replaceState(null, "", url.toString());
         }
         const parsedScreen = parseVoortgangScreenFromUrl(url);

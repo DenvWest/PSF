@@ -45,7 +45,7 @@ export function buildBewegingHelpBridge(
         label: "Advies",
         status: nutritionLogCompleted ? "done" : "wacht",
       },
-      { id: "favorieten", label: "Favorieten", status: "now" },
+      { id: "favorieten", label: "Opgeslagen", status: "now" },
       { id: "beste", label: "Beste", status: "toekomstig" },
     ],
   };
