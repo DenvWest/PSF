@@ -41,6 +41,10 @@ import {
 } from "@/lib/movement-checkin-parse";
 import { buildMovementFactRows } from "@/lib/movement-assessment";
 import {
+  resolveMovementFocusPriority,
+  resolveMovementLayerStates,
+} from "@/lib/movement-ladder";
+import {
   parseStoredSleepCheckinSnapshot,
   parseStoredSleepCheckinForFacts,
 } from "@/lib/sleep-checkin-parse";
@@ -639,9 +643,18 @@ export async function loadAccountDashboardData(
       const focusDimension = isMovementFocusKey(parsed.focusDimension)
         ? parsed.focusDimension
         : null;
+      // De ladder wordt om dezelfde reden herberekend als de feitenrijen:
+      // niet bevroren, zodat een regel-fix ook oude rijen bereikt. De
+      // winst-prioriteit komt uit `focusDimension` — dezelfde waarde die de
+      // readout-kop draagt, dus ladder en readout kunnen niet uiteenlopen.
+      const movementReport = storedReport?.report ?? {};
       movementCheckinSnapshot = {
         ...parsed,
-        factRows: storedReport ? buildMovementFactRows(storedReport.report, focusDimension) : [],
+        factRows: storedReport ? buildMovementFactRows(movementReport, focusDimension) : [],
+        ladder: {
+          states: resolveMovementLayerStates(movementReport, focusDimension),
+          focus: resolveMovementFocusPriority(focusDimension),
+        },
         date: formatDashboardDate(latestMovementCheckin.created_at),
       };
     }

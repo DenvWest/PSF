@@ -10,6 +10,8 @@ import type {
 import type { MovementPrefs } from "@/lib/movement-prefs";
 import type { StoredMovementCheckinSnapshot } from "@/lib/movement-checkin-parse";
 import type { MovementFactRow } from "@/lib/movement-assessment";
+import type { MovementPriorityId } from "@/data/movement/lifestyle-priorities";
+import type { MovementLayerState } from "@/lib/movement-ladder";
 import type { StoredSleepCheckinSnapshot } from "@/lib/sleep-checkin-parse";
 import type { SleepFactRow } from "@/lib/sleep-checkin-readout";
 import type { NutrientId } from "@/data/nutrition/intake-reference";
@@ -215,6 +217,16 @@ export type MovementCheckinReadoutData = StoredMovementCheckinSnapshot & {
   date: string;
   /** Herberekend uit de opgeslagen antwoorden, niet zelf bevroren — zie R0g. */
   factRows: MovementFactRow[];
+  /**
+   * De prioriteitenladder, om dezelfde reden herberekend en niet bevroren:
+   * een regel-fix in de engine moet ook oude rijen op Voortgang bereiken.
+   * `focus` is afgeleid uit `focusDimension` hierboven — één bron voor de
+   * readout-kop en de winst-prioriteit (lock 4).
+   */
+  ladder: {
+    states: Record<MovementPriorityId, MovementLayerState>;
+    focus: MovementPriorityId | null;
+  };
 };
 
 export type SleepCheckinReadoutData = StoredSleepCheckinSnapshot & {

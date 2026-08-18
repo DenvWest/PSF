@@ -26,7 +26,10 @@ import {
   CONNECTION_SAFETY_NET_LINE,
 } from "@/data/connection/lifestyle-priorities";
 import { NUTRITION_PRIORITY_LAYERS } from "@/data/nutrition/lifestyle-pyramid";
-import { MOVEMENT_PRIORITY_LAYERS } from "@/data/movement/lifestyle-priorities";
+import {
+  MOVEMENT_PRIORITY_LAYERS,
+  type MovementPriorityId,
+} from "@/data/movement/lifestyle-priorities";
 import { buildBewegingAdviesTreden } from "@/lib/beweging-advies-treden";
 import { clarityTag } from "@/lib/clarity";
 import { buildMovementRoutingHref } from "@/lib/dashboard-url";
@@ -34,6 +37,10 @@ import { getReadoutPresentation } from "@/lib/dashboard-readout";
 import { isReadoutDomain } from "@/lib/domain-role";
 import { trackEvent } from "@/lib/ga4";
 import { buildLeefstijllijnRows } from "@/lib/leefstijllijn";
+import {
+  MOVEMENT_LAYER_STATE_LABEL,
+  movementLayerWhyWait,
+} from "@/lib/movement-ladder";
 import { isMovementLogEnabled } from "@/lib/feature-flags";
 import { resolveMovementRoutingHint } from "@/lib/movement-assessment";
 import { sleepLayerWhyWait } from "@/lib/sleep-ladder";
@@ -417,10 +424,35 @@ export default function VoortgangDomeinScreen({
           </a>
         ) : null}
 
-        {isMovement ? (
+        {/* Mét beweegcheck draagt de ladder een staat, afgeleid uit dezelfde
+            focusdimensie als de readout hierboven (lock 4). Zonder check is er
+            niets af te leiden en blijft de zelfselectie-vorm staan — een lege
+            ladder met vier verzonnen badges zou erger zijn dan geen badges. */}
+        {isMovement && movementReadout ? (
+          <CockpitTile eyebrow="Fundament naar finetunen">
+            <p className="mb-3.5 mt-2.5 max-w-[58ch] text-[13px] leading-relaxed text-[#CDD7D0]">
+              Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het
+              meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan.
+            </p>
+            <DomainLifestyleLadder
+              layers={MOVEMENT_PRIORITY_LAYERS}
+              layerStates={movementReadout.ladder.states}
+              focusLayer={movementReadout.ladder.focus ?? 0}
+              stateLabels={MOVEMENT_LAYER_STATE_LABEL}
+              variant="full"
+              whyWait={(layerId) =>
+                movementLayerWhyWait(layerId as MovementPriorityId, movementReadout.ladder.focus)
+              }
+              domain="beweging"
+              surface="voortgang_beweging"
+            />
+          </CockpitTile>
+        ) : null}
+
+        {isMovement && !movementReadout ? (
           <PrioriteitenLadder
             layers={MOVEMENT_PRIORITY_LAYERS}
-            intro="Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan."
+            intro="Zes prioriteiten, van fundament naar finetunen. Wat bovenaan staat draagt het meest; wat eronder staat werkt pas mee als de prioriteiten erboven staan. Doe je beweegcheck om te zien waar jouw winst nu zit."
             eyebrow="Fundament naar finetunen"
             domain="beweging"
             surface="voortgang_beweging"

@@ -282,3 +282,52 @@ Zes plakken, elk los reviewbaar, elk ≤ ~400 gewijzigde regels.
 | **P6** | **Eén keten, één oordeel-oppervlak.** De drie-stappen-copy in Statistieken vervalt; `SupplementVerdictPanel` van drie plekken naar één | `StatistiekenBlikPanels.tsx` · `VoortgangHub.tsx` · `DomainSupplementStance.tsx` | één keten in het product; één oordeel-oppervlak | I3 + I4 |
 
 **P1 eerst, en niet onderhandelbaar.** De rest verandert hoe het eruitziet; P1 verandert of het waar is.
+
+---
+
+## K · Plak P1 — uitgevoerd, 18 augustus
+
+**De beweegladder krijgt status.** Wat lock 4 eiste is nu waar in `src/`, niet alleen in de prebuild.
+
+### K1 · De ingreep
+
+De winst-prioriteit wordt **afgeleid uit de focusdimensie die `buildMovementConclusion` al kiest** — dezelfde waarde die de readout-kop draagt. Een tweede regel naast de readout zou precies de tegenspraak scheppen die lock 4 verbiedt; nu kan er geen verschil van mening ontstaan, alleen een bug in één functie.
+
+| bestand | wat |
+|---|---|
+| `src/lib/movement-ladder.ts` **(nieuw, 164 r.)** | `resolveMovementFocusPriority` · `resolveMovementLayerStates` · `movementLayerWhyWait` · `MOVEMENT_LAYER_STATE_LABEL` |
+| `src/data/movement/lifestyle-priorities.ts` | `actions` gevuld voor P1-P4, woordelijk uit `dashboard-supplementroute-prebuild-v1` r.640-649; het commentaar dat de weglating rechtvaardigde is vervangen door de reden dat hij nu dicht is |
+| `src/types/dashboard.ts` | `MovementCheckinReadoutData.ladder = { states, focus }` |
+| `src/lib/account-dashboard.ts` | ladder herberekend uit `raw_inputs`, niet bevroren — zelfde grond als `factRows` (R0g): een regel-fix moet ook oude rijen bereiken |
+| `DomainLifestyleLadder.tsx` | `domain` verbreed met `"beweging"`; de kop *"Wat je kunt doen"* verschijnt niet meer boven een lege lijst |
+| `VoortgangDomeinScreen.tsx` | beweging mét check → `DomainLifestyleLadder` mét staten; **zonder** check blijft `PrioriteitenLadder` staan |
+| `src/lib/__tests__/movement-ladder.test.ts` **(nieuw, 142 r.)** | 8 tests, draaien de echte engine |
+
+### K2 · De mapping, en waar hij vandaan komt
+
+| focusdimensie | prioriteit | grond |
+|---|---|---|
+| `zitten` | P1 | letterlijk *"Zitten onderbreken"* in de subtitel |
+| `mobiliteit` | P1 | P1 heeft als resultaat *"je lijf blijft losser"* — soepel blijven woont daar |
+| `kracht` | P2 | *"Spierbehoud"* in de subtitel |
+| `conditie` | P2 | *"basisconditie"* staat in de naam |
+| `intensiteit` | P2 | de aerobe richtlijn kent één norm met twee valuta's (`MOVEMENT_FACT_ROW_ORDER`: `aeroob` vat cardio en intensief samen) — apart laden zou één gat als twee prioriteiten tonen |
+| `consistentie` | P3 | *"Progressief opbouwen"* begint per definitie pas als je het volhoudt |
+
+P4-P6 staan er bewust niet in: voor specifiek sporten bestaat geen gemeten gat, P5 is marginale winst, P6 is gegate. Geen van drieën kan ooit de winst-prioriteit zijn.
+
+### K3 · Wat de test vastzet
+
+De belangrijkste test zet één veld per keer op 1 en controleert over **alle zes** focusdimensies dat `conclusion.focusDimension` en de winst-prioriteit dezelfde laag aanwijzen, én dat er precies één winst-laag is. Mist de mapping ooit een dimensie, dan valt precies die combinatie om.
+
+Verder: geen winst-laag als alles sterk is · een open laag bóven de winst-laag blijft `watch` (de prebuild-regel *"dit telt mee, maar kracht levert nu meer op"*) · lagen zonder meting krijgen `wacht`, want geen meting is geen oordeel · alleen lagen ónder de winst-laag krijgen een wachtregel.
+
+### K4 · Verificatie
+
+`grep console.log src/` → 0 · `npx tsc --noEmit` → schoon · `npx vitest run` → 212 bestanden, 1919 tests, alles groen · `GET /dashboard` op de dev-server → 200, geen compile-fout.
+
+`npx eslint . --max-warnings 0` faalt op **5 waarschuwingen — exact dezelfde 5 als op `HEAD`**, gemeten met een stash-vergelijking. Vier in `SleepCheckin.tsx` en `sleep-checkin-parse.ts`, één in `DomainLifestyleLadder.tsx:189` (ongebruikte `state`-prop, bestond al). Deze plak voegt er geen toe en haalt er geen weg; de gate staat dus al rood vóór dit werk.
+
+**Omvang:** 135 gewijzigde regels + 306 nieuwe, waarvan 142 test. Code-deel ~299 regels — binnen de plakgrens.
+
+**Meetpunt:** `beweging_ladder_layer_open` — bestond al (`PrioriteitenLadder` en `DomainLifestyleLadder` zenden allebei `${domain}_ladder_layer_open`), dus geen nieuw event en geen registratie op drie plekken nodig. Hier lees je af of mensen de winst-prioriteit nu daadwerkelijk openklappen; deed de ladder eerder niets, dan is dit de eerste keer dat dat cijfer iets betekent.

@@ -43,7 +43,7 @@ export type DomainLifestyleLadderProps = {
   stateLabels: Record<LifestyleLayerState, string>;
   variant: "mini" | "rail" | "full";
   whyWait?: (layerId: number) => string | null;
-  domain: "slaap" | "stress";
+  domain: "slaap" | "stress" | "beweging";
   surface: string;
 };
 
@@ -158,19 +158,23 @@ export default function DomainLifestyleLadder({
                     {waitLine}
                   </p>
                 ) : null}
-                <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
-                  Wat je kunt doen
-                </p>
-                <ol className="m-0 list-decimal pl-4">
-                  {layer.actions.slice(0, 3).map((action) => (
-                    <li
-                      key={action}
-                      className="mb-1.5 max-w-[58ch] text-[12.5px] leading-relaxed text-[#9FB0A6]"
-                    >
-                      {action}
-                    </li>
-                  ))}
-                </ol>
+                {layer.actions.length > 0 ? (
+                  <>
+                    <p className="mb-2 mt-4 text-[9.5px] font-bold uppercase tracking-[0.15em] text-[#7E8C82]">
+                      Wat je kunt doen
+                    </p>
+                    <ol className="m-0 list-decimal pl-4">
+                      {layer.actions.slice(0, 3).map((action) => (
+                        <li
+                          key={action}
+                          className="mb-1.5 max-w-[58ch] text-[12.5px] leading-relaxed text-[#9FB0A6]"
+                        >
+                          {action}
+                        </li>
+                      ))}
+                    </ol>
+                  </>
+                ) : null}
               </div>
             ) : null}
           </article>
