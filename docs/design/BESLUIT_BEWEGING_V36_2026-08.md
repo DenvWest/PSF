@@ -370,3 +370,72 @@ Ze verwijderen was geen onderdeel van "Vandaag naar de v3.6-vorm"; het is een ap
 **Omvang:** 122 gewijzigd in `BewegingScreen.tsx` + 173 nieuw (twee componenten) = 295 regels productiecode, plus 101 regels tests. Binnen de plakgrens.
 
 **Meetpunt:** `choice.shelf_opened` met `{domain:'beweging', from_state:'vandaag', surface:'kompas_beweging'}` op de deur — bestond al, hergebruikt. `beweging_gratis_actie_gepland` (nieuw, GA4) op de acties-tegel — hier lees je af of de suggesties worden opgepakt vóórdat de vraag "moet dit persistent worden" beantwoord hoeft te zijn.
+
+---
+
+## M · Plak P3 — uitgevoerd, 18 augustus
+
+**Voortgang › Beweging uitgedund, en de navigatie-rail meegenomen.** Twee delen, op verzoek: het hoofdblok van `VoortgangDomeinScreen.tsx`, en een gat in `CockpitContextRail` (de bestaande, al mobiel-responsieve linker rail) dat zichtbaar werd zodra je van Voortgang naar een domein-detail gaat.
+
+### M1 · De vondst die de plak bepaalde
+
+`showAdviesDeur` (de oude toggle + `BewegingAdviesTreden`, 314 regels) bleek **exact het probleem dat `DomainSupplementStance` al oplost voor drie andere domeinen** — en `DOMAIN_PRODUCT_STANCE.movement = { kind: "candidates", slugs: ["creatine", "eiwitpoeder"] }` bestond al, ongebruikt. Dit is precies wat `BESLUIT_DASHBOARD_SUPPLEMENTROUTE_V1` §I al op de sloop-lijst had staan: *"`BewegingAdviesTreden.tsx` (234 r.) — gaat op in het schap"*. Geen nieuw component gebouwd — een bestaand, al-juist patroon eindelijk gebruikt.
+
+| bestand | wat |
+|---|---|
+| `src/components/dashboard/voortgang/VoortgangDomeinScreen.tsx` | SSOT-vlag toegevoegd boven `MovementCheckinReadout` (lock 4, alleen beweging); `showAdviesDeur`-blok vervangen door `<DomainSupplementStance domain="movement" .../>`, in dezelfde positie, gate nu `movementReadout` (was `movementCurrent.source === "beweegcheck"` — beide betekenen "beweegcheck gedaan", nu één bron in plaats van twee die uiteen konden lopen) |
+| `src/components/dashboard/voortgang/BewegingAdviesTreden.tsx` | **verwijderd** (314 r.) — geen enkele resterende aanroep |
+| `src/lib/__tests__/beweging-advies-treden.test.ts` | **verwijderd** (226 r.) — testte uitsluitend de verwijderde functie |
+| `src/lib/beweging-advies-treden.ts` | 153 → 16 regels. `programLabelFor` blijft: `beweging-help-bridge.ts` (Agenda › meer-hulp-sheet) leunt erop, en Agenda stond buiten de scope. `buildBewegingAdviesTreden` en zijn types weg |
+| `src/components/dashboard/VoortgangHub.tsx` | `onOpenAdvies`/`onOpenFavorieten` weg bij de `VoortgangDomeinScreen`-aanroep — werden nergens anders meer gebruikt na de vervanging |
+
+### M2 · De rail — op je vraag, niet stilzwijgend uitgebreid
+
+Je koos "de bestaande navigatie-rail" (`CockpitContextRail`, mode `"voortgang"`) — niet de sticky ladder-rail uit de prebuild, die nog nergens in `src/` bestaat. Bevinding: `VOORTGANG_RAIL_ITEMS` kent alleen `hub`/`statistieken`/`inzichten`/`favorieten`. Op Voortgang › Beweging (`screen === "domein"`) matchte niets, dus lichtte er niets op in de rail — een navigatie-dood-punt dat al bestond, niet iets dat P3 veroorzaakte.
+
+`resolveVoortgangRailActiveItem()` (nieuw, `context-rail.ts`) lost dat op door dezelfde hiërarchie te volgen die `VoortgangHub.tsx`'s eigen `goBack()` al gebruikt: `domein → hub`, `lichaamssamenstelling → statistieken`, de vier bestaande items ongewijzigd. Geen nieuw concept — een bestaande terugweg omgezet in een oplicht-regel. Gewijzigd: `context-rail.ts` (+resolver, +5 tests) en `Dashboard.tsx` (1 regel: `railVoortgangActiveScreen={resolveVoortgangRailActiveItem(voortgangScreen)}`).
+
+**`CockpitContextRail.tsx` en `CockpitFrame.tsx` — geen van beide aangeraakt.** Geverifieerd met `git diff --stat`: leeg. Het `md:hidden`/`md:flex`-responsive-patroon (compacte profielstrip <768px, volledige rail ≥768px) staat exact zoals het stond.
+
+### M3 · Verificatie
+
+`grep console.log src/` → 0 · `npx tsc --noEmit` → schoon · `npx eslint --max-warnings 0` → dezelfde 5 baseline-warnings, niets nieuws · `npx vitest run` → 213 bestanden, 1916 tests groen (netto minder tests dan vóór P3, want de verwijderde 226-regel testfile testte uitsluitend verwijderde code; 8 nieuwe tests op `resolveVoortgangRailActiveItem` erbij) · `GET /dashboard?tab=voortgang&screen=domein&domein=beweging` → 200, geen Next.js-compilefout.
+
+**Omvang: netto -566 regels** (-800 verwijderd, +325 nieuw/gewijzigd, over 14 bestanden). Dit is de eerste plak die code afbouwt in plaats van optelt — precies wat "elf blokken naar zeven" beoogde.
+
+### M4 · Wat ik bewust niet heb aangepakt
+
+- **Sleep mist dezelfde SSOT-vlag.** `SleepCheckinReadout.tsx` heeft géén "Zelfde blok als op je check-in resultaat"-tekst, exact hetzelfde gat als beweging had. Niet gefixed — dat is een ander domein aanraken, buiten de scope van deze opdracht.
+- **`SupplementVerdictPanel` draagt nog een vergelijkingslink.** `DomainSupplementStance` (en dus nu ook beweging) opent 'm nog steeds. Lock 5 ("geen vergelijkingslink … op Voortgang") is daarmee nog niet overal waar — maar dat gat bestond al voor slaap/stress/voeding vóór P3, en het nu ook voor beweging "gelijktrekken" is consistent maken, geen nieuw probleem introduceren. Een echte fix raakt `SupplementVerdictPanel` zelf — vier domeinen tegelijk.
+- **De exacte volgorde "elf → zeven" is niet letterlijk op zeven uitgekomen.** DomeinIjkpuntCheckPrompt, de `movementLogEnabled`-tegel en de checkinRoute-link blijven staan (zelfde reden als in P2: bestaande, niet-schap content verwijderen is een productbeslissing, geen reorganisatie). Netto is het blok wel fors kleiner: 234 regels bespoke 3-tredenstructuur weg voor 6 regels die een al-bestaand component aanroepen.
+
+---
+
+## N · Open punten na P1 + P2 + P3
+
+1. **Scherm B (het schap) bestaat niet in `src/`.** Geen plak in §J bouwt hem. De deur op Vandaag wijst voorlopig naar Favorieten (L2) — dat moet mee zodra dit gebouwd wordt.
+2. **Persistentie van de drie gratis acties**, en of ze de `daily_action_log`-streak mogen delen met de primaire dagstap (L2).
+3. **"≤5 secties" letterlijk halen** vraagt een inhoudelijke beslissing over vijf bestaande blokken (L3) — geen refactor, een productkeuze.
+4. Scherm B krijgt geen appbar in de prebuild (v3.5 §Open vragen 1, ongewijzigd) — relevant zodra plak "bouw het schap" aan de beurt is.
+5. **`SupplementVerdictPanel`'s vergelijkingslink op Voortgang** (M4) — geldt voor alle vier de domeinen met een schap, niet beweging-specifiek. Buiten de scope van deze blauwdruk-opdracht.
+6. **Sleep mist de SSOT-vlag** die beweging nu wel heeft (M4) — hetzelfde gat, ander domein, niet aangeraakt.
+7. §J P4-P6 staan klaar en wachten op akkoord.
+
+---
+
+## N · Bestanden
+
+| bestand | status |
+|---|---|
+| `docs/design/beweging-keuze-consumentenbond-prebuild-v3.6-2026-08.html` | **nieuw** |
+| `docs/design/beweging-keuze-consumentenbond-prebuild-v3.5-2026-08.html` | blijft staan, ongewijzigd |
+| `docs/design/BESLUIT_BEWEGING_V36_2026-08.md` | **nieuw** — dit document |
+| `docs/design/BESLUIT_BEWEGING_PRIORITEITEN_V35_2026-08.md` | amendement-verwijzing toegevoegd bij §B en §K |
+| `src/lib/movement-ladder.ts` · `src/lib/__tests__/movement-ladder.test.ts` | **nieuw** — plak P1 |
+| `src/data/movement/lifestyle-priorities.ts` · `src/types/dashboard.ts` · `src/lib/account-dashboard.ts` · `DomainLifestyleLadder.tsx` · `VoortgangDomeinScreen.tsx` | gewijzigd — plak P1 |
+| `src/components/dashboard/kompas/DomainAttentionBar.tsx` · `src/components/dashboard/beweging/MovementFreeActionsTile.tsx` + hun tests | **nieuw** — plak P2 |
+| `src/components/dashboard/BewegingScreen.tsx` | gewijzigd — plak P2 |
+| `src/components/dashboard/voortgang/BewegingAdviesTreden.tsx` · `src/lib/__tests__/beweging-advies-treden.test.ts` | **verwijderd** — plak P3 |
+| `src/components/dashboard/voortgang/VoortgangDomeinScreen.tsx` · `src/lib/beweging-advies-treden.ts` · `src/lib/context-rail.ts` · `src/components/dashboard/Dashboard.tsx` · `src/components/dashboard/VoortgangHub.tsx` | gewijzigd — plak P3 |
+
+P4 tot en met P6 uit §J staan klaar en wachten op akkoord, één plak per beurt.

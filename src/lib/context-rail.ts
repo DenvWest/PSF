@@ -1,6 +1,8 @@
 import { PILLAR } from "@/data/dashboard";
 import type { PillarId, VoortgangScreen } from "@/types/dashboard";
 
+type VoortgangRailItemId = "hub" | "statistieken" | "inzichten" | "favorieten";
+
 /**
  * Contextuele linker rail (slice 1): pure bouwers voor wat de rail toont.
  * De rail heeft vier modi — profiel (geen Kompas-context), Kompas-home
@@ -87,7 +89,7 @@ export function buildBewegingRailTools(): ContextRailTool[] {
 }
 
 export type ContextRailVoortgangItem = {
-  id: Extract<VoortgangScreen, "hub" | "statistieken" | "inzichten" | "favorieten">;
+  id: VoortgangRailItemId;
   label: string;
   icon: string;
 };
@@ -104,3 +106,25 @@ export const VOORTGANG_RAIL_ITEMS: ContextRailVoortgangItem[] = [
   { id: "inzichten", label: "Jouw inzichten", icon: "Spark" },
   { id: "favorieten", label: "Favorieten", icon: "Heart" },
 ];
+
+/**
+ * Twee Voortgang-schermen staan niet in `VOORTGANG_RAIL_ITEMS` en lichtten
+ * daardoor niets op in de rail: `domein` (bijv. Voortgang › Beweging) en
+ * `lichaamssamenstelling`. Beide zijn een drill-down, geen zusje van de vier
+ * rail-items — hun `goBack()` in VoortgangHub.tsx bevestigt dat al: `domein`
+ * gaat terug naar `hub`, `lichaamssamenstelling` naar `statistieken`. Deze
+ * functie spiegelt diezelfde hiërarchie naar de rail, zodat de gebruiker op
+ * Voortgang › Beweging ziet dat hij ergens ónder "Overzicht" zit, in plaats
+ * van een rail waar niets brandt.
+ */
+export function resolveVoortgangRailActiveItem(
+  screen: VoortgangScreen,
+): VoortgangRailItemId {
+  if (screen === "domein") {
+    return "hub";
+  }
+  if (screen === "lichaamssamenstelling") {
+    return "statistieken";
+  }
+  return screen;
+}

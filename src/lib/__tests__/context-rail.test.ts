@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildBewegingRailTools,
   buildKompasRailDomains,
+  resolveVoortgangRailActiveItem,
   KOMPAS_RAIL_PILLAR_IDS,
 } from "@/lib/context-rail";
 
@@ -45,5 +46,24 @@ describe("buildBewegingRailTools", () => {
     expect(tools).toHaveLength(2);
     expect(tools.map((tool) => tool.id)).toEqual(["checkin", "gids"]);
     expect(tools.find((tool) => tool.id === "gids")?.href).toBe("/gids/beweging");
+  });
+});
+
+describe("resolveVoortgangRailActiveItem", () => {
+  it("laat de vier rail-items ongemoeid", () => {
+    expect(resolveVoortgangRailActiveItem("hub")).toBe("hub");
+    expect(resolveVoortgangRailActiveItem("statistieken")).toBe("statistieken");
+    expect(resolveVoortgangRailActiveItem("inzichten")).toBe("inzichten");
+    expect(resolveVoortgangRailActiveItem("favorieten")).toBe("favorieten");
+  });
+
+  it("licht 'Overzicht' op voor een domein-detailscherm (Voortgang › Beweging)", () => {
+    // Spiegelt VoortgangHub.tsx's eigen goBack(): "domein" gaat terug naar "hub".
+    expect(resolveVoortgangRailActiveItem("domein")).toBe("hub");
+  });
+
+  it("licht 'Statistieken' op voor lichaamssamenstelling", () => {
+    // Spiegelt goBack(): "lichaamssamenstelling" gaat terug naar "statistieken".
+    expect(resolveVoortgangRailActiveItem("lichaamssamenstelling")).toBe("statistieken");
   });
 });

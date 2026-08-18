@@ -5,7 +5,6 @@ import * as Icons from "@/components/app/icons";
 import { DeltaBadge, Sparkline } from "@/components/app/primitives";
 import CockpitTile from "@/components/dashboard/cockpit/CockpitTile";
 import KompasDomainGauge from "@/components/app/KompasDomainGauge";
-import BewegingAdviesTreden from "@/components/dashboard/voortgang/BewegingAdviesTreden";
 import DomainLifestyleLadder from "@/components/dashboard/domain/DomainLifestyleLadder";
 import DomainSupplementStance from "@/components/dashboard/voortgang/DomainSupplementStance";
 import PrioriteitenLadder from "@/components/dashboard/voortgang/PrioriteitenLadder";
@@ -30,7 +29,6 @@ import {
   MOVEMENT_PRIORITY_LAYERS,
   type MovementPriorityId,
 } from "@/data/movement/lifestyle-priorities";
-import { buildBewegingAdviesTreden } from "@/lib/beweging-advies-treden";
 import { clarityTag } from "@/lib/clarity";
 import { buildMovementRoutingHref } from "@/lib/dashboard-url";
 import { getReadoutPresentation } from "@/lib/dashboard-readout";
@@ -49,7 +47,6 @@ import {
   parseMovementPlanProfile,
 } from "@/lib/movement-plan-profile";
 import { buildMovementPositionLine } from "@/lib/movement-plan-roadmap";
-import { deriveMovementCurrent } from "@/lib/movement-target";
 import { getScoreBandShortLabel } from "@/lib/score-bands";
 import { buildRecommendationsEligibility } from "@/lib/supplement-eligibility";
 import type { DashboardData, DashboardModel, PillarId } from "@/types/dashboard";
@@ -88,19 +85,13 @@ export default function VoortgangDomeinScreen({
   domain,
   onBack,
   onGoVandaag,
-  onOpenAdvies,
-  onOpenFavorieten,
 }: {
   model: DashboardModel;
   data?: DashboardData;
   domain: PillarId;
   onBack: () => void;
   onGoVandaag: () => void;
-  /** Voeding-advies (statistieken › advies) — de bestaande ladder, niet gedupliceerd. */
-  onOpenAdvies: () => void;
-  onOpenFavorieten: () => void;
 }) {
-  const [adviesOpen, setAdviesOpen] = useState(false);
   const pillar = PILLAR[domain];
   const readout = isReadoutDomain(domain) ? getReadoutPresentation(domain) : null;
   const leefstijllijnRow = buildLeefstijllijnRows(model).find((row) => row.pillarId === domain) ?? null;
@@ -124,14 +115,9 @@ export default function VoortgangDomeinScreen({
       : null;
 
   const checkinRoute = PILLAR_CHECKIN_ROUTES[domain];
-  const movementCurrent = isMovement ? deriveMovementCurrent(model.answers ?? {}) : null;
 
   const nutritionLogCompleted =
     buildRecommendationsEligibility(data?.nutritionIntake).nutritionLogCompleted === true;
-  // Poort 1 (evidence) — alleen beweging heeft vandaag een product-oordeel;
-  // poort 2 (basis staat) is de bestaande voedingscheck-gate (§G.1 BESLUIT).
-  const showAdviesDeur =
-    isMovement && movementCurrent?.source === "beweegcheck" && nutritionLogCompleted;
 
   const movementReadout = isMovement ? (data?.movementCheckinSnapshot ?? null) : null;
   const sleepReadout = isSleep ? (data?.sleepCheckinSnapshot ?? null) : null;
@@ -160,19 +146,6 @@ export default function VoortgangDomeinScreen({
   const handleCheckin = () => {
     trackEvent("dashboard_beweging_checkin_click", { mode: "full", surface: "voortgang_beweging" });
     clarityTag("dashboard_beweging_checkin", "click");
-  };
-
-  // Zelfde eventnaam als de deur op slaap/stress/voeding (DomainSupplementStance)
-  // — beweging opent zijn schap inline i.p.v. in een los component, maar het
-  // is dezelfde interactie en hoort dezelfde naam te dragen.
-  const handleAdvies = () => {
-    const next = !adviesOpen;
-    setAdviesOpen(next);
-    if (!next) {
-      return;
-    }
-    trackEvent("dashboard_supplement_deur_open", { domain: "beweging", surface: "advies_voortgang" });
-    clarityTag("dashboard_supplement_deur", "beweging");
   };
 
   const handleGoVandaag = () => {
@@ -265,6 +238,12 @@ export default function VoortgangDomeinScreen({
 
         {positionLine ? (
           <p className="px-1 text-[12.5px] leading-relaxed text-[#9FB0A6]">{positionLine}</p>
+        ) : null}
+
+        {movementReadout ? (
+          <p className="px-1 text-[9.5px] font-bold uppercase tracking-[0.14em] text-[#5A8F6A]">
+            Zelfde blok als op je check-in resultaat
+          </p>
         ) : null}
 
         {movementReadout ? (
@@ -459,43 +438,13 @@ export default function VoortgangDomeinScreen({
           />
         ) : null}
 
-        {showAdviesDeur ? (
-          <>
-            <button
-              type="button"
-              onClick={handleAdvies}
-              aria-expanded={adviesOpen}
-              aria-controls="beweging-advies-treden"
-              className="flex cursor-pointer items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3.5 text-left"
-            >
-              <span className="text-[13.5px] font-semibold text-[#5A8F6A]">
-                Wat een supplement hier wél en niet doet
-              </span>
-              <Icons.ChevronRight
-                s={16}
-                style={{
-                  color: "#5A8F6A",
-                  flexShrink: 0,
-                  transform: adviesOpen ? "rotate(90deg)" : "rotate(0deg)",
-                  transition: "transform 0.15s ease",
-                }}
-              />
-            </button>
-            {adviesOpen ? (
-              <div id="beweging-advies-treden">
-                <BewegingAdviesTreden
-                  treden={buildBewegingAdviesTreden(
-                    model,
-                    data,
-                    leefstijllijnRow?.baselineScore ?? null,
-                  )}
-                  onGoVandaag={handleGoVandaag}
-                  onOpenVoedingAdvies={onOpenAdvies}
-                  onOpenFavorieten={onOpenFavorieten}
-                />
-              </div>
-            ) : null}
-          </>
+        {isMovement && movementReadout ? (
+          <DomainSupplementStance
+            domain="movement"
+            verdicts={data?.supplementVerdicts ?? []}
+            nutritionLogCompleted={nutritionLogCompleted}
+            surface="voortgang_beweging"
+          />
         ) : null}
 
         <button

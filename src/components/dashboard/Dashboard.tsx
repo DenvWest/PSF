@@ -145,6 +145,7 @@ import { buildRecommendations } from "@/lib/build-recommendations";
 import {
   buildBewegingRailTools,
   buildKompasRailDomains,
+  resolveVoortgangRailActiveItem,
   type ContextRailApi,
   type ContextRailMode,
   type ContextRailToolId,
@@ -3971,7 +3972,7 @@ export default function Dashboard({
         onOpenDomain={contextRailApi?.onOpenDomain}
         onToolClick={contextRailApi?.onToolClick}
         onBackToKompas={contextRailApi?.onBackToKompas}
-        railVoortgangActiveScreen={voortgangScreen}
+        railVoortgangActiveScreen={resolveVoortgangRailActiveItem(voortgangScreen)}
         onOpenVoortgangScreen={handleRailVoortgangOpen}
         onOpenVoortgangAanbouw={handleRailVoortgangAanbouw}
         inspectorCards={inspectorCards}
