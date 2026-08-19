@@ -3,7 +3,6 @@ import type { SleepPriorityId } from "@/data/sleep/lifestyle-priorities";
 import {
   parseSleepCheckReport,
   type SleepCheckinReadoutDelta,
-  type SleepFactRow,
 } from "@/lib/sleep-checkin-readout";
 import type { SleepLayerState } from "@/lib/sleep-ladder";
 
