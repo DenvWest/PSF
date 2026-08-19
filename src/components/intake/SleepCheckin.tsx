@@ -9,7 +9,6 @@ import {
   SLEEP_CONTEXT_QUESTIONS,
   SLEEP_DUUR_QUESTION,
   SLEEP_REGIE_QUESTION,
-  type SleepBand,
 } from "@/data/sleep-checkin";
 import type { SleepAssessment, SleepConclusion } from "@/lib/sleep-assessment";
 import type { SleepDirection } from "@/lib/sleep-delta";
@@ -75,19 +74,11 @@ const ALL_QUESTIONS: QuestionDef[] = [
 
 const TOTAL = ALL_QUESTIONS.length;
 
-const BAND_LABELS: Record<SleepBand, string> = {
-  aandacht: "Aandacht",
-  redelijk: "Redelijk",
-  sterk: "Sterk",
-};
-
 export default function SleepCheckin() {
   const [step, setStep] = useState<Step>({ kind: "question", index: 0 });
   const [answers, setAnswers] = useState<SleepReport>({});
   const [consentChecked, setConsentChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [checkinId, setCheckinId] = useState<string | null>(null);
 
   useEffect(() => {
     clarityTag("sleep_flow", "started");
@@ -158,7 +149,6 @@ export default function SleepCheckin() {
 
       clarityTag("sleep_flow", "completed");
       trackEvent("sleep_checkin_completed", { surface: "intake_slaap" });
-      setCheckinId(data.checkinId);
       setStep({
         kind: "result",
         assessment: data.assessment,
@@ -173,39 +163,6 @@ export default function SleepCheckin() {
     } finally {
       setSubmitting(false);
     }
-  }
-
-  async function persistChosenActions(nextSelected: Set<string>) {
-    if (!checkinId || nextSelected.size === 0) {
-      return;
-    }
-    const chosenActions = [...nextSelected].map((key) => key.split(":").slice(1).join(":"));
-    try {
-      await fetch("/api/intake/sleep-checkin", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          checkin_id: checkinId,
-          chosen_actions: chosenActions,
-        }),
-      });
-    } catch {
-      /* non-blocking */
-    }
-  }
-
-  function toggleChoice(key: string) {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      void persistChosenActions(next);
-      return next;
-    });
   }
 
   if (step.kind === "result") {
@@ -339,7 +296,7 @@ export default function SleepCheckin() {
               setStep({ kind: "question", index: 0 });
               setAnswers({});
               setConsentChecked(false);
-              setSelected(new Set());
+
             }}
             className="rounded-[12px] border border-intake-card-border bg-transparent px-6 py-3 text-sm font-semibold text-intake-ink transition-colors hover:bg-intake-bg-elevated"
           >
